@@ -1,3 +1,3 @@
-# Système de design
+# Système de design gouvernemental
 
-Projet autonome pour le Système de design (SDD)
+Projet autonome pour le Système de design (SDG)
