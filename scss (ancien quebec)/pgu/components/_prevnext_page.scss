@@ -1,0 +1,55 @@
+
+.qc-contentBlock-title{
+  margin-top: -0.5rem;
+  H2, H3, H4, H5, H6 {
+    margin : 0rem;
+    padding  : 0rem;
+    font-family : "Open Sans";
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  margin-bottom: 1.125rem;
+  margin-left: 0.5rem;
+}
+.qc-fleche-icon {
+  margin-top : -0.125rem;
+  margin-right : 0.5rem;
+}
+.qc-link-block  {
+  text-decoration : none;
+}
+.qc-link-title{
+  text-decoration : underline;
+}
+
+.qc-link-title {
+  font-size : 1rem;
+}
+
+.qc-contentBlock:hover{
+  background-color: #F9F8F8;
+  .qc-link-title{
+    text-decoration : none;
+  }
+}
+
+hr {
+  border: 0; border-top: 1px solid $gris-fonce;
+}
+
+.qc-hr-bottom{
+  margin-bottom: 0rem;
+}
+
+.qc-hr-top{
+  margin-top: 0rem;
+  border: 0; border-top: 0.1rem solid #fff;
+}
+
+.qc-hr-head{
+  margin-bottom : 0rem;
+}
+
+.qc-link-title {
+  margin-left : 1.8rem;
+}

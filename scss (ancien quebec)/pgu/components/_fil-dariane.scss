@@ -1,0 +1,205 @@
+/// MIXIN
+@mixin fleche-ariane{
+  content: "";
+  display: inline-block;
+  background-image: url("../Images/Templates/chevron-fil.svg");
+  width: 4px;
+  height: 7px;
+  background-size: cover;
+}
+
+/* Communications numériques gouvernementales */
+.section-cng .filAriane {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+/** introuvable **/
+.filAriane-item+.filAriane-item::before { font-weight: normal; }
+
+/***********************************************/
+.filAriane {
+  visibility : hidden;
+  background-color: transparent;
+  display: inline-flex;
+  list-style: none;
+  font-size: rem-calc(12);
+  align-items: center;
+  flex-wrap: wrap;
+  // Écraser la colour du fil d'Ariane pour l'ellipse dans une campagne
+  #campagneEntete & {
+    .ellipse-options{
+      li{
+        a {
+          color: #095797;
+        }
+      }
+    }
+  }
+  @media (max-width: 767px) {
+    font-size: rem-calc(0.8 * 16);
+  }
+
+  a {
+    color: $bleu-fonce;
+    font-weight: 300;
+    text-decoration: none;
+
+    &::after {
+      position: relative;
+      display: inline-block;
+    }
+
+    &:hover {
+      color: $bleu-fonce;
+      text-decoration: underline;
+    }
+
+    &:focus {
+      color: $bleu-fonce;
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $bleu-fonce;
+    }
+  }
+
+  li {
+    padding:0;
+    &.curitem {
+      color: $bleu-fonce;
+      font-weight:600;
+      a {
+        font-weight: 600;
+
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+    display: inline;
+    margin-right: rem-calc(16* 0.5);
+  }
+
+  .displayNone {
+    display: none;
+  }
+
+  &.ellipse {
+    @media (max-width: 767px) {
+      li {
+        &, &.ellipse-item, &.ellipse-item::after {
+          display: none;
+        }
+        &.last {
+          display: inline-block;
+
+          a {
+            color: $bleu-piv;
+            padding-left: 12px;
+            position: relative;
+
+            &::before {
+              @include fleche-ariane;
+              display: inline-block;
+              position: absolute;
+              top: 6px;
+              left: 0;
+              @media (max-width: 767px) {
+                background-image: url("../Images/Templates/chevron-fil-mobile.svg");
+              }
+            }
+
+            &::after {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    a {
+      &::after {
+        @include fleche-ariane;
+        top: -1px;
+        left: 7px;
+        border: 0;
+        transform: none;
+        @media (max-width: 767px) {
+          background-image: url("../Images/Templates/chevron-fil-mobile.svg");
+        }
+      }
+    }
+
+    .ellipse-item {
+      position: relative;
+      align-items: center;
+      display:flex;
+      &::after {
+        @include fleche-ariane;
+        top: 0;
+        left: 0;
+        border: 0;
+        transform: none;
+        margin-left: 6px;
+        align-self: center;
+        @media (max-width: 767px) {
+          background-image: url("../Images/Templates/chevron-fil-mobile.svg");
+        }
+      }
+    }
+
+    .ellipse-button {
+      width: 24px;
+      height: 16px;
+      background-color: $bleu-pale;
+      position: relative;
+      top: 0;
+      background-image: url("../Images/Templates/dots.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      border: 1px solid #ffffff;
+      &:hover {
+        border: 1px solid #6991D1;
+      }
+      &:focus {
+        border: 1px solid #6991D1;
+      }
+    }
+
+    .ellipse-options {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transform: translateY(100%);
+      width: 300px;
+      background-color: $bleu-pale;
+      z-index: 1;
+      padding: 8px;
+      border-left: 1px solid #ffffff;
+      &.actif {
+        display: block;
+      }
+
+      li {
+        font-size: rem-calc(12);
+        display: block;
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        a {
+          color: $bleu-piv;
+
+          &::after {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

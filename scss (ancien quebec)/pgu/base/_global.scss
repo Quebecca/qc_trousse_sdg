@@ -1,0 +1,174 @@
+html {
+  overflow-x: hidden;
+}
+// Titles
+// H1
+h1.themeTitre,
+.h1.themeTitre {
+  font-size: rem-calc(36);
+  line-height: rem-calc(42);
+  @media (min-width: 768px) {
+    font-size: rem-calc(48);
+    line-height: rem-calc(56);
+  }
+}
+.title-orange-bar {
+  &::after {
+    content: "";
+    display: block;
+    width: rem-calc(48);
+    margin-top: 0;
+    padding-top: 8px;
+    border-bottom: 4px solid $rose-accent;
+  }
+}
+// H2
+h2,
+.h2 {
+  font-size: rem-calc(28);
+  line-height: rem-calc(32);
+  margin-bottom: 16px;
+  @media (min-width: 768px) {
+    font-size: rem-calc(36);
+    line-height: rem-calc(44);
+  }
+}
+// H3
+h3,
+.h3 {
+  font-size: rem-calc(24);
+  line-height: rem-calc(28);
+  @media (min-width: 768px) {
+    font-size: rem-calc(32);
+    line-height: rem-calc(36);
+  }
+}
+// H4
+h4,
+.h4 {
+  font-size: rem-calc(20);
+  line-height: rem-calc(28);
+  @media (min-width: 768px) {
+    font-size: rem-calc(24);
+    line-height: rem-calc(36);
+  }
+}
+// H5 & H6
+h5,
+.h5,
+h6,
+.h6 {
+  font-size: rem-calc(16);
+  line-height: rem-calc(24);
+}
+h5,
+.h5 {
+  @media (min-width: 768px) {
+    font-size: rem-calc(20);
+    line-height: rem-calc(30);
+  }
+}
+h6,
+.h6 {
+  @media (min-width: 768px) {
+    font-size: rem-calc(16);
+    line-height: rem-calc(24);
+  }
+}
+
+// Buttons
+// Global buttons
+button,
+a {
+  &.button-base {
+    display: block;
+    min-width: 156px;
+    text-align: center;
+    padding: 16px;
+    border: 0;
+    font-weight: 700;
+    text-decoration: none;
+    max-width: 340px;
+    width: auto;
+    font-size: rem-calc(16);
+    line-height: 1.5;
+    margin: 30px auto;
+    @media (min-width: 768px) {
+      display: inline-block;
+      margin: 16px 0;
+      & + .button-base {
+        margin-left: 30px;
+      }
+    }
+  }
+  // Primary (overrides zoneClickLeft old class)
+  &.primary{
+    background-color: $bleu-piv;
+    color: $white;
+    box-shadow: 0 3px 6px transparentize($bleu-fonce, 0.85);
+    &:hover {
+      background-color: $bleu-medium;
+      border: 0;
+    }
+  }
+  // Secondary
+  &.secondary {
+    border: 2px solid $bleu-piv;
+    padding: 14px;
+    background-color: $white;
+    color: $bleu-piv;
+    &:hover {
+      background-color: $bleu-piv;
+      color: $white;
+    }
+  }
+  // Tertiary
+  &.tertiary {
+    background-color: transparent;
+    color: $bleu-piv;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+// Go up button
+#flecheHaut {
+  right: 32px;
+}
+
+// Links
+// External
+.linkExtImg {
+  width: 8px;
+  height: 8px;
+}
+// Section links
+.section-link {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 9px;
+    background-image: url("../Images/Templates/fleche-lien.svg");
+    margin-left: 4px;
+  }
+}
+
+// List
+#main {
+  ul {
+    ul {
+      list-style: circle;
+    }
+  }
+}
+
+// Form
+#main {  
+  .formBasPage {
+    h2 {
+      font-size: rem-calc(21);
+      line-height: rem-calc(24);
+    }
+  }
+}

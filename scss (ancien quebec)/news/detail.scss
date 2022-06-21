@@ -1,0 +1,189 @@
+h1.detailNouvelles:after { border-bottom: 5px solid #e88467; }
+.news-lead {
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0;
+    p {
+        font-size: 1.1875rem;
+        line-height: 1.5rem;
+    }
+    .cision-news & { display: none;}
+}
+
+.news-single {
+    .outer:first-of-type .mediaelement-image { padding-top: 0; }
+    .article {
+        border-bottom: 0;
+        .frame-type-textmedia { margin-bottom: 0.8125rem; }
+    }
+    figure.video, figure.image { margin-bottom: 3rem; }
+    .mediaelement-image figure.image { margin-bottom: .5rem; }
+    .ce-column {
+        margin-right: 0;
+    }
+    .nouvellesLieesThemes,
+    .enteteThemes {
+        .btn-info {
+            margin-bottom: .5rem;
+        }
+    }
+    .dateMiseAJour {
+        padding-top: 0;
+        margin-bottom: 0;
+    }
+}
+
+
+.news .article { padding-bottom: 0; }
+
+.partagerNouvelle {
+    border-top: 1px solid #c5cad2;
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+    a {
+        margin-right: 0.75rem;
+        margin-top: 0.2rem;
+        text-decoration: none;
+        &:hover {
+            opacity: 0.7;
+        }
+    }
+    img {
+        width: 28px;
+        height: 28px;
+    }
+}
+.titrePartager {
+    padding-bottom: 0.5rem;
+    font-size: 0.8125rem;
+}
+
+.basDeVignette,
+figcaption,
+.ce-gallery figcaption {
+    display: block;
+    caption-side: bottom;
+    background-color: #f2f1f1;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.5rem;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+    line-height: 1.375rem;
+}
+.detail-view-main-content {
+    clear: both;
+    margin-top: 2rem;
+    padding-top: 0;
+}
+.news-related-wrap {
+    border-top: 2px solid #223654;
+    padding-top: 2rem;
+    margin-bottom: 3.5rem;
+    h3 {
+        font-size: 1.75rem;
+    }
+    h4 {
+        font-size: 1.3125rem;
+        font-weight: normal;
+        margin-top: 1.5rem;
+    }
+}
+
+.news-related {
+    border: none;
+    border-top: 1px solid #dedede;
+    padding: 0;
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    h4 {
+        margin-bottom: 0.5rem;
+    }
+    a p {
+        margin-bottom: 0.5rem;
+    }
+}
+.nouvellesLieesThemes {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.news-related-links ul {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    li {
+        list-style-type: none;
+        &:first-child  {
+            margin-top: 0;
+        }
+        &:last-child  {
+            margin-bottom: 0;
+        }
+    }
+}
+.publiePar {
+    font-size: 0.875rem;
+    line-height: 1.35rem;
+    margin-bottom: 1rem;
+}
+blockquote p {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.7rem;
+    margin-bottom: 0.5rem;
+    padding: 0 2rem;
+}
+q, blockquote p {
+    &:before {
+        padding-right: 0.3rem;
+        content: open-quote;
+    }
+    &:after {
+        padding-left: 0.3rem;
+        content: close-quote;
+    }
+
+}
+
+.signatureCitation {
+    font-size: 0.875rem;
+    position: relative;
+    padding-left: 3.875rem;
+    font-weight: normal;
+    font-style: normal;
+    line-height: inherit;
+    padding-right: 0;
+    margin-bottom: 3.6rem;
+    &::first-line {
+        font-size: 1rem;
+        font-weight: 600;
+        font-style: italic;
+    }
+    &:before {
+        content: "";
+        display: block;
+        margin: 0;
+        width: 1.5rem;
+        position: absolute;
+        top: 0.75rem;
+        left: 1.875rem;
+        border-bottom: 1px solid #223654;
+    }
+}
+
+@media (max-width: 403px) {
+
+    .article {
+        margin-left: -15px;
+    }
+    .news-media-principal .basDeVignette {
+        margin-top: 0;
+        padding-left: 1rem;
+    }
+    .news-single .news-media-principal .mediaelement-image figure.image {
+        margin-bottom: 0;
+    }
+}
+

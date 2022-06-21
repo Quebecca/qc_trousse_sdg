@@ -1,0 +1,106 @@
+@import "../../sass/variables/colors.variables";
+
+@import "../../sass/variables/spacing.variables";
+
+@import "../../sass/variables/typography.variables";
+// petit
+.qc-blockquote {
+    display: block;
+    margin: $spacing-8 $spacing-0;
+    text-align: left;
+    padding: $spacing-0 $spacing-6;
+    border-width: 0;
+
+    .qc-blockquote-quote {
+        font-family: $qc-font-open-sans;
+        display: block;
+        position: relative;
+        margin-bottom: $spacing-4;
+        color: $qc-color-dark-blue;
+        font-size: 18px;
+        line-height: 24px;
+        letter-spacing: -0.38px;
+        font-weight: 600;
+    }
+}
+// grand
+.qc-blockquote-grand {
+    display: block;
+    margin: $spacing-8 $spacing-0;
+    text-align: left;
+    padding: $spacing-0 $spacing-6;
+    border-width: 0;
+
+    .qc-blockquote-quote-grand {
+        font-family: $qc-font-open-sans;
+        display: block;
+        position: relative;
+        margin-bottom: $spacing-4;
+        color: $qc-color-dark-blue;
+        font-size: 31px;
+        line-height: 40px;
+        letter-spacing: -0.6px;
+        font-weight: 600;
+    }
+}
+
+
+.qc-blockquote-grand p{
+    margin: 0 0 $spacing-5 0;
+    &::before {
+        content: open-quote;
+    }
+
+    &::after {
+        content: close-quote;
+    }
+}
+
+.qc-blockquote p {
+    margin: 0 0 $spacing-5 0;
+
+    &::before {
+        content: open-quote;
+    }
+
+    &::after {
+        content: close-quote;
+    }
+}
+
+html[lang="fr"] blockquote {
+    quotes: "« " " »";
+}
+
+.qc-blockquote-author-name {
+    display: block;
+        position: relative;
+        margin-bottom: $spacing-0;
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+        margin-left: 2rem;
+        font-style: normal;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            display: block;
+            width: 24px;
+            height: 1px;
+            background: $qc-color-dark-blue;
+            transform: translate3d(-32px, 0, 0);
+        }
+}
+
+.qc-blockquote-author-title {
+    display: block;
+    margin: $spacing-0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    max-width: 85%;
+    margin-left: 2rem;
+    font-style: normal;
+}

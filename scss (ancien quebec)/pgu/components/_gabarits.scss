@@ -1,0 +1,26 @@
+.gabarit-pleine-largeur,
+.gabarit-sans-menu,
+.gabarit-menu-contenu {
+  @media (max-width: 403px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.gabarit-menu-contenu {
+  #titreNo1 {
+    padding-bottom: 20px;
+    &::after {
+      content: "";
+      display: block;
+      margin: 0;
+      width: 3rem;
+      padding-top: 0.5rem;
+    }
+  }
+  .date-padding-left{
+    padding-left:0!important;
+    @media (max-width: 403px) {
+      padding-left:15px!important;
+    }
+  }
+}

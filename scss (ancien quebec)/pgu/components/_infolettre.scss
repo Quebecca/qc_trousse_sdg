@@ -1,0 +1,70 @@
+.frame-infolettre {
+  @extend %boite-base-frame;
+  background-image: url("../Images/Templates/ico-infolettre.svg?v=1");
+  background-position: 3rem 2.5rem;
+  background-size: 42px;
+  background-color: $gris-pale;
+  padding: 2rem 30rem 1rem 3rem;
+  margin: 3rem 0 2rem 0;
+  position: relative;
+  .colonneDroitePetite & {
+    background-position: 2rem 2.5rem;
+    padding: 2rem 2rem 1rem;
+    margin: 0;
+    h2, h3, h4 {
+      margin-top: 0;
+    }
+    @include headings {
+      &:after {
+        display: none;
+      }
+    }
+    @media (max-width: 992px) {
+      h3 {
+        margin-top: 2rem;
+        padding-left: 0;
+      }
+    }
+    @media (max-width: 767px){
+      background-position: 2rem 2.1rem;
+      h3 {
+        margin-top: 0;
+        padding-left: 3.5rem;
+      }
+    }
+  }
+  h2, h3, h4 {
+    padding-left: 3.5rem;
+    padding-bottom: 1rem;
+    font-size: 1.5rem!important;
+    font-weight: 500;
+    line-height: 2.3rem;
+    margin-top: 0;
+  }
+  .ce-bodytext{
+    border: 0;
+  }
+  .col-md-7 &{
+    padding-right: 3rem;
+    padding-bottom: 5rem;
+    padding-left: 1.75rem;
+    background-position: 2rem 2.5rem;
+    @media (max-width: 767px) {
+      background-position: 2rem 2.1rem;
+    }
+  }
+  @media (max-width: 767px) {
+    padding-right: 1rem;
+    padding-bottom: 6rem;
+    h2, h3, h4 {
+      line-height: 1.5rem;
+    }
+  }
+  @media (max-width: 992px){
+      padding-right: 4rem;
+      padding-bottom: 5rem;
+  }
+  @media screen and  (-ms-high-contrast: none) {
+     background-size: auto;
+  }
+}

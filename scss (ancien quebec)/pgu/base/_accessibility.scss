@@ -1,0 +1,15 @@
+*,
+*:focus,
+button:focus {
+    outline: none;
+}
+[data-n-head-ssr],
+[data-state='keydown'] {
+    *:focus,
+    [type='radio']:focus + label,
+    [type='checkbox']:focus + label {
+        outline-color: -webkit-focus-ring-color;
+        outline-style: auto;
+        outline-width: 1px;
+    }
+}

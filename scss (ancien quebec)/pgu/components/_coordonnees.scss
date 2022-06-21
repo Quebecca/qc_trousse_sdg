@@ -1,0 +1,56 @@
+#main {
+  .coordonnees-title {
+    margin: 0 0 24px;
+    font-size: rem-calc(16);
+    line-height: 1.5;
+    font-family: $f-body;
+    padding: 0;
+    font-weight: 700;
+  }
+  .coordonnee-item {
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    abbr {
+      text-decoration: none;
+    }
+  }
+}
+.frame + .coordonnees-section {
+  margin-top: calc(56px - 1rem);
+}
+.coordonnees-section {
+  border: 1px solid $normal-grey;
+  padding: 24px 16px;
+  margin: 56px 0;
+  .coordonnee-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .coordonnee-item {
+    display: flex;
+    .coordonnee-img {
+      margin-right: 16px;
+      height: rem-calc(24);
+      width: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    p {
+      margin-bottom: 4px;
+      line-height: 1.5;
+      &:last-child {
+        margin: 0;
+      }
+    }
+    a[href^="tel:"] {
+      @media (max-width: 768px) {
+        pointer-events: all;
+        color: $bleu-piv;
+      }
+    }
+  }
+}

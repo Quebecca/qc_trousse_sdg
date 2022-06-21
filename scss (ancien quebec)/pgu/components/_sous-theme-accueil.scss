@@ -1,0 +1,94 @@
+#main {  
+  .sous-theme {
+    margin: 32px 0;
+    padding-right: 15px;
+    padding-left: 15px;
+    .sous-theme-page-lien {
+      text-decoration: none;
+      &:hover {
+        .sous-theme-titre {
+          display: inline;
+          //text-decoration: underline;
+          border-bottom: 1px solid #223654;
+          .image-dernier-mot{
+            &:after {
+              background-color: #223654;
+            }
+          }
+        }
+        .link-arrow {
+          opacity: 1;
+        }
+      }
+      @media (min-width: 768px) {
+        .link-arrow {
+          opacity: 0;
+          display: inline-block;
+          background-image: url("../Images/Templates/fleche-lien-orange.svg");
+          width: 8px;
+          height: 9px;
+          margin-left: 8px;
+        }
+      }
+    }
+    .arrow-wrapper {
+      white-space: nowrap;
+    }
+    .sous-theme-page {
+      padding-right: 1rem;
+      img {
+        margin-left: 8px;
+        display: inline;
+      }
+    }
+    .sous-theme-titre {
+      display: inline;
+      font-size: rem-calc(20);
+      line-height: rem-calc(30);
+      font-weight: 700;
+      padding: 0;
+      margin: 0;
+      .image-dernier-mot{
+        display:inline-block;
+        background-color: #ffffff;
+        line-height: 1.5rem;
+        &:after {
+          content: "";
+          background-color: #ffffff;
+          height: 1px;
+          width: calc(100% - 20px);
+          display: block;
+        }
+      }
+    }
+    .sous-theme-accroche {
+      margin: 8px 0 16px;
+      color: $bleu-fonce;
+    }
+    .sous-theme-liste {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sous-theme-item {
+      margin: 8px 0;
+    }
+    .sous-theme-tous,
+    .sous-theme-lien {
+      text-decoration: none;
+      color: $bleu-piv;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .sous-theme-lien {
+      font-size: rem-calc(16);
+      line-height: rem-calc(24);
+      font-weight: 700;
+    }
+    .sous-theme-tous {
+      font-size: rem-calc(14);
+      line-height: rem-calc(20);
+    }
+  }
+}

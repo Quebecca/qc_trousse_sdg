@@ -1,0 +1,18 @@
+// Builds a rem-calc function for use in SCSS
+@use "sass:math";
+
+@function rem-calc($size) {
+    $remSize: math.div($size, 16);
+    @return $remSize * 1rem;
+}
+
+// Radius for rounded corners (for example, buttons)
+$global-radius: 4px;
+
+// Width values
+$standard-width: 48rem;
+$full-width: 100%;
+
+// Height values
+$standard-input-height: 48px;
+$ontario-logo-height: 46px;

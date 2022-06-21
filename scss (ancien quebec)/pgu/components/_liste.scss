@@ -1,0 +1,104 @@
+/* Listes */
+ol{
+  padding: 0 0 0.5rem 2.5rem;
+}
+
+li{
+  ol{
+    padding-bottom: 0 ;
+  }
+}
+
+/**************************** OL stylisés **************************/
+@mixin espace-droite-leger-gauche {
+  padding: 0 22px 0 22px;
+  margin-right: 3%;
+}
+
+// colonne de contenu peu large
+.col-md-7 ol.olCircle li{
+    width: 47%;
+
+    @media (max-width: 992px){
+      @include zero-espace-droite;
+      width: 100%;
+    }
+
+    &:nth-child(3n) {
+      @include espace-droite-leger-gauche;
+
+      @media (max-width: 992px) {
+        @include espace-droite-leger-gauche;
+      }
+    }
+
+    &:nth-child(2n){
+      @include zero-espace-droite;
+
+      @media (max-width: 992px){
+        width: 100%;
+        @include zero-espace-droite;
+      }
+    }
+}
+
+// Visuel de base pour les listes OL personnalisées.
+ol.olCircle {
+  padding: 0 0 0.5rem 1.5rem;
+  list-style: none;
+  overflow: hidden;
+  counter-reset: numList;
+  display: flex;
+  flex-wrap: wrap;
+
+    li {
+      @include espace-droite-leger-gauche;
+      width: 30%;
+      min-width: 200px;
+      float: left;
+      position: relative;
+
+      &:before {
+        counter-increment: numList;
+        content: counters(numList, ".", decimal-leading-zero);
+        float: left;
+        position: absolute;
+        left: -22px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-align: center;
+        color: #fff;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        background: #095797;
+        -moz-border-radius: 999px;
+        border-radius: 999px;
+      }
+
+      &.olCircle-Bleue:before { background: #1479cc; }
+      &.olCircle-Rose:before { background: #f09686; }
+
+      &:nth-child(3n) {
+        @include zero-espace-droite;
+
+        @media (max-width: 992px) {
+          @include espace-droite-leger-gauche;
+        }
+      }
+
+      &:nth-child(2n){
+        @media (max-width: 992px) {
+          @include zero-espace-droite;
+        }
+      }
+
+      @media (max-width: 992px) {
+        width: 47%;
+      }
+      @media (max-width: 767px) {
+        width: 100%;
+        @include zero-espace-droite;
+      }
+    }
+}

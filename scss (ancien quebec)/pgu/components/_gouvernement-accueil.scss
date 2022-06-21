@@ -1,0 +1,46 @@
+#main .gouvernement-accueil {
+  margin-top: 72px;
+  margin-bottom: 24px;
+  @media (min-width: 768px) {
+    margin-bottom: 32px;
+  }
+  .row {
+    @media (max-width: 768px) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+  a {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .gouvernement-titre {
+    font-weight: 500;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+  .gouvernement-liste-liens {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    @media (min-width: 768px) {
+      border-bottom: 1px solid $normal-grey;
+    }
+    .gouvernement-lien {
+      margin-top: 0;
+      margin-bottom: 16px;
+      a {
+        font-size: rem-calc(18);
+        font-weight: 700;
+      }
+    }
+  }
+  .gouvernement-voir-section {
+    margin-top: 4px;
+    a {
+      font-size: rem-calc(14);
+    }
+  }
+}

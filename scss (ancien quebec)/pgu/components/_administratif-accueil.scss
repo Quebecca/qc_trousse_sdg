@@ -1,0 +1,107 @@
+%news-list {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  list-style-type: none;
+  margin: 0;
+  padding: 1.5rem 4.5rem 1.5rem 0;
+  border-bottom: 1px solid #dedede;
+}
+%right-arrow{
+  content: "";
+  border: solid #095797;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 4px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  position: absolute;
+  right: 2rem;
+  top: 45%;
+}
+
+.actualitesAdministratif{
+  margin-bottom: 2rem;
+  #main &{
+    .col-lg-4{
+      li{
+        @extend %news-list;
+      }
+      .news-list-view:last-of-type {
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      &:last-child{
+        border-bottom: none;
+      }
+    }
+  }
+  figure{
+    margin:0;
+  }
+  .col-lg-8 {
+    padding-right: 4rem;
+    @media (max-width: 767px) {
+      padding-right: 15px;
+    }
+  }
+  .col-lg-4{
+    h2.ligneSousTitre  {
+      padding-right: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+      &:after {
+        width: 100%;
+        padding-top: 1rem;
+      }
+    }
+    ul {
+      padding: 0; margin: 0;
+    }
+    li{
+      &:after{
+        @extend %right-arrow;
+      }
+    }
+    .news {
+      border-top: none;
+    }
+    .news-list-view:first-of-type {
+      border-top: 0;
+    }
+    .no-news-found {
+      display: none;
+    }
+    a{
+      text-decoration: none;
+      &.lienDetail {
+        text-decoration: underline;
+      }
+    }
+
+    @media (max-width: 991px) {
+      margin: 3.5rem 0 2rem 0;
+    }
+  }
+  .news-list-view:last-of-type{
+    margin-bottom: 0.5rem;
+  }
+}
+// À valider
+.nav-list-1 {
+  li {
+    @extend %news-list;
+    &:after{
+      @extend %right-arrow;
+    }
+    &:last-child{
+      border-bottom: none;
+    }
+  }
+  a{
+    text-decoration: none;
+  }
+}
+.right-arrow-after:after {
+  @extend %right-arrow;
+}

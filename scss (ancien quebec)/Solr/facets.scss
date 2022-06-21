@@ -1,0 +1,388 @@
+@import "../../Css/params.sass";
+
+.tx_solr {
+  legend, label, .label {font-weight: bold;}
+}
+#top {
+  .keyword {
+    &::before {
+      content: '« '
+    }
+
+    &::after {
+      content: ' »'
+    }
+  }
+}
+
+.facet-wrap {
+  padding-bottom: 2rem;
+}
+
+.facets {
+  font-family: "Open Sans";
+  [data-toggle] {
+    &[aria-expanded=true] {
+      .less {
+        display:inline;
+
+      }
+      .more {display:none;}
+    }
+    &[aria-expanded=false] {
+      .less {display:none;}
+      .more {display:inline;}
+    }
+  }
+  .dropdown-toggle,
+  .dropdown-toggle:hover {
+    color : #647287;
+  }
+
+  .facet .form-check-input {
+    margin-left: -1.25rem!important;
+  }
+  .dropdown-toggle {
+    &::after {
+      border: none;
+    }
+    .hide {
+      display: none;
+    }
+    .show & {
+      .show {
+        display: none;
+      }
+      .hide {
+        display: inline;
+      }
+    }
+  }
+  .no-result {display: none}
+  .inner-facet {max-height: 250px; }
+
+  .dropdown.show .dropdown-menu {
+    &[x-placement^=bottom] {
+      border-top: 0 !important;
+    }
+    &[x-placement^=top] {
+      border-bottom: 0 !important;
+    }
+  }
+  .dropdown .list { height: 180px; overflow: auto;}
+
+  a[aria-expanded]~.nb-selected:before
+  {
+    border-color:  transparent;
+  }
+
+
+  legend a {
+    position: relative;
+  }
+
+  .dropdown, .nb-selected{
+    font-size: .9em !important;
+  }
+
+  .search-filter {
+    background-image: url("../Images/Templates/loupe-piv-fonce.svg?v=1");
+    background-position: center right .5em;
+    background-repeat: no-repeat;
+    background-size: 1em;
+    padding-right: 2em;
+  }
+
+
+  .facet-result-count {
+    &::before {
+      content: '('
+    }
+    &::after {
+      content: ')'
+    }
+    .facet.is-used & {
+      display: none;
+    }
+  }
+
+  /*.error { display: none;}*/
+  .error {
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    color: #cb381f!important;
+  }
+
+  .selector {
+    &.invalid,
+    .invalid & {
+      border: solid 3px #cb381f!important;
+    }
+  }
+
+  .form-control,
+  .input-group {
+    height: 2.5rem !important;
+  }
+
+  .form-check {
+    padding-left: $form-check-padding;
+    margin-bottom: .75rem !important;
+
+
+    .form-check-label:first-letter {
+      text-transform: uppercase;
+    }
+
+    .form-check-input {
+      height: 1rem !important;
+      width: 1rem !important;
+      margin-left: -$form-check-padding !important;
+    }
+  }
+
+
+
+}
+
+.chevron {
+  a & {
+    right: 0;
+    border: solid #095797;
+    border-width: 0 2px 2px 0 ;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin: 0 .3em .2em;
+  }
+
+  a[aria-expanded=true] & {
+    border-width: 2px 0 0 2px;
+    margin: .2em .3em 0;
+  }
+}
+
+.times {
+  font-size: 1.3rem;
+}
+
+@include media-breakpoint-up(lg) {
+  .width-md-auto {
+   width: auto!important;
+  }
+}
+
+#top {
+  select {height: 2rem;}
+  .fixed-width {
+     width: 80px;
+  }
+}
+
+#tx-solr-keywords {
+  height: 2rem;
+  div {
+    vertical-align: middle;
+    line-height:1.5rem;
+    height:1.5rem;
+  }
+}
+
+.results-per-page label {
+  font-weight: 600;
+}
+
+fieldset.disabled .form-control {
+  pointer-events: none;
+}
+
+.no-button-group {
+  border-right: 1px solid black!important;
+}
+
+#main #tx-solr-search-form-pi-results {
+  padding: 0;
+  margin-bottom: 2.5rem;
+}
+
+.form-control, .dropdown-menu {
+  border: 1px solid #808a9d!important;
+}
+
+.border-gray {
+  border-color: #c5cad2!important;
+}
+
+#reset-filters {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    color: #0056b3;
+  }
+}
+
+
+a.form-control:hover {
+  color: #223654;
+}
+
+@media (max-width: 403px) {
+  #main {
+    .container {
+      padding-left: 15px!important;
+      padding-right: 15px!important;
+    }
+    .row {
+      margin-left: -15px!important;
+      margin-right: -15px!important;
+      padding-right: auto;
+    }
+    .commentaireBasPage .row
+    {
+      margin-left: 0!important;
+      margin-right: 0!important;
+    }
+  }
+}
+
+#tx-solr-search h3 a {
+  text-decoration: none;
+  &:hover {
+    color:  #095797;
+    text-decoration: underline;
+  }
+}
+
+select.form-control {
+  height: 2.5rem;
+  background-position: right .75rem center;
+  background-size: 1em;
+  padding-right: 2em;
+
+  &.form-control-sm {
+    background-size: .75em;
+  }
+}
+
+.facet-type-numericRange {
+  .form-control {
+    width: 3rem;
+    font-size: .75rem;
+    height: 2rem!important;
+  }
+
+  .ui-slider {
+    height: .5rem;
+    background-color: $grey;
+    position: relative;
+    text-align: left;
+  }
+  .ui-slider-range {
+    top: 0; height: 100%;
+    background-color: $light-blue-2;
+    background-image: none;
+    position: absolute;
+    z-index: 1;
+    font-size: .7em;
+    display: block;
+    border: 0;
+    background-position: 0 0;
+  }
+  .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    width: 1.2em;
+    height: 1.2em;
+    cursor: default;
+    top: -.5em;
+    margin-left: -.6em;
+    border: 1px solid $dark-grey;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: .75rem;
+    background-color: white;
+  }
+  .ui-slider-range-min { left: 0; }
+  .ui-slider-range-max { right: 0; }
+  .slider-wrapper {
+    position: relative;
+  }
+  .legend {
+
+    position:absolute;
+    width: 100%;
+    bottom: 0;
+    .min-legend, .max-legend{
+position: absolute;
+      top: .75rem;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .min-legend {
+      left: 0;
+    }
+    .max-legend {
+      right: 0;
+    }
+  }
+}
+
+.nav-link {
+  font-size: .875rem!important;
+}
+
+.pagination {
+  @extend %d-flex, %justify-content-center;
+  .pagination-status {
+    display: none;
+  }
+  .pagination-list {
+    @extend %list-inline, %mb-0,%pb-0;
+
+    li {
+      @extend %list-inline-item;
+      font-size: 1.125rem;
+      margin-right: .75rem!important;
+      &.first::after {
+        content: '...';
+        margin-left: .75rem;
+      }
+      &.last::before {
+        content: '...';
+        margin-right: .75rem;
+      }
+    }
+
+  }
+  .next,.previous {
+    @extend %font-weight-normal;
+
+    padding: 0;
+
+    &, &:hover {
+      background-color: transparent;
+
+    }
+
+    img {
+      //transform: rotate(-90deg);
+      height: 1em;
+    }
+    .invisible {
+      width: 1px;
+      height:auto;
+      overflow: no-display;
+      display: inline-block;
+    }
+  }
+
+}
+
+
+
+
+
+
+
