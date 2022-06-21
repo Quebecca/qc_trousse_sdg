@@ -1,6 +1,6 @@
 /* Error: Undefined variable.
  *   ,
- * 9 |     margin: $spacing-8 $spacing-0;
+ * 9 |     margin: $qc-spacing-8 $qc-spacing-0;
  *   |             ^^^^^^^^^^
  *   '
  *   blockquote.scss 9:13  root stylesheet */
@@ -13,5 +13,5 @@ body::before {
   padding: 1em;
   margin-bottom: 1em;
   border-bottom: 2px solid black;
-  content: "Error: Undefined variable.\a   \2577 \a 9 \2502      margin: $spacing-8 $spacing-0;\a   \2502              ^^^^^^^^^^\a   \2575 \a   blockquote.scss 9:13  root stylesheet";
+  content: "Error: Undefined variable.\a   \2577 \a 9 \2502      margin: $qc-spacing-8 $qc-spacing-0;\a   \2502              ^^^^^^^^^^\a   \2575 \a   blockquote.scss 9:13  root stylesheet";
 }
