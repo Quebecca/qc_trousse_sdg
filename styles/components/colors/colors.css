@@ -1,0 +1,38 @@
+/*Main palette background colours*/
+.qc-bg-blue_piv {
+  background-color: #095797;
+}
+
+.qc-bg-pink {
+  background-color: #f09686;
+}
+
+.qc-bg-blue {
+  background-color: #1479cc;
+}
+
+.qc-bg-light-blue {
+  background-color: #dae6f0;
+}
+
+.qc-bg-light-grey {
+  background-color: #f2f1f1;
+}
+
+.qc-bg-dark-blue {
+  background-color: #223654;
+}
+
+.qc-bg-grey {
+  background-color: #c5cad2;
+}
+
+.qc-bg-red {
+  background-color: #cb381f;
+}
+
+.qc-bg-green {
+  background-color: #4f813d;
+}
+
+/*# sourceMappingURL=colors.css.map */
