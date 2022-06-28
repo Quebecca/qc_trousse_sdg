@@ -219,13 +219,9 @@
                 <ul>
                     <li>Element de liste 01</li>
                     <li>Element de liste 02</li>
-                    <li>Element de liste 03</li>
-                </ul>
-                <ul>
-                    <li>Element de liste 01</li>
-                    <li> Element de liste 02
+                    <li>Element de liste 03
                         <ul>
-                            <li>Element de liste 03</li>
+                            <li>Element de liste 04</li>
                         </ul>
                     </li>
                 </ul>
@@ -236,82 +232,85 @@
                     .grid-sample {
                         border: 1px solid;
                         text-align: center;
+                        max-height: fit-content;
+                        position: relative;
                     }
                 </style>
                 <h2 id="grille">Grille de 8 px</h2>
-                <div class="container-fluid" id="Presentation">
-                    <div class="container">
-                        <div class="row">
-                            <div class="grid-sample qc-col-4 qc-col-md-8 qc-col-lg-12"
+                <h3> Grille de 8 px - Bureau </h3>
+                <div class="qc-container-fluid">
+                    <div class="qc-container">
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-desktop-12"
                                  style="background-color: #cb850b;">
-                                class qc-col
+                                <p>.qc-col-desktop-12</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-4 qc-col-md-4 qc-col-lg-6"
+                        <div class="qc-row">
+                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-4 qc-col-lg-6"
+                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #bbdb2d;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #bbdb2d;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #c5cad2;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-2 qc-col-md-6 qc-col-lg-9"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
                                  style="background-color: #CFEDED;">
-                                qc-col
+                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
                             </div>
-                            <div class="grid-sample qc-col-2 qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #F8E5C3;">
-                                qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-1 qc-col-md-2 qc-col-lg-3"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #CFEDED;">
-                                qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample qc-col-3 qc-col-md-6 qc-col-lg-9"
+                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
                                  style="background-color: #F8E5C3;">
-                                qc-col
+                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
                             </div>
                         </div>
                         <br>
