@@ -1,0 +1,53 @@
+@use "sass:map";
+
+$font-dir: "../fonts" !default;
+
+// QC Font Family
+$qc-font-roboto: "Roboto", sans-serif;
+$qc-font-open-sans: "Open Sans", sans-serif;
+$qc-content-font: $qc-font-open-sans;
+$qc-header-font: $qc-font-roboto;
+
+// QC Font Weight
+$qc-font-weigh-bold: bold;
+$qc-font-weigh-normal: normal;
+
+// Font sizes and line height associations
+// … for content
+$qc-font-sizes: (
+  "content": (
+      14 20,
+      16 24,
+      18 24,
+      22 32,
+      28 40,
+      32 48
+  ),
+  "header": (
+      16 20,
+      19 24,
+      21 24,
+      25 32,
+      29 32,
+      28 32,
+      35 40,
+      36 40,
+      48 56
+  )
+);
+
+@mixin qc-content-font-size($font-size) {
+  @include qc-font-size($font-size, map.get($qc-font-sizes, "content"));
+}
+
+@mixin qc-content-header-size($font-size) {
+  @include qc-font-size($font-size, map.get($qc-font-sizes, "header"));
+}
+
+@mixin qc-font-size($font-size,$map) {
+   $line-height : map.get($map, $font-size);
+   @if $line-height {
+      font-size: #{$font-size * .1}rem;
+      line-height: #{$line-height}rem;
+   }
+}

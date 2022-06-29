@@ -1,0 +1,33 @@
+//---------------
+// colors
+//---------------
+
+// Main colors
+$qc-color-blue-piv: #095797;
+
+//Accent colors
+$qc-color-pink: #f09686;
+$qc-color-blue: #1479cc;
+
+// Secondary colors
+$qc-color-light-blue: #dae6f0;
+$qc-color-light-grey: #f2f1f1;
+$qc-color-dark-blue: #223654;
+$qc-color-pale-sky: #647287;
+$qc-color-grey: #c5cad2;
+$qc-color-white: #fff;
+$qc-color-black: #000;
+
+// Functional colors
+$qc-color-errors: #cb381f;
+$qc-color-validation: #4f813d;
+
+//---------------
+// grid
+//---------------
+//$qc-sm: 36rem;
+$qc-md: 48rem;
+$qc-lg: 62rem;
+
+$qc-grid-breakpoints: (xs: 0,sm: $qc-sm,md: $qc-md,lg: $qc-lg);
+
