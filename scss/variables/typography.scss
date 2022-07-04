@@ -39,12 +39,13 @@ $font-sizes: (
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
 // et ajoute automatiquement le bon interlignage
-@mixin content-font-size($font-size) {
+@mixin content-font($font-size) {
   @include font-size($font-size, map.get($font-sizes, "content"));
 }
 
-@mixin content-header-size($font-size) {
+@mixin header-font($font-size) {
   @include font-size($font-size, map.get($font-sizes, "header"));
+  font-weight: bold;
 }
 
 @mixin font-size($font-size,$map) {

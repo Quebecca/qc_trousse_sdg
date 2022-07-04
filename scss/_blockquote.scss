@@ -2,7 +2,7 @@
 
 
 blockquote {
-    @include content-font-size(18);
+    @include content-font(18);
     display: block;
     position: relative;
     color: #223654;
@@ -14,7 +14,7 @@ blockquote {
     border-width: 0;
 
     &.qc-blockquote--grand {
-        @include content-font-size(31);
+        @include content-font(31);
         letter-spacing: -0.6px;
         &::before {
             transform: translate3d(-1.5rem, 0, 0);
