@@ -1,0 +1,18 @@
+{
+  "name": "qc-sdg",
+  "version": "1.0.0",
+  "description": "Trousse SDG",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@ssh.gitlab.quebec.ca:pgu/systeme-de-design.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "4.6"
+  }
+}

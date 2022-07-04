@@ -1,22 +1,22 @@
-@import "../../variables/colors.variables";
+@import "variables/colors.variables";
 
-@import "../../variables/spacing.variables";
+@import "variables/spacing.variables";
 
-@import "../../variables/typography.variables";
+@import "variables/typography.variables";
 // petit
 .qc-blockquote {
     display: block;
-    margin: $qc-spacing-8 $qc-spacing-0;
+    margin: $spacing-8 $spacing-0;
     text-align: left;
-    padding: $qc-spacing-0 $qc-spacing-6;
+    padding: $spacing-0 $spacing-6;
     border-width: 0;
 
     .qc-blockquote-quote {
-        font-family: $qc-font-open-sans;
+        font-family: $font-open-sans;
         display: block;
         position: relative;
-        margin-bottom: $qc-spacing-4;
-        color: $qc-color-dark-blue;
+        margin-bottom: $spacing-4;
+        color: $color-dark-blue;
         font-size: 18px;
         line-height: 24px;
         letter-spacing: -0.38px;
@@ -26,17 +26,17 @@
 // grand
 .qc-blockquote-grand {
     display: block;
-    margin: $qc-spacing-8 $qc-spacing-0;
+    margin: $spacing-8 $spacing-0;
     text-align: left;
-    padding: $qc-spacing-0 $qc-spacing-6;
+    padding: $spacing-0 $spacing-6;
     border-width: 0;
 
     .qc-blockquote-quote-grand {
-        font-family: $qc-font-open-sans;
+        font-family: $font-open-sans;
         display: block;
         position: relative;
-        margin-bottom: $qc-spacing-4;
-        color: $qc-color-dark-blue;
+        margin-bottom: $spacing-4;
+        color: $color-dark-blue;
         font-size: 31px;
         line-height: 40px;
         letter-spacing: -0.6px;
@@ -46,7 +46,7 @@
 
 
 .qc-blockquote-grand p{
-    margin: 0 0 $qc-spacing-5 0;
+    margin: 0 0 $spacing-5 0;
     &::before {
         content: open-quote;
     }
@@ -57,7 +57,7 @@
 }
 
 .qc-blockquote p {
-    margin: 0 0 $qc-spacing-5 0;
+    margin: 0 0 $spacing-5 0;
 
     &::before {
         content: open-quote;
@@ -75,7 +75,7 @@ html[lang="fr"] blockquote {
 .qc-blockquote-author-name {
     display: block;
         position: relative;
-        margin-bottom: $qc-spacing-0;
+        margin-bottom: $spacing-0;
         font-size: 16px;
         line-height: 24px;
         font-weight: 600;
@@ -89,7 +89,7 @@ html[lang="fr"] blockquote {
             display: block;
             width: 24px;
             height: 1px;
-            background: $qc-color-dark-blue;
+            background: $color-dark-blue;
             transform: translate3d(-32px, 0, 0);
         }
 }

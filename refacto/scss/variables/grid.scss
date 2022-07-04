@@ -1,0 +1,8 @@
+//---------------
+// grid
+//---------------
+$tablet: 768px;
+$desktop: 992px;
+
+$grid-breakpoints: (xs: 0,tablet: $tablet,desktop: $desktop) !default;
+

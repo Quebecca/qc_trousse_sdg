@@ -1,9 +1,0 @@
-@import "../../variables/params";
-
-@each $index, $blur in $qc-shadings-settings {
-    .qc-shading-#{$index} {
-        box-shadow: 0 #{$index}px #{$blur}px $qc-shading-color;
-    }
-}
-
-

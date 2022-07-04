@@ -1,0 +1,32 @@
+@use "variables" as *;
+@use "mixins/breakpoints" as *;
+
+
+:root{
+  font-size:62.5%;
+  body {
+   // @include content-font-size(16);
+    font-family: $content-font;
+    color: $color-dark-blue;
+  }
+}
+
+h1{
+  @include content-header-size(49);
+  font-weight:bold;
+  margin-top: $spacer-48;
+  margin-bottom: $spacer-16;
+  @include media-tablet() {
+    @include content-header-size(36);
+    margin-top:2.4rem !important;
+  }
+
+  &:after{
+    content: "";
+    display:block;
+    margin: 0;
+    width:4.8rem;
+    padding-top: 0.4rem;
+    border-bottom: 4px solid $color-pink;
+  }
+}

@@ -1,22 +1,22 @@
-@import "../../variables/colors.variables";
+@import "variables/colors.variables";
 
-@import "../../variables/typography.variables";
+@import "variables/typography.variables";
 
-@import "../../variables/spacing.variables";
+@import "variables/spacing.variables";
 
 figcaption,
 .qc-gallery figcaption {
   display: table-caption;
   caption-side: bottom;
-  background-color: $qc-color-light-grey;
-  font-size: $qc-spacing-3;
-  padding: $qc-spacing-2 $qc-spacing-3;
-  margin-bottom: $qc-spacing-0;
-  margin-top: $qc-spacing-3-1;
+  background-color: $color-light-grey;
+  font-size: $spacing-3;
+  padding: $spacing-2 $spacing-3;
+  margin-bottom: $spacing-0;
+  margin-top: $spacing-3-1;
 }
 
-figure.image img { margin-bottom: $qc-spacing-0; }
-.qc-gallery figure.image { margin-bottom: $qc-spacing-8; }
+figure.image img { margin-bottom: $spacing-0; }
+.qc-gallery figure.image { margin-bottom: $spacing-8; }
 
 .qc-textpic.qc-left .qc-gallery{
   float:left;
@@ -30,7 +30,7 @@ figure.image img { margin-bottom: $qc-spacing-0; }
 /* Force columns images to go over the text in mobile to keep the text column large enough to read */
 .qc-intext.qc-right .qc-gallery { margin-left: 0; }
 
-figure { margin: $qc-spacing-0 $qc-spacing-0 $qc-spacing-2; }
+figure { margin: $spacing-0 $spacing-0 $spacing-2; }
 figure.image img {
   max-width:100%;
   height: auto;
@@ -44,9 +44,9 @@ figure.image img {
 }
 
 .piv_bas {
-  padding-top: $qc-spacing-6;
+  padding-top: $spacing-6;
   ul {
-    margin-bottom:$qc-spacing-0;
+    margin-bottom:$spacing-0;
     text-align: center;
     li {
       display: inline-block;
@@ -55,9 +55,9 @@ figure.image img {
     }
   }
   a {
-    font-size: $qc-spacing-3;
+    font-size: $spacing-3;
     text-decoration: none;
-    line-height: $qc-spacing-3;
+    line-height: $spacing-3;
     white-space: nowrap;
     &:hover,&:focus {
       text-decoration: underline;
@@ -83,8 +83,8 @@ figure.image img {
 }
 
 .image-caption p {
-  margin-bottom: $qc-spacing-0;
-  line-height: $qc-spacing-4; }
+  margin-bottom: $spacing-0;
+  line-height: $spacing-4; }
 
   .qc-gallery { overflow: hidden; }
 
@@ -99,7 +99,7 @@ figure.image img {
   .qc-gallery iframe { border-width: 0; }
   .qc-border img,
   .qc-border iframe {
-      border: 2px solid $qc-color-black;
+      border: 2px solid $color-black;
       padding: 0px;
   }
 

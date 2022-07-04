@@ -1,0 +1,16 @@
+@use "../variables/grid" as *;
+// Merci Bootstrap ! / ty BS !
+@import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
+
+
+@mixin media-tablet() {
+  @include media-breakpoint-down(tablet) {
+    @content;
+  }
+}
+
+@mixin media-mobile() {
+  @include media-breakpoint-down(xs) {
+    @content;
+  }
+}
