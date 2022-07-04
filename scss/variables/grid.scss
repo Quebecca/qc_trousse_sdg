@@ -1,0 +1,19 @@
+//---------------
+// grid
+//---------------
+$tablet: 768px;
+$desktop: 992px;
+
+// Grid containers
+$container-max-widths: (
+        tablet: $tablet,
+        desktop: $desktop,
+);
+
+//Gutters
+$grid-gutter-width: 3.2rem;
+
+// Grid breakpoints
+$grid-breakpoints: (xs: 0,tablet: $tablet,desktop: $desktop);
+
+

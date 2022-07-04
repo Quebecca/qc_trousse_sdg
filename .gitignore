@@ -1,4 +1,4 @@
 /.idea
 /node_modules/
-/refacto/scss/vendor/*
+/scss/vendor/*
 

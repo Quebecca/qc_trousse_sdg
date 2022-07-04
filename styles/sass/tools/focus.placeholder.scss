@@ -1,9 +1,0 @@
-@import "../variables/colors.variables.scss";
-
-$ontario-focus-transition: box-shadow 0.1s ease-in-out;
-
-%ontario-focus {
-    box-shadow: 0 0 0 4px $ontario-colour-focus;
-    outline: 4px solid transparent;
-    transition: $ontario-focus-transition;
-}

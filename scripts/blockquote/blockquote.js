@@ -2,7 +2,7 @@ $(document).ready(function() {
    if ($('blockquote').length) {
         $('blockquote').each(function (index) {
             if ($(this).text().length <= 140) {
-                $(this).attr("class", "bq-font-size")
+                $(this).attr("class", "qc-blockquote--grand")
             }
             if ($(this).find("p").attr("lang")) {
                 var blockquoteLang = $(this).find("p").attr("lang");
