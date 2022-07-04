@@ -78,17 +78,20 @@ blockquote {
   }
 
   // Français
-  &:lang(fr)::before {
-    content: "«";
+  &:lang(fr) {
+    &:before {
+      content: "«";
+    }
+    &:after {
+      content: "»";
+    }
   }
 
-  &:lang(fr)::after {
-    content: "»";
-  }
 
   // Anglais
-  &:lang(en)::before, &:lang(en)::after,
-  {
-    content: '"';
+  &:lang(en) {
+    &::before, &::after {
+      content: '"';
+    }
   }
 }
