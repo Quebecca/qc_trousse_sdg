@@ -1,106 +1,94 @@
-@import "../../sass/variables/colors.variables";
+@import "../../sass/_variables-import";
 
-@import "../../sass/variables/spacing.variables";
+// Blockquote
+$bq-small-font-size: 1.125rem;
+$bq-font-size: 1.938rem;
 
-@import "../../sass/variables/typography.variables";
-// petit
-.qc-blockquote {
-    display: block;
-    margin: $qc-spacing-8 $qc-spacing-0;
-    text-align: left;
-    padding: $qc-spacing-0 $qc-spacing-6;
-    border-width: 0;
+blockquote {
+  display: block;
+  position: relative;
+  color: #223654;
+  font-size: $bq-small-font-size;
+  line-height: 1.5rem;
+  letter-spacing: -0.024rem;
+  font-weight: 600;
+  margin: 1rem 0 1rem 0;
+  text-align: left;
+  padding: 0 2rem;
+  border-width: 0;
 
-    .qc-blockquote-quote {
-        font-family: $qc-font-open-sans;
-        display: block;
-        position: relative;
-        margin-bottom: $qc-spacing-4;
-        color: $qc-color-dark-blue;
-        font-size: 18px;
-        line-height: 24px;
-        letter-spacing: -0.38px;
-        font-weight: 600;
-    }
-}
-// grand
-.qc-blockquote-grand {
-    display: block;
-    margin: $qc-spacing-8 $qc-spacing-0;
-    text-align: left;
-    padding: $qc-spacing-0 $qc-spacing-6;
-    border-width: 0;
-
-    .qc-blockquote-quote-grand {
-        font-family: $qc-font-open-sans;
-        display: block;
-        position: relative;
-        margin-bottom: $qc-spacing-4;
-        color: $qc-color-dark-blue;
-        font-size: 31px;
-        line-height: 40px;
-        letter-spacing: -0.6px;
-        font-weight: 600;
-    }
-}
-
-
-.qc-blockquote-grand p{
-    margin: 0 0 $qc-spacing-5 0;
-    &::before {
-        content: open-quote;
-    }
-
-    &::after {
-        content: close-quote;
-    }
-}
-
-.qc-blockquote p {
-    margin: 0 0 $qc-spacing-5 0;
+  &.bq-font-size {
+    font-size: $bq-font-size;
+    line-height: 2.5rem;
+    letter-spacing: -0.6px;
 
     &::before {
-        content: open-quote;
+      transform: translate3d(-1.5rem, 0, 0);
     }
+  }
 
-    &::after {
-        content: close-quote;
-    }
-}
+  p {
+    font-size: inherit;
+    margin: inherit;
+    line-height: inherit;
+    display: inline;
+  }
 
-html[lang="fr"] blockquote {
-    quotes: "« " " »";
-}
-
-.qc-blockquote-author-name {
+  // Auteur
+  & ~ p {
     display: block;
-        position: relative;
-        margin-bottom: $qc-spacing-0;
-        font-size: 16px;
-        line-height: 24px;
-        font-weight: 600;
-        margin-left: 2rem;
-        font-style: normal;
-
-        &:before {
-            content: "";
-            position: absolute;
-            top: 12px;
-            display: block;
-            width: 24px;
-            height: 1px;
-            background: $qc-color-dark-blue;
-            transform: translate3d(-32px, 0, 0);
-        }
-}
-
-.qc-blockquote-author-title {
-    display: block;
-    margin: $qc-spacing-0;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 400;
+    position: relative;
+    padding-left: 1.9rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 600;
     max-width: 85%;
     margin-left: 2rem;
-    font-style: normal;
+
+    &:last-of-type {
+      margin-bottom: 2rem;
+    }
+
+    & span {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 400;
+      display: block;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0.75rem;
+      display: block;
+      width: 1.5rem;
+      height: 1px;
+      background: #223654;
+      transform: translate3d(-1.8rem, 0, 0);
+    }
+
+    &:empty:before {
+      display: none;
+    }
+  }
+
+  &::before {
+    position: absolute;
+    transform: translate3d(-0.938rem, 0, 0);
+  }
+
+  // Français
+  &:lang(fr)::before {
+    content: "«";
+  }
+
+  &:lang(fr)::after {
+    content: "»";
+  }
+
+  // Anglais
+  &:lang(en)::before, &:lang(en)::after,
+  {
+    content: '"';
+  }
 }

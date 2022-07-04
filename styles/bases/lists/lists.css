@@ -2,7 +2,6 @@ ul {
   font-family: "Open Sans", sans-serif;
   font-size: 1rem;
   list-style: disc;
-  padding: 0 0 0.8rem 3.2rem;
   padding: 0 0 0.8rem 1.9rem;
 }
 ul li {
@@ -10,6 +9,9 @@ ul li {
   margin: 0;
   color: #223654;
   line-height: 1.5rem;
+}
+ul li ul {
+  list-style: circle;
 }
 
 /*# sourceMappingURL=lists.css.map */

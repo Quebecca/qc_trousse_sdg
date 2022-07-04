@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/lib/qc-sdg.css">
+    <link rel="stylesheet" href="styles/sass/qc-sdg.css">
+    <script type="text/javascript" src="vendor/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="scripts/blockquote/blockquote.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Système de design</title>
@@ -219,13 +222,9 @@
                 <ul>
                     <li>Element de liste 01</li>
                     <li>Element de liste 02</li>
-                    <li>Element de liste 03</li>
-                </ul>
-                <ul>
-                    <li>Element de liste 01</li>
-                    <li> Element de liste 02
+                    <li>Element de liste 03
                         <ul>
-                            <li>Element de liste 03</li>
+                            <li>Element de liste 04</li>
                         </ul>
                     </li>
                 </ul>
@@ -236,82 +235,84 @@
                     .grid-sample {
                         border: 1px solid;
                         text-align: center;
+                        max-height: fit-content;
+                        position: relative;
                     }
                 </style>
                 <h2 id="grille">Grille de 8 px</h2>
-                <div class="container-fluid" id="Presentation">
-                    <div class="container">
-                        <div class="row">
-                            <div class="grid-sample qc-col-4 qc-col-md-8 qc-col-lg-12"
+                <div class="qc-container-fluid">
+                    <div class="qc-container">
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-desktop-12"
                                  style="background-color: #cb850b;">
-                                class qc-col
+                                <p>.qc-col-desktop-12</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-4 qc-col-md-4 qc-col-lg-6"
+                        <div class="qc-row">
+                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-4 qc-col-lg-6"
+                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
-                            <div class="grid-sample d-none d-lg-block d-xl-block qc-col-lg-4"
+                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
                                  style="background-color: #bbdb2d;">
-                                class qc-col
+                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #CFEDED;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #F8E5C3;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #bbdb2d;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample d-none d-sm-none d-md-block qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #c5cad2;">
-                                class qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-2 qc-col-md-6 qc-col-lg-9"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
                                  style="background-color: #CFEDED;">
-                                qc-col
+                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
                             </div>
-                            <div class="grid-sample qc-col-2 qc-col-md-2 qc-col-lg-3"
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #F8E5C3;">
-                                qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
                         </div>
                         <br>
-                        <div class="row">
-                            <div class="grid-sample qc-col-1 qc-col-md-2 qc-col-lg-3"
+                        <div class="qc-row">
+                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
                                  style="background-color: #CFEDED;">
-                                qc-col
+                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
                             </div>
-                            <div class="grid-sample qc-col-3 qc-col-md-6 qc-col-lg-9"
+                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
                                  style="background-color: #F8E5C3;">
-                                qc-col
+                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
                             </div>
                         </div>
                         <br>
@@ -353,28 +354,29 @@
             <!-- Citations -->
             <div class="container">
                 <h2 id="citations">Citations</h2>
-                <blockquote class="qc-blockquote-grand">
-                    <p class="qc-blockquote-quote-grand">I have to constantly use creativity and imagination to impart
+                <blockquote lang="en">
+                    <p>I have to constantly use creativity and imagination to impart
                         knowledge
                         to my students,
                         but that’s also what drives me on a daily basis.</p>
-                    <cite class="qc-blockquote-author-name">Karel</cite>
-                    <cite class="qc-blockquote-author-title">Teacher</cite>
                 </blockquote>
-
-                <blockquote class="qc-blockquote">
-                    <p class="qc-blockquote-quote">Voilà une excellente nouvelle pour la région du Nord-du-Québec. Grâce
+                <p>Karel
+                    <span>Teacher</span>
+                </p>
+                <blockquote>
+                    <p>Voilà une excellente nouvelle pour la région du Nord-du-Québec. Grâce
                         à cet
                         investissement majeur de notre gouvernement,
                         nous pourrons loger davantage de travailleurs et leurs familles, ce qui renforcera la vitalité
                         économique de nos communautés.</p>
-                    <cite class="qc-blockquote-author-name">Pierre Dufour</cite>
-                    <cite class="qc-blockquote-author-title">Ministre des Forêts, de la Faune et des Parcs, ministre
-                        responsable
-                        de la
-                        région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
-                        d’Abitibi-Est</cite>
                 </blockquote>
+                <p>Pierre Dufour
+                    <span>Ministre des Forêts, de la Faune et des Parcs, ministre
+                    responsable
+                    de la
+                    région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
+                    d’Abitibi-Est</span>
+                </p>
             </div>
 
             <hr>
