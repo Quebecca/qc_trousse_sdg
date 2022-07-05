@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/sass/qc-sdg.css">
+    <link rel="stylesheet" href="./scss/qc-sdg.css">
     <script type="text/javascript" src="vendor/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -382,30 +382,15 @@
             <!-- Images -->
             <div class="container">
                 <h2 id="images">Images</h2>
-                <div class="qc-gallery" data-qc-columns="1" data-qc-images="1">
+                <div class="qc-gallery">
                     <div class="qc-row">
-                        <div class="qc-column">
-                            <figure class="image">
-                                <img class="image-embed-item"
-                                     alt="Exemple d'une image au format mobile avec ratio non recommandé"
-                                     src="https://cdn-contenu.quebec.ca/cdn-contenu/Quebec.ca/Visuel_design_system/images/exemple03.png?1594327179"
-                                     width="302" height="84">
-                                <figcaption class="image-caption">
-                                    <p>Description de l'étiquetage.</p>
-                                </figcaption>
-                            </figure>
-                        </div>
-                    </div>
-                </div>
-                <div class="qc-gallery" data-qc-columns="1" data-qc-images="1">
-                    <div class="qc-row">
-                        <div class="qc-column">
-                            <figure class="image">
-                                <img class="image-embed-item"
-                                     src="https://cdn-contenu.quebec.ca/_processed_/5/8/csm_Ne_pas_utiliser_2_fd5c94b623.jpg?0"
-                                     width="825" height="440" alt="">
-                                <figcaption class="image-caption">
-                                    <p>Image traitée artistiquement</p>
+                        <div class="qc-col-6">
+                            <figure class="qc-image">
+                                <img src="./icons/image-01.png" alt="Image avec légende">
+                                <figcaption class="qc-image-caption">
+                                    <p>La légende de l'image <br>
+                                        <em>La source de l'image</em>
+                                    </p>
                                 </figcaption>
                             </figure>
                         </div>
