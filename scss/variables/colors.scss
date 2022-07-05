@@ -1,3 +1,4 @@
+@use "sass:map";
 //---------------
 // System colours QC
 //---------------
@@ -21,3 +22,56 @@ $color-black: #000;
 // Functional colors
 $color-errors: #cb381f;
 $color-validation: #4f813d;
+
+$colors: (
+  "blue" : (
+    "light" : #dae6f0,
+    "pale" : #4a98d9,
+    "" : #1479cc,
+    "piv": #095797,
+    "medium" : #19406C,
+    "dark": #223654,
+  ),
+  "grey" : (
+    "light" : #c5cad2,
+    "pale" : #f1f1f2,
+    "": #8893a2,
+    "medium" : #6b778a,
+    "dark": #4e5662,
+    ),
+  "pink" : (
+    "pale": #ffdbd6,
+    "": #e58271,
+  ),
+  "red": (
+    "": #cb381f,
+    "dark": #692519,
+  ),
+  "green": (
+    "": #4f813d,
+  ),
+  "yellow" : (
+    "pale" : #f8e69a,
+    "": #e0ad03,
+    "dark": #ad781c,
+  ),
+) !default;
+$colors: map.merge($colors,(
+  "accent": (
+    "pink": map.get($colors, "pink", ""),
+    "blue": map.get($colors, "blue", ""),
+  ),
+  "success": (
+    "": map.get($colors, "green", ""),
+  ),
+  "error": (
+    "": map.get($colors, "red", ""),
+  ),
+  "danger": (
+    "": map.get($colors, "red", "dark"),
+  )
+
+));
+
+
+

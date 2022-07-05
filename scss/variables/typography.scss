@@ -55,7 +55,7 @@ $font-sizes: (
    $line-height:  map.get($map, $font-size);
    @if $line-height {
       font-size: #{$font-size * .1}rem;
-      line-height: #{$line-height}rem;
+      line-height: #{$line-height * .1}rem;
    }
 }
 

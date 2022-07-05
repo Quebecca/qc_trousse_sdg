@@ -3,330 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/sass/qc-sdg.css">
-    <script type="text/javascript" src="vendor/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="dist/css/qc-sdg.css">
+<!--    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap-grid.css">-->
     <title>Système de design</title>
-    <style>
-        body {
-            background: #CCCCCC;
-            font-family: "Open sans", sans-serif;
-        }
-
-        .main-content {
-            margin: 0 auto;
-            max-width: 72rem;
-            width: 100%;
-        }
-
-        .main-menu {
-            margin-top: 2.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .container {
-            margin-top: 2.5rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .qc-column {
-            margin-bottom: 1.875rem;
-            background: white;
-            padding: 0 20px;
-        }
-
-        #main-header ul {
-            -webkit-column-count: 3;
-            -moz-column-count: 3;
-            column-count: 3;
-        }
-
-        #main-header li {
-            list-style: none;
-        }
-
-        .icons-list {
-            -webkit-column-count: 3;
-            -moz-column-count: 3;
-            column-count: 3;
-        }
-
-        .icons-list li {
-            list-style: none;
-        }
-    </style>
-
 </head>
 <body>
+<header>
+    <div class="qc-container">
+        <span class="qc-subhead">Release 0.2</span>
+        <h1>Exemple du système de design gouvernemental</h1>
+        <div class="main-menu">
+            <ul>
+                <li><a href='#couleurs'>Couleurs</a></li>
+                <li><a href='#titre'>Niveaux de titres</a></li>
+                <li><a href='#polices'>Polices de caractères</a></li>
+                <li><a href='#liste'>Liste</a></li>
+                <li><a href='#grille'>Grille de 8px</a></li>
+                <li><a href='#liens'>Liens</a></li>
+                <li><a href='#ombrages'>Ombrages</a></li>
+                <li><a href='#citations'>Citations</a></li>
+                <li><a href='#images'>Images</a></li>
+            </ul>
+        </div>
+    </div>
+
+</header>
 <main>
-    <div class="main-content">
-        <div class="qc-column qc-small-12">
-            <div id="main-header">
-                <span>Release 0.2</span>
-                <h1><a href="https://design.quebec.ca/bases/citations"
-                       title="Système de Design du Québec">Système de Design du Québec</a>
-                </h1>
-                <div class="main-menu">
-                    <ul>
-                        <li><a href='#couleurs'>Couleurs</a></li>
-                        <li><a href='#titre'>Niveaux de titres</a></li>
-                        <li><a href='#polices'>Polices de caractères</a></li>
-                        <li><a href='#liste'>Liste</a></li>
-                        <li><a href='#grille'>Grille de 8px</a></li>
-                        <li><a href='#liens'>Liens</a></li>
-                        <li><a href='#ombrages'>Ombrages</a></li>
-                        <li><a href='#citations'>Citations</a></li>
-                        <li><a href='#images'>Images</a></li>
-                    </ul>
-                </div>
+    <div class="qc-container">
+        <!-- colors -->
+        <h2 id="couleurs">Couleurs</h2>
+        <style>
+            .color-details {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+            }
+            .color-details > div + div  {
+                margin-left: 2.4rem;
+            }
+            .color-details + .color-details {
+                margin-top: 1.6rem;
+            }
+            .color-sample {
+                width: 4.8rem;
+                height: 4.8rem;
+                border-radius: 50%;
+            }
+        </style>
+        <h3>Couleur principale</h3>
+        <div class="color-details">
+            <div class="color-sample qc-bg-piv-blue"></div>
+            <div class="color-description">
+                <strong>Bleu piv</strong><br/>
+                <span>--qc-piv-blue</span>
             </div>
-            <hr>
-            <div class="container">
-                <h2 id="couleurs">Couleurs</h2>
-                <style>
-                    #colours-grid div {
-                        width: 1.875rem;
-                        height: 1.875rem;
-                        border: 0.063rem solid black;
-                    }
-                </style>
-                <div id="colours-grid">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Couleur</th>
-                            <th>Nom de couleur</th>
-                            <th>Code Hex</th>
-                            <th>Variable SCSS</th>
-                            <th>Notes</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #095797;"></div>
-                            </td>
-                            <td>Bleu PIV</td>
-                            <td> #095797</td>
-                            <td> $qc-color-blue-piv</td>
-                            <td>Bandeau d'en-tête, les boutons et les liens</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #f09686;"></div>
-                            </td>
-                            <td>Rose</td>
-                            <td> #f09686</td>
-                            <td> $qc-color-pink</td>
-                            <td>Sous les H1, dans les pages de thèmes et pour leur navigation</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #1479cc;"></div>
-                            </td>
-                            <td>Bleu</td>
-                            <td> #1479cc</td>
-                            <td> $qc-color-blue</td>
-                            <td>Sous les H1 dans les pages hors-thème et pour leur navigation, bannières de phase</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #dae6f0;"></div>
-                            </td>
-                            <td>Bleu pâle</td>
-                            <td> #dae6f0</td>
-                            <td> $qc-color-light-blue</td>
-                            <td>Avis importants</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #f2f1f1;"></div>
-                            </td>
-                            <td>Gris pâle</td>
-                            <td> #f2f1f1</td>
-                            <td> $qc-color-light-grey</td>
-                            <td> éléments mis en valeur</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #223654;"></div>
-                            </td>
-                            <td>Bleu foncé</td>
-                            <td>#223654</td>
-                            <td> $qc-color-dark-blue</td>
-                            <td>Contenus textuels, pied de page, bandeau de page, filets séparateurs principaux</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #c5cad2;"></div>
-                            </td>
-                            <td>Gris</td>
-                            <td> #c5cad2</td>
-                            <td> $qc-color-grey</td>
-                            <td> filets secondaires</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #cb381f;"></div>
-                            </td>
-                            <td>Rouge</td>
-                            <td> #cb381f</td>
-                            <td> $qc-color-red</td>
-                            <td> messages d’erreur, indications de champs obligatoires</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div style="background-color: #4f813d;"></div>
-                            </td>
-                            <td>Vert</td>
-                            <td> #4f813d</td>
-                            <td> $qc-color-green</td>
-                            <td> messages de confirmation et de validation</td>
-                        </tr>
-                    </table>
-                </div>
+        </div>
+        <h3>Couleurs d’accent</h3>
+        <div class="color-details">
+            <div class="color-sample qc-bg-pink-accent"></div>
+            <div class="color-description">
+                <strong>Rose</strong><br/>
+                <span>--qc-pink</span>
             </div>
-            <hr>
-            <div class="container">
-                <h2 id="titre">Niveaux de titres</h2>
-                <h1 class="qc-h1">Titre de niveau 1</h1>
-                <h2 class="qc-h2">Titre de niveau 2</h2>
-                <h3 class="qc-h3">Titre de niveau 3</h3>
-                <h4 class="qc-h4">Titre de niveau 4</h4>
-                <h5 class="qc-h5">Titre de niveau 5</h5>
-                <h6 class="qc-h6">Titre de niveau 6</h6>
-                <p><span class="qc-surtitre">Surtitre</span></p>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-blue-accent"></div>
+            <div class="color-description">
+                <strong>Bleu</strong><br/>
+                <span>--qc-blue-accent</span>
             </div>
-            <hr>
-            <div class="container">
-                <h2 id="polices">Polices de caractères</h2>
-                <div style="font-family: Roboto, sans-serif;">
-                    <p><strong>Roboto</strong></p>
-                    <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
-                    <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                    <p><a href="https://fonts.google.com/specimen/Roboto" target="_blank" rel="noreferrer">Télécharger
-                        la police Roboto sur Google Fonts.</a></p>
-                </div>
-                <div style="font-family: 'Open Sans', sans-serif;">
-                    <p><strong>Open Sans</strong></p>
-                    <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
-                    <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                    <p><a href="https://fonts.google.com/specimen/Open+Sans?selection.family=Open+Sans" target="_blank"
-                          rel="noreferrer">Télécharger la police Open Sans sur Google Fonts.</a></p>
-                </div>
+        </div>
+        <h3>Couleurs secondaires</h3>
+        <div class="color-details">
+            <div class="color-sample qc-bg-pale-blue"></div>
+            <div class="color-description">
+                <strong>Bleu pâle</strong><br/>
+                <span>--qc-pale-blue</span>
             </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-light-blue"></div>
+            <div class="color-description">
+                <strong>Bleu clair</strong><br/>
+                <span>--qc-light-blue</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-pale-grey"></div>
+            <div class="color-description">
+                <strong>Gris pâle</strong><br/>
+                <span>--qc-pale-grey</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-dark-blue"></div>
+            <div class="color-description">
+                <strong>Bleu foncé</strong><br/>
+                <span>--qc-dark-blue</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-light-grey"></div>
+            <div class="color-description">
+                <strong>Gris clair</strong><br/>
+                <span>--qc-light-grey</span>
+            </div>
+        </div>
+        <h3>Couleurs fonctionnelles</h3>
+        <div class="color-details">
+            <div class="color-sample qc-bg-red"></div>
+            <div class="color-description">
+                <strong>Rouge</strong><br/>
+                <span>--qc-red, --qc-error</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-green"></div>
+            <div class="color-description">
+                <strong>Vert</strong><br/>
+                <span>--qc-green, --qc-success</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-dark-red"></div>
+            <div class="color-description">
+                <strong>Rouge foncé</strong><br/>
+                <span>--qc-dark-red, --qc-danger</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-yellow"></div>
+            <div class="color-description">
+                <strong>Jaune</strong><br/>
+                <span>--qc-yellow</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-pale-yellow"></div>
+            <div class="color-description">
+                <strong>Jaune pâle</strong><br/>
+                <span>--qc-pale-yellow</span>
+            </div>
+        </div>
+        <div class="color-details">
+            <div class="color-sample qc-bg-dark-yellow"></div>
+            <div class="color-description">
+                <strong>Jaune foncé</strong><br/>
+                <span>--qc-dark-yellow</span>
+            </div>
+        </div>
 
-            <hr>
-            <div class="container">
-                <h2 id="liste">Liste</h2>
+
+        <!-- titles -->
+        <h2 id="titre">Titres</h2>
+        <style>
+            .title-samples {
+                padding: 1.6rem;
+            }
+        </style>
+        <figure class="qc-figure">
+            <div class="qc-bg-pale-grey title-samples" >
+                <p class="qc-h1">Titre de niveau 1</p>
+                <p class="qc-h2" >Titre de niveau 2</p>
+                <p class="qc-h3">Titre de niveau 3</h3>
+                <p class="qc-h4">Titre de niveau 4</p>
+                <p class="qc-h5">Titre de niveau 5</p>
+                <p class="qc-h6">Titre de niveau 6</p>
+            </div>
+        </figure>
+
+        <figure>
+            <div class="qc-bg-pale-grey title-samples" >
+                <span class="qc-subhead ">Surtitre</span>
+                <p class="qc-h1">Titre de niveau 1 avec surtitre</p>
+            </div>
+            <figcaption>Exemple de titre avec surtitre</figcaption>
+        </figure>
+
+
+        <h2 id="paragraphes">Paragraphes</h2>
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
+        <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices, neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
+
+        <h2 id="polices">Polices de caractères</h2>
+        <div style="font-family: Roboto, sans-serif;">
+            <p><strong>Roboto</strong></p>
+            <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
+            <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
+
+        </div>
+        <div style="font-family: 'Open Sans', sans-serif;">
+            <p><strong>Open Sans</strong></p>
+            <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
+            <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
+
+        </div>
+
+        <!-- lists -->
+
+        <h2 id="liste">Listes</h2>
+        <ul>
+            <li>Element de liste 01</li>
+            <li>Element de liste 02</li>
+            <li>Element de liste 03
                 <ul>
-                    <li>Element de liste 01</li>
-                    <li>Element de liste 02</li>
-                    <li>Element de liste 03
-                        <ul>
-                            <li>Element de liste 04</li>
-                        </ul>
-                    </li>
+                    <li>Element de liste 04</li>
                 </ul>
+            </li>
+        </ul>
+
+        <!-- grid -->
+
+        <style>
+            .grid-sample {
+                border: 1px solid;
+                text-align: center;
+                max-height: fit-content;
+                background-color: --qc-blue-
+            }
+        </style>
+        <h2 id="grille">Grille de 8 px</h2>
+        <div id="grid-samples">
+            <div class="qc-row">
+                <div class="grid-sample qc-col-desktop-12">
+                    <p>qc-col-12</p>
+                </div>
             </div>
-            <hr>
-            <div class="container">
-                <style>
-                    .grid-sample {
-                        border: 1px solid;
-                        text-align: center;
-                        max-height: fit-content;
-                        position: relative;
-                    }
-                </style>
-                <h2 id="grille">Grille de 8 px</h2>
-                <div class="qc-container-fluid">
-                    <div class="qc-container">
-                        <div class="qc-row">
-                            <div class="grid-sample qc-col-desktop-12"
-                                 style="background-color: #cb850b;">
-                                <p>.qc-col-desktop-12</p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="qc-row">
-                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
-                                 style="background-color: #CFEDED;">
-                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
-                            </div>
-                            <div class="grid-sample  qc-col-mobile-6 qc-col-tablet-6 qc-col-desktop-6"
-                                 style="background-color: #F8E5C3;">
-                                <p>.qc-col-mobile-6 .qc-col-tablet-6 .qc-col-desktop-6</p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="qc-row">
-                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
-                                 style="background-color: #CFEDED;">
-                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
-                            </div>
-                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
-                                 style="background-color: #F8E5C3;">
-                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
-                            </div>
-                            <div class="grid-sample qc-col-mobile-4 qc-col-tablet-4 qc-col-desktop-4"
-                                 style="background-color: #bbdb2d;">
-                                <p>.qc-col-mobile-4 .qc-col-tablet-4 .qc-col-desktop-4</p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="qc-row">
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #CFEDED;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #F8E5C3;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #bbdb2d;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #c5cad2;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="qc-row">
-                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
-                                 style="background-color: #CFEDED;">
-                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
-                            </div>
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #F8E5C3;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="qc-row">
-                            <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3"
-                                 style="background-color: #CFEDED;">
-                                <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                            </div>
-                            <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9"
-                                 style="background-color: #F8E5C3;">
-                                <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
+            <div class="qc-row">
+                <div class="grid-sample   qc-col-tablet-6 qc-col-desktop-6">
+                    <p>.qc-col-tablet-6 .qc-col-desktop-6</p>
+                </div>
+                <div class="grid-sample   qc-col-tablet-6 qc-col-desktop-6">
+                    <p>.qc-col-tablet-6 .qc-col-desktop-6</p>
+                </div>
+            </div>
+            <div class="qc-row">
+                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
+                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
+                </div>
+                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
+                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
+                </div>
+                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
+                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
                 </div>
             </div>
 
-            <hr>
-            <div class="container">
-                <h2 id="liens">Liens</h2>
-                <a href="#" class="">Règlement de pêche dans la zone 21.</a>
+            <div class="qc-row">
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
             </div>
 
-            <hr>
-            <div class="container">
+            <div class="qc-row">
+                <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9">
+                    <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
+                </div>
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
+            </div>
+
+            <div class="qc-row">
+                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
+                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                </div>
+                <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9">
+                    <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <h2 id="liens">Liens</h2>
+        <a href="#" class="">Règlement de pêche dans la zone 21.</a>
+
                 <h2 id="ombrages">Ombrages</h2>
                 <h3>Échelle d'élévation</h3>
                 <p><strong>Élévation 0</strong></p>
@@ -347,11 +309,8 @@
                 <p><strong>Élévation 4</strong></p>
                 <p>Usage : Boîte de dialogue modale</p>
                 <p class="qc-sd-elevation qc-sd-elevation-4">Élévation 4</p>
-            </div>
 
-            <hr>
-            <!-- Citations -->
-            <div class="container">
+        <!-- Citations -->
                 <h2 id="citations">Citations</h2>
                 <blockquote lang="en">
                     <p>I have to constantly use creativity and imagination to impart
@@ -376,11 +335,8 @@
                     région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
                     d’Abitibi-Est</span>
                 </p>
-            </div>
 
-            <hr>
-            <!-- Images -->
-            <div class="container">
+        <!-- Images -->
                 <h2 id="images">Images</h2>
                 <div class="qc-gallery" data-qc-columns="1" data-qc-images="1">
                     <div class="qc-row">
@@ -412,8 +368,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
 </main>
 </body>
 </html>

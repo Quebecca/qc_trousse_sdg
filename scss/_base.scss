@@ -5,7 +5,7 @@
 :root{
   font-size:62.5%;
   body {
-   // @include content-font-size(16);
+    @include content-font(16);
     font-family: $content-font;
     color: $color-dark-blue;
   }
@@ -60,4 +60,18 @@ h6,.qc-h6 {
   @include header-font(16);
   margin-top: $spacer-16;
   margin-bottom: 0;
+}
+
+.qc-subhead {
+  @include content-font(14);
+  + {
+    h1,h2,h3,h4,h5,h6,
+    .qc-h1,.qc-h2,.qc-h3,.qc-h4,.qc-h5,.qc-h6 {
+      margin-top: $spacer-16;
+    }
+  }
+}
+
+p {
+  margin-bottom: $spacer-24;
 }

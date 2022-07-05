@@ -1,5 +1,17 @@
 @use "mixins/grid" as *;
 
+html {
+  box-sizing: border-box;
+  -ms-overflow-style: scrollbar;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+
 // Container widths
 // Set the container width, and override it for fixed navbars in media queries.
 // Single container class with breakpoint max-widths

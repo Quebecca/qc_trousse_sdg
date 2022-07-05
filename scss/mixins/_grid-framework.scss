@@ -1,6 +1,7 @@
 // Framework grid generation
 //
-// Copié sur bootstrap avec ajout de l’espace de nom qc-
+// Copié sur bootstrap avec ajout de l’espace de nom « qc- » aux classes
+// bootstrap _grid-framework copy, with "qc-" prefix added to classes
 
 @mixin make-grid-columns($columns: $grid-columns, $gutter: $grid-gutter-width, $breakpoints: $grid-breakpoints) {
   // Common properties for all breakpoints

@@ -30,3 +30,24 @@
 .qc-bg-success {
   background-color: $color-validation;
 }
+@function color-name($color, $variant: "") {
+  $hyphen: if($variant == "", "","-");
+  @return #{$variant}#{$hyphen}#{$color};
+}
+
+:root {
+  @each $color,$variants in $colors {
+    @each $variant, $hexa in $variants {
+      --qc-#{color-name($color,$variant)}: #{$hexa};
+    }
+  }
+}
+
+@each $color,$variants in $colors {
+  @each $variant, $hexa in $variants {
+    $color-var-name: #{color-name($color,$variant)};
+    .qc-bg-#{$color-var-name} {
+      background-color: var(--qc-#{$color-var-name});
+    }
+  }
+}

@@ -33,14 +33,13 @@ blockquote {
         display: block;
         position: relative;
         padding-left: 1.9rem;
-        font-size: 1rem;
-        line-height: 1.5rem;
+        @include content-font(14);
         font-weight: 600;
         max-width: 85%;
         margin-left: 2rem;
 
         &:last-of-type {
-            margin-bottom: 2rem;
+            margin-bottom: 3.2rem;
         }
 
         & span {
