@@ -158,28 +158,41 @@
         <h2 id="titre">Titres</h2>
         <style>
             .title-samples {
-                padding: 1.6rem;
+                border: 1px solid var(--qc-light-grey);
             }
-        </style>
-        <figure class="qc-figure">
-            <div class="qc-bg-pale-grey title-samples" >
-                <p class="qc-h1">Titre de niveau 1</p>
-                <p class="qc-h2" >Titre de niveau 2</p>
-                <p class="qc-h3">Titre de niveau 3</h3>
-                <p class="qc-h4">Titre de niveau 4</p>
-                <p class="qc-h5">Titre de niveau 5</p>
-                <p class="qc-h6">Titre de niveau 6</p>
-            </div>
-        </figure>
+            .title-samples figure {
+                width: 100%;
+                padding: 1.6rem 2.4rem;
+                border-bottom: 1px solid var(--qc-pale-grey);
+            }
+            .title-samples figure:first-child {
+                padding-top: 0;
+            }
+            .title-samples figure:last-child {
+                padding-bottom: 0;
+                border-bottom: 0;
+            }
 
-        <figure>
-            <div class="qc-bg-pale-grey title-samples" >
+            .title-samples figure + figure {
+                margin-top: 2.4rem;
+            }
+
+        </style>
+        <div class="qc-gallery title-samples">
+            <figure class="qc-figure">
+                    <p class="qc-h1">Titre de niveau 1</p>
+                    <p class="qc-h2" >Titre de niveau 2</p>
+                    <p class="qc-h3">Titre de niveau 3</p>
+                    <p class="qc-h4">Titre de niveau 4</p>
+                    <p class="qc-h5">Titre de niveau 5</p>
+                    <p class="qc-h6">Titre de niveau 6</p>
+            </figure>
+
+            <figure class="qc-image">
                 <span class="qc-subhead ">Surtitre</span>
                 <p class="qc-h1">Titre de niveau 1 avec surtitre</p>
-            </div>
-            <figcaption>Exemple de titre avec surtitre</figcaption>
-        </figure>
-
+            </figure>
+        </div>
 
         <h2 id="paragraphes">Paragraphes</h2>
 
@@ -197,11 +210,9 @@
             <p><strong>Open Sans</strong></p>
             <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
             <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-
         </div>
 
         <!-- lists -->
-
         <h2 id="liste">Listes</h2>
         <ul>
             <li>Element de liste 01</li>
@@ -216,70 +227,139 @@
         <!-- grid -->
 
         <style>
-            .grid-sample {
-                border: 1px solid;
+            #grid-samples {
+                position: relative;
                 text-align: center;
-                max-height: fit-content;
-                background-color: --qc-blue-
+                margin-top: 4.8rem;
             }
+
+            #grid-samples .qc-row > div > div {
+                background-color: var(--qc-pale-blue);
+                height: 100%;
+                color: white;
+                padding: .8rem 0;
+            }
+
+            #grid-samples .qc-row {
+                margin-top: 2.4rem;
+            }
+            #grid-samples .qc-row:first-child {
+                margin-top: 0;
+            }
+
+            #background {
+                position: absolute;
+                z-index: -1;
+                width: 100%;
+                height: 110%;
+                top:-5%;
+
+            }
+            #background .qc-row > div > div {
+                background-color: var(--qc-pale-grey);
+            }
+            #background div {
+                height: 100%;
+            }
+
         </style>
-        <h2 id="grille">Grille de 8 px</h2>
+        <h2 id="grille">Grille horizontale avec gouttière de 16px</h2>
         <div id="grid-samples">
-            <div class="qc-row">
-                <div class="grid-sample qc-col-desktop-12">
-                    <p>qc-col-12</p>
+            <div id="background">
+                <div class="qc-row">
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
+                    <div class="qc-col-1">
+                        <div></div>
+                    </div>
                 </div>
             </div>
             <div class="qc-row">
-                <div class="grid-sample   qc-col-tablet-6 qc-col-desktop-6">
-                    <p>.qc-col-tablet-6 .qc-col-desktop-6</p>
-                </div>
-                <div class="grid-sample   qc-col-tablet-6 qc-col-desktop-6">
-                    <p>.qc-col-tablet-6 .qc-col-desktop-6</p>
+                <div class="qc-col-12">
+                    <div>12</div>
                 </div>
             </div>
             <div class="qc-row">
-                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
-                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
+                <div class="  qc-col-tablet-6">
+                    <div>6</div>
                 </div>
-                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
-                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
+                <div class="  qc-col-tablet-6">
+                    <div>6</div>
                 </div>
-                <div class="grid-sample  qc-col-tablet-4 qc-col-desktop-4">
-                    <p>.qc-col-tablet-4 .qc-col-desktop-4</p>
+            </div>
+            <div class="qc-row">
+                <div class=" qc-col-tablet-4">
+                    <div>4</div>
+                </div>
+                <div class=" qc-col-tablet-4">
+                    <div>4</div>
+                </div>
+                <div class=" qc-col-tablet-4">
+                    <div>4</div>
                 </div>
             </div>
 
             <div class="qc-row">
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                <div class="qc-col-3">
+                    <div>3</div>
                 </div>
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                <div class="qc-col-3">
+                    <div>3</div>
                 </div>
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                <div class="qc-col-3">
+                    <div>3</div>
                 </div>
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
-                </div>
-            </div>
-
-            <div class="qc-row">
-                <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9">
-                    <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
-                </div>
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                <div class="qc-col-3">
+                    <div>3</div>
                 </div>
             </div>
 
             <div class="qc-row">
-                <div class="grid-sample qc-col-tablet-3 qc-col-desktop-3">
-                    <p>.qc-col-tablet-3 .qc-col-desktop-3</p>
+                <div class="qc-col-tablet-9 ">
+                    <div>9</div>
                 </div>
-                <div class="grid-sample qc-col-tablet-9 qc-col-desktop-9">
-                    <p>.qc-col-tablet-9 .qc-col-desktop-9</p>
+                <div class="qc-col-tablet-3 ">
+                    <div>3</div>
+                </div>
+            </div>
+
+            <div class="qc-row">
+                <div class="qc-col-tablet-3 ">
+                    <div>3</div>
+                </div>
+                <div class="qc-col-tablet-9 ">
+                    <div>9</div>
                 </div>
             </div>
         </div>
