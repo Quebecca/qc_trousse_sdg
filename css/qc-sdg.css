@@ -732,14 +732,14 @@ html {
   }
 }
 :root {
-  --qc-light-blue: #dae6f0;
-  --qc-pale-blue: #4a98d9;
+  --qc-pale-blue: #dae6f0;
+  --qc-light-blue: #4a98d9;
   --qc-blue: #1479cc;
   --qc-piv-blue: #095797;
   --qc-medium-blue: #19406C;
   --qc-dark-blue: #223654;
-  --qc-light-grey: #c5cad2;
   --qc-pale-grey: #f1f1f2;
+  --qc-light-grey: #c5cad2;
   --qc-grey: #8893a2;
   --qc-medium-grey: #6b778a;
   --qc-dark-grey: #4e5662;
@@ -760,12 +760,12 @@ html {
   --qc-hover-link: #1479cc;
 }
 
-.qc-bg-light-blue {
-  background-color: var(--qc-light-blue);
-}
-
 .qc-bg-pale-blue {
   background-color: var(--qc-pale-blue);
+}
+
+.qc-bg-light-blue {
+  background-color: var(--qc-light-blue);
 }
 
 .qc-bg-blue {
@@ -784,12 +784,12 @@ html {
   background-color: var(--qc-dark-blue);
 }
 
-.qc-bg-light-grey {
-  background-color: var(--qc-light-grey);
-}
-
 .qc-bg-pale-grey {
   background-color: var(--qc-pale-grey);
+}
+
+.qc-bg-light-grey {
+  background-color: var(--qc-light-grey);
 }
 
 .qc-bg-grey {
