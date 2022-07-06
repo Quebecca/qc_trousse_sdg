@@ -1,0 +1,8 @@
+@function color-name($color, $variant: "") {
+  $hyphen: if($variant == "", "","-");
+  @return #{$variant}#{$hyphen}#{$color};
+}
+
+@function color($color, $variant : "") {
+  @return var(--qc-#{color-name($color, $variant)});
+}

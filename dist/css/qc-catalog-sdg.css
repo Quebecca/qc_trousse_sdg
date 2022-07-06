@@ -1,0 +1,82 @@
+.color-details {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.color-details > div + div {
+  margin-left: 2.4rem;
+}
+.color-details + .color-details {
+  margin-top: 2.4rem;
+}
+
+.color-sample {
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+}
+
+.title-samples {
+  border: 1px solid var(--qc-light-grey);
+}
+.title-samples figure {
+  width: 100%;
+  padding: 1.6rem 2.4rem;
+  border-bottom: 1px solid var(--qc-pale-grey);
+}
+.title-samples figure:first-child {
+  padding-top: 0;
+}
+.title-samples figure:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.title-samples figure + figure {
+  margin-top: 2.4rem;
+}
+
+.font-titles {
+  font-family: "Roboto", sans-serif;
+}
+
+#grid-samples {
+  position: relative;
+  text-align: center;
+  margin-top: 4.8rem;
+}
+#grid-samples .qc-row {
+  margin-top: 2.4rem;
+}
+#grid-samples .qc-row > div > div {
+  background-color: var(--qc-pale-blue);
+  height: 100%;
+  color: white;
+  padding: 0.8rem 0;
+}
+#grid-samples .qc-row:first-child {
+  margin-top: 0;
+}
+
+#background {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 110%;
+  top: -5%;
+}
+#background .qc-row > div > div {
+  background-color: var(--qc-pale-grey);
+}
+#background div {
+  height: 100%;
+}
+
+.square-box {
+  display: flex;
+  width: 12rem;
+  height: 12rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/*# sourceMappingURL=qc-catalog-sdg.css.map */

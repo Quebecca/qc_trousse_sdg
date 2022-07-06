@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dist/css/qc-sdg.css">
-<!--    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap-grid.css">-->
-    <title>Système de design</title>
+    <link rel="stylesheet" href="dist/css/qc-catalog-sdg.css">
+    <title>Catalogue des composants du système de design gouvernemental</title>
 </head>
 <body>
 <header>
     <div class="qc-container">
-        <span class="qc-subhead">Release 0.2</span>
-        <h1>Exemple du système de design gouvernemental</h1>
+        <span class="qc-subhead">Version 1.0.0</span>
+        <h1>Catalogue du système de design gouvernemental</h1>
         <div class="main-menu">
             <ul>
                 <li><a href='#couleurs'>Couleurs</a></li>
                 <li><a href='#titre'>Niveaux de titres</a></li>
+                <li><a href='#paragraphes'>Paragraphes</a></li>
                 <li><a href='#polices'>Polices de caractères</a></li>
                 <li><a href='#liste'>Liste</a></li>
                 <li><a href='#grille'>Grille de 8px</a></li>
@@ -32,24 +33,6 @@
     <div class="qc-container">
         <!-- colors -->
         <h2 id="couleurs">Couleurs</h2>
-        <style>
-            .color-details {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-            }
-            .color-details > div + div  {
-                margin-left: 2.4rem;
-            }
-            .color-details + .color-details {
-                margin-top: 1.6rem;
-            }
-            .color-sample {
-                width: 4.8rem;
-                height: 4.8rem;
-                border-radius: 50%;
-            }
-        </style>
         <h3>Couleur principale</h3>
         <div class="color-details">
             <div class="color-sample qc-bg-piv-blue"></div>
@@ -156,36 +139,14 @@
 
         <!-- titles -->
         <h2 id="titre">Titres</h2>
-        <style>
-            .title-samples {
-                border: 1px solid var(--qc-light-grey);
-            }
-            .title-samples figure {
-                width: 100%;
-                padding: 1.6rem 2.4rem;
-                border-bottom: 1px solid var(--qc-pale-grey);
-            }
-            .title-samples figure:first-child {
-                padding-top: 0;
-            }
-            .title-samples figure:last-child {
-                padding-bottom: 0;
-                border-bottom: 0;
-            }
-
-            .title-samples figure + figure {
-                margin-top: 2.4rem;
-            }
-
-        </style>
         <div class="qc-gallery title-samples">
             <figure class="qc-figure">
-                    <p class="qc-h1">Titre de niveau 1</p>
-                    <p class="qc-h2" >Titre de niveau 2</p>
-                    <p class="qc-h3">Titre de niveau 3</p>
-                    <p class="qc-h4">Titre de niveau 4</p>
-                    <p class="qc-h5">Titre de niveau 5</p>
-                    <p class="qc-h6">Titre de niveau 6</p>
+                <p class="qc-h1">Titre de niveau 1</p>
+                <p class="qc-h2">Titre de niveau 2</p>
+                <p class="qc-h3">Titre de niveau 3</p>
+                <p class="qc-h4">Titre de niveau 4</p>
+                <p class="qc-h5">Titre de niveau 5</p>
+                <p class="qc-h6">Titre de niveau 6</p>
             </figure>
 
             <figure class="qc-image">
@@ -196,17 +157,26 @@
 
         <h2 id="paragraphes">Paragraphes</h2>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
-        <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices, neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi
+            tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex
+            euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a
+            risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla
+            varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
+        <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque
+            ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis
+            dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui
+            interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices,
+            neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id
+            et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non
+            ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
 
         <h2 id="polices">Polices de caractères</h2>
-        <div style="font-family: Roboto, sans-serif;">
+        <div class="font-titles">
             <p><strong>Roboto</strong></p>
             <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
             <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-
         </div>
-        <div style="font-family: 'Open Sans', sans-serif;">
+        <div>
             <p><strong>Open Sans</strong></p>
             <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
             <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
@@ -226,43 +196,6 @@
 
         <!-- grid -->
 
-        <style>
-            #grid-samples {
-                position: relative;
-                text-align: center;
-                margin-top: 4.8rem;
-            }
-
-            #grid-samples .qc-row > div > div {
-                background-color: var(--qc-pale-blue);
-                height: 100%;
-                color: white;
-                padding: .8rem 0;
-            }
-
-            #grid-samples .qc-row {
-                margin-top: 2.4rem;
-            }
-            #grid-samples .qc-row:first-child {
-                margin-top: 0;
-            }
-
-            #background {
-                position: absolute;
-                z-index: -1;
-                width: 100%;
-                height: 110%;
-                top:-5%;
-
-            }
-            #background .qc-row > div > div {
-                background-color: var(--qc-pale-grey);
-            }
-            #background div {
-                height: 100%;
-            }
-
-        </style>
         <h2 id="grille">Grille horizontale avec gouttière de 32px</h2>
         <div id="grid-samples">
             <div id="background">
@@ -365,74 +298,69 @@
         </div>
 
 
-
         <h2 id="liens">Liens</h2>
         <a href="#" class="">Règlement de pêche dans la zone 21.</a>
 
-                <h2 id="ombrages">Ombrages</h2>
-                <h3>Échelle d'élévation</h3>
-                <p><strong>Élévation 0</strong></p>
-                <p class="qc-sd-elevation qc-sd-elevation-0">Élévation 0</p>
-                <br>
-                <p><strong>Élévation 1</strong></p>
-                <p>Usage : tuiles cliquables, boutons principaux</p>
-                <p class="qc-sd-elevation qc-sd-elevation-1">Élévation 1</p>
-                <br>
-                <p><strong>Élévation 2</strong></p>
-                <p>Usage : infobulle</p>
-                <p class="qc-sd-elevation qc-sd-elevation-2">Élévation 2</p>
-                <br>
-                <p><strong>Élévation 3</strong></p>
-                <p>Usage : champ date avec calendrier, sous-menu, notification contextuelle</p>
-                <p class="qc-sd-elevation qc-sd-elevation-3">Élévation 3</p>
-                <br>
-                <p><strong>Élévation 4</strong></p>
-                <p>Usage : Boîte de dialogue modale</p>
-                <p class="qc-sd-elevation qc-sd-elevation-4">Élévation 4</p>
+        <h2 id="ombrages">Ombrages</h2>
+        <p><strong>Élévation 1</strong></p>
+        <p>Usage : tuiles cliquables, boutons principaux</p>
+        <p class="qc-shading-1 square-box">Élévation 1</p>
+        <br>
+        <p><strong>Élévation 2</strong></p>
+        <p>Usage : infobulle</p>
+        <p class="qc-shading-2 square-box">Élévation 2</p>
+        <br>
+        <p><strong>Élévation 3</strong></p>
+        <p>Usage : champ date avec calendrier, sous-menu, notification contextuelle</p>
+        <p class="qc-shading-3 square-box">Élévation 3</p>
+        <br>
+        <p><strong>Élévation 4</strong></p>
+        <p>Usage : Boîte de dialogue modale</p>
+        <p class="qc-shading-4 square-box">Élévation 4</p>
 
         <!-- Citations -->
-                <h2 id="citations">Citations</h2>
-                <blockquote lang="en">
-                    <p>I have to constantly use creativity and imagination to impart
-                        knowledge
-                        to my students,
-                        but that’s also what drives me on a daily basis.</p>
-                </blockquote>
-                <p>Karel
-                    <span>Teacher</span>
-                </p>
-                <blockquote>
-                    <p>Voilà une excellente nouvelle pour la région du Nord-du-Québec. Grâce
-                        à cet
-                        investissement majeur de notre gouvernement,
-                        nous pourrons loger davantage de travailleurs et leurs familles, ce qui renforcera la vitalité
-                        économique de nos communautés.</p>
-                </blockquote>
-                <p>Pierre Dufour
-                    <span>Ministre des Forêts, de la Faune et des Parcs, ministre
-                    responsable
-                    de la
-                    région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
-                    d’Abitibi-Est</span>
-                </p>
+        <h2 id="citations">Citations</h2>
+        <blockquote lang="en">
+            <p>I have to constantly use creativity and imagination to impart
+                knowledge
+                to my students,
+                but that’s also what drives me on a daily basis.</p>
+        </blockquote>
+        <p>Karel
+            <span>Teacher</span>
+        </p>
+        <blockquote>
+            <p>Voilà une excellente nouvelle pour la région du Nord-du-Québec. Grâce
+                à cet
+                investissement majeur de notre gouvernement,
+                nous pourrons loger davantage de travailleurs et leurs familles, ce qui renforcera la vitalité
+                économique de nos communautés.</p>
+        </blockquote>
+        <p>Pierre Dufour
+            <span>Ministre des Forêts, de la Faune et des Parcs, ministre
+            responsable
+            de la
+            région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
+            d’Abitibi-Est</span>
+        </p>
 
         <!-- Images -->
-                <h2 id="images">Images</h2>
-                <div class="qc-gallery">
-                    <div class="qc-row">
-                        <div class="qc-col-6">
-                            <figure class="qc-image">
-                                <img src="./icons/image-01.png" alt="Image avec légende">
-                                <figcaption class="qc-image-caption">
-                                    <p>La légende de l'image <br>
-                                        <em>La source de l'image</em>
-                                    </p>
-                                </figcaption>
-                            </figure>
-                        </div>
-                    </div>
+        <h2 id="images">Images</h2>
+        <div class="qc-gallery">
+            <div class="qc-row">
+                <div class="qc-col-6">
+                    <figure class="qc-image">
+                        <img src="./icons/image-01.png" alt="Image avec légende">
+                        <figcaption class="qc-image-caption">
+                            <p>La légende de l'image <br>
+                                <em>La source de l'image</em>
+                            </p>
+                        </figcaption>
+                    </figure>
                 </div>
             </div>
+        </div>
+    </div>
 
 </main>
 </body>

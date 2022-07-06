@@ -1,15 +1,5 @@
+@use "function/colors" as *;
 @import "variables";
-
-figcaption,
-.qc-gallery figcaption {
-  @include content-font(10);
-  display: table-caption;
-  caption-side: bottom;
-  background-color: $color-light-grey;
-  padding: $spacer-8 $spacer-8;
-  margin-bottom: 0;
-  margin-top: $spacer-8;
-}
 
 .qc-gallery {
   overflow: hidden;
@@ -28,8 +18,14 @@ figcaption,
       }
     }
   }
-
   figcaption {
+    @include content-font(14);
+    display: table-caption;
+    caption-side: bottom;
+    background-color: #{color("grey","light")};
+    padding: $spacer-8;
+    margin-bottom: 0;
+    margin-top: $spacer-8;
     display: table-caption;
     caption-side: bottom;
 
