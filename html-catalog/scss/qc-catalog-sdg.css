@@ -81,7 +81,8 @@
 }
 
 a.pseudo-hover {
-  @extend
+  color: var(--qc-hover-link);
+  text-decoration: none;
 }
 
 /*# sourceMappingURL=qc-catalog-sdg.css.map */

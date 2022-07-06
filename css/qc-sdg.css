@@ -100,11 +100,25 @@ p {
   margin-bottom: 2.4rem;
 }
 
+img {
+  border: none;
+  vertical-align: middle;
+}
+
 a, a:visited {
   color: var(--qc-link);
 }
 a:hover, a:focus {
-  color: var(--qc-blue);
+  color: var(--qc-hover-link);
+  text-decoration: none;
+}
+a .external-link-tail {
+  white-space: nowrap;
+}
+a .external-link-tail img {
+  max-height: 1.1rem;
+  max-width: 1.1rem;
+  margin-bottom: 0.16rem;
 }
 
 html {
@@ -742,6 +756,8 @@ html {
   --qc-success: #4f813d;
   --qc-error: #cb381f;
   --qc-danger: #692519;
+  --qc-link: #095797;
+  --qc-hover-link: #1479cc;
 }
 
 .qc-bg-light-blue {
@@ -838,6 +854,14 @@ html {
 
 .qc-bg-danger {
   background-color: var(--qc-danger);
+}
+
+.qc-bg-link {
+  background-color: var(--qc-link);
+}
+
+.qc-bg-hover-link {
+  background-color: var(--qc-hover-link);
 }
 
 .qc-gallery {

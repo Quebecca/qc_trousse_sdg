@@ -1,0 +1,5 @@
+@use "../function/colors" as qc;
+@mixin hover-link() {
+  color: qc.color("link", "hover");
+  text-decoration: none;
+}

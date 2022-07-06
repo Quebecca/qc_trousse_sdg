@@ -1,4 +1,5 @@
-@import "../../scss/functions";
+@use "../../scss/functions" as qc;
+@import "../../scss/mixins";
 @import "../../scss/variables";
 
 .color-details {
@@ -20,12 +21,12 @@
 }
 
 .title-samples {
-  border: 1px solid color("grey","light");
+  border: 1px solid qc.color("grey","light");
 
   figure {
     width: 100%;
     padding: $spacer-16 $spacer-24;
-    border-bottom: 1px solid color("grey","pale");
+    border-bottom: 1px solid qc.color("grey","pale");
 
     &:first-child {
       padding-top: 0;
@@ -53,7 +54,7 @@
   .qc-row {
     margin-top: $spacer-24;
     > div > div {
-      background-color: color("blue","piv");
+      background-color: qc.color("blue","piv");
       opacity: .7;
       height: 100%;
       color: white;
@@ -72,7 +73,7 @@
   height: 110%;
   top: -5%;
   .qc-row > div > div {
-    background-color: color("grey","pale");
+    background-color: qc.color("grey","pale");
   }
   div {
     height: 100%;
@@ -85,4 +86,8 @@
   height: $spacer-120;
   justify-content: center;
   align-items: center;
+}
+
+a.pseudo-hover {
+  @include hover-link();
 }

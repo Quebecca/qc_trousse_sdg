@@ -1,6 +1,7 @@
 @use "function/colors" as colors;
 @use "variables" as *;
 @use "mixins/grid" as *;
+@use "mixins/link" as *;
 
 
 :root{
@@ -78,11 +79,24 @@ p {
   margin-bottom: 2.4rem;
 }
 
+img {
+  border: none;
+  vertical-align: middle;
+}
+
 a {
   &, &:visited {
     color: colors.color("link");
   }
   &:hover,&:focus {
-    color: colors.color("blue");
+      @include hover-link();
+  }
+  .external-link-tail {
+    white-space: nowrap;
+    img {
+      max-height: 1.1rem;
+      max-width: 1.1rem;
+      margin-bottom: .16rem;
+    }
   }
 }

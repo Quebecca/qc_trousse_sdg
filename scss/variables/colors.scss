@@ -69,8 +69,11 @@ $colors: map.merge($colors,(
   ),
   "danger": (
     "": map.get($colors, "red", "dark"),
+  ),
+  "link": (
+      "": map.get($colors, "blue", "piv"),
+      "hover": map.get($colors, "blue",""),
   )
-
 ));
 
 
