@@ -75,11 +75,14 @@ h6,.qc-h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: $spacer-24;
+  margin-bottom: 2.4rem;
 }
 
 a {
   &, &:visited {
-    color: colors.color("blue", "piv");
+    color: colors.color("link");
+  }
+  &:hover,&:focus {
+    color: colors.color("blue");
   }
 }

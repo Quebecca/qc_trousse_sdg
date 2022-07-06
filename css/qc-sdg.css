@@ -1,4 +1,3 @@
-@charset "UTF-8";
 :root {
   font-size: 62.5%;
 }
@@ -102,7 +101,10 @@ p {
 }
 
 a, a:visited {
-  color: var(--qc-piv-blue);
+  color: var(--qc-link);
+}
+a:hover, a:focus {
+  color: var(--qc-blue);
 }
 
 html {
@@ -838,79 +840,6 @@ html {
   background-color: var(--qc-danger);
 }
 
-blockquote {
-  font-size: 1.8rem;
-  line-height: 2.4rem;
-  display: block;
-  position: relative;
-  color: #223654;
-  letter-spacing: -0.024rem;
-  font-weight: 600;
-  margin: 1rem 0 1rem 0;
-  text-align: left;
-  padding: 0 2rem;
-  border-width: 0;
-}
-blockquote.qc-blockquote--grand {
-  font-size: 3.2rem;
-  line-height: 4.8rem;
-  letter-spacing: -0.6px;
-}
-blockquote.qc-blockquote--grand::before {
-  transform: translate3d(-1.5rem, 0, 0);
-}
-blockquote p {
-  font-size: inherit;
-  margin: inherit;
-  line-height: inherit;
-  display: inline;
-}
-blockquote ~ p {
-  display: block;
-  position: relative;
-  padding-left: 1.9rem;
-  font-size: 1.4rem;
-  line-height: 2rem;
-  font-weight: 600;
-  max-width: 85%;
-  margin-left: 2rem;
-}
-blockquote ~ p:last-of-type {
-  margin-bottom: 3.2rem;
-}
-blockquote ~ p span {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 400;
-  display: block;
-}
-blockquote ~ p:before {
-  content: "";
-  position: absolute;
-  top: 0.75rem;
-  display: block;
-  width: 1.5rem;
-  height: 1px;
-  background: #223654;
-  transform: translate3d(-1.8rem, 0, 0);
-}
-blockquote ~ p:empty:before {
-  display: none;
-}
-blockquote::before {
-  position: absolute;
-  transform: translate3d(-0.938rem, 0, 0);
-}
-blockquote:lang(fr):before {
-  content: "«";
-}
-blockquote:lang(fr):after {
-  content: "»";
-}
-blockquote:lang(en)::before, blockquote:lang(en)::after {
-  content: '"';
-}
-
 .qc-gallery {
   overflow: hidden;
   margin-top: 0.8rem;
@@ -918,11 +847,9 @@ blockquote:lang(en)::before, blockquote:lang(en)::after {
 .qc-gallery figure {
   display: table;
   margin: 0;
-}
-.qc-gallery figure.qc-image {
   margin-bottom: 3.2rem;
 }
-.qc-gallery figure.qc-image img {
+.qc-gallery figure img {
   max-width: 100%;
   height: auto;
 }
@@ -931,14 +858,12 @@ blockquote:lang(en)::before, blockquote:lang(en)::after {
   line-height: 2rem;
   display: table-caption;
   caption-side: bottom;
-  background-color: var(--qc-light-grey);
+  background-color: var(--qc-pale-grey);
   padding: 0.8rem;
   margin-bottom: 0;
   margin-top: 0.8rem;
-  display: table-caption;
-  caption-side: bottom;
 }
-.qc-gallery figcaption.qc-image-caption p {
+.qc-gallery figcaption p {
   line-height: 2.4rem;
   margin-bottom: 0;
 }

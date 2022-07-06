@@ -9,31 +9,25 @@
     display: table;
     margin: 0;
 
-    &.qc-image {
-      margin-bottom: $spacer-32;
+    margin-bottom: $spacer-32;
 
-      img {
-        max-width: 100%;
-        height: auto;
-      }
+    img {
+      max-width: 100%;
+      height: auto;
     }
   }
   figcaption {
     @include content-font(14);
     display: table-caption;
     caption-side: bottom;
-    background-color: #{color("grey","light")};
+    background-color: #{color("grey","pale")};
     padding: $spacer-8;
     margin-bottom: 0;
     margin-top: $spacer-8;
-    display: table-caption;
-    caption-side: bottom;
 
-    &.qc-image-caption {
-      p {
-        line-height: $spacer-24;
-        margin-bottom: 0;
-      }
+    p {
+      line-height: $spacer-24;
+      margin-bottom: 0;
     }
   }
 }

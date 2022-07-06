@@ -1,7 +1,9 @@
 @use "base"  as *;
 @use "grid" as *;
 @use "colors" as *;
-@use "blockquote" as *;
+// les citations seront des composants web - elle doivent réagir au nombre de caractères
+// elles ne sont pas livrées dans cette version
+//@use "blockquote" as *;
 @use "figure" as *;
 @use "lists" as *;
 @use "fonts" as *;
