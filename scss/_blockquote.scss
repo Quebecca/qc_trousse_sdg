@@ -1,90 +1,90 @@
 @use "variables" as *;
-
+@use "function/colors" as *;
+@use "sass:math";
 
 blockquote {
-    @include content-font(18);
-    display: block;
-    position: relative;
-    color: #223654;
-    letter-spacing: -0.024rem;
-    font-weight: 600;
-    margin: 1rem 0 1rem 0;
-    text-align: left;
-    padding: 0 2rem;
-    border-width: 0;
+  @include content-font(18);
+  display: block;
+  position: relative;
+  color: #{color("blue","dark")};
+  letter-spacing: -0.1px;
+  font-weight: 600;
+  margin: $spacer-16 0 $spacer-16 0;
+  text-align: left;
+  border-width: 0;
 
-    &.qc-blockquote--grand {
-        @include content-font(31);
-        letter-spacing: -0.6px;
-        &::before {
-            transform: translate3d(-1.5rem, 0, 0);
-        }
-    }
-
-    p {
-        font-size: inherit;
-        margin: inherit;
-        line-height: inherit;
-        display: inline;
-    }
-
-    // Auteur
-    & ~ p {
-        display: block;
-        position: relative;
-        padding-left: 1.9rem;
-        @include content-font(14);
-        font-weight: 600;
-        max-width: 85%;
-        margin-left: 2rem;
-
-        &:last-of-type {
-            margin-bottom: 3.2rem;
-        }
-
-        & span {
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            font-weight: 400;
-            display: block;
-        }
-
-        &:before {
-            content: "";
-            position: absolute;
-            top: 0.75rem;
-            display: block;
-            width: 1.5rem;
-            height: 1px;
-            background: #223654;
-            transform: translate3d(-1.8rem, 0, 0);
-        }
-
-        &:empty:before {
-            display: none;
-        }
-    }
+  &.qc-blockquote--grand {
+    @include content-font(31);
+    letter-spacing: -$spacer-16;
 
     &::before {
-        position: absolute;
-        transform: translate3d(-0.938rem, 0, 0);
+      transform: translate3d(-$spacer-16, 0, 0);
+    }
+  }
+
+  p {
+    font-size: inherit;
+    margin: inherit;
+    line-height: inherit;
+    display: inline;
+  }
+
+  // Auteur
+  & ~ p {
+    display: block;
+    position: relative;
+    padding-left: $spacer-16;
+    @include content-font(16);
+    font-weight: 600;
+    max-width: 85%;
+    margin-left: $spacer-24;
+
+    &:last-of-type {
+      margin-bottom: $spacer-32;
     }
 
-    // Français
-    &:lang(fr) {
-        &:before {
-            content: "«";
-        }
-        &:after {
-            content: "»";
-        }
+    & span {
+      @include content-font(14);
+      font-weight: 400;
+      display: block;
     }
 
-
-    // Anglais
-    &:lang(en) {
-        &::before, &::after {
-            content: '"';
-        }
+    &:before {
+      content: "";
+      position: absolute;
+      top: $spacer-16; // todo $spacer-12
+      display: block;
+      width: $spacer-24;
+      height: 1px;
+      background: #{color("blue","dark")};
+      transform: translate3d(-$spacer-32, 0, 0);
     }
+
+    &:empty:before {
+      display: none;
+    }
+  }
+
+  &::before {
+    position: absolute;
+    transform: translate3d(-$spacer-16, 0, 0);
+  }
+
+  // Français
+  &:lang(fr) {
+    &:before {
+      content: "«";
+    }
+
+    &:after {
+      content: "»";
+    }
+  }
+
+  // Anglais
+  &:lang(en) {
+    &::before, &::after {
+      content: '"';
+    }
+  }
 }
