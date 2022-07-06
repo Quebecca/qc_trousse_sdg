@@ -1,3 +1,4 @@
+@use "function/colors" as colors;
 @use "variables" as *;
 @use "mixins/grid" as *;
 
@@ -75,4 +76,10 @@ h6,.qc-h6 {
 p {
   margin-top: 0;
   margin-bottom: $spacer-24;
+}
+
+a {
+  &, &:visited {
+    color: colors.color("blue", "piv");
+  }
 }

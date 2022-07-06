@@ -101,6 +101,10 @@ p {
   margin-bottom: 2.4rem;
 }
 
+a, a:visited {
+  color: var(--qc-piv-blue);
+}
+
 html {
   box-sizing: border-box;
   -ms-overflow-style: scrollbar;

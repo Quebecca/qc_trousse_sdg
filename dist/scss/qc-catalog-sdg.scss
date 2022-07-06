@@ -53,7 +53,8 @@
   .qc-row {
     margin-top: $spacer-24;
     > div > div {
-      background-color: color("blue","pale");
+      background-color: color("blue","piv");
+      opacity: .7;
       height: 100%;
       color: white;
       padding: $spacer-8 0;

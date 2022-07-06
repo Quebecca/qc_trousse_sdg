@@ -48,7 +48,8 @@
   margin-top: 2.4rem;
 }
 #grid-samples .qc-row > div > div {
-  background-color: var(--qc-pale-blue);
+  background-color: var(--qc-piv-blue);
+  opacity: 0.7;
   height: 100%;
   color: white;
   padding: 0.8rem 0;
