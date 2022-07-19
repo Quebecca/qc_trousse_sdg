@@ -2,7 +2,7 @@
 @use "../function/map" as qc;
 
 
-$percent-root-font-size: 100;
+$percent-root-font-size: 100 !default;
 
 $font-dir: "../fonts" !default;
 
