@@ -1,0 +1,51 @@
+@use "sass:map";
+@use "../function/map" as qc;
+
+
+$percent-root-font-size: 100;
+
+$font-dir: "../fonts" !default;
+
+// QC Font Family
+$font-roboto: "Roboto", sans-serif;
+$font-open-sans: "Open Sans", sans-serif;
+$content-font: $font-open-sans;
+$header-font: $font-roboto;
+
+// QC Font Weight
+$font-weight-300: 300;
+$font-weight-lighter: lighter;
+$font-weight-normal: normal;
+$font-weight-500: 500;
+$font-weight-600: 600;
+$font-weight-bold: bold;
+$font-weight-800: 800;
+$font-weight-900: 900;
+$font-weight-bolder: bolder;
+
+// Font sizes and line height associations
+// … for content
+$font-sizes: (
+  "content": (
+      14: 20,
+      16: 24,
+      18: 24,
+      22: 32,
+      28: 40,
+      32: 48
+  ),
+  "header": (
+      16: 20,
+      19: 24,
+      21: 24,
+      25: 32,
+      29: 32,
+      28: 32,
+      35: 40,
+      36: 40,
+      48: 56
+  )
+);
+
+
+

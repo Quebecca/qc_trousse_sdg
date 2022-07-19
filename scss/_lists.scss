@@ -1,13 +1,14 @@
+@use "functions" as *;
 @import "variables";
 
 // To be used for general lists
 ul {
     list-style: disc;
-    padding: 0 0 $spacer-8 $spacer-32;
+    padding: 0 0 spacer(sm) spacer(xl);
     li {
-        padding: 0 0 $spacer-16 0;
+        padding: 0 0 spacer(md) 0;
         margin: 0;
-        color: $color-dark-blue;
+        color: color("blue","dark");
     }
     ul {
         list-style: circle;

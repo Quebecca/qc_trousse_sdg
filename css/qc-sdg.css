@@ -1,24 +1,24 @@
 :root {
-  font-size: 62.5%;
+  font-size: 100%;
 }
 :root body {
-  font-size: 1.6rem;
-  line-height: 2.4rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-family: "Open Sans", sans-serif;
-  color: #223654;
+  color: var(--qc-dark-blue);
 }
 
 h1, .qc-h1 {
-  font-size: 4.8rem;
-  line-height: 5.6rem;
+  font-size: 3rem;
+  line-height: 3.5rem;
   font-weight: bold;
-  margin-top: 7.2rem;
-  margin-bottom: 3.2rem;
+  margin-top: 3.5rem;
+  margin-bottom: 2rem;
 }
 @media (max-width: 991.98px) {
   h1, .qc-h1 {
-    font-size: 3.6rem;
-    line-height: 4rem;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
     font-weight: bold;
   }
 }
@@ -26,78 +26,78 @@ h1:after, .qc-h1:after {
   content: "";
   display: block;
   margin: 0;
-  width: 4.8rem;
-  padding-top: 0.4rem;
-  border-bottom: 4px solid #f09686;
+  width: 3rem;
+  padding-top: 0.25rem;
+  border-bottom: 4px solid var(--qc-pink-accent);
 }
 
 h2, .qc-h2 {
-  font-size: 3.5rem;
-  line-height: 4rem;
+  font-size: 2.1875rem;
+  line-height: 2.5rem;
   font-weight: bold;
-  margin-top: 4.8rem;
-  margin-bottom: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
 }
 @media (max-width: 991.98px) {
   h2, .qc-h2 {
-    font-size: 2.9rem;
-    line-height: 3.2rem;
+    font-size: 1.8125rem;
+    line-height: 2rem;
     font-weight: bold;
   }
 }
 
 h3, .qc-h3 {
-  font-size: 2.8rem;
-  line-height: 3.2rem;
+  font-size: 1.75rem;
+  line-height: 2rem;
   font-weight: bold;
   font-weight: bold;
-  margin-top: 2.4rem;
-  margin-bottom: 1.6rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 @media (max-width: 991.98px) {
   h3, .qc-h3 {
-    font-size: 2.5rem;
-    line-height: 3.2rem;
+    font-size: 1.5625rem;
+    line-height: 2rem;
     font-weight: bold;
   }
 }
 
 h4, .qc-h4 {
-  font-size: 2.8rem;
-  line-height: 3.2rem;
+  font-size: 1.3125rem;
+  line-height: 1.5rem;
   font-weight: bold;
-  margin-top: 2.4rem;
-  margin-bottom: 0.8rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h5, .qc-h5 {
-  font-size: 1.9rem;
-  line-height: 2.4rem;
+  font-size: 1.1875rem;
+  line-height: 1.5rem;
   font-weight: bold;
-  margin-top: 1.6rem;
+  margin-top: 1rem;
   margin-bottom: 0;
 }
 
 h6, .qc-h6 {
-  font-size: 1.6rem;
-  line-height: 2rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
   font-weight: bold;
-  margin-top: 1.6rem;
+  margin-top: 1rem;
   margin-bottom: 0;
 }
 
 .qc-subhead {
-  font-size: 1.4rem;
-  line-height: 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 .qc-subhead + h1, .qc-subhead + h2, .qc-subhead + h3, .qc-subhead + h4, .qc-subhead + h5, .qc-subhead + h6,
 .qc-subhead + .qc-h1, .qc-subhead + .qc-h2, .qc-subhead + .qc-h3, .qc-subhead + .qc-h4, .qc-subhead + .qc-h5, .qc-subhead + .qc-h6 {
-  margin-top: 1.6rem;
+  margin-top: 1rem;
 }
 
 p {
   margin-top: 0;
-  margin-bottom: 2.4rem;
+  margin-bottom: 1.5rem;
 }
 
 img {
@@ -116,9 +116,9 @@ a .external-link-tail {
   white-space: nowrap;
 }
 a .external-link-tail img {
-  max-height: 1.1rem;
-  max-width: 1.1rem;
-  margin-bottom: 0.16rem;
+  max-height: 0.6875rem;
+  max-width: 0.6875rem;
+  margin-bottom: 0.1rem;
 }
 
 html {
@@ -134,8 +134,8 @@ html {
 
 .qc-container {
   width: 100%;
-  padding-right: 1.6rem;
-  padding-left: 1.6rem;
+  padding-right: 16px;
+  padding-left: 16px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -152,8 +152,8 @@ html {
 
 .qc-container-fluid, .qc-container-desktop, .qc-container-tablet {
   width: 100%;
-  padding-right: 1.6rem;
-  padding-left: 1.6rem;
+  padding-right: 16px;
+  padding-left: 16px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -171,8 +171,8 @@ html {
 .qc-row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -1.6rem;
-  margin-left: -1.6rem;
+  margin-right: -16px;
+  margin-left: -16px;
 }
 
 .qc-no-gutters {
@@ -191,8 +191,8 @@ html {
 .qc-col-auto, .qc-col-12, .qc-col-11, .qc-col-10, .qc-col-9, .qc-col-8, .qc-col-7, .qc-col-6, .qc-col-5, .qc-col-4, .qc-col-3, .qc-col-2, .qc-col-1 {
   position: relative;
   width: 100%;
-  padding-right: 1.6rem;
-  padding-left: 1.6rem;
+  padding-right: 16px;
+  padding-left: 16px;
 }
 
 .qc-col {
@@ -866,40 +866,40 @@ html {
 
 .qc-gallery {
   overflow: hidden;
-  margin-top: 0.8rem;
+  margin-top: spacer(sm);
 }
 .qc-gallery figure {
   display: table;
   margin: 0;
-  margin-bottom: 3.2rem;
+  margin-bottom: spacer(xl);
 }
 .qc-gallery figure img {
   max-width: 100%;
   height: auto;
 }
 .qc-gallery figcaption {
-  font-size: 1.4rem;
-  line-height: 2rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   display: table-caption;
   caption-side: bottom;
   background-color: var(--qc-pale-grey);
-  padding: 0.8rem;
+  padding: spacer(sm);
   margin-bottom: 0;
-  margin-top: 0.8rem;
+  margin-top: spacer(sm);
 }
 .qc-gallery figcaption p {
-  line-height: 2.4rem;
+  line-height: spacer(lg);
   margin-bottom: 0;
 }
 
 ul {
   list-style: disc;
-  padding: 0 0 0.8rem 3.2rem;
+  padding: 0 0 0.5rem 2rem;
 }
 ul li {
-  padding: 0 0 1.6rem 0;
+  padding: 0 0 1rem 0;
   margin: 0;
-  color: #223654;
+  color: var(--qc-dark-blue);
 }
 ul ul {
   list-style: circle;

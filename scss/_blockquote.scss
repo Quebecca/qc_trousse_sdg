@@ -1,5 +1,6 @@
 @use "variables" as *;
 @use "function/colors" as *;
+@use "function/utils" as *;
 @use "sass:math";
 
 blockquote {
@@ -9,16 +10,16 @@ blockquote {
   color: #{color("blue","dark")};
   letter-spacing: -0.1px;
   font-weight: 600;
-  margin: $spacer-16 0 $spacer-16 0;
+  margin: spacer(md) 0;
   text-align: left;
   border-width: 0;
 
   &.qc-blockquote--grand {
     @include content-font(31);
-    letter-spacing: -$spacer-16;
+    letter-spacing: -spacer(md);
 
     &::before {
-      transform: translate3d(-$spacer-16, 0, 0);
+      transform: translate3d(-spacer(md), 0, 0);
     }
   }
 
@@ -33,14 +34,14 @@ blockquote {
   & ~ p {
     display: block;
     position: relative;
-    padding-left: $spacer-16;
+    padding-left: spacer(md);
     @include content-font(16);
     font-weight: 600;
     max-width: 85%;
-    margin-left: $spacer-24;
+    margin-left: spacer(lg);
 
     &:last-of-type {
-      margin-bottom: $spacer-32;
+      margin-bottom: spacer(xl);
     }
 
     & span {
@@ -52,12 +53,12 @@ blockquote {
     &:before {
       content: "";
       position: absolute;
-      top: $spacer-16; // todo $spacer-12
+      top: spacer(md); // todo $spacer-12
       display: block;
-      width: $spacer-24;
+      width: spacer(lg);
       height: 1px;
       background: #{color("blue","dark")};
-      transform: translate3d(-$spacer-32, 0, 0);
+      transform: translate3d(-spacer(xl), 0, 0);
     }
 
     &:empty:before {
@@ -67,7 +68,7 @@ blockquote {
 
   &::before {
     position: absolute;
-    transform: translate3d(-$spacer-16, 0, 0);
+    transform: translate3d(-spacer(md), 0, 0);
   }
 
   // Français

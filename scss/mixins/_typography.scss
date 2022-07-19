@@ -1,0 +1,27 @@
+@use "../variables/typography";
+@use "../function/utils";
+@use "../function/map" as qc;
+@use "sass:map";
+
+// toujours utiliser ces mixins pour la déclarations des tailles de police:
+// cela garantit que la taille police est conforme aux exigences du SDG
+// et ajoute automatiquement le bon interlignage
+@mixin content-font($font-size) {
+  @include font-size($font-size, map.get(typography.$font-sizes, "content"));
+}
+
+@mixin header-font($font-size) {
+  @include font-size($font-size, map.get(typography.$font-sizes, "header"));
+  font-weight: bold;
+}
+
+@mixin font-size($font-size,$font-sizes) {
+  @if (not map.has-key($font-sizes, $font-size)) {
+    $font-size : qc.next-in-map($font-size, $font-sizes);
+  }
+  $line-height:  map.get($font-sizes, $font-size);
+  @if $line-height {
+    font-size: utils.rem($font-size);
+    line-height: utils.rem($line-height);
+  }
+}
