@@ -49,7 +49,7 @@ h3, .qc-h3 {
   }
 }
 h4, .qc-h4 {
-  @include header-font(28);
+  @include header-font(21);
   margin-top: $spacer-24;
   margin-bottom: $spacer-8;
 }
