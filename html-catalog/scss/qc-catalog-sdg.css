@@ -4,15 +4,15 @@
   align-items: center;
 }
 .color-details > div + div {
-  margin-left: 1.5rem;
+  margin-left: 2.4rem;
 }
 .color-details + .color-details {
-  margin-top: 1.5rem;
+  margin-top: 2.4rem;
 }
 
 .color-sample {
-  width: 3rem;
-  height: 3rem;
+  width: 4.8rem;
+  height: 4.8rem;
   border-radius: 50%;
 }
 
@@ -21,7 +21,7 @@
 }
 .title-samples figure {
   width: 100%;
-  padding: 1rem 1.5rem;
+  padding: 1.6rem 2.4rem;
   border-bottom: 1px solid var(--qc-pale-grey);
 }
 .title-samples figure:first-child {
@@ -32,7 +32,7 @@
   border-bottom: 0;
 }
 .title-samples figure + figure {
-  margin-top: 1.5rem;
+  margin-top: 2.4rem;
 }
 
 .font-titles {
@@ -42,17 +42,17 @@
 #grid-samples {
   position: relative;
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 4.8rem;
 }
 #grid-samples .qc-row {
-  margin-top: 1.5rem;
+  margin-top: 2.4rem;
 }
 #grid-samples .qc-row > div > div {
   background-color: var(--qc-piv-blue);
   opacity: 0.7;
   height: 100%;
   color: white;
-  padding: 0.5rem 0;
+  padding: 0.8rem 0;
 }
 #grid-samples .qc-row:first-child {
   margin-top: 0;
@@ -74,8 +74,8 @@
 
 .square-box {
   display: flex;
-  width: 7.5rem;
-  height: 7.5rem;
+  width: 12rem;
+  height: 12rem;
   justify-content: center;
   align-items: center;
 }
