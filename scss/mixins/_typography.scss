@@ -16,8 +16,11 @@
 }
 
 @mixin font-size($font-size,$font-sizes) {
+  // @debug Next in map $font-size;
   @if (not map.has-key($font-sizes, $font-size)) {
-    $font-size : qc.next-in-map($font-size, $font-sizes);
+    //@debug font-size $font-size notin map;
+    $font-size : qc.next-key-in-map($font-size, $font-sizes);
+    @debug Next in map $font-size;
   }
   $line-height:  map.get($font-sizes, $font-size);
   @if $line-height {
