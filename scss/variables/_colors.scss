@@ -3,21 +3,27 @@
 // System colours QC
 //---------------
 
-// Main colors
-$color-blue-piv: #095797;
-
-//Accent colors
-$color-pink: #f09686;
-$color-blue: #1479cc;
-
-// Secondary colors
-$color-light-blue: #dae6f0;
-$color-light-grey: #f2f1f1;
-$color-dark-blue: #223654;
-$color-pale-sky: #647287;
-$color-grey: #c5cad2;
 $color-white: #fff;
 $color-black: #000;
+
+// Main colors
+$color-blue-piv: #095797;
+$color-blue-pale: #dae6f0;
+$color-blue-light: #4a98d9;
+$color-blue: #1479cc;
+$color-blue-medium: #19406c;
+$color-blue-dark: #223654;
+
+//Accent colors
+$color-pink: #e58271;
+
+// Grey levels
+$color-grey-pale: #f1f1f2;
+$color-grey-light: #c5cad2;
+$color-grey: #8893a2;
+$color-grey-medium: #6b778a;
+$color-grey-dark: #4e5662;
+
 
 // Functional colors
 $color-errors: #cb381f;
@@ -48,7 +54,9 @@ $colors: (
     "dark": #692519,
   ),
   "green": (
+    "pale": #d7f0bb,
     "": #4f813d,
+    "dark": #2c4024,
   ),
   "yellow" : (
     "pale" : #f8e69a,
@@ -58,8 +66,7 @@ $colors: (
 ) !default;
 $colors: map.merge($colors,(
   "accent": (
-    "pink": map.get($colors, "pink", ""),
-    "blue": map.get($colors, "blue", ""),
+    "pink": map.get($colors, "pink", "")
   ),
   "success": (
     "": map.get($colors, "green", ""),

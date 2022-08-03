@@ -747,12 +747,13 @@ html {
   --qc-pink: #e58271;
   --qc-red: #cb381f;
   --qc-dark-red: #692519;
+  --qc-pale-green: #d7f0bb;
   --qc-green: #4f813d;
+  --qc-dark-green: #2c4024;
   --qc-pale-yellow: #f8e69a;
   --qc-yellow: #e0ad03;
   --qc-dark-yellow: #ad781c;
   --qc-pink-accent: #e58271;
-  --qc-blue-accent: #1479cc;
   --qc-success: #4f813d;
   --qc-error: #cb381f;
   --qc-danger: #692519;
@@ -820,8 +821,16 @@ html {
   background-color: var(--qc-dark-red);
 }
 
+.qc-bg-pale-green {
+  background-color: var(--qc-pale-green);
+}
+
 .qc-bg-green {
   background-color: var(--qc-green);
+}
+
+.qc-bg-dark-green {
+  background-color: var(--qc-dark-green);
 }
 
 .qc-bg-pale-yellow {
@@ -838,10 +847,6 @@ html {
 
 .qc-bg-pink-accent {
   background-color: var(--qc-pink-accent);
-}
-
-.qc-bg-blue-accent {
-  background-color: var(--qc-blue-accent);
 }
 
 .qc-bg-success {
@@ -866,12 +871,12 @@ html {
 
 .qc-gallery {
   overflow: hidden;
-  margin-top: spacer(sm);
+  margin-top: 0.8rem;
 }
 .qc-gallery figure {
   display: table;
   margin: 0;
-  margin-bottom: spacer(xl);
+  margin-bottom: 3.2rem;
 }
 .qc-gallery figure img {
   max-width: 100%;
@@ -883,12 +888,12 @@ html {
   display: table-caption;
   caption-side: bottom;
   background-color: var(--qc-pale-grey);
-  padding: spacer(sm);
+  padding: 0.8rem;
   margin-bottom: 0;
-  margin-top: spacer(sm);
+  margin-top: 0.8rem;
 }
 .qc-gallery figcaption p {
-  line-height: spacer(lg);
+  line-height: 2.4rem;
   margin-bottom: 0;
 }
 
