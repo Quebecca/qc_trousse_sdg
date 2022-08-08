@@ -12,7 +12,7 @@ h1, .qc-h1 {
   font-size: 4.8rem;
   line-height: 5.6rem;
   font-weight: bold;
-  margin-top: 5.6rem;
+  margin-top: 7.2rem;
   margin-bottom: 3.2rem;
 }
 @media (max-width: 991.98px) {
@@ -32,7 +32,7 @@ h1:after, .qc-h1:after {
 }
 
 h2, .qc-h2 {
-  font-size: 3.5rem;
+  font-size: 3.6rem;
   line-height: 4rem;
   font-weight: bold;
   margin-top: 4.8rem;
@@ -40,7 +40,7 @@ h2, .qc-h2 {
 }
 @media (max-width: 991.98px) {
   h2, .qc-h2 {
-    font-size: 2.9rem;
+    font-size: 2.8rem;
     line-height: 3.2rem;
     font-weight: bold;
   }
@@ -49,7 +49,6 @@ h2, .qc-h2 {
 h3, .qc-h3 {
   font-size: 2.8rem;
   line-height: 3.2rem;
-  font-weight: bold;
   font-weight: bold;
   margin-top: 2.4rem;
   margin-bottom: 1.6rem;
@@ -875,8 +874,7 @@ html {
 }
 .qc-gallery figure {
   display: table;
-  margin: 0;
-  margin-bottom: 3.2rem;
+  margin: 0 0 3.2rem 0;
 }
 .qc-gallery figure img {
   max-width: 100%;

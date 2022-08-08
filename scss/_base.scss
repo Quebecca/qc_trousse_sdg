@@ -16,7 +16,7 @@
 
 h1, .qc-h1 {
   @include header-font(48);
-  margin-top: spacer(xxl-7);
+  margin-top: spacer(xxl-9);
   margin-bottom: spacer(xl);
   @include media-tablet() {
     @include header-font(36);
@@ -33,16 +33,15 @@ h1, .qc-h1 {
 }
 
 h2, .qc-h2 {
-  @include header-font(35);
+  @include header-font(36);
   margin-top: spacer(xxl-6);
   margin-bottom: spacer(md);
   @include media-tablet(){
-    @include header-font(29);
+    @include header-font(28);
   }
 }
 h3, .qc-h3 {
   @include header-font(28);
-  font-weight:bold;
   margin-top: spacer(lg);
   margin-bottom: spacer(md);
   @include media-tablet(){
