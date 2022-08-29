@@ -1,14 +1,6 @@
 @use "functions" as *;
 @import "variables";
 
-:root {
-  @each $color,$variants in $colors {
-    @each $variant, $hexa in $variants {
-      --qc-#{color-name($color,$variant)}: #{$hexa};
-    }
-  }
-}
-
 @each $color,$variants in $colors {
   @each $variant, $hexa in $variants {
     $color-var-name: #{color-name($color,$variant)};

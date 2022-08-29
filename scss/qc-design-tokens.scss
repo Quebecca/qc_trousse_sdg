@@ -1,0 +1,15 @@
+@use "function/colors" as colors;
+@use "function/utils" as *;
+@use "variables" as *;
+@use "mixins/grid" as *;
+@use "mixins/link" as *;
+@use "mixins/typography" as *;
+
+:root {
+  // colors
+  @each $color,$variants in $colors {
+    @each $variant, $hexa in $variants {
+      --qc-#{color-name($color,$variant)}: #{$hexa};
+    }
+  }
+}
