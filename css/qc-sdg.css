@@ -13,7 +13,7 @@ h1, .qc-h1 {
   line-height: 5.6rem;
   font-weight: bold;
   margin-top: 7.2rem;
-  margin-bottom: 3.2rem;
+  margin-bottom: 9.6rem;
 }
 @media (max-width: 991.98px) {
   h1, .qc-h1 {
@@ -27,7 +27,7 @@ h1:after, .qc-h1:after {
   display: block;
   margin: 0;
   width: 4.8rem;
-  padding-top: 0.4rem;
+  padding-top: 0.8rem;
   border-bottom: 4px solid var(--qc-pink-accent);
 }
 
@@ -36,7 +36,7 @@ h2, .qc-h2 {
   line-height: 4rem;
   font-weight: bold;
   margin-top: 4.8rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 2.4rem;
 }
 @media (max-width: 991.98px) {
   h2, .qc-h2 {
@@ -50,8 +50,8 @@ h3, .qc-h3 {
   font-size: 2.8rem;
   line-height: 3.2rem;
   font-weight: bold;
-  margin-top: 2.4rem;
-  margin-bottom: 1.6rem;
+  margin-top: 4.8rem;
+  margin-bottom: 2.4rem;
 }
 @media (max-width: 991.98px) {
   h3, .qc-h3 {
@@ -65,15 +65,15 @@ h4, .qc-h4 {
   font-size: 2.1rem;
   line-height: 2.4rem;
   font-weight: bold;
-  margin-top: 2.4rem;
-  margin-bottom: 0.8rem;
+  margin-top: 4.8rem;
+  margin-bottom: 1.6rem;
 }
 
 h5, .qc-h5 {
   font-size: 1.9rem;
   line-height: 2.4rem;
   font-weight: bold;
-  margin-top: 1.6rem;
+  margin-top: 2.4rem;
   margin-bottom: 0;
 }
 
@@ -81,7 +81,7 @@ h6, .qc-h6 {
   font-size: 1.6rem;
   line-height: 2rem;
   font-weight: bold;
-  margin-top: 1.6rem;
+  margin-top: 2.4rem;
   margin-bottom: 0;
 }
 
@@ -91,12 +91,12 @@ h6, .qc-h6 {
 }
 .qc-subhead + h1, .qc-subhead + h2, .qc-subhead + h3, .qc-subhead + h4, .qc-subhead + h5, .qc-subhead + h6,
 .qc-subhead + .qc-h1, .qc-subhead + .qc-h2, .qc-subhead + .qc-h3, .qc-subhead + .qc-h4, .qc-subhead + .qc-h5, .qc-subhead + .qc-h6 {
-  margin-top: 1.6rem;
+  margin-top: 2.4rem;
 }
 
 p {
   margin-top: 0;
-  margin-bottom: 2.4rem;
+  margin-bottom: 4.8rem;
 }
 
 img {
@@ -870,11 +870,11 @@ html {
 
 .qc-gallery {
   overflow: hidden;
-  margin-top: 0.8rem;
+  margin-top: 1.6rem;
 }
 .qc-gallery figure {
   display: table;
-  margin: 0 0 3.2rem 0;
+  margin: 0 0 9.6rem 0;
 }
 .qc-gallery figure img {
   max-width: 100%;
@@ -886,21 +886,21 @@ html {
   display: table-caption;
   caption-side: bottom;
   background-color: var(--qc-pale-grey);
-  padding: 0.8rem;
+  padding: 1.6rem;
   margin-bottom: 0;
-  margin-top: 0.8rem;
+  margin-top: 1.6rem;
 }
 .qc-gallery figcaption p {
-  line-height: 2.4rem;
+  line-height: 4.8rem;
   margin-bottom: 0;
 }
 
 ul {
   list-style: disc;
-  padding: 0 0 0.8rem 3.2rem;
+  padding: 0 0 1.6rem 9.6rem;
 }
 ul li {
-  padding: 0 0 1.6rem 0;
+  padding: 0 0 2.4rem 0;
   margin: 0;
   color: var(--qc-dark-blue);
 }
@@ -1725,6 +1725,10 @@ ul ul {
   src: url(https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtfBBc4.woff2) format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+.qc-shading-0 {
+  box-shadow: 0 0px 0px rgba(34, 54, 84, 0.24);
+}
+
 .qc-shading-1 {
   box-shadow: 0 1px 4px rgba(34, 54, 84, 0.24);
 }

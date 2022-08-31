@@ -9,13 +9,13 @@ $font-dir: "../fonts" !default;
 // QC Font Family
 $font-roboto: "Roboto", sans-serif;
 $font-open-sans: "Open Sans", sans-serif;
-$content-font: $font-open-sans;
-$header-font: $font-roboto;
+$content-font-family: $font-open-sans;
+$header-font-family: $font-roboto;
 
 // QC Font Weight
 $font-weight-regular : 400;
-$roboto-font-weight-medium : 500;
-$open-sans-font-weight-semi-bold : 600;
+$font-weight-medium : 500;
+$font-weight-semi-bold : 600;
 $font-weight-bold : 700;
 
 

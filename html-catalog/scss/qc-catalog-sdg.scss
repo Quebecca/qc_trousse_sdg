@@ -15,8 +15,8 @@
 }
 
 .color-sample {
-  width: qc.spacer(xxl-6);
-  height: qc.spacer(xxl-6);
+  width: qc.rem(6 * $base-spacer);
+  height: qc.rem(6 * $base-spacer);
   border-radius: 50%;
 }
 
@@ -42,14 +42,14 @@
 }
 
 .font-titles {
-  font-family: $header-font;
+  font-family: $header-font-family;
 }
 
 
 #grid-samples {
   position: relative;
   text-align: center;
-  margin-top: qc.spacer(xxl-6);
+  margin-top: qc.rem(6 * $base-spacer);
 
   .qc-row {
     margin-top: qc.spacer(lg);
@@ -82,12 +82,17 @@
 
 .square-box {
   display: flex;
-  width: qc.spacer(xxl-15);
-  height: qc.spacer(xxl-15);
+  width: qc.rem(15 * $base-spacer);
+  height: qc.rem(15 * $base-spacer);
   justify-content: center;
   align-items: center;
+
+  &.qc-shading-0 {
+    border: 1px solid qc.color("blue","pale")
+  }
 }
 
 a.pseudo-hover {
   @include hover-link();
 }
+
