@@ -85,8 +85,9 @@ img {
 }
 
 a {
-  &, &:visited {
-    color: colors.color("link");
+  color: colors.color("link");
+  &:visited {
+    color: colors.color("link", "visited");
   }
   &:hover,&:focus {
       @include hover-link();

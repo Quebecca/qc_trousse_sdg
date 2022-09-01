@@ -87,5 +87,11 @@ a.pseudo-hover {
   color: var(--qc-hover-link);
   text-decoration: none;
 }
+a.visited {
+  color: var(--qc-visited-link);
+}
+a.not-visited:visited:not(:hover) {
+  color: var(--qc-link);
+}
 
 /*# sourceMappingURL=qc-catalog-sdg.css.map */

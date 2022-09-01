@@ -92,7 +92,15 @@
   }
 }
 
-a.pseudo-hover {
-  @include hover-link();
+a {
+  &.pseudo-hover {
+    @include hover-link();
+  }
+  &.visited {
+    color: qc.color("link","visited");
+  }
+  &.not-visited:visited:not(:hover) {
+    color: qc.color("link");
+  }
 }
 
