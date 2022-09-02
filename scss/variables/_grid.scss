@@ -12,6 +12,11 @@ $container-max-widths: (
         desktop: $desktop,
 );
 
+$container-max-widths-aliases: (
+        sm: $mobile,
+        md: $tablet,
+        lg: $desktop,
+);
 //Gutters
 $grid-gutter-width: 32px;
 
