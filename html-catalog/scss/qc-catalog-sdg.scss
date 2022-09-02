@@ -1,7 +1,7 @@
 @use "../../scss/functions" as qc;
 @import "../../scss/mixins";
 @import "../../scss/variables";
-@import "../../css/qc-design-tokens.css";
+
 
 .color-details {
   display: flex;
@@ -104,4 +104,3 @@ a {
     color: qc.color("link");
   }
 }
-

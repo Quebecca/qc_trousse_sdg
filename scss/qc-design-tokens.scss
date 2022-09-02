@@ -10,6 +10,7 @@
   // Font families
   --qc-content-font-family : #{$content-font-family};
   --qc-header-font-family : #{$header-font-family};
+  --qc-code-font-family : #{$code-font-family};
 
   // colors
   @each $color,$variants in $colors {
@@ -19,12 +20,10 @@
   }
 
   // Font sizes
-  @each $categorie, $settings in map.get($font-scales, "mobile-up") {
-    @each $type, $scale in $settings {
+  @each $type, $scale in map.get($font-scales, "mobile-up") {
       @each $key, $value in $scale {
-        --qc-#{$type}-#{$categorie}-#{$key}: #{rem($value)};
+        --qc-#{$type}-#{$key}: #{rem($value)};
       }
-    }
   }
 
   // Font weight
@@ -36,11 +35,9 @@
 
   @include grid.media-mobile() {
     // Font sizes
-    @each $categorie, $settings in map.get($font-scales, "mobile") {
-      @each $type, $scale in $settings {
-        @each $key, $value in $scale {
-          --qc-#{$type}-#{$categorie}-#{$key}: #{rem($value)};
-        }
+    @each $type, $scale in map.get($font-scales, "mobile") {
+      @each $key, $value in $scale {
+        --qc-#{$type}-#{$key}: #{rem($value)};
       }
     }
   }

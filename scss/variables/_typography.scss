@@ -8,9 +8,11 @@ $font-dir: "../fonts" !default;
 
 // QC Font Family
 $font-roboto: "Roboto", sans-serif;
+$font-roboto-mono: "Roboto Mono", sans-serif;
 $font-open-sans: "Open Sans", sans-serif;
 $content-font-family: $font-open-sans;
 $header-font-family: $font-roboto;
+$code-font-family: $font-roboto-mono;
 
 // QC Font Weight
 $font-weight-regular : 400;
@@ -41,53 +43,41 @@ $font-weight : (
 $font-scales: (
   mobile-up : (
       font-size :(
-          header: (
-              h6: 16,
-              h5: 19,
-              h4: 21,
-              h3: 28,
-              h2: 36,
-              h1: 48,
-          ),
-          content: (
-              90: 14,
-              100: 16,
-              120: 18,
-              200: 22,
-              300: 31,
-          )
+        h6: 16,
+        h5: 19,
+        h4: 21,
+        h3: 28,
+        h2: 36,
+        h1: 48,
+        90: 14,
+        100: 16,
+        120: 18,
+        200: 22,
+        300: 31,
       ),
       line-height :(
-          header: (
-              h6: 20,
-              h5: 24,
-              h4: 24,
-              h3: 32,
-              h2: 40,
-              h1: 56,
-          ),
-          content: (
-              90: 20,
-              100: 24,
-              120: 28,
-              200: 32,
-              300: 48,
-          )
+        h6: 20,
+        h5: 24,
+        h4: 24,
+        h3: 32,
+        h2: 40,
+        h1: 56,
+        90: 20,
+        100: 24,
+        120: 28,
+        200: 32,
+        300: 48,
       )
   ),
   mobile : (
       font-size: (
-        header: (
-          h3: 25,
-          h2: 28,
-          h1: 36,
-        ),
+        h3: 25,
+        h2: 28,
+        h1: 36,
       ),
       line-height: (
-        header: (
-          h2: 32,
-          h1: 40,
-        ),
+        h2: 32,
+        h1: 40,
       )
   )
 )

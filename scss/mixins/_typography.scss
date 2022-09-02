@@ -7,12 +7,13 @@
 // cela garantit que la taille police est conforme aux exigences du SDG
 // et ajoute automatiquement le bon interlignage
 @mixin content-font($scale) {
-  font-size: var(--qc-content-font-size-#{$scale}) ;
-  line-height: var(--qc-content-line-height-#{$scale}) ;
+  font-size: var(--qc-font-size-#{$scale}) ;
+  line-height: var(--qc-line-height-#{$scale}) ;
 }
 
 @mixin header-font($header) {
-  font-size: var(--qc-header-font-size-#{$header}) ;
-  line-height: var(--qc-header-line-height-#{$header}) ;
-  font-weight: var(--qc-header-font-weight-bold);
+  font-family: var(--qc-header-font-family);
+  font-size: var(--qc-font-size-#{$header}) ;
+  line-height: var(--qc-line-height-#{$header}) ;
+  font-weight: var(--qc-font-weight-bold);
 }
