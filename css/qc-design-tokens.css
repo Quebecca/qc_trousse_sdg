@@ -1,0 +1,93 @@
+:root {
+  --qc-content-font-family: Open Sans, sans-serif;
+  --qc-header-font-family: Roboto, sans-serif;
+  --qc-code-font-family: Roboto Mono, sans-serif;
+  --qc-pale-blue: #dae6f0;
+  --qc-light-blue: #4a98d9;
+  --qc-blue: #1479cc;
+  --qc-piv-blue: #095797;
+  --qc-medium-blue: #19406C;
+  --qc-dark-blue: #223654;
+  --qc-purple: #6b4fa1;
+  --qc-pale-grey: #f1f1f2;
+  --qc-light-grey: #c5cad2;
+  --qc-grey: #8893a2;
+  --qc-medium-grey: #6b778a;
+  --qc-dark-grey: #4e5662;
+  --qc-pale-pink: #ffdbd6;
+  --qc-pink: #e58271;
+  --qc-red: #cb381f;
+  --qc-dark-red: #692519;
+  --qc-pale-green: #d7f0bb;
+  --qc-green: #4f813d;
+  --qc-dark-green: #2c4024;
+  --qc-pale-yellow: #f8e69a;
+  --qc-yellow: #e0ad03;
+  --qc-dark-yellow: #ad781c;
+  --qc-pink-accent: #e58271;
+  --qc-success: #4f813d;
+  --qc-error: #cb381f;
+  --qc-danger: #692519;
+  --qc-link: #095797;
+  --qc-hover-link: #1479cc;
+  --qc-visited-link: #6b4fa1;
+  --qc-font-size-h6: 1.6rem;
+  --qc-font-size-h5: 1.9rem;
+  --qc-font-size-h4: 2.1rem;
+  --qc-font-size-h3: 2.8rem;
+  --qc-font-size-h2: 3.6rem;
+  --qc-font-size-h1: 4.8rem;
+  --qc-font-size-90: 1.4rem;
+  --qc-font-size-100: 1.6rem;
+  --qc-font-size-120: 1.8rem;
+  --qc-font-size-200: 2.2rem;
+  --qc-font-size-300: 3.1rem;
+  --qc-line-height-h6: 2rem;
+  --qc-line-height-h5: 2.4rem;
+  --qc-line-height-h4: 2.4rem;
+  --qc-line-height-h3: 3.2rem;
+  --qc-line-height-h2: 4rem;
+  --qc-line-height-h1: 5.6rem;
+  --qc-line-height-90: 2rem;
+  --qc-line-height-100: 2.4rem;
+  --qc-line-height-120: 2.8rem;
+  --qc-line-height-200: 3.2rem;
+  --qc-line-height-300: 4.8rem;
+  --qc-base-font-weight-regular: 400;
+  --qc-base-font-weight-medium: 500;
+  --qc-base-font-weight-semi-bold: 600;
+  --qc-base-font-weight-bold: 700;
+  --qc-header-font-weight-regular: 400;
+  --qc-header-font-weight-medium: 600;
+  --qc-header-font-weight-bold: 700;
+  --qc-content-font-weight-regular: 400;
+  --qc-content-font-weight-medium: 500;
+  --qc-content-font-weight-bold: 700;
+  --qc-spacer-sm: 1.6rem;
+  --qc-spacer-md: 2.4rem;
+  --qc-spacer-lg: 4.8rem;
+  --qc-spacer-xl: 9.6rem;
+  --qc-box-shadow-0: 0px;
+  --qc-box-shadow-1: 4px;
+  --qc-box-shadow-2: 8px;
+  --qc-box-shadow-3: 16px;
+  --qc-box-shadow-4: 24px;
+  --qc-breakpoint-mobile: 576px;
+  --qc-breakpoint-tablet: 768px;
+  --qc-breakpoint-desktop: 992px;
+  --qc-breakpoint-sm: 576px;
+  --qc-breakpoint-md: 768px;
+  --qc-breakpoint-lg: 992px;
+  --qc-breakpoint-gutter: 32px;
+}
+@media (max-width: 575.98px) {
+  :root {
+    --qc-font-size-h3: 2.5rem;
+    --qc-font-size-h2: 2.8rem;
+    --qc-font-size-h1: 3.6rem;
+    --qc-line-height-h2: 3.2rem;
+    --qc-line-height-h1: 4rem;
+  }
+}
+
+/*# sourceMappingURL=qc-design-tokens.css.map */
