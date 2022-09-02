@@ -5,11 +5,11 @@
 
 .qc-gallery {
   overflow: hidden;
-  margin-top: spacer(sm);
+  margin-top: rem($base-spacer);
 
   figure {
     display: table;
-    margin: 0 0 spacer(xl) 0;
+    margin: 0 0 rem(4 * $base-spacer) 0;
 
     img {
       max-width: 100%;
@@ -17,16 +17,16 @@
     }
   }
   figcaption {
-    @include content-font(14);
+    @include content-font(90);
     display: table-caption;
     caption-side: bottom;
     background-color: #{color("grey","pale")};
-    padding: spacer(sm);
+    padding: rem($base-spacer);
     margin-bottom: 0;
-    margin-top: spacer(sm);
+    margin-top: rem($base-spacer);
 
     p {
-      line-height: spacer(lg);
+      line-height: var(--qc-content-line-height-100);
       margin-bottom: 0;
     }
   }

@@ -1,24 +1,83 @@
+/*
+$spacers: (
+  xs: .5 ,
+  sm: 1,
+  md: 2 ,
+  lg: 3 ,
+  xl: 4 ,
+  xxl-5: 5 ,
+  xxl-6: 6 ,
+  xxl-7: 7 ,
+  xxl-8: 8 ,
+  xxl-9: 9 ,
+  xxl-10: 10 ,
+  xxl-12: 12 ,
+  xxl-15: 15 ,
+  sm: 2,
+  md: 3 ,
+  lg: 6 ,
+  xl: 12
+);
+ */
+/*
+$spacers: (
+  xs: .5 ,
+  sm: 1,
+  md: 2 ,
+  lg: 3 ,
+  xl: 4 ,
+  xxl-5: 5 ,
+  xxl-6: 6 ,
+  xxl-7: 7 ,
+  xxl-8: 8 ,
+  xxl-9: 9 ,
+  xxl-10: 10 ,
+  xxl-12: 12 ,
+  xxl-15: 15 ,
+  sm: 2,
+  md: 3 ,
+  lg: 6 ,
+  xl: 12
+);
+ */
+@import "../../css/qc-design-tokens.css";
+/*
+$spacers: (
+  xs: .5 ,
+  sm: 1,
+  md: 2 ,
+  lg: 3 ,
+  xl: 4 ,
+  xxl-5: 5 ,
+  xxl-6: 6 ,
+  xxl-7: 7 ,
+  xxl-8: 8 ,
+  xxl-9: 9 ,
+  xxl-10: 10 ,
+  xxl-12: 12 ,
+  xxl-15: 15 ,
+  sm: 2,
+  md: 3 ,
+  lg: 6 ,
+  xl: 12
+);
+ */
 .color-details {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
 .color-details > div + div {
-  margin-left: 4.8rem;
+  margin-left: var(--qc-spacer-md);
 }
 .color-details + .color-details {
-  margin-top: 4.8rem;
+  margin-top: var(--qc-spacer-md);
 }
 
-body::before {
-  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
-      "Droid Sans Mono", monospace, monospace;
-  white-space: pre;
-  display: block;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-bottom: 2px solid black;
-  content: "Error: Can't find stylesheet to import.\a   \2577 \a 2 \2502  @import \"../../node_modules/bootstrap/scss/functions\";\a   \2502          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   scss/mixins/_grid.scss 2:9                 @import\a   scss/_mixins.scss 1:9                      @import\a   html-catalog/scss/qc-catalog-sdg.scss 2:9  root stylesheet";
+.color-sample {
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
 }
 
 .title-samples {
@@ -26,7 +85,7 @@ body::before {
 }
 .title-samples figure {
   width: 100%;
-  padding: 2.4rem 4.8rem;
+  padding: var(--qc-spacer-md) var(--qc-spacer-md);
   border-bottom: 1px solid var(--qc-pale-grey);
 }
 .title-samples figure:first-child {
@@ -37,7 +96,7 @@ body::before {
   border-bottom: 0;
 }
 .title-samples figure + figure {
-  margin-top: 4.8rem;
+  margin-top: var(--qc-spacer-md);
 }
 
 .font-titles {
@@ -50,14 +109,14 @@ body::before {
   margin-top: 4.8rem;
 }
 #grid-samples .qc-row {
-  margin-top: 4.8rem;
+  margin-top: var(--qc-spacer-md);
 }
 #grid-samples .qc-row > div > div {
   background-color: var(--qc-piv-blue);
   opacity: 0.7;
   height: 100%;
   color: white;
-  padding: 1.6rem 0;
+  padding: 0.8rem 0;
 }
 #grid-samples .qc-row:first-child {
   margin-top: 0;

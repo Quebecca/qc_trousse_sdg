@@ -4,22 +4,22 @@
 @use "sass:math";
 
 blockquote {
-  @include content-font(18);
+  @include content-font(120);
   display: block;
   position: relative;
   color: #{color("blue","dark")};
   letter-spacing: -0.1px;
   font-weight: 600;
-  margin: spacer(md) 0;
+  margin: rem(2 * $base-spacer) 0;
   text-align: left;
   border-width: 0;
 
   &.qc-blockquote--grand {
-    @include content-font(31);
-    letter-spacing: -spacer(md);
+    @include content-font(300);
+    letter-spacing: -rem(2 * $base-spacer);
 
     &::before {
-      transform: translate3d(-spacer(md), 0, 0);
+      transform: translate3d(-rem(2 * $base-spacer), 0, 0);
     }
   }
 
@@ -34,18 +34,18 @@ blockquote {
   & ~ p {
     display: block;
     position: relative;
-    padding-left: spacer(md);
-    @include content-font(16);
+    padding-left: rem(2 * $base-spacer);
+    @include content-font(100);
     font-weight: 600;
     max-width: 85%;
-    margin-left: spacer(lg);
+    margin-left: rem(2 * $base-spacer);
 
     &:last-of-type {
-      margin-bottom: spacer(xl);
+      margin-bottom: rem(4 * $base-spacer);
     }
 
     & span {
-      @include content-font(14);
+      @include content-font(90);
       font-weight: 400;
       display: block;
     }
@@ -53,12 +53,12 @@ blockquote {
     &:before {
       content: "";
       position: absolute;
-      top: spacer(md); // todo $spacer-12
+      top: rem(2 * $base-spacer); // todo $spacer-12
       display: block;
-      width: spacer(lg);
+      width: rem(2 * $base-spacer);
       height: 1px;
       background: #{color("blue","dark")};
-      transform: translate3d(-spacer(xl), 0, 0);
+      transform: translate3d(-rem(4 * $base-spacer), 0, 0);
     }
 
     &:empty:before {
@@ -68,7 +68,7 @@ blockquote {
 
   &::before {
     position: absolute;
-    transform: translate3d(-spacer(md), 0, 0);
+    transform: translate3d(-rem(2 * $base-spacer), 0, 0);
   }
 
   // Français

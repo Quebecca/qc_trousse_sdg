@@ -1,12 +1,12 @@
 @use "../variables/typography";
 @use "../variables/spacing";
 @use "sass:math";
-@use "sass:map";
+  @use "sass:map";
 
 @function rem($px-size) {
   @return math.div($px-size, 16 * typography.$percent-root-font-size * .01) * 1rem;
 }
 
 @function spacer($spacer) {
-  @return rem(spacing.$base-spacer * map.get(spacing.$spacers, $spacer));
+  @return var(--qc-spacer-#{$spacer});
 }

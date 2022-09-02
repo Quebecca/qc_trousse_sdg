@@ -6,25 +6,13 @@
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
 // et ajoute automatiquement le bon interlignage
-@mixin content-font($font-size) {
-  @include font-size($font-size, map.get(typography.$font-sizes, "content"));
+@mixin content-font($scale) {
+  font-size: var(--qc-content-font-size-#{$scale}) ;
+  line-height: var(--qc-content-line-height-#{$scale}) ;
 }
 
-@mixin header-font($font-size) {
-  @include font-size($font-size, map.get(typography.$font-sizes, "header"));
-  font-weight: bold;
-}
-
-@mixin font-size($font-size,$font-sizes) {
-  // @debug Next in map $font-size;
-  @if (not map.has-key($font-sizes, $font-size)) {
-    //@debug font-size $font-size notin map;
-    $font-size : qc.next-key-in-map($font-size, $font-sizes);
-    @debug Next in map $font-size;
-  }
-  $line-height:  map.get($font-sizes, $font-size);
-  @if $line-height {
-    font-size: utils.rem($font-size);
-    line-height: utils.rem($line-height);
-  }
+@mixin header-font($header) {
+  font-size: var(--qc-header-font-size-#{$header}) ;
+  line-height: var(--qc-header-line-height-#{$header}) ;
+  font-weight: var(--qc-header-font-weight-bold);
 }

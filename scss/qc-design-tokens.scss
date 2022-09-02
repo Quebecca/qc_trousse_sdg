@@ -1,15 +1,52 @@
 @use "function/colors" as colors;
 @use "function/utils" as *;
 @use "variables" as *;
-@use "mixins/grid" as *;
+@use "mixins/grid" as grid;
 @use "mixins/link" as *;
 @use "mixins/typography" as *;
+@use "sass:map";
 
 :root {
+  // Font families
+  --qc-content-font-family : #{$content-font-family};
+  --qc-header-font-family : #{$header-font-family};
+
   // colors
   @each $color,$variants in $colors {
     @each $variant, $hexa in $variants {
-      --qc-#{color-name($color,$variant)}: #{$hexa};
+      --qc-#{colors.color-name($color,$variant)}: #{$hexa};
     }
   }
+
+  // Font sizes
+  @each $categorie, $settings in map.get($font-scales, "mobile-up") {
+    @each $type, $scale in $settings {
+      @each $key, $value in $scale {
+        --qc-#{$type}-#{$categorie}-#{$key}: #{rem($value)};
+      }
+    }
+  }
+
+  // Font weight
+  @each $content-type, $settings in $font-weight {
+      @each $key, $value in $settings {
+        --qc-#{$content-type}-font-weight-#{$key}: #{$value};
+      }
+  }
+
+  @include grid.media-mobile() {
+    // Font sizes
+    @each $categorie, $settings in map.get($font-scales, "mobile") {
+      @each $type, $scale in $settings {
+        @each $key, $value in $scale {
+          --qc-#{$type}-#{$categorie}-#{$key}: #{rem($value)};
+        }
+      }
+    }
+  }
+
+  @each $size, $value in $spacers {
+    --qc-spacer-#{$size}: #{rem($value * $base-spacer)};
+  }
+
 }

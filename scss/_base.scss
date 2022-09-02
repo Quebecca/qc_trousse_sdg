@@ -8,19 +8,16 @@
 :root{
   font-size: #{$percent-root-font-size}#{"%"};
   body {
-    @include content-font(16);
+    @include content-font(100);
     font-family: $content-font-family;
     color: colors.color("blue", "dark");
   }
 }
 
 h1, .qc-h1 {
-  @include header-font(48);
+  @include header-font(h1);
   margin-top: rem(9 * $base-spacer);
-  margin-bottom: spacer(xl);
-  @include media-tablet() {
-    @include header-font(36);
-  }
+  margin-bottom: rem(4 * $base-spacer);
 
   &:after{
     content: "";
@@ -33,50 +30,45 @@ h1, .qc-h1 {
 }
 
 h2, .qc-h2 {
-  @include header-font(36);
+  @include header-font(h2);
   margin-top: rem(6 * $base-spacer);
-  margin-bottom: spacer(md);
-  @include media-tablet(){
-    @include header-font(28);
-  }
-}
-h3, .qc-h3 {
-  @include header-font(28);
-  margin-top: spacer(lg);
-  margin-bottom: spacer(md);
-  @include media-tablet(){
-    @include header-font(25);
-  }
-}
-h4, .qc-h4 {
-  @include header-font(21);
-  margin-top: spacer(lg);
   margin-bottom: spacer(sm);
 }
-h5,.qc-h5 {
-  @include header-font(19);
+h3, .qc-h3 {
+  @include header-font(h3);
+  margin-top: spacer(sm);
+  margin-bottom: spacer(sm);
+
+}
+h4, .qc-h4 {
+  @include header-font(h4);
   margin-top: spacer(md);
+  margin-bottom: rem($base-spacer);
+}
+h5,.qc-h5 {
+  @include header-font(h5);
+  margin-top: spacer(sm);
   margin-bottom: 0;
 }
 h6,.qc-h6 {
-  @include header-font(16);
+  @include header-font(h6);
   margin-top: spacer(md);
   margin-bottom: 0;
 }
 
 .qc-subhead {
-  @include content-font(14);
+  @include content-font(90);
   + {
     h1,h2,h3,h4,h5,h6,
     .qc-h1,.qc-h2,.qc-h3,.qc-h4,.qc-h5,.qc-h6 {
-      margin-top: spacer(md);
+      margin-top: spacer(sm);
     }
   }
 }
 
 p {
   margin-top: 0;
-  margin-bottom: spacer(lg);
+  margin-bottom: spacer(md);
 }
 
 img {
