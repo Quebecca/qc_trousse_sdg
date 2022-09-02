@@ -11,6 +11,7 @@ ul {
         color: color("blue","dark");
     }
     ul {
+        margin-top: spacer(sm);
         list-style: circle;
     }
 }

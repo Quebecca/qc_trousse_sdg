@@ -1167,6 +1167,7 @@ ul li {
   color: var(--qc-dark-blue);
 }
 ul ul {
+  margin-top: var(--qc-spacer-sm);
   list-style: circle;
 }
 
