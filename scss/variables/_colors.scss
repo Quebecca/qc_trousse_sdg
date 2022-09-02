@@ -38,6 +38,9 @@ $colors: (
     "medium" : #19406C,
     "dark": #223654,
   ),
+  "purple": (
+    "" : #6b4fa1,
+  ),
   "grey" : (
     "pale" : #f1f1f2,
     "light" : #c5cad2,
@@ -80,7 +83,9 @@ $colors: map.merge($colors,(
   "link": (
       "": map.get($colors, "blue", "piv"),
       "hover": map.get($colors, "blue",""),
+      "visited": map.get($colors, "purple",""),
   )
+
 ));
 
 

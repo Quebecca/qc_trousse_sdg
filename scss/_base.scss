@@ -9,14 +9,14 @@
   font-size: #{$percent-root-font-size}#{"%"};
   body {
     @include content-font(16);
-    font-family: $content-font;
+    font-family: $content-font-family;
     color: colors.color("blue", "dark");
   }
 }
 
 h1, .qc-h1 {
   @include header-font(48);
-  margin-top: spacer(xxl-9);
+  margin-top: rem(9 * $base-spacer);
   margin-bottom: spacer(xl);
   @include media-tablet() {
     @include header-font(36);
@@ -26,15 +26,15 @@ h1, .qc-h1 {
     content: "";
     display:block;
     margin: 0;
-    width: spacer(xxl-6);
-    padding-top: spacer(xs);
+    width: rem(6 * $base-spacer);
+    padding-top: rem($base-spacer);
     border-bottom: 4px solid colors.color("accent","pink");
   }
 }
 
 h2, .qc-h2 {
   @include header-font(36);
-  margin-top: spacer(xxl-6);
+  margin-top: rem(6 * $base-spacer);
   margin-bottom: spacer(md);
   @include media-tablet(){
     @include header-font(28);
@@ -85,8 +85,9 @@ img {
 }
 
 a {
-  &, &:visited {
-    color: colors.color("link");
+  color: colors.color("link");
+  &:visited {
+    color: colors.color("link", "visited");
   }
   &:hover,&:focus {
       @include hover-link();
