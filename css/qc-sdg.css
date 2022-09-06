@@ -193,8 +193,8 @@ a:hover, a:focus {
   color: var(--qc-hover-link);
   text-decoration: none;
 }
-a :active {
-  color: var(--qc-active, link);
+a:active {
+  color: var(--qc-active-link);
 }
 a .external-link-tail {
   white-space: nowrap;
