@@ -84,8 +84,8 @@ a {
   &:hover,&:focus {
       @include hover-link();
   }
-  :active {
-    color: token-value("active", "link");
+  &:active {
+    @include active-link();
   }
   .external-link-tail {
     white-space: nowrap;

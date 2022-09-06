@@ -4,3 +4,6 @@
   text-decoration: none;
 }
 
+@mixin active-link() {
+  color: qc.color("link", "active");
+}

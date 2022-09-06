@@ -98,6 +98,9 @@ a {
   &.pseudo-hover {
     @include hover-link();
   }
+  &.pseudo-active {
+    @include active-link();
+  }
   &.visited {
     color: qc.color("link","visited");
   }

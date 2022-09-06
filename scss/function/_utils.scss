@@ -1,7 +1,7 @@
 @use "../variables/typography";
 @use "../variables/spacing";
 @use "sass:math";
-  @use "sass:map";
+@use "sass:map";
 @use "sass:meta";
 @use "sass:list";
 
@@ -10,13 +10,17 @@
 }
 
 @function spacer($spacer) {
-  @return var(--qc-spacer-#{$spacer});
+  @return token-value('spacer', $spacer);
 }
 
+// Return css var corresponding to this token
+// token-value("foo","bar"); // var(--qc-foo-bar);
 @function token-value($args...) {
-  @return var(#{token-name($args)});
+  @return var(#{token-name($args...)});
 }
 
+// Return css var name corresponding to this token
+// token-name("foo","bar"); // --qc-foo-bar;
 @function token-name($args...) {
   $token : --qc;
   @each $arg in $args {

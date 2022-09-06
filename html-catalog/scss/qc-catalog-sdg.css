@@ -87,6 +87,9 @@ a.pseudo-hover {
   color: var(--qc-hover-link);
   text-decoration: none;
 }
+a.pseudo-active {
+  color: var(--qc-active-link);
+}
 a.visited {
   color: var(--qc-visited-link);
 }
