@@ -36,7 +36,7 @@ h2, .qc-h2 {
 }
 h3, .qc-h3 {
   @include header-font(h3);
-  margin-top: spacer(sm);
+  margin-top: spacer(md);
   margin-bottom: spacer(sm);
 
 }
@@ -52,7 +52,7 @@ h5,.qc-h5 {
 }
 h6,.qc-h6 {
   @include header-font(h6);
-  margin-top: spacer(md);
+  margin-top: spacer(sm);
   margin-bottom: 0;
 }
 
@@ -85,7 +85,7 @@ a {
       @include hover-link();
   }
   :active {
-    color: token("active", "link");
+    color: token-value("active", "link");
   }
   .external-link-tail {
     white-space: nowrap;

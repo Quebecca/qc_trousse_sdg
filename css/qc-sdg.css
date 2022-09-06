@@ -133,7 +133,7 @@ h3, .qc-h3 {
   font-size: var(--qc-font-size-h3);
   line-height: var(--qc-line-height-h3);
   font-weight: var(--qc-font-weight-bold);
-  margin-top: var(--qc-spacer-sm);
+  margin-top: var(--qc-spacer-md);
   margin-bottom: var(--qc-spacer-sm);
 }
 
@@ -160,7 +160,7 @@ h6, .qc-h6 {
   font-size: var(--qc-font-size-h6);
   line-height: var(--qc-line-height-h6);
   font-weight: var(--qc-font-weight-bold);
-  margin-top: var(--qc-spacer-md);
+  margin-top: var(--qc-spacer-sm);
   margin-bottom: 0;
 }
 
@@ -194,7 +194,7 @@ a:hover, a:focus {
   text-decoration: none;
 }
 a :active {
-  color: token("active", "link");
+  color: var(--qc-active, link);
 }
 a .external-link-tail {
   white-space: nowrap;
