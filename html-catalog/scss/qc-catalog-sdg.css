@@ -43,6 +43,12 @@
   position: relative;
   text-align: center;
   margin-top: 4.8rem;
+  margin-bottom: 5%;
+}
+#grid-samples::after {
+  display: block;
+  clear: both;
+  content: "";
 }
 #grid-samples .qc-row {
   margin-top: var(--qc-spacer-md);
