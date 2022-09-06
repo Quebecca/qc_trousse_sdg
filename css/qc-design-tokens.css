@@ -31,6 +31,8 @@
   --qc-link: #095797;
   --qc-hover-link: #1479cc;
   --qc-visited-link: #6b4fa1;
+  --qc-active-link: #cb381f;
+  --qc-shading: rgba(34, 54, 84, 0.24);
   --qc-font-size-h6: 1.6rem;
   --qc-font-size-h5: 1.9rem;
   --qc-font-size-h4: 2.1rem;

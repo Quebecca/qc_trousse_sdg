@@ -10,15 +10,16 @@ $font-dir: "../fonts" !default;
 $font-roboto: "Roboto", sans-serif;
 $font-roboto-mono: "Roboto Mono", sans-serif;
 $font-open-sans: "Open Sans", sans-serif;
+
 $content-font-family: $font-open-sans;
 $header-font-family: $font-roboto;
 $code-font-family: $font-roboto-mono;
 
 // QC Font Weight
-$font-weight-regular : 400;
-$font-weight-medium : 500;
-$font-weight-semi-bold : 600;
-$font-weight-bold : 700;
+$font-weight-regular : 400 !default;
+$font-weight-medium : 500 !default;
+$font-weight-semi-bold : 600 !default;
+$font-weight-bold : 700 !default;
 
 $font-weight : (
   base : (
@@ -37,7 +38,7 @@ $font-weight : (
     medium : $font-weight-medium,
     bold : $font-weight-bold,
   ),
-);
+)  !default;
 
 
 $font-scales: (
@@ -80,6 +81,6 @@ $font-scales: (
         h1: 40,
       )
   )
-)
+)  !default;
 
 

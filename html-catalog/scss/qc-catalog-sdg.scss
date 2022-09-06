@@ -1,6 +1,7 @@
 @use "../../scss/functions" as qc;
-@import "../../scss/mixins";
-@import "../../scss/variables";
+@use "../../scss/variables" as *;
+@use "../../scss/mixins" as *;
+
 
 
 .color-details {

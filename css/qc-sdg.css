@@ -31,6 +31,8 @@
   --qc-link: #095797;
   --qc-hover-link: #1479cc;
   --qc-visited-link: #6b4fa1;
+  --qc-active-link: #cb381f;
+  --qc-shading: rgba(34, 54, 84, 0.24);
   --qc-font-size-h6: 1.6rem;
   --qc-font-size-h5: 1.9rem;
   --qc-font-size-h4: 2.1rem;
@@ -191,6 +193,9 @@ a:hover, a:focus {
   color: var(--qc-hover-link);
   text-decoration: none;
 }
+a :active {
+  color: token("active", "link");
+}
 a .external-link-tail {
   white-space: nowrap;
 }
@@ -217,8 +222,8 @@ html {
 
 .qc-container {
   width: 100%;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding-right: 15px;
+  padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -240,8 +245,8 @@ html {
 
 .qc-container-fluid, .qc-container-desktop, .qc-container-tablet, .qc-container-mobile {
   width: 100%;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding-right: 15px;
+  padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -264,8 +269,8 @@ html {
 .qc-row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -16px;
-  margin-left: -16px;
+  margin-right: -15px;
+  margin-left: -15px;
 }
 
 .qc-no-gutters {
@@ -285,8 +290,8 @@ html {
 .qc-col-auto, .qc-col-12, .qc-col-11, .qc-col-10, .qc-col-9, .qc-col-8, .qc-col-7, .qc-col-6, .qc-col-5, .qc-col-4, .qc-col-3, .qc-col-2, .qc-col-1 {
   position: relative;
   width: 100%;
-  padding-right: 16px;
-  padding-left: 16px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .qc-col {
@@ -1104,6 +1109,14 @@ html {
 
 .qc-bg-visited-link {
   background-color: var(--qc-visited-link);
+}
+
+.qc-bg-active-link {
+  background-color: var(--qc-active-link);
+}
+
+.qc-bg-shading {
+  background-color: var(--qc-shading);
 }
 
 .qc-gallery {
@@ -2253,23 +2266,23 @@ ul ul {
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 .qc-shading-0 {
-  box-shadow: 0 0px 0px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 0px 0px var(--qc-shading);
 }
 
 .qc-shading-1 {
-  box-shadow: 0 1px 4px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 1px 4px var(--qc-shading);
 }
 
 .qc-shading-2 {
-  box-shadow: 0 2px 8px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 2px 8px var(--qc-shading);
 }
 
 .qc-shading-3 {
-  box-shadow: 0 3px 16px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 3px 16px var(--qc-shading);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 4px 24px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 4px 24px var(--qc-shading);
 }
 
 /*# sourceMappingURL=qc-sdg.css.map */

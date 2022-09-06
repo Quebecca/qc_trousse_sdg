@@ -2,6 +2,8 @@
 @use "../variables/spacing";
 @use "sass:math";
   @use "sass:map";
+@use "sass:meta";
+@use "sass:list";
 
 @function rem($px-size) {
   @return math.div($px-size, 16 * typography.$percent-root-font-size * .01) * 1rem;
@@ -9,4 +11,16 @@
 
 @function spacer($spacer) {
   @return var(--qc-spacer-#{$spacer});
+}
+
+@function token-value($args...) {
+  @return var(#{token-name($args)});
+}
+
+@function token-name($args...) {
+  $token : --qc;
+  @each $arg in $args {
+    $token : #{$token}-#{$arg};
+  }
+  @return $token;
 }

@@ -1,8 +1,9 @@
+@use "functions" as *;
 @import "variables";
 
 @each $index, $blur in $shadings-settings {
     .qc-shading-#{$index} {
-        box-shadow: 0 #{$index}px #{$blur}px $shading-color;
+        box-shadow: 0 #{$index}px #{$blur}px #{token-value('shading')};
     }
 }
 

@@ -18,7 +18,7 @@ $container-max-widths-aliases: (
         lg: $desktop,
 );
 //Gutters
-$grid-gutter-width: 32px;
+$grid-gutter-width: 32px  !default;
 
 // Grid breakpoints
 $grid-breakpoints: (xs: 0,mobile:$mobile, tablet: $tablet,desktop: $desktop);

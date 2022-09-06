@@ -1,33 +1,4 @@
 @use "sass:map";
-//---------------
-// System colours QC
-//---------------
-
-$color-white: #fff;
-$color-black: #000;
-
-// Main colors
-$color-blue-piv: #095797;
-$color-blue-pale: #dae6f0;
-$color-blue-light: #4a98d9;
-$color-blue: #1479cc;
-$color-blue-medium: #19406c;
-$color-blue-dark: #223654;
-
-//Accent colors
-$color-pink: #e58271;
-
-// Grey levels
-$color-grey-pale: #f1f1f2;
-$color-grey-light: #c5cad2;
-$color-grey: #8893a2;
-$color-grey-medium: #6b778a;
-$color-grey-dark: #4e5662;
-
-
-// Functional colors
-$color-errors: #cb381f;
-$color-validation: #4f813d;
 
 $colors: (
   "blue" : (
@@ -67,6 +38,7 @@ $colors: (
     "dark": #ad781c,
   ),
 ) !default;
+
 $colors: map.merge($colors,(
   "accent": (
     "pink": map.get($colors, "pink", "")
@@ -84,8 +56,11 @@ $colors: map.merge($colors,(
       "": map.get($colors, "blue", "piv"),
       "hover": map.get($colors, "blue",""),
       "visited": map.get($colors, "purple",""),
+      "active":  map.get($colors, "red",""),
+  ),
+  "shading": (
+    "": rgba(map.get($colors, "blue", "dark"), .24),
   )
-
 ));
 
 
