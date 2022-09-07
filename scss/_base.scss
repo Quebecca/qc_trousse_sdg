@@ -10,7 +10,7 @@
   body {
     @include content-font(100);
     font-family: $content-font-family;
-    color: colors.color("blue", "dark");
+    color: colors.color("text", "primary");
   }
 }
 

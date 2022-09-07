@@ -40,6 +40,9 @@ $colors: (
 ) !default;
 
 $colors: map.merge($colors,(
+  "text" : (
+    "primary" : map.get($colors, "blue", "dark")
+  ),
   "accent": (
     "pink": map.get($colors, "pink", "")
   ),
@@ -54,7 +57,7 @@ $colors: map.merge($colors,(
   ),
   "link": (
       "": map.get($colors, "blue", "piv"),
-      "hover": map.get($colors, "blue",""),
+      "hover": map.get($colors, "blue","piv"),
       "visited": map.get($colors, "purple",""),
       "active":  map.get($colors, "red",""),
   ),

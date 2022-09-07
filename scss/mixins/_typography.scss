@@ -15,5 +15,5 @@
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-#{$header}) ;
   line-height: var(--qc-line-height-#{$header}) ;
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: utils.token-value('header', 'font-weight', 'bold');
 }

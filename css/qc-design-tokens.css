@@ -24,12 +24,13 @@
   --qc-pale-yellow: #f8e69a;
   --qc-yellow: #e0ad03;
   --qc-dark-yellow: #ad781c;
+  --qc-primary-text: #223654;
   --qc-pink-accent: #e58271;
   --qc-success: #4f813d;
   --qc-error: #cb381f;
   --qc-danger: #692519;
   --qc-link: #095797;
-  --qc-hover-link: #1479cc;
+  --qc-hover-link: #095797;
   --qc-visited-link: #6b4fa1;
   --qc-active-link: #cb381f;
   --qc-shading: rgba(34, 54, 84, 0.24);

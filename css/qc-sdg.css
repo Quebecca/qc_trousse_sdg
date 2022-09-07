@@ -24,12 +24,13 @@
   --qc-pale-yellow: #f8e69a;
   --qc-yellow: #e0ad03;
   --qc-dark-yellow: #ad781c;
+  --qc-primary-text: #223654;
   --qc-pink-accent: #e58271;
   --qc-success: #4f813d;
   --qc-error: #cb381f;
   --qc-danger: #692519;
   --qc-link: #095797;
-  --qc-hover-link: #1479cc;
+  --qc-hover-link: #095797;
   --qc-visited-link: #6b4fa1;
   --qc-active-link: #cb381f;
   --qc-shading: rgba(34, 54, 84, 0.24);
@@ -99,14 +100,14 @@
   font-size: var(--qc-font-size-100);
   line-height: var(--qc-line-height-100);
   font-family: "Open Sans", sans-serif;
-  color: var(--qc-dark-blue);
+  color: var(--qc-primary-text);
 }
 
 h1, .qc-h1 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h1);
   line-height: var(--qc-line-height-h1);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: 7.2rem;
   margin-bottom: 3.2rem;
 }
@@ -123,7 +124,7 @@ h2, .qc-h2 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h2);
   line-height: var(--qc-line-height-h2);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: 4.8rem;
   margin-bottom: var(--qc-spacer-sm);
 }
@@ -132,7 +133,7 @@ h3, .qc-h3 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h3);
   line-height: var(--qc-line-height-h3);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: var(--qc-spacer-md);
   margin-bottom: var(--qc-spacer-sm);
 }
@@ -141,7 +142,7 @@ h4, .qc-h4 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h4);
   line-height: var(--qc-line-height-h4);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: var(--qc-spacer-md);
   margin-bottom: 0.8rem;
 }
@@ -150,7 +151,7 @@ h5, .qc-h5 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h5);
   line-height: var(--qc-line-height-h5);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: var(--qc-spacer-sm);
   margin-bottom: 0;
 }
@@ -159,7 +160,7 @@ h6, .qc-h6 {
   font-family: var(--qc-header-font-family);
   font-size: var(--qc-font-size-h6);
   line-height: var(--qc-line-height-h6);
-  font-weight: var(--qc-font-weight-bold);
+  font-weight: var(--qc-header-font-weight-bold);
   margin-top: var(--qc-spacer-sm);
   margin-bottom: 0;
 }
@@ -1081,6 +1082,10 @@ html {
 
 .qc-bg-dark-yellow {
   background-color: var(--qc-dark-yellow);
+}
+
+.qc-bg-primary-text {
+  background-color: var(--qc-primary-text);
 }
 
 .qc-bg-pink-accent {
