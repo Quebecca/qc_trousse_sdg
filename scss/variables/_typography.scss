@@ -83,4 +83,27 @@ $font-scales: (
   )
 )  !default;
 
+//
+//
+$font-scales: map.deep-merge($font-scales,(
+  mobile-up : (
+    font-size :(
+      sm: map.get($font-scales, "mobile-up", "font-size", 90),
+      md: map.get($font-scales, "mobile-up", "font-size", 100),
+      l: map.get($font-scales, "mobile-up", "font-size", 120),
+      xl: map.get($font-scales, "mobile-up", "font-size", 200),
+      2xl: map.get($font-scales, "mobile-up", "font-size", 300),
+    ),
+    line-height :(
+      sm: map.get($font-scales, "mobile-up", "line-height", 90),
+      md: map.get($font-scales, "mobile-up", "line-height", 100),
+      l: map.get($font-scales, "mobile-up", "line-height", 120),
+      xl: map.get($font-scales, "mobile-up", "line-height", 200),
+      2xl: map.get($font-scales, "mobile-up", "line-height", 300),
+    )
+  ),
+));
+
+
+
 

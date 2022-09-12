@@ -33,7 +33,7 @@
       }
   }
 
-  @include grid.media-mobile() {
+  @include grid.media-breakpoint-down('mobile') {
     // Font sizes
     @each $type, $scale in map.get($font-scales, "mobile") {
       @each $key, $value in $scale {

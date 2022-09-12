@@ -45,6 +45,11 @@
   --qc-font-size-120: 1.8rem;
   --qc-font-size-200: 2.2rem;
   --qc-font-size-300: 3.1rem;
+  --qc-font-size-sm: 1.4rem;
+  --qc-font-size-md: 1.6rem;
+  --qc-font-size-l: 1.8rem;
+  --qc-font-size-xl: 2.2rem;
+  --qc-font-size-2xl: 3.1rem;
   --qc-line-height-h6: 2rem;
   --qc-line-height-h5: 2.4rem;
   --qc-line-height-h4: 2.4rem;
@@ -56,6 +61,11 @@
   --qc-line-height-120: 2.8rem;
   --qc-line-height-200: 3.2rem;
   --qc-line-height-300: 4.8rem;
+  --qc-line-height-sm: 2rem;
+  --qc-line-height-md: 2.4rem;
+  --qc-line-height-l: 2.8rem;
+  --qc-line-height-xl: 3.2rem;
+  --qc-line-height-2xl: 4.8rem;
   --qc-base-font-weight-regular: 400;
   --qc-base-font-weight-medium: 500;
   --qc-base-font-weight-semi-bold: 600;
@@ -75,15 +85,19 @@
   --qc-box-shadow-2: 8px;
   --qc-box-shadow-3: 16px;
   --qc-box-shadow-4: 24px;
+  --qc-breakpoint-xmobile: 576px;
   --qc-breakpoint-mobile: 576px;
   --qc-breakpoint-tablet: 768px;
   --qc-breakpoint-desktop: 992px;
+  --qc-breakpoint-xdesktop: 992px;
+  --qc-breakpoint-xs: 576px;
   --qc-breakpoint-sm: 576px;
   --qc-breakpoint-md: 768px;
   --qc-breakpoint-lg: 992px;
+  --qc-breakpoint-xl: 992px;
   --qc-breakpoint-gutter: 32px;
 }
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;

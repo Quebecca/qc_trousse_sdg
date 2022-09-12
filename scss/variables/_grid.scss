@@ -7,15 +7,19 @@ $desktop: 992px;
 
 // Grid containers
 $container-max-widths: (
-        mobile: $mobile,
-        tablet: $tablet,
-        desktop: $desktop,
+    xmobile: $mobile,
+    mobile: $mobile,
+    tablet: $tablet,
+    desktop: $desktop,
+    xdesktop : $desktop
 );
 
 $container-max-widths-aliases: (
-        sm: $mobile,
-        md: $tablet,
-        lg: $desktop,
+    xs: $mobile,
+    sm: $mobile,
+    md: $tablet,
+    lg: $desktop,
+    xl: $desktop,
 );
 //Gutters
 $grid-gutter-width: 32px  !default;
