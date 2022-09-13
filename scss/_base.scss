@@ -7,11 +7,19 @@
 
 :root{
   font-size: #{$percent-root-font-size}#{"%"};
-  body {
-    @include content-font(100);
-    font-family: $content-font-family;
-    color: colors.color("text", "primary");
-  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  @include content-font(100);
+  background-color: colors.color("white");
+  font-family: $content-font-family;
+  color: colors.color("text", "primary");
 }
 
 h1, .qc-h1 {
@@ -34,22 +42,26 @@ h2, .qc-h2 {
   margin-top: rem(6 * $base-spacer);
   margin-bottom: spacer(sm);
 }
+
 h3, .qc-h3 {
   @include header-font(h3);
   margin-top: spacer(md);
   margin-bottom: spacer(sm);
 
 }
+
 h4, .qc-h4 {
   @include header-font(h4);
   margin-top: spacer(md);
   margin-bottom: rem($base-spacer);
 }
+
 h5,.qc-h5 {
   @include header-font(h5);
   margin-top: spacer(sm);
   margin-bottom: 0;
 }
+
 h6,.qc-h6 {
   @include header-font(h6);
   margin-top: spacer(sm);

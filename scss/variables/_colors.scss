@@ -1,6 +1,9 @@
 @use "sass:map";
 
 $colors: (
+  "white" : (
+    "": white,
+  ),
   "blue" : (
     "pale" : #dae6f0,
     "light" : #4a98d9,

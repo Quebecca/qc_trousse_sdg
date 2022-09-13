@@ -2,6 +2,7 @@
   --qc-content-font-family: Open Sans, sans-serif;
   --qc-header-font-family: Roboto, sans-serif;
   --qc-code-font-family: Roboto Mono, sans-serif;
+  --qc-white: white;
   --qc-pale-blue: #dae6f0;
   --qc-light-blue: #4a98d9;
   --qc-blue: #1479cc;
@@ -110,9 +111,17 @@
 :root {
   font-size: 62.5%;
 }
-:root body {
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
   font-size: var(--qc-font-size-100);
   line-height: var(--qc-line-height-100);
+  background-color: var(--qc-white);
   font-family: "Open Sans", sans-serif;
   color: var(--qc-primary-text);
 }
@@ -1020,6 +1029,10 @@ html {
     margin-left: 91.66666667%;
   }
 }
+.qc-bg-white {
+  background-color: var(--qc-white);
+}
+
 .qc-bg-pale-blue {
   background-color: var(--qc-pale-blue);
 }
