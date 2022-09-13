@@ -9,7 +9,7 @@ $enable-deprecation-messages : false;
 @import "grid-framework";
 
 @mixin media-tablet() {
-  @include media-breakpoint-down(tablet) {
+  @include media-breakpoint-down(md) {
     @content;
   }
 }

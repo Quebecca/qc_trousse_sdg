@@ -77,6 +77,11 @@
   --qc-content-font-weight-regular: 400;
   --qc-content-font-weight-medium: 500;
   --qc-content-font-weight-bold: 700;
+  --qc-font-size-h3: 2.5rem;
+  --qc-font-size-h2: 2.8rem;
+  --qc-font-size-h1: 3.6rem;
+  --qc-line-height-h2: 3.2rem;
+  --qc-line-height-h1: 4rem;
   --qc-spacer-sm: 1.6rem;
   --qc-spacer-md: 2.4rem;
   --qc-spacer-lg: 4.8rem;
@@ -86,26 +91,12 @@
   --qc-box-shadow-2: 8px;
   --qc-box-shadow-3: 16px;
   --qc-box-shadow-4: 24px;
-  --qc-breakpoint-xmobile: 576px;
-  --qc-breakpoint-mobile: 576px;
-  --qc-breakpoint-tablet: 768px;
-  --qc-breakpoint-desktop: 992px;
-  --qc-breakpoint-xdesktop: 992px;
-  --qc-breakpoint-xs: 576px;
+  --qc-breakpoint-xs: 0;
   --qc-breakpoint-sm: 576px;
   --qc-breakpoint-md: 768px;
   --qc-breakpoint-lg: 992px;
-  --qc-breakpoint-xl: 992px;
+  --qc-breakpoint-xl: 1140px;
   --qc-breakpoint-gutter: 32px;
-}
-@media (max-width: 767.98px) {
-  :root {
-    --qc-font-size-h3: 2.5rem;
-    --qc-font-size-h2: 2.8rem;
-    --qc-font-size-h1: 3.6rem;
-    --qc-line-height-h2: 3.2rem;
-    --qc-line-height-h1: 4rem;
-  }
 }
 
 /*# sourceMappingURL=qc-design-tokens.css.map */

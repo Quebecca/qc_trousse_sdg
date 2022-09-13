@@ -53,8 +53,6 @@
   @each $key, $value in $container-max-widths {
     --qc-breakpoint-#{$key}: #{$value};
   }
-  @each $key, $value in $container-max-widths-aliases {
-    --qc-breakpoint-#{$key}: #{$value};
-  }
+
   --qc-breakpoint-gutter: #{$grid-gutter-width};
 }

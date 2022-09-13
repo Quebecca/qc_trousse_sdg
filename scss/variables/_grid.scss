@@ -4,27 +4,26 @@
 $mobile: 576px;
 $tablet: 768px;
 $desktop: 992px;
+$xdesktop: 1140px;
 
-// Grid containers
-$container-max-widths: (
-    xmobile: $mobile,
-    mobile: $mobile,
-    tablet: $tablet,
-    desktop: $desktop,
-    xdesktop : $desktop
-);
-
-$container-max-widths-aliases: (
-    xs: $mobile,
-    sm: $mobile,
-    md: $tablet,
-    lg: $desktop,
-    xl: $desktop,
-);
 //Gutters
-$grid-gutter-width: 32px  !default;
+$grid-gutter-width: 32px !default;
+
+$container-max-widths: (
+        xs: 0,
+        sm: $mobile,
+        md: $tablet,
+        lg: $desktop,
+        xl: $xdesktop,
+);
 
 // Grid breakpoints
-$grid-breakpoints: (xs: 0,mobile:$mobile, tablet: $tablet,desktop: $desktop);
+$grid-breakpoints: (
+        xs: 0,
+        sm:$mobile,
+        md: $tablet,
+        lg: $desktop,
+        xl: $xdesktop,
+);
 
 
