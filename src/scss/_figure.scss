@@ -1,6 +1,6 @@
-@use "function/colors" as *;
-@use "function/utils" as *;
-@use "mixins/typography" as *;
+@use "base/function/colors" as *;
+@use "base/function/utils" as *;
+@use "base/mixins/typography" as *;
 @import "variables";
 
 .qc-gallery {

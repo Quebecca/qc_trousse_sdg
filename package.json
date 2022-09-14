@@ -4,16 +4,29 @@
   "description": "Trousse SDG",
   "main": "index.js",
   "scripts": {
-    "test": ""
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c -w",
+    "start": "sirv public"
   },
   "repository": {
     "type": "git",
     "url": "git@ssh.gitlab.quebec.ca:pgu/systeme-de-design.git"
   },
-  "author": "",
+  "author": "MCE",
   "license": "ISC",
   "dependencies": {
+    "svelte": "^3.48.0"
+  },
+  "devDependencies": {
     "bootstrap": "4.6",
-    "sass": "^1.53.0"
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "rollup": "^2.75.7",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-scss": "^3.0.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "sass": "^1.53.0",
+    "sirv-cli": "^2.0.2"
   }
 }

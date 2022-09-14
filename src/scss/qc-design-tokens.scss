@@ -1,9 +1,9 @@
-@use "function/colors" as colors;
-@use "function/utils" as *;
+@use "base/function/colors" as colors;
+@use "base/function/utils" as *;
 @use "variables" as *;
-@use "mixins/grid" as grid;
-@use "mixins/link" as *;
-@use "mixins/typography" as *;
+@use "base/mixins/grid" as grid;
+@use "base/mixins/link" as *;
+@use "base/mixins/typography" as *;
 @use "sass:map";
 
 :root {
