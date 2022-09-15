@@ -1,9 +1,0 @@
-@use "../function/colors" as qc;
-@mixin hover-link() {
-  color: qc.color("link", "hover");
-  text-decoration: none;
-}
-
-@mixin active-link() {
-  color: qc.color("link", "active");
-}

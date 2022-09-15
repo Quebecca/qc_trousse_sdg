@@ -1,11 +1,10 @@
-@use "functions" as *;
-@import "variables";
+@use "module/tokens" as *;
+@use "sass:map";
 
-@each $color,$variants in $colors {
-  @each $variant, $hexa in $variants {
-    $color-var-name: #{color-name($color,$variant)};
-    .qc-bg-#{$color-var-name} {
-      background-color: #{color($color,$variant)};
-    }
+$colors : (color : map.get($xl-settings, color));
+@include map-deep-parse($colors, '.qc-bg') using ($path,$value)
+{
+  #{$path} {
+    background-color: $value;
   }
-}
+};

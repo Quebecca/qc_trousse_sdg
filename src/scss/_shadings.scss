@@ -1,10 +1,14 @@
-@use "functions" as *;
-@import "variables";
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "module/tokens" as *;
+@use "sass:map";
 
-@each $index, $blur in $shadings-settings {
-    .qc-shading-#{$index} {
-        box-shadow: 0 #{$index}px #{$blur}px #{token-value('shading')};
-    }
+$color: map-deep-get($xl-settings, box-shadow, rgba-color);
+$gradient: map-deep-get($xl-settings, box-shadow, rgba-gradient);
+$shadow-color: rgba($color, $gradient);
+
+@each $index, $blur in map.get($xl-settings, box-shadow, blur) {
+  .qc-shading-#{$index} {
+    box-shadow: 0 #{$index}#{px} $blur $shadow-color;
+  }
 }
-
-

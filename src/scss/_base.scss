@@ -1,9 +1,7 @@
-@use "base/function/colors" as colors;
-@use "base/function/utils" as *;
-@use "variables" as *;
-@use "base/mixins/grid" as *;
-@use "base/mixins/link" as *;
-@use "base/mixins/typography" as *;
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "module/tokens" as *;
+@use "module/utils" as *;
 
 :root{
   font-size: #{$percent-root-font-size}#{"%"};
@@ -16,10 +14,10 @@
 }
 
 body {
-  @include content-font(100);
-  background-color: colors.color("white");
-  font-family: $content-font-family;
-  color: colors.color("text", "primary");
+  @include content-font(md);
+  font-family: token-value(font, family, content);
+  background-color: token-value(color, white);
+  color: token-value(color, text, primary);
 }
 
 h1, .qc-h1 {
@@ -33,54 +31,54 @@ h1, .qc-h1 {
     margin: 0;
     width: rem(6 * $base-spacer);
     padding-top: rem($base-spacer);
-    border-bottom: 4px solid colors.color("accent","pink");
+    border-bottom: 4px solid token-value(color, accent);
   }
 }
 
 h2, .qc-h2 {
   @include header-font(h2);
   margin-top: rem(6 * $base-spacer);
-  margin-bottom: spacer(sm);
+  margin-bottom: token-value(spacer,sm);
 }
 
 h3, .qc-h3 {
   @include header-font(h3);
-  margin-top: spacer(md);
-  margin-bottom: spacer(sm);
+  margin-top: token-value(spacer,md);
+  margin-bottom: token-value(spacer,sm);
 
 }
 
 h4, .qc-h4 {
   @include header-font(h4);
-  margin-top: spacer(md);
+  margin-top: token-value(spacer,md);
   margin-bottom: rem($base-spacer);
 }
 
 h5,.qc-h5 {
   @include header-font(h5);
-  margin-top: spacer(sm);
+  margin-top: token-value(spacer,sm);
   margin-bottom: 0;
 }
 
 h6,.qc-h6 {
   @include header-font(h6);
-  margin-top: spacer(sm);
+  margin-top: token-value(spacer,sm);
   margin-bottom: 0;
 }
 
 .qc-subhead {
-  @include content-font(90);
+  @include content-font(sm);
   + {
     h1,h2,h3,h4,h5,h6,
     .qc-h1,.qc-h2,.qc-h3,.qc-h4,.qc-h5,.qc-h6 {
-      margin-top: spacer(sm);
+      margin-top: 0;
     }
   }
 }
 
 p {
   margin-top: 0;
-  margin-bottom: spacer(md);
+  margin-bottom: token-value(spacer,md);
 }
 
 img {
@@ -89,12 +87,12 @@ img {
 }
 
 a {
-  color: colors.color("link");
+  color: token-value(color, link, text);
   &:visited {
-    color: colors.color("link", "visited");
+    color: token-value(color, link, visited);
   }
   &:hover,&:focus {
-      @include hover-link();
+    @include hover-link();
   }
   &:active {
     @include active-link();
@@ -110,5 +108,5 @@ a {
 }
 
 .qc-code {
-  font-family: var(--qc-code-font-family);
+  font-family: token-value(font, family, code);
 }

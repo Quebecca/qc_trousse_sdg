@@ -1,3 +1,33 @@
+@use "tokens" as *;
+@use "sass:map";
+// Merci ! / ty Bootstrap
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+$enable-deprecation-messages : false;
+@import "../../../node_modules/bootstrap/scss/mixins/breakpoints";
+@import "../../../node_modules/bootstrap/scss/mixins/grid";
+@import "../../../node_modules/bootstrap/scss/mixins/deprecate";
+
+$grid-breakpoints: map-deep-get($xl-settings, grid, breakpoint);
+$grid-gutter-width: map-deep-get($xl-settings, grid, gutter);
+$container-max-widths: ();
+@each $size, $val in map.keys(map.get($xl-settings, grid , container-max-width)) {
+  $container-max-widths: map.set($container-max-widths, $size, map-deep-get($xl-settings, grid ,container-max-width ,$size))
+}
+
+
+@mixin media-tablet() {
+  @include media-breakpoint-down(md) {
+    @content;
+  }
+}
+
+@mixin media-mobile() {
+  @include media-breakpoint-down(xs) {
+    @content;
+  }
+}
+
 // Framework grid generation
 //
 // Copié sur bootstrap avec ajout de l’espace de nom « qc- » aux classes

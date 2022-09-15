@@ -1,5 +1,6 @@
-@use "functions" as *;
-@import "variables";
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "module/tokens" as *;
 
 // To be used for general lists
 ul {
@@ -8,10 +9,10 @@ ul {
     li {
         padding: 0 0 rem(2 * $base-spacer) 0;
         margin: 0;
-        color: color("blue","dark");
+        color: token-value(color, blue, dark);
     }
     ul {
-        margin-top: spacer(sm);
+        margin-top: token-value(spacer,sm);
         list-style: circle;
     }
 }

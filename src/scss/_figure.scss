@@ -1,7 +1,7 @@
-@use "base/function/colors" as *;
-@use "base/function/utils" as *;
-@use "base/mixins/typography" as *;
-@import "variables";
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "module/tokens" as *;
+@use "module/utils" as *;
 
 .qc-gallery {
   overflow: hidden;
@@ -17,16 +17,16 @@
     }
   }
   figcaption {
-    @include content-font(90);
+    @include content-font(sm);
     display: table-caption;
     caption-side: bottom;
-    background-color: #{color("grey","pale")};
+    background-color: token-value(color, grey, pale);
     padding: rem($base-spacer);
     margin-bottom: 0;
     margin-top: rem($base-spacer);
 
     p {
-      line-height: var(--qc-content-line-height-100);
+      @include content-font(md);
       margin-bottom: 0;
     }
   }

@@ -1,6 +1,7 @@
-@use "../../scss/functions" as qc;
-@use "../../scss/variables" as *;
-@use "../../scss/mixins" as *;
+@use "../../src/scss/settings/settings" as *;
+@use "../../src/scss/function/utils" as *;
+@use "../../src/scss/module/tokens" as *;
+@use "../../src/scss/module/utils" as *;
 
 
 
@@ -9,26 +10,26 @@
   justify-content: flex-start;
   align-items: center;
   > div + div {
-    margin-left: qc.spacer(md);
+    margin-left: token-value(spacer,md);
   }
   & + & {
-    margin-top: qc.spacer(md);
+    margin-top: token-value(spacer,md);
   }
 }
 
 .color-sample {
-  width: qc.rem(6 * $base-spacer);
-  height: qc.rem(6 * $base-spacer);
+  width: rem(6 * $base-spacer);
+  height: rem(6 * $base-spacer);
   border-radius: 50%;
 }
 
 .title-samples {
-  border: 1px solid qc.color("grey","light");
+  border: 1px solid token-value(color,grey,light);
 
   figure {
     width: 100%;
-    padding: qc.spacer(md) qc.spacer(md);
-    border-bottom: 1px solid qc.color("grey","pale");
+    padding: token-value(spacer,md) token-value(spacer,md);
+    border-bottom: 1px solid token-value(color,grey,pale);
 
     &:first-child {
       padding-top: 0;
@@ -38,29 +39,29 @@
       border-bottom: 0;
     }
     + figure {
-      margin-top: qc.spacer(md);
+      margin-top: token-value(spacer,md);
     }
   }
 }
 
 .font-titles {
-  font-family: $header-font-family;
+  font-family: token-value(font,family,header);
 }
 
 
 #grid-samples {
   position: relative;
   text-align: center;
-  margin-top: qc.rem(6 * $base-spacer);
+  margin-top: rem(6 * $base-spacer);
   margin-bottom: 5%;
   .qc-row {
-    margin-top: qc.spacer(md);
+    margin-top: token-value(spacer,md);
     > div > div {
-      background-color: qc.color("blue","piv");
+      background-color: token-value(color,blue,piv);
       opacity: .7;
       height: 100%;
       color: white;
-      padding: qc.rem($base-spacer) 0;
+      padding: rem($base-spacer) 0;
     }
     &:first-child {
       margin-top: 0;
@@ -75,7 +76,7 @@
   height: 110%;
   top: -5%;
   .qc-row > div > div {
-    background-color: qc.color("grey","pale");
+    background-color: token-value(color,grey,pale);
   }
   div {
     height: 100%;
@@ -84,13 +85,13 @@
 
 .square-box {
   display: flex;
-  width: qc.rem(15 * $base-spacer);
-  height: qc.rem(15 * $base-spacer);
+  width: rem(15 * $base-spacer);
+  height: rem(15 * $base-spacer);
   justify-content: center;
   align-items: center;
 
   &.qc-shading-0 {
-    border: 1px solid qc.color("blue","pale")
+    border: 1px solid token-value(color,blue,pale)
   }
 }
 
@@ -102,9 +103,9 @@ a {
     @include active-link();
   }
   &.visited {
-    color: qc.color("link","visited");
+    color: token-value(color,link,visited);
   }
   &.not-visited:visited:not(:hover) {
-    color: qc.color("link");
+    color: token-value(color,link,text);
   }
 }

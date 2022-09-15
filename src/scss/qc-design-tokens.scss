@@ -1,58 +1,13 @@
-@use "base/function/colors" as colors;
-@use "base/function/utils" as *;
-@use "variables" as *;
-@use "base/mixins/grid" as grid;
-@use "base/mixins/link" as *;
-@use "base/mixins/typography" as *;
-@use "sass:map";
+@use "module/tokens" as *;
+@use "module/grid" as *;
 
 :root {
-  // Font families
-  --qc-content-font-family : #{$content-font-family};
-  --qc-header-font-family : #{$header-font-family};
-  --qc-code-font-family : #{$code-font-family};
-
-  // colors
-  @each $color,$variants in $colors {
-    @each $variant, $hexa in $variants {
-      --qc-#{colors.color-name($color,$variant)}: #{$hexa};
-    }
-  }
-
-  // Font sizes
-  @each $type, $scale in map.get($font-scales, "mobile-up") {
-      @each $key, $value in $scale {
-        --qc-#{$type}-#{$key}: #{rem($value)};
+   @each $breakpoint, $settings in $breakpoints-settings {
+      @include media-breakpoint-down($breakpoint) {
+         @include map-deep-parse($settings) using ($path,$value)
+         {
+            #{$path} : $value;
+         };
       }
-  }
-
-  // Font weight
-  @each $content-type, $settings in $font-weight {
-      @each $key, $value in $settings {
-        --qc-#{$content-type}-font-weight-#{$key}: #{$value};
-      }
-  }
-
-  @include grid.media-breakpoint-down('mobile') {
-    // Font sizes
-    @each $type, $scale in map.get($font-scales, "mobile") {
-      @each $key, $value in $scale {
-        --qc-#{$type}-#{$key}: #{rem($value)};
-      }
-    }
-  }
-
-  @each $size, $value in $spacers {
-    --qc-spacer-#{$size}: #{rem($value * $base-spacer)};
-  }
-
-  @each $index, $blur in $shadings-settings {
-    --qc-box-shadow-#{$index}: #{$blur}px;
-  }
-
-  @each $key, $value in $container-max-widths {
-    --qc-breakpoint-#{$key}: #{$value};
-  }
-
-  --qc-breakpoint-gutter: #{$grid-gutter-width};
+   }
 }
