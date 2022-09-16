@@ -1,7 +1,23 @@
 @use "../settings/settings" as *;
 @use "sass:math";
+@use "sass:map";
+@use "sass:list";
+@use "sass:string";
 
 @function rem($px-size) {
   @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
 }
 
+@function implode($list, $glue: '-') {
+  $separator : '';
+  $result : '';
+  @each $item in $list {
+    $result : '#{$result}#{$separator}#{$item}';
+    $separator: $glue;
+  }
+  @return $result;
+}
+
+@function google-font($font) {
+  @return string.unquote(implode(map.get($google-fonts, $font), ','));
+}

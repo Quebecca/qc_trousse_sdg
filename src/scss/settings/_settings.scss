@@ -1,3 +1,9 @@
 $percent-root-font-size: 62.5 !default;
 $font-dir: "../fonts" !default;
 $base-spacer: 8 !default;
+$google-api-font: true !default;
+$google-fonts : (
+  roboto: (Roboto, sans-serif),
+  open-sans: ('Open Sans', sans-serif),
+  roboto-mono: ('Roboto Mono', sans-serif)
+);

@@ -1,9 +1,9 @@
 :root {
-  --qc-font-family-roboto: Roboto, sans-serif;
-  --qc-font-family-open-sans: Open Sans, sans-serif;
+  --qc-font-family-roboto: Roboto,sans-serif;
+  --qc-font-family-open-sans: Open Sans,sans-serif;
   --qc-font-family-roboto-mono: Roboto Mono,sans-serif;
-  --qc-font-family-content: Open Sans, sans-serif;
-  --qc-font-family-header: Roboto, sans-serif;
+  --qc-font-family-content: Open Sans,sans-serif;
+  --qc-font-family-header: Roboto,sans-serif;
   --qc-font-family-code: Roboto Mono,sans-serif;
   --qc-font-size-h6: 1.6rem;
   --qc-font-size-h5: 1.9rem;

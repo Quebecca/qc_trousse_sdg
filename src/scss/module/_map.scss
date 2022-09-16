@@ -1,0 +1,37 @@
+@mixin map-deep-parse($map, $parents: '--qc', $origin : null) {
+  @if $origin == null {
+    $origin: $map;
+  }
+  @each $key, $value in $map {
+    $path: #{$parents}-#{$key};
+    @if type-of($value) == 'map' {
+      @include map-deep-parse($value, $path, $origin) using($path,$value) {
+        @content($path, $value);
+      }
+    } @else {
+      @if type-of($value) == 'list' {
+        $alias: $value;
+        $value: map-deep-get($origin, $alias...);
+        @if $value == null {
+          @error "Undefined token alias #{$path} : #{$alias}";
+          $value: 'undefined';
+        }
+      }
+      @content($path, $value);
+    }
+  }
+}
+
+
+// fonctionne comme map-get, mais si la valeur est une liste, elle est considérée comme un raccourci
+// vers une autre entrée de la map
+// ex
+// map : ( foo: (bar : baz), biz : foo bar);
+// $value : token-get(map, biz); /* raccourci vers foo bar, $value == baz */
+@function map-deep-get($map: map-get($breakpoints-settings, xl), $path...) {
+  $value: map-get($map, $path...);
+  @if type-of($value) == 'list' {
+    @return map-deep-get($map, $value...)
+  }
+  @return $value;
+}
