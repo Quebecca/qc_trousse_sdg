@@ -2,6 +2,9 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import scss from 'rollup-plugin-scss'
+import copy from 'rollup-plugin-copy'
+import del from 'rollup-plugin-delete'
+
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 
@@ -35,38 +38,69 @@ function serve() {
     };
 }
 
-export default {
-    // This `main.js` file we wrote
-    input: 'src/main.js',
-    output: {
-        // The destination for our bundled JavaScript
-        file: 'public/build/bundle.js',
-        // Our bundle will be an Immediately-Invoked Function Expression
-        format: 'iife',
-        // The IIFE return value will be assigned into a variable called `app`
-        name: 'app',
+
+export default [
+    {
+        input: 'src/qc-catalog-sdg.js',
+        output: {
+            file: 'public/css/qc-catalog-sdg.js',
+            format: 'iife'
+        },
+        plugins: [
+            resolve({
+                browser: true
+            }),
+            serve(),
+            //Enable the Hot Reload
+            livereload('public'),
+
+            // will output compiled styles to output.css
+            scss({
+                processor: () => postcss([autoprefixer()]),
+                includePaths: [
+                    path.join(__dirname, '../../node_modules/'),
+                    'node_modules/',
+                    'src/scss',
+                ],
+                outputStyle: 'compressed',
+                watch: 'src/scss',
+            })
+        ],
     },
-    plugins: [
-        svelte({
-            // Tell the svelte plugin where our svelte files are located
-            include: 'src/**/*.svelte',
-        }),
-        // Tell any third-party plugins that we're building for the browser
-        resolve({
-            browser: true
-        }),
-        serve(),
-
-        //Enable the Hot Reload
-        livereload('public'),
-
-        // will output compiled styles to output.css
-        scss({
-            processor: () => postcss([autoprefixer()]),
-            includePaths: [
-                'node_modules/'
-            ],
-            outputStyle: 'compressed'
-        })
-    ],
-};
+    {
+        // This `main.js` file we wrote
+        input: 'src/qc-sdg.js',
+        output: {
+            file: 'dist/css/qc-sdg.js',
+            format: 'iife',
+        },
+        plugins: [
+            // svelte({
+            //     // Tell the svelte plugin where our svelte files are located
+            //     include: 'src/**/*.svelte',
+            // }),
+            // Tell any third-party plugins that we're building for the browser
+            resolve({
+                browser: true
+            }),
+            // will output compiled styles to output.css
+            scss({
+                processor: () => postcss([autoprefixer()]),
+                includePaths: [
+                    path.join(__dirname, '../../node_modules/'),
+                    'node_modules/',
+                    'src/scss',
+                ],
+                outputStyle: 'compressed',
+                watch: 'src/scss',
+            }),
+            copy({
+                targets: [
+                    {src: `assets/*`, dest: `dist`},
+                    {src: `dist/css/qc-sdg.css`, dest: `public/css/`},
+                ]
+            }),
+            del({targets: 'public/css/qc-catalog-sdg.js', verbose: true})
+        ],
+    },
+];

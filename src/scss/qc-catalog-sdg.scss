@@ -1,9 +1,7 @@
-@use "../../src/scss/settings/settings" as *;
-@use "../../src/scss/function/utils" as *;
-@use "../../src/scss/module/tokens" as *;
-@use "../../src/scss/module/utils" as *;
-
-
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "module/tokens" as *;
+@use "module/utils" as *;
 
 .color-details {
   display: flex;
@@ -96,6 +94,7 @@
 }
 
 a {
+
   &.pseudo-hover {
     @include hover-link();
   }

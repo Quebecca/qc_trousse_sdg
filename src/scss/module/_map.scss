@@ -13,7 +13,7 @@
         $alias: $value;
         $value: map-deep-get($origin, $alias...);
         @if $value == null {
-          @error "Undefined token alias #{$path} : #{$alias}";
+          @error "Undefined alias for path #{$path} : #{$alias}";
           $value: 'undefined';
         }
       }
