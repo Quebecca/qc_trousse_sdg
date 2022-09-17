@@ -1,17 +1,14 @@
-@use "settings/settings" as *;
 @use "module/tokens" as *;
 @use "module/map" as *;
 @use "module/grid" as *;
 
 :root {
 
-   font-size: #{$percent-root-font-size}#{"%"};
-
-   @each $breakpoint, $settings in $breakpoints-settings {
+   @each $breakpoint, $settings in $breakpoints-tokens {
       @include media-breakpoint-down($breakpoint) {
          @include map-deep-parse($settings) using ($path,$value)
          {
-            #{$path} : $value;
+            #{token-name($path)} : $value;
          };
       }
    }

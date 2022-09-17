@@ -3,12 +3,8 @@
 @use "module/map" as *;
 @use "sass:map";
 
-$color: map-deep-get($xl-settings, box-shadow, rgba-color);
-$gradient: map-deep-get($xl-settings, box-shadow, rgba-gradient);
-$shadow-color: rgba($color, $gradient);
-
-@each $index, $blur in map.get($xl-settings, box-shadow, blur) {
+@each $index, $blur in map.get($xl-tokens, box-shadow, blur) {
   .qc-shading-#{$index} {
-    box-shadow: 0 #{$index}#{px} $blur $shadow-color;
+    box-shadow: 0 #{$index}#{px} $blur #{token-value(box-shadow color)};
   }
 }

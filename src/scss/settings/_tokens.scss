@@ -1,0 +1,175 @@
+@use "settings/settings" as *;
+@use "function/utils" as *;
+@use "function/tokens" as *;
+
+$dark-blue : #223654;
+$xl-tokens: (
+    font : (
+        family : (
+            roboto: google-font(roboto),
+            open-sans: google-font(open-sans),
+            roboto-mono: google-font(roboto-mono),
+            content: token-value(font family open-sans),
+            header: token-value(font family roboto),
+            code: token-value(font family roboto-mono),
+        ),
+        size: (
+            h6: rem(16),
+            h5: rem(19),
+            h4: rem(21),
+            h3: rem(28),
+            h2: rem(36),
+            h1: rem(48),
+            90: rem(14),
+            100: rem(16),
+            120: rem(18),
+            200: rem(20),
+            300: rem(31),
+            sm : token-value(font size 90),
+            md: token-value(font size 100),
+            lg: token-value(font size 120),
+            xl: token-value(font size 200),
+            xxl: token-value(font size 300),
+            content: token-value(font size md),
+        ),
+        weight : (
+            regular : 400,
+            medium : 500,
+            semi-bold : 600,
+            bold : 700,
+            header : (
+                regular : token-value(font weight regular),
+                medium : token-value(font weight semi-bold),
+                bold : token-value(font weight bold),
+            ),
+            content : (
+                regular : token-value(font weight regular),
+                medium : token-value(font weight medium),
+                bold : token-value(font weight bold),
+            ),
+        ),
+    ),
+    line-height :(
+        h6: rem(20),
+        h5: rem(24),
+        h4: rem(24),
+        h3: rem(32),
+        h2: rem(40),
+        h1: rem(56),
+        90: rem(20),
+        100: rem(24),
+        120: rem(28),
+        200: rem(32),
+        300: rem(48),
+        sm : token-value(line-height, 90),
+        md: token-value(line-height, 100),
+        lg: token-value(line-height, 120),
+        xl: token-value(line-height, 200),
+        xxl: token-value(line-height, 300),
+        content: token-value(line-height, md),
+    ),
+    color: (
+        white : white,
+        blue : (
+            pale : #dae6f0,
+            light : #4a98d9,
+            regular : #1479cc,
+            piv: #095797,
+            medium : #19406C,
+            dark: $dark-blue,
+        ),
+        purple: #6b4fa1,
+        grey : (
+            pale : #f1f1f2,
+            light : #c5cad2,
+            regular: #8893a2,
+            medium : #6b778a,
+            dark: #4e5662,
+        ),
+        pink : (
+            pale: #ffdbd6,
+            regular: #e58271,
+        ),
+        red: (
+            regular: #cb381f,
+            dark: #692519,
+        ),
+        green: (
+            pale: #d7f0bb,
+            regular: #4f813d,
+            dark: #2c4024,
+        ),
+        yellow : (
+            pale : #f8e69a,
+            regular: #e0ad03,
+            dark: #ad781c,
+        ),
+        text : (
+            primary : token-value(color, blue, dark,)
+        ),
+        accent: token-value(color pink regular),
+        success: token-value(color green regular),
+        error: token-value(color red regular),
+        danger: token-value(color red dark),
+        link: (
+            text: token-value(color blue piv),
+            hover: token-value(color blue piv),
+            visited: token-value(color purple),
+            active: token-value(color red regular),
+        ),
+    ),
+    box-shadow: (
+        color: rgba($dark-blue, .24),
+        blur: (
+            0: 0,
+            1: 4px,
+            2: 8px,
+            3: 16px,
+            4: 24px,
+        ),
+    ),
+    spacer: (
+        sm: rem(2 * $base-spacer),
+        md: rem(3 * $base-spacer),
+        lg: rem(6 * $base-spacer),
+        xl: rem(12 * $base-spacer),
+    ),
+    grid: (
+        gutter: 32px,
+        breakpoint: (
+            xs: 0,
+            sm: 576px,
+            md: 768px,
+            lg: 992px,
+            xl: 1140px,
+        ),
+        container-max-width: (
+            sm: token-value(grid breakpoint sm),
+            md: token-value(grid breakpoint md),
+            lg: token-value(grid breakpoint lg),
+            xl: token-value(grid breakpoint xl),
+        )
+    )
+) !default;
+
+$breakpoints-tokens: (
+    xl : $xl-tokens,
+    sm : (
+        font-size: (
+            h3: rem(25),
+            h2: rem(28),
+            h1: rem(36),
+        ),
+        line-height: (
+            h2: rem(32),
+            h1: rem(40),
+        )
+    ),
+) !default;
+
+
+
+
+
+
+

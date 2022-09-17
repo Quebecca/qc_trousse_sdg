@@ -38,7 +38,17 @@ function serve() {
     };
 }
 
-
+const scssOptions = {
+    processor: () => postcss([autoprefixer()]),
+    sourceMap: true,
+    includePaths: [
+        path.join(__dirname, '../../node_modules/'),
+        'node_modules/',
+        'src/scss',
+    ],
+    // outputStyle: 'compressed',
+    watch: 'src/scss',
+};
 export default [
     {
         input: 'src/qc-catalog-sdg.js',
@@ -53,18 +63,7 @@ export default [
             serve(),
             //Enable the Hot Reload
             livereload('public'),
-
-            // will output compiled styles to output.css
-            scss({
-                processor: () => postcss([autoprefixer()]),
-                includePaths: [
-                    path.join(__dirname, '../../node_modules/'),
-                    'node_modules/',
-                    'src/scss',
-                ],
-                outputStyle: 'compressed',
-                watch: 'src/scss',
-            })
+            scss(scssOptions)
         ],
     },
     {
@@ -76,7 +75,6 @@ export default [
         },
         plugins: [
             // svelte({
-            //     // Tell the svelte plugin where our svelte files are located
             //     include: 'src/**/*.svelte',
             // }),
             // Tell any third-party plugins that we're building for the browser
@@ -84,23 +82,46 @@ export default [
                 browser: true
             }),
             // will output compiled styles to output.css
-            scss({
-                processor: () => postcss([autoprefixer()]),
-                includePaths: [
-                    path.join(__dirname, '../../node_modules/'),
-                    'node_modules/',
-                    'src/scss',
+            scss(scssOptions),
+        ],
+    },
+    {
+        // token only css file
+        input: 'src/qc-sdg-design-tokens.js',
+        output: {
+            file: 'dist/css/qc-sdg-design-tokens.js',
+            format: 'iife',
+        },
+        plugins: [
+            resolve({
+                browser: true
+            }),
+            scss(scssOptions),
+        ],
+    },
+    {
+        // last process without output to move, copy, delete operations
+        input: 'src/qc-sdg.js',
+        watch: {
+            skipWrite: true, // prevent output generation
+        },
+        plugins: [
+            scss(), // needed, since the script contains scss…
+            del({ // deletion of uneeded js files
+                targets: [
+                    'public/css/qc-catalog-sdg.js',
+                    'dist/css/qc-sdg.js',
+                    'dist/css/qc-sdg-design-tokens.js'
                 ],
-                outputStyle: 'compressed',
-                watch: 'src/scss',
+                verbose: true
             }),
             copy({
                 targets: [
-                    {src: `assets/*`, dest: `dist`},
-                    {src: `dist/css/qc-sdg.css`, dest: `public/css/`},
-                ]
+                    {src: `assets/*`, dest: [`dist`,`public`]},
+                    {src: [`dist/css/qc-sdg.css`,`dist/css/qc-sdg.css.map`], dest: `public/css`},
+                ],
+                verbose: true,
             }),
-            del({targets: 'public/css/qc-catalog-sdg.js', verbose: true})
-        ],
+        ]
     },
 ];

@@ -8,16 +8,22 @@
   @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
 }
 
-@function implode($list, $glue: '-') {
+// implode a list (and flatten inner list : implode( (foo, (bar baz)), '-'); => foo-bar-baz
+@function deep-implode($list, $glue: '-') {
   $separator : '';
   $result : '';
   @each $item in $list {
-    $result : '#{$result}#{$separator}#{$item}';
+    $part : $item;
+    @if type-of($item) == 'list' {
+      $part : deep-implode($item, $glue);
+    }
+    $result : '#{$result}#{$separator}#{$part}';
     $separator: $glue;
   }
   @return $result;
 }
 
 @function google-font($font) {
-  @return string.unquote(implode(map.get($google-fonts, $font), ','));
+  @return string.unquote(deep-implode(map.get($google-fonts, $font), ','));
 }
+

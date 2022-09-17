@@ -1,3 +1,4 @@
+@use "function/utils" as *;
 @use "tokens" as *;
 @forward "settings/settings";
 @forward "function/utils";
@@ -8,8 +9,8 @@
 // cela garantit que la taille police est conforme aux exigences du SDG
 // et ajoute automatiquement le bon interlignage
 @mixin content-font($scale) {
-  font-size: token-value(font,size, $scale) ;
-  line-height: token-value(line-height, $scale) ;
+  font-size: token-value(font size $scale) ;
+  line-height: token-value(line-height $scale) ;
 }
 
 @mixin header-font($header) {

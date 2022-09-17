@@ -1,6 +1,8 @@
 $percent-root-font-size: 62.5 !default;
 $font-dir: "../fonts" !default;
 $base-spacer: 8 !default;
+// les polices sont importées par google api.
+// pour un hébergement local, cf https://google-webfonts-helper.herokuapp.com/fonts
 $google-api-font: true !default;
 $google-fonts : (
   roboto: (Roboto, sans-serif),

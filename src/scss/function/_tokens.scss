@@ -1,0 +1,12 @@
+@use "utils" as *;
+// functions
+
+// Return css var corresponding to this token
+// token-value("foo","bar"); // var(--qc-foo-bar);
+@function token-value($args...) {
+  @return var(#{token-name($args...)});
+}
+
+@function token-name($args...) {
+  @return --qc-#{deep-implode($args, '-')};
+}

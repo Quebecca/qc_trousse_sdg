@@ -2,7 +2,7 @@
 @use "module/map" as *;
 @use "sass:map";
 
-$colors : (color : map.get($xl-settings, color));
+$colors : (color : map.get($xl-tokens, color));
 @include map-deep-parse($colors, '.qc-bg') using ($path,$value)
 {
   #{$path} {

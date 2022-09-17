@@ -1,6 +1,10 @@
 @use "module/tokens" as *;
 @use "module/utils" as *;
 
+:root {
+  font-size: #{$percent-root-font-size}#{"%"};
+}
+
 body {
   @include content-font(md);
   font-family: token-value(font, family, content);
