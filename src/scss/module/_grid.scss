@@ -1,9 +1,9 @@
 @use "tokens" as *;
 @use "map" as *;
 @use "sass:map";
-// Merci ! / ty Bootstrap
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
+
+@import "bootstrap";
+//@forward "bootstrap" show $grid-breakpoints,$grid-gutter-width,$container-max-widths;
 $enable-deprecation-messages : false;
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/mixins/grid";

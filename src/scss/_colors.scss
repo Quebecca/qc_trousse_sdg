@@ -1,11 +1,12 @@
+@use "module/utils" as *;
 @use "module/tokens" as *;
 @use "module/map" as *;
 @use "sass:map";
 
 $colors : (color : map.get($xl-tokens, color));
-@include map-deep-parse($colors, '.qc-bg') using ($path,$value)
+@include map-deep-parse($colors) using ($path,$value)
 {
-  #{$path} {
+  .qc-bg-#{deep-implode($path, '-')} {
     background-color: $value;
   }
 };
