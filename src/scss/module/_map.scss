@@ -1,13 +1,10 @@
 @use "sass:list";
 //
-@mixin map-deep-parse($map, $parents: (), $origin : null) {
-  @if $origin == null {
-    $origin: $map;
-  }
+@mixin map-deep-parse($map, $parents: ()) {
   @each $key, $value in $map {
     $path: list.append($parents, $key);
     @if type-of($value) == 'map' {
-      @include map-deep-parse($value, $path, $origin) using($path,$value) {
+      @include map-deep-parse($value, $path) using($path,$value) {
         @content($path, $value);
       }
     } @else {

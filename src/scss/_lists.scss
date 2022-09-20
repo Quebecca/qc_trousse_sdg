@@ -4,9 +4,10 @@
 // To be used for general lists
 ul {
     list-style: disc;
-    padding: 0 0 rem($base-spacer) rem(4 * $base-spacer);
+    padding-bottom: rem($base-spacer);
+    padding-left: rem(4 * $base-spacer);
     li {
-        padding: 0 0 rem(2 * $base-spacer) 0;
+        padding-bottom: rem(2 * $base-spacer);
         margin: 0;
         color: token-value(color, blue, dark);
     }

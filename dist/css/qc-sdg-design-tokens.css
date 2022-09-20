@@ -97,10 +97,10 @@
   --qc-grid-breakpoint-md: 768px;
   --qc-grid-breakpoint-lg: 992px;
   --qc-grid-breakpoint-xl: 1140px;
-  --qc-grid-container-max-width-sm: var(--qc-grid-breakpoint-sm);
-  --qc-grid-container-max-width-md: var(--qc-grid-breakpoint-md);
-  --qc-grid-container-max-width-lg: var(--qc-grid-breakpoint-lg);
-  --qc-grid-container-max-width-xl: var(--qc-grid-breakpoint-xl);
+  --qc-grid-container-max-width-sm: 576px;
+  --qc-grid-container-max-width-md: 768px;
+  --qc-grid-container-max-width-lg: 992px;
+  --qc-grid-container-max-width-xl: 1140px;
 }
 @media (max-width: 767.98px) {
   :root {

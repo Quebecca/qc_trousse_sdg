@@ -98,10 +98,10 @@
   --qc-grid-breakpoint-md: 768px;
   --qc-grid-breakpoint-lg: 992px;
   --qc-grid-breakpoint-xl: 1140px;
-  --qc-grid-container-max-width-sm: var(--qc-grid-breakpoint-sm);
-  --qc-grid-container-max-width-md: var(--qc-grid-breakpoint-md);
-  --qc-grid-container-max-width-lg: var(--qc-grid-breakpoint-lg);
-  --qc-grid-container-max-width-xl: var(--qc-grid-breakpoint-xl);
+  --qc-grid-container-max-width-sm: 576px;
+  --qc-grid-container-max-width-md: 768px;
+  --qc-grid-container-max-width-lg: 992px;
+  --qc-grid-container-max-width-xl: 1140px;
 }
 @media (max-width: 767.98px) {
   :root {
@@ -252,22 +252,22 @@ html {
 }
 @media (min-width: 576px) {
   .qc-container {
-    max-width: var(--qc-grid-breakpoint-sm);
+    max-width: 576px;
   }
 }
 @media (min-width: 768px) {
   .qc-container {
-    max-width: var(--qc-grid-breakpoint-md);
+    max-width: 768px;
   }
 }
 @media (min-width: 992px) {
   .qc-container {
-    max-width: var(--qc-grid-breakpoint-lg);
+    max-width: 992px;
   }
 }
 @media (min-width: 1140px) {
   .qc-container {
-    max-width: var(--qc-grid-breakpoint-xl);
+    max-width: 1140px;
   }
 }
 
@@ -281,22 +281,22 @@ html {
 
 @media (min-width: 576px) {
   .qc-container-sm, .qc-container {
-    max-width: var(--qc-grid-breakpoint-sm);
+    max-width: 576px;
   }
 }
 @media (min-width: 768px) {
   .qc-container-md, .qc-container-sm, .qc-container {
-    max-width: var(--qc-grid-breakpoint-md);
+    max-width: 768px;
   }
 }
 @media (min-width: 992px) {
   .qc-container-lg, .qc-container-md, .qc-container-sm, .qc-container {
-    max-width: var(--qc-grid-breakpoint-lg);
+    max-width: 992px;
   }
 }
 @media (min-width: 1140px) {
   .qc-container-xl, .qc-container-lg, .qc-container-md, .qc-container-sm, .qc-container {
-    max-width: var(--qc-grid-breakpoint-xl);
+    max-width: 1140px;
   }
 }
 .qc-row {
@@ -1352,10 +1352,11 @@ html {
 
 ul {
   list-style: disc;
-  padding: 0 0 0.8rem 3.2rem;
+  padding-bottom: 0.8rem;
+  padding-left: 3.2rem;
 }
 ul li {
-  padding: 0 0 1.6rem 0;
+  padding-bottom: 1.6rem;
   margin: 0;
   color: var(--qc-color-blue-dark);
 }
