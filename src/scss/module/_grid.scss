@@ -5,10 +5,6 @@
 @import "bootstrap";
 //@forward "bootstrap" show $grid-breakpoints,$grid-gutter-width,$container-max-widths;
 $enable-deprecation-messages : false;
-@import "bootstrap/scss/mixins/breakpoints";
-@import "bootstrap/scss/mixins/grid";
-@import "bootstrap/scss/mixins/deprecate";
-
 $grid-breakpoints: map.get($xl-tokens, grid, breakpoint);
 $grid-gutter-width: map.get($xl-tokens, grid, gutter);
 $container-max-widths: ();
@@ -16,6 +12,9 @@ $container-max-widths: ();
   $container-max-widths: map.set($container-max-widths, $size, map.get($xl-tokens, grid ,container-max-width ,$size))
 }
 
+@import "bootstrap/scss/mixins/breakpoints";
+@import "bootstrap/scss/mixins/grid";
+@import "bootstrap/scss/mixins/deprecate";
 
 @mixin media-tablet() {
   @include media-breakpoint-down(md) {

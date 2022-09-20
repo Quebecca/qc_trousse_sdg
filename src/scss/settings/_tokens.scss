@@ -144,10 +144,10 @@ $xl-tokens: (
             xl: 1140px,
         ),
         container-max-width: (
-            sm: token-value(grid breakpoint sm),
-            md: token-value(grid breakpoint md),
-            lg: token-value(grid breakpoint lg),
-            xl: token-value(grid breakpoint xl),
+            sm: 576px,
+            md: 768px,
+            lg: 992px,
+            xl: 1140px,
         )
     )
 ) !default;
