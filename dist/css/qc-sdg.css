@@ -97,10 +97,10 @@
   --qc-grid-breakpoint-sm: 576px;
   --qc-grid-breakpoint-md: 768px;
   --qc-grid-breakpoint-lg: 992px;
-  --qc-grid-breakpoint-xl: 1140px;
-  --qc-grid-container-max-width-sm: 576px;
-  --qc-grid-container-max-width-md: 768px;
-  --qc-grid-container-max-width-lg: 992px;
+  --qc-grid-breakpoint-xl: 1200px;
+  --qc-grid-container-max-width-sm: 540px;
+  --qc-grid-container-max-width-md: 720px;
+  --qc-grid-container-max-width-lg: 960px;
   --qc-grid-container-max-width-xl: 1140px;
 }
 @media (max-width: 767.98px) {
@@ -252,20 +252,20 @@ html {
 }
 @media (min-width: 576px) {
   .qc-container {
-    max-width: 576px;
+    max-width: 540px;
   }
 }
 @media (min-width: 768px) {
   .qc-container {
-    max-width: 768px;
+    max-width: 720px;
   }
 }
 @media (min-width: 992px) {
   .qc-container {
-    max-width: 992px;
+    max-width: 960px;
   }
 }
-@media (min-width: 1140px) {
+@media (min-width: 1200px) {
   .qc-container {
     max-width: 1140px;
   }
@@ -281,20 +281,20 @@ html {
 
 @media (min-width: 576px) {
   .qc-container-sm, .qc-container {
-    max-width: 576px;
+    max-width: 540px;
   }
 }
 @media (min-width: 768px) {
   .qc-container-md, .qc-container-sm, .qc-container {
-    max-width: 768px;
+    max-width: 720px;
   }
 }
 @media (min-width: 992px) {
   .qc-container-lg, .qc-container-md, .qc-container-sm, .qc-container {
-    max-width: 992px;
+    max-width: 960px;
   }
 }
-@media (min-width: 1140px) {
+@media (min-width: 1200px) {
   .qc-container-xl, .qc-container-lg, .qc-container-md, .qc-container-sm, .qc-container {
     max-width: 1140px;
   }
@@ -1029,7 +1029,7 @@ html {
     margin-left: 91.66666667%;
   }
 }
-@media (min-width: 1140px) {
+@media (min-width: 1200px) {
   .qc-col-xl {
     flex-basis: 0;
     flex-grow: 1;
@@ -1352,13 +1352,12 @@ html {
 
 ul {
   list-style: disc;
-  padding-bottom: 0.8rem;
+  margin-top: 0;
+  margin-bottom: var(--qc-spacer-md);
   padding-left: 3.2rem;
 }
 ul li {
-  padding-bottom: 1.6rem;
-  margin: 0;
-  color: var(--qc-color-blue-dark);
+  margin-bottom: var(--qc-spacer-sm);
 }
 ul ul {
   margin-top: var(--qc-spacer-sm);

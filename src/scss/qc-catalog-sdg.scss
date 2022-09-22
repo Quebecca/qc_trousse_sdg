@@ -19,8 +19,8 @@
   width: rem(6 * $base-spacer);
   height: rem(6 * $base-spacer);
   border-radius: 50%;
+  flex-shrink: 0;
 }
-
 .title-samples {
   border: 1px solid token-value(color,grey,light);
 

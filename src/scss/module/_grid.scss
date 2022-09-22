@@ -11,6 +11,7 @@ $container-max-widths: ();
 @each $size, $val in map.keys(map.get($xl-tokens, grid , container-max-width)) {
   $container-max-widths: map.set($container-max-widths, $size, map.get($xl-tokens, grid ,container-max-width ,$size))
 }
+@debug $container-max-widths;
 
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/mixins/grid";
