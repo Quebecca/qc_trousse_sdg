@@ -81,6 +81,23 @@ export default [
             resolve({
                 browser: true
             }),
+            copy({
+                targets: [{
+                    src: [
+                        'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
+                        'node_modules/bootstrap/scss/_grid.scss',
+                        ],
+                    dest: 'src/scss/build',
+                    transform:
+                        (contents, filename) =>
+                            contents
+                                .toString()
+                                .replace(
+                                    /\.(container|row|col|order)/g,
+                                    '\.qc-$1'
+                                )
+                }]
+            }),
             // will output compiled styles to output.css
             scss(scssOptions),
         ],
