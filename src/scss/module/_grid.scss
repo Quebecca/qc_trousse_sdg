@@ -1,10 +1,9 @@
-@use "utils";
+@use "utils" as utils;
 @use "tokens" as *;
 @use "map" as *;
 @use "sass:map";
-
 @import "bootstrap";
-
+$enable-grid-classes: utils.$enable-grid-classes;
 $enable-deprecation-messages : false;
 $grid-breakpoints: map.get($xl-tokens, grid, breakpoint);
 $grid-gutter-width: map.get($xl-tokens, grid, gutter);

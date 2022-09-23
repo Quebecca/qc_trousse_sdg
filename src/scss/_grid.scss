@@ -1,2 +1,14 @@
 @use "module/grid" as *;
-//@use "build/grid" as *;
+
+html {
+  box-sizing: border-box;
+  -ms-overflow-style: scrollbar;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+@import "build/bootstrap/scss/mixins/grid-framework";
+@import "build/bootstrap/scss/grid";

@@ -49,6 +49,13 @@ const scssOptions = {
     // outputStyle: 'compressed',
     watch: 'src/scss',
 };
+let addQcNamespaceToBootstrapClasses = (contents, filename) =>
+    contents
+        .toString()
+        .replace(
+            /\.(container|row|col|order|offset)/g,
+            '\.qc-$1'
+        );
 export default [
     {
         input: 'src/qc-catalog-sdg.js',
@@ -83,19 +90,13 @@ export default [
             }),
             copy({
                 targets: [{
-                    src: [
-                        'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
-                        'node_modules/bootstrap/scss/_grid.scss',
-                        ],
-                    dest: 'src/scss/build',
-                    transform:
-                        (contents, filename) =>
-                            contents
-                                .toString()
-                                .replace(
-                                    /\.(container|row|col|order)/g,
-                                    '\.qc-$1'
-                                )
+                    src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
+                    dest: 'build/bootstrap/scss/mixins',
+                    transform: addQcNamespaceToBootstrapClasses
+                },{
+                    src: 'node_modules/bootstrap/scss/_grid.scss',
+                    dest: 'build/bootstrap/scss',
+                    transform: addQcNamespaceToBootstrapClasses
                 }]
             }),
             // will output compiled styles to output.css
