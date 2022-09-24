@@ -92,7 +92,7 @@ a {
   .external-link-tail {
     white-space: nowrap;
     img.external-link-img {
-      content:url(#{$img-dir}}/external-link.svg);
+      content:url(#{$img-dir}/external-link.svg);
       max-height: rem(11);
       max-width: rem(11);
       margin-bottom: rem(1.6);
