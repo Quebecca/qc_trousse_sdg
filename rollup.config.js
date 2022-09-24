@@ -53,7 +53,7 @@ let addQcNamespaceToBootstrapClasses = (contents, filename) =>
     contents
         .toString()
         .replace(
-            /\.(container|row|col|order|offset|d|flex|justify|align)/g,
+            /\.(container|row|col|order|offset|d|flex|justify|align|m|#)/g,
             '\.qc-$1'
         );
 export default [
@@ -100,7 +100,8 @@ export default [
                 },{
                     src: [
                         'node_modules/bootstrap/scss/utilities/_display.scss',
-                        'node_modules/bootstrap/scss/utilities/_flex.scss'
+                        'node_modules/bootstrap/scss/utilities/_flex.scss',
+                        'node_modules/bootstrap/scss/utilities/_spacing.scss',
                         ],
                     dest: 'build/bootstrap/scss/utilities',
                     transform: addQcNamespaceToBootstrapClasses
