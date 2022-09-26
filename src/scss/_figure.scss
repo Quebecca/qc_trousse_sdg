@@ -4,29 +4,30 @@
 .qc-gallery {
   overflow: hidden;
   margin-top: rem($base-spacer);
+}
 
-  figure {
-    display: table;
-    margin: 0 0 rem(4 * $base-spacer) 0;
+figure {
+  display: table;
+  margin: 0 0 rem(4 * $base-spacer) 0;
 
-    img {
-      max-width: 100%;
-      height: auto;
-    }
+  img {
+    max-width: 100%;
+    height: auto;
   }
-  figcaption {
+}
+figcaption {
+  @include content-font(sm);
+  display: table-caption;
+  caption-side: bottom;
+  background-color: token-value(color, grey, pale);
+  padding: rem($base-spacer);
+  margin-top: rem($base-spacer);
+  p {
     @include content-font(sm);
-    display: table-caption;
-    caption-side: bottom;
-    background-color: token-value(color, grey, pale);
-    padding: rem($base-spacer);
-    margin-bottom: 0;
-    margin-top: rem($base-spacer);
-
-    p {
-      @include content-font(md);
+    &:last-child {
       margin-bottom: 0;
     }
   }
+  margin-bottom: token-value(spacer md);
 }
 

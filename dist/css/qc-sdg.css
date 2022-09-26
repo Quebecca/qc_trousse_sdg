@@ -1304,27 +1304,31 @@ html {
   overflow: hidden;
   margin-top: 0.8rem;
 }
-.qc-gallery figure {
+
+figure {
   display: table;
   margin: 0 0 3.2rem 0;
 }
-.qc-gallery figure img {
+figure img {
   max-width: 100%;
   height: auto;
 }
-.qc-gallery figcaption {
+
+figcaption {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   display: table-caption;
   caption-side: bottom;
   background-color: var(--qc-color-grey-pale);
   padding: 0.8rem;
-  margin-bottom: 0;
   margin-top: 0.8rem;
+  margin-bottom: var(--qc-spacer-md);
 }
-.qc-gallery figcaption p {
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
+figcaption p {
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+}
+figcaption p:last-child {
   margin-bottom: 0;
 }
 
