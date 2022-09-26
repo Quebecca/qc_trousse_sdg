@@ -1,6 +1,6 @@
-@use "module/tokens" as *;
-@use "module/utils" as *;
-@use "module/map" as *;
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "modules/map" as *;
 @use "sass:map";
 
 @each $index, $blur in map.get($xl-tokens, box-shadow, blur) {

@@ -1,5 +1,5 @@
-@use "module/tokens" as *;
-@use "module/utils" as *;
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
 
 :root {
   font-size: #{$percent-root-font-size}#{"%"};
@@ -92,7 +92,7 @@ a {
   .external-link-tail {
     white-space: nowrap;
     img.external-link-img {
-      content:url(#{$img-dir}/external-link.svg);
+      content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
       max-height: rem(11);
       max-width: rem(11);
       margin-bottom: rem(1.6);

@@ -1,7 +1,7 @@
 @use "settings/settings" as *;
-@use "function/utils" as *;
-@use "module/tokens" as *;
-@use "module/utils" as *;
+@use "functions/utils" as *;
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
 
 .color-details {
   display: flex;

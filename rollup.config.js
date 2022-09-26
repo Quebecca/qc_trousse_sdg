@@ -1,12 +1,12 @@
-import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import scss from 'rollup-plugin-scss'
 import copy from 'rollup-plugin-copy'
 import del from 'rollup-plugin-delete'
-
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
+import cssReplace from 'postcss-replace'
+import pkg from './package.json';
 
 const path = require('path');
 
@@ -39,7 +39,15 @@ function serve() {
 }
 
 const scssOptions = {
-    processor: () => postcss([autoprefixer()]),
+    processor: css =>
+        postcss([
+            autoprefixer(),
+            cssReplace({
+                data: {
+                    'pkg-version' : pkg.version
+                }
+            })
+        ]),
     sourceMap: true,
     includePaths: [
         path.join(__dirname, '../../node_modules/'),
@@ -47,7 +55,8 @@ const scssOptions = {
         'src/scss',
     ],
     // outputStyle: 'compressed',
-    watch: 'src/scss',
+    watch: 'src/scss'
+
 };
 let addQcNamespaceToBootstrapClasses = (contents, filename) =>
     contents
@@ -81,34 +90,32 @@ export default [
             format: 'iife',
         },
         plugins: [
-            // svelte({
-            //     include: 'src/**/*.svelte',
-            // }),
-            // Tell any third-party plugins that we're building for the browser
             resolve({
                 browser: true
             }),
-            copy({
-                targets: [{
-                    src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
-                    dest: 'build/bootstrap/scss/mixins',
-                    transform: addQcNamespaceToBootstrapClasses
-                },{
-                    src: 'node_modules/bootstrap/scss/_grid.scss',
-                    dest: 'build/bootstrap/scss',
-                    transform: addQcNamespaceToBootstrapClasses
-                },{
-                    src: [
-                        'node_modules/bootstrap/scss/utilities/_display.scss',
-                        'node_modules/bootstrap/scss/utilities/_flex.scss',
-                        'node_modules/bootstrap/scss/utilities/_spacing.scss',
-                        ],
-                    dest: 'build/bootstrap/scss/utilities',
-                    transform: addQcNamespaceToBootstrapClasses
-                },]
-            }),
+            // code to generate bs files in /build
+            // copy({
+            //     targets: [{
+            //         src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
+            //         dest: 'build/bootstrap/scss/mixins',
+            //         transform: addQcNamespaceToBootstrapClasses
+            //     },{
+            //         src: 'node_modules/bootstrap/scss/_grid.scss',
+            //         dest: 'build/bootstrap/scss',
+            //         transform: addQcNamespaceToBootstrapClasses
+            //     },{
+            //         src: [
+            //             'node_modules/bootstrap/scss/utilities/_display.scss',
+            //             'node_modules/bootstrap/scss/utilities/_flex.scss',
+            //             'node_modules/bootstrap/scss/utilities/_spacing.scss',
+            //             ],
+            //         dest: 'build/bootstrap/scss/utilities',
+            //         transform: addQcNamespaceToBootstrapClasses
+            //     },]
+            // }),
             // will output compiled styles to output.css
             scss(scssOptions),
+
         ],
     },
     {

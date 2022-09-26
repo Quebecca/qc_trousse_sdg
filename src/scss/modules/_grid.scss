@@ -20,7 +20,7 @@ $spacers : (
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/mixins/grid";
 @import "bootstrap/scss/mixins/deprecate";
-@import "build/grid-framework";
+@import "build/bootstrap/scss/mixins/grid-framework";
 
 @mixin media-tablet() {
   @include media-breakpoint-down(md) {
