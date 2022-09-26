@@ -223,10 +223,10 @@ a .external-link-tail {
   white-space: nowrap;
 }
 a .external-link-tail img.external-link-img {
-  content: url(../img/external-link.svg?v=1.0.0);
   max-height: 1.1rem;
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
+  content: url(../img/external-link.svg?v=1.0.0);
 }
 
 .qc-code {

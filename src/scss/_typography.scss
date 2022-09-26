@@ -92,10 +92,9 @@ a {
   .external-link-tail {
     white-space: nowrap;
     img.external-link-img {
+      @include external-link-img();
       content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
-      max-height: rem(11);
-      max-width: rem(11);
-      margin-bottom: rem(1.6);
+
     }
   }
 }

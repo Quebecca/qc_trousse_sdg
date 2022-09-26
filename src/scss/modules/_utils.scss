@@ -30,3 +30,9 @@
 @mixin active-link() {
   color: token-value(color, link, active);
 }
+
+@mixin external-link-img() {
+  max-height: rem(11);
+  max-width: rem(11);
+  margin-bottom: rem(1.6);
+}

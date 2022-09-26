@@ -11,7 +11,6 @@ html {
   box-sizing: inherit;
 }
 
-@import "build/bootstrap/scss/mixins/grid-framework";
 @import "build/bootstrap/scss/grid";
 
 // Décommenter ces lignes pour ajouter les classes utilitaires bootstrap précédées de « qc- »,

@@ -1,22 +1,6 @@
 @use "utils" as utils;
-@use "tokens" as *;
 @use "map" as *;
-@use "sass:map";
-@import "bootstrap";
-$enable-grid-classes: utils.$enable-grid-classes;
-$enable-deprecation-messages : false;
-$grid-breakpoints: map.get($xl-tokens, grid, breakpoint);
-$grid-gutter-width: map.get($xl-tokens, grid, gutter);
-$container-max-widths: map.get($xl-tokens, grid, container-max-width);
-
-$spacers : (
-  0: 0,
-  1: token-value(spacer sm),
-  2: token-value(spacer md),
-  3: token-value(spacer lg),
-  4: token-value(spacer xl),
-);
-
+@import "bootstrap-override";
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/mixins/grid";
 @import "bootstrap/scss/mixins/deprecate";
