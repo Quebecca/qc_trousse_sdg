@@ -58,6 +58,8 @@ const scssOptions = {
     watch: 'src/scss'
 
 };
+
+
 let addQcNamespaceToBootstrapClasses = (contents, filename) =>
     contents
         .toString()
@@ -69,24 +71,29 @@ export default [
     {
         input: 'src/qc-catalog-sdg.js',
         output: {
-            file: 'public/css/qc-catalog-sdg.js',
+            file: 'public/js/qc-catalog-sdg.js',
             format: 'iife'
         },
         plugins: [
             resolve({
                 browser: true
             }),
-            serve(),
-            //Enable the Hot Reload
-            livereload('public'),
-            scss(scssOptions)
+            // serve(),
+            // //Enable the Hot Reload
+            // livereload('public'),
+            scss(
+                Object.assign(
+                    scssOptions,
+                    {output: 'public/css/qc-catalog-sdg.css'}
+                )
+            )
         ],
     },
     {
         // This `main.js` file we wrote
         input: 'src/qc-sdg.js',
         output: {
-            file: 'dist/css/qc-sdg.js',
+            file: 'dist/qc-sdg.js',
             format: 'iife',
         },
         plugins: [
@@ -94,6 +101,7 @@ export default [
                 browser: true
             }),
             // code to generate bs files in /build
+            // uncomment to re-generate…
             // copy({
             //     targets: [{
             //         src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
@@ -114,7 +122,7 @@ export default [
             //     },]
             // }),
             // will output compiled styles to output.css
-            scss(scssOptions),
+            scss(Object.assign(scssOptions, {output: 'dist/css/qc-sdg.css'}))
 
         ],
     },
@@ -122,14 +130,19 @@ export default [
         // token only css file
         input: 'src/qc-sdg-design-tokens.js',
         output: {
-            file: 'dist/css/qc-sdg-design-tokens.js',
+            file: 'dist/qc-sdg-design-tokens.js',
             format: 'iife',
         },
         plugins: [
             resolve({
                 browser: true
             }),
-            scss(scssOptions),
+            scss(
+                Object.assign(
+                    scssOptions,
+                    {output: 'dist/css/qc-sdg-design-tokens.css'}
+                )
+            )
         ],
     },
     {
@@ -142,16 +155,15 @@ export default [
             scss(), // needed, since the script contains scss…
             del({ // deletion of uneeded js files
                 targets: [
-                    'public/css/qc-catalog-sdg.js',
-                    'dist/css/qc-sdg.js',
-                    'dist/css/qc-sdg-design-tokens.js'
+                    'dist/qc-sdg.js',
+                    'dist/qc-sdg-design-tokens.js'
                 ],
                 verbose: true
             }),
             copy({
                 targets: [
                     {src: `assets/*`, dest: [`dist`,`public`]},
-                    {src: [`dist/css/qc-sdg.css`,`dist/css/qc-sdg.css.map`], dest: `public/css`},
+                    {src: [`dist/css/qc-sdg.css`,`dist/css/qc-sdg.css.map`], dest: `public/css`}
                 ],
                 verbose: true,
             }),
