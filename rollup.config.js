@@ -8,6 +8,8 @@ import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 
+const BSCustomization = process.env.npm_lifecycle_event == 'bootstrap-customization';
+
 const path = require('path');
 
 function serve() {
@@ -44,7 +46,7 @@ const scssOptions = {
             autoprefixer(),
             cssReplace({
                 data: {
-                    'pkg-version' : pkg.version
+                    'pkg-version': pkg.version
                 }
             })
         ]),
@@ -54,9 +56,9 @@ const scssOptions = {
         'node_modules/',
         'src/scss',
     ],
+    output: false, // no output by default
     // outputStyle: 'compressed',
     watch: 'src/scss'
-
 };
 
 
@@ -67,92 +69,23 @@ let addQcNamespaceToBootstrapClasses = (contents, filename) =>
             /\.(container|row|col|order|offset|d|flex|justify|align|m|#)/g,
             '\.qc-$1'
         );
-export default [
-    {
-        input: 'src/qc-catalog-sdg.js',
-        output: {
-            file: 'public/js/qc-catalog-sdg.js',
-            format: 'iife'
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            // serve(),
-            // //Enable the Hot Reload
-            // livereload('public'),
-            scss(
-                Object.assign(
-                    scssOptions,
-                    {output: 'public/css/qc-catalog-sdg.css'}
-                )
-            )
-        ],
-    },
-    {
-        // This `main.js` file we wrote
-        input: 'src/qc-sdg.js',
-        output: {
-            file: 'dist/qc-sdg.js',
-            format: 'iife',
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            // code to generate bs files in /build
-            // uncomment to re-generate…
-            // copy({
-            //     targets: [{
-            //         src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
-            //         dest: 'build/bootstrap/scss/mixins',
-            //         transform: addQcNamespaceToBootstrapClasses
-            //     },{
-            //         src: 'node_modules/bootstrap/scss/_grid.scss',
-            //         dest: 'build/bootstrap/scss',
-            //         transform: addQcNamespaceToBootstrapClasses
-            //     },{
-            //         src: [
-            //             'node_modules/bootstrap/scss/utilities/_display.scss',
-            //             'node_modules/bootstrap/scss/utilities/_flex.scss',
-            //             'node_modules/bootstrap/scss/utilities/_spacing.scss',
-            //             ],
-            //         dest: 'build/bootstrap/scss/utilities',
-            //         transform: addQcNamespaceToBootstrapClasses
-            //     },]
-            // }),
-            // will output compiled styles to output.css
-            scss(Object.assign(scssOptions, {output: 'dist/css/qc-sdg.css'}))
 
-        ],
+// base task to process without output
+let noOutputTask = {
+    input: 'src/qc-sdg.js',
+    watch: {
+        skipWrite: true, // prevent output generation
     },
-    {
-        // token only css file
-        input: 'src/qc-sdg-design-tokens.js',
-        output: {
-            file: 'dist/qc-sdg-design-tokens.js',
-            format: 'iife',
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            scss(
-                Object.assign(
-                    scssOptions,
-                    {output: 'dist/css/qc-sdg-design-tokens.css'}
-                )
-            )
-        ],
-    },
-    {
-        // last process without output to move, copy, delete operations
-        input: 'src/qc-sdg.js',
-        watch: {
-            skipWrite: true, // prevent output generation
-        },
-        plugins: [
-            scss(), // needed, since the script contains scss…
+    plugins: [
+        scss(scssOptions), // needed, since the script contains scss…
+    ]
+};
+
+let rollupOptions;
+
+switch (process.env.npm_lifecycle_event) { // contains the npm run command
+    case "dev":
+        noOutputTask.plugins.push(
             del({ // deletion of uneeded js files
                 targets: [
                     'dist/qc-sdg.js',
@@ -162,11 +95,96 @@ export default [
             }),
             copy({
                 targets: [
-                    {src: `assets/*`, dest: [`dist`,`public`]},
-                    {src: [`dist/css/qc-sdg.css`,`dist/css/qc-sdg.css.map`], dest: `public/css`}
+                    {src: `assets/*`, dest: [`dist`, `public`]},
+                    {src: [`dist/css/qc-sdg.css`, `dist/css/qc-sdg.css.map`], dest: `public/css`}
                 ],
                 verbose: true,
-            }),
-        ]
-    },
-];
+            }),);
+
+        rollupOptions = [
+            {
+                input: 'src/qc-catalog-sdg.js',
+                output: {
+                    file: 'public/js/qc-catalog-sdg.js',
+                    format: 'iife'
+                },
+                plugins: [
+                    resolve({
+                        browser: true
+                    }),
+                    serve(),
+                    //Enable the Hot Reload
+                    livereload('public'),
+                    scss(
+                        Object.assign(
+                            scssOptions,
+                            {output: 'public/css/qc-catalog-sdg.css'}
+                        )
+                    )
+                ],
+            },
+            {
+                // This `main.js` file we wrote
+                input: 'src/qc-sdg.js',
+                output: {
+                    file: 'dist/qc-sdg.js',
+                    format: 'iife',
+                },
+                plugins: [
+                    resolve({
+                        browser: true
+                    }),
+                    // will output compiled styles to output.css
+                    scss(Object.assign(scssOptions, {output: 'dist/css/qc-sdg.css'}))
+
+                ],
+            },
+            {
+                // token only css file
+                input: 'src/qc-sdg-design-tokens.js',
+                output: {
+                    file: 'dist/qc-sdg-design-tokens.js',
+                    format: 'iife',
+                },
+                plugins: [
+                    resolve({
+                        browser: true
+                    }),
+                    scss(
+                        Object.assign(
+                            scssOptions,
+                            {output: 'dist/css/qc-sdg-design-tokens.css'}
+                        )
+                    )
+                ],
+            },
+            noOutputTask
+        ];
+        break;
+    case "bootstrap-customization":
+        noOutputTask.plugins.unshift(copy({
+            targets: [{
+                src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
+                dest: 'build/bootstrap/scss/mixins',
+                transform: addQcNamespaceToBootstrapClasses
+            }, {
+                src: 'node_modules/bootstrap/scss/_grid.scss',
+                dest: 'build/bootstrap/scss',
+                transform: addQcNamespaceToBootstrapClasses
+            }, {
+                src: [
+                    'node_modules/bootstrap/scss/utilities/_display.scss',
+                    'node_modules/bootstrap/scss/utilities/_flex.scss',
+                    'node_modules/bootstrap/scss/utilities/_spacing.scss',
+                ],
+                dest: 'build/bootstrap/scss/utilities',
+                transform: addQcNamespaceToBootstrapClasses
+            },]
+        }),)
+        rollupOptions = [noOutputTask];
+        break;
+}
+
+export default rollupOptions;
+
+
