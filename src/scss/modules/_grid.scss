@@ -4,7 +4,7 @@
 @import "bootstrap/scss/mixins/breakpoints";
 @import "bootstrap/scss/mixins/grid";
 @import "bootstrap/scss/mixins/deprecate";
-@import "build/bootstrap/scss/mixins/grid-framework";
+@import "lib/bootstrap/scss/mixins/grid-framework";
 
 @mixin media-tablet() {
   @include media-breakpoint-down(md) {

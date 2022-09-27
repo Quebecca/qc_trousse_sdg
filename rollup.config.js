@@ -8,7 +8,7 @@ import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 
-const BSCustomization = process.env.npm_lifecycle_event == 'bootstrap-customization';
+const BSCustomization = process.env.npm_lifecycle_event == 'build';
 
 const path = require('path');
 
