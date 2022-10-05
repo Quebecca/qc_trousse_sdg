@@ -1,3 +1,4 @@
+import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import scss from 'rollup-plugin-scss'
@@ -9,7 +10,7 @@ import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 
 const dev_process = process.env.npm_lifecycle_event == 'dev';
-
+const verbose = false;
 const path = require('path');
 
 function serve() {
@@ -60,6 +61,12 @@ const scssOptions = {
     watch: 'src/scss'
 };
 
+let svelteOptions = {
+    compilerOptions: {
+        // enable run-time checks
+        customElement: true
+    }
+};
 
 let addQcNamespaceToBootstrapClasses = (contents, filename) =>
     contents
@@ -76,20 +83,21 @@ let finisher = {
         skipWrite: true, // prevent output generation
     },
     plugins: [
+        svelte(svelteOptions),
         scss({output: false}), // needed, since the script contains scss…
         del({ // deletion of uneeded js files
             targets: [
-                'dist/qc-sdg.js',
                 'dist/qc-sdg-design-tokens.js'
             ],
-            verbose: true
+            verbose: verbose
         }),
         copy({
             targets: [
                 {src: `assets/*`, dest: [`dist`, `public`, `build`]},
-                {src: [`build/css/qc-sdg.css`, `build/css/qc-sdg.css.map`], dest: `public/css`}
+                {src: [`build/css/qc-sdg.css`, `build/css/qc-sdg.css.map`], dest: `public/css`},
+                {src: [`dist/js/qc-sdg.js`], dest: `public/js`}
             ],
-            verbose: true,
+            verbose: verbose,
         }),
     ]
 };
@@ -120,17 +128,22 @@ let rollupOptions = [
         // This `main.js` file we wrote
         input: 'src/qc-sdg.js',
         output: {
-            file: 'dist/qc-sdg.js',
+            file: (dev_process ? 'public': 'dist') + '/js/qc-sdg.js',
             format: 'iife',
         },
         plugins: [
+            svelte(svelteOptions),
             resolve({
-                browser: true
+                browser: true,
+                // Force resolving for these modules to root's node_modules that helps
+                // to prevent bundling the same package multiple times if package is
+                // imported from dependencies.
+                dedupe: ['svelte']
             }),
             // will output compiled styles to output.css
             scss(Object.assign(scssOptions, {
                 output: dev_process
-                    ? 'build/css/qc-sdg.css'
+                    ? 'public/css/qc-sdg.css'
                     : 'dist/css/qc-sdg.min.css',
             }))
         ],

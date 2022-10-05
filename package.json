@@ -30,5 +30,8 @@
     "rollup-watch": "^3.2.2",
     "sass": "^1.53.0",
     "sirv-cli": "^2.0.2"
+  },
+  "dependencies": {
+    "svelte": "^3.50.1"
   }
 }
