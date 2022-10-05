@@ -303,6 +303,7 @@ a .external-link-tail img.external-link-img {
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
   content: url(../img/external-link.svg?v=1.0.0);
+  display: inline-block;
 }
 
 .qc-code {
