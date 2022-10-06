@@ -12,12 +12,17 @@ body {
   color: token-value(color, text, primary);
 }
 
-h1, .qc-h1 {
-  @include header-font(h1);
-  margin-top: rem(9 * $base-spacer);
-  margin-bottom: rem(4 * $base-spacer);
 
-  &:after{
+@for $i from 1 through 6 {
+  h#{$i}, .qc-h#{$i} {
+    @include header-font(h#{$i});
+    margin-top: token-value(spacer h#{$i} mt);
+    margin-bottom: token-value(spacer h#{$i} mb);
+  }
+}
+
+h1, .qc-h1 {
+  &:after {
     content: "";
     display:block;
     margin: 0;
@@ -25,37 +30,6 @@ h1, .qc-h1 {
     padding-top: rem($base-spacer);
     border-bottom: 4px solid token-value(color, accent);
   }
-}
-
-h2, .qc-h2 {
-  @include header-font(h2);
-  margin-top: rem(6 * $base-spacer);
-  margin-bottom: token-value(spacer,sm);
-}
-
-h3, .qc-h3 {
-  @include header-font(h3);
-  margin-top: token-value(spacer,md);
-  margin-bottom: token-value(spacer,sm);
-
-}
-
-h4, .qc-h4 {
-  @include header-font(h4);
-  margin-top: token-value(spacer,md);
-  margin-bottom: rem($base-spacer);
-}
-
-h5,.qc-h5 {
-  @include header-font(h5);
-  margin-top: token-value(spacer,sm);
-  margin-bottom: 0;
-}
-
-h6,.qc-h6 {
-  @include header-font(h6);
-  margin-top: token-value(spacer,sm);
-  margin-bottom: 0;
 }
 
 .qc-subhead {

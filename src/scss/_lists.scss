@@ -4,13 +4,13 @@
 ul {
     list-style: disc;
     margin-top: 0;
-    margin-bottom: token-value(spacer md);
-    padding-left: rem(4 * $base-spacer);
+    margin-bottom: token-value(spacer list mb);
+    padding-left: token-value(spacer list pl);
     li {
-        margin-bottom: token-value(spacer,sm);
+        margin-bottom: token-value(spacer list-item mb);
     }
     ul {
-        margin-top: token-value(spacer,sm);
+        margin-top: token-value(spacer list-item mb);
         list-style: circle;
     }
 }
