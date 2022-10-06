@@ -93,9 +93,7 @@ let finisher = {
         }),
         copy({
             targets: [
-                {src: `assets/*`, dest: [`dist`, `public`, `build`]},
-                {src: [`build/css/qc-sdg.css`, `build/css/qc-sdg.css.map`], dest: `public/css`},
-                {src: [`dist/js/qc-sdg.js`], dest: `public/js`}
+                {src: `assets/*`, dest: [`dist`, `public`]},
             ],
             verbose: verbose,
         }),
@@ -115,7 +113,7 @@ let rollupOptions = [
             }),
             dev_process && serve(),
             //Enable the Hot Reload
-            livereload('public'),
+            dev_process && livereload('public'),
             scss(
                 Object.assign(
                     scssOptions,
@@ -161,7 +159,7 @@ let rollupOptions = [
             }),
             scss(Object.assign(scssOptions,{
                 output: dev_process
-                    ? 'build/css/qc-sdg-design-tokens.css'
+                    ? 'public/css/qc-sdg-design-tokens.css'
                     : 'dist/css/qc-sdg-design-tokens.min.css',
             })),
         ],
