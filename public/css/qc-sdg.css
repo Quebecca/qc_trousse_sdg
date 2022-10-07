@@ -326,7 +326,7 @@ a .external-link-img {
   content: url(../img/external-link.svg?v=1.0.0);
 }
 
-.qc-code {
+code, .qc-code {
   font-family: var(--qc-font-family-code);
 }
 
