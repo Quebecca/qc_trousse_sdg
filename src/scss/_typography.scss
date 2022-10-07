@@ -65,11 +65,10 @@ a {
   }
   .external-link-tail {
     white-space: nowrap;
-    img.external-link-img {
-      @include external-link-img();
-      content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
-      display: inline-block;
-    }
+  }
+  .external-link-img {
+    @include external-link-img();
+    content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
   }
 }
 
