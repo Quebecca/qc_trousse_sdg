@@ -142,23 +142,23 @@ $xl-tokens: (
             mb: rem(4 * $base-spacer),
         ),
         h2: (
-            mt: rem(6 * $base-spacer),
+            mt: rem(9 * $base-spacer),
             mb: rem(2 * $base-spacer),
         ),
         h3: (
-            mt: rem(3 * $base-spacer),
-            mb: rem(2 * $base-spacer),
+            mt: rem(6 * $base-spacer),
+            mb: rem(1 * $base-spacer),
         ),
         h4: (
-            mt: rem(3 * $base-spacer),
+            mt: rem(6 * $base-spacer),
             mb: rem(1 * $base-spacer),
         ),
         h5: (
-            mt: rem(2 * $base-spacer),
+            mt: token-value(spacer md),
             mb: 0,
         ),
         h6: (
-            mt: rem(2 * $base-spacer),
+            mt: token-value(spacer md),
             mb: 0,
         ),
         content-block : (
@@ -205,9 +205,9 @@ $breakpoints-tokens: (
         spacer: (
           // prefixes : m -> margin, p -> padding, t -> top, b -> bottom, l -> left, r -> right
           // mt -> margin top
-            h1: (
+            h2: (
                 mt: rem(6 * $base-spacer),
-                mb: rem(2 * $base-spacer),
+                mb: rem(1 * $base-spacer),
             )
         )
     )
