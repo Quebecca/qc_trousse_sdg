@@ -4,14 +4,14 @@
 
 La trousse de développement du système de design gouvernemental est un projet node.js dont l'objet est de générer un jeu de ressources — feuilles de style, images, fichiers javascript, etc — à utiliser pour intégrer les composants du système de design gouvernemental (SDG) dans un site web.
 Elle contient :
-- les feuilles de styles minifiées pour être incluse en production, dans le dossier `dist` ;
-- ces mêmes feuilles de style non minifiées, pour lecture simplifiées (lors d'un usage en développement par exemple) — dans le dossier `build` ;
+- les feuilles de styles minifiées pour être incluses en production, dans le dossier `dist` ;
+- ces mêmes feuilles de style non minifiées, pour lecture simplifiées (lors d'un usage en développement par exemple) — dans le dossier `public/css` ;
 - Un catalogue des composants du SDG  au format html au chemin `/public/index.html`; 
 - les fichers sources scss et js dans `src`
 
 ## Utilisation
 - placer le dossier `dist`  dans un dossier public ;
-- insérer la feuille de style `dist/qc-sdg.css` dans vos pages html.
+- insérer la feuille de style `dist/css/qc-sdg.min.css` dans vos pages html.
 ```html
 <head>
     ...
@@ -20,7 +20,7 @@ Elle contient :
 ```
 ### Design tokens seulement
 
-Les réglages de la trousses sont isolés sous forme de variable css dans le fichier `build/css/qc-design-tokens-sdg.css`. Il est possible de les intégrer à une feuille de style déjà existante.
+Les réglages de la trousses sont isolés sous forme de variable css dans le fichier `dist/css/qc-design-tokens-sdg.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
 
 ```css
 // styles.css
@@ -45,7 +45,7 @@ ou bien :
 ```
 
 ## Catalogue des composants du SDG
-Les composants du SDG sont catalogués dans le fichier HTML au chemin `public/index.html`, qu'il est possible de visualiser par simple glisser-déposer dans un navigateur.  
+Les composants du SDG sont catalogués dans le fichier HTML au chemin `public/index.html`.  
 
 
 ## Développement
