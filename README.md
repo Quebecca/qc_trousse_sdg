@@ -20,7 +20,7 @@ Elle contient :
 ```
 ### Design tokens seulement
 
-Les réglages de la trousses sont isolés sous forme de variable css dans le fichier `dist/css/qc-design-tokens-sdg.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
+Les réglages de la trousses sont isolés sous forme de variable css dans le fichier `dist/css/qc-sdg-design-tokens.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
 
 ```css
 // styles.css
