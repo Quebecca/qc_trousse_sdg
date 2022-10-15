@@ -130,6 +130,7 @@ $xl-tokens: (
     ),
     spacer: (
       // base scale
+        xs: rem(1 * $base-spacer),
         sm: rem(2 * $base-spacer),
         md: rem(3 * $base-spacer),
         lg: rem(6 * $base-spacer),
@@ -143,15 +144,15 @@ $xl-tokens: (
         ),
         h2: (
             mt: rem(9 * $base-spacer),
-            mb: rem(2 * $base-spacer),
+            mb: token-value(spacer sm),
         ),
         h3: (
-            mt: rem(6 * $base-spacer),
-            mb: rem(1 * $base-spacer),
+            mt: token-value(spacer lg),
+            mb: token-value(spacer xs),
         ),
         h4: (
-            mt: rem(6 * $base-spacer),
-            mb: rem(1 * $base-spacer),
+            mt: token-value(spacer lg),
+            mb: token-value(spacer xs),
         ),
         h5: (
             mt: token-value(spacer md),
