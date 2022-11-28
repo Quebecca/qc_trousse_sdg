@@ -147,6 +147,30 @@ let rollupOptions = [
         ],
     },
     {
+        // qc-sdg without grid system
+        input: 'src/qc-sdg-no-grid.js',
+        output: {
+            file: (dev_process ? 'public': 'dist') + '/js/qc-sdg-no-grid.js',
+            format: 'iife',
+        },
+        plugins: [
+            svelte(svelteOptions),
+            resolve({
+                browser: true,
+                // Force resolving for these modules to root's node_modules that helps
+                // to prevent bundling the same package multiple times if package is
+                // imported from dependencies.
+                dedupe: ['svelte']
+            }),
+            // will output compiled styles to output.css
+            scss(Object.assign(scssOptions, {
+                output: dev_process
+                    ? 'public/css/qc-sdg-no-grid.css'
+                    : 'dist/css/qc-sdg-no-grid.min.css',
+            }))
+        ],
+    },
+    {
         // token only css file
         input: 'src/qc-sdg-design-tokens.js',
         output: {

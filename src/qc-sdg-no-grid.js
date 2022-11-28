@@ -1,0 +1,1 @@
+import './scss/qc-sgd-no-grid.scss';
