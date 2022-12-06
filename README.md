@@ -55,3 +55,9 @@ Dans cette première version de la trousse, les personnes intéressées à compi
 ## Versions
 
 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.
+1.1.0 - Ajout d'une css sans le système de grille
+1.1.1 - 
+
+## Remerciements
+
+Un grand merci au Ministère de l'Emploi et de la Solidarité Sociale, dont le [projet UTD ](https://github.com/MTESSDev/utd-webcomponents/releases)a largement inspiré cette trousse. 
