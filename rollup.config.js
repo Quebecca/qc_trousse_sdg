@@ -51,7 +51,7 @@ const scssOptions = {
                 }
             })
         ]),
-    sourceMap: true,
+    sourceMap: false,
     includePaths: [
         path.join(__dirname, '../../node_modules/'),
         'node_modules/',
