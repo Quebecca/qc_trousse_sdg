@@ -8,8 +8,9 @@ import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
+import babel from 'rollup-plugin-babel';
 
-const dev_process = process.env.npm_lifecycle_event == 'dev';
+const dev_process = (process.env.npm_lifecycle_event == 'dev');
 const verbose = false;
 const path = require('path');
 
@@ -84,8 +85,8 @@ let rollupOptions = [
             dev_process && livereload('public'),
             scss(
                 Object.assign(
-                    scssOptions,
-                    {output: 'public/css/qc-catalog-sdg.css'}
+                    {output: 'public/css/qc-catalog-sdg.css'},
+                    scssOptions
                 )
             )
         ],
@@ -99,6 +100,32 @@ let rollupOptions = [
         },
         plugins: [
             svelte(svelteOptions),
+            babel({
+                runtimeHelpers: true,
+                extensions: [ '.js', '.mjs', '.html', '.svelte' ],
+                exclude: [ 'node_modules/@babel/**', 'node_modules/core-js/**' ],
+                presets: [
+                    [
+                        '@babel/preset-env',
+                        {
+                            targets: {
+                                ie: '11'
+                            },
+                            useBuiltIns: 'usage',
+                            corejs: 3
+                        }
+                    ]
+                ],
+                plugins: [
+                    '@babel/plugin-syntax-dynamic-import',
+                    [
+                        '@babel/plugin-transform-runtime',
+                        {
+                            useESModules: true
+                        }
+                    ]
+                ]
+            }),
             resolve({
                 browser: true,
                 // Force resolving for these modules to root's node_modules that helps
@@ -107,11 +134,13 @@ let rollupOptions = [
                 dedupe: ['svelte']
             }),
             // will output compiled styles to output.css
-            scss(Object.assign(scssOptions, {
+            scss(Object.assign({
                 output: dev_process
                     ? 'public/css/qc-sdg.css'
-                    : 'dist/css/qc-sdg.min.css',
-            }))
+                    : 'dist/css/qc-sdg.min.css'
+                }
+                , scssOptions
+            ))
         ],
     },
     {
@@ -131,11 +160,13 @@ let rollupOptions = [
                 dedupe: ['svelte']
             }),
             // will output compiled styles to output.css
-            scss(Object.assign(scssOptions, {
+            scss(Object.assign( {
                 output: dev_process
                     ? 'public/css/qc-sdg-no-grid.css'
                     : 'dist/css/qc-sdg-no-grid.min.css',
-            }))
+                }
+                , scssOptions
+            ))
         ],
     },
     {
@@ -149,11 +180,13 @@ let rollupOptions = [
             resolve({
                 browser: true
             }),
-            scss(Object.assign(scssOptions,{
+            scss(Object.assign({
                 output: dev_process
                     ? 'public/css/qc-sdg-design-tokens.css'
                     : 'dist/css/qc-sdg-design-tokens.min.css',
-            })),
+                }
+                , scssOptions
+            )),
         ],
     },
     {
