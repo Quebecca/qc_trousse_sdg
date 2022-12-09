@@ -71,27 +71,6 @@ let svelteOptions = {
 
 let rollupOptions = [
     {
-        input: 'src/qc-catalog-sdg.js',
-        output: {
-            file: 'public/js/qc-catalog-sdg.js',
-            format: 'iife'
-        },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            dev_process && serve(),
-            //Enable the Hot Reload
-            dev_process && livereload('public'),
-            scss(
-                Object.assign(
-                    {output: 'public/css/qc-catalog-sdg.css'},
-                    scssOptions
-                )
-            )
-        ],
-    },
-    {
         // This `main.js` file we wrote
         input: 'src/qc-sdg.js',
         output: {
@@ -213,6 +192,31 @@ let rollupOptions = [
         ]
     }
 ];
+
+
+if (dev_process) {
+    rollupOptions.unshift({
+        input: 'src/qc-catalog-sdg.js',
+        output: {
+            file: 'public/js/qc-catalog-sdg.js',
+            format: 'iife'
+        },
+        plugins: [
+            resolve({
+                browser: true
+            }),
+            dev_process && serve(),
+            //Enable the Hot Reload
+            dev_process && livereload('public'),
+            scss(
+                Object.assign(
+                    {output: 'public/css/qc-catalog-sdg.css'},
+                    scssOptions
+                )
+            )
+        ],
+    },)
+}
 
 export default rollupOptions;
 
