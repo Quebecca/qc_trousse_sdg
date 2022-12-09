@@ -1,5 +1,5 @@
 @use "modules/grid" as *;
-@import "lib/bootstrap/scss/grid";
+@import "modules/bootstrap-rewrite/grid";
 
 // Décommenter ces lignes pour ajouter les classes utilitaires bootstrap précédées de « qc- »,
 // selon le même principe que pour la grille.

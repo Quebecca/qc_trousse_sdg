@@ -194,11 +194,11 @@ if (!dev_process) {
     finisher.plugins.unshift(copy({
         targets: [{
             src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
-            dest: 'lib/bootstrap/scss/mixins',
+            dest: 'src/scss/modules/bootstrap-rewrite/mixins',
             transform: addQcNamespaceToBootstrapClasses
         }, {
             src: 'node_modules/bootstrap/scss/_grid.scss',
-            dest: 'lib/bootstrap/scss',
+            dest: 'src/scss/modules/bootstrap-rewrite',
             transform: addQcNamespaceToBootstrapClasses
         }, {
             src: [
@@ -206,7 +206,7 @@ if (!dev_process) {
                 'node_modules/bootstrap/scss/utilities/_flex.scss',
                 'node_modules/bootstrap/scss/utilities/_spacing.scss',
             ],
-            dest: 'lib/bootstrap/scss/utilities',
+            dest: 'src/scss/modules/bootstrap-rewrite/utilities',
             transform: addQcNamespaceToBootstrapClasses
         },]
     }),);
