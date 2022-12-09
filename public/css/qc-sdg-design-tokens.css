@@ -120,6 +120,11 @@
   --qc-grid-container-max-width-lg: 992px;
   --qc-grid-container-max-width-xl: 1200px;
 }
+@media (max-width: 1199.98px) {
+  :root {
+    --qc-grid-gutter: 24px;
+  }
+}
 @media (max-width: 991.98px) {
   :root {
     --qc-font-size-h3: 2.5rem;
@@ -129,5 +134,10 @@
     --qc-line-height-h1: 4rem;
     --qc-spacer-h2-mt: 4.8rem;
     --qc-spacer-h2-mb: 0.8rem;
+  }
+}
+@media (max-width: 767.98px) {
+  :root {
+    --qc-grid-gutter: 16px;
   }
 }

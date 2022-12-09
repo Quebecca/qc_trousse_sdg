@@ -9,7 +9,7 @@
 $enable-grid-classes: utils.$enable-grid-classes;
 $enable-deprecation-messages : false;
 $grid-breakpoints: map.get(tokens.$xl-tokens, grid, breakpoint);
-$grid-gutter-width: map.get(tokens.$xl-tokens, grid, gutter);
+$grid-gutter-width: tokens.token-value(grid gutter);
 $container-max-widths: map.get(tokens.$xl-tokens, grid, container-max-width);
 
 $spacers : (
@@ -21,10 +21,9 @@ $spacers : (
 );
 
 @import "bootstrap-for-qc-sdg/scss/mixins/breakpoints";
-@import "bootstrap-for-qc-sdg/scss/mixins/grid";
+@import "bootstrap-rewrite/mixins/grid";
 @import "bootstrap-for-qc-sdg/scss/mixins/deprecate";
 @import "bootstrap-rewrite/mixins/grid-framework";
-
 
 @mixin media-tablet() {
   @include media-breakpoint-down(md) {

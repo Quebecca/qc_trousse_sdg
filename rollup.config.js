@@ -68,13 +68,20 @@ let svelteOptions = {
     }
 };
 
-let addQcNamespaceToBootstrapClasses = (contents, filename) =>
+let rewriteBootstrap = (contents, filename) =>
     contents
         .toString()
+        // add qc- namespace prefix to bootstrap grid classes
         .replace(
             /\.(container|row|col|order|offset|d|flex|justify|align|m|#)/g,
             '\.qc-$1'
-        );
+        )
+        // replace gutter calc, based on token
+        .replace(
+            /(-?)\$gutter \* \.5/g,
+            'calc($11 * $gutter / 2)'
+        )
+        ;
 
 // rollup tasks finisher
 let finisher = {
@@ -195,11 +202,15 @@ if (!dev_process) {
         targets: [{
             src: 'node_modules/bootstrap/scss/mixins/_grid-framework.scss',
             dest: 'src/scss/modules/bootstrap-rewrite/mixins',
-            transform: addQcNamespaceToBootstrapClasses
+            transform: rewriteBootstrap
+        },{
+            src: 'node_modules/bootstrap/scss/mixins/_grid.scss',
+            dest: 'lib/bootstrap/scss/mixins',
+            transform: rewriteBootstrap
         }, {
             src: 'node_modules/bootstrap/scss/_grid.scss',
             dest: 'src/scss/modules/bootstrap-rewrite',
-            transform: addQcNamespaceToBootstrapClasses
+            transform: rewriteBootstrap
         }, {
             src: [
                 'node_modules/bootstrap/scss/utilities/_display.scss',
@@ -207,7 +218,7 @@ if (!dev_process) {
                 'node_modules/bootstrap/scss/utilities/_spacing.scss',
             ],
             dest: 'src/scss/modules/bootstrap-rewrite/utilities',
-            transform: addQcNamespaceToBootstrapClasses
+            transform: rewriteBootstrap
         },]
     }),);
 }
