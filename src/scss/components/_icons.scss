@@ -33,94 +33,94 @@
     height: 40px;
   }
 
-  &.warning {
+  &.qc-warning {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#warning);
   }
   
-  &.arrow-up-white {
+  &.qc-arrow-up-white {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-up-white);
   }
   
-  &.clipboard {
+  &.qc-clipboard {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#clipboard);
   }
   
-  &.error {
+  &.qc-error {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error);
   }
 
-  &.error-white {
+  &.qc-error-white {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error-white);
   }
   
-  &.information {
+  &.qc-information {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);  
   }
   
-  &.information-white {
+  &.qc-information-white {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information-white);  
   }
   
-  &.minus {
+  &.qc-minus {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#minus);  
   }
   
-  &.plus {
+  &.qc-plus {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#plus);  
   }
   
-  &.question-mark {
+  &.qc-question-mark {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#question-mark);  
   }
   
-  &.success {
+  &.qc-success {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success);  
   }
-  &.success-white {
+  &.qc-success-white {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success-white);  
   }
   
-  &.xclose-white {
+  &.qc-xclose-white {
     width: 16px;
     height: 16px;
     min-width: 16px;
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-white);  
   }
-  &.xclose-blue {
+  &.qc-xclose-blue {
     width: 16px;
     height: 16px;
     min-width: 16px;
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-blue);  
   }
   
-  &.chevron-blue, &.chevron-white {
+  &.qc-chevron-blue, &.qc-chevron-white {
     width: 16px;
     min-width: 16px;
     height: 10px;
   }
   
-  &.chevron-blue {
+  &.qc-chevron-blue {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-blue);
   }
   
-  &.chevron-white {
+  &.qc-chevron-white {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-white);
   }
   
-  &.facebook {
+  &.qc-facebook {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#facebook);
   }
   
-  &.linkedin {
+  &.qc-linkedin {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#linkedin);
     height: 30px;
   }
   
-  &.twitter {
+  &.qc-twitter {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#twitter);
   }
   
-  &.youtube {
+  &.qc-youtube {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#youtube);
   }
   

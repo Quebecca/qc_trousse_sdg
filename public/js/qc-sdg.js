@@ -4,7 +4,7 @@
   /*! Wrapper needed to support kebab case svelte customElements attributes. 
       Référence : https://github.com/sveltejs/svelte/issues/3852
   */
-  const customElements$1 = {
+  const customElements = {
     define: (tagName, CustomElement) => {
       class CustomElementWrapper extends CustomElement {
         static get observedAttributes() {
@@ -567,13 +567,13 @@
   			link = element("link");
   			this.c = noop;
   			attr(div0, "aria-hidden", "true");
-  			attr(div0, "class", div0_class_value = "qc-icon " + /*type*/ ctx[1]);
+  			attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[1]);
   			attr(div1, "class", "icon-container");
   			attr(h2, "class", "title");
   			attr(slot1, "name", "content");
   			attr(div2, "class", "text");
   			attr(div3, "class", "content");
-  			attr(div4, "class", div4_class_value = "qc-component qc-notice " + /*type*/ ctx[1]);
+  			attr(div4, "class", div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[1]);
   			attr(div4, "tabindex", "0");
   			attr(link, "rel", "stylesheet");
   			attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
@@ -597,7 +597,7 @@
   			insert(target, link, anchor);
   		},
   		p(ctx, [dirty]) {
-  			if (dirty & /*type*/ 2 && div0_class_value !== (div0_class_value = "qc-icon " + /*type*/ ctx[1])) {
+  			if (dirty & /*type*/ 2 && div0_class_value !== (div0_class_value = "qc-icon qc-" + /*type*/ ctx[1])) {
   				attr(div0, "class", div0_class_value);
   			}
 
@@ -616,7 +616,7 @@
   				if_block = null;
   			}
 
-  			if (dirty & /*type*/ 2 && div4_class_value !== (div4_class_value = "qc-component qc-notice " + /*type*/ ctx[1])) {
+  			if (dirty & /*type*/ 2 && div4_class_value !== (div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[1])) {
   				attr(div4, "class", div4_class_value);
   			}
   		},
@@ -709,7 +709,7 @@
 
   customElements.define("qc-notice", Notice);
 
-  exports.customElements = customElements$1;
+  exports.customElements = customElements;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 

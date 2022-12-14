@@ -12,9 +12,9 @@ Required tag for svelte to know were building a custom element.
 
 <!-- TODO Confirmer tabindex. On pense que c'est important de recevoir le focus (notamment dans les formulaires) en fait pour nous c'est très important, sinon en mode formulaire au lecteur écran (nav avec TAB, ce n'est jamais lu). -->
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<div class="qc-component qc-notice {type}" tabindex="0">
+<div class="qc-component qc-notice qc-{type}" tabindex="0">
   <div class="icon-container">
-    <div aria-hidden="true" class="qc-icon {type}"></div>
+    <div aria-hidden="true" class="qc-icon qc-{type}"></div>
   </div>
   <div class="content">
     <!-- TODO Confirmer qu'on veut un header. Si oui, possibilité de spécifier le niveau? -->

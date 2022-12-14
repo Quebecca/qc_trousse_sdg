@@ -10,7 +10,6 @@
   @include content-font(sm);
   margin-bottom: rem(4 * $base-spacer);
 
-
   .icon-container {
     display: flex;  
     padding: token-value(spacer, md) token-value(spacer, xs);
@@ -23,17 +22,17 @@
     }    
   }
 
-  &.information .icon-container {
+  &.qc-information .icon-container {
     background-color: token-value(color,blue,pale);    
   }  
-  &.warning .icon-container {
+  &.qc-warning .icon-container {
     background-color: token-value(color,yellow,pale);
   }
-  &.success .icon-container {
+  &.qc-success .icon-container {
     background-color: token-value(color,green,pale);
   }
 
-  &.error .icon-container {
+  &.qc-error .icon-container {
       background-color: token-value(color,pink,pale);
   }
 
