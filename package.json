@@ -27,7 +27,9 @@
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-svelte": "^7.1.0",
+    "rollup-plugin-terser": "^7.0.2",
     "rollup-watch": "^3.2.2",
+    "@rollup/plugin-replace": "^5.0.1",
     "sass": "^1.53.0",
     "sirv-cli": "^2.0.2"
   },

@@ -1,0 +1,75 @@
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+@use "../modules/grid" as *;
+
+.qc-notice {
+  display: flex;
+  border: 1px solid token-value(color,grey,light);
+  background-color: token-value(color,white);
+  word-break: break-word;
+  @include content-font(sm);
+  margin-bottom: rem(4 * $base-spacer);
+
+
+  .icon-container {
+    display: flex;  
+    padding: token-value(spacer, md) token-value(spacer, xs);
+    background-color: token-value(color,blue,pale);      
+
+    .qc-icon {
+      background-size: 100% auto;
+      min-width: token-value(spacer, md);      
+      height: token-value(spacer, md);
+    }    
+  }
+
+  &.information .icon-container {
+    background-color: token-value(color,blue,pale);    
+  }  
+  &.warning .icon-container {
+    background-color: token-value(color,yellow,pale);
+  }
+  &.success .icon-container {
+    background-color: token-value(color,green,pale);
+  }
+
+  &.error .icon-container {
+      background-color: token-value(color,pink,pale);
+  }
+
+
+  /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
+  .title {
+    margin: 0 0 token-value(spacer, xs) 0;
+    padding: 0;
+    @include content-font(sm, bold);
+    font-family: token-value(font, family, content); 
+  }
+
+  .content {
+      padding: token-value(spacer, md) rem(4 * $base-spacer) token-value(spacer, md) token-value(spacer, sm);
+      width: 100%;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+  }
+}
+
+/* Links in a error notice (eg. error summary) */
+qc-notice[type="error"] ul li a {
+  color: token-value(color,red,regular);
+
+  &:hover, &:focus {
+    text-decoration: none;
+  }  
+}
+
+
+@include media-mobile(){
+  .qc-notice {
+    .content {
+      padding: token-value(spacer, md) token-value(spacer, md) token-value(spacer, md) token-value(spacer, sm);  
+    }
+  }
+}

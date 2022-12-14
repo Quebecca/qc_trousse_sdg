@@ -1,0 +1,14 @@
+{
+  "name": "svg-sprite",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "generateSprite": "gulp generateSprite"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "4.0.2",
+    "gulp-svg-sprite": "1.5.0"
+  }
+}

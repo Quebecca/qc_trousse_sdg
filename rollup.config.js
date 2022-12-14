@@ -1,9 +1,11 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
+import { terser } from 'rollup-plugin-terser';
 import scss from 'rollup-plugin-scss'
 import copy from 'rollup-plugin-copy'
 import del from 'rollup-plugin-delete'
+import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
@@ -93,6 +95,7 @@ let finisher = {
         }),
         copy({
             targets: [
+                {src: `src/sprites/dist/view/svg/sprite.view.svg`, dest: `assets/img`, rename: `qc-sprite.svg`},                                                
                 {src: `assets/*`, dest: [`dist`, `public`]},
             ],
             verbose: verbose,
@@ -126,10 +129,15 @@ let rollupOptions = [
         // This `main.js` file we wrote
         input: 'src/qc-sdg.js',
         output: {
-            file: (dev_process ? 'public': 'dist') + '/js/qc-sdg.js',
+            file: dev_process ? 'public/js/qc-sdg.js': 'dist/js/qc-sdg.min.js',
             format: 'iife',
         },
         plugins: [
+            replace({            
+                _vSDG_ : `v${pkg.version}`, //Permet d'injecter la version du package dans le fichier js généré (Remplace _vSDG_ par la version du package)
+                customElements$1 : 'customElements', //Ici c'est une patch pour notre wrapper de customElement (permettant les attributs kebab). Je n'ai pas trouvé de façon d'avoir le code au bon format après que svelte ait compilé.
+                delimiters: ['', '']
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,
@@ -138,6 +146,9 @@ let rollupOptions = [
                 // imported from dependencies.
                 dedupe: ['svelte']
             }),
+            // compress js only when build
+            !dev_process && terser(),
+
             // will output compiled styles to output.css
             scss(Object.assign(scssOptions, {
                 output: dev_process
@@ -208,7 +219,8 @@ if (!dev_process) {
             ],
             dest: 'lib/bootstrap/scss/utilities',
             transform: addQcNamespaceToBootstrapClasses
-        },]
+        }
+    ]
     }),);
 }
 rollupOptions.push(finisher);

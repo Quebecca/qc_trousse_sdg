@@ -1,0 +1,40 @@
+@use "modules//utils" as *;
+@use "modules/tokens" as *;
+
+table.qc-table{
+  margin-bottom: 0;
+  background-color: token-value(color,white);
+  width: 100%;
+  border-collapse: collapse;
+
+  &>thead {
+    background-color: token-value(color,blue,dark);
+    color: token-value(color,white);
+    border: 1px solid token-value(color,blue,dark);
+
+    th{
+      @include content-font(md, bold);
+    }
+  }
+
+  thead th, tbody th, tbody td {
+    vertical-align: middle;
+    text-align: left;
+    padding: token-value(spacer, sm);    
+  }
+
+
+  /* ----- Striped tables ----- */
+  &.qc-striped tbody tr:nth-of-type(even) {
+    background-color:token-value(color,grey,pale);
+  }
+
+  /* ----- Bordered tables ----- */
+  &.qc-bordered {
+    tbody th, tbody td {
+      border-bottom: 1px solid token-value(color,grey,light);
+    }
+  } 
+
+  /* ----- TODO add footer style ----- */  
+}

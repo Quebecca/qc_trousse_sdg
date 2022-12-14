@@ -1,0 +1,23 @@
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+@use "../modules/grid" as *;
+
+qc-accordion ul, qc-dialog ul, qc-notice ul, qc-section ul, qc-tooltip ul, .qc-component ul {
+  padding-left: 20px;/*TODO vérifier avec Marc, car le spacer du SDG ne correspond pas à ce qui est dans le site du système de design.*/
+}
+
+qc-accordion ul:last-child, qc-dialog ul:last-child, qc-notice ul:last-child, qc-section ul:last-child, qc-tooltip ul:last-child, .qc-component ul:last-child {
+  margin-bottom: 0;
+}
+
+qc-accordion ul li:last-of-type, qc-dialog ul li:last-of-type, qc-notice ul li:last-of-type, qc-section ul li:last-of-type, qc-tooltip ul li:last-of-type, .qc-component ul li:last-of-type {
+  margin-bottom: 0;
+}
+
+qc-accordion p:first-child, qc-dialog p:first-child, qc-notice ul p:first-child, qc-section ul p:first-child, qc-tooltip ul p:first-child, .qc-component p:first-child, .qc-component .contenu p:first-child {
+  margin-top: 0;
+}
+
+qc-accordion p:last-child, qc-dialog p:last-child, qc-notice ul p:last-child, qc-section ul p:last-child, qc-tooltip ul p:last-child, .qc-component p:last-child, .qc-component .contenu p:last-child {
+  margin-bottom: 0;
+}
