@@ -1,0 +1,132 @@
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+@use "../modules/grid" as *;
+
+//$img-dir-sprite: "#{$img-dir}/qc-sprite.svg?v={{pkg-version}})";
+
+/* TODO voir si meilleure façon d'intégrer en scss... */
+.qc-icon {
+  display: inline-block;
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  min-width: 32px;
+  height: 32px;
+
+
+  /* Small icons (sm) */
+  &.sm {
+    min-width: 12px;
+    height: 12px;
+  }
+
+  /* Medium icons (md) */
+  &.md {
+    min-width: 20px;
+    height: 20px;
+  }
+
+  /* Large icons (lg) */
+  &.lg {
+    min-width: 40px;
+    height: 40px;
+  }
+
+  &.qc-warning {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#warning);
+  }
+  
+  &.qc-arrow-up-white {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-up-white);
+  }
+  
+  &.qc-clipboard {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#clipboard);
+  }
+  
+  &.qc-error {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error);
+  }
+
+  &.qc-error-white {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error-white);
+  }
+  
+  &.qc-information {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);  
+  }
+  
+  &.qc-information-white {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information-white);  
+  }
+  
+  &.qc-minus {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#minus);  
+  }
+  
+  &.qc-plus {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#plus);  
+  }
+  
+  &.qc-question-mark {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#question-mark);  
+  }
+  
+  &.qc-success {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success);  
+  }
+  &.qc-success-white {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success-white);  
+  }
+  
+  &.qc-xclose-white {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-white);  
+  }
+  &.qc-xclose-blue {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-blue);  
+  }
+  
+  &.qc-chevron-blue, &.qc-chevron-white {
+    width: 16px;
+    min-width: 16px;
+    height: 10px;
+  }
+  
+  &.qc-chevron-blue {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-blue);
+  }
+  
+  &.qc-chevron-white {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-white);
+  }
+  
+  &.qc-facebook {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#facebook);
+  }
+  
+  &.qc-linkedin {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#linkedin);
+    height: 30px;
+  }
+  
+  &.qc-twitter {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#twitter);
+  }
+  
+  &.qc-youtube {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#youtube);
+  }
+  
+}
+
+
+
+
+
