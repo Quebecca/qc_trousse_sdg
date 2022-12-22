@@ -1,5 +1,6 @@
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
+@use "components/icons" as *;
 
 :root {
   font-size: #{$percent-root-font-size}#{"%"};
@@ -63,13 +64,15 @@ a {
   &:active {
     @include active-link();
   }
-  .external-link-tail {
+  /* to assure non breaking space inter last word and icon */
+  .qc-external-link-tail {
     white-space: nowrap;
+    img {
+      @include external-link-img();
+      content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
+    }
   }
-  .external-link-img {
-    @include external-link-img();
-    content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
-  }
+
 }
 
 code, .qc-code {

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Open Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700");
 :root {
   --qc-font-family-roboto: Roboto,sans-serif;
@@ -209,14 +210,112 @@ select {
     scroll-behavior: auto;
   }
   *,
-*::before,
-*::after {
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
+/* TODO voir si meilleure façon d'intégrer en scss... */
+.qc-icon {
+  display: inline-block;
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  min-width: 32px;
+  height: 32px;
+}
+.qc-icon.qc-icon-sm {
+  min-width: 12px;
+  height: 12px;
+}
+.qc-icon.qc-icon-md {
+  min-width: 20px;
+  height: 20px;
+}
+.qc-icon.qc-icon-lg {
+  min-width: 40px;
+  height: 40px;
+}
+.qc-icon.qc-external-link {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#external-link);
+}
+.qc-icon.qc-warning {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#warning);
+}
+.qc-icon.qc-arrow-up-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#arrow-up-white);
+}
+.qc-icon.qc-clipboard {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#clipboard);
+}
+.qc-icon.qc-error {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#error);
+}
+.qc-icon.qc-error-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#error-white);
+}
+.qc-icon.qc-information {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information);
+}
+.qc-icon.qc-information-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information-white);
+}
+.qc-icon.qc-minus {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#minus);
+}
+.qc-icon.qc-plus {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#plus);
+}
+.qc-icon.qc-question-mark {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#question-mark);
+}
+.qc-icon.qc-success {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#success);
+}
+.qc-icon.qc-success-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#success-white);
+}
+.qc-icon.qc-xclose-white {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-white);
+}
+.qc-icon.qc-xclose-blue {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-blue);
+}
+.qc-icon.qc-chevron-blue, .qc-icon.qc-chevron-white {
+  width: 16px;
+  min-width: 16px;
+  height: 10px;
+}
+.qc-icon.qc-chevron-blue {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-blue);
+}
+.qc-icon.qc-chevron-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-white);
+}
+.qc-icon.qc-facebook {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#facebook);
+}
+.qc-icon.qc-linkedin {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#linkedin);
+  height: 30px;
+}
+.qc-icon.qc-twitter {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#twitter);
+}
+.qc-icon.qc-youtube {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#youtube);
+}
+
 :root {
   font-size: 62.5%;
 }
@@ -224,6 +323,7 @@ select {
 body {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-regular);
   font-family: var(--qc-font-family-content);
   background-color: var(--qc-color-white);
   color: var(--qc-color-text-primary);
@@ -295,6 +395,7 @@ h1:after, .qc-h1:after {
 .qc-subhead {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
 }
 .qc-subhead + h1, .qc-subhead + h2, .qc-subhead + h3, .qc-subhead + h4, .qc-subhead + h5, .qc-subhead + h6,
 .qc-subhead + .qc-h1, .qc-subhead + .qc-h2, .qc-subhead + .qc-h3, .qc-subhead + .qc-h4, .qc-subhead + .qc-h5, .qc-subhead + .qc-h6 {
@@ -313,6 +414,7 @@ img {
 
 a {
   color: var(--qc-color-link-text);
+  /* to assure non breaking space inter last word and icon */
 }
 a:visited {
   color: var(--qc-color-link-visited);
@@ -324,10 +426,10 @@ a:hover, a:focus {
 a:active {
   color: var(--qc-color-link-active);
 }
-a .external-link-tail {
+a .qc-external-link-tail {
   white-space: nowrap;
 }
-a .external-link-img {
+a .qc-external-link-tail img {
   max-height: 1.1rem;
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
@@ -484,6 +586,7 @@ figure img {
 figcaption {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
   display: table-caption;
   caption-side: bottom;
   background-color: var(--qc-color-grey-pale);
@@ -494,6 +597,7 @@ figcaption {
 figcaption p {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
 }
 figcaption p:last-child {
   margin-bottom: 0;
@@ -531,4 +635,98 @@ ul ul {
 
 .qc-shading-4 {
   box-shadow: 0 4px 24px var(--qc-box-shadow-color);
+}
+
+table.qc-table {
+  margin-bottom: 0;
+  background-color: var(--qc-color-white);
+  width: 100%;
+  border-collapse: collapse;
+  /* ----- Striped tables ----- */
+  /* ----- Bordered tables ----- */
+  /* ----- TODO add footer style ----- */
+}
+table.qc-table > thead {
+  background-color: var(--qc-color-blue-dark);
+  color: var(--qc-color-white);
+  border: 1px solid var(--qc-color-blue-dark);
+}
+table.qc-table > thead th {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
+}
+table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
+  vertical-align: middle;
+  text-align: left;
+  padding: var(--qc-spacer-sm);
+}
+table.qc-table.qc-striped tbody tr:nth-of-type(even) {
+  background-color: var(--qc-color-grey-pale);
+}
+table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
+  border-bottom: 1px solid var(--qc-color-grey-light);
+}
+
+.qc-notice {
+  display: flex;
+  border: 1px solid var(--qc-color-grey-light);
+  background-color: var(--qc-color-white);
+  word-break: break-word;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
+  margin-bottom: 3.2rem;
+  /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
+}
+.qc-notice .icon-container {
+  display: flex;
+  padding: var(--qc-spacer-md) var(--qc-spacer-xs);
+  background-color: var(--qc-color-blue-pale);
+}
+.qc-notice .icon-container .qc-icon {
+  background-size: 100% auto;
+  min-width: var(--qc-spacer-md);
+  height: var(--qc-spacer-md);
+}
+.qc-notice.qc-information .icon-container {
+  background-color: var(--qc-color-blue-pale);
+}
+.qc-notice.qc-warning .icon-container {
+  background-color: var(--qc-color-yellow-pale);
+}
+.qc-notice.qc-success .icon-container {
+  background-color: var(--qc-color-green-pale);
+}
+.qc-notice.qc-error .icon-container {
+  background-color: var(--qc-color-pink-pale);
+}
+.qc-notice .title {
+  margin: 0 0 var(--qc-spacer-xs) 0;
+  padding: 0;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-bold);
+  font-family: var(--qc-font-family-content);
+}
+.qc-notice .content {
+  padding: var(--qc-spacer-md) 3.2rem var(--qc-spacer-md) var(--qc-spacer-sm);
+  width: 100%;
+}
+.qc-notice .content:last-child {
+  margin-bottom: 0;
+}
+
+/* Links in a error notice (eg. error summary) */
+qc-notice[type=error] ul li a {
+  color: var(--qc-color-red-regular);
+}
+qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
+  text-decoration: none;
+}
+
+@media (max-width: 575.98px) {
+  .qc-notice .content {
+    padding: var(--qc-spacer-md) var(--qc-spacer-md) var(--qc-spacer-md) var(--qc-spacer-sm);
+  }
 }

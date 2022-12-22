@@ -1,7 +1,7 @@
-@use "modules//utils" as *;
+@use "modules/utils" as *;
 @use "modules/tokens" as *;
 
-table.qc-table{
+table.qc-table {
   margin-bottom: 0;
   background-color: token-value(color,white);
   width: 100%;
@@ -30,8 +30,8 @@ table.qc-table{
   }
 
   /* ----- Bordered tables ----- */
-  &.qc-bordered {
-    tbody th, tbody td {
+  &.qc-bordered tbody {
+    th, td {
       border-bottom: 1px solid token-value(color,grey,light);
     }
   } 

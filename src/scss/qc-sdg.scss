@@ -1,13 +1,2 @@
-@use "qc-design-tokens";
-@use "modern-css-reset/src/reset";
-@use "typography"  as *;
-@use "grid" as *;
-@use "colors" as *;
-@use "figure" as *;
-@use "lists" as *;
-@use "fonts" as *;
-@use "shadings" as *;
-@use "tables" as *;
-@use "./components/common" as *;
-@use "./components/icons" as *;
-@use "./components/notice" as *;
+@use "qc-sgd-no-grid";
+@use "base/grid" as *;

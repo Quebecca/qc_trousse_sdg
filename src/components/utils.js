@@ -1,8 +1,8 @@
 
 export class Utils {
-    static relativeBasePath = document.currentScript.getAttribute('relative-base-path') || '/';
-    static cssRelativePath = `${this.relativeBasePath}/css/`.replace('//','/')
-    static imagesRelativePath = `${this.relativeBasePath}/images/`.replace('//','/')
+    static assetsBasePath = document.currentScript.getAttribute('assets-base-path') || '.';
+    static cssRelativePath = `${this.assetsBasePath}/css/`.replace('//','/')
+    static imagesRelativePath = `${this.assetsBasePath}/images/`.replace('//','/')
     static cssFileName = document.currentScript.getAttribute('sdg-css-filename') || 'qc-sdg.min.css'
 
 

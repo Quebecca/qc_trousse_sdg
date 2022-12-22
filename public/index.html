@@ -462,9 +462,12 @@
             <h3>Lien externe</h3>
             <p>
                 <a href="#" class="not-visited">Un long lien - réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien
-                    <span class="external-link-tail">externe. <img class="external-link-img" alt="Cet hyperlien s’ouvrira dans une autre fenêtre"></span></a>
+                    <span class="qc-external-link-tail">externe.
+                        <!-- no src needed -->
+                        <img alt="Cet hyperlien s’ouvrira dans une autre fenêtre">
+                    </span></a>
             </p>
-            <h3>Lien visités</h3>
+            <h3>Lien visité</h3>
             <p>
                 <a href="#" class="visited">Règlement de pêche dans la zone 21.</a>
             </p>
@@ -555,21 +558,21 @@
             <h2 id="notice">Composant "Avis" (qc-notice)</h2>
 
             <h3>Avis information</h3>
-            <h4>Avec attribut "contenu"</h4>
+            <h4>Avec attribut « contenu »</h4>
             <qc-notice title="Nouvelle règlementation" content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai."></qc-notice>
 
             <h3>Avis avertissement</h3>
-            <h4>Avec attribut "contenu"</h4>
+            <h4>Avec attribut « contenu »</h4>
             <qc-notice type="warning" title="Migration des contenus" content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril."></qc-notice>
 
             <h3>Avis succès</h3>
             <h4>Avec slot par défaut</h4>
             <qc-notice type="success" title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
-                <span>Certains faits importants à savoir à propos de Chuck Norris :</span>
+                <p>Certains faits importants à savoir à propos de Chuck Norris :</p>
                 <ul>
-                    <li>Un jour Chuck Norris a eu un zero en latin, depuis c'est une langue morte;</li>
-                    <li>Chuck Norris a déjà compté jusqu'à l'infini. Deux fois;</li>
-                    <li>C'est Chuck Norris qui a décidé que toute phrase se terminait par un poing;</li>
+                    <li>Un jour Chuck Norris a eu un zero en latin, depuis c'est une langue morte ;</li>
+                    <li>Chuck Norris a déjà compté jusqu'à l'infini. Deux fois ;</li>
+                    <li>C'est Chuck Norris qui a décidé que toute phrase se terminait par un poing.</li>
                 </ul>
             </qc-notice>
 
@@ -579,10 +582,10 @@
             <qc-notice type="error" title="Des erreurs sont présentes dans le formulaire.">
                 <ul>
                     <li>
-                        <a href="#">Le champ « Nom de famille » est obligatoire.</a>
+                        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
                     </li>
                     <li>
-                        <a href="#">Le champ « Prénom » est obligatoire.</a>
+                        <a href="#">Le champ « Prénom » est obligatoire ;</a>
                     </li>
                     <li>
                         <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
@@ -592,9 +595,10 @@
 
 
         </div>
+        <!-- todo: add tables -->
 
     </main>
 
-    <script src='/js/qc-sdg.js' base-relative-path="/" sdg-css-filename="qc-sdg.css"></script>
+    <script src='js/qc-sdg.js'  sdg-css-filename="qc-sdg.css"></script>
 </body>
 </html>

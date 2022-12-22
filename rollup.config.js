@@ -149,8 +149,8 @@ let rollupOptions = [
                 dedupe: ['svelte']
             }),
             // will output compiled styles to output.css
-            scss(Object.assign( {
-                output: dev_process
+            scss(Object.assign({
+                    output: dev_process
                     ? 'public/css/qc-sdg-no-grid.css'
                     : 'dist/css/qc-sdg-no-grid.min.css',
                 }
@@ -189,13 +189,23 @@ let rollupOptions = [
             scss({output: false}), // needed, since the script contains scss…
             del({ // deletion of uneeded js files
                 targets: [
-                    'dist/qc-sdg-design-tokens.js'
+                    'dist/qc-sdg-design-tokens.js',
+                    'dist/js/qc-sdg-no-grid.js',
+                    'dist/js/qc-sdg-no-grid.min.js',
                 ],
                 verbose: verbose
             }),
-            copy({
+            !dev_process && copy({
                 targets: [
-                    {src: `assets/*`, dest: [`dist`, `public`]},
+                    {
+                        src: `src/sprites/dist/view/svg/sprite.view.svg`,
+                        dest: [`dist/img`,`public/img`],
+                        rename: () => 'qc-sprite.svg'
+                    },
+                    {
+                        src: 'src/sprites/svg/external-link.svg',
+                        dest: [`dist/img`,`public/img`],
+                    }
                 ],
                 verbose: verbose,
             }),

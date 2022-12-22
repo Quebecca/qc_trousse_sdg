@@ -58,7 +58,6 @@
 /* Links in a error notice (eg. error summary) */
 qc-notice[type="error"] ul li a {
   color: token-value(color,red,regular);
-
   &:hover, &:focus {
     text-decoration: none;
   }  

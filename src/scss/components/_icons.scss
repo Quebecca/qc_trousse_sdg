@@ -1,6 +1,6 @@
-@use "../modules/tokens" as *;
-@use "../modules/utils" as *;
-@use "../modules/grid" as *;
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "modules/grid" as *;
 
 //$img-dir-sprite: "#{$img-dir}/qc-sprite.svg?v={{pkg-version}})";
 
@@ -14,23 +14,23 @@
   min-width: 32px;
   height: 32px;
 
-
-  /* Small icons (sm) */
-  &.sm {
+  &.qc-icon-sm {
     min-width: 12px;
     height: 12px;
   }
 
-  /* Medium icons (md) */
-  &.md {
+  &.qc-icon-md {
     min-width: 20px;
     height: 20px;
   }
 
-  /* Large icons (lg) */
-  &.lg {
+  &.qc-icon-lg {
     min-width: 40px;
     height: 40px;
+  }
+
+  &.qc-external-link {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#external-link);
   }
 
   &.qc-warning {
@@ -93,7 +93,8 @@
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-blue);  
   }
   
-  &.qc-chevron-blue, &.qc-chevron-white {
+  &.qc-chevron-blue,
+  &.qc-chevron-white {
     width: 16px;
     min-width: 16px;
     height: 10px;
