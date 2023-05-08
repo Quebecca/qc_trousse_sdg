@@ -1,5 +1,5 @@
 <!-- 
-Required tag for svelte to know were building a custom element.
+Required tag for svelte to know we're building a custom element.
 -->
 <svelte:options tag="qc-notice" />
 

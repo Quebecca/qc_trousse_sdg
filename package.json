@@ -16,9 +16,13 @@
   "author": "MCE",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^5.0.1",
     "autoprefixer": "^10.4.7",
     "bootstrap-for-qc-sdg": "npm:bootstrap@^4.6.2",
+    "highlight.js": "^11.8.0",
+    "js-beautify": "^1.14.7",
     "modern-css-reset": "^1.4.0",
     "postcss": "^8.4.14",
     "postcss-replace": "^2.0.0",
@@ -31,14 +35,16 @@
     "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-watch": "^3.2.2",
-    "@rollup/plugin-replace": "^5.0.1",
     "sass": "^1.53.0",
     "sirv-cli": "^2.0.2"
   },
   "dependencies": {
-    "babel": "^6.23.0",
-    "@babel/preset-env": "^7.16.0",
     "@babel/plugin-transform-runtime": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "babel": "^6.23.0",
+    "pretty": "^2.0.0",
+    "requirejs": "^2.3.6",
+    "rollup-plugin-css-only": "^4.3.0",
     "svelte": "^3.50.1"
   }
 }

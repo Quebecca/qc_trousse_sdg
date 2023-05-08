@@ -19,12 +19,11 @@ let rewriteBootstrap = (contents, filename) =>
 ;
 
 export default [{
-    input: 'src/qc-sdg.js',
-    watch: {
-        skipWrite: true, // prevent output generation
-    },
+    input: 'src/rewrite-bs.js',
+    // watch: {
+    //     skipWrite: true, // prevent output generation
+    // },
     plugins: [
-        svelte(),
         scss({output: false}), // needed, since the script contains scss…
         copy({
             targets: [{

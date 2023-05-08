@@ -3,3 +3,5 @@ node_modules
 /vendor/*
 /sandbox
 
+/dist/qc-sdg-design-tokens.js
+/public/js/rewrite-bs.js

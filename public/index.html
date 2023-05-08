@@ -5,11 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/qc-sdg.css">
     <link rel="stylesheet" href="css/qc-catalog-sdg.css">
-    <script  src="js/qc-catalog-sdg.js"></script>
     <title>Catalogue des composants du système de design gouvernemental</title>
+    <script defer
+            src='js/qc-sdg.js'
+            sdg-css-filename="qc-sdg.css">
+    </script>
+    <script defer
+            src='js/qc-catalog-sdg.js'
+            sdg-css-filename="qc-catalog-sdg.css">
+    </script>
 </head>
 <body>
     <header>
+        <qc-piv-header id="pivEntete"
+                       title-text="Trousse SDG"
+                       alt-logo="Signature du gouvernement du Québec. Accédez à Système de design SDG.">
+            <div slot="links">
+                <ul>
+                    <li><a href="#fakeEnglish">English</a>
+                    </li>
+                    <li><a href="#">Nous joindre</a>
+                    </li>
+                </ul>
+            </div>
+        </qc-piv-header>
+
         <div class="qc-container">
             <span class="qc-subhead">Version 1.0.0</span>
             <h1>Catalogue du système de design gouvernemental</h1>
@@ -25,12 +45,14 @@
                     <li><a href='#ombrages'>Ombrages</a></li>
                     <!--<li><a href='#citations'>Citations</a></li>-->
                     <li><a href='#images'>Images</a></li>
+                    <li><a href='#table'>Tables</a></li>
                     <li><a href='#notice'>Composant "Avis"</a></li>
+                    <li><a href='#piv'>Composant "PIV"</a></li>
                 </ul>
             </div>
         </div>
     </header>
-    <main>
+    <main id="main">
         <div class="qc-container">
             <!-- colors -->
             <h2 id="couleurs">Couleurs</h2>
@@ -207,7 +229,6 @@
                 </div>
             </div>
 
-
             <!-- titles -->
             <h2 id="titre">Titres</h2>
             <div class="qc-gallery title-samples">
@@ -215,7 +236,7 @@
                     <p class="qc-h1">Titre de niveau 1</p>
                     <p>
                         <strong>Taille de police/interlignage pour les h1</strong><br/>
-                        <code  >--qc-font-size-h1, --qc-line-height-h1</code>
+                        <code>--qc-font-size-h1, --qc-line-height-h1</code>
                     </p>
                     <p class="qc-h2">Titre de niveau 2</p>
                     <p>
@@ -555,6 +576,38 @@
                 </figure>
             </div>
 
+            <h2 id="tableaux">Tableaux</h2>
+            <table class="qc-table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td colspan="2">Larry the Bird</td>
+                    <td>@twitter</td>
+                </tr>
+                </tbody>
+            </table>
+
+
             <h2 id="notice">Composant "Avis" (qc-notice)</h2>
 
             <h3>Avis information</h3>
@@ -563,11 +616,15 @@
 
             <h3>Avis avertissement</h3>
             <h4>Avec attribut « contenu »</h4>
-            <qc-notice type="warning" title="Migration des contenus" content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril."></qc-notice>
+            <qc-notice type="warning"
+                       title="Migration des contenus"
+                       content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
+            </qc-notice>
 
             <h3>Avis succès</h3>
             <h4>Avec slot par défaut</h4>
-            <qc-notice type="success" title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
+            <qc-notice type="success"
+                       title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
                 <p>Certains faits importants à savoir à propos de Chuck Norris :</p>
                 <ul>
                     <li>Un jour Chuck Norris a eu un zero en latin, depuis c'est une langue morte ;</li>
@@ -575,7 +632,6 @@
                     <li>C'est Chuck Norris qui a décidé que toute phrase se terminait par un poing.</li>
                 </ul>
             </qc-notice>
-
 
             <h3>Avis erreur</h3>
             <h4>Avec slot par défaut (ex. sommaire d'erreurs)</h4>
@@ -592,13 +648,21 @@
                     </li>
                 </ul>
             </qc-notice>
-
-
+            <h3 id="piv">PIV</h3>
+            <h4>En-tête</h4>
+            <qc-piv-header id="pivEnteteExemple"
+                           alt-logo="Signature du gouvernement du Québec. Accédez à Système de design SDG.">
+                <div slot="links">
+                    <ul>
+                        <li><a href="#fakeEnglish">English</a>
+                        </li>
+                        <li><a href="#">Nous joindre</a>
+                        </li>
+                    </ul>
+                </div>
+            </qc-piv-header>
+            <qc-code target-id="pivEnteteExemple" />
         </div>
-        <!-- todo: add tables -->
-
     </main>
-
-    <script src='js/qc-sdg.js'  sdg-css-filename="qc-sdg.css"></script>
 </body>
 </html>
