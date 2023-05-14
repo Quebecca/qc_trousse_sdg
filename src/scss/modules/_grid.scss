@@ -1,8 +1,7 @@
 @import "settings/grid";
-
 @import "bootstrap-for-qc-sdg/scss/mixins/breakpoints";
-@import "bootstrap-rewrite/mixins/grid";
 @import "bootstrap-for-qc-sdg/scss/mixins/deprecate";
+@import "bootstrap-rewrite/mixins/grid";
 @import "bootstrap-rewrite/mixins/grid-framework";
 
 @mixin media-tablet() {

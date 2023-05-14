@@ -644,6 +644,7 @@ table.qc-table {
   border-collapse: collapse;
   /* ----- Striped tables ----- */
   /* ----- Bordered tables ----- */
+  /* ----- TODO add footer style ----- */
 }
 table.qc-table > thead {
   background-color: var(--qc-color-blue-dark);

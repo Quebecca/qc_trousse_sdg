@@ -1,6 +1,5 @@
 /.idea
-node_modules
-/vendor/*
+node_modules/
 /sandbox
 
 /dist/qc-sdg-design-tokens.js

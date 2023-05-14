@@ -12,7 +12,7 @@ import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
-import babel from 'rollup-plugin-babel';
+// import babel from 'rollup-plugin-babel';
 
 const dev_process = (process.env.npm_lifecycle_event == 'dev');
 const verbose = false;
@@ -61,6 +61,7 @@ const scssOptions = {
         path.join(__dirname, '../../node_modules/'),
         'node_modules/',
         'src/scss',
+        __dirname + '/vendor',
     ],
     outputStyle: dev_process ? 'expanded' : 'compressed',
     watch: 'src/scss'
@@ -185,39 +186,39 @@ let
                 )),
             ],
         },
-        {
-            // finisher : copy, deletions, etc
-            input: 'src/qc-sdg.js',
-            watch: {
-                skipWrite: true, // prevent output generation
-            },
-            plugins: [
-                svelte(svelteOptions),
-                scss({output: false}), // needed, since the script contains scss…
-                del({ // deletion of uneeded js files
-                    targets: [
-                        'dist/qc-sdg-design-tokens.js',
-                        'dist/js/qc-sdg-no-grid.js',
-                        'dist/js/qc-sdg-no-grid.min.js',
-                    ],
-                    verbose: verbose
-                }),
-                !dev_process && copy({
-                    targets: [
-                        {
-                            src: `src/sprites/dist/view/svg/sprite.view.svg`,
-                            dest: [`dist/img`,`public/img`],
-                            rename: () => 'qc-sprite.svg'
-                        },
-                        {
-                            src: 'src/sprites/svg/external-link.svg',
-                            dest: [`dist/img`,`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
-            ]
-        }
+        // {
+        //     // finisher : copy, deletions, etc
+        //     input: 'src/qc-sdg.js',
+        //     watch: {
+        //         skipWrite: true, // prevent output generation
+        //     },
+        //     plugins: [
+        //         svelte(svelteOptions),
+        //         scss({output: false}), // needed, since the script contains scss…
+        //         del({ // deletion of uneeded js files
+        //             targets: [
+        //                 'dist/qc-sdg-design-tokens.js',
+        //                 'dist/js/qc-sdg-no-grid.js',
+        //                 'dist/js/qc-sdg-no-grid.min.js',
+        //             ],
+        //             verbose: verbose
+        //         }),
+        //         !dev_process && copy({
+        //             targets: [
+        //                 {
+        //                     src: `src/sprites/dist/view/svg/sprite.view.svg`,
+        //                     dest: [`dist/img`,`public/img`],
+        //                     rename: () => 'qc-sprite.svg'
+        //                 },
+        //                 {
+        //                     src: 'src/sprites/svg/external-link.svg',
+        //                     dest: [`dist/img`,`public/img`],
+        //                 }
+        //             ],
+        //             verbose: verbose,
+        //         }),
+        //     ]
+        // }
     ]
 ;
 

@@ -11,11 +11,12 @@ Elle contient :
 
 ## Utilisation
 - placer le dossier `dist`  dans un dossier public ;
-- insérer la feuille de style `dist/css/qc-sdg.min.css` dans vos pages html.
+- insérer la feuille de style `dist/css/qc-sdg.min.css`  dans vos pages html.
 ```html
 <head>
     ...
     <link rel="stylesheet" href="/dist/css/qc-sdg.min.css">
+    <script defer href="/dist/js/qc-sdg.js">
 </head>
 ```
 ### Design tokens seulement
@@ -40,7 +41,7 @@ ou bien :
 <head>
     ...
     <link rel="stylesheet" href="dist/css/qc-sdg-design-tokens.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/custum.css">
 </head>
 ```
 
@@ -54,9 +55,9 @@ Dans cette première version de la trousse, les personnes intéressées à compi
 
 ## Versions
 
-1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.
-1.1.0 - Ajout d'une css sans le système de grille
-1.1.1 - 
+- 1.1.0 - Ajout d'une css sans le système de grille
+- 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>
+ 
 
 ## Remerciements
 
