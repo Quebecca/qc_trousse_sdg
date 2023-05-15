@@ -41,7 +41,7 @@ ou bien :
 <head>
     ...
     <link rel="stylesheet" href="dist/css/qc-sdg-design-tokens.min.css">
-    <link rel="stylesheet" href="css/custum.css">
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 ```
 
@@ -51,10 +51,11 @@ Les composants du SDG sont catalogués dans le fichier HTML au chemin `public/in
 
 ## Développement
 
-Dans cette première version de la trousse, les personnes intéressées à compiler leur propres css, pour changer les réglages de la trousse, ou bien l'étendre, sont invitées à contacter [Marc Munos](mailto:marc.munos@mce.gouv.qc.ca) de l'équipe Techno de Québec.ca 
+Dans cette version de la trousse non publique, les personnes intéressées à compiler leur propres css, pour changer les réglages de la trousse, ou bien l'étendre, sont invitées à contacter [Marc Munos](mailto:marc.munos@mce.gouv.qc.ca) de l'équipe Techno de Québec.ca 
 
 ## Versions
 
+- 1.1.1 - suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 - Ajout d'une css sans le système de grille
 - 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>
  

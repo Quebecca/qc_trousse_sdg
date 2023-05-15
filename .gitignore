@@ -4,3 +4,4 @@ node_modules/
 
 /dist/qc-sdg-design-tokens.js
 /public/js/rewrite-bs.js
+/dist/js/qc-sdg-design-tokens.js
