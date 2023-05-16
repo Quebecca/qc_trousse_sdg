@@ -218,104 +218,6 @@ select {
     scroll-behavior: auto !important;
   }
 }
-/* TODO voir si meilleure façon d'intégrer en scss... */
-.qc-icon {
-  display: inline-block;
-  content: "";
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% auto;
-  min-width: 32px;
-  height: 32px;
-}
-.qc-icon.qc-icon-sm {
-  min-width: 12px;
-  height: 12px;
-}
-.qc-icon.qc-icon-md {
-  min-width: 20px;
-  height: 20px;
-}
-.qc-icon.qc-icon-lg {
-  min-width: 40px;
-  height: 40px;
-}
-.qc-icon.qc-external-link {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#external-link);
-}
-.qc-icon.qc-warning {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#warning);
-}
-.qc-icon.qc-arrow-up-white {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#arrow-up-white);
-}
-.qc-icon.qc-clipboard {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#clipboard);
-}
-.qc-icon.qc-error {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#error);
-}
-.qc-icon.qc-error-white {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#error-white);
-}
-.qc-icon.qc-information {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#information);
-}
-.qc-icon.qc-information-white {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#information-white);
-}
-.qc-icon.qc-minus {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#minus);
-}
-.qc-icon.qc-plus {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#plus);
-}
-.qc-icon.qc-question-mark {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#question-mark);
-}
-.qc-icon.qc-success {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#success);
-}
-.qc-icon.qc-success-white {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#success-white);
-}
-.qc-icon.qc-xclose-white {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-white);
-}
-.qc-icon.qc-xclose-blue {
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-blue);
-}
-.qc-icon.qc-chevron-blue, .qc-icon.qc-chevron-white {
-  width: 16px;
-  min-width: 16px;
-  height: 10px;
-}
-.qc-icon.qc-chevron-blue {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-blue);
-}
-.qc-icon.qc-chevron-white {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-white);
-}
-.qc-icon.qc-facebook {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#facebook);
-}
-.qc-icon.qc-linkedin {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#linkedin);
-  height: 30px;
-}
-.qc-icon.qc-twitter {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#twitter);
-}
-.qc-icon.qc-youtube {
-  background-image: url(../img/qc-sprite.svg?v=1.0.0#youtube);
-}
-
 :root {
   font-size: 62.5%;
 }
@@ -637,37 +539,6 @@ ul ul {
   box-shadow: 0 4px 24px var(--qc-box-shadow-color);
 }
 
-table.qc-table {
-  margin-bottom: 0;
-  background-color: var(--qc-color-white);
-  width: 100%;
-  border-collapse: collapse;
-  /* ----- Striped tables ----- */
-  /* ----- Bordered tables ----- */
-  /* ----- TODO add footer style ----- */
-}
-table.qc-table > thead {
-  background-color: var(--qc-color-blue-dark);
-  color: var(--qc-color-white);
-  border: 1px solid var(--qc-color-blue-dark);
-}
-table.qc-table > thead th {
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-bold);
-}
-table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
-  vertical-align: middle;
-  text-align: left;
-  padding: var(--qc-spacer-sm);
-}
-table.qc-table.qc-striped tbody tr:nth-of-type(even) {
-  background-color: var(--qc-color-grey-pale);
-}
-table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
-  border-bottom: 1px solid var(--qc-color-grey-light);
-}
-
 .qc-d-none {
   display: none !important;
 }
@@ -849,6 +720,104 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
     display: inline-flex !important;
   }
 }
+/* TODO voir si meilleure façon d'intégrer en scss... */
+.qc-icon {
+  display: inline-block;
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  min-width: 32px;
+  height: 32px;
+}
+.qc-icon.qc-icon-sm {
+  min-width: 12px;
+  height: 12px;
+}
+.qc-icon.qc-icon-md {
+  min-width: 20px;
+  height: 20px;
+}
+.qc-icon.qc-icon-lg {
+  min-width: 40px;
+  height: 40px;
+}
+.qc-icon.qc-external-link {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#external-link);
+}
+.qc-icon.qc-warning {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#warning);
+}
+.qc-icon.qc-arrow-up-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#arrow-up-white);
+}
+.qc-icon.qc-clipboard {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#clipboard);
+}
+.qc-icon.qc-error {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#error);
+}
+.qc-icon.qc-error-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#error-white);
+}
+.qc-icon.qc-information {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information);
+}
+.qc-icon.qc-information-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information-white);
+}
+.qc-icon.qc-minus {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#minus);
+}
+.qc-icon.qc-plus {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#plus);
+}
+.qc-icon.qc-question-mark {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#question-mark);
+}
+.qc-icon.qc-success {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#success);
+}
+.qc-icon.qc-success-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#success-white);
+}
+.qc-icon.qc-xclose-white {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-white);
+}
+.qc-icon.qc-xclose-blue {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#xclose-blue);
+}
+.qc-icon.qc-chevron-blue, .qc-icon.qc-chevron-white {
+  width: 16px;
+  min-width: 16px;
+  height: 10px;
+}
+.qc-icon.qc-chevron-blue {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-blue);
+}
+.qc-icon.qc-chevron-white {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#chevron-white);
+}
+.qc-icon.qc-facebook {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#facebook);
+}
+.qc-icon.qc-linkedin {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#linkedin);
+  height: 30px;
+}
+.qc-icon.qc-twitter {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#twitter);
+}
+.qc-icon.qc-youtube {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#youtube);
+}
+
 .qc-notice {
   display: flex;
   border: 1px solid var(--qc-color-grey-light);
@@ -914,7 +883,6 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
 qc-piv-header {
   display: block;
   min-height: 72px;
-  max-height: 72px;
   visibility: hidden;
   background-color: var(--qc-color-blue-piv);
   width: 100%;
@@ -924,9 +892,13 @@ qc-piv-header.mounted {
   max-height: inherit;
   visibility: visible;
 }
-qc-piv-header [slot=searchZone] > *:first-child {
+qc-piv-header [slot=search-zone] > *:first-child {
   padding: var(--qc-spacer-xs) 0 var(--qc-spacer-md) 0;
 }
+qc-piv-header [slot=search-button] {
+  padding-right: 11.2px;
+}
+
 .qc-piv-header {
   color: #fff;
 }
@@ -988,34 +960,33 @@ qc-piv-header [slot=searchZone] > *:first-child {
     min-width: auto;
   }
 }
-.qc-piv-header .piv-bottom {
+.qc-piv-header .piv-bottom .title {
   display: none;
-  padding-bottom: var(--qc-spacer-xs);
 }
 .qc-piv-header .bouton-recherche {
   min-width: 32px;
   min-height: 32px;
 }
 
-qc-piv-header [slot=links] ul, .qc-piv-header .piv-top .right-section .piv-links ul {
+qc-piv-header [slot=links] ul, .qc-piv-header .piv-top .right-section .links ul {
   list-style: none;
   padding: 0 0 0 var(--qc-spacer-xs);
   margin: 0;
   height: 100%;
 }
-qc-piv-header [slot=links] ul li, .qc-piv-header .piv-top .right-section .piv-links ul li {
+qc-piv-header [slot=links] ul li, .qc-piv-header .piv-top .right-section .links ul li {
   padding: 0;
   margin: 0;
   line-height: 2rem;
 }
-qc-piv-header [slot=links] ul a, .qc-piv-header .piv-top .right-section .piv-links ul a {
+qc-piv-header [slot=links] ul a, .qc-piv-header .piv-top .right-section .links ul a {
   font-family: var(--qc-font-family-header);
   text-decoration: none;
   font-size: 1.28rem;
   color: #fff;
   font-weight: 400;
 }
-qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .piv-links ul a:focus, qc-piv-header [slot=links] ul a:hover, .qc-piv-header .piv-top .right-section .piv-links ul a:hover {
+qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .links ul a:focus, qc-piv-header [slot=links] ul a:hover, .qc-piv-header .piv-top .right-section .links ul a:hover {
   text-decoration: underline;
   color: #fff;
 }
@@ -1042,23 +1013,14 @@ qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .p
   background-color: var(--qc-color-blue-piv);
 }
 
-.utd-piv-entete .section-droite .bouton-recherche {
-  margin-right: var(--qc-spacer-sm);
-}
-
-@media (max-width: 575.98px) {
-  .qc-piv-header .piv-top .logo img {
-    min-width: 132px;
-    height: 48px;
-  }
-}
-@media (max-width: 575.98px) {
-  qc-piv-header {
+@media (max-width: 767.98px) {
+  .qc-piv-header {
     min-height: 99px;
-    max-height: 99px;
   }
   .qc-piv-header .piv-top .logo img {
     margin-left: -3px;
+    min-width: 132px;
+    height: 48px;
   }
   .qc-piv-header .piv-top .title {
     display: none;
@@ -1070,10 +1032,9 @@ qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .p
     display: none;
   }
   .qc-piv-header .piv-bottom {
-    display: flex;
     justify-content: space-between;
   }
-  .qc-piv-header .piv-bottom .titre {
+  .qc-piv-header .piv-bottom .title {
     margin: 0;
     display: flex;
   }
@@ -1083,14 +1044,6 @@ qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .p
     min-width: auto;
   }
 }
-header {
-  margin-bottom: var(--qc-spacer-lg);
-}
-
-#pivLogoGouvernementPrint {
-  display: none;
-}
-
 .qc-container,
 .qc-container-fluid,
 .qc-container-xl,

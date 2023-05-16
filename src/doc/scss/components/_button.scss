@@ -1,0 +1,61 @@
+@use "settings/settings" as *;
+@use "functions/utils" as *;
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "base/shadings" as *;
+
+@mixin button-border-and-padding($border-size, $padding-y, $padding-x) {
+  padding: calc(#{token-value(spacer $padding-y)} - #{$border-size}) calc(#{token-value(spacer $padding-x)} - #{$border-size});
+  border: $border-size solid transparent;
+}
+
+
+.btn {
+  /* si Compact font-weight: 600; */
+  @include content-font();
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: rem(112);
+  //padding: calc(#{token-value(spacer sm)} - 2px) calc(#{token-value(spacer md)} - 2px);
+  transition: all 0.24s ease-in-out;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  //border: 2px solid transparent;
+  @include button-border-and-padding(2px, sm, md);
+  border-radius: 0;
+  cursor: pointer;
+
+  &.btn-sm {
+    min-width: rem(80);
+    @include button-border-and-padding(1px, xs, sm);
+  }
+
+  &.btn-primary {
+
+    color: #fff;
+    border-color: token-value(color blue piv);
+    background-color: token-value(color blue piv);
+    @extend .qc-shading-1;
+
+    &:hover {
+      border-color: #156bb2;
+      background-color: #156bb2;
+    }
+
+    &:focus {
+      border-color: token-value(color blue dark);
+      background-color: #156bb2;
+      box-shadow:
+          0 2px 8px rgba(34, 54, 84, 0.24),
+          0 0 0 2px token-value(color blue light);
+    }
+
+    &:active {
+      border-color: #3783c9;
+      background-color: #3783c9;
+    }
+  }
+}
+
+

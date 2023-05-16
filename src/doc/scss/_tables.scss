@@ -5,6 +5,8 @@ table.qc-table {
   margin-bottom: 0;
   background-color: token-value(color,white);
   width: 100%;
+  max-width: 100%;
+  overflow: auto;
   border-collapse: collapse;
 
   &>thead {
@@ -20,7 +22,7 @@ table.qc-table {
   thead th, tbody th, tbody td {
     vertical-align: middle;
     text-align: left;
-    padding: token-value(spacer, sm);    
+    padding: token-value(spacer, xs);
   }
 
 

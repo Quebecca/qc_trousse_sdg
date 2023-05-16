@@ -10,11 +10,10 @@ export let
   , fullWidth = 'false'
   , logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#QUEBEC_blanc`
   , logoAlt = Utils.getPageLanguage() === 'fr'
-                ? 'Site web du gouvernement du Québec'
-                : 'Government of Québec website.'
+                ? 'Logo du gouvernement du Québec'
+                : 'Logo of government of Québec'
   , titleUrl= '/'
   , titleText= ''
-  , titleDescription= ''
   , altLanguageText= Utils.getPageLanguage() === 'fr'
                         ? 'English'
                         : 'Français'
@@ -46,7 +45,7 @@ onMount(() => {
 <div class="qc-piv-header qc-component"
      class:qc-d-none={!mounted}>
   <div class="{containerClass}">
-    {#if goToContent}
+    {#if goToContent == 'true'}
       <div class="go-to-content">
         <a href="{goToContentAnchor}">
           {goToContentText}
@@ -66,11 +65,6 @@ onMount(() => {
           {#if titleText}
           <a href="{titleUrl}">
             <span>{titleText}</span>
-            {#if titleDescription}
-            <span class="description">
-              {titleDescription}
-            </span>
-            {/if}
           </a>
           {/if}
         </slot>
@@ -100,32 +94,15 @@ onMount(() => {
           {#if titleText}
             <a href="{titleUrl}">
               <span>{titleText}</span>
-              {#if titleDescription}
-            <span class="description">
-              {titleDescription}
-            </span>
-              {/if}
             </a>
           {/if}
         </slot>
       </div>
 
-      {#if Utils.slotExiste(slots, 'smSearchButton')}
-        <div class="search-button">
-          <slot name="smSearchButton" />
-        </div>    
-      {/if}
-    </div>          
-    {#if Utils.slotExiste(slots, 'searchZone')}
       <div class="search-zone">
-        <slot name="searchZone" />
-      </div>    
-    {/if}
-      {#if Utils.slotExiste(slots, 'pivBottom')}
-          <div class="piv-bottom-slot">
-              <slot name="pivBottom" />
-          </div>
-      {/if}
+        <slot name="search-zone" />
+      </div>
+  </div>
   </div>
 </div>
 

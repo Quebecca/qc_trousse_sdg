@@ -2,6 +2,10 @@
 @use "functions/utils" as *;
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
+@use "components/icons" as *;
+@use "components/code" as *;
+@use "components/button" as *;
+@use "tables";
 
 .color-details {
   display: flex;
@@ -112,3 +116,39 @@ a {
 p,h1,h2,h3,h4,h5,h6 {
   hyphens: auto;
 }
+
+#piv-search-form {
+  padding-bottom: token-value(spacer md);
+  .input-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    input {
+      width: 100%;
+      padding: rem(6) rem(12) ;
+      border: 1px solid black;
+      border-right: none;
+    }
+    button {
+      background-size: rem(24);
+      border: 1px solid;
+      border-left: none;
+      min-height: rem(24);
+      color: token-value(color blue piv);
+      background-color: white;
+      background-image: url("https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-fonce.svg?v=1");
+      background-repeat: no-repeat;
+      background-position: rem(8) rem(6.4);
+      width: rem( 2.6 * 16);
+      span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        clip: rect(0 0 0 0);
+      }
+    }
+
+  }
+}
+

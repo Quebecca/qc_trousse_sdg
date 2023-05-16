@@ -64,7 +64,7 @@ const scssOptions = {
         __dirname + '/vendor',
     ],
     outputStyle: dev_process ? 'expanded' : 'compressed',
-    watch: 'src/scss'
+    watch: ['src/scss', 'src/doc/scss']
 };
 
 let
@@ -186,39 +186,41 @@ let
                 )),
             ],
         },
-        // {
-        //     // finisher : copy, deletions, etc
-        //     input: 'src/qc-sdg.js',
-        //     watch: {
-        //         skipWrite: true, // prevent output generation
-        //     },
-        //     plugins: [
-        //         svelte(svelteOptions),
-        //         scss({output: false}), // needed, since the script contains scss…
-        //         del({ // deletion of uneeded js files
-        //             targets: [
-        //                 'dist/qc-sdg-design-tokens.js',
-        //                 'dist/js/qc-sdg-no-grid.js',
-        //                 'dist/js/qc-sdg-no-grid.min.js',
-        //             ],
-        //             verbose: verbose
-        //         }),
-        //         !dev_process && copy({
-        //             targets: [
-        //                 {
-        //                     src: `src/sprites/dist/view/svg/sprite.view.svg`,
-        //                     dest: [`dist/img`,`public/img`],
-        //                     rename: () => 'qc-sprite.svg'
-        //                 },
-        //                 {
-        //                     src: 'src/sprites/svg/external-link.svg',
-        //                     dest: [`dist/img`,`public/img`],
-        //                 }
-        //             ],
-        //             verbose: verbose,
-        //         }),
-        //     ]
-        // }
+        {
+            // finisher : copy, deletions, etc
+            input: 'src/qc-sdg.js',
+            watch: {
+                skipWrite: true, // prevent output generation
+            },
+            plugins: [
+                svelte(svelteOptions),
+                scss(Object.assign({
+                        output: false,
+                    }
+                    , scssOptions
+                )), // needed, since the script contains scss…
+                del({ // deletion of uneeded js files
+                    targets: [
+                        'dist/qc-sdg-design-tokens.js',
+                    ],
+                    verbose: verbose
+                }),
+                !dev_process && copy({
+                    targets: [
+                        {
+                            src: `src/sprites/dist/view/svg/sprite.view.svg`,
+                            dest: [`dist/img`,`public/img`],
+                            rename: () => 'qc-sprite.svg'
+                        },
+                        {
+                            src: 'src/sprites/svg/external-link.svg',
+                            dest: [`dist/img`,`public/img`],
+                        }
+                    ],
+                    verbose: verbose,
+                }),
+            ]
+        }
     ]
 ;
 

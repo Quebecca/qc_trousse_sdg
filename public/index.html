@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/qc-sdg.css">
-    <link rel="stylesheet" href="css/qc-catalog-sdg.css">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="css/qc-sdg.css">
+    <link rel="stylesheet"
+          href="css/qc-catalog-sdg.css">
     <title>Catalogue des composants du système de design gouvernemental</title>
     <script defer
             src='js/qc-sdg.js'
@@ -20,14 +24,6 @@
         <qc-piv-header id="pivEntete"
                        title-text="Trousse SDG"
                        alt-logo="Signature du gouvernement du Québec. Accédez à Système de design SDG.">
-            <div slot="links">
-                <ul>
-                    <li><a href="#fakeEnglish">English</a>
-                    </li>
-                    <li><a href="#">Nous joindre</a>
-                    </li>
-                </ul>
-            </div>
         </qc-piv-header>
 
         <div class="qc-container">
@@ -576,38 +572,6 @@
                 </figure>
             </div>
 
-            <h2 id="tableaux">Tableaux</h2>
-            <table class="qc-table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-                </tbody>
-            </table>
-
-
             <h2 id="notice">Composant "Avis" (qc-notice)</h2>
 
             <h3>Avis information</h3>
@@ -650,8 +614,184 @@
             </qc-notice>
             <h3 id="piv">PIV</h3>
             <h4>En-tête</h4>
-            <qc-piv-header id="pivEnteteExemple"
-                           alt-logo="Signature du gouvernement du Québec. Accédez à Système de design SDG.">
+            <h5>Attributs disponibles</h5>
+            <table class="qc-table qc-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>title-text</td>
+
+                        <td>Texte</td>
+                        <td>Chaine vide</td>
+                        <td>Titre au milieu du bandeau (dans un hyperlien)</td>
+                    </tr>
+                    <tr>
+                        <td>title-url</td>
+
+                        <td>Adresse</td>
+                        <td>/</td>
+                        <td>Url de l'hyperlien du titre</td>
+                    </tr>
+                    <tr>
+                        <td>logo-url</td>
+                        <td>Adresse</td>
+                        <td>/</td>
+                        <td>Adresse du lien du Logo</td>
+                    </tr>
+                    <tr>
+                        <td>logo-src</td>
+                        <td>Adresse</td>
+                        <td>adresse du logo inclus dans la trousse</td>
+                        <td>Adresse du logo </td>
+                    </tr>
+                    <tr>
+                        <td>logo-alt</td>
+                        <td>texte</td>
+                        <td>Logo du gouvernement du Québec/Logo of government of Québec</td>
+                        <td>Attribut « alt » de la balise img du logo</td>
+                    </tr>
+                    <tr>
+                        <td>alt-language-text</td>
+                        <td>Texte</td>
+                        <td>English/Français</td>
+                        <td>Texte du lien de changement de langue</td>
+                    </tr>
+                    <tr>
+                        <td>alt-language-text</td>
+                        <td>Texte</td>
+                        <td>English/Français</td>
+                        <td>Texte du lien de changement de langue</td>
+                    </tr>
+                    <tr>
+                        <td>alt-language-url</td>
+                        <td>Adresse</td>
+                        <td>vide</td>
+                        <td>L'url du de l'autre langue. Si vide, le lien n'apparaît pas.</td>
+                    </tr>
+                <tr>
+                    <td>join-us-text</td>
+                    <td>Texte</td>
+                    <td>Nous joindre/Contact us</td>
+                    <td>Texte du lien « Nous joindre »</td>
+                </tr>
+                    <tr>
+                        <td>join-us-url</td>
+                        <td>Adresse</td>
+                        <td>Vide</td>
+                        <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparait pas.</td>
+                    </tr>
+                <tr>
+                    <td>go-to-content</td>
+                    <td>"true" ou "false"</td>
+                    <td>"true"</td>
+                    <td>Afficher ou non le lien pour aller directement au contenu.</td>
+                </tr>
+                <tr>
+                    <td>go-to-content-text</td>
+                    <td>Texte</td>
+                    <td>Passer au contenu/Skip to content</td>
+                    <td>Texte du lien pour passer directement au contenu.</td>
+                </tr>
+                    <tr>
+                        <td>go-to-content-anchor</td>
+                        <td>id du 1<sup>er</sup> élément de contenu</td>
+                        <td>"main"</td>
+                        <td>Cible du lien pour passer directement au contenu.</td>
+                    </tr>
+                    <tr>
+                        <td>full-width</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Affiche le bandeau en pleine largeur. (classe de conteneur « qc-container-fluid »)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="qc-table">
+                <thead>
+                <tr></tr>
+                </thead>
+            </table>
+
+            <h5>Slots disponibles</h5>
+            <div class="table-wrapper">
+
+            </div>
+
+            <table class="qc-table qc-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>title</td>
+                        <td>Personalisation du titre du bandeau.</td>
+                    </tr>
+                    <tr>
+                        <td>links</td>
+                        <td>Personnalisation des liens à droite du bandeau.</td>
+                    </tr>
+                    <tr>
+                        <td>search-button</td>
+                        <td>Bouton de recherche, <a href="#pivEnteteExempleRecherche">voir l'exemple.</a></td>
+                    </tr>
+                    <tr>
+                        <td>search-zone</td>
+                        <td>Zone dans le bas du PIV pour afficher un champ recherche</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5>Exemples</h5>
+            <p>Exemple minimaliste</p>
+            <qc-piv-header id="pivEnteteExempleLiens"
+                           title-text="Trousse de développement SDG"
+                           alt-logo="Accédez à Système de design SDG."
+                           join-us-url="#join-us"
+                           alt-language-url="#fakeEnglish"
+            >
+            </qc-piv-header>
+            <qc-code target-id="pivEnteteExempleLiens"></qc-code>
+
+            <p>Exemple avec bouton recherche et affichage de la zone recherche</p>
+            <qc-piv-header id="pivEnteteExempleRecherche"
+                           title-text="Trousse de développement SDG"
+                           alt-logo="Accédez à Système de design SDG.">
+                <div slot="search-button">
+                    <a href="#piv-search">
+                        <img alt="Bouton recherche"
+                             src="https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-droite.svg"
+                             width="24"
+                             height="24">
+                    </a>
+                </div>
+                <div slot="search-zone">
+                    <form method="get"
+                          id="piv-search-form">
+                        <div class="input-group">
+                            <input type="text"
+                                   title="Recherche"
+                                   placeholder="Rechercher..."
+                                   name="tx_solr[q]"
+                                   value="">
+
+                            <button>
+                                <span>Rechercher</span>
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
                 <div slot="links">
                     <ul>
                         <li><a href="#fakeEnglish">English</a>
@@ -661,7 +801,7 @@
                     </ul>
                 </div>
             </qc-piv-header>
-            <qc-code target-id="pivEnteteExemple" />
+            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
         </div>
     </main>
 </body>

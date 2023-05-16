@@ -5,7 +5,6 @@
 qc-piv-header {
     display: block;
     min-height: 72px;
-    max-height: 72px;
     visibility: hidden;
     background-color: token-value(color, blue, piv);
     width: 100%;
@@ -16,11 +15,14 @@ qc-piv-header {
         visibility: visible;
     }
 
-    [slot="searchZone"] > *:first-child {
+    [slot=search-zone] > *:first-child {
         padding: token-value(spacer xs) 0 token-value(spacer md) 0;
     }
     [slot=links] {
         @extend %piv-links;
+    }
+    [slot=search-button] {
+        padding-right: 11.2px;
     }
 } 
   
@@ -88,7 +90,7 @@ qc-piv-header {
             justify-content: flex-end;
             align-items: center;
 
-            .piv-links {
+            .links {
                 @extend %piv-links;
             }
             @include media-mobile() {
@@ -101,8 +103,9 @@ qc-piv-header {
 
 
     .piv-bottom {
-        display:none;
-        padding-bottom: token-value(spacer xs);
+        .title {
+            display: none;
+        }
     }
 
     .bouton-recherche {
@@ -168,33 +171,14 @@ qc-piv-header {
 }
 
 
-.utd-piv-entete .section-droite .bouton-recherche {
-    margin-right: token-value(spacer sm);
-}
-
-
-@include media-mobile() {
+@include media-tablet() {
     .qc-piv-header {
-        .piv-top {
-            .logo img {
-                min-width: 132px;
-                height: 48px;
-            }
-        }
-    }
-}
-
-@include media-mobile() {
-
-    qc-piv-header {
         min-height: 99px;
-        max-height: 99px;   
-    } 
-    
-    .qc-piv-header {
         .piv-top {
             .logo img {
                 margin-left: -3px;
+                min-width: 132px;
+                height: 48px;
             }
 
             .title {
@@ -209,11 +193,9 @@ qc-piv-header {
             }
         }
 
-
         .piv-bottom {
-            display: flex;
             justify-content: space-between;
-            .titre {
+            .title {
                 margin: 0;
                 display: flex;
             }
@@ -231,11 +213,3 @@ qc-piv-header {
     }
 }
 
-header {
-    margin-bottom: token-value(spacer lg);
-}
-  
-#pivLogoGouvernementPrint {
-    display: none;
-}
-  
