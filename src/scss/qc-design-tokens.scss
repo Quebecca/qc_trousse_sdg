@@ -2,7 +2,7 @@
 @use "modules/map" as *;
 @use "modules/grid" as *;
 
-:root, [slot] {
+:root {
 
    @each $breakpoint, $settings in $breakpoints-tokens {
       @include media-breakpoint-down($breakpoint) {

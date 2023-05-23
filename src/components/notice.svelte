@@ -5,28 +5,54 @@ Required tag for svelte to know we're building a custom element.
 
 <script>
   import { Utils } from "./utils"
-  export let title = ""
-  export let type = "information"
-  export let content = ""
+  import { onMount } from "svelte";
+
+  const
+      defaultHeader = 'h2'
+    , defaultType = 'information'
+    , types =
+        [ 'information'
+        , 'warning'
+        , 'success'
+        , 'error'
+        ]
+  export let
+          title = ""
+          , type = defaultType
+          , content = ""
+          , header = defaultHeader
+
+  onMount(() => {
+    header = header.match(/h[1-6]/)
+            ? header
+            : defaultHeader
+            ;
+    type = types.includes(type)
+            ? type
+            : defaultType
+            ;
+  })
 </script>
 
 <!-- TODO Confirmer tabindex. On pense que c'est important de recevoir le focus (notamment dans les formulaires) en fait pour nous c'est très important, sinon en mode formulaire au lecteur écran (nav avec TAB, ce n'est jamais lu). -->
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<div class="qc-component qc-notice qc-{type}" tabindex="0">
+<div class="qc-component qc-notice qc-{type}"
+     tabindex="0">
   <div class="icon-container">
-    <div aria-hidden="true" class="qc-icon qc-{type}"></div>
+    <div aria-hidden="true"
+         class="qc-icon qc-{type}">
+    </div>
   </div>
   <div class="content">
-    <!-- TODO Confirmer qu'on veut un header. Si oui, possibilité de spécifier le niveau? -->
-    <h2 class="title">
+    <svelte:element this={header}
+                    class="title">
       {title}
-    </h2>
+    </svelte:element>
     <div class="text">
-      {#if content}
-        {@html content}      
-      {/if}
       <slot />
-      <slot name="content" />
+      <slot name="content">
+        {@html content}
+      </slot>
     </div>
   </div>
 </div>

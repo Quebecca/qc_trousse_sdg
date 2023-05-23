@@ -1,4 +1,4 @@
-:root, [slot] {
+:root {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;
   --qc-font-family-roboto-mono: Roboto Mono,monospace;
@@ -109,6 +109,8 @@
   --qc-spacer-list-pl: 3.2rem;
   --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
+  --qc-spacer-notice-my: var(--qc-spacer-md);
+  --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 576px;
@@ -121,12 +123,12 @@
   --qc-grid-container-max-width-xl: 1200px;
 }
 @media (max-width: 1199.98px) {
-  :root, [slot] {
+  :root {
     --qc-grid-gutter: 24px;
   }
 }
 @media (max-width: 991.98px) {
-  :root, [slot] {
+  :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
     --qc-font-size-h1: 3.6rem;
@@ -137,7 +139,7 @@
   }
 }
 @media (max-width: 767.98px) {
-  :root, [slot] {
+  :root {
     --qc-grid-gutter: 16px;
   }
 }

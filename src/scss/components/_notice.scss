@@ -46,12 +46,17 @@
   }
 
   .content {
-      padding: token-value(spacer, md) rem(4 * $base-spacer) token-value(spacer, md) token-value(spacer, sm);
+      margin:
+          token-value(spacer notice my)
+          token-value(spacer notice mx)
+          0;
       width: 100%;
-
-      &:last-child {
-        margin-bottom: 0;
+      .text {
+        margin-bottom: token-value(spacer notice my);
       }
+      //&:last-child {
+      //  margin-bottom: 0;
+      //}
   }
 }
 

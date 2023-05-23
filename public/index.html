@@ -576,18 +576,23 @@
 
             <h3>Avis information</h3>
             <h4>Avec attribut « contenu »</h4>
-            <qc-notice title="Nouvelle règlementation" content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai."></qc-notice>
-
+            <qc-notice id="notice-info"
+                       title="Nouvelle règlementation"
+                       content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+            </qc-notice>
+            <qc-code target-id="notice-info"></qc-code>
             <h3>Avis avertissement</h3>
             <h4>Avec attribut « contenu »</h4>
-            <qc-notice type="warning"
+            <qc-notice id="notice-exemple-warning"
+                       type="warning"
                        title="Migration des contenus"
                        content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
             </qc-notice>
-
+            <qc-code target-id="notice-exemple-warning"></qc-code>
             <h3>Avis succès</h3>
             <h4>Avec slot par défaut</h4>
-            <qc-notice type="success"
+            <qc-notice id="notice-success"
+                       type="success"
                        title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
                 <p>Certains faits importants à savoir à propos de Chuck Norris :</p>
                 <ul>
@@ -596,10 +601,12 @@
                     <li>C'est Chuck Norris qui a décidé que toute phrase se terminait par un poing.</li>
                 </ul>
             </qc-notice>
-
+            <qc-code target-id="notice-success"></qc-code>
             <h3>Avis erreur</h3>
             <h4>Avec slot par défaut (ex. sommaire d'erreurs)</h4>
-            <qc-notice type="error" title="Des erreurs sont présentes dans le formulaire.">
+            <qc-notice id="notice-error"
+                       type="error"
+                       title="Des erreurs sont présentes dans le formulaire.">
                 <ul>
                     <li>
                         <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
@@ -612,9 +619,10 @@
                     </li>
                 </ul>
             </qc-notice>
-            <h3 id="piv">PIV</h3>
-            <h4>En-tête</h4>
-            <h5>Attributs disponibles</h5>
+            <qc-code target-id="notice-error"></qc-code>
+            <h2 id="piv">PIV</h2>
+            <h3>En-tête</h3>
+            <h4>Attributs disponibles</h4>
             <table class="qc-table qc-striped">
                 <thead>
                     <tr>
@@ -720,7 +728,7 @@
                 </thead>
             </table>
 
-            <h5>Slots disponibles</h5>
+            <h4>Slots disponibles</h4>
             <div class="table-wrapper">
 
             </div>
@@ -752,7 +760,7 @@
                 </tbody>
             </table>
 
-            <h5>Exemples</h5>
+            <h4>Exemples</h4>
             <p>Exemple minimaliste</p>
             <qc-piv-header id="pivEnteteExempleLiens"
                            title-text="Trousse de développement SDG"

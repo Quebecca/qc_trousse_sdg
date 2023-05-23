@@ -171,6 +171,10 @@ $xl-tokens: (
         ),
         list-item : (
             mb: token-value(spacer sm),
+        ),
+        notice: (
+            my: token-value(spacer, md),
+            mx: rem(4 * $base-spacer),
         )
     ),
     grid: (

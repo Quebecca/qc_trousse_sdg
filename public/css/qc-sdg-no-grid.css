@@ -1,6 +1,6 @@
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Open Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700");
-:root, [slot] {
+:root {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;
   --qc-font-family-roboto-mono: Roboto Mono,monospace;
@@ -111,6 +111,8 @@
   --qc-spacer-list-pl: 3.2rem;
   --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
+  --qc-spacer-notice-my: var(--qc-spacer-md);
+  --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 576px;
@@ -123,12 +125,12 @@
   --qc-grid-container-max-width-xl: 1200px;
 }
 @media (max-width: 1199.98px) {
-  :root, [slot] {
+  :root {
     --qc-grid-gutter: 24px;
   }
 }
 @media (max-width: 991.98px) {
-  :root, [slot] {
+  :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
     --qc-font-size-h1: 3.6rem;
@@ -139,7 +141,7 @@
   }
 }
 @media (max-width: 767.98px) {
-  :root, [slot] {
+  :root {
     --qc-grid-gutter: 16px;
   }
 }
@@ -860,11 +862,11 @@ ul ul {
   font-family: var(--qc-font-family-content);
 }
 .qc-notice .content {
-  padding: var(--qc-spacer-md) 3.2rem var(--qc-spacer-md) var(--qc-spacer-sm);
+  margin: var(--qc-spacer-notice-my) var(--qc-spacer-notice-mx) 0;
   width: 100%;
 }
-.qc-notice .content:last-child {
-  margin-bottom: 0;
+.qc-notice .content .text {
+  margin-bottom: var(--qc-spacer-notice-my);
 }
 
 /* Links in a error notice (eg. error summary) */
