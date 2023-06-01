@@ -66290,6 +66290,12 @@ var qcCatalog = (function (exports) {
 
   customElements.define("qc-code", Code);
 
+  // Show maskable "general alert" component
+  const content = document.getElementById("maskable-alert").innerHTML;
+  document.getElementById("show-qc-alert").addEventListener('click', function (e)  {
+      document.getElementById("maskable-alert").innerHTML = content;
+  });
+
   exports.customElements = customElements;
 
   Object.defineProperty(exports, '__esModule', { value: true });

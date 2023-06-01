@@ -39,11 +39,11 @@
                     <li><a href='#grille'>Grille horizontale</a></li>
                     <li><a href='#liens'>Liens</a></li>
                     <li><a href='#ombrages'>Ombrages</a></li>
-                    <!--<li><a href='#citations'>Citations</a></li>-->
                     <li><a href='#images'>Images</a></li>
                     <li><a href='#table'>Tables</a></li>
                     <li><a href='#notice'>Composant "Avis"</a></li>
                     <li><a href='#piv'>Composant "PIV"</a></li>
+                    <li><a href='#alert'>Composant "Alerte générale"</a></li>
                 </ul>
             </div>
         </div>
@@ -532,31 +532,6 @@
                 <strong>Ombre</strong><br/>
                 <code >--qc-box-shadow-4</code>
             </p>
-            <!-- Citations -->
-            <!--<h2 id="citations">Citations</h2>
-            <blockquote lang="en">
-                <p>I have to constantly use creativity and imagination to impart
-                    knowledge
-                    to my students,
-                    but that’s also what drives me on a daily basis.</p>
-            </blockquote>
-            <p>Karel
-                <span>Teacher</span>
-            </p>
-            <blockquote>
-                <p>Voilà une excellente nouvelle pour la région du Nord-du-Québec. Grâce
-                    à cet
-                    investissement majeur de notre gouvernement,
-                    nous pourrons loger davantage de travailleurs et leurs familles, ce qui renforcera la vitalité
-                    économique de nos communautés.</p>
-            </blockquote>
-            <p>Pierre Dufour
-                <span>Ministre des Forêts, de la Faune et des Parcs, ministre
-                responsable
-                de la
-                région de l’Abitibi-Témiscamingue et de la région du Nord-du-Québec et député
-                d’Abitibi-Est</span>
-            </p>-->
 
             <!-- Images -->
             <h2 id="images">Images</h2>
@@ -620,6 +595,60 @@
                 </ul>
             </qc-notice>
             <qc-code target-id="notice-error"></qc-code>
+
+            <!-- Alerte générale -->
+            <h2 id="alert">Composant "Alerte générale" (qc-alert)</h2>
+
+            <table class="qc-table qc-striped">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>type</td>
+                    <td>"general" ou "warning"</td>
+                    <td>"general"</td>
+                    <td>Type de l'alerte : S'il s'agit d'une alerte bleur ou jaune</td>
+                </tr>
+                <tr>
+                    <td>maskable</td>
+                    <td>"true" ou "false"</td>
+                    <td>"true"</td>
+                    <td>Afficher le bouton de fermeture de l'alerte</td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Afficher le contenu de l'alerte</td>
+                </tr>
+            </table>
+
+            <h3>Alerte jaune - Message hautement prioritaire</h3>
+            <p><a href="#maskable-alert" id="show-qc-alert">Réaficher l'alerte</a></p>
+
+            <div id="maskable-alert">
+                <qc-alert id="alert-warning"
+                          type="warning"
+                          maskable="true"
+                          content="Alerte jaune d'importance élevée">
+                </qc-alert>
+            </div>
+            <qc-code target-id="alert-warning"></qc-code>
+
+            <h3>Alerte bleue - Message moins prioritaire</h3>
+            <qc-alert id="alert-general"
+                      type="general"
+                      maskable="false">
+                    <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
+            </qc-alert>
+            <qc-code target-id="alert-general"></qc-code>
+
+            <!-- PIV -->
             <h2 id="piv">PIV</h2>
             <h3>En-tête</h3>
             <h4>Attributs disponibles</h4>

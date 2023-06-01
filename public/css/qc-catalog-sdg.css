@@ -126,6 +126,12 @@ Always use this function for rem values
 .qc-icon.qc-youtube {
   background-image: url(../img/qc-sprite.svg?v=1.0.0#youtube);
 }
+.qc-icon.qc-warning-alert-icon {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#warning);
+}
+.qc-icon.qc-general-alert-icon {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information);
+}
 
 qc-code {
   display: block;

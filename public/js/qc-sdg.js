@@ -70,11 +70,21 @@ var qcSdg = (function (exports) {
   function element(name) {
       return document.createElement(name);
   }
+  function svg_element(name) {
+      return document.createElementNS('http://www.w3.org/2000/svg', name);
+  }
   function text(data) {
       return document.createTextNode(data);
   }
   function space() {
       return text(' ');
+  }
+  function empty() {
+      return text('');
+  }
+  function listen(node, event, handler, options) {
+      node.addEventListener(event, handler, options);
+      return () => node.removeEventListener(event, handler, options);
   }
   function attr(node, attribute, value) {
       if (value == null)
@@ -138,6 +148,44 @@ var qcSdg = (function (exports) {
   }
   function toggle_class(element, name, toggle) {
       element.classList[toggle ? 'add' : 'remove'](name);
+  }
+  class HtmlTag {
+      constructor(is_svg = false) {
+          this.is_svg = false;
+          this.is_svg = is_svg;
+          this.e = this.n = null;
+      }
+      c(html) {
+          this.h(html);
+      }
+      m(html, target, anchor = null) {
+          if (!this.e) {
+              if (this.is_svg)
+                  this.e = svg_element(target.nodeName);
+              else
+                  this.e = element(target.nodeName);
+              this.t = target;
+              this.c(html);
+          }
+          this.i(anchor);
+      }
+      h(html) {
+          this.e.innerHTML = html;
+          this.n = Array.from(this.e.childNodes);
+      }
+      i(anchor) {
+          for (let i = 0; i < this.n.length; i += 1) {
+              insert(this.t, this.n[i], anchor);
+          }
+      }
+      p(html) {
+          this.d();
+          this.h(html);
+          this.i(this.a);
+      }
+      d() {
+          this.n.forEach(detach);
+      }
   }
   function attribute_to_object(attributes) {
       const result = {};
@@ -684,7 +732,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function create_fragment$1(ctx) {
+  function create_fragment$2(ctx) {
   	let div4;
   	let div1;
   	let div0;
@@ -787,7 +835,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function instance$1($$self, $$props, $$invalidate) {
+  function instance$2($$self, $$props, $$invalidate) {
   	const defaultHeader = 'h2',
   		defaultType = 'information',
   		types = ['information', 'warning', 'success', 'error'];
@@ -820,8 +868,8 @@ var qcSdg = (function (exports) {
   				props: attribute_to_object(this.attributes),
   				customElement: true
   			},
-  			instance$1,
-  			create_fragment$1,
+  			instance$2,
+  			create_fragment$2,
   			safe_not_equal,
   			{ title: 2, type: 0, content: 3, header: 1 },
   			null
@@ -947,11 +995,11 @@ var qcSdg = (function (exports) {
   }
 
   // (77:10) {#if joinUsUrl || altLanguageUrl}
-  function create_if_block_1(ctx) {
+  function create_if_block_1$1(ctx) {
   	let ul;
   	let t;
   	let if_block0 = /*altLanguageUrl*/ ctx[6] && create_if_block_3(ctx);
-  	let if_block1 = /*joinUsUrl*/ ctx[8] && create_if_block_2(ctx);
+  	let if_block1 = /*joinUsUrl*/ ctx[8] && create_if_block_2$1(ctx);
 
   	return {
   		c() {
@@ -984,7 +1032,7 @@ var qcSdg = (function (exports) {
   				if (if_block1) {
   					if_block1.p(ctx, dirty);
   				} else {
-  					if_block1 = create_if_block_2(ctx);
+  					if_block1 = create_if_block_2$1(ctx);
   					if_block1.c();
   					if_block1.m(ul, null);
   				}
@@ -1033,7 +1081,7 @@ var qcSdg = (function (exports) {
   }
 
   // (82:16) {#if joinUsUrl}
-  function create_if_block_2(ctx) {
+  function create_if_block_2$1(ctx) {
   	let li;
   	let a;
   	let t;
@@ -1064,7 +1112,7 @@ var qcSdg = (function (exports) {
   }
 
   // (94:10) {#if titleText}
-  function create_if_block(ctx) {
+  function create_if_block$1(ctx) {
   	let a;
   	let span;
   	let t;
@@ -1094,7 +1142,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function create_fragment(ctx) {
+  function create_fragment$1(ctx) {
   	let div9;
   	let div8;
   	let t0;
@@ -1122,8 +1170,8 @@ var qcSdg = (function (exports) {
   	let link;
   	let if_block0 = /*goToContent*/ ctx[9] == 'true' && create_if_block_5(ctx);
   	let if_block1 = /*titleText*/ ctx[4] && create_if_block_4(ctx);
-  	let if_block2 = (/*joinUsUrl*/ ctx[8] || /*altLanguageUrl*/ ctx[6]) && create_if_block_1(ctx);
-  	let if_block3 = /*titleText*/ ctx[4] && create_if_block(ctx);
+  	let if_block2 = (/*joinUsUrl*/ ctx[8] || /*altLanguageUrl*/ ctx[6]) && create_if_block_1$1(ctx);
+  	let if_block3 = /*titleText*/ ctx[4] && create_if_block$1(ctx);
 
   	return {
   		c() {
@@ -1251,7 +1299,7 @@ var qcSdg = (function (exports) {
   				if (if_block2) {
   					if_block2.p(ctx, dirty);
   				} else {
-  					if_block2 = create_if_block_1(ctx);
+  					if_block2 = create_if_block_1$1(ctx);
   					if_block2.c();
   					if_block2.m(slot2, null);
   				}
@@ -1264,7 +1312,7 @@ var qcSdg = (function (exports) {
   				if (if_block3) {
   					if_block3.p(ctx, dirty);
   				} else {
-  					if_block3 = create_if_block(ctx);
+  					if_block3 = create_if_block$1(ctx);
   					if_block3.c();
   					if_block3.m(slot3, null);
   				}
@@ -1295,7 +1343,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function instance($$self, $$props, $$invalidate) {
+  function instance$1($$self, $$props, $$invalidate) {
   	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.0.0#QUEBEC_blanc`, logoAlt = Utils.getPageLanguage() === 'fr'
   	? 'Logo du gouvernement du Québec'
   	: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = Utils.getPageLanguage() === 'fr'
@@ -1362,8 +1410,8 @@ var qcSdg = (function (exports) {
   				props: attribute_to_object(this.attributes),
   				customElement: true
   			},
-  			instance,
-  			create_fragment,
+  			instance$1,
+  			create_fragment$1,
   			safe_not_equal,
   			{
   				logoUrl: 0,
@@ -1532,6 +1580,304 @@ var qcSdg = (function (exports) {
   }
 
   customElements.define("qc-piv-header", PivHeader);
+
+  /* src/components/alert.svelte generated by Svelte v3.55.0 */
+
+  function create_if_block(ctx) {
+  	let div3;
+  	let div2;
+  	let div0;
+  	let div0_class_value;
+  	let t0;
+  	let div1;
+  	let slot0;
+  	let t1;
+  	let slot1;
+  	let t2;
+  	let if_block0 = /*content*/ ctx[2] && create_if_block_2(ctx);
+  	let if_block1 = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
+
+  	return {
+  		c() {
+  			div3 = element("div");
+  			div2 = element("div");
+  			div0 = element("div");
+  			t0 = space();
+  			div1 = element("div");
+  			slot0 = element("slot");
+  			if (if_block0) if_block0.c();
+  			t1 = space();
+  			slot1 = element("slot");
+  			t2 = space();
+  			if (if_block1) if_block1.c();
+  			attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon");
+  			attr(div0, "aria-hidden", "true");
+  			attr(slot0, "name", "content");
+  			attr(div1, "class", "qc-alert-content");
+  			attr(div2, "class", "qc-container qc-general-alert-elements");
+  			attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[4]);
+  			attr(div3, "role", "alert");
+  			attr(div3, "aria-label", /*label*/ ctx[6]);
+  		},
+  		m(target, anchor) {
+  			insert(target, div3, anchor);
+  			append(div3, div2);
+  			append(div2, div0);
+  			append(div2, t0);
+  			append(div2, div1);
+  			append(div1, slot0);
+  			if (if_block0) if_block0.m(slot0, null);
+  			append(div1, t1);
+  			append(div1, slot1);
+  			append(div2, t2);
+  			if (if_block1) if_block1.m(div2, null);
+  		},
+  		p(ctx, dirty) {
+  			if (dirty & /*type*/ 1 && div0_class_value !== (div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon")) {
+  				attr(div0, "class", div0_class_value);
+  			}
+
+  			if (/*content*/ ctx[2]) {
+  				if (if_block0) {
+  					if_block0.p(ctx, dirty);
+  				} else {
+  					if_block0 = create_if_block_2(ctx);
+  					if_block0.c();
+  					if_block0.m(slot0, null);
+  				}
+  			} else if (if_block0) {
+  				if_block0.d(1);
+  				if_block0 = null;
+  			}
+
+  			if (/*maskable*/ ctx[1] === "true") {
+  				if (if_block1) {
+  					if_block1.p(ctx, dirty);
+  				} else {
+  					if_block1 = create_if_block_1(ctx);
+  					if_block1.c();
+  					if_block1.m(div2, null);
+  				}
+  			} else if (if_block1) {
+  				if_block1.d(1);
+  				if_block1 = null;
+  			}
+  		},
+  		d(detaching) {
+  			if (detaching) detach(div3);
+  			if (if_block0) if_block0.d();
+  			if (if_block1) if_block1.d();
+  		}
+  	};
+  }
+
+  // (23:20) {#if content}
+  function create_if_block_2(ctx) {
+  	let html_tag;
+  	let html_anchor;
+
+  	return {
+  		c() {
+  			html_tag = new HtmlTag(false);
+  			html_anchor = empty();
+  			html_tag.a = html_anchor;
+  		},
+  		m(target, anchor) {
+  			html_tag.m(/*content*/ ctx[2], target, anchor);
+  			insert(target, html_anchor, anchor);
+  		},
+  		p(ctx, dirty) {
+  			if (dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
+  		},
+  		d(detaching) {
+  			if (detaching) detach(html_anchor);
+  			if (detaching) html_tag.d();
+  		}
+  	};
+  }
+
+  // (29:12) {#if maskable === "true"}
+  function create_if_block_1(ctx) {
+  	let div;
+  	let button;
+  	let span;
+  	let mounted;
+  	let dispose;
+
+  	return {
+  		c() {
+  			div = element("div");
+  			button = element("button");
+  			span = element("span");
+  			attr(span, "aria-hidden", "true");
+  			attr(span, "class", "qc-icon qc-xclose-blue qc-close-alert-icon");
+  			attr(button, "type", "button");
+  			attr(button, "class", "close");
+  			attr(button, "aria-label", /*closeLabel*/ ctx[5]);
+  			attr(div, "class", "qc-alert-close");
+  		},
+  		m(target, anchor) {
+  			insert(target, div, anchor);
+  			append(div, button);
+  			append(button, span);
+
+  			if (!mounted) {
+  				dispose = listen(button, "click", /*click_handler*/ ctx[7]);
+  				mounted = true;
+  			}
+  		},
+  		p: noop,
+  		d(detaching) {
+  			if (detaching) detach(div);
+  			mounted = false;
+  			dispose();
+  		}
+  	};
+  }
+
+  function create_fragment(ctx) {
+  	let t;
+  	let link;
+  	let if_block = !/*hideAlert*/ ctx[3] && create_if_block(ctx);
+
+  	return {
+  		c() {
+  			if (if_block) if_block.c();
+  			t = space();
+  			link = element("link");
+  			this.c = noop;
+  			attr(link, "rel", "stylesheet");
+  			attr(link, "href", "css/qc-sdg.css");
+  		},
+  		m(target, anchor) {
+  			if (if_block) if_block.m(target, anchor);
+  			insert(target, t, anchor);
+  			insert(target, link, anchor);
+  		},
+  		p(ctx, [dirty]) {
+  			if (!/*hideAlert*/ ctx[3]) {
+  				if (if_block) {
+  					if_block.p(ctx, dirty);
+  				} else {
+  					if_block = create_if_block(ctx);
+  					if_block.c();
+  					if_block.m(t.parentNode, t);
+  				}
+  			} else if (if_block) {
+  				if_block.d(1);
+  				if_block = null;
+  			}
+  		},
+  		i: noop,
+  		o: noop,
+  		d(detaching) {
+  			if (if_block) if_block.d(detaching);
+  			if (detaching) detach(t);
+  			if (detaching) detach(link);
+  		}
+  	};
+  }
+
+  function instance($$self, $$props, $$invalidate) {
+  	let { type = "" } = $$props;
+  	let { maskable = "" } = $$props;
+  	let { content = "" } = $$props;
+  	let hideAlert = false;
+  	let typeClass = type !== "" ? type : 'general';
+  	let closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer" : "Close";
+
+  	let warningLabel = Utils.getPageLanguage() === 'fr'
+  	? "Information d'importance élevée"
+  	: "Information of high importance";
+
+  	let generalLabel = Utils.getPageLanguage() === 'fr'
+  	? "Information importante"
+  	: "Important information";
+
+  	let label = type === 'general' ? generalLabel : warningLabel;
+  	const click_handler = () => $$invalidate(3, hideAlert = true);
+
+  	$$self.$$set = $$props => {
+  		if ('type' in $$props) $$invalidate(0, type = $$props.type);
+  		if ('maskable' in $$props) $$invalidate(1, maskable = $$props.maskable);
+  		if ('content' in $$props) $$invalidate(2, content = $$props.content);
+  	};
+
+  	return [
+  		type,
+  		maskable,
+  		content,
+  		hideAlert,
+  		typeClass,
+  		closeLabel,
+  		label,
+  		click_handler
+  	];
+  }
+
+  class Alert extends SvelteElement {
+  	constructor(options) {
+  		super();
+
+  		init(
+  			this,
+  			{
+  				target: this.shadowRoot,
+  				props: attribute_to_object(this.attributes),
+  				customElement: true
+  			},
+  			instance,
+  			create_fragment,
+  			safe_not_equal,
+  			{ type: 0, maskable: 1, content: 2 },
+  			null
+  		);
+
+  		if (options) {
+  			if (options.target) {
+  				insert(options.target, this, options.anchor);
+  			}
+
+  			if (options.props) {
+  				this.$set(options.props);
+  				flush();
+  			}
+  		}
+  	}
+
+  	static get observedAttributes() {
+  		return ["type", "maskable", "content"];
+  	}
+
+  	get type() {
+  		return this.$$.ctx[0];
+  	}
+
+  	set type(type) {
+  		this.$$set({ type });
+  		flush();
+  	}
+
+  	get maskable() {
+  		return this.$$.ctx[1];
+  	}
+
+  	set maskable(maskable) {
+  		this.$$set({ maskable });
+  		flush();
+  	}
+
+  	get content() {
+  		return this.$$.ctx[2];
+  	}
+
+  	set content(content) {
+  		this.$$set({ content });
+  		flush();
+  	}
+  }
+
+  customElements.define("qc-alert", Alert);
 
   exports.customElements = customElements;
 

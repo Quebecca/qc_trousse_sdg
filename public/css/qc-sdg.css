@@ -865,6 +865,12 @@ Always use this function for rem values
 .qc-icon.qc-youtube {
   background-image: url(../img/qc-sprite.svg?v=1.0.0#youtube);
 }
+.qc-icon.qc-warning-alert-icon {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#warning);
+}
+.qc-icon.qc-general-alert-icon {
+  background-image: url(../img/qc-sprite.svg?v=1.0.0#information);
+}
 
 .qc-notice {
   display: flex;
@@ -1092,6 +1098,72 @@ qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .l
     min-width: auto;
   }
 }
+.qc-general-alert {
+  padding: var(--qc-spacer-md) var(--qc-spacer-sm);
+}
+@media (max-width: 575.98px) {
+  .qc-general-alert {
+    padding: var(--qc-spacer-sm);
+  }
+}
+.qc-general-alert .qc-general-alert-elements {
+  display: flex;
+  padding: 0;
+}
+.qc-general-alert.warning {
+  background-color: var(--qc-color-yellow-pale);
+}
+.qc-general-alert.general {
+  background-color: var(--qc-color-blue-pale);
+}
+.qc-general-alert .qc-icon {
+  min-width: var(--qc-spacer-md);
+  height: var(--qc-spacer-md);
+}
+.qc-general-alert .qc-alert-content {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-semi-bold);
+  margin: 0 var(--qc-spacer-md);
+  width: 100%;
+}
+@media (max-width: 575.98px) {
+  .qc-general-alert .qc-alert-content {
+    font-size: var(--qc-font-size-sm);
+    line-height: var(--qc-line-height-sm);
+    font-weight: var(--qc-font-weight-semi-bold);
+  }
+}
+.qc-general-alert .qc-alert-close {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 575.98px) {
+  .qc-general-alert .qc-alert-close {
+    align-items: inherit;
+  }
+}
+.qc-general-alert .close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  display: inline-flex;
+  justify-content: center;
+}
+.qc-general-alert .close .qc-close-alert-icon {
+  display: inline-block;
+  min-width: var(--qc-spacer-sm);
+  height: var(--qc-spacer-sm);
+  vertical-align: middle;
+}
+
+qc-alert [slot] *, qc-alert:not([slot=content]) * {
+  margin-bottom: 0;
+}
+qc-alert [slot] a, qc-alert:not([slot=content]) a {
+  color: var(--qc-color-blue-dark);
+}
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-xl,

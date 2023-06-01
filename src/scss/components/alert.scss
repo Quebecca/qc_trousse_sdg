@@ -1,0 +1,74 @@
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "../modules/grid" as *;
+
+.qc-general-alert {
+  padding: token-value(spacer, md) token-value(spacer, sm);
+
+  @include media-mobile() {
+    padding: token-value(spacer, sm);
+  }
+
+  .qc-general-alert-elements {
+    display: flex;
+    padding: 0;
+  }
+
+  &.warning {
+    background-color: token-value(color, yellow, pale);
+  }
+
+  &.general {
+    background-color: token-value(color, blue, pale);
+  }
+
+  .qc-icon {
+    min-width: token-value(spacer, md);
+    height: token-value(spacer, md);
+  }
+
+  .qc-alert-content {
+    @include content-font(md, semi-bold);
+    margin: 0 token-value(spacer, md);
+    width: 100%;
+
+    @include media-mobile() {
+      @include content-font(sm, semi-bold);
+    }
+  }
+
+  .qc-alert-close {
+    display: flex;
+    align-items: center;
+    @include media-mobile() {
+      align-items: inherit;
+    }
+  }
+
+  .close {
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    display: inline-flex;
+    justify-content: center;
+
+    .qc-close-alert-icon {
+      display: inline-block;
+      min-width: token-value(spacer, sm);
+      height: token-value(spacer, sm);
+      vertical-align: middle;
+    }
+  }
+}
+
+qc-alert {
+  [slot], &:not([slot=content]) {
+    * {
+      margin-bottom: 0;
+    }
+
+    a {
+      color: token-value(color blue dark);
+    }
+  }
+}

@@ -124,7 +124,14 @@
   &.qc-youtube {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#youtube);
   }
-  
+
+  &.qc-warning-alert-icon {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#warning);
+  }
+
+  &.qc-general-alert-icon {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);
+  }
 }
 
 
