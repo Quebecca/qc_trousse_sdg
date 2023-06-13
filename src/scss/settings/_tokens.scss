@@ -14,6 +14,7 @@ $xl-tokens: (
             code: token-value(font family roboto-mono),
         ),
         size: (
+            root-percent: #{$percent-root-font-size}#{"%"},
             h6: rem(16),
             h5: rem(19),
             h4: rem(21),

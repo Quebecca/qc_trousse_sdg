@@ -2,7 +2,7 @@
 @use "modules/utils" as *;
 
 :root {
-  font-size: #{$percent-root-font-size}#{"%"};
+  font-size: token-value(font size root-percent);
 }
 
 body {

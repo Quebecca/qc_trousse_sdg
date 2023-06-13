@@ -5,6 +5,7 @@
   --qc-font-family-content: var(--qc-font-family-open-sans);
   --qc-font-family-header: var(--qc-font-family-roboto);
   --qc-font-family-code: var(--qc-font-family-roboto-mono);
+  --qc-font-size-root-percent: 62.5%;
   --qc-font-size-h6: 1.6rem;
   --qc-font-size-h5: 1.9rem;
   --qc-font-size-h4: 2.1rem;
