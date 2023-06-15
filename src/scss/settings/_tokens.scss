@@ -106,7 +106,7 @@ $xl-tokens: (
             dark: #ad781c,
         ),
         text : (
-            primary : token-value(color, blue, dark,)
+            primary : token-value(color blue dark)
         ),
         accent: token-value(color pink regular),
         success: token-value(color green regular),
@@ -138,6 +138,7 @@ $xl-tokens: (
         xl: rem(12 * $base-spacer),
         section : token-value(spacer xl),
       // prefixes : m -> margin, p -> padding, t -> top, b -> bottom, l -> left, r -> right
+      // x -> horizontal i.e. left and right, y -> vertical i.e. top and bottom
       // mt -> margin top
         h1: (
             mt: rem(9 * $base-spacer),

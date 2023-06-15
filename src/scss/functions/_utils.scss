@@ -4,6 +4,21 @@
 @use "sass:list";
 @use "sass:string";
 
+/*
+Return rem size from pixel size according to root font-size as define in settings
+Always use this function for rem values
+// root font-size : 100 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1rem; }
+
+// root font-size : 62.5 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1.6rem; }
+*/
 @function rem($px-size) {
   @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
 }

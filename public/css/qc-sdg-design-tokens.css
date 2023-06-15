@@ -1,3 +1,33 @@
+/*
+Return rem size from pixel size according to root font-size as define in settings
+Always use this function for rem values
+// root font-size : 100 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1rem; }
+
+// root font-size : 62.5 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1.6rem; }
+*/
+/*
+Return rem size from pixel size according to root font-size as define in settings
+Always use this function for rem values
+// root font-size : 100 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1rem; }
+
+// root font-size : 62.5 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1.6rem; }
+*/
 :root {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;

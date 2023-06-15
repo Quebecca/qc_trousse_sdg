@@ -6,13 +6,12 @@ import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser';
 import scss from 'rollup-plugin-scss'
 import copy from 'rollup-plugin-copy'
-import del from 'rollup-plugin-delete'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
-// import babel from 'rollup-plugin-babel';
+
 
 const dev_process = (process.env.npm_lifecycle_event == 'dev');
 const verbose = false;
@@ -74,32 +73,6 @@ let
             customElement: true
         }
     }
-    , babelOptions = {
-        runtimeHelpers: true,
-        extensions: [ '.js', '.mjs', '.html', '.svelte' ],
-        exclude: [ 'node_modules/@babel/**', 'node_modules/core-js/**' ],
-        presets: [
-            [
-                '@babel/preset-env',
-                {
-                    targets: {
-                        ie: '11'
-                    },
-                    useBuiltIns: 'usage',
-                    corejs: 3
-                }
-            ]
-        ],
-        plugins: [
-            '@babel/plugin-syntax-dynamic-import',
-            [
-                '@babel/plugin-transform-runtime',
-                {
-                    useESModules: true
-                }
-            ]
-        ]
-    }
     , rollupOptions = [
         {
             // This `main.js` file we wrote
@@ -138,6 +111,20 @@ let
                     }
                     , scssOptions
                 )),
+                !dev_process && copy({
+                    targets: [
+                        {
+                            src: `src/sprites/dist/view/svg/sprite.view.svg`,
+                            dest: [`dist/img`,`public/img`],
+                            rename: () => 'qc-sprite.svg'
+                        },
+                        {
+                            src: 'src/sprites/svg/external-link.svg',
+                            dest: [`dist/img`,`public/img`],
+                        }
+                    ],
+                    verbose: verbose,
+                }),
             ],
         },
         {
@@ -186,41 +173,7 @@ let
                 )),
             ],
         },
-        {
-            // finisher : copy, deletions, etc
-            input: 'src/qc-sdg.js',
-            watch: {
-                skipWrite: true, // prevent output generation
-            },
-            plugins: [
-                svelte(svelteOptions),
-                scss(Object.assign({
-                        output: false,
-                    }
-                    , scssOptions
-                )), // needed, since the script contains scss…
-                del({ // deletion of uneeded js files
-                    targets: [
-                        'dist/qc-sdg-design-tokens.js',
-                    ],
-                    verbose: verbose
-                }),
-                !dev_process && copy({
-                    targets: [
-                        {
-                            src: `src/sprites/dist/view/svg/sprite.view.svg`,
-                            dest: [`dist/img`,`public/img`],
-                            rename: () => 'qc-sprite.svg'
-                        },
-                        {
-                            src: 'src/sprites/svg/external-link.svg',
-                            dest: [`dist/img`,`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
-            ]
-        }
+
     ]
 ;
 
@@ -253,7 +206,6 @@ if (dev_process) {
             dev_process && serve(),
             //Enable the Hot Reload
             dev_process && livereload('public'),
-
         ],
     },)
 }

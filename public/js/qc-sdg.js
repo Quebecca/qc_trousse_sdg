@@ -30,12 +30,6 @@ var qcSdg = (function (exports) {
   };
 
   function noop() { }
-  function assign(tar, src) {
-      // @ts-ignore
-      for (const k in src)
-          tar[k] = src[k];
-      return tar;
-  }
   function run(fn) {
       return fn();
   }
@@ -88,6 +82,14 @@ var qcSdg = (function (exports) {
       else if (node.getAttribute(attribute) !== value)
           node.setAttribute(attribute, value);
   }
+  /**
+   * List of attributes that should always be set through the attr method,
+   * because updating them through the property setter doesn't work reliably.
+   * In the example of `width`/`height`, the problem is that the setter only
+   * accepts numeric values, but the attribute can also be set to a string like `50%`.
+   * If this list becomes too big, rethink this approach.
+   */
+  const always_set_through_set_attribute = ['width', 'height'];
   function set_attributes(node, attributes) {
       // @ts-ignore
       const descriptors = Object.getOwnPropertyDescriptors(node.__proto__);
@@ -101,7 +103,7 @@ var qcSdg = (function (exports) {
           else if (key === '__value') {
               node.value = node[key] = attributes[key];
           }
-          else if (descriptors[key] && descriptors[key].set) {
+          else if (descriptors[key] && descriptors[key].set && always_set_through_set_attribute.indexOf(key) === -1) {
               node[key] = attributes[key];
           }
           else {
@@ -122,13 +124,17 @@ var qcSdg = (function (exports) {
           attr(node, prop, value);
       }
   }
+  function set_dynamic_element_data(tag) {
+      return (/-/.test(tag)) ? set_custom_element_data_map : set_attributes;
+  }
   function children(element) {
       return Array.from(element.childNodes);
   }
   function set_data(text, data) {
       data = '' + data;
-      if (text.wholeText !== data)
-          text.data = data;
+      if (text.data === data)
+          return;
+      text.data = data;
   }
   function toggle_class(element, name, toggle) {
       element.classList[toggle ? 'add' : 'remove'](name);
@@ -165,9 +171,9 @@ var qcSdg = (function (exports) {
 
   const dirty_components = [];
   const binding_callbacks = [];
-  const render_callbacks = [];
+  let render_callbacks = [];
   const flush_callbacks = [];
-  const resolved_promise = Promise.resolve();
+  const resolved_promise = /* @__PURE__ */ Promise.resolve();
   let update_scheduled = false;
   function schedule_update() {
       if (!update_scheduled) {
@@ -199,15 +205,29 @@ var qcSdg = (function (exports) {
   const seen_callbacks = new Set();
   let flushidx = 0; // Do *not* move this inside the flush() function
   function flush() {
+      // Do not reenter flush while dirty components are updated, as this can
+      // result in an infinite loop. Instead, let the inner flush handle it.
+      // Reentrancy is ok afterwards for bindings etc.
+      if (flushidx !== 0) {
+          return;
+      }
       const saved_component = current_component;
       do {
           // first, call beforeUpdate functions
           // and update components
-          while (flushidx < dirty_components.length) {
-              const component = dirty_components[flushidx];
-              flushidx++;
-              set_current_component(component);
-              update(component.$$);
+          try {
+              while (flushidx < dirty_components.length) {
+                  const component = dirty_components[flushidx];
+                  flushidx++;
+                  set_current_component(component);
+                  update(component.$$);
+              }
+          }
+          catch (e) {
+              // reset dirty state to not end up in a deadlocked state and then rethrow
+              dirty_components.length = 0;
+              flushidx = 0;
+              throw e;
           }
           set_current_component(null);
           dirty_components.length = 0;
@@ -244,46 +264,22 @@ var qcSdg = (function (exports) {
           $$.after_update.forEach(add_render_callback);
       }
   }
+  /**
+   * Useful for example to execute remaining `afterUpdate` callbacks before executing `destroy`.
+   */
+  function flush_render_callbacks(fns) {
+      const filtered = [];
+      const targets = [];
+      render_callbacks.forEach((c) => fns.indexOf(c) === -1 ? filtered.push(c) : targets.push(c));
+      targets.forEach((c) => c());
+      render_callbacks = filtered;
+  }
   const outroing = new Set();
   function transition_in(block, local) {
       if (block && block.i) {
           outroing.delete(block);
           block.i(local);
       }
-  }
-
-  function get_spread_update(levels, updates) {
-      const update = {};
-      const to_null_out = {};
-      const accounted_for = { $$scope: 1 };
-      let i = levels.length;
-      while (i--) {
-          const o = levels[i];
-          const n = updates[i];
-          if (n) {
-              for (const key in o) {
-                  if (!(key in n))
-                      to_null_out[key] = 1;
-              }
-              for (const key in n) {
-                  if (!accounted_for[key]) {
-                      update[key] = n[key];
-                      accounted_for[key] = 1;
-                  }
-              }
-              levels[i] = n;
-          }
-          else {
-              for (const key in o) {
-                  accounted_for[key] = 1;
-              }
-          }
-      }
-      for (const key in to_null_out) {
-          if (!(key in update))
-              update[key] = undefined;
-      }
-      return update;
   }
   function mount_component(component, target, anchor, customElement) {
       const { fragment, after_update } = component.$$;
@@ -311,6 +307,7 @@ var qcSdg = (function (exports) {
   function destroy_component(component, detaching) {
       const $$ = component.$$;
       if ($$.fragment !== null) {
+          flush_render_callbacks($$.after_update);
           run_all($$.on_destroy);
           $$.fragment && $$.fragment.d(detaching);
           // TODO null out other refs, including component.$$ (but need to
@@ -662,28 +659,17 @@ var qcSdg = (function (exports) {
       }
   }
 
-  /* src/components/notice.svelte generated by Svelte v3.55.0 */
+  /* src/components/notice.svelte generated by Svelte v3.59.1 */
 
   function create_dynamic_element(ctx) {
   	let svelte_element;
   	let t;
-  	let svelte_element_levels = [{ class: "title" }];
-  	let svelte_element_data = {};
-
-  	for (let i = 0; i < svelte_element_levels.length; i += 1) {
-  		svelte_element_data = assign(svelte_element_data, svelte_element_levels[i]);
-  	}
 
   	return {
   		c() {
   			svelte_element = element(/*header*/ ctx[1]);
   			t = text(/*title*/ ctx[2]);
-
-  			if ((/-/).test(/*header*/ ctx[1])) {
-  				set_custom_element_data_map(svelte_element, svelte_element_data);
-  			} else {
-  				set_attributes(svelte_element, svelte_element_data);
-  			}
+  			set_dynamic_element_data(/*header*/ ctx[1])(svelte_element, { class: "title" });
   		},
   		m(target, anchor) {
   			insert(target, svelte_element, anchor);
@@ -691,13 +677,6 @@ var qcSdg = (function (exports) {
   		},
   		p(ctx, dirty) {
   			if (dirty & /*title*/ 4) set_data(t, /*title*/ ctx[2]);
-  			svelte_element_data = get_spread_update(svelte_element_levels, [{ class: "title" }]);
-
-  			if ((/-/).test(/*header*/ ctx[1])) {
-  				set_custom_element_data_map(svelte_element, svelte_element_data);
-  			} else {
-  				set_attributes(svelte_element, svelte_element_data);
-  			}
   		},
   		d(detaching) {
   			if (detaching) detach(svelte_element);
@@ -713,13 +692,13 @@ var qcSdg = (function (exports) {
   	let t0;
   	let div3;
   	let previous_tag = /*header*/ ctx[1];
-  	let t2;
+  	let t1;
   	let div2;
   	let slot0;
-  	let t3;
+  	let t2;
   	let slot1;
   	let div4_class_value;
-  	let t4;
+  	let t3;
   	let link;
   	let svelte_element = /*header*/ ctx[1] && create_dynamic_element(ctx);
 
@@ -731,12 +710,12 @@ var qcSdg = (function (exports) {
   			t0 = space();
   			div3 = element("div");
   			if (svelte_element) svelte_element.c();
-  			t2 = space();
+  			t1 = space();
   			div2 = element("div");
   			slot0 = element("slot");
-  			t3 = space();
+  			t2 = space();
   			slot1 = element("slot");
-  			t4 = space();
+  			t3 = space();
   			link = element("link");
   			this.c = noop;
   			attr(div0, "aria-hidden", "true");
@@ -757,13 +736,13 @@ var qcSdg = (function (exports) {
   			append(div4, t0);
   			append(div4, div3);
   			if (svelte_element) svelte_element.m(div3, null);
-  			append(div3, t2);
+  			append(div3, t1);
   			append(div3, div2);
   			append(div2, slot0);
-  			append(div2, t3);
+  			append(div2, t2);
   			append(div2, slot1);
   			slot1.innerHTML = /*content*/ ctx[3];
-  			insert(target, t4, anchor);
+  			insert(target, t3, anchor);
   			insert(target, link, anchor);
   		},
   		p(ctx, [dirty]) {
@@ -774,22 +753,24 @@ var qcSdg = (function (exports) {
   			if (/*header*/ ctx[1]) {
   				if (!previous_tag) {
   					svelte_element = create_dynamic_element(ctx);
+  					previous_tag = /*header*/ ctx[1];
   					svelte_element.c();
-  					svelte_element.m(div3, t2);
+  					svelte_element.m(div3, t1);
   				} else if (safe_not_equal(previous_tag, /*header*/ ctx[1])) {
   					svelte_element.d(1);
   					svelte_element = create_dynamic_element(ctx);
+  					previous_tag = /*header*/ ctx[1];
   					svelte_element.c();
-  					svelte_element.m(div3, t2);
+  					svelte_element.m(div3, t1);
   				} else {
   					svelte_element.p(ctx, dirty);
   				}
   			} else if (previous_tag) {
   				svelte_element.d(1);
   				svelte_element = null;
+  				previous_tag = /*header*/ ctx[1];
   			}
 
-  			previous_tag = /*header*/ ctx[1];
   			if (dirty & /*content*/ 8) slot1.innerHTML = /*content*/ ctx[3];
   			if (dirty & /*type*/ 1 && div4_class_value !== (div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0])) {
   				attr(div4, "class", div4_class_value);
@@ -800,7 +781,7 @@ var qcSdg = (function (exports) {
   		d(detaching) {
   			if (detaching) detach(div4);
   			if (svelte_element) svelte_element.d(detaching);
-  			if (detaching) detach(t4);
+  			if (detaching) detach(t3);
   			if (detaching) detach(link);
   		}
   	};
@@ -901,7 +882,7 @@ var qcSdg = (function (exports) {
 
   customElements.define("qc-notice", Notice);
 
-  /* src/components/pivHeader.svelte generated by Svelte v3.55.0 */
+  /* src/components/pivHeader.svelte generated by Svelte v3.59.1 */
 
   function create_if_block_5(ctx) {
   	let div;
