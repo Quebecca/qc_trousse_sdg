@@ -28,7 +28,7 @@
             </div>
             {#if maskable === "true"}
                 <div class="qc-alert-close">
-                    <button type="button" class="close" aria-label={closeLabel}
+                    <button type="button" class="qc-close" aria-label={closeLabel}
                             on:click="{() => hideAlert = true}">
                         <span aria-hidden="true" class="qc-icon qc-xclose-blue qc-close-alert-icon"></span>
                     </button>

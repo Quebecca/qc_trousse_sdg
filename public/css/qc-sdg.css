@@ -1143,18 +1143,19 @@ qc-piv-header [slot=links] ul a:focus, .qc-piv-header .piv-top .right-section .l
     align-items: inherit;
   }
 }
-.qc-general-alert .close {
+.qc-general-alert .qc-close {
   padding: 0;
   background-color: transparent;
   border: 0;
   display: inline-flex;
   justify-content: center;
 }
-.qc-general-alert .close .qc-close-alert-icon {
+.qc-general-alert .qc-close .qc-close-alert-icon {
   display: inline-block;
   min-width: var(--qc-spacer-sm);
   height: var(--qc-spacer-sm);
   vertical-align: middle;
+  cursor: pointer;
 }
 
 qc-alert [slot] *, qc-alert:not([slot=content]) * {

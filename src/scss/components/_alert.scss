@@ -45,7 +45,7 @@
     }
   }
 
-  .close {
+  .qc-close {
     padding: 0;
     background-color: transparent;
     border: 0;
@@ -57,6 +57,7 @@
       min-width: token-value(spacer, sm);
       height: token-value(spacer, sm);
       vertical-align: middle;
+      cursor: pointer;
     }
   }
 }

@@ -1712,7 +1712,7 @@ var qcSdg = (function (exports) {
   			attr(span, "aria-hidden", "true");
   			attr(span, "class", "qc-icon qc-xclose-blue qc-close-alert-icon");
   			attr(button, "type", "button");
-  			attr(button, "class", "close");
+  			attr(button, "class", "qc-close");
   			attr(button, "aria-label", /*closeLabel*/ ctx[5]);
   			attr(div, "class", "qc-alert-close");
   		},
