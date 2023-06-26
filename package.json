@@ -4,8 +4,9 @@
   "description": "Trousse SDG",
   "main": "index.js",
   "scripts": {
-    "start": "rollup -c -w",
+    "dev": "rollup -c -w",
     "build": "rollup -c",
+    "start": "sirv public",
     "rewrite-bootstrap": "gulp rewriteBs"
   },
   "repository": {

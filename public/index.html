@@ -42,8 +42,8 @@
                     <li><a href='#images'>Images</a></li>
                     <li><a href='#table'>Tables</a></li>
                     <li><a href='#notice'>Composant "Avis"</a></li>
-                    <li><a href='#piv'>Composant "PIV"</a></li>
                     <li><a href='#alert'>Composant "Alerte générale"</a></li>
+                    <li><a href='#piv'>Composant "PIV"</a></li>
                 </ul>
             </div>
         </div>
@@ -495,7 +495,7 @@
             <h2 id="ombrages">Ombrages</h2>
 
             <h3>Élévation 0</h3>
-            <p>Usage : encadrés</p>
+            <p>Usage : encadrés</p>
             <p class="qc-shading-0 square-box">Élévation 0</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -503,14 +503,14 @@
             </p>
 
             <h3>Élévation 1</h3>
-            <p>Usage : tuiles cliquables, boutons principaux</p>
+            <p>Usage : tuiles cliquables, boutons principaux</p>
             <p class="qc-shading-1 square-box">Élévation 1</p>
             <p>
                 <strong>Ombre</strong><br/>
                 <code >--qc-box-shadow-1</code>
             </p>
             <h3>Élévation 2</h3>
-            <p>Usage : infobulle</p>
+            <p>Usage : infobulle</p>
             <p class="qc-shading-2 square-box">Élévation 2</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -518,7 +518,7 @@
             </p>
 
             <h3>Élévation 3</h3>
-            <p>Usage : champ date avec calendrier, sous-menu, notification contextuelle</p>
+            <p>Usage : champ date avec calendrier, sous-menu, notification contextuelle</p>
             <p class="qc-shading-3 square-box">Élévation 3</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -526,7 +526,7 @@
             </p>
 
             <h3>Élévation 4</h3>
-            <p>Usage : Boîte de dialogue modale</p>
+            <p>Usage : Boîte de dialogue modale</p>
             <p class="qc-shading-4 square-box">Élévation 4</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -565,11 +565,11 @@
             </qc-notice>
             <qc-code target-id="notice-exemple-warning"></qc-code>
             <h3>Avis succès</h3>
-            <h4>Avec slot par défaut</h4>
+            <h4>Avec contenu par défaut</h4>
             <qc-notice id="notice-success"
                        type="success"
                        title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
-                <p>Certains faits importants à savoir à propos de Chuck Norris :</p>
+                <p>Certains faits importants à savoir à propos de Chuck Norris :</p>
                 <ul>
                     <li>Un jour Chuck Norris a eu un zero en latin, depuis c'est une langue morte ;</li>
                     <li>Chuck Norris a déjà compté jusqu'à l'infini. Deux fois ;</li>
@@ -578,23 +578,75 @@
             </qc-notice>
             <qc-code target-id="notice-success"></qc-code>
             <h3>Avis erreur</h3>
-            <h4>Avec slot par défaut (ex. sommaire d'erreurs)</h4>
+            <h4>Avec contenu par défaut (ex. sommaire d'erreurs)</h4>
             <qc-notice id="notice-error"
                        type="error"
                        title="Des erreurs sont présentes dans le formulaire.">
                 <ul>
                     <li>
-                        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
+                        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
                     </li>
                     <li>
-                        <a href="#">Le champ « Prénom » est obligatoire ;</a>
+                        <a href="#">Le champ « Prénom » est obligatoire ;</a>
                     </li>
                     <li>
-                        <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
+                        <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
                     </li>
                 </ul>
             </qc-notice>
             <qc-code target-id="notice-error"></qc-code>
+
+            <!-- Alerte générale -->
+            <h2 id="alert">Composant "Alerte générale" (qc-alert)</h2>
+
+            <table class="qc-table qc-striped">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>type</td>
+                    <td>"general" ou "warning"</td>
+                    <td>"general"</td>
+                    <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
+                </tr>
+                <tr>
+                    <td>maskable</td>
+                    <td>"true" ou "false"</td>
+                    <td>"true"</td>
+                    <td>Afficher le bouton de fermeture de l'alerte</td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Afficher le contenu de l'alerte</td>
+                </tr>
+            </table>
+
+            <h3>Alerte jaune - Message hautement prioritaire</h3>
+            <p><a href="#maskable-alert" id="show-qc-alert">Réaficher l'alerte</a></p>
+
+            <div id="maskable-alert">
+                <qc-alert id="alert-warning"
+                          type="warning"
+                          maskable="true"
+                          content="Alerte jaune d'importance élevée">
+                </qc-alert>
+            </div>
+            <qc-code target-id="alert-warning"></qc-code>
+
+            <h3>Alerte bleue - Message moins prioritaire</h3>
+            <qc-alert id="alert-general"
+                      type="general"
+                      maskable="false">
+                <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
+            </qc-alert>
+            <qc-code target-id="alert-general"></qc-code>
 
             <!-- PIV -->
             <h2 id="piv">PIV</h2>
@@ -649,12 +701,6 @@
                         <td>Texte du lien de changement de langue</td>
                     </tr>
                     <tr>
-                        <td>alt-language-text</td>
-                        <td>Texte</td>
-                        <td>English/Français</td>
-                        <td>Texte du lien de changement de langue</td>
-                    </tr>
-                    <tr>
                         <td>alt-language-url</td>
                         <td>Adresse</td>
                         <td>vide</td>
@@ -664,13 +710,13 @@
                     <td>join-us-text</td>
                     <td>Texte</td>
                     <td>Nous joindre/Contact us</td>
-                    <td>Texte du lien « Nous joindre »</td>
+                    <td>Texte du lien « Nous joindre »</td>
                 </tr>
                     <tr>
                         <td>join-us-url</td>
                         <td>Adresse</td>
                         <td>Vide</td>
-                        <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparait pas.</td>
+                        <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparait pas.</td>
                     </tr>
                 <tr>
                     <td>go-to-content</td>
@@ -705,7 +751,7 @@
                 </thead>
             </table>
 
-            <h4>Slots disponibles</h4>
+            <h4>Emplacement imbriqués disponibles (élément html <i>slot</i>)</h4>
             <div class="table-wrapper">
 
             </div>
@@ -787,59 +833,6 @@
                 </div>
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
-
-
-            <!-- Alerte générale -->
-            <h2 id="alert">Composant "Alerte générale" (qc-alert)</h2>
-
-            <table class="qc-table qc-striped">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Valeur attendue</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tr>
-                    <td>type</td>
-                    <td>"general" ou "warning"</td>
-                    <td>"general"</td>
-                    <td>Type de l'alerte : S'il s'agit d'une alerte bleur ou jaune</td>
-                </tr>
-                <tr>
-                    <td>maskable</td>
-                    <td>"true" ou "false"</td>
-                    <td>"true"</td>
-                    <td>Afficher le bouton de fermeture de l'alerte</td>
-                </tr>
-                <tr>
-                    <td>content</td>
-                    <td>Texte</td>
-                    <td>Chaine vide</td>
-                    <td>Afficher le contenu de l'alerte</td>
-                </tr>
-            </table>
-
-            <h3>Alerte jaune - Message hautement prioritaire</h3>
-            <p><a href="#maskable-alert" id="show-qc-alert">Réaficher l'alerte</a></p>
-
-            <div id="maskable-alert">
-                <qc-alert id="alert-warning"
-                          type="warning"
-                          maskable="true"
-                          content="Alerte jaune d'importance élevée">
-                </qc-alert>
-            </div>
-            <qc-code target-id="alert-warning"></qc-code>
-
-            <h3>Alerte bleue - Message moins prioritaire</h3>
-            <qc-alert id="alert-general"
-                      type="general"
-                      maskable="false">
-                <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
-            </qc-alert>
-            <qc-code target-id="alert-general"></qc-code>
         </div>
     </main>
 </body>
