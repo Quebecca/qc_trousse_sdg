@@ -7,7 +7,7 @@
   import pretty from "pretty";
   import { get_current_component } from "svelte/internal"
   import { onMount } from "svelte";
-  import { Utils } from "../../components/utils"
+  import { Utils } from "../../src/components/utils"
 
   export
     let

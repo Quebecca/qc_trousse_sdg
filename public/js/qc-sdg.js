@@ -1363,7 +1363,7 @@ var qcSdg = (function (exports) {
   }
 
   function instance$1($$self, $$props, $$invalidate) {
-  	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.0.0#QUEBEC_blanc`, logoAlt = Utils.getPageLanguage() === 'fr'
+  	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#QUEBEC_blanc`, logoAlt = Utils.getPageLanguage() === 'fr'
   	? 'Logo du gouvernement du Québec'
   	: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = Utils.getPageLanguage() === 'fr'
   	? 'English'

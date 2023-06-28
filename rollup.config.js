@@ -68,7 +68,12 @@ const scssOptions = {
 };
 
 let
-    svelteOptions = {
+    replacements = {
+        _vSDG_ : `v${pkg.version}`, //Permet d'injecter la version du package dans le fichier js généré (Remplace _vSDG_ par la version du package)
+        customElements$1 : 'customElements', //Ici c'est une patch pour notre wrapper de customElement (permettant les attributs kebab). Je n'ai pas trouvé de façon d'avoir le code au bon format après que svelte a compilé.
+        delimiters: ['', '']
+    }
+    , svelteOptions = {
         compilerOptions: {
             // enable run-time checks
             customElement: true
@@ -86,13 +91,8 @@ let
                 name: 'qcSdg'
             },
             plugins: [
-                replace({
-                    _vSDG_ : `v${pkg.version}`, //Permet d'injecter la version du package dans le fichier js généré (Remplace _vSDG_ par la version du package)
-                    customElements$1 : 'customElements', //Ici c'est une patch pour notre wrapper de customElement (permettant les attributs kebab). Je n'ai pas trouvé de façon d'avoir le code au bon format après que svelte a compilé.
-                    delimiters: ['', '']
-                }),
+                replace(replacements),
                 svelte(svelteOptions),
-                // babel(babelOptions),
                 resolve({
                     browser: true,
                     // Force resolving for these modules to root's node_modules that helps
@@ -181,16 +181,14 @@ let
 
 if (dev_process) {
     rollupOptions.unshift({
-        input: 'src/doc/qc-catalog-sdg.js',
+        input: 'doc/qc-catalog-sdg.js',
         output: {
             file: 'public/js/qc-catalog-sdg.js',
             format: 'iife',
             name: 'qcCatalog'
         },
         plugins: [
-            replace({
-                customElements$1 : 'customElements', //Ici c'est une patch pour notre wrapper de customElement (permettant les attributs kebab). Je n'ai pas trouvé de façon d'avoir le code au bon format après que svelte a compilé.
-            }),
+            replace(replacements),
             svelte(svelteOptions),
             resolve({
                 browser: true,
@@ -204,9 +202,9 @@ if (dev_process) {
                 )
             ),
             css(),
-            dev_process && serve(),
+            serve(),
             //Enable the Hot Reload
-            dev_process && livereload('public'),
+            livereload('public'),
         ],
     },)
 }

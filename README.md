@@ -81,8 +81,9 @@ Ici un exemple de projet d'extension de la trousse offrant 3 scénarios d'extens
 
 Lancer la commande `npm run build` pour générer les fichier css et js minifiés dans le répertoire `/dist`
 
-## Versions
+## Historique
 
+- 1.1.2 - ajout des composants alerte, information générale et bandeau PIV. 
 - 1.1.1 - suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 - Ajout d'une css sans le système de grille
 - 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>

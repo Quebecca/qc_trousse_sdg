@@ -1,8 +1,8 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
-@use "components/icons" as *;
+@use "../../src/scss/settings/settings" as *;
+@use "../../src/scss/functions/utils" as *;
+@use "../../src/scss/modules/tokens" as *;
+@use "../../src/scss/modules/utils" as *;
+@use "../../src/scss/components/icons" as *;
 @use "components/code" as *;
 @use "components/button" as *;
 @use "tables";
