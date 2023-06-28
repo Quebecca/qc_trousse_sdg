@@ -6,3 +6,4 @@ node_modules/
 /public/js/rewrite-bs.js
 /dist/js/qc-sdg-design-tokens.js
 /dist/js/qc-sdg-no-grid.js
+/public/js/assets/asset-*
