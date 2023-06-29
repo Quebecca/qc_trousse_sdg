@@ -170,9 +170,10 @@ $xl-tokens: (
         list-item : (
             mb: token-value(spacer sm),
         ),
-        notice: (
-            my: token-value(spacer, md),
-            mx: rem(4 * $base-spacer),
+        notice-content: (
+            my: token-value(spacer content-block mb),
+            mr: rem(4 * $base-spacer),
+            ml: token-value(spacer sm),
         )
     ),
     grid: (
@@ -216,6 +217,9 @@ $breakpoints-tokens: (
             h2: (
                 mt: rem(6 * $base-spacer),
                 mb: rem(1 * $base-spacer),
+            ),
+            notice-content: (
+                mr: rem(3 * $base-spacer),
             )
         ),
     ),
