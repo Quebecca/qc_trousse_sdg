@@ -3,47 +3,43 @@
 <script>
 import { onMount } from "svelte";
 import { Utils } from "./utils"
-import { get_current_component } from "svelte/internal"  
+
+const
+  lang = Utils.getPageLanguage()
 
 export let
     logoUrl= '/'
   , fullWidth = 'false'
   , logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#QUEBEC_blanc`
-  , logoAlt = Utils.getPageLanguage() === 'fr'
+  , logoAlt = lang === 'fr'
                 ? 'Logo du gouvernement du Québec'
                 : 'Logo of government of Québec'
   , titleUrl= '/'
   , titleText= ''
-  , altLanguageText= Utils.getPageLanguage() === 'fr'
+  , altLanguageText= lang === 'fr'
                         ? 'English'
                         : 'Français'
   , altLanguageUrl= ''
-  , joinUsText= Utils.getPageLanguage() === 'fr'
+  , joinUsText= lang === 'fr'
                   ? 'Nous joindre'
                   : 'Contact us'
   , joinUsUrl= ''
   , goToContent = 'true'
   , goToContentAnchor= '#main'
-  , goToContentText= Utils.getPageLanguage() === 'fr'
+  , goToContentText= lang === 'fr'
                       ? 'Passer au contenu'
                       : 'Skip to content'
 
-let   slots = []
-    , mounted = false
-    , containerClass = 'qc-container'
+let  containerClass = 'qc-container'
 ;
-const thisComponent = get_current_component()
 
-onMount(() => {  
-  slots = Array.from(thisComponent.querySelectorAll('[slot]'))    
-  mounted = true
+
+onMount(() => {
   containerClass += fullWidth === 'true' ? '-fluid' : '';
-  Utils.refreshAfterUpdate(thisComponent)
 })
 </script>
 
-<div class="qc-piv-header qc-component"
-     class:qc-d-none={!mounted}>
+<div class="qc-piv-header qc-component">
   <div class="{containerClass}">
     {#if goToContent == 'true'}
       <div class="go-to-content">
@@ -98,7 +94,6 @@ onMount(() => {
           {/if}
         </slot>
       </div>
-
       <div class="search-zone">
         <slot name="search-zone" />
       </div>

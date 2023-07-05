@@ -85,9 +85,6 @@ var qcSdg = (function (exports) {
   function space() {
       return text(' ');
   }
-  function empty() {
-      return text('');
-  }
   function listen(node, event, handler, options) {
       node.addEventListener(event, handler, options);
       return () => node.removeEventListener(event, handler, options);
@@ -139,9 +136,6 @@ var qcSdg = (function (exports) {
       data = '' + data;
       if (text.wholeText !== data)
           text.data = data;
-  }
-  function toggle_class(element, name, toggle) {
-      element.classList[toggle ? 'add' : 'remove'](name);
   }
   class HtmlTag {
       constructor(is_svg = false) {
@@ -486,10 +480,29 @@ var qcSdg = (function (exports) {
   }
 
   class Utils {
-      static assetsBasePath = document.currentScript.getAttribute('assets-base-path') || '.';
-      static cssRelativePath = `${this.assetsBasePath}/css/`.replace('//','/')
-      static imagesRelativePath = `${this.assetsBasePath}/img/`.replace('//','/')
-      static cssFileName = document.currentScript.getAttribute('sdg-css-filename') || 'qc-sdg.min.css'
+      static assetsBasePath =
+          document
+              .currentScript
+              .getAttribute('assets-base-path')
+          || '.'
+      static cssRelativePath =
+          `${this.assetsBasePath}/css/`
+              .replace('//','/')
+      static imagesRelativePath =
+          `${this.assetsBasePath}/img/`
+              .replace('//','/')
+      static cssFileName =
+          document
+              .currentScript
+              .getAttribute('sdg-css-filename')
+          || 'qc-sdg.min.css'
+      static sharedTexts =
+          { openInNewTab :
+              { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
+              , en: 'This link will open in a new tab.'
+              }
+          }
+
 
 
       static conserverFocusElement(componentShadow, componentRoot) {
@@ -753,7 +766,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function create_fragment$2(ctx) {
+  function create_fragment$3(ctx) {
   	let div4;
   	let div1;
   	let div0;
@@ -763,9 +776,9 @@ var qcSdg = (function (exports) {
   	let previous_tag = /*header*/ ctx[1];
   	let t2;
   	let div2;
-  	let slot0;
+  	let html_tag;
   	let t3;
-  	let slot1;
+  	let slot;
   	let div4_class_value;
   	let t4;
   	let link;
@@ -781,16 +794,16 @@ var qcSdg = (function (exports) {
   			if (svelte_element) svelte_element.c();
   			t2 = space();
   			div2 = element("div");
-  			slot0 = element("slot");
+  			html_tag = new HtmlTag(false);
   			t3 = space();
-  			slot1 = element("slot");
+  			slot = element("slot");
   			t4 = space();
   			link = element("link");
   			this.c = noop;
   			attr(div0, "aria-hidden", "true");
   			attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[0]);
   			attr(div1, "class", "icon-container");
-  			attr(slot1, "name", "content");
+  			html_tag.a = t3;
   			attr(div2, "class", "text");
   			attr(div3, "class", "content");
   			attr(div4, "class", div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0]);
@@ -807,10 +820,9 @@ var qcSdg = (function (exports) {
   			if (svelte_element) svelte_element.m(div3, null);
   			append(div3, t2);
   			append(div3, div2);
-  			append(div2, slot0);
+  			html_tag.m(/*content*/ ctx[3], div2);
   			append(div2, t3);
-  			append(div2, slot1);
-  			slot1.innerHTML = /*content*/ ctx[3];
+  			append(div2, slot);
   			insert(target, t4, anchor);
   			insert(target, link, anchor);
   		},
@@ -838,7 +850,8 @@ var qcSdg = (function (exports) {
   			}
 
   			previous_tag = /*header*/ ctx[1];
-  			if (dirty & /*content*/ 8) slot1.innerHTML = /*content*/ ctx[3];
+  			if (dirty & /*content*/ 8) html_tag.p(/*content*/ ctx[3]);
+
   			if (dirty & /*type*/ 1 && div4_class_value !== (div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0])) {
   				attr(div4, "class", div4_class_value);
   			}
@@ -854,7 +867,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function instance$2($$self, $$props, $$invalidate) {
+  function instance$3($$self, $$props, $$invalidate) {
   	const defaultHeader = 'h2',
   		defaultType = 'information',
   		types = ['information', 'warning', 'success', 'error'];
@@ -887,8 +900,8 @@ var qcSdg = (function (exports) {
   				props: attribute_to_object(this.attributes),
   				customElement: true
   			},
-  			instance$2,
-  			create_fragment$2,
+  			instance$3,
+  			create_fragment$3,
   			safe_not_equal,
   			{ title: 2, type: 0, content: 3, header: 1 },
   			null
@@ -982,7 +995,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (65:10) {#if titleText}
+  // (61:10) {#if titleText}
   function create_if_block_4(ctx) {
   	let a;
   	let span;
@@ -1013,12 +1026,12 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (77:10) {#if joinUsUrl || altLanguageUrl}
+  // (73:10) {#if joinUsUrl || altLanguageUrl}
   function create_if_block_1$1(ctx) {
   	let ul;
   	let t;
   	let if_block0 = /*altLanguageUrl*/ ctx[6] && create_if_block_3(ctx);
-  	let if_block1 = /*joinUsUrl*/ ctx[8] && create_if_block_2$1(ctx);
+  	let if_block1 = /*joinUsUrl*/ ctx[8] && create_if_block_2(ctx);
 
   	return {
   		c() {
@@ -1051,7 +1064,7 @@ var qcSdg = (function (exports) {
   				if (if_block1) {
   					if_block1.p(ctx, dirty);
   				} else {
-  					if_block1 = create_if_block_2$1(ctx);
+  					if_block1 = create_if_block_2(ctx);
   					if_block1.c();
   					if_block1.m(ul, null);
   				}
@@ -1068,7 +1081,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (79:16) {#if altLanguageUrl}
+  // (75:16) {#if altLanguageUrl}
   function create_if_block_3(ctx) {
   	let li;
   	let a;
@@ -1099,8 +1112,8 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (82:16) {#if joinUsUrl}
-  function create_if_block_2$1(ctx) {
+  // (78:16) {#if joinUsUrl}
+  function create_if_block_2(ctx) {
   	let li;
   	let a;
   	let t;
@@ -1130,7 +1143,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (94:10) {#if titleText}
+  // (90:10) {#if titleText}
   function create_if_block$1(ctx) {
   	let a;
   	let span;
@@ -1161,7 +1174,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function create_fragment$1(ctx) {
+  function create_fragment$2(ctx) {
   	let div9;
   	let div8;
   	let t0;
@@ -1239,9 +1252,8 @@ var qcSdg = (function (exports) {
   			attr(div5, "class", "title");
   			attr(div6, "class", "search-zone");
   			attr(div7, "class", "piv-bottom");
-  			attr(div8, "class", /*containerClass*/ ctx[13]);
+  			attr(div8, "class", /*containerClass*/ ctx[12]);
   			attr(div9, "class", "qc-piv-header qc-component");
-  			toggle_class(div9, "qc-d-none", !/*mounted*/ ctx[12]);
   			attr(link, "rel", "stylesheet");
   			attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
   		},
@@ -1340,12 +1352,8 @@ var qcSdg = (function (exports) {
   				if_block3 = null;
   			}
 
-  			if (dirty & /*containerClass*/ 8192) {
-  				attr(div8, "class", /*containerClass*/ ctx[13]);
-  			}
-
-  			if (dirty & /*mounted*/ 4096) {
-  				toggle_class(div9, "qc-d-none", !/*mounted*/ ctx[12]);
+  			if (dirty & /*containerClass*/ 4096) {
+  				attr(div8, "class", /*containerClass*/ ctx[12]);
   			}
   		},
   		i: noop,
@@ -1362,30 +1370,22 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  function instance$1($$self, $$props, $$invalidate) {
-  	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#QUEBEC_blanc`, logoAlt = Utils.getPageLanguage() === 'fr'
-  	? 'Logo du gouvernement du Québec'
-  	: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = Utils.getPageLanguage() === 'fr'
-  	? 'English'
-  	: 'Français', altLanguageUrl = '', joinUsText = Utils.getPageLanguage() === 'fr'
-  	? 'Nous joindre'
-  	: 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = Utils.getPageLanguage() === 'fr'
-  	? 'Passer au contenu'
-  	: 'Skip to content' } = $$props;
+  function instance$2($$self, $$props, $$invalidate) {
+  	const lang = Utils.getPageLanguage();
 
-  	let mounted = false, containerClass = 'qc-container';
-  	const thisComponent = get_current_component();
+  	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#QUEBEC_blanc`, logoAlt = lang === 'fr'
+  	? 'Logo du gouvernement du Québec'
+  	: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content' } = $$props;
+
+  	let containerClass = 'qc-container';
 
   	onMount(() => {
-  		Array.from(thisComponent.querySelectorAll('[slot]'));
-  		$$invalidate(12, mounted = true);
-  		$$invalidate(13, containerClass += fullWidth === 'true' ? '-fluid' : '');
-  		Utils.refreshAfterUpdate(thisComponent);
+  		$$invalidate(12, containerClass += fullWidth === 'true' ? '-fluid' : '');
   	});
 
   	$$self.$$set = $$props => {
   		if ('logoUrl' in $$props) $$invalidate(0, logoUrl = $$props.logoUrl);
-  		if ('fullWidth' in $$props) $$invalidate(14, fullWidth = $$props.fullWidth);
+  		if ('fullWidth' in $$props) $$invalidate(13, fullWidth = $$props.fullWidth);
   		if ('logoSrc' in $$props) $$invalidate(1, logoSrc = $$props.logoSrc);
   		if ('logoAlt' in $$props) $$invalidate(2, logoAlt = $$props.logoAlt);
   		if ('titleUrl' in $$props) $$invalidate(3, titleUrl = $$props.titleUrl);
@@ -1412,7 +1412,6 @@ var qcSdg = (function (exports) {
   		goToContent,
   		goToContentAnchor,
   		goToContentText,
-  		mounted,
   		containerClass,
   		fullWidth
   	];
@@ -1429,12 +1428,12 @@ var qcSdg = (function (exports) {
   				props: attribute_to_object(this.attributes),
   				customElement: true
   			},
-  			instance$1,
-  			create_fragment$1,
+  			instance$2,
+  			create_fragment$2,
   			safe_not_equal,
   			{
   				logoUrl: 0,
-  				fullWidth: 14,
+  				fullWidth: 13,
   				logoSrc: 1,
   				logoAlt: 2,
   				titleUrl: 3,
@@ -1490,7 +1489,7 @@ var qcSdg = (function (exports) {
   	}
 
   	get fullWidth() {
-  		return this.$$.ctx[14];
+  		return this.$$.ctx[13];
   	}
 
   	set fullWidth(fullWidth) {
@@ -1600,6 +1599,251 @@ var qcSdg = (function (exports) {
 
   customElements.define("qc-piv-header", PivHeader);
 
+  /* src/components/pivFooter.svelte generated by Svelte v3.55.0 */
+
+  function create_fragment$1(ctx) {
+  	let div2;
+  	let div1;
+  	let nav;
+  	let t0;
+  	let div0;
+  	let slot1;
+  	let a0;
+  	let img;
+  	let img_src_value;
+  	let t1;
+  	let span;
+  	let slot2;
+  	let a1;
+  	let t2;
+  	let t3;
+  	let link;
+
+  	return {
+  		c() {
+  			div2 = element("div");
+  			div1 = element("div");
+  			nav = element("nav");
+  			nav.innerHTML = `<slot></slot>`;
+  			t0 = space();
+  			div0 = element("div");
+  			slot1 = element("slot");
+  			a0 = element("a");
+  			img = element("img");
+  			t1 = space();
+  			span = element("span");
+  			slot2 = element("slot");
+  			a1 = element("a");
+  			t2 = text(/*copyrightText*/ ctx[5]);
+  			t3 = space();
+  			link = element("link");
+  			this.c = noop;
+  			attr(img, "class", "logo-mo");
+  			attr(img, "alt", /*logoAlt*/ ctx[2]);
+  			if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[1])) attr(img, "src", img_src_value);
+  			attr(img, "width", /*logoWidth*/ ctx[3]);
+  			attr(img, "height", /*logoHeight*/ ctx[4]);
+  			attr(a0, "href", /*logoUrl*/ ctx[0]);
+  			attr(slot1, "name", "logo");
+  			attr(div0, "class", "logo");
+  			attr(a1, "href", /*copyrightUrl*/ ctx[6]);
+  			attr(slot2, "name", "copyright");
+  			attr(span, "class", "copyright");
+  			attr(div1, "class", "qc-container");
+  			attr(div2, "class", "qc-piv-footer qc-component");
+  			attr(link, "rel", "stylesheet");
+  			attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+  		},
+  		m(target, anchor) {
+  			insert(target, div2, anchor);
+  			append(div2, div1);
+  			append(div1, nav);
+  			append(div1, t0);
+  			append(div1, div0);
+  			append(div0, slot1);
+  			append(slot1, a0);
+  			append(a0, img);
+  			append(div1, t1);
+  			append(div1, span);
+  			append(span, slot2);
+  			append(slot2, a1);
+  			append(a1, t2);
+  			insert(target, t3, anchor);
+  			insert(target, link, anchor);
+  		},
+  		p(ctx, [dirty]) {
+  			if (dirty & /*logoAlt*/ 4) {
+  				attr(img, "alt", /*logoAlt*/ ctx[2]);
+  			}
+
+  			if (dirty & /*logoSrc*/ 2 && !src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[1])) {
+  				attr(img, "src", img_src_value);
+  			}
+
+  			if (dirty & /*logoWidth*/ 8) {
+  				attr(img, "width", /*logoWidth*/ ctx[3]);
+  			}
+
+  			if (dirty & /*logoHeight*/ 16) {
+  				attr(img, "height", /*logoHeight*/ ctx[4]);
+  			}
+
+  			if (dirty & /*logoUrl*/ 1) {
+  				attr(a0, "href", /*logoUrl*/ ctx[0]);
+  			}
+
+  			if (dirty & /*copyrightText*/ 32) set_data(t2, /*copyrightText*/ ctx[5]);
+
+  			if (dirty & /*copyrightUrl*/ 64) {
+  				attr(a1, "href", /*copyrightUrl*/ ctx[6]);
+  			}
+  		},
+  		i: noop,
+  		o: noop,
+  		d(detaching) {
+  			if (detaching) detach(div2);
+  			if (detaching) detach(t3);
+  			if (detaching) detach(link);
+  		}
+  	};
+  }
+
+  function instance$1($$self, $$props, $$invalidate) {
+  	const lang = Utils.getPageLanguage();
+
+  	let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
+  	? 'https://www.quebec.ca/droit-auteur'
+  	: 'https://www.quebec.ca/en/copyright' } = $$props;
+
+  	$$self.$$set = $$props => {
+  		if ('logoUrl' in $$props) $$invalidate(0, logoUrl = $$props.logoUrl);
+  		if ('logoSrc' in $$props) $$invalidate(1, logoSrc = $$props.logoSrc);
+  		if ('logoAlt' in $$props) $$invalidate(2, logoAlt = $$props.logoAlt);
+  		if ('logoWidth' in $$props) $$invalidate(3, logoWidth = $$props.logoWidth);
+  		if ('logoHeight' in $$props) $$invalidate(4, logoHeight = $$props.logoHeight);
+  		if ('copyrightText' in $$props) $$invalidate(5, copyrightText = $$props.copyrightText);
+  		if ('copyrightUrl' in $$props) $$invalidate(6, copyrightUrl = $$props.copyrightUrl);
+  	};
+
+  	return [logoUrl, logoSrc, logoAlt, logoWidth, logoHeight, copyrightText, copyrightUrl];
+  }
+
+  class PivFooter extends SvelteElement {
+  	constructor(options) {
+  		super();
+
+  		init(
+  			this,
+  			{
+  				target: this.shadowRoot,
+  				props: attribute_to_object(this.attributes),
+  				customElement: true
+  			},
+  			instance$1,
+  			create_fragment$1,
+  			safe_not_equal,
+  			{
+  				logoUrl: 0,
+  				logoSrc: 1,
+  				logoAlt: 2,
+  				logoWidth: 3,
+  				logoHeight: 4,
+  				copyrightText: 5,
+  				copyrightUrl: 6
+  			},
+  			null
+  		);
+
+  		if (options) {
+  			if (options.target) {
+  				insert(options.target, this, options.anchor);
+  			}
+
+  			if (options.props) {
+  				this.$set(options.props);
+  				flush();
+  			}
+  		}
+  	}
+
+  	static get observedAttributes() {
+  		return [
+  			"logoUrl",
+  			"logoSrc",
+  			"logoAlt",
+  			"logoWidth",
+  			"logoHeight",
+  			"copyrightText",
+  			"copyrightUrl"
+  		];
+  	}
+
+  	get logoUrl() {
+  		return this.$$.ctx[0];
+  	}
+
+  	set logoUrl(logoUrl) {
+  		this.$$set({ logoUrl });
+  		flush();
+  	}
+
+  	get logoSrc() {
+  		return this.$$.ctx[1];
+  	}
+
+  	set logoSrc(logoSrc) {
+  		this.$$set({ logoSrc });
+  		flush();
+  	}
+
+  	get logoAlt() {
+  		return this.$$.ctx[2];
+  	}
+
+  	set logoAlt(logoAlt) {
+  		this.$$set({ logoAlt });
+  		flush();
+  	}
+
+  	get logoWidth() {
+  		return this.$$.ctx[3];
+  	}
+
+  	set logoWidth(logoWidth) {
+  		this.$$set({ logoWidth });
+  		flush();
+  	}
+
+  	get logoHeight() {
+  		return this.$$.ctx[4];
+  	}
+
+  	set logoHeight(logoHeight) {
+  		this.$$set({ logoHeight });
+  		flush();
+  	}
+
+  	get copyrightText() {
+  		return this.$$.ctx[5];
+  	}
+
+  	set copyrightText(copyrightText) {
+  		this.$$set({ copyrightText });
+  		flush();
+  	}
+
+  	get copyrightUrl() {
+  		return this.$$.ctx[6];
+  	}
+
+  	set copyrightUrl(copyrightUrl) {
+  		this.$$set({ copyrightUrl });
+  		flush();
+  	}
+  }
+
+  customElements.define("qc-piv-footer", PivFooter);
+
   /* src/components/alert.svelte generated by Svelte v3.55.0 */
 
   function create_if_block(ctx) {
@@ -1609,12 +1853,11 @@ var qcSdg = (function (exports) {
   	let div0_class_value;
   	let t0;
   	let div1;
-  	let slot0;
+  	let html_tag;
   	let t1;
-  	let slot1;
+  	let slot;
   	let t2;
-  	let if_block0 = /*content*/ ctx[2] && create_if_block_2(ctx);
-  	let if_block1 = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
+  	let if_block = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
 
   	return {
   		c() {
@@ -1623,15 +1866,14 @@ var qcSdg = (function (exports) {
   			div0 = element("div");
   			t0 = space();
   			div1 = element("div");
-  			slot0 = element("slot");
-  			if (if_block0) if_block0.c();
+  			html_tag = new HtmlTag(false);
   			t1 = space();
-  			slot1 = element("slot");
+  			slot = element("slot");
   			t2 = space();
-  			if (if_block1) if_block1.c();
+  			if (if_block) if_block.c();
   			attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon");
   			attr(div0, "aria-hidden", "true");
-  			attr(slot0, "name", "content");
+  			html_tag.a = t1;
   			attr(div1, "class", "qc-alert-content");
   			attr(div2, "class", "qc-container qc-general-alert-elements");
   			attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[4]);
@@ -1644,78 +1886,40 @@ var qcSdg = (function (exports) {
   			append(div2, div0);
   			append(div2, t0);
   			append(div2, div1);
-  			append(div1, slot0);
-  			if (if_block0) if_block0.m(slot0, null);
+  			html_tag.m(/*content*/ ctx[2], div1);
   			append(div1, t1);
-  			append(div1, slot1);
+  			append(div1, slot);
   			append(div2, t2);
-  			if (if_block1) if_block1.m(div2, null);
+  			if (if_block) if_block.m(div2, null);
   		},
   		p(ctx, dirty) {
   			if (dirty & /*type*/ 1 && div0_class_value !== (div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon")) {
   				attr(div0, "class", div0_class_value);
   			}
 
-  			if (/*content*/ ctx[2]) {
-  				if (if_block0) {
-  					if_block0.p(ctx, dirty);
-  				} else {
-  					if_block0 = create_if_block_2(ctx);
-  					if_block0.c();
-  					if_block0.m(slot0, null);
-  				}
-  			} else if (if_block0) {
-  				if_block0.d(1);
-  				if_block0 = null;
-  			}
+  			if (dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
 
   			if (/*maskable*/ ctx[1] === "true") {
-  				if (if_block1) {
-  					if_block1.p(ctx, dirty);
+  				if (if_block) {
+  					if_block.p(ctx, dirty);
   				} else {
-  					if_block1 = create_if_block_1(ctx);
-  					if_block1.c();
-  					if_block1.m(div2, null);
+  					if_block = create_if_block_1(ctx);
+  					if_block.c();
+  					if_block.m(div2, null);
   				}
-  			} else if (if_block1) {
-  				if_block1.d(1);
-  				if_block1 = null;
+  			} else if (if_block) {
+  				if_block.d(1);
+  				if_block = null;
   			}
   		},
   		d(detaching) {
   			if (detaching) detach(div3);
-  			if (if_block0) if_block0.d();
-  			if (if_block1) if_block1.d();
+  			if (if_block) if_block.d();
   		}
   	};
   }
 
-  // (23:20) {#if content}
-  function create_if_block_2(ctx) {
-  	let html_tag;
-  	let html_anchor;
-
-  	return {
-  		c() {
-  			html_tag = new HtmlTag(false);
-  			html_anchor = empty();
-  			html_tag.a = html_anchor;
-  		},
-  		m(target, anchor) {
-  			html_tag.m(/*content*/ ctx[2], target, anchor);
-  			insert(target, html_anchor, anchor);
-  		},
-  		p(ctx, dirty) {
-  			if (dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
-  		},
-  		d(detaching) {
-  			if (detaching) detach(html_anchor);
-  			if (detaching) html_tag.d();
-  		}
-  	};
-  }
-
-  // (29:12) {#if maskable === "true"}
+  // (46:12) {#if maskable === "true"}
   function create_if_block_1(ctx) {
   	let div;
   	let button;
@@ -1798,22 +2002,23 @@ var qcSdg = (function (exports) {
   }
 
   function instance($$self, $$props, $$invalidate) {
-  	let { type = "" } = $$props;
-  	let { maskable = "" } = $$props;
-  	let { content = "" } = $$props;
-  	let hideAlert = false;
-  	let typeClass = type !== "" ? type : 'general';
-  	let closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer" : "Close";
+  	let { type = "general", maskable = "", content = "" } = $$props;
 
-  	let warningLabel = Utils.getPageLanguage() === 'fr'
-  	? "Information d'importance élevée"
-  	: "Information of high importance";
+  	let hideAlert = false,
+  		typeClass = type !== "" ? type : 'general',
+  		closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer" : "Close",
+  		warningLabel = Utils.getPageLanguage() === 'fr'
+  		? "Information d'importance élevée"
+  		: "Information of high importance",
+  		generalLabel = Utils.getPageLanguage() === 'fr'
+  		? "Information importante"
+  		: "Important information",
+  		label = type === 'general' ? generalLabel : warningLabel;
 
-  	let generalLabel = Utils.getPageLanguage() === 'fr'
-  	? "Information importante"
-  	: "Important information";
+  	onMount(() => {
+  		
+  	});
 
-  	let label = type === 'general' ? generalLabel : warningLabel;
   	const click_handler = () => $$invalidate(3, hideAlert = true);
 
   	$$self.$$set = $$props => {

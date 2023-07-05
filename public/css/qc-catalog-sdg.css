@@ -399,9 +399,6 @@ p, h1, h2, h3, h4, h5, h6 {
           hyphens: auto;
 }
 
-#piv-search-form {
-  padding-bottom: var(--qc-spacer-md);
-}
 #piv-search-form .input-group {
   width: 100%;
   display: flex;

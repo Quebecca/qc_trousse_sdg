@@ -550,23 +550,28 @@
 
             <h2 id="notice">Composant "Avis" (qc-notice)</h2>
 
-            <h3>Avis information</h3>
-            <h4>Avec attribut « contenu »</h4>
+            <h3>Exemples</h3>
+
+            <h4>Information</h4>
+
             <qc-notice id="notice-info"
                        title="Nouvelle règlementation"
                        content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
             </qc-notice>
             <qc-code target-id="notice-info"></qc-code>
-            <h3>Avis avertissement</h3>
-            <h4>Avec attribut « contenu »</h4>
+
+            <h4>Avertissement</h4>
+
             <qc-notice id="notice-exemple-warning"
                        type="warning"
                        title="Migration des contenus"
                        content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
             </qc-notice>
+
             <qc-code target-id="notice-exemple-warning"></qc-code>
-            <h3>Avis succès</h3>
-            <h4>Avec contenu par défaut</h4>
+
+            <h4>Succès</h4>
+
             <qc-notice id="notice-success"
                        type="success"
                        title="Chuck Norris a été élu être humain le plus extraordinaire de tous les temps.">
@@ -577,9 +582,11 @@
                     <li>C'est Chuck Norris qui a décidé que toute phrase se terminait par un poing.</li>
                 </ul>
             </qc-notice>
+
             <qc-code target-id="notice-success"></qc-code>
-            <h3>Avis erreur</h3>
-            <h4>Avec contenu par défaut (ex. sommaire d'erreurs)</h4>
+
+            <h4>Erreur</h4>
+
             <qc-notice id="notice-error"
                        type="error"
                        title="Des erreurs sont présentes dans le formulaire.">
@@ -595,10 +602,87 @@
                     </li>
                 </ul>
             </qc-notice>
+
             <qc-code target-id="notice-error"></qc-code>
+
+            <h3>Documentation technique</h3>
+
+            <h4>Attributs HTML</h4>
+
+            <table class="qc-table qc-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Titre de l'avis</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>information, warning, success, error</td>
+                    <td>information</td>
+                    <td>Le type d'avis</td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>Texte</td>
+                    <td>Chaîne vide</td>
+                    <td>Le contenu de l'avis</td>
+                </tr>
+                <tr>
+                    <td>header</td>
+                    <td>h1,h3,h2,h3,h4,h5,h6</td>
+                    <td>h2</td>
+                    <td>La balise du niveau de titre de l'avis</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>Places d'insertion de contenu</h4>
+
+            <p>Ci-dessous en encadré, l'emplacement disponibles pour insérer du contenu dans le composant.</p>
+
+            <qc-notice id="qc-notice-slots">
+                <div style="border:1px solid; padding: var(--qc-spacer-xs);">
+                    Contenu par défaut
+                </div>
+            </qc-notice>
+            <qc-code target-id="qc-notice-slots"></qc-code>
 
             <!-- Alerte générale -->
             <h2 id="alert">Composant "Alerte générale" (qc-alert)</h2>
+            <h3>Exemples</h3>
+            <h4>Alerte jaune - Message hautement prioritaire</h4>
+            <p><a href="#maskable-alert" id="show-qc-alert">Réafficher l'alerte</a></p>
+
+            <div id="maskable-alert">
+                <qc-alert id="alert-warning"
+                          type="warning"
+                          maskable="true"
+                          content="Alerte jaune d'importance élevée">
+                </qc-alert>
+            </div>
+            <qc-code target-id="alert-warning"></qc-code>
+
+            <h4>Alerte bleue - Message moins prioritaire</h4>
+            <qc-alert id="alert-general"
+                      type="general"
+                      maskable="false">
+                <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
+            </qc-alert>
+            <qc-code target-id="alert-general"></qc-code>
+
+            <h3>Documentation technique</h3>
+
+            <h4>Attributs</h4>
 
             <table class="qc-table qc-striped">
                 <thead>
@@ -629,29 +713,218 @@
                 </tr>
             </table>
 
-            <h3>Alerte jaune - Message hautement prioritaire</h3>
-            <p><a href="#maskable-alert" id="show-qc-alert">Réafficher l'alerte</a></p>
+            <h4>Emplacement d'insertion de contenu</h4>
 
-            <div id="maskable-alert">
-                <qc-alert id="alert-warning"
-                          type="warning"
-                          maskable="true"
-                          content="Alerte jaune d'importance élevée">
-                </qc-alert>
-            </div>
-            <qc-code target-id="alert-warning"></qc-code>
+            <p>Ci-dessous en encadré, l'emplacement disponible pour insérer du contenu dans le composant.</p>
 
-            <h3>Alerte bleue - Message moins prioritaire</h3>
-            <qc-alert id="alert-general"
-                      type="general"
-                      maskable="false">
-                <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
+            <qc-alert id="qc-alert-slots">
+                <div style="border:1px solid; padding: var(--qc-spacer-xs);">
+                    Contenu par défaut
+                </div>
             </qc-alert>
-            <qc-code target-id="alert-general"></qc-code>
+            <qc-code target-id="qc-notice-slots"></qc-code>
 
             <!-- PIV -->
             <h2 id="piv">PIV</h2>
-            <h3>En-tête</h3>
+
+            <h3>Pied de page (qc-piv-footer)</h3>
+            <h4>Exemples</h4>
+            <p>Exemple minimaliste.</p>
+            <qc-piv-footer id="piv-footer-1">
+                <ul>
+                    <li><a href="/">Accessibilité</a></li>
+                    <li><a href="/">Plan du site</a></li>
+                    <li><a href="/">Accès à l'information</a></li>
+                    <li><a href="/">Politique de confidentialité</a></li>
+                    <li><a href="/">Condition d'utilisation</a></li>
+                    <li><a href="/">À propos de Québec.ca</a></li>
+                </ul>
+            </qc-piv-footer>
+            <qc-code target-id="piv-footer-1"></qc-code>
+
+            <p>Personnalisation du logo</p>
+            <qc-piv-footer id="piv-footer-2"
+                           logo-url="https://www.mess.gouv.qc.ca"
+                           logo-alt="Ministère de l'emploi et de la solidarité sociale"
+                           logo-src="img/logo-piv-footer-mess.png"
+                           logo-width="210"
+                           logo-height="81">
+                <ul>
+                    <li><a href="/">Accessibilité</a></li>
+                    <li><a href="/">Plan du site</a></li>
+                    <li><a href="/">S'informer sur clicSÉCUR - Citoyens</a></li>
+                    <li><a href="/">FAQ</a></li>
+                </ul>
+            </qc-piv-footer>
+            <qc-code target-id="piv-footer-2"></qc-code>
+
+            <p>Avec des insertion de contenu :</p>
+            <qc-piv-footer id="piv-footer-3">
+                <ul>
+                    <li><a href="/">Accessibilité</a></li>
+                    <li><a href="/">Plan du site</a></li>
+                    <li><a href="/">S'informer sur clicSÉCUR - Citoyens</a></li>
+                    <li><a href="/">FAQ</a></li>
+                </ul>
+                <a slot="logo"
+                    href="https://www.mess.gouv.qc.ca">
+                    <img class="logo-mo"
+                         alt="Ministère de l'emploi et de la solidarité sociale"
+                         src="img/logo-piv-footer-mess.png"
+                         width="210"
+                         height="81">
+                </a>
+                <a slot="copyright"
+                   target="_blank"
+                   rel="noopener"
+                   href="https://www.quebec.ca/droit-auteur">
+                    © Gouvernement du Québec, <span class="qc-external-link-tail">2023 <img alt="Ce lien s'ouvrira dans un nouvel onglet" /></span>
+                </a>
+            </qc-piv-footer>
+            <qc-code target-id="piv-footer-3"></qc-code>
+
+            <h4>Attributs disponibles</h4>
+            <table class="qc-table qc-striped">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>logo-url</td>
+                    <td>Adresse</td>
+                    <td>/</td>
+                    <td>Cible du lien contenant le logo</td>
+                </tr>
+                <tr>
+                    <td>logo-src</td>
+                    <td>Adresse</td>
+                    <td>/</td>
+                    <td>Adresse de l'image du drapeau du Québec de la trousse</td>
+                </tr>
+                <tr>
+                    <td>logo-alt</td>
+                    <td>Texte</td>
+                    <td>Gouvernement du Québec</td>
+                    <td>Texte alternatif du logo pour les lecteurs d'écran</td>
+                </tr>
+                <tr>
+                    <td>logo-width</td>
+                    <td>Nombre entier</td>
+                    <td>117</td>
+                    <td>Largeur de l'image en pixel</td>
+                </tr>
+                <tr>
+                    <td>logo-height</td>
+                    <td>Nombre entier</td>
+                    <td>35</td>
+                    <td>Hauteur de l'image en pixel</td>
+                </tr>
+                <tr>
+                    <td>copyright-text</td>
+                    <td>Texte</td>
+                    <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
+                    <td>Texte du lien de changement de langue</td>
+                </tr>
+                <tr>
+                    <td>copyright-url</td>
+                    <td>Adresse</td>
+                    <td>
+                        <dl>
+                            <dt>Français</dt><dd>https://www.quebec.ca/droit-auteur</dd>
+                            <dt>Anglais</dt><dd>https://www.quebec.ca/en/copyright</dd>
+                        </dl>
+                    </td>
+                    <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <table class="qc-table">
+                <thead>
+                <tr></tr>
+                </thead>
+            </table>
+
+            <h4>Emplacements d'insertion de contenu</h4>
+
+            <p>Ci-dessous en encadré, les emplacements disponibles pour insérer du contenu dans le composant.</p>
+
+            <qc-piv-footer id="qc-piv-footer-slots">
+                <div  style="border:1px solid;padding: var(--qc-spacer-xs);">
+                    Contenu par défaut
+                </div>
+                <div  slot="logo"
+                      style="border:1px solid;padding: var(--qc-spacer-xs);">
+                    slot="logo"
+                </div>
+                <div slot="copyright"
+                     style="border:1px solid;padding: var(--qc-spacer-xs);">
+                    slot="copyright"
+                </div>
+
+
+            </qc-piv-footer>
+            <qc-code target-id="qc-piv-footer-slots"></qc-code>
+
+            <h3>Bandeau (qc-piv-header)</h3>
+
+            <h4>Exemples</h4>
+            <p>Exemple minimaliste</p>
+            <qc-piv-header id="pivEnteteExempleLiens"
+                           title-text="Trousse de développement SDG"
+                           alt-logo="Accédez à Système de design SDG."
+                           join-us-url="#join-us"
+                           alt-language-url="#fakeEnglish"
+            >
+            </qc-piv-header>
+            <qc-code target-id="pivEnteteExempleLiens"></qc-code>
+
+            <p>Exemple avec bouton recherche et affichage de la zone recherche</p>
+            <qc-piv-header id="pivEnteteExempleRecherche"
+                           title-text="Trousse de développement SDG"
+                           alt-logo="Accédez à Système de design SDG.">
+
+                <a  slot="search-button"
+                    href="#piv-search">
+                    <img alt="Bouton recherche"
+                         src="https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-droite.svg"
+                         width="24"
+                         height="24">
+                </a>
+
+                <form slot="search-zone"
+                      method="get"
+                      id="piv-search-form">
+                    <div class="input-group">
+                        <input type="text"
+                               title="Recherche"
+                               placeholder="Rechercher..."
+                               name="tx_solr[q]"
+                               value="">
+
+                        <button>
+                            <span>Rechercher</span>
+                        </button>
+
+                    </div>
+                </form>
+
+                <ul slot="links">
+                    <li><a href="#fakeEnglish">English</a>
+                    </li>
+                    <li><a href="#">Nous joindre</a>
+                    </li>
+                </ul>
+
+            </qc-piv-header>
+            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
+
             <h4>Attributs disponibles</h4>
             <table class="qc-table qc-striped">
                 <thead>
@@ -752,88 +1025,34 @@
                 </thead>
             </table>
 
-            <h4>Emplacements imbriqués disponibles (éléments html de type <i>slot</i>)</h4>
-            <div class="table-wrapper">
+            <h4>Emplacements d'insertion de contenu</h4>
 
-            </div>
+            <p>Ci-dessous en encadré, les emplacements disponibles pour insérer du contenu dans le composant.</p>
 
-            <table class="qc-table qc-striped">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>title</td>
-                        <td>Zone du titre du bandeau.</td>
-                    </tr>
-                    <tr>
-                        <td>links</td>
-                        <td>Zone des liens à droite du bandeau.</td>
-                    </tr>
-                    <tr>
-                        <td>search-button</td>
-                        <td>Zone du bouton de recherche, <a href="#pivEnteteExempleRecherche">voir l'exemple.</a></td>
-                    </tr>
-                    <tr>
-                        <td>search-zone</td>
-                        <td>Zone dans le bas du PIV pour afficher un champ recherche</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h4>Exemples</h4>
-            <p>Exemple minimaliste</p>
-            <qc-piv-header id="pivEnteteExempleLiens"
-                           title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG."
-                           join-us-url="#join-us"
-                           alt-language-url="#fakeEnglish"
+            <qc-piv-header id="qc-piv-header-slots"
+                           style="margin-bottom: var(--qc-spacer-content-block-mb);"
             >
-            </qc-piv-header>
-            <qc-code target-id="pivEnteteExempleLiens"></qc-code>
 
-            <p>Exemple avec bouton recherche et affichage de la zone recherche</p>
-            <qc-piv-header id="pivEnteteExempleRecherche"
-                           title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG.">
-                <div slot="search-button">
-                    <a href="#piv-search">
-                        <img alt="Bouton recherche"
-                             src="https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-droite.svg"
-                             width="24"
-                             height="24">
-                    </a>
+                <div  slot="search-button"
+                      style="border:1px solid;padding: var(--qc-spacer-xs);">
+                    slot="search‑button"
                 </div>
-                <div slot="search-zone">
-                    <form method="get"
-                          id="piv-search-form">
-                        <div class="input-group">
-                            <input type="text"
-                                   title="Recherche"
-                                   placeholder="Rechercher..."
-                                   name="tx_solr[q]"
-                                   value="">
-
-                            <button>
-                                <span>Rechercher</span>
-                            </button>
-
-                        </div>
-                    </form>
+                <div  slot="title"
+                      style="border:1px solid;padding: var(--qc-spacer-xs);">
+                    slot="title"
                 </div>
-                <div slot="links">
-                    <ul>
-                        <li><a href="#fakeEnglish">English</a>
-                        </li>
-                        <li><a href="#">Nous joindre</a>
-                        </li>
-                    </ul>
+                <div slot="search-zone"
+                     style="border:1px solid;border-bottom-color:transparent;padding: var(--qc-spacer-xs);">
+                    slot="search-zone"
+                </div>
+                <div slot="links"
+                     style="border:1px solid;padding: var(--qc-spacer-xs);"
+                >
+                    slot="links"
                 </div>
             </qc-piv-header>
-            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
+            <qc-code target-id="qc-piv-header-slots"></qc-code>
+
         </div>
     </main>
 </body>

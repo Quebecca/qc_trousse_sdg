@@ -65865,10 +65865,29 @@ var qcCatalog = (function (exports) {
   var pretty$1 = /*@__PURE__*/getDefaultExportFromCjs(pretty);
 
   class Utils {
-      static assetsBasePath = document.currentScript.getAttribute('assets-base-path') || '.';
-      static cssRelativePath = `${this.assetsBasePath}/css/`.replace('//','/')
-      static imagesRelativePath = `${this.assetsBasePath}/img/`.replace('//','/')
-      static cssFileName = document.currentScript.getAttribute('sdg-css-filename') || 'qc-sdg.min.css'
+      static assetsBasePath =
+          document
+              .currentScript
+              .getAttribute('assets-base-path')
+          || '.'
+      static cssRelativePath =
+          `${this.assetsBasePath}/css/`
+              .replace('//','/')
+      static imagesRelativePath =
+          `${this.assetsBasePath}/img/`
+              .replace('//','/')
+      static cssFileName =
+          document
+              .currentScript
+              .getAttribute('sdg-css-filename')
+          || 'qc-sdg.min.css'
+      static sharedTexts =
+          { openInNewTab :
+              { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
+              , en: 'This link will open in a new tab.'
+              }
+          }
+
 
 
       static conserverFocusElement(componentShadow, componentRoot) {
@@ -66156,13 +66175,11 @@ var qcCatalog = (function (exports) {
   function instance($$self, $$props, $$invalidate) {
   	let { targetId = '' } = $$props;
   	let rawCode = '', hlCode, prettyCode;
-  	const thisComponent = get_current_component();
 
   	onMount(() => {
-  		Utils.refreshAfterUpdate(thisComponent);
-  		rawCode = document.getElementById(targetId)?.outerHTML ?? '';
+  		rawCode = (document.getElementById(targetId)?.outerHTML ?? '').replace('class="mounted"', '');
   		prettyCode = pretty$1(rawCode, { wrap_attributes: 'force-aligned' });
-  		$$invalidate(0, hlCode = HighlightJS.highlightAuto(prettyCode).value);
+  		$$invalidate(0, hlCode = HighlightJS.highlight(prettyCode, { language: 'html' }).value);
   	});
 
   	function copy() {

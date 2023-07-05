@@ -9,8 +9,7 @@
   import { onMount } from "svelte";
   import { Utils } from "../../src/components/utils"
 
-  export
-    let
+  export let
       targetId = ''
   ;
 
@@ -19,13 +18,15 @@
     , hlCode
     , prettyCode
   ;
-  const thisComponent = get_current_component()
 
   onMount(() => {
-      Utils.refreshAfterUpdate(thisComponent)
-      rawCode = document.getElementById(targetId)?.outerHTML ?? '';
+      rawCode =
+          ( document.getElementById(targetId)?.outerHTML
+            ?? ''
+          ) . replace('class="mounted"', '')
+        ;
       prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
-      hlCode = HighlightJS.highlightAuto(prettyCode).value;
+      hlCode = HighlightJS.highlight(prettyCode, {language:'html'}).value;
   })
 
   function copy() {

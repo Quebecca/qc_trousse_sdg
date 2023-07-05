@@ -49,13 +49,9 @@ Required tag for svelte to know we're building a custom element.
       {title}
     </svelte:element>
     <div class="text">
+      {@html content}
       <slot />
-      <slot name="content">
-        {@html content}
-      </slot>
     </div>
   </div>
 </div>
-
-<!-- TODO Ici on fait quoi? on doit connaître le fichier css à utiliser, et là il y a plusieurs possibilités (on devrait en avoir un seul à mon avis. Pas grave si on ne veut pas la grille mais que le css est là. C'est plus simple, 1 css pour les dominer tous. Le poids ne fera pas une énorme différence) -->
 <link rel='stylesheet' href='{Utils.cssRelativePath}{Utils.cssFileName}'>
