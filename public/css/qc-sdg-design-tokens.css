@@ -136,9 +136,8 @@ Always use this function for rem values
   --qc-spacer-list-pl: 3.2rem;
   --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
-  --qc-spacer-notice-content-my: var(--qc-spacer-content-block-mb);
-  --qc-spacer-notice-content-mr: 3.2rem;
-  --qc-spacer-notice-content-ml: var(--qc-spacer-sm);
+  --qc-spacer-notice-my: var(--qc-spacer-md);
+  --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 576px;
@@ -164,7 +163,6 @@ Always use this function for rem values
     --qc-line-height-h1: 4rem;
     --qc-spacer-h2-mt: 4.8rem;
     --qc-spacer-h2-mb: 0.8rem;
-    --qc-spacer-notice-content-mr: 2.4rem;
   }
 }
 @media (max-width: 767.98px) {

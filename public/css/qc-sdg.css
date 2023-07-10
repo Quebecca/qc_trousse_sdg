@@ -552,11 +552,11 @@ ul ul {
   box-shadow: 0 0px 0 var(--qc-box-shadow-color);
 }
 
-.qc-shading-1 {
+.qc-shading-1, .qc-to-top {
   box-shadow: 0 1px 4px var(--qc-box-shadow-color);
 }
 
-.qc-shading-2 {
+.qc-shading-2, .qc-to-top:focus {
   box-shadow: 0 2px 8px var(--qc-box-shadow-color);
 }
 
@@ -794,6 +794,9 @@ Always use this function for rem values
 }
 .qc-icon.qc-arrow-up-white {
   background-image: url(../img/qc-sprite.svg?v=1.1.2#arrow-up-white);
+}
+.qc-icon.qc-arrow-up-white-2 {
+  background-image: url(../img/qc-sprite.svg?v=1.1.2#arrow-up-white-2);
 }
 .qc-icon.qc-clipboard {
   background-image: url(../img/qc-sprite.svg?v=1.1.2#clipboard);
@@ -1256,6 +1259,46 @@ qc-alert [slot] *, qc-alert:not([slot=content]) * {
 }
 qc-alert [slot] a, qc-alert:not([slot=content]) a {
   color: var(--qc-color-blue-dark);
+}
+
+.qc-to-top {
+  display: flex;
+  z-index: 99;
+  cursor: pointer;
+  width: 4rem;
+  height: 4rem;
+  background-color: var(--qc-color-blue-piv);
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s linear;
+  opacity: 0;
+}
+.qc-to-top[demo=false] {
+  position: fixed;
+  bottom: 9.6rem;
+  right: 3.2rem;
+}
+.qc-to-top[style*=block] {
+  display: flex !important;
+}
+.qc-to-top:hover {
+  background-color: var(--qc-color-blue-regular);
+}
+.qc-to-top:focus {
+  background-color: var(--qc-color-blue-regular);
+  outline: 2px solid var(--qc-color-blue-light);
+  border: 2px solid var(--qc-color-blue-dark);
+}
+.qc-to-top:active {
+  background-color: var(--qc-color-blue-light);
+}
+.qc-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+.qc-to-top img {
+  min-width: 1.6rem;
+  height: 2rem;
 }
 
 .qc-container,

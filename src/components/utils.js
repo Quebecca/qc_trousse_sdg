@@ -199,7 +199,7 @@ export class Utils {
      * @param composant
      */
     static reafficherApresChargement(composant) {
-        this.refreshAfterUpdate()
+        this.refreshAfterUpdate(composant)
     }
 
     static refreshAfterUpdate(composant) {

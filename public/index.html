@@ -50,6 +50,7 @@
                             <li><a href='#piv-header'>Bandeau PIV</a>
                         </ul>
                     </li>
+                    <li><a href="#toTop">Haut de page</a></li>
                 </ul>
             </div>
         </div>
@@ -1099,7 +1100,48 @@
                 </div>
             </qc-piv-header>
             <qc-code target-id="qc-piv-header-slots"></qc-code>
+            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
 
+            <!-- Haut de page -->
+            <h2 id="toTop">Haut de page</h2>
+            <p>
+                Le composant haut de page est la flèche qui permet l'utilisateur de remonter vers le haut de page. Il s'affiche quand l'utilisateur commence à défiler vers le haut.
+                Il disparaît quand l'utilisateur commence à défiler vers le bas.
+            </p>
+            <h4>Exemple de composant "Retour en haut"</h4>
+            <div>
+                <qc-to-top demo="true" />
+            </div>
+            <div>
+                <qc-to-top id="pivToTopExample"></qc-to-top>
+                <qc-code target-id="pivToTopExample"></qc-code>
+            </div>
+            <h4>Attributs disponibles</h4>
+            <br>
+            <table class="qc-table qc-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>alt</td>
+                        <td>Texte</td>
+                        <td>Retour en haut / Back to top</td>
+                        <td>la valeur de l'attribut "alt" de l'élément img.</td>
+                    </tr>
+                    <tr>
+                        <td>demo</td>
+                        <td>"true" ou "false"</td>
+                        <td>false</td>
+                        <td>Pour utiliser le composant en démonstration uniquement.</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </main>
 </body>

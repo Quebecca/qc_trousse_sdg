@@ -60,6 +60,9 @@ Always use this function for rem values
 .qc-icon.qc-arrow-up-white {
   background-image: url(../img/qc-sprite.svg?v=1.1.2#arrow-up-white);
 }
+.qc-icon.qc-arrow-up-white-2 {
+  background-image: url(../img/qc-sprite.svg?v=1.1.2#arrow-up-white-2);
+}
 .qc-icon.qc-clipboard {
   background-image: url(../img/qc-sprite.svg?v=1.1.2#clipboard);
 }
