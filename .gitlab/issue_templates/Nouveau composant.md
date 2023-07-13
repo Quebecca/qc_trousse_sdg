@@ -24,5 +24,9 @@
 - **Fichiers UI** : 
 - **Exemple visuel** :
 
+# Responsable
+- Techno : // nom du responsable
+- UX : // nom du responsable
+
 # Procédure techno
 cf https://gitlab.quebec.ca/pgu/ux/trousse-dev-sdg/-/wikis/Procédures/Programmation/Création-d’un-nouveau-composant
