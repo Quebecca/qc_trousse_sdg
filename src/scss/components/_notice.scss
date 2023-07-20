@@ -49,14 +49,9 @@
       margin:
           token-value(spacer notice my)
           token-value(spacer notice mx)
-          0;
+          token-value(spacer notice my)
+          token-value(spacer, sm);
       width: 100%;
-      .text {
-        margin-bottom: token-value(spacer notice my);
-      }
-      //&:last-child {
-      //  margin-bottom: 0;
-      //}
   }
 }
 
@@ -72,7 +67,7 @@ qc-notice[type="error"] ul li a {
 @include media-mobile(){
   .qc-notice {
     .content {
-      padding: token-value(spacer, md) token-value(spacer, md) token-value(spacer, md) token-value(spacer, sm);  
+      margin-right: token-value(spacer notice my);
     }
   }
 }

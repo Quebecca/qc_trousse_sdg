@@ -1240,6 +1240,7 @@ var qcSdg = (function (exports) {
   			attr(img, "alt", /*logoAlt*/ ctx[2]);
   			if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[1])) attr(img, "src", img_src_value);
   			attr(a, "href", /*logoUrl*/ ctx[0]);
+  			attr(a, "target", "_blank");
   			attr(div0, "class", "logo");
   			attr(slot0, "name", "title");
   			attr(div1, "class", "title");

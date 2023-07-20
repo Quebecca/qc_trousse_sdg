@@ -2,207 +2,203 @@
 @use "../modules/utils" as *;
 @use "../modules/grid" as *;
 
+
 qc-piv-header {
-    display: block;
-    min-height: 72px;
-    background-color: token-value(color, blue, piv);
-    width: 100%;
+  display: block;
+  min-height: rem(72);
+  background-color: token-value(color, blue, piv);
+  width: 100%;
 
-    [slot=search-zone] > *:first-child {
-        padding: token-value(spacer xs) 0 token-value(spacer md) 0;
-    }
-    [slot=links] {
-        @extend %piv-links;
-    }
-    [slot=search-button] {
-        padding-right: 11.2px;
-    }
-} 
-  
-.qc-piv-header {
-    color: #fff;
-    a {
-        color: #fff;
-        &:hover, &:focus {
-            color: #fff;
-        }
-        text-decoration: none;
-        &:hover, &:focus  {
-            text-decoration: underline;
-        }
+  [slot=search-zone] > *:first-child {
+    padding-bottom: token-value(spacer md);
+  }
 
-    }
-
-    .piv-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 72px;
-
-        .logo {
-            margin-right: 63px;
-
-            a {
-                display: block;
-            }
-
-            img{
-                height: 72px;
-                min-width: 200px;
-            }
-        }
-
-        .title {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            margin-top: -4px;
-
-            a {
-                font-family: token-value(font family header);
-                display: flex;
-                flex-direction: column;
-                text-decoration: none;
-                font-size: token-value(font size 100);
-                line-height: 1.2;
-                /*margin-top: 3px;  Pas dans charte graphique... permet d'aligner parfaitement avec drapeau*/
-
-                &:hover, &:focus  {
-                    text-decoration: underline;
-                }
-
-                .description {
-                    font-size: token-value(font size sm);
-                }
-            }
-        }
-
-        .right-section {
-            min-width: 160px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-
-            .links ul {
-                @extend %piv-links;
-            }
-            @include media-mobile() {
-                min-width: auto;
-            }
-        }
-
-
-    }
-
-
-    .piv-bottom {
-        .title {
-            display: none;
-        }
-    }
-
-    .bouton-recherche {
-        min-width: 32px;
-        min-height: 32px;
-    }
+  [slot=links] {
+    @extend %piv-links;
+  }
 }
+
+.qc-piv-header {
+  color: token-value(color white);
+
+  a {
+    color: token-value(color white);
+    text-decoration: none;
+
+    &:hover, &:focus {
+      color: token-value(color white);
+      text-decoration: underline;
+    }
+  }
+
+  .piv-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      margin-right: rem(64);
+      @include media-mobile() {
+        margin: 0;
+      }
+
+      a {
+        display: block;
+      }
+
+      img {
+        height: rem(72);
+        min-width: rem(200);
+      }
+    }
+
+    .title {
+      width: 100%;
+      padding: token-value(spacer sm) 0;
+      min-height: rem(72);
+      align-items: center;
+      display: flex;
+      margin-right: rem(40);
+
+      a {
+        @include content-font(100);
+        font-family: token-value(font, family, header);
+
+        &:hover, &:focus {
+          text-decoration: underline;
+        }
+
+        .description {
+          font-size: token-value(font size sm);
+        }
+      }
+    }
+
+    .right-section {
+      min-width: fit-content;
+      display: flex;
+      align-items: center;
+
+      .links ul {
+        @extend %piv-links;
+      }
+
+      @include media-mobile() {
+        min-width: auto;
+      }
+    }
+  }
+
+  .piv-bottom {
+    .title {
+      display: none;
+    }
+  }
+
+  .bouton-recherche {
+    min-width: rem(4 * $base-spacer);
+    min-height: rem(4 * $base-spacer);
+  }
+}
+
 
 %piv-links {
-    &,& ul {
-        list-style: none;
-        padding: 0 0 0 token-value(spacer xs);
-        margin: 0;
-        height: 100%;
-
-        li {
-            padding: 0;
-            margin: 0;
-            line-height: rem(20);
-        }
-
-        a {
-            font-family: token-value(font family header);
-            text-decoration: none;
-            font-size: rem(12.8);
-            color: #fff;
-            font-weight: 400;
-            &:focus, &:hover {
-                text-decoration: underline;
-                color: #fff;
-            }
-        }
+  &, & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    margin-left: token-value(spacer md);
+    @include media-mobile() {
+      margin-left: token-value(spacer sm);
     }
-}
 
-
-.go-to-content {
-    display:flex;
-    //flex-direction: column;
-    //align-items: center;
+    li {
+      padding: 0;
+      margin: 0;
+      @include content-font(sm);
+    }
 
     a {
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        overflow: hidden;
-        clip: rect(0,0,0,0);
-        white-space: nowrap;
-        border: 0;
+      font-family: token-value(font family header);
+      text-decoration: none;
+      font-size: rem(12);
+      color: token-value(color white);
+      font-weight: token-value(font weight regular);
 
-        &:focus {
-            width: inherit;
-            height: inherit;
-            overflow: inherit;
-            clip: inherit;
-            white-space: inherit;
-            color: #fff;
-            //padding: 4px;
-            //border: 1px solid #fff;
-            background-color: token-value(color blue piv);
-        }
+      &:focus, &:hover {
+        text-decoration: underline;
+        color: token-value(color white);
+      }
     }
+  }
+}
+
+.go-to-content {
+  display: flex;
+  height: 0;
+
+  a {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+
+    &:focus {
+      width: inherit;
+      height: inherit;
+      overflow: inherit;
+      clip: inherit;
+      white-space: inherit;
+      color: token-value(color white);
+      background-color: token-value(color blue piv);
+    }
+  }
 }
 
 
 @include media-tablet() {
-    .qc-piv-header {
-        min-height: 99px;
-        .piv-top {
-            .logo img {
-                margin-left: -3px;
-                min-width: 132px;
-                height: 48px;
-            }
+  .qc-piv-header {
+    .piv-top {
+      .logo img {
+        min-width: rem(175);
+        height: rem(66);
+      }
 
-            .title {
-                display: none;
-            }
-            .right-section {
-                min-width: 130px;
+      .title {
+        display: none;
+      }
 
-                .search-button {
-                    display: none;
-                }
-            }
+      .right-section {
+        min-width: rem(130);
+
+        .search-button {
+          display: none;
         }
-
-        .piv-bottom {
-            justify-content: space-between;
-            .title {
-                margin: 0;
-                display: flex;
-            }
-        }
+      }
     }
+
+    .piv-bottom {
+      .title {
+        margin: 0;
+        display: flex;
+        padding-bottom: token-value(spacer sm);
+      }
+    }
+  }
 }
 
 @include media-mobile() {
-    .qc-piv-header {
-        .piv-top {
-            .right-section {
-                min-width: auto;
-            }
-        }
-    }
-}
+  .qc-piv-header {
+    .piv-top {
+      height: rem(72);
 
+      .right-section {
+        min-width: fit-content;
+      }
+    }
+  }
+}

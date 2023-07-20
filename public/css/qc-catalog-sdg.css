@@ -408,20 +408,33 @@ p, h1, h2, h3, h4, h5, h6 {
 #piv-search-form .input-group input {
   width: 100%;
   padding: 0.6rem 1.2rem;
-  border: 1px solid black;
+  border: 1px solid var(--qc-color-blue-dark);
   border-right: none;
 }
+#piv-search-form .input-group input:focus {
+  outline: 0.2rem solid var(--qc-color-blue-pale);
+  border-right: 1px solid black;
+  z-index: 1;
+}
+#piv-search-form .input-group input::-moz-placeholder {
+  font-size: var(--qc-font-size-md);
+}
+#piv-search-form .input-group input::placeholder {
+  font-size: var(--qc-font-size-md);
+}
 #piv-search-form .input-group button {
-  background-size: 2.4rem;
-  border: 1px solid;
+  background-size: var(--qc-spacer-md);
+  border: 1px solid var(--qc-color-blue-dark);
   border-left: none;
-  min-height: 2.4rem;
-  color: var(--qc-color-blue-piv);
   background-color: white;
   background-image: url("https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-fonce.svg?v=1");
   background-repeat: no-repeat;
-  background-position: 0.8rem 0.64rem;
+  background-position: var(--qc-spacer-xs) 0.64rem;
   width: 4.16rem;
+}
+#piv-search-form .input-group button:focus {
+  outline: 0.2rem solid var(--qc-color-blue-pale);
+  border-left: 1px solid black;
 }
 #piv-search-form .input-group button span {
   position: absolute;

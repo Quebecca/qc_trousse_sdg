@@ -50,7 +50,7 @@ onMount(() => {
     {/if}
     <div class="piv-top">
       <div class="logo">
-        <a href="{logoUrl}">
+        <a href="{logoUrl}" target="_blank">
           <img alt="{logoAlt}"
                src="{logoSrc}">
         </a>
