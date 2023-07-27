@@ -417,10 +417,10 @@ p, h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 #piv-search-form .input-group input::-moz-placeholder {
-  font-size: var(--qc-font-size-md);
+  font-size: var(--qc-font-size-sm);
 }
 #piv-search-form .input-group input::placeholder {
-  font-size: var(--qc-font-size-md);
+  font-size: var(--qc-font-size-sm);
 }
 #piv-search-form .input-group button {
   background-size: var(--qc-spacer-md);
