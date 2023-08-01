@@ -767,11 +767,12 @@ var qcSdg = (function (exports) {
   }
 
   function create_fragment$3(ctx) {
-  	let div4;
+  	let div5;
   	let div1;
   	let div0;
   	let div0_class_value;
   	let t0;
+  	let div4;
   	let div3;
   	let previous_tag = /*header*/ ctx[1];
   	let t2;
@@ -779,17 +780,18 @@ var qcSdg = (function (exports) {
   	let html_tag;
   	let t3;
   	let slot;
-  	let div4_class_value;
+  	let div5_class_value;
   	let t4;
   	let link;
   	let svelte_element = /*header*/ ctx[1] && create_dynamic_element(ctx);
 
   	return {
   		c() {
-  			div4 = element("div");
+  			div5 = element("div");
   			div1 = element("div");
   			div0 = element("div");
   			t0 = space();
+  			div4 = element("div");
   			div3 = element("div");
   			if (svelte_element) svelte_element.c();
   			t2 = space();
@@ -806,16 +808,18 @@ var qcSdg = (function (exports) {
   			html_tag.a = t3;
   			attr(div2, "class", "text");
   			attr(div3, "class", "content");
-  			attr(div4, "class", div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0]);
-  			attr(div4, "tabindex", "0");
+  			attr(div4, "class", "content-container");
+  			attr(div5, "class", div5_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0]);
+  			attr(div5, "tabindex", "0");
   			attr(link, "rel", "stylesheet");
   			attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
   		},
   		m(target, anchor) {
-  			insert(target, div4, anchor);
-  			append(div4, div1);
+  			insert(target, div5, anchor);
+  			append(div5, div1);
   			append(div1, div0);
-  			append(div4, t0);
+  			append(div5, t0);
+  			append(div5, div4);
   			append(div4, div3);
   			if (svelte_element) svelte_element.m(div3, null);
   			append(div3, t2);
@@ -852,14 +856,14 @@ var qcSdg = (function (exports) {
   			previous_tag = /*header*/ ctx[1];
   			if (dirty & /*content*/ 8) html_tag.p(/*content*/ ctx[3]);
 
-  			if (dirty & /*type*/ 1 && div4_class_value !== (div4_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0])) {
-  				attr(div4, "class", div4_class_value);
+  			if (dirty & /*type*/ 1 && div5_class_value !== (div5_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0])) {
+  				attr(div5, "class", div5_class_value);
   			}
   		},
   		i: noop,
   		o: noop,
   		d(detaching) {
-  			if (detaching) detach(div4);
+  			if (detaching) detach(div5);
   			if (svelte_element) svelte_element.d(detaching);
   			if (detaching) detach(t4);
   			if (detaching) detach(link);

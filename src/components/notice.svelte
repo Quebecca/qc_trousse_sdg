@@ -43,14 +43,16 @@ Required tag for svelte to know we're building a custom element.
          class="qc-icon qc-{type}">
     </div>
   </div>
-  <div class="content">
-    <svelte:element this={header}
-                    class="title">
-      {title}
-    </svelte:element>
-    <div class="text">
-      {@html content}
-      <slot />
+  <div class="content-container">
+    <div class="content">
+      <svelte:element this={header}
+                      class="title">
+        {title}
+      </svelte:element>
+      <div class="text">
+        {@html content}
+        <slot />
+      </div>
     </div>
   </div>
 </div>

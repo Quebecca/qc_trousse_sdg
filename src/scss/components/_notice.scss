@@ -21,6 +21,9 @@
       height: token-value(spacer, md);
     }    
   }
+  .content-container {
+    width: 100%;
+  }
 
   &.qc-information .icon-container {
     background-color: token-value(color,blue,pale);    
@@ -51,7 +54,6 @@
           token-value(spacer notice mx)
           token-value(spacer notice my)
           token-value(spacer, sm);
-      width: 100%;
   }
 }
 

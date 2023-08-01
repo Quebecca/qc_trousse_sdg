@@ -889,6 +889,9 @@ Always use this function for rem values
   min-width: var(--qc-spacer-md);
   height: var(--qc-spacer-md);
 }
+.qc-notice .content-container {
+  width: 100%;
+}
 .qc-notice.qc-information .icon-container {
   background-color: var(--qc-color-blue-pale);
 }
@@ -911,7 +914,6 @@ Always use this function for rem values
 }
 .qc-notice .content {
   margin: var(--qc-spacer-notice-my) var(--qc-spacer-notice-mx) var(--qc-spacer-notice-my) var(--qc-spacer-sm);
-  width: 100%;
 }
 
 /* Links in a error notice (eg. error summary) */
