@@ -203,8 +203,8 @@ if (dev_process) {
             ),
             css(),
             serve(),
-            //Enable the Hot Reload
-            livereload('public'),
+            //uncomment to enable the Hot Reload,
+            // livereload('public'),
         ],
     },)
 }
