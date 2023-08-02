@@ -6,7 +6,9 @@
     "generateSprite": "gulp generateSprite"
   },
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "gulp-rename": "^2.0.0"
+  },
   "devDependencies": {
     "gulp": "4.0.2",
     "gulp-svg-sprite": "1.5.0"
