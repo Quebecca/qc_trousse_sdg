@@ -132,6 +132,12 @@ Always use this function for rem values
 .qc-icon.qc-general-alert-icon {
   background-image: url(../img/qc-sprite.svg?v=1.1.2#information);
 }
+.qc-icon.qc-search {
+  background-image: url(../img/qc-sprite.svg?v=1.1.2#loupe-piv-droite);
+}
+.qc-icon.qc-search-submit {
+  background-image: url(../img/qc-sprite.svg?v=1.1.2#loupe-piv-fonce);
+}
 
 qc-code {
   display: block;
@@ -399,44 +405,51 @@ p, h1, h2, h3, h4, h5, h6 {
           hyphens: auto;
 }
 
-#piv-search-form .input-group {
+table.component-attributes-description td:first-child {
+  white-space: nowrap;
+}
+
+#custom-piv-search-form .input-group {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: stretch;
 }
-#piv-search-form .input-group input {
+#custom-piv-search-form .input-group input {
   width: 100%;
   padding: 0.6rem 1.2rem;
   border: 1px solid var(--qc-color-blue-dark);
   border-right: none;
 }
-#piv-search-form .input-group input:focus {
-  outline: 0.2rem solid var(--qc-color-blue-pale);
+#custom-piv-search-form .input-group input:focus {
+  outline: 0.2rem solid var(--qc-color-blue-light);
   border-right: 1px solid black;
   z-index: 1;
 }
-#piv-search-form .input-group input::-moz-placeholder {
+#custom-piv-search-form .input-group input::-moz-placeholder {
   font-size: var(--qc-font-size-sm);
 }
-#piv-search-form .input-group input::placeholder {
+#custom-piv-search-form .input-group input::placeholder {
   font-size: var(--qc-font-size-sm);
 }
-#piv-search-form .input-group button {
-  background-size: var(--qc-spacer-md);
+#custom-piv-search-form .input-group button {
+  display: flex;
+  justify-content: center;
   border: 1px solid var(--qc-color-blue-dark);
   border-left: none;
   background-color: white;
-  background-image: url("https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-fonce.svg?v=1");
-  background-repeat: no-repeat;
-  background-position: var(--qc-spacer-xs) 0.64rem;
   width: 4.16rem;
 }
-#piv-search-form .input-group button:focus {
-  outline: 0.2rem solid var(--qc-color-blue-pale);
+#custom-piv-search-form .input-group button:focus {
+  outline: 0.2rem solid var(--qc-color-blue-light);
   border-left: 1px solid black;
 }
-#piv-search-form .input-group button span {
+#custom-piv-search-form .input-group button .qc-search-submit {
+  min-width: 2.4rem;
+  height: 2.4rem;
+  align-self: center;
+}
+#custom-piv-search-form .input-group button .sr-description {
   position: absolute;
   width: 1px;
   height: 1px;

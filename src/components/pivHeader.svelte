@@ -12,8 +12,8 @@ export let
   , fullWidth = 'false'
   , logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#QUEBEC_blanc`
   , logoAlt = lang === 'fr'
-                ? 'Logo du gouvernement du Québec'
-                : 'Logo of government of Québec'
+      ? 'Logo du gouvernement du Québec'
+      : 'Logo of government of Québec'
   , titleUrl= '/'
   , titleText= ''
   , altLanguageText= lang === 'fr'
@@ -25,18 +25,39 @@ export let
                   : 'Contact us'
   , joinUsUrl= ''
   , goToContent = 'true'
-  , goToContentAnchor= '#main'
+  , goToContentAnchor = '#main'
   , goToContentText= lang === 'fr'
-                      ? 'Passer au contenu'
-                      : 'Skip to content'
+      ? 'Passer au contenu'
+      : 'Skip to content'
+  , searchPlaceholder =  lang === 'fr'
+      ? 'Rechercher…'
+      : 'Search…'
+  , searchInputName =  'q'
+  , submitSearchText =  lang === 'fr'
+      ? 'Rechercher'
+      : 'Search'
+  , displaySearchText =  lang === 'fr'
+          ? 'Cliquer pour rechercher'
+          : 'Click to search'
+  , searchFormAction =  '#'
+  , enableSearch = 'false'
+        , showSearch = 'false'
 
-let  containerClass = 'qc-container'
+let
+    containerClass = 'qc-container'
+  , displaySearchForm = false
 ;
 
 
 onMount(() => {
   containerClass += fullWidth === 'true' ? '-fluid' : '';
+  if (showSearch === 'true') {
+    enableSearch = 'true'
+    displaySearchForm = true;
+  }
 })
+
+
 </script>
 
 <div class="qc-piv-header qc-component">
@@ -50,12 +71,13 @@ onMount(() => {
     {/if}
     <div class="piv-top">
       <div class="logo">
-        <a href="{logoUrl}" target="_blank">
+        <a href="{logoUrl}"
+           target="_blank"
+           rel="noreferrer">
           <img alt="{logoAlt}"
                src="{logoSrc}">
         </a>
       </div>
-
       <div class="title">
         <slot name="title">
           {#if titleText}
@@ -65,9 +87,15 @@ onMount(() => {
           {/if}
         </slot>
       </div>
-
       <div class="right-section">
-        <slot name="search-button" />
+        {#if enableSearch == 'true'}
+          <a  class="qc-icon qc-search"
+              href="#"
+              role="button"
+              on:click = {() => displaySearchForm = true}>
+            <span>{displaySearchText}</span>
+          </a>
+        {/if}
         <div class="links">
           <slot name="links">
           {#if joinUsUrl || altLanguageUrl}
@@ -94,9 +122,25 @@ onMount(() => {
           {/if}
         </slot>
       </div>
+      {#if displaySearchForm}
       <div class="search-zone">
-        <slot name="search-zone" />
+        <slot name="search-zone">
+
+          <form method="get"
+                action="{searchFormAction}">
+            <div class="input-group">
+              <input type="text"
+                     placeholder="{searchPlaceholder}"
+                     name="{searchInputName}">
+              <button>
+                <span class="qc-icon qc-search-submit" />
+                <span class="sr-description">{submitSearchText}</span>
+              </button>
+            </div>
+          </form>
+        </slot>
       </div>
+      {/if}
   </div>
   </div>
 </div>

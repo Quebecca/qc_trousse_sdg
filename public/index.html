@@ -600,7 +600,7 @@
 
             <h4>Attributs HTML</h4>
 
-            <table class="qc-table qc-striped">
+            <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -675,7 +675,7 @@
 
             <h4>Attributs</h4>
 
-            <table class="qc-table qc-striped">
+            <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                 <tr>
                     <th>Nom</th>
@@ -775,7 +775,7 @@
             <qc-code target-id="piv-footer-3"></qc-code>
 
             <h4>Attributs disponibles</h4>
-            <table class="qc-table qc-striped">
+            <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                 <tr>
                     <th>Nom</th>
@@ -836,11 +836,6 @@
                 </tbody>
             </table>
 
-            <table class="qc-table">
-                <thead>
-                <tr></tr>
-                </thead>
-            </table>
 
             <h4>Insertions de contenu ciblées</h4>
 
@@ -876,36 +871,14 @@
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleLiens"></qc-code>
 
-            <p>Exemple avec bouton recherche et affichage de la zone recherche</p>
+            <p>Exemple avec activation de la recherche </p>
             <qc-piv-header id="pivEnteteExempleRecherche"
                            title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG.">
-
-                <a  slot="search-button"
-                    href="#piv-search">
-                    <img alt="Bouton recherche"
-                         src="https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-droite.svg"
-                         width="24"
-                         height="24">
-                </a>
-
-                <form slot="search-zone"
-                      method="get"
-                      id="piv-search-form">
-                    <div class="input-group">
-                        <input type="text"
-                               title="Recherche"
-                               placeholder="Rechercher..."
-                               name="tx_solr[q]"
-                               value="">
-
-                        <button>
-                            <span>Rechercher</span>
-                        </button>
-
-                    </div>
-                </form>
-
+                           alt-logo="Accédez à Système de design SDG."
+                           enable-search="true"
+                           search-form-action="https://www.quebec.ca/resultats-de-recherche"
+                           search-input-name="tx_solr[q]"
+            >
                 <ul slot="links">
                     <li><a href="#fakeEnglish">English</a>
                     </li>
@@ -916,8 +889,46 @@
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
 
+            <p>Exemple avec personnalisation du formulaire de recherche </p>
+            <qc-piv-header id="pivEnteteExempleRecherchePersonnalisee"
+                           title-text="Trousse de développement SDG"
+                           alt-logo="Accédez à Système de design SDG."
+                           enable-search="true"
+                           show-search="true"
+            >
+                <ul slot="links">
+                    <li><a href="#fakeEnglish">English</a>
+                    </li>
+                    <li><a href="#">Nous joindre</a>
+                    </li>
+                </ul>
+
+                <form slot="search-zone"
+                      method="get"
+                      id="custom-piv-search-form"
+                      action="https:/www.google.ca/search"
+                >
+                    <input type="hidden"
+                           name="custom-field"
+                           value="foo" />
+                    <div class="input-group">
+                        <input type="text"
+                               title="Recherche"
+                               placeholder="Rechercher sur Google"
+                               name="q">
+                        <button>
+                            <span class="qc-icon qc-search-submit"></span>
+                            <span class="sr-description">Rechercher</span>
+                        </button>
+                    </div>
+                </form>
+            </qc-piv-header>
+
+            <qc-code target-id="pivEnteteExempleRecherchePersonnalisee"></qc-code>
+
+
             <h4>Attributs disponibles</h4>
-            <table class="qc-table qc-striped">
+            <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -929,7 +940,6 @@
                 <tbody>
                     <tr>
                         <td>title-text</td>
-
                         <td>Texte</td>
                         <td>Chaine vide</td>
                         <td>Titre au milieu du bandeau (dans un hyperlien)</td>
@@ -1005,15 +1015,52 @@
                         <td>full-width</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Affiche le bandeau en pleine largeur. (classe de conteneur « qc-container-fluid »)</td>
+                        <td>Affiche le bandeau en pleine largeur. (classe de conteneur « qc‑container‑fluid »)</td>
                     </tr>
-                </tbody>
-            </table>
+                    <tr>
+                        <td>enable-search</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Active la recherche dans le bandeau PIV : le bouton rechercher est alors affiché et au clic il affiche le formulaire de recherche.</td>
+                    </tr>
+                    <tr>
+                        <td>show-search</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Affiche le formulaire de recherche (normalement caché tant que le bouton recherche n'a pas été pressé).</td>
+                    </tr>
+                    <tr>
+                        <td>search-form-action</td>
+                        <td>Adresse</td>
+                        <td>#</td>
+                        <td>Valeur de l'attribut action du champ du formulaire de recherche.</td>
+                    </tr>
+                    <tr>
+                        <td>search-input-name</td>
+                        <td>Texte</td>
+                        <td>q</td>
+                        <td>Valeur de l'attribut « name » du champ texte du formulaire de recherche.</td>
+                    </tr>
+                    <tr>
+                        <td>search-placeholder</td>
+                        <td>Texte</td>
+                        <td>Rechercher… / Search…</td>
+                        <td>Valeur de l'attribut « placeholder » du champ texte du formulaire de recherche.</td>
+                    </tr>
+                    <tr>
+                        <td>display-search-text</td>
+                        <td>Texte</td>
+                        <td>Cliquer pour rechercher / Click to search</td>
+                        <td>Texte du bouton de recherche pour les lecteurs d'écran.</td>
+                    </tr>
+                    <tr>
+                        <td>submit-search-text</td>
+                        <td>Texte</td>
+                        <td>Rechercher / Search</td>
+                        <td>Texte du bouton de soumission du formulaire pour les lecteurs d'écran.</td>
+                    </tr>
 
-            <table class="qc-table">
-                <thead>
-                <tr></tr>
-                </thead>
+                </tbody>
             </table>
 
             <h4>Insertions de contenu ciblées</h4>
@@ -1022,18 +1069,16 @@
 
             <qc-piv-header id="qc-piv-header-slots"
                            style="margin-bottom: var(--qc-spacer-content-block-mb);"
+                           enable-search="true"
+                           show-search="true"
             >
 
-                <div  slot="search-button"
-                      style="border:1px solid;padding: var(--qc-spacer-xs);">
-                    slot="search‑button"
-                </div>
                 <div  slot="title"
                       style="border:1px solid;padding: var(--qc-spacer-xs);">
                     slot="title"
                 </div>
                 <div slot="search-zone"
-                     style="border:1px solid;border-bottom-color:transparent;padding: var(--qc-spacer-xs);">
+                     style="border:1px solid;padding: var(--qc-spacer-xs);">
                     slot="search-zone"
                 </div>
                 <div slot="links"

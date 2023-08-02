@@ -132,6 +132,14 @@
   &.qc-general-alert-icon {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);
   }
+
+  &.qc-search {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#loupe-piv-droite);
+  }
+  &.qc-search-submit {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#loupe-piv-fonce);
+  }
+
 }
 
 

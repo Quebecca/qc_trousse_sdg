@@ -9,10 +9,6 @@ qc-piv-header {
   background-color: token-value(color, blue, piv);
   width: 100%;
 
-  [slot=search-zone] > *:first-child {
-    padding-bottom: token-value(spacer md);
-  }
-
   [slot=links] {
     @extend %piv-links;
   }
@@ -87,17 +83,70 @@ qc-piv-header {
         min-width: auto;
       }
     }
+
+    .qc-search {
+      min-width: rem(24);
+      height: rem(24);
+      span {
+        @include sr-only();
+      }
+    }
   }
 
   .piv-bottom {
     .title {
       display: none;
     }
-  }
+    .search-zone {
+      padding-bottom: token-value(spacer md);
+      form {
+        .input-group {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: stretch;
+          input {
+            width: 100%;
+            padding: rem(6) rem(12) ;
+            border: 1px solid token-value(color blue dark);
+            border-right: none;
+            &:focus {
+              outline: rem(2) solid token-value(color blue light);
+              border-right: 1px solid black;
+              z-index: 1;
+            }
+            &::placeholder {
+              font-size: token-value(font size sm);
+            }
+          }
+          button {
+            display: flex;
+            justify-content: center;
+            border: 1px solid token-value(color blue dark);
+            border-left: none;
+            background-color: white;
+            width: rem(2.6 * 16);
+            &:focus{
+              outline: rem(2) solid token-value(color blue light);
+              border-left: 1px solid black;
+            }
+            .qc-search-submit {
+              min-width: rem(24);
+              height: rem(24);
+              align-self: center;
+            }
+            .sr-description {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              clip: rect(0 0 0 0);
+            }
+          }
 
-  .bouton-recherche {
-    min-width: rem(4 * $base-spacer);
-    min-height: rem(4 * $base-spacer);
+        }
+      }
+    }
+
   }
 }
 
@@ -139,13 +188,7 @@ qc-piv-header {
   height: 0;
 
   a {
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    @include sr-only();
 
     &:focus {
       width: inherit;
@@ -174,10 +217,6 @@ qc-piv-header {
 
       .right-section {
         min-width: rem(130);
-
-        .search-button {
-          display: none;
-        }
       }
     }
 

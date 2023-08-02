@@ -117,7 +117,11 @@ p,h1,h2,h3,h4,h5,h6 {
   hyphens: auto;
 }
 
-#piv-search-form {
+table.component-attributes-description td:first-child {
+  white-space: nowrap;
+}
+
+#custom-piv-search-form {
   .input-group {
     width: 100%;
     display: flex;
@@ -129,7 +133,7 @@ p,h1,h2,h3,h4,h5,h6 {
       border: 1px solid token-value(color blue dark);
       border-right: none;
       &:focus {
-        outline: rem(2) solid token-value(color blue pale);
+        outline: rem(2) solid token-value(color blue light);
         border-right: 1px solid black;
         z-index: 1;
       }
@@ -138,19 +142,22 @@ p,h1,h2,h3,h4,h5,h6 {
       }
     }
     button {
-      background-size: token-value(spacer md);
+      display: flex;
+      justify-content: center;
       border: 1px solid token-value(color blue dark);
       border-left: none;
       background-color: white;
-      background-image: url("https://www.quebec.ca/typo3conf/ext/gabarit_pgu/Resources/Public/Images/Templates/loupe-piv-fonce.svg?v=1");
-      background-repeat: no-repeat;
-      background-position: token-value(spacer xs) rem(6.4);
       width: rem(2.6 * 16);
       &:focus{
-        outline: rem(2) solid token-value(color blue pale);
+        outline: rem(2) solid token-value(color blue light);
         border-left: 1px solid black;
       }
-      span {
+      .qc-search-submit {
+        min-width: rem(24);
+        height: rem(24);
+        align-self: center;
+      }
+      .sr-description {
         position: absolute;
         width: 1px;
         height: 1px;

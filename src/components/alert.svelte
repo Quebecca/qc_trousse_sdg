@@ -35,9 +35,12 @@
 
 </script>
 {#if !hideAlert}
-    <div class="qc-general-alert {typeClass}" role="alert" aria-label={label}>
+    <div class="qc-general-alert {typeClass}"
+         role="alert"
+         aria-label={label}>
         <div class="qc-container qc-general-alert-elements">
-            <div class="qc-icon qc-{type}-alert-icon" aria-hidden="true"
+            <div class="qc-icon qc-{type}-alert-icon"
+                 aria-hidden="true"
             ></div>
             <div class="qc-alert-content">
                 {@html content}
