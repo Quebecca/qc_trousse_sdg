@@ -89,9 +89,9 @@ onMount(() => {
       <div class="right-section">
         {#if enableSearch == 'true'}
           <a  class="qc-icon qc-search"
-              href="#"
+              href="/"
               role="button"
-              on:click = {() => displaySearchForm = true}>
+              on:click|preventDefault = {() => displaySearchForm = true}>
             <span>{displaySearchText}</span>
           </a>
         {/if}
