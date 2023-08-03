@@ -71,7 +71,8 @@ let
     replacements = {
         _vSDG_ : `v${pkg.version}`, //Permet d'injecter la version du package dans le fichier js généré (Remplace _vSDG_ par la version du package)
         customElements$1 : 'customElements', //Ici c'est une patch pour notre wrapper de customElement (permettant les attributs kebab). Je n'ai pas trouvé de façon d'avoir le code au bon format après que svelte a compilé.
-        delimiters: ['', '']
+        delimiters: ['', ''],
+        preventAssignment: false,
     }
     , svelteOptions = {
         compilerOptions: {

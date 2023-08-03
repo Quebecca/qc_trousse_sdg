@@ -89,6 +89,13 @@ var qcSdg = (function (exports) {
       node.addEventListener(event, handler, options);
       return () => node.removeEventListener(event, handler, options);
   }
+  function prevent_default(fn) {
+      return function (event) {
+          event.preventDefault();
+          // @ts-ignore
+          return fn.call(this, event);
+      };
+  }
   function attr(node, attribute, value) {
       if (value == null)
           node.removeAttribute(attribute);
@@ -1044,7 +1051,7 @@ var qcSdg = (function (exports) {
   			span = element("span");
   			t = text(/*displaySearchText*/ ctx[16]);
   			attr(a, "class", "qc-icon qc-search");
-  			attr(a, "href", "#");
+  			attr(a, "href", "/");
   			attr(a, "role", "button");
   		},
   		m(target, anchor) {
@@ -1053,7 +1060,7 @@ var qcSdg = (function (exports) {
   			append(span, t);
 
   			if (!mounted) {
-  				dispose = listen(a, "click", /*click_handler*/ ctx[22]);
+  				dispose = listen(a, "click", prevent_default(/*click_handler*/ ctx[22]));
   				mounted = true;
   			}
   		},
