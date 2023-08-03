@@ -999,7 +999,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (83:10) {#if titleText}
+  // (82:10) {#if titleText}
   function create_if_block_6(ctx) {
   	let a;
   	let span;
@@ -1030,7 +1030,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (91:8) {#if enableSearch == 'true'}
+  // (90:8) {#if enableSearch == 'true'}
   function create_if_block_5(ctx) {
   	let a;
   	let span;
@@ -1068,7 +1068,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (101:10) {#if joinUsUrl || altLanguageUrl}
+  // (100:10) {#if joinUsUrl || altLanguageUrl}
   function create_if_block_2(ctx) {
   	let ul;
   	let t;
@@ -1123,7 +1123,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (103:16) {#if altLanguageUrl}
+  // (102:16) {#if altLanguageUrl}
   function create_if_block_4(ctx) {
   	let li;
   	let a;
@@ -1154,7 +1154,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (106:16) {#if joinUsUrl}
+  // (105:16) {#if joinUsUrl}
   function create_if_block_3(ctx) {
   	let li;
   	let a;
@@ -1185,7 +1185,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (118:10) {#if titleText}
+  // (117:10) {#if titleText}
   function create_if_block_1$1(ctx) {
   	let a;
   	let span;
@@ -1216,7 +1216,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (125:6) {#if displaySearchForm}
+  // (124:6) {#if displaySearchForm}
   function create_if_block$1(ctx) {
   	let div1;
   	let slot;

@@ -57,7 +57,6 @@ onMount(() => {
   }
 })
 
-
 </script>
 
 <div class="qc-piv-header qc-component">
@@ -125,7 +124,6 @@ onMount(() => {
       {#if displaySearchForm}
       <div class="search-zone">
         <slot name="search-zone">
-
           <form method="get"
                 action="{searchFormAction}">
             <div class="input-group">
