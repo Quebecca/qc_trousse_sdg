@@ -1006,7 +1006,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (82:10) {#if titleText}
+  // (92:10) {#if titleText}
   function create_if_block_6(ctx) {
   	let a;
   	let span;
@@ -1037,10 +1037,15 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (90:8) {#if enableSearch == 'true'}
+  // (100:8) {#if enableSearch == 'true'}
   function create_if_block_5(ctx) {
   	let a;
   	let span;
+
+  	let t_value = (/*displaySearchForm*/ ctx[21]
+  	? /*hideSearchText*/ ctx[17]
+  	: /*displaySearchText*/ ctx[16]) + "";
+
   	let t;
   	let mounted;
   	let dispose;
@@ -1049,7 +1054,7 @@ var qcSdg = (function (exports) {
   		c() {
   			a = element("a");
   			span = element("span");
-  			t = text(/*displaySearchText*/ ctx[16]);
+  			t = text(t_value);
   			attr(a, "class", "qc-icon qc-search");
   			attr(a, "href", "/");
   			attr(a, "role", "button");
@@ -1060,22 +1065,28 @@ var qcSdg = (function (exports) {
   			append(span, t);
 
   			if (!mounted) {
-  				dispose = listen(a, "click", prevent_default(/*click_handler*/ ctx[22]));
+  				dispose = [
+  					listen(a, "click", prevent_default(/*click_handler*/ ctx[25])),
+  					listen(a, "click", /*focusOnSearchInput*/ ctx[19])
+  				];
+
   				mounted = true;
   			}
   		},
   		p(ctx, dirty) {
-  			if (dirty & /*displaySearchText*/ 65536) set_data(t, /*displaySearchText*/ ctx[16]);
+  			if (dirty & /*displaySearchForm, hideSearchText, displaySearchText*/ 2293760 && t_value !== (t_value = (/*displaySearchForm*/ ctx[21]
+  			? /*hideSearchText*/ ctx[17]
+  			: /*displaySearchText*/ ctx[16]) + "")) set_data(t, t_value);
   		},
   		d(detaching) {
   			if (detaching) detach(a);
   			mounted = false;
-  			dispose();
+  			run_all(dispose);
   		}
   	};
   }
 
-  // (100:10) {#if joinUsUrl || altLanguageUrl}
+  // (111:10) {#if joinUsUrl || altLanguageUrl}
   function create_if_block_2(ctx) {
   	let ul;
   	let t;
@@ -1130,7 +1141,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (102:16) {#if altLanguageUrl}
+  // (113:16) {#if altLanguageUrl}
   function create_if_block_4(ctx) {
   	let li;
   	let a;
@@ -1161,7 +1172,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (105:16) {#if joinUsUrl}
+  // (116:16) {#if joinUsUrl}
   function create_if_block_3(ctx) {
   	let li;
   	let a;
@@ -1192,7 +1203,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (117:10) {#if titleText}
+  // (128:10) {#if titleText}
   function create_if_block_1$1(ctx) {
   	let a;
   	let span;
@@ -1223,7 +1234,7 @@ var qcSdg = (function (exports) {
   	};
   }
 
-  // (124:6) {#if displaySearchForm}
+  // (135:6) {#if displaySearchForm}
   function create_if_block$1(ctx) {
   	let div1;
   	let slot;
@@ -1257,7 +1268,7 @@ var qcSdg = (function (exports) {
   			attr(span1, "class", "sr-description");
   			attr(div0, "class", "input-group");
   			attr(form, "method", "get");
-  			attr(form, "action", /*searchFormAction*/ ctx[17]);
+  			attr(form, "action", /*searchFormAction*/ ctx[18]);
   			attr(slot, "name", "search-zone");
   			attr(div1, "class", "search-zone");
   		},
@@ -1267,6 +1278,7 @@ var qcSdg = (function (exports) {
   			append(slot, form);
   			append(form, div0);
   			append(div0, input);
+  			/*input_binding*/ ctx[26](input);
   			append(div0, t0);
   			append(div0, button);
   			append(button, span0);
@@ -1285,12 +1297,13 @@ var qcSdg = (function (exports) {
 
   			if (dirty & /*submitSearchText*/ 32768) set_data(t2, /*submitSearchText*/ ctx[15]);
 
-  			if (dirty & /*searchFormAction*/ 131072) {
-  				attr(form, "action", /*searchFormAction*/ ctx[17]);
+  			if (dirty & /*searchFormAction*/ 262144) {
+  				attr(form, "action", /*searchFormAction*/ ctx[18]);
   			}
   		},
   		d(detaching) {
   			if (detaching) detach(div1);
+  			/*input_binding*/ ctx[26](null);
   		}
   	};
   }
@@ -1324,7 +1337,7 @@ var qcSdg = (function (exports) {
   	let if_block2 = /*enableSearch*/ ctx[0] == 'true' && create_if_block_5(ctx);
   	let if_block3 = (/*joinUsUrl*/ ctx[9] || /*altLanguageUrl*/ ctx[7]) && create_if_block_2(ctx);
   	let if_block4 = /*titleText*/ ctx[5] && create_if_block_1$1(ctx);
-  	let if_block5 = /*displaySearchForm*/ ctx[19] && create_if_block$1(ctx);
+  	let if_block5 = /*displaySearchForm*/ ctx[21] && create_if_block$1(ctx);
 
   	return {
   		c() {
@@ -1372,7 +1385,7 @@ var qcSdg = (function (exports) {
   			attr(slot2, "name", "title");
   			attr(div5, "class", "title");
   			attr(div6, "class", "piv-bottom");
-  			attr(div7, "class", /*containerClass*/ ctx[18]);
+  			attr(div7, "class", /*containerClass*/ ctx[20]);
   			attr(div8, "class", "qc-piv-header qc-component");
   			attr(link, "rel", "stylesheet");
   			attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
@@ -1485,7 +1498,7 @@ var qcSdg = (function (exports) {
   				if_block4 = null;
   			}
 
-  			if (/*displaySearchForm*/ ctx[19]) {
+  			if (/*displaySearchForm*/ ctx[21]) {
   				if (if_block5) {
   					if_block5.p(ctx, dirty);
   				} else {
@@ -1498,8 +1511,8 @@ var qcSdg = (function (exports) {
   				if_block5 = null;
   			}
 
-  			if (dirty & /*containerClass*/ 262144) {
-  				attr(div7, "class", /*containerClass*/ ctx[18]);
+  			if (dirty & /*containerClass*/ 1048576) {
+  				attr(div7, "class", /*containerClass*/ ctx[20]);
   			}
   		},
   		i: noop,
@@ -1524,25 +1537,40 @@ var qcSdg = (function (exports) {
   	let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#QUEBEC_blanc`, logoAlt = lang === 'fr'
   	? 'Logo du gouvernement du Québec'
   	: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', searchPlaceholder = lang === 'fr' ? 'Rechercher…' : 'Search…', searchInputName = 'q', submitSearchText = lang === 'fr' ? 'Rechercher' : 'Search', displaySearchText = lang === 'fr'
-  	? 'Cliquer pour rechercher'
-  	: 'Click to search', searchFormAction = '#', enableSearch = 'false', showSearch = 'false' } = $$props;
+  	? 'Cliquer pour faire une recherche'
+  	: 'Click to search', hideSearchText = lang === 'fr'
+  	? 'Masquer la barre de recherche'
+  	: 'Hide search bar', searchFormAction = '#', enableSearch = 'false', showSearch = 'false' } = $$props;
 
-  	let containerClass = 'qc-container', displaySearchForm = false;
+  	function focusOnSearchInput() {
+  		if (displaySearchForm) {
+  			searchInput.focus();
+  		}
+  	}
+
+  	let containerClass = 'qc-container', displaySearchForm = false, searchInput;
 
   	onMount(() => {
-  		$$invalidate(18, containerClass += fullWidth === 'true' ? '-fluid' : '');
+  		$$invalidate(20, containerClass += fullWidth === 'true' ? '-fluid' : '');
 
   		if (showSearch === 'true') {
   			$$invalidate(0, enableSearch = 'true');
-  			$$invalidate(19, displaySearchForm = true);
+  			$$invalidate(21, displaySearchForm = true);
   		}
   	});
 
-  	const click_handler = () => $$invalidate(19, displaySearchForm = true);
+  	const click_handler = () => $$invalidate(21, displaySearchForm = !displaySearchForm);
+
+  	function input_binding($$value) {
+  		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+  			searchInput = $$value;
+  			$$invalidate(22, searchInput);
+  		});
+  	}
 
   	$$self.$$set = $$props => {
   		if ('logoUrl' in $$props) $$invalidate(1, logoUrl = $$props.logoUrl);
-  		if ('fullWidth' in $$props) $$invalidate(20, fullWidth = $$props.fullWidth);
+  		if ('fullWidth' in $$props) $$invalidate(23, fullWidth = $$props.fullWidth);
   		if ('logoSrc' in $$props) $$invalidate(2, logoSrc = $$props.logoSrc);
   		if ('logoAlt' in $$props) $$invalidate(3, logoAlt = $$props.logoAlt);
   		if ('titleUrl' in $$props) $$invalidate(4, titleUrl = $$props.titleUrl);
@@ -1558,9 +1586,10 @@ var qcSdg = (function (exports) {
   		if ('searchInputName' in $$props) $$invalidate(14, searchInputName = $$props.searchInputName);
   		if ('submitSearchText' in $$props) $$invalidate(15, submitSearchText = $$props.submitSearchText);
   		if ('displaySearchText' in $$props) $$invalidate(16, displaySearchText = $$props.displaySearchText);
-  		if ('searchFormAction' in $$props) $$invalidate(17, searchFormAction = $$props.searchFormAction);
+  		if ('hideSearchText' in $$props) $$invalidate(17, hideSearchText = $$props.hideSearchText);
+  		if ('searchFormAction' in $$props) $$invalidate(18, searchFormAction = $$props.searchFormAction);
   		if ('enableSearch' in $$props) $$invalidate(0, enableSearch = $$props.enableSearch);
-  		if ('showSearch' in $$props) $$invalidate(21, showSearch = $$props.showSearch);
+  		if ('showSearch' in $$props) $$invalidate(24, showSearch = $$props.showSearch);
   	};
 
   	return [
@@ -1581,12 +1610,16 @@ var qcSdg = (function (exports) {
   		searchInputName,
   		submitSearchText,
   		displaySearchText,
+  		hideSearchText,
   		searchFormAction,
+  		focusOnSearchInput,
   		containerClass,
   		displaySearchForm,
+  		searchInput,
   		fullWidth,
   		showSearch,
-  		click_handler
+  		click_handler,
+  		input_binding
   	];
   }
 
@@ -1606,7 +1639,7 @@ var qcSdg = (function (exports) {
   			safe_not_equal,
   			{
   				logoUrl: 1,
-  				fullWidth: 20,
+  				fullWidth: 23,
   				logoSrc: 2,
   				logoAlt: 3,
   				titleUrl: 4,
@@ -1622,9 +1655,11 @@ var qcSdg = (function (exports) {
   				searchInputName: 14,
   				submitSearchText: 15,
   				displaySearchText: 16,
-  				searchFormAction: 17,
+  				hideSearchText: 17,
+  				searchFormAction: 18,
   				enableSearch: 0,
-  				showSearch: 21
+  				showSearch: 24,
+  				focusOnSearchInput: 19
   			},
   			null
   		);
@@ -1660,9 +1695,11 @@ var qcSdg = (function (exports) {
   			"searchInputName",
   			"submitSearchText",
   			"displaySearchText",
+  			"hideSearchText",
   			"searchFormAction",
   			"enableSearch",
-  			"showSearch"
+  			"showSearch",
+  			"focusOnSearchInput"
   		];
   	}
 
@@ -1676,7 +1713,7 @@ var qcSdg = (function (exports) {
   	}
 
   	get fullWidth() {
-  		return this.$$.ctx[20];
+  		return this.$$.ctx[23];
   	}
 
   	set fullWidth(fullWidth) {
@@ -1819,8 +1856,17 @@ var qcSdg = (function (exports) {
   		flush();
   	}
 
-  	get searchFormAction() {
+  	get hideSearchText() {
   		return this.$$.ctx[17];
+  	}
+
+  	set hideSearchText(hideSearchText) {
+  		this.$$set({ hideSearchText });
+  		flush();
+  	}
+
+  	get searchFormAction() {
+  		return this.$$.ctx[18];
   	}
 
   	set searchFormAction(searchFormAction) {
@@ -1838,12 +1884,16 @@ var qcSdg = (function (exports) {
   	}
 
   	get showSearch() {
-  		return this.$$.ctx[21];
+  		return this.$$.ctx[24];
   	}
 
   	set showSearch(showSearch) {
   		this.$$set({ showSearch });
   		flush();
+  	}
+
+  	get focusOnSearchInput() {
+  		return this.$$.ctx[19];
   	}
   }
 

@@ -37,17 +37,26 @@ export let
       ? 'Rechercher'
       : 'Search'
   , displaySearchText =  lang === 'fr'
-          ? 'Cliquer pour rechercher'
+          ? 'Cliquer pour faire une recherche'
           : 'Click to search'
+  , hideSearchText =  lang === 'fr'
+          ? 'Masquer la barre de recherche'
+          : 'Hide search bar'
   , searchFormAction =  '#'
   , enableSearch = 'false'
-        , showSearch = 'false'
+  , showSearch = 'false'
+
+export function focusOnSearchInput() {
+  if (displaySearchForm) {
+    searchInput.focus()
+  }
+}
 
 let
     containerClass = 'qc-container'
   , displaySearchForm = false
+  , searchInput
 ;
-
 
 onMount(() => {
   containerClass += fullWidth === 'true' ? '-fluid' : '';
@@ -56,6 +65,7 @@ onMount(() => {
     displaySearchForm = true;
   }
 })
+
 
 </script>
 
@@ -91,8 +101,9 @@ onMount(() => {
           <a  class="qc-icon qc-search"
               href="/"
               role="button"
-              on:click|preventDefault = {() => displaySearchForm = true}>
-            <span>{displaySearchText}</span>
+              on:click|preventDefault = {() => displaySearchForm = !displaySearchForm}
+              on:click ={focusOnSearchInput}>
+            <span>{displaySearchForm ? hideSearchText : displaySearchText}</span>
           </a>
         {/if}
         <div class="links">
@@ -128,6 +139,7 @@ onMount(() => {
                 action="{searchFormAction}">
             <div class="input-group">
               <input type="text"
+                     bind:this = {searchInput}
                      placeholder="{searchPlaceholder}"
                      name="{searchInputName}">
               <button>
