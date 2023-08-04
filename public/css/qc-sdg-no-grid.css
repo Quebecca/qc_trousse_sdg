@@ -1278,6 +1278,7 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   justify-content: center;
   transition: opacity 0.4s linear;
   opacity: 0;
+  background-size: 1.6rem 2rem;
 }
 .qc-to-top[demo=false] {
   position: fixed;
@@ -1302,7 +1303,14 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   opacity: 1;
   visibility: visible;
 }
-.qc-to-top img {
-  min-width: 1.6rem;
-  height: 2rem;
+.qc-to-top span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

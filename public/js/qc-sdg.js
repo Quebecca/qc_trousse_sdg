@@ -2417,68 +2417,65 @@ var qcSdg = (function (exports) {
   const { window: window_1 } = globals;
 
   function create_fragment(ctx) {
-  	let div;
-  	let img;
-  	let img_src_value;
-  	let t;
+  	let a;
+  	let span;
+  	let t0;
+  	let t1;
   	let link;
   	let mounted;
   	let dispose;
 
   	return {
   		c() {
-  			div = element("div");
-  			img = element("img");
-  			t = space();
+  			a = element("a");
+  			span = element("span");
+  			t0 = text(/*alt*/ ctx[0]);
+  			t1 = space();
   			link = element("link");
   			this.c = noop;
-  			attr(img, "aria-hidden", "true");
-  			if (!src_url_equal(img.src, img_src_value = /*src*/ ctx[4])) attr(img, "src", img_src_value);
-  			attr(img, "alt", /*alt*/ ctx[0]);
-  			attr(div, "class", "qc-to-top");
-  			attr(div, "tabindex", "0");
-  			attr(div, "role", "link");
-  			attr(div, "demo", /*demo*/ ctx[1]);
-  			toggle_class(div, "visible", /*visible*/ ctx[2]);
+  			attr(a, "class", "qc-to-top qc-icon qc-arrow-up-white-2");
+  			attr(a, "tabindex", "0");
+  			attr(a, "role", "link");
+  			attr(a, "demo", /*demo*/ ctx[1]);
+  			toggle_class(a, "visible", /*visible*/ ctx[2]);
   			attr(link, "rel", "stylesheet");
   			attr(link, "href", "css/qc-sdg.css");
   		},
   		m(target, anchor) {
-  			insert(target, div, anchor);
-  			append(div, img);
-  			/*div_binding*/ ctx[6](div);
-  			insert(target, t, anchor);
+  			insert(target, a, anchor);
+  			append(a, span);
+  			append(span, t0);
+  			/*a_binding*/ ctx[5](a);
+  			insert(target, t1, anchor);
   			insert(target, link, anchor);
 
   			if (!mounted) {
   				dispose = [
-  					listen(window_1, "scroll", /*handleScrollUpButton*/ ctx[5]),
-  					listen(div, "click", prevent_default(scrollToTop)),
-  					listen(div, "keydown", handleEnterAndSpace)
+  					listen(window_1, "scroll", /*handleScrollUpButton*/ ctx[4]),
+  					listen(a, "click", prevent_default(scrollToTop)),
+  					listen(a, "keydown", handleEnterAndSpace)
   				];
 
   				mounted = true;
   			}
   		},
   		p(ctx, [dirty]) {
-  			if (dirty & /*alt*/ 1) {
-  				attr(img, "alt", /*alt*/ ctx[0]);
-  			}
+  			if (dirty & /*alt*/ 1) set_data(t0, /*alt*/ ctx[0]);
 
   			if (dirty & /*demo*/ 2) {
-  				attr(div, "demo", /*demo*/ ctx[1]);
+  				attr(a, "demo", /*demo*/ ctx[1]);
   			}
 
   			if (dirty & /*visible*/ 4) {
-  				toggle_class(div, "visible", /*visible*/ ctx[2]);
+  				toggle_class(a, "visible", /*visible*/ ctx[2]);
   			}
   		},
   		i: noop,
   		o: noop,
   		d(detaching) {
-  			if (detaching) detach(div);
-  			/*div_binding*/ ctx[6](null);
-  			if (detaching) detach(t);
+  			if (detaching) detach(a);
+  			/*a_binding*/ ctx[5](null);
+  			if (detaching) detach(t1);
   			if (detaching) detach(link);
   			mounted = false;
   			run_all(dispose);
@@ -2504,7 +2501,6 @@ var qcSdg = (function (exports) {
   	let { alt = lang === 'fr' ? "Retour en haut" : "Back to top", demo = 'false' } = $$props;
 
   	let minimumScrollHeight = 0,
-  		src = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#arrow-up-white-2`,
   		lastScrollY = 0,
   		visible = demo === 'true',
   		lastVisible = visible,
@@ -2527,7 +2523,7 @@ var qcSdg = (function (exports) {
   		lastScrollY = window.scrollY;
   	}
 
-  	function div_binding($$value) {
+  	function a_binding($$value) {
   		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
   			toTopElement = $$value;
   			$$invalidate(3, toTopElement);
@@ -2539,7 +2535,7 @@ var qcSdg = (function (exports) {
   		if ('demo' in $$props) $$invalidate(1, demo = $$props.demo);
   	};
 
-  	return [alt, demo, visible, toTopElement, src, handleScrollUpButton, div_binding];
+  	return [alt, demo, visible, toTopElement, handleScrollUpButton, a_binding];
   }
 
   class ToTop extends SvelteElement {

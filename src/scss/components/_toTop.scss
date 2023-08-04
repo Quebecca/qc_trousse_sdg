@@ -19,6 +19,7 @@
   justify-content: center;
   transition: opacity .4s linear;
   opacity: 0;
+  background-size: rem(16) rem(20);
 
   @extend .qc-shading-1;
 
@@ -39,9 +40,8 @@
     opacity: 1;
     visibility: visible;
   }
-  img {
-    min-width: rem(16);
-    height: rem(20);
+  span {
+    @include sr-only;
   }
 
 }

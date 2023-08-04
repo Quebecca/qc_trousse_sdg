@@ -2,7 +2,6 @@
 
 <script>
    import { Utils } from "./utils";
-   import {onMount} from "svelte";
 
    const
         lang = Utils.getPageLanguage();
@@ -66,9 +65,9 @@
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<div
+<a
    bind:this={toTopElement}
-   class="qc-to-top"
+   class="qc-to-top qc-icon qc-arrow-up-white-2"
    tabindex="0"
    role="link"
    class:visible
@@ -76,10 +75,8 @@
    on:keydown={handleEnterAndSpace}
    {demo}
 >
-   <img aria-hidden="true"
-        {src}
-        {alt} />
-</div>
+   <span>{alt}</span>
+</a>
 
 <link rel='stylesheet'
       href='css/qc-sdg.css'>
