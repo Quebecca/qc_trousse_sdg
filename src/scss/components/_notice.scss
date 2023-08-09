@@ -42,7 +42,7 @@
 
   /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
   .title {
-    margin: 0 0 token-value(spacer, xs) 0;
+    margin: 0;
     padding: 0;
     @include content-font(sm, bold);
     font-family: token-value(font, family, content); 
@@ -54,6 +54,12 @@
           token-value(spacer notice mx)
           token-value(spacer notice my)
           token-value(spacer, sm);
+
+    .text {
+      ::slotted(*) {
+        padding-left: token-value(spacer, sm) !important;
+      }
+    }
   }
 }
 

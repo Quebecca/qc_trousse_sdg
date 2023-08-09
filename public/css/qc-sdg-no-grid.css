@@ -914,7 +914,7 @@ Always use this function for rem values
   background-color: var(--qc-color-pink-pale);
 }
 .qc-notice .title {
-  margin: 0 0 var(--qc-spacer-xs) 0;
+  margin: 0;
   padding: 0;
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
@@ -923,6 +923,9 @@ Always use this function for rem values
 }
 .qc-notice .content {
   margin: var(--qc-spacer-notice-my) var(--qc-spacer-notice-mx) var(--qc-spacer-notice-my) var(--qc-spacer-sm);
+}
+.qc-notice .content .text ::slotted(*) {
+  padding-left: var(--qc-spacer-sm) !important;
 }
 
 /* Links in a error notice (eg. error summary) */
