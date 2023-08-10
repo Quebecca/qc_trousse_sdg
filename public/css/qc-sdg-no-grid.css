@@ -927,6 +927,9 @@ Always use this function for rem values
 .qc-notice .content .text ::slotted(*) {
   padding-left: var(--qc-spacer-sm) !important;
 }
+.qc-notice .content .text ::slotted(ul) {
+  margin-top: var(--qc-spacer-md) !important;
+}
 
 /* Links in a error notice (eg. error summary) */
 qc-notice[type=error] ul li a {

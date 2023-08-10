@@ -59,6 +59,9 @@
       ::slotted(*) {
         padding-left: token-value(spacer, sm) !important;
       }
+      ::slotted(ul) {
+        margin-top: token-value(spacer, md) !important;
+      }
     }
   }
 }
