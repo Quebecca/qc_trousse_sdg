@@ -1,4 +1,4 @@
-<svelte:options tag="qc-alert"/>
+<svelte:options customElement="qc-alert"/>
 <script>
     import {Utils} from "./utils";
     import { onMount } from "svelte";

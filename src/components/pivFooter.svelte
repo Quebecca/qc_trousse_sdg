@@ -1,4 +1,4 @@
-<svelte:options tag="qc-piv-footer" />
+<svelte:options customElement="qc-piv-footer" />
 
 <script>
 

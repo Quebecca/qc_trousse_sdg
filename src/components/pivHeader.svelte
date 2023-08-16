@@ -1,4 +1,4 @@
-<svelte:options tag="qc-piv-header" />
+<svelte:options customElement="qc-piv-header" />
 
 <script>
 import { onMount } from "svelte";

@@ -1,4 +1,4 @@
-<svelte:options tag="qc-to-top" />
+<svelte:options customElement="qc-to-top" />
 
 <script>
    import { Utils } from "./utils";

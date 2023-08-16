@@ -1,4 +1,4 @@
-<svelte:options tag="qc-code" />
+<svelte:options customElement="qc-code" />
 
 <script>
 

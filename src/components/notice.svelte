@@ -1,7 +1,7 @@
 <!-- 
 Required tag for svelte to know we're building a custom element.
 -->
-<svelte:options tag="qc-notice" />
+<svelte:options customElement="qc-notice" />
 
 <script>
   import { Utils } from "./utils"
