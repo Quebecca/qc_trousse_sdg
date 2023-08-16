@@ -135,7 +135,7 @@ Always use this function for rem values
   --qc-spacer-h6-mt: var(--qc-spacer-md);
   --qc-spacer-h6-mb: 0;
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
-  --qc-spacer-list-pl: 3.2rem;
+  --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
   --qc-spacer-notice-my: var(--qc-spacer-md);

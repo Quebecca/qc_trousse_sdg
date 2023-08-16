@@ -164,7 +164,7 @@ $xl-tokens: (
             mb: token-value(spacer md),
         ),
         list : (
-            pl: rem(4 * $base-spacer),
+            pl: token-value(spacer sm),
             mb: token-value(spacer content-block mb),
         ),
         list-item : (
