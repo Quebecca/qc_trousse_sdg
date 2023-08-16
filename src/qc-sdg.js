@@ -1,4 +1,3 @@
-export * from './components/componentWrapper'
 export * from './components/notice.svelte'
 export * from './components/pivHeader.svelte'
 export * from './components/pivFooter.svelte'

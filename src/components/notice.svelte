@@ -1,6 +1,3 @@
-<!-- 
-Required tag for svelte to know we're building a custom element.
--->
 <svelte:options customElement="qc-notice" />
 
 <script>

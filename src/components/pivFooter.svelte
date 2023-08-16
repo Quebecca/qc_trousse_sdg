@@ -1,4 +1,14 @@
-<svelte:options customElement="qc-piv-footer" />
+<svelte:options customElement="{{
+    tag: 'qc-piv-footer'
+    , props: {
+        logoUrl : {attribute: 'logo-url'}
+        , logoAlt : {attribute: 'logo-alt'}
+        , logoWidth : {attribute: 'logo-width'}
+        , logoHeight : {attribute: 'logo-height'}
+        , copyrightText : {attribute: 'copyrightText'}
+        , copyrightUrl : {attribute: 'copyright-url'}
+    }}
+}}" />
 
 <script>
 

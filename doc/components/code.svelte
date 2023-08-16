@@ -1,11 +1,15 @@
-<svelte:options customElement="qc-code" />
+<svelte:options customElement="{{
+    tag: 'qc-code'
+    , props: {
+        targetId : {attribute: 'target-id'}
+    }
+}}" />
 
 <script>
 
   import {HighlightJS} from "highlight.js"
   import 'highlight.js/styles/default.css';
   import pretty from "pretty";
-  import { get_current_component } from "svelte/internal"
   import { onMount } from "svelte";
   import { Utils } from "../../src/components/utils"
 
