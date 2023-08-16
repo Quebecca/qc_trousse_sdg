@@ -41,10 +41,6 @@
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-up-white);
   }
 
-  &.qc-arrow-up-white-2 {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-up-white-2);
-  }
-
   
   &.qc-clipboard {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#clipboard);

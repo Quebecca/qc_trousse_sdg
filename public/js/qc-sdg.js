@@ -2433,7 +2433,7 @@ var qcSdg = (function (exports) {
   			t1 = space();
   			link = element("link");
   			this.c = noop;
-  			attr(a, "class", "qc-to-top qc-icon qc-arrow-up-white-2");
+  			attr(a, "class", "qc-to-top qc-icon qc-arrow-up-white");
   			attr(a, "tabindex", "0");
   			attr(a, "role", "link");
   			attr(a, "demo", /*demo*/ ctx[1]);

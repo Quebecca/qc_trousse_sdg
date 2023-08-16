@@ -13,7 +13,7 @@
       ;
    let
         minimumScrollHeight = 0
-      , src = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#arrow-up-white-2`
+      , src = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#arrow-up-white`
       , lastScrollY = 0
       , visible = demo === 'true'
       , lastVisible = visible
@@ -67,7 +67,7 @@
 
 <a
    bind:this={toTopElement}
-   class="qc-to-top qc-icon qc-arrow-up-white-2"
+   class="qc-to-top qc-icon qc-arrow-up-white"
    tabindex="0"
    role="link"
    class:visible
