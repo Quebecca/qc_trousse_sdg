@@ -65,11 +65,10 @@
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<a
+<a href=" "
    bind:this={toTopElement}
    class="qc-to-top qc-icon qc-arrow-up-white"
    tabindex="0"
-   role="link"
    class:visible
    on:click|preventDefault={scrollToTop}
    on:keydown={handleEnterAndSpace}
