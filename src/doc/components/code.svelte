@@ -11,7 +11,7 @@
   import 'highlight.js/styles/default.css';
   import pretty from "pretty";
   import { onMount } from "svelte";
-  import { Utils } from "../../src/components/utils"
+  import { Utils } from "../../sdg/components/utils"
 
   export let
       targetId = ''

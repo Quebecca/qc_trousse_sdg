@@ -60,11 +60,11 @@ const scssOptions = {
     includePaths: [
         path.join(__dirname, '../../node_modules/'),
         'node_modules/',
-        'src/scss',
+        'src/sdg/scss',
         __dirname + '/vendor',
     ],
     outputStyle: dev_process ? 'expanded' : 'compressed',
-    watch: ['src/scss', 'src/doc/scss']
+    watch: ['src/sdg/scss', 'src/doc/scss']
 };
 
 let
@@ -83,7 +83,7 @@ let
     , rollupOptions = [
         {
             // This `main.js` file we wrote
-            input: 'src/qc-sdg.js',
+            input: 'src/sdg/qc-sdg.js',
             output: {
                 file: dev_process
                         ? 'public/js/qc-sdg.js'
@@ -116,12 +116,12 @@ let
                 !dev_process && copy({
                     targets: [
                         {
-                            src: `src/sprites/dist/view/svg/sprite.view.svg`,
+                            src: `src/sdg/sprites/dist/view/svg/sprite.view.svg`,
                             dest: [`dist/img`,`public/img`],
                             rename: () => 'qc-sprite.svg'
                         },
                         {
-                            src: 'src/sprites/svg/external-link.svg',
+                            src: 'src/sdg/sprites/svg/external-link.svg',
                             dest: [`dist/img`,`public/img`],
                         }
                     ],
@@ -131,7 +131,7 @@ let
         },
         {
             // qc-sdg without grid system
-            input: 'src/qc-sdg-no-grid.js',
+            input: 'src/sdg/qc-sdg-no-grid.js',
             output: {
                 file: (dev_process ? 'public': 'dist') + '/js/qc-sdg-no-grid.js',
                 format: 'iife',
@@ -157,7 +157,7 @@ let
         },
         {
             // token only css file
-            input: 'src/qc-sdg-design-tokens.js',
+            input: 'src/sdg/qc-sdg-design-tokens.js',
             output: {
                 file: 'dist/qc-sdg-design-tokens.js',
                 format: 'iife',
@@ -182,7 +182,7 @@ let
 
 if (dev_process) {
     rollupOptions.unshift({
-        input: 'doc/qc-catalog-sdg.js',
+        input: 'src/doc/qc-catalog-sdg.js',
         output: {
             file: 'public/js/qc-catalog-sdg.js',
             format: 'iife',
