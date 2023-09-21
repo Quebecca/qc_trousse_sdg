@@ -79,11 +79,30 @@ Ici un exemple de projet d'extension de la trousse offrant 3 scénarios d'extens
 
 ### Compilation pour la production
 
-Lancer la commande `npm run build` pour générer les fichier css et js minifiés dans le répertoire `/dist`
+Lancer la commande `npm run build` pour générer les fichiers css et js minifiés dans le répertoire `/dist`
+
+### Génération des sprites
+
+Pour ajouter de nouvelles images :
+- aller dans le fichier `/scr/sprites` ;
+- installer les dépendances avec la commande `npm install` ;
+- ajouter votre fichier .svg dans le dossier `/src/sprites/svg` ;
+- générer le sprite avec la commande `gulp generateSprite`.
+
+Le sprite sera mis à jour dans les dossiers `/public/img` et `/dist/img`.
+
+Ensuite pour afficher votre svg, il faut le référencer de la façon suivante :
+
+```css
+.custom-classe {
+    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#<nom-du-fichier-svg-ajouté>);
+}
+```
+Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`
 
 ## Historique
 
-- 1.1.2 - ajout des composants alerte, information générale et bandeau PIV. 
+- 1.2.0 - ajout des composants alerte, information générale, bandeau PIV et retour en haut de page. Modification du compteur de version majeure. 
 - 1.1.1 - suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 - Ajout d'une css sans le système de grille
 - 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>

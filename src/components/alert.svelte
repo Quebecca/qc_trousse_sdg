@@ -2,16 +2,17 @@
 
 <script>
     import {Utils} from "./utils";
-    import { onMount } from "svelte";
 
     export let
           type = "general"
         , maskable = ""
         , content = ""
+        , hide = "false"
         ;
 
     let
-          hideAlert = false
+        rootElement
+        , hiddenFlag
         , typeClass = (type !== "")
                         ? type
                         : 'general'
@@ -29,16 +30,22 @@
                         : warningLabel
         ;
 
-    onMount(() => {
-
-
-    })
+    $: hiddenFlag = hide === 'true'
+    function hideAlert() {
+        hide='true'
+        rootElement.dispatchEvent(
+            new CustomEvent('qc.alert.hide',{
+                bubbles: true,
+                composed: true
+            }))
+    }
 
 </script>
-{#if !hideAlert}
-    <div class="qc-general-alert {typeClass}"
-         role="alert"
-         aria-label={label}>
+{#if !hiddenFlag}
+    <div bind:this={rootElement}
+        class="qc-general-alert {typeClass}"
+        role="alert"
+        aria-label={label}>
         <div class="qc-container qc-general-alert-elements">
             <div class="qc-icon qc-{type}-alert-icon"
                  aria-hidden="true"
@@ -50,7 +57,7 @@
             {#if maskable === "true"}
                 <div class="qc-alert-close">
                     <button type="button" class="qc-close" aria-label={closeLabel}
-                            on:click="{() => hideAlert = true}">
+                            on:click={hideAlert}>
                         <span aria-hidden="true"
                               class="qc-icon qc-xclose-blue qc-close-alert-icon"
                         ></span>
