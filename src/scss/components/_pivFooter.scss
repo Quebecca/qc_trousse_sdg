@@ -5,7 +5,7 @@
 qc-piv-footer {
   display: block;
   margin-top: rem(40);
-  margin-bottom: token-value(spacer content-block);
+  padding-bottom: rem(4 * $base-spacer);
   @include content-font(sm);
 
   a {
@@ -39,9 +39,5 @@ qc-piv-footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .copyright, [slot=copyright] {
-    font-family: token-value(font family header);
   }
 }
