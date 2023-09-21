@@ -65,6 +65,7 @@ $xl-tokens: (
         xl: token-value(line-height, 200),
         content: token-value(line-height, md),
     ),
+    max-content-width: rem(825),
     color: (
         white : white,
         blue : (
@@ -166,9 +167,11 @@ $xl-tokens: (
         list : (
             pl: token-value(spacer sm),
             mb: token-value(spacer content-block mb),
+            embedded-mb : token-value(spacer sm),
         ),
         list-item : (
             mb: token-value(spacer sm),
+
         ),
         notice: (
             my: token-value(spacer, md),
