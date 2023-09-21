@@ -5,13 +5,16 @@
 
 // typography
 
-// toujours utiliser ces mixins pour la déclarations des tailles de police:  /*TODO Un commentaire en anglais!!!!*/
+// toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
 // et ajoute automatiquement le bon interlignage
-@mixin content-font($scale: 'md', $weight: 'regular') {
+@mixin content-font($scale: 'md', $weight: 'regular', $include-family: 0) {
   font-size: token-value(font size $scale);
   line-height: token-value(line-height $scale);
   font-weight: token-value(font weight $weight);
+  @if $include-family == 1 {
+    font-family: token-value(font family content);
+  }
 }
 
 @mixin header-font($header) {
