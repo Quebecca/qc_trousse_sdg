@@ -755,7 +755,6 @@
             <h4>Exemples</h4>
             <h5>Exemple de base</h5>
             <qc-piv-header id="pivEnteteExempleLiens"
-                           title-text="Nom du site"
                            alt-logo="Accédez à Québec.ca"
                            join-us-url="#join-us"
                            alt-language-url="#fakeEnglish"
@@ -765,7 +764,8 @@
 
             <h5>Exemple avec activation de la recherche</h5>
             <qc-piv-header id="pivEnteteExempleRecherche"
-                           title-text="Nom du site"
+                           title-text="Gouvernement du Québec"
+                           title-url="https://www.quebec.ca/"
                            alt-logo="Accédez à Québec.ca"
                            enable-search="true"
                            search-form-action="https://www.quebec.ca/resultats-de-recherche"
@@ -871,7 +871,7 @@
                         <td>alt-language-url</td>
                         <td>Adresse</td>
                         <td>vide</td>
-                        <td>L'url du de l'autre langue. Si vide, le lien n'apparaît pas.</td>
+                        <td>L'url de l'autre langue. Si vide, le lien n'apparaît pas.</td>
                     </tr>
                 <tr>
                     <td>join-us-text</td>
@@ -913,19 +913,25 @@
                         <td>enable-search</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Active la recherche dans le bandeau PIV : le bouton rechercher est alors affiché et au clic il affiche le formulaire de recherche.</td>
+                        <td>
+                            Active la recherche dans le bandeau PIV :
+                            <ul>
+                                <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors affiché ;</li>
+                                <li>au clic, il affiche le formulaire de recherche.</li>
+                            </ul>
+                        </td>
                     </tr>
                     <tr>
                         <td>show-search</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Affiche le formulaire de recherche (normalement caché tant que le bouton recherche n'a pas été pressé).</td>
+                        <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a pas été pressé).</td>
                     </tr>
                     <tr>
                         <td>search-form-action</td>
                         <td>Adresse</td>
                         <td>#</td>
-                        <td>Valeur de l'attribut action du champ du formulaire de recherche.</td>
+                        <td>Valeur de l'attribut « action » du champ du formulaire de recherche.</td>
                     </tr>
                     <tr>
                         <td>search-input-name</td>
@@ -943,13 +949,13 @@
                         <td>display-search-text</td>
                         <td>Texte</td>
                         <td>Cliquer pour faire une recherche / Click to search</td>
-                        <td>Texte du bouton de recherche pour les lecteurs d'écran pour masquer la barre de recherche.</td>
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour afficher la barre de recherche.</td>
                     </tr>
                     <tr>
                         <td>hide-search-text</td>
                         <td>Texte</td>
                         <td>Masquer la barre de recherche / Hide search bar</td>
-                        <td>Texte du bouton de recherche pour les lecteurs d'écran pour masquer la barre de recherche.</td>
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour masquer la barre de recherche.</td>
                     </tr>
                     <tr>
                         <td>submit-search-text</td>
