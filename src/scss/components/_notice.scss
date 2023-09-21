@@ -3,6 +3,7 @@
 @use "../modules/grid" as *;
 
 .qc-notice {
+  max-inline-size: token-value(max-content-width);
   display: flex;
   border: 1px solid token-value(color,grey,light);
   background-color: token-value(color,white);
@@ -56,10 +57,8 @@
           token-value(spacer, sm);
 
     .text {
-      ::slotted(*) {
-        padding-left: token-value(spacer, sm) !important;
-      }
       ::slotted(ul) {
+        padding-left: token-value(spacer, sm) !important;
         margin-top: token-value(spacer, md) !important;
       }
     }
