@@ -6,7 +6,7 @@ La trousse de développement du système de design gouvernemental est un projet 
 Elle contient :
 - les feuilles de styles minifiées pour être incluses en production, dans le dossier `dist` ;
 - ces mêmes feuilles de style non minifiées, pour lecture simplifiées (lors d'un usage en développement par exemple) — dans le dossier `public/css` ;
-- Un catalogue des composants du SDG  au format html au chemin `/public/index.html`; 
+- Une documentation technique des composants du SDG  au format html au chemin `/public/index.html`; 
 - les fichers sources scss et js dans `src`
 
 ## Utilisation

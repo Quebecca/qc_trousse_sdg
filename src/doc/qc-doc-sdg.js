@@ -1,5 +1,5 @@
 export * from './components/code.svelte';
-import './scss/qc-catalog-sdg.scss';
+import './scss/qc-doc-sdg.scss';
 
 // Show maskable "general alert" component
 const displayAlertLink = document.getElementById("show-qc-alert");

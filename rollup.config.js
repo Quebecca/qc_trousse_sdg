@@ -182,11 +182,10 @@ let
 
 if (dev_process) {
     rollupOptions.unshift({
-        input: 'src/doc/qc-catalog-sdg.js',
+        input: 'src/doc/qc-doc-sdg.js',
         output: {
-            file: 'public/js/qc-catalog-sdg.js',
+            file: 'public/js/qc-doc-sdg.js',
             format: 'iife',
-            name: 'qcCatalog'
         },
         plugins: [
             replace(replacements),
@@ -198,7 +197,7 @@ if (dev_process) {
             commonjs(),
             scss(
                 Object.assign(
-                    {output: 'public/css/qc-catalog-sdg.css'},
+                    {output: 'public/css/qc-doc-sdg.css'},
                     scssOptions
                 )
             ),
