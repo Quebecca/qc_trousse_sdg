@@ -6,8 +6,7 @@
 }
 
 body {
-  @include content-font(md);
-  font-family: token-value(font, family, content);
+  @include content-font($scale: md , $include-family: 1);
   background-color: token-value(color, white);
   color: token-value(color, text, primary);
 }
@@ -16,12 +15,21 @@ body {
 @for $i from 1 through 6 {
   h#{$i}, .qc-h#{$i} {
     @include header-font(h#{$i});
+    max-inline-size: token-value(max-content-width);
     margin-top: token-value(spacer h#{$i} mt);
     margin-bottom: token-value(spacer h#{$i} mb);
   }
 }
 
 h1, .qc-h1 {
+
+  .qc-subhead {
+    @include content-font(sm, $include-family: 1);
+    color : #647287;
+    display: block;
+    margin: 0;
+  }
+
   &:after {
     content: "";
     display:block;
@@ -32,19 +40,10 @@ h1, .qc-h1 {
   }
 }
 
-.qc-subhead {
-  @include content-font(sm);
-  + {
-    h1,h2,h3,h4,h5,h6,
-    .qc-h1,.qc-h2,.qc-h3,.qc-h4,.qc-h5,.qc-h6 {
-      margin-top: 0;
-    }
-  }
-}
-
 p {
   margin-top: 0;
   margin-bottom: token-value(spacer,md);
+  max-inline-size: token-value(max-content-width);
 }
 
 img {
