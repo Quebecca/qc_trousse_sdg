@@ -9,7 +9,7 @@
           href="css/qc-sdg.css">
     <link rel="stylesheet"
           href="css/qc-catalog-sdg.css">
-    <title>Catalogue des composants du système de design gouvernemental</title>
+    <title>Documentation technique du Système de design gouvernemental</title>
     <script defer
             src='js/qc-sdg.js'
             sdg-css-filename="qc-sdg.css">
@@ -22,44 +22,51 @@
 <body>
     <header>
         <qc-piv-header id="pivEntete"
-                       title-text="Trousse SDG"
-                       alt-logo="Signature du gouvernement du Québec. Accédez à Système de design SDG.">
+                       title-text="Documentation technique du Système de design gouvernemental"
+                       alt-logo="Signature du gouvernement du Québec. Accédez au Système de design gouvernemental.">
         </qc-piv-header>
 
         <div class="qc-container">
-            <span class="qc-subhead"
-                  id="version"></span>
-            <h1>Catalogue du système de design gouvernemental</h1>
+            <h1>
+                <span class="qc-subhead"id="version"></span>
+                Trousse du Système de design gouvernemental
+            </h1>
             <div class="main-menu">
+                <p class="qc-h4">Bases</p>
                 <ul>
                     <li><a href='#couleurs'>Couleurs</a></li>
+                    <li><a href='#grille'>Grille horizontale</a></li>
+                    <li><a href='#images'>Images</a></li>
+                    <li><a href='#liens'>Liens</a></li>
+                    <li><a href='#liste'>Liste</a></li>
                     <li><a href='#titre'>Niveaux de titres</a></li>
+                    <li><a href='#ombrages'>Ombrages</a></li>
                     <li><a href='#paragraphes'>Paragraphes</a></li>
                     <li><a href='#polices'>Polices de caractères</a></li>
-                    <li><a href='#liste'>Liste</a></li>
-                    <li><a href='#grille'>Grille horizontale</a></li>
-                    <li><a href='#liens'>Liens</a></li>
-                    <li><a href='#ombrages'>Ombrages</a></li>
-                    <li><a href='#images'>Images</a></li>
-                    <li><a href='#table'>Tables</a></li>
-                    <li><a href='#notice'>Composant "Avis"</a></li>
-                    <li><a href='#alert'>Composant "Alerte générale"</a></li>
-                    <li><a href='#piv'>Composants "PIV"</a>
+                </ul>
+                <p class="qc-h4">Composants</p>
+                <ul>
+                    <li><a href='#alert'>Alerte générale</a></li>
+                    <li><a href='#notice'>Avis</a></li>
+                    <li><a href='#piv'>Composants du PIV</a>
                         <ul>
-                            <li><a href='#piv-footer'>Pied-de-page PIV</a>
-                            <li><a href='#piv-header'>Bandeau PIV</a>
+                            <li><a href='#piv-header'>Bandeau d'en-tête du PIV</a>
+                            <li><a href='#piv-footer'>Pied de page du PIV</a>
                         </ul>
                     </li>
                     <li><a href="#toTop">Haut de page</a></li>
+
                 </ul>
             </div>
         </div>
     </header>
+
     <main id="main">
         <div class="qc-container">
-            <!-- colors -->
+            <hr/>
+            <!-- couleurs -->
             <h2 id="couleurs">Couleurs</h2>
-            <h3>Couleur principale</h3>
+            <h3>Couleurs principales</h3>
             <div class="color-details">
                 <div class="color-sample qc-bg-color-blue-pale"></div>
                 <div class="color-description">
@@ -108,7 +115,7 @@
                 <div class="color-sample qc-bg-color-grey-pale"></div>
                 <div class="color-description">
                     <strong>Gris pâle</strong><br/>
-                    <code  >--qc-color-grey-pale</code>
+                    <code>--qc-color-grey-pale</code>
                 </div>
             </div>
             <div class="color-details">
@@ -192,6 +199,7 @@
                     <code  >--qc-color-green-dark</code>
                 </div>
             </div>
+
             <h4>Jaunes</h4>
             <div class="color-details">
                 <div class="color-sample qc-bg-color-yellow-pale"></div>
@@ -211,7 +219,7 @@
                 <div class="color-sample qc-bg-color-yellow-dark"></div>
                 <div class="color-description">
                     <strong>Jaune foncé</strong><br/>
-                    <code  >--qc-color-yellow-dark</code>
+                    <code>--qc-color-yellow-dark</code>
                 </div>
             </div>
             <h4>Violet</h4>
@@ -219,124 +227,14 @@
                 <div class="color-sample qc-bg-color-purple"></div>
                 <div class="color-description">
                     <strong>Violet</strong><br/>
-                    <code  >--qc-color-purple, --qc-color-link-visited</code>
+                    <code >--qc-color-purple, --qc-color-link-visited</code>
                 </div>
             </div>
 
-            <!-- titles -->
-            <h2 id="titre">Titres</h2>
-            <div class="qc-gallery title-samples">
-                <figure>
-                    <p class="qc-h1">Titre de niveau 1</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h1</strong><br/>
-                        <code>--qc-font-size-h1, --qc-line-height-h1</code>
-                    </p>
-                    <p class="qc-h2">Titre de niveau 2</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h2</strong><br/>
-                        <code  >--qc-font-size-h2, --qc-line-height-h2</code>
-                    </p>
-                    <p class="qc-h3">Titre de niveau 3</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h3</strong><br/>
-                        <code  >--qc-font-size-h3, --qc-line-height-h3</code>
-                    </p>
+            <hr />
 
-                    <p class="qc-h4">Titre de niveau 4</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h4</strong><br/>
-                        <code  >--qc-font-size-h4, --qc-line-height-h4</code>
-                    </p>
-                    <p class="qc-h5">Titre de niveau 5</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h5</strong><br/>
-                        <code  >--qc-font-size-h5, --qc-line-height-h5</code>
-                    </p>
-                    <p class="qc-h6">Titre de niveau 6</p>
-                    <p>
-                        <strong>Taille de police/interlignage pour les h6</strong><br/>
-                        <code  >--qc-font-size-h6, --qc-line-height-h6</code>
-                    </p>
-
-                </figure>
-
-                <figure>
-                    <span class="qc-subhead ">Surtitre</span>
-                    <p class="qc-h1">Titre de niveau 1 avec surtitre</p>
-                </figure>
-            </div>
-
-            <h2 id="paragraphes">Paragraphes</h2>
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi
-                tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex
-                euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a
-                risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla
-                varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
-            <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque
-                ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis
-                dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui
-                interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices,
-                neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id
-                et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non
-                ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
-            <p>
-                <strong>Taille de police/interlignage</strong><br/>
-                <code  >--qc-content-font-size-100, --qc-content-line-height-100</code>
-            </p>
-            <p>
-                <strong>Marge basse</strong><br/>
-                <code  >--qc-spacer-md</code>
-            </p>
-
-            <h2 id="polices">Polices de caractères</h2>
-            <div class="font-titles">
-                <h3><strong>Roboto</strong></h3>
-                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
-                <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-header-font-family</code>
-                </p>
-            </div>
-            <div>
-                <h3><strong>Open Sans</strong></h3>
-                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
-                <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-content-font-family</code>
-                </p>
-            </div>
-            <div >
-                <h3><strong>Roboto Mono</strong></h3>
-                <code >
-                    <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</p>
-                    <p>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                </code>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-code-font-family</code>
-                </p>
-            </div>
-
-
-            <!-- lists -->
-            <h2 id="liste">Listes</h2>
-            <ul>
-                <li>Élément de liste 01</li>
-                <li>Élément de liste 02</li>
-                <li>Élément de liste 03
-                    <ul>
-                        <li>Élément de liste 04</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- grid -->
-
-            <h2 id="grille">Grille horizontale avec gouttière adaptative</h2>
+            <!-- grille horizontale -->
+            <h2 id="grille">Grille horizontale</h2>
             <div id="grid-samples">
                 <div id="background">
                     <div class="qc-row">
@@ -448,19 +346,36 @@
                 <code >--qc-breakpoint-gutter</code>
             </p>
 
+<hr />
+
+            <!-- images -->
+            <h2 id="images">Images</h2>
+            <figure>
+                <img src="img/figure-sample.png"
+                     alt="Image avec légende">
+                <figcaption>
+                    <p>La légende de l'image <br>
+                        <em>La source de l'image</em>
+                    </p>
+                </figcaption>
+            </figure>
+
+<hr />
+
+            <!-- liens -->
             <h2 id="liens">Liens</h2>
-        <h3>Liens internes</h3>
+            <h3>Lien interne</h3>
             <p>
 
-                <a href="#" class="not-visited">Règlement de pêche dans la zone 21.</a>
+                <a href="javascript:;" class="not-visited">Règlement de pêche dans la zone 21.</a>
             </p>
             <p>
                 <strong>Couleur</strong><br/>
                 <code >--qc-link-text</code>
             </p>
-            <h3>Survol, focus</h3>
+            <h3>Lien au survol ou au focus</h3>
             <p>
-                <a href="#" class="pseudo-hover">Règlement de pêche dans la zone 21.</a>
+                <a href="javascript:;" class="pseudo-hover">Règlement de pêche dans la zone 21.</a>
             </p>
             <p>
                 <strong>Couleur</strong><br/>
@@ -468,7 +383,7 @@
             </p>
             <h3>Lien actif</h3>
             <p>
-                <a href="#" class="pseudo-active">Règlement de pêche dans la zone 21.</a>
+                <a href="javascript:;" class="pseudo-active">Règlement de pêche dans la zone 21.</a>
             </p>
             <p>
                 <strong>Couleur</strong><br/>
@@ -476,7 +391,7 @@
             </p>
             <h3>Lien externe</h3>
             <p>
-                <a href="#" class="not-visited">Un long lien - réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien
+                <a href="javascript:;" class="not-visited">Un long lien - réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien
                     <span class="qc-external-link-tail">externe.
                         <!-- no src needed -->
                         <img alt="Cet hyperlien s’ouvrira dans une autre fenêtre">
@@ -484,16 +399,70 @@
             </p>
             <h3>Lien visité</h3>
             <p>
-                <a href="#" class="visited">Règlement de pêche dans la zone 21.</a>
+                <a href="javascript:;" class="visited">Règlement de pêche dans la zone 21.</a>
             </p>
             <p>
                 <strong>Couleur</strong><br/>
                 <code >--qc-link-visited</code>
             </p>
-            <h2 id="ombrages">Ombrages</h2>
 
+            <hr />
+
+            <!-- liste -->
+            <h2 id="liste">Liste</h2>
+            <ul>
+                <li>Élément de liste 01</li>
+                <li>Élément de liste 02</li>
+                <li>Élément de liste 03
+                    <ul>
+                        <li>Élément de liste 03.1</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <hr />
+
+            <!-- niveaux de titres -->
+            <h2 id="titre">Niveaux de titres</h2>
+                    <p class="qc-h1">Titre de niveau 1</p>
+
+                    <p class="qc-h1"><span class="qc-subhead ">Surtitre</span>Titre de niveau 1 avec surtitre</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h1</strong><br/>
+                        <code>--qc-font-size-h1, --qc-line-height-h1</code>
+                    </p>
+                    <p class="qc-h2">Titre de niveau 2</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h2</strong><br/>
+                        <code  >--qc-font-size-h2, --qc-line-height-h2</code>
+                    </p>
+                    <p class="qc-h3">Titre de niveau 3</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h3</strong><br/>
+                        <code  >--qc-font-size-h3, --qc-line-height-h3</code>
+                    </p>
+
+                    <p class="qc-h4">Titre de niveau 4</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h4</strong><br/>
+                        <code  >--qc-font-size-h4, --qc-line-height-h4</code>
+                    </p>
+                    <p class="qc-h5">Titre de niveau 5</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h5</strong><br/>
+                        <code  >--qc-font-size-h5, --qc-line-height-h5</code>
+                    </p>
+                    <p class="qc-h6">Titre de niveau 6</p>
+                    <p>
+                        <strong>Taille de police/interlignage pour les h6</strong><br/>
+                        <code  >--qc-font-size-h6, --qc-line-height-h6</code>
+                    </p>
+
+<hr />
+
+            <!-- ombrages -->
+            <h2 id="ombrages">Ombrages</h2>
             <h3>Élévation 0</h3>
-            <p>Usage : encadrés</p>
             <p class="qc-shading-0 square-box">Élévation 0</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -501,14 +470,12 @@
             </p>
 
             <h3>Élévation 1</h3>
-            <p>Usage : tuiles cliquables, boutons principaux</p>
             <p class="qc-shading-1 square-box">Élévation 1</p>
             <p>
                 <strong>Ombre</strong><br/>
                 <code >--qc-box-shadow-1</code>
             </p>
             <h3>Élévation 2</h3>
-            <p>Usage : infobulle</p>
             <p class="qc-shading-2 square-box">Élévation 2</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -516,7 +483,6 @@
             </p>
 
             <h3>Élévation 3</h3>
-            <p>Usage : champ date avec calendrier, sous-menu, notification contextuelle</p>
             <p class="qc-shading-3 square-box">Élévation 3</p>
             <p>
                 <strong>Ombre</strong><br/>
@@ -524,31 +490,148 @@
             </p>
 
             <h3>Élévation 4</h3>
-            <p>Usage : Boîte de dialogue modale</p>
             <p class="qc-shading-4 square-box">Élévation 4</p>
             <p>
                 <strong>Ombre</strong><br/>
                 <code >--qc-box-shadow-4</code>
             </p>
 
-            <!-- Images -->
-            <h2 id="images">Images</h2>
-            <div class="qc-gallery">
-                <figure>
-                    <img src="img/figure-sample.png"
-                        alt="Image avec légende">
-                    <figcaption>
-                        <p>La légende de l'image <br>
-                            <em>La source de l'image</em>
-                        </p>
-                    </figcaption>
-                </figure>
+<hr />
+
+            <!-- paragraphes -->
+            <h2 id="paragraphes">Paragraphes</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
+            <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices, neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
+            <p>
+                <strong>Taille de police/interlignage</strong><br/>
+                <code  >--qc-content-font-size-100, --qc-content-line-height-100</code>
+            </p>
+            <p>
+                <strong>Marge inférieure</strong><br/>
+                <code  >--qc-spacer-md</code>
+            </p>
+
+<hr />
+
+            <!-- polices de caractères -->
+            <h2 id="polices">Polices de caractères</h2>
+            <div class="font-titles">
+                <h3><strong>Roboto</strong></h3>
+                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<br>abcdefghijklmnopqrstuvwxyz0123456789</p>
+                <p>
+                    <strong>Police</strong><br/>
+                    <code  >--qc-header-font-family</code>
+                </p>
+            </div>
+            <div>
+                <h3><strong>Open Sans</strong></h3>
+                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</br>abcdefghijklmnopqrstuvwxyz0123456789</p>
+                <p>
+                    <strong>Police</strong><br/>
+                    <code  >--qc-content-font-family</code>
+                </p>
+            </div>
+            <div >
+                <h3><strong>Roboto Mono</strong></h3>
+                <code >
+                    <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<br>abcdefghijklmnopqrstuvwxyz0123456789</p>
+                </code>
+                <p>
+                    <strong>Police</strong><br/>
+                    <code  >--qc-code-font-family</code>
+                </p>
             </div>
 
-            <h2 id="notice">Composant "Avis" (qc-notice)</h2>
+<hr />
 
+            <!-- alerte générale -->
+            <h2 id="alert">Alerte générale (qc-alert)</h2>
             <h3>Exemples</h3>
+            <h4>Alerte jaune</h4>
+            <p>
+                <a href="javascript:;"
+                  id="show-qc-alert"
+                   hidden
+                >
+                    Réafficher l'alerte
+                </a>
+            </p>
 
+
+            <qc-alert id="alert-warning"
+                      type="warning"
+                      maskable="true"
+                      content="Alerte jaune d'importance élevée"
+            >
+            </qc-alert>
+
+            <qc-code target-id="alert-warning"></qc-code>
+
+            <h4>Alerte bleue</h4>
+            <qc-alert id="alert-general"
+                      type="general"
+                      maskable="false"
+
+            >
+                <p>Alerte bleue d'importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+            </qc-alert>
+            <qc-code target-id="alert-general"></qc-code>
+
+            <h3>Documentation technique</h3>
+
+            <h4>Attributs</h4>
+
+            <table class="qc-table qc-striped component-attributes-description">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>type</td>
+                    <td>"general" ou "warning"</td>
+                    <td>"general"</td>
+                    <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
+                </tr>
+                <tr>
+                    <td>maskable</td>
+                    <td>"true" ou "false"</td>
+                    <td>"true"</td>
+                    <td>Afficher le bouton de fermeture de l'alerte</td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Afficher le contenu de l'alerte</td>
+                </tr>
+                <tr>
+                    <td>hide</td>
+                    <td>"true" ou "false"</td>
+                    <td>"false"</td>
+                    <td>Masque ou affiche l'alerte</td>
+                </tr>
+            </table>
+
+            <h4>Zone d'ajout de contenu HTML</h4>
+
+            <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+
+            <qc-alert id="qc-alert-slots">
+                <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
+                    Contenu par défaut
+                </div>
+            </qc-alert>
+            <qc-code target-id="qc-notice-slots"></qc-code>
+
+            <hr />
+
+            <!-- avis -->
+            <h2 id="notice">Avis (qc-notice)</h2>
+            <h3>Exemples</h3>
             <h4>Information</h4>
 
             <qc-notice id="notice-info"
@@ -584,13 +667,13 @@
                        title="Des erreurs sont présentes dans le formulaire.">
                 <ul>
                     <li>
-                        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
+                        <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
                     </li>
                     <li>
-                        <a href="#">Le champ « Prénom » est obligatoire ;</a>
+                        <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
                     </li>
                     <li>
-                        <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
+                        <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
                     </li>
                 </ul>
             </qc-notice>
@@ -599,7 +682,7 @@
 
             <h3>Documentation technique</h3>
 
-            <h4>Attributs HTML</h4>
+            <h4>Attributs</h4>
 
             <table class="qc-table qc-striped component-attributes-description">
                 <thead>
@@ -638,244 +721,39 @@
                 </tbody>
             </table>
 
-            <h4>Insertions de contenu ciblées</h4>
+            <h4>Zone d'ajout de contenu HTML</h4>
 
-            <p>Ci-dessous en encadré, l'emplacement disponible pour insérer du contenu dans le composant.</p>
+            <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
 
             <qc-notice id="qc-notice-slots">
-                <div style="border:1px solid; padding: var(--qc-spacer-xs);">
+                <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
                     Contenu par défaut
                 </div>
             </qc-notice>
             <qc-code target-id="qc-notice-slots"></qc-code>
 
-            <!-- Alerte générale -->
-            <h2 id="alert">Composant "Alerte générale" (qc-alert)</h2>
-            <h3>Exemples</h3>
-            <h4>Alerte jaune - Message hautement prioritaire</h4>
-            <p><a href="#maskable-alert" id="show-qc-alert">Réafficher l'alerte</a></p>
-
-            <div id="maskable-alert">
-                <qc-alert id="alert-warning"
-                          type="warning"
-                          maskable="true"
-                          content="Alerte jaune d'importance élevée">
-                </qc-alert>
-            </div>
-            <qc-code target-id="alert-warning"></qc-code>
-
-            <h4>Alerte bleue - Message moins prioritaire</h4>
-            <qc-alert id="alert-general"
-                      type="general"
-                      maskable="false">
-                <p>Alerte bleue d'importance modérée <a href="#">avec un lien textuel</a></p>
-            </qc-alert>
-            <qc-code target-id="alert-general"></qc-code>
-
-            <h3>Documentation technique</h3>
-
-            <h4>Attributs</h4>
-
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Valeur attendue</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tr>
-                    <td>type</td>
-                    <td>"general" ou "warning"</td>
-                    <td>"general"</td>
-                    <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
-                </tr>
-                <tr>
-                    <td>maskable</td>
-                    <td>"true" ou "false"</td>
-                    <td>"true"</td>
-                    <td>Afficher le bouton de fermeture de l'alerte</td>
-                </tr>
-                <tr>
-                    <td>content</td>
-                    <td>Texte</td>
-                    <td>Chaine vide</td>
-                    <td>Afficher le contenu de l'alerte</td>
-                </tr>
-            </table>
-
-            <h4>Insertions de contenu ciblées</h4>
-
-            <p>Ci-dessous en encadré, l'emplacement disponible pour insérer du contenu dans le composant.</p>
-
-            <qc-alert id="qc-alert-slots">
-                <div style="border:1px solid; padding: var(--qc-spacer-xs);">
-                    Contenu par défaut
-                </div>
-            </qc-alert>
-            <qc-code target-id="qc-notice-slots"></qc-code>
+<hr />
 
             <!-- PIV -->
-            <h2 id="piv">PIV</h2>
-
-            <h3 id="piv-footer">Pied de page (qc-piv-footer)</h3>
-            <h4>Exemples</h4>
-            <p>Exemple minimaliste.</p>
-            <qc-piv-footer id="piv-footer-1">
-                <ul>
-                    <li><a href="/">Accessibilité</a></li>
-                    <li><a href="/">Plan du site</a></li>
-                    <li><a href="/">Accès à l'information</a></li>
-                    <li><a href="/">Politique de confidentialité</a></li>
-                    <li><a href="/">Condition d'utilisation</a></li>
-                    <li><a href="/">À propos de Québec.ca</a></li>
-                </ul>
-            </qc-piv-footer>
-            <qc-code target-id="piv-footer-1"></qc-code>
-
-            <p>Personnalisation du logo</p>
-            <qc-piv-footer id="piv-footer-2"
-                           logo-url="https://www.mess.gouv.qc.ca"
-                           logo-alt="Ministère de l'emploi et de la solidarité sociale"
-                           logo-src="img/logo-piv-footer-mess.png"
-                           logo-width="210"
-                           logo-height="81">
-                <ul>
-                    <li><a href="/">Accessibilité</a></li>
-                    <li><a href="/">Plan du site</a></li>
-                    <li><a href="/">S'informer sur clicSÉCUR - Citoyens</a></li>
-                    <li><a href="/">FAQ</a></li>
-                </ul>
-            </qc-piv-footer>
-            <qc-code target-id="piv-footer-2"></qc-code>
-
-            <p>Avec des insertions de contenu :</p>
-            <qc-piv-footer id="piv-footer-3">
-                <ul>
-                    <li><a href="/">Accessibilité</a></li>
-                    <li><a href="/">Plan du site</a></li>
-                    <li><a href="/">S'informer sur clicSÉCUR - Citoyens</a></li>
-                    <li><a href="/">FAQ</a></li>
-                </ul>
-                <a slot="logo"
-                    href="https://www.mess.gouv.qc.ca">
-                    <img class="logo-mo"
-                         alt="Ministère de l'emploi et de la solidarité sociale"
-                         src="img/logo-piv-footer-mess.png"
-                         width="210"
-                         height="81">
-                </a>
-                <a slot="copyright"
-                   target="_blank"
-                   rel="noopener"
-                   href="https://www.quebec.ca/droit-auteur">
-                    © Gouvernement du Québec, <span class="qc-external-link-tail">2023 <img alt="Ce lien s'ouvrira dans un nouvel onglet" /></span>
-                </a>
-            </qc-piv-footer>
-            <qc-code target-id="piv-footer-3"></qc-code>
-
-            <h4>Attributs disponibles</h4>
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Valeur attendue</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>logo-url</td>
-                    <td>Adresse</td>
-                    <td>/</td>
-                    <td>Cible du lien contenant le logo</td>
-                </tr>
-                <tr>
-                    <td>logo-src</td>
-                    <td>Adresse</td>
-                    <td>/</td>
-                    <td>Adresse de l'image du drapeau du Québec de la trousse</td>
-                </tr>
-                <tr>
-                    <td>logo-alt</td>
-                    <td>Texte</td>
-                    <td>Gouvernement du Québec</td>
-                    <td>Texte alternatif du logo pour les lecteurs d'écran</td>
-                </tr>
-                <tr>
-                    <td>logo-width</td>
-                    <td>Nombre entier</td>
-                    <td>117</td>
-                    <td>Largeur de l'image en pixel</td>
-                </tr>
-                <tr>
-                    <td>logo-height</td>
-                    <td>Nombre entier</td>
-                    <td>35</td>
-                    <td>Hauteur de l'image en pixel</td>
-                </tr>
-                <tr>
-                    <td>copyright-text</td>
-                    <td>Texte</td>
-                    <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
-                    <td>Texte du lien de changement de langue</td>
-                </tr>
-                <tr>
-                    <td>copyright-url</td>
-                    <td>Adresse</td>
-                    <td>
-                        <dl>
-                            <dt>Français</dt><dd>https://www.quebec.ca/droit-auteur</dd>
-                            <dt>Anglais</dt><dd>https://www.quebec.ca/en/copyright</dd>
-                        </dl>
-                    </td>
-                    <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
-                </tr>
-
-                </tbody>
-            </table>
-
-
-            <h4>Insertions de contenu ciblées</h4>
-
-            <p>Ci-dessous en encadré, les emplacements disponibles pour insérer du contenu dans le composant.</p>
-
-            <qc-piv-footer id="qc-piv-footer-slots">
-                <div  style="border:1px solid;padding: var(--qc-spacer-xs);">
-                    Contenu par défaut
-                </div>
-                <div  slot="logo"
-                      style="border:1px solid;padding: var(--qc-spacer-xs);">
-                    slot="logo"
-                </div>
-                <div slot="copyright"
-                     style="border:1px solid;padding: var(--qc-spacer-xs);">
-                    slot="copyright"
-                </div>
-
-
-            </qc-piv-footer>
-            <qc-code target-id="qc-piv-footer-slots"></qc-code>
-
-            <h3 id="piv-header">Bandeau (qc-piv-header)</h3>
+            <h2 id="piv">Composants du PIV</h2>
+            <!-- bandeau d'entête PIV -->
+            <h3 id="piv-header">Bandeau d'en-tête du PIV (qc-piv-header)</h3>
 
             <h4>Exemples</h4>
-            <p>Exemple minimaliste</p>
+            <h5>Exemple de base</h5>
             <qc-piv-header id="pivEnteteExempleLiens"
-                           title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG."
+                           title-text="Nom du site"
+                           alt-logo="Accédez à Québec.ca"
                            join-us-url="#join-us"
                            alt-language-url="#fakeEnglish"
             >
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleLiens"></qc-code>
 
-            <p>Exemple avec activation de la recherche </p>
+            <h5>Exemple avec activation de la recherche</h5>
             <qc-piv-header id="pivEnteteExempleRecherche"
-                           title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG."
+                           title-text="Nom du site"
+                           alt-logo="Accédez à Québec.ca"
                            enable-search="true"
                            search-form-action="https://www.quebec.ca/resultats-de-recherche"
                            search-input-name="tx_solr[q]"
@@ -883,24 +761,24 @@
                 <ul slot="links">
                     <li><a href="#fakeEnglish">English</a>
                     </li>
-                    <li><a href="#">Nous joindre</a>
+                    <li><a href="javascript:;">Nous joindre</a>
                     </li>
                 </ul>
 
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
 
-            <p>Exemple avec personnalisation du formulaire de recherche </p>
+            <h5>Exemple avec personnalisation du formulaire de recherche</h5>
             <qc-piv-header id="pivEnteteExempleRecherchePersonnalisee"
-                           title-text="Trousse de développement SDG"
-                           alt-logo="Accédez à Système de design SDG."
+                           title-text="Nom du site"
+                           alt-logo="Accédez à Québec.ca"
                            enable-search="true"
                            show-search="true"
             >
                 <ul slot="links">
                     <li><a href="#fakeEnglish">English</a>
                     </li>
-                    <li><a href="#">Nous joindre</a>
+                    <li><a href="javascript:;">Nous joindre</a>
                     </li>
                 </ul>
 
@@ -915,7 +793,7 @@
                     <div class="input-group">
                         <input type="text"
                                title="Recherche"
-                               placeholder="Rechercher sur Google"
+                               placeholder="Rechercher dans Nom du site"
                                name="q">
                         <button>
                             <span class="qc-icon qc-search-submit"></span>
@@ -927,8 +805,8 @@
 
             <qc-code target-id="pivEnteteExempleRecherchePersonnalisee"></qc-code>
 
-
-            <h4>Attributs disponibles</h4>
+            <h4>Documentation technique</h4>
+            <h5>Attributs</h5>
             <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                     <tr>
@@ -1070,40 +948,161 @@
                 </tbody>
             </table>
 
-            <h4>Insertions de contenu ciblées</h4>
-
-            <p>Ci-dessous en encadré, les emplacements disponibles pour insérer du contenu dans le composant.</p>
-
+            <h5>Zones d'ajout de contenu HTML</h5>
+            <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
             <qc-piv-header id="qc-piv-header-slots"
                            style="margin-bottom: var(--qc-spacer-content-block-mb);"
                            enable-search="true"
-                           show-search="true"
-            >
+                           show-search="true">
 
                 <div  slot="title"
-                      style="border:1px solid;padding: var(--qc-spacer-xs);">
+                      style="border:2px dashed;padding: var(--qc-spacer-xs);">
                     slot="title"
                 </div>
                 <div slot="search-zone"
-                     style="border:1px solid;padding: var(--qc-spacer-xs);">
+                     style="border:2px dashed;padding: var(--qc-spacer-xs);">
                     slot="search-zone"
                 </div>
                 <div slot="links"
-                     style="border:1px solid;padding: var(--qc-spacer-xs);"
+                     style="border:2px dashed;padding: var(--qc-spacer-xs);"
                 >
                     slot="links"
                 </div>
             </qc-piv-header>
             <qc-code target-id="qc-piv-header-slots"></qc-code>
-            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
 
-            <!-- Haut de page -->
+            <h3 id="piv-footer">Pied de page du PIV (qc-piv-footer)</h3>
+            <h4>Exemples</h4>
+            <h5>Exemple de base</h5>
+            <qc-piv-footer id="piv-footer-1">
+                <ul>
+                    <li><a href="/">Accessibilité</a></li>
+                    <li><a href="/">Plan du site</a></li>
+                    <li><a href="/">Accès à l'information</a></li>
+                    <li><a href="/">Politique de confidentialité</a></li>
+                    <li><a href="/">Condition d'utilisation</a></li>
+                    <li><a href="/">À propos de Québec.ca</a></li>
+                </ul>
+            </qc-piv-footer>
+            <qc-code target-id="piv-footer-1"></qc-code>
+
+            <h5>Exemple d'ajout de contenu HTML dans le composant</h5>
+            <qc-piv-footer id="piv-footer-3">
+                <ul>
+                    <li><a href="/">Accessibilité</a></li>
+                    <li><a href="/">Plan du site</a></li>
+                    <li><a href="/">S'informer sur clicSÉQUR - Citoyens</a></li>
+                    <li><a href="/">FAQ</a></li>
+                </ul>
+                <a slot="logo"
+                    href="https://www.mess.gouv.qc.ca">
+                    <img class="logo-mo"
+                         alt="Ministère de l'emploi et de la solidarité sociale"
+                         src="img/logo-piv-footer-mess.png"
+                         width="210"
+                         height="81">
+                </a>
+                <a slot="copyright"
+                   target="_blank"
+                   rel="noopener"
+                   href="https://www.quebec.ca/droit-auteur">
+                    © Gouvernement du Québec, <span class="qc-external-link-tail">2023 <img alt="Ce lien s'ouvrira dans un nouvel onglet" /></span>
+                </a>
+            </qc-piv-footer>
+            <qc-code target-id="piv-footer-3"></qc-code>
+
+            <h4>Documentation technique</h4>
+            <h5>Attributs</h5>
+            <table class="qc-table qc-striped component-attributes-description">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>logo-url</td>
+                    <td>Adresse</td>
+                    <td>/</td>
+                    <td>Cible du lien contenant le logo</td>
+                </tr>
+                <tr>
+                    <td>logo-src</td>
+                    <td>Adresse</td>
+                    <td>/</td>
+                    <td>Adresse de l'image du drapeau du Québec de la trousse</td>
+                </tr>
+                <tr>
+                    <td>logo-alt</td>
+                    <td>Texte</td>
+                    <td>Gouvernement du Québec</td>
+                    <td>Texte alternatif du logo pour les lecteurs d'écran</td>
+                </tr>
+                <tr>
+                    <td>logo-width</td>
+                    <td>Nombre entier</td>
+                    <td>117</td>
+                    <td>Largeur de l'image en pixel</td>
+                </tr>
+                <tr>
+                    <td>logo-height</td>
+                    <td>Nombre entier</td>
+                    <td>35</td>
+                    <td>Hauteur de l'image en pixel</td>
+                </tr>
+                <tr>
+                    <td>copyright-text</td>
+                    <td>Texte</td>
+                    <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
+                    <td>Texte du lien de changement de langue</td>
+                </tr>
+                <tr>
+                    <td>copyright-url</td>
+                    <td>Adresse</td>
+                    <td>
+                        <dl>
+                            <dt>Français</dt><dd>https://www.quebec.ca/droit-auteur</dd>
+                            <dt>Anglais</dt><dd>https://www.quebec.ca/en/copyright</dd>
+                        </dl>
+                    </td>
+                    <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+
+            <h5>Zones d'ajout de contenu HTML</h5>
+
+            <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
+
+            <qc-piv-footer id="qc-piv-footer-slots">
+                <div  style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                    Contenu par défaut
+                </div>
+                <div  slot="logo"
+                      style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                    slot="logo"
+                </div>
+                <div slot="copyright"
+                     style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                    slot="copyright"
+                </div>
+            </qc-piv-footer>
+            <qc-code target-id="qc-piv-footer-slots"></qc-code>
+
+<hr />
+
+            <!-- haut de page -->
             <h2 id="toTop">Haut de page</h2>
             <p>
                 Le composant haut de page est la flèche qui permet l'utilisateur de remonter vers le haut de page. Il s'affiche quand l'utilisateur commence à défiler vers le haut.
                 Il disparaît quand l'utilisateur commence à défiler vers le bas.
             </p>
-            <h4>Exemple de composant "Retour en haut"</h4>
+            <h4>Exemple</h4>
             <div>
                 <qc-to-top demo="true" />
             </div>
@@ -1111,7 +1110,9 @@
                 <qc-to-top id="pivToTopExample"></qc-to-top>
                 <qc-code target-id="pivToTopExample"></qc-code>
             </div>
-            <h4>Attributs disponibles</h4>
+
+            <h3>Documentation technique</h3>
+            <h4>Attributs</h4>
             <br>
             <table class="qc-table qc-striped">
                 <thead>
@@ -1139,5 +1140,8 @@
             </table>
         </div>
     </main>
+    <footer>
+        <qc-piv-footer></qc-piv-footer>
+    </footer>
 </body>
 </html>

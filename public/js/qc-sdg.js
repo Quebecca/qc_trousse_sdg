@@ -1033,17 +1033,15 @@
 	 * @param {string[]} slots  The slots to create
 	 * @param {string[]} accessors  Other accessors besides the ones for props the component has
 	 * @param {boolean} use_shadow_dom  Whether to use shadow DOM
-	 * @param {(ce: new () => HTMLElement) => new () => HTMLElement} [extend]
 	 */
 	function create_custom_element(
 		Component,
 		props_definition,
 		slots,
 		accessors,
-		use_shadow_dom,
-		extend
+		use_shadow_dom
 	) {
-		let Class = class extends SvelteElement {
+		const Class = class extends SvelteElement {
 			constructor() {
 				super(Component, slots, use_shadow_dom);
 				this.$$p_d = props_definition;
@@ -1073,10 +1071,6 @@
 				}
 			});
 		});
-		if (extend) {
-			// @ts-expect-error - assigning here is fine
-			Class = extend(Class);
-		}
 		Component.element = /** @type {any} */ (Class);
 		return Class;
 	}
@@ -1180,131 +1174,6 @@
 	            }
 	        }
 
-
-
-	    static conserverFocusElement(componentShadow, componentRoot) {
-	        const elementsFocusablesShadow = Array.from(this.obtenirElementsFocusables(componentShadow));
-	        const elementsFocusablesRoot = Array.from(this.obtenirElementsFocusables(componentRoot));
-	        const elementsFocusables = elementsFocusablesShadow.concat(elementsFocusablesRoot);
-
-	        const premierElementFocusable = elementsFocusables[0];
-	        const dernierElementFocusable = elementsFocusables[elementsFocusables.length - 1];
-	        const KEYCODE_TAB = 9;
-
-	        componentShadow.addEventListener('keydown', function(e) {
-	            let estToucheTab = (e.key === 'Tab' || e.keyCode === KEYCODE_TAB);
-
-	            if (!estToucheTab) {
-	                return
-	            }
-
-	            const elementActif = document.activeElement.shadowRoot ? document.activeElement.shadowRoot.activeElement : document.activeElement;
-	            if (e.shiftKey) /* shift + tab */ {
-	                if (elementActif === premierElementFocusable) {
-	                    dernierElementFocusable.focus();
-	                    e.preventDefault();
-	                }
-	            } else /* tab */ {
-	                if (elementsFocusables.length === 1 || elementActif === dernierElementFocusable ) {
-	                    premierElementFocusable.focus();
-	                    e.preventDefault();
-	                }
-	            }
-	        });
-	    }
-	    static obtenirElementsFocusables(element) {
-	        return element.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled])')
-	    }
-	    /**
-	     * Génère un id unique.
-	     * @returns L'id unique généré.
-	     */
-	    static genererId() {
-	        return Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
-	    }
-	    /**
-	     * dispatch web component event
-	     * @param {*} component
-	     * @param {*} eventName
-	     * @param {*} eventDetail
-	     */
-	    static dispatchWcEvent = (component, eventName, eventDetail) => {
-	        component.dispatchEvent(new CustomEvent(eventName, {
-	            detail: eventDetail,
-	            composed: true // bubble event throught shadow DOM
-	        }));
-	    }
-
-	    static estMobile() {
-	        return navigator.maxTouchPoints || 'ontouchstart' in document.documentElement
-	    }
-
-	    static ajusterInterfaceAvantAffichageModale(html, body) {
-
-	        if(!this.estMobile()){
-	            const largeurScrollbarHtml = window.innerWidth - html.offsetWidth;
-
-	            if(largeurScrollbarHtml > 0){
-	                html.style['padding-right'] = largeurScrollbarHtml + 'px';
-	            }
-	            else {
-	                const largeurScrollbarBody = window.innerWidth - body.offsetWidth;
-	                if(largeurScrollbarBody > 0){
-	                    body.style['padding-right'] = largeurScrollbarBody + 'px';
-	                }
-	            }
-	        }
-	        /* On s'assure que le scroll ne changera pas une fois le body modifié avec position fixe */
-	        const scrollY = window.scrollY;
-	        html.classList.add("utd-modale-ouverte");
-	        document.body.style.top = `-${scrollY}px`;
-	    }
-
-	    static ajusterInterfacePendantAffichageModale(body, modale) {
-
-	        if(!this.estMobile()){
-	            const largeurScrollbarModale = window.innerWidth - modale.offsetWidth;
-	            if(largeurScrollbarModale > 0){
-	                body.style['padding-right'] = largeurScrollbarModale + 'px';
-	            }
-	        }
-	    }
-
-	    static ajusterInterfaceApresFermetureModale(html, body) {
-	        html.style.removeProperty('padding-right');
-	        body.style.removeProperty('padding-right');
-	        html.classList.remove("utd-modale-ouverte");
-
-	        /* Repositionner l'écran où il était avant l'affichage de la modale. */
-	        const scrollY = document.body.style.top;
-	        document.body.style.position = '';
-	        document.body.style.top = '';
-	        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-	    }
-
-	    static slotExiste(slots, nomSlot) {
-	        return slots.some(s => s.slot === nomSlot)
-	    }
-
-	    static obtenirSlot(slots, nomSlot) {
-	        return slots.find(s => s.slot === nomSlot)
-	    }
-
-	    static obtenirTextesDefaut() {
-	        const textes = {
-	            texteSrOuvertureNouvelOnglet: this.getPageLanguage() === 'fr' ? `. Ce lien sera ouvert dans un nouvel onglet.` : `. This link will open in a new tab.`
-	        };
-	        return textes
-	    }
-	    /**
-	     * Obtient la langue de la page courante.
-	     * @returns {string} Code de langue de la page courante (fr/en).
-	     * @todo remove after translation refacto
-	     */
-	    static obtenirLanguePage() {
-	        return this.getPageLanguage()
-	    }
-
 	    /**
 	     * Get current page language based on html lang attribute
 	     * @returns {string} language code  (fr/en).
@@ -1312,95 +1181,9 @@
 	    static getPageLanguage() {
 	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
 	    }
-
-	    /**
-	     * Permet de palier au fait que svelte converti en booleen la valeur d'un attribut si celui-ci est vide (ex. titre="", la valeur considérée par svelte est true, alors que nous c'est une attribut vide, qu'on ne devrait pas traiter. Nos if ne fonctionnent pas comme prévu dans cette situation)
-	     * On considère donc qu'un attribut est absent, si l'attribut n'est pas spécifié, vide ou true (valeur booléenne que svelte utilise si attribut est vide, et ça ne peut jamais arriver sauf dans cette circonstance car normalement les attributs sont toujours des strings)
-	     * @param {*} attribut Valeur de l'attribut à vérifier
-	     * @returns Booléen indiquant si l'attribut doit être considéré comme présent ou non
-	     */
-	    static estAttributPresent(attribut) {
-	        return attribut && attribut !== true
-	    }
-
-	    /**
-	     * Permet de debouncer une fonction.
-	     * @param {Object} func Fonction à debouncer.
-	     * @param {Number} timeout Délai du debounce.
-	     */
-	    static debounce(func, timeout = 400) {
-	        let timer;
-	        return (...args) => {
-	            clearTimeout(timer);
-	            timer = setTimeout(() => { func.apply(this, args); }, timeout);
-	        }
-	    }
-
-	    static extend (first, second) {
-	        for (var secondProp in second) {
-	            var secondVal = second[secondProp];
-	            // Is this value an object?  If so, iterate over its properties, copying them over
-	            if (secondVal && Object.prototype.toString.call(secondVal) === "[object Object]") {
-	                first[secondProp] = first[secondProp] || {};
-	                this.extend(first[secondProp], secondVal);
-	            }
-	            else {
-	                first[secondProp] = secondVal;
-	            }
-	        }
-	        return first
-	    }
-
-	    /**
-	     * @todo remove after tr refacto
-	     * @param composant
-	     */
-	    static reafficherApresChargement(composant) {
-	        this.refreshAfterUpdate(composant);
-	    }
-
-	    static refreshAfterUpdate(composant) {
-	        setTimeout(() => {
-	            composant.classList.add('mounted');
-	        });
-	    }
-
-	    /**
-	     * Normalise une chaîne de caractères pour utilisation insensible à la case et aux accents.
-	     * @param {string} chaineCaracteres Chaîne de caractères.
-	     * */
-	    static normaliserChaineCaracteres(chaineCaracteres) {
-	        return this.normaliserApostrophes(this.remplacerAccents(chaineCaracteres).toLowerCase())
-	    }
-
-	    /**
-	     * Normaliser les apostrophes d'une chaîne de caractères.
-	     * @param {string} chaineCaracteres Chaîne de caractères.
-	     **/
-	    static normaliserApostrophes(chaineCaracteres) {
-	        return chaineCaracteres.replace(/[\u2018-\u2019]/g, '\u0027')
-	    }
-
-	    /**
-	     * Remplace les accents d'une chaîne de caractères.
-	     * @param {string} chaineCaracteres Chaîne de caractères.
-	     * */
-	    static remplacerAccents(chaineCaracteres) {
-	        return chaineCaracteres.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-	    }
-
-	    /**
-	     * Génère un id à partir du texte spécifié. Le texte est normalisé, puis tous les caractères non textuels sont remplacés par des underscore "_".
-	     * @param {string} texte Texte à partir duquel il faut créer un id.
-	     * @returns Un id généré à partir du texte.
-	     */
-	    static obtenirIdSelonTexte(texte){
-	        const texteNormalise = this.normaliserChaineCaracteres(texte);
-	        return texteNormalise.replace(/\W/g,'_')
-	    }
 	}
 
-	/* src/components/notice.svelte generated by Svelte v4.2.0 */
+	/* src/components/notice.svelte generated by Svelte v4.0.5 */
 
 	function create_dynamic_element(ctx) {
 		let svelte_element;
@@ -1636,7 +1419,7 @@
 
 	customElements.define("qc-notice", create_custom_element(Notice, {"title":{},"type":{},"content":{},"header":{}}, ["default"], [], true));
 
-	/* src/components/pivHeader.svelte generated by Svelte v4.2.0 */
+	/* src/components/pivHeader.svelte generated by Svelte v4.0.5 */
 	const get_search_zone_slot_changes = dirty => ({});
 	const get_search_zone_slot_context = ctx => ({});
 	const get_title_slot_changes_1 = dirty => ({});
@@ -2445,7 +2228,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#QUEBEC_blanc`, logoAlt = lang === 'fr'
+		let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.0#QUEBEC_blanc`, logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
 		: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', searchPlaceholder = lang === 'fr' ? 'Rechercher…' : 'Search…', searchInputName = 'q', submitSearchText = lang === 'fr' ? 'Rechercher' : 'Search', displaySearchText = lang === 'fr'
 		? 'Cliquer pour faire une recherche'
@@ -2763,7 +2546,7 @@
 
 	customElements.define("qc-piv-header", create_custom_element(PivHeader, {"logoUrl":{"attribute":"logo-url"},"fullWidth":{"attribute":"full-width"},"logoSrc":{"attribute":"logo-src"},"logoAlt":{"attribute":"logo-alt"},"titleUrl":{"attribute":"title-url"},"titleText":{"attribute":"title-text"},"altLanguageText":{"attribute":"alt-language-text"},"altLanguageUrl":{"attribute":"alt-language-url"},"joinUsText":{"attribute":"join-us-text"},"joinUsUrl":{"attribute":"join-us-url"},"goToContent":{"attribute":"go-to-content"},"goToContentAnchor":{"attribute":"go-to-content-anchor"},"goToContentText":{"attribute":"go-to-content-text"},"searchPlaceholder":{"attribute":"search-placeholder"},"searchInputName":{"attribute":"search-input-name"},"submitSearchText":{"attribute":"submit-search-text"},"displaySearchText":{"attribute":"display-search-text"},"hideSearchText":{"attribute":"hide-search-text"},"searchFormAction":{"attribute":"search-form-action"},"enableSearch":{"attribute":"enable-search"},"showSearch":{"attribute":"show-search"}}, ["title","links","search-zone"], ["focusOnSearchInput"], true));
 
-	/* src/components/pivFooter.svelte generated by Svelte v4.2.0 */
+	/* src/components/pivFooter.svelte generated by Svelte v4.0.5 */
 	const get_copyright_slot_changes = dirty => ({});
 	const get_copyright_slot_context = ctx => ({});
 	const get_logo_slot_changes = dirty => ({});
@@ -3002,7 +2785,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.1.2#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
+		let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.0#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
 		? 'https://www.quebec.ca/droit-auteur'
 		: 'https://www.quebec.ca/en/copyright' } = $$props;
 
@@ -3111,7 +2894,7 @@
 
 	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{},"logoAlt":{"attribute":"logo-alt"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"copyrightText":{"attribute":"copyrightText"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","logo","copyright"], [], true));
 
-	/* src/components/alert.svelte generated by Svelte v4.2.0 */
+	/* src/components/alert.svelte generated by Svelte v4.0.5 */
 
 	function create_if_block(ctx) {
 		let div3;
@@ -3124,8 +2907,8 @@
 		let t1;
 		let t2;
 		let current;
-		const default_slot_template = /*#slots*/ ctx[8].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[7], null);
+		const default_slot_template = /*#slots*/ ctx[11].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[10], null);
 		let if_block = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
 
 		return {
@@ -3145,9 +2928,9 @@
 				html_tag.a = t1;
 				attr(div1, "class", "qc-alert-content");
 				attr(div2, "class", "qc-container qc-general-alert-elements");
-				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[4]);
+				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[5]);
 				attr(div3, "role", "alert");
-				attr(div3, "aria-label", /*label*/ ctx[6]);
+				attr(div3, "aria-label", /*label*/ ctx[7]);
 			},
 			m(target, anchor) {
 				insert(target, div3, anchor);
@@ -3164,6 +2947,7 @@
 
 				append(div2, t2);
 				if (if_block) if_block.m(div2, null);
+				/*div3_binding*/ ctx[12](div3);
 				current = true;
 			},
 			p(ctx, dirty) {
@@ -3174,15 +2958,15 @@
 				if (!current || dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
 
 				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 128)) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 1024)) {
 						update_slot_base(
 							default_slot,
 							default_slot_template,
 							ctx,
-							/*$$scope*/ ctx[7],
+							/*$$scope*/ ctx[10],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[7])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[7], dirty, null),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[10])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[10], dirty, null),
 							null
 						);
 					}
@@ -3217,11 +3001,12 @@
 
 				if (default_slot) default_slot.d(detaching);
 				if (if_block) if_block.d();
+				/*div3_binding*/ ctx[12](null);
 			}
 		};
 	}
 
-	// (50:12) {#if maskable === "true"}
+	// (57:12) {#if maskable === "true"}
 	function create_if_block_1(ctx) {
 		let div;
 		let button;
@@ -3238,7 +3023,7 @@
 				attr(span, "class", "qc-icon qc-xclose-blue qc-close-alert-icon");
 				attr(button, "type", "button");
 				attr(button, "class", "qc-close");
-				attr(button, "aria-label", /*closeLabel*/ ctx[5]);
+				attr(button, "aria-label", /*closeLabel*/ ctx[6]);
 				attr(div, "class", "qc-alert-close");
 			},
 			m(target, anchor) {
@@ -3247,7 +3032,7 @@
 				append(button, span);
 
 				if (!mounted) {
-					dispose = listen(button, "click", /*click_handler*/ ctx[9]);
+					dispose = listen(button, "click", /*hideAlert*/ ctx[8]);
 					mounted = true;
 				}
 			},
@@ -3267,7 +3052,7 @@
 		let t;
 		let link;
 		let current;
-		let if_block = !/*hideAlert*/ ctx[3] && create_if_block(ctx);
+		let if_block = !/*hiddenFlag*/ ctx[4] && create_if_block(ctx);
 
 		return {
 			c() {
@@ -3284,11 +3069,11 @@
 				current = true;
 			},
 			p(ctx, [dirty]) {
-				if (!/*hideAlert*/ ctx[3]) {
+				if (!/*hiddenFlag*/ ctx[4]) {
 					if (if_block) {
 						if_block.p(ctx, dirty);
 
-						if (dirty & /*hideAlert*/ 8) {
+						if (dirty & /*hiddenFlag*/ 16) {
 							transition_in(if_block, 1);
 						}
 					} else {
@@ -3329,9 +3114,10 @@
 
 	function instance$1($$self, $$props, $$invalidate) {
 		let { $$slots: slots = {}, $$scope } = $$props;
-		let { type = "general", maskable = "", content = "" } = $$props;
+		let { type = "general", maskable = "", content = "", hide = "false" } = $$props;
 
-		let hideAlert = false,
+		let rootElement,
+			hiddenFlag,
 			typeClass = type !== "" ? type : 'general',
 			closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer" : "Close",
 			warningLabel = Utils.getPageLanguage() === 'fr'
@@ -3342,37 +3128,59 @@
 			: "Important information",
 			label = type === 'general' ? generalLabel : warningLabel;
 
-		onMount(() => {
-			
-		});
+		function hideAlert() {
+			$$invalidate(9, hide = 'true');
+			rootElement.dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+		}
 
-		const click_handler = () => $$invalidate(3, hideAlert = true);
+		function div3_binding($$value) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				rootElement = $$value;
+				$$invalidate(3, rootElement);
+			});
+		}
 
 		$$self.$$set = $$props => {
 			if ('type' in $$props) $$invalidate(0, type = $$props.type);
 			if ('maskable' in $$props) $$invalidate(1, maskable = $$props.maskable);
 			if ('content' in $$props) $$invalidate(2, content = $$props.content);
-			if ('$$scope' in $$props) $$invalidate(7, $$scope = $$props.$$scope);
+			if ('hide' in $$props) $$invalidate(9, hide = $$props.hide);
+			if ('$$scope' in $$props) $$invalidate(10, $$scope = $$props.$$scope);
+		};
+
+		$$self.$$.update = () => {
+			if ($$self.$$.dirty & /*hide*/ 512) {
+				$$invalidate(4, hiddenFlag = hide === 'true');
+			}
 		};
 
 		return [
 			type,
 			maskable,
 			content,
-			hideAlert,
+			rootElement,
+			hiddenFlag,
 			typeClass,
 			closeLabel,
 			label,
+			hideAlert,
+			hide,
 			$$scope,
 			slots,
-			click_handler
+			div3_binding
 		];
 	}
 
 	class Alert extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance$1, create_fragment$1, safe_not_equal, { type: 0, maskable: 1, content: 2 });
+
+			init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+				type: 0,
+				maskable: 1,
+				content: 2,
+				hide: 9
+			});
 		}
 
 		get type() {
@@ -3401,11 +3209,20 @@
 			this.$$set({ content });
 			flush();
 		}
+
+		get hide() {
+			return this.$$.ctx[9];
+		}
+
+		set hide(hide) {
+			this.$$set({ hide });
+			flush();
+		}
 	}
 
-	customElements.define("qc-alert", create_custom_element(Alert, {"type":{},"maskable":{},"content":{}}, ["default"], [], true));
+	customElements.define("qc-alert", create_custom_element(Alert, {"type":{},"maskable":{},"content":{},"hide":{}}, ["default"], [], true));
 
-	/* src/components/toTop.svelte generated by Svelte v4.2.0 */
+	/* src/components/toTop.svelte generated by Svelte v4.0.5 */
 
 	const { window: window_1 } = globals;
 

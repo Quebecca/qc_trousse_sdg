@@ -76,6 +76,7 @@ Always use this function for rem values
   --qc-line-height-lg: var(--qc-line-height-120);
   --qc-line-height-xl: var(--qc-line-height-200);
   --qc-line-height-content: var(--qc-line-height-md);
+  --qc-max-content-width: 82.5rem;
   --qc-color-white: white;
   --qc-color-blue-pale: #dae6f0;
   --qc-color-blue-light: #4a98d9;
@@ -135,6 +136,7 @@ Always use this function for rem values
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
+  --qc-spacer-list-embedded-mb: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
   --qc-spacer-notice-my: var(--qc-spacer-md);
   --qc-spacer-notice-mx: 3.2rem;

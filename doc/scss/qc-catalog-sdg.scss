@@ -7,6 +7,10 @@
 @use "components/button" as *;
 @use "tables";
 
+main {
+  padding-bottom: token-value(spacer lg);
+}
+
 .color-details {
   display: flex;
   justify-content: flex-start;
@@ -166,5 +170,17 @@ table.component-attributes-description td:first-child {
     }
 
   }
+}
+
+hr {
+  margin: token-value(spacer lg) 0;
+  height: 1px;
+  border: 0;
+  color: token-value(color grey light);
+  background-color: token-value(color grey light);
+}
+
+qc-piv-footer + qc-code {
+  margin-top: 0;
 }
 

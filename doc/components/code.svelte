@@ -41,13 +41,13 @@
 
 </script>
 
-<div class="clipboard">
-    <button class="btn btn-sm btn-primary" on:click={copy}>
-        <span class="copy">copier ?</span>
-        <span class="copied">copié !</span>
-    </button>
-</div>
-<pre><code class="hljs">{@html hlCode}</code></pre>
+<pre
+    ><code class="hljs"><button class="btn btn-sm btn-primary" on:click={copy}>
+            <span class="copy">copier</span>
+            <span class="copied">copié !</span>
+        </button
+        >{@html hlCode}</code
+></pre>
 <link rel='stylesheet'
       href='{Utils.cssRelativePath}{Utils.cssFileName}'>
 
