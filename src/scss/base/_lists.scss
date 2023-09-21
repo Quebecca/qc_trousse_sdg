@@ -2,6 +2,7 @@
 @use "modules/utils" as *;
 
 ul {
+    max-inline-size: token-value(max-content-width);
     list-style: disc;
     margin-top: 0;
     margin-bottom: token-value(spacer list mb);
@@ -11,6 +12,7 @@ ul {
     }
     ul {
         margin-top: token-value(spacer list-item mb);
+        margin-bottom: token-value(spacer list embedded-mb);
         list-style: circle;
     }
 }
