@@ -616,6 +616,19 @@
                 </tr>
             </table>
 
+            <h4>Événement JS</h4>
+
+            <p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de l'alerte</p>
+            <script id="qc-alert-event-exemple">
+                /* Fermer l'alerte jaune pour voir un message dans la console de votre navigateur */
+                document.addEventListener(
+                    'qc.alert.hide',
+                    (e) => { console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');}
+                )
+            </script>
+            <qc-code target-id="qc-alert-event-exemple"
+                     language="html"></qc-code>
+
             <h4>Zone d'ajout de contenu HTML</h4>
 
             <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
@@ -625,7 +638,7 @@
                     Contenu par défaut
                 </div>
             </qc-alert>
-            <qc-code target-id="qc-notice-slots"></qc-code>
+            <qc-code target-id="qc-alert-slots"></qc-code>
 
             <hr />
 

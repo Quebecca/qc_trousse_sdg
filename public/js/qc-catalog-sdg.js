@@ -66316,13 +66316,13 @@
 	}
 
 	function instance($$self, $$props, $$invalidate) {
-		let { targetId = '' } = $$props;
+		let { targetId = '', language = 'html' } = $$props;
 		let rawCode = '', hlCode, prettyCode;
 
 		onMount(() => {
 			rawCode = (document.getElementById(targetId)?.outerHTML ?? '').replace('class="mounted"', '');
 			prettyCode = pretty$1(rawCode, { wrap_attributes: 'force-aligned' });
-			$$invalidate(0, hlCode = HighlightJS.highlight(prettyCode, { language: 'html' }).value);
+			$$invalidate(0, hlCode = HighlightJS.highlight(prettyCode, { language }).value);
 		});
 
 		function copy() {
@@ -66339,15 +66339,16 @@
 
 		$$self.$$set = $$props => {
 			if ('targetId' in $$props) $$invalidate(2, targetId = $$props.targetId);
+			if ('language' in $$props) $$invalidate(3, language = $$props.language);
 		};
 
-		return [hlCode, copy, targetId];
+		return [hlCode, copy, targetId, language];
 	}
 
 	class Code extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance, create_fragment, safe_not_equal, { targetId: 2 });
+			init(this, options, instance, create_fragment, safe_not_equal, { targetId: 2, language: 3 });
 		}
 
 		get targetId() {
@@ -66358,9 +66359,18 @@
 			this.$$set({ targetId });
 			flush();
 		}
+
+		get language() {
+			return this.$$.ctx[3];
+		}
+
+		set language(language) {
+			this.$$set({ language });
+			flush();
+		}
 	}
 
-	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"}}, [], [], true));
+	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"},"language":{}}, [], [], true));
 
 	// Show maskable "general alert" component
 	const displayAlertLink = document.getElementById("show-qc-alert");

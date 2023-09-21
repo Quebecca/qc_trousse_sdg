@@ -15,6 +15,7 @@
 
   export let
       targetId = ''
+      , language = 'html'
   ;
 
   let
@@ -30,7 +31,7 @@
           ) . replace('class="mounted"', '')
         ;
       prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
-      hlCode = HighlightJS.highlight(prettyCode, {language:'html'}).value;
+      hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   })
 
   function copy() {
