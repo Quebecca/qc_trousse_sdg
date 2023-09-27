@@ -1,10 +1,16 @@
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
-@use "modules/map" as *;
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+@use "../modules/map" as *;
 @use "sass:map";
 
 @each $index, $blur in map.get($xl-tokens, box-shadow, blur) {
+  $color : token-value(box-shadow color);
+  // qc-shading-1
+  @if($index == 1){
+    $color: token-value(color, grey, light);
+  }
+  $offset : map.get($xl-tokens, box-shadow, offset, $index);
   .qc-shading-#{$index} {
-    box-shadow: 0 #{$index}#{px} $blur #{token-value(box-shadow color)};
+    box-shadow: 0 $offset $blur $color;
   }
 }

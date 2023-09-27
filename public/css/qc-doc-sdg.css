@@ -199,11 +199,11 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
 }
 
 .qc-shading-0 {
-  box-shadow: 0 0px 0 var(--qc-box-shadow-color);
+  box-shadow: 0 0 0 var(--qc-box-shadow-color);
 }
 
 .qc-shading-1, .btn.btn-primary {
-  box-shadow: 0 1px 4px var(--qc-box-shadow-color);
+  box-shadow: 0 1px 4px var(--qc-color-grey-light);
 }
 
 .qc-shading-2 {
@@ -211,11 +211,11 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
 }
 
 .qc-shading-3 {
-  box-shadow: 0 3px 16px var(--qc-box-shadow-color);
+  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 4px 24px var(--qc-box-shadow-color);
+  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
 }
 
 .btn {

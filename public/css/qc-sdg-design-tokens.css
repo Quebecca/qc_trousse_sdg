@@ -115,6 +115,11 @@ Always use this function for rem values
   --qc-box-shadow-blur-2: 8px;
   --qc-box-shadow-blur-3: 16px;
   --qc-box-shadow-blur-4: 24px;
+  --qc-box-shadow-offset-0: 0;
+  --qc-box-shadow-offset-1: 1px;
+  --qc-box-shadow-offset-2: 2px;
+  --qc-box-shadow-offset-3: 4px;
+  --qc-box-shadow-offset-4: 6px;
   --qc-spacer-xs: 0.8rem;
   --qc-spacer-sm: 1.6rem;
   --qc-spacer-md: 2.4rem;

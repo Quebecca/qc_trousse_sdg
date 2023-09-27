@@ -117,6 +117,11 @@ Always use this function for rem values
   --qc-box-shadow-blur-2: 8px;
   --qc-box-shadow-blur-3: 16px;
   --qc-box-shadow-blur-4: 24px;
+  --qc-box-shadow-offset-0: 0;
+  --qc-box-shadow-offset-1: 1px;
+  --qc-box-shadow-offset-2: 2px;
+  --qc-box-shadow-offset-3: 4px;
+  --qc-box-shadow-offset-4: 6px;
   --qc-spacer-xs: 0.8rem;
   --qc-spacer-sm: 1.6rem;
   --qc-spacer-md: 2.4rem;
@@ -327,7 +332,7 @@ h1 .qc-subhead, .qc-h1 .qc-subhead {
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
   font-family: var(--qc-font-family-content);
-  color: #647287;
+  color: var(--qc-color-grey-medium);
   display: block;
   margin: 0;
 }
@@ -551,11 +556,11 @@ ul ul {
 }
 
 .qc-shading-0 {
-  box-shadow: 0 0px 0 var(--qc-box-shadow-color);
+  box-shadow: 0 0 0 var(--qc-box-shadow-color);
 }
 
 .qc-shading-1, .qc-to-top {
-  box-shadow: 0 1px 4px var(--qc-box-shadow-color);
+  box-shadow: 0 1px 4px var(--qc-color-grey-light);
 }
 
 .qc-shading-2, .qc-to-top:focus {
@@ -563,11 +568,11 @@ ul ul {
 }
 
 .qc-shading-3 {
-  box-shadow: 0 3px 16px var(--qc-box-shadow-color);
+  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 4px 24px var(--qc-box-shadow-color);
+  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
 }
 
 /*
@@ -926,7 +931,7 @@ Always use this function for rem values
 }
 .qc-notice .content .text ::slotted(ul) {
   padding-left: var(--qc-spacer-sm) !important;
-  margin-top: var(--qc-spacer-md) !important;
+  margin-top: var(--qc-spacer-sm) !important;
 }
 
 /* Links in a error notice (eg. error summary) */
@@ -1171,6 +1176,9 @@ qc-piv-footer {
 qc-piv-footer a {
   text-decoration: none;
 }
+qc-piv-footer a:hover {
+  text-decoration: underline;
+}
 qc-piv-footer ul {
   margin: 0 0 var(--qc-spacer-sm) 0;
   padding: 0;
@@ -1185,9 +1193,15 @@ qc-piv-footer ul li {
   margin: 0;
   text-align: center;
 }
+qc-piv-footer ul li:hover {
+  text-decoration: underline;
+}
 
 .qc-piv-footer a {
   text-decoration: none;
+}
+.qc-piv-footer a:hover {
+  text-decoration: underline;
 }
 .qc-piv-footer .qc-container {
   display: flex;

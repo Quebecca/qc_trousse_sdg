@@ -59,7 +59,7 @@
     .text {
       ::slotted(ul) {
         padding-left: token-value(spacer, sm) !important;
-        margin-top: token-value(spacer, md) !important;
+        margin-top: token-value(spacer, sm) !important;
       }
     }
   }

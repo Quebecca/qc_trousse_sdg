@@ -25,7 +25,7 @@ h1, .qc-h1 {
 
   .qc-subhead {
     @include content-font(sm, $include-family: 1);
-    color : #647287;
+    color : token-value(color, grey, medium);
     display: block;
     margin: 0;
   }

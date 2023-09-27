@@ -113,13 +113,11 @@ onMount(() => {
         </a>
       </div>
       <div class="title">
-        <slot name="title">
           {#if titleText}
           <a href="{titleUrl}">
             <span>{titleText}</span>
           </a>
           {/if}
-        </slot>
       </div>
       <div class="right-section">
         {#if enableSearch == 'true'}
@@ -148,15 +146,13 @@ onMount(() => {
       </div>
     </div>
     <div class="piv-bottom">
-      <div class="title">
-        <slot name="title">
-          {#if titleText}
+      {#if titleText}
+        <div class="title">
             <a href="{titleUrl}">
               <span>{titleText}</span>
             </a>
-          {/if}
-        </slot>
-      </div>
+        </div>
+      {/if}
       {#if displaySearchForm}
       <div class="search-zone">
         <slot name="search-zone">
