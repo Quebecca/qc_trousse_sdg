@@ -35,7 +35,7 @@ const
 export let
     logoUrl= '/'
   , fullWidth = 'false'
-  , logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#QUEBEC_blanc`
+  , logoSrc = './img/quebec-logo.svg'
   , logoAlt = lang === 'fr'
       ? 'Logo du gouvernement du Québec'
       : 'Logo of government of Québec'
@@ -112,13 +112,13 @@ onMount(() => {
                src="{logoSrc}">
         </a>
       </div>
-      <div class="title">
-          {#if titleText}
+      {#if titleText}
+        <div class="title">
           <a href="{titleUrl}">
             <span>{titleText}</span>
           </a>
-          {/if}
-      </div>
+        </div>
+      {/if}
       <div class="right-section">
         {#if enableSearch == 'true'}
           <a  class="qc-icon qc-search"

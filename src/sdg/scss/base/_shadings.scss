@@ -5,8 +5,8 @@
 
 @each $index, $blur in map.get($xl-tokens, box-shadow, blur) {
   $color : token-value(box-shadow color);
-  // qc-shading-1
-  @if($index == 1){
+  // qc-shading-0 and qc-shading-1
+  @if($index in [0,1]){
     $color: token-value(color, grey, light);
   }
   $offset : map.get($xl-tokens, box-shadow, offset, $index);

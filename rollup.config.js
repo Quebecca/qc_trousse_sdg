@@ -123,6 +123,10 @@ let
                         {
                             src: 'src/sdg/sprites/svg/external-link.svg',
                             dest: [`dist/img`,`public/img`],
+                        },
+                        {
+                            src: 'dist/img/*',
+                            dest: [`public/img`],
                         }
                     ],
                     verbose: verbose,

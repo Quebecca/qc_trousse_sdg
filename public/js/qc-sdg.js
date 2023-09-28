@@ -1465,21 +1465,25 @@
 		};
 	}
 
-	// (116:10) {#if titleText}
+	// (115:6) {#if titleText}
 	function create_if_block_6(ctx) {
+		let div;
 		let a;
 		let span;
 		let t;
 
 		return {
 			c() {
+				div = element("div");
 				a = element("a");
 				span = element("span");
 				t = text(/*titleText*/ ctx[5]);
 				attr(a, "href", /*titleUrl*/ ctx[4]);
+				attr(div, "class", "title");
 			},
 			m(target, anchor) {
-				insert(target, a, anchor);
+				insert(target, div, anchor);
+				append(div, a);
 				append(a, span);
 				append(span, t);
 			},
@@ -1492,7 +1496,7 @@
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(a);
+					detach(div);
 				}
 			}
 		};
@@ -1881,22 +1885,21 @@
 	}
 
 	function create_fragment$3(ctx) {
-		let div7;
 		let div6;
+		let div5;
 		let t0;
-		let div4;
+		let div3;
 		let div0;
 		let a;
 		let img;
 		let img_src_value;
 		let t1;
-		let div1;
 		let t2;
-		let div3;
-		let t3;
 		let div2;
+		let t3;
+		let div1;
 		let t4;
-		let div5;
+		let div4;
 		let t5;
 		let t6;
 		let link;
@@ -1912,25 +1915,24 @@
 
 		return {
 			c() {
-				div7 = element("div");
 				div6 = element("div");
+				div5 = element("div");
 				if (if_block0) if_block0.c();
 				t0 = space();
-				div4 = element("div");
+				div3 = element("div");
 				div0 = element("div");
 				a = element("a");
 				img = element("img");
 				t1 = space();
-				div1 = element("div");
 				if (if_block1) if_block1.c();
 				t2 = space();
-				div3 = element("div");
+				div2 = element("div");
 				if (if_block2) if_block2.c();
 				t3 = space();
-				div2 = element("div");
+				div1 = element("div");
 				if (links_slot_or_fallback) links_slot_or_fallback.c();
 				t4 = space();
-				div5 = element("div");
+				div4 = element("div");
 				if (if_block3) if_block3.c();
 				t5 = space();
 				if (if_block4) if_block4.c();
@@ -1942,43 +1944,41 @@
 				attr(a, "target", "_blank");
 				attr(a, "rel", "noreferrer");
 				attr(div0, "class", "logo");
-				attr(div1, "class", "title");
-				attr(div2, "class", "links");
-				attr(div3, "class", "right-section");
-				attr(div4, "class", "piv-top");
-				attr(div5, "class", "piv-bottom");
-				attr(div6, "class", /*containerClass*/ ctx[20]);
-				attr(div7, "class", "qc-piv-header qc-component");
+				attr(div1, "class", "links");
+				attr(div2, "class", "right-section");
+				attr(div3, "class", "piv-top");
+				attr(div4, "class", "piv-bottom");
+				attr(div5, "class", /*containerClass*/ ctx[20]);
+				attr(div6, "class", "qc-piv-header qc-component");
 				attr(link, "rel", "stylesheet");
 				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
 			},
 			m(target, anchor) {
-				insert(target, div7, anchor);
-				append(div7, div6);
-				if (if_block0) if_block0.m(div6, null);
-				append(div6, t0);
-				append(div6, div4);
-				append(div4, div0);
+				insert(target, div6, anchor);
+				append(div6, div5);
+				if (if_block0) if_block0.m(div5, null);
+				append(div5, t0);
+				append(div5, div3);
+				append(div3, div0);
 				append(div0, a);
 				append(a, img);
-				append(div4, t1);
-				append(div4, div1);
-				if (if_block1) if_block1.m(div1, null);
-				append(div4, t2);
-				append(div4, div3);
-				if (if_block2) if_block2.m(div3, null);
-				append(div3, t3);
+				append(div3, t1);
+				if (if_block1) if_block1.m(div3, null);
+				append(div3, t2);
 				append(div3, div2);
+				if (if_block2) if_block2.m(div2, null);
+				append(div2, t3);
+				append(div2, div1);
 
 				if (links_slot_or_fallback) {
-					links_slot_or_fallback.m(div2, null);
+					links_slot_or_fallback.m(div1, null);
 				}
 
-				append(div6, t4);
-				append(div6, div5);
-				if (if_block3) if_block3.m(div5, null);
-				append(div5, t5);
-				if (if_block4) if_block4.m(div5, null);
+				append(div5, t4);
+				append(div5, div4);
+				if (if_block3) if_block3.m(div4, null);
+				append(div4, t5);
+				if (if_block4) if_block4.m(div4, null);
 				insert(target, t6, anchor);
 				insert(target, link, anchor);
 				current = true;
@@ -1990,7 +1990,7 @@
 					} else {
 						if_block0 = create_if_block_7(ctx);
 						if_block0.c();
-						if_block0.m(div6, t0);
+						if_block0.m(div5, t0);
 					}
 				} else if (if_block0) {
 					if_block0.d(1);
@@ -2015,7 +2015,7 @@
 					} else {
 						if_block1 = create_if_block_6(ctx);
 						if_block1.c();
-						if_block1.m(div1, null);
+						if_block1.m(div3, t2);
 					}
 				} else if (if_block1) {
 					if_block1.d(1);
@@ -2028,7 +2028,7 @@
 					} else {
 						if_block2 = create_if_block_5(ctx);
 						if_block2.c();
-						if_block2.m(div3, t3);
+						if_block2.m(div2, t3);
 					}
 				} else if (if_block2) {
 					if_block2.d(1);
@@ -2060,7 +2060,7 @@
 					} else {
 						if_block3 = create_if_block_1$1(ctx);
 						if_block3.c();
-						if_block3.m(div5, t5);
+						if_block3.m(div4, t5);
 					}
 				} else if (if_block3) {
 					if_block3.d(1);
@@ -2078,7 +2078,7 @@
 						if_block4 = create_if_block$1(ctx);
 						if_block4.c();
 						transition_in(if_block4, 1);
-						if_block4.m(div5, null);
+						if_block4.m(div4, null);
 					}
 				} else if (if_block4) {
 					group_outros();
@@ -2091,7 +2091,7 @@
 				}
 
 				if (!current || dirty & /*containerClass*/ 1048576) {
-					attr(div6, "class", /*containerClass*/ ctx[20]);
+					attr(div5, "class", /*containerClass*/ ctx[20]);
 				}
 			},
 			i(local) {
@@ -2107,7 +2107,7 @@
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(div7);
+					detach(div6);
 					detach(t6);
 					detach(link);
 				}
@@ -2126,7 +2126,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', fullWidth = 'false', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.0#QUEBEC_blanc`, logoAlt = lang === 'fr'
+		let { logoUrl = '/', fullWidth = 'false', logoSrc = './img/quebec-logo.svg', logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
 		: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', searchPlaceholder = lang === 'fr' ? 'Rechercher…' : 'Search…', searchInputName = 'q', submitSearchText = lang === 'fr' ? 'Rechercher' : 'Search', displaySearchText = lang === 'fr'
 		? 'Cliquer pour faire une recherche'

@@ -199,7 +199,7 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
 }
 
 .qc-shading-0 {
-  box-shadow: 0 0 0 var(--qc-box-shadow-color);
+  box-shadow: 0 0 0 var(--qc-color-grey-light);
 }
 
 .qc-shading-1, .btn.btn-primary {
@@ -207,15 +207,15 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
 }
 
 .qc-shading-2 {
-  box-shadow: 0 2px 8px var(--qc-box-shadow-color);
+  box-shadow: 0 2px 8px var(--qc-color-grey-light);
 }
 
 .qc-shading-3 {
-  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
+  box-shadow: 0 4px 16px var(--qc-color-grey-light);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
+  box-shadow: 0 6px 24px var(--qc-color-grey-light);
 }
 
 .btn {
@@ -380,7 +380,7 @@ main {
   align-items: center;
 }
 .square-box.qc-shading-0 {
-  border: 1px solid var(--qc-color-blue-pale);
+  border: 1px solid var(--qc-color-grey-light);
 }
 
 a.pseudo-hover {
