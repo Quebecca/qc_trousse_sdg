@@ -6,7 +6,7 @@ La trousse de développement du Système de design gouvernemental (SDG) est un p
 
 Elle contient :
 - Les feuilles de styles minifiées pour être incluses en production, dans le dossier `dist`.
-- Ces mêmes feuilles de style non minifiées, pour lecture simplifiées (lors d'un usage en développement par exemple) – dans le dossier `public/css`.
+- Ces mêmes feuilles de style non minifiées, pour lecture simplifiée (lors du développement par exemple) – dans le dossier `public/css`.
 - Une documentation technique des composants du SDG au format HTML au chemin `/public/index.html`.
 - Les fichers sources SCSS et JavaScript dans `src`.
 
@@ -47,7 +47,7 @@ ou bien :
 ```
 
 ## Documentation des composants du SDG
-Les composants du SDG sont catalogués avec leur documentation dans le fichier HTML au chemin `public/index.html`.  
+Les composants du SDG sont catalogués avec leur documentation dans le fichier `public/index.html`.  
 
 
 ## Développement
@@ -87,12 +87,12 @@ Lancer la commande `npm run build` pour générer les fichiers CSS et JavaScript
 ### Génération des sprites
 
 Pour ajouter de nouvelles images :
-- Aller dans le fichier `/src/sdg/sprites`.
-- Installer les dépendances avec la commande `npm install`.
-- Ajouter votre fichier .svg dans le dossier `/src/sdg/sprites/svg`.
+- Aller dans le fichier `/src/sdg/sprites` ;
+- Installer les dépendances avec la commande `npm install` ;
+- Ajouter votre fichier au format SVG dans le dossier `/src/sdg/sprites/svg` ;
 - Générer le sprite avec la commande `gulp generateSprite`.
 
-Le sprite sera mis à jour dans les dossiers `/public/img` et `/dist/img`.
+Votre SVG sera ajouté au deux fichiers `qc-sprite.svg` dans les répertoires `/public/img` et `/dist/img`.
 
 Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
 
@@ -101,11 +101,11 @@ Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#<nom-du-fichier-svg-ajouté>);
 }
 ```
-Voir, comme exemple, ce qui est fait dans `src/scss/components/_icons.scss`
+Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`
 
 ## Historique
 
-- 1.2.0 - Ajout des composants Alerte générale, Avis, Bandeau d'en-tête du PIV et Haut de page ; Réorganisation des répertoires du projet ; Modification de la documention incluse (`/public/index.html`) ; Ajout/modification de jetons de conception.   
+- 1.2.0 - Ajout des composants Alerte générale, Avis, Bandeau d'en-tête du PIV et Haut de page ; Réorganisation des répertoires du projet ; Modification de la documention incluse (`/public/index.html`) ; Ajout/modification de jetons de design.   
 - 1.1.1 - Suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 - Ajout d'une CSS sans le système de grille
 - 1.0.0 - Première version contenant les ressources pour intégrer [les bases](https://design.quebec.ca/bases/citations) du Système de design gouvernemental.</li>
