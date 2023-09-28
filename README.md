@@ -55,7 +55,7 @@ Les composants du SDG sont catalogués avec leur documentation dans le fichier H
 - Cloner le dépôt : `git clone https://github.com/Quebecca/qc_trousse_sdg.git`
 - Aller dans le dossier : `cd qc_trousse_sdg` ;
 - Installer les dépendances nodejs : `npm install` ;
-- Lancer la commande : `npm run start`
+- Lancer la commande : `npm run dev`
 
 Une fois cette commande lancée, toutes modifications d'un fichier dans `/src` est automatiquement compilée à la volée dans le répertoire `/public`.
 Un lien vers la documentation de la trousse (`/public/index.html`) est affichée dans la console : les changements dans le code seront automatiquement reflétés dans le navigateur sans besoin de recharger manuellement la page.
@@ -72,7 +72,7 @@ Cf le guide github : https://docs.github.com/fr/get-started.
 #### Personnaliser la trousse
 
 L'autre option est d'ajouter la trousse comme dépendance de votre projet, et d'inclure les scss nécessaire pour profiter des jetons et fonctions de la trousse.
-Ici un exemple de projet d'extension de la trousse offrant 3 scénarios d'extensions :
+Ici [un exemple de projet d'extension de la trousse](https://github.com/Quebecca/qc-sdg-extension-demo) offrant 3 scénarios d'extensions :
 - Modification des réglages de la trousse ;
 - Utilisation de la trousse comme dépendance pour créer une feuille de style personnalisée ;
 - Intégration dans bootstrap ;
@@ -102,7 +102,7 @@ Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`
 
 ## Historique
 
-- 1.2.0 - ajout des composants alerte, information générale, bandeau PIV et retour en haut de page. Modification du compteur de version majeure. 
+- 1.2.0 - ajout des composants alerte, information générale, bandeau PIV et retour en haut de page ; Réorganisation des répertoires du projet ; Modification de la documention incluse (`/public/index.html`) ; Ajout/modification de jetons de conception.   
 - 1.1.1 - suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 - Ajout d'une css sans le système de grille
 - 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>
