@@ -2,7 +2,7 @@
 
 ## Présentation
 
-La trousse de développement du système de design gouvernemental est un projet node.js dont l'objet est de générer un jeu de ressources — feuilles de style, images, fichiers javascript, etc — à utiliser pour intégrer les composants du système de design gouvernemental (SDG) dans un site web.
+La trousse de développement du Système de design gouvernemental (SDG) est un projet node.js dont l'objet est de générer un jeu de ressources — feuilles de style, images, fichiers javascript, etc — à utiliser pour intégrer les composants du Système de design gouvernemental dans un site web.
 Elle contient :
 - les feuilles de styles minifiées pour être incluses en production, dans le dossier `dist` ;
 - ces mêmes feuilles de style non minifiées, pour lecture simplifiées (lors d'un usage en développement par exemple) — dans le dossier `public/css` ;
@@ -104,10 +104,10 @@ Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`
 
 - 1.2.0 - ajout des composants alerte, information générale, bandeau PIV et retour en haut de page ; Réorganisation des répertoires du projet ; Modification de la documention incluse (`/public/index.html`) ; Ajout/modification de jetons de conception.   
 - 1.1.1 - suppression des css.map + ajout de fichiers en suivi de version.
-- 1.1.0 - Ajout d'une css sans le système de grille
-- 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du système de design gouvernemental.</li>
+- 1.1.0 - Ajout d'une css sans le  de grille
+- 1.0.0 - première version, contenant les ressources pour intégrer [les composants de base](https://design.quebec.ca/bases/citations) du Système de design gouvernemental.</li>
  
 
 ## Remerciements
 
-Un grand merci au Ministère de l'Emploi et de la Solidarité Sociale, dont le [projet UTD ](https://github.com/MTESSDev/utd-webcomponents/releases)a largement inspiré cette trousse. 
+Un grand merci au Ministère de l'Emploi et de la Solidarité Sociale, dont le [projet UTD ](https://github.com/MTESSDev/utd-webcomponents/releases)a largement inspiré le code de cette trousse. 
