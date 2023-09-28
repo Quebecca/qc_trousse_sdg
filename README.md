@@ -1,4 +1,4 @@
-# Trousse de développement du système de design gouvernemental du Québec
+# Trousse de développement du Système de design gouvernemental du Québec
 
 ## Présentation
 
