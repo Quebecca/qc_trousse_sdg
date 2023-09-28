@@ -84,9 +84,9 @@ Lancer la commande `npm run build` pour générer les fichiers css et js minifi�
 ### Génération des sprites
 
 Pour ajouter de nouvelles images :
-- aller dans le fichier `/scr/sprites` ;
+- aller dans le fichier `/src/sdg/sprites` ;
 - installer les dépendances avec la commande `npm install` ;
-- ajouter votre fichier .svg dans le dossier `/src/sprites/svg` ;
+- ajouter votre fichier .svg dans le dossier `/src/sdg/sprites/svg` ;
 - générer le sprite avec la commande `gulp generateSprite`.
 
 Le sprite sera mis à jour dans les dossiers `/public/img` et `/dist/img`.
