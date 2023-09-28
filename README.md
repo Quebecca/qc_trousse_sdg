@@ -20,7 +20,7 @@ Elle contient :
     <script defer href="/dist/js/qc-sdg.js">
 </head>
 ```
-### Design tokens seulement
+### Jetons de design (_design tokens_) seulement
 
 Les réglages de la trousse sont isolés sous forme de variable CSS dans le fichier `dist/css/qc-sdg-design-tokens.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
 
@@ -75,7 +75,7 @@ Cf. le guide GitHub : https://docs.github.com/fr/get-started.
 
 L'autre option est d'ajouter la trousse comme dépendance de votre projet et d'inclure les SCSS nécessaire pour profiter des jetons et fonctions de la trousse.
 
-Ici [un exemple de projet d'extension de la trousse](https://github.com/Quebecca/qc-sdg-extension-demo) offrant 3 scénarios d'extensions :
+Voici [un exemple de projet d'extension de la trousse](https://github.com/Quebecca/qc-sdg-extension-demo) offrant 3 scénarios d'extensions :
 - Modification des réglages de la trousse.
 - Utilisation de la trousse comme dépendance pour créer une feuille de style personnalisée.
 - Intégration dans Bootstrap.
