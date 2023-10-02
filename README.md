@@ -144,7 +144,8 @@ Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
 ## Historique
 
-- 1.2.0 — Ajout des composants Alerte générale, Avis, Bandeau d’en-tête du PIV et Haut de page ; Réorganisation des répertoires du projet ; Modification de la documentation incluse (`/public/index.html`) ; Ajout/modification de jetons de design.
+- 1.2.1 — Mise à jour d’un jeton de design concernant les ombrages ; correction d’une anomalie visuelle dans du bandeau PIV en mobile ; mise à jour des titres de la documentation incluse.
+- 1.2.0 — Ajout des composants Alerte générale, Avis, Bandeau d’en-tête du PIV et Haut de page ; réorganisation des répertoires du projet ; modification de la documentation incluse (`/public/index.html`) ; ajout/modification de jetons de design.
 - 1.1.1 — Suppression des css.map + ajout de fichiers en suivi de version.
 - 1.1.0 — Ajout d’une CSS sans le système de grille.
 - 1.0.0 — Première version contenant les ressources pour intégrer [les bases](https://design.quebec.ca/bases/) du Système de design gouvernemental.

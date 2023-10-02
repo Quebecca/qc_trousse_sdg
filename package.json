@@ -1,6 +1,6 @@
 {
   "name": "qc-sdg",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Trousse SDG",
   "main": "index.js",
   "scripts": {
