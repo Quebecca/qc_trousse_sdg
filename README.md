@@ -55,7 +55,7 @@ Si vous utilisez déjà un système de grille, vous pouvez intégrer la trousse 
 
 ### Utilisation des jetons de design (_design tokens_) uniquement
 
-Les réglages de la trousse sont isolés sous forme de variable CSS dans le fichier `dist/css/qc-sdg-design-tokens.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
+Les réglages de la trousse sont isolés sous forme de variables CSS dans le fichier `dist/css/qc-sdg-design-tokens.min.css`. Il est possible de les intégrer à une feuille de style déjà existante.
 
 ```css
 // styles.css
