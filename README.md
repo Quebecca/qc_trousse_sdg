@@ -35,7 +35,7 @@ Un processus d’autorisation de projet numérique est en place au Secrétariat 
 <head>
     ...
     <link rel="stylesheet" href="/dist/css/qc-sdg.min.css">
-    <script defer href="/dist/js/qc-sdg.js">
+    <script defer src="/dist/js/qc-sdg.js">
 </head>
 ```
 ### Utilisation de la trousse sans le système de grille
@@ -49,7 +49,7 @@ Si vous utilisez déjà un système de grille, vous pouvez intégrer la trousse 
 <head>
     ...
     <link rel="stylesheet" href="/dist/css/qc-sdg-no-grid.min.css">
-    <script defer href="/dist/js/qc-sdg.js">
+    <script defer src="/dist/js/qc-sdg.js">
 </head>
 ```
 
