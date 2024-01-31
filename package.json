@@ -1,7 +1,7 @@
 {
-  "name": "qc-sdg",
+  "name": "qc-trousse-sdg",
   "version": "1.2.1",
-  "description": "Trousse SDG",
+  "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c -w",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@ssh.gitlab.quebec.ca:pgu/systeme-de-design.git"
+    "url": "https://github.com/Quebecca/qc_trousse_sdg.git"
   },
   "author": "MCE",
   "license": "ISC",

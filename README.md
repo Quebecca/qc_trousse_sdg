@@ -95,6 +95,10 @@ Une fois cette commande lancée, toute modification d’un fichier dans `/src` e
 
 Un lien vers la documentation de la trousse (`/public/index.html`) est affiché dans la console : les changements dans le code seront automatiquement reflétés dans le navigateur, sans besoin de recharger manuellement la page.
 
+### Installation dans un projet node.js
+
+Vous pouvez installer la trousse comme dépendance dans un projet node.js avec la commande suivante : `npm i qc-trousse-sgd`
+
 ### Étendre la trousse de développement
 
 Il y a 2 façons de faire pour étendre la trousse de développement afin d’y ajouter des composants ou de l’utiliser pour l’intégrer dans un cadriciel déjà existant.
