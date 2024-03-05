@@ -1,16 +1,5 @@
-const svelte = require('rollup-plugin-svelte');
-const resolve = require('@rollup/plugin-node-resolve');
-const css = require('rollup-plugin-css-only');
-const livereload = require('rollup-plugin-livereload');
-const commonjs = require('@rollup/plugin-commonjs');
-const { terser } = require('rollup-plugin-terser');
-const scss = require('rollup-plugin-scss');
-const copy = require('rollup-plugin-copy');
-const del = require('rollup-plugin-delete');
-const replace = require('@rollup/plugin-replace');
 const gulp = require('gulp');
 const transform = require('gulp-transform');
-// import del from 'del'
 const clean = require('gulp-clean')
 
 
