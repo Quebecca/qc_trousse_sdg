@@ -273,7 +273,7 @@
 	 *
 	 * If a function is returned _synchronously_ from `onMount`, it will be called when the component is unmounted.
 	 *
-	 * `onMount` does not run inside a [server-side component](/docs#run-time-server-side-component-api).
+	 * `onMount` does not run inside a [server-side component](https://svelte.dev/docs#run-time-server-side-component-api).
 	 *
 	 * https://svelte.dev/docs/svelte#onmount
 	 * @template T
@@ -495,7 +495,17 @@
 		component.$$.dirty[(i / 31) | 0] |= 1 << i % 31;
 	}
 
-	/** @returns {void} */
+	// TODO: Document the other params
+	/**
+	 * @param {SvelteComponent} component
+	 * @param {import('./public.js').ComponentConstructorOptions} options
+	 *
+	 * @param {import('./utils.js')['not_equal']} not_equal Used to compare props and state values.
+	 * @param {(target: Element | ShadowRoot) => void} [append_styles] Function that appends styles to the DOM when the component is first initialised.
+	 * This will be the `add_css` function from the compiled component.
+	 *
+	 * @returns {void}
+	 */
 	function init(
 		component,
 		options,
@@ -503,7 +513,7 @@
 		create_fragment,
 		not_equal,
 		props,
-		append_styles,
+		append_styles = null,
 		dirty = [-1]
 	) {
 		const parent_component = current_component;
@@ -549,8 +559,9 @@
 		$$.fragment = create_fragment ? create_fragment($$.ctx) : false;
 		if (options.target) {
 			if (options.hydrate) {
+				// TODO: what is the correct type here?
+				// @ts-expect-error
 				const nodes = children(options.target);
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				$$.fragment && $$.fragment.l(nodes);
 				nodes.forEach(detach);
 			} else {
@@ -625,7 +636,7 @@
 				if (!this.$$c) {
 					// We wait one tick to let possible child slot elements be created/mounted
 					await Promise.resolve();
-					if (!this.$$cn) {
+					if (!this.$$cn || this.$$c) {
 						return;
 					}
 					function create_slot(name) {
@@ -668,6 +679,13 @@
 							this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, 'toProp');
 						}
 					}
+					// Port over props that were set programmatically before ce was initialized
+					for (const key in this.$$p_d) {
+						if (!(key in this.$$d) && this[key] !== undefined) {
+							this.$$d[key] = this[key]; // don't transform, these were set through JavaScript
+							delete this[key]; // remove the property that shadows the getter/setter
+						}
+					}
 					this.$$c = new this.$$ctor({
 						target: this.shadowRoot || this,
 						props: {
@@ -692,7 +710,7 @@
 									'toAttribute'
 								);
 								if (attribute_value == null) {
-									this.removeAttribute(key);
+									this.removeAttribute(this.$$p_d[key].attribute || key);
 								} else {
 									this.setAttribute(this.$$p_d[key].attribute || key, attribute_value);
 								}
@@ -1119,8 +1137,8 @@
 	  }
 	}
 
-	/** @typedef {{scope?: string, language?: string, sublanguage?: boolean, children: Node[]} | string} Node */
-	/** @typedef {{scope?: string, language?: string, sublanguage?: boolean, children: Node[]} } DataNode */
+	/** @typedef {{scope?: string, language?: string, children: Node[]} | string} Node */
+	/** @typedef {{scope?: string, language?: string, children: Node[]} } DataNode */
 	/** @typedef {import('highlight.js').Emitter} Emitter */
 	/**  */
 
@@ -1587,28 +1605,18 @@
 	  relevance: 0
 	};
 	const REGEXP_MODE = {
-	  // this outer rule makes sure we actually have a WHOLE regex and not simply
-	  // an expression such as:
-	  //
-	  //     3 / something
-	  //
-	  // (which will then blow up when regex's `illegal` sees the newline)
-	  begin: /(?=\/[^/\n]*\/)/,
-	  contains: [{
-	    scope: 'regexp',
-	    begin: /\//,
-	    end: /\/[gimuy]*/,
-	    illegal: /\n/,
-	    contains: [
-	      BACKSLASH_ESCAPE,
-	      {
-	        begin: /\[/,
-	        end: /\]/,
-	        relevance: 0,
-	        contains: [BACKSLASH_ESCAPE]
-	      }
-	    ]
-	  }]
+	  scope: "regexp",
+	  begin: /\/(?=[^/\n]*\/)/,
+	  end: /\/[gimuy]*/,
+	  contains: [
+	    BACKSLASH_ESCAPE,
+	    {
+	      begin: /\[/,
+	      end: /\]/,
+	      relevance: 0,
+	      contains: [BACKSLASH_ESCAPE]
+	    }
+	  ]
 	};
 	const TITLE_MODE = {
 	  scope: 'title',
@@ -1645,30 +1653,30 @@
 
 	var MODES = /*#__PURE__*/Object.freeze({
 	  __proto__: null,
-	  MATCH_NOTHING_RE: MATCH_NOTHING_RE,
-	  IDENT_RE: IDENT_RE,
-	  UNDERSCORE_IDENT_RE: UNDERSCORE_IDENT_RE,
-	  NUMBER_RE: NUMBER_RE,
-	  C_NUMBER_RE: C_NUMBER_RE,
+	  APOS_STRING_MODE: APOS_STRING_MODE,
+	  BACKSLASH_ESCAPE: BACKSLASH_ESCAPE,
+	  BINARY_NUMBER_MODE: BINARY_NUMBER_MODE,
 	  BINARY_NUMBER_RE: BINARY_NUMBER_RE,
+	  COMMENT: COMMENT,
+	  C_BLOCK_COMMENT_MODE: C_BLOCK_COMMENT_MODE,
+	  C_LINE_COMMENT_MODE: C_LINE_COMMENT_MODE,
+	  C_NUMBER_MODE: C_NUMBER_MODE,
+	  C_NUMBER_RE: C_NUMBER_RE,
+	  END_SAME_AS_BEGIN: END_SAME_AS_BEGIN,
+	  HASH_COMMENT_MODE: HASH_COMMENT_MODE,
+	  IDENT_RE: IDENT_RE,
+	  MATCH_NOTHING_RE: MATCH_NOTHING_RE,
+	  METHOD_GUARD: METHOD_GUARD,
+	  NUMBER_MODE: NUMBER_MODE,
+	  NUMBER_RE: NUMBER_RE,
+	  PHRASAL_WORDS_MODE: PHRASAL_WORDS_MODE,
+	  QUOTE_STRING_MODE: QUOTE_STRING_MODE,
+	  REGEXP_MODE: REGEXP_MODE,
 	  RE_STARTERS_RE: RE_STARTERS_RE,
 	  SHEBANG: SHEBANG,
-	  BACKSLASH_ESCAPE: BACKSLASH_ESCAPE,
-	  APOS_STRING_MODE: APOS_STRING_MODE,
-	  QUOTE_STRING_MODE: QUOTE_STRING_MODE,
-	  PHRASAL_WORDS_MODE: PHRASAL_WORDS_MODE,
-	  COMMENT: COMMENT,
-	  C_LINE_COMMENT_MODE: C_LINE_COMMENT_MODE,
-	  C_BLOCK_COMMENT_MODE: C_BLOCK_COMMENT_MODE,
-	  HASH_COMMENT_MODE: HASH_COMMENT_MODE,
-	  NUMBER_MODE: NUMBER_MODE,
-	  C_NUMBER_MODE: C_NUMBER_MODE,
-	  BINARY_NUMBER_MODE: BINARY_NUMBER_MODE,
-	  REGEXP_MODE: REGEXP_MODE,
 	  TITLE_MODE: TITLE_MODE,
-	  UNDERSCORE_TITLE_MODE: UNDERSCORE_TITLE_MODE,
-	  METHOD_GUARD: METHOD_GUARD,
-	  END_SAME_AS_BEGIN: END_SAME_AS_BEGIN
+	  UNDERSCORE_IDENT_RE: UNDERSCORE_IDENT_RE,
+	  UNDERSCORE_TITLE_MODE: UNDERSCORE_TITLE_MODE
 	});
 
 	/**
@@ -2481,7 +2489,7 @@
 	  return mode;
 	}
 
-	var version = "11.8.0";
+	var version = "11.9.0";
 
 	class HTMLInjectionError extends Error {
 	  constructor(reason, html) {
@@ -2495,6 +2503,7 @@
 	Syntax highlighting with language autodetection.
 	https://highlightjs.org/
 	*/
+
 
 
 	/**
@@ -3224,6 +3233,11 @@
 	    fire("before:highlightElement",
 	      { el: element, language });
 
+	    if (element.dataset.highlighted) {
+	      console.log("Element previously highlighted. To highlight again, first unset `dataset.highlighted`.", element);
+	      return;
+	    }
+
 	    // we should be all text, no child nodes (unescaped HTML) - this is possibly
 	    // an HTML injection attack - it's likely too late if this is already in
 	    // production (the code has likely already done its damage by the time
@@ -3250,6 +3264,7 @@
 	    const result = language ? highlight(text, { language, ignoreIllegals: true }) : highlightAuto(text);
 
 	    element.innerHTML = result.value;
+	    element.dataset.highlighted = "yes";
 	    updateClassName(element, language, result.language);
 	    element.result = {
 	      language: result.language,
@@ -6099,6 +6114,7 @@
 		Website: https://www.arduino.cc
 		*/
 
+
 		/** @type LanguageFn */
 		function arduino(hljs) {
 		  const ARDUINO_KW = {
@@ -6537,6 +6553,10 @@
 		        + 'ALIAS ALIGN ARM AREA ASSERT ATTR CN CODE CODE16 CODE32 COMMON CP DATA DCB DCD DCDU DCDO DCFD DCFDU DCI DCQ DCQU DCW DCWU DN ELIF ELSE END ENDFUNC ENDIF ENDP ENTRY EQU EXPORT EXPORTAS EXTERN FIELD FILL FUNCTION GBLA GBLL GBLS GET GLOBAL IF IMPORT INCBIN INCLUDE INFO KEEP LCLA LCLL LCLS LTORG MACRO MAP MEND MEXIT NOFP OPT PRESERVE8 PROC QN READONLY RELOC REQUIRE REQUIRE8 RLIST FN ROUT SETA SETL SETS SN SPACE SUBT THUMB THUMBX TTL WHILE WEND ',
 		      built_in:
 		        'r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 ' // standard registers
+		        + 'w0 w1 w2 w3 w4 w5 w6 w7 w8 w9 w10 w11 w12 w13 w14 w15 ' // 32 bit ARMv8 registers
+		        + 'w16 w17 w18 w19 w20 w21 w22 w23 w24 w25 w26 w27 w28 w29 w30 '
+		        + 'x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 ' // 64 bit ARMv8 registers
+		        + 'x16 x17 x18 x19 x20 x21 x22 x23 x24 x25 x26 x27 x28 x29 x30 '
 		        + 'pc lr sp ip sl sb fp ' // typical regs plus backward compatibility
 		        + 'a1 a2 a3 a4 v1 v2 v3 v4 v5 v6 v7 v8 f0 f1 f2 f3 f4 f5 f6 f7 ' // more regs and fp
 		        + 'p0 p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 ' // coprocessor regs
@@ -8084,14 +8104,15 @@
 		  };
 		  SUBST.contains.push(QUOTE_STRING);
 		  const ESCAPED_QUOTE = {
-		    className: '',
-		    begin: /\\"/
-
+		    match: /\\"/
 		  };
 		  const APOS_STRING = {
 		    className: 'string',
 		    begin: /'/,
 		    end: /'/
+		  };
+		  const ESCAPED_APOS = {
+		    match: /\\'/
 		  };
 		  const ARITHMETIC = {
 		    begin: /\$?\(\(/,
@@ -8405,6 +8426,7 @@
 		      QUOTE_STRING,
 		      ESCAPED_QUOTE,
 		      APOS_STRING,
+		      ESCAPED_APOS,
 		      VAR
 		    ]
 		  };
@@ -10048,6 +10070,7 @@
 		Category: scripting
 		Website: https://coffeescript.org
 		*/
+
 
 		/** @type LanguageFn */
 		function coffeescript(hljs) {
@@ -12394,7 +12417,7 @@
 		    },
 		    CSS_VARIABLE: {
 		      className: "attr",
-		      begin: /--[A-Za-z][A-Za-z0-9_-]*/
+		      begin: /--[A-Za-z_][A-Za-z0-9_-]*/
 		    }
 		  };
 		};
@@ -12960,6 +12983,7 @@
 		Category: common, css, web
 		Website: https://developer.mozilla.org/en-US/docs/Web/CSS
 		*/
+
 
 		/** @type LanguageFn */
 		function css(hljs) {
@@ -17515,6 +17539,7 @@
 		Website: https://docs.microsoft.com/en-us/dotnet/fsharp/
 		Category: functional
 		*/
+
 
 		/** @type LanguageFn */
 		function fsharp(hljs) {
@@ -22281,7 +22306,7 @@
 
 		  const CLASS_DEFINITION = {
 		    match: [
-		      /(class|interface|trait|enum|extends|implements)/,
+		      /(class|interface|trait|enum|record|extends|implements)/,
 		      /\s+/,
 		      hljs.UNDERSCORE_IDENT_RE
 		    ],
@@ -22341,7 +22366,8 @@
 		    "import",
 		    "package",
 		    "return",
-		    "instanceof"
+		    "instanceof",
+		    "var"
 		  ];
 
 		  return {
@@ -22808,8 +22834,32 @@
 		if (hasRequiredHaskell) return haskell_1;
 		hasRequiredHaskell = 1;
 		function haskell(hljs) {
+
+		  /* See:
+		     - https://www.haskell.org/onlinereport/lexemes.html
+		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/binary_literals.html
+		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/numeric_underscores.html
+		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/hex_float_literals.html
+		  */
+		  const decimalDigits = '([0-9]_*)+';
+		  const hexDigits = '([0-9a-fA-F]_*)+';
+		  const binaryDigits = '([01]_*)+';
+		  const octalDigits = '([0-7]_*)+';
+		  const ascSymbol = '[!#$%&*+.\\/<=>?@\\\\^~-]';
+		  const uniSymbol = '(\\p{S}|\\p{P})'; // Symbol or Punctuation
+		  const special = '[(),;\\[\\]`|{}]';
+		  const symbol = `(${ascSymbol}|(?!(${special}|[_:"']))${uniSymbol})`;
+
 		  const COMMENT = { variants: [
-		    hljs.COMMENT('--', '$'),
+		    // Double dash forms a valid comment only if it's not part of legal lexeme.
+		    // See: Haskell 98 report: https://www.haskell.org/onlinereport/lexemes.html
+		    //
+		    // The commented code does the job, but we can't use negative lookbehind,
+		    // due to poor support by Safari browser.
+		    // > hljs.COMMENT(`(?<!${symbol})--+(?!${symbol})`, '$'),
+		    // So instead, we'll add a no-markup rule before the COMMENT rule in the rules list
+		    // to match the problematic infix operators that contain double dash.
+		    hljs.COMMENT('--+', '$'),
 		    hljs.COMMENT(
 		      /\{-/,
 		      /-\}/,
@@ -22857,19 +22907,6 @@
 		    contains: LIST.contains
 		  };
 
-		  /* See:
-
-		     - https://www.haskell.org/onlinereport/lexemes.html
-		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/binary_literals.html
-		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/numeric_underscores.html
-		     - https://downloads.haskell.org/ghc/9.0.1/docs/html/users_guide/exts/hex_float_literals.html
-
-		  */
-		  const decimalDigits = '([0-9]_*)+';
-		  const hexDigits = '([0-9a-fA-F]_*)+';
-		  const binaryDigits = '([01]_*)+';
-		  const octalDigits = '([0-7]_*)+';
-
 		  const NUMBER = {
 		    className: 'number',
 		    relevance: 0,
@@ -22893,6 +22930,7 @@
 		      + 'qualified type data newtype deriving class instance as default '
 		      + 'infix infixl infixr foreign export ccall stdcall cplusplus '
 		      + 'jvm dotnet safe unsafe family forall mdo proc rec',
+		    unicodeRegex: true,
 		    contains: [
 		      // Top-level constructions.
 		      {
@@ -22994,6 +23032,8 @@
 		      NUMBER,
 		      CONSTRUCTOR,
 		      hljs.inherit(hljs.TITLE_MODE, { begin: '^[_a-z][\\w\']*' }),
+		      // No markup, prevents infix operators from being recognized as comments.
+		      { begin: `(?!-)${symbol}--+|--+(?!-)${symbol}`},
 		      COMMENT,
 		      { // No markup, relevance booster
 		        begin: '->|<-' }
@@ -23020,6 +23060,10 @@
 		if (hasRequiredHaxe) return haxe_1;
 		hasRequiredHaxe = 1;
 		function haxe(hljs) {
+		  const IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
+
+		  // C_NUMBER_RE with underscores and literal suffixes
+		  const HAXE_NUMBER_RE = /(-?)(\b0[xX][a-fA-F0-9_]+|(\b\d+(\.[\d_]*)?|\.[\d_]+)(([eE][-+]?\d+)|i32|u32|i64|f64)?)/;
 
 		  const HAXE_BASIC_TYPES = 'Int Float String Bool Dynamic Void Array ';
 
@@ -23027,8 +23071,8 @@
 		    name: 'Haxe',
 		    aliases: [ 'hx' ],
 		    keywords: {
-		      keyword: 'break case cast catch continue default do dynamic else enum extern '
-		               + 'for function here if import in inline never new override package private get set '
+		      keyword: 'abstract break case cast catch continue default do dynamic else enum extern '
+		               + 'final for function here if import in inline is macro never new override package private get set '
 		               + 'public return static super switch this throw trace try typedef untyped using var while '
 		               + HAXE_BASIC_TYPES,
 		      built_in:
@@ -23045,12 +23089,12 @@
 		          hljs.BACKSLASH_ESCAPE,
 		          {
 		            className: 'subst', // interpolation
-		            begin: '\\$\\{',
-		            end: '\\}'
+		            begin: /\$\{/,
+		            end: /\}/
 		          },
 		          {
 		            className: 'subst', // interpolation
-		            begin: '\\$',
+		            begin: /\$/,
 		            end: /\W\}/
 		          }
 		        ]
@@ -23058,11 +23102,20 @@
 		      hljs.QUOTE_STRING_MODE,
 		      hljs.C_LINE_COMMENT_MODE,
 		      hljs.C_BLOCK_COMMENT_MODE,
-		      hljs.C_NUMBER_MODE,
+		      {
+		        className: 'number',
+		        begin: HAXE_NUMBER_RE,
+		        relevance: 0
+		      },
+		      {
+		        className: 'variable',
+		        begin: "\\$" + IDENT_RE,
+		      },
 		      {
 		        className: 'meta', // compiler meta
-		        begin: '@:',
-		        end: '$'
+		        begin: /@:?/,
+		        end: /\(|$/,
+		        excludeEnd: true,
 		      },
 		      {
 		        className: 'meta', // compiler conditionals
@@ -23072,55 +23125,55 @@
 		      },
 		      {
 		        className: 'type', // function types
-		        begin: ':[ \t]*',
-		        end: '[^A-Za-z0-9_ \t\\->]',
+		        begin: /:[ \t]*/,
+		        end: /[^A-Za-z0-9_ \t\->]/,
 		        excludeBegin: true,
 		        excludeEnd: true,
 		        relevance: 0
 		      },
 		      {
 		        className: 'type', // types
-		        begin: ':[ \t]*',
-		        end: '\\W',
+		        begin: /:[ \t]*/,
+		        end: /\W/,
 		        excludeBegin: true,
 		        excludeEnd: true
 		      },
 		      {
 		        className: 'type', // instantiation
-		        begin: 'new *',
-		        end: '\\W',
+		        begin: /new */,
+		        end: /\W/,
 		        excludeBegin: true,
 		        excludeEnd: true
 		      },
 		      {
-		        className: 'class', // enums
+		        className: 'title.class', // enums
 		        beginKeywords: 'enum',
-		        end: '\\{',
+		        end: /\{/,
 		        contains: [ hljs.TITLE_MODE ]
 		      },
 		      {
-		        className: 'class', // abstracts
-		        beginKeywords: 'abstract',
-		        end: '[\\{$]',
+		        className: 'title.class', // abstracts
+		        begin: '\\babstract\\b(?=\\s*' + hljs.IDENT_RE + '\\s*\\()',
+		        end: /[\{$]/,
 		        contains: [
 		          {
 		            className: 'type',
-		            begin: '\\(',
-		            end: '\\)',
+		            begin: /\(/,
+		            end: /\)/,
 		            excludeBegin: true,
 		            excludeEnd: true
 		          },
 		          {
 		            className: 'type',
-		            begin: 'from +',
-		            end: '\\W',
+		            begin: /from +/,
+		            end: /\W/,
 		            excludeBegin: true,
 		            excludeEnd: true
 		          },
 		          {
 		            className: 'type',
-		            begin: 'to +',
-		            end: '\\W',
+		            begin: /to +/,
+		            end: /\W/,
 		            excludeBegin: true,
 		            excludeEnd: true
 		          },
@@ -23129,15 +23182,15 @@
 		        keywords: { keyword: 'abstract from to' }
 		      },
 		      {
-		        className: 'class', // classes
-		        begin: '\\b(class|interface) +',
-		        end: '[\\{$]',
+		        className: 'title.class', // classes
+		        begin: /\b(class|interface) +/,
+		        end: /[\{$]/,
 		        excludeEnd: true,
 		        keywords: 'class interface',
 		        contains: [
 		          {
 		            className: 'keyword',
-		            begin: '\\b(extends|implements) +',
+		            begin: /\b(extends|implements) +/,
 		            keywords: 'extends implements',
 		            contains: [
 		              {
@@ -23151,11 +23204,11 @@
 		        ]
 		      },
 		      {
-		        className: 'function',
+		        className: 'title.function',
 		        beginKeywords: 'function',
-		        end: '\\(',
+		        end: /\(/,
 		        excludeEnd: true,
-		        illegal: '\\S',
+		        illegal: /\S/,
 		        contains: [ hljs.TITLE_MODE ]
 		      }
 		    ],
@@ -27073,6 +27126,7 @@
 		Website: https://www.java.com/
 		*/
 
+
 		/**
 		 * Allows recursive regex expressions to a given depth
 		 *
@@ -27492,6 +27546,7 @@
 		Category: common, scripting, web
 		Website: https://developer.mozilla.org/en-US/docs/Web/JavaScript
 		*/
+
 
 		/** @type LanguageFn */
 		function javascript(hljs) {
@@ -28788,6 +28843,7 @@
 		 Category: common
 		 */
 
+
 		function kotlin(hljs) {
 		  const KEYWORDS = {
 		    keyword:
@@ -29541,8 +29597,9 @@
 
 	/*
 	Language: Leaf
-	Author: Hale Chan <halechan@qq.com>
-	Description: Based on the Leaf reference from https://vapor.github.io/documentation/guide/leaf.html.
+	Description: A Swift-based templating language created for the Vapor project.
+	Website: https://docs.vapor.codes/leaf/overview
+	Category: template
 	*/
 
 	var leaf_1;
@@ -29552,43 +29609,90 @@
 		if (hasRequiredLeaf) return leaf_1;
 		hasRequiredLeaf = 1;
 		function leaf(hljs) {
+		  const IDENT = /([A-Za-z_][A-Za-z_0-9]*)?/;
+		  const LITERALS = [
+		    'true',
+		    'false',
+		    'in'
+		  ];
+		  const PARAMS = {
+		    scope: 'params',
+		    begin: /\(/,
+		    end: /\)(?=\:?)/,
+		    endsParent: true,
+		    relevance: 7,
+		    contains: [
+		      {
+		        scope: 'string',
+		        begin: '"',
+		        end: '"'
+		      },
+		      {
+		        scope: 'keyword',
+		        match: LITERALS.join("|"),
+		      },
+		      {
+		        scope: 'variable',
+		        match: /[A-Za-z_][A-Za-z_0-9]*/
+		      },
+		      {
+		        scope: 'operator',
+		        match: /\+|\-|\*|\/|\%|\=\=|\=|\!|\>|\<|\&\&|\|\|/
+		      }
+		    ]
+		  };
+		  const INSIDE_DISPATCH = {
+		    match: [
+		      IDENT,
+		      /(?=\()/,
+		    ],
+		    scope: {
+		      1: "keyword"
+		    },
+		    contains: [ PARAMS ]
+		  };
+		  PARAMS.contains.unshift(INSIDE_DISPATCH);
 		  return {
 		    name: 'Leaf',
 		    contains: [
+		      // #ident():
 		      {
-		        className: 'function',
-		        begin: '#+' + '[A-Za-z_0-9]*' + '\\(',
-		        end: / \{/,
-		        returnBegin: true,
-		        excludeEnd: true,
+		        match: [
+		          /#+/,
+		          IDENT,
+		          /(?=\()/,
+		        ],
+		        scope: {
+		          1: "punctuation",
+		          2: "keyword"
+		        },
+		        // will start up after the ending `)` match from line ~44
+		        // just to grab the trailing `:` if we can match it
+		        starts: {
+		          contains: [
+		            {
+		              match: /\:/,
+		              scope: "punctuation"
+		            }
+		          ]
+		        },
 		        contains: [
-		          {
-		            className: 'keyword',
-		            begin: '#+'
-		          },
-		          {
-		            className: 'title',
-		            begin: '[A-Za-z_][A-Za-z_0-9]*'
-		          },
-		          {
-		            className: 'params',
-		            begin: '\\(',
-		            end: '\\)',
-		            endsParent: true,
-		            contains: [
-		              {
-		                className: 'string',
-		                begin: '"',
-		                end: '"'
-		              },
-		              {
-		                className: 'variable',
-		                begin: '[A-Za-z_][A-Za-z_0-9]*'
-		              }
-		            ]
-		          }
-		        ]
-		      }
+		          PARAMS
+		        ],
+		      },
+		      // #ident or #ident:
+		      {
+		        match: [
+		          /#+/,
+		          IDENT,
+		          /:?/,
+		        ],
+		        scope: {
+		          1: "punctuation",
+		          2: "keyword",
+		          3: "punctuation"
+		        }
+		      },
 		    ]
 		  };
 		}
@@ -29643,7 +29747,7 @@
 		    },
 		    CSS_VARIABLE: {
 		      className: "attr",
-		      begin: /--[A-Za-z][A-Za-z0-9_-]*/
+		      begin: /--[A-Za-z_][A-Za-z0-9_-]*/
 		    }
 		  };
 		};
@@ -30214,6 +30318,7 @@
 		Website: http://lesscss.org
 		Category: common, css, web
 		*/
+
 
 		/** @type LanguageFn */
 		function less(hljs) {
@@ -30933,6 +31038,7 @@
 		Website: https://livescript.net
 		Category: scripting
 		*/
+
 
 		function livescript(hljs) {
 		  const LIVESCRIPT_BUILT_INS = [
@@ -38820,6 +38926,7 @@
 		Category: scientific
 		*/
 
+
 		/** @type LanguageFn */
 		function mathematica(hljs) {
 		  const regex = hljs.regex;
@@ -41939,6 +42046,7 @@
 		    "addincludedir",
 		    "addplugindir",
 		    "appendfile",
+		    "assert",
 		    "cd",
 		    "define",
 		    "delfile",
@@ -46756,301 +46864,135 @@
 		if (hasRequiredReasonml) return reasonml_1;
 		hasRequiredReasonml = 1;
 		function reasonml(hljs) {
-		  function orReValues(ops) {
-		    return ops
-		      .map(function(op) {
-		        return op
-		          .split('')
-		          .map(function(char) {
-		            return '\\' + char;
-		          })
-		          .join('');
-		      })
-		      .join('|');
-		  }
-
-		  const RE_IDENT = '~?[a-z$_][0-9a-zA-Z$_]*';
-		  const RE_MODULE_IDENT = '`?[A-Z$_][0-9a-zA-Z$_]*';
-
-		  const RE_PARAM_TYPEPARAM = '\'?[a-z$_][0-9a-z$_]*';
-		  const RE_PARAM_TYPE = '\\s*:\\s*[a-z$_][0-9a-z$_]*(\\(\\s*(' + RE_PARAM_TYPEPARAM + '\\s*(,' + RE_PARAM_TYPEPARAM + '\\s*)*)?\\))?';
-		  const RE_PARAM = RE_IDENT + '(' + RE_PARAM_TYPE + '){0,2}';
-		  const RE_OPERATOR = "(" + orReValues([
-		    '||',
-		    '++',
-		    '**',
-		    '+.',
-		    '*',
-		    '/',
-		    '*.',
-		    '/.',
-		    '...'
-		  ]) + "|\\|>|&&|==|===)";
-		  const RE_OPERATOR_SPACED = "\\s+" + RE_OPERATOR + "\\s+";
-
-		  const KEYWORDS = {
-		    keyword:
-		      'and as asr assert begin class constraint do done downto else end exception external '
-		      + 'for fun function functor if in include inherit initializer '
-		      + 'land lazy let lor lsl lsr lxor match method mod module mutable new nonrec '
-		      + 'object of open or private rec sig struct then to try type val virtual when while with',
-		    built_in:
-		      'array bool bytes char exn|5 float int int32 int64 list lazy_t|5 nativeint|5 ref string unit ',
-		    literal:
-		      'true false'
-		  };
-
-		  const RE_NUMBER = '\\b(0[xX][a-fA-F0-9_]+[Lln]?|'
-		    + '0[oO][0-7_]+[Lln]?|'
-		    + '0[bB][01_]+[Lln]?|'
-		    + '[0-9][0-9_]*([Lln]|(\\.[0-9_]*)?([eE][-+]?[0-9_]+)?)?)';
-
-		  const NUMBER_MODE = {
-		    className: 'number',
-		    relevance: 0,
-		    variants: [
-		      { begin: RE_NUMBER },
-		      { begin: '\\(-' + RE_NUMBER + '\\)' }
-		    ]
-		  };
-
-		  const OPERATOR_MODE = {
-		    className: 'operator',
-		    relevance: 0,
-		    begin: RE_OPERATOR
-		  };
-		  const LIST_CONTENTS_MODES = [
-		    {
-		      className: 'identifier',
-		      relevance: 0,
-		      begin: RE_IDENT
-		    },
-		    OPERATOR_MODE,
-		    NUMBER_MODE
+		  const BUILT_IN_TYPES = [
+		    "array",
+		    "bool",
+		    "bytes",
+		    "char",
+		    "exn|5",
+		    "float",
+		    "int",
+		    "int32",
+		    "int64",
+		    "list",
+		    "lazy_t|5",
+		    "nativeint|5",
+		    "ref",
+		    "string",
+		    "unit",
 		  ];
-
-		  const MODULE_ACCESS_CONTENTS = [
-		    hljs.QUOTE_STRING_MODE,
-		    OPERATOR_MODE,
-		    {
-		      className: 'module',
-		      begin: "\\b" + RE_MODULE_IDENT,
-		      returnBegin: true,
-		      relevance: 0,
-		      end: "\.",
-		      contains: [
-		        {
-		          className: 'identifier',
-		          begin: RE_MODULE_IDENT,
-		          relevance: 0
-		        }
-		      ]
-		    }
-		  ];
-
-		  const PARAMS_CONTENTS = [
-		    {
-		      className: 'module',
-		      begin: "\\b" + RE_MODULE_IDENT,
-		      returnBegin: true,
-		      end: "\.",
-		      relevance: 0,
-		      contains: [
-		        {
-		          className: 'identifier',
-		          begin: RE_MODULE_IDENT,
-		          relevance: 0
-		        }
-		      ]
-		    }
-		  ];
-
-		  const PARAMS_MODE = {
-		    begin: RE_IDENT,
-		    end: '(,|\\n|\\))',
-		    relevance: 0,
-		    contains: [
-		      OPERATOR_MODE,
-		      {
-		        className: 'typing',
-		        begin: ':',
-		        end: '(,|\\n)',
-		        returnBegin: true,
-		        relevance: 0,
-		        contains: PARAMS_CONTENTS
-		      }
-		    ]
-		  };
-
-		  const FUNCTION_BLOCK_MODE = {
-		    className: 'function',
-		    relevance: 0,
-		    keywords: KEYWORDS,
-		    variants: [
-		      {
-		        begin: '\\s(\\(\\.?.*?\\)|' + RE_IDENT + ')\\s*=>',
-		        end: '\\s*=>',
-		        returnBegin: true,
-		        relevance: 0,
-		        contains: [
-		          {
-		            className: 'params',
-		            variants: [
-		              { begin: RE_IDENT },
-		              { begin: RE_PARAM },
-		              { begin: /\(\s*\)/ }
-		            ]
-		          }
-		        ]
-		      },
-		      {
-		        begin: '\\s\\(\\.?[^;\\|]*\\)\\s*=>',
-		        end: '\\s=>',
-		        returnBegin: true,
-		        relevance: 0,
-		        contains: [
-		          {
-		            className: 'params',
-		            relevance: 0,
-		            variants: [ PARAMS_MODE ]
-		          }
-		        ]
-		      },
-		      { begin: '\\(\\.\\s' + RE_IDENT + '\\)\\s*=>' }
-		    ]
-		  };
-		  MODULE_ACCESS_CONTENTS.push(FUNCTION_BLOCK_MODE);
-
-		  const CONSTRUCTOR_MODE = {
-		    className: 'constructor',
-		    begin: RE_MODULE_IDENT + '\\(',
-		    end: '\\)',
-		    illegal: '\\n',
-		    keywords: KEYWORDS,
-		    contains: [
-		      hljs.QUOTE_STRING_MODE,
-		      OPERATOR_MODE,
-		      {
-		        className: 'params',
-		        begin: '\\b' + RE_IDENT
-		      }
-		    ]
-		  };
-
-		  const PATTERN_MATCH_BLOCK_MODE = {
-		    className: 'pattern-match',
-		    begin: '\\|',
-		    returnBegin: true,
-		    keywords: KEYWORDS,
-		    end: '=>',
-		    relevance: 0,
-		    contains: [
-		      CONSTRUCTOR_MODE,
-		      OPERATOR_MODE,
-		      {
-		        relevance: 0,
-		        className: 'constructor',
-		        begin: RE_MODULE_IDENT
-		      }
-		    ]
-		  };
-
-		  const MODULE_ACCESS_MODE = {
-		    className: 'module-access',
-		    keywords: KEYWORDS,
-		    returnBegin: true,
-		    variants: [
-		      { begin: "\\b(" + RE_MODULE_IDENT + "\\.)+" + RE_IDENT },
-		      {
-		        begin: "\\b(" + RE_MODULE_IDENT + "\\.)+\\(",
-		        end: "\\)",
-		        returnBegin: true,
-		        contains: [
-		          FUNCTION_BLOCK_MODE,
-		          {
-		            begin: '\\(',
-		            end: '\\)',
-		            relevance: 0,
-		            skip: true
-		          }
-		        ].concat(MODULE_ACCESS_CONTENTS)
-		      },
-		      {
-		        begin: "\\b(" + RE_MODULE_IDENT + "\\.)+\\{",
-		        end: /\}/
-		      }
-		    ],
-		    contains: MODULE_ACCESS_CONTENTS
-		  };
-
-		  PARAMS_CONTENTS.push(MODULE_ACCESS_MODE);
-
 		  return {
 		    name: 'ReasonML',
 		    aliases: [ 're' ],
-		    keywords: KEYWORDS,
-		    illegal: '(:-|:=|\\$\\{|\\+=)',
+		    keywords: {
+		      $pattern:  /[a-z_]\w*!?/,
+		      keyword: [
+		        "and",
+		        "as",
+		        "asr",
+		        "assert",
+		        "begin",
+		        "class",
+		        "constraint",
+		        "do",
+		        "done",
+		        "downto",
+		        "else",
+		        "end",
+		        "esfun",
+		        "exception",
+		        "external",
+		        "for",
+		        "fun",
+		        "function",
+		        "functor",
+		        "if",
+		        "in",
+		        "include",
+		        "inherit",
+		        "initializer",
+		        "land",
+		        "lazy",
+		        "let",
+		        "lor",
+		        "lsl",
+		        "lsr",
+		        "lxor",
+		        "mod",
+		        "module",
+		        "mutable",
+		        "new",
+		        "nonrec",
+		        "object",
+		        "of",
+		        "open",
+		        "or",
+		        "pri",
+		        "pub",
+		        "rec",
+		        "sig",
+		        "struct",
+		        "switch",
+		        "then",
+		        "to",
+		        "try",
+		        "type",
+		        "val",
+		        "virtual",
+		        "when",
+		        "while",
+		        "with",
+		      ],
+		      built_in: BUILT_IN_TYPES,
+		      literal: ["true", "false"],
+		    },
+		    illegal: /(:-|:=|\$\{|\+=)/,
 		    contains: [
-		      hljs.COMMENT('/\\*', '\\*/', { illegal: '^(#,\\/\\/)' }),
 		      {
-		        className: 'character',
-		        begin: '\'(\\\\[^\']+|[^\'])\'',
-		        illegal: '\\n',
+		        scope: 'literal',
+		        match: /\[(\|\|)?\]|\(\)/,
 		        relevance: 0
 		      },
-		      hljs.QUOTE_STRING_MODE,
-		      {
-		        className: 'literal',
-		        begin: '\\(\\)',
-		        relevance: 0
-		      },
-		      {
-		        className: 'literal',
-		        begin: '\\[\\|',
-		        end: '\\|\\]',
-		        relevance: 0,
-		        contains: LIST_CONTENTS_MODES
-		      },
-		      {
-		        className: 'literal',
-		        begin: '\\[',
-		        end: '\\]',
-		        relevance: 0,
-		        contains: LIST_CONTENTS_MODES
-		      },
-		      CONSTRUCTOR_MODE,
-		      {
-		        className: 'operator',
-		        begin: RE_OPERATOR_SPACED,
-		        illegal: '-->',
-		        relevance: 0
-		      },
-		      NUMBER_MODE,
 		      hljs.C_LINE_COMMENT_MODE,
-		      PATTERN_MATCH_BLOCK_MODE,
-		      FUNCTION_BLOCK_MODE,
-		      {
-		        className: 'module-def',
-		        begin: "\\bmodule\\s+" + RE_IDENT + "\\s+" + RE_MODULE_IDENT + "\\s+=\\s+\\{",
-		        end: /\}/,
-		        returnBegin: true,
-		        keywords: KEYWORDS,
-		        relevance: 0,
-		        contains: [
-		          {
-		            className: 'module',
-		            relevance: 0,
-		            begin: RE_MODULE_IDENT
-		          },
-		          {
-		            begin: /\{/,
-		            end: /\}/,
-		            relevance: 0,
-		            skip: true
-		          }
-		        ].concat(MODULE_ACCESS_CONTENTS)
+		      hljs.COMMENT(/\/\*/, /\*\//, { illegal: /^(#,\/\/)/ }),
+		      { /* type variable */
+		        scope: 'symbol',
+		        match: /\'[A-Za-z_](?!\')[\w\']*/
+		        /* the grammar is ambiguous on how 'a'b should be interpreted but not the compiler */
 		      },
-		      MODULE_ACCESS_MODE
+		      { /* polymorphic variant */
+		        scope: 'type',
+		        match: /`[A-Z][\w\']*/
+		      },
+		      { /* module or constructor */
+		        scope: 'type',
+		        match: /\b[A-Z][\w\']*/,
+		        relevance: 0
+		      },
+		      { /* don't color identifiers, but safely catch all identifiers with ' */
+		      match: /[a-z_]\w*\'[\w\']*/,
+		        relevance: 0
+		      },
+		      {
+		        scope: 'operator',
+		        match: /\s+(\|\||\+[\+\.]?|\*[\*\/\.]?|\/[\.]?|\.\.\.|\|>|&&|===?)\s+/,
+		        relevance: 0
+		      },      
+		      hljs.inherit(hljs.APOS_STRING_MODE, {
+		        scope: 'string',
+		        relevance: 0
+		      }),
+		      hljs.inherit(hljs.QUOTE_STRING_MODE, { illegal: null }),
+		      {
+		        scope: 'number',
+		        variants: [
+		          { match: /\b0[xX][a-fA-F0-9_]+[Lln]?/ },
+		          { match: /\b0[oO][0-7_]+[Lln]?/ },
+		          { match: /\b0[bB][01_]+[Lln]?/ },
+		          { match: /\b[0-9][0-9_]*([Lln]|(\.[0-9_]*)?([eE][-+]?[0-9_]+)?)/ },
+		        ],
+		        relevance: 0
+		      },
 		    ]
 		  };
 		}
@@ -47633,7 +47575,7 @@
 		    relevance: 0,
 		    begin: regex.concat(
 		      /\b/,
-		      /(?!let\b)/,
+		      /(?!let|for|while|if|else|match\b)/,
 		      hljs.IDENT_RE,
 		      regex.lookahead(/\s*\(/))
 		  };
@@ -47742,6 +47684,7 @@
 		    "debug_assert!",
 		    "debug_assert_eq!",
 		    "env!",
+		    "eprintln!",
 		    "panic!",
 		    "file!",
 		    "format!",
@@ -48585,7 +48528,11 @@
 		        excludeBegin: true,
 		        excludeEnd: true,
 		        relevance: 0,
-		        contains: [ TYPE ]
+		        contains: [ 
+		          TYPE, 
+		          hljs.C_LINE_COMMENT_MODE, 
+		          hljs.C_BLOCK_COMMENT_MODE, 
+		        ]
 		      },
 		      {
 		        className: 'params',
@@ -48594,7 +48541,11 @@
 		        excludeBegin: true,
 		        excludeEnd: true,
 		        relevance: 0,
-		        contains: [ TYPE ]
+		        contains: [ 
+		          TYPE, 
+		          hljs.C_LINE_COMMENT_MODE, 
+		          hljs.C_BLOCK_COMMENT_MODE, 
+		        ]
 		      },
 		      NAME
 		    ]
@@ -48648,6 +48599,34 @@
 		    beginScope: { 2: "keyword", }
 		  };
 
+		  // glob all non-whitespace characters as a "string"
+		  // sourced from https://github.com/scala/docs.scala-lang/pull/2845
+		  const DIRECTIVE_VALUE = {
+		    className: 'string',
+		    begin: /\S+/,
+		  };
+
+		  // directives
+		  // sourced from https://github.com/scala/docs.scala-lang/pull/2845
+		  const USING_DIRECTIVE = {
+		    begin: [
+		      '//>',
+		      /\s+/,
+		      /using/,
+		      /\s+/,
+		      /\S+/
+		    ],
+		    beginScope: {
+		      1: "comment",
+		      3: "keyword",
+		      5: "type"
+		    },
+		    end: /$/,
+		    contains: [
+		      DIRECTIVE_VALUE,
+		    ]
+		  };
+
 		  return {
 		    name: 'Scala',
 		    keywords: {
@@ -48655,6 +48634,7 @@
 		      keyword: 'type yield lazy override def with val var sealed abstract private trait object if then forSome for while do throw finally protected extends import final return else break new catch super class case package default try this match continue throws implicit export enum given transparent'
 		    },
 		    contains: [
+		      USING_DIRECTIVE,
 		      hljs.C_LINE_COMMENT_MODE,
 		      hljs.C_BLOCK_COMMENT_MODE,
 		      STRING,
@@ -49008,7 +48988,7 @@
 		    },
 		    CSS_VARIABLE: {
 		      className: "attr",
-		      begin: /--[A-Za-z][A-Za-z0-9_-]*/
+		      begin: /--[A-Za-z_][A-Za-z0-9_-]*/
 		    }
 		  };
 		};
@@ -49576,6 +49556,7 @@
 		Website: https://sass-lang.com
 		Category: common, css, web
 		*/
+
 
 		/** @type LanguageFn */
 		function scss(hljs) {
@@ -53438,16 +53419,20 @@
 
 		  const TYPES = [
 		    'array',
+		    'tuple',
 		    'complex',
 		    'int',
 		    'real',
 		    'vector',
+		    'complex_vector',
 		    'ordered',
 		    'positive_ordered',
 		    'simplex',
 		    'unit_vector',
 		    'row_vector',
+		    'complex_row_vector',
 		    'matrix',
+		    'complex_matrix',
 		    'cholesky_factor_corr|10',
 		    'cholesky_factor_cov|10',
 		    'corr_matrix|10',
@@ -53464,8 +53449,6 @@
 		  // functions_quoted.txt
 
 		  const FUNCTIONS = [
-		    'Phi',
-		    'Phi_approx',
 		    'abs',
 		    'acos',
 		    'acosh',
@@ -53483,7 +53466,6 @@
 		    'bessel_first_kind',
 		    'bessel_second_kind',
 		    'binary_log_loss',
-		    'binomial_coefficient_log',
 		    'block',
 		    'cbrt',
 		    'ceil',
@@ -53494,37 +53476,48 @@
 		    'cols',
 		    'columns_dot_product',
 		    'columns_dot_self',
+		    'complex_schur_decompose',
+		    'complex_schur_decompose_t',
+		    'complex_schur_decompose_u',
 		    'conj',
 		    'cos',
 		    'cosh',
 		    'cov_exp_quad',
 		    'crossprod',
+		    'csr_extract',
 		    'csr_extract_u',
 		    'csr_extract_v',
 		    'csr_extract_w',
 		    'csr_matrix_times_vector',
 		    'csr_to_dense_matrix',
 		    'cumulative_sum',
+		    'dae',
+		    'dae_tol',
 		    'determinant',
 		    'diag_matrix',
+		    'diagonal',
 		    'diag_post_multiply',
 		    'diag_pre_multiply',
-		    'diagonal',
 		    'digamma',
 		    'dims',
 		    'distance',
 		    'dot_product',
 		    'dot_self',
+		    'eigendecompose',
+		    'eigendecompose_sym',
+		    'eigenvalues',
 		    'eigenvalues_sym',
+		    'eigenvectors',
 		    'eigenvectors_sym',
 		    'erf',
 		    'erfc',
 		    'exp',
 		    'exp2',
 		    'expm1',
-		    'fabs',
 		    'falling_factorial',
 		    'fdim',
+		    'fft',
+		    'fft2',
 		    'floor',
 		    'fma',
 		    'fmax',
@@ -53534,7 +53527,6 @@
 		    'gamma_q',
 		    'generalized_inverse',
 		    'get_imag',
-		    'get_lp',
 		    'get_real',
 		    'head',
 		    'hmm_hidden_state_prob',
@@ -53542,20 +53534,24 @@
 		    'hypot',
 		    'identity_matrix',
 		    'inc_beta',
-		    'int_step',
 		    'integrate_1d',
 		    'integrate_ode',
 		    'integrate_ode_adams',
 		    'integrate_ode_bdf',
 		    'integrate_ode_rk45',
+		    'int_step',
 		    'inv',
-		    'inv_Phi',
 		    'inv_cloglog',
-		    'inv_logit',
-		    'inv_sqrt',
-		    'inv_square',
+		    'inv_erfc',
 		    'inverse',
 		    'inverse_spd',
+		    'inv_fft',
+		    'inv_fft2',
+		    'inv_inc_beta',
+		    'inv_logit',
+		    'inv_Phi',
+		    'inv_sqrt',
+		    'inv_square',
 		    'is_inf',
 		    'is_nan',
 		    'lambert_w0',
@@ -53581,12 +53577,12 @@
 		    'log_falling_factorial',
 		    'log_inv_logit',
 		    'log_inv_logit_diff',
+		    'logit',
 		    'log_mix',
 		    'log_modified_bessel_first_kind',
 		    'log_rising_factorial',
 		    'log_softmax',
 		    'log_sum_exp',
-		    'logit',
 		    'machine_precision',
 		    'map_rect',
 		    'matrix_exp',
@@ -53601,10 +53597,11 @@
 		    'min',
 		    'modified_bessel_first_kind',
 		    'modified_bessel_second_kind',
-		    'multiply_log',
 		    'multiply_lower_tri_self_transpose',
 		    'negative_infinity',
 		    'norm',
+		    'norm1',
+		    'norm2',
 		    'not_a_number',
 		    'num_elements',
 		    'ode_adams',
@@ -53625,14 +53622,18 @@
 		    'ones_row_vector',
 		    'ones_vector',
 		    'owens_t',
+		    'Phi',
+		    'Phi_approx',
 		    'polar',
 		    'positive_infinity',
 		    'pow',
 		    'print',
 		    'prod',
 		    'proj',
+		    'qr',
 		    'qr_Q',
 		    'qr_R',
+		    'qr_thin',
 		    'qr_thin_Q',
 		    'qr_thin_R',
 		    'quad_form',
@@ -53672,6 +53673,7 @@
 		    'sub_col',
 		    'sub_row',
 		    'sum',
+		    'svd',
 		    'svd_U',
 		    'svd_V',
 		    'symmetrize_from_lower_tri',
@@ -53684,6 +53686,7 @@
 		    'to_array_1d',
 		    'to_array_2d',
 		    'to_complex',
+		    'to_int',
 		    'to_matrix',
 		    'to_row_vector',
 		    'to_vector',
@@ -53727,18 +53730,22 @@
 		    'inv_chi_square',
 		    'inv_gamma',
 		    'inv_wishart',
+		    'inv_wishart_cholesky',
 		    'lkj_corr',
 		    'lkj_corr_cholesky',
 		    'logistic',
+		    'loglogistic',
 		    'lognormal',
 		    'multi_gp',
 		    'multi_gp_cholesky',
+		    'multinomial',
+		    'multinomial_logit',
 		    'multi_normal',
 		    'multi_normal_cholesky',
 		    'multi_normal_prec',
+		    'multi_student_cholesky_t',
 		    'multi_student_t',
-		    'multinomial',
-		    'multinomial_logit',
+		    'multi_student_t_cholesky',
 		    'neg_binomial',
 		    'neg_binomial_2',
 		    'neg_binomial_2_log',
@@ -53758,12 +53765,14 @@
 		    'skew_double_exponential',
 		    'skew_normal',
 		    'std_normal',
+		    'std_normal_log',
 		    'student_t',
 		    'uniform',
 		    'von_mises',
 		    'weibull',
 		    'wiener',
-		    'wishart'
+		    'wishart',
+		    'wishart_cholesky'
 		  ];
 
 		  const BLOCK_COMMENT = hljs.COMMENT(
@@ -54083,7 +54092,7 @@
 		    },
 		    CSS_VARIABLE: {
 		      className: "attr",
-		      begin: /--[A-Za-z][A-Za-z0-9_-]*/
+		      begin: /--[A-Za-z_][A-Za-z0-9_-]*/
 		    }
 		  };
 		};
@@ -54652,6 +54661,7 @@
 		Category: css, web
 		*/
 
+
 		/** @type LanguageFn */
 		function stylus(hljs) {
 		  const modes = MODES(hljs);
@@ -54994,12 +55004,16 @@
 		  /as\?/, // operator
 		  /as!/, // operator
 		  'as', // operator
+		  'borrowing', // contextual
 		  'break',
 		  'case',
 		  'catch',
 		  'class',
+		  'consume', // contextual
+		  'consuming', // contextual
 		  'continue',
 		  'convenience', // contextual
+		  'copy', // contextual
 		  'default',
 		  'defer',
 		  'deinit',
@@ -55007,6 +55021,7 @@
 		  'distributed',
 		  'do',
 		  'dynamic', // contextual
+		  'each',
 		  'else',
 		  'enum',
 		  'extension',
@@ -55033,6 +55048,7 @@
 		  'nonisolated', // contextual
 		  'lazy', // contextual
 		  'let',
+		  'macro',
 		  'mutating', // contextual
 		  'nonmutating', // contextual
 		  /open\(set\)/, // contextual
@@ -55117,7 +55133,6 @@
 		  '#line',
 		  '#selector',
 		  '#sourceLocation',
-		  '#warn_unqualified_access',
 		  '#warning'
 		];
 
@@ -55231,13 +55246,16 @@
 
 		// Built-in attributes, which are highlighted as keywords.
 		// @available is handled separately.
+		// https://docs.swift.org/swift-book/documentation/the-swift-programming-language/attributes
 		const keywordAttributes = [
+		  'attached',
 		  'autoclosure',
 		  concat(/convention\(/, either('swift', 'block', 'c'), /\)/),
 		  'discardableResult',
 		  'dynamicCallable',
 		  'dynamicMemberLookup',
 		  'escaping',
+		  'freestanding',
 		  'frozen',
 		  'GKInspectable',
 		  'IBAction',
@@ -55257,10 +55275,13 @@
 		  'propertyWrapper',
 		  'requires_stored_property_inits',
 		  'resultBuilder',
+		  'Sendable',
 		  'testable',
 		  'UIApplicationMain',
+		  'unchecked',
 		  'unknown',
-		  'usableFromInline'
+		  'usableFromInline',
+		  'warn_unqualified_access'
 		];
 
 		// Contextual keywords used in @available and #(un)available.
@@ -55286,6 +55307,7 @@
 		Website: https://swift.org
 		Category: common, system
 		*/
+
 
 		/** @type LanguageFn */
 		function swift(hljs) {
@@ -55453,6 +55475,50 @@
 		    ]
 		  };
 
+		  const REGEXP_CONTENTS = [
+		    hljs.BACKSLASH_ESCAPE,
+		    {
+		      begin: /\[/,
+		      end: /\]/,
+		      relevance: 0,
+		      contains: [ hljs.BACKSLASH_ESCAPE ]
+		    }
+		  ];
+
+		  const BARE_REGEXP_LITERAL = {
+		    begin: /\/[^\s](?=[^/\n]*\/)/,
+		    end: /\//,
+		    contains: REGEXP_CONTENTS
+		  };
+
+		  const EXTENDED_REGEXP_LITERAL = (rawDelimiter) => {
+		    const begin = concat(rawDelimiter, /\//);
+		    const end = concat(/\//, rawDelimiter);
+		    return {
+		      begin,
+		      end,
+		      contains: [
+		        ...REGEXP_CONTENTS,
+		        {
+		          scope: "comment",
+		          begin: `#(?!.*${end})`,
+		          end: /$/,
+		        },
+		      ],
+		    };
+		  };
+
+		  // https://docs.swift.org/swift-book/documentation/the-swift-programming-language/lexicalstructure/#Regular-Expression-Literals
+		  const REGEXP = {
+		    scope: "regexp",
+		    variants: [
+		      EXTENDED_REGEXP_LITERAL('###'),
+		      EXTENDED_REGEXP_LITERAL('##'),
+		      EXTENDED_REGEXP_LITERAL('#'),
+		      BARE_REGEXP_LITERAL
+		    ]
+		  };
+
 		  // https://docs.swift.org/swift-book/ReferenceManual/LexicalStructure.html#ID412
 		  const QUOTED_IDENTIFIER = { match: concat(/`/, identifier, /`/) };
 		  const IMPLICIT_PARAMETER = {
@@ -55472,7 +55538,7 @@
 		  // https://docs.swift.org/swift-book/ReferenceManual/Attributes.html
 		  const AVAILABLE_ATTRIBUTE = {
 		    match: /(@|#(un)?)available/,
-		    className: "keyword",
+		    scope: 'keyword',
 		    starts: { contains: [
 		      {
 		        begin: /\(/,
@@ -55487,11 +55553,11 @@
 		    ] }
 		  };
 		  const KEYWORD_ATTRIBUTE = {
-		    className: 'keyword',
+		    scope: 'keyword',
 		    match: concat(/@/, either(...keywordAttributes))
 		  };
 		  const USER_DEFINED_ATTRIBUTE = {
-		    className: 'meta',
+		    scope: 'meta',
 		    match: concat(/@/, identifier)
 		  };
 		  const ATTRIBUTES = [
@@ -55559,6 +55625,7 @@
 		      'self',
 		      TUPLE_ELEMENT_NAME,
 		      ...COMMENTS,
+		      REGEXP,
 		      ...KEYWORD_MODES,
 		      ...BUILT_INS,
 		      ...OPERATORS,
@@ -55573,6 +55640,7 @@
 		  const GENERIC_PARAMETERS = {
 		    begin: /</,
 		    end: />/,
+		    keywords: 'repeat each',
 		    contains: [
 		      ...COMMENTS,
 		      TYPE
@@ -55615,9 +55683,10 @@
 		    illegal: /["']/
 		  };
 		  // https://docs.swift.org/swift-book/ReferenceManual/Declarations.html#ID362
-		  const FUNCTION = {
+		  // https://docs.swift.org/swift-book/documentation/the-swift-programming-language/declarations/#Macro-Declaration
+		  const FUNCTION_OR_MACRO = {
 		    match: [
-		      /func/,
+		      /(func|macro)/,
 		      /\s+/,
 		      either(QUOTED_IDENTIFIER.match, identifier, operator)
 		    ],
@@ -55714,7 +55783,7 @@
 		    keywords: KEYWORDS,
 		    contains: [
 		      ...COMMENTS,
-		      FUNCTION,
+		      FUNCTION_OR_MACRO,
 		      INIT_SUBSCRIPT,
 		      {
 		        beginKeywords: 'struct protocol class extension enum actor',
@@ -55737,6 +55806,7 @@
 		        contains: [ ...COMMENTS ],
 		        relevance: 0
 		      },
+		      REGEXP,
 		      ...KEYWORD_MODES,
 		      ...BUILT_INS,
 		      ...OPERATORS,
@@ -56987,6 +57057,7 @@
 		Website: https://developer.mozilla.org/en-US/docs/Web/JavaScript
 		*/
 
+
 		/** @type LanguageFn */
 		function javascript(hljs) {
 		  const regex = hljs.regex;
@@ -57594,6 +57665,7 @@
 		Website: https://www.typescriptlang.org
 		Category: common, scripting
 		*/
+
 
 		/** @type LanguageFn */
 		function typescript(hljs) {
@@ -60305,7 +60377,8 @@
 		    name: 'XQuery',
 		    aliases: [
 		      'xpath',
-		      'xq'
+		      'xq',
+		      'xqm'
 		    ],
 		    case_insensitive: false,
 		    illegal: /(proc)|(abstract)|(extends)|(until)|(#)/,
@@ -61140,12 +61213,13 @@
 			//var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
 			//var nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
 
-			var identifierStart = "(?:\\\\u[0-9a-fA-F]{4}|[" + baseASCIIidentifierStartChars + nonASCIIidentifierStartChars + "])";
-			var identifierChars = "(?:\\\\u[0-9a-fA-F]{4}|[" + baseASCIIidentifierChars + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "])*";
+			var unicodeEscapeOrCodePoint = "\\\\u[0-9a-fA-F]{4}|\\\\u\\{[0-9a-fA-F]+\\}";
+			var identifierStart = "(?:" + unicodeEscapeOrCodePoint + "|[" + baseASCIIidentifierStartChars + nonASCIIidentifierStartChars + "])";
+			var identifierChars = "(?:" + unicodeEscapeOrCodePoint + "|[" + baseASCIIidentifierChars + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "])*";
 
 			exports.identifier = new RegExp(identifierStart + identifierChars, 'g');
 			exports.identifierStart = new RegExp(identifierStart);
-			exports.identifierMatch = new RegExp("(?:\\\\u[0-9a-fA-F]{4}|[" + baseASCIIidentifierChars + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "])+");
+			exports.identifierMatch = new RegExp("(?:" + unicodeEscapeOrCodePoint + "|[" + baseASCIIidentifierChars + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "])+");
 
 			// Whether a single character denotes a newline.
 
@@ -61213,10 +61287,10 @@
 
 		  this.indent_empty_lines = this._get_boolean('indent_empty_lines');
 
-		  // valid templating languages ['django', 'erb', 'handlebars', 'php', 'smarty']
-		  // For now, 'auto' = all off for javascript, all on for html (and inline javascript).
+		  // valid templating languages ['django', 'erb', 'handlebars', 'php', 'smarty', 'angular']
+		  // For now, 'auto' = all off for javascript, all except angular on for html (and inline javascript/css).
 		  // other values ignored
-		  this.templating = this._get_selection_list('templating', ['auto', 'none', 'django', 'erb', 'handlebars', 'php', 'smarty'], ['auto']);
+		  this.templating = this._get_selection_list('templating', ['auto', 'none', 'angular', 'django', 'erb', 'handlebars', 'php', 'smarty'], ['auto']);
 		}
 
 		Options.prototype._get_array = function(name, default_value) {
@@ -62003,7 +62077,8 @@
 		  erb: false,
 		  handlebars: false,
 		  php: false,
-		  smarty: false
+		  smarty: false,
+		  angular: false
 		};
 
 		// This lets templates appear anywhere we would do a readUntil
@@ -62326,6 +62401,7 @@
 
 		  token = token || this._read_non_javascript(c);
 		  token = token || this._read_string(c);
+		  token = token || this._read_pair(c, this._input.peek(1)); // Issue #2062 hack for record type '#{'
 		  token = token || this._read_word(previous_token);
 		  token = token || this._read_singles(c);
 		  token = token || this._read_comment(c);
@@ -62379,6 +62455,19 @@
 		  }
 
 		  if (token) {
+		    this._input.next();
+		  }
+		  return token;
+		};
+
+		Tokenizer.prototype._read_pair = function(c, d) {
+		  var token = null;
+		  if (c === '#' && d === '{') {
+		    token = this._create_token(TOKEN.START_BLOCK, c + d);
+		  }
+
+		  if (token) {
+		    this._input.next();
 		    this._input.next();
 		  }
 		  return token;
@@ -62627,6 +62716,9 @@
 		        matched = input_scan.match(/x([0-9A-Fa-f]{2})/g);
 		      } else if (input_scan.peek() === 'u') {
 		        matched = input_scan.match(/u([0-9A-Fa-f]{4})/g);
+		        if (!matched) {
+		          matched = input_scan.match(/u\{([0-9A-Fa-f]+)\}/g);
+		        }
 		      } else {
 		        out += '\\';
 		        if (input_scan.hasNext()) {
@@ -62650,7 +62742,9 @@
 		      } else if (escaped >= 0x00 && escaped < 0x20) {
 		        // leave 0x00...0x1f escaped
 		        out += '\\' + matched[0];
-		        continue;
+		      } else if (escaped > 0x10FFFF) {
+		        // If the escape sequence is out of bounds, keep the original sequence and continue conversion
+		        out += '\\' + matched[0];
 		      } else if (escaped === 0x22 || escaped === 0x27 || escaped === 0x5c) {
 		        // single-quote, apostrophe, backslash - escape these
 		        out += '\\' + String.fromCharCode(escaped);
@@ -63470,7 +63564,7 @@
 		      }
 		    }
 		    if (this._flags.last_token.type !== TOKEN.OPERATOR && this._flags.last_token.type !== TOKEN.START_EXPR) {
-		      if (this._flags.last_token.type === TOKEN.START_BLOCK && !this._flags.inline_frame) {
+		      if (in_array(this._flags.last_token.type, [TOKEN.START_BLOCK, TOKEN.SEMICOLON]) && !this._flags.inline_frame) {
 		        this.print_newline();
 		      } else {
 		        this._output.space_before_token = true;
@@ -63596,7 +63690,9 @@
 		  }
 
 		  if (this._flags.last_token.type === TOKEN.COMMA || this._flags.last_token.type === TOKEN.START_EXPR || this._flags.last_token.type === TOKEN.EQUALS || this._flags.last_token.type === TOKEN.OPERATOR) {
-		    if (!this.start_of_object_property()) {
+		    if (!this.start_of_object_property() && !(
+		        // start of object property is different for numeric values with +/- prefix operators
+		        in_array(this._flags.last_token.text, ['+', '-']) && this._last_last_text === ':' && this._flags.parent.mode === MODE.ObjectLiteral)) {
 		      this.allow_wrap_or_preserved_newline(current_token);
 		    }
 		  }
@@ -63865,6 +63961,12 @@
 
 		  if (current_token.text === '::') {
 		    // no spaces around exotic namespacing syntax operator
+		    this.print_token(current_token);
+		    return;
+		  }
+
+		  if (in_array(current_token.text, ['-', '+']) && this.start_of_object_property()) {
+		    // numeric value with +/- symbol in front as a property
 		    this.print_token(current_token);
 		    return;
 		  }
@@ -64268,18 +64370,18 @@
 
 		  // https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
 		  this.NESTED_AT_RULE = {
-		    "@page": true,
-		    "@font-face": true,
-		    "@keyframes": true,
+		    "page": true,
+		    "font-face": true,
+		    "keyframes": true,
 		    // also in CONDITIONAL_GROUP_RULE below
-		    "@media": true,
-		    "@supports": true,
-		    "@document": true
+		    "media": true,
+		    "supports": true,
+		    "document": true
 		  };
 		  this.CONDITIONAL_GROUP_RULE = {
-		    "@media": true,
-		    "@supports": true,
-		    "@document": true
+		    "media": true,
+		    "supports": true,
+		    "document": true
 		  };
 		  this.NON_SEMICOLON_NEWLINE_PROPERTY = [
 		    "grid-template-areas",
@@ -64407,8 +64509,7 @@
 		  // label { content: blue }
 		  var insidePropertyValue = false;
 		  var enteringConditionalGroup = false;
-		  var insideAtExtend = false;
-		  var insideAtImport = false;
+		  var insideNonNestedAtRule = false;
 		  var insideScssMap = false;
 		  var topCharacter = this._ch;
 		  var insideNonSemiColonValues = false;
@@ -64463,10 +64564,30 @@
 
 		      // Ensures any new lines following the comment are preserved
 		      this.eatWhitespace(true);
-		    } else if (this._ch === '@' || this._ch === '$') {
+		    } else if (this._ch === '$') {
 		      this.preserveSingleSpace(isAfterSpace);
 
-		      // deal with less propery mixins @{...}
+		      this.print_string(this._ch);
+
+		      // strip trailing space, if present, for hash property checks
+		      var variable = this._input.peekUntilAfter(/[: ,;{}()[\]\/='"]/g);
+
+		      if (variable.match(/[ :]$/)) {
+		        // we have a variable or pseudo-class, add it and insert one space before continuing
+		        variable = this.eatString(": ").replace(/\s+$/, '');
+		        this.print_string(variable);
+		        this._output.space_before_token = true;
+		      }
+
+		      // might be sass variable
+		      if (parenLevel === 0 && variable.indexOf(':') !== -1) {
+		        insidePropertyValue = true;
+		        this.indent();
+		      }
+		    } else if (this._ch === '@') {
+		      this.preserveSingleSpace(isAfterSpace);
+
+		      // deal with less property mixins @{...}
 		      if (this._input.peek() === '{') {
 		        this.print_string(this._ch + this.eatString('}'));
 		      } else {
@@ -64477,29 +64598,26 @@
 
 		        if (variableOrRule.match(/[ :]$/)) {
 		          // we have a variable or pseudo-class, add it and insert one space before continuing
-		          variableOrRule = this.eatString(": ").replace(/\s$/, '');
+		          variableOrRule = this.eatString(": ").replace(/\s+$/, '');
 		          this.print_string(variableOrRule);
 		          this._output.space_before_token = true;
 		        }
 
-		        variableOrRule = variableOrRule.replace(/\s$/, '');
+		        // might be less variable
+		        if (parenLevel === 0 && variableOrRule.indexOf(':') !== -1) {
+		          insidePropertyValue = true;
+		          this.indent();
 
-		        if (variableOrRule === 'extend') {
-		          insideAtExtend = true;
-		        } else if (variableOrRule === 'import') {
-		          insideAtImport = true;
-		        }
-
-		        // might be a nesting at-rule
-		        if (variableOrRule in this.NESTED_AT_RULE) {
+		          // might be a nesting at-rule
+		        } else if (variableOrRule in this.NESTED_AT_RULE) {
 		          this._nestedLevel += 1;
 		          if (variableOrRule in this.CONDITIONAL_GROUP_RULE) {
 		            enteringConditionalGroup = true;
 		          }
-		          // might be less variable
-		        } else if (!insideRule && parenLevel === 0 && variableOrRule.indexOf(':') !== -1) {
-		          insidePropertyValue = true;
-		          this.indent();
+
+		          // might be a non-nested at-rule
+		        } else if (parenLevel === 0 && !insidePropertyValue) {
+		          insideNonNestedAtRule = true;
 		        }
 		      }
 		    } else if (this._ch === '#' && this._input.peek() === '{') {
@@ -64510,6 +64628,9 @@
 		        insidePropertyValue = false;
 		        this.outdent();
 		      }
+
+		      // non nested at rule becomes nested
+		      insideNonNestedAtRule = false;
 
 		      // when entering conditional groups, only rulesets are allowed
 		      if (enteringConditionalGroup) {
@@ -64551,8 +64672,7 @@
 		      if (previous_ch === '{') {
 		        this._output.trim(true);
 		      }
-		      insideAtImport = false;
-		      insideAtExtend = false;
+
 		      if (insidePropertyValue) {
 		        this.outdent();
 		        insidePropertyValue = false;
@@ -64586,9 +64706,10 @@
 		        }
 		      }
 
-		      if ((insideRule || enteringConditionalGroup) && !(this._input.lookBack("&") || this.foundNestedPseudoClass()) && !this._input.lookBack("(") && !insideAtExtend && parenLevel === 0) {
+		      if ((insideRule || enteringConditionalGroup) && !(this._input.lookBack("&") || this.foundNestedPseudoClass()) && !this._input.lookBack("(") && !insideNonNestedAtRule && parenLevel === 0) {
 		        // 'property: value' delimiter
 		        // which could be in a conditional group query
+
 		        this.print_string(':');
 		        if (!insidePropertyValue) {
 		          insidePropertyValue = true;
@@ -64625,8 +64746,7 @@
 		          this.outdent();
 		          insidePropertyValue = false;
 		        }
-		        insideAtExtend = false;
-		        insideAtImport = false;
+		        insideNonNestedAtRule = false;
 		        this.print_string(this._ch);
 		        this.eatWhitespace(true);
 
@@ -64691,7 +64811,7 @@
 		    } else if (this._ch === ',') {
 		      this.print_string(this._ch);
 		      this.eatWhitespace(true);
-		      if (this._options.selector_separator_newline && (!insidePropertyValue || insideScssMap) && parenLevel === 0 && !insideAtImport && !insideAtExtend) {
+		      if (this._options.selector_separator_newline && (!insidePropertyValue || insideScssMap) && parenLevel === 0 && !insideNonNestedAtRule) {
 		        this._output.add_new_line();
 		      } else {
 		        this._output.space_before_token = true;
@@ -64796,6 +64916,7 @@
 		  this.indent_handlebars = this._get_boolean('indent_handlebars', true);
 		  this.wrap_attributes = this._get_selection('wrap_attributes',
 		    ['auto', 'force', 'force-aligned', 'force-expand-multiline', 'aligned-multiple', 'preserve', 'preserve-aligned']);
+		  this.wrap_attributes_min_attrs = this._get_number('wrap_attributes_min_attrs', 2);
 		  this.wrap_attributes_indent_size = this._get_number('wrap_attributes_indent_size', this.indent_size);
 		  this.extra_liners = this._get_array('extra_liners', ['head', 'body', '/html']);
 
@@ -64813,6 +64934,7 @@
 		    // obsolete inline tags
 		    'acronym', 'big', 'strike', 'tt'
 		  ]);
+		  this.inline_custom_elements = this._get_boolean('inline_custom_elements', true);
 		  this.void_elements = this._get_array('void_elements', [
 		    // HTLM void elements - aka self-closing tags - aka singletons
 		    // https://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
@@ -64864,6 +64986,8 @@
 		var TOKEN = {
 		  TAG_OPEN: 'TK_TAG_OPEN',
 		  TAG_CLOSE: 'TK_TAG_CLOSE',
+		  CONTROL_FLOW_OPEN: 'TK_CONTROL_FLOW_OPEN',
+		  CONTROL_FLOW_CLOSE: 'TK_CONTROL_FLOW_CLOSE',
 		  ATTRIBUTE: 'TK_ATTRIBUTE',
 		  EQUALS: 'TK_EQUALS',
 		  VALUE: 'TK_VALUE',
@@ -64888,11 +65012,13 @@
 
 		  this.__patterns = {
 		    word: templatable_reader.until(/[\n\r\t <]/),
+		    word_control_flow_close_excluded: templatable_reader.until(/[\n\r\t <}]/),
 		    single_quote: templatable_reader.until_after(/'/),
 		    double_quote: templatable_reader.until_after(/"/),
 		    attribute: templatable_reader.until(/[\n\r\t =>]|\/>/),
 		    element_name: templatable_reader.until(/[\n\r\t >\/]/),
 
+		    angular_control_flow_start: pattern_reader.matching(/\@[a-zA-Z]+[^({]*[({]/),
 		    handlebars_comment: pattern_reader.starting_with(/{{!--/).until_after(/--}}/),
 		    handlebars: pattern_reader.starting_with(/{{/).until_after(/}}/),
 		    handlebars_open: pattern_reader.until(/[\n\r\t }]/),
@@ -64906,6 +65032,7 @@
 
 		  if (this._options.indent_handlebars) {
 		    this.__patterns.word = this.__patterns.word.exclude('handlebars');
+		    this.__patterns.word_control_flow_close_excluded = this.__patterns.word_control_flow_close_excluded.exclude('handlebars');
 		  }
 
 		  this._unformatted_content_delimiter = null;
@@ -64924,14 +65051,16 @@
 		};
 
 		Tokenizer.prototype._is_opening = function(current_token) {
-		  return current_token.type === TOKEN.TAG_OPEN;
+		  return current_token.type === TOKEN.TAG_OPEN || current_token.type === TOKEN.CONTROL_FLOW_OPEN;
 		};
 
 		Tokenizer.prototype._is_closing = function(current_token, open_token) {
-		  return current_token.type === TOKEN.TAG_CLOSE &&
+		  return (current_token.type === TOKEN.TAG_CLOSE &&
 		    (open_token && (
 		      ((current_token.text === '>' || current_token.text === '/>') && open_token.text[0] === '<') ||
-		      (current_token.text === '}}' && open_token.text[0] === '{' && open_token.text[1] === '{')));
+		      (current_token.text === '}}' && open_token.text[0] === '{' && open_token.text[1] === '{')))
+		  ) || (current_token.type === TOKEN.CONTROL_FLOW_CLOSE &&
+		    (current_token.text === '}' && open_token.text.endsWith('{')));
 		};
 
 		Tokenizer.prototype._reset = function() {
@@ -64950,8 +65079,9 @@
 		  token = token || this._read_open_handlebars(c, open_token);
 		  token = token || this._read_attribute(c, previous_token, open_token);
 		  token = token || this._read_close(c, open_token);
+		  token = token || this._read_control_flows(c, open_token);
 		  token = token || this._read_raw_content(c, previous_token, open_token);
-		  token = token || this._read_content_word(c);
+		  token = token || this._read_content_word(c, open_token);
 		  token = token || this._read_comment_or_cdata(c);
 		  token = token || this._read_processing(c);
 		  token = token || this._read_open(c, open_token);
@@ -65016,7 +65146,7 @@
 		Tokenizer.prototype._read_open = function(c, open_token) {
 		  var resulting_string = null;
 		  var token = null;
-		  if (!open_token) {
+		  if (!open_token || open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
 		    if (c === '<') {
 
 		      resulting_string = this._input.next();
@@ -65033,7 +65163,7 @@
 		Tokenizer.prototype._read_open_handlebars = function(c, open_token) {
 		  var resulting_string = null;
 		  var token = null;
-		  if (!open_token) {
+		  if (!open_token || open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
 		    if (this._options.indent_handlebars && c === '{' && this._input.peek(1) === '{') {
 		      if (this._input.peek(2) === '!') {
 		        resulting_string = this.__patterns.handlebars_comment.read();
@@ -65048,11 +65178,48 @@
 		  return token;
 		};
 
+		Tokenizer.prototype._read_control_flows = function(c, open_token) {
+		  var resulting_string = '';
+		  var token = null;
+		  // Only check for control flows if angular templating is set AND indenting is set
+		  if (!this._options.templating.includes('angular') || !this._options.indent_handlebars) {
+		    return token;
+		  }
+
+		  if (c === '@') {
+		    resulting_string = this.__patterns.angular_control_flow_start.read();
+		    if (resulting_string === '') {
+		      return token;
+		    }
+
+		    var opening_parentheses_count = resulting_string.endsWith('(') ? 1 : 0;
+		    var closing_parentheses_count = 0;
+		    // The opening brace of the control flow is where the number of opening and closing parentheses equal
+		    // e.g. @if({value: true} !== null) { 
+		    while (!(resulting_string.endsWith('{') && opening_parentheses_count === closing_parentheses_count)) {
+		      var next_char = this._input.next();
+		      if (next_char === null) {
+		        break;
+		      } else if (next_char === '(') {
+		        opening_parentheses_count++;
+		      } else if (next_char === ')') {
+		        closing_parentheses_count++;
+		      }
+		      resulting_string += next_char;
+		    }
+		    token = this._create_token(TOKEN.CONTROL_FLOW_OPEN, resulting_string);
+		  } else if (c === '}' && open_token && open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
+		    resulting_string = this._input.next();
+		    token = this._create_token(TOKEN.CONTROL_FLOW_CLOSE, resulting_string);
+		  }
+		  return token;
+		};
+
 
 		Tokenizer.prototype._read_close = function(c, open_token) {
 		  var resulting_string = null;
 		  var token = null;
-		  if (open_token) {
+		  if (open_token && open_token.type === TOKEN.TAG_OPEN) {
 		    if (open_token.text[0] === '<' && (c === '>' || (c === '/' && this._input.peek(1) === '>'))) {
 		      resulting_string = this._input.next();
 		      if (c === '/') { //  for close tag "/>"
@@ -65139,7 +65306,7 @@
 		  return null;
 		};
 
-		Tokenizer.prototype._read_content_word = function(c) {
+		Tokenizer.prototype._read_content_word = function(c, open_token) {
 		  var resulting_string = '';
 		  if (this._options.unformatted_content_delimiter) {
 		    if (c === this._options.unformatted_content_delimiter[0]) {
@@ -65148,7 +65315,7 @@
 		  }
 
 		  if (!resulting_string) {
-		    resulting_string = this.__patterns.word.read();
+		    resulting_string = (open_token && open_token.type === TOKEN.CONTROL_FLOW_OPEN) ? this.__patterns.word_control_flow_close_excluded.read() : this.__patterns.word.read();
 		  }
 		  if (resulting_string) {
 		    return this._create_token(TOKEN.TEXT, resulting_string);
@@ -65249,6 +65416,13 @@
 
 		Printer.prototype.indent = function() {
 		  this.indent_level++;
+		};
+
+		Printer.prototype.deindent = function() {
+		  if (this.indent_level > 0) {
+		    this.indent_level--;
+		    this._output.set_indent(this.indent_level, this.alignment_size);
+		  }
 		};
 
 		Printer.prototype.get_full_indent = function(level) {
@@ -65436,15 +65610,19 @@
 		  while (raw_token.type !== TOKEN.EOF) {
 
 		    if (raw_token.type === TOKEN.TAG_OPEN || raw_token.type === TOKEN.COMMENT) {
-		      parser_token = this._handle_tag_open(printer, raw_token, last_tag_token, last_token);
+		      parser_token = this._handle_tag_open(printer, raw_token, last_tag_token, last_token, tokens);
 		      last_tag_token = parser_token;
 		    } else if ((raw_token.type === TOKEN.ATTRIBUTE || raw_token.type === TOKEN.EQUALS || raw_token.type === TOKEN.VALUE) ||
 		      (raw_token.type === TOKEN.TEXT && !last_tag_token.tag_complete)) {
-		      parser_token = this._handle_inside_tag(printer, raw_token, last_tag_token, tokens);
+		      parser_token = this._handle_inside_tag(printer, raw_token, last_tag_token, last_token);
 		    } else if (raw_token.type === TOKEN.TAG_CLOSE) {
 		      parser_token = this._handle_tag_close(printer, raw_token, last_tag_token);
 		    } else if (raw_token.type === TOKEN.TEXT) {
 		      parser_token = this._handle_text(printer, raw_token, last_tag_token);
+		    } else if (raw_token.type === TOKEN.CONTROL_FLOW_OPEN) {
+		      parser_token = this._handle_control_flow_open(printer, raw_token);
+		    } else if (raw_token.type === TOKEN.CONTROL_FLOW_CLOSE) {
+		      parser_token = this._handle_control_flow_close(printer, raw_token);
 		    } else {
 		      // This should never happen, but if it does. Print the raw token
 		      printer.add_raw_token(raw_token);
@@ -65457,6 +65635,38 @@
 		  var sweet_code = printer._output.get_code(eol);
 
 		  return sweet_code;
+		};
+
+		Beautifier.prototype._handle_control_flow_open = function(printer, raw_token) {
+		  var parser_token = {
+		    text: raw_token.text,
+		    type: raw_token.type
+		  };
+		  printer.set_space_before_token(raw_token.newlines || raw_token.whitespace_before !== '', true);
+		  if (raw_token.newlines) {
+		    printer.print_preserved_newlines(raw_token);
+		  } else {
+		    printer.set_space_before_token(raw_token.newlines || raw_token.whitespace_before !== '', true);
+		  }
+		  printer.print_token(raw_token);
+		  printer.indent();
+		  return parser_token;
+		};
+
+		Beautifier.prototype._handle_control_flow_close = function(printer, raw_token) {
+		  var parser_token = {
+		    text: raw_token.text,
+		    type: raw_token.type
+		  };
+
+		  printer.deindent();
+		  if (raw_token.newlines) {
+		    printer.print_preserved_newlines(raw_token);
+		  } else {
+		    printer.set_space_before_token(raw_token.newlines || raw_token.whitespace_before !== '', true);
+		  }
+		  printer.print_token(raw_token);
+		  return parser_token;
 		};
 
 		Beautifier.prototype._handle_tag_close = function(printer, raw_token, last_tag_token) {
@@ -65497,7 +65707,7 @@
 		  return parser_token;
 		};
 
-		Beautifier.prototype._handle_inside_tag = function(printer, raw_token, last_tag_token, tokens) {
+		Beautifier.prototype._handle_inside_tag = function(printer, raw_token, last_tag_token, last_token) {
 		  var wrapped = last_tag_token.has_wrapped_attrs;
 		  var parser_token = {
 		    text: raw_token.text,
@@ -65518,7 +65728,6 @@
 		  } else {
 		    if (raw_token.type === TOKEN.ATTRIBUTE) {
 		      printer.set_space_before_token(true);
-		      last_tag_token.attr_count += 1;
 		    } else if (raw_token.type === TOKEN.EQUALS) { //no space before =
 		      printer.set_space_before_token(false);
 		    } else if (raw_token.type === TOKEN.VALUE && raw_token.previous.type === TOKEN.EQUALS) { //no space before value
@@ -65531,29 +65740,15 @@
 		        wrapped = wrapped || raw_token.newlines !== 0;
 		      }
 
-
-		      if (this._is_wrap_attributes_force) {
-		        var force_attr_wrap = last_tag_token.attr_count > 1;
-		        if (this._is_wrap_attributes_force_expand_multiline && last_tag_token.attr_count === 1) {
-		          var is_only_attribute = true;
-		          var peek_index = 0;
-		          var peek_token;
-		          do {
-		            peek_token = tokens.peek(peek_index);
-		            if (peek_token.type === TOKEN.ATTRIBUTE) {
-		              is_only_attribute = false;
-		              break;
-		            }
-		            peek_index += 1;
-		          } while (peek_index < 4 && peek_token.type !== TOKEN.EOF && peek_token.type !== TOKEN.TAG_CLOSE);
-
-		          force_attr_wrap = !is_only_attribute;
-		        }
-
-		        if (force_attr_wrap) {
-		          printer.print_newline(false);
-		          wrapped = true;
-		        }
+		      // Wrap for 'force' options, and if the number of attributes is at least that specified in 'wrap_attributes_min_attrs':
+		      // 1. always wrap the second and beyond attributes
+		      // 2. wrap the first attribute only if 'force-expand-multiline' is specified
+		      if (this._is_wrap_attributes_force &&
+		        last_tag_token.attr_count >= this._options.wrap_attributes_min_attrs &&
+		        (last_token.type !== TOKEN.TAG_OPEN || // ie. second attribute and beyond
+		          this._is_wrap_attributes_force_expand_multiline)) {
+		        printer.print_newline(false);
+		        wrapped = true;
 		      }
 		    }
 		    printer.print_token(raw_token);
@@ -65682,12 +65877,12 @@
 		  }
 		};
 
-		Beautifier.prototype._handle_tag_open = function(printer, raw_token, last_tag_token, last_token) {
+		Beautifier.prototype._handle_tag_open = function(printer, raw_token, last_tag_token, last_token, tokens) {
 		  var parser_token = this._get_tag_open_token(raw_token);
 
 		  if ((last_tag_token.is_unformatted || last_tag_token.is_content_unformatted) &&
 		    !last_tag_token.is_empty_element &&
-		    raw_token.type === TOKEN.TAG_OPEN && raw_token.text.indexOf('</') === 0) {
+		    raw_token.type === TOKEN.TAG_OPEN && !parser_token.is_start_tag) {
 		    // End element tags for unformatted or content_unformatted elements
 		    // are printed raw to keep any newlines inside them exactly the same.
 		    printer.add_raw_token(raw_token);
@@ -65699,6 +65894,19 @@
 		      printer.set_wrap_point();
 		    }
 		    printer.print_token(raw_token);
+		  }
+
+		  // count the number of attributes
+		  if (parser_token.is_start_tag && this._is_wrap_attributes_force) {
+		    var peek_index = 0;
+		    var peek_token;
+		    do {
+		      peek_token = tokens.peek(peek_index);
+		      if (peek_token.type === TOKEN.ATTRIBUTE) {
+		        parser_token.attr_count += 1;
+		      }
+		      peek_index += 1;
+		    } while (peek_token.type !== TOKEN.EOF && peek_token.type !== TOKEN.TAG_CLOSE);
 		  }
 
 		  //indent attributes an auto, forced, aligned or forced-align line-wrap
@@ -65798,7 +66006,7 @@
 
 		  parser_token.is_unformatted = !parser_token.tag_complete && in_array(parser_token.tag_check, this._options.unformatted);
 		  parser_token.is_content_unformatted = !parser_token.is_empty_element && in_array(parser_token.tag_check, this._options.content_unformatted);
-		  parser_token.is_inline_element = in_array(parser_token.tag_name, this._options.inline) || parser_token.tag_name.includes("-") || parser_token.tag_start_char === '{';
+		  parser_token.is_inline_element = in_array(parser_token.tag_name, this._options.inline) || (this._options.inline_custom_elements && parser_token.tag_name.includes("-")) || parser_token.tag_start_char === '{';
 
 		  return parser_token;
 		};
@@ -65903,7 +66111,7 @@
 		};
 
 		//To be used for <p> tag special case:
-		var p_closers = ['address', 'article', 'aside', 'blockquote', 'details', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'main', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'];
+		var p_closers = ['address', 'article', 'aside', 'blockquote', 'details', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'];
 		var p_parent_excludes = ['a', 'audio', 'del', 'ins', 'map', 'noscript', 'video'];
 
 		Beautifier.prototype._do_optional_end_element = function(parser_token) {
@@ -65926,7 +66134,7 @@
 
 		  } else if (parser_token.tag_name === 'li') {
 		    // An li element’s end tag may be omitted if the li element is immediately followed by another li element or if there is no more content in the parent element.
-		    result = result || this._tag_stack.try_pop('li', ['ol', 'ul']);
+		    result = result || this._tag_stack.try_pop('li', ['ol', 'ul', 'menu']);
 
 		  } else if (parser_token.tag_name === 'dd' || parser_token.tag_name === 'dt') {
 		    // A dd element’s end tag may be omitted if the dd element is immediately followed by another dd element or a dt element, or if there is no more content in the parent element.
@@ -66459,7 +66667,7 @@
 	    }
 	}
 
-	/* src/doc/components/code.svelte generated by Svelte v4.2.0 */
+	/* src/doc/components/code.svelte generated by Svelte v4.2.12 */
 
 	function create_fragment(ctx) {
 		let pre;
