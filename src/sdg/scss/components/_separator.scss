@@ -1,0 +1,14 @@
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+
+/**
+style applicable sur n'importe quel bloc, et par
+défaut pour le hr
+Ça se trouve il est déjà correct dans la feuille de style
+de la doc incluse (index.html)
+donc jeter un œil dans
+src/doc/scss/qc-doc-sdg.scss
+ */
+.separator,hr {
+
+}
