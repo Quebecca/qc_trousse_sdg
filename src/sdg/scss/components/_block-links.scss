@@ -1,0 +1,18 @@
+@use "modules/utils" as *;
+@use "modules/tokens" as *;
+
+/**
+classe à appliquer sur une ancre pour créer un lien bloc
+<a class="qc-block-link">
+ */
+.qc-block-link {}
+
+
+/**
+classe à appliquer sur une liste pour créer une liste de liens blocs
+<ul class="qc-blocs-links-list">
+  <li><a href="…">…</a></li>
+  …
+</ul>
+ */
+.qc-block-links-list {}

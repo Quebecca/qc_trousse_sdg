@@ -1325,6 +1325,17 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   border: 0;
 }
 
+/**
+classe à appliquer sur une ancre pour créer un lien bloc
+<a class="qc-block-link">
+ */
+/**
+classe à appliquer sur une liste pour créer une liste de liens blocs
+<ul class="qc-blocs-links-list">
+  <li><a href="…">…</a></li>
+  …
+</ul>
+ */
 .qc-container,
 .qc-container-fluid,
 .qc-container-xl,
