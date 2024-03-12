@@ -1,0 +1,8 @@
+@use "../modules/tokens" as *;
+@use "../modules/utils" as *;
+
+hr {
+  margin: token-value(spacer lg) 0;
+  border: 0;
+  border-bottom: 1px solid  token-value(color grey light);
+}

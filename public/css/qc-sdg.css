@@ -1325,6 +1325,12 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   border: 0;
 }
 
+hr {
+  margin: var(--qc-spacer-lg) 0;
+  border: 0;
+  border-bottom: 1px solid var(--qc-color-grey-light);
+}
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-xl,
