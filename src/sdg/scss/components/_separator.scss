@@ -1,14 +1,10 @@
 @use "../modules/tokens" as *;
 @use "../modules/utils" as *;
 
-/**
-style applicable sur n'importe quel bloc, et par
-défaut pour le hr
-Ça se trouve il est déjà correct dans la feuille de style
-de la doc incluse (index.html)
-donc jeter un œil dans
-src/doc/scss/qc-doc-sdg.scss
- */
 .separator,hr {
-
+  margin: token-value(spacer lg) 0;
+  height: 1px;
+  border: 0;
+  color: token-value(color grey light);
+  background-color: token-value(color grey light);
 }
