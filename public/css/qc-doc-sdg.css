@@ -453,14 +453,6 @@ table.component-attributes-description td:first-child {
   clip: rect(0 0 0 0);
 }
 
-hr {
-  margin: var(--qc-spacer-lg) 0;
-  height: 1px;
-  border: 0;
-  color: var(--qc-color-grey-light);
-  background-color: var(--qc-color-grey-light);
-}
-
 qc-piv-footer + qc-code {
   margin-top: 0;
 }
