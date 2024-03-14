@@ -1,17 +1,7 @@
 @use "../modules/tokens" as *;
 @use "../modules/utils" as *;
 
-.separator {
-  padding: token-value(spacer lg) 0;
-  border-top: 1px solid token-value(color grey light);
-  border-bottom: 1px solid token-value(color grey light);
-  text-align: justify;
-}
-
-hr {
+.separator,hr {
   margin: token-value(spacer lg) 0;
-  height: 1px;
-  border: 0;
-  color: token-value(color grey light);
-  background-color: token-value(color grey light);
+  border: 1px solid token-value(color grey light);
 }
