@@ -1,9 +1,10 @@
 
 export class Utils {
     static assetsBasePath =
-        document
-            .currentScript
-            .getAttribute('assets-base-path')
+        new URL(document.currentScript.src).pathname
+            .split('/')
+            .slice(0, -2)
+            .join('/')
         || '.'
     static cssRelativePath =
         `${this.assetsBasePath}/css/`
