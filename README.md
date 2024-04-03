@@ -56,7 +56,7 @@ Si vous utilisez déjà un système de grille, vous pouvez intégrer la trousse 
 <head>
     ...
     <link rel="stylesheet" href="/dist/css/qc-sdg-no-grid.min.css">
-    <script defer src="/dist/js/qc-sdg.js">
+    <script defer src="/dist/js/qc-sdg.min.js">
 </head>
 ```
 
