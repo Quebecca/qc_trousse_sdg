@@ -30,7 +30,7 @@ Always use this function for rem values
 // foo.css
 .foo { font-size: 1.6rem; }
 */
-:root {
+:root, :host {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;
   --qc-font-family-roboto-mono: Roboto Mono,monospace;
@@ -159,12 +159,12 @@ Always use this function for rem values
   --qc-grid-container-max-width-xl: 1200px;
 }
 @media (max-width: 1199.98px) {
-  :root {
+  :root, :host {
     --qc-grid-gutter: 24px;
   }
 }
 @media (max-width: 991.98px) {
-  :root {
+  :root, :host {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
     --qc-font-size-h1: 3.6rem;
@@ -175,7 +175,7 @@ Always use this function for rem values
   }
 }
 @media (max-width: 767.98px) {
-  :root {
+  :root, :host {
     --qc-grid-gutter: 16px;
   }
 }
@@ -378,7 +378,7 @@ a .qc-external-link-tail img {
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
   display: inline-block;
-  content: url(../img/external-link.svg?v=1.2.1);
+  content: url(../img/external-link.svg?v=1.2.2);
 }
 
 code, .qc-code {
@@ -794,55 +794,55 @@ Always use this function for rem values
   height: 40px;
 }
 .qc-icon.qc-external-link {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#external-link);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#external-link);
 }
 .qc-icon.qc-warning {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#warning);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#warning);
 }
 .qc-icon.qc-arrow-up-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#arrow-up-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#arrow-up-white);
 }
 .qc-icon.qc-clipboard {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#clipboard);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#clipboard);
 }
 .qc-icon.qc-error {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#error);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#error);
 }
 .qc-icon.qc-error-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#error-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#error-white);
 }
 .qc-icon.qc-information {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#information);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#information);
 }
 .qc-icon.qc-information-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#information-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#information-white);
 }
 .qc-icon.qc-minus {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#minus);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#minus);
 }
 .qc-icon.qc-plus {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#plus);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#plus);
 }
 .qc-icon.qc-question-mark {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#question-mark);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#question-mark);
 }
 .qc-icon.qc-success {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#success);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#success);
 }
 .qc-icon.qc-success-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#success-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#success-white);
 }
 .qc-icon.qc-xclose-white {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#xclose-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#xclose-white);
 }
 .qc-icon.qc-xclose-blue {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#xclose-blue);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#xclose-blue);
 }
 .qc-icon.qc-chevron-blue, .qc-icon.qc-chevron-white {
   width: 16px;
@@ -850,35 +850,35 @@ Always use this function for rem values
   height: 10px;
 }
 .qc-icon.qc-chevron-blue {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#chevron-blue);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#chevron-blue);
 }
 .qc-icon.qc-chevron-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#chevron-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#chevron-white);
 }
 .qc-icon.qc-facebook {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#facebook);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#facebook);
 }
 .qc-icon.qc-linkedin {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#linkedin);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#linkedin);
   height: 30px;
 }
 .qc-icon.qc-twitter {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#twitter);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#twitter);
 }
 .qc-icon.qc-youtube {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#youtube);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#youtube);
 }
 .qc-icon.qc-warning-alert-icon {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#warning);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#warning);
 }
 .qc-icon.qc-general-alert-icon {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#information);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#information);
 }
 .qc-icon.qc-search {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#loupe-piv-droite);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#loupe-piv-droite);
 }
 .qc-icon.qc-search-submit {
-  background-image: url(../img/qc-sprite.svg?v=1.2.1#loupe-piv-fonce);
+  background-image: url(../img/qc-sprite.svg?v=1.2.2#loupe-piv-fonce);
 }
 
 .qc-notice {

@@ -35,7 +35,7 @@ const
 export let
     logoUrl= '/'
   , fullWidth = 'false'
-  , logoSrc = './img/quebec-logo.svg'
+  , logoSrc = Utils.imagesRelativePath + 'quebec-logo.svg'
   , logoAlt = lang === 'fr'
       ? 'Logo du gouvernement du Québec'
       : 'Logo of government of Québec'

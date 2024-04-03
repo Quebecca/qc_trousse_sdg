@@ -78,4 +78,4 @@
 </a>
 
 <link rel='stylesheet'
-      href='css/qc-sdg.css'>
+      href='{Utils.cssRelativePath}{Utils.cssFileName}'>

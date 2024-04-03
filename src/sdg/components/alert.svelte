@@ -67,4 +67,5 @@
         </div>
     </div>
 {/if}
-<link rel='stylesheet' href='css/qc-sdg.css'>
+<link rel='stylesheet'
+      href='{Utils.cssRelativePath}{Utils.cssFileName}'>

@@ -1,5 +1,5 @@
-
 export class Utils {
+
     static assetsBasePath =
         new URL(document.currentScript.src).pathname
             .split('/')

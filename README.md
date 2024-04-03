@@ -28,14 +28,17 @@ Un processus d’autorisation de projet numérique est en place au Secrétariat 
 
 ### Utilisation de la trousse au complet
 
-- Placer le dossier `dist` dans un dossier public.
-- Insérer la feuille de style `dist/css/qc-sdg.min.css` dans vos pages HTML.
+- Placer le dossier `dist` dans un dossier public ;
+- Insérer la feuille de style `dist/css/qc-sdg.min.css` dans vos pages HTML ;
+- Insérer le fichier javascript `dist/js/qc-sdg.min.js` dans vos pages HTML ;
 
 ```html
 <head>
     ...
-    <link rel="stylesheet" href="/dist/css/qc-sdg.min.css">
-    <script defer src="/dist/js/qc-sdg.js">
+    <link rel="stylesheet" 
+          href="/dist/css/qc-sdg.min.css">
+    <script defer 
+            src="/dist/js/qc-sdg.min.js">
 </head>
 ```
 ### Utilisation de la trousse sans le système de grille
@@ -148,6 +151,7 @@ Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
 ## Historique
 
+- 1.2.2 — Calcul automatique du chemin d'insertion de la feuille de style en fonction de celui du fichier javascript ; correction dans la documentation.
 - 1.2.1 — Mise à jour d’un jeton de design concernant les ombrages ; correction d’une anomalie visuelle dans du bandeau PIV en mobile ; mise à jour des titres de la documentation incluse.
 - 1.2.0 — Ajout des composants Alerte générale, Avis, Bandeau d’en-tête du PIV et Haut de page ; réorganisation des répertoires du projet ; modification de la documentation incluse (`/public/index.html`) ; ajout/modification de jetons de design.
 - 1.1.1 — Suppression des css.map + ajout de fichiers en suivi de version.
