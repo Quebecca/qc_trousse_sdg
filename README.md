@@ -2,6 +2,10 @@ README.md
 
 # Trousse de développement du Système de design gouvernemental du Québec
 
+## Avertissement
+
+Cette version de la trousse est réglée pour une valeur de `root-font-size` de 100 %, au lieu du 62,5 % de la branche principale.
+
 ## Présentation
 
 La trousse de développement du Système de design gouvernemental (SDG) est un projet Node.js dont l’objectif est de générer un jeu de ressources — feuilles de style, images, fichiers JavaScript, etc. — à utiliser pour intégrer les composants du Système de design gouvernemental dans un site Web.

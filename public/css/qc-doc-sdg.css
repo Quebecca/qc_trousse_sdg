@@ -225,7 +225,7 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
   font-weight: var(--qc-font-weight-regular);
   display: inline-block;
   box-sizing: border-box;
-  min-width: 11.2rem;
+  min-width: 7rem;
   transition: all 0.24s ease-in-out;
   text-align: center;
   vertical-align: middle;
@@ -236,7 +236,7 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
   cursor: pointer;
 }
 .btn.btn-sm {
-  min-width: 8rem;
+  min-width: 5rem;
   padding: calc(var(--qc-spacer-xs) - 1px) calc(var(--qc-spacer-sm) - 1px);
   border: 1px solid transparent;
 }
@@ -309,8 +309,8 @@ main {
 }
 
 .color-sample {
-  width: 4.8rem;
-  height: 4.8rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -341,7 +341,7 @@ main {
 #grid-samples {
   position: relative;
   text-align: center;
-  margin-top: 4.8rem;
+  margin-top: 3rem;
   margin-bottom: 5%;
 }
 #grid-samples .qc-row {
@@ -352,7 +352,7 @@ main {
   opacity: 0.7;
   height: 100%;
   color: white;
-  padding: 0.8rem 0;
+  padding: 0.5rem 0;
 }
 #grid-samples .qc-row:first-child {
   margin-top: 0;
@@ -374,8 +374,8 @@ main {
 
 .square-box {
   display: flex;
-  width: 12rem;
-  height: 12rem;
+  width: 7.5rem;
+  height: 7.5rem;
   justify-content: center;
   align-items: center;
 }
@@ -414,12 +414,12 @@ table.component-attributes-description td:first-child {
 }
 #custom-piv-search-form .input-group input {
   width: 100%;
-  padding: 0.6rem 1.2rem;
+  padding: 0.375rem 0.75rem;
   border: 1px solid var(--qc-color-blue-dark);
   border-right: none;
 }
 #custom-piv-search-form .input-group input:focus {
-  outline: 0.2rem solid var(--qc-color-blue-light);
+  outline: 0.125rem solid var(--qc-color-blue-light);
   border-right: 1px solid black;
   z-index: 1;
 }
@@ -435,15 +435,15 @@ table.component-attributes-description td:first-child {
   border: 1px solid var(--qc-color-blue-dark);
   border-left: none;
   background-color: white;
-  width: 4.16rem;
+  width: 2.6rem;
 }
 #custom-piv-search-form .input-group button:focus {
-  outline: 0.2rem solid var(--qc-color-blue-light);
+  outline: 0.125rem solid var(--qc-color-blue-light);
   border-left: 1px solid black;
 }
 #custom-piv-search-form .input-group button .qc-search-submit {
-  min-width: 2.4rem;
-  height: 2.4rem;
+  min-width: 1.5rem;
+  height: 1.5rem;
   align-self: center;
 }
 #custom-piv-search-form .input-group button .sr-description {
