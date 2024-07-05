@@ -1,6 +1,6 @@
 {
   "name": "qc-trousse-sdg",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,6 @@
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-replace": "^5.0.1",
     "autoprefixer": "^10.4.7",
-    "bootstrap-for-qc-sdg": "npm:bootstrap@^4.6.2",
     "del": "^7.0.0",
     "highlight.js": "^11.8.0",
     "js-beautify": "^1.14.7",
@@ -41,5 +40,8 @@
     "sass": "^1.53.0",
     "sirv-cli": "^2.0.2",
     "svelte": "^4.0.0"
+  },
+  "dependencies": {
+    "bootstrap-for-qc-sdg": "npm:bootstrap@^4.6.2"
   }
 }

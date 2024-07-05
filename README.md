@@ -150,7 +150,7 @@ Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
 Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
 ## Historique
-
+- 1.2.3 — Modification des dépendances npm du projets ;
 - 1.2.2 — Calcul automatique du chemin d'insertion de la feuille de style en fonction de celui du fichier javascript ; correction dans la documentation.
 - 1.2.1 — Mise à jour d’un jeton de design concernant les ombrages ; correction d’une anomalie visuelle dans du bandeau PIV en mobile ; mise à jour des titres de la documentation incluse.
 - 1.2.0 — Ajout des composants Alerte générale, Avis, Bandeau d’en-tête du PIV et Haut de page ; réorganisation des répertoires du projet ; modification de la documentation incluse (`/public/index.html`) ; ajout/modification de jetons de design.
