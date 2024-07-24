@@ -2706,7 +2706,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.2#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
+		let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.3#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
 		? 'https://www.quebec.ca/droit-auteur'
 		: 'https://www.quebec.ca/en/copyright' } = $$props;
 

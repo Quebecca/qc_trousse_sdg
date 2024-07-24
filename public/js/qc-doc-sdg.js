@@ -66805,6 +66805,6 @@
 	);
 
 	// add version
-	document.getElementById("version").textContent = `v1.2.2`;
+	document.getElementById("version").textContent = `v1.2.3`;
 
 })();
