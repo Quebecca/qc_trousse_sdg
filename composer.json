@@ -1,0 +1,9 @@
+{
+  "name": "qc/qc-trousse-sdg",
+  "description": "Trousse SDG - Système de Design Quebec",
+  "type": "library",
+  "homepage": "https://github.com/Quebecca/qc_trousse_sdg",
+  "require": {
+    "php": ">=7.4"
+  }
+}
