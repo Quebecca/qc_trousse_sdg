@@ -58,10 +58,7 @@ const scssOptions = {
         ]),
     sourceMap: false,
     includePaths: [
-        path.join(__dirname, '../../node_modules/'),
-        'node_modules/',
         'src/sdg/scss',
-        __dirname + '/vendor',
     ],
     outputStyle: dev_process ? 'expanded' : 'compressed',
     watch: ['src/sdg/scss', 'src/doc/scss']

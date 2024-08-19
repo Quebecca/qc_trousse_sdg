@@ -3,8 +3,8 @@
 @use "modules/tokens";
 @use "sass:map";
 // Merci ! / ty Bootstrap
-@import "bootstrap-for-qc-sdg/scss/functions";
-@import "bootstrap-for-qc-sdg/scss/variables";
+@import "vendor/bootstrap-rewrite/functions";
+@import "vendor/bootstrap-rewrite/variables";
 
 $enable-grid-classes: utils.$enable-grid-classes;
 $enable-deprecation-messages : false;
@@ -20,5 +20,5 @@ $spacers : (
     4: tokens.token-value(spacer xl),
 );
 
-@import "bootstrap-for-qc-sdg/scss/mixins/breakpoints";
+@import "vendor/bootstrap-rewrite/mixins/breakpoints";
 
