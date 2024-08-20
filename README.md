@@ -104,8 +104,24 @@ Vous pouvez installer la trousse comme dépendance dans un projet node.js avec l
 
 ### Installation composer dans un projet php
 
-Vous pouvez installer la trousse comme dépendance composer dans un projet php.
-- 
+Pour installer la trousse dans un projet php avec composer :
+- ajouter le dépôt github dans votre composer.json
+```
+// composer.json
+{
+  (...)
+  "repositories": [
+    (...),
+    {
+      "type": "vcs",
+      "url": "https://github.com/Quebecca/qc_trousse_sdg.git"
+    }
+  ]
+}
+```
+- installer la trousse avec composer : `composer req qc/qc-trousse-sdg`
+
+
 
 ### Étendre la trousse de développement
 
@@ -155,6 +171,7 @@ Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
 Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
 ## Historique
+- 1.2.5 — Ajout/modififcation des instructions dans le readme pour installation par composer et node.js ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;
 - 1.2.2 — Calcul automatique du chemin d'insertion de la feuille de style en fonction de celui du fichier javascript ; correction dans la documentation.
