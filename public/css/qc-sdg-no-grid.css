@@ -378,7 +378,7 @@ a .qc-external-link-tail img {
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
   display: inline-block;
-  content: url(../img/external-link.svg?v=1.2.3);
+  content: url(../img/external-link.svg?v=1.2.4);
 }
 
 code, .qc-code {
@@ -794,55 +794,55 @@ Always use this function for rem values
   height: 40px;
 }
 .qc-icon.qc-external-link {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#external-link);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#external-link);
 }
 .qc-icon.qc-warning {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#warning);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#warning);
 }
 .qc-icon.qc-arrow-up-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#arrow-up-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#arrow-up-white);
 }
 .qc-icon.qc-clipboard {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#clipboard);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#clipboard);
 }
 .qc-icon.qc-error {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#error);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#error);
 }
 .qc-icon.qc-error-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#error-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#error-white);
 }
 .qc-icon.qc-information {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#information);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#information);
 }
 .qc-icon.qc-information-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#information-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#information-white);
 }
 .qc-icon.qc-minus {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#minus);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#minus);
 }
 .qc-icon.qc-plus {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#plus);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#plus);
 }
 .qc-icon.qc-question-mark {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#question-mark);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#question-mark);
 }
 .qc-icon.qc-success {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#success);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#success);
 }
 .qc-icon.qc-success-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#success-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#success-white);
 }
 .qc-icon.qc-xclose-white {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#xclose-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#xclose-white);
 }
 .qc-icon.qc-xclose-blue {
   width: 16px;
   height: 16px;
   min-width: 16px;
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#xclose-blue);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#xclose-blue);
 }
 .qc-icon.qc-chevron-blue, .qc-icon.qc-chevron-white {
   width: 16px;
@@ -850,35 +850,35 @@ Always use this function for rem values
   height: 10px;
 }
 .qc-icon.qc-chevron-blue {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#chevron-blue);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#chevron-blue);
 }
 .qc-icon.qc-chevron-white {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#chevron-white);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#chevron-white);
 }
 .qc-icon.qc-facebook {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#facebook);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#facebook);
 }
 .qc-icon.qc-linkedin {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#linkedin);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#linkedin);
   height: 30px;
 }
 .qc-icon.qc-twitter {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#twitter);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#twitter);
 }
 .qc-icon.qc-youtube {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#youtube);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#youtube);
 }
 .qc-icon.qc-warning-alert-icon {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#warning);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#warning);
 }
 .qc-icon.qc-general-alert-icon {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#information);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#information);
 }
 .qc-icon.qc-search {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#loupe-piv-droite);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#loupe-piv-droite);
 }
 .qc-icon.qc-search-submit {
-  background-image: url(../img/qc-sprite.svg?v=1.2.3#loupe-piv-fonce);
+  background-image: url(../img/qc-sprite.svg?v=1.2.4#loupe-piv-fonce);
 }
 
 .qc-notice {

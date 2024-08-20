@@ -102,6 +102,11 @@ Un lien vers la documentation de la trousse (`/public/index.html`) est affiché 
 
 Vous pouvez installer la trousse comme dépendance dans un projet node.js avec la commande suivante : `npm i qc-trousse-sgd`
 
+### Installation composer dans un projet php
+
+Vous pouvez installer la trousse comme dépendance composer dans un projet php.
+- 
+
 ### Étendre la trousse de développement
 
 Il y a 2 façons de faire pour étendre la trousse de développement afin d’y ajouter des composants ou de l’utiliser pour l’intégrer dans un cadriciel déjà existant.
@@ -150,6 +155,7 @@ Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
 Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
 ## Historique
+- 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;
 - 1.2.2 — Calcul automatique du chemin d'insertion de la feuille de style en fonction de celui du fichier javascript ; correction dans la documentation.
 - 1.2.1 — Mise à jour d’un jeton de design concernant les ombrages ; correction d’une anomalie visuelle dans du bandeau PIV en mobile ; mise à jour des titres de la documentation incluse.
