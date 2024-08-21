@@ -87,9 +87,18 @@ Les composants du SDG sont catalogués avec leur documentation dans le fichier `
 
 ## Développement
 
-### Installation et démarrage du projet
+### Extension de la trousse de développement
 
-- Cloner le dépôt : `git clone https://github.com/Quebecca/qc_trousse_sdg.git`.
+Il est important de consulter tous les outils et utiliser le matériel disponible dès qu’il y a lieu. Les composants et modèles qui ne sont pas présents actuellement dans les outils devront être conçus en collaboration avec le SCG, dans la continuité du système de design et approuvés par le SCG. Vous pouvez nous écrire à l’adresse [design@quebec.ca](mailto:design@quebec.ca) pour planifier des ateliers de collaboration au besoin.
+
+Nous vous conseillons de créer une divergence du projet dans github : de cette façon, vous pourrez bonifier la trousse avec de nouveaux composants ou feuilles de style, qui pourront ensuite être proposés à la fusion avec le dépôt principal.
+
+Cf le guide GitHub : https://docs.github.com/fr/get-started.
+
+#### Installation
+
+Une fois votre divergence créée :
+- Cloner le dépôt : `git clone <url-de-votre-divergence>`
 - Aller dans le dossier : `cd qc_trousse_sdg`.
 - Installer les dépendances Node.js : `npm install`.
 - Lancer la commande : `npm run dev`.
@@ -98,58 +107,11 @@ Une fois cette commande lancée, toute modification d’un fichier dans `/src` e
 
 Un lien vers la documentation de la trousse (`/public/index.html`) est affiché dans la console : les changements dans le code seront automatiquement reflétés dans le navigateur, sans besoin de recharger manuellement la page.
 
-### Installation dans un projet node.js
-
-Vous pouvez installer la trousse comme dépendance dans un projet node.js avec la commande suivante : `npm i qc-trousse-sgd`
-
-### Installation composer dans un projet php
-
-Pour installer la trousse dans un projet php avec composer :
-- ajouter le dépôt github dans votre composer.json
-```
-// composer.json
-{
-  (...)
-  "repositories": [
-    (...),
-    {
-      "type": "vcs",
-      "url": "https://github.com/Quebecca/qc_trousse_sdg.git"
-    }
-  ]
-}
-```
-- installer la trousse avec composer : `composer req qc/qc-trousse-sdg`
-
-
-
-### Étendre la trousse de développement
-
-Il y a 2 façons de faire pour étendre la trousse de développement afin d’y ajouter des composants ou de l’utiliser pour l’intégrer dans un cadriciel déjà existant.
-
-Il est important de consulter tous les outils et utiliser le matériel disponible dès qu’il y a lieu. Les composants et modèles qui ne sont pas présents actuellement dans les outils devront être conçus en collaboration avec le SCG, dans la continuité du système de design et approuvés par le SCG. Vous pouvez nous écrire à l’adresse [design@quebec.ca](mailto:design@quebec.ca) pour planifier des ateliers de collaboration au besoin.
-
-#### Créer une divergence GitHub
-
-C’est la façon la plus simple de procéder pour bonifier la trousse avec de nouveaux composants ou feuilles de style, qui pourront être proposés à la fusion.
-
-Cf le guide GitHub : https://docs.github.com/fr/get-started.
-
-#### Personnaliser la trousse
-
-L’autre option est d’ajouter la trousse comme dépendance de votre projet et d’inclure les SCSS nécessaires pour profiter des jetons et fonctions de la trousse.
-
-Voici un [exemple de projet d’extension de la trousse](https://github.com/Quebecca/qc-sdg-extension-demo) offrant 3 scénarios d’extensions :
-
-- Modification des réglages de la trousse.
-- Utilisation de la trousse comme dépendance pour créer une feuille de style personnalisée.
-- Intégration dans Bootstrap.
-
-### Compilation pour la production
+#### Compilation pour la production
 
 Lancer la commande `npm run build` pour générer les fichiers CSS et JavaScript minifiés dans le répertoire `/dist`.
 
-### Génération des sprites
+#### Génération des sprites
 
 Pour ajouter de nouvelles images :
 
@@ -163,15 +125,51 @@ Votre SVG sera ajouté au deux fichiers `qc-sprite.svg` dans les répertoires `/
 Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
 
 ```css
-.custom-classe {
+.custom-class {
     background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#<nom-du-fichier-svg-ajouté>);
 }
 ```
 
 Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
 
+### Ajout de la trousse dans un projet existant
+
+L’autre option est d’ajouter la trousse comme dépendance de votre projet et d’inclure les SCSS nécessaires pour profiter des jetons et fonctions de la trousse.
+
+Pour un projet node.js :
+ - `npm i qc-trousse-sgd`
+
+Pour ajouter votre propre divergence à l'adresse `https://github.com/votre-organisation/qc_trousse_sdg`, si elle n'est pas publiée dans npmjs :
+- `npm i github:votre-organisation/qc-trousse-sdg`
+
+Pour un projet php avec composer :
+- ajouter le dépôt github dans votre composer.json
+```
+// composer.json
+{
+  (...)
+  "repositories": [
+    (...),
+    {
+      "type": "vcs",
+      "url": "https://github.com/Quebecca/qc_trousse_sdg.git"
+      // ou pour installer votre divergence
+      // "url": "https://github.com/votre-organisation/qc-trousse-sdg
+    }
+  ]
+}
+```
+- installer la trousse avec composer : `composer req qc/qc-trousse-sdg`
+
+Une fois la trousse ajoutée comme dépendance, vous pourrez directement inclure ses fichiers sources dans vos propres fichiers scss ou js.
+Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Quebecca/qc-sdg-extension-demo) offrant 3 besoins liés à l'utilisation de la trousse :
+
+- Recompilation des feuilles de style de la trousse avec de nouveaux réglages ; 
+- Inclusion des scss de la trousse dans une feuille de style personnalisée ;
+- Intégration dans Bootstrap.
+
 ## Historique
-- 1.2.5 — Ajout/modififcation des instructions dans le readme pour installation par composer et node.js ;
+- 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;
 - 1.2.2 — Calcul automatique du chemin d'insertion de la feuille de style en fonction de celui du fichier javascript ; correction dans la documentation.
