@@ -1,8 +1,7 @@
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
+@use "modules/helpers" as *;
 @use "modules/grid" as *;
-
-//$img-dir-sprite: "#{$img-dir}/qc-sprite.svg?v={{pkg-version}})";
 
 /* TODO voir si meilleure façon d'intégrer en scss... */
 .qc-icon {
@@ -30,68 +29,68 @@
   }
 
   &.qc-external-link {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#external-link);
+    background-image: getImageUrl(external-link);
   }
 
   &.qc-warning {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#warning);
+    background-image: getImageUrl(warning);
   }
   
   &.qc-arrow-up-white {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-up-white);
+    background-image: getImageUrl(arrow-up-white);
   }
 
   
   &.qc-clipboard {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#clipboard);
+    background-image: getImageUrl(clipboard);
   }
   
   &.qc-error {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error);
+    background-image: getImageUrl(error);
   }
 
   &.qc-error-white {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#error-white);
+    background-image: getImageUrl(error-white);
   }
   
   &.qc-information {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);  
+    background-image: getImageUrl(information);  
   }
   
   &.qc-information-white {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information-white);  
+    background-image: getImageUrl(information-white);  
   }
   
   &.qc-minus {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#minus);  
+    background-image: getImageUrl(minus);  
   }
   
   &.qc-plus {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#plus);  
+    background-image: getImageUrl(plus);  
   }
   
   &.qc-question-mark {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#question-mark);  
+    background-image: getImageUrl(question-mark);  
   }
   
   &.qc-success {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success);  
+    background-image: getImageUrl(success);  
   }
   &.qc-success-white {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#success-white);  
+    background-image: getImageUrl(success-white);  
   }
   
   &.qc-xclose-white {
     width: 16px;
     height: 16px;
     min-width: 16px;
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-white);  
+    background-image: getImageUrl(xclose-white);  
   }
   &.qc-xclose-blue {
     width: 16px;
     height: 16px;
     min-width: 16px;
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#xclose-blue);  
+    background-image: getImageUrl(xclose-blue);  
   }
   
   &.qc-chevron-blue,
@@ -102,48 +101,43 @@
   }
   
   &.qc-chevron-blue {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-blue);
+    background-image: getImageUrl(chevron-blue);
   }
   
   &.qc-chevron-white {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#chevron-white);
+    background-image: getImageUrl(chevron-white);
   }
   
   &.qc-facebook {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#facebook);
+    background-image: getImageUrl(facebook);
   }
   
   &.qc-linkedin {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#linkedin);
+    background-image: getImageUrl(linkedin);
     height: 30px;
   }
   
   &.qc-twitter {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#twitter);
+    background-image: getImageUrl(twitter);
   }
   
   &.qc-youtube {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#youtube);
+    background-image: getImageUrl(youtube);
   }
 
   &.qc-warning-alert-icon {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#warning);
+    background-image: getImageUrl(warning);
   }
 
   &.qc-general-alert-icon {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#information);
+    background-image: getImageUrl(information);
   }
 
   &.qc-search {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#loupe-piv-droite);
+    background-image: getImageUrl(loupe-piv-droite);
   }
   &.qc-search-submit {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#loupe-piv-fonce);
+    background-image: getImageUrl(loupe-piv-fonce);
   }
 
 }
-
-
-
-
-

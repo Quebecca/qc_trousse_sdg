@@ -13,7 +13,7 @@
       ;
    let
         minimumScrollHeight = 0
-      , src = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#arrow-up-white`
+      , src = `${Utils.imagesRelativePath}arrow-up-white.svg`
       , lastScrollY = 0
       , visible = demo === 'true'
       , lastVisible = visible

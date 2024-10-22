@@ -113,15 +113,6 @@ let
                 !dev_process && copy({
                     targets: [
                         {
-                            src: `src/sdg/sprites/dist/view/svg/sprite.view.svg`,
-                            dest: [`dist/img`,`public/img`],
-                            rename: () => 'qc-sprite.svg'
-                        },
-                        {
-                            src: 'src/sdg/sprites/svg/external-link.svg',
-                            dest: [`dist/img`,`public/img`],
-                        },
-                        {
                             src: 'dist/img/*',
                             dest: [`public/img`],
                         }
