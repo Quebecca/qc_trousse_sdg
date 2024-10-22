@@ -21,7 +21,7 @@ const
 
 export let
       logoUrl = '/'
-    , logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#logo-quebec-piv-footer`
+    , logoSrc = `${Utils.imagesRelativePath}logo-quebec-piv-footer.svg`
     , logoAlt = 'Gouvernement du Québec'
     , logoWidth = '117'
     , logoHeight = '35'

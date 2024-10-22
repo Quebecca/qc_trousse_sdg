@@ -111,27 +111,6 @@ Un lien vers la documentation de la trousse (`/public/index.html`) est affiché 
 
 Lancer la commande `npm run build` pour générer les fichiers CSS et JavaScript minifiés dans le répertoire `/dist`.
 
-#### Génération des sprites
-
-Pour ajouter de nouvelles images :
-
-- Aller dans le fichier `/src/sdg/sprites` ;
-- Installer les dépendances avec la commande `npm install` ;
-- Ajouter votre fichier au format SVG dans le dossier `/src/sdg/sprites/svg` ;
-- Générer le sprite avec la commande `gulp generateSprite`.
-
-Votre SVG sera ajouté au deux fichiers `qc-sprite.svg` dans les répertoires `/public/img` et `/dist/img`.
-
-Ensuite pour afficher votre SVG, il faut le référencer de la façon suivante :
-
-```css
-.custom-class {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#<nom-du-fichier-svg-ajouté>);
-}
-```
-
-Voir par exemple ce qui est fait dans `src/scss/components/_icons.scss`.
-
 ### Ajout de la trousse dans un projet existant
 
 L’autre option est d’ajouter la trousse comme dépendance de votre projet et d’inclure les SCSS nécessaires pour profiter des jetons et fonctions de la trousse.
@@ -169,6 +148,7 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Intégration dans Bootstrap.
 
 ## Historique
+- Dernière version : Ajout du helper getImageUrl() et retrait des sprites;
 - 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;
