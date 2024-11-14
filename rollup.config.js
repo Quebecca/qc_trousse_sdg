@@ -1,7 +1,7 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only'
-import livereload from 'rollup-plugin-livereload';
+import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
 import { terser } from 'rollup-plugin-terser';
 import scss from 'rollup-plugin-scss'
@@ -60,6 +60,10 @@ const scssOptions = {
     includePaths: [
         'src/sdg/scss',
     ],
+    prependData: `
+        @use "modules/tokens" as *;
+        @use "modules/utils" as *;
+    `,
     outputStyle: dev_process ? 'expanded' : 'compressed',
     watch: ['src/sdg/scss', 'src/doc/scss']
 };
@@ -75,7 +79,10 @@ let
         compilerOptions: {
             // enable run-time checks
             customElement: true
-        }
+        },
+        preprocess: sveltePreprocess({
+            scss: scssOptions
+        })
     }
     , rollupOptions = [
         {
