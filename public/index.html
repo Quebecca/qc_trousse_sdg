@@ -93,7 +93,7 @@
                 <div class="color-sample qc-bg-color-blue-piv"></div>
                 <div class="color-description">
                     <strong>Bleu piv</strong><br/>
-                    <code  >--qc-color-blue-piv</code>
+                    <code>--qc-color-blue-piv</code>
                 </div>
             </div>
             <div class="color-details">
@@ -367,7 +367,6 @@
             <h2 id="liens">Liens</h2>
             <h3>Lien interne</h3>
             <p>
-
                 <a href="javascript:;" class="not-visited">Règlement de pêche dans la zone 21.</a>
             </p>
             <p>
@@ -390,14 +389,68 @@
                 <strong>Couleur</strong><br/>
                 <code >--qc-link-active</code>
             </p>
-            <h3>Lien externe</h3>
-            <p>
-                <a href="javascript:;" class="not-visited">Un long lien - réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien
-                    <span class="qc-external-link-tail">externe.
-                        <!-- no src needed -->
-                        <img alt="Cet hyperlien s’ouvrira dans une autre fenêtre">
-                    </span></a>
+            <h3>Lien externe (qc-external-link)</h3>
+
+            <p>Le composant <code>qc-external-link</code> detecte les liens externes (c-à-d. dirigeant vers un nouveau site) en comparant le nom de domaine du lien et celui de la page. Si le lien est externe, une icône est ajoutée à la fin du lien, séparée du dernier mot par une espace insécable.</p>
+            <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d'ombre (<i>shadow DOM</i>).</p>
+
+            <h4>Exemples</h4>
+
+            <p id="exemple-lien-externe">
+                <qc-external-link >
+                    <a href="/foo/bar.html">Un lien interne</a>
+                </qc-external-link><br/>
+                <qc-external-link >
+                    <a href="javascript:;">Un lien avec <code>href="javascript:;"</code></a>
+                </qc-external-link><br/>
+                <qc-external-link >
+                    <a href="http://www.external.domain.com/">Un lien externe. Réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien externe.</a>
+                </qc-external-link><br/>
+                <qc-external-link is-external>
+                    <a href="javascript:;">Un lien que l'on force en externe.</a>
+                </qc-external-link>
             </p>
+
+            <qc-code id="code-lien-externe"></qc-code>
+
+            <script>
+
+                document.getElementById('code-lien-externe')
+                        .setAttribute(
+                            'raw-code',
+                            document
+                                .getElementById('exemple-lien-externe')
+                                .outerHTML
+                                .replace('is-external=""', 'is-external')
+                        )
+
+            </script>
+
+            <h4>Attributs</h4>
+
+            <table class="qc-table qc-striped component-attributes-description">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td>is-external</td>
+                    <td>Aucune</td>
+                    <td>Null</td>
+                    <td>Force le lien comme externe. La présence de l'attribut est suffisante, comme l'attribut <code>disabled</code> dans les champs de formulaire.</td>
+                </tr>
+                <tr>
+                    <td>external-icon-alt</td>
+                    <td>Texte</td>
+                    <td>Français : « Ce lien dirige vers un autre site. » ; autre langue : <i lang="en">"This link directs to another site."</i></td>
+                    <td>Texte alternatif de l'icône de lien externe.</td>
+                </tr>
+            </table>
+
             <h3>Lien visité</h3>
             <p>
                 <a href="javascript:;" class="visited">Règlement de pêche dans la zone 21.</a>
@@ -1027,12 +1080,14 @@
                          width="210"
                          height="81">
                 </a>
-                <a slot="copyright"
-                   target="_blank"
-                   rel="noopener"
-                   href="https://www.quebec.ca/droit-auteur">
-                    © Gouvernement du Québec, <span class="qc-external-link-tail">2023 <img alt="Ce lien s'ouvrira dans un nouvel onglet" /></span>
-                </a>
+                <qc-external-link slot="copyright">
+                    <a
+                            target="_blank"
+                            rel="noopener"
+                            href="https://www.quebec.ca/droit-auteur">
+                        © Gouvernement du Québec, 2023</span>
+                    </a>
+                </qc-external-link>
             </qc-piv-footer>
             <qc-code target-id="piv-footer-3"></qc-code>
 

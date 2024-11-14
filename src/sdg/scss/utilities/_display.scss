@@ -2,3 +2,6 @@
 @import "vendor/bootstrap-rewrite/utilities/display";
 //@import "vendor/bootstrap-rewrite/mixins/deprecate";
 
+.qc-nowrap {
+  white-space: nowrap;
+}

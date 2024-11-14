@@ -31,4 +31,20 @@ export class Utils {
     static getPageLanguage() {
         return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
     }
+
+    static isTruthy(value) {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        if (typeof value === 'string') {
+            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
+        }
+        if (typeof value === 'number') {
+            return !!value; // Vérifie si le nombre est égal à 1
+        }
+        return false;
+    }
+
+
+
 }

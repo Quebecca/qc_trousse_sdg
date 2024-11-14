@@ -42,3 +42,8 @@ Always use this function for rem values
   @return string.unquote(deep-implode(map.get($google-fonts, $font), ','));
 }
 
+@function getImageUrl($nom, $images: $images) {
+  $image: map-get($images, $nom);
+  @return url('data:image/svg+xml;base64,#{$image}');
+}
+

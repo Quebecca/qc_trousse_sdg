@@ -33,6 +33,7 @@
       rawCode
           . replace('class="mounted"', '')
           . replace('/qc-hash-.*/g', '')
+          . replace('/is-external=""/g', 'is-external')
         ;
       prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;

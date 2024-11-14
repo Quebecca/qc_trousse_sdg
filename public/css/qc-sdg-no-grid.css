@@ -358,7 +358,9 @@ img {
 
 a {
   color: var(--qc-color-link-text);
-  /* to assure non breaking space inter last word and icon */
+  /* DEPRECATED: use <qc-external-link> instead.
+    to assure non breaking space inter last word and icon
+  */
 }
 a:visited {
   color: var(--qc-color-link-visited);
@@ -378,7 +380,7 @@ a .qc-external-link-tail img {
   max-width: 1.1rem;
   margin-bottom: 0.16rem;
   display: inline-block;
-  content: url(../img/external-link.svg?v=1.2.5);
+  content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOS4yMDciIGhlaWdodD0iMjkuNjA4IiB2aWV3Qm94PSIwIDAgMjkuMjA3IDI5LjYwOCI+CiAgPGcgaWQ9Ikdyb3VwZV8zOTQiIGRhdGEtbmFtZT0iR3JvdXBlIDM5NCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEzOSAtNTQ1LjYyNCkiPgogICAgPGcgaWQ9Ikdyb3VwZV8zOTAiIGRhdGEtbmFtZT0iR3JvdXBlIDM5MCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3MjIuMDA4IDQzNy41MjQpIj4KICAgICAgPGcgaWQ9Ikdyb3VwZV8zODkiIGRhdGEtbmFtZT0iR3JvdXBlIDM4OSI+CiAgICAgICAgPHBhdGggaWQ9IlRyYWPDqV82NzEiIGRhdGEtbmFtZT0iVHJhY8OpIDY3MSIgZD0iTTE4ODQuMDg3LDEyMC44MTRhMS4xNDUsMS4xNDUsMCwwLDAtMS4xNDUsMS4xNDV2MTMuNDU4SDE4NjMuM3YtMjAuMWgxMy4wNTdhMS4xNDYsMS4xNDYsMCwxLDAsMC0yLjI5MWgtMTUuMzQ4djI0LjY4M2gyNC4yMjVWMTIxLjk1OUExLjE0NiwxLjE0NiwwLDAsMCwxODg0LjA4NywxMjAuODE0WiIgZmlsbD0iIzA5NTc5NyIvPgogICAgICAgIDxwYXRoIGlkPSJUcmFjw6lfNjcyIiBkYXRhLW5hbWU9IlRyYWPDqSA2NzIiIGQ9Ik0xODc5Ljc5MiwxMDguMWExLjE0NiwxLjE0NiwwLDAsMCwwLDIuMjkxaDYuNTMzbC0xNC4wMTksMTQuMTdhMS4xNDYsMS4xNDYsMCwwLDAsMS42MjksMS42MTFsMTMuOTg5LTE0LjE0djYuMzc3YTEuMTQ2LDEuMTQ2LDAsMCwwLDIuMjkxLDBWMTA4LjFaIiBmaWxsPSIjMDk1Nzk3Ii8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPgo=");
 }
 
 code, .qc-code {
@@ -771,6 +773,10 @@ Always use this function for rem values
     display: inline-flex !important;
   }
 }
+.qc-nowrap {
+  white-space: nowrap;
+}
+
 /* TODO voir si meilleure façon d'intégrer en scss... */
 .qc-icon {
   display: inline-block;

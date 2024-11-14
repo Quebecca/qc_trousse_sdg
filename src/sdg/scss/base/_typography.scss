@@ -62,12 +62,14 @@ a {
   &:active {
     @include active-link();
   }
-  /* to assure non breaking space inter last word and icon */
+  /* DEPRECATED: use <qc-external-link> instead.
+    to assure non breaking space inter last word and icon
+  */
   .qc-external-link-tail {
     white-space: nowrap;
     img {
       @include external-link-img();
-      content:url(#{$img-dir}/external-link.svg?v={{pkg-version}});
+      content:getImageUrl(external-link);
     }
   }
 
