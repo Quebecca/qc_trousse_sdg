@@ -1,7 +1,8 @@
 <svelte:options customElement="{{
     tag: 'qc-code'
     , props: {
-        targetId : {attribute: 'target-id'}
+        targetId : {attribute: 'target-id'},
+        rawCode : {attribute: 'raw-code'},
     }
 }}" />
 
@@ -15,20 +16,23 @@
 
   export let
       targetId = ''
+      , rawCode = ''
       , language = 'html'
   ;
 
   let
-    rawCode = ''
-    , hlCode
+    hlCode
     , prettyCode
   ;
 
   onMount(() => {
-      rawCode =
-          ( document.getElementById(targetId)?.outerHTML
-            ?? ''
-          ) . replace('class="mounted"', '')
+      if (!rawCode) {
+          rawCode = document.getElementById(targetId)?.outerHTML
+                    ?? ''
+      }
+      rawCode
+          . replace('class="mounted"', '')
+          . replace('/qc-hash-.*/g', '')
         ;
       prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
