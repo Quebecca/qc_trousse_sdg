@@ -78,7 +78,11 @@ let
     , svelteOptions = {
         compilerOptions: {
             // enable run-time checks
-            customElement: true
+            customElement: true,
+            cssHash: ({ hash, name, filename, css }) => {
+                // replacement of default `svelte-${hash(css)}`
+                return `qc-hash-${hash(css)}`;
+            }
         },
         preprocess: sveltePreprocess({
             scss: scssOptions
