@@ -296,23 +296,9 @@ main {
   padding-bottom: var(--qc-spacer-lg);
 }
 
-.color-details {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-.color-details > div + div {
-  margin-left: var(--qc-spacer-md);
-}
-.color-details + .color-details {
-  margin-top: var(--qc-spacer-md);
-}
-
-.color-sample {
-  width: 4.8rem;
-  height: 4.8rem;
-  border-radius: 50%;
-  flex-shrink: 0;
+qc-color-doc {
+  display: block;
+  margin-bottom: var(--qc-spacer-md);
 }
 
 .title-samples {

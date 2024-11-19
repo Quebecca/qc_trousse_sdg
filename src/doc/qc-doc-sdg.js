@@ -1,4 +1,5 @@
 export * from './components/code.svelte';
+export * from './components/color-doc.svelte'
 import './scss/qc-doc-sdg.scss';
 
 // Show maskable "general alert" component

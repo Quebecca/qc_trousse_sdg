@@ -11,23 +11,9 @@ main {
   padding-bottom: token-value(spacer lg);
 }
 
-.color-details {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  > div + div {
-    margin-left: token-value(spacer,md);
-  }
-  & + & {
-    margin-top: token-value(spacer,md);
-  }
-}
-
-.color-sample {
-  width: rem(6 * $base-spacer);
-  height: rem(6 * $base-spacer);
-  border-radius: 50%;
-  flex-shrink: 0;
+qc-color-doc {
+  display: block;
+  margin-bottom: token-value(spacer,md);;
 }
 .title-samples {
   border: 1px solid token-value(color,grey,light);

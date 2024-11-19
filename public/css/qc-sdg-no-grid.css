@@ -79,7 +79,7 @@ Always use this function for rem values
   --qc-line-height-xl: var(--qc-line-height-200);
   --qc-line-height-content: var(--qc-line-height-md);
   --qc-max-content-width: 82.5rem;
-  --qc-color-white: white;
+  --qc-color-white: #ffffff;
   --qc-color-blue-pale: #dae6f0;
   --qc-color-blue-light: #4a98d9;
   --qc-color-blue-regular: #1472bf;
@@ -388,7 +388,7 @@ code, .qc-code {
 }
 
 .qc-bg-color-white {
-  background-color: white;
+  background-color: #ffffff;
 }
 
 .qc-bg-color-blue-pale {
