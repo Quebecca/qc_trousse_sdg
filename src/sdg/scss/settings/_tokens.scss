@@ -118,15 +118,14 @@ $xl-tokens: (
     ),
     box-shadow: (
         color: rgba($dark-blue, .24),
+        color-0: token-value(color grey light),
         blur: (
-            0: 0,
             1: 4px,
             2: 8px,
             3: 16px,
             4: 24px,
         ),
         offset: (
-            0: 0,
             1: 1px,
             2: 2px,
             3: 4px,

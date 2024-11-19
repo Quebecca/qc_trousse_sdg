@@ -112,12 +112,11 @@ Always use this function for rem values
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
   --qc-box-shadow-color: rgba(34, 54, 84, 0.24);
-  --qc-box-shadow-blur-0: 0;
+  --qc-box-shadow-color-0: var(--qc-color-grey-light);
   --qc-box-shadow-blur-1: 4px;
   --qc-box-shadow-blur-2: 8px;
   --qc-box-shadow-blur-3: 16px;
   --qc-box-shadow-blur-4: 24px;
-  --qc-box-shadow-offset-0: 0;
   --qc-box-shadow-offset-1: 1px;
   --qc-box-shadow-offset-2: 2px;
   --qc-box-shadow-offset-3: 4px;
@@ -557,24 +556,20 @@ ul ul {
   list-style: circle;
 }
 
-.qc-shading-0 {
-  box-shadow: 0 0 0 var(--qc-color-grey-light);
-}
-
 .qc-shading-1, .qc-to-top {
-  box-shadow: 0 1px 4px var(--qc-color-grey-light);
+  box-shadow: 0 1px 4px var(--qc-box-shadow-color);
 }
 
 .qc-shading-2, .qc-to-top:focus {
-  box-shadow: 0 2px 8px var(--qc-color-grey-light);
+  box-shadow: 0 2px 8px var(--qc-box-shadow-color);
 }
 
 .qc-shading-3 {
-  box-shadow: 0 4px 16px var(--qc-color-grey-light);
+  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 6px 24px var(--qc-color-grey-light);
+  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
 }
 
 /*

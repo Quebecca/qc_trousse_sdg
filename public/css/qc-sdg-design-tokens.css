@@ -110,12 +110,11 @@ Always use this function for rem values
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
   --qc-box-shadow-color: rgba(34, 54, 84, 0.24);
-  --qc-box-shadow-blur-0: 0;
+  --qc-box-shadow-color-0: var(--qc-color-grey-light);
   --qc-box-shadow-blur-1: 4px;
   --qc-box-shadow-blur-2: 8px;
   --qc-box-shadow-blur-3: 16px;
   --qc-box-shadow-blur-4: 24px;
-  --qc-box-shadow-offset-0: 0;
   --qc-box-shadow-offset-1: 1px;
   --qc-box-shadow-offset-2: 2px;
   --qc-box-shadow-offset-3: 4px;

@@ -4,13 +4,13 @@
 @use "sass:map";
 
 @each $index, $blur in map.get($xl-tokens, box-shadow, blur) {
-  $color : token-value(box-shadow color);
-  // qc-shading-0 and qc-shading-1
-  @if($index in [0,1]){
-    $color: token-value(color, grey, light);
-  }
   $offset : map.get($xl-tokens, box-shadow, offset, $index);
   .qc-shading-#{$index} {
-    box-shadow: 0 $offset $blur $color;
+    @if ($index == 0) {
+      border: 1px solid token-value(box-shadow, color-0);
+    }
+    @else {
+      box-shadow: 0 $offset $blur token-value(box-shadow, color);
+    }
   }
 }
