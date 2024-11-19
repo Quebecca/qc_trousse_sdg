@@ -370,6 +370,7 @@ a:hover, a:focus {
 }
 a:active {
   color: var(--qc-color-link-active);
+  text-decoration: none;
 }
 a .qc-external-link-tail {
   white-space: nowrap;

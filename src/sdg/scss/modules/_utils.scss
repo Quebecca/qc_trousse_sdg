@@ -33,6 +33,7 @@
 
 @mixin active-link() {
   color: token-value(color, link, active);
+  text-decoration: none;
 }
 
 @mixin external-link-img() {
