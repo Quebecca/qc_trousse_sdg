@@ -1,0 +1,12 @@
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "modules/grid" as *;
+@use "pivHeaderSlots" as *;
+
+qc-piv-header {
+  [slot=links] {
+    @extend %piv-links;
+  }
+}
+
+

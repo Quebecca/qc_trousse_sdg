@@ -63,6 +63,7 @@ const scssOptions = {
     prependData: `
         @use "modules/tokens" as *;
         @use "modules/utils" as *;
+        @use "modules/grid" as *;
     `,
     outputStyle: dev_process ? 'expanded' : 'compressed',
     watch: ['src/sdg/scss', 'src/doc/scss']

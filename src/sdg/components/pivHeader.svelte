@@ -121,7 +121,7 @@ onMount(() => {
       {/if}
       <div class="right-section">
         {#if enableSearch == 'true'}
-          <a  class="qc-icon qc-search"
+          <a  class="qc-search"
               href="/"
               role="button"
               on:click|preventDefault = {() => displaySearchForm = !displaySearchForm}
@@ -176,4 +176,250 @@ onMount(() => {
   </div>
 </div>
 
-<link rel='stylesheet' href='{Utils.cssRelativePath}{Utils.cssFileName}'>
+<style lang="scss">
+  @use "vendor/modern-css-reset/src/reset";
+  @use "components/piv-header/pivHeaderSlots";
+  //@use "components/icons" as *;
+
+  :host {
+    display: block;
+    min-height: rem(72);
+    background-color: token-value(color, blue, piv);
+    width: 100%;
+  }
+
+  // Single container class with breakpoint max-widths
+  .qc-container,
+    // 100% wide container at all breakpoints
+  .qc-container-fluid {
+    @include make-container();
+  }
+
+  // Responsive containers that are 100% wide until a breakpoint
+  @each $breakpoint, $container-max-width in $container-max-widths {
+    .qc-container-#{$breakpoint} {
+      @extend .qc-container-fluid;
+    }
+
+    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+      %responsive-container-#{$breakpoint} {
+        max-width: $container-max-width;
+      }
+
+      // Extend each breakpoint which is smaller or equal to the current breakpoint
+      $extend-breakpoint: true;
+
+      @each $name, $width in $grid-breakpoints {
+        @if ($extend-breakpoint) {
+          .qc-container {
+            @extend %responsive-container-#{$breakpoint};
+          }
+
+          // Once the current breakpoint is reached, stop extending
+          @if ($breakpoint == $name) {
+            $extend-breakpoint: false;
+          }
+        }
+      }
+    }
+  }
+
+  .qc-piv-header {
+    color: token-value(color white);
+
+    a {
+      color: token-value(color white);
+      text-decoration: none;
+
+      &:hover, &:focus {
+        color: token-value(color white);
+        text-decoration: underline;
+      }
+    }
+
+    .piv-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .logo {
+        margin-right: rem(64);
+        @include media-mobile() {
+          margin: 0;
+        }
+
+        a {
+          display: block;
+        }
+
+        img {
+          height: rem(72);
+          min-width: rem(200);
+        }
+      }
+
+      .title {
+        width: 100%;
+        padding: token-value(spacer sm) 0;
+        min-height: rem(72);
+        align-items: center;
+        display: flex;
+        margin-right: rem(40);
+
+        a {
+          @include content-font(100);
+          font-family: token-value(font, family, header);
+
+          &:hover, &:focus {
+            text-decoration: underline;
+          }
+
+          .description {
+            font-size: token-value(font size sm);
+          }
+        }
+      }
+
+      .right-section {
+        min-width: fit-content;
+        display: flex;
+        align-items: center;
+
+        .links ul {
+          @extend %piv-links;
+        }
+
+        @include media-mobile() {
+          min-width: auto;
+        }
+      }
+
+      .qc-search {
+        background-image: getImageUrl(loupe-piv-droite);
+        min-width: rem(24);
+        height: rem(24);
+        span {
+          @include sr-only();
+        }
+      }
+    }
+
+    .piv-bottom {
+      .title {
+        display: none;
+      }
+      .search-zone {
+        padding-bottom: token-value(spacer md);
+        form {
+          .input-group {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            input {
+              width: 100%;
+              padding: rem(6) rem(12) ;
+              border: 1px solid token-value(color blue dark);
+              border-right: none;
+              &:focus {
+                outline: rem(2) solid token-value(color blue light);
+                border-right: 1px solid black;
+                z-index: 1;
+              }
+              &::placeholder {
+                font-size: token-value(font size sm);
+              }
+            }
+            button {
+              display: flex;
+              justify-content: center;
+              border: 1px solid token-value(color blue dark);
+              border-left: none;
+              background-color: white;
+              width: rem(2.6 * 16);
+              &:focus{
+                outline: rem(2) solid token-value(color blue light);
+                border-left: 1px solid black;
+              }
+              .qc-search-submit {
+                min-width: rem(24);
+                height: rem(24);
+                align-self: center;
+              }
+              .sr-description {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                clip: rect(0 0 0 0);
+              }
+            }
+
+          }
+        }
+      }
+
+    }
+  }
+
+
+  .go-to-content {
+    display: flex;
+    height: 0;
+
+    a {
+      @include sr-only();
+
+      &:focus {
+        width: inherit;
+        height: inherit;
+        overflow: inherit;
+        clip: inherit;
+        white-space: inherit;
+        color: token-value(color white);
+        background-color: token-value(color blue piv);
+      }
+    }
+  }
+
+
+  @include media-tablet() {
+    .qc-piv-header {
+      .piv-top {
+        .logo img {
+          min-width: rem(175);
+          width: rem(175);
+        }
+
+        .title {
+          display: none;
+        }
+
+        .right-section {
+          min-width: rem(130);
+        }
+      }
+
+      .piv-bottom {
+        .title {
+          margin: 0;
+          display: flex;
+          padding-bottom: token-value(spacer sm);
+        }
+      }
+    }
+  }
+
+  @include media-mobile() {
+    .qc-piv-header {
+      .piv-top {
+        height: rem(72);
+
+        .right-section {
+          min-width: fit-content;
+        }
+      }
+    }
+  }
+
+
+</style>

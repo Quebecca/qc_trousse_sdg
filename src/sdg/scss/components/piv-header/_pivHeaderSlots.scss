@@ -1,0 +1,35 @@
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+@use "modules/grid" as *;
+
+%piv-links {
+  &, & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    margin-left: token-value(spacer md);
+    @include media-mobile() {
+      margin-left: token-value(spacer sm);
+    }
+
+    li {
+      padding: 0;
+      margin: 0;
+      @include content-font(sm);
+    }
+
+    a {
+      font-family: token-value(font family header);
+      text-decoration: none;
+      font-size: rem(12);
+      color: token-value(color white);
+      font-weight: token-value(font weight regular);
+
+      &:focus, &:hover {
+        text-decoration: underline;
+        color: token-value(color white);
+      }
+    }
+  }
+}
