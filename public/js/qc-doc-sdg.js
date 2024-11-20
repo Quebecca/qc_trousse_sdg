@@ -67013,6 +67013,6 @@
 	);
 
 	// add version
-	document.getElementById("version").textContent = `v1.2.5-dev`;
+	document.getElementById("version").textContent = `v1.2.5`;
 
 })();
