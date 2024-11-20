@@ -33,32 +33,50 @@ export let
 
 </script>
 
-<div class="qc-piv-footer qc-component">
-    <div class="qc-container">
-        <nav>
-            <slot/>
-        </nav>
-        <div class="logo">
-            <slot name="logo">
-                <a href="{logoUrl}">
-                    <img class="logo-mo"
-                         alt="{logoAlt}"
-                         src="{logoSrc}"
-                         width="{logoWidth}"
-                         height="{logoHeight}">
-                </a>
-            </slot>
-        </div>
-        <span class="copyright">
-            <slot name="copyright">
-                <a href="{copyrightUrl}">
-                    {copyrightText}
-                </a>
-            </slot>
-        </span>
-    </div>
 
+<slot/>
+<div class="logo">
+    <slot name="logo">
+        <a href="{logoUrl}">
+            <img class="logo-mo"
+                 alt="{logoAlt}"
+                 src="{logoSrc}"
+                 width="{logoWidth}"
+                 height="{logoHeight}">
+        </a>
+    </slot>
 </div>
+<span class="copyright">
+    <slot name="copyright">
+        <a href="{copyrightUrl}">
+            {copyrightText}
+        </a>
+    </slot>
+</span>
 
-<link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
+<style lang="scss">
+    @use "base/typography";
+
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      margin-top: rem(40);
+      padding-bottom: rem(4 * $base-spacer);
+      @include content-font(sm);
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  .copyright {
+    margin-top: rem(32);
+  }
+
+</style>
+

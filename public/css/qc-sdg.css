@@ -1167,20 +1167,6 @@ qc-piv-header [slot=links] a:focus, .qc-piv-header .piv-top .right-section .link
     min-width: fit-content;
   }
 }
-qc-piv-footer {
-  display: block;
-  margin-top: 4rem;
-  padding-bottom: 3.2rem;
-  font-size: var(--qc-font-size-sm);
-  line-height: var(--qc-line-height-sm);
-  font-weight: var(--qc-font-weight-regular);
-}
-qc-piv-footer a {
-  text-decoration: none;
-}
-qc-piv-footer a:hover {
-  text-decoration: underline;
-}
 qc-piv-footer ul {
   margin: 0 0 var(--qc-spacer-sm) 0;
   padding: 0;
@@ -1195,20 +1181,11 @@ qc-piv-footer ul li {
   margin: 0;
   text-align: center;
 }
-qc-piv-footer ul li:hover {
-  text-decoration: underline;
-}
-
-.qc-piv-footer a {
+qc-piv-footer ul li a {
   text-decoration: none;
 }
-.qc-piv-footer a:hover {
+qc-piv-footer ul li a:hover {
   text-decoration: underline;
-}
-.qc-piv-footer .qc-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .qc-general-alert {

@@ -1,19 +1,8 @@
 @use "../modules/tokens" as *;
 @use "../modules/utils" as *;
-@use "../modules/grid" as *;
+
 
 qc-piv-footer {
-  display: block;
-  margin-top: rem(40);
-  padding-bottom: rem(4 * $base-spacer);
-  @include content-font(sm);
-
-  a {
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 
   ul {
     margin: 0 0 token-value(spacer sm) 0;
@@ -29,25 +18,14 @@ qc-piv-footer {
       margin: 0;
       text-align: center;
 
-      &:hover {
-        text-decoration: underline;
+      a {
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
 
 }
 
-.qc-piv-footer {
-  a {
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .qc-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-}
