@@ -3390,7 +3390,7 @@
 			},
 			m(target, anchor) {
 				insert(target, img_1, anchor);
-				/*img_1_binding*/ ctx[3](img_1);
+				/*img_1_binding*/ ctx[2](img_1);
 			},
 			p(ctx, [dirty]) {
 				if (dirty & /*externalIconAlt*/ 1) {
@@ -3404,7 +3404,7 @@
 					detach(img_1);
 				}
 
-				/*img_1_binding*/ ctx[3](null);
+				/*img_1_binding*/ ctx[2](null);
 			}
 		};
 	}
@@ -3412,30 +3412,12 @@
 	function instance($$self, $$props, $$invalidate) {
 		let { externalIconAlt = Utils.getPageLanguage() == "fr"
 		? "Ce lien dirige vers un autre site."
-		: "This link directs to another site.", isExternal = null } = $$props;
+		: "This link directs to another site." } = $$props;
 
 		let img;
-		const currentDomain = window.location.hostname;
-
-		function markAsExternal(a) {
-			if (isExternal !== null) {
-				return true;
-			}
-
-			if (a.href.startsWith('javascript:')) {
-				return false;
-			}
-
-			const linkDomain = new URL(a.href).hostname;
-			return linkDomain != currentDomain;
-		}
 
 		onMount(() => {
 			img.parentElement.querySelectorAll('a').forEach(a => {
-				if (!markAsExternal(a)) {
-					return;
-				}
-
 				const lastWord = a.textContent.split(/\s/).pop(),
 					lastWordIndex = a.innerHTML.lastIndexOf(lastWord),
 					firstSegment = a.innerHTML.substring(lastWordIndex, -1),
@@ -3456,16 +3438,15 @@
 
 		$$self.$$set = $$props => {
 			if ('externalIconAlt' in $$props) $$invalidate(0, externalIconAlt = $$props.externalIconAlt);
-			if ('isExternal' in $$props) $$invalidate(2, isExternal = $$props.isExternal);
 		};
 
-		return [externalIconAlt, img, isExternal, img_1_binding];
+		return [externalIconAlt, img, img_1_binding];
 	}
 
 	class ExternalLink extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance, create_fragment, safe_not_equal, { externalIconAlt: 0, isExternal: 2 }, add_css);
+			init(this, options, instance, create_fragment, safe_not_equal, { externalIconAlt: 0 }, add_css);
 		}
 
 		get externalIconAlt() {
@@ -3476,17 +3457,8 @@
 			this.$$set({ externalIconAlt });
 			flush();
 		}
-
-		get isExternal() {
-			return this.$$.ctx[2];
-		}
-
-		set isExternal(isExternal) {
-			this.$$set({ isExternal });
-			flush();
-		}
 	}
 
-	customElements.define("qc-external-link", create_custom_element(ExternalLink, {"externalIconAlt":{"attribute":"external-icon-alt"},"isExternal":{"attribute":"is-external"}}, [], [], false));
+	customElements.define("qc-external-link", create_custom_element(ExternalLink, {"externalIconAlt":{"attribute":"external-icon-alt"}}, [], [], false));
 
 })();
