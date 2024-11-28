@@ -750,12 +750,16 @@
                            search-form-action="https://www.quebec.ca/resultats-de-recherche"
                            search-input-name="tx_solr[q]"
             >
-                <ul slot="links">
-                    <li><a href="#fakeEnglish">English</a>
-                    </li>
-                    <li><a href="javascript:;">Nous joindre</a>
-                    </li>
-                </ul>
+                <nav slot="links"
+                     aria-label="Navigation PIV">
+                    <ul>
+                        <li><a href="#fakeEnglish">English</a>
+                        </li>
+                        <li><a href="javascript:;">Nous joindre</a>
+                        </li>
+                    </ul>
+                </nav>
+
 
             </qc-piv-header>
             <qc-code target-id="pivEnteteExempleRecherche"></qc-code>

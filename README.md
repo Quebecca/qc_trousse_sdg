@@ -148,7 +148,7 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Intégration dans Bootstrap.
 
 ## Historique
-- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ;
+- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité ;
 - 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;

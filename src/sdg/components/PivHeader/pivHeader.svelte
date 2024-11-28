@@ -7,6 +7,7 @@
     , logoAlt : {attribute: 'logo-alt'}
     , titleUrl : {attribute: 'title-url'}
     , titleText: {attribute: 'title-text'}
+    , linksLabel: {attribute: 'links-label'}
     , altLanguageText: {attribute: 'alt-language-text'}
     , altLanguageUrl: {attribute: 'alt-language-url'}
     , joinUsText: {attribute: 'join-us-text'}
@@ -27,7 +28,7 @@
 
 <script>
 import { onMount } from "svelte";
-import { Utils } from "./utils"
+import { Utils } from "../utils"
 
 const
   lang = Utils.getPageLanguage()
@@ -41,9 +42,12 @@ export let
       : 'Logo of government of Québec'
   , titleUrl= '/'
   , titleText= ''
+  , linksLabel= lang === 'fr'
+          ? 'Navigation PIV'
+          : 'PIV navigation'
   , altLanguageText= lang === 'fr'
-                        ? 'English'
-                        : 'Français'
+                  ? 'English'
+                  : 'Français'
   , altLanguageUrl= ''
   , joinUsText= lang === 'fr'
                   ? 'Nous joindre'
@@ -94,7 +98,9 @@ onMount(() => {
 
 </script>
 
-<div class="qc-piv-header qc-component">
+<div role="banner"
+     class="qc-piv-header qc-component"
+>
   <div class="{containerClass}">
     {#if goToContent == 'true'}
       <div class="go-to-content">
@@ -132,14 +138,16 @@ onMount(() => {
         <div class="links">
           <slot name="links">
           {#if joinUsUrl || altLanguageUrl}
+            <nav aria-label="{linksLabel}">
               <ul>
-                {#if altLanguageUrl}
-                  <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
-                {/if}
-                {#if joinUsUrl}
-                  <li><a href="{joinUsUrl}">{joinUsText}</a></li>
-                {/if}
-              </ul>
+                  {#if altLanguageUrl}
+                    <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
+                  {/if}
+                  {#if joinUsUrl}
+                    <li><a href="{joinUsUrl}">{joinUsText}</a></li>
+                  {/if}
+                </ul>
+            </nav>
           {/if}
           </slot>
         </div>
@@ -177,8 +185,8 @@ onMount(() => {
 </div>
 
 <style lang="scss">
-  @use "vendor/modern-css-reset/src/reset";
-  @use "components/piv-header/pivHeaderSlots";
+  @use "../../scss/vendor/modern-css-reset/src/reset.css";
+  @use "../../scss/components/piv-header/pivHeaderSlots";
   //@use "components/icons" as *;
 
   :host {
@@ -404,6 +412,8 @@ onMount(() => {
           margin: 0;
           display: flex;
           padding-bottom: token-value(spacer sm);
+          @include content-font(100);
+          font-family: token-value(font, family, header);
         }
       }
     }
