@@ -26,19 +26,6 @@
     width: 100%;
   }
 
-  &.qc-information .icon-container {
-    background-color: token-value(color,blue,pale);    
-  }  
-  &.qc-warning .icon-container {
-    background-color: token-value(color,yellow,pale);
-  }
-  &.qc-success .icon-container {
-    background-color: token-value(color,green,pale);
-  }
-
-  &.qc-error .icon-container {
-      background-color: token-value(color,pink,pale);
-  }
 
 
   /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
