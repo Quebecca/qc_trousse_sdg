@@ -15,36 +15,24 @@ export
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site."
 ;
-let img
-;
-const currentDomain = window.location.hostname;
+let img;
 
 onMount(() => {
     img
         .parentElement
         .querySelectorAll('a')
         .forEach(a => {
-            const
-                lastWord = a.textContent.split( /\s/ ).pop(),
-                lastWordIndex = a.innerHTML.lastIndexOf(lastWord),
-                firstSegment = a.innerHTML.substring(lastWordIndex,-1),
-                lastSegment = a.innerHTML.substring(lastWordIndex)
-            ;
-
-            a.innerHTML = firstSegment + lastSegment.replace(lastWord, `<span class="qc-nowrap">${lastWord}${img.outerHTML}</span>`)
+            a.innerHTML = a.innerHTML.trim()
     })
-    img.remove()
 });
-
 </script>
 <img bind:this={img}
      alt="{externalIconAlt}"
 />
 <style lang="scss">
+  // cf https://stackoverflow.com/questions/16100956/prevent-after-element-from-wrapping-to-next-line
      img {
-       @include external-link-img();
-       content:getImageUrl(external-link);
-       margin-left: rem($base-spacer * .5);
+       @include sr-only();
     }
 </style>
 
