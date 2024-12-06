@@ -66,41 +66,46 @@ $xl-tokens: (
     ),
     max-content-width: rem(825), //TODO faire une clé max_width : (content:…, component1:…, )
     color: (
-        white : #ffffff,
-        blue : (
-            pale : #dae6f0,
-            light : #4a98d9,
-            regular : #1472bf,
-            piv: #095797,
-            medium : #19406C,
-            dark: $dark-blue,
-        ),
-        purple: #6b4fa1,
-        grey : (
-            pale : #f1f1f2,
-            light : #c5cad2,
-            regular: #8893a2,
-            medium : #6b778a,
-            dark: #4e5662,
-        ),
-        pink : (
-            pale: #ffdbd6,
-            regular: #e58271,
-        ),
-        red: (
-            regular: #cb381f,
-            dark: #692519,
-        ),
-        green: (
-            pale: #d7f0bb,
-            regular: #4f813d,
-            dark: #2c4024,
-        ),
-        yellow : (
-            pale : #f8e69a,
-            regular: #e0ad03,
-            dark: #ad781c,
-        ),
+          white : #ffffff,
+          blue : (
+              pale : #dae6f0,
+              light : #4a98d9,
+              regular : #1472bf,
+              piv: #095797,
+              medium : #19406C,
+              dark_rgb: (34, 54, 84),
+              dark: rgb(token-value(color blue dark_rgb))
+          ),
+          purple: #6b4fa1,
+          grey : (
+              pale : #f1f1f2,
+              light : #c5cad2,
+              regular: #8893a2,
+              medium : #6b778a,
+              dark: #4e5662,
+          ),
+          pink : (
+              pale: #ffdbd6,
+              regular: #e58271,
+          ),
+          red: (
+              pale: token-value(color pink pale),
+              light: token-value(color pink regular),
+              regular: #cb381f,
+              dark: #692519,
+          ),
+          green: (
+              pale: #d7f0bb,
+              regular: #4f813d,
+              dark: #2c4024,
+          ),
+          yellow : (
+              pale : #f8e69a,
+              regular: #e0ad03,
+              dark: #ad781c,
+          ),
+
+        background : token-value(color white),
         text : (
             primary : token-value(color blue dark)
         ),
@@ -115,9 +120,20 @@ $xl-tokens: (
             active: token-value(color red regular),
             // TODO ajouter le focus cf https://www.figma.com/design/p5kWdGvZk0BvkEGIrdvXL6/%5BSDG-OFFICIEL%5D-Bases-et-composants?node-id=1070-628&node-type=canvas&t=eIMD5cFp9Jq5vMNt-0
         ),
+        formfield: (
+            border: token-value(color grey medium ),
+            focus: (
+                border: token-value(color dark-blue),
+                outline: token-value(color blue light)
+            )
+        ),
+        searchinput: (
+          icon: token-value(color blue piv),
+        )
     ),
     box-shadow: (
-        color: rgba($dark-blue, .24),
+        color: rgba(var(--qc-color-blue-dark_rgb), .24),
+        //color: token-value(color blue dark),
         color-0: token-value(color grey light),
         blur: (
             1: 4px,
@@ -177,12 +193,11 @@ $xl-tokens: (
         ),
         list-item : (
             mb: token-value(spacer sm),
-
         ),
         notice: (
             my: token-value(spacer, md),
             mx: rem(4 * $base-spacer),
-        )
+        ),
     ),
     grid: (
         gutter: 32px,
@@ -233,6 +248,55 @@ $breakpoints-tokens: (
             gutter: 16px,
         )
     ),
+) !default;
+
+$themes-tokens: (
+  light: $breakpoints-tokens,
+  dark: (
+    xl: (
+      color: (
+        white : #121519,
+        blue : (
+            pale : #162B47,
+            light : #0078CC,
+            regular : #3B95E1,
+            piv: #72B2EB,
+            medium : #ADCDEB,
+            dark_rgb: (198, 219, 238),
+        ),
+        purple: #B3A5D4,
+        grey : (
+            pale : #1C2025,
+            light : #3B424C,
+            regular: #6A7688,
+            medium : #8590A8,
+            dark: #A7ACBC,
+        ),
+        pink : (
+            pale: #4F180E,
+            regular: #BB3A23,
+        ),
+        red: (
+            regular: #F26049,
+            dark: #F3BCB6,
+        ),
+        green: (
+            pale: #1E2F17,
+            regular: #6E9C57,
+            dark: #B0D493,
+        ),
+        yellow : (
+            pale : #3F240C,
+            regular: #6D4512,
+            dark: #AC7900,
+        ),
+        text : (
+            primary : #D7D8DD
+        ),
+        accent: #F17B6C,
+      )
+    )
+  )
 ) !default;
 
 

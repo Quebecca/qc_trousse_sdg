@@ -47,3 +47,21 @@ Always use this function for rem values
   @return url('data:image/svg+xml;base64,#{$image}');
 }
 
+@function getImageUrl($nom, $images: $images) {
+  $image: map-get($images, $nom);
+  @return url('data:image/svg+xml;base64,#{$image}');
+}
+
+@mixin dark-theme() {
+  .qc-dark-theme,:root.qc-dark-theme {
+    @content;
+  }
+}
+
+@mixin control-focus() {
+  outline: 2px solid token-value(color blue medium);
+}
+
+
+
+

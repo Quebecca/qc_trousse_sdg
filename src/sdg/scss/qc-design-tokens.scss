@@ -1,15 +1,23 @@
 @use "modules/tokens" as *;
 @use "modules/map" as *;
 @use "modules/grid" as *;
+@use "modules/utils" as *;
 
-:root,:host {
+@mixin generate-token-for-breakpoints($breakpoints-settings) {
 
-   @each $breakpoint, $settings in $breakpoints-tokens {
+   @each $breakpoint, $settings in $breakpoints-settings {
       @include media-breakpoint-down($breakpoint) {
-         @include map-deep-parse($settings) using ($path,$value)
-         {
+         @include map-deep-parse($settings) using($path,$value) {
             #{token-name($path)} : $value;
-         };
+         }
       }
    }
+}
+
+:root {
+   @include generate-token-for-breakpoints(map-get($themes-tokens, light));
+}
+
+@include dark-theme() {
+   @include generate-token-for-breakpoints(map-get($themes-tokens, dark))
 }
