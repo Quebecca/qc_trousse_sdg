@@ -26,6 +26,7 @@
                        alt-logo="Signature du gouvernement du Québec. Accédez au Système de design gouvernemental.">
         </qc-piv-header>
     </header>
+    <qc-doc-top-nav></qc-doc-top-nav>
     <div class="qc-container">
         <h1>
             <span class="qc-subhead"id="version"></span>
@@ -36,7 +37,7 @@
             <ul>
                 <li><a href='#couleurs'>Couleurs</a></li>
                 <li><a href='#grille'>Grille horizontale</a></li>
-                <li><a href='#images'>Images</a></li>
+                <li><a href='#figures'>Figures</a></li>
                 <li><a href='#liens'>Liens</a></li>
                 <li><a href='#liste'>Liste</a></li>
                 <li><a href='#titre'>Niveaux de titres</a></li>
@@ -293,17 +294,22 @@
 <hr />
 
             <!-- images -->
-            <h2 id="Figures">Figures</h2>
-            <p>Les figures servent en général pour l’affichage des images, mais aussi pour n’importe quel élément qui d</p>
-            <figure>
-                <img src="img/figure-sample.png"
-                     alt="Image avec légende">
-                <figcaption>
-                    <p>La légende de l'image <br>
-                        <em>La source de l'image</em>
-                    </p>
-                </figcaption>
-            </figure>
+            <h2 id="figures">Figures</h2>
+            <p>Les figures servent en général pour l’affichage des images.</p>
+            <qc-doc-exemple id="exemple-figure"
+                           aria-label="Exemple de figure"
+                           >
+                <figure >
+                    <img src="img/figure-sample.png"
+                         alt="Image avec légende">
+                    <figcaption>
+                        <p>La légende de l'image <br>
+                            <em>La source de l'image</em>
+                        </p>
+                    </figcaption>
+                </figure>
+            </qc-doc-exemple>
+            <qc-code target-id="exemple-figure"></qc-code>
 
 <hr />
 
@@ -317,6 +323,7 @@
                 <strong>Couleur</strong><br/>
                 <code >--qc-link-text</code>
             </p>
+            <!-- TODO le focus n'est pas stylé -->
             <h3>Lien au survol ou au focus</h3>
             <p>
                 <a href="javascript:;" class="pseudo-hover">Règlement de pêche dans la zone 21.</a>
@@ -537,24 +544,26 @@
                 </a>
             </p>
 
-
-            <qc-alert id="alert-warning"
+            <qc-doc-exemple id="alert-warning"
+                            aria-label="Exemple d'alerte jaune" >
+            <qc-alert id="alerte-masquable"
                       type="warning"
                       maskable="true"
                       content="Alerte jaune d'importance élevée"
             >
             </qc-alert>
-
+            </qc-doc-exemple>
             <qc-code target-id="alert-warning"></qc-code>
 
             <h4>Alerte bleue</h4>
-            <qc-alert id="alert-general"
-                      type="general"
-                      maskable="false"
+            <qc-doc-exemple id="alert-general"
+                            aria-label="Exemple d'alerte générale" >
+                <qc-alert type="general"
+                          maskable="false">
+                    <p>Alerte bleue d'importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+                </qc-alert>
+            </qc-doc-exemple>
 
-            >
-                <p>Alerte bleue d'importance modérée <a href="javascript:;">avec un lien textuel</a></p>
-            </qc-alert>
             <qc-code target-id="alert-general"></qc-code>
 
             <h3>Documentation technique</h3>
@@ -607,7 +616,7 @@
                 )
             </script>
             <qc-code target-id="qc-alert-event-exemple"
-                     language="html"></qc-code>
+                     language="javascript"></qc-code>
 
             <h4>Zone d'ajout de contenu HTML</h4>
 
@@ -627,36 +636,48 @@
             <h3>Exemples</h3>
             <h4>Information</h4>
 
-            <qc-notice id="notice-info"
-                       title="Nouvelle règlementation"
-                       content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
-            </qc-notice>
-            <qc-code target-id="notice-info"></qc-code>
+            <qc-doc-exemple id="exemple-avis-neutre"
+                    aria-label="Exemple d’avis neutres"
+                >
+                <qc-notice icon="ampoule"
+                           title="Nouvelle règlementation"
+                           content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+                </qc-notice>
+                <qc-notice icon="note"
+                           title="Nouvelle règlementation"
+                           content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+                </qc-notice>
+            </qc-doc-exemple>
+            <qc-code target-id="exemple-avis-neutre" ></qc-code>
 
             <h4>Avertissement</h4>
+            <qc-doc-exemple id="exemple-avis-avertissement"
+                    aria-label="Exemple d’avis d’avertissement"
+            >
+                <qc-notice type="warning"
+                           title="Migration des contenus"
+                           content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
+                </qc-notice>
+            </qc-doc-exemple>
 
-            <qc-notice id="notice-exemple-warning"
-                       type="warning"
-                       title="Migration des contenus"
-                       content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
-            </qc-notice>
-
-            <qc-code target-id="notice-exemple-warning"></qc-code>
+            <qc-code target-id="exemple-avis-avertissement" ></qc-code>
 
             <h4>Succès</h4>
-
-            <qc-notice id="notice-success"
-                       type="success"
-                       title="Votre demande d'inscription a été reçue"
-                       content="Votre code de confirmation sera envoyé par courriel.">
-            </qc-notice>
-
-            <qc-code target-id="notice-success"></qc-code>
+            <qc-doc-exemple id="exemple-avis-succes"
+                    aria-label="Exemple d’avis de succès"
+            >
+                <qc-notice type="success"
+                           title="Votre demande d'inscription a été reçue"
+                           content="Votre code de confirmation sera envoyé par courriel.">
+                </qc-notice>
+            </qc-doc-exemple>
+            <qc-code target-id="exemple-avis-succes" ></qc-code>
 
             <h4>Erreur</h4>
-
-            <qc-notice id="notice-error"
-                       type="error"
+            <qc-doc-exemple id="exemple-avis-erreur"
+                    aria-label="Exemple d’avis d’erreur"
+            >
+            <qc-notice type="error"
                        title="Des erreurs sont présentes dans le formulaire.">
                 <ul>
                     <li>
@@ -670,8 +691,9 @@
                     </li>
                 </ul>
             </qc-notice>
+            </qc-doc-exemple>
 
-            <qc-code target-id="notice-error"></qc-code>
+            <qc-code target-id="exemple-avis-erreur" ></qc-code>
 
             <h3>Documentation technique</h3>
 
@@ -695,8 +717,8 @@
                 </tr>
                 <tr>
                     <td>type</td>
-                    <td>information, warning, success, error</td>
-                    <td>information</td>
+                    <td>information, warning, success, error,neutral</td>
+                    <td>neutral</td>
                     <td>Le type d'avis</td>
                 </tr>
                 <tr>
@@ -711,6 +733,12 @@
                     <td>h2</td>
                     <td>La balise du niveau de titre de l'avis</td>
                 </tr>
+                <tr>
+                    <td>icon</td>
+                    <td>Toute clé de la map $images dans settings/_settings.scss</td>
+                    <td>information <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon> (si absence de type)</td>
+                    <td>Défini l’icône pour les avis neutres</td>
+                </tr>
                 </tbody>
             </table>
 
@@ -718,14 +746,18 @@
 
             <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
 
-            <qc-notice id="qc-notice-slots">
-                <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
-                    Contenu par défaut
-                </div>
-            </qc-notice>
-            <qc-code target-id="qc-notice-slots"></qc-code>
+            <qc-doc-exemple id="presentation-slots-avis"
+                    aria-label="Présentation des emplacements disponibles dans les avis."
+                >
+                <qc-notice id="qc-notice-slots">
+                    <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
+                        Contenu par défaut
+                    </div>
+                </qc-notice>
+            </qc-doc-exemple>
+            <qc-code target-id="presentation-slots-avis" ></qc-code>
 
-<hr />
+        <hr />
 
             <!-- PIV -->
             <h2 id="piv">Composants du PIV</h2>
@@ -733,73 +765,69 @@
             <h3 id="piv-header">Bandeau d'en-tête du PIV (qc-piv-header)</h3>
 
             <h4>Exemples</h4>
-            <h5>Exemple de base</h5>
-            <qc-piv-header id="pivEnteteExempleLiens"
-                           alt-logo="Accédez à Québec.ca"
+            <h5 id="">Exemple de base</h5>
+            <!-- TODO remplacer les aria-label des qc-doc-exemple par aria-labelby et cibler le titre -->
+            <qc-doc-exemple id="pivEnteteExempleLiens"
+                           aria-label="Exemple d’entête de PIV simpliste"
+                >
+            <qc-piv-header alt-logo="Accédez à Québec.ca"
                            join-us-url="#join-us"
                            alt-language-url="#fakeEnglish"
             >
             </qc-piv-header>
+            </qc-doc-exemple>
             <qc-code target-id="pivEnteteExempleLiens"></qc-code>
 
             <h5>Exemple avec activation de la recherche</h5>
-            <qc-piv-header id="pivEnteteExempleRecherche"
-                           title-text="Gouvernement du Québec"
-                           title-url="https://www.quebec.ca/"
-                           alt-logo="Accédez à Québec.ca"
-                           enable-search="true"
-                           search-form-action="https://www.quebec.ca/resultats-de-recherche"
-                           search-input-name="tx_solr[q]"
+            <qc-doc-exemple id="pivEnteteExempleRecherche"
+                           aria-label="Exemple d’entête de PIV avec recherche"
             >
-                <nav slot="links"
-                     aria-label="Navigation PIV">
-                    <ul>
+                <qc-piv-header
+                               title-text="Gouvernement du Québec"
+                               title-url="https://www.quebec.ca/"
+                               alt-logo="Accédez à Québec.ca"
+                               enable-search="true"
+                               search-form-action="https://www.quebec.ca/resultats-de-recherche"
+                               search-input-name="tx_solr[q]"
+                >
+                    <nav slot="links"
+                         aria-label="Navigation PIV">
+                        <ul>
+                            <li><a href="#fakeEnglish">English</a>
+                            </li>
+                            <li><a href="javascript:;">Nous joindre</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </qc-piv-header>
+            </qc-doc-exemple>
+            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
+
+            <h5>Exemple avec personnalisation du formulaire de recherche</h5>
+            <qc-doc-exemple id="pivEnteteExempleRecherchePersonnalisee"
+                           aria-label="Exemple d’entête de PIV avec recherche personnalisée"
+            >
+                <qc-piv-header title-text="Nom du site"
+                               alt-logo="Accédez à Québec.ca"
+                               enable-search="true"
+                               show-search="true"
+                >
+                    <ul slot="links">
                         <li><a href="#fakeEnglish">English</a>
                         </li>
                         <li><a href="javascript:;">Nous joindre</a>
                         </li>
                     </ul>
-                </nav>
 
-
-            </qc-piv-header>
-            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
-
-            <h5>Exemple avec personnalisation du formulaire de recherche</h5>
-            <qc-piv-header id="pivEnteteExempleRecherchePersonnalisee"
-                           title-text="Nom du site"
-                           alt-logo="Accédez à Québec.ca"
-                           enable-search="true"
-                           show-search="true"
-            >
-                <ul slot="links">
-                    <li><a href="#fakeEnglish">English</a>
-                    </li>
-                    <li><a href="javascript:;">Nous joindre</a>
-                    </li>
-                </ul>
-
-                <form slot="search-zone"
-                      method="get"
-                      id="custom-piv-search-form"
-                      action="https://www.google.ca/search"
-                >
-                    <input type="hidden"
-                           name="custom-field"
-                           value="foo" />
-                    <div class="input-group">
-                        <input type="text"
-                               title="Recherche"
-                               placeholder="Rechercher dans Nom du site"
-                               name="q">
-                        <button>
-                            <span class="qc-icon qc-search-submit"></span>
-                            <span class="sr-description">Rechercher</span>
-                        </button>
-                    </div>
-                </form>
-            </qc-piv-header>
-
+                    <form slot="search-zone"
+                          method="get"
+                          id="custom-piv-search-form"
+                          action="https://www.google.ca/search"
+                    >
+                        <qc-search-bar name="q"></qc-search-bar>
+                    </form>
+                </qc-piv-header>
+            </qc-doc-exemple>
             <qc-code target-id="pivEnteteExempleRecherchePersonnalisee"></qc-code>
 
             <h4>Documentation technique</h4>
@@ -954,42 +982,56 @@
             <h5>Zones d'ajout de contenu HTML</h5>
 
             <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
-
-            <qc-piv-header id="qc-piv-header-slots"
-                           style="margin-bottom: var(--qc-spacer-content-block-mb);"
-                           enable-search="true"
-                           show-search="true">
-                <div slot="search-zone"
-                     style="border:2px dashed;padding: var(--qc-spacer-xs);">
-                    slot="search-zone"
-                </div>
-                <div slot="links"
-                     style="border:2px dashed;padding: var(--qc-spacer-xs);"
+            <qc-doc-exemple id="qc-piv-header-slots"
+                            aria-label="Présentation des zones d'ajout de contenu dans le PIV"
                 >
-                    slot="links"
-                </div>
-            </qc-piv-header>
+                <qc-piv-header
+                               style="margin-bottom: var(--qc-spacer-content-block-mb);"
+                               enable-search="true"
+                               show-search="true">
+                    <div slot="search-zone"
+                         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                        slot="search-zone"
+                    </div>
+                    <div slot="links"
+                         style="border:2px dashed;padding: var(--qc-spacer-xs);"
+                    >
+                        slot="links"
+                    </div>
+                </qc-piv-header>
+            </qc-doc-exemple>
+
             <qc-code target-id="qc-piv-header-slots"></qc-code>
 
             <h3 id="piv-footer">Pied de page du PIV (qc-piv-footer)</h3>
+
             <h4>Exemples</h4>
-            <h5>Exemple de base</h5>
-            <qc-piv-footer id="piv-footer-1">
-                <nav>
-                    <ul>
-                        <li><a href="/">Accessibilité</a></li>
-                        <li><a href="/">Plan du site</a></li>
-                        <li><a href="/">Accès à l'information</a></li>
-                        <li><a href="/">Politique de confidentialité</a></li>
-                        <li><a href="/">Condition d'utilisation</a></li>
-                        <li><a href="/">À propos de Québec.ca</a></li>
-                    </ul>
-                </nav>
-            </qc-piv-footer>
+
+            <h5 id="piv-footer-base">Exemple de base</h5>
+
+            <qc-doc-exemple id="piv-footer-1"
+                            aria-labelledby="piv-footer-base"
+                            >
+                <qc-piv-footer >
+                    <nav>
+                        <ul>
+                            <li><a href="/">Accessibilité</a></li>
+                            <li><a href="/">Plan du site</a></li>
+                            <li><a href="/">Accès à l'information</a></li>
+                            <li><a href="/">Politique de confidentialité</a></li>
+                            <li><a href="/">Condition d'utilisation</a></li>
+                            <li><a href="/">À propos de Québec.ca</a></li>
+                        </ul>
+                    </nav>
+                </qc-piv-footer>
+            </qc-doc-exemple>
             <qc-code target-id="piv-footer-1"></qc-code>
 
-            <h5>Exemple d'ajout de contenu HTML dans le composant</h5>
-            <qc-piv-footer id="piv-footer-3">
+            <h5 id="piv-footer-2">Exemple d'ajout de contenu HTML dans le composant</h5>
+            <qc-doc-exemple id="piv-footer-ex-2"
+                            aria-labelledby="piv-footer-2"
+            >
+                <qc-piv-footer >
                 <nav>
                     <ul>
                         <li><a href="/">Accessibilité</a></li>
@@ -1015,10 +1057,13 @@
                     </a>
                 </qc-external-link>
             </qc-piv-footer>
-            <qc-code target-id="piv-footer-3"></qc-code>
+            </qc-doc-exemple>
+            <qc-code target-id="piv-footer-ex-2"></qc-code>
 
             <h4>Documentation technique</h4>
+
             <h5>Attributs</h5>
+
             <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                 <tr>
@@ -1084,20 +1129,22 @@
             <h5>Zones d'ajout de contenu HTML</h5>
 
             <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
-
-            <qc-piv-footer id="qc-piv-footer-slots">
-                <div  style="border:2px dashed;padding: var(--qc-spacer-xs);">
-                    Contenu par défaut
-                </div>
-                <div  slot="logo"
-                      style="border:2px dashed;padding: var(--qc-spacer-xs);">
-                    slot="logo"
-                </div>
-                <div slot="copyright"
-                     style="border:2px dashed;padding: var(--qc-spacer-xs);">
-                    slot="copyright"
-                </div>
-            </qc-piv-footer>
+            <qc-doc-exemple id="qc-piv-footer-slots"
+                            aria-label="Présentation des zones d'ajout de contenu du pied-de-page PIV">
+                <qc-piv-footer >
+                    <div  style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                        Contenu par défaut
+                    </div>
+                    <div  slot="logo"
+                          style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                        slot="logo"
+                    </div>
+                    <div slot="copyright"
+                         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                        slot="copyright"
+                    </div>
+                </qc-piv-footer>
+            </qc-doc-exemple>
             <qc-code target-id="qc-piv-footer-slots"></qc-code>
 
 <hr />
@@ -1109,13 +1156,14 @@
                 Il disparaît quand l'utilisateur commence à défiler vers le bas.
             </p>
             <h4>Exemple</h4>
-            <div>
+            <qc-doc-exemple aria-label="Présentation du composant retour en haut de page">
                 <qc-to-top demo="true" />
+            </qc-doc-exemple>
+            <div aria-hidden="true"  id="pivToTopExample">
+                <qc-to-top></qc-to-top>
             </div>
-            <div>
-                <qc-to-top id="pivToTopExample"></qc-to-top>
                 <qc-code target-id="pivToTopExample"></qc-code>
-            </div>
+
 
             <h3>Documentation technique</h3>
             <h4>Attributs</h4>
