@@ -3,6 +3,7 @@
     , props: {
         targetId : {attribute: 'target-id'},
         rawCode : {attribute: 'raw-code'},
+        outerHTML: {attribute: 'outer-html', type: 'Boolean'},
     }
 }}" />
 
@@ -18,6 +19,7 @@
       targetId = ''
       , rawCode = ''
       , language = 'html'
+      , outerHTML = false
   ;
 
   let
@@ -27,7 +29,7 @@
 
   onMount(() => {
       if (!rawCode) {
-          rawCode = document.getElementById(targetId)?.outerHTML
+          rawCode = document.getElementById(targetId)?.[outerHTML ? 'outerHTML' : 'innerHTML'   ]
                     ?? ''
       }
       rawCode
