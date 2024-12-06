@@ -2,7 +2,12 @@
 @use "modules/utils" as *;
 @use "modules/grid" as *;
 
-/* TODO voir si meilleure façon d'intégrer en scss... */
+qc-icon {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* TODO retirer une fois toutes les icônes remplacées par Icon dans les composants */
 .qc-icon {
   display: inline-block;
   content: "";
@@ -34,16 +39,16 @@
   &.qc-warning {
     background-image: getImageUrl(warning);
   }
-  
+
   &.qc-arrow-up-white {
     background-image: getImageUrl(arrow-up-white);
   }
 
-  
+
   &.qc-clipboard {
     background-image: getImageUrl(clipboard);
   }
-  
+
   &.qc-error {
     background-image: getImageUrl(error);
   }
@@ -51,75 +56,75 @@
   &.qc-error-white {
     background-image: getImageUrl(error-white);
   }
-  
+
   &.qc-information {
-    background-image: getImageUrl(information);  
+    background-image: getImageUrl(information);
   }
-  
+
   &.qc-information-white {
-    background-image: getImageUrl(information-white);  
+    background-image: getImageUrl(information-white);
   }
-  
+
   &.qc-minus {
-    background-image: getImageUrl(minus);  
+    background-image: getImageUrl(minus);
   }
-  
+
   &.qc-plus {
-    background-image: getImageUrl(plus);  
+    background-image: getImageUrl(plus);
   }
-  
+
   &.qc-question-mark {
-    background-image: getImageUrl(question-mark);  
+    background-image: getImageUrl(question-mark);
   }
-  
+
   &.qc-success {
-    background-image: getImageUrl(success);  
+    background-image: getImageUrl(success);
   }
   &.qc-success-white {
-    background-image: getImageUrl(success-white);  
+    background-image: getImageUrl(success-white);
   }
-  
+
   &.qc-xclose-white {
     width: 16px;
     height: 16px;
     min-width: 16px;
-    background-image: getImageUrl(xclose-white);  
+    background-image: getImageUrl(xclose-white);
   }
   &.qc-xclose-blue {
     width: 16px;
     height: 16px;
     min-width: 16px;
-    background-image: getImageUrl(xclose-blue);  
+    background-image: getImageUrl(xclose-blue);
   }
-  
+
   &.qc-chevron-blue,
   &.qc-chevron-white {
     width: 16px;
     min-width: 16px;
     height: 10px;
   }
-  
+
   &.qc-chevron-blue {
     background-image: getImageUrl(chevron-blue);
   }
-  
+
   &.qc-chevron-white {
     background-image: getImageUrl(chevron-white);
   }
-  
+
   &.qc-facebook {
     background-image: getImageUrl(facebook);
   }
-  
+
   &.qc-linkedin {
     background-image: getImageUrl(linkedin);
     height: 30px;
   }
-  
+
   &.qc-twitter {
     background-image: getImageUrl(twitter);
   }
-  
+
   &.qc-youtube {
     background-image: getImageUrl(youtube);
   }
