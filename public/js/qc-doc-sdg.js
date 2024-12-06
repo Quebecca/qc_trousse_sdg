@@ -4,6 +4,19 @@
 	/** @returns {void} */
 	function noop() {}
 
+	/**
+	 * @template T
+	 * @template S
+	 * @param {T} tar
+	 * @param {S} src
+	 * @returns {T & S}
+	 */
+	function assign$1(tar, src) {
+		// @ts-ignore
+		for (const k in src) tar[k] = src[k];
+		return /** @type {T & S} */ (tar);
+	}
+
 	function run(fn) {
 		return fn();
 	}
@@ -36,6 +49,79 @@
 	/** @returns {boolean} */
 	function is_empty(obj) {
 		return Object.keys(obj).length === 0;
+	}
+
+	function create_slot(definition, ctx, $$scope, fn) {
+		if (definition) {
+			const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
+			return definition[0](slot_ctx);
+		}
+	}
+
+	function get_slot_context(definition, ctx, $$scope, fn) {
+		return definition[1] && fn ? assign$1($$scope.ctx.slice(), definition[1](fn(ctx))) : $$scope.ctx;
+	}
+
+	function get_slot_changes(definition, $$scope, dirty, fn) {
+		if (definition[2] && fn) {
+			const lets = definition[2](fn(dirty));
+			if ($$scope.dirty === undefined) {
+				return lets;
+			}
+			if (typeof lets === 'object') {
+				const merged = [];
+				const len = Math.max($$scope.dirty.length, lets.length);
+				for (let i = 0; i < len; i += 1) {
+					merged[i] = $$scope.dirty[i] | lets[i];
+				}
+				return merged;
+			}
+			return $$scope.dirty | lets;
+		}
+		return $$scope.dirty;
+	}
+
+	/** @returns {void} */
+	function update_slot_base(
+		slot,
+		slot_definition,
+		ctx,
+		$$scope,
+		slot_changes,
+		get_slot_context_fn
+	) {
+		if (slot_changes) {
+			const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
+			slot.p(slot_context, slot_changes);
+		}
+	}
+
+	/** @returns {any[] | -1} */
+	function get_all_dirty_from_scope($$scope) {
+		if ($$scope.ctx.length > 32) {
+			const dirty = [];
+			const length = $$scope.ctx.length / 32;
+			for (let i = 0; i < length; i++) {
+				dirty[i] = -1;
+			}
+			return dirty;
+		}
+		return -1;
+	}
+
+	/** @returns {{}} */
+	function exclude_internal_props(props) {
+		const result = {};
+		for (const k in props) if (k[0] !== '$') result[k] = props[k];
+		return result;
+	}
+
+	/** @returns {{}} */
+	function compute_rest_props(props, keys) {
+		const rest = {};
+		keys = new Set(keys);
+		for (const k in props) if (!keys.has(k) && k[0] !== '$') rest[k] = props[k];
+		return rest;
 	}
 
 	/**
@@ -159,6 +245,41 @@
 	function attr(node, attribute, value) {
 		if (value == null) node.removeAttribute(attribute);
 		else if (node.getAttribute(attribute) !== value) node.setAttribute(attribute, value);
+	}
+	/**
+	 * List of attributes that should always be set through the attr method,
+	 * because updating them through the property setter doesn't work reliably.
+	 * In the example of `width`/`height`, the problem is that the setter only
+	 * accepts numeric values, but the attribute can also be set to a string like `50%`.
+	 * If this list becomes too big, rethink this approach.
+	 */
+	const always_set_through_set_attribute = ['width', 'height'];
+
+	/**
+	 * @param {Element & ElementCSSInlineStyle} node
+	 * @param {{ [x: string]: string }} attributes
+	 * @returns {void}
+	 */
+	function set_attributes(node, attributes) {
+		// @ts-ignore
+		const descriptors = Object.getOwnPropertyDescriptors(node.__proto__);
+		for (const key in attributes) {
+			if (attributes[key] == null) {
+				node.removeAttribute(key);
+			} else if (key === 'style') {
+				node.style.cssText = attributes[key];
+			} else if (key === '__value') {
+				/** @type {any} */ (node).value = node[key] = attributes[key];
+			} else if (
+				descriptors[key] &&
+				descriptors[key].set &&
+				always_set_through_set_attribute.indexOf(key) === -1
+			) {
+				node[key] = attributes[key];
+			} else {
+				attr(node, key, attributes[key]);
+			}
+		}
 	}
 
 	/**
@@ -365,6 +486,11 @@
 		render_callbacks.push(fn);
 	}
 
+	/** @returns {void} */
+	function add_flush_callback(fn) {
+		flush_callbacks.push(fn);
+	}
+
 	// flush() calls callbacks in this order:
 	// 1. All beforeUpdate callbacks, in order: parents before children
 	// 2. All bind:this callbacks, in reverse order: children before parents.
@@ -465,6 +591,11 @@
 	const outroing = new Set();
 
 	/**
+	 * @type {Outro}
+	 */
+	let outros;
+
+	/**
 	 * @param {import('./private.js').Fragment} block
 	 * @param {0 | 1} [local]
 	 * @returns {void}
@@ -473,6 +604,30 @@
 		if (block && block.i) {
 			outroing.delete(block);
 			block.i(local);
+		}
+	}
+
+	/**
+	 * @param {import('./private.js').Fragment} block
+	 * @param {0 | 1} local
+	 * @param {0 | 1} [detach]
+	 * @param {() => void} [callback]
+	 * @returns {void}
+	 */
+	function transition_out(block, local, detach, callback) {
+		if (block && block.o) {
+			if (outroing.has(block)) return;
+			outroing.add(block);
+			outros.c.push(() => {
+				outroing.delete(block);
+				if (callback) {
+					if (detach) block.d(1);
+					callback();
+				}
+			});
+			block.o(local);
+		} else if (callback) {
+			callback();
 		}
 	}
 
@@ -505,6 +660,52 @@
 	 * @property {number} end
 	 * @property {Outro} [group]
 	 */
+
+	/** @returns {{}} */
+	function get_spread_update(levels, updates) {
+		const update = {};
+		const to_null_out = {};
+		const accounted_for = { $$scope: 1 };
+		let i = levels.length;
+		while (i--) {
+			const o = levels[i];
+			const n = updates[i];
+			if (n) {
+				for (const key in o) {
+					if (!(key in n)) to_null_out[key] = 1;
+				}
+				for (const key in n) {
+					if (!accounted_for[key]) {
+						update[key] = n[key];
+						accounted_for[key] = 1;
+					}
+				}
+				levels[i] = n;
+			} else {
+				for (const key in o) {
+					accounted_for[key] = 1;
+				}
+			}
+		}
+		for (const key in to_null_out) {
+			if (!(key in update)) update[key] = undefined;
+		}
+		return update;
+	}
+
+	/** @returns {void} */
+	function bind(component, name, callback) {
+		const index = component.$$.props[name];
+		if (index !== undefined) {
+			component.$$.bound[index] = callback;
+			callback(component.$$.ctx[index]);
+		}
+	}
+
+	/** @returns {void} */
+	function create_component(block) {
+		block && block.c();
+	}
 
 	/** @returns {void} */
 	function mount_component(component, target, anchor) {
@@ -66744,7 +66945,7 @@
 
 	/* src/doc/components/code.svelte generated by Svelte v4.2.12 */
 
-	function create_fragment$1(ctx) {
+	function create_fragment$4(ctx) {
 		let pre;
 		let code;
 		let button;
@@ -66805,13 +67006,13 @@
 		};
 	}
 
-	function instance$1($$self, $$props, $$invalidate) {
-		let { targetId = '', rawCode = '', language = 'html' } = $$props;
+	function instance$4($$self, $$props, $$invalidate) {
+		let { targetId = '', rawCode = '', language = 'html', outerHTML = false } = $$props;
 		let hlCode, prettyCode;
 
 		onMount(() => {
 			if (!rawCode) {
-				$$invalidate(2, rawCode = document.getElementById(targetId)?.outerHTML ?? '');
+				$$invalidate(2, rawCode = document.getElementById(targetId)?.[outerHTML ? 'outerHTML' : 'innerHTML'] ?? '');
 			}
 
 			rawCode.replace('class="mounted"', '').replace('/qc-hash-.*/g', '').replace('/is-external=""/g', 'is-external');
@@ -66835,15 +67036,22 @@
 			if ('targetId' in $$props) $$invalidate(3, targetId = $$props.targetId);
 			if ('rawCode' in $$props) $$invalidate(2, rawCode = $$props.rawCode);
 			if ('language' in $$props) $$invalidate(4, language = $$props.language);
+			if ('outerHTML' in $$props) $$invalidate(5, outerHTML = $$props.outerHTML);
 		};
 
-		return [hlCode, copy, rawCode, targetId, language];
+		return [hlCode, copy, rawCode, targetId, language, outerHTML];
 	}
 
 	class Code extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance$1, create_fragment$1, safe_not_equal, { targetId: 3, rawCode: 2, language: 4 });
+
+			init(this, options, instance$4, create_fragment$4, safe_not_equal, {
+				targetId: 3,
+				rawCode: 2,
+				language: 4,
+				outerHTML: 5
+			});
 		}
 
 		get targetId() {
@@ -66872,17 +67080,26 @@
 			this.$$set({ language });
 			flush();
 		}
+
+		get outerHTML() {
+			return this.$$.ctx[5];
+		}
+
+		set outerHTML(outerHTML) {
+			this.$$set({ outerHTML });
+			flush();
+		}
 	}
 
-	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"},"rawCode":{"attribute":"raw-code"},"language":{}}, [], [], true));
+	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"},"rawCode":{"attribute":"raw-code"},"language":{},"outerHTML":{"attribute":"outer-html","type":"Boolean"}}, [], [], true));
 
 	/* src/doc/components/color-doc.svelte generated by Svelte v4.2.12 */
 
-	function add_css(target) {
-		append_styles(target, "qc-hash-7hzj7c", ".qc-bg-color-white.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#ffffff}.qc-bg-color-blue-pale.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#dae6f0}.qc-bg-color-blue-light.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#4a98d9}.qc-bg-color-blue-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#1472bf}.qc-bg-color-blue-piv.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#095797}.qc-bg-color-blue-medium.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#19406C}.qc-bg-color-blue-dark.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#223654}.qc-bg-color-purple.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#6b4fa1}.qc-bg-color-grey-pale.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#f1f1f2}.qc-bg-color-grey-light.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#c5cad2}.qc-bg-color-grey-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#8893a2}.qc-bg-color-grey-medium.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#6b778a}.qc-bg-color-grey-dark.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#4e5662}.qc-bg-color-pink-pale.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#ffdbd6}.qc-bg-color-pink-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#e58271}.qc-bg-color-red-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#cb381f}.qc-bg-color-red-dark.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#692519}.qc-bg-color-green-pale.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#d7f0bb}.qc-bg-color-green-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#4f813d}.qc-bg-color-green-dark.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#2c4024}.qc-bg-color-yellow-pale.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#f8e69a}.qc-bg-color-yellow-regular.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#e0ad03}.qc-bg-color-yellow-dark.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:#ad781c}.qc-bg-color-text-primary.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-blue-dark)}.qc-bg-color-accent.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-pink-regular)}.qc-bg-color-success.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-green-regular)}.qc-bg-color-error.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-red-regular)}.qc-bg-color-danger.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-red-dark)}.qc-bg-color-link-text.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-blue-piv)}.qc-bg-color-link-hover.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-blue-piv)}.qc-bg-color-link-visited.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-purple)}.qc-bg-color-link-active.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{background-color:var(--qc-color-red-regular)}.color-details.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{display:flex;justify-content:flex-start;align-items:center}.color-details.qc-hash-7hzj7c>div.qc-hash-7hzj7c+div.qc-hash-7hzj7c{margin-left:var(--qc-spacer-md)}.color-sample.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{width:4.8rem;height:4.8rem;border-radius:50%;flex-shrink:0}.border.qc-hash-7hzj7c.qc-hash-7hzj7c.qc-hash-7hzj7c{border:1px solid var(--qc-color-grey-light)}");
+	function add_css$3(target) {
+		append_styles(target, "qc-hash-11ofsiz", "@charset \"UTF-8\";.qc-bg-color-white.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-white)}.qc-bg-color-blue-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-pale)}.qc-bg-color-blue-light.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-light)}.qc-bg-color-blue-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-regular)}.qc-bg-color-blue-piv.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-piv)}.qc-bg-color-blue-medium.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-medium)}.qc-bg-color-blue-dark_rgb.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-dark_rgb)}.qc-bg-color-blue-dark.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-blue-dark)}.qc-bg-color-purple.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-purple)}.qc-bg-color-grey-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-grey-pale)}.qc-bg-color-grey-light.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-grey-light)}.qc-bg-color-grey-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-grey-regular)}.qc-bg-color-grey-medium.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-grey-medium)}.qc-bg-color-grey-dark.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-grey-dark)}.qc-bg-color-pink-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-pink-pale)}.qc-bg-color-pink-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-pink-regular)}.qc-bg-color-red-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-red-pale)}.qc-bg-color-red-light.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-red-light)}.qc-bg-color-red-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-red-regular)}.qc-bg-color-red-dark.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-red-dark)}.qc-bg-color-green-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-green-pale)}.qc-bg-color-green-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-green-regular)}.qc-bg-color-green-dark.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-green-dark)}.qc-bg-color-yellow-pale.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-yellow-pale)}.qc-bg-color-yellow-regular.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-yellow-regular)}.qc-bg-color-yellow-dark.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-yellow-dark)}.qc-bg-color-background.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-background)}.qc-bg-color-text-primary.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-text-primary)}.qc-bg-color-accent.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-accent)}.qc-bg-color-success.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-success)}.qc-bg-color-error.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-error)}.qc-bg-color-danger.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-danger)}.qc-bg-color-link-text.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-link-text)}.qc-bg-color-link-hover.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-link-hover)}.qc-bg-color-link-visited.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-link-visited)}.qc-bg-color-link-active.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-link-active)}.qc-bg-color-formfield-border.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-formfield-border)}.qc-bg-color-formfield-focus-border.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-formfield-focus-border)}.qc-bg-color-formfield-focus-outline.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-formfield-focus-outline)}.qc-bg-color-searchinput-icon.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{background-color:var(--qc-color-searchinput-icon)}.color-details.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{display:flex;justify-content:flex-start;align-items:center}.color-details.qc-hash-11ofsiz>div.qc-hash-11ofsiz+div.qc-hash-11ofsiz{margin-left:var(--qc-spacer-md)}.color-sample.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{width:4.8rem;height:4.8rem;border-radius:50%;flex-shrink:0}.border.qc-hash-11ofsiz.qc-hash-11ofsiz.qc-hash-11ofsiz{border:1px solid var(--qc-color-grey-light)}");
 	}
 
-	function create_fragment(ctx) {
+	function create_fragment$3(ctx) {
 		let div2;
 		let div0;
 		let div0_class_value;
@@ -66908,10 +67125,10 @@
 				t2 = space();
 				code = element("code");
 				t3 = text(t3_value);
-				attr(div0, "class", div0_class_value = "color-sample qc-bg-color-" + /*token*/ ctx[1].split(',')[0] + " qc-hash-7hzj7c");
+				attr(div0, "class", div0_class_value = "color-sample qc-bg-color-" + /*token*/ ctx[1].split(',')[0] + " qc-hash-11ofsiz");
 				toggle_class(div0, "border", /*border*/ ctx[2]);
-				attr(div1, "class", "color-description qc-hash-7hzj7c");
-				attr(div2, "class", "color-details qc-hash-7hzj7c");
+				attr(div1, "class", "color-description qc-hash-11ofsiz");
+				attr(div2, "class", "color-details qc-hash-11ofsiz");
 			},
 			m(target, anchor) {
 				insert(target, div2, anchor);
@@ -66926,7 +67143,7 @@
 				append(code, t3);
 			},
 			p(ctx, [dirty]) {
-				if (dirty & /*token*/ 2 && div0_class_value !== (div0_class_value = "color-sample qc-bg-color-" + /*token*/ ctx[1].split(',')[0] + " qc-hash-7hzj7c")) {
+				if (dirty & /*token*/ 2 && div0_class_value !== (div0_class_value = "color-sample qc-bg-color-" + /*token*/ ctx[1].split(',')[0] + " qc-hash-11ofsiz")) {
 					attr(div0, "class", div0_class_value);
 				}
 
@@ -66949,7 +67166,7 @@
 
 	const func = part => '--qc-color-' + part.trim();
 
-	function instance($$self, $$props, $$invalidate) {
+	function instance$3($$self, $$props, $$invalidate) {
 		let { title, token, border = null } = $$props;
 
 		$$self.$$set = $$props => {
@@ -66964,7 +67181,7 @@
 	class Color_doc extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance, create_fragment, safe_not_equal, { title: 0, token: 1, border: 2 }, add_css);
+			init(this, options, instance$3, create_fragment$3, safe_not_equal, { title: 0, token: 1, border: 2 }, add_css$3);
 		}
 
 		get title() {
@@ -66997,22 +67214,404 @@
 
 	customElements.define("qc-color-doc", create_custom_element(Color_doc, {"title":{},"token":{},"border":{}}, [], [], true));
 
+	/* src/doc/components/Switch.svelte generated by Svelte v4.2.12 */
+
+	function add_css$2(target) {
+		append_styles(target, "qc-hash-3yslgs", "@charset \"UTF-8\";.qc-hash-3yslgs.qc-hash-3yslgs{box-sizing:border-box}.switch.qc-hash-3yslgs.qc-hash-3yslgs{position:relative;display:inline-block;width:5.6rem;height:3.2rem}input.qc-hash-3yslgs.qc-hash-3yslgs{z-index:10;opacity:0;position:absolute;cursor:pointer;margin:0;padding:0;top:0;left:0;right:0;bottom:0}.slider.qc-hash-3yslgs.qc-hash-3yslgs{z-index:5;position:absolute;top:0;left:0;right:0;bottom:0;background-color:var(--unchecked-bg-color);-webkit-transition:0.4s;transition:0.4s}.slider.qc-hash-3yslgs.qc-hash-3yslgs::before{position:absolute;content:\"\";height:2.8rem;width:2.8rem;left:0.2rem;bottom:0.2rem;background-color:var(--slider-color);-webkit-transition:0.4s;transition:0.4s}input.qc-hash-3yslgs:checked+.slider.qc-hash-3yslgs{background-color:var(--checked-bg-color)}input.qc-hash-3yslgs:focus+.slider.qc-hash-3yslgs{box-shadow:0 0 1px var(--qc-bok-shadow-color)}input.qc-hash-3yslgs:checked+.slider.qc-hash-3yslgs::before{transform:translateX(2.4rem)}.slider.round.qc-hash-3yslgs.qc-hash-3yslgs,input.qc-hash-3yslgs.qc-hash-3yslgs{border-radius:3.2rem}.slider.round.qc-hash-3yslgs.qc-hash-3yslgs::before{border-radius:50%}");
+	}
+
+	function create_fragment$2(ctx) {
+		let div;
+		let input;
+		let t;
+		let span;
+		let div_style_value;
+		let mounted;
+		let dispose;
+
+		let div_levels = [
+			{ class: "switch" },
+			/*$$restProps*/ ctx[4],
+			{
+				style: div_style_value = "--unchecked-bg-color: var(--qc-color-" + /*color*/ ctx[3].unchecked + "); --checked-bg-color: var(--qc-color-" + /*color*/ ctx[3].checked + "); --slider-color: var(--qc-color-" + /*color*/ ctx[3].slider + ");"
+			}
+		];
+
+		let div_data = {};
+
+		for (let i = 0; i < div_levels.length; i += 1) {
+			div_data = assign$1(div_data, div_levels[i]);
+		}
+
+		return {
+			c() {
+				div = element("div");
+				input = element("input");
+				t = space();
+				span = element("span");
+				attr(input, "type", "checkbox");
+				attr(input, "role", "switch");
+				attr(input, "name", /*name*/ ctx[1]);
+				attr(input, "aria-checked", /*value*/ ctx[0]);
+				attr(input, "id", /*inputId*/ ctx[2]);
+				attr(input, "class", "qc-hash-3yslgs");
+				attr(span, "class", "slider round qc-hash-3yslgs");
+				set_attributes(div, div_data);
+				toggle_class(div, "qc-hash-3yslgs", true);
+			},
+			m(target, anchor) {
+				insert(target, div, anchor);
+				append(div, input);
+				input.checked = /*value*/ ctx[0];
+				append(div, t);
+				append(div, span);
+
+				if (!mounted) {
+					dispose = listen(input, "change", /*input_change_handler*/ ctx[5]);
+					mounted = true;
+				}
+			},
+			p(ctx, [dirty]) {
+				if (dirty & /*name*/ 2) {
+					attr(input, "name", /*name*/ ctx[1]);
+				}
+
+				if (dirty & /*value*/ 1) {
+					attr(input, "aria-checked", /*value*/ ctx[0]);
+				}
+
+				if (dirty & /*inputId*/ 4) {
+					attr(input, "id", /*inputId*/ ctx[2]);
+				}
+
+				if (dirty & /*value*/ 1) {
+					input.checked = /*value*/ ctx[0];
+				}
+
+				set_attributes(div, div_data = get_spread_update(div_levels, [
+					{ class: "switch" },
+					dirty & /*$$restProps*/ 16 && /*$$restProps*/ ctx[4],
+					dirty & /*color*/ 8 && div_style_value !== (div_style_value = "--unchecked-bg-color: var(--qc-color-" + /*color*/ ctx[3].unchecked + "); --checked-bg-color: var(--qc-color-" + /*color*/ ctx[3].checked + "); --slider-color: var(--qc-color-" + /*color*/ ctx[3].slider + ");") && { style: div_style_value }
+				]));
+
+				toggle_class(div, "qc-hash-3yslgs", true);
+			},
+			i: noop,
+			o: noop,
+			d(detaching) {
+				if (detaching) {
+					detach(div);
+				}
+
+				mounted = false;
+				dispose();
+			}
+		};
+	}
+
+	function instance$2($$self, $$props, $$invalidate) {
+		const omit_props_names = ["value","name","inputId","color"];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+
+		let { value = false, name = 'switch', inputId, color = {
+			unchecked: 'grey-light',
+			checked: 'blue-regular',
+			slider: 'background'
+		} } = $$props;
+
+		function input_change_handler() {
+			value = this.checked;
+			$$invalidate(0, value);
+		}
+
+		$$self.$$set = $$new_props => {
+			$$props = assign$1(assign$1({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(4, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('value' in $$new_props) $$invalidate(0, value = $$new_props.value);
+			if ('name' in $$new_props) $$invalidate(1, name = $$new_props.name);
+			if ('inputId' in $$new_props) $$invalidate(2, inputId = $$new_props.inputId);
+			if ('color' in $$new_props) $$invalidate(3, color = $$new_props.color);
+		};
+
+		return [value, name, inputId, color, $$restProps, input_change_handler];
+	}
+
+	class Switch extends SvelteComponent {
+		constructor(options) {
+			super();
+			init(this, options, instance$2, create_fragment$2, safe_not_equal, { value: 0, name: 1, inputId: 2, color: 3 }, add_css$2);
+		}
+
+		get value() {
+			return this.$$.ctx[0];
+		}
+
+		set value(value) {
+			this.$$set({ value });
+			flush();
+		}
+
+		get name() {
+			return this.$$.ctx[1];
+		}
+
+		set name(name) {
+			this.$$set({ name });
+			flush();
+		}
+
+		get inputId() {
+			return this.$$.ctx[2];
+		}
+
+		set inputId(inputId) {
+			this.$$set({ inputId });
+			flush();
+		}
+
+		get color() {
+			return this.$$.ctx[3];
+		}
+
+		set color(color) {
+			this.$$set({ color });
+			flush();
+		}
+	}
+
+	customElements.define("qc-switch", create_custom_element(Switch, {"value":{"type":"Boolean"},"name":{},"inputId":{"attribute":"input-id"},"color":{}}, [], [], false));
+
+	/* src/doc/components/TopNav.svelte generated by Svelte v4.2.12 */
+
+	function add_css$1(target) {
+		append_styles(target, "qc-hash-1qp0lqv", "@charset \"UTF-8\";.qc-hash-1qp0lqv.qc-hash-1qp0lqv{box-sizing:border-box}[role=complementary].qc-hash-1qp0lqv.qc-hash-1qp0lqv{background-color:var(--qc-color-blue-medium);color:var(--qc-color-grey-pale);min-height:7.2rem;height:7.2rem}.qc-container.qc-hash-1qp0lqv.qc-hash-1qp0lqv{display:flex;width:100%;height:100%;padding-right:calc(1 * var(--qc-grid-gutter) / 2);padding-left:calc(1 * var(--qc-grid-gutter) / 2);margin-right:auto;margin-left:auto;align-items:center}.qc-container.qc-hash-1qp0lqv .switch-control.qc-hash-1qp0lqv{margin-left:auto;margin-right:0;display:flex;align-items:center}.qc-container.qc-hash-1qp0lqv .switch-control label.qc-hash-1qp0lqv:first-child{margin-right:1.6rem}label.qc-hash-1qp0lqv.qc-hash-1qp0lqv{font-weight:bold}@media(min-width: 576px){.qc-container.qc-hash-1qp0lqv.qc-hash-1qp0lqv{max-width:576px}}@media(min-width: 768px){.qc-container.qc-hash-1qp0lqv.qc-hash-1qp0lqv{max-width:768px}}@media(min-width: 992px){.qc-container.qc-hash-1qp0lqv.qc-hash-1qp0lqv{max-width:992px}}@media(min-width: 1200px){.qc-container.qc-hash-1qp0lqv.qc-hash-1qp0lqv{max-width:1200px}}");
+	}
+
+	function create_fragment$1(ctx) {
+		let div2;
+		let div1;
+		let div0;
+		let label;
+		let t1;
+		let switch_1;
+		let updating_value;
+		let current;
+
+		function switch_1_value_binding(value) {
+			/*switch_1_value_binding*/ ctx[1](value);
+		}
+
+		let switch_1_props = { id: "switch" };
+
+		if (/*value*/ ctx[0] !== void 0) {
+			switch_1_props.value = /*value*/ ctx[0];
+		}
+
+		switch_1 = new Switch({ props: switch_1_props });
+		binding_callbacks.push(() => bind(switch_1, 'value', switch_1_value_binding));
+
+		return {
+			c() {
+				div2 = element("div");
+				div1 = element("div");
+				div0 = element("div");
+				label = element("label");
+				label.textContent = "Activer le thème sombre";
+				t1 = space();
+				create_component(switch_1.$$.fragment);
+				attr(label, "for", "switch");
+				attr(label, "class", "qc-hash-1qp0lqv");
+				attr(div0, "class", "switch-control qc-hash-1qp0lqv");
+				attr(div1, "class", "qc-container qc-hash-1qp0lqv");
+				attr(div2, "role", "complementary");
+				attr(div2, "class", "qc-hash-1qp0lqv");
+			},
+			m(target, anchor) {
+				insert(target, div2, anchor);
+				append(div2, div1);
+				append(div1, div0);
+				append(div0, label);
+				append(div0, t1);
+				mount_component(switch_1, div0, null);
+				current = true;
+			},
+			p(ctx, [dirty]) {
+				const switch_1_changes = {};
+
+				if (!updating_value && dirty & /*value*/ 1) {
+					updating_value = true;
+					switch_1_changes.value = /*value*/ ctx[0];
+					add_flush_callback(() => updating_value = false);
+				}
+
+				switch_1.$set(switch_1_changes);
+			},
+			i(local) {
+				if (current) return;
+				transition_in(switch_1.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(switch_1.$$.fragment, local);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(div2);
+				}
+
+				destroy_component(switch_1);
+			}
+		};
+	}
+
+	function instance$1($$self, $$props, $$invalidate) {
+		let value = localStorage.getItem('dark-theme') === "true";
+
+		function switch_1_value_binding(value$1) {
+			value = value$1;
+			$$invalidate(0, value);
+		}
+
+		$$self.$$.update = () => {
+			if ($$self.$$.dirty & /*value*/ 1) {
+				document.documentElement.classList.toggle('qc-dark-theme', value);
+			}
+
+			if ($$self.$$.dirty & /*value*/ 1) {
+				localStorage.setItem('dark-theme', value);
+			}
+		};
+
+		return [value, switch_1_value_binding];
+	}
+
+	class TopNav extends SvelteComponent {
+		constructor(options) {
+			super();
+			init(this, options, instance$1, create_fragment$1, safe_not_equal, {}, add_css$1);
+		}
+	}
+
+	customElements.define("qc-doc-top-nav", create_custom_element(TopNav, {}, [], [], true));
+
+	/* src/doc/components/Exemple.svelte generated by Svelte v4.2.12 */
+
+	function add_css(target) {
+		append_styles(target, "qc-hash-inoh0w", ":host{display:block}figure.qc-hash-inoh0w{display:block;margin:0;padding:0}");
+	}
+
+	function create_fragment(ctx) {
+		let figure;
+		let current;
+		const default_slot_template = /*#slots*/ ctx[2].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[1], null);
+		let figure_levels = [/*$$restProps*/ ctx[0]];
+		let figure_data = {};
+
+		for (let i = 0; i < figure_levels.length; i += 1) {
+			figure_data = assign$1(figure_data, figure_levels[i]);
+		}
+
+		return {
+			c() {
+				figure = element("figure");
+				if (default_slot) default_slot.c();
+				set_attributes(figure, figure_data);
+				toggle_class(figure, "qc-hash-inoh0w", true);
+			},
+			m(target, anchor) {
+				insert(target, figure, anchor);
+
+				if (default_slot) {
+					default_slot.m(figure, null);
+				}
+
+				current = true;
+			},
+			p(ctx, [dirty]) {
+				if (default_slot) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 2)) {
+						update_slot_base(
+							default_slot,
+							default_slot_template,
+							ctx,
+							/*$$scope*/ ctx[1],
+							!current
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[1])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[1], dirty, null),
+							null
+						);
+					}
+				}
+
+				set_attributes(figure, figure_data = get_spread_update(figure_levels, [dirty & /*$$restProps*/ 1 && /*$$restProps*/ ctx[0]]));
+				toggle_class(figure, "qc-hash-inoh0w", true);
+			},
+			i(local) {
+				if (current) return;
+				transition_in(default_slot, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(default_slot, local);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(figure);
+				}
+
+				if (default_slot) default_slot.d(detaching);
+			}
+		};
+	}
+
+	function instance($$self, $$props, $$invalidate) {
+		const omit_props_names = [];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+		let { $$slots: slots = {}, $$scope } = $$props;
+
+		$$self.$$set = $$new_props => {
+			$$props = assign$1(assign$1({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(0, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('$$scope' in $$new_props) $$invalidate(1, $$scope = $$new_props.$$scope);
+		};
+
+		return [$$restProps, $$scope, slots];
+	}
+
+	class Exemple extends SvelteComponent {
+		constructor(options) {
+			super();
+			init(this, options, instance, create_fragment, safe_not_equal, {}, add_css);
+		}
+	}
+
+	customElements.define("qc-doc-figure", create_custom_element(Exemple, {}, ["default"], [], true));
+
+	if (document.getElementById("version")) {
+	    document.getElementById("version").textContent = `v1.2.5-dev`;
+	}
+
 	// Show maskable "general alert" component
 	const displayAlertLink = document.getElementById("show-qc-alert");
 	const maskableAlert = document.getElementById("alert-warning");
-	displayAlertLink.addEventListener(
-	    'click',
-	    () => {
-	        maskableAlert.setAttribute('hide', 'false');
-	        displayAlertLink.hidden = true;
-	    }
-	);
-	document.addEventListener(
-	    'qc.alert.hide',
-	    () => displayAlertLink.hidden = false
-	);
+	if (displayAlertLink) {
+	    displayAlertLink.addEventListener(
+	        'click',
+	        () => {
+	            maskableAlert.setAttribute('hide', 'false');
+	            displayAlertLink.hidden = true;
+	        }
+	    );
+	    document.addEventListener(
+	        'qc.alert.hide',
+	        () => displayAlertLink.hidden = false
+	    );
+	}
+
 
 	// add version
-	document.getElementById("version").textContent = `v1.2.5-dev`;
 
 })();

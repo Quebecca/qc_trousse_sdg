@@ -1,19 +1,9 @@
 @charset "UTF-8";
 /*
-Return rem size from pixel size according to root font-size as define in settings
-Always use this function for rem values
-// root font-size : 100 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1rem; }
-
-// root font-size : 62.5 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1.6rem; }
-*/
+  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
+  TODO 2 - demander des nouvelles icône les plus neutres possibles
+  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
+ */
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
@@ -29,7 +19,32 @@ Always use this function for rem values
 // foo.css
 .foo { font-size: 1.6rem; }
 */
-/* TODO voir si meilleure façon d'intégrer en scss... */
+/*
+  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
+  TODO 2 - demander des nouvelles icône les plus neutres possibles
+  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
+ */
+/*
+Return rem size from pixel size according to root font-size as define in settings
+Always use this function for rem values
+// root font-size : 100 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1rem; }
+
+// root font-size : 62.5 %,
+// foo.scss
+.foo { font-size: rem(16); }
+// foo.css
+.foo { font-size: 1.6rem; }
+*/
+qc-icon {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* TODO retirer une fois toutes les icônes remplacées par Icon dans les composants */
 .qc-icon {
   display: inline-block;
   content: "";

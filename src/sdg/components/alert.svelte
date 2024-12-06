@@ -47,6 +47,7 @@
         role="alert"
         aria-label={label}>
         <div class="qc-container qc-general-alert-elements">
+            <!-- TODO remplacer par Icon -->
             <div class="qc-icon qc-{type}-alert-icon"
                  aria-hidden="true"
             ></div>

@@ -1,3 +1,9 @@
+@charset "UTF-8";
+/*
+  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
+  TODO 2 - demander des nouvelles icône les plus neutres possibles
+  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
+ */
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
@@ -14,6 +20,11 @@ Always use this function for rem values
 .foo { font-size: 1.6rem; }
 */
 /*
+  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
+  TODO 2 - demander des nouvelles icône les plus neutres possibles
+  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
+ */
+/*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
 // root font-size : 100 %,
@@ -28,7 +39,7 @@ Always use this function for rem values
 // foo.css
 .foo { font-size: 1.6rem; }
 */
-:root, :host {
+:root {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;
   --qc-font-family-roboto-mono: Roboto Mono,monospace;
@@ -83,7 +94,8 @@ Always use this function for rem values
   --qc-color-blue-regular: #1472bf;
   --qc-color-blue-piv: #095797;
   --qc-color-blue-medium: #19406C;
-  --qc-color-blue-dark: #223654;
+  --qc-color-blue-dark_rgb: 34, 54, 84;
+  --qc-color-blue-dark: rgb(var(--qc-color-blue-dark_rgb));
   --qc-color-purple: #6b4fa1;
   --qc-color-grey-pale: #f1f1f2;
   --qc-color-grey-light: #c5cad2;
@@ -92,6 +104,8 @@ Always use this function for rem values
   --qc-color-grey-dark: #4e5662;
   --qc-color-pink-pale: #ffdbd6;
   --qc-color-pink-regular: #e58271;
+  --qc-color-red-pale: var(--qc-color-pink-pale);
+  --qc-color-red-light: var(--qc-color-pink-regular);
   --qc-color-red-regular: #cb381f;
   --qc-color-red-dark: #692519;
   --qc-color-green-pale: #d7f0bb;
@@ -100,6 +114,7 @@ Always use this function for rem values
   --qc-color-yellow-pale: #f8e69a;
   --qc-color-yellow-regular: #e0ad03;
   --qc-color-yellow-dark: #ad781c;
+  --qc-color-background: var(--qc-color-white);
   --qc-color-text-primary: var(--qc-color-blue-dark);
   --qc-color-accent: var(--qc-color-pink-regular);
   --qc-color-success: var(--qc-color-green-regular);
@@ -109,7 +124,11 @@ Always use this function for rem values
   --qc-color-link-hover: var(--qc-color-blue-piv);
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
-  --qc-box-shadow-color: rgba(34, 54, 84, 0.24);
+  --qc-color-formfield-border: var(--qc-color-grey-medium);
+  --qc-color-formfield-focus-border: var(--qc-color-dark-blue);
+  --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
+  --qc-color-searchinput-icon: var(--qc-color-blue-piv);
+  --qc-box-shadow-color: rgba(var(--qc-color-blue-dark_rgb), 0.24);
   --qc-box-shadow-color-0: var(--qc-color-grey-light);
   --qc-box-shadow-blur-1: 4px;
   --qc-box-shadow-blur-2: 8px;
@@ -156,12 +175,12 @@ Always use this function for rem values
   --qc-grid-container-max-width-xl: 1200px;
 }
 @media (max-width: 1199.98px) {
-  :root, :host {
+  :root {
     --qc-grid-gutter: 24px;
   }
 }
 @media (max-width: 991.98px) {
-  :root, :host {
+  :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
     --qc-font-size-h1: 3.6rem;
@@ -172,7 +191,35 @@ Always use this function for rem values
   }
 }
 @media (max-width: 767.98px) {
-  :root, :host {
+  :root {
     --qc-grid-gutter: 16px;
   }
+}
+
+.qc-dark-theme, :root.qc-dark-theme {
+  --qc-color-white: #121519;
+  --qc-color-blue-pale: #162B47;
+  --qc-color-blue-light: #0078CC;
+  --qc-color-blue-regular: #3B95E1;
+  --qc-color-blue-piv: #72B2EB;
+  --qc-color-blue-medium: #ADCDEB;
+  --qc-color-blue-dark_rgb: 198, 219, 238;
+  --qc-color-purple: #B3A5D4;
+  --qc-color-grey-pale: #1C2025;
+  --qc-color-grey-light: #3B424C;
+  --qc-color-grey-regular: #6A7688;
+  --qc-color-grey-medium: #8590A8;
+  --qc-color-grey-dark: #A7ACBC;
+  --qc-color-pink-pale: #4F180E;
+  --qc-color-pink-regular: #BB3A23;
+  --qc-color-red-regular: #F26049;
+  --qc-color-red-dark: #F3BCB6;
+  --qc-color-green-pale: #1E2F17;
+  --qc-color-green-regular: #6E9C57;
+  --qc-color-green-dark: #B0D493;
+  --qc-color-yellow-pale: #3F240C;
+  --qc-color-yellow-regular: #6D4512;
+  --qc-color-yellow-dark: #AC7900;
+  --qc-color-text-primary: #D7D8DD;
+  --qc-color-accent: #F17B6C;
 }
