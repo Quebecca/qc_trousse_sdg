@@ -1,8 +1,7 @@
 @use "settings/settings" as *;
 @use "functions/utils" as *;
 @use "functions/tokens" as *;
-
-$dark-blue: #223654;
+// TODO remplacer les clés avec tirets par un souligné foo-bar -> foo_bar
 $xl-tokens: (
     font : (
         family : (
@@ -65,7 +64,7 @@ $xl-tokens: (
         xl: token-value(line-height, 200),
         content: token-value(line-height, md),
     ),
-    max-content-width: rem(825),
+    max-content-width: rem(825), //TODO faire une clé max_width : (content:…, component1:…, )
     color: (
         white : #ffffff,
         blue : (
@@ -114,6 +113,7 @@ $xl-tokens: (
             hover: token-value(color blue piv),
             visited: token-value(color purple),
             active: token-value(color red regular),
+            // TODO ajouter le focus cf https://www.figma.com/design/p5kWdGvZk0BvkEGIrdvXL6/%5BSDG-OFFICIEL%5D-Bases-et-composants?node-id=1070-628&node-type=canvas&t=eIMD5cFp9Jq5vMNt-0
         ),
     ),
     box-shadow: (
