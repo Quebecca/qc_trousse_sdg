@@ -4,6 +4,14 @@
 @use "pivHeaderSlots" as *;
 
 qc-piv-header {
+
+  display: block;
+  min-height: rem(72);
+  // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
+  // on se base donc sur les valeurs scss
+  background-color: map-get($colors, blue, piv);
+  width: 100%;
+
   [slot=links] {
     @extend %piv-links;
   }

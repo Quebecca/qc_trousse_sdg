@@ -17,6 +17,7 @@
     , goToContentText: {attribute: 'go-to-content-text'}
     , searchPlaceholder : {attribute: 'search-placeholder'}
     , searchInputName : {attribute: 'search-input-name'}
+    , searchInputValue : {attribute: 'search-input-value'}
     , submitSearchText : {attribute: 'submit-search-text'}
     , displaySearchText : {attribute: 'display-search-text'}
     , hideSearchText : {attribute: 'hide-search-text'}
@@ -29,6 +30,7 @@
 <script>
 import { onMount } from "svelte";
 import { Utils } from "../utils"
+import SearchBar from "../SearchBar/searchBar.svelte";
 
 const
   lang = Utils.getPageLanguage()
@@ -62,6 +64,7 @@ export let
       ? 'Rechercher…'
       : 'Search…'
   , searchInputName =  'q'
+  , searchInputValue = ''
   , submitSearchText =  lang === 'fr'
       ? 'Rechercher'
       : 'Search'
@@ -77,14 +80,13 @@ export let
 
 export function focusOnSearchInput() {
   if (displaySearchForm) {
-    searchInput.focus()
+
   }
 }
 
 let
     containerClass = 'qc-container'
   , displaySearchForm = false
-  , searchInput
 ;
 
 onMount(() => {
@@ -166,16 +168,11 @@ onMount(() => {
         <slot name="search-zone">
           <form method="get"
                 action="{searchFormAction}">
-            <div class="input-group">
-              <input type="text"
-                     bind:this = {searchInput}
-                     placeholder="{searchPlaceholder}"
-                     name="{searchInputName}">
-              <button>
-                <span class="qc-icon qc-search-submit" />
-                <span class="sr-description">{submitSearchText}</span>
-              </button>
-            </div>
+            <SearchBar placeholder="{searchPlaceholder}"
+                       name={searchInputName}
+                       value={searchInputValue}
+                       submitText={submitSearchText}
+            />
           </form>
         </slot>
       </div>
@@ -187,60 +184,34 @@ onMount(() => {
 <style lang="scss">
   @use "../../scss/vendor/modern-css-reset/src/reset.css";
   @use "../../scss/components/piv-header/pivHeaderSlots";
-  //@use "components/icons" as *;
 
-  :host {
-    display: block;
-    min-height: rem(72);
-    background-color: token-value(color, blue, piv);
-    width: 100%;
-  }
-
-  // Single container class with breakpoint max-widths
   .qc-container,
-    // 100% wide container at all breakpoints
-  .qc-container-fluid {
-    @include make-container();
+  .qc-container-fluid
+  {
+    width: 100%;
+    padding-right: calc(1 * var(--qc-grid-gutter) / 2);
+    padding-left: calc(1 * var(--qc-grid-gutter) / 2);
+    margin-right: auto;
+    margin-left: auto;
   }
 
-  // Responsive containers that are 100% wide until a breakpoint
-  @each $breakpoint, $container-max-width in $container-max-widths {
-    .qc-container-#{$breakpoint} {
-      @extend .qc-container-fluid;
-    }
-
-    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-      %responsive-container-#{$breakpoint} {
-        max-width: $container-max-width;
-      }
-
-      // Extend each breakpoint which is smaller or equal to the current breakpoint
-      $extend-breakpoint: true;
-
-      @each $name, $width in $grid-breakpoints {
-        @if ($extend-breakpoint) {
-          .qc-container {
-            @extend %responsive-container-#{$breakpoint};
-          }
-
-          // Once the current breakpoint is reached, stop extending
-          @if ($breakpoint == $name) {
-            $extend-breakpoint: false;
-          }
-        }
+  @each $breakpoint, $media-width in map-get($xl-tokens, grid, breakpoint) {
+    @media (min-width: $media-width) {
+      .qc-container {
+        max-width: map-get($xl-tokens, grid, container-max-width, $breakpoint);
       }
     }
   }
 
   .qc-piv-header {
-    color: token-value(color white);
+    color: map-get($colors, white);
 
     a {
-      color: token-value(color white);
+      color: map-get($colors, white);
       text-decoration: none;
 
       &:hover, &:focus {
-        color: token-value(color white);
+        color: map-get($colors, white);
         text-decoration: underline;
       }
     }
@@ -318,54 +289,7 @@ onMount(() => {
       }
       .search-zone {
         padding-bottom: token-value(spacer md);
-        form {
-          .input-group {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: stretch;
-            input {
-              width: 100%;
-              padding: rem(6) rem(12) ;
-              border: 1px solid token-value(color blue dark);
-              border-right: none;
-              &:focus {
-                outline: rem(2) solid token-value(color blue light);
-                border-right: 1px solid black;
-                z-index: 1;
-              }
-              &::placeholder {
-                font-size: token-value(font size sm);
-              }
-            }
-            button {
-              display: flex;
-              justify-content: center;
-              border: 1px solid token-value(color blue dark);
-              border-left: none;
-              background-color: white;
-              width: rem(2.6 * 16);
-              &:focus{
-                outline: rem(2) solid token-value(color blue light);
-                border-left: 1px solid black;
-              }
-              .qc-search-submit {
-                min-width: rem(24);
-                height: rem(24);
-                align-self: center;
-              }
-              .sr-description {
-                position: absolute;
-                width: 1px;
-                height: 1px;
-                clip: rect(0 0 0 0);
-              }
-            }
-
-          }
-        }
       }
-
     }
   }
 
@@ -383,8 +307,8 @@ onMount(() => {
         overflow: inherit;
         clip: inherit;
         white-space: inherit;
-        color: token-value(color white);
-        background-color: token-value(color blue piv);
+        color: map-get($colors, white);
+        background-color: map-get($colors, blue, piv);
       }
     }
   }

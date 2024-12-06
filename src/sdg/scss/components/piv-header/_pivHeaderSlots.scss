@@ -2,6 +2,8 @@
 @use "modules/utils" as *;
 @use "modules/grid" as *;
 
+$colors : map-get($themes-tokens, light, xl, color);
+
 %piv-links {
   &, & ul {
     list-style: none;
@@ -23,12 +25,12 @@
       font-family: token-value(font family header);
       text-decoration: none;
       font-size: rem(12);
-      color: token-value(color white);
+      color: map-get($colors, white);
       font-weight: token-value(font weight regular);
 
       &:focus, &:hover {
         text-decoration: underline;
-        color: token-value(color white);
+        color: map-get($colors, white);
       }
     }
   }
