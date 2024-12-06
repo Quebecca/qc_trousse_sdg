@@ -7,7 +7,7 @@
 
 body {
   @include content-font($scale: md , $include-family: 1);
-  background-color: token-value(color, white);
+  background-color: token-value(color, background);
   color: token-value(color, text, primary);
 }
 
