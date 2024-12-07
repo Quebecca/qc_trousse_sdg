@@ -8,13 +8,14 @@
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
-// root font-size : 100 %,
+
+root font-size : 100 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
 .foo { font-size: 1rem; }
 
-// root font-size : 62.5 %,
+root font-size : 62.5 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
@@ -28,13 +29,14 @@ Always use this function for rem values
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
-// root font-size : 100 %,
+
+root font-size : 100 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
 .foo { font-size: 1rem; }
 
-// root font-size : 62.5 %,
+root font-size : 62.5 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
@@ -92,6 +94,7 @@ Always use this function for rem values
   --qc-color-white: #ffffff;
   --qc-color-blue-pale: #dae6f0;
   --qc-color-blue-light: #4a98d9;
+  --qc-color-blue-regular_light: #2586d6;
   --qc-color-blue-regular: #1472bf;
   --qc-color-blue-piv: #095797;
   --qc-color-blue-medium: #19406C;
@@ -99,6 +102,7 @@ Always use this function for rem values
   --qc-color-blue-dark: rgb(var(--qc-color-blue-dark_rgb));
   --qc-color-purple: #6b4fa1;
   --qc-color-grey-pale: #f1f1f2;
+  --qc-color-grey-light_rgb: 197, 202, 210;
   --qc-color-grey-light: #c5cad2;
   --qc-color-grey-regular: #8893a2;
   --qc-color-grey-medium: #6b778a;
@@ -126,7 +130,7 @@ Always use this function for rem values
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
   --qc-color-formfield-border: var(--qc-color-grey-medium);
-  --qc-color-formfield-focus-border: var(--qc-color-dark-blue);
+  --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
   --qc-color-searchinput-icon: var(--qc-color-blue-piv);
   --qc-box-shadow-color: rgba(var(--qc-color-blue-dark_rgb), 0.24);
@@ -466,6 +470,10 @@ code, .qc-code {
   background-color: var(--qc-color-blue-light);
 }
 
+.qc-bg-color-blue-regular_light {
+  background-color: var(--qc-color-blue-regular_light);
+}
+
 .qc-bg-color-blue-regular {
   background-color: var(--qc-color-blue-regular);
 }
@@ -492,6 +500,10 @@ code, .qc-code {
 
 .qc-bg-color-grey-pale {
   background-color: var(--qc-color-grey-pale);
+}
+
+.qc-bg-color-grey-light_rgb {
+  background-color: var(--qc-color-grey-light_rgb);
 }
 
 .qc-bg-color-grey-light {
@@ -680,13 +692,14 @@ ul ul {
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
-// root font-size : 100 %,
+
+root font-size : 100 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
 .foo { font-size: 1rem; }
 
-// root font-size : 62.5 %,
+root font-size : 62.5 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
@@ -1078,6 +1091,7 @@ qc-piv-header [slot=links] a:focus, qc-piv-header [slot=links] a:hover {
 }
 
 qc-piv-header {
+  --qc-piv-header-bg: 1;
   display: block;
   min-height: 7.2rem;
   background-color: #095797;
@@ -1226,28 +1240,139 @@ hr {
   border-bottom: 1px solid var(--qc-color-grey-light);
 }
 
+qc-search-input {
+  display: block;
+  width: 100%;
+  max-width: 54.8rem;
+}
+
+/**
+Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+qui affiche la bordure de 1px et l'outline interne de 2px.
+Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+Tous les élémmens placés dans ce cadre son marqués comme transparents.
+De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+ */
+.qc-search-bar button, .qc-search-input button, .qc-search-bar, .qc-search-input {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 10;
+  background: transparent;
+  border: 0;
+}
+.qc-search-bar button::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-input::before {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: var(--qc-color-background);
+  inset: 0;
+  z-index: -5;
+}
+.qc-search-bar button:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-input:has(input:focus), .qc-search-bar button:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-input:focus {
+  outline: 2px solid var(--qc-color-formfield-focus-outline);
+}
+.qc-search-bar button:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-bar button:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-input:focus::before {
+  border: 2px solid var(--qc-color-formfield-focus-border);
+}
+
+.qc-search-bar::before, .qc-search-input::before {
+  border: 1px solid var(--qc-color-formfield-border);
+}
+.qc-search-bar button, .qc-search-input button {
+  width: 4rem;
+  flex-shrink: 0;
+}
+.qc-search-bar button::before, .qc-search-input button::before {
+  background: transparent;
+}
+
+.qc-search-input input[type=search] {
+  display: block;
+  position: relative;
+  color: var(--qc-color-text-primary);
+  width: 100%;
+  background: transparent;
+  margin-right: 0;
+  padding: 0.8rem 0rem 0.8rem 0.8rem;
+  border: 0;
+  /* clears the ‘X’ from Chrome */
+}
+.qc-search-input input[type=search]::-webkit-search-decoration, .qc-search-input input[type=search]::-webkit-search-cancel-button, .qc-search-input input[type=search]::-webkit-search-results-button, .qc-search-input input[type=search]::-webkit-search-results-decoration {
+  display: none;
+}
+.qc-search-input input[type=search]::-moz-placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-search-input input[type=search]::placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-search-input input[type=search]:focus, .qc-search-input input[type=search]:focus-visible {
+  outline: none;
+}
+.qc-search-input button {
+  cursor: pointer;
+}
+.qc-search-input button::before {
+  background: transparent;
+}
+
 qc-search-bar {
   display: block;
+  max-width: 64rem;
 }
 
 .qc-search-bar {
-  display: flex;
-  max-width: 64rem;
-  height: 4rem;
-  flex-grow: 1;
-  align-items: stretch;
-  border: 1px solid var(--qc-color-blue-dark);
+  width: 100%;
+  border: 0;
 }
-.qc-search-bar:has(:focus) {
-  outline: 2px solid var(--qc-color-background);
+.qc-search-bar:has(input:focus) [type=submit]::before {
+  inset: 2px 2px 2px 0;
+  border: 0;
 }
-.qc-search-bar input, .qc-search-bar .search-bar {
-  border-width: 0;
+.qc-search-bar .qc-search-input {
+  margin: 0;
+  width: 100%;
+  outline: none !important;
+}
+.qc-search-bar .qc-search-input::before {
+  content: none !important;
 }
 .qc-search-bar [type=submit] {
-  border-left-width: 1px;
-  margin-left: -1px;
+  z-index: 1;
+  background-color: transparent;
 }
-.qc-search-bar input {
-  border-right-width: 1px;
+.qc-search-bar [type=submit]::before {
+  z-index: -1;
+  background: var(--qc-color-blue-piv);
+  border: 1px solid var(--qc-color-formfield-border);
+  transition: background-color 0.15s;
+}
+.qc-search-bar [type=submit]:hover::before {
+  background-color: var(--qc-color-blue-regular);
+}
+.qc-search-bar [type=submit]:active::before {
+  background-color: var(--qc-color-blue-regular_light);
+}
+
+.qc-search-bar.piv-background {
+  --qc-color-formfield-focus-outline: var(--qc-color-blue-pale);
+}
+.qc-search-bar.piv-background [type=submit]::before {
+  background: var(--qc-color-background);
+  border-left-width: 0;
+}
+.qc-search-bar.piv-background [type=submit]:focus::before {
+  border-left-width: 2px;
+  background-color: rgba(var(--qc-color-grey-light_rgb), 0.24);
+}
+.qc-search-bar.piv-background [type=submit]:hover::before {
+  background-color: rgba(var(--qc-color-grey-light_rgb), 0.24);
+}
+.qc-search-bar.piv-background [type=submit]:active::before {
+  background-color: rgba(var(--qc-color-grey-light_rgb), 0.16);
 }

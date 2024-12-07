@@ -778,17 +778,14 @@
             </qc-doc-exemple>
             <qc-code target-id="pivEnteteExempleLiens"></qc-code>
 
-            <h5>Exemple avec activation de la recherche</h5>
+            <h5>Exemple de personnalisation des liens</h5>
             <qc-doc-exemple id="pivEnteteExempleRecherche"
-                           aria-label="Exemple d’entête de PIV avec recherche"
+                           aria-label="Exemple de personnalisation des liens"
             >
                 <qc-piv-header
                                title-text="Gouvernement du Québec"
                                title-url="https://www.quebec.ca/"
                                alt-logo="Accédez à Québec.ca"
-                               enable-search="true"
-                               search-form-action="https://www.quebec.ca/resultats-de-recherche"
-                               search-input-name="tx_solr[q]"
                 >
                     <nav slot="links"
                          aria-label="Navigation PIV">
@@ -803,7 +800,7 @@
             </qc-doc-exemple>
             <qc-code target-id="pivEnteteExempleRecherche"></qc-code>
 
-            <h5>Exemple avec personnalisation du formulaire de recherche</h5>
+            <h5>Exemple avec recherche</h5>
             <qc-doc-exemple id="pivEnteteExempleRecherchePersonnalisee"
                            aria-label="Exemple d’entête de PIV avec recherche personnalisée"
             >
@@ -824,11 +821,23 @@
                           id="custom-piv-search-form"
                           action="https://www.google.ca/search"
                     >
-                        <qc-search-bar name="q"></qc-search-bar>
+                        <qc-search-bar name="q" piv-background></qc-search-bar>
                     </form>
                 </qc-piv-header>
             </qc-doc-exemple>
-            <qc-code target-id="pivEnteteExempleRecherchePersonnalisee"></qc-code>
+            <qc-code id="code-piv-header-exemple"
+                ></qc-code>
+            <script>
+
+                document.getElementById('code-piv-header-exemple')
+                    .setAttribute(
+                        'raw-code',
+                        document
+                            .getElementById('pivEnteteExempleRecherchePersonnalisee')
+                            .innerHTML
+                    )
+
+            </script>
 
             <h4>Documentation technique</h4>
             <h5>Attributs</h5>
@@ -939,24 +948,7 @@
                         <td>"false"</td>
                         <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a pas été pressé).</td>
                     </tr>
-                    <tr>
-                        <td>search-form-action</td>
-                        <td>Adresse</td>
-                        <td>#</td>
-                        <td>Valeur de l'attribut « action » du champ du formulaire de recherche.</td>
-                    </tr>
-                    <tr>
-                        <td>search-input-name</td>
-                        <td>Texte</td>
-                        <td>q</td>
-                        <td>Valeur de l'attribut « name » du champ texte du formulaire de recherche.</td>
-                    </tr>
-                    <tr>
-                        <td>search-placeholder</td>
-                        <td>Texte</td>
-                        <td>Rechercher… / Search…</td>
-                        <td>Valeur de l'attribut « placeholder » du champ texte du formulaire de recherche.</td>
-                    </tr>
+
                     <tr>
                         <td>display-search-text</td>
                         <td>Texte</td>
@@ -969,13 +961,6 @@
                         <td>Masquer la barre de recherche / Hide search bar</td>
                         <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour masquer la barre de recherche.</td>
                     </tr>
-                    <tr>
-                        <td>submit-search-text</td>
-                        <td>Texte</td>
-                        <td>Rechercher / Search</td>
-                        <td>Texte du bouton de soumission du formulaire pour les lecteurs d'écran.</td>
-                    </tr>
-
                 </tbody>
             </table>
 

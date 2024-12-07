@@ -7,13 +7,14 @@
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
-// root font-size : 100 %,
+
+root font-size : 100 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
 .foo { font-size: 1rem; }
 
-// root font-size : 62.5 %,
+root font-size : 62.5 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
@@ -27,13 +28,14 @@ Always use this function for rem values
 /*
 Return rem size from pixel size according to root font-size as define in settings
 Always use this function for rem values
-// root font-size : 100 %,
+
+root font-size : 100 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
 .foo { font-size: 1rem; }
 
-// root font-size : 62.5 %,
+root font-size : 62.5 %,
 // foo.scss
 .foo { font-size: rem(16); }
 // foo.css
@@ -91,6 +93,7 @@ Always use this function for rem values
   --qc-color-white: #ffffff;
   --qc-color-blue-pale: #dae6f0;
   --qc-color-blue-light: #4a98d9;
+  --qc-color-blue-regular_light: #2586d6;
   --qc-color-blue-regular: #1472bf;
   --qc-color-blue-piv: #095797;
   --qc-color-blue-medium: #19406C;
@@ -98,6 +101,7 @@ Always use this function for rem values
   --qc-color-blue-dark: rgb(var(--qc-color-blue-dark_rgb));
   --qc-color-purple: #6b4fa1;
   --qc-color-grey-pale: #f1f1f2;
+  --qc-color-grey-light_rgb: 197, 202, 210;
   --qc-color-grey-light: #c5cad2;
   --qc-color-grey-regular: #8893a2;
   --qc-color-grey-medium: #6b778a;
@@ -125,7 +129,7 @@ Always use this function for rem values
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
   --qc-color-formfield-border: var(--qc-color-grey-medium);
-  --qc-color-formfield-focus-border: var(--qc-color-dark-blue);
+  --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
   --qc-color-searchinput-icon: var(--qc-color-blue-piv);
   --qc-box-shadow-color: rgba(var(--qc-color-blue-dark_rgb), 0.24);

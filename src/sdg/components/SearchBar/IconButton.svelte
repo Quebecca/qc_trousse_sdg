@@ -5,14 +5,19 @@ export let
     text = '',
     srText = '',
     icon,
-    size
+    iconSize,
+    iconColor
 ;
 
 </script>
 
-<button {...$$restProps}>
+<button on:click
+        {...$$restProps}>
     {#if icon}
-    <Icon type="{icon}" size="md"/>
+    <Icon type="{icon}"
+          size={iconSize}
+          color={iconColor}
+    />
     {/if}
     {#if text}
         <span class="button-text">{text}</span>
@@ -24,12 +29,11 @@ export let
 
 <style lang="scss">
   button {
-    background: token-value(color background);
     display: flex;
     align-items: center;
     justify-content: center;
+    // TODO mettre un token
     width: rem(40);
-    border: 0;
   }
   .sr-only {
     @include sr-only();

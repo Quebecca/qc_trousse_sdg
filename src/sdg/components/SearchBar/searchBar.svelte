@@ -7,43 +7,64 @@
         ariaLabel: {attribute: 'aria-label', type:'String'},
         submitValue: {attribute: 'submit-value', type:'String'},
         submitName: {attribute: 'submit-value', type:'String'},
-        submitText: {attribute: 'submit-text', type:'String'},
+        submitSrText: {attribute: 'submit-text', type:'String'},
+        pivBackground: {attribute: 'piv-background', type:'Boolean'},
     }
 }}" />
 
 <script>
     import {Utils} from "../utils";
     import SearchInput from "./SearchInput.svelte";
+    import IconButton from "./IconButton.svelte";
+    import {onMount} from "svelte";
 
     const
         lang = Utils.getPageLanguage()
     export let
         value = '',
-        name = 'search',
+        name = 'q',
         placeholder = lang === "fr"
-            ? "Lancer la recherche"
-            : "Submit search",
+            ? "Rechercher…"
+            : "Search_",
         ariaLabel = placeholder,
         submitValue,
         submitName,
-        submitText
+        submitSrText = lang === "fr"
+            ? "Lancer la recherche"
+            : "Submit search",
+        pivBackground = false
     ;
+
+    let root;
+    onMount(() => {
+        const pivHeaderBg = getComputedStyle(root.parentNode)
+                            .getPropertyValue('--qc-piv-header-bg');
+        console.log('--qc-piv-header-bg', pivBackground)
+
+    })
 
 
 </script>
-<div class="qc-search-bar">
-    <SearchInput/>
-    <div class="search-button">
+<div bind:this={root}
+        class="qc-search-bar"
+        class:piv-background={pivBackground}
+    >
+    <SearchInput {value}
+                 {name}
+                 {ariaLabel}
+    />
     {#if true}
         {@const name = submitName}
         {@const value = submitValue}
-        {@const text = submitText}
-        <Button
+        {@const srText = submitSrText}
+        <IconButton
+                type="submit"
                 {name}
                 {value}
-                {text}
+                {srText}
+                iconColor={pivBackground ? 'blue-piv' : 'background'}
                 icon="loupe-piv-fine"
+                iconSize="md"
         />
     {/if}
-    </div>
 </div>

@@ -4,7 +4,7 @@
 @use "pivHeaderSlots" as *;
 
 qc-piv-header {
-
+  --qc-piv-header-bg: 1;
   display: block;
   min-height: rem(72);
   // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème

@@ -71,6 +71,7 @@ $xl-tokens: (
           blue : (
               pale : #dae6f0,
               light : #4a98d9,
+              regular_light: #2586d6,
               regular : #1472bf,
               piv: #095797,
               medium : #19406C,
@@ -80,6 +81,7 @@ $xl-tokens: (
           purple: #6b4fa1,
           grey : (
               pale : #f1f1f2,
+              light_rgb: (197, 202, 210),
               light : #c5cad2,
               regular: #8893a2,
               medium : #6b778a,
@@ -124,7 +126,7 @@ $xl-tokens: (
         formfield: (
             border: token-value(color grey medium ),
             focus: (
-                border: token-value(color dark-blue),
+                border: token-value(color blue dark),
                 outline: token-value(color blue light)
             )
         ),
@@ -260,6 +262,7 @@ $themes-tokens: (
         blue : (
             pale : #162B47,
             light : #0078CC,
+            // regular_light est inchangé
             regular : #3B95E1,
             piv: #72B2EB,
             medium : #ADCDEB,

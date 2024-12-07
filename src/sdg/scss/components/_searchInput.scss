@@ -1,0 +1,98 @@
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+
+qc-search-input {
+  display: block;
+  width: 100%;
+  // TODO mettre un token
+  max-width: rem(548);
+}
+
+/**
+Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+qui affiche la bordure de 1px et l'outline interne de 2px.
+Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+Tous les élémmens placés dans ce cadre son marqués comme transparents.
+De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+ */
+%qc-formcontrol-box {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 10;
+  // TODO mettre des tokens
+  background: transparent;
+  border: 0;
+  //color: token-value(color text primary);
+  // TODO renommer formfield en textfield
+  &::before {
+    position: absolute;
+    display: block;
+    content: "";
+    background-color: token-value(color background);
+    inset: 0;
+    z-index: -5
+  }
+  &:has(input:focus), &:focus {
+    outline: 2px solid token-value(color formfield focus outline);
+    &::before {
+      border: 2px solid token-value(color formfield focus border);
+    }
+  }
+}
+
+%qc-search-wrapper {
+  @extend %qc-formcontrol-box;
+  &::before {
+    border: 1px solid token-value(color formfield border);
+  }
+  button {
+    @extend %qc-formcontrol-box;
+    &::before {
+      background: transparent;
+    }
+    width: rem(40);
+    flex-shrink: 0;
+  }
+}
+
+.qc-search-input {
+  @extend %qc-search-wrapper;
+  input[type=search] {
+    display: block;
+    position: relative;
+    color: token-value(color text primary);
+    width: 100%;
+    background: transparent;
+    //height: auto;
+    margin-right: 0;
+    padding: rem(8) rem(0) rem(8) rem(8);
+    border: 0;
+    /* clears the ‘X’ from Chrome */
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      display: none;
+    }
+    &::placeholder {
+      color: token-value(color grey medium);
+      font-weight: normal;
+    }
+    &:focus,&:focus-visible {
+      outline: none;
+    }
+  }
+
+  button {
+    @extend %qc-formcontrol-box;
+    &::before {
+      background: transparent;
+    }
+    cursor: pointer;
+  }
+}
+
+

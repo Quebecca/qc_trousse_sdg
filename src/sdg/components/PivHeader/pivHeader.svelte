@@ -15,13 +15,8 @@
     , goToContent: {attribute: 'go-to-content'}
     , goToContentAnchor : {attribute: 'go-to-content-anchor'}
     , goToContentText: {attribute: 'go-to-content-text'}
-    , searchPlaceholder : {attribute: 'search-placeholder'}
-    , searchInputName : {attribute: 'search-input-name'}
-    , searchInputValue : {attribute: 'search-input-value'}
-    , submitSearchText : {attribute: 'submit-search-text'}
     , displaySearchText : {attribute: 'display-search-text'}
     , hideSearchText : {attribute: 'hide-search-text'}
-    , searchFormAction : {attribute: 'search-form-action'}
     , enableSearch : {attribute: 'enable-search'}
     , showSearch : {attribute: 'show-search'}
   }
@@ -60,21 +55,12 @@ export let
   , goToContentText= lang === 'fr'
       ? 'Passer au contenu'
       : 'Skip to content'
-  , searchPlaceholder =  lang === 'fr'
-      ? 'Rechercher…'
-      : 'Search…'
-  , searchInputName =  'q'
-  , searchInputValue = ''
-  , submitSearchText =  lang === 'fr'
-      ? 'Rechercher'
-      : 'Search'
   , displaySearchText =  lang === 'fr'
           ? 'Cliquer pour faire une recherche'
           : 'Click to search'
   , hideSearchText =  lang === 'fr'
           ? 'Masquer la barre de recherche'
           : 'Hide search bar'
-  , searchFormAction =  '#'
   , enableSearch = 'false'
   , showSearch = 'false'
 
@@ -165,16 +151,7 @@ onMount(() => {
       {/if}
       {#if displaySearchForm}
       <div class="search-zone">
-        <slot name="search-zone">
-          <form method="get"
-                action="{searchFormAction}">
-            <SearchBar placeholder="{searchPlaceholder}"
-                       name={searchInputName}
-                       value={searchInputValue}
-                       submitText={submitSearchText}
-            />
-          </form>
-        </slot>
+        <slot name="search-zone" />
       </div>
       {/if}
   </div>
