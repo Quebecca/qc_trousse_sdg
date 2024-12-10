@@ -1,5 +1,5 @@
 <svelte:options customElement="{{
-    tag: 'qc-doc-figure',
+    tag: 'qc-doc-exemple',
 }}" />
 <figure {...$$restProps}>
     <slot/>

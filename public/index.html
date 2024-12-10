@@ -481,8 +481,7 @@
                 <strong>Ombre</strong><br/>
                 <code >--qc-box-shadow-4</code>
             </p>
-
-<hr />
+            <hr />
 
             <!-- paragraphes -->
             <h2 id="paragraphes">Paragraphes</h2>
@@ -503,30 +502,49 @@
             <h2 id="polices">Polices de caractères</h2>
             <div class="font-titles">
                 <h3><strong>Roboto</strong></h3>
-                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<br>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-header-font-family</code>
-                </p>
+                <qc-doc-exemple id="font-roboto"
+                                aria-label="exemple de texte en roboto, avec différentes graisses."
+                    >
+                    <div style="font-family: var(--qc-font-family-header);">
+                        <p style="font-weight:var(--qc-font-weight-header-regular);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                        <p style="font-weight:var(--qc-font-weight-header-medium);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                        <p style="font-weight:var(--qc-font-weight-header-bold);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                    </div>
+                </qc-doc-exemple>
+                <qc-code target-id="font-roboto"></qc-code>
             </div>
             <div>
                 <h3><strong>Open Sans</strong></h3>
-                <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</br>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-content-font-family</code>
-                </p>
+                <qc-doc-exemple id="font-open-sans"
+                                aria-label="exemple de texte en open sans, avec différentes graisses."
+                    >
+                    <div style="font-family: var(--qc-font-family-content);">
+                        <p style="font-weight:var(--qc-font-weight-content-regular);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                        <p style="font-weight:var(--qc-font-weight-content-medium);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                        <p style="font-weight:var(--qc-font-weight-content-bold);">
+                            ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
+                            <i>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789</i>
+                        </p>
+                    </div>
+                </qc-doc-exemple>
+                <qc-code target-id="font-open-sans"></qc-code>
             </div>
-            <div >
-                <h3><strong>Roboto Mono</strong></h3>
-                <code >
-                    <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<br>abcdefghijklmnopqrstuvwxyz0123456789</p>
-                </code>
-                <p>
-                    <strong>Police</strong><br/>
-                    <code  >--qc-code-font-family</code>
-                </p>
-            </div>
+
             <!-- Séparateur -->
             <h2 id="separator">Séparateur</h2>
 
@@ -538,8 +556,7 @@
 
             <qc-code target-id="separateur-exemple"></qc-code>
 
-<hr />
-
+            <hr />
 
             <!-- alerte générale -->
             <h2 id="alert">Alerte générale (qc-alert)</h2>

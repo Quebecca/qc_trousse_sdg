@@ -67588,6 +67588,6 @@
 		}
 	}
 
-	customElements.define("qc-doc-figure", create_custom_element(Exemple, {}, ["default"], [], true));
+	customElements.define("qc-doc-exemple", create_custom_element(Exemple, {}, ["default"], [], true));
 
 })();
