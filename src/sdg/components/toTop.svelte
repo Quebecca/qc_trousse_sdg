@@ -1,7 +1,15 @@
-<svelte:options customElement="qc-to-top" />
+<svelte:options customElement="{{
+    tag: 'qc-to-top',
+    shadow: 'none',
+   props: {
+      alt: {attribute: 'alt', type:'String'},
+  }
+}}" />
+
 
 <script>
    import { Utils } from "./utils";
+   import Icon from "./Icon.svelte";
 
    const
         lang = Utils.getPageLanguage();
@@ -67,15 +75,13 @@
 
 <a href=" "
    bind:this={toTopElement}
-   class="qc-to-top qc-icon qc-arrow-up-white"
+   class="qc-to-top"
    tabindex="0"
    class:visible
    on:click|preventDefault={scrollToTop}
    on:keydown={handleEnterAndSpace}
    {demo}
 >
+   <Icon type="arrow-up-white" color="background"/>
    <span>{alt}</span>
 </a>
-
-<link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
