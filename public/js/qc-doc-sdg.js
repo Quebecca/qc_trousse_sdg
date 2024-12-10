@@ -303,6 +303,16 @@
 
 	/**
 	 * @returns {void} */
+	function set_style(node, key, value, important) {
+		if (value == null) {
+			node.style.removeProperty(key);
+		} else {
+			node.style.setProperty(key, value, important ? 'important' : '');
+		}
+	}
+
+	/**
+	 * @returns {void} */
 	function toggle_class(element, name, toggle) {
 		// The `!!` is required because an `undefined` flag means flipping the current state.
 		element.classList.toggle(name, !!toggle);
@@ -67215,22 +67225,21 @@
 		let input;
 		let t;
 		let span;
-		let div_style_value;
 		let mounted;
 		let dispose;
 
-		let div_levels = [
-			{ class: "switch" },
-			/*$$restProps*/ ctx[4],
-			{
-				style: div_style_value = "--unchecked-bg-color: var(--qc-color-" + /*color*/ ctx[3].unchecked + "); --checked-bg-color: var(--qc-color-" + /*color*/ ctx[3].checked + "); --slider-color: var(--qc-color-" + /*color*/ ctx[3].slider + ");"
-			}
+		let input_levels = [
+			{ type: "checkbox" },
+			{ role: "switch" },
+			{ name: /*name*/ ctx[1] },
+			{ "aria-checked": /*value*/ ctx[0] },
+			/*$$restProps*/ ctx[3]
 		];
 
-		let div_data = {};
+		let input_data = {};
 
-		for (let i = 0; i < div_levels.length; i += 1) {
-			div_data = assign$1(div_data, div_levels[i]);
+		for (let i = 0; i < input_levels.length; i += 1) {
+			input_data = assign$1(input_data, input_levels[i]);
 		}
 
 		return {
@@ -67239,19 +67248,18 @@
 				input = element("input");
 				t = space();
 				span = element("span");
-				attr(input, "type", "checkbox");
-				attr(input, "role", "switch");
-				attr(input, "name", /*name*/ ctx[1]);
-				attr(input, "aria-checked", /*value*/ ctx[0]);
-				attr(input, "id", /*inputId*/ ctx[2]);
-				attr(input, "class", "qc-hash-1ynq0oe");
+				set_attributes(input, input_data);
+				toggle_class(input, "qc-hash-1ynq0oe", true);
 				attr(span, "class", "slider round qc-hash-1ynq0oe");
-				set_attributes(div, div_data);
-				toggle_class(div, "qc-hash-1ynq0oe", true);
+				attr(div, "class", "switch qc-hash-1ynq0oe");
+				set_style(div, "--unchecked-bg-color", "var(--qc-color-" + /*color*/ ctx[2].unchecked + ")");
+				set_style(div, "--checked-bg-color", "var(--qc-color-" + /*color*/ ctx[2].checked + ")");
+				set_style(div, "--slider-color", "var(--qc-color-" + /*color*/ ctx[2].slider + ")");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
 				append(div, input);
+				if (input.autofocus) input.focus();
 				input.checked = /*value*/ ctx[0];
 				append(div, t);
 				append(div, span);
@@ -67262,29 +67270,31 @@
 				}
 			},
 			p(ctx, [dirty]) {
-				if (dirty & /*name*/ 2) {
-					attr(input, "name", /*name*/ ctx[1]);
-				}
-
-				if (dirty & /*value*/ 1) {
-					attr(input, "aria-checked", /*value*/ ctx[0]);
-				}
-
-				if (dirty & /*inputId*/ 4) {
-					attr(input, "id", /*inputId*/ ctx[2]);
-				}
+				set_attributes(input, input_data = get_spread_update(input_levels, [
+					{ type: "checkbox" },
+					{ role: "switch" },
+					dirty & /*name*/ 2 && { name: /*name*/ ctx[1] },
+					dirty & /*value*/ 1 && { "aria-checked": /*value*/ ctx[0] },
+					dirty & /*$$restProps*/ 8 && /*$$restProps*/ ctx[3]
+				]));
 
 				if (dirty & /*value*/ 1) {
 					input.checked = /*value*/ ctx[0];
 				}
 
-				set_attributes(div, div_data = get_spread_update(div_levels, [
-					{ class: "switch" },
-					dirty & /*$$restProps*/ 16 && /*$$restProps*/ ctx[4],
-					dirty & /*color*/ 8 && div_style_value !== (div_style_value = "--unchecked-bg-color: var(--qc-color-" + /*color*/ ctx[3].unchecked + "); --checked-bg-color: var(--qc-color-" + /*color*/ ctx[3].checked + "); --slider-color: var(--qc-color-" + /*color*/ ctx[3].slider + ");") && { style: div_style_value }
-				]));
+				toggle_class(input, "qc-hash-1ynq0oe", true);
 
-				toggle_class(div, "qc-hash-1ynq0oe", true);
+				if (dirty & /*color*/ 4) {
+					set_style(div, "--unchecked-bg-color", "var(--qc-color-" + /*color*/ ctx[2].unchecked + ")");
+				}
+
+				if (dirty & /*color*/ 4) {
+					set_style(div, "--checked-bg-color", "var(--qc-color-" + /*color*/ ctx[2].checked + ")");
+				}
+
+				if (dirty & /*color*/ 4) {
+					set_style(div, "--slider-color", "var(--qc-color-" + /*color*/ ctx[2].slider + ")");
+				}
 			},
 			i: noop,
 			o: noop,
@@ -67316,20 +67326,20 @@
 
 		$$self.$$set = $$new_props => {
 			$$props = assign$1(assign$1({}, $$props), exclude_internal_props($$new_props));
-			$$invalidate(4, $$restProps = compute_rest_props($$props, omit_props_names));
+			$$invalidate(3, $$restProps = compute_rest_props($$props, omit_props_names));
 			if ('value' in $$new_props) $$invalidate(0, value = $$new_props.value);
 			if ('name' in $$new_props) $$invalidate(1, name = $$new_props.name);
-			if ('inputId' in $$new_props) $$invalidate(2, inputId = $$new_props.inputId);
-			if ('color' in $$new_props) $$invalidate(3, color = $$new_props.color);
+			if ('inputId' in $$new_props) $$invalidate(4, inputId = $$new_props.inputId);
+			if ('color' in $$new_props) $$invalidate(2, color = $$new_props.color);
 		};
 
-		return [value, name, inputId, color, $$restProps, input_change_handler];
+		return [value, name, color, $$restProps, inputId, input_change_handler];
 	}
 
 	class Switch extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance$2, create_fragment$2, safe_not_equal, { value: 0, name: 1, inputId: 2, color: 3 }, add_css$2);
+			init(this, options, instance$2, create_fragment$2, safe_not_equal, { value: 0, name: 1, inputId: 4, color: 2 }, add_css$2);
 		}
 
 		get value() {
@@ -67351,7 +67361,7 @@
 		}
 
 		get inputId() {
-			return this.$$.ctx[2];
+			return this.$$.ctx[4];
 		}
 
 		set inputId(inputId) {
@@ -67360,7 +67370,7 @@
 		}
 
 		get color() {
-			return this.$$.ctx[3];
+			return this.$$.ctx[2];
 		}
 
 		set color(color) {

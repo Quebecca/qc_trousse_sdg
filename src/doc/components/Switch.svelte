@@ -19,7 +19,6 @@
 
 </script>
 <div class="switch"
-     {...$$restProps}
      style="--unchecked-bg-color: var(--qc-color-{color.unchecked});
             --checked-bg-color: var(--qc-color-{color.checked});
             --slider-color: var(--qc-color-{color.slider});
@@ -30,7 +29,7 @@
            {name}
            bind:checked={value}
            aria-checked={value}
-           id={inputId}
+           {...$$restProps}
     />
     <span class="slider round" ></span>
 </div>
