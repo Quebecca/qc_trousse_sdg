@@ -16,7 +16,6 @@
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
     import IconButton from "../Button/IconButton.svelte";
-    import {onMount} from "svelte";
 
     const
         lang = Utils.getPageLanguage()
@@ -35,18 +34,9 @@
         pivBackground = false
     ;
 
-    let root;
-    onMount(() => {
-        const pivHeaderBg = getComputedStyle(root.parentNode)
-                            .getPropertyValue('--qc-piv-header-bg');
-        console.log('--qc-piv-header-bg', pivBackground)
-
-    })
-
 
 </script>
-<div bind:this={root}
-        class="qc-search-bar"
+<div    class="qc-search-bar"
         class:piv-background={pivBackground}
     >
     <SearchInput {value}

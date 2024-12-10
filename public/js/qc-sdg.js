@@ -2301,11 +2301,11 @@
 		const constants_1 = /*submitValue*/ child_ctx[1];
 		child_ctx[5] = constants_1;
 		const constants_2 = /*submitSrText*/ child_ctx[3];
-		child_ctx[11] = constants_2;
+		child_ctx[9] = constants_2;
 		return child_ctx;
 	}
 
-	// (56:4) {#if true}
+	// (46:4) {#if true}
 	function create_if_block$2(ctx) {
 		let iconbutton;
 		let current;
@@ -2315,7 +2315,7 @@
 					type: "submit",
 					name: /*name*/ ctx[6],
 					value: /*value*/ ctx[5],
-					srText: /*srText*/ ctx[11],
+					srText: /*srText*/ ctx[9],
 					iconColor: /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background',
 					icon: "loupe-piv-fine",
 					iconSize: "md"
@@ -2334,7 +2334,7 @@
 				const iconbutton_changes = {};
 				if (dirty & /*submitName*/ 4) iconbutton_changes.name = /*name*/ ctx[6];
 				if (dirty & /*submitValue*/ 2) iconbutton_changes.value = /*value*/ ctx[5];
-				if (dirty & /*submitSrText*/ 8) iconbutton_changes.srText = /*srText*/ ctx[11];
+				if (dirty & /*submitSrText*/ 8) iconbutton_changes.srText = /*srText*/ ctx[9];
 				if (dirty & /*pivBackground*/ 16) iconbutton_changes.iconColor = /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background';
 				iconbutton.$set(iconbutton_changes);
 			},
@@ -2383,7 +2383,6 @@
 				mount_component(searchinput, div, null);
 				append(div, t);
 				if (if_block) if_block.m(div, null);
-				/*div_binding*/ ctx[9](div);
 				current = true;
 			},
 			p(ctx, [dirty]) {
@@ -2416,7 +2415,6 @@
 
 				destroy_component(searchinput);
 				if (if_block) if_block.d();
-				/*div_binding*/ ctx[9](null);
 			}
 		};
 	}
@@ -2424,24 +2422,11 @@
 	function instance$5($$self, $$props, $$invalidate) {
 		const lang = Utils.getPageLanguage();
 		let { value = '', name = 'q', placeholder = lang === "fr" ? "Rechercher…" : "Search_", ariaLabel = placeholder, submitValue, submitName, submitSrText = lang === "fr" ? "Lancer la recherche" : "Submit search", pivBackground = false } = $$props;
-		let root;
-
-		onMount(() => {
-			getComputedStyle(root.parentNode).getPropertyValue('--qc-piv-header-bg');
-			console.log('--qc-piv-header-bg', pivBackground);
-		});
-
-		function div_binding($$value) {
-			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
-				root = $$value;
-				$$invalidate(7, root);
-			});
-		}
 
 		$$self.$$set = $$props => {
 			if ('value' in $$props) $$invalidate(5, value = $$props.value);
 			if ('name' in $$props) $$invalidate(6, name = $$props.name);
-			if ('placeholder' in $$props) $$invalidate(8, placeholder = $$props.placeholder);
+			if ('placeholder' in $$props) $$invalidate(7, placeholder = $$props.placeholder);
 			if ('ariaLabel' in $$props) $$invalidate(0, ariaLabel = $$props.ariaLabel);
 			if ('submitValue' in $$props) $$invalidate(1, submitValue = $$props.submitValue);
 			if ('submitName' in $$props) $$invalidate(2, submitName = $$props.submitName);
@@ -2457,9 +2442,7 @@
 			pivBackground,
 			value,
 			name,
-			root,
-			placeholder,
-			div_binding
+			placeholder
 		];
 	}
 
@@ -2470,7 +2453,7 @@
 			init(this, options, instance$5, create_fragment$5, safe_not_equal, {
 				value: 5,
 				name: 6,
-				placeholder: 8,
+				placeholder: 7,
 				ariaLabel: 0,
 				submitValue: 1,
 				submitName: 2,
@@ -2498,7 +2481,7 @@
 		}
 
 		get placeholder() {
-			return this.$$.ctx[8];
+			return this.$$.ctx[7];
 		}
 
 		set placeholder(placeholder) {
