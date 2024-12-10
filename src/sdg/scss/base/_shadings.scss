@@ -3,14 +3,19 @@
 @use "../modules/map" as *;
 @use "sass:map";
 
-@each $index, $blur in map.get($xl-tokens, box-shadow, blur) {
-  $offset : map.get($xl-tokens, box-shadow, offset, $index);
+@mixin qc-shading($index) {
+  @if ($index == 0) {
+    border: 1px solid token-value(box_shadow 0 color);
+  }
+  @else {
+    box-shadow: 0
+                token-value(box_shadow $index offset)
+                token-value(box_shadow $index blur)
+                token-value(color box_shadow);
+  }
+}
+@each $index,$settings in map.get($xl-tokens, box_shadow) {
   .qc-shading-#{$index} {
-    @if ($index == 0) {
-      border: 1px solid token-value(box-shadow, color-0);
-    }
-    @else {
-      box-shadow: 0 $offset $blur token-value(box-shadow, color);
-    }
+    @include qc-shading($index)
   }
 }

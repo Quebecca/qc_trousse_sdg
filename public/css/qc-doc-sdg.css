@@ -329,20 +329,24 @@ code.hljs {
   font-weight: bold;
 }
 
-.qc-shading-1, .btn.btn-primary {
-  box-shadow: 0 1px 4px var(--qc-box-shadow-color);
+.qc-shading-0 {
+  border: 1px solid var(--qc-box_shadow-0-color);
+}
+
+.qc-shading-1 {
+  box-shadow: 0 var(--qc-box_shadow-1-offset) var(--qc-box_shadow-1-blur) var(--qc-color-box_shadow);
 }
 
 .qc-shading-2 {
-  box-shadow: 0 2px 8px var(--qc-box-shadow-color);
+  box-shadow: 0 var(--qc-box_shadow-2-offset) var(--qc-box_shadow-2-blur) var(--qc-color-box_shadow);
 }
 
 .qc-shading-3 {
-  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
+  box-shadow: 0 var(--qc-box_shadow-3-offset) var(--qc-box_shadow-3-blur) var(--qc-color-box_shadow);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
+  box-shadow: 0 var(--qc-box_shadow-4-offset) var(--qc-box_shadow-4-blur) var(--qc-color-box_shadow);
 }
 
 .btn {
@@ -372,6 +376,7 @@ code.hljs {
   color: var(--qc-color-background);
   border-color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-blue-piv);
+  box-shadow: 0 var(--qc-box_shadow-1-offset) var(--qc-box_shadow-1-blur) var(--qc-color-box_shadow);
 }
 .btn.btn-primary:hover {
   border-color: var(--qc-color-blue-regular);

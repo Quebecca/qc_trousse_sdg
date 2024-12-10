@@ -133,16 +133,16 @@ root font-size : 62.5 %,
   --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
   --qc-color-searchinput-icon: var(--qc-color-blue-piv);
-  --qc-box-shadow-color: rgba(var(--qc-color-blue-dark_rgb), 0.24);
-  --qc-box-shadow-color-0: var(--qc-color-grey-light);
-  --qc-box-shadow-blur-1: 4px;
-  --qc-box-shadow-blur-2: 8px;
-  --qc-box-shadow-blur-3: 16px;
-  --qc-box-shadow-blur-4: 24px;
-  --qc-box-shadow-offset-1: 1px;
-  --qc-box-shadow-offset-2: 2px;
-  --qc-box-shadow-offset-3: 4px;
-  --qc-box-shadow-offset-4: 6px;
+  --qc-color-box_shadow: rgba(var(--qc-color-blue-dark_rgb), 0.24);
+  --qc-box_shadow-0-color: var(--qc-color-grey-light);
+  --qc-box_shadow-1-blur: 4px;
+  --qc-box_shadow-1-offset: 1px;
+  --qc-box_shadow-2-blur: 8px;
+  --qc-box_shadow-2-offset: 2px;
+  --qc-box_shadow-3-blur: 16px;
+  --qc-box_shadow-3-offset: 4px;
+  --qc-box_shadow-4-blur: 24px;
+  --qc-box_shadow-4-offset: 6px;
   --qc-spacer-xs: 0.8rem;
   --qc-spacer-sm: 1.6rem;
   --qc-spacer-md: 2.4rem;
@@ -580,6 +580,10 @@ code, .qc-code {
   background-color: var(--qc-color-searchinput-icon);
 }
 
+.qc-bg-color-box_shadow {
+  background-color: var(--qc-color-box_shadow);
+}
+
 img,
 picture {
   max-width: 100%;
@@ -634,20 +638,24 @@ ul ul {
   list-style: circle;
 }
 
-.qc-shading-1, .qc-to-top {
-  box-shadow: 0 1px 4px var(--qc-box-shadow-color);
+.qc-shading-0 {
+  border: 1px solid var(--qc-box_shadow-0-color);
 }
 
-.qc-shading-2, .qc-to-top:focus {
-  box-shadow: 0 2px 8px var(--qc-box-shadow-color);
+.qc-shading-1 {
+  box-shadow: 0 var(--qc-box_shadow-1-offset) var(--qc-box_shadow-1-blur) var(--qc-color-box_shadow);
+}
+
+.qc-shading-2 {
+  box-shadow: 0 var(--qc-box_shadow-2-offset) var(--qc-box_shadow-2-blur) var(--qc-color-box_shadow);
 }
 
 .qc-shading-3 {
-  box-shadow: 0 4px 16px var(--qc-box-shadow-color);
+  box-shadow: 0 var(--qc-box_shadow-3-offset) var(--qc-box_shadow-3-blur) var(--qc-color-box_shadow);
 }
 
 .qc-shading-4 {
-  box-shadow: 0 6px 24px var(--qc-box-shadow-color);
+  box-shadow: 0 var(--qc-box_shadow-4-offset) var(--qc-box_shadow-4-blur) var(--qc-color-box_shadow);
 }
 
 /* Inherit fonts for inputs and buttons */
@@ -1172,6 +1180,7 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   transition: opacity 0.4s linear;
   opacity: 0;
   background-size: 1.6rem 2rem;
+  box-shadow: 0 var(--qc-box_shadow-1-offset) var(--qc-box_shadow-1-blur) var(--qc-color-box_shadow);
 }
 .qc-to-top[demo=false] {
   position: fixed;
@@ -1188,6 +1197,7 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   background-color: var(--qc-color-blue-regular);
   outline: 2px solid var(--qc-color-blue-light);
   border: 2px solid var(--qc-color-blue-dark);
+  box-shadow: 0 var(--qc-box_shadow-2-offset) var(--qc-box_shadow-2-blur) var(--qc-color-box_shadow);
 }
 .qc-to-top:active {
   background-color: var(--qc-color-blue-light);

@@ -132,23 +132,28 @@ $xl-tokens: (
         ),
         searchinput: (
           icon: token-value(color blue piv),
-        )
-    ),
-    box-shadow: (
-        color: rgba(var(--qc-color-blue-dark_rgb), .24),
-        //color: token-value(color blue dark),
-        color-0: token-value(color grey light),
-        blur: (
-            1: 4px,
-            2: 8px,
-            3: 16px,
-            4: 24px,
         ),
-        offset: (
-            1: 1px,
-            2: 2px,
-            3: 4px,
-            4: 6px,
+        box_shadow: rgba(var(--qc-color-blue-dark_rgb), .24)
+    ),
+    box_shadow: (
+        0: (
+          color: token-value(color grey light)
+        ),
+        1: (
+          blur: 4px,
+          offset: 1px,
+        ),
+        2: (
+            blur: 8px,
+            offset: 2px,
+        ),
+        3: (
+            blur: 16px,
+            offset: 4px,
+        ),
+        4: (
+            blur: 24px,
+            offset: 6px,
         ),
     ),
     spacer: (

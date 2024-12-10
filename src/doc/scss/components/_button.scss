@@ -41,7 +41,7 @@
     color: token-value(color background);
     border-color: token-value(color blue piv);
     background-color: token-value(color blue piv);
-    @extend .qc-shading-1;
+    @include qc-shading(1);
 
     &:hover {
       @include state-color(token-value(color blue regular));
