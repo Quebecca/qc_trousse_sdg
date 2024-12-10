@@ -510,6 +510,11 @@ a.pseudo-active {
   color: var(--qc-color-link-active);
   text-decoration: none;
 }
+a.pseudo-focus {
+  color: var(--qc-color-link-hover);
+  text-decoration: none;
+  outline: 2px solid var(--qc-color-link-focus-outline);
+}
 a.visited {
   color: var(--qc-color-link-visited);
 }

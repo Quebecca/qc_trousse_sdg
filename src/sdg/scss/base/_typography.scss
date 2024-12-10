@@ -35,18 +35,16 @@ p {
   max-inline-size: token-value(max-content-width);
 }
 
-img {
-  border: none;
-  vertical-align: middle;
-}
-
 a {
   color: token-value(color, link, text);
   &:visited {
     color: token-value(color, link, visited);
   }
-  &:hover,&:focus {
+  &:hover {
     @include hover-link();
+  }
+  &:focus {
+    @include focus-link();
   }
   &:active {
     @include active-link();

@@ -122,6 +122,9 @@ $xl-tokens: (
             visited: token-value(color purple),
             active: token-value(color red regular),
             // TODO ajouter le focus cf https://www.figma.com/design/p5kWdGvZk0BvkEGIrdvXL6/%5BSDG-OFFICIEL%5D-Bases-et-composants?node-id=1070-628&node-type=canvas&t=eIMD5cFp9Jq5vMNt-0
+            focus: (
+              outline: token-value(color blue light),
+            )
         ),
         formfield: (
             border: token-value(color grey medium ),

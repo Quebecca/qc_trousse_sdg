@@ -95,6 +95,9 @@ a {
   &.pseudo-active {
     @include active-link();
   }
+  &.pseudo-focus {
+    @include focus-link();
+  }
   &.visited {
     color: token-value(color,link,visited);
   }

@@ -128,6 +128,7 @@ root font-size : 62.5 %,
   --qc-color-link-hover: var(--qc-color-blue-piv);
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
+  --qc-color-link-focus-outline: var(--qc-color-blue-light);
   --qc-color-formfield-border: var(--qc-color-grey-medium);
   --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);

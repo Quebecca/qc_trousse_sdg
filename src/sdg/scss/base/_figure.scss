@@ -7,12 +7,16 @@ picture {
   display: block;
 }
 
+img {
+  border: none;
+  vertical-align: middle;
+}
+
 figure {
   margin: 0;
   display: inline-block;
   flex-direction: column;
   img {
-    max-width: 100%;
     height: auto;
   }
 }

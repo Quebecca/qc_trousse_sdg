@@ -149,7 +149,7 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 
 ## Historique
 
-- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages.. 
+- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages ; ajout du focus pour les liens. 
 - 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;

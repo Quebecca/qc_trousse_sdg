@@ -129,6 +129,7 @@ root font-size : 62.5 %,
   --qc-color-link-hover: var(--qc-color-blue-piv);
   --qc-color-link-visited: var(--qc-color-purple);
   --qc-color-link-active: var(--qc-color-red-regular);
+  --qc-color-link-focus-outline: var(--qc-color-blue-light);
   --qc-color-formfield-border: var(--qc-color-grey-medium);
   --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
@@ -354,11 +355,6 @@ p {
   max-inline-size: var(--qc-max-content-width);
 }
 
-img {
-  border: none;
-  vertical-align: middle;
-}
-
 a {
   color: var(--qc-color-link-text);
   /* DEPRECATED: use <qc-external-link> instead.
@@ -368,9 +364,14 @@ a {
 a:visited {
   color: var(--qc-color-link-visited);
 }
-a:hover, a:focus {
+a:hover {
   color: var(--qc-color-link-hover);
   text-decoration: none;
+}
+a:focus {
+  color: var(--qc-color-link-hover);
+  text-decoration: none;
+  outline: 2px solid var(--qc-color-link-focus-outline);
 }
 a:active {
   color: var(--qc-color-link-active);
@@ -564,6 +565,10 @@ code, .qc-code {
   background-color: var(--qc-color-link-active);
 }
 
+.qc-bg-color-link-focus-outline {
+  background-color: var(--qc-color-link-focus-outline);
+}
+
 .qc-bg-color-formfield-border {
   background-color: var(--qc-color-formfield-border);
 }
@@ -590,13 +595,17 @@ picture {
   display: block;
 }
 
+img {
+  border: none;
+  vertical-align: middle;
+}
+
 figure {
   margin: 0;
   display: inline-block;
   flex-direction: column;
 }
 figure img {
-  max-width: 100%;
   height: auto;
 }
 
