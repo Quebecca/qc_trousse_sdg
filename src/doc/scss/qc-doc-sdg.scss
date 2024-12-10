@@ -111,52 +111,6 @@ table.component-attributes-description td:first-child {
   white-space: nowrap;
 }
 
-#custom-piv-search-form {
-  .input-group {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    input {
-      width: 100%;
-      padding: rem(6) rem(12) ;
-      border: 1px solid token-value(color blue dark);
-      border-right: none;
-      &:focus {
-        outline: rem(2) solid token-value(color blue light);
-        border-right: 1px solid black;
-        z-index: 1;
-      }
-      &::placeholder {
-        font-size: token-value(font size sm);
-      }
-    }
-    button {
-      display: flex;
-      justify-content: center;
-      border: 1px solid token-value(color blue dark);
-      border-left: none;
-      background-color: white;
-      width: rem(2.6 * 16);
-      &:focus{
-        outline: rem(2) solid token-value(color blue light);
-        border-left: 1px solid black;
-      }
-      .qc-search-submit {
-        min-width: rem(24);
-        height: rem(24);
-        align-self: center;
-      }
-      .sr-description {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        clip: rect(0 0 0 0);
-      }
-    }
-
-  }
-}
 qc-piv-footer + qc-code {
   margin-top: 0;
 }

@@ -215,6 +215,120 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
   margin-top: var(--qc-spacer-lg);
 }
 
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+}
+
+code.hljs {
+  padding: 0.4rem;
+}
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1.6rem;
+}
+
+code.hljs {
+  padding: 0.4rem;
+}
+
+/* end baseline CSS */
+.hljs {
+  background: var(--qc-color-grey-pale);
+  color: var(--qc-color-blue-dark);
+}
+
+/* Base color: saturation 0; */
+.hljs-subst {
+  /* default */
+}
+
+/* purposely ignored */
+.hljs-comment {
+  color: var(--qc-color-grey-dark);
+}
+
+.hljs-tag,
+.hljs-punctuation {
+  color: var(--qc-color-blue-medium);
+}
+
+.hljs-tag .hljs-name,
+.hljs-tag .hljs-attr {
+  color: var(--qc-color-blue-dark);
+}
+
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-name {
+  font-weight: bold;
+}
+
+/* User color: hue: 0 */
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion {
+  color: var(--qc-color-red-dark);
+}
+
+.hljs-title,
+.hljs-section {
+  color: var(--qc-color-red-dark);
+  font-weight: bold;
+}
+
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-operator,
+.hljs-selector-pseudo {
+  color: var(--qc-color-pink-regular);
+}
+
+/* Language color: hue: 90; */
+.hljs-literal {
+  color: var(--qc-color-green-regular);
+}
+
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+  color: var(--qc-color-green-dark);
+}
+
+/* Meta color: hue: 200 */
+.hljs-meta {
+  color: var(--qc-color-blue-medium);
+}
+
+.hljs-meta .hljs-string {
+  color: var(--qc-color-blue-regular);
+}
+
+/* Misc effects */
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
 .qc-shading-1, .btn.btn-primary {
   box-shadow: 0 1px 4px var(--qc-box-shadow-color);
 }
@@ -236,6 +350,7 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-regular);
+  font-family: var(--qc-font-family-content);
   display: inline-block;
   box-sizing: border-box;
   min-width: 11.2rem;
@@ -254,22 +369,22 @@ pre code button.copied .copied, pre .qc-code button.copied .copied {
   border: 1px solid transparent;
 }
 .btn.btn-primary {
-  color: #fff;
+  color: var(--qc-color-background);
   border-color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-blue-piv);
 }
 .btn.btn-primary:hover {
-  border-color: #156bb2;
-  background-color: #156bb2;
+  border-color: var(--qc-color-blue-regular);
+  background-color: var(--qc-color-blue-regular);
 }
 .btn.btn-primary:focus {
-  border-color: var(--qc-color-blue-dark);
-  background-color: #156bb2;
+  border-color: var(--qc-color-blue-regular);
+  background-color: var(--qc-color-blue-regular);
   box-shadow: 0 2px 8px rgba(34, 54, 84, 0.24), 0 0 0 2px var(--qc-color-blue-light);
 }
 .btn.btn-primary:active {
-  border-color: #3783c9;
-  background-color: #3783c9;
+  border-color: var(--qc-color-blue-regular_light);
+  background-color: var(--qc-color-blue-regular_light);
 }
 
 table.qc-table {
@@ -406,182 +521,6 @@ table.component-attributes-description td:first-child {
   white-space: nowrap;
 }
 
-#custom-piv-search-form .input-group {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-}
-#custom-piv-search-form .input-group input {
-  width: 100%;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid var(--qc-color-blue-dark);
-  border-right: none;
-}
-#custom-piv-search-form .input-group input:focus {
-  outline: 0.2rem solid var(--qc-color-blue-light);
-  border-right: 1px solid black;
-  z-index: 1;
-}
-#custom-piv-search-form .input-group input::-moz-placeholder {
-  font-size: var(--qc-font-size-sm);
-}
-#custom-piv-search-form .input-group input::placeholder {
-  font-size: var(--qc-font-size-sm);
-}
-#custom-piv-search-form .input-group button {
-  display: flex;
-  justify-content: center;
-  border: 1px solid var(--qc-color-blue-dark);
-  border-left: none;
-  background-color: white;
-  width: 4.16rem;
-}
-#custom-piv-search-form .input-group button:focus {
-  outline: 0.2rem solid var(--qc-color-blue-light);
-  border-left: 1px solid black;
-}
-#custom-piv-search-form .input-group button .qc-search-submit {
-  min-width: 2.4rem;
-  height: 2.4rem;
-  align-self: center;
-}
-#custom-piv-search-form .input-group button .sr-description {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  clip: rect(0 0 0 0);
-}
-
 qc-piv-footer + qc-code {
   margin-top: 0;
-}
-
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-}
-
-code.hljs {
-  padding: 3px 5px;
-}
-
-/*!
-  Theme: Default
-  Description: Original highlight.js style
-  Author: (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
-  Maintainer: @highlightjs/core-team
-  Website: https://highlightjs.org/
-  License: see project LICENSE
-  Touched: 2021
-*/
-/*
-This is left on purpose making default.css the single file that can be lifted
-as-is from the repository directly without the need for a build step
-
-Typically this "required" baseline CSS is added by `makestuff.js` during build.
-*/
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-}
-
-code.hljs {
-  padding: 3px 5px;
-}
-
-/* end baseline CSS */
-.hljs {
-  background: #F3F3F3;
-  color: #444;
-}
-
-/* Base color: saturation 0; */
-.hljs-subst {
-  /* default */
-}
-
-/* purposely ignored */
-.hljs-comment {
-  color: #697070;
-}
-
-.hljs-tag,
-.hljs-punctuation {
-  color: rgba(68, 68, 68, 0.6666666667);
-}
-
-.hljs-tag .hljs-name,
-.hljs-tag .hljs-attr {
-  color: #444;
-}
-
-.hljs-keyword,
-.hljs-attribute,
-.hljs-selector-tag,
-.hljs-meta .hljs-keyword,
-.hljs-doctag,
-.hljs-name {
-  font-weight: bold;
-}
-
-/* User color: hue: 0 */
-.hljs-type,
-.hljs-string,
-.hljs-number,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-quote,
-.hljs-template-tag,
-.hljs-deletion {
-  color: #880000;
-}
-
-.hljs-title,
-.hljs-section {
-  color: #880000;
-  font-weight: bold;
-}
-
-.hljs-regexp,
-.hljs-symbol,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-link,
-.hljs-selector-attr,
-.hljs-operator,
-.hljs-selector-pseudo {
-  color: #ab5656;
-}
-
-/* Language color: hue: 90; */
-.hljs-literal {
-  color: #695;
-}
-
-.hljs-built_in,
-.hljs-bullet,
-.hljs-code,
-.hljs-addition {
-  color: #397300;
-}
-
-/* Meta color: hue: 200 */
-.hljs-meta {
-  color: #1f7199;
-}
-
-.hljs-meta .hljs-string {
-  color: #38a;
-}
-
-/* Misc effects */
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
 }

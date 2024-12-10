@@ -12,7 +12,7 @@
 
 .btn {
   /* si Compact font-weight: 600; */
-  @include content-font();
+  @include content-font($include-family: 1);
   display: inline-block;
   box-sizing: border-box;
   min-width: rem(112);
@@ -31,29 +31,31 @@
     @include button-border-and-padding(1px, xs, sm);
   }
 
+  @mixin state-color($color) {
+    border-color : $color;
+    background-color: $color;
+  }
+
   &.btn-primary {
 
-    color: #fff;
+    color: token-value(color background);
     border-color: token-value(color blue piv);
     background-color: token-value(color blue piv);
     @extend .qc-shading-1;
 
     &:hover {
-      border-color: #156bb2;
-      background-color: #156bb2;
+      @include state-color(token-value(color blue regular));
     }
 
     &:focus {
-      border-color: token-value(color blue dark);
-      background-color: #156bb2;
+      @include state-color(token-value(color blue regular));
       box-shadow:
           0 2px 8px rgba(34, 54, 84, 0.24),
           0 0 0 2px token-value(color blue light);
     }
 
     &:active {
-      border-color: #3783c9;
-      background-color: #3783c9;
+      @include state-color(token-value(color blue regular_light));
     }
   }
 }

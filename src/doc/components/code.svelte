@@ -1,5 +1,6 @@
 <svelte:options customElement="{{
     tag: 'qc-code'
+    , shadow: 'none'
     , props: {
         targetId : {attribute: 'target-id'},
         rawCode : {attribute: 'raw-code'},
@@ -10,7 +11,7 @@
 <script>
 
   import {HighlightJS} from "highlight.js"
-  import 'highlight.js/styles/default.css';
+  // import 'highlight.js/styles/default.css';
   import pretty from "pretty";
   import { onMount } from "svelte";
   import { Utils } from "../../sdg/components/utils"
@@ -50,12 +51,12 @@
 </script>
 
 <pre
-    ><code class="hljs"><button class="btn btn-sm btn-primary" on:click={copy}>
+    ><code class="hljs"
+        ><button class="btn btn-sm btn-primary"
+                 on:click={copy}>
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
         </button
         >{@html hlCode}</code
 ></pre>
-<link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
 
