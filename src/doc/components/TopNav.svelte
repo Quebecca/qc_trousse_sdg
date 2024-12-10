@@ -1,6 +1,7 @@
 <svelte:options customElement="{{
-    tag: 'qc-doc-top-nav'
-  , props: {
+    tag: 'qc-doc-top-nav',
+    shadow: 'none',
+   props: {
 
   }
 }}" />
@@ -12,7 +13,7 @@
     $: localStorage.setItem('dark-theme', value)
 </script>
 <div role="complementary">
-    <div class="qc-container">
+    <div class="qc-container top-nav">
         <div class="switch-control">
             <label for="switch">Activer le thème sombre</label>
             <Switch id="switch" bind:value />
@@ -20,27 +21,23 @@
     </div>
 </div>
 <style lang="scss">
-  * {
-    box-sizing: border-box;
-  }
 
   [role=complementary] {
+    position: sticky;
+    z-index: 100;
+    top: 0;
     background-color: token-value(color blue medium);
     color: token-value(color grey pale);
     min-height: rem(72);
     height: rem(72);
   }
-
-  .qc-container
-  {
+  .top-nav {
+    position: absolute;
+    inset: 0;
     display: flex;
-    width: 100%;
-    height: 100%;
-    padding-right: calc(1 * var(--qc-grid-gutter) / 2);
-    padding-left: calc(1 * var(--qc-grid-gutter) / 2);
-    margin-right: auto;
-    margin-left: auto;
-    align-items: center;
+
+    align-items: end;
+    padding-bottom: token-value(spacer sm);
     .switch-control {
       margin-left: auto;
       margin-right: 0;
@@ -51,16 +48,6 @@
       }
     }
   }
-  label {
-    font-weight: bold;
-  }
 
-  @each $breakpoint, $media-width in map-get($xl-tokens, grid, breakpoint) {
-    @media (min-width: $media-width) {
-      .qc-container {
-        max-width: map-get($xl-tokens, grid, container-max-width, $breakpoint);
-      }
-    }
-  }
 
 </style>

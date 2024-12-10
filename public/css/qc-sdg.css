@@ -229,6 +229,10 @@ root font-size : 62.5 %,
   --qc-color-accent: #F17B6C;
 }
 
+:root {
+  font-size: var(--qc-font-size-root-percent);
+}
+
 /* Box sizing rules */
 *,
 *::before,
@@ -236,57 +240,19 @@ root font-size : 62.5 %,
   box-sizing: border-box;
 }
 
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
-  margin: 0;
-}
-
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role=list],
-ol[role=list] {
-  list-style: none;
-}
-
-/* Set core root defaults */
-html:focus-within {
-  scroll-behavior: smooth;
-}
-
-/* Set core body defaults */
 body {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-regular);
+  font-family: var(--qc-font-family-content);
+  margin: 0;
+  background-color: var(--qc-color-background);
+  color: var(--qc-color-text-primary);
   min-height: 100vh;
   text-rendering: optimizeSpeed;
-  line-height: 1.5;
 }
-
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  -webkit-text-decoration-skip: ink;
-          text-decoration-skip-ink: auto;
-}
-
-/* Make images easier to work with */
-img,
-picture {
-  max-width: 100%;
-  display: block;
-}
-
-/* Inherit fonts for inputs and buttons */
-input,
-button,
-textarea,
-select {
-  font: inherit;
+body:focus-within {
+  scroll-behavior: smooth;
 }
 
 /* Remove all animations and transitions for people that prefer not to see them */
@@ -303,19 +269,6 @@ select {
     scroll-behavior: auto !important;
   }
 }
-:root {
-  font-size: var(--qc-font-size-root-percent);
-}
-
-body {
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-regular);
-  font-family: var(--qc-font-family-content);
-  background-color: var(--qc-color-background);
-  color: var(--qc-color-text-primary);
-}
-
 h1, .qc-h1 {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h1);
@@ -626,7 +579,14 @@ code, .qc-code {
   background-color: var(--qc-color-searchinput-icon);
 }
 
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
 figure {
+  margin: 0;
   display: inline-block;
   flex-direction: column;
 }
@@ -650,6 +610,11 @@ figcaption p {
 }
 figcaption p:last-child {
   margin-bottom: 0;
+}
+
+dl,
+dd {
+  margin: 0;
 }
 
 ul {
@@ -682,6 +647,14 @@ ul ul {
 
 .qc-shading-4 {
   box-shadow: 0 6px 24px var(--qc-box-shadow-color);
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }
 
 /*

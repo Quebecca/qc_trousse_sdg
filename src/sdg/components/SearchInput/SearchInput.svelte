@@ -7,7 +7,7 @@
     }
 }}" />
 <script>
-    import IconButton from "./IconButton.svelte";
+    import IconButton from "../Button/IconButton.svelte";
     export let value, ariaLabel;
     let searchInput;
 </script>

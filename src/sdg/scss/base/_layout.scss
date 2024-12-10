@@ -1,0 +1,42 @@
+@use "modules/tokens" as *;
+@use "modules/utils" as *;
+
+:root {
+  font-size: token-value(font size root-percent);
+}
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  @include content-font($scale: md , $include-family: 1);
+  margin:0;
+  background-color: token-value(color, background);
+  color: token-value(color, text, primary);
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  &:focus-within {
+    scroll-behavior: smooth;
+  }
+
+}
+
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

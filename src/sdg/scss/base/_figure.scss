@@ -1,7 +1,14 @@
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
 
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
 figure {
+  margin: 0;
   display: inline-block;
   flex-direction: column;
   img {

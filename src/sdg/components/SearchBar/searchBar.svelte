@@ -14,8 +14,8 @@
 
 <script>
     import {Utils} from "../utils";
-    import SearchInput from "./SearchInput.svelte";
-    import IconButton from "./IconButton.svelte";
+    import SearchInput from "../SearchInput/SearchInput.svelte";
+    import IconButton from "../Button/IconButton.svelte";
     import {onMount} from "svelte";
 
     const

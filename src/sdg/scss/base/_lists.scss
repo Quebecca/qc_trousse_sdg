@@ -1,6 +1,11 @@
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
 
+dl,
+dd {
+    margin: 0;
+}
+
 ul {
     max-inline-size: token-value(max-content-width);
     list-style: disc;

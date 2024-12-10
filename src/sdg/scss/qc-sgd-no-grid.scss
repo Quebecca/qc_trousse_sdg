@@ -1,11 +1,13 @@
 @use "qc-design-tokens";
-@use "vendor/modern-css-reset/src/reset";
+@use "base/layout";
+@use "base/typography"  as *;
 @use "base/typography"  as *;
 @use "base/colors" as *;
 @use "base/figure" as *;
 @use "base/lists" as *;
 @use "base/fonts" as *;
 @use "base/shadings" as *;
+@use "base/form" as *;
 @use "utilities/display" as *;
 @use "./components/icons" as *;
 @use "./components/notice" as *;

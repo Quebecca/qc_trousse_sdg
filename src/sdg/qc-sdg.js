@@ -5,7 +5,7 @@ export * from './components/alert.svelte'
 export * from './components/toTop.svelte'
 export * from './components/externalLink.svelte'
 export * from './components/SearchBar/searchBar.svelte'
-export * from './components/SearchBar/SearchInput.svelte'
+export * from './components/SearchInput/SearchInput.svelte'
 export * from './components/Icon.svelte'
 import './scss/qc-sdg.scss';
 
