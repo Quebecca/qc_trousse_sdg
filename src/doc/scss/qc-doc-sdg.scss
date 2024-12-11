@@ -40,6 +40,9 @@ qc-color-doc {
   font-family: token-value(font,family,header);
 }
 
+h1,h2,h3,h4,h5,h6 {
+  scroll-margin-top: rem(96);
+}
 
 #grid-samples {
   position: relative;
