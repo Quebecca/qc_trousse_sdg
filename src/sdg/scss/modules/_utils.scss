@@ -39,6 +39,7 @@
 @mixin focus-link() {
   @include hover-link();
   outline: 2px solid token-value(color link focus outline);
+  outline-offset: 0;
 }
 
 @mixin external-link-img() {

@@ -279,14 +279,23 @@ onMount(() => {
       @include sr-only();
 
       &:focus {
+        top: 2px;
         width: inherit;
-        height: inherit;
+        height: 24px;
         overflow: inherit;
         clip: inherit;
         white-space: inherit;
         color: map-get($colors, white);
         background-color: map-get($colors, blue, piv);
+        margin:0;
       }
+    }
+  }
+  a:focus-visible {
+      --qc-color-link-focus-outline: white;
+      @include focus-link();
+    &:has(img) {
+      outline-offset: -2px;
     }
   }
 

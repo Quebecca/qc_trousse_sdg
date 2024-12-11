@@ -372,6 +372,7 @@ a:focus {
   color: var(--qc-color-link-hover);
   text-decoration: none;
   outline: 2px solid var(--qc-color-link-focus-outline);
+  outline-offset: 0;
 }
 a:active {
   color: var(--qc-color-link-active);
