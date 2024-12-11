@@ -28,25 +28,27 @@
     , prettyCode
   ;
 
-  onMount(() => {
-      if (!rawCode) {
-          rawCode = document.getElementById(targetId)?.[outerHTML ? 'outerHTML' : 'innerHTML'   ]
-                    ?? ''
-      }
-      rawCode
-          . replace('class="mounted"', '')
-          . replace('/qc-hash-.*/g', '')
-          . replace('/is-external=""/g', 'is-external')
-        ;
-      prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
-      hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
-  })
-
   function copy() {
       navigator.clipboard.writeText(prettyCode);
       this.classList.add('copied')
       setTimeout(() => {this.classList.remove('copied')}, 500)
   }
+
+  function updateHLCode(rawCode, targetId) {
+      if (!rawCode) {
+          rawCode = document.getElementById(targetId)?.[outerHTML ? 'outerHTML' : 'innerHTML'   ]
+              ?? ''
+      }
+      rawCode
+          . replace('class="mounted"', '')
+          . replace('/qc-hash-.*/g', '')
+          . replace('/is-external=""/g', 'is-external')
+      ;
+      prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
+      hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
+  }
+
+  $: updateHLCode(rawCode, targetId)
 
 </script>
 

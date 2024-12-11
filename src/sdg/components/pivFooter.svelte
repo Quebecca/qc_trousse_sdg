@@ -33,7 +33,6 @@ export let
 
 </script>
 
-
 <slot/>
 <div class="logo">
     <slot name="logo">

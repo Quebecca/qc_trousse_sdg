@@ -75,7 +75,7 @@ qc-color-doc {
   }
 }
 
-.square-box {
+#liste-elevation p {
   display: flex;
   width: rem(15 * $base-spacer);
   height: rem(15 * $base-spacer);
@@ -98,7 +98,7 @@ a {
   &.pseudo-focus {
     @include focus-link();
   }
-  &.visited {
+  &.pseudo-visited {
     color: token-value(color,link,visited);
   }
   &.not-visited:visited:not(:hover) {
@@ -116,5 +116,17 @@ table.component-attributes-description td:first-child {
 
 qc-piv-footer + qc-code {
   margin-top: 0;
+}
+
+qc-doc-exemple {
+  display: block;
+  margin-bottom: token-value(spacer xl);
+}
+
+dl {
+  dt { font-weight: token-value(font weight content regular)}
+  dd {
+    margin-bottom : token-value(spacer list mb);
+  }
 }
 

@@ -1,4 +1,4 @@
-export * from './components/code.svelte';
+export * from './components/Code.svelte';
 export * from './components/color-doc.svelte'
 export * from './components/TopNav.svelte'
 export * from './components/Switch.svelte'

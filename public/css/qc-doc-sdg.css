@@ -491,14 +491,14 @@ qc-color-doc {
   height: 100%;
 }
 
-.square-box {
+#liste-elevation p {
   display: flex;
   width: 12rem;
   height: 12rem;
   justify-content: center;
   align-items: center;
 }
-.square-box.qc-shading-0 {
+#liste-elevation p.qc-shading-0 {
   border: 1px solid var(--qc-color-grey-light);
 }
 
@@ -515,7 +515,7 @@ a.pseudo-focus {
   text-decoration: none;
   outline: 2px solid var(--qc-color-link-focus-outline);
 }
-a.visited {
+a.pseudo-visited {
   color: var(--qc-color-link-visited);
 }
 a.not-visited:visited:not(:hover) {
@@ -533,4 +533,16 @@ table.component-attributes-description td:first-child {
 
 qc-piv-footer + qc-code {
   margin-top: 0;
+}
+
+qc-doc-exemple {
+  display: block;
+  margin-bottom: var(--qc-spacer-xl);
+}
+
+dl dt {
+  font-weight: var(--qc-font-weight-content-regular);
+}
+dl dd {
+  margin-bottom: var(--qc-spacer-list-mb);
 }

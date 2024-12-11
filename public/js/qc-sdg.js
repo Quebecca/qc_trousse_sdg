@@ -3472,7 +3472,7 @@
 	const get_logo_slot_changes = dirty => ({});
 	const get_logo_slot_context = ctx => ({});
 
-	// (39:22)          
+	// (38:22)          
 	function fallback_block_1(ctx) {
 		let a;
 		let svg;
@@ -3637,7 +3637,7 @@
 		};
 	}
 
-	// (50:27)          
+	// (49:27)          
 	function fallback_block(ctx) {
 		let a;
 		let t;
