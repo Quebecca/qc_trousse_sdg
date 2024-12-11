@@ -6,7 +6,7 @@
         name: {attribute: 'value', type:'String'},
         ariaLabel: {attribute: 'aria-label', type:'String'},
         submitValue: {attribute: 'submit-value', type:'String'},
-        submitName: {attribute: 'submit-value', type:'String'},
+        submitName: {attribute: 'submit-name', type:'String'},
         submitSrText: {attribute: 'submit-text', type:'String'},
         pivBackground: {attribute: 'piv-background', type:'Boolean'},
     }
@@ -42,6 +42,7 @@
     <SearchInput {value}
                  {name}
                  {ariaLabel}
+                 {...$$restProps}
     />
     {#if true}
         {@const name = submitName}

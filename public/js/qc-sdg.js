@@ -815,6 +815,10 @@
 		return update;
 	}
 
+	function get_spread_object(spread_props) {
+		return typeof spread_props === 'object' && spread_props !== null ? spread_props : {};
+	}
+
 	/** @returns {void} */
 	function create_component(block) {
 		block && block.c();
@@ -2085,13 +2089,14 @@
 
 		iconbutton = new IconButton({
 				props: {
+					type: "button",
 					icon: "clear-input",
 					iconColor: "blue-piv",
 					iconSize: "sm"
 				}
 			});
 
-		iconbutton.$on("click", /*click_handler*/ ctx[6]);
+		iconbutton.$on("click", /*click_handler_1*/ ctx[7]);
 
 		return {
 			c() {
@@ -2161,7 +2166,11 @@
 				current = true;
 
 				if (!mounted) {
-					dispose = listen(input, "input", /*input_input_handler*/ ctx[5]);
+					dispose = [
+						listen(input, "input", /*input_input_handler*/ ctx[5]),
+						listen(input, "click", /*click_handler*/ ctx[6])
+					];
+
 					mounted = true;
 				}
 			},
@@ -2218,7 +2227,7 @@
 				/*input_binding*/ ctx[4](null);
 				if (if_block) if_block.d();
 				mounted = false;
-				dispose();
+				run_all(dispose);
 			}
 		};
 	}
@@ -2247,6 +2256,12 @@
 			searchInput.focus();
 		};
 
+		const click_handler_1 = e => {
+			e.preventDefault();
+			$$invalidate(0, value = "");
+			searchInput.focus();
+		};
+
 		$$self.$$set = $$new_props => {
 			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
 			$$invalidate(3, $$restProps = compute_rest_props($$props, omit_props_names));
@@ -2261,7 +2276,8 @@
 			$$restProps,
 			input_binding,
 			input_input_handler,
-			click_handler
+			click_handler,
+			click_handler_1
 		];
 	}
 
@@ -2301,11 +2317,11 @@
 		const constants_1 = /*submitValue*/ child_ctx[1];
 		child_ctx[5] = constants_1;
 		const constants_2 = /*submitSrText*/ child_ctx[3];
-		child_ctx[9] = constants_2;
+		child_ctx[10] = constants_2;
 		return child_ctx;
 	}
 
-	// (46:4) {#if true}
+	// (47:4) {#if true}
 	function create_if_block$2(ctx) {
 		let iconbutton;
 		let current;
@@ -2315,7 +2331,7 @@
 					type: "submit",
 					name: /*name*/ ctx[6],
 					value: /*value*/ ctx[5],
-					srText: /*srText*/ ctx[9],
+					srText: /*srText*/ ctx[10],
 					iconColor: /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background',
 					icon: "loupe-piv-fine",
 					iconSize: "md"
@@ -2334,7 +2350,7 @@
 				const iconbutton_changes = {};
 				if (dirty & /*submitName*/ 4) iconbutton_changes.name = /*name*/ ctx[6];
 				if (dirty & /*submitValue*/ 2) iconbutton_changes.value = /*value*/ ctx[5];
-				if (dirty & /*submitSrText*/ 8) iconbutton_changes.srText = /*srText*/ ctx[9];
+				if (dirty & /*submitSrText*/ 8) iconbutton_changes.srText = /*srText*/ ctx[10];
 				if (dirty & /*pivBackground*/ 16) iconbutton_changes.iconColor = /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background';
 				iconbutton.$set(iconbutton_changes);
 			},
@@ -2359,14 +2375,20 @@
 		let t;
 		let current;
 
-		searchinput = new SearchInput({
-				props: {
-					value: /*value*/ ctx[5],
-					name: /*name*/ ctx[6],
-					ariaLabel: /*ariaLabel*/ ctx[0]
-				}
-			});
+		const searchinput_spread_levels = [
+			{ value: /*value*/ ctx[5] },
+			{ name: /*name*/ ctx[6] },
+			{ ariaLabel: /*ariaLabel*/ ctx[0] },
+			/*$$restProps*/ ctx[7]
+		];
 
+		let searchinput_props = {};
+
+		for (let i = 0; i < searchinput_spread_levels.length; i += 1) {
+			searchinput_props = assign(searchinput_props, searchinput_spread_levels[i]);
+		}
+
+		searchinput = new SearchInput({ props: searchinput_props });
 		let if_block = create_if_block$2(get_if_ctx(ctx));
 
 		return {
@@ -2386,10 +2408,15 @@
 				current = true;
 			},
 			p(ctx, [dirty]) {
-				const searchinput_changes = {};
-				if (dirty & /*value*/ 32) searchinput_changes.value = /*value*/ ctx[5];
-				if (dirty & /*name*/ 64) searchinput_changes.name = /*name*/ ctx[6];
-				if (dirty & /*ariaLabel*/ 1) searchinput_changes.ariaLabel = /*ariaLabel*/ ctx[0];
+				const searchinput_changes = (dirty & /*value, name, ariaLabel, $$restProps*/ 225)
+				? get_spread_update(searchinput_spread_levels, [
+						dirty & /*value*/ 32 && { value: /*value*/ ctx[5] },
+						dirty & /*name*/ 64 && { name: /*name*/ ctx[6] },
+						dirty & /*ariaLabel*/ 1 && { ariaLabel: /*ariaLabel*/ ctx[0] },
+						dirty & /*$$restProps*/ 128 && get_spread_object(/*$$restProps*/ ctx[7])
+					])
+				: {};
+
 				searchinput.$set(searchinput_changes);
 				if_block.p(get_if_ctx(ctx), dirty);
 
@@ -2420,18 +2447,25 @@
 	}
 
 	function instance$5($$self, $$props, $$invalidate) {
+		const omit_props_names = [
+			"value","name","placeholder","ariaLabel","submitValue","submitName","submitSrText","pivBackground"
+		];
+
+		let $$restProps = compute_rest_props($$props, omit_props_names);
 		const lang = Utils.getPageLanguage();
 		let { value = '', name = 'q', placeholder = lang === "fr" ? "Rechercher…" : "Search_", ariaLabel = placeholder, submitValue, submitName, submitSrText = lang === "fr" ? "Lancer la recherche" : "Submit search", pivBackground = false } = $$props;
 
-		$$self.$$set = $$props => {
-			if ('value' in $$props) $$invalidate(5, value = $$props.value);
-			if ('name' in $$props) $$invalidate(6, name = $$props.name);
-			if ('placeholder' in $$props) $$invalidate(7, placeholder = $$props.placeholder);
-			if ('ariaLabel' in $$props) $$invalidate(0, ariaLabel = $$props.ariaLabel);
-			if ('submitValue' in $$props) $$invalidate(1, submitValue = $$props.submitValue);
-			if ('submitName' in $$props) $$invalidate(2, submitName = $$props.submitName);
-			if ('submitSrText' in $$props) $$invalidate(3, submitSrText = $$props.submitSrText);
-			if ('pivBackground' in $$props) $$invalidate(4, pivBackground = $$props.pivBackground);
+		$$self.$$set = $$new_props => {
+			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(7, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('value' in $$new_props) $$invalidate(5, value = $$new_props.value);
+			if ('name' in $$new_props) $$invalidate(6, name = $$new_props.name);
+			if ('placeholder' in $$new_props) $$invalidate(8, placeholder = $$new_props.placeholder);
+			if ('ariaLabel' in $$new_props) $$invalidate(0, ariaLabel = $$new_props.ariaLabel);
+			if ('submitValue' in $$new_props) $$invalidate(1, submitValue = $$new_props.submitValue);
+			if ('submitName' in $$new_props) $$invalidate(2, submitName = $$new_props.submitName);
+			if ('submitSrText' in $$new_props) $$invalidate(3, submitSrText = $$new_props.submitSrText);
+			if ('pivBackground' in $$new_props) $$invalidate(4, pivBackground = $$new_props.pivBackground);
 		};
 
 		return [
@@ -2442,6 +2476,7 @@
 			pivBackground,
 			value,
 			name,
+			$$restProps,
 			placeholder
 		];
 	}
@@ -2453,7 +2488,7 @@
 			init(this, options, instance$5, create_fragment$5, safe_not_equal, {
 				value: 5,
 				name: 6,
-				placeholder: 7,
+				placeholder: 8,
 				ariaLabel: 0,
 				submitValue: 1,
 				submitName: 2,
@@ -2481,7 +2516,7 @@
 		}
 
 		get placeholder() {
-			return this.$$.ctx[7];
+			return this.$$.ctx[8];
 		}
 
 		set placeholder(placeholder) {
@@ -2535,12 +2570,12 @@
 		}
 	}
 
-	customElements.define("qc-search-bar", create_custom_element(SearchBar, {"value":{"attribute":"value","type":"String"},"name":{"attribute":"value","type":"String"},"placeholder":{},"ariaLabel":{"attribute":"aria-label","type":"String"},"submitValue":{"attribute":"submit-value","type":"String"},"submitName":{"attribute":"submit-value","type":"String"},"submitSrText":{"attribute":"submit-text","type":"String"},"pivBackground":{"attribute":"piv-background","type":"Boolean"}}, [], [], false));
+	customElements.define("qc-search-bar", create_custom_element(SearchBar, {"value":{"attribute":"value","type":"String"},"name":{"attribute":"value","type":"String"},"placeholder":{},"ariaLabel":{"attribute":"aria-label","type":"String"},"submitValue":{"attribute":"submit-value","type":"String"},"submitName":{"attribute":"submit-name","type":"String"},"submitSrText":{"attribute":"submit-text","type":"String"},"pivBackground":{"attribute":"piv-background","type":"Boolean"}}, [], [], false));
 
 	/* src/sdg/components/PivHeader/pivHeader.svelte generated by Svelte v4.2.12 */
 
 	function add_css$2(target) {
-		append_styles(target, "qc-hash-ph6oy8", "@charset \"UTF-8\";.qc-hash-ph6oy8.qc-hash-ph6oy8,.qc-hash-ph6oy8.qc-hash-ph6oy8::before,.qc-hash-ph6oy8.qc-hash-ph6oy8::after{box-sizing:border-box}a.qc-hash-ph6oy8.qc-hash-ph6oy8:not([class]){text-decoration-skip-ink:auto}img.qc-hash-ph6oy8.qc-hash-ph6oy8{max-width:100%;display:block}@media(prefers-reduced-motion: reduce){.qc-hash-ph6oy8.qc-hash-ph6oy8,.qc-hash-ph6oy8.qc-hash-ph6oy8::before,.qc-hash-ph6oy8.qc-hash-ph6oy8::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul.qc-hash-ph6oy8{list-style:none;padding:0;margin:0;height:100%;margin-left:var(--qc-spacer-md)}@media(max-width: 575.98px){.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul.qc-hash-ph6oy8{margin-left:var(--qc-spacer-sm)}}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul li.qc-hash-ph6oy8{padding:0;margin:0;font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);font-weight:var(--qc-font-weight-regular)}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul a.qc-hash-ph6oy8{font-family:var(--qc-font-family-header);text-decoration:none;font-size:1.2rem;color:#ffffff;font-weight:var(--qc-font-weight-regular)}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul a.qc-hash-ph6oy8:focus,.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section .links ul a.qc-hash-ph6oy8:hover{text-decoration:underline;color:#ffffff}.qc-container.qc-hash-ph6oy8.qc-hash-ph6oy8,.qc-container-fluid.qc-hash-ph6oy8.qc-hash-ph6oy8{width:100%;padding-right:calc(1 * var(--qc-grid-gutter) / 2);padding-left:calc(1 * var(--qc-grid-gutter) / 2);margin-right:auto;margin-left:auto}@media(min-width: 576px){.qc-container.qc-hash-ph6oy8.qc-hash-ph6oy8{max-width:576px}}@media(min-width: 768px){.qc-container.qc-hash-ph6oy8.qc-hash-ph6oy8{max-width:768px}}@media(min-width: 992px){.qc-container.qc-hash-ph6oy8.qc-hash-ph6oy8{max-width:992px}}@media(min-width: 1200px){.qc-container.qc-hash-ph6oy8.qc-hash-ph6oy8{max-width:1200px}}.qc-piv-header.qc-hash-ph6oy8.qc-hash-ph6oy8{color:#ffffff}.qc-piv-header.qc-hash-ph6oy8 a.qc-hash-ph6oy8{color:#ffffff;text-decoration:none}.qc-piv-header.qc-hash-ph6oy8 a.qc-hash-ph6oy8:hover,.qc-piv-header.qc-hash-ph6oy8 a.qc-hash-ph6oy8:focus{color:#ffffff;text-decoration:underline}.qc-piv-header.qc-hash-ph6oy8 .piv-top.qc-hash-ph6oy8{display:flex;justify-content:space-between;align-items:center}.qc-piv-header.qc-hash-ph6oy8 .piv-top .logo.qc-hash-ph6oy8{margin-right:6.4rem}@media(max-width: 575.98px){.qc-piv-header.qc-hash-ph6oy8 .piv-top .logo.qc-hash-ph6oy8{margin:0}}.qc-piv-header.qc-hash-ph6oy8 .piv-top .logo a.qc-hash-ph6oy8{display:block}.qc-piv-header.qc-hash-ph6oy8 .piv-top .logo img.qc-hash-ph6oy8{height:7.2rem;min-width:20rem}.qc-piv-header.qc-hash-ph6oy8 .piv-top .title.qc-hash-ph6oy8{width:100%;padding:var(--qc-spacer-sm) 0;min-height:7.2rem;align-items:center;display:flex;margin-right:4rem}.qc-piv-header.qc-hash-ph6oy8 .piv-top .title a.qc-hash-ph6oy8{font-size:var(--qc-font-size-100);line-height:var(--qc-line-height-100);font-weight:var(--qc-font-weight-regular);font-family:var(--qc-font-family-header)}.qc-piv-header.qc-hash-ph6oy8 .piv-top .title a.qc-hash-ph6oy8:hover,.qc-piv-header.qc-hash-ph6oy8 .piv-top .title a.qc-hash-ph6oy8:focus{text-decoration:underline}.qc-piv-header.qc-hash-ph6oy8 .piv-top .title a .description.qc-hash-ph6oy8{font-size:var(--qc-font-size-sm)}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section.qc-hash-ph6oy8{min-width:fit-content;display:flex;align-items:center}@media(max-width: 575.98px){.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section.qc-hash-ph6oy8{min-width:auto}}.qc-piv-header.qc-hash-ph6oy8 .piv-top .qc-search.qc-hash-ph6oy8{background-image:url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=\");min-width:2.4rem;height:2.4rem}.qc-piv-header.qc-hash-ph6oy8 .piv-top .qc-search span.qc-hash-ph6oy8{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0}.qc-piv-header.qc-hash-ph6oy8 .piv-bottom .title.qc-hash-ph6oy8{display:none}.qc-piv-header.qc-hash-ph6oy8 .piv-bottom .search-zone.qc-hash-ph6oy8{padding-bottom:var(--qc-spacer-md)}.go-to-content.qc-hash-ph6oy8.qc-hash-ph6oy8{display:flex;height:0}.go-to-content.qc-hash-ph6oy8 a.qc-hash-ph6oy8{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0}.go-to-content.qc-hash-ph6oy8 a.qc-hash-ph6oy8:focus{top:2px;width:inherit;height:24px;overflow:inherit;clip:inherit;white-space:inherit;color:#ffffff;background-color:#095797;margin:0}a.qc-hash-ph6oy8.qc-hash-ph6oy8:focus-visible{--qc-color-link-focus-outline:white;color:var(--qc-color-link-hover);text-decoration:none;outline:2px solid var(--qc-color-link-focus-outline);outline-offset:0}a.qc-hash-ph6oy8.qc-hash-ph6oy8:focus-visible:has(img){outline-offset:-2px}@media(max-width: 767.98px){.qc-piv-header.qc-hash-ph6oy8 .piv-top .logo img.qc-hash-ph6oy8{min-width:17.5rem;width:17.5rem}.qc-piv-header.qc-hash-ph6oy8 .piv-top .title.qc-hash-ph6oy8{display:none}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section.qc-hash-ph6oy8{min-width:13rem}.qc-piv-header.qc-hash-ph6oy8 .piv-bottom .title.qc-hash-ph6oy8{margin:0;display:flex;padding-bottom:var(--qc-spacer-sm);font-size:var(--qc-font-size-100);line-height:var(--qc-line-height-100);font-weight:var(--qc-font-weight-regular);font-family:var(--qc-font-family-header)}}@media(max-width: 575.98px){.qc-piv-header.qc-hash-ph6oy8 .piv-top.qc-hash-ph6oy8{height:7.2rem}.qc-piv-header.qc-hash-ph6oy8 .piv-top .right-section.qc-hash-ph6oy8{min-width:fit-content}}");
+		append_styles(target, "qc-hash-6fbxhe", "@charset \"UTF-8\";.qc-hash-6fbxhe.qc-hash-6fbxhe,.qc-hash-6fbxhe.qc-hash-6fbxhe::before,.qc-hash-6fbxhe.qc-hash-6fbxhe::after{box-sizing:border-box}a.qc-hash-6fbxhe.qc-hash-6fbxhe:not([class]){text-decoration-skip-ink:auto}img.qc-hash-6fbxhe.qc-hash-6fbxhe{max-width:100%;display:block}@media(prefers-reduced-motion: reduce){.qc-hash-6fbxhe.qc-hash-6fbxhe,.qc-hash-6fbxhe.qc-hash-6fbxhe::before,.qc-hash-6fbxhe.qc-hash-6fbxhe::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul.qc-hash-6fbxhe{list-style:none;padding:0;margin:0;height:100%;margin-left:var(--qc-spacer-md)}@media(max-width: 575.98px){.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul.qc-hash-6fbxhe{margin-left:var(--qc-spacer-sm)}}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul li.qc-hash-6fbxhe{padding:0;margin:0;font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);font-weight:var(--qc-font-weight-regular)}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul a.qc-hash-6fbxhe{font-family:var(--qc-font-family-header);text-decoration:none;font-size:1.2rem;color:#ffffff;font-weight:var(--qc-font-weight-regular)}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul a.qc-hash-6fbxhe:focus,.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section .links ul a.qc-hash-6fbxhe:hover{text-decoration:underline;color:#ffffff}.qc-container.qc-hash-6fbxhe.qc-hash-6fbxhe,.qc-container-fluid.qc-hash-6fbxhe.qc-hash-6fbxhe{width:100%;padding-right:calc(1 * var(--qc-grid-gutter) / 2);padding-left:calc(1 * var(--qc-grid-gutter) / 2);margin-right:auto;margin-left:auto}@media(min-width: 576px){.qc-container.qc-hash-6fbxhe.qc-hash-6fbxhe{max-width:576px}}@media(min-width: 768px){.qc-container.qc-hash-6fbxhe.qc-hash-6fbxhe{max-width:768px}}@media(min-width: 992px){.qc-container.qc-hash-6fbxhe.qc-hash-6fbxhe{max-width:992px}}@media(min-width: 1200px){.qc-container.qc-hash-6fbxhe.qc-hash-6fbxhe{max-width:1200px}}.qc-piv-header.qc-hash-6fbxhe.qc-hash-6fbxhe{color:#ffffff}.qc-piv-header.qc-hash-6fbxhe .go-to-content.qc-hash-6fbxhe{position:relative}.qc-piv-header.qc-hash-6fbxhe a.qc-hash-6fbxhe{color:#ffffff;text-decoration:none}.qc-piv-header.qc-hash-6fbxhe a.qc-hash-6fbxhe:hover,.qc-piv-header.qc-hash-6fbxhe a.qc-hash-6fbxhe:focus{color:#ffffff;text-decoration:underline}.qc-piv-header.qc-hash-6fbxhe .piv-top.qc-hash-6fbxhe{display:flex;justify-content:space-between;align-items:center}.qc-piv-header.qc-hash-6fbxhe .piv-top .logo.qc-hash-6fbxhe{margin-right:6.4rem}@media(max-width: 575.98px){.qc-piv-header.qc-hash-6fbxhe .piv-top .logo.qc-hash-6fbxhe{margin:0}}.qc-piv-header.qc-hash-6fbxhe .piv-top .logo a.qc-hash-6fbxhe{display:block}.qc-piv-header.qc-hash-6fbxhe .piv-top .logo img.qc-hash-6fbxhe{height:7.2rem;min-width:20rem}.qc-piv-header.qc-hash-6fbxhe .piv-top .title.qc-hash-6fbxhe{width:100%;padding:var(--qc-spacer-sm) 0;min-height:7.2rem;align-items:center;display:flex;margin-right:4rem}.qc-piv-header.qc-hash-6fbxhe .piv-top .title a.qc-hash-6fbxhe{font-size:var(--qc-font-size-100);line-height:var(--qc-line-height-100);font-weight:var(--qc-font-weight-regular);font-family:var(--qc-font-family-header)}.qc-piv-header.qc-hash-6fbxhe .piv-top .title a.qc-hash-6fbxhe:hover,.qc-piv-header.qc-hash-6fbxhe .piv-top .title a.qc-hash-6fbxhe:focus{text-decoration:underline}.qc-piv-header.qc-hash-6fbxhe .piv-top .title a .description.qc-hash-6fbxhe{font-size:var(--qc-font-size-sm)}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section.qc-hash-6fbxhe{min-width:fit-content;display:flex;align-items:center}@media(max-width: 575.98px){.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section.qc-hash-6fbxhe{min-width:auto}}.qc-piv-header.qc-hash-6fbxhe .piv-top .qc-search.qc-hash-6fbxhe{background-image:url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=\");min-width:2.4rem;height:2.4rem}.qc-piv-header.qc-hash-6fbxhe .piv-top .qc-search span.qc-hash-6fbxhe{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0}.qc-piv-header.qc-hash-6fbxhe .piv-bottom .title.qc-hash-6fbxhe{display:none}.qc-piv-header.qc-hash-6fbxhe .piv-bottom .search-zone.qc-hash-6fbxhe{padding-bottom:var(--qc-spacer-md)}.go-to-content.qc-hash-6fbxhe.qc-hash-6fbxhe{display:flex;height:0}.go-to-content.qc-hash-6fbxhe a.qc-hash-6fbxhe{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0}.go-to-content.qc-hash-6fbxhe a.qc-hash-6fbxhe:focus{top:2px;width:inherit;height:24px;overflow:inherit;clip:inherit;white-space:inherit;color:#ffffff;background-color:#095797;margin:0}a.qc-hash-6fbxhe.qc-hash-6fbxhe:focus-visible{--qc-color-link-focus-outline:white;color:var(--qc-color-link-hover);text-decoration:none;outline:2px solid var(--qc-color-link-focus-outline);outline-offset:0}a.qc-hash-6fbxhe.qc-hash-6fbxhe:focus-visible:has(img){outline-offset:-2px}@media(max-width: 767.98px){.qc-piv-header.qc-hash-6fbxhe .piv-top .logo img.qc-hash-6fbxhe{min-width:17.5rem;width:17.5rem}.qc-piv-header.qc-hash-6fbxhe .piv-top .title.qc-hash-6fbxhe{display:none}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section.qc-hash-6fbxhe{min-width:13rem}.qc-piv-header.qc-hash-6fbxhe .piv-bottom .title.qc-hash-6fbxhe{margin:0;display:flex;padding-bottom:var(--qc-spacer-sm);font-size:var(--qc-font-size-100);line-height:var(--qc-line-height-100);font-weight:var(--qc-font-weight-regular);font-family:var(--qc-font-family-header)}}@media(max-width: 575.98px){.qc-piv-header.qc-hash-6fbxhe .piv-top.qc-hash-6fbxhe{height:7.2rem}.qc-piv-header.qc-hash-6fbxhe .piv-top .right-section.qc-hash-6fbxhe{min-width:fit-content}}");
 	}
 
 	const get_search_zone_slot_changes = dirty => ({});
@@ -2560,8 +2595,8 @@
 				a = element("a");
 				t = text(/*goToContentText*/ ctx[13]);
 				attr(a, "href", /*goToContentAnchor*/ ctx[12]);
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(div, "class", "go-to-content qc-hash-ph6oy8");
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(div, "class", "go-to-content qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
@@ -2596,10 +2631,10 @@
 				a = element("a");
 				span = element("span");
 				t = text(/*titleText*/ ctx[5]);
-				attr(span, "class", "qc-hash-ph6oy8");
+				attr(span, "class", "qc-hash-6fbxhe");
 				attr(a, "href", /*titleUrl*/ ctx[4]);
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(div, "class", "title qc-hash-ph6oy8");
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(div, "class", "title qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
@@ -2640,8 +2675,8 @@
 				a = element("a");
 				span = element("span");
 				t = text(t_value);
-				attr(span, "class", "qc-hash-ph6oy8");
-				attr(a, "class", "qc-search qc-hash-ph6oy8");
+				attr(span, "class", "qc-hash-6fbxhe");
+				attr(a, "class", "qc-search qc-hash-6fbxhe");
 				attr(a, "href", "/");
 				attr(a, "role", "button");
 			},
@@ -2690,9 +2725,9 @@
 				if (if_block0) if_block0.c();
 				t = space();
 				if (if_block1) if_block1.c();
-				attr(ul, "class", "qc-hash-ph6oy8");
+				attr(ul, "class", "qc-hash-6fbxhe");
 				attr(nav, "aria-label", /*linksLabel*/ ctx[6]);
-				attr(nav, "class", "qc-hash-ph6oy8");
+				attr(nav, "class", "qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, nav, anchor);
@@ -2755,8 +2790,8 @@
 				a = element("a");
 				t = text(/*altLanguageText*/ ctx[7]);
 				attr(a, "href", /*altLanguageUrl*/ ctx[8]);
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(li, "class", "qc-hash-ph6oy8");
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(li, "class", "qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, li, anchor);
@@ -2790,8 +2825,8 @@
 				a = element("a");
 				t = text(/*joinUsText*/ ctx[9]);
 				attr(a, "href", /*joinUsUrl*/ ctx[10]);
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(li, "class", "qc-hash-ph6oy8");
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(li, "class", "qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, li, anchor);
@@ -2864,10 +2899,10 @@
 				a = element("a");
 				span = element("span");
 				t = text(/*titleText*/ ctx[5]);
-				attr(span, "class", "qc-hash-ph6oy8");
+				attr(span, "class", "qc-hash-6fbxhe");
 				attr(a, "href", /*titleUrl*/ ctx[4]);
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(div, "class", "title qc-hash-ph6oy8");
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(div, "class", "title qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
@@ -2901,7 +2936,7 @@
 			c() {
 				div = element("div");
 				if (search_zone_slot) search_zone_slot.c();
-				attr(div, "class", "search-zone qc-hash-ph6oy8");
+				attr(div, "class", "search-zone qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
@@ -3000,19 +3035,19 @@
 				if (if_block4) if_block4.c();
 				attr(img, "alt", /*logoAlt*/ ctx[3]);
 				if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[2])) attr(img, "src", img_src_value);
-				attr(img, "class", "qc-hash-ph6oy8");
+				attr(img, "class", "qc-hash-6fbxhe");
 				attr(a, "href", /*logoUrl*/ ctx[1]);
 				attr(a, "target", "_blank");
 				attr(a, "rel", "noreferrer");
-				attr(a, "class", "qc-hash-ph6oy8");
-				attr(div0, "class", "logo qc-hash-ph6oy8");
-				attr(div1, "class", "links qc-hash-ph6oy8");
-				attr(div2, "class", "right-section qc-hash-ph6oy8");
-				attr(div3, "class", "piv-top qc-hash-ph6oy8");
-				attr(div4, "class", "piv-bottom qc-hash-ph6oy8");
-				attr(div5, "class", div5_class_value = "" + (null_to_empty(/*containerClass*/ ctx[17]) + " qc-hash-ph6oy8"));
+				attr(a, "class", "qc-hash-6fbxhe");
+				attr(div0, "class", "logo qc-hash-6fbxhe");
+				attr(div1, "class", "links qc-hash-6fbxhe");
+				attr(div2, "class", "right-section qc-hash-6fbxhe");
+				attr(div3, "class", "piv-top qc-hash-6fbxhe");
+				attr(div4, "class", "piv-bottom qc-hash-6fbxhe");
+				attr(div5, "class", div5_class_value = "" + (null_to_empty(/*containerClass*/ ctx[17]) + " qc-hash-6fbxhe"));
 				attr(div6, "role", "banner");
-				attr(div6, "class", "qc-piv-header qc-component qc-hash-ph6oy8");
+				attr(div6, "class", "qc-piv-header qc-component qc-hash-6fbxhe");
 			},
 			m(target, anchor) {
 				insert(target, div6, anchor);
@@ -3149,7 +3184,7 @@
 					check_outros();
 				}
 
-				if (!current || dirty & /*containerClass*/ 131072 && div5_class_value !== (div5_class_value = "" + (null_to_empty(/*containerClass*/ ctx[17]) + " qc-hash-ph6oy8"))) {
+				if (!current || dirty & /*containerClass*/ 131072 && div5_class_value !== (div5_class_value = "" + (null_to_empty(/*containerClass*/ ctx[17]) + " qc-hash-6fbxhe"))) {
 					attr(div5, "class", div5_class_value);
 				}
 			},

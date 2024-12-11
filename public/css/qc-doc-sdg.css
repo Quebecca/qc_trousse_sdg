@@ -457,6 +457,10 @@ qc-color-doc {
   font-family: var(--qc-font-family-header);
 }
 
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 9.6rem;
+}
+
 #grid-samples {
   position: relative;
   text-align: center;

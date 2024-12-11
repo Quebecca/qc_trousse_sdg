@@ -722,9 +722,20 @@
             </qc-doc-exemple>
 <!--            <qc-code target-id="presentation-slots-avis" ></qc-code>-->
 
-        <hr />
             <h2 id="search-bar">Barre de recherche</h2>
             <h3>Exemples</h3>
+            <qc-doc-exemple caption="Exemple de barre de recherche lançant une recherche dans quebec.ca">
+                <div id="search-bar-exemple-1">
+                    <form action="http://www.quebec.ca/resultats-de-recherche">
+                        <qc-search-bar name="tx_solr[q]"></qc-search-bar>
+                    </form>
+                </div>
+            </qc-doc-exemple>
+            <script>
+                let el =document.getElementById('search-bar-exemple-1')
+                el.parentElement.rawCode = el.innerHTML;
+            </script>
+
             <qc-doc-exemple caption="Exemple de barre de recherche sur fond blanc et bleu PIV">
                 <div id="search-bar-exemple">
                     <qc-search-bar></qc-search-bar>
@@ -737,9 +748,45 @@
                 </div>
             </qc-doc-exemple>
             <script>
-                let el =document.getElementById('search-bar-exemple')
+                el =document.getElementById('search-bar-exemple')
                 el.parentElement.rawCode = el.innerHTML;
             </script>
+
+            <h3>Attributs</h3>
+
+            <table class="qc-table qc-striped component-attributes-description">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>submit-value</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Valeur du bouton submit</td>
+                </tr>
+                <tr>
+                    <td>submit-name</td>
+                    <td>Texte</td>
+                    <td>Chaine vide</td>
+                    <td>Nom du bouton submit</td>
+                </tr>
+                <tr>
+                    <td>piv-background</td>
+                    <td>Aucune (simplement ajouter l'attribut)</td>
+                    <td>False</td>
+                    <td>Indique que la barre de recherche est sur fond bleu PIV</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3>Zone d'ajout de contenu HTML</h3>
+            <p>Aucune zone d'ajout de contenu n'est définie pour ce composant</p>
 
             <!-- PIV -->
             <h2 id="piv">Composants du PIV</h2>
