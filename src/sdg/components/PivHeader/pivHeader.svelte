@@ -182,7 +182,9 @@ onMount(() => {
 
   .qc-piv-header {
     color: map-get($colors, white);
-
+    .go-to-content {
+     position: relative;
+    }
     a {
       color: map-get($colors, white);
       text-decoration: none;
