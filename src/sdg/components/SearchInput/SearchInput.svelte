@@ -19,9 +19,15 @@
             class="control"
             autocomplete="off"
             {...$$restProps}
+            on:click={e => {
+                    e.preventDefault();
+                    value = "";
+                    searchInput.focus();
+                }}
     />
     {#if value}
-    <IconButton icon="clear-input"
+    <IconButton type="button"
+                icon="clear-input"
                 iconColor="blue-piv"
                 iconSize="sm"
                 on:click={e => {
