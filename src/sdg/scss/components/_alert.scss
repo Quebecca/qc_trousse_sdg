@@ -23,11 +23,6 @@
     background-color: token-value(color, blue, pale);
   }
 
-  .qc-icon {
-    min-width: token-value(spacer, md);
-    height: token-value(spacer, md);
-  }
-
   .qc-alert-content {
     @include content-font(md, semi-bold);
     margin: 0 token-value(spacer, md);
@@ -38,28 +33,13 @@
     }
   }
 
-  .qc-alert-close {
-    display: flex;
-    align-items: center;
-    @include media-mobile() {
-      align-items: inherit;
+  button {
+    @include qc-formcontrol-box;
+    flex-shrink: 0;
+    &::before {
+      background: transparent;
     }
-  }
-
-  .qc-close {
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    display: inline-flex;
-    justify-content: center;
-
-    .qc-close-alert-icon {
-      display: inline-block;
-      min-width: token-value(spacer, sm);
-      height: token-value(spacer, sm);
-      vertical-align: middle;
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
 }
 

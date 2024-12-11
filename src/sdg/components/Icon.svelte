@@ -21,11 +21,13 @@
      data-img-size="{size}"
      style="--img-color:var(--qc-color-{color});"
      data-img-type={type}
+     {...$$restProps}
     >
 </div>
 <style lang="scss">
     [role=img] {
       display: inline-block;
+      flex-shrink: 0;
       // TODO questionner une échelle [0 - 10 ou 100]
       @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
         &[data-img-size=#{$size-type}] {

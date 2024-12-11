@@ -2,6 +2,8 @@
 
 <script>
     import {Utils} from "./utils";
+    import Icon from "./Icon.svelte";
+    import IconButton from "./Button/IconButton.svelte";
 
     export let
           type = "general"
@@ -17,8 +19,8 @@
                         ? type
                         : 'general'
         , closeLabel = Utils.getPageLanguage() === 'fr'
-                        ? "Fermer"
-                        : "Close"
+                        ? "Fermer l’alerte"
+                        : "Close l’alerte"
         , warningLabel = Utils.getPageLanguage() === 'fr'
                         ? "Information d'importance élevée"
                         : "Information of high importance"
@@ -31,6 +33,7 @@
         ;
 
     $: hiddenFlag = hide === 'true'
+
     function hideAlert() {
         hide='true'
         rootElement.dispatchEvent(
@@ -48,22 +51,22 @@
         aria-label={label}>
         <div class="qc-container qc-general-alert-elements">
             <!-- TODO remplacer par Icon -->
-            <div class="qc-icon qc-{type}-alert-icon"
-                 aria-hidden="true"
-            ></div>
+            <Icon type={type == 'warning' ? 'warning' : 'information'}
+                  color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
+                  size="nm"
+            />
             <div class="qc-alert-content">
                 {@html content}
                 <slot />
             </div>
             {#if maskable === "true"}
-                <div class="qc-alert-close">
-                    <button type="button" class="qc-close" aria-label={closeLabel}
-                            on:click={hideAlert}>
-                        <span aria-hidden="true"
-                              class="qc-icon qc-xclose-blue qc-close-alert-icon"
-                        ></span>
-                    </button>
-                </div>
+                <IconButton srText={closeLabel}
+                            on:click={hideAlert}
+                            size="nm"
+                            icon="clear-input"
+                            iconSize="sm"
+                            iconColor="text-primary"
+                    />
             {/if}
         </div>
     </div>

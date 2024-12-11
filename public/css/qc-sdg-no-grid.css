@@ -42,6 +42,45 @@ root font-size : 62.5 %,
 // foo.css
 .foo { font-size: 1.6rem; }
 */
+/**
+Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+qui affiche la bordure de 1px et l'outline interne de 2px.
+Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+Tous les élémmens placés dans ce cadre son marqués comme transparents.
+De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+ */
+/**
+Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+qui affiche la bordure de 1px et l'outline interne de 2px.
+Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+Tous les élémmens placés dans ce cadre son marqués comme transparents.
+De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+ */
+.qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
+  position: relative;
+  z-index: 10;
+  background: transparent;
+  border: 0;
+}
+.qc-search-input::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-bar button::before {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: var(--qc-color-background);
+  inset: 0;
+  z-index: -5;
+}
+.qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus {
+  outline: 2px solid var(--qc-color-formfield-focus-outline);
+}
+.qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before {
+  border: 2px solid var(--qc-color-formfield-focus-border);
+}
+
 :root {
   --qc-font-family-roboto: Roboto,sans-serif;
   --qc-font-family-open-sans: Open Sans,sans-serif;
@@ -697,6 +736,15 @@ root font-size : 62.5 %,
 // foo.css
 .foo { font-size: 1.6rem; }
 */
+/**
+Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+qui affiche la bordure de 1px et l'outline interne de 2px.
+Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+Tous les élémmens placés dans ce cadre son marqués comme transparents.
+De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+ */
 .qc-d-none {
   display: none !important;
 }
@@ -1129,10 +1177,6 @@ qc-piv-footer ul li a:hover {
 .qc-general-alert.general {
   background-color: var(--qc-color-blue-pale);
 }
-.qc-general-alert .qc-icon {
-  min-width: var(--qc-spacer-md);
-  height: var(--qc-spacer-md);
-}
 .qc-general-alert .qc-alert-content {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
@@ -1147,28 +1191,30 @@ qc-piv-footer ul li a:hover {
     font-weight: var(--qc-font-weight-semi-bold);
   }
 }
-.qc-general-alert .qc-alert-close {
-  display: flex;
-  align-items: center;
-}
-@media (max-width: 575.98px) {
-  .qc-general-alert .qc-alert-close {
-    align-items: inherit;
-  }
-}
-.qc-general-alert .qc-close {
-  padding: 0;
-  background-color: transparent;
+.qc-general-alert button {
+  position: relative;
+  z-index: 10;
+  background: transparent;
   border: 0;
-  display: inline-flex;
-  justify-content: center;
-}
-.qc-general-alert .qc-close .qc-close-alert-icon {
-  display: inline-block;
-  min-width: var(--qc-spacer-sm);
-  height: var(--qc-spacer-sm);
-  vertical-align: middle;
+  flex-shrink: 0;
   cursor: pointer;
+}
+.qc-general-alert button::before {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: var(--qc-color-background);
+  inset: 0;
+  z-index: -5;
+}
+.qc-general-alert button:has(input:focus), .qc-general-alert button:focus {
+  outline: 2px solid var(--qc-color-formfield-focus-outline);
+}
+.qc-general-alert button:has(input:focus)::before, .qc-general-alert button:focus::before {
+  border: 2px solid var(--qc-color-formfield-focus-border);
+}
+.qc-general-alert button::before {
+  background: transparent;
 }
 
 qc-alert [slot] *, qc-alert:not([slot=content]) * {
@@ -1240,38 +1286,10 @@ qc-search-input {
   max-width: 54.8rem;
 }
 
-/**
-Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
-le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
-Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
-qui affiche la bordure de 1px et l'outline interne de 2px.
-Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
-Tous les élémmens placés dans ce cadre son marqués comme transparents.
-De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
- */
-.qc-search-bar button, .qc-search-input button, .qc-search-bar, .qc-search-input {
+.qc-search-bar, .qc-search-input {
   display: flex;
   align-items: stretch;
-  position: relative;
-  z-index: 10;
-  background: transparent;
-  border: 0;
 }
-.qc-search-bar button::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-input::before {
-  position: absolute;
-  display: block;
-  content: "";
-  background-color: var(--qc-color-background);
-  inset: 0;
-  z-index: -5;
-}
-.qc-search-bar button:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-input:has(input:focus), .qc-search-bar button:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-input:focus {
-  outline: 2px solid var(--qc-color-formfield-focus-outline);
-}
-.qc-search-bar button:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-bar button:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-input:focus::before {
-  border: 2px solid var(--qc-color-formfield-focus-border);
-}
-
 .qc-search-bar::before, .qc-search-input::before {
   border: 1px solid var(--qc-color-formfield-border);
 }
