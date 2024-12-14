@@ -15,23 +15,18 @@ export
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site."
 ;
-let img;
+let srText;
 
 onMount(() => {
-    img
-        .parentElement
-        .querySelectorAll('a')
-        .forEach(a => {
-            a.innerHTML = a.innerHTML.trim()
-    })
+    let a = srText.previousElementSibling;
+    a.innerHTML = a.innerHTML.trim()
+    a.appendChild(srText)
 });
 </script>
-<img bind:this={img}
-     alt="{externalIconAlt}"
-/>
+<span bind:this={srText}>{externalIconAlt}</span>
 <style lang="scss">
   // cf https://stackoverflow.com/questions/16100956/prevent-after-element-from-wrapping-to-next-line
-     img {
+     span {
        @include sr-only();
     }
 </style>
