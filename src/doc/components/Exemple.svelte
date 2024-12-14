@@ -1,15 +1,14 @@
-<svelte:options customElement="{{
-    tag: 'qc-doc-exemple',
-    shadow: 'none',
-    props: {
-        caption : {attribute: 'caption'},
-        codeTargetId: {attribute: 'code-target-id'},
-        hideCode: {attribute: 'hide-code', type: 'Boolean'},
-        rawCode: {attribute: 'raw-code'}
-    }
-
-}}" />
-<script>
+<svelte:options customElement={{
+        tag: 'qc-doc-exemple',
+        shadow: 'none',
+        props: {
+            caption : {attribute: 'caption'},
+            codeTargetId: {attribute: 'code-target-id'},
+            hideCode: {attribute: 'hide-code', type: 'Boolean'},
+            rawCode: {attribute: 'raw-code'}
+        }
+    }} />
+    <script>
     import Code from "./Code.svelte";
     import {onMount} from "svelte";
     export let
@@ -39,6 +38,7 @@
     })
 
 </script>
+
 <div bind:this={rootElement}
      class="exemple-area"
     >

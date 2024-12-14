@@ -348,7 +348,7 @@
 
             <qc-doc-exemple  caption="Exemple de lien externe.">
                 <qc-external-link>
-                    <a href="http://www.external.domain.com/">Un lien externe assez long. Réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien externe.</a>
+                        <a href="http://www.external.domain.com/">Un lien externe assez long. Réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien externe.</a>
                 </qc-external-link>
             </qc-doc-exemple>
 
@@ -402,7 +402,7 @@
             <h2 id="ombrages">Ombrages</h2>
             <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>, X étant le niveau d’élévation. </p>
             <qc-doc-exemple
-                    caption="Exemple des différents niveau d’élévation."
+                    caption="Exemple des différents niveaux d’élévation."
                     code-target-id="liste-elevation">
                 <div style="display: flex; gap: var(--qc-spacer-lg);"
                      id="liste-elevation"
@@ -725,32 +725,22 @@
             <h2 id="search-bar">Barre de recherche</h2>
             <h3>Exemples</h3>
             <qc-doc-exemple caption="Exemple de barre de recherche lançant une recherche dans quebec.ca">
-                <div id="search-bar-exemple-1">
-                    <form action="http://www.quebec.ca/resultats-de-recherche">
-                        <qc-search-bar name="tx_solr[q]"></qc-search-bar>
-                    </form>
-                </div>
+                <form action="http://www.quebec.ca/resultats-de-recherche">
+                    <qc-search-bar name="tx_solr[q]"></qc-search-bar>
+                </form>
             </qc-doc-exemple>
-            <script>
-                let el =document.getElementById('search-bar-exemple-1')
-                el.parentElement.rawCode = el.innerHTML;
-            </script>
 
             <qc-doc-exemple caption="Exemple de barre de recherche sur fond blanc et bleu PIV">
-                <div id="search-bar-exemple">
-                    <qc-search-bar></qc-search-bar>
 
-                    <div style="margin: var(--qc-spacer-content-block-mb) 0 0;
-                                padding: var(--qc-spacer-md);
-                                background-color: var(--qc-color-blue-piv);" >
-                        <qc-search-bar piv-background></qc-search-bar>
-                    </div>
+                <qc-search-bar></qc-search-bar>
+
+                <div style="margin: var(--qc-spacer-content-block-mb) 0 0;
+                            padding: var(--qc-spacer-md);
+                            background-color: var(--qc-color-blue-piv);" >
+                    <qc-search-bar piv-background></qc-search-bar>
                 </div>
+
             </qc-doc-exemple>
-            <script>
-                el =document.getElementById('search-bar-exemple')
-                el.parentElement.rawCode = el.innerHTML;
-            </script>
 
             <h3>Attributs</h3>
 
@@ -853,11 +843,6 @@
                 </div>
             </qc-doc-exemple>
 
-            <script>
-                el =document.getElementById('pivEnteteExempleRecherchePersonnalisee')
-                el.parentElement.rawCode =  el.innerHTML;
-
-            </script>
 
             <h4>Documentation technique</h4>
             <h5>Attributs</h5>
@@ -1160,7 +1145,7 @@
             </p>
             <h4>Exemple</h4>
             <qc-doc-exemple caption="Présentation du composant retour en haut de page"
-                            id="to-top-doc-exemple"
+                            code-target-id="to-top-exemple"
                 >
                 <qc-to-top demo="true" />
             </qc-doc-exemple>
@@ -1168,17 +1153,10 @@
                 <qc-to-top></qc-to-top>
             </div>
 
-            <script>
-                document.getElementById('to-top-doc-exemple').rawCode = document.getElementById('to-top-exemple').innerHTML
-            </script>
-
-
-            <!--                <qc-code target-id="pivToTopExample"></qc-code>-->
-
-
             <h3>Documentation technique</h3>
+
             <h4>Attributs</h4>
-            <br>
+
             <table class="qc-table qc-striped">
                 <thead>
                     <tr>
@@ -1208,5 +1186,6 @@
     <footer>
         <qc-piv-footer></qc-piv-footer>
     </footer>
+    <script src='js/qc-doc-exemple.js'></script>
 </body>
 </html>
