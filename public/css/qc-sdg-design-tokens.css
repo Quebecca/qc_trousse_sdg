@@ -191,16 +191,10 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
   --qc-grid-breakpoint-sm: 576px;
   --qc-grid-breakpoint-md: 768px;
   --qc-grid-breakpoint-lg: 992px;
-  --qc-grid-breakpoint-xl: 1200px;
   --qc-grid-container-max-width-sm: 576px;
   --qc-grid-container-max-width-md: 768px;
   --qc-grid-container-max-width-lg: 992px;
-  --qc-grid-container-max-width-xl: 1200px;
-}
-@media (max-width: 1199.98px) {
-  :root {
-    --qc-grid-gutter: 24px;
-  }
+  --qc-grid-gutter: 24px;
 }
 @media (max-width: 991.98px) {
   :root {
