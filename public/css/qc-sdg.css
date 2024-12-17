@@ -310,6 +310,10 @@ body:focus-within {
     scroll-behavior: auto !important;
   }
 }
+legend {
+  padding: 0;
+}
+
 h1, .qc-h1 {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h1);
