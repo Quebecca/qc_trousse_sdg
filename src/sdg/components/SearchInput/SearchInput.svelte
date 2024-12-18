@@ -1,10 +1,6 @@
 <svelte:options customElement="{{
     tag: 'qc-search-input',
-    shadow: 'none',
-    props: {
-        value: {attribute:'value'},
-        ariaLabel: {attribute:'aria-label'}
-    }
+    shadow: 'none'
 }}" />
 <script>
     import IconButton from "../Button/IconButton.svelte";
@@ -15,15 +11,9 @@
     <input  bind:this={searchInput}
             bind:value
             type="search"
-            aria-label={ariaLabel}
             class="control"
             autocomplete="off"
             {...$$restProps}
-            on:click={e => {
-                    e.preventDefault();
-                    value = "";
-                    searchInput.focus();
-                }}
     />
     {#if value}
     <IconButton type="button"
