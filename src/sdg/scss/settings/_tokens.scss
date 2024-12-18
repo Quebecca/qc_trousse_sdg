@@ -3,7 +3,7 @@
 @use "functions/tokens" as *;
 // TODO remplacer les clés avec tirets par un souligné foo-bar -> foo_bar
 // TODO générer ce fichier à partir d'un json, afin d'avoir les tokens en js
-$xl-tokens: (
+$lg-tokens: (
     font : (
         family : (
             roboto: google-font(roboto),
@@ -214,25 +214,20 @@ $xl-tokens: (
         gutter: 32px,
         breakpoint: (
             xs: 0,
-            sm: 576px,
-            md: 768px,
-            lg: 992px
+            sm: 768px,
+            md: 992px,
+            lg: 1200px,
         ),
         container-max-width: (
-            sm: 576px,
-            md: 768px,
-            lg: 992px
+            sm: 768px,
+            md: 992px,
+            lg: 1200px
         )
     ),
 ) !default;
 
 $breakpoints-tokens: (
-    xl : $xl-tokens,
-    lg : (
-        grid: (
-            gutter: 24px,
-        )
-    ),
+    lg : $lg-tokens,
     md : (
         font-size: (
             h3: rem(25),
@@ -251,6 +246,9 @@ $breakpoints-tokens: (
                 mb: rem(1 * $base-spacer),
             )
         ),
+        grid: (
+            gutter: 24px,
+        )
     ),
     sm : (
         grid: (
@@ -262,7 +260,7 @@ $breakpoints-tokens: (
 $themes-tokens: (
   light: $breakpoints-tokens,
   dark: (
-    xl: (
+    lg: (
       color: (
         white : #121519,
         blue : (

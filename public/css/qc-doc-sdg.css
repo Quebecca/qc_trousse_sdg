@@ -513,14 +513,19 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
 }
 
-#liste-elevation p {
+#liste-elevation {
+  display: flex;
+  gap: var(--qc-grid-gutter);
+  flex-wrap: wrap;
+}
+#liste-elevation [class*=qc-shading-] {
   display: flex;
   width: 12rem;
   height: 12rem;
   justify-content: center;
   align-items: center;
 }
-#liste-elevation p.qc-shading-0 {
+#liste-elevation [class*=qc-shading-].qc-shading-0 {
   border: 1px solid var(--qc-color-grey-light);
 }
 
@@ -568,4 +573,9 @@ dl dt {
 }
 dl dd {
   margin-bottom: var(--qc-spacer-list-mb);
+}
+
+.table-overflow {
+  max-width: var(--qc-max-content-width);
+  overflow-x: auto;
 }

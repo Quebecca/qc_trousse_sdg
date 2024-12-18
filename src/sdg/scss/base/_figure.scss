@@ -16,6 +16,7 @@ figure {
   margin: 0;
   display: inline-block;
   flex-direction: column;
+  overflow-x: auto;
   img {
     height: auto;
   }

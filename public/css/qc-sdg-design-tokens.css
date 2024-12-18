@@ -188,15 +188,14 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
   --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
-  --qc-grid-breakpoint-sm: 576px;
-  --qc-grid-breakpoint-md: 768px;
-  --qc-grid-breakpoint-lg: 992px;
-  --qc-grid-container-max-width-sm: 576px;
-  --qc-grid-container-max-width-md: 768px;
-  --qc-grid-container-max-width-lg: 992px;
-  --qc-grid-gutter: 24px;
+  --qc-grid-breakpoint-sm: 768px;
+  --qc-grid-breakpoint-md: 992px;
+  --qc-grid-breakpoint-lg: 1200px;
+  --qc-grid-container-max-width-sm: 768px;
+  --qc-grid-container-max-width-md: 992px;
+  --qc-grid-container-max-width-lg: 1200px;
 }
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
@@ -205,9 +204,10 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
     --qc-line-height-h1: 4rem;
     --qc-spacer-h2-mt: 4.8rem;
     --qc-spacer-h2-mb: 0.8rem;
+    --qc-grid-gutter: 24px;
   }
 }
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
   :root {
     --qc-grid-gutter: 16px;
   }

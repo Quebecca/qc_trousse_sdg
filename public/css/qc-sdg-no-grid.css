@@ -210,15 +210,14 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
   --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
-  --qc-grid-breakpoint-sm: 576px;
-  --qc-grid-breakpoint-md: 768px;
-  --qc-grid-breakpoint-lg: 992px;
-  --qc-grid-container-max-width-sm: 576px;
-  --qc-grid-container-max-width-md: 768px;
-  --qc-grid-container-max-width-lg: 992px;
-  --qc-grid-gutter: 24px;
+  --qc-grid-breakpoint-sm: 768px;
+  --qc-grid-breakpoint-md: 992px;
+  --qc-grid-breakpoint-lg: 1200px;
+  --qc-grid-container-max-width-sm: 768px;
+  --qc-grid-container-max-width-md: 992px;
+  --qc-grid-container-max-width-lg: 1200px;
 }
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   :root {
     --qc-font-size-h3: 2.5rem;
     --qc-font-size-h2: 2.8rem;
@@ -227,9 +226,10 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
     --qc-line-height-h1: 4rem;
     --qc-spacer-h2-mt: 4.8rem;
     --qc-spacer-h2-mb: 0.8rem;
+    --qc-grid-gutter: 24px;
   }
 }
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
   :root {
     --qc-grid-gutter: 16px;
   }
@@ -642,6 +642,7 @@ figure {
   margin: 0;
   display: inline-block;
   flex-direction: column;
+  overflow-x: auto;
 }
 figure img {
   height: auto;
@@ -779,7 +780,7 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
   display: inline-flex !important;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
   .qc-d-sm-none {
     display: none !important;
   }
@@ -808,7 +809,7 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
     display: inline-flex !important;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .qc-d-md-none {
     display: none !important;
   }
@@ -837,7 +838,7 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
     display: inline-flex !important;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
   .qc-d-lg-none {
     display: none !important;
   }
@@ -1063,7 +1064,7 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   text-decoration: none;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .qc-notice .content {
     margin-right: var(--qc-spacer-notice-my);
   }
@@ -1075,7 +1076,7 @@ qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
   height: 100%;
   margin-left: var(--qc-spacer-md);
 }
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
     margin-left: var(--qc-spacer-sm);
   }
@@ -1131,7 +1132,7 @@ qc-piv-footer ul li a:hover {
   max-inline-size: var(--qc-max-content-width);
   padding: var(--qc-spacer-md) var(--qc-spacer-sm);
 }
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .qc-general-alert {
     padding: var(--qc-spacer-sm);
   }
@@ -1153,7 +1154,7 @@ qc-piv-footer ul li a:hover {
   margin: 0 var(--qc-spacer-md);
   width: 100%;
 }
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .qc-general-alert .qc-alert-content {
     font-size: var(--qc-font-size-sm);
     line-height: var(--qc-line-height-sm);

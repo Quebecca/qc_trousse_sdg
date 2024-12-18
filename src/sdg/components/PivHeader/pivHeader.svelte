@@ -172,10 +172,10 @@ onMount(() => {
     margin-left: auto;
   }
 
-  @each $breakpoint, $media-width in map-get($xl-tokens, grid, breakpoint) {
+  @each $breakpoint, $media-width in map-get($lg-tokens, grid, breakpoint) {
     @media (min-width: $media-width) {
       .qc-container {
-        max-width: map-get($xl-tokens, grid, container-max-width, $breakpoint);
+        max-width: map-get($lg-tokens, grid, container-max-width, $breakpoint);
       }
     }
   }

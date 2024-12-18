@@ -2,7 +2,7 @@
 @use "modules/utils" as *;
 @use "modules/grid" as *;
 
-$colors : map-get($themes-tokens, light, xl, color);
+$colors : map-get($themes-tokens, light, lg, color);
 
 %piv-links {
   &, & ul {

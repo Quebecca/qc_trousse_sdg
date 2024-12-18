@@ -6,7 +6,7 @@
 @if $google-api-font {
   // ci dessous on construit l'url pour importer les fonts google
   // en se basant sur la déclaration des tokens (les font-weights)
-  $font-weights : map.values(map-get($xl-tokens, font, weight));
+  $font-weights : map.values(map-get($lg-tokens, font, weight));
   $url : 'https://fonts.googleapis.com/css2';
   $param-separator : '?';
   @each $name, $fonts in $google-fonts {

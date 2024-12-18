@@ -8,9 +8,9 @@
 
 $enable-grid-classes: utils.$enable-grid-classes;
 $enable-deprecation-messages : false;
-$grid-breakpoints: map.get(tokens.$xl-tokens, grid, breakpoint);
+$grid-breakpoints: map.get(tokens.$lg-tokens, grid, breakpoint);
 $grid-gutter-width: tokens.token-value(grid gutter);
-$container-max-widths: map.get(tokens.$xl-tokens, grid, container-max-width);
+$container-max-widths: map.get(tokens.$lg-tokens, grid, container-max-width);
 
 $spacers : (
     0: 0,

@@ -2,6 +2,7 @@
 @use "functions/utils" as *;
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
+@use "modules/grid" as *;
 @use "components/icons" as *;
 @use "components/code" as *;
 @use "components/button" as *;
@@ -78,15 +79,20 @@ h1,h2,h3,h4,h5,h6 {
   }
 }
 
-#liste-elevation p {
+#liste-elevation {
   display: flex;
-  width: rem(15 * $base-spacer);
-  height: rem(15 * $base-spacer);
-  justify-content: center;
-  align-items: center;
+  gap: token-value(grid gutter);
+  flex-wrap: wrap;
+  [class*=qc-shading-] {
+    display: flex;
+    width: rem(15 * $base-spacer);
+    height: rem(15 * $base-spacer);
+    justify-content: center;
+    align-items: center;
 
-  &.qc-shading-0 {
-    border: 1px solid token-value(color, grey, light)
+    &.qc-shading-0 {
+      border: 1px solid token-value(color, grey, light)
+    }
   }
 }
 
@@ -131,5 +137,10 @@ dl {
   dd {
     margin-bottom : token-value(spacer list mb);
   }
+}
+
+.table-overflow {
+  max-width: token-value(max-content-width);
+  overflow-x: auto;
 }
 
