@@ -226,6 +226,9 @@ $lg-tokens: (
     ),
 ) !default;
 
+// legacy
+$xl-tokens : $lg-tokens;
+
 $breakpoints-tokens: (
     lg : $lg-tokens,
     md : (
