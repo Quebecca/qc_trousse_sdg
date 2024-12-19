@@ -5,7 +5,7 @@
   font-size: token-value(font size root-percent);
 }
 
-/* Box sizing rules */
+// Box sizing rules
 *,
 *::before,
 *::after {
@@ -26,7 +26,7 @@ body {
 }
 
 
-/* Remove all animations and transitions for people that prefer not to see them */
+// Remove all animations and transitions for people that prefer not to see them
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;

@@ -1,65 +1,4 @@
-@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Open Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700");
-/*
-  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
-  TODO 2 - demander des nouvelles icône les plus neutres possibles
-  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
- */
-/*
-Return rem size from pixel size according to root font-size as define in settings
-Always use this function for rem values
-
-root font-size : 100 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1rem; }
-
-root font-size : 62.5 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1.6rem; }
-*/
-/*
-  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
-  TODO 2 - demander des nouvelles icône les plus neutres possibles
-  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
- */
-/*
-Return rem size from pixel size according to root font-size as define in settings
-Always use this function for rem values
-
-root font-size : 100 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1rem; }
-
-root font-size : 62.5 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1.6rem; }
-*/
-/**
-Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
-le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
-Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
-qui affiche la bordure de 1px et l'outline interne de 2px.
-Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
-Tous les élémmens placés dans ce cadre son marqués comme transparents.
-De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
- */
-/**
-Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
-le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
-Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
-qui affiche la bordure de 1px et l'outline interne de 2px.
-Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
-Tous les élémmens placés dans ce cadre son marqués comme transparents.
-De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
- */
 .qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
   position: relative;
   z-index: 10;
@@ -268,7 +207,6 @@ De cette façon, l'affichage des focus et des bordures ne joue pas sur les marge
   font-size: var(--qc-font-size-root-percent);
 }
 
-/* Box sizing rules */
 *,
 *::before,
 *::after {
@@ -290,7 +228,6 @@ body:focus-within {
   scroll-behavior: smooth;
 }
 
-/* Remove all animations and transitions for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;
@@ -394,9 +331,6 @@ p {
 
 a {
   color: var(--qc-color-link-text);
-  /* DEPRECATED: use <qc-external-link> instead.
-    to assure non breaking space inter last word and icon
-  */
 }
 a:visited {
   color: var(--qc-color-link-visited);
@@ -706,7 +640,6 @@ ul ul {
   box-shadow: 0 var(--qc-box_shadow-4-offset) var(--qc-box_shadow-4-blur) var(--qc-color-box_shadow);
 }
 
-/* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
@@ -714,36 +647,6 @@ select {
   font: inherit;
 }
 
-/*
-  TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
-  TODO 2 - demander des nouvelles icône les plus neutres possibles
-  TODO 3 - faire le ménage ; certaines icones sont présentées en 2 couleaurs, ce qui est inutile depuis l'introduction de qc-icon
- */
-/*
-Return rem size from pixel size according to root font-size as define in settings
-Always use this function for rem values
-
-root font-size : 100 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1rem; }
-
-root font-size : 62.5 %,
-// foo.scss
-.foo { font-size: rem(16); }
-// foo.css
-.foo { font-size: 1.6rem; }
-*/
-/**
-Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
-le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
-Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
-qui affiche la bordure de 1px et l'outline interne de 2px.
-Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
-Tous les élémmens placés dans ce cadre son marqués comme transparents.
-De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
- */
 .qc-d-none {
   display: none !important;
 }
@@ -905,7 +808,6 @@ qc-icon {
   align-items: stretch;
 }
 
-/* TODO retirer une fois toutes les icônes remplacées par Icon dans les composants */
 .qc-icon {
   display: inline-block;
   content: "";
@@ -1025,7 +927,6 @@ qc-icon {
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
   margin-bottom: 3.2rem;
-  /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
 }
 .qc-notice .icon-container {
   display: flex;
@@ -1056,7 +957,6 @@ qc-icon {
   margin-top: var(--qc-spacer-sm) !important;
 }
 
-/* Links in a error notice (eg. error summary) */
 qc-notice[type=error] ul li a {
   color: var(--qc-color-red-regular);
 }
@@ -1280,7 +1180,6 @@ qc-search-input {
   margin-right: 0;
   padding: 0.8rem 0rem 0.8rem 0.8rem;
   border: 0;
-  /* clears the ‘X’ from Chrome */
 }
 .qc-search-input input[type=search]::-webkit-search-decoration, .qc-search-input input[type=search]::-webkit-search-cancel-button, .qc-search-input input[type=search]::-webkit-search-results-button, .qc-search-input input[type=search]::-webkit-search-results-decoration {
   display: none;

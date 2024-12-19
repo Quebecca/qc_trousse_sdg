@@ -37,7 +37,7 @@ qc-search-input {
     margin-right: 0;
     padding: rem(8) rem(0) rem(8) rem(8);
     border: 0;
-    /* clears the ‘X’ from Chrome */
+    // clears the ‘X’ from Chrome
     &::-webkit-search-decoration,
     &::-webkit-search-cancel-button,
     &::-webkit-search-results-button,

@@ -28,7 +28,7 @@
 
 
 
-  /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
+  //TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG.
   .title {
     margin: 0;
     padding: 0;
@@ -52,7 +52,7 @@
   }
 }
 
-/* Links in a error notice (eg. error summary) */
+// Links in a error notice (eg. error summary)
 qc-notice[type="error"] ul li a {
   color: token-value(color,red,regular);
   &:hover, &:focus {
