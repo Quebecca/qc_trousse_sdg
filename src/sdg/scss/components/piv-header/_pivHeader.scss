@@ -1,7 +1,40 @@
 @use "modules/tokens" as *;
 @use "modules/utils" as *;
 @use "modules/grid" as *;
-@use "pivHeaderSlots" as *;
+
+$colors : map-get($themes-tokens, light, lg, color);
+
+%piv-links {
+  &, & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    margin-left: token-value(spacer md);
+    @include media-mobile() {
+      margin-left: token-value(spacer sm);
+    }
+
+    li {
+      padding: 0;
+      margin: 0;
+      @include content-font(sm);
+    }
+
+    a {
+      font-family: token-value(font family header);
+      text-decoration: none;
+      font-size: rem(12);
+      color: map-get($colors, white);
+      font-weight: token-value(font weight regular);
+
+      &:focus, &:hover {
+        text-decoration: underline;
+        color: map-get($colors, white);
+      }
+    }
+  }
+}
 
 qc-piv-header {
   --qc-piv-header-bg: 1;
@@ -14,6 +47,169 @@ qc-piv-header {
 
   [slot=links] {
     @extend %piv-links;
+  }
+}
+
+.qc-piv-header {
+  color: map-get($colors, white);
+  .go-to-content {
+    position: relative;
+  }
+  a {
+    color: map-get($colors, white);
+    text-decoration: none;
+
+    &:hover, &:focus {
+      color: map-get($colors, white);
+      text-decoration: underline;
+    }
+  }
+
+  .piv-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      margin-right: rem(64);
+      @include media-mobile() {
+        margin: 0;
+      }
+
+      a {
+        display: block;
+      }
+
+      img {
+        height: rem(72);
+        min-width: rem(200);
+      }
+    }
+
+    .title {
+      width: 100%;
+      padding: token-value(spacer sm) 0;
+      min-height: rem(72);
+      align-items: center;
+      display: flex;
+      margin-right: rem(40);
+
+      a {
+        @include content-font(100);
+        font-family: token-value(font, family, header);
+
+        &:hover, &:focus {
+          text-decoration: underline;
+        }
+
+        .description {
+          font-size: token-value(font size sm);
+        }
+      }
+    }
+
+    .right-section {
+      min-width: fit-content;
+      display: flex;
+      align-items: center;
+
+      .links ul {
+        @extend %piv-links;
+      }
+
+      @include media-mobile() {
+        min-width: auto;
+      }
+    }
+
+    .qc-search {
+      background-image: getImageUrl(loupe-piv-droite);
+      min-width: rem(24);
+      height: rem(24);
+      span {
+        @include sr-only();
+      }
+    }
+  }
+
+  .piv-bottom {
+    .title {
+      display: none;
+    }
+    .search-zone {
+      padding-bottom: token-value(spacer md);
+    }
+  }
+}
+
+
+.go-to-content {
+  display: flex;
+  height: 0;
+
+  a {
+    @include sr-only();
+
+    &:focus {
+      top: 2px;
+      width: inherit;
+      height: 24px;
+      overflow: inherit;
+      clip: inherit;
+      white-space: inherit;
+      color: map-get($colors, white);
+      background-color: map-get($colors, blue, piv);
+      margin:0;
+    }
+  }
+}
+a:focus-visible {
+  --qc-color-link-focus-outline: white;
+  @include focus-link();
+  &:has(img) {
+    outline-offset: -2px;
+  }
+}
+
+
+@include media-tablet() {
+  .qc-piv-header {
+    .piv-top {
+      .logo img {
+        min-width: rem(175);
+        width: rem(175);
+      }
+
+      .title {
+        display: none;
+      }
+
+      .right-section {
+        min-width: rem(130);
+      }
+    }
+
+    .piv-bottom {
+      .title {
+        margin: 0;
+        display: flex;
+        padding-bottom: token-value(spacer sm);
+        @include content-font(100);
+        font-family: token-value(font, family, header);
+      }
+    }
+  }
+}
+
+@include media-mobile() {
+  .qc-piv-header {
+    .piv-top {
+      height: rem(72);
+
+      .right-section {
+        min-width: fit-content;
+      }
+    }
   }
 }
 
