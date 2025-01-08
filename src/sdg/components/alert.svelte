@@ -72,4 +72,4 @@
     </div>
 {/if}
 <link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
+      href='{Utils.cssPath}'>

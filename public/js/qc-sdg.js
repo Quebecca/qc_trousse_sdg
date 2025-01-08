@@ -1297,10 +1297,13 @@
 	class Utils {
 
 	    static assetsBasePath =
-	        new URL(document.currentScript.src).pathname
-	            .split('/')
-	            .slice(0, -2)
-	            .join('/')
+	        document
+	            .currentScript
+	            .getAttribute('sdg-assets-base-path')
+	        || new URL(document.currentScript.src).pathname
+	                    .split('/')
+	                    .slice(0, -2)
+	                    .join('/')
 	        || '.'
 	    static cssRelativePath =
 	        `${this.assetsBasePath}/css/`
@@ -1313,6 +1316,11 @@
 	            .currentScript
 	            .getAttribute('sdg-css-filename')
 	        || 'qc-sdg.min.css'
+	    static cssPath =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-css-path')
+	        || this.cssRelativePath + this.cssFileName
 	    static sharedTexts =
 	        { openInNewTab :
 	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
@@ -1555,7 +1563,7 @@
 				attr(div5, "class", div5_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0] + " qc-hash-1ciy5x1");
 				attr(div5, "tabindex", "0");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
 				insert(target, div5, anchor);
@@ -3035,7 +3043,7 @@
 				attr(div6, "role", "banner");
 				attr(div6, "class", "qc-piv-header qc-component");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
 				insert(target, div6, anchor);
@@ -4130,7 +4138,7 @@
 				t = space();
 				link = element("link");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
 				if (if_block) if_block.m(target, anchor);

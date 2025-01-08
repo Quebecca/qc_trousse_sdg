@@ -78,4 +78,4 @@
   }
 </style>
 
-<link rel='stylesheet' href='{Utils.cssRelativePath}{Utils.cssFileName}'>
+<link rel='stylesheet' href='{Utils.cssPath}'>

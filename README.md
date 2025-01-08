@@ -41,6 +41,21 @@ Un processus d’autorisation de projet numérique est en place au Secrétariat 
             src="/dist/js/qc-sdg.min.js">
 </head>
 ```
+
+Si la feuille de style se trouve ailleurs qu'au chemin relatif `../css/qc-sdg.min.css` par rapport au js, vous pouvez le préciser en ajoutant l'attribut `sdg-css-path` à la balise script :
+
+```html
+<head>
+    ...
+    <link rel="stylesheet" 
+          href="/my/path/custom.css">
+    <script defer 
+            src="/dist/js/qc-sdg.min.js"
+            sdg-css-path="/my/path/custom.css"
+    >
+</head>
+```
+
 ### Utilisation de la trousse sans le système de grille
 
 Si vous utilisez déjà un système de grille, vous pouvez intégrer la trousse sans son système de grille — la CSS sera alors moins lourde.
@@ -149,7 +164,7 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 
 ## Historique
 
-- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages ; ajout du focus pour les liens. 
+- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages ; ajout du focus pour les liens ; Ajout d'un attribut `sdg-css-path` à la balise script qui insère le js, pour pouvoir préciser le chemin vers la css du sdg. 
 - 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;

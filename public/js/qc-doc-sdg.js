@@ -66866,10 +66866,13 @@
 	class Utils {
 
 	    static assetsBasePath =
-	        new URL(document.currentScript.src).pathname
-	            .split('/')
-	            .slice(0, -2)
-	            .join('/')
+	        document
+	            .currentScript
+	            .getAttribute('sdg-assets-base-path')
+	        || new URL(document.currentScript.src).pathname
+	                    .split('/')
+	                    .slice(0, -2)
+	                    .join('/')
 	        || '.'
 	    static cssRelativePath =
 	        `${this.assetsBasePath}/css/`
@@ -66882,6 +66885,11 @@
 	            .currentScript
 	            .getAttribute('sdg-css-filename')
 	        || 'qc-sdg.min.css'
+	    static cssPath =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-css-path')
+	        || this.cssRelativePath + this.cssFileName
 	    static sharedTexts =
 	        { openInNewTab :
 	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
