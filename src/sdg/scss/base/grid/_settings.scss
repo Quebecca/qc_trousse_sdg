@@ -1,0 +1,24 @@
+@use "settings/base" as base;
+@use "settings/tokens" as *;
+@use "lib/functions" as *;
+@use "sass:map";
+// Merci ! / ty Bootstrap
+@import "../../vendor/bootstrap-rewrite/functions";
+@import "../../vendor/bootstrap-rewrite/variables";
+
+$enable-grid-classes: base.$enable-grid-classes;
+$enable-deprecation-messages : false;
+$grid-breakpoints: map.get($lg-tokens, grid, breakpoint);
+$grid-gutter-width: token-value(grid gutter);
+$container-max-widths: map.get($lg-tokens, grid, container-max-width);
+
+$spacers : (
+    0: 0,
+    1: token-value(spacer sm),
+    2: token-value(spacer md),
+    3: token-value(spacer lg),
+    4: token-value(spacer xl),
+);
+
+
+

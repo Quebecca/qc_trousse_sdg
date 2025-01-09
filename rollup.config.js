@@ -61,9 +61,8 @@ const scssOptions = {
         'src/sdg/scss',
     ],
     prependData: `
-        @use "modules/tokens" as *;
-        @use "modules/utils" as *;
-        @use "modules/grid" as *;
+        @use "qc-sdg-lib" as *;
+        
     `,
     outputStyle: dev_process ? 'expanded' : 'compressed',
     watch: ['src/sdg/scss', 'src/doc/scss']

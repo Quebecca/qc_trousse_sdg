@@ -1,10 +1,5 @@
-@use "functions/utils" as *;
-@use "tokens" as *;
-@forward "settings/settings";
-@forward "functions/utils";
-//@forward "modules/grid";
-
-// typography
+@use "sass:list";
+@use "functions" as *;
 
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
@@ -77,7 +72,11 @@
   }
 }
 
-
+@mixin dark-theme() {
+  .qc-dark-theme,:root.qc-dark-theme {
+    @content;
+  }
+}
 
 //Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
 //le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
@@ -86,6 +85,7 @@
 //Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
 //Tous les élémmens placés dans ce cadre son marqués comme transparents.
 //De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+
 @mixin qc-formcontrol-box() {
   position: relative;
   z-index: 10;
@@ -114,3 +114,16 @@
   @include qc-formcontrol-box();
 }
 
+
+@mixin map-deep-parse($map, $parents: ()) {
+  @each $key, $value in $map {
+    $path: list.append($parents, $key);
+    @if type-of($value) == 'map' {
+      @include map-deep-parse($value, $path) using($path,$value) {
+        @content($path, $value);
+      }
+    } @else {
+      @content($path, $value);
+    }
+  }
+}

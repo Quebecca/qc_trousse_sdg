@@ -1,7 +1,4 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
+@use "qc-sdg-lib" as *;
 @use "base/shadings" as *;
 
 @mixin button-border-and-padding($border-size, $padding-y, $padding-x) {

@@ -25,6 +25,7 @@ onMount(() => {
 </script>
 <span bind:this={srText}>{externalIconAlt}</span>
 <style lang="scss">
+
   // cf https://stackoverflow.com/questions/16100956/prevent-after-element-from-wrapping-to-next-line
      span {
        @include sr-only();

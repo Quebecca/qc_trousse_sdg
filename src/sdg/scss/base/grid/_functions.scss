@@ -1,0 +1,17 @@
+@use "settings" as *;
+@import "../../vendor/bootstrap-rewrite/mixins/breakpoints";
+@import "../../vendor/bootstrap-rewrite/mixins/deprecate";
+@import "../../vendor/bootstrap-rewrite/mixins/grid";
+@import "../../vendor/bootstrap-rewrite/mixins/grid-framework";
+
+@mixin media-tablet() {
+  @include media-breakpoint-down(sm) {
+    @content;
+  }
+}
+
+@mixin media-mobile() {
+  @include media-breakpoint-down(xs) {
+    @content;
+  }
+}

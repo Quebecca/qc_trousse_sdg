@@ -1,7 +1,4 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
+@use "qc-sdg-lib" as *;
 
 qc-code {
   display: block;

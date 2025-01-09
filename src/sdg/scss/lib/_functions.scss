@@ -1,24 +1,23 @@
-@use "settings/settings" as *;
+@use "../settings/base" as *;
 @use "sass:math";
 @use "sass:map";
-@use "sass:list";
 @use "sass:string";
 
 
-//Return rem size from pixel size according to root font-size as define in settings
-//Always use this function for rem values
+// Return rem size from pixel size according to root font-size as define in settings
+// Always use this function for rem values
 //
-//root font-size : 100 %,
-//// foo.scss
-//.foo { font-size: rem(16); }
-//// foo.css
-//.foo { font-size: 1rem; }
+// root font-size : 100 %,
+// /* foo.scss */
+// .foo { font-size: rem(16); }
+// /* foo.css */
+// .foo { font-size: 1rem; }
 //
-//root font-size : 62.5 %,
-//// foo.scss
-//.foo { font-size: rem(16); }
-//// foo.css
-//.foo { font-size: 1.6rem; }
+// root font-size : 62.5 %,
+// /* foo.scss */
+// .foo { font-size: rem(16); }
+// /* foo.css */
+// .foo { font-size: 1.6rem; }
 
 @function rem($px-size) {
   @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
@@ -48,14 +47,15 @@
   @return url('data:image/svg+xml;base64,#{$image}');
 }
 
-@mixin dark-theme() {
-  .qc-dark-theme,:root.qc-dark-theme {
-    @content;
-  }
+
+// Return css var corresponding to this token
+// token-value(foo bar); // var(--qc-foo-bar);
+@function token-value($args...) {
+  @return var(#{token-name($args...)});
 }
 
-@mixin control-focus() {
-  outline: 2px solid token-value(color blue medium);
+@function token-name($args...) {
+  @return --qc-#{deep-implode($args, '-')};
 }
 
 

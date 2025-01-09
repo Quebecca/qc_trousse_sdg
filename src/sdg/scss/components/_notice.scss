@@ -1,6 +1,4 @@
-@use "../modules/tokens" as *;
-@use "../modules/utils" as *;
-@use "../modules/grid" as *;
+@use "qc-sdg-lib" as *;
 
 .qc-notice {
   max-inline-size: token-value(max-content-width);
