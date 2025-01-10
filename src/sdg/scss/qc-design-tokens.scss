@@ -1,4 +1,5 @@
 @use "qc-sdg-lib" as *;
+@use "sass:map";
 
 @mixin generate-token-for-breakpoints($breakpoints-settings) {
 
@@ -12,9 +13,9 @@
 }
 
 :root {
-   @include generate-token-for-breakpoints(map-get($themes-tokens, light));
+   @include generate-token-for-breakpoints(map.get($themes-tokens, light));
 }
 
 @include dark-theme() {
-   @include generate-token-for-breakpoints(map-get($themes-tokens, dark))
+   @include generate-token-for-breakpoints(map.get($themes-tokens, dark))
 }

@@ -43,7 +43,7 @@
 }
 
 @function getImageUrl($nom, $images: $images) {
-  $image: map-get($images, $nom);
+  $image: map.get($images, $nom);
   @return url('data:image/svg+xml;base64,#{$image}');
 }
 

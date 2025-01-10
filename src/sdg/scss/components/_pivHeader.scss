@@ -1,6 +1,7 @@
 @use "qc-sdg-lib" as *;
+@use "sass:map";
 
-$colors : map-get($themes-tokens, light, lg, color);
+$colors : map.get($themes-tokens, light, lg, color);
 
 %piv-links {
   &, & ul {
@@ -23,12 +24,12 @@ $colors : map-get($themes-tokens, light, lg, color);
       font-family: token-value(font family header);
       text-decoration: none;
       font-size: rem(12);
-      color: map-get($colors, white);
+      color: map.get($colors, white);
       font-weight: token-value(font weight regular);
 
       &:focus, &:hover {
         text-decoration: underline;
-        color: map-get($colors, white);
+        color: map.get($colors, white);
       }
     }
   }
@@ -40,7 +41,7 @@ qc-piv-header {
   min-height: rem(72);
   // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
   // on se base donc sur les valeurs scss
-  background-color: map-get($colors, blue, piv);
+  background-color: map.get($colors, blue, piv);
   width: 100%;
 
   [slot=links] {
@@ -49,16 +50,16 @@ qc-piv-header {
 }
 
 .qc-piv-header {
-  color: map-get($colors, white);
+  color: map.get($colors, white);
   .go-to-content {
     position: relative;
   }
   a {
-    color: map-get($colors, white);
+    color: map.get($colors, white);
     text-decoration: none;
 
     &:hover, &:focus {
-      color: map-get($colors, white);
+      color: map.get($colors, white);
       text-decoration: underline;
     }
   }
@@ -155,8 +156,8 @@ qc-piv-header {
       overflow: inherit;
       clip: inherit;
       white-space: inherit;
-      color: map-get($colors, white);
-      background-color: map-get($colors, blue, piv);
+      color: map.get($colors, white);
+      background-color: map.get($colors, blue, piv);
       margin:0;
     }
   }
