@@ -1,4 +1,7 @@
 @use "sass:list";
+@use "sass:map";
+@use "settings/base" as *;
+
 @use "functions" as *;
 @use "base/grid/functions" as grid;
 
@@ -152,3 +155,35 @@
     @content;
   }
 }
+
+// ci-dessous override des fonctions bootstrap, pour pouvoir les utiliser avec des alias (mobile, tablet, desktop, etc)
+@mixin media-breakpoint-up($name, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $name)) {
+    $name: map.get($grid-aliases, $name);
+  }
+  @include grid.media-breakpoint-up($name, $breakpoints) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($name, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $name)) {
+    $name: map.get($grid-aliases, $name);
+  }
+  @include grid.media-breakpoint-down($name, $breakpoints) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $lower)) {
+    $lower: map.get($grid-aliases, $lower);
+  }
+  @if (map.has-key($grid-aliases, $upper)) {
+    $upper: map.get($grid-aliases, $upper);
+  }
+  @include grid.media-breakpoint-between($lower, $upper, $breakpoints) {
+    @content;
+  }
+}
+

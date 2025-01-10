@@ -3,9 +3,3 @@
 @forward "settings/tokens";
 @forward "lib/functions";
 @forward "lib/mixins";
-
-@forward "base/grid/functions"
-  show
-    media-breakpoint-down,
-    media-breakpoint-up
-;

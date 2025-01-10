@@ -11,9 +11,10 @@ $google-fonts : (
 
 $enable-grid-classes: true;
 $grid-aliases: (
-    desktop: lg,
-    tablet: md,
-    mobile: sm
+    large-desktop: lg,
+    desktop: md,
+    tablet: sm,
+    mobile: xs
 );
 
 

@@ -1,4 +1,5 @@
 @use "settings" as *;
+@forward "settings";
 @import "../../vendor/bootstrap-rewrite/mixins/breakpoints";
 @import "../../vendor/bootstrap-rewrite/mixins/deprecate";
 @import "../../vendor/bootstrap-rewrite/mixins/grid";
