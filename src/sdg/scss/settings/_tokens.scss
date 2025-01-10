@@ -1,4 +1,5 @@
 @use "base" as *;
+@use "sass:color";
 @use "lib/functions" as *;
 
 // TODO remplacer les clés avec tirets par un souligné foo-bar -> foo_bar
@@ -311,7 +312,6 @@ $themes-tokens: (
     )
   )
 ) !default;
-
 
 
 

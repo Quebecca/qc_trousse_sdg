@@ -1,5 +1,6 @@
 @use "sass:list";
 @use "functions" as *;
+@use "base/grid/functions" as grid;
 
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
@@ -125,5 +126,29 @@
     } @else {
       @content($path, $value);
     }
+  }
+}
+
+@mixin media-large-desktop() {
+  @include grid.media-breakpoint-up(lg) {
+    @content;
+  }
+}
+
+@mixin media-desktop() {
+  @include grid.media-breakpoint-up(md) {
+    @content;
+  }
+}
+
+@mixin media-tablet() {
+  @include grid.media-breakpoint-down(sm) {
+    @content;
+  }
+}
+
+@mixin media-mobile() {
+  @include grid.media-breakpoint-down(xs) {
+    @content;
   }
 }

@@ -10,6 +10,11 @@ $google-fonts : (
 );
 
 $enable-grid-classes: true;
+$grid-aliases: (
+    desktop: lg,
+    tablet: md,
+    mobile: sm
+);
 
 
   //TODO 1 -générer automatiquement cette map à partir du contenu du fichie img en javascript (avec gupl ou autre)
