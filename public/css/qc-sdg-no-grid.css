@@ -70,34 +70,55 @@
   --qc-line-height-content: var(--qc-line-height-md);
   --qc-max-content-width: 82.5rem;
   --qc-color-white: #ffffff;
+  --qc-color-white-rgb: 255, 255, 255;
   --qc-color-blue-pale: #dae6f0;
+  --qc-color-blue-pale-rgb: 218, 230, 240;
   --qc-color-blue-light: #4a98d9;
+  --qc-color-blue-light-rgb: 74, 152, 217;
   --qc-color-blue-regular_light: #2586d6;
+  --qc-color-blue-regular_light-rgb: 37, 134, 214;
   --qc-color-blue-regular: #1472bf;
-  --qc-color-blue-piv_rgb: 9, 87, 151;
+  --qc-color-blue-regular-rgb: 20, 114, 191;
   --qc-color-blue-piv: #095797;
+  --qc-color-blue-piv-rgb: 9, 87, 151;
   --qc-color-blue-medium: #19406C;
-  --qc-color-blue-dark_rgb: 34, 54, 84;
-  --qc-color-blue-dark: rgb(var(--qc-color-blue-dark_rgb));
+  --qc-color-blue-medium-rgb: 25, 64, 108;
+  --qc-color-blue-dark: #223654;
+  --qc-color-blue-dark-rgb: 34, 54, 84;
   --qc-color-purple: #6b4fa1;
+  --qc-color-purple-rgb: 107, 79, 161;
   --qc-color-grey-pale: #f1f1f2;
-  --qc-color-grey-light_rgb: 197, 202, 210;
+  --qc-color-grey-pale-rgb: 241, 241, 242;
   --qc-color-grey-light: #c5cad2;
+  --qc-color-grey-light-rgb: 197, 202, 210;
   --qc-color-grey-regular: #8893a2;
+  --qc-color-grey-regular-rgb: 136, 147, 162;
   --qc-color-grey-medium: #6b778a;
+  --qc-color-grey-medium-rgb: 107, 119, 138;
   --qc-color-grey-dark: #4e5662;
+  --qc-color-grey-dark-rgb: 78, 86, 98;
   --qc-color-pink-pale: #ffdbd6;
+  --qc-color-pink-pale-rgb: 255, 219, 214;
   --qc-color-pink-regular: #e58271;
+  --qc-color-pink-regular-rgb: 229, 130, 113;
   --qc-color-red-pale: var(--qc-color-pink-pale);
   --qc-color-red-light: var(--qc-color-pink-regular);
   --qc-color-red-regular: #cb381f;
+  --qc-color-red-regular-rgb: 203, 56, 31;
   --qc-color-red-dark: #692519;
+  --qc-color-red-dark-rgb: 105, 37, 25;
   --qc-color-green-pale: #d7f0bb;
+  --qc-color-green-pale-rgb: 215, 240, 187;
   --qc-color-green-regular: #4f813d;
+  --qc-color-green-regular-rgb: 79, 129, 61;
   --qc-color-green-dark: #2c4024;
+  --qc-color-green-dark-rgb: 44, 64, 36;
   --qc-color-yellow-pale: #f8e69a;
+  --qc-color-yellow-pale-rgb: 248, 230, 154;
   --qc-color-yellow-regular: #e0ad03;
+  --qc-color-yellow-regular-rgb: 224, 173, 3;
   --qc-color-yellow-dark: #ad781c;
+  --qc-color-yellow-dark-rgb: 173, 120, 28;
   --qc-color-background: var(--qc-color-white);
   --qc-color-text-primary: var(--qc-color-blue-dark);
   --qc-color-accent: var(--qc-color-pink-regular);
@@ -113,7 +134,7 @@
   --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
   --qc-color-formfield-focus-outline: var(--qc-color-blue-light);
   --qc-color-searchinput-icon: var(--qc-color-blue-piv);
-  --qc-color-box_shadow: rgba(var(--qc-color-blue-dark_rgb), 0.24);
+  --qc-color-box_shadow: rgba(var(--qc-color-blue-dark-rgb), 0.24);
   --qc-box_shadow-0-color: var(--qc-color-grey-light);
   --qc-box_shadow-1-blur: 4px;
   --qc-box_shadow-1-offset: 1px;
@@ -177,31 +198,53 @@
 
 .qc-dark-theme, :root.qc-dark-theme {
   --qc-color-white: #121519;
+  --qc-color-white-rgb: 18, 21, 25;
   --qc-color-blue-pale: #162B47;
+  --qc-color-blue-pale-rgb: 22, 43, 71;
   --qc-color-blue-light: #0078CC;
+  --qc-color-blue-light-rgb: 0, 120, 204;
   --qc-color-blue-regular: #3B95E1;
+  --qc-color-blue-regular-rgb: 59, 149, 225;
   --qc-color-blue-piv: #72B2EB;
+  --qc-color-blue-piv-rgb: 114, 178, 235;
   --qc-color-blue-medium: #ADCDEB;
-  --qc-color-blue-dark_rgb: 198, 219, 238;
+  --qc-color-blue-medium-rgb: 173, 205, 235;
   --qc-color-purple: #B3A5D4;
+  --qc-color-purple-rgb: 179, 165, 212;
   --qc-color-grey-pale: #1C2025;
-  --qc-color-grey-light_rgb: 59, 66, 76;
+  --qc-color-grey-pale-rgb: 28, 32, 37;
   --qc-color-grey-light: #3B424C;
+  --qc-color-grey-light-rgb: 59, 66, 76;
   --qc-color-grey-regular: #6A7688;
+  --qc-color-grey-regular-rgb: 106, 118, 136;
   --qc-color-grey-medium: #8590A8;
+  --qc-color-grey-medium-rgb: 133, 144, 168;
   --qc-color-grey-dark: #A7ACBC;
+  --qc-color-grey-dark-rgb: 167, 172, 188;
   --qc-color-pink-pale: #4F180E;
+  --qc-color-pink-pale-rgb: 79, 24, 14;
   --qc-color-pink-regular: #BB3A23;
+  --qc-color-pink-regular-rgb: 187, 58, 35;
   --qc-color-red-regular: #F26049;
+  --qc-color-red-regular-rgb: 242, 96, 73;
   --qc-color-red-dark: #F3BCB6;
+  --qc-color-red-dark-rgb: 243, 188, 182;
   --qc-color-green-pale: #1E2F17;
+  --qc-color-green-pale-rgb: 30, 47, 23;
   --qc-color-green-regular: #6E9C57;
+  --qc-color-green-regular-rgb: 110, 156, 87;
   --qc-color-green-dark: #B0D493;
+  --qc-color-green-dark-rgb: 176, 212, 147;
   --qc-color-yellow-pale: #3F240C;
+  --qc-color-yellow-pale-rgb: 63, 36, 12;
   --qc-color-yellow-regular: #6D4512;
+  --qc-color-yellow-regular-rgb: 109, 69, 18;
   --qc-color-yellow-dark: #AC7900;
+  --qc-color-yellow-dark-rgb: 172, 121, 0;
   --qc-color-text-primary: #D7D8DD;
+  --qc-color-text-primary-rgb: 215, 216, 221;
   --qc-color-accent: #F17B6C;
+  --qc-color-accent-rgb: 241, 123, 108;
 }
 
 :root {
@@ -406,20 +449,12 @@ code, .qc-code {
   background-color: var(--qc-color-blue-regular);
 }
 
-.qc-bg-color-blue-piv_rgb {
-  background-color: var(--qc-color-blue-piv_rgb);
-}
-
 .qc-bg-color-blue-piv {
   background-color: var(--qc-color-blue-piv);
 }
 
 .qc-bg-color-blue-medium {
   background-color: var(--qc-color-blue-medium);
-}
-
-.qc-bg-color-blue-dark_rgb {
-  background-color: var(--qc-color-blue-dark_rgb);
 }
 
 .qc-bg-color-blue-dark {
@@ -432,10 +467,6 @@ code, .qc-code {
 
 .qc-bg-color-grey-pale {
   background-color: var(--qc-color-grey-pale);
-}
-
-.qc-bg-color-grey-light_rgb {
-  background-color: var(--qc-color-grey-light_rgb);
 }
 
 .qc-bg-color-grey-light {
@@ -1410,11 +1441,11 @@ qc-search-bar {
 }
 .qc-search-bar.piv-background [type=submit]:focus::before {
   border-left-width: 2px;
-  background-color: rgba(var(--qc-color-grey-light_rgb), 0.24);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
 }
 .qc-search-bar.piv-background [type=submit]:hover::before {
-  background-color: rgba(var(--qc-color-grey-light_rgb), 0.24);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
 }
 .qc-search-bar.piv-background [type=submit]:active::before {
-  background-color: rgba(var(--qc-color-grey-light_rgb), 0.16);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }

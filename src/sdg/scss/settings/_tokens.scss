@@ -74,16 +74,13 @@ $lg-tokens: (
               light : #4a98d9,
               regular_light: #2586d6,
               regular : #1472bf,
-              piv_rgb: (9, 87, 151),
               piv: #095797,
               medium : #19406C,
-              dark_rgb: (34, 54, 84),
-              dark: rgb(token-value(color blue dark_rgb))
+              dark: #223654,
           ),
           purple: #6b4fa1,
           grey : (
               pale : #f1f1f2,
-              light_rgb: (197, 202, 210),
               light : #c5cad2,
               regular: #8893a2,
               medium : #6b778a,
@@ -138,7 +135,7 @@ $lg-tokens: (
         searchinput: (
           icon: token-value(color blue piv),
         ),
-        box_shadow: rgba(var(--qc-color-blue-dark_rgb), .24)
+        box_shadow: rgba(var(--qc-color-blue-dark-rgb), .24)
     ),
     box_shadow: (
         0: (
@@ -271,16 +268,13 @@ $themes-tokens: (
         blue : (
             pale : #162B47,
             light : #0078CC,
-            // regular_light est inchangé
             regular : #3B95E1,
             piv: #72B2EB,
             medium : #ADCDEB,
-            dark_rgb: (198, 219, 238),
         ),
         purple: #B3A5D4,
         grey : (
             pale : #1C2025,
-            light_rgb: (59, 66, 76),
             light : #3B424C,
             regular: #6A7688,
             medium : #8590A8,

@@ -58,6 +58,10 @@
   @return --qc-#{deep-implode($args, '-')};
 }
 
+@function rgb-token($color) {
+  @return (red($color), green($color), blue($color));
+}
+
 
 
 

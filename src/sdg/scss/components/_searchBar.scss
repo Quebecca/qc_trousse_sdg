@@ -56,17 +56,17 @@ qc-search-bar {
     &:focus {
       &::before {
         border-left-width: 2px;
-        background-color: rgba(token-value(color grey light_rgb), .24);
+        background-color: rgba(token-value(color grey light rgb), .24);
       }
     }
     &:hover {
       &::before {
-        background-color: rgba(token-value(color grey light_rgb), .24);
+        background-color: rgba(token-value(color grey light rgb), .24);
       }
     }
     &:active {
       &::before {
-        background-color: rgba(token-value(color grey light_rgb), .16);
+        background-color: rgba(token-value(color grey light rgb), .16);
       }
     }
   }

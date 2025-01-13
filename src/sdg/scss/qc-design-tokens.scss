@@ -7,6 +7,21 @@
       @include media-breakpoint-down($breakpoint) {
          @include map-deep-parse($settings) using($path,$value) {
             #{token-name($path)} : $value;
+            // pour chaque couleur définie avec un code hexa,
+            // on ajoute un token avec les coordonnées rgb
+            // par exemple : --qc-color-white: #ffffff;
+            // ajoute automatiquement --qc-color-white-rgb: 255,255,255;
+            // Ceci afin de pouvoir ajouter une transparence à une couleur
+            // avec la fonctions css rgba(), tout en permettant le changement de thème.
+            // par exemple : .foo { background-color: rgba(var(--qc-color-xxx-rgb), .23)};
+            // cette règle fonctionne quel que soit le thème clair ou sombre puisque basée
+            // sur un token.
+            @if (index($path, "color")) {
+               // ici on vérifie que la couleur commence par #
+               @if (str-index("#{$value}", '#') == 1) {
+                  #{token-name($path)}-rgb : rgb-token($value);
+               }
+            }
          }
       }
    }
