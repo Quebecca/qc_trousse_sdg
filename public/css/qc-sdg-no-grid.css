@@ -71,6 +71,7 @@
   --qc-max-content-width: 82.5rem;
   --qc-color-white: #ffffff;
   --qc-color-white-rgb: 255, 255, 255;
+  --qc-color-blue-extra-pale: var(--qc-color-blue-pale);
   --qc-color-blue-pale: #dae6f0;
   --qc-color-blue-pale-rgb: 218, 230, 240;
   --qc-color-blue-light: #4a98d9;
@@ -87,6 +88,7 @@
   --qc-color-blue-dark-rgb: 34, 54, 84;
   --qc-color-purple: #6b4fa1;
   --qc-color-purple-rgb: 107, 79, 161;
+  --qc-color-grey-extra-pale: var(--qc-color-grey-pale);
   --qc-color-grey-pale: #f1f1f2;
   --qc-color-grey-pale-rgb: 241, 241, 242;
   --qc-color-grey-light: #c5cad2;
@@ -433,6 +435,10 @@ code, .qc-code {
   background-color: var(--qc-color-white);
 }
 
+.qc-bg-color-blue-extra-pale {
+  background-color: var(--qc-color-blue-extra-pale);
+}
+
 .qc-bg-color-blue-pale {
   background-color: var(--qc-color-blue-pale);
 }
@@ -463,6 +469,10 @@ code, .qc-code {
 
 .qc-bg-color-purple {
   background-color: var(--qc-color-purple);
+}
+
+.qc-bg-color-grey-extra-pale {
+  background-color: var(--qc-color-grey-extra-pale);
 }
 
 .qc-bg-color-grey-pale {

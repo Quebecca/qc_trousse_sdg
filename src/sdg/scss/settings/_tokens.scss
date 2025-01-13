@@ -70,6 +70,7 @@ $lg-tokens: (
     color: (
           white : #ffffff,
           blue : (
+              extra-pale: token-value(color blue pale),
               pale : #dae6f0,
               light : #4a98d9,
               regular_light: #2586d6,
@@ -80,6 +81,7 @@ $lg-tokens: (
           ),
           purple: #6b4fa1,
           grey : (
+              extra-pale: token-value(color grey pale),
               pale : #f1f1f2,
               light : #c5cad2,
               regular: #8893a2,
