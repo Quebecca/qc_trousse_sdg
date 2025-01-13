@@ -2,6 +2,7 @@
 @use "sass:color";
 @use "lib/functions" as *;
 
+
 // TODO remplacer les clés avec tirets par un souligné foo-bar -> foo_bar
 // TODO générer ce fichier à partir d'un json, afin d'avoir les tokens en js
 $lg-tokens: (
