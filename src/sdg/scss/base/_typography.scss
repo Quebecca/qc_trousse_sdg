@@ -2,10 +2,7 @@
 
 @for $i from 1 through 6 {
   h#{$i}, .qc-h#{$i} {
-    @include header-font(h#{$i});
-    max-inline-size: token-value(max-content-width);
-    margin-top: token-value(spacer h#{$i} mt);
-    margin-bottom: token-value(spacer h#{$i} mb);
+    @include heading($i);
   }
 }
 

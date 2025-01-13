@@ -118,6 +118,12 @@
   @include qc-formcontrol-box();
 }
 
+@mixin heading($i) {
+  @include header-font(h#{$i});
+  max-inline-size: token-value(max-content-width);
+  margin-top: token-value(spacer h#{$i} mt);
+  margin-bottom: token-value(spacer h#{$i} mb);
+}
 
 @mixin map-deep-parse($map, $parents: ()) {
   @each $key, $value in $map {
