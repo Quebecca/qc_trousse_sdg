@@ -1,6 +1,5 @@
 // @use this file to access every variables, function, mixin or %class from Qc SDG
-//@forward "settings/base";
-//@forward "settings/tokens";
-@forward "settings/all";
+@forward "settings/base";
+@forward "settings/tokens";
 @forward "lib/functions";
 @forward "lib/mixins";
