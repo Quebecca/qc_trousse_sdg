@@ -3965,8 +3965,8 @@
 				}
 			});
 
-		const default_slot_template = /*#slots*/ ctx[11].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[10], null);
+		const default_slot_template = /*#slots*/ ctx[13].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[12], null);
 		let if_block = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
 
 		return {
@@ -3985,10 +3985,10 @@
 				html_tag.a = t1;
 				attr(div0, "class", "qc-alert-content");
 				attr(div1, "class", "qc-general-alert-elements");
-				attr(div2, "class", "qc-container");
-				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[5]);
+				attr(div2, "class", /*containerClass*/ ctx[5]);
+				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[6]);
 				attr(div3, "role", "alert");
-				attr(div3, "aria-label", /*label*/ ctx[7]);
+				attr(div3, "aria-label", /*label*/ ctx[8]);
 			},
 			m(target, anchor) {
 				insert(target, div3, anchor);
@@ -4006,7 +4006,7 @@
 
 				append(div1, t2);
 				if (if_block) if_block.m(div1, null);
-				/*div3_binding*/ ctx[12](div3);
+				/*div3_binding*/ ctx[14](div3);
 				current = true;
 			},
 			p(ctx, dirty) {
@@ -4021,15 +4021,15 @@
 				if (!current || dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
 
 				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 1024)) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 4096)) {
 						update_slot_base(
 							default_slot,
 							default_slot_template,
 							ctx,
-							/*$$scope*/ ctx[10],
+							/*$$scope*/ ctx[12],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[10])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[10], dirty, null),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[12])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[12], dirty, null),
 							null
 						);
 					}
@@ -4057,6 +4057,10 @@
 
 					check_outros();
 				}
+
+				if (!current || dirty & /*containerClass*/ 32) {
+					attr(div2, "class", /*containerClass*/ ctx[5]);
+				}
 			},
 			i(local) {
 				if (current) return;
@@ -4079,19 +4083,19 @@
 				destroy_component(icon);
 				if (default_slot) default_slot.d(detaching);
 				if (if_block) if_block.d();
-				/*div3_binding*/ ctx[12](null);
+				/*div3_binding*/ ctx[14](null);
 			}
 		};
 	}
 
-	// (62:16) {#if maskable === "true"}
+	// (74:16) {#if maskable === "true"}
 	function create_if_block_1(ctx) {
 		let iconbutton;
 		let current;
 
 		iconbutton = new IconButton({
 				props: {
-					srText: /*closeLabel*/ ctx[6],
+					srText: /*closeLabel*/ ctx[7],
 					size: "nm",
 					icon: "clear-input",
 					iconSize: "sm",
@@ -4099,7 +4103,7 @@
 				}
 			});
 
-		iconbutton.$on("click", /*hideAlert*/ ctx[8]);
+		iconbutton.$on("click", /*hideAlert*/ ctx[9]);
 
 		return {
 			c() {
@@ -4191,7 +4195,7 @@
 
 	function instance$2($$self, $$props, $$invalidate) {
 		let { $$slots: slots = {}, $$scope } = $$props;
-		let { type = "general", maskable = "", content = "", hide = "false" } = $$props;
+		let { type = "general", maskable = "", content = "", hide = "false", fullWidth = 'false' } = $$props;
 
 		let rootElement,
 			hiddenFlag,
@@ -4205,10 +4209,11 @@
 			generalLabel = Utils.getPageLanguage() === 'fr'
 			? "Information importante"
 			: "Important information",
-			label = type === 'general' ? generalLabel : warningLabel;
+			label = type === 'general' ? generalLabel : warningLabel,
+			containerClass;
 
 		function hideAlert() {
-			$$invalidate(9, hide = 'true');
+			$$invalidate(10, hide = 'true');
 			rootElement.dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
@@ -4223,13 +4228,18 @@
 			if ('type' in $$props) $$invalidate(0, type = $$props.type);
 			if ('maskable' in $$props) $$invalidate(1, maskable = $$props.maskable);
 			if ('content' in $$props) $$invalidate(2, content = $$props.content);
-			if ('hide' in $$props) $$invalidate(9, hide = $$props.hide);
-			if ('$$scope' in $$props) $$invalidate(10, $$scope = $$props.$$scope);
+			if ('hide' in $$props) $$invalidate(10, hide = $$props.hide);
+			if ('fullWidth' in $$props) $$invalidate(11, fullWidth = $$props.fullWidth);
+			if ('$$scope' in $$props) $$invalidate(12, $$scope = $$props.$$scope);
 		};
 
 		$$self.$$.update = () => {
-			if ($$self.$$.dirty & /*hide*/ 512) {
+			if ($$self.$$.dirty & /*hide*/ 1024) {
 				$$invalidate(4, hiddenFlag = hide === 'true');
+			}
+
+			if ($$self.$$.dirty & /*fullWidth*/ 2048) {
+				$$invalidate(5, containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : ''));
 			}
 		};
 
@@ -4239,11 +4249,13 @@
 			content,
 			rootElement,
 			hiddenFlag,
+			containerClass,
 			typeClass,
 			closeLabel,
 			label,
 			hideAlert,
 			hide,
+			fullWidth,
 			$$scope,
 			slots,
 			div3_binding
@@ -4258,7 +4270,8 @@
 				type: 0,
 				maskable: 1,
 				content: 2,
-				hide: 9
+				hide: 10,
+				fullWidth: 11
 			});
 		}
 
@@ -4290,16 +4303,25 @@
 		}
 
 		get hide() {
-			return this.$$.ctx[9];
+			return this.$$.ctx[10];
 		}
 
 		set hide(hide) {
 			this.$$set({ hide });
 			flush();
 		}
+
+		get fullWidth() {
+			return this.$$.ctx[11];
+		}
+
+		set fullWidth(fullWidth) {
+			this.$$set({ fullWidth });
+			flush();
+		}
 	}
 
-	customElements.define("qc-alert", create_custom_element(Alert, {"type":{},"maskable":{},"content":{},"hide":{}}, ["default"], [], true));
+	customElements.define("qc-alert", create_custom_element(Alert, {"type":{"attribute":"type"},"maskable":{"attribute":"maskable"},"content":{"attribute":"content"},"hide":{"attribute":"hide"},"fullWidth":{"attribute":"full-width"}}, ["default"], [], true));
 
 	/* src/sdg/components/toTop.svelte generated by Svelte v4.2.12 */
 

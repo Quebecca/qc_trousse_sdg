@@ -1,4 +1,13 @@
-<svelte:options customElement="qc-alert"/>
+<svelte:options customElement="{{
+  tag:'qc-alert',
+  props: {
+     type  : {attribute: 'type'},
+     maskable  : {attribute: 'maskable'},
+     fullWidth : {attribute: 'full-width'},
+     content: {attribute: 'content'},
+     hide: {attribute: 'hide'},
+  }
+}}"/>
 
 <script>
     import {Utils} from "./utils";
@@ -10,6 +19,7 @@
         , maskable = ""
         , content = ""
         , hide = "false"
+        , fullWidth = 'false'
         ;
 
     let
@@ -30,9 +40,11 @@
         , label = type === 'general'
                         ? generalLabel
                         : warningLabel
+        , containerClass
         ;
 
     $: hiddenFlag = hide === 'true'
+    $: containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
     function hideAlert() {
         hide='true'
@@ -49,7 +61,7 @@
         class="qc-general-alert {typeClass}"
         role="alert"
         aria-label={label}>
-        <div class="qc-container">
+        <div class={containerClass}>
             <div class="qc-general-alert-elements">
                 <Icon type={type == 'warning' ? 'warning' : 'information'}
                       color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
