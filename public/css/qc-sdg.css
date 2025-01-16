@@ -1392,6 +1392,7 @@ a:focus-visible:has(img) {
   }
 }
 qc-piv-footer ul {
+  max-inline-size: none;
   margin: 0 0 var(--qc-spacer-sm) 0;
   padding: 0;
   width: 100%;

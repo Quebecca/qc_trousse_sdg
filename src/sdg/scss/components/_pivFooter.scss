@@ -4,6 +4,7 @@
 qc-piv-footer {
 
   ul {
+    max-inline-size: none;
     margin: 0 0 token-value(spacer sm) 0;
     padding: 0;
     width: 100%;
