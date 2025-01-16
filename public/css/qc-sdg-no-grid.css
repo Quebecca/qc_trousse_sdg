@@ -1414,7 +1414,6 @@ qc-piv-footer ul li a:hover {
 }
 
 .qc-general-alert {
-  max-inline-size: var(--qc-max-content-width);
   padding: var(--qc-spacer-md) var(--qc-spacer-sm);
 }
 @media (max-width: 767.98px) {
@@ -1424,7 +1423,6 @@ qc-piv-footer ul li a:hover {
 }
 .qc-general-alert .qc-general-alert-elements {
   display: flex;
-  padding: 0;
 }
 .qc-general-alert.warning {
   background-color: var(--qc-color-yellow-pale);
@@ -1472,6 +1470,9 @@ qc-piv-footer ul li a:hover {
   background: transparent;
 }
 
+qc-alert * {
+  max-inline-size: none;
+}
 qc-alert [slot] *, qc-alert:not([slot=content]) * {
   margin-bottom: 0;
 }

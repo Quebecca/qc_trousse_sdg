@@ -1,7 +1,6 @@
 @use "qc-sdg-lib" as *;
 
 .qc-general-alert {
-  max-inline-size: token-value(max-content-width);
   padding: token-value(spacer, md) token-value(spacer, sm);
 
   @include media-mobile() {
@@ -10,7 +9,6 @@
 
   .qc-general-alert-elements {
     display: flex;
-    padding: 0;
   }
 
   &.warning {
@@ -42,6 +40,9 @@
 }
 
 qc-alert {
+  * {
+      max-inline-size: none;
+  }
   [slot], &:not([slot=content]) {
     * {
       margin-bottom: 0;
