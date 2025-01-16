@@ -5,15 +5,27 @@ qc-icon {
   align-items: stretch;
 }
 
+
+
+
 // TODO retirer une fois toutes les icônes remplacées par Icon dans les composants
 .qc-icon {
   display: inline-block;
-  content: "";
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100% auto;
-  min-width: 32px;
-  height: 32px;
+  flex-shrink: 0;
+  // TODO questionner une échelle [0 - 10 ou 100]
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      height: rem($size);
+      width: rem($size);
+    }
+  }
+  background-color: var(--img-color);
+  @each $name, $url in $images {
+    &[data-img-type=#{$name}] {
+      mask: getImageUrl($name) no-repeat;
+      mask-size: 100% 100%;
+    }
+  }
 
   &.qc-icon-sm {
     min-width: 12px;

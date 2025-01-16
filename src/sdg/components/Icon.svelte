@@ -17,6 +17,7 @@
     ;
 </script>
 <div role="img"
+     class="qc-icon"
      aria-label={label}
      data-img-size="{size}"
      style="--img-color:var(--qc-color-{color});"
@@ -24,23 +25,3 @@
      {...$$restProps}
     >
 </div>
-<style lang="scss">
-    [role=img] {
-      display: inline-block;
-      flex-shrink: 0;
-      // TODO questionner une échelle [0 - 10 ou 100]
-      @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
-        &[data-img-size=#{$size-type}] {
-          height: rem($size);
-          width: rem($size);
-        }
-      }
-      background-color: var(--img-color);
-      @each $name, $url in $images {
-        &[data-img-type=#{$name}] {
-          mask: getImageUrl($name) no-repeat;
-          mask-size: 100% 100%;
-        }
-      }
-    }
-</style>
