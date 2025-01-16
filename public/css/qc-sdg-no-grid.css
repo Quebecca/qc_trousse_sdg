@@ -1418,7 +1418,7 @@ qc-piv-footer ul li a:hover {
 }
 @media (max-width: 767.98px) {
   .qc-general-alert {
-    padding: var(--qc-spacer-sm);
+    padding: var(--qc-spacer-sm) 0;
   }
 }
 .qc-general-alert .qc-general-alert-elements {
