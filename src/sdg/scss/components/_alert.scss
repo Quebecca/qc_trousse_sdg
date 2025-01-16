@@ -4,7 +4,7 @@
   padding: token-value(spacer, md) 0;
 
   @include media-mobile() {
-    padding: token-value(spacer, sm);
+    padding: token-value(spacer, sm) 0;
   }
 
   .qc-general-alert-elements {
