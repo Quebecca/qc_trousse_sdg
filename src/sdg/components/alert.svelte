@@ -50,28 +50,24 @@
         role="alert"
         aria-label={label}>
         <div class="qc-container">
-            <div class="qc-row">
-                <div class="qc-col-12">
-                    <div class="qc-general-alert-elements">
-                        <Icon type={type == 'warning' ? 'warning' : 'information'}
-                              color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
-                              size="nm"
-                        />
-                        <div class="qc-alert-content">
-                            {@html content}
-                            <slot />
-                        </div>
-                        {#if maskable === "true"}
-                            <IconButton srText={closeLabel}
-                                        on:click={hideAlert}
-                                        size="nm"
-                                        icon="clear-input"
-                                        iconSize="sm"
-                                        iconColor="text-primary"
-                            />
-                        {/if}
-                    </div>
+            <div class="qc-general-alert-elements">
+                <Icon type={type == 'warning' ? 'warning' : 'information'}
+                      color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
+                      size="nm"
+                />
+                <div class="qc-alert-content">
+                    {@html content}
+                    <slot />
                 </div>
+                {#if maskable === "true"}
+                    <IconButton srText={closeLabel}
+                                on:click={hideAlert}
+                                size="nm"
+                                icon="clear-input"
+                                iconSize="sm"
+                                iconColor="text-primary"
+                    />
+                {/if}
             </div>
         </div>
     </div>
