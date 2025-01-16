@@ -1470,9 +1470,6 @@ qc-piv-footer ul li a:hover {
   background: transparent;
 }
 
-qc-alert * {
-  max-inline-size: none;
-}
 qc-alert [slot] *, qc-alert:not([slot=content]) * {
   margin-bottom: 0;
 }

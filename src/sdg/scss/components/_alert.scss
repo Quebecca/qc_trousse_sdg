@@ -40,9 +40,6 @@
 }
 
 qc-alert {
-  * {
-      max-inline-size: none;
-  }
   [slot], &:not([slot=content]) {
     * {
       margin-bottom: 0;
