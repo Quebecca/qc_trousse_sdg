@@ -1,5 +1,14 @@
 @use "base/grid/settings" as *;
 @use "base/grid/functions" as *;
+
+$spacers : (
+    0: 0,
+    1: token-value(spacer sm),
+    2: token-value(spacer md),
+    3: token-value(spacer lg),
+    4: token-value(spacer xl),
+);
+
 @import "vendor/bootstrap-rewrite/utilities/display";
 //@import "vendor/bootstrap-rewrite/mixins/deprecate";
 
