@@ -166,8 +166,6 @@
   --qc-spacer-h6-mb: 0;
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
-  --qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
-  --qc-spacer-list-embedded-mb: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
   --qc-spacer-notice-my: var(--qc-spacer-md);
   --qc-spacer-notice-mx: 3.2rem;
@@ -654,16 +652,19 @@ ul {
   max-inline-size: var(--qc-max-content-width);
   list-style: disc;
   margin-top: 0;
-  margin-bottom: var(--qc-spacer-list-mb);
+  margin-bottom: var(--qc-spacer-content-block-mb);
   padding-left: var(--qc-spacer-list-pl);
 }
 ul li {
   margin-bottom: var(--qc-spacer-list-item-mb);
 }
 ul ul {
-  margin-top: var(--qc-spacer-list-item-mb);
-  margin-bottom: var(--qc-spacer-list-embedded-mb);
+  margin-top: 0;
+  margin-bottom: 0;
   list-style: circle;
+}
+ul ul > li:first-child {
+  margin-top: var(--qc-spacer-list-item-mb);
 }
 
 .qc-shading-0 {

@@ -8,14 +8,17 @@ ul {
     max-inline-size: token-value(max-content-width);
     list-style: disc;
     margin-top: 0;
-    margin-bottom: token-value(spacer list mb);
+    margin-bottom: token-value(spacer content-block mb);
     padding-left: token-value(spacer list pl);
     li {
         margin-bottom: token-value(spacer list-item mb);
     }
     ul {
-        margin-top: token-value(spacer list-item mb);
-        margin-bottom: token-value(spacer list embedded-mb);
+        margin-top: 0;
+        margin-bottom: 0;
         list-style: circle;
+        & > li:first-child {
+            margin-top: token-value(spacer list-item mb);
+        }
     }
 }
