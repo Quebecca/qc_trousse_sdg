@@ -28,7 +28,7 @@ export let
         <span class="button-text">{text}</span>
     {/if}
     {#if srText}
-        <span class="sr-only">{srText}</span>
+        <span class="qc-sr-only">{srText}</span>
     {/if}
 </button>
 

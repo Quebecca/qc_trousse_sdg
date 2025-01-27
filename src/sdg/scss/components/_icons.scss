@@ -165,9 +165,6 @@ qc-icon {
       &[data-button-size=#{$size-type}] {
         height: rem($size);
         width: rem($size);
-        .sr-only {
-          @include sr-only();
-        }
       }
     }
   }

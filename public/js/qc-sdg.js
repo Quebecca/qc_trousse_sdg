@@ -1852,7 +1852,7 @@
 			c() {
 				span = element("span");
 				t = text(/*srText*/ ctx[1]);
-				attr(span, "class", "sr-only");
+				attr(span, "class", "qc-sr-only");
 			},
 			m(target, anchor) {
 				insert(target, span, anchor);

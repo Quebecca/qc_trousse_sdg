@@ -689,6 +689,18 @@ select {
   font: inherit;
 }
 
+.qc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .qc-d-none {
   display: none !important;
 }
@@ -1151,76 +1163,21 @@ qc-icon {
   height: 1.6rem;
   width: 1.6rem;
 }
-.qc-icon-button[data-button-size=sm] .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
 .qc-icon-button[data-button-size=md] {
   height: 2rem;
   width: 2rem;
-}
-.qc-icon-button[data-button-size=md] .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 .qc-icon-button[data-button-size=nm] {
   height: 2.4rem;
   width: 2.4rem;
 }
-.qc-icon-button[data-button-size=nm] .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
 .qc-icon-button[data-button-size=lg] {
   height: 3.2rem;
   width: 3.2rem;
 }
-.qc-icon-button[data-button-size=lg] .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
 .qc-icon-button[data-button-size=xl] {
   height: 4rem;
   width: 4rem;
-}
-.qc-icon-button[data-button-size=xl] .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 .qc-notice {
