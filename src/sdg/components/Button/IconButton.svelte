@@ -15,6 +15,7 @@ export let
 <button on:click
         {...$$restProps}
         data-button-size={size}
+        class="qc-icon-button"
     >
     {#if icon}
     <Icon type="{icon}"
@@ -31,22 +32,3 @@ export let
     {/if}
 </button>
 
-<style lang="scss">
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    @each $size-type, $size in ( sm: 16, md: 20, nm: 24, lg: 32, xl: 40) {
-      &[data-button-size=#{$size-type}] {
-        height: rem($size);
-        width: rem($size);
-      }
-    }
-  }
-
-  .sr-only {
-    @include sr-only();
-  }
-
-</style>

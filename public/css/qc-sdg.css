@@ -209,6 +209,8 @@
   --qc-color-blue-piv-rgb: 114, 178, 235;
   --qc-color-blue-medium: #ADCDEB;
   --qc-color-blue-medium-rgb: 173, 205, 235;
+  --qc-color-blue-dark: #C6DBEE;
+  --qc-color-blue-dark-rgb: 198, 219, 238;
   --qc-color-purple: #B3A5D4;
   --qc-color-purple-rgb: 179, 165, 212;
   --qc-color-grey-pale: #1C2025;
@@ -1137,6 +1139,88 @@ qc-icon {
 }
 .qc-icon.qc-search-submit {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42OCA1Mi4yMyI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiMyMjM2NTQ7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxnIGlkPSJDYWxxdWVfMi0yIiBkYXRhLW5hbWU9IkNhbHF1ZSAyIj48ZyBpZD0iQ2FscXVlXzEtMi0yIiBkYXRhLW5hbWU9IkNhbHF1ZSAxLTIiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY4LDQ3LjgzbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjksNTIuMjNaTTIwLjc5LDM1LjM4QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjIsMjFWMjFoMEExNC40MywxNC40MywwLDAsMSwyMC43OSwzNS4zOFoiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+");
+}
+
+.qc-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.qc-icon-button[data-button-size=sm] {
+  height: 1.6rem;
+  width: 1.6rem;
+}
+.qc-icon-button[data-button-size=sm] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.qc-icon-button[data-button-size=md] {
+  height: 2rem;
+  width: 2rem;
+}
+.qc-icon-button[data-button-size=md] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.qc-icon-button[data-button-size=nm] {
+  height: 2.4rem;
+  width: 2.4rem;
+}
+.qc-icon-button[data-button-size=nm] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.qc-icon-button[data-button-size=lg] {
+  height: 3.2rem;
+  width: 3.2rem;
+}
+.qc-icon-button[data-button-size=lg] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.qc-icon-button[data-button-size=xl] {
+  height: 4rem;
+  width: 4rem;
+}
+.qc-icon-button[data-button-size=xl] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .qc-notice {
