@@ -643,11 +643,6 @@ figcaption p:last-child {
   margin-bottom: 0;
 }
 
-dl,
-dd {
-  margin: 0;
-}
-
 ul {
   max-inline-size: var(--qc-max-content-width);
   list-style: disc;
@@ -657,14 +652,12 @@ ul {
 }
 ul li {
   margin-bottom: var(--qc-spacer-list-item-mb);
+  margin-top: var(--qc-spacer-list-item-mb);
 }
 ul ul {
   margin-top: 0;
   margin-bottom: 0;
   list-style: circle;
-}
-ul ul > li:first-child {
-  margin-top: var(--qc-spacer-list-item-mb);
 }
 
 .qc-shading-0 {

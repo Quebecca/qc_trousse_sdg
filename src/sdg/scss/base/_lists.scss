@@ -1,8 +1,4 @@
 @use "qc-sdg-lib" as *;
-dl,
-dd {
-    margin: 0;
-}
 
 ul {
     max-inline-size: token-value(max-content-width);
@@ -12,13 +8,14 @@ ul {
     padding-left: token-value(spacer list pl);
     li {
         margin-bottom: token-value(spacer list-item mb);
+        margin-top: token-value(spacer list-item mb);
     }
     ul {
         margin-top: 0;
         margin-bottom: 0;
         list-style: circle;
-        & > li:first-child {
-            margin-top: token-value(spacer list-item mb);
-        }
+        //& > li:first-child {
+        //    margin-top: token-value(spacer list-item mb);
+        //}
     }
 }
