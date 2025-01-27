@@ -562,6 +562,7 @@ table.qc-table {
   background-color: var(--qc-color-white);
   width: 100%;
   max-width: 100%;
+  min-width: var(--qc-max-content-width);
   overflow: auto;
   border-collapse: collapse;
   /* ----- Striped tables ----- */
@@ -723,6 +724,6 @@ dl dd {
 }
 
 .table-overflow {
-  max-width: var(--qc-max-content-width);
+  width: 100%;
   overflow-x: auto;
 }

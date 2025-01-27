@@ -136,7 +136,8 @@ dl {
 }
 
 .table-overflow {
-  max-width: token-value(max-content-width);
+  width: 100%;
   overflow-x: auto;
+
 }
 

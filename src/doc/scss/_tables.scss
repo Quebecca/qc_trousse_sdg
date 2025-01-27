@@ -5,6 +5,7 @@ table.qc-table {
   background-color: token-value(color,white);
   width: 100%;
   max-width: 100%;
+  min-width: token-value(max-content-width);
   overflow: auto;
   border-collapse: collapse;
 
