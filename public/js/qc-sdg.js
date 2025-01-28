@@ -2308,16 +2308,16 @@
 
 	function get_if_ctx(ctx) {
 		const child_ctx = ctx.slice();
-		const constants_0 = /*submitName*/ child_ctx[2];
-		child_ctx[6] = constants_0;
-		const constants_1 = /*submitValue*/ child_ctx[1];
-		child_ctx[5] = constants_1;
-		const constants_2 = /*submitSrText*/ child_ctx[3];
+		const constants_0 = /*submitName*/ child_ctx[3];
+		child_ctx[7] = constants_0;
+		const constants_1 = /*submitValue*/ child_ctx[2];
+		child_ctx[6] = constants_1;
+		const constants_2 = /*submitSrText*/ child_ctx[4];
 		child_ctx[10] = constants_2;
 		return child_ctx;
 	}
 
-	// (47:4) {#if true}
+	// (48:4) {#if true}
 	function create_if_block$2(ctx) {
 		let iconbutton;
 		let current;
@@ -2325,10 +2325,10 @@
 		iconbutton = new IconButton({
 				props: {
 					type: "submit",
-					name: /*name*/ ctx[6],
-					value: /*value*/ ctx[5],
+					name: /*name*/ ctx[7],
+					value: /*value*/ ctx[6],
 					srText: /*srText*/ ctx[10],
-					iconColor: /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background',
+					iconColor: /*pivBackground*/ ctx[5] ? 'blue-piv' : 'background',
 					icon: "loupe-piv-fine",
 					iconSize: "md"
 				}
@@ -2344,10 +2344,10 @@
 			},
 			p(ctx, dirty) {
 				const iconbutton_changes = {};
-				if (dirty & /*submitName*/ 4) iconbutton_changes.name = /*name*/ ctx[6];
-				if (dirty & /*submitValue*/ 2) iconbutton_changes.value = /*value*/ ctx[5];
-				if (dirty & /*submitSrText*/ 8) iconbutton_changes.srText = /*srText*/ ctx[10];
-				if (dirty & /*pivBackground*/ 16) iconbutton_changes.iconColor = /*pivBackground*/ ctx[4] ? 'blue-piv' : 'background';
+				if (dirty & /*submitName*/ 8) iconbutton_changes.name = /*name*/ ctx[7];
+				if (dirty & /*submitValue*/ 4) iconbutton_changes.value = /*value*/ ctx[6];
+				if (dirty & /*submitSrText*/ 16) iconbutton_changes.srText = /*srText*/ ctx[10];
+				if (dirty & /*pivBackground*/ 32) iconbutton_changes.iconColor = /*pivBackground*/ ctx[5] ? 'blue-piv' : 'background';
 				iconbutton.$set(iconbutton_changes);
 			},
 			i(local) {
@@ -2372,10 +2372,11 @@
 		let current;
 
 		const searchinput_spread_levels = [
-			{ value: /*value*/ ctx[5] },
-			{ name: /*name*/ ctx[6] },
-			{ ariaLabel: /*ariaLabel*/ ctx[0] },
-			/*$$restProps*/ ctx[7]
+			{ value: /*value*/ ctx[6] },
+			{ name: /*name*/ ctx[7] },
+			{ ariaLabel: /*ariaLabel*/ ctx[1] },
+			{ placeholder: /*placeholder*/ ctx[0] },
+			/*$$restProps*/ ctx[8]
 		];
 
 		let searchinput_props = {};
@@ -2394,7 +2395,7 @@
 				t = space();
 				if (if_block) if_block.c();
 				attr(div, "class", "qc-search-bar");
-				toggle_class(div, "piv-background", /*pivBackground*/ ctx[4]);
+				toggle_class(div, "piv-background", /*pivBackground*/ ctx[5]);
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
@@ -2404,20 +2405,21 @@
 				current = true;
 			},
 			p(ctx, [dirty]) {
-				const searchinput_changes = (dirty & /*value, name, ariaLabel, $$restProps*/ 225)
+				const searchinput_changes = (dirty & /*value, name, ariaLabel, placeholder, $$restProps*/ 451)
 				? get_spread_update(searchinput_spread_levels, [
-						dirty & /*value*/ 32 && { value: /*value*/ ctx[5] },
-						dirty & /*name*/ 64 && { name: /*name*/ ctx[6] },
-						dirty & /*ariaLabel*/ 1 && { ariaLabel: /*ariaLabel*/ ctx[0] },
-						dirty & /*$$restProps*/ 128 && get_spread_object(/*$$restProps*/ ctx[7])
+						dirty & /*value*/ 64 && { value: /*value*/ ctx[6] },
+						dirty & /*name*/ 128 && { name: /*name*/ ctx[7] },
+						dirty & /*ariaLabel*/ 2 && { ariaLabel: /*ariaLabel*/ ctx[1] },
+						dirty & /*placeholder*/ 1 && { placeholder: /*placeholder*/ ctx[0] },
+						dirty & /*$$restProps*/ 256 && get_spread_object(/*$$restProps*/ ctx[8])
 					])
 				: {};
 
 				searchinput.$set(searchinput_changes);
 				if_block.p(get_if_ctx(ctx), dirty);
 
-				if (!current || dirty & /*pivBackground*/ 16) {
-					toggle_class(div, "piv-background", /*pivBackground*/ ctx[4]);
+				if (!current || dirty & /*pivBackground*/ 32) {
+					toggle_class(div, "piv-background", /*pivBackground*/ ctx[5]);
 				}
 			},
 			i(local) {
@@ -2453,18 +2455,19 @@
 
 		$$self.$$set = $$new_props => {
 			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
-			$$invalidate(7, $$restProps = compute_rest_props($$props, omit_props_names));
-			if ('value' in $$new_props) $$invalidate(5, value = $$new_props.value);
-			if ('name' in $$new_props) $$invalidate(6, name = $$new_props.name);
-			if ('placeholder' in $$new_props) $$invalidate(8, placeholder = $$new_props.placeholder);
-			if ('ariaLabel' in $$new_props) $$invalidate(0, ariaLabel = $$new_props.ariaLabel);
-			if ('submitValue' in $$new_props) $$invalidate(1, submitValue = $$new_props.submitValue);
-			if ('submitName' in $$new_props) $$invalidate(2, submitName = $$new_props.submitName);
-			if ('submitSrText' in $$new_props) $$invalidate(3, submitSrText = $$new_props.submitSrText);
-			if ('pivBackground' in $$new_props) $$invalidate(4, pivBackground = $$new_props.pivBackground);
+			$$invalidate(8, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('value' in $$new_props) $$invalidate(6, value = $$new_props.value);
+			if ('name' in $$new_props) $$invalidate(7, name = $$new_props.name);
+			if ('placeholder' in $$new_props) $$invalidate(0, placeholder = $$new_props.placeholder);
+			if ('ariaLabel' in $$new_props) $$invalidate(1, ariaLabel = $$new_props.ariaLabel);
+			if ('submitValue' in $$new_props) $$invalidate(2, submitValue = $$new_props.submitValue);
+			if ('submitName' in $$new_props) $$invalidate(3, submitName = $$new_props.submitName);
+			if ('submitSrText' in $$new_props) $$invalidate(4, submitSrText = $$new_props.submitSrText);
+			if ('pivBackground' in $$new_props) $$invalidate(5, pivBackground = $$new_props.pivBackground);
 		};
 
 		return [
+			placeholder,
 			ariaLabel,
 			submitValue,
 			submitName,
@@ -2472,8 +2475,7 @@
 			pivBackground,
 			value,
 			name,
-			$$restProps,
-			placeholder
+			$$restProps
 		];
 	}
 
@@ -2482,19 +2484,19 @@
 			super();
 
 			init(this, options, instance$5, create_fragment$5, safe_not_equal, {
-				value: 5,
-				name: 6,
-				placeholder: 8,
-				ariaLabel: 0,
-				submitValue: 1,
-				submitName: 2,
-				submitSrText: 3,
-				pivBackground: 4
+				value: 6,
+				name: 7,
+				placeholder: 0,
+				ariaLabel: 1,
+				submitValue: 2,
+				submitName: 3,
+				submitSrText: 4,
+				pivBackground: 5
 			});
 		}
 
 		get value() {
-			return this.$$.ctx[5];
+			return this.$$.ctx[6];
 		}
 
 		set value(value) {
@@ -2503,7 +2505,7 @@
 		}
 
 		get name() {
-			return this.$$.ctx[6];
+			return this.$$.ctx[7];
 		}
 
 		set name(name) {
@@ -2512,7 +2514,7 @@
 		}
 
 		get placeholder() {
-			return this.$$.ctx[8];
+			return this.$$.ctx[0];
 		}
 
 		set placeholder(placeholder) {
@@ -2521,7 +2523,7 @@
 		}
 
 		get ariaLabel() {
-			return this.$$.ctx[0];
+			return this.$$.ctx[1];
 		}
 
 		set ariaLabel(ariaLabel) {
@@ -2530,7 +2532,7 @@
 		}
 
 		get submitValue() {
-			return this.$$.ctx[1];
+			return this.$$.ctx[2];
 		}
 
 		set submitValue(submitValue) {
@@ -2539,7 +2541,7 @@
 		}
 
 		get submitName() {
-			return this.$$.ctx[2];
+			return this.$$.ctx[3];
 		}
 
 		set submitName(submitName) {
@@ -2548,7 +2550,7 @@
 		}
 
 		get submitSrText() {
-			return this.$$.ctx[3];
+			return this.$$.ctx[4];
 		}
 
 		set submitSrText(submitSrText) {
@@ -2557,7 +2559,7 @@
 		}
 
 		get pivBackground() {
-			return this.$$.ctx[4];
+			return this.$$.ctx[5];
 		}
 
 		set pivBackground(pivBackground) {

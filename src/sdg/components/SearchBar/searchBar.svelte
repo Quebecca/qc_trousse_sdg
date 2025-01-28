@@ -42,6 +42,7 @@
     <SearchInput {value}
                  {name}
                  {ariaLabel}
+                 {placeholder}
                  {...$$restProps}
     />
     {#if true}
