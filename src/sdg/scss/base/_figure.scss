@@ -12,9 +12,8 @@ img {
 }
 
 figure {
-  margin: 0;
-  display: inline-block;
-  flex-direction: column;
+  margin: 0 0 token-value(spacer content-block mb);
+  display: block;
   overflow-x: auto;
   img {
     height: auto;

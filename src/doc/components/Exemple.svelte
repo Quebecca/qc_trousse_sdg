@@ -65,7 +65,7 @@
       @include qc-shading(0);
       margin-bottom: token-value(spacer content-block mb);
       .exemple {
-        padding: token-value(spacer sm)
+        padding: token-value(spacer sm) token-value(spacer sm) 0 token-value(spacer sm);
       }
     }
 </style>

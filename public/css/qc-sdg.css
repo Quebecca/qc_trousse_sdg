@@ -619,9 +619,8 @@ img {
 }
 
 figure {
-  margin: 0;
-  display: inline-block;
-  flex-direction: column;
+  margin: 0 0 var(--qc-spacer-content-block-mb);
+  display: block;
   overflow-x: auto;
 }
 figure img {
