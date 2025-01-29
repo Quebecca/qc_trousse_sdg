@@ -70,3 +70,12 @@ a {
 code, .qc-code {
   font-family: token-value(font, family, code);
 }
+
+// pour les très petites résolutions, on ajoute des tirets aux mots.
+@media (max-width: 320px) {
+  body {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
