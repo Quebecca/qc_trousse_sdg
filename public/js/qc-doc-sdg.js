@@ -973,7 +973,7 @@
 				this.$$cn = false;
 				// In a microtask, because this could be a move within the DOM
 				Promise.resolve().then(() => {
-					if (!this.$$cn) {
+					if (!this.$$cn && this.$$c) {
 						this.$$c.$destroy();
 						this.$$c = undefined;
 					}
@@ -2718,7 +2718,7 @@
 	  return mode;
 	}
 
-	var version = "11.9.0";
+	var version = "11.11.1";
 
 	class HTMLInjectionError extends Error {
 	  constructor(reason, html) {
@@ -3245,6 +3245,7 @@
 	      // first handler (when ignoreIllegals is true)
 	      if (match.type === "illegal" && lexeme === "") {
 	        // advance so we aren't stuck in an infinite loop
+	        modeBuffer += "\n";
 	        return 1;
 	      }
 
@@ -3538,24 +3539,23 @@
 	   * auto-highlights all pre>code elements on the page
 	   */
 	  function highlightAll() {
+	    function boot() {
+	      // if a highlight was requested before DOM was loaded, do now
+	      highlightAll();
+	    }
+
 	    // if we are called too early in the loading process
 	    if (document.readyState === "loading") {
+	      // make sure the event listener is only added once
+	      if (!wantsHighlight) {
+	        window.addEventListener('DOMContentLoaded', boot, false);
+	      }
 	      wantsHighlight = true;
 	      return;
 	    }
 
 	    const blocks = document.querySelectorAll(options.cssSelector);
 	    blocks.forEach(highlightElement);
-	  }
-
-	  function boot() {
-	    // if a highlight was requested before DOM was loaded, do now
-	    if (wantsHighlight) highlightAll();
-	  }
-
-	  // make sure we are in the browser environment
-	  if (typeof window !== 'undefined' && window.addEventListener) {
-	    window.addEventListener('DOMContentLoaded', boot, false);
 	  }
 
 	  /**
@@ -4215,6 +4215,12 @@
 		    ]
 		  };
 
+		  const PUNCTUATION = {
+		    match: /[;()+\-:=,]/,
+		    className: "punctuation",
+		    relevance: 0
+		  };
+
 		  // comment : комментарии
 		  const COMMENTS = hljs.inherit(hljs.C_LINE_COMMENT_MODE);
 
@@ -4301,7 +4307,8 @@
 		      SYMBOL,
 		      NUMBERS,
 		      STRINGS,
-		      DATE
+		      DATE,
+		      PUNCTUATION
 		    ]
 		  };
 		}
@@ -4314,6 +4321,7 @@
 	Language: Augmented Backus-Naur Form
 	Author: Alex McKibben <alex@nullscope.net>
 	Website: https://tools.ietf.org/html/rfc5234
+	Category: syntax
 	Audit: 2020
 	*/
 
@@ -5207,6 +5215,10 @@
 		          keywords: { literal: 'on off all deny allow' },
 		          contains: [
 		            {
+		              scope: "punctuation",
+		              match: /\\\n/
+		            },
+		            {
 		              className: 'meta',
 		              begin: /\s\[/,
 		              end: /\]$/
@@ -5396,7 +5408,6 @@
 	/*
 	 Language: ArcGIS Arcade
 	 Category: scripting
-	 Author: John Foster <jfoster@esri.com>
 	 Website: https://developers.arcgis.com/arcade/
 	 Description: ArcGIS Arcade is an expression language used in many Esri ArcGIS products such as Pro, Online, Server, Runtime, JavaScript, and Python
 	*/
@@ -5409,34 +5420,45 @@
 		hasRequiredArcade = 1;
 		/** @type LanguageFn */
 		function arcade(hljs) {
+		  const regex = hljs.regex;
 		  const IDENT_RE = '[A-Za-z_][0-9A-Za-z_]*';
 		  const KEYWORDS = {
 		    keyword: [
-		      "if",
-		      "for",
-		      "while",
-		      "var",
-		      "new",
-		      "function",
+		      "break",
+		      "case",
+		      "catch",
+		      "continue",
+		      "debugger",
 		      "do",
-		      "return",
-		      "void",
 		      "else",
-		      "break"
+		      "export",
+		      "for",
+		      "function",
+		      "if",
+		      "import",
+		      "in",
+		      "new",
+		      "of",
+		      "return",
+		      "switch",
+		      "try",
+		      "var",
+		      "void",
+		      "while"
 		    ],
 		    literal: [
 		      "BackSlash",
 		      "DoubleQuote",
-		      "false",
 		      "ForwardSlash",
 		      "Infinity",
 		      "NaN",
 		      "NewLine",
-		      "null",
 		      "PI",
 		      "SingleQuote",
 		      "Tab",
 		      "TextFormatting",
+		      "false",
+		      "null",
 		      "true",
 		      "undefined"
 		    ],
@@ -5461,19 +5483,22 @@
 		      "BufferGeodetic",
 		      "Ceil",
 		      "Centroid",
+		      "ChangeTimeZone",
 		      "Clip",
 		      "Concatenate",
 		      "Console",
 		      "Constrain",
 		      "Contains",
 		      "ConvertDirection",
+		      "ConvexHull",
 		      "Cos",
 		      "Count",
 		      "Crosses",
 		      "Cut",
-		      "Date",
+		      "Date|0",
 		      "DateAdd",
 		      "DateDiff",
+		      "DateOnly",
 		      "Day",
 		      "Decode",
 		      "DefaultValue",
@@ -5484,6 +5509,7 @@
 		      "Disjoint",
 		      "Distance",
 		      "DistanceGeodetic",
+		      "DistanceToCoordinate",
 		      "Distinct",
 		      "Domain",
 		      "DomainCode",
@@ -5495,30 +5521,41 @@
 		      "Expects",
 		      "Extent",
 		      "Feature",
+		      "FeatureInFilter",
 		      "FeatureSet",
 		      "FeatureSetByAssociation",
 		      "FeatureSetById",
 		      "FeatureSetByName",
 		      "FeatureSetByPortalItem",
+		      "FeatureSetByRelationshipClass",
 		      "FeatureSetByRelationshipName",
 		      "Filter",
+		      "FilterBySubtypeCode",
 		      "Find",
-		      "First",
+		      "First|0",
 		      "Floor",
 		      "FromCharCode",
 		      "FromCodePoint",
 		      "FromJSON",
+		      "Front",
 		      "GdbVersion",
 		      "Generalize",
 		      "Geometry",
+		      "GetEnvironment",
 		      "GetFeatureSet",
+		      "GetFeatureSetInfo",
 		      "GetUser",
 		      "GroupBy",
 		      "Guid",
-		      "Hash",
 		      "HasKey",
+		      "HasValue",
+		      "Hash",
 		      "Hour",
 		      "IIf",
+		      "ISOMonth",
+		      "ISOWeek",
+		      "ISOWeekday",
+		      "ISOYear",
 		      "Includes",
 		      "IndexOf",
 		      "Insert",
@@ -5526,12 +5563,9 @@
 		      "Intersects",
 		      "IsEmpty",
 		      "IsNan",
-		      "ISOMonth",
-		      "ISOWeek",
-		      "ISOWeekday",
-		      "ISOYear",
 		      "IsSelfIntersecting",
 		      "IsSimple",
+		      "KnowledgeGraphByPortalItem",
 		      "Left|0",
 		      "Length",
 		      "Length3D",
@@ -5541,6 +5575,7 @@
 		      "Map",
 		      "Max",
 		      "Mean",
+		      "MeasureToCoordinate",
 		      "Mid",
 		      "Millisecond",
 		      "Min",
@@ -5548,14 +5583,17 @@
 		      "Month",
 		      "MultiPartToSinglePart",
 		      "Multipoint",
+		      "NearestCoordinate",
+		      "NearestVertex",
 		      "NextSequenceValue",
 		      "None",
 		      "Now",
 		      "Number",
-		      "Offset|0",
+		      "Offset",
 		      "OrderBy",
 		      "Overlaps",
 		      "Point",
+		      "PointToCoordinate",
 		      "Polygon",
 		      "Polyline",
 		      "Pop",
@@ -5563,6 +5601,7 @@
 		      "Pow",
 		      "Proper",
 		      "Push",
+		      "QueryGraph",
 		      "Random",
 		      "Reduce",
 		      "Relate",
@@ -5583,6 +5622,8 @@
 		      "Splice",
 		      "Split",
 		      "Sqrt",
+		      "StandardizeFilename",
+		      "StandardizeGuid",
 		      "Stdev",
 		      "SubtypeCode",
 		      "SubtypeName",
@@ -5591,15 +5632,18 @@
 		      "SymmetricDifference",
 		      "Tan",
 		      "Text",
+		      "Time",
+		      "TimeZone",
+		      "TimeZoneOffset",
 		      "Timestamp",
 		      "ToCharCode",
 		      "ToCodePoint",
-		      "Today",
 		      "ToHex",
 		      "ToLocal",
+		      "ToUTC",
+		      "Today",
 		      "Top|0",
 		      "Touches",
-		      "ToUTC",
 		      "TrackAccelerationAt",
 		      "TrackAccelerationWindow",
 		      "TrackCurrentAcceleration",
@@ -5624,14 +5668,49 @@
 		      "Variance",
 		      "Week",
 		      "Weekday",
-		      "When",
+		      "When|0",
 		      "Within",
-		      "Year"
+		      "Year|0",
 		    ]
 		  };
+		  const PROFILE_VARS = [
+		    "aggregatedFeatures",
+		    "analytic",
+		    "config",
+		    "datapoint",
+		    "datastore",
+		    "editcontext",
+		    "feature",
+		    "featureSet",
+		    "feedfeature",
+		    "fencefeature",
+		    "fencenotificationtype",
+		    "graph",
+		    "join",
+		    "layer",
+		    "locationupdate",
+		    "map",
+		    "measure",
+		    "measure",
+		    "originalFeature",
+		    "record",
+		    "reference",
+		    "rowindex",
+		    "sourcedatastore",
+		    "sourcefeature",
+		    "sourcelayer",
+		    "target",
+		    "targetdatastore",
+		    "targetfeature",
+		    "targetlayer",
+		    "userInput",
+		    "value",
+		    "variables",
+		    "view"
+		  ];
 		  const SYMBOL = {
 		    className: 'symbol',
-		    begin: '\\$[datastore|feature|layer|map|measure|sourcefeature|sourcelayer|targetfeature|targetlayer|value|view]+'
+		    begin: '\\$' + regex.either(...PROFILE_VARS)
 		  };
 		  const NUMBER = {
 		    className: 'number',
@@ -5823,9 +5902,44 @@
 		  const NUMBERS = {
 		    className: 'number',
 		    variants: [
-		      { begin: '\\b(0b[01\']+)' },
-		      { begin: '(-?)\\b([\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)((ll|LL|l|L)(u|U)?|(u|U)(ll|LL|l|L)?|f|F|b|B)' },
-		      { begin: '(-?)(\\b0[xX][a-fA-F0-9\']+|(\\b[\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)([eE][-+]?[\\d\']+)?)' }
+		      // Floating-point literal.
+		      { begin:
+		        "[+-]?(?:" // Leading sign.
+		          // Decimal.
+		          + "(?:"
+		            +"[0-9](?:'?[0-9])*\\.(?:[0-9](?:'?[0-9])*)?"
+		            + "|\\.[0-9](?:'?[0-9])*"
+		          + ")(?:[Ee][+-]?[0-9](?:'?[0-9])*)?"
+		          + "|[0-9](?:'?[0-9])*[Ee][+-]?[0-9](?:'?[0-9])*"
+		          // Hexadecimal.
+		          + "|0[Xx](?:"
+		            +"[0-9A-Fa-f](?:'?[0-9A-Fa-f])*(?:\\.(?:[0-9A-Fa-f](?:'?[0-9A-Fa-f])*)?)?"
+		            + "|\\.[0-9A-Fa-f](?:'?[0-9A-Fa-f])*"
+		          + ")[Pp][+-]?[0-9](?:'?[0-9])*"
+		        + ")(?:" // Literal suffixes.
+		          + "[Ff](?:16|32|64|128)?"
+		          + "|(BF|bf)16"
+		          + "|[Ll]"
+		          + "|" // Literal suffix is optional.
+		        + ")"
+		      },
+		      // Integer literal.
+		      { begin:
+		        "[+-]?\\b(?:" // Leading sign.
+		          + "0[Bb][01](?:'?[01])*" // Binary.
+		          + "|0[Xx][0-9A-Fa-f](?:'?[0-9A-Fa-f])*" // Hexadecimal.
+		          + "|0(?:'?[0-7])*" // Octal or just a lone zero.
+		          + "|[1-9](?:'?[0-9])*" // Decimal.
+		        + ")(?:" // Literal suffixes.
+		          + "[Uu](?:LL?|ll?)"
+		          + "|[Uu][Zz]?"
+		          + "|(?:LL?|ll?)[Uu]?"
+		          + "|[Zz][Uu]"
+		          + "|" // Literal suffix is optional.
+		        + ")"
+		        // Note: there are user-defined literal suffixes too, but perhaps having the custom suffix not part of the
+		        // literal highlight actually makes it stand out more.
+		      }
 		    ],
 		    relevance: 0
 		  };
@@ -5983,6 +6097,8 @@
 		    'counting_semaphore',
 		    'deque',
 		    'false_type',
+		    'flat_map',
+		    'flat_set',
 		    'future',
 		    'imaginary',
 		    'initializer_list',
@@ -6308,7 +6424,7 @@
 		      [
 		        PREPROCESSOR,
 		        { // containers: ie, `vector <int> rooms (9);`
-		          begin: '\\b(deque|list|queue|priority_queue|pair|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array|tuple|optional|variant|function)\\s*<(?!<)',
+		          begin: '\\b(deque|list|queue|priority_queue|pair|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array|tuple|optional|variant|function|flat_map|flat_set)\\s*<(?!<)',
 		          end: '>',
 		          keywords: CPP_KEYWORDS,
 		          contains: [
@@ -6341,6 +6457,7 @@
 		Author: Stefania Mellai <s.mellai@arduino.cc>
 		Description: The Arduino® Language is a superset of C++. This rules are designed to highlight the Arduino® source code. For info about language see http://www.arduino.cc.
 		Website: https://www.arduino.cc
+		Category: system
 		*/
 
 
@@ -7400,6 +7517,7 @@
 	Author: Hakan Ozler <ozler.hakan@gmail.com>
 	Website: https://www.eclipse.org/aspectj/
 	Description: Syntax Highlighting for the AspectJ Language which is a general-purpose aspect-oriented extension to the Java programming language.
+	Category: system
 	Audit: 2020
 	*/
 
@@ -7997,6 +8115,7 @@
 	Author: Matthew Daly <matthewbdaly@gmail.com>
 	Website: https://www.gnu.org/software/gawk/manual/gawk.html
 	Description: language definition for Awk scripts
+	Category: scripting
 	*/
 
 	var awk_1;
@@ -8270,7 +8389,7 @@
 	Author: vah <vahtenberg@gmail.com>
 	Contributrors: Benjamin Pannell <contact@sierrasoftworks.com>
 	Website: https://www.gnu.org/software/bash/
-	Category: common
+	Category: common, scripting
 	*/
 
 	var bash_1;
@@ -8311,6 +8430,18 @@
 		    end: /\)/,
 		    contains: [ hljs.BACKSLASH_ESCAPE ]
 		  };
+		  const COMMENT = hljs.inherit(
+		    hljs.COMMENT(),
+		    {
+		      match: [
+		        /(^|\s)/,
+		        /#.*$/
+		      ],
+		      scope: {
+		        2: 'comment'
+		      }
+		    }
+		  );
 		  const HERE_DOC = {
 		    begin: /<<-?\s*(?=\w+)/,
 		    starts: { contains: [
@@ -8384,6 +8515,7 @@
 		    "else",
 		    "elif",
 		    "fi",
+		    "time",
 		    "for",
 		    "while",
 		    "until",
@@ -8392,6 +8524,7 @@
 		    "done",
 		    "case",
 		    "esac",
+		    "coproc",
 		    "function",
 		    "select"
 		  ];
@@ -8444,6 +8577,7 @@
 		    "read",
 		    "readarray",
 		    "source",
+		    "sudo",
 		    "type",
 		    "typeset",
 		    "ulimit",
@@ -8629,7 +8763,10 @@
 
 		  return {
 		    name: 'Bash',
-		    aliases: [ 'sh' ],
+		    aliases: [
+		      'sh',
+		      'zsh'
+		    ],
 		    keywords: {
 		      $pattern: /\b[a-z][a-z0-9._-]+\b/,
 		      keyword: KEYWORDS,
@@ -8649,7 +8786,7 @@
 		      hljs.SHEBANG(), // to catch unknown shells but still highlight the shebang
 		      FUNCTION,
 		      ARITHMETIC,
-		      hljs.HASH_COMMENT_MODE,
+		      COMMENT,
 		      HERE_DOC,
 		      PATH_MODE,
 		      QUOTE_STRING,
@@ -8670,6 +8807,7 @@
 	Author: Raphaël Assénat <raph@raphnet.net>
 	Description: Based on the BASIC reference from the Tandy 1000 guide
 	Website: https://en.wikipedia.org/wiki/Tandy_1000
+	Category: system
 	*/
 
 	var basic_1;
@@ -8870,7 +9008,13 @@
 		      keyword: KEYWORDS
 		    },
 		    contains: [
-		      hljs.QUOTE_STRING_MODE,
+		      {
+		        // Match strings that start with " and end with " or a line break
+		        scope: 'string',
+		        begin: /"/,
+		        end: /"|$/,
+		        contains: [ hljs.BACKSLASH_ESCAPE ]
+		      },
 		      hljs.COMMENT('REM', '$', { relevance: 10 }),
 		      hljs.COMMENT('\'', '$', { relevance: 0 }),
 		      {
@@ -8906,6 +9050,7 @@
 	/*
 	Language: Backus–Naur Form
 	Website: https://en.wikipedia.org/wiki/Backus–Naur_form
+	Category: syntax
 	Author: Oleg Efimov <efimovov@gmail.com>
 	*/
 
@@ -9078,20 +9223,21 @@
 		  const NUMBERS = {
 		    className: 'number',
 		    variants: [
-		      { begin: '\\b(0b[01\']+)' },
-		      { begin: '(-?)\\b([\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)((ll|LL|l|L)(u|U)?|(u|U)(ll|LL|l|L)?|f|F|b|B)' },
-		      { begin: '(-?)(\\b0[xX][a-fA-F0-9\']+|(\\b[\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)([eE][-+]?[\\d\']+)?)' }
-		    ],
+		      { match: /\b(0b[01']+)/ },  
+		      { match: /(-?)\b([\d']+(\.[\d']*)?|\.[\d']+)((ll|LL|l|L)(u|U)?|(u|U)(ll|LL|l|L)?|f|F|b|B)/ },  
+		      { match: /(-?)\b(0[xX][a-fA-F0-9]+(?:'[a-fA-F0-9]+)*(?:\.[a-fA-F0-9]*(?:'[a-fA-F0-9]*)*)?(?:[pP][-+]?[0-9]+)?(l|L)?(u|U)?)/ },  
+		      { match: /(-?)\b\d+(?:'\d+)*(?:\.\d*(?:'\d*)*)?(?:[eE][-+]?\d+)?/ }  
+		  ],
 		    relevance: 0
-		  };
-
+		  };  
+		  
 		  const PREPROCESSOR = {
 		    className: 'meta',
 		    begin: /#\s*[a-z]+\b/,
 		    end: /$/,
 		    keywords: { keyword:
 		        'if else elif endif define undef warning error line '
-		        + 'pragma _Pragma ifdef ifndef include' },
+		        + 'pragma _Pragma ifdef ifndef elifdef elifndef include' },
 		    contains: [
 		      {
 		        begin: /\\\n/,
@@ -9135,6 +9281,8 @@
 		    "restrict",
 		    "return",
 		    "sizeof",
+		    "typeof",
+		    "typeof_unqual",
 		    "struct",
 		    "switch",
 		    "typedef",
@@ -9169,14 +9317,26 @@
 		    "char",
 		    "void",
 		    "_Bool",
+		    "_BitInt",
 		    "_Complex",
 		    "_Imaginary",
 		    "_Decimal32",
 		    "_Decimal64",
+		    "_Decimal96",
 		    "_Decimal128",
+		    "_Decimal64x",
+		    "_Decimal128x",
+		    "_Float16",
+		    "_Float32",
+		    "_Float64",
+		    "_Float128",
+		    "_Float32x",
+		    "_Float64x",
+		    "_Float128x",
 		    // modifiers
 		    "const",
 		    "static",
+		    "constexpr",
 		    // aliases
 		    "complex",
 		    "bool",
@@ -9345,6 +9505,7 @@
 	Author: Kenneth Fuglsang Christensen <kfuglsang@gmail.com>
 	Description: Provides highlighting of Microsoft Dynamics NAV C/AL code files
 	Website: https://docs.microsoft.com/en-us/dynamics-nav/programming-in-c-al
+	Category: enterprise
 	*/
 
 	var cal_1;
@@ -9620,6 +9781,7 @@
 	Language: Ceylon
 	Author: Lucas Werkmeister <mail@lucaswerkmeister.de>
 	Website: https://ceylon-lang.org
+	Category: system
 	*/
 
 	var ceylon_1;
@@ -10074,6 +10236,7 @@
 	Description: CMake is an open-source cross-platform system for build automation.
 	Author: Igor Kalnitsky <igor@kalnitsky.org>
 	Website: https://cmake.org
+	Category: build-system
 	*/
 
 	var cmake_1;
@@ -10188,7 +10351,9 @@
 		  "import",
 		  "from",
 		  "export",
-		  "extends"
+		  "extends",
+		  // It's reached stage 3, which is "recommended for implementation":
+		  "using"
 		];
 		const LITERALS = [
 		  "true",
@@ -11179,9 +11344,44 @@
 		  const NUMBERS = {
 		    className: 'number',
 		    variants: [
-		      { begin: '\\b(0b[01\']+)' },
-		      { begin: '(-?)\\b([\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)((ll|LL|l|L)(u|U)?|(u|U)(ll|LL|l|L)?|f|F|b|B)' },
-		      { begin: '(-?)(\\b0[xX][a-fA-F0-9\']+|(\\b[\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)([eE][-+]?[\\d\']+)?)' }
+		      // Floating-point literal.
+		      { begin:
+		        "[+-]?(?:" // Leading sign.
+		          // Decimal.
+		          + "(?:"
+		            +"[0-9](?:'?[0-9])*\\.(?:[0-9](?:'?[0-9])*)?"
+		            + "|\\.[0-9](?:'?[0-9])*"
+		          + ")(?:[Ee][+-]?[0-9](?:'?[0-9])*)?"
+		          + "|[0-9](?:'?[0-9])*[Ee][+-]?[0-9](?:'?[0-9])*"
+		          // Hexadecimal.
+		          + "|0[Xx](?:"
+		            +"[0-9A-Fa-f](?:'?[0-9A-Fa-f])*(?:\\.(?:[0-9A-Fa-f](?:'?[0-9A-Fa-f])*)?)?"
+		            + "|\\.[0-9A-Fa-f](?:'?[0-9A-Fa-f])*"
+		          + ")[Pp][+-]?[0-9](?:'?[0-9])*"
+		        + ")(?:" // Literal suffixes.
+		          + "[Ff](?:16|32|64|128)?"
+		          + "|(BF|bf)16"
+		          + "|[Ll]"
+		          + "|" // Literal suffix is optional.
+		        + ")"
+		      },
+		      // Integer literal.
+		      { begin:
+		        "[+-]?\\b(?:" // Leading sign.
+		          + "0[Bb][01](?:'?[01])*" // Binary.
+		          + "|0[Xx][0-9A-Fa-f](?:'?[0-9A-Fa-f])*" // Hexadecimal.
+		          + "|0(?:'?[0-7])*" // Octal or just a lone zero.
+		          + "|[1-9](?:'?[0-9])*" // Decimal.
+		        + ")(?:" // Literal suffixes.
+		          + "[Uu](?:LL?|ll?)"
+		          + "|[Uu][Zz]?"
+		          + "|(?:LL?|ll?)[Uu]?"
+		          + "|[Zz][Uu]"
+		          + "|" // Literal suffix is optional.
+		        + ")"
+		        // Note: there are user-defined literal suffixes too, but perhaps having the custom suffix not part of the
+		        // literal highlight actually makes it stand out more.
+		      }
 		    ],
 		    relevance: 0
 		  };
@@ -11339,6 +11539,8 @@
 		    'counting_semaphore',
 		    'deque',
 		    'false_type',
+		    'flat_map',
+		    'flat_set',
 		    'future',
 		    'imaginary',
 		    'initializer_list',
@@ -11664,7 +11866,7 @@
 		      [
 		        PREPROCESSOR,
 		        { // containers: ie, `vector <int> rooms (9);`
-		          begin: '\\b(deque|list|queue|priority_queue|pair|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array|tuple|optional|variant|function)\\s*<(?!<)',
+		          begin: '\\b(deque|list|queue|priority_queue|pair|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array|tuple|optional|variant|function|flat_map|flat_set)\\s*<(?!<)',
 		          end: '>',
 		          keywords: CPP_KEYWORDS,
 		          contains: [
@@ -11809,6 +12011,7 @@
 	Language: Crystal
 	Author: TSUYUSATO Kitsune <make.just.on@gmail.com>
 	Website: https://crystal-lang.org
+	Category: system
 	*/
 
 	var crystal_1;
@@ -12250,11 +12453,14 @@
 		    'alias',
 		    'and',
 		    'ascending',
+		    'args',
 		    'async',
 		    'await',
 		    'by',
 		    'descending',
+		    'dynamic',
 		    'equals',
+		    'file',
 		    'from',
 		    'get',
 		    'global',
@@ -12270,7 +12476,10 @@
 		    'or',
 		    'orderby',
 		    'partial',
+		    'record',
 		    'remove',
+		    'required',
+		    'scoped',
 		    'select',
 		    'set',
 		    'unmanaged',
@@ -12296,6 +12505,11 @@
 		      { begin: '(-?)(\\b0[xX][a-fA-F0-9\']+|(\\b[\\d\']+(\\.[\\d\']*)?|\\.[\\d\']+)([eE][-+]?[\\d\']+)?)' }
 		    ],
 		    relevance: 0
+		  };
+		  const RAW_STRING = {
+		    className: 'string',
+		    begin: /"""("*)(?!")(.|\n)*?"""\1/,
+		    relevance: 1
 		  };
 		  const VERBATIM_STRING = {
 		    className: 'string',
@@ -12362,6 +12576,7 @@
 		    hljs.inherit(hljs.C_BLOCK_COMMENT_MODE, { illegal: /\n/ })
 		  ];
 		  const STRING = { variants: [
+		    RAW_STRING,
 		    INTERPOLATED_VERBATIM_STRING,
 		    INTERPOLATED_STRING,
 		    VERBATIM_STRING,
@@ -12539,6 +12754,7 @@
 	Description: Content Security Policy definition highlighting
 	Author: Taras <oxdef@oxdef.info>
 	Website: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+	Category: web
 
 	vim: ts=2 sw=2 st=2
 	*/
@@ -12651,7 +12867,7 @@
 		  };
 		};
 
-		const TAGS = [
+		const HTML_TAGS = [
 		  'a',
 		  'abbr',
 		  'address',
@@ -12703,11 +12919,16 @@
 		  'nav',
 		  'object',
 		  'ol',
+		  'optgroup',
+		  'option',
 		  'p',
+		  'picture',
 		  'q',
 		  'quote',
 		  'samp',
 		  'section',
+		  'select',
+		  'source',
 		  'span',
 		  'strong',
 		  'summary',
@@ -12725,6 +12946,58 @@
 		  'var',
 		  'video'
 		];
+
+		const SVG_TAGS = [
+		  'defs',
+		  'g',
+		  'marker',
+		  'mask',
+		  'pattern',
+		  'svg',
+		  'switch',
+		  'symbol',
+		  'feBlend',
+		  'feColorMatrix',
+		  'feComponentTransfer',
+		  'feComposite',
+		  'feConvolveMatrix',
+		  'feDiffuseLighting',
+		  'feDisplacementMap',
+		  'feFlood',
+		  'feGaussianBlur',
+		  'feImage',
+		  'feMerge',
+		  'feMorphology',
+		  'feOffset',
+		  'feSpecularLighting',
+		  'feTile',
+		  'feTurbulence',
+		  'linearGradient',
+		  'radialGradient',
+		  'stop',
+		  'circle',
+		  'ellipse',
+		  'image',
+		  'line',
+		  'path',
+		  'polygon',
+		  'polyline',
+		  'rect',
+		  'text',
+		  'use',
+		  'textPath',
+		  'tspan',
+		  'foreignObject',
+		  'clipPath'
+		];
+
+		const TAGS = [
+		  ...HTML_TAGS,
+		  ...SVG_TAGS,
+		];
+
+		// Sorting, then reversing makes sure longer attributes/elements like
+		// `font-weight` are matched fully instead of getting false positives on say `font`
 
 		const MEDIA_FEATURES = [
 		  'any-hover',
@@ -12761,7 +13034,7 @@
 		  'max-width',
 		  'min-height',
 		  'max-height'
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
 		const PSEUDO_CLASSES = [
@@ -12824,7 +13097,7 @@
 		  'valid',
 		  'visited',
 		  'where' // where()
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
 		const PSEUDO_ELEMENTS = [
@@ -12842,14 +13115,18 @@
 		  'selection',
 		  'slotted',
 		  'spelling-error'
-		];
+		].sort().reverse();
 
 		const ATTRIBUTES = [
+		  'accent-color',
 		  'align-content',
 		  'align-items',
 		  'align-self',
+		  'alignment-baseline',
 		  'all',
+		  'anchor-name',
 		  'animation',
+		  'animation-composition',
 		  'animation-delay',
 		  'animation-direction',
 		  'animation-duration',
@@ -12857,7 +13134,14 @@
 		  'animation-iteration-count',
 		  'animation-name',
 		  'animation-play-state',
+		  'animation-range',
+		  'animation-range-end',
+		  'animation-range-start',
+		  'animation-timeline',
 		  'animation-timing-function',
+		  'appearance',
+		  'aspect-ratio',
+		  'backdrop-filter',
 		  'backface-visibility',
 		  'background',
 		  'background-attachment',
@@ -12867,8 +13151,11 @@
 		  'background-image',
 		  'background-origin',
 		  'background-position',
+		  'background-position-x',
+		  'background-position-y',
 		  'background-repeat',
 		  'background-size',
+		  'baseline-shift',
 		  'block-size',
 		  'border',
 		  'border-block',
@@ -12891,6 +13178,8 @@
 		  'border-bottom-width',
 		  'border-collapse',
 		  'border-color',
+		  'border-end-end-radius',
+		  'border-end-start-radius',
 		  'border-image',
 		  'border-image-outset',
 		  'border-image-repeat',
@@ -12919,6 +13208,8 @@
 		  'border-right-style',
 		  'border-right-width',
 		  'border-spacing',
+		  'border-start-end-radius',
+		  'border-start-start-radius',
 		  'border-style',
 		  'border-top',
 		  'border-top-color',
@@ -12928,7 +13219,15 @@
 		  'border-top-width',
 		  'border-width',
 		  'bottom',
+		  'box-align',
 		  'box-decoration-break',
+		  'box-direction',
+		  'box-flex',
+		  'box-flex-group',
+		  'box-lines',
+		  'box-ordinal-group',
+		  'box-orient',
+		  'box-pack',
 		  'box-shadow',
 		  'box-sizing',
 		  'break-after',
@@ -12941,6 +13240,11 @@
 		  'clip-path',
 		  'clip-rule',
 		  'color',
+		  'color-interpolation',
+		  'color-interpolation-filters',
+		  'color-profile',
+		  'color-rendering',
+		  'color-scheme',
 		  'column-count',
 		  'column-fill',
 		  'column-gap',
@@ -12952,17 +13256,34 @@
 		  'column-width',
 		  'columns',
 		  'contain',
+		  'contain-intrinsic-block-size',
+		  'contain-intrinsic-height',
+		  'contain-intrinsic-inline-size',
+		  'contain-intrinsic-size',
+		  'contain-intrinsic-width',
+		  'container',
+		  'container-name',
+		  'container-type',
 		  'content',
 		  'content-visibility',
 		  'counter-increment',
 		  'counter-reset',
+		  'counter-set',
 		  'cue',
 		  'cue-after',
 		  'cue-before',
 		  'cursor',
+		  'cx',
+		  'cy',
 		  'direction',
 		  'display',
+		  'dominant-baseline',
 		  'empty-cells',
+		  'enable-background',
+		  'field-sizing',
+		  'fill',
+		  'fill-opacity',
+		  'fill-rule',
 		  'filter',
 		  'flex',
 		  'flex-basis',
@@ -12972,6 +13293,8 @@
 		  'flex-shrink',
 		  'flex-wrap',
 		  'float',
+		  'flood-color',
+		  'flood-opacity',
 		  'flow',
 		  'font',
 		  'font-display',
@@ -12979,21 +13302,32 @@
 		  'font-feature-settings',
 		  'font-kerning',
 		  'font-language-override',
+		  'font-optical-sizing',
+		  'font-palette',
 		  'font-size',
 		  'font-size-adjust',
+		  'font-smooth',
 		  'font-smoothing',
 		  'font-stretch',
 		  'font-style',
 		  'font-synthesis',
+		  'font-synthesis-position',
+		  'font-synthesis-small-caps',
+		  'font-synthesis-style',
+		  'font-synthesis-weight',
 		  'font-variant',
+		  'font-variant-alternates',
 		  'font-variant-caps',
 		  'font-variant-east-asian',
+		  'font-variant-emoji',
 		  'font-variant-ligatures',
 		  'font-variant-numeric',
 		  'font-variant-position',
 		  'font-variation-settings',
 		  'font-weight',
+		  'forced-color-adjust',
 		  'gap',
+		  'glyph-orientation-horizontal',
 		  'glyph-orientation-vertical',
 		  'grid',
 		  'grid-area',
@@ -13013,19 +13347,36 @@
 		  'grid-template-rows',
 		  'hanging-punctuation',
 		  'height',
+		  'hyphenate-character',
+		  'hyphenate-limit-chars',
 		  'hyphens',
 		  'icon',
 		  'image-orientation',
 		  'image-rendering',
 		  'image-resolution',
 		  'ime-mode',
+		  'initial-letter',
+		  'initial-letter-align',
 		  'inline-size',
+		  'inset',
+		  'inset-area',
+		  'inset-block',
+		  'inset-block-end',
+		  'inset-block-start',
+		  'inset-inline',
+		  'inset-inline-end',
+		  'inset-inline-start',
 		  'isolation',
 		  'justify-content',
+		  'justify-items',
+		  'justify-self',
+		  'kerning',
 		  'left',
 		  'letter-spacing',
+		  'lighting-color',
 		  'line-break',
 		  'line-height',
+		  'line-height-step',
 		  'list-style',
 		  'list-style-image',
 		  'list-style-position',
@@ -13041,6 +13392,11 @@
 		  'margin-left',
 		  'margin-right',
 		  'margin-top',
+		  'margin-trim',
+		  'marker',
+		  'marker-end',
+		  'marker-mid',
+		  'marker-start',
 		  'marks',
 		  'mask',
 		  'mask-border',
@@ -13059,6 +13415,10 @@
 		  'mask-repeat',
 		  'mask-size',
 		  'mask-type',
+		  'masonry-auto-flow',
+		  'math-depth',
+		  'math-shift',
+		  'math-style',
 		  'max-block-size',
 		  'max-height',
 		  'max-inline-size',
@@ -13077,6 +13437,12 @@
 		  'normal',
 		  'object-fit',
 		  'object-position',
+		  'offset',
+		  'offset-anchor',
+		  'offset-distance',
+		  'offset-path',
+		  'offset-position',
+		  'offset-rotate',
 		  'opacity',
 		  'order',
 		  'orphans',
@@ -13086,9 +13452,19 @@
 		  'outline-style',
 		  'outline-width',
 		  'overflow',
+		  'overflow-anchor',
+		  'overflow-block',
+		  'overflow-clip-margin',
+		  'overflow-inline',
 		  'overflow-wrap',
 		  'overflow-x',
 		  'overflow-y',
+		  'overlay',
+		  'overscroll-behavior',
+		  'overscroll-behavior-block',
+		  'overscroll-behavior-inline',
+		  'overscroll-behavior-x',
+		  'overscroll-behavior-y',
 		  'padding',
 		  'padding-block',
 		  'padding-block-end',
@@ -13100,23 +13476,37 @@
 		  'padding-left',
 		  'padding-right',
 		  'padding-top',
+		  'page',
 		  'page-break-after',
 		  'page-break-before',
 		  'page-break-inside',
+		  'paint-order',
 		  'pause',
 		  'pause-after',
 		  'pause-before',
 		  'perspective',
 		  'perspective-origin',
+		  'place-content',
+		  'place-items',
+		  'place-self',
 		  'pointer-events',
 		  'position',
+		  'position-anchor',
+		  'position-visibility',
+		  'print-color-adjust',
 		  'quotes',
+		  'r',
 		  'resize',
 		  'rest',
 		  'rest-after',
 		  'rest-before',
 		  'right',
+		  'rotate',
 		  'row-gap',
+		  'ruby-align',
+		  'ruby-position',
+		  'scale',
+		  'scroll-behavior',
 		  'scroll-margin',
 		  'scroll-margin-block',
 		  'scroll-margin-block-end',
@@ -13142,25 +13532,43 @@
 		  'scroll-snap-align',
 		  'scroll-snap-stop',
 		  'scroll-snap-type',
+		  'scroll-timeline',
+		  'scroll-timeline-axis',
+		  'scroll-timeline-name',
 		  'scrollbar-color',
 		  'scrollbar-gutter',
 		  'scrollbar-width',
 		  'shape-image-threshold',
 		  'shape-margin',
 		  'shape-outside',
+		  'shape-rendering',
 		  'speak',
 		  'speak-as',
 		  'src', // @font-face
+		  'stop-color',
+		  'stop-opacity',
+		  'stroke',
+		  'stroke-dasharray',
+		  'stroke-dashoffset',
+		  'stroke-linecap',
+		  'stroke-linejoin',
+		  'stroke-miterlimit',
+		  'stroke-opacity',
+		  'stroke-width',
 		  'tab-size',
 		  'table-layout',
 		  'text-align',
 		  'text-align-all',
 		  'text-align-last',
+		  'text-anchor',
 		  'text-combine-upright',
 		  'text-decoration',
 		  'text-decoration-color',
 		  'text-decoration-line',
+		  'text-decoration-skip',
+		  'text-decoration-skip-ink',
 		  'text-decoration-style',
+		  'text-decoration-thickness',
 		  'text-emphasis',
 		  'text-emphasis-color',
 		  'text-emphasis-position',
@@ -13171,20 +13579,37 @@
 		  'text-overflow',
 		  'text-rendering',
 		  'text-shadow',
+		  'text-size-adjust',
 		  'text-transform',
+		  'text-underline-offset',
 		  'text-underline-position',
+		  'text-wrap',
+		  'text-wrap-mode',
+		  'text-wrap-style',
+		  'timeline-scope',
 		  'top',
+		  'touch-action',
 		  'transform',
 		  'transform-box',
 		  'transform-origin',
 		  'transform-style',
 		  'transition',
+		  'transition-behavior',
 		  'transition-delay',
 		  'transition-duration',
 		  'transition-property',
 		  'transition-timing-function',
+		  'translate',
 		  'unicode-bidi',
+		  'user-modify',
+		  'user-select',
+		  'vector-effect',
 		  'vertical-align',
+		  'view-timeline',
+		  'view-timeline-axis',
+		  'view-timeline-inset',
+		  'view-timeline-name',
+		  'view-transition-name',
 		  'visibility',
 		  'voice-balance',
 		  'voice-duration',
@@ -13195,6 +13620,7 @@
 		  'voice-stress',
 		  'voice-volume',
 		  'white-space',
+		  'white-space-collapse',
 		  'widows',
 		  'width',
 		  'will-change',
@@ -13202,10 +13628,11 @@
 		  'word-spacing',
 		  'word-wrap',
 		  'writing-mode',
-		  'z-index'
-		  // reverse makes sure longer attributes `font-weight` are matched fully
-		  // instead of getting false positives on say `font`
-		].reverse();
+		  'x',
+		  'y',
+		  'z-index',
+		  'zoom'
+		].sort().reverse();
 
 		/*
 		Language: CSS
@@ -13353,6 +13780,7 @@
 	Description: D is a language with C-like syntax and static typing. It pragmatically combines efficiency, control, and modeling power, with safety and programmer productivity.
 	Version: 1.0a
 	Website: https://dlang.org
+	Category: system
 	Date: 2012-04-08
 	*/
 
@@ -13851,6 +14279,12 @@
 		    end: '$'
 		  };
 
+		  const ENTITY = {
+		    //https://spec.commonmark.org/0.31.2/#entity-references
+		    scope: 'literal',
+		    match: /&([a-zA-Z0-9]+|#[0-9]{1,7}|#[Xx][0-9a-fA-F]{1,6});/
+		  };
+
 		  return {
 		    name: 'Markdown',
 		    aliases: [
@@ -13868,7 +14302,8 @@
 		      CODE,
 		      HORIZONTAL_RULE,
 		      LINK,
-		      LINK_REFERENCE
+		      LINK_REFERENCE,
+		      ENTITY
 		    ]
 		  };
 		}
@@ -13908,6 +14343,15 @@
 		      }
 		    ],
 		    keywords: 'true false null this is new super'
+		  };
+
+		  const NUMBER = {
+		    className: 'number',
+		    relevance: 0,
+		    variants: [
+		      { match: /\b[0-9][0-9_]*(\.[0-9][0-9_]*)?([eE][+-]?[0-9][0-9_]*)?\b/ },
+		      { match: /\b0[xX][0-9A-Fa-f][0-9A-Fa-f_]*\b/ }
+		    ]
 		  };
 
 		  const STRING = {
@@ -13972,7 +14416,7 @@
 		    ]
 		  };
 		  BRACED_SUBST.contains = [
-		    hljs.C_NUMBER_MODE,
+		    NUMBER,
 		    STRING
 		  ];
 
@@ -14133,7 +14577,7 @@
 		          hljs.UNDERSCORE_TITLE_MODE
 		        ]
 		      },
-		      hljs.C_NUMBER_MODE,
+		      NUMBER,
 		      {
 		        className: 'meta',
 		        begin: '@[A-Za-z]+'
@@ -14151,6 +14595,7 @@
 	/*
 	Language: Delphi
 	Website: https://www.embarcadero.com/products/delphi
+	Category: system
 	*/
 
 	var delphi_1;
@@ -14320,19 +14765,35 @@
 		    // Source: https://www.freepascal.org/docs-html/ref/refse6.html
 		    variants: [
 		      {
+		        // Regular numbers, e.g., 123, 123.456.
+		        match: /\b\d[\d_]*(\.\d[\d_]*)?/ },
+		      {
 		        // Hexadecimal notation, e.g., $7F.
-		        begin: '\\$[0-9A-Fa-f]+' },
+		        match: /\$[\dA-Fa-f_]+/ },
+		      {
+		        // Hexadecimal literal with no digits
+		        match: /\$/,
+		        relevance: 0 },
 		      {
 		        // Octal notation, e.g., &42.
-		        begin: '&[0-7]+' },
+		        match: /&[0-7][0-7_]*/ },
 		      {
 		        // Binary notation, e.g., %1010.
-		        begin: '%[01]+' }
+		        match: /%[01_]+/ },
+		      {
+		        // Binary literal with no digits
+		        match: /%/,
+		        relevance: 0 }
 		    ]
 		  };
 		  const CHAR_STRING = {
 		    className: 'string',
-		    begin: /(#\d+)+/
+		    variants: [
+		      { match: /#\d[\d_]*/ },
+		      { match: /#\$[\dA-Fa-f][\dA-Fa-f_]*/ },
+		      { match: /#&[0-7][0-7_]*/ },
+		      { match: /#%[01][01_]*/ }
+		    ]
 		  };
 		  const CLASS = {
 		    begin: hljs.IDENT_RE + '\\s*=\\s*class\\s*\\(',
@@ -14374,7 +14835,6 @@
 		    contains: [
 		      STRING,
 		      CHAR_STRING,
-		      hljs.NUMBER_MODE,
 		      NUMBER,
 		      CLASS,
 		      FUNCTION,
@@ -14687,6 +15147,7 @@
 	Author: Alexander Makarov <sam@rmcreative.ru>
 	Contributors: Anton Kochkov <anton.kochkov@gmail.com>
 	Website: https://en.wikipedia.org/wiki/Batch_file
+	Category: scripting
 	*/
 
 	var dos_1;
@@ -15158,6 +15619,7 @@
 	Language: Extended Backus-Naur Form
 	Author: Alex McKibben <alex@nullscope.net>
 	Website: https://en.wikipedia.org/wiki/Extended_Backus–Naur_form
+	Category: syntax
 	*/
 
 	var ebnf_1;
@@ -15662,7 +16124,7 @@
 	Website: https://www.ruby-lang.org/
 	Author: Anton Kovalyov <anton@kovalyov.net>
 	Contributors: Peter Leonov <gojpeg@yandex.ru>, Vasily Polovnyov <vast@whiteants.net>, Loren Segal <lsegal@soen.ca>, Pascal Hurni <phi@ruby-reactive.org>, Cedric Sohrauer <sohrauer@googlemail.com>
-	Category: common
+	Category: common, scripting
 	*/
 
 	var ruby_1;
@@ -16014,7 +16476,7 @@
 		    },
 		    {
 		      className: 'params',
-		      begin: /\|/,
+		      begin: /\|(?!=)/,
 		      end: /\|/,
 		      excludeBegin: true,
 		      excludeEnd: true,
@@ -16235,7 +16697,7 @@
 		  const ERLANG_RESERVED = {
 		    keyword:
 		      'after and andalso|10 band begin bnot bor bsl bzr bxor case catch cond div end fun if '
-		      + 'let not of orelse|10 query receive rem try when xor',
+		      + 'let not of orelse|10 query receive rem try when xor maybe else',
 		    literal:
 		      'false true'
 		  };
@@ -16298,9 +16760,35 @@
 		      }
 		    ]
 		  };
+		  const CHAR_LITERAL = {
+		    scope: 'string',
+		    match: /\$(\\([^0-9]|[0-9]{1,3}|)|.)/,
+		  };
+		  const TRIPLE_QUOTE = {
+		    scope: 'string',
+		    match: /"""("*)(?!")[\s\S]*?"""\1/,
+		  };
+
+		  const SIGIL = {
+		    scope: 'string',
+		    contains: [ hljs.BACKSLASH_ESCAPE ],
+		    variants: [
+		      {match: /~\w?"""("*)(?!")[\s\S]*?"""\1/},
+		      {begin: /~\w?\(/, end: /\)/},
+		      {begin: /~\w?\[/, end: /\]/},
+		      {begin: /~\w?{/, end: /}/},
+		      {begin: /~\w?</, end: />/},
+		      {begin: /~\w?\//, end: /\//},
+		      {begin: /~\w?\|/, end: /\|/},
+		      {begin: /~\w?'/, end: /'/},
+		      {begin: /~\w?"/, end: /"/},
+		      {begin: /~\w?`/, end: /`/},
+		      {begin: /~\w?#/, end: /#/},
+		    ],
+		  };
 
 		  const BLOCK_STATEMENTS = {
-		    beginKeywords: 'fun receive if try case',
+		    beginKeywords: 'fun receive if try case maybe',
 		    end: 'end',
 		    keywords: ERLANG_RESERVED
 		  };
@@ -16310,12 +16798,15 @@
 		    hljs.inherit(hljs.APOS_STRING_MODE, { className: '' }),
 		    BLOCK_STATEMENTS,
 		    FUNCTION_CALL,
+		    SIGIL,
+		    TRIPLE_QUOTE,
 		    hljs.QUOTE_STRING_MODE,
 		    NUMBER,
 		    TUPLE,
 		    VAR1,
 		    VAR2,
-		    RECORD_ACCESS
+		    RECORD_ACCESS,
+		    CHAR_LITERAL
 		  ];
 
 		  const BASIC_MODES = [
@@ -16323,12 +16814,15 @@
 		    NAMED_FUN,
 		    BLOCK_STATEMENTS,
 		    FUNCTION_CALL,
+		    SIGIL,
+		    TRIPLE_QUOTE,
 		    hljs.QUOTE_STRING_MODE,
 		    NUMBER,
 		    TUPLE,
 		    VAR1,
 		    VAR2,
-		    RECORD_ACCESS
+		    RECORD_ACCESS,
+		    CHAR_LITERAL
 		  ];
 		  FUNCTION_CALL.contains[1].contains = BASIC_MODES;
 		  TUPLE.contains = BASIC_MODES;
@@ -16344,6 +16838,7 @@
 		    "-author",
 		    "-copyright",
 		    "-doc",
+		    "-moduledoc",
 		    "-vsn",
 		    "-import",
 		    "-include",
@@ -16355,7 +16850,9 @@
 		    "-file",
 		    "-behaviour",
 		    "-behavior",
-		    "-spec"
+		    "-spec",
+		    "-on_load",
+		    "-nifs",
 		  ];
 
 		  const PARAMS = {
@@ -16364,6 +16861,7 @@
 		    end: '\\)',
 		    contains: BASIC_MODES
 		  };
+
 		  return {
 		    name: 'Erlang',
 		    aliases: [ 'erl' ],
@@ -16397,14 +16895,22 @@
 		          $pattern: '-' + hljs.IDENT_RE,
 		          keyword: DIRECTIVES.map(x => `${x}|1.5`).join(" ")
 		        },
-		        contains: [ PARAMS ]
+		        contains: [
+		          PARAMS,
+		          SIGIL,
+		          TRIPLE_QUOTE,
+		          hljs.QUOTE_STRING_MODE
+		        ]
 		      },
 		      NUMBER,
+		      SIGIL,
+		      TRIPLE_QUOTE,
 		      hljs.QUOTE_STRING_MODE,
 		      RECORD_ACCESS,
 		      VAR1,
 		      VAR2,
 		      TUPLE,
+		      CHAR_LITERAL,
 		      { begin: /\.$/ } // relevance booster
 		    ]
 		  };
@@ -16419,6 +16925,7 @@
 	Author: Victor Zhou <OiCMudkips@users.noreply.github.com>
 	Description: Excel formulae
 	Website: https://products.office.com/en-us/excel/
+	Category: enterprise
 	*/
 
 	var excel_1;
@@ -16429,7 +16936,7 @@
 		hasRequiredExcel = 1;
 		/** @type LanguageFn */
 		function excel(hljs) {
-		  // built-in functions imported from https://web.archive.org/web/20160513042710/https://support.office.com/en-us/article/Excel-functions-alphabetical-b3944572-255d-4efb-bb96-c6d90033e188
+		  // built-in functions imported from https://web.archive.org/web/20241205190205/https://support.microsoft.com/en-us/office/excel-functions-alphabetical-b3944572-255d-4efb-bb96-c6d90033e188
 		  const BUILT_INS = [
 		    "ABS",
 		    "ACCRINT",
@@ -16445,6 +16952,7 @@
 		    "AND",
 		    "ARABIC",
 		    "AREAS",
+		    "ARRAYTOTEXT",
 		    "ASC",
 		    "ASIN",
 		    "ASINH",
@@ -16478,6 +16986,8 @@
 		    "BITOR",
 		    "BITRSHIFT",
 		    "BITXOR",
+		    "BYCOL",
+		    "BYROW",
 		    "CALL",
 		    "CEILING",
 		    "CEILING.MATH",
@@ -16493,6 +17003,8 @@
 		    "CHISQ.INV.RT",
 		    "CHISQ.TEST",
 		    "CHOOSE",
+		    "CHOOSECOLS",
+		    "CHOOSEROWS",
 		    "CLEAN",
 		    "CODE",
 		    "COLUMN",
@@ -16564,6 +17076,7 @@
 		    "DOLLARDE",
 		    "DOLLARFR",
 		    "DPRODUCT",
+		    "DROP",
 		    "DSTDEV",
 		    "DSTDEVP",
 		    "DSUM",
@@ -16583,14 +17096,16 @@
 		    "EVEN",
 		    "EXACT",
 		    "EXP",
+		    "EXPAND",
 		    "EXPON.DIST",
 		    "EXPONDIST",
 		    "FACT",
 		    "FACTDOUBLE",
-		    "FALSE|0",
+		    "FALSE",
 		    "F.DIST",
 		    "FDIST",
 		    "F.DIST.RT",
+		    "FILTER",
 		    "FILTERXML",
 		    "FIND",
 		    "FINDB",
@@ -16634,6 +17149,7 @@
 		    "HEX2OCT",
 		    "HLOOKUP",
 		    "HOUR",
+		    "HSTACK",
 		    "HYPERLINK",
 		    "HYPGEOM.DIST",
 		    "HYPGEOMDIST",
@@ -16642,6 +17158,7 @@
 		    "IFNA",
 		    "IFS",
 		    "IMABS",
+		    "IMAGE",
 		    "IMAGINARY",
 		    "IMARGUMENT",
 		    "IMCONJUGATE",
@@ -16684,6 +17201,7 @@
 		    "ISNONTEXT",
 		    "ISNUMBER",
 		    "ISODD",
+		    "ISOMITTED",
 		    "ISREF",
 		    "ISTEXT",
 		    "ISO.CEILING",
@@ -16691,12 +17209,14 @@
 		    "ISPMT",
 		    "JIS",
 		    "KURT",
+		    "LAMBDA",
 		    "LARGE",
 		    "LCM",
 		    "LEFT",
 		    "LEFTB",
 		    "LEN",
 		    "LENB",
+		    "LET",
 		    "LINEST",
 		    "LN",
 		    "LOG",
@@ -16708,6 +17228,8 @@
 		    "LOGNORM.INV",
 		    "LOOKUP",
 		    "LOWER",
+		    "MAKEARRAY",
+		    "MAP",
 		    "MATCH",
 		    "MAX",
 		    "MAXA",
@@ -16716,7 +17238,7 @@
 		    "MDURATION",
 		    "MEDIAN",
 		    "MID",
-		    "MIDBs",
+		    "MIDB",
 		    "MIN",
 		    "MINIFS",
 		    "MINA",
@@ -16793,12 +17315,14 @@
 		    "QUOTIENT",
 		    "RADIANS",
 		    "RAND",
+		    "RANDARRAY",
 		    "RANDBETWEEN",
 		    "RANK.AVG",
 		    "RANK.EQ",
 		    "RANK",
 		    "RATE",
 		    "RECEIVED",
+		    "REDUCE",
 		    "REGISTER.ID",
 		    "REPLACE",
 		    "REPLACEB",
@@ -16814,11 +17338,13 @@
 		    "RRI",
 		    "RSQ",
 		    "RTD",
+		    "SCAN",
 		    "SEARCH",
 		    "SEARCHB",
 		    "SEC",
 		    "SECH",
 		    "SECOND",
+		    "SEQUENCE",
 		    "SERIESSUM",
 		    "SHEET",
 		    "SHEETS",
@@ -16830,10 +17356,13 @@
 		    "SLN",
 		    "SLOPE",
 		    "SMALL",
-		    "SQL.REQUEST",
+		    "SORT",
+		    "SORTBY",
 		    "SQRT",
 		    "SQRTPI",
+		    "SQL.REQUEST",
 		    "STANDARDIZE",
+		    "STOCKHISTORY",
 		    "STDEV",
 		    "STDEV.P",
 		    "STDEV.S",
@@ -16856,6 +17385,7 @@
 		    "T",
 		    "TAN",
 		    "TANH",
+		    "TAKE",
 		    "TBILLEQ",
 		    "TBILLPRICE",
 		    "TBILLYIELD",
@@ -16864,26 +17394,33 @@
 		    "T.DIST.RT",
 		    "TDIST",
 		    "TEXT",
+		    "TEXTAFTER",
+		    "TEXTBEFORE",
 		    "TEXTJOIN",
+		    "TEXTSPLIT",
 		    "TIME",
 		    "TIMEVALUE",
 		    "T.INV",
 		    "T.INV.2T",
 		    "TINV",
+		    "TOCOL",
+		    "TOROW",
 		    "TODAY",
 		    "TRANSPOSE",
 		    "TREND",
 		    "TRIM",
 		    "TRIMMEAN",
-		    "TRUE|0",
+		    "TRUE",
 		    "TRUNC",
 		    "T.TEST",
 		    "TTEST",
 		    "TYPE",
 		    "UNICHAR",
 		    "UNICODE",
+		    "UNIQUE",
 		    "UPPER",
 		    "VALUE",
+		    "VALUETOTEXT",
 		    "VAR",
 		    "VAR.P",
 		    "VAR.S",
@@ -16892,6 +17429,7 @@
 		    "VARPA",
 		    "VDB",
 		    "VLOOKUP",
+		    "VSTACK",
 		    "WEBSERVICE",
 		    "WEEKDAY",
 		    "WEEKNUM",
@@ -16899,7 +17437,11 @@
 		    "WEIBULL.DIST",
 		    "WORKDAY",
 		    "WORKDAY.INTL",
+		    "WRAPCOLS",
+		    "WRAPROWS",
 		    "XIRR",
+		    "XLOOKUP",
+		    "XMATCH",
 		    "XNPV",
 		    "XOR",
 		    "YEAR",
@@ -17661,6 +18203,7 @@
 		      'f95'
 		    ],
 		    keywords: {
+		      $pattern: /\b[a-z][a-z0-9_]+\b|\.[a-z][a-z0-9_]+\./,
 		      keyword: KEYWORDS,
 		      literal: LITERALS,
 		      built_in: BUILT_INS
@@ -18715,7 +19258,7 @@
 		        excludeEnd: true,
 		        contains: [].concat(PARSE_PARAMS)
 		      },
-		      inherits || {}
+		      {}
 		    );
 		    mode.contains.push(FUNCTION_DEF);
 		    mode.contains.push(hljs.C_NUMBER_MODE);
@@ -18833,6 +19376,7 @@
 	 Contributors: Adam Joseph Cook <adam.joseph.cook@gmail.com>
 	 Description: G-code syntax highlighter for Fanuc and other common CNC machine tool controls.
 	 Website: https://www.sis.se/api/document/preview/911952/
+	 Category: hardware
 	 */
 
 	var gcode_1;
@@ -18842,58 +19386,170 @@
 		if (hasRequiredGcode) return gcode_1;
 		hasRequiredGcode = 1;
 		function gcode(hljs) {
-		  const GCODE_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
-		  const GCODE_CLOSE_RE = '%';
+		  const regex = hljs.regex;
 		  const GCODE_KEYWORDS = {
-		    $pattern: GCODE_IDENT_RE,
-		    keyword: 'IF DO WHILE ENDWHILE CALL ENDIF SUB ENDSUB GOTO REPEAT ENDREPEAT '
-		      + 'EQ LT GT NE GE LE OR XOR'
+		    $pattern: /[A-Z]+|%/,
+		    keyword: [
+		      // conditions
+		      'THEN',
+		      'ELSE',
+		      'ENDIF',
+		      'IF',
+
+		      // controls
+		      'GOTO',
+		      'DO',
+		      'WHILE',
+		      'WH',
+		      'END',
+		      'CALL',
+
+		      // scoping
+		      'SUB',
+		      'ENDSUB',
+
+		      // comparisons
+		      'EQ',
+		      'NE',
+		      'LT',
+		      'GT',
+		      'LE',
+		      'GE',
+		      'AND',
+		      'OR',
+		      'XOR',
+
+		      // start/end of program
+		      '%'
+		    ],
+		    built_in: [
+		      'ATAN',
+		      'ABS',
+		      'ACOS',
+		      'ASIN',
+		      'COS',
+		      'EXP',
+		      'FIX',
+		      'FUP',
+		      'ROUND',
+		      'LN',
+		      'SIN',
+		      'SQRT',
+		      'TAN',
+		      'EXISTS'
+		    ]
 		  };
-		  const GCODE_START = {
-		    className: 'meta',
-		    begin: '([O])([0-9]+)'
-		  };
-		  const NUMBER = hljs.inherit(hljs.C_NUMBER_MODE, { begin: '([-+]?((\\.\\d+)|(\\d+)(\\.\\d*)?))|' + hljs.C_NUMBER_RE });
+
+
+		  // TODO: post v12 lets use look-behind, until then \b and a callback filter will be used
+		  // const LETTER_BOUNDARY_RE = /(?<![A-Z])/;
+		  const LETTER_BOUNDARY_RE = /\b/;
+
+		  function LETTER_BOUNDARY_CALLBACK(matchdata, response) {
+		    if (matchdata.index === 0) {
+		      return;
+		    }
+
+		    const charBeforeMatch = matchdata.input[matchdata.index - 1];
+		    if (charBeforeMatch >= '0' && charBeforeMatch <= '9') {
+		      return;
+		    }
+
+		    if (charBeforeMatch === '_') {
+		      return;
+		    }
+
+		    response.ignoreMatch();
+		  }
+
+		  const NUMBER_RE = /[+-]?((\.\d+)|(\d+)(\.\d*)?)/;
+
+		  const GENERAL_MISC_FUNCTION_RE = /[GM]\s*\d+(\.\d+)?/;
+		  const TOOLS_RE = /T\s*\d+/;
+		  const SUBROUTINE_RE = /O\s*\d+/;
+		  const SUBROUTINE_NAMED_RE = /O<.+>/;
+		  const AXES_RE = /[ABCUVWXYZ]\s*/;
+		  const PARAMETERS_RE = /[FHIJKPQRS]\s*/;
+
 		  const GCODE_CODE = [
-		    hljs.C_LINE_COMMENT_MODE,
-		    hljs.C_BLOCK_COMMENT_MODE,
+		    // comments
 		    hljs.COMMENT(/\(/, /\)/),
-		    NUMBER,
-		    hljs.inherit(hljs.APOS_STRING_MODE, { illegal: null }),
-		    hljs.inherit(hljs.QUOTE_STRING_MODE, { illegal: null }),
+		    hljs.COMMENT(/;/, /$/),
+		    hljs.APOS_STRING_MODE,
+		    hljs.QUOTE_STRING_MODE,
+		    hljs.C_NUMBER_MODE,
+
+		    // gcodes
 		    {
-		      className: 'name',
-		      begin: '([G])([0-9]+\\.?[0-9]?)'
-		    },
-		    {
-		      className: 'name',
-		      begin: '([M])([0-9]+\\.?[0-9]?)'
-		    },
-		    {
-		      className: 'attr',
-		      begin: '(VC|VS|#)',
-		      end: '(\\d+)'
-		    },
-		    {
-		      className: 'attr',
-		      begin: '(VZOFX|VZOFY|VZOFZ)'
-		    },
-		    {
-		      className: 'built_in',
-		      begin: '(ATAN|ABS|ACOS|ASIN|SIN|COS|EXP|FIX|FUP|ROUND|LN|TAN)(\\[)',
-		      contains: [ NUMBER ],
-		      end: '\\]'
-		    },
-		    {
-		      className: 'symbol',
+		      scope: 'title.function',
 		      variants: [
+		        // G General functions: G0, G5.1, G5.2, …
+		        // M Misc functions: M0, M55.6, M199, …
+		        { match: regex.concat(LETTER_BOUNDARY_RE, GENERAL_MISC_FUNCTION_RE) },
 		        {
-		          begin: 'N',
-		          end: '\\d+',
-		          illegal: '\\W'
+		          begin: GENERAL_MISC_FUNCTION_RE,
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
+		        },
+		        // T Tools
+		        { match: regex.concat(LETTER_BOUNDARY_RE, TOOLS_RE), },
+		        {
+		          begin: TOOLS_RE,
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
 		        }
 		      ]
-		    }
+		    },
+
+		    {
+		      scope: 'symbol',
+		      variants: [
+		        // O Subroutine ID: O100, O110, …
+		        { match: regex.concat(LETTER_BOUNDARY_RE, SUBROUTINE_RE) },
+		        {
+		          begin: SUBROUTINE_RE,
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
+		        },
+		        // O Subroutine name: O<some>, …
+		        { match: regex.concat(LETTER_BOUNDARY_RE, SUBROUTINE_NAMED_RE) },
+		        {
+		          begin: SUBROUTINE_NAMED_RE,
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
+		        },
+		        // Checksum at end of line: *71, *199, …
+		        { match: /\*\s*\d+\s*$/ }
+		      ]
+		    },
+
+		    {
+		      scope: 'operator', // N Line number: N1, N2, N1020, …
+		      match: /^N\s*\d+/
+		    },
+
+		    {
+		      scope: 'variable',
+		      match: /-?#\s*\d+/
+		    },
+
+		    {
+		      scope: 'property', // Physical axes,
+		      variants: [
+		        { match: regex.concat(LETTER_BOUNDARY_RE, AXES_RE, NUMBER_RE) },
+		        {
+		          begin: regex.concat(AXES_RE, NUMBER_RE),
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
+		        },
+		      ]
+		    },
+
+		    {
+		      scope: 'params', // Different types of parameters
+		      variants: [
+		        { match: regex.concat(LETTER_BOUNDARY_RE, PARAMETERS_RE, NUMBER_RE) },
+		        {
+		          begin: regex.concat(PARAMETERS_RE, NUMBER_RE),
+		          'on:begin': LETTER_BOUNDARY_CALLBACK
+		        },
+		      ]
+		    },
 		  ];
 
 		  return {
@@ -18902,14 +19558,10 @@
 		    // Some implementations (CNC controls) of G-code are interoperable with uppercase and lowercase letters seamlessly.
 		    // However, most prefer all uppercase and uppercase is customary.
 		    case_insensitive: true,
+		    // TODO: post v12 with the use of look-behind this can be enabled
+		    disableAutodetect: true,
 		    keywords: GCODE_KEYWORDS,
-		    contains: [
-		      {
-		        className: 'meta',
-		        begin: GCODE_CLOSE_RE
-		      },
-		      GCODE_START
-		    ].concat(GCODE_CODE)
+		    contains: GCODE_CODE
 		  };
 		}
 
@@ -19114,9 +19766,8 @@
 
 	/*
 	Language: GML
-	Author: Meseta <meseta@gmail.com>
-	Description: Game Maker Language for GameMaker Studio 2
-	Website: https://docs2.yoyogames.com
+	Description: Game Maker Language for GameMaker (rev. 2023.1)
+	Website: https://manual.yoyogames.com/
 	Category: scripting
 	*/
 
@@ -19150,10 +19801,12 @@
 		    "globalvar",
 		    "if",
 		    "mod",
+		    "new",
 		    "not",
 		    "or",
 		    "repeat",
 		    "return",
+		    "static",
 		    "switch",
 		    "then",
 		    "until",
@@ -19162,49 +19815,21 @@
 		    "with",
 		    "xor"
 		  ];
+
 		  const BUILT_INS = [
 		    "abs",
-		    "achievement_available",
-		    "achievement_event",
-		    "achievement_get_challenges",
-		    "achievement_get_info",
-		    "achievement_get_pic",
-		    "achievement_increment",
-		    "achievement_load_friends",
-		    "achievement_load_leaderboard",
-		    "achievement_load_progress",
-		    "achievement_login",
-		    "achievement_login_status",
-		    "achievement_logout",
-		    "achievement_post",
-		    "achievement_post_score",
-		    "achievement_reset",
-		    "achievement_send_challenge",
-		    "achievement_show",
-		    "achievement_show_achievements",
-		    "achievement_show_challenge_notifications",
-		    "achievement_show_leaderboards",
-		    "action_inherited",
-		    "action_kill_object",
-		    "ads_disable",
-		    "ads_enable",
-		    "ads_engagement_active",
-		    "ads_engagement_available",
-		    "ads_engagement_launch",
-		    "ads_event",
-		    "ads_event_preload",
-		    "ads_get_display_height",
-		    "ads_get_display_width",
-		    "ads_interstitial_available",
-		    "ads_interstitial_display",
-		    "ads_move",
-		    "ads_set_reward_callback",
-		    "ads_setup",
 		    "alarm_get",
 		    "alarm_set",
-		    "analytics_event",
-		    "analytics_event_ext",
 		    "angle_difference",
+		    "animcurve_channel_evaluate",
+		    "animcurve_channel_new",
+		    "animcurve_create",
+		    "animcurve_destroy",
+		    "animcurve_exists",
+		    "animcurve_get",
+		    "animcurve_get_channel",
+		    "animcurve_get_channel_index",
+		    "animcurve_point_new",
 		    "ansi_char",
 		    "application_get_position",
 		    "application_surface_draw_enable",
@@ -19214,21 +19839,55 @@
 		    "arcsin",
 		    "arctan",
 		    "arctan2",
+		    "array_all",
+		    "array_any",
+		    "array_concat",
+		    "array_contains",
+		    "array_contains_ext",
 		    "array_copy",
+		    "array_copy_while",
 		    "array_create",
+		    "array_create_ext",
 		    "array_delete",
 		    "array_equals",
-		    "array_height_2d",
+		    "array_filter",
+		    "array_filter_ext",
+		    "array_find_index",
+		    "array_first",
+		    "array_foreach",
+		    "array_get",
+		    "array_get_index",
 		    "array_insert",
+		    "array_intersection",
+		    "array_last",
 		    "array_length",
-		    "array_length_1d",
-		    "array_length_2d",
+		    "array_map",
+		    "array_map_ext",
 		    "array_pop",
 		    "array_push",
+		    "array_reduce",
 		    "array_resize",
+		    "array_reverse",
+		    "array_reverse_ext",
+		    "array_set",
+		    "array_shuffle",
+		    "array_shuffle_ext",
 		    "array_sort",
+		    "array_union",
+		    "array_unique",
+		    "array_unique_ext",
+		    "asset_add_tags",
+		    "asset_clear_tags",
+		    "asset_get_ids",
 		    "asset_get_index",
+		    "asset_get_tags",
 		    "asset_get_type",
+		    "asset_has_any_tag",
+		    "asset_has_tags",
+		    "asset_remove_tags",
+		    "audio_bus_clear_emitters",
+		    "audio_bus_create",
+		    "audio_bus_get_emitters",
 		    "audio_channel_num",
 		    "audio_create_buffer_sound",
 		    "audio_create_play_queue",
@@ -19237,11 +19896,14 @@
 		    "audio_debug",
 		    "audio_destroy_stream",
 		    "audio_destroy_sync_group",
+		    "audio_effect_create",
+		    "audio_emitter_bus",
 		    "audio_emitter_create",
 		    "audio_emitter_exists",
 		    "audio_emitter_falloff",
 		    "audio_emitter_free",
 		    "audio_emitter_gain",
+		    "audio_emitter_get_bus",
 		    "audio_emitter_get_gain",
 		    "audio_emitter_get_listener_mask",
 		    "audio_emitter_get_pitch",
@@ -19267,6 +19929,8 @@
 		    "audio_get_recorder_count",
 		    "audio_get_recorder_info",
 		    "audio_get_type",
+		    "audio_group_get_assets",
+		    "audio_group_get_gain",
 		    "audio_group_is_loaded",
 		    "audio_group_load",
 		    "audio_group_load_progress",
@@ -19284,48 +19948,52 @@
 		    "audio_listener_set_velocity",
 		    "audio_listener_velocity",
 		    "audio_master_gain",
-		    "audio_music_gain",
-		    "audio_music_is_playing",
 		    "audio_pause_all",
-		    "audio_pause_music",
 		    "audio_pause_sound",
 		    "audio_pause_sync_group",
 		    "audio_play_in_sync_group",
-		    "audio_play_music",
 		    "audio_play_sound",
 		    "audio_play_sound_at",
+		    "audio_play_sound_ext",
 		    "audio_play_sound_on",
 		    "audio_queue_sound",
 		    "audio_resume_all",
-		    "audio_resume_music",
 		    "audio_resume_sound",
 		    "audio_resume_sync_group",
 		    "audio_set_listener_mask",
 		    "audio_set_master_gain",
 		    "audio_sound_gain",
+		    "audio_sound_get_audio_group",
 		    "audio_sound_get_gain",
 		    "audio_sound_get_listener_mask",
+		    "audio_sound_get_loop",
+		    "audio_sound_get_loop_end",
+		    "audio_sound_get_loop_start",
 		    "audio_sound_get_pitch",
 		    "audio_sound_get_track_position",
+		    "audio_sound_is_playable",
 		    "audio_sound_length",
+		    "audio_sound_loop",
+		    "audio_sound_loop_end",
+		    "audio_sound_loop_start",
 		    "audio_sound_pitch",
 		    "audio_sound_set_listener_mask",
 		    "audio_sound_set_track_position",
 		    "audio_start_recording",
 		    "audio_start_sync_group",
 		    "audio_stop_all",
-		    "audio_stop_music",
 		    "audio_stop_recording",
 		    "audio_stop_sound",
 		    "audio_stop_sync_group",
 		    "audio_sync_group_debug",
 		    "audio_sync_group_get_track_pos",
+		    "audio_sync_group_is_paused",
 		    "audio_sync_group_is_playing",
-		    "audio_system",
-		    "background_get_height",
-		    "background_get_width",
+		    "audio_system_is_available",
+		    "audio_system_is_initialised",
 		    "base64_decode",
 		    "base64_encode",
+		    "bool",
 		    "browser_input_capture",
 		    "buffer_async_group_begin",
 		    "buffer_async_group_end",
@@ -19333,11 +20001,15 @@
 		    "buffer_base64_decode",
 		    "buffer_base64_decode_ext",
 		    "buffer_base64_encode",
+		    "buffer_compress",
 		    "buffer_copy",
 		    "buffer_copy_from_vertex_buffer",
+		    "buffer_copy_stride",
+		    "buffer_crc32",
 		    "buffer_create",
 		    "buffer_create_from_vertex_buffer",
 		    "buffer_create_from_vertex_buffer_ext",
+		    "buffer_decompress",
 		    "buffer_delete",
 		    "buffer_exists",
 		    "buffer_fill",
@@ -19360,11 +20032,15 @@
 		    "buffer_save_ext",
 		    "buffer_seek",
 		    "buffer_set_surface",
+		    "buffer_set_used_size",
 		    "buffer_sha1",
 		    "buffer_sizeof",
 		    "buffer_tell",
 		    "buffer_write",
+		    "call_cancel",
+		    "call_later",
 		    "camera_apply",
+		    "camera_copy_transforms",
 		    "camera_create",
 		    "camera_create_view",
 		    "camera_destroy",
@@ -19485,6 +20161,26 @@
 		    "date_valid_datetime",
 		    "date_week_span",
 		    "date_year_span",
+		    "db_to_lin",
+		    "dbg_add_font_glyphs",
+		    "dbg_button",
+		    "dbg_checkbox",
+		    "dbg_color",
+		    "dbg_colour",
+		    "dbg_drop_down",
+		    "dbg_same_line",
+		    "dbg_section",
+		    "dbg_section_delete",
+		    "dbg_section_exists",
+		    "dbg_slider",
+		    "dbg_slider_int",
+		    "dbg_sprite",
+		    "dbg_text",
+		    "dbg_text_input",
+		    "dbg_view",
+		    "dbg_view_delete",
+		    "dbg_view_exists",
+		    "dbg_watch",
 		    "dcos",
 		    "debug_event",
 		    "debug_get_callstack",
@@ -19508,6 +20204,7 @@
 		    "directory_exists",
 		    "display_get_dpi_x",
 		    "display_get_dpi_y",
+		    "display_get_frequency",
 		    "display_get_gui_height",
 		    "display_get_gui_width",
 		    "display_get_height",
@@ -19534,10 +20231,6 @@
 		    "dot_product_normalised",
 		    "dot_product_normalized",
 		    "draw_arrow",
-		    "draw_background",
-		    "draw_background_ext",
-		    "draw_background_part_ext",
-		    "draw_background_tiled",
 		    "draw_button",
 		    "draw_circle",
 		    "draw_circle_color",
@@ -19547,15 +20240,19 @@
 		    "draw_ellipse",
 		    "draw_ellipse_color",
 		    "draw_ellipse_colour",
-		    "draw_enable_alphablend",
 		    "draw_enable_drawevent",
+		    "draw_enable_skeleton_blendmodes",
 		    "draw_enable_swf_aa",
 		    "draw_flush",
 		    "draw_get_alpha",
 		    "draw_get_color",
 		    "draw_get_colour",
+		    "draw_get_enable_skeleton_blendmodes",
+		    "draw_get_font",
+		    "draw_get_halign",
 		    "draw_get_lighting",
 		    "draw_get_swf_aa_level",
+		    "draw_get_valign",
 		    "draw_getpixel",
 		    "draw_getpixel_ext",
 		    "draw_healthbar",
@@ -19590,13 +20287,8 @@
 		    "draw_roundrect_ext",
 		    "draw_self",
 		    "draw_set_alpha",
-		    "draw_set_alpha_test",
-		    "draw_set_alpha_test_ref_value",
-		    "draw_set_blend_mode",
-		    "draw_set_blend_mode_ext",
 		    "draw_set_circle_precision",
 		    "draw_set_color",
-		    "draw_set_color_write_enable",
 		    "draw_set_colour",
 		    "draw_set_font",
 		    "draw_set_halign",
@@ -19681,6 +20373,7 @@
 		    "ds_grid_set_region",
 		    "ds_grid_shuffle",
 		    "ds_grid_sort",
+		    "ds_grid_to_mp_grid",
 		    "ds_grid_value_disk_exists",
 		    "ds_grid_value_disk_x",
 		    "ds_grid_value_disk_y",
@@ -19699,6 +20392,8 @@
 		    "ds_list_find_index",
 		    "ds_list_find_value",
 		    "ds_list_insert",
+		    "ds_list_is_list",
+		    "ds_list_is_map",
 		    "ds_list_mark_as_list",
 		    "ds_list_mark_as_map",
 		    "ds_list_read",
@@ -19723,6 +20418,9 @@
 		    "ds_map_find_next",
 		    "ds_map_find_previous",
 		    "ds_map_find_value",
+		    "ds_map_is_list",
+		    "ds_map_is_map",
+		    "ds_map_keys_to_array",
 		    "ds_map_read",
 		    "ds_map_replace",
 		    "ds_map_replace_list",
@@ -19733,6 +20431,7 @@
 		    "ds_map_secure_save_buffer",
 		    "ds_map_set",
 		    "ds_map_size",
+		    "ds_map_values_to_array",
 		    "ds_map_write",
 		    "ds_priority_add",
 		    "ds_priority_change_priority",
@@ -19779,29 +20478,25 @@
 		    "effect_clear",
 		    "effect_create_above",
 		    "effect_create_below",
+		    "effect_create_depth",
+		    "effect_create_layer",
 		    "environment_get_variable",
 		    "event_inherited",
 		    "event_perform",
+		    "event_perform_async",
 		    "event_perform_object",
 		    "event_user",
+		    "exception_unhandled_handler",
 		    "exp",
+		    "extension_exists",
+		    "extension_get_option_count",
+		    "extension_get_option_names",
+		    "extension_get_option_value",
+		    "extension_get_options",
+		    "extension_get_version",
 		    "external_call",
 		    "external_define",
 		    "external_free",
-		    "facebook_accesstoken",
-		    "facebook_check_permission",
-		    "facebook_dialog",
-		    "facebook_graph_request",
-		    "facebook_init",
-		    "facebook_launch_offerwall",
-		    "facebook_login",
-		    "facebook_logout",
-		    "facebook_post_message",
-		    "facebook_request_publish_permissions",
-		    "facebook_request_read_permissions",
-		    "facebook_send_invite",
-		    "facebook_status",
-		    "facebook_user_id",
 		    "file_attributes",
 		    "file_bin_close",
 		    "file_bin_open",
@@ -19843,23 +20538,38 @@
 		    "font_add_get_enable_aa",
 		    "font_add_sprite",
 		    "font_add_sprite_ext",
+		    "font_cache_glyph",
 		    "font_delete",
+		    "font_enable_effects",
+		    "font_enable_sdf",
 		    "font_exists",
 		    "font_get_bold",
 		    "font_get_first",
 		    "font_get_fontname",
+		    "font_get_info",
 		    "font_get_italic",
 		    "font_get_last",
 		    "font_get_name",
+		    "font_get_sdf_enabled",
+		    "font_get_sdf_spread",
 		    "font_get_size",
 		    "font_get_texture",
 		    "font_get_uvs",
-		    "font_replace",
 		    "font_replace_sprite",
 		    "font_replace_sprite_ext",
+		    "font_sdf_spread",
 		    "font_set_cache_size",
-		    "font_texture_page_size",
 		    "frac",
+		    "fx_create",
+		    "fx_get_name",
+		    "fx_get_parameter",
+		    "fx_get_parameter_names",
+		    "fx_get_parameters",
+		    "fx_get_single_layer",
+		    "fx_set_parameter",
+		    "fx_set_parameters",
+		    "fx_set_single_layer",
+		    "game_change",
 		    "game_end",
 		    "game_get_speed",
 		    "game_load",
@@ -19879,13 +20589,27 @@
 		    "gamepad_get_button_threshold",
 		    "gamepad_get_description",
 		    "gamepad_get_device_count",
+		    "gamepad_get_guid",
+		    "gamepad_get_mapping",
+		    "gamepad_get_option",
+		    "gamepad_hat_count",
+		    "gamepad_hat_value",
 		    "gamepad_is_connected",
 		    "gamepad_is_supported",
+		    "gamepad_remove_mapping",
 		    "gamepad_set_axis_deadzone",
 		    "gamepad_set_button_threshold",
 		    "gamepad_set_color",
 		    "gamepad_set_colour",
+		    "gamepad_set_option",
 		    "gamepad_set_vibration",
+		    "gamepad_test_mapping",
+		    "gc_collect",
+		    "gc_enable",
+		    "gc_get_stats",
+		    "gc_get_target_frame_time",
+		    "gc_is_enabled",
+		    "gc_target_frame_time",
 		    "gesture_double_tap_distance",
 		    "gesture_double_tap_time",
 		    "gesture_drag_distance",
@@ -19918,10 +20642,13 @@
 		    "get_string",
 		    "get_string_async",
 		    "get_timer",
+		    "gif_add_surface",
+		    "gif_open",
+		    "gif_save",
+		    "gif_save_buffer",
 		    "gml_pragma",
 		    "gml_release_mode",
 		    "gpu_get_alphatestenable",
-		    "gpu_get_alphatestfunc",
 		    "gpu_get_alphatestref",
 		    "gpu_get_blendenable",
 		    "gpu_get_blendmode",
@@ -19934,8 +20661,8 @@
 		    "gpu_get_colorwriteenable",
 		    "gpu_get_colourwriteenable",
 		    "gpu_get_cullmode",
+		    "gpu_get_depth",
 		    "gpu_get_fog",
-		    "gpu_get_lightingenable",
 		    "gpu_get_state",
 		    "gpu_get_tex_filter",
 		    "gpu_get_tex_filter_ext",
@@ -19963,7 +20690,6 @@
 		    "gpu_pop_state",
 		    "gpu_push_state",
 		    "gpu_set_alphatestenable",
-		    "gpu_set_alphatestfunc",
 		    "gpu_set_alphatestref",
 		    "gpu_set_blendenable",
 		    "gpu_set_blendmode",
@@ -19972,8 +20698,8 @@
 		    "gpu_set_colorwriteenable",
 		    "gpu_set_colourwriteenable",
 		    "gpu_set_cullmode",
+		    "gpu_set_depth",
 		    "gpu_set_fog",
-		    "gpu_set_lightingenable",
 		    "gpu_set_state",
 		    "gpu_set_tex_filter",
 		    "gpu_set_tex_filter_ext",
@@ -19998,14 +20724,17 @@
 		    "gpu_set_zfunc",
 		    "gpu_set_ztestenable",
 		    "gpu_set_zwriteenable",
+		    "handle_parse",
 		    "highscore_add",
 		    "highscore_clear",
 		    "highscore_name",
 		    "highscore_value",
 		    "http_get",
 		    "http_get_file",
+		    "http_get_request_crossorigin",
 		    "http_post_string",
 		    "http_request",
+		    "http_set_request_crossorigin",
 		    "iap_acquire",
 		    "iap_activate",
 		    "iap_consume",
@@ -20031,7 +20760,6 @@
 		    "instance_activate_region",
 		    "instance_change",
 		    "instance_copy",
-		    "instance_create",
 		    "instance_create_depth",
 		    "instance_create_layer",
 		    "instance_deactivate_all",
@@ -20049,17 +20777,23 @@
 		    "instance_place_list",
 		    "instance_position",
 		    "instance_position_list",
+		    "instanceof",
 		    "int64",
 		    "io_clear",
 		    "irandom",
 		    "irandom_range",
 		    "is_array",
 		    "is_bool",
+		    "is_callable",
+		    "is_debug_overlay_open",
+		    "is_handle",
 		    "is_infinity",
+		    "is_instanceof",
 		    "is_int32",
 		    "is_int64",
-		    "is_matrix",
+		    "is_keyboard_used_debug_overlay",
 		    "is_method",
+		    "is_mouse_over_debug_overlay",
 		    "is_nan",
 		    "is_numeric",
 		    "is_ptr",
@@ -20067,10 +20801,10 @@
 		    "is_string",
 		    "is_struct",
 		    "is_undefined",
-		    "is_vec3",
-		    "is_vec4",
 		    "json_decode",
 		    "json_encode",
+		    "json_parse",
+		    "json_stringify",
 		    "keyboard_check",
 		    "keyboard_check_direct",
 		    "keyboard_check_pressed",
@@ -20115,19 +20849,23 @@
 		    "layer_background_vtiled",
 		    "layer_background_xscale",
 		    "layer_background_yscale",
+		    "layer_clear_fx",
 		    "layer_create",
 		    "layer_depth",
 		    "layer_destroy",
 		    "layer_destroy_instances",
 		    "layer_element_move",
+		    "layer_enable_fx",
 		    "layer_exists",
 		    "layer_force_draw_depth",
+		    "layer_fx_is_enabled",
 		    "layer_get_all",
 		    "layer_get_all_elements",
 		    "layer_get_depth",
 		    "layer_get_element_layer",
 		    "layer_get_element_type",
 		    "layer_get_forced_depth",
+		    "layer_get_fx",
 		    "layer_get_hspeed",
 		    "layer_get_id",
 		    "layer_get_id_at_depth",
@@ -20147,6 +20885,33 @@
 		    "layer_reset_target_room",
 		    "layer_script_begin",
 		    "layer_script_end",
+		    "layer_sequence_angle",
+		    "layer_sequence_create",
+		    "layer_sequence_destroy",
+		    "layer_sequence_exists",
+		    "layer_sequence_get_angle",
+		    "layer_sequence_get_headdir",
+		    "layer_sequence_get_headpos",
+		    "layer_sequence_get_instance",
+		    "layer_sequence_get_length",
+		    "layer_sequence_get_sequence",
+		    "layer_sequence_get_speedscale",
+		    "layer_sequence_get_x",
+		    "layer_sequence_get_xscale",
+		    "layer_sequence_get_y",
+		    "layer_sequence_get_yscale",
+		    "layer_sequence_headdir",
+		    "layer_sequence_headpos",
+		    "layer_sequence_is_finished",
+		    "layer_sequence_is_paused",
+		    "layer_sequence_pause",
+		    "layer_sequence_play",
+		    "layer_sequence_speedscale",
+		    "layer_sequence_x",
+		    "layer_sequence_xscale",
+		    "layer_sequence_y",
+		    "layer_sequence_yscale",
+		    "layer_set_fx",
 		    "layer_set_target_room",
 		    "layer_set_visible",
 		    "layer_shader",
@@ -20205,6 +20970,7 @@
 		    "lengthdir_x",
 		    "lengthdir_y",
 		    "lerp",
+		    "lin_to_db",
 		    "ln",
 		    "load_csv",
 		    "log10",
@@ -20227,7 +20993,6 @@
 		    "matrix_set",
 		    "matrix_stack_clear",
 		    "matrix_stack_is_empty",
-		    "matrix_stack_multiply",
 		    "matrix_stack_pop",
 		    "matrix_stack_push",
 		    "matrix_stack_set",
@@ -20241,6 +21006,10 @@
 		    "median",
 		    "merge_color",
 		    "merge_colour",
+		    "method",
+		    "method_call",
+		    "method_get_index",
+		    "method_get_self",
 		    "min",
 		    "motion_add",
 		    "motion_set",
@@ -20250,6 +21019,7 @@
 		    "mouse_clear",
 		    "mouse_wheel_down",
 		    "mouse_wheel_up",
+		    "move_and_collide",
 		    "move_bounce_all",
 		    "move_bounce_solid",
 		    "move_contact_all",
@@ -20281,8 +21051,11 @@
 		    "mp_potential_settings",
 		    "mp_potential_step",
 		    "mp_potential_step_object",
+		    "nameof",
 		    "network_connect",
+		    "network_connect_async",
 		    "network_connect_raw",
+		    "network_connect_raw_async",
 		    "network_create_server",
 		    "network_create_server_raw",
 		    "network_create_socket",
@@ -20297,7 +21070,6 @@
 		    "network_set_config",
 		    "network_set_timeout",
 		    "object_exists",
-		    "object_get_depth",
 		    "object_get_mask",
 		    "object_get_name",
 		    "object_get_parent",
@@ -20313,6 +21085,7 @@
 		    "object_set_sprite",
 		    "object_set_visible",
 		    "ord",
+		    "os_check_permission",
 		    "os_get_config",
 		    "os_get_info",
 		    "os_get_language",
@@ -20321,24 +21094,34 @@
 		    "os_is_paused",
 		    "os_lock_orientation",
 		    "os_powersave_enable",
+		    "os_request_permission",
+		    "os_set_orientation_lock",
 		    "parameter_count",
 		    "parameter_string",
 		    "part_emitter_burst",
 		    "part_emitter_clear",
 		    "part_emitter_create",
+		    "part_emitter_delay",
 		    "part_emitter_destroy",
 		    "part_emitter_destroy_all",
+		    "part_emitter_enable",
 		    "part_emitter_exists",
+		    "part_emitter_interval",
 		    "part_emitter_region",
+		    "part_emitter_relative",
 		    "part_emitter_stream",
+		    "part_particles_burst",
 		    "part_particles_clear",
 		    "part_particles_count",
 		    "part_particles_create",
 		    "part_particles_create_color",
 		    "part_particles_create_colour",
+		    "part_system_angle",
 		    "part_system_automatic_draw",
 		    "part_system_automatic_update",
 		    "part_system_clear",
+		    "part_system_color",
+		    "part_system_colour",
 		    "part_system_create",
 		    "part_system_create_layer",
 		    "part_system_depth",
@@ -20346,7 +21129,9 @@
 		    "part_system_draw_order",
 		    "part_system_drawit",
 		    "part_system_exists",
+		    "part_system_get_info",
 		    "part_system_get_layer",
+		    "part_system_global_space",
 		    "part_system_layer",
 		    "part_system_position",
 		    "part_system_update",
@@ -20378,9 +21163,14 @@
 		    "part_type_scale",
 		    "part_type_shape",
 		    "part_type_size",
+		    "part_type_size_x",
+		    "part_type_size_y",
 		    "part_type_speed",
 		    "part_type_sprite",
 		    "part_type_step",
+		    "part_type_subimage",
+		    "particle_exists",
+		    "particle_get_info",
 		    "path_add",
 		    "path_add_point",
 		    "path_append",
@@ -20403,7 +21193,6 @@
 		    "path_get_point_y",
 		    "path_get_precision",
 		    "path_get_speed",
-		    "path_get_time",
 		    "path_get_x",
 		    "path_get_y",
 		    "path_insert_point",
@@ -20530,10 +21319,6 @@
 		    "position_meeting",
 		    "power",
 		    "ptr",
-		    "push_cancel_local_notification",
-		    "push_get_first_local_notification",
-		    "push_get_next_local_notification",
-		    "push_local_notification",
 		    "radtodeg",
 		    "random",
 		    "random_get_seed",
@@ -20545,11 +21330,33 @@
 		    "rectangle_in_circle",
 		    "rectangle_in_rectangle",
 		    "rectangle_in_triangle",
+		    "ref_create",
+		    "rollback_chat",
+		    "rollback_create_game",
+		    "rollback_define_extra_network_latency",
+		    "rollback_define_input",
+		    "rollback_define_input_frame_delay",
+		    "rollback_define_mock_input",
+		    "rollback_define_player",
+		    "rollback_display_events",
+		    "rollback_get_info",
+		    "rollback_get_input",
+		    "rollback_get_player_prefs",
+		    "rollback_join_game",
+		    "rollback_leave_game",
+		    "rollback_set_player_prefs",
+		    "rollback_start_game",
+		    "rollback_sync_on_frame",
+		    "rollback_use_late_join",
+		    "rollback_use_manual_start",
+		    "rollback_use_player_prefs",
+		    "rollback_use_random_input",
 		    "room_add",
 		    "room_assign",
 		    "room_duplicate",
 		    "room_exists",
 		    "room_get_camera",
+		    "room_get_info",
 		    "room_get_name",
 		    "room_get_viewport",
 		    "room_goto",
@@ -20560,21 +21367,30 @@
 		    "room_next",
 		    "room_previous",
 		    "room_restart",
-		    "room_set_background_color",
-		    "room_set_background_colour",
 		    "room_set_camera",
 		    "room_set_height",
 		    "room_set_persistent",
-		    "room_set_view",
 		    "room_set_view_enabled",
 		    "room_set_viewport",
 		    "room_set_width",
 		    "round",
+		    "scheduler_resolution_get",
+		    "scheduler_resolution_set",
 		    "screen_save",
 		    "screen_save_part",
 		    "script_execute",
+		    "script_execute_ext",
 		    "script_exists",
 		    "script_get_name",
+		    "sequence_create",
+		    "sequence_destroy",
+		    "sequence_exists",
+		    "sequence_get",
+		    "sequence_get_objects",
+		    "sequence_instance_override_object",
+		    "sequence_keyframe_new",
+		    "sequence_keyframedata_new",
+		    "sequence_track_new",
 		    "sha1_file",
 		    "sha1_string_unicode",
 		    "sha1_string_utf8",
@@ -20588,6 +21404,7 @@
 		    "shader_set",
 		    "shader_set_uniform_f",
 		    "shader_set_uniform_f_array",
+		    "shader_set_uniform_f_buffer",
 		    "shader_set_uniform_i",
 		    "shader_set_uniform_i_array",
 		    "shader_set_uniform_matrix",
@@ -20595,6 +21412,7 @@
 		    "shaders_are_supported",
 		    "shop_leave_rating",
 		    "show_debug_message",
+		    "show_debug_message_ext",
 		    "show_debug_overlay",
 		    "show_error",
 		    "show_message",
@@ -20606,30 +21424,53 @@
 		    "skeleton_animation_clear",
 		    "skeleton_animation_get",
 		    "skeleton_animation_get_duration",
+		    "skeleton_animation_get_event_frames",
 		    "skeleton_animation_get_ext",
 		    "skeleton_animation_get_frame",
 		    "skeleton_animation_get_frames",
+		    "skeleton_animation_get_position",
+		    "skeleton_animation_is_finished",
+		    "skeleton_animation_is_looping",
 		    "skeleton_animation_list",
 		    "skeleton_animation_mix",
 		    "skeleton_animation_set",
 		    "skeleton_animation_set_ext",
 		    "skeleton_animation_set_frame",
+		    "skeleton_animation_set_position",
 		    "skeleton_attachment_create",
+		    "skeleton_attachment_create_color",
+		    "skeleton_attachment_create_colour",
+		    "skeleton_attachment_destroy",
+		    "skeleton_attachment_exists",
 		    "skeleton_attachment_get",
+		    "skeleton_attachment_replace",
+		    "skeleton_attachment_replace_color",
+		    "skeleton_attachment_replace_colour",
 		    "skeleton_attachment_set",
 		    "skeleton_bone_data_get",
 		    "skeleton_bone_data_set",
+		    "skeleton_bone_list",
 		    "skeleton_bone_state_get",
 		    "skeleton_bone_state_set",
 		    "skeleton_collision_draw_set",
+		    "skeleton_find_slot",
 		    "skeleton_get_bounds",
 		    "skeleton_get_minmax",
 		    "skeleton_get_num_bounds",
+		    "skeleton_skin_create",
 		    "skeleton_skin_get",
 		    "skeleton_skin_list",
 		    "skeleton_skin_set",
+		    "skeleton_slot_alpha_get",
+		    "skeleton_slot_color_get",
+		    "skeleton_slot_color_set",
+		    "skeleton_slot_colour_get",
+		    "skeleton_slot_colour_set",
 		    "skeleton_slot_data",
+		    "skeleton_slot_data_instance",
+		    "skeleton_slot_list",
 		    "sprite_add",
+		    "sprite_add_ext",
 		    "sprite_add_from_surface",
 		    "sprite_assign",
 		    "sprite_collision_mask",
@@ -20641,10 +21482,13 @@
 		    "sprite_flush_multi",
 		    "sprite_get_bbox_bottom",
 		    "sprite_get_bbox_left",
+		    "sprite_get_bbox_mode",
 		    "sprite_get_bbox_right",
 		    "sprite_get_bbox_top",
 		    "sprite_get_height",
+		    "sprite_get_info",
 		    "sprite_get_name",
+		    "sprite_get_nineslice",
 		    "sprite_get_number",
 		    "sprite_get_speed",
 		    "sprite_get_speed_type",
@@ -20655,136 +21499,88 @@
 		    "sprite_get_xoffset",
 		    "sprite_get_yoffset",
 		    "sprite_merge",
+		    "sprite_nineslice_create",
 		    "sprite_prefetch",
 		    "sprite_prefetch_multi",
 		    "sprite_replace",
 		    "sprite_save",
 		    "sprite_save_strip",
 		    "sprite_set_alpha_from_sprite",
+		    "sprite_set_bbox",
+		    "sprite_set_bbox_mode",
 		    "sprite_set_cache_size",
 		    "sprite_set_cache_size_ext",
+		    "sprite_set_nineslice",
 		    "sprite_set_offset",
 		    "sprite_set_speed",
 		    "sqr",
 		    "sqrt",
-		    "steam_activate_overlay",
-		    "steam_activate_overlay_browser",
-		    "steam_activate_overlay_store",
-		    "steam_activate_overlay_user",
-		    "steam_available_languages",
-		    "steam_clear_achievement",
-		    "steam_create_leaderboard",
-		    "steam_current_game_language",
-		    "steam_download_friends_scores",
-		    "steam_download_scores",
-		    "steam_download_scores_around_user",
-		    "steam_file_delete",
-		    "steam_file_exists",
-		    "steam_file_persisted",
-		    "steam_file_read",
-		    "steam_file_share",
-		    "steam_file_size",
-		    "steam_file_write",
-		    "steam_file_write_file",
-		    "steam_get_achievement",
-		    "steam_get_app_id",
-		    "steam_get_persona_name",
-		    "steam_get_quota_free",
-		    "steam_get_quota_total",
-		    "steam_get_stat_avg_rate",
-		    "steam_get_stat_float",
-		    "steam_get_stat_int",
-		    "steam_get_user_account_id",
-		    "steam_get_user_persona_name",
-		    "steam_get_user_steam_id",
-		    "steam_initialised",
-		    "steam_is_cloud_enabled_for_account",
-		    "steam_is_cloud_enabled_for_app",
-		    "steam_is_overlay_activated",
-		    "steam_is_overlay_enabled",
-		    "steam_is_screenshot_requested",
-		    "steam_is_user_logged_on",
-		    "steam_reset_all_stats",
-		    "steam_reset_all_stats_achievements",
-		    "steam_send_screenshot",
-		    "steam_set_achievement",
-		    "steam_set_stat_avg_rate",
-		    "steam_set_stat_float",
-		    "steam_set_stat_int",
-		    "steam_stats_ready",
-		    "steam_ugc_create_item",
-		    "steam_ugc_create_query_all",
-		    "steam_ugc_create_query_all_ex",
-		    "steam_ugc_create_query_user",
-		    "steam_ugc_create_query_user_ex",
-		    "steam_ugc_download",
-		    "steam_ugc_get_item_install_info",
-		    "steam_ugc_get_item_update_info",
-		    "steam_ugc_get_item_update_progress",
-		    "steam_ugc_get_subscribed_items",
-		    "steam_ugc_num_subscribed_items",
-		    "steam_ugc_query_add_excluded_tag",
-		    "steam_ugc_query_add_required_tag",
-		    "steam_ugc_query_set_allow_cached_response",
-		    "steam_ugc_query_set_cloud_filename_filter",
-		    "steam_ugc_query_set_match_any_tag",
-		    "steam_ugc_query_set_ranked_by_trend_days",
-		    "steam_ugc_query_set_return_long_description",
-		    "steam_ugc_query_set_return_total_only",
-		    "steam_ugc_query_set_search_text",
-		    "steam_ugc_request_item_details",
-		    "steam_ugc_send_query",
-		    "steam_ugc_set_item_content",
-		    "steam_ugc_set_item_description",
-		    "steam_ugc_set_item_preview",
-		    "steam_ugc_set_item_tags",
-		    "steam_ugc_set_item_title",
-		    "steam_ugc_set_item_visibility",
-		    "steam_ugc_start_item_update",
-		    "steam_ugc_submit_item_update",
-		    "steam_ugc_subscribe_item",
-		    "steam_ugc_unsubscribe_item",
-		    "steam_upload_score",
-		    "steam_upload_score_buffer",
-		    "steam_upload_score_buffer_ext",
-		    "steam_upload_score_ext",
-		    "steam_user_installed_dlc",
-		    "steam_user_owns_dlc",
+		    "static_get",
+		    "static_set",
 		    "string",
 		    "string_byte_at",
 		    "string_byte_length",
 		    "string_char_at",
+		    "string_concat",
+		    "string_concat_ext",
 		    "string_copy",
 		    "string_count",
 		    "string_delete",
 		    "string_digits",
+		    "string_ends_with",
+		    "string_ext",
+		    "string_foreach",
 		    "string_format",
 		    "string_hash_to_newline",
 		    "string_height",
 		    "string_height_ext",
 		    "string_insert",
+		    "string_join",
+		    "string_join_ext",
+		    "string_last_pos",
+		    "string_last_pos_ext",
 		    "string_length",
 		    "string_letters",
 		    "string_lettersdigits",
 		    "string_lower",
 		    "string_ord_at",
 		    "string_pos",
+		    "string_pos_ext",
 		    "string_repeat",
 		    "string_replace",
 		    "string_replace_all",
 		    "string_set_byte_at",
+		    "string_split",
+		    "string_split_ext",
+		    "string_starts_with",
+		    "string_trim",
+		    "string_trim_end",
+		    "string_trim_start",
 		    "string_upper",
 		    "string_width",
 		    "string_width_ext",
+		    "struct_exists",
+		    "struct_foreach",
+		    "struct_get",
+		    "struct_get_from_hash",
+		    "struct_get_names",
+		    "struct_names_count",
+		    "struct_remove",
+		    "struct_set",
+		    "struct_set_from_hash",
 		    "surface_copy",
 		    "surface_copy_part",
 		    "surface_create",
 		    "surface_create_ext",
 		    "surface_depth_disable",
 		    "surface_exists",
+		    "surface_format_is_supported",
 		    "surface_free",
 		    "surface_get_depth_disable",
+		    "surface_get_format",
 		    "surface_get_height",
+		    "surface_get_target",
+		    "surface_get_target_ext",
 		    "surface_get_texture",
 		    "surface_get_width",
 		    "surface_getpixel",
@@ -20795,14 +21591,29 @@
 		    "surface_save_part",
 		    "surface_set_target",
 		    "surface_set_target_ext",
+		    "tag_get_asset_ids",
+		    "tag_get_assets",
 		    "tan",
+		    "texture_debug_messages",
+		    "texture_flush",
 		    "texture_get_height",
 		    "texture_get_texel_height",
 		    "texture_get_texel_width",
 		    "texture_get_uvs",
 		    "texture_get_width",
 		    "texture_global_scale",
+		    "texture_is_ready",
+		    "texture_prefetch",
 		    "texture_set_stage",
+		    "texturegroup_get_fonts",
+		    "texturegroup_get_names",
+		    "texturegroup_get_sprites",
+		    "texturegroup_get_status",
+		    "texturegroup_get_textures",
+		    "texturegroup_get_tilesets",
+		    "texturegroup_load",
+		    "texturegroup_set_mode",
+		    "texturegroup_unload",
 		    "tile_get_empty",
 		    "tile_get_flip",
 		    "tile_get_index",
@@ -20831,10 +21642,35 @@
 		    "tilemap_set",
 		    "tilemap_set_at_pixel",
 		    "tilemap_set_global_mask",
+		    "tilemap_set_height",
 		    "tilemap_set_mask",
+		    "tilemap_set_width",
 		    "tilemap_tileset",
 		    "tilemap_x",
 		    "tilemap_y",
+		    "tileset_get_info",
+		    "tileset_get_name",
+		    "tileset_get_texture",
+		    "tileset_get_uvs",
+		    "time_bpm_to_seconds",
+		    "time_seconds_to_bpm",
+		    "time_source_create",
+		    "time_source_destroy",
+		    "time_source_exists",
+		    "time_source_get_children",
+		    "time_source_get_parent",
+		    "time_source_get_period",
+		    "time_source_get_reps_completed",
+		    "time_source_get_reps_remaining",
+		    "time_source_get_state",
+		    "time_source_get_time_remaining",
+		    "time_source_get_units",
+		    "time_source_pause",
+		    "time_source_reconfigure",
+		    "time_source_reset",
+		    "time_source_resume",
+		    "time_source_start",
+		    "time_source_stop",
 		    "timeline_add",
 		    "timeline_clear",
 		    "timeline_delete",
@@ -20849,12 +21685,33 @@
 		    "url_open",
 		    "url_open_ext",
 		    "url_open_full",
+		    "uwp_device_touchscreen_available",
+		    "uwp_livetile_badge_clear",
+		    "uwp_livetile_badge_notification",
+		    "uwp_livetile_notification_begin",
+		    "uwp_livetile_notification_end",
+		    "uwp_livetile_notification_expiry",
+		    "uwp_livetile_notification_image_add",
+		    "uwp_livetile_notification_secondary_begin",
+		    "uwp_livetile_notification_tag",
+		    "uwp_livetile_notification_template_add",
+		    "uwp_livetile_notification_text_add",
+		    "uwp_livetile_queue_enable",
+		    "uwp_livetile_tile_clear",
+		    "uwp_secondarytile_badge_clear",
+		    "uwp_secondarytile_badge_notification",
+		    "uwp_secondarytile_delete",
+		    "uwp_secondarytile_pin",
+		    "uwp_secondarytile_tile_clear",
+		    "variable_clone",
+		    "variable_get_hash",
 		    "variable_global_exists",
 		    "variable_global_get",
 		    "variable_global_set",
 		    "variable_instance_exists",
 		    "variable_instance_get",
 		    "variable_instance_get_names",
+		    "variable_instance_names_count",
 		    "variable_instance_set",
 		    "variable_struct_exists",
 		    "variable_struct_get",
@@ -20883,10 +21740,10 @@
 		    "vertex_format_add_position",
 		    "vertex_format_add_position_3d",
 		    "vertex_format_add_texcoord",
-		    "vertex_format_add_textcoord",
 		    "vertex_format_begin",
 		    "vertex_format_delete",
 		    "vertex_format_end",
+		    "vertex_format_get_info",
 		    "vertex_freeze",
 		    "vertex_get_buffer_size",
 		    "vertex_get_number",
@@ -20894,8 +21751,25 @@
 		    "vertex_position",
 		    "vertex_position_3d",
 		    "vertex_submit",
+		    "vertex_submit_ext",
 		    "vertex_texcoord",
 		    "vertex_ubyte4",
+		    "vertex_update_buffer_from_buffer",
+		    "vertex_update_buffer_from_vertex",
+		    "video_close",
+		    "video_draw",
+		    "video_enable_loop",
+		    "video_get_duration",
+		    "video_get_format",
+		    "video_get_position",
+		    "video_get_status",
+		    "video_get_volume",
+		    "video_is_looping",
+		    "video_open",
+		    "video_pause",
+		    "video_resume",
+		    "video_seek_to",
+		    "video_set_volume",
 		    "view_get_camera",
 		    "view_get_hport",
 		    "view_get_surface_id",
@@ -20914,58 +21788,35 @@
 		    "virtual_key_delete",
 		    "virtual_key_hide",
 		    "virtual_key_show",
-		    "win8_appbar_add_element",
-		    "win8_appbar_enable",
-		    "win8_appbar_remove_element",
-		    "win8_device_touchscreen_available",
-		    "win8_license_initialize_sandbox",
-		    "win8_license_trial_version",
-		    "win8_livetile_badge_clear",
-		    "win8_livetile_badge_notification",
-		    "win8_livetile_notification_begin",
-		    "win8_livetile_notification_end",
-		    "win8_livetile_notification_expiry",
-		    "win8_livetile_notification_image_add",
-		    "win8_livetile_notification_secondary_begin",
-		    "win8_livetile_notification_tag",
-		    "win8_livetile_notification_text_add",
-		    "win8_livetile_queue_enable",
-		    "win8_livetile_tile_clear",
-		    "win8_livetile_tile_notification",
-		    "win8_search_add_suggestions",
-		    "win8_search_disable",
-		    "win8_search_enable",
-		    "win8_secondarytile_badge_notification",
-		    "win8_secondarytile_delete",
-		    "win8_secondarytile_pin",
-		    "win8_settingscharm_add_entry",
-		    "win8_settingscharm_add_html_entry",
-		    "win8_settingscharm_add_xaml_entry",
-		    "win8_settingscharm_get_xaml_property",
-		    "win8_settingscharm_remove_entry",
-		    "win8_settingscharm_set_xaml_property",
-		    "win8_share_file",
-		    "win8_share_image",
-		    "win8_share_screenshot",
-		    "win8_share_text",
-		    "win8_share_url",
+		    "wallpaper_set_config",
+		    "wallpaper_set_subscriptions",
+		    "weak_ref_alive",
+		    "weak_ref_any_alive",
+		    "weak_ref_create",
 		    "window_center",
 		    "window_device",
+		    "window_enable_borderless_fullscreen",
+		    "window_get_borderless_fullscreen",
 		    "window_get_caption",
 		    "window_get_color",
 		    "window_get_colour",
 		    "window_get_cursor",
 		    "window_get_fullscreen",
 		    "window_get_height",
+		    "window_get_showborder",
 		    "window_get_visible_rects",
 		    "window_get_width",
 		    "window_get_x",
 		    "window_get_y",
 		    "window_handle",
 		    "window_has_focus",
+		    "window_mouse_get_delta_x",
+		    "window_mouse_get_delta_y",
+		    "window_mouse_get_locked",
 		    "window_mouse_get_x",
 		    "window_mouse_get_y",
 		    "window_mouse_set",
+		    "window_mouse_set_locked",
 		    "window_set_caption",
 		    "window_set_color",
 		    "window_set_colour",
@@ -20977,106 +21828,74 @@
 		    "window_set_min_width",
 		    "window_set_position",
 		    "window_set_rectangle",
+		    "window_set_showborder",
 		    "window_set_size",
 		    "window_view_mouse_get_x",
 		    "window_view_mouse_get_y",
 		    "window_views_mouse_get_x",
 		    "window_views_mouse_get_y",
-		    "winphone_license_trial_version",
-		    "winphone_tile_back_content",
-		    "winphone_tile_back_content_wide",
-		    "winphone_tile_back_image",
-		    "winphone_tile_back_image_wide",
-		    "winphone_tile_back_title",
 		    "winphone_tile_background_color",
 		    "winphone_tile_background_colour",
-		    "winphone_tile_count",
-		    "winphone_tile_cycle_images",
-		    "winphone_tile_front_image",
-		    "winphone_tile_front_image_small",
-		    "winphone_tile_front_image_wide",
-		    "winphone_tile_icon_image",
-		    "winphone_tile_small_background_image",
-		    "winphone_tile_small_icon_image",
-		    "winphone_tile_title",
-		    "winphone_tile_wide_content",
-		    "zip_unzip"
+		    "zip_add_file",
+		    "zip_create",
+		    "zip_save",
+		    "zip_unzip",
+		    "zip_unzip_async"
 		  ];
-		  const LITERALS = [
-		    "all",
-		    "false",
-		    "noone",
-		    "pointer_invalid",
-		    "pointer_null",
-		    "true",
-		    "undefined"
-		  ];
-		  // many of these look like enumerables to me (see comments below)
 		  const SYMBOLS = [
-		    "ANSI_CHARSET",
-		    "ARABIC_CHARSET",
-		    "BALTIC_CHARSET",
-		    "CHINESEBIG5_CHARSET",
-		    "DEFAULT_CHARSET",
-		    "EASTEUROPE_CHARSET",
-		    "GB2312_CHARSET",
+		    "AudioEffect",
+		    "AudioEffectType",
+		    "AudioLFOType",
 		    "GM_build_date",
+		    "GM_build_type",
+		    "GM_is_sandboxed",
+		    "GM_project_filename",
 		    "GM_runtime_version",
 		    "GM_version",
-		    "GREEK_CHARSET",
-		    "HANGEUL_CHARSET",
-		    "HEBREW_CHARSET",
-		    "JOHAB_CHARSET",
-		    "MAC_CHARSET",
-		    "OEM_CHARSET",
-		    "RUSSIAN_CHARSET",
-		    "SHIFTJIS_CHARSET",
-		    "SYMBOL_CHARSET",
-		    "THAI_CHARSET",
-		    "TURKISH_CHARSET",
-		    "VIETNAMESE_CHARSET",
-		    "achievement_achievement_info",
-		    "achievement_filter_all_players",
-		    "achievement_filter_favorites_only",
-		    "achievement_filter_friends_only",
-		    "achievement_friends_info",
-		    "achievement_leaderboard_info",
-		    "achievement_our_info",
-		    "achievement_pic_loaded",
-		    "achievement_show_achievement",
-		    "achievement_show_bank",
-		    "achievement_show_friend_picker",
-		    "achievement_show_leaderboard",
-		    "achievement_show_profile",
-		    "achievement_show_purchase_prompt",
-		    "achievement_show_ui",
-		    "achievement_type_achievement_challenge",
-		    "achievement_type_score_challenge",
+		    "NaN",
+		    "_GMFILE_",
+		    "_GMFUNCTION_",
+		    "_GMLINE_",
+		    "alignmentH",
+		    "alignmentV",
+		    "all",
+		    "animcurvetype_bezier",
+		    "animcurvetype_catmullrom",
+		    "animcurvetype_linear",
+		    "asset_animationcurve",
 		    "asset_font",
 		    "asset_object",
 		    "asset_path",
 		    "asset_room",
 		    "asset_script",
+		    "asset_sequence",
 		    "asset_shader",
 		    "asset_sound",
 		    "asset_sprite",
 		    "asset_tiles",
 		    "asset_timeline",
 		    "asset_unknown",
-		    "audio_3d",
+		    "audio_3D",
+		    "audio_bus_main",
 		    "audio_falloff_exponent_distance",
 		    "audio_falloff_exponent_distance_clamped",
+		    "audio_falloff_exponent_distance_scaled",
 		    "audio_falloff_inverse_distance",
 		    "audio_falloff_inverse_distance_clamped",
+		    "audio_falloff_inverse_distance_scaled",
 		    "audio_falloff_linear_distance",
 		    "audio_falloff_linear_distance_clamped",
 		    "audio_falloff_none",
 		    "audio_mono",
-		    "audio_new_system",
-		    "audio_old_system",
 		    "audio_stereo",
+		    "bboxkind_diamond",
+		    "bboxkind_ellipse",
+		    "bboxkind_precise",
+		    "bboxkind_rectangular",
+		    "bboxmode_automatic",
+		    "bboxmode_fullimage",
+		    "bboxmode_manual",
 		    "bm_add",
-		    "bm_complex",
 		    "bm_dest_alpha",
 		    "bm_dest_color",
 		    "bm_dest_colour",
@@ -21113,12 +21932,7 @@
 		    "buffer_f64",
 		    "buffer_fast",
 		    "buffer_fixed",
-		    "buffer_generalerror",
 		    "buffer_grow",
-		    "buffer_invalidtype",
-		    "buffer_network",
-		    "buffer_outofbounds",
-		    "buffer_outofspace",
 		    "buffer_s16",
 		    "buffer_s32",
 		    "buffer_s8",
@@ -21126,7 +21940,6 @@
 		    "buffer_seek_relative",
 		    "buffer_seek_start",
 		    "buffer_string",
-		    "buffer_surface_copy",
 		    "buffer_text",
 		    "buffer_u16",
 		    "buffer_u32",
@@ -21134,16 +21947,18 @@
 		    "buffer_u8",
 		    "buffer_vbuffer",
 		    "buffer_wrap",
-		    "button_type",
 		    "c_aqua",
 		    "c_black",
 		    "c_blue",
 		    "c_dkgray",
+		    "c_dkgrey",
 		    "c_fuchsia",
 		    "c_gray",
 		    "c_green",
+		    "c_grey",
 		    "c_lime",
 		    "c_ltgray",
+		    "c_ltgrey",
 		    "c_maroon",
 		    "c_navy",
 		    "c_olive",
@@ -21154,6 +21969,8 @@
 		    "c_teal",
 		    "c_white",
 		    "c_yellow",
+		    "cache_directory",
+		    "characterSpacing",
 		    "cmpfunc_always",
 		    "cmpfunc_equal",
 		    "cmpfunc_greater",
@@ -21162,6 +21979,8 @@
 		    "cmpfunc_lessequal",
 		    "cmpfunc_never",
 		    "cmpfunc_notequal",
+		    "coreColor",
+		    "coreColour",
 		    "cr_appstart",
 		    "cr_arrow",
 		    "cr_beam",
@@ -21196,6 +22015,8 @@
 		    "display_portrait_flipped",
 		    "dll_cdecl",
 		    "dll_stdcall",
+		    "dropShadowEnabled",
+		    "dropShadowEnabled",
 		    "ds_type_grid",
 		    "ds_type_list",
 		    "ds_type_map",
@@ -21214,18 +22035,49 @@
 		    "ef_snow",
 		    "ef_spark",
 		    "ef_star",
-		    // for example ev_ are types of events
+		    "effectsEnabled",
+		    "effectsEnabled",
 		    "ev_alarm",
 		    "ev_animation_end",
+		    "ev_animation_event",
+		    "ev_animation_update",
+		    "ev_async_audio_playback",
+		    "ev_async_audio_playback_ended",
+		    "ev_async_audio_recording",
+		    "ev_async_dialog",
+		    "ev_async_push_notification",
+		    "ev_async_save_load",
+		    "ev_async_save_load",
+		    "ev_async_social",
+		    "ev_async_system_event",
+		    "ev_async_web",
+		    "ev_async_web_cloud",
+		    "ev_async_web_iap",
+		    "ev_async_web_image_load",
+		    "ev_async_web_networking",
+		    "ev_async_web_steam",
+		    "ev_audio_playback",
+		    "ev_audio_playback_ended",
+		    "ev_audio_recording",
 		    "ev_boundary",
+		    "ev_boundary_view0",
+		    "ev_boundary_view1",
+		    "ev_boundary_view2",
+		    "ev_boundary_view3",
+		    "ev_boundary_view4",
+		    "ev_boundary_view5",
+		    "ev_boundary_view6",
+		    "ev_boundary_view7",
+		    "ev_broadcast_message",
 		    "ev_cleanup",
-		    "ev_close_button",
 		    "ev_collision",
 		    "ev_create",
 		    "ev_destroy",
+		    "ev_dialog_async",
 		    "ev_draw",
 		    "ev_draw_begin",
 		    "ev_draw_end",
+		    "ev_draw_normal",
 		    "ev_draw_post",
 		    "ev_draw_pre",
 		    "ev_end_of_path",
@@ -21313,18 +22165,36 @@
 		    "ev_no_more_lives",
 		    "ev_other",
 		    "ev_outside",
+		    "ev_outside_view0",
+		    "ev_outside_view1",
+		    "ev_outside_view2",
+		    "ev_outside_view3",
+		    "ev_outside_view4",
+		    "ev_outside_view5",
+		    "ev_outside_view6",
+		    "ev_outside_view7",
+		    "ev_pre_create",
+		    "ev_push_notification",
 		    "ev_right_button",
 		    "ev_right_press",
 		    "ev_right_release",
 		    "ev_room_end",
 		    "ev_room_start",
+		    "ev_social",
 		    "ev_step",
 		    "ev_step_begin",
 		    "ev_step_end",
 		    "ev_step_normal",
+		    "ev_system_event",
 		    "ev_trigger",
 		    "ev_user0",
 		    "ev_user1",
+		    "ev_user10",
+		    "ev_user11",
+		    "ev_user12",
+		    "ev_user13",
+		    "ev_user14",
+		    "ev_user15",
 		    "ev_user2",
 		    "ev_user3",
 		    "ev_user4",
@@ -21333,12 +22203,13 @@
 		    "ev_user7",
 		    "ev_user8",
 		    "ev_user9",
-		    "ev_user10",
-		    "ev_user11",
-		    "ev_user12",
-		    "ev_user13",
-		    "ev_user14",
-		    "ev_user15",
+		    "ev_web_async",
+		    "ev_web_cloud",
+		    "ev_web_iap",
+		    "ev_web_image_load",
+		    "ev_web_networking",
+		    "ev_web_sound_load",
+		    "ev_web_steam",
 		    "fa_archive",
 		    "fa_bottom",
 		    "fa_center",
@@ -21346,21 +22217,34 @@
 		    "fa_hidden",
 		    "fa_left",
 		    "fa_middle",
+		    "fa_none",
 		    "fa_readonly",
 		    "fa_right",
 		    "fa_sysfile",
 		    "fa_top",
 		    "fa_volumeid",
-		    "fb_login_default",
-		    "fb_login_fallback_to_webview",
-		    "fb_login_forcing_safari",
-		    "fb_login_forcing_webview",
-		    "fb_login_no_fallback_to_webview",
-		    "fb_login_use_system_account",
+		    "false",
+		    "frameSizeX",
+		    "frameSizeY",
 		    "gamespeed_fps",
 		    "gamespeed_microseconds",
-		    "ge_lose",
 		    "global",
+		    "glowColor",
+		    "glowColour",
+		    "glowEnabled",
+		    "glowEnabled",
+		    "glowEnd",
+		    "glowStart",
+		    "gp_axis_acceleration_x",
+		    "gp_axis_acceleration_y",
+		    "gp_axis_acceleration_z",
+		    "gp_axis_angular_velocity_x",
+		    "gp_axis_angular_velocity_y",
+		    "gp_axis_angular_velocity_z",
+		    "gp_axis_orientation_w",
+		    "gp_axis_orientation_x",
+		    "gp_axis_orientation_y",
+		    "gp_axis_orientation_z",
 		    "gp_axislh",
 		    "gp_axislv",
 		    "gp_axisrh",
@@ -21400,7 +22284,7 @@
 		    "iap_storeload_failed",
 		    "iap_storeload_ok",
 		    "iap_unavailable",
-		    "input_type",
+		    "infinity",
 		    "kbv_autocapitalize_characters",
 		    "kbv_autocapitalize_none",
 		    "kbv_autocapitalize_sentences",
@@ -21428,22 +22312,22 @@
 		    "layerelementtype_instance",
 		    "layerelementtype_oldtilemap",
 		    "layerelementtype_particlesystem",
+		    "layerelementtype_sequence",
 		    "layerelementtype_sprite",
 		    "layerelementtype_tile",
 		    "layerelementtype_tilemap",
 		    "layerelementtype_undefined",
-		    "lb_disp_none",
-		    "lb_disp_numeric",
-		    "lb_disp_time_ms",
-		    "lb_disp_time_sec",
-		    "lb_sort_ascending",
-		    "lb_sort_descending",
-		    "lb_sort_none",
 		    "leaderboard_type_number",
 		    "leaderboard_type_time_mins_secs",
 		    "lighttype_dir",
 		    "lighttype_point",
-		    "local",
+		    "lineSpacing",
+		    "m_axisx",
+		    "m_axisx_gui",
+		    "m_axisy",
+		    "m_axisy_gui",
+		    "m_scroll_down",
+		    "m_scroll_up",
 		    "matrix_projection",
 		    "matrix_view",
 		    "matrix_world",
@@ -21452,52 +22336,83 @@
 		    "mb_middle",
 		    "mb_none",
 		    "mb_right",
+		    "mb_side1",
+		    "mb_side2",
 		    "mip_markedonly",
 		    "mip_off",
 		    "mip_on",
+		    "network_config_avoid_time_wait",
 		    "network_config_connect_timeout",
+		    "network_config_disable_multicast",
 		    "network_config_disable_reliable_udp",
+		    "network_config_enable_multicast",
 		    "network_config_enable_reliable_udp",
 		    "network_config_use_non_blocking_socket",
+		    "network_config_websocket_protocol",
+		    "network_connect_active",
+		    "network_connect_blocking",
+		    "network_connect_nonblocking",
+		    "network_connect_none",
+		    "network_connect_passive",
+		    "network_send_binary",
+		    "network_send_text",
 		    "network_socket_bluetooth",
 		    "network_socket_tcp",
 		    "network_socket_udp",
+		    "network_socket_ws",
+		    "network_socket_wss",
 		    "network_type_connect",
 		    "network_type_data",
 		    "network_type_disconnect",
+		    "network_type_down",
 		    "network_type_non_blocking_connect",
-		    "of_challen",
+		    "network_type_up",
+		    "network_type_up_failed",
+		    "nineslice_blank",
+		    "nineslice_bottom",
+		    "nineslice_center",
+		    "nineslice_centre",
+		    "nineslice_hide",
+		    "nineslice_left",
+		    "nineslice_mirror",
+		    "nineslice_repeat",
+		    "nineslice_right",
+		    "nineslice_stretch",
+		    "nineslice_top",
+		    "noone",
+		    "of_challenge_lose",
 		    "of_challenge_tie",
 		    "of_challenge_win",
-		    "os_3ds",
 		    "os_android",
-		    "os_bb10",
+		    "os_gdk",
+		    "os_gxgames",
 		    "os_ios",
 		    "os_linux",
 		    "os_macosx",
+		    "os_operagx",
+		    "os_permission_denied",
+		    "os_permission_denied_dont_request",
+		    "os_permission_granted",
 		    "os_ps3",
 		    "os_ps4",
+		    "os_ps5",
 		    "os_psvita",
 		    "os_switch",
-		    "os_symbian",
-		    "os_tizen",
 		    "os_tvos",
 		    "os_unknown",
 		    "os_uwp",
-		    "os_wiiu",
-		    "os_win32",
 		    "os_win8native",
 		    "os_windows",
 		    "os_winphone",
-		    "os_xbox360",
 		    "os_xboxone",
+		    "os_xboxseriesxs",
 		    "other",
-		    "ov_achievements",
-		    "ov_community",
-		    "ov_friends",
-		    "ov_gamegroup",
-		    "ov_players",
-		    "ov_settings",
+		    "outlineColor",
+		    "outlineColour",
+		    "outlineDist",
+		    "outlineEnabled",
+		    "outlineEnabled",
+		    "paragraphSpacing",
 		    "path_action_continue",
 		    "path_action_restart",
 		    "path_action_reverse",
@@ -21553,6 +22468,8 @@
 		    "phy_particle_group_flag_rigid",
 		    "phy_particle_group_flag_solid",
 		    "pi",
+		    "pointer_invalid",
+		    "pointer_null",
 		    "pr_linelist",
 		    "pr_linestrip",
 		    "pr_pointlist",
@@ -21562,6 +22479,8 @@
 		    "ps_distr_gaussian",
 		    "ps_distr_invgaussian",
 		    "ps_distr_linear",
+		    "ps_mode_burst",
+		    "ps_mode_stream",
 		    "ps_shape_diamond",
 		    "ps_shape_ellipse",
 		    "ps_shape_line",
@@ -21580,68 +22499,110 @@
 		    "pt_shape_sphere",
 		    "pt_shape_square",
 		    "pt_shape_star",
+		    "rollback_chat_message",
+		    "rollback_connect_error",
+		    "rollback_connect_info",
+		    "rollback_connected_to_peer",
+		    "rollback_connection_rejected",
+		    "rollback_disconnected_from_peer",
+		    "rollback_end_game",
+		    "rollback_game_full",
+		    "rollback_game_info",
+		    "rollback_game_interrupted",
+		    "rollback_game_resumed",
+		    "rollback_high_latency",
+		    "rollback_player_prefs",
+		    "rollback_protocol_rejected",
+		    "rollback_synchronized_with_peer",
+		    "rollback_synchronizing_with_peer",
+		    "self",
+		    "seqaudiokey_loop",
+		    "seqaudiokey_oneshot",
+		    "seqdir_left",
+		    "seqdir_right",
+		    "seqinterpolation_assign",
+		    "seqinterpolation_lerp",
+		    "seqplay_loop",
+		    "seqplay_oneshot",
+		    "seqplay_pingpong",
+		    "seqtextkey_bottom",
+		    "seqtextkey_center",
+		    "seqtextkey_justify",
+		    "seqtextkey_left",
+		    "seqtextkey_middle",
+		    "seqtextkey_right",
+		    "seqtextkey_top",
+		    "seqtracktype_audio",
+		    "seqtracktype_bool",
+		    "seqtracktype_clipmask",
+		    "seqtracktype_clipmask_mask",
+		    "seqtracktype_clipmask_subject",
+		    "seqtracktype_color",
+		    "seqtracktype_colour",
+		    "seqtracktype_empty",
+		    "seqtracktype_graphic",
+		    "seqtracktype_group",
+		    "seqtracktype_instance",
+		    "seqtracktype_message",
+		    "seqtracktype_moment",
+		    "seqtracktype_particlesystem",
+		    "seqtracktype_real",
+		    "seqtracktype_sequence",
+		    "seqtracktype_spriteframes",
+		    "seqtracktype_string",
+		    "seqtracktype_text",
+		    "shadowColor",
+		    "shadowColour",
+		    "shadowOffsetX",
+		    "shadowOffsetY",
+		    "shadowSoftness",
+		    "sprite_add_ext_error_cancelled",
+		    "sprite_add_ext_error_decompressfailed",
+		    "sprite_add_ext_error_loadfailed",
+		    "sprite_add_ext_error_setupfailed",
+		    "sprite_add_ext_error_spritenotfound",
+		    "sprite_add_ext_error_unknown",
 		    "spritespeed_framespergameframe",
 		    "spritespeed_framespersecond",
-		    "text_type",
+		    "surface_r16float",
+		    "surface_r32float",
+		    "surface_r8unorm",
+		    "surface_rg8unorm",
+		    "surface_rgba16float",
+		    "surface_rgba32float",
+		    "surface_rgba4unorm",
+		    "surface_rgba8unorm",
+		    "texturegroup_status_fetched",
+		    "texturegroup_status_loaded",
+		    "texturegroup_status_loading",
+		    "texturegroup_status_unloaded",
 		    "tf_anisotropic",
 		    "tf_linear",
 		    "tf_point",
+		    "thickness",
 		    "tile_flip",
 		    "tile_index_mask",
 		    "tile_mirror",
 		    "tile_rotate",
+		    "time_source_expire_after",
+		    "time_source_expire_nearest",
+		    "time_source_game",
+		    "time_source_global",
+		    "time_source_state_active",
+		    "time_source_state_initial",
+		    "time_source_state_paused",
+		    "time_source_state_stopped",
+		    "time_source_units_frames",
+		    "time_source_units_seconds",
 		    "timezone_local",
 		    "timezone_utc",
 		    "tm_countvsyncs",
 		    "tm_sleep",
+		    "tm_systemtiming",
+		    "true",
 		    "ty_real",
 		    "ty_string",
-		    "ugc_filetype_community",
-		    "ugc_filetype_microtrans",
-		    "ugc_list_Favorited",
-		    "ugc_list_Followed",
-		    "ugc_list_Published",
-		    "ugc_list_Subscribed",
-		    "ugc_list_UsedOrPlayed",
-		    "ugc_list_VotedDown",
-		    "ugc_list_VotedOn",
-		    "ugc_list_VotedUp",
-		    "ugc_list_WillVoteLater",
-		    "ugc_match_AllGuides",
-		    "ugc_match_Artwork",
-		    "ugc_match_Collections",
-		    "ugc_match_ControllerBindings",
-		    "ugc_match_IntegratedGuides",
-		    "ugc_match_Items",
-		    "ugc_match_Items_Mtx",
-		    "ugc_match_Items_ReadyToUse",
-		    "ugc_match_Screenshots",
-		    "ugc_match_UsableInGame",
-		    "ugc_match_Videos",
-		    "ugc_match_WebGuides",
-		    "ugc_query_AcceptedForGameRankedByAcceptanceDate",
-		    "ugc_query_CreatedByFollowedUsersRankedByPublicationDate",
-		    "ugc_query_CreatedByFriendsRankedByPublicationDate",
-		    "ugc_query_FavoritedByFriendsRankedByPublicationDate",
-		    "ugc_query_NotYetRated",
-		    "ugc_query_RankedByNumTimesReported",
-		    "ugc_query_RankedByPublicationDate",
-		    "ugc_query_RankedByTextSearch",
-		    "ugc_query_RankedByTotalVotesAsc",
-		    "ugc_query_RankedByTrend",
-		    "ugc_query_RankedByVote",
-		    "ugc_query_RankedByVotesUp",
-		    "ugc_result_success",
-		    "ugc_sortorder_CreationOrderAsc",
-		    "ugc_sortorder_CreationOrderDesc",
-		    "ugc_sortorder_ForModeration",
-		    "ugc_sortorder_LastUpdatedDesc",
-		    "ugc_sortorder_SubscriptionDateDesc",
-		    "ugc_sortorder_TitleAsc",
-		    "ugc_sortorder_VoteScoreDesc",
-		    "ugc_visibility_friends_only",
-		    "ugc_visibility_private",
-		    "ugc_visibility_public",
+		    "undefined",
 		    "vertex_type_color",
 		    "vertex_type_colour",
 		    "vertex_type_float1",
@@ -21662,7 +22623,12 @@
 		    "vertex_usage_sample",
 		    "vertex_usage_tangent",
 		    "vertex_usage_texcoord",
-		    "vertex_usage_textcoord",
+		    "video_format_rgba",
+		    "video_format_yuv",
+		    "video_status_closed",
+		    "video_status_paused",
+		    "video_status_playing",
+		    "video_status_preparing",
 		    "vk_add",
 		    "vk_alt",
 		    "vk_anykey",
@@ -21676,6 +22642,9 @@
 		    "vk_enter",
 		    "vk_escape",
 		    "vk_f1",
+		    "vk_f10",
+		    "vk_f11",
+		    "vk_f12",
 		    "vk_f2",
 		    "vk_f3",
 		    "vk_f4",
@@ -21684,9 +22653,6 @@
 		    "vk_f7",
 		    "vk_f8",
 		    "vk_f9",
-		    "vk_f10",
-		    "vk_f11",
-		    "vk_f12",
 		    "vk_home",
 		    "vk_insert",
 		    "vk_lalt",
@@ -21718,7 +22684,10 @@
 		    "vk_space",
 		    "vk_subtract",
 		    "vk_tab",
-		    "vk_up"
+		    "vk_up",
+		    "wallpaper_config",
+		    "wallpaper_subscription_data",
+		    "wrap"
 		  ];
 		  const LANGUAGE_VARIABLES = [
 		    "alarm",
@@ -21741,7 +22710,6 @@
 		    "argument14",
 		    "argument15",
 		    "argument_count",
-		    "argument_relative",
 		    "async_load",
 		    "background_color",
 		    "background_colour",
@@ -21753,9 +22721,7 @@
 		    "bbox_top",
 		    "browser_height",
 		    "browser_width",
-		    "caption_health",
-		    "caption_lives",
-		    "caption_score",
+		    "colour?ColourTrack",
 		    "current_day",
 		    "current_hour",
 		    "current_minute",
@@ -21770,13 +22736,13 @@
 		    "depth",
 		    "direction",
 		    "display_aa",
-		    "error_last",
-		    "error_occurred",
+		    "drawn_by_sequence",
 		    "event_action",
 		    "event_data",
 		    "event_number",
 		    "event_object",
 		    "event_type",
+		    "font_texture_page_size",
 		    "fps",
 		    "fps_real",
 		    "friction",
@@ -21784,15 +22750,12 @@
 		    "game_id",
 		    "game_project_name",
 		    "game_save_id",
-		    "gamemaker_pro",
-		    "gamemaker_registered",
-		    "gamemaker_version",
 		    "gravity",
 		    "gravity_direction",
 		    "health",
 		    "hspeed",
 		    "iap_data",
-		    "id|0",
+		    "id",
 		    "image_alpha",
 		    "image_angle",
 		    "image_blend",
@@ -21801,6 +22764,8 @@
 		    "image_speed",
 		    "image_xscale",
 		    "image_yscale",
+		    "in_collision_tree",
+		    "in_sequence",
 		    "instance_count",
 		    "instance_id",
 		    "keyboard_key",
@@ -21809,7 +22774,10 @@
 		    "keyboard_string",
 		    "layer",
 		    "lives",
+		    "longMessage",
+		    "managed",
 		    "mask_index",
+		    "message",
 		    "mouse_button",
 		    "mouse_lastbutton",
 		    "mouse_x",
@@ -21855,9 +22823,20 @@
 		    "phy_speed",
 		    "phy_speed_x",
 		    "phy_speed_y",
+		    "player_avatar_sprite",
+		    "player_avatar_url",
+		    "player_id",
+		    "player_local",
+		    "player_type",
+		    "player_user_id",
 		    "program_directory",
+		    "rollback_api_server",
+		    "rollback_confirmed_frame",
+		    "rollback_current_frame",
+		    "rollback_event_id",
+		    "rollback_event_param",
+		    "rollback_game_running",
 		    "room",
-		    "room_caption",
 		    "room_first",
 		    "room_height",
 		    "room_last",
@@ -21865,10 +22844,8 @@
 		    "room_speed",
 		    "room_width",
 		    "score",
-		    "self",
-		    "show_health",
-		    "show_lives",
-		    "show_score",
+		    "script",
+		    "sequence_instance",
 		    "solid",
 		    "speed",
 		    "sprite_height",
@@ -21876,50 +22853,39 @@
 		    "sprite_width",
 		    "sprite_xoffset",
 		    "sprite_yoffset",
+		    "stacktrace",
 		    "temp_directory",
 		    "timeline_index",
 		    "timeline_loop",
 		    "timeline_position",
 		    "timeline_running",
 		    "timeline_speed",
-		    "view_angle",
 		    "view_camera",
 		    "view_current",
 		    "view_enabled",
-		    "view_hborder",
 		    "view_hport",
-		    "view_hspeed",
-		    "view_hview",
-		    "view_object",
 		    "view_surface_id",
-		    "view_vborder",
 		    "view_visible",
-		    "view_vspeed",
 		    "view_wport",
-		    "view_wview",
 		    "view_xport",
-		    "view_xview",
 		    "view_yport",
-		    "view_yview",
 		    "visible",
 		    "vspeed",
 		    "webgl_enabled",
 		    "working_directory",
+		    "x",
 		    "xprevious",
 		    "xstart",
-		    "x|0",
+		    "y",
 		    "yprevious",
-		    "ystart",
-		    "y|0"
+		    "ystart"
 		  ];
-
 		  return {
 		    name: 'GML',
 		    case_insensitive: false, // language is case-insensitive
 		    keywords: {
 		      keyword: KEYWORDS,
 		      built_in: BUILT_INS,
-		      literal: LITERALS,
 		      symbol: SYMBOLS,
 		      "variable.language": LANGUAGE_VARIABLES
 		    },
@@ -22054,10 +23020,25 @@
 		        className: 'number',
 		        variants: [
 		          {
-		            begin: hljs.C_NUMBER_RE + '[i]',
-		            relevance: 1
+		            match: /-?\b0[xX]\.[a-fA-F0-9](_?[a-fA-F0-9])*[pP][+-]?\d(_?\d)*i?/, // hex without a present digit before . (making a digit afterwards required)
+		            relevance: 0
 		          },
-		          hljs.C_NUMBER_MODE
+		          {
+		            match: /-?\b0[xX](_?[a-fA-F0-9])+((\.([a-fA-F0-9](_?[a-fA-F0-9])*)?)?[pP][+-]?\d(_?\d)*)?i?/, // hex with a present digit before . (making a digit afterwards optional)
+		            relevance: 0
+		          },
+		          {
+		            match: /-?\b0[oO](_?[0-7])*i?/, // leading 0o octal
+		            relevance: 0
+		          },
+		          {
+		            match: /-?\.\d(_?\d)*([eE][+-]?\d(_?\d)*)?i?/, // decimal without a present digit before . (making a digit afterwards required)
+		            relevance: 0
+		          },
+		          {
+		            match: /-?\b\d(_?\d)*(\.(\d(_?\d)*)?)?([eE][+-]?\d(_?\d)*)?i?/, // decimal with a present digit before . (making a digit afterwards optional)
+		            relevance: 0
+		          }
 		        ]
 		      },
 		      { begin: /:=/ // relevance booster
@@ -22092,6 +23073,7 @@
 	Author: Philippe Charriere <ph.charriere@gmail.com>
 	Description: a lightweight dynamic language for the JVM
 	Website: http://golo-lang.org/
+	Category: system
 	*/
 
 	var golo_1;
@@ -22181,6 +23163,7 @@
 	Description: Gradle is an open-source build automation tool focused on flexibility and performance.
 	Website: https://gradle.org
 	Author: Damian Mee <mee.damian@gmail.com>
+	Category: build-system
 	*/
 
 	var gradle_1;
@@ -22466,6 +23449,7 @@
 	 Author: Guillaume Laforge <glaforge@gmail.com>
 	 Description: Groovy programming language implementation inspired from Vsevolod's Java mode
 	 Website: https://groovy-lang.org
+	 Category: system
 	 */
 
 	var groovy_1;
@@ -23280,6 +24264,7 @@
 	Author: Christopher Kaster <ikasoki@gmail.com> (Based on the actionscript.js language file by Alexander Myadzel)
 	Contributors: Kenton Hamaluik <kentonh@gmail.com>
 	Website: https://haxe.org
+	Category: system
 	*/
 
 	var haxe_1;
@@ -23369,7 +24354,7 @@
 		      },
 		      {
 		        className: 'type', // instantiation
-		        begin: /new */,
+		        beginKeywords: 'new',
 		        end: /\W/,
 		        excludeBegin: true,
 		        excludeEnd: true
@@ -23774,6 +24759,7 @@
 	Author: Bruno Dias <bruno.r.dias@gmail.com>
 	Description: Language definition for Inform 7, a DSL for writing parser interactive fiction.
 	Website: http://inform7.com
+	Category: gaming
 	*/
 
 	var inform7_1;
@@ -27423,7 +28409,9 @@
 		    'do',
 		    'sealed',
 		    'yield',
-		    'permits'
+		    'permits',
+		    'goto',
+		    'when'
 		  ];
 
 		  const BUILT_INS = [
@@ -27653,7 +28641,9 @@
 		  "import",
 		  "from",
 		  "export",
-		  "extends"
+		  "extends",
+		  // It's reached stage 3, which is "recommended for implementation":
+		  "using"
 		];
 		const LITERALS = [
 		  "true",
@@ -27903,7 +28893,7 @@
 		    contains: [] // defined later
 		  };
 		  const HTML_TEMPLATE = {
-		    begin: 'html`',
+		    begin: '\.?html`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -27916,7 +28906,7 @@
 		    }
 		  };
 		  const CSS_TEMPLATE = {
-		    begin: 'css`',
+		    begin: '\.?css`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -27929,7 +28919,7 @@
 		    }
 		  };
 		  const GRAPHQL_TEMPLATE = {
-		    begin: 'gql`',
+		    begin: '\.?gql`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -28026,7 +29016,7 @@
 		  const PARAMS_CONTAINS = SUBST_AND_COMMENTS.concat([
 		    // eat recursive parens in sub expressions
 		    {
-		      begin: /\(/,
+		      begin: /(\s*)\(/,
 		      end: /\)/,
 		      keywords: KEYWORDS$1,
 		      contains: ["self"].concat(SUBST_AND_COMMENTS)
@@ -28034,7 +29024,8 @@
 		  ]);
 		  const PARAMS = {
 		    className: 'params',
-		    begin: /\(/,
+		    // convert this to negative lookbehind in v12
+		    begin: /(\s*)\(/, // to match the parms with
 		    end: /\)/,
 		    excludeBegin: true,
 		    excludeEnd: true,
@@ -28157,8 +29148,8 @@
 		        ...BUILT_IN_GLOBALS,
 		        "super",
 		        "import"
-		      ]),
-		      IDENT_RE$1, regex.lookahead(/\(/)),
+		      ].map(x => `${x}\\s*\\(`)),
+		      IDENT_RE$1, regex.lookahead(/\s*\(/)),
 		    className: "title.function",
 		    relevance: 0
 		  };
@@ -28245,8 +29236,8 @@
 		      NUMBER,
 		      CLASS_REFERENCE,
 		      {
-		        className: 'attr',
-		        begin: IDENT_RE$1 + regex.lookahead(':'),
+		        scope: 'attr',
+		        match: IDENT_RE$1 + regex.lookahead(':'),
 		        relevance: 0
 		      },
 		      FUNCTION_VARIABLE,
@@ -28279,7 +29270,7 @@
 		                    skip: true
 		                  },
 		                  {
-		                    begin: /\(/,
+		                    begin: /(\s*)\(/,
 		                    end: /\)/,
 		                    excludeBegin: true,
 		                    excludeEnd: true,
@@ -28494,6 +29485,7 @@
 
 		  return {
 		    name: 'JSON',
+		    aliases: ['jsonc'],
 		    keywords:{
 		      literal: LITERALS,
 		    },
@@ -28520,6 +29512,7 @@
 	Author: Kenta Sato <bicycle1885@gmail.com>
 	Contributors: Alex Arslan <ararslan@comcast.net>, Fredrik Ekre <ekrefredrik@gmail.com>
 	Website: https://julialang.org
+	Category: scientific
 	*/
 
 	var julia_1;
@@ -28970,6 +29963,7 @@
 	Author: Morten Piibeleht <morten.piibeleht@gmail.com>
 	Website: https://julialang.org
 	Requires: julia.js
+	Category: scientific
 
 	The Julia REPL code blocks look something like the following:
 
@@ -29323,6 +30317,7 @@
 	Author: Eric Knibbe <eric@lassosoft.com>
 	Description: Lasso is a language and server platform for database-driven web applications. This definition handles Lasso 9 syntax and LassoScript for Lasso 8.6 and earlier.
 	Website: http://www.lassosoft.com/What-Is-Lasso
+	Category: database, web
 	*/
 
 	var lasso_1;
@@ -29981,7 +30976,7 @@
 		  };
 		};
 
-		const TAGS = [
+		const HTML_TAGS = [
 		  'a',
 		  'abbr',
 		  'address',
@@ -30033,11 +31028,16 @@
 		  'nav',
 		  'object',
 		  'ol',
+		  'optgroup',
+		  'option',
 		  'p',
+		  'picture',
 		  'q',
 		  'quote',
 		  'samp',
 		  'section',
+		  'select',
+		  'source',
 		  'span',
 		  'strong',
 		  'summary',
@@ -30055,6 +31055,58 @@
 		  'var',
 		  'video'
 		];
+
+		const SVG_TAGS = [
+		  'defs',
+		  'g',
+		  'marker',
+		  'mask',
+		  'pattern',
+		  'svg',
+		  'switch',
+		  'symbol',
+		  'feBlend',
+		  'feColorMatrix',
+		  'feComponentTransfer',
+		  'feComposite',
+		  'feConvolveMatrix',
+		  'feDiffuseLighting',
+		  'feDisplacementMap',
+		  'feFlood',
+		  'feGaussianBlur',
+		  'feImage',
+		  'feMerge',
+		  'feMorphology',
+		  'feOffset',
+		  'feSpecularLighting',
+		  'feTile',
+		  'feTurbulence',
+		  'linearGradient',
+		  'radialGradient',
+		  'stop',
+		  'circle',
+		  'ellipse',
+		  'image',
+		  'line',
+		  'path',
+		  'polygon',
+		  'polyline',
+		  'rect',
+		  'text',
+		  'use',
+		  'textPath',
+		  'tspan',
+		  'foreignObject',
+		  'clipPath'
+		];
+
+		const TAGS = [
+		  ...HTML_TAGS,
+		  ...SVG_TAGS,
+		];
+
+		// Sorting, then reversing makes sure longer attributes/elements like
+		// `font-weight` are matched fully instead of getting false positives on say `font`
 
 		const MEDIA_FEATURES = [
 		  'any-hover',
@@ -30091,7 +31143,7 @@
 		  'max-width',
 		  'min-height',
 		  'max-height'
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
 		const PSEUDO_CLASSES = [
@@ -30154,7 +31206,7 @@
 		  'valid',
 		  'visited',
 		  'where' // where()
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
 		const PSEUDO_ELEMENTS = [
@@ -30172,14 +31224,18 @@
 		  'selection',
 		  'slotted',
 		  'spelling-error'
-		];
+		].sort().reverse();
 
 		const ATTRIBUTES = [
+		  'accent-color',
 		  'align-content',
 		  'align-items',
 		  'align-self',
+		  'alignment-baseline',
 		  'all',
+		  'anchor-name',
 		  'animation',
+		  'animation-composition',
 		  'animation-delay',
 		  'animation-direction',
 		  'animation-duration',
@@ -30187,7 +31243,14 @@
 		  'animation-iteration-count',
 		  'animation-name',
 		  'animation-play-state',
+		  'animation-range',
+		  'animation-range-end',
+		  'animation-range-start',
+		  'animation-timeline',
 		  'animation-timing-function',
+		  'appearance',
+		  'aspect-ratio',
+		  'backdrop-filter',
 		  'backface-visibility',
 		  'background',
 		  'background-attachment',
@@ -30197,8 +31260,11 @@
 		  'background-image',
 		  'background-origin',
 		  'background-position',
+		  'background-position-x',
+		  'background-position-y',
 		  'background-repeat',
 		  'background-size',
+		  'baseline-shift',
 		  'block-size',
 		  'border',
 		  'border-block',
@@ -30221,6 +31287,8 @@
 		  'border-bottom-width',
 		  'border-collapse',
 		  'border-color',
+		  'border-end-end-radius',
+		  'border-end-start-radius',
 		  'border-image',
 		  'border-image-outset',
 		  'border-image-repeat',
@@ -30249,6 +31317,8 @@
 		  'border-right-style',
 		  'border-right-width',
 		  'border-spacing',
+		  'border-start-end-radius',
+		  'border-start-start-radius',
 		  'border-style',
 		  'border-top',
 		  'border-top-color',
@@ -30258,7 +31328,15 @@
 		  'border-top-width',
 		  'border-width',
 		  'bottom',
+		  'box-align',
 		  'box-decoration-break',
+		  'box-direction',
+		  'box-flex',
+		  'box-flex-group',
+		  'box-lines',
+		  'box-ordinal-group',
+		  'box-orient',
+		  'box-pack',
 		  'box-shadow',
 		  'box-sizing',
 		  'break-after',
@@ -30271,6 +31349,11 @@
 		  'clip-path',
 		  'clip-rule',
 		  'color',
+		  'color-interpolation',
+		  'color-interpolation-filters',
+		  'color-profile',
+		  'color-rendering',
+		  'color-scheme',
 		  'column-count',
 		  'column-fill',
 		  'column-gap',
@@ -30282,17 +31365,34 @@
 		  'column-width',
 		  'columns',
 		  'contain',
+		  'contain-intrinsic-block-size',
+		  'contain-intrinsic-height',
+		  'contain-intrinsic-inline-size',
+		  'contain-intrinsic-size',
+		  'contain-intrinsic-width',
+		  'container',
+		  'container-name',
+		  'container-type',
 		  'content',
 		  'content-visibility',
 		  'counter-increment',
 		  'counter-reset',
+		  'counter-set',
 		  'cue',
 		  'cue-after',
 		  'cue-before',
 		  'cursor',
+		  'cx',
+		  'cy',
 		  'direction',
 		  'display',
+		  'dominant-baseline',
 		  'empty-cells',
+		  'enable-background',
+		  'field-sizing',
+		  'fill',
+		  'fill-opacity',
+		  'fill-rule',
 		  'filter',
 		  'flex',
 		  'flex-basis',
@@ -30302,6 +31402,8 @@
 		  'flex-shrink',
 		  'flex-wrap',
 		  'float',
+		  'flood-color',
+		  'flood-opacity',
 		  'flow',
 		  'font',
 		  'font-display',
@@ -30309,21 +31411,32 @@
 		  'font-feature-settings',
 		  'font-kerning',
 		  'font-language-override',
+		  'font-optical-sizing',
+		  'font-palette',
 		  'font-size',
 		  'font-size-adjust',
+		  'font-smooth',
 		  'font-smoothing',
 		  'font-stretch',
 		  'font-style',
 		  'font-synthesis',
+		  'font-synthesis-position',
+		  'font-synthesis-small-caps',
+		  'font-synthesis-style',
+		  'font-synthesis-weight',
 		  'font-variant',
+		  'font-variant-alternates',
 		  'font-variant-caps',
 		  'font-variant-east-asian',
+		  'font-variant-emoji',
 		  'font-variant-ligatures',
 		  'font-variant-numeric',
 		  'font-variant-position',
 		  'font-variation-settings',
 		  'font-weight',
+		  'forced-color-adjust',
 		  'gap',
+		  'glyph-orientation-horizontal',
 		  'glyph-orientation-vertical',
 		  'grid',
 		  'grid-area',
@@ -30343,19 +31456,36 @@
 		  'grid-template-rows',
 		  'hanging-punctuation',
 		  'height',
+		  'hyphenate-character',
+		  'hyphenate-limit-chars',
 		  'hyphens',
 		  'icon',
 		  'image-orientation',
 		  'image-rendering',
 		  'image-resolution',
 		  'ime-mode',
+		  'initial-letter',
+		  'initial-letter-align',
 		  'inline-size',
+		  'inset',
+		  'inset-area',
+		  'inset-block',
+		  'inset-block-end',
+		  'inset-block-start',
+		  'inset-inline',
+		  'inset-inline-end',
+		  'inset-inline-start',
 		  'isolation',
 		  'justify-content',
+		  'justify-items',
+		  'justify-self',
+		  'kerning',
 		  'left',
 		  'letter-spacing',
+		  'lighting-color',
 		  'line-break',
 		  'line-height',
+		  'line-height-step',
 		  'list-style',
 		  'list-style-image',
 		  'list-style-position',
@@ -30371,6 +31501,11 @@
 		  'margin-left',
 		  'margin-right',
 		  'margin-top',
+		  'margin-trim',
+		  'marker',
+		  'marker-end',
+		  'marker-mid',
+		  'marker-start',
 		  'marks',
 		  'mask',
 		  'mask-border',
@@ -30389,6 +31524,10 @@
 		  'mask-repeat',
 		  'mask-size',
 		  'mask-type',
+		  'masonry-auto-flow',
+		  'math-depth',
+		  'math-shift',
+		  'math-style',
 		  'max-block-size',
 		  'max-height',
 		  'max-inline-size',
@@ -30407,6 +31546,12 @@
 		  'normal',
 		  'object-fit',
 		  'object-position',
+		  'offset',
+		  'offset-anchor',
+		  'offset-distance',
+		  'offset-path',
+		  'offset-position',
+		  'offset-rotate',
 		  'opacity',
 		  'order',
 		  'orphans',
@@ -30416,9 +31561,19 @@
 		  'outline-style',
 		  'outline-width',
 		  'overflow',
+		  'overflow-anchor',
+		  'overflow-block',
+		  'overflow-clip-margin',
+		  'overflow-inline',
 		  'overflow-wrap',
 		  'overflow-x',
 		  'overflow-y',
+		  'overlay',
+		  'overscroll-behavior',
+		  'overscroll-behavior-block',
+		  'overscroll-behavior-inline',
+		  'overscroll-behavior-x',
+		  'overscroll-behavior-y',
 		  'padding',
 		  'padding-block',
 		  'padding-block-end',
@@ -30430,23 +31585,37 @@
 		  'padding-left',
 		  'padding-right',
 		  'padding-top',
+		  'page',
 		  'page-break-after',
 		  'page-break-before',
 		  'page-break-inside',
+		  'paint-order',
 		  'pause',
 		  'pause-after',
 		  'pause-before',
 		  'perspective',
 		  'perspective-origin',
+		  'place-content',
+		  'place-items',
+		  'place-self',
 		  'pointer-events',
 		  'position',
+		  'position-anchor',
+		  'position-visibility',
+		  'print-color-adjust',
 		  'quotes',
+		  'r',
 		  'resize',
 		  'rest',
 		  'rest-after',
 		  'rest-before',
 		  'right',
+		  'rotate',
 		  'row-gap',
+		  'ruby-align',
+		  'ruby-position',
+		  'scale',
+		  'scroll-behavior',
 		  'scroll-margin',
 		  'scroll-margin-block',
 		  'scroll-margin-block-end',
@@ -30472,25 +31641,43 @@
 		  'scroll-snap-align',
 		  'scroll-snap-stop',
 		  'scroll-snap-type',
+		  'scroll-timeline',
+		  'scroll-timeline-axis',
+		  'scroll-timeline-name',
 		  'scrollbar-color',
 		  'scrollbar-gutter',
 		  'scrollbar-width',
 		  'shape-image-threshold',
 		  'shape-margin',
 		  'shape-outside',
+		  'shape-rendering',
 		  'speak',
 		  'speak-as',
 		  'src', // @font-face
+		  'stop-color',
+		  'stop-opacity',
+		  'stroke',
+		  'stroke-dasharray',
+		  'stroke-dashoffset',
+		  'stroke-linecap',
+		  'stroke-linejoin',
+		  'stroke-miterlimit',
+		  'stroke-opacity',
+		  'stroke-width',
 		  'tab-size',
 		  'table-layout',
 		  'text-align',
 		  'text-align-all',
 		  'text-align-last',
+		  'text-anchor',
 		  'text-combine-upright',
 		  'text-decoration',
 		  'text-decoration-color',
 		  'text-decoration-line',
+		  'text-decoration-skip',
+		  'text-decoration-skip-ink',
 		  'text-decoration-style',
+		  'text-decoration-thickness',
 		  'text-emphasis',
 		  'text-emphasis-color',
 		  'text-emphasis-position',
@@ -30501,20 +31688,37 @@
 		  'text-overflow',
 		  'text-rendering',
 		  'text-shadow',
+		  'text-size-adjust',
 		  'text-transform',
+		  'text-underline-offset',
 		  'text-underline-position',
+		  'text-wrap',
+		  'text-wrap-mode',
+		  'text-wrap-style',
+		  'timeline-scope',
 		  'top',
+		  'touch-action',
 		  'transform',
 		  'transform-box',
 		  'transform-origin',
 		  'transform-style',
 		  'transition',
+		  'transition-behavior',
 		  'transition-delay',
 		  'transition-duration',
 		  'transition-property',
 		  'transition-timing-function',
+		  'translate',
 		  'unicode-bidi',
+		  'user-modify',
+		  'user-select',
+		  'vector-effect',
 		  'vertical-align',
+		  'view-timeline',
+		  'view-timeline-axis',
+		  'view-timeline-inset',
+		  'view-timeline-name',
+		  'view-transition-name',
 		  'visibility',
 		  'voice-balance',
 		  'voice-duration',
@@ -30525,6 +31729,7 @@
 		  'voice-stress',
 		  'voice-volume',
 		  'white-space',
+		  'white-space-collapse',
 		  'widows',
 		  'width',
 		  'will-change',
@@ -30532,13 +31737,14 @@
 		  'word-spacing',
 		  'word-wrap',
 		  'writing-mode',
-		  'z-index'
-		  // reverse makes sure longer attributes `font-weight` are matched fully
-		  // instead of getting false positives on say `font`
-		].reverse();
+		  'x',
+		  'y',
+		  'z-index',
+		  'zoom'
+		].sort().reverse();
 
 		// some grammars use them all as a single group
-		const PSEUDO_SELECTORS = PSEUDO_CLASSES.concat(PSEUDO_ELEMENTS);
+		const PSEUDO_SELECTORS = PSEUDO_CLASSES.concat(PSEUDO_ELEMENTS).sort().reverse();
 
 		/*
 		Language: Less
@@ -31155,7 +32361,9 @@
 		  "import",
 		  "from",
 		  "export",
-		  "extends"
+		  "extends",
+		  // It's reached stage 3, which is "recommended for implementation":
+		  "using"
 		];
 		const LITERALS = [
 		  "true",
@@ -31566,44 +32774,47 @@
 		  return {
 		    name: 'LLVM IR',
 		    // TODO: split into different categories of keywords
-		    keywords:
-		      'begin end true false declare define global '
-		      + 'constant private linker_private internal '
-		      + 'available_externally linkonce linkonce_odr weak '
-		      + 'weak_odr appending dllimport dllexport common '
-		      + 'default hidden protected extern_weak external '
-		      + 'thread_local zeroinitializer undef null to tail '
-		      + 'target triple datalayout volatile nuw nsw nnan '
-		      + 'ninf nsz arcp fast exact inbounds align '
-		      + 'addrspace section alias module asm sideeffect '
-		      + 'gc dbg linker_private_weak attributes blockaddress '
-		      + 'initialexec localdynamic localexec prefix unnamed_addr '
-		      + 'ccc fastcc coldcc x86_stdcallcc x86_fastcallcc '
-		      + 'arm_apcscc arm_aapcscc arm_aapcs_vfpcc ptx_device '
-		      + 'ptx_kernel intel_ocl_bicc msp430_intrcc spir_func '
-		      + 'spir_kernel x86_64_sysvcc x86_64_win64cc x86_thiscallcc '
-		      + 'cc c signext zeroext inreg sret nounwind '
-		      + 'noreturn noalias nocapture byval nest readnone '
-		      + 'readonly inlinehint noinline alwaysinline optsize ssp '
-		      + 'sspreq noredzone noimplicitfloat naked builtin cold '
-		      + 'nobuiltin noduplicate nonlazybind optnone returns_twice '
-		      + 'sanitize_address sanitize_memory sanitize_thread sspstrong '
-		      + 'uwtable returned type opaque eq ne slt sgt '
-		      + 'sle sge ult ugt ule uge oeq one olt ogt '
-		      + 'ole oge ord uno ueq une x acq_rel acquire '
-		      + 'alignstack atomic catch cleanup filter inteldialect '
-		      + 'max min monotonic nand personality release seq_cst '
-		      + 'singlethread umax umin unordered xchg add fadd '
-		      + 'sub fsub mul fmul udiv sdiv fdiv urem srem '
-		      + 'frem shl lshr ashr and or xor icmp fcmp '
-		      + 'phi call trunc zext sext fptrunc fpext uitofp '
-		      + 'sitofp fptoui fptosi inttoptr ptrtoint bitcast '
-		      + 'addrspacecast select va_arg ret br switch invoke '
-		      + 'unwind unreachable indirectbr landingpad resume '
-		      + 'malloc alloca free load store getelementptr '
-		      + 'extractelement insertelement shufflevector getresult '
-		      + 'extractvalue insertvalue atomicrmw cmpxchg fence '
-		      + 'argmemonly double',
+		    keywords: {
+		      keyword: 'begin end true false declare define global '
+		        + 'constant private linker_private internal '
+		        + 'available_externally linkonce linkonce_odr weak '
+		        + 'weak_odr appending dllimport dllexport common '
+		        + 'default hidden protected extern_weak external '
+		        + 'thread_local zeroinitializer undef null to tail '
+		        + 'target triple datalayout volatile nuw nsw nnan '
+		        + 'ninf nsz arcp fast exact inbounds align '
+		        + 'addrspace section alias module asm sideeffect '
+		        + 'gc dbg linker_private_weak attributes blockaddress '
+		        + 'initialexec localdynamic localexec prefix unnamed_addr '
+		        + 'ccc fastcc coldcc x86_stdcallcc x86_fastcallcc '
+		        + 'arm_apcscc arm_aapcscc arm_aapcs_vfpcc ptx_device '
+		        + 'ptx_kernel intel_ocl_bicc msp430_intrcc spir_func '
+		        + 'spir_kernel x86_64_sysvcc x86_64_win64cc x86_thiscallcc '
+		        + 'cc c signext zeroext inreg sret nounwind '
+		        + 'noreturn noalias nocapture byval nest readnone '
+		        + 'readonly inlinehint noinline alwaysinline optsize ssp '
+		        + 'sspreq noredzone noimplicitfloat naked builtin cold '
+		        + 'nobuiltin noduplicate nonlazybind optnone returns_twice '
+		        + 'sanitize_address sanitize_memory sanitize_thread sspstrong '
+		        + 'uwtable returned type opaque eq ne slt sgt '
+		        + 'sle sge ult ugt ule uge oeq one olt ogt '
+		        + 'ole oge ord uno ueq une x acq_rel acquire '
+		        + 'alignstack atomic catch cleanup filter inteldialect '
+		        + 'max min monotonic nand personality release seq_cst '
+		        + 'singlethread umax umin unordered xchg add fadd '
+		        + 'sub fsub mul fmul udiv sdiv fdiv urem srem '
+		        + 'frem shl lshr ashr and or xor icmp fcmp '
+		        + 'phi call trunc zext sext fptrunc fpext uitofp '
+		        + 'sitofp fptoui fptosi inttoptr ptrtoint bitcast '
+		        + 'addrspacecast select va_arg ret br switch invoke '
+		        + 'unwind unreachable indirectbr landingpad resume '
+		        + 'malloc alloca free load store getelementptr '
+		        + 'extractelement insertelement shufflevector getresult '
+		        + 'extractvalue insertvalue atomicrmw cmpxchg fence '
+		        + 'argmemonly',
+		      type: 'void half bfloat float double fp128 x86_fp80 ppc_fp128 '
+		        + 'x86_amx x86_mmx ptr label token metadata opaque'
+		    },
 		    contains: [
 		      TYPE,
 		      // this matches "empty comments"...
@@ -31725,7 +32936,7 @@
 	Language: Lua
 	Description: Lua is a powerful, efficient, lightweight, embeddable scripting language.
 	Author: Andrew Fedorov <dmmdrs@mail.ru>
-	Category: common, scripting
+	Category: common, gaming, scripting
 	Website: https://www.lua.org
 	*/
 
@@ -31756,6 +32967,7 @@
 		  ];
 		  return {
 		    name: 'Lua',
+		    aliases: ['pluto'],
 		    keywords: {
 		      $pattern: hljs.UNDERSCORE_IDENT_RE,
 		      literal: "true false nil",
@@ -31815,7 +33027,7 @@
 	Author: Ivan Sagalaev <maniac@softwaremaniacs.org>
 	Contributors: Joël Porquet <joel@porquet.org>
 	Website: https://www.gnu.org/software/make/manual/html_node/Introduction.html
-	Category: common
+	Category: common, build-system
 	*/
 
 	var makefile_1;
@@ -31856,7 +33068,10 @@
 		        + 'word wordlist firstword lastword dir notdir suffix basename '
 		        + 'addsuffix addprefix join wildcard realpath abspath error warning '
 		        + 'shell origin flavor foreach if or and call eval file value' },
-		    contains: [ VARIABLE ]
+		    contains: [ 
+		      VARIABLE,
+		      QUOTE_STRING // Added QUOTE_STRING as they can be a part of functions
+		    ]
 		  };
 		  /* Variable assignment */
 		  const ASSIGNMENT = { begin: '^' + hljs.UNDERSCORE_IDENT_RE + '\\s*(?=[:+?]?=)' };
@@ -40061,6 +41276,7 @@
 	Author: mucaho <mkucko@gmail.com>
 	Description: Mercury is a logic/functional programming language which combines the clarity and expressiveness of declarative programming with advanced static analysis and error detection features.
 	Website: https://www.mercurylang.org
+	Category: functional
 	*/
 
 	var mercury_1;
@@ -40355,6 +41571,7 @@
 		    'chown',
 		    'chr',
 		    'chroot',
+		    'class',
 		    'close',
 		    'closedir',
 		    'connect',
@@ -40384,6 +41601,7 @@
 		    'exit',
 		    'exp',
 		    'fcntl',
+		    'field',
 		    'fileno',
 		    'flock',
 		    'for',
@@ -40443,6 +41661,7 @@
 		    'lt',
 		    'ma',
 		    'map',
+		    'method',
 		    'mkdir',
 		    'msgctl',
 		    'msgget',
@@ -40587,19 +41806,45 @@
 		    end: /\}/
 		    // contains defined later
 		  };
-		  const VAR = { variants: [
-		    { begin: /\$\d/ },
-		    { begin: regex.concat(
-		      /[$%@](\^\w\b|#\w+(::\w+)*|\{\w+\}|\w+(::\w*)*)/,
-		      // negative look-ahead tries to avoid matching patterns that are not
-		      // Perl at all like $ident$, @ident@, etc.
-		      `(?![A-Za-z])(?![@$%])`
-		    ) },
-		    {
-		      begin: /[$%@][^\s\w{]/,
-		      relevance: 0
-		    }
-		  ] };
+		  const ATTR = {
+		    scope: 'attr',
+		    match: /\s+:\s*\w+(\s*\(.*?\))?/,
+		  };
+		  const VAR = {
+		    scope: 'variable',
+		    variants: [
+		      { begin: /\$\d/ },
+		      { begin: regex.concat(
+		        /[$%@](?!")(\^\w\b|#\w+(::\w+)*|\{\w+\}|\w+(::\w*)*)/,
+		        // negative look-ahead tries to avoid matching patterns that are not
+		        // Perl at all like $ident$, @ident@, etc.
+		        `(?![A-Za-z])(?![@$%])`
+		        )
+		      },
+		      {
+		        // Only $= is a special Perl variable and one can't declare @= or %=.
+		        begin: /[$%@](?!")[^\s\w{=]|\$=/,
+		        relevance: 0
+		      }
+		    ],
+		    contains: [ ATTR ],
+		  };
+		  const NUMBER = {
+		    className: 'number',
+		    variants: [
+		      // decimal numbers:
+		      // include the case where a number starts with a dot (eg. .9), and
+		      // the leading 0? avoids mixing the first and second match on 0.x cases
+		      { match: /0?\.[0-9][0-9_]+\b/ },
+		      // include the special versioned number (eg. v5.38)
+		      { match: /\bv?(0|[1-9][0-9_]*(\.[0-9_]+)?|[1-9][0-9_]*)\b/ },
+		      // non-decimal numbers:
+		      { match: /\b0[0-7][0-7_]*\b/ },
+		      { match: /\b0x[0-9a-fA-F][0-9a-fA-F_]*\b/ },
+		      { match: /\b0b[0-1][0-1_]*\b/ },
+		    ],
+		    relevance: 0
+		  };
 		  const STRING_CONTAINS = [
 		    hljs.BACKSLASH_ESCAPE,
 		    SUBST,
@@ -40714,11 +41959,7 @@
 		        }
 		      ]
 		    },
-		    {
-		      className: 'number',
-		      begin: '(\\b0[0-7_]+)|(\\b0x[0-9a-fA-F_]+)|(\\b[1-9][0-9_]*(\\.[0-9_]+)?)|[0_]\\b',
-		      relevance: 0
-		    },
+		    NUMBER,
 		    { // regexp container
 		      begin: '(\\/\\/|' + hljs.RE_STARTERS_RE + '|\\b(split|return|print|reverse|grep)\\b)\\s*',
 		      keywords: 'split return print reverse grep',
@@ -40760,11 +42001,19 @@
 		    },
 		    {
 		      className: 'function',
-		      beginKeywords: 'sub',
+		      beginKeywords: 'sub method',
 		      end: '(\\s*\\(.*?\\))?[;{]',
 		      excludeEnd: true,
 		      relevance: 5,
-		      contains: [ hljs.TITLE_MODE ]
+		      contains: [ hljs.TITLE_MODE, ATTR ]
+		    },
+		    {
+		      className: 'class',
+		      beginKeywords: 'class',
+		      end: '[;{]',
+		      excludeEnd: true,
+		      relevance: 5,
+		      contains: [ hljs.TITLE_MODE, ATTR, NUMBER ]
 		    },
 		    {
 		      begin: '-\\w\\b',
@@ -40852,6 +42101,7 @@
 	Description: Monkey2 is an easy to use, cross platform, games oriented programming language from Blitz Research.
 	Author: Arthur Bikmullin <devolonter@gmail.com>
 	Website: https://blitzresearch.itch.io/monkey2
+	Category: gaming
 	*/
 
 	var monkey_1;
@@ -41195,6 +42445,7 @@
 	 Contributors: Rene Saarsoo <nene@triin.net>
 	 Description: Couchbase query language
 	 Website: https://www.couchbase.com/products/n1ql
+	 Category: database
 	 */
 
 	var n1ql_1;
@@ -41888,9 +43139,11 @@
 		    "break",
 		    "case",
 		    "cast",
+		    "concept",
 		    "const",
 		    "continue",
 		    "converter",
+		    "defer",
 		    "discard",
 		    "distinct",
 		    "div",
@@ -42015,6 +43268,7 @@
 	Author: Domen Kožar <domen@dev.si>
 	Description: Nix functional language
 	Website: http://nixos.org/nix
+	Category: system
 	*/
 
 	var nix_1;
@@ -42023,89 +43277,366 @@
 	function requireNix () {
 		if (hasRequiredNix) return nix_1;
 		hasRequiredNix = 1;
+		/** @type LanguageFn */
 		function nix(hljs) {
+		  const regex = hljs.regex;
 		  const KEYWORDS = {
 		    keyword: [
-		      "rec",
-		      "with",
-		      "let",
+		      "assert",
+		      "else",
+		      "if",
 		      "in",
 		      "inherit",
-		      "assert",
-		      "if",
-		      "else",
-		      "then"
+		      "let",
+		      "or",
+		      "rec",
+		      "then",
+		      "with",
 		    ],
 		    literal: [
 		      "true",
 		      "false",
-		      "or",
-		      "and",
-		      "null"
+		      "null",
 		    ],
 		    built_in: [
-		      "import",
+		      // toplevel builtins
 		      "abort",
 		      "baseNameOf",
-		      "dirOf",
-		      "isNull",
 		      "builtins",
+		      "derivation",
+		      "derivationStrict",
+		      "dirOf",
+		      "fetchGit",
+		      "fetchMercurial",
+		      "fetchTarball",
+		      "fetchTree",
+		      "fromTOML",
+		      "import",
+		      "isNull",
 		      "map",
+		      "placeholder",
 		      "removeAttrs",
+		      "scopedImport",
 		      "throw",
 		      "toString",
-		      "derivation"
-		    ]
+		    ],
 		  };
-		  const ANTIQUOTE = {
-		    className: 'subst',
-		    begin: /\$\{/,
-		    end: /\}/,
-		    keywords: KEYWORDS
+
+		  const BUILTINS = {
+		    scope: 'built_in',
+		    match: regex.either(...[
+		      "abort",
+		      "add",
+		      "addDrvOutputDependencies",
+		      "addErrorContext",
+		      "all",
+		      "any",
+		      "appendContext",
+		      "attrNames",
+		      "attrValues",
+		      "baseNameOf",
+		      "bitAnd",
+		      "bitOr",
+		      "bitXor",
+		      "break",
+		      "builtins",
+		      "catAttrs",
+		      "ceil",
+		      "compareVersions",
+		      "concatLists",
+		      "concatMap",
+		      "concatStringsSep",
+		      "convertHash",
+		      "currentSystem",
+		      "currentTime",
+		      "deepSeq",
+		      "derivation",
+		      "derivationStrict",
+		      "dirOf",
+		      "div",
+		      "elem",
+		      "elemAt",
+		      "false",
+		      "fetchGit",
+		      "fetchMercurial",
+		      "fetchTarball",
+		      "fetchTree",
+		      "fetchurl",
+		      "filter",
+		      "filterSource",
+		      "findFile",
+		      "flakeRefToString",
+		      "floor",
+		      "foldl'",
+		      "fromJSON",
+		      "fromTOML",
+		      "functionArgs",
+		      "genList",
+		      "genericClosure",
+		      "getAttr",
+		      "getContext",
+		      "getEnv",
+		      "getFlake",
+		      "groupBy",
+		      "hasAttr",
+		      "hasContext",
+		      "hashFile",
+		      "hashString",
+		      "head",
+		      "import",
+		      "intersectAttrs",
+		      "isAttrs",
+		      "isBool",
+		      "isFloat",
+		      "isFunction",
+		      "isInt",
+		      "isList",
+		      "isNull",
+		      "isPath",
+		      "isString",
+		      "langVersion",
+		      "length",
+		      "lessThan",
+		      "listToAttrs",
+		      "map",
+		      "mapAttrs",
+		      "match",
+		      "mul",
+		      "nixPath",
+		      "nixVersion",
+		      "null",
+		      "parseDrvName",
+		      "parseFlakeRef",
+		      "partition",
+		      "path",
+		      "pathExists",
+		      "placeholder",
+		      "readDir",
+		      "readFile",
+		      "readFileType",
+		      "removeAttrs",
+		      "replaceStrings",
+		      "scopedImport",
+		      "seq",
+		      "sort",
+		      "split",
+		      "splitVersion",
+		      "storeDir",
+		      "storePath",
+		      "stringLength",
+		      "sub",
+		      "substring",
+		      "tail",
+		      "throw",
+		      "toFile",
+		      "toJSON",
+		      "toPath",
+		      "toString",
+		      "toXML",
+		      "trace",
+		      "traceVerbose",
+		      "true",
+		      "tryEval",
+		      "typeOf",
+		      "unsafeDiscardOutputDependency",
+		      "unsafeDiscardStringContext",
+		      "unsafeGetAttrPos",
+		      "warn",
+		      "zipAttrsWith",
+		    ].map(b => `builtins\\.${b}`)),
+		    relevance: 10,
 		  };
-		  const ESCAPED_DOLLAR = {
-		    className: 'char.escape',
-		    begin: /''\$/,
+
+		  const IDENTIFIER_REGEX = '[A-Za-z_][A-Za-z0-9_\'-]*';
+
+		  const LOOKUP_PATH = {
+		    scope: 'symbol',
+		    match: new RegExp(`<${IDENTIFIER_REGEX}(/${IDENTIFIER_REGEX})*>`),
 		  };
+
+		  const PATH_PIECE = "[A-Za-z0-9_\\+\\.-]+";
+		  const PATH = {
+		    scope: 'symbol',
+		    match: new RegExp(`(\\.\\.|\\.|~)?/(${PATH_PIECE})?(/${PATH_PIECE})*(?=[\\s;])`),
+		  };
+
+		  const OPERATOR_WITHOUT_MINUS_REGEX = regex.either(...[
+		    '==',
+		    '=',
+		    '\\+\\+',
+		    '\\+',
+		    '<=',
+		    '<\\|',
+		    '<',
+		    '>=',
+		    '>',
+		    '->',
+		    '//',
+		    '/',
+		    '!=',
+		    '!',
+		    '\\|\\|',
+		    '\\|>',
+		    '\\?',
+		    '\\*',
+		    '&&',
+		  ]);
+
+		  const OPERATOR = {
+		    scope: 'operator',
+		    match: regex.concat(OPERATOR_WITHOUT_MINUS_REGEX, /(?!-)/),
+		    relevance: 0,
+		  };
+
+		  // '-' is being handled by itself to ensure we are able to tell the difference
+		  // between a dash in an identifier and a minus operator
+		  const NUMBER = {
+		    scope: 'number',
+		    match: new RegExp(`${hljs.NUMBER_RE}(?!-)`),
+		    relevance: 0,
+		  };
+		  const MINUS_OPERATOR = {
+		    variants: [
+		      {
+		        scope: 'operator',
+		        beforeMatch: /\s/,
+		        // The (?!>) is used to ensure this doesn't collide with the '->' operator
+		        begin: /-(?!>)/,
+		      },
+		      {
+		        begin: [
+		          new RegExp(`${hljs.NUMBER_RE}`),
+		          /-/,
+		          /(?!>)/,
+		        ],
+		        beginScope: {
+		          1: 'number',
+		          2: 'operator'
+		        },
+		      },
+		      {
+		        begin: [
+		          OPERATOR_WITHOUT_MINUS_REGEX,
+		          /-/,
+		          /(?!>)/,
+		        ],
+		        beginScope: {
+		          1: 'operator',
+		          2: 'operator'
+		        },
+		      },
+		    ],
+		    relevance: 0,
+		  };
+
 		  const ATTRS = {
-		    begin: /[a-zA-Z0-9-_]+(\s*=)/,
+		    beforeMatch: /(^|\{|;)\s*/,
+		    begin: new RegExp(`${IDENTIFIER_REGEX}(\\.${IDENTIFIER_REGEX})*\\s*=(?!=)`),
 		    returnBegin: true,
 		    relevance: 0,
 		    contains: [
 		      {
-		        className: 'attr',
-		        begin: /\S+/,
-		        relevance: 0.2
+		        scope: 'attr',
+		        match: new RegExp(`${IDENTIFIER_REGEX}(\\.${IDENTIFIER_REGEX})*(?=\\s*=)`),
+		        relevance: 0.2,
 		      }
-		    ]
+		    ],
+		  };
+
+		  const NORMAL_ESCAPED_DOLLAR = {
+		    scope: 'char.escape',
+		    match: /\\\$/,
+		  };
+		  const INDENTED_ESCAPED_DOLLAR = {
+		    scope: 'char.escape',
+		    match: /''\$/,
+		  };
+		  const ANTIQUOTE = {
+		    scope: 'subst',
+		    begin: /\$\{/,
+		    end: /\}/,
+		    keywords: KEYWORDS,
+		  };
+		  const ESCAPED_DOUBLEQUOTE = {
+		    scope: 'char.escape',
+		    match: /'''/,
+		  };
+		  const ESCAPED_LITERAL = {
+		    scope: 'char.escape',
+		    match: /\\(?!\$)./,
 		  };
 		  const STRING = {
-		    className: 'string',
-		    contains: [ ESCAPED_DOLLAR, ANTIQUOTE ],
+		    scope: 'string',
 		    variants: [
 		      {
 		        begin: "''",
-		        end: "''"
+		        end: "''",
+		        contains: [
+		          INDENTED_ESCAPED_DOLLAR,
+		          ANTIQUOTE,
+		          ESCAPED_DOUBLEQUOTE,
+		          ESCAPED_LITERAL,
+		        ],
 		      },
 		      {
 		        begin: '"',
-		        end: '"'
-		      }
-		    ]
+		        end: '"',
+		        contains: [
+		          NORMAL_ESCAPED_DOLLAR,
+		          ANTIQUOTE,
+		          ESCAPED_LITERAL,
+		        ],
+		      },
+		    ],
 		  };
+
+		  const FUNCTION_PARAMS = {
+		    scope: 'params',
+		    match: new RegExp(`${IDENTIFIER_REGEX}\\s*:(?=\\s)`),
+		  };
+
 		  const EXPRESSIONS = [
-		    hljs.NUMBER_MODE,
+		    NUMBER,
 		    hljs.HASH_COMMENT_MODE,
 		    hljs.C_BLOCK_COMMENT_MODE,
+		    hljs.COMMENT(
+		      /\/\*\*(?!\/)/,
+		      /\*\//,
+		      {
+		        subLanguage: 'markdown',
+		        relevance: 0
+		      }
+		    ),
+		    BUILTINS,
 		    STRING,
-		    ATTRS
+		    LOOKUP_PATH,
+		    PATH,
+		    FUNCTION_PARAMS,
+		    ATTRS,
+		    MINUS_OPERATOR,
+		    OPERATOR,
 		  ];
+
 		  ANTIQUOTE.contains = EXPRESSIONS;
+
+		  const REPL = [
+		    {
+		      scope: 'meta.prompt',
+		      match: /^nix-repl>(?=\s)/,
+		      relevance: 10,
+		    },
+		    {
+		      scope: 'meta',
+		      beforeMatch: /\s+/,
+		      begin: /:([a-z]+|\?)/,
+		    },
+		  ];
+
 		  return {
 		    name: 'Nix',
 		    aliases: [ "nixos" ],
 		    keywords: KEYWORDS,
-		    contains: EXPRESSIONS
+		    contains: EXPRESSIONS.concat(REPL),
 		  };
 		}
 
@@ -42160,6 +43691,7 @@
 	Description: Nullsoft Scriptable Install System
 	Author: Jan T. Sott <jan.sott@gmail.com>
 	Website: https://nsis.sourceforge.io/Main_Page
+	Category: scripting
 	*/
 
 	var nsis_1;
@@ -43164,6 +44696,7 @@
 	Author: Carlo Kok <ck@remobjects.com>
 	Description: Oxygene is built on the foundation of Object Pascal, revamped and extended to be a modern language for the twenty-first century.
 	Website: https://www.elementscompiler.com/elements/default.aspx
+	Category: build-system
 	*/
 
 	var oxygene_1;
@@ -43403,6 +44936,7 @@
 	    - Function names deliberately are not highlighted. There is no way to tell function
 	      call from other constructs, hence we can't highlight _all_ function names. And
 	      some names highlighted while others not looks ugly.
+	Category: database
 	*/
 
 	var pgsql_1;
@@ -43950,12 +45484,15 @@
 		  const PASCAL_CASE_CLASS_NAME_RE = regex.concat(
 		    /(\\?[A-Z][a-z0-9_\x7f-\xff]+|\\?[A-Z]+(?=[A-Z][a-z0-9_\x7f-\xff])){1,}/,
 		    NOT_PERL_ETC);
+		  const UPCASE_NAME_RE = regex.concat(
+		    /[A-Z]+/,
+		    NOT_PERL_ETC);
 		  const VARIABLE = {
 		    scope: 'variable',
 		    match: '\\$+' + IDENT_RE,
 		  };
 		  const PREPROCESSOR = {
-		    scope: 'meta',
+		    scope: "meta",
 		    variants: [
 		      { begin: /<\?php/, relevance: 10 }, // boost for obvious PHP
 		      { begin: /<\?=/ },
@@ -44369,7 +45906,12 @@
 		  ];
 
 		  const ATTRIBUTES = {
-		    begin: regex.concat(/#\[\s*/, PASCAL_CASE_CLASS_NAME_RE),
+		    begin: regex.concat(/#\[\s*\\?/,
+		      regex.either(
+		        PASCAL_CASE_CLASS_NAME_RE,
+		        UPCASE_NAME_RE
+		      )
+		    ),
 		    beginScope: "meta",
 		    end: /]/,
 		    endScope: "meta",
@@ -44399,7 +45941,10 @@
 		      ...ATTRIBUTE_CONTAINS,
 		      {
 		        scope: 'meta',
-		        match: PASCAL_CASE_CLASS_NAME_RE
+		        variants: [
+		          { match: PASCAL_CASE_CLASS_NAME_RE },
+		          { match: UPCASE_NAME_RE }
+		        ]
 		      }
 		    ]
 		  };
@@ -44479,6 +46024,7 @@
 		            keywords: KEYWORDS,
 		            contains: [
 		              'self',
+		              ATTRIBUTES,
 		              VARIABLE,
 		              LEFT_AND_RIGHT_SIDE_OF_DOUBLE_COLON,
 		              hljs.C_BLOCK_COMMENT_MODE,
@@ -44639,6 +46185,7 @@
 	Description: Pony is an open-source, object-oriented, actor-model,
 	             capabilities-secure, high performance programming language.
 	Website: https://www.ponylang.io
+	Category: system
 	*/
 
 	var pony_1;
@@ -44737,6 +46284,7 @@
 	Author: David Mohundro <david@mohundro.com>
 	Contributors: Nicholas Blumhardt <nblumhardt@nblumhardt.com>, Victor Zhou <OiCMudkips@users.noreply.github.com>, Nicolas Le Gall <contact@nlegall.fr>
 	Website: https://docs.microsoft.com/en-us/powershell/
+	Category: scripting
 	*/
 
 	var powershell_1;
@@ -45556,6 +47104,7 @@
 	Description: Prolog is a general purpose logic programming language associated with artificial intelligence and computational linguistics.
 	Author: Raivo Laanemets <raivo@infdot.com>
 	Website: https://en.wikipedia.org/wiki/Prolog
+	Category: functional
 	*/
 
 	var prolog_1;
@@ -45982,6 +47531,7 @@
 	Description: Syntax highlighting for PureBASIC (v.5.00-5.60). No inline ASM highlighting. (v.1.2, May 2017)
 	Credits: I've taken inspiration from the PureBasic language file for GeSHi, created by Gustavo Julio Fiorenza (GuShH).
 	Website: https://www.purebasic.com
+	Category: system
 	*/
 
 	var purebasic_1;
@@ -46465,7 +48015,8 @@
 		      NUMBER,
 		      {
 		        // very common convention
-		        begin: /\bself\b/
+		        scope: 'variable.language',
+		        match: /\bself\b/
 		      },
 		      {
 		        // eat "if" prior to string so that it won't accidentally be
@@ -46473,6 +48024,7 @@
 		        beginKeywords: "if",
 		        relevance: 0
 		      },
+		      { match: /\bor\b/, scope: "keyword" },
 		      STRING,
 		      COMMENT_TYPE,
 		      hljs.HASH_COMMENT_MODE,
@@ -46574,6 +48126,7 @@
 	             (K/Q/Kdb+ from Kx Systems)
 	Author: Sergey Vidyuk <svidyuk@gmail.com>
 	Website: https://kx.com/connect-with-us/developers/
+	Category: enterprise, functional, database
 	*/
 
 	var q_1;
@@ -47372,6 +48925,7 @@
 	Author: Ivan Dementev <ivan_div@mail.ru>
 	Description: Scripting host provides a way to automate some router maintenance tasks by means of executing user-defined scripts bounded to some event occurrence
 	Website: https://wiki.mikrotik.com/wiki/Manual:Scripting
+	Category: scripting
 	*/
 
 	var routeros_1;
@@ -47797,15 +49351,22 @@
 		if (hasRequiredRust) return rust_1;
 		hasRequiredRust = 1;
 		/** @type LanguageFn */
+
 		function rust(hljs) {
 		  const regex = hljs.regex;
+		  // ============================================
+		  // Added to support the r# keyword, which is a raw identifier in Rust.
+		  const RAW_IDENTIFIER = /(r#)?/;
+		  const UNDERSCORE_IDENT_RE = regex.concat(RAW_IDENTIFIER, hljs.UNDERSCORE_IDENT_RE);
+		  const IDENT_RE = regex.concat(RAW_IDENTIFIER, hljs.IDENT_RE);
+		  // ============================================
 		  const FUNCTION_INVOKE = {
 		    className: "title.function.invoke",
 		    relevance: 0,
 		    begin: regex.concat(
 		      /\b/,
 		      /(?!let|for|while|if|else|match\b)/,
-		      hljs.IDENT_RE,
+		      IDENT_RE,
 		      regex.lookahead(/\s*\(/))
 		  };
 		  const NUMBER_SUFFIX = '([ui](8|16|32|64|128|size)|f(32|64))\?';
@@ -47854,6 +49415,7 @@
 		    "try",
 		    "type",
 		    "typeof",
+		    "union",
 		    "unsafe",
 		    "unsized",
 		    "use",
@@ -47981,15 +49543,25 @@
 		        illegal: null
 		      }),
 		      {
-		        className: 'string',
-		        variants: [
-		          { begin: /b?r(#*)"(.|\n)*?"\1(?!#)/ },
-		          { begin: /b?'\\?(x\w{2}|u\w{4}|U\w{8}|.)'/ }
-		        ]
+		        className: 'symbol',
+		        // negative lookahead to avoid matching `'`
+		        begin: /'[a-zA-Z_][a-zA-Z0-9_]*(?!')/
 		      },
 		      {
-		        className: 'symbol',
-		        begin: /'[a-zA-Z_][a-zA-Z0-9_]*/
+		        scope: 'string',
+		        variants: [
+		          { begin: /b?r(#*)"(.|\n)*?"\1(?!#)/ },
+		          {
+		            begin: /b?'/,
+		            end: /'/,
+		            contains: [
+		              {
+		                scope: "char.escape",
+		                match: /\\('|\w|x\w{2}|u\w{4}|U\w{8})/
+		              }
+		            ]
+		          }
+		        ]
 		      },
 		      {
 		        className: 'number',
@@ -48006,7 +49578,7 @@
 		        begin: [
 		          /fn/,
 		          /\s+/,
-		          hljs.UNDERSCORE_IDENT_RE
+		          UNDERSCORE_IDENT_RE
 		        ],
 		        className: {
 		          1: "keyword",
@@ -48021,7 +49593,10 @@
 		          {
 		            className: 'string',
 		            begin: /"/,
-		            end: /"/
+		            end: /"/,
+		            contains: [
+		              hljs.BACKSLASH_ESCAPE
+		            ]
 		          }
 		        ]
 		      },
@@ -48030,7 +49605,7 @@
 		          /let/,
 		          /\s+/,
 		          /(?:mut\s+)?/,
-		          hljs.UNDERSCORE_IDENT_RE
+		          UNDERSCORE_IDENT_RE
 		        ],
 		        className: {
 		          1: "keyword",
@@ -48043,7 +49618,7 @@
 		        begin: [
 		          /for/,
 		          /\s+/,
-		          hljs.UNDERSCORE_IDENT_RE,
+		          UNDERSCORE_IDENT_RE,
 		          /\s+/,
 		          /in/
 		        ],
@@ -48057,7 +49632,7 @@
 		        begin: [
 		          /type/,
 		          /\s+/,
-		          hljs.UNDERSCORE_IDENT_RE
+		          UNDERSCORE_IDENT_RE
 		        ],
 		        className: {
 		          1: "keyword",
@@ -48068,7 +49643,7 @@
 		        begin: [
 		          /(?:trait|enum|struct|union|impl|for)/,
 		          /\s+/,
-		          hljs.UNDERSCORE_IDENT_RE
+		          UNDERSCORE_IDENT_RE
 		        ],
 		        className: {
 		          1: "keyword",
@@ -48100,6 +49675,7 @@
 	Language: SAS
 	Author: Mauricio Caceres <mauricio.caceres.bravo@gmail.com>
 	Description: Syntax Highlighting for SAS
+	Category: scientific
 	*/
 
 	var sas_1;
@@ -49222,7 +50798,7 @@
 		  };
 		};
 
-		const TAGS = [
+		const HTML_TAGS = [
 		  'a',
 		  'abbr',
 		  'address',
@@ -49274,11 +50850,16 @@
 		  'nav',
 		  'object',
 		  'ol',
+		  'optgroup',
+		  'option',
 		  'p',
+		  'picture',
 		  'q',
 		  'quote',
 		  'samp',
 		  'section',
+		  'select',
+		  'source',
 		  'span',
 		  'strong',
 		  'summary',
@@ -49296,6 +50877,58 @@
 		  'var',
 		  'video'
 		];
+
+		const SVG_TAGS = [
+		  'defs',
+		  'g',
+		  'marker',
+		  'mask',
+		  'pattern',
+		  'svg',
+		  'switch',
+		  'symbol',
+		  'feBlend',
+		  'feColorMatrix',
+		  'feComponentTransfer',
+		  'feComposite',
+		  'feConvolveMatrix',
+		  'feDiffuseLighting',
+		  'feDisplacementMap',
+		  'feFlood',
+		  'feGaussianBlur',
+		  'feImage',
+		  'feMerge',
+		  'feMorphology',
+		  'feOffset',
+		  'feSpecularLighting',
+		  'feTile',
+		  'feTurbulence',
+		  'linearGradient',
+		  'radialGradient',
+		  'stop',
+		  'circle',
+		  'ellipse',
+		  'image',
+		  'line',
+		  'path',
+		  'polygon',
+		  'polyline',
+		  'rect',
+		  'text',
+		  'use',
+		  'textPath',
+		  'tspan',
+		  'foreignObject',
+		  'clipPath'
+		];
+
+		const TAGS = [
+		  ...HTML_TAGS,
+		  ...SVG_TAGS,
+		];
+
+		// Sorting, then reversing makes sure longer attributes/elements like
+		// `font-weight` are matched fully instead of getting false positives on say `font`
 
 		const MEDIA_FEATURES = [
 		  'any-hover',
@@ -49332,7 +50965,7 @@
 		  'max-width',
 		  'min-height',
 		  'max-height'
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
 		const PSEUDO_CLASSES = [
@@ -49395,7 +51028,7 @@
 		  'valid',
 		  'visited',
 		  'where' // where()
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
 		const PSEUDO_ELEMENTS = [
@@ -49413,14 +51046,18 @@
 		  'selection',
 		  'slotted',
 		  'spelling-error'
-		];
+		].sort().reverse();
 
 		const ATTRIBUTES = [
+		  'accent-color',
 		  'align-content',
 		  'align-items',
 		  'align-self',
+		  'alignment-baseline',
 		  'all',
+		  'anchor-name',
 		  'animation',
+		  'animation-composition',
 		  'animation-delay',
 		  'animation-direction',
 		  'animation-duration',
@@ -49428,7 +51065,14 @@
 		  'animation-iteration-count',
 		  'animation-name',
 		  'animation-play-state',
+		  'animation-range',
+		  'animation-range-end',
+		  'animation-range-start',
+		  'animation-timeline',
 		  'animation-timing-function',
+		  'appearance',
+		  'aspect-ratio',
+		  'backdrop-filter',
 		  'backface-visibility',
 		  'background',
 		  'background-attachment',
@@ -49438,8 +51082,11 @@
 		  'background-image',
 		  'background-origin',
 		  'background-position',
+		  'background-position-x',
+		  'background-position-y',
 		  'background-repeat',
 		  'background-size',
+		  'baseline-shift',
 		  'block-size',
 		  'border',
 		  'border-block',
@@ -49462,6 +51109,8 @@
 		  'border-bottom-width',
 		  'border-collapse',
 		  'border-color',
+		  'border-end-end-radius',
+		  'border-end-start-radius',
 		  'border-image',
 		  'border-image-outset',
 		  'border-image-repeat',
@@ -49490,6 +51139,8 @@
 		  'border-right-style',
 		  'border-right-width',
 		  'border-spacing',
+		  'border-start-end-radius',
+		  'border-start-start-radius',
 		  'border-style',
 		  'border-top',
 		  'border-top-color',
@@ -49499,7 +51150,15 @@
 		  'border-top-width',
 		  'border-width',
 		  'bottom',
+		  'box-align',
 		  'box-decoration-break',
+		  'box-direction',
+		  'box-flex',
+		  'box-flex-group',
+		  'box-lines',
+		  'box-ordinal-group',
+		  'box-orient',
+		  'box-pack',
 		  'box-shadow',
 		  'box-sizing',
 		  'break-after',
@@ -49512,6 +51171,11 @@
 		  'clip-path',
 		  'clip-rule',
 		  'color',
+		  'color-interpolation',
+		  'color-interpolation-filters',
+		  'color-profile',
+		  'color-rendering',
+		  'color-scheme',
 		  'column-count',
 		  'column-fill',
 		  'column-gap',
@@ -49523,17 +51187,34 @@
 		  'column-width',
 		  'columns',
 		  'contain',
+		  'contain-intrinsic-block-size',
+		  'contain-intrinsic-height',
+		  'contain-intrinsic-inline-size',
+		  'contain-intrinsic-size',
+		  'contain-intrinsic-width',
+		  'container',
+		  'container-name',
+		  'container-type',
 		  'content',
 		  'content-visibility',
 		  'counter-increment',
 		  'counter-reset',
+		  'counter-set',
 		  'cue',
 		  'cue-after',
 		  'cue-before',
 		  'cursor',
+		  'cx',
+		  'cy',
 		  'direction',
 		  'display',
+		  'dominant-baseline',
 		  'empty-cells',
+		  'enable-background',
+		  'field-sizing',
+		  'fill',
+		  'fill-opacity',
+		  'fill-rule',
 		  'filter',
 		  'flex',
 		  'flex-basis',
@@ -49543,6 +51224,8 @@
 		  'flex-shrink',
 		  'flex-wrap',
 		  'float',
+		  'flood-color',
+		  'flood-opacity',
 		  'flow',
 		  'font',
 		  'font-display',
@@ -49550,21 +51233,32 @@
 		  'font-feature-settings',
 		  'font-kerning',
 		  'font-language-override',
+		  'font-optical-sizing',
+		  'font-palette',
 		  'font-size',
 		  'font-size-adjust',
+		  'font-smooth',
 		  'font-smoothing',
 		  'font-stretch',
 		  'font-style',
 		  'font-synthesis',
+		  'font-synthesis-position',
+		  'font-synthesis-small-caps',
+		  'font-synthesis-style',
+		  'font-synthesis-weight',
 		  'font-variant',
+		  'font-variant-alternates',
 		  'font-variant-caps',
 		  'font-variant-east-asian',
+		  'font-variant-emoji',
 		  'font-variant-ligatures',
 		  'font-variant-numeric',
 		  'font-variant-position',
 		  'font-variation-settings',
 		  'font-weight',
+		  'forced-color-adjust',
 		  'gap',
+		  'glyph-orientation-horizontal',
 		  'glyph-orientation-vertical',
 		  'grid',
 		  'grid-area',
@@ -49584,19 +51278,36 @@
 		  'grid-template-rows',
 		  'hanging-punctuation',
 		  'height',
+		  'hyphenate-character',
+		  'hyphenate-limit-chars',
 		  'hyphens',
 		  'icon',
 		  'image-orientation',
 		  'image-rendering',
 		  'image-resolution',
 		  'ime-mode',
+		  'initial-letter',
+		  'initial-letter-align',
 		  'inline-size',
+		  'inset',
+		  'inset-area',
+		  'inset-block',
+		  'inset-block-end',
+		  'inset-block-start',
+		  'inset-inline',
+		  'inset-inline-end',
+		  'inset-inline-start',
 		  'isolation',
 		  'justify-content',
+		  'justify-items',
+		  'justify-self',
+		  'kerning',
 		  'left',
 		  'letter-spacing',
+		  'lighting-color',
 		  'line-break',
 		  'line-height',
+		  'line-height-step',
 		  'list-style',
 		  'list-style-image',
 		  'list-style-position',
@@ -49612,6 +51323,11 @@
 		  'margin-left',
 		  'margin-right',
 		  'margin-top',
+		  'margin-trim',
+		  'marker',
+		  'marker-end',
+		  'marker-mid',
+		  'marker-start',
 		  'marks',
 		  'mask',
 		  'mask-border',
@@ -49630,6 +51346,10 @@
 		  'mask-repeat',
 		  'mask-size',
 		  'mask-type',
+		  'masonry-auto-flow',
+		  'math-depth',
+		  'math-shift',
+		  'math-style',
 		  'max-block-size',
 		  'max-height',
 		  'max-inline-size',
@@ -49648,6 +51368,12 @@
 		  'normal',
 		  'object-fit',
 		  'object-position',
+		  'offset',
+		  'offset-anchor',
+		  'offset-distance',
+		  'offset-path',
+		  'offset-position',
+		  'offset-rotate',
 		  'opacity',
 		  'order',
 		  'orphans',
@@ -49657,9 +51383,19 @@
 		  'outline-style',
 		  'outline-width',
 		  'overflow',
+		  'overflow-anchor',
+		  'overflow-block',
+		  'overflow-clip-margin',
+		  'overflow-inline',
 		  'overflow-wrap',
 		  'overflow-x',
 		  'overflow-y',
+		  'overlay',
+		  'overscroll-behavior',
+		  'overscroll-behavior-block',
+		  'overscroll-behavior-inline',
+		  'overscroll-behavior-x',
+		  'overscroll-behavior-y',
 		  'padding',
 		  'padding-block',
 		  'padding-block-end',
@@ -49671,23 +51407,37 @@
 		  'padding-left',
 		  'padding-right',
 		  'padding-top',
+		  'page',
 		  'page-break-after',
 		  'page-break-before',
 		  'page-break-inside',
+		  'paint-order',
 		  'pause',
 		  'pause-after',
 		  'pause-before',
 		  'perspective',
 		  'perspective-origin',
+		  'place-content',
+		  'place-items',
+		  'place-self',
 		  'pointer-events',
 		  'position',
+		  'position-anchor',
+		  'position-visibility',
+		  'print-color-adjust',
 		  'quotes',
+		  'r',
 		  'resize',
 		  'rest',
 		  'rest-after',
 		  'rest-before',
 		  'right',
+		  'rotate',
 		  'row-gap',
+		  'ruby-align',
+		  'ruby-position',
+		  'scale',
+		  'scroll-behavior',
 		  'scroll-margin',
 		  'scroll-margin-block',
 		  'scroll-margin-block-end',
@@ -49713,25 +51463,43 @@
 		  'scroll-snap-align',
 		  'scroll-snap-stop',
 		  'scroll-snap-type',
+		  'scroll-timeline',
+		  'scroll-timeline-axis',
+		  'scroll-timeline-name',
 		  'scrollbar-color',
 		  'scrollbar-gutter',
 		  'scrollbar-width',
 		  'shape-image-threshold',
 		  'shape-margin',
 		  'shape-outside',
+		  'shape-rendering',
 		  'speak',
 		  'speak-as',
 		  'src', // @font-face
+		  'stop-color',
+		  'stop-opacity',
+		  'stroke',
+		  'stroke-dasharray',
+		  'stroke-dashoffset',
+		  'stroke-linecap',
+		  'stroke-linejoin',
+		  'stroke-miterlimit',
+		  'stroke-opacity',
+		  'stroke-width',
 		  'tab-size',
 		  'table-layout',
 		  'text-align',
 		  'text-align-all',
 		  'text-align-last',
+		  'text-anchor',
 		  'text-combine-upright',
 		  'text-decoration',
 		  'text-decoration-color',
 		  'text-decoration-line',
+		  'text-decoration-skip',
+		  'text-decoration-skip-ink',
 		  'text-decoration-style',
+		  'text-decoration-thickness',
 		  'text-emphasis',
 		  'text-emphasis-color',
 		  'text-emphasis-position',
@@ -49742,20 +51510,37 @@
 		  'text-overflow',
 		  'text-rendering',
 		  'text-shadow',
+		  'text-size-adjust',
 		  'text-transform',
+		  'text-underline-offset',
 		  'text-underline-position',
+		  'text-wrap',
+		  'text-wrap-mode',
+		  'text-wrap-style',
+		  'timeline-scope',
 		  'top',
+		  'touch-action',
 		  'transform',
 		  'transform-box',
 		  'transform-origin',
 		  'transform-style',
 		  'transition',
+		  'transition-behavior',
 		  'transition-delay',
 		  'transition-duration',
 		  'transition-property',
 		  'transition-timing-function',
+		  'translate',
 		  'unicode-bidi',
+		  'user-modify',
+		  'user-select',
+		  'vector-effect',
 		  'vertical-align',
+		  'view-timeline',
+		  'view-timeline-axis',
+		  'view-timeline-inset',
+		  'view-timeline-name',
+		  'view-transition-name',
 		  'visibility',
 		  'voice-balance',
 		  'voice-duration',
@@ -49766,6 +51551,7 @@
 		  'voice-stress',
 		  'voice-volume',
 		  'white-space',
+		  'white-space-collapse',
 		  'widows',
 		  'width',
 		  'will-change',
@@ -49773,10 +51559,11 @@
 		  'word-spacing',
 		  'word-wrap',
 		  'writing-mode',
-		  'z-index'
-		  // reverse makes sure longer attributes `font-weight` are matched fully
-		  // instead of getting false positives on say `font`
-		].reverse();
+		  'x',
+		  'y',
+		  'z-index',
+		  'zoom'
+		].sort().reverse();
 
 		/*
 		Language: SCSS
@@ -49955,6 +51742,7 @@
 	Author: Dennis Titze <dennis.titze@gmail.com>
 	Description: Basic Smali highlighting
 	Website: https://github.com/JesusFreke/smali
+	Category: assembler
 	*/
 
 	var smali_1;
@@ -50089,6 +51877,7 @@
 	Description: Smalltalk is an object-oriented, dynamically typed reflective programming language.
 	Author: Vladimir Gubarkov <xonixx@gmail.com>
 	Website: https://en.wikipedia.org/wiki/Smalltalk
+	Category: system
 	*/
 
 	var smalltalk_1;
@@ -52949,19 +54738,19 @@
 		  const regex = hljs.regex;
 		  const COMMENT_MODE = hljs.COMMENT('--', '$');
 		  const STRING = {
-		    className: 'string',
+		    scope: 'string',
 		    variants: [
 		      {
 		        begin: /'/,
 		        end: /'/,
-		        contains: [ { begin: /''/ } ]
+		        contains: [ { match: /''/ } ]
 		      }
 		    ]
 		  };
 		  const QUOTED_IDENTIFIER = {
 		    begin: /"/,
 		    end: /"/,
-		    contains: [ { begin: /""/ } ]
+		    contains: [ { match: /""/ } ]
 		  };
 
 		  const LITERALS = [
@@ -53531,20 +55320,40 @@
 		  });
 
 		  const VARIABLE = {
-		    className: "variable",
-		    begin: /@[a-z0-9][a-z0-9_]*/,
+		    scope: "variable",
+		    match: /@[a-z0-9][a-z0-9_]*/,
 		  };
 
 		  const OPERATOR = {
-		    className: "operator",
-		    begin: /[-+*/=%^~]|&&?|\|\|?|!=?|<(?:=>?|<|>)?|>[>=]?/,
+		    scope: "operator",
+		    match: /[-+*/=%^~]|&&?|\|\|?|!=?|<(?:=>?|<|>)?|>[>=]?/,
 		    relevance: 0,
 		  };
 
 		  const FUNCTION_CALL = {
-		    begin: regex.concat(/\b/, regex.either(...FUNCTIONS), /\s*\(/),
+		    match: regex.concat(/\b/, regex.either(...FUNCTIONS), /\s*\(/),
 		    relevance: 0,
 		    keywords: { built_in: FUNCTIONS }
+		  };
+
+		  // turns a multi-word keyword combo into a regex that doesn't
+		  // care about extra whitespace etc.
+		  // input: "START QUERY"
+		  // output: /\bSTART\s+QUERY\b/
+		  function kws_to_regex(list) {
+		    return regex.concat(
+		      /\b/,
+		      regex.either(...list.map((kw) => {
+		        return kw.replace(/\s+/, "\\s+")
+		      })),
+		      /\b/
+		    )
+		  }
+
+		  const MULTI_WORD_KEYWORDS = {
+		    scope: "keyword",
+		    match: kws_to_regex(COMBOS),
+		    relevance: 0,
 		  };
 
 		  // keywords with less than 3 letters are reduced in relevancy
@@ -53579,19 +55388,10 @@
 		    },
 		    contains: [
 		      {
-		        begin: regex.either(...COMBOS),
-		        relevance: 0,
-		        keywords: {
-		          $pattern: /[\w\.]+/,
-		          keyword: KEYWORDS.concat(COMBOS),
-		          literal: LITERALS,
-		          type: TYPES
-		        },
+		        scope: "type",
+		        match: kws_to_regex(MULTI_WORD_TYPES)
 		      },
-		      {
-		        className: "type",
-		        begin: regex.either(...MULTI_WORD_TYPES)
-		      },
+		      MULTI_WORD_KEYWORDS,
 		      FUNCTION_CALL,
 		      VARIABLE,
 		      STRING,
@@ -54205,6 +56005,7 @@
 	Contributors: Adam Joseph Cook <adam.joseph.cook@gmail.com>
 	Description: Syntax highlighter for STEP Part 21 files (ISO 10303-21).
 	Website: https://en.wikipedia.org/wiki/ISO_10303-21
+	Category: syntax
 	*/
 
 	var step21_1;
@@ -54326,7 +56127,7 @@
 		  };
 		};
 
-		const TAGS = [
+		const HTML_TAGS = [
 		  'a',
 		  'abbr',
 		  'address',
@@ -54378,11 +56179,16 @@
 		  'nav',
 		  'object',
 		  'ol',
+		  'optgroup',
+		  'option',
 		  'p',
+		  'picture',
 		  'q',
 		  'quote',
 		  'samp',
 		  'section',
+		  'select',
+		  'source',
 		  'span',
 		  'strong',
 		  'summary',
@@ -54400,6 +56206,58 @@
 		  'var',
 		  'video'
 		];
+
+		const SVG_TAGS = [
+		  'defs',
+		  'g',
+		  'marker',
+		  'mask',
+		  'pattern',
+		  'svg',
+		  'switch',
+		  'symbol',
+		  'feBlend',
+		  'feColorMatrix',
+		  'feComponentTransfer',
+		  'feComposite',
+		  'feConvolveMatrix',
+		  'feDiffuseLighting',
+		  'feDisplacementMap',
+		  'feFlood',
+		  'feGaussianBlur',
+		  'feImage',
+		  'feMerge',
+		  'feMorphology',
+		  'feOffset',
+		  'feSpecularLighting',
+		  'feTile',
+		  'feTurbulence',
+		  'linearGradient',
+		  'radialGradient',
+		  'stop',
+		  'circle',
+		  'ellipse',
+		  'image',
+		  'line',
+		  'path',
+		  'polygon',
+		  'polyline',
+		  'rect',
+		  'text',
+		  'use',
+		  'textPath',
+		  'tspan',
+		  'foreignObject',
+		  'clipPath'
+		];
+
+		const TAGS = [
+		  ...HTML_TAGS,
+		  ...SVG_TAGS,
+		];
+
+		// Sorting, then reversing makes sure longer attributes/elements like
+		// `font-weight` are matched fully instead of getting false positives on say `font`
 
 		const MEDIA_FEATURES = [
 		  'any-hover',
@@ -54436,7 +56294,7 @@
 		  'max-width',
 		  'min-height',
 		  'max-height'
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
 		const PSEUDO_CLASSES = [
@@ -54499,7 +56357,7 @@
 		  'valid',
 		  'visited',
 		  'where' // where()
-		];
+		].sort().reverse();
 
 		// https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
 		const PSEUDO_ELEMENTS = [
@@ -54517,14 +56375,18 @@
 		  'selection',
 		  'slotted',
 		  'spelling-error'
-		];
+		].sort().reverse();
 
 		const ATTRIBUTES = [
+		  'accent-color',
 		  'align-content',
 		  'align-items',
 		  'align-self',
+		  'alignment-baseline',
 		  'all',
+		  'anchor-name',
 		  'animation',
+		  'animation-composition',
 		  'animation-delay',
 		  'animation-direction',
 		  'animation-duration',
@@ -54532,7 +56394,14 @@
 		  'animation-iteration-count',
 		  'animation-name',
 		  'animation-play-state',
+		  'animation-range',
+		  'animation-range-end',
+		  'animation-range-start',
+		  'animation-timeline',
 		  'animation-timing-function',
+		  'appearance',
+		  'aspect-ratio',
+		  'backdrop-filter',
 		  'backface-visibility',
 		  'background',
 		  'background-attachment',
@@ -54542,8 +56411,11 @@
 		  'background-image',
 		  'background-origin',
 		  'background-position',
+		  'background-position-x',
+		  'background-position-y',
 		  'background-repeat',
 		  'background-size',
+		  'baseline-shift',
 		  'block-size',
 		  'border',
 		  'border-block',
@@ -54566,6 +56438,8 @@
 		  'border-bottom-width',
 		  'border-collapse',
 		  'border-color',
+		  'border-end-end-radius',
+		  'border-end-start-radius',
 		  'border-image',
 		  'border-image-outset',
 		  'border-image-repeat',
@@ -54594,6 +56468,8 @@
 		  'border-right-style',
 		  'border-right-width',
 		  'border-spacing',
+		  'border-start-end-radius',
+		  'border-start-start-radius',
 		  'border-style',
 		  'border-top',
 		  'border-top-color',
@@ -54603,7 +56479,15 @@
 		  'border-top-width',
 		  'border-width',
 		  'bottom',
+		  'box-align',
 		  'box-decoration-break',
+		  'box-direction',
+		  'box-flex',
+		  'box-flex-group',
+		  'box-lines',
+		  'box-ordinal-group',
+		  'box-orient',
+		  'box-pack',
 		  'box-shadow',
 		  'box-sizing',
 		  'break-after',
@@ -54616,6 +56500,11 @@
 		  'clip-path',
 		  'clip-rule',
 		  'color',
+		  'color-interpolation',
+		  'color-interpolation-filters',
+		  'color-profile',
+		  'color-rendering',
+		  'color-scheme',
 		  'column-count',
 		  'column-fill',
 		  'column-gap',
@@ -54627,17 +56516,34 @@
 		  'column-width',
 		  'columns',
 		  'contain',
+		  'contain-intrinsic-block-size',
+		  'contain-intrinsic-height',
+		  'contain-intrinsic-inline-size',
+		  'contain-intrinsic-size',
+		  'contain-intrinsic-width',
+		  'container',
+		  'container-name',
+		  'container-type',
 		  'content',
 		  'content-visibility',
 		  'counter-increment',
 		  'counter-reset',
+		  'counter-set',
 		  'cue',
 		  'cue-after',
 		  'cue-before',
 		  'cursor',
+		  'cx',
+		  'cy',
 		  'direction',
 		  'display',
+		  'dominant-baseline',
 		  'empty-cells',
+		  'enable-background',
+		  'field-sizing',
+		  'fill',
+		  'fill-opacity',
+		  'fill-rule',
 		  'filter',
 		  'flex',
 		  'flex-basis',
@@ -54647,6 +56553,8 @@
 		  'flex-shrink',
 		  'flex-wrap',
 		  'float',
+		  'flood-color',
+		  'flood-opacity',
 		  'flow',
 		  'font',
 		  'font-display',
@@ -54654,21 +56562,32 @@
 		  'font-feature-settings',
 		  'font-kerning',
 		  'font-language-override',
+		  'font-optical-sizing',
+		  'font-palette',
 		  'font-size',
 		  'font-size-adjust',
+		  'font-smooth',
 		  'font-smoothing',
 		  'font-stretch',
 		  'font-style',
 		  'font-synthesis',
+		  'font-synthesis-position',
+		  'font-synthesis-small-caps',
+		  'font-synthesis-style',
+		  'font-synthesis-weight',
 		  'font-variant',
+		  'font-variant-alternates',
 		  'font-variant-caps',
 		  'font-variant-east-asian',
+		  'font-variant-emoji',
 		  'font-variant-ligatures',
 		  'font-variant-numeric',
 		  'font-variant-position',
 		  'font-variation-settings',
 		  'font-weight',
+		  'forced-color-adjust',
 		  'gap',
+		  'glyph-orientation-horizontal',
 		  'glyph-orientation-vertical',
 		  'grid',
 		  'grid-area',
@@ -54688,19 +56607,36 @@
 		  'grid-template-rows',
 		  'hanging-punctuation',
 		  'height',
+		  'hyphenate-character',
+		  'hyphenate-limit-chars',
 		  'hyphens',
 		  'icon',
 		  'image-orientation',
 		  'image-rendering',
 		  'image-resolution',
 		  'ime-mode',
+		  'initial-letter',
+		  'initial-letter-align',
 		  'inline-size',
+		  'inset',
+		  'inset-area',
+		  'inset-block',
+		  'inset-block-end',
+		  'inset-block-start',
+		  'inset-inline',
+		  'inset-inline-end',
+		  'inset-inline-start',
 		  'isolation',
 		  'justify-content',
+		  'justify-items',
+		  'justify-self',
+		  'kerning',
 		  'left',
 		  'letter-spacing',
+		  'lighting-color',
 		  'line-break',
 		  'line-height',
+		  'line-height-step',
 		  'list-style',
 		  'list-style-image',
 		  'list-style-position',
@@ -54716,6 +56652,11 @@
 		  'margin-left',
 		  'margin-right',
 		  'margin-top',
+		  'margin-trim',
+		  'marker',
+		  'marker-end',
+		  'marker-mid',
+		  'marker-start',
 		  'marks',
 		  'mask',
 		  'mask-border',
@@ -54734,6 +56675,10 @@
 		  'mask-repeat',
 		  'mask-size',
 		  'mask-type',
+		  'masonry-auto-flow',
+		  'math-depth',
+		  'math-shift',
+		  'math-style',
 		  'max-block-size',
 		  'max-height',
 		  'max-inline-size',
@@ -54752,6 +56697,12 @@
 		  'normal',
 		  'object-fit',
 		  'object-position',
+		  'offset',
+		  'offset-anchor',
+		  'offset-distance',
+		  'offset-path',
+		  'offset-position',
+		  'offset-rotate',
 		  'opacity',
 		  'order',
 		  'orphans',
@@ -54761,9 +56712,19 @@
 		  'outline-style',
 		  'outline-width',
 		  'overflow',
+		  'overflow-anchor',
+		  'overflow-block',
+		  'overflow-clip-margin',
+		  'overflow-inline',
 		  'overflow-wrap',
 		  'overflow-x',
 		  'overflow-y',
+		  'overlay',
+		  'overscroll-behavior',
+		  'overscroll-behavior-block',
+		  'overscroll-behavior-inline',
+		  'overscroll-behavior-x',
+		  'overscroll-behavior-y',
 		  'padding',
 		  'padding-block',
 		  'padding-block-end',
@@ -54775,23 +56736,37 @@
 		  'padding-left',
 		  'padding-right',
 		  'padding-top',
+		  'page',
 		  'page-break-after',
 		  'page-break-before',
 		  'page-break-inside',
+		  'paint-order',
 		  'pause',
 		  'pause-after',
 		  'pause-before',
 		  'perspective',
 		  'perspective-origin',
+		  'place-content',
+		  'place-items',
+		  'place-self',
 		  'pointer-events',
 		  'position',
+		  'position-anchor',
+		  'position-visibility',
+		  'print-color-adjust',
 		  'quotes',
+		  'r',
 		  'resize',
 		  'rest',
 		  'rest-after',
 		  'rest-before',
 		  'right',
+		  'rotate',
 		  'row-gap',
+		  'ruby-align',
+		  'ruby-position',
+		  'scale',
+		  'scroll-behavior',
 		  'scroll-margin',
 		  'scroll-margin-block',
 		  'scroll-margin-block-end',
@@ -54817,25 +56792,43 @@
 		  'scroll-snap-align',
 		  'scroll-snap-stop',
 		  'scroll-snap-type',
+		  'scroll-timeline',
+		  'scroll-timeline-axis',
+		  'scroll-timeline-name',
 		  'scrollbar-color',
 		  'scrollbar-gutter',
 		  'scrollbar-width',
 		  'shape-image-threshold',
 		  'shape-margin',
 		  'shape-outside',
+		  'shape-rendering',
 		  'speak',
 		  'speak-as',
 		  'src', // @font-face
+		  'stop-color',
+		  'stop-opacity',
+		  'stroke',
+		  'stroke-dasharray',
+		  'stroke-dashoffset',
+		  'stroke-linecap',
+		  'stroke-linejoin',
+		  'stroke-miterlimit',
+		  'stroke-opacity',
+		  'stroke-width',
 		  'tab-size',
 		  'table-layout',
 		  'text-align',
 		  'text-align-all',
 		  'text-align-last',
+		  'text-anchor',
 		  'text-combine-upright',
 		  'text-decoration',
 		  'text-decoration-color',
 		  'text-decoration-line',
+		  'text-decoration-skip',
+		  'text-decoration-skip-ink',
 		  'text-decoration-style',
+		  'text-decoration-thickness',
 		  'text-emphasis',
 		  'text-emphasis-color',
 		  'text-emphasis-position',
@@ -54846,20 +56839,37 @@
 		  'text-overflow',
 		  'text-rendering',
 		  'text-shadow',
+		  'text-size-adjust',
 		  'text-transform',
+		  'text-underline-offset',
 		  'text-underline-position',
+		  'text-wrap',
+		  'text-wrap-mode',
+		  'text-wrap-style',
+		  'timeline-scope',
 		  'top',
+		  'touch-action',
 		  'transform',
 		  'transform-box',
 		  'transform-origin',
 		  'transform-style',
 		  'transition',
+		  'transition-behavior',
 		  'transition-delay',
 		  'transition-duration',
 		  'transition-property',
 		  'transition-timing-function',
+		  'translate',
 		  'unicode-bidi',
+		  'user-modify',
+		  'user-select',
+		  'vector-effect',
 		  'vertical-align',
+		  'view-timeline',
+		  'view-timeline-axis',
+		  'view-timeline-inset',
+		  'view-timeline-name',
+		  'view-transition-name',
 		  'visibility',
 		  'voice-balance',
 		  'voice-duration',
@@ -54870,6 +56880,7 @@
 		  'voice-stress',
 		  'voice-volume',
 		  'white-space',
+		  'white-space-collapse',
 		  'widows',
 		  'width',
 		  'will-change',
@@ -54877,10 +56888,11 @@
 		  'word-spacing',
 		  'word-wrap',
 		  'writing-mode',
-		  'z-index'
-		  // reverse makes sure longer attributes `font-weight` are matched fully
-		  // instead of getting false positives on say `font`
-		].reverse();
+		  'x',
+		  'y',
+		  'z-index',
+		  'zoom'
+		].sort().reverse();
 
 		/*
 		Language: Stylus
@@ -55076,6 +57088,7 @@
 	Language: SubUnit
 	Author: Sergey Bronnikov <sergeyb@bronevichok.ru>
 	Website: https://pypi.org/project/python-subunit/
+	Category: protocols
 	*/
 
 	var subunit_1;
@@ -55285,6 +57298,7 @@
 		  'operator',
 		  'optional', // contextual
 		  'override', // contextual
+		  'package',
 		  'postfix', // contextual
 		  'precedencegroup',
 		  'prefix', // contextual
@@ -55781,14 +57795,17 @@
 		      }
 		    ] }
 		  };
+
 		  const KEYWORD_ATTRIBUTE = {
 		    scope: 'keyword',
-		    match: concat(/@/, either(...keywordAttributes))
+		    match: concat(/@/, either(...keywordAttributes), lookahead(either(/\(/, /\s+/))),
 		  };
+
 		  const USER_DEFINED_ATTRIBUTE = {
 		    scope: 'meta',
 		    match: concat(/@/, identifier)
 		  };
+
 		  const ATTRIBUTES = [
 		    AVAILABLE_ATTRIBUTE,
 		    KEYWORD_ATTRIBUTE,
@@ -55981,6 +57998,64 @@
 		    end: /}/
 		  };
 
+		  const CLASS_FUNC_DECLARATION = {
+		    match: [
+		      /class\b/,          
+		      /\s+/,
+		      /func\b/,
+		      /\s+/,
+		      /\b[A-Za-z_][A-Za-z0-9_]*\b/ 
+		    ],
+		    scope: {
+		      1: "keyword",
+		      3: "keyword",
+		      5: "title.function"
+		    }
+		  };
+
+		  const CLASS_VAR_DECLARATION = {
+		    match: [
+		      /class\b/,
+		      /\s+/,          
+		      /var\b/, 
+		    ],
+		    scope: {
+		      1: "keyword",
+		      3: "keyword"
+		    }
+		  };
+
+		  const TYPE_DECLARATION = {
+		    begin: [
+		      /(struct|protocol|class|extension|enum|actor)/,
+		      /\s+/,
+		      identifier,
+		      /\s*/,
+		    ],
+		    beginScope: {
+		      1: "keyword",
+		      3: "title.class"
+		    },
+		    keywords: KEYWORDS,
+		    contains: [
+		      GENERIC_PARAMETERS,
+		      ...KEYWORD_MODES,
+		      {
+		        begin: /:/,
+		        end: /\{/,
+		        keywords: KEYWORDS,
+		        contains: [
+		          {
+		            scope: "title.class.inherited",
+		            match: typeIdentifier,
+		          },
+		          ...KEYWORD_MODES,
+		        ],
+		        relevance: 0,
+		      },
+		    ]
+		  };
+
 		  // Add supported submodes to string interpolation.
 		  for (const variant of STRING.variants) {
 		    const interpolation = variant.contains.find(mode => mode.label === "interpol");
@@ -56014,19 +58089,9 @@
 		      ...COMMENTS,
 		      FUNCTION_OR_MACRO,
 		      INIT_SUBSCRIPT,
-		      {
-		        beginKeywords: 'struct protocol class extension enum actor',
-		        end: '\\{',
-		        excludeEnd: true,
-		        keywords: KEYWORDS,
-		        contains: [
-		          hljs.inherit(hljs.TITLE_MODE, {
-		            className: "title.class",
-		            begin: /[A-Za-z$_][\u00C0-\u02B80-9A-Za-z$_]*/
-		          }),
-		          ...KEYWORD_MODES
-		        ]
-		      },
+		      CLASS_FUNC_DECLARATION,
+		      CLASS_VAR_DECLARATION,
+		      TYPE_DECLARATION,
 		      OPERATOR_DECLARATION,
 		      PRECEDENCEGROUP,
 		      {
@@ -56058,6 +58123,7 @@
 	Author: Philipp Wolfer <ph.wolfer@gmail.com>
 	Description: Syntax Highlighting for the Tagger Script as used by MusicBrainz Picard.
 	Website: https://picard.musicbrainz.org
+	Category: scripting
 	 */
 
 	var taggerscript_1;
@@ -56150,14 +58216,15 @@
 		  const KEY = {
 		    className: 'attr',
 		    variants: [
-		      { begin: '\\w[\\w :\\/.-]*:(?=[ \t]|$)' },
-		      { // double quoted keys
-		        begin: '"\\w[\\w :\\/.-]*":(?=[ \t]|$)' },
-		      { // single quoted keys
-		        begin: '\'\\w[\\w :\\/.-]*\':(?=[ \t]|$)' }
+		      // added brackets support and special char support
+		      { begin: /[\w*@][\w*@ :()\./-]*:(?=[ \t]|$)/ },
+		      { // double quoted keys - with brackets and special char support
+		        begin: /"[\w*@][\w*@ :()\./-]*":(?=[ \t]|$)/ },
+		      { // single quoted keys - with brackets and special char support
+		        begin: /'[\w*@][\w*@ :()\./-]*':(?=[ \t]|$)/ },
 		    ]
 		  };
-
+		  
 		  const TEMPLATE_VARIABLES = {
 		    className: 'template-variable',
 		    variants: [
@@ -56171,14 +58238,25 @@
 		      }
 		    ]
 		  };
+
+		  const SINGLE_QUOTE_STRING = {
+		    className: 'string',
+		    relevance: 0,
+		    begin: /'/,
+		    end: /'/,
+		    contains: [
+		      {
+		        match: /''/,
+		        scope: 'char.escape',
+		        relevance: 0
+		      }
+		    ]
+		  };
+
 		  const STRING = {
 		    className: 'string',
 		    relevance: 0,
 		    variants: [
-		      {
-		        begin: /'/,
-		        end: /'/
-		      },
 		      {
 		        begin: /"/,
 		        end: /"/
@@ -56196,7 +58274,13 @@
 		  const CONTAINER_STRING = hljs.inherit(STRING, { variants: [
 		    {
 		      begin: /'/,
-		      end: /'/
+		      end: /'/,
+		      contains: [
+		        {
+		          begin: /''/,
+		          relevance: 0
+		        }
+		      ]
 		    },
 		    {
 		      begin: /"/,
@@ -56305,6 +58389,7 @@
 		    },
 		    OBJECT,
 		    ARRAY,
+		    SINGLE_QUOTE_STRING,
 		    STRING
 		  ];
 
@@ -56386,6 +58471,7 @@
 	Description: Tcl is a very simple programming language.
 	Author: Radek Liska <radekliska@gmail.com>
 	Website: https://www.tcl.tk/about/language.html
+	Category: scripting
 	*/
 
 	var tcl_1;
@@ -56670,6 +58756,7 @@
 	Language: TP
 	Author: Jay Strybis <jay.strybis@gmail.com>
 	Description: FANUC TP programming language (TPP).
+	Category: hardware
 	*/
 
 	var tp_1;
@@ -57163,7 +59250,9 @@
 		  "import",
 		  "from",
 		  "export",
-		  "extends"
+		  "extends",
+		  // It's reached stage 3, which is "recommended for implementation":
+		  "using"
 		];
 		const LITERALS = [
 		  "true",
@@ -57413,7 +59502,7 @@
 		    contains: [] // defined later
 		  };
 		  const HTML_TEMPLATE = {
-		    begin: 'html`',
+		    begin: '\.?html`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -57426,7 +59515,7 @@
 		    }
 		  };
 		  const CSS_TEMPLATE = {
-		    begin: 'css`',
+		    begin: '\.?css`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -57439,7 +59528,7 @@
 		    }
 		  };
 		  const GRAPHQL_TEMPLATE = {
-		    begin: 'gql`',
+		    begin: '\.?gql`',
 		    end: '',
 		    starts: {
 		      end: '`',
@@ -57536,7 +59625,7 @@
 		  const PARAMS_CONTAINS = SUBST_AND_COMMENTS.concat([
 		    // eat recursive parens in sub expressions
 		    {
-		      begin: /\(/,
+		      begin: /(\s*)\(/,
 		      end: /\)/,
 		      keywords: KEYWORDS$1,
 		      contains: ["self"].concat(SUBST_AND_COMMENTS)
@@ -57544,7 +59633,8 @@
 		  ]);
 		  const PARAMS = {
 		    className: 'params',
-		    begin: /\(/,
+		    // convert this to negative lookbehind in v12
+		    begin: /(\s*)\(/, // to match the parms with
 		    end: /\)/,
 		    excludeBegin: true,
 		    excludeEnd: true,
@@ -57667,8 +59757,8 @@
 		        ...BUILT_IN_GLOBALS,
 		        "super",
 		        "import"
-		      ]),
-		      IDENT_RE$1, regex.lookahead(/\(/)),
+		      ].map(x => `${x}\\s*\\(`)),
+		      IDENT_RE$1, regex.lookahead(/\s*\(/)),
 		    className: "title.function",
 		    relevance: 0
 		  };
@@ -57755,8 +59845,8 @@
 		      NUMBER,
 		      CLASS_REFERENCE,
 		      {
-		        className: 'attr',
-		        begin: IDENT_RE$1 + regex.lookahead(':'),
+		        scope: 'attr',
+		        match: IDENT_RE$1 + regex.lookahead(':'),
 		        relevance: 0
 		      },
 		      FUNCTION_VARIABLE,
@@ -57789,7 +59879,7 @@
 		                    skip: true
 		                  },
 		                  {
-		                    begin: /\(/,
+		                    begin: /(\s*)\(/,
 		                    end: /\)/,
 		                    excludeBegin: true,
 		                    excludeEnd: true,
@@ -57898,6 +59988,7 @@
 
 		/** @type LanguageFn */
 		function typescript(hljs) {
+		  const regex = hljs.regex;
 		  const tsLanguage = javascript(hljs);
 
 		  const IDENT_RE$1 = IDENT_RE;
@@ -57914,10 +60005,15 @@
 		    "unknown"
 		  ];
 		  const NAMESPACE = {
-		    beginKeywords: 'namespace',
-		    end: /\{/,
-		    excludeEnd: true,
-		    contains: [ tsLanguage.exports.CLASS_REFERENCE ]
+		    begin: [
+		      /namespace/,
+		      /\s+/,
+		      hljs.IDENT_RE
+		    ],
+		    beginScope: {
+		      1: "keyword",
+		      3: "title.class"
+		    }
 		  };
 		  const INTERFACE = {
 		    beginKeywords: 'interface',
@@ -57936,7 +60032,7 @@
 		  };
 		  const TS_SPECIFIC_KEYWORDS = [
 		    "type",
-		    "namespace",
+		    // "namespace",
 		    "interface",
 		    "public",
 		    "private",
@@ -57946,8 +60042,14 @@
 		    "abstract",
 		    "readonly",
 		    "enum",
-		    "override"
+		    "override",
+		    "satisfies"
 		  ];
+		  /*
+		    namespace is a TS keyword but it's fine to use it as a variable name too.
+		    const message = 'foo';
+		    const namespace = 'bar';
+		  */
 		  const KEYWORDS$1 = {
 		    $pattern: IDENT_RE,
 		    keyword: KEYWORDS.concat(TS_SPECIFIC_KEYWORDS),
@@ -57955,6 +60057,7 @@
 		    built_in: BUILT_INS.concat(TYPES),
 		    "variable.language": BUILT_IN_VARIABLES
 		  };
+
 		  const DECORATOR = {
 		    className: 'meta',
 		    begin: '@' + IDENT_RE$1,
@@ -57973,10 +60076,27 @@
 		  Object.assign(tsLanguage.keywords, KEYWORDS$1);
 
 		  tsLanguage.exports.PARAMS_CONTAINS.push(DECORATOR);
+
+		  // highlight the function params
+		  const ATTRIBUTE_HIGHLIGHT = tsLanguage.contains.find(c => c.scope === "attr");
+
+		  // take default attr rule and extend it to support optionals
+		  const OPTIONAL_KEY_OR_ARGUMENT = Object.assign({},
+		    ATTRIBUTE_HIGHLIGHT,
+		    { match: regex.concat(IDENT_RE$1, regex.lookahead(/\s*\?:/)) }
+		  );
+		  tsLanguage.exports.PARAMS_CONTAINS.push([
+		    tsLanguage.exports.CLASS_REFERENCE, // class reference for highlighting the params types
+		    ATTRIBUTE_HIGHLIGHT, // highlight the params key
+		    OPTIONAL_KEY_OR_ARGUMENT, // Added for optional property assignment highlighting
+		  ]);
+
+		  // Add the optional property assignment highlighting for objects or classes
 		  tsLanguage.contains = tsLanguage.contains.concat([
 		    DECORATOR,
 		    NAMESPACE,
 		    INTERFACE,
+		    OPTIONAL_KEY_OR_ARGUMENT, // Added for optional property assignment highlighting
 		  ]);
 
 		  // TS gets a simpler shebang rule than JS
@@ -58009,6 +60129,7 @@
 	Author: Antono Vasiljev <antono.vasiljev@gmail.com>
 	Description: Vala is a new programming language that aims to bring modern programming language features to GNOME developers without imposing any additional runtime requirements and without using a different ABI compared to applications and libraries written in C.
 	Website: https://wiki.gnome.org/Projects/Vala
+	Category: system
 	*/
 
 	var vala_1;
@@ -58507,6 +60628,7 @@
 	Contributors: Boone Severson <boone.severson@gmail.com>
 	Description: Verilog is a hardware description language used in electronic design automation to describe digital and mixed-signal systems. This highlighter supports Verilog and SystemVerilog through IEEE 1800-2012.
 	Website: http://www.verilog.com
+	Category: hardware
 	*/
 
 	var verilog_1;
@@ -59065,6 +61187,7 @@
 	Contributors: Daniel C.K. Kho <daniel.kho@tauhop.com>, Guillaume Savaton <guillaume.savaton@eseo.fr>
 	Description: VHDL is a hardware description language used in electronic design automation to describe digital and mixed-signal systems.
 	Website: https://en.wikipedia.org/wiki/VHDL
+	Category: hardware
 	*/
 
 	var vhdl_1;
@@ -60630,6 +62753,7 @@
 	 Description: Zephir, an open source, high-level language designed to ease the creation and maintainability of extensions for PHP with a focus on type and memory safety.
 	 Author: Oleg Efimov <efimovov@gmail.com>
 	 Website: https://zephir-lang.com/en
+	 Category: web
 	 Audit: 2020
 	 */
 
@@ -66922,7 +69046,7 @@
 
 	}
 
-	/* src/doc/components/Code.svelte generated by Svelte v4.2.12 */
+	/* src/doc/components/Code.svelte generated by Svelte v4.2.19 */
 
 	function create_fragment$4(ctx) {
 		let pre;
@@ -67068,7 +69192,7 @@
 
 	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"},"rawCode":{"attribute":"raw-code"},"language":{},"outerHTML":{"attribute":"outer-html","type":"Boolean"}}, [], [], false));
 
-	/* src/doc/components/color-doc.svelte generated by Svelte v4.2.12 */
+	/* src/doc/components/color-doc.svelte generated by Svelte v4.2.19 */
 
 	function add_css$3(target) {
 		append_styles(target, "qc-hash-1v55k4q", ".qc-bg-color-white.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-white)}.qc-bg-color-blue-extra-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-extra-pale)}.qc-bg-color-blue-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-pale)}.qc-bg-color-blue-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-light)}.qc-bg-color-blue-regular_light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-regular_light)}.qc-bg-color-blue-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-regular)}.qc-bg-color-blue-piv.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-piv)}.qc-bg-color-blue-medium.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-medium)}.qc-bg-color-blue-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-dark)}.qc-bg-color-purple.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-purple)}.qc-bg-color-grey-extra-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-extra-pale)}.qc-bg-color-grey-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-pale)}.qc-bg-color-grey-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-light)}.qc-bg-color-grey-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-regular)}.qc-bg-color-grey-medium.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-medium)}.qc-bg-color-grey-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-dark)}.qc-bg-color-pink-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-pink-pale)}.qc-bg-color-pink-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-pink-regular)}.qc-bg-color-red-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-pale)}.qc-bg-color-red-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-light)}.qc-bg-color-red-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-regular)}.qc-bg-color-red-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-dark)}.qc-bg-color-green-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-pale)}.qc-bg-color-green-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-regular)}.qc-bg-color-green-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-dark)}.qc-bg-color-yellow-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-pale)}.qc-bg-color-yellow-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-regular)}.qc-bg-color-yellow-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-dark)}.qc-bg-color-background.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-background)}.qc-bg-color-text-primary.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-text-primary)}.qc-bg-color-accent.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-accent)}.qc-bg-color-success.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-success)}.qc-bg-color-error.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-error)}.qc-bg-color-danger.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-danger)}.qc-bg-color-link-text.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-text)}.qc-bg-color-link-hover.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-hover)}.qc-bg-color-link-visited.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-visited)}.qc-bg-color-link-active.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-active)}.qc-bg-color-link-focus-outline.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-focus-outline)}.qc-bg-color-formfield-border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-border)}.qc-bg-color-formfield-focus-border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-focus-border)}.qc-bg-color-formfield-focus-outline.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-focus-outline)}.qc-bg-color-searchinput-icon.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-searchinput-icon)}.qc-bg-color-box_shadow.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-box_shadow)}.color-details.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{display:flex;justify-content:flex-start;align-items:center}.color-details.qc-hash-1v55k4q>div.qc-hash-1v55k4q+div.qc-hash-1v55k4q{margin-left:var(--qc-spacer-md)}.color-sample.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{width:4.8rem;height:4.8rem;border-radius:50%;flex-shrink:0}.border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{border:1px solid var(--qc-color-grey-light)}");
@@ -67189,7 +69313,7 @@
 
 	customElements.define("qc-color-doc", create_custom_element(Color_doc, {"title":{},"token":{},"border":{}}, [], [], true));
 
-	/* src/doc/components/Switch.svelte generated by Svelte v4.2.12 */
+	/* src/doc/components/Switch.svelte generated by Svelte v4.2.19 */
 
 	function add_css$2(target) {
 		append_styles(target, "qc-hash-1opajyv", ".qc-hash-1opajyv.qc-hash-1opajyv{box-sizing:border-box}.switch.qc-hash-1opajyv.qc-hash-1opajyv{position:relative;display:inline-block;width:5.6rem;height:3.2rem}input.qc-hash-1opajyv.qc-hash-1opajyv{z-index:10;opacity:0;position:absolute;cursor:pointer;margin:0;padding:0;top:0;left:0;right:0;bottom:0}.slider.qc-hash-1opajyv.qc-hash-1opajyv{z-index:5;position:absolute;top:0;left:0;right:0;bottom:0;background-color:var(--unchecked-bg-color);-webkit-transition:0.4s;transition:0.4s}.slider.qc-hash-1opajyv.qc-hash-1opajyv::before{position:absolute;content:\"\";height:2.8rem;width:2.8rem;left:0.2rem;bottom:0.2rem;background-color:var(--slider-color);-webkit-transition:0.4s;transition:0.4s}input.qc-hash-1opajyv:checked+.slider.qc-hash-1opajyv{background-color:var(--checked-bg-color)}input.qc-hash-1opajyv:focus+.slider.qc-hash-1opajyv{box-shadow:0 0 1px var(--qc-bok-shadow-color)}input.qc-hash-1opajyv:checked+.slider.qc-hash-1opajyv::before{transform:translateX(2.4rem)}.slider.round.qc-hash-1opajyv.qc-hash-1opajyv,input.qc-hash-1opajyv.qc-hash-1opajyv{border-radius:3.2rem}.slider.round.qc-hash-1opajyv.qc-hash-1opajyv::before{border-radius:50%}");
@@ -67356,7 +69480,7 @@
 
 	customElements.define("qc-switch", create_custom_element(Switch, {"value":{"type":"Boolean"},"name":{},"inputId":{"attribute":"input-id"},"color":{}}, [], [], false));
 
-	/* src/doc/components/TopNav.svelte generated by Svelte v4.2.12 */
+	/* src/doc/components/TopNav.svelte generated by Svelte v4.2.19 */
 
 	function add_css$1(target) {
 		append_styles(target, "qc-hash-1qt294a", "[role=complementary].qc-hash-1qt294a.qc-hash-1qt294a{position:sticky;z-index:100;top:0;background-color:var(--qc-color-blue-medium);color:var(--qc-color-grey-pale);min-height:7.2rem;height:7.2rem}.top-nav.qc-hash-1qt294a.qc-hash-1qt294a{position:absolute;inset:0;display:flex;align-items:end;padding-bottom:var(--qc-spacer-sm)}.top-nav.qc-hash-1qt294a .switch-control.qc-hash-1qt294a{margin-left:auto;margin-right:0;display:flex;align-items:center}.top-nav.qc-hash-1qt294a .switch-control label.qc-hash-1qt294a:first-child{margin-right:1.6rem}");
@@ -67470,7 +69594,7 @@
 
 	customElements.define("qc-doc-top-nav", create_custom_element(TopNav, {}, [], [], false));
 
-	/* src/doc/components/Exemple.svelte generated by Svelte v4.2.12 */
+	/* src/doc/components/Exemple.svelte generated by Svelte v4.2.19 */
 
 	function add_css(target) {
 		append_styles(target, "qc-hash-1memf3k", "figure.qc-hash-1memf3k.qc-hash-1memf3k{display:block;border:1px solid var(--qc-box_shadow-0-color);margin-bottom:var(--qc-spacer-content-block-mb)}figure.qc-hash-1memf3k .exemple.qc-hash-1memf3k{padding:var(--qc-spacer-sm) var(--qc-spacer-sm) 0 var(--qc-spacer-sm)}");
