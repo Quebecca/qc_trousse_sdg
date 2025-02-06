@@ -1211,10 +1211,6 @@
 				}
 			});
 		});
-		if (extend) {
-			// @ts-expect-error - assigning here is fine
-			Class = extend(Class);
-		}
 		Component.element = /** @type {any} */ (Class);
 		return Class;
 	}
@@ -1288,6 +1284,7 @@
 	 */
 
 	// generated during release, do not modify
+
 	const PUBLIC_VERSION = '4';
 
 	if (typeof window !== 'undefined')

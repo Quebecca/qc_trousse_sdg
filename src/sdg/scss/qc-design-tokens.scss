@@ -1,5 +1,7 @@
 @use "qc-sdg-lib" as *;
 @use "sass:map";
+@use "sass:string";
+@use "sass:list";
 
 @mixin generate-token-for-breakpoints($breakpoints-settings) {
 
@@ -16,9 +18,9 @@
             // par exemple : .foo { background-color: rgba(var(--qc-color-xxx-rgb), .23)};
             // cette règle fonctionne quel que soit le thème clair ou sombre puisque basée
             // sur un token.
-            @if (index($path, "color")) {
+            @if (list.index($path, "color")) {
                // ici on vérifie que la couleur commence par #
-               @if (str-index("#{$value}", '#') == 1) {
+               @if (string.index("#{$value}", '#') == 1) {
                   #{token-name($path)}-rgb : rgb-token($value);
                }
             }

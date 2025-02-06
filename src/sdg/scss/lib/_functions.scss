@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "sass:meta";
 @use "settings/base" as *;
 @use "sass:math";
 @use "sass:map";
@@ -29,7 +31,7 @@
   $result : '';
   @each $item in $list {
     $part : $item;
-    @if type-of($item) == 'list' {
+    @if meta.type-of($item) == 'list' {
       $part : deep-implode($item, $glue);
     }
     $result : '#{$result}#{$separator}#{$part}';
@@ -59,7 +61,7 @@
 }
 
 @function rgb-token($color) {
-  @return (red($color), green($color), blue($color));
+  @return (color.channel($color, 'red', $space: rgb), color.channel($color, 'green', $space: rgb), color.channel($color, 'blue', $space: rgb));
 }
 
 

@@ -1,9 +1,10 @@
+@use "sass:meta";
 @use "sass:list";
 @use "sass:map";
 @use "settings/base" as *;
 
 @use "functions" as *;
-@use "base/grid/functions" as grid;
+@use "../grid/grid-lib" as grid;
 
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
@@ -128,7 +129,7 @@
 @mixin map-deep-parse($map, $parents: ()) {
   @each $key, $value in $map {
     $path: list.append($parents, $key);
-    @if type-of($value) == 'map' {
+    @if meta.type-of($value) == 'map' {
       @include map-deep-parse($value, $path) using($path,$value) {
         @content($path, $value);
       }

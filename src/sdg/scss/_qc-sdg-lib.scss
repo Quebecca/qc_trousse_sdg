@@ -1,5 +1,3 @@
 // @use this file to access every variables, function, mixin or %class from Qc SDG
-@forward "settings/base";
-@forward "settings/tokens";
-@forward "lib/functions";
+@forward "lib/gridless-lib";
 @forward "lib/mixins";
