@@ -3,19 +3,26 @@ import resolve from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
-import { terser } from '@rollup/plugin-terser';
-import scss from 'rollup-plugin-sass'
+import terser from '@rollup/plugin-terser';
+// import scss from 'rollup-plugin-sass'
+import scss from 'rollup-plugin-scss'
 import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
+import fs from "fs";
 
 
 const dev_process = (process.env.npm_lifecycle_event == 'dev');
 const verbose = false;
-const path = require('path');
+const  includePaths = [
+        'src/sdg/scss',
+        'src/doc/scss'
+];
+
+// const path = require('path');
 
 function serve() {
     // Keep a reference to a spawned server process
@@ -47,7 +54,7 @@ function serve() {
 }
 
 const scssOptions = {
-    api: "modern",
+    includePaths: includePaths,
     processor: css =>
         postcss([
             autoprefixer(),
@@ -57,18 +64,18 @@ const scssOptions = {
                 }
             })
         ])
-        .process(css)
+        .process(css, {
+            from: undefined
+        })
         .then((result) => result.css),
     sourceMap: false,
-    includePaths: [
-        'src/sdg/scss',
-    ],
+
     prependData: `
         @use "qc-sdg-lib" as *;
-        
     `,
     outputStyle: dev_process ? 'expanded' : 'compressed',
-    watch: ['src/sdg/scss', 'src/doc/scss']
+    watch: ['src/sdg/scss', 'src/doc/scss'],
+    silenceDeprecations: ['legacy-js-api'],
 };
 
 let
@@ -85,8 +92,9 @@ let
             cssHash: ({ hash, name, filename, css }) => {
                 // replacement of default `svelte-${hash(css)}`
                 return `qc-hash-${hash(css)}`;
-            }
+            },
         },
+        emitCss: false,
         preprocess: sveltePreprocess({
             scss: scssOptions
         })
@@ -100,7 +108,7 @@ let
                         ? 'public/js/qc-sdg.js'
                         : 'dist/js/qc-sdg.min.js',
                 format: 'iife',
-                name: 'qcSdg'
+                name: 'qcSdg',
             },
             plugins: [
                 replace(replacements),
@@ -118,10 +126,12 @@ let
 
                 // will output compiled styles to output.css
                 scss(Object.assign({
-                    output: dev_process
-                        ? 'public/css/qc-sdg.css'
-                        : 'dist/css/qc-sdg.min.css'
-                    }
+                    output: (styles, styleNodes) => {
+                        fs.writeFileSync( dev_process
+                            ? 'public/css/qc-sdg.css'
+                            : 'dist/css/qc-sdg.min.css'
+                            , styles)
+                    }}
                     , scssOptions
                 )),
                 !dev_process && copy({
@@ -153,9 +163,12 @@ let
                 }),
                 // will output compiled styles to output.css
                 scss(Object.assign({
-                        output: dev_process
-                        ? 'public/css/qc-sdg-no-grid.css'
-                        : 'dist/css/qc-sdg-no-grid.min.css',
+                        output: (styles, styleNodes) => {
+                            fs.writeFileSync( dev_process
+                                    ? 'public/css/qc-sdg-no-grid.css'
+                                    : 'dist/css/qc-sdg-no-grid.min.css'
+                                , styles)
+                        }
                     }
                     , scssOptions
                 ))
@@ -173,9 +186,12 @@ let
                     browser: true
                 }),
                 scss(Object.assign({
-                    output: dev_process
-                        ? 'public/css/qc-sdg-design-tokens.css'
-                        : 'dist/css/qc-sdg-design-tokens.min.css',
+                        output: (styles, styleNodes) => {
+                            fs.writeFileSync( dev_process
+                                    ? 'public/css/qc-sdg-design-tokens.css'
+                                    : 'dist/css/qc-sdg-design-tokens.min.css'
+                                , styles)
+                        }
                     }
                     , scssOptions
                 )),
@@ -202,8 +218,13 @@ if (dev_process) {
             }),
             commonjs(),
             scss(
-                Object.assign(
-                    {output: 'public/css/qc-doc-sdg.css'},
+                Object.assign({
+                        output: (styles, styleNodes) => {
+                            fs.writeFileSync( dev_process
+                                    ? 'public/css/qc-doc-sdg.css'
+                                    : 'dist/css/qc-doc-sdg.min.css'
+                                , styles)
+                        }},
                     scssOptions
                 )
             ),

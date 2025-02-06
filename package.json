@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c -w --bundleConfigAsCjs",
-    "build": "rollup -c",
+    "build": "rollup -c --bundleConfigAsCjs",
     "start": "sirv public",
     "rewrite-bootstrap": "gulp rewriteBs"
   },
@@ -42,7 +42,7 @@
     "postcss-import": "^16.1.0",
     "postcss-scss": "^4.0.9",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-sass": "^1.15.2",
+    "rollup-plugin-scss": "^4.0.1",
     "svelte-preprocess": "^6.0.3"
   }
 }
