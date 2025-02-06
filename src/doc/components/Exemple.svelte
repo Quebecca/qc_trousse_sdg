@@ -57,9 +57,6 @@
     {/if}
 </div>
 <style lang="scss">
-    qc-doc-exemple {
-        display:block;
-    }
     figure {
       display: block;
       @include qc-shading(0);

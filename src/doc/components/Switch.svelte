@@ -1,15 +1,11 @@
 <svelte:options customElement="{{
     tag: 'qc-switch',
-    shadow:'none',
-    props: {
-        inputId: {attribute:'input-id'},
-    }
+    shadow:'none'
 }}" />
 <script>
     export let
         value=false,
         name='switch',
-        inputId,
         color = {
             unchecked: 'grey-light',
             checked: 'blue-regular',
@@ -34,9 +30,6 @@
     <span class="slider round" ></span>
 </div>
 <style lang="scss">
-  * {
-    box-sizing: border-box;
-  }
 
   $switch-height: 32;
   $switch-width: 56;
