@@ -3,8 +3,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
-import { terser } from 'rollup-plugin-terser';
-import scss from 'rollup-plugin-scss'
+import { terser } from '@rollup/plugin-terser';
+import scss from 'rollup-plugin-sass'
 import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
@@ -47,6 +47,7 @@ function serve() {
 }
 
 const scssOptions = {
+    api: "modern",
     processor: css =>
         postcss([
             autoprefixer(),
@@ -55,7 +56,9 @@ const scssOptions = {
                     'pkg-version': pkg.version
                 }
             })
-        ]),
+        ])
+        .process(css)
+        .then((result) => result.css),
     sourceMap: false,
     includePaths: [
         'src/sdg/scss',
