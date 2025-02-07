@@ -61,9 +61,12 @@
 }
 
 @function rgb-token($color) {
-  @return (color.channel($color, 'red', $space: rgb), color.channel($color, 'green', $space: rgb), color.channel($color, 'blue', $space: rgb));
+  @if meta.function-exists("channel","color") {  // Sass 1.63.0 = Dart Sass 3.63.0
+    @return (color.channel($color, 'red', $space: rgb), color.channel($color, 'green', $space: rgb), color.channel($color, 'blue', $space: rgb));
+  } @else {
+    @return (color.red($color), color.green($color), color.blue($color));
+  }
 }
-
 
 
 
