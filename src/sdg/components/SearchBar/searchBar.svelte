@@ -2,12 +2,8 @@
     tag: 'qc-search-bar',
     shadow: 'none',
     props: {
-        value: {attribute: 'value', type:'String'},
-        name: {attribute: 'value', type:'String'},
-        ariaLabel: {attribute: 'aria-label', type:'String'},
-        submitValue: {attribute: 'submit-value', type:'String'},
-        submitName: {attribute: 'submit-name', type:'String'},
-        submitSrText: {attribute: 'submit-text', type:'String'},
+        value: {attribute: 'input-value', type:'String'},
+        name: {attribute: 'input-name', type:'String'},
         pivBackground: {attribute: 'piv-background', type:'Boolean'},
     }
 }}" />
@@ -18,45 +14,72 @@
     import IconButton from "../Button/IconButton.svelte";
 
     const
-        lang = Utils.getPageLanguage()
+        lang = Utils.getPageLanguage(),
+        inputDefaultPlaceholder = lang === "fr"
+            ? "Rechercher…"
+            : "Search_",
+        submitDefaultAriaLabel = lang === "fr"
+            ? "Lancer la recherche"
+            : "Submit search"
+    ;
     export let
         value = '',
         name = 'q',
-        placeholder = lang === "fr"
-            ? "Rechercher…"
-            : "Search_",
-        ariaLabel = placeholder,
-        submitValue,
-        submitName,
-        submitSrText = lang === "fr"
-            ? "Lancer la recherche"
-            : "Submit search",
         pivBackground = false
     ;
+
+    let defaultsAttributes = {
+            input: {
+                "placeholder": inputDefaultPlaceholder,
+                "aria-label": inputDefaultPlaceholder
+            },
+            button: {
+                "aria-label": submitDefaultAriaLabel
+            }
+        },
+        inputProps = {},
+        buttonProps = {}
+
+    $: [inputProps, buttonProps] = computeFieldsAttributes($$restProps)
+    $: inputProps = {
+        "value": value,
+        "name": name,
+        ...inputProps
+    }
+    $: console.log(buttonProps)
+
+    function computeFieldsAttributes(restProps) {
+        return ["input","button"]
+            .map(control => {
+                    const prefix = `${control}-`;
+                    return {
+                        ...defaultsAttributes[control],
+                        ...Object.fromEntries(Object
+                            .entries(restProps)
+                            .map(([k,v]) => k.startsWith(prefix)
+                                ? [k.replace(prefix, ''),v]
+                                : null
+                            )
+                            .filter(x => x) // élimine les éléments null
+                        )
+                    }
+                }
+            )
+    }
 
 
 </script>
 <div    class="qc-search-bar"
         class:piv-background={pivBackground}
     >
-    <SearchInput {value}
-                 {name}
-                 {ariaLabel}
-                 {placeholder}
-                 {...$$restProps}
-    />
+    <SearchInput {...inputProps}/>
     {#if true}
-        {@const name = submitName}
-        {@const value = submitValue}
-        {@const srText = submitSrText}
         <IconButton
                 type="submit"
-                {name}
-                {value}
-                {srText}
                 iconColor={pivBackground ? 'blue-piv' : 'background'}
                 icon="loupe-piv-fine"
                 iconSize="md"
+                {...buttonProps}
         />
     {/if}
 </div>

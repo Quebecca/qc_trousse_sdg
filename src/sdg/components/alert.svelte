@@ -72,7 +72,7 @@
                     <slot />
                 </div>
                 {#if maskable === "true"}
-                    <IconButton srText={closeLabel}
+                    <IconButton aria-label={closeLabel}
                                 on:click={hideAlert}
                                 size="nm"
                                 icon="clear-input"
