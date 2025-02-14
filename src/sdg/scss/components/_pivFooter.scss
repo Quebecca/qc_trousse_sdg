@@ -53,10 +53,10 @@ qc-piv-footer {
   .copyright {
     margin-top: rem(32);
   }
-  @media (prefers-color-scheme: dark) {
-    svg {
-      fill: token-value(color text primary)
-    }
+
+  svg {
+    fill: token-value(color text primary)
   }
+
 }
 

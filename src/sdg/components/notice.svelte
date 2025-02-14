@@ -22,7 +22,7 @@
           , content = ""
           , header = defaultHeader
           , icon
-          , iconLabel = typesDescriptions[type] ?? ''
+          , iconLabel = typesDescriptions[type] ?? typesDescriptions['information']
 
   onMount(() => {
     header = header.match(/h[1-6]/)

@@ -78,8 +78,8 @@
 }
 
 @mixin dark-theme() {
-  .qc-dark-theme,:root.qc-dark-theme {
-    @content;
+  @at-root .qc-dark-theme #{&},:root.qc-dark-theme #{&} {
+     @content;
   }
 }
 

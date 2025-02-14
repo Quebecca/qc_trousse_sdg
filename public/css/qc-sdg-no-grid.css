@@ -871,6 +871,8 @@ qc-icon {
 .qc-icon {
   display: inline-block;
   flex-shrink: 0;
+  width: var(--img-width);
+  height: var(--img-height);
   background-color: var(--img-color);
 }
 .qc-icon[data-img-size=xs] {
@@ -1480,10 +1482,8 @@ qc-piv-footer ul li a:hover {
 .qc-piv-footer .copyright {
   margin-top: 3.2rem;
 }
-@media (prefers-color-scheme: dark) {
-  .qc-piv-footer svg {
-    fill: var(--qc-color-text-primary);
-  }
+.qc-piv-footer svg {
+  fill: var(--qc-color-text-primary);
 }
 
 .qc-general-alert {
