@@ -1051,9 +1051,9 @@
 <!--            <qc-code target-id="piv-footer-1"></qc-code>-->
 
             <qc-doc-exemple id="piv-footer-ex-2"
-                            caption="Exemple de pied de page du PIV avec personnalisation du logo et du copyright."
+                            caption="Exemple de pied de page du PIV avec personnalisation du copyright."
             >
-                <qc-piv-footer >
+                <qc-piv-footer>
                     <nav aria-label="Navigation du pied-de-page">
                         <ul>
                             <li><a href="/">Accessibilité</a></li>
@@ -1062,20 +1062,12 @@
                             <li><a href="/">FAQ</a></li>
                         </ul>
                     </nav>
-                    <a slot="logo"
-                        href="https://www.mess.gouv.qc.ca">
-                    <img class="logo-mo"
-                         alt="Ministère de l'emploi et de la solidarité sociale"
-                         src="img/logo-piv-footer-mess.png"
-                         width="210"
-                         height="81">
-                    </a>
                     <qc-external-link slot="copyright">
                         <a
                                 target="_blank"
                                 rel="noopener"
                                 href="https://www.quebec.ca/droit-auteur">
-                            © Gouvernement du Québec, 2023</span>
+                            © Gouvernement du Québec, 2023
                         </a>
                     </qc-external-link>
                 </qc-piv-footer>
@@ -1085,7 +1077,7 @@
             <h4>Documentation technique</h4>
 
             <h5>Attributs</h5>
-            <div class="table-overflow">
+            <p class="table-overflow">
             <table class="qc-table qc-striped component-attributes-description">
                 <thead>
                 <tr>
@@ -1098,33 +1090,30 @@
                 <tbody>
                 <tr>
                     <td>logo-url</td>
-                    <td>Adresse</td>
+                    <td>Adresse du lien au clic sur l’image</td>
                     <td>/</td>
                     <td>Cible du lien contenant le logo</td>
                 </tr>
                 <tr>
                     <td>logo-src</td>
-                    <td>Adresse</td>
-                    <td>/</td>
-                    <td>Adresse de l'image du drapeau du Québec de la trousse</td>
+                    <td>Le chemin de l’image en thème clair.</td>
+                    <td>https://www.piv.gouv.qc.ca/fileadmin/templates/images/QUEBEC_couleur.svg</td>
+                    <td>Adresse de l'image du pied de page en thème clair.</td>
+                </tr>
+                <tr>
+                    <td>logo-src-dark-theme</td>
+                    <td>Le chemin de l’image en thème sombre.</td>
+                    <td>https://www.piv.gouv.qc.ca/fileadmin/templates/images/QUEBEC_blanc.svg</td>
+                    <td>Adresse de l'image du pied de page en thème sombre.</td>
                 </tr>
                 <tr>
                     <td>logo-alt</td>
                     <td>Texte</td>
-                    <td>Gouvernement du Québec</td>
+                    <td>
+                        <dt>Français</dt><dd>Logo du gouvernement du Québec</dd>
+                        <dt>Anglais</dt><dd>Logo of government of Québec</dd>
+                    </td>
                     <td>Texte alternatif du logo pour les lecteurs d'écran</td>
-                </tr>
-                <tr>
-                    <td>logo-width</td>
-                    <td>Nombre entier</td>
-                    <td>117</td>
-                    <td>Largeur de l'image en pixel</td>
-                </tr>
-                <tr>
-                    <td>logo-height</td>
-                    <td>Nombre entier</td>
-                    <td>35</td>
-                    <td>Hauteur de l'image en pixel</td>
                 </tr>
                 <tr>
                     <td>copyright-text</td>
@@ -1143,23 +1132,20 @@
                     </td>
                     <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
                 </tr>
-
                 </tbody>
             </table>
-            </div>
+            </p>
+
+            <qc-alert>Les images du pied de page PIV doivent respecter <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les normes graphiques du système d’identification visuel.</a></qc-external-link></qc-alert>
 
             <h5>Zones d'ajout de contenu HTML</h5>
 
             <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
             <qc-doc-exemple id="qc-piv-footer-slots"
                             caption="Présentation des zones d'ajout de contenu du pied-de-page PIV">
-                <qc-piv-footer >
+                <qc-piv-footer>
                     <div  style="border:2px dashed;padding: var(--qc-spacer-xs);">
                         Contenu par défaut
-                    </div>
-                    <div  slot="logo"
-                          style="border:2px dashed;padding: var(--qc-spacer-xs);">
-                        slot="logo"
                     </div>
                     <div slot="copyright"
                          style="border:2px dashed;padding: var(--qc-spacer-xs);">

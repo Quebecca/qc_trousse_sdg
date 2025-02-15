@@ -863,6 +863,23 @@ select {
   white-space: nowrap;
 }
 
+:root {
+  --qc-light-theme-display: initial;
+  --qc-dark-theme-display: none;
+}
+:root.qc-dark-theme {
+  --qc-light-theme-display: none;
+  --qc-dark-theme-display: initial;
+}
+
+.qc-light-theme-show {
+  display: var(--qc-light-theme-display);
+}
+
+.qc-dark-theme-show {
+  display: var(--qc-dark-theme-display);
+}
+
 qc-icon {
   display: inline-flex;
   align-items: stretch;
@@ -1481,9 +1498,6 @@ qc-piv-footer ul li a:hover {
 }
 .qc-piv-footer .copyright {
   margin-top: 3.2rem;
-}
-.qc-piv-footer svg {
-  fill: var(--qc-color-text-primary);
 }
 
 .qc-general-alert {

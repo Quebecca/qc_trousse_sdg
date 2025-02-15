@@ -1,0 +1,17 @@
+@use "qc-sdg-lib" as *;
+
+:root {
+  --qc-light-theme-display: initial;
+  --qc-dark-theme-display: none;
+  &.qc-dark-theme {
+    --qc-light-theme-display: none;
+    --qc-dark-theme-display: initial;
+  }
+}
+
+.qc-light-theme-show {
+  display: var(--qc-light-theme-display);
+}
+.qc-dark-theme-show {
+  display: var(--qc-dark-theme-display);
+}
