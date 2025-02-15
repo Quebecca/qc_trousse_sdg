@@ -21,16 +21,7 @@ $colors : map.get($themes-tokens, light, lg, color);
     }
 
     a {
-      font-family: token-value(font family header);
-      text-decoration: none;
       font-size: rem(12);
-      color: map.get($colors, white);
-      font-weight: token-value(font weight regular);
-
-      &:focus, &:hover {
-        text-decoration: underline;
-        color: map.get($colors, white);
-      }
     }
   }
 }
@@ -54,16 +45,6 @@ qc-piv-header {
   .go-to-content {
     position: relative;
   }
-  a {
-    color: map.get($colors, white);
-    text-decoration: none;
-
-    &:hover, &:focus {
-      color: map.get($colors, white);
-      text-decoration: underline;
-    }
-  }
-
   .piv-top {
     display: flex;
     justify-content: space-between;
@@ -95,15 +76,6 @@ qc-piv-header {
 
       a {
         @include content-font(100);
-        font-family: token-value(font, family, header);
-
-        &:hover, &:focus {
-          text-decoration: underline;
-        }
-
-        .description {
-          font-size: token-value(font size sm);
-        }
       }
     }
 
@@ -141,6 +113,29 @@ qc-piv-header {
   }
 }
 
+qc-piv-header,
+.qc-piv-header {
+  a {
+    --qc-color-link-focus-outline: white;
+    --qc-color-link-hover: white;
+    --qc-color-link-text: white;
+    --qc-color-link-visited: white;
+    --qc-color-link-active: white;
+
+    font-family: token-value(font family header);
+    text-decoration: none;
+    font-weight: token-value(font weight regular);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  a:focus-visible, a:focus {
+    &:has(img) {
+      outline-offset: -2px;
+    }
+  }
+}
 
 .go-to-content {
   display: flex;
@@ -162,14 +157,6 @@ qc-piv-header {
     }
   }
 }
-a:focus-visible {
-  --qc-color-link-focus-outline: white;
-  @include focus-link();
-  &:has(img) {
-    outline-offset: -2px;
-  }
-}
-
 
 @include media-tablet() {
   .qc-piv-header {

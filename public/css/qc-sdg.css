@@ -1277,15 +1277,7 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   font-weight: var(--qc-font-weight-regular);
 }
 .qc-piv-header .piv-top .right-section .links ul a, qc-piv-header [slot=links] a {
-  font-family: var(--qc-font-family-header);
-  text-decoration: none;
   font-size: 1.2rem;
-  color: #ffffff;
-  font-weight: var(--qc-font-weight-regular);
-}
-.qc-piv-header .piv-top .right-section .links ul a:focus, qc-piv-header [slot=links] a:focus, .qc-piv-header .piv-top .right-section .links ul a:hover, qc-piv-header [slot=links] a:hover {
-  text-decoration: underline;
-  color: #ffffff;
 }
 
 qc-piv-header {
@@ -1300,14 +1292,6 @@ qc-piv-header {
 }
 .qc-piv-header .go-to-content {
   position: relative;
-}
-.qc-piv-header a {
-  color: #ffffff;
-  text-decoration: none;
-}
-.qc-piv-header a:hover, .qc-piv-header a:focus {
-  color: #ffffff;
-  text-decoration: underline;
 }
 .qc-piv-header .piv-top {
   display: flex;
@@ -1341,13 +1325,6 @@ qc-piv-header {
   font-size: var(--qc-font-size-100);
   line-height: var(--qc-line-height-100);
   font-weight: var(--qc-font-weight-regular);
-  font-family: var(--qc-font-family-header);
-}
-.qc-piv-header .piv-top .title a:hover, .qc-piv-header .piv-top .title a:focus {
-  text-decoration: underline;
-}
-.qc-piv-header .piv-top .title a .description {
-  font-size: var(--qc-font-size-sm);
 }
 .qc-piv-header .piv-top .right-section {
   min-width: -moz-fit-content;
@@ -1383,6 +1360,27 @@ qc-piv-header {
   padding-bottom: var(--qc-spacer-md);
 }
 
+qc-piv-header a,
+.qc-piv-header a {
+  --qc-color-link-focus-outline: white;
+  --qc-color-link-hover: white;
+  --qc-color-link-text: white;
+  --qc-color-link-visited: white;
+  --qc-color-link-active: white;
+  font-family: var(--qc-font-family-header);
+  text-decoration: none;
+  font-weight: var(--qc-font-weight-regular);
+}
+qc-piv-header a:hover,
+.qc-piv-header a:hover {
+  text-decoration: underline;
+}
+qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
+.qc-piv-header a:focus-visible:has(img),
+.qc-piv-header a:focus:has(img) {
+  outline-offset: -2px;
+}
+
 .go-to-content {
   display: flex;
   height: 0;
@@ -1408,17 +1406,6 @@ qc-piv-header {
   color: #ffffff;
   background-color: #095797;
   margin: 0;
-}
-
-a:focus-visible {
-  --qc-color-link-focus-outline: white;
-  color: var(--qc-color-link-hover);
-  text-decoration: none;
-  outline: 2px solid var(--qc-color-link-focus-outline);
-  outline-offset: 0;
-}
-a:focus-visible:has(img) {
-  outline-offset: -2px;
 }
 
 @media (max-width: 991.98px) {
