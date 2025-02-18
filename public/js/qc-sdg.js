@@ -1861,7 +1861,7 @@
 			{ "data-button-size": /*size*/ ctx[0] },
 			/*$$restProps*/ ctx[4],
 			{
-				class: button_class_value = "qc-icon-button " + /*$$restProps*/ ctx[4].class
+				class: button_class_value = "qc-icon-button " + (/*$$restProps*/ ctx[4].class ?? '')
 			}
 		];
 
@@ -1915,7 +1915,7 @@
 				set_attributes(button, button_data = get_spread_update(button_levels, [
 					(!current || dirty & /*size*/ 1) && { "data-button-size": /*size*/ ctx[0] },
 					dirty & /*$$restProps*/ 16 && /*$$restProps*/ ctx[4],
-					(!current || dirty & /*$$restProps*/ 16 && button_class_value !== (button_class_value = "qc-icon-button " + /*$$restProps*/ ctx[4].class)) && { class: button_class_value }
+					(!current || dirty & /*$$restProps*/ 16 && button_class_value !== (button_class_value = "qc-icon-button " + (/*$$restProps*/ ctx[4].class ?? ''))) && { class: button_class_value }
 				]));
 			},
 			i(local) {

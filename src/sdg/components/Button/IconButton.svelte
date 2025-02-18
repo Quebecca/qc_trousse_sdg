@@ -13,7 +13,7 @@ export let
 <button on:click
         data-button-size={size}
         {...$$restProps}
-        class="qc-icon-button {$$restProps.class}"
+        class="qc-icon-button {$$restProps.class ?? ''}"
 
     >
     {#if icon}
