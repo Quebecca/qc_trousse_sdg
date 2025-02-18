@@ -1,5 +1,3 @@
-README.md
-
 # Trousse de développement du Système de design gouvernemental du Québec
 
 ## Présentation
@@ -41,8 +39,8 @@ Un processus d’autorisation de projet numérique est en place au Secrétariat 
             src="/dist/js/qc-sdg.min.js">
 </head>
 ```
-
-Si la feuille de style se trouve ailleurs qu'au chemin relatif `../css/qc-sdg.min.css` par rapport au js, vous pouvez le préciser en ajoutant l'attribut `sdg-css-path` à la balise script :
+Les composants web inclus dans la trousse calculeront automatiquement les chemins vers les css et images dont ils ont besoin en se basant sur les attributs de la balise `script`.
+Si la css ou le dossier image se trouvent à des endroits personnalisés, il faut alors le préciser en ajoutant les attributs `sdg-assets-base-path` ou `sdg-css-path` :
 
 ```html
 <head>
@@ -51,6 +49,7 @@ Si la feuille de style se trouve ailleurs qu'au chemin relatif `../css/qc-sdg.mi
           href="/my/path/custom.css">
     <script defer 
             src="/dist/js/qc-sdg.min.js"
+            sdg-assets-base-path="/path/to/assets"
             sdg-css-path="/my/path/custom.css"
     >
 </head>
