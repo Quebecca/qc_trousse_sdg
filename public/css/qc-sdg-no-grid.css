@@ -651,6 +651,12 @@ figcaption p:last-child {
   margin-bottom: 0;
 }
 
+dl,
+dd {
+  margin-left: 0;
+  margin-bottom: var(--qc-spacer-content-block-mb);
+}
+
 ul {
   max-inline-size: var(--qc-max-content-width);
   list-style: disc;
@@ -864,12 +870,12 @@ select {
 }
 
 :root {
-  --qc-light-theme-display: initial;
+  --qc-light-theme-display: block;
   --qc-dark-theme-display: none;
 }
 :root.qc-dark-theme {
   --qc-light-theme-display: none;
-  --qc-dark-theme-display: initial;
+  --qc-dark-theme-display: block;
 }
 
 .qc-light-theme-show {

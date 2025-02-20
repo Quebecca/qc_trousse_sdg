@@ -380,6 +380,16 @@
             <p>Lorem ipsum dolor sit amet</p>
             </qc-doc-exemple>
 
+            <qc-doc-exemple caption="Exemple de liste simple de définition">
+                <dl>
+                    <dt>Terme 1</dt>
+                    <dd>Définition 1</dd>
+                    <dt>Terme 2</dt>
+                    <dd>Définition 2</dd>
+                </dl>
+                <p>Lorem ipsum dolor sit amet</p>
+            </qc-doc-exemple>
+
             <hr />
 
             <!-- niveaux de titres -->
@@ -1097,13 +1107,13 @@
                 <tr>
                     <td>logo-src</td>
                     <td>Le chemin de l’image en thème clair.</td>
-                    <td>https://www.piv.gouv.qc.ca/fileadmin/templates/images/QUEBEC_couleur.svg</td>
+                    <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
                     <td>Adresse de l'image du pied de page en thème clair.</td>
                 </tr>
                 <tr>
                     <td>logo-src-dark-theme</td>
                     <td>Le chemin de l’image en thème sombre.</td>
-                    <td>https://www.piv.gouv.qc.ca/fileadmin/templates/images/QUEBEC_blanc.svg</td>
+                    <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
                     <td>Adresse de l'image du pied de page en thème sombre.</td>
                 </tr>
                 <tr>
@@ -1116,6 +1126,18 @@
                     <td>Texte alternatif du logo pour les lecteurs d'écran</td>
                 </tr>
                 <tr>
+                    <td>logo-width</td>
+                    <td>Nombre</td>
+                    <td>139</td>
+                    <td>Largeur de l’image en px</td>
+                </tr>
+                <tr>
+                    <td>logo-height</td>
+                    <td>Nombre</td>
+                    <td>35</td>
+                    <td>Hauteur de l’image en px</td>
+                </tr>
+                <tr>
                     <td>copyright-text</td>
                     <td>Texte</td>
                     <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
@@ -1125,7 +1147,7 @@
                     <td>copyright-url</td>
                     <td>Adresse</td>
                     <td>
-                        <dl>
+                        <dl class="qc-list-inline">
                             <dt>Français</dt><dd>https://www.quebec.ca/droit-auteur</dd>
                             <dt>Anglais</dt><dd>https://www.quebec.ca/en/copyright</dd>
                         </dl>

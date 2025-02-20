@@ -219,6 +219,14 @@
 	}
 
 	/**
+	 * @returns {void} */
+	function destroy_each(iterations, detaching) {
+		for (let i = 0; i < iterations.length; i += 1) {
+			if (iterations[i]) iterations[i].d(detaching);
+		}
+	}
+
+	/**
 	 * @template {keyof HTMLElementTagNameMap} K
 	 * @param {K} name
 	 * @returns {HTMLElementTagNameMap[K]}
@@ -768,6 +776,14 @@
 	 * @property {number} end
 	 * @property {Outro} [group]
 	 */
+
+	// general each functions:
+
+	function ensure_array_like(array_like_or_iterator) {
+		return array_like_or_iterator?.length !== undefined
+			? array_like_or_iterator
+			: Array.from(array_like_or_iterator);
+	}
 
 	/** @returns {{}} */
 	function get_spread_update(levels, updates) {
@@ -3379,7 +3395,61 @@
 	const get_copyright_slot_changes = dirty => ({});
 	const get_copyright_slot_context = ctx => ({});
 
-	// (51:31)              
+	function get_each_context(ctx, list, i) {
+		const child_ctx = ctx.slice();
+		child_ctx[11] = list[i][0];
+		child_ctx[12] = list[i][1];
+		return child_ctx;
+	}
+
+	// (45:8) {#each [             ['light', logoSrc],             ['dark', logoSrcDarkTheme]]         as [theme, src]}
+	function create_each_block(ctx) {
+		let img;
+		let img_src_value;
+		let img_class_value;
+
+		return {
+			c() {
+				img = element("img");
+				if (!src_url_equal(img.src, img_src_value = /*src*/ ctx[12])) attr(img, "src", img_src_value);
+				attr(img, "alt", /*logoAlt*/ ctx[5]);
+				attr(img, "width", /*logoWidth*/ ctx[3]);
+				attr(img, "height", /*logoHeight*/ ctx[4]);
+				attr(img, "class", img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show");
+			},
+			m(target, anchor) {
+				insert(target, img, anchor);
+			},
+			p(ctx, dirty) {
+				if (dirty & /*logoSrc, logoSrcDarkTheme*/ 6 && !src_url_equal(img.src, img_src_value = /*src*/ ctx[12])) {
+					attr(img, "src", img_src_value);
+				}
+
+				if (dirty & /*logoAlt*/ 32) {
+					attr(img, "alt", /*logoAlt*/ ctx[5]);
+				}
+
+				if (dirty & /*logoWidth*/ 8) {
+					attr(img, "width", /*logoWidth*/ ctx[3]);
+				}
+
+				if (dirty & /*logoHeight*/ 16) {
+					attr(img, "height", /*logoHeight*/ ctx[4]);
+				}
+
+				if (dirty & /*logoSrc, logoSrcDarkTheme*/ 6 && img_class_value !== (img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show")) {
+					attr(img, "class", img_class_value);
+				}
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(img);
+				}
+			}
+		};
+	}
+
+	// (57:31)              
 	function fallback_block(ctx) {
 		let a;
 		let t;
@@ -3387,18 +3457,18 @@
 		return {
 			c() {
 				a = element("a");
-				t = text(/*copyrightText*/ ctx[4]);
-				attr(a, "href", /*copyrightUrl*/ ctx[5]);
+				t = text(/*copyrightText*/ ctx[6]);
+				attr(a, "href", /*copyrightUrl*/ ctx[7]);
 			},
 			m(target, anchor) {
 				insert(target, a, anchor);
 				append(a, t);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*copyrightText*/ 16) set_data(t, /*copyrightText*/ ctx[4]);
+				if (dirty & /*copyrightText*/ 64) set_data(t, /*copyrightText*/ ctx[6]);
 
-				if (dirty & /*copyrightUrl*/ 32) {
-					attr(a, "href", /*copyrightUrl*/ ctx[5]);
+				if (dirty & /*copyrightUrl*/ 128) {
+					attr(a, "href", /*copyrightUrl*/ ctx[7]);
 				}
 			},
 			d(detaching) {
@@ -3413,20 +3483,22 @@
 		let div;
 		let t0;
 		let a;
-		let img0;
-		let img0_src_value;
 		let t1;
-		let img1;
-		let img1_src_value;
-		let t2;
 		let span;
-		let t3;
+		let t2;
 		let link;
 		let current;
-		const default_slot_template = /*#slots*/ ctx[7].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[6], null);
-		const copyright_slot_template = /*#slots*/ ctx[7].copyright;
-		const copyright_slot = create_slot(copyright_slot_template, ctx, /*$$scope*/ ctx[6], get_copyright_slot_context);
+		const default_slot_template = /*#slots*/ ctx[9].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[8], null);
+		let each_value = ensure_array_like([['light', /*logoSrc*/ ctx[1]], ['dark', /*logoSrcDarkTheme*/ ctx[2]]]);
+		let each_blocks = [];
+
+		for (let i = 0; i < 2; i += 1) {
+			each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+		}
+
+		const copyright_slot_template = /*#slots*/ ctx[9].copyright;
+		const copyright_slot = create_slot(copyright_slot_template, ctx, /*$$scope*/ ctx[8], get_copyright_slot_context);
 		const copyright_slot_or_fallback = copyright_slot || fallback_block(ctx);
 
 		return {
@@ -3435,20 +3507,16 @@
 				if (default_slot) default_slot.c();
 				t0 = space();
 				a = element("a");
-				img0 = element("img");
+
+				for (let i = 0; i < 2; i += 1) {
+					each_blocks[i].c();
+				}
+
 				t1 = space();
-				img1 = element("img");
-				t2 = space();
 				span = element("span");
 				if (copyright_slot_or_fallback) copyright_slot_or_fallback.c();
-				t3 = space();
+				t2 = space();
 				link = element("link");
-				if (!src_url_equal(img0.src, img0_src_value = /*logoSrc*/ ctx[1])) attr(img0, "src", img0_src_value);
-				attr(img0, "alt", /*logoAlt*/ ctx[3]);
-				attr(img0, "class", "qc-light-theme-show");
-				if (!src_url_equal(img1.src, img1_src_value = /*logoSrcDarkTheme*/ ctx[2])) attr(img1, "src", img1_src_value);
-				attr(img1, "alt", /*logoAlt*/ ctx[3]);
-				attr(img1, "class", "qc-dark-theme-show");
 				attr(a, "href", /*logoUrl*/ ctx[0]);
 				attr(a, "class", "logo");
 				attr(span, "class", "copyright");
@@ -3465,50 +3533,59 @@
 
 				append(div, t0);
 				append(div, a);
-				append(a, img0);
-				append(a, t1);
-				append(a, img1);
-				append(div, t2);
+
+				for (let i = 0; i < 2; i += 1) {
+					if (each_blocks[i]) {
+						each_blocks[i].m(a, null);
+					}
+				}
+
+				append(div, t1);
 				append(div, span);
 
 				if (copyright_slot_or_fallback) {
 					copyright_slot_or_fallback.m(span, null);
 				}
 
-				insert(target, t3, anchor);
+				insert(target, t2, anchor);
 				insert(target, link, anchor);
 				current = true;
 			},
 			p(ctx, [dirty]) {
 				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 64)) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 256)) {
 						update_slot_base(
 							default_slot,
 							default_slot_template,
 							ctx,
-							/*$$scope*/ ctx[6],
+							/*$$scope*/ ctx[8],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[6])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[6], dirty, null),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[8])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[8], dirty, null),
 							null
 						);
 					}
 				}
 
-				if (!current || dirty & /*logoSrc*/ 2 && !src_url_equal(img0.src, img0_src_value = /*logoSrc*/ ctx[1])) {
-					attr(img0, "src", img0_src_value);
-				}
+				if (dirty & /*logoSrc, logoSrcDarkTheme, logoAlt, logoWidth, logoHeight*/ 62) {
+					each_value = ensure_array_like([['light', /*logoSrc*/ ctx[1]], ['dark', /*logoSrcDarkTheme*/ ctx[2]]]);
+					let i;
 
-				if (!current || dirty & /*logoAlt*/ 8) {
-					attr(img0, "alt", /*logoAlt*/ ctx[3]);
-				}
+					for (i = 0; i < 2; i += 1) {
+						const child_ctx = get_each_context(ctx, each_value, i);
 
-				if (!current || dirty & /*logoSrcDarkTheme*/ 4 && !src_url_equal(img1.src, img1_src_value = /*logoSrcDarkTheme*/ ctx[2])) {
-					attr(img1, "src", img1_src_value);
-				}
+						if (each_blocks[i]) {
+							each_blocks[i].p(child_ctx, dirty);
+						} else {
+							each_blocks[i] = create_each_block(child_ctx);
+							each_blocks[i].c();
+							each_blocks[i].m(a, null);
+						}
+					}
 
-				if (!current || dirty & /*logoAlt*/ 8) {
-					attr(img1, "alt", /*logoAlt*/ ctx[3]);
+					for (; i < 2; i += 1) {
+						each_blocks[i].d(1);
+					}
 				}
 
 				if (!current || dirty & /*logoUrl*/ 1) {
@@ -3516,20 +3593,20 @@
 				}
 
 				if (copyright_slot) {
-					if (copyright_slot.p && (!current || dirty & /*$$scope*/ 64)) {
+					if (copyright_slot.p && (!current || dirty & /*$$scope*/ 256)) {
 						update_slot_base(
 							copyright_slot,
 							copyright_slot_template,
 							ctx,
-							/*$$scope*/ ctx[6],
+							/*$$scope*/ ctx[8],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[6])
-							: get_slot_changes(copyright_slot_template, /*$$scope*/ ctx[6], dirty, get_copyright_slot_changes),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[8])
+							: get_slot_changes(copyright_slot_template, /*$$scope*/ ctx[8], dirty, get_copyright_slot_changes),
 							get_copyright_slot_context
 						);
 					}
 				} else {
-					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 48)) {
+					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 192)) {
 						copyright_slot_or_fallback.p(ctx, !current ? -1 : dirty);
 					}
 				}
@@ -3548,11 +3625,12 @@
 			d(detaching) {
 				if (detaching) {
 					detach(div);
-					detach(t3);
+					detach(t2);
 					detach(link);
 				}
 
 				if (default_slot) default_slot.d(detaching);
+				destroy_each(each_blocks, detaching);
 				if (copyright_slot_or_fallback) copyright_slot_or_fallback.d(detaching);
 			}
 		};
@@ -3562,7 +3640,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg', logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg', logoAlt = lang === 'fr'
+		let { logoUrl = '/', logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg', logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg', logoWidth = 139, logoHeight = 35, logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
 		: 'Logo of the Quebec government', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
 		? 'https://www.quebec.ca/droit-auteur'
@@ -3572,16 +3650,20 @@
 			if ('logoUrl' in $$props) $$invalidate(0, logoUrl = $$props.logoUrl);
 			if ('logoSrc' in $$props) $$invalidate(1, logoSrc = $$props.logoSrc);
 			if ('logoSrcDarkTheme' in $$props) $$invalidate(2, logoSrcDarkTheme = $$props.logoSrcDarkTheme);
-			if ('logoAlt' in $$props) $$invalidate(3, logoAlt = $$props.logoAlt);
-			if ('copyrightText' in $$props) $$invalidate(4, copyrightText = $$props.copyrightText);
-			if ('copyrightUrl' in $$props) $$invalidate(5, copyrightUrl = $$props.copyrightUrl);
-			if ('$$scope' in $$props) $$invalidate(6, $$scope = $$props.$$scope);
+			if ('logoWidth' in $$props) $$invalidate(3, logoWidth = $$props.logoWidth);
+			if ('logoHeight' in $$props) $$invalidate(4, logoHeight = $$props.logoHeight);
+			if ('logoAlt' in $$props) $$invalidate(5, logoAlt = $$props.logoAlt);
+			if ('copyrightText' in $$props) $$invalidate(6, copyrightText = $$props.copyrightText);
+			if ('copyrightUrl' in $$props) $$invalidate(7, copyrightUrl = $$props.copyrightUrl);
+			if ('$$scope' in $$props) $$invalidate(8, $$scope = $$props.$$scope);
 		};
 
 		return [
 			logoUrl,
 			logoSrc,
 			logoSrcDarkTheme,
+			logoWidth,
+			logoHeight,
 			logoAlt,
 			copyrightText,
 			copyrightUrl,
@@ -3598,9 +3680,11 @@
 				logoUrl: 0,
 				logoSrc: 1,
 				logoSrcDarkTheme: 2,
-				logoAlt: 3,
-				copyrightText: 4,
-				copyrightUrl: 5
+				logoWidth: 3,
+				logoHeight: 4,
+				logoAlt: 5,
+				copyrightText: 6,
+				copyrightUrl: 7
 			});
 		}
 
@@ -3631,8 +3715,26 @@
 			flush();
 		}
 
-		get logoAlt() {
+		get logoWidth() {
 			return this.$$.ctx[3];
+		}
+
+		set logoWidth(logoWidth) {
+			this.$$set({ logoWidth });
+			flush();
+		}
+
+		get logoHeight() {
+			return this.$$.ctx[4];
+		}
+
+		set logoHeight(logoHeight) {
+			this.$$set({ logoHeight });
+			flush();
+		}
+
+		get logoAlt() {
+			return this.$$.ctx[5];
 		}
 
 		set logoAlt(logoAlt) {
@@ -3641,7 +3743,7 @@
 		}
 
 		get copyrightText() {
-			return this.$$.ctx[4];
+			return this.$$.ctx[6];
 		}
 
 		set copyrightText(copyrightText) {
@@ -3650,7 +3752,7 @@
 		}
 
 		get copyrightUrl() {
-			return this.$$.ctx[5];
+			return this.$$.ctx[7];
 		}
 
 		set copyrightUrl(copyrightUrl) {
@@ -3659,7 +3761,7 @@
 		}
 	}
 
-	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{"attribute":"logo-src"},"logoSrcDarkTheme":{"attribute":"logo-src-dark-theme"},"logoAlt":{"attribute":"logo-alt"},"copyrightText":{"attribute":"copyright-text"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","copyright"], [], true));
+	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{"attribute":"logo-src"},"logoSrcDarkTheme":{"attribute":"logo-src-dark-theme"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"logoAlt":{"attribute":"logo-alt"},"copyrightText":{"attribute":"copyright-text"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","copyright"], [], true));
 
 	/* src/sdg/components/alert.svelte generated by Svelte v4.2.19 */
 

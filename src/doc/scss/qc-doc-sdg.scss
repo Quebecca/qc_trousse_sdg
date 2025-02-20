@@ -130,7 +130,7 @@ qc-doc-exemple {
 dl {
   dt { font-weight: token-value(font weight content regular)}
   dd {
-    margin-bottom : token-value(spacer list mb);
+    margin-bottom : token-value(spacer list-item mb);
   }
 }
 

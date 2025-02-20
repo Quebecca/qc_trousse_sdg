@@ -5,6 +5,8 @@
         , logoSrc : {attribute: 'logo-src'}
         , logoSrcDarkTheme: {attribute: 'logo-src-dark-theme'}
         , logoAlt : {attribute: 'logo-alt'}
+        , logoWidth: {attribute: 'logo-width'}
+        , logoHeight: {attribute: 'logo-height'}
         , copyrightText : {attribute: 'copyright-text'}
         , copyrightUrl : {attribute: 'copyright-url'}
 
@@ -24,6 +26,8 @@ export let
       logoUrl = '/'
     , logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
     , logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+    , logoWidth = 139
+    , logoHeight = 35
     , logoAlt = lang === 'fr'
         ? 'Logo du gouvernement du Québec'
         : 'Logo of the Quebec government'
@@ -32,20 +36,22 @@ export let
                         ? 'https://www.quebec.ca/droit-auteur'
                         : 'https://www.quebec.ca/en/copyright'
     ;
-
-
 </script>
 <div class="qc-piv-footer">
     <slot/>
     <a href="{logoUrl}"
        class="logo"
     >
-        <img src="{logoSrc}"
+        {#each [
+            ['light', logoSrc],
+            ['dark', logoSrcDarkTheme]]
+        as [theme, src]}
+        <img {src}
              alt="{logoAlt}"
-             class="qc-light-theme-show"/>
-        <img src="{logoSrcDarkTheme}"
-             alt="{logoAlt}"
-             class="qc-dark-theme-show"/>
+             width="{logoWidth}"
+             height="{logoHeight}"
+             class="qc-{theme}-theme-show"/>
+        {/each}
     </a>
     <span class="copyright">
         <slot name="copyright">

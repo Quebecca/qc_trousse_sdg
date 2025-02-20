@@ -397,7 +397,7 @@ dl dt {
   font-weight: var(--qc-font-weight-content-regular);
 }
 dl dd {
-  margin-bottom: var(--qc-spacer-list-mb);
+  margin-bottom: var(--qc-spacer-list-item-mb);
 }
 
 .table-overflow {
