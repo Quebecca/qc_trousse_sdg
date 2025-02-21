@@ -2,7 +2,7 @@
   tag:'qc-external-link',
   shadow:'none',
   props: {
-     externalIconAlt  : {attribute: 'external-icon-alt'}
+     externalIconAlt  : {attribute: 'img-alt'}
   }
 }}"/>
 
@@ -15,21 +15,86 @@ export
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site."
 ;
-let srText;
+let imgElement;
 
 onMount(() => {
-    let a = srText.previousElementSibling;
-    a.innerHTML = a.innerHTML.trim()
-    a.appendChild(srText)
+    imgElement.parentElement.querySelectorAll('a').forEach(link => {
+
+        // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+        const walker = document.createTreeWalker(
+            link,
+            NodeFilter.SHOW_ALL,
+            {
+                acceptNode: node => {
+                    if (node instanceof Element) {
+                        if (node.hasAttribute('hidden')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        const style = window.getComputedStyle(node);
+                        // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+                        console.log(style)
+                        if (style.display === 'none'
+                            || style.visibility === 'hidden'
+                            || style.position === 'absolute') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                    }
+                    if (!node instanceof Text) {
+                        return NodeFilter.FILTER_SKIP
+                    }
+                    // Ignore les nœuds vides
+                    if (!/\S/.test(node.textContent)) {
+                        return NodeFilter.FILTER_SKIP;
+                    }
+                    console.log(node);
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            }
+        );
+
+        let lastTextNode = null;
+        while (walker.nextNode()) {
+            lastTextNode = walker.currentNode;
+        }
+
+        // S'il n'y a pas de nœud texte visible, on ne fait rien
+        if (!lastTextNode) return;
+
+        // Séparer le contenu du dernier nœud texte en deux parties :
+        // le préfixe (éventuel) et le dernier mot
+        const text = lastTextNode.textContent;
+        const regex = /^(.*\s)?(\S+)\s*$/m;
+        const match = text.match(regex);
+        if (!match) return;
+        console.log(lastTextNode)
+        const prefix = match[1] || "";
+        const lastWord = match[2];
+
+        // Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
+        const span = document.createElement('span');
+        span.style.whiteSpace = 'nowrap';
+        span.innerHTML = `${lastWord}`;
+        span.appendChild(imgElement)
+
+        // Met à jour le nœud texte : on garde le préfixe et on insère le span après
+        if (prefix) {
+            lastTextNode.textContent = prefix;
+            lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
+        } else {
+            lastTextNode.parentNode.replaceChild(span, lastTextNode);
+        }
+    });
 });
 </script>
-<span bind:this={srText}>{externalIconAlt}</span>
+<span bind:this={imgElement}
+      role="img"
+      class="qc-ext-link-img"
+      aria-label={externalIconAlt}></span>
 <style lang="scss">
-
-  // cf https://stackoverflow.com/questions/16100956/prevent-after-element-from-wrapping-to-next-line
-     span {
-       @include sr-only();
-    }
+     span.qc-ext-link-img {
+       @include external-link-img();
+     }
 </style>
+
 
 

@@ -341,23 +341,39 @@
 
             <h3>Lien externe (qc-external-link)</h3>
 
-            <p>Le composant <code>qc-external-link</code> detecte les liens externes (c-à-d. dirigeant vers un nouveau site) en comparant le nom de domaine du lien et celui de la page. Il ajoute une icône à la fin du lien, séparée du dernier mot par une espace insécable.</p>
+            <p>Le composant <code>qc-external-link</code> ajoute une icône à la fin du lien, séparée du dernier mot par une espace insécable.</p>
             <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d'ombre (<i>shadow DOM</i>).</p>
 
             <h4>Exemples</h4>
 
             <qc-doc-exemple  caption="Exemple de lien externe.">
-                <qc-external-link>
-                        <a href="http://www.external.domain.com/">Un lien externe assez long. Réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien externe.</a>
-                </qc-external-link>
+                <p>Voici un exemple de <qc-external-link
+                    ><a href="http://www.external.domain.com/">lien externe assez long (Réduire la taille de l’écran pour constater l’espace insécable devant l’icone de lien externe)</a
+                    ></qc-external-link>, avec du texte à la suite.
+                </p>
             </qc-doc-exemple>
 
             <h4>Attributs</h4>
 
-            <p>Ce composant n'a pas d'attributs.</p>
-
-
-
+            <table class="qc-table qc-striped component-attributes-description">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Valeur attendue</th>
+                    <th>Valeur par défaut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>img-alt</td>
+                        <td>Texte</td>
+                        <td><dt>Français</dt><dd>Ce lien dirige vers un autre site.</dd>
+                            <dt>Anglais</dt><dd>This link directs to another site.</dd></td>
+                        <td>Texte alternatif de l’image du lien externe.</td>
+                    </tr>
+                </tbody>
+            </table>
             <hr />
 
             <!-- liste -->

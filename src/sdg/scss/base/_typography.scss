@@ -55,16 +55,6 @@ a {
     }
   }
 
-  qc-external-link & {
-    display: inline-block;
-    padding-right: rem(20);
-    &:after {
-      @include external-link-img();
-      content: ' ';
-    }
-  }
-
-
 }
 
 code, .qc-code {
