@@ -90,11 +90,6 @@ onMount(() => {
       role="img"
       class="qc-ext-link-img"
       aria-label={externalIconAlt}></span>
-<style lang="scss">
-     span.qc-ext-link-img {
-       @include external-link-img();
-     }
-</style>
 
 
 

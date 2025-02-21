@@ -54,6 +54,9 @@ a {
       content:getImageUrl(external-link);
     }
   }
+  span.qc-ext-link-img {
+    @include external-link-img();
+  }
 
 }
 
