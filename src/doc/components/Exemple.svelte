@@ -49,7 +49,7 @@
              class="exemple"
             ></div>
         <figcaption bind:this={figCaption}>
-            {caption}
+            {@html caption}
         </figcaption>
     </figure>
     {#if !hideCode}

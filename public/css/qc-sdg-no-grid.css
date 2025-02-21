@@ -1212,7 +1212,7 @@ qc-icon {
 .qc-notice .content-container {
   width: 100%;
 }
-.qc-notice .title {
+.qc-notice h1, .qc-notice h2, .qc-notice h3, .qc-notice h4, .qc-notice h5, .qc-notice h6, .qc-notice [role=heading] {
   margin: 0;
   padding: 0;
   font-size: var(--qc-font-size-sm);
@@ -1223,13 +1223,56 @@ qc-icon {
 .qc-notice .content {
   margin: var(--qc-spacer-notice-my) var(--qc-spacer-notice-mx) var(--qc-spacer-notice-my) var(--qc-spacer-sm);
 }
-.qc-notice .content .text ::slotted(ul) {
-  padding-left: var(--qc-spacer-sm) !important;
-  margin-top: var(--qc-spacer-sm) !important;
+.qc-notice.qc-information .icon-container {
+  background-color: var(--qc-color-blue-pale);
+}
+.qc-notice.qc-information .icon-container [role=img] {
+  background-color: var(--qc-color-blue-dark);
+}
+.qc-notice.qc-warning .icon-container {
+  background-color: var(--qc-color-yellow-pale);
+}
+.qc-notice.qc-warning .icon-container [role=img] {
+  background-color: var(--qc-color-yellow-dark);
+}
+.qc-notice.qc-neutral .icon-container {
+  background-color: var(--qc-color-grey-pale);
+}
+.qc-notice.qc-neutral .icon-container [role=img] {
+  background-color: var(--qc-color-grey-dark);
+}
+.qc-notice.qc-error .icon-container {
+  background-color: var(--qc-color-red-pale);
+}
+.qc-notice.qc-error .icon-container [role=img] {
+  background-color: var(--qc-color-red-dark);
+}
+.qc-notice.qc-success .icon-container {
+  background-color: var(--qc-color-green-pale);
+}
+.qc-notice.qc-success .icon-container [role=img] {
+  background-color: var(--qc-color-green-dark);
 }
 
-qc-notice[type=error] ul li a {
+qc-notice h1, qc-notice h2, qc-notice h3, qc-notice h4, qc-notice h5, qc-notice h6, qc-notice [role=heading] {
+  margin: 0;
+  padding: 0;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-bold);
+  font-family: var(--qc-font-family-content);
+}
+qc-notice ul {
+  padding-left: var(--qc-spacer-sm) !important;
+}
+qc-notice[type=error] ul li {
   color: var(--qc-color-red-regular);
+}
+qc-notice[type=error] ul li::marker {
+  color: var(--qc-color-text-primary);
+}
+qc-notice[type=error] ul li a {
+  color: inherit;
 }
 qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   text-decoration: none;

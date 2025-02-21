@@ -1,5 +1,14 @@
 @use "qc-sdg-lib" as *;
 
+@mixin qc-notice-title() {
+  h1,h2,h3,h4,h5,h6,[role=heading] {
+    margin: 0;
+    padding: 0;
+    @include content-font(sm, bold);
+    font-family: token-value(font, family, content);
+  }
+}
+
 .qc-notice {
   max-inline-size: token-value(max-content-width);
   display: flex;
@@ -24,15 +33,10 @@
     width: 100%;
   }
 
-
+  @include qc-notice-title();
 
   //TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG.
-  .title {
-    margin: 0;
-    padding: 0;
-    @include content-font(sm, bold);
-    font-family: token-value(font, family, content); 
-  }
+
 
   .content {
       margin:
@@ -40,25 +44,45 @@
           token-value(spacer notice mx)
           token-value(spacer notice my)
           token-value(spacer, sm);
+  }
 
-    .text {
-      ::slotted(ul) {
-        padding-left: token-value(spacer, sm) !important;
-        margin-top: token-value(spacer, sm) !important;
+  @each $type, $color in (
+      "information": "blue",
+      "warning": "yellow",
+      "neutral": "grey",
+      "error": "red",
+      "success": "green",
+  ) {
+    &.qc-#{$type} .icon-container {
+      background-color: token-value(color,$color,pale);
+      [role=img] {
+        background-color: token-value(color,$color,dark);
       }
     }
   }
 }
 
 // Links in a error notice (eg. error summary)
-qc-notice[type="error"] ul li a {
-  color: token-value(color,red,regular);
-  &:hover, &:focus {
-    text-decoration: none;
-  }  
+qc-notice {
+  @include qc-notice-title();
+  ul {
+    padding-left: token-value(spacer, sm) !important;
+    //margin-top: token-value(spacer, sm) !important;
+  }
+  &[type="error"] ul li {
+     &::marker {
+       color:token-value(color text primary);
+     }
+     color: token-value(color, red, regular);
+     a {
+      color: inherit;
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+
 }
-
-
 @include media-mobile(){
   .qc-notice {
     .content {

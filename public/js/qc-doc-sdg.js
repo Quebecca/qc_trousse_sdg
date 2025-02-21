@@ -69711,7 +69711,6 @@
 		let t0;
 		let figcaption;
 		let t1;
-		let t2;
 		let current;
 		let figure_1_levels = [/*$$restProps*/ ctx[7]];
 		let figure_data = {};
@@ -69729,8 +69728,7 @@
 				div0 = element("div");
 				t0 = space();
 				figcaption = element("figcaption");
-				t1 = text(/*caption*/ ctx[0]);
-				t2 = space();
+				t1 = space();
 				if (if_block) if_block.c();
 				attr(div0, "class", "exemple qc-hash-1yzifs0");
 				set_attributes(figure_1, figure_data);
@@ -69744,17 +69742,16 @@
 				/*div0_binding*/ ctx[10](div0);
 				append(figure_1, t0);
 				append(figure_1, figcaption);
-				append(figcaption, t1);
+				figcaption.innerHTML = /*caption*/ ctx[0];
 				/*figcaption_binding*/ ctx[11](figcaption);
 				/*figure_1_binding*/ ctx[12](figure_1);
-				append(div1, t2);
+				append(div1, t1);
 				if (if_block) if_block.m(div1, null);
 				/*div1_binding*/ ctx[13](div1);
 				current = true;
 			},
 			p(ctx, [dirty]) {
-				if (!current || dirty & /*caption*/ 1) set_data(t1, /*caption*/ ctx[0]);
-				set_attributes(figure_1, figure_data = get_spread_update(figure_1_levels, [dirty & /*$$restProps*/ 128 && /*$$restProps*/ ctx[7]]));
+				if (!current || dirty & /*caption*/ 1) figcaption.innerHTML = /*caption*/ ctx[0];			set_attributes(figure_1, figure_data = get_spread_update(figure_1_levels, [dirty & /*$$restProps*/ 128 && /*$$restProps*/ ctx[7]]));
 				toggle_class(figure_1, "qc-hash-1yzifs0", true);
 
 				if (!/*hideCode*/ ctx[1]) {

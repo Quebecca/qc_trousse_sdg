@@ -50,32 +50,14 @@
   </div>
   <div class="content-container">
     <div class="content">
-      <svelte:element this={header}
-                      class="title">
-        {title}
-      </svelte:element>
-      <div class="text">
+        {#if title}
+          <svelte:element this={header}>
+            {@html title}
+          </svelte:element>
+        {/if}
         {@html content}
         <slot />
-      </div>
     </div>
   </div>
 </div>
-<style lang="scss">
-  @each $type, $color in (
-          "information": "blue",
-          "warning": "yellow",
-          "neutral": "grey",
-          "error": "red",
-          "success": "green",
-  ) {
-    .qc-notice.qc-#{$type} .icon-container {
-      background-color: token-value(color,$color,pale);
-      :global([role=img]) {
-        background-color: token-value(color,$color,dark);
-      }
-    }
-  }
-</style>
-
 <link rel='stylesheet' href='{Utils.cssPath}'>
