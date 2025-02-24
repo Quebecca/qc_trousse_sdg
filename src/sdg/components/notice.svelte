@@ -9,12 +9,13 @@
       isFr = Utils.getPageLanguage() == 'fr'
     , defaultHeader = 'h2'
     , defaultType = 'neutral'
-          , typesDescriptions = {
-            'information': isFr ? "Avis général" : "General notice"
-            , 'warning': isFr ? "Avis d’avertissement" : "Warning notice"
-            , 'success': isFr ? "Avis de réussite" : "Success notice"
-            , 'error': isFr ? "Avis d’erreur" : "Error notice"
-          }
+    , typesDescriptions = {
+          'neutral' : isFr ? "Avis général" : "General notice"
+        , 'information': isFr ? "Avis général" : "General notice"
+        , 'warning': isFr ? "Avis d’avertissement" : "Warning notice"
+        , 'success': isFr ? "Avis de réussite" : "Success notice"
+        , 'error': isFr ? "Avis d’erreur" : "Error notice"
+    }
     , types = Object.keys(typesDescriptions)
   export let
           title = ""

@@ -1495,7 +1495,7 @@
 		};
 	}
 
-	// (54:10) <svelte:element this={header}>
+	// (55:10) <svelte:element this={header}>
 	function create_dynamic_element(ctx) {
 		let svelte_element;
 
@@ -1670,6 +1670,7 @@
 			defaultHeader = 'h2',
 			defaultType = 'neutral',
 			typesDescriptions = {
+				'neutral': isFr ? "Avis général" : "General notice",
 				'information': isFr ? "Avis général" : "General notice",
 				'warning': isFr ? "Avis d’avertissement" : "Warning notice",
 				'success': isFr ? "Avis de réussite" : "Success notice",
