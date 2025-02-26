@@ -1082,9 +1082,12 @@
 <!--            <qc-code target-id="piv-footer-1"></qc-code>-->
 
             <qc-doc-exemple id="piv-footer-ex-2"
-                            caption="Exemple de pied de page du PIV avec personnalisation du copyright."
+                            caption="Exemple de pied de page du PIV personnalisé."
             >
-                <qc-piv-footer>
+                <qc-piv-footer
+                        logo-src="img/piv-MCE-theme-clair.svg"
+                        logo-src-dark-theme="img/piv-MCE-theme-sombre.svg"
+                    >
                     <nav aria-label="Navigation du pied-de-page">
                         <ul>
                             <li><a href="/">Accessibilité</a></li>
@@ -1129,13 +1132,13 @@
                     <td>logo-src</td>
                     <td>Le chemin de l’image en thème clair.</td>
                     <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
-                    <td>Adresse de l'image du pied de page en thème clair.</td>
+                    <td>Adresse de l'image du pied de page en thème clair (fond transparent, texte et drapeaux en couleur, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).</td>
                 </tr>
                 <tr>
                     <td>logo-src-dark-theme</td>
                     <td>Le chemin de l’image en thème sombre.</td>
                     <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
-                    <td>Adresse de l'image du pied de page en thème sombre.</td>
+                    <td>Adresse de l'image du pied de page en thème sombre  (fond transparent, texte et drapeaux en blanc, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).</td>
                 </tr>
                 <tr>
                     <td>logo-alt</td>
@@ -1179,7 +1182,7 @@
             </table>
             </p>
 
-            <qc-notice>Les images du pied de page PIV doivent respecter <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les normes graphiques du système d’identification visuel.</a></qc-external-link></qc-notice>
+            <qc-notice type="information">Les images du pied de page PIV doivent respecter <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les normes graphiques du système d’identification visuel</a>. Nous vous invitons à privilégier le format SVG, qui permet de conserver la lisibilité de l’image en cas de zoom..</qc-external-link></qc-notice>
 
             <h5>Zones d'ajout de contenu HTML</h5>
 

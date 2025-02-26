@@ -1499,10 +1499,10 @@ qc-piv-footer ul li {
   margin: 0;
   text-align: center;
 }
-qc-piv-footer ul li a {
+qc-piv-footer a {
   text-decoration: none;
 }
-qc-piv-footer ul li a:hover {
+qc-piv-footer a:hover {
   text-decoration: underline;
 }
 

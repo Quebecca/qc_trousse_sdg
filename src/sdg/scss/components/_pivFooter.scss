@@ -1,5 +1,14 @@
 @use "qc-sdg-lib" as *;
 
+@mixin pivLinks() {
+  a {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 qc-piv-footer {
   margin-top: rem(40);
   padding-bottom: rem(4 * $base-spacer);
@@ -23,15 +32,10 @@ qc-piv-footer {
       padding: 0 token-value(spacer sm) token-value(spacer xs);
       margin: 0;
       text-align: center;
-
-      a {
-        text-decoration: none;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
     }
   }
+
+  @include pivLinks();
 
 }
 
@@ -42,13 +46,7 @@ qc-piv-footer {
   flex-direction: column;
   align-items: center;
 
-  a {
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  @include pivLinks();
 
   .copyright {
     margin-top: rem(32);
