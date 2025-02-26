@@ -620,7 +620,7 @@ img {
 
 figure {
   margin: 0 0 var(--qc-spacer-content-block-mb);
-  display: block;
+  display: inline-block;
   overflow-x: auto;
 }
 figure img {
