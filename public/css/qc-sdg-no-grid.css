@@ -1313,7 +1313,7 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   font-weight: var(--qc-font-weight-regular);
 }
 .qc-piv-header .piv-top .right-section .links ul a, qc-piv-header [slot=links] a {
-  font-size: 1.2rem;
+  font-size: 1.28rem;
 }
 
 qc-piv-header {

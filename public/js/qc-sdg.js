@@ -3070,7 +3070,7 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', fullWidth = 'false', logoSrc = Utils.imagesRelativePath + 'quebec-logo.svg', logoAlt = lang === 'fr'
+		let { logoUrl = '/', fullWidth = 'false', logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg', logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
 		: 'Logo of government of Québec', titleUrl = '/', titleText = '', linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', displaySearchText = lang === 'fr'
 		? 'Cliquer pour faire une recherche'
