@@ -54,6 +54,12 @@ a {
       content:getImageUrl(external-link);
     }
   }
+  .img-wrap {
+    //display: inline-flex;
+    //align-items: center;
+    white-space: nowrap;
+
+  }
   span.qc-ext-link-img {
     @include external-link-img();
   }
@@ -72,3 +78,17 @@ code, .qc-code {
   }
 }
 
+
+.qc-font-size-sm {
+  @include content-font("sm");
+}
+
+.qc-font-size-lg {
+  @include content-font("lg");
+}
+.qc-font-size-xl {
+  @include content-font("xl");
+}
+.qc-font-size-md {
+  @include content-font("md");
+}

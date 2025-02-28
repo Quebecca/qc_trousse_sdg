@@ -72,7 +72,7 @@ onMount(() => {
 
         // Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
         const span = document.createElement('span');
-        span.style.whiteSpace = 'nowrap';
+        span.classList.add('img-wrap')
         span.innerHTML = `${lastWord}`;
         span.appendChild(imgElement)
 
