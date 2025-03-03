@@ -128,10 +128,21 @@ qc-doc-exemple {
 }
 
 dl {
-  dt { font-weight: token-value(font weight content regular)}
+  margin: 0 0 token-value(spacer content-block mb);
+  dt { font-weight: token-value(font weight content medium)}
   dd {
+    margin-left: 0;
     margin-bottom : token-value(spacer list-item mb);
   }
+  &.qc-list-inline {
+    dt, dd { display: inline;}
+    dt::before {
+      display: block;
+      content: "";
+      margin-bottom: token-value(spacer list-item mb);
+    }
+  }
+
 }
 
 .table-overflow {

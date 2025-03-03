@@ -393,10 +393,22 @@ qc-doc-exemple {
   margin-bottom: var(--qc-spacer-xl);
 }
 
+dl {
+  margin: 0 0 var(--qc-spacer-content-block-mb);
+}
 dl dt {
-  font-weight: var(--qc-font-weight-content-regular);
+  font-weight: var(--qc-font-weight-content-medium);
 }
 dl dd {
+  margin-left: 0;
+  margin-bottom: var(--qc-spacer-list-item-mb);
+}
+dl.qc-list-inline dt, dl.qc-list-inline dd {
+  display: inline;
+}
+dl.qc-list-inline dt::before {
+  display: block;
+  content: "";
   margin-bottom: var(--qc-spacer-list-item-mb);
 }
 
