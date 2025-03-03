@@ -44,12 +44,12 @@
 }
 
 @mixin external-link-img() {
-  height: .7em;
-  width: .7em;
+  height: 1ex;
+  width: 1ex;
   display: inline-block;
   mask: getImageUrl(external-link) no-repeat;
   background: token-value(color link text);
-  mask-size: .7em;
+  mask-size: 1ex;
   margin-left: 4px;
 }
 
