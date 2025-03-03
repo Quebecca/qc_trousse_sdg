@@ -4,7 +4,7 @@
 @use "tables";
 
 main {
-  padding-bottom: token-value(spacer lg);
+  margin-bottom: token-value(spacer lg);
 }
 
 qc-color-doc {

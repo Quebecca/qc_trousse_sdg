@@ -269,7 +269,7 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
 }
 
 main {
-  padding-bottom: var(--qc-spacer-lg);
+  margin-bottom: var(--qc-spacer-lg);
 }
 
 qc-color-doc {
