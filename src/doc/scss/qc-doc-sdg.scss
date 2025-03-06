@@ -2,6 +2,7 @@
 @use "components/code" as *;
 @use "components/button" as *;
 @use "tables";
+@use "jQueryUI/jquery-ui.autocomplete";
 
 main {
   margin-bottom: token-value(spacer lg);

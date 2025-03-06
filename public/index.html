@@ -798,6 +798,48 @@
 
             </qc-doc-exemple>
 
+            <h3>Saisie semi-automatique (<i>autocomplete</i>)</h3>
+
+            <p>La barre de recherche n’offre pas encore la possibilité d’ajouter des suggestions à la saisie de texte. Cependant il vous est possible d’utiliser votre propre bibliothèque javascript. Voici un exemple avec jQuery UI.</p>
+
+            <qc-doc-exemple caption="Exemple de barre de recherche avec saisie semi-automatique basée sur jQuery UI">
+
+                <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+                <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+                <qc-search-bar id="autocomplete-search-bar"
+                               input-placeholder="Tapez 'aaa' pour faire apparaître de nombreuses suggestions…"
+                    ></qc-search-bar>
+                <script>
+                    $(function() {
+                        $.widget("ui.autocomplete", $.ui.autocomplete, {
+                            _resizeMenu: function() {
+                                // pour donner au panneau des suggestions la largeur de la barre de recherche
+                                let component = this.element.closest("qc-search-bar");
+                                this.menu.element.outerWidth(component.outerWidth());
+                            },
+                        });
+                        // personnalisation des messages jquery ui pour le lecteur d’écran en français
+                        $.extend($.ui.autocomplete.prototype.options.messages, {
+                            noResults: "Aucun résultat trouvé.",
+                            results: function(count) {
+                                let s = count > 1 ? "s" : ''
+                                return `${count} résultat${s} disponible${s}, utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`;
+                            }
+                        });
+
+                        $("#autocomplete-search-bar input[type=search]").autocomplete({
+                            source: [...Array(1000)].map((v,k) => "aaaa - " + k)
+                        });
+                    })
+
+
+                </script>
+
+            </qc-doc-exemple>
+
+
+
             <h3>Attributs</h3>
             <div class="table-overflow">
                 <table class="qc-table qc-striped component-attributes-description">
