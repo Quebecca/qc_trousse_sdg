@@ -43,3 +43,7 @@
 .ui-menu::-webkit-scrollbar-thumb:hover {
   background: token-value(color blue piv);
 }
+
+.ui-helper-hidden-accessible {
+  @include sr-only();
+}
