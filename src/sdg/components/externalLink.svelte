@@ -32,7 +32,6 @@ onMount(() => {
                         }
                         const style = window.getComputedStyle(node);
                         // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
-                        console.log(style)
                         if (style.display === 'none'
                             || style.visibility === 'hidden'
                             || style.position === 'absolute') {
@@ -46,7 +45,6 @@ onMount(() => {
                     if (!/\S/.test(node.textContent)) {
                         return NodeFilter.FILTER_SKIP;
                     }
-                    console.log(node);
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }
@@ -66,7 +64,6 @@ onMount(() => {
         const regex = /^(.*\s)?(\S+)\s*$/m;
         const match = text.match(regex);
         if (!match) return;
-        console.log(lastTextNode)
         const prefix = match[1] || "";
         const lastWord = match[2];
 

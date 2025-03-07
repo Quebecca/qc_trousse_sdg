@@ -2389,10 +2389,6 @@
 			if ($$self.$$.dirty & /*value, name, inputProps*/ 26) {
 				$$invalidate(1, inputProps = { value, name, ...inputProps });
 			}
-
-			if ($$self.$$.dirty & /*buttonProps*/ 4) {
-				console.log(buttonProps);
-			}
 		};
 
 		return [pivBackground, inputProps, buttonProps, value, name];
@@ -4315,8 +4311,6 @@
 							const style = window.getComputedStyle(node);
 
 							// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
-							console.log(style);
-
 							if (style.display === 'none' || style.visibility === 'hidden' || style.position === 'absolute') {
 								return NodeFilter.FILTER_REJECT;
 							}
@@ -4331,7 +4325,6 @@
 							return NodeFilter.FILTER_SKIP;
 						}
 
-						console.log(node);
 						return NodeFilter.FILTER_ACCEPT;
 					}
 				});
@@ -4352,7 +4345,6 @@
 				const regex = /^(.*\s)?(\S+)\s*$/m;
 				const match = text.match(regex);
 				if (!match) return;
-				console.log(lastTextNode);
 				const prefix = match[1] || "";
 				const lastWord = match[2];
 

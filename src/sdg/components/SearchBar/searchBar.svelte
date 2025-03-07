@@ -46,7 +46,6 @@
         "name": name,
         ...inputProps
     }
-    $: console.log(buttonProps)
 
     function computeFieldsAttributes(restProps) {
         return ["input","button"]
