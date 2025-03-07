@@ -1,6 +1,6 @@
 @use "qc-sdg-lib" as *;
 .ui-autocomplete {
-  max-height: rem(32 * 5) !important;
+  max-height: calc(rem(32 * 5) + 2px) !important;
   overflow-y: auto !important;
   list-style-type: none !important;
   padding-left: 0 !important;
