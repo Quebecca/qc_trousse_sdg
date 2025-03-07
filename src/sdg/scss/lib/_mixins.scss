@@ -87,7 +87,7 @@
 //le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
 //Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
 //qui affiche la bordure de 1px et l'outline interne de 2px.
-//Les boutons placés dans ce cadre on le même comportement (donc héritent de cette classe).
+//Les boutons placés dans ce cadre ont le même comportement (donc héritent de cette classe).
 //Tous les élémmens placés dans ce cadre son marqués comme transparents.
 //De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
 
