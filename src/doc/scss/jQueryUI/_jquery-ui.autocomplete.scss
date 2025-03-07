@@ -1,4 +1,4 @@
-@use "../../../sdg/scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 .ui-autocomplete {
   max-height: rem(32 * 5) !important;
   overflow-y: auto !important;
@@ -7,7 +7,8 @@
   margin: 0 !important;
   border: 1px solid token-value(color grey medium);
   background-color: token-value(color background);
-  @include qc-shading(1);
+  @include qc-shading(4);
+  cursor: pointer;
 }
 
 .ui-menu-item {
@@ -18,29 +19,27 @@
   padding: rem(8);
 }
 .ui-state-active {
-  background-color: token-value(color blue regular);
-  color: token-value(color background);;
-  cursor: pointer !important;
+  background-color: token-value(color blue pale);
 }
 
-.ui-menu::-webkit-scrollbar {
+.ui-autocomplete::-webkit-scrollbar {
   width: 8px;
   margin-left: 5px;
 }
 
 /* Track */
-.ui-menu::-webkit-scrollbar-track {
+.ui-autocomplete::-webkit-scrollbar-track {
   background: token-value(color background);;
 }
 
 /* Handle */
-.ui-menu::-webkit-scrollbar-thumb {
+.ui-autocomplete::-webkit-scrollbar-thumb {
   background: token-value(color blue piv);
   border-radius: 15px;
 }
 
 /* Handle on hover */
-.ui-menu::-webkit-scrollbar-thumb:hover {
+.ui-autocomplete::-webkit-scrollbar-thumb:hover {
   background: token-value(color blue piv);
 }
 

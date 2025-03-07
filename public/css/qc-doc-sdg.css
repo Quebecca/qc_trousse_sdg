@@ -275,7 +275,8 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
   margin: 0 !important;
   border: 1px solid var(--qc-color-grey-medium);
   background-color: var(--qc-color-background);
-  box-shadow: 0 var(--qc-box_shadow-1-offset) var(--qc-box_shadow-1-blur) var(--qc-color-box_shadow);
+  box-shadow: 0 var(--qc-box_shadow-4-offset) var(--qc-box_shadow-4-blur) var(--qc-color-box_shadow);
+  cursor: pointer;
 }
 
 .ui-menu-item {
@@ -288,29 +289,27 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
 }
 
 .ui-state-active {
-  background-color: var(--qc-color-blue-regular);
-  color: var(--qc-color-background);
-  cursor: pointer !important;
+  background-color: var(--qc-color-blue-pale);
 }
 
-.ui-menu::-webkit-scrollbar {
+.ui-autocomplete::-webkit-scrollbar {
   width: 8px;
   margin-left: 5px;
 }
 
 /* Track */
-.ui-menu::-webkit-scrollbar-track {
+.ui-autocomplete::-webkit-scrollbar-track {
   background: var(--qc-color-background);
 }
 
 /* Handle */
-.ui-menu::-webkit-scrollbar-thumb {
+.ui-autocomplete::-webkit-scrollbar-thumb {
   background: var(--qc-color-blue-piv);
   border-radius: 15px;
 }
 
 /* Handle on hover */
-.ui-menu::-webkit-scrollbar-thumb:hover {
+.ui-autocomplete::-webkit-scrollbar-thumb:hover {
   background: var(--qc-color-blue-piv);
 }
 

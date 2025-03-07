@@ -2,6 +2,7 @@
 @use "searchInput" as *;
 
 qc-search-bar {
+  position: relative;
   display: block;
   max-width: rem(640);
 }

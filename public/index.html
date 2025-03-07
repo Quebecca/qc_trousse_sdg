@@ -807,9 +807,11 @@
                 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
                 <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
-                <qc-search-bar id="autocomplete-search-bar"
+                <qc-search-bar class="autocomplete-search-bar"
                                input-placeholder="Tapez 'aaa' pour faire apparaître de nombreuses suggestions…"
+                               style="margin-bottom: var(--qc-spacer-content-block-mb)"
                     ></qc-search-bar>
+
                 <script>
                     $(function() {
                         $.widget("ui.autocomplete", $.ui.autocomplete, {
@@ -828,7 +830,7 @@
                             }
                         });
 
-                        $("#autocomplete-search-bar input[type=search]").autocomplete({
+                        $(".autocomplete-search-bar input[type=search]").autocomplete({
                             source: [...Array(1000)].map((v,k) => "aaaa - " + k)
                         });
                     })
