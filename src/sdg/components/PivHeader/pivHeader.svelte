@@ -25,7 +25,6 @@
 <script>
 import { onMount } from "svelte";
 import { Utils } from "../utils"
-import SearchBar from "../SearchBar/searchBar.svelte";
 
 const
   lang = Utils.getPageLanguage()
@@ -64,11 +63,11 @@ export let
   , enableSearch = 'false'
   , showSearch = 'false'
 
-export function focusOnSearchInput() {
-  if (displaySearchForm) {
-
-  }
-}
+    export function focusOnSearchInput() {
+        if (displaySearchForm) {
+            document.querySelector('[slot="search-zone"] input').focus();
+        }
+    }
 
 let
     containerClass = 'qc-container'

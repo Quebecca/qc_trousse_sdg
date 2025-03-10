@@ -59,13 +59,13 @@
 {#if !hiddenFlag}
     <div bind:this={rootElement}
         class="qc-general-alert {typeClass}"
-        role="alert"
-        aria-label={label}>
+        role="alert">
         <div class={containerClass}>
             <div class="qc-general-alert-elements">
                 <Icon type={type == 'warning' ? 'warning' : 'information'}
                       color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
                       size="nm"
+                      label={label}
                 />
                 <div class="qc-alert-content">
                     {@html content}

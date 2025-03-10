@@ -69940,7 +69940,7 @@
 	customElements.define("qc-doc-exemple", create_custom_element(Exemple, {"caption":{"attribute":"caption"},"codeTargetId":{"attribute":"code-target-id"},"hideCode":{"attribute":"hide-code","type":"Boolean"},"rawCode":{"attribute":"raw-code"}}, [], [], false));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.2.5-dev`;
+	    document.getElementById("version").textContent = `v1.3`;
 	}
 
 	// Show maskable "general alert" component

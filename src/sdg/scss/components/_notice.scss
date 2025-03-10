@@ -57,6 +57,10 @@
       background-color: token-value(color,$color,pale);
       [role=img] {
         background-color: token-value(color,$color,dark);
+
+        &[data-img-type=success], &[data-img-type=error] {
+          background-color: token-value(color,$color,regular);
+        }
       }
     }
   }

@@ -1268,11 +1268,17 @@ qc-icon {
 .qc-notice.qc-information .icon-container [role=img] {
   background-color: var(--qc-color-blue-dark);
 }
+.qc-notice.qc-information .icon-container [role=img][data-img-type=success], .qc-notice.qc-information .icon-container [role=img][data-img-type=error] {
+  background-color: var(--qc-color-blue-regular);
+}
 .qc-notice.qc-warning .icon-container {
   background-color: var(--qc-color-yellow-pale);
 }
 .qc-notice.qc-warning .icon-container [role=img] {
   background-color: var(--qc-color-yellow-dark);
+}
+.qc-notice.qc-warning .icon-container [role=img][data-img-type=success], .qc-notice.qc-warning .icon-container [role=img][data-img-type=error] {
+  background-color: var(--qc-color-yellow-regular);
 }
 .qc-notice.qc-neutral .icon-container {
   background-color: var(--qc-color-grey-pale);
@@ -1280,17 +1286,26 @@ qc-icon {
 .qc-notice.qc-neutral .icon-container [role=img] {
   background-color: var(--qc-color-grey-dark);
 }
+.qc-notice.qc-neutral .icon-container [role=img][data-img-type=success], .qc-notice.qc-neutral .icon-container [role=img][data-img-type=error] {
+  background-color: var(--qc-color-grey-regular);
+}
 .qc-notice.qc-error .icon-container {
   background-color: var(--qc-color-red-pale);
 }
 .qc-notice.qc-error .icon-container [role=img] {
   background-color: var(--qc-color-red-dark);
 }
+.qc-notice.qc-error .icon-container [role=img][data-img-type=success], .qc-notice.qc-error .icon-container [role=img][data-img-type=error] {
+  background-color: var(--qc-color-red-regular);
+}
 .qc-notice.qc-success .icon-container {
   background-color: var(--qc-color-green-pale);
 }
 .qc-notice.qc-success .icon-container [role=img] {
   background-color: var(--qc-color-green-dark);
+}
+.qc-notice.qc-success .icon-container [role=img][data-img-type=success], .qc-notice.qc-success .icon-container [role=img][data-img-type=error] {
+  background-color: var(--qc-color-green-regular);
 }
 
 qc-notice h1, qc-notice h2, qc-notice h3, qc-notice h4, qc-notice h5, qc-notice h6, qc-notice [role=heading] {
@@ -1611,7 +1626,7 @@ qc-alert [slot] *, qc-alert:not([slot=content]) * {
   margin-bottom: 0;
 }
 qc-alert [slot] a, qc-alert:not([slot=content]) a {
-  color: var(--qc-color-blue-dark);
+  color: var(--qc-color-blue-piv);
 }
 
 .qc-to-top {
