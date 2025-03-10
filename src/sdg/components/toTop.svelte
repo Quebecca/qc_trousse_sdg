@@ -2,7 +2,7 @@
     tag: 'qc-to-top',
     shadow: 'none',
    props: {
-      alt: {attribute: 'alt', type:'String'},
+      text: {attribute: 'text', type:'String'},
   }
 }}" />
 
@@ -14,7 +14,7 @@
    const
         lang = Utils.getPageLanguage();
    export let
-        alt = lang === 'fr'
+        text = lang === 'fr'
              ? "Retour en haut"
              : "Back to top"
       , demo =  'false'
@@ -73,15 +73,15 @@
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<a href=" "
+<a href="javascript:;"
    bind:this={toTopElement}
    class="qc-to-top"
-   tabindex="0"
    class:visible
    on:click|preventDefault={scrollToTop}
    on:keydown={handleEnterAndSpace}
+   tabindex={visible ? 0 : -1}
    {demo}
 >
    <Icon type="arrow-up-white" color="background"/>
-   <span>{alt}</span>
+   <span>{text}</span>
 </a>

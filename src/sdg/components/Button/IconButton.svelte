@@ -3,6 +3,7 @@ import Icon from "../Icon.svelte";
 
 export let
     size = 'xl',
+    label,
     icon,
     iconSize,
     iconColor
@@ -21,6 +22,7 @@ export let
           size={iconSize}
           color={iconColor}
           aria-hidden="true"
+          label={label}
     />
     {/if}
 </button>

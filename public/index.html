@@ -647,11 +647,13 @@
             <qc-doc-exemple id="exemple-avis-neutre"
                     caption="Exemple d’avis neutres"
                 >
-                <qc-notice icon="ampoule"
+                <qc-notice type="advice"
+                           icon="ampoule"
                            title="Nouvelle règlementation"
                            content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
                 </qc-notice>
-                <qc-notice icon="note"
+                <qc-notice type="note"
+                           icon="note"
                            title="Nouvelle règlementation"
                            content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
                 </qc-notice>
@@ -737,15 +739,15 @@
                 </tr>
                 <tr>
                     <td>type</td>
-                    <td>information, warning, success, error,neutral</td>
-                    <td>neutral</td>
+                    <td>information, warning, success, error, advice, note</td>
+                    <td>information (si absence de type)</td>
                     <td>Le type d'avis</td>
                 </tr>
                 <tr>
                     <td>content</td>
                     <td>Texte</td>
                     <td>Chaîne vide</td>
-                    <td>Le contenu de l'avis</td>
+                    <td>Le contenu de l'avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
                 </tr>
                 <tr>
                     <td>header</td>
@@ -755,7 +757,7 @@
                 </tr>
                 <tr>
                     <td>icon</td>
-                    <td>Toute clé de la map $images dans settings/_settings.scss</td>
+                    <td>Toute clé de la map $images dans settings/_base.scss</td>
                     <td>information <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon> (si absence de type)</td>
                     <td>Défini l’icône pour les avis neutres</td>
                 </tr>
@@ -1294,10 +1296,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>alt</td>
+                        <td>text</td>
                         <td>Texte</td>
                         <td>Retour en haut / Back to top</td>
-                        <td>la valeur de l'attribut "alt" de l'élément img.</td>
+                        <td>la valeur de l'attribut "text" de l'élément.</td>
                     </tr>
                     <tr>
                         <td>demo</td>
