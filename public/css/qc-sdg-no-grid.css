@@ -649,7 +649,7 @@ img {
 
 figure {
   margin: 0 0 var(--qc-spacer-content-block-mb);
-  display: inline-block;
+  display: block;
   overflow-x: auto;
 }
 figure img {

@@ -63,6 +63,7 @@
       margin-bottom: token-value(spacer content-block mb);
       .exemple {
         padding: token-value(spacer sm) token-value(spacer sm) 0 token-value(spacer sm);
+        margin-bottom: token-value(spacer sm);
       }
     }
 </style>
