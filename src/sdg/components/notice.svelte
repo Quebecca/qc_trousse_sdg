@@ -41,7 +41,7 @@
   $: if (role) {
       if (noticeElement) {
           const tempNodes = Array.from(noticeElement.childNodes);
-          console.log("temp: ",tempNodes);
+          // console.log("temp: ",tempNodes);
           noticeElement.innerHTML = "";
           // Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
           tempNodes.forEach(node => noticeElement.appendChild(node)); }

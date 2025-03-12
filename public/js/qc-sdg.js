@@ -1723,7 +1723,8 @@
 				if (role) {
 					if (noticeElement) {
 						const tempNodes = Array.from(noticeElement.childNodes);
-						console.log("temp: ", tempNodes);
+
+						// console.log("temp: ",tempNodes);
 						$$invalidate(3, noticeElement.innerHTML = "", noticeElement);
 
 						// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
