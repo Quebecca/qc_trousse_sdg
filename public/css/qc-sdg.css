@@ -413,11 +413,11 @@ a .qc-external-link-tail img {
 a:hover a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
 }
-a:active a .qc-external-link-tail img {
-  background: var(--qc-color-link-active);
-}
 a:visited a .qc-external-link-tail img {
   background: var(--qc-color-link-visited);
+}
+a:active a .qc-external-link-tail img {
+  background: var(--qc-color-link-active);
 }
 a .img-wrap {
   white-space: nowrap;
@@ -437,11 +437,11 @@ span.qc-ext-link-img {
 a:hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
 }
-a:active span.qc-ext-link-img {
-  background: var(--qc-color-link-active);
-}
 a:visited span.qc-ext-link-img {
   background: var(--qc-color-link-visited);
+}
+a:active span.qc-ext-link-img {
+  background: var(--qc-color-link-active);
 }
 
 code, .qc-code {

@@ -54,12 +54,13 @@
   #{$hover}  & {
     background: token-value(color link hover);
   }
-  #{$active}  & {
-    background: token-value(color link active);
-  }
   #{$visited}  & {
     background: token-value(color link visited);
   }
+  #{$active}  & {
+    background: token-value(color link active);
+  }
+
 }
 
 @mixin sr-only() {

@@ -50,7 +50,7 @@ a {
   .qc-external-link-tail {
     white-space: nowrap;
     img {
-      @include external-link-img('a:hover');
+      @include external-link-img();
       content:getImageUrl(external-link);
     }
   }

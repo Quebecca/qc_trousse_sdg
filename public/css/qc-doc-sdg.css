@@ -446,11 +446,11 @@ span.qc-ext-link-img {
 .pseudo-hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
 }
-.pseudo-active span.qc-ext-link-img {
-  background: var(--qc-color-link-active);
-}
 .pseudo-visited span.qc-ext-link-img {
   background: var(--qc-color-link-visited);
+}
+.pseudo-active span.qc-ext-link-img {
+  background: var(--qc-color-link-active);
 }
 
 p, h1, h2, h3, h4, h5, h6 {
