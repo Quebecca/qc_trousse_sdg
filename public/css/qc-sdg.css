@@ -414,7 +414,7 @@ a:visited a .qc-external-link-tail img {
   background: var(--qc-color-link-visited);
 }
 a:focus a .qc-external-link-tail img {
-  background: var(--qc-color-link-focus);
+  background: var(--qc-color-link-hover);
 }
 a:hover a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
@@ -441,7 +441,7 @@ a:visited span.qc-ext-link-img {
   background: var(--qc-color-link-visited);
 }
 a:focus span.qc-ext-link-img {
-  background: var(--qc-color-link-focus);
+  background: var(--qc-color-link-hover);
 }
 a:hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);

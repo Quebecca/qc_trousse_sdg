@@ -55,7 +55,7 @@
     background: token-value(color link visited);
   }
   #{$focus}  & {
-    background: token-value(color link focus);
+    background: token-value(color link hover);
   }
   #{$hover}  & {
     background: token-value(color link hover);
