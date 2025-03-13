@@ -51,11 +51,11 @@
   background: token-value(color link text);
   mask-size: 1ex;
   margin-left: 4px;
-  #{$hover}  & {
-    background: token-value(color link hover);
-  }
   #{$visited}  & {
     background: token-value(color link visited);
+  }
+  #{$hover}  & {
+    background: token-value(color link hover);
   }
   #{$active}  & {
     background: token-value(color link active);

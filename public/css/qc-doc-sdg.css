@@ -443,11 +443,11 @@ span.qc-ext-link-img {
           mask-size: 1ex;
   margin-left: 4px;
 }
-.pseudo-hover span.qc-ext-link-img {
-  background: var(--qc-color-link-hover);
-}
 .pseudo-visited span.qc-ext-link-img {
   background: var(--qc-color-link-visited);
+}
+.pseudo-hover span.qc-ext-link-img {
+  background: var(--qc-color-link-hover);
 }
 .pseudo-active span.qc-ext-link-img {
   background: var(--qc-color-link-active);
