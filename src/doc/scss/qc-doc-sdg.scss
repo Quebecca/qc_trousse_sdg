@@ -112,7 +112,7 @@ a {
 }
 
 span.qc-ext-link-img {
-  @include external-link-img(".pseudo-hover",".pseudo-focus",".pseudo-active", ".pseudo-visited")
+  @include external-link-img(".pseudo-hover",".pseudo-active", ".pseudo-visited")
 }
 
 p,h1,h2,h3,h4,h5,h6 {
@@ -138,6 +138,9 @@ dl {
   dd {
     margin-left: 0;
     margin-bottom : token-value(spacer list-item mb);
+    & + dd {
+      margin-top : calc(-1 * token-value(spacer list-item mb) + 4px);
+    }
   }
   &.qc-list-inline {
     dt, dd { display: inline;}

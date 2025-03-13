@@ -413,9 +413,6 @@ a .qc-external-link-tail img {
 a:hover a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
 }
-a:focus a .qc-external-link-tail img {
-  background: var(--qc-color-link-focus);
-}
 a:active a .qc-external-link-tail img {
   background: var(--qc-color-link-active);
 }
@@ -439,9 +436,6 @@ span.qc-ext-link-img {
 }
 a:hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
-}
-a:focus span.qc-ext-link-img {
-  background: var(--qc-color-link-focus);
 }
 a:active span.qc-ext-link-img {
   background: var(--qc-color-link-active);

@@ -446,9 +446,6 @@ span.qc-ext-link-img {
 .pseudo-hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
 }
-.pseudo-focus span.qc-ext-link-img {
-  background: var(--qc-color-link-focus);
-}
 .pseudo-active span.qc-ext-link-img {
   background: var(--qc-color-link-active);
 }
@@ -483,6 +480,9 @@ dl dt {
 dl dd {
   margin-left: 0;
   margin-bottom: var(--qc-spacer-list-item-mb);
+}
+dl dd + dd {
+  margin-top: calc(-1 * var(--qc-spacer-list-item-mb) + 4px);
 }
 dl.qc-list-inline dt, dl.qc-list-inline dd {
   display: inline;
