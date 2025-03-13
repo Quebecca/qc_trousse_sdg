@@ -43,7 +43,7 @@
   outline-offset: 0;
 }
 
-@mixin external-link-img($hover: "a:hover",  $active: "a:active", $visited: "a:visited") {
+@mixin external-link-img($hover: "a:hover",  $active: "a:active", $visited: "a:visited", $focus: "a:focus") {
   height: 1ex;
   width: 1ex;
   display: inline-block;
@@ -53,6 +53,9 @@
   margin-left: 4px;
   #{$visited}  & {
     background: token-value(color link visited);
+  }
+  #{$focus}  & {
+    background: token-value(color link focus);
   }
   #{$hover}  & {
     background: token-value(color link hover);
