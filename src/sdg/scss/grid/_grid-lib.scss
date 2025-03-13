@@ -447,8 +447,8 @@ $container-max-widths: map.get(tokens.$lg-tokens, grid, container-max-width);
 
 @mixin make-container($gutter: $grid-gutter-width) {
   width: 100%;
-  padding-right: calc(1 * $gutter / 2);
-  padding-left: calc(1 * $gutter / 2);
+  padding-right: $gutter;
+  padding-left: $gutter;
   margin-right: auto;
   margin-left: auto;
 }
