@@ -111,6 +111,10 @@ a {
   }
 }
 
+span.qc-ext-link-img {
+  @include external-link-img(".pseudo-hover",".pseudo-focus",".pseudo-active", ".pseudo-visited")
+}
+
 p,h1,h2,h3,h4,h5,h6 {
   hyphens: auto;
 }

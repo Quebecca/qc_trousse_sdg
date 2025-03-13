@@ -43,7 +43,7 @@
   outline-offset: 0;
 }
 
-@mixin external-link-img() {
+@mixin external-link-img($hover: "a:hover", $focus: "a:focus", $active: "a:active", $visited: "a:visited") {
   height: 1ex;
   width: 1ex;
   display: inline-block;
@@ -51,6 +51,18 @@
   background: token-value(color link text);
   mask-size: 1ex;
   margin-left: 4px;
+  #{$hover}  & {
+    background: token-value(color link hover);
+  }
+  #{$focus}  & {
+    background: token-value(color link focus);
+  }
+  #{$active}  & {
+    background: token-value(color link active);
+  }
+  #{$visited}  & {
+    background: token-value(color link visited);
+  }
 }
 
 @mixin sr-only() {

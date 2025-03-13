@@ -410,10 +410,23 @@ a .qc-external-link-tail img {
   margin-left: 4px;
   content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOS4yMDciIGhlaWdodD0iMjkuNjA4IiB2aWV3Qm94PSIwIDAgMjkuMjA3IDI5LjYwOCI+CiAgPGcgaWQ9Ikdyb3VwZV8zOTQiIGRhdGEtbmFtZT0iR3JvdXBlIDM5NCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEzOSAtNTQ1LjYyNCkiPgogICAgPGcgaWQ9Ikdyb3VwZV8zOTAiIGRhdGEtbmFtZT0iR3JvdXBlIDM5MCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3MjIuMDA4IDQzNy41MjQpIj4KICAgICAgPGcgaWQ9Ikdyb3VwZV8zODkiIGRhdGEtbmFtZT0iR3JvdXBlIDM4OSI+CiAgICAgICAgPHBhdGggaWQ9IlRyYWPDqV82NzEiIGRhdGEtbmFtZT0iVHJhY8OpIDY3MSIgZD0iTTE4ODQuMDg3LDEyMC44MTRhMS4xNDUsMS4xNDUsMCwwLDAtMS4xNDUsMS4xNDV2MTMuNDU4SDE4NjMuM3YtMjAuMWgxMy4wNTdhMS4xNDYsMS4xNDYsMCwxLDAsMC0yLjI5MWgtMTUuMzQ4djI0LjY4M2gyNC4yMjVWMTIxLjk1OUExLjE0NiwxLjE0NiwwLDAsMCwxODg0LjA4NywxMjAuODE0WiIgZmlsbD0iIzA5NTc5NyIvPgogICAgICAgIDxwYXRoIGlkPSJUcmFjw6lfNjcyIiBkYXRhLW5hbWU9IlRyYWPDqSA2NzIiIGQ9Ik0xODc5Ljc5MiwxMDguMWExLjE0NiwxLjE0NiwwLDAsMCwwLDIuMjkxaDYuNTMzbC0xNC4wMTksMTQuMTdhMS4xNDYsMS4xNDYsMCwwLDAsMS42MjksMS42MTFsMTMuOTg5LTE0LjE0djYuMzc3YTEuMTQ2LDEuMTQ2LDAsMCwwLDIuMjkxLDBWMTA4LjFaIiBmaWxsPSIjMDk1Nzk3Ii8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPgo=");
 }
+a:hover a .qc-external-link-tail img {
+  background: var(--qc-color-link-hover);
+}
+a:focus a .qc-external-link-tail img {
+  background: var(--qc-color-link-focus);
+}
+a:active a .qc-external-link-tail img {
+  background: var(--qc-color-link-active);
+}
+a:visited a .qc-external-link-tail img {
+  background: var(--qc-color-link-visited);
+}
 a .img-wrap {
   white-space: nowrap;
 }
-a span.qc-ext-link-img {
+
+span.qc-ext-link-img {
   height: 1ex;
   width: 1ex;
   display: inline-block;
@@ -423,6 +436,18 @@ a span.qc-ext-link-img {
   -webkit-mask-size: 1ex;
           mask-size: 1ex;
   margin-left: 4px;
+}
+a:hover span.qc-ext-link-img {
+  background: var(--qc-color-link-hover);
+}
+a:focus span.qc-ext-link-img {
+  background: var(--qc-color-link-focus);
+}
+a:active span.qc-ext-link-img {
+  background: var(--qc-color-link-active);
+}
+a:visited span.qc-ext-link-img {
+  background: var(--qc-color-link-visited);
 }
 
 code, .qc-code {
