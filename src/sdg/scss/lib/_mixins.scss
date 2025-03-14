@@ -1,6 +1,7 @@
 @use "sass:meta";
 @use "sass:list";
 @use "sass:map";
+@use "sass:math";
 @use "settings/base" as *;
 
 @use "functions" as *;
@@ -27,24 +28,36 @@
 
 // links
 
-@mixin hover-link() {
-  color: token-value(color, link, hover);
+@mixin hover-link($important: false) {
+  $importance-rule: '';
+  @if $important {
+    $importance-rule: '!important';
+  }
+  color: token-value(color, link, hover)#{$importance-rule};
   text-decoration: none;
 }
 
-@mixin active-link() {
-  color: token-value(color, link, active);
+@mixin active-link($important: false) {
+  $importance-rule: '';
+  @if $important {
+    $importance-rule: '!important';
+  }
+  color: token-value(color, link, active)#{$importance-rule};
   text-decoration: none;
 }
 
-@mixin focus-link() {
-  @include hover-link();
-  outline: 2px solid token-value(color link focus outline);
+@mixin focus-link($important: false) {
+  $importance-rule: '';
+  @if $important {
+    $importance-rule: '!important';
+  }
+  @include hover-link($important);
+  outline: 2px solid token-value(color link focus outline)#{$importance-rule};
   outline-offset: 0;
 }
 
-@mixin external-link-img($hover: "a:hover",  $active: "a:active", $visited: "a:visited", $focus: "a:focus") {
-  $ratio : 11/16 * 1em;
+@mixin external-link-img() {
+  $ratio : math.div(11,16) * 1em;
   height: $ratio;
   width: $ratio;
   display: inline-block;
@@ -52,16 +65,16 @@
   background: token-value(color link text);
   mask-size: $ratio;
   margin-left: 4px;
-  #{$visited}  & {
+  a:visited  & {
     background: token-value(color link visited);
   }
-  #{$focus}  & {
+  a:focus  & {
     background: token-value(color link hover);
   }
-  #{$hover}  & {
+  a:hover  & {
     background: token-value(color link hover);
   }
-  #{$active}  & {
+  a:active  & {
     background: token-value(color link active);
   }
 

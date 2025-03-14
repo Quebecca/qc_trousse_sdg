@@ -95,16 +95,16 @@ h1,h2,h3,h4,h5,h6 {
 a {
 
   &.pseudo-hover {
-    @include hover-link();
+    @include hover-link($important: true);
   }
   &.pseudo-active {
-    @include active-link();
+    @include active-link($important: true);
   }
   &.pseudo-focus {
-    @include focus-link();
+    @include focus-link($important: true);
   }
   &.pseudo-visited {
-    color: token-value(color,link,visited);
+    color: token-value(color,link,visited)!important;
   }
   &.not-visited:visited:not(:hover) {
     color: token-value(color,link,text);
@@ -112,7 +112,18 @@ a {
 }
 
 span.qc-ext-link-img {
-  @include external-link-img(".pseudo-hover",".pseudo-active", ".pseudo-visited")
+  a.pseudo-visited  & {
+    background: token-value(color link visited)!important;
+  }
+  a.pseudo-focus  & {
+    background: token-value(color link hover)!important;
+  }
+  a.pseudo-hover  & {
+    background: token-value(color link hover)!important;
+  }
+  a.pseudo-active  & {
+    background: token-value(color link active)!important;
+  }
 }
 
 p,h1,h2,h3,h4,h5,h6 {
