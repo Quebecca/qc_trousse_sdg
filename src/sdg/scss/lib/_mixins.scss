@@ -44,12 +44,13 @@
 }
 
 @mixin external-link-img($hover: "a:hover",  $active: "a:active", $visited: "a:visited", $focus: "a:focus") {
-  height: 1ex;
-  width: 1ex;
+  $ratio : 11/16 * 1em;
+  height: $ratio;
+  width: $ratio;
   display: inline-block;
   mask: getImageUrl(external-link) no-repeat;
   background: token-value(color link text);
-  mask-size: 1ex;
+  mask-size: $ratio;
   margin-left: 4px;
   #{$visited}  & {
     background: token-value(color link visited);
