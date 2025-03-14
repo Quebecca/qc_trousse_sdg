@@ -28,32 +28,20 @@
 
 // links
 
-@mixin hover-link($important: false) {
-  $importance-rule: '';
-  @if $important {
-    $importance-rule: '!important';
-  }
-  color: token-value(color, link, hover)#{$importance-rule};
+@mixin hover-link() {
+  color: token-value(color, link, hover);
   text-decoration: none;
 }
 
-@mixin active-link($important: false) {
-  $importance-rule: '';
-  @if $important {
-    $importance-rule: '!important';
-  }
-  color: token-value(color, link, active)#{$importance-rule};
+@mixin active-link() {
+  color: token-value(color, link, active);
   text-decoration: none;
 }
 
-@mixin focus-link($important: false) {
-  $importance-rule: '';
-  @if $important {
-    $importance-rule: '!important';
-  }
-  @include hover-link($important);
-  outline: 2px solid token-value(color link focus outline)#{$importance-rule};
-  outline-offset: 0;
+@mixin focus-link() {
+  @include hover-link();
+  outline: 2px solid token-value(color link focus outline);
+  outline-offset: 1px;
 }
 
 @mixin external-link-img() {
@@ -70,7 +58,6 @@
   }
   a:focus  & {
     background: token-value(color link hover);
-    margin-right: 1px;
   }
   a:hover  & {
     background: token-value(color link hover);

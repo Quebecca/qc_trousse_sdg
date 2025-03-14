@@ -224,10 +224,11 @@ code.hljs {
   border-color: var(--qc-color-blue-regular);
   background-color: var(--qc-color-blue-regular);
 }
-.btn.btn-primary:focus {
+.btn.btn-primary:focus, .btn.btn-primary:focus-visible {
   border-color: var(--qc-color-blue-regular);
   background-color: var(--qc-color-blue-regular);
   box-shadow: 0 2px 8px rgba(34, 54, 84, 0.24), 0 0 0 2px var(--qc-color-blue-light);
+  outline: none;
 }
 .btn.btn-primary:active {
   border-color: var(--qc-color-blue-regular_light);
@@ -412,18 +413,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a.pseudo-hover {
-  color: var(--qc-color-link-hover) !important;
+  color: var(--qc-color-link-hover);
   text-decoration: none;
 }
 a.pseudo-active {
-  color: var(--qc-color-link-active) !important;
+  color: var(--qc-color-link-active);
   text-decoration: none;
 }
 a.pseudo-focus {
-  color: var(--qc-color-link-hover) !important;
+  color: var(--qc-color-link-hover);
   text-decoration: none;
-  outline: 2px solid var(--qc-color-link-focus-outline) !important;
-  outline-offset: 0;
+  outline: 2px solid var(--qc-color-link-focus-outline);
+  outline-offset: 1px;
 }
 a.pseudo-visited {
   color: var(--qc-color-link-visited) !important;
@@ -437,7 +438,6 @@ a.pseudo-visited span.qc-ext-link-img {
 }
 a.pseudo-focus span.qc-ext-link-img {
   background: var(--qc-color-link-hover) !important;
-  margin-right: 1px;
 }
 a.pseudo-hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover) !important;
@@ -475,7 +475,10 @@ dl dd {
   margin-bottom: var(--qc-spacer-list-item-mb);
 }
 dl dd + dd {
-  margin-top: calc(-1 * var(--qc-spacer-list-item-mb) + 4px);
+  margin-top: calc(-1 * var(--qc-spacer-list-item-mb));
+}
+dl dd + dd:has(.pseudo-focus) {
+  margin-top: calc(-1 * var(--qc-spacer-list-item-mb) + 6px);
 }
 dl.qc-list-inline dt, dl.qc-list-inline dd {
   display: inline;

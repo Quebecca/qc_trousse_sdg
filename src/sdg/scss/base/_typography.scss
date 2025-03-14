@@ -39,7 +39,7 @@ a {
   &:hover {
     @include hover-link();
   }
-  &:focus {
+  &:focus, &:focus-visible {
     @include focus-link();
   }
   &:active {

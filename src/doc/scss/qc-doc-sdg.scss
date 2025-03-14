@@ -95,13 +95,13 @@ h1,h2,h3,h4,h5,h6 {
 a {
 
   &.pseudo-hover {
-    @include hover-link($important: true);
+    @include hover-link();
   }
   &.pseudo-active {
-    @include active-link($important: true);
+    @include active-link();
   }
   &.pseudo-focus {
-    @include focus-link($important: true);
+    @include focus-link();
   }
   &.pseudo-visited {
     color: token-value(color,link,visited)!important;
@@ -117,7 +117,6 @@ span.qc-ext-link-img {
   }
   a.pseudo-focus  & {
     background: token-value(color link hover)!important;
-    margin-right: 1px;
   }
   a.pseudo-hover  & {
     background: token-value(color link hover)!important;
@@ -151,7 +150,10 @@ dl {
     margin-left: 0;
     margin-bottom : token-value(spacer list-item mb);
     & + dd {
-      margin-top : calc(-1 * token-value(spacer list-item mb) + 4px);
+      margin-top : calc(-1 * token-value(spacer list-item mb));
+      &:has(.pseudo-focus) {
+        margin-top : calc(-1 * token-value(spacer list-item mb) + 6px);
+      }
     }
   }
   &.qc-list-inline {

@@ -44,11 +44,12 @@
       @include state-color(token-value(color blue regular));
     }
 
-    &:focus {
+    &:focus,&:focus-visible {
       @include state-color(token-value(color blue regular));
       box-shadow:
           0 2px 8px rgba(34, 54, 84, 0.24),
           0 0 0 2px token-value(color blue light);
+      outline: none;
     }
 
     &:active {

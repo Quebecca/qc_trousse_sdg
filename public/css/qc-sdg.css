@@ -385,11 +385,11 @@ a:hover {
   color: var(--qc-color-link-hover);
   text-decoration: none;
 }
-a:focus {
+a:focus, a:focus-visible {
   color: var(--qc-color-link-hover);
   text-decoration: none;
   outline: 2px solid var(--qc-color-link-focus-outline);
-  outline-offset: 0;
+  outline-offset: 1px;
 }
 a:active {
   color: var(--qc-color-link-active);
@@ -415,7 +415,6 @@ a:visited a .qc-external-link-tail img {
 }
 a:focus a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
-  margin-right: 1px;
 }
 a:hover a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
@@ -443,7 +442,6 @@ a:visited span.qc-ext-link-img {
 }
 a:focus span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
-  margin-right: 1px;
 }
 a:hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
