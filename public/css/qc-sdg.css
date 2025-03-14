@@ -415,6 +415,7 @@ a:visited a .qc-external-link-tail img {
 }
 a:focus a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
+  margin-right: 1px;
 }
 a:hover a .qc-external-link-tail img {
   background: var(--qc-color-link-hover);
@@ -442,6 +443,7 @@ a:visited span.qc-ext-link-img {
 }
 a:focus span.qc-ext-link-img {
   background: var(--qc-color-link-hover);
+  margin-right: 1px;
 }
 a:hover span.qc-ext-link-img {
   background: var(--qc-color-link-hover);

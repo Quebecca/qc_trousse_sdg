@@ -117,6 +117,7 @@ span.qc-ext-link-img {
   }
   a.pseudo-focus  & {
     background: token-value(color link hover)!important;
+    margin-right: 1px;
   }
   a.pseudo-hover  & {
     background: token-value(color link hover)!important;

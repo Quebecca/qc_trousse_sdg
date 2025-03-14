@@ -70,6 +70,7 @@
   }
   a:focus  & {
     background: token-value(color link hover);
+    margin-right: 1px;
   }
   a:hover  & {
     background: token-value(color link hover);
