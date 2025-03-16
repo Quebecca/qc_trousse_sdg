@@ -449,6 +449,9 @@ a:hover span.qc-ext-link-img {
 a:active span.qc-ext-link-img {
   background: var(--qc-color-link-active);
 }
+.img-wrap + span.qc-ext-link-img {
+  display: none;
+}
 
 code, .qc-code {
   font-family: var(--qc-font-family-code);

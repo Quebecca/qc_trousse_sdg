@@ -55,16 +55,16 @@ a {
     }
   }
   .img-wrap {
-    //display: inline-flex;
-    //align-items: center;
     white-space: nowrap;
-
   }
 
 
 }
 span.qc-ext-link-img {
   @include external-link-img();
+  .img-wrap + & {
+    display: none;
+  }
 }
 
 code, .qc-code {
