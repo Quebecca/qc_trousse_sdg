@@ -95,6 +95,7 @@ qc-piv-header {
 
     .qc-search {
       background-image: getImageUrl(loupe-piv-droite);
+      background-repeat: no-repeat;
       min-width: rem(24);
       height: rem(24);
       span {
