@@ -4278,7 +4278,7 @@
 			},
 			{ icon: "loupe-piv-fine" },
 			{ iconSize: "md" },
-			/*buttonProps*/ ctx[2]
+			/*submitProps*/ ctx[2]
 		];
 
 		let iconbutton_props = {};
@@ -4298,7 +4298,7 @@
 				current = true;
 			},
 			p(ctx, dirty) {
-				const iconbutton_changes = (dirty & /*pivBackground, buttonProps*/ 5)
+				const iconbutton_changes = (dirty & /*pivBackground, submitProps*/ 5)
 				? get_spread_update(iconbutton_spread_levels, [
 						iconbutton_spread_levels[0],
 						dirty & /*pivBackground*/ 1 && {
@@ -4306,7 +4306,7 @@
 						},
 						iconbutton_spread_levels[2],
 						iconbutton_spread_levels[3],
-						dirty & /*buttonProps*/ 4 && get_spread_object(/*buttonProps*/ ctx[2])
+						dirty & /*submitProps*/ 4 && get_spread_object(/*submitProps*/ ctx[2])
 					])
 				: {};
 
@@ -4397,7 +4397,7 @@
 		let $$restProps = compute_rest_props($$props, omit_props_names);
 
 		const lang = Utils.getPageLanguage(),
-			inputDefaultPlaceholder = lang === "fr" ? "Rechercher…" : "Search_",
+			inputDefaultPlaceholder = lang === "fr" ? "Rechercher…" : "Search",
 			submitDefaultAriaLabel = lang === "fr" ? "Lancer la recherche" : "Submit search";
 
 		let { value = '', name = 'q', pivBackground = false } = $$props;
@@ -4407,13 +4407,16 @@
 					"placeholder": inputDefaultPlaceholder,
 					"aria-label": inputDefaultPlaceholder
 				},
-				button: { "aria-label": submitDefaultAriaLabel }
+				submit: { "aria-label": submitDefaultAriaLabel }
 			},
 			inputProps = {},
-			buttonProps = {};
+			submitProps = {};
 
+		/**
+	 * @param {{[p: string]: T}} restProps
+	 */
 		function computeFieldsAttributes(restProps) {
-			return ["input", "button"].map(control => {
+			return ["input", "submit"].map(control => {
 				const prefix = `${control}-`;
 
 				return {
@@ -4433,14 +4436,14 @@
 		};
 
 		$$self.$$.update = () => {
-			$$invalidate(1, [inputProps, buttonProps] = computeFieldsAttributes($$restProps), inputProps, ($$invalidate(2, buttonProps), $$invalidate(10, $$restProps)));
+			$$invalidate(1, [inputProps, submitProps] = computeFieldsAttributes($$restProps), inputProps, ($$invalidate(2, submitProps), $$invalidate(10, $$restProps)));
 
 			if ($$self.$$.dirty & /*value, name, inputProps*/ 26) {
 				$$invalidate(1, inputProps = { value, name, ...inputProps });
 			}
 		};
 
-		return [pivBackground, inputProps, buttonProps, value, name];
+		return [pivBackground, inputProps, submitProps, value, name];
 	}
 
 	class SearchBar extends SvelteComponent {
