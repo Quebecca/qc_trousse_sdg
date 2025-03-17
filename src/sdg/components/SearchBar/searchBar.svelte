@@ -17,7 +17,7 @@
         lang = Utils.getPageLanguage(),
         inputDefaultPlaceholder = lang === "fr"
             ? "Rechercher…"
-            : "Search_",
+            : "Search",
         submitDefaultAriaLabel = lang === "fr"
             ? "Lancer la recherche"
             : "Submit search"
@@ -33,22 +33,25 @@
                 "placeholder": inputDefaultPlaceholder,
                 "aria-label": inputDefaultPlaceholder
             },
-            button: {
+            submit: {
                 "aria-label": submitDefaultAriaLabel
             }
         },
         inputProps = {},
-        buttonProps = {}
+        submitProps = {}
 
-    $: [inputProps, buttonProps] = computeFieldsAttributes($$restProps)
+    $: [inputProps, submitProps] = computeFieldsAttributes($$restProps)
     $: inputProps = {
         "value": value,
         "name": name,
         ...inputProps
     }
 
+    /**
+     * @param {{[p: string]: T}} restProps
+     */
     function computeFieldsAttributes(restProps) {
-        return ["input","button"]
+        return ["input","submit"]
             .map(control => {
                     const prefix = `${control}-`;
                     return {
@@ -78,7 +81,7 @@
                 iconColor={pivBackground ? 'blue-piv' : 'background'}
                 icon="loupe-piv-fine"
                 iconSize="md"
-                {...buttonProps}
+                {...submitProps}
         />
     {/if}
 </div>
