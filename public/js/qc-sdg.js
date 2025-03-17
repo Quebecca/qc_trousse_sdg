@@ -2868,7 +2868,7 @@
 				attr(a, "href", /*logoUrl*/ ctx[0]);
 				attr(a, "class", "logo");
 				attr(span, "class", "copyright");
-				attr(div, "class", "qc-piv-footer");
+				attr(div, "class", "qc-piv-footer qc-container-fluid");
 				attr(link, "rel", "stylesheet");
 				attr(link, "href", Utils.cssPath);
 			},

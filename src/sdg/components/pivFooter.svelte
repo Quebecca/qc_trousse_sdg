@@ -37,7 +37,7 @@ export let
                         : 'https://www.quebec.ca/en/copyright'
     ;
 </script>
-<div class="qc-piv-footer">
+<div class="qc-piv-footer qc-container-fluid">
     <slot/>
     <a href="{logoUrl}"
        class="logo"
