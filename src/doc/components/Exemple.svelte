@@ -53,12 +53,13 @@
         </figcaption>
     </figure>
     {#if !hideCode}
-    <Code rawCode={exempleCode}></Code>
+        <Code rawCode={exempleCode}></Code>
     {/if}
 </div>
 <style lang="scss">
     figure {
       display: block;
+      width: token-value(max-content-width);
       @include qc-shading(0);
       margin-bottom: token-value(spacer content-block mb);
       .exemple {

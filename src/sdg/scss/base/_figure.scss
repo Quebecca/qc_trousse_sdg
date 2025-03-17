@@ -1,17 +1,12 @@
 @use "qc-sdg-lib" as *;
 
-img,
-picture {
-  max-width: 100%;
-  display: block;
-}
-
 img {
   border: none;
   vertical-align: middle;
 }
 
 figure {
+  width: fit-content;
   margin: 0 0 token-value(spacer content-block mb);
   display: block;
   overflow-x: auto;
@@ -21,6 +16,7 @@ figure {
 }
 figcaption {
   @include content-font(sm);
+  max-inline-size: token-value(max-content-width);
   background-color: token-value(color, grey, pale);
   padding: rem($base-spacer);
   margin-top: rem($base-spacer);

@@ -664,18 +664,14 @@ code, .qc-code {
   background-color: var(--qc-color-box_shadow);
 }
 
-img,
-picture {
-  max-width: 100%;
-  display: block;
-}
-
 img {
   border: none;
   vertical-align: middle;
 }
 
 figure {
+  width: -moz-fit-content;
+  width: fit-content;
   margin: 0 0 var(--qc-spacer-content-block-mb);
   display: block;
   overflow-x: auto;
@@ -688,6 +684,7 @@ figcaption {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
+  max-inline-size: var(--qc-max-content-width);
   background-color: var(--qc-color-grey-pale);
   padding: 0.8rem;
   margin-top: 0.8rem;

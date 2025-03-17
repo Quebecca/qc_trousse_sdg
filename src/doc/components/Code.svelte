@@ -61,4 +61,9 @@
         </button
         >{@html hlCode}</code
 ></pre>
+<style lang="scss">
+    pre {
+      max-inline-size: token-value(max-content-width);
+    }
+</style>
 
