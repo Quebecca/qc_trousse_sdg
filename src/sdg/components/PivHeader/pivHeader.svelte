@@ -65,7 +65,7 @@ export let
 
     export function focusOnSearchInput() {
         if (displaySearchForm) {
-            document.querySelector('[slot="search-zone"] input').focus();
+            document.querySelector('[slot="search-zone"] input')?.focus();
         }
     }
 
@@ -97,20 +97,23 @@ onMount(() => {
       </div>
     {/if}
     <div class="piv-top">
-      <div class="logo">
+
         <a href="{logoUrl}"
+           class="logo"
            target="_blank"
            rel="noreferrer">
           <img alt="{logoAlt}"
                src="{logoSrc}">
         </a>
-      </div>
+
       {#if titleText}
         <div class="title">
-          <a href="{titleUrl}">
-            <span>{titleText}</span>
+          <a href="{titleUrl}"
+             class="title">
+            {titleText}
           </a>
         </div>
+
       {/if}
       <div class="right-section">
         {#if enableSearch == 'true'}
@@ -141,13 +144,6 @@ onMount(() => {
       </div>
     </div>
     <div class="piv-bottom">
-      {#if titleText}
-        <div class="title">
-            <a href="{titleUrl}">
-              <span>{titleText}</span>
-            </a>
-        </div>
-      {/if}
       {#if displaySearchForm}
       <div class="search-zone">
         <slot name="search-zone" />

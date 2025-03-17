@@ -9,10 +9,6 @@ $colors : map.get($themes-tokens, light, lg, color);
     padding: 0;
     margin: 0;
     height: 100%;
-    margin-left: token-value(spacer md);
-    @include media-mobile() {
-      margin-left: token-value(spacer sm);
-    }
 
     li {
       padding: 0;
@@ -29,7 +25,6 @@ $colors : map.get($themes-tokens, light, lg, color);
 qc-piv-header {
   --qc-piv-header-bg: 1;
   display: block;
-  min-height: rem(72);
   // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
   // on se base donc sur les valeurs scss
   background-color: map.get($colors, blue, piv);
@@ -47,35 +42,36 @@ qc-piv-header {
   }
   .piv-top {
     display: flex;
-    justify-content: space-between;
+    //justify-content: space-between;
     align-items: center;
-
+    > * {
+      min-height: rem(72);
+      max-height: rem(72);
+    }
     .logo {
-      margin-right: rem(64);
-      @include media-mobile() {
-        margin: 0;
-      }
-
-      a {
-        display: block;
-      }
-
+      display: flex;
+      //margin-right: rem(64);
+      min-width: 256px;
       img {
-        height: rem(72);
-        min-width: rem(200);
+        max-width: 256px;
+  //min-width: rem(200);
       }
     }
 
     .title {
-      width: 100%;
-      padding: token-value(spacer sm) 0;
-      min-height: rem(72);
-      align-items: center;
       display: flex;
-      margin-right: rem(40);
-
-      a {
-        @include content-font(100);
+      align-items: center;
+      @include content-font(100);
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: auto;
+      padding-right: 40px;
+      > * {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        max-height: rem(72);
       }
     }
 
@@ -83,6 +79,7 @@ qc-piv-header {
       min-width: fit-content;
       display: flex;
       align-items: center;
+      margin-left: auto;
 
       .links ul {
         @extend %piv-links;
@@ -98,6 +95,11 @@ qc-piv-header {
       background-repeat: no-repeat;
       min-width: rem(24);
       height: rem(24);
+      margin-right: token-value(spacer md);;
+      @include media-mobile() {
+        margin-right: token-value(spacer sm);
+      }
+
       span {
         @include sr-only();
       }
@@ -105,9 +107,6 @@ qc-piv-header {
   }
 
   .piv-bottom {
-    .title {
-      display: none;
-    }
     .search-zone {
       padding-bottom: token-value(spacer md);
     }
@@ -159,45 +158,40 @@ qc-piv-header,
   }
 }
 
-@include media-tablet() {
+@include media-mobile(){
   .qc-piv-header {
     .piv-top {
-      .logo img {
-        min-width: rem(175);
-        width: rem(175);
+      flex-wrap: wrap;
+      .logo {
+        flex-shrink: 1;
+        margin-right: auto;
+        min-width: 0;
+        img {
+          width: 100%;
+          margin-right: rem(16);
+        }
       }
 
       .title {
-        display: none;
+        min-width: 100%;
+        padding: 0;
+        //height: auto;
+        height: fit-content;
+        max-height: fit-content;
+        order: 2;
+        margin-left: 0;
+        margin-right: 0;
       }
 
       .right-section {
-        min-width: rem(130);
-      }
-    }
-
-    .piv-bottom {
-      .title {
-        margin: 0;
-        display: flex;
-        padding-bottom: token-value(spacer sm);
-        @include content-font(100);
-        font-family: token-value(font, family, header);
+        min-width: 0;
+        margin-right: 0;
+        margin-left: 0;
       }
     }
   }
 }
 
-@include media-mobile() {
-  .qc-piv-header {
-    .piv-top {
-      height: rem(72);
 
-      .right-section {
-        min-width: fit-content;
-      }
-    }
-  }
-}
 
 
