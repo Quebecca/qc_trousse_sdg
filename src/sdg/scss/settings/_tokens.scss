@@ -67,7 +67,7 @@ $lg-tokens: (
         xl: token-value(line-height, 200),
         content: token-value(line-height, md),
     ),
-    max-content-width: rem(825), //TODO faire une clé max_width : (content:…, component1:…, )
+    max-content-width: 825px, //TODO faire une clé max_width : (content:…, component1:…, )
     color: (
           white : #ffffff,
           blue : (

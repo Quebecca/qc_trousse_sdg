@@ -68,7 +68,7 @@
   --qc-line-height-lg: var(--qc-line-height-120);
   --qc-line-height-xl: var(--qc-line-height-200);
   --qc-line-height-content: var(--qc-line-height-md);
-  --qc-max-content-width: 82.5rem;
+  --qc-max-content-width: 825px;
   --qc-color-white: #ffffff;
   --qc-color-white-rgb: 255, 255, 255;
   --qc-color-blue-extra-pale: var(--qc-color-blue-pale);
