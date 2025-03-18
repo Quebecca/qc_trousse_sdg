@@ -1,7 +1,5 @@
 @use "qc-sdg-lib" as *;
 
 hr {
-  margin: token-value(spacer lg) 0;
-  border: 0;
-  border-bottom: 1px solid  token-value(color grey light);
+  @include ruler();
 }

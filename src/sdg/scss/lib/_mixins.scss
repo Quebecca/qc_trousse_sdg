@@ -26,6 +26,14 @@
   font-weight: token-value(font, weight, header, bold);
 }
 
+// ruler
+
+@mixin ruler() {
+  margin: token-value(spacer lg) 0;
+  border: 0;
+  border-bottom: 1px solid  token-value(color grey light);
+}
+
 // links
 
 @mixin hover-link() {
