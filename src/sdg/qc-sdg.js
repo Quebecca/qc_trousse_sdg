@@ -7,6 +7,9 @@ export * from './components/externalLink.svelte'
 export * from './components/SearchBar/searchBar.svelte'
 export * from './components/SearchInput/SearchInput.svelte'
 export * from './components/Icon.svelte'
+export * from './components/Note/Note.svelte'
+export * from './components/Note/NoteLink.svelte'
+export * from './components/Note/NoteContainer.svelte'
 import './scss/qc-sdg.scss' ;
 
 const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
