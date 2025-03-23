@@ -13,6 +13,7 @@
 }}" />
 <script>
     import {onMount} from "svelte";
+    import Icon from "../Icon.svelte";
     import {noteStore} from "./NoteStore";
     export let
         self,
@@ -37,19 +38,11 @@
     $: $noteStore[id].index = index
 </script>
 <span bind:this={indexElement}
-      id="qc-note-{id}">{index}
+      class="note-index"
+      id="qc-note-{id}"><Icon type="arrow-up-white" color="blue-piv" size="xs"></Icon> {index}
     {#each $noteStore[id].links ?? [] as letter}
     <a href="#qc-note-link-{id}-{letter}"
        class:selected={letter == $noteStore[id].selected}
     >{letter}</a>
     {/each}
 </span>
-<style>
-    span,a {
-        display: inline-block;
-        margin-right: 4px;
-    }
-    .selected {
-        font-weight: bold;
-    }
-</style>

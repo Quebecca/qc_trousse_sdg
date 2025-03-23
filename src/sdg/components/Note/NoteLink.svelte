@@ -2,16 +2,23 @@
     tag: 'qc-note-link'
     , shadow: 'none'
     , props: {
-        targetId: {attribute: 'target-id', type: 'String'}
+        targetId: {attribute: 'target-id', type: 'String'},
+        linkAriaLabelPattern: {attribute: 'link-aria-label-pattern', type: 'String'}
     }
 }}" />
 <script>
     import {onMount} from "svelte";
     import {noteStore} from "./NoteStore";
+    import {Utils} from "../utils";
+    const lang = Utils.getPageLanguage()
     export let
-        targetId
+        targetId,
+        linkAriaLabel = lang === 'fr'
+            ? "Aller à la note %note-index%"
+            : "Go to note %note-index%"
     ;
-    let letter
+    let letter,
+        noteIndex
     ;
     onMount( _ => {
         return noteStore.subscribe(_ => {
@@ -29,13 +36,15 @@
             letter
         ]
     }
+    $: noteIndex = $noteStore[targetId].index;
 
 </script>
 {#if $noteStore[targetId]}
-<a href="#qc-note-{targetId}"
-   id="qc-note-link-{targetId}-{letter}"
-   on:click={_ => $noteStore[targetId].selected = letter}
-    >
-    {$noteStore[targetId].index}{letter}
-</a>
+<sup><a href="#qc-note-{targetId}"
+        id="qc-note-link-{targetId}-{letter}"
+        on:click={_ => $noteStore[targetId].selected = letter}
+>
+    <span class="qc-sr-only">{linkAriaLabel.replace('%note-index%',noteIndex)}</span>
+    <span aria-hidden="true">{noteIndex}{letter}</span>
+</a></sup>
 {/if}

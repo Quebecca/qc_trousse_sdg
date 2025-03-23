@@ -1,0 +1,29 @@
+@use "qc-sdg-lib" as *;
+qc-note-link sup {
+
+  //background: token-value(color blue piv);
+  a {
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 4px;
+    background-color: token-value(color blue pale);
+    white-space: nowrap;
+    &:focus {
+      outline-offset: 0;
+    }
+  }
+}
+
+qc-note {
+  display: flex;
+  @include content-font(sm);
+  gap: 4px;
+  span.note-index a {
+    display: inline-block;
+    margin-right: 4px;
+    &.selected {
+      font-weight: bold;
+    }
+  }
+  //flex-direction: row-reverse;
+}
