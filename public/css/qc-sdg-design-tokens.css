@@ -145,8 +145,6 @@
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
-  --qc-spacer-notice-my: var(--qc-spacer-md);
-  --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 768px;

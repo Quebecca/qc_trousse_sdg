@@ -167,8 +167,6 @@
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
-  --qc-spacer-notice-my: var(--qc-spacer-md);
-  --qc-spacer-notice-mx: 3.2rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 768px;
@@ -1285,7 +1283,7 @@ qc-icon {
   font-family: var(--qc-font-family-content);
 }
 .qc-notice .content {
-  margin: var(--qc-spacer-notice-my) var(--qc-spacer-notice-mx) var(--qc-spacer-notice-my) var(--qc-spacer-sm);
+  margin: var(--qc-spacer-md) var(--qc-spacer-md) var(--qc-spacer-md) var(--qc-spacer-sm);
 }
 .qc-notice.qc-information .icon-container {
   background-color: var(--qc-color-blue-pale);
@@ -1357,11 +1355,6 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   text-decoration: none;
 }
 
-@media (max-width: 767.98px) {
-  .qc-notice .content {
-    margin-right: var(--qc-spacer-notice-my);
-  }
-}
 .qc-piv-header .piv-top .right-section .links ul, qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
   list-style: none;
   padding: 0;

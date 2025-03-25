@@ -40,9 +40,9 @@
 
   .content {
       margin:
-          token-value(spacer notice my)
-          token-value(spacer notice mx)
-          token-value(spacer notice my)
+          token-value(spacer md)
+          token-value(spacer md)
+          token-value(spacer md)
           token-value(spacer, sm);
   }
 
@@ -86,11 +86,4 @@ qc-notice {
     }
   }
 
-}
-@include media-mobile(){
-  .qc-notice {
-    .content {
-      margin-right: token-value(spacer notice my);
-    }
-  }
 }
