@@ -673,6 +673,7 @@ figure {
   overflow-x: auto;
 }
 figure img {
+  width: 100%;
   height: auto;
 }
 

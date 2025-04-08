@@ -59,7 +59,8 @@
 <style lang="scss">
     figure {
       //display: block;
-      width: token-value(max-content-width);
+      max-width: token-value(max-content-width);
+      width: 100%;
       @include qc-shading(0);
       margin-bottom: token-value(spacer content-block mb);
       .exemple {
