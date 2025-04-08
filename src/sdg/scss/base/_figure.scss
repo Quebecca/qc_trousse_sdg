@@ -23,9 +23,7 @@ figcaption {
   margin-top: rem($base-spacer);
   p {
     @include content-font(sm);
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin-bottom: 0;
   }
 }
 

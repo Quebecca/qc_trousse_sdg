@@ -691,8 +691,6 @@ figcaption p {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
-}
-figcaption p:last-child {
   margin-bottom: 0;
 }
 
