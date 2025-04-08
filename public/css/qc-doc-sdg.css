@@ -493,3 +493,7 @@ dl.qc-list-inline dt::before {
   width: 100%;
   overflow-x: auto;
 }
+
+hr {
+  max-width: var(--qc-max-content-width);
+}

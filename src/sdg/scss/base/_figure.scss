@@ -6,15 +6,16 @@ img {
 }
 
 figure {
-  width: fit-content;
   margin: 0 0 token-value(spacer content-block mb);
-  display: block;
+  display: table;
   overflow-x: auto;
   img {
     height: auto;
   }
 }
 figcaption {
+  display: table-caption;
+  caption-side: bottom;
   @include content-font(sm);
   max-inline-size: token-value(max-content-width);
   background-color: token-value(color, grey, pale);
@@ -26,6 +27,5 @@ figcaption {
       margin-bottom: 0;
     }
   }
-  //margin-bottom: token-value(spacer md);
 }
 

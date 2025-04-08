@@ -668,10 +668,8 @@ img {
 }
 
 figure {
-  width: -moz-fit-content;
-  width: fit-content;
   margin: 0 0 var(--qc-spacer-content-block-mb);
-  display: block;
+  display: table;
   overflow-x: auto;
 }
 figure img {
@@ -679,6 +677,8 @@ figure img {
 }
 
 figcaption {
+  display: table-caption;
+  caption-side: bottom;
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
