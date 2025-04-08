@@ -68,6 +68,7 @@
 
 // Links in a error notice (eg. error summary)
 qc-notice {
+  display: block;
   @include qc-notice-title();
   ul {
     padding-left: token-value(spacer, sm) !important;

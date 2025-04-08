@@ -1329,6 +1329,9 @@ qc-icon {
   background-color: var(--qc-color-green-regular);
 }
 
+qc-notice {
+  display: block;
+}
 qc-notice h1, qc-notice h2, qc-notice h3, qc-notice h4, qc-notice h5, qc-notice h6, qc-notice [role=heading] {
   margin: 0;
   padding: 0;
@@ -1639,6 +1642,9 @@ qc-piv-footer a:hover {
   background: transparent;
 }
 
+qc-alert {
+  display: block;
+}
 qc-alert [slot] *, qc-alert:not([slot=content]) * {
   margin-bottom: 0;
 }

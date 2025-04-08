@@ -40,6 +40,7 @@
 }
 
 qc-alert {
+  display: block;
   [slot], &:not([slot=content]) {
     * {
       margin-bottom: 0;
