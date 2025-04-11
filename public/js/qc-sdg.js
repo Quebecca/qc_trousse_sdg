@@ -320,6 +320,16 @@
 
 	/**
 	 * @returns {void} */
+	function set_style(node, key, value, important) {
+		if (value == null) {
+			node.style.removeProperty(key);
+		} else {
+			node.style.setProperty(key, value, '');
+		}
+	}
+
+	/**
+	 * @returns {void} */
 	function toggle_class(element, name, toggle) {
 		// The `!!` is required because an `undefined` flag means flipping the current state.
 		element.classList.toggle(name, !!toggle);
@@ -2750,7 +2760,7 @@
 		return child_ctx;
 	}
 
-	// (45:8) {#each [             ['light', logoSrc],             ['dark', logoSrcDarkTheme]]         as [theme, src]}
+	// (47:8) {#each [             ['light', logoSrc],             ['dark', logoSrcDarkTheme]]         as [theme, src]}
 	function create_each_block(ctx) {
 		let img;
 		let img_src_value;
@@ -2760,9 +2770,7 @@
 			c() {
 				img = element("img");
 				if (!src_url_equal(img.src, img_src_value = /*src*/ ctx[12])) attr(img, "src", img_src_value);
-				attr(img, "alt", /*logoAlt*/ ctx[5]);
-				attr(img, "width", /*logoWidth*/ ctx[3]);
-				attr(img, "height", /*logoHeight*/ ctx[4]);
+				attr(img, "alt", /*logoAlt*/ ctx[3]);
 				attr(img, "class", img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show");
 			},
 			m(target, anchor) {
@@ -2773,16 +2781,8 @@
 					attr(img, "src", img_src_value);
 				}
 
-				if (dirty & /*logoAlt*/ 32) {
-					attr(img, "alt", /*logoAlt*/ ctx[5]);
-				}
-
-				if (dirty & /*logoWidth*/ 8) {
-					attr(img, "width", /*logoWidth*/ ctx[3]);
-				}
-
-				if (dirty & /*logoHeight*/ 16) {
-					attr(img, "height", /*logoHeight*/ ctx[4]);
+				if (dirty & /*logoAlt*/ 8) {
+					attr(img, "alt", /*logoAlt*/ ctx[3]);
 				}
 
 				if (dirty & /*logoSrc, logoSrcDarkTheme*/ 6 && img_class_value !== (img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show")) {
@@ -2805,7 +2805,7 @@
 		return {
 			c() {
 				a = element("a");
-				t = text(/*copyrightText*/ ctx[6]);
+				t = text(/*copyrightText*/ ctx[4]);
 				attr(a, "href", /*copyrightUrl*/ ctx[7]);
 			},
 			m(target, anchor) {
@@ -2813,7 +2813,7 @@
 				append(a, t);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*copyrightText*/ 64) set_data(t, /*copyrightText*/ ctx[6]);
+				if (dirty & /*copyrightText*/ 16) set_data(t, /*copyrightText*/ ctx[4]);
 
 				if (dirty & /*copyrightUrl*/ 128) {
 					attr(a, "href", /*copyrightUrl*/ ctx[7]);
@@ -2867,6 +2867,8 @@
 				link = element("link");
 				attr(a, "href", /*logoUrl*/ ctx[0]);
 				attr(a, "class", "logo");
+				set_style(a, "--logo-width", /*logoWidth*/ ctx[5]);
+				set_style(a, "--logo-height", /*logoHeight*/ ctx[6]);
 				attr(span, "class", "copyright");
 				attr(div, "class", "qc-piv-footer qc-container-fluid");
 				attr(link, "rel", "stylesheet");
@@ -2915,7 +2917,7 @@
 					}
 				}
 
-				if (dirty & /*logoSrc, logoSrcDarkTheme, logoAlt, logoWidth, logoHeight*/ 62) {
+				if (dirty & /*logoSrc, logoSrcDarkTheme, logoAlt*/ 14) {
 					each_value = ensure_array_like([['light', /*logoSrc*/ ctx[1]], ['dark', /*logoSrcDarkTheme*/ ctx[2]]]);
 					let i;
 
@@ -2940,6 +2942,14 @@
 					attr(a, "href", /*logoUrl*/ ctx[0]);
 				}
 
+				if (dirty & /*logoWidth*/ 32) {
+					set_style(a, "--logo-width", /*logoWidth*/ ctx[5]);
+				}
+
+				if (dirty & /*logoHeight*/ 64) {
+					set_style(a, "--logo-height", /*logoHeight*/ ctx[6]);
+				}
+
 				if (copyright_slot) {
 					if (copyright_slot.p && (!current || dirty & /*$$scope*/ 256)) {
 						update_slot_base(
@@ -2954,7 +2964,7 @@
 						);
 					}
 				} else {
-					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 192)) {
+					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 144)) {
 						copyright_slot_or_fallback.p(ctx, !current ? -1 : dirty);
 					}
 				}
@@ -2988,9 +2998,9 @@
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg', logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg', logoWidth = 139, logoHeight = 35, logoAlt = lang === 'fr'
+		let { logoUrl = '/', logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg', logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg', logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
-		: 'Logo of the Quebec government', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
+		: 'Logo of the Quebec government', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), logoWidth = 139, logoHeight = 50, copyrightUrl = lang === 'fr'
 		? 'https://www.quebec.ca/droit-auteur'
 		: 'https://www.quebec.ca/en/copyright' } = $$props;
 
@@ -2998,10 +3008,10 @@
 			if ('logoUrl' in $$props) $$invalidate(0, logoUrl = $$props.logoUrl);
 			if ('logoSrc' in $$props) $$invalidate(1, logoSrc = $$props.logoSrc);
 			if ('logoSrcDarkTheme' in $$props) $$invalidate(2, logoSrcDarkTheme = $$props.logoSrcDarkTheme);
-			if ('logoWidth' in $$props) $$invalidate(3, logoWidth = $$props.logoWidth);
-			if ('logoHeight' in $$props) $$invalidate(4, logoHeight = $$props.logoHeight);
-			if ('logoAlt' in $$props) $$invalidate(5, logoAlt = $$props.logoAlt);
-			if ('copyrightText' in $$props) $$invalidate(6, copyrightText = $$props.copyrightText);
+			if ('logoAlt' in $$props) $$invalidate(3, logoAlt = $$props.logoAlt);
+			if ('copyrightText' in $$props) $$invalidate(4, copyrightText = $$props.copyrightText);
+			if ('logoWidth' in $$props) $$invalidate(5, logoWidth = $$props.logoWidth);
+			if ('logoHeight' in $$props) $$invalidate(6, logoHeight = $$props.logoHeight);
 			if ('copyrightUrl' in $$props) $$invalidate(7, copyrightUrl = $$props.copyrightUrl);
 			if ('$$scope' in $$props) $$invalidate(8, $$scope = $$props.$$scope);
 		};
@@ -3010,10 +3020,10 @@
 			logoUrl,
 			logoSrc,
 			logoSrcDarkTheme,
-			logoWidth,
-			logoHeight,
 			logoAlt,
 			copyrightText,
+			logoWidth,
+			logoHeight,
 			copyrightUrl,
 			$$scope,
 			slots
@@ -3028,10 +3038,10 @@
 				logoUrl: 0,
 				logoSrc: 1,
 				logoSrcDarkTheme: 2,
-				logoWidth: 3,
-				logoHeight: 4,
-				logoAlt: 5,
-				copyrightText: 6,
+				logoAlt: 3,
+				copyrightText: 4,
+				logoWidth: 5,
+				logoHeight: 6,
 				copyrightUrl: 7
 			});
 		}
@@ -3063,26 +3073,8 @@
 			flush();
 		}
 
-		get logoWidth() {
-			return this.$$.ctx[3];
-		}
-
-		set logoWidth(logoWidth) {
-			this.$$set({ logoWidth });
-			flush();
-		}
-
-		get logoHeight() {
-			return this.$$.ctx[4];
-		}
-
-		set logoHeight(logoHeight) {
-			this.$$set({ logoHeight });
-			flush();
-		}
-
 		get logoAlt() {
-			return this.$$.ctx[5];
+			return this.$$.ctx[3];
 		}
 
 		set logoAlt(logoAlt) {
@@ -3091,11 +3083,29 @@
 		}
 
 		get copyrightText() {
-			return this.$$.ctx[6];
+			return this.$$.ctx[4];
 		}
 
 		set copyrightText(copyrightText) {
 			this.$$set({ copyrightText });
+			flush();
+		}
+
+		get logoWidth() {
+			return this.$$.ctx[5];
+		}
+
+		set logoWidth(logoWidth) {
+			this.$$set({ logoWidth });
+			flush();
+		}
+
+		get logoHeight() {
+			return this.$$.ctx[6];
+		}
+
+		set logoHeight(logoHeight) {
+			this.$$set({ logoHeight });
 			flush();
 		}
 
@@ -3109,7 +3119,7 @@
 		}
 	}
 
-	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{"attribute":"logo-src"},"logoSrcDarkTheme":{"attribute":"logo-src-dark-theme"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"logoAlt":{"attribute":"logo-alt"},"copyrightText":{"attribute":"copyright-text"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","copyright"], [], true));
+	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{"attribute":"logo-src"},"logoSrcDarkTheme":{"attribute":"logo-src-dark-theme"},"logoAlt":{"attribute":"logo-alt"},"copyrightText":{"attribute":"copyright-text"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","copyright"], [], true));
 
 	/* src/sdg/components/Button/IconButton.svelte generated by Svelte v4.2.19 */
 
