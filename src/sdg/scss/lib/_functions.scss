@@ -21,7 +21,12 @@
 // /* foo.css */
 // .foo { font-size: 1.6rem; }
 
+$rem-ratio: math.div(1, .16 * $percent-root-font-size);
 @function rem($px-size) {
+  @return $px-size * $rem-ratio * 1rem;
+}
+
+@function rem-ratio($px-size) {
   @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
 }
 
