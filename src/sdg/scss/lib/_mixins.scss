@@ -101,8 +101,10 @@
 }
 
 @mixin dark-theme() {
-  @at-root .qc-dark-theme #{&},:root.qc-dark-theme #{&} {
-     @content;
+  @if ($enable-dark-theme) {
+    @at-root .qc-dark-theme #{&},:root.qc-dark-theme #{&} {
+      @content;
+    }
   }
 }
 
