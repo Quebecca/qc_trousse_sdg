@@ -65,7 +65,7 @@ export let
 
     export function focusOnSearchInput() {
         if (displaySearchForm) {
-            document.querySelector('[slot="search-zone"] input').focus();
+            document.querySelector('[slot="search-zone"] input')?.focus();
         }
     }
 
@@ -87,6 +87,7 @@ onMount(() => {
 
 <div role="banner"
      class="qc-piv-header qc-component"
+     style="--logo-src:url({logoSrc})"
 >
   <div class="{containerClass}">
     {#if goToContent == 'true'}
@@ -97,21 +98,27 @@ onMount(() => {
       </div>
     {/if}
     <div class="piv-top">
-      <div class="logo">
-        <a href="{logoUrl}"
-           target="_blank"
-           rel="noreferrer">
-          <img alt="{logoAlt}"
-               src="{logoSrc}">
-        </a>
-      </div>
-      {#if titleText}
-        <div class="title">
-          <a href="{titleUrl}">
-            <span>{titleText}</span>
-          </a>
+        <div class="signature-group">
+            <a href="{logoUrl}"
+               class="logo"
+               target="_blank"
+               rel="noreferrer">
+                <div role="img"
+                     aria-label="{logoAlt}"
+                ></div>
+            </a>
+
+            {#if titleText}
+                <div class="title">
+                    <a href="{titleUrl}"
+                       class="title">
+                        {titleText}
+                    </a>
+                </div>
+
+            {/if}
         </div>
-      {/if}
+
       <div class="right-section">
         {#if enableSearch == 'true'}
           <a  class="qc-search"
@@ -141,13 +148,6 @@ onMount(() => {
       </div>
     </div>
     <div class="piv-bottom">
-      {#if titleText}
-        <div class="title">
-            <a href="{titleUrl}">
-              <span>{titleText}</span>
-            </a>
-        </div>
-      {/if}
       {#if displaySearchForm}
       <div class="search-zone">
         <slot name="search-zone" />

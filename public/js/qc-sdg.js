@@ -1846,8 +1846,8 @@
 	const get_links_slot_changes = dirty => ({});
 	const get_links_slot_context = ctx => ({});
 
-	// (92:4) {#if goToContent == 'true'}
-	function create_if_block_7(ctx) {
+	// (93:4) {#if goToContent == 'true'}
+	function create_if_block_6(ctx) {
 		let div;
 		let a;
 		let t;
@@ -1880,27 +1880,25 @@
 		};
 	}
 
-	// (108:6) {#if titleText}
-	function create_if_block_6(ctx) {
+	// (111:12) {#if titleText}
+	function create_if_block_5(ctx) {
 		let div;
 		let a;
-		let span;
 		let t;
 
 		return {
 			c() {
 				div = element("div");
 				a = element("a");
-				span = element("span");
 				t = text(/*titleText*/ ctx[5]);
 				attr(a, "href", /*titleUrl*/ ctx[4]);
+				attr(a, "class", "title");
 				attr(div, "class", "title");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
 				append(div, a);
-				append(a, span);
-				append(span, t);
+				append(a, t);
 			},
 			p(ctx, dirty) {
 				if (dirty & /*titleText*/ 32) set_data(t, /*titleText*/ ctx[5]);
@@ -1917,8 +1915,8 @@
 		};
 	}
 
-	// (116:8) {#if enableSearch == 'true'}
-	function create_if_block_5(ctx) {
+	// (123:8) {#if enableSearch == 'true'}
+	function create_if_block_4(ctx) {
 		let a;
 		let span;
 
@@ -1969,13 +1967,13 @@
 		};
 	}
 
-	// (127:10) {#if joinUsUrl || altLanguageUrl}
-	function create_if_block_2(ctx) {
+	// (134:10) {#if joinUsUrl || altLanguageUrl}
+	function create_if_block_1$1(ctx) {
 		let nav;
 		let ul;
 		let t;
-		let if_block0 = /*altLanguageUrl*/ ctx[8] && create_if_block_4(ctx);
-		let if_block1 = /*joinUsUrl*/ ctx[10] && create_if_block_3(ctx);
+		let if_block0 = /*altLanguageUrl*/ ctx[8] && create_if_block_3(ctx);
+		let if_block1 = /*joinUsUrl*/ ctx[10] && create_if_block_2(ctx);
 
 		return {
 			c() {
@@ -1998,7 +1996,7 @@
 					if (if_block0) {
 						if_block0.p(ctx, dirty);
 					} else {
-						if_block0 = create_if_block_4(ctx);
+						if_block0 = create_if_block_3(ctx);
 						if_block0.c();
 						if_block0.m(ul, t);
 					}
@@ -2011,7 +2009,7 @@
 					if (if_block1) {
 						if_block1.p(ctx, dirty);
 					} else {
-						if_block1 = create_if_block_3(ctx);
+						if_block1 = create_if_block_2(ctx);
 						if_block1.c();
 						if_block1.m(ul, null);
 					}
@@ -2035,8 +2033,8 @@
 		};
 	}
 
-	// (130:18) {#if altLanguageUrl}
-	function create_if_block_4(ctx) {
+	// (137:18) {#if altLanguageUrl}
+	function create_if_block_3(ctx) {
 		let li;
 		let a;
 		let t;
@@ -2068,8 +2066,8 @@
 		};
 	}
 
-	// (133:18) {#if joinUsUrl}
-	function create_if_block_3(ctx) {
+	// (140:18) {#if joinUsUrl}
+	function create_if_block_2(ctx) {
 		let li;
 		let a;
 		let t;
@@ -2101,10 +2099,10 @@
 		};
 	}
 
-	// (126:29)            
+	// (133:29)            
 	function fallback_block$1(ctx) {
 		let if_block_anchor;
-		let if_block = (/*joinUsUrl*/ ctx[10] || /*altLanguageUrl*/ ctx[8]) && create_if_block_2(ctx);
+		let if_block = (/*joinUsUrl*/ ctx[10] || /*altLanguageUrl*/ ctx[8]) && create_if_block_1$1(ctx);
 
 		return {
 			c() {
@@ -2120,7 +2118,7 @@
 					if (if_block) {
 						if_block.p(ctx, dirty);
 					} else {
-						if_block = create_if_block_2(ctx);
+						if_block = create_if_block_1$1(ctx);
 						if_block.c();
 						if_block.m(if_block_anchor.parentNode, if_block_anchor);
 					}
@@ -2135,43 +2133,6 @@
 				}
 
 				if (if_block) if_block.d(detaching);
-			}
-		};
-	}
-
-	// (144:6) {#if titleText}
-	function create_if_block_1$1(ctx) {
-		let div;
-		let a;
-		let span;
-		let t;
-
-		return {
-			c() {
-				div = element("div");
-				a = element("a");
-				span = element("span");
-				t = text(/*titleText*/ ctx[5]);
-				attr(a, "href", /*titleUrl*/ ctx[4]);
-				attr(div, "class", "title");
-			},
-			m(target, anchor) {
-				insert(target, div, anchor);
-				append(div, a);
-				append(a, span);
-				append(span, t);
-			},
-			p(ctx, dirty) {
-				if (dirty & /*titleText*/ 32) set_data(t, /*titleText*/ ctx[5]);
-
-				if (dirty & /*titleUrl*/ 16) {
-					attr(a, "href", /*titleUrl*/ ctx[4]);
-				}
-			},
-			d(detaching) {
-				if (detaching) {
-					detach(div);
-				}
 			}
 		};
 	}
@@ -2234,102 +2195,97 @@
 	}
 
 	function create_fragment$7(ctx) {
+		let div7;
 		let div6;
-		let div5;
 		let t0;
-		let div3;
-		let div0;
+		let div4;
+		let div1;
 		let a;
-		let img;
-		let img_src_value;
+		let div0;
 		let t1;
 		let t2;
-		let div2;
+		let div3;
 		let t3;
-		let div1;
+		let div2;
 		let t4;
-		let div4;
+		let div5;
 		let t5;
-		let t6;
 		let link;
 		let current;
-		let if_block0 = /*goToContent*/ ctx[11] == 'true' && create_if_block_7(ctx);
-		let if_block1 = /*titleText*/ ctx[5] && create_if_block_6(ctx);
-		let if_block2 = /*enableSearch*/ ctx[0] == 'true' && create_if_block_5(ctx);
+		let if_block0 = /*goToContent*/ ctx[11] == 'true' && create_if_block_6(ctx);
+		let if_block1 = /*titleText*/ ctx[5] && create_if_block_5(ctx);
+		let if_block2 = /*enableSearch*/ ctx[0] == 'true' && create_if_block_4(ctx);
 		const links_slot_template = /*#slots*/ ctx[22].links;
 		const links_slot = create_slot(links_slot_template, ctx, /*$$scope*/ ctx[21], get_links_slot_context);
 		const links_slot_or_fallback = links_slot || fallback_block$1(ctx);
-		let if_block3 = /*titleText*/ ctx[5] && create_if_block_1$1(ctx);
-		let if_block4 = /*displaySearchForm*/ ctx[18] && create_if_block$4(ctx);
+		let if_block3 = /*displaySearchForm*/ ctx[18] && create_if_block$4(ctx);
 
 		return {
 			c() {
+				div7 = element("div");
 				div6 = element("div");
-				div5 = element("div");
 				if (if_block0) if_block0.c();
 				t0 = space();
-				div3 = element("div");
-				div0 = element("div");
+				div4 = element("div");
+				div1 = element("div");
 				a = element("a");
-				img = element("img");
+				div0 = element("div");
 				t1 = space();
 				if (if_block1) if_block1.c();
 				t2 = space();
-				div2 = element("div");
+				div3 = element("div");
 				if (if_block2) if_block2.c();
 				t3 = space();
-				div1 = element("div");
+				div2 = element("div");
 				if (links_slot_or_fallback) links_slot_or_fallback.c();
 				t4 = space();
-				div4 = element("div");
+				div5 = element("div");
 				if (if_block3) if_block3.c();
 				t5 = space();
-				if (if_block4) if_block4.c();
-				t6 = space();
 				link = element("link");
-				attr(img, "alt", /*logoAlt*/ ctx[3]);
-				if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[2])) attr(img, "src", img_src_value);
+				attr(div0, "role", "img");
+				attr(div0, "aria-label", /*logoAlt*/ ctx[3]);
 				attr(a, "href", /*logoUrl*/ ctx[1]);
+				attr(a, "class", "logo");
 				attr(a, "target", "_blank");
 				attr(a, "rel", "noreferrer");
-				attr(div0, "class", "logo");
-				attr(div1, "class", "links");
-				attr(div2, "class", "right-section");
-				attr(div3, "class", "piv-top");
-				attr(div4, "class", "piv-bottom");
-				attr(div5, "class", /*containerClass*/ ctx[17]);
-				attr(div6, "role", "banner");
-				attr(div6, "class", "qc-piv-header qc-component");
+				attr(div1, "class", "signature-group");
+				attr(div2, "class", "links");
+				attr(div3, "class", "right-section");
+				attr(div4, "class", "piv-top");
+				attr(div5, "class", "piv-bottom");
+				attr(div6, "class", /*containerClass*/ ctx[17]);
+				attr(div7, "role", "banner");
+				attr(div7, "class", "qc-piv-header qc-component");
+				set_style(div7, "--logo-src", "url(" + /*logoSrc*/ ctx[2] + ")");
 				attr(link, "rel", "stylesheet");
 				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
-				insert(target, div6, anchor);
-				append(div6, div5);
-				if (if_block0) if_block0.m(div5, null);
-				append(div5, t0);
-				append(div5, div3);
-				append(div3, div0);
-				append(div0, a);
-				append(a, img);
-				append(div3, t1);
-				if (if_block1) if_block1.m(div3, null);
-				append(div3, t2);
+				insert(target, div7, anchor);
+				append(div7, div6);
+				if (if_block0) if_block0.m(div6, null);
+				append(div6, t0);
+				append(div6, div4);
+				append(div4, div1);
+				append(div1, a);
+				append(a, div0);
+				append(div1, t1);
+				if (if_block1) if_block1.m(div1, null);
+				append(div4, t2);
+				append(div4, div3);
+				if (if_block2) if_block2.m(div3, null);
+				append(div3, t3);
 				append(div3, div2);
-				if (if_block2) if_block2.m(div2, null);
-				append(div2, t3);
-				append(div2, div1);
 
 				if (links_slot_or_fallback) {
-					links_slot_or_fallback.m(div1, null);
+					links_slot_or_fallback.m(div2, null);
 				}
 
-				append(div5, t4);
-				append(div5, div4);
-				if (if_block3) if_block3.m(div4, null);
-				append(div4, t5);
-				if (if_block4) if_block4.m(div4, null);
-				insert(target, t6, anchor);
+				append(div6, t4);
+				append(div6, div5);
+				if (if_block3) if_block3.m(div5, null);
+				insert(target, t5, anchor);
 				insert(target, link, anchor);
 				current = true;
 			},
@@ -2338,9 +2294,9 @@
 					if (if_block0) {
 						if_block0.p(ctx, dirty);
 					} else {
-						if_block0 = create_if_block_7(ctx);
+						if_block0 = create_if_block_6(ctx);
 						if_block0.c();
-						if_block0.m(div5, t0);
+						if_block0.m(div6, t0);
 					}
 				} else if (if_block0) {
 					if_block0.d(1);
@@ -2348,11 +2304,7 @@
 				}
 
 				if (!current || dirty & /*logoAlt*/ 8) {
-					attr(img, "alt", /*logoAlt*/ ctx[3]);
-				}
-
-				if (!current || dirty & /*logoSrc*/ 4 && !src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[2])) {
-					attr(img, "src", img_src_value);
+					attr(div0, "aria-label", /*logoAlt*/ ctx[3]);
 				}
 
 				if (!current || dirty & /*logoUrl*/ 2) {
@@ -2363,9 +2315,9 @@
 					if (if_block1) {
 						if_block1.p(ctx, dirty);
 					} else {
-						if_block1 = create_if_block_6(ctx);
+						if_block1 = create_if_block_5(ctx);
 						if_block1.c();
-						if_block1.m(div3, t2);
+						if_block1.m(div1, null);
 					}
 				} else if (if_block1) {
 					if_block1.d(1);
@@ -2376,9 +2328,9 @@
 					if (if_block2) {
 						if_block2.p(ctx, dirty);
 					} else {
-						if_block2 = create_if_block_5(ctx);
+						if_block2 = create_if_block_4(ctx);
 						if_block2.c();
-						if_block2.m(div2, t3);
+						if_block2.m(div3, t3);
 					}
 				} else if (if_block2) {
 					if_block2.d(1);
@@ -2404,61 +2356,52 @@
 					}
 				}
 
-				if (/*titleText*/ ctx[5]) {
+				if (/*displaySearchForm*/ ctx[18]) {
 					if (if_block3) {
 						if_block3.p(ctx, dirty);
-					} else {
-						if_block3 = create_if_block_1$1(ctx);
-						if_block3.c();
-						if_block3.m(div4, t5);
-					}
-				} else if (if_block3) {
-					if_block3.d(1);
-					if_block3 = null;
-				}
-
-				if (/*displaySearchForm*/ ctx[18]) {
-					if (if_block4) {
-						if_block4.p(ctx, dirty);
 
 						if (dirty & /*displaySearchForm*/ 262144) {
-							transition_in(if_block4, 1);
+							transition_in(if_block3, 1);
 						}
 					} else {
-						if_block4 = create_if_block$4(ctx);
-						if_block4.c();
-						transition_in(if_block4, 1);
-						if_block4.m(div4, null);
+						if_block3 = create_if_block$4(ctx);
+						if_block3.c();
+						transition_in(if_block3, 1);
+						if_block3.m(div5, null);
 					}
-				} else if (if_block4) {
+				} else if (if_block3) {
 					group_outros();
 
-					transition_out(if_block4, 1, 1, () => {
-						if_block4 = null;
+					transition_out(if_block3, 1, 1, () => {
+						if_block3 = null;
 					});
 
 					check_outros();
 				}
 
 				if (!current || dirty & /*containerClass*/ 131072) {
-					attr(div5, "class", /*containerClass*/ ctx[17]);
+					attr(div6, "class", /*containerClass*/ ctx[17]);
+				}
+
+				if (!current || dirty & /*logoSrc*/ 4) {
+					set_style(div7, "--logo-src", "url(" + /*logoSrc*/ ctx[2] + ")");
 				}
 			},
 			i(local) {
 				if (current) return;
 				transition_in(links_slot_or_fallback, local);
-				transition_in(if_block4);
+				transition_in(if_block3);
 				current = true;
 			},
 			o(local) {
 				transition_out(links_slot_or_fallback, local);
-				transition_out(if_block4);
+				transition_out(if_block3);
 				current = false;
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(div6);
-					detach(t6);
+					detach(div7);
+					detach(t5);
 					detach(link);
 				}
 
@@ -2467,7 +2410,6 @@
 				if (if_block2) if_block2.d();
 				if (links_slot_or_fallback) links_slot_or_fallback.d(detaching);
 				if (if_block3) if_block3.d();
-				if (if_block4) if_block4.d();
 			}
 		};
 	}
@@ -2486,7 +2428,7 @@
 
 		function focusOnSearchInput() {
 			if (displaySearchForm) {
-				document.querySelector('[slot="search-zone"] input').focus();
+				document.querySelector('[slot="search-zone"] input')?.focus();
 			}
 		}
 

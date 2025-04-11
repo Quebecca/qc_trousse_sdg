@@ -1362,12 +1362,6 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   padding: 0;
   margin: 0;
   height: 100%;
-  margin-left: var(--qc-spacer-md);
-}
-@media (max-width: 767.98px) {
-  .qc-piv-header .piv-top .right-section .links ul, qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
-    margin-left: var(--qc-spacer-sm);
-  }
 }
 .qc-piv-header .piv-top .right-section .links ul li, qc-piv-header [slot=links] li {
   padding: 0;
@@ -1383,7 +1377,6 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
 qc-piv-header {
   --qc-piv-header-bg: 1;
   display: block;
-  min-height: 7.2rem;
   background-color: #095797;
   width: 100%;
 }
@@ -1395,42 +1388,52 @@ qc-piv-header {
 }
 .qc-piv-header .piv-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: start;
 }
-.qc-piv-header .piv-top .logo {
-  margin-right: 6.4rem;
-}
-@media (max-width: 767.98px) {
-  .qc-piv-header .piv-top .logo {
-    margin: 0;
-  }
-}
-.qc-piv-header .piv-top .logo a {
-  display: block;
-}
-.qc-piv-header .piv-top .logo img {
-  height: 7.2rem;
-  min-width: 20rem;
-}
-.qc-piv-header .piv-top .title {
-  width: 100%;
-  padding: var(--qc-spacer-sm) 0;
+.qc-piv-header .piv-top > * {
   min-height: 7.2rem;
-  align-items: center;
-  display: flex;
-  margin-right: 4rem;
 }
-.qc-piv-header .piv-top .title a {
+.qc-piv-header .piv-top .signature-group {
+  display: flex;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  align-items: start;
+  margin-right: auto;
+}
+.qc-piv-header .piv-top .signature-group * {
+  min-height: 7.2rem;
+}
+.qc-piv-header .piv-top .signature-group .logo {
+  display: flex;
+  flex-basis: 25.6rem;
+}
+.qc-piv-header .piv-top .signature-group .logo [role=img] {
+  background-image: var(--logo-src);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: center;
+  margin-right: 16px;
+  min-width: 150px;
+  width: 100%;
+  max-width: 20rem;
+  min-height: 7.2rem;
+}
+.qc-piv-header .piv-top .signature-group .title {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
   font-size: var(--qc-font-size-100);
   line-height: var(--qc-line-height-100);
   font-weight: var(--qc-font-weight-regular);
+  flex-basis: fit-content;
 }
 .qc-piv-header .piv-top .right-section {
   min-width: -moz-fit-content;
   min-width: fit-content;
   display: flex;
   align-items: center;
+  flex-basis: fit-content;
 }
 @media (max-width: 767.98px) {
   .qc-piv-header .piv-top .right-section {
@@ -1442,6 +1445,12 @@ qc-piv-header {
   background-repeat: no-repeat;
   min-width: 2.4rem;
   height: 2.4rem;
+  margin-right: var(--qc-spacer-md);
+}
+@media (max-width: 767.98px) {
+  .qc-piv-header .piv-top .qc-search {
+    margin-right: var(--qc-spacer-sm);
+  }
 }
 .qc-piv-header .piv-top .qc-search span {
   position: absolute;
@@ -1453,9 +1462,6 @@ qc-piv-header {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-.qc-piv-header .piv-bottom .title {
-  display: none;
 }
 .qc-piv-header .piv-bottom .search-zone {
   padding-bottom: var(--qc-spacer-md);
@@ -1509,34 +1515,36 @@ qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
   margin: 0;
 }
 
-@media (max-width: 991.98px) {
-  .qc-piv-header .piv-top .logo img {
-    min-width: 17.5rem;
-    width: 17.5rem;
-  }
-  .qc-piv-header .piv-top .title {
-    display: none;
-  }
-  .qc-piv-header .piv-top .right-section {
-    min-width: 13rem;
-  }
-  .qc-piv-header .piv-bottom .title {
-    margin: 0;
-    display: flex;
-    padding-bottom: var(--qc-spacer-sm);
-    font-size: var(--qc-font-size-100);
-    line-height: var(--qc-line-height-100);
-    font-weight: var(--qc-font-weight-regular);
-    font-family: var(--qc-font-family-header);
-  }
-}
 @media (max-width: 767.98px) {
   .qc-piv-header .piv-top {
-    height: 7.2rem;
+    flex-wrap: wrap;
+  }
+  .qc-piv-header .piv-top .logo {
+    flex-shrink: 1;
+    margin-right: auto;
+    min-width: 0;
+  }
+  .qc-piv-header .piv-top .logo img {
+    width: 100%;
+    margin-right: 1.6rem;
+  }
+  .qc-piv-header .piv-top .title {
+    min-width: 100%;
+    padding: 0;
+    height: -moz-fit-content;
+    height: fit-content;
+    max-height: -moz-fit-content;
+    max-height: fit-content;
+    order: 2;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    align-items: center;
   }
   .qc-piv-header .piv-top .right-section {
-    min-width: -moz-fit-content;
-    min-width: fit-content;
+    min-width: 0;
+    margin-right: 0;
+    margin-left: 0;
   }
 }
 qc-piv-footer {

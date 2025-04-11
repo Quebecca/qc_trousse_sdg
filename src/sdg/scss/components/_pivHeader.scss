@@ -9,10 +9,6 @@ $colors : map.get($themes-tokens, light, lg, color);
     padding: 0;
     margin: 0;
     height: 100%;
-    margin-left: token-value(spacer md);
-    @include media-mobile() {
-      margin-left: token-value(spacer sm);
-    }
 
     li {
       padding: 0;
@@ -29,7 +25,6 @@ $colors : map.get($themes-tokens, light, lg, color);
 qc-piv-header {
   --qc-piv-header-bg: 1;
   display: block;
-  min-height: rem(72);
   // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
   // on se base donc sur les valeurs scss
   background-color: map.get($colors, blue, piv);
@@ -47,43 +42,66 @@ qc-piv-header {
   }
   .piv-top {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .logo {
-      margin-right: rem(64);
-      @include media-mobile() {
-        margin: 0;
-      }
-
-      a {
-        display: block;
-      }
-
-      img {
-        height: rem(72);
-        min-width: rem(200);
-      }
-    }
-
-    .title {
-      width: 100%;
-      padding: token-value(spacer sm) 0;
+    flex-wrap: wrap;
+    //justify-content: space-between;
+    align-items: start;
+    > * {
       min-height: rem(72);
-      align-items: center;
+    }
+    .signature-group {
       display: flex;
-      margin-right: rem(40);
-
-      a {
+      flex-grow: 1;
+      flex-wrap: wrap;
+      align-items: start;
+      margin-right: auto;
+      * {
+        min-height: rem(72);
+      }
+      .logo {
+        display: flex;
+        flex-basis: rem(256);
+        //margin-right: rem(64);
+        [role=img] {
+          background-image: var(--logo-src);
+          background-repeat: no-repeat;
+          background-size: 100%;
+          background-position: center;
+          margin-right: 16px;
+          min-width: 150px;
+          //object-fit: fill;
+          width: 100%;
+          max-width: rem(200);
+          min-height: rem(72);
+        }
+      }
+      .title {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
         @include content-font(100);
+        flex-basis: fit-content;
+        //margin-top: auto;
+        //margin-bottom: auto;
+        //margin-right: auto;
+        //padding-right: 40px;
+        > * {
+          //display: -webkit-box;
+          //-webkit-line-clamp: 2;
+          //-webkit-box-orient: vertical;
+          //overflow: hidden;
+          //max-height: rem(72);
+        }
       }
     }
+
+
+
 
     .right-section {
       min-width: fit-content;
       display: flex;
       align-items: center;
-
+      flex-basis: fit-content;
       .links ul {
         @extend %piv-links;
       }
@@ -98,6 +116,11 @@ qc-piv-header {
       background-repeat: no-repeat;
       min-width: rem(24);
       height: rem(24);
+      margin-right: token-value(spacer md);;
+      @include media-mobile() {
+        margin-right: token-value(spacer sm);
+      }
+
       span {
         @include sr-only();
       }
@@ -105,9 +128,6 @@ qc-piv-header {
   }
 
   .piv-bottom {
-    .title {
-      display: none;
-    }
     .search-zone {
       padding-bottom: token-value(spacer md);
     }
@@ -159,45 +179,42 @@ qc-piv-header,
   }
 }
 
-@include media-tablet() {
+@include media-mobile(){
   .qc-piv-header {
     .piv-top {
-      .logo img {
-        min-width: rem(175);
-        width: rem(175);
+      flex-wrap: wrap;
+      .logo {
+        flex-shrink: 1;
+        margin-right: auto;
+        min-width: 0;
+        img {
+          width: 100%;
+          margin-right: rem(16);
+        }
       }
 
       .title {
-        display: none;
-      }
-
-      .right-section {
-        min-width: rem(130);
-      }
-    }
-
-    .piv-bottom {
-      .title {
-        margin: 0;
+        min-width: 100%;
+        padding: 0;
+        //height: auto;
+        height: fit-content;
+        max-height: fit-content;
+        order: 2;
+        margin-left: 0;
+        margin-right: 0;
         display: flex;
-        padding-bottom: token-value(spacer sm);
-        @include content-font(100);
-        font-family: token-value(font, family, header);
+        align-items: center;
       }
-    }
-  }
-}
-
-@include media-mobile() {
-  .qc-piv-header {
-    .piv-top {
-      height: rem(72);
 
       .right-section {
-        min-width: fit-content;
+        min-width: 0;
+        margin-right: 0;
+        margin-left: 0;
       }
     }
   }
 }
+
+
 
 
