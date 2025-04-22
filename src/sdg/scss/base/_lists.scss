@@ -1,8 +1,7 @@
 @use "qc-sdg-lib" as *;
 
-ul {
+ol,ul {
     max-inline-size: token-value(max-content-width);
-    list-style: disc;
     margin-top: 0;
     margin-bottom: token-value(spacer content-block mb);
     padding-left: token-value(spacer list pl);
@@ -10,9 +9,15 @@ ul {
         margin-bottom: token-value(spacer list-item mb);
         margin-top: token-value(spacer list-item mb);
     }
-    ul {
+    ol,ul {
         margin-top: 0;
         margin-bottom: 0;
+
+    }
+}
+ul {
+    list-style: disc;
+    ul {
         list-style: circle;
     }
 }

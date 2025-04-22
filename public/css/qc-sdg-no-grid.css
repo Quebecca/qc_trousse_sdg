@@ -695,20 +695,25 @@ figcaption p {
   margin-bottom: 0;
 }
 
-ul {
+ol, ul {
   max-inline-size: var(--qc-max-content-width);
-  list-style: disc;
   margin-top: 0;
   margin-bottom: var(--qc-spacer-content-block-mb);
   padding-left: var(--qc-spacer-list-pl);
 }
-ul li {
+ol li, ul li {
   margin-bottom: var(--qc-spacer-list-item-mb);
   margin-top: var(--qc-spacer-list-item-mb);
 }
-ul ul {
+ol ol, ol ul, ul ol, ul ul {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+ul {
+  list-style: disc;
+}
+ul ul {
   list-style: circle;
 }
 
