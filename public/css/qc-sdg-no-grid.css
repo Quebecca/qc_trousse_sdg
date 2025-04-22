@@ -1263,7 +1263,6 @@ qc-icon {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
-  margin-bottom: 3.2rem;
 }
 .qc-notice .icon-container {
   display: flex;
@@ -1337,6 +1336,7 @@ qc-icon {
 
 qc-notice {
   display: block;
+  margin-bottom: 3.2rem;
 }
 qc-notice h1, qc-notice h2, qc-notice h3, qc-notice h4, qc-notice h5, qc-notice h6, qc-notice [role=heading] {
   margin: 0;
