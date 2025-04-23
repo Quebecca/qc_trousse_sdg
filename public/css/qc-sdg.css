@@ -363,7 +363,7 @@ h1:after, .qc-h1:after {
   display: block;
   margin: 0;
   width: 4.8rem;
-  padding-top: 0.8rem;
+  padding-top: 0.4rem;
   border-bottom: 4px solid var(--qc-color-accent);
 }
 

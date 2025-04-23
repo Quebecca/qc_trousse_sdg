@@ -20,7 +20,7 @@ h1, .qc-h1 {
     display:block;
     margin: 0;
     width: rem(6 * $base-spacer);
-    padding-top: rem($base-spacer);
+    padding-top: rem($base-spacer * .5);
     border-bottom: 4px solid token-value(color, accent);
   }
 }
