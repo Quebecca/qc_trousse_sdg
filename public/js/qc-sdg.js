@@ -1880,7 +1880,7 @@
 		};
 	}
 
-	// (111:12) {#if titleText}
+	// (110:12) {#if titleText}
 	function create_if_block_5(ctx) {
 		let div;
 		let a;
@@ -1915,7 +1915,7 @@
 		};
 	}
 
-	// (123:8) {#if enableSearch == 'true'}
+	// (122:8) {#if enableSearch == 'true'}
 	function create_if_block_4(ctx) {
 		let a;
 		let span;
@@ -1967,7 +1967,7 @@
 		};
 	}
 
-	// (134:10) {#if joinUsUrl || altLanguageUrl}
+	// (133:10) {#if joinUsUrl || altLanguageUrl}
 	function create_if_block_1$1(ctx) {
 		let nav;
 		let ul;
@@ -2033,7 +2033,7 @@
 		};
 	}
 
-	// (137:18) {#if altLanguageUrl}
+	// (136:18) {#if altLanguageUrl}
 	function create_if_block_3(ctx) {
 		let li;
 		let a;
@@ -2066,7 +2066,7 @@
 		};
 	}
 
-	// (140:18) {#if joinUsUrl}
+	// (139:18) {#if joinUsUrl}
 	function create_if_block_2(ctx) {
 		let li;
 		let a;
@@ -2099,7 +2099,7 @@
 		};
 	}
 
-	// (133:29)            
+	// (132:29)            
 	function fallback_block$1(ctx) {
 		let if_block_anchor;
 		let if_block = (/*joinUsUrl*/ ctx[10] || /*altLanguageUrl*/ ctx[8]) && create_if_block_1$1(ctx);
@@ -2137,7 +2137,7 @@
 		};
 	}
 
-	// (151:6) {#if displaySearchForm}
+	// (150:6) {#if displaySearchForm}
 	function create_if_block$4(ctx) {
 		let div;
 		let current;
@@ -2247,7 +2247,6 @@
 				attr(div0, "aria-label", /*logoAlt*/ ctx[3]);
 				attr(a, "href", /*logoUrl*/ ctx[1]);
 				attr(a, "class", "logo");
-				attr(a, "target", "_blank");
 				attr(a, "rel", "noreferrer");
 				attr(div1, "class", "signature-group");
 				attr(div2, "class", "links");

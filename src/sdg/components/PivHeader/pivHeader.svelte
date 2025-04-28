@@ -101,7 +101,6 @@ onMount(() => {
         <div class="signature-group">
             <a href="{logoUrl}"
                class="logo"
-               target="_blank"
                rel="noreferrer">
                 <div role="img"
                      aria-label="{logoAlt}"
