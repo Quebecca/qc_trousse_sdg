@@ -744,6 +744,14 @@ select {
   font: inherit;
 }
 
+label {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
+  display: inline-block;
+  margin-bottom: 0.4rem;
+}
+
 .qc-sr-only {
   position: absolute;
   width: 1px;

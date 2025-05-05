@@ -1,7 +1,14 @@
+@use "qc-sdg-lib" as *;
 // Inherit fonts for inputs and buttons
 input,
 button,
 textarea,
 select {
   font: inherit;
+}
+
+label {
+  @include content-font('md', 'bold');
+  display: inline-block;
+  margin-bottom: rem(4);
 }
