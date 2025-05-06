@@ -1,4 +1,5 @@
 @use "qc-sdg-lib" as *;
+@use "sass:list" as *;
 
 @mixin qc-notice-title() {
   h1,h2,h3,h4,h5,h6,[role=heading] {
@@ -47,20 +48,16 @@
   }
 
   @each $type, $color in (
-      "information": "blue",
-      "warning": "yellow",
-      "neutral": "grey",
-      "error": "red",
-      "success": "green",
+      "information": ("blue", "piv"),
+      "warning": ("yellow" , "dark"),
+      "neutral": ("grey", "dark"),
+      "error": ("red", "regular"),
+      "success": ("green","regular"),
   ) {
     &.qc-#{$type} .icon-container {
-      background-color: token-value(color,$color,pale);
+      background-color: token-value(color, nth($color, 1), pale);
       [role=img] {
-        background-color: token-value(color,$color,dark);
-
-        &[data-img-type=success], &[data-img-type=error] {
-          background-color: token-value(color,$color,regular);
-        }
+        background-color: token-value(color,nth($color, 1), nth($color, 2));
       }
     }
   }
