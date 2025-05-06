@@ -161,6 +161,140 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Inclusion des scss de la trousse dans une feuille de style personnalisée ;
 - Intégration dans Bootstrap.
 
+## Ajustements à faire pour passer de la v1.2.5 à la v1.3.0
+
+
+### Composant Bandeau PIV (qc-piv-header)
+Les attributs `search-placeholder`, `search-input-name`,`submit-search-text` et `search-form-action` ont été retirés.
+À la place, vous devez créer un formulaire de recherche dans le slot `search-zone`. 
+Voir l'exemple dans le fichier `public/index.html`.
+
+### Composant Pied-de-page PIV (qc-piv-footer)
+Les attributs `logo-src` et `logo-src-dark-theme` ont été ajoutés, pour les thèmes clairs et sombres.
+L’attribut `copyrightText` a été renommé en `copyright-text`.
+
+### Composant Avis (qc-notice)
+L’attribut `type` peut avoir deux nouvelles valeurs : `advice` et `note`.
+L’attribut `icon` a été ajouté.
+
+### Composant Alerte générale (qc-alert)
+
+L’attribut `full-width` a été ajouté.
+
+### Thème sombre
+
+Les couleurs de la trousse s'adaptent en cas de choix du thème sombre.
+- un commutateur dans la documentation incluse permet de basculer dans le thème sombre.
+- en cas de thème sombre, la classe `qc-dark-theme` est ajouté à l'élément html (cf `src/sdg/_dark-theme.js`)
+- des classes et variables css utilitaires permettent de masquer/montrer des éléments selon le thème.
+```scss
+// src/sdg/scss/utilities/_themes.scss
+:root {
+  --qc-light-theme-display: block;
+  --qc-dark-theme-display: none;
+  &.qc-dark-theme {
+    --qc-light-theme-display: none;
+    --qc-dark-theme-display: block;
+  }
+}
+
+.qc-light-theme-show {
+  display: var(--qc-light-theme-display);
+}
+.qc-dark-theme-show {
+  display: var(--qc-dark-theme-display);
+}
+```
+- pour désactiver le thème sombre, vous devez recompiler la trousse avec la variable `$enable-dark-theme: false`. (cf chapitre [Ajout de la trousse dans un projet existant](#ajout-de-la-trousse-dans-un-projet-existant))
+
+### Jetons de conception
+
+- pour chaque token de couleur, ajout d'un token `-rgb`, pour pouvoir appliquer une couche alpha avec la fonction css `rgba()`
+Exemple :
+
+```
+--qc-color-blue-piv: #095797;
+--qc-color-blue-piv-rgb: 9, 87, 151;
+
+// ma-css.css
+.ma-classe {
+   color: rgba(var(--qc-color-blue-piv-rgb), .16);
+}  
+```
+ 
+- ajouts de jetons
+```yaml
+--qc-color-blue-regular_light: #2586d6;
+  
+// ces tokens recevront des extra pâles dans de futur version de la trousse
+--qc-color-blue-extra-pale: var(--qc-color-blue-pale);
+--qc-color-grey-extra-pale: var(--qc-color-grey-pale);
+
+--qc-color-red-pale: var(--qc-color-pink-pale);
+--qc-color-red-light: var(--qc-color-pink-regular);
+
+--qc-color-link-focus-outline: var(--qc-color-blue-light);
+
+// token pour les champs de formulaire
+--qc-color-formfield-border: var(--qc-color-grey-medium);
+--qc-color-formfield-focus-border: var(--qc-color-blue-dark);
+--qc-color-formfield-focus-outline: var(--qc-color-blue-light);
+--qc-color-searchinput-icon: var(--qc-color-blue-piv);
+```
+
+- retraits de jetons:
+```yaml
+--qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
+--qc-spacer-list-embedded-mb: var(--qc-spacer-sm);
+--qc-spacer-notice-my: var(--qc-spacer-md);
+--qc-spacer-notice-mx: 3.2rem;
+```
+- refontes de jetons :
+```yaml
+// refonte des tokens box-shadow
+--qc-color-box_shadow: rgba(var(--qc-color-blue-dark-rgb), 0.24);
+--qc-box_shadow-0-color: var(--qc-color-grey-light);
+--qc-box_shadow-1-blur: 4px;
+--qc-box_shadow-1-offset: 1px;
+--qc-box_shadow-2-blur: 8px;
+--qc-box_shadow-2-offset: 2px;
+--qc-box_shadow-3-blur: 16px;
+--qc-box_shadow-3-offset: 4px;
+--qc-box_shadow-4-blur: 24px;
+--qc-box_shadow-4-offset: 6px;
+
+// refonte des tokens de la grille
+--qc-grid-breakpoint-sm: 768px;
+--qc-grid-breakpoint-md: 992px;
+--qc-grid-breakpoint-lg: 1200px;
+--qc-grid-container-max-width-sm: 768px;
+--qc-grid-container-max-width-md: 992px;
+--qc-grid-container-max-width-lg: 1200px;
+```
+**NB : le point de rupture 576px a été retiré : la résolution mobile/sm commence donc à 768px**
+Tous les autres points de rupture 1.2.5 ont donc été décalés vers le bas.
+
+| résolution    | 1.2.5   | 1.3.0  |
+|---------------|---------|--------|
+| mobile   / sm | 576px   | 768px  |
+| tablet   / md | 768px   | 996px  |
+| desktop  / lg | 996px   | 1200px |
+| desktop  / xl | 1200px  | na     |
+
+### Import de l'API scss de la trousse
+
+En version 1.2.5, l'import de la trousse dans une scss personnalisée se faisait par l'import d'un ou plusieurs modules :
+```scss
+@use "modules/utils" as *;
+@use "modules/tokens" as *;
+```
+
+Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier de toute l'api scss de la trousse :
+```scss
+@use "qc-sdg-lib" as *;
+// donne accés à toutes les fonctions, mixins et variables de la trousse
+```
+
 ## Historique
 
 - Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages ; ajout du focus pour les liens ; Ajout d'un attribut `sdg-css-path` à la balise script qui insère le js, pour pouvoir préciser le chemin vers la css du sdg. Refonte de toute la structure des fichiers : suppression du répertoire modules, ajout d'un unique fichier _qc-sdg-lib.scss pour accéder à l'intégralité des variables, fonctions, mixins et classes abstraites (c-à-d. précédées de l'opérateur sass %) du la trousse ; ajout d’un exemple de barre de recherche avec saisie semi-automatique basé sur jQuery UI ; ajout d'un style pour les libellés des champs de formulaire (label).  
