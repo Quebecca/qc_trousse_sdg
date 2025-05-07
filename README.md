@@ -279,7 +279,7 @@ Tous les autres points de rupture 1.2.5 ont donc été décalés vers le bas.
 | mobile   / sm       | 0 - 576px      | 0 - 768px      |
 | tablet   / md       | 576px - 768px  | 768px - 996px  |
 | desktop  / lg       | 768px - 996px  | 996px - 1200px |
-| large-desktop  / xl | 996px - 1200px |  1200px             |
+| large-desktop  / xl | 996px - 1200px | &gt; 1200px    |
 
 ### Import de l'API scss de la trousse
 
@@ -293,6 +293,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```scss
 @use "qc-sdg-lib" as *;
 // donne accés à toutes les fonctions, mixins et variables de la trousse
+// sans générer aucun code css
 ```
 
 ## Historique
