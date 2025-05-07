@@ -183,9 +183,9 @@ L’attribut `full-width` a été ajouté.
 
 ### Thème sombre
 
-Les couleurs de la trousse s'adaptent en cas de choix du thème sombre.
-- un commutateur dans la documentation incluse permet de basculer dans le thème sombre.
-- en cas de thème sombre, la classe `qc-dark-theme` est ajouté à l'élément html (cf `src/sdg/_dark-theme.js`)
+Les couleurs de la trousse s'adaptent en cas de choix du thème sombre ;
+- un commutateur dans la documentation incluse permet de basculer dans le thème sombre ; 
+- en cas de thème sombre, la classe `qc-dark-theme` est ajoutée à l'élément html (cf `src/sdg/_dark-theme.js`) ;
 - des classes et variables css utilitaires permettent de masquer/montrer des éléments selon le thème.
 ```scss
 // src/sdg/scss/utilities/_themes.scss
@@ -209,7 +209,7 @@ Les couleurs de la trousse s'adaptent en cas de choix du thème sombre.
 
 ### Jetons de conception
 
-- pour chaque token de couleur, ajout d'un token `-rgb`, pour pouvoir appliquer une couche alpha avec la fonction css `rgba()`
+- pour chaque token de couleur, ajout d'un token avec le suffix `-rgb` qui indique la valeur RGB de la couleur, ceci afin de pour pouvoir appliquer une couche alpha avec la fonction css `rgba()`
 Exemple :
 
 ```
@@ -226,7 +226,7 @@ Exemple :
 ```yaml
 --qc-color-blue-regular_light: #2586d6;
   
-// ces tokens recevront des extra pâles dans de futur version de la trousse
+// ces tokens recevront des valeurs extra pâles dans de futures versions de la trousse
 --qc-color-blue-extra-pale: var(--qc-color-blue-pale);
 --qc-color-grey-extra-pale: var(--qc-color-grey-pale);
 
@@ -271,15 +271,15 @@ Exemple :
 --qc-grid-container-max-width-md: 992px;
 --qc-grid-container-max-width-lg: 1200px;
 ```
-**NB : le point de rupture 576px a été retiré : la résolution mobile/sm commence donc à 768px**
+**NB : le point de rupture 576px a été retiré : la résolution mobile/sm commence donc à 768px**.
 Tous les autres points de rupture 1.2.5 ont donc été décalés vers le bas.
 
-| résolution    | 1.2.5   | 1.3.0  |
-|---------------|---------|--------|
-| mobile   / sm | 576px   | 768px  |
-| tablet   / md | 768px   | 996px  |
-| desktop  / lg | 996px   | 1200px |
-| desktop  / xl | 1200px  | na     |
+| Résolution          | 1.2.5          | 1.3.0          |
+|---------------------|----------------|----------------|
+| mobile   / sm       | 0 - 576px      | 0 - 768px      |
+| tablet   / md       | 576px - 768px  | 768px - 996px  |
+| desktop  / lg       | 768px - 996px  | 996px - 1200px |
+| large-desktop  / xl | 996px - 1200px |  1200px             |
 
 ### Import de l'API scss de la trousse
 
