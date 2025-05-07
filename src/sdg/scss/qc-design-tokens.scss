@@ -1,15 +1,38 @@
-@use "modules/tokens" as *;
-@use "modules/map" as *;
-@use "modules/grid" as *;
+@use "qc-sdg-lib" as *;
+@use "sass:map";
+@use "sass:string";
+@use "sass:list";
 
-:root,:host {
+@mixin generate-token-for-breakpoints($breakpoints-settings) {
 
-   @each $breakpoint, $settings in $breakpoints-tokens {
+   @each $breakpoint, $settings in $breakpoints-settings {
       @include media-breakpoint-down($breakpoint) {
-         @include map-deep-parse($settings) using ($path,$value)
-         {
+         @include map-deep-parse($settings) using($path,$value) {
             #{token-name($path)} : $value;
-         };
+            // pour chaque couleur définie avec un code hexa,
+            // on ajoute un token avec les coordonnées rgb
+            // par exemple : --qc-color-white: #ffffff;
+            // ajoute automatiquement --qc-color-white-rgb: 255,255,255;
+            // Ceci afin de pouvoir ajouter une transparence à une couleur
+            // avec la fonctions css rgba(), tout en permettant le changement de thème.
+            // par exemple : .foo { background-color: rgba(var(--qc-color-xxx-rgb), .23)};
+            // cette règle fonctionne quel que soit le thème clair ou sombre puisque basée
+            // sur un token.
+            @if (list.index($path, "color")) {
+               // ici on vérifie que la couleur commence par #
+               @if (string.index("#{$value}", '#') == 1) {
+                  #{token-name($path)}-rgb : rgb-token($value);
+               }
+            }
+         }
       }
    }
+}
+
+:root {
+   @include generate-token-for-breakpoints(map.get($themes-tokens, light));
+}
+
+@include dark-theme() {
+   @include generate-token-for-breakpoints(map.get($themes-tokens, dark))
 }

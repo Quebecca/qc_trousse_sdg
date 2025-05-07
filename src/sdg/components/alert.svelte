@@ -1,13 +1,25 @@
-<svelte:options customElement="qc-alert"/>
+<svelte:options customElement="{{
+  tag:'qc-alert',
+  props: {
+     type  : {attribute: 'type'},
+     maskable  : {attribute: 'maskable'},
+     fullWidth : {attribute: 'full-width'},
+     content: {attribute: 'content'},
+     hide: {attribute: 'hide'},
+  }
+}}"/>
 
 <script>
     import {Utils} from "./utils";
+    import Icon from "./Icon.svelte";
+    import IconButton from "./Button/IconButton.svelte";
 
     export let
           type = "general"
         , maskable = ""
         , content = ""
         , hide = "false"
+        , fullWidth = 'false'
         ;
 
     let
@@ -17,8 +29,8 @@
                         ? type
                         : 'general'
         , closeLabel = Utils.getPageLanguage() === 'fr'
-                        ? "Fermer"
-                        : "Close"
+                        ? "Fermer l’alerte"
+                        : "Close l’alerte"
         , warningLabel = Utils.getPageLanguage() === 'fr'
                         ? "Information d'importance élevée"
                         : "Information of high importance"
@@ -28,9 +40,12 @@
         , label = type === 'general'
                         ? generalLabel
                         : warningLabel
+        , containerClass
         ;
 
     $: hiddenFlag = hide === 'true'
+    $: containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
+
     function hideAlert() {
         hide='true'
         rootElement.dispatchEvent(
@@ -44,28 +59,30 @@
 {#if !hiddenFlag}
     <div bind:this={rootElement}
         class="qc-general-alert {typeClass}"
-        role="alert"
-        aria-label={label}>
-        <div class="qc-container qc-general-alert-elements">
-            <div class="qc-icon qc-{type}-alert-icon"
-                 aria-hidden="true"
-            ></div>
-            <div class="qc-alert-content">
-                {@html content}
-                <slot />
-            </div>
-            {#if maskable === "true"}
-                <div class="qc-alert-close">
-                    <button type="button" class="qc-close" aria-label={closeLabel}
-                            on:click={hideAlert}>
-                        <span aria-hidden="true"
-                              class="qc-icon qc-xclose-blue qc-close-alert-icon"
-                        ></span>
-                    </button>
+        role="alert">
+        <div class={containerClass}>
+            <div class="qc-general-alert-elements">
+                <Icon type={type == 'warning' ? 'warning' : 'information'}
+                      color="{type == 'general' ? 'blue-piv' : 'yellow-dark'}"
+                      size="nm"
+                      label={label}
+                />
+                <div class="qc-alert-content">
+                    {@html content}
+                    <slot />
                 </div>
-            {/if}
+                {#if maskable === "true"}
+                    <IconButton aria-label={closeLabel}
+                                on:click={hideAlert}
+                                size="nm"
+                                icon="clear-input"
+                                iconSize="sm"
+                                iconColor="text-primary"
+                    />
+                {/if}
+            </div>
         </div>
     </div>
 {/if}
 <link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
+      href='{Utils.cssPath}'>

@@ -1,25 +1,30 @@
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
+@use "qc-sdg-lib" as *;
+
+img {
+  border: none;
+  vertical-align: middle;
+}
 
 figure {
-  display: inline-block;
-  flex-direction: column;
+  margin: 0 0 token-value(spacer content-block mb);
+  display: table;
+  overflow-x: auto;
   img {
-    max-width: 100%;
+    width: 100%;
     height: auto;
   }
 }
 figcaption {
+  display: table-caption;
+  caption-side: bottom;
   @include content-font(sm);
+  max-inline-size: token-value(max-content-width);
   background-color: token-value(color, grey, pale);
   padding: rem($base-spacer);
   margin-top: rem($base-spacer);
   p {
     @include content-font(sm);
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin-bottom: 0;
   }
-  //margin-bottom: token-value(spacer md);
 }
 

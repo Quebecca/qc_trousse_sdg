@@ -1,0 +1,4 @@
+@use "qc-sdg-lib" as *;
+.qc-sr-only {
+  @include sr-only();
+}

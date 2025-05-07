@@ -2,9 +2,6 @@
     Référence : https://github.com/sveltejs/svelte/issues/3852
 */
 export const customElements = {
-  customFoo: function () {
-    return "bar";
-  },
   define: (tagName, CustomElement) => {
     class CustomElementWrapper extends CustomElement {
       static get observedAttributes() {

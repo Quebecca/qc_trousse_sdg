@@ -1,18 +1,14 @@
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
-@use "../modules/grid" as *;
+@use "qc-sdg-lib" as *;
 
 .qc-general-alert {
-  max-inline-size: token-value(max-content-width);
-  padding: token-value(spacer, md) token-value(spacer, sm);
+  padding: token-value(spacer, md) 0;
 
   @include media-mobile() {
-    padding: token-value(spacer, sm);
+    padding: token-value(spacer, sm) 0;
   }
 
   .qc-general-alert-elements {
     display: flex;
-    padding: 0;
   }
 
   &.warning {
@@ -21,11 +17,6 @@
 
   &.general {
     background-color: token-value(color, blue, pale);
-  }
-
-  .qc-icon {
-    min-width: token-value(spacer, md);
-    height: token-value(spacer, md);
   }
 
   .qc-alert-content {
@@ -38,39 +29,25 @@
     }
   }
 
-  .qc-alert-close {
-    display: flex;
-    align-items: center;
-    @include media-mobile() {
-      align-items: inherit;
+  button {
+    @include qc-formcontrol-box;
+    flex-shrink: 0;
+    &::before {
+      background: transparent;
     }
-  }
-
-  .qc-close {
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    display: inline-flex;
-    justify-content: center;
-
-    .qc-close-alert-icon {
-      display: inline-block;
-      min-width: token-value(spacer, sm);
-      height: token-value(spacer, sm);
-      vertical-align: middle;
-      cursor: pointer;
-    }
+    cursor: pointer;
   }
 }
 
 qc-alert {
+  display: block;
   [slot], &:not([slot=content]) {
     * {
       margin-bottom: 0;
     }
 
     a {
-      color: token-value(color blue dark);
+      color: token-value(color blue piv);
     }
   }
 }

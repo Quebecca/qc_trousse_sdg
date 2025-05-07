@@ -1,0 +1,78 @@
+@use "sass:color";
+@use "sass:meta";
+@use "settings/base" as *;
+@use "sass:math";
+@use "sass:map";
+@use "sass:string";
+
+
+// Return rem size from pixel size according to root font-size as define in settings
+// Always use this function for rem values
+//
+// root font-size : 100 %,
+// /* foo.scss */
+// .foo { font-size: rem(16); }
+// /* foo.css */
+// .foo { font-size: 1rem; }
+//
+// root font-size : 62.5 %,
+// /* foo.scss */
+// .foo { font-size: rem(16); }
+// /* foo.css */
+// .foo { font-size: 1.6rem; }
+
+$rem-ratio: math.div(1, .16 * $percent-root-font-size);
+@function rem($px-size) {
+  @return $px-size * $rem-ratio * 1rem;
+}
+
+@function rem-ratio($px-size) {
+  @return math.div($px-size, 16 * $percent-root-font-size * .01) * 1rem;
+}
+
+// implode a list (and flatten inner list : implode( (foo, (bar baz)), '-'); => foo-bar-baz
+@function deep-implode($list, $glue: '-') {
+  $separator : '';
+  $result : '';
+  @each $item in $list {
+    $part : $item;
+    @if meta.type-of($item) == 'list' {
+      $part : deep-implode($item, $glue);
+    }
+    $result : '#{$result}#{$separator}#{$part}';
+    $separator: $glue;
+  }
+  @return $result;
+}
+
+@function google-font($font) {
+  @return string.unquote(deep-implode(map.get($google-fonts, $font), ','));
+}
+
+@function getImageUrl($nom, $images: $images) {
+  $image: map.get($images, $nom);
+  @return url('data:image/svg+xml;base64,#{$image}');
+}
+
+
+// Return css var corresponding to this token
+// token-value(foo bar); // var(--qc-foo-bar);
+@function token-value($args...) {
+  @return var(#{token-name($args...)});
+}
+
+@function token-name($args...) {
+  @return --qc-#{deep-implode($args, '-')};
+}
+
+@function rgb-token($color) {
+  @if meta.function-exists("channel","color") {  // Sass 1.63.0 = Dart Sass 3.63.0
+    @return (color.channel($color, 'red', $space: rgb), color.channel($color, 'green', $space: rgb), color.channel($color, 'blue', $space: rgb));
+  } @else {
+    @return (color.red($color), color.green($color), color.blue($color));
+  }
+}
+
+
+
+

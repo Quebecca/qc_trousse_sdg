@@ -1,0 +1,220 @@
+@use "sass:meta";
+@use "sass:list";
+@use "sass:map";
+@use "sass:math";
+@use "settings/base" as *;
+
+@use "functions" as *;
+@use "../grid/grid-lib" as grid;
+
+// toujours utiliser ces mixins pour la déclarations des tailles de police:
+// cela garantit que la taille police est conforme aux exigences du SDG
+// et ajoute automatiquement le bon interlignage
+@mixin content-font($scale: 'md', $weight: 'regular', $include-family: 0) {
+  font-size: token-value(font size $scale);
+  line-height: token-value(line-height $scale);
+  font-weight: token-value(font weight $weight);
+  @if $include-family == 1 {
+    font-family: token-value(font family content);
+  }
+}
+
+@mixin header-font($header) {
+  font-family:  token-value(font, family, header) ;
+  font-size: token-value(font, size, $header) ;
+  line-height:  token-value(line-height, $header) ;
+  font-weight: token-value(font, weight, header, bold);
+}
+
+// ruler
+@mixin ruler() {
+  margin: token-value(spacer lg) 0;
+  border: 0;
+  border-bottom: 1px solid  token-value(color grey light);
+}
+
+// links
+
+@mixin hover-link() {
+  color: token-value(color, link, hover);
+  text-decoration: none;
+}
+
+@mixin active-link() {
+  color: token-value(color, link, active);
+  text-decoration: none;
+}
+
+@mixin focus-link() {
+  @include hover-link();
+  outline: 2px solid token-value(color link focus outline);
+  outline-offset: 1px;
+}
+
+@mixin external-link-img() {
+  $ratio : math.div(11,16) * 1em;
+  height: $ratio;
+  width: $ratio;
+  display: inline-block;
+  mask: getImageUrl(external-link) no-repeat;
+  background: token-value(color link text);
+  mask-size: $ratio;
+  margin-left: 4px;
+  a:visited  & {
+    background: token-value(color link visited);
+  }
+  a:focus  & {
+    background: token-value(color link hover);
+  }
+  a:hover  & {
+    background: token-value(color link hover);
+  }
+  a:active  & {
+    background: token-value(color link active);
+  }
+
+}
+
+@mixin sr-only() {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin qc-shading($index) {
+  @if ($index == 0) {
+    border: 1px solid token-value(box_shadow 0 color);
+  }
+  @else {
+    box-shadow: 0
+    token-value(box_shadow $index offset)
+    token-value(box_shadow $index blur)
+    token-value(color box_shadow);
+  }
+}
+
+@mixin dark-theme() {
+  @if ($enable-dark-theme) {
+    @at-root .qc-dark-theme #{&},:root.qc-dark-theme #{&} {
+      @content;
+    }
+  }
+}
+
+//Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
+//le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
+//Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,
+//qui affiche la bordure de 1px et l'outline interne de 2px.
+//Les boutons placés dans ce cadre ont le même comportement (donc héritent de cette classe).
+//Tous les élémmens placés dans ce cadre son marqués comme transparents.
+//De cette façon, l'affichage des focus et des bordures ne joue pas sur les marges et largeur des composants.
+
+@mixin qc-formcontrol-box() {
+  position: relative;
+  z-index: 10;
+  // TODO mettre des tokens
+  background: transparent;
+  border: 0;
+  //color: token-value(color text primary);
+  // TODO renommer formfield en textfield
+  &::before {
+    position: absolute;
+    display: block;
+    content: "";
+    background-color: token-value(color background);
+    inset: 0;
+    z-index: -5
+  }
+  &:has(input:focus), &:focus {
+    outline: 2px solid token-value(color formfield focus outline);
+    &::before {
+      border: 2px solid token-value(color formfield focus border);
+    }
+  }
+}
+
+%qc-formcontrol-box {
+  @include qc-formcontrol-box();
+}
+
+@mixin heading($i) {
+  @include header-font(h#{$i});
+  max-inline-size: token-value(max-content-width);
+  margin-top: token-value(spacer h#{$i} mt);
+  margin-bottom: token-value(spacer h#{$i} mb);
+}
+
+@mixin map-deep-parse($map, $parents: ()) {
+  @each $key, $value in $map {
+    $path: list.append($parents, $key);
+    @if meta.type-of($value) == 'map' {
+      @include map-deep-parse($value, $path) using($path,$value) {
+        @content($path, $value);
+      }
+    } @else {
+      @content($path, $value);
+    }
+  }
+}
+
+@mixin media-large-desktop() {
+  @include grid.media-breakpoint-up(lg) {
+    @content;
+  }
+}
+
+@mixin media-desktop() {
+  @include grid.media-breakpoint-up(md) {
+    @content;
+  }
+}
+
+@mixin media-tablet() {
+  @include grid.media-breakpoint-down(sm) {
+    @content;
+  }
+}
+
+@mixin media-mobile() {
+  @include grid.media-breakpoint-down(xs) {
+    @content;
+  }
+}
+
+// ci-dessous override des fonctions bootstrap, pour pouvoir les utiliser avec des alias (mobile, tablet, desktop, etc)
+@mixin media-breakpoint-up($name, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $name)) {
+    $name: map.get($grid-aliases, $name);
+  }
+  @include grid.media-breakpoint-up($name, $breakpoints) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($name, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $name)) {
+    $name: map.get($grid-aliases, $name);
+  }
+  @include grid.media-breakpoint-down($name, $breakpoints) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: grid.$grid-breakpoints) {
+  @if (map.has-key($grid-aliases, $lower)) {
+    $lower: map.get($grid-aliases, $lower);
+  }
+  @if (map.has-key($grid-aliases, $upper)) {
+    $upper: map.get($grid-aliases, $upper);
+  }
+  @include grid.media-breakpoint-between($lower, $upper, $breakpoints) {
+    @content;
+  }
+}
+

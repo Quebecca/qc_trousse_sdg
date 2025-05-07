@@ -1,18 +1,23 @@
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
+@use "qc-sdg-lib" as *;
 
-ul {
+ol,ul {
     max-inline-size: token-value(max-content-width);
-    list-style: disc;
     margin-top: 0;
-    margin-bottom: token-value(spacer list mb);
+    margin-bottom: token-value(spacer content-block mb);
     padding-left: token-value(spacer list pl);
     li {
         margin-bottom: token-value(spacer list-item mb);
-    }
-    ul {
         margin-top: token-value(spacer list-item mb);
-        margin-bottom: token-value(spacer list embedded-mb);
+    }
+    ol,ul {
+        margin-top: 0;
+        margin-bottom: 0;
+
+    }
+}
+ul {
+    list-style: disc;
+    ul {
         list-style: circle;
     }
 }

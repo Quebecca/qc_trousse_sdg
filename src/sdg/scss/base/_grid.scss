@@ -1,9 +1,0 @@
-@use "modules/grid" as *;
-@import "bootstrap-rewrite/grid";
-
-// Décommenter ces lignes pour ajouter les classes utilitaires bootstrap précédées de « qc- »,
-// selon le même principe que pour la grille.
-// ex: mt-lg-4 -> qc-mt-lg-4, d-sm-flex -> qc-d-sm-flex, d-md-none, qc-d-md-none
-//@import "build/bootstrap/scss/utilities/display";
-//@import "build/bootstrap/scss/utilities/flex";
-//@import "build/bootstrap/scss/utilities/spacing";

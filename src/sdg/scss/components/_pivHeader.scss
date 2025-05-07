@@ -1,12 +1,33 @@
-@use "../modules/tokens" as *;
-@use "../modules/utils" as *;
-@use "../modules/grid" as *;
+@use "qc-sdg-lib" as *;
+@use "sass:map";
 
+$colors : map.get($themes-tokens, light, lg, color);
+
+%piv-links {
+  &, & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+
+    li {
+      padding: 0;
+      margin: 0;
+      @include content-font(sm);
+    }
+
+    a {
+      font-size: rem(12.8);
+    }
+  }
+}
 
 qc-piv-header {
+  --qc-piv-header-bg: 1;
   display: block;
-  min-height: rem(72);
-  background-color: token-value(color, blue, piv);
+  // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
+  // on se base donc sur les valeurs scss
+  background-color: map.get($colors, blue, piv);
   width: 100%;
 
   [slot=links] {
@@ -15,66 +36,72 @@ qc-piv-header {
 }
 
 .qc-piv-header {
-  color: token-value(color white);
-
-  a {
-    color: token-value(color white);
-    text-decoration: none;
-
-    &:hover, &:focus {
-      color: token-value(color white);
-      text-decoration: underline;
-    }
+  color: map.get($colors, white);
+  .go-to-content {
+    position: relative;
   }
-
   .piv-top {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .logo {
-      margin-right: rem(64);
-      @include media-mobile() {
-        margin: 0;
-      }
-
-      a {
-        display: block;
-      }
-
-      img {
-        height: rem(72);
-        min-width: rem(200);
-      }
-    }
-
-    .title {
-      width: 100%;
-      padding: token-value(spacer sm) 0;
+    flex-wrap: wrap;
+    //justify-content: space-between;
+    align-items: start;
+    > * {
       min-height: rem(72);
-      align-items: center;
+    }
+    .signature-group {
       display: flex;
-      margin-right: rem(40);
-
-      a {
-        @include content-font(100);
-        font-family: token-value(font, family, header);
-
-        &:hover, &:focus {
-          text-decoration: underline;
+      flex-grow: 1;
+      flex-wrap: wrap;
+      align-items: start;
+      margin-right: auto;
+      * {
+        min-height: rem(72);
+      }
+      .logo {
+        display: flex;
+        flex-basis: rem(256);
+        //margin-right: rem(64);
+        [role=img] {
+          background-image: var(--logo-src);
+          background-repeat: no-repeat;
+          background-size: 100%;
+          background-position: center;
+          margin-right: 16px;
+          min-width: 150px;
+          //object-fit: fill;
+          width: 100%;
+          max-width: rem(200);
+          min-height: rem(72);
         }
-
-        .description {
-          font-size: token-value(font size sm);
+      }
+      .title {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        @include content-font(100);
+        flex-basis: fit-content;
+        //margin-top: auto;
+        //margin-bottom: auto;
+        //margin-right: auto;
+        //padding-right: 40px;
+        > * {
+          //display: -webkit-box;
+          //-webkit-line-clamp: 2;
+          //-webkit-box-orient: vertical;
+          //overflow: hidden;
+          //max-height: rem(72);
         }
       }
     }
+
+
+
 
     .right-section {
       min-width: fit-content;
       display: flex;
       align-items: center;
-
+      flex-basis: fit-content;
       .links ul {
         @extend %piv-links;
       }
@@ -85,8 +112,15 @@ qc-piv-header {
     }
 
     .qc-search {
+      background-image: getImageUrl(loupe-piv-droite);
+      background-repeat: no-repeat;
       min-width: rem(24);
       height: rem(24);
+      margin-right: token-value(spacer md);;
+      @include media-mobile() {
+        margin-right: token-value(spacer sm);
+      }
+
       span {
         @include sr-only();
       }
@@ -94,91 +128,32 @@ qc-piv-header {
   }
 
   .piv-bottom {
-    .title {
-      display: none;
-    }
     .search-zone {
       padding-bottom: token-value(spacer md);
-      form {
-        .input-group {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: stretch;
-          input {
-            width: 100%;
-            padding: rem(6) rem(12) ;
-            border: 1px solid token-value(color blue dark);
-            border-right: none;
-            &:focus {
-              outline: rem(2) solid token-value(color blue light);
-              border-right: 1px solid black;
-              z-index: 1;
-            }
-            &::placeholder {
-              font-size: token-value(font size sm);
-            }
-          }
-          button {
-            display: flex;
-            justify-content: center;
-            border: 1px solid token-value(color blue dark);
-            border-left: none;
-            background-color: white;
-            width: rem(2.6 * 16);
-            &:focus{
-              outline: rem(2) solid token-value(color blue light);
-              border-left: 1px solid black;
-            }
-            .qc-search-submit {
-              min-width: rem(24);
-              height: rem(24);
-              align-self: center;
-            }
-            .sr-description {
-              position: absolute;
-              width: 1px;
-              height: 1px;
-              clip: rect(0 0 0 0);
-            }
-          }
-
-        }
-      }
     }
-
   }
 }
 
+qc-piv-header,
+.qc-piv-header {
+  a {
+    --qc-color-link-focus-outline: white;
+    --qc-color-link-hover: white;
+    --qc-color-link-text: white;
+    --qc-color-link-visited: white;
+    --qc-color-link-active: white;
 
-%piv-links {
-  &, & ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    margin-left: token-value(spacer md);
-    @include media-mobile() {
-      margin-left: token-value(spacer sm);
+    font-family: token-value(font family header);
+    text-decoration: none;
+    font-weight: token-value(font weight regular);
+
+    &:hover {
+      text-decoration: underline;
     }
-
-    li {
-      padding: 0;
-      margin: 0;
-      @include content-font(sm);
-    }
-
-    a {
-      font-family: token-value(font family header);
-      text-decoration: none;
-      font-size: rem(12);
-      color: token-value(color white);
-      font-weight: token-value(font weight regular);
-
-      &:focus, &:hover {
-        text-decoration: underline;
-        color: token-value(color white);
-      }
+  }
+  a:focus-visible, a:focus {
+    &:has(img) {
+      outline-offset: -2px;
     }
   }
 }
@@ -191,53 +166,55 @@ qc-piv-header {
     @include sr-only();
 
     &:focus {
+      top: 2px;
       width: inherit;
-      height: inherit;
+      height: 24px;
       overflow: inherit;
       clip: inherit;
       white-space: inherit;
-      color: token-value(color white);
-      background-color: token-value(color blue piv);
+      color: map.get($colors, white);
+      background-color: map.get($colors, blue, piv);
+      margin:0;
     }
   }
 }
 
-
-@include media-tablet() {
+@include media-mobile(){
   .qc-piv-header {
     .piv-top {
-      .logo img {
-        min-width: rem(175);
-        width: rem(175);
+      flex-wrap: wrap;
+      .logo {
+        flex-shrink: 1;
+        margin-right: auto;
+        min-width: 0;
+        img {
+          width: 100%;
+          margin-right: rem(16);
+        }
       }
 
       .title {
-        display: none;
-      }
-
-      .right-section {
-        min-width: rem(130);
-      }
-    }
-
-    .piv-bottom {
-      .title {
-        margin: 0;
+        min-width: 100%;
+        padding: 0;
+        //height: auto;
+        height: fit-content;
+        max-height: fit-content;
+        order: 2;
+        margin-left: 0;
+        margin-right: 0;
         display: flex;
-        padding-bottom: token-value(spacer sm);
+        align-items: center;
       }
-    }
-  }
-}
-
-@include media-mobile() {
-  .qc-piv-header {
-    .piv-top {
-      height: rem(72);
 
       .right-section {
-        min-width: fit-content;
+        min-width: 0;
+        margin-right: 0;
+        margin-left: 0;
       }
     }
   }
 }
+
+
+
+

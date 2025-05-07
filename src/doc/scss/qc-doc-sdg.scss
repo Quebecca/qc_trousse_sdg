@@ -1,33 +1,16 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
-@use "components/icons" as *;
+@use "qc-sdg-lib" as *;
 @use "components/code" as *;
 @use "components/button" as *;
 @use "tables";
+@use "jQueryUI/jquery-ui.autocomplete";
 
 main {
-  padding-bottom: token-value(spacer lg);
+  margin-bottom: token-value(spacer lg);
 }
 
-.color-details {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  > div + div {
-    margin-left: token-value(spacer,md);
-  }
-  & + & {
-    margin-top: token-value(spacer,md);
-  }
-}
-
-.color-sample {
-  width: rem(6 * $base-spacer);
-  height: rem(6 * $base-spacer);
-  border-radius: 50%;
-  flex-shrink: 0;
+qc-color-doc {
+  display: block;
+  margin-bottom: token-value(spacer,md);;
 }
 .title-samples {
   border: 1px solid token-value(color,grey,light);
@@ -54,6 +37,9 @@ main {
   font-family: token-value(font,family,header);
 }
 
+h1,h2,h3,h4,h5,h6 {
+  scroll-margin-top: rem(96);
+}
 
 #grid-samples {
   position: relative;
@@ -89,15 +75,20 @@ main {
   }
 }
 
-.square-box {
+#liste-elevation {
   display: flex;
-  width: rem(15 * $base-spacer);
-  height: rem(15 * $base-spacer);
-  justify-content: center;
-  align-items: center;
+  gap: token-value(grid gutter);
+  flex-wrap: wrap;
+  [class*=qc-shading-] {
+    display: flex;
+    width: rem(15 * $base-spacer);
+    height: rem(15 * $base-spacer);
+    justify-content: center;
+    align-items: center;
 
-  &.qc-shading-0 {
-    border: 1px solid token-value(color, grey, light)
+    &.qc-shading-0 {
+      border: 1px solid token-value(color, grey, light)
+    }
   }
 }
 
@@ -109,11 +100,29 @@ a {
   &.pseudo-active {
     @include active-link();
   }
-  &.visited {
-    color: token-value(color,link,visited);
+  &.pseudo-focus {
+    @include focus-link();
+  }
+  &.pseudo-visited {
+    color: token-value(color,link,visited)!important;
   }
   &.not-visited:visited:not(:hover) {
     color: token-value(color,link,text);
+  }
+}
+
+span.qc-ext-link-img {
+  a.pseudo-visited  & {
+    background: token-value(color link visited)!important;
+  }
+  a.pseudo-focus  & {
+    background: token-value(color link hover)!important;
+  }
+  a.pseudo-hover  & {
+    background: token-value(color link hover)!important;
+  }
+  a.pseudo-active  & {
+    background: token-value(color link active)!important;
   }
 }
 
@@ -125,53 +134,45 @@ table.component-attributes-description td:first-child {
   white-space: nowrap;
 }
 
-#custom-piv-search-form {
-  .input-group {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    input {
-      width: 100%;
-      padding: rem(6) rem(12) ;
-      border: 1px solid token-value(color blue dark);
-      border-right: none;
-      &:focus {
-        outline: rem(2) solid token-value(color blue light);
-        border-right: 1px solid black;
-        z-index: 1;
-      }
-      &::placeholder {
-        font-size: token-value(font size sm);
-      }
-    }
-    button {
-      display: flex;
-      justify-content: center;
-      border: 1px solid token-value(color blue dark);
-      border-left: none;
-      background-color: white;
-      width: rem(2.6 * 16);
-      &:focus{
-        outline: rem(2) solid token-value(color blue light);
-        border-left: 1px solid black;
-      }
-      .qc-search-submit {
-        min-width: rem(24);
-        height: rem(24);
-        align-self: center;
-      }
-      .sr-description {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        clip: rect(0 0 0 0);
-      }
-    }
-
-  }
-}
 qc-piv-footer + qc-code {
   margin-top: 0;
+}
+
+qc-doc-exemple {
+  display: block;
+  margin-bottom: token-value(spacer xl);
+}
+
+dl {
+  margin: 0 0 token-value(spacer content-block mb);
+  dt { font-weight: token-value(font weight content medium)}
+  dd {
+    margin-left: 0;
+    margin-bottom : token-value(spacer list-item mb);
+    & + dd {
+      margin-top : calc(-1 * token-value(spacer list-item mb));
+      &:has(.pseudo-focus) {
+        margin-top : calc(-1 * token-value(spacer list-item mb) + 6px);
+      }
+    }
+  }
+  &.qc-list-inline {
+    dt, dd { display: inline;}
+    dt::before {
+      display: block;
+      content: "";
+      margin-bottom: token-value(spacer list-item mb);
+    }
+  }
+
+}
+
+.table-overflow {
+  width: 100%;
+  overflow-x: auto;
+}
+
+hr {
+  max-width: token-value(max-content-width);
 }
 

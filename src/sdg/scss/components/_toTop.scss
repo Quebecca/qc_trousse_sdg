@@ -1,7 +1,5 @@
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
-@use "../modules/grid" as *;
-@use "../base/shadings" as *;
+@use "qc-sdg-lib" as *;
+@use "base/shadings" as *;
 
 .qc-to-top {
   &[demo="false"] {
@@ -21,7 +19,7 @@
   opacity: 0;
   background-size: rem(16) rem(20);
 
-  @extend .qc-shading-1;
+  @include qc-shading(1);
 
   &[style*='block']{ display: flex !important; }
   &:hover {
@@ -31,7 +29,7 @@
     background-color: token-value( color blue regular);
     outline: 2px solid token-value(color blue light);
     border: 2px solid token-value(color blue dark);
-    @extend .qc-shading-2;
+    @include qc-shading(2);
   }
   &:active {
     background-color: token-value( color blue light);

@@ -1,10 +1,13 @@
 export class Utils {
 
     static assetsBasePath =
-        new URL(document.currentScript.src).pathname
-            .split('/')
-            .slice(0, -2)
-            .join('/')
+        document
+            .currentScript
+            .getAttribute('sdg-assets-base-path')
+        || new URL(document.currentScript.src).pathname
+                    .split('/')
+                    .slice(0, -2)
+                    .join('/')
         || '.'
     static cssRelativePath =
         `${this.assetsBasePath}/css/`
@@ -17,6 +20,11 @@ export class Utils {
             .currentScript
             .getAttribute('sdg-css-filename')
         || 'qc-sdg.min.css'
+    static cssPath =
+        document
+            .currentScript
+            .getAttribute('sdg-css-path')
+        || this.cssRelativePath + this.cssFileName
     static sharedTexts =
         { openInNewTab :
             { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
@@ -31,4 +39,20 @@ export class Utils {
     static getPageLanguage() {
         return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
     }
+
+    static isTruthy(value) {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        if (typeof value === 'string') {
+            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
+        }
+        if (typeof value === 'number') {
+            return !!value; // Vérifie si le nombre est égal à 1
+        }
+        return false;
+    }
+
+
+
 }

@@ -1,9 +1,11 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "functions/tokens" as *;
+@use "base" as *;
+@use "sass:color";
+@use "lib/functions" as *;
 
-$dark-blue: #223654;
-$xl-tokens: (
+
+// TODO remplacer les clés avec tirets par un souligné foo-bar -> foo_bar
+// TODO générer ce fichier à partir d'un json, afin d'avoir les tokens en js
+$lg-tokens: (
     font : (
         family : (
             roboto: google-font(roboto),
@@ -65,43 +67,50 @@ $xl-tokens: (
         xl: token-value(line-height, 200),
         content: token-value(line-height, md),
     ),
-    max-content-width: rem(825),
+    max-content-width: 825px, //TODO faire une clé max_width : (content:…, component1:…, )
     color: (
-        white : white,
-        blue : (
-            pale : #dae6f0,
-            light : #4a98d9,
-            regular : #1472bf,
-            piv: #095797,
-            medium : #19406C,
-            dark: $dark-blue,
-        ),
-        purple: #6b4fa1,
-        grey : (
-            pale : #f1f1f2,
-            light : #c5cad2,
-            regular: #8893a2,
-            medium : #6b778a,
-            dark: #4e5662,
-        ),
-        pink : (
-            pale: #ffdbd6,
-            regular: #e58271,
-        ),
-        red: (
-            regular: #cb381f,
-            dark: #692519,
-        ),
-        green: (
-            pale: #d7f0bb,
-            regular: #4f813d,
-            dark: #2c4024,
-        ),
-        yellow : (
-            pale : #f8e69a,
-            regular: #e0ad03,
-            dark: #ad781c,
-        ),
+          white : #ffffff,
+          blue : (
+              extra-pale: token-value(color blue pale),
+              pale : #dae6f0,
+              light : #4a98d9,
+              regular_light: #2586d6,
+              regular : #1472bf,
+              piv: #095797,
+              medium : #19406C,
+              dark: #223654,
+          ),
+          purple: #6b4fa1,
+          grey : (
+              extra-pale: token-value(color grey pale),
+              pale : #f1f1f2,
+              light : #c5cad2,
+              regular: #8893a2,
+              medium : #6b778a,
+              dark: #4e5662,
+          ),
+          pink : (
+              pale: #ffdbd6,
+              regular: #e58271,
+          ),
+          red: (
+              pale: token-value(color pink pale),
+              light: token-value(color pink regular),
+              regular: #cb381f,
+              dark: #692519,
+          ),
+          green: (
+              pale: #d7f0bb,
+              regular: #4f813d,
+              dark: #2c4024,
+          ),
+          yellow : (
+              pale : #f8e69a,
+              regular: #e0ad03,
+              dark: #ad781c,
+          ),
+
+        background : token-value(color white),
         text : (
             primary : token-value(color blue dark)
         ),
@@ -114,23 +123,42 @@ $xl-tokens: (
             hover: token-value(color blue piv),
             visited: token-value(color purple),
             active: token-value(color red regular),
+            // TODO ajouter le focus cf https://www.figma.com/design/p5kWdGvZk0BvkEGIrdvXL6/%5BSDG-OFFICIEL%5D-Bases-et-composants?node-id=1070-628&node-type=canvas&t=eIMD5cFp9Jq5vMNt-0
+            focus: (
+              outline: token-value(color blue light),
+            )
         ),
+        formfield: (
+            border: token-value(color grey medium ),
+            focus: (
+                border: token-value(color blue dark),
+                outline: token-value(color blue light)
+            )
+        ),
+        searchinput: (
+          icon: token-value(color blue piv),
+        ),
+        box_shadow: rgba(var(--qc-color-blue-dark-rgb), .24)
     ),
-    box-shadow: (
-        color: rgba($dark-blue, .24),
-        blur: (
-            0: 0,
-            1: 4px,
-            2: 8px,
-            3: 16px,
-            4: 24px,
+    box_shadow: (
+        0: (
+          color: token-value(color grey light)
         ),
-        offset: (
-            0: 0,
-            1: 1px,
-            2: 2px,
-            3: 4px,
-            4: 6px,
+        1: (
+          blur: 4px,
+          offset: 1px,
+        ),
+        2: (
+            blur: 8px,
+            offset: 2px,
+        ),
+        3: (
+            blur: 16px,
+            offset: 4px,
+        ),
+        4: (
+            blur: 24px,
+            offset: 6px,
         ),
     ),
     spacer: (
@@ -173,43 +201,32 @@ $xl-tokens: (
         ),
         list : (
             pl: token-value(spacer sm),
-            mb: token-value(spacer content-block mb),
-            embedded-mb : token-value(spacer sm),
         ),
         list-item : (
             mb: token-value(spacer sm),
-
         ),
-        notice: (
-            my: token-value(spacer, md),
-            mx: rem(4 * $base-spacer),
-        )
     ),
     grid: (
         gutter: 32px,
         breakpoint: (
             xs: 0,
-            sm: 576px,
-            md: 768px,
-            lg: 992px,
-            xl: 1200px,
+            sm: 768px,
+            md: 992px,
+            lg: 1200px,
         ),
         container-max-width: (
-            sm: 576px,
-            md: 768px,
-            lg: 992px,
-            xl: 1200px,
+            sm: 768px,
+            md: 992px,
+            lg: 1200px
         )
     ),
 ) !default;
 
+// legacy
+$xl-tokens : $lg-tokens;
+
 $breakpoints-tokens: (
-    xl : $xl-tokens,
-    lg : (
-        grid: (
-            gutter: 24px,
-        )
-    ),
+    lg : $lg-tokens,
     md : (
         font-size: (
             h3: rem(25),
@@ -228,6 +245,9 @@ $breakpoints-tokens: (
                 mb: rem(1 * $base-spacer),
             )
         ),
+        grid: (
+            gutter: 24px,
+        )
     ),
     sm : (
         grid: (
@@ -236,6 +256,54 @@ $breakpoints-tokens: (
     ),
 ) !default;
 
+$themes-tokens: (
+  light: $breakpoints-tokens,
+  dark: (
+    lg: (
+      color: (
+        white : #121519,
+        blue : (
+            pale : #162B47,
+            light : #0078CC,
+            regular : #3B95E1,
+            piv: #72B2EB,
+            medium : #ADCDEB,
+            dark: #C6DBEE,
+        ),
+        purple: #B3A5D4,
+        grey : (
+            pale : #1C2025,
+            light : #3B424C,
+            regular: #6A7688,
+            medium : #8590A8,
+            dark: #A7ACBC,
+        ),
+        pink : (
+            pale: #4F180E,
+            regular: #BB3A23,
+        ),
+        red: (
+            regular: #F26049,
+            dark: #F3BCB6,
+        ),
+        green: (
+            pale: #1E2F17,
+            regular: #6E9C57,
+            dark: #B0D493,
+        ),
+        yellow : (
+            pale : #3F240C,
+            regular: #6D4512,
+            dark: #AC7900,
+        ),
+        text : (
+            primary : #D7D8DD
+        ),
+        accent: #F17B6C,
+      )
+    )
+  )
+) !default;
 
 
 

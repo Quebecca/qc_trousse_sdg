@@ -1,0 +1,48 @@
+@use "qc-sdg-lib" as *;
+.ui-autocomplete {
+  max-height: calc(rem(32 * 5) + 2px) !important;
+  overflow-y: auto !important;
+  list-style-type: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+  border: 1px solid token-value(color grey medium);
+  background-color: token-value(color background);
+  @include qc-shading(4);
+  cursor: pointer;
+}
+
+.ui-menu-item {
+  padding: 0!important;
+  margin: 0!important;
+}
+.ui-menu-item-wrapper {
+  padding: rem(8);
+}
+.ui-state-active {
+  background-color: token-value(color blue pale);
+}
+
+.ui-autocomplete::-webkit-scrollbar {
+  width: 8px;
+  margin-left: 5px;
+}
+
+/* Track */
+.ui-autocomplete::-webkit-scrollbar-track {
+  background: token-value(color background);;
+}
+
+/* Handle */
+.ui-autocomplete::-webkit-scrollbar-thumb {
+  background: token-value(color blue piv);
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+.ui-autocomplete::-webkit-scrollbar-thumb:hover {
+  background: token-value(color blue piv);
+}
+
+.ui-helper-hidden-accessible {
+  @include sr-only();
+}

@@ -1,6 +1,14 @@
-@use "../modules/tokens" as *;
-@use "../modules/utils" as *;
-@use "../modules/grid" as *;
+@use "qc-sdg-lib" as *;
+@use "sass:list" as *;
+
+@mixin qc-notice-title() {
+  h1,h2,h3,h4,h5,h6,[role=heading] {
+    margin: 0;
+    padding: 0;
+    @include content-font(sm, bold);
+    font-family: token-value(font, family, content);
+  }
+}
 
 .qc-notice {
   max-inline-size: token-value(max-content-width);
@@ -9,7 +17,7 @@
   background-color: token-value(color,white);
   word-break: break-word;
   @include content-font(sm);
-  margin-bottom: rem(4 * $base-spacer);
+
 
   .icon-container {
     display: flex;  
@@ -26,58 +34,55 @@
     width: 100%;
   }
 
-  &.qc-information .icon-container {
-    background-color: token-value(color,blue,pale);    
-  }  
-  &.qc-warning .icon-container {
-    background-color: token-value(color,yellow,pale);
-  }
-  &.qc-success .icon-container {
-    background-color: token-value(color,green,pale);
-  }
+  @include qc-notice-title();
 
-  &.qc-error .icon-container {
-      background-color: token-value(color,pink,pale);
-  }
+  //TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG.
 
-
-  /*TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG. */
-  .title {
-    margin: 0;
-    padding: 0;
-    @include content-font(sm, bold);
-    font-family: token-value(font, family, content); 
-  }
 
   .content {
       margin:
-          token-value(spacer notice my)
-          token-value(spacer notice mx)
-          token-value(spacer notice my)
+          token-value(spacer md)
+          token-value(spacer md)
+          token-value(spacer md)
           token-value(spacer, sm);
+  }
 
-    .text {
-      ::slotted(ul) {
-        padding-left: token-value(spacer, sm) !important;
-        margin-top: token-value(spacer, sm) !important;
+  @each $type, $color in (
+      "information": ("blue", "piv"),
+      "warning": ("yellow" , "dark"),
+      "neutral": ("grey", "dark"),
+      "error": ("red", "regular"),
+      "success": ("green","regular"),
+  ) {
+    &.qc-#{$type} .icon-container {
+      background-color: token-value(color, nth($color, 1), pale);
+      [role=img] {
+        background-color: token-value(color,nth($color, 1), nth($color, 2));
       }
     }
   }
 }
 
-/* Links in a error notice (eg. error summary) */
-qc-notice[type="error"] ul li a {
-  color: token-value(color,red,regular);
-  &:hover, &:focus {
-    text-decoration: none;
-  }  
-}
-
-
-@include media-mobile(){
-  .qc-notice {
-    .content {
-      margin-right: token-value(spacer notice my);
+// Links in a error notice (eg. error summary)
+qc-notice {
+  display: block;
+  @include qc-notice-title();
+  ul {
+    padding-left: token-value(spacer, sm) !important;
+    //margin-top: token-value(spacer, sm) !important;
+  }
+  &[type="error"] ul li {
+     &::marker {
+       color:token-value(color text primary);
+     }
+     color: token-value(color, red, regular);
+     a {
+      color: inherit;
+      &:hover, &:focus {
+        text-decoration: none;
+      }
     }
   }
+  margin-bottom: rem(4 * $base-spacer);
+
 }

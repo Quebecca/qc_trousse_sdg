@@ -1,12 +1,12 @@
-@use "modules/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/map" as *;
+@use "qc-sdg-lib" as *;
 @use "sass:map";
 
-$colors : (color : map.get($xl-tokens, color));
-@include map-deep-parse($colors) using ($path,$value)
-{
-  .qc-bg-#{deep-implode($path, '-')} {
-    background-color: $value;
-  }
-};
+@mixin generate-color-classes($colors) {
+  @include map-deep-parse($colors) using ($path,$value)
+  {
+    .qc-bg-#{deep-implode($path, '-')} {
+      background-color: token-value($path);
+    }
+  };
+}
+@include generate-color-classes((color : map.get($lg-tokens, color)));

@@ -1,7 +1,4 @@
-@use "settings/settings" as *;
-@use "functions/utils" as *;
-@use "modules/tokens" as *;
-@use "modules/utils" as *;
+@use "qc-sdg-lib" as *;
 
 qc-code {
   display: block;
@@ -59,4 +56,109 @@ pre {
   & + * {
     margin-top: token-value(spacer lg);
   }
+}
+
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em
+}
+code.hljs {
+  padding: rem(4)
+}
+
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: rem(16)
+}
+code.hljs {
+  padding: rem(4)
+}
+/* end baseline CSS */
+.hljs {
+  background: token-value(color grey pale);
+  color: token-value(color blue dark)
+}
+/* Base color: saturation 0; */
+.hljs-subst {
+  /* default */
+
+}
+/* purposely ignored */
+.hljs-formula,
+.hljs-attr,
+.hljs-property,
+.hljs-params {
+
+}
+.hljs-comment {
+  color: token-value(color grey dark)
+}
+.hljs-tag,
+.hljs-punctuation {
+  color: token-value(color blue medium)
+}
+.hljs-tag .hljs-name,
+.hljs-tag .hljs-attr {
+  color: token-value(color blue dark)
+}
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-name {
+  font-weight: bold
+}
+/* User color: hue: 0 */
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion {
+  color: token-value(color red dark)
+}
+.hljs-title,
+.hljs-section {
+  color: token-value(color red dark);
+  font-weight: bold
+}
+.hljs-regexp,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-operator,
+.hljs-selector-pseudo {
+  color: token-value(color pink regular)
+}
+/* Language color: hue: 90; */
+.hljs-literal {
+  color: token-value(color green regular)
+}
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+  color: token-value(color green dark)
+}
+/* Meta color: hue: 200 */
+.hljs-meta {
+  color: token-value(color blue medium)
+}
+.hljs-meta .hljs-string {
+  color: token-value(color blue regular)
+}
+/* Misc effects */
+.hljs-emphasis {
+  font-style: italic
+}
+.hljs-strong {
+  font-weight: bold
 }

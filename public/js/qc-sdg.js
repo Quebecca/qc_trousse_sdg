@@ -126,6 +126,21 @@
 		return -1;
 	}
 
+	/** @returns {{}} */
+	function exclude_internal_props(props) {
+		const result = {};
+		for (const k in props) if (k[0] !== '$') result[k] = props[k];
+		return result;
+	}
+
+	/** @returns {{}} */
+	function compute_rest_props(props, keys) {
+		const rest = {};
+		keys = new Set(keys);
+		for (const k in props) if (!keys.has(k) && k[0] !== '$') rest[k] = props[k];
+		return rest;
+	}
+
 	/** @type {typeof globalThis} */
 	const globals =
 		typeof window !== 'undefined'
@@ -161,6 +176,14 @@
 	function detach(node) {
 		if (node.parentNode) {
 			node.parentNode.removeChild(node);
+		}
+	}
+
+	/**
+	 * @returns {void} */
+	function destroy_each(iterations, detaching) {
+		for (let i = 0; i < iterations.length; i += 1) {
+			if (iterations[i]) iterations[i].d(detaching);
 		}
 	}
 
@@ -271,36 +294,6 @@
 	}
 
 	/**
-	 * @param {Record<string, unknown>} data_map
-	 * @returns {void}
-	 */
-	function set_custom_element_data_map(node, data_map) {
-		Object.keys(data_map).forEach((key) => {
-			set_custom_element_data(node, key, data_map[key]);
-		});
-	}
-
-	/**
-	 * @returns {void} */
-	function set_custom_element_data(node, prop, value) {
-		const lower = prop.toLowerCase(); // for backwards compatibility with existing behavior we do lowercase first
-		if (lower in node) {
-			node[lower] = typeof node[lower] === 'boolean' && value === '' ? true : value;
-		} else if (prop in node) {
-			node[prop] = typeof node[prop] === 'boolean' && value === '' ? true : value;
-		} else {
-			attr(node, prop, value);
-		}
-	}
-
-	/**
-	 * @param {string} tag
-	 */
-	function set_dynamic_element_data(tag) {
-		return /-/.test(tag) ? set_custom_element_data_map : set_attributes;
-	}
-
-	/**
 	 * @param {Element} element
 	 * @returns {ChildNode[]}
 	 */
@@ -317,6 +310,22 @@
 		data = '' + data;
 		if (text.data === data) return;
 		text.data = /** @type {string} */ (data);
+	}
+
+	/**
+	 * @returns {void} */
+	function set_input_value(input, value) {
+		input.value = value == null ? '' : value;
+	}
+
+	/**
+	 * @returns {void} */
+	function set_style(node, key, value, important) {
+		if (value == null) {
+			node.style.removeProperty(key);
+		} else {
+			node.style.setProperty(key, value, '');
+		}
 	}
 
 	/**
@@ -478,6 +487,22 @@
 	 */
 	function onMount(fn) {
 		get_current_component().$$.on_mount.push(fn);
+	}
+
+	// TODO figure out if we still want to support
+	// shorthand events, or if we want to implement
+	// a real bubbling mechanism
+	/**
+	 * @param component
+	 * @param event
+	 * @returns {void}
+	 */
+	function bubble(component, event) {
+		const callbacks = component.$$.callbacks[event.type];
+		if (callbacks) {
+			// @ts-ignore
+			callbacks.slice().forEach((fn) => fn.call(this, event));
+		}
 	}
 
 	const dirty_components = [];
@@ -692,6 +717,55 @@
 	 * @property {number} end
 	 * @property {Outro} [group]
 	 */
+
+	// general each functions:
+
+	function ensure_array_like(array_like_or_iterator) {
+		return array_like_or_iterator?.length !== undefined
+			? array_like_or_iterator
+			: Array.from(array_like_or_iterator);
+	}
+
+	/** @returns {{}} */
+	function get_spread_update(levels, updates) {
+		const update = {};
+		const to_null_out = {};
+		const accounted_for = { $$scope: 1 };
+		let i = levels.length;
+		while (i--) {
+			const o = levels[i];
+			const n = updates[i];
+			if (n) {
+				for (const key in o) {
+					if (!(key in n)) to_null_out[key] = 1;
+				}
+				for (const key in n) {
+					if (!accounted_for[key]) {
+						update[key] = n[key];
+						accounted_for[key] = 1;
+					}
+				}
+				levels[i] = n;
+			} else {
+				for (const key in o) {
+					accounted_for[key] = 1;
+				}
+			}
+		}
+		for (const key in to_null_out) {
+			if (!(key in update)) update[key] = undefined;
+		}
+		return update;
+	}
+
+	function get_spread_object(spread_props) {
+		return typeof spread_props === 'object' && spread_props !== null ? spread_props : {};
+	}
+
+	/** @returns {void} */
+	function create_component(block) {
+		block && block.c();
+	}
 
 	/** @returns {void} */
 	function mount_component(component, target, anchor) {
@@ -988,7 +1062,7 @@
 				this.$$cn = false;
 				// In a microtask, because this could be a move within the DOM
 				Promise.resolve().then(() => {
-					if (!this.$$cn) {
+					if (!this.$$cn && this.$$c) {
 						this.$$c.$destroy();
 						this.$$c = undefined;
 					}
@@ -1094,10 +1168,6 @@
 				}
 			});
 		});
-		if (extend) {
-			// @ts-expect-error - assigning here is fine
-			Class = extend(Class);
-		}
 		Component.element = /** @type {any} */ (Class);
 		return Class;
 	}
@@ -1171,6 +1241,7 @@
 	 */
 
 	// generated during release, do not modify
+
 	const PUBLIC_VERSION = '4';
 
 	if (typeof window !== 'undefined')
@@ -1180,10 +1251,13 @@
 	class Utils {
 
 	    static assetsBasePath =
-	        new URL(document.currentScript.src).pathname
-	            .split('/')
-	            .slice(0, -2)
-	            .join('/')
+	        document
+	            .currentScript
+	            .getAttribute('sdg-assets-base-path')
+	        || new URL(document.currentScript.src).pathname
+	                    .split('/')
+	                    .slice(0, -2)
+	                    .join('/')
 	        || '.'
 	    static cssRelativePath =
 	        `${this.assetsBasePath}/css/`
@@ -1196,6 +1270,11 @@
 	            .currentScript
 	            .getAttribute('sdg-css-filename')
 	        || 'qc-sdg.min.css'
+	    static cssPath =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-css-path')
+	        || this.cssRelativePath + this.cssFileName
 	    static sharedTexts =
 	        { openInNewTab :
 	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
@@ -1210,212 +1289,115 @@
 	    static getPageLanguage() {
 	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
 	    }
+
+	    static isTruthy(value) {
+	        if (typeof value === 'boolean') {
+	            return value;
+	        }
+	        if (typeof value === 'string') {
+	            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
+	        }
+	        if (typeof value === 'number') {
+	            return !!value; // Vérifie si le nombre est égal à 1
+	        }
+	        return false;
+	    }
+
+
+
 	}
 
-	/* src/sdg/components/notice.svelte generated by Svelte v4.2.12 */
+	/* src/sdg/components/Icon.svelte generated by Svelte v4.2.19 */
 
-	function create_dynamic_element(ctx) {
-		let svelte_element;
-		let t;
+	function create_fragment$9(ctx) {
+		let div;
+		let div_style_value;
+
+		let div_levels = [
+			{ role: "img" },
+			{ class: "qc-icon" },
+			{ "aria-label": /*label*/ ctx[1] },
+			{
+				style: div_style_value = "--img-color:var(--qc-color-" + /*color*/ ctx[2] + "); --img-width:" + /*width*/ ctx[3] + "; --img-height:" + /*height*/ ctx[4] + ";"
+			},
+			{ "data-img-type": /*type*/ ctx[0] },
+			/*attributes*/ ctx[5],
+			/*$$restProps*/ ctx[6]
+		];
+
+		let div_data = {};
+
+		for (let i = 0; i < div_levels.length; i += 1) {
+			div_data = assign(div_data, div_levels[i]);
+		}
 
 		return {
 			c() {
-				svelte_element = element(/*header*/ ctx[1]);
-				t = text(/*title*/ ctx[2]);
-				set_dynamic_element_data(/*header*/ ctx[1])(svelte_element, { class: "title" });
+				div = element("div");
+				set_attributes(div, div_data);
 			},
 			m(target, anchor) {
-				insert(target, svelte_element, anchor);
-				append(svelte_element, t);
-			},
-			p(ctx, dirty) {
-				if (dirty & /*title*/ 4) set_data(t, /*title*/ ctx[2]);
-			},
-			d(detaching) {
-				if (detaching) {
-					detach(svelte_element);
-				}
-			}
-		};
-	}
-
-	function create_fragment$4(ctx) {
-		let div5;
-		let div1;
-		let div0;
-		let div0_class_value;
-		let t0;
-		let div4;
-		let div3;
-		let previous_tag = /*header*/ ctx[1];
-		let t1;
-		let div2;
-		let html_tag;
-		let t2;
-		let div5_class_value;
-		let t3;
-		let link;
-		let current;
-		let svelte_element = /*header*/ ctx[1] && create_dynamic_element(ctx);
-		const default_slot_template = /*#slots*/ ctx[5].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[4], null);
-
-		return {
-			c() {
-				div5 = element("div");
-				div1 = element("div");
-				div0 = element("div");
-				t0 = space();
-				div4 = element("div");
-				div3 = element("div");
-				if (svelte_element) svelte_element.c();
-				t1 = space();
-				div2 = element("div");
-				html_tag = new HtmlTag(false);
-				t2 = space();
-				if (default_slot) default_slot.c();
-				t3 = space();
-				link = element("link");
-				attr(div0, "aria-hidden", "true");
-				attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[0]);
-				attr(div1, "class", "icon-container");
-				html_tag.a = t2;
-				attr(div2, "class", "text");
-				attr(div3, "class", "content");
-				attr(div4, "class", "content-container");
-				attr(div5, "class", div5_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0]);
-				attr(div5, "tabindex", "0");
-				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
-			},
-			m(target, anchor) {
-				insert(target, div5, anchor);
-				append(div5, div1);
-				append(div1, div0);
-				append(div5, t0);
-				append(div5, div4);
-				append(div4, div3);
-				if (svelte_element) svelte_element.m(div3, null);
-				append(div3, t1);
-				append(div3, div2);
-				html_tag.m(/*content*/ ctx[3], div2);
-				append(div2, t2);
-
-				if (default_slot) {
-					default_slot.m(div2, null);
-				}
-
-				insert(target, t3, anchor);
-				insert(target, link, anchor);
-				current = true;
+				insert(target, div, anchor);
 			},
 			p(ctx, [dirty]) {
-				if (!current || dirty & /*type*/ 1 && div0_class_value !== (div0_class_value = "qc-icon qc-" + /*type*/ ctx[0])) {
-					attr(div0, "class", div0_class_value);
-				}
-
-				if (/*header*/ ctx[1]) {
-					if (!previous_tag) {
-						svelte_element = create_dynamic_element(ctx);
-						previous_tag = /*header*/ ctx[1];
-						svelte_element.c();
-						svelte_element.m(div3, t1);
-					} else if (safe_not_equal(previous_tag, /*header*/ ctx[1])) {
-						svelte_element.d(1);
-						svelte_element = create_dynamic_element(ctx);
-						previous_tag = /*header*/ ctx[1];
-						svelte_element.c();
-						svelte_element.m(div3, t1);
-					} else {
-						svelte_element.p(ctx, dirty);
-					}
-				} else if (previous_tag) {
-					svelte_element.d(1);
-					svelte_element = null;
-					previous_tag = /*header*/ ctx[1];
-				}
-
-				if (!current || dirty & /*content*/ 8) html_tag.p(/*content*/ ctx[3]);
-
-				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 16)) {
-						update_slot_base(
-							default_slot,
-							default_slot_template,
-							ctx,
-							/*$$scope*/ ctx[4],
-							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[4])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[4], dirty, null),
-							null
-						);
-					}
-				}
-
-				if (!current || dirty & /*type*/ 1 && div5_class_value !== (div5_class_value = "qc-component qc-notice qc-" + /*type*/ ctx[0])) {
-					attr(div5, "class", div5_class_value);
-				}
+				set_attributes(div, div_data = get_spread_update(div_levels, [
+					{ role: "img" },
+					{ class: "qc-icon" },
+					dirty & /*label*/ 2 && { "aria-label": /*label*/ ctx[1] },
+					dirty & /*color, width, height*/ 28 && div_style_value !== (div_style_value = "--img-color:var(--qc-color-" + /*color*/ ctx[2] + "); --img-width:" + /*width*/ ctx[3] + "; --img-height:" + /*height*/ ctx[4] + ";") && { style: div_style_value },
+					dirty & /*type*/ 1 && { "data-img-type": /*type*/ ctx[0] },
+					dirty & /*attributes*/ 32 && /*attributes*/ ctx[5],
+					dirty & /*$$restProps*/ 64 && /*$$restProps*/ ctx[6]
+				]));
 			},
-			i(local) {
-				if (current) return;
-				transition_in(default_slot, local);
-				current = true;
-			},
-			o(local) {
-				transition_out(default_slot, local);
-				current = false;
-			},
+			i: noop,
+			o: noop,
 			d(detaching) {
 				if (detaching) {
-					detach(div5);
-					detach(t3);
-					detach(link);
+					detach(div);
 				}
-
-				if (svelte_element) svelte_element.d(detaching);
-				if (default_slot) default_slot.d(detaching);
 			}
 		};
 	}
 
-	function instance$4($$self, $$props, $$invalidate) {
-		let { $$slots: slots = {}, $$scope } = $$props;
+	function instance$9($$self, $$props, $$invalidate) {
+		let attributes;
+		const omit_props_names = ["type","label","size","color","width","height"];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+		let { type, label, size = 'md', color = 'text-primary', width = 'auto', height = 'auto' } = $$props;
 
-		const defaultHeader = 'h2',
-			defaultType = 'information',
-			types = ['information', 'warning', 'success', 'error'];
-
-		let { title = "", type = defaultType, content = "", header = defaultHeader } = $$props;
-
-		onMount(() => {
-			$$invalidate(1, header = header.match(/h[1-6]/) ? header : defaultHeader);
-			$$invalidate(0, type = types.includes(type) ? type : defaultType);
-		});
-
-		$$self.$$set = $$props => {
-			if ('title' in $$props) $$invalidate(2, title = $$props.title);
-			if ('type' in $$props) $$invalidate(0, type = $$props.type);
-			if ('content' in $$props) $$invalidate(3, content = $$props.content);
-			if ('header' in $$props) $$invalidate(1, header = $$props.header);
-			if ('$$scope' in $$props) $$invalidate(4, $$scope = $$props.$$scope);
+		$$self.$$set = $$new_props => {
+			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(6, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('type' in $$new_props) $$invalidate(0, type = $$new_props.type);
+			if ('label' in $$new_props) $$invalidate(1, label = $$new_props.label);
+			if ('size' in $$new_props) $$invalidate(7, size = $$new_props.size);
+			if ('color' in $$new_props) $$invalidate(2, color = $$new_props.color);
+			if ('width' in $$new_props) $$invalidate(3, width = $$new_props.width);
+			if ('height' in $$new_props) $$invalidate(4, height = $$new_props.height);
 		};
 
-		return [type, header, title, content, $$scope, slots];
+		$$self.$$.update = () => {
+			if ($$self.$$.dirty & /*width, size*/ 136) {
+				$$invalidate(5, attributes = width === "auto" ? { "data-img-size": size } : {});
+			}
+		};
+
+		return [type, label, color, width, height, attributes, $$restProps, size];
 	}
 
-	class Notice extends SvelteComponent {
+	class Icon extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance$4, create_fragment$4, safe_not_equal, { title: 2, type: 0, content: 3, header: 1 });
-		}
 
-		get title() {
-			return this.$$.ctx[2];
-		}
-
-		set title(title) {
-			this.$$set({ title });
-			flush();
+			init(this, options, instance$9, create_fragment$9, safe_not_equal, {
+				type: 0,
+				label: 1,
+				size: 7,
+				color: 2,
+				width: 3,
+				height: 4
+			});
 		}
 
 		get type() {
@@ -1427,8 +1409,409 @@
 			flush();
 		}
 
-		get content() {
+		get label() {
+			return this.$$.ctx[1];
+		}
+
+		set label(label) {
+			this.$$set({ label });
+			flush();
+		}
+
+		get size() {
+			return this.$$.ctx[7];
+		}
+
+		set size(size) {
+			this.$$set({ size });
+			flush();
+		}
+
+		get color() {
+			return this.$$.ctx[2];
+		}
+
+		set color(color) {
+			this.$$set({ color });
+			flush();
+		}
+
+		get width() {
 			return this.$$.ctx[3];
+		}
+
+		set width(width) {
+			this.$$set({ width });
+			flush();
+		}
+
+		get height() {
+			return this.$$.ctx[4];
+		}
+
+		set height(height) {
+			this.$$set({ height });
+			flush();
+		}
+	}
+
+	customElements.define("qc-icon", create_custom_element(Icon, {"type":{"attribute":"icon"},"label":{"attribute":"label"},"size":{"attribute":"size"},"color":{"attribute":"color"},"width":{"attribute":"width"},"height":{"attribute":"height"}}, [], [], false));
+
+	/* src/sdg/components/notice.svelte generated by Svelte v4.2.19 */
+
+	function create_if_block$5(ctx) {
+		let previous_tag = /*header*/ ctx[0];
+		let svelte_element_anchor;
+		let svelte_element = /*header*/ ctx[0] && create_dynamic_element(ctx);
+
+		return {
+			c() {
+				if (svelte_element) svelte_element.c();
+				svelte_element_anchor = empty();
+			},
+			m(target, anchor) {
+				if (svelte_element) svelte_element.m(target, anchor);
+				insert(target, svelte_element_anchor, anchor);
+			},
+			p(ctx, dirty) {
+				if (/*header*/ ctx[0]) {
+					if (!previous_tag) {
+						svelte_element = create_dynamic_element(ctx);
+						previous_tag = /*header*/ ctx[0];
+						svelte_element.c();
+						svelte_element.m(svelte_element_anchor.parentNode, svelte_element_anchor);
+					} else if (safe_not_equal(previous_tag, /*header*/ ctx[0])) {
+						svelte_element.d(1);
+						svelte_element = create_dynamic_element(ctx);
+						previous_tag = /*header*/ ctx[0];
+						svelte_element.c();
+						svelte_element.m(svelte_element_anchor.parentNode, svelte_element_anchor);
+					} else {
+						svelte_element.p(ctx, dirty);
+					}
+				} else if (previous_tag) {
+					svelte_element.d(1);
+					svelte_element = null;
+					previous_tag = /*header*/ ctx[0];
+				}
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(svelte_element_anchor);
+				}
+
+				if (svelte_element) svelte_element.d(detaching);
+			}
+		};
+	}
+
+	// (74:10) <svelte:element this={header}>
+	function create_dynamic_element(ctx) {
+		let svelte_element;
+
+		return {
+			c() {
+				svelte_element = element(/*header*/ ctx[0]);
+			},
+			m(target, anchor) {
+				insert(target, svelte_element, anchor);
+				svelte_element.innerHTML = /*title*/ ctx[1];
+			},
+			p(ctx, dirty) {
+				if (dirty & /*title*/ 2) svelte_element.innerHTML = /*title*/ ctx[1];		},
+			d(detaching) {
+				if (detaching) {
+					detach(svelte_element);
+				}
+			}
+		};
+	}
+
+	function create_fragment$8(ctx) {
+		let div4;
+		let div1;
+		let div0;
+		let icon_1;
+		let t0;
+		let div3;
+		let div2;
+		let t1;
+		let html_tag;
+		let t2;
+		let div4_class_value;
+		let t3;
+		let link;
+		let current;
+
+		icon_1 = new Icon({
+				props: {
+					type: /*iconType*/ ctx[6],
+					label: /*iconLabel*/ ctx[5],
+					size: "nm"
+				}
+			});
+
+		let if_block = /*title*/ ctx[1] && create_if_block$5(ctx);
+		const default_slot_template = /*#slots*/ ctx[12].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[11], null);
+
+		return {
+			c() {
+				div4 = element("div");
+				div1 = element("div");
+				div0 = element("div");
+				create_component(icon_1.$$.fragment);
+				t0 = space();
+				div3 = element("div");
+				div2 = element("div");
+				if (if_block) if_block.c();
+				t1 = space();
+				html_tag = new HtmlTag(false);
+				t2 = space();
+				if (default_slot) default_slot.c();
+				t3 = space();
+				link = element("link");
+				attr(div0, "class", "qc-icon");
+				attr(div1, "class", "icon-container");
+				html_tag.a = t2;
+				attr(div2, "class", "content");
+				attr(div2, "role", /*role*/ ctx[4]);
+				attr(div3, "class", "content-container");
+				attr(div4, "class", div4_class_value = "qc-component qc-notice qc-" + /*computedType*/ ctx[7]);
+				attr(div4, "tabindex", "0");
+				attr(link, "rel", "stylesheet");
+				attr(link, "href", Utils.cssPath);
+			},
+			m(target, anchor) {
+				insert(target, div4, anchor);
+				append(div4, div1);
+				append(div1, div0);
+				mount_component(icon_1, div0, null);
+				append(div4, t0);
+				append(div4, div3);
+				append(div3, div2);
+				if (if_block) if_block.m(div2, null);
+				append(div2, t1);
+				html_tag.m(/*content*/ ctx[2], div2);
+				append(div2, t2);
+
+				if (default_slot) {
+					default_slot.m(div2, null);
+				}
+
+				/*div2_binding*/ ctx[13](div2);
+				insert(target, t3, anchor);
+				insert(target, link, anchor);
+				current = true;
+			},
+			p(ctx, [dirty]) {
+				const icon_1_changes = {};
+				if (dirty & /*iconType*/ 64) icon_1_changes.type = /*iconType*/ ctx[6];
+				if (dirty & /*iconLabel*/ 32) icon_1_changes.label = /*iconLabel*/ ctx[5];
+				icon_1.$set(icon_1_changes);
+
+				if (/*title*/ ctx[1]) {
+					if (if_block) {
+						if_block.p(ctx, dirty);
+					} else {
+						if_block = create_if_block$5(ctx);
+						if_block.c();
+						if_block.m(div2, t1);
+					}
+				} else if (if_block) {
+					if_block.d(1);
+					if_block = null;
+				}
+
+				if (!current || dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
+
+				if (default_slot) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 2048)) {
+						update_slot_base(
+							default_slot,
+							default_slot_template,
+							ctx,
+							/*$$scope*/ ctx[11],
+							!current
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[11])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[11], dirty, null),
+							null
+						);
+					}
+				}
+
+				if (!current || dirty & /*role*/ 16) {
+					attr(div2, "role", /*role*/ ctx[4]);
+				}
+
+				if (!current || dirty & /*computedType*/ 128 && div4_class_value !== (div4_class_value = "qc-component qc-notice qc-" + /*computedType*/ ctx[7])) {
+					attr(div4, "class", div4_class_value);
+				}
+			},
+			i(local) {
+				if (current) return;
+				transition_in(icon_1.$$.fragment, local);
+				transition_in(default_slot, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(icon_1.$$.fragment, local);
+				transition_out(default_slot, local);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(div4);
+					detach(t3);
+					detach(link);
+				}
+
+				destroy_component(icon_1);
+				if (if_block) if_block.d();
+				if (default_slot) default_slot.d(detaching);
+				/*div2_binding*/ ctx[13](null);
+			}
+		};
+	}
+
+	function instance$8($$self, $$props, $$invalidate) {
+		let role;
+		let shouldUseIcon;
+		let computedType;
+		let iconType;
+		let iconLabel;
+		let { $$slots: slots = {}, $$scope } = $$props;
+
+		const isFr = Utils.getPageLanguage() == 'fr',
+			defaultHeader = 'h2',
+			defaultType = 'information',
+			typesDescriptions = {
+				'advice': isFr ? "Avis conseil" : "Advisory notice",
+				'note': isFr ? "Avis explicatif" : "Explanatory notice",
+				'information': isFr ? "Avis général" : "General notice",
+				'warning': isFr ? "Avis d’avertissement" : "Warning notice",
+				'success': isFr ? "Avis de réussite" : "Success notice",
+				'error': isFr ? "Avis d’erreur" : "Error notice"
+			},
+			types = Object.keys(typesDescriptions);
+
+		let noticeElement;
+		let { title = "", type = defaultType, content = "", header = defaultHeader, icon } = $$props;
+
+		function div2_binding($$value) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				noticeElement = $$value;
+				(($$invalidate(3, noticeElement), $$invalidate(4, role)), $$invalidate(8, type));
+			});
+		}
+
+		$$self.$$set = $$props => {
+			if ('title' in $$props) $$invalidate(1, title = $$props.title);
+			if ('type' in $$props) $$invalidate(8, type = $$props.type);
+			if ('content' in $$props) $$invalidate(2, content = $$props.content);
+			if ('header' in $$props) $$invalidate(0, header = $$props.header);
+			if ('icon' in $$props) $$invalidate(9, icon = $$props.icon);
+			if ('$$scope' in $$props) $$invalidate(11, $$scope = $$props.$$scope);
+		};
+
+		$$self.$$.update = () => {
+			if ($$self.$$.dirty & /*header*/ 1) {
+				$$invalidate(0, header = header.match(/h[1-6]/) ? header : defaultHeader);
+			}
+
+			if ($$self.$$.dirty & /*type*/ 256) {
+				$$invalidate(8, type = types.includes(type) ? type : defaultType);
+			}
+
+			if ($$self.$$.dirty & /*type*/ 256) {
+				$$invalidate(4, role = type === "success"
+				? "status"
+				: type === "error" ? "alert" : null);
+			}
+
+			if ($$self.$$.dirty & /*role, noticeElement*/ 24) {
+				if (role) {
+					if (noticeElement) {
+						const tempNodes = Array.from(noticeElement.childNodes);
+
+						// console.log("temp: ",tempNodes);
+						$$invalidate(3, noticeElement.innerHTML = "", noticeElement);
+
+						// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
+						tempNodes.forEach(node => noticeElement.appendChild(node));
+					}
+				}
+			}
+
+			if ($$self.$$.dirty & /*type*/ 256) {
+				$$invalidate(10, shouldUseIcon = type === "advice" || type === "note");
+			}
+
+			if ($$self.$$.dirty & /*shouldUseIcon, type*/ 1280) {
+				// Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
+				$$invalidate(7, computedType = shouldUseIcon ? "neutral" : type);
+			}
+
+			if ($$self.$$.dirty & /*shouldUseIcon, icon, type*/ 1792) {
+				$$invalidate(6, iconType = shouldUseIcon ? icon ?? "note" : type);
+			}
+
+			if ($$self.$$.dirty & /*type*/ 256) {
+				$$invalidate(5, iconLabel = typesDescriptions[type] ?? typesDescriptions['information']);
+			}
+		};
+
+		return [
+			header,
+			title,
+			content,
+			noticeElement,
+			role,
+			iconLabel,
+			iconType,
+			computedType,
+			type,
+			icon,
+			shouldUseIcon,
+			$$scope,
+			slots,
+			div2_binding
+		];
+	}
+
+	class Notice extends SvelteComponent {
+		constructor(options) {
+			super();
+
+			init(this, options, instance$8, create_fragment$8, safe_not_equal, {
+				title: 1,
+				type: 8,
+				content: 2,
+				header: 0,
+				icon: 9
+			});
+		}
+
+		get title() {
+			return this.$$.ctx[1];
+		}
+
+		set title(title) {
+			this.$$set({ title });
+			flush();
+		}
+
+		get type() {
+			return this.$$.ctx[8];
+		}
+
+		set type(type) {
+			this.$$set({ type });
+			flush();
+		}
+
+		get content() {
+			return this.$$.ctx[2];
 		}
 
 		set content(content) {
@@ -1437,25 +1820,34 @@
 		}
 
 		get header() {
-			return this.$$.ctx[1];
+			return this.$$.ctx[0];
 		}
 
 		set header(header) {
 			this.$$set({ header });
 			flush();
 		}
+
+		get icon() {
+			return this.$$.ctx[9];
+		}
+
+		set icon(icon) {
+			this.$$set({ icon });
+			flush();
+		}
 	}
 
-	customElements.define("qc-notice", create_custom_element(Notice, {"title":{},"type":{},"content":{},"header":{}}, ["default"], [], true));
+	customElements.define("qc-notice", create_custom_element(Notice, {"title":{},"type":{},"content":{},"header":{},"icon":{}}, ["default"], [], true));
 
-	/* src/sdg/components/pivHeader.svelte generated by Svelte v4.2.12 */
+	/* src/sdg/components/PivHeader/pivHeader.svelte generated by Svelte v4.2.19 */
 	const get_search_zone_slot_changes = dirty => ({});
 	const get_search_zone_slot_context = ctx => ({});
 	const get_links_slot_changes = dirty => ({});
 	const get_links_slot_context = ctx => ({});
 
-	// (99:4) {#if goToContent == 'true'}
-	function create_if_block_7(ctx) {
+	// (93:4) {#if goToContent == 'true'}
+	function create_if_block_6(ctx) {
 		let div;
 		let a;
 		let t;
@@ -1464,8 +1856,8 @@
 			c() {
 				div = element("div");
 				a = element("a");
-				t = text(/*goToContentText*/ ctx[12]);
-				attr(a, "href", /*goToContentAnchor*/ ctx[11]);
+				t = text(/*goToContentText*/ ctx[13]);
+				attr(a, "href", /*goToContentAnchor*/ ctx[12]);
 				attr(div, "class", "go-to-content");
 			},
 			m(target, anchor) {
@@ -1474,10 +1866,10 @@
 				append(a, t);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*goToContentText*/ 4096) set_data(t, /*goToContentText*/ ctx[12]);
+				if (dirty & /*goToContentText*/ 8192) set_data(t, /*goToContentText*/ ctx[13]);
 
-				if (dirty & /*goToContentAnchor*/ 2048) {
-					attr(a, "href", /*goToContentAnchor*/ ctx[11]);
+				if (dirty & /*goToContentAnchor*/ 4096) {
+					attr(a, "href", /*goToContentAnchor*/ ctx[12]);
 				}
 			},
 			d(detaching) {
@@ -1488,27 +1880,25 @@
 		};
 	}
 
-	// (115:6) {#if titleText}
-	function create_if_block_6(ctx) {
+	// (110:12) {#if titleText}
+	function create_if_block_5(ctx) {
 		let div;
 		let a;
-		let span;
 		let t;
 
 		return {
 			c() {
 				div = element("div");
 				a = element("a");
-				span = element("span");
 				t = text(/*titleText*/ ctx[5]);
 				attr(a, "href", /*titleUrl*/ ctx[4]);
+				attr(a, "class", "title");
 				attr(div, "class", "title");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
 				append(div, a);
-				append(a, span);
-				append(span, t);
+				append(a, t);
 			},
 			p(ctx, dirty) {
 				if (dirty & /*titleText*/ 32) set_data(t, /*titleText*/ ctx[5]);
@@ -1525,14 +1915,14 @@
 		};
 	}
 
-	// (123:8) {#if enableSearch == 'true'}
-	function create_if_block_5(ctx) {
+	// (122:8) {#if enableSearch == 'true'}
+	function create_if_block_4(ctx) {
 		let a;
 		let span;
 
-		let t_value = (/*displaySearchForm*/ ctx[21]
-		? /*hideSearchText*/ ctx[17]
-		: /*displaySearchText*/ ctx[16]) + "";
+		let t_value = (/*displaySearchForm*/ ctx[18]
+		? /*hideSearchText*/ ctx[15]
+		: /*displaySearchText*/ ctx[14]) + "";
 
 		let t;
 		let mounted;
@@ -1543,7 +1933,7 @@
 				a = element("a");
 				span = element("span");
 				t = text(t_value);
-				attr(a, "class", "qc-icon qc-search");
+				attr(a, "class", "qc-search");
 				attr(a, "href", "/");
 				attr(a, "role", "button");
 			},
@@ -1554,17 +1944,17 @@
 
 				if (!mounted) {
 					dispose = [
-						listen(a, "click", prevent_default(/*click_handler*/ ctx[27])),
-						listen(a, "click", /*focusOnSearchInput*/ ctx[19])
+						listen(a, "click", prevent_default(/*click_handler*/ ctx[23])),
+						listen(a, "click", /*focusOnSearchInput*/ ctx[16])
 					];
 
 					mounted = true;
 				}
 			},
 			p(ctx, dirty) {
-				if (dirty & /*displaySearchForm, hideSearchText, displaySearchText*/ 2293760 && t_value !== (t_value = (/*displaySearchForm*/ ctx[21]
-				? /*hideSearchText*/ ctx[17]
-				: /*displaySearchText*/ ctx[16]) + "")) set_data(t, t_value);
+				if (dirty & /*displaySearchForm, hideSearchText, displaySearchText*/ 311296 && t_value !== (t_value = (/*displaySearchForm*/ ctx[18]
+				? /*hideSearchText*/ ctx[15]
+				: /*displaySearchText*/ ctx[14]) + "")) set_data(t, t_value);
 			},
 			d(detaching) {
 				if (detaching) {
@@ -1577,32 +1967,36 @@
 		};
 	}
 
-	// (134:10) {#if joinUsUrl || altLanguageUrl}
-	function create_if_block_2(ctx) {
+	// (133:10) {#if joinUsUrl || altLanguageUrl}
+	function create_if_block_1$1(ctx) {
+		let nav;
 		let ul;
 		let t;
-		let if_block0 = /*altLanguageUrl*/ ctx[7] && create_if_block_4(ctx);
-		let if_block1 = /*joinUsUrl*/ ctx[9] && create_if_block_3(ctx);
+		let if_block0 = /*altLanguageUrl*/ ctx[8] && create_if_block_3(ctx);
+		let if_block1 = /*joinUsUrl*/ ctx[10] && create_if_block_2(ctx);
 
 		return {
 			c() {
+				nav = element("nav");
 				ul = element("ul");
 				if (if_block0) if_block0.c();
 				t = space();
 				if (if_block1) if_block1.c();
+				attr(nav, "aria-label", /*linksLabel*/ ctx[6]);
 			},
 			m(target, anchor) {
-				insert(target, ul, anchor);
+				insert(target, nav, anchor);
+				append(nav, ul);
 				if (if_block0) if_block0.m(ul, null);
 				append(ul, t);
 				if (if_block1) if_block1.m(ul, null);
 			},
 			p(ctx, dirty) {
-				if (/*altLanguageUrl*/ ctx[7]) {
+				if (/*altLanguageUrl*/ ctx[8]) {
 					if (if_block0) {
 						if_block0.p(ctx, dirty);
 					} else {
-						if_block0 = create_if_block_4(ctx);
+						if_block0 = create_if_block_3(ctx);
 						if_block0.c();
 						if_block0.m(ul, t);
 					}
@@ -1611,11 +2005,11 @@
 					if_block0 = null;
 				}
 
-				if (/*joinUsUrl*/ ctx[9]) {
+				if (/*joinUsUrl*/ ctx[10]) {
 					if (if_block1) {
 						if_block1.p(ctx, dirty);
 					} else {
-						if_block1 = create_if_block_3(ctx);
+						if_block1 = create_if_block_2(ctx);
 						if_block1.c();
 						if_block1.m(ul, null);
 					}
@@ -1623,10 +2017,14 @@
 					if_block1.d(1);
 					if_block1 = null;
 				}
+
+				if (dirty & /*linksLabel*/ 64) {
+					attr(nav, "aria-label", /*linksLabel*/ ctx[6]);
+				}
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(ul);
+					detach(nav);
 				}
 
 				if (if_block0) if_block0.d();
@@ -1635,40 +2033,7 @@
 		};
 	}
 
-	// (136:16) {#if altLanguageUrl}
-	function create_if_block_4(ctx) {
-		let li;
-		let a;
-		let t;
-
-		return {
-			c() {
-				li = element("li");
-				a = element("a");
-				t = text(/*altLanguageText*/ ctx[6]);
-				attr(a, "href", /*altLanguageUrl*/ ctx[7]);
-			},
-			m(target, anchor) {
-				insert(target, li, anchor);
-				append(li, a);
-				append(a, t);
-			},
-			p(ctx, dirty) {
-				if (dirty & /*altLanguageText*/ 64) set_data(t, /*altLanguageText*/ ctx[6]);
-
-				if (dirty & /*altLanguageUrl*/ 128) {
-					attr(a, "href", /*altLanguageUrl*/ ctx[7]);
-				}
-			},
-			d(detaching) {
-				if (detaching) {
-					detach(li);
-				}
-			}
-		};
-	}
-
-	// (139:16) {#if joinUsUrl}
+	// (136:18) {#if altLanguageUrl}
 	function create_if_block_3(ctx) {
 		let li;
 		let a;
@@ -1678,8 +2043,8 @@
 			c() {
 				li = element("li");
 				a = element("a");
-				t = text(/*joinUsText*/ ctx[8]);
-				attr(a, "href", /*joinUsUrl*/ ctx[9]);
+				t = text(/*altLanguageText*/ ctx[7]);
+				attr(a, "href", /*altLanguageUrl*/ ctx[8]);
 			},
 			m(target, anchor) {
 				insert(target, li, anchor);
@@ -1687,10 +2052,10 @@
 				append(a, t);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*joinUsText*/ 256) set_data(t, /*joinUsText*/ ctx[8]);
+				if (dirty & /*altLanguageText*/ 128) set_data(t, /*altLanguageText*/ ctx[7]);
 
-				if (dirty & /*joinUsUrl*/ 512) {
-					attr(a, "href", /*joinUsUrl*/ ctx[9]);
+				if (dirty & /*altLanguageUrl*/ 256) {
+					attr(a, "href", /*altLanguageUrl*/ ctx[8]);
 				}
 			},
 			d(detaching) {
@@ -1701,10 +2066,43 @@
 		};
 	}
 
-	// (133:29)            
-	function fallback_block_1$1(ctx) {
+	// (139:18) {#if joinUsUrl}
+	function create_if_block_2(ctx) {
+		let li;
+		let a;
+		let t;
+
+		return {
+			c() {
+				li = element("li");
+				a = element("a");
+				t = text(/*joinUsText*/ ctx[9]);
+				attr(a, "href", /*joinUsUrl*/ ctx[10]);
+			},
+			m(target, anchor) {
+				insert(target, li, anchor);
+				append(li, a);
+				append(a, t);
+			},
+			p(ctx, dirty) {
+				if (dirty & /*joinUsText*/ 512) set_data(t, /*joinUsText*/ ctx[9]);
+
+				if (dirty & /*joinUsUrl*/ 1024) {
+					attr(a, "href", /*joinUsUrl*/ ctx[10]);
+				}
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(li);
+				}
+			}
+		};
+	}
+
+	// (132:29)            
+	function fallback_block$1(ctx) {
 		let if_block_anchor;
-		let if_block = (/*joinUsUrl*/ ctx[9] || /*altLanguageUrl*/ ctx[7]) && create_if_block_2(ctx);
+		let if_block = (/*joinUsUrl*/ ctx[10] || /*altLanguageUrl*/ ctx[8]) && create_if_block_1$1(ctx);
 
 		return {
 			c() {
@@ -1716,11 +2114,11 @@
 				insert(target, if_block_anchor, anchor);
 			},
 			p(ctx, dirty) {
-				if (/*joinUsUrl*/ ctx[9] || /*altLanguageUrl*/ ctx[7]) {
+				if (/*joinUsUrl*/ ctx[10] || /*altLanguageUrl*/ ctx[8]) {
 					if (if_block) {
 						if_block.p(ctx, dirty);
 					} else {
-						if_block = create_if_block_2(ctx);
+						if_block = create_if_block_1$1(ctx);
 						if_block.c();
 						if_block.m(if_block_anchor.parentNode, if_block_anchor);
 					}
@@ -1739,93 +2137,51 @@
 		};
 	}
 
-	// (149:6) {#if titleText}
-	function create_if_block_1$1(ctx) {
-		let div;
-		let a;
-		let span;
-		let t;
-
-		return {
-			c() {
-				div = element("div");
-				a = element("a");
-				span = element("span");
-				t = text(/*titleText*/ ctx[5]);
-				attr(a, "href", /*titleUrl*/ ctx[4]);
-				attr(div, "class", "title");
-			},
-			m(target, anchor) {
-				insert(target, div, anchor);
-				append(div, a);
-				append(a, span);
-				append(span, t);
-			},
-			p(ctx, dirty) {
-				if (dirty & /*titleText*/ 32) set_data(t, /*titleText*/ ctx[5]);
-
-				if (dirty & /*titleUrl*/ 16) {
-					attr(a, "href", /*titleUrl*/ ctx[4]);
-				}
-			},
-			d(detaching) {
-				if (detaching) {
-					detach(div);
-				}
-			}
-		};
-	}
-
-	// (156:6) {#if displaySearchForm}
-	function create_if_block$1(ctx) {
+	// (150:6) {#if displaySearchForm}
+	function create_if_block$4(ctx) {
 		let div;
 		let current;
-		const search_zone_slot_template = /*#slots*/ ctx[26]["search-zone"];
-		const search_zone_slot = create_slot(search_zone_slot_template, ctx, /*$$scope*/ ctx[25], get_search_zone_slot_context);
-		const search_zone_slot_or_fallback = search_zone_slot || fallback_block$1(ctx);
+		const search_zone_slot_template = /*#slots*/ ctx[22]["search-zone"];
+		const search_zone_slot = create_slot(search_zone_slot_template, ctx, /*$$scope*/ ctx[21], get_search_zone_slot_context);
 
 		return {
 			c() {
 				div = element("div");
-				if (search_zone_slot_or_fallback) search_zone_slot_or_fallback.c();
+				if (search_zone_slot) search_zone_slot.c();
 				attr(div, "class", "search-zone");
 			},
 			m(target, anchor) {
 				insert(target, div, anchor);
 
-				if (search_zone_slot_or_fallback) {
-					search_zone_slot_or_fallback.m(div, null);
+				if (search_zone_slot) {
+					search_zone_slot.m(div, null);
 				}
 
 				current = true;
 			},
 			p(ctx, dirty) {
 				if (search_zone_slot) {
-					if (search_zone_slot.p && (!current || dirty & /*$$scope*/ 33554432)) {
+					if (search_zone_slot.p && (!current || dirty & /*$$scope*/ 2097152)) {
 						update_slot_base(
 							search_zone_slot,
 							search_zone_slot_template,
 							ctx,
-							/*$$scope*/ ctx[25],
+							/*$$scope*/ ctx[21],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[25])
-							: get_slot_changes(search_zone_slot_template, /*$$scope*/ ctx[25], dirty, get_search_zone_slot_changes),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[21])
+							: get_slot_changes(search_zone_slot_template, /*$$scope*/ ctx[21], dirty, get_search_zone_slot_changes),
 							get_search_zone_slot_context
 						);
-					}
-				} else {
-					if (search_zone_slot_or_fallback && search_zone_slot_or_fallback.p && (!current || dirty & /*searchFormAction, submitSearchText, searchPlaceholder, searchInputName, searchInput*/ 4513792)) {
-						search_zone_slot_or_fallback.p(ctx, !current ? -1 : dirty);
 					}
 				}
 			},
 			i(local) {
 				if (current) return;
-				transition_in(search_zone_slot_or_fallback, local);
+				transition_in(search_zone_slot, local);
 				current = true;
 			},
 			o(local) {
-				transition_out(search_zone_slot_or_fallback, local);
+				transition_out(search_zone_slot, local);
 				current = false;
 			},
 			d(detaching) {
@@ -1833,187 +2189,113 @@
 					detach(div);
 				}
 
-				if (search_zone_slot_or_fallback) search_zone_slot_or_fallback.d(detaching);
+				if (search_zone_slot) search_zone_slot.d(detaching);
 			}
 		};
 	}
 
-	// (158:33)            
-	function fallback_block$1(ctx) {
-		let form;
-		let div;
-		let input;
-		let t0;
-		let button;
-		let span0;
-		let t1;
-		let span1;
-		let t2;
-
-		return {
-			c() {
-				form = element("form");
-				div = element("div");
-				input = element("input");
-				t0 = space();
-				button = element("button");
-				span0 = element("span");
-				t1 = space();
-				span1 = element("span");
-				t2 = text(/*submitSearchText*/ ctx[15]);
-				attr(input, "type", "text");
-				attr(input, "placeholder", /*searchPlaceholder*/ ctx[13]);
-				attr(input, "name", /*searchInputName*/ ctx[14]);
-				attr(span0, "class", "qc-icon qc-search-submit");
-				attr(span1, "class", "sr-description");
-				attr(div, "class", "input-group");
-				attr(form, "method", "get");
-				attr(form, "action", /*searchFormAction*/ ctx[18]);
-			},
-			m(target, anchor) {
-				insert(target, form, anchor);
-				append(form, div);
-				append(div, input);
-				/*input_binding*/ ctx[28](input);
-				append(div, t0);
-				append(div, button);
-				append(button, span0);
-				append(button, t1);
-				append(button, span1);
-				append(span1, t2);
-			},
-			p(ctx, dirty) {
-				if (dirty & /*searchPlaceholder*/ 8192) {
-					attr(input, "placeholder", /*searchPlaceholder*/ ctx[13]);
-				}
-
-				if (dirty & /*searchInputName*/ 16384) {
-					attr(input, "name", /*searchInputName*/ ctx[14]);
-				}
-
-				if (dirty & /*submitSearchText*/ 32768) set_data(t2, /*submitSearchText*/ ctx[15]);
-
-				if (dirty & /*searchFormAction*/ 262144) {
-					attr(form, "action", /*searchFormAction*/ ctx[18]);
-				}
-			},
-			d(detaching) {
-				if (detaching) {
-					detach(form);
-				}
-
-				/*input_binding*/ ctx[28](null);
-			}
-		};
-	}
-
-	function create_fragment$3(ctx) {
+	function create_fragment$7(ctx) {
+		let div7;
 		let div6;
-		let div5;
 		let t0;
-		let div3;
-		let div0;
+		let div4;
+		let div1;
 		let a;
-		let img;
-		let img_src_value;
+		let div0;
 		let t1;
 		let t2;
-		let div2;
+		let div3;
 		let t3;
-		let div1;
+		let div2;
 		let t4;
-		let div4;
+		let div5;
 		let t5;
-		let t6;
 		let link;
 		let current;
-		let if_block0 = /*goToContent*/ ctx[10] == 'true' && create_if_block_7(ctx);
-		let if_block1 = /*titleText*/ ctx[5] && create_if_block_6(ctx);
-		let if_block2 = /*enableSearch*/ ctx[0] == 'true' && create_if_block_5(ctx);
-		const links_slot_template = /*#slots*/ ctx[26].links;
-		const links_slot = create_slot(links_slot_template, ctx, /*$$scope*/ ctx[25], get_links_slot_context);
-		const links_slot_or_fallback = links_slot || fallback_block_1$1(ctx);
-		let if_block3 = /*titleText*/ ctx[5] && create_if_block_1$1(ctx);
-		let if_block4 = /*displaySearchForm*/ ctx[21] && create_if_block$1(ctx);
+		let if_block0 = /*goToContent*/ ctx[11] == 'true' && create_if_block_6(ctx);
+		let if_block1 = /*titleText*/ ctx[5] && create_if_block_5(ctx);
+		let if_block2 = /*enableSearch*/ ctx[0] == 'true' && create_if_block_4(ctx);
+		const links_slot_template = /*#slots*/ ctx[22].links;
+		const links_slot = create_slot(links_slot_template, ctx, /*$$scope*/ ctx[21], get_links_slot_context);
+		const links_slot_or_fallback = links_slot || fallback_block$1(ctx);
+		let if_block3 = /*displaySearchForm*/ ctx[18] && create_if_block$4(ctx);
 
 		return {
 			c() {
+				div7 = element("div");
 				div6 = element("div");
-				div5 = element("div");
 				if (if_block0) if_block0.c();
 				t0 = space();
-				div3 = element("div");
-				div0 = element("div");
+				div4 = element("div");
+				div1 = element("div");
 				a = element("a");
-				img = element("img");
+				div0 = element("div");
 				t1 = space();
 				if (if_block1) if_block1.c();
 				t2 = space();
-				div2 = element("div");
+				div3 = element("div");
 				if (if_block2) if_block2.c();
 				t3 = space();
-				div1 = element("div");
+				div2 = element("div");
 				if (links_slot_or_fallback) links_slot_or_fallback.c();
 				t4 = space();
-				div4 = element("div");
+				div5 = element("div");
 				if (if_block3) if_block3.c();
 				t5 = space();
-				if (if_block4) if_block4.c();
-				t6 = space();
 				link = element("link");
-				attr(img, "alt", /*logoAlt*/ ctx[3]);
-				if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[2])) attr(img, "src", img_src_value);
+				attr(div0, "role", "img");
+				attr(div0, "aria-label", /*logoAlt*/ ctx[3]);
 				attr(a, "href", /*logoUrl*/ ctx[1]);
-				attr(a, "target", "_blank");
+				attr(a, "class", "logo");
 				attr(a, "rel", "noreferrer");
-				attr(div0, "class", "logo");
-				attr(div1, "class", "links");
-				attr(div2, "class", "right-section");
-				attr(div3, "class", "piv-top");
-				attr(div4, "class", "piv-bottom");
-				attr(div5, "class", /*containerClass*/ ctx[20]);
-				attr(div6, "class", "qc-piv-header qc-component");
+				attr(div1, "class", "signature-group");
+				attr(div2, "class", "links");
+				attr(div3, "class", "right-section");
+				attr(div4, "class", "piv-top");
+				attr(div5, "class", "piv-bottom");
+				attr(div6, "class", /*containerClass*/ ctx[17]);
+				attr(div7, "role", "banner");
+				attr(div7, "class", "qc-piv-header qc-component");
+				set_style(div7, "--logo-src", "url(" + /*logoSrc*/ ctx[2] + ")");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
-				insert(target, div6, anchor);
-				append(div6, div5);
-				if (if_block0) if_block0.m(div5, null);
-				append(div5, t0);
-				append(div5, div3);
-				append(div3, div0);
-				append(div0, a);
-				append(a, img);
-				append(div3, t1);
-				if (if_block1) if_block1.m(div3, null);
-				append(div3, t2);
+				insert(target, div7, anchor);
+				append(div7, div6);
+				if (if_block0) if_block0.m(div6, null);
+				append(div6, t0);
+				append(div6, div4);
+				append(div4, div1);
+				append(div1, a);
+				append(a, div0);
+				append(div1, t1);
+				if (if_block1) if_block1.m(div1, null);
+				append(div4, t2);
+				append(div4, div3);
+				if (if_block2) if_block2.m(div3, null);
+				append(div3, t3);
 				append(div3, div2);
-				if (if_block2) if_block2.m(div2, null);
-				append(div2, t3);
-				append(div2, div1);
 
 				if (links_slot_or_fallback) {
-					links_slot_or_fallback.m(div1, null);
+					links_slot_or_fallback.m(div2, null);
 				}
 
-				append(div5, t4);
-				append(div5, div4);
-				if (if_block3) if_block3.m(div4, null);
-				append(div4, t5);
-				if (if_block4) if_block4.m(div4, null);
-				insert(target, t6, anchor);
+				append(div6, t4);
+				append(div6, div5);
+				if (if_block3) if_block3.m(div5, null);
+				insert(target, t5, anchor);
 				insert(target, link, anchor);
 				current = true;
 			},
 			p(ctx, [dirty]) {
-				if (/*goToContent*/ ctx[10] == 'true') {
+				if (/*goToContent*/ ctx[11] == 'true') {
 					if (if_block0) {
 						if_block0.p(ctx, dirty);
 					} else {
-						if_block0 = create_if_block_7(ctx);
+						if_block0 = create_if_block_6(ctx);
 						if_block0.c();
-						if_block0.m(div5, t0);
+						if_block0.m(div6, t0);
 					}
 				} else if (if_block0) {
 					if_block0.d(1);
@@ -2021,11 +2303,7 @@
 				}
 
 				if (!current || dirty & /*logoAlt*/ 8) {
-					attr(img, "alt", /*logoAlt*/ ctx[3]);
-				}
-
-				if (!current || dirty & /*logoSrc*/ 4 && !src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[2])) {
-					attr(img, "src", img_src_value);
+					attr(div0, "aria-label", /*logoAlt*/ ctx[3]);
 				}
 
 				if (!current || dirty & /*logoUrl*/ 2) {
@@ -2036,9 +2314,9 @@
 					if (if_block1) {
 						if_block1.p(ctx, dirty);
 					} else {
-						if_block1 = create_if_block_6(ctx);
+						if_block1 = create_if_block_5(ctx);
 						if_block1.c();
-						if_block1.m(div3, t2);
+						if_block1.m(div1, null);
 					}
 				} else if (if_block1) {
 					if_block1.d(1);
@@ -2049,9 +2327,9 @@
 					if (if_block2) {
 						if_block2.p(ctx, dirty);
 					} else {
-						if_block2 = create_if_block_5(ctx);
+						if_block2 = create_if_block_4(ctx);
 						if_block2.c();
-						if_block2.m(div2, t3);
+						if_block2.m(div3, t3);
 					}
 				} else if (if_block2) {
 					if_block2.d(1);
@@ -2059,79 +2337,70 @@
 				}
 
 				if (links_slot) {
-					if (links_slot.p && (!current || dirty & /*$$scope*/ 33554432)) {
+					if (links_slot.p && (!current || dirty & /*$$scope*/ 2097152)) {
 						update_slot_base(
 							links_slot,
 							links_slot_template,
 							ctx,
-							/*$$scope*/ ctx[25],
+							/*$$scope*/ ctx[21],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[25])
-							: get_slot_changes(links_slot_template, /*$$scope*/ ctx[25], dirty, get_links_slot_changes),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[21])
+							: get_slot_changes(links_slot_template, /*$$scope*/ ctx[21], dirty, get_links_slot_changes),
 							get_links_slot_context
 						);
 					}
 				} else {
-					if (links_slot_or_fallback && links_slot_or_fallback.p && (!current || dirty & /*joinUsUrl, joinUsText, altLanguageUrl, altLanguageText*/ 960)) {
+					if (links_slot_or_fallback && links_slot_or_fallback.p && (!current || dirty & /*linksLabel, joinUsUrl, joinUsText, altLanguageUrl, altLanguageText*/ 1984)) {
 						links_slot_or_fallback.p(ctx, !current ? -1 : dirty);
 					}
 				}
 
-				if (/*titleText*/ ctx[5]) {
+				if (/*displaySearchForm*/ ctx[18]) {
 					if (if_block3) {
 						if_block3.p(ctx, dirty);
-					} else {
-						if_block3 = create_if_block_1$1(ctx);
-						if_block3.c();
-						if_block3.m(div4, t5);
-					}
-				} else if (if_block3) {
-					if_block3.d(1);
-					if_block3 = null;
-				}
 
-				if (/*displaySearchForm*/ ctx[21]) {
-					if (if_block4) {
-						if_block4.p(ctx, dirty);
-
-						if (dirty & /*displaySearchForm*/ 2097152) {
-							transition_in(if_block4, 1);
+						if (dirty & /*displaySearchForm*/ 262144) {
+							transition_in(if_block3, 1);
 						}
 					} else {
-						if_block4 = create_if_block$1(ctx);
-						if_block4.c();
-						transition_in(if_block4, 1);
-						if_block4.m(div4, null);
+						if_block3 = create_if_block$4(ctx);
+						if_block3.c();
+						transition_in(if_block3, 1);
+						if_block3.m(div5, null);
 					}
-				} else if (if_block4) {
+				} else if (if_block3) {
 					group_outros();
 
-					transition_out(if_block4, 1, 1, () => {
-						if_block4 = null;
+					transition_out(if_block3, 1, 1, () => {
+						if_block3 = null;
 					});
 
 					check_outros();
 				}
 
-				if (!current || dirty & /*containerClass*/ 1048576) {
-					attr(div5, "class", /*containerClass*/ ctx[20]);
+				if (!current || dirty & /*containerClass*/ 131072) {
+					attr(div6, "class", /*containerClass*/ ctx[17]);
+				}
+
+				if (!current || dirty & /*logoSrc*/ 4) {
+					set_style(div7, "--logo-src", "url(" + /*logoSrc*/ ctx[2] + ")");
 				}
 			},
 			i(local) {
 				if (current) return;
 				transition_in(links_slot_or_fallback, local);
-				transition_in(if_block4);
+				transition_in(if_block3);
 				current = true;
 			},
 			o(local) {
 				transition_out(links_slot_or_fallback, local);
-				transition_out(if_block4);
+				transition_out(if_block3);
 				current = false;
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(div6);
-					detach(t6);
+					detach(div7);
+					detach(t5);
 					detach(link);
 				}
 
@@ -2140,72 +2409,61 @@
 				if (if_block2) if_block2.d();
 				if (links_slot_or_fallback) links_slot_or_fallback.d(detaching);
 				if (if_block3) if_block3.d();
-				if (if_block4) if_block4.d();
 			}
 		};
 	}
 
-	function instance$3($$self, $$props, $$invalidate) {
+	function instance$7($$self, $$props, $$invalidate) {
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', fullWidth = 'false', logoSrc = Utils.imagesRelativePath + 'quebec-logo.svg', logoAlt = lang === 'fr'
+		let { logoUrl = '/', fullWidth = 'false', logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg', logoAlt = lang === 'fr'
 		? 'Logo du gouvernement du Québec'
-		: 'Logo of government of Québec', titleUrl = '/', titleText = '', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', searchPlaceholder = lang === 'fr' ? 'Rechercher…' : 'Search…', searchInputName = 'q', submitSearchText = lang === 'fr' ? 'Rechercher' : 'Search', displaySearchText = lang === 'fr'
+		: 'Logo of government of Québec', titleUrl = '/', titleText = '', linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation', altLanguageText = lang === 'fr' ? 'English' : 'Français', altLanguageUrl = '', joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us', joinUsUrl = '', goToContent = 'true', goToContentAnchor = '#main', goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content', displaySearchText = lang === 'fr'
 		? 'Cliquer pour faire une recherche'
 		: 'Click to search', hideSearchText = lang === 'fr'
 		? 'Masquer la barre de recherche'
-		: 'Hide search bar', searchFormAction = '#', enableSearch = 'false', showSearch = 'false' } = $$props;
+		: 'Hide search bar', enableSearch = 'false', showSearch = 'false' } = $$props;
 
 		function focusOnSearchInput() {
 			if (displaySearchForm) {
-				searchInput.focus();
+				document.querySelector('[slot="search-zone"] input')?.focus();
 			}
 		}
 
-		let containerClass = 'qc-container', displaySearchForm = false, searchInput;
+		let containerClass = 'qc-container', displaySearchForm = false;
 
 		onMount(() => {
-			$$invalidate(20, containerClass += fullWidth === 'true' ? '-fluid' : '');
+			$$invalidate(17, containerClass += fullWidth === 'true' ? '-fluid' : '');
 
 			if (showSearch === 'true') {
 				$$invalidate(0, enableSearch = 'true');
-				$$invalidate(21, displaySearchForm = true);
+				$$invalidate(18, displaySearchForm = true);
 			}
 		});
 
-		const click_handler = () => $$invalidate(21, displaySearchForm = !displaySearchForm);
-
-		function input_binding($$value) {
-			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
-				searchInput = $$value;
-				$$invalidate(22, searchInput);
-			});
-		}
+		const click_handler = () => $$invalidate(18, displaySearchForm = !displaySearchForm);
 
 		$$self.$$set = $$props => {
 			if ('logoUrl' in $$props) $$invalidate(1, logoUrl = $$props.logoUrl);
-			if ('fullWidth' in $$props) $$invalidate(23, fullWidth = $$props.fullWidth);
+			if ('fullWidth' in $$props) $$invalidate(19, fullWidth = $$props.fullWidth);
 			if ('logoSrc' in $$props) $$invalidate(2, logoSrc = $$props.logoSrc);
 			if ('logoAlt' in $$props) $$invalidate(3, logoAlt = $$props.logoAlt);
 			if ('titleUrl' in $$props) $$invalidate(4, titleUrl = $$props.titleUrl);
 			if ('titleText' in $$props) $$invalidate(5, titleText = $$props.titleText);
-			if ('altLanguageText' in $$props) $$invalidate(6, altLanguageText = $$props.altLanguageText);
-			if ('altLanguageUrl' in $$props) $$invalidate(7, altLanguageUrl = $$props.altLanguageUrl);
-			if ('joinUsText' in $$props) $$invalidate(8, joinUsText = $$props.joinUsText);
-			if ('joinUsUrl' in $$props) $$invalidate(9, joinUsUrl = $$props.joinUsUrl);
-			if ('goToContent' in $$props) $$invalidate(10, goToContent = $$props.goToContent);
-			if ('goToContentAnchor' in $$props) $$invalidate(11, goToContentAnchor = $$props.goToContentAnchor);
-			if ('goToContentText' in $$props) $$invalidate(12, goToContentText = $$props.goToContentText);
-			if ('searchPlaceholder' in $$props) $$invalidate(13, searchPlaceholder = $$props.searchPlaceholder);
-			if ('searchInputName' in $$props) $$invalidate(14, searchInputName = $$props.searchInputName);
-			if ('submitSearchText' in $$props) $$invalidate(15, submitSearchText = $$props.submitSearchText);
-			if ('displaySearchText' in $$props) $$invalidate(16, displaySearchText = $$props.displaySearchText);
-			if ('hideSearchText' in $$props) $$invalidate(17, hideSearchText = $$props.hideSearchText);
-			if ('searchFormAction' in $$props) $$invalidate(18, searchFormAction = $$props.searchFormAction);
+			if ('linksLabel' in $$props) $$invalidate(6, linksLabel = $$props.linksLabel);
+			if ('altLanguageText' in $$props) $$invalidate(7, altLanguageText = $$props.altLanguageText);
+			if ('altLanguageUrl' in $$props) $$invalidate(8, altLanguageUrl = $$props.altLanguageUrl);
+			if ('joinUsText' in $$props) $$invalidate(9, joinUsText = $$props.joinUsText);
+			if ('joinUsUrl' in $$props) $$invalidate(10, joinUsUrl = $$props.joinUsUrl);
+			if ('goToContent' in $$props) $$invalidate(11, goToContent = $$props.goToContent);
+			if ('goToContentAnchor' in $$props) $$invalidate(12, goToContentAnchor = $$props.goToContentAnchor);
+			if ('goToContentText' in $$props) $$invalidate(13, goToContentText = $$props.goToContentText);
+			if ('displaySearchText' in $$props) $$invalidate(14, displaySearchText = $$props.displaySearchText);
+			if ('hideSearchText' in $$props) $$invalidate(15, hideSearchText = $$props.hideSearchText);
 			if ('enableSearch' in $$props) $$invalidate(0, enableSearch = $$props.enableSearch);
-			if ('showSearch' in $$props) $$invalidate(24, showSearch = $$props.showSearch);
-			if ('$$scope' in $$props) $$invalidate(25, $$scope = $$props.$$scope);
+			if ('showSearch' in $$props) $$invalidate(20, showSearch = $$props.showSearch);
+			if ('$$scope' in $$props) $$invalidate(21, $$scope = $$props.$$scope);
 		};
 
 		return [
@@ -2215,6 +2473,7 @@
 			logoAlt,
 			titleUrl,
 			titleText,
+			linksLabel,
 			altLanguageText,
 			altLanguageUrl,
 			joinUsText,
@@ -2222,22 +2481,16 @@
 			goToContent,
 			goToContentAnchor,
 			goToContentText,
-			searchPlaceholder,
-			searchInputName,
-			submitSearchText,
 			displaySearchText,
 			hideSearchText,
-			searchFormAction,
 			focusOnSearchInput,
 			containerClass,
 			displaySearchForm,
-			searchInput,
 			fullWidth,
 			showSearch,
 			$$scope,
 			slots,
-			click_handler,
-			input_binding
+			click_handler
 		];
 	}
 
@@ -2245,29 +2498,26 @@
 		constructor(options) {
 			super();
 
-			init(this, options, instance$3, create_fragment$3, safe_not_equal, {
+			init(this, options, instance$7, create_fragment$7, safe_not_equal, {
 				logoUrl: 1,
-				fullWidth: 23,
+				fullWidth: 19,
 				logoSrc: 2,
 				logoAlt: 3,
 				titleUrl: 4,
 				titleText: 5,
-				altLanguageText: 6,
-				altLanguageUrl: 7,
-				joinUsText: 8,
-				joinUsUrl: 9,
-				goToContent: 10,
-				goToContentAnchor: 11,
-				goToContentText: 12,
-				searchPlaceholder: 13,
-				searchInputName: 14,
-				submitSearchText: 15,
-				displaySearchText: 16,
-				hideSearchText: 17,
-				searchFormAction: 18,
+				linksLabel: 6,
+				altLanguageText: 7,
+				altLanguageUrl: 8,
+				joinUsText: 9,
+				joinUsUrl: 10,
+				goToContent: 11,
+				goToContentAnchor: 12,
+				goToContentText: 13,
+				displaySearchText: 14,
+				hideSearchText: 15,
 				enableSearch: 0,
-				showSearch: 24,
-				focusOnSearchInput: 19
+				showSearch: 20,
+				focusOnSearchInput: 16
 			});
 		}
 
@@ -2281,7 +2531,7 @@
 		}
 
 		get fullWidth() {
-			return this.$$.ctx[23];
+			return this.$$.ctx[19];
 		}
 
 		set fullWidth(fullWidth) {
@@ -2325,8 +2575,17 @@
 			flush();
 		}
 
-		get altLanguageText() {
+		get linksLabel() {
 			return this.$$.ctx[6];
+		}
+
+		set linksLabel(linksLabel) {
+			this.$$set({ linksLabel });
+			flush();
+		}
+
+		get altLanguageText() {
+			return this.$$.ctx[7];
 		}
 
 		set altLanguageText(altLanguageText) {
@@ -2335,7 +2594,7 @@
 		}
 
 		get altLanguageUrl() {
-			return this.$$.ctx[7];
+			return this.$$.ctx[8];
 		}
 
 		set altLanguageUrl(altLanguageUrl) {
@@ -2344,7 +2603,7 @@
 		}
 
 		get joinUsText() {
-			return this.$$.ctx[8];
+			return this.$$.ctx[9];
 		}
 
 		set joinUsText(joinUsText) {
@@ -2353,7 +2612,7 @@
 		}
 
 		get joinUsUrl() {
-			return this.$$.ctx[9];
+			return this.$$.ctx[10];
 		}
 
 		set joinUsUrl(joinUsUrl) {
@@ -2362,7 +2621,7 @@
 		}
 
 		get goToContent() {
-			return this.$$.ctx[10];
+			return this.$$.ctx[11];
 		}
 
 		set goToContent(goToContent) {
@@ -2371,7 +2630,7 @@
 		}
 
 		get goToContentAnchor() {
-			return this.$$.ctx[11];
+			return this.$$.ctx[12];
 		}
 
 		set goToContentAnchor(goToContentAnchor) {
@@ -2380,7 +2639,7 @@
 		}
 
 		get goToContentText() {
-			return this.$$.ctx[12];
+			return this.$$.ctx[13];
 		}
 
 		set goToContentText(goToContentText) {
@@ -2388,35 +2647,8 @@
 			flush();
 		}
 
-		get searchPlaceholder() {
-			return this.$$.ctx[13];
-		}
-
-		set searchPlaceholder(searchPlaceholder) {
-			this.$$set({ searchPlaceholder });
-			flush();
-		}
-
-		get searchInputName() {
-			return this.$$.ctx[14];
-		}
-
-		set searchInputName(searchInputName) {
-			this.$$set({ searchInputName });
-			flush();
-		}
-
-		get submitSearchText() {
-			return this.$$.ctx[15];
-		}
-
-		set submitSearchText(submitSearchText) {
-			this.$$set({ submitSearchText });
-			flush();
-		}
-
 		get displaySearchText() {
-			return this.$$.ctx[16];
+			return this.$$.ctx[14];
 		}
 
 		set displaySearchText(displaySearchText) {
@@ -2425,20 +2657,11 @@
 		}
 
 		get hideSearchText() {
-			return this.$$.ctx[17];
+			return this.$$.ctx[15];
 		}
 
 		set hideSearchText(hideSearchText) {
 			this.$$set({ hideSearchText });
-			flush();
-		}
-
-		get searchFormAction() {
-			return this.$$.ctx[18];
-		}
-
-		set searchFormAction(searchFormAction) {
-			this.$$set({ searchFormAction });
 			flush();
 		}
 
@@ -2452,7 +2675,7 @@
 		}
 
 		get showSearch() {
-			return this.$$.ctx[24];
+			return this.$$.ctx[20];
 		}
 
 		set showSearch(showSearch) {
@@ -2461,69 +2684,61 @@
 		}
 
 		get focusOnSearchInput() {
-			return this.$$.ctx[19];
+			return this.$$.ctx[16];
 		}
 	}
 
-	customElements.define("qc-piv-header", create_custom_element(PivHeader, {"logoUrl":{"attribute":"logo-url"},"fullWidth":{"attribute":"full-width"},"logoSrc":{"attribute":"logo-src"},"logoAlt":{"attribute":"logo-alt"},"titleUrl":{"attribute":"title-url"},"titleText":{"attribute":"title-text"},"altLanguageText":{"attribute":"alt-language-text"},"altLanguageUrl":{"attribute":"alt-language-url"},"joinUsText":{"attribute":"join-us-text"},"joinUsUrl":{"attribute":"join-us-url"},"goToContent":{"attribute":"go-to-content"},"goToContentAnchor":{"attribute":"go-to-content-anchor"},"goToContentText":{"attribute":"go-to-content-text"},"searchPlaceholder":{"attribute":"search-placeholder"},"searchInputName":{"attribute":"search-input-name"},"submitSearchText":{"attribute":"submit-search-text"},"displaySearchText":{"attribute":"display-search-text"},"hideSearchText":{"attribute":"hide-search-text"},"searchFormAction":{"attribute":"search-form-action"},"enableSearch":{"attribute":"enable-search"},"showSearch":{"attribute":"show-search"}}, ["links","search-zone"], ["focusOnSearchInput"], true));
+	customElements.define("qc-piv-header", create_custom_element(PivHeader, {"logoUrl":{"attribute":"logo-url"},"fullWidth":{"attribute":"full-width"},"logoSrc":{"attribute":"logo-src"},"logoAlt":{"attribute":"logo-alt"},"titleUrl":{"attribute":"title-url"},"titleText":{"attribute":"title-text"},"linksLabel":{"attribute":"links-label"},"altLanguageText":{"attribute":"alt-language-text"},"altLanguageUrl":{"attribute":"alt-language-url"},"joinUsText":{"attribute":"join-us-text"},"joinUsUrl":{"attribute":"join-us-url"},"goToContent":{"attribute":"go-to-content"},"goToContentAnchor":{"attribute":"go-to-content-anchor"},"goToContentText":{"attribute":"go-to-content-text"},"displaySearchText":{"attribute":"display-search-text"},"hideSearchText":{"attribute":"hide-search-text"},"enableSearch":{"attribute":"enable-search"},"showSearch":{"attribute":"show-search"}}, ["links","search-zone"], ["focusOnSearchInput"], true));
 
-	/* src/sdg/components/pivFooter.svelte generated by Svelte v4.2.12 */
+	/* src/sdg/components/pivFooter.svelte generated by Svelte v4.2.19 */
 	const get_copyright_slot_changes = dirty => ({});
 	const get_copyright_slot_context = ctx => ({});
-	const get_logo_slot_changes = dirty => ({});
-	const get_logo_slot_context = ctx => ({});
 
-	// (42:30)                  
-	function fallback_block_1(ctx) {
-		let a;
+	function get_each_context(ctx, list, i) {
+		const child_ctx = ctx.slice();
+		child_ctx[11] = list[i][0];
+		child_ctx[12] = list[i][1];
+		return child_ctx;
+	}
+
+	// (47:8) {#each [             ['light', logoSrc],             ['dark', logoSrcDarkTheme]]         as [theme, src]}
+	function create_each_block(ctx) {
 		let img;
 		let img_src_value;
+		let img_class_value;
 
 		return {
 			c() {
-				a = element("a");
 				img = element("img");
-				attr(img, "class", "logo-mo");
-				attr(img, "alt", /*logoAlt*/ ctx[2]);
-				if (!src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[1])) attr(img, "src", img_src_value);
-				attr(img, "width", /*logoWidth*/ ctx[3]);
-				attr(img, "height", /*logoHeight*/ ctx[4]);
-				attr(a, "href", /*logoUrl*/ ctx[0]);
+				if (!src_url_equal(img.src, img_src_value = /*src*/ ctx[12])) attr(img, "src", img_src_value);
+				attr(img, "alt", /*logoAlt*/ ctx[3]);
+				attr(img, "class", img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show");
 			},
 			m(target, anchor) {
-				insert(target, a, anchor);
-				append(a, img);
+				insert(target, img, anchor);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*logoAlt*/ 4) {
-					attr(img, "alt", /*logoAlt*/ ctx[2]);
-				}
-
-				if (dirty & /*logoSrc*/ 2 && !src_url_equal(img.src, img_src_value = /*logoSrc*/ ctx[1])) {
+				if (dirty & /*logoSrc, logoSrcDarkTheme*/ 6 && !src_url_equal(img.src, img_src_value = /*src*/ ctx[12])) {
 					attr(img, "src", img_src_value);
 				}
 
-				if (dirty & /*logoWidth*/ 8) {
-					attr(img, "width", /*logoWidth*/ ctx[3]);
+				if (dirty & /*logoAlt*/ 8) {
+					attr(img, "alt", /*logoAlt*/ ctx[3]);
 				}
 
-				if (dirty & /*logoHeight*/ 16) {
-					attr(img, "height", /*logoHeight*/ ctx[4]);
-				}
-
-				if (dirty & /*logoUrl*/ 1) {
-					attr(a, "href", /*logoUrl*/ ctx[0]);
+				if (dirty & /*logoSrc, logoSrcDarkTheme*/ 6 && img_class_value !== (img_class_value = "qc-" + /*theme*/ ctx[11] + "-theme-show")) {
+					attr(img, "class", img_class_value);
 				}
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(a);
+					detach(img);
 				}
 			}
 		};
 	}
 
-	// (53:35)                  
+	// (57:31)              
 	function fallback_block(ctx) {
 		let a;
 		let t;
@@ -2531,18 +2746,18 @@
 		return {
 			c() {
 				a = element("a");
-				t = text(/*copyrightText*/ ctx[5]);
-				attr(a, "href", /*copyrightUrl*/ ctx[6]);
+				t = text(/*copyrightText*/ ctx[4]);
+				attr(a, "href", /*copyrightUrl*/ ctx[7]);
 			},
 			m(target, anchor) {
 				insert(target, a, anchor);
 				append(a, t);
 			},
 			p(ctx, dirty) {
-				if (dirty & /*copyrightText*/ 32) set_data(t, /*copyrightText*/ ctx[5]);
+				if (dirty & /*copyrightText*/ 16) set_data(t, /*copyrightText*/ ctx[4]);
 
-				if (dirty & /*copyrightUrl*/ 64) {
-					attr(a, "href", /*copyrightUrl*/ ctx[6]);
+				if (dirty & /*copyrightUrl*/ 128) {
+					attr(a, "href", /*copyrightUrl*/ ctx[7]);
 				}
 			},
 			d(detaching) {
@@ -2553,65 +2768,71 @@
 		};
 	}
 
-	function create_fragment$2(ctx) {
-		let div2;
-		let div1;
-		let nav;
+	function create_fragment$6(ctx) {
+		let div;
 		let t0;
-		let div0;
+		let a;
 		let t1;
 		let span;
 		let t2;
 		let link;
 		let current;
-		const default_slot_template = /*#slots*/ ctx[8].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[7], null);
-		const logo_slot_template = /*#slots*/ ctx[8].logo;
-		const logo_slot = create_slot(logo_slot_template, ctx, /*$$scope*/ ctx[7], get_logo_slot_context);
-		const logo_slot_or_fallback = logo_slot || fallback_block_1(ctx);
-		const copyright_slot_template = /*#slots*/ ctx[8].copyright;
-		const copyright_slot = create_slot(copyright_slot_template, ctx, /*$$scope*/ ctx[7], get_copyright_slot_context);
+		const default_slot_template = /*#slots*/ ctx[9].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[8], null);
+		let each_value = ensure_array_like([['light', /*logoSrc*/ ctx[1]], ['dark', /*logoSrcDarkTheme*/ ctx[2]]]);
+		let each_blocks = [];
+
+		for (let i = 0; i < 2; i += 1) {
+			each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+		}
+
+		const copyright_slot_template = /*#slots*/ ctx[9].copyright;
+		const copyright_slot = create_slot(copyright_slot_template, ctx, /*$$scope*/ ctx[8], get_copyright_slot_context);
 		const copyright_slot_or_fallback = copyright_slot || fallback_block(ctx);
 
 		return {
 			c() {
-				div2 = element("div");
-				div1 = element("div");
-				nav = element("nav");
+				div = element("div");
 				if (default_slot) default_slot.c();
 				t0 = space();
-				div0 = element("div");
-				if (logo_slot_or_fallback) logo_slot_or_fallback.c();
+				a = element("a");
+
+				for (let i = 0; i < 2; i += 1) {
+					each_blocks[i].c();
+				}
+
 				t1 = space();
 				span = element("span");
 				if (copyright_slot_or_fallback) copyright_slot_or_fallback.c();
 				t2 = space();
 				link = element("link");
-				attr(div0, "class", "logo");
+				attr(a, "href", /*logoUrl*/ ctx[0]);
+				attr(a, "class", "logo");
+				set_style(a, "--logo-width", /*logoWidth*/ ctx[5]);
+				set_style(a, "--logo-height", /*logoHeight*/ ctx[6]);
 				attr(span, "class", "copyright");
-				attr(div1, "class", "qc-container");
-				attr(div2, "class", "qc-piv-footer qc-component");
+				attr(div, "class", "qc-piv-footer qc-container-fluid");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
-				insert(target, div2, anchor);
-				append(div2, div1);
-				append(div1, nav);
+				insert(target, div, anchor);
 
 				if (default_slot) {
-					default_slot.m(nav, null);
+					default_slot.m(div, null);
 				}
 
-				append(div1, t0);
-				append(div1, div0);
+				append(div, t0);
+				append(div, a);
 
-				if (logo_slot_or_fallback) {
-					logo_slot_or_fallback.m(div0, null);
+				for (let i = 0; i < 2; i += 1) {
+					if (each_blocks[i]) {
+						each_blocks[i].m(a, null);
+					}
 				}
 
-				append(div1, t1);
-				append(div1, span);
+				append(div, t1);
+				append(div, span);
 
 				if (copyright_slot_or_fallback) {
 					copyright_slot_or_fallback.m(span, null);
@@ -2623,54 +2844,68 @@
 			},
 			p(ctx, [dirty]) {
 				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 128)) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 256)) {
 						update_slot_base(
 							default_slot,
 							default_slot_template,
 							ctx,
-							/*$$scope*/ ctx[7],
+							/*$$scope*/ ctx[8],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[7])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[7], dirty, null),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[8])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[8], dirty, null),
 							null
 						);
 					}
 				}
 
-				if (logo_slot) {
-					if (logo_slot.p && (!current || dirty & /*$$scope*/ 128)) {
-						update_slot_base(
-							logo_slot,
-							logo_slot_template,
-							ctx,
-							/*$$scope*/ ctx[7],
-							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[7])
-							: get_slot_changes(logo_slot_template, /*$$scope*/ ctx[7], dirty, get_logo_slot_changes),
-							get_logo_slot_context
-						);
+				if (dirty & /*logoSrc, logoSrcDarkTheme, logoAlt*/ 14) {
+					each_value = ensure_array_like([['light', /*logoSrc*/ ctx[1]], ['dark', /*logoSrcDarkTheme*/ ctx[2]]]);
+					let i;
+
+					for (i = 0; i < 2; i += 1) {
+						const child_ctx = get_each_context(ctx, each_value, i);
+
+						if (each_blocks[i]) {
+							each_blocks[i].p(child_ctx, dirty);
+						} else {
+							each_blocks[i] = create_each_block(child_ctx);
+							each_blocks[i].c();
+							each_blocks[i].m(a, null);
+						}
 					}
-				} else {
-					if (logo_slot_or_fallback && logo_slot_or_fallback.p && (!current || dirty & /*logoUrl, logoAlt, logoSrc, logoWidth, logoHeight*/ 31)) {
-						logo_slot_or_fallback.p(ctx, !current ? -1 : dirty);
+
+					for (; i < 2; i += 1) {
+						each_blocks[i].d(1);
 					}
 				}
 
+				if (!current || dirty & /*logoUrl*/ 1) {
+					attr(a, "href", /*logoUrl*/ ctx[0]);
+				}
+
+				if (dirty & /*logoWidth*/ 32) {
+					set_style(a, "--logo-width", /*logoWidth*/ ctx[5]);
+				}
+
+				if (dirty & /*logoHeight*/ 64) {
+					set_style(a, "--logo-height", /*logoHeight*/ ctx[6]);
+				}
+
 				if (copyright_slot) {
-					if (copyright_slot.p && (!current || dirty & /*$$scope*/ 128)) {
+					if (copyright_slot.p && (!current || dirty & /*$$scope*/ 256)) {
 						update_slot_base(
 							copyright_slot,
 							copyright_slot_template,
 							ctx,
-							/*$$scope*/ ctx[7],
+							/*$$scope*/ ctx[8],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[7])
-							: get_slot_changes(copyright_slot_template, /*$$scope*/ ctx[7], dirty, get_copyright_slot_changes),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[8])
+							: get_slot_changes(copyright_slot_template, /*$$scope*/ ctx[8], dirty, get_copyright_slot_changes),
 							get_copyright_slot_context
 						);
 					}
 				} else {
-					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 96)) {
+					if (copyright_slot_or_fallback && copyright_slot_or_fallback.p && (!current || dirty & /*copyrightUrl, copyrightText*/ 144)) {
 						copyright_slot_or_fallback.p(ctx, !current ? -1 : dirty);
 					}
 				}
@@ -2678,56 +2913,58 @@
 			i(local) {
 				if (current) return;
 				transition_in(default_slot, local);
-				transition_in(logo_slot_or_fallback, local);
 				transition_in(copyright_slot_or_fallback, local);
 				current = true;
 			},
 			o(local) {
 				transition_out(default_slot, local);
-				transition_out(logo_slot_or_fallback, local);
 				transition_out(copyright_slot_or_fallback, local);
 				current = false;
 			},
 			d(detaching) {
 				if (detaching) {
-					detach(div2);
+					detach(div);
 					detach(t2);
 					detach(link);
 				}
 
 				if (default_slot) default_slot.d(detaching);
-				if (logo_slot_or_fallback) logo_slot_or_fallback.d(detaching);
+				destroy_each(each_blocks, detaching);
 				if (copyright_slot_or_fallback) copyright_slot_or_fallback.d(detaching);
 			}
 		};
 	}
 
-	function instance$2($$self, $$props, $$invalidate) {
+	function instance$6($$self, $$props, $$invalidate) {
 		let { $$slots: slots = {}, $$scope } = $$props;
 		const lang = Utils.getPageLanguage();
 
-		let { logoUrl = '/', logoSrc = `${Utils.imagesRelativePath}qc-sprite.svg?v=v1.2.2#logo-quebec-piv-footer`, logoAlt = 'Gouvernement du Québec', logoWidth = '117', logoHeight = '35', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), copyrightUrl = lang === 'fr'
+		let { logoUrl = '/', logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg', logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg', logoAlt = lang === 'fr'
+		? 'Logo du gouvernement du Québec'
+		: 'Logo of the Quebec government', copyrightText = '© Gouvernement du Québec, ' + new Date().getFullYear(), logoWidth = 139, logoHeight = 50, copyrightUrl = lang === 'fr'
 		? 'https://www.quebec.ca/droit-auteur'
 		: 'https://www.quebec.ca/en/copyright' } = $$props;
 
 		$$self.$$set = $$props => {
 			if ('logoUrl' in $$props) $$invalidate(0, logoUrl = $$props.logoUrl);
 			if ('logoSrc' in $$props) $$invalidate(1, logoSrc = $$props.logoSrc);
-			if ('logoAlt' in $$props) $$invalidate(2, logoAlt = $$props.logoAlt);
-			if ('logoWidth' in $$props) $$invalidate(3, logoWidth = $$props.logoWidth);
-			if ('logoHeight' in $$props) $$invalidate(4, logoHeight = $$props.logoHeight);
-			if ('copyrightText' in $$props) $$invalidate(5, copyrightText = $$props.copyrightText);
-			if ('copyrightUrl' in $$props) $$invalidate(6, copyrightUrl = $$props.copyrightUrl);
-			if ('$$scope' in $$props) $$invalidate(7, $$scope = $$props.$$scope);
+			if ('logoSrcDarkTheme' in $$props) $$invalidate(2, logoSrcDarkTheme = $$props.logoSrcDarkTheme);
+			if ('logoAlt' in $$props) $$invalidate(3, logoAlt = $$props.logoAlt);
+			if ('copyrightText' in $$props) $$invalidate(4, copyrightText = $$props.copyrightText);
+			if ('logoWidth' in $$props) $$invalidate(5, logoWidth = $$props.logoWidth);
+			if ('logoHeight' in $$props) $$invalidate(6, logoHeight = $$props.logoHeight);
+			if ('copyrightUrl' in $$props) $$invalidate(7, copyrightUrl = $$props.copyrightUrl);
+			if ('$$scope' in $$props) $$invalidate(8, $$scope = $$props.$$scope);
 		};
 
 		return [
 			logoUrl,
 			logoSrc,
+			logoSrcDarkTheme,
 			logoAlt,
+			copyrightText,
 			logoWidth,
 			logoHeight,
-			copyrightText,
 			copyrightUrl,
 			$$scope,
 			slots
@@ -2738,14 +2975,15 @@
 		constructor(options) {
 			super();
 
-			init(this, options, instance$2, create_fragment$2, safe_not_equal, {
+			init(this, options, instance$6, create_fragment$6, safe_not_equal, {
 				logoUrl: 0,
 				logoSrc: 1,
-				logoAlt: 2,
-				logoWidth: 3,
-				logoHeight: 4,
-				copyrightText: 5,
-				copyrightUrl: 6
+				logoSrcDarkTheme: 2,
+				logoAlt: 3,
+				copyrightText: 4,
+				logoWidth: 5,
+				logoHeight: 6,
+				copyrightUrl: 7
 			});
 		}
 
@@ -2767,8 +3005,17 @@
 			flush();
 		}
 
-		get logoAlt() {
+		get logoSrcDarkTheme() {
 			return this.$$.ctx[2];
+		}
+
+		set logoSrcDarkTheme(logoSrcDarkTheme) {
+			this.$$set({ logoSrcDarkTheme });
+			flush();
+		}
+
+		get logoAlt() {
+			return this.$$.ctx[3];
 		}
 
 		set logoAlt(logoAlt) {
@@ -2776,8 +3023,17 @@
 			flush();
 		}
 
+		get copyrightText() {
+			return this.$$.ctx[4];
+		}
+
+		set copyrightText(copyrightText) {
+			this.$$set({ copyrightText });
+			flush();
+		}
+
 		get logoWidth() {
-			return this.$$.ctx[3];
+			return this.$$.ctx[5];
 		}
 
 		set logoWidth(logoWidth) {
@@ -2786,7 +3042,7 @@
 		}
 
 		get logoHeight() {
-			return this.$$.ctx[4];
+			return this.$$.ctx[6];
 		}
 
 		set logoHeight(logoHeight) {
@@ -2794,17 +3050,8 @@
 			flush();
 		}
 
-		get copyrightText() {
-			return this.$$.ctx[5];
-		}
-
-		set copyrightText(copyrightText) {
-			this.$$set({ copyrightText });
-			flush();
-		}
-
 		get copyrightUrl() {
-			return this.$$.ctx[6];
+			return this.$$.ctx[7];
 		}
 
 		set copyrightUrl(copyrightUrl) {
@@ -2813,81 +3060,317 @@
 		}
 	}
 
-	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{},"logoAlt":{"attribute":"logo-alt"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"copyrightText":{"attribute":"copyrightText"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","logo","copyright"], [], true));
+	customElements.define("qc-piv-footer", create_custom_element(PivFooter, {"logoUrl":{"attribute":"logo-url"},"logoSrc":{"attribute":"logo-src"},"logoSrcDarkTheme":{"attribute":"logo-src-dark-theme"},"logoAlt":{"attribute":"logo-alt"},"copyrightText":{"attribute":"copyright-text"},"logoWidth":{"attribute":"logo-width"},"logoHeight":{"attribute":"logo-height"},"copyrightUrl":{"attribute":"copyright-url"}}, ["default","copyright"], [], true));
 
-	/* src/sdg/components/alert.svelte generated by Svelte v4.2.12 */
+	/* src/sdg/components/Button/IconButton.svelte generated by Svelte v4.2.19 */
 
-	function create_if_block(ctx) {
+	function create_if_block$3(ctx) {
+		let icon_1;
+		let current;
+
+		icon_1 = new Icon({
+				props: {
+					type: /*icon*/ ctx[2],
+					size: /*iconSize*/ ctx[3],
+					color: /*iconColor*/ ctx[4],
+					"aria-hidden": "true",
+					label: /*label*/ ctx[1]
+				}
+			});
+
+		return {
+			c() {
+				create_component(icon_1.$$.fragment);
+			},
+			m(target, anchor) {
+				mount_component(icon_1, target, anchor);
+				current = true;
+			},
+			p(ctx, dirty) {
+				const icon_1_changes = {};
+				if (dirty & /*icon*/ 4) icon_1_changes.type = /*icon*/ ctx[2];
+				if (dirty & /*iconSize*/ 8) icon_1_changes.size = /*iconSize*/ ctx[3];
+				if (dirty & /*iconColor*/ 16) icon_1_changes.color = /*iconColor*/ ctx[4];
+				if (dirty & /*label*/ 2) icon_1_changes.label = /*label*/ ctx[1];
+				icon_1.$set(icon_1_changes);
+			},
+			i(local) {
+				if (current) return;
+				transition_in(icon_1.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(icon_1.$$.fragment, local);
+				current = false;
+			},
+			d(detaching) {
+				destroy_component(icon_1, detaching);
+			}
+		};
+	}
+
+	function create_fragment$5(ctx) {
+		let button;
+		let button_class_value;
+		let current;
+		let mounted;
+		let dispose;
+		let if_block = /*icon*/ ctx[2] && create_if_block$3(ctx);
+
+		let button_levels = [
+			{ "data-button-size": /*size*/ ctx[0] },
+			/*$$restProps*/ ctx[5],
+			{
+				class: button_class_value = "qc-icon-button " + (/*$$restProps*/ ctx[5].class ?? '')
+			}
+		];
+
+		let button_data = {};
+
+		for (let i = 0; i < button_levels.length; i += 1) {
+			button_data = assign(button_data, button_levels[i]);
+		}
+
+		return {
+			c() {
+				button = element("button");
+				if (if_block) if_block.c();
+				set_attributes(button, button_data);
+			},
+			m(target, anchor) {
+				insert(target, button, anchor);
+				if (if_block) if_block.m(button, null);
+				if (button.autofocus) button.focus();
+				current = true;
+
+				if (!mounted) {
+					dispose = listen(button, "click", /*click_handler*/ ctx[6]);
+					mounted = true;
+				}
+			},
+			p(ctx, [dirty]) {
+				if (/*icon*/ ctx[2]) {
+					if (if_block) {
+						if_block.p(ctx, dirty);
+
+						if (dirty & /*icon*/ 4) {
+							transition_in(if_block, 1);
+						}
+					} else {
+						if_block = create_if_block$3(ctx);
+						if_block.c();
+						transition_in(if_block, 1);
+						if_block.m(button, null);
+					}
+				} else if (if_block) {
+					group_outros();
+
+					transition_out(if_block, 1, 1, () => {
+						if_block = null;
+					});
+
+					check_outros();
+				}
+
+				set_attributes(button, button_data = get_spread_update(button_levels, [
+					(!current || dirty & /*size*/ 1) && { "data-button-size": /*size*/ ctx[0] },
+					dirty & /*$$restProps*/ 32 && /*$$restProps*/ ctx[5],
+					(!current || dirty & /*$$restProps*/ 32 && button_class_value !== (button_class_value = "qc-icon-button " + (/*$$restProps*/ ctx[5].class ?? ''))) && { class: button_class_value }
+				]));
+			},
+			i(local) {
+				if (current) return;
+				transition_in(if_block);
+				current = true;
+			},
+			o(local) {
+				transition_out(if_block);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(button);
+				}
+
+				if (if_block) if_block.d();
+				mounted = false;
+				dispose();
+			}
+		};
+	}
+
+	function instance$5($$self, $$props, $$invalidate) {
+		const omit_props_names = ["size","label","icon","iconSize","iconColor"];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+		let { size = 'xl', label, icon, iconSize, iconColor } = $$props;
+
+		function click_handler(event) {
+			bubble.call(this, $$self, event);
+		}
+
+		$$self.$$set = $$new_props => {
+			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(5, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('size' in $$new_props) $$invalidate(0, size = $$new_props.size);
+			if ('label' in $$new_props) $$invalidate(1, label = $$new_props.label);
+			if ('icon' in $$new_props) $$invalidate(2, icon = $$new_props.icon);
+			if ('iconSize' in $$new_props) $$invalidate(3, iconSize = $$new_props.iconSize);
+			if ('iconColor' in $$new_props) $$invalidate(4, iconColor = $$new_props.iconColor);
+		};
+
+		return [size, label, icon, iconSize, iconColor, $$restProps, click_handler];
+	}
+
+	class IconButton extends SvelteComponent {
+		constructor(options) {
+			super();
+
+			init(this, options, instance$5, create_fragment$5, safe_not_equal, {
+				size: 0,
+				label: 1,
+				icon: 2,
+				iconSize: 3,
+				iconColor: 4
+			});
+		}
+
+		get size() {
+			return this.$$.ctx[0];
+		}
+
+		set size(size) {
+			this.$$set({ size });
+			flush();
+		}
+
+		get label() {
+			return this.$$.ctx[1];
+		}
+
+		set label(label) {
+			this.$$set({ label });
+			flush();
+		}
+
+		get icon() {
+			return this.$$.ctx[2];
+		}
+
+		set icon(icon) {
+			this.$$set({ icon });
+			flush();
+		}
+
+		get iconSize() {
+			return this.$$.ctx[3];
+		}
+
+		set iconSize(iconSize) {
+			this.$$set({ iconSize });
+			flush();
+		}
+
+		get iconColor() {
+			return this.$$.ctx[4];
+		}
+
+		set iconColor(iconColor) {
+			this.$$set({ iconColor });
+			flush();
+		}
+	}
+
+	create_custom_element(IconButton, {"size":{},"label":{},"icon":{},"iconSize":{},"iconColor":{}}, [], [], true);
+
+	/* src/sdg/components/alert.svelte generated by Svelte v4.2.19 */
+
+	function create_if_block$2(ctx) {
 		let div3;
 		let div2;
-		let div0;
-		let div0_class_value;
-		let t0;
 		let div1;
+		let icon;
+		let t0;
+		let div0;
 		let html_tag;
 		let t1;
 		let t2;
 		let current;
-		const default_slot_template = /*#slots*/ ctx[11].default;
-		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[10], null);
+
+		icon = new Icon({
+				props: {
+					type: /*type*/ ctx[0] == 'warning' ? 'warning' : 'information',
+					color: /*type*/ ctx[0] == 'general'
+					? 'blue-piv'
+					: 'yellow-dark',
+					size: "nm",
+					label: /*label*/ ctx[8]
+				}
+			});
+
+		const default_slot_template = /*#slots*/ ctx[13].default;
+		const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[12], null);
 		let if_block = /*maskable*/ ctx[1] === "true" && create_if_block_1(ctx);
 
 		return {
 			c() {
 				div3 = element("div");
 				div2 = element("div");
-				div0 = element("div");
-				t0 = space();
 				div1 = element("div");
+				create_component(icon.$$.fragment);
+				t0 = space();
+				div0 = element("div");
 				html_tag = new HtmlTag(false);
 				t1 = space();
 				if (default_slot) default_slot.c();
 				t2 = space();
 				if (if_block) if_block.c();
-				attr(div0, "class", div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon");
-				attr(div0, "aria-hidden", "true");
 				html_tag.a = t1;
-				attr(div1, "class", "qc-alert-content");
-				attr(div2, "class", "qc-container qc-general-alert-elements");
-				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[5]);
+				attr(div0, "class", "qc-alert-content");
+				attr(div1, "class", "qc-general-alert-elements");
+				attr(div2, "class", /*containerClass*/ ctx[5]);
+				attr(div3, "class", "qc-general-alert " + /*typeClass*/ ctx[6]);
 				attr(div3, "role", "alert");
-				attr(div3, "aria-label", /*label*/ ctx[7]);
 			},
 			m(target, anchor) {
 				insert(target, div3, anchor);
 				append(div3, div2);
-				append(div2, div0);
-				append(div2, t0);
 				append(div2, div1);
-				html_tag.m(/*content*/ ctx[2], div1);
-				append(div1, t1);
+				mount_component(icon, div1, null);
+				append(div1, t0);
+				append(div1, div0);
+				html_tag.m(/*content*/ ctx[2], div0);
+				append(div0, t1);
 
 				if (default_slot) {
-					default_slot.m(div1, null);
+					default_slot.m(div0, null);
 				}
 
-				append(div2, t2);
-				if (if_block) if_block.m(div2, null);
-				/*div3_binding*/ ctx[12](div3);
+				append(div1, t2);
+				if (if_block) if_block.m(div1, null);
+				/*div3_binding*/ ctx[14](div3);
 				current = true;
 			},
 			p(ctx, dirty) {
-				if (!current || dirty & /*type*/ 1 && div0_class_value !== (div0_class_value = "qc-icon qc-" + /*type*/ ctx[0] + "-alert-icon")) {
-					attr(div0, "class", div0_class_value);
-				}
+				const icon_changes = {};
+				if (dirty & /*type*/ 1) icon_changes.type = /*type*/ ctx[0] == 'warning' ? 'warning' : 'information';
 
+				if (dirty & /*type*/ 1) icon_changes.color = /*type*/ ctx[0] == 'general'
+				? 'blue-piv'
+				: 'yellow-dark';
+
+				icon.$set(icon_changes);
 				if (!current || dirty & /*content*/ 4) html_tag.p(/*content*/ ctx[2]);
 
 				if (default_slot) {
-					if (default_slot.p && (!current || dirty & /*$$scope*/ 1024)) {
+					if (default_slot.p && (!current || dirty & /*$$scope*/ 4096)) {
 						update_slot_base(
 							default_slot,
 							default_slot_template,
 							ctx,
-							/*$$scope*/ ctx[10],
+							/*$$scope*/ ctx[12],
 							!current
-							? get_all_dirty_from_scope(/*$$scope*/ ctx[10])
-							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[10], dirty, null),
+							? get_all_dirty_from_scope(/*$$scope*/ ctx[12])
+							: get_slot_changes(default_slot_template, /*$$scope*/ ctx[12], dirty, null),
 							null
 						);
 					}
@@ -2896,23 +3379,41 @@
 				if (/*maskable*/ ctx[1] === "true") {
 					if (if_block) {
 						if_block.p(ctx, dirty);
+
+						if (dirty & /*maskable*/ 2) {
+							transition_in(if_block, 1);
+						}
 					} else {
 						if_block = create_if_block_1(ctx);
 						if_block.c();
-						if_block.m(div2, null);
+						transition_in(if_block, 1);
+						if_block.m(div1, null);
 					}
 				} else if (if_block) {
-					if_block.d(1);
-					if_block = null;
+					group_outros();
+
+					transition_out(if_block, 1, 1, () => {
+						if_block = null;
+					});
+
+					check_outros();
+				}
+
+				if (!current || dirty & /*containerClass*/ 32) {
+					attr(div2, "class", /*containerClass*/ ctx[5]);
 				}
 			},
 			i(local) {
 				if (current) return;
+				transition_in(icon.$$.fragment, local);
 				transition_in(default_slot, local);
+				transition_in(if_block);
 				current = true;
 			},
 			o(local) {
+				transition_out(icon.$$.fragment, local);
 				transition_out(default_slot, local);
+				transition_out(if_block);
 				current = false;
 			},
 			d(detaching) {
@@ -2920,60 +3421,60 @@
 					detach(div3);
 				}
 
+				destroy_component(icon);
 				if (default_slot) default_slot.d(detaching);
 				if (if_block) if_block.d();
-				/*div3_binding*/ ctx[12](null);
+				/*div3_binding*/ ctx[14](null);
 			}
 		};
 	}
 
-	// (57:12) {#if maskable === "true"}
+	// (74:16) {#if maskable === "true"}
 	function create_if_block_1(ctx) {
-		let div;
-		let button;
-		let span;
-		let mounted;
-		let dispose;
+		let iconbutton;
+		let current;
+
+		iconbutton = new IconButton({
+				props: {
+					"aria-label": /*closeLabel*/ ctx[7],
+					size: "nm",
+					icon: "clear-input",
+					iconSize: "sm",
+					iconColor: "text-primary"
+				}
+			});
+
+		iconbutton.$on("click", /*hideAlert*/ ctx[9]);
 
 		return {
 			c() {
-				div = element("div");
-				button = element("button");
-				span = element("span");
-				attr(span, "aria-hidden", "true");
-				attr(span, "class", "qc-icon qc-xclose-blue qc-close-alert-icon");
-				attr(button, "type", "button");
-				attr(button, "class", "qc-close");
-				attr(button, "aria-label", /*closeLabel*/ ctx[6]);
-				attr(div, "class", "qc-alert-close");
+				create_component(iconbutton.$$.fragment);
 			},
 			m(target, anchor) {
-				insert(target, div, anchor);
-				append(div, button);
-				append(button, span);
-
-				if (!mounted) {
-					dispose = listen(button, "click", /*hideAlert*/ ctx[8]);
-					mounted = true;
-				}
+				mount_component(iconbutton, target, anchor);
+				current = true;
 			},
 			p: noop,
+			i(local) {
+				if (current) return;
+				transition_in(iconbutton.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(iconbutton.$$.fragment, local);
+				current = false;
+			},
 			d(detaching) {
-				if (detaching) {
-					detach(div);
-				}
-
-				mounted = false;
-				dispose();
+				destroy_component(iconbutton, detaching);
 			}
 		};
 	}
 
-	function create_fragment$1(ctx) {
+	function create_fragment$4(ctx) {
 		let t;
 		let link;
 		let current;
-		let if_block = !/*hiddenFlag*/ ctx[4] && create_if_block(ctx);
+		let if_block = !/*hiddenFlag*/ ctx[4] && create_if_block$2(ctx);
 
 		return {
 			c() {
@@ -2981,7 +3482,7 @@
 				t = space();
 				link = element("link");
 				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
+				attr(link, "href", Utils.cssPath);
 			},
 			m(target, anchor) {
 				if (if_block) if_block.m(target, anchor);
@@ -2998,7 +3499,7 @@
 							transition_in(if_block, 1);
 						}
 					} else {
-						if_block = create_if_block(ctx);
+						if_block = create_if_block$2(ctx);
 						if_block.c();
 						transition_in(if_block, 1);
 						if_block.m(t.parentNode, t);
@@ -3033,24 +3534,27 @@
 		};
 	}
 
-	function instance$1($$self, $$props, $$invalidate) {
+	function instance$4($$self, $$props, $$invalidate) {
 		let { $$slots: slots = {}, $$scope } = $$props;
-		let { type = "general", maskable = "", content = "", hide = "false" } = $$props;
+		let { type = "general", maskable = "", content = "", hide = "false", fullWidth = 'false' } = $$props;
 
 		let rootElement,
 			hiddenFlag,
 			typeClass = type !== "" ? type : 'general',
-			closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer" : "Close",
+			closeLabel = Utils.getPageLanguage() === 'fr'
+			? "Fermer l’alerte"
+			: "Close l’alerte",
 			warningLabel = Utils.getPageLanguage() === 'fr'
 			? "Information d'importance élevée"
 			: "Information of high importance",
 			generalLabel = Utils.getPageLanguage() === 'fr'
 			? "Information importante"
 			: "Important information",
-			label = type === 'general' ? generalLabel : warningLabel;
+			label = type === 'general' ? generalLabel : warningLabel,
+			containerClass;
 
 		function hideAlert() {
-			$$invalidate(9, hide = 'true');
+			$$invalidate(10, hide = 'true');
 			rootElement.dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
@@ -3065,13 +3569,18 @@
 			if ('type' in $$props) $$invalidate(0, type = $$props.type);
 			if ('maskable' in $$props) $$invalidate(1, maskable = $$props.maskable);
 			if ('content' in $$props) $$invalidate(2, content = $$props.content);
-			if ('hide' in $$props) $$invalidate(9, hide = $$props.hide);
-			if ('$$scope' in $$props) $$invalidate(10, $$scope = $$props.$$scope);
+			if ('hide' in $$props) $$invalidate(10, hide = $$props.hide);
+			if ('fullWidth' in $$props) $$invalidate(11, fullWidth = $$props.fullWidth);
+			if ('$$scope' in $$props) $$invalidate(12, $$scope = $$props.$$scope);
 		};
 
 		$$self.$$.update = () => {
-			if ($$self.$$.dirty & /*hide*/ 512) {
+			if ($$self.$$.dirty & /*hide*/ 1024) {
 				$$invalidate(4, hiddenFlag = hide === 'true');
+			}
+
+			if ($$self.$$.dirty & /*fullWidth*/ 2048) {
+				$$invalidate(5, containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : ''));
 			}
 		};
 
@@ -3081,11 +3590,13 @@
 			content,
 			rootElement,
 			hiddenFlag,
+			containerClass,
 			typeClass,
 			closeLabel,
 			label,
 			hideAlert,
 			hide,
+			fullWidth,
 			$$scope,
 			slots,
 			div3_binding
@@ -3096,11 +3607,12 @@
 		constructor(options) {
 			super();
 
-			init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+			init(this, options, instance$4, create_fragment$4, safe_not_equal, {
 				type: 0,
 				maskable: 1,
 				content: 2,
-				hide: 9
+				hide: 10,
+				fullWidth: 11
 			});
 		}
 
@@ -3132,52 +3644,69 @@
 		}
 
 		get hide() {
-			return this.$$.ctx[9];
+			return this.$$.ctx[10];
 		}
 
 		set hide(hide) {
 			this.$$set({ hide });
 			flush();
 		}
+
+		get fullWidth() {
+			return this.$$.ctx[11];
+		}
+
+		set fullWidth(fullWidth) {
+			this.$$set({ fullWidth });
+			flush();
+		}
 	}
 
-	customElements.define("qc-alert", create_custom_element(Alert, {"type":{},"maskable":{},"content":{},"hide":{}}, ["default"], [], true));
+	customElements.define("qc-alert", create_custom_element(Alert, {"type":{"attribute":"type"},"maskable":{"attribute":"maskable"},"content":{"attribute":"content"},"hide":{"attribute":"hide"},"fullWidth":{"attribute":"full-width"}}, ["default"], [], true));
 
-	/* src/sdg/components/toTop.svelte generated by Svelte v4.2.12 */
+	/* src/sdg/components/toTop.svelte generated by Svelte v4.2.19 */
 
 	const { window: window_1 } = globals;
 
-	function create_fragment(ctx) {
+	function create_fragment$3(ctx) {
 		let a;
-		let span;
+		let icon;
 		let t0;
+		let span;
 		let t1;
-		let link;
+		let a_tabindex_value;
+		let current;
 		let mounted;
 		let dispose;
+
+		icon = new Icon({
+				props: {
+					type: "arrow-up-white",
+					color: "background"
+				}
+			});
 
 		return {
 			c() {
 				a = element("a");
+				create_component(icon.$$.fragment);
+				t0 = space();
 				span = element("span");
-				t0 = text(/*alt*/ ctx[0]);
-				t1 = space();
-				link = element("link");
-				attr(a, "href", " ");
-				attr(a, "class", "qc-to-top qc-icon qc-arrow-up-white");
-				attr(a, "tabindex", "0");
+				t1 = text(/*text*/ ctx[0]);
+				attr(a, "href", "javascript:;");
+				attr(a, "class", "qc-to-top");
+				attr(a, "tabindex", a_tabindex_value = /*visible*/ ctx[2] ? 0 : -1);
 				attr(a, "demo", /*demo*/ ctx[1]);
 				toggle_class(a, "visible", /*visible*/ ctx[2]);
-				attr(link, "rel", "stylesheet");
-				attr(link, "href", "" + (Utils.cssRelativePath + Utils.cssFileName));
 			},
 			m(target, anchor) {
 				insert(target, a, anchor);
+				mount_component(icon, a, null);
+				append(a, t0);
 				append(a, span);
-				append(span, t0);
+				append(span, t1);
 				/*a_binding*/ ctx[5](a);
-				insert(target, t1, anchor);
-				insert(target, link, anchor);
+				current = true;
 
 				if (!mounted) {
 					dispose = [
@@ -3190,25 +3719,35 @@
 				}
 			},
 			p(ctx, [dirty]) {
-				if (dirty & /*alt*/ 1) set_data(t0, /*alt*/ ctx[0]);
+				if (!current || dirty & /*text*/ 1) set_data(t1, /*text*/ ctx[0]);
 
-				if (dirty & /*demo*/ 2) {
+				if (!current || dirty & /*visible*/ 4 && a_tabindex_value !== (a_tabindex_value = /*visible*/ ctx[2] ? 0 : -1)) {
+					attr(a, "tabindex", a_tabindex_value);
+				}
+
+				if (!current || dirty & /*demo*/ 2) {
 					attr(a, "demo", /*demo*/ ctx[1]);
 				}
 
-				if (dirty & /*visible*/ 4) {
+				if (!current || dirty & /*visible*/ 4) {
 					toggle_class(a, "visible", /*visible*/ ctx[2]);
 				}
 			},
-			i: noop,
-			o: noop,
+			i(local) {
+				if (current) return;
+				transition_in(icon.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(icon.$$.fragment, local);
+				current = false;
+			},
 			d(detaching) {
 				if (detaching) {
 					detach(a);
-					detach(t1);
-					detach(link);
 				}
 
+				destroy_component(icon);
 				/*a_binding*/ ctx[5](null);
 				mounted = false;
 				run_all(dispose);
@@ -3229,9 +3768,9 @@
 		}
 	}
 
-	function instance($$self, $$props, $$invalidate) {
+	function instance$3($$self, $$props, $$invalidate) {
 		const lang = Utils.getPageLanguage();
-		let { alt = lang === 'fr' ? "Retour en haut" : "Back to top", demo = 'false' } = $$props;
+		let { text = lang === 'fr' ? "Retour en haut" : "Back to top", demo = 'false' } = $$props;
 
 		let minimumScrollHeight = 0,
 			lastScrollY = 0,
@@ -3264,25 +3803,25 @@
 		}
 
 		$$self.$$set = $$props => {
-			if ('alt' in $$props) $$invalidate(0, alt = $$props.alt);
+			if ('text' in $$props) $$invalidate(0, text = $$props.text);
 			if ('demo' in $$props) $$invalidate(1, demo = $$props.demo);
 		};
 
-		return [alt, demo, visible, toTopElement, handleScrollUpButton, a_binding];
+		return [text, demo, visible, toTopElement, handleScrollUpButton, a_binding];
 	}
 
 	class ToTop extends SvelteComponent {
 		constructor(options) {
 			super();
-			init(this, options, instance, create_fragment, safe_not_equal, { alt: 0, demo: 1 });
+			init(this, options, instance$3, create_fragment$3, safe_not_equal, { text: 0, demo: 1 });
 		}
 
-		get alt() {
+		get text() {
 			return this.$$.ctx[0];
 		}
 
-		set alt(alt) {
-			this.$$set({ alt });
+		set text(text) {
+			this.$$set({ text });
 			flush();
 		}
 
@@ -3296,6 +3835,607 @@
 		}
 	}
 
-	customElements.define("qc-to-top", create_custom_element(ToTop, {"alt":{},"demo":{}}, [], [], true));
+	customElements.define("qc-to-top", create_custom_element(ToTop, {"text":{"attribute":"text","type":"String"},"demo":{}}, [], [], false));
+
+	/* src/sdg/components/externalLink.svelte generated by Svelte v4.2.19 */
+
+	function create_fragment$2(ctx) {
+		let span;
+
+		return {
+			c() {
+				span = element("span");
+				attr(span, "role", "img");
+				attr(span, "class", "qc-ext-link-img");
+				attr(span, "aria-label", /*externalIconAlt*/ ctx[0]);
+			},
+			m(target, anchor) {
+				insert(target, span, anchor);
+				/*span_binding*/ ctx[2](span);
+			},
+			p(ctx, [dirty]) {
+				if (dirty & /*externalIconAlt*/ 1) {
+					attr(span, "aria-label", /*externalIconAlt*/ ctx[0]);
+				}
+			},
+			i: noop,
+			o: noop,
+			d(detaching) {
+				if (detaching) {
+					detach(span);
+				}
+
+				/*span_binding*/ ctx[2](null);
+			}
+		};
+	}
+
+	function instance$2($$self, $$props, $$invalidate) {
+		let { externalIconAlt = Utils.getPageLanguage() == "fr"
+		? "Ce lien dirige vers un autre site."
+		: "This link directs to another site." } = $$props;
+
+		let imgElement;
+
+		onMount(() => {
+			imgElement.parentElement.querySelectorAll('a').forEach(link => {
+				// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+				const walker = document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
+					acceptNode: node => {
+						if (node instanceof Element) {
+							if (node.hasAttribute('hidden')) {
+								return NodeFilter.FILTER_REJECT;
+							}
+
+							const style = window.getComputedStyle(node);
+
+							// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+							if (style.display === 'none' || style.visibility === 'hidden' || style.position === 'absolute') {
+								return NodeFilter.FILTER_REJECT;
+							}
+						}
+
+						if (!node instanceof Text) {
+							return NodeFilter.FILTER_SKIP;
+						}
+
+						// Ignore les nœuds vides
+						if (!(/\S/).test(node.textContent)) {
+							return NodeFilter.FILTER_SKIP;
+						}
+
+						return NodeFilter.FILTER_ACCEPT;
+					}
+				});
+
+				let lastTextNode = null;
+
+				while (walker.nextNode()) {
+					lastTextNode = walker.currentNode;
+				}
+
+				// S'il n'y a pas de nœud texte visible, on ne fait rien
+				if (!lastTextNode) return;
+
+				// Séparer le contenu du dernier nœud texte en deux parties :
+				// le préfixe (éventuel) et le dernier mot
+				const text = lastTextNode.textContent;
+
+				const regex = /^(.*\s)?(\S+)\s*$/m;
+				const match = text.match(regex);
+				if (!match) return;
+				const prefix = match[1] || "";
+				const lastWord = match[2];
+
+				// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
+				const span = document.createElement('span');
+
+				span.classList.add('img-wrap');
+				span.innerHTML = `${lastWord}`;
+				span.appendChild(imgElement);
+
+				// Met à jour le nœud texte : on garde le préfixe et on insère le span après
+				if (prefix) {
+					lastTextNode.textContent = prefix;
+					lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
+				} else {
+					lastTextNode.parentNode.replaceChild(span, lastTextNode);
+				}
+			});
+		});
+
+		function span_binding($$value) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				imgElement = $$value;
+				$$invalidate(1, imgElement);
+			});
+		}
+
+		$$self.$$set = $$props => {
+			if ('externalIconAlt' in $$props) $$invalidate(0, externalIconAlt = $$props.externalIconAlt);
+		};
+
+		return [externalIconAlt, imgElement, span_binding];
+	}
+
+	class ExternalLink extends SvelteComponent {
+		constructor(options) {
+			super();
+			init(this, options, instance$2, create_fragment$2, safe_not_equal, { externalIconAlt: 0 });
+		}
+
+		get externalIconAlt() {
+			return this.$$.ctx[0];
+		}
+
+		set externalIconAlt(externalIconAlt) {
+			this.$$set({ externalIconAlt });
+			flush();
+		}
+	}
+
+	customElements.define("qc-external-link", create_custom_element(ExternalLink, {"externalIconAlt":{"attribute":"img-alt"}}, [], [], false));
+
+	/* src/sdg/components/SearchInput/SearchInput.svelte generated by Svelte v4.2.19 */
+
+	function create_if_block$1(ctx) {
+		let iconbutton;
+		let current;
+
+		iconbutton = new IconButton({
+				props: {
+					type: "button",
+					icon: "clear-input",
+					iconColor: "blue-piv",
+					iconSize: "sm",
+					"aria-label": /*clearAriaLabel*/ ctx[2]
+				}
+			});
+
+		iconbutton.$on("click", /*click_handler*/ ctx[7]);
+
+		return {
+			c() {
+				create_component(iconbutton.$$.fragment);
+			},
+			m(target, anchor) {
+				mount_component(iconbutton, target, anchor);
+				current = true;
+			},
+			p(ctx, dirty) {
+				const iconbutton_changes = {};
+				if (dirty & /*clearAriaLabel*/ 4) iconbutton_changes["aria-label"] = /*clearAriaLabel*/ ctx[2];
+				iconbutton.$set(iconbutton_changes);
+			},
+			i(local) {
+				if (current) return;
+				transition_in(iconbutton.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(iconbutton.$$.fragment, local);
+				current = false;
+			},
+			d(detaching) {
+				destroy_component(iconbutton, detaching);
+			}
+		};
+	}
+
+	function create_fragment$1(ctx) {
+		let div;
+		let input;
+		let t;
+		let current;
+		let mounted;
+		let dispose;
+
+		let input_levels = [
+			{ type: "search" },
+			{ autocomplete: "off" },
+			/*ariaLabel*/ ctx[1]
+			? { "aria-label": /*ariaLabel*/ ctx[1] }
+			: {},
+			/*$$restProps*/ ctx[4]
+		];
+
+		let input_data = {};
+
+		for (let i = 0; i < input_levels.length; i += 1) {
+			input_data = assign(input_data, input_levels[i]);
+		}
+
+		let if_block = /*value*/ ctx[0] && create_if_block$1(ctx);
+
+		return {
+			c() {
+				div = element("div");
+				input = element("input");
+				t = space();
+				if (if_block) if_block.c();
+				set_attributes(input, input_data);
+				attr(div, "class", "qc-search-input");
+			},
+			m(target, anchor) {
+				insert(target, div, anchor);
+				append(div, input);
+				if (input.autofocus) input.focus();
+				/*input_binding*/ ctx[5](input);
+				set_input_value(input, /*value*/ ctx[0]);
+				append(div, t);
+				if (if_block) if_block.m(div, null);
+				current = true;
+
+				if (!mounted) {
+					dispose = listen(input, "input", /*input_input_handler*/ ctx[6]);
+					mounted = true;
+				}
+			},
+			p(ctx, [dirty]) {
+				set_attributes(input, input_data = get_spread_update(input_levels, [
+					{ type: "search" },
+					{ autocomplete: "off" },
+					dirty & /*ariaLabel*/ 2 && (/*ariaLabel*/ ctx[1]
+					? { "aria-label": /*ariaLabel*/ ctx[1] }
+					: {}),
+					dirty & /*$$restProps*/ 16 && /*$$restProps*/ ctx[4]
+				]));
+
+				if (dirty & /*value*/ 1 && input.value !== /*value*/ ctx[0]) {
+					set_input_value(input, /*value*/ ctx[0]);
+				}
+
+				if (/*value*/ ctx[0]) {
+					if (if_block) {
+						if_block.p(ctx, dirty);
+
+						if (dirty & /*value*/ 1) {
+							transition_in(if_block, 1);
+						}
+					} else {
+						if_block = create_if_block$1(ctx);
+						if_block.c();
+						transition_in(if_block, 1);
+						if_block.m(div, null);
+					}
+				} else if (if_block) {
+					group_outros();
+
+					transition_out(if_block, 1, 1, () => {
+						if_block = null;
+					});
+
+					check_outros();
+				}
+			},
+			i(local) {
+				if (current) return;
+				transition_in(if_block);
+				current = true;
+			},
+			o(local) {
+				transition_out(if_block);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(div);
+				}
+
+				/*input_binding*/ ctx[5](null);
+				if (if_block) if_block.d();
+				mounted = false;
+				dispose();
+			}
+		};
+	}
+
+	function instance$1($$self, $$props, $$invalidate) {
+		const omit_props_names = ["value","ariaLabel","clearAriaLabel"];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+		const lang = Utils.getPageLanguage();
+		let { value, ariaLabel = lang === "fr" ? "Rechercher…" : "Search_", clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text" } = $$props;
+		let searchInput;
+
+		function input_binding($$value) {
+			binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+				searchInput = $$value;
+				$$invalidate(3, searchInput);
+			});
+		}
+
+		function input_input_handler() {
+			value = this.value;
+			$$invalidate(0, value);
+		}
+
+		const click_handler = e => {
+			e.preventDefault();
+			$$invalidate(0, value = "");
+			searchInput.focus();
+		};
+
+		$$self.$$set = $$new_props => {
+			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(4, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('value' in $$new_props) $$invalidate(0, value = $$new_props.value);
+			if ('ariaLabel' in $$new_props) $$invalidate(1, ariaLabel = $$new_props.ariaLabel);
+			if ('clearAriaLabel' in $$new_props) $$invalidate(2, clearAriaLabel = $$new_props.clearAriaLabel);
+		};
+
+		return [
+			value,
+			ariaLabel,
+			clearAriaLabel,
+			searchInput,
+			$$restProps,
+			input_binding,
+			input_input_handler,
+			click_handler
+		];
+	}
+
+	class SearchInput extends SvelteComponent {
+		constructor(options) {
+			super();
+
+			init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+				value: 0,
+				ariaLabel: 1,
+				clearAriaLabel: 2
+			});
+		}
+
+		get value() {
+			return this.$$.ctx[0];
+		}
+
+		set value(value) {
+			this.$$set({ value });
+			flush();
+		}
+
+		get ariaLabel() {
+			return this.$$.ctx[1];
+		}
+
+		set ariaLabel(ariaLabel) {
+			this.$$set({ ariaLabel });
+			flush();
+		}
+
+		get clearAriaLabel() {
+			return this.$$.ctx[2];
+		}
+
+		set clearAriaLabel(clearAriaLabel) {
+			this.$$set({ clearAriaLabel });
+			flush();
+		}
+	}
+
+	customElements.define("qc-search-input", create_custom_element(SearchInput, {"value":{},"ariaLabel":{"attribute":"aria-label"},"clearAriaLabel":{"attribute":"clear-aria-label"}}, [], [], false));
+
+	/* src/sdg/components/SearchBar/searchBar.svelte generated by Svelte v4.2.19 */
+
+	function create_if_block(ctx) {
+		let iconbutton;
+		let current;
+
+		const iconbutton_spread_levels = [
+			{ type: "submit" },
+			{
+				iconColor: /*pivBackground*/ ctx[0] ? 'blue-piv' : 'background'
+			},
+			{ icon: "loupe-piv-fine" },
+			{ iconSize: "md" },
+			/*submitProps*/ ctx[2]
+		];
+
+		let iconbutton_props = {};
+
+		for (let i = 0; i < iconbutton_spread_levels.length; i += 1) {
+			iconbutton_props = assign(iconbutton_props, iconbutton_spread_levels[i]);
+		}
+
+		iconbutton = new IconButton({ props: iconbutton_props });
+
+		return {
+			c() {
+				create_component(iconbutton.$$.fragment);
+			},
+			m(target, anchor) {
+				mount_component(iconbutton, target, anchor);
+				current = true;
+			},
+			p(ctx, dirty) {
+				const iconbutton_changes = (dirty & /*pivBackground, submitProps*/ 5)
+				? get_spread_update(iconbutton_spread_levels, [
+						iconbutton_spread_levels[0],
+						dirty & /*pivBackground*/ 1 && {
+							iconColor: /*pivBackground*/ ctx[0] ? 'blue-piv' : 'background'
+						},
+						iconbutton_spread_levels[2],
+						iconbutton_spread_levels[3],
+						dirty & /*submitProps*/ 4 && get_spread_object(/*submitProps*/ ctx[2])
+					])
+				: {};
+
+				iconbutton.$set(iconbutton_changes);
+			},
+			i(local) {
+				if (current) return;
+				transition_in(iconbutton.$$.fragment, local);
+				current = true;
+			},
+			o(local) {
+				transition_out(iconbutton.$$.fragment, local);
+				current = false;
+			},
+			d(detaching) {
+				destroy_component(iconbutton, detaching);
+			}
+		};
+	}
+
+	function create_fragment(ctx) {
+		let div;
+		let searchinput;
+		let t;
+		let current;
+		const searchinput_spread_levels = [/*inputProps*/ ctx[1]];
+		let searchinput_props = {};
+
+		for (let i = 0; i < searchinput_spread_levels.length; i += 1) {
+			searchinput_props = assign(searchinput_props, searchinput_spread_levels[i]);
+		}
+
+		searchinput = new SearchInput({ props: searchinput_props });
+		let if_block = create_if_block(ctx);
+
+		return {
+			c() {
+				div = element("div");
+				create_component(searchinput.$$.fragment);
+				t = space();
+				if (if_block) if_block.c();
+				attr(div, "class", "qc-search-bar");
+				toggle_class(div, "piv-background", /*pivBackground*/ ctx[0]);
+			},
+			m(target, anchor) {
+				insert(target, div, anchor);
+				mount_component(searchinput, div, null);
+				append(div, t);
+				if (if_block) if_block.m(div, null);
+				current = true;
+			},
+			p(ctx, [dirty]) {
+				const searchinput_changes = (dirty & /*inputProps*/ 2)
+				? get_spread_update(searchinput_spread_levels, [get_spread_object(/*inputProps*/ ctx[1])])
+				: {};
+
+				searchinput.$set(searchinput_changes);
+				if_block.p(ctx, dirty);
+
+				if (!current || dirty & /*pivBackground*/ 1) {
+					toggle_class(div, "piv-background", /*pivBackground*/ ctx[0]);
+				}
+			},
+			i(local) {
+				if (current) return;
+				transition_in(searchinput.$$.fragment, local);
+				transition_in(if_block);
+				current = true;
+			},
+			o(local) {
+				transition_out(searchinput.$$.fragment, local);
+				transition_out(if_block);
+				current = false;
+			},
+			d(detaching) {
+				if (detaching) {
+					detach(div);
+				}
+
+				destroy_component(searchinput);
+				if (if_block) if_block.d();
+			}
+		};
+	}
+
+	function instance($$self, $$props, $$invalidate) {
+		const omit_props_names = ["value","name","pivBackground"];
+		let $$restProps = compute_rest_props($$props, omit_props_names);
+
+		const lang = Utils.getPageLanguage(),
+			inputDefaultPlaceholder = lang === "fr" ? "Rechercher…" : "Search",
+			submitDefaultAriaLabel = lang === "fr" ? "Lancer la recherche" : "Submit search";
+
+		let { value = '', name = 'q', pivBackground = false } = $$props;
+
+		let defaultsAttributes = {
+				input: {
+					"placeholder": inputDefaultPlaceholder,
+					"aria-label": inputDefaultPlaceholder
+				},
+				submit: { "aria-label": submitDefaultAriaLabel }
+			},
+			inputProps = {},
+			submitProps = {};
+
+		/**
+	 * @param {{[p: string]: T}} restProps
+	 */
+		function computeFieldsAttributes(restProps) {
+			return ["input", "submit"].map(control => {
+				const prefix = `${control}-`;
+
+				return {
+					...defaultsAttributes[control],
+					...Object.fromEntries(Object.entries(restProps).map(([k, v]) => k.startsWith(prefix) ? [k.replace(prefix, ''), v] : null).filter(x => x)), // élimine les éléments null
+					
+				};
+			});
+		}
+
+		$$self.$$set = $$new_props => {
+			$$props = assign(assign({}, $$props), exclude_internal_props($$new_props));
+			$$invalidate(10, $$restProps = compute_rest_props($$props, omit_props_names));
+			if ('value' in $$new_props) $$invalidate(3, value = $$new_props.value);
+			if ('name' in $$new_props) $$invalidate(4, name = $$new_props.name);
+			if ('pivBackground' in $$new_props) $$invalidate(0, pivBackground = $$new_props.pivBackground);
+		};
+
+		$$self.$$.update = () => {
+			$$invalidate(1, [inputProps, submitProps] = computeFieldsAttributes($$restProps), inputProps, ($$invalidate(2, submitProps), $$invalidate(10, $$restProps)));
+
+			if ($$self.$$.dirty & /*value, name, inputProps*/ 26) {
+				$$invalidate(1, inputProps = { value, name, ...inputProps });
+			}
+		};
+
+		return [pivBackground, inputProps, submitProps, value, name];
+	}
+
+	class SearchBar extends SvelteComponent {
+		constructor(options) {
+			super();
+			init(this, options, instance, create_fragment, safe_not_equal, { value: 3, name: 4, pivBackground: 0 });
+		}
+
+		get value() {
+			return this.$$.ctx[3];
+		}
+
+		set value(value) {
+			this.$$set({ value });
+			flush();
+		}
+
+		get name() {
+			return this.$$.ctx[4];
+		}
+
+		set name(name) {
+			this.$$set({ name });
+			flush();
+		}
+
+		get pivBackground() {
+			return this.$$.ctx[0];
+		}
+
+		set pivBackground(pivBackground) {
+			this.$$set({ pivBackground });
+			flush();
+		}
+	}
+
+	customElements.define("qc-search-bar", create_custom_element(SearchBar, {"value":{"attribute":"input-value","type":"String"},"name":{"attribute":"input-name","type":"String"},"pivBackground":{"attribute":"piv-background","type":"Boolean"}}, [], [], false));
+
+	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+	if (isDarkMode) {
+	    document.documentElement.classList.add('qc-dark-theme');
+	}
 
 })();

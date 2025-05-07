@@ -1,19 +1,27 @@
-<svelte:options customElement="qc-to-top" />
+<svelte:options customElement="{{
+    tag: 'qc-to-top',
+    shadow: 'none',
+   props: {
+      text: {attribute: 'text', type:'String'},
+  }
+}}" />
+
 
 <script>
    import { Utils } from "./utils";
+   import Icon from "./Icon.svelte";
 
    const
         lang = Utils.getPageLanguage();
    export let
-        alt = lang === 'fr'
+        text = lang === 'fr'
              ? "Retour en haut"
              : "Back to top"
       , demo =  'false'
       ;
    let
         minimumScrollHeight = 0
-      , src = `${Utils.imagesRelativePath}qc-sprite.svg?v=_vSDG_#arrow-up-white`
+      , src = `${Utils.imagesRelativePath}arrow-up-white.svg`
       , lastScrollY = 0
       , visible = demo === 'true'
       , lastVisible = visible
@@ -65,17 +73,15 @@
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<a href=" "
+<a href="javascript:;"
    bind:this={toTopElement}
-   class="qc-to-top qc-icon qc-arrow-up-white"
-   tabindex="0"
+   class="qc-to-top"
    class:visible
    on:click|preventDefault={scrollToTop}
    on:keydown={handleEnterAndSpace}
+   tabindex={visible ? 0 : -1}
    {demo}
 >
-   <span>{alt}</span>
+   <Icon type="arrow-up-white" color="background"/>
+   <span>{text}</span>
 </a>
-
-<link rel='stylesheet'
-      href='{Utils.cssRelativePath}{Utils.cssFileName}'>
