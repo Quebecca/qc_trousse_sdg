@@ -89,6 +89,7 @@ let
         compilerOptions: {
             // enable run-time checks
             customElement: true,
+            dev: dev_process,
             cssHash: ({ hash, name, filename, css }) => {
                 // replacement of default `svelte-${hash(css)}`
                 return `qc-hash-${hash(css)}`;

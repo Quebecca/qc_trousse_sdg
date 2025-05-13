@@ -300,7 +300,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-
+- develop:
+  - Passage à svelte 5 ;
+  - Organisation des composants par dossier ;
+  - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un custom element ;
+  - correction d'un bug dans le composant lien externe lorsqu'il contient un retour à la ligne ;
 - 1.3.2 :
   - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.1 :

@@ -22,7 +22,10 @@ if (displayAlertLink) {
     );
     document.addEventListener(
         'qc.alert.hide',
-        () => displayAlertLink.hidden = false
+        () => {
+            maskableAlert.setAttribute('hide', 'true');
+            displayAlertLink.hidden = false;
+        }
     )
 }
 

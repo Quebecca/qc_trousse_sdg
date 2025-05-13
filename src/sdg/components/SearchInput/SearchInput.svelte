@@ -1,36 +1,27 @@
-<svelte:options customElement="{{
-    tag: 'qc-search-input',
-    shadow: 'none',
-    props: {
-        ariaLabel: {attribute:'aria-label'},
-        clearAriaLabel: {attribute: 'clear-aria-label'}
-    }
-}}" />
 <script>
-    import IconButton from "../Button/IconButton.svelte";
+    import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
-    const
-        lang = Utils.getPageLanguage();
 
-    export let
-        value,
-        ariaLabel = lang === "fr"
-            ? "Rechercher…"
-            : "Search_",
-        clearAriaLabel = lang === "fr"
-            ? "Effacer le texte"
-            : "Clear text"
-    ;
+    const lang = Utils.getPageLanguage();
+
+
+    let {
+        value = $bindable(''),
+        ariaLabel = lang === "fr" ? "Rechercher…" : "Search_",
+        clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
+        ...rest
+    } = $props();
+
     let searchInput;
-
 </script>
+
 <div class="qc-search-input">
     <input  bind:this={searchInput}
-            bind:value
+            bind:value={value}
             type="search"
             autocomplete="off"
-            {...(ariaLabel ? {"aria-label": ariaLabel} : {})}
-            {...$$restProps}
+            aria-label={ariaLabel}
+            {...rest}
     />
     {#if value}
     <IconButton type="button"
@@ -38,10 +29,10 @@
                 iconColor="blue-piv"
                 iconSize="sm"
                 aria-label={clearAriaLabel}
-                on:click={e => {
+                onclick={(e) => {
                     e.preventDefault();
                     value = "";
-                    searchInput.focus();
+                    searchInput?.focus();
                 }}
         />
     {/if}

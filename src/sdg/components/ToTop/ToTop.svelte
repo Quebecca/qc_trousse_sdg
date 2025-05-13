@@ -1,44 +1,32 @@
-<svelte:options customElement="{{
-    tag: 'qc-to-top',
-    shadow: 'none',
-   props: {
-      text: {attribute: 'text', type:'String'},
-  }
-}}" />
-
-
 <script>
-   import { Utils } from "./utils";
-   import Icon from "./Icon.svelte";
+   import { Utils } from "../utils";
+   import Icon from "../Icon/Icon.svelte";
+   import {setContext} from "svelte";
 
-   const
-        lang = Utils.getPageLanguage();
-   export let
-        text = lang === 'fr'
-             ? "Retour en haut"
-             : "Back to top"
-      , demo =  'false'
-      ;
-   let
-        minimumScrollHeight = 0
-      , src = `${Utils.imagesRelativePath}arrow-up-white.svg`
-      , lastScrollY = 0
-      , visible = demo === 'true'
-      , lastVisible = visible
-      , toTopElement
-      ;
+   const lang = Utils.getPageLanguage();
+   const {
+      text = lang === 'fr' ? "Retour en haut" : "Back to top",
+      demo = 'false'
+   } = $props();
 
+   let visible = $state(demo === 'true');
+   let lastVisible = setContext('visible', () => visible);
+   let lastScrollY = 0;
+   let minimumScrollHeight = 0;
+   let toTopElement;
 
+   const src = `${Utils.imagesRelativePath}arrow-up-white.svg`;
 
    function handleScrollUpButton() {
-      if (demo === 'true') {
-         return
+      if (Utils.isTruthy(demo)) {
+         return;
       }
-      let pageBottom =
+
+      const pageBottom =
               ( window.innerHeight + window.scrollY )
               >=
-              ( document.body.offsetHeight - 1 )
-      ;
+              ( document.body.offsetHeight - 1 );
+
       visible =
             lastScrollY >  window.scrollY
             && ( document.body.scrollTop > minimumScrollHeight
@@ -53,11 +41,12 @@
       lastScrollY = window.scrollY;
    }
 
-   function scrollToTop() {
-     window.scrollTo({
+   function scrollToTop(e) {
+      e.preventDefault()
+      window.scrollTo({
         top: 0,
         behavior: 'smooth'
-     });
+      });
    }
 
    function handleEnterAndSpace(e) {
@@ -69,16 +58,20 @@
       }
    }
 
+   $effect(() => {
+      lastScrollY = window.scrollY;
+   });
+
 </script>
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<a href="javascript:;"
+<a href="#top"
    bind:this={toTopElement}
    class="qc-to-top"
    class:visible
-   on:click|preventDefault={scrollToTop}
-   on:keydown={handleEnterAndSpace}
+   onclick={(e) => scrollToTop(e)}
+   onkeydown={handleEnterAndSpace}
    tabindex={visible ? 0 : -1}
    {demo}
 >
