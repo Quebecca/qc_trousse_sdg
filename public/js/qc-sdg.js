@@ -10,6 +10,10 @@
 		((window.__svelte ??= {}).v ??= new Set()).add(PUBLIC_VERSION);
 	}
 
+	const EACH_ITEM_REACTIVE = 1;
+	const EACH_INDEX_REACTIVE = 1 << 1;
+	const EACH_ITEM_IMMUTABLE = 1 << 4;
+
 	const PROPS_IS_IMMUTABLE = 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
@@ -809,6 +813,18 @@
 		push_reaction_value(d);
 
 		return d;
+	}
+
+	/**
+	 * @template V
+	 * @param {() => V} fn
+	 * @returns {Derived<V>}
+	 */
+	/*#__NO_SIDE_EFFECTS__*/
+	function derived_safe_equal(fn) {
+		const signal = derived(fn);
+		signal.equals = safe_equals;
+		return signal;
 	}
 
 	/**
@@ -3216,6 +3232,506 @@
 		}
 	}
 
+	/** @import { EachItem, EachState, Effect, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
+
+	/**
+	 * @param {any} _
+	 * @param {number} i
+	 */
+	function index(_, i) {
+		return i;
+	}
+
+	/**
+	 * Pause multiple effects simultaneously, and coordinate their
+	 * subsequent destruction. Used in each blocks
+	 * @param {EachState} state
+	 * @param {EachItem[]} items
+	 * @param {null | Node} controlled_anchor
+	 * @param {Map<any, EachItem>} items_map
+	 */
+	function pause_effects(state, items, controlled_anchor, items_map) {
+		/** @type {TransitionManager[]} */
+		var transitions = [];
+		var length = items.length;
+
+		for (var i = 0; i < length; i++) {
+			pause_children(items[i].e, transitions, true);
+		}
+
+		var is_controlled = length > 0 && transitions.length === 0 && controlled_anchor !== null;
+		// If we have a controlled anchor, it means that the each block is inside a single
+		// DOM element, so we can apply a fast-path for clearing the contents of the element.
+		if (is_controlled) {
+			var parent_node = /** @type {Element} */ (
+				/** @type {Element} */ (controlled_anchor).parentNode
+			);
+			clear_text_content(parent_node);
+			parent_node.append(/** @type {Element} */ (controlled_anchor));
+			items_map.clear();
+			link(state, items[0].prev, items[length - 1].next);
+		}
+
+		run_out_transitions(transitions, () => {
+			for (var i = 0; i < length; i++) {
+				var item = items[i];
+				if (!is_controlled) {
+					items_map.delete(item.k);
+					link(state, item.prev, item.next);
+				}
+				destroy_effect(item.e, !is_controlled);
+			}
+		});
+	}
+
+	/**
+	 * @template V
+	 * @param {Element | Comment} node The next sibling node, or the parent node if this is a 'controlled' block
+	 * @param {number} flags
+	 * @param {() => V[]} get_collection
+	 * @param {(value: V, index: number) => any} get_key
+	 * @param {(anchor: Node, item: MaybeSource<V>, index: MaybeSource<number>) => void} render_fn
+	 * @param {null | ((anchor: Node) => void)} fallback_fn
+	 * @returns {void}
+	 */
+	function each(node, flags, get_collection, get_key, render_fn, fallback_fn = null) {
+		var anchor = node;
+
+		/** @type {EachState} */
+		var state = { flags, items: new Map(), first: null };
+
+		{
+			var parent_node = /** @type {Element} */ (node);
+
+			anchor = hydrating
+				? set_hydrate_node(/** @type {Comment | Text} */ (get_first_child(parent_node)))
+				: parent_node.appendChild(create_text());
+		}
+
+		if (hydrating) {
+			hydrate_next();
+		}
+
+		/** @type {Effect | null} */
+		var fallback = null;
+
+		var was_empty = false;
+
+		// TODO: ideally we could use derived for runes mode but because of the ability
+		// to use a store which can be mutated, we can't do that here as mutating a store
+		// will still result in the collection array being the same from the store
+		var each_array = derived_safe_equal(() => {
+			var collection = get_collection();
+
+			return is_array(collection) ? collection : collection == null ? [] : array_from(collection);
+		});
+
+		block(() => {
+			var array = get(each_array);
+			var length = array.length;
+
+			if (was_empty && length === 0) {
+				// ignore updates if the array is empty,
+				// and it already was empty on previous run
+				return;
+			}
+			was_empty = length === 0;
+
+			/** `true` if there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
+			let mismatch = false;
+
+			if (hydrating) {
+				var is_else = /** @type {Comment} */ (anchor).data === HYDRATION_START_ELSE;
+
+				if (is_else !== (length === 0)) {
+					// hydration mismatch — remove the server-rendered DOM and start over
+					anchor = remove_nodes();
+
+					set_hydrate_node(anchor);
+					set_hydrating(false);
+					mismatch = true;
+				}
+			}
+
+			// this is separate to the previous block because `hydrating` might change
+			if (hydrating) {
+				/** @type {EachItem | null} */
+				var prev = null;
+
+				/** @type {EachItem} */
+				var item;
+
+				for (var i = 0; i < length; i++) {
+					if (
+						hydrate_node.nodeType === 8 &&
+						/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
+					) {
+						// The server rendered fewer items than expected,
+						// so break out and continue appending non-hydrated items
+						anchor = /** @type {Comment} */ (hydrate_node);
+						mismatch = true;
+						set_hydrating(false);
+						break;
+					}
+
+					var value = array[i];
+					var key = get_key(value, i);
+					item = create_item(
+						hydrate_node,
+						state,
+						prev,
+						null,
+						value,
+						key,
+						i,
+						render_fn,
+						flags,
+						get_collection
+					);
+					state.items.set(key, item);
+
+					prev = item;
+				}
+
+				// remove excess nodes
+				if (length > 0) {
+					set_hydrate_node(remove_nodes());
+				}
+			}
+
+			if (!hydrating) {
+				reconcile(array, state, anchor, render_fn, flags, get_key, get_collection);
+			}
+
+			if (fallback_fn !== null) {
+				if (length === 0) {
+					if (fallback) {
+						resume_effect(fallback);
+					} else {
+						fallback = branch(() => fallback_fn(anchor));
+					}
+				} else if (fallback !== null) {
+					pause_effect(fallback, () => {
+						fallback = null;
+					});
+				}
+			}
+
+			if (mismatch) {
+				// continue in hydration mode
+				set_hydrating(true);
+			}
+
+			// When we mount the each block for the first time, the collection won't be
+			// connected to this effect as the effect hasn't finished running yet and its deps
+			// won't be assigned. However, it's possible that when reconciling the each block
+			// that a mutation occurred and it's made the collection MAYBE_DIRTY, so reading the
+			// collection again can provide consistency to the reactive graph again as the deriveds
+			// will now be `CLEAN`.
+			get(each_array);
+		});
+
+		if (hydrating) {
+			anchor = hydrate_node;
+		}
+	}
+
+	/**
+	 * Add, remove, or reorder items output by an each block as its input changes
+	 * @template V
+	 * @param {Array<V>} array
+	 * @param {EachState} state
+	 * @param {Element | Comment | Text} anchor
+	 * @param {(anchor: Node, item: MaybeSource<V>, index: number | Source<number>, collection: () => V[]) => void} render_fn
+	 * @param {number} flags
+	 * @param {(value: V, index: number) => any} get_key
+	 * @param {() => V[]} get_collection
+	 * @returns {void}
+	 */
+	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+
+		var length = array.length;
+		var items = state.items;
+		var first = state.first;
+		var current = first;
+
+		/** @type {undefined | Set<EachItem>} */
+		var seen;
+
+		/** @type {EachItem | null} */
+		var prev = null;
+
+		/** @type {EachItem[]} */
+		var matched = [];
+
+		/** @type {EachItem[]} */
+		var stashed = [];
+
+		/** @type {V} */
+		var value;
+
+		/** @type {any} */
+		var key;
+
+		/** @type {EachItem | undefined} */
+		var item;
+
+		/** @type {number} */
+		var i;
+
+		for (i = 0; i < length; i += 1) {
+			value = array[i];
+			key = get_key(value, i);
+			item = items.get(key);
+
+			if (item === undefined) {
+				var child_anchor = current ? /** @type {TemplateNode} */ (current.e.nodes_start) : anchor;
+
+				prev = create_item(
+					child_anchor,
+					state,
+					prev,
+					prev === null ? state.first : prev.next,
+					value,
+					key,
+					i,
+					render_fn,
+					flags,
+					get_collection
+				);
+
+				items.set(key, prev);
+
+				matched = [];
+				stashed = [];
+
+				current = prev.next;
+				continue;
+			}
+
+			{
+				update_item(item, value, i);
+			}
+
+			if ((item.e.f & INERT) !== 0) {
+				resume_effect(item.e);
+			}
+
+			if (item !== current) {
+				if (seen !== undefined && seen.has(item)) {
+					if (matched.length < stashed.length) {
+						// more efficient to move later items to the front
+						var start = stashed[0];
+						var j;
+
+						prev = start.prev;
+
+						var a = matched[0];
+						var b = matched[matched.length - 1];
+
+						for (j = 0; j < matched.length; j += 1) {
+							move(matched[j], start, anchor);
+						}
+
+						for (j = 0; j < stashed.length; j += 1) {
+							seen.delete(stashed[j]);
+						}
+
+						link(state, a.prev, b.next);
+						link(state, prev, a);
+						link(state, b, start);
+
+						current = start;
+						prev = b;
+						i -= 1;
+
+						matched = [];
+						stashed = [];
+					} else {
+						// more efficient to move earlier items to the back
+						seen.delete(item);
+						move(item, current, anchor);
+
+						link(state, item.prev, item.next);
+						link(state, item, prev === null ? state.first : prev.next);
+						link(state, prev, item);
+
+						prev = item;
+					}
+
+					continue;
+				}
+
+				matched = [];
+				stashed = [];
+
+				while (current !== null && current.k !== key) {
+					// If the each block isn't inert and an item has an effect that is already inert,
+					// skip over adding it to our seen Set as the item is already being handled
+					if ((current.e.f & INERT) === 0) {
+						(seen ??= new Set()).add(current);
+					}
+					stashed.push(current);
+					current = current.next;
+				}
+
+				if (current === null) {
+					continue;
+				}
+
+				item = current;
+			}
+
+			matched.push(item);
+			prev = item;
+			current = item.next;
+		}
+
+		if (current !== null || seen !== undefined) {
+			var to_destroy = seen === undefined ? [] : array_from(seen);
+
+			while (current !== null) {
+				// If the each block isn't inert, then inert effects are currently outroing and will be removed once the transition is finished
+				if ((current.e.f & INERT) === 0) {
+					to_destroy.push(current);
+				}
+				current = current.next;
+			}
+
+			var destroy_length = to_destroy.length;
+
+			if (destroy_length > 0) {
+				var controlled_anchor = length === 0 ? anchor : null;
+
+				pause_effects(state, to_destroy, controlled_anchor, items);
+			}
+		}
+
+		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
+		/** @type {Effect} */ (active_effect).last = prev && prev.e;
+	}
+
+	/**
+	 * @param {EachItem} item
+	 * @param {any} value
+	 * @param {number} index
+	 * @param {number} type
+	 * @returns {void}
+	 */
+	function update_item(item, value, index, type) {
+		{
+			internal_set(item.v, value);
+		}
+
+		{
+			item.i = index;
+		}
+	}
+
+	/**
+	 * @template V
+	 * @param {Node} anchor
+	 * @param {EachState} state
+	 * @param {EachItem | null} prev
+	 * @param {EachItem | null} next
+	 * @param {V} value
+	 * @param {unknown} key
+	 * @param {number} index
+	 * @param {(anchor: Node, item: V | Source<V>, index: number | Value<number>, collection: () => V[]) => void} render_fn
+	 * @param {number} flags
+	 * @param {() => V[]} get_collection
+	 * @returns {EachItem}
+	 */
+	function create_item(
+		anchor,
+		state,
+		prev,
+		next,
+		value,
+		key,
+		index,
+		render_fn,
+		flags,
+		get_collection
+	) {
+		var reactive = (flags & EACH_ITEM_REACTIVE) !== 0;
+		var mutable = (flags & EACH_ITEM_IMMUTABLE) === 0;
+
+		var v = reactive ? (mutable ? mutable_source(value) : source(value)) : value;
+		var i = (flags & EACH_INDEX_REACTIVE) === 0 ? index : source(index);
+
+		/** @type {EachItem} */
+		var item = {
+			i,
+			v,
+			k: key,
+			a: null,
+			// @ts-expect-error
+			e: null,
+			prev,
+			next
+		};
+
+		try {
+			item.e = branch(() => render_fn(anchor, v, i, get_collection), hydrating);
+
+			item.e.prev = prev && prev.e;
+			item.e.next = next && next.e;
+
+			if (prev === null) {
+				state.first = item;
+			} else {
+				prev.next = item;
+				prev.e.next = item.e;
+			}
+
+			if (next !== null) {
+				next.prev = item;
+				next.e.prev = item.e;
+			}
+
+			return item;
+		} finally {
+		}
+	}
+
+	/**
+	 * @param {EachItem} item
+	 * @param {EachItem | null} next
+	 * @param {Text | Element | Comment} anchor
+	 */
+	function move(item, next, anchor) {
+		var end = item.next ? /** @type {TemplateNode} */ (item.next.e.nodes_start) : anchor;
+
+		var dest = next ? /** @type {TemplateNode} */ (next.e.nodes_start) : anchor;
+		var node = /** @type {TemplateNode} */ (item.e.nodes_start);
+
+		while (node !== end) {
+			var next_node = /** @type {TemplateNode} */ (get_next_sibling(node));
+			dest.before(node);
+			node = next_node;
+		}
+	}
+
+	/**
+	 * @param {EachState} state
+	 * @param {EachItem | null} prev
+	 * @param {EachItem | null} next
+	 */
+	function link(state, prev, next) {
+		if (prev === null) {
+			state.first = next;
+		} else {
+			prev.next = next;
+			prev.e.next = next && next.e;
+		}
+
+		if (next !== null) {
+			next.prev = prev;
+			next.e.prev = prev && prev.e;
+		}
+	}
+
 	/**
 	 * @param {Comment} anchor
 	 * @param {Record<string, any>} $$props
@@ -4644,8 +5160,8 @@
 
 	}
 
-	var root_1 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_1$1 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -4658,7 +5174,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$1 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -4702,14 +5218,14 @@
 			}
 		});
 
-		var fragment = root$1();
+		var fragment = root$2();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1();
+				var div_2 = root_1$1();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -4736,7 +5252,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2();
+				var div_5 = root_2$1();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -5069,6 +5585,180 @@
 		},
 		['links', 'search-zone'],
 		['focusOnSearchInput'],
+		true
+	));
+
+	var root_1 = template(`<img>`);
+	var root_2 = template(`<a> </a>`);
+	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+
+	function PivFooter($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoAlt = prop($$props, 'logoAlt', 7, lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
+			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear()),
+			logoWidth = prop($$props, 'logoWidth', 7, 139),
+			logoHeight = prop($$props, 'logoHeight', 7, 50),
+			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
+
+		var fragment = root$1();
+		var div = first_child(fragment);
+		var node = child(div);
+
+		slot(node, $$props, 'default', {}, null);
+
+		var a = sibling(node, 2);
+		let styles;
+
+		each(
+			a,
+			21,
+			() => [
+				['light', logoSrc()],
+				['dark', logoSrcDarkTheme()]
+			],
+			index,
+			($$anchor, $$item) => {
+				let theme = () => get($$item)[0];
+				let src = () => get($$item)[1];
+				var img = root_1();
+
+				template_effect(() => {
+					set_attribute(img, 'src', src());
+					set_attribute(img, 'alt', logoAlt());
+					set_class(img, 1, `qc-${theme() ?? ''}-theme-show`);
+				});
+
+				append($$anchor, img);
+			}
+		);
+
+		reset(a);
+
+		var span = sibling(a, 2);
+		var node_1 = child(span);
+
+		slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
+			var a_1 = root_2();
+			var text = child(a_1, true);
+
+			reset(a_1);
+
+			template_effect(() => {
+				set_attribute(a_1, 'href', copyrightUrl());
+				set_text(text, copyrightText());
+			});
+
+			append($$anchor, a_1);
+		});
+
+		reset(span);
+		reset(div);
+
+		var link = sibling(div, 2);
+
+		template_effect(() => {
+			set_attribute(a, 'href', logoUrl());
+
+			styles = set_style(a, '', styles, {
+				'--logo-width': logoWidth(),
+				'--logo-height': logoHeight()
+			});
+
+			set_attribute(link, 'href', Utils.cssPath);
+		});
+
+		append($$anchor, fragment);
+
+		return pop({
+			get logoUrl() {
+				return logoUrl();
+			},
+			set logoUrl($$value = '/') {
+				logoUrl($$value);
+				flushSync();
+			},
+			get logoSrc() {
+				return logoSrc();
+			},
+			set logoSrc(
+				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
+			) {
+				logoSrc($$value);
+				flushSync();
+			},
+			get logoSrcDarkTheme() {
+				return logoSrcDarkTheme();
+			},
+			set logoSrcDarkTheme(
+				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+			) {
+				logoSrcDarkTheme($$value);
+				flushSync();
+			},
+			get logoAlt() {
+				return logoAlt();
+			},
+			set logoAlt(
+				$$value = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'
+			) {
+				logoAlt($$value);
+				flushSync();
+			},
+			get copyrightText() {
+				return copyrightText();
+			},
+			set copyrightText(
+				$$value = '© Gouvernement du Québec, ' + new Date().getFullYear()
+			) {
+				copyrightText($$value);
+				flushSync();
+			},
+			get logoWidth() {
+				return logoWidth();
+			},
+			set logoWidth($$value = 139) {
+				logoWidth($$value);
+				flushSync();
+			},
+			get logoHeight() {
+				return logoHeight();
+			},
+			set logoHeight($$value = 50) {
+				logoHeight($$value);
+				flushSync();
+			},
+			get copyrightUrl() {
+				return copyrightUrl();
+			},
+			set copyrightUrl(
+				$$value = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
+			) {
+				copyrightUrl($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-piv-footer', create_custom_element(
+		PivFooter,
+		{
+			logoUrl: { attribute: 'logo-url' },
+			logoSrc: { attribute: 'logo-src' },
+			logoSrcDarkTheme: { attribute: 'logo-src-dark-theme' },
+			logoAlt: { attribute: 'logo-alt' },
+			logoWidth: { attribute: 'logo-width' },
+			logoHeight: { attribute: 'logo-height' },
+			copyrightText: { attribute: 'copyright-text' },
+			copyrightUrl: { attribute: 'copyright-url' }
+		},
+		['default', 'copyright'],
+		[],
 		true
 	));
 
