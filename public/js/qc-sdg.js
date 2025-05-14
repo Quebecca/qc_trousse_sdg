@@ -31,6 +31,7 @@
 	const UNINITIALIZED = Symbol();
 
 	const NAMESPACE_HTML = 'http://www.w3.org/1999/xhtml';
+	const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
 
 	var DEV = false;
 
@@ -238,19 +239,6 @@
 
 	function hydrate_next() {
 		return set_hydrate_node(/** @type {TemplateNode} */ (get_next_sibling(hydrate_node)));
-	}
-
-	/** @param {TemplateNode} node */
-	function reset(node) {
-		if (!hydrating) return;
-
-		// If the node has remaining siblings, something has gone wrong
-		if (get_next_sibling(hydrate_node) !== null) {
-			hydration_mismatch();
-			throw HYDRATION_ERROR;
-		}
-
-		hydrate_node = node;
 	}
 
 	/** @param {TemplateNode} node */
@@ -649,76 +637,6 @@
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_next_sibling(node) {
 		return next_sibling_getter.call(node);
-	}
-
-	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @template {Node} N
-	 * @param {N} node
-	 * @param {boolean} is_text
-	 * @returns {Node | null}
-	 */
-	function child(node, is_text) {
-		if (!hydrating) {
-			return get_first_child(node);
-		}
-
-		var child = /** @type {TemplateNode} */ (get_first_child(hydrate_node));
-
-		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
-		if (child === null) {
-			child = hydrate_node.appendChild(create_text());
-		} else if (is_text && child.nodeType !== 3) {
-			var text = create_text();
-			child?.before(text);
-			set_hydrate_node(text);
-			return text;
-		}
-
-		set_hydrate_node(child);
-		return child;
-	}
-
-	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {TemplateNode} node
-	 * @param {number} count
-	 * @param {boolean} is_text
-	 * @returns {Node | null}
-	 */
-	function sibling(node, count = 1, is_text = false) {
-		let next_sibling = hydrating ? hydrate_node : node;
-		var last_sibling;
-
-		while (count--) {
-			last_sibling = next_sibling;
-			next_sibling = /** @type {TemplateNode} */ (get_next_sibling(next_sibling));
-		}
-
-		if (!hydrating) {
-			return next_sibling;
-		}
-
-		var type = next_sibling?.nodeType;
-
-		// if a sibling {expression} is empty during SSR, there might be no
-		// text node to hydrate — we must therefore create one
-		if (is_text && type !== 3) {
-			var text = create_text();
-			// If the next sibling is `null` and we're handling text then it's because
-			// the SSR content was empty for the text, so we need to generate a new text
-			// node and insert it after the last sibling
-			if (next_sibling === null) {
-				last_sibling?.after(text);
-			} else {
-				next_sibling.before(text);
-			}
-			set_hydrate_node(text);
-			return text;
-		}
-
-		set_hydrate_node(next_sibling);
-		return /** @type {TemplateNode} */ (next_sibling);
 	}
 
 	/**
@@ -2592,6 +2510,14 @@
 		return PASSIVE_EVENTS.includes(name);
 	}
 
+	/** List of elements that require raw contents and should not have SSR comments put in them */
+	const RAW_TEXT_ELEMENTS = /** @type {const} */ (['textarea', 'script', 'style', 'title']);
+
+	/** @param {string} name */
+	function is_raw_text_element(name) {
+		return RAW_TEXT_ELEMENTS.includes(/** @type {RAW_TEXT_ELEMENTS[number]} */ (name));
+	}
+
 	/**
 	 * @param {HTMLElement} dom
 	 * @param {boolean} value
@@ -2672,26 +2598,6 @@
 		}
 
 		return target_handler;
-	}
-
-	/**
-	 * @param {string} event_name
-	 * @param {Element} dom
-	 * @param {EventListener} [handler]
-	 * @param {boolean} [capture]
-	 * @param {boolean} [passive]
-	 * @returns {void}
-	 */
-	function event(event_name, dom, handler, capture, passive) {
-		var options = { capture, passive };
-		var target_handler = create_event(event_name, dom, handler, options);
-
-		// @ts-ignore
-		if (dom === document.body || dom === window || dom === document) {
-			teardown(() => {
-				dom.removeEventListener(event_name, target_handler, options);
-			});
-		}
 	}
 
 	/**
@@ -3835,6 +3741,86 @@
 		}
 	}
 
+	/** @import { Effect, TemplateNode } from '#client' */
+
+	/**
+	 * @param {Element | Text | Comment} node
+	 * @param {() => string} get_value
+	 * @param {boolean} [svg]
+	 * @param {boolean} [mathml]
+	 * @param {boolean} [skip_warning]
+	 * @returns {void}
+	 */
+	function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
+		var anchor = node;
+
+		var value = '';
+
+		template_effect(() => {
+			var effect = /** @type {Effect} */ (active_effect);
+
+			if (value === (value = get_value() ?? '')) {
+				if (hydrating) hydrate_next();
+				return;
+			}
+
+			if (effect.nodes_start !== null) {
+				remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
+				effect.nodes_start = effect.nodes_end = null;
+			}
+
+			if (value === '') return;
+
+			if (hydrating) {
+				// We're deliberately not trying to repair mismatches between server and client,
+				// as it's costly and error-prone (and it's an edge case to have a mismatch anyway)
+				/** @type {Comment} */ (hydrate_node).data;
+				var next = hydrate_next();
+				var last = next;
+
+				while (next !== null && (next.nodeType !== 8 || /** @type {Comment} */ (next).data !== '')) {
+					last = next;
+					next = /** @type {TemplateNode} */ (get_next_sibling(next));
+				}
+
+				if (next === null) {
+					hydration_mismatch();
+					throw HYDRATION_ERROR;
+				}
+
+				assign_nodes(hydrate_node, last);
+				anchor = set_hydrate_node(next);
+				return;
+			}
+
+			var html = value + '';
+			if (svg) html = `<svg>${html}</svg>`;
+			else if (mathml) html = `<math>${html}</math>`;
+
+			// Don't use create_fragment_with_script_from_html here because that would mean script tags are executed.
+			// @html is basically `.innerHTML = ...` and that doesn't execute scripts either due to security reasons.
+			/** @type {DocumentFragment | Element} */
+			var node = create_fragment_from_html(html);
+
+			if (svg || mathml) {
+				node = /** @type {Element} */ (get_first_child(node));
+			}
+
+			assign_nodes(
+				/** @type {TemplateNode} */ (get_first_child(node)),
+				/** @type {TemplateNode} */ (node.lastChild)
+			);
+
+			if (svg || mathml) {
+				while (get_first_child(node)) {
+					anchor.before(/** @type {Node} */ (get_first_child(node)));
+				}
+			} else {
+				anchor.before(node);
+			}
+		});
+	}
+
 	/**
 	 * @param {Comment} anchor
 	 * @param {Record<string, any>} $$props
@@ -3864,6 +3850,120 @@
 		}
 	}
 
+	/** @import { Effect, TemplateNode } from '#client' */
+
+	/**
+	 * @param {Comment | Element} node
+	 * @param {() => string} get_tag
+	 * @param {boolean} is_svg
+	 * @param {undefined | ((element: Element, anchor: Node | null) => void)} render_fn,
+	 * @param {undefined | (() => string)} get_namespace
+	 * @param {undefined | [number, number]} location
+	 * @returns {void}
+	 */
+	function element(node, get_tag, is_svg, render_fn, get_namespace, location) {
+		let was_hydrating = hydrating;
+
+		if (hydrating) {
+			hydrate_next();
+		}
+
+		/** @type {string | null} */
+		var tag;
+
+		/** @type {string | null} */
+		var current_tag;
+
+		/** @type {null | Element} */
+		var element = null;
+
+		if (hydrating && hydrate_node.nodeType === 1) {
+			element = /** @type {Element} */ (hydrate_node);
+			hydrate_next();
+		}
+
+		var anchor = /** @type {TemplateNode} */ (hydrating ? hydrate_node : node);
+
+		/** @type {Effect | null} */
+		var effect;
+
+		block(() => {
+			const next_tag = get_tag() || null;
+			var ns = next_tag === 'svg' ? NAMESPACE_SVG : null;
+
+			// Assumption: Noone changes the namespace but not the tag (what would that even mean?)
+			if (next_tag === tag) return;
+
+			if (effect) {
+				if (next_tag === null) {
+					// start outro
+					pause_effect(effect, () => {
+						effect = null;
+						current_tag = null;
+					});
+				} else if (next_tag === current_tag) {
+					// same tag as is currently rendered — abort outro
+					resume_effect(effect);
+				} else {
+					// tag is changing — destroy immediately, render contents without intro transitions
+					destroy_effect(effect);
+				}
+			}
+
+			if (next_tag && next_tag !== current_tag) {
+				effect = branch(() => {
+					element = hydrating
+						? /** @type {Element} */ (element)
+						: ns
+							? document.createElementNS(ns, next_tag)
+							: document.createElement(next_tag);
+
+					assign_nodes(element, element);
+
+					if (render_fn) {
+						if (hydrating && is_raw_text_element(next_tag)) {
+							// prevent hydration glitches
+							element.append(document.createComment(''));
+						}
+
+						// If hydrating, use the existing ssr comment as the anchor so that the
+						// inner open and close methods can pick up the existing nodes correctly
+						var child_anchor = /** @type {TemplateNode} */ (
+							hydrating ? get_first_child(element) : element.appendChild(create_text())
+						);
+
+						if (hydrating) {
+							if (child_anchor === null) {
+								set_hydrating(false);
+							} else {
+								set_hydrate_node(child_anchor);
+							}
+						}
+
+						// `child_anchor` is undefined if this is a void element, but we still
+						// need to call `render_fn` in order to run actions etc. If the element
+						// contains children, it's a user error (which is warned on elsewhere)
+						// and the DOM will be silently discarded
+						render_fn(element, child_anchor);
+					}
+
+					// we do this after calling `render_fn` so that child effects don't override `nodes.end`
+					/** @type {Effect} */ (active_effect).nodes_end = element;
+
+					anchor.before(element);
+				});
+			}
+
+			tag = next_tag;
+			if (tag) current_tag = tag;
+		}, EFFECT_TRANSPARENT);
+
+		if (was_hydrating) {
+			set_hydrating(true);
+			set_hydrate_node(anchor);
+		}
+	}
+
 	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 	/**
@@ -3889,10 +3989,6 @@
 	 */
 	function to_class(value, hash, directives) {
 		var classname = value == null ? '' : '' + value;
-
-		if (hash) {
-			classname = classname ? classname + ' ' + hash : hash;
-		}
 
 		if (directives) {
 			for (var key in directives) {
@@ -4520,21 +4616,6 @@
 		});
 
 		return element_or_component;
-	}
-
-	/**
-	 * Substitute for the `preventDefault` event modifier
-	 * @deprecated
-	 * @param {(event: Event, ...args: Array<unknown>) => void} fn
-	 * @returns {(event: Event, ...args: unknown[]) => void}
-	 */
-	function preventDefault(fn) {
-		return function (...args) {
-			var event = /** @type {Event} */ (args[0]);
-			event.preventDefault();
-			// @ts-ignore
-			return fn?.apply(this, args);
-		};
 	}
 
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
@@ -5339,65 +5420,263 @@
 
 	}
 
-	var root$1 = template(`<div></div>`);
-	class Utils {
+	var root$3 = template(`<div></div>`);
 
-	    static assetsBasePath =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-assets-base-path')
-	        || new URL(document.currentScript.src).pathname
-	                    .split('/')
-	                    .slice(0, -2)
-	                    .join('/')
-	        || '.'
-	    static cssRelativePath =
-	        `${this.assetsBasePath}/css/`
-	            .replace('//','/')
-	    static imagesRelativePath =
-	        `${this.assetsBasePath}/img/`
-	            .replace('//','/')
-	    static cssFileName =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-css-filename')
-	        || 'qc-sdg.min.css'
-	    static cssPath =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-css-path')
-	        || this.cssRelativePath + this.cssFileName
-	    static sharedTexts =
-	        { openInNewTab :
-	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
-	            , en: 'This link will open in a new tab.'
-	            }
-	        }
+	function Icon($$anchor, $$props) {
+		push($$props, true);
 
-	    /**
-	     * Get current page language based on html lang attribute
-	     * @returns {string} language code  (fr/en).
-	     */
-	    static getPageLanguage() {
-	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
-	    }
+		let type = prop($$props, 'type', 7),
+			label = prop($$props, 'label', 7),
+			size = prop($$props, 'size', 7, 'md'),
+			color = prop($$props, 'color', 7, 'text-primary'),
+			width = prop($$props, 'width', 7, 'auto'),
+			height = prop($$props, 'height', 7, 'auto'),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'type',
+				'label',
+				'size',
+				'color',
+				'width',
+				'height'
+			]);
 
-	    static isTruthy(value) {
-	        if (typeof value === 'boolean') {
-	            return value;
-	        }
-	        if (typeof value === 'string') {
-	            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
-	        }
-	        if (typeof value === 'number') {
-	            return !!value; // Vérifie si le nombre est égal à 1
-	        }
-	        return false;
-	    }
+		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
+		var div = root$3();
+		let attributes_1;
 
+		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
+			role: 'img',
+			class: 'qc-icon',
+			'aria-label': label(),
+			style: `--img-color:var(--qc-color-${color() ?? ''});
+            --img-width:${width() ?? ''};
+            --img-height:${height() ?? ''};
+        `,
+			'data-img-type': type(),
+			...get(attributes),
+			...rest
+		}));
 
+		append($$anchor, div);
 
+		return pop({
+			get type() {
+				return type();
+			},
+			set type($$value) {
+				type($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = 'md') {
+				size($$value);
+				flushSync();
+			},
+			get color() {
+				return color();
+			},
+			set color($$value = 'text-primary') {
+				color($$value);
+				flushSync();
+			},
+			get width() {
+				return width();
+			},
+			set width($$value = 'auto') {
+				width($$value);
+				flushSync();
+			},
+			get height() {
+				return height();
+			},
+			set height($$value = 'auto') {
+				height($$value);
+				flushSync();
+			}
+		});
 	}
+
+	customElements.define('qc-icon', create_custom_element(
+		Icon,
+		{
+			type: { attribute: 'icon' },
+			label: { attribute: 'label' },
+			color: { attribute: 'color' },
+			size: { attribute: 'size' },
+			width: { attribute: 'width' },
+			height: { attribute: 'height' }
+		},
+		[],
+		[],
+		false
+	));
+
+	var root$2 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+
+	function Notice($$anchor, $$props) {
+		push($$props, true);
+
+		const isFr = Utils.getPageLanguage() === 'fr';
+		const defaultHeader = 'h2';
+		const defaultType = 'information';
+
+		const typesDescriptions = {
+			'advice': isFr ? "Avis conseil" : "Advisory notice",
+			'note': isFr ? "Avis explicatif" : "Explanatory notice",
+			'information': isFr ? "Avis général" : "General notice",
+			'warning': isFr ? "Avis d’avertissement" : "Warning notice",
+			'success': isFr ? "Avis de réussite" : "Success notice",
+			'error': isFr ? "Avis d’erreur" : "Error notice"
+		};
+
+		let title = prop($$props, 'title', 7, ""),
+			type = prop($$props, 'type', 7, defaultType),
+			content = prop($$props, 'content', 7, ""),
+			header = prop($$props, 'header', 7, defaultHeader),
+			icon = prop($$props, 'icon', 7);
+
+		const types = Object.keys(typesDescriptions);
+		const usedType = types.includes(type()) ? type() : defaultType;
+		const usedHeader = header().match(/h[1-6]/) ? header() : defaultHeader;
+		const role = usedType === "success" ? "status" : usedType === "error" ? "alert" : null;
+		let noticeElement;
+
+		if (role && noticeElement) {
+			const tempNodes = Array.from(noticeElement.childNodes);
+
+			noticeElement.innerHTML = "";
+			// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
+			tempNodes.forEach((node) => noticeElement.appendChild(node));
+		}
+
+		const shouldUseIcon = type() === "advice" || type() === "note";
+		// Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
+		const computedType = shouldUseIcon ? "neutral" : type();
+		const iconType = shouldUseIcon ? icon() ?? "note" : type();
+		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
+		var fragment = root$2();
+		var div = first_child(fragment);
+
+		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
+
+		var div_1 = child(div);
+		var div_2 = child(div_1);
+		var node_1 = child(div_2);
+
+		Icon(node_1, { type: iconType, label: iconLabel, size: 'nm' });
+		reset(div_2);
+		reset(div_1);
+
+		var div_3 = sibling(div_1, 2);
+		var div_4 = child(div_3);
+
+		set_attribute(div_4, 'role', role);
+
+		var node_2 = child(div_4);
+
+		{
+			var consequent = ($$anchor) => {
+				var fragment_1 = comment();
+				var node_3 = first_child(fragment_1);
+
+				element(node_3, () => usedHeader, false, ($$element, $$anchor) => {
+					var fragment_2 = comment();
+					var node_4 = first_child(fragment_2);
+
+					html(node_4, title);
+					append($$anchor, fragment_2);
+				});
+
+				append($$anchor, fragment_1);
+			};
+
+			if_block(node_2, ($$render) => {
+				if (title()) $$render(consequent);
+			});
+		}
+
+		var node_5 = sibling(node_2, 2);
+
+		html(node_5, content);
+
+		var node_6 = sibling(node_5, 2);
+
+		slot(node_6, $$props, 'default', {}, null);
+		reset(div_4);
+		bind_this(div_4, ($$value) => noticeElement = $$value, () => noticeElement);
+		reset(div_3);
+		reset(div);
+
+		var link = sibling(div, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		append($$anchor, fragment);
+
+		return pop({
+			get title() {
+				return title();
+			},
+			set title($$value = "") {
+				title($$value);
+				flushSync();
+			},
+			get type() {
+				return type();
+			},
+			set type($$value = defaultType) {
+				type($$value);
+				flushSync();
+			},
+			get content() {
+				return content();
+			},
+			set content($$value = "") {
+				content($$value);
+				flushSync();
+			},
+			get header() {
+				return header();
+			},
+			set header($$value = defaultHeader) {
+				header($$value);
+				flushSync();
+			},
+			get icon() {
+				return icon();
+			},
+			set icon($$value) {
+				icon($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-notice', create_custom_element(
+		Notice,
+		{
+			title: {},
+			type: {},
+			content: {},
+			header: {},
+			icon: {}
+		},
+		['default'],
+		[],
+		true
+	));
 
 	var root_1$1 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
@@ -5413,7 +5692,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$1 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -5457,7 +5736,7 @@
 			}
 		});
 
-		var fragment = root$2();
+		var fragment = root$1();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -5829,7 +6108,7 @@
 
 	var root_1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -5845,7 +6124,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$1();
+		var fragment = root();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -5999,217 +6278,6 @@
 		['default', 'copyright'],
 		[],
 		true
-	));
-
-	var root = template(`<div></div>`);
-
-	function Icon($$anchor, $$props) {
-		push($$props, true);
-
-		let type = prop($$props, 'type', 7),
-			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, 'md'),
-			color = prop($$props, 'color', 7, 'text-primary'),
-			width = prop($$props, 'width', 7, 'auto'),
-			height = prop($$props, 'height', 7, 'auto'),
-			rest = rest_props($$props, [
-				'$$slots',
-				'$$events',
-				'$$legacy',
-				'$$host',
-				'type',
-				'label',
-				'size',
-				'color',
-				'width',
-				'height'
-			]);
-
-		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$1();
-		let attributes_1;
-
-		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
-			role: 'img',
-			class: 'qc-icon',
-			'aria-label': label(),
-			style: `--img-color:var(--qc-color-${color() ?? ''});
-            --img-width:${width() ?? ''};
-            --img-height:${height() ?? ''};
-        `,
-			'data-img-type': type(),
-			...get(attributes),
-			...rest
-		}));
-
-		append($$anchor, div);
-
-		return pop({
-			get type() {
-				return type();
-			},
-			set type($$value) {
-				type($$value);
-				flushSync();
-			},
-			get label() {
-				return label();
-			},
-			set label($$value) {
-				label($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = 'md') {
-				size($$value);
-				flushSync();
-			},
-			get color() {
-				return color();
-			},
-			set color($$value = 'text-primary') {
-				color($$value);
-				flushSync();
-			},
-			get width() {
-				return width();
-			},
-			set width($$value = 'auto') {
-				width($$value);
-				flushSync();
-			},
-			get height() {
-				return height();
-			},
-			set height($$value = 'auto') {
-				height($$value);
-				flushSync();
-			}
-		});
-	}
-
-	customElements.define('qc-icon', create_custom_element(
-		Icon,
-		{
-			type: { attribute: 'icon' },
-			label: { attribute: 'label' },
-			color: { attribute: 'color' },
-			size: { attribute: 'size' },
-			width: { attribute: 'width' },
-			height: { attribute: 'height' }
-		},
-		[],
-		[],
-		false
-	));
-
-	var root = template(`<a href="javascript:;"><!> <span> </span></a>`);
-
-	function ToTop($$anchor, $$props) {
-		push($$props, true);
-
-		const lang = Utils.getPageLanguage();
-
-		const text = prop($$props, 'text', 7, lang === 'fr' ? "Retour en haut" : "Back to top"),
-			demo = prop($$props, 'demo', 7, 'false');
-
-		let visible = demo() === 'true';
-		let lastVisible = visible;
-		let lastScrollY = 0;
-		let minimumScrollHeight = 0;
-		let toTopElement;
-
-		function handleScrollUpButton() {
-			if (demo() === 'true') return;
-
-			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
-
-			visible = lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom;
-
-			if (!visible && lastVisible) {
-				// removing focus on visibility loss
-				toTopElement.blur();
-			}
-
-			lastVisible = visible;
-			lastScrollY = window.scrollY;
-		}
-
-		function scrollToTop() {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		}
-
-		function handleEnterAndSpace(e) {
-			switch (e.code) {
-				case 'Enter':
-
-				case 'Space':
-					e.preventDefault();
-					scrollToTop();
-			}
-		}
-
-		user_effect(() => {
-			lastScrollY = window.scrollY;
-		});
-
-		var a = root();
-
-		event('scroll', $window, handleScrollUpButton);
-		set_class(a, 1, 'qc-to-top', null, {}, { visible });
-		set_attribute(a, 'tabindex', visible ? 0 : -1);
-
-		var node = child(a);
-
-		Icon(node, { type: 'arrow-up-white', color: 'background' });
-
-		var span = sibling(node, 2);
-		var text_1 = child(span, true);
-
-		reset(span);
-		reset(a);
-		bind_this(a, ($$value) => toTopElement = $$value, () => toTopElement);
-
-		template_effect(() => {
-			set_attribute(a, 'demo', demo());
-			set_text(text_1, text());
-		});
-
-		event('click', a, preventDefault(scrollToTop));
-		event('keydown', a, handleEnterAndSpace);
-		append($$anchor, a);
-
-		return pop({
-			get text() {
-				return text();
-			},
-			set text(
-				$$value = lang === 'fr' ? "Retour en haut" : "Back to top"
-			) {
-				text($$value);
-				flushSync();
-			},
-			get demo() {
-				return demo();
-			},
-			set demo($$value = 'false') {
-				demo($$value);
-				flushSync();
-			}
-		});
-	}
-
-	customElements.define('qc-to-top', create_custom_element(
-		ToTop,
-		{
-			text: { attribute: 'text', type: 'String' },
-			demo: {}
-		},
-		[],
-		[],
-		false
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
