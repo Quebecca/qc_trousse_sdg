@@ -72,6 +72,38 @@
 
 
 	/**
+	 * `%rune%` cannot be used inside an effect cleanup function
+	 * @param {string} rune
+	 * @returns {never}
+	 */
+	function effect_in_teardown(rune) {
+		{
+			throw new Error(`https://svelte.dev/e/effect_in_teardown`);
+		}
+	}
+
+	/**
+	 * Effect cannot be created inside a `$derived` value that was not itself created inside an effect
+	 * @returns {never}
+	 */
+	function effect_in_unowned_derived() {
+		{
+			throw new Error(`https://svelte.dev/e/effect_in_unowned_derived`);
+		}
+	}
+
+	/**
+	 * `%rune%` can only be used inside an effect (e.g. during component initialisation)
+	 * @param {string} rune
+	 * @returns {never}
+	 */
+	function effect_orphan(rune) {
+		{
+			throw new Error(`https://svelte.dev/e/effect_orphan`);
+		}
+	}
+
+	/**
 	 * Maximum update depth exceeded. This can happen when a reactive block or effect repeatedly sets a new value. Svelte limits the number of nested updates to prevent infinite loops
 	 * @returns {never}
 	 */
@@ -169,6 +201,19 @@
 
 	function hydrate_next() {
 		return set_hydrate_node(/** @type {TemplateNode} */ (get_next_sibling(hydrate_node)));
+	}
+
+	/** @param {TemplateNode} node */
+	function reset(node) {
+		if (!hydrating) return;
+
+		// If the node has remaining siblings, something has gone wrong
+		if (get_next_sibling(hydrate_node) !== null) {
+			hydration_mismatch();
+			throw HYDRATION_ERROR;
+		}
+
+		hydrate_node = node;
 	}
 
 	let tracing_mode_flag = false;
@@ -532,6 +577,76 @@
 	}
 
 	/**
+	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
+	 * @template {Node} N
+	 * @param {N} node
+	 * @param {boolean} is_text
+	 * @returns {Node | null}
+	 */
+	function child(node, is_text) {
+		if (!hydrating) {
+			return get_first_child(node);
+		}
+
+		var child = /** @type {TemplateNode} */ (get_first_child(hydrate_node));
+
+		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
+		if (child === null) {
+			child = hydrate_node.appendChild(create_text());
+		} else if (is_text && child.nodeType !== 3) {
+			var text = create_text();
+			child?.before(text);
+			set_hydrate_node(text);
+			return text;
+		}
+
+		set_hydrate_node(child);
+		return child;
+	}
+
+	/**
+	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
+	 * @param {TemplateNode} node
+	 * @param {number} count
+	 * @param {boolean} is_text
+	 * @returns {Node | null}
+	 */
+	function sibling(node, count = 1, is_text = false) {
+		let next_sibling = hydrating ? hydrate_node : node;
+		var last_sibling;
+
+		while (count--) {
+			last_sibling = next_sibling;
+			next_sibling = /** @type {TemplateNode} */ (get_next_sibling(next_sibling));
+		}
+
+		if (!hydrating) {
+			return next_sibling;
+		}
+
+		var type = next_sibling?.nodeType;
+
+		// if a sibling {expression} is empty during SSR, there might be no
+		// text node to hydrate — we must therefore create one
+		if (is_text && type !== 3) {
+			var text = create_text();
+			// If the next sibling is `null` and we're handling text then it's because
+			// the SSR content was empty for the text, so we need to generate a new text
+			// node and insert it after the last sibling
+			if (next_sibling === null) {
+				last_sibling?.after(text);
+			} else {
+				next_sibling.before(text);
+			}
+			set_hydrate_node(text);
+			return text;
+		}
+
+		set_hydrate_node(next_sibling);
+		return /** @type {TemplateNode} */ (next_sibling);
+	}
+
+	/**
 	 * @template {Node} N
 	 * @param {N} node
 	 * @returns {void}
@@ -692,6 +807,23 @@
 	/** @import { ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
 
 	/**
+	 * @param {'$effect' | '$effect.pre' | '$inspect'} rune
+	 */
+	function validate_effect(rune) {
+		if (active_effect === null && active_reaction === null) {
+			effect_orphan();
+		}
+
+		if (active_reaction !== null && (active_reaction.f & UNOWNED) !== 0 && active_effect === null) {
+			effect_in_unowned_derived();
+		}
+
+		if (is_destroying_effect) {
+			effect_in_teardown();
+		}
+	}
+
+	/**
 	 * @param {Effect} effect
 	 * @param {Effect} parent_effect
 	 */
@@ -779,6 +911,34 @@
 		set_signal_status(effect, CLEAN);
 		effect.teardown = fn;
 		return effect;
+	}
+
+	/**
+	 * Internal representation of `$effect(...)`
+	 * @param {() => void | (() => void)} fn
+	 */
+	function user_effect(fn) {
+		validate_effect();
+
+		// Non-nested `$effect(...)` in a component should be deferred
+		// until the component is mounted
+		var defer =
+			active_effect !== null &&
+			(active_effect.f & BRANCH_EFFECT) !== 0 &&
+			component_context !== null &&
+			!component_context.m;
+
+		if (defer) {
+			var context = /** @type {ComponentContext} */ (component_context);
+			(context.e ??= []).push({
+				fn,
+				effect: active_effect,
+				reaction: active_reaction
+			});
+		} else {
+			var signal = effect(fn);
+			return signal;
+		}
 	}
 
 	/**
@@ -2287,6 +2447,26 @@
 	}
 
 	/**
+	 * @param {string} event_name
+	 * @param {Element} dom
+	 * @param {EventListener} [handler]
+	 * @param {boolean} [capture]
+	 * @param {boolean} [passive]
+	 * @returns {void}
+	 */
+	function event(event_name, dom, handler, capture, passive) {
+		var options = { capture, passive };
+		var target_handler = create_event(event_name, dom, handler, options);
+
+		// @ts-ignore
+		if (dom === document.body || dom === window || dom === document) {
+			teardown(() => {
+				dom.removeEventListener(event_name, target_handler, options);
+			});
+		}
+	}
+
+	/**
 	 * @param {Array<string>} events
 	 * @returns {void}
 	 */
@@ -2529,6 +2709,22 @@
 
 	/** @import { ComponentContext, Effect, TemplateNode } from '#client' */
 	/** @import { Component, ComponentType, SvelteComponent, MountOptions } from '../../index.js' */
+
+	/**
+	 * @param {Element} text
+	 * @param {string} value
+	 * @returns {void}
+	 */
+	function set_text(text, value) {
+		// For objects, we apply string coercion (which might make things like $state array references in the template reactive) before diffing
+		var str = value == null ? '' : typeof value === 'object' ? value + '' : value;
+		// @ts-expect-error
+		if (str !== (text.__t ??= text.nodeValue)) {
+			// @ts-expect-error
+			text.__t = str;
+			text.nodeValue = str + '';
+		}
+	}
 
 	/**
 	 * Mounts a component to the given target and returns the exports and potentially the props (if compiled with `accessors: true`) of the component.
@@ -2793,6 +2989,10 @@
 	 */
 	function to_class(value, hash, directives) {
 		var classname = value == null ? '' : '' + value;
+
+		if (hash) {
+			classname = classname ? classname + ' ' + hash : hash;
+		}
 
 		if (directives) {
 			for (var key in directives) {
@@ -3363,6 +3563,78 @@
 		}
 
 		return setters;
+	}
+
+	/**
+	 * @param {any} bound_value
+	 * @param {Element} element_or_component
+	 * @returns {boolean}
+	 */
+	function is_bound_this(bound_value, element_or_component) {
+		return (
+			bound_value === element_or_component || bound_value?.[STATE_SYMBOL] === element_or_component
+		);
+	}
+
+	/**
+	 * @param {any} element_or_component
+	 * @param {(value: unknown, ...parts: unknown[]) => void} update
+	 * @param {(...parts: unknown[]) => unknown} get_value
+	 * @param {() => unknown[]} [get_parts] Set if the this binding is used inside an each block,
+	 * 										returns all the parts of the each block context that are used in the expression
+	 * @returns {void}
+	 */
+	function bind_this(element_or_component = {}, update, get_value, get_parts) {
+		effect(() => {
+			/** @type {unknown[]} */
+			var old_parts;
+
+			/** @type {unknown[]} */
+			var parts;
+
+			render_effect(() => {
+				old_parts = parts;
+				// We only track changes to the parts, not the value itself to avoid unnecessary reruns.
+				parts = [];
+
+				untrack(() => {
+					if (element_or_component !== get_value(...parts)) {
+						update(element_or_component, ...parts);
+						// If this is an effect rerun (cause: each block context changes), then nullfiy the binding at
+						// the previous position if it isn't already taken over by a different effect.
+						if (old_parts && is_bound_this(get_value(...old_parts), element_or_component)) {
+							update(null, ...old_parts);
+						}
+					}
+				});
+			});
+
+			return () => {
+				// We cannot use effects in the teardown phase, we we use a microtask instead.
+				queue_micro_task(() => {
+					if (parts && is_bound_this(get_value(...parts), element_or_component)) {
+						update(null, ...parts);
+					}
+				});
+			};
+		});
+
+		return element_or_component;
+	}
+
+	/**
+	 * Substitute for the `preventDefault` event modifier
+	 * @deprecated
+	 * @param {(event: Event, ...args: Array<unknown>) => void} fn
+	 * @returns {(event: Event, ...args: unknown[]) => void}
+	 */
+	function preventDefault(fn) {
+		return function (...args) {
+			var event = /** @type {Event} */ (args[0]);
+			event.preventDefault();
+			// @ts-ignore
+			return fn?.apply(this, args);
+		};
 	}
 
 	/** @import { Derived, Source } from './types.js' */
@@ -3993,7 +4265,66 @@
 		return Class;
 	}
 
-	var root = template(`<div></div>`);
+	class Utils {
+
+	    static assetsBasePath =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-assets-base-path')
+	        || new URL(document.currentScript.src).pathname
+	                    .split('/')
+	                    .slice(0, -2)
+	                    .join('/')
+	        || '.'
+	    static cssRelativePath =
+	        `${this.assetsBasePath}/css/`
+	            .replace('//','/')
+	    static imagesRelativePath =
+	        `${this.assetsBasePath}/img/`
+	            .replace('//','/')
+	    static cssFileName =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-css-filename')
+	        || 'qc-sdg.min.css'
+	    static cssPath =
+	        document
+	            .currentScript
+	            .getAttribute('sdg-css-path')
+	        || this.cssRelativePath + this.cssFileName
+	    static sharedTexts =
+	        { openInNewTab :
+	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
+	            , en: 'This link will open in a new tab.'
+	            }
+	        }
+
+	    /**
+	     * Get current page language based on html lang attribute
+	     * @returns {string} language code  (fr/en).
+	     */
+	    static getPageLanguage() {
+	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
+	    }
+
+	    static isTruthy(value) {
+	        if (typeof value === 'boolean') {
+	            return value;
+	        }
+	        if (typeof value === 'string') {
+	            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
+	        }
+	        if (typeof value === 'number') {
+	            return !!value; // Vérifie si le nombre est égal à 1
+	        }
+	        return false;
+	    }
+
+
+
+	}
+
+	var root$1 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -4018,7 +4349,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root();
+		var div = root$1();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -4091,6 +4422,113 @@
 			size: { attribute: 'size' },
 			width: { attribute: 'width' },
 			height: { attribute: 'height' }
+		},
+		[],
+		[],
+		false
+	));
+
+	var root = template(`<a href="javascript:;"><!> <span> </span></a>`);
+
+	function ToTop($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		const text = prop($$props, 'text', 7, lang === 'fr' ? "Retour en haut" : "Back to top"),
+			demo = prop($$props, 'demo', 7, 'false');
+
+		let visible = demo() === 'true';
+		let lastVisible = visible;
+		let lastScrollY = 0;
+		let minimumScrollHeight = 0;
+		let toTopElement;
+
+		function handleScrollUpButton() {
+			if (demo() === 'true') return;
+
+			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
+
+			visible = lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom;
+
+			if (!visible && lastVisible) {
+				// removing focus on visibility loss
+				toTopElement.blur();
+			}
+
+			lastVisible = visible;
+			lastScrollY = window.scrollY;
+		}
+
+		function scrollToTop() {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function handleEnterAndSpace(e) {
+			switch (e.code) {
+				case 'Enter':
+
+				case 'Space':
+					e.preventDefault();
+					scrollToTop();
+			}
+		}
+
+		user_effect(() => {
+			lastScrollY = window.scrollY;
+		});
+
+		var a = root();
+
+		event('scroll', $window, handleScrollUpButton);
+		set_class(a, 1, 'qc-to-top', null, {}, { visible });
+		set_attribute(a, 'tabindex', visible ? 0 : -1);
+
+		var node = child(a);
+
+		Icon(node, { type: 'arrow-up-white', color: 'background' });
+
+		var span = sibling(node, 2);
+		var text_1 = child(span, true);
+
+		reset(span);
+		reset(a);
+		bind_this(a, ($$value) => toTopElement = $$value, () => toTopElement);
+
+		template_effect(() => {
+			set_attribute(a, 'demo', demo());
+			set_text(text_1, text());
+		});
+
+		event('click', a, preventDefault(scrollToTop));
+		event('keydown', a, handleEnterAndSpace);
+		append($$anchor, a);
+
+		return pop({
+			get text() {
+				return text();
+			},
+			set text(
+				$$value = lang === 'fr' ? "Retour en haut" : "Back to top"
+			) {
+				text($$value);
+				flushSync();
+			},
+			get demo() {
+				return demo();
+			},
+			set demo($$value = 'false') {
+				demo($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-to-top', create_custom_element(
+		ToTop,
+		{
+			text: { attribute: 'text', type: 'String' },
+			demo: {}
 		},
 		[],
 		[],
