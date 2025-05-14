@@ -3591,7 +3591,7 @@
 		var anchor = node;
 
 		/** @type {EachState} */
-		var state = { items: new Map(), first: null };
+		var state = { flags, items: new Map(), first: null };
 
 		{
 			var parent_node = /** @type {Element} */ (node);
