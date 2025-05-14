@@ -23,45 +23,34 @@
 }}" />
 
 <script>
-import { onMount } from "svelte";
-import { Utils } from "../utils"
+    import { onMount } from "svelte";
+    import { Utils } from "../utils"
 
-const
-  lang = Utils.getPageLanguage()
+    const lang = Utils.getPageLanguage();
 
-export let
-    logoUrl= '/'
-  , fullWidth = 'false'
-  , logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
-  , logoAlt = lang === 'fr'
-      ? 'Logo du gouvernement du Québec'
-      : 'Logo of government of Québec'
-  , titleUrl= '/'
-  , titleText= ''
-  , linksLabel= lang === 'fr'
-          ? 'Navigation PIV'
-          : 'PIV navigation'
-  , altLanguageText= lang === 'fr'
-                  ? 'English'
-                  : 'Français'
-  , altLanguageUrl= ''
-  , joinUsText= lang === 'fr'
-                  ? 'Nous joindre'
-                  : 'Contact us'
-  , joinUsUrl= ''
-  , goToContent = 'true'
-  , goToContentAnchor = '#main'
-  , goToContentText= lang === 'fr'
-      ? 'Passer au contenu'
-      : 'Skip to content'
-  , displaySearchText =  lang === 'fr'
-          ? 'Cliquer pour faire une recherche'
-          : 'Click to search'
-  , hideSearchText =  lang === 'fr'
-          ? 'Masquer la barre de recherche'
-          : 'Hide search bar'
-  , enableSearch = 'false'
-  , showSearch = 'false'
+    let {
+        logoUrl = '/',
+        fullWidth = 'false',
+        logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg',
+        logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec',
+        titleUrl = '/',
+        titleText = '',
+        linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation',
+        altLanguageText = lang === 'fr' ? 'English' : 'Français',
+        altLanguageUrl = '',
+        joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us',
+        joinUsUrl = '',
+        goToContent = 'true',
+        goToContentAnchor = '#main',
+        goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content',
+        displaySearchText = lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search',
+        hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
+        enableSearch = 'false',
+        showSearch = 'false'
+    } = $props()
+
+    let containerClass = $state('qc-container');
+    let displaySearchForm = $state(false);
 
     export function focusOnSearchInput() {
         if (displaySearchForm) {
@@ -69,20 +58,13 @@ export let
         }
     }
 
-let
-    containerClass = 'qc-container'
-  , displaySearchForm = false
-;
-
-onMount(() => {
-  containerClass += fullWidth === 'true' ? '-fluid' : '';
-  if (showSearch === 'true') {
-    enableSearch = 'true'
-    displaySearchForm = true;
-  }
-})
-
-
+    onMount(() => {
+      containerClass += fullWidth === 'true' ? '-fluid' : '';
+      if (showSearch === 'true') {
+        enableSearch = 'true'
+        displaySearchForm = true;
+      }
+    });
 </script>
 
 <div role="banner"
@@ -90,21 +72,22 @@ onMount(() => {
      style="--logo-src:url({logoSrc})"
 >
   <div class="{containerClass}">
-    {#if goToContent == 'true'}
+    {#if goToContent === 'true'}
       <div class="go-to-content">
         <a href="{goToContentAnchor}">
           {goToContentText}
         </a>
       </div>
     {/if}
+
     <div class="piv-top">
         <div class="signature-group">
             <a href="{logoUrl}"
                class="logo"
-               rel="noreferrer">
-                <div role="img"
-                     aria-label="{logoAlt}"
-                ></div>
+               rel="noreferrer"
+               aria-label="{logoAlt}"
+            >
+                <div role="img"></div>
             </a>
 
             {#if titleText}
@@ -119,12 +102,16 @@ onMount(() => {
         </div>
 
       <div class="right-section">
-        {#if enableSearch == 'true'}
+        {#if enableSearch === 'true'}
           <a  class="qc-search"
               href="/"
               role="button"
-              on:click|preventDefault = {() => displaySearchForm = !displaySearchForm}
-              on:click ={focusOnSearchInput}>
+              onclick = {(evt) => {
+                  evt.preventDefault();
+                  displaySearchForm = !displaySearchForm;
+                  focusOnSearchInput();
+              }}
+          >
             <span>{displaySearchForm ? hideSearchText : displaySearchText}</span>
           </a>
         {/if}
