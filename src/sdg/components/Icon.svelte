@@ -11,20 +11,19 @@
   }
 }}" />
 <script>
-    export let
+    let {
         type,
         label,
-        size='md',
+        size = 'md',
         color = 'text-primary',
         width='auto',
-        height='auto'
-    ;
-    $: attributes = width === "auto"
-        ? {
-            "data-img-size":size,
-        }
-        : {}
+        height='auto',
+        ...rest
+    } = $props();
+
+    let attributes = $derived(width === 'auto' ? { 'data-img-size': size } : {});
 </script>
+
 <div role="img"
      class="qc-icon"
      aria-label={label}
@@ -34,6 +33,6 @@
         "
      data-img-type={type}
      {...attributes}
-     {...$$restProps}
+     {...rest}
     >
 </div>
