@@ -5490,7 +5490,7 @@
 
 	}
 
-	var root$4 = template(`<div></div>`);
+	var root$5 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5515,7 +5515,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$4();
+		var div = root$5();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5594,7 +5594,7 @@
 		false
 	));
 
-	var root$3 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$4 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5639,7 +5639,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$3();
+		var fragment = root$4();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -5764,7 +5764,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$3 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -5808,7 +5808,7 @@
 			}
 		});
 
-		var fragment = root$2();
+		var fragment = root$3();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6180,7 +6180,7 @@
 
 	var root_1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$2 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6196,7 +6196,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$1();
+		var fragment = root$2();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6363,7 +6363,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$1 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -6404,7 +6404,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root();
+		var a = root$1();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -6468,6 +6468,93 @@
 		[],
 		false
 	));
+
+	var root = template(`<span role="img" class="qc-ext-link-img"></span>`);
+
+	function ExternalLink($$anchor, $$props) {
+		push($$props, true);
+
+		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => Utils.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
+		let imgElement;
+
+		user_effect(() => {
+			imgElement.parentElement.querySelectorAll('a').forEach((link) => {
+				// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+				const walker = document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
+					acceptNode: (node) => {
+						if (node instanceof Element) {
+							if (node.hasAttribute('hidden')) return NodeFilter.FILTER_REJECT;
+
+							const style = window.getComputedStyle(node);
+
+							// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+							if (style.display === 'none' || style.visibility === 'hidden' || style.position === 'absolute') {
+								return NodeFilter.FILTER_REJECT;
+							}
+						}
+
+						if (!node instanceof Text) return NodeFilter.FILTER_SKIP;
+						// Ignore les nœuds vides
+						if (!(/\S/).test(node.textContent)) return NodeFilter.FILTER_SKIP;
+						return NodeFilter.FILTER_ACCEPT;
+					}
+				});
+
+				let lastTextNode = null;
+
+				while (walker.nextNode()) {
+					lastTextNode = walker.currentNode;
+				}
+
+				// S'il n'y a pas de nœud texte visible, on ne fait rien
+				if (!lastTextNode) return;
+
+				// Séparer le contenu du dernier nœud texte en deux parties :
+				// le préfixe (éventuel) et le dernier mot
+				const text = lastTextNode.textContent;
+				const match = text.match(/^(.*\s)?(\S+)\s*$/m);
+
+				if (!match) return;
+
+				const prefix = match[1] || "";
+				const lastWord = match[2];
+				// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
+				const span = document.createElement('span');
+
+				span.classList.add('img-wrap');
+				span.innerHTML = `${lastWord}`;
+				span.appendChild(imgElement);
+
+				// Met à jour le nœud texte : on garde le préfixe et on insère le span après
+				if (prefix) {
+					lastTextNode.textContent = prefix;
+					lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
+				} else {
+					lastTextNode.parentNode.replaceChild(span, lastTextNode);
+				}
+			});
+		});
+
+		var span_1 = root();
+
+		bind_this(span_1, ($$value) => imgElement = $$value, () => imgElement);
+		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
+		append($$anchor, span_1);
+
+		return pop({
+			get externalIconAlt() {
+				return externalIconAlt();
+			},
+			set externalIconAlt(
+				$$value = Utils.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
+			) {
+				externalIconAlt($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-external-link', create_custom_element(ExternalLink, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 	if (isDarkMode) {
