@@ -2356,6 +2356,24 @@
 	}
 
 	/**
+	 * Associates an arbitrary `context` object with the current component and the specified `key`
+	 * and returns that object. The context is then available to children of the component
+	 * (including slotted content) with `getContext`.
+	 *
+	 * Like lifecycle functions, this must be called during component initialisation.
+	 *
+	 * @template T
+	 * @param {any} key
+	 * @param {T} context
+	 * @returns {T}
+	 */
+	function setContext(key, context) {
+		const context_map = get_or_init_context_map();
+		context_map.set(key, context);
+		return context;
+	}
+
+	/**
 	 * @param {Record<string, unknown>} props
 	 * @param {any} runes
 	 * @param {Function} [fn]
@@ -2417,6 +2435,34 @@
 	/** @returns {boolean} */
 	function is_runes() {
 		return true;
+	}
+
+	/**
+	 * @param {string} name
+	 * @returns {Map<unknown, unknown>}
+	 */
+	function get_or_init_context_map(name) {
+		if (component_context === null) {
+			lifecycle_outside_component();
+		}
+
+		return (component_context.c ??= new Map(get_parent_context(component_context) || undefined));
+	}
+
+	/**
+	 * @param {ComponentContext} component_context
+	 * @returns {Map<unknown, unknown> | null}
+	 */
+	function get_parent_context(component_context) {
+		let parent = component_context.p;
+		while (parent !== null) {
+			const context_map = parent.c;
+			if (context_map !== null) {
+				return context_map;
+			}
+			parent = parent.p;
+		}
+		return null;
 	}
 
 	/**
@@ -4642,21 +4688,6 @@
 		return element_or_component;
 	}
 
-	/**
-	 * Substitute for the `preventDefault` event modifier
-	 * @deprecated
-	 * @param {(event: Event, ...args: Array<unknown>) => void} fn
-	 * @returns {(event: Event, ...args: unknown[]) => void}
-	 */
-	function preventDefault(fn) {
-		return function (...args) {
-			var event = /** @type {Event} */ (args[0]);
-			event.preventDefault();
-			// @ts-ignore
-			return fn?.apply(this, args);
-		};
-	}
-
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
 	/** @import { EventDispatcher } from './index.js' */
 	/** @import { NotFunction } from './internal/types.js' */
@@ -5720,7 +5751,7 @@
 	var root_1$1 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
-	var on_click = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 		focusOnSearchInput();
@@ -5839,7 +5870,7 @@
 				var a_3 = root_3();
 
 				a_3.__click = [
-					on_click,
+					on_click$1,
 					displaySearchForm,
 					focusOnSearchInput
 				];
@@ -6319,6 +6350,17 @@
 		true
 	));
 
+	function handleEnterAndSpace(e, scrollToTop) {
+		switch (e.code) {
+			case 'Enter':
+
+			case 'Space':
+				e.preventDefault();
+				scrollToTop();
+		}
+	}
+
+	var on_click = (e, scrollToTop) => scrollToTop(e);
 	var root = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
@@ -6329,8 +6371,8 @@
 		const text = prop($$props, 'text', 7, lang === 'fr' ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
 
-		let visible = demo() === 'true';
-		let lastVisible = visible;
+		let visible = state(demo() === 'true');
+		let lastVisible = setContext('visible', () => get(visible));
 		let lastScrollY = 0;
 		let minimumScrollHeight = 0;
 		let toTopElement;
@@ -6340,29 +6382,20 @@
 
 			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
 
-			visible = lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom;
+			set(visible, lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom, true);
 
-			if (!visible && lastVisible) {
+			if (!get(visible) && lastVisible) {
 				// removing focus on visibility loss
 				toTopElement.blur();
 			}
 
-			lastVisible = visible;
+			lastVisible = get(visible);
 			lastScrollY = window.scrollY;
 		}
 
-		function scrollToTop() {
+		function scrollToTop(e) {
+			e.preventDefault();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
-		}
-
-		function handleEnterAndSpace(e) {
-			switch (e.code) {
-				case 'Enter':
-
-				case 'Space':
-					e.preventDefault();
-					scrollToTop();
-			}
 		}
 
 		user_effect(() => {
@@ -6372,8 +6405,11 @@
 		var a = root();
 
 		event('scroll', $window, handleScrollUpButton);
-		set_class(a, 1, 'qc-to-top', null, {}, { visible });
-		set_attribute(a, 'tabindex', visible ? 0 : -1);
+
+		let classes;
+
+		a.__click = [on_click, scrollToTop];
+		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
 
@@ -6386,13 +6422,16 @@
 		reset(a);
 		bind_this(a, ($$value) => toTopElement = $$value, () => toTopElement);
 
-		template_effect(() => {
-			set_attribute(a, 'demo', demo());
-			set_text(text_1, text());
-		});
+		template_effect(
+			($0) => {
+				classes = set_class(a, 1, 'qc-to-top', null, classes, $0);
+				set_attribute(a, 'tabindex', get(visible) ? 0 : -1);
+				set_attribute(a, 'demo', demo());
+				set_text(text_1, text());
+			},
+			[() => ({ visible: get(visible) })]
+		);
 
-		event('click', a, preventDefault(scrollToTop));
-		event('keydown', a, handleEnterAndSpace);
 		append($$anchor, a);
 
 		return pop({
@@ -6414,6 +6453,8 @@
 			}
 		});
 	}
+
+	delegate(['click', 'keydown']);
 
 	customElements.define('qc-to-top', create_custom_element(
 		ToTop,
