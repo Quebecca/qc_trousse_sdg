@@ -5622,20 +5622,22 @@
 		const usedType = types.includes(type()) ? type() : defaultType;
 		const usedHeader = header().match(/h[1-6]/) ? header() : defaultHeader;
 		const role = usedType === "success" ? "status" : usedType === "error" ? "alert" : null;
-		let noticeElement;
+		let noticeElement = state(null);
 
-		if (role && noticeElement) {
-			const tempNodes = Array.from(noticeElement.childNodes);
+		user_effect(() => {
+			if (role && get(noticeElement)) {
+				const tempNodes = Array.from(get(noticeElement).childNodes);
 
-			noticeElement.innerHTML = "";
-			// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
-			tempNodes.forEach((node) => noticeElement.appendChild(node));
-		}
+				get(noticeElement).innerHTML = "";
+				// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
+				tempNodes.forEach((node) => get(noticeElement).appendChild(node));
+			}
+		});
 
-		const shouldUseIcon = type() === "advice" || type() === "note";
+		const shouldUseIcon = usedType === "advice" || usedType === "note";
 		// Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
-		const computedType = shouldUseIcon ? "neutral" : type();
-		const iconType = shouldUseIcon ? icon() ?? "note" : type();
+		const computedType = shouldUseIcon ? "neutral" : usedType;
+		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
 		var fragment = root$3();
 		var div = first_child(fragment);
@@ -5686,7 +5688,7 @@
 
 		slot(node_6, $$props, 'default', {}, null);
 		reset(div_4);
-		bind_this(div_4, ($$value) => noticeElement = $$value, () => noticeElement);
+		bind_this(div_4, ($$value) => set(noticeElement, $$value), () => get(noticeElement));
 		reset(div_3);
 		reset(div);
 
