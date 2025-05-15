@@ -1,4 +1,4 @@
-<svelte:options customElement="{{
+<svelte:options runes={true} customElement="{{
   tag:'qc-external-link',
   shadow:'none',
   props: {
@@ -8,16 +8,16 @@
 
 <script>
 import {Utils} from "./utils";
-import {onMount} from "svelte";
 
-export
-  let externalIconAlt = Utils.getPageLanguage() == "fr"
+const {
+    externalIconAlt = Utils.getPageLanguage() === 'fr'
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site."
-;
+} = $props();
+
 let imgElement;
 
-onMount(() => {
+$effect(() => {
     imgElement.parentElement.querySelectorAll('a').forEach(link => {
 
         // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
@@ -27,9 +27,7 @@ onMount(() => {
             {
                 acceptNode: node => {
                     if (node instanceof Element) {
-                        if (node.hasAttribute('hidden')) {
-                            return NodeFilter.FILTER_REJECT;
-                        }
+                        if (node.hasAttribute('hidden')) return NodeFilter.FILTER_REJECT;
                         const style = window.getComputedStyle(node);
                         // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
                         if (style.display === 'none'
@@ -38,13 +36,13 @@ onMount(() => {
                             return NodeFilter.FILTER_REJECT;
                         }
                     }
-                    if (!node instanceof Text) {
-                        return NodeFilter.FILTER_SKIP
-                    }
-                    // Ignore les nœuds vides
-                    if (!/\S/.test(node.textContent)) {
+                    if (!node instanceof Text)
                         return NodeFilter.FILTER_SKIP;
-                    }
+
+                    // Ignore les nœuds vides
+                    if (!/\S/.test(node.textContent))
+                        return NodeFilter.FILTER_SKIP;
+
                     return NodeFilter.FILTER_ACCEPT;
                 }
             }
@@ -61,9 +59,9 @@ onMount(() => {
         // Séparer le contenu du dernier nœud texte en deux parties :
         // le préfixe (éventuel) et le dernier mot
         const text = lastTextNode.textContent;
-        const regex = /^(.*\s)?(\S+)\s*$/m;
-        const match = text.match(regex);
+        const match = text.match(/^(.*\s)?(\S+)\s*$/m);
         if (!match) return;
+
         const prefix = match[1] || "";
         const lastWord = match[2];
 
@@ -86,7 +84,8 @@ onMount(() => {
 <span bind:this={imgElement}
       role="img"
       class="qc-ext-link-img"
-      aria-label={externalIconAlt}></span>
+      aria-label={externalIconAlt}>
+</span>
 
 
 
