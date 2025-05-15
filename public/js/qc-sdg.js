@@ -2601,6 +2601,26 @@
 	}
 
 	/**
+	 * @param {string} event_name
+	 * @param {Element} dom
+	 * @param {EventListener} [handler]
+	 * @param {boolean} [capture]
+	 * @param {boolean} [passive]
+	 * @returns {void}
+	 */
+	function event(event_name, dom, handler, capture, passive) {
+		var options = { capture, passive };
+		var target_handler = create_event(event_name, dom, handler, options);
+
+		// @ts-ignore
+		if (dom === document.body || dom === window || dom === document) {
+			teardown(() => {
+				dom.removeEventListener(event_name, target_handler, options);
+			});
+		}
+	}
+
+	/**
 	 * @param {Array<string>} events
 	 * @returns {void}
 	 */
@@ -3990,6 +4010,10 @@
 	function to_class(value, hash, directives) {
 		var classname = value == null ? '' : '' + value;
 
+		if (hash) {
+			classname = classname ? classname + ' ' + hash : hash;
+		}
+
 		if (directives) {
 			for (var key in directives) {
 				if (directives[key]) {
@@ -4616,6 +4640,21 @@
 		});
 
 		return element_or_component;
+	}
+
+	/**
+	 * Substitute for the `preventDefault` event modifier
+	 * @deprecated
+	 * @param {(event: Event, ...args: Array<unknown>) => void} fn
+	 * @returns {(event: Event, ...args: unknown[]) => void}
+	 */
+	function preventDefault(fn) {
+		return function (...args) {
+			var event = /** @type {Event} */ (args[0]);
+			event.preventDefault();
+			// @ts-ignore
+			return fn?.apply(this, args);
+		};
 	}
 
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
@@ -5420,7 +5459,7 @@
 
 	}
 
-	var root$3 = template(`<div></div>`);
+	var root$4 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5445,7 +5484,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$3();
+		var div = root$4();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5524,7 +5563,7 @@
 		false
 	));
 
-	var root$2 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$3 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5567,7 +5606,7 @@
 		const computedType = shouldUseIcon ? "neutral" : type();
 		const iconType = shouldUseIcon ? icon() ?? "note" : type();
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$2();
+		var fragment = root$3();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -5692,7 +5731,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$1 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -5736,7 +5775,7 @@
 			}
 		});
 
-		var fragment = root$1();
+		var fragment = root$2();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6108,7 +6147,7 @@
 
 	var root_1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6124,7 +6163,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root();
+		var fragment = root$1();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6278,6 +6317,113 @@
 		['default', 'copyright'],
 		[],
 		true
+	));
+
+	var root = template(`<a href="javascript:;"><!> <span> </span></a>`);
+
+	function ToTop($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		const text = prop($$props, 'text', 7, lang === 'fr' ? "Retour en haut" : "Back to top"),
+			demo = prop($$props, 'demo', 7, 'false');
+
+		let visible = demo() === 'true';
+		let lastVisible = visible;
+		let lastScrollY = 0;
+		let minimumScrollHeight = 0;
+		let toTopElement;
+
+		function handleScrollUpButton() {
+			if (demo() === 'true') return;
+
+			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
+
+			visible = lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom;
+
+			if (!visible && lastVisible) {
+				// removing focus on visibility loss
+				toTopElement.blur();
+			}
+
+			lastVisible = visible;
+			lastScrollY = window.scrollY;
+		}
+
+		function scrollToTop() {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function handleEnterAndSpace(e) {
+			switch (e.code) {
+				case 'Enter':
+
+				case 'Space':
+					e.preventDefault();
+					scrollToTop();
+			}
+		}
+
+		user_effect(() => {
+			lastScrollY = window.scrollY;
+		});
+
+		var a = root();
+
+		event('scroll', $window, handleScrollUpButton);
+		set_class(a, 1, 'qc-to-top', null, {}, { visible });
+		set_attribute(a, 'tabindex', visible ? 0 : -1);
+
+		var node = child(a);
+
+		Icon(node, { type: 'arrow-up-white', color: 'background' });
+
+		var span = sibling(node, 2);
+		var text_1 = child(span, true);
+
+		reset(span);
+		reset(a);
+		bind_this(a, ($$value) => toTopElement = $$value, () => toTopElement);
+
+		template_effect(() => {
+			set_attribute(a, 'demo', demo());
+			set_text(text_1, text());
+		});
+
+		event('click', a, preventDefault(scrollToTop));
+		event('keydown', a, handleEnterAndSpace);
+		append($$anchor, a);
+
+		return pop({
+			get text() {
+				return text();
+			},
+			set text(
+				$$value = lang === 'fr' ? "Retour en haut" : "Back to top"
+			) {
+				text($$value);
+				flushSync();
+			},
+			get demo() {
+				return demo();
+			},
+			set demo($$value = 'false') {
+				demo($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-to-top', create_custom_element(
+		ToTop,
+		{
+			text: { attribute: 'text', type: 'String' },
+			demo: {}
+		},
+		[],
+		[],
+		false
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
