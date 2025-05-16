@@ -15,6 +15,7 @@
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
+	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
@@ -63,6 +64,11 @@
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
 
+	/** @param {Function} fn */
+	function run(fn) {
+		return fn();
+	}
+
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
 		for (var i = 0; i < arr.length; i++) {
@@ -87,6 +93,8 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
+	const LEGACY_DERIVED_PROP = 1 << 17;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -279,7 +287,12 @@
 		}
 	}
 
+	let legacy_mode_flag = false;
 	let tracing_mode_flag = false;
+
+	function enable_legacy_mode_flag() {
+		legacy_mode_flag = true;
+	}
 
 	/** @import { Source } from '#client' */
 
@@ -1034,6 +1047,16 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/**
+	 * Internal representation of `$effect.pre(...)`
+	 * @param {() => void | (() => void)} fn
+	 * @returns {Effect}
+	 */
+	function user_pre_effect(fn) {
+		validate_effect();
+		return render_effect(fn);
 	}
 
 	/**
@@ -2187,6 +2210,80 @@
 		signal.f = (signal.f & STATUS_MASK) | status;
 	}
 
+	/**
+	 * Possibly traverse an object and read all its properties so that they're all reactive in case this is `$state`.
+	 * Does only check first level of an object for performance reasons (heuristic should be good for 99% of all cases).
+	 * @param {any} value
+	 * @returns {void}
+	 */
+	function deep_read_state(value) {
+		if (typeof value !== 'object' || !value || value instanceof EventTarget) {
+			return;
+		}
+
+		if (STATE_SYMBOL in value) {
+			deep_read(value);
+		} else if (!Array.isArray(value)) {
+			for (let key in value) {
+				const prop = value[key];
+				if (typeof prop === 'object' && prop && STATE_SYMBOL in prop) {
+					deep_read(prop);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Deeply traverse an object and read all its properties
+	 * so that they're all reactive in case this is `$state`
+	 * @param {any} value
+	 * @param {Set<any>} visited
+	 * @returns {void}
+	 */
+	function deep_read(value, visited = new Set()) {
+		if (
+			typeof value === 'object' &&
+			value !== null &&
+			// We don't want to traverse DOM elements
+			!(value instanceof EventTarget) &&
+			!visited.has(value)
+		) {
+			visited.add(value);
+			// When working with a possible SvelteDate, this
+			// will ensure we capture changes to it.
+			if (value instanceof Date) {
+				value.getTime();
+			}
+			for (let key in value) {
+				try {
+					deep_read(value[key], visited);
+				} catch (e) {
+					// continue
+				}
+			}
+			const proto = get_prototype_of(value);
+			if (
+				proto !== Object.prototype &&
+				proto !== Array.prototype &&
+				proto !== Map.prototype &&
+				proto !== Set.prototype &&
+				proto !== Date.prototype
+			) {
+				const descriptors = get_descriptors(proto);
+				for (let key in descriptors) {
+					const get = descriptors[key].get;
+					if (get) {
+						try {
+							get.call(value);
+						} catch (e) {
+							// continue
+						}
+					}
+				}
+			}
+		}
+	}
+
 	/** @import { Derived, Effect, Source, Value } from '#client' */
 	const old_values = new Map();
 
@@ -2236,6 +2333,12 @@
 		const s = source(initial_value);
 		if (!immutable) {
 			s.equals = safe_equals;
+		}
+
+		// bind the signal to the component context, in case we need to
+		// track updates to trigger beforeUpdate/afterUpdate callbacks
+		if (legacy_mode_flag && component_context !== null && component_context.l !== null) {
+			(component_context.l.s ??= []).push(s);
 		}
 
 		return s;
@@ -2299,6 +2402,7 @@
 			// properly for itself, we need to ensure the current effect actually gets
 			// scheduled. i.e: `$effect(() => x++)`
 			if (
+				is_runes() &&
 				active_effect !== null &&
 				(active_effect.f & CLEAN) !== 0 &&
 				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
@@ -2315,6 +2419,22 @@
 	}
 
 	/**
+	 * @template {number | bigint} T
+	 * @param {Source<T>} source
+	 * @param {1 | -1} [d]
+	 * @returns {T}
+	 */
+	function update(source, d = 1) {
+		var value = get(source);
+		var result = d === 1 ? value++ : value--;
+
+		set(source, value);
+
+		// @ts-expect-error
+		return result;
+	}
+
+	/**
 	 * @param {Value} signal
 	 * @param {number} status should be DIRTY or MAYBE_DIRTY
 	 * @returns {void}
@@ -2322,6 +2442,8 @@
 	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
+
+		var runes = is_runes();
 		var length = reactions.length;
 
 		for (var i = 0; i < length; i++) {
@@ -2330,6 +2452,9 @@
 
 			// Skip any effects that are already dirty
 			if ((flags & DIRTY) !== 0) continue;
+
+			// In legacy mode, skip the current effect to prevent infinite loops
+			if (!runes && reaction === active_effect) continue;
 
 			set_signal_status(reaction, status);
 
@@ -2391,6 +2516,15 @@
 			l: null
 		});
 
+		if (legacy_mode_flag && !runes) {
+			component_context.l = {
+				s: null,
+				u: null,
+				r1: [],
+				r2: source(false)
+			};
+		}
+
 		teardown(() => {
 			/** @type {ComponentContext} */ (ctx).d = true;
 		});
@@ -2434,7 +2568,7 @@
 
 	/** @returns {boolean} */
 	function is_runes() {
-		return true;
+		return !legacy_mode_flag || (component_context !== null && component_context.l === null);
 	}
 
 	/**
@@ -4688,6 +4822,103 @@
 		return element_or_component;
 	}
 
+	/** @import { ComponentContextLegacy } from '#client' */
+
+	/**
+	 * Legacy-mode only: Call `onMount` callbacks and set up `beforeUpdate`/`afterUpdate` effects
+	 * @param {boolean} [immutable]
+	 */
+	function init(immutable = false) {
+		const context = /** @type {ComponentContextLegacy} */ (component_context);
+
+		const callbacks = context.l.u;
+		if (!callbacks) return;
+
+		let props = () => deep_read_state(context.s);
+
+		if (immutable) {
+			let version = 0;
+			let prev = /** @type {Record<string, any>} */ ({});
+
+			// In legacy immutable mode, before/afterUpdate only fire if the object identity of a prop changes
+			const d = derived(() => {
+				let changed = false;
+				const props = context.s;
+				for (const key in props) {
+					if (props[key] !== prev[key]) {
+						prev[key] = props[key];
+						changed = true;
+					}
+				}
+				if (changed) version++;
+				return version;
+			});
+
+			props = () => get(d);
+		}
+
+		// beforeUpdate
+		if (callbacks.b.length) {
+			user_pre_effect(() => {
+				observe_all(context, props);
+				run_all(callbacks.b);
+			});
+		}
+
+		// onMount (must run before afterUpdate)
+		user_effect(() => {
+			const fns = untrack(() => callbacks.m.map(run));
+			return () => {
+				for (const fn of fns) {
+					if (typeof fn === 'function') {
+						fn();
+					}
+				}
+			};
+		});
+
+		// afterUpdate
+		if (callbacks.a.length) {
+			user_effect(() => {
+				observe_all(context, props);
+				run_all(callbacks.a);
+			});
+		}
+	}
+
+	/**
+	 * Invoke the getter of all signals associated with a component
+	 * so they can be registered to the effect this function is called in.
+	 * @param {ComponentContextLegacy} context
+	 * @param {(() => void)} props
+	 */
+	function observe_all(context, props) {
+		if (context.l.s) {
+			for (const signal of context.l.s) get(signal);
+		}
+
+		props();
+	}
+
+	/**
+	 * @this {any}
+	 * @param {Record<string, unknown>} $$props
+	 * @param {Event} event
+	 * @returns {void}
+	 */
+	function bubble_event($$props, event) {
+		var events = /** @type {Record<string, Function[] | Function>} */ ($$props.$$events)?.[
+			event.type
+		];
+
+		var callbacks = is_array(events) ? events.slice() : events == null ? [] : [events];
+
+		for (var fn of callbacks) {
+			// Preserve "this" context
+			fn.call(this, event);
+		}
+	}
+
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
 	/** @import { EventDispatcher } from './index.js' */
 	/** @import { NotFunction } from './internal/types.js' */
@@ -4711,12 +4942,23 @@
 			lifecycle_outside_component();
 		}
 
-		{
+		if (legacy_mode_flag && component_context.l !== null) {
+			init_update_callbacks(component_context).m.push(fn);
+		} else {
 			user_effect(() => {
 				const cleanup = untrack(fn);
 				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
 			});
 		}
+	}
+
+	/**
+	 * Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
+	 * @param {ComponentContext} context
+	 */
+	function init_update_callbacks(context) {
+		var l = /** @type {ComponentContextLegacy} */ (context).l;
+		return (l.u ??= { a: [], b: [], m: [] });
 	}
 
 	/** @import { StoreReferencesContainer } from '#client' */
@@ -4798,6 +5040,70 @@
 	}
 
 	/**
+	 * The proxy handler for legacy $$restProps and $$props
+	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, special: Record<string | symbol, (v?: unknown) => unknown>, version: Source<number> }>}}
+	 */
+	const legacy_rest_props_handler = {
+		get(target, key) {
+			if (target.exclude.includes(key)) return;
+			get(target.version);
+			return key in target.special ? target.special[key]() : target.props[key];
+		},
+		set(target, key, value) {
+			if (!(key in target.special)) {
+				// Handle props that can temporarily get out of sync with the parent
+				/** @type {Record<string, (v?: unknown) => unknown>} */
+				target.special[key] = prop(
+					{
+						get [key]() {
+							return target.props[key];
+						}
+					},
+					/** @type {string} */ (key),
+					PROPS_IS_UPDATED
+				);
+			}
+
+			target.special[key](value);
+			update(target.version); // $$props is coarse-grained: when $$props.x is updated, usages of $$props.y etc are also rerun
+			return true;
+		},
+		getOwnPropertyDescriptor(target, key) {
+			if (target.exclude.includes(key)) return;
+			if (key in target.props) {
+				return {
+					enumerable: true,
+					configurable: true,
+					value: target.props[key]
+				};
+			}
+		},
+		deleteProperty(target, key) {
+			// Svelte 4 allowed for deletions on $$restProps
+			if (target.exclude.includes(key)) return true;
+			target.exclude.push(key);
+			update(target.version);
+			return true;
+		},
+		has(target, key) {
+			if (target.exclude.includes(key)) return false;
+			return key in target.props;
+		},
+		ownKeys(target) {
+			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.includes(key));
+		}
+	};
+
+	/**
+	 * @param {Record<string, unknown>} props
+	 * @param {string[]} exclude
+	 * @returns {Record<string, unknown>}
+	 */
+	function legacy_rest_props(props, exclude) {
+		return new Proxy({ props, exclude, special: {}, version: source(0) }, legacy_rest_props_handler);
+	}
+
+	/**
 	 * @param {Derived} current_value
 	 * @returns {boolean}
 	 */
@@ -4817,7 +5123,7 @@
 	 */
 	function prop(props, key, flags, fallback) {
 		var immutable = (flags & PROPS_IS_IMMUTABLE) !== 0;
-		var runes = true;
+		var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 		var is_store_sub = false;
@@ -4868,13 +5174,25 @@
 
 		/** @type {() => V} */
 		var getter;
-		{
+		if (runes) {
 			getter = () => {
 				var value = /** @type {V} */ (props[key]);
 				if (value === undefined) return get_fallback();
 				fallback_dirty = true;
 				fallback_used = false;
 				return value;
+			};
+		} else {
+			// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
+			// Replicate that behavior through using a derived
+			var derived_getter = (immutable ? derived : derived_safe_equal)(
+				() => /** @type {V} */ (props[key])
+			);
+			derived_getter.f |= LEGACY_DERIVED_PROP;
+			getter = () => {
+				var value = get(derived_getter);
+				if (value !== undefined) fallback_value = /** @type {V} */ (undefined);
+				return value === undefined ? fallback_value : value;
 			};
 		}
 
@@ -4893,7 +5211,7 @@
 					// In that case the state proxy (if it exists) should take care of the notification.
 					// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
 					// has changed because the parent will not be able to detect the change otherwise.
-					if (!mutation || legacy_parent || is_store_sub) {
+					if (!runes || !mutation || legacy_parent || is_store_sub) {
 						/** @type {Function} */ (setter)(mutation ? getter() : value);
 					}
 					return value;
@@ -4932,7 +5250,7 @@
 		return function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
 
 			if (arguments.length > 0) {
-				const new_value = mutation ? get(current_value) : bindable ? proxy(value) : value;
+				const new_value = mutation ? get(current_value) : runes && bindable ? proxy(value) : value;
 
 				if (!current_value.equals(new_value)) {
 					from_child = true;
@@ -5490,7 +5808,7 @@
 
 	}
 
-	var root$5 = template(`<div></div>`);
+	var root$4 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5515,7 +5833,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$5();
+		var div = root$4();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5594,7 +5912,7 @@
 		false
 	));
 
-	var root$4 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$3 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5639,7 +5957,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$4();
+		var fragment = root$3();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -5750,7 +6068,7 @@
 		true
 	));
 
-	var root_1$1 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -5764,7 +6082,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$3 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -5808,14 +6126,14 @@
 			}
 		});
 
-		var fragment = root$3();
+		var fragment = root$2();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$1();
+				var div_2 = root_1$2();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6178,9 +6496,9 @@
 		true
 	));
 
-	var root_1 = template(`<img>`);
+	var root_1$1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$2 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6196,7 +6514,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$2();
+		var fragment = root$1();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6216,7 +6534,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1();
+				var img = root_1$1();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -6351,6 +6669,306 @@
 		[],
 		true
 	));
+
+	enable_legacy_mode_flag();
+
+	var root$2 = template(`<button><!></button>`);
+
+	function IconButton($$anchor, $$props) {
+		const $$sanitized_props = legacy_rest_props($$props, [
+			'children',
+			'$$slots',
+			'$$events',
+			'$$legacy',
+			'$$host'
+		]);
+
+		const $$restProps = legacy_rest_props($$sanitized_props, [
+			'size',
+			'label',
+			'icon',
+			'iconSize',
+			'iconColor'
+		]);
+
+		push($$props, false);
+
+		let size = prop($$props, 'size', 12, 'xl'),
+			label = prop($$props, 'label', 12),
+			icon = prop($$props, 'icon', 12),
+			iconSize = prop($$props, 'iconSize', 12),
+			iconColor = prop($$props, 'iconColor', 12);
+
+		init();
+
+		var button = root$2();
+		let attributes;
+		var node = child(button);
+
+		{
+			var consequent = ($$anchor) => {
+				Icon($$anchor, {
+					get type() {
+						return icon();
+					},
+					get size() {
+						return iconSize();
+					},
+					get color() {
+						return iconColor();
+					},
+					'aria-hidden': 'true',
+					get label() {
+						return label();
+					}
+				});
+			};
+
+			if_block(node, ($$render) => {
+				if (icon()) $$render(consequent);
+			});
+		}
+
+		reset(button);
+
+		template_effect(() => attributes = set_attributes(button, attributes, {
+			'data-button-size': size(),
+			...$$restProps,
+			class: `qc-icon-button ${$$restProps.class ?? '' ?? ''}`
+		}));
+
+		event('click', button, function ($$arg) {
+			bubble_event.call(this, $$props, $$arg);
+		});
+
+		append($$anchor, button);
+
+		return pop({
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get icon() {
+				return icon();
+			},
+			set icon($$value) {
+				icon($$value);
+				flushSync();
+			},
+			get iconSize() {
+				return iconSize();
+			},
+			set iconSize($$value) {
+				iconSize($$value);
+				flushSync();
+			},
+			get iconColor() {
+				return iconColor();
+			},
+			set iconColor($$value) {
+				iconColor($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		IconButton,
+		{
+			size: {},
+			label: {},
+			icon: {},
+			iconSize: {},
+			iconColor: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root$1 = template(`<p> </p> <!> <link rel="stylesheet">`, 1);
+
+	function Alert($$anchor, $$props) {
+		push($$props, true);
+
+		let type = prop($$props, 'type', 7, "general"),
+			maskable = prop($$props, 'maskable', 7, ""),
+			content = prop($$props, 'content', 7, ""),
+			hide = prop($$props, 'hide', 7, "false"),
+			fullWidth = prop($$props, 'fullWidth', 7, "false"),
+			children = prop($$props, 'children', 7);
+
+		const typeClass = type() !== "" ? type() : 'general';
+		const closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
+		const warningLabel = Utils.getPageLanguage() === 'fr' ? "Information d'importance élevée" : "Information of high importance";
+		const generalLabel = Utils.getPageLanguage() === 'fr' ? "Information importante" : "Important information";
+		const label = type() === 'general' ? generalLabel : warningLabel;
+		let rootElement = state(null);
+		let hiddenFlag = user_derived(() => hide() === "true");
+		let containerClass = user_derived(() => "qc-container" + (fullWidth() === 'true' ? '-fluid' : ''));
+
+		user_effect(() => {
+			set(hiddenFlag, hide() === 'true');
+		});
+
+		function hideAlert() {
+			set(hiddenFlag, true);
+			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+		}
+
+		var fragment = root$1();
+		var p = first_child(fragment);
+		var text = child(p, true);
+
+		reset(p);
+
+		var node = sibling(p, 2);
+
+		{
+			var consequent_1 = ($$anchor) => {
+				var div = root_1();
+
+				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
+
+				var div_1 = child(div);
+				var div_2 = child(div_1);
+				var node_1 = child(div_2);
+				const expression = user_derived(() => type() === 'warning' ? 'warning' : 'information');
+				const expression_1 = user_derived(() => type() === 'general' ? 'blue-piv' : 'yellow-dark');
+
+				Icon(node_1, {
+					get type() {
+						return get(expression);
+					},
+					get color() {
+						return get(expression_1);
+					},
+					size: 'nm',
+					label
+				});
+
+				var div_3 = sibling(node_1, 2);
+				var node_2 = child(div_3);
+
+				html(node_2, content);
+
+				var node_3 = sibling(node_2, 2);
+
+				slot(node_3, $$props, 'default', {}, null);
+				reset(div_3);
+
+				var node_4 = sibling(div_3, 2);
+
+				{
+					var consequent = ($$anchor) => {
+						IconButton($$anchor, {
+							'aria-label': closeLabel,
+							onclick: hideAlert,
+							size: 'nm',
+							icon: 'clear-input',
+							iconSize: 'sm',
+							iconColor: 'text-primary'
+						});
+					};
+
+					if_block(node_4, ($$render) => {
+						if (maskable() === "true") $$render(consequent);
+					});
+				}
+
+				reset(div_2);
+				reset(div_1);
+				reset(div);
+				bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
+				template_effect(() => set_class(div_1, 1, clsx(get(containerClass))));
+				append($$anchor, div);
+			};
+
+			if_block(node, ($$render) => {
+				if (!get(hiddenFlag)) $$render(consequent_1);
+			});
+		}
+
+		var link = sibling(node, 2);
+
+		template_effect(() => {
+			set_text(text, get(hiddenFlag));
+			set_attribute(link, 'href', Utils.cssPath);
+		});
+
+		append($$anchor, fragment);
+
+		return pop({
+			get type() {
+				return type();
+			},
+			set type($$value = "general") {
+				type($$value);
+				flushSync();
+			},
+			get maskable() {
+				return maskable();
+			},
+			set maskable($$value = "") {
+				maskable($$value);
+				flushSync();
+			},
+			get content() {
+				return content();
+			},
+			set content($$value = "") {
+				content($$value);
+				flushSync();
+			},
+			get hide() {
+				return hide();
+			},
+			set hide($$value = "false") {
+				hide($$value);
+				flushSync();
+			},
+			get fullWidth() {
+				return fullWidth();
+			},
+			set fullWidth($$value = "false") {
+				fullWidth($$value);
+				flushSync();
+			},
+			get children() {
+				return children();
+			},
+			set children($$value) {
+				children($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		Alert,
+		{
+			type: {},
+			maskable: {},
+			content: {},
+			hide: {},
+			fullWidth: {},
+			children: {}
+		},
+		['default'],
+		[],
+		true
+	);
 
 	function handleEnterAndSpace(e, scrollToTop) {
 		switch (e.code) {
