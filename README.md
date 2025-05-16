@@ -303,6 +303,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 
 - 1.3.1 :
   - suppression des marges par défaut pour les dl/dd ;
+  - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.0 : 
   - Ajout du composant `qc-external-link` ; 
   - Ajout du composant `qc-search-bar` ; 

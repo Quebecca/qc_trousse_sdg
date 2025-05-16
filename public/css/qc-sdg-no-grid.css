@@ -1472,7 +1472,6 @@ qc-piv-header {
 
 qc-piv-header a,
 .qc-piv-header a {
-  --qc-color-link-focus-outline: white;
   --qc-color-link-hover: white;
   --qc-color-link-text: white;
   --qc-color-link-visited: white;
