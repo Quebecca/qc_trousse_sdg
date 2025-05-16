@@ -5847,7 +5847,7 @@
 
 	}
 
-	var root$4 = template(`<div></div>`);
+	var root$7 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5872,7 +5872,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$4();
+		var div = root$7();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5951,7 +5951,7 @@
 		false
 	));
 
-	var root$3 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$6 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5996,7 +5996,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$3();
+		var fragment = root$6();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6121,7 +6121,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$2 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$5 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6165,7 +6165,7 @@
 			}
 		});
 
-		var fragment = root$2();
+		var fragment = root$5();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6537,7 +6537,7 @@
 
 	var root_1$1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$1 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$4 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6553,7 +6553,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$1();
+		var fragment = root$4();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6711,7 +6711,7 @@
 
 	enable_legacy_mode_flag();
 
-	var root$2 = template(`<button><!></button>`);
+	var root$3 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		const $$sanitized_props = legacy_rest_props($$props, [
@@ -6740,7 +6740,7 @@
 
 		init();
 
-		var button = root$2();
+		var button = root$3();
 		let attributes;
 		var node = child(button);
 
@@ -6836,7 +6836,7 @@
 	);
 
 	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$1 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$2 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -6866,7 +6866,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$1();
+		var fragment = root$2();
 		var node = first_child(fragment);
 
 		{
