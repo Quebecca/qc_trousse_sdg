@@ -1,5 +1,6 @@
 <svelte:options customElement="{{
   tag:'qc-alert',
+  reflect: true,
   props: {
      type : {attribute: 'type'},
      maskable  : {attribute: 'maskable'},
@@ -20,7 +21,6 @@
         content = "",
         hide = $bindable("false"),
         fullWidth = "false",
-        children
     } = $props();
 
     const language = Utils.getPageLanguage();
@@ -35,7 +35,9 @@
     let rootElement = $state(null);
     let hiddenFlag = $derived(false);
 
-    $effect(() => hiddenFlag = hide === 'true');
+    $effect(() => {
+        hiddenFlag = hide === 'true'
+    });
 
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
@@ -47,10 +49,6 @@
                 composed: true
             })
         );
-    }
-
-    function showAlert() {
-        hiddenFlag = false;
     }
 </script>
 
@@ -67,7 +65,7 @@
                 />
                 <div class="qc-alert-content">
                     {@html content}
-                    {@render children?.()}
+                    <slot />
                 </div>
                 {#if maskable === "true"}
                     <IconButton aria-label={closeLabel}

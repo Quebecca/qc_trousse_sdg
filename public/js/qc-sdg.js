@@ -64,8 +64,6 @@
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
 
-	const noop = () => {};
-
 	/** @param {Function} fn */
 	function run(fn) {
 		return fn();
@@ -4052,43 +4050,6 @@
 		}
 	}
 
-	/** @import { Snippet } from 'svelte' */
-	/** @import { Effect, TemplateNode } from '#client' */
-	/** @import { Getters } from '#shared' */
-
-	/**
-	 * @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
-	 * @param {TemplateNode} node
-	 * @param {() => SnippetFn | null | undefined} get_snippet
-	 * @param {(() => any)[]} args
-	 * @returns {void}
-	 */
-	function snippet(node, get_snippet, ...args) {
-		var anchor = node;
-
-		/** @type {SnippetFn | null | undefined} */
-		// @ts-ignore
-		var snippet = noop;
-
-		/** @type {Effect | null} */
-		var snippet_effect;
-
-		block(() => {
-			if (snippet === (snippet = get_snippet())) return;
-
-			if (snippet_effect) {
-				destroy_effect(snippet_effect);
-				snippet_effect = null;
-			}
-
-			snippet_effect = branch(() => /** @type {SnippetFn} */ (snippet)(anchor, ...args));
-		}, EFFECT_TRANSPARENT);
-
-		if (hydrating) {
-			anchor = hydrate_node;
-		}
-	}
-
 	/** @import { Effect, TemplateNode } from '#client' */
 
 	/**
@@ -6845,8 +6806,7 @@
 			maskable = prop($$props, 'maskable', 7, ""),
 			content = prop($$props, 'content', 7, ""),
 			hide = prop($$props, 'hide', 15, "false"),
-			fullWidth = prop($$props, 'fullWidth', 7, "false"),
-			children = prop($$props, 'children', 7);
+			fullWidth = prop($$props, 'fullWidth', 7, "false");
 
 		const language = Utils.getPageLanguage();
 		const typeClass = type() !== "" ? type() : 'general';
@@ -6857,7 +6817,9 @@
 		let rootElement = state(null);
 		let hiddenFlag = user_derived(() => false);
 
-		user_effect(() => set(hiddenFlag, hide() === 'true'));
+		user_effect(() => {
+			set(hiddenFlag, hide() === 'true');
+		});
 
 		let containerClass = "qc-container" + (fullWidth() === 'true' ? '-fluid' : '');
 
@@ -6902,7 +6864,7 @@
 
 				var node_3 = sibling(node_2, 2);
 
-				snippet(node_3, () => children() ?? noop);
+				slot(node_3, $$props, 'default', {}, null);
 				reset(div_3);
 
 				var node_4 = sibling(div_3, 2);
@@ -6976,13 +6938,6 @@
 			set fullWidth($$value = "false") {
 				fullWidth($$value);
 				flushSync();
-			},
-			get children() {
-				return children();
-			},
-			set children($$value) {
-				children($$value);
-				flushSync();
 			}
 		});
 	}
@@ -6994,10 +6949,9 @@
 			maskable: { attribute: 'maskable' },
 			fullWidth: { attribute: 'full-width' },
 			content: { attribute: 'content' },
-			hide: { attribute: 'hide' },
-			children: {}
+			hide: { attribute: 'hide' }
 		},
-		[],
+		['default'],
 		[],
 		true
 	));
