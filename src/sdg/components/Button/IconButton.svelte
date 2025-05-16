@@ -1,29 +1,30 @@
 <script>
 import Icon from "../Icon.svelte";
 
-export let
+const {
     size = 'xl',
     label,
     icon,
     iconSize,
-    iconColor
-;
+    iconColor,
+    class: className = '',
+    ...rest
+} = $props();
 
 </script>
 
-<button on:click
-        data-button-size={size}
-        {...$$restProps}
-        class="qc-icon-button {$$restProps.class ?? ''}"
-
-    >
+<button
+    data-button-size={size}
+    class={`qc-icon-button ${className}`}
+    {...rest}
+>
     {#if icon}
-    <Icon type="{icon}"
-          size={iconSize}
-          color={iconColor}
-          aria-hidden="true"
-          label={label}
-    />
+        <Icon type={icon}
+            size={iconSize}
+            color={iconColor}
+            aria-hidden="true"
+            label={label}
+        />
     {/if}
 </button>
 
