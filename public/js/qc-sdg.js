@@ -64,6 +64,14 @@
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
 
+	/**
+	 * @param {any} thing
+	 * @returns {thing is Function}
+	 */
+	function is_function(thing) {
+		return typeof thing === 'function';
+	}
+
 	/** @param {Function} fn */
 	function run(fn) {
 		return fn();
@@ -1396,6 +1404,12 @@
 		}
 	}
 
+	// Fallback for when requestIdleCallback is not available
+	const request_idle_callback =
+		typeof requestIdleCallback === 'undefined'
+			? (/** @type {() => void} */ cb) => setTimeout(cb, 1)
+			: requestIdleCallback;
+
 	/** @type {Array<() => void>} */
 	let micro_tasks = [];
 
@@ -1423,6 +1437,17 @@
 		}
 
 		micro_tasks.push(fn);
+	}
+
+	/**
+	 * @param {() => void} fn
+	 */
+	function queue_idle_task(fn) {
+		if (idle_tasks.length === 0) {
+			request_idle_callback(run_idle_tasks);
+		}
+
+		idle_tasks.push(fn);
 	}
 
 	/**
@@ -2716,6 +2741,31 @@
 		}
 	}
 
+	let listening_to_form_reset = false;
+
+	function add_form_reset_listener() {
+		if (!listening_to_form_reset) {
+			listening_to_form_reset = true;
+			document.addEventListener(
+				'reset',
+				(evt) => {
+					// Needs to happen one tick later or else the dom properties of the form
+					// elements have not updated to their reset values yet
+					Promise.resolve().then(() => {
+						if (!evt.defaultPrevented) {
+							for (const e of /**@type {HTMLFormElement} */ (evt.target).elements) {
+								// @ts-expect-error
+								e.__on_r?.();
+							}
+						}
+					});
+				},
+				// In the capture phase to guarantee we get noticed of it (no possiblity of stopPropagation)
+				{ capture: true }
+			);
+		}
+	}
+
 	/**
 	 * @template T
 	 * @param {() => T} fn
@@ -2731,6 +2781,33 @@
 			set_active_reaction(previous_reaction);
 			set_active_effect(previous_effect);
 		}
+	}
+
+	/**
+	 * Listen to the given event, and then instantiate a global form reset listener if not already done,
+	 * to notify all bindings when the form is reset
+	 * @param {HTMLElement} element
+	 * @param {string} event
+	 * @param {(is_reset?: true) => void} handler
+	 * @param {(is_reset?: true) => void} [on_reset]
+	 */
+	function listen_to_event_and_reset_event(element, event, handler, on_reset = handler) {
+		element.addEventListener(event, () => without_reactive_context(handler));
+		// @ts-expect-error
+		const prev = element.__on_r;
+		if (prev) {
+			// special case for checkbox that can have multiple binds (group & checked)
+			// @ts-expect-error
+			element.__on_r = () => {
+				prev();
+				on_reset(true);
+			};
+		} else {
+			// @ts-expect-error
+			element.__on_r = () => on_reset(true);
+		}
+
+		add_form_reset_listener();
 	}
 
 	/** @type {Set<string>} */
@@ -4467,6 +4544,45 @@
 	const IS_HTML = Symbol('is html');
 
 	/**
+	 * The value/checked attribute in the template actually corresponds to the defaultValue property, so we need
+	 * to remove it upon hydration to avoid a bug when someone resets the form value.
+	 * @param {HTMLInputElement} input
+	 * @returns {void}
+	 */
+	function remove_input_defaults(input) {
+		if (!hydrating) return;
+
+		var already_removed = false;
+
+		// We try and remove the default attributes later, rather than sync during hydration.
+		// Doing it sync during hydration has a negative impact on performance, but deferring the
+		// work in an idle task alleviates this greatly. If a form reset event comes in before
+		// the idle callback, then we ensure the input defaults are cleared just before.
+		var remove_defaults = () => {
+			if (already_removed) return;
+			already_removed = true;
+
+			// Remove the attributes but preserve the values
+			if (input.hasAttribute('value')) {
+				var value = input.value;
+				set_attribute(input, 'value', null);
+				input.value = value;
+			}
+
+			if (input.hasAttribute('checked')) {
+				var checked = input.checked;
+				set_attribute(input, 'checked', null);
+				input.checked = checked;
+			}
+		};
+
+		// @ts-expect-error
+		input.__on_r = remove_defaults;
+		queue_idle_task(remove_defaults);
+		add_form_reset_listener();
+	}
+
+	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -4766,6 +4882,88 @@
 	}
 
 	/**
+	 * @param {HTMLInputElement} input
+	 * @param {() => unknown} get
+	 * @param {(value: unknown) => void} set
+	 * @returns {void}
+	 */
+	function bind_value(input, get, set = get) {
+
+		listen_to_event_and_reset_event(input, 'input', (is_reset) => {
+
+			/** @type {any} */
+			var value = is_reset ? input.defaultValue : input.value;
+			value = is_numberlike_input(input) ? to_number(value) : value;
+			set(value);
+
+			// In runes mode, respect any validation in accessors (doesn't apply in legacy mode,
+			// because we use mutable state which ensures the render effect always runs)
+			if (value !== (value = get())) {
+				var start = input.selectionStart;
+				var end = input.selectionEnd;
+
+				// the value is coerced on assignment
+				input.value = value ?? '';
+
+				// Restore selection
+				if (end !== null) {
+					input.selectionStart = start;
+					input.selectionEnd = Math.min(end, input.value.length);
+				}
+			}
+		});
+
+		if (
+			// If we are hydrating and the value has since changed,
+			// then use the updated value from the input instead.
+			(hydrating && input.defaultValue !== input.value) ||
+			// If defaultValue is set, then value == defaultValue
+			// TODO Svelte 6: remove input.value check and set to empty string?
+			(untrack(get) == null && input.value)
+		) {
+			set(is_numberlike_input(input) ? to_number(input.value) : input.value);
+		}
+
+		render_effect(() => {
+
+			var value = get();
+
+			if (is_numberlike_input(input) && value === to_number(input.value)) {
+				// handles 0 vs 00 case (see https://github.com/sveltejs/svelte/issues/9959)
+				return;
+			}
+
+			if (input.type === 'date' && !value && !input.value) {
+				// Handles the case where a temporarily invalid date is set (while typing, for example with a leading 0 for the day)
+				// and prevents this state from clearing the other parts of the date input (see https://github.com/sveltejs/svelte/issues/7897)
+				return;
+			}
+
+			// don't set the value of the input if it's the same to allow
+			// minlength to work properly
+			if (value !== input.value) {
+				// @ts-expect-error the value is coerced on assignment
+				input.value = value ?? '';
+			}
+		});
+	}
+
+	/**
+	 * @param {HTMLInputElement} input
+	 */
+	function is_numberlike_input(input) {
+		var type = input.type;
+		return type === 'number' || type === 'range';
+	}
+
+	/**
+	 * @param {string} value
+	 */
+	function to_number(value) {
+		return value === '' ? null : +value;
+	}
+
+	/**
 	 * @param {any} bound_value
 	 * @param {Element} element_or_component
 	 * @returns {boolean}
@@ -5040,67 +5238,83 @@
 	}
 
 	/**
-	 * The proxy handler for legacy $$restProps and $$props
-	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, special: Record<string | symbol, (v?: unknown) => unknown>, version: Source<number> }>}}
+	 * The proxy handler for spread props. Handles the incoming array of props
+	 * that looks like `() => { dynamic: props }, { static: prop }, ..` and wraps
+	 * them so that the whole thing is passed to the component as the `$$props` argument.
+	 * @template {Record<string | symbol, unknown>} T
+	 * @type {ProxyHandler<{ props: Array<T | (() => T)> }>}}
 	 */
-	const legacy_rest_props_handler = {
+	const spread_props_handler = {
 		get(target, key) {
-			if (target.exclude.includes(key)) return;
-			get(target.version);
-			return key in target.special ? target.special[key]() : target.props[key];
+			let i = target.props.length;
+			while (i--) {
+				let p = target.props[i];
+				if (is_function(p)) p = p();
+				if (typeof p === 'object' && p !== null && key in p) return p[key];
+			}
 		},
 		set(target, key, value) {
-			if (!(key in target.special)) {
-				// Handle props that can temporarily get out of sync with the parent
-				/** @type {Record<string, (v?: unknown) => unknown>} */
-				target.special[key] = prop(
-					{
-						get [key]() {
-							return target.props[key];
-						}
-					},
-					/** @type {string} */ (key),
-					PROPS_IS_UPDATED
-				);
+			let i = target.props.length;
+			while (i--) {
+				let p = target.props[i];
+				if (is_function(p)) p = p();
+				const desc = get_descriptor(p, key);
+				if (desc && desc.set) {
+					desc.set(value);
+					return true;
+				}
 			}
-
-			target.special[key](value);
-			update(target.version); // $$props is coarse-grained: when $$props.x is updated, usages of $$props.y etc are also rerun
-			return true;
+			return false;
 		},
 		getOwnPropertyDescriptor(target, key) {
-			if (target.exclude.includes(key)) return;
-			if (key in target.props) {
-				return {
-					enumerable: true,
-					configurable: true,
-					value: target.props[key]
-				};
+			let i = target.props.length;
+			while (i--) {
+				let p = target.props[i];
+				if (is_function(p)) p = p();
+				if (typeof p === 'object' && p !== null && key in p) {
+					const descriptor = get_descriptor(p, key);
+					if (descriptor && !descriptor.configurable) {
+						// Prevent a "Non-configurability Report Error": The target is an array, it does
+						// not actually contain this property. If it is now described as non-configurable,
+						// the proxy throws a validation error. Setting it to true avoids that.
+						descriptor.configurable = true;
+					}
+					return descriptor;
+				}
 			}
 		},
-		deleteProperty(target, key) {
-			// Svelte 4 allowed for deletions on $$restProps
-			if (target.exclude.includes(key)) return true;
-			target.exclude.push(key);
-			update(target.version);
-			return true;
-		},
 		has(target, key) {
-			if (target.exclude.includes(key)) return false;
-			return key in target.props;
+			// To prevent a false positive `is_entry_props` in the `prop` function
+			if (key === STATE_SYMBOL || key === LEGACY_PROPS) return false;
+
+			for (let p of target.props) {
+				if (is_function(p)) p = p();
+				if (p != null && key in p) return true;
+			}
+
+			return false;
 		},
 		ownKeys(target) {
-			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.includes(key));
+			/** @type {Array<string | symbol>} */
+			const keys = [];
+
+			for (let p of target.props) {
+				if (is_function(p)) p = p();
+				for (const key in p) {
+					if (!keys.includes(key)) keys.push(key);
+				}
+			}
+
+			return keys;
 		}
 	};
 
 	/**
-	 * @param {Record<string, unknown>} props
-	 * @param {string[]} exclude
-	 * @returns {Record<string, unknown>}
+	 * @param {Array<Record<string, unknown> | (() => Record<string, unknown>)>} props
+	 * @returns {any}
 	 */
-	function legacy_rest_props(props, exclude) {
-		return new Proxy({ props, exclude, special: {}, version: source(0) }, legacy_rest_props_handler);
+	function spread_props(...props) {
+		return new Proxy({ props }, spread_props_handler);
 	}
 
 	/**
@@ -5808,7 +6022,7 @@
 
 	}
 
-	var root$7 = template(`<div></div>`);
+	var root$8 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5833,7 +6047,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$7();
+		var div = root$8();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5912,7 +6126,7 @@
 		false
 	));
 
-	var root$6 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$7 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5957,7 +6171,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$6();
+		var fragment = root$7();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6082,7 +6296,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$5 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$6 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6126,7 +6340,7 @@
 			}
 		});
 
-		var fragment = root$5();
+		var fragment = root$6();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6498,7 +6712,7 @@
 
 	var root_1$1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$4 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$5 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6514,7 +6728,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$4();
+		var fragment = root$5();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6967,7 +7181,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$1 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$4 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7008,7 +7222,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$1();
+		var a = root$4();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7073,7 +7287,7 @@
 		false
 	));
 
-	var root = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$3 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7139,7 +7353,7 @@
 			});
 		});
 
-		var span_1 = root();
+		var span_1 = root$3();
 
 		bind_this(span_1, ($$value) => imgElement = $$value, () => imgElement);
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7159,6 +7373,364 @@
 	}
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLink, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
+
+	var root$2 = template(`<button><!></button>`);
+
+	function IconButton($$anchor, $$props) {
+		push($$props, true);
+
+		const size = prop($$props, 'size', 7, 'xl'),
+			label = prop($$props, 'label', 7),
+			icon = prop($$props, 'icon', 7),
+			iconSize = prop($$props, 'iconSize', 7),
+			iconColor = prop($$props, 'iconColor', 7),
+			className = prop($$props, 'class', 7, ''),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'size',
+				'label',
+				'icon',
+				'iconSize',
+				'iconColor',
+				'class'
+			]);
+
+		var button = root$2();
+		let attributes;
+		var node = child(button);
+
+		{
+			var consequent = ($$anchor) => {
+				Icon($$anchor, {
+					get type() {
+						return icon();
+					},
+					get size() {
+						return iconSize();
+					},
+					get color() {
+						return iconColor();
+					},
+					'aria-hidden': 'true',
+					get label() {
+						return label();
+					}
+				});
+			};
+
+			if_block(node, ($$render) => {
+				if (icon()) $$render(consequent);
+			});
+		}
+
+		reset(button);
+
+		template_effect(() => attributes = set_attributes(button, attributes, {
+			'data-button-size': size(),
+			class: `qc-icon-button ${className()}`,
+			...rest
+		}));
+
+		append($$anchor, button);
+
+		return pop({
+			get size() {
+				return size();
+			},
+			set size($$value = 'xl') {
+				size($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get icon() {
+				return icon();
+			},
+			set icon($$value) {
+				icon($$value);
+				flushSync();
+			},
+			get iconSize() {
+				return iconSize();
+			},
+			set iconSize($$value) {
+				iconSize($$value);
+				flushSync();
+			},
+			get iconColor() {
+				return iconColor();
+			},
+			set iconColor($$value) {
+				iconColor($$value);
+				flushSync();
+			},
+			get class() {
+				return className();
+			},
+			set class($$value = '') {
+				className($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		IconButton,
+		{
+			size: {},
+			label: {},
+			icon: {},
+			iconSize: {},
+			iconColor: {},
+			class: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	var root$1 = template(`<div class="qc-search-input"><input> <!></div>`);
+
+	function SearchInput($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		let value = prop($$props, 'value', 15, ''),
+			ariaLabel = prop($$props, 'ariaLabel', 7, lang === "fr" ? "Rechercher…" : "Search_"),
+			clearAriaLabel = prop($$props, 'clearAriaLabel', 7, lang === "fr" ? "Effacer le texte" : "Clear text"),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'value',
+				'ariaLabel',
+				'clearAriaLabel'
+			]);
+
+		let searchInput;
+		var div = root$1();
+		var input = child(div);
+
+		remove_input_defaults(input);
+
+		let attributes;
+
+		bind_this(input, ($$value) => searchInput = $$value, () => searchInput);
+
+		var node = sibling(input, 2);
+
+		{
+			var consequent = ($$anchor) => {
+				IconButton($$anchor, {
+					type: 'button',
+					icon: 'clear-input',
+					iconColor: 'blue-piv',
+					iconSize: 'sm',
+					get 'aria-label'() {
+						return clearAriaLabel();
+					},
+					onclick: (e) => {
+						e.preventDefault();
+						value("");
+						searchInput?.focus();
+					}
+				});
+			};
+
+			if_block(node, ($$render) => {
+				if (value()) $$render(consequent);
+			});
+		}
+
+		reset(div);
+
+		template_effect(() => attributes = set_attributes(input, attributes, {
+			type: 'search',
+			autocomplete: 'off',
+			'aria-label': ariaLabel(),
+			...rest
+		}));
+
+		bind_value(input, value);
+		append($$anchor, div);
+
+		return pop({
+			get value() {
+				return value();
+			},
+			set value($$value = '') {
+				value($$value);
+				flushSync();
+			},
+			get ariaLabel() {
+				return ariaLabel();
+			},
+			set ariaLabel(
+				$$value = lang === "fr" ? "Rechercher…" : "Search_"
+			) {
+				ariaLabel($$value);
+				flushSync();
+			},
+			get clearAriaLabel() {
+				return clearAriaLabel();
+			},
+			set clearAriaLabel(
+				$$value = lang === "fr" ? "Effacer le texte" : "Clear text"
+			) {
+				clearAriaLabel($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-search-input', create_custom_element(
+		SearchInput,
+		{
+			ariaLabel: { attribute: 'aria-label' },
+			clearAriaLabel: { attribute: 'clear-aria-label' },
+			value: {}
+		},
+		[],
+		[],
+		false
+	));
+
+	var root = template(`<div><!> <!></div>`);
+
+	function SearchBar($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		let value = prop($$props, 'value', 15, ''),
+			name = prop($$props, 'name', 7, 'q'),
+			pivBackground = prop($$props, 'pivBackground', 7, false),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'value',
+				'name',
+				'pivBackground'
+			]);
+
+		let defaultsAttributes = {
+			input: {
+				"placeholder": lang === "fr" ? "Rechercher…" : "Search",
+				"aria-label": lang === "fr" ? "Rechercher…" : "Search"
+			},
+			submit: {
+				"aria-label": lang === "fr" ? "Lancer la recherche" : "Submit search"
+			}
+		};
+
+		let inputProps = state(proxy({}));
+		let submitProps = state(proxy({}));
+
+		user_effect(() => {
+			const [inputAttrs, submitAttrs] = computeFieldsAttributes(rest);
+
+			set(inputProps, { ...inputAttrs, name: name() }, true);
+			set(submitProps, submitAttrs, true);
+		});
+
+		/**
+		 * @param {{[p: string]: T}} restProps
+		 */
+		function computeFieldsAttributes(restProps) {
+			return ["input", "submit"].map((control) => {
+				const prefix = `${control}-`;
+
+				return {
+					...defaultsAttributes[control],
+					...Object.fromEntries(Object.entries(restProps).map(([k, v]) => k.startsWith(prefix) ? [k.replace(prefix, ''), v] : null).filter(Boolean)) // élimine les éléments null
+				};
+			});
+		}
+
+		var div = root();
+		let classes;
+		var node = child(div);
+
+		SearchInput(node, spread_props(() => get(inputProps), {
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+			}
+		}));
+
+		var node_1 = sibling(node, 2);
+		const expression = user_derived(() => pivBackground() ? 'blue-piv' : 'background');
+
+		IconButton(node_1, spread_props(
+			{
+				type: 'submit',
+				get iconColor() {
+					return get(expression);
+				},
+				icon: 'loupe-piv-fine',
+				iconSize: 'md'
+			},
+			() => get(submitProps)
+		));
+
+		reset(div);
+
+		template_effect(($0) => classes = set_class(div, 1, 'qc-search-bar', null, classes, $0), [
+			() => ({ 'piv-background': pivBackground() })
+		]);
+
+		append($$anchor, div);
+
+		return pop({
+			get value() {
+				return value();
+			},
+			set value($$value = '') {
+				value($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value = 'q') {
+				name($$value);
+				flushSync();
+			},
+			get pivBackground() {
+				return pivBackground();
+			},
+			set pivBackground($$value = false) {
+				pivBackground($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-search-bar', create_custom_element(
+		SearchBar,
+		{
+			value: { attribute: 'input-value', type: 'String' },
+			name: { attribute: 'input-name', type: 'String' },
+			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
+		},
+		[],
+		[],
+		false
+	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 	if (isDarkMode) {
