@@ -717,6 +717,11 @@ ul ul {
   list-style: circle;
 }
 
+dl,
+dd {
+  margin: 0;
+}
+
 .qc-shading-0 {
   border: 1px solid var(--qc-box_shadow-0-color);
 }
