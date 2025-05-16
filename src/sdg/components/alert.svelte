@@ -1,3 +1,14 @@
+<svelte:options customElement="{{
+  tag:'qc-alert',
+  props: {
+     type : {attribute: 'type'},
+     maskable  : {attribute: 'maskable'},
+     fullWidth : {attribute: 'full-width'},
+     content: {attribute: 'content'},
+     hide: {attribute: 'hide'},
+  }
+}}"/>
+
 <script>
     import {Utils} from "./utils";
     import Icon from "./Icon.svelte";
@@ -7,29 +18,29 @@
         type = "general",
         maskable = "",
         content = "",
-        hide = "false",
+        hide = $bindable("false"),
         fullWidth = "false",
         children
     } = $props();
 
+    const language = Utils.getPageLanguage();
+
     const typeClass = (type !== "") ? type : 'general';
-    const closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
-    const warningLabel = Utils.getPageLanguage() === 'fr' ? "Information d'importance élevée" : "Information of high importance";
-    const generalLabel = Utils.getPageLanguage() === 'fr' ? "Information importante" : "Important information";
+    const closeLabel = language === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
+    const warningLabel = language === 'fr' ? "Information d'importance élevée" : "Information of high importance";
+    const generalLabel = language === 'fr' ? "Information importante" : "Important information";
 
     const label = type === 'general' ? generalLabel : warningLabel;
 
     let rootElement = $state(null);
-    let hiddenFlag = $derived(hide === "true");
+    let hiddenFlag = $derived(false);
 
-    let containerClass = $derived("qc-container" + (fullWidth === 'true' ? '-fluid' : ''));
+    $effect(() => hiddenFlag = hide === 'true');
 
-    $effect(() => {
-        hiddenFlag = hide === 'true';
-    })
+    let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
     function hideAlert() {
-        hiddenFlag = true;
+        hide = "true";
         rootElement.dispatchEvent(
             new CustomEvent('qc.alert.hide', {
                 bubbles: true,
@@ -43,8 +54,6 @@
     }
 </script>
 
-<p>{hiddenFlag}</p>
-
 {#if !hiddenFlag}
     <div bind:this={rootElement}
          class="qc-general-alert {typeClass}"
@@ -52,13 +61,13 @@
         <div class={containerClass}>
             <div class="qc-general-alert-elements">
                 <Icon type={type === 'warning' ? 'warning' : 'information'}
-                      color="{type === 'general' ? 'blue-piv' : 'yellow-dark'}"
+                      color={type === 'general' ? 'blue-piv' : 'yellow-dark'}
                       size="nm"
                       label={label}
                 />
                 <div class="qc-alert-content">
                     {@html content}
-                    <slot />
+                    {@render children?.()}
                 </div>
                 {#if maskable === "true"}
                     <IconButton aria-label={closeLabel}

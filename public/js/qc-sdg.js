@@ -64,6 +64,8 @@
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
 
+	const noop = () => {};
+
 	/** @param {Function} fn */
 	function run(fn) {
 		return fn();
@@ -4050,6 +4052,43 @@
 		}
 	}
 
+	/** @import { Snippet } from 'svelte' */
+	/** @import { Effect, TemplateNode } from '#client' */
+	/** @import { Getters } from '#shared' */
+
+	/**
+	 * @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
+	 * @param {TemplateNode} node
+	 * @param {() => SnippetFn | null | undefined} get_snippet
+	 * @param {(() => any)[]} args
+	 * @returns {void}
+	 */
+	function snippet(node, get_snippet, ...args) {
+		var anchor = node;
+
+		/** @type {SnippetFn | null | undefined} */
+		// @ts-ignore
+		var snippet = noop;
+
+		/** @type {Effect | null} */
+		var snippet_effect;
+
+		block(() => {
+			if (snippet === (snippet = get_snippet())) return;
+
+			if (snippet_effect) {
+				destroy_effect(snippet_effect);
+				snippet_effect = null;
+			}
+
+			snippet_effect = branch(() => /** @type {SnippetFn} */ (snippet)(anchor, ...args));
+		}, EFFECT_TRANSPARENT);
+
+		if (hydrating) {
+			anchor = hydrate_node;
+		}
+	}
+
 	/** @import { Effect, TemplateNode } from '#client' */
 
 	/**
@@ -6797,7 +6836,7 @@
 	);
 
 	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$1 = template(`<p> </p> <!> <link rel="stylesheet">`, 1);
+	var root$1 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -6805,35 +6844,30 @@
 		let type = prop($$props, 'type', 7, "general"),
 			maskable = prop($$props, 'maskable', 7, ""),
 			content = prop($$props, 'content', 7, ""),
-			hide = prop($$props, 'hide', 7, "false"),
+			hide = prop($$props, 'hide', 15, "false"),
 			fullWidth = prop($$props, 'fullWidth', 7, "false"),
 			children = prop($$props, 'children', 7);
 
+		const language = Utils.getPageLanguage();
 		const typeClass = type() !== "" ? type() : 'general';
-		const closeLabel = Utils.getPageLanguage() === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
-		const warningLabel = Utils.getPageLanguage() === 'fr' ? "Information d'importance élevée" : "Information of high importance";
-		const generalLabel = Utils.getPageLanguage() === 'fr' ? "Information importante" : "Important information";
+		const closeLabel = language === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
+		const warningLabel = language === 'fr' ? "Information d'importance élevée" : "Information of high importance";
+		const generalLabel = language === 'fr' ? "Information importante" : "Important information";
 		const label = type() === 'general' ? generalLabel : warningLabel;
 		let rootElement = state(null);
-		let hiddenFlag = user_derived(() => hide() === "true");
-		let containerClass = user_derived(() => "qc-container" + (fullWidth() === 'true' ? '-fluid' : ''));
+		let hiddenFlag = user_derived(() => false);
 
-		user_effect(() => {
-			set(hiddenFlag, hide() === 'true');
-		});
+		user_effect(() => set(hiddenFlag, hide() === 'true'));
+
+		let containerClass = "qc-container" + (fullWidth() === 'true' ? '-fluid' : '');
 
 		function hideAlert() {
-			set(hiddenFlag, true);
+			hide("true");
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
 		var fragment = root$1();
-		var p = first_child(fragment);
-		var text = child(p, true);
-
-		reset(p);
-
-		var node = sibling(p, 2);
+		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
@@ -6842,6 +6876,9 @@
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
 				var div_1 = child(div);
+
+				set_class(div_1, 1, clsx(containerClass));
+
 				var div_2 = child(div_1);
 				var node_1 = child(div_2);
 				const expression = user_derived(() => type() === 'warning' ? 'warning' : 'information');
@@ -6865,7 +6902,7 @@
 
 				var node_3 = sibling(node_2, 2);
 
-				slot(node_3, $$props, 'default', {}, null);
+				snippet(node_3, () => children() ?? noop);
 				reset(div_3);
 
 				var node_4 = sibling(div_3, 2);
@@ -6891,7 +6928,6 @@
 				reset(div_1);
 				reset(div);
 				bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
-				template_effect(() => set_class(div_1, 1, clsx(get(containerClass))));
 				append($$anchor, div);
 			};
 
@@ -6902,11 +6938,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => {
-			set_text(text, get(hiddenFlag));
-			set_attribute(link, 'href', Utils.cssPath);
-		});
-
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -6955,20 +6987,20 @@
 		});
 	}
 
-	create_custom_element(
+	customElements.define('qc-alert', create_custom_element(
 		Alert,
 		{
-			type: {},
-			maskable: {},
-			content: {},
-			hide: {},
-			fullWidth: {},
+			type: { attribute: 'type' },
+			maskable: { attribute: 'maskable' },
+			fullWidth: { attribute: 'full-width' },
+			content: { attribute: 'content' },
+			hide: { attribute: 'hide' },
 			children: {}
 		},
-		['default'],
+		[],
 		[],
 		true
-	);
+	));
 
 	function handleEnterAndSpace(e, scrollToTop) {
 		switch (e.code) {
