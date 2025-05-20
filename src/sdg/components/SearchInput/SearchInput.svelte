@@ -1,13 +1,5 @@
-<svelte:options customElement="{{
-    tag: 'qc-search-input',
-    shadow: 'none',
-    props: {
-        ariaLabel: {attribute:'aria-label'},
-        clearAriaLabel: {attribute: 'clear-aria-label'}
-    }
-}}" />
 <script>
-    import IconButton from "../Button/IconButton.svelte";
+    import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
 
     const lang = Utils.getPageLanguage();

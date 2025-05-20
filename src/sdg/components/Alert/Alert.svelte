@@ -1,7 +1,7 @@
 <script>
     import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";
-    import IconButton from "../Button/IconButton.svelte";
+    import IconButton from "../IconButton/IconButton.svelte";
 
     let {
         type = "general",

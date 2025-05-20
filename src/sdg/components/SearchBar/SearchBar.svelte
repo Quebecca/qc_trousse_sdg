@@ -1,17 +1,7 @@
-<svelte:options customElement="{{
-    tag: 'qc-search-bar',
-    shadow: 'none',
-    props: {
-        value: {attribute: 'input-value', type:'String'},
-        name: {attribute: 'input-name', type:'String'},
-        pivBackground: {attribute: 'piv-background', type:'Boolean'},
-    }
-}}" />
-
 <script>
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
-    import IconButton from "../Button/IconButton.svelte";
+    import IconButton from "../IconButton/IconButton.svelte";
 
     const lang = Utils.getPageLanguage();
 
