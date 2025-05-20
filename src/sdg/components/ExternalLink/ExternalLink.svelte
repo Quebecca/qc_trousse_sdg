@@ -1,11 +1,3 @@
-<svelte:options runes={true} customElement="{{
-  tag:'qc-external-link',
-  shadow:'none',
-  props: {
-     externalIconAlt  : {attribute: 'img-alt'}
-  }
-}}"/>
-
 <script>
 import {Utils} from "../utils";
 
