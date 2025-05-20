@@ -6053,7 +6053,7 @@
 		});
 	}
 
-	customElements.define('qc-notice', create_custom_element(
+	create_custom_element(
 		Notice,
 		{
 			title: {},
@@ -6065,6 +6065,26 @@
 		['default'],
 		[],
 		true
+	);
+
+	function NoticeWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		Notice($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-notice', create_custom_element(
+		NoticeWC,
+		{
+			title: { attribute: 'title', type: 'String' },
+			type: { attribute: 'type', type: 'String' },
+			content: { attribute: 'content', type: 'String' },
+			header: { attribute: 'header', type: 'String' },
+			icon: { attribute: 'icon', type: 'String' }
+		},
+		[],
+		[],
+		false
 	));
 
 	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
@@ -6072,7 +6092,12 @@
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
-		set(displaySearchForm, !get(displaySearchForm));
+
+		set(displaySearchForm, (previous) => {
+			console.log(previous);
+			return !previous;
+		});
+
 		focusOnSearchInput();
 	};
 
@@ -6326,7 +6351,7 @@
 		var link = sibling(div, 2);
 
 		template_effect(() => {
-			set_style(div, `--logo-src:url(${`/${logoSrc()}`})`);
+			set_style(div, `--logo-src:url(${logoSrc() ?? ''})`);
 			set_class(div_1, 1, get(containerClass));
 			set_attribute(a_1, 'href', logoUrl());
 			set_attribute(a_1, 'aria-label', logoAlt());
@@ -6623,7 +6648,7 @@
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 7),
 			logoAlt = prop($$props, 'logoAlt', 7, lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'),
 			titleUrl = prop($$props, 'titleUrl', 7, '/'),
 			titleText = prop($$props, 'titleText', 7, ''),
@@ -6639,6 +6664,10 @@
 			hideSearchText = prop($$props, 'hideSearchText', 7, lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'),
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
 			showSearch = prop($$props, 'showSearch', 7, 'false');
+
+		user_effect(() => {
+			console.log(Utils.assetsBasePath);
+		});
 
 		function focusOnSearchInput() {
 			if (displaySearchForm) {
@@ -6724,9 +6753,7 @@
 			get logoSrc() {
 				return logoSrc();
 			},
-			set logoSrc(
-				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
-			) {
+			set logoSrc($$value) {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -7367,7 +7394,7 @@
 
 				var node_3 = sibling(node_2, 2);
 
-				html(node_3, slotContent);
+				snippet(node_3, () => slotContent() ?? noop);
 				reset(div_3);
 
 				var node_4 = sibling(div_3, 2);
@@ -7467,6 +7494,14 @@
 		true
 	);
 
+	const slotContent = ($$anchor) => {
+		var fragment = comment();
+		var node = first_child(fragment);
+
+		slot(node, $$props, 'default', {}, null);
+		append($$anchor, fragment);
+	};
+
 	function AlertWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -7492,7 +7527,7 @@
 			get fullWidth() {
 				return fullWidth();
 			},
-			slotContent: '<slot></slot>'
+			slotContent
 		});
 
 		return pop({
@@ -7543,7 +7578,7 @@
 			content: { attribute: 'content' },
 			hide: { attribute: 'hide' }
 		},
-		[],
+		['default'],
 		[],
 		true
 	));
@@ -7655,12 +7690,19 @@
 	}
 
 	delegate(['click', 'keydown']);
+	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], true);
+
+	function ToTopWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		ToTop($$anchor, spread_props(() => props));
+	}
 
 	customElements.define('qc-to-top', create_custom_element(
-		ToTop,
+		ToTopWC,
 		{
 			text: { attribute: 'text', type: 'String' },
-			demo: {}
+			demo: { attribute: 'demo', type: 'String' }
 		},
 		[],
 		[],
@@ -7752,7 +7794,15 @@
 		});
 	}
 
-	customElements.define('qc-external-link', create_custom_element(ExternalLink, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
+	create_custom_element(ExternalLink, { externalIconAlt: {} }, [], [], true);
+
+	function ExternalLinkWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		ExternalLink($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
 	var root$1 = template(`<div class="qc-search-input"><input> <!></div>`);
 
@@ -7850,17 +7900,7 @@
 		});
 	}
 
-	customElements.define('qc-search-input', create_custom_element(
-		SearchInput,
-		{
-			ariaLabel: { attribute: 'aria-label' },
-			clearAriaLabel: { attribute: 'clear-aria-label' },
-			value: {}
-		},
-		[],
-		[],
-		false
-	));
+	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
 	var root = template(`<div><!> <!></div>`);
 
@@ -7977,12 +8017,37 @@
 		});
 	}
 
+	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], true);
+
+	function SearchBarWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		SearchBar($$anchor, spread_props(() => props));
+	}
+
 	customElements.define('qc-search-bar', create_custom_element(
-		SearchBar,
+		SearchBarWC,
 		{
 			value: { attribute: 'input-value', type: 'String' },
 			name: { attribute: 'input-name', type: 'String' },
 			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
+		},
+		[],
+		[],
+		false
+	));
+
+	function SearchInputWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		SearchInput($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-search-input', create_custom_element(
+		SearchInputWC,
+		{
+			ariaLabel: { attribute: 'aria-label' },
+			clearAriaLabel: { attribute: 'clear-aria-label' }
 		},
 		[],
 		[],
@@ -8090,6 +8155,26 @@
 			size: { attribute: 'size' },
 			width: { attribute: 'width' },
 			height: { attribute: 'height' }
+		},
+		[],
+		[],
+		false
+	));
+
+	function IconButtonWC($$anchor, $$props) {
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		IconButton($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-icon-button', create_custom_element(
+		IconButtonWC,
+		{
+			size: { attribute: 'size' },
+			label: { attribute: 'label' },
+			icon: { attribute: 'icon' },
+			iconSize: { attribute: 'icon-size' },
+			iconColor: { attribute: 'icon-color' }
 		},
 		[],
 		[],

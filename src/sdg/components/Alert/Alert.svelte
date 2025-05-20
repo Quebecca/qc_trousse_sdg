@@ -49,7 +49,7 @@
                 />
                 <div class="qc-alert-content">
                     {@html content}
-                    {@html slotContent}
+                    {@render slotContent?.()}
                 </div>
                 {#if Utils.isTruthy(maskable)}
                     <IconButton aria-label={closeLabel}
