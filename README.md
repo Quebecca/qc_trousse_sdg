@@ -301,6 +301,8 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 
 ## Historique
 
+- 1.3.2 :
+  - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.1 :
   - suppression des marges par défaut pour les dl/dd ;
   - modification de la couleur de focus des liens du bandeau PIV ;
