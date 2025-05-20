@@ -47,7 +47,7 @@
     }
 </script>
 
-{#if hide !== "true"}
+{#if !Utils.isTruthy(hide)}
     <div bind:this={rootElement}
          class="qc-general-alert {typeClass}"
          role="alert">
@@ -62,7 +62,7 @@
                     {@html content}
                     <slot />
                 </div>
-                {#if maskable === "true"}
+                {#if Utils.isTruthy(maskable)}
                     <IconButton aria-label={closeLabel}
                                 onclick={hideAlert}
                                 size="nm"

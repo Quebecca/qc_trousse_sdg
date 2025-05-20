@@ -27,7 +27,9 @@
    const src = `${Utils.imagesRelativePath}arrow-up-white.svg`;
 
    function handleScrollUpButton() {
-      if (demo === 'true') return;
+      if (Utils.isTruthy(demo)) {
+         return;
+      }
 
       const pageBottom =
               ( window.innerHeight + window.scrollY )
