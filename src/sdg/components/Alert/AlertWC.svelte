@@ -26,10 +26,10 @@
 
 <div>
     <Alert
-        type={type}
-        maskable={maskable}
-        content={content}
-        hide={hide}
-        fullWidth={fullWidth}
+        {type}
+        {maskable}
+        {content}
+        {hide}
+        {fullWidth}
     ></Alert>
 </div>
