@@ -14,7 +14,7 @@
 }}" />
 
 <script>
-    import { Utils } from "./utils"
+    import { Utils } from "../utils"
 
     const lang = Utils.getPageLanguage();
 

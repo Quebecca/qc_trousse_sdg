@@ -8,8 +8,8 @@
 
 
 <script>
-   import { Utils } from "./utils";
-   import Icon from "./Icon.svelte";
+   import { Utils } from "../utils";
+   import Icon from "../Icon/Icon.svelte";
    import {setContext} from "svelte";
 
    const lang = Utils.getPageLanguage();

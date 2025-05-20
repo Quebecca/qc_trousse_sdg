@@ -1,8 +1,8 @@
 <svelte:options customElement="qc-notice" />
 
 <script>
-  import { Utils } from "./utils"
-  import Icon from "./Icon.svelte";
+  import { Utils } from "../utils"
+  import Icon from "../Icon/Icon.svelte";
 
   const isFr = Utils.getPageLanguage() === 'fr';
   const defaultHeader = 'h2'

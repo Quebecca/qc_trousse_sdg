@@ -11,9 +11,9 @@
 }}"/>
 
 <script>
-    import {Utils} from "./utils";
-    import Icon from "./Icon.svelte";
-    import IconButton from "./Button/IconButton.svelte";
+    import {Utils} from "../utils";
+    import Icon from "../Icon/Icon.svelte";
+    import IconButton from "../Button/IconButton.svelte";
 
     let {
         type = "general",
@@ -33,10 +33,6 @@
     const label = type === 'general' ? generalLabel : warningLabel;
 
     let rootElement = $state(null);
-
-    $effect(() => {
-        console.log(hide);
-    })
 
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
