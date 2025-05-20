@@ -31,7 +31,7 @@
     let {
         logoUrl = '/',
         fullWidth = 'false',
-        logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg',
+        logoSrc,
         logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec',
         titleUrl = '/',
         titleText = '',
@@ -49,6 +49,11 @@
         showSearch = 'false',
     } = $props()
 
+    $inspect(Utils.assetsBasePath);
+
+    $effect(() => {
+        console.log(Utils.assetsBasePath);
+    })
     export function focusOnSearchInput() {
         if (displaySearchForm) {
             document.querySelector('[slot="search-zone"] input')?.focus();

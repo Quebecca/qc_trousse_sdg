@@ -24,11 +24,15 @@
 
 </script>
 
+{#snippet slotContent()}
+    <slot></slot>
+{/snippet}
+
  <Alert
     {type}
     {maskable}
     {content}
     {hide}
     {fullWidth}
-    slotContent="<slot></slot>"
+    {slotContent}
 ></Alert>
