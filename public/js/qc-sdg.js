@@ -6833,7 +6833,7 @@
 					};
 
 					if_block(node_4, ($$render) => {
-						if (maskable() === "true") $$render(consequent);
+						if (Utils.isTruthy(maskable())) $$render(consequent);
 					});
 				}
 
@@ -6845,7 +6845,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (hide() !== "true") $$render(consequent_1);
+				if (!Utils.isTruthy(hide())) $$render(consequent_1);
 			});
 		}
 
@@ -6935,7 +6935,9 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (demo() === 'true') return;
+			if (Utils.isTruthy(demo())) {
+				return;
+			}
 
 			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
 
