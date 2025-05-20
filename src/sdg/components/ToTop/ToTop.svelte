@@ -1,12 +1,3 @@
-<svelte:options customElement={{
-    tag: 'qc-to-top',
-    shadow: 'none',
-   props: {
-      text: {attribute: 'text', type:'String'},
-  }
-}} />
-
-
 <script>
    import { Utils } from "../utils";
    import Icon from "../Icon/Icon.svelte";
