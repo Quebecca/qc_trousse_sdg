@@ -6772,11 +6772,6 @@
 		const generalLabel = language === 'fr' ? "Information importante" : "Important information";
 		const label = type() === 'general' ? generalLabel : warningLabel;
 		let rootElement = state(null);
-
-		user_effect(() => {
-			console.log(hide());
-		});
-
 		let containerClass = "qc-container" + (fullWidth() === 'true' ? '-fluid' : '');
 
 		function hideAlert() {
