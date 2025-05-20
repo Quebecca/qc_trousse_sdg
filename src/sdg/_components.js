@@ -1,5 +1,5 @@
 export * from './components/Notice/notice.svelte'
-export * from './components/PivHeader/pivHeader.svelte'
+export * from './components/PivHeader/PivHeaderWC.svelte'
 export * from './components/PivFooter/pivFooter.svelte'
 export * from './components/Alert/AlertWC.svelte'
 export * from './components/ToTop/toTop.svelte'

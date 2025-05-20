@@ -5768,7 +5768,7 @@
 
 	}
 
-	var root$b = template(`<div></div>`);
+	var root$c = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5793,7 +5793,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$b();
+		var div = root$c();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5872,7 +5872,7 @@
 		true
 	);
 
-	var root$a = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$b = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5917,7 +5917,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$a();
+		var fragment = root$b();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6042,7 +6042,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$9 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6086,7 +6086,7 @@
 			}
 		});
 
-		var fragment = root$9();
+		var fragment = root$a();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6429,8 +6429,270 @@
 
 	delegate(['click']);
 
-	customElements.define('qc-piv-header', create_custom_element(
+	create_custom_element(
 		PivHeader,
+		{
+			logoUrl: {},
+			fullWidth: {},
+			logoSrc: {},
+			logoAlt: {},
+			titleUrl: {},
+			titleText: {},
+			linksLabel: {},
+			altLanguageText: {},
+			altLanguageUrl: {},
+			joinUsText: {},
+			joinUsUrl: {},
+			goToContent: {},
+			goToContentAnchor: {},
+			goToContentText: {},
+			displaySearchText: {},
+			hideSearchText: {},
+			enableSearch: {},
+			showSearch: {}
+		},
+		['links', 'search-zone'],
+		['focusOnSearchInput'],
+		true
+	);
+
+	var root$9 = template(`<div><!></div>`);
+
+	function PivHeaderWC($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
+			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoAlt = prop($$props, 'logoAlt', 7, lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'),
+			titleUrl = prop($$props, 'titleUrl', 7, '/'),
+			titleText = prop($$props, 'titleText', 7, ''),
+			linksLabel = prop($$props, 'linksLabel', 7, lang === 'fr' ? 'Navigation PIV' : 'PIV navigation'),
+			altLanguageText = prop($$props, 'altLanguageText', 7, lang === 'fr' ? 'English' : 'Français'),
+			altLanguageUrl = prop($$props, 'altLanguageUrl', 7, ''),
+			joinUsText = prop($$props, 'joinUsText', 7, lang === 'fr' ? 'Nous joindre' : 'Contact us'),
+			joinUsUrl = prop($$props, 'joinUsUrl', 7, ''),
+			goToContent = prop($$props, 'goToContent', 7, 'true'),
+			goToContentAnchor = prop($$props, 'goToContentAnchor', 7, '#main'),
+			goToContentText = prop($$props, 'goToContentText', 7, lang === 'fr' ? 'Passer au contenu' : 'Skip to content'),
+			displaySearchText = prop($$props, 'displaySearchText', 7, lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search'),
+			hideSearchText = prop($$props, 'hideSearchText', 7, lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'),
+			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
+			showSearch = prop($$props, 'showSearch', 7, 'false');
+
+		var div = root$9();
+		var node = child(div);
+
+		PivHeader(node, {
+			get logoUrl() {
+				return logoUrl();
+			},
+			get fullWidth() {
+				return fullWidth();
+			},
+			get logoSrc() {
+				return logoSrc();
+			},
+			get logoAlt() {
+				return logoAlt();
+			},
+			get titleUrl() {
+				return titleUrl();
+			},
+			get titleText() {
+				return titleText();
+			},
+			get linksLabel() {
+				return linksLabel();
+			},
+			get altLanguageText() {
+				return altLanguageText();
+			},
+			get altLanguageUrl() {
+				return altLanguageUrl();
+			},
+			get joinUsText() {
+				return joinUsText();
+			},
+			get joinUsUrl() {
+				return joinUsUrl();
+			},
+			get goToContent() {
+				return goToContent();
+			},
+			get goToContentAnchor() {
+				return goToContentAnchor();
+			},
+			get goToContentText() {
+				return goToContentText();
+			},
+			get displaySearchText() {
+				return displaySearchText();
+			},
+			get hideSearchText() {
+				return hideSearchText();
+			},
+			get enableSearch() {
+				return enableSearch();
+			},
+			get showSearch() {
+				return showSearch();
+			}
+		});
+
+		reset(div);
+		append($$anchor, div);
+
+		return pop({
+			get logoUrl() {
+				return logoUrl();
+			},
+			set logoUrl($$value = '/') {
+				logoUrl($$value);
+				flushSync();
+			},
+			get fullWidth() {
+				return fullWidth();
+			},
+			set fullWidth($$value = 'false') {
+				fullWidth($$value);
+				flushSync();
+			},
+			get logoSrc() {
+				return logoSrc();
+			},
+			set logoSrc(
+				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
+			) {
+				logoSrc($$value);
+				flushSync();
+			},
+			get logoAlt() {
+				return logoAlt();
+			},
+			set logoAlt(
+				$$value = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'
+			) {
+				logoAlt($$value);
+				flushSync();
+			},
+			get titleUrl() {
+				return titleUrl();
+			},
+			set titleUrl($$value = '/') {
+				titleUrl($$value);
+				flushSync();
+			},
+			get titleText() {
+				return titleText();
+			},
+			set titleText($$value = '') {
+				titleText($$value);
+				flushSync();
+			},
+			get linksLabel() {
+				return linksLabel();
+			},
+			set linksLabel(
+				$$value = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation'
+			) {
+				linksLabel($$value);
+				flushSync();
+			},
+			get altLanguageText() {
+				return altLanguageText();
+			},
+			set altLanguageText(
+				$$value = lang === 'fr' ? 'English' : 'Français'
+			) {
+				altLanguageText($$value);
+				flushSync();
+			},
+			get altLanguageUrl() {
+				return altLanguageUrl();
+			},
+			set altLanguageUrl($$value = '') {
+				altLanguageUrl($$value);
+				flushSync();
+			},
+			get joinUsText() {
+				return joinUsText();
+			},
+			set joinUsText(
+				$$value = lang === 'fr' ? 'Nous joindre' : 'Contact us'
+			) {
+				joinUsText($$value);
+				flushSync();
+			},
+			get joinUsUrl() {
+				return joinUsUrl();
+			},
+			set joinUsUrl($$value = '') {
+				joinUsUrl($$value);
+				flushSync();
+			},
+			get goToContent() {
+				return goToContent();
+			},
+			set goToContent($$value = 'true') {
+				goToContent($$value);
+				flushSync();
+			},
+			get goToContentAnchor() {
+				return goToContentAnchor();
+			},
+			set goToContentAnchor($$value = '#main') {
+				goToContentAnchor($$value);
+				flushSync();
+			},
+			get goToContentText() {
+				return goToContentText();
+			},
+			set goToContentText(
+				$$value = lang === 'fr' ? 'Passer au contenu' : 'Skip to content'
+			) {
+				goToContentText($$value);
+				flushSync();
+			},
+			get displaySearchText() {
+				return displaySearchText();
+			},
+			set displaySearchText(
+				$$value = lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search'
+			) {
+				displaySearchText($$value);
+				flushSync();
+			},
+			get hideSearchText() {
+				return hideSearchText();
+			},
+			set hideSearchText(
+				$$value = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'
+			) {
+				hideSearchText($$value);
+				flushSync();
+			},
+			get enableSearch() {
+				return enableSearch();
+			},
+			set enableSearch($$value = 'false') {
+				enableSearch($$value);
+				flushSync();
+			},
+			get showSearch() {
+				return showSearch();
+			},
+			set showSearch($$value = 'false') {
+				showSearch($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-piv-header', create_custom_element(
+		PivHeaderWC,
 		{
 			logoUrl: { attribute: 'logo-url' },
 			fullWidth: { attribute: 'full-width' },
@@ -6451,8 +6713,8 @@
 			enableSearch: { attribute: 'enable-search' },
 			showSearch: { attribute: 'show-search' }
 		},
-		['links', 'search-zone'],
-		['focusOnSearchInput'],
+		[],
+		[],
 		true
 	));
 
