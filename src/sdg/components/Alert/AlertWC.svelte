@@ -24,12 +24,10 @@
 
 </script>
 
-<div>
-    <Alert
-        {type}
-        {maskable}
-        {content}
-        {hide}
-        {fullWidth}
-    ></Alert>
-</div>
+ <Alert
+    {type}
+    {maskable}
+    {content}
+    {hide}
+    {fullWidth}
+></Alert>

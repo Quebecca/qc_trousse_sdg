@@ -50,25 +50,23 @@
     } = $props()
 </script>
 
-<div>
-    <PivHeader
-        {logoUrl}
-        {fullWidth}
-        {logoSrc}
-        {logoAlt}
-        {titleUrl}
-        {titleText}
-        {linksLabel}
-        {altLanguageText}
-        {altLanguageUrl}
-        {joinUsText}
-        {joinUsUrl}
-        {goToContent}
-        {goToContentAnchor}
-        {goToContentText}
-        {displaySearchText}
-        {hideSearchText}
-        {enableSearch}
-        {showSearch}
-    ></PivHeader>
-</div>
+<PivHeader
+    {logoUrl}
+    {fullWidth}
+    {logoSrc}
+    {logoAlt}
+    {titleUrl}
+    {titleText}
+    {linksLabel}
+    {altLanguageText}
+    {altLanguageUrl}
+    {joinUsText}
+    {joinUsUrl}
+    {goToContent}
+    {goToContentAnchor}
+    {goToContentText}
+    {displaySearchText}
+    {hideSearchText}
+    {enableSearch}
+    {showSearch}
+></PivHeader>

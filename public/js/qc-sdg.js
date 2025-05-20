@@ -5768,7 +5768,7 @@
 
 	}
 
-	var root$c = template(`<div></div>`);
+	var root$9 = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5793,7 +5793,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$c();
+		var div = root$9();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5872,7 +5872,7 @@
 		true
 	);
 
-	var root$b = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5917,7 +5917,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$b();
+		var fragment = root$8();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6042,7 +6042,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$a = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$7 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6086,7 +6086,7 @@
 			}
 		});
 
-		var fragment = root$a();
+		var fragment = root$7();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6456,8 +6456,6 @@
 		true
 	);
 
-	var root$9 = template(`<div><!></div>`);
-
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -6482,10 +6480,7 @@
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
 			showSearch = prop($$props, 'showSearch', 7, 'false');
 
-		var div = root$9();
-		var node = child(div);
-
-		PivHeader(node, {
+		PivHeader($$anchor, {
 			get logoUrl() {
 				return logoUrl();
 			},
@@ -6541,9 +6536,6 @@
 				return showSearch();
 			}
 		});
-
-		reset(div);
-		append($$anchor, div);
 
 		return pop({
 			get logoUrl() {
@@ -6720,7 +6712,7 @@
 
 	var root_1$1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$6 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6736,7 +6728,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$8();
+		var fragment = root$6();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6875,8 +6867,136 @@
 		});
 	}
 
-	customElements.define('qc-piv-footer', create_custom_element(
+	create_custom_element(
 		PivFooter,
+		{
+			logoUrl: {},
+			logoSrc: {},
+			logoSrcDarkTheme: {},
+			logoAlt: {},
+			copyrightText: {},
+			logoWidth: {},
+			logoHeight: {},
+			copyrightUrl: {}
+		},
+		['default', 'copyright'],
+		[],
+		true
+	);
+
+	function PivFooterWC($$anchor, $$props) {
+		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
+
+		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoAlt = prop($$props, 'logoAlt', 7, lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
+			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear()),
+			logoWidth = prop($$props, 'logoWidth', 7, 139),
+			logoHeight = prop($$props, 'logoHeight', 7, 50),
+			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
+
+		PivFooter($$anchor, {
+			get logoUrl() {
+				return logoUrl();
+			},
+			get logoSrc() {
+				return logoSrc();
+			},
+			get logoSrcDarkTheme() {
+				return logoSrcDarkTheme();
+			},
+			get logoAlt() {
+				return logoAlt();
+			},
+			get copyrightText() {
+				return copyrightText();
+			},
+			get logoWidth() {
+				return logoWidth();
+			},
+			get logoHeight() {
+				return logoHeight();
+			},
+			get copyrightUrl() {
+				return copyrightUrl();
+			}
+		});
+
+		return pop({
+			get logoUrl() {
+				return logoUrl();
+			},
+			set logoUrl($$value = '/') {
+				logoUrl($$value);
+				flushSync();
+			},
+			get logoSrc() {
+				return logoSrc();
+			},
+			set logoSrc(
+				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
+			) {
+				logoSrc($$value);
+				flushSync();
+			},
+			get logoSrcDarkTheme() {
+				return logoSrcDarkTheme();
+			},
+			set logoSrcDarkTheme(
+				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+			) {
+				logoSrcDarkTheme($$value);
+				flushSync();
+			},
+			get logoAlt() {
+				return logoAlt();
+			},
+			set logoAlt(
+				$$value = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'
+			) {
+				logoAlt($$value);
+				flushSync();
+			},
+			get copyrightText() {
+				return copyrightText();
+			},
+			set copyrightText(
+				$$value = '© Gouvernement du Québec, ' + new Date().getFullYear()
+			) {
+				copyrightText($$value);
+				flushSync();
+			},
+			get logoWidth() {
+				return logoWidth();
+			},
+			set logoWidth($$value = 139) {
+				logoWidth($$value);
+				flushSync();
+			},
+			get logoHeight() {
+				return logoHeight();
+			},
+			set logoHeight($$value = 50) {
+				logoHeight($$value);
+				flushSync();
+			},
+			get copyrightUrl() {
+				return copyrightUrl();
+			},
+			set copyrightUrl(
+				$$value = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
+			) {
+				copyrightUrl($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-piv-footer', create_custom_element(
+		PivFooterWC,
 		{
 			logoUrl: { attribute: 'logo-url' },
 			logoSrc: { attribute: 'logo-src' },
@@ -6887,12 +7007,12 @@
 			copyrightText: { attribute: 'copyright-text' },
 			copyrightUrl: { attribute: 'copyright-url' }
 		},
-		['default', 'copyright'],
+		[],
 		[],
 		true
 	));
 
-	var root$7 = template(`<button><!></button>`);
+	var root$5 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -6916,7 +7036,7 @@
 				'class'
 			]);
 
-		var button = root$7();
+		var button = root$5();
 		let attributes;
 		var node = child(button);
 
@@ -7016,7 +7136,7 @@
 	);
 
 	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$4 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7041,7 +7161,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$6();
+		var fragment = root$4();
 		var node = first_child(fragment);
 
 		{
@@ -7169,8 +7289,6 @@
 		true
 	);
 
-	var root$5 = template(`<div><!></div>`);
-
 	function AlertWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -7180,10 +7298,7 @@
 			hide = prop($$props, 'hide', 7, "false"),
 			fullWidth = prop($$props, 'fullWidth', 7, "false");
 
-		var div = root$5();
-		var node = child(div);
-
-		Alert(node, {
+		Alert($$anchor, {
 			get type() {
 				return type();
 			},
@@ -7200,9 +7315,6 @@
 				return fullWidth();
 			}
 		});
-
-		reset(div);
-		append($$anchor, div);
 
 		return pop({
 			get type() {
@@ -7268,7 +7380,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$4 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$3 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7311,7 +7423,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$4();
+		var a = root$3();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7376,7 +7488,7 @@
 		false
 	));
 
-	var root$3 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$2 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7442,7 +7554,7 @@
 			});
 		});
 
-		var span_1 = root$3();
+		var span_1 = root$2();
 
 		bind_this(span_1, ($$value) => imgElement = $$value, () => imgElement);
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7463,7 +7575,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLink, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$2 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$1 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7484,7 +7596,7 @@
 			]);
 
 		let searchInput;
-		var div = root$2();
+		var div = root$1();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7571,7 +7683,7 @@
 		false
 	));
 
-	var root$1 = template(`<div><!> <!></div>`);
+	var root = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -7625,7 +7737,7 @@
 			});
 		}
 
-		var div = root$1();
+		var div = root();
 		let classes;
 		var node = child(div);
 
@@ -7698,8 +7810,6 @@
 		false
 	));
 
-	var root = template(`<div><!></div>`);
-
 	function IconWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -7722,10 +7832,7 @@
 				'height'
 			]);
 
-		var div = root();
-		var node = child(div);
-
-		Icon(node, spread_props(
+		Icon($$anchor, spread_props(
 			{
 				get type() {
 					return type();
@@ -7748,9 +7855,6 @@
 			},
 			() => rest
 		));
-
-		reset(div);
-		append($$anchor, div);
 
 		return pop({
 			get type() {

@@ -25,14 +25,12 @@
     } = $props();
 </script>
 
-<div>
-    <Icon
-        {type}
-        {label}
-        {size}
-        {color}
-        {width}
-        {height}
-        {...rest}
-    ></Icon>
-</div>
+<Icon
+    {type}
+    {label}
+    {size}
+    {color}
+    {width}
+    {height}
+    {...rest}
+></Icon>

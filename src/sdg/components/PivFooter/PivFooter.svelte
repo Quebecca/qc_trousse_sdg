@@ -1,18 +1,3 @@
-<svelte:options customElement="{{
-    tag: 'qc-piv-footer'
-    , props: {
-        logoUrl : {attribute: 'logo-url'}
-        , logoSrc : {attribute: 'logo-src'}
-        , logoSrcDarkTheme: {attribute: 'logo-src-dark-theme'}
-        , logoAlt : {attribute: 'logo-alt'}
-        , logoWidth: {attribute: 'logo-width'}
-        , logoHeight: {attribute: 'logo-height'}
-        , copyrightText : {attribute: 'copyright-text'}
-        , copyrightUrl : {attribute: 'copyright-url'}
-
-    }}
-}}" />
-
 <script>
     import { Utils } from "../utils"
 
