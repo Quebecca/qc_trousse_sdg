@@ -1,15 +1,3 @@
-<svelte:options customElement="{{
-  tag:'qc-alert',
-  reflect: true,
-  props: {
-     type : {attribute: 'type'},
-     maskable  : {attribute: 'maskable'},
-     fullWidth : {attribute: 'full-width'},
-     content: {attribute: 'content'},
-     hide: {attribute: 'hide'},
-  }
-}}"/>
-
 <script>
     import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";

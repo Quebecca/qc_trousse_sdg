@@ -69,7 +69,7 @@
 
 <div role="banner"
      class="qc-piv-header qc-component"
-     style="--logo-src:url({logoSrc})"
+     style="--logo-src:url({`/${logoSrc}`})"
 >
   <div class="{containerClass}">
     {#if goToContent === 'true'}

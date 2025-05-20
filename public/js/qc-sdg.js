@@ -5768,7 +5768,7 @@
 
 	}
 
-	var root$9 = template(`<div></div>`);
+	var root$a = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5793,7 +5793,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$9();
+		var div = root$a();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5872,7 +5872,7 @@
 		false
 	));
 
-	var root$8 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$9 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5917,7 +5917,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$8();
+		var fragment = root$9();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6042,7 +6042,7 @@
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_8 = template(`<div class="search-zone"><!></div>`);
-	var root$7 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6086,7 +6086,7 @@
 			}
 		});
 
-		var fragment = root$7();
+		var fragment = root$8();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6271,7 +6271,7 @@
 		var link = sibling(div, 2);
 
 		template_effect(() => {
-			set_style(div, `--logo-src:url(${logoSrc() ?? ''})`);
+			set_style(div, `--logo-src:url(${`/${logoSrc()}`})`);
 			set_class(div_1, 1, get(containerClass));
 			set_attribute(a_1, 'href', logoUrl());
 			set_attribute(a_1, 'aria-label', logoAlt());
@@ -6458,7 +6458,7 @@
 
 	var root_1$1 = template(`<img>`);
 	var root_2 = template(`<a> </a>`);
-	var root$6 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$7 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6474,7 +6474,7 @@
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
 			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
 
-		var fragment = root$6();
+		var fragment = root$7();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6630,7 +6630,7 @@
 		true
 	));
 
-	var root$5 = template(`<button><!></button>`);
+	var root$6 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -6654,7 +6654,7 @@
 				'class'
 			]);
 
-		var button = root$5();
+		var button = root$6();
 		let attributes;
 		var node = child(button);
 
@@ -6754,7 +6754,7 @@
 	);
 
 	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$4 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$5 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -6779,7 +6779,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$4();
+		var fragment = root$5();
 		var node = first_child(fragment);
 
 		{
@@ -6893,8 +6893,96 @@
 		});
 	}
 
-	customElements.define('qc-alert', create_custom_element(
+	create_custom_element(
 		Alert,
+		{
+			type: {},
+			maskable: {},
+			content: {},
+			hide: {},
+			fullWidth: {}
+		},
+		['default'],
+		[],
+		true
+	);
+
+	var root$4 = template(`<div><!></div>`);
+
+	function AlertWC($$anchor, $$props) {
+		push($$props, true);
+
+		let type = prop($$props, 'type', 7, "general"),
+			maskable = prop($$props, 'maskable', 7, ""),
+			content = prop($$props, 'content', 7, ""),
+			hide = prop($$props, 'hide', 7, "false"),
+			fullWidth = prop($$props, 'fullWidth', 7, "false");
+
+		var div = root$4();
+		var node = child(div);
+
+		Alert(node, {
+			get type() {
+				return type();
+			},
+			get maskable() {
+				return maskable();
+			},
+			get content() {
+				return content();
+			},
+			get hide() {
+				return hide();
+			},
+			get fullWidth() {
+				return fullWidth();
+			}
+		});
+
+		reset(div);
+		append($$anchor, div);
+
+		return pop({
+			get type() {
+				return type();
+			},
+			set type($$value = "general") {
+				type($$value);
+				flushSync();
+			},
+			get maskable() {
+				return maskable();
+			},
+			set maskable($$value = "") {
+				maskable($$value);
+				flushSync();
+			},
+			get content() {
+				return content();
+			},
+			set content($$value = "") {
+				content($$value);
+				flushSync();
+			},
+			get hide() {
+				return hide();
+			},
+			set hide($$value = "false") {
+				hide($$value);
+				flushSync();
+			},
+			get fullWidth() {
+				return fullWidth();
+			},
+			set fullWidth($$value = "false") {
+				fullWidth($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-alert', create_custom_element(
+		AlertWC,
 		{
 			type: { attribute: 'type' },
 			maskable: { attribute: 'maskable' },
@@ -6902,7 +6990,7 @@
 			content: { attribute: 'content' },
 			hide: { attribute: 'hide' }
 		},
-		['default'],
+		[],
 		[],
 		true
 	));
