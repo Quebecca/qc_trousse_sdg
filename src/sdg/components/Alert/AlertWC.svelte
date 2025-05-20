@@ -30,4 +30,5 @@
     {content}
     {hide}
     {fullWidth}
+    slotContent="<slot></slot>"
 ></Alert>

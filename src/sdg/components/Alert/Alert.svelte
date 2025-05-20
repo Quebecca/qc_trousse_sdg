@@ -9,6 +9,7 @@
         content = "",
         hide = "false",
         fullWidth = "false",
+        slotContent,
     } = $props();
 
     const language = Utils.getPageLanguage();
@@ -48,7 +49,7 @@
                 />
                 <div class="qc-alert-content">
                     {@html content}
-                    <slot />
+                    {@html slotContent}
                 </div>
                 {#if Utils.isTruthy(maskable)}
                     <IconButton aria-label={closeLabel}

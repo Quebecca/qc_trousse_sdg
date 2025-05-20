@@ -7145,7 +7145,8 @@
 			maskable = prop($$props, 'maskable', 7, ""),
 			content = prop($$props, 'content', 7, ""),
 			hide = prop($$props, 'hide', 7, "false"),
-			fullWidth = prop($$props, 'fullWidth', 7, "false");
+			fullWidth = prop($$props, 'fullWidth', 7, "false"),
+			slotContent = prop($$props, 'slotContent', 7);
 
 		const language = Utils.getPageLanguage();
 		const typeClass = type() !== "" ? type() : 'general';
@@ -7197,7 +7198,7 @@
 
 				var node_3 = sibling(node_2, 2);
 
-				slot(node_3, $$props, 'default', {}, null);
+				html(node_3, slotContent);
 				reset(div_3);
 
 				var node_4 = sibling(div_3, 2);
@@ -7271,6 +7272,13 @@
 			set fullWidth($$value = "false") {
 				fullWidth($$value);
 				flushSync();
+			},
+			get slotContent() {
+				return slotContent();
+			},
+			set slotContent($$value) {
+				slotContent($$value);
+				flushSync();
 			}
 		});
 	}
@@ -7282,9 +7290,10 @@
 			maskable: {},
 			content: {},
 			hide: {},
-			fullWidth: {}
+			fullWidth: {},
+			slotContent: {}
 		},
-		['default'],
+		[],
 		[],
 		true
 	);
@@ -7313,7 +7322,8 @@
 			},
 			get fullWidth() {
 				return fullWidth();
-			}
+			},
+			slotContent: '<slot></slot>'
 		});
 
 		return pop({
