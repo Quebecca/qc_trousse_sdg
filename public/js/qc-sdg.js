@@ -71,6 +71,8 @@
 		return typeof thing === 'function';
 	}
 
+	const noop = () => {};
+
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
 		for (var i = 0; i < arr.length; i++) {
@@ -3993,6 +3995,43 @@
 		}
 	}
 
+	/** @import { Snippet } from 'svelte' */
+	/** @import { Effect, TemplateNode } from '#client' */
+	/** @import { Getters } from '#shared' */
+
+	/**
+	 * @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
+	 * @param {TemplateNode} node
+	 * @param {() => SnippetFn | null | undefined} get_snippet
+	 * @param {(() => any)[]} args
+	 * @returns {void}
+	 */
+	function snippet(node, get_snippet, ...args) {
+		var anchor = node;
+
+		/** @type {SnippetFn | null | undefined} */
+		// @ts-ignore
+		var snippet = noop;
+
+		/** @type {Effect | null} */
+		var snippet_effect;
+
+		block(() => {
+			if (snippet === (snippet = get_snippet())) return;
+
+			if (snippet_effect) {
+				destroy_effect(snippet_effect);
+				snippet_effect = null;
+			}
+
+			snippet_effect = branch(() => /** @type {SnippetFn} */ (snippet)(anchor, ...args));
+		}, EFFECT_TRANSPARENT);
+
+		if (hydrating) {
+			anchor = hydrate_node;
+		}
+	}
+
 	/** @import { Effect, TemplateNode } from '#client' */
 
 	/**
@@ -6037,11 +6076,11 @@
 		focusOnSearchInput();
 	};
 
-	var root_3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
-	var root_6 = template(`<li><a> </a></li>`);
+	var root_3$1 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
-	var root_5 = template(`<nav><ul><!> <!></ul></nav>`);
-	var root_8 = template(`<div class="search-zone"><!></div>`);
+	var root_8 = template(`<li><a> </a></li>`);
+	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_9 = template(`<div class="search-zone"><!></div>`);
 	var root$7 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
@@ -6066,7 +6105,9 @@
 			displaySearchText = prop($$props, 'displaySearchText', 7, lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search'),
 			hideSearchText = prop($$props, 'hideSearchText', 7, lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'),
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
-			showSearch = prop($$props, 'showSearch', 7, 'false');
+			showSearch = prop($$props, 'showSearch', 7, 'false'),
+			links = prop($$props, 'links', 7),
+			search = prop($$props, 'search', 7);
 
 		let containerClass = state('qc-container');
 		let displaySearchForm = state(false);
@@ -6147,7 +6188,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3();
+				var a_3 = root_3$1();
 
 				a_3.__click = [
 					on_click$1,
@@ -6172,95 +6213,109 @@
 		var div_7 = sibling(node_2, 2);
 		var node_3 = child(div_7);
 
-		slot(node_3, $$props, 'links', {}, ($$anchor) => {
-			var fragment_1 = comment();
-			var node_4 = first_child(fragment_1);
+		{
+			var consequent_3 = ($$anchor) => {
+				var fragment_1 = comment();
+				var node_4 = first_child(fragment_1);
 
-			{
-				var consequent_5 = ($$anchor) => {
-					var nav = root_5();
-					var ul = child(nav);
-					var node_5 = child(ul);
+				snippet(node_4, links);
+				append($$anchor, fragment_1);
+			};
 
-					{
-						var consequent_3 = ($$anchor) => {
-							var li = root_6();
-							var a_4 = child(li);
-							var text_3 = child(a_4, true);
+			var alternate = ($$anchor) => {
+				var fragment_2 = comment();
+				var node_5 = first_child(fragment_2);
 
-							reset(a_4);
-							reset(li);
+				{
+					var consequent_6 = ($$anchor) => {
+						var nav = root_6();
+						var ul = child(nav);
+						var node_6 = child(ul);
 
-							template_effect(() => {
-								set_attribute(a_4, 'href', altLanguageUrl());
-								set_text(text_3, altLanguageText());
+						{
+							var consequent_4 = ($$anchor) => {
+								var li = root_7();
+								var a_4 = child(li);
+								var text_3 = child(a_4, true);
+
+								reset(a_4);
+								reset(li);
+
+								template_effect(() => {
+									set_attribute(a_4, 'href', altLanguageUrl());
+									set_text(text_3, altLanguageText());
+								});
+
+								append($$anchor, li);
+							};
+
+							if_block(node_6, ($$render) => {
+								if (altLanguageUrl()) $$render(consequent_4);
 							});
+						}
 
-							append($$anchor, li);
-						};
+						var node_7 = sibling(node_6, 2);
 
-						if_block(node_5, ($$render) => {
-							if (altLanguageUrl()) $$render(consequent_3);
-						});
-					}
+						{
+							var consequent_5 = ($$anchor) => {
+								var li_1 = root_8();
+								var a_5 = child(li_1);
+								var text_4 = child(a_5, true);
 
-					var node_6 = sibling(node_5, 2);
+								reset(a_5);
+								reset(li_1);
 
-					{
-						var consequent_4 = ($$anchor) => {
-							var li_1 = root_7();
-							var a_5 = child(li_1);
-							var text_4 = child(a_5, true);
+								template_effect(() => {
+									set_attribute(a_5, 'href', joinUsUrl());
+									set_text(text_4, joinUsText());
+								});
 
-							reset(a_5);
-							reset(li_1);
+								append($$anchor, li_1);
+							};
 
-							template_effect(() => {
-								set_attribute(a_5, 'href', joinUsUrl());
-								set_text(text_4, joinUsText());
+							if_block(node_7, ($$render) => {
+								if (joinUsUrl()) $$render(consequent_5);
 							});
+						}
 
-							append($$anchor, li_1);
-						};
+						reset(ul);
+						reset(nav);
+						template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
+						append($$anchor, nav);
+					};
 
-						if_block(node_6, ($$render) => {
-							if (joinUsUrl()) $$render(consequent_4);
-						});
-					}
+					if_block(node_5, ($$render) => {
+						if (joinUsUrl() || altLanguageUrl()) $$render(consequent_6);
+					});
+				}
 
-					reset(ul);
-					reset(nav);
-					template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
-					append($$anchor, nav);
-				};
+				append($$anchor, fragment_2);
+			};
 
-				if_block(node_4, ($$render) => {
-					if (joinUsUrl() || altLanguageUrl()) $$render(consequent_5);
-				});
-			}
-
-			append($$anchor, fragment_1);
-		});
+			if_block(node_3, ($$render) => {
+				if (links()) $$render(consequent_3); else $$render(alternate, false);
+			});
+		}
 
 		reset(div_7);
 		reset(div_6);
 		reset(div_3);
 
 		var div_8 = sibling(div_3, 2);
-		var node_7 = child(div_8);
+		var node_8 = child(div_8);
 
 		{
-			var consequent_6 = ($$anchor) => {
-				var div_9 = root_8();
-				var node_8 = child(div_9);
+			var consequent_7 = ($$anchor) => {
+				var div_9 = root_9();
+				var node_9 = child(div_9);
 
-				slot(node_8, $$props, 'search-zone', {}, null);
+				snippet(node_9, () => search() ?? noop);
 				reset(div_9);
 				append($$anchor, div_9);
 			};
 
-			if_block(node_7, ($$render) => {
-				if (get(displaySearchForm)) $$render(consequent_6);
+			if_block(node_8, ($$render) => {
+				if (get(displaySearchForm)) $$render(consequent_7);
 			});
 		}
 
@@ -6423,6 +6478,20 @@
 			set showSearch($$value = 'false') {
 				showSearch($$value);
 				flushSync();
+			},
+			get links() {
+				return links();
+			},
+			set links($$value) {
+				links($$value);
+				flushSync();
+			},
+			get search() {
+				return search();
+			},
+			set search($$value) {
+				search($$value);
+				flushSync();
 			}
 		});
 	}
@@ -6449,15 +6518,106 @@
 			displaySearchText: {},
 			hideSearchText: {},
 			enableSearch: {},
-			showSearch: {}
+			showSearch: {},
+			links: {},
+			search: {}
 		},
-		['links', 'search-zone'],
+		[],
 		['focusOnSearchInput'],
 		true
 	);
 
+	const search = ($$anchor) => {
+		var fragment_2 = comment();
+		var node_4 = first_child(fragment_2);
+
+		slot(node_4, $$props, 'search-zone', {}, null);
+		append($$anchor, fragment_2);
+	};
+
+	var root_4 = template(`<li><a> </a></li>`);
+	var root_5 = template(`<li><a> </a></li>`);
+	var root_3 = template(`<nav><ul><!> <!></ul></nav>`);
+
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
+
+		const links = ($$anchor) => {
+			var fragment = comment();
+			var node = first_child(fragment);
+
+			slot(node, $$props, 'links', {}, ($$anchor) => {
+				var fragment_1 = comment();
+				var node_1 = first_child(fragment_1);
+
+				{
+					var consequent_2 = ($$anchor) => {
+						var nav = root_3();
+						var ul = child(nav);
+						var node_2 = child(ul);
+
+						{
+							var consequent = ($$anchor) => {
+								var li = root_4();
+								var a = child(li);
+								var text = child(a, true);
+
+								reset(a);
+								reset(li);
+
+								template_effect(() => {
+									set_attribute(a, 'href', altLanguageUrl());
+									set_text(text, altLanguageText());
+								});
+
+								append($$anchor, li);
+							};
+
+							if_block(node_2, ($$render) => {
+								if (altLanguageUrl()) $$render(consequent);
+							});
+						}
+
+						var node_3 = sibling(node_2, 2);
+
+						{
+							var consequent_1 = ($$anchor) => {
+								var li_1 = root_5();
+								var a_1 = child(li_1);
+								var text_1 = child(a_1, true);
+
+								reset(a_1);
+								reset(li_1);
+
+								template_effect(() => {
+									set_attribute(a_1, 'href', joinUsUrl());
+									set_text(text_1, joinUsText());
+								});
+
+								append($$anchor, li_1);
+							};
+
+							if_block(node_3, ($$render) => {
+								if (joinUsUrl()) $$render(consequent_1);
+							});
+						}
+
+						reset(ul);
+						reset(nav);
+						template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
+						append($$anchor, nav);
+					};
+
+					if_block(node_1, ($$render) => {
+						if (joinUsUrl() || altLanguageUrl()) $$render(consequent_2);
+					});
+				}
+
+				append($$anchor, fragment_1);
+			});
+
+			append($$anchor, fragment);
+		};
 
 		const lang = Utils.getPageLanguage();
 
@@ -6479,6 +6639,12 @@
 			hideSearchText = prop($$props, 'hideSearchText', 7, lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'),
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
 			showSearch = prop($$props, 'showSearch', 7, 'false');
+
+		function focusOnSearchInput() {
+			if (displaySearchForm) {
+				document.querySelector('[slot="search-zone"] input')?.focus();
+			}
+		}
 
 		PivHeader($$anchor, {
 			get logoUrl() {
@@ -6534,10 +6700,13 @@
 			},
 			get showSearch() {
 				return showSearch();
-			}
+			},
+			links,
+			search
 		});
 
 		return pop({
+			focusOnSearchInput,
 			get logoUrl() {
 				return logoUrl();
 			},
@@ -6705,8 +6874,8 @@
 			enableSearch: { attribute: 'enable-search' },
 			showSearch: { attribute: 'show-search' }
 		},
-		[],
-		[],
+		['links', 'search-zone'],
+		['focusOnSearchInput'],
 		true
 	));
 

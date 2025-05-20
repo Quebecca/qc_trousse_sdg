@@ -46,9 +46,36 @@
         displaySearchText = lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search',
         hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
         enableSearch = 'false',
-        showSearch = 'false'
+        showSearch = 'false',
     } = $props()
+
+    export function focusOnSearchInput() {
+        if (displaySearchForm) {
+            document.querySelector('[slot="search-zone"] input')?.focus();
+        }
+    }
 </script>
+
+{#snippet links()}
+    <slot name="links">
+        {#if joinUsUrl || altLanguageUrl}
+            <nav aria-label="{linksLabel}">
+                <ul>
+                    {#if altLanguageUrl}
+                        <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
+                    {/if}
+                    {#if joinUsUrl}
+                        <li><a href="{joinUsUrl}">{joinUsText}</a></li>
+                    {/if}
+                </ul>
+            </nav>
+        {/if}
+    </slot>
+{/snippet}
+
+{#snippet search()}
+    <slot name="search-zone" />
+{/snippet}
 
 <PivHeader
     {logoUrl}
@@ -69,4 +96,6 @@
     {hideSearchText}
     {enableSearch}
     {showSearch}
+    {links}
+    {search}
 ></PivHeader>

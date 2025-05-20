@@ -22,7 +22,9 @@
         displaySearchText = lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search',
         hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
         enableSearch = 'false',
-        showSearch = 'false'
+        showSearch = 'false',
+        links,
+        search
     } = $props()
 
     let containerClass = $state('qc-container');
@@ -92,27 +94,30 @@
           </a>
         {/if}
         <div class="links">
-          <slot name="links">
-          {#if joinUsUrl || altLanguageUrl}
-            <nav aria-label="{linksLabel}">
-              <ul>
-                  {#if altLanguageUrl}
-                    <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
-                  {/if}
-                  {#if joinUsUrl}
-                    <li><a href="{joinUsUrl}">{joinUsText}</a></li>
-                  {/if}
-                </ul>
-            </nav>
-          {/if}
-          </slot>
+            {#if links}
+                {@render links()}
+<!--            Le bloc else est present uniquement pour le cas ou PivHeader est utilise sans le wrapper PivHeaderWC.svelte -->
+            {:else}
+                {#if joinUsUrl || altLanguageUrl}
+                    <nav aria-label="{linksLabel}">
+                        <ul>
+                            {#if altLanguageUrl}
+                                <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
+                            {/if}
+                            {#if joinUsUrl}
+                                <li><a href="{joinUsUrl}">{joinUsText}</a></li>
+                            {/if}
+                        </ul>
+                    </nav>
+                {/if}
+            {/if}
         </div>
       </div>
     </div>
     <div class="piv-bottom">
       {#if displaySearchForm}
       <div class="search-zone">
-        <slot name="search-zone" />
+          {@render search?.()}
       </div>
       {/if}
   </div>
