@@ -19,7 +19,7 @@
         type = "general",
         maskable = "",
         content = "",
-        hide = $bindable("false"),
+        hide = "false",
         fullWidth = "false",
     } = $props();
 
@@ -33,11 +33,10 @@
     const label = type === 'general' ? generalLabel : warningLabel;
 
     let rootElement = $state(null);
-    let hiddenFlag = $derived(false);
 
     $effect(() => {
-        hiddenFlag = hide === 'true'
-    });
+        console.log(hide);
+    })
 
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
@@ -52,7 +51,7 @@
     }
 </script>
 
-{#if !hiddenFlag}
+{#if hide !== "true"}
     <div bind:this={rootElement}
          class="qc-general-alert {typeClass}"
          role="alert">
