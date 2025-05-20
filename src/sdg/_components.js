@@ -1,4 +1,4 @@
-export * from './components/Notice/Notice.svelte'
+export * from './components/Notice/NoticeWC.svelte'
 export * from './components/PivHeader/PivHeaderWC.svelte'
 export * from './components/PivFooter/PivFooterWC.svelte'
 export * from './components/Alert/AlertWC.svelte'

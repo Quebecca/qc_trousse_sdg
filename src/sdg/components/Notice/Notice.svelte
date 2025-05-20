@@ -1,5 +1,3 @@
-<svelte:options customElement="qc-notice" />
-
 <script>
   import { Utils } from "../utils"
   import Icon from "../Icon/Icon.svelte";
