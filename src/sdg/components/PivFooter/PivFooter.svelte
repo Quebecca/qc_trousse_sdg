@@ -11,12 +11,14 @@
         copyrightText = '© Gouvernement du Québec, ' + (new Date()).getFullYear(),
         logoWidth = 139,
         logoHeight = 50,
-        copyrightUrl = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
+        copyrightUrl = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright',
+        mainSlot,
+        copyrightSlot
     } = $props();
 </script>
 
 <div class="qc-piv-footer qc-container-fluid">
-    <slot/>
+    {@render mainSlot?.()}
 
     <a href="{logoUrl}"
        class="logo"
@@ -35,11 +37,13 @@
     </a>
 
     <span class="copyright">
-        <slot name="copyright">
+        {#if copyrightSlot}
+            {@render copyrightSlot()}
+        {:else}
             <a href="{copyrightUrl}">
                 {copyrightText}
             </a>
-        </slot>
+        {/if}
     </span>
 </div>
 

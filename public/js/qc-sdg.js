@@ -6170,7 +6170,7 @@
 	));
 
 	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6178,7 +6178,7 @@
 		focusOnSearchInput();
 	};
 
-	var root_3$1 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
+	var root_3$3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
@@ -6221,7 +6221,6 @@
 		}
 
 		onMount(() => {
-			console.log(search());
 			set(containerClass, get(containerClass) + (fullWidth() === 'true' ? '-fluid' : ''));
 
 			if (showSearch() === 'true') {
@@ -6264,7 +6263,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
+				var div_5 = root_2();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -6291,7 +6290,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$1();
+				var a_3 = root_3$3();
 
 				a_3.__click = [
 					on_click$1,
@@ -6641,7 +6640,7 @@
 
 	var root_4 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<li><a> </a></li>`);
-	var root_3 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_3$2 = template(`<nav><ul><!> <!></ul></nav>`);
 
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
@@ -6656,7 +6655,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var nav = root_3();
+						var nav = root_3$2();
 						var ul = child(nav);
 						var node_2 = child(ul);
 
@@ -6982,7 +6981,7 @@
 	));
 
 	var root_1$1 = template(`<img>`);
-	var root_2 = template(`<a> </a>`);
+	var root_3$1 = template(`<a> </a>`);
 	var root$6 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
@@ -6997,13 +6996,15 @@
 			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear()),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
-			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright');
+			copyrightUrl = prop($$props, 'copyrightUrl', 7, lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'),
+			mainSlot = prop($$props, 'mainSlot', 7),
+			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
 		var fragment = root$6();
 		var div = first_child(fragment);
 		var node = child(div);
 
-		slot(node, $$props, 'default', {}, null);
+		snippet(node, () => mainSlot() ?? noop);
 
 		var a = sibling(node, 2);
 		let styles;
@@ -7036,19 +7037,33 @@
 		var span = sibling(a, 2);
 		var node_1 = child(span);
 
-		slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-			var a_1 = root_2();
-			var text = child(a_1, true);
+		{
+			var consequent = ($$anchor) => {
+				var fragment_1 = comment();
+				var node_2 = first_child(fragment_1);
 
-			reset(a_1);
+				snippet(node_2, copyrightSlot);
+				append($$anchor, fragment_1);
+			};
 
-			template_effect(() => {
-				set_attribute(a_1, 'href', copyrightUrl());
-				set_text(text, copyrightText());
+			var alternate = ($$anchor) => {
+				var a_1 = root_3$1();
+				var text = child(a_1, true);
+
+				reset(a_1);
+
+				template_effect(() => {
+					set_attribute(a_1, 'href', copyrightUrl());
+					set_text(text, copyrightText());
+				});
+
+				append($$anchor, a_1);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (copyrightSlot()) $$render(consequent); else $$render(alternate, false);
 			});
-
-			append($$anchor, a_1);
-		});
+		}
 
 		reset(span);
 		reset(div);
@@ -7134,6 +7149,20 @@
 			) {
 				copyrightUrl($$value);
 				flushSync();
+			},
+			get mainSlot() {
+				return mainSlot();
+			},
+			set mainSlot($$value) {
+				mainSlot($$value);
+				flushSync();
+			},
+			get copyrightSlot() {
+				return copyrightSlot();
+			},
+			set copyrightSlot($$value) {
+				copyrightSlot($$value);
+				flushSync();
 			}
 		});
 	}
@@ -7148,15 +7177,49 @@
 			copyrightText: {},
 			logoWidth: {},
 			logoHeight: {},
-			copyrightUrl: {}
+			copyrightUrl: {},
+			mainSlot: {},
+			copyrightSlot: {}
 		},
-		['default', 'copyright'],
+		[],
 		[],
 		true
 	);
 
+	const mainSlot = ($$anchor) => {
+		var fragment = comment();
+		const contentHtml = user_derived(() => `<slot />`);
+		var node = first_child(fragment);
+
+		html(node, () => get(contentHtml));
+		append($$anchor, fragment);
+	};
+
+	var root_3 = template(`<a> </a>`);
+
 	function PivFooterWC($$anchor, $$props) {
 		push($$props, true);
+
+		const copyrightSlot = ($$anchor) => {
+			var fragment_1 = comment();
+			var node_1 = first_child(fragment_1);
+
+			slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
+				var a = root_3();
+				var text = child(a, true);
+
+				reset(a);
+
+				template_effect(() => {
+					set_attribute(a, 'href', copyrightUrl());
+					set_text(text, copyrightText());
+				});
+
+				append($$anchor, a);
+			});
+
+			append($$anchor, fragment_1);
+		};
 
 		const lang = Utils.getPageLanguage();
 
@@ -7193,7 +7256,9 @@
 			},
 			get copyrightUrl() {
 				return copyrightUrl();
-			}
+			},
+			mainSlot,
+			copyrightSlot
 		});
 
 		return pop({
@@ -7278,7 +7343,7 @@
 			copyrightText: { attribute: 'copyright-text' },
 			copyrightUrl: { attribute: 'copyright-url' }
 		},
-		[],
+		['copyright'],
 		[],
 		true
 	));

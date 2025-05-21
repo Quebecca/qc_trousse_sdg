@@ -31,6 +31,19 @@
     } = $props();
 </script>
 
+{#snippet mainSlot()}
+    {@const contentHtml = `<slot />`}
+    {@html contentHtml}
+{/snippet}
+
+{#snippet copyrightSlot()}
+    <slot name="copyright">
+        <a href="{copyrightUrl}">
+            {copyrightText}
+        </a>
+    </slot>
+{/snippet}
+
 <PivFooter
     {logoUrl}
     {logoSrc}
@@ -40,4 +53,6 @@
     {logoWidth}
     {logoHeight}
     {copyrightUrl}
+    {mainSlot}
+    {copyrightSlot}
 ></PivFooter>

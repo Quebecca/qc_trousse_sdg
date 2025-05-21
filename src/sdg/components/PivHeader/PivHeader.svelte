@@ -37,8 +37,6 @@
     }
 
     onMount(() => {
-    console.log(search);
-
       containerClass += fullWidth === 'true' ? '-fluid' : '';
       if (showSearch === 'true') {
         enableSearch = 'true'
