@@ -7897,7 +7897,7 @@
 				// Séparer le contenu du dernier nœud texte en deux parties :
 				// le préfixe (éventuel) et le dernier mot
 				const text = lastTextNode.textContent;
-				const match = text.match(/^(.*\s)?(\S+)\s*$/m);
+				const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
 
 				if (!match) {
 					return;
