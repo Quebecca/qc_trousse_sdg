@@ -3,7 +3,7 @@
   import Icon from "../Icon/Icon.svelte";
 
   const isFr = Utils.getPageLanguage() === 'fr';
-  const defaultHeader = 'h2'
+  const defaultHeader = 'h2';
   const defaultType = 'information';
   const typesDescriptions = {
       'advice': isFr ? "Avis conseil" : "Advisory notice",
@@ -19,7 +19,8 @@
       type = defaultType,
       content = "",
       header = defaultHeader,
-      icon
+      icon,
+      slotContent
   } = $props();
 
   const types = Object.keys(typesDescriptions);
@@ -30,6 +31,8 @@
 
   let noticeElement = $state(null);
   $effect(() => {
+      console.log(slotContent);
+
       if (role && noticeElement) {
           const tempNodes = Array.from(noticeElement.childNodes);
           noticeElement.innerHTML = "";
@@ -63,13 +66,15 @@ le denaturaliser.-->
 
   <div class="content-container">
     <div class="content" {role} bind:this={noticeElement}>
-        {#if title}
+        {#if title && title !== ""}
           <svelte:element this={usedHeader}>
             {@html title}
           </svelte:element>
         {/if}
+
         {@html content}
-        <slot />
+
+        {@render slotContent?.()}
     </div>
   </div>
 </div>

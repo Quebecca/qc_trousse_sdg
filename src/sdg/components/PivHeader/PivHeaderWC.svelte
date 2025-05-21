@@ -79,7 +79,8 @@
 {/snippet}
 
 {#snippet search()}
-    <slot name="search-zone" />
+    {@const searchZone = `<slot name="search-zone" />`}
+    {@html searchZone}
 {/snippet}
 
 <PivHeader

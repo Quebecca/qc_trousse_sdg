@@ -1,6 +1,5 @@
 <svelte:options customElement={{
   tag: 'qc-notice',
-  shadow: 'none',
   props: {
     title: { attribute: 'title', type: 'String' },
     type: { attribute: 'type', type: 'String' },
@@ -13,7 +12,30 @@
 <script>
     import Notice from './Notice.svelte';
 
-    const props = $props();
+    const defaultType = 'information';
+    const defaultHeader = 'h2';
+
+    let {
+        title = "",
+        type = defaultType,
+        content = "",
+        header = defaultHeader,
+        icon,
+    } = $props();
+
+    console.log(title);
 </script>
 
-<Notice {...props} />
+{#snippet slotContent()}
+    {@const contentHtml = `<slot />`}
+    {@html contentHtml}
+{/snippet}
+
+<Notice
+    {title}
+    {type}
+    {content}
+    {header}
+    {icon}
+    {slotContent}
+/>

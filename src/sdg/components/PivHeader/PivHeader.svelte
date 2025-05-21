@@ -119,9 +119,9 @@
     </div>
     <div class="piv-bottom">
       {#if displaySearchForm}
-      <div class="search-zone">
-          {@render search?.()}
-      </div>
+          <div class="search-zone">
+              {@render search?.()}
+          </div>
       {/if}
   </div>
   </div>
