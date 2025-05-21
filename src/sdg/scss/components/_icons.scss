@@ -41,6 +41,10 @@ qc-icon {
     height: 40px;
   }
 
+  &.qc-adresse {
+    background-image: getImageUrl(adresse);
+  }
+
   &.qc-external-link {
     background-image: getImageUrl(external-link);
   }
@@ -78,6 +82,10 @@ qc-icon {
     background-image: getImageUrl(minus);
   }
 
+  &.qc-phone {
+    background-image: getImageUrl(phone);
+  }
+
   &.qc-plus {
     background-image: getImageUrl(plus);
   }
@@ -104,6 +112,10 @@ qc-icon {
     height: 16px;
     min-width: 16px;
     background-image: getImageUrl(xclose-blue);
+  }
+
+  &.qc-website {
+    background-image: getImageUrl(website);
   }
 
   &.qc-chevron-blue,
