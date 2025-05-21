@@ -5943,8 +5943,6 @@
 		let noticeElement = state(null);
 
 		user_effect(() => {
-			console.log(slotContent());
-
 			if (role && get(noticeElement)) {
 				const tempNodes = Array.from(get(noticeElement).childNodes);
 
@@ -6099,8 +6097,6 @@
 			header = prop($$props, 'header', 7, defaultHeader),
 			icon = prop($$props, 'icon', 7);
 
-		console.log(title());
-
 		Notice($$anchor, {
 			get title() {
 				return title();
@@ -6178,12 +6174,7 @@
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
-
-		set(displaySearchForm, (previous) => {
-			console.log(previous);
-			return !previous;
-		});
-
+		set(displaySearchForm, !get(displaySearchForm));
 		focusOnSearchInput();
 	};
 
@@ -6230,6 +6221,7 @@
 		}
 
 		onMount(() => {
+			console.log(search());
 			set(containerClass, get(containerClass) + (fullWidth() === 'true' ? '-fluid' : ''));
 
 			if (showSearch() === 'true') {
@@ -6317,7 +6309,7 @@
 			};
 
 			if_block(node_2, ($$render) => {
-				if (enableSearch() === 'true') $$render(consequent_2);
+				if (Utils.isTruthy(enableSearch())) $$render(consequent_2);
 			});
 		}
 
@@ -6751,10 +6743,6 @@
 			hideSearchText = prop($$props, 'hideSearchText', 7, lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'),
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
 			showSearch = prop($$props, 'showSearch', 7, 'false');
-
-		user_effect(() => {
-			console.log(Utils.assetsBasePath);
-		});
 
 		function focusOnSearchInput() {
 			if (displaySearchForm) {
