@@ -5933,7 +5933,8 @@
 			type = prop($$props, 'type', 7, defaultType),
 			content = prop($$props, 'content', 7, ""),
 			header = prop($$props, 'header', 7, defaultHeader),
-			icon = prop($$props, 'icon', 7);
+			icon = prop($$props, 'icon', 7),
+			slotContent = prop($$props, 'slotContent', 7);
 
 		const types = Object.keys(typesDescriptions);
 		const usedType = types.includes(type()) ? type() : defaultType;
@@ -5942,6 +5943,8 @@
 		let noticeElement = state(null);
 
 		user_effect(() => {
+			console.log(slotContent());
+
 			if (role && get(noticeElement)) {
 				const tempNodes = Array.from(get(noticeElement).childNodes);
 
@@ -5993,7 +5996,7 @@
 			};
 
 			if_block(node_2, ($$render) => {
-				if (title()) $$render(consequent);
+				if (title() && title() !== "") $$render(consequent);
 			});
 		}
 
@@ -6003,7 +6006,7 @@
 
 		var node_6 = sibling(node_5, 2);
 
-		slot(node_6, $$props, 'default', {}, null);
+		snippet(node_6, () => slotContent() ?? noop);
 		reset(div_4);
 		bind_this(div_4, ($$value) => set(noticeElement, $$value), () => get(noticeElement));
 		reset(div_3);
@@ -6049,6 +6052,13 @@
 			set icon($$value) {
 				icon($$value);
 				flushSync();
+			},
+			get slotContent() {
+				return slotContent();
+			},
+			set slotContent($$value) {
+				slotContent($$value);
+				flushSync();
 			}
 		});
 	}
@@ -6060,17 +6070,93 @@
 			type: {},
 			content: {},
 			header: {},
-			icon: {}
+			icon: {},
+			slotContent: {}
 		},
-		['default'],
+		[],
 		[],
 		true
 	);
 
-	function NoticeWC($$anchor, $$props) {
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+	const slotContent = ($$anchor) => {
+		var fragment = comment();
+		const contentHtml = user_derived(() => `<slot />`);
+		var node = first_child(fragment);
 
-		Notice($$anchor, spread_props(() => props));
+		html(node, () => get(contentHtml));
+		append($$anchor, fragment);
+	};
+
+	function NoticeWC($$anchor, $$props) {
+		push($$props, true);
+
+		const defaultType = 'information';
+		const defaultHeader = 'h2';
+
+		let title = prop($$props, 'title', 7, ""),
+			type = prop($$props, 'type', 7, defaultType),
+			content = prop($$props, 'content', 7, ""),
+			header = prop($$props, 'header', 7, defaultHeader),
+			icon = prop($$props, 'icon', 7);
+
+		console.log(title());
+
+		Notice($$anchor, {
+			get title() {
+				return title();
+			},
+			get type() {
+				return type();
+			},
+			get content() {
+				return content();
+			},
+			get header() {
+				return header();
+			},
+			get icon() {
+				return icon();
+			},
+			slotContent
+		});
+
+		return pop({
+			get title() {
+				return title();
+			},
+			set title($$value = "") {
+				title($$value);
+				flushSync();
+			},
+			get type() {
+				return type();
+			},
+			set type($$value = defaultType) {
+				type($$value);
+				flushSync();
+			},
+			get content() {
+				return content();
+			},
+			set content($$value = "") {
+				content($$value);
+				flushSync();
+			},
+			get header() {
+				return header();
+			},
+			set header($$value = defaultHeader) {
+				header($$value);
+				flushSync();
+			},
+			get icon() {
+				return icon();
+			},
+			set icon($$value) {
+				icon($$value);
+				flushSync();
+			}
+		});
 	}
 
 	customElements.define('qc-notice', create_custom_element(
@@ -6084,7 +6170,7 @@
 		},
 		[],
 		[],
-		false
+		true
 	));
 
 	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
@@ -6554,9 +6640,10 @@
 
 	const search = ($$anchor) => {
 		var fragment_2 = comment();
+		const searchZone = user_derived(() => `<slot name="search-zone" />`);
 		var node_4 = first_child(fragment_2);
 
-		slot(node_4, $$props, 'search-zone', {}, null);
+		html(node_4, () => get(searchZone));
 		append($$anchor, fragment_2);
 	};
 
@@ -6901,7 +6988,7 @@
 			enableSearch: { attribute: 'enable-search' },
 			showSearch: { attribute: 'show-search' }
 		},
-		['links', 'search-zone'],
+		['links'],
 		['focusOnSearchInput'],
 		true
 	));
@@ -7394,7 +7481,7 @@
 
 				var node_3 = sibling(node_2, 2);
 
-				snippet(node_3, () => slotContent() ?? noop);
+				html(node_3, slotContent);
 				reset(div_3);
 
 				var node_4 = sibling(div_3, 2);
@@ -7494,14 +7581,6 @@
 		true
 	);
 
-	const slotContent = ($$anchor) => {
-		var fragment = comment();
-		var node = first_child(fragment);
-
-		slot(node, $$props, 'default', {}, null);
-		append($$anchor, fragment);
-	};
-
 	function AlertWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -7527,7 +7606,7 @@
 			get fullWidth() {
 				return fullWidth();
 			},
-			slotContent
+			slotContent: `<slot />`
 		});
 
 		return pop({
@@ -7578,7 +7657,7 @@
 			content: { attribute: 'content' },
 			hide: { attribute: 'hide' }
 		},
-		['default'],
+		[],
 		[],
 		true
 	));
