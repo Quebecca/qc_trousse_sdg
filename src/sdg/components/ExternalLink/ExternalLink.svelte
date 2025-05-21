@@ -1,5 +1,6 @@
 <script>
 import {Utils} from "../utils";
+import {onMount} from "svelte";
 
 const {
     externalIconAlt = Utils.getPageLanguage() === 'fr'
@@ -7,52 +8,63 @@ const {
         : "This link directs to another site."
 } = $props();
 
-let imgElement;
+let imgElement = $state();
 
-$effect(() => {
+function createVisibleNodesTreeWalker() {
+    return document.createTreeWalker(
+        imgElement.parentElement,
+        NodeFilter.SHOW_ALL,
+        {
+            acceptNode: node => {
+                if (node instanceof Element) {
+                    if (node.hasAttribute('hidden')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    const style = window.getComputedStyle(node);
+                    // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+                    if (style.display === 'none'
+                        || style.visibility === 'hidden'
+                        || style.position === 'absolute') {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                }
+                if (!node instanceof Text) {
+                    return NodeFilter.FILTER_SKIP;
+                }
+
+                // Ignore les nœuds vides
+                if (!/\S/.test(node.textContent)) {
+                    return NodeFilter.FILTER_SKIP;
+                }
+
+                return NodeFilter.FILTER_ACCEPT;
+            }
+        }
+    );
+}
+
+onMount(() => {
     imgElement.parentElement.querySelectorAll('a').forEach(link => {
 
         // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
-        const walker = document.createTreeWalker(
-            link,
-            NodeFilter.SHOW_ALL,
-            {
-                acceptNode: node => {
-                    if (node instanceof Element) {
-                        if (node.hasAttribute('hidden')) return NodeFilter.FILTER_REJECT;
-                        const style = window.getComputedStyle(node);
-                        // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
-                        if (style.display === 'none'
-                            || style.visibility === 'hidden'
-                            || style.position === 'absolute') {
-                            return NodeFilter.FILTER_REJECT;
-                        }
-                    }
-                    if (!node instanceof Text)
-                        return NodeFilter.FILTER_SKIP;
-
-                    // Ignore les nœuds vides
-                    if (!/\S/.test(node.textContent))
-                        return NodeFilter.FILTER_SKIP;
-
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-            }
-        );
+        const walker = createVisibleNodesTreeWalker();
 
         let lastTextNode = null;
         while (walker.nextNode()) {
             lastTextNode = walker.currentNode;
         }
-
         // S'il n'y a pas de nœud texte visible, on ne fait rien
-        if (!lastTextNode) return;
+        if (!lastTextNode) {
+            return;
+        }
 
         // Séparer le contenu du dernier nœud texte en deux parties :
         // le préfixe (éventuel) et le dernier mot
         const text = lastTextNode.textContent;
         const match = text.match(/^(.*\s)?(\S+)\s*$/m);
-        if (!match) return;
+        if (!match) {
+            return;
+        }
 
         const prefix = match[1] || "";
         const lastWord = match[2];
@@ -73,6 +85,7 @@ $effect(() => {
     });
 });
 </script>
+
 <span bind:this={imgElement}
       role="img"
       class="qc-ext-link-img"
