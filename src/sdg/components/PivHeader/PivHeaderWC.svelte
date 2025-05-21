@@ -49,11 +49,6 @@
         showSearch = 'false',
     } = $props()
 
-    $inspect(Utils.assetsBasePath);
-
-    $effect(() => {
-        console.log(Utils.assetsBasePath);
-    })
     export function focusOnSearchInput() {
         if (displaySearchForm) {
             document.querySelector('[slot="search-zone"] input')?.focus();

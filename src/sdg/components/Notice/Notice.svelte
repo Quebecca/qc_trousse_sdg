@@ -31,8 +31,6 @@
 
   let noticeElement = $state(null);
   $effect(() => {
-      console.log(slotContent);
-
       if (role && noticeElement) {
           const tempNodes = Array.from(noticeElement.childNodes);
           noticeElement.innerHTML = "";

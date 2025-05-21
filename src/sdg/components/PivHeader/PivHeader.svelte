@@ -37,6 +37,8 @@
     }
 
     onMount(() => {
+    console.log(search);
+
       containerClass += fullWidth === 'true' ? '-fluid' : '';
       if (showSearch === 'true') {
         enableSearch = 'true'
@@ -80,16 +82,13 @@
         </div>
 
       <div class="right-section">
-        {#if enableSearch === 'true'}
+        {#if Utils.isTruthy(enableSearch)}
           <a  class="qc-search"
               href="/"
               role="button"
               onclick = {(evt) => {
                   evt.preventDefault();
-                  displaySearchForm = (previous) => {
-                      console.log(previous);
-                      return !previous;
-                  };
+                  displaySearchForm = !displaySearchForm;
                   focusOnSearchInput();
               }}
           >
@@ -117,6 +116,7 @@
         </div>
       </div>
     </div>
+
     <div class="piv-bottom">
       {#if displaySearchForm}
           <div class="search-zone">

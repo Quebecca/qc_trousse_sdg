@@ -22,8 +22,6 @@
         header = defaultHeader,
         icon,
     } = $props();
-
-    console.log(title);
 </script>
 
 {#snippet slotContent()}
