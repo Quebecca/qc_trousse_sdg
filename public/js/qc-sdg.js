@@ -8077,95 +8077,9 @@
 	));
 
 	function IconWC($$anchor, $$props) {
-		push($$props, true);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 
-		let type = prop($$props, 'type', 7),
-			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, 'md'),
-			color = prop($$props, 'color', 7, 'text-primary'),
-			width = prop($$props, 'width', 7, 'auto'),
-			height = prop($$props, 'height', 7, 'auto'),
-			rest = rest_props($$props, [
-				'$$slots',
-				'$$events',
-				'$$legacy',
-				'$$host',
-				'type',
-				'label',
-				'size',
-				'color',
-				'width',
-				'height'
-			]);
-
-		Icon($$anchor, spread_props(
-			{
-				get type() {
-					return type();
-				},
-				get label() {
-					return label();
-				},
-				get size() {
-					return size();
-				},
-				get color() {
-					return color();
-				},
-				get width() {
-					return width();
-				},
-				get height() {
-					return height();
-				}
-			},
-			() => rest
-		));
-
-		return pop({
-			get type() {
-				return type();
-			},
-			set type($$value) {
-				type($$value);
-				flushSync();
-			},
-			get label() {
-				return label();
-			},
-			set label($$value) {
-				label($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = 'md') {
-				size($$value);
-				flushSync();
-			},
-			get color() {
-				return color();
-			},
-			set color($$value = 'text-primary') {
-				color($$value);
-				flushSync();
-			},
-			get width() {
-				return width();
-			},
-			set width($$value = 'auto') {
-				width($$value);
-				flushSync();
-			},
-			get height() {
-				return height();
-			},
-			set height($$value = 'auto') {
-				height($$value);
-				flushSync();
-			}
-		});
+		Icon($$anchor, spread_props(() => props));
 	}
 
 	customElements.define('qc-icon', create_custom_element(
