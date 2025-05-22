@@ -10,15 +10,6 @@
 		((window.__svelte ??= {}).v ??= new Set()).add(PUBLIC_VERSION);
 	}
 
-	let legacy_mode_flag = false;
-	let tracing_mode_flag = false;
-
-	function enable_legacy_mode_flag() {
-		legacy_mode_flag = true;
-	}
-
-	enable_legacy_mode_flag();
-
 	const PROPS_IS_IMMUTABLE = 1;
 	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
@@ -300,6 +291,13 @@
 			node.remove();
 			node = next;
 		}
+	}
+
+	let legacy_mode_flag = false;
+	let tracing_mode_flag = false;
+
+	function enable_legacy_mode_flag() {
+		legacy_mode_flag = true;
 	}
 
 	/** @import { Source } from '#client' */
@@ -2819,26 +2817,6 @@
 		}
 
 		return target_handler;
-	}
-
-	/**
-	 * @param {string} event_name
-	 * @param {Element} dom
-	 * @param {EventListener} [handler]
-	 * @param {boolean} [capture]
-	 * @param {boolean} [passive]
-	 * @returns {void}
-	 */
-	function event(event_name, dom, handler, capture, passive) {
-		var options = { capture, passive };
-		var target_handler = create_event(event_name, dom, handler, options);
-
-		// @ts-ignore
-		if (dom === document.body || dom === window || dom === document) {
-			teardown(() => {
-				dom.removeEventListener(event_name, target_handler, options);
-			});
-		}
 	}
 
 	/**
@@ -73072,63 +73050,16 @@
 	var prettyExports = requirePretty();
 	var pretty = /*@__PURE__*/getDefaultExportFromCjs(prettyExports);
 
-	class Utils {
+	function copy(_, prettyCode) {
+		navigator.clipboard.writeText(get(prettyCode));
+		this.classList.add('copied');
 
-	    static assetsBasePath =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-assets-base-path')
-	        || new URL(document.currentScript.src).pathname
-	                    .split('/')
-	                    .slice(0, -2)
-	                    .join('/')
-	        || '/'
-	    static cssRelativePath =
-	        `${this.assetsBasePath}/css/`
-	            .replace('//','/')
-	    static imagesRelativePath =
-	        `${this.assetsBasePath}/img/`
-	            .replace('//','/')
-	    static cssFileName =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-css-filename')
-	        || 'qc-sdg.min.css'
-	    static cssPath =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-css-path')
-	        || this.cssRelativePath + this.cssFileName
-	    static sharedTexts =
-	        { openInNewTab :
-	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
-	            , en: 'This link will open in a new tab.'
-	            }
-	        }
-
-	    /**
-	     * Get current page language based on html lang attribute
-	     * @returns {string} language code  (fr/en).
-	     */
-	    static getPageLanguage() {
-	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
-	    }
-
-	    static isTruthy(value) {
-	        if (typeof value === 'boolean') {
-	            return value;
-	        }
-	        if (typeof value === 'string') {
-	            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
-	        }
-	        if (typeof value === 'number') {
-	            return !!value; // Vérifie si le nombre est égal à 1
-	        }
-	        return false;
-	    }
-
-
-
+		setTimeout(
+			() => {
+				this.classList.remove('copied');
+			},
+			500
+		);
 	}
 
 	var root$4 = template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button class="btn btn-sm btn-primary">
@@ -73142,27 +73073,16 @@
 	};
 
 	function Code($$anchor, $$props) {
-		push($$props, false);
+		push($$props, true);
 		append_styles$1($$anchor, $$css$4);
 
-		let targetId = prop($$props, 'targetId', 12, ''),
-			rawCode = prop($$props, 'rawCode', 12, ''),
-			language = prop($$props, 'language', 12, 'html'),
-			outerHTML = prop($$props, 'outerHTML', 12, false);
+		let targetId = prop($$props, 'targetId', 7, ''),
+			rawCode = prop($$props, 'rawCode', 7, ''),
+			language = prop($$props, 'language', 7, 'html'),
+			outerHTML = prop($$props, 'outerHTML', 7, false);
 
-		let hlCode = mutable_source(), prettyCode;
-
-		function copy() {
-			navigator.clipboard.writeText(prettyCode);
-			this.classList.add('copied');
-
-			setTimeout(
-				() => {
-					this.classList.remove('copied');
-				},
-				500
-			);
-		}
+		let hlCode = state(void 0);
+		let prettyCode = state(void 0);
 
 		function updateHLCode(rawCode, targetId) {
 			if (!rawCode) {
@@ -73170,65 +73090,58 @@
 			}
 
 			rawCode.replace('class="mounted"', '').replace('/qc-hash-.*/g', '').replace('/is-external=""/g', 'is-external');
-			prettyCode = pretty(rawCode, { wrap_attributes: 'force-aligned' });
-			set(hlCode, HighlightJS.highlight(prettyCode, { language: language() }).value);
+			set(prettyCode, pretty(rawCode, { wrap_attributes: 'force-aligned' }), true);
+			set(hlCode, HighlightJS.highlight(get(prettyCode), { language: language() }).value, true);
 		}
 
-		legacy_pre_effect(
-			() => (
-				deep_read_state(rawCode()),
-				deep_read_state(targetId())
-			),
-			() => {
-				updateHLCode(rawCode(), targetId());
-			}
-		);
-
-		legacy_pre_effect_reset();
-		init();
+		user_effect(() => updateHLCode(rawCode(), targetId()));
 
 		var pre = root$4();
 		var code = child(pre);
 		var button = child(code);
+
+		button.__click = [copy, prettyCode];
+
 		var node = sibling(button);
 
 		html$1(node, () => get(hlCode));
 		reset(code);
 		reset(pre);
-		event('click', button, copy);
 		append($$anchor, pre);
 
 		return pop({
 			get targetId() {
 				return targetId();
 			},
-			set targetId($$value) {
+			set targetId($$value = '') {
 				targetId($$value);
 				flushSync();
 			},
 			get rawCode() {
 				return rawCode();
 			},
-			set rawCode($$value) {
+			set rawCode($$value = '') {
 				rawCode($$value);
 				flushSync();
 			},
 			get language() {
 				return language();
 			},
-			set language($$value) {
+			set language($$value = 'html') {
 				language($$value);
 				flushSync();
 			},
 			get outerHTML() {
 				return outerHTML();
 			},
-			set outerHTML($$value) {
+			set outerHTML($$value = false) {
 				outerHTML($$value);
 				flushSync();
 			}
 		});
 	}
+
+	delegate(['click']);
 
 	customElements.define('qc-code', create_custom_element(
 		Code,
@@ -73242,6 +73155,8 @@
 		[],
 		false
 	));
+
+	enable_legacy_mode_flag();
 
 	var root$3 = template(`<div class="color-details qc-hash-1v55k4q"><div></div> <div class="color-description qc-hash-1v55k4q"><strong> </strong><br> <code> </code></div></div>`);
 
