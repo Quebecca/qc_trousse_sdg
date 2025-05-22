@@ -73082,7 +73082,7 @@
 	                    .split('/')
 	                    .slice(0, -2)
 	                    .join('/')
-	        || '.'
+	        || '/'
 	    static cssRelativePath =
 	        `${this.assetsBasePath}/css/`
 	            .replace('//','/')
