@@ -4419,6 +4419,53 @@
 	/** @import { Derived, Source } from './types.js' */
 
 	/**
+	 * The proxy handler for rest props (i.e. `const { x, ...rest } = $props()`).
+	 * Is passed the full `$$props` object and excludes the named props.
+	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, name?: string }>}}
+	 */
+	const rest_props_handler = {
+		get(target, key) {
+			if (target.exclude.includes(key)) return;
+			return target.props[key];
+		},
+		set(target, key) {
+
+			return false;
+		},
+		getOwnPropertyDescriptor(target, key) {
+			if (target.exclude.includes(key)) return;
+			if (key in target.props) {
+				return {
+					enumerable: true,
+					configurable: true,
+					value: target.props[key]
+				};
+			}
+		},
+		has(target, key) {
+			if (target.exclude.includes(key)) return false;
+			return key in target.props;
+		},
+		ownKeys(target) {
+			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.includes(key));
+		}
+	};
+
+	/**
+	 * @param {Record<string, unknown>} props
+	 * @param {string[]} exclude
+	 * @param {string} [name]
+	 * @returns {Record<string, unknown>}
+	 */
+	/*#__NO_SIDE_EFFECTS__*/
+	function rest_props(props, exclude, name) {
+		return new Proxy(
+			{ props, exclude },
+			rest_props_handler
+		);
+	}
+
+	/**
 	 * The proxy handler for legacy $$restProps and $$props
 	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, special: Record<string | symbol, (v?: unknown) => unknown>, version: Source<number> }>}}
 	 */
@@ -73390,51 +73437,43 @@
 	};
 
 	function Exemple($$anchor, $$props) {
-		const $$sanitized_props = legacy_rest_props($$props, [
-			'children',
-			'$$slots',
-			'$$events',
-			'$$legacy',
-			'$$host'
-		]);
-
-		const $$restProps = legacy_rest_props($$sanitized_props, [
-			'caption',
-			'codeTargetId',
-			'hideCode',
-			'rawCode'
-		]);
-
-		push($$props, false);
+		push($$props, true);
 		append_styles$1($$anchor, $$css);
 
-		let caption = prop($$props, 'caption', 12, "SVP fournir une description"),
-			codeTargetId = prop($$props, 'codeTargetId', 12),
-			hideCode = prop($$props, 'hideCode', 12, false),
-			rawCode = prop($$props, 'rawCode', 12);
+		let caption = prop($$props, 'caption', 7, "SVP fournir une description"),
+			codeTargetId = prop($$props, 'codeTargetId', 7),
+			hideCode = prop($$props, 'hideCode', 7, false),
+			rawCode = prop($$props, 'rawCode', 7),
+			restProps = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'caption',
+				'codeTargetId',
+				'hideCode',
+				'rawCode'
+			]);
 
-		let exempleCode = mutable_source(),
-			figure = mutable_source(),
-			rootElement = mutable_source(),
-			exempleArea = mutable_source(),
-			figCaption = mutable_source();
+		let exempleCode = state(void 0);
+		let figure = state(void 0);
+		let rootElement = state(void 0);
+		let exempleArea = state(void 0);
+		let figCaption = state(void 0);
 
 		onMount(() => {
 			get(rootElement).parentElement.childNodes.forEach((node) => {
-				if (node.nodeType == 3) {
+				if (node.nodeType === 3) {
 					return;
 				}
 
-				if (node != get(rootElement)) {
-					// let detach = rootElement.removeChild(node)
+				if (node !== get(rootElement)) {
 					get(exempleArea).appendChild(node);
 				}
 
-				set(exempleCode, rawCode() ? rawCode() : (codeTargetId() ? document.getElementById(codeTargetId()) : get(exempleArea)).innerHTML);
+				set(exempleCode, rawCode() ? rawCode() : (codeTargetId() ? document.getElementById(codeTargetId()) : get(exempleArea)).innerHTML, true);
 			});
 		});
-
-		init();
 
 		var div = root();
 		var figure_1 = child(div);
@@ -73470,14 +73509,14 @@
 
 		reset(div);
 		bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
-		template_effect(() => attributes = set_attributes(figure_1, attributes, { ...$$restProps }, 'qc-hash-1u5h5rs'));
+		template_effect(() => attributes = set_attributes(figure_1, attributes, { ...restProps }, 'qc-hash-1u5h5rs'));
 		append($$anchor, div);
 
 		return pop({
 			get caption() {
 				return caption();
 			},
-			set caption($$value) {
+			set caption($$value = "SVP fournir une description") {
 				caption($$value);
 				flushSync();
 			},
@@ -73491,7 +73530,7 @@
 			get hideCode() {
 				return hideCode();
 			},
-			set hideCode($$value) {
+			set hideCode($$value = false) {
 				hideCode($$value);
 				flushSync();
 			},
