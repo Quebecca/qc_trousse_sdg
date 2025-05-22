@@ -73156,8 +73156,6 @@
 		false
 	));
 
-	enable_legacy_mode_flag();
-
 	var root$3 = template(`<div class="color-details qc-hash-1v55k4q"><div></div> <div class="color-description qc-hash-1v55k4q"><strong> </strong><br> <code> </code></div></div>`);
 
 	const $$css$3 = {
@@ -73166,14 +73164,12 @@
 	};
 
 	function Color_doc($$anchor, $$props) {
-		push($$props, false);
+		push($$props, true);
 		append_styles$1($$anchor, $$css$3);
 
-		let title = prop($$props, 'title', 12),
-			token = prop($$props, 'token', 12),
-			border = prop($$props, 'border', 12, null);
-
-		init();
+		let title = prop($$props, 'title', 7),
+			token = prop($$props, 'token', 7),
+			border = prop($$props, 'border', 7, null);
 
 		var div = root$3();
 		var div_1 = child(div);
@@ -73201,8 +73197,7 @@
 				() => token().split(',')[0],
 				() => ({ border: border() }),
 				() => token().split(',').map((part) => '--qc-color-' + part.trim()).join(', ')
-			],
-			derived_safe_equal
+			]
 		);
 
 		append($$anchor, div);
@@ -73225,7 +73220,7 @@
 			get border() {
 				return border();
 			},
-			set border($$value) {
+			set border($$value = null) {
 				border($$value);
 				flushSync();
 			}
@@ -73245,6 +73240,8 @@
 		[],
 		true
 	));
+
+	enable_legacy_mode_flag();
 
 	var root$2 = template(`<div class="switch qc-hash-qsg5d6"><input> <span class="slider round qc-hash-qsg5d6"></span></div>`);
 
