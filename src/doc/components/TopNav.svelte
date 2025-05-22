@@ -10,7 +10,6 @@
     let value = $state(localStorage.getItem('dark-theme') === "true");
 
     $effect(() => {
-        console.log("changed", value);
         document.documentElement.classList.toggle('qc-dark-theme', value);
         localStorage.setItem('dark-theme', value);
     });

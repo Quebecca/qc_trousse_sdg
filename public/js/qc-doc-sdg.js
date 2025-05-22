@@ -73033,7 +73033,6 @@
 		let value = state(localStorage.getItem('dark-theme') === "true");
 
 		user_effect(() => {
-			console.log("changed", get(value));
 			document.documentElement.classList.toggle('qc-dark-theme', get(value));
 			localStorage.setItem('dark-theme', get(value));
 		});
