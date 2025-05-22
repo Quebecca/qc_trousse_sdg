@@ -6,11 +6,11 @@
     }
 }}" />
 <script>
-    export let
+    let {
         title,
         token,
         border = null
-    ;
+    } = $props();
 
 </script>
 <div class="color-details">

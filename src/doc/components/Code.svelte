@@ -11,22 +11,17 @@
 <script>
 
   import {HighlightJS} from "highlight.js"
-  // import 'highlight.js/styles/default.css';
   import pretty from "pretty";
-  import { onMount } from "svelte";
-  import { Utils } from "../../sdg/components/utils"
 
-  export let
-      targetId = ''
-      , rawCode = ''
-      , language = 'html'
-      , outerHTML = false
-  ;
+  let {
+      targetId = '',
+      rawCode = '',
+      language = 'html',
+      outerHTML = false
+  } = $props();
 
-  let
-    hlCode
-    , prettyCode
-  ;
+  let hlCode = $state();
+  let prettyCode = $state();
 
   function copy() {
       navigator.clipboard.writeText(prettyCode);
@@ -48,14 +43,14 @@
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   }
 
-  $: updateHLCode(rawCode, targetId)
+  $effect(() => updateHLCode(rawCode, targetId));
 
 </script>
 
 <pre
     ><code class="hljs"
         ><button class="btn btn-sm btn-primary"
-                 on:click={copy}>
+                 onclick={copy}>
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
         </button

@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<!--suppress ALL -->
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="css/qc-sdg.css">
-    <link rel="stylesheet"
-          href="css/qc-doc-sdg.css">
-    <title>Documentation technique du Système de design gouvernemental</title>
-    <script defer
-            src='js/qc-sdg.js'
-            sdg-css-filename="qc-sdg.css">
-    </script>
-    <script defer
-            src='js/qc-doc-sdg.js'
-            sdg-css-filename="qc-doc-sdg.css">
-    </script>
-</head>
-<body>
+    <!--suppress ALL -->
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="css/qc-sdg.css">
+        <link rel="stylesheet"
+              href="css/qc-doc-sdg.css">
+        <title>Documentation technique du Système de design gouvernemental</title>
+        <script defer
+                src='js/qc-sdg.js'
+                sdg-css-filename="qc-sdg.css">
+        </script>
+        <script defer
+                src='js/qc-doc-sdg.js'
+                sdg-css-filename="qc-doc-sdg.css">
+        </script>
+    </head>
+    <body>
     <header>
         <qc-piv-header id="pivEntete"
                        title-text="Trousse de développement du Système de design gouvernemental"
@@ -29,10 +29,10 @@
     <qc-doc-top-nav></qc-doc-top-nav>
     <div class="qc-container">
         <h1>
-            <span class="qc-subhead"id="version"></span>
+            <span class="qc-subhead" id="version"></span>
             Documentation technique
         </h1>
-        <nav class="main-menu"_
+        <nav class="main-menu" _
              aria-label="Navigation principale">
             <h2 class="qc-h4">Bases</h2>
             <ul>
@@ -178,13 +178,13 @@
                           title="Violet"
             ></qc-color-doc>
 
-            <hr />
+            <hr/>
 
             <!-- grille horizontale -->
             <h2 id="grille">Grille horizontale</h2>
             <qc-doc-exemple caption="Présentation de la grille sur 12 colonnes"
                             code-target-id="exemple-grille"
-                >
+            >
                 <div id="grid-samples">
                     <div id="background">
                         <div class="qc-row">
@@ -290,25 +290,25 @@
             </qc-doc-exemple>
             <p>
                 <strong>Points de rupture</strong><br/>
-                <code >--qc-breakpoint-sm<br>
+                <code>--qc-breakpoint-sm<br>
                     --qc-breakpoint-md<br>
                     --qc-breakpoint-lg
                 </code>
             </p>
             <p>
                 <strong>Gouttière</strong><br/>
-                <code >--qc-breakpoint-gutter</code>
+                <code>--qc-breakpoint-gutter</code>
             </p>
 
-<hr />
+            <hr/>
 
             <!-- images -->
             <h2 id="figures">Figures</h2>
             <p>Les figures servent en général pour l’affichage des images.</p>
             <qc-doc-exemple id="exemple-figure"
-                           caption="Exemple d’affichage d’une image"
-                           >
-                <figure >
+                            caption="Exemple d’affichage d’une image"
+            >
+                <figure>
                     <img src="img/figure-sample.png"
                          alt="Image avec légende">
                     <figcaption>
@@ -318,9 +318,9 @@
                     </figcaption>
                 </figure>
             </qc-doc-exemple>
-<!--            <qc-code target-id="exemple-figure"></qc-code>-->
+            <!--            <qc-code target-id="exemple-figure"></qc-code>-->
 
-<hr />
+            <hr/>
 
             <!-- liens -->
             <h2 id="liens">Liens</h2>
@@ -328,43 +328,72 @@
                 <dl>
                     <dt>Lien interne</dt>
                     <dd><a href="javascript:;" class="not-visited">Lien interne</a></dd>
-                    <dd><qc-external-link><a href="javascript:;" class="not-visited">Lien externe</a></qc-external-link></dd>
+                    <dd>
+                        <qc-external-link><a href="javascript:;" class="not-visited">Lien externe</a></qc-external-link>
+                    </dd>
 
                     <dt>Lien au survol (pseudo-classe :hover)</dt>
                     <dd><a href="javascript:;" class="pseudo-hover">Lien interne</a></dd>
-                    <dd><qc-external-link><a href="javascript:;" class="pseudo-hover">Lien externe</a></qc-external-link></dd>
-                    <dt>Lien  au focus (pseudo-classe :focus)</dt>
+                    <dd>
+                        <qc-external-link><a href="javascript:;" class="pseudo-hover">Lien externe</a>
+                        </qc-external-link>
+                    </dd>
+                    <dt>Lien au focus (pseudo-classe :focus)</dt>
                     <dd><a href="javascript:;" class="pseudo-focus">Lien interne</a></dd>
-                    <dd><qc-external-link><a href="javascript:;" class="pseudo-focus">Lien externe</a></qc-external-link></dd>
-                    <dt>Lien  au clic (pseudo-classe :active)</dt>
+                    <dd>
+                        <qc-external-link><a href="javascript:;" class="pseudo-focus">Lien externe</a>
+                        </qc-external-link>
+                    </dd>
+                    <dt>Lien au clic (pseudo-classe :active)</dt>
                     <dd><a href="javascript:;" class="pseudo-active">Lien interne</a></dd>
-                    <dd><qc-external-link><a href="javascript:;" class="pseudo-active">Lien externe</a></qc-external-link></dd>
-                    <dt>Lien  visité (pseudo-classe :visited)</dt>
+                    <dd>
+                        <qc-external-link><a href="javascript:;" class="pseudo-active">Lien externe</a>
+                        </qc-external-link>
+                    </dd>
+                    <dt>Lien visité (pseudo-classe :visited)</dt>
                     <dd><a href="javascript:;" class="pseudo-visited">Lien interne</a></dd>
-                    <dd><qc-external-link><a href="javascript:;" class="pseudo-visited">Lien externe</a></qc-external-link></dd>
+                    <dd>
+                        <qc-external-link><a href="javascript:;" class="pseudo-visited">Lien externe</a>
+                        </qc-external-link>
+                    </dd>
                 </dl>
             </qc-doc-exemple>
 
 
             <h3>Lien externe (qc-external-link)</h3>
 
-            <p>Le composant <code>qc-external-link</code> ajoute une icône à la fin du lien, séparée du dernier mot par une espace insécable.</p>
-            <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d'ombre (<i>shadow DOM</i>).</p>
+            <p>Le composant <code>qc-external-link</code> ajoute une icône à la fin du lien, séparée du dernier mot par
+                une espace insécable.</p>
+            <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d'ombre (<i>shadow
+                DOM</i>).</p>
 
             <h4>Exemples</h4>
 
-            <qc-doc-exemple  caption="Exemple de lien externe avec différentes tailles de police. Réduire la fenêtre pour constater que l’icône ne se sépare pas du lien au passage à la ligne.">
+            <qc-doc-exemple
+                    caption="Exemple de lien externe avec différentes tailles de police. Réduire la fenêtre pour constater que l’icône ne se sépare pas du lien au passage à la ligne.">
                 <p class="qc-font-size-xl">
-                    Lorem ipsum <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur adipiscing</a></qc-external-link> elit
+                    Lorem ipsum
+                    <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+                        adipiscing</a></qc-external-link>
+                    elit
                 </p>
                 <p class="qc-font-size-lg">
-                    Lorem ipsum <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur adipiscing</a></qc-external-link> elit
+                    Lorem ipsum
+                    <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+                        adipiscing</a></qc-external-link>
+                    elit
                 </p>
                 <p class="qc-font-size-md">
-                    Lorem ipsum <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur adipiscing</a></qc-external-link> elit
+                    Lorem ipsum
+                    <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+                        adipiscing</a></qc-external-link>
+                    elit
                 </p>
                 <p class="qc-font-size-sm">
-                    Lorem ipsum <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur adipiscing</a></qc-external-link> elit
+                    Lorem ipsum
+                    <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+                        adipiscing</a></qc-external-link>
+                    elit
                 </p>
 
 
@@ -372,47 +401,49 @@
 
             <h4>Attributs</h4>
             <div class="table-overflow">
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Valeur attendue</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>img-alt</td>
                         <td>Texte</td>
                         <td>
                             <dl>
-                                <dt>Français</dt><dd>Ce lien dirige vers un autre site.</dd>
-                                <dt>Anglais</dt><dd>This link directs to another site.</dd>
+                                <dt>Français</dt>
+                                <dd>Ce lien dirige vers un autre site.</dd>
+                                <dt>Anglais</dt>
+                                <dd>This link directs to another site.</dd>
                             </dl>
                         </td>
                         <td>Texte alternatif de l’image du lien externe.</td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </div>
-            <hr />
+            <hr/>
 
             <!-- liste -->
             <h2 id="liste">Liste</h2>
             <qc-doc-exemple caption="Exemple de listes">
 
-                    <ul>
-                        <li>Élément de liste 1</li>
-                        <li>Élément de liste 2</li>
-                        <li>Élément de liste 3
-                            <ul>
-                                <li>Élément de liste 3.1</li>
-                                <li>Élément de liste 3.2</li>
-                            </ul>
-                        </li>
-                        <li>Élément de liste 4</li>
-                    </ul>
+                <ul>
+                    <li>Élément de liste 1</li>
+                    <li>Élément de liste 2</li>
+                    <li>Élément de liste 3
+                        <ul>
+                            <li>Élément de liste 3.1</li>
+                            <li>Élément de liste 3.2</li>
+                        </ul>
+                    </li>
+                    <li>Élément de liste 4</li>
+                </ul>
                 <ol>
                     <li>Élément de liste 1</li>
                     <li>Élément de liste 2</li>
@@ -437,33 +468,34 @@
                 <p>Lorem ipsum dolor sit amet</p>
             </qc-doc-exemple>
 
-            <hr />
+            <hr/>
 
             <!-- niveaux de titres -->
             <h2 id="titre">Niveaux de titres</h2>
             <qc-doc-exemple caption="Exemples de titres"
                             code-target-id="liste-titres"
+            >
+                <div role="presentation"
+                     id="liste-titres"
                 >
-                    <div role="presentation"
-                         id="liste-titres"
-                        >
-                        <h1 class="qc-h1">Titre de niveau 1</h1>
-                        <h1 id="exemple-titre-h1"
-                           class="qc-h1"><span class="qc-subhead ">Surtitre</span>Titre de niveau 1 avec surtitre
-                        </h1>
-                        <h2 class="qc-h2">Titre de niveau 2</h2>
-                        <h3 class="qc-h3">Titre de niveau 3</h3>
-                        <h4 class="qc-h4">Titre de niveau 4</h4>
-                        <h5 class="qc-h5">Titre de niveau 5</h5>
-                        <h6 class="qc-h6">Titre de niveau 6</h6>
-                    </div>
+                    <h1 class="qc-h1">Titre de niveau 1</h1>
+                    <h1 id="exemple-titre-h1"
+                        class="qc-h1"><span class="qc-subhead ">Surtitre</span>Titre de niveau 1 avec surtitre
+                    </h1>
+                    <h2 class="qc-h2">Titre de niveau 2</h2>
+                    <h3 class="qc-h3">Titre de niveau 3</h3>
+                    <h4 class="qc-h4">Titre de niveau 4</h4>
+                    <h5 class="qc-h5">Titre de niveau 5</h5>
+                    <h6 class="qc-h6">Titre de niveau 6</h6>
+                </div>
             </qc-doc-exemple>
 
-            <hr />
+            <hr/>
 
             <!-- ombrages -->
             <h2 id="ombrages">Ombrages</h2>
-            <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>, X étant le niveau d’élévation. </p>
+            <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>,
+                X étant le niveau d’élévation. </p>
             <qc-doc-exemple
                     caption="Exemple des différents niveaux d’élévation."
                     code-target-id="liste-elevation">
@@ -476,16 +508,28 @@
                 </div>
             </qc-doc-exemple>
 
-            <hr />
+            <hr/>
 
             <!-- paragraphes -->
             <h2 id="paragraphes">Paragraphes</h2>
             <qc-doc-exemple caption="Exemple de paragraphe">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor. Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse potenti. Donec a risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium, vitae fermentum nulla varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum erat.</p>
-                <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus. Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a blandit. Etiam vitae augue id dui interdum viverra. In at metus nec augue accumsan iaculis. Suspendisse interdum, orci quis posuere ultrices, neque orci gravida diam, eu gravida nulla justo ac nisi. Nullam vitae sapien id augue imperdiet vehicula id et risus. Cras egestas aliquam magna eu aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor.
+                    Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet nisi tempus, ut
+                    euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget cursus. Suspendisse
+                    potenti. Donec a risus viverra dolor sodales elementum. In lobortis ligula vitae libero pretium,
+                    vitae fermentum nulla varius. Sed felis libero, facilisis vitae turpis in, ullamcorper bibendum
+                    erat.</p>
+                <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus.
+                    Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor. Mauris
+                    odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum metus a
+                    blandit. Etiam vitae augue id dui interdum viverra. In at metus nec augue accumsan iaculis.
+                    Suspendisse interdum, orci quis posuere ultrices, neque orci gravida diam, eu gravida nulla justo ac
+                    nisi. Nullam vitae sapien id augue imperdiet vehicula id et risus. Cras egestas aliquam magna eu
+                    aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit
+                    dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
             </qc-doc-exemple>
 
-            <hr />
+            <hr/>
 
             <!-- polices de caractères -->
             <h2 id="polices">Polices de caractères</h2>
@@ -493,7 +537,7 @@
                 <h3><strong>Roboto</strong></h3>
                 <qc-doc-exemple id="font-roboto"
                                 caption="Exemple de texte en roboto, avec différentes graisses."
-                    >
+                >
                     <div style="font-family: var(--qc-font-family-header);">
                         <p style="font-weight:var(--qc-font-weight-header-regular);">
                             ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
@@ -509,13 +553,13 @@
                         </p>
                     </div>
                 </qc-doc-exemple>
-<!--                <qc-code target-id="font-roboto"></qc-code>-->
+                <!--                <qc-code target-id="font-roboto"></qc-code>-->
             </div>
             <div>
                 <h3><strong>Open Sans</strong></h3>
                 <qc-doc-exemple id="font-open-sans"
                                 caption="Exemple de texte en open sans, avec différentes graisses."
-                    >
+                >
                     <div style="font-family: var(--qc-font-family-content);">
                         <p style="font-weight:var(--qc-font-weight-content-regular);">
                             ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,abcdefghijklmnopqrstuvwxyz0123456789<br>
@@ -531,7 +575,7 @@
                         </p>
                     </div>
                 </qc-doc-exemple>
-<!--                <qc-code target-id="font-open-sans"></qc-code>-->
+                <!--                <qc-code target-id="font-open-sans"></qc-code>-->
             </div>
 
             <!-- Séparateur -->
@@ -539,13 +583,13 @@
 
             <qc-doc-exemple caption="Exemple de séparateur">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-                <hr />
+                <hr/>
                 <p>A autem consequuntur cum cupiditate dignissimos, dolore doloribus,</p>
             </qc-doc-exemple>
 
-<!--            <qc-code target-id="separateur-exemple"></qc-code>-->
+            <!--            <qc-code target-id="separateur-exemple"></qc-code>-->
 
-            <hr />
+            <hr/>
 
             <!-- alerte générale -->
             <h2 id="alert">Alerte générale (qc-alert)</h2>
@@ -553,7 +597,7 @@
             <h4>Alerte jaune</h4>
             <p>
                 <a href="javascript:;"
-                  id="show-qc-alert"
+                   id="show-qc-alert"
                    hidden
                 >
                     Réafficher l'alerte
@@ -561,81 +605,86 @@
             </p>
 
             <qc-doc-exemple id="alert-warning"
-                            caption="Exemple d'alerte jaune" >
-            <qc-alert id="alerte-masquable"
-                      type="warning"
-                      maskable="true"
-                      content="Alerte jaune d'importance élevée"
-            >
-            </qc-alert>
+                            caption="Exemple d'alerte jaune">
+                <qc-alert id="alerte-masquable"
+                          type="warning"
+                          maskable="true"
+                          content="Alerte jaune d'importance élevée"
+                >
+                </qc-alert>
             </qc-doc-exemple>
-<!--            <qc-code target-id="alert-warning"></qc-code>-->
+            <!--            <qc-code target-id="alert-warning"></qc-code>-->
 
             <h4>Alerte bleue</h4>
             <qc-doc-exemple id="alert-general"
-                            caption="Exemple d'alerte générale" >
+                            caption="Exemple d'alerte générale">
                 <qc-alert type="general"
                           maskable="false">
                     <p>Alerte bleue d'importance modérée <a href="javascript:;">avec un lien textuel</a></p>
                 </qc-alert>
             </qc-doc-exemple>
 
-<!--            <qc-code target-id="alert-general"></qc-code>-->
+            <!--            <qc-code target-id="alert-general"></qc-code>-->
 
             <h3>Documentation technique</h3>
 
             <h4>Attributs</h4>
             <div class="table-overflow">
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Valeur attendue</th>
-                    <th>Valeur par défaut</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tr>
-                    <td>type</td>
-                    <td>"general" ou "warning"</td>
-                    <td>"general"</td>
-                    <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
-                </tr>
-                <tr>
-                    <td>maskable</td>
-                    <td>"true" ou "false"</td>
-                    <td>"true"</td>
-                    <td>Afficher le bouton de fermeture de l'alerte</td>
-                </tr>
-                <tr>
-                    <td>content</td>
-                    <td>Texte</td>
-                    <td>Chaine vide</td>
-                    <td>Afficher le contenu de l'alerte</td>
-                </tr>
-                <tr>
-                    <td>hide</td>
-                    <td>"true" ou "false"</td>
-                    <td>"false"</td>
-                    <td>Masque ou affiche l'alerte</td>
-                </tr>
-                <tr>
-                    <td>full-width</td>
-                    <td>"true" ou "false"</td>
-                    <td>"false"</td>
-                    <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css qc-container-fluid)</td>
-                </tr>
-            </table>
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>type</td>
+                        <td>"general" ou "warning"</td>
+                        <td>"general"</td>
+                        <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
+                    </tr>
+                    <tr>
+                        <td>maskable</td>
+                        <td>"true" ou "false"</td>
+                        <td>"true"</td>
+                        <td>Afficher le bouton de fermeture de l'alerte</td>
+                    </tr>
+                    <tr>
+                        <td>content</td>
+                        <td>Texte</td>
+                        <td>Chaine vide</td>
+                        <td>Afficher le contenu de l'alerte</td>
+                    </tr>
+                    <tr>
+                        <td>hide</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Masque ou affiche l'alerte</td>
+                    </tr>
+                    <tr>
+                        <td>full-width</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
+                            qc-container-fluid)
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             <h4>Événement JS</h4>
 
-            <p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de l'alerte</p>
+            <p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de
+                l'alerte</p>
             <script id="qc-alert-event-exemple">
                 /* Fermer l'alerte jaune pour voir un message dans la console de votre navigateur */
                 document.addEventListener(
                     'qc.alert.hide',
-                    (e) => { console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');}
+                    (e) => {
+                        console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');
+                    }
                 )
             </script>
             <qc-code target-id="qc-alert-event-exemple"
@@ -646,24 +695,24 @@
             <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
             <qc-doc-exemple caption="Présentation des zone d'ajout de contenu"
                             hide-code
-                >
+            >
                 <qc-alert id="qc-alert-slots">
                     <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
                         Contenu par défaut
                     </div>
                 </qc-alert>
             </qc-doc-exemple>
-<!--            <qc-code target-id="qc-alert-slots"></qc-code>-->
+            <!--            <qc-code target-id="qc-alert-slots"></qc-code>-->
 
-            <hr />
+            <hr/>
 
             <!-- avis -->
             <h2 id="notice">Avis (qc-notice)</h2>
             <h3>Exemples</h3>
 
             <qc-doc-exemple id="exemple-avis-neutre"
-                    caption="Exemple d’avis neutres"
-                >
+                            caption="Exemple d’avis neutres"
+            >
                 <qc-notice type="advice"
                            icon="ampoule"
                            title="Nouvelle règlementation"
@@ -682,11 +731,11 @@
                            content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
                 </qc-notice>
             </qc-doc-exemple>
-<!--            <qc-code target-id="exemple-avis-neutre" ></qc-code>-->
+            <!--            <qc-code target-id="exemple-avis-neutre" ></qc-code>-->
 
 
             <qc-doc-exemple id="exemple-avis-avertissement"
-                    caption="Exemple d’avertissement (avec et sans <i><code>slot</code></i>)"
+                            caption="Exemple d’avertissement (avec et sans <i><code>slot</code></i>)"
             >
                 <qc-notice type="warning"
                            title="Migration des <i>contenus</i>"
@@ -695,91 +744,95 @@
 
                 <qc-notice type="warning">
                     <h2>Migration des <i>contenus</i></h2>
-                    <p>Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.</p>
+                    <p>Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20
+                        avril.</p>
                 </qc-notice>
             </qc-doc-exemple>
 
-<!--            <qc-code target-id="exemple-avis-avertissement" ></qc-code>-->
+            <!--            <qc-code target-id="exemple-avis-avertissement" ></qc-code>-->
 
 
             <qc-doc-exemple id="exemple-avis-succes"
-                    caption="Exemple d’avis de succès"
+                            caption="Exemple d’avis de succès"
             >
                 <qc-notice type="success"
                            title="Votre demande d'inscription a été reçue"
                            content="Votre code de confirmation sera envoyé par courriel.">
                 </qc-notice>
             </qc-doc-exemple>
-<!--            <qc-code target-id="exemple-avis-succes" ></qc-code>-->
+            <!--            <qc-code target-id="exemple-avis-succes" ></qc-code>-->
 
 
             <qc-doc-exemple id="exemple-avis-erreur"
-                    caption="Exemple d’avis d’erreur"
+                            caption="Exemple d’avis d’erreur"
             >
-            <qc-notice type="error"
-                       title="Des erreurs sont présentes dans le formulaire.">
-                <ul>
-                    <li>
-                        <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
-                    </li>
-                </ul>
-            </qc-notice>
+                <qc-notice type="error"
+                           title="Des erreurs sont présentes dans le formulaire.">
+                    <ul>
+                        <li>
+                            <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
+                        </li>
+                    </ul>
+                </qc-notice>
             </qc-doc-exemple>
 
-<!--            <qc-code target-id="exemple-avis-erreur" ></qc-code>-->
+            <!--            <qc-code target-id="exemple-avis-erreur" ></qc-code>-->
 
             <h3>Documentation technique</h3>
 
             <h4>Attributs</h4>
             <div class="table-overflow">
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Valeur attendue</th>
                         <th>Valeur par défaut</th>
                         <th>Description</th>
                     </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>title</td>
-                    <td>Texte</td>
-                    <td>Chaine vide</td>
-                    <td>Titre de l'avis</td>
-                </tr>
-                <tr>
-                    <td>type</td>
-                    <td>information, warning, success, error, advice, note</td>
-                    <td>information (si absence de type)</td>
-                    <td>Le type d'avis</td>
-                </tr>
-                <tr>
-                    <td>content</td>
-                    <td>Texte</td>
-                    <td>Chaîne vide</td>
-                    <td>Le contenu de l'avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
-                </tr>
-                <tr>
-                    <td>header</td>
-                    <td>h1,h3,h2,h3,h4,h5,h6</td>
-                    <td>h2</td>
-                    <td>La balise du niveau de titre de l'avis</td>
-                </tr>
-                <tr>
-                    <td>icon</td>
-                    <td>Toute clé de la map $images dans settings/_base.scss</td>
-                    <td>information <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon> (si absence de type)</td>
-                    <td>Défini l’icône pour les avis neutres</td>
-                </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>title</td>
+                        <td>Texte</td>
+                        <td>Chaine vide</td>
+                        <td>Titre de l'avis</td>
+                    </tr>
+                    <tr>
+                        <td>type</td>
+                        <td>information, warning, success, error, advice, note</td>
+                        <td>information (si absence de type)</td>
+                        <td>Le type d'avis</td>
+                    </tr>
+                    <tr>
+                        <td>content</td>
+                        <td>Texte</td>
+                        <td>Chaîne vide</td>
+                        <td>Le contenu de l'avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
+                    </tr>
+                    <tr>
+                        <td>header</td>
+                        <td>h1,h3,h2,h3,h4,h5,h6</td>
+                        <td>h2</td>
+                        <td>La balise du niveau de titre de l'avis</td>
+                    </tr>
+                    <tr>
+                        <td>icon</td>
+                        <td>Toute clé de la map $images dans settings/_base.scss</td>
+                        <td>information
+                            <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon>
+                            (si absence de type)
+                        </td>
+                        <td>Défini l’icône pour les avis neutres</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <h4>Zone d'ajout de contenu HTML</h4>
 
@@ -788,14 +841,14 @@
             <qc-doc-exemple id="presentation-slots-avis"
                             caption="Présentation des emplacements disponibles dans les avis."
                             hide-code
-                >
+            >
                 <qc-notice id="qc-notice-slots">
                     <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
                         Contenu par défaut
                     </div>
                 </qc-notice>
             </qc-doc-exemple>
-<!--            <qc-code target-id="presentation-slots-avis" ></qc-code>-->
+            <!--            <qc-code target-id="presentation-slots-avis" ></qc-code>-->
 
             <h2 id="search-bar">Barre de recherche</h2>
             <h3>Exemples</h3>
@@ -811,7 +864,7 @@
 
                 <div style="margin: var(--qc-spacer-content-block-mb) 0 0;
                             padding: var(--qc-spacer-md);
-                            background-color: var(--qc-color-blue-piv);" >
+                            background-color: var(--qc-color-blue-piv);">
                     <qc-search-bar piv-background></qc-search-bar>
                 </div>
 
@@ -819,7 +872,9 @@
 
             <h3>Saisie semi-automatique (<i>autocomplete</i>)</h3>
 
-            <p>La barre de recherche n’offre pas encore la possibilité d’ajouter des suggestions à la saisie de texte. Cependant il vous est possible d’utiliser votre propre bibliothèque javascript. Voici un exemple avec jQuery UI.</p>
+            <p>La barre de recherche n’offre pas encore la possibilité d’ajouter des suggestions à la saisie de texte.
+                Cependant il vous est possible d’utiliser votre propre bibliothèque javascript. Voici un exemple avec
+                jQuery UI.</p>
 
             <qc-doc-exemple caption="Exemple de barre de recherche avec saisie semi-automatique basée sur jQuery UI">
 
@@ -829,12 +884,12 @@
                 <qc-search-bar class="autocomplete-search-bar"
                                input-placeholder="Tapez 'aaa' pour faire apparaître de nombreuses suggestions…"
                                style="margin-bottom: var(--qc-spacer-content-block-mb)"
-                    ></qc-search-bar>
+                ></qc-search-bar>
 
                 <script>
-                    $(function() {
+                    $(function () {
                         $.widget("ui.autocomplete", $.ui.autocomplete, {
-                            _resizeMenu: function() {
+                            _resizeMenu: function () {
                                 // pour donner au panneau des suggestions la largeur de la barre de recherche
                                 let component = this.element.closest("qc-search-bar");
                                 this.menu.element.outerWidth(component.outerWidth());
@@ -843,14 +898,14 @@
                         // personnalisation des messages jquery ui pour le lecteur d’écran en français
                         $.extend($.ui.autocomplete.prototype.options.messages, {
                             noResults: "Aucun résultat trouvé.",
-                            results: function(count) {
+                            results: function (count) {
                                 let s = count > 1 ? "s" : ''
                                 return `${count} résultat${s} disponible${s}, utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`;
                             }
                         });
 
                         $(".autocomplete-search-bar input[type=search]").autocomplete({
-                            source: [...Array(1000)].map((v,k) => "aaaa - " + k)
+                            source: [...Array(1000)].map((v, k) => "aaaa - " + k)
                         });
                     })
 
@@ -858,7 +913,6 @@
                 </script>
 
             </qc-doc-exemple>
-
 
 
             <h3>Attributs</h3>
@@ -889,7 +943,8 @@
                         <td>input-*</td>
                         <td>na</td>
                         <td>na</td>
-                        <td>Tout attribut commençant par <code>input-</code> sera ajouté au champ texte du composant.</td>
+                        <td>Tout attribut commençant par <code>input-</code> sera ajouté au champ texte du composant.
+                        </td>
                     </tr>
                     <tr>
                         <td>submit-aria-label</td>
@@ -901,7 +956,9 @@
                         <td>submit-*</td>
                         <td>na</td>
                         <td>na</td>
-                        <td>Tout attribut commençant par <code>input-</code> sera ajouté au bouton du composant. Utile par exemple pour lui donner un nom et une valeur.</td>
+                        <td>Tout attribut commençant par <code>input-</code> sera ajouté au bouton du composant. Utile
+                            par exemple pour lui donner un nom et une valeur.
+                        </td>
                     </tr>
                     <tr>
                         <td>piv-background</td>
@@ -927,23 +984,23 @@
             <h4>Exemples</h4>
             <!-- TODO remplacer les aria-label des qc-doc-exemple par aria-labelby et cibler le titre -->
             <qc-doc-exemple id="pivEnteteExempleLiens"
-                           caption="Exemple de bandeau d’entête PIV de base"
-                >
+                            caption="Exemple de bandeau d’entête PIV de base"
+            >
                 <qc-piv-header alt-logo="Accédez à Québec.ca"
                                join-us-url="#join-us"
                                alt-language-url="#fakeEnglish"
                 >
                 </qc-piv-header>
             </qc-doc-exemple>
-<!--            <qc-code target-id="pivEnteteExempleLiens"></qc-code>-->
+            <!--            <qc-code target-id="pivEnteteExempleLiens"></qc-code>-->
 
             <qc-doc-exemple id="pivEnteteExempleRecherche"
-                           caption="Exemple de personnalisation des liens du bandeau d’entête PIV"
+                            caption="Exemple de personnalisation des liens du bandeau d’entête PIV"
             >
                 <qc-piv-header
-                               title-text="Nom du site"
-                               title-url="https://www.quebec.ca/"
-                               alt-logo="Accédez à Québec.ca"
+                        title-text="Nom du site"
+                        title-url="https://www.quebec.ca/"
+                        alt-logo="Accédez à Québec.ca"
                 >
                     <nav slot="links"
                          aria-label="Navigation PIV">
@@ -956,7 +1013,7 @@
                     </nav>
                 </qc-piv-header>
             </qc-doc-exemple>
-<!--            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>-->
+            <!--            <qc-code target-id="pivEnteteExempleRecherche"></qc-code>-->
 
             <qc-doc-exemple caption="Exemple de bandeau d’entête PIV avec recherche personnalisée"
 
@@ -988,16 +1045,16 @@
             <h4>Documentation technique</h4>
             <h5>Attributs</h5>
             <div class="table-overflow">
-            <table class="qc-table qc-striped component-attributes-description">
-                <thead>
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Valeur attendue</th>
                         <th>Valeur par défaut</th>
                         <th>Description</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>title-text</td>
                         <td>Texte</td>
@@ -1021,7 +1078,7 @@
                         <td>logo-src</td>
                         <td>Adresse</td>
                         <td>adresse du logo inclus dans la trousse</td>
-                        <td>Adresse du logo </td>
+                        <td>Adresse du logo</td>
                     </tr>
                     <tr>
                         <td>logo-alt</td>
@@ -1041,30 +1098,30 @@
                         <td>vide</td>
                         <td>L'url de l'autre langue. Si vide, le lien n'apparaît pas.</td>
                     </tr>
-                <tr>
-                    <td>join-us-text</td>
-                    <td>Texte</td>
-                    <td>Nous joindre/Contact us</td>
-                    <td>Texte du lien « Nous joindre »</td>
-                </tr>
+                    <tr>
+                        <td>join-us-text</td>
+                        <td>Texte</td>
+                        <td>Nous joindre/Contact us</td>
+                        <td>Texte du lien « Nous joindre »</td>
+                    </tr>
                     <tr>
                         <td>join-us-url</td>
                         <td>Adresse</td>
                         <td>Vide</td>
                         <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparait pas.</td>
                     </tr>
-                <tr>
-                    <td>go-to-content</td>
-                    <td>"true" ou "false"</td>
-                    <td>"true"</td>
-                    <td>Afficher ou non le lien pour aller directement au contenu.</td>
-                </tr>
-                <tr>
-                    <td>go-to-content-text</td>
-                    <td>Texte</td>
-                    <td>Passer au contenu/Skip to content</td>
-                    <td>Texte du lien pour passer directement au contenu.</td>
-                </tr>
+                    <tr>
+                        <td>go-to-content</td>
+                        <td>"true" ou "false"</td>
+                        <td>"true"</td>
+                        <td>Afficher ou non le lien pour aller directement au contenu.</td>
+                    </tr>
+                    <tr>
+                        <td>go-to-content-text</td>
+                        <td>Texte</td>
+                        <td>Passer au contenu/Skip to content</td>
+                        <td>Texte du lien pour passer directement au contenu.</td>
+                    </tr>
                     <tr>
                         <td>go-to-content-anchor</td>
                         <td>id du 1<sup>er</sup> élément de contenu</td>
@@ -1084,7 +1141,9 @@
                         <td>
                             Active la recherche dans le bandeau PIV :
                             <ul>
-                                <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors affiché ;</li>
+                                <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors
+                                    affiché ;
+                                </li>
                                 <li>au clic, il affiche le formulaire de recherche.</li>
                             </ul>
                         </td>
@@ -1093,23 +1152,29 @@
                         <td>show-search</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a pas été pressé).</td>
+                        <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a
+                            pas été pressé).
+                        </td>
                     </tr>
 
                     <tr>
                         <td>display-search-text</td>
                         <td>Texte</td>
                         <td>Cliquer pour faire une recherche / Click to search</td>
-                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour afficher la barre de recherche.</td>
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour afficher la
+                            barre de recherche.
+                        </td>
                     </tr>
                     <tr>
                         <td>hide-search-text</td>
                         <td>Texte</td>
                         <td>Masquer la barre de recherche / Hide search bar</td>
-                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour masquer la barre de recherche.</td>
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour masquer la
+                            barre de recherche.
+                        </td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </div>
             <h5>Zones d'ajout de contenu HTML</h5>
 
@@ -1117,11 +1182,11 @@
             <qc-doc-exemple id="qc-piv-header-slots"
                             caption="Présentation des zones d'ajout de contenu dans le PIV"
                             hide-code
-                >
+            >
                 <qc-piv-header
-                               style="margin-bottom: var(--qc-spacer-content-block-mb);"
-                               enable-search="true"
-                               show-search="true">
+                        style="margin-bottom: var(--qc-spacer-content-block-mb);"
+                        enable-search="true"
+                        show-search="true">
                     <div slot="search-zone"
                          style="border:2px dashed;padding: var(--qc-spacer-xs);">
                         slot="search-zone"
@@ -1134,7 +1199,7 @@
                 </qc-piv-header>
             </qc-doc-exemple>
 
-<!--            <qc-code target-id="qc-piv-header-slots"></qc-code>-->
+            <!--            <qc-code target-id="qc-piv-header-slots"></qc-code>-->
 
             <h3 id="piv-footer">Pied de page du PIV (qc-piv-footer)</h3>
 
@@ -1143,7 +1208,7 @@
 
             <qc-doc-exemple id="piv-footer-1"
                             caption="Exemple de pied de page du PIV de base">
-                <qc-piv-footer >
+                <qc-piv-footer>
                     <nav aria-label="Navigation du pied-de-page">
                         <ul>
                             <li><a href="/">Accessibilité</a></li>
@@ -1156,7 +1221,7 @@
                     </nav>
                 </qc-piv-footer>
             </qc-doc-exemple>
-<!--            <qc-code target-id="piv-footer-1"></qc-code>-->
+            <!--            <qc-code target-id="piv-footer-1"></qc-code>-->
 
             <qc-doc-exemple id="piv-footer-ex-2"
                             caption="Exemple de pied de page du PIV personnalisé."
@@ -1164,7 +1229,7 @@
                 <qc-piv-footer
                         logo-src="img/piv-MCE-theme-clair.svg"
                         logo-src-dark-theme="img/piv-MCE-theme-sombre.svg"
-                    >
+                >
                     <nav aria-label="Navigation du pied-de-page">
                         <ul>
                             <li><a href="/">Accessibilité</a></li>
@@ -1183,7 +1248,7 @@
                     </qc-external-link>
                 </qc-piv-footer>
             </qc-doc-exemple>
-<!--            <qc-code target-id="piv-footer-ex-2"></qc-code>-->
+            <!--            <qc-code target-id="piv-footer-ex-2"></qc-code>-->
 
             <h4>Documentation technique</h4>
 
@@ -1209,21 +1274,27 @@
                         <td>logo-src</td>
                         <td>Le chemin de l’image en thème clair.</td>
                         <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
-                        <td>Adresse de l'image du pied de page en thème clair (fond transparent, texte et drapeaux en couleur, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).</td>
+                        <td>Adresse de l'image du pied de page en thème clair (fond transparent, texte et drapeaux en
+                            couleur, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).
+                        </td>
                     </tr>
                     <tr>
                         <td>logo-src-dark-theme</td>
                         <td>Le chemin de l’image en thème sombre.</td>
                         <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
-                        <td>Adresse de l'image du pied de page en thème sombre  (fond transparent, texte et drapeaux en blanc, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).</td>
+                        <td>Adresse de l'image du pied de page en thème sombre (fond transparent, texte et drapeaux en
+                            blanc, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).
+                        </td>
                     </tr>
                     <tr>
                         <td>logo-alt</td>
                         <td>Texte</td>
                         <td>
                             <dl>
-                                <dt>Français</dt><dd>Logo du gouvernement du Québec</dd>
-                                <dt>Anglais</dt><dd>Logo of government of Québec</dd>
+                                <dt>Français</dt>
+                                <dd>Logo du gouvernement du Québec</dd>
+                                <dt>Anglais</dt>
+                                <dd>Logo of government of Québec</dd>
                             </dl>
                         </td>
                         <td>Texte alternatif du logo pour les lecteurs d'écran</td>
@@ -1251,8 +1322,10 @@
                         <td>Adresse</td>
                         <td>
                             <dl>
-                                <dt>Français</dt><dd>https://www.quebec.ca/droit-auteur</dd>
-                                <dt>Anglais</dt><dd>https://www.quebec.ca/en/copyright</dd>
+                                <dt>Français</dt>
+                                <dd>https://www.quebec.ca/droit-auteur</dd>
+                                <dt>Anglais</dt>
+                                <dd>https://www.quebec.ca/en/copyright</dd>
                             </dl>
                         </td>
                         <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
@@ -1261,7 +1334,12 @@
                 </table>
             </div>
 
-            <qc-notice type="information">Les images du pied de page PIV doivent respecter <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les normes graphiques du système d’identification visuel</a>. Nous vous invitons à privilégier le format SVG, qui permet de conserver la lisibilité de l’image en cas de zoom..</qc-external-link></qc-notice>
+            <qc-notice type="information">Les images du pied de page PIV doivent respecter
+                <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les
+                    normes graphiques du système d’identification visuel</a>. Nous vous invitons à privilégier le format
+                    SVG, qui permet de conserver la lisibilité de l’image en cas de zoom..
+                </qc-external-link>
+            </qc-notice>
 
             <h5>Zones d'ajout de contenu HTML</h5>
 
@@ -1269,7 +1347,7 @@
             <qc-doc-exemple id="qc-piv-footer-slots"
                             caption="Présentation des zones d'ajout de contenu du pied-de-page PIV">
                 <qc-piv-footer>
-                    <div  style="border:2px dashed;padding: var(--qc-spacer-xs);">
+                    <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
                         Contenu par défaut
                     </div>
                     <div slot="copyright"
@@ -1278,21 +1356,22 @@
                     </div>
                 </qc-piv-footer>
             </qc-doc-exemple>
-<!--            <qc-code target-id="qc-piv-footer-slots"></qc-code>-->
+            <!--            <qc-code target-id="qc-piv-footer-slots"></qc-code>-->
 
-<hr />
+            <hr/>
 
             <!-- haut de page -->
             <h2 id="toTop">Haut de page</h2>
             <p>
-                Le composant <i>haut de page</i> est la flèche qui permet à l'utilisateur de remonter vers le haut de page. Il s'affiche quand l'utilisateur commence à défiler vers le haut.
+                Le composant <i>haut de page</i> est la flèche qui permet à l'utilisateur de remonter vers le haut de
+                page. Il s'affiche quand l'utilisateur commence à défiler vers le haut.
                 Il disparaît quand l'utilisateur commence à défiler vers le bas.
             </p>
             <h4>Exemple</h4>
             <qc-doc-exemple caption="Présentation du composant retour en haut de page"
                             code-target-id="to-top-exemple"
-                >
-                <qc-to-top demo="true" />
+            >
+                <qc-to-top demo="true"/>
             </qc-doc-exemple>
             <div id="to-top-exemple">
                 <qc-to-top></qc-to-top>
@@ -1302,16 +1381,16 @@
 
             <h4>Attributs</h4>
             <div class="table-overflow">
-            <table class="qc-table qc-striped">
-                <thead>
+                <table class="qc-table qc-striped">
+                    <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Valeur attendue</th>
                         <th>Valeur par défaut</th>
                         <th>Description</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td>text</td>
                         <td>Texte</td>
@@ -1324,8 +1403,8 @@
                         <td>false</td>
                         <td>Pour utiliser le composant en démonstration uniquement.</td>
                     </tr>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -1333,5 +1412,5 @@
         <qc-piv-footer></qc-piv-footer>
     </footer>
     <script src='js/qc-doc-exemple.js'></script>
-</body>
-</html>
+    </body>
+    </html>
