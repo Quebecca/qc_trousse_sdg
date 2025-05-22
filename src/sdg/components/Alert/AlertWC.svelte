@@ -14,21 +14,11 @@
 
     import Alert from "./Alert.svelte";
 
-    let {
-        type = "general",
-        maskable = "",
-        content = "",
-        hide = "false",
-        fullWidth = "false",
-    } = $props();
+    const props = $props();
 
 </script>
 
  <Alert
-    {type}
-    {maskable}
-    {content}
-    {hide}
-    {fullWidth}
+    {...props}
     slotContent = {`<slot />`}
-></Alert>
+ />

@@ -7635,70 +7635,9 @@
 	);
 
 	function AlertWC($$anchor, $$props) {
-		push($$props, true);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 
-		let type = prop($$props, 'type', 7, "general"),
-			maskable = prop($$props, 'maskable', 7, ""),
-			content = prop($$props, 'content', 7, ""),
-			hide = prop($$props, 'hide', 7, "false"),
-			fullWidth = prop($$props, 'fullWidth', 7, "false");
-
-		Alert($$anchor, {
-			get type() {
-				return type();
-			},
-			get maskable() {
-				return maskable();
-			},
-			get content() {
-				return content();
-			},
-			get hide() {
-				return hide();
-			},
-			get fullWidth() {
-				return fullWidth();
-			},
-			slotContent: `<slot />`
-		});
-
-		return pop({
-			get type() {
-				return type();
-			},
-			set type($$value = "general") {
-				type($$value);
-				flushSync();
-			},
-			get maskable() {
-				return maskable();
-			},
-			set maskable($$value = "") {
-				maskable($$value);
-				flushSync();
-			},
-			get content() {
-				return content();
-			},
-			set content($$value = "") {
-				content($$value);
-				flushSync();
-			},
-			get hide() {
-				return hide();
-			},
-			set hide($$value = "false") {
-				hide($$value);
-				flushSync();
-			},
-			get fullWidth() {
-				return fullWidth();
-			},
-			set fullWidth($$value = "false") {
-				fullWidth($$value);
-				flushSync();
-			}
-		});
+		Alert($$anchor, spread_props(() => props, { slotContent: `<slot />` }));
 	}
 
 	customElements.define('qc-alert', create_custom_element(
