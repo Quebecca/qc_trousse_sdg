@@ -11,7 +11,6 @@
 	}
 
 	const PROPS_IS_IMMUTABLE = 1;
-	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
@@ -57,11 +56,6 @@
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
 
-	/** @param {Function} fn */
-	function run(fn) {
-		return fn();
-	}
-
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
 		for (var i = 0; i < arr.length; i++) {
@@ -86,8 +80,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
-	const LEGACY_DERIVED_PROP = 1 << 17;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -293,12 +285,7 @@
 		}
 	}
 
-	let legacy_mode_flag = false;
 	let tracing_mode_flag = false;
-
-	function enable_legacy_mode_flag() {
-		legacy_mode_flag = true;
-	}
 
 	/** @import { Source } from '#client' */
 
@@ -802,18 +789,6 @@
 	}
 
 	/**
-	 * @template V
-	 * @param {() => V} fn
-	 * @returns {Derived<V>}
-	 */
-	/*#__NO_SIDE_EFFECTS__*/
-	function derived_safe_equal(fn) {
-		const signal = derived(fn);
-		signal.equals = safe_equals;
-		return signal;
-	}
-
-	/**
 	 * @param {Derived} derived
 	 * @returns {void}
 	 */
@@ -1022,16 +997,6 @@
 	}
 
 	/**
-	 * Internal representation of `$effect.pre(...)`
-	 * @param {() => void | (() => void)} fn
-	 * @returns {Effect}
-	 */
-	function user_pre_effect(fn) {
-		validate_effect();
-		return render_effect(fn);
-	}
-
-	/**
 	 * Internal representation of `$effect.root(...)`
 	 * @param {() => void | (() => void)} fn
 	 * @returns {() => void}
@@ -1073,58 +1038,6 @@
 	 */
 	function effect(fn) {
 		return create_effect(EFFECT, fn, false);
-	}
-
-	/**
-	 * Internal representation of `$: ..`
-	 * @param {() => any} deps
-	 * @param {() => void | (() => void)} fn
-	 */
-	function legacy_pre_effect(deps, fn) {
-		var context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		/** @type {{ effect: null | Effect, ran: boolean }} */
-		var token = { effect: null, ran: false };
-		context.l.r1.push(token);
-
-		token.effect = render_effect(() => {
-			deps();
-
-			// If this legacy pre effect has already run before the end of the reset, then
-			// bail out to emulate the same behavior.
-			if (token.ran) return;
-
-			token.ran = true;
-			set(context.l.r2, true);
-			untrack(fn);
-		});
-	}
-
-	function legacy_pre_effect_reset() {
-		var context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		render_effect(() => {
-			if (!get(context.l.r2)) return;
-
-			// Run dirty `$:` statements
-			for (var token of context.l.r1) {
-				var effect = token.effect;
-
-				// If the effect is CLEAN, then make it MAYBE_DIRTY. This ensures we traverse through
-				// the effects dependencies and correctly ensure each dependency is up-to-date.
-				if ((effect.f & CLEAN) !== 0) {
-					set_signal_status(effect, MAYBE_DIRTY);
-				}
-
-				if (check_dirtiness(effect)) {
-					update_effect(effect);
-				}
-
-				token.ran = false;
-			}
-
-			context.l.r2.v = false; // set directly to avoid rerunning this effect
-		});
 	}
 
 	/**
@@ -2251,80 +2164,6 @@
 		signal.f = (signal.f & STATUS_MASK) | status;
 	}
 
-	/**
-	 * Possibly traverse an object and read all its properties so that they're all reactive in case this is `$state`.
-	 * Does only check first level of an object for performance reasons (heuristic should be good for 99% of all cases).
-	 * @param {any} value
-	 * @returns {void}
-	 */
-	function deep_read_state(value) {
-		if (typeof value !== 'object' || !value || value instanceof EventTarget) {
-			return;
-		}
-
-		if (STATE_SYMBOL in value) {
-			deep_read(value);
-		} else if (!Array.isArray(value)) {
-			for (let key in value) {
-				const prop = value[key];
-				if (typeof prop === 'object' && prop && STATE_SYMBOL in prop) {
-					deep_read(prop);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Deeply traverse an object and read all its properties
-	 * so that they're all reactive in case this is `$state`
-	 * @param {any} value
-	 * @param {Set<any>} visited
-	 * @returns {void}
-	 */
-	function deep_read(value, visited = new Set()) {
-		if (
-			typeof value === 'object' &&
-			value !== null &&
-			// We don't want to traverse DOM elements
-			!(value instanceof EventTarget) &&
-			!visited.has(value)
-		) {
-			visited.add(value);
-			// When working with a possible SvelteDate, this
-			// will ensure we capture changes to it.
-			if (value instanceof Date) {
-				value.getTime();
-			}
-			for (let key in value) {
-				try {
-					deep_read(value[key], visited);
-				} catch (e) {
-					// continue
-				}
-			}
-			const proto = get_prototype_of(value);
-			if (
-				proto !== Object.prototype &&
-				proto !== Array.prototype &&
-				proto !== Map.prototype &&
-				proto !== Set.prototype &&
-				proto !== Date.prototype
-			) {
-				const descriptors = get_descriptors(proto);
-				for (let key in descriptors) {
-					const get = descriptors[key].get;
-					if (get) {
-						try {
-							get.call(value);
-						} catch (e) {
-							// continue
-						}
-					}
-				}
-			}
-		}
-	}
-
 	/** @import { Derived, Effect, Source, Value } from '#client' */
 	const old_values = new Map();
 
@@ -2374,12 +2213,6 @@
 		const s = source(initial_value);
 		if (!immutable) {
 			s.equals = safe_equals;
-		}
-
-		// bind the signal to the component context, in case we need to
-		// track updates to trigger beforeUpdate/afterUpdate callbacks
-		if (legacy_mode_flag && component_context !== null && component_context.l !== null) {
-			(component_context.l.s ??= []).push(s);
 		}
 
 		return s;
@@ -2443,7 +2276,6 @@
 			// properly for itself, we need to ensure the current effect actually gets
 			// scheduled. i.e: `$effect(() => x++)`
 			if (
-				is_runes() &&
 				active_effect !== null &&
 				(active_effect.f & CLEAN) !== 0 &&
 				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
@@ -2460,22 +2292,6 @@
 	}
 
 	/**
-	 * @template {number | bigint} T
-	 * @param {Source<T>} source
-	 * @param {1 | -1} [d]
-	 * @returns {T}
-	 */
-	function update(source, d = 1) {
-		var value = get(source);
-		var result = d === 1 ? value++ : value--;
-
-		set(source, value);
-
-		// @ts-expect-error
-		return result;
-	}
-
-	/**
 	 * @param {Value} signal
 	 * @param {number} status should be DIRTY or MAYBE_DIRTY
 	 * @returns {void}
@@ -2483,8 +2299,6 @@
 	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
-
-		var runes = is_runes();
 		var length = reactions.length;
 
 		for (var i = 0; i < length; i++) {
@@ -2493,9 +2307,6 @@
 
 			// Skip any effects that are already dirty
 			if ((flags & DIRTY) !== 0) continue;
-
-			// In legacy mode, skip the current effect to prevent infinite loops
-			if (!runes && reaction === active_effect) continue;
 
 			set_signal_status(reaction, status);
 
@@ -2538,15 +2349,6 @@
 			x: null,
 			l: null
 		});
-
-		if (legacy_mode_flag && !runes) {
-			component_context.l = {
-				s: null,
-				u: null,
-				r1: [],
-				r2: source(false)
-			};
-		}
 
 		teardown(() => {
 			/** @type {ComponentContext} */ (ctx).d = true;
@@ -2591,7 +2393,7 @@
 
 	/** @returns {boolean} */
 	function is_runes() {
-		return !legacy_mode_flag || (component_context !== null && component_context.l === null);
+		return true;
 	}
 
 	/**
@@ -4267,84 +4069,6 @@
 		return element_or_component;
 	}
 
-	/** @import { ComponentContextLegacy } from '#client' */
-
-	/**
-	 * Legacy-mode only: Call `onMount` callbacks and set up `beforeUpdate`/`afterUpdate` effects
-	 * @param {boolean} [immutable]
-	 */
-	function init(immutable = false) {
-		const context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		const callbacks = context.l.u;
-		if (!callbacks) return;
-
-		let props = () => deep_read_state(context.s);
-
-		if (immutable) {
-			let version = 0;
-			let prev = /** @type {Record<string, any>} */ ({});
-
-			// In legacy immutable mode, before/afterUpdate only fire if the object identity of a prop changes
-			const d = derived(() => {
-				let changed = false;
-				const props = context.s;
-				for (const key in props) {
-					if (props[key] !== prev[key]) {
-						prev[key] = props[key];
-						changed = true;
-					}
-				}
-				if (changed) version++;
-				return version;
-			});
-
-			props = () => get(d);
-		}
-
-		// beforeUpdate
-		if (callbacks.b.length) {
-			user_pre_effect(() => {
-				observe_all(context, props);
-				run_all(callbacks.b);
-			});
-		}
-
-		// onMount (must run before afterUpdate)
-		user_effect(() => {
-			const fns = untrack(() => callbacks.m.map(run));
-			return () => {
-				for (const fn of fns) {
-					if (typeof fn === 'function') {
-						fn();
-					}
-				}
-			};
-		});
-
-		// afterUpdate
-		if (callbacks.a.length) {
-			user_effect(() => {
-				observe_all(context, props);
-				run_all(callbacks.a);
-			});
-		}
-	}
-
-	/**
-	 * Invoke the getter of all signals associated with a component
-	 * so they can be registered to the effect this function is called in.
-	 * @param {ComponentContextLegacy} context
-	 * @param {(() => void)} props
-	 */
-	function observe_all(context, props) {
-		if (context.l.s) {
-			for (const signal of context.l.s) get(signal);
-		}
-
-		props();
-	}
-
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
 	/** @import { EventDispatcher } from './index.js' */
 	/** @import { NotFunction } from './internal/types.js' */
@@ -4368,23 +4092,12 @@
 			lifecycle_outside_component();
 		}
 
-		if (legacy_mode_flag && component_context.l !== null) {
-			init_update_callbacks(component_context).m.push(fn);
-		} else {
+		{
 			user_effect(() => {
 				const cleanup = untrack(fn);
 				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
 			});
 		}
-	}
-
-	/**
-	 * Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
-	 * @param {ComponentContext} context
-	 */
-	function init_update_callbacks(context) {
-		var l = /** @type {ComponentContextLegacy} */ (context).l;
-		return (l.u ??= { a: [], b: [], m: [] });
 	}
 
 	/** @import { StoreReferencesContainer } from '#client' */
@@ -4466,70 +4179,6 @@
 	}
 
 	/**
-	 * The proxy handler for legacy $$restProps and $$props
-	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, special: Record<string | symbol, (v?: unknown) => unknown>, version: Source<number> }>}}
-	 */
-	const legacy_rest_props_handler = {
-		get(target, key) {
-			if (target.exclude.includes(key)) return;
-			get(target.version);
-			return key in target.special ? target.special[key]() : target.props[key];
-		},
-		set(target, key, value) {
-			if (!(key in target.special)) {
-				// Handle props that can temporarily get out of sync with the parent
-				/** @type {Record<string, (v?: unknown) => unknown>} */
-				target.special[key] = prop(
-					{
-						get [key]() {
-							return target.props[key];
-						}
-					},
-					/** @type {string} */ (key),
-					PROPS_IS_UPDATED
-				);
-			}
-
-			target.special[key](value);
-			update(target.version); // $$props is coarse-grained: when $$props.x is updated, usages of $$props.y etc are also rerun
-			return true;
-		},
-		getOwnPropertyDescriptor(target, key) {
-			if (target.exclude.includes(key)) return;
-			if (key in target.props) {
-				return {
-					enumerable: true,
-					configurable: true,
-					value: target.props[key]
-				};
-			}
-		},
-		deleteProperty(target, key) {
-			// Svelte 4 allowed for deletions on $$restProps
-			if (target.exclude.includes(key)) return true;
-			target.exclude.push(key);
-			update(target.version);
-			return true;
-		},
-		has(target, key) {
-			if (target.exclude.includes(key)) return false;
-			return key in target.props;
-		},
-		ownKeys(target) {
-			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.includes(key));
-		}
-	};
-
-	/**
-	 * @param {Record<string, unknown>} props
-	 * @param {string[]} exclude
-	 * @returns {Record<string, unknown>}
-	 */
-	function legacy_rest_props(props, exclude) {
-		return new Proxy({ props, exclude, special: {}, version: source(0) }, legacy_rest_props_handler);
-	}
-
-	/**
 	 * @param {Derived} current_value
 	 * @returns {boolean}
 	 */
@@ -4549,7 +4198,7 @@
 	 */
 	function prop(props, key, flags, fallback) {
 		var immutable = (flags & PROPS_IS_IMMUTABLE) !== 0;
-		var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
+		var runes = true;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 		var is_store_sub = false;
@@ -4600,25 +4249,13 @@
 
 		/** @type {() => V} */
 		var getter;
-		if (runes) {
+		{
 			getter = () => {
 				var value = /** @type {V} */ (props[key]);
 				if (value === undefined) return get_fallback();
 				fallback_dirty = true;
 				fallback_used = false;
 				return value;
-			};
-		} else {
-			// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
-			// Replicate that behavior through using a derived
-			var derived_getter = (immutable ? derived : derived_safe_equal)(
-				() => /** @type {V} */ (props[key])
-			);
-			derived_getter.f |= LEGACY_DERIVED_PROP;
-			getter = () => {
-				var value = get(derived_getter);
-				if (value !== undefined) fallback_value = /** @type {V} */ (undefined);
-				return value === undefined ? fallback_value : value;
 			};
 		}
 
@@ -4637,7 +4274,7 @@
 					// In that case the state proxy (if it exists) should take care of the notification.
 					// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
 					// has changed because the parent will not be able to detect the change otherwise.
-					if (!runes || !mutation || legacy_parent || is_store_sub) {
+					if (!mutation || legacy_parent || is_store_sub) {
 						/** @type {Function} */ (setter)(mutation ? getter() : value);
 					}
 					return value;
@@ -4676,7 +4313,7 @@
 		return function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
 
 			if (arguments.length > 0) {
-				const new_value = mutation ? get(current_value) : runes && bindable ? proxy(value) : value;
+				const new_value = mutation ? get(current_value) : bindable ? proxy(value) : value;
 
 				if (!current_value.equals(new_value)) {
 					from_child = true;
@@ -73288,8 +72925,6 @@
 		true
 	));
 
-	enable_legacy_mode_flag();
-
 	var root$2 = template(`<div class="switch qc-hash-qsg5d6"><input> <span class="slider round qc-hash-qsg5d6"></span></div>`);
 
 	const $$css$2 = {
@@ -73298,28 +72933,25 @@
 	};
 
 	function Switch($$anchor, $$props) {
-		const $$sanitized_props = legacy_rest_props($$props, [
-			'children',
-			'$$slots',
-			'$$events',
-			'$$legacy',
-			'$$host'
-		]);
-
-		const $$restProps = legacy_rest_props($$sanitized_props, ['value', 'name', 'color']);
-
-		push($$props, false);
+		push($$props, true);
 		append_styles$1($$anchor, $$css$2);
 
-		let value = prop($$props, 'value', 12, false),
-			name = prop($$props, 'name', 12, 'switch'),
-			color = prop($$props, 'color', 28, () => ({
+		let value = prop($$props, 'value', 15, false),
+			name = prop($$props, 'name', 7, 'switch'),
+			color = prop($$props, 'color', 23, () => ({
 				unchecked: 'grey-light',
 				checked: 'blue-regular',
 				slider: 'background'
-			}));
-
-		init();
+			})),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'value',
+				'name',
+				'color'
+			]);
 
 		var div = root$2();
 		var input = child(div);
@@ -73345,7 +72977,7 @@
 					role: 'switch',
 					name: name(),
 					'aria-checked': value(),
-					...$$restProps
+					...rest
 				},
 				'qc-hash-qsg5d6'
 			);
@@ -73358,21 +72990,27 @@
 			get value() {
 				return value();
 			},
-			set value($$value) {
+			set value($$value = false) {
 				value($$value);
 				flushSync();
 			},
 			get name() {
 				return name();
 			},
-			set name($$value) {
+			set name($$value = 'switch') {
 				name($$value);
 				flushSync();
 			},
 			get color() {
 				return color();
 			},
-			set color($$value) {
+			set color(
+				$$value = {
+					unchecked: 'grey-light',
+					checked: 'blue-regular',
+					slider: 'background'
+				}
+			) {
 				color($$value);
 				flushSync();
 			}
@@ -73389,20 +73027,16 @@
 	};
 
 	function TopNav($$anchor, $$props) {
-		push($$props, false);
+		push($$props, true);
 		append_styles$1($$anchor, $$css$1);
 
-		let value = mutable_source(localStorage.getItem('dark-theme') === "true");
+		let value = state(localStorage.getItem('dark-theme') === "true");
 
-		legacy_pre_effect(() => (get(value)), () => {
+		user_effect(() => {
+			console.log("changed", get(value));
 			document.documentElement.classList.toggle('qc-dark-theme', get(value));
-		});
-
-		legacy_pre_effect(() => (get(value)), () => {
 			localStorage.setItem('dark-theme', get(value));
 		});
-
-		legacy_pre_effect_reset();
 
 		var div = root$1();
 		var div_1 = child(div);
@@ -73415,9 +73049,8 @@
 				return get(value);
 			},
 			set value($$value) {
-				set(value, $$value);
-			},
-			$$legacy: true
+				set(value, $$value, true);
+			}
 		});
 
 		reset(div_2);
