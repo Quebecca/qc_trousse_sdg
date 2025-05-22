@@ -6086,73 +6086,9 @@
 	};
 
 	function NoticeWC($$anchor, $$props) {
-		push($$props, true);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 
-		const defaultType = 'information';
-		const defaultHeader = 'h2';
-
-		let title = prop($$props, 'title', 7, ""),
-			type = prop($$props, 'type', 7, defaultType),
-			content = prop($$props, 'content', 7, ""),
-			header = prop($$props, 'header', 7, defaultHeader),
-			icon = prop($$props, 'icon', 7);
-
-		Notice($$anchor, {
-			get title() {
-				return title();
-			},
-			get type() {
-				return type();
-			},
-			get content() {
-				return content();
-			},
-			get header() {
-				return header();
-			},
-			get icon() {
-				return icon();
-			},
-			slotContent
-		});
-
-		return pop({
-			get title() {
-				return title();
-			},
-			set title($$value = "") {
-				title($$value);
-				flushSync();
-			},
-			get type() {
-				return type();
-			},
-			set type($$value = defaultType) {
-				type($$value);
-				flushSync();
-			},
-			get content() {
-				return content();
-			},
-			set content($$value = "") {
-				content($$value);
-				flushSync();
-			},
-			get header() {
-				return header();
-			},
-			set header($$value = defaultHeader) {
-				header($$value);
-				flushSync();
-			},
-			get icon() {
-				return icon();
-			},
-			set icon($$value) {
-				icon($$value);
-				flushSync();
-			}
-		});
+		Notice($$anchor, spread_props(() => props, { slotContent }));
 	}
 
 	customElements.define('qc-notice', create_custom_element(

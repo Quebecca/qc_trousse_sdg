@@ -12,16 +12,7 @@
 <script>
     import Notice from './Notice.svelte';
 
-    const defaultType = 'information';
-    const defaultHeader = 'h2';
-
-    let {
-        title = "",
-        type = defaultType,
-        content = "",
-        header = defaultHeader,
-        icon,
-    } = $props();
+    const props = $props();
 </script>
 
 {#snippet slotContent()}
@@ -30,10 +21,6 @@
 {/snippet}
 
 <Notice
-    {title}
-    {type}
-    {content}
-    {header}
-    {icon}
+    {...props}
     {slotContent}
 />
