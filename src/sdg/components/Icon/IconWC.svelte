@@ -14,23 +14,9 @@
 <script>
     import Icon from "./Icon.svelte";
 
-    let {
-        type,
-        label,
-        size = 'md',
-        color = 'text-primary',
-        width='auto',
-        height='auto',
-        ...rest
-    } = $props();
+    const props = $props();
 </script>
 
 <Icon
-    {type}
-    {label}
-    {size}
-    {color}
-    {width}
-    {height}
-    {...rest}
-></Icon>
+    {...props}
+/>
