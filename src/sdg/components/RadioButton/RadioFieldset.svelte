@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import RadioButton from "./RadioButton/RadioButton.svelte";
+    import RadioButton from "./RadioButton.svelte";
 
     let {
         fieldLegendName = "",
