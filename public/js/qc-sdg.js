@@ -8163,7 +8163,7 @@
 	var root_1 = template(`<legend> </legend>`);
 	var root$2 = template(`<fieldset><!> <div><!></div></fieldset>`);
 
-	function Fieldset($$anchor, $$props) {
+	function RadioFieldset($$anchor, $$props) {
 		push($$props, true);
 
 		let fieldLegendName = prop($$props, 'fieldLegendName', 7, ""),
@@ -8223,7 +8223,7 @@
 	}
 
 	create_custom_element(
-		Fieldset,
+		RadioFieldset,
 		{
 			fieldLegendName: {},
 			fieldDescribedBy: {},
@@ -8245,7 +8245,7 @@
 
 	var root$1 = template(`<div><!></div>`);
 
-	function FieldsetWC($$anchor, $$props) {
+	function RadioFieldsetWC($$anchor, $$props) {
 		push($$props, true);
 
 		let fieldLegendName = prop($$props, 'fieldLegendName', 7),
@@ -8254,7 +8254,7 @@
 		var div = root$1();
 		var node_1 = child(div);
 
-		Fieldset(node_1, {
+		RadioFieldset(node_1, {
 			get fieldLegendName() {
 				return fieldLegendName();
 			},
@@ -8285,8 +8285,8 @@
 		});
 	}
 
-	customElements.define('qc-fieldset', create_custom_element(
-		FieldsetWC,
+	customElements.define('qc-radio-fieldset', create_custom_element(
+		RadioFieldsetWC,
 		{
 			fieldLegendName: { attribute: 'field-legend-name' },
 			fieldDescribedBy: { attribute: 'field-described-by' }

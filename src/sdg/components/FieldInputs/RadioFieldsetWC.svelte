@@ -1,5 +1,5 @@
 <svelte:options customElement="{{
-    tag: 'qc-fieldset',
+    tag: 'qc-radio-fieldset',
     props: {
         fieldLegendName: {attribute:'field-legend-name'},
         fieldDescribedBy: {attribute: 'field-described-by'}
@@ -7,7 +7,7 @@
 }}" />
 
 <script>
-    import Fieldset from "./Fieldset.svelte";
+    import RadioFieldset from "./RadioFieldset.svelte";
 
     let { fieldLegendName, fieldDescribedBy } = $props();
 </script>
@@ -18,7 +18,7 @@
 {/snippet}
 
 <div>
-    <Fieldset
+    <RadioFieldset
         {fieldLegendName}
         {fieldDescribedBy}
         {options}
