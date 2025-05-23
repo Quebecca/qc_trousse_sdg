@@ -12,6 +12,9 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
+	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
+	const EACH_IS_CONTROLLED = 1 << 2;
+	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3454,7 +3457,9 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		{
+		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
+
+		if (is_controlled) {
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3603,6 +3608,8 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3614,6 +3621,9 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
+
+		/** @type {undefined | Set<EachItem>} */
+		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3632,6 +3642,19 @@
 
 		/** @type {number} */
 		var i;
+
+		if (is_animated) {
+			for (i = 0; i < length; i += 1) {
+				value = array[i];
+				key = get_key(value, i);
+				item = items.get(key);
+
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
+				}
+			}
+		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3663,12 +3686,16 @@
 				continue;
 			}
 
-			{
-				update_item(item, value, i);
+			if (should_update) {
+				update_item(item, value, i, flags);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
+				}
 			}
 
 			if (item !== current) {
@@ -3755,10 +3782,29 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = length === 0 ? anchor : null;
+				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
+
+				if (is_animated) {
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.measure();
+					}
+
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.fix();
+					}
+				}
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
+		}
+
+		if (is_animated) {
+			queue_micro_task(() => {
+				if (to_animate === undefined) return;
+				for (item of to_animate) {
+					item.a?.apply();
+				}
+			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -3773,11 +3819,13 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		{
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
 			internal_set(item.v, value);
 		}
 
-		{
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
 			item.i = index;
 		}
 	}
@@ -4485,6 +4533,29 @@
 		input.__on_r = remove_defaults;
 		queue_idle_task(remove_defaults);
 		add_form_reset_listener();
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
 	}
 
 	/**
@@ -5807,7 +5878,7 @@
 
 	}
 
-	var root$9 = template(`<div></div>`);
+	var root$b = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5832,7 +5903,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$9();
+		var div = root$b();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5911,7 +5982,7 @@
 		true
 	);
 
-	var root$8 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5957,7 +6028,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$8();
+		var fragment = root$a();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6105,7 +6176,7 @@
 		true
 	));
 
-	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6119,7 +6190,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$7 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$9 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6165,14 +6236,14 @@
 			}
 		});
 
-		var fragment = root$7();
+		var fragment = root$9();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$2();
+				var div_2 = root_1$3();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6916,9 +6987,9 @@
 		true
 	));
 
-	var root_1$1 = template(`<img>`);
+	var root_1$2 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
-	var root$6 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6936,7 +7007,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$6();
+		var fragment = root$8();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6956,7 +7027,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$1();
+				var img = root_1$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7284,7 +7355,7 @@
 		true
 	));
 
-	var root$5 = template(`<button><!></button>`);
+	var root$7 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7308,7 +7379,7 @@
 				'class'
 			]);
 
-		var button = root$5();
+		var button = root$7();
 		let attributes;
 		var node = child(button);
 
@@ -7407,8 +7478,8 @@
 		true
 	);
 
-	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$4 = template(`<!> <link rel="stylesheet">`, 1);
+	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7434,12 +7505,12 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$4();
+		var fragment = root$6();
 		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1();
+				var div = root_1$1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -7601,7 +7672,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$3 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$5 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7644,7 +7715,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$3();
+		var a = root$5();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7716,7 +7787,7 @@
 		false
 	));
 
-	var root$2 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$4 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7797,7 +7868,7 @@
 			});
 		});
 
-		var span_1 = root$2();
+		var span_1 = root$4();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7826,7 +7897,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$1 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$3 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7847,7 +7918,7 @@
 			]);
 
 		let searchInput;
-		var div = root$1();
+		var div = root$3();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7924,7 +7995,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root = template(`<div><!> <!></div>`);
+	var root$2 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -7978,7 +8049,7 @@
 			});
 		}
 
-		var div = root();
+		var div = root$2();
 		let classes;
 		var node = child(div);
 
@@ -8111,6 +8182,181 @@
 			icon: { attribute: 'icon' },
 			iconSize: { attribute: 'icon-size' },
 			iconColor: { attribute: 'icon-color' }
+		},
+		[],
+		[],
+		false
+	));
+
+	var root$1 = template(`<div><input type="radio"> <label></label></div>`);
+
+	function RadioButton($$anchor, $$props) {
+		push($$props, true);
+
+		let name = prop($$props, 'name', 7),
+			value = prop($$props, 'value', 7),
+			size = prop($$props, 'size', 7);
+
+		size() === "sm" ? "sm" : "md";
+		const displayedValue = value().startsWith("_") ? value().substring(1) : value();
+		var div = root$1();
+		var input = child(div);
+
+		remove_input_defaults(input);
+
+		var label = sibling(input, 2);
+
+		label.textContent = displayedValue;
+		reset(div);
+
+		template_effect(
+			($0) => {
+				set_attribute(input, 'id', value());
+				set_attribute(input, 'name', name());
+				set_value(input, value());
+				input.disabled = $0;
+				set_attribute(label, 'for', value());
+			},
+			[() => value().startsWith("_")]
+		);
+
+		append($$anchor, div);
+
+		return pop({
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(RadioButton, { name: {}, value: {}, size: {} }, [], [], true);
+
+	var root_1 = template(`<legend> </legend>`);
+	var root = template(`<fieldset><!> <!></fieldset>`);
+
+	function Fieldset($$anchor, $$props) {
+		push($$props, true);
+
+		let fieldInputType = prop($$props, 'fieldInputType', 7, "radio"),
+			fieldLegendName = prop($$props, 'fieldLegendName', 7, ""),
+			fieldValues = prop($$props, 'fieldValues', 31, () => proxy([])),
+			fieldName = prop($$props, 'fieldName', 7, ""),
+			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7, "");
+
+		let valuesArray = user_derived(() => JSON.parse(fieldValues().replace(/'/g, '"')));
+		var fieldset = root();
+		var node = child(fieldset);
+
+		{
+			var consequent = ($$anchor) => {
+				var legend = root_1();
+				var text = child(legend, true);
+
+				reset(legend);
+				template_effect(() => set_text(text, fieldLegendName()));
+				append($$anchor, legend);
+			};
+
+			if_block(node, ($$render) => {
+				if (fieldLegendName()) $$render(consequent);
+			});
+		}
+
+		var node_1 = sibling(node, 2);
+
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = comment();
+				var node_2 = first_child(fragment);
+
+				each(node_2, 17, () => get(valuesArray), index, ($$anchor, v) => {
+					RadioButton($$anchor, {
+						get name() {
+							return fieldName();
+						},
+						get value() {
+							return get(v);
+						}
+					});
+				});
+
+				append($$anchor, fragment);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (fieldInputType() === "radio") $$render(consequent_1);
+			});
+		}
+
+		reset(fieldset);
+		template_effect(() => set_attribute(fieldset, 'aria-describedby', fieldDescribedBy()));
+		append($$anchor, fieldset);
+
+		return pop({
+			get fieldInputType() {
+				return fieldInputType();
+			},
+			set fieldInputType($$value = "radio") {
+				fieldInputType($$value);
+				flushSync();
+			},
+			get fieldLegendName() {
+				return fieldLegendName();
+			},
+			set fieldLegendName($$value = "") {
+				fieldLegendName($$value);
+				flushSync();
+			},
+			get fieldValues() {
+				return fieldValues();
+			},
+			set fieldValues($$value = []) {
+				fieldValues($$value);
+				flushSync();
+			},
+			get fieldName() {
+				return fieldName();
+			},
+			set fieldName($$value = "") {
+				fieldName($$value);
+				flushSync();
+			},
+			get fieldDescribedBy() {
+				return fieldDescribedBy();
+			},
+			set fieldDescribedBy($$value = "") {
+				fieldDescribedBy($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-fieldset', create_custom_element(
+		Fieldset,
+		{
+			fieldInputType: { attribute: 'field-input-type' },
+			fieldLegendName: { attribute: 'field-legend-name' },
+			fieldValues: { attribute: 'field-values' },
+			fieldName: { attribute: 'field-name' },
+			fieldDescribedBy: { attribute: 'field-described-by' }
 		},
 		[],
 		[],
