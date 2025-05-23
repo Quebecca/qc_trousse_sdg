@@ -3,8 +3,8 @@
     import RadioButton from "./RadioButton.svelte";
 
     let {
-        fieldLegendName = "",
-        fieldDescribedBy = "",
+        radioLegendName = "",
+        radioDescribedBy = "",
         options = []
     } = $props();
 
@@ -15,9 +15,9 @@
     });
 </script>
 
-<fieldset aria-describedby={fieldDescribedBy}>
-    {#if fieldLegendName}
-        <legend>{fieldLegendName}</legend>
+<fieldset aria-describedby={radioDescribedBy}>
+    {#if radioLegendName}
+        <legend>{radioLegendName}</legend>
     {/if}
 
 
