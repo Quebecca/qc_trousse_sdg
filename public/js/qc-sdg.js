@@ -8308,8 +8308,8 @@
 	function RadioFieldset($$anchor, $$props) {
 		push($$props, true);
 
-		let fieldLegendName = prop($$props, 'fieldLegendName', 7, ""),
-			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7, ""),
+		let radioLegendName = prop($$props, 'radioLegendName', 7, ""),
+			radioDescribedBy = prop($$props, 'radioDescribedBy', 7, ""),
 			options = prop($$props, 'options', 23, () => []);
 
 		onMount(() => {
@@ -8327,12 +8327,12 @@
 				var text = child(legend, true);
 
 				reset(legend);
-				template_effect(() => set_text(text, fieldLegendName()));
+				template_effect(() => set_text(text, radioLegendName()));
 				append($$anchor, legend);
 			};
 
 			if_block(node, ($$render) => {
-				if (fieldLegendName()) $$render(consequent);
+				if (radioLegendName()) $$render(consequent);
 			});
 		}
 
@@ -8372,22 +8372,22 @@
 		}
 
 		reset(fieldset);
-		template_effect(() => set_attribute(fieldset, 'aria-describedby', fieldDescribedBy()));
+		template_effect(() => set_attribute(fieldset, 'aria-describedby', radioDescribedBy()));
 		append($$anchor, fieldset);
 
 		return pop({
-			get fieldLegendName() {
-				return fieldLegendName();
+			get radioLegendName() {
+				return radioLegendName();
 			},
-			set fieldLegendName($$value = "") {
-				fieldLegendName($$value);
+			set radioLegendName($$value = "") {
+				radioLegendName($$value);
 				flushSync();
 			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
+			get radioDescribedBy() {
+				return radioDescribedBy();
 			},
-			set fieldDescribedBy($$value = "") {
-				fieldDescribedBy($$value);
+			set radioDescribedBy($$value = "") {
+				radioDescribedBy($$value);
 				flushSync();
 			},
 			get options() {
@@ -8403,8 +8403,8 @@
 	create_custom_element(
 		RadioFieldset,
 		{
-			fieldLegendName: {},
-			fieldDescribedBy: {},
+			radioLegendName: {},
+			radioDescribedBy: {},
 			options: {}
 		},
 		[],
@@ -8417,19 +8417,19 @@
 	function RadioFieldsetWC($$anchor, $$props) {
 		push($$props, true);
 
-		let fieldLegendName = prop($$props, 'fieldLegendName', 7),
-			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7);
+		let radioLegendName = prop($$props, 'radioLegendName', 7),
+			radioDescribedBy = prop($$props, 'radioDescribedBy', 7);
 
 		const options = document.querySelectorAll("qc-radio-button");
 		var div = root();
 		var node = child(div);
 
 		RadioFieldset(node, {
-			get fieldLegendName() {
-				return fieldLegendName();
+			get radioLegendName() {
+				return radioLegendName();
 			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
+			get radioDescribedBy() {
+				return radioDescribedBy();
 			},
 			options
 		});
@@ -8438,18 +8438,18 @@
 		append($$anchor, div);
 
 		return pop({
-			get fieldLegendName() {
-				return fieldLegendName();
+			get radioLegendName() {
+				return radioLegendName();
 			},
-			set fieldLegendName($$value) {
-				fieldLegendName($$value);
+			set radioLegendName($$value) {
+				radioLegendName($$value);
 				flushSync();
 			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
+			get radioDescribedBy() {
+				return radioDescribedBy();
 			},
-			set fieldDescribedBy($$value) {
-				fieldDescribedBy($$value);
+			set radioDescribedBy($$value) {
+				radioDescribedBy($$value);
 				flushSync();
 			}
 		});
@@ -8458,8 +8458,8 @@
 	customElements.define('qc-radio-fieldset', create_custom_element(
 		RadioFieldsetWC,
 		{
-			fieldLegendName: { attribute: 'field-legend-name' },
-			fieldDescribedBy: { attribute: 'field-described-by' }
+			radioLegendName: { attribute: 'radio-legend-name' },
+			radioDescribedBy: { attribute: 'radio-described-by' }
 		},
 		[],
 		[],
