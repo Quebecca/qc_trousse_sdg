@@ -12,6 +12,9 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
+	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
+	const EACH_IS_CONTROLLED = 1 << 2;
+	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3454,7 +3457,9 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		{
+		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
+
+		if (is_controlled) {
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3603,6 +3608,8 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3614,6 +3621,9 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
+
+		/** @type {undefined | Set<EachItem>} */
+		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3632,6 +3642,19 @@
 
 		/** @type {number} */
 		var i;
+
+		if (is_animated) {
+			for (i = 0; i < length; i += 1) {
+				value = array[i];
+				key = get_key(value, i);
+				item = items.get(key);
+
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
+				}
+			}
+		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3663,12 +3686,16 @@
 				continue;
 			}
 
-			{
-				update_item(item, value, i);
+			if (should_update) {
+				update_item(item, value, i, flags);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
+				}
 			}
 
 			if (item !== current) {
@@ -3755,10 +3782,29 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = length === 0 ? anchor : null;
+				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
+
+				if (is_animated) {
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.measure();
+					}
+
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.fix();
+					}
+				}
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
+		}
+
+		if (is_animated) {
+			queue_micro_task(() => {
+				if (to_animate === undefined) return;
+				for (item of to_animate) {
+					item.a?.apply();
+				}
+			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -3773,11 +3819,13 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		{
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
 			internal_set(item.v, value);
 		}
 
-		{
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
 			item.i = index;
 		}
 	}
@@ -8160,143 +8208,7 @@
 		false
 	));
 
-	var root_1 = template(`<legend> </legend>`);
-	var root$2 = template(`<fieldset><!> <div><!></div></fieldset>`);
-
-	function RadioFieldset($$anchor, $$props) {
-		push($$props, true);
-
-		let fieldLegendName = prop($$props, 'fieldLegendName', 7, ""),
-			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7, ""),
-			options = prop($$props, 'options', 7);
-
-		var fieldset = root$2();
-		var node = child(fieldset);
-
-		{
-			var consequent = ($$anchor) => {
-				var legend = root_1();
-				var text = child(legend, true);
-
-				reset(legend);
-				template_effect(() => set_text(text, fieldLegendName()));
-				append($$anchor, legend);
-			};
-
-			if_block(node, ($$render) => {
-				if (fieldLegendName()) $$render(consequent);
-			});
-		}
-
-		var div = sibling(node, 2);
-		var node_1 = child(div);
-
-		snippet(node_1, () => options() ?? noop);
-		reset(div);
-		reset(fieldset);
-		template_effect(() => set_attribute(fieldset, 'aria-describedby', fieldDescribedBy()));
-		append($$anchor, fieldset);
-
-		return pop({
-			get fieldLegendName() {
-				return fieldLegendName();
-			},
-			set fieldLegendName($$value = "") {
-				fieldLegendName($$value);
-				flushSync();
-			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
-			},
-			set fieldDescribedBy($$value = "") {
-				fieldDescribedBy($$value);
-				flushSync();
-			},
-			get options() {
-				return options();
-			},
-			set options($$value) {
-				options($$value);
-				flushSync();
-			}
-		});
-	}
-
-	create_custom_element(
-		RadioFieldset,
-		{
-			fieldLegendName: {},
-			fieldDescribedBy: {},
-			options: {}
-		},
-		[],
-		[],
-		true
-	);
-
-	const options = ($$anchor) => {
-		var fragment = comment();
-		const contentHtml = user_derived(() => `<slot />`);
-		var node = first_child(fragment);
-
-		html(node, () => get(contentHtml));
-		append($$anchor, fragment);
-	};
-
-	var root$1 = template(`<div><!></div>`);
-
-	function RadioFieldsetWC($$anchor, $$props) {
-		push($$props, true);
-
-		let fieldLegendName = prop($$props, 'fieldLegendName', 7),
-			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7);
-
-		var div = root$1();
-		var node_1 = child(div);
-
-		RadioFieldset(node_1, {
-			get fieldLegendName() {
-				return fieldLegendName();
-			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
-			},
-			options
-		});
-
-		reset(div);
-		append($$anchor, div);
-
-		return pop({
-			get fieldLegendName() {
-				return fieldLegendName();
-			},
-			set fieldLegendName($$value) {
-				fieldLegendName($$value);
-				flushSync();
-			},
-			get fieldDescribedBy() {
-				return fieldDescribedBy();
-			},
-			set fieldDescribedBy($$value) {
-				fieldDescribedBy($$value);
-				flushSync();
-			}
-		});
-	}
-
-	customElements.define('qc-radio-fieldset', create_custom_element(
-		RadioFieldsetWC,
-		{
-			fieldLegendName: { attribute: 'field-legend-name' },
-			fieldDescribedBy: { attribute: 'field-described-by' }
-		},
-		[],
-		[],
-		true
-	));
-
-	var root = template(`<div><input type="radio"> <label> </label></div>`);
+	var root$2 = template(`<div><input type="radio"> <label> </label></div>`);
 
 	function RadioButton($$anchor, $$props) {
 		push($$props, true);
@@ -8308,7 +8220,7 @@
 			disabled = prop($$props, 'disabled', 7);
 
 		size() === "sm" ? "sm" : "md"; // const displayedValue = value.startsWith("_") ? value.substring(1) : value;
-		var div = root();
+		var div = root$2();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -8384,6 +8296,170 @@
 			size: { attribute: 'size' },
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled' }
+		},
+		[],
+		[],
+		false
+	));
+
+	var root_1 = template(`<legend> </legend>`);
+	var root$1 = template(`<fieldset><!> <!></fieldset>`);
+
+	function RadioFieldset($$anchor, $$props) {
+		push($$props, true);
+
+		let fieldLegendName = prop($$props, 'fieldLegendName', 7, ""),
+			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7, ""),
+			options = prop($$props, 'options', 23, () => []);
+
+		onMount(() => {
+			options().forEach((option) => {
+				option.parentNode.removeChild(option);
+			});
+		});
+
+		var fieldset = root$1();
+		var node = child(fieldset);
+
+		{
+			var consequent = ($$anchor) => {
+				var legend = root_1();
+				var text = child(legend, true);
+
+				reset(legend);
+				template_effect(() => set_text(text, fieldLegendName()));
+				append($$anchor, legend);
+			};
+
+			if_block(node, ($$render) => {
+				if (fieldLegendName()) $$render(consequent);
+			});
+		}
+
+		var node_1 = sibling(node, 2);
+
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = comment();
+				var node_2 = first_child(fragment);
+
+				each(node_2, 17, options, index, ($$anchor, option) => {
+					RadioButton($$anchor, {
+						get name() {
+							return get(option).name;
+						},
+						get value() {
+							return get(option).value;
+						},
+						get size() {
+							return get(option).size;
+						},
+						get checked() {
+							return get(option).checked;
+						},
+						get disabled() {
+							return get(option).disabled;
+						}
+					});
+				});
+
+				append($$anchor, fragment);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (options().length > 0) $$render(consequent_1);
+			});
+		}
+
+		reset(fieldset);
+		template_effect(() => set_attribute(fieldset, 'aria-describedby', fieldDescribedBy()));
+		append($$anchor, fieldset);
+
+		return pop({
+			get fieldLegendName() {
+				return fieldLegendName();
+			},
+			set fieldLegendName($$value = "") {
+				fieldLegendName($$value);
+				flushSync();
+			},
+			get fieldDescribedBy() {
+				return fieldDescribedBy();
+			},
+			set fieldDescribedBy($$value = "") {
+				fieldDescribedBy($$value);
+				flushSync();
+			},
+			get options() {
+				return options();
+			},
+			set options($$value = []) {
+				options($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		RadioFieldset,
+		{
+			fieldLegendName: {},
+			fieldDescribedBy: {},
+			options: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	var root = template(`<div><!></div>`);
+
+	function RadioFieldsetWC($$anchor, $$props) {
+		push($$props, true);
+
+		let fieldLegendName = prop($$props, 'fieldLegendName', 7),
+			fieldDescribedBy = prop($$props, 'fieldDescribedBy', 7);
+
+		const options = document.querySelectorAll("qc-radio-button");
+		var div = root();
+		var node = child(div);
+
+		RadioFieldset(node, {
+			get fieldLegendName() {
+				return fieldLegendName();
+			},
+			get fieldDescribedBy() {
+				return fieldDescribedBy();
+			},
+			options
+		});
+
+		reset(div);
+		append($$anchor, div);
+
+		return pop({
+			get fieldLegendName() {
+				return fieldLegendName();
+			},
+			set fieldLegendName($$value) {
+				fieldLegendName($$value);
+				flushSync();
+			},
+			get fieldDescribedBy() {
+				return fieldDescribedBy();
+			},
+			set fieldDescribedBy($$value) {
+				fieldDescribedBy($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-radio-fieldset', create_custom_element(
+		RadioFieldsetWC,
+		{
+			fieldLegendName: { attribute: 'field-legend-name' },
+			fieldDescribedBy: { attribute: 'field-described-by' }
 		},
 		[],
 		[],
