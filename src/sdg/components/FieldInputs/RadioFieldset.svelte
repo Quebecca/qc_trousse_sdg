@@ -1,9 +1,18 @@
 <script>
+    import {onMount} from "svelte";
+    import RadioButton from "./RadioButton/RadioButton.svelte";
+
     let {
         fieldLegendName = "",
         fieldDescribedBy = "",
-        options
+        options = []
     } = $props();
+
+    onMount(() => {
+        options.forEach((option) => {
+            option.parentNode.removeChild(option);
+        });
+    });
 </script>
 
 <fieldset aria-describedby={fieldDescribedBy}>
@@ -12,7 +21,15 @@
     {/if}
 
 
-    <div>
-        {@render options?.()}
-    </div>
+    {#if options.length > 0}
+        {#each options as option}
+            <RadioButton
+                name={option.name}
+                value={option.value}
+                size={option.size}
+                checked={option.checked}
+                disabled={option.disabled}
+            />
+        {/each}
+    {/if}
 </fieldset>

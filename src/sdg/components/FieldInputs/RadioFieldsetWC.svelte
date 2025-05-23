@@ -1,5 +1,6 @@
 <svelte:options customElement="{{
     tag: 'qc-radio-fieldset',
+    shadow: 'none',
     props: {
         fieldLegendName: {attribute:'field-legend-name'},
         fieldDescribedBy: {attribute: 'field-described-by'}
@@ -10,12 +11,8 @@
     import RadioFieldset from "./RadioFieldset.svelte";
 
     let { fieldLegendName, fieldDescribedBy } = $props();
+    const options = document.querySelectorAll("qc-radio-button");
 </script>
-
-{#snippet options()}
-    {@const contentHtml = `<slot />`}
-    {@html contentHtml}
-{/snippet}
 
 <div>
     <RadioFieldset
