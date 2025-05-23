@@ -8219,7 +8219,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7);
 
-		size() === "sm" ? "sm" : "md"; // const displayedValue = value.startsWith("_") ? value.substring(1) : value;
+		size() === "sm" ? "sm" : "md";
 		var div = root$2();
 		var input = child(div);
 
@@ -8288,19 +8288,19 @@
 		});
 	}
 
-	customElements.define('qc-radio-button', create_custom_element(
+	create_custom_element(
 		RadioButton,
 		{
-			name: { attribute: 'name' },
-			value: { attribute: 'value' },
-			size: { attribute: 'size' },
-			checked: { attribute: 'checked', type: 'Boolean' },
-			disabled: { attribute: 'disabled' }
+			name: {},
+			value: {},
+			size: {},
+			checked: {},
+			disabled: {}
 		},
 		[],
 		[],
-		false
-	));
+		true
+	);
 
 	var root_1 = template(`<legend> </legend>`);
 	var root$1 = template(`<fieldset><!> <!></fieldset>`);
@@ -8460,6 +8460,39 @@
 		{
 			fieldLegendName: { attribute: 'field-legend-name' },
 			fieldDescribedBy: { attribute: 'field-described-by' }
+		},
+		[],
+		[],
+		false
+	));
+
+	function RadioButtonWC($$anchor, $$props) {
+		push($$props, true);
+
+		let props = prop($$props, 'props', 7);
+
+		RadioButton($$anchor, spread_props(props));
+
+		return pop({
+			get props() {
+				return props();
+			},
+			set props($$value) {
+				props($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-radio-button', create_custom_element(
+		RadioButtonWC,
+		{
+			name: { attribute: 'name' },
+			value: { attribute: 'value' },
+			size: { attribute: 'size' },
+			checked: { attribute: 'checked' },
+			disabled: { attribute: 'disabled' },
+			props: {}
 		},
 		[],
 		[],
