@@ -2,22 +2,24 @@
     tag: 'qc-radio-fieldset',
     shadow: 'none',
     props: {
-        radioLegendName: {attribute:'radio-legend-name'},
-        radioDescribedBy: {attribute: 'radio-described-by'}
+        radioLegend: {attribute:'radio-legend'},
+        radioName: {attribute:'radio-name'},
+        radioSize: {attribute:'radio-size'},
     }
 }}" />
 
 <script>
     import RadioFieldset from "./RadioFieldset.svelte";
 
-    let { radioLegendName, radioDescribedBy } = $props();
+    let { radioLegend, radioName, radioSize } = $props();
     const options = document.querySelectorAll("qc-radio-button");
 </script>
 
 <div>
     <RadioFieldset
-        {radioLegendName}
-        {radioDescribedBy}
+        {radioLegend}
+        {radioName}
+        {radioSize}
         {options}
     />
 </div>

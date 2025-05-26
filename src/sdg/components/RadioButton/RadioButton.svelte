@@ -2,24 +2,24 @@
     import {Utils} from "../utils";
 
     let {
-        name,
-        value,
-        size,
-        checked = $bindable(false),
-        disabled
+        radioName,
+        radioValue,
+        radioSize,
+        radioChecked = $bindable(false),
+        radioDisabled
     } = $props();
 
-    const usedSize = size === "sm" ? "sm" : "md";
+    const usedSize = radioSize === "sm" ? "sm" : "md";
 </script>
 
 <div>
     <input
         type="radio"
-        id={value}
-        name={name}
-        value={value}
-        checked={Utils.isTruthy(checked)}
-        disabled={Utils.isTruthy(disabled)}
+        id={`${radioName}_${radioValue}`}
+        name={radioName}
+        value={radioValue}
+        checked={Utils.isTruthy(radioChecked)}
+        disabled={Utils.isTruthy(radioDisabled)}
     />
-    <label for={value}>{value}</label>
+    <label for={`${radioName}_${radioValue}`}>{radioValue}</label>
 </div>

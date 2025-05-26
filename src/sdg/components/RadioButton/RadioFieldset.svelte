@@ -3,8 +3,9 @@
     import RadioButton from "./RadioButton.svelte";
 
     let {
-        radioLegendName = "",
-        radioDescribedBy = "",
+        radioLegend = "",
+        radioName,
+        radioSize,
         options = []
     } = $props();
 
@@ -15,20 +16,20 @@
     });
 </script>
 
-<fieldset aria-describedby={radioDescribedBy}>
-    {#if radioLegendName}
-        <legend>{radioLegendName}</legend>
+<fieldset>
+    {#if radioLegend}
+        <legend>{radioLegend}</legend>
     {/if}
 
 
     {#if options.length > 0}
         {#each options as option}
             <RadioButton
-                name={option.name}
-                value={option.value}
-                size={option.size}
-                checked={option.checked}
-                disabled={option.disabled}
+                radioName={radioName ? radioName : option.radioName}
+                radioValue={option.radioValue}
+                radioSize={radioSize ? radioSize : option.radioSize}
+                radioChecked={option.radioChecked}
+                radioDisabled={option.radioDisabled}
             />
         {/each}
     {/if}

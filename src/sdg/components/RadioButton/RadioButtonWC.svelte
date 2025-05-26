@@ -2,11 +2,11 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        name: {attribute:'name'},
-        value: {attribute:'value'},
-        size: {attribute:'size'},
-        checked: {attribute: 'checked'},
-        disabled: {attribute:'disabled'}
+        radioName: {attribute:'radio-name'},
+        radioValue: {attribute:'radio-value'},
+        radioSize: {attribute:'radio-size'},
+        radioChecked: {attribute: 'radio-checked'},
+        radioDisabled: {attribute:'radio-disabled'}
     }
 }}" />
 
