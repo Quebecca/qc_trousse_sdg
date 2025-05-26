@@ -6,7 +6,8 @@
         radioValue: {attribute:'radio-value'},
         radioSize: {attribute:'radio-size'},
         radioChecked: {attribute: 'radio-checked'},
-        radioDisabled: {attribute:'radio-disabled'}
+        radioDisabled: {attribute:'radio-disabled'},
+        radioRequired: {attribute:'radio-required'}
     }
 }}" />
 

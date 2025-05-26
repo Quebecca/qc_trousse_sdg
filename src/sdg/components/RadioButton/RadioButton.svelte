@@ -5,8 +5,9 @@
         radioName,
         radioValue,
         radioSize,
-        radioChecked = $bindable(false),
-        radioDisabled
+        radioChecked = false,
+        radioDisabled,
+        radioRequired = true
     } = $props();
 
     const usedSize = radioSize === "sm" ? "sm" : "md";
@@ -20,6 +21,7 @@
         value={radioValue}
         checked={Utils.isTruthy(radioChecked)}
         disabled={Utils.isTruthy(radioDisabled)}
+        required={radioRequired}
     />
     <label for={`${radioName}_${radioValue}`}>{radioValue}</label>
 </div>
