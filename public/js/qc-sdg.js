@@ -8216,8 +8216,9 @@
 		let radioName = prop($$props, 'radioName', 7),
 			radioValue = prop($$props, 'radioValue', 7),
 			radioSize = prop($$props, 'radioSize', 7),
-			radioChecked = prop($$props, 'radioChecked', 15, false),
-			radioDisabled = prop($$props, 'radioDisabled', 7);
+			radioChecked = prop($$props, 'radioChecked', 7, false),
+			radioDisabled = prop($$props, 'radioDisabled', 7),
+			radioRequired = prop($$props, 'radioRequired', 7, true);
 
 		radioSize() === "sm" ? "sm" : "md";
 		var div = root$2();
@@ -8238,6 +8239,7 @@
 				set_value(input, radioValue());
 				set_checked(input, $0);
 				input.disabled = $1;
+				input.required = radioRequired();
 				set_attribute(label, 'for', `${radioName()}_${radioValue()}`);
 				set_text(text, radioValue());
 			},
@@ -8284,6 +8286,13 @@
 			set radioDisabled($$value) {
 				radioDisabled($$value);
 				flushSync();
+			},
+			get radioRequired() {
+				return radioRequired();
+			},
+			set radioRequired($$value = true) {
+				radioRequired($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8295,7 +8304,8 @@
 			radioValue: {},
 			radioSize: {},
 			radioChecked: {},
-			radioDisabled: {}
+			radioDisabled: {},
+			radioRequired: {}
 		},
 		[],
 		[],
@@ -8515,6 +8525,7 @@
 			radioSize: { attribute: 'radio-size' },
 			radioChecked: { attribute: 'radio-checked' },
 			radioDisabled: { attribute: 'radio-disabled' },
+			radioRequired: { attribute: 'radio-required' },
 			props: {}
 		},
 		[],
