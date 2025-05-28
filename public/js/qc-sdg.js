@@ -8220,8 +8220,11 @@
 			radioDisabled = prop($$props, 'radioDisabled', 7),
 			radioRequired = prop($$props, 'radioRequired', 7, true);
 
-		radioSize() === "sm" ? "sm" : "md";
+		const usedSize = radioSize() === "sm" ? "sm" : "md";
 		var div = root$2();
+
+		set_class(div, 1, `qc-radio-${usedSize}`);
+
 		var input = child(div);
 
 		remove_input_defaults(input);
