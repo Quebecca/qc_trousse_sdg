@@ -18,7 +18,7 @@
         parentGroup,
         ...rest
     } = $props();
-    
+
     let id = $derived(name + "_" + value);
 
     let restProps = $state({});

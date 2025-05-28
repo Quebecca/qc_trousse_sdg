@@ -12,6 +12,9 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
+	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
+	const EACH_IS_CONTROLLED = 1 << 2;
+	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3454,7 +3457,9 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		{
+		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
+
+		if (is_controlled) {
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3603,6 +3608,8 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3614,6 +3621,9 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
+
+		/** @type {undefined | Set<EachItem>} */
+		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3632,6 +3642,19 @@
 
 		/** @type {number} */
 		var i;
+
+		if (is_animated) {
+			for (i = 0; i < length; i += 1) {
+				value = array[i];
+				key = get_key(value, i);
+				item = items.get(key);
+
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
+				}
+			}
+		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3663,12 +3686,16 @@
 				continue;
 			}
 
-			{
-				update_item(item, value, i);
+			if (should_update) {
+				update_item(item, value, i, flags);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
+				}
 			}
 
 			if (item !== current) {
@@ -3755,10 +3782,29 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = length === 0 ? anchor : null;
+				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
+
+				if (is_animated) {
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.measure();
+					}
+
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.fix();
+					}
+				}
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
+		}
+
+		if (is_animated) {
+			queue_micro_task(() => {
+				if (to_animate === undefined) return;
+				for (item of to_animate) {
+					item.a?.apply();
+				}
+			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -3773,11 +3819,13 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		{
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
 			internal_set(item.v, value);
 		}
 
-		{
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
 			item.i = index;
 		}
 	}
@@ -4146,6 +4194,31 @@
 		}
 	}
 
+	/**
+	 * @param {Node} anchor
+	 * @param {{ hash: string, code: string }} css
+	 */
+	function append_styles$1(anchor, css) {
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		queue_micro_task(() => {
+			var root = anchor.getRootNode();
+
+			var target = /** @type {ShadowRoot} */ (root).host
+				? /** @type {ShadowRoot} */ (root)
+				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
+
+			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
+			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
+			if (!target.querySelector('#' + css.hash)) {
+				const style = document.createElement('style');
+				style.id = css.hash;
+				style.textContent = css.code;
+
+				target.appendChild(style);
+			}
+		});
+	}
+
 	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 	/**
@@ -4485,6 +4558,49 @@
 		input.__on_r = remove_defaults;
 		queue_idle_task(remove_defaults);
 		add_form_reset_listener();
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {boolean} checked
+	 */
+	function set_checked(element, checked) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.checked ===
+			(attributes.checked =
+				// treat null and undefined the same for the initial value
+				checked ?? undefined)
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.checked = checked;
 	}
 
 	/**
@@ -5744,10 +5860,6 @@
 				}
 			});
 		});
-		if (extend) {
-			// @ts-expect-error - assigning here is fine
-			Class = extend(Class);
-		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
 	}
@@ -6110,7 +6222,7 @@
 	));
 
 	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6203,7 +6315,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
+				var div_5 = root_2();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8121,580 +8233,303 @@
 		false
 	));
 
-	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
-	var root_1 = template(`<legend> <!></legend>`);
-	var root$1 = template(`<div><fieldset><!> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+	var root$1 = template(`<div><input class="qc-form-check-input" type="checkbox"> <label> </label></div>`);
+	const $$css$1 = { hash: 'qc-hash-32ttx', code: '' };
 
-	function RadioGroup($$anchor, $$props) {
+	function Checkbox($$anchor, $$props) {
 		push($$props, true);
+		append_styles$1($$anchor, $$css$1);
 
-		const lang = Utils.getPageLanguage();
+		const checkboxName = prop($$props, 'checkboxName', 7),
+			checkboxValue = prop($$props, 'checkboxValue', 7),
+			checkboxSize = prop($$props, 'checkboxSize', 7, "md"),
+			checkboxChecked = prop($$props, 'checkboxChecked', 7, false),
+			checkboxDisabled = prop($$props, 'checkboxDisabled', 7, false),
+			checkboxLabel = prop($$props, 'checkboxLabel', 7, "");
 
-		let name = prop($$props, 'name', 7),
-			legend = prop($$props, 'legend', 7, ""),
-			size = prop($$props, 'size', 7, "md"),
-			radioButtons = prop($$props, 'radioButtons', 23, () => []),
-			required = prop($$props, 'required', 7, false),
-			invalid = prop($$props, 'invalid', 7, false),
-			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
-			children = prop($$props, 'children', 7);
-
-		let group = state(void 0);
-
-		onMount(() => {
-			radioButtons().forEach((option) => {
-				get(group).appendChild(option);
-			});
-
-			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
-				invalid(false);
-			});
-		});
-
+		const id = `${checkboxName()}_${checkboxValue()}`;
 		var div = root$1();
-		var fieldset = child(div);
-		var node = child(fieldset);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var legend_1 = root_1();
-				var text = child(legend_1);
-				var node_1 = sibling(text);
-
-				{
-					var consequent = ($$anchor) => {
-						var span = root_2();
-
-						append($$anchor, span);
-					};
-
-					if_block(node_1, ($$render) => {
-						if (Utils.isTruthy(required())) $$render(consequent);
-					});
-				}
-
-				reset(legend_1);
-				template_effect(() => set_text(text, `${legend() ?? ''} `));
-				append($$anchor, legend_1);
-			};
-
-			if_block(node, ($$render) => {
-				if (legend()) $$render(consequent_1);
-			});
-		}
-
-		var div_1 = sibling(node, 2);
-		var node_2 = child(div_1);
-
-		snippet(node_2, () => children() ?? noop);
-		reset(div_1);
-		bind_this(div_1, ($$value) => set(group, $$value), () => get(group));
-
-		var div_2 = sibling(div_1, 2);
-		var node_3 = child(div_2);
-
-		Icon(node_3, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'md'
-		});
-
-		var p = sibling(node_3, 2);
-		var text_1 = child(p, true);
-
-		reset(p);
-		reset(div_2);
-		reset(fieldset);
-		reset(div);
-
-		template_effect(
-			($0, $1) => {
-				set_class(div, 1, $0);
-				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
-				set_class(div_1, 1, `radio-options-${size()}`);
-				set_class(div_2, 1, $1);
-				set_text(text_1, errorText());
-			},
-			[
-				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
-				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
-			]
-		);
-
-		append($$anchor, div);
-
-		return pop({
-			get name() {
-				return name();
-			},
-			set name($$value) {
-				name($$value);
-				flushSync();
-			},
-			get legend() {
-				return legend();
-			},
-			set legend($$value = "") {
-				legend($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = "md") {
-				size($$value);
-				flushSync();
-			},
-			get radioButtons() {
-				return radioButtons();
-			},
-			set radioButtons($$value = []) {
-				radioButtons($$value);
-				flushSync();
-			},
-			get required() {
-				return required();
-			},
-			set required($$value = false) {
-				required($$value);
-				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value = false) {
-				invalid($$value);
-				flushSync();
-			},
-			get errorText() {
-				return errorText();
-			},
-			set errorText(
-				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
-			) {
-				errorText($$value);
-				flushSync();
-			},
-			get children() {
-				return children();
-			},
-			set children($$value) {
-				children($$value);
-				flushSync();
-			}
-		});
-	}
-
-	create_custom_element(
-		RadioGroup,
-		{
-			name: {},
-			legend: {},
-			size: {},
-			radioButtons: {},
-			required: {},
-			invalid: {},
-			errorText: {},
-			children: {}
-		},
-		[],
-		[],
-		true
-	);
-
-	function RadioGroupWC($$anchor, $$props) {
-		push($$props, true);
-
-		let name = prop($$props, 'name', 7),
-			legend = prop($$props, 'legend', 7),
-			size = prop($$props, 'size', 7, "md"),
-			radioButtons = prop($$props, 'radioButtons', 7),
-			required = prop($$props, 'required', 7),
-			invalid = prop($$props, 'invalid', 7),
-			errorText = prop($$props, 'errorText', 7);
-
-		onMount(() => {
-			if (required() === "") {
-				required("true");
-			}
-
-			if (invalid() === "") {
-				invalid("true");
-			}
-		});
-
-		RadioGroup($$anchor, {
-			get name() {
-				return name();
-			},
-			get legend() {
-				return legend();
-			},
-			get size() {
-				return size();
-			},
-			get radioButtons() {
-				return radioButtons();
-			},
-			get required() {
-				return required();
-			},
-			get invalid() {
-				return invalid();
-			},
-			get errorText() {
-				return errorText();
-			}
-		});
-
-		return pop({
-			get name() {
-				return name();
-			},
-			set name($$value) {
-				name($$value);
-				flushSync();
-			},
-			get legend() {
-				return legend();
-			},
-			set legend($$value) {
-				legend($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = "md") {
-				size($$value);
-				flushSync();
-			},
-			get radioButtons() {
-				return radioButtons();
-			},
-			set radioButtons($$value) {
-				radioButtons($$value);
-				flushSync();
-			},
-			get required() {
-				return required();
-			},
-			set required($$value) {
-				required($$value);
-				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value) {
-				invalid($$value);
-				flushSync();
-			},
-			get errorText() {
-				return errorText();
-			},
-			set errorText($$value) {
-				errorText($$value);
-				flushSync();
-			}
-		});
-	}
-
-	customElements.define('qc-radio-group', create_custom_element(
-		RadioGroupWC,
-		{
-			name: { attribute: 'name', type: 'String' },
-			legend: { attribute: 'legend', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
-			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
-			errorText: { attribute: 'error-text', type: 'String' },
-			radioButtons: {}
-		},
-		[],
-		[],
-		false,
-		(customElementConstructor) => {
-			return class extends customElementConstructor {
-				static radioButtons;
-
-				constructor() {
-					super();
-					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
-				}
-			};
-		}
-	));
-
-	var root = template(`<div><input> <label> </label></div>`);
-
-	function RadioButton($$anchor, $$props) {
-		push($$props, true);
-
-		let name = prop($$props, 'name', 7),
-			value = prop($$props, 'value', 7),
-			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, "sm"),
-			checked = prop($$props, 'checked', 7, false),
-			disabled = prop($$props, 'disabled', 7, false);
-
-		let inputInstance = state(void 0);
-
-		let boolAttributes = user_derived(() => {
-			let truthyProps = {
-				checked: Utils.isTruthy(checked()),
-				disabled: Utils.isTruthy(disabled())
-			};
-
-			for (const prop in truthyProps) {
-				if (!truthyProps[prop]) {
-					delete truthyProps[prop];
-				}
-			}
-
-			return truthyProps;
-		});
-
-		function removeInvalid() {
-			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
-		}
-
-		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
+		set_attribute(input, 'id', id);
 
-		var event_handler = () => removeInvalid();
-		let attributes;
+		var label = sibling(input, 2);
 
-		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
+		set_attribute(label, 'for', id);
 
-		var label_1 = sibling(input, 2);
-		var text = child(label_1, true);
+		var text = child(label, true);
 
-		reset(label_1);
+		reset(label);
 		reset(div);
 
 		template_effect(() => {
-			set_class(div, 1, `qc-radio-${size()}`);
-
-			attributes = set_attributes(input, attributes, {
-				type: 'radio',
-				id: `${name()}_${value()}`,
-				name: name(),
-				value: value(),
-				...get(boolAttributes),
-				onclick: event_handler
-			});
-
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
-			set_text(text, label());
+			set_class(div, 1, clsx(checkboxSize() === "sm" ? "qc-form-check-sm" : "qc-form-check"));
+			set_attribute(input, 'name', checkboxName());
+			set_value(input, checkboxValue());
+			set_checked(input, checkboxChecked());
+			input.disabled = checkboxDisabled();
+			set_text(text, checkboxLabel() || checkboxValue());
 		});
 
 		append($$anchor, div);
 
 		return pop({
-			get name() {
-				return name();
+			get checkboxName() {
+				return checkboxName();
 			},
-			set name($$value) {
-				name($$value);
+			set checkboxName($$value) {
+				checkboxName($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
+			get checkboxValue() {
+				return checkboxValue();
 			},
-			set value($$value) {
-				value($$value);
+			set checkboxValue($$value) {
+				checkboxValue($$value);
 				flushSync();
 			},
-			get label() {
-				return label();
+			get checkboxSize() {
+				return checkboxSize();
 			},
-			set label($$value) {
-				label($$value);
+			set checkboxSize($$value = "md") {
+				checkboxSize($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get checkboxChecked() {
+				return checkboxChecked();
 			},
-			set size($$value = "sm") {
-				size($$value);
+			set checkboxChecked($$value = false) {
+				checkboxChecked($$value);
 				flushSync();
 			},
-			get checked() {
-				return checked();
+			get checkboxDisabled() {
+				return checkboxDisabled();
 			},
-			set checked($$value = false) {
-				checked($$value);
+			set checkboxDisabled($$value = false) {
+				checkboxDisabled($$value);
 				flushSync();
 			},
-			get disabled() {
-				return disabled();
+			get checkboxLabel() {
+				return checkboxLabel();
 			},
-			set disabled($$value = false) {
-				disabled($$value);
+			set checkboxLabel($$value = "") {
+				checkboxLabel($$value);
 				flushSync();
 			}
 		});
 	}
 
 	create_custom_element(
-		RadioButton,
+		Checkbox,
 		{
-			name: {},
-			value: {},
-			label: {},
-			size: {},
-			checked: {},
-			disabled: {}
+			checkboxName: {},
+			checkboxValue: {},
+			checkboxSize: {},
+			checkboxChecked: {},
+			checkboxDisabled: {},
+			checkboxLabel: {}
 		},
 		[],
 		[],
 		true
 	);
 
-	function RadioButtonWC($$anchor, $$props) {
-		push($$props, true);
+	var root_1 = template(`<legend class="qc-form-check-legend"> </legend>`);
+	var root = template(`<fieldset><!> <!></fieldset>`);
+	const $$css = { hash: 'qc-hash-32ttx', code: '' };
 
-		let parent = prop($$props, 'parent', 7),
-			name = prop($$props, 'name', 7),
-			value = prop($$props, 'value', 7),
-			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7),
-			checked = prop($$props, 'checked', 7),
-			disabled = prop($$props, 'disabled', 7),
-			invalid = prop($$props, 'invalid', 7);
+	function FieldsetCheckbox($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css);
+
+		const checkboxLegend = prop($$props, 'checkboxLegend', 7, ""),
+			checkboxSize = prop($$props, 'checkboxSize', 7, "md"),
+			checkboxName = prop($$props, 'checkboxName', 7, ""),
+			checkboxes = prop($$props, 'checkboxes', 23, () => []);
 
 		onMount(() => {
-			if (checked() === "") {
-				checked("true");
-			}
-
-			if (disabled() === "") {
-				disabled("true");
-			}
-
-			if (invalid() === "") {
-				invalid("true");
-			}
+			checkboxes().forEach((e) => {
+				e.parentNode?.removeChild(e);
+			});
 		});
 
-		const expression = user_derived(() => parent()?.name ?? name());
-		const expression_1 = user_derived(() => parent()?.size ?? size());
-		const expression_2 = user_derived(() => parent()?.invalid ?? invalid());
+		var fieldset = root();
+		var node = child(fieldset);
 
-		RadioButton($$anchor, {
-			get name() {
-				return get(expression);
-			},
-			get value() {
-				return value();
-			},
-			get label() {
-				return label();
-			},
-			get size() {
-				return get(expression_1);
-			},
-			get checked() {
-				return checked();
-			},
-			get disabled() {
-				return disabled();
-			},
-			get invalid() {
-				return get(expression_2);
-			}
+		{
+			var consequent = ($$anchor) => {
+				var legend = root_1();
+				var text = child(legend, true);
+
+				reset(legend);
+				template_effect(() => set_text(text, checkboxLegend()));
+				append($$anchor, legend);
+			};
+
+			if_block(node, ($$render) => {
+				if (checkboxLegend()) $$render(consequent);
+			});
+		}
+
+		var node_1 = sibling(node, 2);
+
+		each(node_1, 17, checkboxes, index, ($$anchor, checkbox) => {
+			const expression = user_derived(() => checkboxName() || get(checkbox).getAttribute("checkbox-name"));
+			const expression_1 = user_derived(() => get(checkbox).getAttribute("checkbox-value"));
+			const expression_2 = user_derived(() => get(checkbox).getAttribute("checkbox-size") || checkboxSize());
+			const expression_3 = user_derived(() => get(checkbox).getAttribute("checkbox-checked"));
+			const expression_4 = user_derived(() => get(checkbox).getAttribute("checkbox-disabled"));
+			const expression_5 = user_derived(() => get(checkbox).getAttribute("checkbox-label"));
+
+			Checkbox($$anchor, {
+				get checkboxName() {
+					return get(expression);
+				},
+				get checkboxValue() {
+					return get(expression_1);
+				},
+				get checkboxSize() {
+					return get(expression_2);
+				},
+				get checkboxChecked() {
+					return get(expression_3);
+				},
+				get checkboxDisabled() {
+					return get(expression_4);
+				},
+				get checkboxLabel() {
+					return get(expression_5);
+				}
+			});
 		});
+
+		reset(fieldset);
+		append($$anchor, fieldset);
 
 		return pop({
-			get parent() {
-				return parent();
+			get checkboxLegend() {
+				return checkboxLegend();
 			},
-			set parent($$value) {
-				parent($$value);
+			set checkboxLegend($$value = "") {
+				checkboxLegend($$value);
 				flushSync();
 			},
-			get name() {
-				return name();
+			get checkboxSize() {
+				return checkboxSize();
 			},
-			set name($$value) {
-				name($$value);
+			set checkboxSize($$value = "md") {
+				checkboxSize($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
+			get checkboxName() {
+				return checkboxName();
 			},
-			set value($$value) {
-				value($$value);
+			set checkboxName($$value = "") {
+				checkboxName($$value);
 				flushSync();
 			},
-			get label() {
-				return label();
+			get checkboxes() {
+				return checkboxes();
 			},
-			set label($$value) {
-				label($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
-				flushSync();
-			},
-			get checked() {
-				return checked();
-			},
-			set checked($$value) {
-				checked($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value) {
-				disabled($$value);
-				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value) {
-				invalid($$value);
+			set checkboxes($$value = []) {
+				checkboxes($$value);
 				flushSync();
 			}
 		});
 	}
 
-	customElements.define('qc-radio-button', create_custom_element(
-		RadioButtonWC,
+	create_custom_element(
+		FieldsetCheckbox,
 		{
-			name: { attribute: 'name', type: 'String' },
-			value: { attribute: 'value', type: 'String' },
-			label: { attribute: 'label', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
-			checked: { attribute: 'checked', type: 'String' },
-			disabled: { attribute: 'disabled', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
-			parent: {}
+			checkboxLegend: {},
+			checkboxSize: {},
+			checkboxName: {},
+			checkboxes: {}
 		},
 		[],
 		[],
-		false,
-		(customElementConstructor) => {
-			return class extends customElementConstructor {
-				static parent;
-				static thisElement;
+		true
+	);
 
-				constructor() {
-					super();
-					this.thisElement = this;
-					this.parent = this.closest('qc-radio-group');
-				}
-			};
-		}
+	function FieldsetCheckboxWC($$anchor, $$props) {
+		push($$props, true);
+
+		const checkboxLegend = prop($$props, 'checkboxLegend', 7),
+			checkboxSize = prop($$props, 'checkboxSize', 7),
+			checkboxName = prop($$props, 'checkboxName', 7);
+
+		const checkboxes = document.querySelectorAll("qc-checkbox");
+
+		FieldsetCheckbox($$anchor, {
+			get checkboxLegend() {
+				return checkboxLegend();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			get checkboxName() {
+				return checkboxName();
+			},
+			checkboxes
+		});
+
+		return pop({
+			get checkboxLegend() {
+				return checkboxLegend();
+			},
+			set checkboxLegend($$value) {
+				checkboxLegend($$value);
+				flushSync();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			set checkboxSize($$value) {
+				checkboxSize($$value);
+				flushSync();
+			},
+			get checkboxName() {
+				return checkboxName();
+			},
+			set checkboxName($$value) {
+				checkboxName($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-checkbox-fieldset', create_custom_element(
+		FieldsetCheckboxWC,
+		{
+			checkboxLegend: { attribute: 'checkbox-legend' },
+			checkboxSize: { attribute: 'checkbox-size' },
+			checkboxName: { attribute: 'checkbox-name' }
+		},
+		[],
+		[],
+		false
+	));
+
+	function CheckboxWC($$anchor, $$props) {
+		let props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		Checkbox($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-checkbox', create_custom_element(
+		CheckboxWC,
+		{
+			checkboxName: { attribute: 'checkbox-name' },
+			checkboxValue: { attribute: 'checkbox-value' },
+			checkboxSize: { attribute: 'checkbox-size' },
+			checkboxChecked: { attribute: 'checkbox-checked' },
+			checkboxDisabled: { attribute: 'checkbox-disabled' },
+			checkboxLabel: { attribute: 'checkbox-label' }
+		},
+		[],
+		[],
+		false
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;

@@ -29,12 +29,12 @@
 
     let {
         parentGroup,
-        value, 
-        label, 
+        value,
+        label,
         name,
-        disabled, 
+        disabled,
         checked = $bindable(false),
-        required, 
+        required,
         compact,
         invalid = $bindable(false),
         invalidText,
