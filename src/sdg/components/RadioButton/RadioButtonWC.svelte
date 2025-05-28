@@ -2,12 +2,12 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        radioName: {attribute:'radio-name'},
-        radioValue: {attribute:'radio-value'},
-        radioSize: {attribute:'radio-size'},
-        radioChecked: {attribute: 'radio-checked'},
-        radioDisabled: {attribute:'radio-disabled'},
-        radioRequired: {attribute:'radio-required'}
+        radioName: {attribute:'radio-name', type: 'String'},
+        radioValue: {attribute:'radio-value', type: 'String'},
+        radioSize: {attribute:'radio-size', type: 'String'},
+        radioChecked: {attribute: 'radio-checked', type: 'Boolean'},
+        radioDisabled: {attribute:'radio-disabled', type: 'Boolean'},
+        radioRequired: {attribute:'radio-required', type: 'Boolean'}
     }
 }}" />
 
