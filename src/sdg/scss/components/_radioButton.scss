@@ -1,6 +1,10 @@
 @use "../lib/functions" as *;
+@use "../lib/mixins" as *;
 
 %radio-style {
+  display: flex;
+  align-items: center;
+
   // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
   input[type="radio"] {
     appearance: none;
@@ -8,6 +12,8 @@
 
     display: inline-block;
     position: relative;
+
+    margin-right: rem(8);
 
     background-color: token-value(color, white);
     border-style: solid;
@@ -27,6 +33,7 @@
 
     &:focus {
       outline: rem(2) solid token-value(color, blue, light);
+      outline-offset: 0;
       border-color: token-value(color, blue, dark) !important;
     }
 
@@ -74,5 +81,9 @@ input[type=radio]::before {
     border: rem(7) solid transparent;
     border-radius: 100%;
     background: token-value(color, blue, regular);
+  }
+
+  label {
+    text-align: center;
   }
 }

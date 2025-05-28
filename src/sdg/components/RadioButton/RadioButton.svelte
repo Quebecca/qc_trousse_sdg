@@ -10,7 +10,7 @@
         radioRequired = true
     } = $props();
 
-    const usedSize = radioSize === "sm" ? "sm" : "md";
+    const usedSize = (typeof radioSize === "string" && radioSize.toLowerCase() === "sm") ? "sm" : "md";
 </script>
 
 <div class={`qc-radio-${usedSize}`}>
