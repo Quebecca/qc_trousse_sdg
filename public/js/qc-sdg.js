@@ -8318,7 +8318,7 @@
 	var root_1 = template(`<legend> </legend>`);
 	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
-	function RadioFieldset($$anchor, $$props) {
+	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
 
 		let radioLegend = prop($$props, 'radioLegend', 7, ""),
@@ -8426,7 +8426,7 @@
 	}
 
 	create_custom_element(
-		RadioFieldset,
+		RadioGroup,
 		{
 			radioLegend: {},
 			radioName: {},
@@ -8440,7 +8440,7 @@
 
 	var root = template(`<div><!></div>`);
 
-	function RadioFieldsetWC($$anchor, $$props) {
+	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
 
 		let radioLegend = prop($$props, 'radioLegend', 7),
@@ -8451,7 +8451,7 @@
 		var div = root();
 		var node = child(div);
 
-		RadioFieldset(node, {
+		RadioGroup(node, {
 			get radioLegend() {
 				return radioLegend();
 			},
@@ -8492,8 +8492,8 @@
 		});
 	}
 
-	customElements.define('qc-radio-fieldset', create_custom_element(
-		RadioFieldsetWC,
+	customElements.define('qc-radio-group', create_custom_element(
+		RadioGroupWC,
 		{
 			radioLegend: { attribute: 'radio-legend', type: 'String' },
 			radioName: { attribute: 'radio-name', type: 'String' },

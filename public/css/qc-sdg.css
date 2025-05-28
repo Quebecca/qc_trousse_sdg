@@ -1834,8 +1834,8 @@ qc-search-bar {
 }
 
 .qc-radio-md, .qc-radio-sm {
-  display: flex;
-  align-items: center;
+  display: block;
+  justify-items: center;
 }
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
   -moz-appearance: none;
@@ -1902,8 +1902,6 @@ input[type=radio]::before {
 }
 
 .radio-options {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 

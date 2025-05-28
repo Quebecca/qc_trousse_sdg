@@ -1,5 +1,5 @@
 <svelte:options customElement="{{
-    tag: 'qc-radio-fieldset',
+    tag: 'qc-radio-group',
     shadow: 'none',
     props: {
         radioLegend: {attribute:'radio-legend', type: 'String'},
@@ -9,14 +9,14 @@
 }}" />
 
 <script>
-    import RadioFieldset from "./RadioFieldset.svelte";
+    import RadioGroup from "./RadioGroup.svelte";
 
     let { radioLegend, radioName, radioSize } = $props();
     const options = document.querySelectorAll("qc-radio-button");
 </script>
 
 <div>
-    <RadioFieldset
+    <RadioGroup
         {radioLegend}
         {radioName}
         {radioSize}

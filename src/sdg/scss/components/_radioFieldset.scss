@@ -1,8 +1,6 @@
 @use "../lib/functions" as *;
 
 .radio-options {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   //row-gap: rem(8);
 }
