@@ -1,0 +1,69 @@
+@use "../lib/functions" as *;
+
+$size-small: rem(16);
+$size-medium: rem(24);
+
+%radio-style {
+  appearance: none;
+  background-color: token-value(color, red, dark);
+  border-radius: 100%;
+}
+
+.qc-radio-sm {
+  input {
+    @extend %radio-style;
+    width: $size-small;
+    height: $size-small;
+  }
+}
+
+.qc-radio-md {
+  // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: $size-medium;
+    height: $size-medium;
+
+    display: inline-block;
+    position: relative;
+
+
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+    border-width: rem(2);
+    border-radius: calc(infinity * 1px);
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      top: 0;
+    }
+
+    &:focus {
+      outline: rem(2) solid token-value(color, blue, light);
+    }
+
+    &:disabled {
+      border-color: (token-value(color, grey, light));
+    }
+  }
+
+  input[type=radio]::before {
+    height: 0;
+    width: 0;
+  }
+
+  input[type=radio]:checked::before {
+    border: rem(7) solid transparent;
+    border-radius: calc(infinity * 1px);
+    background: token-value(color, blue, regular);
+  }
+}

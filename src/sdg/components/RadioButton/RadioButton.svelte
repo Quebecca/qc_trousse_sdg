@@ -13,7 +13,7 @@
     const usedSize = radioSize === "sm" ? "sm" : "md";
 </script>
 
-<div>
+<div class={`qc-radio-${usedSize}`}>
     <input
         type="radio"
         id={`${radioName}_${radioValue}`}

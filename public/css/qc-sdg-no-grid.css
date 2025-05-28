@@ -1832,3 +1832,56 @@ qc-search-bar {
 .qc-search-bar.piv-background [type=submit]:active::before {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }
+
+.qc-radio-sm input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-color: var(--qc-color-red-dark);
+  border-radius: 100%;
+}
+
+.qc-radio-sm input {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.qc-radio-md input[type=radio] {
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: inline-block;
+  position: relative;
+  background-color: var(--qc-color-white);
+  border-style: solid;
+  border-color: var(--qc-color-blue-dark);
+  border-width: 0.2rem;
+  border-radius: calc(infinity * 1px);
+}
+.qc-radio-md input[type=radio]::before {
+  content: "";
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  top: 0;
+}
+.qc-radio-md input[type=radio]:focus {
+  outline: 0.2rem solid var(--qc-color-blue-light);
+}
+.qc-radio-md input[type=radio]:disabled {
+  border-color: var(--qc-color-grey-light);
+}
+.qc-radio-md input[type=radio]::before {
+  height: 0;
+  width: 0;
+}
+.qc-radio-md input[type=radio]:checked::before {
+  border: 0.7rem solid transparent;
+  border-radius: calc(infinity * 1px);
+  background: var(--qc-color-blue-regular);
+}
