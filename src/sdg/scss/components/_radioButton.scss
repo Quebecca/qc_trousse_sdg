@@ -2,8 +2,8 @@
 @use "../lib/mixins" as *;
 
 %radio-style {
-  display: flex;
-  align-items: center;
+  display: block;
+  justify-items: center;
 
   // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
   input[type="radio"] {
