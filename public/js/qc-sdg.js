@@ -12,6 +12,9 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
+	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
+	const EACH_IS_CONTROLLED = 1 << 2;
+	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3454,7 +3457,9 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		{
+		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
+
+		if (is_controlled) {
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3603,6 +3608,8 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3614,6 +3621,9 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
+
+		/** @type {undefined | Set<EachItem>} */
+		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3632,6 +3642,19 @@
 
 		/** @type {number} */
 		var i;
+
+		if (is_animated) {
+			for (i = 0; i < length; i += 1) {
+				value = array[i];
+				key = get_key(value, i);
+				item = items.get(key);
+
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
+				}
+			}
+		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3663,12 +3686,16 @@
 				continue;
 			}
 
-			{
-				update_item(item, value, i);
+			if (should_update) {
+				update_item(item, value, i, flags);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
+				}
 			}
 
 			if (item !== current) {
@@ -3755,10 +3782,29 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = length === 0 ? anchor : null;
+				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
+
+				if (is_animated) {
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.measure();
+					}
+
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.fix();
+					}
+				}
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
+		}
+
+		if (is_animated) {
+			queue_micro_task(() => {
+				if (to_animate === undefined) return;
+				for (item of to_animate) {
+					item.a?.apply();
+				}
+			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -3773,11 +3819,13 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		{
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
 			internal_set(item.v, value);
 		}
 
-		{
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
 			item.i = index;
 		}
 	}
@@ -4146,6 +4194,31 @@
 		}
 	}
 
+	/**
+	 * @param {Node} anchor
+	 * @param {{ hash: string, code: string }} css
+	 */
+	function append_styles$1(anchor, css) {
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		queue_micro_task(() => {
+			var root = anchor.getRootNode();
+
+			var target = /** @type {ShadowRoot} */ (root).host
+				? /** @type {ShadowRoot} */ (root)
+				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
+
+			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
+			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
+			if (!target.querySelector('#' + css.hash)) {
+				const style = document.createElement('style');
+				style.id = css.hash;
+				style.textContent = css.code;
+
+				target.appendChild(style);
+			}
+		});
+	}
+
 	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 	/**
@@ -4485,6 +4558,49 @@
 		input.__on_r = remove_defaults;
 		queue_idle_task(remove_defaults);
 		add_form_reset_listener();
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {boolean} checked
+	 */
+	function set_checked(element, checked) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.checked ===
+			(attributes.checked =
+				// treat null and undefined the same for the initial value
+				checked ?? undefined)
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.checked = checked;
 	}
 
 	/**
@@ -5807,7 +5923,7 @@
 
 	}
 
-	var root$9 = template(`<div></div>`);
+	var root$b = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5832,7 +5948,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$9();
+		var div = root$b();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5911,7 +6027,7 @@
 		true
 	);
 
-	var root$8 = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5957,7 +6073,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$8();
+		var fragment = root$a();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6105,7 +6221,7 @@
 		true
 	));
 
-	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6119,7 +6235,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$7 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$9 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6165,14 +6281,14 @@
 			}
 		});
 
-		var fragment = root$7();
+		var fragment = root$9();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$2();
+				var div_2 = root_1$3();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6916,9 +7032,9 @@
 		true
 	));
 
-	var root_1$1 = template(`<img>`);
+	var root_1$2 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
-	var root$6 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6936,7 +7052,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$6();
+		var fragment = root$8();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6956,7 +7072,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$1();
+				var img = root_1$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7284,7 +7400,7 @@
 		true
 	));
 
-	var root$5 = template(`<button><!></button>`);
+	var root$7 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7308,7 +7424,7 @@
 				'class'
 			]);
 
-		var button = root$5();
+		var button = root$7();
 		let attributes;
 		var node = child(button);
 
@@ -7407,8 +7523,8 @@
 		true
 	);
 
-	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$4 = template(`<!> <link rel="stylesheet">`, 1);
+	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7434,12 +7550,12 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$4();
+		var fragment = root$6();
 		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1();
+				var div = root_1$1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -7601,7 +7717,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$3 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$5 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7644,7 +7760,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$3();
+		var a = root$5();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7716,7 +7832,7 @@
 		false
 	));
 
-	var root$2 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$4 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7797,7 +7913,7 @@
 			});
 		});
 
-		var span_1 = root$2();
+		var span_1 = root$4();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7826,7 +7942,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$1 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$3 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7847,7 +7963,7 @@
 			]);
 
 		let searchInput;
-		var div = root$1();
+		var div = root$3();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7924,7 +8040,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root = template(`<div><!> <!></div>`);
+	var root$2 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -7978,7 +8094,7 @@
 			});
 		}
 
-		var div = root();
+		var div = root$2();
 		let classes;
 		var node = child(div);
 
@@ -8111,6 +8227,305 @@
 			icon: { attribute: 'icon' },
 			iconSize: { attribute: 'icon-size' },
 			iconColor: { attribute: 'icon-color' }
+		},
+		[],
+		[],
+		false
+	));
+
+	var root$1 = template(`<div><input class="qc-form-check-input" type="checkbox"> <label> </label></div>`);
+	const $$css$1 = { hash: 'qc-hash-32ttx', code: '' };
+
+	function Checkbox($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css$1);
+
+		const checkboxName = prop($$props, 'checkboxName', 7),
+			checkboxValue = prop($$props, 'checkboxValue', 7),
+			checkboxSize = prop($$props, 'checkboxSize', 7, "md"),
+			checkboxChecked = prop($$props, 'checkboxChecked', 7, false),
+			checkboxDisabled = prop($$props, 'checkboxDisabled', 7, false),
+			checkboxLabel = prop($$props, 'checkboxLabel', 7, "");
+
+		const id = `${checkboxName()}_${checkboxValue()}`;
+		var div = root$1();
+		var input = child(div);
+
+		remove_input_defaults(input);
+		set_attribute(input, 'id', id);
+
+		var label = sibling(input, 2);
+
+		set_attribute(label, 'for', id);
+
+		var text = child(label, true);
+
+		reset(label);
+		reset(div);
+
+		template_effect(() => {
+			set_class(div, 1, clsx(checkboxSize() === "sm" ? "qc-form-check-sm" : "qc-form-check"));
+			set_attribute(input, 'name', checkboxName());
+			set_value(input, checkboxValue());
+			set_checked(input, checkboxChecked());
+			input.disabled = checkboxDisabled();
+			set_text(text, checkboxLabel() || checkboxValue());
+		});
+
+		append($$anchor, div);
+
+		return pop({
+			get checkboxName() {
+				return checkboxName();
+			},
+			set checkboxName($$value) {
+				checkboxName($$value);
+				flushSync();
+			},
+			get checkboxValue() {
+				return checkboxValue();
+			},
+			set checkboxValue($$value) {
+				checkboxValue($$value);
+				flushSync();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			set checkboxSize($$value = "md") {
+				checkboxSize($$value);
+				flushSync();
+			},
+			get checkboxChecked() {
+				return checkboxChecked();
+			},
+			set checkboxChecked($$value = false) {
+				checkboxChecked($$value);
+				flushSync();
+			},
+			get checkboxDisabled() {
+				return checkboxDisabled();
+			},
+			set checkboxDisabled($$value = false) {
+				checkboxDisabled($$value);
+				flushSync();
+			},
+			get checkboxLabel() {
+				return checkboxLabel();
+			},
+			set checkboxLabel($$value = "") {
+				checkboxLabel($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		Checkbox,
+		{
+			checkboxName: {},
+			checkboxValue: {},
+			checkboxSize: {},
+			checkboxChecked: {},
+			checkboxDisabled: {},
+			checkboxLabel: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	var root_1 = template(`<legend class="qc-form-check-legend"> </legend>`);
+	var root = template(`<fieldset><!> <!></fieldset>`);
+	const $$css = { hash: 'qc-hash-32ttx', code: '' };
+
+	function FieldsetCheckbox($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css);
+
+		const checkboxLegend = prop($$props, 'checkboxLegend', 7, ""),
+			checkboxSize = prop($$props, 'checkboxSize', 7, "md"),
+			checkboxName = prop($$props, 'checkboxName', 7, ""),
+			checkboxes = prop($$props, 'checkboxes', 23, () => []);
+
+		onMount(() => {
+			checkboxes().forEach((e) => {
+				e.parentNode?.removeChild(e);
+			});
+		});
+
+		var fieldset = root();
+		var node = child(fieldset);
+
+		{
+			var consequent = ($$anchor) => {
+				var legend = root_1();
+				var text = child(legend, true);
+
+				reset(legend);
+				template_effect(() => set_text(text, checkboxLegend()));
+				append($$anchor, legend);
+			};
+
+			if_block(node, ($$render) => {
+				if (checkboxLegend()) $$render(consequent);
+			});
+		}
+
+		var node_1 = sibling(node, 2);
+
+		each(node_1, 17, checkboxes, index, ($$anchor, checkbox) => {
+			const expression = user_derived(() => checkboxName() || get(checkbox).getAttribute("checkbox-name"));
+			const expression_1 = user_derived(() => get(checkbox).getAttribute("checkbox-value"));
+			const expression_2 = user_derived(() => get(checkbox).getAttribute("checkbox-size") || checkboxSize());
+			const expression_3 = user_derived(() => get(checkbox).getAttribute("checkbox-checked"));
+			const expression_4 = user_derived(() => get(checkbox).getAttribute("checkbox-disabled"));
+			const expression_5 = user_derived(() => get(checkbox).getAttribute("checkbox-label"));
+
+			Checkbox($$anchor, {
+				get checkboxName() {
+					return get(expression);
+				},
+				get checkboxValue() {
+					return get(expression_1);
+				},
+				get checkboxSize() {
+					return get(expression_2);
+				},
+				get checkboxChecked() {
+					return get(expression_3);
+				},
+				get checkboxDisabled() {
+					return get(expression_4);
+				},
+				get checkboxLabel() {
+					return get(expression_5);
+				}
+			});
+		});
+
+		reset(fieldset);
+		append($$anchor, fieldset);
+
+		return pop({
+			get checkboxLegend() {
+				return checkboxLegend();
+			},
+			set checkboxLegend($$value = "") {
+				checkboxLegend($$value);
+				flushSync();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			set checkboxSize($$value = "md") {
+				checkboxSize($$value);
+				flushSync();
+			},
+			get checkboxName() {
+				return checkboxName();
+			},
+			set checkboxName($$value = "") {
+				checkboxName($$value);
+				flushSync();
+			},
+			get checkboxes() {
+				return checkboxes();
+			},
+			set checkboxes($$value = []) {
+				checkboxes($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		FieldsetCheckbox,
+		{
+			checkboxLegend: {},
+			checkboxSize: {},
+			checkboxName: {},
+			checkboxes: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	function FieldsetCheckboxWC($$anchor, $$props) {
+		push($$props, true);
+
+		const checkboxLegend = prop($$props, 'checkboxLegend', 7),
+			checkboxSize = prop($$props, 'checkboxSize', 7),
+			checkboxName = prop($$props, 'checkboxName', 7);
+
+		const checkboxes = document.querySelectorAll("qc-checkbox");
+
+		FieldsetCheckbox($$anchor, {
+			get checkboxLegend() {
+				return checkboxLegend();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			get checkboxName() {
+				return checkboxName();
+			},
+			checkboxes
+		});
+
+		return pop({
+			get checkboxLegend() {
+				return checkboxLegend();
+			},
+			set checkboxLegend($$value) {
+				checkboxLegend($$value);
+				flushSync();
+			},
+			get checkboxSize() {
+				return checkboxSize();
+			},
+			set checkboxSize($$value) {
+				checkboxSize($$value);
+				flushSync();
+			},
+			get checkboxName() {
+				return checkboxName();
+			},
+			set checkboxName($$value) {
+				checkboxName($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-checkbox-fieldset', create_custom_element(
+		FieldsetCheckboxWC,
+		{
+			checkboxLegend: { attribute: 'checkbox-legend' },
+			checkboxSize: { attribute: 'checkbox-size' },
+			checkboxName: { attribute: 'checkbox-name' }
+		},
+		[],
+		[],
+		false
+	));
+
+	function CheckboxWC($$anchor, $$props) {
+		let props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		Checkbox($$anchor, spread_props(() => props));
+	}
+
+	customElements.define('qc-checkbox', create_custom_element(
+		CheckboxWC,
+		{
+			checkboxName: { attribute: 'checkbox-name' },
+			checkboxValue: { attribute: 'checkbox-value' },
+			checkboxSize: { attribute: 'checkbox-size' },
+			checkboxChecked: { attribute: 'checkbox-checked' },
+			checkboxDisabled: { attribute: 'checkbox-disabled' },
+			checkboxLabel: { attribute: 'checkbox-label' }
 		},
 		[],
 		[],
