@@ -1833,12 +1833,17 @@ qc-search-bar {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }
 
+.qc-radio-md, .qc-radio-sm {
+  display: flex;
+  align-items: center;
+}
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
   -moz-appearance: none;
        appearance: none;
   -webkit-appearance: none;
   display: inline-block;
   position: relative;
+  margin-right: 0.8rem;
   background-color: var(--qc-color-white);
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
@@ -1856,6 +1861,7 @@ qc-search-bar {
 }
 .qc-radio-md input[type=radio]:focus, .qc-radio-sm input[type=radio]:focus {
   outline: 0.2rem solid var(--qc-color-blue-light);
+  outline-offset: 0;
   border-color: var(--qc-color-blue-dark) !important;
 }
 .qc-radio-md input[type=radio]:checked, .qc-radio-sm input[type=radio]:checked {
@@ -1891,8 +1897,12 @@ input[type=radio]::before {
   border-radius: 100%;
   background: var(--qc-color-blue-regular);
 }
+.qc-radio-md label {
+  text-align: center;
+}
 
 .radio-options {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
