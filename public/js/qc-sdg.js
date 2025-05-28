@@ -8316,7 +8316,7 @@
 	);
 
 	var root_1 = template(`<legend> </legend>`);
-	var root$1 = template(`<fieldset><!> <!></fieldset>`);
+	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
 	function RadioFieldset($$anchor, $$props) {
 		push($$props, true);
@@ -8350,7 +8350,8 @@
 			});
 		}
 
-		var node_1 = sibling(node, 2);
+		var div = sibling(node, 2);
+		var node_1 = child(div);
 
 		{
 			var consequent_1 = ($$anchor) => {
@@ -8388,6 +8389,7 @@
 			});
 		}
 
+		reset(div);
 		reset(fieldset);
 		append($$anchor, fieldset);
 

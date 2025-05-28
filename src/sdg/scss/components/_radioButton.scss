@@ -9,7 +9,6 @@
     display: inline-block;
     position: relative;
 
-
     background-color: token-value(color, white);
     border-style: solid;
     border-color: token-value(color, blue, dark);
@@ -28,10 +27,15 @@
 
     &:focus {
       outline: rem(2) solid token-value(color, blue, light);
+      border-color: token-value(color, blue, dark) !important;
+    }
+
+    &:checked {
+      border-color: token-value(color, blue, regular);
     }
 
     &:disabled {
-      border-color: (token-value(color, grey, light));
+      border-color: token-value(color, grey, light);
     }
   }
 }
@@ -50,7 +54,7 @@ input[type=radio]::before {
   }
 
   input[type=radio]:checked::before {
-    // Espace entre la bordure et l'interieur
+    // Rayon de l'espace entre la bordure et l'interieur
     border: rem(5) solid transparent;
     border-radius: 100%;
     background: token-value(color, blue, regular);
@@ -66,7 +70,7 @@ input[type=radio]::before {
   }
 
   input[type=radio]:checked::before {
-    // Espace entre la bordure et l'interieur
+    // Rayon de l'espace entre la bordure et l'interieur
     border: rem(7) solid transparent;
     border-radius: 100%;
     background: token-value(color, blue, regular);
