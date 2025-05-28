@@ -8339,11 +8339,11 @@
 	var root = template(`<fieldset><!> <!></fieldset>`);
 	const $$css = { hash: 'qc-hash-32ttx', code: '' };
 
-	function FieldsetCheckbox($$anchor, $$props) {
+	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
 
-		const checkboxLegend = prop($$props, 'checkboxLegend', 7, ""),
+		const checkboxGroupLabel = prop($$props, 'checkboxGroupLabel', 7, ""),
 			checkboxSize = prop($$props, 'checkboxSize', 7, "md"),
 			checkboxName = prop($$props, 'checkboxName', 7, ""),
 			checkboxes = prop($$props, 'checkboxes', 23, () => []);
@@ -8363,12 +8363,12 @@
 				var text = child(legend, true);
 
 				reset(legend);
-				template_effect(() => set_text(text, checkboxLegend()));
+				template_effect(() => set_text(text, checkboxGroupLabel()));
 				append($$anchor, legend);
 			};
 
 			if_block(node, ($$render) => {
-				if (checkboxLegend()) $$render(consequent);
+				if (checkboxGroupLabel()) $$render(consequent);
 			});
 		}
 
@@ -8408,11 +8408,11 @@
 		append($$anchor, fieldset);
 
 		return pop({
-			get checkboxLegend() {
-				return checkboxLegend();
+			get checkboxGroupLabel() {
+				return checkboxGroupLabel();
 			},
-			set checkboxLegend($$value = "") {
-				checkboxLegend($$value);
+			set checkboxGroupLabel($$value = "") {
+				checkboxGroupLabel($$value);
 				flushSync();
 			},
 			get checkboxSize() {
@@ -8440,9 +8440,9 @@
 	}
 
 	create_custom_element(
-		FieldsetCheckbox,
+		CheckboxGroup,
 		{
-			checkboxLegend: {},
+			checkboxGroupLabel: {},
 			checkboxSize: {},
 			checkboxName: {},
 			checkboxes: {}
@@ -8452,18 +8452,18 @@
 		true
 	);
 
-	function FieldsetCheckboxWC($$anchor, $$props) {
+	function CheckboxGroupWC($$anchor, $$props) {
 		push($$props, true);
 
-		const checkboxLegend = prop($$props, 'checkboxLegend', 7),
+		const checkboxGroupLabel = prop($$props, 'checkboxGroupLabel', 7),
 			checkboxSize = prop($$props, 'checkboxSize', 7),
 			checkboxName = prop($$props, 'checkboxName', 7);
 
 		const checkboxes = document.querySelectorAll("qc-checkbox");
 
-		FieldsetCheckbox($$anchor, {
-			get checkboxLegend() {
-				return checkboxLegend();
+		CheckboxGroup($$anchor, {
+			get checkboxGroupLabel() {
+				return checkboxGroupLabel();
 			},
 			get checkboxSize() {
 				return checkboxSize();
@@ -8475,11 +8475,11 @@
 		});
 
 		return pop({
-			get checkboxLegend() {
-				return checkboxLegend();
+			get checkboxGroupLabel() {
+				return checkboxGroupLabel();
 			},
-			set checkboxLegend($$value) {
-				checkboxLegend($$value);
+			set checkboxGroupLabel($$value) {
+				checkboxGroupLabel($$value);
 				flushSync();
 			},
 			get checkboxSize() {
@@ -8499,10 +8499,10 @@
 		});
 	}
 
-	customElements.define('qc-checkbox-fieldset', create_custom_element(
-		FieldsetCheckboxWC,
+	customElements.define('qc-checkbox-group', create_custom_element(
+		CheckboxGroupWC,
 		{
-			checkboxLegend: { attribute: 'checkbox-legend' },
+			checkboxGroupLabel: { attribute: 'checkbox-group-label' },
 			checkboxSize: { attribute: 'checkbox-size' },
 			checkboxName: { attribute: 'checkbox-name' }
 		},
@@ -8523,8 +8523,14 @@
 			checkboxName: { attribute: 'checkbox-name' },
 			checkboxValue: { attribute: 'checkbox-value' },
 			checkboxSize: { attribute: 'checkbox-size' },
-			checkboxChecked: { attribute: 'checkbox-checked' },
-			checkboxDisabled: { attribute: 'checkbox-disabled' },
+			checkboxChecked: {
+				attribute: 'checkbox-checked',
+				type: 'Boolean'
+			},
+			checkboxDisabled: {
+				attribute: 'checkbox-disabled',
+				type: 'Boolean'
+			},
 			checkboxLabel: { attribute: 'checkbox-label' }
 		},
 		[],

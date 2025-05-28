@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
 
     const {
-        checkboxLegend = "",
+        checkboxGroupLabel = "",
         checkboxSize = "md",
         checkboxName = "",
         checkboxes = [],
@@ -19,8 +19,8 @@
 
 <fieldset>
 
-    {#if checkboxLegend}
-        <legend class="qc-form-check-legend">{checkboxLegend}</legend>
+    {#if checkboxGroupLabel}
+        <legend class="qc-form-check-legend">{checkboxGroupLabel}</legend>
     {/if}
 
     {#each checkboxes as checkbox}
