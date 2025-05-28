@@ -1,23 +1,23 @@
 
 <svelte:options customElement={{
-    tag: 'qc-checkbox-fieldset',
+    tag: 'qc-checkbox-group',
     shadow: 'none',
     props: {
-        checkboxLegend: { attribute: 'checkbox-legend' },
+        checkboxGroupLabel: { attribute: 'checkbox-group-label' },
         checkboxSize: { attribute: 'checkbox-size' },
         checkboxName: { attribute: 'checkbox-name' }
     }
 }} />
 
 <script>
-    import FieldsetCheckbox from "./FieldsetCheckbox.svelte";
-    const { checkboxLegend, checkboxSize, checkboxName } = $props();
+    import CheckboxGroup from "./CheckboxGroup.svelte";
+    const { checkboxGroupLabel, checkboxSize, checkboxName } = $props();
     const checkboxes = document.querySelectorAll("qc-checkbox");
 </script>
 
 
-<FieldsetCheckbox
-    {checkboxLegend}
+<CheckboxGroup
+    {checkboxGroupLabel}
     {checkboxSize}
     {checkboxName}
     {checkboxes}
