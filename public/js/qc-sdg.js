@@ -8495,9 +8495,9 @@
 	customElements.define('qc-radio-fieldset', create_custom_element(
 		RadioFieldsetWC,
 		{
-			radioLegend: { attribute: 'radio-legend' },
-			radioName: { attribute: 'radio-name' },
-			radioSize: { attribute: 'radio-size' }
+			radioLegend: { attribute: 'radio-legend', type: 'String' },
+			radioName: { attribute: 'radio-name', type: 'String' },
+			radioSize: { attribute: 'radio-size', type: 'String' }
 		},
 		[],
 		[],
@@ -8525,12 +8525,12 @@
 	customElements.define('qc-radio-button', create_custom_element(
 		RadioButtonWC,
 		{
-			radioName: { attribute: 'radio-name' },
-			radioValue: { attribute: 'radio-value' },
-			radioSize: { attribute: 'radio-size' },
-			radioChecked: { attribute: 'radio-checked' },
-			radioDisabled: { attribute: 'radio-disabled' },
-			radioRequired: { attribute: 'radio-required' },
+			radioName: { attribute: 'radio-name', type: 'String' },
+			radioValue: { attribute: 'radio-value', type: 'String' },
+			radioSize: { attribute: 'radio-size', type: 'String' },
+			radioChecked: { attribute: 'radio-checked', type: 'Boolean' },
+			radioDisabled: { attribute: 'radio-disabled', type: 'Boolean' },
+			radioRequired: { attribute: 'radio-required', type: 'Boolean' },
 			props: {}
 		},
 		[],

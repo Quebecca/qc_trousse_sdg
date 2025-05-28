@@ -2,9 +2,9 @@
     tag: 'qc-radio-fieldset',
     shadow: 'none',
     props: {
-        radioLegend: {attribute:'radio-legend'},
-        radioName: {attribute:'radio-name'},
-        radioSize: {attribute:'radio-size'},
+        radioLegend: {attribute:'radio-legend', type: 'String'},
+        radioName: {attribute:'radio-name', type: 'String'},
+        radioSize: {attribute:'radio-size', type: 'String'},
     }
 }}" />
 
