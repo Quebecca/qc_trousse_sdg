@@ -2,7 +2,7 @@
     tag: 'qc-radio-group',
     shadow: 'none',
     props: {
-        radioLegend: {attribute:'radio-legend', type: 'String'},
+        legend: {attribute:'legend', type: 'String'},
         radioName: {attribute:'radio-name', type: 'String'},
         radioSize: {attribute:'radio-size', type: 'String'},
     }
@@ -11,13 +11,13 @@
 <script>
     import RadioGroup from "./RadioGroup.svelte";
 
-    let { radioLegend, radioName, radioSize } = $props();
+    let { legend, radioName, radioSize } = $props();
     const options = document.querySelectorAll("qc-radio-button");
 </script>
 
 <div>
     <RadioGroup
-        {radioLegend}
+        {legend}
         {radioName}
         {radioSize}
         {options}

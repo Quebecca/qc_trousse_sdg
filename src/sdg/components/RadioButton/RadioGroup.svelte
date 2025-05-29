@@ -3,7 +3,7 @@
     import RadioButton from "./RadioButton.svelte";
 
     let {
-        radioLegend = "",
+        legend = "",
         radioName,
         radioSize,
         options = []
@@ -17,8 +17,8 @@
 </script>
 
 <fieldset>
-    {#if radioLegend}
-        <legend>{radioLegend}</legend>
+    {#if legend}
+        <legend>{legend}</legend>
     {/if}
 
 
