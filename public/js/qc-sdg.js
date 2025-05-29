@@ -8321,7 +8321,7 @@
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
 
-		let radioLegend = prop($$props, 'radioLegend', 7, ""),
+		let legend = prop($$props, 'legend', 7, ""),
 			radioName = prop($$props, 'radioName', 7),
 			radioSize = prop($$props, 'radioSize', 7),
 			options = prop($$props, 'options', 23, () => []);
@@ -8337,16 +8337,16 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var legend = root_1();
-				var text = child(legend, true);
+				var legend_1 = root_1();
+				var text = child(legend_1, true);
 
-				reset(legend);
-				template_effect(() => set_text(text, radioLegend()));
-				append($$anchor, legend);
+				reset(legend_1);
+				template_effect(() => set_text(text, legend()));
+				append($$anchor, legend_1);
 			};
 
 			if_block(node, ($$render) => {
-				if (radioLegend()) $$render(consequent);
+				if (legend()) $$render(consequent);
 			});
 		}
 
@@ -8394,11 +8394,11 @@
 		append($$anchor, fieldset);
 
 		return pop({
-			get radioLegend() {
-				return radioLegend();
+			get legend() {
+				return legend();
 			},
-			set radioLegend($$value = "") {
-				radioLegend($$value);
+			set legend($$value = "") {
+				legend($$value);
 				flushSync();
 			},
 			get radioName() {
@@ -8428,7 +8428,7 @@
 	create_custom_element(
 		RadioGroup,
 		{
-			radioLegend: {},
+			legend: {},
 			radioName: {},
 			radioSize: {},
 			options: {}
@@ -8443,7 +8443,7 @@
 	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
 
-		let radioLegend = prop($$props, 'radioLegend', 7),
+		let legend = prop($$props, 'legend', 7),
 			radioName = prop($$props, 'radioName', 7),
 			radioSize = prop($$props, 'radioSize', 7);
 
@@ -8452,8 +8452,8 @@
 		var node = child(div);
 
 		RadioGroup(node, {
-			get radioLegend() {
-				return radioLegend();
+			get legend() {
+				return legend();
 			},
 			get radioName() {
 				return radioName();
@@ -8468,11 +8468,11 @@
 		append($$anchor, div);
 
 		return pop({
-			get radioLegend() {
-				return radioLegend();
+			get legend() {
+				return legend();
 			},
-			set radioLegend($$value) {
-				radioLegend($$value);
+			set legend($$value) {
+				legend($$value);
 				flushSync();
 			},
 			get radioName() {
@@ -8495,7 +8495,7 @@
 	customElements.define('qc-radio-group', create_custom_element(
 		RadioGroupWC,
 		{
-			radioLegend: { attribute: 'radio-legend', type: 'String' },
+			legend: { attribute: 'legend', type: 'String' },
 			radioName: { attribute: 'radio-name', type: 'String' },
 			radioSize: { attribute: 'radio-size', type: 'String' }
 		},
