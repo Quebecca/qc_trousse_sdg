@@ -1406,6 +1406,58 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Boutons radio -->
+            <qc-doc-exemple caption="Exemple de boutons radio">
+                <form action="/">
+                    <qc-radio-group legend="Faites un choix : " radio-name="foo" radio-size="md">
+                        <qc-radio-button
+                            radio-name="foo"
+                            radio-label="option 1"
+                            radio-value="1"
+                            radio-size="sm"
+                        ></qc-radio-button>
+                        <qc-radio-button
+                            radio-name="foo"
+                            radio-label="option 2"
+                            radio-value="2"
+                        ></qc-radio-button>
+                        <qc-radio-button
+                            radio-name="foo"
+                            radio-label="option 3 (désactivé)"
+                            radio-value="3"
+                            radio-disabled
+                        ></qc-radio-button>
+                    </qc-radio-group>
+
+                    <button>Soumettre</button>
+                </form>
+
+                <form action="/">
+                    <qc-radio-group legend="Faites un choix : " radio-name="bar" radio-size="md">
+                        <qc-radio-button
+                                radio-name="bar"
+                                radio-label="option 1"
+                                radio-value="1"
+                                radio-size="sm"
+                                radio-required
+                        ></qc-radio-button>
+                        <qc-radio-button
+                                radio-name="bar"
+                                radio-label="option 2"
+                                radio-value="2"
+                                radio-required
+                        ></qc-radio-button>
+                        <qc-radio-button
+                                radio-name="bar"
+                                radio-label="option 3"
+                                radio-value="3"
+                        ></qc-radio-button>
+                    </qc-radio-group>
+
+                    <button>Soumettre</button>
+                </form>
+
         </div>
     </main>
     <footer>

@@ -31,7 +31,7 @@
         {#if required}
             <legend>
                 {legend}
-                <span class="required">*</span>
+                <span class="radio-required">*</span>
             </legend>
         {:else}
             <legend>{legend}</legend>
