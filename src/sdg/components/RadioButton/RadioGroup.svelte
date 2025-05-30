@@ -9,16 +9,33 @@
         options = []
     } = $props();
 
+    let required = $state(true);
+
     onMount(() => {
+        let notRequiredCount = 0;
         options.forEach((option) => {
             option.parentNode.removeChild(option);
+            if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
+                notRequiredCount++;
+            }
         });
+
+        if (notRequiredCount >= options.length) {
+            required = false;
+        }
     });
 </script>
 
 <fieldset>
     {#if legend}
-        <legend>{legend}</legend>
+        {#if required}
+            <legend>
+                {legend}
+                <span class="required">*</span>
+            </legend>
+        {:else}
+            <legend>{legend}</legend>
+        {/if}
     {/if}
 
 

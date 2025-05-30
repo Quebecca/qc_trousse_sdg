@@ -1905,6 +1905,10 @@ input[type=radio]::before {
   justify-content: center;
 }
 
+.required {
+  color: var(--qc-color-red-regular);
+}
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-lg,

@@ -1904,3 +1904,7 @@ input[type=radio]::before {
 .radio-options {
   justify-content: center;
 }
+
+.required {
+  color: var(--qc-color-red-regular);
+}
