@@ -8447,7 +8447,7 @@
 			radioName = prop($$props, 'radioName', 7),
 			radioSize = prop($$props, 'radioSize', 7);
 
-		const options = document.querySelectorAll("qc-radio-button");
+		const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName()}]`);
 		var div = root();
 		var node = child(div);
 

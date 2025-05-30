@@ -12,7 +12,7 @@
     import RadioGroup from "./RadioGroup.svelte";
 
     let { legend, radioName, radioSize } = $props();
-    const options = document.querySelectorAll("qc-radio-button");
+    const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName}]`);
 </script>
 
 <div>
