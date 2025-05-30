@@ -8328,7 +8328,7 @@
 		true
 	);
 
-	var root_2 = template(`<legend> <span class="required">*</span></legend>`);
+	var root_2 = template(`<legend> <span class="radio-required">*</span></legend>`);
 	var root_3 = template(`<legend> </legend>`);
 	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
