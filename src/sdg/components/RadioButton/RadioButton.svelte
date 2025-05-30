@@ -4,6 +4,7 @@
     let {
         radioName,
         radioValue,
+        radioLabel,
         radioSize,
         radioChecked = false,
         radioDisabled,
@@ -23,5 +24,5 @@
         disabled={Utils.isTruthy(radioDisabled)}
         required={radioRequired}
     />
-    <label for={`${radioName}_${radioValue}`}>{radioValue}</label>
+    <label for={`${radioName}_${radioValue}`}>{radioLabel}</label>
 </div>

@@ -12,9 +12,6 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
-	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
-	const EACH_IS_CONTROLLED = 1 << 2;
-	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3470,9 +3467,7 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
-
-		if (is_controlled) {
+		{
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3621,8 +3616,6 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
-		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
-		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3634,9 +3627,6 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
-
-		/** @type {undefined | Set<EachItem>} */
-		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3655,19 +3645,6 @@
 
 		/** @type {number} */
 		var i;
-
-		if (is_animated) {
-			for (i = 0; i < length; i += 1) {
-				value = array[i];
-				key = get_key(value, i);
-				item = items.get(key);
-
-				if (item !== undefined) {
-					item.a?.measure();
-					(to_animate ??= new Set()).add(item);
-				}
-			}
-		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3699,16 +3676,12 @@
 				continue;
 			}
 
-			if (should_update) {
-				update_item(item, value, i, flags);
+			{
+				update_item(item, value, i);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
-				if (is_animated) {
-					item.a?.unfix();
-					(to_animate ??= new Set()).delete(item);
-				}
 			}
 
 			if (item !== current) {
@@ -3795,29 +3768,10 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
-
-				if (is_animated) {
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.measure();
-					}
-
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.fix();
-					}
-				}
+				var controlled_anchor = length === 0 ? anchor : null;
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
-		}
-
-		if (is_animated) {
-			queue_micro_task(() => {
-				if (to_animate === undefined) return;
-				for (item of to_animate) {
-					item.a?.apply();
-				}
-			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -3832,13 +3786,11 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		if ((type & EACH_ITEM_REACTIVE) !== 0) {
+		{
 			internal_set(item.v, value);
 		}
 
-		if ((type & EACH_INDEX_REACTIVE) !== 0) {
-			internal_set(/** @type {Value<number>} */ (item.i), index);
-		} else {
+		{
 			item.i = index;
 		}
 	}
@@ -8221,132 +8173,26 @@
 		false
 	));
 
-	var root$2 = template(`<div><input type="radio"> <label> </label></div>`);
-
-	function RadioButton($$anchor, $$props) {
-		push($$props, true);
-
-		let radioName = prop($$props, 'radioName', 7),
-			radioValue = prop($$props, 'radioValue', 7),
-			radioSize = prop($$props, 'radioSize', 7),
-			radioChecked = prop($$props, 'radioChecked', 7, false),
-			radioDisabled = prop($$props, 'radioDisabled', 7),
-			radioRequired = prop($$props, 'radioRequired', 7, true);
-
-		const usedSize = typeof radioSize() === "string" && radioSize().toLowerCase() === "sm" ? "sm" : "md";
-		var div = root$2();
-
-		set_class(div, 1, `qc-radio-${usedSize}`);
-
-		var input = child(div);
-
-		remove_input_defaults(input);
-
-		var label = sibling(input, 2);
-		var text = child(label, true);
-
-		reset(label);
-		reset(div);
-
-		template_effect(
-			($0, $1) => {
-				set_attribute(input, 'id', `${radioName()}_${radioValue()}`);
-				set_attribute(input, 'name', radioName());
-				set_value(input, radioValue());
-				set_checked(input, $0);
-				input.disabled = $1;
-				input.required = radioRequired();
-				set_attribute(label, 'for', `${radioName()}_${radioValue()}`);
-				set_text(text, radioValue());
-			},
-			[
-				() => Utils.isTruthy(radioChecked()),
-				() => Utils.isTruthy(radioDisabled())
-			]
-		);
-
-		append($$anchor, div);
-
-		return pop({
-			get radioName() {
-				return radioName();
-			},
-			set radioName($$value) {
-				radioName($$value);
-				flushSync();
-			},
-			get radioValue() {
-				return radioValue();
-			},
-			set radioValue($$value) {
-				radioValue($$value);
-				flushSync();
-			},
-			get radioSize() {
-				return radioSize();
-			},
-			set radioSize($$value) {
-				radioSize($$value);
-				flushSync();
-			},
-			get radioChecked() {
-				return radioChecked();
-			},
-			set radioChecked($$value = false) {
-				radioChecked($$value);
-				flushSync();
-			},
-			get radioDisabled() {
-				return radioDisabled();
-			},
-			set radioDisabled($$value) {
-				radioDisabled($$value);
-				flushSync();
-			},
-			get radioRequired() {
-				return radioRequired();
-			},
-			set radioRequired($$value = true) {
-				radioRequired($$value);
-				flushSync();
-			}
-		});
-	}
-
-	create_custom_element(
-		RadioButton,
-		{
-			radioName: {},
-			radioValue: {},
-			radioSize: {},
-			radioChecked: {},
-			radioDisabled: {},
-			radioRequired: {}
-		},
-		[],
-		[],
-		true
-	);
-
 	var root_2 = template(`<legend> <span class="radio-required">*</span></legend>`);
 	var root_3 = template(`<legend> </legend>`);
-	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
+	var root$2 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
-			radioName = prop($$props, 'radioName', 7),
-			radioSize = prop($$props, 'radioSize', 7),
-			options = prop($$props, 'options', 23, () => []);
+			options = prop($$props, 'options', 23, () => []),
+			children = prop($$props, 'children', 7);
 
 		let required = state(true);
+		let group = state(void 0);
 
 		onMount(() => {
 			let notRequiredCount = 0;
 
 			options().forEach((option) => {
-				option.parentNode.removeChild(option);
+				console.log(option.outerHTML);
+				get(group).appendChild(option);
 
 				if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
 					notRequiredCount++;
@@ -8358,7 +8204,7 @@
 			}
 		});
 
-		var fieldset = root$1();
+		var fieldset = root$2();
 		var node = child(fieldset);
 
 		{
@@ -8402,43 +8248,9 @@
 		var div = sibling(node, 2);
 		var node_2 = child(div);
 
-		{
-			var consequent_2 = ($$anchor) => {
-				var fragment_1 = comment();
-				var node_3 = first_child(fragment_1);
-
-				each(node_3, 17, options, index, ($$anchor, option) => {
-					const expression = user_derived(() => radioName() ? radioName() : get(option).radioName);
-					const expression_1 = user_derived(() => radioSize() ? radioSize() : get(option).radioSize);
-
-					RadioButton($$anchor, {
-						get radioName() {
-							return get(expression);
-						},
-						get radioValue() {
-							return get(option).radioValue;
-						},
-						get radioSize() {
-							return get(expression_1);
-						},
-						get radioChecked() {
-							return get(option).radioChecked;
-						},
-						get radioDisabled() {
-							return get(option).radioDisabled;
-						}
-					});
-				});
-
-				append($$anchor, fragment_1);
-			};
-
-			if_block(node_2, ($$render) => {
-				if (options().length > 0) $$render(consequent_2);
-			});
-		}
-
+		snippet(node_2, () => children() ?? noop);
 		reset(div);
+		bind_this(div, ($$value) => set(group, $$value), () => get(group));
 		reset(fieldset);
 		append($$anchor, fieldset);
 
@@ -8450,44 +8262,26 @@
 				legend($$value);
 				flushSync();
 			},
-			get radioName() {
-				return radioName();
-			},
-			set radioName($$value) {
-				radioName($$value);
-				flushSync();
-			},
-			get radioSize() {
-				return radioSize();
-			},
-			set radioSize($$value) {
-				radioSize($$value);
-				flushSync();
-			},
 			get options() {
 				return options();
 			},
 			set options($$value = []) {
 				options($$value);
 				flushSync();
+			},
+			get children() {
+				return children();
+			},
+			set children($$value) {
+				children($$value);
+				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(
-		RadioGroup,
-		{
-			legend: {},
-			radioName: {},
-			radioSize: {},
-			options: {}
-		},
-		[],
-		[],
-		true
-	);
+	create_custom_element(RadioGroup, { legend: {}, options: {}, children: {} }, [], [], true);
 
-	var root = template(`<div><!></div>`);
+	var root$1 = template(`<div><!></div>`);
 
 	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
@@ -8497,7 +8291,14 @@
 			radioSize = prop($$props, 'radioSize', 7);
 
 		const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName()}]`);
-		var div = root();
+
+		options.forEach((option) => {
+			if (radioSize()) {
+				option.setAttribute('radio-size', radioSize());
+			}
+		});
+
+		var div = root$1();
 		var node = child(div);
 
 		RadioGroup(node, {
@@ -8553,19 +8354,205 @@
 		false
 	));
 
+	var root = template(`<div><input type="radio"> <label> </label></div>`);
+
+	function RadioButton($$anchor, $$props) {
+		push($$props, true);
+
+		let radioName = prop($$props, 'radioName', 7),
+			radioValue = prop($$props, 'radioValue', 7),
+			radioLabel = prop($$props, 'radioLabel', 7),
+			radioSize = prop($$props, 'radioSize', 7),
+			radioChecked = prop($$props, 'radioChecked', 7, false),
+			radioDisabled = prop($$props, 'radioDisabled', 7),
+			radioRequired = prop($$props, 'radioRequired', 7, true);
+
+		const usedSize = typeof radioSize() === "string" && radioSize().toLowerCase() === "sm" ? "sm" : "md";
+		var div = root();
+
+		set_class(div, 1, `qc-radio-${usedSize}`);
+
+		var input = child(div);
+
+		remove_input_defaults(input);
+
+		var label = sibling(input, 2);
+		var text = child(label, true);
+
+		reset(label);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_attribute(input, 'id', `${radioName()}_${radioValue()}`);
+				set_attribute(input, 'name', radioName());
+				set_value(input, radioValue());
+				set_checked(input, $0);
+				input.disabled = $1;
+				input.required = radioRequired();
+				set_attribute(label, 'for', `${radioName()}_${radioValue()}`);
+				set_text(text, radioLabel());
+			},
+			[
+				() => Utils.isTruthy(radioChecked()),
+				() => Utils.isTruthy(radioDisabled())
+			]
+		);
+
+		append($$anchor, div);
+
+		return pop({
+			get radioName() {
+				return radioName();
+			},
+			set radioName($$value) {
+				radioName($$value);
+				flushSync();
+			},
+			get radioValue() {
+				return radioValue();
+			},
+			set radioValue($$value) {
+				radioValue($$value);
+				flushSync();
+			},
+			get radioLabel() {
+				return radioLabel();
+			},
+			set radioLabel($$value) {
+				radioLabel($$value);
+				flushSync();
+			},
+			get radioSize() {
+				return radioSize();
+			},
+			set radioSize($$value) {
+				radioSize($$value);
+				flushSync();
+			},
+			get radioChecked() {
+				return radioChecked();
+			},
+			set radioChecked($$value = false) {
+				radioChecked($$value);
+				flushSync();
+			},
+			get radioDisabled() {
+				return radioDisabled();
+			},
+			set radioDisabled($$value) {
+				radioDisabled($$value);
+				flushSync();
+			},
+			get radioRequired() {
+				return radioRequired();
+			},
+			set radioRequired($$value = true) {
+				radioRequired($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		RadioButton,
+		{
+			radioName: {},
+			radioValue: {},
+			radioLabel: {},
+			radioSize: {},
+			radioChecked: {},
+			radioDisabled: {},
+			radioRequired: {}
+		},
+		[],
+		[],
+		true
+	);
+
 	function RadioButtonWC($$anchor, $$props) {
 		push($$props, true);
 
-		let props = prop($$props, 'props', 7);
+		let radioName = prop($$props, 'radioName', 7),
+			radioValue = prop($$props, 'radioValue', 7),
+			radioLabel = prop($$props, 'radioLabel', 7),
+			radioSize = prop($$props, 'radioSize', 7),
+			radioChecked = prop($$props, 'radioChecked', 7, false),
+			radioDisabled = prop($$props, 'radioDisabled', 7),
+			radioRequired = prop($$props, 'radioRequired', 7, true);
 
-		RadioButton($$anchor, spread_props(props));
+		RadioButton($$anchor, {
+			get radioName() {
+				return radioName();
+			},
+			get radioValue() {
+				return radioValue();
+			},
+			get radioLabel() {
+				return radioLabel();
+			},
+			get radioSize() {
+				return radioSize();
+			},
+			get radioChecked() {
+				return radioChecked();
+			},
+			get radioDisabled() {
+				return radioDisabled();
+			},
+			get radioRequired() {
+				return radioRequired();
+			}
+		});
 
 		return pop({
-			get props() {
-				return props();
+			get radioName() {
+				return radioName();
 			},
-			set props($$value) {
-				props($$value);
+			set radioName($$value) {
+				radioName($$value);
+				flushSync();
+			},
+			get radioValue() {
+				return radioValue();
+			},
+			set radioValue($$value) {
+				radioValue($$value);
+				flushSync();
+			},
+			get radioLabel() {
+				return radioLabel();
+			},
+			set radioLabel($$value) {
+				radioLabel($$value);
+				flushSync();
+			},
+			get radioSize() {
+				return radioSize();
+			},
+			set radioSize($$value) {
+				radioSize($$value);
+				flushSync();
+			},
+			get radioChecked() {
+				return radioChecked();
+			},
+			set radioChecked($$value = false) {
+				radioChecked($$value);
+				flushSync();
+			},
+			get radioDisabled() {
+				return radioDisabled();
+			},
+			set radioDisabled($$value) {
+				radioDisabled($$value);
+				flushSync();
+			},
+			get radioRequired() {
+				return radioRequired();
+			},
+			set radioRequired($$value = true) {
+				radioRequired($$value);
 				flushSync();
 			}
 		});
@@ -8576,11 +8563,11 @@
 		{
 			radioName: { attribute: 'radio-name', type: 'String' },
 			radioValue: { attribute: 'radio-value', type: 'String' },
+			radioLabel: { attribute: 'radio-label', type: 'String' },
 			radioSize: { attribute: 'radio-size', type: 'String' },
 			radioChecked: { attribute: 'radio-checked', type: 'Boolean' },
 			radioDisabled: { attribute: 'radio-disabled', type: 'Boolean' },
-			radioRequired: { attribute: 'radio-required', type: 'Boolean' },
-			props: {}
+			radioRequired: { attribute: 'radio-required', type: 'Boolean' }
 		},
 		[],
 		[],

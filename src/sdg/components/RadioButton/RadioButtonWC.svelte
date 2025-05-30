@@ -4,6 +4,7 @@
     props: {
         radioName: {attribute:'radio-name', type: 'String'},
         radioValue: {attribute:'radio-value', type: 'String'},
+        radioLabel: {attribute:'radio-label', type: 'String'},
         radioSize: {attribute:'radio-size', type: 'String'},
         radioChecked: {attribute: 'radio-checked', type: 'Boolean'},
         radioDisabled: {attribute:'radio-disabled', type: 'Boolean'},
@@ -14,7 +15,23 @@
 <script>
     import RadioButton from "./RadioButton.svelte";
 
-    let { props } = $props();
+    let {
+        radioName,
+        radioValue,
+        radioLabel,
+        radioSize,
+        radioChecked = false,
+        radioDisabled,
+        radioRequired = true
+    } = $props();
 </script>
 
-<RadioButton {...props} />
+<RadioButton
+    {radioName}
+    {radioValue}
+    {radioLabel}
+    {radioSize}
+    {radioChecked}
+    {radioDisabled}
+    {radioRequired}
+/>
