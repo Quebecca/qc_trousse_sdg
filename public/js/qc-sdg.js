@@ -267,6 +267,19 @@
 		hydrate_node = node;
 	}
 
+	function next(count = 1) {
+		if (hydrating) {
+			var i = count;
+			var node = hydrate_node;
+
+			while (i--) {
+				node = /** @type {TemplateNode} */ (get_next_sibling(node));
+			}
+
+			hydrate_node = node;
+		}
+	}
+
 	/**
 	 * Removes all nodes starting at `hydrate_node` up until the next hydration end comment
 	 */
@@ -6196,8 +6209,8 @@
 		true
 	));
 
-	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6205,7 +6218,7 @@
 		focusOnSearchInput();
 	};
 
-	var root_3$3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
+	var root_3$4 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
@@ -6263,7 +6276,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$3();
+				var div_2 = root_1$2();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6290,7 +6303,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2();
+				var div_5 = root_2$1();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -6317,7 +6330,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$3();
+				var a_3 = root_3$4();
 
 				a_3.__click = [
 					on_click$1,
@@ -6667,7 +6680,7 @@
 
 	var root_4 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<li><a> </a></li>`);
-	var root_3$2 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_3$3 = template(`<nav><ul><!> <!></ul></nav>`);
 
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
@@ -6682,7 +6695,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var nav = root_3$2();
+						var nav = root_3$3();
 						var ul = child(nav);
 						var node_2 = child(ul);
 
@@ -7007,8 +7020,8 @@
 		true
 	));
 
-	var root_1$2 = template(`<img>`);
-	var root_3$1 = template(`<a> </a>`);
+	var root_1$1 = template(`<img>`);
+	var root_3$2 = template(`<a> </a>`);
 	var root$9 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
@@ -7047,7 +7060,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$2();
+				var img = root_1$1();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7074,7 +7087,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_3$1();
+				var a_1 = root_3$2();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -7222,7 +7235,7 @@
 		append($$anchor, fragment);
 	};
 
-	var root_3 = template(`<a> </a>`);
+	var root_3$1 = template(`<a> </a>`);
 
 	function PivFooterWC($$anchor, $$props) {
 		push($$props, true);
@@ -7232,7 +7245,7 @@
 			var node_1 = first_child(fragment_1);
 
 			slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-				var a = root_3();
+				var a = root_3$1();
 				var text = child(a, true);
 
 				reset(a);
@@ -7498,7 +7511,7 @@
 		true
 	);
 
-	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	var root$7 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
@@ -7530,7 +7543,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$1();
+				var div = root_1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8315,7 +8328,8 @@
 		true
 	);
 
-	var root_1 = template(`<legend> </legend>`);
+	var root_2 = template(`<legend> <span class="required">*</span></legend>`);
+	var root_3 = template(`<legend> </legend>`);
 	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
@@ -8326,39 +8340,74 @@
 			radioSize = prop($$props, 'radioSize', 7),
 			options = prop($$props, 'options', 23, () => []);
 
+		let required = state(true);
+
 		onMount(() => {
+			let notRequiredCount = 0;
+
 			options().forEach((option) => {
 				option.parentNode.removeChild(option);
+
+				if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
+					notRequiredCount++;
+				}
 			});
+
+			if (notRequiredCount >= options().length) {
+				set(required, false);
+			}
 		});
 
 		var fieldset = root$1();
 		var node = child(fieldset);
 
 		{
-			var consequent = ($$anchor) => {
-				var legend_1 = root_1();
-				var text = child(legend_1, true);
+			var consequent_1 = ($$anchor) => {
+				var fragment = comment();
+				var node_1 = first_child(fragment);
 
-				reset(legend_1);
-				template_effect(() => set_text(text, legend()));
-				append($$anchor, legend_1);
+				{
+					var consequent = ($$anchor) => {
+						var legend_1 = root_2();
+						var text = child(legend_1);
+
+						next();
+						reset(legend_1);
+						template_effect(() => set_text(text, `${legend() ?? ''} `));
+						append($$anchor, legend_1);
+					};
+
+					var alternate = ($$anchor) => {
+						var legend_2 = root_3();
+						var text_1 = child(legend_2, true);
+
+						reset(legend_2);
+						template_effect(() => set_text(text_1, legend()));
+						append($$anchor, legend_2);
+					};
+
+					if_block(node_1, ($$render) => {
+						if (get(required)) $$render(consequent); else $$render(alternate, false);
+					});
+				}
+
+				append($$anchor, fragment);
 			};
 
 			if_block(node, ($$render) => {
-				if (legend()) $$render(consequent);
+				if (legend()) $$render(consequent_1);
 			});
 		}
 
 		var div = sibling(node, 2);
-		var node_1 = child(div);
+		var node_2 = child(div);
 
 		{
-			var consequent_1 = ($$anchor) => {
-				var fragment = comment();
-				var node_2 = first_child(fragment);
+			var consequent_2 = ($$anchor) => {
+				var fragment_1 = comment();
+				var node_3 = first_child(fragment_1);
 
-				each(node_2, 17, options, index, ($$anchor, option) => {
+				each(node_3, 17, options, index, ($$anchor, option) => {
 					const expression = user_derived(() => radioName() ? radioName() : get(option).radioName);
 					const expression_1 = user_derived(() => radioSize() ? radioSize() : get(option).radioSize);
 
@@ -8381,11 +8430,11 @@
 					});
 				});
 
-				append($$anchor, fragment);
+				append($$anchor, fragment_1);
 			};
 
-			if_block(node_1, ($$render) => {
-				if (options().length > 0) $$render(consequent_1);
+			if_block(node_2, ($$render) => {
+				if (options().length > 0) $$render(consequent_2);
 			});
 		}
 
