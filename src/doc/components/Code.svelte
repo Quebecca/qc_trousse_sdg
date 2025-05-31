@@ -9,6 +9,8 @@
 }}" />
 
 <script>
+  import { run } from 'svelte/legacy';
+
 
   import {HighlightJS} from "highlight.js"
   // import 'highlight.js/styles/default.css';
@@ -16,15 +18,24 @@
   import { onMount } from "svelte";
   import { Utils } from "../../sdg/components/utils"
 
-  export let
-      targetId = ''
-      , rawCode = ''
-      , language = 'html'
-      , outerHTML = false
-  ;
+  /**
+   * @typedef {Object} Props
+   * @property {string} [targetId]
+   * @property {string} [rawCode]
+   * @property {string} [language]
+   * @property {boolean} [outerHTML]
+   */
+
+  /** @type {Props} */
+  let {
+    targetId = '',
+    rawCode = '',
+    language = 'html',
+    outerHTML = false
+  } = $props();
 
   let
-    hlCode
+    hlCode = $state()
     , prettyCode
   ;
 
@@ -48,14 +59,16 @@
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   }
 
-  $: updateHLCode(rawCode, targetId)
+  run(() => {
+    updateHLCode(rawCode, targetId)
+  });
 
 </script>
 
 <pre
     ><code class="hljs"
         ><button class="btn btn-sm btn-primary"
-                 on:click={copy}>
+                 onclick={copy}>
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
         </button

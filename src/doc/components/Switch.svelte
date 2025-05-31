@@ -3,15 +3,19 @@
     shadow:'none'
 }}" />
 <script>
-    export let
-        value=false,
-        name='switch',
-        color = {
+    /**
+     * @typedef {Object} Props
+     * @property {boolean} [value]
+     * @property {string} [name]
+     * @property {any} [color]
+     */
+
+    /** @type {Props & { [key: string]: any }} */
+    let { value = $bindable(false), name = 'switch', color = {
             unchecked: 'grey-light',
             checked: 'blue-regular',
             slider: 'background'
-        }
-    ;
+        }, ...rest } = $props();
 
 </script>
 <div class="switch"
@@ -25,7 +29,7 @@
            {name}
            bind:checked={value}
            aria-checked={value}
-           {...$$restProps}
+           {...rest}
     />
     <span class="slider round" ></span>
 </div>

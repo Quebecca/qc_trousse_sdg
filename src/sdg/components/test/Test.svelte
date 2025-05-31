@@ -1,11 +1,11 @@
 <script>
-    export let foo;
+    let { foo, slot1, slot2 } = $props();
 </script>
 <div class="root">
     <label>Test.svelte</label>
-<slot name="slot1"/>
+{@render slot1?.()}
     <div>--</div>
-<slot name="slot2">{foo}</slot>
+{#if slot2}{@render slot2()}{:else}{foo}{/if}
 </div>
 <style>
     .root {

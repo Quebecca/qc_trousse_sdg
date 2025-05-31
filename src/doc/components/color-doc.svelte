@@ -6,11 +6,15 @@
     }
 }}" />
 <script>
-    export let
-        title,
-        token,
-        border = null
-    ;
+    /**
+     * @typedef {Object} Props
+     * @property {any} title
+     * @property {any} token
+     * @property {any} [border]
+     */
+
+    /** @type {Props} */
+    let { title, token, border = null } = $props();
 
 </script>
 <div class="color-details">

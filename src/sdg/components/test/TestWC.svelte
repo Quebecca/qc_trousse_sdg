@@ -7,11 +7,15 @@
 }}" />
 <script>
   import Test from "./Test.svelte";
-  export let foo;
+  let { foo } = $props();
 </script>
 <Test {foo}>
+    {#snippet slot1()}
     <slot name="slot1"
-          slot="slot1" />
+             />
+  {/snippet}
+    {#snippet slot2()}
     <slot name="slot2"
-          slot="slot2" />
+             />
+  {/snippet}
 </Test>

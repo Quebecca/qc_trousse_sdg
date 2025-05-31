@@ -6,11 +6,17 @@
   }
 }}" />
 <script>
-    import Switch from "./Switch.svelte";
-    let value = localStorage.getItem('dark-theme') === "true";
+  import { run } from 'svelte/legacy';
 
-    $: document.documentElement.classList.toggle('qc-dark-theme', value)
-    $: localStorage.setItem('dark-theme', value)
+    import Switch from "./Switch.svelte";
+    let value = $state(localStorage.getItem('dark-theme') === "true");
+
+    run(() => {
+    document.documentElement.classList.toggle('qc-dark-theme', value)
+  });
+    run(() => {
+    localStorage.setItem('dark-theme', value)
+  });
 </script>
 <div role="complementary">
     <div class="qc-container top-nav">

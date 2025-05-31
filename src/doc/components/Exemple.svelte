@@ -11,17 +11,27 @@
     <script>
     import Code from "./Code.svelte";
     import {onMount} from "svelte";
-    export let
-        caption = "SVP fournir une description"
-        , codeTargetId
-        , hideCode = false
-        , rawCode
-    ;
-    let exempleCode,
-        figure,
-        rootElement,
-        exempleArea,
-        figCaption;
+    /**
+     * @typedef {Object} Props
+     * @property {string} [caption]
+     * @property {any} codeTargetId
+     * @property {boolean} [hideCode]
+     * @property {any} rawCode
+     */
+
+    /** @type {Props & { [key: string]: any }} */
+    let {
+        caption = "SVP fournir une description",
+        codeTargetId,
+        hideCode = false,
+        rawCode,
+        ...rest
+    } = $props();
+    let exempleCode = $state(),
+        figure = $state(),
+        rootElement = $state(),
+        exempleArea = $state(),
+        figCaption = $state();
     onMount(() => {
         rootElement.parentElement.childNodes.forEach(node => {
             if (node.nodeType == 3) {
@@ -42,7 +52,7 @@
 <div bind:this={rootElement}
      class="exemple-area"
     >
-    <figure {...$$restProps}
+    <figure {...rest}
             bind:this={figure}
         >
         <div bind:this={exempleArea}
