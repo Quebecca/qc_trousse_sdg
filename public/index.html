@@ -33,14 +33,16 @@
 
         <qc-doc-exemple caption="Exemple d’affichage d'un composant web séparé (qc-test, wrapper de Test.svelte) et d'un composant web partagé (qc-other-test, qui importe Test.svelte)"
         >
-            <qc-test>
-                <p slot="slot1">slot1 value</p>
-                <p slot="slot2">slot2 value</p>
-            </qc-test>
+            <qc-outer shared="shared">
+                <qc-inner foo="foo1"></qc-inner>
+                <qc-inner foo="foo2"></qc-inner>
+            </qc-outer>
 
-            <qc-other-test>
+<!--            <qc-wrapper></qc-wrapper>-->
 
-            </qc-other-test>
+<!--            <qc-other-test>-->
+
+<!--            </qc-other-test>-->
         </qc-doc-exemple>
     </div>
 
@@ -49,10 +51,10 @@
             display: block;
             margin-top: var(--qc-spacer-xl);
         }
-        [slot] {
+        slot {
             border: 1px solid red;
         }
-        qc-test {
+        qc-inner {
             display: block;
             margin-bottom: var(--qc-spacer-md);
         }

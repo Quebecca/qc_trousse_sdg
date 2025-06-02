@@ -6,19 +6,19 @@
     }
 }}" />
 <script>
-    import Test from "./Test.svelte";
+    import Outer from "./Outer.svelte";
     let { foo } = $props();
 </script>
 <div class="root">
     <label>OtherTest.svelte</label>
-<Test>
+<Outer>
     {#snippet slot1()}
                 <p >slot1</p>
             {/snippet}
     {#snippet slot2()}
                 <p >slot2</p>
             {/snippet}
-</Test>
+</Outer>
 </div>
 <style>
     .root {
