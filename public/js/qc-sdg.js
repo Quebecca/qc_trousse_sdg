@@ -264,19 +264,6 @@
 		hydrate_node = node;
 	}
 
-	function next(count = 1) {
-		if (hydrating) {
-			var i = count;
-			var node = hydrate_node;
-
-			while (i--) {
-				node = /** @type {TemplateNode} */ (get_next_sibling(node));
-			}
-
-			hydrate_node = node;
-		}
-	}
-
 	/**
 	 * Removes all nodes starting at `hydrate_node` up until the next hydration end comment
 	 */
@@ -6161,7 +6148,7 @@
 		true
 	));
 
-	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6170,7 +6157,7 @@
 		focusOnSearchInput();
 	};
 
-	var root_3$4 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
+	var root_3$3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
@@ -6228,7 +6215,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$2();
+				var div_2 = root_1$3();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6282,7 +6269,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$4();
+				var a_3 = root_3$3();
 
 				a_3.__click = [
 					on_click$1,
@@ -6632,7 +6619,7 @@
 
 	var root_4 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<li><a> </a></li>`);
-	var root_3$3 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_3$2 = template(`<nav><ul><!> <!></ul></nav>`);
 
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
@@ -6647,7 +6634,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var nav = root_3$3();
+						var nav = root_3$2();
 						var ul = child(nav);
 						var node_2 = child(ul);
 
@@ -6972,8 +6959,8 @@
 		true
 	));
 
-	var root_1$1 = template(`<img>`);
-	var root_3$2 = template(`<a> </a>`);
+	var root_1$2 = template(`<img>`);
+	var root_3$1 = template(`<a> </a>`);
 	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
@@ -7012,7 +6999,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$1();
+				var img = root_1$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7039,7 +7026,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_3$2();
+				var a_1 = root_3$1();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -7187,7 +7174,7 @@
 		append($$anchor, fragment);
 	};
 
-	var root_3$1 = template(`<a> </a>`);
+	var root_3 = template(`<a> </a>`);
 
 	function PivFooterWC($$anchor, $$props) {
 		push($$props, true);
@@ -7197,7 +7184,7 @@
 			var node_1 = first_child(fragment_1);
 
 			slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-				var a = root_3$1();
+				var a = root_3();
 				var text = child(a, true);
 
 				reset(a);
@@ -7463,7 +7450,7 @@
 		true
 	);
 
-	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
@@ -7495,7 +7482,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1();
+				var div = root_1$1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8173,34 +8160,27 @@
 		false
 	));
 
-	var root_2 = template(`<legend> <span class="radio-required">*</span></legend>`);
-	var root_3 = template(`<legend> </legend>`);
+	var root_2 = template(`<span class="radio-required">*</span>`);
+	var root_1 = template(`<legend> <!></legend>`);
 	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
+			radioSize = prop($$props, 'radioSize', 7),
 			options = prop($$props, 'options', 23, () => []),
+			radioRequired = prop($$props, 'radioRequired', 7, true),
 			children = prop($$props, 'children', 7);
 
-		let required = state(true);
 		let group = state(void 0);
 
 		onMount(() => {
-			let notRequiredCount = 0;
-
 			options().forEach((option) => {
+				option.setAttribute("radio-size", radioSize());
+				option.setAttribute("radio-required", Utils.isTruthy(radioRequired()));
 				get(group).appendChild(option);
-
-				if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
-					notRequiredCount++;
-				}
 			});
-
-			if (notRequiredCount >= options().length) {
-				set(required, false);
-			}
 		});
 
 		var fieldset = root$1();
@@ -8208,35 +8188,25 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var fragment = comment();
-				var node_1 = first_child(fragment);
+				var legend_1 = root_1();
+				var text = child(legend_1);
+				var node_1 = sibling(text);
 
 				{
 					var consequent = ($$anchor) => {
-						var legend_1 = root_2();
-						var text = child(legend_1);
+						var span = root_2();
 
-						next();
-						reset(legend_1);
-						template_effect(() => set_text(text, `${legend() ?? ''} `));
-						append($$anchor, legend_1);
-					};
-
-					var alternate = ($$anchor) => {
-						var legend_2 = root_3();
-						var text_1 = child(legend_2, true);
-
-						reset(legend_2);
-						template_effect(() => set_text(text_1, legend()));
-						append($$anchor, legend_2);
+						append($$anchor, span);
 					};
 
 					if_block(node_1, ($$render) => {
-						if (get(required)) $$render(consequent); else $$render(alternate, false);
+						if (Utils.isTruthy(radioRequired())) $$render(consequent);
 					});
 				}
 
-				append($$anchor, fragment);
+				reset(legend_1);
+				template_effect(() => set_text(text, `${legend() ?? ''} `));
+				append($$anchor, legend_1);
 			};
 
 			if_block(node, ($$render) => {
@@ -8261,11 +8231,25 @@
 				legend($$value);
 				flushSync();
 			},
+			get radioSize() {
+				return radioSize();
+			},
+			set radioSize($$value) {
+				radioSize($$value);
+				flushSync();
+			},
 			get options() {
 				return options();
 			},
 			set options($$value = []) {
 				options($$value);
+				flushSync();
+			},
+			get radioRequired() {
+				return radioRequired();
+			},
+			set radioRequired($$value = true) {
+				radioRequired($$value);
 				flushSync();
 			},
 			get children() {
@@ -8278,30 +8262,41 @@
 		});
 	}
 
-	create_custom_element(RadioGroup, { legend: {}, options: {}, children: {} }, [], [], true);
+	create_custom_element(
+		RadioGroup,
+		{
+			legend: {},
+			radioSize: {},
+			options: {},
+			radioRequired: {},
+			children: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7),
 			radioName = prop($$props, 'radioName', 7),
-			radioSize = prop($$props, 'radioSize', 7);
+			radioSize = prop($$props, 'radioSize', 7),
+			radioRequired = prop($$props, 'radioRequired', 7, true);
 
 		const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName()}]`);
-
-		console.log(options);
-
-		options.forEach((option) => {
-			if (radioSize()) {
-				option.setAttribute('radio-size', radioSize());
-			}
-		});
 
 		RadioGroup($$anchor, {
 			get legend() {
 				return legend();
 			},
-			options
+			get radioSize() {
+				return radioSize();
+			},
+			options,
+			get radioRequired() {
+				return radioRequired();
+			}
 		});
 
 		return pop({
@@ -8325,6 +8320,13 @@
 			set radioSize($$value) {
 				radioSize($$value);
 				flushSync();
+			},
+			get radioRequired() {
+				return radioRequired();
+			},
+			set radioRequired($$value = true) {
+				radioRequired($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8334,7 +8336,8 @@
 		{
 			legend: { attribute: 'legend', type: 'String' },
 			radioName: { attribute: 'radio-name', type: 'String' },
-			radioSize: { attribute: 'radio-size', type: 'String' }
+			radioSize: { attribute: 'radio-size', type: 'String' },
+			radioRequired: { attribute: 'radio-required', type: 'String' }
 		},
 		[],
 		[],
@@ -8354,11 +8357,13 @@
 			radioDisabled = prop($$props, 'radioDisabled', 7),
 			radioRequired = prop($$props, 'radioRequired', 7, true);
 
-		const usedSize = typeof radioSize() === "string" && radioSize().toLowerCase() === "sm" ? "sm" : "md";
+		let usedSize = state("md");
+
+		onMount(() => {
+			set(usedSize, typeof radioSize() === "string" && radioSize().toLowerCase() === "sm" ? "sm" : "md", true);
+		});
+
 		var div = root();
-
-		set_class(div, 1, `qc-radio-${usedSize}`);
-
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -8370,19 +8375,21 @@
 		reset(div);
 
 		template_effect(
-			($0, $1) => {
+			($0, $1, $2) => {
+				set_class(div, 1, `qc-radio-${get(usedSize)}`);
 				set_attribute(input, 'id', `${radioName()}_${radioValue()}`);
 				set_attribute(input, 'name', radioName());
 				set_value(input, radioValue());
 				set_checked(input, $0);
 				input.disabled = $1;
-				input.required = radioRequired();
+				input.required = $2;
 				set_attribute(label, 'for', `${radioName()}_${radioValue()}`);
 				set_text(text, radioLabel());
 			},
 			[
 				() => Utils.isTruthy(radioChecked()),
-				() => Utils.isTruthy(radioDisabled())
+				() => Utils.isTruthy(radioDisabled()),
+				() => Utils.isTruthy(radioRequired())
 			]
 		);
 
