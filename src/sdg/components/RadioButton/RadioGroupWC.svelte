@@ -5,24 +5,26 @@
         legend: {attribute:'legend', type: 'String'},
         radioName: {attribute:'radio-name', type: 'String'},
         radioSize: {attribute:'radio-size', type: 'String'},
+        radioRequired: {attribute: 'radio-required', type: 'String'}
     }
 }}" />
 
 <script>
     import RadioGroup from "./RadioGroup.svelte";
 
-    let { legend, radioName, radioSize } = $props();
+    let {
+        legend,
+        radioName,
+        radioSize,
+        radioRequired = true
+    } = $props();
     const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName}]`);
-    console.log(options);
-    options.forEach((option) => {
-        if (radioSize) {
-            option.setAttribute('radio-size', radioSize);
-        }
-    });
 </script>
 
 <RadioGroup
     {legend}
+    {radioSize}
     {options}
+    {radioRequired}
 />
 

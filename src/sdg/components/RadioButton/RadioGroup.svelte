@@ -1,40 +1,34 @@
 <script>
     import {onMount} from "svelte";
+    import {Utils} from "../utils";
 
     let {
         legend = "",
+        radioSize,
         options = [],
+        radioRequired = true,
         children
     } = $props();
 
-    let required = $state(true);
     let group = $state();
 
     onMount(() => {
-        let notRequiredCount = 0;
         options.forEach((option) => {
+            option.setAttribute("radio-size", radioSize);
+            option.setAttribute("radio-required", Utils.isTruthy(radioRequired));
             group.appendChild(option);
-            if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
-                notRequiredCount++;
-            }
         });
-
-        if (notRequiredCount >= options.length) {
-            required = false;
-        }
     });
 </script>
 
 <fieldset>
     {#if legend}
-        {#if required}
-            <legend>
-                {legend}
+        <legend>
+            {legend}
+            {#if Utils.isTruthy(radioRequired)}
                 <span class="radio-required">*</span>
-            </legend>
-        {:else}
-            <legend>{legend}</legend>
-        {/if}
+            {/if}
+        </legend>
     {/if}
 
 

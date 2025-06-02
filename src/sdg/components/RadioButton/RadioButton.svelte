@@ -1,5 +1,6 @@
 <script>
     import {Utils} from "../utils";
+    import {onMount} from "svelte";
 
     let {
         radioName,
@@ -11,7 +12,11 @@
         radioRequired = true
     } = $props();
 
-    const usedSize = (typeof radioSize === "string" && radioSize.toLowerCase() === "sm") ? "sm" : "md";
+    let usedSize = $state("md");
+
+    onMount(() => {
+        usedSize = (typeof radioSize === "string" && radioSize.toLowerCase() === "sm") ? "sm" : "md";
+    })
 </script>
 
 <div class={`qc-radio-${usedSize}`}>
@@ -22,7 +27,7 @@
         value={radioValue}
         checked={Utils.isTruthy(radioChecked)}
         disabled={Utils.isTruthy(radioDisabled)}
-        required={radioRequired}
+        required={Utils.isTruthy(radioRequired)}
     />
     <label for={`${radioName}_${radioValue}`}>{radioLabel}</label>
 </div>
