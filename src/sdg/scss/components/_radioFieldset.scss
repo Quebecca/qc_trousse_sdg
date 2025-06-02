@@ -1,12 +1,25 @@
 @use "../lib/functions" as *;
 @use "../lib/mixins" as *;
 
-.qc-radio-legend-sm {
-    @include content-font(sm, semi-bold);
+%radio-fieldset {
+  //display: flex;
+  border: none;
+
+  legend {
+    display: flex;
+    margin-left: token-value(spacer, xs);
+    margin-bottom: 0;
+  }
 }
 
-.qc-radio-legend-md {
-  @include content-font(md, semi-bold);
+.qc-radio-fieldset-sm {
+  @extend %radio-fieldset;
+  @include content-font(sm, bold);
+}
+
+.qc-radio-fieldset-md {
+  @extend %radio-fieldset;
+  @include content-font(md, bold);
 }
 
 .radio-options {
