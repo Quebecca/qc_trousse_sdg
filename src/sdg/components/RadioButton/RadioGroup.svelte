@@ -4,7 +4,7 @@
 
     let {
         legend = "",
-        radioSize,
+        radioSize = "md",
         options = [],
         radioRequired = true,
         children
@@ -21,11 +21,11 @@
     });
 </script>
 
-<fieldset>
+<fieldset class={`qc-radio-legend${radioSize}`}>
     {#if legend}
         <legend>
             {legend}
-            {#if Utils.isTruthy(radioRequired)}
+            {#if radioRequired !== "false" && radioRequired !== false}
                 <span class="radio-required">*</span>
             {/if}
         </legend>

@@ -8168,7 +8168,7 @@
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
-			radioSize = prop($$props, 'radioSize', 7),
+			radioSize = prop($$props, 'radioSize', 7, "md"),
 			options = prop($$props, 'options', 23, () => []),
 			radioRequired = prop($$props, 'radioRequired', 7, true),
 			children = prop($$props, 'children', 7);
@@ -8200,7 +8200,7 @@
 					};
 
 					if_block(node_1, ($$render) => {
-						if (Utils.isTruthy(radioRequired())) $$render(consequent);
+						if (radioRequired() !== "false" && radioRequired() !== false) $$render(consequent);
 					});
 				}
 
@@ -8221,6 +8221,7 @@
 		reset(div);
 		bind_this(div, ($$value) => set(group, $$value), () => get(group));
 		reset(fieldset);
+		template_effect(() => set_class(fieldset, 1, `qc-radio-legend${radioSize()}`));
 		append($$anchor, fieldset);
 
 		return pop({
@@ -8234,7 +8235,7 @@
 			get radioSize() {
 				return radioSize();
 			},
-			set radioSize($$value) {
+			set radioSize($$value = "md") {
 				radioSize($$value);
 				flushSync();
 			},
@@ -8352,16 +8353,10 @@
 		let radioName = prop($$props, 'radioName', 7),
 			radioValue = prop($$props, 'radioValue', 7),
 			radioLabel = prop($$props, 'radioLabel', 7),
-			radioSize = prop($$props, 'radioSize', 7),
+			radioSize = prop($$props, 'radioSize', 7, "sm"),
 			radioChecked = prop($$props, 'radioChecked', 7, false),
 			radioDisabled = prop($$props, 'radioDisabled', 7),
 			radioRequired = prop($$props, 'radioRequired', 7, true);
-
-		let usedSize = state("md");
-
-		onMount(() => {
-			set(usedSize, typeof radioSize() === "string" && radioSize().toLowerCase() === "sm" ? "sm" : "md", true);
-		});
 
 		var div = root();
 		var input = child(div);
@@ -8376,7 +8371,7 @@
 
 		template_effect(
 			($0, $1, $2) => {
-				set_class(div, 1, `qc-radio-${get(usedSize)}`);
+				set_class(div, 1, `qc-radio-${radioSize()}`);
 				set_attribute(input, 'id', `${radioName()}_${radioValue()}`);
 				set_attribute(input, 'name', radioName());
 				set_value(input, radioValue());
@@ -8420,7 +8415,7 @@
 			get radioSize() {
 				return radioSize();
 			},
-			set radioSize($$value) {
+			set radioSize($$value = "sm") {
 				radioSize($$value);
 				flushSync();
 			},
@@ -8471,9 +8466,9 @@
 			radioValue = prop($$props, 'radioValue', 7),
 			radioLabel = prop($$props, 'radioLabel', 7),
 			radioSize = prop($$props, 'radioSize', 7),
-			radioChecked = prop($$props, 'radioChecked', 7, false),
+			radioChecked = prop($$props, 'radioChecked', 7),
 			radioDisabled = prop($$props, 'radioDisabled', 7),
-			radioRequired = prop($$props, 'radioRequired', 7, true);
+			radioRequired = prop($$props, 'radioRequired', 7);
 
 		RadioButton($$anchor, {
 			get radioName() {
@@ -8531,7 +8526,7 @@
 			get radioChecked() {
 				return radioChecked();
 			},
-			set radioChecked($$value = false) {
+			set radioChecked($$value) {
 				radioChecked($$value);
 				flushSync();
 			},
@@ -8545,7 +8540,7 @@
 			get radioRequired() {
 				return radioRequired();
 			},
-			set radioRequired($$value = true) {
+			set radioRequired($$value) {
 				radioRequired($$value);
 				flushSync();
 			}
