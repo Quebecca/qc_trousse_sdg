@@ -1,41 +1,30 @@
 <script>
-    import Checkbox from "./Checkbox.svelte";
-    import {onMount} from "svelte";
+    import Checkbox from './Checkbox.svelte';
 
-    const {
-        checkboxGroupLabel = "",
-        checkboxSize = "md",
-        checkboxName = "",
-        checkboxes = [],
+    let {
+        groupId = "",
+        legend = "",
+        name = "",
+        options = []
     } = $props();
-
-    onMount(() => {
-        checkboxes.forEach((e) => {
-            e.parentNode?.removeChild(e);
-        });
-    });
 
 </script>
 
-<fieldset>
-
-    {#if checkboxGroupLabel}
-        <legend class="qc-form-check-legend">{checkboxGroupLabel}</legend>
-    {/if}
-
-    {#each checkboxes as checkbox}
-        <Checkbox
-        checkboxName={checkboxName || checkbox.getAttribute("checkbox-name")}
-        checkboxValue={checkbox.getAttribute("checkbox-value")}
-        checkboxSize={checkbox.getAttribute("checkbox-size") || checkboxSize}
-        checkboxChecked={checkbox.getAttribute("checkbox-checked")}
-        checkboxDisabled={checkbox.getAttribute("checkbox-disabled")}
-        checkboxLabel={checkbox.getAttribute("checkbox-label")}
-        />
-    {/each}
-
-</fieldset>
-
-<style>
-
-</style>
+<div id={groupId} class="qc-col-md-6">
+    <h3>Case à cocher au format standard</h3>
+    <fieldset>
+        <legend class="qc-form-check-legend">{legend}</legend>
+        <div class="qc-form-checks">
+            {#each options as option}
+                <Checkbox
+                        checkboxName={name}
+                        checkboxLabel={option.label}
+                        checkboxValue={option.value}
+                        checkboxDisabled={option.disabled}
+                        checkboxChecked={option.checked}
+                        checkboxSize="md"
+                />
+            {/each}
+        </div>
+    </fieldset>
+</div>
