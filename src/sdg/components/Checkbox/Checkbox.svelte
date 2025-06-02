@@ -1,27 +1,29 @@
 <script>
+
     const {
-        checkboxName,
-        checkboxValue,
+        checkboxName = "",
+        checkboxLabel = "",
+        checkboxValue = "",
         checkboxSize = "md",
         checkboxChecked = false,
         checkboxDisabled = false,
-        checkboxLabel = ""
+        checkboxRequired = false,
     } = $props();
 
-    const id = `${checkboxName}_${checkboxValue}`;
 </script>
 
 <div class={checkboxSize === "sm" ? "qc-form-check-sm" : "qc-form-check"}>
-    <input
-        class="qc-form-check-input"
-        type="checkbox"
-        id={id}
-        name={checkboxName}
-        value={checkboxValue}
-        checked={checkboxChecked}
-        disabled={checkboxDisabled}
-        />
-    <label for={id}>{checkboxLabel || checkboxValue}</label>
+    <label>
+        <input
+            class="qc-form-check-input"
+            type="checkbox"
+            name={checkboxName}
+            value={checkboxValue}
+            checked={checkboxChecked}
+            disabled={checkboxDisabled}
+            required={checkboxRequired}
+            />{checkboxLabel}
+    </label>
 </div>
 
 

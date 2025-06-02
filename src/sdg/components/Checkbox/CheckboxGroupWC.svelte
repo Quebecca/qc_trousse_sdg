@@ -1,24 +1,41 @@
-
 <svelte:options customElement={{
-    tag: 'qc-checkbox-group',
-    shadow: 'none',
-    props: {
-        checkboxGroupLabel: { attribute: 'checkbox-group-label' },
-        checkboxSize: { attribute: 'checkbox-size' },
-        checkboxName: { attribute: 'checkbox-name' }
-    }
+  tag: 'qc-checkbox-group',
+  shadow: 'none',
+  props: {
+    groupId: { attribute: 'group-id' },
+    legend: { attribute: 'legend' },
+    name: { attribute: 'name' },
+    options: { attribute: 'options' } // reste une chaîne JSON
+  }
 }} />
 
 <script>
-    import CheckboxGroup from "./CheckboxGroup.svelte";
-    const { checkboxGroupLabel, checkboxSize, checkboxName } = $props();
-    const checkboxes = document.querySelectorAll("qc-checkbox");
+    import CheckboxGroup from './CheckboxGroup.svelte';
+
+    export let groupId = '';
+    export let legend = '';
+    export let name = '';
+    export let options = [];
+
+
+
+    // Parser si options est une chaîne JSON
+    $: parsedOptions = typeof options === 'string'
+        ? (() => {
+            try {
+                return JSON.parse(options);
+            } catch (e) {
+                console.error('Erreur de parsing des options :', e);
+                return [];
+            }
+        })()
+        : options;
 </script>
 
-
 <CheckboxGroup
-    {checkboxGroupLabel}
-    {checkboxSize}
-    {checkboxName}
-    {checkboxes}
+        {groupId}
+        {legend}
+        {name}
+        options={parsedOptions}
 />
+
