@@ -1922,16 +1922,25 @@ input[type=radio]::before {
   font-weight: var(--qc-font-weight-regular);
 }
 
-.qc-radio-legend-sm {
-  font-size: var(--qc-font-size-sm);
-  line-height: var(--qc-line-height-sm);
-  font-weight: var(--qc-font-weight-semi-bold);
+.qc-radio-fieldset-md, .qc-radio-fieldset-sm {
+  border: none;
+}
+.qc-radio-fieldset-md legend, .qc-radio-fieldset-sm legend {
+  display: flex;
+  margin-left: var(--qc-spacer-xs);
+  margin-bottom: 0;
 }
 
-.qc-radio-legend-md {
+.qc-radio-fieldset-sm {
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-bold);
+}
+
+.qc-radio-fieldset-md {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-semi-bold);
+  font-weight: var(--qc-font-weight-bold);
 }
 
 .radio-options {

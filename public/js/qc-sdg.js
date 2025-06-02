@@ -8205,7 +8205,7 @@
 				}
 
 				reset(legend_1);
-				template_effect(() => set_text(text, `${legend() ?? ''} `));
+				template_effect(() => set_text(text, `${legend() + " "} `));
 				append($$anchor, legend_1);
 			};
 
@@ -8221,7 +8221,7 @@
 		reset(div);
 		bind_this(div, ($$value) => set(group, $$value), () => get(group));
 		reset(fieldset);
-		template_effect(() => set_class(fieldset, 1, `qc-radio-legend${radioSize()}`));
+		template_effect(() => set_class(fieldset, 1, `qc-radio-fieldset-${radioSize()}`));
 		append($$anchor, fieldset);
 
 		return pop({

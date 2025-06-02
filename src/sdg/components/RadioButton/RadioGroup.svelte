@@ -21,10 +21,10 @@
     });
 </script>
 
-<fieldset class={`qc-radio-legend${radioSize}`}>
+<fieldset class={`qc-radio-fieldset-${radioSize}`}>
     {#if legend}
         <legend>
-            {legend}
+            {legend + " "}
             {#if radioRequired !== "false" && radioRequired !== false}
                 <span class="radio-required">*</span>
             {/if}
