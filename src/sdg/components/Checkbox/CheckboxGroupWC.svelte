@@ -5,22 +5,21 @@
     groupId: { attribute: 'group-id' },
     legend: { attribute: 'legend' },
     name: { attribute: 'name' },
-    options: { attribute: 'options' } // reste une chaîne JSON
+    options: { attribute: 'options' }
   }
 }} />
 
 <script>
     import CheckboxGroup from './CheckboxGroup.svelte';
 
-    export let groupId = '';
-    export let legend = '';
-    export let name = '';
-    export let options = [];
+    let {
+    groupId = '',
+    legend = '',
+    name = '',
+    options = []
+    } = $props();
 
-
-
-    // Parser si options est une chaîne JSON
-    $: parsedOptions = typeof options === 'string'
+    let parsedOptions = $derived(typeof options === 'string'
         ? (() => {
             try {
                 return JSON.parse(options);
@@ -29,7 +28,7 @@
                 return [];
             }
         })()
-        : options;
+        : options);
 </script>
 
 <CheckboxGroup
