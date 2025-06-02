@@ -1,5 +1,6 @@
 <svelte:options customElement="{{
     tag: 'qc-outer',
+    shadow: 'none',
     props: {
         shared: {attribute:'shared'}
     },
@@ -8,23 +9,22 @@
 			// Extend the class so we can let it participate in HTML forms
 			return class extends customElementConstructor {
               static inners;
-              static outer;
               constructor() {
                 super();
-                this.outer = this;
                 // this.inners = Array.from(this.querySelectorAll('qc-inner'));
                 this.inners = Array.from(this.querySelectorAll('qc-inner'))
+
+                // en cas de dom shadow, décommenter tout le code en dessous
+
                 this.inners.forEach(setUpInner)
 
+                // cette fonction prépare chaque qc-inner pour être monté dans le shadow dom
                 function setUpInner(inner,i) {
-                  // console.log('setUpInners', )
-                    inner.setAttribute(`slot`, `slot${i +1}`)
-                    // inner.outer = this;
-                    // inner.setAttribute('bar', 'bar');
-                    // console.log('inner outer', inner.outer)
+                     inner.setAttribute(`slot`, `slot${i +1}`)
                 }
 
-                // Observer pour détecter les ajouts dynamiques
+                // Observer pour détecter les ajouts dynamiques à l'intérieur de qc-outer
+                // pour chaque nouvel ajout, on s'assure d'appeler setUpInner pour le nouveau qc-inner
                 const observer = new MutationObserver((mutationsList) => {
                   for (const mutation of mutationsList) {
                     if (mutation.type === 'childList') {
@@ -40,10 +40,8 @@
                 });
 
                 observer.observe(this, { childList: true, subtree: false });
-              }
 
-              getShared() {
-                return this.shared
+
               }
 		}
     }
@@ -52,17 +50,7 @@
 
 <script>
   import Outer from "./Outer.svelte";
-  import {onMount} from "svelte";
-  let {outer, inners, shared } = $props();
-  onMount(() => {
-      inners.forEach(inner => inner.outer = outer)
-  })
-  $inspect("inners change", inners)
+  let {inners, legend, name } = $props();
   // $inspect(shared)
 </script>
-<strong>Outer WC</strong>
-<Outer {inners} {shared}>
-    {#snippet slot(inner)}
-        {@html `<slot name="${inner.getAttribute("slot")}"></slot>`}
-    {/snippet}
-</Outer>
+<Outer {inners} {legend} {name}></Outer>

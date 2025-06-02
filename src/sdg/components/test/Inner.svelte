@@ -1,4 +1,11 @@
 <script>
-    let { foo, shared } = $props();
+    let { value, label, name } = $props();
+    let id = $derived( name + "_" + value)
 </script>
-<div>{foo} {shared}</div>
+<div>
+    <input type="checkbox"
+            bind:value
+            {name}
+            {id}
+    /><label for={id}>{label}</label> {name}
+</div>

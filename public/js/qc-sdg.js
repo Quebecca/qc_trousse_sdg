@@ -12,9 +12,6 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
-	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
-	const EACH_IS_CONTROLLED = 1 << 2;
-	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const TEMPLATE_FRAGMENT = 1;
@@ -45,8 +42,6 @@
 	var array_prototype = Array.prototype;
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
-
-	const noop = () => {};
 
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
@@ -647,6 +642,20 @@
 	 * @returns {Derived<V>}
 	 */
 	/*#__NO_SIDE_EFFECTS__*/
+	function user_derived(fn) {
+		const d = derived(fn);
+
+		push_reaction_value(d);
+
+		return d;
+	}
+
+	/**
+	 * @template V
+	 * @param {() => V} fn
+	 * @returns {Derived<V>}
+	 */
+	/*#__NO_SIDE_EFFECTS__*/
 	function derived_safe_equal(fn) {
 		const signal = derived(fn);
 		signal.equals = safe_equals;
@@ -1087,6 +1096,11 @@
 		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
 		if (child === null) {
 			child = hydrate_node.appendChild(create_text());
+		} else if (is_text && child.nodeType !== 3) {
+			var text = create_text();
+			child?.before(text);
+			set_hydrate_node(text);
+			return text;
 		}
 
 		set_hydrate_node(child);
@@ -2771,23 +2785,6 @@
 		};
 	}
 
-	function comment() {
-		// we're not delegating to `template` here for performance reasons
-		if (hydrating) {
-			assign_nodes(hydrate_node, null);
-			return hydrate_node;
-		}
-
-		var frag = document.createDocumentFragment();
-		var start = document.createComment('');
-		var anchor = create_text();
-		frag.append(start, anchor);
-
-		assign_nodes(start, anchor);
-
-		return frag;
-	}
-
 	/**
 	 * Assign the created (or in hydration mode, traversed) dom elements to the current block
 	 * and insert the elements into the dom (in client mode).
@@ -3085,43 +3082,6 @@
 		return Promise.resolve();
 	}
 
-	/** @import { Snippet } from 'svelte' */
-	/** @import { Effect, TemplateNode } from '#client' */
-	/** @import { Getters } from '#shared' */
-
-	/**
-	 * @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
-	 * @param {TemplateNode} node
-	 * @param {() => SnippetFn | null | undefined} get_snippet
-	 * @param {(() => any)[]} args
-	 * @returns {void}
-	 */
-	function snippet(node, get_snippet, ...args) {
-		var anchor = node;
-
-		/** @type {SnippetFn | null | undefined} */
-		// @ts-ignore
-		var snippet = noop;
-
-		/** @type {Effect | null} */
-		var snippet_effect;
-
-		block(() => {
-			if (snippet === (snippet = get_snippet())) return;
-
-			if (snippet_effect) {
-				destroy_effect(snippet_effect);
-				snippet_effect = null;
-			}
-
-			snippet_effect = branch(() => /** @type {SnippetFn} */ (snippet)(anchor, ...args));
-		}, EFFECT_TRANSPARENT);
-
-		if (hydrating) {
-			anchor = hydrate_node;
-		}
-	}
-
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
 	/** @import { EventDispatcher } from './index.js' */
 	/** @import { NotFunction } from './internal/types.js' */
@@ -3153,136 +3113,7 @@
 		}
 	}
 
-	/** @import { Effect, TemplateNode } from '#client' */
-
-	/**
-	 * @param {TemplateNode} node
-	 * @param {(branch: (fn: (anchor: Node, elseif?: [number,number]) => void, flag?: boolean) => void) => void} fn
-	 * @param {[number,number]} [elseif]
-	 * @returns {void}
-	 */
-	function if_block(node, fn, [root_index, hydrate_index] = [0, 0]) {
-		if (hydrating && root_index === 0) {
-			hydrate_next();
-		}
-
-		var anchor = node;
-
-		/** @type {Effect | null} */
-		var consequent_effect = null;
-
-		/** @type {Effect | null} */
-		var alternate_effect = null;
-
-		/** @type {UNINITIALIZED | boolean | null} */
-		var condition = UNINITIALIZED;
-
-		var flags = root_index > 0 ? EFFECT_TRANSPARENT : 0;
-
-		var has_branch = false;
-
-		const set_branch = (
-			/** @type {(anchor: Node, elseif?: [number,number]) => void} */ fn,
-			flag = true
-		) => {
-			has_branch = true;
-			update_branch(flag, fn);
-		};
-
-		const update_branch = (
-			/** @type {boolean | null} */ new_condition,
-			/** @type {null | ((anchor: Node, elseif?: [number,number]) => void)} */ fn
-		) => {
-			if (condition === (condition = new_condition)) return;
-
-			/** Whether or not there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
-			let mismatch = false;
-
-			if (hydrating && hydrate_index !== -1) {
-				if (root_index === 0) {
-					const data = read_hydration_instruction(anchor);
-
-					if (data === HYDRATION_START) {
-						hydrate_index = 0;
-					} else if (data === HYDRATION_START_ELSE) {
-						hydrate_index = Infinity;
-					} else {
-						hydrate_index = parseInt(data.substring(1));
-						if (hydrate_index !== hydrate_index) {
-							// if hydrate_index is NaN
-							// we set an invalid index to force mismatch
-							hydrate_index = condition ? Infinity : -1;
-						}
-					}
-				}
-				const is_else = hydrate_index > root_index;
-
-				if (!!condition === is_else) {
-					// Hydration mismatch: remove everything inside the anchor and start fresh.
-					// This could happen with `{#if browser}...{/if}`, for example
-					anchor = remove_nodes();
-
-					set_hydrate_node(anchor);
-					set_hydrating(false);
-					mismatch = true;
-					hydrate_index = -1; // ignore hydration in next else if
-				}
-			}
-
-			if (condition) {
-				if (consequent_effect) {
-					resume_effect(consequent_effect);
-				} else if (fn) {
-					consequent_effect = branch(() => fn(anchor));
-				}
-
-				if (alternate_effect) {
-					pause_effect(alternate_effect, () => {
-						alternate_effect = null;
-					});
-				}
-			} else {
-				if (alternate_effect) {
-					resume_effect(alternate_effect);
-				} else if (fn) {
-					alternate_effect = branch(() => fn(anchor, [root_index + 1, hydrate_index]));
-				}
-
-				if (consequent_effect) {
-					pause_effect(consequent_effect, () => {
-						consequent_effect = null;
-					});
-				}
-			}
-
-			if (mismatch) {
-				// continue in hydration mode
-				set_hydrating(true);
-			}
-		};
-
-		block(() => {
-			has_branch = false;
-			fn(set_branch);
-			if (!has_branch) {
-				update_branch(null, null);
-			}
-		}, flags);
-
-		if (hydrating) {
-			anchor = hydrate_node;
-		}
-	}
-
 	/** @import { EachItem, EachState, Effect, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
-
-	/**
-	 * @param {any} _
-	 * @param {number} i
-	 */
-	function index(_, i) {
-		return i;
-	}
 
 	/**
 	 * Pause multiple effects simultaneously, and coordinate their
@@ -3342,9 +3173,7 @@
 		/** @type {EachState} */
 		var state = { items: new Map(), first: null };
 
-		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
-
-		if (is_controlled) {
+		{
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -3493,8 +3322,6 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
-		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
-		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -3506,9 +3333,6 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
-
-		/** @type {undefined | Set<EachItem>} */
-		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -3527,19 +3351,6 @@
 
 		/** @type {number} */
 		var i;
-
-		if (is_animated) {
-			for (i = 0; i < length; i += 1) {
-				value = array[i];
-				key = get_key(value, i);
-				item = items.get(key);
-
-				if (item !== undefined) {
-					item.a?.measure();
-					(to_animate ??= new Set()).add(item);
-				}
-			}
-		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -3571,16 +3382,8 @@
 				continue;
 			}
 
-			if (should_update) {
-				update_item(item, value, i, flags);
-			}
-
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
-				if (is_animated) {
-					item.a?.unfix();
-					(to_animate ??= new Set()).delete(item);
-				}
 			}
 
 			if (item !== current) {
@@ -3667,52 +3470,14 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
-
-				if (is_animated) {
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.measure();
-					}
-
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.fix();
-					}
-				}
+				var controlled_anchor = length === 0 ? anchor : null;
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
 		}
 
-		if (is_animated) {
-			queue_micro_task(() => {
-				if (to_animate === undefined) return;
-				for (item of to_animate) {
-					item.a?.apply();
-				}
-			});
-		}
-
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
 		/** @type {Effect} */ (active_effect).last = prev && prev.e;
-	}
-
-	/**
-	 * @param {EachItem} item
-	 * @param {any} value
-	 * @param {number} index
-	 * @param {number} type
-	 * @returns {void}
-	 */
-	function update_item(item, value, index, type) {
-		if ((type & EACH_ITEM_REACTIVE) !== 0) {
-			internal_set(item.v, value);
-		}
-
-		if ((type & EACH_INDEX_REACTIVE) !== 0) {
-			internal_set(/** @type {Value<number>} */ (item.i), index);
-		} else {
-			item.i = index;
-		}
 	}
 
 	/**
@@ -3817,111 +3582,6 @@
 			next.prev = prev;
 			next.e.prev = prev && prev.e;
 		}
-	}
-
-	/** @import { Effect, TemplateNode } from '#client' */
-
-	/**
-	 * @param {Element | Text | Comment} node
-	 * @param {() => string} get_value
-	 * @param {boolean} [svg]
-	 * @param {boolean} [mathml]
-	 * @param {boolean} [skip_warning]
-	 * @returns {void}
-	 */
-	function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
-		var anchor = node;
-
-		var value = '';
-
-		template_effect(() => {
-			var effect = /** @type {Effect} */ (active_effect);
-
-			if (value === (value = get_value() ?? '')) {
-				if (hydrating) hydrate_next();
-				return;
-			}
-
-			if (effect.nodes_start !== null) {
-				remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
-				effect.nodes_start = effect.nodes_end = null;
-			}
-
-			if (value === '') return;
-
-			if (hydrating) {
-				// We're deliberately not trying to repair mismatches between server and client,
-				// as it's costly and error-prone (and it's an edge case to have a mismatch anyway)
-				/** @type {Comment} */ (hydrate_node).data;
-				var next = hydrate_next();
-				var last = next;
-
-				while (next !== null && (next.nodeType !== 8 || /** @type {Comment} */ (next).data !== '')) {
-					last = next;
-					next = /** @type {TemplateNode} */ (get_next_sibling(next));
-				}
-
-				if (next === null) {
-					hydration_mismatch();
-					throw HYDRATION_ERROR;
-				}
-
-				assign_nodes(hydrate_node, last);
-				anchor = set_hydrate_node(next);
-				return;
-			}
-
-			var html = value + '';
-			if (svg) html = `<svg>${html}</svg>`;
-			else if (mathml) html = `<math>${html}</math>`;
-
-			// Don't use create_fragment_with_script_from_html here because that would mean script tags are executed.
-			// @html is basically `.innerHTML = ...` and that doesn't execute scripts either due to security reasons.
-			/** @type {DocumentFragment | Element} */
-			var node = create_fragment_from_html(html);
-
-			if (svg || mathml) {
-				node = /** @type {Element} */ (get_first_child(node));
-			}
-
-			assign_nodes(
-				/** @type {TemplateNode} */ (get_first_child(node)),
-				/** @type {TemplateNode} */ (node.lastChild)
-			);
-
-			if (svg || mathml) {
-				while (get_first_child(node)) {
-					anchor.before(/** @type {Node} */ (get_first_child(node)));
-				}
-			} else {
-				anchor.before(node);
-			}
-		});
-	}
-
-	/**
-	 * @param {Node} anchor
-	 * @param {{ hash: string, code: string }} css
-	 */
-	function append_styles(anchor, css) {
-		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
-		queue_micro_task(() => {
-			var root = anchor.getRootNode();
-
-			var target = /** @type {ShadowRoot} */ (root).host
-				? /** @type {ShadowRoot} */ (root)
-				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
-
-			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
-			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
-			if (!target.querySelector('#' + css.hash)) {
-				const style = document.createElement('style');
-				style.id = css.hash;
-				style.textContent = css.code;
-
-				target.appendChild(style);
-			}
-		});
 	}
 
 	/** @import { Effect } from '#client' */
@@ -4828,58 +4488,37 @@
 		return Class;
 	}
 
-	var root$3 = from_html(`<div class="root qc-hash-ydav1d"><strong>Outer.svelte</strong> <!></div>`);
-
-	const $$css = {
-		hash: 'qc-hash-ydav1d',
-		code: '.root.qc-hash-ydav1d {border:1px solid blue;padding:10px;}'
-	};
+	var root$2 = from_html(`<fieldset><legend> </legend> <div id="pseudo-slot"></div></fieldset>`);
 
 	function Outer($$anchor, $$props) {
 		push($$props, true);
-		append_styles($$anchor, $$css);
 
-		let shared = prop($$props, 'shared'),
-			inners = prop($$props, 'inners'),
-			slot = prop($$props, 'slot');
+		let inners = prop($$props, 'inners'),
+			legend = prop($$props, 'legend'),
+			name = prop($$props, 'name');
 
-		setContext('shared', { shared: shared() });
+		let pseudo;
 
-		var div = root$3();
-		var node = sibling(child(div), 2);
+		setContext('name', { name: name() });
 
-		{
-			var consequent = ($$anchor) => {
-				var fragment = comment();
-				var node_1 = first_child(fragment);
+		onMount(() => {
+			inners().forEach((inner) => pseudo.appendChild(inner));
+		});
 
-				each(node_1, 17, inners, index, ($$anchor, inner) => {
-					var fragment_1 = comment();
-					var node_2 = first_child(fragment_1);
+		var fieldset = root$2();
+		var legend_1 = child(fieldset);
+		var text = child(legend_1, true);
 
-					snippet(node_2, slot, () => get(inner));
-					append($$anchor, fragment_1);
-				});
+		reset(legend_1);
 
-				append($$anchor, fragment);
-			};
+		var div = sibling(legend_1, 2);
 
-			if_block(node, ($$render) => {
-				if (inners()) $$render(consequent);
-			});
-		}
-
-		reset(div);
-		append($$anchor, div);
+		bind_this(div, ($$value) => pseudo = $$value, () => pseudo);
+		reset(fieldset);
+		template_effect(() => set_text(text, legend()));
+		append($$anchor, fieldset);
 
 		return pop({
-			get shared() {
-				return shared();
-			},
-			set shared($$value) {
-				shared($$value);
-				flushSync();
-			},
 			get inners() {
 				return inners();
 			},
@@ -4887,65 +4526,45 @@
 				inners($$value);
 				flushSync();
 			},
-			get slot() {
-				return slot();
+			get legend() {
+				return legend();
 			},
-			set slot($$value) {
-				slot($$value);
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
 				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(Outer, { shared: {}, inners: {}, slot: {} }, [], [], true);
-
-	var root$2 = from_html(`<strong>Outer WC</strong> <!>`, 1);
+	create_custom_element(Outer, { inners: {}, legend: {}, name: {} }, [], [], true);
 
 	function OuterWC($$anchor, $$props) {
 		push($$props, true);
 
-		let outer = prop($$props, 'outer'),
-			inners = prop($$props, 'inners'),
-			shared = prop($$props, 'shared');
+		let inners = prop($$props, 'inners'),
+			legend = prop($$props, 'legend'),
+			name = prop($$props, 'name'); // $inspect(shared)
 
-		onMount(() => {
-			inners().forEach((inner) => inner.outer = outer());
+		Outer($$anchor, {
+			get inners() {
+				return inners();
+			},
+			get legend() {
+				return legend();
+			},
+			get name() {
+				return name();
+			}
 		});
 
-		var fragment = root$2();
-		var node = sibling(first_child(fragment), 2);
-
-		{
-			const slot = ($$anchor, inner = noop) => {
-				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
-
-				html(node_1, () => `<slot name="${inner().getAttribute("slot")}"></slot>`);
-				append($$anchor, fragment_1);
-			};
-
-			Outer(node, {
-				get inners() {
-					return inners();
-				},
-				get shared() {
-					return shared();
-				},
-				slot,
-				$$slots: { slot: true }
-			});
-		}
-
-		append($$anchor, fragment);
-
 		return pop({
-			get outer() {
-				return outer();
-			},
-			set outer($$value) {
-				outer($$value);
-				flushSync();
-			},
 			get inners() {
 				return inners();
 			},
@@ -4953,11 +4572,18 @@
 				inners($$value);
 				flushSync();
 			},
-			get shared() {
-				return shared();
+			get legend() {
+				return legend();
 			},
-			set shared($$value) {
-				shared($$value);
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
 				flushSync();
 			}
 		});
@@ -4967,31 +4593,32 @@
 		OuterWC,
 		{
 			shared: { attribute: 'shared' },
-			outer: {},
-			inners: {}
+			inners: {},
+			legend: {},
+			name: {}
 		},
 		[],
 		[],
-		true,
+		false,
 		(customElementConstructor) => {
 			// Extend the class so we can let it participate in HTML forms
 			return class extends customElementConstructor {
 				static inners;
-				static outer;
 
 				constructor() {
 					super();
-					this.outer = this;
 					// this.inners = Array.from(this.querySelectorAll('qc-inner'));
 					this.inners = Array.from(this.querySelectorAll('qc-inner'));
+					// en cas de dom shadow, décommenter tout le code en dessous
 					this.inners.forEach(setUpInner);
 
+					// cette fonction prépare chaque qc-inner pour être monté dans le shadow dom
 					function setUpInner(inner, i) {
-						// console.log('setUpInners', )
-						inner.setAttribute(`slot`, `slot${i + 1}`); // inner.outer = this;
+						inner.setAttribute(`slot`, `slot${i + 1}`);
 					}
 
-					// Observer pour détecter les ajouts dynamiques
+					// Observer pour détecter les ajouts dynamiques à l'intérieur de qc-outer
+					// pour chaque nouvel ajout, on s'assure d'appeler setUpInner pour le nouveau qc-inner
 					const observer = new MutationObserver((mutationsList) => {
 						for (const mutation of mutationsList) {
 							if (mutation.type === 'childList') {
@@ -5008,71 +4635,92 @@
 
 					observer.observe(this, { childList: true, subtree: false });
 				}
-
-				getShared() {
-					return this.shared;
-				}
 			};
 		}
 	));
 
-	var root$1 = from_html(`<div> </div>`);
+	var root$1 = from_html(`<div><input type="checkbox"/><label> </label> </div>`);
 
 	function Inner($$anchor, $$props) {
 		push($$props, true);
 
-		let foo = prop($$props, 'foo'),
-			shared = prop($$props, 'shared');
+		let value = prop($$props, 'value'),
+			label = prop($$props, 'label'),
+			name = prop($$props, 'name');
 
+		let id = user_derived(() => name() + "_" + value());
 		var div = root$1();
-		var text = child(div);
+		var input = child(div);
+
+		remove_input_defaults(input);
+
+		var label_1 = sibling(input);
+		var text = child(label_1, true);
+
+		reset(label_1);
+
+		var text_1 = sibling(label_1);
 
 		reset(div);
-		template_effect(() => set_text(text, `${foo() ?? ''} ${shared() ?? ''}`));
+
+		template_effect(() => {
+			set_attribute(input, 'name', name());
+			set_attribute(input, 'id', get(id));
+			set_attribute(label_1, 'for', get(id));
+			set_text(text, label());
+			set_text(text_1, ` ${name() ?? ''}`);
+		});
+
+		bind_value(input, value);
 		append($$anchor, div);
 
 		return pop({
-			get foo() {
-				return foo();
+			get value() {
+				return value();
 			},
-			set foo($$value) {
-				foo($$value);
+			set value($$value) {
+				value($$value);
 				flushSync();
 			},
-			get shared() {
-				return shared();
+			get label() {
+				return label();
 			},
-			set shared($$value) {
-				shared($$value);
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
 				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(Inner, { foo: {}, shared: {} }, [], [], true);
+	create_custom_element(Inner, { value: {}, label: {}, name: {} }, [], [], true);
 
 	function InnerWC($$anchor, $$props) {
 		push($$props, true);
 
 		let inner = prop($$props, 'inner'),
 			outer = prop($$props, 'outer'),
-			foo = prop($$props, 'foo');
+			value = prop($$props, 'value'),
+			label = prop($$props, 'label'),
+			name = prop($$props, 'name');
 
-		let shared = state('');
-
-		onMount(() => {
-			let outer = inner().closest('qc-outer');
-
-			set(shared, outer.shared, true);
-			console.log("inner/outer/shared", inner(), outer, outer.shared); //,outer.getShared()
-		}); // $inspect("outerShared in innerWC", outerShared)
+		const expression = user_derived(() => outer()?.name ?? name());
 
 		Inner($$anchor, {
-			get foo() {
-				return foo();
+			get value() {
+				return value();
 			},
-			get shared() {
-				return get(shared);
+			get label() {
+				return label();
+			},
+			get name() {
+				return get(expression);
 			}
 		});
 
@@ -5091,11 +4739,25 @@
 				outer($$value);
 				flushSync();
 			},
-			get foo() {
-				return foo();
+			get value() {
+				return value();
 			},
-			set foo($$value) {
-				foo($$value);
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
 				flushSync();
 			}
 		});
@@ -5104,7 +4766,9 @@
 	customElements.define('qc-inner', create_custom_element(
 		InnerWC,
 		{
-			foo: { attribute: 'foo' },
+			value: { attribute: 'inner-value' },
+			label: { attribute: 'inner-label' },
+			name: { attribute: 'inner-name' },
 			inner: {},
 			outer: {}
 		},
@@ -5118,9 +4782,8 @@
 
 				constructor() {
 					super();
-					// console.log('typeof this',typeof this)
-					// console.log(this.getAttribute('bar'));
 					this.inner = this;
+					this.outer = this.closest('qc-outer');
 				}
 			};
 		}

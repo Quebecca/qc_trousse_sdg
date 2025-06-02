@@ -2,17 +2,19 @@
     tag: 'qc-inner',
     shadow: 'none',
     props: {
-        foo: {attribute:'foo'}
+        value: {attribute:'inner-value'},
+        label: {attribute:'inner-label'},
+        name: {attribute:'inner-name'},
     },
     extend: (customElementConstructor) => {
             return class extends customElementConstructor {
                 static inner;
                 static outer;
+
 				constructor() {
 					super();
-                    // console.log('typeof this',typeof this)
-                    // console.log(this.getAttribute('bar'));
                     this.inner = this;
+                    this.outer = this.closest('qc-outer')
 				}
 			};
 		}
@@ -21,14 +23,7 @@
 
     import Inner from "./Inner.svelte";
     import {onMount} from "svelte";
-    let {inner, outer, foo} = $props();
-    let shared = $state('');
-    onMount(() => {
-         let outer = inner.closest('qc-outer')
-         shared = outer.shared;
-         console.log("inner/outer/shared",inner, outer, outer.shared ); //,outer.getShared()
-    })
-    // $inspect("outerShared in innerWC", outerShared)
-    // $inspect(inner.root.shared)
+    let {inner, outer, value, label, name} = $props();
 </script>
-<Inner {foo} {shared}></Inner>
+
+<Inner {value} {label} name={outer?.name ?? name}></Inner>

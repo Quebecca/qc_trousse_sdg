@@ -1,20 +1,17 @@
 <script>
-    import { setContext } from 'svelte';
-    let {shared, inners, slot } = $props();
-    setContext('shared', {shared});
+    import { setContext, onMount } from 'svelte';
+    let {inners, legend, name } = $props();
+    let pseudo;
+    setContext('name', {name});
+
+    onMount(() => {
+        inners.forEach(
+            inner => pseudo.appendChild(inner)
+        )
+    })
 </script>
-<div class="root">
-    <strong>Outer.svelte</strong>
-    {#if inners}
-        {#each inners as inner,i}
-            {@render slot(inner)}
-        {/each}
-    {/if}
-</div>
-<style>
-    .root {
-        border: 1px solid blue;
-        padding: 10px;
-    }
-</style>
+<fieldset>
+    <legend>{legend}</legend>
+    <div id="pseudo-slot" bind:this={pseudo}></div>
+</fieldset>
 
