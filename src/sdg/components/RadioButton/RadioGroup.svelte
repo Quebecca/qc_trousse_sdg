@@ -13,7 +13,6 @@
     onMount(() => {
         let notRequiredCount = 0;
         options.forEach((option) => {
-            console.log(option.outerHTML);
             group.appendChild(option);
             if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
                 notRequiredCount++;

@@ -13,6 +13,7 @@
 
     let { legend, radioName, radioSize } = $props();
     const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName}]`);
+    console.log(options);
     options.forEach((option) => {
         if (radioSize) {
             option.setAttribute('radio-size', radioSize);
@@ -20,11 +21,8 @@
     });
 </script>
 
-<div>
-    <RadioGroup
-        {legend}
-        {radioName}
-        {radioSize}
-        {options}
-    />
-</div>
+<RadioGroup
+    {legend}
+    {options}
+/>
+
