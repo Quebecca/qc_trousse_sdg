@@ -5863,7 +5863,7 @@
 
 	}
 
-	var root$c = template(`<div></div>`);
+	var root$b = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5888,7 +5888,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$c();
+		var div = root$b();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5967,7 +5967,7 @@
 		true
 	);
 
-	var root$b = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -6013,7 +6013,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$b();
+		var fragment = root$a();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6175,7 +6175,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$a = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$9 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6221,7 +6221,7 @@
 			}
 		});
 
-		var fragment = root$a();
+		var fragment = root$9();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6974,7 +6974,7 @@
 
 	var root_1$1 = template(`<img>`);
 	var root_3$2 = template(`<a> </a>`);
-	var root$9 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6992,7 +6992,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$9();
+		var fragment = root$8();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -7340,7 +7340,7 @@
 		true
 	));
 
-	var root$8 = template(`<button><!></button>`);
+	var root$7 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7364,7 +7364,7 @@
 				'class'
 			]);
 
-		var button = root$8();
+		var button = root$7();
 		let attributes;
 		var node = child(button);
 
@@ -7464,7 +7464,7 @@
 	);
 
 	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$7 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7490,7 +7490,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$7();
+		var fragment = root$6();
 		var node = first_child(fragment);
 
 		{
@@ -7657,7 +7657,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$6 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$5 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7700,7 +7700,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$6();
+		var a = root$5();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7772,7 +7772,7 @@
 		false
 	));
 
-	var root$5 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$4 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7853,7 +7853,7 @@
 			});
 		});
 
-		var span_1 = root$5();
+		var span_1 = root$4();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7882,7 +7882,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$4 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$3 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7903,7 +7903,7 @@
 			]);
 
 		let searchInput;
-		var div = root$4();
+		var div = root$3();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7980,7 +7980,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root$3 = template(`<div><!> <!></div>`);
+	var root$2 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -8034,7 +8034,7 @@
 			});
 		}
 
-		var div = root$3();
+		var div = root$2();
 		let classes;
 		var node = child(div);
 
@@ -8175,7 +8175,7 @@
 
 	var root_2 = template(`<legend> <span class="radio-required">*</span></legend>`);
 	var root_3 = template(`<legend> </legend>`);
-	var root$2 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
+	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8191,7 +8191,6 @@
 			let notRequiredCount = 0;
 
 			options().forEach((option) => {
-				console.log(option.outerHTML);
 				get(group).appendChild(option);
 
 				if (option.hasAttribute('radio-required') && option.getAttribute('radio-required') === 'false') {
@@ -8204,7 +8203,7 @@
 			}
 		});
 
-		var fieldset = root$2();
+		var fieldset = root$1();
 		var node = child(fieldset);
 
 		{
@@ -8281,8 +8280,6 @@
 
 	create_custom_element(RadioGroup, { legend: {}, options: {}, children: {} }, [], [], true);
 
-	var root$1 = template(`<div><!></div>`);
-
 	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
 
@@ -8292,30 +8289,20 @@
 
 		const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName()}]`);
 
+		console.log(options);
+
 		options.forEach((option) => {
 			if (radioSize()) {
 				option.setAttribute('radio-size', radioSize());
 			}
 		});
 
-		var div = root$1();
-		var node = child(div);
-
-		RadioGroup(node, {
+		RadioGroup($$anchor, {
 			get legend() {
 				return legend();
 			},
-			get radioName() {
-				return radioName();
-			},
-			get radioSize() {
-				return radioSize();
-			},
 			options
 		});
-
-		reset(div);
-		append($$anchor, div);
 
 		return pop({
 			get legend() {
