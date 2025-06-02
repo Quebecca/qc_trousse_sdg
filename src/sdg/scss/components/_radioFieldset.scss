@@ -1,8 +1,19 @@
 @use "../lib/functions" as *;
+@use "../lib/mixins" as *;
+
+.qc-radio-legend-sm {
+    @include content-font(sm, semi-bold);
+}
+
+.qc-radio-legend-md {
+  @include content-font(md, semi-bold);
+}
 
 .radio-options {
-  justify-content: center;
-  //row-gap: rem(8);
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  row-gap: token-value(spacer, sm);
 }
 
 .radio-required {

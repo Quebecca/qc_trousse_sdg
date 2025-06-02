@@ -20,9 +20,9 @@
         radioValue,
         radioLabel,
         radioSize,
-        radioChecked = false,
+        radioChecked,
         radioDisabled,
-        radioRequired = true
+        radioRequired
     } = $props();
 </script>
 

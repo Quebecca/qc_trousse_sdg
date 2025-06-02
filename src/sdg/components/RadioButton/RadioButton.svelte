@@ -1,25 +1,18 @@
 <script>
     import {Utils} from "../utils";
-    import {onMount} from "svelte";
 
     let {
         radioName,
         radioValue,
         radioLabel,
-        radioSize,
+        radioSize = "sm",
         radioChecked = false,
         radioDisabled,
         radioRequired = true
     } = $props();
-
-    let usedSize = $state("md");
-
-    onMount(() => {
-        usedSize = (typeof radioSize === "string" && radioSize.toLowerCase() === "sm") ? "sm" : "md";
-    })
 </script>
 
-<div class={`qc-radio-${usedSize}`}>
+<div class={`qc-radio-${radioSize}`}>
     <input
         type="radio"
         id={`${radioName}_${radioValue}`}

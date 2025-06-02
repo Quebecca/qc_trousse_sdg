@@ -1834,16 +1834,19 @@ qc-search-bar {
 }
 
 .qc-radio-md, .qc-radio-sm {
-  display: block;
-  justify-items: center;
+  display: flex;
+  align-items: center;
+  margin: 0;
 }
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
   -moz-appearance: none;
        appearance: none;
   -webkit-appearance: none;
-  display: inline-block;
+  display: flex;
   position: relative;
-  margin-right: 0.8rem;
+  margin-left: var(--qc-spacer-xs);
+  margin-right: var(--qc-spacer-xs);
+  margin-top: 0;
   background-color: var(--qc-color-white);
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
@@ -1856,8 +1859,8 @@ qc-search-bar {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: hidden;
   top: 0;
+  overflow: hidden;
 }
 .qc-radio-md input[type=radio]:focus, .qc-radio-sm input[type=radio]:focus {
   outline: 0.2rem solid var(--qc-color-blue-light);
@@ -1869,6 +1872,17 @@ qc-search-bar {
 }
 .qc-radio-md input[type=radio]:disabled, .qc-radio-sm input[type=radio]:disabled {
   border-color: var(--qc-color-grey-light);
+}
+.qc-radio-md input[type=radio]:disabled + label, .qc-radio-sm input[type=radio]:disabled + label {
+  color: var(--qc-color-grey-regular);
+  cursor: not-allowed;
+}
+.qc-radio-md label, .qc-radio-sm label {
+  cursor: pointer;
+  display: flex;
+  align-items: end;
+  margin-right: var(--qc-spacer-xs);
+  margin-bottom: 0;
 }
 
 input[type=radio]::before {
@@ -1886,6 +1900,11 @@ input[type=radio]::before {
   border-radius: 100%;
   background: var(--qc-color-blue-regular);
 }
+.qc-radio-sm label {
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
+}
 
 .qc-radio-md input {
   width: 2.4rem;
@@ -1898,11 +1917,28 @@ input[type=radio]::before {
   background: var(--qc-color-blue-regular);
 }
 .qc-radio-md label {
-  text-align: center;
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-regular);
+}
+
+.qc-radio-legend-sm {
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-semi-bold);
+}
+
+.qc-radio-legend-md {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-semi-bold);
 }
 
 .radio-options {
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  row-gap: var(--qc-spacer-sm);
 }
 
 .radio-required {
