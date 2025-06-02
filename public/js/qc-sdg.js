@@ -15,7 +15,6 @@
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
-	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
@@ -74,11 +73,6 @@
 
 	const noop = () => {};
 
-	/** @param {Function} fn */
-	function run(fn) {
-		return fn();
-	}
-
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
 		for (var i = 0; i < arr.length; i++) {
@@ -103,8 +97,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
-	const LEGACY_DERIVED_PROP = 1 << 17;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -297,12 +289,7 @@
 		}
 	}
 
-	let legacy_mode_flag = false;
 	let tracing_mode_flag = false;
-
-	function enable_legacy_mode_flag() {
-		legacy_mode_flag = true;
-	}
 
 	/** @import { Source } from '#client' */
 
@@ -1060,16 +1047,6 @@
 	}
 
 	/**
-	 * Internal representation of `$effect.pre(...)`
-	 * @param {() => void | (() => void)} fn
-	 * @returns {Effect}
-	 */
-	function user_pre_effect(fn) {
-		validate_effect();
-		return render_effect(fn);
-	}
-
-	/**
 	 * Internal representation of `$effect.root(...)`
 	 * @param {() => void | (() => void)} fn
 	 * @returns {() => void}
@@ -1111,58 +1088,6 @@
 	 */
 	function effect(fn) {
 		return create_effect(EFFECT, fn, false);
-	}
-
-	/**
-	 * Internal representation of `$: ..`
-	 * @param {() => any} deps
-	 * @param {() => void | (() => void)} fn
-	 */
-	function legacy_pre_effect(deps, fn) {
-		var context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		/** @type {{ effect: null | Effect, ran: boolean }} */
-		var token = { effect: null, ran: false };
-		context.l.r1.push(token);
-
-		token.effect = render_effect(() => {
-			deps();
-
-			// If this legacy pre effect has already run before the end of the reset, then
-			// bail out to emulate the same behavior.
-			if (token.ran) return;
-
-			token.ran = true;
-			set(context.l.r2, true);
-			untrack(fn);
-		});
-	}
-
-	function legacy_pre_effect_reset() {
-		var context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		render_effect(() => {
-			if (!get(context.l.r2)) return;
-
-			// Run dirty `$:` statements
-			for (var token of context.l.r1) {
-				var effect = token.effect;
-
-				// If the effect is CLEAN, then make it MAYBE_DIRTY. This ensures we traverse through
-				// the effects dependencies and correctly ensure each dependency is up-to-date.
-				if ((effect.f & CLEAN) !== 0) {
-					set_signal_status(effect, MAYBE_DIRTY);
-				}
-
-				if (check_dirtiness(effect)) {
-					update_effect(effect);
-				}
-
-				token.ran = false;
-			}
-
-			context.l.r2.v = false; // set directly to avoid rerunning this effect
-		});
 	}
 
 	/**
@@ -2289,80 +2214,6 @@
 		signal.f = (signal.f & STATUS_MASK) | status;
 	}
 
-	/**
-	 * Possibly traverse an object and read all its properties so that they're all reactive in case this is `$state`.
-	 * Does only check first level of an object for performance reasons (heuristic should be good for 99% of all cases).
-	 * @param {any} value
-	 * @returns {void}
-	 */
-	function deep_read_state(value) {
-		if (typeof value !== 'object' || !value || value instanceof EventTarget) {
-			return;
-		}
-
-		if (STATE_SYMBOL in value) {
-			deep_read(value);
-		} else if (!Array.isArray(value)) {
-			for (let key in value) {
-				const prop = value[key];
-				if (typeof prop === 'object' && prop && STATE_SYMBOL in prop) {
-					deep_read(prop);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Deeply traverse an object and read all its properties
-	 * so that they're all reactive in case this is `$state`
-	 * @param {any} value
-	 * @param {Set<any>} visited
-	 * @returns {void}
-	 */
-	function deep_read(value, visited = new Set()) {
-		if (
-			typeof value === 'object' &&
-			value !== null &&
-			// We don't want to traverse DOM elements
-			!(value instanceof EventTarget) &&
-			!visited.has(value)
-		) {
-			visited.add(value);
-			// When working with a possible SvelteDate, this
-			// will ensure we capture changes to it.
-			if (value instanceof Date) {
-				value.getTime();
-			}
-			for (let key in value) {
-				try {
-					deep_read(value[key], visited);
-				} catch (e) {
-					// continue
-				}
-			}
-			const proto = get_prototype_of(value);
-			if (
-				proto !== Object.prototype &&
-				proto !== Array.prototype &&
-				proto !== Map.prototype &&
-				proto !== Set.prototype &&
-				proto !== Date.prototype
-			) {
-				const descriptors = get_descriptors(proto);
-				for (let key in descriptors) {
-					const get = descriptors[key].get;
-					if (get) {
-						try {
-							get.call(value);
-						} catch (e) {
-							// continue
-						}
-					}
-				}
-			}
-		}
-	}
-
 	/** @import { Derived, Effect, Source, Value } from '#client' */
 	const old_values = new Map();
 
@@ -2412,12 +2263,6 @@
 		const s = source(initial_value);
 		if (!immutable) {
 			s.equals = safe_equals;
-		}
-
-		// bind the signal to the component context, in case we need to
-		// track updates to trigger beforeUpdate/afterUpdate callbacks
-		if (legacy_mode_flag && component_context !== null && component_context.l !== null) {
-			(component_context.l.s ??= []).push(s);
 		}
 
 		return s;
@@ -2481,7 +2326,6 @@
 			// properly for itself, we need to ensure the current effect actually gets
 			// scheduled. i.e: `$effect(() => x++)`
 			if (
-				is_runes() &&
 				active_effect !== null &&
 				(active_effect.f & CLEAN) !== 0 &&
 				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
@@ -2505,8 +2349,6 @@
 	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
-
-		var runes = is_runes();
 		var length = reactions.length;
 
 		for (var i = 0; i < length; i++) {
@@ -2515,9 +2357,6 @@
 
 			// Skip any effects that are already dirty
 			if ((flags & DIRTY) !== 0) continue;
-
-			// In legacy mode, skip the current effect to prevent infinite loops
-			if (!runes && reaction === active_effect) continue;
 
 			set_signal_status(reaction, status);
 
@@ -2579,15 +2418,6 @@
 			l: null
 		});
 
-		if (legacy_mode_flag && !runes) {
-			component_context.l = {
-				s: null,
-				u: null,
-				r1: [],
-				r2: source(false)
-			};
-		}
-
 		teardown(() => {
 			/** @type {ComponentContext} */ (ctx).d = true;
 		});
@@ -2631,7 +2461,7 @@
 
 	/** @returns {boolean} */
 	function is_runes() {
-		return !legacy_mode_flag || (component_context !== null && component_context.l === null);
+		return true;
 	}
 
 	/**
@@ -4683,49 +4513,6 @@
 	}
 
 	/**
-	 * @param {Element} element
-	 * @param {any} value
-	 */
-	function set_value(element, value) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.value ===
-				(attributes.value =
-					// treat null and undefined the same for the initial value
-					value ?? undefined) ||
-			// @ts-expect-error
-			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.value = value ?? '';
-	}
-
-	/**
-	 * @param {Element} element
-	 * @param {boolean} checked
-	 */
-	function set_checked(element, checked) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.checked ===
-			(attributes.checked =
-				// treat null and undefined the same for the initial value
-				checked ?? undefined)
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.checked = checked;
-	}
-
-	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -5031,7 +4818,6 @@
 	 * @returns {void}
 	 */
 	function bind_value(input, get, set = get) {
-		var runes = is_runes();
 
 		listen_to_event_and_reset_event(input, 'input', (is_reset) => {
 
@@ -5042,7 +4828,7 @@
 
 			// In runes mode, respect any validation in accessors (doesn't apply in legacy mode,
 			// because we use mutable state which ensures the render effect always runs)
-			if (runes && value !== (value = get())) {
+			if (value !== (value = get())) {
 				var start = input.selectionStart;
 				var end = input.selectionEnd;
 
@@ -5089,6 +4875,34 @@
 				// @ts-expect-error the value is coerced on assignment
 				input.value = value ?? '';
 			}
+		});
+	}
+
+	/**
+	 * @param {HTMLInputElement} input
+	 * @param {() => unknown} get
+	 * @param {(value: unknown) => void} set
+	 * @returns {void}
+	 */
+	function bind_checked(input, get, set = get) {
+		listen_to_event_and_reset_event(input, 'change', (is_reset) => {
+			var value = is_reset ? input.defaultChecked : input.checked;
+			set(value);
+		});
+
+		if (
+			// If we are hydrating and the value has since changed,
+			// then use the update value from the input instead.
+			(hydrating && input.defaultChecked !== input.checked) ||
+			// If defaultChecked is set, then checked == defaultChecked
+			untrack(get) == null
+		) {
+			set(input.checked);
+		}
+
+		render_effect(() => {
+			var value = get();
+			input.checked = Boolean(value);
 		});
 	}
 
@@ -5164,84 +4978,6 @@
 		return element_or_component;
 	}
 
-	/** @import { ComponentContextLegacy } from '#client' */
-
-	/**
-	 * Legacy-mode only: Call `onMount` callbacks and set up `beforeUpdate`/`afterUpdate` effects
-	 * @param {boolean} [immutable]
-	 */
-	function init(immutable = false) {
-		const context = /** @type {ComponentContextLegacy} */ (component_context);
-
-		const callbacks = context.l.u;
-		if (!callbacks) return;
-
-		let props = () => deep_read_state(context.s);
-
-		if (immutable) {
-			let version = 0;
-			let prev = /** @type {Record<string, any>} */ ({});
-
-			// In legacy immutable mode, before/afterUpdate only fire if the object identity of a prop changes
-			const d = derived(() => {
-				let changed = false;
-				const props = context.s;
-				for (const key in props) {
-					if (props[key] !== prev[key]) {
-						prev[key] = props[key];
-						changed = true;
-					}
-				}
-				if (changed) version++;
-				return version;
-			});
-
-			props = () => get(d);
-		}
-
-		// beforeUpdate
-		if (callbacks.b.length) {
-			user_pre_effect(() => {
-				observe_all(context, props);
-				run_all(callbacks.b);
-			});
-		}
-
-		// onMount (must run before afterUpdate)
-		user_effect(() => {
-			const fns = untrack(() => callbacks.m.map(run));
-			return () => {
-				for (const fn of fns) {
-					if (typeof fn === 'function') {
-						fn();
-					}
-				}
-			};
-		});
-
-		// afterUpdate
-		if (callbacks.a.length) {
-			user_effect(() => {
-				observe_all(context, props);
-				run_all(callbacks.a);
-			});
-		}
-	}
-
-	/**
-	 * Invoke the getter of all signals associated with a component
-	 * so they can be registered to the effect this function is called in.
-	 * @param {ComponentContextLegacy} context
-	 * @param {(() => void)} props
-	 */
-	function observe_all(context, props) {
-		if (context.l.s) {
-			for (const signal of context.l.s) get(signal);
-		}
-
-		props();
-	}
-
 	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
 	/** @import { EventDispatcher } from './index.js' */
 	/** @import { NotFunction } from './internal/types.js' */
@@ -5265,23 +5001,12 @@
 			lifecycle_outside_component();
 		}
 
-		if (legacy_mode_flag && component_context.l !== null) {
-			init_update_callbacks(component_context).m.push(fn);
-		} else {
+		{
 			user_effect(() => {
 				const cleanup = untrack(fn);
 				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
 			});
 		}
-	}
-
-	/**
-	 * Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
-	 * @param {ComponentContext} context
-	 */
-	function init_update_callbacks(context) {
-		var l = /** @type {ComponentContextLegacy} */ (context).l;
-		return (l.u ??= { a: [], b: [], m: [] });
 	}
 
 	/** @import { StoreReferencesContainer } from '#client' */
@@ -5462,7 +5187,7 @@
 	 */
 	function prop(props, key, flags, fallback) {
 		var immutable = (flags & PROPS_IS_IMMUTABLE) !== 0;
-		var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
+		var runes = true;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 		var is_store_sub = false;
@@ -5513,25 +5238,13 @@
 
 		/** @type {() => V} */
 		var getter;
-		if (runes) {
+		{
 			getter = () => {
 				var value = /** @type {V} */ (props[key]);
 				if (value === undefined) return get_fallback();
 				fallback_dirty = true;
 				fallback_used = false;
 				return value;
-			};
-		} else {
-			// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
-			// Replicate that behavior through using a derived
-			var derived_getter = (immutable ? derived : derived_safe_equal)(
-				() => /** @type {V} */ (props[key])
-			);
-			derived_getter.f |= LEGACY_DERIVED_PROP;
-			getter = () => {
-				var value = get(derived_getter);
-				if (value !== undefined) fallback_value = /** @type {V} */ (undefined);
-				return value === undefined ? fallback_value : value;
 			};
 		}
 
@@ -5550,7 +5263,7 @@
 					// In that case the state proxy (if it exists) should take care of the notification.
 					// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
 					// has changed because the parent will not be able to detect the change otherwise.
-					if (!runes || !mutation || legacy_parent || is_store_sub) {
+					if (!mutation || legacy_parent || is_store_sub) {
 						/** @type {Function} */ (setter)(mutation ? getter() : value);
 					}
 					return value;
@@ -5589,7 +5302,7 @@
 		return function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
 
 			if (arguments.length > 0) {
-				const new_value = mutation ? get(current_value) : runes && bindable ? proxy(value) : value;
+				const new_value = mutation ? get(current_value) : bindable ? proxy(value) : value;
 
 				if (!current_value.equals(new_value)) {
 					from_child = true;
@@ -6445,7 +6158,7 @@
 		true
 	));
 
-	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6512,7 +6225,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$2();
+				var div_2 = root_1$3();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7256,7 +6969,7 @@
 		true
 	));
 
-	var root_1$1 = template(`<img>`);
+	var root_1$2 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
 	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
@@ -7296,7 +7009,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$1();
+				var img = root_1$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7747,7 +7460,7 @@
 		true
 	);
 
-	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
@@ -7779,7 +7492,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1();
+				var div = root_1$1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8457,9 +8170,8 @@
 		false
 	));
 
-	enable_legacy_mode_flag();
-
-	var root$1 = template(`<div><label><input class="qc-form-check-input" type="checkbox"> </label></div>`);
+	var root_1 = template(`<input type="text" class="qc-form-text" placeholder="Veuillez préciser">`);
+	var root$1 = template(`<div><label><input class="qc-form-check-input" type="checkbox"> </label> <!></div>`);
 	const $$css = { hash: 'qc-hash-32ttx', code: '' };
 
 	function Checkbox($$anchor, $$props) {
@@ -8474,27 +8186,51 @@
 			checkboxDisabled = prop($$props, 'checkboxDisabled', 7, false),
 			checkboxRequired = prop($$props, 'checkboxRequired', 7, false);
 
+		let isChecked = state(proxy(checkboxChecked()));
+		const inputId = `checkbox-${checkboxName()}-${checkboxValue()}`;
 		var div = root$1();
 		var label = child(div);
 		var input = child(label);
 
 		remove_input_defaults(input);
+		set_attribute(input, 'id', inputId);
 
+		var input_value;
 		var text = sibling(input, 1, true);
 
 		reset(label);
+
+		var node = sibling(label, 2);
+
+		{
+			var consequent = ($$anchor) => {
+				var input_1 = root_1();
+
+				template_effect(() => set_attribute(input_1, 'name', `${checkboxName()}-autre-texte`));
+				append($$anchor, input_1);
+			};
+
+			if_block(node, ($$render) => {
+				if (checkboxValue() === 'autre' && get(isChecked)) $$render(consequent);
+			});
+		}
+
 		reset(div);
 
 		template_effect(() => {
 			set_class(div, 1, clsx(checkboxSize() === "sm" ? "qc-form-check-sm" : "qc-form-check"));
 			set_attribute(input, 'name', checkboxName());
-			set_value(input, checkboxValue());
-			set_checked(input, checkboxChecked());
+
+			if (input_value !== (input_value = checkboxValue())) {
+				input.value = (input.__value = checkboxValue()) ?? '';
+			}
+
 			input.disabled = checkboxDisabled();
 			input.required = checkboxRequired();
 			set_text(text, checkboxLabel());
 		});
 
+		bind_checked(input, () => get(isChecked), ($$value) => set(isChecked, $$value));
 		append($$anchor, div);
 
 		return pop({
@@ -8663,29 +8399,23 @@
 	);
 
 	function CheckboxGroupWC($$anchor, $$props) {
-		push($$props, false);
+		push($$props, true);
 
-		const parsedOptions = mutable_source();
-		let groupId = prop($$props, 'groupId', 12, '');
-		let legend = prop($$props, 'legend', 12, '');
-		let name = prop($$props, 'name', 12, '');
-		let options = prop($$props, 'options', 28, () => []);
+		let groupId = prop($$props, 'groupId', 7, ''),
+			legend = prop($$props, 'legend', 7, ''),
+			name = prop($$props, 'name', 7, ''),
+			options = prop($$props, 'options', 23, () => []);
 
-		legacy_pre_effect(() => (deep_read_state(options())), () => {
-			set(parsedOptions, typeof options() === 'string'
-				? (() => {
-					try {
-						return JSON.parse(options());
-					} catch(e) {
-						console.error('Erreur de parsing des options :', e);
-						return [];
-					}
-				})()
-				: options());
-		});
-
-		legacy_pre_effect_reset();
-		init();
+		let parsedOptions = user_derived(() => typeof options() === 'string'
+			? (() => {
+				try {
+					return JSON.parse(options());
+				} catch(e) {
+					console.error('Erreur de parsing des options :', e);
+					return [];
+				}
+			})()
+			: options());
 
 		CheckboxGroup($$anchor, {
 			get groupId() {
@@ -8706,28 +8436,28 @@
 			get groupId() {
 				return groupId();
 			},
-			set groupId($$value) {
+			set groupId($$value = '') {
 				groupId($$value);
 				flushSync();
 			},
 			get legend() {
 				return legend();
 			},
-			set legend($$value) {
+			set legend($$value = '') {
 				legend($$value);
 				flushSync();
 			},
 			get name() {
 				return name();
 			},
-			set name($$value) {
+			set name($$value = '') {
 				name($$value);
 				flushSync();
 			},
 			get options() {
 				return options();
 			},
-			set options($$value) {
+			set options($$value = []) {
 				options($$value);
 				flushSync();
 			}
