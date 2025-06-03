@@ -26,7 +26,7 @@
         <legend>
             {legend}
             {#if radioRequired !== "false" && radioRequired !== false}
-                <span class="radio-required">&nbsp*</span>
+                <span class="qc-radio-required">&nbsp*</span>
             {/if}
         </legend>
     {/if}
@@ -34,5 +34,8 @@
 
     <div class="radio-options" bind:this={group}>
         {@render children?.()}
+    </div>
+    <div class="qc-radio-invalid">
+        Champ obligatoire
     </div>
 </fieldset>

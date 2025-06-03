@@ -264,6 +264,19 @@
 		hydrate_node = node;
 	}
 
+	function next(count = 1) {
+		if (hydrating) {
+			var i = count;
+			var node = hydrate_node;
+
+			while (i--) {
+				node = /** @type {TemplateNode} */ (get_next_sibling(node));
+			}
+
+			hydrate_node = node;
+		}
+	}
+
 	/**
 	 * Removes all nodes starting at `hydrate_node` up until the next hydration end comment
 	 */
@@ -8160,9 +8173,9 @@
 		false
 	));
 
-	var root_2 = template(`<span class="radio-required">&nbsp*</span>`);
+	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
-	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
+	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div> <div class="qc-radio-invalid">Champ obligatoire</div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8220,6 +8233,7 @@
 		snippet(node_2, () => children() ?? noop);
 		reset(div);
 		bind_this(div, ($$value) => set(group, $$value), () => get(group));
+		next(2);
 		reset(fieldset);
 		template_effect(() => set_class(fieldset, 1, `qc-radio-fieldset-${radioSize()}`));
 		append($$anchor, fieldset);
