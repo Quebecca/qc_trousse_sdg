@@ -5800,6 +5800,10 @@
 				}
 			});
 		});
+		if (extend) {
+			// @ts-expect-error - assigning here is fine
+			Class = extend(Class);
+		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
 	}
@@ -8181,17 +8185,16 @@
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
+			radioName = prop($$props, 'radioName', 7, ""),
 			radioSize = prop($$props, 'radioSize', 7, "md"),
-			options = prop($$props, 'options', 23, () => []),
+			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			radioRequired = prop($$props, 'radioRequired', 7, true),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0);
 
 		onMount(() => {
-			options().forEach((option) => {
-				option.setAttribute("radio-size", radioSize());
-				option.setAttribute("radio-required", Utils.isTruthy(radioRequired()));
+			radioButtons().forEach((option) => {
 				get(group).appendChild(option);
 			});
 		});
@@ -8257,6 +8260,13 @@
 				legend($$value);
 				flushSync();
 			},
+			get radioName() {
+				return radioName();
+			},
+			set radioName($$value = "") {
+				radioName($$value);
+				flushSync();
+			},
 			get radioSize() {
 				return radioSize();
 			},
@@ -8264,11 +8274,11 @@
 				radioSize($$value);
 				flushSync();
 			},
-			get options() {
-				return options();
+			get radioButtons() {
+				return radioButtons();
 			},
-			set options($$value = []) {
-				options($$value);
+			set radioButtons($$value = []) {
+				radioButtons($$value);
 				flushSync();
 			},
 			get radioRequired() {
@@ -8292,8 +8302,9 @@
 		RadioGroup,
 		{
 			legend: {},
+			radioName: {},
 			radioSize: {},
-			options: {},
+			radioButtons: {},
 			radioRequired: {},
 			children: {}
 		},
@@ -8308,18 +8319,22 @@
 		let legend = prop($$props, 'legend', 7),
 			radioName = prop($$props, 'radioName', 7),
 			radioSize = prop($$props, 'radioSize', 7),
-			radioRequired = prop($$props, 'radioRequired', 7, true);
-
-		const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName()}]`);
+			radioButtons = prop($$props, 'radioButtons', 7),
+			radioRequired = prop($$props, 'radioRequired', 7);
 
 		RadioGroup($$anchor, {
+			get radioName() {
+				return radioName();
+			},
 			get legend() {
 				return legend();
 			},
 			get radioSize() {
 				return radioSize();
 			},
-			options,
+			get radioButtons() {
+				return radioButtons();
+			},
 			get radioRequired() {
 				return radioRequired();
 			}
@@ -8347,10 +8362,17 @@
 				radioSize($$value);
 				flushSync();
 			},
+			get radioButtons() {
+				return radioButtons();
+			},
+			set radioButtons($$value) {
+				radioButtons($$value);
+				flushSync();
+			},
 			get radioRequired() {
 				return radioRequired();
 			},
-			set radioRequired($$value = true) {
+			set radioRequired($$value) {
 				radioRequired($$value);
 				flushSync();
 			}
@@ -8363,11 +8385,26 @@
 			legend: { attribute: 'legend', type: 'String' },
 			radioName: { attribute: 'radio-name', type: 'String' },
 			radioSize: { attribute: 'radio-size', type: 'String' },
-			radioRequired: { attribute: 'radio-required', type: 'String' }
+			radioRequired: { attribute: 'radio-required', type: 'String' },
+			radioButtons: {}
 		},
 		[],
 		[],
-		false
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static radioButtons;
+
+				constructor() {
+					super();
+					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+
+					this.radioButtons.forEach((btn, i) => {
+						btn.setAttribute('slot', `slot${i}`);
+					});
+				}
+			};
+		}
 	));
 
 	var root = template(`<div><input type="radio"> <label> </label></div>`);
@@ -8487,7 +8524,8 @@
 	function RadioButtonWC($$anchor, $$props) {
 		push($$props, true);
 
-		let radioName = prop($$props, 'radioName', 7),
+		let parent = prop($$props, 'parent', 7),
+			radioName = prop($$props, 'radioName', 7),
 			radioValue = prop($$props, 'radioValue', 7),
 			radioLabel = prop($$props, 'radioLabel', 7),
 			radioSize = prop($$props, 'radioSize', 7),
@@ -8495,9 +8533,13 @@
 			radioDisabled = prop($$props, 'radioDisabled', 7),
 			radioRequired = prop($$props, 'radioRequired', 7);
 
+		const expression = user_derived(() => parent()?.radioName ?? radioName());
+		const expression_1 = user_derived(() => parent()?.radioSize ?? radioSize());
+		const expression_2 = user_derived(() => parent()?.radioRequired ?? radioRequired());
+
 		RadioButton($$anchor, {
 			get radioName() {
-				return radioName();
+				return get(expression);
 			},
 			get radioValue() {
 				return radioValue();
@@ -8506,7 +8548,7 @@
 				return radioLabel();
 			},
 			get radioSize() {
-				return radioSize();
+				return get(expression_1);
 			},
 			get radioChecked() {
 				return radioChecked();
@@ -8515,11 +8557,18 @@
 				return radioDisabled();
 			},
 			get radioRequired() {
-				return radioRequired();
+				return get(expression_2);
 			}
 		});
 
 		return pop({
+			get parent() {
+				return parent();
+			},
+			set parent($$value) {
+				parent($$value);
+				flushSync();
+			},
 			get radioName() {
 				return radioName();
 			},
@@ -8575,17 +8624,30 @@
 	customElements.define('qc-radio-button', create_custom_element(
 		RadioButtonWC,
 		{
-			radioName: { attribute: 'radio-name', type: 'String' },
 			radioValue: { attribute: 'radio-value', type: 'String' },
 			radioLabel: { attribute: 'radio-label', type: 'String' },
-			radioSize: { attribute: 'radio-size', type: 'String' },
 			radioChecked: { attribute: 'radio-checked', type: 'Boolean' },
 			radioDisabled: { attribute: 'radio-disabled', type: 'Boolean' },
-			radioRequired: { attribute: 'radio-required', type: 'Boolean' }
+			parent: {},
+			radioName: {},
+			radioSize: {},
+			radioRequired: {}
 		},
 		[],
 		[],
-		false
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static parent;
+				static thisElement;
+
+				constructor() {
+					super();
+					this.thisElement = this;
+					this.parent = this.closest('qc-radio-group');
+				}
+			};
+		}
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
