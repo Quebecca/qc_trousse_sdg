@@ -1,6 +1,7 @@
 <script>
     import {onMount} from "svelte";
     import {Utils} from "../utils";
+    import Icon from "../Icon/Icon.svelte";
 
     let {
         legend = "",
@@ -36,6 +37,11 @@
         {@render children?.()}
     </div>
     <div class="qc-radio-invalid">
-        Champ obligatoire
+        <Icon
+            type="warning"
+            color="red-regular"
+            size="sm"
+        />
+        <p>Champ obligatoire</p>
     </div>
 </fieldset>
