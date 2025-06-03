@@ -6,6 +6,21 @@
         radioName: {attribute:'radio-name', type: 'String'},
         radioSize: {attribute:'radio-size', type: 'String'},
         radioRequired: {attribute: 'radio-required', type: 'String'}
+    },
+
+    extend: (customElementConstructor) => {
+        return class extends customElementConstructor {
+            static radioButtons;
+
+            constructor() {
+                super();
+
+                this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+                this.radioButtons.forEach((btn, i) => {
+                    btn.setAttribute('slot', `slot${i}`);
+                })
+            }
+        }
     }
 }}" />
 
@@ -16,15 +31,16 @@
         legend,
         radioName,
         radioSize,
-        radioRequired = true
+        radioButtons,
+        radioRequired
     } = $props();
-    const options = document.querySelectorAll(`qc-radio-button[radio-name=${radioName}]`);
 </script>
 
 <RadioGroup
+    {radioName}
     {legend}
     {radioSize}
-    {options}
+    {radioButtons}
     {radioRequired}
 />
 

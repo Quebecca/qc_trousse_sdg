@@ -1,12 +1,12 @@
 <script>
     import {onMount} from "svelte";
-    import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";
 
     let {
         legend = "",
+        radioName = "",
         radioSize = "md",
-        options = [],
+        radioButtons = [],
         radioRequired = true,
         children
     } = $props();
@@ -14,9 +14,7 @@
     let group = $state();
 
     onMount(() => {
-        options.forEach((option) => {
-            option.setAttribute("radio-size", radioSize);
-            option.setAttribute("radio-required", Utils.isTruthy(radioRequired));
+        radioButtons.forEach((option) => {
             group.appendChild(option);
         });
     });

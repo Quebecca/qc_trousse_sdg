@@ -2,13 +2,23 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        radioName: {attribute:'radio-name', type: 'String'},
         radioValue: {attribute:'radio-value', type: 'String'},
         radioLabel: {attribute:'radio-label', type: 'String'},
-        radioSize: {attribute:'radio-size', type: 'String'},
         radioChecked: {attribute: 'radio-checked', type: 'Boolean'},
         radioDisabled: {attribute:'radio-disabled', type: 'Boolean'},
-        radioRequired: {attribute:'radio-required', type: 'Boolean'}
+    },
+
+    extend: (customElementConstructor) => {
+        return class extends customElementConstructor {
+            static parent;
+            static thisElement;
+            constructor() {
+                super();
+
+                this.thisElement = this;
+                this.parent = this.closest('qc-radio-group');
+            }
+        }
     }
 }}" />
 
@@ -16,6 +26,7 @@
     import RadioButton from "./RadioButton.svelte";
 
     let {
+        parent,
         radioName,
         radioValue,
         radioLabel,
@@ -27,11 +38,11 @@
 </script>
 
 <RadioButton
-    {radioName}
+    radioName={parent?.radioName ?? radioName}
     {radioValue}
     {radioLabel}
-    {radioSize}
+    radioSize={parent?.radioSize ?? radioSize}
     {radioChecked}
     {radioDisabled}
-    {radioRequired}
+    radioRequired={parent?.radioRequired ?? radioRequired}
 />
