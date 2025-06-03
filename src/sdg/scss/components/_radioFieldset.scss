@@ -20,6 +20,13 @@
       display: flex;
       color: token-value(color, red, regular);
       margin-left: token-value(spacer, xs);
+      align-items: center;
+
+      p {
+        margin-left: token-value(spacer, xs);
+        margin-bottom: 0;
+        align-items: center;
+      }
     }
   }
 }
@@ -27,11 +34,17 @@
 .qc-radio-fieldset-sm {
   @extend %radio-fieldset;
   @include content-font(sm, bold);
+  .qc-radio-invalid {
+    margin-top: rem(16);
+  }
 }
 
 .qc-radio-fieldset-md {
   @extend %radio-fieldset;
   @include content-font(md, bold);
+  .qc-radio-invalid {
+    margin-top: rem(24);
+  }
 }
 
 .radio-options {
