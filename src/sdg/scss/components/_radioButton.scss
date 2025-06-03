@@ -84,6 +84,11 @@ input[type=radio]::before {
     background: token-value(color, blue, regular);
   }
 
+  input[type=radio]:user-invalid::after {
+    border-color: token-value(color, red, regular);
+    border-radius: 0;
+  }
+
   label {
     @include content-font(sm);
   }
@@ -107,4 +112,8 @@ input[type=radio]::before {
   label {
     @include content-font(md);
   }
+}
+
+.qc-radio-required {
+  color: token-value(color, red, regular);
 }

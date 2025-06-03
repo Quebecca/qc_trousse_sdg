@@ -3,11 +3,24 @@
 
 %radio-fieldset {
   display: flex;
+  flex-direction: column;
   border: none;
 
   legend {
     margin-left: token-value(spacer, xs);
     margin-bottom: 0;
+  }
+
+  .qc-radio-invalid  {
+    display: none;
+  }
+
+  &:has(input:user-invalid) {
+    .qc-radio-invalid {
+      display: flex;
+      color: token-value(color, red, regular);
+      margin-left: token-value(spacer, xs);
+    }
   }
 }
 
@@ -26,8 +39,4 @@
   flex-direction: column;
   justify-items: center;
   row-gap: token-value(spacer, sm);
-}
-
-.radio-required {
-  color: token-value(color, red, regular);
 }

@@ -1900,6 +1900,10 @@ input[type=radio]::before {
   border-radius: 100%;
   background: var(--qc-color-blue-regular);
 }
+.qc-radio-sm input[type=radio]:user-invalid::after {
+  border-color: var(--qc-color-red-regular);
+  border-radius: 0;
+}
 .qc-radio-sm label {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
@@ -1922,13 +1926,26 @@ input[type=radio]::before {
   font-weight: var(--qc-font-weight-regular);
 }
 
+.qc-radio-required {
+  color: var(--qc-color-red-regular);
+}
+
 .qc-radio-fieldset-md, .qc-radio-fieldset-sm {
   display: flex;
+  flex-direction: column;
   border: none;
 }
 .qc-radio-fieldset-md legend, .qc-radio-fieldset-sm legend {
   margin-left: var(--qc-spacer-xs);
   margin-bottom: 0;
+}
+.qc-radio-fieldset-md .qc-radio-invalid, .qc-radio-fieldset-sm .qc-radio-invalid {
+  display: none;
+}
+.qc-radio-fieldset-md:has(input:user-invalid) .qc-radio-invalid, .qc-radio-fieldset-sm:has(input:user-invalid) .qc-radio-invalid {
+  display: flex;
+  color: var(--qc-color-red-regular);
+  margin-left: var(--qc-spacer-xs);
 }
 
 .qc-radio-fieldset-sm {
@@ -1948,8 +1965,4 @@ input[type=radio]::before {
   flex-direction: column;
   justify-items: center;
   row-gap: var(--qc-spacer-sm);
-}
-
-.radio-required {
-  color: var(--qc-color-red-regular);
 }
