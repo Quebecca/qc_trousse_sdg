@@ -1838,6 +1838,14 @@ qc-search-bar {
   align-items: center;
   margin: 0;
 }
+.qc-radio-md:has(input:user-invalid)::before, .qc-radio-sm:has(input:user-invalid)::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  outline: 0.1rem solid var(--qc-color-red-regular);
+  outline-offset: 0.2rem;
+  margin-left: var(--qc-spacer-xs);
+}
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
   -moz-appearance: none;
        appearance: none;
@@ -1890,6 +1898,10 @@ input[type=radio]::before {
   width: 0;
 }
 
+.qc-radio-sm:has(input:user-invalid)::before {
+  width: 1.6rem;
+  height: 1.6rem;
+}
 .qc-radio-sm input {
   width: 1.6rem;
   height: 1.6rem;
@@ -1900,16 +1912,16 @@ input[type=radio]::before {
   border-radius: 100%;
   background: var(--qc-color-blue-regular);
 }
-.qc-radio-sm input[type=radio]:user-invalid::after {
-  border-color: var(--qc-color-red-regular);
-  border-radius: 0;
-}
 .qc-radio-sm label {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
 }
 
+.qc-radio-md:has(input:user-invalid)::before {
+  width: 2.4rem;
+  height: 2.4rem;
+}
 .qc-radio-md input {
   width: 2.4rem;
   height: 2.4rem;
