@@ -24,9 +24,9 @@
 <fieldset class={`qc-radio-fieldset-${radioSize}`}>
     {#if legend}
         <legend>
-            {legend + " "}
+            {legend}
             {#if radioRequired !== "false" && radioRequired !== false}
-                <span class="radio-required">*</span>
+                <span class="radio-required">&nbsp*</span>
             {/if}
         </legend>
     {/if}

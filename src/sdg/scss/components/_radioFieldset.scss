@@ -2,11 +2,10 @@
 @use "../lib/mixins" as *;
 
 %radio-fieldset {
-  //display: flex;
+  display: flex;
   border: none;
 
   legend {
-    display: flex;
     margin-left: token-value(spacer, xs);
     margin-bottom: 0;
   }

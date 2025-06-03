@@ -8160,7 +8160,7 @@
 		false
 	));
 
-	var root_2 = template(`<span class="radio-required">*</span>`);
+	var root_2 = template(`<span class="radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
 	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div></fieldset>`);
 
@@ -8205,7 +8205,7 @@
 				}
 
 				reset(legend_1);
-				template_effect(() => set_text(text, `${legend() + " "} `));
+				template_effect(() => set_text(text, `${legend() ?? ''} `));
 				append($$anchor, legend_1);
 			};
 

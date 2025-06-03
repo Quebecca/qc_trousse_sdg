@@ -1923,10 +1923,10 @@ input[type=radio]::before {
 }
 
 .qc-radio-fieldset-md, .qc-radio-fieldset-sm {
+  display: flex;
   border: none;
 }
 .qc-radio-fieldset-md legend, .qc-radio-fieldset-sm legend {
-  display: flex;
   margin-left: var(--qc-spacer-xs);
   margin-bottom: 0;
 }
