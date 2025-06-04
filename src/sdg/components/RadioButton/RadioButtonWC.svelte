@@ -8,7 +8,8 @@
         size: {attribute: 'size', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
         disabled: {attribute:'disabled', type: 'Boolean'},
-        required: {attribute: 'required', type: 'String'}
+        required: {attribute: 'required', type: 'String'},
+        hasError: {attribute: 'has-error', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -36,7 +37,8 @@
         size,
         checked,
         disabled,
-        required
+        required,
+        hasError
     } = $props();
 </script>
 
@@ -48,4 +50,5 @@
     {checked}
     {disabled}
     required={parent?.required ?? required}
+    hasError={parent?.hasError ?? hasError}
 />

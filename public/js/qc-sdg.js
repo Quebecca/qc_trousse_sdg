@@ -264,19 +264,6 @@
 		hydrate_node = node;
 	}
 
-	function next(count = 1) {
-		if (hydrating) {
-			var i = count;
-			var node = hydrate_node;
-
-			while (i--) {
-				node = /** @type {TemplateNode} */ (get_next_sibling(node));
-			}
-
-			hydrate_node = node;
-		}
-	}
-
 	/**
 	 * Removes all nodes starting at `hydrate_node` up until the next hydration end comment
 	 */
@@ -6131,7 +6118,7 @@
 		focusOnSearchInput();
 	};
 
-	var root_3$3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
+	var root_3$4 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
@@ -6243,7 +6230,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$3();
+				var a_3 = root_3$4();
 
 				a_3.__click = [
 					on_click$1,
@@ -6593,7 +6580,7 @@
 
 	var root_4 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<li><a> </a></li>`);
-	var root_3$2 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_3$3 = template(`<nav><ul><!> <!></ul></nav>`);
 
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
@@ -6608,7 +6595,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var nav = root_3$2();
+						var nav = root_3$3();
 						var ul = child(nav);
 						var node_2 = child(ul);
 
@@ -6934,7 +6921,7 @@
 	));
 
 	var root_1$2 = template(`<img>`);
-	var root_3$1 = template(`<a> </a>`);
+	var root_3$2 = template(`<a> </a>`);
 	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
@@ -7000,7 +6987,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_3$1();
+				var a_1 = root_3$2();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -7148,7 +7135,7 @@
 		append($$anchor, fragment);
 	};
 
-	var root_3 = template(`<a> </a>`);
+	var root_3$1 = template(`<a> </a>`);
 
 	function PivFooterWC($$anchor, $$props) {
 		push($$props, true);
@@ -7158,7 +7145,7 @@
 			var node_1 = first_child(fragment_1);
 
 			slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-				var a = root_3();
+				var a = root_3$1();
 				var text = child(a, true);
 
 				reset(a);
@@ -8136,15 +8123,20 @@
 
 	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
-	var root$1 = template(`<fieldset><!> <div><!></div> <div class="qc-radio-invalid"><!> <p>Champ obligatoire</p></div></fieldset>`);
+	var root_3 = template(`<div class="qc-radio-invalid"><!> <p> </p></div>`);
+	var root$1 = template(`<fieldset><!> <div><!></div> <!></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
+
+		const lang = Utils.getPageLanguage();
 
 		let legend = prop($$props, 'legend', 7, ""),
 			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, true),
+			hasError = prop($$props, 'hasError', 15, false),
+			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0);
@@ -8193,17 +8185,33 @@
 		reset(div);
 		bind_this(div, ($$value) => set(group, $$value), () => get(group));
 
-		var div_1 = sibling(div, 2);
-		var node_3 = child(div_1);
+		var node_3 = sibling(div, 2);
 
-		Icon(node_3, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'sm'
-		});
+		{
+			var consequent_2 = ($$anchor) => {
+				var div_1 = root_3();
+				var node_4 = child(div_1);
 
-		next(2);
-		reset(div_1);
+				Icon(node_4, {
+					type: 'warning',
+					color: 'red-regular',
+					size: 'sm'
+				});
+
+				var p = sibling(node_4, 2);
+				var text_1 = child(p, true);
+
+				reset(p);
+				reset(div_1);
+				template_effect(() => set_text(text_1, errorText()));
+				append($$anchor, div_1);
+			};
+
+			if_block(node_3, ($$render) => {
+				if (Utils.isTruthy(hasError())) $$render(consequent_2);
+			});
+		}
+
 		reset(fieldset);
 
 		template_effect(() => {
@@ -8242,6 +8250,22 @@
 				required($$value);
 				flushSync();
 			},
+			get hasError() {
+				return hasError();
+			},
+			set hasError($$value = false) {
+				hasError($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText(
+				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
+			) {
+				errorText($$value);
+				flushSync();
+			},
 			get children() {
 				return children();
 			},
@@ -8259,6 +8283,8 @@
 			size: {},
 			radioButtons: {},
 			required: {},
+			hasError: {},
+			errorText: {},
 			children: {}
 		},
 		[],
@@ -8272,7 +8298,9 @@
 		let legend = prop($$props, 'legend', 7),
 			size = prop($$props, 'size', 7),
 			radioButtons = prop($$props, 'radioButtons', 7),
-			required = prop($$props, 'required', 7);
+			required = prop($$props, 'required', 7),
+			hasError = prop($$props, 'hasError', 7),
+			errorText = prop($$props, 'errorText', 7);
 
 		RadioGroup($$anchor, {
 			get legend() {
@@ -8286,6 +8314,12 @@
 			},
 			get required() {
 				return required();
+			},
+			get hasError() {
+				return hasError();
+			},
+			get errorText() {
+				return errorText();
 			}
 		});
 
@@ -8317,6 +8351,20 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
+			},
+			get hasError() {
+				return hasError();
+			},
+			set hasError($$value) {
+				hasError($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText($$value) {
+				errorText($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8328,6 +8376,8 @@
 			legend: { attribute: 'legend', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
+			hasError: { attribute: 'has-error', type: 'Boolean' },
+			errorText: { attribute: 'error-text', type: 'String' },
 			radioButtons: {}
 		},
 		[],
@@ -8356,7 +8406,8 @@
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7, true);
+			required = prop($$props, 'required', 7, true),
+			hasError = prop($$props, 'hasError', 15, false);
 
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
@@ -8365,14 +8416,14 @@
 				required: Utils.isTruthy(required())
 			};
 
-			for (const cle in truthyProps) {
-				if (!truthyProps[cle]) {
-					delete truthyProps[cle];
+			for (const prop in truthyProps) {
+				if (!truthyProps[prop]) {
+					delete truthyProps[prop];
 				}
 			}
 
 			return truthyProps;
-		});
+		}); // console.log(Utils.isTruthy(hasError));
 
 		var div = root();
 		var input = child(div);
@@ -8386,20 +8437,25 @@
 		reset(label_1);
 		reset(div);
 
-		template_effect(() => {
-			set_class(div, 1, `qc-radio-${size()}`);
+		template_effect(
+			($0) => {
+				set_class(div, 1, $0);
 
-			attributes = set_attributes(input, attributes, {
-				type: 'radio',
-				id: `${name()}_${value()}`,
-				name: name(),
-				value: value(),
-				...get(boolAttributes)
-			});
+				attributes = set_attributes(input, attributes, {
+					type: 'radio',
+					id: `${name()}_${value()}`,
+					name: name(),
+					value: value(),
+					...get(boolAttributes)
+				});
 
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
-			set_text(text, label());
-		});
+				set_attribute(label_1, 'for', `${name()}_${value()}`);
+				set_text(text, label());
+			},
+			[
+				() => `qc-radio-${size() + (Utils.isTruthy(hasError()) ? " qc-radio-input-required-" + size() : "")}`
+			]
+		);
 
 		append($$anchor, div);
 
@@ -8452,6 +8508,13 @@
 			set required($$value = true) {
 				required($$value);
 				flushSync();
+			},
+			get hasError() {
+				return hasError();
+			},
+			set hasError($$value = false) {
+				hasError($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8465,7 +8528,8 @@
 			size: {},
 			checked: {},
 			disabled: {},
-			required: {}
+			required: {},
+			hasError: {}
 		},
 		[],
 		[],
@@ -8482,11 +8546,13 @@
 			size = prop($$props, 'size', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 7);
+			required = prop($$props, 'required', 7),
+			hasError = prop($$props, 'hasError', 7);
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
 		const expression_2 = user_derived(() => parent()?.required ?? required());
+		const expression_3 = user_derived(() => parent()?.hasError ?? hasError());
 
 		RadioButton($$anchor, {
 			get name() {
@@ -8509,6 +8575,9 @@
 			},
 			get required() {
 				return get(expression_2);
+			},
+			get hasError() {
+				return get(expression_3);
 			}
 		});
 
@@ -8568,6 +8637,13 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
+			},
+			get hasError() {
+				return hasError();
+			},
+			set hasError($$value) {
+				hasError($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8582,6 +8658,7 @@
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			required: { attribute: 'required', type: 'String' },
+			hasError: { attribute: 'has-error', type: 'Boolean' },
 			parent: {}
 		},
 		[],

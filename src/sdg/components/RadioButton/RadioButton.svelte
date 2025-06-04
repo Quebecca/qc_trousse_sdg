@@ -8,7 +8,8 @@
         size = "sm",
         checked = false,
         disabled = false,
-        required = true
+        required = true,
+        hasError = $bindable(false)
     } = $props();
 
     let boolAttributes = $derived.by(() => {
@@ -18,16 +19,18 @@
             required : Utils.isTruthy(required)
         }
 
-        for (const cle in truthyProps) {
-            if (!truthyProps[cle]) {
-                delete truthyProps[cle];
+        for (const prop in truthyProps) {
+            if (!truthyProps[prop]) {
+                delete truthyProps[prop];
             }
         }
         return truthyProps;
     })
+
+    // console.log(Utils.isTruthy(hasError));
 </script>
 
-<div class={`qc-radio-${size}`}>
+<div class={`qc-radio-${size + (Utils.isTruthy(hasError) ? " qc-radio-input-required-" + size : "")}`}>
     <input
         type="radio"
         id={`${name}_${value}`}

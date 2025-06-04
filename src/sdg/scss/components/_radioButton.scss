@@ -6,15 +6,6 @@
   align-items: center;
   margin: 0;
 
-  &:has(input:user-invalid)::before {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    outline: rem(1) solid token-value(color, red, regular);
-    outline-offset: rem(2);
-    margin-left: token-value(spacer, xs);
-  }
-
   // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
   input[type="radio"] {
     appearance: none;
@@ -80,11 +71,6 @@ input[type=radio]::before {
 .qc-radio-sm {
   @extend %radio-style;
 
-  &:has(input:user-invalid)::before {
-    width: rem(16);
-    height: rem(16);
-  }
-
   input {
     width: rem(16);
     height: rem(16);
@@ -106,11 +92,6 @@ input[type=radio]::before {
 .qc-radio-md {
   @extend %radio-style;
 
-  &:has(input:user-invalid)::before {
-    width: rem(24);
-    height: rem(24);
-  }
-
   input {
     width: rem(24);
     height: rem(24);
@@ -126,6 +107,31 @@ input[type=radio]::before {
 
   label {
     @include content-font(md);
+  }
+}
+
+%qc-radio-input-required::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  outline: rem(1) solid token-value(color, red, regular);
+  outline-offset: rem(2);
+  margin-left: token-value(spacer, xs);
+}
+
+.qc-radio-sm.qc-radio-input-required-sm {
+  @extend %qc-radio-input-required;
+  &::before {
+    width: rem(16);
+    height: rem(16);
+  }
+}
+
+.qc-radio-md.qc-radio-input-required-md {
+  @extend %qc-radio-input-required;
+  &::before {
+    width: rem(24);
+    height: rem(24);
   }
 }
 
