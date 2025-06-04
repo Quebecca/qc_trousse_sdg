@@ -4501,49 +4501,6 @@
 	}
 
 	/**
-	 * @param {Element} element
-	 * @param {any} value
-	 */
-	function set_value(element, value) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.value ===
-				(attributes.value =
-					// treat null and undefined the same for the initial value
-					value ?? undefined) ||
-			// @ts-expect-error
-			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.value = value ?? '';
-	}
-
-	/**
-	 * @param {Element} element
-	 * @param {boolean} checked
-	 */
-	function set_checked(element, checked) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.checked ===
-			(attributes.checked =
-				// treat null and undefined the same for the initial value
-				checked ?? undefined)
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.checked = checked;
-	}
-
-	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -8383,7 +8340,7 @@
 		}
 	));
 
-	var root = template(`<div><input type="radio"> <label> </label></div>`);
+	var root = template(`<div><input> <label> </label></div>`);
 
 	function RadioButton($$anchor, $$props) {
 		push($$props, true);
@@ -8393,38 +8350,51 @@
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
-			disabled = prop($$props, 'disabled', 7),
+			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, true);
+
+		let boolAttributes = user_derived(() => {
+			let truthyProps = {
+				checked: Utils.isTruthy(checked()),
+				disabled: Utils.isTruthy(disabled()),
+				required: Utils.isTruthy(required())
+			};
+
+			for (const cle in truthyProps) {
+				if (!truthyProps[cle]) {
+					delete truthyProps[cle];
+				}
+			}
+
+			return truthyProps;
+		});
 
 		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
 
+		let attributes;
 		var label_1 = sibling(input, 2);
 		var text = child(label_1, true);
 
 		reset(label_1);
 		reset(div);
 
-		template_effect(
-			($0, $1, $2) => {
-				set_class(div, 1, `qc-radio-${size()}`);
-				set_attribute(input, 'id', `${name()}_${value()}`);
-				set_attribute(input, 'name', name());
-				set_value(input, value());
-				set_checked(input, $0);
-				input.disabled = $1;
-				input.required = $2;
-				set_attribute(label_1, 'for', `${name()}_${value()}`);
-				set_text(text, label());
-			},
-			[
-				() => Utils.isTruthy(checked()),
-				() => Utils.isTruthy(disabled()),
-				() => Utils.isTruthy(required())
-			]
-		);
+		template_effect(() => {
+			set_class(div, 1, `qc-radio-${size()}`);
+
+			attributes = set_attributes(input, attributes, {
+				type: 'radio',
+				id: `${name()}_${value()}`,
+				name: name(),
+				value: value(),
+				...get(boolAttributes)
+			});
+
+			set_attribute(label_1, 'for', `${name()}_${value()}`);
+			set_text(text, label());
+		});
 
 		append($$anchor, div);
 
@@ -8467,7 +8437,7 @@
 			get disabled() {
 				return disabled();
 			},
-			set disabled($$value) {
+			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},

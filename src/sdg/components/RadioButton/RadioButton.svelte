@@ -7,7 +7,7 @@
         label,
         size = "sm",
         checked = false,
-        disabled,
+        disabled = false,
         required = true
     } = $props();
 
@@ -33,9 +33,7 @@
         id={`${name}_${value}`}
         {name}
         {value}
-        checked={Utils.isTruthy(checked)}
-        disabled={Utils.isTruthy(disabled)}
-        required={Utils.isTruthy(required)}
+        {...boolAttributes}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>
