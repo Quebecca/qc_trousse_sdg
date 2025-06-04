@@ -2,16 +2,15 @@
     import Checkbox from './Checkbox.svelte';
 
     let {
-        groupId = "",
         legend = "",
         name = "",
+        size = "md",
         options = []
     } = $props();
 
 </script>
 
-<div id={groupId} class="qc-col-md-6">
-    <h3>Case à cocher au format standard</h3>
+<div class="qc-col-md-6">
     <fieldset>
         <legend class="qc-form-check-legend">{legend}</legend>
         <div class="qc-form-checks">
@@ -22,7 +21,7 @@
                         checkboxValue={option.value}
                         checkboxDisabled={option.disabled}
                         checkboxChecked={option.checked}
-                        checkboxSize="md"
+                        checkboxSize={size}
                 />
             {/each}
         </div>
