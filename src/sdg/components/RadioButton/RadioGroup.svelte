@@ -1,5 +1,5 @@
 <script>
-    import {onMount} from "svelte";
+    import {getContext, onMount} from "svelte";
     import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";
 
@@ -10,7 +10,7 @@
         size = "md",
         radioButtons = [],
         required = true,
-        hasError = $bindable(false),
+        hasError = false,
         errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
     } = $props();
@@ -22,6 +22,14 @@
             group.appendChild(option);
         });
     });
+
+    let context = getContext("hasError");
+
+    $effect(() => {
+        if (context && !Utils.isTruthy(context)) {
+            hasError = false;
+        }
+    })
 </script>
 
 <fieldset class={`qc-radio-fieldset-${size}`}>
