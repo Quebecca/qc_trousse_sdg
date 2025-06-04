@@ -1,5 +1,6 @@
 <script>
     import {Utils} from "../utils";
+    import {setContext} from "svelte";
 
     let {
         name,
@@ -9,8 +10,11 @@
         checked = false,
         disabled = false,
         required = true,
-        hasError = $bindable(false)
+        hasError = false
     } = $props();
+
+    let inputs = $state();
+    setContext("hasError", () => inputs)
 
     let boolAttributes = $derived.by(() => {
         let truthyProps = {
@@ -26,8 +30,6 @@
         }
         return truthyProps;
     })
-
-    // console.log(Utils.isTruthy(hasError));
 </script>
 
 <div class={`qc-radio-${size + (Utils.isTruthy(hasError) ? " qc-radio-input-required-" + size : "")}`}>
@@ -37,6 +39,7 @@
         {name}
         {value}
         {...boolAttributes}
+        bind:group={inputs}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>

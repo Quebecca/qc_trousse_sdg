@@ -566,6 +566,35 @@
 		set(signal, signal.v + d);
 	}
 
+	/**
+	 * @param {any} value
+	 */
+	function get_proxied_value(value) {
+		try {
+			if (value !== null && typeof value === 'object' && STATE_SYMBOL in value) {
+				return value[STATE_SYMBOL];
+			}
+		} catch {
+			// the above if check can throw an error if the value in question
+			// is the contentWindow of an iframe on another domain, in which
+			// case we want to just return the value (because it's definitely
+			// not a proxied value) so we don't break any JavaScript interacting
+			// with that iframe (such as various payment companies client side
+			// JavaScript libraries interacting with their iframes on the same
+			// domain)
+		}
+
+		return value;
+	}
+
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 */
+	function is(a, b) {
+		return Object.is(get_proxied_value(a), get_proxied_value(b));
+	}
+
 	/** @import { TemplateNode } from '#client' */
 
 	// export these for reference in the compiled code, making global name deduplication unnecessary
@@ -2380,6 +2409,20 @@
 	/** @param {ComponentContext | null} context */
 	function set_component_context(context) {
 		component_context = context;
+	}
+
+	/**
+	 * Retrieves the context that belongs to the closest parent component with the specified `key`.
+	 * Must be called during component initialisation.
+	 *
+	 * @template T
+	 * @param {any} key
+	 * @returns {T}
+	 */
+	function getContext(key) {
+		const context_map = get_or_init_context_map();
+		const result = /** @type {T} */ (context_map.get(key));
+		return result;
 	}
 
 	/**
@@ -4851,6 +4894,129 @@
 				input.value = value ?? '';
 			}
 		});
+	}
+
+	/** @type {Set<HTMLInputElement[]>} */
+	const pending = new Set();
+
+	/**
+	 * @param {HTMLInputElement[]} inputs
+	 * @param {null | [number]} group_index
+	 * @param {HTMLInputElement} input
+	 * @param {() => unknown} get
+	 * @param {(value: unknown) => void} set
+	 * @returns {void}
+	 */
+	function bind_group(inputs, group_index, input, get, set = get) {
+		var is_checkbox = input.getAttribute('type') === 'checkbox';
+		var binding_group = inputs;
+
+		// needs to be let or related code isn't treeshaken out if it's always false
+		let hydration_mismatch = false;
+
+		if (group_index !== null) {
+			for (var index of group_index) {
+				// @ts-expect-error
+				binding_group = binding_group[index] ??= [];
+			}
+		}
+
+		binding_group.push(input);
+
+		listen_to_event_and_reset_event(
+			input,
+			'change',
+			() => {
+				// @ts-ignore
+				var value = input.__value;
+
+				if (is_checkbox) {
+					value = get_binding_group_value(binding_group, value, input.checked);
+				}
+
+				set(value);
+			},
+			// TODO better default value handling
+			() => set(is_checkbox ? [] : null)
+		);
+
+		render_effect(() => {
+			var value = get();
+
+			// If we are hydrating and the value has since changed, then use the update value
+			// from the input instead.
+			if (hydrating && input.defaultChecked !== input.checked) {
+				hydration_mismatch = true;
+				return;
+			}
+
+			if (is_checkbox) {
+				value = value || [];
+				// @ts-ignore
+				input.checked = value.includes(input.__value);
+			} else {
+				// @ts-ignore
+				input.checked = is(input.__value, value);
+			}
+		});
+
+		teardown(() => {
+			var index = binding_group.indexOf(input);
+
+			if (index !== -1) {
+				binding_group.splice(index, 1);
+			}
+		});
+
+		if (!pending.has(binding_group)) {
+			pending.add(binding_group);
+
+			queue_micro_task(() => {
+				// necessary to maintain binding group order in all insertion scenarios
+				binding_group.sort((a, b) => (a.compareDocumentPosition(b) === 4 ? -1 : 1));
+				pending.delete(binding_group);
+			});
+		}
+
+		queue_micro_task(() => {
+			if (hydration_mismatch) {
+				var value;
+
+				if (is_checkbox) {
+					value = get_binding_group_value(binding_group, value, input.checked);
+				} else {
+					var hydration_input = binding_group.find((input) => input.checked);
+					// @ts-ignore
+					value = hydration_input?.__value;
+				}
+
+				set(value);
+			}
+		});
+	}
+
+	/**
+	 * @template V
+	 * @param {Array<HTMLInputElement>} group
+	 * @param {V} __value
+	 * @param {boolean} checked
+	 * @returns {V[]}
+	 */
+	function get_binding_group_value(group, __value, checked) {
+		var value = new Set();
+
+		for (var i = 0; i < group.length; i += 1) {
+			if (group[i].checked) {
+				// @ts-ignore
+				value.add(group[i].__value);
+			}
+		}
+
+		if (!checked) {
+			value.delete(__value);
+		}
+
+		return Array.from(value);
 	}
 
 	/**
@@ -8135,7 +8301,7 @@
 			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, true),
-			hasError = prop($$props, 'hasError', 15, false),
+			hasError = prop($$props, 'hasError', 7, false),
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
@@ -8145,6 +8311,14 @@
 			radioButtons().forEach((option) => {
 				get(group).appendChild(option);
 			});
+		});
+
+		let context = getContext("hasError");
+
+		user_effect(() => {
+			if (context && !Utils.isTruthy(context)) {
+				hasError(false);
+			}
 		});
 
 		var fieldset = root$1();
@@ -8400,6 +8574,8 @@
 	function RadioButton($$anchor, $$props) {
 		push($$props, true);
 
+		const binding_group = [];
+
 		let name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
@@ -8407,7 +8583,11 @@
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, true),
-			hasError = prop($$props, 'hasError', 15, false);
+			hasError = prop($$props, 'hasError', 7, false);
+
+		let inputs = state(void 0);
+
+		setContext("hasError", () => get(inputs));
 
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
@@ -8423,7 +8603,7 @@
 			}
 
 			return truthyProps;
-		}); // console.log(Utils.isTruthy(hasError));
+		});
 
 		var div = root();
 		var input = child(div);
@@ -8455,6 +8635,17 @@
 			[
 				() => `qc-radio-${size() + (Utils.isTruthy(hasError()) ? " qc-radio-input-required-" + size() : "")}`
 			]
+		);
+
+		bind_group(
+			binding_group,
+			[],
+			input,
+			() => {
+				value();
+				return get(inputs);
+			},
+			($$value) => set(inputs, $$value)
 		);
 
 		append($$anchor, div);
