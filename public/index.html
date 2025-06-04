@@ -1414,71 +1414,46 @@
             <h3>Exemples</h3>
 
             <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne">
-                <qc-radio-group legend="Choisissez une option : " radio-name="ex-md" radio-size="md">
-                    <qc-radio-button
-                        radio-name="ex-md"
-                        radio-label="Option 1"
-                        radio-value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                        radio-name="ex-md"
-                        radio-label="Option 2"
-                        radio-value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                        radio-name="ex-md"
-                        radio-label="Option 3 (désactivée)"
-                        radio-value="3"
-                        radio-disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio de petite taille">
                 <form>
                     <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
                         <qc-radio-button
-                                name="ex-md"
                                 label="Option 1"
                                 value="1"
                         ></qc-radio-button>
                         <qc-radio-button
-                                name="ex-md"
                                 label="Option 2"
                                 value="2"
                         ></qc-radio-button>
                         <qc-radio-button
-                                name="ex-md"
                                 label="Option 3 (désactivée)"
                                 value="3"
                                 disabled
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <button type="submit" onclick="(e) => e.preventDefault()">Soumettre</button>
+                    <button type="submit">Soumettre</button>
                 </form>
+            </qc-doc-exemple>
 
+            <qc-doc-exemple caption="Exemple de boutons radio de petite taille">
                 <form>
-                    <qc-radio-group legend="Quel entrainement?" name="ex-sm" size="sm" required="false">
+                    <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm" required="false">
                         <qc-radio-button
-                                name="ex-md"
-                                label="Chest"
+                                label="Option 1"
                                 value="1"
                         ></qc-radio-button>
                         <qc-radio-button
-                                name="ex-md"
-                                label="Bras"
+                                label="Option 2"
                                 value="2"
                         ></qc-radio-button>
                         <qc-radio-button
-                                name="ex-md"
-                                label="Jambes (les jambes?)"
+                                label="Option 3 (désactivée)"
                                 value="3"
                                 disabled
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <button type="submit" onclick="(e) => e.preventDefault()">Soumettre</button>
+                    <button type="submit">Soumettre</button>
                 </form>
             </qc-doc-exemple>
         </div>
