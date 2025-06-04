@@ -5,10 +5,10 @@
   display: flex;
   flex-direction: column;
   border: none;
+  padding: 0.001em 0 0 0; //Ce padding est nécessaire pour contrôler les marges de <legend>.
 
   legend {
     margin-left: token-value(spacer, xs);
-    margin-bottom: 0;
   }
 
   .qc-radio-invalid  {
@@ -34,22 +34,28 @@
 .qc-radio-fieldset-sm {
   @extend %radio-fieldset;
   @include content-font(sm, bold);
-  .qc-radio-invalid {
-    margin-top: rem(16);
-  }
 }
 
 .qc-radio-fieldset-md {
   @extend %radio-fieldset;
   @include content-font(md, bold);
-  .qc-radio-invalid {
-    margin-top: rem(24);
-  }
 }
 
-.radio-options {
+%radio-options {
   display: flex;
   flex-direction: column;
   justify-items: center;
   row-gap: token-value(spacer, sm);
+}
+
+.radio-options-sm {
+  @extend %radio-options;
+  margin-top: rem(16);
+  margin-bottom: rem(16);
+}
+
+.radio-options-md {
+  @extend %radio-options;
+  margin-top: rem(24);
+  margin-bottom: rem(24);
 }

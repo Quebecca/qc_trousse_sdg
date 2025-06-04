@@ -8136,7 +8136,7 @@
 
 	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
-	var root$1 = template(`<fieldset><!> <div class="radio-options"><!></div> <div class="qc-radio-invalid"><!> <p>Champ obligatoire</p></div></fieldset>`);
+	var root$1 = template(`<fieldset><!> <div><!></div> <div class="qc-radio-invalid"><!> <p>Champ obligatoire</p></div></fieldset>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8205,7 +8205,12 @@
 		next(2);
 		reset(div_1);
 		reset(fieldset);
-		template_effect(() => set_class(fieldset, 1, `qc-radio-fieldset-${size()}`));
+
+		template_effect(() => {
+			set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
+			set_class(div, 1, `radio-options-${size()}`);
+		});
+
 		append($$anchor, fieldset);
 
 		return pop({
