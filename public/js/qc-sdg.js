@@ -8302,18 +8302,18 @@
 		true
 	);
 
-	var root = template(`<div class="qc-col-md-6"><h3>Case à cocher au format standard</h3> <fieldset><legend class="qc-form-check-legend"> </legend> <div class="qc-form-checks"></div></fieldset></div>`);
+	var root = template(`<div class="qc-col-md-6"><fieldset><legend class="qc-form-check-legend"> </legend> <div class="qc-form-checks"></div></fieldset></div>`);
 
 	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
 
-		let groupId = prop($$props, 'groupId', 7, ""),
-			legend = prop($$props, 'legend', 7, ""),
+		let legend = prop($$props, 'legend', 7, ""),
 			name = prop($$props, 'name', 7, ""),
+			size = prop($$props, 'size', 7, "md"),
 			options = prop($$props, 'options', 23, () => []);
 
 		var div = root();
-		var fieldset = sibling(child(div), 2);
+		var fieldset = child(div);
 		var legend_1 = child(fieldset);
 		var text = child(legend_1, true);
 
@@ -8338,29 +8338,19 @@
 				get checkboxChecked() {
 					return get(option).checked;
 				},
-				checkboxSize: 'md'
+				get checkboxSize() {
+					return size();
+				}
 			});
 		});
 
 		reset(div_1);
 		reset(fieldset);
 		reset(div);
-
-		template_effect(() => {
-			set_attribute(div, 'id', groupId());
-			set_text(text, legend());
-		});
-
+		template_effect(() => set_text(text, legend()));
 		append($$anchor, div);
 
 		return pop({
-			get groupId() {
-				return groupId();
-			},
-			set groupId($$value = "") {
-				groupId($$value);
-				flushSync();
-			},
 			get legend() {
 				return legend();
 			},
@@ -8375,6 +8365,13 @@
 				name($$value);
 				flushSync();
 			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
+			},
 			get options() {
 				return options();
 			},
@@ -8385,25 +8382,14 @@
 		});
 	}
 
-	create_custom_element(
-		CheckboxGroup,
-		{
-			groupId: {},
-			legend: {},
-			name: {},
-			options: {}
-		},
-		[],
-		[],
-		true
-	);
+	create_custom_element(CheckboxGroup, { legend: {}, name: {}, size: {}, options: {} }, [], [], true);
 
 	function CheckboxGroupWC($$anchor, $$props) {
 		push($$props, true);
 
-		let groupId = prop($$props, 'groupId', 7, ''),
-			legend = prop($$props, 'legend', 7, ''),
+		let legend = prop($$props, 'legend', 7, ''),
 			name = prop($$props, 'name', 7, ''),
+			size = prop($$props, 'size', 7, 'md'),
 			options = prop($$props, 'options', 23, () => []);
 
 		let parsedOptions = user_derived(() => typeof options() === 'string'
@@ -8418,14 +8404,14 @@
 			: options());
 
 		CheckboxGroup($$anchor, {
-			get groupId() {
-				return groupId();
-			},
 			get legend() {
 				return legend();
 			},
 			get name() {
 				return name();
+			},
+			get size() {
+				return size();
 			},
 			get options() {
 				return get(parsedOptions);
@@ -8433,13 +8419,6 @@
 		});
 
 		return pop({
-			get groupId() {
-				return groupId();
-			},
-			set groupId($$value = '') {
-				groupId($$value);
-				flushSync();
-			},
 			get legend() {
 				return legend();
 			},
@@ -8452,6 +8431,13 @@
 			},
 			set name($$value = '') {
 				name($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = 'md') {
+				size($$value);
 				flushSync();
 			},
 			get options() {
@@ -8467,9 +8453,9 @@
 	customElements.define('qc-checkbox-group', create_custom_element(
 		CheckboxGroupWC,
 		{
-			groupId: { attribute: 'group-id' },
 			legend: { attribute: 'legend' },
 			name: { attribute: 'name' },
+			size: { attribute: 'size' },
 			options: { attribute: 'options' }
 		},
 		[],
