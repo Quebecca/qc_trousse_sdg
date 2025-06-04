@@ -31,7 +31,7 @@
     {/if}
 
 
-    <div class="radio-options" bind:this={group}>
+    <div class={`radio-options-${size}`} bind:this={group}>
         {@render children?.()}
     </div>
     <div class="qc-radio-invalid">
