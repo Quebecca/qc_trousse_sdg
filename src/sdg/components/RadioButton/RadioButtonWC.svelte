@@ -27,13 +27,7 @@
 
     let {
         parent,
-        radioName,
-        radioValue,
-        radioLabel,
-        radioSize,
-        radioChecked,
-        radioDisabled,
-        radioRequired
+        ...props
     } = $props();
 </script>
 
@@ -41,7 +35,7 @@
     radioName={parent?.radioName ?? radioName}
     {radioValue}
     {radioLabel}
-    radioSize={parent?.radioSize ?? radioSize}
+    radioSize={parent?.radioSize ?? size}
     {radioChecked}
     {radioDisabled}
     radioRequired={parent?.radioRequired ?? radioRequired}
