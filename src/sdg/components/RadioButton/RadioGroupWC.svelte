@@ -5,7 +5,9 @@
         name: {attribute: 'name', type: 'String'},
         legend: {attribute:'legend', type: 'String'},
         size: {attribute:'size', type: 'String'},
-        required: {attribute: 'required', type: 'String'}
+        required: {attribute: 'required', type: 'String'},
+        hasError: {attribute: 'has-error', type: 'Boolean'},
+        errorText: {attribute: 'error-text', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -27,7 +29,9 @@
         legend,
         size,
         radioButtons,
-        required
+        required,
+        hasError,
+        errorText
     } = $props();
 </script>
 
@@ -36,5 +40,7 @@
     {size}
     {radioButtons}
     {required}
+    {hasError}
+    {errorText}
 />
 

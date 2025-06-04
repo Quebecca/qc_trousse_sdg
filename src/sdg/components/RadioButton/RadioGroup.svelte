@@ -3,11 +3,15 @@
     import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";
 
+    const lang = Utils.getPageLanguage();
+
     let {
         legend = "",
         size = "md",
         radioButtons = [],
         required = true,
+        hasError = $bindable(false),
+        errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
     } = $props();
 
@@ -34,12 +38,14 @@
     <div class={`radio-options-${size}`} bind:this={group}>
         {@render children?.()}
     </div>
-    <div class="qc-radio-invalid">
-        <Icon
-            type="warning"
-            color="red-regular"
-            size="sm"
-        />
-        <p>Champ obligatoire</p>
-    </div>
+    {#if Utils.isTruthy(hasError)}
+        <div class="qc-radio-invalid">
+            <Icon
+                type="warning"
+                color="red-regular"
+                size="sm"
+            />
+            <p>{errorText}</p>
+        </div>
+    {/if}
 </fieldset>

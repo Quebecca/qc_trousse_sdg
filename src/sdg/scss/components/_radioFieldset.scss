@@ -10,25 +10,6 @@
   legend {
     margin-left: token-value(spacer, xs);
   }
-
-  .qc-radio-invalid  {
-    display: none;
-  }
-
-  &:has(input:user-invalid) {
-    .qc-radio-invalid {
-      display: flex;
-      color: token-value(color, red, regular);
-      margin-left: token-value(spacer, xs);
-      align-items: center;
-
-      p {
-        margin-left: token-value(spacer, xs);
-        margin-bottom: 0;
-        align-items: center;
-      }
-    }
-  }
 }
 
 .qc-radio-fieldset-sm {
@@ -58,4 +39,17 @@
   @extend %radio-options;
   margin-top: rem(24);
   margin-bottom: rem(24);
+}
+
+.qc-radio-invalid {
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
+  align-items: center;
+
+  p {
+    margin-left: token-value(spacer, xs);
+    margin-bottom: 0;
+    align-items: center;
+  }
 }
