@@ -73190,7 +73190,7 @@
 	));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.4.0-develop.0`;
+	    document.getElementById("version").textContent = `v1.3.0-develop.6`;
 	}
 
 	// Show maskable "general alert" component

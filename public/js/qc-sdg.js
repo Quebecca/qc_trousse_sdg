@@ -8142,7 +8142,7 @@
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
-			radioSize = prop($$props, 'radioSize', 7, "md"),
+			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, true),
 			children = prop($$props, 'children', 7);
@@ -8205,7 +8205,7 @@
 		next(2);
 		reset(div_1);
 		reset(fieldset);
-		template_effect(() => set_class(fieldset, 1, `qc-radio-fieldset-${radioSize()}`));
+		template_effect(() => set_class(fieldset, 1, `qc-radio-fieldset-${size()}`));
 		append($$anchor, fieldset);
 
 		return pop({
@@ -8216,11 +8216,11 @@
 				legend($$value);
 				flushSync();
 			},
-			get radioSize() {
-				return radioSize();
+			get size() {
+				return size();
 			},
-			set radioSize($$value = "md") {
-				radioSize($$value);
+			set size($$value = "md") {
+				size($$value);
 				flushSync();
 			},
 			get radioButtons() {
@@ -8251,7 +8251,7 @@
 		RadioGroup,
 		{
 			legend: {},
-			radioSize: {},
+			size: {},
 			radioButtons: {},
 			required: {},
 			children: {}
