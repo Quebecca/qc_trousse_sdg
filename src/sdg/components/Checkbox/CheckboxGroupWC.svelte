@@ -2,9 +2,9 @@
   tag: 'qc-checkbox-group',
   shadow: 'none',
   props: {
-    groupId: { attribute: 'group-id' },
     legend: { attribute: 'legend' },
     name: { attribute: 'name' },
+    size: { attribute: 'size' },
     options: { attribute: 'options' }
   }
 }} />
@@ -13,9 +13,9 @@
     import CheckboxGroup from './CheckboxGroup.svelte';
 
     let {
-    groupId = '',
     legend = '',
     name = '',
+    size = 'md',
     options = []
     } = $props();
 
@@ -32,9 +32,9 @@
 </script>
 
 <CheckboxGroup
-        {groupId}
         {legend}
         {name}
+        {size}
         options={parsedOptions}
 />
 
