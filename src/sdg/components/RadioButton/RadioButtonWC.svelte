@@ -2,10 +2,13 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        radioValue: {attribute:'radio-value', type: 'String'},
-        radioLabel: {attribute:'radio-label', type: 'String'},
-        radioChecked: {attribute: 'radio-checked', type: 'Boolean'},
-        radioDisabled: {attribute:'radio-disabled', type: 'Boolean'},
+        name: {attribute: 'name', type: 'String'},
+        value: {attribute:'value', type: 'String'},
+        label: {attribute:'label', type: 'String'},
+        size: {attribute: 'size', type: 'String'},
+        checked: {attribute: 'checked', type: 'Boolean'},
+        disabled: {attribute:'disabled', type: 'Boolean'},
+        required: {attribute: 'required', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -27,16 +30,22 @@
 
     let {
         parent,
-        ...props
+        name,
+        value,
+        label,
+        size,
+        checked,
+        disabled,
+        required
     } = $props();
 </script>
 
 <RadioButton
-    radioName={parent?.radioName ?? radioName}
-    {radioValue}
-    {radioLabel}
-    radioSize={parent?.radioSize ?? size}
-    {radioChecked}
-    {radioDisabled}
-    radioRequired={parent?.radioRequired ?? radioRequired}
+    name={parent?.name ?? name}
+    {value}
+    {label}
+    size={parent?.size ?? size}
+    {checked}
+    {disabled}
+    required={parent?.required ?? required}
 />
