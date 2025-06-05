@@ -29,7 +29,7 @@
     let {
         name,
         legend,
-        size,
+        size = "md",
         radioButtons,
         required,
         invalid,
