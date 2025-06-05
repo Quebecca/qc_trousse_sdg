@@ -22,13 +22,20 @@
     let parsedOptions = $derived(typeof options === 'string'
         ? (() => {
             try {
-                return JSON.parse(options);
+                const parsed = JSON.parse(options);
+                return parsed.map(option => ({
+                    ...option,
+                    value: option.value || option.label
+                }));
             } catch (e) {
                 console.error('Erreur de parsing des options :', e);
                 return [];
             }
         })()
-        : options);
+        : options.map(option => ({
+            ...option,
+            value: option.value || option.label
+        })));
 </script>
 
 <CheckboxGroup
@@ -37,4 +44,3 @@
         {size}
         options={parsedOptions}
 />
-
