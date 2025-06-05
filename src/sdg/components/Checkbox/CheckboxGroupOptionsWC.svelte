@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-checkbox-group',
+  tag: 'qc-checkbox-group-options',
   shadow: 'none',
   props: {
     legend: { attribute: 'legend' },
@@ -10,7 +10,7 @@
 }} />
 
 <script>
-    import CheckboxGroup from './CheckboxGroup.svelte';
+    import CheckboxGroupOptions from './CheckboxGroupOptions.svelte';
 
     let {
     legend = '',
@@ -38,7 +38,7 @@
         })));
 </script>
 
-<CheckboxGroup
+<CheckboxGroupOptions
         {legend}
         {name}
         {size}
