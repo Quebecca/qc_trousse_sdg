@@ -1449,7 +1449,25 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio pour un champ obligatoire">
+            <qc-doc-exemple caption="Exemple de boutons radio dans un champ avec une option présélectionnée">
+                <qc-radio-group legend="Choisissez une option : " name="ex-md-checked">
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                            checked
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3"
+                            value="3"
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de boutons radio dans un champ obligatoire">
                 <qc-radio-group legend="Choisissez une option : " name="ex-md-ob" required>
                     <qc-radio-button
                             label="Option 1"
@@ -1466,7 +1484,7 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio pour un champ en état invalide">
+            <qc-doc-exemple caption="Exemple de boutons radio dans un champ en état invalide">
                 <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" invalid>
                     <qc-radio-button
                             label="Option 1"
