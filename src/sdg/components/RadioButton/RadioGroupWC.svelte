@@ -26,6 +26,7 @@
     import RadioGroup from "./RadioGroup.svelte";
 
     let {
+        name,
         legend,
         size,
         radioButtons,
@@ -36,6 +37,7 @@
 </script>
 
 <RadioGroup
+    {name}
     {legend}
     {size}
     {radioButtons}
