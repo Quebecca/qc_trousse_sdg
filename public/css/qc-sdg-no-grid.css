@@ -1784,10 +1784,10 @@ qc-search-input {
 qc-search-bar {
   position: relative;
   display: block;
-  max-width: 64rem;
 }
 
 .qc-search-bar {
+  max-width: 64rem;
   width: 100%;
   border: 0;
 }
