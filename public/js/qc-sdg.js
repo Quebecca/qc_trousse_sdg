@@ -8131,7 +8131,8 @@
 
 		const lang = Utils.getPageLanguage();
 
-		let legend = prop($$props, 'legend', 7, ""),
+		let name = prop($$props, 'name', 7),
+			legend = prop($$props, 'legend', 7, ""),
 			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, true),
@@ -8144,6 +8145,10 @@
 		onMount(() => {
 			radioButtons().forEach((option) => {
 				get(group).appendChild(option);
+			});
+
+			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
+				hasError(false);
 			});
 		});
 
@@ -8222,6 +8227,13 @@
 		append($$anchor, fieldset);
 
 		return pop({
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
 			get legend() {
 				return legend();
 			},
@@ -8279,6 +8291,7 @@
 	create_custom_element(
 		RadioGroup,
 		{
+			name: {},
 			legend: {},
 			size: {},
 			radioButtons: {},
@@ -8295,7 +8308,8 @@
 	function RadioGroupWC($$anchor, $$props) {
 		push($$props, true);
 
-		let legend = prop($$props, 'legend', 7),
+		let name = prop($$props, 'name', 7),
+			legend = prop($$props, 'legend', 7),
 			size = prop($$props, 'size', 7),
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
@@ -8303,6 +8317,9 @@
 			errorText = prop($$props, 'errorText', 7);
 
 		RadioGroup($$anchor, {
+			get name() {
+				return name();
+			},
 			get legend() {
 				return legend();
 			},
@@ -8324,6 +8341,13 @@
 		});
 
 		return pop({
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
 			get legend() {
 				return legend();
 			},
@@ -8409,6 +8433,8 @@
 			required = prop($$props, 'required', 7, true),
 			hasError = prop($$props, 'hasError', 7, false);
 
+		let inputInstance = state(void 0);
+
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
 				checked: Utils.isTruthy(checked()),
@@ -8425,13 +8451,27 @@
 			return truthyProps;
 		});
 
+		onMount(() => {
+			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
+				hasError(false);
+			});
+		});
+
+		function removeInvalid() {
+			hasError(false);
+			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
+		}
+
 		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
 
-		var event_handler = () => hasError(false);
+		var event_handler = () => removeInvalid();
 		let attributes;
+
+		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
+
 		var label_1 = sibling(input, 2);
 		var text = child(label_1, true);
 

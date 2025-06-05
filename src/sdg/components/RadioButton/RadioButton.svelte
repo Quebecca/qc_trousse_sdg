@@ -1,6 +1,6 @@
 <script>
     import {Utils} from "../utils";
-    import {getContext} from "svelte";
+    import {onMount} from "svelte";
 
     let {
         name,
@@ -12,6 +12,8 @@
         required = true,
         hasError = false
     } = $props();
+
+    let inputInstance = $state();
 
     let boolAttributes = $derived.by(() => {
         let truthyProps = {
@@ -27,6 +29,25 @@
         }
         return truthyProps;
     })
+
+    onMount(() => {
+        document.addEventListener(
+            `qc.radio.removeInvalidFor${name}`,
+            () => {
+                hasError = false;
+            }
+        );
+    })
+
+    function removeInvalid() {
+        hasError = false;
+        inputInstance.dispatchEvent(
+            new CustomEvent(
+                `qc.radio.removeInvalidFor${name}`,
+                {bubbles: true, composed: true}
+            )
+        );
+    }
 </script>
 
 <div class={`qc-radio-${size + (Utils.isTruthy(hasError) ? " qc-radio-input-required-" + size : "")}`}>
@@ -36,7 +57,8 @@
         {name}
         {value}
         {...boolAttributes}
-        onclick={() => hasError = false}
+        bind:this={inputInstance}
+        onclick={() => removeInvalid()}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>

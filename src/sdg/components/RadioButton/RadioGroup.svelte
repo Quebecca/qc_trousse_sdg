@@ -6,6 +6,7 @@
     const lang = Utils.getPageLanguage();
 
     let {
+        name,
         legend = "",
         size = "md",
         radioButtons = [],
@@ -21,6 +22,13 @@
         radioButtons.forEach((option) => {
             group.appendChild(option);
         });
+
+        document.addEventListener(
+            `qc.radio.removeInvalidFor${name}`,
+            () => {
+                hasError = false;
+            }
+        );
     });
 </script>
 
