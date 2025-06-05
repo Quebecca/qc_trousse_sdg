@@ -8611,8 +8611,7 @@
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
-		const expression_2 = user_derived(() => parent()?.required ?? required());
-		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
+		const expression_2 = user_derived(() => parent()?.invalid ?? invalid());
 
 		RadioButton($$anchor, {
 			get name() {
@@ -8633,11 +8632,8 @@
 			get disabled() {
 				return disabled();
 			},
-			get required() {
-				return get(expression_2);
-			},
 			get invalid() {
-				return get(expression_3);
+				return get(expression_2);
 			}
 		});
 
@@ -8717,9 +8713,9 @@
 			size: { attribute: 'size', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
-			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
-			parent: {}
+			parent: {},
+			required: {}
 		},
 		[],
 		[],
