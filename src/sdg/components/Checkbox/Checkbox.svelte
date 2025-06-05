@@ -30,7 +30,7 @@
             />{checkboxLabel}
     </label>
 
-    {#if checkboxValue === 'autre' && isChecked}
+    {#if checkboxValue === 'Autre' && isChecked}
         <input
             type="text"
             class="qc-form-text"
