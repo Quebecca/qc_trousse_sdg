@@ -5797,6 +5797,10 @@
 				}
 			});
 		});
+		if (extend) {
+			// @ts-expect-error - assigning here is fine
+			Class = extend(Class);
+		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
 	}
@@ -5860,7 +5864,7 @@
 
 	}
 
-	var root$c = template(`<div></div>`);
+	var root$d = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5885,7 +5889,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$c();
+		var div = root$d();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5964,7 +5968,7 @@
 		true
 	);
 
-	var root$b = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$c = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -6010,7 +6014,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$b();
+		var fragment = root$c();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6172,7 +6176,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$a = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$b = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6218,7 +6222,7 @@
 			}
 		});
 
-		var fragment = root$a();
+		var fragment = root$b();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6971,7 +6975,7 @@
 
 	var root_1$2 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
-	var root$9 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6989,7 +6993,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$9();
+		var fragment = root$a();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -7337,7 +7341,7 @@
 		true
 	));
 
-	var root$8 = template(`<button><!></button>`);
+	var root$9 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7361,7 +7365,7 @@
 				'class'
 			]);
 
-		var button = root$8();
+		var button = root$9();
 		let attributes;
 		var node = child(button);
 
@@ -7461,7 +7465,7 @@
 	);
 
 	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$7 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$8 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7487,7 +7491,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$7();
+		var fragment = root$8();
 		var node = first_child(fragment);
 
 		{
@@ -7654,7 +7658,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$6 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$7 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7697,7 +7701,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$6();
+		var a = root$7();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7769,7 +7773,7 @@
 		false
 	));
 
-	var root$5 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$6 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7850,7 +7854,7 @@
 			});
 		});
 
-		var span_1 = root$5();
+		var span_1 = root$6();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7879,7 +7883,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$4 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$5 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7900,7 +7904,7 @@
 			]);
 
 		let searchInput;
-		var div = root$4();
+		var div = root$5();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7977,7 +7981,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root$3 = template(`<div><!> <!></div>`);
+	var root$4 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -8031,7 +8035,7 @@
 			});
 		}
 
-		var div = root$3();
+		var div = root$4();
 		let classes;
 		var node = child(div);
 
@@ -8171,12 +8175,12 @@
 	));
 
 	var root_1 = template(`<input type="text" class="qc-form-text" placeholder="Veuillez préciser">`);
-	var root$2 = template(`<div><label><input class="qc-form-check-input" type="checkbox"> </label> <!></div>`);
-	const $$css = { hash: 'qc-hash-32ttx', code: '' };
+	var root$3 = template(`<div><label><input class="qc-form-check-input" type="checkbox"> </label> <!></div>`);
+	const $$css$2 = { hash: 'qc-hash-32ttx', code: '' };
 
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
-		append_styles$1($$anchor, $$css);
+		append_styles$1($$anchor, $$css$2);
 
 		const checkboxName = prop($$props, 'checkboxName', 7, ""),
 			checkboxLabel = prop($$props, 'checkboxLabel', 7, ""),
@@ -8188,7 +8192,7 @@
 
 		let isChecked = state(proxy(checkboxChecked()));
 		const inputId = `checkbox-${checkboxName()}-${checkboxValue()}`;
-		var div = root$2();
+		var div = root$3();
 		var label = child(div);
 		var input = child(label);
 
@@ -8302,9 +8306,9 @@
 		true
 	);
 
-	var root$1 = template(`<div class="qc-col-md-6"><fieldset><legend class="qc-form-check-legend"> </legend> <div class="qc-form-checks"></div></fieldset></div>`);
+	var root$2 = template(`<div class="qc-col-md-6"><fieldset><legend class="qc-form-check-legend"> </legend> <div class="qc-form-checks"></div></fieldset></div>`);
 
-	function CheckboxGroup($$anchor, $$props) {
+	function CheckboxGroupOptions($$anchor, $$props) {
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ""),
@@ -8312,7 +8316,7 @@
 			size = prop($$props, 'size', 7, "md"),
 			options = prop($$props, 'options', 23, () => []);
 
-		var div = root$1();
+		var div = root$2();
 		var fieldset = child(div);
 		var legend_1 = child(fieldset);
 		var text = child(legend_1, true);
@@ -8382,9 +8386,9 @@
 		});
 	}
 
-	create_custom_element(CheckboxGroup, { legend: {}, name: {}, size: {}, options: {} }, [], [], true);
+	create_custom_element(CheckboxGroupOptions, { legend: {}, name: {}, size: {}, options: {} }, [], [], true);
 
-	function CheckboxGroupWC($$anchor, $$props) {
+	function CheckboxGroupOptionsWC($$anchor, $$props) {
 		push($$props, true);
 
 		let legend = prop($$props, 'legend', 7, ''),
@@ -8411,7 +8415,7 @@
 				value: option.value || option.label
 			})));
 
-		CheckboxGroup($$anchor, {
+		CheckboxGroupOptions($$anchor, {
 			get legend() {
 				return legend();
 			},
@@ -8458,8 +8462,8 @@
 		});
 	}
 
-	customElements.define('qc-checkbox-group', create_custom_element(
-		CheckboxGroupWC,
+	customElements.define('qc-checkbox-group-options', create_custom_element(
+		CheckboxGroupOptionsWC,
 		{
 			legend: { attribute: 'legend' },
 			name: { attribute: 'name' },
@@ -8578,158 +8582,298 @@
 		false
 	));
 
-	var root = template(`<div class="qc-col-md-6"><fieldset><legend class="qc-form-check-legend"> </legend> <div class="qc-form-checks"><!></div></fieldset></div>`);
+	var root$1 = template(`<fieldset><legend> </legend> <div id="pseudo-slot"></div></fieldset>`);
+	const $$css$1 = { hash: 'qc-hash-32ttx', code: '' };
 
-	function GroupTest($$anchor, $$props) {
+	function CheckboxOuter($$anchor, $$props) {
 		push($$props, true);
+		append_styles$1($$anchor, $$css$1);
 
-		let legend = prop($$props, 'legend', 7, ""),
-			name = prop($$props, 'name', 7, ""),
-			size = prop($$props, 'size', 7, "md");
+		let inners = prop($$props, 'inners', 7),
+			legend = prop($$props, 'legend', 7),
+			name = prop($$props, 'name', 7);
 
-		var div = root();
-		var fieldset = child(div);
+		let pseudo;
+
+		setContext('name', { name: name() });
+
+		onMount(() => {
+			inners().forEach((inner) => pseudo.appendChild(inner));
+		});
+
+		var fieldset = root$1();
 		var legend_1 = child(fieldset);
 		var text = child(legend_1, true);
 
 		reset(legend_1);
 
-		var div_1 = sibling(legend_1, 2);
-		var node = child(div_1);
+		var div = sibling(legend_1, 2);
 
-		slot(node, $$props, 'default', {}, null);
-		reset(div_1);
+		bind_this(div, ($$value) => pseudo = $$value, () => pseudo);
 		reset(fieldset);
-		reset(div);
 		template_effect(() => set_text(text, legend()));
+		append($$anchor, fieldset);
+
+		return pop({
+			get inners() {
+				return inners();
+			},
+			set inners($$value) {
+				inners($$value);
+				flushSync();
+			},
+			get legend() {
+				return legend();
+			},
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(CheckboxOuter, { inners: {}, legend: {}, name: {} }, [], [], true);
+
+	function CheckboxOuterWC($$anchor, $$props) {
+		push($$props, true);
+
+		let inners = prop($$props, 'inners', 7),
+			legend = prop($$props, 'legend', 7),
+			name = prop($$props, 'name', 7); // $inspect(shared)
+
+		CheckboxOuter($$anchor, {
+			get inners() {
+				return inners();
+			},
+			get legend() {
+				return legend();
+			},
+			get name() {
+				return name();
+			}
+		});
+
+		return pop({
+			get inners() {
+				return inners();
+			},
+			set inners($$value) {
+				inners($$value);
+				flushSync();
+			},
+			get legend() {
+				return legend();
+			},
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-checkbox-outer', create_custom_element(
+		CheckboxOuterWC,
+		{
+			shared: { attribute: 'shared' },
+			inners: {},
+			legend: {},
+			name: {}
+		},
+		[],
+		[],
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static inners;
+
+				constructor() {
+					super();
+					this.inners = Array.from(this.querySelectorAll('qc-checkbox-inner'));
+					this.inners.forEach(setUpInner);
+
+					function setUpInner(inner, i) {
+						inner.setAttribute('slot', `slot${i + 1}`);
+					}
+
+					const observer = new MutationObserver((mutationsList) => {
+						for (const mutation of mutationsList) {
+							if (mutation.type === 'childList') {
+								for (const node of mutation.addedNodes) {
+									if (node.tagName === 'QC-CHECKBOX-INNER') {
+										setUpInner(node, this.inners.length);
+										this.inners = [...this.inners, node];
+									}
+								}
+							}
+						}
+					});
+
+					observer.observe(this, { childList: true, subtree: false });
+				}
+			};
+		}
+	));
+
+	var root = template(`<div><input type="checkbox"> <label> </label></div>`);
+	const $$css = { hash: 'qc-hash-32ttx', code: '' };
+
+	function CheckboxInner($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css);
+
+		let value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			name = prop($$props, 'name', 7);
+
+		let id = user_derived(() => name() + "_" + value());
+		var div = root();
+		var input = child(div);
+
+		remove_input_defaults(input);
+
+		var label_1 = sibling(input, 2);
+		var text = child(label_1, true);
+
+		reset(label_1);
+		reset(div);
+
+		template_effect(() => {
+			set_attribute(input, 'name', name());
+			set_attribute(input, 'id', get(id));
+			set_attribute(label_1, 'for', get(id));
+			set_text(text, label());
+		});
+
+		bind_value(input, value);
 		append($$anchor, div);
 
 		return pop({
-			get legend() {
-				return legend();
+			get value() {
+				return value();
 			},
-			set legend($$value = "") {
-				legend($$value);
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
 				flushSync();
 			},
 			get name() {
 				return name();
 			},
-			set name($$value = "") {
+			set name($$value) {
 				name($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = "md") {
-				size($$value);
 				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(GroupTest, { legend: {}, name: {}, size: {} }, ['default'], [], true);
+	create_custom_element(CheckboxInner, { value: {}, label: {}, name: {} }, [], [], true);
 
-	function GroupTestWC($$anchor, $$props) {
+	function CheckboxInnerWC($$anchor, $$props) {
 		push($$props, true);
 
-		let legend = prop($$props, 'legend', 7, ''),
-			name = prop($$props, 'name', 7, ''),
-			size = prop($$props, 'size', 7, 'md');
+		let inner = prop($$props, 'inner', 7),
+			outer = prop($$props, 'outer', 7),
+			value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			name = prop($$props, 'name', 7);
 
-		// Fonction pour propager les propriétés du groupe aux checkbox enfants
-		function handleSlotChange(event) {
-			const slot = event.target;
-			const checkboxes = slot.assignedElements().filter((el) => el.tagName.toLowerCase() === 'qc-checkbox');
+		const expression = user_derived(() => outer()?.name ?? name());
 
-			checkboxes.forEach((checkbox) => {
-				// Propager le name et size aux checkboxes
-				if (!checkbox.hasAttribute('checkbox-name')) {
-					checkbox.setAttribute('checkbox-name', name());
-				}
-
-				if (!checkbox.hasAttribute('size')) {
-					checkbox.setAttribute('size', size());
-				}
-
-				// Utiliser le label comme value si non spécifié
-				if (!checkbox.hasAttribute('value')) {
-					const label = checkbox.getAttribute('label');
-
-					if (label) {
-						checkbox.setAttribute('value', label);
-					}
-				}
-			});
-		}
-
-		user_effect(() => {
-			// Sélectionner le slot une fois le composant monté
-			const slot = document.querySelector('qc-checkbox-group-test > slot');
-
-			if (slot) {
-				slot.addEventListener('slotchange', handleSlotChange);
-				// Déclencher manuellement pour les éléments initiaux
-				handleSlotChange({ target: slot });
-			}
-		});
-
-		GroupTest($$anchor, {
-			get legend() {
-				return legend();
+		CheckboxInner($$anchor, {
+			get value() {
+				return value();
+			},
+			get label() {
+				return label();
 			},
 			get name() {
-				return name();
-			},
-			get size() {
-				return size();
-			},
-			children: ($$anchor, $$slotProps) => {
-				var fragment_1 = comment();
-				var node = first_child(fragment_1);
-
-				slot(node, $$props, 'default', {}, null);
-				append($$anchor, fragment_1);
-			},
-			$$slots: { default: true }
+				return get(expression);
+			}
 		});
 
 		return pop({
-			get legend() {
-				return legend();
+			get inner() {
+				return inner();
 			},
-			set legend($$value = '') {
-				legend($$value);
+			set inner($$value) {
+				inner($$value);
+				flushSync();
+			},
+			get outer() {
+				return outer();
+			},
+			set outer($$value) {
+				outer($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
 				flushSync();
 			},
 			get name() {
 				return name();
 			},
-			set name($$value = '') {
+			set name($$value) {
 				name($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = 'md') {
-				size($$value);
 				flushSync();
 			}
 		});
 	}
 
-	customElements.define('qc-checkbox-group-test', create_custom_element(
-		GroupTestWC,
+	customElements.define('qc-checkbox-inner', create_custom_element(
+		CheckboxInnerWC,
 		{
-			legend: { attribute: 'legend' },
-			name: { attribute: 'name' },
-			size: { attribute: 'size' }
+			value: { attribute: 'value', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
+			name: { attribute: 'name', type: 'String' },
+			inner: {},
+			outer: {}
 		},
-		['default'],
 		[],
-		false
+		[],
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static inner;
+				static outer;
+
+				constructor() {
+					super();
+					this.inner = this;
+					this.outer = this.closest('qc-checkbox-outer');
+				}
+			};
+		}
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
