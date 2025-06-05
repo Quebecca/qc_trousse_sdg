@@ -6,7 +6,7 @@
         legend: {attribute:'legend', type: 'String'},
         size: {attribute:'size', type: 'String'},
         required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'Boolean'},
+        invalid: {attribute: 'invalid', type: 'String'},
         errorText: {attribute: 'error-text', type: 'String'}
     },
 
@@ -24,6 +24,7 @@
 
 <script>
     import RadioGroup from "./RadioGroup.svelte";
+    import {onMount} from "svelte";
 
     let {
         name,
@@ -34,6 +35,13 @@
         invalid,
         errorText
     } = $props();
+
+    if (required === "") {
+        required = "true";
+    }
+    if (invalid === "") {
+        invalid = "true";
+    }
 </script>
 
 <RadioGroup
