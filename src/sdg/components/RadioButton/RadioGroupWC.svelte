@@ -6,7 +6,7 @@
         legend: {attribute:'legend', type: 'String'},
         size: {attribute:'size', type: 'String'},
         required: {attribute: 'required', type: 'String'},
-        hasError: {attribute: 'has-error', type: 'Boolean'},
+        invalid: {attribute: 'invalid', type: 'Boolean'},
         errorText: {attribute: 'error-text', type: 'String'}
     },
 
@@ -31,7 +31,7 @@
         size,
         radioButtons,
         required,
-        hasError,
+        invalid,
         errorText
     } = $props();
 </script>
@@ -42,7 +42,7 @@
     {size}
     {radioButtons}
     {required}
-    {hasError}
+    {invalid}
     {errorText}
 />
 

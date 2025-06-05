@@ -8136,7 +8136,7 @@
 			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, true),
-			hasError = prop($$props, 'hasError', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
@@ -8148,7 +8148,7 @@
 			});
 
 			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
-				hasError(false);
+				invalid(false);
 			});
 		});
 
@@ -8213,7 +8213,7 @@
 			};
 
 			if_block(node_3, ($$render) => {
-				if (Utils.isTruthy(hasError())) $$render(consequent_2);
+				if (Utils.isTruthy(invalid())) $$render(consequent_2);
 			});
 		}
 
@@ -8262,11 +8262,11 @@
 				required($$value);
 				flushSync();
 			},
-			get hasError() {
-				return hasError();
+			get invalid() {
+				return invalid();
 			},
-			set hasError($$value = false) {
-				hasError($$value);
+			set invalid($$value = false) {
+				invalid($$value);
 				flushSync();
 			},
 			get errorText() {
@@ -8296,7 +8296,7 @@
 			size: {},
 			radioButtons: {},
 			required: {},
-			hasError: {},
+			invalid: {},
 			errorText: {},
 			children: {}
 		},
@@ -8313,7 +8313,7 @@
 			size = prop($$props, 'size', 7),
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
-			hasError = prop($$props, 'hasError', 7),
+			invalid = prop($$props, 'invalid', 7),
 			errorText = prop($$props, 'errorText', 7);
 
 		RadioGroup($$anchor, {
@@ -8332,8 +8332,8 @@
 			get required() {
 				return required();
 			},
-			get hasError() {
-				return hasError();
+			get invalid() {
+				return invalid();
 			},
 			get errorText() {
 				return errorText();
@@ -8376,11 +8376,11 @@
 				required($$value);
 				flushSync();
 			},
-			get hasError() {
-				return hasError();
+			get invalid() {
+				return invalid();
 			},
-			set hasError($$value) {
-				hasError($$value);
+			set invalid($$value) {
+				invalid($$value);
 				flushSync();
 			},
 			get errorText() {
@@ -8400,7 +8400,7 @@
 			legend: { attribute: 'legend', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
-			hasError: { attribute: 'has-error', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
 			errorText: { attribute: 'error-text', type: 'String' },
 			radioButtons: {}
 		},
@@ -8431,7 +8431,7 @@
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, true),
-			hasError = prop($$props, 'hasError', 7, false);
+			invalid = prop($$props, 'invalid', 7, false);
 
 		let inputInstance = state(void 0);
 
@@ -8453,12 +8453,12 @@
 
 		onMount(() => {
 			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
-				hasError(false);
+				invalid(false);
 			});
 		});
 
 		function removeInvalid() {
-			hasError(false);
+			invalid(false);
 			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
 		}
 
@@ -8495,7 +8495,7 @@
 				set_text(text, label());
 			},
 			[
-				() => `qc-radio-${size() + (Utils.isTruthy(hasError()) ? " qc-radio-input-required-" + size() : "")}`
+				() => `qc-radio-${size() + (Utils.isTruthy(invalid()) ? " qc-radio-input-required-" + size() : "")}`
 			]
 		);
 
@@ -8551,11 +8551,11 @@
 				required($$value);
 				flushSync();
 			},
-			get hasError() {
-				return hasError();
+			get invalid() {
+				return invalid();
 			},
-			set hasError($$value = false) {
-				hasError($$value);
+			set invalid($$value = false) {
+				invalid($$value);
 				flushSync();
 			}
 		});
@@ -8571,7 +8571,7 @@
 			checked: {},
 			disabled: {},
 			required: {},
-			hasError: {}
+			invalid: {}
 		},
 		[],
 		[],
@@ -8589,12 +8589,12 @@
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
-			hasError = prop($$props, 'hasError', 7);
+			invalid = prop($$props, 'invalid', 7);
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
 		const expression_2 = user_derived(() => parent()?.required ?? required());
-		const expression_3 = user_derived(() => parent()?.hasError ?? hasError());
+		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
 
 		RadioButton($$anchor, {
 			get name() {
@@ -8618,7 +8618,7 @@
 			get required() {
 				return get(expression_2);
 			},
-			get hasError() {
+			get invalid() {
 				return get(expression_3);
 			}
 		});
@@ -8680,11 +8680,11 @@
 				required($$value);
 				flushSync();
 			},
-			get hasError() {
-				return hasError();
+			get invalid() {
+				return invalid();
 			},
-			set hasError($$value) {
-				hasError($$value);
+			set invalid($$value) {
+				invalid($$value);
 				flushSync();
 			}
 		});
@@ -8700,7 +8700,7 @@
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			required: { attribute: 'required', type: 'String' },
-			hasError: { attribute: 'has-error', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
 			parent: {}
 		},
 		[],
