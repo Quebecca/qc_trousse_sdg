@@ -28,6 +28,7 @@
 
 <script>
     import RadioButton from "./RadioButton.svelte";
+    import {onMount} from "svelte";
 
     let {
         parent,
@@ -41,18 +42,20 @@
         invalid
     } = $props();
 
-    if (checked === "") {
-        checked = "true";
-    }
-    if (disabled === "") {
-        disabled = "true";
-    }
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
+    onMount(() => {
+        if (checked === "") {
+            checked = "true";
+        }
+        if (disabled === "") {
+            disabled = "true";
+        }
+        if (required === "") {
+            required = "true";
+        }
+        if (invalid === "") {
+            invalid = "true";
+        }
+    });
 </script>
 
 <RadioButton

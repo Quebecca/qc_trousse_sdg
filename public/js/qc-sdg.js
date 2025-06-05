@@ -8316,13 +8316,15 @@
 			invalid = prop($$props, 'invalid', 7),
 			errorText = prop($$props, 'errorText', 7);
 
-		if (required() === "") {
-			required("true");
-		}
+		onMount(() => {
+			if (required() === "") {
+				required("true");
+			}
 
-		if (invalid() === "") {
-			invalid("true");
-		}
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
 
 		RadioGroup($$anchor, {
 			get name() {
@@ -8446,8 +8448,7 @@
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
 				checked: Utils.isTruthy(checked()),
-				disabled: Utils.isTruthy(disabled()),
-				required: Utils.isTruthy(required())
+				disabled: Utils.isTruthy(disabled()) // required : Utils.isTruthy(required)
 			};
 
 			for (const prop in truthyProps) {
@@ -8599,21 +8600,23 @@
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7);
 
-		if (checked() === "") {
-			checked("true");
-		}
+		onMount(() => {
+			if (checked() === "") {
+				checked("true");
+			}
 
-		if (disabled() === "") {
-			disabled("true");
-		}
+			if (disabled() === "") {
+				disabled("true");
+			}
 
-		if (required() === "") {
-			required("true");
-		}
+			if (required() === "") {
+				required("true");
+			}
 
-		if (invalid() === "") {
-			invalid("true");
-		}
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());

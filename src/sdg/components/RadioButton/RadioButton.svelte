@@ -19,7 +19,7 @@
         let truthyProps = {
             checked : Utils.isTruthy(checked),
             disabled : Utils.isTruthy(disabled),
-            required : Utils.isTruthy(required)
+            // required : Utils.isTruthy(required)
         }
 
         for (const prop in truthyProps) {
