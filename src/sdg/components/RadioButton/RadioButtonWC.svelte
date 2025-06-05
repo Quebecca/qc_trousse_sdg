@@ -6,10 +6,10 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         size: {attribute: 'size', type: 'String'},
-        checked: {attribute: 'checked', type: 'Boolean'},
-        disabled: {attribute:'disabled', type: 'Boolean'},
+        checked: {attribute: 'checked', type: 'String'},
+        disabled: {attribute:'disabled', type: 'String'},
         required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'Boolean'}
+        invalid: {attribute: 'invalid', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -40,6 +40,19 @@
         required,
         invalid
     } = $props();
+
+    if (checked === "") {
+        checked = "true";
+    }
+    if (disabled === "") {
+        disabled = "true";
+    }
+    if (required === "") {
+        required = "true";
+    }
+    if (invalid === "") {
+        invalid = "true";
+    }
 </script>
 
 <RadioButton

@@ -8135,7 +8135,7 @@
 			legend = prop($$props, 'legend', 7, ""),
 			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
-			required = prop($$props, 'required', 7, true),
+			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
@@ -8258,7 +8258,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value = true) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -8315,6 +8315,14 @@
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
 			errorText = prop($$props, 'errorText', 7);
+
+		if (required() === "") {
+			required("true");
+		}
+
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		RadioGroup($$anchor, {
 			get name() {
@@ -8400,7 +8408,7 @@
 			legend: { attribute: 'legend', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'String' },
 			errorText: { attribute: 'error-text', type: 'String' },
 			radioButtons: {}
 		},
@@ -8430,7 +8438,7 @@
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7, true),
+			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false);
 
 		let inputInstance = state(void 0);
@@ -8547,7 +8555,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value = true) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -8590,6 +8598,22 @@
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7);
+
+		if (checked() === "") {
+			checked("true");
+		}
+
+		if (disabled() === "") {
+			disabled("true");
+		}
+
+		if (required() === "") {
+			required("true");
+		}
+
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
@@ -8697,10 +8721,10 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
-			checked: { attribute: 'checked', type: 'Boolean' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
+			checked: { attribute: 'checked', type: 'String' },
+			disabled: { attribute: 'disabled', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'String' },
 			parent: {}
 		},
 		[],

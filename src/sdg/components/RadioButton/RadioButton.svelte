@@ -9,7 +9,7 @@
         size = "sm",
         checked = false,
         disabled = false,
-        required = true,
+        required = false,
         invalid = false
     } = $props();
 

@@ -1410,51 +1410,60 @@
             <hr />
 
             <!-- Boutons radio -->
-            <h2 id="RadioButtonMd">Boutons radio de taille moyenne</h2>
+            <h2 id="RadioButton">Boutons radio</h2>
             <h3>Exemples</h3>
 
             <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne">
-                <form>
-                    <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
-                        <qc-radio-button
-                                label="Option 1"
-                                value="1"
-                        ></qc-radio-button>
-                        <qc-radio-button
-                                label="Option 2"
-                                value="2"
-                        ></qc-radio-button>
-                        <qc-radio-button
-                                label="Option 3 (désactivée)"
-                                value="3"
-                                disabled
-                        ></qc-radio-button>
-                    </qc-radio-group>
-
-                    <button type="submit">Soumettre</button>
-                </form>
+                <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3 (désactivée)"
+                            value="3"
+                            disabled
+                    ></qc-radio-button>
+                </qc-radio-group>
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de boutons radio de petite taille">
-                <form>
-                    <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm" required="false" invalid>
-                        <qc-radio-button
-                                label="Option 1"
-                                value="1"
-                        ></qc-radio-button>
-                        <qc-radio-button
-                                label="Option 2"
-                                value="2"
-                        ></qc-radio-button>
-                        <qc-radio-button
-                                label="Option 3 (désactivée)"
-                                value="3"
-                                disabled
-                        ></qc-radio-button>
-                    </qc-radio-group>
+                <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm">
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3 (désactivée)"
+                            value="3"
+                            disabled
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
 
-                    <button type="submit">Soumettre</button>
-                </form>
+            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne pour un champ obligatoire">
+                <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md" required invalid>
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3"
+                            value="3"
+                    ></qc-radio-button>
+                </qc-radio-group>
             </qc-doc-exemple>
         </div>
     </main>

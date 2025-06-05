@@ -10,7 +10,7 @@
         legend = "",
         size = "md",
         radioButtons = [],
-        required = true,
+        required = false,
         invalid = false,
         errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
