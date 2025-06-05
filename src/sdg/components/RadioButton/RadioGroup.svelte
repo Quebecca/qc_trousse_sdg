@@ -11,7 +11,7 @@
         size = "md",
         radioButtons = [],
         required = true,
-        hasError = false,
+        invalid = false,
         errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
     } = $props();
@@ -26,7 +26,7 @@
         document.addEventListener(
             `qc.radio.removeInvalidFor${name}`,
             () => {
-                hasError = false;
+                invalid = false;
             }
         );
     });
@@ -46,7 +46,7 @@
     <div class={`radio-options-${size}`} bind:this={group}>
         {@render children?.()}
     </div>
-    {#if Utils.isTruthy(hasError)}
+    {#if Utils.isTruthy(invalid)}
         <div class="qc-radio-invalid">
             <Icon
                 type="warning"

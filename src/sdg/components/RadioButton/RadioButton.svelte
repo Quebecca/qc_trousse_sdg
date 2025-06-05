@@ -10,7 +10,7 @@
         checked = false,
         disabled = false,
         required = true,
-        hasError = false
+        invalid = false
     } = $props();
 
     let inputInstance = $state();
@@ -34,13 +34,13 @@
         document.addEventListener(
             `qc.radio.removeInvalidFor${name}`,
             () => {
-                hasError = false;
+                invalid = false;
             }
         );
     })
 
     function removeInvalid() {
-        hasError = false;
+        invalid = false;
         inputInstance.dispatchEvent(
             new CustomEvent(
                 `qc.radio.removeInvalidFor${name}`,
@@ -50,7 +50,7 @@
     }
 </script>
 
-<div class={`qc-radio-${size + (Utils.isTruthy(hasError) ? " qc-radio-input-required-" + size : "")}`}>
+<div class={`qc-radio-${size + (Utils.isTruthy(invalid) ? " qc-radio-input-required-" + size : "")}`}>
     <input
         type="radio"
         id={`${name}_${value}`}

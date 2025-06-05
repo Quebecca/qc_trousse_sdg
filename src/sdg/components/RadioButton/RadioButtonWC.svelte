@@ -9,7 +9,7 @@
         checked: {attribute: 'checked', type: 'Boolean'},
         disabled: {attribute:'disabled', type: 'Boolean'},
         required: {attribute: 'required', type: 'String'},
-        hasError: {attribute: 'has-error', type: 'Boolean'}
+        invalid: {attribute: 'invalid', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -38,7 +38,7 @@
         checked,
         disabled,
         required,
-        hasError
+        invalid
     } = $props();
 </script>
 
@@ -50,5 +50,5 @@
     {checked}
     {disabled}
     required={parent?.required ?? required}
-    hasError={parent?.hasError ?? hasError}
+    invalid={parent?.invalid ?? invalid}
 />
