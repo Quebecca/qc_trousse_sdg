@@ -9,7 +9,6 @@
         size = "sm",
         checked = false,
         disabled = false,
-        required = false,
         invalid = false
     } = $props();
 
@@ -19,7 +18,6 @@
         let truthyProps = {
             checked : Utils.isTruthy(checked),
             disabled : Utils.isTruthy(disabled),
-            // required : Utils.isTruthy(required)
         }
 
         for (const prop in truthyProps) {

@@ -1413,7 +1413,7 @@
             <h2 id="RadioButton">Boutons radio</h2>
             <h3>Exemples</h3>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne">
+            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée">
                 <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
                     <qc-radio-button
                             label="Option 1"
@@ -1431,7 +1431,7 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de petite taille">
+            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée">
                 <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm">
                     <qc-radio-button
                             label="Option 1"
@@ -1449,8 +1449,25 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne pour un champ obligatoire">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-ob" size="md" required>
+            <qc-doc-exemple caption="Exemple de boutons radio pour un champ obligatoire">
+                <qc-radio-group legend="Choisissez une option : " name="ex-md-ob" required>
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3"
+                            value="3"
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de boutons radio pour un champ en état invalide">
+                <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" invalid>
                     <qc-radio-button
                             label="Option 1"
                             value="1"
@@ -1468,7 +1485,7 @@
 
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
-                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form" size="md" required>
+                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form" required>
                         <qc-radio-button
                                 label="Option 1"
                                 value="1"
@@ -1483,7 +1500,7 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form-2" size="md">
+                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form-2">
                         <qc-radio-button
                                 label="Option 1"
                                 value="1"

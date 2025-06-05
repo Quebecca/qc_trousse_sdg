@@ -8310,7 +8310,7 @@
 
 		let name = prop($$props, 'name', 7),
 			legend = prop($$props, 'legend', 7),
-			size = prop($$props, 'size', 7),
+			size = prop($$props, 'size', 7, "md"),
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
@@ -8368,7 +8368,7 @@
 			get size() {
 				return size();
 			},
-			set size($$value) {
+			set size($$value = "md") {
 				size($$value);
 				flushSync();
 			},
@@ -8440,7 +8440,6 @@
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false);
 
 		let inputInstance = state(void 0);
@@ -8448,7 +8447,7 @@
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
 				checked: Utils.isTruthy(checked()),
-				disabled: Utils.isTruthy(disabled()) // required : Utils.isTruthy(required)
+				disabled: Utils.isTruthy(disabled())
 			};
 
 			for (const prop in truthyProps) {
@@ -8553,13 +8552,6 @@
 				disabled($$value);
 				flushSync();
 			},
-			get required() {
-				return required();
-			},
-			set required($$value = false) {
-				required($$value);
-				flushSync();
-			},
 			get invalid() {
 				return invalid();
 			},
@@ -8579,7 +8571,6 @@
 			size: {},
 			checked: {},
 			disabled: {},
-			required: {},
 			invalid: {}
 		},
 		[],
