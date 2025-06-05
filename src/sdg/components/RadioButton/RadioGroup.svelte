@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from "svelte";
+    import {onMount} from "svelte";
     import {Utils} from "../utils";
     import Icon from "../Icon/Icon.svelte";
 
@@ -22,14 +22,6 @@
             group.appendChild(option);
         });
     });
-
-    let context = getContext("hasError");
-
-    $effect(() => {
-        if (context && !Utils.isTruthy(context)) {
-            hasError = false;
-        }
-    })
 </script>
 
 <fieldset class={`qc-radio-fieldset-${size}`}>

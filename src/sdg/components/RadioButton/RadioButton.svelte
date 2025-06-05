@@ -1,6 +1,6 @@
 <script>
     import {Utils} from "../utils";
-    import {setContext} from "svelte";
+    import {getContext} from "svelte";
 
     let {
         name,
@@ -12,9 +12,6 @@
         required = true,
         hasError = false
     } = $props();
-
-    let inputs = $state();
-    setContext("hasError", () => inputs)
 
     let boolAttributes = $derived.by(() => {
         let truthyProps = {
@@ -39,7 +36,7 @@
         {name}
         {value}
         {...boolAttributes}
-        bind:group={inputs}
+        onclick={() => hasError = false}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>
