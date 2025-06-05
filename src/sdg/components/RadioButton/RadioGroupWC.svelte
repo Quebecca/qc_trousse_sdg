@@ -36,12 +36,14 @@
         errorText
     } = $props();
 
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
+    onMount(() => {
+        if (required === "") {
+            required = "true";
+        }
+        if (invalid === "") {
+            invalid = "true";
+        }
+    });
 </script>
 
 <RadioGroup
