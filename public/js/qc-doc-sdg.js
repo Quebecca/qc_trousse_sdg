@@ -73216,11 +73216,10 @@
 	// Event listener pour l'exemple de validation de formulaire de qc-radio-group
 	const form = document.getElementById("radio-form");
 	form.addEventListener("submit", (event) => validateRadioForm(event, form));
-	function validateRadioForm(event, f) {
+
+	function validateRadioForm(event, formToValidate) {
 	    event.preventDefault();
-
-	    let groups = f.querySelectorAll("qc-radio-group");
-
+	    const groups = formToValidate.querySelectorAll("qc-radio-group");
 	    groups.forEach((group) => {
 	        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
 	        if (group.required && !checkedValue) {
