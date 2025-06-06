@@ -23,8 +23,15 @@
 <script>
 
     import CheckboxInner from "./CheckboxInner.svelte";
-    import {onMount} from "svelte";
+
     let {inner, outer, value, label, name} = $props();
+
+    let effectiveValue = $derived(value || label);
+    let effectiveName = $derived(outer?.getAttribute('name') || name || '');
 </script>
 
-<CheckboxInner {value} {label} name={outer?.name ?? name}></CheckboxInner>
+<CheckboxInner
+        value={effectiveValue}
+        {label}
+        name={effectiveName}
+></CheckboxInner>
