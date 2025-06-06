@@ -31,20 +31,23 @@
 
 .radio-options-sm {
   @extend %radio-options;
-  margin-top: rem(16);
-  margin-bottom: rem(16);
+  margin-top: token-value(spacer, sm);
 }
 
 .radio-options-md {
   @extend %radio-options;
-  margin-top: rem(24);
-  margin-bottom: rem(24);
+  margin-top: token-value(spacer, md);
+}
+
+.qc-fieldset-invalid {
+  box-shadow: rem(2) 0 token-value(color, red, regular) inset;
 }
 
 .qc-radio-invalid {
   display: flex;
   color: token-value(color, red, regular);
   margin-left: token-value(spacer, xs);
+  margin-top: token-value(spacer, sm);
   align-items: center;
 
   p {

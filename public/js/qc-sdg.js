@@ -8124,7 +8124,7 @@
 	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
 	var root_3 = template(`<div class="qc-radio-invalid"><!> <p> </p></div>`);
-	var root$1 = template(`<fieldset><!> <div><!></div> <!></fieldset>`);
+	var root$1 = template(`<div><fieldset><!> <div><!></div> <!></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8152,7 +8152,8 @@
 			});
 		});
 
-		var fieldset = root$1();
+		var div = root$1();
+		var fieldset = child(div);
 		var node = child(fieldset);
 
 		{
@@ -8183,33 +8184,33 @@
 			});
 		}
 
-		var div = sibling(node, 2);
-		var node_2 = child(div);
+		var div_1 = sibling(node, 2);
+		var node_2 = child(div_1);
 
 		snippet(node_2, () => children() ?? noop);
-		reset(div);
-		bind_this(div, ($$value) => set(group, $$value), () => get(group));
+		reset(div_1);
+		bind_this(div_1, ($$value) => set(group, $$value), () => get(group));
 
-		var node_3 = sibling(div, 2);
+		var node_3 = sibling(div_1, 2);
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var div_1 = root_3();
-				var node_4 = child(div_1);
+				var div_2 = root_3();
+				var node_4 = child(div_2);
 
 				Icon(node_4, {
 					type: 'warning',
 					color: 'red-regular',
-					size: 'sm'
+					size: 'md'
 				});
 
 				var p = sibling(node_4, 2);
 				var text_1 = child(p, true);
 
 				reset(p);
-				reset(div_1);
+				reset(div_2);
 				template_effect(() => set_text(text_1, errorText()));
-				append($$anchor, div_1);
+				append($$anchor, div_2);
 			};
 
 			if_block(node_3, ($$render) => {
@@ -8218,13 +8219,20 @@
 		}
 
 		reset(fieldset);
+		reset(div);
 
-		template_effect(() => {
-			set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
-			set_class(div, 1, `radio-options-${size()}`);
-		});
+		template_effect(
+			($0) => {
+				set_class(div, 1, $0);
+				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
+				set_class(div_1, 1, `radio-options-${size()}`);
+			},
+			[
+				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : "")
+			]
+		);
 
-		append($$anchor, fieldset);
+		append($$anchor, div);
 
 		return pop({
 			get name() {
@@ -8486,26 +8494,21 @@
 		reset(label_1);
 		reset(div);
 
-		template_effect(
-			($0) => {
-				set_class(div, 1, $0);
+		template_effect(() => {
+			set_class(div, 1, `qc-radio-${size()}`);
 
-				attributes = set_attributes(input, attributes, {
-					type: 'radio',
-					id: `${name()}_${value()}`,
-					name: name(),
-					value: value(),
-					...get(boolAttributes),
-					onclick: event_handler
-				});
+			attributes = set_attributes(input, attributes, {
+				type: 'radio',
+				id: `${name()}_${value()}`,
+				name: name(),
+				value: value(),
+				...get(boolAttributes),
+				onclick: event_handler
+			});
 
-				set_attribute(label_1, 'for', `${name()}_${value()}`);
-				set_text(text, label());
-			},
-			[
-				() => `qc-radio-${size() + (Utils.isTruthy(invalid()) ? " qc-radio-input-required-" + size() : "")}`
-			]
-		);
+			set_attribute(label_1, 'for', `${name()}_${value()}`);
+			set_text(text, label());
+		});
 
 		append($$anchor, div);
 

@@ -1891,8 +1891,8 @@ input[type=radio]::before {
 }
 
 .qc-radio-sm input {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: var(--qc-spacer-sm);
+  height: var(--qc-spacer-sm);
   border-width: 0.1rem;
 }
 .qc-radio-sm input[type=radio]:checked::before {
@@ -1907,8 +1907,8 @@ input[type=radio]::before {
 }
 
 .qc-radio-md input {
-  width: 2.4rem;
-  height: 2.4rem;
+  width: var(--qc-spacer-md);
+  height: var(--qc-spacer-md);
   border-width: 0.2rem;
 }
 .qc-radio-md input[type=radio]:checked::before {
@@ -1920,25 +1920,6 @@ input[type=radio]::before {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-regular);
-}
-
-.qc-radio-md.qc-radio-input-required-md::before, .qc-radio-sm.qc-radio-input-required-sm::before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  outline: 0.1rem solid var(--qc-color-red-regular);
-  outline-offset: 0.2rem;
-  margin-left: var(--qc-spacer-xs);
-}
-
-.qc-radio-sm.qc-radio-input-required-sm::before {
-  width: 1.6rem;
-  height: 1.6rem;
-}
-
-.qc-radio-md.qc-radio-input-required-md::before {
-  width: 2.4rem;
-  height: 2.4rem;
 }
 
 .qc-radio-required {
@@ -1975,19 +1956,22 @@ input[type=radio]::before {
 }
 
 .radio-options-sm {
-  margin-top: 1.6rem;
-  margin-bottom: 1.6rem;
+  margin-top: var(--qc-spacer-sm);
 }
 
 .radio-options-md {
-  margin-top: 2.4rem;
-  margin-bottom: 2.4rem;
+  margin-top: var(--qc-spacer-md);
+}
+
+.qc-fieldset-invalid {
+  box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
 }
 
 .qc-radio-invalid {
   display: flex;
   color: var(--qc-color-red-regular);
   margin-left: var(--qc-spacer-xs);
+  margin-top: var(--qc-spacer-sm);
   align-items: center;
 }
 .qc-radio-invalid p {
