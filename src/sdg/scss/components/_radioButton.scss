@@ -72,8 +72,8 @@ input[type=radio]::before {
   @extend %radio-style;
 
   input {
-    width: rem(16);
-    height: rem(16);
+    width: token-value(spacer, sm);
+    height: token-value(spacer, sm);
     border-width: rem(1);
   }
 
@@ -93,8 +93,8 @@ input[type=radio]::before {
   @extend %radio-style;
 
   input {
-    width: rem(24);
-    height: rem(24);
+    width: token-value(spacer, md);
+    height: token-value(spacer, md);
     border-width: rem(2);
   }
 
@@ -107,31 +107,6 @@ input[type=radio]::before {
 
   label {
     @include content-font(md);
-  }
-}
-
-%qc-radio-input-required::before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  outline: rem(1) solid token-value(color, red, regular);
-  outline-offset: rem(2);
-  margin-left: token-value(spacer, xs);
-}
-
-.qc-radio-sm.qc-radio-input-required-sm {
-  @extend %qc-radio-input-required;
-  &::before {
-    width: rem(16);
-    height: rem(16);
-  }
-}
-
-.qc-radio-md.qc-radio-input-required-md {
-  @extend %qc-radio-input-required;
-  &::before {
-    width: rem(24);
-    height: rem(24);
   }
 }
 

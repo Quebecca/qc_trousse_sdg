@@ -1485,7 +1485,7 @@
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de boutons radio dans un champ en état invalide">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" invalid>
+                <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" required invalid>
                     <qc-radio-button
                             label="Option 1"
                             value="1"
@@ -1683,9 +1683,9 @@
             <p>
                 Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
                 est émis au clic du bouton radio d'un groupe.
-                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> parent pour ajuster
-                l'attribut <code class="qc-bg-color-grey-pale">invalid</code> à <code class="qc-bg-color-grey-pale">false</code>
-                pour celui-ci et tous les boutons radio faisant partie du champ.
+                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> et les autres boutons
+                radio du champ pour ajuster l'attribut <code class="qc-bg-color-grey-pale">invalid</code>
+                à <code class="qc-bg-color-grey-pale">false</code> pour celui-ci et tous les boutons radio faisant partie du champ.
             </p>
 
             <script id="qc-hide-invalid-example">

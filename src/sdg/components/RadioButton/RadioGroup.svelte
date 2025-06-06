@@ -32,28 +32,30 @@
     });
 </script>
 
-<fieldset class={`qc-radio-fieldset-${size}`}>
-    {#if legend}
-        <legend>
-            {legend}
-            {#if Utils.isTruthy(required)}
-                <span class="qc-radio-required">&nbsp*</span>
-            {/if}
-        </legend>
-    {/if}
+<div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
+    <fieldset class={`qc-radio-fieldset-${size}`}>
+        {#if legend}
+            <legend>
+                {legend}
+                {#if Utils.isTruthy(required)}
+                    <span class="qc-radio-required">&nbsp*</span>
+                {/if}
+            </legend>
+        {/if}
 
 
-    <div class={`radio-options-${size}`} bind:this={group}>
-        {@render children?.()}
-    </div>
-    {#if Utils.isTruthy(invalid)}
-        <div class="qc-radio-invalid">
-            <Icon
-                type="warning"
-                color="red-regular"
-                size="sm"
-            />
-            <p>{errorText}</p>
+        <div class={`radio-options-${size}`} bind:this={group}>
+            {@render children?.()}
         </div>
-    {/if}
-</fieldset>
+        {#if Utils.isTruthy(invalid)}
+            <div class="qc-radio-invalid">
+                <Icon
+                    type="warning"
+                    color="red-regular"
+                    size="md"
+                />
+                <p>{errorText}</p>
+            </div>
+        {/if}
+    </fieldset>
+</div>

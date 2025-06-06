@@ -48,7 +48,7 @@
     }
 </script>
 
-<div class={`qc-radio-${size + (Utils.isTruthy(invalid) ? " qc-radio-input-required-" + size : "")}`}>
+<div class={`qc-radio-${size}`}>
     <input
         type="radio"
         id={`${name}_${value}`}
