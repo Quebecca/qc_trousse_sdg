@@ -59,6 +59,7 @@
                     </ul>
                 </li>
                 <li><a href="#toTop">Haut de page</a></li>
+                <li><a href="#checkbox">Cases à cocher</a></li>
 
             </ul>
         </nav>
@@ -1697,6 +1698,100 @@
             </script>
 
             <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>
+
+            <h2 id="checkbox">Cases à cocher</h2>
+
+            <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
+
+            <h3>Exemples</h3>
+
+            <h4>Case à cocher seule</h4>
+            <qc-doc-exemple caption="Exemple d'une case à cocher simple">
+                <qc-checkbox
+                label="J'accepte les conditions d'utilisation">
+                </qc-checkbox>
+            </qc-doc-exemple>
+
+            <h4>Groupe de cases à cocher</h4>
+            <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher">
+                <qc-checkbox-group
+                legend="Sélectionnez une option"
+                name="options">
+                    <qc-checkbox label="Option 1"></qc-checkbox>
+                    <qc-checkbox label="Option 2"></qc-checkbox>
+                    <qc-checkbox label="Option 3"></qc-checkbox>
+                </qc-checkbox-group>
+            </qc-doc-exemple>
+
+            <h3>Documentation technique</h3>
+
+            <h4>Attributs de qc-checkbox</h4>
+            <div class="table-overflow">
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Nom du champ de formulaire</td>
+                    </tr>
+                    <tr>
+                        <td>label</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Étiquette de la case à cocher</td>
+                    </tr>
+                    <tr>
+                        <td>value</td>
+                        <td>Texte</td>
+                        <td>label</td>
+                        <td>Valeur envoyée lors de la soumission du formulaire</td>
+                    </tr>
+                    <tr>
+                        <td>disabled</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Désactive la case à cocher</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>Attributs de qc-checkbox-group</h4>
+            <div class="table-overflow">
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Nom du groupe de cases à cocher</td>
+                    </tr>
+                    <tr>
+                        <td>legend</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Légende du groupe de cases à cocher</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </main>
