@@ -6,7 +6,7 @@
 <div>
     <input
         type="checkbox"
-        bind:value
+        value={value}
         {name}
         {id}
     />
