@@ -4,7 +4,9 @@
     props: {
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
-        name: { attribute: 'name', type: 'String' }
+        name: { attribute: 'name', type: 'String' },
+        disabled: { attribute: 'disabled', type: 'Boolean' },
+        checked: { attribute: 'checked', type: 'Boolean' },
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -24,7 +26,7 @@
 
     import Checkbox from "./Checkbox.svelte";
 
-    let {inner, outer, value, label, name} = $props();
+    let {inner, outer, value, label, name, disabled, checked} = $props();
 
     let effectiveValue = $derived(value || label);
     let effectiveName = $derived(outer?.getAttribute('name') || name || '');
@@ -34,4 +36,6 @@
         value={effectiveValue}
         {label}
         name={effectiveName}
+        {disabled}
+        {checked}
 ></Checkbox>
