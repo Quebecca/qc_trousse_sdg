@@ -4,19 +4,21 @@
 %radio-style {
   display: flex;
   align-items: center;
+  height: token-value(spacer, md);
   margin: 0;
 
   // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
   input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
+    cursor: pointer;
 
     display: flex;
     position: relative;
 
-    margin-left: token-value(spacer, xs);
     margin-right: token-value(spacer, xs);
     margin-top: 0;
+    margin-left: 0;
 
     background-color: token-value(color, white);
     border-style: solid;
@@ -45,21 +47,23 @@
     }
 
     &:disabled {
+      cursor: not-allowed;
       border-color: token-value(color, grey, light);
     }
 
     &:disabled+label {
-        color: token-value(color, grey, regular);
-        cursor: not-allowed;
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
     }
   }
 
   label {
-    cursor: pointer;
     display: flex;
     align-items: end;
+    cursor: pointer;
     margin-right: token-value(spacer, xs);
     margin-bottom: 0;
+    @include content-font(md);
   }
 }
 
@@ -83,10 +87,6 @@ input[type=radio]::before {
     border-radius: 100%;
     background: token-value(color, blue, regular);
   }
-
-  label {
-    @include content-font(sm);
-  }
 }
 
 .qc-radio-md {
@@ -103,10 +103,6 @@ input[type=radio]::before {
     border: rem(7) solid transparent;
     border-radius: 100%;
     background: token-value(color, blue, regular);
-  }
-
-  label {
-    @include content-font(md);
   }
 }
 
