@@ -1,45 +1,17 @@
 <script>
-
-    const {
-        checkboxName = "",
-        checkboxLabel = "",
-        checkboxValue = "",
-        checkboxSize = "md",
-        checkboxChecked = false,
-        checkboxDisabled = false,
-        checkboxRequired = false,
-    } = $props();
-
-    let isChecked = $state(checkboxChecked);
-
-    const inputId = `checkbox-${checkboxName}-${checkboxValue}`;
-
+    let { value, label, name } = $props();
+    let id = $derived(name + "_" + value);
 </script>
 
-<div class={checkboxSize === "sm" ? "qc-form-check-sm" : "qc-form-check"}>
-    <label>
-        <input
-            class="qc-form-check-input"
-            id={inputId}
-            type="checkbox"
-            name={checkboxName}
-            value={checkboxValue}
-            bind:checked={isChecked}
-            disabled={checkboxDisabled}
-            required={checkboxRequired}
-            />{checkboxLabel}
-    </label>
-
-    {#if checkboxValue === 'Autre' && isChecked}
-        <input
-            type="text"
-            class="qc-form-text"
-            placeholder="Veuillez préciser"
-            name={`${checkboxName}-autre-texte`}
-            />
-    {/if}
+<div>
+    <input
+        type="checkbox"
+        value={value}
+        {name}
+        {id}
+    />
+    <label for={id}>{label}</label>
 </div>
-
 
 <style>
 

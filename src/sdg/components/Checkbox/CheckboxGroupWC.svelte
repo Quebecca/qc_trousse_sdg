@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-    tag: 'qc-checkbox-outer',
+    tag: 'qc-checkbox-group',
     shadow: 'none',
     props: {
         shared: {attribute:'shared'}
@@ -9,7 +9,7 @@
             static inners;
             constructor() {
                 super();
-                this.inners = Array.from(this.querySelectorAll('qc-checkbox-inner'));
+                this.inners = Array.from(this.querySelectorAll('qc-checkbox'));
 
                 this.inners.forEach(setUpInner);
 
@@ -38,8 +38,7 @@
 
 
 <script>
-    import CheckboxOuter from "./CheckboxOuter.svelte";
+    import CheckboxGroup from "./CheckboxGroup.svelte";
     let {inners, legend, name } = $props();
-    // $inspect(shared)
 </script>
-<CheckboxOuter {inners} {legend} {name}></CheckboxOuter>
+<CheckboxGroup {inners} {legend} {name}></CheckboxGroup>
