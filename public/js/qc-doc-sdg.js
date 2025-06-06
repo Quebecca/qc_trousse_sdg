@@ -37660,7 +37660,7 @@
 		  "CheckAbort",
 		  "CheckAll",
 		  "CheckArguments",
-		  "CheckboxAncien",
+		  "Checkbox",
 		  "CheckboxBar",
 		  "CheckboxBox",
 		  "CheckboxBoxOptions",
