@@ -33,36 +33,22 @@
 }}" />
 
 <script>
-    import { Utils } from "../utils";
     import PivHeader from "./PivHeader.svelte";
-    import DefaultLinks  from "./_defaultLinks.svelte";
-
-    const lang = Utils.getPageLanguage();
 
     let {
         self,
-        joinUsText,
-        joinUsUrl,
-        altLanguageText,
-        altLanguageUrl,
-        linksLabel,
         ...props
     } = $props()
 
 </script>
 
-<PivHeader {self} {...props}>
-    {#snippet links()}
-        <slot name="links">
-            <DefaultLinks {joinUsUrl}
-                          {joinUsText}
-                          {altLanguageUrl}
-                          {altLanguageText}
-                          {linksLabel}/>
-        </slot>
+<PivHeader customElementParent={self}
+           {...props}
+           slots={$$slots} >
+    {#snippet linksSlot()}
+        <slot name="links" />
     {/snippet}
-
-    {#snippet search()}
+    {#snippet searchZoneSlot()}
         <slot name="search-zone" />
     {/snippet}
 </PivHeader>

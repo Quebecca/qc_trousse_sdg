@@ -24,29 +24,19 @@
 }}" />
 
 <script>
-    import { Utils } from "../utils";
     import PivFooter from "./PivFooter.svelte";
-    import DefaultCopyright from "./_defaultCopyright.svelte";
-
-    const lang = Utils.getPageLanguage();
 
     let {
-        copyrightText,
-        copyrightUrl,
        self,
-       slots,
-       defaultSlot,
        ...props
     } = $props();
-    $inspect(self,slots,defaultSlot);
+
 </script>
-<PivFooter {...props} >
+<PivFooter {...props} slots={$$slots}>
     {#snippet mainSlot()}
         <slot />
     {/snippet}
     {#snippet copyrightSlot()}
-        <slot name="copyright">
-            <DefaultCopyright {copyrightText} {copyrightUrl} />
-        </slot>
+        <slot name="copyright" />
     {/snippet}
 </PivFooter>

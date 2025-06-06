@@ -1,23 +1,22 @@
 <script>
     import { onMount, tick } from "svelte";
     import { Utils } from "../utils"
-    import DefaultLinks from "./_defaultLinks.svelte"
 
     const lang = Utils.getPageLanguage();
 
     let {
-        self,
+        customElementParent,
         logoUrl = '/',
         fullWidth = 'false',
         logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg',
         logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec',
         titleUrl = '/',
         titleText = '',
-        linksLabel,
-        altLanguageText,
-        altLanguageUrl,
-        joinUsText,
-        joinUsUrl,
+        joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us',
+        joinUsUrl = '',
+        altLanguageText = lang === 'fr' ? 'English' : 'Français',
+        altLanguageUrl = '',
+        linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation',
         goToContent = 'true',
         goToContentAnchor = '#main',
         goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content',
@@ -25,36 +24,24 @@
         hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
         enableSearch = 'false',
         showSearch = 'false',
-        links,
-        search
+        linksSlot,
+        searchZoneSlot,
+        slots = false
     } = $props()
-    console.log('PivHeader self', self);
+
     let containerClass = $state('qc-container')
         , searchZone = $state(null)
-        , displaySearchForm = $state(false);
-
-    // $effect(_ => {
-    //     if (displaySearchForm) {
-    //         let input = self
-    //             ? self.querySelector('[slot="search-zone"] input')
-    //             : searchZone.querySelector('input')
-    //         ;
-    //         input?.focus();
-    //     }
-    // })
-    $inspect(self)
+        , displaySearchForm = $state(false)
+    ;
 
     function focusOnSearchInput() {
 
         if (displaySearchForm) {
-
-            let input = self
-                ? self.querySelector('[slot="search-zone"] input')
+            let input = customElementParent
+                ? customElementParent.querySelector('[slot="search-zone"] input')
                 : searchZone.querySelector('input')
             ;
-            console.log('focusOnSearchInput', self, searchZone, input );
             input?.focus();
-
         }
     }
 
@@ -65,6 +52,8 @@
         displaySearchForm = true;
       }
     });
+
+    $inspect("piv header slots", slots)
 </script>
 
 <div role="banner"
@@ -118,15 +107,22 @@
           </a>
         {/if}
         <div class="links">
-            {#if links}
-                {@render links()}
+            {#if (!slots || slots['links']) && linksSlot }
+                {@render linksSlot()}
 <!--            Le bloc else est present uniquement pour le cas ou PivHeader est utilise sans le wrapper PivHeaderWC.svelte -->
             {:else}
-                <DefaultLinks {joinUsUrl}
-                              {joinUsText}
-                              {altLanguageUrl}
-                              {altLanguageText}
-                              {linksLabel}/>
+                {#if joinUsUrl || altLanguageUrl}
+                    <nav aria-label="{linksLabel}">
+                        <ul>
+                            {#if altLanguageUrl}
+                                <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
+                            {/if}
+                            {#if joinUsUrl}
+                                <li><a href="{joinUsUrl}">{joinUsText}</a></li>
+                            {/if}
+                        </ul>
+                    </nav>
+                {/if}
             {/if}
         </div>
       </div>
@@ -135,7 +131,9 @@
     <div class="piv-bottom">
       {#if displaySearchForm}
           <div class="search-zone" bind:this={searchZone}>
-              {@render search?.()}
+              {#if searchZoneSlot}
+                {@render searchZoneSlot()}
+              {/if}
           </div>
       {/if}
   </div>

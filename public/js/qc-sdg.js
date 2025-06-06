@@ -263,16 +263,6 @@
 
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * Hydration failed because the initial UI does not match what was rendered on the server. The error occurred near %location%
 	 * @param {string | undefined | null} [location]
 	 */
@@ -4502,13 +4492,23 @@
 			is_interop = true;
 		}
 
-		if (slot_fn === undefined) {
-			if (fallback_fn !== null) {
-				fallback_fn(anchor);
-			}
-		} else {
+		if (slot_fn === undefined) ; else {
 			slot_fn(anchor, is_interop ? () => slot_props : slot_props);
 		}
+	}
+
+	/**
+	 * @param {Record<string, any>} props
+	 * @returns {Record<string, boolean>}
+	 */
+	function sanitize_slots(props) {
+		/** @type {Record<string, boolean>} */
+		const sanitized = {};
+		if (props.children) sanitized.default = true;
+		for (const key in props.$$slots) {
+			sanitized[key] = true;
+		}
+		return sanitized;
 	}
 
 	/** @import { TemplateNode } from '#client' */
@@ -6323,37 +6323,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -6415,7 +6384,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$a = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$9 = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6443,7 +6412,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$a();
+		var div = root$9();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6525,7 +6494,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$9 = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$8 = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -6582,7 +6551,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$9();
+		var fragment = root$8();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6748,156 +6717,10 @@
 		true
 	));
 
-	_defaultLinks[FILENAME] = 'src/sdg/components/PivHeader/_defaultLinks.svelte';
-
-	var root_2$2 = add_locations(template(`<li><a> </a></li>`), _defaultLinks[FILENAME], [[17, 16, [[17, 20]]]]);
-	var root_3$1 = add_locations(template(`<li><a> </a></li>`), _defaultLinks[FILENAME], [[20, 16, [[20, 20]]]]);
-	var root_1$2 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), _defaultLinks[FILENAME], [[14, 4, [[15, 8]]]]);
-
-	function _defaultLinks($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const lang = Utils.getPageLanguage();
-
-		const joinUsText = prop($$props, 'joinUsText', 23, () => strict_equals(lang, 'fr') ? 'Nous joindre' : 'Contact us'),
-			joinUsUrl = prop($$props, 'joinUsUrl', 7, ''),
-			altLanguageText = prop($$props, 'altLanguageText', 23, () => strict_equals(lang, 'fr') ? 'English' : 'Français'),
-			altLanguageUrl = prop($$props, 'altLanguageUrl', 7, ''),
-			linksLabel = prop($$props, 'linksLabel', 23, () => strict_equals(lang, 'fr') ? 'Navigation PIV' : 'PIV navigation');
-
-		var fragment = comment();
-		var node = first_child(fragment);
-
-		{
-			var consequent_2 = ($$anchor) => {
-				var nav = root_1$2();
-				var ul = child(nav);
-				var node_1 = child(ul);
-
-				{
-					var consequent = ($$anchor) => {
-						var li = root_2$2();
-						var a = child(li);
-						var text = child(a, true);
-
-						reset(a);
-						reset(li);
-
-						template_effect(() => {
-							set_attribute(a, 'href', altLanguageUrl());
-							set_text(text, altLanguageText());
-						});
-
-						append($$anchor, li);
-					};
-
-					if_block(node_1, ($$render) => {
-						if (altLanguageUrl()) $$render(consequent);
-					});
-				}
-
-				var node_2 = sibling(node_1, 2);
-
-				{
-					var consequent_1 = ($$anchor) => {
-						var li_1 = root_3$1();
-						var a_1 = child(li_1);
-						var text_1 = child(a_1, true);
-
-						reset(a_1);
-						reset(li_1);
-
-						template_effect(() => {
-							set_attribute(a_1, 'href', joinUsUrl());
-							set_text(text_1, joinUsText());
-						});
-
-						append($$anchor, li_1);
-					};
-
-					if_block(node_2, ($$render) => {
-						if (joinUsUrl()) $$render(consequent_1);
-					});
-				}
-
-				reset(ul);
-				reset(nav);
-				template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
-				append($$anchor, nav);
-			};
-
-			if_block(node, ($$render) => {
-				if (joinUsUrl() || altLanguageUrl()) $$render(consequent_2);
-			});
-		}
-
-		append($$anchor, fragment);
-
-		return pop({
-			get joinUsText() {
-				return joinUsText();
-			},
-			set joinUsText(
-				$$value = lang === 'fr' ? 'Nous joindre' : 'Contact us'
-			) {
-				joinUsText($$value);
-				flushSync();
-			},
-			get joinUsUrl() {
-				return joinUsUrl();
-			},
-			set joinUsUrl($$value = '') {
-				joinUsUrl($$value);
-				flushSync();
-			},
-			get altLanguageText() {
-				return altLanguageText();
-			},
-			set altLanguageText(
-				$$value = lang === 'fr' ? 'English' : 'Français'
-			) {
-				altLanguageText($$value);
-				flushSync();
-			},
-			get altLanguageUrl() {
-				return altLanguageUrl();
-			},
-			set altLanguageUrl($$value = '') {
-				altLanguageUrl($$value);
-				flushSync();
-			},
-			get linksLabel() {
-				return linksLabel();
-			},
-			set linksLabel(
-				$$value = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation'
-			) {
-				linksLabel($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	create_custom_element(
-		_defaultLinks,
-		{
-			joinUsText: {},
-			joinUsUrl: {},
-			altLanguageText: {},
-			altLanguageUrl: {},
-			linksLabel: {}
-		},
-		[],
-		[],
-		true
-	);
-
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$1 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[76, 6, [[77, 8]]]]);
-	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[94, 16, [[95, 20]]]]);
+	var root_1$1 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
+	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6908,36 +6731,39 @@
 		});
 	};
 
-	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[106, 10, [[117, 12]]]]);
-	var root_6 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[137, 10]]);
+	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[95, 10, [[106, 12]]]]);
+	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
+	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 32, [[121, 36]]]]);
+	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
+	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
 
-	var root$8 = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$7 = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
-			70,
+			59,
 			0,
 			[
 				[
-					74,
+					63,
 					2,
 					[
 						[
-							83,
+							72,
 							4,
 							[
 								[
-									84,
+									73,
 									8,
-									[[85, 12, [[90, 16]]]]
+									[[74, 12, [[79, 16]]]]
 								],
-								[104, 6, [[120, 8]]]
+								[93, 6, [[109, 8]]]
 							]
 						],
-						[135, 4]
+						[131, 4]
 					]
 				]
 			]
 		],
-		[144, 0]
+		[142, 0]
 	]);
 
 	function PivHeader($$anchor, $$props) {
@@ -6946,18 +6772,18 @@
 
 		const lang = Utils.getPageLanguage();
 
-		let self = prop($$props, 'self', 7),
+		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
 			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'),
 			titleUrl = prop($$props, 'titleUrl', 7, '/'),
 			titleText = prop($$props, 'titleText', 7, ''),
-			linksLabel = prop($$props, 'linksLabel', 7),
-			altLanguageText = prop($$props, 'altLanguageText', 7),
-			altLanguageUrl = prop($$props, 'altLanguageUrl', 7),
-			joinUsText = prop($$props, 'joinUsText', 7),
-			joinUsUrl = prop($$props, 'joinUsUrl', 7),
+			joinUsText = prop($$props, 'joinUsText', 23, () => strict_equals(lang, 'fr') ? 'Nous joindre' : 'Contact us'),
+			joinUsUrl = prop($$props, 'joinUsUrl', 7, ''),
+			altLanguageText = prop($$props, 'altLanguageText', 23, () => strict_equals(lang, 'fr') ? 'English' : 'Français'),
+			altLanguageUrl = prop($$props, 'altLanguageUrl', 7, ''),
+			linksLabel = prop($$props, 'linksLabel', 23, () => strict_equals(lang, 'fr') ? 'Navigation PIV' : 'PIV navigation'),
 			goToContent = prop($$props, 'goToContent', 7, 'true'),
 			goToContentAnchor = prop($$props, 'goToContentAnchor', 7, '#main'),
 			goToContentText = prop($$props, 'goToContentText', 23, () => strict_equals(lang, 'fr') ? 'Passer au contenu' : 'Skip to content'),
@@ -6965,31 +6791,18 @@
 			hideSearchText = prop($$props, 'hideSearchText', 23, () => strict_equals(lang, 'fr') ? 'Masquer la barre de recherche' : 'Hide search bar'),
 			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
 			showSearch = prop($$props, 'showSearch', 7, 'false'),
-			links = prop($$props, 'links', 7),
-			search = prop($$props, 'search', 7);
-
-		console.log(...log_if_contains_state('log', 'PivHeader self', self()));
+			linksSlot = prop($$props, 'linksSlot', 7),
+			searchZoneSlot = prop($$props, 'searchZoneSlot', 7),
+			slots = prop($$props, 'slots', 7, false);
 
 		let containerClass = state('qc-container'),
 			searchZone = state(null),
 			displaySearchForm = state(false);
 
-		// $effect(_ => {
-		//     if (displaySearchForm) {
-		//         let input = self
-		//             ? self.querySelector('[slot="search-zone"] input')
-		//             : searchZone.querySelector('input')
-		//         ;
-		//         input?.focus();
-		//     }
-		// })
-		inspect(() => [self()]);
-
 		function focusOnSearchInput() {
 			if (get(displaySearchForm)) {
-				let input = self() ? self().querySelector('[slot="search-zone"] input') : get(searchZone).querySelector('input');
+				let input = customElementParent() ? customElementParent().querySelector('[slot="search-zone"] input') : get(searchZone).querySelector('input');
 
-				console.log(...log_if_contains_state('log', 'focusOnSearchInput', self(), get(searchZone), input));
 				input?.focus();
 			}
 		}
@@ -7003,7 +6816,9 @@
 			}
 		});
 
-		var fragment = root$8();
+		inspect(() => ["piv header slots", slots()]);
+
+		var fragment = root$7();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -7094,32 +6909,82 @@
 				var fragment_1 = comment();
 				var node_4 = first_child(fragment_1);
 
-				snippet(node_4, links);
+				snippet(node_4, linksSlot);
 				append($$anchor, fragment_1);
 			};
 
 			var alternate = ($$anchor) => {
-				_defaultLinks($$anchor, {
-					get joinUsUrl() {
-						return joinUsUrl();
-					},
-					get joinUsText() {
-						return joinUsText();
-					},
-					get altLanguageUrl() {
-						return altLanguageUrl();
-					},
-					get altLanguageText() {
-						return altLanguageText();
-					},
-					get linksLabel() {
-						return linksLabel();
-					}
-				});
+				var fragment_2 = comment();
+				var node_5 = first_child(fragment_2);
+
+				{
+					var consequent_6 = ($$anchor) => {
+						var nav = root_6();
+						var ul = child(nav);
+						var node_6 = child(ul);
+
+						{
+							var consequent_4 = ($$anchor) => {
+								var li = root_7();
+								var a_4 = child(li);
+								var text_3 = child(a_4, true);
+
+								reset(a_4);
+								reset(li);
+
+								template_effect(() => {
+									set_attribute(a_4, 'href', altLanguageUrl());
+									set_text(text_3, altLanguageText());
+								});
+
+								append($$anchor, li);
+							};
+
+							if_block(node_6, ($$render) => {
+								if (altLanguageUrl()) $$render(consequent_4);
+							});
+						}
+
+						var node_7 = sibling(node_6, 2);
+
+						{
+							var consequent_5 = ($$anchor) => {
+								var li_1 = root_8();
+								var a_5 = child(li_1);
+								var text_4 = child(a_5, true);
+
+								reset(a_5);
+								reset(li_1);
+
+								template_effect(() => {
+									set_attribute(a_5, 'href', joinUsUrl());
+									set_text(text_4, joinUsText());
+								});
+
+								append($$anchor, li_1);
+							};
+
+							if_block(node_7, ($$render) => {
+								if (joinUsUrl()) $$render(consequent_5);
+							});
+						}
+
+						reset(ul);
+						reset(nav);
+						template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
+						append($$anchor, nav);
+					};
+
+					if_block(node_5, ($$render) => {
+						if (joinUsUrl() || altLanguageUrl()) $$render(consequent_6);
+					});
+				}
+
+				append($$anchor, fragment_2);
 			};
 
 			if_block(node_3, ($$render) => {
-				if (links()) $$render(consequent_3); else $$render(alternate, false);
+				if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_3); else $$render(alternate, false);
 			});
 		}
 
@@ -7128,21 +6993,34 @@
 		reset(div_3);
 
 		var div_8 = sibling(div_3, 2);
-		var node_5 = child(div_8);
+		var node_8 = child(div_8);
 
 		{
-			var consequent_4 = ($$anchor) => {
-				var div_9 = root_6();
-				var node_6 = child(div_9);
+			var consequent_8 = ($$anchor) => {
+				var div_9 = root_9();
+				var node_9 = child(div_9);
 
-				snippet(node_6, () => search() ?? noop);
+				{
+					var consequent_7 = ($$anchor) => {
+						var fragment_3 = comment();
+						var node_10 = first_child(fragment_3);
+
+						snippet(node_10, searchZoneSlot);
+						append($$anchor, fragment_3);
+					};
+
+					if_block(node_9, ($$render) => {
+						if (searchZoneSlot()) $$render(consequent_7);
+					});
+				}
+
 				reset(div_9);
 				bind_this(div_9, ($$value) => set(searchZone, $$value), () => get(searchZone));
 				append($$anchor, div_9);
 			};
 
-			if_block(node_5, ($$render) => {
-				if (get(displaySearchForm)) $$render(consequent_4);
+			if_block(node_8, ($$render) => {
+				if (get(displaySearchForm)) $$render(consequent_8);
 			});
 		}
 
@@ -7163,11 +7041,11 @@
 		append($$anchor, fragment);
 
 		return pop({
-			get self() {
-				return self();
+			get customElementParent() {
+				return customElementParent();
 			},
-			set self($$value) {
-				self($$value);
+			set customElementParent($$value) {
+				customElementParent($$value);
 				flushSync();
 			},
 			get logoUrl() {
@@ -7216,39 +7094,45 @@
 				titleText($$value);
 				flushSync();
 			},
-			get linksLabel() {
-				return linksLabel();
-			},
-			set linksLabel($$value) {
-				linksLabel($$value);
-				flushSync();
-			},
-			get altLanguageText() {
-				return altLanguageText();
-			},
-			set altLanguageText($$value) {
-				altLanguageText($$value);
-				flushSync();
-			},
-			get altLanguageUrl() {
-				return altLanguageUrl();
-			},
-			set altLanguageUrl($$value) {
-				altLanguageUrl($$value);
-				flushSync();
-			},
 			get joinUsText() {
 				return joinUsText();
 			},
-			set joinUsText($$value) {
+			set joinUsText(
+				$$value = lang === 'fr' ? 'Nous joindre' : 'Contact us'
+			) {
 				joinUsText($$value);
 				flushSync();
 			},
 			get joinUsUrl() {
 				return joinUsUrl();
 			},
-			set joinUsUrl($$value) {
+			set joinUsUrl($$value = '') {
 				joinUsUrl($$value);
+				flushSync();
+			},
+			get altLanguageText() {
+				return altLanguageText();
+			},
+			set altLanguageText(
+				$$value = lang === 'fr' ? 'English' : 'Français'
+			) {
+				altLanguageText($$value);
+				flushSync();
+			},
+			get altLanguageUrl() {
+				return altLanguageUrl();
+			},
+			set altLanguageUrl($$value = '') {
+				altLanguageUrl($$value);
+				flushSync();
+			},
+			get linksLabel() {
+				return linksLabel();
+			},
+			set linksLabel(
+				$$value = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation'
+			) {
+				linksLabel($$value);
 				flushSync();
 			},
 			get goToContent() {
@@ -7306,18 +7190,25 @@
 				showSearch($$value);
 				flushSync();
 			},
-			get links() {
-				return links();
+			get linksSlot() {
+				return linksSlot();
 			},
-			set links($$value) {
-				links($$value);
+			set linksSlot($$value) {
+				linksSlot($$value);
 				flushSync();
 			},
-			get search() {
-				return search();
+			get searchZoneSlot() {
+				return searchZoneSlot();
 			},
-			set search($$value) {
-				search($$value);
+			set searchZoneSlot($$value) {
+				searchZoneSlot($$value);
+				flushSync();
+			},
+			get slots() {
+				return slots();
+			},
+			set slots($$value = false) {
+				slots($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -7329,18 +7220,18 @@
 	create_custom_element(
 		PivHeader,
 		{
-			self: {},
+			customElementParent: {},
 			logoUrl: {},
 			fullWidth: {},
 			logoSrc: {},
 			logoAlt: {},
 			titleUrl: {},
 			titleText: {},
-			linksLabel: {},
-			altLanguageText: {},
-			altLanguageUrl: {},
 			joinUsText: {},
 			joinUsUrl: {},
+			altLanguageText: {},
+			altLanguageUrl: {},
+			linksLabel: {},
 			goToContent: {},
 			goToContentAnchor: {},
 			goToContentText: {},
@@ -7348,8 +7239,9 @@
 			hideSearchText: {},
 			enableSearch: {},
 			showSearch: {},
-			links: {},
-			search: {}
+			linksSlot: {},
+			searchZoneSlot: {},
+			slots: {}
 		},
 		[],
 		[],
@@ -7360,16 +7252,12 @@
 
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
+
+		const $$slots = sanitize_slots($$props);
+
 		push($$props, true);
 
-		Utils.getPageLanguage();
-
 		let self = prop($$props, 'self', 7),
-			joinUsText = prop($$props, 'joinUsText', 7),
-			joinUsUrl = prop($$props, 'joinUsUrl', 7),
-			altLanguageText = prop($$props, 'altLanguageText', 7),
-			altLanguageUrl = prop($$props, 'altLanguageUrl', 7),
-			linksLabel = prop($$props, 'linksLabel', 7),
 			props = rest_props(
 				$$props,
 				[
@@ -7377,65 +7265,42 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'self',
-					'joinUsText',
-					'joinUsUrl',
-					'altLanguageText',
-					'altLanguageUrl',
-					'linksLabel'
+					'self'
 				]);
 
 		{
-			const links = wrap_snippet(PivHeaderWC, function ($$anchor) {
+			const linksSlot = wrap_snippet(PivHeaderWC, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
 				var fragment_1 = comment();
 				var node = first_child(fragment_1);
 
-				slot(node, $$props, 'links', {}, ($$anchor) => {
-					_defaultLinks($$anchor, {
-						get joinUsUrl() {
-							return joinUsUrl();
-						},
-						get joinUsText() {
-							return joinUsText();
-						},
-						get altLanguageUrl() {
-							return altLanguageUrl();
-						},
-						get altLanguageText() {
-							return altLanguageText();
-						},
-						get linksLabel() {
-							return linksLabel();
-						}
-					});
-				});
-
+				slot(node, $$props, 'links', {}, null);
 				append($$anchor, fragment_1);
 			});
 
-			const search = wrap_snippet(PivHeaderWC, function ($$anchor) {
+			const searchZoneSlot = wrap_snippet(PivHeaderWC, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
-				var fragment_3 = comment();
-				var node_1 = first_child(fragment_3);
+				var fragment_2 = comment();
+				var node_1 = first_child(fragment_2);
 
 				slot(node_1, $$props, 'search-zone', {}, null);
-				append($$anchor, fragment_3);
+				append($$anchor, fragment_2);
 			});
 
 			PivHeader($$anchor, spread_props(
 				{
-					get self() {
+					get customElementParent() {
 						return self();
 					}
 				},
 				() => props,
 				{
-					links,
-					search,
-					$$slots: { links: true, search: true }
+					slots: $$slots,
+					linksSlot,
+					searchZoneSlot,
+					$$slots: { linksSlot: true, searchZoneSlot: true }
 				}
 			));
 		}
@@ -7446,41 +7311,6 @@
 			},
 			set self($$value) {
 				self($$value);
-				flushSync();
-			},
-			get joinUsText() {
-				return joinUsText();
-			},
-			set joinUsText($$value) {
-				joinUsText($$value);
-				flushSync();
-			},
-			get joinUsUrl() {
-				return joinUsUrl();
-			},
-			set joinUsUrl($$value) {
-				joinUsUrl($$value);
-				flushSync();
-			},
-			get altLanguageText() {
-				return altLanguageText();
-			},
-			set altLanguageText($$value) {
-				altLanguageText($$value);
-				flushSync();
-			},
-			get altLanguageUrl() {
-				return altLanguageUrl();
-			},
-			set altLanguageUrl($$value) {
-				altLanguageUrl($$value);
-				flushSync();
-			},
-			get linksLabel() {
-				return linksLabel();
-			},
-			set linksLabel($$value) {
-				linksLabel($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -7525,63 +7355,14 @@
 		}
 	));
 
-	_defaultCopyright[FILENAME] = 'src/sdg/components/PivFooter/_defaultCopyright.svelte';
-
-	var root$7 = add_locations(template(`<a> </a>`), _defaultCopyright[FILENAME], [[9, 0]]);
-
-	function _defaultCopyright($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const lang = Utils.getPageLanguage();
-
-		const copyrightUrl = prop($$props, 'copyrightUrl', 23, () => strict_equals(lang, 'fr') ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'),
-			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear());
-
-		var a = root$7();
-		var text = child(a, true);
-
-		reset(a);
-
-		template_effect(() => {
-			set_attribute(a, 'href', copyrightUrl());
-			set_text(text, copyrightText());
-		});
-
-		append($$anchor, a);
-
-		return pop({
-			get copyrightUrl() {
-				return copyrightUrl();
-			},
-			set copyrightUrl(
-				$$value = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
-			) {
-				copyrightUrl($$value);
-				flushSync();
-			},
-			get copyrightText() {
-				return copyrightText();
-			},
-			set copyrightText(
-				$$value = '© Gouvernement du Québec, ' + new Date().getFullYear()
-			) {
-				copyrightText($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	create_custom_element(_defaultCopyright, { copyrightUrl: {}, copyrightText: {} }, [], [], true);
-
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
 	var root_2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$6 = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
-		[50, 0]
+		[52, 0]
 	]);
 
 	function PivFooter($$anchor, $$props) {
@@ -7594,12 +7375,13 @@
 			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
 			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
-			copyrightText = prop($$props, 'copyrightText', 7),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
-			copyrightUrl = prop($$props, 'copyrightUrl', 7),
+			copyrightUrl = prop($$props, 'copyrightUrl', 23, () => strict_equals(lang, 'fr') ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'),
+			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear()),
 			mainSlot = prop($$props, 'mainSlot', 7),
-			copyrightSlot = prop($$props, 'copyrightSlot', 7);
+			copyrightSlot = prop($$props, 'copyrightSlot', 7),
+			slots = prop($$props, 'slots', 23, () => ({}));
 
 		var fragment = root$6();
 		var div = first_child(fragment);
@@ -7666,18 +7448,21 @@
 			};
 
 			var alternate = ($$anchor) => {
-				_defaultCopyright($$anchor, {
-					get copyrightText() {
-						return copyrightText();
-					},
-					get copyrightUrl() {
-						return copyrightUrl();
-					}
+				var a_1 = root_4();
+				var text = child(a_1, true);
+
+				reset(a_1);
+
+				template_effect(() => {
+					set_attribute(a_1, 'href', copyrightUrl());
+					set_text(text, copyrightText());
 				});
+
+				append($$anchor, a_1);
 			};
 
 			if_block(node_2, ($$render) => {
-				if (copyrightSlot()) $$render(consequent_1); else $$render(alternate, false);
+				if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, false);
 			});
 		}
 
@@ -7734,13 +7519,6 @@
 				logoAlt($$value);
 				flushSync();
 			},
-			get copyrightText() {
-				return copyrightText();
-			},
-			set copyrightText($$value) {
-				copyrightText($$value);
-				flushSync();
-			},
 			get logoWidth() {
 				return logoWidth();
 			},
@@ -7758,8 +7536,19 @@
 			get copyrightUrl() {
 				return copyrightUrl();
 			},
-			set copyrightUrl($$value) {
+			set copyrightUrl(
+				$$value = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
+			) {
 				copyrightUrl($$value);
+				flushSync();
+			},
+			get copyrightText() {
+				return copyrightText();
+			},
+			set copyrightText(
+				$$value = '© Gouvernement du Québec, ' + new Date().getFullYear()
+			) {
+				copyrightText($$value);
 				flushSync();
 			},
 			get mainSlot() {
@@ -7776,6 +7565,13 @@
 				copyrightSlot($$value);
 				flushSync();
 			},
+			get slots() {
+				return slots();
+			},
+			set slots($$value = {}) {
+				slots($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -7787,12 +7583,13 @@
 			logoSrc: {},
 			logoSrcDarkTheme: {},
 			logoAlt: {},
-			copyrightText: {},
 			logoWidth: {},
 			logoHeight: {},
 			copyrightUrl: {},
+			copyrightText: {},
 			mainSlot: {},
-			copyrightSlot: {}
+			copyrightSlot: {},
+			slots: {}
 		},
 		[],
 		[],
@@ -7803,15 +7600,12 @@
 
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
+
+		const $$slots = sanitize_slots($$props);
+
 		push($$props, true);
 
-		Utils.getPageLanguage();
-
-		let copyrightText = prop($$props, 'copyrightText', 7),
-			copyrightUrl = prop($$props, 'copyrightUrl', 7),
-			self = prop($$props, 'self', 7),
-			slots = prop($$props, 'slots', 7),
-			defaultSlot = prop($$props, 'defaultSlot', 7),
+		let self = prop($$props, 'self', 7),
 			props = rest_props(
 				$$props,
 				[
@@ -7819,14 +7613,8 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'copyrightText',
-					'copyrightUrl',
-					'self',
-					'slots',
-					'defaultSlot'
+					'self'
 				]);
-
-		inspect(() => [self(), slots(), defaultSlot()]);
 
 		{
 			const mainSlot = wrap_snippet(PivFooterWC, function ($$anchor) {
@@ -7845,21 +7633,12 @@
 				var fragment_2 = comment();
 				var node_1 = first_child(fragment_2);
 
-				slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-					_defaultCopyright($$anchor, {
-						get copyrightText() {
-							return copyrightText();
-						},
-						get copyrightUrl() {
-							return copyrightUrl();
-						}
-					});
-				});
-
+				slot(node_1, $$props, 'copyright', {}, null);
 				append($$anchor, fragment_2);
 			});
 
 			PivFooter($$anchor, spread_props(() => props, {
+				slots: $$slots,
 				mainSlot,
 				copyrightSlot,
 				$$slots: { mainSlot: true, copyrightSlot: true }
@@ -7867,39 +7646,11 @@
 		}
 
 		return pop({
-			get copyrightText() {
-				return copyrightText();
-			},
-			set copyrightText($$value) {
-				copyrightText($$value);
-				flushSync();
-			},
-			get copyrightUrl() {
-				return copyrightUrl();
-			},
-			set copyrightUrl($$value) {
-				copyrightUrl($$value);
-				flushSync();
-			},
 			get self() {
 				return self();
 			},
 			set self($$value) {
 				self($$value);
-				flushSync();
-			},
-			get slots() {
-				return slots();
-			},
-			set slots($$value) {
-				slots($$value);
-				flushSync();
-			},
-			get defaultSlot() {
-				return defaultSlot();
-			},
-			set defaultSlot($$value) {
-				defaultSlot($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -7917,9 +7668,7 @@
 			logoHeight: { attribute: 'logo-height' },
 			copyrightText: { attribute: 'copyright-text' },
 			copyrightUrl: { attribute: 'copyright-url' },
-			self: {},
-			slots: {},
-			defaultSlot: {}
+			self: {}
 		},
 		['default', 'copyright'],
 		[],
