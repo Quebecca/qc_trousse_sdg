@@ -1537,6 +1537,23 @@
                 </form>
             </qc-doc-exemple>
 
+            <h4>Code JS de cet exemple de validation</h4>
+            <script id="qc-radio-form-validation-example">
+                const form = document.getElementById("radio-form");
+                form.addEventListener("submit", (event) => validateRadioForm(event, form));
+                function validateRadioForm(event, formToValidate) {
+                    event.preventDefault();
+                    const groups = formToValidate.querySelectorAll("qc-radio-group");
+                    groups.forEach((group) => {
+                        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
+                        if (group.required && !checkedValue) {
+                            group.invalid = true;
+                        }
+                    });
+                }
+            </script>
+            <qc-code target-id="qc-radio-form-validation-example" language="javascript"></qc-code>
+
             <h3>Documentation technique</h3>
 
             <h4>Attributs de qc-radio-group</h4>
@@ -1660,16 +1677,54 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>zzz
+            </div>
 
             <h4>Événement JS</h4>
             <p>
                 Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
                 est émis au clic du bouton radio d'un groupe.
-                Celui-ci est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> parent pour ajuster
+                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> parent pour ajuster
                 l'attribut <code class="qc-bg-color-grey-pale">invalid</code> à <code class="qc-bg-color-grey-pale">false</code>
-                à celui-ci et tous les boutons radio enfants.
+                pour celui-ci et tous les boutons radio faisant partie du champ.
             </p>
+
+            <script id="qc-hide-invalid-example">
+                // qc-radio-button
+                onMount(() => {
+                    document.addEventListener(
+                        `qc.radio.removeInvalidFor${name}`,
+                        () => {
+                            invalid = false;
+                        }
+                    );
+                })
+
+                function removeInvalid() {
+                    invalid = false;
+                    inputInstance.dispatchEvent(
+                        new CustomEvent(
+                            `qc.radio.removeInvalidFor${name}`,
+                            {bubbles: true, composed: true}
+                        )
+                    );
+                }
+
+                // qc-radio-group
+                onMount(() => {
+                    radioButtons.forEach((option) => {
+                        group.appendChild(option);
+                    });
+
+                    document.addEventListener(
+                        `qc.radio.removeInvalidFor${name}`,
+                        () => {
+                            invalid = false;
+                        }
+                    );
+                });
+            </script>
+
+            <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>
 
         </div>
     </main>
