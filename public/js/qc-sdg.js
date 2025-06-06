@@ -4513,6 +4513,29 @@
 	}
 
 	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -8178,7 +8201,7 @@
 	var root$3 = template(`<div><label><input class="qc-form-check-input" type="checkbox"> </label> <!></div>`);
 	const $$css$2 = { hash: 'qc-hash-32ttx', code: '' };
 
-	function Checkbox($$anchor, $$props) {
+	function CheckboxAncien($$anchor, $$props) {
 		push($$props, true);
 		append_styles$1($$anchor, $$css$2);
 
@@ -8291,7 +8314,7 @@
 	}
 
 	create_custom_element(
-		Checkbox,
+		CheckboxAncien,
 		{
 			checkboxName: {},
 			checkboxLabel: {},
@@ -8326,7 +8349,7 @@
 		var div_1 = sibling(legend_1, 2);
 
 		each(div_1, 21, options, index, ($$anchor, option) => {
-			Checkbox($$anchor, {
+			CheckboxAncien($$anchor, {
 				get checkboxName() {
 					return name();
 				},
@@ -8475,7 +8498,7 @@
 		false
 	));
 
-	function CheckboxWC($$anchor, $$props) {
+	function CheckboxAncienWC($$anchor, $$props) {
 		push($$props, true);
 
 		let checkboxName = prop($$props, 'checkboxName', 7, ""),
@@ -8489,7 +8512,7 @@
 		// Utiliser le label comme value si non spécifié
 		let effectiveValue = user_derived(() => value() || label());
 
-		Checkbox($$anchor, {
+		CheckboxAncien($$anchor, {
 			get checkboxName() {
 				return checkboxName();
 			},
@@ -8567,7 +8590,7 @@
 	}
 
 	customElements.define('qc-checkbox', create_custom_element(
-		CheckboxWC,
+		CheckboxAncienWC,
 		{
 			checkboxName: { attribute: 'checkbox-name' },
 			label: { attribute: 'label' },
@@ -8752,13 +8775,13 @@
 		reset(div);
 
 		template_effect(() => {
+			set_value(input, value());
 			set_attribute(input, 'name', name());
 			set_attribute(input, 'id', get(id));
 			set_attribute(label_1, 'for', get(id));
 			set_text(text, label());
 		});
 
-		bind_value(input, value);
 		append($$anchor, div);
 
 		return pop({
@@ -8797,17 +8820,18 @@
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7);
 
-		const expression = user_derived(() => outer()?.name ?? name());
+		let effectiveValue = user_derived(() => value() || label());
+		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
 
 		CheckboxInner($$anchor, {
 			get value() {
-				return value();
+				return get(effectiveValue);
 			},
 			get label() {
 				return label();
 			},
 			get name() {
-				return get(expression);
+				return get(effectiveName);
 			}
 		});
 
