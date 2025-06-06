@@ -1,5 +1,11 @@
 <script>
-    let { value, label, name } = $props();
+    let {
+        value,
+        label,
+        name,
+        disabled = false,
+        checked = false
+    } = $props();
     let id = $derived(name + "_" + value);
 </script>
 
@@ -9,6 +15,8 @@
         value={value}
         {name}
         {id}
+        {disabled}
+        {checked}
     />
     <label for={id}>{label}</label>
 </div>

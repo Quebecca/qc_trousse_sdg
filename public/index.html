@@ -1713,15 +1713,14 @@
             </qc-doc-exemple>
 
             <h4>Groupe de cases à cocher</h4>
-            <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher">
-                <qc-checkbox-group
-                legend="Sélectionnez une option"
-                name="options">
+            <qc-doc-exemple caption="Exemple de cases à cocher avec différents états">
+                <qc-checkbox-group legend="Sélectionnez vos options">
                     <qc-checkbox label="Option 1"></qc-checkbox>
-                    <qc-checkbox label="Option 2"></qc-checkbox>
-                    <qc-checkbox label="Option 3"></qc-checkbox>
+                    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
+                    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
                 </qc-checkbox-group>
             </qc-doc-exemple>
+
 
             <h3>Documentation technique</h3>
 
@@ -1752,18 +1751,25 @@
                     <tr>
                         <td>value</td>
                         <td>Texte</td>
-                        <td>label</td>
+                        <td>Label si non spécifié</td>
                         <td>Valeur envoyée lors de la soumission du formulaire</td>
                     </tr>
                     <tr>
                         <td>disabled</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Désactive la case à cocher</td>
+                        <td>booléen</td>
+                        <td>false</td>
+                        <td>Désactive la case à cocher lorsque true</td>
+                    </tr>
+                    <tr>
+                        <td>checked</td>
+                        <td>booléen</td>
+                        <td>false</td>
+                        <td>Détermine si la case est cochée par défaut</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+
 
             <h4>Attributs de qc-checkbox-group</h4>
             <div class="table-overflow">
