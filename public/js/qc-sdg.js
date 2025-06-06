@@ -4536,6 +4536,26 @@
 	}
 
 	/**
+	 * @param {Element} element
+	 * @param {boolean} checked
+	 */
+	function set_checked(element, checked) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.checked ===
+			(attributes.checked =
+				// treat null and undefined the same for the initial value
+				checked ?? undefined)
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.checked = checked;
+	}
+
+	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -8324,7 +8344,9 @@
 
 		let value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			name = prop($$props, 'name', 7);
+			name = prop($$props, 'name', 7),
+			disabled = prop($$props, 'disabled', 7, false),
+			checked = prop($$props, 'checked', 7, false);
 
 		let id = user_derived(() => name() + "_" + value());
 		var div = root();
@@ -8342,6 +8364,8 @@
 			set_value(input, value());
 			set_attribute(input, 'name', name());
 			set_attribute(input, 'id', get(id));
+			input.disabled = disabled();
+			set_checked(input, checked());
 			set_attribute(label_1, 'for', get(id));
 			set_text(text, label());
 		});
@@ -8369,11 +8393,37 @@
 			set name($$value) {
 				name($$value);
 				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(Checkbox, { value: {}, label: {}, name: {} }, [], [], true);
+	create_custom_element(
+		Checkbox,
+		{
+			value: {},
+			label: {},
+			name: {},
+			disabled: {},
+			checked: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	function CheckboxWC($$anchor, $$props) {
 		push($$props, true);
@@ -8382,7 +8432,9 @@
 			outer = prop($$props, 'outer', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			name = prop($$props, 'name', 7);
+			name = prop($$props, 'name', 7),
+			disabled = prop($$props, 'disabled', 7),
+			checked = prop($$props, 'checked', 7);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
@@ -8396,6 +8448,12 @@
 			},
 			get name() {
 				return get(effectiveName);
+			},
+			get disabled() {
+				return disabled();
+			},
+			get checked() {
+				return checked();
 			}
 		});
 
@@ -8434,6 +8492,20 @@
 			set name($$value) {
 				name($$value);
 				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value) {
+				checked($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8444,6 +8516,8 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			name: { attribute: 'name', type: 'String' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			checked: { attribute: 'checked', type: 'Boolean' },
 			inner: {},
 			outer: {}
 		},
