@@ -53,6 +53,26 @@ export class Utils {
         return false;
     }
 
-
+    /**
+     * Produces an array of props objects, with each object containing all props that start with the associated prefix
+     * passed in tags
+     * @param tags
+     * @param defaultsAttributes
+     * @param restProps
+     * @returns {*} The array of props objects
+     */
+    static computeFieldsAttributes(tags, defaultsAttributes, restProps) {
+        return tags.map(control => {
+            const prefix = `${control}-`;
+            return {
+                ...defaultsAttributes[control],
+                ...Object.fromEntries(
+                    Object.entries(restProps)
+                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
+                        .filter(Boolean) // élimine les éléments null
+                )
+            };
+        });
+    }
 
 }

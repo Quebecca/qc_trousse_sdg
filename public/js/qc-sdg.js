@@ -5807,7 +5807,27 @@
 	        return false;
 	    }
 
-
+	    /**
+	     * Produces an array of props objects, with each object containing all props that start with the associated prefix
+	     * passed in tags
+	     * @param tags
+	     * @param defaultsAttributes
+	     * @param restProps
+	     * @returns {*} The array of props objects
+	     */
+	    static computeFieldsAttributes(tags, defaultsAttributes, restProps) {
+	        return tags.map(control => {
+	            const prefix = `${control}-`;
+	            return {
+	                ...defaultsAttributes[control],
+	                ...Object.fromEntries(
+	                    Object.entries(restProps)
+	                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
+	                        .filter(Boolean) // élimine les éléments null
+	                )
+	            };
+	        });
+	    }
 
 	}
 
@@ -7962,25 +7982,11 @@
 		let submitProps = state(proxy({}));
 
 		user_effect(() => {
-			const [inputAttrs, submitAttrs] = computeFieldsAttributes(rest);
+			const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input", "submit"], defaultsAttributes, rest);
 
 			set(inputProps, { ...inputAttrs, name: name() }, true);
 			set(submitProps, submitAttrs, true);
 		});
-
-		/**
-		 * @param {{[p: string]: T}} restProps
-		 */
-		function computeFieldsAttributes(restProps) {
-			return ["input", "submit"].map((control) => {
-				const prefix = `${control}-`;
-
-				return {
-					...defaultsAttributes[control],
-					...Object.fromEntries(Object.entries(restProps).map(([k, v]) => k.startsWith(prefix) ? [k.replace(prefix, ''), v] : null).filter(Boolean)) // élimine les éléments null
-				};
-			});
-		}
 
 		var div = root$2();
 		let classes;

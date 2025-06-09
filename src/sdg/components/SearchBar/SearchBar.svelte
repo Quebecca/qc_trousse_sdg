@@ -28,7 +28,7 @@
 
 
     $effect(() => {
-        const [inputAttrs, submitAttrs] = computeFieldsAttributes(rest);
+        const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input","submit"], defaultsAttributes, rest);
         inputProps = {
             ...inputAttrs,
             name,
@@ -37,10 +37,11 @@
     });
 
     /**
-     * @param {{[p: string]: T}} restProps
+     * @param tags
+     * @param restProps
      */
-    function computeFieldsAttributes(restProps) {
-        return ["input","submit"].map(control => {
+    function computeFieldsAttributes(tags, restProps) {
+        return tags.map(control => {
             const prefix = `${control}-`;
             return {
                 ...defaultsAttributes[control],
