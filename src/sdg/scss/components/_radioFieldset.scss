@@ -38,6 +38,19 @@
   row-gap: token-value(spacer, sm);
 }
 
+.qc-radio-required {
+  color: token-value(color, red, regular);
+}
+
+.qc-radio-required-text {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
 .qc-fieldset-invalid {
   box-shadow: rem(2) 0 token-value(color, red, regular) inset;
 }
