@@ -26,13 +26,13 @@
   justify-items: center;
 }
 
-.radio-options-sm {
+.qc-radio-options-sm {
   @extend %radio-options;
   margin-top: token-value(spacer, sm);
   row-gap: token-value(spacer, xs);
 }
 
-.radio-options-md {
+.qc-radio-options-md {
   @extend %radio-options;
   margin-top: token-value(spacer, md);
   row-gap: token-value(spacer, sm);

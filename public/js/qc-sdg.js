@@ -8203,7 +8203,7 @@
 				set_attribute(fieldset, 'aria-describedby', name());
 				set_attribute(legend_1, 'id', name());
 				set_text(text, `${legend() ?? ''} `);
-				set_class(div_1, 1, `radio-options-${size()}`);
+				set_class(div_1, 1, `qc-radio-options-${size()}`);
 				set_class(div_2, 1, $1);
 				set_text(text_1, errorText());
 			},
