@@ -1537,7 +1537,7 @@
                 </form>
             </qc-doc-exemple>
 
-            <h4>Code JS de cet exemple de validation</h4>
+            <h5>Code JS de cet exemple de validation</h5>
             <script id="qc-radio-form-validation-example">
                 const form = document.getElementById("radio-form");
                 form.addEventListener("submit", (event) => validateRadioForm(event, form));
@@ -1554,9 +1554,9 @@
             </script>
             <qc-code target-id="qc-radio-form-validation-example" language="javascript"></qc-code>
 
-            <h3>Documentation technique</h3>
+            <h4>Documentation technique</h4>
 
-            <h4>Attributs de qc-radio-group</h4>
+            <h5>Attributs de qc-radio-group</h5>
             <div class="table-overflow">
                 <table class="qc-table qc-striped">
                     <thead>
@@ -1572,7 +1572,7 @@
                         <td>name</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Le nom identifiant le groupe de boutons radio dans le DOM</td>
+                        <td>Nom du champ de formulaire</td>
                     </tr>
                     <tr>
                         <td>legend</td>
@@ -1605,13 +1605,13 @@
                         <td>error-text</td>
                         <td>Texte</td>
                         <td>Champ obligatoire/Required field</td>
-                        <td>Texte qui s'affiche sous les boutons radio en cas d'état invalide</td>
+                        <td>Texte qui s'affiche sous les boutons radio en cas d'erreur</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
-            <h4>Attributs de qc-radio-button</h4>
+            <h5>Attributs de qc-radio-button</h5>
             <div class="table-overflow">
                 <table class="qc-table qc-striped">
                     <thead>
@@ -1627,7 +1627,7 @@
                         <td>name</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Le nom identifiant le groupe de boutons radio dans le DOM. Hérité du groupe parent si une valeur y est présente.</td>
+                        <td>Nom du champ de formulaire. Hérité du groupe parent si une valeur y est présente.</td>
                     </tr>
                     <tr>
                         <td>value</td>
@@ -1639,7 +1639,7 @@
                         <td>label</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Texte de l'étiquette s'affichant à côté du bouton radio</td>
+                        <td>Texte de l'étiquette s'affichant à droite du bouton radio</td>
                     </tr>
                     <tr>
                         <td>size</td>
@@ -1663,18 +1663,6 @@
                         <td>"false"</td>
                         <td>Indique si un bouton radio peut être sélectionné</td>
                     </tr>
-                    <tr>
-                        <td>required</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Indique si un bouton radio peut être sélectionné</td>
-                    </tr>
-                    <tr>
-                        <td>invalid</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Indique si un bouton radio est dans un état invalide. Hérité du groupe parent si une valeur y est présente.</td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -1683,24 +1671,14 @@
             <p>
                 Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
                 est émis au clic du bouton radio d'un groupe.
-                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> et les autres boutons
-                radio du champ pour ajuster l'attribut <code class="qc-bg-color-grey-pale">invalid</code>
-                à <code class="qc-bg-color-grey-pale">false</code> pour celui-ci et tous les boutons radio faisant partie du champ.
+                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code>
+                pour ajuster l'attribut <code class="qc-bg-color-grey-pale">invalid</code>
+                à <code class="qc-bg-color-grey-pale">false</code> pour celui-ci.
             </p>
 
             <script id="qc-hide-invalid-example">
                 // qc-radio-button
-                onMount(() => {
-                    document.addEventListener(
-                        `qc.radio.removeInvalidFor${name}`,
-                        () => {
-                            invalid = false;
-                        }
-                    );
-                })
-
                 function removeInvalid() {
-                    invalid = false;
                     inputInstance.dispatchEvent(
                         new CustomEvent(
                             `qc.radio.removeInvalidFor${name}`,
@@ -1710,18 +1688,12 @@
                 }
 
                 // qc-radio-group
-                onMount(() => {
-                    radioButtons.forEach((option) => {
-                        group.appendChild(option);
-                    });
-
-                    document.addEventListener(
-                        `qc.radio.removeInvalidFor${name}`,
-                        () => {
-                            invalid = false;
-                        }
-                    );
-                });
+                document.addEventListener(
+                    `qc.radio.removeInvalidFor${name}`,
+                    () => {
+                        invalid = false;
+                    }
+                );
             </script>
 
             <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>

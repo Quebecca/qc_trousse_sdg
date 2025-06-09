@@ -1,6 +1,5 @@
 <script>
     import {Utils} from "../utils";
-    import {onMount} from "svelte";
 
     let {
         name,
@@ -9,7 +8,6 @@
         size = "sm",
         checked = false,
         disabled = false,
-        invalid = false
     } = $props();
 
     let inputInstance = $state();
@@ -28,17 +26,7 @@
         return truthyProps;
     })
 
-    onMount(() => {
-        document.addEventListener(
-            `qc.radio.removeInvalidFor${name}`,
-            () => {
-                invalid = false;
-            }
-        );
-    })
-
     function removeInvalid() {
-        invalid = false;
         inputInstance.dispatchEvent(
             new CustomEvent(
                 `qc.radio.removeInvalidFor${name}`,

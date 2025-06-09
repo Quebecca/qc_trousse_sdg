@@ -37,7 +37,6 @@
         size,
         checked,
         disabled,
-        required,
         invalid
     } = $props();
 
@@ -47,9 +46,6 @@
         }
         if (disabled === "") {
             disabled = "true";
-        }
-        if (required === "") {
-            required = "true";
         }
         if (invalid === "") {
             invalid = "true";

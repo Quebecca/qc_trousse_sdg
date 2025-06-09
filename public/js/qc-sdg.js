@@ -6118,7 +6118,7 @@
 		focusOnSearchInput();
 	};
 
-	var root_3$4 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
+	var root_3$3 = template(`<a class="qc-search" href="/" role="button"><span> </span></a>`);
 	var root_7 = template(`<li><a> </a></li>`);
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
@@ -6230,7 +6230,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$4();
+				var a_3 = root_3$3();
 
 				a_3.__click = [
 					on_click$1,
@@ -6580,7 +6580,7 @@
 
 	var root_4 = template(`<li><a> </a></li>`);
 	var root_5 = template(`<li><a> </a></li>`);
-	var root_3$3 = template(`<nav><ul><!> <!></ul></nav>`);
+	var root_3$2 = template(`<nav><ul><!> <!></ul></nav>`);
 
 	function PivHeaderWC($$anchor, $$props) {
 		push($$props, true);
@@ -6595,7 +6595,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var nav = root_3$3();
+						var nav = root_3$2();
 						var ul = child(nav);
 						var node_2 = child(ul);
 
@@ -6921,7 +6921,7 @@
 	));
 
 	var root_1$2 = template(`<img>`);
-	var root_3$2 = template(`<a> </a>`);
+	var root_3$1 = template(`<a> </a>`);
 	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
@@ -6987,7 +6987,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_3$2();
+				var a_1 = root_3$1();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -7135,7 +7135,7 @@
 		append($$anchor, fragment);
 	};
 
-	var root_3$1 = template(`<a> </a>`);
+	var root_3 = template(`<a> </a>`);
 
 	function PivFooterWC($$anchor, $$props) {
 		push($$props, true);
@@ -7145,7 +7145,7 @@
 			var node_1 = first_child(fragment_1);
 
 			slot(node_1, $$props, 'copyright', {}, ($$anchor) => {
-				var a = root_3$1();
+				var a = root_3();
 				var text = child(a, true);
 
 				reset(a);
@@ -8123,8 +8123,7 @@
 
 	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
-	var root_3 = template(`<div class="qc-radio-invalid"><!> <p> </p></div>`);
-	var root$1 = template(`<div><fieldset><!> <div><!></div> <!></fieldset></div>`);
+	var root$1 = template(`<div><fieldset><!> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8191,44 +8190,34 @@
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(group, $$value), () => get(group));
 
-		var node_3 = sibling(div_1, 2);
+		var div_2 = sibling(div_1, 2);
+		var node_3 = child(div_2);
 
-		{
-			var consequent_2 = ($$anchor) => {
-				var div_2 = root_3();
-				var node_4 = child(div_2);
+		Icon(node_3, {
+			type: 'warning',
+			color: 'red-regular',
+			size: 'md'
+		});
 
-				Icon(node_4, {
-					type: 'warning',
-					color: 'red-regular',
-					size: 'md'
-				});
+		var p = sibling(node_3, 2);
+		var text_1 = child(p, true);
 
-				var p = sibling(node_4, 2);
-				var text_1 = child(p, true);
-
-				reset(p);
-				reset(div_2);
-				template_effect(() => set_text(text_1, errorText()));
-				append($$anchor, div_2);
-			};
-
-			if_block(node_3, ($$render) => {
-				if (Utils.isTruthy(invalid())) $$render(consequent_2);
-			});
-		}
-
+		reset(p);
+		reset(div_2);
 		reset(fieldset);
 		reset(div);
 
 		template_effect(
-			($0) => {
+			($0, $1) => {
 				set_class(div, 1, $0);
 				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
 				set_class(div_1, 1, `radio-options-${size()}`);
+				set_class(div_2, 1, $1);
+				set_text(text_1, errorText());
 			},
 			[
-				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : "")
+				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
+				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
 			]
 		);
 
@@ -8447,8 +8436,7 @@
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
-			disabled = prop($$props, 'disabled', 7, false),
-			invalid = prop($$props, 'invalid', 7, false);
+			disabled = prop($$props, 'disabled', 7, false);
 
 		let inputInstance = state(void 0);
 
@@ -8467,14 +8455,7 @@
 			return truthyProps;
 		});
 
-		onMount(() => {
-			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
-				invalid(false);
-			});
-		});
-
 		function removeInvalid() {
-			invalid(false);
 			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
 		}
 
@@ -8554,13 +8535,6 @@
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value = false) {
-				invalid($$value);
-				flushSync();
 			}
 		});
 	}
@@ -8573,8 +8547,7 @@
 			label: {},
 			size: {},
 			checked: {},
-			disabled: {},
-			invalid: {}
+			disabled: {}
 		},
 		[],
 		[],
@@ -8591,7 +8564,6 @@
 			size = prop($$props, 'size', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7);
 
 		onMount(() => {
@@ -8601,10 +8573,6 @@
 
 			if (disabled() === "") {
 				disabled("true");
-			}
-
-			if (required() === "") {
-				required("true");
 			}
 
 			if (invalid() === "") {
@@ -8690,13 +8658,6 @@
 				disabled($$value);
 				flushSync();
 			},
-			get required() {
-				return required();
-			},
-			set required($$value) {
-				required($$value);
-				flushSync();
-			},
 			get invalid() {
 				return invalid();
 			},
@@ -8717,8 +8678,7 @@
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
-			parent: {},
-			required: {}
+			parent: {}
 		},
 		[],
 		[],

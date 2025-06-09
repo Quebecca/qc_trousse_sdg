@@ -43,19 +43,17 @@
             </legend>
         {/if}
 
-
         <div class={`radio-options-${size}`} bind:this={group}>
             {@render children?.()}
         </div>
-        {#if Utils.isTruthy(invalid)}
-            <div class="qc-radio-invalid">
-                <Icon
-                    type="warning"
-                    color="red-regular"
-                    size="md"
-                />
-                <p>{errorText}</p>
-            </div>
-        {/if}
+
+        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
+            <Icon
+                type="warning"
+                color="red-regular"
+                size="md"
+            />
+            <p>{errorText}</p>
+        </div>
     </fieldset>
 </div>
