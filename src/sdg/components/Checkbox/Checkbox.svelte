@@ -5,12 +5,13 @@
         name,
         disabled = false,
         checked = false,
-        required = false
+        required = false,
+        size = "md"
     } = $props();
     let id = $derived(name + "_" + value);
 </script>
 
-<div>
+<div class="checkbox-{size}">
     <input
         type="checkbox"
         value={value}

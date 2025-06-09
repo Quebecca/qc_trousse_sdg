@@ -2,7 +2,8 @@
     tag: 'qc-checkbox-group',
     shadow: 'none',
     props: {
-        shared: {attribute:'shared'}
+        shared: {attribute:'shared'},
+        size: { attribute: 'size', type: 'String' },
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -39,6 +40,6 @@
 
 <script>
     import CheckboxGroup from "./CheckboxGroup.svelte";
-    let {inners, legend, name } = $props();
+    let {inners, legend, name, size = "md" } = $props();
 </script>
-<CheckboxGroup {inners} {legend} {name}></CheckboxGroup>
+<CheckboxGroup {inners} {legend} {name} {size}></CheckboxGroup>
