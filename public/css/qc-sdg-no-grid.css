@@ -1968,9 +1968,14 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
   margin-top: var(--qc-spacer-sm);
   align-items: center;
+  height: var(--qc-spacer-md);
 }
 .qc-radio-invalid p {
   margin-left: var(--qc-spacer-xs);
   margin-bottom: 0;
   align-items: center;
+}
+
+.qc-radio-invalid-hidden {
+  display: none;
 }
