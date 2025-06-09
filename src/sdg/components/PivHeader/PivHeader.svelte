@@ -71,13 +71,17 @@
 
     <div class="piv-top">
         <div class="signature-group">
-            <a href="{logoUrl}"
+            <div
                class="logo"
-               rel="noreferrer"
-               aria-label="{logoAlt}"
             >
-                <div role="img"></div>
-            </a>
+                <a href="{logoUrl}"
+                   rel="noreferrer"
+                   aria-label="{logoAlt}"
+                    >
+                    <div role="img"></div>
+                </a>
+
+            </div>
 
             {#if titleText}
                 <div class="title">

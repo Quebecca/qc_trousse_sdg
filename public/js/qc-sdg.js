@@ -6720,7 +6720,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_1$1 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
-	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
+	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[87, 16, [[88, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6731,13 +6731,13 @@
 		});
 	};
 
-	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[95, 10, [[106, 12]]]]);
-	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
-	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 32, [[121, 36]]]]);
-	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
-	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
+	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[99, 10, [[110, 12]]]]);
+	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 32, [[122, 36]]]]);
+	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[125, 32, [[125, 36]]]]);
+	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[119, 20, [[120, 24]]]]);
+	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[137, 10]]);
 
-	var root$7 = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$7 = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><div role="img"></div></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
 			59,
 			0,
@@ -6753,17 +6753,23 @@
 								[
 									73,
 									8,
-									[[74, 12, [[79, 16]]]]
+									[
+										[
+											74,
+											12,
+											[[77, 16, [[81, 20]]]]
+										]
+									]
 								],
-								[93, 6, [[109, 8]]]
+								[97, 6, [[113, 8]]]
 							]
 						],
-						[131, 4]
+						[135, 4]
 					]
 				]
 			]
 		],
-		[142, 0]
+		[146, 0]
 	]);
 
 	function PivHeader($$anchor, $$props) {
@@ -6847,24 +6853,28 @@
 
 		var div_3 = sibling(node, 2);
 		var div_4 = child(div_3);
-		var a_1 = child(div_4);
-		var node_1 = sibling(a_1, 2);
+		var div_5 = child(div_4);
+		var a_1 = child(div_5);
+
+		reset(div_5);
+
+		var node_1 = sibling(div_5, 2);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
-				var a_2 = child(div_5);
+				var div_6 = root_2$1();
+				var a_2 = child(div_6);
 				var text_1 = child(a_2, true);
 
 				reset(a_2);
-				reset(div_5);
+				reset(div_6);
 
 				template_effect(() => {
 					set_attribute(a_2, 'href', titleUrl());
 					set_text(text_1, titleText());
 				});
 
-				append($$anchor, div_5);
+				append($$anchor, div_6);
 			};
 
 			if_block(node_1, ($$render) => {
@@ -6874,8 +6884,8 @@
 
 		reset(div_4);
 
-		var div_6 = sibling(div_4, 2);
-		var node_2 = child(div_6);
+		var div_7 = sibling(div_4, 2);
+		var node_2 = child(div_7);
 
 		{
 			var consequent_2 = ($$anchor) => {
@@ -6901,8 +6911,8 @@
 			});
 		}
 
-		var div_7 = sibling(node_2, 2);
-		var node_3 = child(div_7);
+		var div_8 = sibling(node_2, 2);
+		var node_3 = child(div_8);
 
 		{
 			var consequent_3 = ($$anchor) => {
@@ -6988,17 +6998,17 @@
 			});
 		}
 
+		reset(div_8);
 		reset(div_7);
-		reset(div_6);
 		reset(div_3);
 
-		var div_8 = sibling(div_3, 2);
-		var node_8 = child(div_8);
+		var div_9 = sibling(div_3, 2);
+		var node_8 = child(div_9);
 
 		{
 			var consequent_8 = ($$anchor) => {
-				var div_9 = root_9();
-				var node_9 = child(div_9);
+				var div_10 = root_9();
+				var node_9 = child(div_10);
 
 				{
 					var consequent_7 = ($$anchor) => {
@@ -7014,9 +7024,9 @@
 					});
 				}
 
-				reset(div_9);
-				bind_this(div_9, ($$value) => set(searchZone, $$value), () => get(searchZone));
-				append($$anchor, div_9);
+				reset(div_10);
+				bind_this(div_10, ($$value) => set(searchZone, $$value), () => get(searchZone));
+				append($$anchor, div_10);
 			};
 
 			if_block(node_8, ($$render) => {
@@ -7024,7 +7034,7 @@
 			});
 		}
 
-		reset(div_8);
+		reset(div_9);
 		reset(div_1);
 		reset(div);
 

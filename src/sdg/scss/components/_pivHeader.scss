@@ -54,25 +54,33 @@ qc-piv-header {
       flex-wrap: wrap;
       align-items: start;
       margin-right: auto;
-      * {
+      & > * {
         min-height: rem(72);
       }
       .logo {
         display: flex;
+        align-items: center;
         flex-basis: rem(256);
         //margin-right: rem(64);
-        [role=img] {
-          background-image: var(--logo-src);
-          background-repeat: no-repeat;
-          background-size: 100%;
-          background-position: center;
-          margin-right: 16px;
-          min-width: 150px;
-          //object-fit: fill;
-          width: 100%;
-          max-width: rem(200);
-          min-height: rem(72);
-        }
+          a {
+            display: block;
+            height: calc(rem(72) - 8px);
+            [role=img] {
+              background-image: var(--logo-src);
+              background-repeat: no-repeat;
+              background-size: 100%;
+              background-position: center;
+              margin-right: 16px;
+              min-width: 150px;
+              //object-fit: fill;
+              width: 100%;
+              height: 100%;
+              max-width: rem(200);
+              min-height: rem(40);
+
+            }
+          }
+
       }
       .title {
         display: flex;

@@ -1404,14 +1404,19 @@ qc-piv-header {
   align-items: start;
   margin-right: auto;
 }
-.qc-piv-header .piv-top .signature-group * {
+.qc-piv-header .piv-top .signature-group > * {
   min-height: 7.2rem;
 }
 .qc-piv-header .piv-top .signature-group .logo {
   display: flex;
+  align-items: center;
   flex-basis: 25.6rem;
 }
-.qc-piv-header .piv-top .signature-group .logo [role=img] {
+.qc-piv-header .piv-top .signature-group .logo a {
+  display: block;
+  height: calc(7.2rem - 8px);
+}
+.qc-piv-header .piv-top .signature-group .logo a [role=img] {
   background-image: var(--logo-src);
   background-repeat: no-repeat;
   background-size: 100%;
@@ -1419,8 +1424,9 @@ qc-piv-header {
   margin-right: 16px;
   min-width: 150px;
   width: 100%;
+  height: 100%;
   max-width: 20rem;
-  min-height: 7.2rem;
+  min-height: 4rem;
 }
 .qc-piv-header .piv-top .signature-group .title {
   display: flex;
