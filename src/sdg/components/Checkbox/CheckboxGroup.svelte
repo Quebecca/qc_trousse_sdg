@@ -1,8 +1,15 @@
 <script>
     import { setContext, onMount } from 'svelte';
-    let { inners, legend, name } = $props();
+    let {
+        inners,
+        legend,
+        name,
+        size = "md"
+    } = $props();
+
     let pseudo;
     setContext('name', {name});
+    setContext('size', {size});
 
     onMount(() => {
         inners.forEach(
@@ -11,7 +18,7 @@
     })
 </script>
 
-<fieldset>
+<fieldset class ="checkbox-group-{size}">
     <legend>{legend}</legend>
     <div id="pseudo-slot" bind:this={pseudo}></div>
 </fieldset>

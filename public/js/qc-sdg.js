@@ -8198,11 +8198,13 @@
 
 		let inners = prop($$props, 'inners', 7),
 			legend = prop($$props, 'legend', 7),
-			name = prop($$props, 'name', 7);
+			name = prop($$props, 'name', 7),
+			size = prop($$props, 'size', 7, "md");
 
 		let pseudo;
 
 		setContext('name', { name: name() });
+		setContext('size', { size: size() });
 
 		onMount(() => {
 			inners().forEach((inner) => pseudo.appendChild(inner));
@@ -8218,7 +8220,12 @@
 
 		bind_this(div, ($$value) => pseudo = $$value, () => pseudo);
 		reset(fieldset);
-		template_effect(() => set_text(text, legend()));
+
+		template_effect(() => {
+			set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`);
+			set_text(text, legend());
+		});
+
 		append($$anchor, fieldset);
 
 		return pop({
@@ -8242,18 +8249,26 @@
 			set name($$value) {
 				name($$value);
 				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(CheckboxGroup, { inners: {}, legend: {}, name: {} }, [], [], true);
+	create_custom_element(CheckboxGroup, { inners: {}, legend: {}, name: {}, size: {} }, [], [], true);
 
 	function CheckboxGroupWC($$anchor, $$props) {
 		push($$props, true);
 
 		let inners = prop($$props, 'inners', 7),
 			legend = prop($$props, 'legend', 7),
-			name = prop($$props, 'name', 7);
+			name = prop($$props, 'name', 7),
+			size = prop($$props, 'size', 7, "md");
 
 		CheckboxGroup($$anchor, {
 			get inners() {
@@ -8264,6 +8279,9 @@
 			},
 			get name() {
 				return name();
+			},
+			get size() {
+				return size();
 			}
 		});
 
@@ -8288,6 +8306,13 @@
 			set name($$value) {
 				name($$value);
 				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8296,6 +8321,7 @@
 		CheckboxGroupWC,
 		{
 			shared: { attribute: 'shared' },
+			size: { attribute: 'size', type: 'String' },
 			inners: {},
 			legend: {},
 			name: {}
@@ -8352,7 +8378,8 @@
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7, false),
 			checked = prop($$props, 'checked', 7, false),
-			required = prop($$props, 'required', 7, false);
+			required = prop($$props, 'required', 7, false),
+			size = prop($$props, 'size', 7, "md");
 
 		let id = user_derived(() => name() + "_" + value());
 		var div = root();
@@ -8380,6 +8407,7 @@
 		reset(div);
 
 		template_effect(() => {
+			set_class(div, 1, `checkbox-${size() ?? ''}`, 'qc-hash-1dc2eqh');
 			set_value(input, value());
 			set_attribute(input, 'name', name());
 			set_attribute(input, 'id', get(id));
@@ -8434,6 +8462,13 @@
 			set required($$value = false) {
 				required($$value);
 				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8446,7 +8481,8 @@
 			name: {},
 			disabled: {},
 			checked: {},
-			required: {}
+			required: {},
+			size: {}
 		},
 		[],
 		[],
@@ -8463,10 +8499,12 @@
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7),
 			checked = prop($$props, 'checked', 7),
-			required = prop($$props, 'required', 7);
+			required = prop($$props, 'required', 7),
+			size = prop($$props, 'size', 7);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
+		let effectiveSize = user_derived(() => outer()?.getAttribute('size') || size() || 'md');
 
 		Checkbox($$anchor, {
 			get value() {
@@ -8486,6 +8524,9 @@
 			},
 			get required() {
 				return required();
+			},
+			get size() {
+				return get(effectiveSize);
 			}
 		});
 
@@ -8545,6 +8586,13 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8558,6 +8606,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			checked: { attribute: 'checked', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },
+			size: { attribute: 'size', type: 'String' },
 			inner: {},
 			outer: {}
 		},
