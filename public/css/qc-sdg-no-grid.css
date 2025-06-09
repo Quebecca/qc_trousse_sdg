@@ -1939,18 +1939,18 @@ input[type=radio]::before {
   font-weight: var(--qc-font-weight-bold);
 }
 
-.radio-options-md, .radio-options-sm {
+.qc-radio-options-md, .qc-radio-options-sm {
   display: flex;
   flex-direction: column;
   justify-items: center;
 }
 
-.radio-options-sm {
+.qc-radio-options-sm {
   margin-top: var(--qc-spacer-sm);
   row-gap: var(--qc-spacer-xs);
 }
 
-.radio-options-md {
+.qc-radio-options-md {
   margin-top: var(--qc-spacer-md);
   row-gap: var(--qc-spacer-sm);
 }

@@ -44,7 +44,7 @@
             {/if}
         </legend>
 
-        <div class={`radio-options-${size}`} bind:this={group}>
+        <div class={`qc-radio-options-${size}`} bind:this={group}>
             {@render children?.()}
         </div>
 
