@@ -8,7 +8,6 @@
         size: {attribute: 'size', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -37,7 +36,6 @@
         size,
         checked,
         disabled,
-        invalid
     } = $props();
 
     onMount(() => {
@@ -46,9 +44,6 @@
         }
         if (disabled === "") {
             disabled = "true";
-        }
-        if (invalid === "") {
-            invalid = "true";
         }
     });
 </script>
@@ -60,5 +55,4 @@
     size={parent?.size ?? size}
     {checked}
     {disabled}
-    invalid={parent?.invalid ?? invalid}
 />

@@ -59,6 +59,7 @@
                     </ul>
                 </li>
                 <li><a href="#toTop">Haut de page</a></li>
+                <li><a href="#radio-button">Boutons radio</a></li>
 
             </ul>
         </nav>
@@ -1410,7 +1411,7 @@
             <hr />
 
             <!-- Boutons radio -->
-            <h2 id="RadioButton">Boutons radio</h2>
+            <h2 id="radio-button">Boutons radio</h2>
             <h3>Exemples</h3>
 
             <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée">
@@ -1503,33 +1504,33 @@
 
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
-                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form" required>
+                    <qc-radio-group legend="Quel est votre niveau de scolarité?" name="ex-md-form" required>
                         <qc-radio-button
-                                label="Option 1"
-                                value="1"
+                                label="Secondaire"
+                                value="secondaire"
                         ></qc-radio-button>
                         <qc-radio-button
-                                label="Option 2"
-                                value="2"
+                                label="Professionnel"
+                                value="professionnel"
                         ></qc-radio-button>
                         <qc-radio-button
-                                label="Option 3"
-                                value="3"
+                                label="Collégial"
+                                value="collegial"
+                        ></qc-radio-button>
+                        <qc-radio-button
+                                label="Universitaire"
+                                value="universitaire"
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <qc-radio-group legend="Choisissez une option : " name="ex-md-form-2">
+                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2">
                         <qc-radio-button
-                                label="Option 1"
-                                value="1"
+                                label="Oui"
+                                value="oui"
                         ></qc-radio-button>
                         <qc-radio-button
-                                label="Option 2"
-                                value="2"
-                        ></qc-radio-button>
-                        <qc-radio-button
-                                label="Option 3"
-                                value="3"
+                                label="Non"
+                                value="non"
                         ></qc-radio-button>
                     </qc-radio-group>
 
@@ -1661,7 +1662,7 @@
                         <td>disabled</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Indique si un bouton radio peut être sélectionné</td>
+                        <td>Indique si un bouton radio ne peut pas être sélectionné</td>
                     </tr>
                     </tbody>
                 </table>

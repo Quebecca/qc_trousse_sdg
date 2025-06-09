@@ -33,15 +33,16 @@
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class={`qc-radio-fieldset-${size}`}>
-        {#if legend}
-            <legend>
-                {legend}
-                {#if Utils.isTruthy(required)}
-                    <span class="qc-radio-required">&nbsp*</span>
-                {/if}
-            </legend>
-        {/if}
+    <fieldset class={`qc-radio-fieldset-${size}`} aria-describedby={name}>
+        <legend id={name}>
+            {legend}
+            {#if Utils.isTruthy(required)}
+                <span class="qc-radio-required" aria-hidden="true">&nbsp*</span>
+                <span class="qc-radio-required-text">
+                    {lang === "fr" ? "Requis" : "Required"}
+                </span>
+            {/if}
+        </legend>
 
         <div class={`radio-options-${size}`} bind:this={group}>
             {@render children?.()}
