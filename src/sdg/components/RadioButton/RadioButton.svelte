@@ -1,5 +1,6 @@
 <script>
     import {Utils} from "../utils";
+    import {onMount} from "svelte";
 
     let {
         name,
@@ -8,6 +9,7 @@
         size = "sm",
         checked = false,
         disabled = false,
+        ...rest
     } = $props();
 
     let inputInstance = $state();
@@ -26,6 +28,14 @@
         return truthyProps;
     })
 
+    let restProps = $state({});
+
+    onMount(() => {
+        const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
+
+        restProps = {...inputProps};
+    });
+
     function removeInvalid() {
         inputInstance.dispatchEvent(
             new CustomEvent(
@@ -43,6 +53,7 @@
         {name}
         {value}
         {...boolAttributes}
+        {...restProps}
         bind:this={inputInstance}
         onclick={() => removeInvalid()}
     />

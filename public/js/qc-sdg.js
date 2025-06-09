@@ -8434,7 +8434,19 @@
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
 			checked = prop($$props, 'checked', 7, false),
-			disabled = prop($$props, 'disabled', 7, false);
+			disabled = prop($$props, 'disabled', 7, false),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'name',
+				'value',
+				'label',
+				'size',
+				'checked',
+				'disabled'
+			]);
 
 		let inputInstance = state(void 0);
 
@@ -8451,6 +8463,14 @@
 			}
 
 			return truthyProps;
+		});
+
+		let restProps = state(proxy({}));
+
+		onMount(() => {
+			const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
+
+			set(restProps, { ...inputProps }, true);
 		});
 
 		function removeInvalid() {
@@ -8482,6 +8502,7 @@
 				name: name(),
 				value: value(),
 				...get(boolAttributes),
+				...get(restProps),
 				onclick: event_handler
 			});
 
@@ -8561,7 +8582,20 @@
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7),
 			checked = prop($$props, 'checked', 7),
-			disabled = prop($$props, 'disabled', 7);
+			disabled = prop($$props, 'disabled', 7),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'parent',
+				'name',
+				'value',
+				'label',
+				'size',
+				'checked',
+				'disabled'
+			]);
 
 		onMount(() => {
 			if (checked() === "") {
@@ -8576,26 +8610,29 @@
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
 
-		RadioButton($$anchor, {
-			get name() {
-				return get(expression);
+		RadioButton($$anchor, spread_props(
+			{
+				get name() {
+					return get(expression);
+				},
+				get value() {
+					return value();
+				},
+				get label() {
+					return label();
+				},
+				get size() {
+					return get(expression_1);
+				},
+				get checked() {
+					return checked();
+				},
+				get disabled() {
+					return disabled();
+				}
 			},
-			get value() {
-				return value();
-			},
-			get label() {
-				return label();
-			},
-			get size() {
-				return get(expression_1);
-			},
-			get checked() {
-				return checked();
-			},
-			get disabled() {
-				return disabled();
-			}
-		});
+			() => rest
+		));
 
 		return pop({
 			get parent() {

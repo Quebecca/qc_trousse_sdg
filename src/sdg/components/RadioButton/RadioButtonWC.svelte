@@ -36,6 +36,7 @@
         size,
         checked,
         disabled,
+        ...rest
     } = $props();
 
     onMount(() => {
@@ -55,4 +56,5 @@
     size={parent?.size ?? size}
     {checked}
     {disabled}
+    {...rest}
 />

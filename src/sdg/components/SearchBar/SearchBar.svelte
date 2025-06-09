@@ -35,27 +35,8 @@
         };
         submitProps = submitAttrs;
     });
-
-    /**
-     * @param tags
-     * @param restProps
-     */
-    function computeFieldsAttributes(tags, restProps) {
-        return tags.map(control => {
-            const prefix = `${control}-`;
-            return {
-                ...defaultsAttributes[control],
-                ...Object.fromEntries(
-                    Object.entries(restProps)
-                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
-                        .filter(Boolean) // élimine les éléments null
-                )
-            };
-        });
-    }
-
-
 </script>
+
 <div class="qc-search-bar" class:piv-background={pivBackground}>
     <SearchInput bind:value {...inputProps}/>
         <IconButton
