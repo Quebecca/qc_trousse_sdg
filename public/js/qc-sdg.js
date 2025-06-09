@@ -6177,7 +6177,7 @@
 		true
 	));
 
-	var root_1$2 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6244,7 +6244,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$2();
+				var div_2 = root_1$3();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6988,7 +6988,7 @@
 		true
 	));
 
-	var root_1$1 = template(`<img>`);
+	var root_1$2 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
 	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
@@ -7028,7 +7028,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$1();
+				var img = root_1$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7479,7 +7479,7 @@
 		true
 	);
 
-	var root_1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
@@ -7511,7 +7511,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1();
+				var div = root_1$1();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8335,8 +8335,13 @@
 		}
 	));
 
-	var root = template(`<div><input type="checkbox"> <label> </label></div>`);
-	const $$css = { hash: 'qc-hash-32ttx', code: '' };
+	var root_1 = template(`<span class="required qc-hash-1dc2eqh">*</span>`);
+	var root = template(`<div><input type="checkbox"> <label> <!></label></div>`);
+
+	const $$css = {
+		hash: 'qc-hash-1dc2eqh',
+		code: '.required.qc-hash-1dc2eqh {color:var(--qc-color-red-regular);margin-left:0.25rem;}'
+	};
 
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
@@ -8346,7 +8351,8 @@
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7, false),
-			checked = prop($$props, 'checked', 7, false);
+			checked = prop($$props, 'checked', 7, false),
+			required = prop($$props, 'required', 7, false);
 
 		let id = user_derived(() => name() + "_" + value());
 		var div = root();
@@ -8355,7 +8361,20 @@
 		remove_input_defaults(input);
 
 		var label_1 = sibling(input, 2);
-		var text = child(label_1, true);
+		var text = child(label_1);
+		var node = sibling(text);
+
+		{
+			var consequent = ($$anchor) => {
+				var span = root_1();
+
+				append($$anchor, span);
+			};
+
+			if_block(node, ($$render) => {
+				if (required()) $$render(consequent);
+			});
+		}
 
 		reset(label_1);
 		reset(div);
@@ -8366,8 +8385,9 @@
 			set_attribute(input, 'id', get(id));
 			input.disabled = disabled();
 			set_checked(input, checked());
+			input.required = required();
 			set_attribute(label_1, 'for', get(id));
-			set_text(text, label());
+			set_text(text, `${label() ?? ''} `);
 		});
 
 		append($$anchor, div);
@@ -8407,6 +8427,13 @@
 			set checked($$value = false) {
 				checked($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8418,7 +8445,8 @@
 			label: {},
 			name: {},
 			disabled: {},
-			checked: {}
+			checked: {},
+			required: {}
 		},
 		[],
 		[],
@@ -8434,7 +8462,8 @@
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7),
-			checked = prop($$props, 'checked', 7);
+			checked = prop($$props, 'checked', 7),
+			required = prop($$props, 'required', 7);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
@@ -8454,6 +8483,9 @@
 			},
 			get checked() {
 				return checked();
+			},
+			get required() {
+				return required();
 			}
 		});
 
@@ -8506,6 +8538,13 @@
 			set checked($$value) {
 				checked($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8518,6 +8557,7 @@
 			name: { attribute: 'name', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			checked: { attribute: 'checked', type: 'Boolean' },
+			required: { attribute: 'required', type: 'Boolean' },
 			inner: {},
 			outer: {}
 		},

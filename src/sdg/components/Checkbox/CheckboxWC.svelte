@@ -7,6 +7,7 @@
         name: { attribute: 'name', type: 'String' },
         disabled: { attribute: 'disabled', type: 'Boolean' },
         checked: { attribute: 'checked', type: 'Boolean' },
+        required: { attribute: 'required', type: 'Boolean' },
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -23,19 +24,19 @@
 }} />
 
 <script>
-
     import Checkbox from "./Checkbox.svelte";
 
-    let {inner, outer, value, label, name, disabled, checked} = $props();
+    let {inner, outer, value, label, name, disabled, checked, required} = $props();
 
     let effectiveValue = $derived(value || label);
     let effectiveName = $derived(outer?.getAttribute('name') || name || '');
 </script>
 
 <Checkbox
-        value={effectiveValue}
-        {label}
-        name={effectiveName}
-        {disabled}
-        {checked}
+    value={effectiveValue}
+    {label}
+    name={effectiveName}
+    {disabled}
+    {checked}
+    {required}
 ></Checkbox>

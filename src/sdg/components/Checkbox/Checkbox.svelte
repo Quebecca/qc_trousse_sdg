@@ -4,7 +4,8 @@
         label,
         name,
         disabled = false,
-        checked = false
+        checked = false,
+        required = false
     } = $props();
     let id = $derived(name + "_" + value);
 </script>
@@ -17,10 +18,20 @@
         {id}
         {disabled}
         {checked}
+        {required}
     />
-    <label for={id}>{label}</label>
+    <label for={id}>
+        {label}
+        {#if required}
+            <span class="required">*</span>
+        {/if}
+    </label>
 </div>
 
 <style>
+    .required {
+        color: var(--qc-color-red-regular);
+        margin-left: 0.25rem;
+    }
 
 </style>

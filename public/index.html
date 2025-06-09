@@ -1704,9 +1704,10 @@
             <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
 
             <h4>Case à cocher seule</h4>
-            <qc-doc-exemple caption="Exemple d'une case à cocher simple">
+            <qc-doc-exemple caption="Exemple d'une case à cocher seule obligatoire">
                 <qc-checkbox
-                label="J'accepte les conditions d'utilisation">
+                label="J'accepte les conditions d'utilisation"
+                required="true">
                 </qc-checkbox>
             </qc-doc-exemple>
 
@@ -1763,6 +1764,12 @@
                         <td>"true" ou "false"</td>
                         <td>false</td>
                         <td>Coche la case par défaut lorsque true</td>
+                    </tr>
+                    <tr>
+                        <td>required</td>
+                        <td>"true" ou "false"</td>
+                        <td>false</td>
+                        <td>Rend la case à cocher obligatoire lorsque true</td>
                     </tr>
                     </tbody>
                 </table>
