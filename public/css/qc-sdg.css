@@ -1846,9 +1846,7 @@ qc-search-bar {
   cursor: pointer;
   display: flex;
   position: relative;
-  margin-right: var(--qc-spacer-xs);
-  margin-top: 0;
-  margin-left: 0;
+  margin: 0;
   background-color: var(--qc-color-white);
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
@@ -1884,7 +1882,8 @@ qc-search-bar {
   display: flex;
   align-items: end;
   cursor: pointer;
-  margin-right: var(--qc-spacer-xs);
+  padding-left: var(--qc-spacer-xs);
+  padding-right: var(--qc-spacer-xs);
   margin-bottom: 0;
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
