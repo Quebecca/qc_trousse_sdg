@@ -1985,6 +1985,7 @@ input[type=radio]::before {
   align-items: center;
   height: var(--qc-spacer-md);
   margin: 0;
+  padding: 0 var(--qc-spacer-xs);
 }
 .checkbox-md input[type=checkbox], .checkbox-sm input[type=checkbox] {
   -moz-appearance: none;
@@ -2016,7 +2017,22 @@ input[type=radio]::before {
   border-color: var(--qc-color-blue-dark) !important;
 }
 .checkbox-md input[type=checkbox]:checked, .checkbox-sm input[type=checkbox]:checked {
+  background-color: var(--qc-color-blue-regular);
   border-color: var(--qc-color-blue-regular);
+}
+.checkbox-md input[type=checkbox]:checked::after, .checkbox-sm input[type=checkbox]:checked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z"/></svg>');
+          mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z"/></svg>');
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  background-color: var(--qc-color-white);
 }
 .checkbox-md input[type=checkbox]:disabled, .checkbox-sm input[type=checkbox]:disabled {
   cursor: not-allowed;
@@ -2080,6 +2096,16 @@ input[type=radio]::before {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-bold);
+}
+
+.qc-checkbox-legend {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-regular);
+  color: var(--qc-color-blue-dark);
+  font-weight: var(--qc-font-weight-bold);
+  font-family: var(--qc-font-family-content);
+  padding: 0;
 }
 
 .qc-checkbox-fieldset-md {

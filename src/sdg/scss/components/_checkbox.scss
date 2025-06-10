@@ -6,6 +6,7 @@
   align-items: center;
   height: token-value(spacer, md);
   margin: 0;
+  padding: 0 token-value(spacer, xs);
 
   input[type="checkbox"] {
     appearance: none;
@@ -41,7 +42,19 @@
     }
 
     &:checked {
-      border-color: token-value(color, blue, regular);
+      background-color: token-value(color blue regular);
+      border-color: token-value(color blue regular);
+
+      &::after {content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z"/></svg>');
+        mask-repeat: no-repeat;
+        mask-position: center;
+        background-color: token-value(color, white);
+      }
     }
 
     &:disabled {

@@ -15,6 +15,14 @@
   @include content-font(sm, bold);
 }
 
+.qc-checkbox-legend {
+  @include content-font(md);
+  color: token-value(color blue dark);
+  font-weight: token-value(font weight bold);
+  font-family: token-value(font family content);
+  padding: 0;
+}
+
 .qc-checkbox-fieldset-md {
   @extend %checkbox-fieldset;
   @include content-font(md, bold);
