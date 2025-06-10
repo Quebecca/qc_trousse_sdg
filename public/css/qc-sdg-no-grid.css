@@ -2088,18 +2088,18 @@ input[type=radio]::before {
   font-weight: var(--qc-font-weight-bold);
 }
 
-.checkbox-options-md, .checkbox-options-sm {
+.checkbox-group-md, .checkbox-group-sm {
   display: flex;
   flex-direction: column;
   justify-items: center;
 }
 
-.checkbox-options-sm {
+.checkbox-group-sm {
   margin-top: var(--qc-spacer-sm);
   row-gap: var(--qc-spacer-xs);
 }
 
-.checkbox-options-md {
+.checkbox-group-md {
   margin-top: var(--qc-spacer-md);
   row-gap: var(--qc-spacer-sm);
 }
