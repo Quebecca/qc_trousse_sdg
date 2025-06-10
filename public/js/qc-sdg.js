@@ -8224,6 +8224,7 @@
 		template_effect(() => {
 			set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`);
 			set_text(text, legend());
+			set_class(div, 1, `checkbox-group-${size() ?? ''}`);
 		});
 
 		append($$anchor, fieldset);
