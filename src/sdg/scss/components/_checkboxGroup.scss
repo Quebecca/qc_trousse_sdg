@@ -1,0 +1,57 @@
+@use "../lib/functions" as *;
+@use "../lib/mixins" as *;
+
+%checkbox-fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  padding: 0.001em 0 0 0;
+  margin-left: token-value(spacer, xs);
+  margin-bottom: token-value(spacer, sm);
+}
+
+.qc-checkbox-fieldset-sm {
+  @extend %checkbox-fieldset;
+  @include content-font(sm, bold);
+}
+
+.qc-checkbox-fieldset-md {
+  @extend %checkbox-fieldset;
+  @include content-font(md, bold);
+}
+
+%checkbox-options {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+.checkbox-options-sm {
+  @extend %checkbox-options;
+  margin-top: token-value(spacer, sm);
+  row-gap: token-value(spacer, xs);
+}
+
+.checkbox-options-md {
+  @extend %checkbox-options;
+  margin-top: token-value(spacer, md);
+  row-gap: token-value(spacer, sm);
+}
+
+.qc-checkbox-invalid {
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-top: token-value(spacer, sm);
+  align-items: center;
+  height: token-value(spacer, md);
+
+  p {
+    margin-left: token-value(spacer, xs);
+    margin-bottom: 0;
+    align-items: center;
+  }
+}
+
+.qc-checkbox-invalid-hidden {
+  display: none;
+}
