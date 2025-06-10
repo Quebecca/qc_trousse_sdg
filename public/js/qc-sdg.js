@@ -8189,7 +8189,7 @@
 		false
 	));
 
-	var root$3 = template(`<fieldset><legend> </legend> <div id="pseudo-slot"></div></fieldset>`);
+	var root$3 = template(`<fieldset><legend class="qc-checkbox-legend"> </legend> <div id="pseudo-slot"></div></fieldset>`);
 	const $$css$1 = { hash: 'qc-hash-32ttx', code: '' };
 
 	function CheckboxGroup($$anchor, $$props) {
