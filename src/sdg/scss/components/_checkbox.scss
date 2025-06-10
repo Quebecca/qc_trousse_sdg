@@ -1,2 +1,106 @@
-@use "../mixins" as *;
+@use "../lib/functions" as *;
+@use "../lib/mixins" as *;
 
+%checkbox-style {
+  display: flex;
+  align-items: center;
+  height: token-value(spacer, md);
+  margin: 0;
+
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+
+    display: flex;
+    position: relative;
+
+    margin-right: token-value(spacer, xs);
+    margin-top: 0;
+    margin-left: 0;
+
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      overflow: hidden;
+    }
+
+    &:focus {
+      outline: rem(2) solid token-value(color, blue, light);
+      outline-offset: 0;
+      border-color: token-value(color, blue, dark) !important;
+    }
+
+    &:checked {
+      border-color: token-value(color, blue, regular);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+
+    &:disabled+label {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    display: flex;
+    align-items: end;
+    cursor: pointer;
+    margin-right: token-value(spacer, xs);
+    margin-bottom: 0;
+    @include content-font(md);
+  }
+}
+
+.checkbox-sm {
+  @extend %checkbox-style;
+
+  input {
+    width: token-value(spacer, sm);
+    height: token-value(spacer, sm);
+    border-width: rem(1);
+  }
+
+  input[type=checkbox]:checked::before {
+    width: rem(8);
+    height: rem(5);
+    border: rem(2) solid token-value(color, blue, regular);
+    border-top: 0;
+    border-right: 0;
+    transform: rotate(-45deg);
+    top: rem(1);
+  }
+}
+
+.checkbox-md {
+  @extend %checkbox-style;
+
+  input {
+    width: token-value(spacer, md);
+    height: token-value(spacer, md);
+    border-width: rem(2);
+  }
+
+  input[type=checkbox]:checked::before {
+    width: rem(12);
+    height: rem(7);
+    border: rem(3) solid token-value(color, blue, regular);
+    border-top: 0;
+    border-right: 0;
+    transform: rotate(-45deg);
+    top: rem(2);
+  }
+}
