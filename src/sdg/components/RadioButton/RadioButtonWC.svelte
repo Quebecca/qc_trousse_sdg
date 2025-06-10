@@ -6,6 +6,7 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         size: {attribute: 'size', type: 'String'},
+        other: {attribute: 'other', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
     },
@@ -34,12 +35,16 @@
         value,
         label,
         size,
+        other,
         checked,
         disabled,
         ...rest
     } = $props();
 
     onMount(() => {
+        if(other === "") {
+            other = "true";
+        }
         if (checked === "") {
             checked = "true";
         }
@@ -54,6 +59,7 @@
     {value}
     {label}
     size={parent?.size ?? size}
+    {other}
     {checked}
     {disabled}
     {...rest}

@@ -8433,6 +8433,7 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
+			other = prop($$props, 'other', 7, false),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			rest = rest_props($$props, [
@@ -8444,6 +8445,7 @@
 				'value',
 				'label',
 				'size',
+				'other',
 				'checked',
 				'disabled'
 			]);
@@ -8477,12 +8479,24 @@
 			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
 		}
 
+		function displayOther() {
+			if (Utils.isTruthy(other())) {
+				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.displayOtherFor${name()}`, { bubbles: true, composed: true }));
+			} else {
+				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.hideOtherFor${name()}`, { bubbles: true, composed: true }));
+			}
+		}
+
 		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
 
-		var event_handler = () => removeInvalid();
+		var event_handler = () => {
+			removeInvalid();
+			displayOther();
+		};
+
 		let attributes;
 
 		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
@@ -8541,6 +8555,13 @@
 				size($$value);
 				flushSync();
 			},
+			get other() {
+				return other();
+			},
+			set other($$value = false) {
+				other($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -8565,6 +8586,7 @@
 			value: {},
 			label: {},
 			size: {},
+			other: {},
 			checked: {},
 			disabled: {}
 		},
@@ -8581,6 +8603,7 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7),
+			other = prop($$props, 'other', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
 			rest = rest_props($$props, [
@@ -8593,11 +8616,16 @@
 				'value',
 				'label',
 				'size',
+				'other',
 				'checked',
 				'disabled'
 			]);
 
 		onMount(() => {
+			if (other() === "") {
+				other("true");
+			}
+
 			if (checked() === "") {
 				checked("true");
 			}
@@ -8623,6 +8651,9 @@
 				},
 				get size() {
 					return get(expression_1);
+				},
+				get other() {
+					return other();
 				},
 				get checked() {
 					return checked();
@@ -8670,6 +8701,13 @@
 				size($$value);
 				flushSync();
 			},
+			get other() {
+				return other();
+			},
+			set other($$value) {
+				other($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -8694,6 +8732,7 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
+			other: { attribute: 'other', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
 			parent: {}

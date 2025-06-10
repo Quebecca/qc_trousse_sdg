@@ -1485,6 +1485,24 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
+            <qc-doc-exemple caption="Exemple de boutons radio avec une option 'autre'">
+                <qc-radio-group legend="Choisissez une option : " name="ex-md-other">
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Autre"
+                            value="other"
+                            other
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
+
             <qc-doc-exemple caption="Exemple de boutons radio dans un groupe en état invalide">
                 <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" required invalid>
                     <qc-radio-button
@@ -1649,6 +1667,12 @@
                         <td>Taille des boutons radio et de leurs étiquettes. Hérité du groupe parent si une valeur y est présente.</td>
                     </tr>
                     <tr>
+                        <td>other</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Détermine si le bouton radio émet les événements JS pour un champ 'autre'</td>
+                    </tr>
+                    <tr>
                         <td>checked</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
@@ -1678,7 +1702,7 @@
                 </table>
             </div>
 
-            <h4>Événement JS</h4>
+            <h4>Événements JS</h4>
             <p>
                 Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
                 est émis au clic du bouton radio d'un groupe.
@@ -1708,6 +1732,26 @@
             </script>
 
             <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>
+
+            <p>
+                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.displayOtherFor${name}</code> est émis au
+                clic d'un bouton radio dont l'attribut <code class="qc-bg-color-grey-pale">other</code> est à
+                <code class="qc-bg-color-grey-pale">true</code>. Si cet attribut est à <code class="qc-bg-color-grey-pale">false</code>,
+                l'événement <code class="qc-bg-color-grey-pale">qc.radio.hideOtherFor${name}</code> est émis par le bouton coché du
+                groupe concerné. S'assurer de remplacer la variable <code class="qc-bg-color-grey-pale">${name}</code>
+                par l'attribut <code class="qc-bg-color-grey-pale">name</code> du bon groupe de boutons radio.
+            </p>
+
+            <script id="qc-radio-show-other-events">
+                document.addEventListener("qc.radio.displayOtherForex-md-other", () => {
+                    console.log("Champ 'autre' visible");
+                });
+                document.addEventListener("qc.radio.hideOtherForex-md-other", () => {
+                    console.log("Champ 'autre' caché");
+                });
+            </script>
+
+            <qc-code target-id="qc-radio-show-other-events" language="javascript"></qc-code>
 
         </div>
     </main>
