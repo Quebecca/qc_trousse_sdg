@@ -1949,15 +1949,6 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
 }
 
-.qc-radio-required-text {
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 .qc-fieldset-invalid {
   box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
 }

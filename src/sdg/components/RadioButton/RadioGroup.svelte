@@ -35,9 +35,6 @@
             {legend}
             {#if Utils.isTruthy(required)}
                 <span class="qc-radio-required" aria-hidden="true">&nbsp*</span>
-                <span class="qc-radio-required-text">
-                    {lang === "fr" ? "Requis" : "Required"}
-                </span>
             {/if}
         </legend>
 
