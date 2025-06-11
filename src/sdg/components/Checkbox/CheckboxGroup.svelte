@@ -30,6 +30,21 @@
                 invalid = false;
             }
         );
+
+        const form = pseudo.closest('form');
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                if (required) {
+                    const checkedBoxes = Array.from(document.getElementsByName(name)).filter(cb => cb.checked);
+                    if (checkedBoxes.length === 0) {
+                        event.preventDefault();
+                        invalid = true;
+                    } else {
+                        invalid = false;
+                    }
+                }
+            });
+        }
     });
 </script>
 
@@ -39,7 +54,6 @@
             {legend}
             {#if Utils.isTruthy(required)}
                 <span class="qc-checkbox-required" aria-hidden="true">&nbsp;*</span>
-
             {/if}
         </legend>
         <div id="pseudo-slot" class="checkbox-group-{size}" bind:this={pseudo}></div>
