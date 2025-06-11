@@ -1415,7 +1415,7 @@
             <h3>Exemples</h3>
 
             <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
+                <qc-radio-group legend="Choisissez une option :" name="ex-md" size="md">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
@@ -1433,8 +1433,18 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
+            <script id="qc-radio-get-value">
+                const group = document.querySelector("qc-radio-group[name='ex-md']");
+
+                group.addEventListener("change", () => {
+                    const checkedValue = group.querySelector("input:checked").value;
+                    console.log(checkedValue);
+                });
+            </script>
+            <qc-code target-id="qc-radio-get-value" language="javascript"></qc-code>
+
             <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
-                <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm">
+                <qc-radio-group legend="Choisissez une option :" name="ex-sm" size="sm">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
@@ -1495,7 +1505,7 @@
                 </form>
             </qc-doc-exemple>
 
-            <h5>Code JS de cet exemple de validation</h5>
+<!--            <h5>Code JS de cet exemple de validation</h5>-->
             <script id="qc-radio-form-validation-example">
                 const form = document.getElementById("radio-form");
                 form.addEventListener("submit", (event) => validateRadioForm(event, form));
