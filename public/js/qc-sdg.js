@@ -8883,7 +8883,7 @@
 	));
 
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
-	var root$1 = template(`<div><fieldset><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8960,7 +8960,6 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
-				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
 				set_attribute(fieldset, 'aria-describedby', name());
 				set_attribute(legend_1, 'id', name());
 				set_text(text, `${legend() ?? ''} `);

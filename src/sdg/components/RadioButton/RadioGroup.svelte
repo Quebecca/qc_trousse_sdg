@@ -33,7 +33,7 @@
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class={`qc-radio-fieldset-${size}`} aria-describedby={name}>
+    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
         <legend id={name}>
             {legend}
             {#if Utils.isTruthy(required)}

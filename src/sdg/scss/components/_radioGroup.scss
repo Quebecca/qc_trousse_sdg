@@ -1,22 +1,13 @@
 @use "../lib/functions" as *;
 @use "../lib/mixins" as *;
 
-%radio-fieldset {
+.qc-radio-fieldset {
   display: flex;
   flex-direction: column;
   border: none;
   padding: 0.001em 0 0 0; //Ce padding est nécessaire pour contrôler les marges de <legend>.
   margin-left: token-value(spacer, xs);
   margin-bottom: token-value(spacer, sm);
-}
-
-.qc-radio-fieldset-sm {
-  @extend %radio-fieldset;
-  @include content-font(sm, bold);
-}
-
-.qc-radio-fieldset-md {
-  @extend %radio-fieldset;
   @include content-font(md, bold);
 }
 
