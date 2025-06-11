@@ -16,6 +16,7 @@
         children
     } = $props();
 
+    let instance = $state();
     let group = $state();
 
     onMount(() => {
@@ -23,17 +24,14 @@
             group.appendChild(option);
         });
 
-        document.addEventListener(
-            `qc.radio.removeInvalidFor${name}`,
-            () => {
-                invalid = false;
-            }
-        );
+        instance.addEventListener("change", () => {
+            invalid = false;
+        });
     });
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
+    <fieldset class="qc-radio-fieldset" aria-describedby={name} bind:this={instance}>
         <legend id={name}>
             {legend}
             {#if Utils.isTruthy(required)}
