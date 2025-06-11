@@ -42,15 +42,14 @@
   color: token-value(color, red, regular);
   margin-top: token-value(spacer, sm);
   align-items: center;
-  min-height: token-value(spacer, md);
 
-  p {
-    margin-left: token-value(spacer, xs);
-    margin-bottom: 0;
+  .qc-radio-invalid-icon {
+    display: flex;
     align-items: center;
+    margin-right: token-value(spacer, xs);
   }
-}
 
-.qc-radio-invalid-hidden {
-  display: none;
+  &.qc-radio-invalid-visible {
+    min-height: token-value(spacer, md);
+  }
 }

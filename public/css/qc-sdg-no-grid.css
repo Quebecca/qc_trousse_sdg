@@ -1958,14 +1958,12 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
   margin-top: var(--qc-spacer-sm);
   align-items: center;
-  min-height: var(--qc-spacer-md);
 }
-.qc-radio-invalid p {
-  margin-left: var(--qc-spacer-xs);
-  margin-bottom: 0;
+.qc-radio-invalid .qc-radio-invalid-icon {
+  display: flex;
   align-items: center;
+  margin-right: var(--qc-spacer-xs);
 }
-
-.qc-radio-invalid-hidden {
-  display: none;
+.qc-radio-invalid.qc-radio-invalid-visible {
+  min-height: var(--qc-spacer-md);
 }

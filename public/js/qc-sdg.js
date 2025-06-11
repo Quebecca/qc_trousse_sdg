@@ -6130,7 +6130,7 @@
 	));
 
 	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6223,7 +6223,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2();
+				var div_5 = root_2$1();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8128,7 +8128,8 @@
 	));
 
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
-	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
+	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8186,16 +8187,33 @@
 		var div_2 = sibling(div_1, 2);
 		var node_2 = child(div_2);
 
-		Icon(node_2, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'md'
-		});
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = root_2();
+				var div_3 = first_child(fragment);
+				var node_3 = child(div_3);
 
-		var p = sibling(node_2, 2);
-		var text_1 = child(p, true);
+				Icon(node_3, {
+					type: 'warning',
+					color: 'red-regular',
+					size: 'md'
+				});
 
-		reset(p);
+				reset(div_3);
+
+				var span_1 = sibling(div_3, 2);
+				var text_1 = child(span_1, true);
+
+				reset(span_1);
+				template_effect(() => set_text(text_1, errorText()));
+				append($$anchor, fragment);
+			};
+
+			if_block(node_2, ($$render) => {
+				if (Utils.isTruthy(invalid())) $$render(consequent_1);
+			});
+		}
+
 		reset(div_2);
 		reset(fieldset);
 		reset(div);
@@ -8208,11 +8226,10 @@
 				set_text(text, `${legend() ?? ''} `);
 				set_class(div_1, 1, `qc-radio-options-${size()}`);
 				set_class(div_2, 1, $1);
-				set_text(text_1, errorText());
 			},
 			[
 				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
-				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? " qc-radio-invalid-visible" : ""}`
 			]
 		);
 
