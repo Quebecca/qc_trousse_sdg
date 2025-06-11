@@ -28,21 +28,6 @@ if (displayAlertLink) {
         }
     )
 }
-
-// Event listener pour l'exemple de validation de formulaire de qc-radio-group
-const form = document.getElementById("radio-form");
-form.addEventListener("submit", (event) => validateRadioForm(event, form));
-
-function validateRadioForm(event, formToValidate) {
-    event.preventDefault();
-    const groups = formToValidate.querySelectorAll("qc-radio-group");
-    groups.forEach((group) => {
-        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
-        if (group.required && !checkedValue) {
-            group.invalid = true;
-        }
-    });
-}
 // add version
 
 

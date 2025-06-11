@@ -9,6 +9,8 @@
         other: {attribute: 'other', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
+        required: {attribute: 'required', type: 'String'},
+        invalid: {attribute: 'invalid', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -38,6 +40,8 @@
         other,
         checked,
         disabled,
+        required,
+        invalid,
         ...rest
     } = $props();
 
@@ -51,6 +55,12 @@
         if (disabled === "") {
             disabled = "true";
         }
+        if (required === "") {
+            required = "true";
+        }
+        if (invalid === "") {
+            invalid = "true";
+        }
     });
 </script>
 
@@ -62,5 +72,7 @@
     {other}
     {checked}
     {disabled}
+    required={parent?.required ?? required}
+    invalid={parent?.invalid ?? invalid}
     {...rest}
 />

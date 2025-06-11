@@ -8127,7 +8127,7 @@
 		false
 	));
 
-	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
+	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
 	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
@@ -8164,11 +8164,9 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1();
-				var span = sibling(first_child(fragment), 2);
+				var span = root_1();
 
-				span.textContent = lang === "fr" ? "Requis" : "Required";
-				append($$anchor, fragment);
+				append($$anchor, span);
 			};
 
 			if_block(node, ($$render) => {
@@ -8435,6 +8433,8 @@
 			other = prop($$props, 'other', 7, false),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
+			required = prop($$props, 'required', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -8446,10 +8446,10 @@
 				'size',
 				'other',
 				'checked',
-				'disabled'
+				'disabled',
+				'required',
+				'invalid'
 			]);
-
-		let inputInstance = state(void 0);
 
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
@@ -8480,30 +8480,35 @@
 		remove_input_defaults(input);
 
 		let attributes;
-
-		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
-
 		var label_1 = sibling(input, 2);
 		var text = child(label_1, true);
 
 		reset(label_1);
 		reset(div);
 
-		template_effect(() => {
-			set_class(div, 1, `qc-radio-${size()}`);
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, `qc-radio-${size()}`);
 
-			attributes = set_attributes(input, attributes, {
-				type: 'radio',
-				id: `${name()}_${value()}`,
-				name: name(),
-				value: value(),
-				...get(boolAttributes),
-				...get(restProps)
-			});
+				attributes = set_attributes(input, attributes, {
+					type: 'radio',
+					id: `${name()}_${value()}`,
+					name: name(),
+					value: value(),
+					'aria-required': $0,
+					'aria-invalid': $1,
+					...get(boolAttributes),
+					...get(restProps)
+				});
 
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
-			set_text(text, label());
-		});
+				set_attribute(label_1, 'for', `${name()}_${value()}`);
+				set_text(text, label());
+			},
+			[
+				() => Utils.isTruthy(required()),
+				() => Utils.isTruthy(invalid())
+			]
+		);
 
 		append($$anchor, div);
 
@@ -8556,6 +8561,20 @@
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8569,7 +8588,9 @@
 			size: {},
 			other: {},
 			checked: {},
-			disabled: {}
+			disabled: {},
+			required: {},
+			invalid: {}
 		},
 		[],
 		[],
@@ -8587,6 +8608,8 @@
 			other = prop($$props, 'other', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 7),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -8599,7 +8622,9 @@
 				'size',
 				'other',
 				'checked',
-				'disabled'
+				'disabled',
+				'required',
+				'invalid'
 			]);
 
 		onMount(() => {
@@ -8614,10 +8639,20 @@
 			if (disabled() === "") {
 				disabled("true");
 			}
+
+			if (required() === "") {
+				required("true");
+			}
+
+			if (invalid() === "") {
+				invalid("true");
+			}
 		});
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
+		const expression_2 = user_derived(() => parent()?.required ?? required());
+		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
 
 		RadioButton($$anchor, spread_props(
 			{
@@ -8641,6 +8676,12 @@
 				},
 				get disabled() {
 					return disabled();
+				},
+				get required() {
+					return get(expression_2);
+				},
+				get invalid() {
+					return get(expression_3);
 				}
 			},
 			() => rest
@@ -8702,6 +8743,20 @@
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8716,6 +8771,8 @@
 			other: { attribute: 'other', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
+			required: { attribute: 'required', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' },
 			parent: {}
 		},
 		[],

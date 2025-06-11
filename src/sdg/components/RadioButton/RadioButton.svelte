@@ -10,10 +10,10 @@
         other = false,
         checked = false,
         disabled = false,
+        required = false,
+        invalid = false,
         ...rest
     } = $props();
-
-    let inputInstance = $state();
 
     let boolAttributes = $derived.by(() => {
         let truthyProps = {
@@ -30,7 +30,6 @@
     })
 
     let restProps = $state({});
-
     onMount(() => {
         const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
 
@@ -44,9 +43,10 @@
         id={`${name}_${value}`}
         {name}
         {value}
+        aria-required={Utils.isTruthy(required)}
+        aria-invalid={Utils.isTruthy(invalid)}
         {...boolAttributes}
         {...restProps}
-        bind:this={inputInstance}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>
