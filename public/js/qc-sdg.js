@@ -8228,6 +8228,23 @@
 			document.addEventListener(`qc.checkbox.removeInvalidFor${name()}`, () => {
 				invalid(false);
 			});
+
+			const form = pseudo.closest('form');
+
+			if (form) {
+				form.addEventListener('submit', (event) => {
+					if (required()) {
+						const checkedBoxes = Array.from(document.getElementsByName(name())).filter((cb) => cb.checked);
+
+						if (checkedBoxes.length === 0) {
+							event.preventDefault();
+							invalid(true);
+						} else {
+							invalid(false);
+						}
+					}
+				});
+			}
 		});
 
 		var div = root$3();

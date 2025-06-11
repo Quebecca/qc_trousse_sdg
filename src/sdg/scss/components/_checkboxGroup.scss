@@ -26,6 +26,7 @@
   font-weight: token-value(font weight bold);
   font-family: token-value(font family content);
   padding: 0;
+  margin-bottom: token-value(spacer, md);
 }
 
 fieldset {
@@ -48,7 +49,6 @@ fieldset {
 
 .checkbox-group-md {
   @extend %checkbox-group;
-  margin-top: token-value(spacer, md);
   row-gap: token-value(spacer, sm);
 }
 

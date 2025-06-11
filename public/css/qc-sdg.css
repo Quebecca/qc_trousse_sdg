@@ -2121,6 +2121,7 @@ input[type=radio]::before {
   font-weight: var(--qc-font-weight-bold);
   font-family: var(--qc-font-family-content);
   padding: 0;
+  margin-bottom: var(--qc-spacer-md);
 }
 
 fieldset {
@@ -2141,7 +2142,6 @@ fieldset {
 }
 
 .checkbox-group-md {
-  margin-top: var(--qc-spacer-md);
   row-gap: var(--qc-spacer-sm);
 }
 
