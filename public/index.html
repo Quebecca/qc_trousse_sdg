@@ -1505,7 +1505,7 @@
                     const groups = formToValidate.querySelectorAll("qc-radio-group");
                     let validForm = true;
                     groups.forEach((group) => {
-                        const checkedValues = Array.from(formToValidate.querySelectorAll(`qc-radio-button${group.name}`))
+                        const checkedValues = Array.from(group.querySelectorAll(`input[name="${group.name}"]`))
                             .find(r => r.checked);
                         if (group.required && !checkedValues) {
                             group.invalid = true;
