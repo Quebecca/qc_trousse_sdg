@@ -8144,7 +8144,6 @@
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
-		let instance = state(void 0);
 		let group = state(void 0);
 
 		onMount(() => {
@@ -8152,7 +8151,7 @@
 				get(group).appendChild(option);
 			});
 
-			get(instance).addEventListener("change", () => {
+			get(group).addEventListener("change", () => {
 				invalid(false);
 			});
 		});
@@ -8201,7 +8200,6 @@
 		reset(p);
 		reset(div_2);
 		reset(fieldset);
-		bind_this(fieldset, ($$value) => set(instance, $$value), () => get(instance));
 		reset(div);
 
 		template_effect(

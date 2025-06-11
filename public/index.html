@@ -1414,11 +1414,12 @@
             <h2 id="radio-button">Boutons radio</h2>
             <h3>Exemples</h3>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée">
+            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
                 <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
+                            checked
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 2"
@@ -1432,11 +1433,12 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée">
+            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
                 <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
+                            checked
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 2"
@@ -1446,83 +1448,18 @@
                             label="Option 3 (désactivée)"
                             value="3"
                             disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe avec une option présélectionnée">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-checked">
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                            checked
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3"
-                            value="3"
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe obligatoire">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-ob" required>
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3"
-                            value="3"
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio avec une option 'autre'">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-other">
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Autre"
-                            value="other"
-                            other
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe en état invalide">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" required invalid>
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3"
-                            value="3"
                     ></qc-radio-button>
                 </qc-radio-group>
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
-                    <qc-radio-group legend="Quel est votre niveau de scolarité?" name="ex-md-form" required>
+                    <qc-radio-group
+                            legend="Quel est votre niveau de scolarité?"
+                            name="ex-md-form"
+                            required
+                            error-text="Veuillez sélectionner un niveau de scolarité."
+                    >
                         <qc-radio-button
                                 label="Secondaire"
                                 value="secondaire"
@@ -1541,7 +1478,7 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2">
+                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2" size="sm">
                         <qc-radio-button
                                 label="Oui"
                                 value="oui"
@@ -1701,57 +1638,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <h4>Événements JS</h4>
-            <p>
-                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
-                est émis au clic du bouton radio d'un groupe.
-                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code>
-                pour ajuster l'attribut <code class="qc-bg-color-grey-pale">invalid</code>
-                à <code class="qc-bg-color-grey-pale">false</code> pour celui-ci.
-            </p>
-
-            <script id="qc-hide-invalid-example">
-                // qc-radio-button
-                function removeInvalid() {
-                    inputInstance.dispatchEvent(
-                        new CustomEvent(
-                            `qc.radio.removeInvalidFor${name}`,
-                            {bubbles: true, composed: true}
-                        )
-                    );
-                }
-
-                // qc-radio-group
-                document.addEventListener(
-                    `qc.radio.removeInvalidFor${name}`,
-                    () => {
-                        invalid = false;
-                    }
-                );
-            </script>
-
-            <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>
-
-            <p>
-                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.displayOtherFor${name}</code> est émis au
-                clic d'un bouton radio dont l'attribut <code class="qc-bg-color-grey-pale">other</code> est à
-                <code class="qc-bg-color-grey-pale">true</code>. Si cet attribut est à <code class="qc-bg-color-grey-pale">false</code>,
-                l'événement <code class="qc-bg-color-grey-pale">qc.radio.hideOtherFor${name}</code> est émis par le bouton coché du
-                groupe concerné. S'assurer de remplacer la variable <code class="qc-bg-color-grey-pale">${name}</code>
-                par l'attribut <code class="qc-bg-color-grey-pale">name</code> du bon groupe de boutons radio.
-            </p>
-
-            <script id="qc-radio-show-other-events">
-                document.addEventListener("qc.radio.displayOtherForex-md-other", () => {
-                    console.log("Champ 'autre' visible");
-                });
-                document.addEventListener("qc.radio.hideOtherForex-md-other", () => {
-                    console.log("Champ 'autre' caché");
-                });
-            </script>
-
-            <qc-code target-id="qc-radio-show-other-events" language="javascript"></qc-code>
 
         </div>
     </main>
