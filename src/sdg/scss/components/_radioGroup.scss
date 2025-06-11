@@ -26,16 +26,29 @@
   justify-items: center;
 }
 
-.radio-options-sm {
+.qc-radio-options-sm {
   @extend %radio-options;
   margin-top: token-value(spacer, sm);
   row-gap: token-value(spacer, xs);
 }
 
-.radio-options-md {
+.qc-radio-options-md {
   @extend %radio-options;
   margin-top: token-value(spacer, md);
   row-gap: token-value(spacer, sm);
+}
+
+.qc-radio-required {
+  color: token-value(color, red, regular);
+}
+
+.qc-radio-required-text {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
 }
 
 .qc-fieldset-invalid {

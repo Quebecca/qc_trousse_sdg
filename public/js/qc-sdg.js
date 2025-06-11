@@ -5875,7 +5875,27 @@
 	        return false;
 	    }
 
-
+	    /**
+	     * Produces an array of props objects, with each object containing all props that start with the associated prefix
+	     * passed in tags
+	     * @param tags
+	     * @param defaultsAttributes
+	     * @param restProps
+	     * @returns {*} The array of props objects
+	     */
+	    static computeFieldsAttributes(tags, defaultsAttributes, restProps) {
+	        return tags.map(control => {
+	            const prefix = `${control}-`;
+	            return {
+	                ...defaultsAttributes[control],
+	                ...Object.fromEntries(
+	                    Object.entries(restProps)
+	                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
+	                        .filter(Boolean) // élimine les éléments null
+	                )
+	            };
+	        });
+	    }
 
 	}
 
@@ -6179,6 +6199,8 @@
 
 	var root_1$4 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6271,7 +6293,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
+				var div_5 = root_2();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8030,7 +8052,7 @@
 		let submitProps = state(proxy({}));
 
 		user_effect(() => {
-			const [inputAttrs, submitAttrs] = computeFieldsAttributes(rest);
+			const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input", "submit"], defaultsAttributes, rest);
 
 			set(inputProps, { ...inputAttrs, name: name() }, true);
 			set(submitProps, submitAttrs, true);
@@ -8051,6 +8073,7 @@
 		}
 
 		var div = root$4();
+		var div = root$2();
 		let classes;
 		var node = child(div);
 
@@ -8631,6 +8654,8 @@
 	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
 	var root_1 = template(`<legend> <!></legend>`);
 	var root$1 = template(`<div><fieldset><!> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
+	var root$1 = template(`<div><fieldset><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8660,53 +8685,43 @@
 
 		var div = root$1();
 		var fieldset = child(div);
-		var node = child(fieldset);
+		var legend_1 = child(fieldset);
+		var text = child(legend_1);
+		var node = sibling(text);
 
 		{
-			var consequent_1 = ($$anchor) => {
-				var legend_1 = root_1();
-				var text = child(legend_1);
-				var node_1 = sibling(text);
+			var consequent = ($$anchor) => {
+				var fragment = root_1();
+				var span = sibling(first_child(fragment), 2);
 
-				{
-					var consequent = ($$anchor) => {
-						var span = root_2();
-
-						append($$anchor, span);
-					};
-
-					if_block(node_1, ($$render) => {
-						if (Utils.isTruthy(required())) $$render(consequent);
-					});
-				}
-
-				reset(legend_1);
-				template_effect(() => set_text(text, `${legend() ?? ''} `));
-				append($$anchor, legend_1);
+				span.textContent = lang === "fr" ? "Requis" : "Required";
+				append($$anchor, fragment);
 			};
 
 			if_block(node, ($$render) => {
-				if (legend()) $$render(consequent_1);
+				if (Utils.isTruthy(required())) $$render(consequent);
 			});
 		}
 
-		var div_1 = sibling(node, 2);
-		var node_2 = child(div_1);
+		reset(legend_1);
 
-		snippet(node_2, () => children() ?? noop);
+		var div_1 = sibling(legend_1, 2);
+		var node_1 = child(div_1);
+
+		snippet(node_1, () => children() ?? noop);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(group, $$value), () => get(group));
 
 		var div_2 = sibling(div_1, 2);
-		var node_3 = child(div_2);
+		var node_2 = child(div_2);
 
-		Icon(node_3, {
+		Icon(node_2, {
 			type: 'warning',
 			color: 'red-regular',
 			size: 'md'
 		});
 
-		var p = sibling(node_3, 2);
+		var p = sibling(node_2, 2);
 		var text_1 = child(p, true);
 
 		reset(p);
@@ -8718,7 +8733,10 @@
 			($0, $1) => {
 				set_class(div, 1, $0);
 				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
-				set_class(div_1, 1, `radio-options-${size()}`);
+				set_attribute(fieldset, 'aria-describedby', name());
+				set_attribute(legend_1, 'id', name());
+				set_text(text, `${legend() ?? ''} `);
+				set_class(div_1, 1, `qc-radio-options-${size()}`);
 				set_class(div_2, 1, $1);
 				set_text(text_1, errorText());
 			},
@@ -8942,8 +8960,22 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
+			other = prop($$props, 'other', 7, false),
 			checked = prop($$props, 'checked', 7, false),
-			disabled = prop($$props, 'disabled', 7, false);
+			disabled = prop($$props, 'disabled', 7, false),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'name',
+				'value',
+				'label',
+				'size',
+				'other',
+				'checked',
+				'disabled'
+			]);
 
 		let inputInstance = state(void 0);
 
@@ -8962,8 +8994,24 @@
 			return truthyProps;
 		});
 
+		let restProps = state(proxy({}));
+
+		onMount(() => {
+			const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
+
+			set(restProps, { ...inputProps }, true);
+		});
+
 		function removeInvalid() {
 			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
+		}
+
+		function displayOther() {
+			if (Utils.isTruthy(other())) {
+				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.displayOtherFor${name()}`, { bubbles: true, composed: true }));
+			} else {
+				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.hideOtherFor${name()}`, { bubbles: true, composed: true }));
+			}
 		}
 
 		var div = root();
@@ -8971,7 +9019,11 @@
 
 		remove_input_defaults(input);
 
-		var event_handler = () => removeInvalid();
+		var event_handler = () => {
+			removeInvalid();
+			displayOther();
+		};
+
 		let attributes;
 
 		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
@@ -8991,6 +9043,7 @@
 				name: name(),
 				value: value(),
 				...get(boolAttributes),
+				...get(restProps),
 				onclick: event_handler
 			});
 
@@ -9029,6 +9082,13 @@
 				size($$value);
 				flushSync();
 			},
+			get other() {
+				return other();
+			},
+			set other($$value = false) {
+				other($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -9053,6 +9113,7 @@
 			value: {},
 			label: {},
 			size: {},
+			other: {},
 			checked: {},
 			disabled: {}
 		},
@@ -9069,11 +9130,29 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7),
+			other = prop($$props, 'other', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
-			invalid = prop($$props, 'invalid', 7);
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'parent',
+				'name',
+				'value',
+				'label',
+				'size',
+				'other',
+				'checked',
+				'disabled'
+			]);
 
 		onMount(() => {
+			if (other() === "") {
+				other("true");
+			}
+
 			if (checked() === "") {
 				checked("true");
 			}
@@ -9081,39 +9160,37 @@
 			if (disabled() === "") {
 				disabled("true");
 			}
-
-			if (invalid() === "") {
-				invalid("true");
-			}
 		});
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
-		const expression_2 = user_derived(() => parent()?.invalid ?? invalid());
 
-		RadioButton($$anchor, {
-			get name() {
-				return get(expression);
+		RadioButton($$anchor, spread_props(
+			{
+				get name() {
+					return get(expression);
+				},
+				get value() {
+					return value();
+				},
+				get label() {
+					return label();
+				},
+				get size() {
+					return get(expression_1);
+				},
+				get other() {
+					return other();
+				},
+				get checked() {
+					return checked();
+				},
+				get disabled() {
+					return disabled();
+				}
 			},
-			get value() {
-				return value();
-			},
-			get label() {
-				return label();
-			},
-			get size() {
-				return get(expression_1);
-			},
-			get checked() {
-				return checked();
-			},
-			get disabled() {
-				return disabled();
-			},
-			get invalid() {
-				return get(expression_2);
-			}
-		});
+			() => rest
+		));
 
 		return pop({
 			get parent() {
@@ -9151,6 +9228,13 @@
 				size($$value);
 				flushSync();
 			},
+			get other() {
+				return other();
+			},
+			set other($$value) {
+				other($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -9164,13 +9248,6 @@
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value) {
-				invalid($$value);
-				flushSync();
 			}
 		});
 	}
@@ -9182,9 +9259,9 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
+			other: { attribute: 'other', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
 			parent: {}
 		},
 		[],

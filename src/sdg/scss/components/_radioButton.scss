@@ -105,7 +105,3 @@ input[type=radio]::before {
     background: token-value(color, blue, regular);
   }
 }
-
-.qc-radio-required {
-  color: token-value(color, red, regular);
-}

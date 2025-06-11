@@ -6,9 +6,9 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         size: {attribute: 'size', type: 'String'},
+        other: {attribute: 'other', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -35,20 +35,21 @@
         value,
         label,
         size,
+        other,
         checked,
         disabled,
-        invalid
+        ...rest
     } = $props();
 
     onMount(() => {
+        if(other === "") {
+            other = "true";
+        }
         if (checked === "") {
             checked = "true";
         }
         if (disabled === "") {
             disabled = "true";
-        }
-        if (invalid === "") {
-            invalid = "true";
         }
     });
 </script>
@@ -58,7 +59,8 @@
     {value}
     {label}
     size={parent?.size ?? size}
+    {other}
     {checked}
     {disabled}
-    invalid={parent?.invalid ?? invalid}
+    {...rest}
 />

@@ -28,33 +28,15 @@
 
 
     $effect(() => {
-        const [inputAttrs, submitAttrs] = computeFieldsAttributes(rest);
+        const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input","submit"], defaultsAttributes, rest);
         inputProps = {
             ...inputAttrs,
             name,
         };
         submitProps = submitAttrs;
     });
-
-    /**
-     * @param {{[p: string]: T}} restProps
-     */
-    function computeFieldsAttributes(restProps) {
-        return ["input","submit"].map(control => {
-            const prefix = `${control}-`;
-            return {
-                ...defaultsAttributes[control],
-                ...Object.fromEntries(
-                    Object.entries(restProps)
-                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
-                        .filter(Boolean) // élimine les éléments null
-                )
-            };
-        });
-    }
-
-
 </script>
+
 <div class="qc-search-bar" class:piv-background={pivBackground}>
     <SearchInput bind:value {...inputProps}/>
         <IconButton
