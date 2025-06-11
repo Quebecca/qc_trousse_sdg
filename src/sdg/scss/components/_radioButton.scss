@@ -4,7 +4,7 @@
 %radio-style {
   display: flex;
   align-items: center;
-  height: token-value(spacer, md);
+  min-height: token-value(spacer, md);
   margin: 0;
 
   // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html

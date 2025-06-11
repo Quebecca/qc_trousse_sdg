@@ -1489,7 +1489,9 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <button type="submit">Soumettre</button>
+                <button class="btn btn-sm btn-primary" type="submit">
+                    Soumettre
+                </button>
                 </form>
             </qc-doc-exemple>
 
@@ -1503,8 +1505,9 @@
                     const groups = formToValidate.querySelectorAll("qc-radio-group");
                     let validForm = true;
                     groups.forEach((group) => {
-                        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
-                        if (group.required && !checkedValue) {
+                        const checkedValues = Array.from(formToValidate.querySelectorAll(`qc-radio-button${group.name}`))
+                            .find(r => r.checked);
+                        if (group.required && !checkedValues) {
                             group.invalid = true;
                             validForm = false;
                         }
