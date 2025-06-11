@@ -9,6 +9,8 @@
         checked: { attribute: 'checked', type: 'Boolean' },
         required: { attribute: 'required', type: 'Boolean' },
         size: { attribute: 'size', type: 'String' },
+        invalid: { attribute: 'invalid', type: 'Boolean' },
+        errorText: { attribute: 'error-text', type: 'String' }
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -26,12 +28,31 @@
 
 <script>
     import Checkbox from "./Checkbox.svelte";
+    import { onMount } from "svelte";
 
-    let {inner, outer, value, label, name, disabled, checked, required, size} = $props();
+    let {
+        inner, 
+        outer, 
+        value, 
+        label, 
+        name, 
+        disabled, 
+        checked, 
+        required, 
+        size,
+        invalid,
+        errorText
+    } = $props();
 
     let effectiveValue = $derived(value || label);
     let effectiveName = $derived(outer?.getAttribute('name') || name || '');
     let effectiveSize = $derived(outer?.getAttribute('size') || size || 'md');
+
+    onMount(() => {
+        if (invalid === "") {
+            invalid = "true";
+        }
+    });
 </script>
 
 <Checkbox
@@ -42,4 +63,6 @@
     {checked}
     {required}
     size={effectiveSize}
+    {invalid}
+    {errorText}
 ></Checkbox>

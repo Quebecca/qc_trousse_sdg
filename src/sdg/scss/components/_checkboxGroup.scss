@@ -57,6 +57,7 @@ fieldset {
   color: token-value(color, red, regular);
   align-items: center;
   height: token-value(spacer, md);
+  margin-left: token-value(spacer, xs);
 
   p {
     margin-left: token-value(spacer, xs);

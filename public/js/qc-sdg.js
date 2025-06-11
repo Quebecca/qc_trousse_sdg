@@ -8504,17 +8504,19 @@
 		}
 	));
 
-	var root_1$1 = template(`<span class="required qc-hash-kavic5">*</span>`);
-	var root$2 = template(`<div><input type="checkbox"> <label> <!></label></div>`);
+	var root_1$1 = template(`<span class="required qc-hash-essqr3">*</span>`);
+	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!> <p> </p></div></div>`);
 
 	const $$css = {
-		hash: 'qc-hash-kavic5',
-		code: '.required.qc-hash-kavic5 {color:var(--qc-color-red-regular);margin-left:0.25rem;}'
+		hash: 'qc-hash-essqr3',
+		code: '.required.qc-hash-essqr3 {color:var(--qc-color-red-regular);margin-left:0.25rem;}.checkbox-container.qc-hash-essqr3 {display:flex;flex-direction:column;gap:var(--qc-spacer-sm);}'
 	};
 
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
+
+		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
@@ -8522,17 +8524,28 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			checked = prop($$props, 'checked', 7, false),
 			required = prop($$props, 'required', 7, false),
-			size = prop($$props, 'size', 7, "md");
+			size = prop($$props, 'size', 7, "md"),
+			invalid = prop($$props, 'invalid', 7, false),
+			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
 
 		let id = user_derived(() => name() + "_" + value());
 		let inputInstance;
 
 		function removeInvalid() {
+			invalid(false);
 			inputInstance.dispatchEvent(new CustomEvent(`qc.checkbox.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
 		}
 
+		function handleInvalid(event) {
+			if (required() && !checked()) {
+				event.preventDefault();
+				invalid(true);
+			}
+		}
+
 		var div = root$2();
-		var input = child(div);
+		var div_1 = child(div);
+		var input = child(div_1);
 
 		remove_input_defaults(input);
 		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
@@ -8554,21 +8567,47 @@
 		}
 
 		reset(label_1);
-		reset(div);
+		reset(div_1);
 
-		template_effect(() => {
-			set_class(div, 1, `checkbox-${size() ?? ''}`, 'qc-hash-kavic5');
-			set_value(input, value());
-			set_attribute(input, 'name', name());
-			set_attribute(input, 'id', get(id));
-			input.disabled = disabled();
-			set_checked(input, checked());
-			input.required = required();
-			set_attribute(label_1, 'for', get(id));
-			set_text(text, `${label() ?? ''} `);
+		var div_2 = sibling(div_1, 2);
+		var node_1 = child(div_2);
+
+		Icon(node_1, {
+			type: 'warning',
+			color: 'red-regular',
+			size: 'md'
 		});
 
+		var p = sibling(node_1, 2);
+		var text_1 = child(p, true);
+
+		reset(p);
+		reset(div_2);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, $0, 'qc-hash-essqr3');
+				set_class(div_1, 1, `checkbox-${size() ?? ''}`, 'qc-hash-essqr3');
+				set_value(input, value());
+				set_attribute(input, 'name', name());
+				set_attribute(input, 'id', get(id));
+				input.disabled = disabled();
+				set_checked(input, checked());
+				input.required = required();
+				set_attribute(label_1, 'for', get(id));
+				set_text(text, `${label() ?? ''} `);
+				set_class(div_2, 1, $1, 'qc-hash-essqr3');
+				set_text(text_1, errorText());
+			},
+			[
+				() => `checkbox-container${Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""}`,
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+			]
+		);
+
 		event('change', input, removeInvalid);
+		event('invalid', input, handleInvalid);
 		append($$anchor, div);
 
 		return pop({
@@ -8620,6 +8659,22 @@
 			set size($$value = "md") {
 				size($$value);
 				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText(
+				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
+			) {
+				errorText($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8633,7 +8688,9 @@
 			disabled: {},
 			checked: {},
 			required: {},
-			size: {}
+			size: {},
+			invalid: {},
+			errorText: {}
 		},
 		[],
 		[],
@@ -8651,11 +8708,19 @@
 			disabled = prop($$props, 'disabled', 7),
 			checked = prop($$props, 'checked', 7),
 			required = prop($$props, 'required', 7),
-			size = prop($$props, 'size', 7);
+			size = prop($$props, 'size', 7),
+			invalid = prop($$props, 'invalid', 7),
+			errorText = prop($$props, 'errorText', 7);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
 		let effectiveSize = user_derived(() => outer()?.getAttribute('size') || size() || 'md');
+
+		onMount(() => {
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
 
 		Checkbox($$anchor, {
 			get value() {
@@ -8678,6 +8743,12 @@
 			},
 			get size() {
 				return get(effectiveSize);
+			},
+			get invalid() {
+				return invalid();
+			},
+			get errorText() {
+				return errorText();
 			}
 		});
 
@@ -8744,6 +8815,20 @@
 			set size($$value) {
 				size($$value);
 				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText($$value) {
+				errorText($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8758,6 +8843,8 @@
 			checked: { attribute: 'checked', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },
 			size: { attribute: 'size', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
+			errorText: { attribute: 'error-text', type: 'String' },
 			inner: {},
 			outer: {}
 		},
