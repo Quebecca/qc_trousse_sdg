@@ -15,6 +15,11 @@
   @include content-font(sm, bold);
 }
 
+.qc-checkbox-fieldset-md {
+  @extend %checkbox-fieldset;
+  @include content-font(md, bold);
+}
+
 .qc-checkbox-legend {
   @include content-font(md);
   color: token-value(color blue dark);
@@ -23,15 +28,16 @@
   padding: 0;
 }
 
-.qc-checkbox-fieldset-md {
-  @extend %checkbox-fieldset;
-  @include content-font(md, bold);
+fieldset {
+  border: none;
 }
 
 %checkbox-group {
   display: flex;
   flex-direction: column;
   justify-items: center;
+  margin-left: token-value(spacer, xs);
+  padding: 0;
 }
 
 .checkbox-group-sm {
@@ -49,7 +55,6 @@
 .qc-checkbox-invalid {
   display: flex;
   color: token-value(color, red, regular);
-  margin-top: token-value(spacer, sm);
   align-items: center;
   height: token-value(spacer, md);
 
@@ -57,6 +62,7 @@
     margin-left: token-value(spacer, xs);
     margin-bottom: 0;
     align-items: center;
+    @include content-font(md, bold);
   }
 }
 

@@ -6197,9 +6197,7 @@
 		true
 	));
 
-	var root_1$4 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
-	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6266,7 +6264,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$4();
+				var div_2 = root_1$5();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7010,7 +7008,7 @@
 		true
 	));
 
-	var root_1$3 = template(`<img>`);
+	var root_1$4 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
 	var root$a = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
@@ -7050,7 +7048,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$3();
+				var img = root_1$4();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7501,7 +7499,7 @@
 		true
 	);
 
-	var root_1$2 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root_1$3 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	var root$8 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
@@ -7533,7 +7531,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$2();
+				var div = root_1$3();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8058,22 +8056,7 @@
 			set(submitProps, submitAttrs, true);
 		});
 
-		/**
-		 * @param {{[p: string]: T}} restProps
-		 */
-		function computeFieldsAttributes(restProps) {
-			return ["input", "submit"].map((control) => {
-				const prefix = `${control}-`;
-
-				return {
-					...defaultsAttributes[control],
-					...Object.fromEntries(Object.entries(restProps).map(([k, v]) => k.startsWith(prefix) ? [k.replace(prefix, ''), v] : null).filter(Boolean)) // élimine les éléments null
-				};
-			});
-		}
-
 		var div = root$4();
-		var div = root$2();
 		let classes;
 		var node = child(div);
 
@@ -8212,17 +8195,27 @@
 		false
 	));
 
-	var root$3 = template(`<fieldset><legend class="qc-checkbox-legend"> </legend> <div id="pseudo-slot"></div></fieldset>`);
-	const $$css$1 = { hash: 'qc-hash-32ttx', code: '' };
+	var root_1$2 = template(`<span class="qc-checkbox-required qc-hash-hise16" aria-hidden="true">&nbsp;*</span>`);
+	var root$3 = template(`<div><fieldset><legend class="qc-checkbox-legend"> <!></legend> <div id="pseudo-slot"></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+
+	const $$css$1 = {
+		hash: 'qc-hash-hise16',
+		code: '.qc-checkbox-required.qc-hash-hise16 {color:var(--qc-color-red-regular);}'
+	};
 
 	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
 		append_styles$1($$anchor, $$css$1);
 
+		const lang = Utils.getPageLanguage();
+
 		let inners = prop($$props, 'inners', 7),
 			legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			size = prop($$props, 'size', 7, "md");
+			size = prop($$props, 'size', 7, "md"),
+			required = prop($$props, 'required', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
+			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
 
 		let pseudo;
 
@@ -8231,26 +8224,69 @@
 
 		onMount(() => {
 			inners().forEach((inner) => pseudo.appendChild(inner));
+
+			document.addEventListener(`qc.checkbox.removeInvalidFor${name()}`, () => {
+				invalid(false);
+			});
 		});
 
-		var fieldset = root$3();
+		var div = root$3();
+		var fieldset = child(div);
 		var legend_1 = child(fieldset);
-		var text = child(legend_1, true);
+		var text = child(legend_1);
+		var node = sibling(text);
+
+		{
+			var consequent = ($$anchor) => {
+				var span = root_1$2();
+
+				append($$anchor, span);
+			};
+
+			if_block(node, ($$render) => {
+				if (Utils.isTruthy(required())) $$render(consequent);
+			});
+		}
 
 		reset(legend_1);
 
-		var div = sibling(legend_1, 2);
+		var div_1 = sibling(legend_1, 2);
 
-		bind_this(div, ($$value) => pseudo = $$value, () => pseudo);
-		reset(fieldset);
+		bind_this(div_1, ($$value) => pseudo = $$value, () => pseudo);
 
-		template_effect(() => {
-			set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`);
-			set_text(text, legend());
-			set_class(div, 1, `checkbox-group-${size() ?? ''}`);
+		var div_2 = sibling(div_1, 2);
+		var node_1 = child(div_2);
+
+		Icon(node_1, {
+			type: 'warning',
+			color: 'red-regular',
+			size: 'md'
 		});
 
-		append($$anchor, fieldset);
+		var p = sibling(node_1, 2);
+		var text_1 = child(p, true);
+
+		reset(p);
+		reset(div_2);
+		reset(fieldset);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, $0);
+				set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
+				set_text(text, `${legend() ?? ''} `);
+				set_class(div_1, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
+				set_class(div_2, 1, $1, 'qc-hash-hise16');
+				set_text(text_1, errorText());
+			},
+			[
+				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+			]
+		);
+
+		append($$anchor, div);
 
 		return pop({
 			get inners() {
@@ -8280,11 +8316,48 @@
 			set size($$value = "md") {
 				size($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText(
+				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
+			) {
+				errorText($$value);
+				flushSync();
 			}
 		});
 	}
 
-	create_custom_element(CheckboxGroup, { inners: {}, legend: {}, name: {}, size: {} }, [], [], true);
+	create_custom_element(
+		CheckboxGroup,
+		{
+			inners: {},
+			legend: {},
+			name: {},
+			size: {},
+			required: {},
+			invalid: {},
+			errorText: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	function CheckboxGroupWC($$anchor, $$props) {
 		push($$props, true);
@@ -8292,7 +8365,20 @@
 		let inners = prop($$props, 'inners', 7),
 			legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			size = prop($$props, 'size', 7, "md");
+			size = prop($$props, 'size', 7, "md"),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 7),
+			errorText = prop($$props, 'errorText', 7);
+
+		onMount(() => {
+			if (required() === "") {
+				required("true");
+			}
+
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
 
 		CheckboxGroup($$anchor, {
 			get inners() {
@@ -8306,6 +8392,15 @@
 			},
 			get size() {
 				return size();
+			},
+			get required() {
+				return required();
+			},
+			get invalid() {
+				return invalid();
+			},
+			get errorText() {
+				return errorText();
 			}
 		});
 
@@ -8337,6 +8432,27 @@
 			set size($$value = "md") {
 				size($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText($$value) {
+				errorText($$value);
+				flushSync();
 			}
 		});
 	}
@@ -8346,6 +8462,9 @@
 		{
 			shared: { attribute: 'shared' },
 			size: { attribute: 'size', type: 'String' },
+			required: { attribute: 'required', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' },
+			errorText: { attribute: 'error-text', type: 'String' },
 			inners: {},
 			legend: {},
 			name: {}
@@ -8385,12 +8504,12 @@
 		}
 	));
 
-	var root_1$1 = template(`<span class="required qc-hash-1dc2eqh">*</span>`);
+	var root_1$1 = template(`<span class="required qc-hash-kavic5">*</span>`);
 	var root$2 = template(`<div><input type="checkbox"> <label> <!></label></div>`);
 
 	const $$css = {
-		hash: 'qc-hash-1dc2eqh',
-		code: '.required.qc-hash-1dc2eqh {color:var(--qc-color-red-regular);margin-left:0.25rem;}'
+		hash: 'qc-hash-kavic5',
+		code: '.required.qc-hash-kavic5 {color:var(--qc-color-red-regular);margin-left:0.25rem;}'
 	};
 
 	function Checkbox($$anchor, $$props) {
@@ -8406,10 +8525,17 @@
 			size = prop($$props, 'size', 7, "md");
 
 		let id = user_derived(() => name() + "_" + value());
+		let inputInstance;
+
+		function removeInvalid() {
+			inputInstance.dispatchEvent(new CustomEvent(`qc.checkbox.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
+		}
+
 		var div = root$2();
 		var input = child(div);
 
 		remove_input_defaults(input);
+		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
 
 		var label_1 = sibling(input, 2);
 		var text = child(label_1);
@@ -8431,7 +8557,7 @@
 		reset(div);
 
 		template_effect(() => {
-			set_class(div, 1, `checkbox-${size() ?? ''}`, 'qc-hash-1dc2eqh');
+			set_class(div, 1, `checkbox-${size() ?? ''}`, 'qc-hash-kavic5');
 			set_value(input, value());
 			set_attribute(input, 'name', name());
 			set_attribute(input, 'id', get(id));
@@ -8442,6 +8568,7 @@
 			set_text(text, `${label() ?? ''} `);
 		});
 
+		event('change', input, removeInvalid);
 		append($$anchor, div);
 
 		return pop({
@@ -8651,9 +8778,6 @@
 		}
 	));
 
-	var root_2 = template(`<span class="qc-radio-required">&nbsp*</span>`);
-	var root_1 = template(`<legend> <!></legend>`);
-	var root$1 = template(`<div><fieldset><!> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
 	var root$1 = template(`<div><fieldset><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 

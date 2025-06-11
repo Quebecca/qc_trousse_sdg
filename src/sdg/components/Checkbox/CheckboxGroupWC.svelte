@@ -4,6 +4,9 @@
     props: {
         shared: {attribute:'shared'},
         size: { attribute: 'size', type: 'String' },
+        required: { attribute: 'required', type: 'String' },
+        invalid: { attribute: 'invalid', type: 'String' },
+        errorText: { attribute: 'error-text', type: 'String' }
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -37,9 +40,36 @@
     }
 }} />
 
-
 <script>
     import CheckboxGroup from "./CheckboxGroup.svelte";
-    let {inners, legend, name, size = "md" } = $props();
+    import { onMount } from "svelte";
+
+    let {
+        inners,
+        legend,
+        name,
+        size = "md",
+        required,
+        invalid,
+        errorText
+    } = $props();
+
+    onMount(() => {
+        if (required === "") {
+            required = "true";
+        }
+        if (invalid === "") {
+            invalid = "true";
+        }
+    });
 </script>
-<CheckboxGroup {inners} {legend} {name} {size}></CheckboxGroup>
+
+<CheckboxGroup
+    {inners}
+    {legend}
+    {name}
+    {size}
+    {required}
+    {invalid}
+    {errorText}
+/>
