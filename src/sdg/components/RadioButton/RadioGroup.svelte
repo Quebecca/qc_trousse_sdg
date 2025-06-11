@@ -42,13 +42,17 @@
             {@render children?.()}
         </div>
 
-        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
-            <Icon
-                type="warning"
-                color="red-regular"
-                size="md"
-            />
-            <p>{errorText}</p>
+        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? " qc-radio-invalid-visible" : ""}`} role="alert">
+            {#if Utils.isTruthy(invalid)}
+                <div class="qc-radio-invalid-icon">
+                    <Icon
+                        type="warning"
+                        color="red-regular"
+                        size="md"
+                    />
+                </div>
+                <span>{errorText}</span>
+            {/if}
         </div>
     </fieldset>
 </div>
