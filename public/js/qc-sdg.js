@@ -8144,6 +8144,7 @@
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
+		let instance = state(void 0);
 		let group = state(void 0);
 
 		onMount(() => {
@@ -8151,7 +8152,7 @@
 				get(group).appendChild(option);
 			});
 
-			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
+			get(instance).addEventListener("change", () => {
 				invalid(false);
 			});
 		});
@@ -8200,6 +8201,7 @@
 		reset(p);
 		reset(div_2);
 		reset(fieldset);
+		bind_this(fieldset, ($$value) => set(instance, $$value), () => get(instance));
 		reset(div);
 
 		template_effect(
@@ -8474,27 +8476,10 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		function removeInvalid() {
-			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
-		}
-
-		function displayOther() {
-			if (Utils.isTruthy(other())) {
-				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.displayOtherFor${name()}`, { bubbles: true, composed: true }));
-			} else {
-				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.hideOtherFor${name()}`, { bubbles: true, composed: true }));
-			}
-		}
-
 		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
-
-		var event_handler = () => {
-			removeInvalid();
-			displayOther();
-		};
 
 		let attributes;
 
@@ -8515,8 +8500,7 @@
 				name: name(),
 				value: value(),
 				...get(boolAttributes),
-				...get(restProps),
-				onclick: event_handler
+				...get(restProps)
 			});
 
 			set_attribute(label_1, 'for', `${name()}_${value()}`);

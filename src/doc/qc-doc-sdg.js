@@ -43,19 +43,6 @@ function validateRadioForm(event, formToValidate) {
         }
     });
 }
-
-const otherRadioGroup = document.querySelector("qc-radio-group[name='ex-md-other']");
-const otherField = document.createElement("input");
-otherField.setAttribute("type", "text");
-
-document.addEventListener("qc.radio.displayOtherForex-md-other", () => {
-   otherRadioGroup.appendChild(otherField);
-});
-document.addEventListener("qc.radio.hideOtherForex-md-other", () => {
-    if (otherRadioGroup.lastChild === otherField) {
-        otherRadioGroup.removeChild(otherField);
-    }
-});
 // add version
 
 
