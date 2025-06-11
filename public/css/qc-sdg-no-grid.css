@@ -1836,7 +1836,7 @@ qc-search-bar {
 .qc-radio-md, .qc-radio-sm {
   display: flex;
   align-items: center;
-  height: var(--qc-spacer-md);
+  min-height: var(--qc-spacer-md);
   margin: 0;
 }
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
@@ -1958,7 +1958,7 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
   margin-top: var(--qc-spacer-sm);
   align-items: center;
-  height: var(--qc-spacer-md);
+  min-height: var(--qc-spacer-md);
 }
 .qc-radio-invalid p {
   margin-left: var(--qc-spacer-xs);
