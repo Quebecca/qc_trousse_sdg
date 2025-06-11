@@ -1,0 +1,235 @@
+@use "qc-sdg-lib" as *;
+@use "sass:map";
+@use "base/typography";
+
+@mixin scrollbar {
+    &::-webkit-scrollbar {
+        width: rem(8);
+        margin-left: rem(5);
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: #fff;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: token-value(color blue piv);
+        border-radius: rem(15);
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: token-value(color blue piv);
+    }
+}
+
+%control {
+    border: 1px solid token-value(color grey medium);
+    padding: rem(8) rem(32) rem(8) rem(8);
+
+    &:focus {
+        outline: 2px solid token-value(color blue light);
+        border: 1px solid token-value(color blue dark);
+        box-shadow: none;
+    }
+}
+
+qc-select-box {
+    @include content-font($include-family: 1);
+    .qc-select-select-box {
+        z-index: auto;
+        min-width: rem(136);
+        max-width: rem(342);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: rem(4);
+    }
+
+    [aria-invalid=true] {
+        border: 2px solid token-value(color red regular);
+    }
+
+    .required {
+        color: token-value(color red regular);
+    }
+
+    .combo-error {
+        color: token-value(color red regular);
+        padding-left: rem(32);
+        background-image: getImageUrl(error);
+        background-repeat: no-repeat;
+        background-position: left top;
+        margin-top: rem(8);
+        display: inline-block;
+        font-weight: 600;
+    }
+
+    [role=combobox] {
+        @extend %control;
+        cursor: pointer;
+        min-width: 0;
+        min-height: rem(24);
+        color: token-value(color grey dark);
+        font-size: rem(16);
+        font-weight: 400;
+        background-color: white;
+        background-image: getImageUrl(chevron-bas);
+        background-repeat: no-repeat;
+        background-position: right rem(8) center;
+        //max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        &[aria-expanded=true] {
+            //border-bottom: none!important;
+            white-space: normal;
+            background-image: getImageUrl(chevron-haut);
+        }
+
+        &[aria-activedescendant] {
+            color: token-value(color blue dark);
+        }
+    }
+
+    .panel-wrapper {
+        position: relative;
+
+        .panel {
+            display: flex;
+            z-index: 100;
+            flex-direction: column;
+            border: 1px solid token-value(color grey dark);
+            padding: 0;
+            border-top: none !important;
+            background: white;
+            position: absolute;
+            // pour masquer la séparation avec la bouton
+            top: -1px;
+            min-width: calc(100% - 2px);
+            background: white;
+
+
+            [type=search] {
+                @extend %control;
+                font-family: "Open Sans", sans-serif;
+                font-size: rem(16);
+                margin: rem(8);
+                padding: rem(8) rem(24) rem(8) rem(8);
+                background-image: getImageUrl(loupe-piv);
+                background-size: rem(16);
+                background-repeat: no-repeat;
+                background-position: right rem(8) center;
+                /* clears the ‘X’ from Chrome */
+                &::-webkit-search-decoration,
+                &::-webkit-search-cancel-button,
+                &::-webkit-search-results-button,
+                &::-webkit-search-results-decoration {
+                    display: none;
+                }
+            }
+
+            [role=listbox] {
+                max-height: rem(5 * 32);
+                overflow-y: auto;
+                scrollbar-color: token-value(color blue piv);
+                list-style-type: none;
+                padding: 1px 0 0 0;
+                margin: 0;
+                @include scrollbar;
+            }
+
+            [role=option] {
+                padding: rem(8);
+
+                &:hover, &:focus {
+                    background-color: token-value(color blue pale);
+                    cursor: pointer;
+                }
+
+                &[aria-selected=true] {
+                    background-color: token-value(color blue regular) !important;
+                    color: white;
+                }
+
+                &.form-check {
+                    label {
+                        font-weight: 400;
+                        cursor: pointer;
+                        margin-bottom: 0;
+                        width: 100%;
+                        display: block;
+
+                        .form-check-input {
+                            height: rem(16) !important;
+                            width: rem(16) !important;
+                        }
+                    }
+
+                    &[aria-selected=true] {
+                        background-color: unset !important;
+                        color: inherit;
+                    }
+
+                    &:hover, &:focus {
+                        background-color: token-value(color blue pale) !important;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
+    .width-control-xl {
+        width: rem(450);
+        max-width: rem(450);
+    }
+
+    .width-control-lg {
+        width: rem(318);
+        max-width: rem(318);
+    }
+
+    .width-control-md {
+        width: rem(232);
+        max-width: rem(232);
+    }
+
+    .width-control-sm {
+        width: rem(120);
+        max-width: rem(120);
+        margin-right: rem(24);
+        min-width: fit-content;
+
+        @include  media-breakpoint-down(xs) {
+            margin-bottom: rem(24);
+        }
+    }
+
+    @include  media-breakpoint-down(xs) {
+        .width-control-xl, .width-control-lg, .width-control-md {
+            width: 100%;
+        }
+    }
+
+
+    .sr-only {
+        @include sr-only();
+    }
+
+}
+
+
+
+
+
+
+
+

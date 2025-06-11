@@ -53,6 +53,43 @@ export class Utils {
         return false;
     }
 
+    /**
+     * Nettoie un mot en supprimant les accents, le convertissant en minuscules et en
+     * remplaçant les caractères spéciaux par des espaces.
+     *
+     * @param {any} value Le mot à nettoyer.
+     * @returns {string} La chaîne de caractères représentant le mot nettoyé.
+     */
+    static cleanWord(value) {
+        let word = String(value)
+        /**
+         * Remplace les lettres accentuées par leur version non accentuée.
+         * @param {string} str La chaîne de caractères à traiter.
+         * @param {string} search Les caractères accentués à rechercher.
+         * @param {string} replace Le caractère de remplacement.
+         * @returns {string} La chaîne de caractères avec les accents remplacés.
+         */
+        function replaceAccents(str, search, replace) {
+            return str.replaceAll(new RegExp(search, 'gi'), replace);
+        }
+
+        // Supprime les accents.
+        word = replaceAccents(word, /[éèêë]/gi, 'e');
+        word = replaceAccents(word, /[àäâ]/gi, 'a');
+        word = replaceAccents(word, /[ùûü]/gi, 'u');
+        word = replaceAccents(word, /[ïî]/gi, 'i');
+        word = replaceAccents(word, /[ôö]/gi, 'i');
+        word = replaceAccents(word, /[œ]/gi, 'oe');
+        word = replaceAccents(word, /[æ]/gi, 'ae');
+
+        // Remplace les caractères spéciaux par des espaces.
+        word = word.replaceAll(/[-_—–]/gi, ' ');
+        word = word.replaceAll(/’/gi, "'");
+
+        // Convertit le mot en minuscules.
+        return word.toLowerCase();
+    }
+
 
 
 }
