@@ -2150,6 +2150,7 @@ fieldset {
   color: var(--qc-color-red-regular);
   align-items: center;
   height: var(--qc-spacer-md);
+  margin-left: var(--qc-spacer-xs);
 }
 .qc-checkbox-invalid p {
   margin-left: var(--qc-spacer-xs);
