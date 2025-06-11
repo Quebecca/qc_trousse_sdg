@@ -2035,12 +2035,16 @@ input[type=radio]::before {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z"/></svg>');
-          mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z"/></svg>');
+  width: 16px;
+  height: 12px;
+  mask-image: url("../../../../public/img/checkmark.svg");
+  -webkit-mask-image: url("../../../../public/img/checkmark.svg");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
+  mask-position: center;
   -webkit-mask-position: center;
-          mask-position: center;
   background-color: var(--qc-color-white);
 }
 .checkbox-md input[type=checkbox]:disabled, .checkbox-sm input[type=checkbox]:disabled {
