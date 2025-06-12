@@ -26,11 +26,11 @@
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
-        <legend id={name}>
+    <fieldset class="qc-radio-fieldset" aria-describedby={`id_${name}`}>
+        <legend class="qc-radio-legend" id={`id_${name}`}>
             {legend}
             {#if Utils.isTruthy(required)}
-                <span class="qc-radio-required" aria-hidden="true">&nbsp*</span>
+                <span class="qc-radio-required" aria-hidden="true">*</span>
             {/if}
         </legend>
 

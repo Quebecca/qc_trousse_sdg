@@ -6,7 +6,7 @@
         size: { attribute: 'size', type: 'String' },
         required: { attribute: 'required', type: 'String' },
         invalid: { attribute: 'invalid', type: 'String' },
-        errorText: { attribute: 'error-text', type: 'String' }
+        invalidText: { attribute: 'invalid-text', type: 'String' }
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -51,7 +51,7 @@
         size = "md",
         required,
         invalid,
-        errorText
+        invalidText
     } = $props();
 
     onMount(() => {
@@ -71,5 +71,5 @@
     {size}
     {required}
     {invalid}
-    {errorText}
+    {invalidText}
 />

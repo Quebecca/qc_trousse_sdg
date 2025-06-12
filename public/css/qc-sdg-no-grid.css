@@ -1935,6 +1935,11 @@ input[type=radio]::before {
   justify-items: center;
 }
 
+.qc-radio-legend {
+  display: flex;
+  flex-direction: row;
+}
+
 .qc-radio-options-sm {
   margin-top: var(--qc-spacer-sm);
   row-gap: var(--qc-spacer-xs);
@@ -1946,7 +1951,9 @@ input[type=radio]::before {
 }
 
 .qc-radio-required {
+  display: flex;
   color: var(--qc-color-red-regular);
+  margin-left: var(--qc-spacer-xs);
 }
 
 .qc-fieldset-invalid {
