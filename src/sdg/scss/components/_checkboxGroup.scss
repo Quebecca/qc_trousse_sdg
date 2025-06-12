@@ -43,7 +43,6 @@
 .qc-checkbox-invalid {
   display: flex;
   color: token-value(color, red, regular);
-  margin-top: token-value(spacer, sm);
   align-items: center;
 
   .qc-checkbox-invalid-icon {
@@ -53,6 +52,7 @@
   }
 
   &.qc-checkbox-invalid-visible {
+    margin-top: token-value(spacer, sm);
     min-height: token-value(spacer, md);
   }
 }

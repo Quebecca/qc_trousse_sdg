@@ -39,7 +39,7 @@
     console.log(hasParentGroup)
 </script>
 
-<div class={`checkbox-container${Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}`}>
+<div>
     <div class="checkbox-{size}">
         <input
             type="checkbox"
@@ -70,16 +70,3 @@
         {/if}
     </div>
 </div>
-
-<style>
-    .required {
-        color: var(--qc-color-red-regular);
-        margin-left: 0.25rem;
-    }
-
-    .checkbox-container {
-        display: flex;
-        flex-direction: column;
-        gap: var(--qc-spacer-sm);
-    }
-</style>

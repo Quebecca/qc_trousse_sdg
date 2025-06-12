@@ -1978,9 +1978,9 @@ input[type=radio]::before {
 .checkbox-md, .checkbox-sm {
   display: flex;
   align-items: center;
-  height: var(--qc-spacer-md);
+  min-height: var(--qc-spacer-md);
   margin: 0;
-  padding: 0 var(--qc-spacer-xs);
+  padding: 0;
 }
 .checkbox-md input[type=checkbox], .checkbox-sm input[type=checkbox] {
   -moz-appearance: none;
@@ -2124,7 +2124,6 @@ input[type=radio]::before {
 .qc-checkbox-invalid {
   display: flex;
   color: var(--qc-color-red-regular);
-  margin-top: var(--qc-spacer-sm);
   align-items: center;
 }
 .qc-checkbox-invalid .qc-checkbox-invalid-icon {
@@ -2133,5 +2132,6 @@ input[type=radio]::before {
   margin-right: var(--qc-spacer-xs);
 }
 .qc-checkbox-invalid.qc-checkbox-invalid-visible {
+  margin-top: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-md);
 }

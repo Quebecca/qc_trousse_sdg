@@ -4146,31 +4146,6 @@
 		}
 	}
 
-	/**
-	 * @param {Node} anchor
-	 * @param {{ hash: string, code: string }} css
-	 */
-	function append_styles$1(anchor, css) {
-		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
-		queue_micro_task(() => {
-			var root = anchor.getRootNode();
-
-			var target = /** @type {ShadowRoot} */ (root).host
-				? /** @type {ShadowRoot} */ (root)
-				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
-
-			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
-			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
-			if (!target.querySelector('#' + css.hash)) {
-				const style = document.createElement('style');
-				style.id = css.hash;
-				style.textContent = css.code;
-
-				target.appendChild(style);
-			}
-		});
-	}
-
 	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 	/**
@@ -8520,14 +8495,8 @@
 	var root_2$1 = template(`<!> <span> </span>`, 1);
 	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!></div></div>`);
 
-	const $$css = {
-		hash: 'qc-hash-essqr3',
-		code: '.required.qc-hash-essqr3 {color:var(--qc-color-red-regular);margin-left:0.25rem;}.checkbox-container.qc-hash-essqr3 {display:flex;flex-direction:column;gap:var(--qc-spacer-sm);}'
-	};
-
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
-		append_styles$1($$anchor, $$css);
 
 		const lang = Utils.getPageLanguage();
 
@@ -8617,9 +8586,8 @@
 		reset(div);
 
 		template_effect(
-			($0, $1) => {
-				set_class(div, 1, $0, 'qc-hash-essqr3');
-				set_class(div_1, 1, `checkbox-${size() ?? ''}`, 'qc-hash-essqr3');
+			($0) => {
+				set_class(div_1, 1, `checkbox-${size() ?? ''}`);
 				set_value(input, value());
 				set_attribute(input, 'name', name());
 				set_attribute(input, 'id', get(id));
@@ -8629,10 +8597,9 @@
 				set_attribute(input, 'aria-invalid', invalid());
 				set_attribute(label_1, 'for', get(id));
 				set_text(text, `${label() ?? ''} `);
-				set_class(div_2, 1, $1, 'qc-hash-essqr3');
+				set_class(div_2, 1, $0);
 			},
 			[
-				() => `checkbox-container${Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""}`,
 				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? " qc-checkbox-invalid-visible" : ""}`
 			]
 		);
