@@ -19,22 +19,22 @@
     let id = $derived(name + "_" + value);
     let inputInstance;
 
-    function removeInvalid() {
-        invalid = false;
-        inputInstance.dispatchEvent(
-            new CustomEvent(
-                `qc.checkbox.removeInvalidFor${name}`,
-                {bubbles: true, composed: true}
-            )
-        );
-    }
+    // function removeInvalid() {
+    //     invalid = false;
+    //     inputInstance.dispatchEvent(
+    //         new CustomEvent(
+    //             `qc.checkbox.removeInvalidFor${name}`,
+    //             {bubbles: true, composed: true}
+    //         )
+    //     );
+    // }
 
-    function handleInvalid(event) {
-        if (required && !checked) {
-            event.preventDefault();
-            invalid = true;
-        }
-    }
+    // function handleInvalid(event) {
+    //     if (required && !checked) {
+    //         event.preventDefault();
+    //         invalid = true;
+    //     }
+    // }
 </script>
 
 <div class={`checkbox-container${Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}`}>
@@ -48,8 +48,6 @@
             {checked}
             {required}
             bind:this={inputInstance}
-            on:change={removeInvalid}
-            on:invalid={handleInvalid}
         />
         <label for={id}>
             {label}

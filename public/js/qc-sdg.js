@@ -8196,6 +8196,7 @@
 	));
 
 	var root_1$2 = template(`<span class="qc-checkbox-required qc-hash-hise16" aria-hidden="true">&nbsp;*</span>`);
+	var on_change$1 = (_, invalid) => invalid(false);
 	var root$3 = template(`<div><fieldset><legend class="qc-checkbox-legend"> <!></legend> <div id="pseudo-slot"></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 
 	const $$css$1 = {
@@ -8217,34 +8218,13 @@
 			invalid = prop($$props, 'invalid', 7, false),
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
 
-		let pseudo;
+		let checkboxes = state(void 0);
 
 		setContext('name', { name: name() });
 		setContext('size', { size: size() });
 
 		onMount(() => {
-			inners().forEach((inner) => pseudo.appendChild(inner));
-
-			document.addEventListener(`qc.checkbox.removeInvalidFor${name()}`, () => {
-				invalid(false);
-			});
-
-			const form = pseudo.closest('form');
-
-			if (form) {
-				form.addEventListener('submit', (event) => {
-					if (required()) {
-						const checkedBoxes = Array.from(document.getElementsByName(name())).filter((cb) => cb.checked);
-
-						if (checkedBoxes.length === 0) {
-							event.preventDefault();
-							invalid(true);
-						} else {
-							invalid(false);
-						}
-					}
-				});
-			}
+			inners().forEach((inner) => get(checkboxes).appendChild(inner)); // const form = pseudo.closest('form');
 		});
 
 		var div = root$3();
@@ -8269,7 +8249,8 @@
 
 		var div_1 = sibling(legend_1, 2);
 
-		bind_this(div_1, ($$value) => pseudo = $$value, () => pseudo);
+		div_1.__change = [on_change$1, invalid];
+		bind_this(div_1, ($$value) => set(checkboxes, $$value), () => get(checkboxes));
 
 		var div_2 = sibling(div_1, 2);
 		var node_1 = child(div_2);
@@ -8359,6 +8340,8 @@
 			}
 		});
 	}
+
+	delegate(['change']);
 
 	create_custom_element(
 		CheckboxGroup,
@@ -8565,6 +8548,7 @@
 		var input = child(div_1);
 
 		remove_input_defaults(input);
+		input.__change = removeInvalid;
 		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
 
 		var label_1 = sibling(input, 2);
@@ -8623,7 +8607,6 @@
 			]
 		);
 
-		event('change', input, removeInvalid);
 		event('invalid', input, handleInvalid);
 		append($$anchor, div);
 
@@ -8695,6 +8678,8 @@
 			}
 		});
 	}
+
+	delegate(['change']);
 
 	create_custom_element(
 		Checkbox,
@@ -8883,6 +8868,7 @@
 	));
 
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
+	var on_change = (_, invalid) => invalid(false);
 	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
 	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
 
@@ -8905,10 +8891,6 @@
 		onMount(() => {
 			radioButtons().forEach((btn) => {
 				get(group).appendChild(btn);
-			});
-
-			get(group).addEventListener("change", () => {
-				invalid(false);
 			});
 		});
 
@@ -8933,6 +8915,9 @@
 		reset(legend_1);
 
 		var div_1 = sibling(legend_1, 2);
+
+		div_1.__change = [on_change, invalid];
+
 		var node_1 = child(div_1);
 
 		snippet(node_1, () => children() ?? noop);
@@ -9051,6 +9036,8 @@
 			}
 		});
 	}
+
+	delegate(['change']);
 
 	create_custom_element(
 		RadioGroup,
