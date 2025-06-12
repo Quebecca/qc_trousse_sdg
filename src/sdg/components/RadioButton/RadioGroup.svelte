@@ -22,10 +22,6 @@
         radioButtons.forEach((btn) => {
             group.appendChild(btn);
         });
-
-        group.addEventListener("change", () => {
-            invalid = false;
-        });
     });
 </script>
 
@@ -38,7 +34,7 @@
             {/if}
         </legend>
 
-        <div class={`qc-radio-options-${size}`} bind:this={group}>
+        <div class={`qc-radio-options-${size}`} bind:this={group} onchange={() => invalid = false}>
             {@render children?.()}
         </div>
 

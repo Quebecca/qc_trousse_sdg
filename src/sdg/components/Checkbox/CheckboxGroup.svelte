@@ -15,36 +15,29 @@
         errorText = lang === "fr" ? "Champ obligatoire" : "Required field"
     } = $props();
 
-    let pseudo;
+    let checkboxes = $state();
     setContext('name', {name});
     setContext('size', {size});
 
     onMount(() => {
         inners.forEach(
-            inner => pseudo.appendChild(inner)
+            inner => checkboxes.appendChild(inner)
         );
 
-        document.addEventListener(
-            `qc.checkbox.removeInvalidFor${name}`,
-            () => {
-                invalid = false;
-            }
-        );
-
-        const form = pseudo.closest('form');
-        if (form) {
-            form.addEventListener('submit', (event) => {
-                if (required) {
-                    const checkedBoxes = Array.from(document.getElementsByName(name)).filter(cb => cb.checked);
-                    if (checkedBoxes.length === 0) {
-                        event.preventDefault();
-                        invalid = true;
-                    } else {
-                        invalid = false;
-                    }
-                }
-            });
-        }
+        // const form = pseudo.closest('form');
+        // if (form) {
+        //     form.addEventListener('submit', (event) => {
+        //         if (required) {
+        //             const checkedBoxes = Array.from(document.getElementsByName(name)).filter(cb => cb.checked);
+        //             if (checkedBoxes.length === 0) {
+        //                 event.preventDefault();
+        //                 invalid = true;
+        //             } else {
+        //                 invalid = false;
+        //             }
+        //         }
+        //     });
+        // }
     });
 </script>
 
@@ -56,7 +49,10 @@
                 <span class="qc-checkbox-required" aria-hidden="true">&nbsp;*</span>
             {/if}
         </legend>
-        <div id="pseudo-slot" class="checkbox-group-{size}" bind:this={pseudo}></div>
+        <div
+            id="pseudo-slot" class="checkbox-group-{size}" bind:this={checkboxes}
+            onchange={() => invalid = false}
+        ></div>
         
         <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
             <Icon
