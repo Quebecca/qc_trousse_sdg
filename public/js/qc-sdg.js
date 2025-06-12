@@ -6198,8 +6198,6 @@
 	));
 
 	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
-	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -8884,8 +8882,6 @@
 		}
 	));
 
-	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
-	var root$1 = template(`<div><fieldset><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
 	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
 	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);

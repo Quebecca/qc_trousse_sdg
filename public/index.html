@@ -1671,58 +1671,6 @@
                 </table>
             </div>
 
-<h4>Événements</h4>
-<p>L'événement <code>qc.checkbox.removeInvalidFor${name}</code> est émis lorsqu'une case à cocher change d'état, où <code>${name}</code> est le nom du champ.</p>
-            <p>
-                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
-                est émis au clic du bouton radio d'un groupe.
-                Il est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code>
-                pour ajuster l'attribut <code class="qc-bg-color-grey-pale">invalid</code>
-                à <code class="qc-bg-color-grey-pale">false</code> pour celui-ci.
-            </p>
-
-            <script id="qc-hide-invalid-example">
-                // qc-radio-button
-                function removeInvalid() {
-                    inputInstance.dispatchEvent(
-                        new CustomEvent(
-                            `qc.radio.removeInvalidFor${name}`,
-                            {bubbles: true, composed: true}
-                        )
-                    );
-                }
-
-                // qc-radio-group
-                document.addEventListener(
-                    `qc.radio.removeInvalidFor${name}`,
-                    () => {
-                        invalid = false;
-                    }
-                );
-            </script>
-
-            <qc-code target-id="qc-hide-invalid-example" language="javascript"></qc-code>
-
-            <p>
-                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.displayOtherFor${name}</code> est émis au
-                clic d'un bouton radio dont l'attribut <code class="qc-bg-color-grey-pale">other</code> est à
-                <code class="qc-bg-color-grey-pale">true</code>. Si cet attribut est à <code class="qc-bg-color-grey-pale">false</code>,
-                l'événement <code class="qc-bg-color-grey-pale">qc.radio.hideOtherFor${name}</code> est émis par le bouton coché du
-                groupe concerné. S'assurer de remplacer la variable <code class="qc-bg-color-grey-pale">${name}</code>
-                par l'attribut <code class="qc-bg-color-grey-pale">name</code> du bon groupe de boutons radio.
-            </p>
-
-            <script id="qc-radio-show-other-events">
-                document.addEventListener("qc.radio.displayOtherForex-md-other", () => {
-                    console.log("Champ 'autre' visible");
-                });
-                document.addEventListener("qc.radio.hideOtherForex-md-other", () => {
-                    console.log("Champ 'autre' caché");
-                });
-            </script>
-
-            <qc-code target-id="qc-radio-show-other-events" language="javascript"></qc-code>
-
             <h2 id="checkbox">Cases à cocher</h2>
 
             <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
