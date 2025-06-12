@@ -57,7 +57,7 @@
         </label>
     </div>
 
-    <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
+    <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? " qc-checkbox-invalid-visible" : ""}`} role="alert">
         <Icon
             type="warning"
             color="red-regular"

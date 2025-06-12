@@ -8195,10 +8195,10 @@
 		false
 	));
 
-	var root_1$2 = template(`<span class="qc-radio-required" aria-hidden="true">*</span>`);
+	var root_1$2 = template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`);
 	var on_change$1 = (_, invalid) => invalid(false);
-	var root_2$1 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$3 = template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
+	var root_2$1 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
+	var root$3 = template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8219,7 +8219,22 @@
 		setContext('size', { size: size() });
 
 		onMount(() => {
-			inners().forEach((inner) => get(checkboxes).appendChild(inner)); // const form = pseudo.closest('form');
+			inners().forEach((inner) => get(checkboxes).appendChild(inner));
+			// const form = pseudo.closest('form');
+			// if (form) {
+			//     form.addEventListener('submit', (event) => {
+			//         if (required) {
+			//             const checkedBoxes = Array.from(document.getElementsByName(name)).filter(cb => cb.checked);
+			//             if (checkedBoxes.length === 0) {
+			//                 event.preventDefault();
+			//                 invalid = true;
+			//             } else {
+			//                 invalid = false;
+			//             }
+			//         }
+			//     });
+			// }
+			console.log(invalid());
 		});
 
 		var div = root$3();
@@ -8284,15 +8299,15 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
-				set_attribute(fieldset, 'aria-describedby', name());
+				set_attribute(fieldset, 'aria-describedby', `id_${name()}`);
 				set_attribute(legend_1, 'id', `id_${name()}`);
 				set_text(text, `${legend() ?? ''} `);
-				set_class(div_1, 1, `qc-radio-options-${size() ?? ''}`);
+				set_class(div_1, 1, `qc-checkbox-group-${size() ?? ''}`);
 				set_class(div_2, 1, $1);
 			},
 			[
 				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
-				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? " qc-radio-invalid-visible" : ""}`
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? " qc-checkbox-invalid-visible" : ""}`
 			]
 		);
 
@@ -8601,7 +8616,7 @@
 			},
 			[
 				() => `checkbox-container${Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""}`,
-				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? " qc-checkbox-invalid-visible" : ""}`
 			]
 		);
 
@@ -8959,7 +8974,7 @@
 				set_attribute(fieldset, 'aria-describedby', `id_${name()}`);
 				set_attribute(legend_1, 'id', `id_${name()}`);
 				set_text(text, `${legend() ?? ''} `);
-				set_class(div_1, 1, `qc-radio-options-${size()}`);
+				set_class(div_1, 1, `qc-radio-group-${size()}`);
 				set_class(div_2, 1, $1);
 			},
 			[

@@ -1,72 +1,58 @@
 @use "../lib/functions" as *;
 @use "../lib/mixins" as *;
 
-%checkbox-fieldset {
+.qc-checkbox-fieldset {
   display: flex;
   flex-direction: column;
   border: none;
-  padding: 0.001em 0 0 0;
+  padding: 0.001em 0 0 0; //Ce padding est nécessaire pour contrôler les marges de <legend>.
   margin-left: token-value(spacer, xs);
   margin-bottom: token-value(spacer, sm);
-}
-
-.qc-checkbox-fieldset-sm {
-  @extend %checkbox-fieldset;
-  @include content-font(sm, bold);
-}
-
-.qc-checkbox-fieldset-md {
-  @extend %checkbox-fieldset;
   @include content-font(md, bold);
-}
-
-.qc-checkbox-legend {
-  @include content-font(md);
-  color: token-value(color blue dark);
-  font-weight: token-value(font weight bold);
-  font-family: token-value(font family content);
-  padding: 0;
-  margin-bottom: token-value(spacer, md);
-}
-
-fieldset {
-  border: none;
 }
 
 %checkbox-group {
   display: flex;
   flex-direction: column;
   justify-items: center;
-  margin-left: token-value(spacer, xs);
-  padding: 0;
 }
 
-.checkbox-group-sm {
+.qc-checkbox-legend {
+  display: flex;
+  flex-direction: row;
+}
+
+.qc-checkbox-group-sm {
   @extend %checkbox-group;
   margin-top: token-value(spacer, sm);
   row-gap: token-value(spacer, xs);
 }
 
-.checkbox-group-md {
+.qc-checkbox-group-md {
   @extend %checkbox-group;
+  margin-top: token-value(spacer, md);
   row-gap: token-value(spacer, sm);
+}
+
+.qc-radio-required {
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
 }
 
 .qc-checkbox-invalid {
   display: flex;
   color: token-value(color, red, regular);
+  margin-top: token-value(spacer, sm);
   align-items: center;
-  height: token-value(spacer, md);
-  margin-left: token-value(spacer, xs);
 
-  p {
-    margin-left: token-value(spacer, xs);
-    margin-bottom: 0;
+  .qc-checkbox-invalid-icon {
+    display: flex;
     align-items: center;
-    @include content-font(md, bold);
+    margin-right: token-value(spacer, xs);
   }
-}
 
-.qc-checkbox-invalid-hidden {
-  display: none;
+  &.qc-checkbox-invalid-visible {
+    min-height: token-value(spacer, md);
+  }
 }

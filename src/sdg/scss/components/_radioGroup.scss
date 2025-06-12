@@ -11,7 +11,7 @@
   @include content-font(md, bold);
 }
 
-%radio-options {
+%radio-group {
   display: flex;
   flex-direction: column;
   justify-items: center;
@@ -22,14 +22,14 @@
   flex-direction: row;
 }
 
-.qc-radio-options-sm {
-  @extend %radio-options;
+.qc-radio-group-sm {
+  @extend %radio-group;
   margin-top: token-value(spacer, sm);
   row-gap: token-value(spacer, xs);
 }
 
-.qc-radio-options-md {
-  @extend %radio-options;
+.qc-radio-group-md {
+  @extend %radio-group;
   margin-top: token-value(spacer, md);
   row-gap: token-value(spacer, sm);
 }

@@ -38,22 +38,24 @@
         //         }
         //     });
         // }
+
+        console.log(invalid);
     });
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
-        <legend class="qc-radio-legend" id={`id_${name}`}>
+    <fieldset class="qc-checkbox-fieldset" aria-describedby={`id_${name}`}>
+        <legend class="qc-checkbox-legend" id={`id_${name}`}>
             {legend}
             {#if Utils.isTruthy(required)}
-                <span class="qc-radio-required" aria-hidden="true">*</span>
+                <span class="qc-checkbox-required" aria-hidden="true">*</span>
             {/if}
         </legend>
-        <div class="qc-radio-options-{size}" bind:this={checkboxes} onchange={() => invalid = false}></div>
+        <div class="qc-checkbox-group-{size}" bind:this={checkboxes} onchange={() => invalid = false}></div>
 
-        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? " qc-radio-invalid-visible" : ""}`} role="alert">
+        <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? " qc-checkbox-invalid-visible" : ""}`} role="alert">
             {#if Utils.isTruthy(invalid)}
-                <div class="qc-radio-invalid-icon">
+                <div class="qc-checkbox-invalid-icon">
                     <Icon
                         type="warning"
                         color="red-regular"
