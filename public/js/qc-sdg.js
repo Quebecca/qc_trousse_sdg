@@ -4146,6 +4146,31 @@
 		}
 	}
 
+	/**
+	 * @param {Node} anchor
+	 * @param {{ hash: string, code: string }} css
+	 */
+	function append_styles$1(anchor, css) {
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		queue_micro_task(() => {
+			var root = anchor.getRootNode();
+
+			var target = /** @type {ShadowRoot} */ (root).host
+				? /** @type {ShadowRoot} */ (root)
+				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
+
+			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
+			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
+			if (!target.querySelector('#' + css.hash)) {
+				const style = document.createElement('style');
+				style.id = css.hash;
+				style.textContent = css.code;
+
+				target.appendChild(style);
+			}
+		});
+	}
+
 	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
 	/**
@@ -4485,6 +4510,49 @@
 		input.__on_r = remove_defaults;
 		queue_idle_task(remove_defaults);
 		add_form_reset_listener();
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {boolean} checked
+	 */
+	function set_checked(element, checked) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.checked ===
+			(attributes.checked =
+				// treat null and undefined the same for the initial value
+				checked ?? undefined)
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.checked = checked;
 	}
 
 	/**
@@ -5831,7 +5899,7 @@
 
 	}
 
-	var root$b = template(`<div></div>`);
+	var root$d = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5856,7 +5924,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$b();
+		var div = root$d();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5935,7 +6003,7 @@
 		true
 	);
 
-	var root$a = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$c = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5981,7 +6049,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$a();
+		var fragment = root$c();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6129,7 +6197,7 @@
 		true
 	));
 
-	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6143,7 +6211,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$9 = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$b = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6189,14 +6257,14 @@
 			}
 		});
 
-		var fragment = root$9();
+		var fragment = root$b();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$3();
+				var div_2 = root_1$5();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -6940,9 +7008,9 @@
 		true
 	));
 
-	var root_1$2 = template(`<img>`);
+	var root_1$4 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
-	var root$8 = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$a = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6960,7 +7028,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$8();
+		var fragment = root$a();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -6980,7 +7048,7 @@
 			($$anchor, $$item) => {
 				let theme = () => get($$item)[0];
 				let src = () => get($$item)[1];
-				var img = root_1$2();
+				var img = root_1$4();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7308,7 +7376,7 @@
 		true
 	));
 
-	var root$7 = template(`<button><!></button>`);
+	var root$9 = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7332,7 +7400,7 @@
 				'class'
 			]);
 
-		var button = root$7();
+		var button = root$9();
 		let attributes;
 		var node = child(button);
 
@@ -7431,8 +7499,8 @@
 		true
 	);
 
-	var root_1$1 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$6 = template(`<!> <link rel="stylesheet">`, 1);
+	var root_1$3 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root$8 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7458,12 +7526,12 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$6();
+		var fragment = root$8();
 		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$1();
+				var div = root_1$3();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -7625,7 +7693,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$5 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$7 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7668,7 +7736,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$5();
+		var a = root$7();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7740,7 +7808,7 @@
 		false
 	));
 
-	var root$4 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$6 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7821,7 +7889,7 @@
 			});
 		});
 
-		var span_1 = root$4();
+		var span_1 = root$6();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7850,7 +7918,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$3 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$5 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7871,7 +7939,7 @@
 			]);
 
 		let searchInput;
-		var div = root$3();
+		var div = root$5();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7948,7 +8016,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root$2 = template(`<div><!> <!></div>`);
+	var root$4 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -7988,7 +8056,7 @@
 			set(submitProps, submitAttrs, true);
 		});
 
-		var div = root$2();
+		var div = root$4();
 		let classes;
 		var node = child(div);
 
@@ -8125,6 +8193,693 @@
 		[],
 		[],
 		false
+	));
+
+	var root_1$2 = template(`<span class="qc-checkbox-required qc-hash-hise16" aria-hidden="true">&nbsp;*</span>`);
+	var root$3 = template(`<div><fieldset><legend class="qc-checkbox-legend"> <!></legend> <div id="pseudo-slot"></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+
+	const $$css$1 = {
+		hash: 'qc-hash-hise16',
+		code: '.qc-checkbox-required.qc-hash-hise16 {color:var(--qc-color-red-regular);}'
+	};
+
+	function CheckboxGroup($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css$1);
+
+		const lang = Utils.getPageLanguage();
+
+		let inners = prop($$props, 'inners', 7),
+			legend = prop($$props, 'legend', 7),
+			name = prop($$props, 'name', 7),
+			size = prop($$props, 'size', 7, "md"),
+			required = prop($$props, 'required', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
+			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
+
+		let pseudo;
+
+		setContext('name', { name: name() });
+		setContext('size', { size: size() });
+
+		onMount(() => {
+			inners().forEach((inner) => pseudo.appendChild(inner));
+
+			document.addEventListener(`qc.checkbox.removeInvalidFor${name()}`, () => {
+				invalid(false);
+			});
+
+			const form = pseudo.closest('form');
+
+			if (form) {
+				form.addEventListener('submit', (event) => {
+					if (required()) {
+						const checkedBoxes = Array.from(document.getElementsByName(name())).filter((cb) => cb.checked);
+
+						if (checkedBoxes.length === 0) {
+							event.preventDefault();
+							invalid(true);
+						} else {
+							invalid(false);
+						}
+					}
+				});
+			}
+		});
+
+		var div = root$3();
+		var fieldset = child(div);
+		var legend_1 = child(fieldset);
+		var text = child(legend_1);
+		var node = sibling(text);
+
+		{
+			var consequent = ($$anchor) => {
+				var span = root_1$2();
+
+				append($$anchor, span);
+			};
+
+			if_block(node, ($$render) => {
+				if (Utils.isTruthy(required())) $$render(consequent);
+			});
+		}
+
+		reset(legend_1);
+
+		var div_1 = sibling(legend_1, 2);
+
+		bind_this(div_1, ($$value) => pseudo = $$value, () => pseudo);
+
+		var div_2 = sibling(div_1, 2);
+		var node_1 = child(div_2);
+
+		Icon(node_1, {
+			type: 'warning',
+			color: 'red-regular',
+			size: 'md'
+		});
+
+		var p = sibling(node_1, 2);
+		var text_1 = child(p, true);
+
+		reset(p);
+		reset(div_2);
+		reset(fieldset);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, $0);
+				set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
+				set_text(text, `${legend() ?? ''} `);
+				set_class(div_1, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
+				set_class(div_2, 1, $1, 'qc-hash-hise16');
+				set_text(text_1, errorText());
+			},
+			[
+				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+			]
+		);
+
+		append($$anchor, div);
+
+		return pop({
+			get inners() {
+				return inners();
+			},
+			set inners($$value) {
+				inners($$value);
+				flushSync();
+			},
+			get legend() {
+				return legend();
+			},
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText(
+				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
+			) {
+				errorText($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		CheckboxGroup,
+		{
+			inners: {},
+			legend: {},
+			name: {},
+			size: {},
+			required: {},
+			invalid: {},
+			errorText: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	function CheckboxGroupWC($$anchor, $$props) {
+		push($$props, true);
+
+		let inners = prop($$props, 'inners', 7),
+			legend = prop($$props, 'legend', 7),
+			name = prop($$props, 'name', 7),
+			size = prop($$props, 'size', 7, "md"),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 7),
+			errorText = prop($$props, 'errorText', 7);
+
+		onMount(() => {
+			if (required() === "") {
+				required("true");
+			}
+
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
+
+		CheckboxGroup($$anchor, {
+			get inners() {
+				return inners();
+			},
+			get legend() {
+				return legend();
+			},
+			get name() {
+				return name();
+			},
+			get size() {
+				return size();
+			},
+			get required() {
+				return required();
+			},
+			get invalid() {
+				return invalid();
+			},
+			get errorText() {
+				return errorText();
+			}
+		});
+
+		return pop({
+			get inners() {
+				return inners();
+			},
+			set inners($$value) {
+				inners($$value);
+				flushSync();
+			},
+			get legend() {
+				return legend();
+			},
+			set legend($$value) {
+				legend($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText($$value) {
+				errorText($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-checkbox-group', create_custom_element(
+		CheckboxGroupWC,
+		{
+			shared: { attribute: 'shared' },
+			size: { attribute: 'size', type: 'String' },
+			required: { attribute: 'required', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' },
+			errorText: { attribute: 'error-text', type: 'String' },
+			inners: {},
+			legend: {},
+			name: {}
+		},
+		[],
+		[],
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static inners;
+
+				constructor() {
+					super();
+					this.inners = Array.from(this.querySelectorAll('qc-checkbox'));
+					this.inners.forEach(setUpInner);
+
+					function setUpInner(inner, i) {
+						inner.setAttribute('slot', `slot${i + 1}`);
+					}
+
+					const observer = new MutationObserver((mutationsList) => {
+						for (const mutation of mutationsList) {
+							if (mutation.type === 'childList') {
+								for (const node of mutation.addedNodes) {
+									if (node.tagName === 'QC-CHECKBOX-INNER') {
+										setUpInner(node, this.inners.length);
+										this.inners = [...this.inners, node];
+									}
+								}
+							}
+						}
+					});
+
+					observer.observe(this, { childList: true, subtree: false });
+				}
+			};
+		}
+	));
+
+	var root_1$1 = template(`<span class="required qc-hash-essqr3">*</span>`);
+	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!> <p> </p></div></div>`);
+
+	const $$css = {
+		hash: 'qc-hash-essqr3',
+		code: '.required.qc-hash-essqr3 {color:var(--qc-color-red-regular);margin-left:0.25rem;}.checkbox-container.qc-hash-essqr3 {display:flex;flex-direction:column;gap:var(--qc-spacer-sm);}'
+	};
+
+	function Checkbox($$anchor, $$props) {
+		push($$props, true);
+		append_styles$1($$anchor, $$css);
+
+		const lang = Utils.getPageLanguage();
+
+		let value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			name = prop($$props, 'name', 7),
+			disabled = prop($$props, 'disabled', 7, false),
+			checked = prop($$props, 'checked', 7, false),
+			required = prop($$props, 'required', 7, false),
+			size = prop($$props, 'size', 7, "md"),
+			invalid = prop($$props, 'invalid', 7, false),
+			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
+
+		let id = user_derived(() => name() + "_" + value());
+		let inputInstance;
+
+		function removeInvalid() {
+			invalid(false);
+			inputInstance.dispatchEvent(new CustomEvent(`qc.checkbox.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
+		}
+
+		function handleInvalid(event) {
+			if (required() && !checked()) {
+				event.preventDefault();
+				invalid(true);
+			}
+		}
+
+		var div = root$2();
+		var div_1 = child(div);
+		var input = child(div_1);
+
+		remove_input_defaults(input);
+		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
+
+		var label_1 = sibling(input, 2);
+		var text = child(label_1);
+		var node = sibling(text);
+
+		{
+			var consequent = ($$anchor) => {
+				var span = root_1$1();
+
+				append($$anchor, span);
+			};
+
+			if_block(node, ($$render) => {
+				if (required()) $$render(consequent);
+			});
+		}
+
+		reset(label_1);
+		reset(div_1);
+
+		var div_2 = sibling(div_1, 2);
+		var node_1 = child(div_2);
+
+		Icon(node_1, {
+			type: 'warning',
+			color: 'red-regular',
+			size: 'md'
+		});
+
+		var p = sibling(node_1, 2);
+		var text_1 = child(p, true);
+
+		reset(p);
+		reset(div_2);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, $0, 'qc-hash-essqr3');
+				set_class(div_1, 1, `checkbox-${size() ?? ''}`, 'qc-hash-essqr3');
+				set_value(input, value());
+				set_attribute(input, 'name', name());
+				set_attribute(input, 'id', get(id));
+				input.disabled = disabled();
+				set_checked(input, checked());
+				input.required = required();
+				set_attribute(label_1, 'for', get(id));
+				set_text(text, `${label() ?? ''} `);
+				set_class(div_2, 1, $1, 'qc-hash-essqr3');
+				set_text(text_1, errorText());
+			},
+			[
+				() => `checkbox-container${Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""}`,
+				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+			]
+		);
+
+		event('change', input, removeInvalid);
+		event('invalid', input, handleInvalid);
+		append($$anchor, div);
+
+		return pop({
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "md") {
+				size($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText(
+				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
+			) {
+				errorText($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		Checkbox,
+		{
+			value: {},
+			label: {},
+			name: {},
+			disabled: {},
+			checked: {},
+			required: {},
+			size: {},
+			invalid: {},
+			errorText: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	function CheckboxWC($$anchor, $$props) {
+		push($$props, true);
+
+		let inner = prop($$props, 'inner', 7),
+			outer = prop($$props, 'outer', 7),
+			value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			name = prop($$props, 'name', 7),
+			disabled = prop($$props, 'disabled', 7),
+			checked = prop($$props, 'checked', 7),
+			required = prop($$props, 'required', 7),
+			size = prop($$props, 'size', 7),
+			invalid = prop($$props, 'invalid', 7),
+			errorText = prop($$props, 'errorText', 7);
+
+		let effectiveValue = user_derived(() => value() || label());
+		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
+		let effectiveSize = user_derived(() => outer()?.getAttribute('size') || size() || 'md');
+
+		onMount(() => {
+			if (invalid() === "") {
+				invalid("true");
+			}
+		});
+
+		Checkbox($$anchor, {
+			get value() {
+				return get(effectiveValue);
+			},
+			get label() {
+				return label();
+			},
+			get name() {
+				return get(effectiveName);
+			},
+			get disabled() {
+				return disabled();
+			},
+			get checked() {
+				return checked();
+			},
+			get required() {
+				return required();
+			},
+			get size() {
+				return get(effectiveSize);
+			},
+			get invalid() {
+				return invalid();
+			},
+			get errorText() {
+				return errorText();
+			}
+		});
+
+		return pop({
+			get inner() {
+				return inner();
+			},
+			set inner($$value) {
+				inner($$value);
+				flushSync();
+			},
+			get outer() {
+				return outer();
+			},
+			set outer($$value) {
+				outer($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value) {
+				checked($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			},
+			get errorText() {
+				return errorText();
+			},
+			set errorText($$value) {
+				errorText($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-checkbox', create_custom_element(
+		CheckboxWC,
+		{
+			value: { attribute: 'value', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
+			name: { attribute: 'name', type: 'String' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			checked: { attribute: 'checked', type: 'Boolean' },
+			required: { attribute: 'required', type: 'Boolean' },
+			size: { attribute: 'size', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
+			errorText: { attribute: 'error-text', type: 'String' },
+			inner: {},
+			outer: {}
+		},
+		[],
+		[],
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static inner;
+				static outer;
+
+				constructor() {
+					super();
+					this.inner = this;
+					this.outer = this.closest('qc-checkbox-group');
+				}
+			};
+		}
 	));
 
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
