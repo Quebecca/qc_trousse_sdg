@@ -8142,14 +8142,14 @@
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
-			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
+			invalidText = prop($$props, 'invalidText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0);
 
 		onMount(() => {
-			radioButtons().forEach((option) => {
-				get(group).appendChild(option);
+			radioButtons().forEach((btn) => {
+				get(group).appendChild(btn);
 			});
 
 			get(group).addEventListener("change", () => {
@@ -8205,7 +8205,7 @@
 				var text_1 = child(span_1, true);
 
 				reset(span_1);
-				template_effect(() => set_text(text_1, errorText()));
+				template_effect(() => set_text(text_1, invalidText()));
 				append($$anchor, fragment);
 			};
 
@@ -8278,13 +8278,13 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText(
+			set invalidText(
 				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
 			) {
-				errorText($$value);
+				invalidText($$value);
 				flushSync();
 			},
 			get children() {
@@ -8306,7 +8306,7 @@
 			radioButtons: {},
 			required: {},
 			invalid: {},
-			errorText: {},
+			invalidText: {},
 			children: {}
 		},
 		[],
@@ -8323,7 +8323,7 @@
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
-			errorText = prop($$props, 'errorText', 7);
+			invalidText = prop($$props, 'invalidText', 7);
 
 		if (required() === "") {
 			required("true");
@@ -8352,8 +8352,8 @@
 			get invalid() {
 				return invalid();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			}
 		});
 
@@ -8400,11 +8400,11 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText($$value) {
-				errorText($$value);
+			set invalidText($$value) {
+				invalidText($$value);
 				flushSync();
 			}
 		});
@@ -8418,7 +8418,7 @@
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
-			errorText: { attribute: 'error-text', type: 'String' },
+			invalidText: { attribute: 'invalid-text', type: 'String' },
 			radioButtons: {}
 		},
 		[],
