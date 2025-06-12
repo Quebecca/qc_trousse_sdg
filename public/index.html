@@ -1675,15 +1675,37 @@
 
             <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
 
-            <h4>Case à cocher seule</h4>
             <qc-doc-exemple caption="Exemple d'une case à cocher seule obligatoire">
-                <qc-checkbox
+                <form id="exemple-tos-form">
+                    <qc-checkbox
+                            id="exemple-une-case"
                             label="J'accepte les conditions d'utilisation"
-                    required="true">
-                </qc-checkbox>
+                            required="true"
+                    ></qc-checkbox>
+
+                    <button class="btn btn-sm btn-primary" type="submit">
+                        S'inscrire
+                    </button>
+                </form>
+
+                <script>
+                    const tosForm = document.getElementById("exemple-tos-form");
+                    tosForm.addEventListener("submit", (event) => verifyTermsAcceptance(event));
+                    function verifyTermsAcceptance(event) {
+                        event.preventDefault();
+
+                        const termsAcceptance = document.getElementById("exemple-une-case");
+
+                        if (Array.from(termsAcceptance.querySelectorAll(`input[name="${termsAcceptance.name}"]`))
+                            .find(r => r.checked)) {
+                            alert("Formulaire soumis");
+                        } else {
+                            termsAcceptance.invalid = true;
+                        }
+                    }
+                </script>
             </qc-doc-exemple>
 
-            <h4>Groupe de cases à cocher</h4>
             <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher avec différents états">
                 <qc-checkbox-group legend="Sélectionnez vos options">
                     <qc-checkbox label="Option 1"></qc-checkbox>
@@ -1692,20 +1714,86 @@
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
-            <h4>Groupe de cases à cocher obligatoire</h4>
-            <qc-doc-exemple caption="Exemple d'un groupe de cases avec une option obligatoire">
+            <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher au petit format">
                 <qc-checkbox-group
                         legend="Sélectionnez vos options"
                         name="options"
-                        required="true"
-                        invalid="true"
-                        invalid-text="Veuillez sélectionner au moins une option">
+                        size="sm"
+                >
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2"></qc-checkbox>
                     <qc-checkbox label="Option 3"></qc-checkbox>
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
+            <qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">
+                <form id="checkbox-form">
+                    <qc-checkbox-group
+                            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
+                            name="ex-checkbox-form"
+                            required
+                            invalid-text="Veuillez sélectionner une plateforme."
+                    >
+                        <qc-checkbox
+                                label="Ordinateur"
+                                value="ordinateur"
+                        ></qc-checkbox>
+                        <qc-checkbox
+                                label="Tablette"
+                                value="tablette"
+                        ></qc-checkbox>
+                        <qc-checkbox
+                                label="Téléphone intelligent"
+                                value="telephone_intelligent"
+                        ></qc-checkbox>
+                    </qc-checkbox-group>
+
+                    <qc-checkbox-group
+                            legend="Sur quel navigateur consultez-vous www.quebec.ca?"
+                            name="ex-checkbox-form-2" size="sm"
+                    >
+                        <qc-checkbox
+                                label="Chrome"
+                                value="chrome"
+                        ></qc-checkbox>
+                        <qc-checkbox
+                                label="Safari"
+                                value="safari"
+                        ></qc-checkbox>
+                        <qc-checkbox
+                                label="Firefox"
+                                value="firefox"
+                        ></qc-checkbox>
+                    </qc-checkbox-group>
+
+                    <button class="btn btn-sm btn-primary" type="submit">
+                        Soumettre
+                    </button>
+                </form>
+
+                <script>
+                    const checkboxForm = document.getElementById("checkbox-form");
+                    checkboxForm.addEventListener("submit", (event) => validateCheckboxForm(event, checkboxForm));
+                    function validateCheckboxForm(event, formToValidate) {
+                        event.preventDefault();
+
+                        const groups = formToValidate.querySelectorAll("qc-checkbox-group");
+                        let validForm = true;
+                        groups.forEach((group) => {
+                            const checkedValues = Array.from(group.querySelectorAll(`input[name="${group.name}"]`))
+                                .find(r => r.checked);
+                            if (group.required && !checkedValues) {
+                                group.invalid = true;
+                                validForm = false;
+                            }
+                        });
+
+                        if (validForm) {
+                            alert("Formulaire soumis");
+                        }
+                    }
+                </script>
+            </qc-doc-exemple>
 
             <h3>Documentation technique</h3>
 
@@ -1765,7 +1853,7 @@
                         </tr>
                         <tr>
                             <td>invalid</td>
-                            <td>booléen</td>
+                            <td>"true" ou "false"</td>
                             <td>false</td>
                             <td>Indique si la case est invalide.  La case à cocher devient invalide si on tente de soumettre la case non cochée alors qu'elle est obligatoire.</td>
                         </tr>
@@ -1812,13 +1900,13 @@
                         </tr>
                         <tr>
                             <td>required</td>
-                            <td>booléen</td>
+                            <td>"true" ou "false"</td>
                             <td>false</td>
                             <td>Indique qu'au moins une case du groupe doit être cochée lorsque true</td>
                         </tr>
                         <tr>
                             <td>invalid</td>
-                            <td>booléen</td>
+                            <td>"true" ou "false"</td>
                             <td>false</td>
                             <td>Indique si le groupe est invalide.  Le groupe devient invalide si on tente de soumettre le groupe avec aucune case cochée alors qu'il est obligatoire.</td>
                         </tr>
