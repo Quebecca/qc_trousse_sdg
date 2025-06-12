@@ -12,15 +12,15 @@
         radioButtons = [],
         required = false,
         invalid = false,
-        errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
     } = $props();
 
     let group = $state();
 
     onMount(() => {
-        radioButtons.forEach((option) => {
-            group.appendChild(option);
+        radioButtons.forEach((btn) => {
+            group.appendChild(btn);
         });
 
         group.addEventListener("change", () => {
@@ -51,7 +51,7 @@
                         size="md"
                     />
                 </div>
-                <span>{errorText}</span>
+                <span>{invalidText}</span>
             {/if}
         </div>
     </fieldset>

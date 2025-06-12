@@ -7,7 +7,7 @@
         size: {attribute:'size', type: 'String'},
         required: {attribute: 'required', type: 'String'},
         invalid: {attribute: 'invalid', type: 'String'},
-        errorText: {attribute: 'error-text', type: 'String'}
+        invalidText: {attribute: 'invalid-text', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -32,7 +32,7 @@
         radioButtons,
         required,
         invalid,
-        errorText
+        invalidText
     } = $props();
 
     if (required === "") {
@@ -50,6 +50,6 @@
     {radioButtons}
     {required}
     {invalid}
-    {errorText}
+    {invalidText}
 />
 
