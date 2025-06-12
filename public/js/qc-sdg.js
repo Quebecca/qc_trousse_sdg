@@ -6198,7 +6198,7 @@
 	));
 
 	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_2$2 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6291,7 +6291,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
+				var div_5 = root_2$2();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8195,18 +8195,13 @@
 		false
 	));
 
-	var root_1$2 = template(`<span class="qc-checkbox-required qc-hash-hise16" aria-hidden="true">&nbsp;*</span>`);
+	var root_1$2 = template(`<span class="qc-radio-required" aria-hidden="true">*</span>`);
 	var on_change$1 = (_, invalid) => invalid(false);
-	var root$3 = template(`<div><fieldset><legend class="qc-checkbox-legend"> <!></legend> <div id="pseudo-slot"></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
-
-	const $$css$1 = {
-		hash: 'qc-hash-hise16',
-		code: '.qc-checkbox-required.qc-hash-hise16 {color:var(--qc-color-red-regular);}'
-	};
+	var root_2$1 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
+	var root$3 = template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
-		append_styles$1($$anchor, $$css$1);
 
 		const lang = Utils.getPageLanguage();
 
@@ -8216,7 +8211,7 @@
 			size = prop($$props, 'size', 7, "md"),
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
-			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
+			invalidText = prop($$props, 'invalidText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
 
 		let checkboxes = state(void 0);
 
@@ -8255,16 +8250,33 @@
 		var div_2 = sibling(div_1, 2);
 		var node_1 = child(div_2);
 
-		Icon(node_1, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'md'
-		});
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = root_2$1();
+				var div_3 = first_child(fragment);
+				var node_2 = child(div_3);
 
-		var p = sibling(node_1, 2);
-		var text_1 = child(p, true);
+				Icon(node_2, {
+					type: 'warning',
+					color: 'red-regular',
+					size: 'md'
+				});
 
-		reset(p);
+				reset(div_3);
+
+				var span_1 = sibling(div_3, 2);
+				var text_1 = child(span_1, true);
+
+				reset(span_1);
+				template_effect(() => set_text(text_1, invalidText()));
+				append($$anchor, fragment);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (Utils.isTruthy(invalid())) $$render(consequent_1);
+			});
+		}
+
 		reset(div_2);
 		reset(fieldset);
 		reset(div);
@@ -8272,15 +8284,15 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
-				set_class(fieldset, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
+				set_attribute(fieldset, 'aria-describedby', name());
+				set_attribute(legend_1, 'id', `id_${name()}`);
 				set_text(text, `${legend() ?? ''} `);
-				set_class(div_1, 1, `checkbox-group-${size() ?? ''}`, 'qc-hash-hise16');
-				set_class(div_2, 1, $1, 'qc-hash-hise16');
-				set_text(text_1, errorText());
+				set_class(div_1, 1, `qc-radio-options-${size() ?? ''}`);
+				set_class(div_2, 1, $1);
 			},
 			[
 				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
-				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? " qc-radio-invalid-visible" : ""}`
 			]
 		);
 
@@ -8329,13 +8341,13 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText(
+			set invalidText(
 				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
 			) {
-				errorText($$value);
+				invalidText($$value);
 				flushSync();
 			}
 		});
@@ -8352,7 +8364,7 @@
 			size: {},
 			required: {},
 			invalid: {},
-			errorText: {}
+			invalidText: {}
 		},
 		[],
 		[],
@@ -8368,7 +8380,7 @@
 			size = prop($$props, 'size', 7, "md"),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
-			errorText = prop($$props, 'errorText', 7);
+			invalidText = prop($$props, 'invalidText', 7);
 
 		onMount(() => {
 			if (required() === "") {
@@ -8399,8 +8411,8 @@
 			get invalid() {
 				return invalid();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			}
 		});
 
@@ -8447,11 +8459,11 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText($$value) {
-				errorText($$value);
+			set invalidText($$value) {
+				invalidText($$value);
 				flushSync();
 			}
 		});
@@ -8464,7 +8476,7 @@
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
-			errorText: { attribute: 'error-text', type: 'String' },
+			invalidText: { attribute: 'invalid-text', type: 'String' },
 			inners: {},
 			legend: {},
 			name: {}
@@ -8529,26 +8541,12 @@
 			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
 
 		let id = user_derived(() => name() + "_" + value());
-		let inputInstance;
-
-		function removeInvalid() {
-			invalid(false);
-			inputInstance.dispatchEvent(new CustomEvent(`qc.checkbox.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
-		}
-
-		function handleInvalid(event) {
-			if (required() && !checked()) {
-				event.preventDefault();
-				invalid(true);
-			}
-		}
-
+		let inputInstance; // function removeInvalid() {
 		var div = root$2();
 		var div_1 = child(div);
 		var input = child(div_1);
 
 		remove_input_defaults(input);
-		input.__change = removeInvalid;
 		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
 
 		var label_1 = sibling(input, 2);
@@ -8607,7 +8605,6 @@
 			]
 		);
 
-		event('invalid', input, handleInvalid);
 		append($$anchor, div);
 
 		return pop({
@@ -8678,8 +8675,6 @@
 			}
 		});
 	}
-
-	delegate(['change']);
 
 	create_custom_element(
 		Checkbox,
@@ -8867,10 +8862,10 @@
 		}
 	));
 
-	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
+	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">*</span>`);
 	var on_change = (_, invalid) => invalid(false);
 	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
+	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8961,8 +8956,8 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
-				set_attribute(fieldset, 'aria-describedby', name());
-				set_attribute(legend_1, 'id', name());
+				set_attribute(fieldset, 'aria-describedby', `id_${name()}`);
+				set_attribute(legend_1, 'id', `id_${name()}`);
 				set_text(text, `${legend() ?? ''} `);
 				set_class(div_1, 1, `qc-radio-options-${size()}`);
 				set_class(div_2, 1, $1);

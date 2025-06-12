@@ -17,6 +17,11 @@
   justify-items: center;
 }
 
+.qc-radio-legend {
+  display: flex;
+  flex-direction: row;
+}
+
 .qc-radio-options-sm {
   @extend %radio-options;
   margin-top: token-value(spacer, sm);
@@ -30,7 +35,9 @@
 }
 
 .qc-radio-required {
+  display: flex;
   color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
 }
 
 .qc-fieldset-invalid {

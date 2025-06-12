@@ -12,7 +12,7 @@
         size = "md",
         required = false,
         invalid = false,
-        errorText = lang === "fr" ? "Champ obligatoire" : "Required field"
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field"
     } = $props();
 
     let checkboxes = $state();
@@ -42,31 +42,26 @@
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="checkbox-group-{size}">
-        <legend class="qc-checkbox-legend">
+    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
+        <legend class="qc-radio-legend" id={`id_${name}`}>
             {legend}
             {#if Utils.isTruthy(required)}
-                <span class="qc-checkbox-required" aria-hidden="true">&nbsp;*</span>
+                <span class="qc-radio-required" aria-hidden="true">*</span>
             {/if}
         </legend>
-        <div
-            id="pseudo-slot" class="checkbox-group-{size}" bind:this={checkboxes}
-            onchange={() => invalid = false}
-        ></div>
-        
-        <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
-            <Icon
-                type="warning"
-                color="red-regular"
-                size="md"
-            />
-            <p>{errorText}</p>
+        <div class="qc-radio-options-{size}" bind:this={checkboxes} onchange={() => invalid = false}></div>
+
+        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? " qc-radio-invalid-visible" : ""}`} role="alert">
+            {#if Utils.isTruthy(invalid)}
+                <div class="qc-radio-invalid-icon">
+                    <Icon
+                        type="warning"
+                        color="red-regular"
+                        size="md"
+                    />
+                </div>
+                <span>{invalidText}</span>
+            {/if}
         </div>
     </fieldset>
 </div>
-
-<style>
-    .qc-checkbox-required {
-        color: var(--qc-color-red-regular);
-    }
-</style>
