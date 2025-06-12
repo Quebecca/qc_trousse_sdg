@@ -8492,7 +8492,7 @@
 	));
 
 	var root_1$1 = template(`<span class="qc-checkbox-required">*</span>`);
-	var root_2$1 = template(`<!> <span> </span>`, 1);
+	var root_2$1 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
 	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!></div></div>`);
 
 	function Checkbox($$anchor, $$props) {
@@ -8512,24 +8512,6 @@
 			hasParentGroup = prop($$props, 'hasParentGroup', 7, false);
 
 		let id = user_derived(() => name() + "_" + value());
-
-		// function removeInvalid() {
-		//     invalid = false;
-		//     inputInstance.dispatchEvent(
-		//         new CustomEvent(
-		//             `qc.checkbox.removeInvalidFor${name}`,
-		//             {bubbles: true, composed: true}
-		//         )
-		//     );
-		// }
-		// function handleInvalid(event) {
-		//     if (required && !checked) {
-		//         event.preventDefault();
-		//         invalid = true;
-		//     }
-		// }
-		console.log(hasParentGroup());
-
 		var div = root$2();
 		var div_1 = child(div);
 		var input = child(div_1);
@@ -8561,7 +8543,8 @@
 		{
 			var consequent_1 = ($$anchor) => {
 				var fragment = root_2$1();
-				var node_2 = first_child(fragment);
+				var div_3 = first_child(fragment);
+				var node_2 = child(div_3);
 
 				Icon(node_2, {
 					type: 'warning',
@@ -8569,7 +8552,9 @@
 					size: 'md'
 				});
 
-				var span_1 = sibling(node_2, 2);
+				reset(div_3);
+
+				var span_1 = sibling(div_3, 2);
 				var text_1 = child(span_1, true);
 
 				reset(span_1);
@@ -8586,8 +8571,9 @@
 		reset(div);
 
 		template_effect(
-			($0) => {
-				set_class(div_1, 1, `checkbox-${size() ?? ''}`);
+			($0, $1) => {
+				set_class(div, 1, $0);
+				set_class(div_1, 1, `checkbox-${size()}`);
 				set_value(input, value());
 				set_attribute(input, 'name', name());
 				set_attribute(input, 'id', get(id));
@@ -8597,9 +8583,10 @@
 				set_attribute(input, 'aria-invalid', invalid());
 				set_attribute(label_1, 'for', get(id));
 				set_text(text, `${label() ?? ''} `);
-				set_class(div_2, 1, $0);
+				set_class(div_2, 1, $1);
 			},
 			[
+				() => `${hasParentGroup() ? "" : " checkbox-single"}${Utils.isTruthy(invalid()) ? " checkbox-single-invalid" : ""}`,
 				() => `qc-checkbox-invalid${Utils.isTruthy(invalid()) ? " qc-checkbox-invalid-visible" : ""}`
 			]
 		);
@@ -8871,7 +8858,7 @@
 				constructor() {
 					super();
 					this.inner = this;
-					this.outer = this.parentNode === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
+					this.outer = this.parentNode.tagName === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
 				}
 			};
 		}

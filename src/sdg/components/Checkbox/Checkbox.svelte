@@ -18,29 +18,10 @@
     } = $props();
     
     let id = $derived(name + "_" + value);
-
-    // function removeInvalid() {
-    //     invalid = false;
-    //     inputInstance.dispatchEvent(
-    //         new CustomEvent(
-    //             `qc.checkbox.removeInvalidFor${name}`,
-    //             {bubbles: true, composed: true}
-    //         )
-    //     );
-    // }
-
-    // function handleInvalid(event) {
-    //     if (required && !checked) {
-    //         event.preventDefault();
-    //         invalid = true;
-    //     }
-    // }
-
-    console.log(hasParentGroup)
 </script>
 
-<div>
-    <div class="checkbox-{size}">
+<div class={`${hasParentGroup ? "" : " checkbox-single"}${Utils.isTruthy(invalid) ? " checkbox-single-invalid" : ""}`}>
+    <div class={`checkbox-${size}`}>
         <input
             type="checkbox"
             {value}
@@ -61,11 +42,13 @@
 
     <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? " qc-checkbox-invalid-visible" : ""}`} role="alert">
         {#if !hasParentGroup && Utils.isTruthy(invalid)}
-            <Icon
-                type="warning"
-                color="red-regular"
-                size="md"
-            />
+            <div class="qc-checkbox-invalid-icon">
+                <Icon
+                    type="warning"
+                    color="red-regular"
+                    size="md"
+                />
+            </div>
             <span>{invalidText}</span>
         {/if}
     </div>

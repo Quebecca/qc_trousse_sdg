@@ -20,7 +20,7 @@
             constructor() {
                 super();
                 this.inner = this;
-                this.outer = this.parentNode === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
+                this.outer = this.parentNode.tagName === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
             }
         };
     }

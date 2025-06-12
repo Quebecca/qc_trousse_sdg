@@ -126,3 +126,11 @@
     top: rem(2);
   }
 }
+
+.checkbox-single {
+  padding-left: token-value(spacer, xs);
+
+  &.checkbox-single-invalid {
+    box-shadow: rem(2) 0 token-value(color, red, regular) inset;
+  }
+}
