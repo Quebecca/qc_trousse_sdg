@@ -2082,6 +2082,13 @@ input[type=radio]::before {
   top: 0.2rem;
 }
 
+.checkbox-single {
+  padding-left: var(--qc-spacer-xs);
+}
+.checkbox-single.checkbox-single-invalid {
+  box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
+}
+
 .qc-checkbox-fieldset {
   display: flex;
   flex-direction: column;
@@ -2125,6 +2132,9 @@ input[type=radio]::before {
   display: flex;
   color: var(--qc-color-red-regular);
   align-items: center;
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
 }
 .qc-checkbox-invalid .qc-checkbox-invalid-icon {
   display: flex;
