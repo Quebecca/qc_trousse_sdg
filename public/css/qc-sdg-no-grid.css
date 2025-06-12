@@ -2115,7 +2115,7 @@ input[type=radio]::before {
   row-gap: var(--qc-spacer-sm);
 }
 
-.qc-radio-required {
+.qc-checkbox-required {
   display: flex;
   color: var(--qc-color-red-regular);
   margin-left: var(--qc-spacer-xs);

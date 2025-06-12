@@ -13,11 +13,11 @@
         required = false,
         size = "md",
         invalid = false,
-        errorText = lang === "fr" ? "Champ obligatoire" : "Required field"
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        hasParentGroup = false
     } = $props();
     
     let id = $derived(name + "_" + value);
-    let inputInstance;
 
     // function removeInvalid() {
     //     invalid = false;
@@ -35,35 +35,39 @@
     //         invalid = true;
     //     }
     // }
+
+    console.log(hasParentGroup)
 </script>
 
 <div class={`checkbox-container${Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}`}>
     <div class="checkbox-{size}">
         <input
             type="checkbox"
-            value={value}
+            {value}
             {name}
             {id}
             {disabled}
             {checked}
-            {required}
-            bind:this={inputInstance}
+            aria-required = {required}
+            aria-invalid={invalid}
         />
         <label for={id}>
             {label}
-            {#if required}
-                <span class="required">*</span>
+            {#if !hasParentGroup && required}
+                <span class="qc-checkbox-required">*</span>
             {/if}
         </label>
     </div>
 
     <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? " qc-checkbox-invalid-visible" : ""}`} role="alert">
-        <Icon
-            type="warning"
-            color="red-regular"
-            size="md"
-        />
-        <p>{errorText}</p>
+        {#if !hasParentGroup && Utils.isTruthy(invalid)}
+            <Icon
+                type="warning"
+                color="red-regular"
+                size="md"
+            />
+            <span>{invalidText}</span>
+        {/if}
     </div>
 </div>
 

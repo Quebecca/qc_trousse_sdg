@@ -10,7 +10,7 @@
         required: { attribute: 'required', type: 'Boolean' },
         size: { attribute: 'size', type: 'String' },
         invalid: { attribute: 'invalid', type: 'Boolean' },
-        errorText: { attribute: 'error-text', type: 'String' }
+        invalidText: { attribute: 'invalid-text', type: 'String' }
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -20,7 +20,7 @@
             constructor() {
                 super();
                 this.inner = this;
-                this.outer = this.closest('qc-checkbox-group');
+                this.outer = this.parentNode === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
             }
         };
     }
@@ -41,7 +41,7 @@
         required, 
         size,
         invalid,
-        errorText
+        invalidText
     } = $props();
 
     let effectiveValue = $derived(value || label);
@@ -59,10 +59,11 @@
     value={effectiveValue}
     {label}
     name={effectiveName}
-    {disabled}
+    disabled={outer?.disabled ?? disabled}
     {checked}
-    {required}
+    required={outer?.required ?? required}
     size={effectiveSize}
-    {invalid}
-    {errorText}
+    invalid={outer ? false : invalid}
+    {invalidText}
+    hasParentGroup={outer !== null && outer !== undefined}
 ></Checkbox>

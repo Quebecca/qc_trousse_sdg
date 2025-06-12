@@ -6198,7 +6198,7 @@
 	));
 
 	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
-	var root_2$2 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_2$3 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6291,7 +6291,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$2();
+				var div_5 = root_2$3();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8197,7 +8197,7 @@
 
 	var root_1$2 = template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`);
 	var on_change$1 = (_, invalid) => invalid(false);
-	var root_2$1 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
+	var root_2$2 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
 	var root$3 = template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function CheckboxGroup($$anchor, $$props) {
@@ -8219,22 +8219,7 @@
 		setContext('size', { size: size() });
 
 		onMount(() => {
-			inners().forEach((inner) => get(checkboxes).appendChild(inner));
-			// const form = pseudo.closest('form');
-			// if (form) {
-			//     form.addEventListener('submit', (event) => {
-			//         if (required) {
-			//             const checkedBoxes = Array.from(document.getElementsByName(name)).filter(cb => cb.checked);
-			//             if (checkedBoxes.length === 0) {
-			//                 event.preventDefault();
-			//                 invalid = true;
-			//             } else {
-			//                 invalid = false;
-			//             }
-			//         }
-			//     });
-			// }
-			console.log(invalid());
+			inners().forEach((inner) => get(checkboxes).appendChild(inner)); // const form = pseudo.closest('form');
 		});
 
 		var div = root$3();
@@ -8267,7 +8252,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var fragment = root_2$1();
+				var fragment = root_2$2();
 				var div_3 = first_child(fragment);
 				var node_2 = child(div_3);
 
@@ -8531,8 +8516,9 @@
 		}
 	));
 
-	var root_1$1 = template(`<span class="required qc-hash-essqr3">*</span>`);
-	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!> <p> </p></div></div>`);
+	var root_1$1 = template(`<span class="qc-checkbox-required">*</span>`);
+	var root_2$1 = template(`<!> <span> </span>`, 1);
+	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!></div></div>`);
 
 	const $$css = {
 		hash: 'qc-hash-essqr3',
@@ -8553,16 +8539,33 @@
 			required = prop($$props, 'required', 7, false),
 			size = prop($$props, 'size', 7, "md"),
 			invalid = prop($$props, 'invalid', 7, false),
-			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field");
+			invalidText = prop($$props, 'invalidText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
+			hasParentGroup = prop($$props, 'hasParentGroup', 7, false);
 
 		let id = user_derived(() => name() + "_" + value());
-		let inputInstance; // function removeInvalid() {
+
+		// function removeInvalid() {
+		//     invalid = false;
+		//     inputInstance.dispatchEvent(
+		//         new CustomEvent(
+		//             `qc.checkbox.removeInvalidFor${name}`,
+		//             {bubbles: true, composed: true}
+		//         )
+		//     );
+		// }
+		// function handleInvalid(event) {
+		//     if (required && !checked) {
+		//         event.preventDefault();
+		//         invalid = true;
+		//     }
+		// }
+		console.log(hasParentGroup());
+
 		var div = root$2();
 		var div_1 = child(div);
 		var input = child(div_1);
 
 		remove_input_defaults(input);
-		bind_this(input, ($$value) => inputInstance = $$value, () => inputInstance);
 
 		var label_1 = sibling(input, 2);
 		var text = child(label_1);
@@ -8576,7 +8579,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (required()) $$render(consequent);
+				if (!hasParentGroup() && required()) $$render(consequent);
 			});
 		}
 
@@ -8586,16 +8589,30 @@
 		var div_2 = sibling(div_1, 2);
 		var node_1 = child(div_2);
 
-		Icon(node_1, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'md'
-		});
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = root_2$1();
+				var node_2 = first_child(fragment);
 
-		var p = sibling(node_1, 2);
-		var text_1 = child(p, true);
+				Icon(node_2, {
+					type: 'warning',
+					color: 'red-regular',
+					size: 'md'
+				});
 
-		reset(p);
+				var span_1 = sibling(node_2, 2);
+				var text_1 = child(span_1, true);
+
+				reset(span_1);
+				template_effect(() => set_text(text_1, invalidText()));
+				append($$anchor, fragment);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (!hasParentGroup() && Utils.isTruthy(invalid())) $$render(consequent_1);
+			});
+		}
+
 		reset(div_2);
 		reset(div);
 
@@ -8608,11 +8625,11 @@
 				set_attribute(input, 'id', get(id));
 				input.disabled = disabled();
 				set_checked(input, checked());
-				input.required = required();
+				set_attribute(input, 'aria-required', required());
+				set_attribute(input, 'aria-invalid', invalid());
 				set_attribute(label_1, 'for', get(id));
 				set_text(text, `${label() ?? ''} `);
 				set_class(div_2, 1, $1, 'qc-hash-essqr3');
-				set_text(text_1, errorText());
 			},
 			[
 				() => `checkbox-container${Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""}`,
@@ -8679,13 +8696,20 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText(
+			set invalidText(
 				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
 			) {
-				errorText($$value);
+				invalidText($$value);
+				flushSync();
+			},
+			get hasParentGroup() {
+				return hasParentGroup();
+			},
+			set hasParentGroup($$value = false) {
+				hasParentGroup($$value);
 				flushSync();
 			}
 		});
@@ -8702,7 +8726,8 @@
 			required: {},
 			size: {},
 			invalid: {},
-			errorText: {}
+			invalidText: {},
+			hasParentGroup: {}
 		},
 		[],
 		[],
@@ -8722,7 +8747,7 @@
 			required = prop($$props, 'required', 7),
 			size = prop($$props, 'size', 7),
 			invalid = prop($$props, 'invalid', 7),
-			errorText = prop($$props, 'errorText', 7);
+			invalidText = prop($$props, 'invalidText', 7);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
@@ -8733,6 +8758,11 @@
 				invalid("true");
 			}
 		});
+
+		const expression = user_derived(() => outer()?.disabled ?? disabled());
+		const expression_1 = user_derived(() => outer()?.required ?? required());
+		const expression_2 = user_derived(() => outer() ? false : invalid());
+		const expression_3 = user_derived(() => outer() !== null && outer() !== undefined);
 
 		Checkbox($$anchor, {
 			get value() {
@@ -8745,22 +8775,25 @@
 				return get(effectiveName);
 			},
 			get disabled() {
-				return disabled();
+				return get(expression);
 			},
 			get checked() {
 				return checked();
 			},
 			get required() {
-				return required();
+				return get(expression_1);
 			},
 			get size() {
 				return get(effectiveSize);
 			},
 			get invalid() {
-				return invalid();
+				return get(expression_2);
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
+			},
+			get hasParentGroup() {
+				return get(expression_3);
 			}
 		});
 
@@ -8835,11 +8868,11 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText($$value) {
-				errorText($$value);
+			set invalidText($$value) {
+				invalidText($$value);
 				flushSync();
 			}
 		});
@@ -8856,7 +8889,7 @@
 			required: { attribute: 'required', type: 'Boolean' },
 			size: { attribute: 'size', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
-			errorText: { attribute: 'error-text', type: 'String' },
+			invalidText: { attribute: 'invalid-text', type: 'String' },
 			inner: {},
 			outer: {}
 		},
@@ -8871,7 +8904,7 @@
 				constructor() {
 					super();
 					this.inner = this;
-					this.outer = this.closest('qc-checkbox-group');
+					this.outer = this.parentNode === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
 				}
 			};
 		}
