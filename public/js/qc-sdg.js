@@ -8447,7 +8447,6 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
-			other = prop($$props, 'other', 7, false),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
@@ -8461,7 +8460,6 @@
 				'value',
 				'label',
 				'size',
-				'other',
 				'checked',
 				'disabled',
 				'required',
@@ -8558,13 +8556,6 @@
 				size($$value);
 				flushSync();
 			},
-			get other() {
-				return other();
-			},
-			set other($$value = false) {
-				other($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -8603,7 +8594,6 @@
 			value: {},
 			label: {},
 			size: {},
-			other: {},
 			checked: {},
 			disabled: {},
 			required: {},
@@ -8622,7 +8612,6 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7),
-			other = prop($$props, 'other', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
@@ -8637,7 +8626,6 @@
 				'value',
 				'label',
 				'size',
-				'other',
 				'checked',
 				'disabled',
 				'required',
@@ -8645,10 +8633,6 @@
 			]);
 
 		onMount(() => {
-			if (other() === "") {
-				other("true");
-			}
-
 			if (checked() === "") {
 				checked("true");
 			}
@@ -8684,9 +8668,6 @@
 				},
 				get size() {
 					return get(expression_1);
-				},
-				get other() {
-					return other();
 				},
 				get checked() {
 					return checked();
@@ -8740,13 +8721,6 @@
 				size($$value);
 				flushSync();
 			},
-			get other() {
-				return other();
-			},
-			set other($$value) {
-				other($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -8785,7 +8759,6 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
-			other: { attribute: 'other', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
 			required: { attribute: 'required', type: 'String' },

@@ -7,7 +7,6 @@
         value,
         label,
         size = "sm",
-        other = false,
         checked = false,
         disabled = false,
         required = false,
