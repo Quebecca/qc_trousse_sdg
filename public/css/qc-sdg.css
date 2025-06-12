@@ -1836,7 +1836,7 @@ qc-search-bar {
 .qc-radio-md, .qc-radio-sm {
   display: flex;
   align-items: center;
-  height: var(--qc-spacer-md);
+  min-height: var(--qc-spacer-md);
   margin: 0;
 }
 .qc-radio-md input[type=radio], .qc-radio-sm input[type=radio] {
@@ -1846,9 +1846,7 @@ qc-search-bar {
   cursor: pointer;
   display: flex;
   position: relative;
-  margin-right: var(--qc-spacer-xs);
-  margin-top: 0;
-  margin-left: 0;
+  margin: 0;
   background-color: var(--qc-color-white);
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
@@ -1884,7 +1882,8 @@ qc-search-bar {
   display: flex;
   align-items: end;
   cursor: pointer;
-  margin-right: var(--qc-spacer-xs);
+  padding-left: var(--qc-spacer-xs);
+  padding-right: var(--qc-spacer-xs);
   margin-bottom: 0;
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
@@ -1918,22 +1917,13 @@ input[type=radio]::before {
   background: var(--qc-color-blue-regular);
 }
 
-.qc-radio-fieldset-md, .qc-radio-fieldset-sm {
+.qc-radio-fieldset {
   display: flex;
   flex-direction: column;
   border: none;
   padding: 0.001em 0 0 0;
   margin-left: var(--qc-spacer-xs);
   margin-bottom: var(--qc-spacer-sm);
-}
-
-.qc-radio-fieldset-sm {
-  font-size: var(--qc-font-size-sm);
-  line-height: var(--qc-line-height-sm);
-  font-weight: var(--qc-font-weight-bold);
-}
-
-.qc-radio-fieldset-md {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
@@ -1959,15 +1949,6 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
 }
 
-.qc-radio-required-text {
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 .qc-fieldset-invalid {
   box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
 }
@@ -1977,16 +1958,14 @@ input[type=radio]::before {
   color: var(--qc-color-red-regular);
   margin-top: var(--qc-spacer-sm);
   align-items: center;
-  height: var(--qc-spacer-md);
 }
-.qc-radio-invalid p {
-  margin-left: var(--qc-spacer-xs);
-  margin-bottom: 0;
+.qc-radio-invalid .qc-radio-invalid-icon {
+  display: flex;
   align-items: center;
+  margin-right: var(--qc-spacer-xs);
 }
-
-.qc-radio-invalid-hidden {
-  display: none;
+.qc-radio-invalid.qc-radio-invalid-visible {
+  min-height: var(--qc-spacer-md);
 }
 
 .checkbox-md, .checkbox-sm {

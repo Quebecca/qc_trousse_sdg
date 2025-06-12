@@ -73212,34 +73212,6 @@
 	        }
 	    );
 	}
-
-	// Event listener pour l'exemple de validation de formulaire de qc-radio-group
-	const form = document.getElementById("radio-form");
-	form.addEventListener("submit", (event) => validateRadioForm(event, form));
-
-	function validateRadioForm(event, formToValidate) {
-	    event.preventDefault();
-	    const groups = formToValidate.querySelectorAll("qc-radio-group");
-	    groups.forEach((group) => {
-	        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
-	        if (group.required && !checkedValue) {
-	            group.invalid = true;
-	        }
-	    });
-	}
-
-	const otherRadioGroup = document.querySelector("qc-radio-group[name='ex-md-other']");
-	const otherField = document.createElement("input");
-	otherField.setAttribute("type", "text");
-
-	document.addEventListener("qc.radio.displayOtherForex-md-other", () => {
-	   otherRadioGroup.appendChild(otherField);
-	});
-	document.addEventListener("qc.radio.hideOtherForex-md-other", () => {
-	    if (otherRadioGroup.lastChild === otherField) {
-	        otherRadioGroup.removeChild(otherField);
-	    }
-	});
 	// add version
 
 })();

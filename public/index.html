@@ -1415,115 +1415,61 @@
             <h2 id="radio-button">Boutons radio</h2>
             <h3>Exemples</h3>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md" size="md">
+            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
+                <qc-radio-group id="exemple-radio-md" legend="Choisissez une option :" name="ex-md" size="md">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3 (désactivée)"
-                            value="3"
-                            disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée">
-                <qc-radio-group legend="Choisissez une option" name="ex-sm" size="sm">
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3 (désactivée)"
-                            value="3"
-                            disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe avec une option présélectionnée">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-checked">
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
                             checked
                     ></qc-radio-button>
                     <qc-radio-button
-                            label="Option 3"
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3 (désactivée)"
                             value="3"
+                            disabled
                     ></qc-radio-button>
                 </qc-radio-group>
+
+                <script>
+                    const group = document.getElementById("exemple-radio-md");
+
+                    group.addEventListener("change", () => {
+                        const checkedValue = group.querySelector("input:checked").value;
+                        console.log(checkedValue);
+                    });
+                </script>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe obligatoire">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-ob" required>
+            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
+                <qc-radio-group legend="Choisissez une option :" name="ex-sm" size="sm">
                     <qc-radio-button
                             label="Option 1"
                             value="1"
+                            checked
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 2"
                             value="2"
                     ></qc-radio-button>
                     <qc-radio-button
-                            label="Option 3"
+                            label="Option 3 (désactivée)"
                             value="3"
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio avec une option 'autre'">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-other">
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Autre"
-                            value="other"
-                            other
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemple de boutons radio dans un groupe en état invalide">
-                <qc-radio-group legend="Choisissez une option : " name="ex-md-invalid" required invalid>
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3"
-                            value="3"
+                            disabled
                     ></qc-radio-button>
                 </qc-radio-group>
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
-                    <qc-radio-group legend="Quel est votre niveau de scolarité?" name="ex-md-form" required>
+                    <qc-radio-group
+                            legend="Quel est votre niveau de scolarité?"
+                            name="ex-md-form"
+                            required
+                            invalid-text="Veuillez sélectionner un niveau de scolarité."
+                    >
                         <qc-radio-button
                                 label="Secondaire"
                                 value="secondaire"
@@ -1542,7 +1488,7 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2">
+                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2" size="sm">
                         <qc-radio-button
                                 label="Oui"
                                 value="oui"
@@ -1553,26 +1499,34 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <button type="submit">Soumettre</button>
+                <button class="btn btn-sm btn-primary" type="submit">
+                    Soumettre
+                </button>
                 </form>
-            </qc-doc-exemple>
 
-            <h5>Code JS de cet exemple de validation</h5>
-            <script id="qc-radio-form-validation-example">
-                const form = document.getElementById("radio-form");
-                form.addEventListener("submit", (event) => validateRadioForm(event, form));
-                function validateRadioForm(event, formToValidate) {
-                    event.preventDefault();
-                    const groups = formToValidate.querySelectorAll("qc-radio-group");
-                    groups.forEach((group) => {
-                        const checkedValue = Array.from(document.getElementsByName(group.name)).find(r => r.checked);
-                        if (group.required && !checkedValue) {
-                            group.invalid = true;
+                <script>
+                    const form = document.getElementById("radio-form");
+                    form.addEventListener("submit", (event) => validateRadioForm(event, form));
+                    function validateRadioForm(event, formToValidate) {
+                        event.preventDefault();
+
+                        const groups = formToValidate.querySelectorAll("qc-radio-group");
+                        let validForm = true;
+                        groups.forEach((group) => {
+                            const checkedValues = Array.from(group.querySelectorAll(`input[name="${group.name}"]`))
+                                .find(r => r.checked);
+                            if (group.required && !checkedValues) {
+                                group.invalid = true;
+                                validForm = false;
+                            }
+                        });
+
+                        if (validForm) {
+                            alert("Formulaire soumis");
                         }
-                    });
-                }
-            </script>
-            <qc-code target-id="qc-radio-form-validation-example" language="javascript"></qc-code>
+                    }
+                </script>
+            </qc-doc-exemple>
 
             <h4>Documentation technique</h4>
 
@@ -1622,10 +1576,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>error-text</td>
+                        <td>invalid-text</td>
                         <td>Texte</td>
                         <td>Champ obligatoire/Required field</td>
-                        <td>Texte qui s'affiche sous les boutons radio en cas d'erreur</td>
+                        <td>Texte qui s'affiche sous les boutons radio en cas d'état invalide</td>
                     </tr>
                     </tbody>
                 </table>
@@ -1668,12 +1622,6 @@
                         <td>Taille des boutons radio et de leurs étiquettes. Hérité du groupe parent si une valeur y est présente.</td>
                     </tr>
                     <tr>
-                        <td>other</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Détermine si le bouton radio émet les événements JS pour un champ 'autre'</td>
-                    </tr>
-                    <tr>
                         <td>checked</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
@@ -1688,6 +1636,26 @@
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
                         <td>Indique si un bouton radio ne peut pas être sélectionné</td>
+                    </tr>
+                    <tr>
+                        <td>required</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>
+                            Indique la valeur <code class="qc-bg-color-grey-pale">aria-required</code> du bouton radio.
+                            Hérité du groupe parent si une valeur y est présente. Permet aux lecteurs d'écran d'indiquer
+                            que le groupe de boutons radio est requis.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>invalid</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>
+                            Indique la valeur <code class="qc-bg-color-grey-pale">aria-invalid</code> du bouton radio.
+                            Hérité du groupe parent si une valeur y est présente. Permet aux lecteurs d'écran d'indiquer
+                            que l'état du groupe de boutons radio est invalide.
+                        </td>
                     </tr>
                     <tr>
                         <td>radio-*</td>
@@ -1756,9 +1724,9 @@
             <qc-code target-id="qc-radio-show-other-events" language="javascript"></qc-code>
 
             <h2 id="checkbox">Cases à cocher</h2>
-            
+
             <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
-            
+
             <h4>Case à cocher seule</h4>
             <qc-doc-exemple caption="Exemple d'une case à cocher seule obligatoire">
                 <qc-checkbox
@@ -1766,7 +1734,7 @@
                     required="true">
                 </qc-checkbox>
             </qc-doc-exemple>
-            
+
             <h4>Groupe de cases à cocher</h4>
             <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher avec différents états">
                 <qc-checkbox-group legend="Sélectionnez vos options">
@@ -1790,9 +1758,9 @@
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
-            
+
             <h3>Documentation technique</h3>
-            
+
             <h4>Attributs de qc-checkbox</h4>
             <div class="table-overflow">
                 <table class="qc-table qc-striped component-attributes-description">
@@ -1863,7 +1831,7 @@
                 </table>
             </div>
 
-            
+
             <h4>Attributs de qc-checkbox-group</h4>
             <div class="table-overflow">
                 <table class="qc-table qc-striped component-attributes-description">

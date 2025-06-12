@@ -1,22 +1,13 @@
 @use "../lib/functions" as *;
 @use "../lib/mixins" as *;
 
-%radio-fieldset {
+.qc-radio-fieldset {
   display: flex;
   flex-direction: column;
   border: none;
   padding: 0.001em 0 0 0; //Ce padding est nécessaire pour contrôler les marges de <legend>.
   margin-left: token-value(spacer, xs);
   margin-bottom: token-value(spacer, sm);
-}
-
-.qc-radio-fieldset-sm {
-  @extend %radio-fieldset;
-  @include content-font(sm, bold);
-}
-
-.qc-radio-fieldset-md {
-  @extend %radio-fieldset;
   @include content-font(md, bold);
 }
 
@@ -42,15 +33,6 @@
   color: token-value(color, red, regular);
 }
 
-.qc-radio-required-text {
-  position:absolute;
-  left:-10000px;
-  top:auto;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-}
-
 .qc-fieldset-invalid {
   box-shadow: rem(2) 0 token-value(color, red, regular) inset;
 }
@@ -60,15 +42,14 @@
   color: token-value(color, red, regular);
   margin-top: token-value(spacer, sm);
   align-items: center;
-  height: token-value(spacer, md);
 
-  p {
-    margin-left: token-value(spacer, xs);
-    margin-bottom: 0;
+  .qc-radio-invalid-icon {
+    display: flex;
     align-items: center;
+    margin-right: token-value(spacer, xs);
   }
-}
 
-.qc-radio-invalid-hidden {
-  display: none;
+  &.qc-radio-invalid-visible {
+    min-height: token-value(spacer, md);
+  }
 }

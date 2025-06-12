@@ -6,9 +6,10 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         size: {attribute: 'size', type: 'String'},
-        other: {attribute: 'other', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
+        required: {attribute: 'required', type: 'String'},
+        invalid: {attribute: 'invalid', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -27,7 +28,6 @@
 
 <script>
     import RadioButton from "./RadioButton.svelte";
-    import {onMount} from "svelte";
 
     let {
         parent,
@@ -35,23 +35,25 @@
         value,
         label,
         size,
-        other,
         checked,
         disabled,
+        required,
+        invalid,
         ...rest
     } = $props();
 
-    onMount(() => {
-        if(other === "") {
-            other = "true";
-        }
-        if (checked === "") {
-            checked = "true";
-        }
-        if (disabled === "") {
-            disabled = "true";
-        }
-    });
+    if (checked === "") {
+        checked = "true";
+    }
+    if (disabled === "") {
+        disabled = "true";
+    }
+    if (required === "") {
+        required = "true";
+    }
+    if (invalid === "") {
+        invalid = "true";
+    }
 </script>
 
 <RadioButton
@@ -59,8 +61,9 @@
     {value}
     {label}
     size={parent?.size ?? size}
-    {other}
     {checked}
     {disabled}
+    required={parent?.required ?? required}
+    invalid={parent?.invalid ?? invalid}
     {...rest}
 />

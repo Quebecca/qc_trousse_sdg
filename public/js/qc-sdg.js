@@ -6199,6 +6199,8 @@
 
 	var root_1$5 = template(`<div class="go-to-content"><a> </a></div>`);
 	var root_2 = template(`<div class="title"><a class="title"> </a></div>`);
+	var root_1$3 = template(`<div class="go-to-content"><a> </a></div>`);
+	var root_2$1 = template(`<div class="title"><a class="title"> </a></div>`);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -6291,7 +6293,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2();
+				var div_5 = root_2$1();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -8884,6 +8886,9 @@
 
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span> <span class="qc-radio-required-text"></span>`, 1);
 	var root$1 = template(`<div><fieldset><legend> <!></legend> <div><!></div> <div role="alert"><!> <p> </p></div></fieldset></div>`);
+	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">&nbsp*</span>`);
+	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
+	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8896,17 +8901,17 @@
 			radioButtons = prop($$props, 'radioButtons', 23, () => []),
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
-			errorText = prop($$props, 'errorText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
+			invalidText = prop($$props, 'invalidText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0);
 
 		onMount(() => {
-			radioButtons().forEach((option) => {
-				get(group).appendChild(option);
+			radioButtons().forEach((btn) => {
+				get(group).appendChild(btn);
 			});
 
-			document.addEventListener(`qc.radio.removeInvalidFor${name()}`, () => {
+			get(group).addEventListener("change", () => {
 				invalid(false);
 			});
 		});
@@ -8919,11 +8924,9 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1();
-				var span = sibling(first_child(fragment), 2);
+				var span = root_1();
 
-				span.textContent = lang === "fr" ? "Requis" : "Required";
-				append($$anchor, fragment);
+				append($$anchor, span);
 			};
 
 			if_block(node, ($$render) => {
@@ -8943,16 +8946,33 @@
 		var div_2 = sibling(div_1, 2);
 		var node_2 = child(div_2);
 
-		Icon(node_2, {
-			type: 'warning',
-			color: 'red-regular',
-			size: 'md'
-		});
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment = root_2();
+				var div_3 = first_child(fragment);
+				var node_3 = child(div_3);
 
-		var p = sibling(node_2, 2);
-		var text_1 = child(p, true);
+				Icon(node_3, {
+					type: 'warning',
+					color: 'red-regular',
+					size: 'md'
+				});
 
-		reset(p);
+				reset(div_3);
+
+				var span_1 = sibling(div_3, 2);
+				var text_1 = child(span_1, true);
+
+				reset(span_1);
+				template_effect(() => set_text(text_1, invalidText()));
+				append($$anchor, fragment);
+			};
+
+			if_block(node_2, ($$render) => {
+				if (Utils.isTruthy(invalid())) $$render(consequent_1);
+			});
+		}
+
 		reset(div_2);
 		reset(fieldset);
 		reset(div);
@@ -8960,17 +8980,15 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
-				set_class(fieldset, 1, `qc-radio-fieldset-${size()}`);
 				set_attribute(fieldset, 'aria-describedby', name());
 				set_attribute(legend_1, 'id', name());
 				set_text(text, `${legend() ?? ''} `);
 				set_class(div_1, 1, `qc-radio-options-${size()}`);
 				set_class(div_2, 1, $1);
-				set_text(text_1, errorText());
 			},
 			[
 				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : ""),
-				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? "" : "-hidden"}`
+				() => `qc-radio-invalid${Utils.isTruthy(invalid()) ? " qc-radio-invalid-visible" : ""}`
 			]
 		);
 
@@ -9019,13 +9037,13 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText(
+			set invalidText(
 				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
 			) {
-				errorText($$value);
+				invalidText($$value);
 				flushSync();
 			},
 			get children() {
@@ -9047,7 +9065,7 @@
 			radioButtons: {},
 			required: {},
 			invalid: {},
-			errorText: {},
+			invalidText: {},
 			children: {}
 		},
 		[],
@@ -9064,17 +9082,15 @@
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
-			errorText = prop($$props, 'errorText', 7);
+			invalidText = prop($$props, 'invalidText', 7);
 
-		onMount(() => {
-			if (required() === "") {
-				required("true");
-			}
+		if (required() === "") {
+			required("true");
+		}
 
-			if (invalid() === "") {
-				invalid("true");
-			}
-		});
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		RadioGroup($$anchor, {
 			get name() {
@@ -9095,8 +9111,8 @@
 			get invalid() {
 				return invalid();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			}
 		});
 
@@ -9143,11 +9159,11 @@
 				invalid($$value);
 				flushSync();
 			},
-			get errorText() {
-				return errorText();
+			get invalidText() {
+				return invalidText();
 			},
-			set errorText($$value) {
-				errorText($$value);
+			set invalidText($$value) {
+				invalidText($$value);
 				flushSync();
 			}
 		});
@@ -9161,7 +9177,7 @@
 			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
-			errorText: { attribute: 'error-text', type: 'String' },
+			invalidText: { attribute: 'invalid-text', type: 'String' },
 			radioButtons: {}
 		},
 		[],
@@ -9188,9 +9204,10 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, "sm"),
-			other = prop($$props, 'other', 7, false),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
+			required = prop($$props, 'required', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -9200,12 +9217,11 @@
 				'value',
 				'label',
 				'size',
-				'other',
 				'checked',
-				'disabled'
+				'disabled',
+				'required',
+				'invalid'
 			]);
-
-		let inputInstance = state(void 0);
 
 		let boolAttributes = user_derived(() => {
 			let truthyProps = {
@@ -9230,54 +9246,41 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		function removeInvalid() {
-			get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.removeInvalidFor${name()}`, { bubbles: true, composed: true }));
-		}
-
-		function displayOther() {
-			if (Utils.isTruthy(other())) {
-				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.displayOtherFor${name()}`, { bubbles: true, composed: true }));
-			} else {
-				get(inputInstance).dispatchEvent(new CustomEvent(`qc.radio.hideOtherFor${name()}`, { bubbles: true, composed: true }));
-			}
-		}
-
 		var div = root();
 		var input = child(div);
 
 		remove_input_defaults(input);
 
-		var event_handler = () => {
-			removeInvalid();
-			displayOther();
-		};
-
 		let attributes;
-
-		bind_this(input, ($$value) => set(inputInstance, $$value), () => get(inputInstance));
-
 		var label_1 = sibling(input, 2);
 		var text = child(label_1, true);
 
 		reset(label_1);
 		reset(div);
 
-		template_effect(() => {
-			set_class(div, 1, `qc-radio-${size()}`);
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, `qc-radio-${size()}`);
 
-			attributes = set_attributes(input, attributes, {
-				type: 'radio',
-				id: `${name()}_${value()}`,
-				name: name(),
-				value: value(),
-				...get(boolAttributes),
-				...get(restProps),
-				onclick: event_handler
-			});
+				attributes = set_attributes(input, attributes, {
+					type: 'radio',
+					id: `${name()}_${value()}`,
+					name: name(),
+					value: value(),
+					'aria-required': $0,
+					'aria-invalid': $1,
+					...get(boolAttributes),
+					...get(restProps)
+				});
 
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
-			set_text(text, label());
-		});
+				set_attribute(label_1, 'for', `${name()}_${value()}`);
+				set_text(text, label());
+			},
+			[
+				() => Utils.isTruthy(required()),
+				() => Utils.isTruthy(invalid())
+			]
+		);
 
 		append($$anchor, div);
 
@@ -9310,13 +9313,6 @@
 				size($$value);
 				flushSync();
 			},
-			get other() {
-				return other();
-			},
-			set other($$value = false) {
-				other($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -9330,6 +9326,20 @@
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
 			}
 		});
 	}
@@ -9341,9 +9351,10 @@
 			value: {},
 			label: {},
 			size: {},
-			other: {},
 			checked: {},
-			disabled: {}
+			disabled: {},
+			required: {},
+			invalid: {}
 		},
 		[],
 		[],
@@ -9358,9 +9369,10 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7),
-			other = prop($$props, 'other', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 7),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -9371,27 +9383,32 @@
 				'value',
 				'label',
 				'size',
-				'other',
 				'checked',
-				'disabled'
+				'disabled',
+				'required',
+				'invalid'
 			]);
 
-		onMount(() => {
-			if (other() === "") {
-				other("true");
-			}
+		if (checked() === "") {
+			checked("true");
+		}
 
-			if (checked() === "") {
-				checked("true");
-			}
+		if (disabled() === "") {
+			disabled("true");
+		}
 
-			if (disabled() === "") {
-				disabled("true");
-			}
-		});
+		if (required() === "") {
+			required("true");
+		}
+
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());
+		const expression_2 = user_derived(() => parent()?.required ?? required());
+		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
 
 		RadioButton($$anchor, spread_props(
 			{
@@ -9407,14 +9424,17 @@
 				get size() {
 					return get(expression_1);
 				},
-				get other() {
-					return other();
-				},
 				get checked() {
 					return checked();
 				},
 				get disabled() {
 					return disabled();
+				},
+				get required() {
+					return get(expression_2);
+				},
+				get invalid() {
+					return get(expression_3);
 				}
 			},
 			() => rest
@@ -9456,13 +9476,6 @@
 				size($$value);
 				flushSync();
 			},
-			get other() {
-				return other();
-			},
-			set other($$value) {
-				other($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -9476,6 +9489,20 @@
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
 			}
 		});
 	}
@@ -9487,9 +9514,10 @@
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
-			other: { attribute: 'other', type: 'String' },
 			checked: { attribute: 'checked', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
+			required: { attribute: 'required', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' },
 			parent: {}
 		},
 		[],

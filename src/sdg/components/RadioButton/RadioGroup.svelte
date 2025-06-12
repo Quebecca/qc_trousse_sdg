@@ -12,35 +12,29 @@
         radioButtons = [],
         required = false,
         invalid = false,
-        errorText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children
     } = $props();
 
     let group = $state();
 
     onMount(() => {
-        radioButtons.forEach((option) => {
-            group.appendChild(option);
+        radioButtons.forEach((btn) => {
+            group.appendChild(btn);
         });
 
-        document.addEventListener(
-            `qc.radio.removeInvalidFor${name}`,
-            () => {
-                invalid = false;
-            }
-        );
+        group.addEventListener("change", () => {
+            invalid = false;
+        });
     });
 </script>
 
 <div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class={`qc-radio-fieldset-${size}`} aria-describedby={name}>
+    <fieldset class="qc-radio-fieldset" aria-describedby={name}>
         <legend id={name}>
             {legend}
             {#if Utils.isTruthy(required)}
                 <span class="qc-radio-required" aria-hidden="true">&nbsp*</span>
-                <span class="qc-radio-required-text">
-                    {lang === "fr" ? "Requis" : "Required"}
-                </span>
             {/if}
         </legend>
 
@@ -48,13 +42,17 @@
             {@render children?.()}
         </div>
 
-        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? "" : "-hidden"}`} role="alert">
-            <Icon
-                type="warning"
-                color="red-regular"
-                size="md"
-            />
-            <p>{errorText}</p>
+        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? " qc-radio-invalid-visible" : ""}`} role="alert">
+            {#if Utils.isTruthy(invalid)}
+                <div class="qc-radio-invalid-icon">
+                    <Icon
+                        type="warning"
+                        color="red-regular"
+                        size="md"
+                    />
+                </div>
+                <span>{invalidText}</span>
+            {/if}
         </div>
     </fieldset>
 </div>

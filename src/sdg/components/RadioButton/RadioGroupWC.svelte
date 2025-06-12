@@ -7,7 +7,7 @@
         size: {attribute:'size', type: 'String'},
         required: {attribute: 'required', type: 'String'},
         invalid: {attribute: 'invalid', type: 'String'},
-        errorText: {attribute: 'error-text', type: 'String'}
+        invalidText: {attribute: 'invalid-text', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -24,7 +24,6 @@
 
 <script>
     import RadioGroup from "./RadioGroup.svelte";
-    import {onMount} from "svelte";
 
     let {
         name,
@@ -33,17 +32,15 @@
         radioButtons,
         required,
         invalid,
-        errorText
+        invalidText
     } = $props();
 
-    onMount(() => {
-        if (required === "") {
-            required = "true";
-        }
-        if (invalid === "") {
-            invalid = "true";
-        }
-    });
+    if (required === "") {
+        required = "true";
+    }
+    if (invalid === "") {
+        invalid = "true";
+    }
 </script>
 
 <RadioGroup
@@ -53,6 +50,6 @@
     {radioButtons}
     {required}
     {invalid}
-    {errorText}
+    {invalidText}
 />
 
