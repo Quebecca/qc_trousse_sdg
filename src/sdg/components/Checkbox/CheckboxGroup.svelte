@@ -38,8 +38,6 @@
         //         }
         //     });
         // }
-
-        console.log(invalid);
     });
 </script>
 

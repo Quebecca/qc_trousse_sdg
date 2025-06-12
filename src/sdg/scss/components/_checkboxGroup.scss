@@ -34,7 +34,7 @@
   row-gap: token-value(spacer, sm);
 }
 
-.qc-radio-required {
+.qc-checkbox-required {
   display: flex;
   color: token-value(color, red, regular);
   margin-left: token-value(spacer, xs);
