@@ -858,6 +858,12 @@
 						this.$$l_u.delete(listener);
 					}
 				}
+				if (this.$$l[type]) {
+					const idx = this.$$l[type].indexOf(listener);
+					if (idx >= 0) {
+						this.$$l[type].splice(idx, 1);
+					}
+				}
 			}
 
 			async connectedCallback() {
@@ -64540,6 +64546,10 @@
 		  if (!this._disabled.handlebars) {
 		    items.push(this.__patterns.handlebars._starting_pattern.source);
 		  }
+		  if (!this._disabled.angular) {
+		    // Handlebars ('{{' and '}}') are also special tokens in Angular)
+		    items.push(this.__patterns.handlebars._starting_pattern.source);
+		  }
 		  if (!this._disabled.erb) {
 		    items.push(this.__patterns.erb._starting_pattern.source);
 		  }
@@ -67443,6 +67453,7 @@
 		  token = token || this._read_open_handlebars(c, open_token);
 		  token = token || this._read_attribute(c, previous_token, open_token);
 		  token = token || this._read_close(c, open_token);
+		  token = token || this._read_script_and_style(c, previous_token);
 		  token = token || this._read_control_flows(c, open_token);
 		  token = token || this._read_raw_content(c, previous_token, open_token);
 		  token = token || this._read_content_word(c, open_token);
@@ -67528,8 +67539,8 @@
 		  var resulting_string = null;
 		  var token = null;
 		  if (!open_token || open_token.type === TOKEN.CONTROL_FLOW_OPEN) {
-		    if (this._options.indent_handlebars && c === '{' && this._input.peek(1) === '{') {
-		      if (this._input.peek(2) === '!') {
+		    if ((this._options.templating.includes('angular') || this._options.indent_handlebars) && c === '{' && this._input.peek(1) === '{') {
+		      if (this._options.indent_handlebars && this._input.peek(2) === '!') {
 		        resulting_string = this.__patterns.handlebars_comment.read();
 		        resulting_string = resulting_string || this.__patterns.handlebars.read();
 		        token = this._create_token(TOKEN.COMMENT, resulting_string);
@@ -67545,8 +67556,8 @@
 		Tokenizer.prototype._read_control_flows = function(c, open_token) {
 		  var resulting_string = '';
 		  var token = null;
-		  // Only check for control flows if angular templating is set AND indenting is set
-		  if (!this._options.templating.includes('angular') || !this._options.indent_handlebars) {
+		  // Only check for control flows if angular templating is set
+		  if (!this._options.templating.includes('angular')) {
 		    return token;
 		  }
 
@@ -67639,7 +67650,6 @@
 		      this._options.unformatted.indexOf(tag_name) !== -1);
 		};
 
-
 		Tokenizer.prototype._read_raw_content = function(c, previous_token, open_token) { // jshint unused:false
 		  var resulting_string = '';
 		  if (open_token && open_token.text[0] === '{') {
@@ -67648,16 +67658,7 @@
 		    previous_token.opened.text[0] === '<' && previous_token.text[0] !== '/') {
 		    // ^^ empty tag has no content 
 		    var tag_name = previous_token.opened.text.substr(1).toLowerCase();
-		    if (tag_name === 'script' || tag_name === 'style') {
-		      // Script and style tags are allowed to have comments wrapping their content
-		      // or just have regular content.
-		      var token = this._read_comment_or_cdata(c);
-		      if (token) {
-		        token.type = TOKEN.TEXT;
-		        return token;
-		      }
-		      resulting_string = this._input.readUntil(new RegExp('</' + tag_name + '[\\n\\r\\t ]*?>', 'ig'));
-		    } else if (this._is_content_unformatted(tag_name)) {
+		    if (this._is_content_unformatted(tag_name)) {
 
 		      resulting_string = this._input.readUntil(new RegExp('</' + tag_name + '[\\n\\r\\t ]*?>', 'ig'));
 		    }
@@ -67667,6 +67668,26 @@
 		    return this._create_token(TOKEN.TEXT, resulting_string);
 		  }
 
+		  return null;
+		};
+
+		Tokenizer.prototype._read_script_and_style = function(c, previous_token) { // jshint unused:false 
+		  if (previous_token.type === TOKEN.TAG_CLOSE && previous_token.opened.text[0] === '<' && previous_token.text[0] !== '/') {
+		    var tag_name = previous_token.opened.text.substr(1).toLowerCase();
+		    if (tag_name === 'script' || tag_name === 'style') {
+		      // Script and style tags are allowed to have comments wrapping their content
+		      // or just have regular content.
+		      var token = this._read_comment_or_cdata(c);
+		      if (token) {
+		        token.type = TOKEN.TEXT;
+		        return token;
+		      }
+		      var resulting_string = this._input.readUntil(new RegExp('</' + tag_name + '[\\n\\r\\t ]*?>', 'ig'));
+		      if (resulting_string) {
+		        return this._create_token(TOKEN.TEXT, resulting_string);
+		      }
+		    }
+		  }
 		  return null;
 		};
 
@@ -67684,6 +67705,7 @@
 		  if (resulting_string) {
 		    return this._create_token(TOKEN.TEXT, resulting_string);
 		  }
+		  return null;
 		};
 
 		tokenizer.Tokenizer = Tokenizer;
@@ -67962,7 +67984,7 @@
 		    type: ''
 		  };
 
-		  var last_tag_token = new TagOpenParserToken();
+		  var last_tag_token = new TagOpenParserToken(this._options);
 
 		  var printer = new Printer(this._options, baseIndentString);
 		  var tokens = new Tokenizer(source_text, this._options).tokenize();
@@ -68285,7 +68307,7 @@
 		  return parser_token;
 		};
 
-		var TagOpenParserToken = function(parent, raw_token) {
+		var TagOpenParserToken = function(options, parent, raw_token) {
 		  this.parent = parent || null;
 		  this.text = '';
 		  this.type = 'TK_TAG_OPEN';
@@ -68352,13 +68374,14 @@
 		    }
 
 		    // handlebars tags that don't start with # or ^ are single_tags, and so also start and end.
+		    // if they start with # or ^, they are still considered single tags if indenting of handlebars is set to false
 		    this.is_end_tag = this.is_end_tag ||
-		      (this.tag_start_char === '{' && (this.text.length < 3 || (/[^#\^]/.test(this.text.charAt(handlebar_starts)))));
+		      (this.tag_start_char === '{' && (!options.indent_handlebars || this.text.length < 3 || (/[^#\^]/.test(this.text.charAt(handlebar_starts)))));
 		  }
 		};
 
 		Beautifier.prototype._get_tag_open_token = function(raw_token) { //function to get a full tag and parse its type
-		  var parser_token = new TagOpenParserToken(this._tag_stack.get_parser_token(), raw_token);
+		  var parser_token = new TagOpenParserToken(this._options, this._tag_stack.get_parser_token(), raw_token);
 
 		  parser_token.alignment_size = this._options.wrap_attributes_indent_size;
 
@@ -69123,7 +69146,7 @@
 
 	}
 
-	/* src/doc/components/Code.svelte generated by Svelte v4.2.19 */
+	/* src/doc/components/Code.svelte generated by Svelte v4.2.20 */
 
 	function add_css$4(target) {
 		append_styles(target, "qc-hash-1fxiy4n", "pre.qc-hash-1fxiy4n{max-inline-size:var(--qc-max-content-width)}");
@@ -69282,7 +69305,7 @@
 
 	customElements.define("qc-code", create_custom_element(Code, {"targetId":{"attribute":"target-id"},"rawCode":{"attribute":"raw-code"},"language":{},"outerHTML":{"attribute":"outer-html","type":"Boolean"}}, [], [], false));
 
-	/* src/doc/components/color-doc.svelte generated by Svelte v4.2.19 */
+	/* src/doc/components/color-doc.svelte generated by Svelte v4.2.20 */
 
 	function add_css$3(target) {
 		append_styles(target, "qc-hash-1v55k4q", ".qc-bg-color-white.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-white)}.qc-bg-color-blue-extra-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-extra-pale)}.qc-bg-color-blue-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-pale)}.qc-bg-color-blue-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-light)}.qc-bg-color-blue-regular_light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-regular_light)}.qc-bg-color-blue-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-regular)}.qc-bg-color-blue-piv.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-piv)}.qc-bg-color-blue-medium.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-medium)}.qc-bg-color-blue-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-blue-dark)}.qc-bg-color-purple.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-purple)}.qc-bg-color-grey-extra-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-extra-pale)}.qc-bg-color-grey-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-pale)}.qc-bg-color-grey-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-light)}.qc-bg-color-grey-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-regular)}.qc-bg-color-grey-medium.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-medium)}.qc-bg-color-grey-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-grey-dark)}.qc-bg-color-pink-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-pink-pale)}.qc-bg-color-pink-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-pink-regular)}.qc-bg-color-red-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-pale)}.qc-bg-color-red-light.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-light)}.qc-bg-color-red-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-regular)}.qc-bg-color-red-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-red-dark)}.qc-bg-color-green-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-pale)}.qc-bg-color-green-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-regular)}.qc-bg-color-green-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-green-dark)}.qc-bg-color-yellow-pale.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-pale)}.qc-bg-color-yellow-regular.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-regular)}.qc-bg-color-yellow-dark.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-yellow-dark)}.qc-bg-color-background.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-background)}.qc-bg-color-text-primary.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-text-primary)}.qc-bg-color-accent.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-accent)}.qc-bg-color-success.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-success)}.qc-bg-color-error.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-error)}.qc-bg-color-danger.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-danger)}.qc-bg-color-link-text.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-text)}.qc-bg-color-link-hover.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-hover)}.qc-bg-color-link-visited.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-visited)}.qc-bg-color-link-active.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-active)}.qc-bg-color-link-focus-outline.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-link-focus-outline)}.qc-bg-color-formfield-border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-border)}.qc-bg-color-formfield-focus-border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-focus-border)}.qc-bg-color-formfield-focus-outline.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-formfield-focus-outline)}.qc-bg-color-searchinput-icon.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-searchinput-icon)}.qc-bg-color-box_shadow.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{background-color:var(--qc-color-box_shadow)}.color-details.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{display:flex;justify-content:flex-start;align-items:center}.color-details.qc-hash-1v55k4q>div.qc-hash-1v55k4q+div.qc-hash-1v55k4q{margin-left:var(--qc-spacer-md)}.color-sample.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{width:4.8rem;height:4.8rem;border-radius:50%;flex-shrink:0}.border.qc-hash-1v55k4q.qc-hash-1v55k4q.qc-hash-1v55k4q{border:1px solid var(--qc-color-grey-light)}");
@@ -69403,7 +69426,7 @@
 
 	customElements.define("qc-color-doc", create_custom_element(Color_doc, {"title":{},"token":{},"border":{}}, [], [], true));
 
-	/* src/doc/components/Switch.svelte generated by Svelte v4.2.19 */
+	/* src/doc/components/Switch.svelte generated by Svelte v4.2.20 */
 
 	function add_css$2(target) {
 		append_styles(target, "qc-hash-qsg5d6", ".switch.qc-hash-qsg5d6.qc-hash-qsg5d6{position:relative;display:inline-block;width:5.6rem;height:3.2rem}input.qc-hash-qsg5d6.qc-hash-qsg5d6{z-index:10;opacity:0;position:absolute;cursor:pointer;margin:0;padding:0;inset:0;height:auto;width:auto}.slider.qc-hash-qsg5d6.qc-hash-qsg5d6{z-index:5;position:absolute;top:0;left:0;right:0;bottom:0;background-color:var(--unchecked-bg-color);-webkit-transition:0.4s;transition:0.4s}.slider.qc-hash-qsg5d6.qc-hash-qsg5d6::before{position:absolute;content:\"\";height:2.8rem;width:2.8rem;left:0.2rem;bottom:0.2rem;background-color:var(--slider-color);-webkit-transition:0.4s;transition:0.4s}input.qc-hash-qsg5d6:checked+.slider.qc-hash-qsg5d6{background-color:var(--checked-bg-color)}input.qc-hash-qsg5d6:focus+.slider.qc-hash-qsg5d6{box-shadow:0 0 1px var(--qc-bok-shadow-color)}input.qc-hash-qsg5d6:checked+.slider.qc-hash-qsg5d6::before{transform:translateX(2.4rem)}.slider.round.qc-hash-qsg5d6.qc-hash-qsg5d6,input.qc-hash-qsg5d6.qc-hash-qsg5d6{border-radius:3.2rem}.slider.round.qc-hash-qsg5d6.qc-hash-qsg5d6::before{border-radius:50%}");
@@ -69560,7 +69583,7 @@
 
 	customElements.define("qc-switch", create_custom_element(Switch, {"value":{"type":"Boolean"},"name":{},"color":{}}, [], [], false));
 
-	/* src/doc/components/TopNav.svelte generated by Svelte v4.2.19 */
+	/* src/doc/components/TopNav.svelte generated by Svelte v4.2.20 */
 
 	function add_css$1(target) {
 		append_styles(target, "qc-hash-1qt294a", "[role=complementary].qc-hash-1qt294a.qc-hash-1qt294a{position:sticky;z-index:100;top:0;background-color:var(--qc-color-blue-medium);color:var(--qc-color-grey-pale);min-height:7.2rem;height:7.2rem}.top-nav.qc-hash-1qt294a.qc-hash-1qt294a{position:absolute;inset:0;display:flex;align-items:end;padding-bottom:var(--qc-spacer-sm)}.top-nav.qc-hash-1qt294a .switch-control.qc-hash-1qt294a{margin-left:auto;margin-right:0;display:flex;align-items:center}.top-nav.qc-hash-1qt294a .switch-control label.qc-hash-1qt294a:first-child{margin-right:1.6rem}");
@@ -69582,7 +69605,7 @@
 
 		let switch_1_props = { id: "switch" };
 
-		if (/*value*/ ctx[0] !== undefined) {
+		if (/*value*/ ctx[0] !== void 0) {
 			switch_1_props.value = /*value*/ ctx[0];
 		}
 
@@ -69674,7 +69697,7 @@
 
 	customElements.define("qc-doc-top-nav", create_custom_element(TopNav, {}, [], [], false));
 
-	/* src/doc/components/Exemple.svelte generated by Svelte v4.2.19 */
+	/* src/doc/components/Exemple.svelte generated by Svelte v4.2.20 */
 
 	function add_css(target) {
 		append_styles(target, "qc-hash-1u5h5rs", "figure.qc-hash-1u5h5rs.qc-hash-1u5h5rs{max-width:var(--qc-max-content-width);width:100%;border:1px solid var(--qc-box_shadow-0-color);margin-bottom:var(--qc-spacer-content-block-mb)}figure.qc-hash-1u5h5rs .exemple.qc-hash-1u5h5rs{padding:var(--qc-spacer-sm) var(--qc-spacer-sm) 0 var(--qc-spacer-sm);margin-bottom:var(--qc-spacer-sm)}");
