@@ -8325,15 +8325,13 @@
 			invalid = prop($$props, 'invalid', 7),
 			errorText = prop($$props, 'errorText', 7);
 
-		onMount(() => {
-			if (required() === "") {
-				required("true");
-			}
+		if (required() === "") {
+			required("true");
+		}
 
-			if (invalid() === "") {
-				invalid("true");
-			}
-		});
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		RadioGroup($$anchor, {
 			get name() {
@@ -8632,23 +8630,21 @@
 				'invalid'
 			]);
 
-		onMount(() => {
-			if (checked() === "") {
-				checked("true");
-			}
+		if (checked() === "") {
+			checked("true");
+		}
 
-			if (disabled() === "") {
-				disabled("true");
-			}
+		if (disabled() === "") {
+			disabled("true");
+		}
 
-			if (required() === "") {
-				required("true");
-			}
+		if (required() === "") {
+			required("true");
+		}
 
-			if (invalid() === "") {
-				invalid("true");
-			}
-		});
+		if (invalid() === "") {
+			invalid("true");
+		}
 
 		const expression = user_derived(() => parent()?.name ?? name());
 		const expression_1 = user_derived(() => parent()?.size ?? size());

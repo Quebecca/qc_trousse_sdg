@@ -24,7 +24,6 @@
 
 <script>
     import RadioGroup from "./RadioGroup.svelte";
-    import {onMount} from "svelte";
 
     let {
         name,
@@ -36,14 +35,12 @@
         errorText
     } = $props();
 
-    onMount(() => {
-        if (required === "") {
-            required = "true";
-        }
-        if (invalid === "") {
-            invalid = "true";
-        }
-    });
+    if (required === "") {
+        required = "true";
+    }
+    if (invalid === "") {
+        invalid = "true";
+    }
 </script>
 
 <RadioGroup
