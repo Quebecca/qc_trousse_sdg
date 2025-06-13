@@ -2020,8 +2020,6 @@ input[type=radio]::before {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 2.4rem;
-  height: 1.8rem;
   mask-image: url("../../../../public/img/checkmark.svg");
   -webkit-mask-image: url("../../../../public/img/checkmark.svg");
   mask-size: contain;
@@ -2066,6 +2064,10 @@ input[type=radio]::before {
   transform: rotate(-45deg);
   top: 0.1rem;
 }
+.checkbox-sm input[type=checkbox]:checked::after {
+  width: var(--qc-spacer-sm);
+  height: 1.2rem;
+}
 
 .checkbox-md input {
   width: var(--qc-spacer-md);
@@ -2080,6 +2082,10 @@ input[type=radio]::before {
   border-right: 0;
   transform: rotate(-45deg);
   top: 0.2rem;
+}
+.checkbox-md input[type=checkbox]:checked::after {
+  width: var(--qc-spacer-md);
+  height: 1.8rem;
 }
 
 .checkbox-single {
