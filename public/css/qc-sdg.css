@@ -1862,7 +1862,6 @@ qc-search-bar {
   top: 0;
   overflow: hidden;
   opacity: 0;
-  transition: all 160ms ease-in-out;
 }
 .qc-radio-md input[type=radio]:focus, .qc-radio-sm input[type=radio]:focus {
   outline: 0.2rem solid var(--qc-color-blue-light);
@@ -1936,8 +1935,7 @@ qc-search-bar {
 }
 
 .qc-radio-legend {
-  display: flex;
-  flex-direction: row;
+  display: -webkit-box;
 }
 
 .qc-radio-group-sm {
