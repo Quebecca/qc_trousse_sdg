@@ -7,7 +7,6 @@
   min-height: token-value(spacer, md);
   margin: 0;
 
-  // Reference pour le style: https://www.scottohara.me/blog/2021/09/24/custom-radio-checkbox-again.html
   input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
@@ -32,6 +31,8 @@
       bottom: 0;
       top: 0;
       overflow: hidden;
+      opacity: 0;
+      transition: all 160ms ease-in-out;
     }
 
     &:focus {
@@ -42,6 +43,12 @@
 
     &:checked {
       border-color: token-value(color, blue, regular);
+
+      &::before {
+        opacity: 1;
+        border-radius: 100%;
+        background-color: token-value(color, blue, regular);
+      }
     }
 
     &:disabled {
@@ -66,41 +73,32 @@
   }
 }
 
-input[type=radio]::before {
-  height: 0;
-  width: 0;
-}
-
 .qc-radio-sm {
   @extend %radio-style;
 
-  input {
+  input[type=radio] {
     width: token-value(spacer, sm);
     height: token-value(spacer, sm);
     border-width: rem(1);
-  }
 
-  input[type=radio]:checked::before {
-    // Rayon de l'espace entre la bordure et l'interieur
-    border: rem(5) solid transparent;
-    border-radius: 100%;
-    background: token-value(color, blue, regular);
+    &::before {
+      width: rem(10);
+      height: rem(10);
+    }
   }
 }
 
 .qc-radio-md {
   @extend %radio-style;
 
-  input {
+  input[type=radio] {
     width: token-value(spacer, md);
     height: token-value(spacer, md);
     border-width: rem(2);
-  }
 
-  input[type=radio]:checked::before {
-    // Rayon de l'espace entre la bordure et l'interieur
-    border: rem(7) solid transparent;
-    border-radius: 100%;
-    background: token-value(color, blue, regular);
+    &::before {
+      width: rem(14);
+      height: rem(14);
+    }
   }
 }
