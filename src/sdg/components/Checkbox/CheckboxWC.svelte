@@ -41,7 +41,8 @@
         required, 
         size,
         invalid,
-        invalidText
+        invalidText,
+        ...rest
     } = $props();
 
     let effectiveValue = $derived(value || label);
@@ -66,4 +67,5 @@
     invalid={outer ? false : invalid}
     {invalidText}
     hasParentGroup={outer !== null && outer !== undefined}
+    {...rest}
 ></Checkbox>

@@ -14,10 +14,18 @@
         size = "md",
         invalid = false,
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        hasParentGroup = false
+        hasParentGroup = false,
+        ...rest
     } = $props();
     
     let id = $derived(name + "_" + value);
+
+    let restProps = $state({});
+    $effect(() => {
+        const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
+
+        restProps = inputProps;
+    });
 </script>
 
 <div class={`${hasParentGroup ? "" : " checkbox-single"}${Utils.isTruthy(invalid) ? " checkbox-single-invalid" : ""}`}>
@@ -31,6 +39,7 @@
             {checked}
             aria-required = {required}
             aria-invalid={invalid}
+            {...restProps}
         />
         <label for={id}>
             {label}
