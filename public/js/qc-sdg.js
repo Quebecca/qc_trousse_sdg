@@ -8222,7 +8222,7 @@
 				}
 
 				const prefix = match[1] || "";
-				const lastWord = match[2];
+				const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
 				// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
 				const span = document.createElement('span');
 
