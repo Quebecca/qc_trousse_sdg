@@ -2133,6 +2133,9 @@ input[type=radio]::before {
   display: flex;
   color: var(--qc-color-red-regular);
   margin-left: var(--qc-spacer-xs);
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
 }
 
 .qc-checkbox-invalid {
