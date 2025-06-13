@@ -50,8 +50,7 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: 16px;
-        height: 12px;
+
         mask-image: url('../../../../public/img/checkmark.svg');
         -webkit-mask-image: url('../../../../public/img/checkmark.svg');
         mask-size: contain;
@@ -105,6 +104,11 @@
     transform: rotate(-45deg);
     top: rem(1);
   }
+
+  input[type=checkbox]:checked::after {
+    width: token-value(spacer, sm);
+    height: rem(12);
+  }
 }
 
 .checkbox-md {
@@ -124,6 +128,10 @@
     border-right: 0;
     transform: rotate(-45deg);
     top: rem(2);
+  }
+  input[type=checkbox]:checked::after {
+    width: token-value(spacer, md);
+    height: rem(18);
   }
 }
 
