@@ -37,7 +37,7 @@
   display: flex;
   color: token-value(color, red, regular);
   margin-left: token-value(spacer, xs);
-  @include content-font(md);
+  @include content-font(md, bold);
 }
 
 .qc-fieldset-invalid {
