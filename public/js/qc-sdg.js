@@ -4488,49 +4488,6 @@
 	}
 
 	/**
-	 * @param {Element} element
-	 * @param {any} value
-	 */
-	function set_value(element, value) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.value ===
-				(attributes.value =
-					// treat null and undefined the same for the initial value
-					value ?? undefined) ||
-			// @ts-expect-error
-			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.value = value ?? '';
-	}
-
-	/**
-	 * @param {Element} element
-	 * @param {boolean} checked
-	 */
-	function set_checked(element, checked) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.checked ===
-			(attributes.checked =
-				// treat null and undefined the same for the initial value
-				checked ?? undefined)
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.checked = checked;
-	}
-
-	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -8194,7 +8151,7 @@
 		setContext('size', { size: size() });
 
 		onMount(() => {
-			inners().forEach((inner) => get(checkboxes).appendChild(inner)); // const form = pseudo.closest('form');
+			inners().forEach((inner) => get(checkboxes).appendChild(inner));
 		});
 
 		var div = root$3();
@@ -8493,7 +8450,7 @@
 
 	var root_1$1 = template(`<span class="qc-checkbox-required">*</span>`);
 	var root_2$1 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$2 = template(`<div><div><input type="checkbox"> <label> <!></label></div> <div role="alert"><!></div></div>`);
+	var root$2 = template(`<div><div><input> <label> <!></label></div> <div role="alert"><!></div></div>`);
 
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
@@ -8509,15 +8466,40 @@
 			size = prop($$props, 'size', 7, "md"),
 			invalid = prop($$props, 'invalid', 7, false),
 			invalidText = prop($$props, 'invalidText', 7, lang === "fr" ? "Champ obligatoire" : "Required field"),
-			hasParentGroup = prop($$props, 'hasParentGroup', 7, false);
+			hasParentGroup = prop($$props, 'hasParentGroup', 7, false),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'value',
+				'label',
+				'name',
+				'disabled',
+				'checked',
+				'required',
+				'size',
+				'invalid',
+				'invalidText',
+				'hasParentGroup'
+			]);
 
 		let id = user_derived(() => name() + "_" + value());
+		let restProps = state(proxy({}));
+
+		user_effect(() => {
+			const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
+
+			set(restProps, inputProps, true);
+		});
+
 		var div = root$2();
 		var div_1 = child(div);
 		var input = child(div_1);
 
 		remove_input_defaults(input);
 
+		let attributes;
 		var label_1 = sibling(input, 2);
 		var text = child(label_1);
 		var node = sibling(text);
@@ -8574,13 +8556,19 @@
 			($0, $1) => {
 				set_class(div, 1, $0);
 				set_class(div_1, 1, `checkbox-${size()}`);
-				set_value(input, value());
-				set_attribute(input, 'name', name());
-				set_attribute(input, 'id', get(id));
-				input.disabled = disabled();
-				set_checked(input, checked());
-				set_attribute(input, 'aria-required', required());
-				set_attribute(input, 'aria-invalid', invalid());
+
+				attributes = set_attributes(input, attributes, {
+					type: 'checkbox',
+					value: value(),
+					name: name(),
+					id: get(id),
+					disabled: disabled(),
+					checked: checked(),
+					'aria-required': required(),
+					'aria-invalid': invalid(),
+					...get(restProps)
+				});
+
 				set_attribute(label_1, 'for', get(id));
 				set_text(text, `${label() ?? ''} `);
 				set_class(div_2, 1, $1);
@@ -8701,7 +8689,24 @@
 			required = prop($$props, 'required', 7),
 			size = prop($$props, 'size', 7),
 			invalid = prop($$props, 'invalid', 7),
-			invalidText = prop($$props, 'invalidText', 7);
+			invalidText = prop($$props, 'invalidText', 7),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'inner',
+				'outer',
+				'value',
+				'label',
+				'name',
+				'disabled',
+				'checked',
+				'required',
+				'size',
+				'invalid',
+				'invalidText'
+			]);
 
 		let effectiveValue = user_derived(() => value() || label());
 		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
@@ -8718,38 +8723,41 @@
 		const expression_2 = user_derived(() => outer() ? false : invalid());
 		const expression_3 = user_derived(() => outer() !== null && outer() !== undefined);
 
-		Checkbox($$anchor, {
-			get value() {
-				return get(effectiveValue);
+		Checkbox($$anchor, spread_props(
+			{
+				get value() {
+					return get(effectiveValue);
+				},
+				get label() {
+					return label();
+				},
+				get name() {
+					return get(effectiveName);
+				},
+				get disabled() {
+					return get(expression);
+				},
+				get checked() {
+					return checked();
+				},
+				get required() {
+					return get(expression_1);
+				},
+				get size() {
+					return get(effectiveSize);
+				},
+				get invalid() {
+					return get(expression_2);
+				},
+				get invalidText() {
+					return invalidText();
+				},
+				get hasParentGroup() {
+					return get(expression_3);
+				}
 			},
-			get label() {
-				return label();
-			},
-			get name() {
-				return get(effectiveName);
-			},
-			get disabled() {
-				return get(expression);
-			},
-			get checked() {
-				return checked();
-			},
-			get required() {
-				return get(expression_1);
-			},
-			get size() {
-				return get(effectiveSize);
-			},
-			get invalid() {
-				return get(expression_2);
-			},
-			get invalidText() {
-				return invalidText();
-			},
-			get hasParentGroup() {
-				return get(expression_3);
-			}
-		});
+			() => rest
+		));
 
 		return pop({
 			get inner() {
