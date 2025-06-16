@@ -306,6 +306,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
   - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un custom element ;
   - correction d'un bug dans le composant lien externe lorsqu'il contient un retour à la ligne ;
   - évolution dans le composant lien externe pour gérer les débordements des chaînes très longues (par exemple les url) ;
+- Derniers changements
+  - Mise à jour des dépendances nodejs ,
+  - Ajout de scripts pour le versionnage du projet (liés à npm version);
+- 1.3.3 :
+  - PR dependabot
 - 1.3.2 :
   - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.1 :
