@@ -28,8 +28,6 @@ if (displayAlertLink) {
         }
     )
 }
-
-
 // add version
 
 

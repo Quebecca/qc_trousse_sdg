@@ -1,0 +1,98 @@
+@use "qc-sdg-lib" as *;
+
+%fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  padding: 0.001em 0 0 0; //Ce padding est nécessaire pour contrôler les marges de <legend>.
+  margin-left: token-value(spacer, xs);
+  margin-bottom: token-value(spacer, sm);
+  @include content-font(md, bold);
+}
+
+%group {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+}
+
+%legend {
+  display: -webkit-box;
+}
+
+%group-sm {
+  @extend %group;
+  margin-top: token-value(spacer, sm);
+  row-gap: token-value(spacer, xs);
+}
+
+%group-md {
+  @extend %group;
+  margin-top: token-value(spacer, md);
+  row-gap: token-value(spacer, sm);
+}
+
+%required {
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
+  @include content-font(md, bold);
+}
+
+.qc-fieldset-invalid {
+  box-shadow: rem(2) 0 token-value(color, red, regular) inset;
+}
+
+%invalid {
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-top: token-value(spacer, sm);
+  align-items: center;
+
+}
+%invalid-icon {
+  display: flex;
+  align-items: center;
+  margin-right: token-value(spacer, xs);
+}
+
+%invalid-visible {
+  min-height: token-value(spacer, md);
+}
+
+@mixin fieldgroup($type) {
+  .qc-#{$type}-fieldset {
+    @extend %fieldset;
+  }
+
+  .qc-#{$type}-legend {
+    @extend %legend;
+  }
+
+  .qc-#{$type}-group-sm {
+    @extend %group-sm;
+  }
+
+  .qc-#{$type}-group-md {
+    @extend %group-md;
+  }
+
+  .qc-#{$type}-required {
+    @extend %required;
+  }
+
+
+  .qc-#{$type}-invalid {
+    @extend %invalid;
+
+    .qc-#{$type}-invalid-icon {
+      @extend %invalid-icon;
+    }
+
+    &.qc-#{$type}-invalid-visible {
+      @extend %invalid-visible;
+    }
+  }
+
+}
+

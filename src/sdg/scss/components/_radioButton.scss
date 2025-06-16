@@ -1,0 +1,102 @@
+@use "qc-sdg-lib" as *;
+
+%radio-style {
+  display: flex;
+  align-items: center;
+  min-height: token-value(spacer, md);
+  margin: 0;
+
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+
+    display: flex;
+    position: relative;
+
+    margin: 0;
+
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+    border-radius: 100%;
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    &:focus {
+      outline: rem(2) solid token-value(color, blue, light);
+      outline-offset: 0;
+      border-color: token-value(color, blue, dark) !important;
+    }
+
+    &:checked {
+      border-color: token-value(color, blue, regular);
+
+      &::before {
+        opacity: 1;
+        border-radius: 100%;
+        background-color: token-value(color, blue, regular);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+
+    &:disabled+label {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    display: flex;
+    align-items: end;
+    cursor: pointer;
+    padding-left: token-value(spacer, xs);
+    padding-right: token-value(spacer, xs);
+    margin-bottom: 0;
+    @include content-font(md);
+  }
+}
+
+.qc-radio-sm {
+  @extend %radio-style;
+
+  input[type=radio] {
+    width: token-value(spacer, sm);
+    height: token-value(spacer, sm);
+    border-width: rem(1);
+
+    &::before {
+      width: rem(10);
+      height: rem(10);
+    }
+  }
+}
+
+.qc-radio-md {
+  @extend %radio-style;
+
+  input[type=radio] {
+    width: token-value(spacer, md);
+    height: token-value(spacer, md);
+    border-width: rem(2);
+
+    &::before {
+      width: rem(14);
+      height: rem(14);
+    }
+  }
+}
