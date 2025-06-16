@@ -17,6 +17,7 @@
             constructor() {
                 super();
                 this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+                this.radioButtons.push(...Array.from(this.querySelectorAll('qc-radio-tile')));
             }
         }
     }

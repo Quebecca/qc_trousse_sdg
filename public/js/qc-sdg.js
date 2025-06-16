@@ -5831,7 +5831,7 @@
 
 	}
 
-	var root$d = template(`<div></div>`);
+	var root$e = template(`<div></div>`);
 
 	function Icon($$anchor, $$props) {
 		push($$props, true);
@@ -5856,7 +5856,7 @@
 			]);
 
 		let attributes = user_derived(() => width() === 'auto' ? { 'data-img-size': size() } : {});
-		var div = root$d();
+		var div = root$e();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -5935,7 +5935,7 @@
 		true
 	);
 
-	var root$c = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$d = template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function Notice($$anchor, $$props) {
 		push($$props, true);
@@ -5981,7 +5981,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$c();
+		var fragment = root$d();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6143,7 +6143,7 @@
 	var root_8 = template(`<li><a> </a></li>`);
 	var root_6 = template(`<nav><ul><!> <!></ul></nav>`);
 	var root_9 = template(`<div class="search-zone"><!></div>`);
-	var root$b = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
+	var root$c = template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1);
 
 	function PivHeader($$anchor, $$props) {
 		push($$props, true);
@@ -6189,7 +6189,7 @@
 			}
 		});
 
-		var fragment = root$b();
+		var fragment = root$c();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -6942,7 +6942,7 @@
 
 	var root_1$4 = template(`<img>`);
 	var root_3$1 = template(`<a> </a>`);
-	var root$a = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
+	var root$b = template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1);
 
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
@@ -6960,7 +6960,7 @@
 			mainSlot = prop($$props, 'mainSlot', 7),
 			copyrightSlot = prop($$props, 'copyrightSlot', 7);
 
-		var fragment = root$a();
+		var fragment = root$b();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -7308,7 +7308,7 @@
 		true
 	));
 
-	var root$9 = template(`<button><!></button>`);
+	var root$a = template(`<button><!></button>`);
 
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
@@ -7332,7 +7332,7 @@
 				'class'
 			]);
 
-		var button = root$9();
+		var button = root$a();
 		let attributes;
 		var node = child(button);
 
@@ -7432,7 +7432,7 @@
 	);
 
 	var root_1$3 = template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
-	var root$8 = template(`<!> <link rel="stylesheet">`, 1);
+	var root$9 = template(`<!> <link rel="stylesheet">`, 1);
 
 	function Alert($$anchor, $$props) {
 		push($$props, true);
@@ -7458,7 +7458,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$8();
+		var fragment = root$9();
 		var node = first_child(fragment);
 
 		{
@@ -7625,7 +7625,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$7 = template(`<a href="javascript:;"><!> <span> </span></a>`);
+	var root$8 = template(`<a href="javascript:;"><!> <span> </span></a>`);
 
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
@@ -7668,7 +7668,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$7();
+		var a = root$8();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -7740,7 +7740,7 @@
 		false
 	));
 
-	var root$6 = template(`<span role="img" class="qc-ext-link-img"></span>`);
+	var root$7 = template(`<span role="img" class="qc-ext-link-img"></span>`);
 
 	function ExternalLink($$anchor, $$props) {
 		push($$props, true);
@@ -7821,7 +7821,7 @@
 			});
 		});
 
-		var span_1 = root$6();
+		var span_1 = root$7();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -7850,7 +7850,7 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
-	var root$5 = template(`<div class="qc-search-input"><input> <!></div>`);
+	var root$6 = template(`<div class="qc-search-input"><input> <!></div>`);
 
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
@@ -7871,7 +7871,7 @@
 			]);
 
 		let searchInput;
-		var div = root$5();
+		var div = root$6();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -7948,7 +7948,7 @@
 
 	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
 
-	var root$4 = template(`<div><!> <!></div>`);
+	var root$5 = template(`<div><!> <!></div>`);
 
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
@@ -7988,7 +7988,7 @@
 			set(submitProps, submitAttrs, true);
 		});
 
-		var div = root$4();
+		var div = root$5();
 		let classes;
 		var node = child(div);
 
@@ -8130,7 +8130,7 @@
 	var root_1$2 = template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`);
 	var on_change$1 = (_, invalid) => invalid(false);
 	var root_2$2 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$3 = template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
+	var root$4 = template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function CheckboxGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8154,7 +8154,7 @@
 			inners().forEach((inner) => get(checkboxes).appendChild(inner));
 		});
 
-		var div = root$3();
+		var div = root$4();
 		var fieldset = child(div);
 		var legend_1 = child(fieldset);
 		var text = child(legend_1);
@@ -8450,7 +8450,7 @@
 
 	var root_1$1 = template(`<span class="qc-checkbox-required">*</span>`);
 	var root_2$1 = template(`<div class="qc-checkbox-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$2 = template(`<div><div><input> <label> <!></label></div> <div role="alert"><!></div></div>`);
+	var root$3 = template(`<div><div><input> <label> <!></label></div> <div role="alert"><!></div></div>`);
 
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
@@ -8493,7 +8493,7 @@
 			set(restProps, inputProps, true);
 		});
 
-		var div = root$2();
+		var div = root$3();
 		var div_1 = child(div);
 		var input = child(div_1);
 
@@ -8875,7 +8875,7 @@
 	var root_1 = template(`<span class="qc-radio-required" aria-hidden="true">*</span>`);
 	var on_change = (_, invalid) => invalid(false);
 	var root_2 = template(`<div class="qc-radio-invalid-icon"><!></div> <span> </span>`, 1);
-	var root$1 = template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
+	var root$2 = template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <div role="alert"><!></div></fieldset></div>`);
 
 	function RadioGroup($$anchor, $$props) {
 		push($$props, true);
@@ -8899,7 +8899,7 @@
 			});
 		});
 
-		var div = root$1();
+		var div = root$2();
 		var fieldset = child(div);
 		var legend_1 = child(fieldset);
 		var text = child(legend_1);
@@ -9178,12 +9178,13 @@
 				constructor() {
 					super();
 					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+					this.radioButtons.push(...Array.from(this.querySelectorAll('qc-radio-tile')));
 				}
 			};
 		}
 	));
 
-	var root = template(`<div><input> <label> </label></div>`);
+	var root$1 = template(`<div><input> <label> </label></div>`);
 
 	function RadioButton($$anchor, $$props) {
 		push($$props, true);
@@ -9234,7 +9235,7 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		var div = root();
+		var div = root$1();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -9497,6 +9498,348 @@
 
 	customElements.define('qc-radio-button', create_custom_element(
 		RadioButtonWC,
+		{
+			name: { attribute: 'name', type: 'String' },
+			value: { attribute: 'value', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
+			size: { attribute: 'size', type: 'String' },
+			checked: { attribute: 'checked', type: 'String' },
+			disabled: { attribute: 'disabled', type: 'String' },
+			required: { attribute: 'required', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' },
+			parent: {}
+		},
+		[],
+		[],
+		false,
+		(customElementConstructor) => {
+			return class extends customElementConstructor {
+				static parent;
+				static thisElement;
+
+				constructor() {
+					super();
+					this.thisElement = this;
+					this.parent = this.closest('qc-radio-group');
+				}
+			};
+		}
+	));
+
+	var root = template(`<div><label><input> </label></div>`);
+
+	function RadioTile($$anchor, $$props) {
+		push($$props, true);
+
+		let name = prop($$props, 'name', 7),
+			value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			size = prop($$props, 'size', 7, "sm"),
+			checked = prop($$props, 'checked', 7, false),
+			disabled = prop($$props, 'disabled', 7, false),
+			required = prop($$props, 'required', 7, false),
+			invalid = prop($$props, 'invalid', 7, false),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'name',
+				'value',
+				'label',
+				'size',
+				'checked',
+				'disabled',
+				'required',
+				'invalid'
+			]);
+
+		let boolAttributes = user_derived(() => {
+			let truthyProps = {
+				checked: Utils.isTruthy(checked()),
+				disabled: Utils.isTruthy(disabled())
+			};
+
+			for (const prop in truthyProps) {
+				if (!truthyProps[prop]) {
+					delete truthyProps[prop];
+				}
+			}
+
+			return truthyProps;
+		});
+
+		let restProps = state(proxy({}));
+
+		onMount(() => {
+			const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
+
+			set(restProps, { ...inputProps }, true);
+		});
+
+		var div = root();
+		var label_1 = child(div);
+		var input = child(label_1);
+
+		remove_input_defaults(input);
+
+		let attributes;
+		var text = sibling(input);
+
+		reset(label_1);
+		reset(div);
+
+		template_effect(
+			($0, $1) => {
+				set_class(div, 1, `qc-radio-${size()}`);
+				set_attribute(label_1, 'for', `${name()}_${value()}`);
+
+				attributes = set_attributes(input, attributes, {
+					type: 'radio',
+					id: `${name()}_${value()}`,
+					name: name(),
+					value: value(),
+					'aria-required': $0,
+					'aria-invalid': $1,
+					...get(boolAttributes),
+					...get(restProps)
+				});
+
+				set_text(text, ` ${label() ?? ''}`);
+			},
+			[
+				() => Utils.isTruthy(required()),
+				() => Utils.isTruthy(invalid())
+			]
+		);
+
+		append($$anchor, div);
+
+		return pop({
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value = "sm") {
+				size($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			}
+		});
+	}
+
+	create_custom_element(
+		RadioTile,
+		{
+			name: {},
+			value: {},
+			label: {},
+			size: {},
+			checked: {},
+			disabled: {},
+			required: {},
+			invalid: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	function RadioTileWC($$anchor, $$props) {
+		push($$props, true);
+
+		let parent = prop($$props, 'parent', 7),
+			name = prop($$props, 'name', 7),
+			value = prop($$props, 'value', 7),
+			label = prop($$props, 'label', 7),
+			size = prop($$props, 'size', 7),
+			checked = prop($$props, 'checked', 7),
+			disabled = prop($$props, 'disabled', 7),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 7),
+			rest = rest_props($$props, [
+				'$$slots',
+				'$$events',
+				'$$legacy',
+				'$$host',
+				'parent',
+				'name',
+				'value',
+				'label',
+				'size',
+				'checked',
+				'disabled',
+				'required',
+				'invalid'
+			]);
+
+		if (checked() === "") {
+			checked("true");
+		}
+
+		if (disabled() === "") {
+			disabled("true");
+		}
+
+		if (required() === "") {
+			required("true");
+		}
+
+		if (invalid() === "") {
+			invalid("true");
+		}
+
+		const expression = user_derived(() => parent()?.name ?? name());
+		const expression_1 = user_derived(() => parent()?.size ?? size());
+		const expression_2 = user_derived(() => parent()?.required ?? required());
+		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
+
+		RadioTile($$anchor, spread_props(
+			{
+				get name() {
+					return get(expression);
+				},
+				get value() {
+					return value();
+				},
+				get label() {
+					return label();
+				},
+				get size() {
+					return get(expression_1);
+				},
+				get checked() {
+					return checked();
+				},
+				get disabled() {
+					return disabled();
+				},
+				get required() {
+					return get(expression_2);
+				},
+				get invalid() {
+					return get(expression_3);
+				}
+			},
+			() => rest
+		));
+
+		return pop({
+			get parent() {
+				return parent();
+			},
+			set parent($$value) {
+				parent($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value) {
+				checked($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			}
+		});
+	}
+
+	customElements.define('qc-radio-tile', create_custom_element(
+		RadioTileWC,
 		{
 			name: { attribute: 'name', type: 'String' },
 			value: { attribute: 'value', type: 'String' },
