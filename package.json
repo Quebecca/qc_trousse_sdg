@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c -w --bundleConfigAsCjs",
+    "preversion": "./scripts/check-release-note.sh",
+    "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
     "start": "sirv public",
     "rewrite-bootstrap": "gulp rewriteBs"

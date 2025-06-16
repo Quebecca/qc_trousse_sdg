@@ -300,7 +300,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-
+- Derniers changements
+  - Mise à jour des dépendances nodejs ,
+  - Ajout de scripts pour le versionnage du projet (liés à npm version);
+- 1.3.3 :
+  - PR dependabot
 - 1.3.2 :
   - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.1 :
