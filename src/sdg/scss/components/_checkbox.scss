@@ -1,47 +1,14 @@
 @use "qc-sdg-lib" as *;
+@use "groupsMixins" as *;
+@use "checkMixin" as *;
 
-%checkbox-style {
-  display: flex;
-  align-items: center;
-  min-height: token-value(spacer, md);
-  margin: 0;
-  padding: 0;
+.checkbox-md, .checkbox-sm {
+
 
   input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-
-    display: flex;
-    position: relative;
-
-    margin-top: 0;
-    margin-left: 0;
-
-    background-color: token-value(color, white);
-    border-style: solid;
-    border-color: token-value(color, blue, dark);
-
-    &::before {
-      content: "";
-      position: absolute;
-      margin: auto;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      overflow: hidden;
-    }
-
-    &:focus {
-      outline: rem(2) solid token-value(color, blue, light);
-      outline-offset: 0;
-      border-color: token-value(color, blue, dark) !important;
-    }
 
     &:checked {
       background-color: token-value(color blue regular);
-      border-color: token-value(color blue regular);
 
       &::after {
         content: "";
@@ -49,50 +16,18 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-
-        mask-image: url('../../../../public/img/checkmark.svg');
-        -webkit-mask-image: url('../../../../public/img/checkmark.svg');
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z'/%3E%3C/svg%3E");
         mask-size: contain;
-        -webkit-mask-size: contain;
         mask-repeat: no-repeat;
-        -webkit-mask-repeat: no-repeat;
         mask-position: center;
-        -webkit-mask-position: center;
         background-color: token-value(color, white);
       }
     }
-
-
-    &:disabled {
-      cursor: not-allowed;
-      border-color: token-value(color, grey, light);
-    }
-
-    &:disabled+label {
-      color: token-value(color, grey, regular);
-      cursor: not-allowed;
-    }
-  }
-
-  label {
-    display: flex;
-    align-items: end;
-    cursor: pointer;
-    padding-left: token-value(spacer, xs);
-    padding-right: token-value(spacer, xs);
-    margin-bottom: 0;
-    @include content-font(md);
   }
 }
 
 .checkbox-sm {
-  @extend %checkbox-style;
-
-  input {
-    width: token-value(spacer, sm);
-    height: token-value(spacer, sm);
-    border-width: rem(1);
-  }
+  @include check-style(checkbox, sm);
 
   input[type=checkbox]:checked::before {
     width: rem(8);
@@ -111,13 +46,7 @@
 }
 
 .checkbox-md {
-  @extend %checkbox-style;
-
-  input {
-    width: token-value(spacer, md);
-    height: token-value(spacer, md);
-    border-width: rem(2);
-  }
+  @include check-style(checkbox, md);
 
   input[type=checkbox]:checked::before {
     width: rem(12);
@@ -135,10 +64,9 @@
 }
 
 .checkbox-single {
-  padding-left: token-value(spacer, xs);
-  margin-bottom: token-value(spacer, sm);
+  margin-bottom: token-value(spacer content-block mb);
 
   &.checkbox-single-invalid {
-    box-shadow: rem(2) 0 token-value(color, red, regular) inset;
+    @extend %fieldset-invalid;
   }
 }

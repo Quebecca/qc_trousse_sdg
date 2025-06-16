@@ -91,6 +91,7 @@ let
     }
     , svelteOptions = {
         compilerOptions: {
+            dev: dev_process,
             // enable run-time checks
             customElement: true,
             dev: dev_process,

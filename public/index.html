@@ -1690,19 +1690,16 @@
 
                 <script>
                     const tosForm = document.getElementById("exemple-tos-form");
-                    tosForm.addEventListener("submit", (event) => verifyTermsAcceptance(event));
-                    function verifyTermsAcceptance(event) {
+                    const termsAcceptance = document.getElementById("exemple-une-case")
+                    tosForm.addEventListener("submit", (event) => {
+                        console.log(termsAcceptance.checked);
                         event.preventDefault();
-
-                        const termsAcceptance = document.getElementById("exemple-une-case");
-
-                        if (Array.from(termsAcceptance.querySelectorAll(`input[name="${termsAcceptance.name}"]`))
-                            .find(r => r.checked)) {
+                        if(termsAcceptance.checked) {
                             alert("Formulaire soumis");
                         } else {
                             termsAcceptance.invalid = true;
                         }
-                    }
+                    })
                 </script>
             </qc-doc-exemple>
 
