@@ -1,0 +1,33 @@
+@use "qc-sdg-lib" as *;
+@use "checkMixin" as *;
+
+.qc-radio-tile-md {
+  @include check-style(radio, md);
+
+  label {
+    padding: token-value(spacer, sm);
+    border-style: solid;
+    border-width: rem(1);
+    border-color: token-value(color, grey, light);
+  }
+
+  input[type=radio] {
+    margin-right: token-value(spacer, xs);
+
+    &::before {
+      width: rem(14);
+      height: rem(14);
+    }
+  }
+}
+
+.qc-radio-tile-label {
+  display: flex;
+  align-items: start !important;
+}
+
+.qc-radio-tile-label-span {
+  display: flex;
+  flex-direction: column;
+  row-gap: token-value(spacer, xs);
+}
