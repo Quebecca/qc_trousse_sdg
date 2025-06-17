@@ -17,6 +17,4 @@
     const props = $props();
 </script>
 
-<Icon
-    {...props}
-/>
+<Icon {...props} />

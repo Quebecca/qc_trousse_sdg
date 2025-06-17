@@ -161,9 +161,177 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Inclusion des scss de la trousse dans une feuille de style personnalisée ;
 - Intégration dans Bootstrap.
 
-## Historique
+## Ajustements à faire pour passer de la v1.2.5 à la v1.3.0
 
-- Dernière version : Ajout du helper getImageUrl() et retrait des sprites; Ajout du composants qc-external-link ; Modification de qc-piv-header en lien avec l'accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant qc-search-bar est ajouté à la trousse et peut-être inclus directement en slot ; Refonte des jetons de conception pour les ombrages ; ajout du focus pour les liens ; Ajout d'un attribut `sdg-css-path` à la balise script qui insère le js, pour pouvoir préciser le chemin vers la css du sdg. Refonte de toute la structure des fichiers : suppression du répertoire modules, ajout d'un unique fichier _qc-sdg-lib.scss pour accéder à l'intégralité des variables, fonctions, mixins et classes abstraites (c-à-d. précédées de l'opérateur sass %) du la trousse ; ajout d’un exemple de barre de recherche avec saisie semi-automatique basé sur jQuery UI ; ajout d'un style pour les libellés des champs de formulaire (label).  
+
+### Composant Bandeau PIV (qc-piv-header)
+Les attributs `search-placeholder`, `search-input-name`,`submit-search-text` et `search-form-action` ont été retirés.
+À la place, vous devez créer un formulaire de recherche dans le slot `search-zone`. 
+Voir l'exemple dans le fichier `public/index.html`.
+
+### Composant Pied-de-page PIV (qc-piv-footer)
+Les attributs `logo-src` et `logo-src-dark-theme` ont été ajoutés, pour les thèmes clairs et sombres.
+L’attribut `copyrightText` a été renommé en `copyright-text`.
+
+### Composant Avis (qc-notice)
+L’attribut `type` peut avoir deux nouvelles valeurs : `advice` et `note`.
+L’attribut `icon` a été ajouté.
+
+### Composant Alerte générale (qc-alert)
+
+L’attribut `full-width` a été ajouté.
+
+### Thème sombre
+
+Les couleurs de la trousse s’adaptent en cas de choix du thème sombre par l’internaute ;
+- un commutateur dans la documentation incluse permet de basculer dans le thème sombre ; 
+- en cas de thème sombre, la classe `qc-dark-theme` est ajoutée à l'élément html (cf `src/sdg/_dark-theme.js`) ;
+- des classes et variables css utilitaires permettent de masquer/montrer des éléments selon le thème.
+```scss
+// src/sdg/scss/utilities/_themes.scss
+:root {
+  --qc-light-theme-display: block;
+  --qc-dark-theme-display: none;
+  &.qc-dark-theme {
+    --qc-light-theme-display: none;
+    --qc-dark-theme-display: block;
+  }
+}
+
+.qc-light-theme-show {
+  display: var(--qc-light-theme-display);
+}
+.qc-dark-theme-show {
+  display: var(--qc-dark-theme-display);
+}
+```
+- pour désactiver le thème sombre, vous devez recompiler la trousse avec la variable `$enable-dark-theme: false`. (cf chapitre [Ajout de la trousse dans un projet existant](#ajout-de-la-trousse-dans-un-projet-existant))
+
+### Jetons de conception
+
+- pour chaque jeton de couleur, ajout d'un jeton avec le suffix `-rgb` qui indique la valeur RGB de la couleur, ceci afin de pour pouvoir appliquer une couche alpha avec la fonction css `rgba()`
+Exemple :
+
+```
+// qc-design-token.css
+--qc-color-blue-piv: #095797;
+--qc-color-blue-piv-rgb: 9, 87, 151;
+
+// ma-css.css
+.ma-classe {
+   color: rgba(var(--qc-color-blue-piv-rgb), .16);
+}  
+```
+ 
+- ajouts de jetons
+```yaml
+--qc-color-blue-regular_light: #2586d6;
+  
+// ces jetons recevront des valeurs extra pâles dans de futures versions de la trousse
+--qc-color-blue-extra-pale: var(--qc-color-blue-pale);
+--qc-color-grey-extra-pale: var(--qc-color-grey-pale);
+
+// pour des raisons de cohérence, les jetons pale et light du rouge sont ajoutés comme raccourcis des jetons du rose.
+--qc-color-red-pale: var(--qc-color-pink-pale);
+--qc-color-red-light: var(--qc-color-pink-regular);
+
+// nouveau jeton pour les liens
+--qc-color-link-focus-outline: var(--qc-color-blue-light);
+
+// token pour les champs de formulaire
+--qc-color-formfield-border: var(--qc-color-grey-medium);
+--qc-color-formfield-focus-border: var(--qc-color-blue-dark);
+--qc-color-formfield-focus-outline: var(--qc-color-blue-light);
+--qc-color-searchinput-icon: var(--qc-color-blue-piv);
+```
+
+- retraits de jetons:
+```yaml
+--qc-spacer-list-mb: var(--qc-spacer-content-block-mb);
+--qc-spacer-list-embedded-mb: var(--qc-spacer-sm);
+--qc-spacer-notice-my: var(--qc-spacer-md);
+--qc-spacer-notice-mx: 3.2rem;
+```
+- refontes de jetons :
+```yaml
+// refonte des jetons d’ombrage
+--qc-color-box_shadow: rgba(var(--qc-color-blue-dark-rgb), 0.24);
+--qc-box_shadow-0-color: var(--qc-color-grey-light);
+--qc-box_shadow-1-blur: 4px;
+--qc-box_shadow-1-offset: 1px;
+--qc-box_shadow-2-blur: 8px;
+--qc-box_shadow-2-offset: 2px;
+--qc-box_shadow-3-blur: 16px;
+--qc-box_shadow-3-offset: 4px;
+--qc-box_shadow-4-blur: 24px;
+--qc-box_shadow-4-offset: 6px;
+
+// refonte des jetons de la grille
+--qc-grid-breakpoint-sm: 768px;
+--qc-grid-breakpoint-md: 992px;
+--qc-grid-breakpoint-lg: 1200px;
+--qc-grid-container-max-width-sm: 768px;
+--qc-grid-container-max-width-md: 992px;
+--qc-grid-container-max-width-lg: 1200px;
+```
+**NB : le point de rupture 576px a été retiré : la résolution mobile/sm commence donc à 768px**.
+Tous les autres points de rupture 1.2.5 ont donc été décalés vers le bas.
+
+| Résolution          | 1.2.5          | 1.3.0          |
+|---------------------|----------------|----------------|
+| mobile   / sm       | 0 - 576px      | 0 - 768px      |
+| tablet   / md       | 576px - 768px  | 768px - 996px  |
+| desktop  / lg       | 768px - 996px  | 996px - 1200px |
+| large-desktop  / xl | 996px - 1200px | &gt; 1200px    |
+
+### Import de l'API scss de la trousse
+
+En version 1.2.5, l'import de la trousse dans une scss personnalisée se faisait par l'import d'un ou plusieurs modules :
+```scss
+@use "modules/utils" as *;
+@use "modules/tokens" as *;
+```
+
+Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier de toute l'api scss de la trousse :
+```scss
+@use "qc-sdg-lib" as *;
+// donne accés à toutes les fonctions, mixins et variables de la trousse
+// sans générer aucun code css
+```
+
+## Historique
+- develop:
+  - Passage à svelte 5 ;
+  - Organisation des composants par dossier ;
+  - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un custom element ;
+  - correction d'un bug dans le composant lien externe lorsqu'il contient un retour à la ligne ;
+  - évolution dans le composant lien externe pour gérer les débordements des chaînes très longues (par exemple les url) ;
+  - Ajout des boutons radios et cases à cocher ;
+- Derniers changements
+  - Mise à jour des dépendances nodejs ,
+  - Ajout de scripts pour le versionnage du projet (liés à npm version);
+- 1.3.3 :
+  - PR dependabot
+- 1.3.2 :
+  - modification de la couleur de focus des liens du bandeau PIV ;
+- 1.3.1 :
+  - suppression des marges par défaut pour les dl/dd ;
+  - modification de la couleur de focus des liens du bandeau PIV ;
+- 1.3.0 : 
+  - Ajout du composant `qc-external-link` ; 
+  - Ajout du composant `qc-search-bar` ; 
+  - Modification de `qc-piv-header` en lien avec l’accessibilité : retrait de l’inclusion de la recherche par défaut. À la place, le composant `qc‑search‑bar` peut être inclus directement en _slot_ ; 
+  - Refonte des jetons de conception pour les ombrages ;
+  - Refonte des jetons de conception pour la grille, avec suppression du point de rupture 576px ;
+  - Ajout et retrait de jetons ;
+  - Ajout du focus pour les liens ; 
+  - Ajout d'un attribut `sdg-css-path` à la balise script qui insère le js, pour pouvoir préciser le chemin vers la css du sdg. 
+  - Refonte de toute la structure des fichiers : suppression du répertoire modules, ajout d'un unique fichier _qc-sdg-lib.scss pour accéder à l'intégralité des variables, fonctions, mixins et classes abstraites (c-à-d. précédées de l'opérateur sass %) de la trousse ;
+  - Ajout du helper getImageUrl() et retrait des sprites ;
+  - ajout d'un style pour les libellés des champs de formulaire (label).
+  - ajout d'un style pour les listes ol ;
+  - ajout de classe css utilitaires : `qc-font-size-sm/md/lg/xl` cf `base/_typography.scss` ;
+  - ajout de la classe utilitaire `qc-sr-only`, pour affichage aux lecteurs d’écran seulement ;
 - 1.2.5 — Ajout/modififcation des instructions concernant l'installation et l'extension de la trousse ;
 - 1.2.4 — Suppression de dépendances npm et réorganisation des répertoires ; Ajout d'un composer.json pour pouvoir installer la trousse par composer ;
 - 1.2.3 — Modification des dépendances npm du projets ;

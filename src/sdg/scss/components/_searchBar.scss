@@ -4,10 +4,10 @@
 qc-search-bar {
   position: relative;
   display: block;
-  max-width: rem(640);
 }
 .qc-search-bar {
   @extend %qc-search-wrapper;
+  max-width: rem(640);
   width: 100%;
   border: 0;
   &:has(input:focus) {

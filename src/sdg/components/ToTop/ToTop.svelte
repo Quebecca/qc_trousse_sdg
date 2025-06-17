@@ -66,7 +66,7 @@
 
 <svelte:window on:scroll = {handleScrollUpButton} />
 
-<a href="javascript:;"
+<a href="#top"
    bind:this={toTopElement}
    class="qc-to-top"
    class:visible

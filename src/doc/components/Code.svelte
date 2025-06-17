@@ -12,6 +12,7 @@
 
   import {HighlightJS} from "highlight.js"
   import pretty from "pretty";
+  import jsBeautify from "js-beautify";
 
   let {
       targetId = '',
@@ -39,7 +40,11 @@
           . replace('/qc-hash-.*/g', '')
           . replace('/is-external=""/g', 'is-external')
       ;
-      prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
+      // prettyCode = pretty(rawCode, prettyOptions);
+      prettyCode = language === 'javascript'
+                    ? jsBeautify(rawCode)
+                    : pretty(rawCode, {wrap_attributes: 'force-aligned'});
+      ;
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   }
 
