@@ -11,7 +11,7 @@
         disabled = false,
         required = false,
         invalid = false,
-        description = "",
+        description,
         ...rest
     } = $props();
 
@@ -51,7 +51,9 @@
         />
         <span class="qc-radio-tile-label-span">
             <span class="qc-radio-tile-label-choice">{label}</span>
-            <span>{description}</span>
+            {#if description}
+                <span>{description}</span>
+            {/if}
         </span>
     </label>
 </div>

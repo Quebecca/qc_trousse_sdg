@@ -2142,6 +2142,7 @@ qc-search-bar {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-semi-bold);
+  min-height: var(--qc-spacer-md);
 }
 
 .checkbox-md input[type=checkbox]:checked, .checkbox-sm input[type=checkbox]:checked {
