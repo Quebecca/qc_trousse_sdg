@@ -10,11 +10,11 @@ qc-text-field {
   @extend %qc-formcontrol-box;
   position: relative;
   margin-bottom: rem(24);
-  
+
   &::before {
     border: 1px solid token-value(color formfield border);
   }
-  
+
   input[type=text] {
     display: block;
     position: relative;
@@ -23,12 +23,12 @@ qc-text-field {
     background: transparent;
     padding: rem(8) rem(8);
     border: 0;
-    
+
     &::placeholder {
       color: token-value(color grey medium);
       font-weight: normal;
     }
-    
+
     &:focus,
     &:focus-visible {
       outline: none;
@@ -38,11 +38,8 @@ qc-text-field {
   // Gestion des erreurs
   &.error {
     &::before {
-      border-color: token-value(color error border);
-    }
-
-    input[type=text] {
-      color: token-value(color error text);
+      border-color: token-value(color, red, regular);
+      border-width: 2px;
     }
   }
 }

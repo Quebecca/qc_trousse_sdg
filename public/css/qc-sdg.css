@@ -2224,10 +2224,8 @@ qc-text-field {
   outline: none;
 }
 .qc-text-field.error::before {
-  border-color: var(--qc-color-error-border);
-}
-.qc-text-field.error input[type=text] {
-  color: var(--qc-color-error-text);
+  border-color: var(--qc-color-red-regular);
+  border-width: 2px;
 }
 
 .qc-text-field-error-message {
