@@ -1,0 +1,60 @@
+@use "qc-sdg-lib" as *;
+
+qc-text-field {
+  display: block;
+  width: 100%;
+  max-width: rem(548);
+}
+
+.qc-text-field {
+  @extend %qc-formcontrol-box;
+  position: relative;
+  margin-bottom: rem(24);
+  
+  &::before {
+    border: 1px solid token-value(color formfield border);
+  }
+  
+  input[type=text] {
+    display: block;
+    position: relative;
+    color: token-value(color text primary);
+    width: 100%;
+    background: transparent;
+    padding: rem(8) rem(8);
+    border: 0;
+    
+    &::placeholder {
+      color: token-value(color grey medium);
+      font-weight: normal;
+    }
+    
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  // Gestion des erreurs
+  &.error {
+    &::before {
+      border-color: token-value(color error border);
+    }
+
+    input[type=text] {
+      color: token-value(color error text);
+    }
+  }
+}
+
+// Message d'erreur
+.qc-text-field-error-message {
+  display: none;
+  margin-top: rem(4);
+  color: token-value(color error text);
+  font-size: rem(14);
+
+  .error & {
+    display: block;
+  }
+}
