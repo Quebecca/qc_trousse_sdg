@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Open Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700");
-.qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
+.qc-text-field, .qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
   position: relative;
   z-index: 10;
   background: transparent;
   border: 0;
 }
-.qc-search-input::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-bar button::before {
+.qc-text-field::before, .qc-search-input::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-bar button::before {
   position: absolute;
   display: block;
   content: "";
@@ -13,10 +13,10 @@
   inset: 0;
   z-index: -5;
 }
-.qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus {
+.qc-text-field:has(input:focus), .qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-text-field:focus, .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before {
+.qc-text-field:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-text-field:focus::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 
@@ -2190,6 +2190,56 @@ qc-search-bar {
 .checkbox-single {
   margin-bottom: var(--qc-spacer-content-block-mb);
 }
+qc-text-field {
+  display: block;
+  width: 100%;
+  max-width: 54.8rem;
+}
+
+.qc-text-field {
+  position: relative;
+  margin-bottom: 2.4rem;
+}
+.qc-text-field::before {
+  border: 1px solid var(--qc-color-formfield-border);
+}
+.qc-text-field input[type=text] {
+  display: block;
+  position: relative;
+  color: var(--qc-color-text-primary);
+  width: 100%;
+  background: transparent;
+  padding: 0.8rem 0.8rem;
+  border: 0;
+}
+.qc-text-field input[type=text]::-moz-placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-text-field input[type=text]::placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-text-field input[type=text]:focus, .qc-text-field input[type=text]:focus-visible {
+  outline: none;
+}
+.qc-text-field.error::before {
+  border-color: var(--qc-color-error-border);
+}
+.qc-text-field.error input[type=text] {
+  color: var(--qc-color-error-text);
+}
+
+.qc-text-field-error-message {
+  display: none;
+  margin-top: 0.4rem;
+  color: var(--qc-color-error-text);
+  font-size: 1.4rem;
+}
+.error .qc-text-field-error-message {
+  display: block;
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
