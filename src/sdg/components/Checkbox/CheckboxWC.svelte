@@ -6,7 +6,7 @@
         label: { attribute: 'label', type: 'String' },
         name: { attribute: 'name', type: 'String' },
         disabled: { attribute: 'disabled', type: 'Boolean' },
-        checked: { attribute: 'checked', type: 'Boolean' },
+        checked: { attribute: 'checked', type: 'Boolean', reflect: true },
         required: { attribute: 'required', type: 'Boolean' },
         size: { attribute: 'size', type: 'String' },
         invalid: { attribute: 'invalid', type: 'Boolean' },
@@ -37,10 +37,10 @@
         label, 
         name, 
         disabled, 
-        checked, 
+        checked = $bindable(false),
         required, 
         size,
-        invalid,
+        invalid = $bindable(false),
         invalidText,
         ...rest
     } = $props();
@@ -54,17 +54,19 @@
             invalid = "true";
         }
     });
+    $inspect("checked wc", checked, ", invalid wc", invalid)
+
 </script>
 
 <Checkbox
-    value={effectiveValue}
+    bind:value={effectiveValue}
     {label}
     name={effectiveName}
     disabled={outer?.disabled ?? disabled}
-    {checked}
+    bind:checked
     required={outer?.required ?? required}
     size={effectiveSize}
-    invalid={outer ? false : invalid}
+    bind:invalid
     {invalidText}
     hasParentGroup={outer !== null && outer !== undefined}
     {...rest}

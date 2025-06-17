@@ -19,84 +19,36 @@
     , hideSearchText : {attribute: 'hide-search-text'}
     , enableSearch : {attribute: 'enable-search'}
     , showSearch : {attribute: 'show-search'}
+  },
+  extend: (customElementConstructor) => {
+    return class extends customElementConstructor {
+      static self;
+
+      constructor() {
+        super();
+        this.self = this;
+      }
+    }
   }
 }}" />
 
 <script>
-    import { Utils } from "../utils";
     import PivHeader from "./PivHeader.svelte";
 
-    const lang = Utils.getPageLanguage();
-
     let {
-        logoUrl = '/',
-        fullWidth = 'false',
-        logoSrc,
-        logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec',
-        titleUrl = '/',
-        titleText = '',
-        linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation',
-        altLanguageText = lang === 'fr' ? 'English' : 'Français',
-        altLanguageUrl = '',
-        joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us',
-        joinUsUrl = '',
-        goToContent = 'true',
-        goToContentAnchor = '#main',
-        goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content',
-        displaySearchText = lang === 'fr' ? 'Cliquer pour faire une recherche' : 'Click to search',
-        hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
-        enableSearch = 'false',
-        showSearch = 'false',
+        self,
+        ...props
     } = $props()
 
-    export function focusOnSearchInput() {
-        if (displaySearchForm) {
-            document.querySelector('[slot="search-zone"] input')?.focus();
-        }
-    }
 </script>
 
-{#snippet links()}
-    <slot name="links">
-        {#if joinUsUrl || altLanguageUrl}
-            <nav aria-label="{linksLabel}">
-                <ul>
-                    {#if altLanguageUrl}
-                        <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
-                    {/if}
-                    {#if joinUsUrl}
-                        <li><a href="{joinUsUrl}">{joinUsText}</a></li>
-                    {/if}
-                </ul>
-            </nav>
-        {/if}
-    </slot>
-{/snippet}
-
-{#snippet search()}
-    {@const searchZone = `<slot name="search-zone" />`}
-    {@html searchZone}
-{/snippet}
-
-<PivHeader
-    {logoUrl}
-    {fullWidth}
-    {logoSrc}
-    {logoAlt}
-    {titleUrl}
-    {titleText}
-    {linksLabel}
-    {altLanguageText}
-    {altLanguageUrl}
-    {joinUsText}
-    {joinUsUrl}
-    {goToContent}
-    {goToContentAnchor}
-    {goToContentText}
-    {displaySearchText}
-    {hideSearchText}
-    {enableSearch}
-    {showSearch}
-    {links}
-    {search}
-></PivHeader>
+<PivHeader customElementParent={self}
+           {...props}
+           slots={$$slots} >
+    {#snippet linksSlot()}
+        <slot name="links" />
+    {/snippet}
+    {#snippet searchZoneSlot()}
+        <slot name="search-zone" />
+    {/snippet}
+</PivHeader>

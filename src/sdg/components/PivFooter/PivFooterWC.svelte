@@ -10,49 +10,33 @@
         , copyrightText : {attribute: 'copyright-text'}
         , copyrightUrl : {attribute: 'copyright-url'}
 
-    }}
+    },
+    extend: (customElementConstructor) => {
+        return class extends customElementConstructor {
+          static self;
+
+          constructor() {
+            super();
+            this.self = this;
+          }
+        }
+    }
 }}" />
 
 <script>
-    import { Utils } from "../utils";
     import PivFooter from "./PivFooter.svelte";
 
-    const lang = Utils.getPageLanguage();
-
     let {
-        logoUrl = '/',
-        logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg',
-        logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg',
-        logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government',
-        copyrightText = '© Gouvernement du Québec, ' + (new Date()).getFullYear(),
-        logoWidth = 139,
-        logoHeight = 50,
-        copyrightUrl = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright'
+       self,
+       ...props
     } = $props();
+
 </script>
-
-{#snippet mainSlot()}
-    {@const contentHtml = `<slot />`}
-    {@html contentHtml}
-{/snippet}
-
-{#snippet copyrightSlot()}
-    <slot name="copyright">
-        <a href="{copyrightUrl}">
-            {copyrightText}
-        </a>
-    </slot>
-{/snippet}
-
-<PivFooter
-    {logoUrl}
-    {logoSrc}
-    {logoSrcDarkTheme}
-    {logoAlt}
-    {copyrightText}
-    {logoWidth}
-    {logoHeight}
-    {copyrightUrl}
-    {mainSlot}
-    {copyrightSlot}
-></PivFooter>
+<PivFooter {...props} slots={$$slots}>
+    {#snippet mainSlot()}
+        <slot />
+    {/snippet}
+    {#snippet copyrightSlot()}
+        <slot name="copyright" />
+    {/snippet}
+</PivFooter>

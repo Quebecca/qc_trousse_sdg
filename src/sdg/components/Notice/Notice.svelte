@@ -52,7 +52,11 @@
 <!--Le warning `Svelte: noninteractive element cannot have nonnegative tabIndex value`
 associe a tabindex="0" doit etre ignore pour qu'on puisse focus sur le composant sans
 le denaturaliser.-->
-<div class="qc-component qc-notice qc-{computedType}" tabindex="0">
+
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<div class="qc-component qc-notice qc-{computedType}"
+     tabindex="0"
+     >
   <div class="icon-container">
     <div class="qc-icon">
       <Icon type={iconType}

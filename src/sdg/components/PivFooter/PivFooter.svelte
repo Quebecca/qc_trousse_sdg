@@ -1,6 +1,5 @@
 <script>
     import { Utils } from "../utils"
-
     const lang = Utils.getPageLanguage();
 
     let {
@@ -8,17 +7,20 @@
         logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg',
         logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg',
         logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government',
-        copyrightText = '© Gouvernement du Québec, ' + (new Date()).getFullYear(),
         logoWidth = 139,
         logoHeight = 50,
         copyrightUrl = lang === 'fr' ? 'https://www.quebec.ca/droit-auteur' : 'https://www.quebec.ca/en/copyright',
+        copyrightText =  '© Gouvernement du Québec, ' + (new Date()).getFullYear(),
         mainSlot,
-        copyrightSlot
+        copyrightSlot,
+        slots = {}
     } = $props();
 </script>
 
 <div class="qc-piv-footer qc-container-fluid">
-    {@render mainSlot?.()}
+    {#if mainSlot}
+        {@render mainSlot()}
+    {/if}
 
     <a href="{logoUrl}"
        class="logo"
@@ -37,7 +39,7 @@
     </a>
 
     <span class="copyright">
-        {#if copyrightSlot}
+        {#if (!slots && copyrightSlot) || slots.copyright}
             {@render copyrightSlot()}
         {:else}
             <a href="{copyrightUrl}">

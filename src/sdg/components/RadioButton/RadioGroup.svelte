@@ -1,22 +1,27 @@
 <script>
     import {onMount} from "svelte";
     import {Utils} from "../utils";
-    import Icon from "../Icon/Icon.svelte";
+    import FormError from "../FormError/FormError.svelte";
 
     const lang = Utils.getPageLanguage();
 
     let {
-        name,
+        name = "",
         legend = "",
         size = "md",
         radioButtons = [],
         required = false,
         invalid = false,
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        invalidText = lang === "fr"
+                        ? "Champ obligatoire"
+                        : "Required field",
         children
     } = $props();
 
-    let group = $state();
+    let group = $state(),
+        legendId = name
+                    ? "id_" + name
+                    : "legend-" + Math.floor(Math.random() * 1000000 );
 
     onMount(() => {
         radioButtons.forEach((btn) => {
@@ -25,9 +30,11 @@
     });
 </script>
 
-<div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="qc-radio-fieldset" aria-describedby={`id_${name}`}>
-        <legend class="qc-radio-legend" id={`id_${name}`}>
+<div class={[invalid && "qc-fieldset-invalid"]}>
+    <fieldset class="qc-radio-fieldset"
+              aria-describedby={legendId}>
+        <legend class="qc-radio-legend"
+                id={legendId}>
             {legend}
             {#if Utils.isTruthy(required)}
                 <span class="qc-radio-required" aria-hidden="true">*</span>
@@ -37,18 +44,7 @@
         <div class={`qc-radio-group-${size}`} bind:this={group} onchange={() => invalid = false}>
             {@render children?.()}
         </div>
+        <FormError {invalid} {invalidText} />
 
-        <div class={`qc-radio-invalid${Utils.isTruthy(invalid) ? " qc-radio-invalid-visible" : ""}`} role="alert">
-            {#if Utils.isTruthy(invalid)}
-                <div class="qc-radio-invalid-icon">
-                    <Icon
-                        type="warning"
-                        color="red-regular"
-                        size="md"
-                    />
-                </div>
-                <span>{invalidText}</span>
-            {/if}
-        </div>
     </fieldset>
 </div>

@@ -15,12 +15,11 @@
     const props = $props();
 </script>
 
-{#snippet slotContent()}
-    {@const contentHtml = `<slot />`}
-    {@html contentHtml}
-{/snippet}
 
 <Notice
     {...props}
-    {slotContent}
-/>
+>
+    {#snippet slotContent()}
+        <slot />
+    {/snippet}
+</Notice>

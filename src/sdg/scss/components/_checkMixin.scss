@@ -1,16 +1,24 @@
 @use "qc-sdg-lib" as *;
-@use "checkMixin" as *;
 
-%radio-style {
+@mixin check-style($type, $size: md) {
   display: flex;
   align-items: center;
   min-height: token-value(spacer, md);
   margin: 0;
   padding: 0;
 
-  input[type="radio"] {
+  input[type="#{$type}"] {
+
+    width: token-value(spacer, $size);
+    height: token-value(spacer, $size);
+    @if $size == "md" {
+      border-width: 2px;
+    }
+    @else  {
+      border-width: 1px;
+    }
+
     appearance: none;
-    -webkit-appearance: none;
     cursor: pointer;
 
     display: flex;
@@ -21,34 +29,38 @@
     background-color: token-value(color, white);
     border-style: solid;
     border-color: token-value(color, blue, dark);
-    border-radius: 100%;
+    @if $type == "radio" {
+      border-radius: 100%;
+    }
+
 
     &::before {
       content: "";
       position: absolute;
       margin: auto;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
+      inset: 0;
       overflow: hidden;
       opacity: 0;
     }
 
     &:focus {
-      outline: rem(2) solid token-value(color, blue, light);
+      outline: 2px solid token-value(color, blue, light);
       outline-offset: 0;
       border-color: token-value(color, blue, dark) !important;
+      border-width: 2px;
     }
 
     &:checked {
-      border-color: token-value(color, blue, regular);
+      border-color: token-value(color blue regular);
 
-      &::before {
-        opacity: 1;
-        border-radius: 100%;
-        background-color: token-value(color, blue, regular);
+      @if $type == "radio" {
+          &::before {
+            opacity: 1;
+            border-radius: 100%;
+            background-color: token-value(color, blue, regular);
+          }
       }
+
     }
 
     &:disabled {
@@ -70,29 +82,5 @@
     padding-right: token-value(spacer, xs);
     margin-bottom: 0;
     @include content-font(md);
-  }
-}
-
-.qc-radio-sm {
-  @include check-style(radio, sm);
-
-  input[type=radio] {
-
-    &::before {
-      width: rem(10);
-      height: rem(10);
-    }
-  }
-}
-
-.qc-radio-md {
-  @include check-style(radio, md);
-
-  input[type=radio] {
-
-    &::before {
-      width: rem(14);
-      height: rem(14);
-    }
   }
 }

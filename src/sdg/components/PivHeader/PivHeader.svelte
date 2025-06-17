@@ -1,21 +1,22 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { Utils } from "../utils"
 
     const lang = Utils.getPageLanguage();
 
     let {
+        customElementParent,
         logoUrl = '/',
         fullWidth = 'false',
         logoSrc = Utils.imagesRelativePath + 'QUEBEC_blanc.svg',
         logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec',
         titleUrl = '/',
         titleText = '',
-        linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation',
-        altLanguageText = lang === 'fr' ? 'English' : 'Français',
-        altLanguageUrl = '',
         joinUsText = lang === 'fr' ? 'Nous joindre' : 'Contact us',
         joinUsUrl = '',
+        altLanguageText = lang === 'fr' ? 'English' : 'Français',
+        altLanguageUrl = '',
+        linksLabel = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation',
         goToContent = 'true',
         goToContentAnchor = '#main',
         goToContentText = lang === 'fr' ? 'Passer au contenu' : 'Skip to content',
@@ -23,16 +24,24 @@
         hideSearchText = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar',
         enableSearch = 'false',
         showSearch = 'false',
-        links,
-        search
+        linksSlot,
+        searchZoneSlot,
+        slots = false
     } = $props()
 
-    let containerClass = $state('qc-container');
-    let displaySearchForm = $state(false);
+    let containerClass = $state('qc-container')
+        , searchZone = $state(null)
+        , displaySearchForm = $state(false)
+    ;
 
-    export function focusOnSearchInput() {
+    function focusOnSearchInput() {
+
         if (displaySearchForm) {
-            document.querySelector('[slot="search-zone"] input')?.focus();
+            let input = customElementParent
+                ? customElementParent.querySelector('[slot="search-zone"] input')
+                : searchZone.querySelector('input')
+            ;
+            input?.focus();
         }
     }
 
@@ -43,6 +52,8 @@
         displaySearchForm = true;
       }
     });
+
+    $inspect("piv header slots", slots)
 </script>
 
 <div role="banner"
@@ -87,15 +98,17 @@
               onclick = {(evt) => {
                   evt.preventDefault();
                   displaySearchForm = !displaySearchForm;
-                  focusOnSearchInput();
+                  tick().then(() => {
+                            focusOnSearchInput()
+                    });
               }}
           >
             <span>{displaySearchForm ? hideSearchText : displaySearchText}</span>
           </a>
         {/if}
         <div class="links">
-            {#if links}
-                {@render links()}
+            {#if (!slots || slots['links']) && linksSlot }
+                {@render linksSlot()}
 <!--            Le bloc else est present uniquement pour le cas ou PivHeader est utilise sans le wrapper PivHeaderWC.svelte -->
             {:else}
                 {#if joinUsUrl || altLanguageUrl}
@@ -117,8 +130,10 @@
 
     <div class="piv-bottom">
       {#if displaySearchForm}
-          <div class="search-zone">
-              {@render search?.()}
+          <div class="search-zone" bind:this={searchZone}>
+              {#if searchZoneSlot}
+                {@render searchZoneSlot()}
+              {/if}
           </div>
       {/if}
   </div>
