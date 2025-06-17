@@ -36,23 +36,21 @@
     });
 </script>
 
-<div class={`qc-radio-tile`}>
-    <label for={`${name}_${value}`}>
-        <input
-                type="radio"
-                id={`${name}_${value}`}
-                {name}
-                {value}
-                aria-required={Utils.isTruthy(required)}
-                aria-invalid={Utils.isTruthy(invalid)}
-                {...boolAttributes}
-                {...restProps}
-        />
-        <span class="qc-radio-tile-label-span">
-            <span class="qc-radio-tile-label-choice">{label}</span>
-            {#if description}
-                <span class="qc-radio-tile-label-description">{description}</span>
-            {/if}
-        </span>
-    </label>
-</div>
+<label for={`${name}_${value}`} class={`qc-radio-tile`}>
+    <input
+            type="radio"
+            id={`${name}_${value}`}
+            {name}
+            {value}
+            aria-required={Utils.isTruthy(required)}
+            aria-invalid={Utils.isTruthy(invalid)}
+            {...boolAttributes}
+            {...restProps}
+    />
+    <span class="qc-radio-tile-label-span">
+        <span class="qc-radio-tile-label-choice">{label}</span>
+        {#if description}
+            <span class="qc-radio-tile-label-description">{description}</span>
+        {/if}
+    </span>
+</label>

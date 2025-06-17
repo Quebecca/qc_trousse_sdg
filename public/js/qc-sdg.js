@@ -9488,14 +9488,14 @@
 
 	RadioGroup[FILENAME] = 'src/sdg/components/RadioButton/RadioGroup.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[40, 16]]);
+	var root_1$1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[42, 16]]);
 	var on_change = (_, invalid) => invalid(false);
 
 	var root$2 = add_locations(template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <!></fieldset></div>`), RadioGroup[FILENAME], [
 		[
-			33,
+			35,
 			0,
-			[[34, 4, [[36, 8], [44, 8]]]]
+			[[36, 4, [[38, 8], [46, 8]]]]
 		]
 	]);
 
@@ -9512,6 +9512,8 @@
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
+			tiled = prop($$props, 'tiled', 7, false),
+			flowDirection = prop($$props, 'flowDirection', 7, "column"),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0),
@@ -9573,11 +9575,16 @@
 		reset(fieldset);
 		reset(div);
 
-		template_effect(() => {
-			set_class(div, 1, clsx([invalid() && "qc-fieldset-invalid"]));
-			set_text(text, `${legend() ?? ''} `);
-			set_class(div_1, 1, `qc-radio-group-${size()}`);
-		});
+		template_effect(
+			($0) => {
+				set_class(div, 1, clsx([invalid() && "qc-fieldset-invalid"]));
+				set_text(text, `${legend() ?? ''} `);
+				set_class(div_1, 1, $0);
+			},
+			[
+				() => clsx(Utils.isTruthy(tiled()) ? `qc-radio-group-tiles-${flowDirection()}` : `qc-radio-group-${size()}`)
+			]
+		);
 
 		append($$anchor, div);
 
@@ -9633,6 +9640,20 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value = false) {
+				tiled($$value);
+				flushSync();
+			},
+			get flowDirection() {
+				return flowDirection();
+			},
+			set flowDirection($$value = "column") {
+				flowDirection($$value);
+				flushSync();
+			},
 			get children() {
 				return children();
 			},
@@ -9656,6 +9677,8 @@
 			required: {},
 			invalid: {},
 			invalidText: {},
+			tiled: {},
+			flowDirection: {},
 			children: {}
 		},
 		[],
@@ -9675,7 +9698,9 @@
 			radioButtons = prop($$props, 'radioButtons', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
-			invalidText = prop($$props, 'invalidText', 7);
+			invalidText = prop($$props, 'invalidText', 7),
+			tiled = prop($$props, 'tiled', 7),
+			flowDirection = prop($$props, 'flowDirection', 7);
 
 		if (strict_equals(required(), "")) {
 			required("true");
@@ -9683,6 +9708,10 @@
 
 		if (strict_equals(invalid(), "")) {
 			invalid("true");
+		}
+
+		if (strict_equals(tiled(), "")) {
+			tiled("true");
 		}
 
 		RadioGroup($$anchor, {
@@ -9706,6 +9735,12 @@
 			},
 			get invalidText() {
 				return invalidText();
+			},
+			get tiled() {
+				return tiled();
+			},
+			get flowDirection() {
+				return flowDirection();
 			}
 		});
 
@@ -9759,6 +9794,20 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
+				flushSync();
+			},
+			get flowDirection() {
+				return flowDirection();
+			},
+			set flowDirection($$value) {
+				flowDirection($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9772,6 +9821,8 @@
 			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
+			tiled: { attribute: 'tiled', type: 'String' },
+			flowDirection: { attribute: 'flow-direction', type: 'String' },
 			radioButtons: {}
 		},
 		[],
@@ -9784,7 +9835,14 @@
 				constructor() {
 					super();
 					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
-					this.radioButtons.push(...Array.from(this.querySelectorAll('qc-radio-tile')));
+
+					const tiles = Array.from(this.querySelectorAll('qc-radio-tile'));
+
+					tiles.forEach((tile) => {
+						tile.classList.add('qc-radio-tile-parent');
+					});
+
+					this.radioButtons.push(...tiles);
 				}
 			};
 		}
@@ -10146,19 +10204,13 @@
 
 	RadioTile[FILENAME] = 'src/sdg/components/RadioButton/RadioTile.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-radio-tile-label-description"> </span>`), RadioTile[FILENAME], [[54, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-radio-tile-label-description"> </span>`), RadioTile[FILENAME], [[53, 12]]);
 
-	var root = add_locations(template(`<div><label><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label></div>`), RadioTile[FILENAME], [
+	var root = add_locations(template(`<label><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label>`), RadioTile[FILENAME], [
 		[
 			39,
 			0,
-			[
-				[
-					40,
-					4,
-					[[41, 8], [51, 8, [[52, 12]]]]
-				]
-			]
+			[[40, 4], [50, 4, [[51, 8]]]]
 		]
 	]);
 
@@ -10214,11 +10266,10 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		var div = root();
+		var label_1 = root();
 
-		set_class(div, 1, `qc-radio-tile`);
+		set_class(label_1, 1, `qc-radio-tile`);
 
-		var label_1 = child(div);
 		var input = child(label_1);
 
 		remove_input_defaults(input);
@@ -10249,7 +10300,6 @@
 
 		reset(span);
 		reset(label_1);
-		reset(div);
 
 		template_effect(
 			($0, $1) => {
@@ -10274,7 +10324,7 @@
 			]
 		);
 
-		append($$anchor, div);
+		append($$anchor, label_1);
 
 		return pop({
 			get name() {
