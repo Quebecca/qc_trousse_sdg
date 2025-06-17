@@ -15,6 +15,8 @@
         invalidText = lang === "fr"
                         ? "Champ obligatoire"
                         : "Required field",
+        tiled = false,
+        flowDirection = "column",
         children
     } = $props();
 
@@ -41,7 +43,12 @@
             {/if}
         </legend>
 
-        <div class={`qc-radio-group-${size}`} bind:this={group} onchange={() => invalid = false}>
+        <div class={
+                Utils.isTruthy(tiled) ?
+                `qc-radio-group-tiles-${flowDirection}` :
+                `qc-radio-group-${size}`
+            }
+            bind:this={group} onchange={() => invalid = false}>
             {@render children?.()}
         </div>
         <FormError {invalid} {invalidText} />

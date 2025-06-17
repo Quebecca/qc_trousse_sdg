@@ -46,6 +46,21 @@
   //margin-left: rem(-1 * $base-spacer);
 }
 
+%group-tiles {
+  display: inline-grid;
+  margin-top: token-value(spacer, md);
+}
+
+%group-tiles-row {
+  @extend %group-tiles;
+  grid-auto-flow: column;
+}
+
+%group-tiles-column {
+  @extend %group-tiles;
+  grid-auto-flow: row;
+}
+
 .qc-fieldset-invalid {
   @extend %fieldset-invalid;
 }
@@ -59,6 +74,10 @@
     @extend %legend;
   }
 
+  .qc-#{$type}-required {
+    @extend %required;
+  }
+
   .qc-#{$type}-group-sm {
     @extend %group-sm;
   }
@@ -67,9 +86,25 @@
     @extend %group-md;
   }
 
-  .qc-#{$type}-required {
-    @extend %required;
+  .qc-radio-group-tiles-row {
+    @extend %group-tiles-row;
+
+    qc-radio-tile {
+      margin-right: token-value(spacer, xs);
+      &:last-child {
+        margin: 0;
+      }
+    }
   }
 
-}
+  .qc-radio-group-tiles-column {
+    @extend %group-tiles-column;
 
+    qc-radio-tile {
+      margin-bottom: token-value(spacer, xs);
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+}

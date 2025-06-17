@@ -7,7 +7,9 @@
         size: {attribute:'size', type: 'String'},
         required: {attribute: 'required', type: 'String'},
         invalid: {attribute: 'invalid', type: 'String'},
-        invalidText: {attribute: 'invalid-text', type: 'String'}
+        invalidText: {attribute: 'invalid-text', type: 'String'},
+        tiled: {attribute: 'tiled', type: 'String'},
+        flowDirection: {attribute: 'flow-direction', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -17,7 +19,12 @@
             constructor() {
                 super();
                 this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
-                this.radioButtons.push(...Array.from(this.querySelectorAll('qc-radio-tile')));
+
+                const tiles = Array.from(this.querySelectorAll('qc-radio-tile'));
+                tiles.forEach((tile) => {
+                    tile.classList.add('qc-radio-tile-parent');
+                })
+                this.radioButtons.push(...tiles);
             }
         }
     }
@@ -33,7 +40,9 @@
         radioButtons,
         required,
         invalid,
-        invalidText
+        invalidText,
+        tiled,
+        flowDirection
     } = $props();
 
     if (required === "") {
@@ -41,6 +50,9 @@
     }
     if (invalid === "") {
         invalid = "true";
+    }
+    if (tiled === "") {
+        tiled = "true";
     }
 </script>
 
@@ -52,5 +64,7 @@
     {required}
     {invalid}
     {invalidText}
+    {tiled}
+    {flowDirection}
 />
 
