@@ -11,6 +11,7 @@
         disabled = false,
         required = false,
         invalid = false,
+        description = "",
         ...rest
     } = $props();
 
@@ -48,6 +49,9 @@
                 {...boolAttributes}
                 {...restProps}
         />
-        {label}
+        <span>
+            <span>{label}</span>
+            <span>{description}</span>
+        </span>
     </label>
 </div>

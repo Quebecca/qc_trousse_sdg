@@ -9,7 +9,8 @@
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
         required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'}
+        invalid: {attribute: 'invalid', type: 'String'},
+        description: {attribute: 'descirption', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -40,6 +41,7 @@
         disabled,
         required,
         invalid,
+        description,
         ...rest
     } = $props();
 
@@ -66,5 +68,6 @@
         {disabled}
         required={parent?.required ?? required}
         invalid={parent?.invalid ?? invalid}
+        {description}
         {...rest}
 />

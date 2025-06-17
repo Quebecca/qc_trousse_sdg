@@ -9526,7 +9526,7 @@
 		}
 	));
 
-	var root = template(`<div><label><input> </label></div>`);
+	var root = template(`<div><label><input> <span><span> </span> <span> </span></span></label></div>`);
 
 	function RadioTile($$anchor, $$props) {
 		push($$props, true);
@@ -9539,6 +9539,7 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
+			description = prop($$props, 'description', 7, ""),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -9551,7 +9552,8 @@
 				'checked',
 				'disabled',
 				'required',
-				'invalid'
+				'invalid',
+				'description'
 			]);
 
 		let boolAttributes = user_derived(() => {
@@ -9584,8 +9586,17 @@
 		remove_input_defaults(input);
 
 		let attributes;
-		var text = sibling(input);
+		var span = sibling(input, 2);
+		var span_1 = child(span);
+		var text = child(span_1, true);
 
+		reset(span_1);
+
+		var span_2 = sibling(span_1, 2);
+		var text_1 = child(span_2, true);
+
+		reset(span_2);
+		reset(span);
 		reset(label_1);
 		reset(div);
 
@@ -9605,7 +9616,8 @@
 					...get(restProps)
 				});
 
-				set_text(text, ` ${label() ?? ''}`);
+				set_text(text, label());
+				set_text(text_1, description());
 			},
 			[
 				() => Utils.isTruthy(required()),
@@ -9671,6 +9683,13 @@
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value = "") {
+				description($$value);
+				flushSync();
 			}
 		});
 	}
@@ -9685,7 +9704,8 @@
 			checked: {},
 			disabled: {},
 			required: {},
-			invalid: {}
+			invalid: {},
+			description: {}
 		},
 		[],
 		[],
@@ -9704,6 +9724,7 @@
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 7),
+			description = prop($$props, 'description', 7),
 			rest = rest_props($$props, [
 				'$$slots',
 				'$$events',
@@ -9717,7 +9738,8 @@
 				'checked',
 				'disabled',
 				'required',
-				'invalid'
+				'invalid',
+				'description'
 			]);
 
 		if (checked() === "") {
@@ -9766,6 +9788,9 @@
 				},
 				get invalid() {
 					return get(expression_3);
+				},
+				get description() {
+					return description();
 				}
 			},
 			() => rest
@@ -9834,6 +9859,13 @@
 			set invalid($$value) {
 				invalid($$value);
 				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
 			}
 		});
 	}
@@ -9849,6 +9881,7 @@
 			disabled: { attribute: 'disabled', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'String' },
+			description: { attribute: 'descirption', type: 'String' },
 			parent: {}
 		},
 		[],
