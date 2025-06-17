@@ -1,10 +1,13 @@
 @use "qc-sdg-lib" as *;
 @use "checkMixin" as *;
 
-.qc-radio-tile-md {
-  @include check-style(radio, md);
+.qc-radio-tile {
+  @include check-style(radio, sm);
 
   label {
+    display: flex;
+    align-items: start !important;
+
     padding: token-value(spacer, sm);
     @include qc-formcontrol-box();
 
@@ -18,24 +21,24 @@
       border-color: token-value(color, blue, light);
     }
 
-    &:checked::before {
+    &:has(input:checked)::before {
       background-color: token-value(color, blue, pale) !important;
     }
   }
 
   input[type=radio] {
     margin-right: token-value(spacer, xs);
+    margin-top: rem(4);
 
     &::before {
-      width: rem(14);
-      height: rem(14);
+      width: rem(10);
+      height: rem(10);
+    }
+
+    &:focus::before {
+      outline: none !important;
     }
   }
-}
-
-.qc-radio-tile-label {
-  display: flex;
-  align-items: start !important;
 }
 
 .qc-radio-tile-label-span {

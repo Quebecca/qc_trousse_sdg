@@ -36,7 +36,6 @@
         name,
         value,
         label,
-        size,
         checked,
         disabled,
         required,
@@ -63,7 +62,6 @@
         name={parent?.name ?? name}
         {value}
         {label}
-        size={parent?.size ?? size}
         {checked}
         {disabled}
         required={parent?.required ?? required}
