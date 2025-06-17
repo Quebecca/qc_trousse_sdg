@@ -6,7 +6,6 @@
         name,
         value,
         label,
-        size = "md",
         checked = false,
         disabled = false,
         required = false,
@@ -37,8 +36,8 @@
     });
 </script>
 
-<div class={`qc-radio-tile-${size}`}>
-    <label for={`${name}_${value}`} class="qc-radio-tile-label">
+<div class={`qc-radio-tile`}>
+    <label for={`${name}_${value}`}>
         <input
                 type="radio"
                 id={`${name}_${value}`}

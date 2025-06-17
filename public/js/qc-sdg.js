@@ -10146,17 +10146,17 @@
 
 	RadioTile[FILENAME] = 'src/sdg/components/RadioButton/RadioTile.svelte';
 
-	var root_1 = add_locations(template(`<span> </span>`), RadioTile[FILENAME], [[55, 16]]);
+	var root_1 = add_locations(template(`<span> </span>`), RadioTile[FILENAME], [[54, 16]]);
 
-	var root = add_locations(template(`<div><label class="qc-radio-tile-label"><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label></div>`), RadioTile[FILENAME], [
+	var root = add_locations(template(`<div><label><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label></div>`), RadioTile[FILENAME], [
 		[
-			40,
+			39,
 			0,
 			[
 				[
-					41,
+					40,
 					4,
-					[[42, 8], [52, 8, [[53, 12]]]]
+					[[41, 8], [51, 8, [[52, 12]]]]
 				]
 			]
 		]
@@ -10169,7 +10169,6 @@
 		let name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, "md"),
 			checked = prop($$props, 'checked', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
@@ -10185,7 +10184,6 @@
 					'name',
 					'value',
 					'label',
-					'size',
 					'checked',
 					'disabled',
 					'required',
@@ -10217,6 +10215,9 @@
 		});
 
 		var div = root();
+
+		set_class(div, 1, `qc-radio-tile`);
+
 		var label_1 = child(div);
 		var input = child(label_1);
 
@@ -10252,7 +10253,6 @@
 
 		template_effect(
 			($0, $1) => {
-				set_class(div, 1, `qc-radio-tile-${size()}`);
 				set_attribute(label_1, 'for', `${name()}_${value()}`);
 
 				attributes = set_attributes(input, attributes, {
@@ -10296,13 +10296,6 @@
 			},
 			set label($$value) {
 				label($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = "md") {
-				size($$value);
 				flushSync();
 			},
 			get checked() {
@@ -10350,7 +10343,6 @@
 			name: {},
 			value: {},
 			label: {},
-			size: {},
 			checked: {},
 			disabled: {},
 			required: {},
@@ -10372,7 +10364,6 @@
 			name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
@@ -10389,7 +10380,6 @@
 					'name',
 					'value',
 					'label',
-					'size',
 					'checked',
 					'disabled',
 					'required',
@@ -10414,9 +10404,8 @@
 		}
 
 		const expression = user_derived(() => parent()?.name ?? name());
-		const expression_1 = user_derived(() => parent()?.size ?? size());
-		const expression_2 = user_derived(() => parent()?.required ?? required());
-		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
+		const expression_1 = user_derived(() => parent()?.required ?? required());
+		const expression_2 = user_derived(() => parent()?.invalid ?? invalid());
 
 		RadioTile($$anchor, spread_props(
 			{
@@ -10429,9 +10418,6 @@
 				get label() {
 					return label();
 				},
-				get size() {
-					return get(expression_1);
-				},
 				get checked() {
 					return checked();
 				},
@@ -10439,10 +10425,10 @@
 					return disabled();
 				},
 				get required() {
-					return get(expression_2);
+					return get(expression_1);
 				},
 				get invalid() {
-					return get(expression_3);
+					return get(expression_2);
 				},
 				get description() {
 					return description();
@@ -10478,13 +10464,6 @@
 			},
 			set label($$value) {
 				label($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
 				flushSync();
 			},
 			get checked() {
