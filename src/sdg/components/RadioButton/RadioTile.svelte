@@ -50,7 +50,7 @@
                 {...restProps}
         />
         <span class="qc-radio-tile-label-span">
-            <span>{label}</span>
+            <span class="qc-radio-tile-label-choice">{label}</span>
             <span>{description}</span>
         </span>
     </label>

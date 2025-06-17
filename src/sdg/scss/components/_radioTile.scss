@@ -6,9 +6,21 @@
 
   label {
     padding: token-value(spacer, sm);
-    border-style: solid;
-    border-width: rem(1);
-    border-color: token-value(color, grey, light);
+    @include qc-formcontrol-box();
+
+    &::before {
+      border-style: solid;
+      border-width: rem(1);
+      border-color: token-value(color, grey, light);
+    }
+
+    &:hover::before {
+      border-color: token-value(color, blue, light);
+    }
+
+    &:checked::before {
+      background-color: token-value(color, blue, pale) !important;
+    }
   }
 
   input[type=radio] {
@@ -30,4 +42,8 @@
   display: flex;
   flex-direction: column;
   row-gap: token-value(spacer, xs);
+}
+
+.qc-radio-tile-label-choice {
+  @include content-font(md, semi-bold);
 }
