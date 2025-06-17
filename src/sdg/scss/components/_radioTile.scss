@@ -46,4 +46,5 @@
 
 .qc-radio-tile-label-choice {
   @include content-font(md, semi-bold);
+  min-height: token-value(spacer, md);
 }

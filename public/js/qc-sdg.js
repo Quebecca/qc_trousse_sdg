@@ -6767,7 +6767,7 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
+	var root_1$6 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
 	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6873,7 +6873,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$5();
+				var div_2 = root_1$6();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7864,7 +7864,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$4 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$5 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -7910,7 +7910,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$4();
+				var div = root_1$5();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8644,7 +8644,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_1$3 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_1$4 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
 	var root$5 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8659,7 +8659,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$3();
+				var fragment = root_1$4();
 				var node_1 = first_child(fragment);
 
 				Icon(node_1, {
@@ -8708,7 +8708,7 @@
 
 	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`), CheckboxGroup[FILENAME], [[37, 16]]);
+	var root_1$3 = add_locations(template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`), CheckboxGroup[FILENAME], [[37, 16]]);
 	var on_change$1 = (_, invalid) => invalid(false);
 
 	var root$4 = add_locations(template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <!></fieldset></div>`), CheckboxGroup[FILENAME], [
@@ -8750,7 +8750,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$2();
+				var span = root_1$3();
 
 				append($$anchor, span);
 			};
@@ -9021,7 +9021,7 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-checkbox-required">*</span>`), Checkbox[FILENAME], [[51, 16]]);
+	var root_1$2 = add_locations(template(`<span class="qc-checkbox-required">*</span>`), Checkbox[FILENAME], [[51, 16]]);
 
 	var root$3 = add_locations(template(`<div><div><input> <label> <!></label></div> <!></div>`), Checkbox[FILENAME], [
 		[
@@ -9099,7 +9099,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$1();
+				var span = root_1$2();
 
 				append($$anchor, span);
 			};
@@ -9488,7 +9488,7 @@
 
 	RadioGroup[FILENAME] = 'src/sdg/components/RadioButton/RadioGroup.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[40, 16]]);
+	var root_1$1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[40, 16]]);
 	var on_change = (_, invalid) => invalid(false);
 
 	var root$2 = add_locations(template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <!></fieldset></div>`), RadioGroup[FILENAME], [
@@ -9537,7 +9537,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1();
+				var span = root_1$1();
 
 				append($$anchor, span);
 			};
@@ -10146,7 +10146,9 @@
 
 	RadioTile[FILENAME] = 'src/sdg/components/RadioButton/RadioTile.svelte';
 
-	var root = add_locations(template(`<div><label class="qc-radio-tile-label"><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <span> </span></span></label></div>`), RadioTile[FILENAME], [
+	var root_1 = add_locations(template(`<span> </span>`), RadioTile[FILENAME], [[55, 16]]);
+
+	var root = add_locations(template(`<div><label class="qc-radio-tile-label"><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label></div>`), RadioTile[FILENAME], [
 		[
 			40,
 			0,
@@ -10154,10 +10156,7 @@
 				[
 					41,
 					4,
-					[
-						[42, 8],
-						[52, 8, [[53, 12], [54, 12]]]
-					]
+					[[42, 8], [52, 8, [[53, 12]]]]
 				]
 			]
 		]
@@ -10175,7 +10174,7 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
 			invalid = prop($$props, 'invalid', 7, false),
-			description = prop($$props, 'description', 7, ""),
+			description = prop($$props, 'description', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -10230,10 +10229,23 @@
 
 		reset(span_1);
 
-		var span_2 = sibling(span_1, 2);
-		var text_1 = child(span_2, true);
+		var node = sibling(span_1, 2);
 
-		reset(span_2);
+		{
+			var consequent = ($$anchor) => {
+				var span_2 = root_1();
+				var text_1 = child(span_2, true);
+
+				reset(span_2);
+				template_effect(() => set_text(text_1, description()));
+				append($$anchor, span_2);
+			};
+
+			if_block(node, ($$render) => {
+				if (description()) $$render(consequent);
+			});
+		}
+
 		reset(span);
 		reset(label_1);
 		reset(div);
@@ -10255,7 +10267,6 @@
 				});
 
 				set_text(text, label());
-				set_text(text_1, description());
 			},
 			[
 				() => Utils.isTruthy(required()),
@@ -10325,7 +10336,7 @@
 			get description() {
 				return description();
 			},
-			set description($$value = "") {
+			set description($$value) {
 				description($$value);
 				flushSync();
 			},
