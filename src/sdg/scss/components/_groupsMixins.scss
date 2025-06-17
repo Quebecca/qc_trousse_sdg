@@ -22,13 +22,13 @@
 
 %group-sm {
   @extend %group;
-  margin-top: token-value(spacer, sm);
+  margin-top: token-value(spacer, xs);
   row-gap: token-value(spacer, xs);
 }
 
 %group-md {
   @extend %group;
-  margin-top: token-value(spacer, md);
+  margin-top: token-value(spacer, sm);
   row-gap: token-value(spacer, sm);
 }
 
@@ -43,7 +43,7 @@
   box-shadow: -2px 0 token-value(color, red, regular) ;
   //border-left: 2px solid token-value(color, red, regular);
   padding-left: token-value(spacer, xs);
-  margin-left: rem(-1 * $base-spacer);
+  //margin-left: rem(-1 * $base-spacer);
 }
 
 .qc-fieldset-invalid {

@@ -1999,12 +1999,12 @@ qc-search-bar {
 }
 
 .qc-checkbox-group-sm, .qc-radio-group-sm {
-  margin-top: var(--qc-spacer-sm);
+  margin-top: var(--qc-spacer-xs);
   row-gap: var(--qc-spacer-xs);
 }
 
 .qc-checkbox-group-md, .qc-radio-group-md {
-  margin-top: var(--qc-spacer-md);
+  margin-top: var(--qc-spacer-sm);
   row-gap: var(--qc-spacer-sm);
 }
 
@@ -2020,7 +2020,6 @@ qc-search-bar {
 .checkbox-single.checkbox-single-invalid, .qc-fieldset-invalid {
   box-shadow: -2px 0 var(--qc-color-red-regular);
   padding-left: var(--qc-spacer-xs);
-  margin-left: -0.8rem;
 }
 
 .checkbox-md input[type=checkbox]:checked, .checkbox-sm input[type=checkbox]:checked {
