@@ -15,7 +15,8 @@ qc-text-field {
     border: 1px solid token-value(color formfield border);
   }
 
-  input[type=text] {
+  input[type=text],
+  textarea {
     display: block;
     position: relative;
     color: token-value(color text primary);
@@ -35,6 +36,11 @@ qc-text-field {
     }
   }
 
+  textarea {
+    min-height: rem(108);
+    resize: vertical;
+  }
+
   // Gestion des erreurs
   &.error {
     &::before {
@@ -48,7 +54,7 @@ qc-text-field {
 .qc-text-field-error-message {
   display: none;
   margin-top: rem(4);
-  color: token-value(color error text);
+  color: token-value(color, red, regular);
   font-size: rem(14);
 
   .error & {

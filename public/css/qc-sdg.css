@@ -2202,7 +2202,8 @@ qc-text-field {
 .qc-text-field::before {
   border: 1px solid var(--qc-color-formfield-border);
 }
-.qc-text-field input[type=text] {
+.qc-text-field input[type=text],
+.qc-text-field textarea {
   display: block;
   position: relative;
   color: var(--qc-color-text-primary);
@@ -2211,16 +2212,23 @@ qc-text-field {
   padding: 0.8rem 0.8rem;
   border: 0;
 }
-.qc-text-field input[type=text]::-moz-placeholder {
+.qc-text-field input[type=text]::-moz-placeholder, .qc-text-field textarea::-moz-placeholder {
   color: var(--qc-color-grey-medium);
   font-weight: normal;
 }
-.qc-text-field input[type=text]::placeholder {
+.qc-text-field input[type=text]::placeholder,
+.qc-text-field textarea::placeholder {
   color: var(--qc-color-grey-medium);
   font-weight: normal;
 }
-.qc-text-field input[type=text]:focus, .qc-text-field input[type=text]:focus-visible {
+.qc-text-field input[type=text]:focus, .qc-text-field input[type=text]:focus-visible,
+.qc-text-field textarea:focus,
+.qc-text-field textarea:focus-visible {
   outline: none;
+}
+.qc-text-field textarea {
+  min-height: 10.8rem;
+  resize: vertical;
 }
 .qc-text-field.error::before {
   border-color: var(--qc-color-red-regular);
@@ -2230,7 +2238,7 @@ qc-text-field {
 .qc-text-field-error-message {
   display: none;
   margin-top: 0.4rem;
-  color: var(--qc-color-error-text);
+  color: var(--qc-color-red-regular);
   font-size: 1.4rem;
 }
 .error .qc-text-field-error-message {
