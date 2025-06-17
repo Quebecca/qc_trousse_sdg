@@ -2146,6 +2146,12 @@ qc-search-bar {
   min-height: var(--qc-spacer-md);
 }
 
+.qc-radio-tile-label-description {
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
+}
+
 .checkbox-md input[type=checkbox]:checked, .checkbox-sm input[type=checkbox]:checked {
   background-color: var(--qc-color-blue-regular);
 }
