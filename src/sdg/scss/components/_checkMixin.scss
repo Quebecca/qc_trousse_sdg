@@ -9,8 +9,8 @@
 
   input[type="#{$type}"] {
 
-    width: token-value(spacer, $size);
-    height: token-value(spacer, $size);
+    min-width: token-value(spacer, $size);
+    min-height: token-value(spacer, $size);
     @if $size == "md" {
       border-width: 2px;
     }
