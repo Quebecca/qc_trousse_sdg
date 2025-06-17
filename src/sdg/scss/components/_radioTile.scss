@@ -51,3 +51,7 @@
   @include content-font(md, semi-bold);
   min-height: token-value(spacer, md);
 }
+
+.qc-radio-tile-label-description {
+  @include content-font(sm);
+}

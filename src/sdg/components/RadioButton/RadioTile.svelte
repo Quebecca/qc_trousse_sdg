@@ -51,7 +51,7 @@
         <span class="qc-radio-tile-label-span">
             <span class="qc-radio-tile-label-choice">{label}</span>
             {#if description}
-                <span>{description}</span>
+                <span class="qc-radio-tile-label-description">{description}</span>
             {/if}
         </span>
     </label>
