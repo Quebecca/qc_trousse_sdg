@@ -2050,75 +2050,14 @@ qc-search-bar {
 
 .qc-radio-tile {
   display: flex;
-  align-items: center;
-  min-height: var(--qc-spacer-md);
-  margin: 0;
-  padding: 0;
-  display: flex;
   flex-grow: 1;
   align-items: start !important;
   padding: var(--qc-spacer-sm);
+  margin: 0;
   position: relative;
   z-index: 10;
   background: transparent;
   border: 0;
-}
-.qc-radio-tile input[type=radio] {
-  min-width: var(--qc-spacer-sm);
-  min-height: var(--qc-spacer-sm);
-  border-width: 1px;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  cursor: pointer;
-  display: flex;
-  position: relative;
-  margin: 0;
-  background-color: var(--qc-color-white);
-  border-style: solid;
-  border-color: var(--qc-color-blue-dark);
-  border-radius: 100%;
-}
-.qc-radio-tile input[type=radio]::before {
-  content: "";
-  position: absolute;
-  margin: auto;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0;
-}
-.qc-radio-tile input[type=radio]:focus {
-  outline: 2px solid var(--qc-color-blue-light);
-  outline-offset: 0;
-  border-color: var(--qc-color-blue-dark) !important;
-  border-width: 2px;
-}
-.qc-radio-tile input[type=radio]:checked {
-  border-color: var(--qc-color-blue-regular);
-}
-.qc-radio-tile input[type=radio]:checked::before {
-  opacity: 1;
-  border-radius: 100%;
-  background-color: var(--qc-color-blue-regular);
-}
-.qc-radio-tile input[type=radio]:disabled {
-  cursor: not-allowed;
-  border-color: var(--qc-color-grey-light);
-}
-.qc-radio-tile input[type=radio]:disabled + label {
-  color: var(--qc-color-grey-regular);
-  cursor: not-allowed;
-}
-.qc-radio-tile label {
-  display: flex;
-  align-items: end;
-  cursor: pointer;
-  padding-left: var(--qc-spacer-xs);
-  padding-right: var(--qc-spacer-xs);
-  margin-bottom: 0;
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-regular);
 }
 .qc-radio-tile::before {
   position: absolute;
@@ -2142,46 +2081,71 @@ qc-search-bar {
 .qc-radio-tile:not(:has(input:disabled)):hover::before {
   cursor: pointer;
 }
-.qc-radio-tile:not(:has(input:focus)):hover::before {
+.qc-radio-tile:not(:has(input:focus, input:disabled)):hover::before {
   border-color: var(--qc-color-blue-light);
 }
 .qc-radio-tile:has(input:checked)::before {
   background-color: var(--qc-color-blue-pale);
 }
-.qc-radio-tile:has(input:disabled)::before {
+.qc-radio-tile:has(input:disabled) {
   color: var(--qc-color-grey-regular);
+}
+.qc-radio-tile:has(input:disabled)::before {
   background-color: var(--qc-color-grey-pale);
   cursor: not-allowed;
 }
-.qc-radio-tile input[type=radio] {
-  margin-right: var(--qc-spacer-xs);
-  margin-top: 0.4rem;
-}
-.qc-radio-tile input[type=radio]::before {
-  width: 1rem;
-  height: 1rem;
-}
-.qc-radio-tile input[type=radio]:focus::before {
-  outline: none !important;
-}
-
-.qc-radio-tile-label-span {
+.qc-radio-tile .qc-radio-tile-label-span {
   display: flex;
   flex-direction: column;
   row-gap: var(--qc-spacer-xs);
 }
-
-.qc-radio-tile-label-choice {
+.qc-radio-tile .qc-radio-tile-label-choice {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-semi-bold);
   min-height: var(--qc-spacer-md);
 }
-
-.qc-radio-tile-label-description {
+.qc-radio-tile .qc-radio-tile-label-description {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
+}
+.qc-radio-tile .qc-radio-tile-input {
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  min-width: var(--qc-spacer-sm);
+  min-height: var(--qc-spacer-sm);
+  margin: 0.4rem var(--qc-spacer-xs) 0 0;
+  background-color: var(--qc-color-white);
+  border-style: solid;
+  border-color: var(--qc-color-blue-dark);
+  border-width: 0.1rem;
+  border-radius: 100%;
+}
+.qc-radio-tile .qc-radio-tile-input::before {
+  content: "";
+  position: absolute;
+  margin: auto;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  border-radius: 100%;
+}
+.qc-radio-tile .qc-radio-tile-input:checked {
+  border-color: var(--qc-color-blue-regular);
+}
+.qc-radio-tile .qc-radio-tile-input:checked::before {
+  opacity: 1;
+  background-color: var(--qc-color-blue-regular);
+  width: 1rem;
+  height: 1rem;
+}
+.qc-radio-tile .qc-radio-tile-input:disabled {
+  border-color: var(--qc-color-grey-light);
 }
 
 .checkbox-md input[type=checkbox]:checked, .checkbox-sm input[type=checkbox]:checked {

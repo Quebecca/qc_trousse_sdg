@@ -10229,13 +10229,13 @@
 
 	RadioTile[FILENAME] = 'src/sdg/components/RadioButton/RadioTile.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-radio-tile-label-description"> </span>`), RadioTile[FILENAME], [[53, 12]]);
+	var root_1 = add_locations(template(`<span class="qc-radio-tile-label-description"> </span>`), RadioTile[FILENAME], [[54, 12]]);
 
 	var root = add_locations(template(`<label><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label>`), RadioTile[FILENAME], [
 		[
 			39,
 			0,
-			[[40, 4], [50, 4, [[51, 8]]]]
+			[[40, 4], [51, 4, [[52, 8]]]]
 		]
 	]);
 
@@ -10331,6 +10331,7 @@
 				set_attribute(label_1, 'for', `${name()}_${value()}`);
 
 				attributes = set_attributes(input, attributes, {
+					class: 'qc-radio-tile-input',
 					type: 'radio',
 					id: `${name()}_${value()}`,
 					name: name(),
