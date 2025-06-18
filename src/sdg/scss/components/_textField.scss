@@ -1,12 +1,12 @@
 @use "qc-sdg-lib" as *;
 
-qc-text-field {
+qc-textfield {
   display: block;
   width: 100%;
   max-width: rem(548);
 }
 
-.qc-text-field {
+.qc-textfield {
   @extend %qc-formcontrol-box;
   position: relative;
   margin-bottom: rem(24);
@@ -41,6 +41,13 @@ qc-text-field {
     resize: vertical;
   }
 
+  // Tailles
+  &--sm { width: rem(63); }  // 5ch
+  &--md { width: rem(156); } // 16ch
+  &--lg { width: rem(249); } // 26ch
+  &--xl { width: rem(528); } // 58ch
+  &--xxl { width: 100%; }
+
   // Gestion des erreurs
   &.error {
     &::before {
@@ -50,8 +57,29 @@ qc-text-field {
   }
 }
 
+// Conteneur
+.qc-textfield-container {
+  display: flex;
+  flex-direction: column;
+  gap: token-value(spacer, xs);
+  margin-bottom: token-value(spacer, md);
+}
+
+
+// Indicateur requis
+.qc-textfield-required {
+  color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
+}
+
+// Indice
+.qc-textfield-description {
+  font-size: token-value(font, size, sm);
+  color: token-value(color, grey, medium);
+}
+
 // Message d'erreur
-.qc-text-field-error-message {
+.qc-textfield-error-message {
   display: none;
   margin-top: rem(4);
   color: token-value(color, red, regular);

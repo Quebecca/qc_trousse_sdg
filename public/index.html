@@ -52,6 +52,7 @@
                 <li><a href='#alert'>Alerte générale</a></li>
                 <li><a href='#notice'>Avis</a></li>
                 <li><a href='#search-bar'>Barre de recherche</a></li>
+                <li><a href='#textfield'>Champ de texte</a></li>
                 <li><a href='#piv'>Composants du PIV</a>
                     <ul>
                         <li><a href='#piv-header'>Bandeau d'en-tête du PIV</a>
@@ -977,6 +978,132 @@
 
             <h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
             <p>Ce composant ne contient pas de DOM d'ombre.</p>
+
+            <!-- champ de texte -->
+            <h2 id="textfield">Champ de texte (qc-textfield)</h2>
+            <h4>Exemples</h4>
+
+            <qc-doc-exemple caption="Exemple de champ de texte extra large">
+                <qc-textfield
+                        name="text-xl"
+                        label="Entrez votre adresse"
+                        size="xl"
+                        placeholder="ex : 1234 rue du Moulin"
+                ></qc-textfield>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de champ de texte large">
+                <qc-textfield
+                        name="text-lg"
+                        label="Entrez votre nom"
+                        size="lg"
+                        placeholder="ex : Jean Tremblay"
+                ></qc-textfield>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de champ de texte moyen">
+                <qc-textfield
+                        name="text-md"
+                        label="Entrez votre code postal"
+                        size="md"
+                        placeholder="ex : G1A 1A1"
+                ></qc-textfield>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de champ de texte petit">
+                <qc-textfield
+                        name="text-sm"
+                        label="Entrez votre âge"
+                        size="sm"
+                        placeholder="ex : 24"
+                ></qc-textfield>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de champ de texte multiligne (zone de texte)">
+                <qc-textfield
+                        name="text-xxl"
+                        label="Commentaires"
+                        size="xxl"
+                ></qc-textfield>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de champ de texte obligatoire">
+                <qc-textfield
+                        name="text-required"
+                        label="Champ obligatoire"
+                        size="md"
+                        required="true"
+                ></qc-textfield>
+
+            </qc-doc-exemple>
+
+            <h3>Documentation technique</h3>
+
+            <h4>Attributs</h4>
+            <div class="table-overflow">
+                <table class="qc-table qc-striped component-attributes-description">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Valeur attendue</th>
+                        <th>Valeur par défaut</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Nom du champ</td>
+                    </tr>
+                    <tr>
+                        <td>label</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Étiquette du champ</td>
+                    </tr>
+                    <tr>
+                        <td>placeholder</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Texte indicatif</td>
+                    </tr>
+                    <tr>
+                        <td>value</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Valeur du champ</td>
+                    </tr>
+                    <tr>
+                        <td>size</td>
+                        <td>"sm", "md", "lg", "xl", "xxl"</td>
+                        <td>"md"</td>
+                        <td>Taille du champ</td>
+                    </tr>
+                    <tr>
+                        <td>disabled</td>
+                        <td>"true", "false"</td>
+                        <td>"false"</td>
+                        <td>Désactive le champ</td>
+                    </tr>
+                    <tr>
+                        <td>required</td>
+                        <td>"true", "false"</td>
+                        <td>"false"</td>
+                        <td>Rend le champ obligatoire</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>Texte</td>
+                        <td>""</td>
+                        <td>Texte d'aide sous le champ</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <hr/>
 
             <!-- PIV -->
             <h2 id="piv">Composants du PIV</h2>
@@ -1926,7 +2053,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     </main>
     <footer>
