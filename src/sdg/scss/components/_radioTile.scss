@@ -21,8 +21,11 @@
   }
 
   &:not(:has(input:disabled)):hover::before {
-    border-color: token-value(color, blue, light);
     cursor: pointer;
+  }
+
+  &:not(:has(input:focus)):hover::before {
+    border-color: token-value(color, blue, light);
   }
 
   &:has(input:checked)::before {
