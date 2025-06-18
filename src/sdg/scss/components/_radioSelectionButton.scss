@@ -34,9 +34,9 @@
 
   &:has(input:disabled) {
     color: token-value(color, grey, regular);
+    cursor: not-allowed;
     &::before {
       background-color: token-value(color, grey, pale);
-      cursor: not-allowed;
     }
   }
 
