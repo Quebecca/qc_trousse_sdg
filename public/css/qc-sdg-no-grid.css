@@ -2140,8 +2140,10 @@ qc-search-bar {
   border-color: var(--qc-color-grey-light);
 }
 .qc-radio-tile:not(:has(input:disabled)):hover::before {
-  border-color: var(--qc-color-blue-light);
   cursor: pointer;
+}
+.qc-radio-tile:not(:has(input:focus)):hover::before {
+  border-color: var(--qc-color-blue-light);
 }
 .qc-radio-tile:has(input:checked)::before {
   background-color: var(--qc-color-blue-pale);
