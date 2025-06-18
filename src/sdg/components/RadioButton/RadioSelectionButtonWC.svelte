@@ -5,7 +5,6 @@
         name: {attribute: 'name', type: 'String'},
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
-        size: {attribute: 'size', type: 'String'},
         checked: {attribute: 'checked', type: 'String'},
         disabled: {attribute:'disabled', type: 'String'},
         required: {attribute: 'required', type: 'String'},

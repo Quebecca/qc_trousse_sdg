@@ -36,7 +36,7 @@
     });
 </script>
 
-<label for={`${name}_${value}`} class={`qc-radio-select`}>
+<label for={`${name}_${value}`} class="qc-radio-select">
     <input
             class="qc-radio-select-input"
             type="radio"
@@ -51,7 +51,7 @@
     <span class="qc-radio-select-label-span">
         <span class="qc-radio-select-label-choice">{label}</span>
         {#if description}
-            <span class="qc-radio-select-label-description">{description}</span>
+            <span class="qc-radio-select-label-description">{@html description}</span>
         {/if}
     </span>
 </label>

@@ -6,7 +6,10 @@
         size: { attribute: 'size', type: 'String' },
         required: { attribute: 'required', type: 'String' },
         invalid: { attribute: 'invalid', type: 'String' },
-        invalidText: { attribute: 'invalid-text', type: 'String' }
+        invalidText: { attribute: 'invalid-text', type: 'String' },
+        tiled: {attribute: 'tiled', type: 'String'},
+        flowDirection: {attribute: 'flow-direction', type: 'String'},
+        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -15,7 +18,11 @@
                 super();
                 this.inners = Array.from(this.querySelectorAll('qc-checkbox'));
 
-                this.inners.forEach(setUpInner);
+                const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
+                tiles.forEach((tile) => {
+                    tile.classList.add('qc-radio-select-parent');
+                })
+                this.inners.push(...tiles);
 
                 function setUpInner(inner, i) {
                     inner.setAttribute('slot', `slot${i + 1}`);
@@ -51,7 +58,10 @@
         size = "md",
         required,
         invalid,
-        invalidText
+        invalidText,
+        tiled,
+        flowDirection,
+        elementsPerRowOrCol
     } = $props();
 
     onMount(() => {
@@ -60,6 +70,9 @@
         }
         if (invalid === "") {
             invalid = "true";
+        }
+        if (tiled === "") {
+            tiled = "true";
         }
     });
 </script>
@@ -72,4 +85,7 @@
     {required}
     {invalid}
     {invalidText}
+    {tiled}
+    {flowDirection}
+    {elementsPerRowOrCol}
 />

@@ -26,31 +26,32 @@
 
         restProps = inputProps;
     });
-    $inspect("checked svelte", checked, ", invalid svelte", invalid)
+    // $inspect("checked svelte", checked, ", invalid svelte", invalid)
 
 </script>
 
-<div class={[!hasParentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
-    <div class={`checkbox-${size}`}>
+<div class={[!hasParentGroup && "checkbox-select-single", invalid && "checkbox-select-single-invalid"]} >
+    <label for={id} class="qc-radio-select">
         <input
-                type="checkbox"
-                {value}
-                {name}
-                {id}
-                {disabled}
-                bind:checked
-                aria-required = {required}
-                aria-invalid={invalid}
-                {...restProps}
-                onchange={() => { if (checked) invalid = false}}
+            class="qc-checkbox-select-input"
+            type="checkbox"
+            {value}
+            {name}
+            {id}
+            {disabled}
+            bind:checked
+            aria-required = {required}
+            aria-invalid={invalid}
+            {...restProps}
+            onchange={() => { if (checked) invalid = false}}
         />
-        <label for={id}>
-            {label}
-            {#if !hasParentGroup && required}
-                <span class="qc-checkbox-required">*</span>
+        <span class="qc-radio-select-label-span">
+            <span class="qc-radio-select-label-choice">{label}</span>
+            {#if description}
+                <span class="qc-radio-select-label-description">{@html description}</span>
             {/if}
-        </label>
-    </div>
+        </span>
+    </label>
     {#if !hasParentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
