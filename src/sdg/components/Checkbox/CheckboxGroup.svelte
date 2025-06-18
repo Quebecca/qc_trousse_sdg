@@ -13,7 +13,10 @@
         size = "md",
         required = false,
         invalid = false,
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field"
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        tiled = false,
+        flowDirection = "column",
+        elementsPerRowOrCol = 1,
     } = $props();
 
     let checkboxes = $state();
@@ -37,7 +40,11 @@
                 <span class="qc-checkbox-required" aria-hidden="true">*</span>
             {/if}
         </legend>
-        <div class="qc-checkbox-group-{size}"
+        <div class={
+                Utils.isTruthy(tiled) ?
+                `qc-radio-group-tiles-${flowDirection}` :
+                `qc-checkbox-group-${size}`
+            }
              bind:this={checkboxes}
              onchange={() => invalid = false}>
         </div>
