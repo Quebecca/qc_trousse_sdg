@@ -30,7 +30,10 @@
     });
 </script>
 
-<div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
+<div
+    class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}
+    style="--elementsPerRowOrCol: {elementsPerRowOrCol};"
+>
     <fieldset class="qc-checkbox-fieldset"
               aria-describedby={`id_${name}`}
     >

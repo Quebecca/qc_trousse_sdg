@@ -30,7 +30,11 @@
 
 </script>
 
-<div class={[!hasParentGroup && "checkbox-select-single", invalid && "checkbox-select-single-invalid"]} >
+<div class={[
+        "qc-checkbox-select-main-div",
+        !hasParentGroup && "checkbox-select-single",
+        invalid && "checkbox-select-single-invalid"
+    ]} >
     <label for={id} class="qc-radio-select">
         <input
             class="qc-checkbox-select-input"
