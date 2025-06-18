@@ -9021,13 +9021,13 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-checkbox-required">*</span>`), Checkbox[FILENAME], [[51, 16]]);
+	var root_1$2 = add_locations(template(`<span class="qc-checkbox-required">*</span>`), Checkbox[FILENAME], [[50, 16]]);
 
 	var root$3 = add_locations(template(`<div><div><input> <label> <!></label></div> <!></div>`), Checkbox[FILENAME], [
 		[
-			34,
+			33,
 			0,
-			[[35, 4, [[36, 8], [48, 8]]]]
+			[[34, 4, [[35, 8], [47, 8]]]]
 		]
 	]);
 

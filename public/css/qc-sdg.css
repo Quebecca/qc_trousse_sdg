@@ -2144,6 +2144,9 @@ qc-search-bar {
   width: 1rem;
   height: 1rem;
 }
+.qc-radio-select .qc-radio-select-input:checked:focus {
+  outline: none;
+}
 .qc-radio-select .qc-radio-select-input:disabled {
   border-color: var(--qc-color-grey-light);
 }
