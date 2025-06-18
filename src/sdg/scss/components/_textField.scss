@@ -42,11 +42,11 @@ qc-textfield {
   }
 
   // Tailles
-  &--sm { width: rem(63); }  // 5ch
-  &--md { width: rem(156); } // 16ch
-  &--lg { width: rem(249); } // 26ch
-  &--xl { width: rem(528); } // 58ch
-  &--xxl { width: 100%; }
+  &--sm { width: rem(63); }
+  &--md { width: rem(156); }
+  &--lg { width: rem(249); }
+  &--xl { width: rem(528); }
+  &--xxl { width: rem(528); }
 
   // Gestion des erreurs
   &.error {
@@ -66,13 +66,13 @@ qc-textfield {
 }
 
 
-// Indicateur requis
+// Required
 .qc-textfield-required {
   color: token-value(color, red, regular);
   margin-left: token-value(spacer, xs);
 }
 
-// Indice
+// Description
 .qc-textfield-description {
   font-size: token-value(font, size, sm);
   color: token-value(color, grey, medium);

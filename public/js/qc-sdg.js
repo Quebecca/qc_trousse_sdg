@@ -10185,9 +10185,9 @@
 	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[33, 20]]);
 	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[31, 4]]);
 	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[38, 4]]);
-	var root_4 = add_locations(template(`<div><textarea></textarea></div>`), TextField[FILENAME], [[42, 4, [[43, 6]]]]);
-	var root_5 = add_locations(template(`<div><input type="text"></div>`), TextField[FILENAME], [[51, 4, [[52, 6]]]]);
-	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <!></div>`), TextField[FILENAME], [[29, 0]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[43, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[50, 6]]);
+	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div></div>`), TextField[FILENAME], [[29, 0, [[41, 2]]]]);
 	const $$css = { hash: 'qc-hash-32ttx', code: '\n\n' };
 
 	function TextField($$anchor, $$props) {
@@ -10256,43 +10256,38 @@
 			});
 		}
 
-		var node_3 = sibling(node_2, 2);
+		var div_2 = sibling(node_2, 2);
+		var node_3 = child(div_2);
 
 		{
 			var consequent_3 = ($$anchor) => {
-				var div_2 = root_4();
-				var textarea = child(div_2);
+				var textarea = root_4();
 
 				remove_textarea_child(textarea);
-				reset(div_2);
 
 				template_effect(() => {
-					set_class(div_2, 1, `qc-textfield ${get(sizeClass) ?? ''}`);
 					set_attribute(textarea, 'placeholder', placeholder());
 					textarea.disabled = disabled();
 					textarea.required = required();
 				});
 
 				bind_value(textarea, value);
-				append($$anchor, div_2);
+				append($$anchor, textarea);
 			};
 
 			var alternate = ($$anchor) => {
-				var div_3 = root_5();
-				var input = child(div_3);
+				var input = root_5();
 
 				remove_input_defaults(input);
-				reset(div_3);
 
 				template_effect(() => {
-					set_class(div_3, 1, `qc-textfield ${get(sizeClass) ?? ''}`);
 					set_attribute(input, 'placeholder', placeholder());
 					input.disabled = disabled();
 					input.required = required();
 				});
 
 				bind_value(input, value);
-				append($$anchor, div_3);
+				append($$anchor, input);
 			};
 
 			if_block(node_3, ($$render) => {
@@ -10300,7 +10295,9 @@
 			});
 		}
 
+		reset(div_2);
 		reset(div);
+		template_effect(() => set_class(div_2, 1, `qc-textfield ${get(sizeClass) ?? ''}`));
 		append($$anchor, div);
 
 		return pop({

@@ -38,17 +38,15 @@
     <div class="qc-textfield-description">{description}</div>
   {/if}
 
+  <div class="qc-textfield {sizeClass}">
   {#if isTextArea}
-    <div class="qc-textfield {sizeClass}">
       <textarea
         {placeholder}
         bind:value
         {disabled}
         {required}
       ></textarea>
-    </div>
   {:else}
-    <div class="qc-textfield {sizeClass}">
       <input
         type="text"
         {placeholder}
@@ -56,8 +54,8 @@
         {disabled}
         {required}
       />
-    </div>
   {/if}
+</div>
 </div>
 
 <style>

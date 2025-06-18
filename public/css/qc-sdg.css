@@ -13,10 +13,10 @@
   inset: 0;
   z-index: -5;
 }
-.qc-textfield:has(input:focus), .qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-textfield:focus, .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus {
+.qc-textfield:has(input:focus), .qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-textfield:focus, .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus, .qc-textfield:has(textarea:focus), .qc-search-input:has(textarea:focus), .qc-search-input button:has(textarea:focus), .qc-search-bar:has(textarea:focus), .qc-search-bar button:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-textfield:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-textfield:focus::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before {
+.qc-textfield:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-textfield:focus::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before, .qc-textfield:has(textarea:focus)::before, .qc-search-input:has(textarea:focus)::before, .qc-search-input button:has(textarea:focus)::before, .qc-search-bar:has(textarea:focus)::before, .qc-search-bar button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 
@@ -1653,10 +1653,10 @@ qc-piv-footer a:hover {
   inset: 0;
   z-index: -5;
 }
-.qc-general-alert button:has(input:focus), .qc-general-alert button:focus {
+.qc-general-alert button:has(input:focus), .qc-general-alert button:focus, .qc-general-alert button:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-general-alert button:has(input:focus)::before, .qc-general-alert button:focus::before {
+.qc-general-alert button:has(input:focus)::before, .qc-general-alert button:focus::before, .qc-general-alert button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 .qc-general-alert button::before {
@@ -2243,7 +2243,7 @@ qc-textfield {
   width: 52.8rem;
 }
 .qc-textfield--xxl {
-  width: 100%;
+  width: 52.8rem;
 }
 .qc-textfield.error::before {
   border-color: var(--qc-color-red-regular);
