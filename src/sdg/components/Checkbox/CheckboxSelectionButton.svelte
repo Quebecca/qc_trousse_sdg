@@ -11,13 +11,13 @@
         disabled = false,
         checked = $bindable(false),
         required = false,
-        size = "md",
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        description,
         hasParentGroup = false,
         ...rest
     } = $props();
-    
+
     let id = $derived(name + "_" + value);
 
     let restProps = $state({});
@@ -33,16 +33,16 @@
 <div class={[!hasParentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
     <div class={`checkbox-${size}`}>
         <input
-            type="checkbox"
-            {value}
-            {name}
-            {id}
-            {disabled}
-            bind:checked
-            aria-required = {required}
-            aria-invalid={invalid}
-            {...restProps}
-            onchange={() => { if (checked) invalid = false}}
+                type="checkbox"
+                {value}
+                {name}
+                {id}
+                {disabled}
+                bind:checked
+                aria-required = {required}
+                aria-invalid={invalid}
+                {...restProps}
+                onchange={() => { if (checked) invalid = false}}
         />
         <label for={id}>
             {label}
