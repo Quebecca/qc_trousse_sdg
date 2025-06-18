@@ -38,6 +38,7 @@
 
 <label for={`${name}_${value}`} class={`qc-radio-tile`}>
     <input
+            class="qc-radio-tile-input"
             type="radio"
             id={`${name}_${value}`}
             {name}
