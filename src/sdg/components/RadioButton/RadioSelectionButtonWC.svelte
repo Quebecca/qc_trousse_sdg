@@ -1,5 +1,5 @@
 <svelte:options customElement="{{
-    tag: 'qc-radio-tile',
+    tag: 'qc-radio-selection-button',
     shadow: 'none',
     props: {
         name: {attribute: 'name', type: 'String'},
@@ -28,8 +28,7 @@
 }}" />
 
 <script>
-    import RadioButton from "./RadioButton.svelte";
-    import RadioTile from "./RadioTile.svelte";
+    import RadioSelectionButton from "./RadioSelectionButton.svelte";
 
     let {
         parent,
@@ -58,7 +57,7 @@
     }
 </script>
 
-<RadioTile
+<RadioSelectionButton
         name={parent?.name ?? name}
         {value}
         {label}

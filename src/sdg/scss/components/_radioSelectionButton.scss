@@ -1,12 +1,12 @@
 @use "qc-sdg-lib" as *;
 @use "checkMixin" as *;
 
-.qc-radio-tile-parent {
+.qc-radio-select-parent {
   display: flex;
   flex-grow: 1;
 }
 
-.qc-radio-tile {
+.qc-radio-select {
   display: flex;
   flex-grow: 1;
   align-items: start !important;
@@ -40,22 +40,22 @@
     }
   }
 
-  .qc-radio-tile-label-span {
+  .qc-radio-select-label-span {
     display: flex;
     flex-direction: column;
     row-gap: token-value(spacer, xs);
   }
 
-  .qc-radio-tile-label-choice {
+  .qc-radio-select-label-choice {
     @include content-font(md, semi-bold);
     min-height: token-value(spacer, md);
   }
 
-  .qc-radio-tile-label-description {
+  .qc-radio-select-label-description {
     @include content-font(sm);
   }
 
-  .qc-radio-tile-input {
+  .qc-radio-select-input {
     appearance: none;
     -webkit-appearance: none;
     cursor: pointer;
