@@ -17,6 +17,7 @@
                         : "Required field",
         tiled = false,
         flowDirection = "column",
+        elementsPerRowOrCol = 1,
         children
     } = $props();
 
@@ -32,7 +33,10 @@
     });
 </script>
 
-<div class={[invalid && "qc-fieldset-invalid"]}>
+<div
+        class={[invalid && "qc-fieldset-invalid"]}
+        style="--elementsPerRowOrCol: {elementsPerRowOrCol};"
+>
     <fieldset class="qc-radio-fieldset"
               aria-describedby={legendId}>
         <legend class="qc-radio-legend"
@@ -55,3 +59,4 @@
 
     </fieldset>
 </div>
+
