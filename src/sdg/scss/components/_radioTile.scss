@@ -1,17 +1,17 @@
 @use "qc-sdg-lib" as *;
 @use "checkMixin" as *;
 
-.qc-radio-tile-parent {
-  display: flex;
-  flex-grow: 1;
-}
+//.qc-radio-tile-parent {
+//  display: flex;
+//  flex-grow: 0;
+//}
 
 .qc-radio-tile {
   @include check-style(radio, sm);
 
   display: flex;
   align-items: start !important;
-  flex-grow: 1;
+  flex-grow: 1 !important;
 
   padding: token-value(spacer, sm);
   @include qc-formcontrol-box();
@@ -22,12 +22,19 @@
     border-color: token-value(color, grey, light);
   }
 
-  &:hover::before {
+  &:not(:has(input:disabled)):hover::before {
     border-color: token-value(color, blue, light);
+    cursor: pointer;
   }
 
   &:has(input:checked)::before {
-    background-color: token-value(color, blue, pale) !important;
+    background-color: token-value(color, blue, pale);
+  }
+
+  &:has(input:disabled)::before {
+    color: token-value(color, grey, regular);
+    background-color: token-value(color, grey, pale);
+    cursor: not-allowed;
   }
 
   input[type=radio] {

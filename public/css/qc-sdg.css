@@ -2050,11 +2050,6 @@ qc-search-bar {
   margin: 0;
 }
 
-.qc-radio-tile-parent {
-  display: flex;
-  flex-grow: 1;
-}
-
 .qc-radio-tile {
   display: flex;
   align-items: center;
@@ -2063,7 +2058,7 @@ qc-search-bar {
   padding: 0;
   display: flex;
   align-items: start !important;
-  flex-grow: 1;
+  flex-grow: 1 !important;
   padding: var(--qc-spacer-sm);
   position: relative;
   z-index: 10;
@@ -2146,11 +2141,17 @@ qc-search-bar {
   border-width: 0.1rem;
   border-color: var(--qc-color-grey-light);
 }
-.qc-radio-tile:hover::before {
+.qc-radio-tile:not(:has(input:disabled)):hover::before {
   border-color: var(--qc-color-blue-light);
+  cursor: pointer;
 }
 .qc-radio-tile:has(input:checked)::before {
-  background-color: var(--qc-color-blue-pale) !important;
+  background-color: var(--qc-color-blue-pale);
+}
+.qc-radio-tile:has(input:disabled)::before {
+  color: var(--qc-color-grey-regular);
+  background-color: var(--qc-color-grey-pale);
+  cursor: not-allowed;
 }
 .qc-radio-tile input[type=radio] {
   margin-right: var(--qc-spacer-xs);
