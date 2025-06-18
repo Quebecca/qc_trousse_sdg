@@ -1,18 +1,16 @@
 @use "qc-sdg-lib" as *;
 @use "checkMixin" as *;
 
-//.qc-radio-tile-parent {
-//  display: flex;
-//  flex-grow: 0;
-//}
+.qc-radio-tile-parent {
+  display: flex;
+  flex-grow: 1;
+}
 
 .qc-radio-tile {
   @include check-style(radio, sm);
-
   display: flex;
+  flex-grow: 1;
   align-items: start !important;
-  flex-grow: 1 !important;
-
   padding: token-value(spacer, sm);
   @include qc-formcontrol-box();
 
