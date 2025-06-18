@@ -9,7 +9,8 @@
         invalid: {attribute: 'invalid', type: 'String'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
         tiled: {attribute: 'tiled', type: 'String'},
-        flowDirection: {attribute: 'flow-direction', type: 'String'}
+        flowDirection: {attribute: 'flow-direction', type: 'String'},
+        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -42,7 +43,8 @@
         invalid,
         invalidText,
         tiled,
-        flowDirection
+        flowDirection,
+        elementsPerRowOrCol
     } = $props();
 
     if (required === "") {
@@ -66,5 +68,6 @@
     {invalidText}
     {tiled}
     {flowDirection}
+    {elementsPerRowOrCol}
 />
 

@@ -47,16 +47,17 @@
 %group-tiles {
   display: inline-grid;
   margin-top: token-value(spacer, md);
+  grid-gap: token-value(spacer, xs);
 }
 
 %group-tiles-row {
   @extend %group-tiles;
-  grid-auto-flow: column;
+  grid-auto-flow: row;
 }
 
 %group-tiles-column {
   @extend %group-tiles;
-  grid-auto-flow: row;
+  grid-auto-flow: column;
 }
 
 .qc-fieldset-invalid {
@@ -84,27 +85,13 @@
     @extend %group-md;
   }
 
-  .qc-radio-group-tiles-row {
+  .qc-#{$type}-group-tiles-row {
     @extend %group-tiles-row;
-
-    //qc-radio-tile {
-    //  margin-right: token-value(spacer, xs);
-    //  &:last-child {
-    //    margin: 0;
-    //  }
-    //}
-    grid-gap: token-value(spacer, xs);
+    grid-template-columns: repeat(var(--elementsPerRowOrCol), 1fr);
   }
 
-  .qc-radio-group-tiles-column {
+  .qc-#{$type}-group-tiles-column {
     @extend %group-tiles-column;
-
-    //qc-radio-tile {
-    //  margin-bottom: token-value(spacer, xs);
-    //  &:last-child {
-    //    margin: 0;
-    //  }
-    //}
-    grid-gap: token-value(spacer, xs);
+    grid-template-rows: repeat(var(--elementsPerRowOrCol), 1fr);
   }
 }

@@ -9488,14 +9488,14 @@
 
 	RadioGroup[FILENAME] = 'src/sdg/components/RadioButton/RadioGroup.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[42, 16]]);
+	var root_1$1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[46, 16]]);
 	var on_change = (_, invalid) => invalid(false);
 
 	var root$2 = add_locations(template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <!></fieldset></div>`), RadioGroup[FILENAME], [
 		[
-			35,
+			36,
 			0,
-			[[36, 4, [[38, 8], [46, 8]]]]
+			[[40, 4, [[42, 8], [50, 8]]]]
 		]
 	]);
 
@@ -9514,6 +9514,7 @@
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
 			tiled = prop($$props, 'tiled', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7, "column"),
+			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			children = prop($$props, 'children', 7);
 
 		let group = state(void 0),
@@ -9578,6 +9579,7 @@
 		template_effect(
 			($0) => {
 				set_class(div, 1, clsx([invalid() && "qc-fieldset-invalid"]));
+				set_style(div, `--elementsPerRowOrCol: ${elementsPerRowOrCol() ?? ''};`);
 				set_text(text, `${legend() ?? ''} `);
 				set_class(div_1, 1, $0);
 			},
@@ -9654,6 +9656,13 @@
 				flowDirection($$value);
 				flushSync();
 			},
+			get elementsPerRowOrCol() {
+				return elementsPerRowOrCol();
+			},
+			set elementsPerRowOrCol($$value = 1) {
+				elementsPerRowOrCol($$value);
+				flushSync();
+			},
 			get children() {
 				return children();
 			},
@@ -9679,6 +9688,7 @@
 			invalidText: {},
 			tiled: {},
 			flowDirection: {},
+			elementsPerRowOrCol: {},
 			children: {}
 		},
 		[],
@@ -9700,7 +9710,8 @@
 			invalid = prop($$props, 'invalid', 7),
 			invalidText = prop($$props, 'invalidText', 7),
 			tiled = prop($$props, 'tiled', 7),
-			flowDirection = prop($$props, 'flowDirection', 7);
+			flowDirection = prop($$props, 'flowDirection', 7),
+			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
 
 		if (strict_equals(required(), "")) {
 			required("true");
@@ -9741,6 +9752,9 @@
 			},
 			get flowDirection() {
 				return flowDirection();
+			},
+			get elementsPerRowOrCol() {
+				return elementsPerRowOrCol();
 			}
 		});
 
@@ -9808,6 +9822,13 @@
 				flowDirection($$value);
 				flushSync();
 			},
+			get elementsPerRowOrCol() {
+				return elementsPerRowOrCol();
+			},
+			set elementsPerRowOrCol($$value) {
+				elementsPerRowOrCol($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9823,6 +9844,10 @@
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			tiled: { attribute: 'tiled', type: 'String' },
 			flowDirection: { attribute: 'flow-direction', type: 'String' },
+			elementsPerRowOrCol: {
+				attribute: 'elements-per-row-or-col',
+				type: 'String'
+			},
 			radioButtons: {}
 		},
 		[],
