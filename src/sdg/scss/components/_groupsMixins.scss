@@ -1,8 +1,6 @@
 @use "qc-sdg-lib" as *;
 
 %fieldset {
-  display: flex;
-  flex-direction: column;
   border: none;
   padding: 0;
   margin-left: 0;
@@ -89,22 +87,24 @@
   .qc-radio-group-tiles-row {
     @extend %group-tiles-row;
 
-    qc-radio-tile {
-      margin-right: token-value(spacer, xs);
-      &:last-child {
-        margin: 0;
-      }
-    }
+    //qc-radio-tile {
+    //  margin-right: token-value(spacer, xs);
+    //  &:last-child {
+    //    margin: 0;
+    //  }
+    //}
+    grid-gap: token-value(spacer, xs);
   }
 
   .qc-radio-group-tiles-column {
     @extend %group-tiles-column;
 
-    qc-radio-tile {
-      margin-bottom: token-value(spacer, xs);
-      &:last-child {
-        margin: 0;
-      }
-    }
+    //qc-radio-tile {
+    //  margin-bottom: token-value(spacer, xs);
+    //  &:last-child {
+    //    margin: 0;
+    //  }
+    //}
+    grid-gap: token-value(spacer, xs);
   }
 }
