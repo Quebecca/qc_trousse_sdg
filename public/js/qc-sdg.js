@@ -9861,10 +9861,10 @@
 					super();
 					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
 
-					const tiles = Array.from(this.querySelectorAll('qc-radio-tile'));
+					const tiles = Array.from(this.querySelectorAll('qc-radio-selection-button'));
 
 					tiles.forEach((tile) => {
-						tile.classList.add('qc-radio-tile-parent');
+						tile.classList.add('qc-radio-select-parent');
 					});
 
 					this.radioButtons.push(...tiles);
@@ -10227,11 +10227,11 @@
 		}
 	));
 
-	RadioTile[FILENAME] = 'src/sdg/components/RadioButton/RadioTile.svelte';
+	RadioSelectionButton[FILENAME] = 'src/sdg/components/RadioButton/RadioSelectionButton.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-radio-tile-label-description"> </span>`), RadioTile[FILENAME], [[54, 12]]);
+	var root_1 = add_locations(template(`<span class="qc-radio-select-label-description"> </span>`), RadioSelectionButton[FILENAME], [[54, 12]]);
 
-	var root = add_locations(template(`<label><input> <span class="qc-radio-tile-label-span"><span class="qc-radio-tile-label-choice"> </span> <!></span></label>`), RadioTile[FILENAME], [
+	var root = add_locations(template(`<label><input> <span class="qc-radio-select-label-span"><span class="qc-radio-select-label-choice"> </span> <!></span></label>`), RadioSelectionButton[FILENAME], [
 		[
 			39,
 			0,
@@ -10239,7 +10239,7 @@
 		]
 	]);
 
-	function RadioTile($$anchor, $$props) {
+	function RadioSelectionButton($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -10293,7 +10293,7 @@
 
 		var label_1 = root();
 
-		set_class(label_1, 1, `qc-radio-tile`);
+		set_class(label_1, 1, `qc-radio-select`);
 
 		var input = child(label_1);
 
@@ -10331,7 +10331,7 @@
 				set_attribute(label_1, 'for', `${name()}_${value()}`);
 
 				attributes = set_attributes(input, attributes, {
-					class: 'qc-radio-tile-input',
+					class: 'qc-radio-select-input',
 					type: 'radio',
 					id: `${name()}_${value()}`,
 					name: name(),
@@ -10414,7 +10414,7 @@
 	}
 
 	create_custom_element(
-		RadioTile,
+		RadioSelectionButton,
 		{
 			name: {},
 			value: {},
@@ -10430,9 +10430,9 @@
 		true
 	);
 
-	RadioTileWC[FILENAME] = 'src/sdg/components/RadioButton/RadioTileWC.svelte';
+	RadioSelectionButtonWC[FILENAME] = 'src/sdg/components/RadioButton/RadioSelectionButtonWC.svelte';
 
-	function RadioTileWC($$anchor, $$props) {
+	function RadioSelectionButtonWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -10483,7 +10483,7 @@
 		const expression_1 = user_derived(() => parent()?.required ?? required());
 		const expression_2 = user_derived(() => parent()?.invalid ?? invalid());
 
-		RadioTile($$anchor, spread_props(
+		RadioSelectionButton($$anchor, spread_props(
 			{
 				get name() {
 					return get(expression);
@@ -10581,8 +10581,8 @@
 		});
 	}
 
-	customElements.define('qc-radio-tile', create_custom_element(
-		RadioTileWC,
+	customElements.define('qc-radio-selection-button', create_custom_element(
+		RadioSelectionButtonWC,
 		{
 			name: { attribute: 'name', type: 'String' },
 			value: { attribute: 'value', type: 'String' },

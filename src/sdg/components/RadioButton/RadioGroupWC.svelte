@@ -21,9 +21,9 @@
                 super();
                 this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
 
-                const tiles = Array.from(this.querySelectorAll('qc-radio-tile'));
+                const tiles = Array.from(this.querySelectorAll('qc-radio-selection-button'));
                 tiles.forEach((tile) => {
-                    tile.classList.add('qc-radio-tile-parent');
+                    tile.classList.add('qc-radio-select-parent');
                 })
                 this.radioButtons.push(...tiles);
             }

@@ -36,9 +36,9 @@
     });
 </script>
 
-<label for={`${name}_${value}`} class={`qc-radio-tile`}>
+<label for={`${name}_${value}`} class={`qc-radio-select`}>
     <input
-            class="qc-radio-tile-input"
+            class="qc-radio-select-input"
             type="radio"
             id={`${name}_${value}`}
             {name}
@@ -48,10 +48,10 @@
             {...boolAttributes}
             {...restProps}
     />
-    <span class="qc-radio-tile-label-span">
-        <span class="qc-radio-tile-label-choice">{label}</span>
+    <span class="qc-radio-select-label-span">
+        <span class="qc-radio-select-label-choice">{label}</span>
         {#if description}
-            <span class="qc-radio-tile-label-description">{description}</span>
+            <span class="qc-radio-select-label-description">{description}</span>
         {/if}
     </span>
 </label>

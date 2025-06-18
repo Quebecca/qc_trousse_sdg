@@ -2043,12 +2043,12 @@ qc-search-bar {
   grid-template-rows: repeat(var(--elementsPerRowOrCol), 1fr);
 }
 
-.qc-radio-tile-parent {
+.qc-radio-select-parent {
   display: flex;
   flex-grow: 1;
 }
 
-.qc-radio-tile {
+.qc-radio-select {
   display: flex;
   flex-grow: 1;
   align-items: start !important;
@@ -2059,7 +2059,7 @@ qc-search-bar {
   background: transparent;
   border: 0;
 }
-.qc-radio-tile::before {
+.qc-radio-select::before {
   position: absolute;
   display: block;
   content: "";
@@ -2067,50 +2067,50 @@ qc-search-bar {
   inset: 0;
   z-index: -5;
 }
-.qc-radio-tile:has(input:focus), .qc-radio-tile:focus {
+.qc-radio-select:has(input:focus), .qc-radio-select:focus {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-radio-tile:has(input:focus)::before, .qc-radio-tile:focus::before {
+.qc-radio-select:has(input:focus)::before, .qc-radio-select:focus::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
-.qc-radio-tile::before {
+.qc-radio-select::before {
   border-style: solid;
   border-width: 0.1rem;
   border-color: var(--qc-color-grey-light);
 }
-.qc-radio-tile:not(:has(input:disabled)):hover::before {
+.qc-radio-select:not(:has(input:disabled)):hover::before {
   cursor: pointer;
 }
-.qc-radio-tile:not(:has(input:focus, input:disabled)):hover::before {
+.qc-radio-select:not(:has(input:focus, input:disabled)):hover::before {
   border-color: var(--qc-color-blue-light);
 }
-.qc-radio-tile:has(input:checked)::before {
+.qc-radio-select:has(input:checked)::before {
   background-color: var(--qc-color-blue-pale);
 }
-.qc-radio-tile:has(input:disabled) {
+.qc-radio-select:has(input:disabled) {
   color: var(--qc-color-grey-regular);
 }
-.qc-radio-tile:has(input:disabled)::before {
+.qc-radio-select:has(input:disabled)::before {
   background-color: var(--qc-color-grey-pale);
   cursor: not-allowed;
 }
-.qc-radio-tile .qc-radio-tile-label-span {
+.qc-radio-select .qc-radio-select-label-span {
   display: flex;
   flex-direction: column;
   row-gap: var(--qc-spacer-xs);
 }
-.qc-radio-tile .qc-radio-tile-label-choice {
+.qc-radio-select .qc-radio-select-label-choice {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-semi-bold);
   min-height: var(--qc-spacer-md);
 }
-.qc-radio-tile .qc-radio-tile-label-description {
+.qc-radio-select .qc-radio-select-label-description {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
 }
-.qc-radio-tile .qc-radio-tile-input {
+.qc-radio-select .qc-radio-select-input {
   -moz-appearance: none;
        appearance: none;
   -webkit-appearance: none;
@@ -2126,7 +2126,7 @@ qc-search-bar {
   border-width: 0.1rem;
   border-radius: 100%;
 }
-.qc-radio-tile .qc-radio-tile-input::before {
+.qc-radio-select .qc-radio-select-input::before {
   content: "";
   position: absolute;
   margin: auto;
@@ -2135,16 +2135,16 @@ qc-search-bar {
   opacity: 0;
   border-radius: 100%;
 }
-.qc-radio-tile .qc-radio-tile-input:checked {
+.qc-radio-select .qc-radio-select-input:checked {
   border-color: var(--qc-color-blue-regular);
 }
-.qc-radio-tile .qc-radio-tile-input:checked::before {
+.qc-radio-select .qc-radio-select-input:checked::before {
   opacity: 1;
   background-color: var(--qc-color-blue-regular);
   width: 1rem;
   height: 1rem;
 }
-.qc-radio-tile .qc-radio-tile-input:disabled {
+.qc-radio-select .qc-radio-select-input:disabled {
   border-color: var(--qc-color-grey-light);
 }
 
