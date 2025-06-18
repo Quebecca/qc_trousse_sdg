@@ -27,7 +27,6 @@
 }} />
 
 <script>
-    import Checkbox from "./Checkbox.svelte";
     import { onMount } from "svelte";
     import CheckboxSelectionButton from "./CheckboxSelectionButton.svelte";
 

@@ -2051,7 +2051,7 @@ qc-search-bar {
 .qc-radio-select {
   display: flex;
   flex-grow: 1;
-  align-items: start !important;
+  align-items: start;
   padding: var(--qc-spacer-sm);
   margin: 0;
   position: relative;
@@ -2318,6 +2318,11 @@ qc-search-bar {
 .checkbox-single {
   margin-bottom: var(--qc-spacer-content-block-mb);
 }
+.qc-checkbox-select-main-div {
+  display: flex;
+  flex-grow: 1;
+}
+
 .qc-checkbox-group-tiles-row {
   grid-template-columns: repeat(var(--elementsPerRowOrCol), 1fr);
 }

@@ -9,7 +9,7 @@
 .qc-radio-select {
   display: flex;
   flex-grow: 1;
-  align-items: start !important;
+  align-items: start;
   padding: token-value(spacer, sm);
   margin: 0;
   @include qc-formcontrol-box();

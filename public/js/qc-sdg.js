@@ -8708,14 +8708,14 @@
 
 	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
 
-	var root_1$4 = add_locations(template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`), CheckboxGroup[FILENAME], [[40, 16]]);
+	var root_1$4 = add_locations(template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`), CheckboxGroup[FILENAME], [[43, 16]]);
 	var on_change$1 = (_, invalid) => invalid(false);
 
 	var root$5 = add_locations(template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <!></fieldset></div>`), CheckboxGroup[FILENAME], [
 		[
 			33,
 			0,
-			[[34, 4, [[37, 8], [43, 8]]]]
+			[[37, 4, [[40, 8], [46, 8]]]]
 		]
 	]);
 
@@ -8787,6 +8787,7 @@
 		template_effect(
 			($0, $1) => {
 				set_class(div, 1, $0);
+				set_style(div, `--elementsPerRowOrCol: ${elementsPerRowOrCol() ?? ''};`);
 				set_attribute(fieldset, 'aria-describedby', `id_${name()}`);
 				set_attribute(legend_1, 'id', `id_${name()}`);
 				set_text(text, `${legend() ?? ''} `);
@@ -9566,7 +9567,7 @@
 
 	CheckboxSelectionButton[FILENAME] = 'src/sdg/components/Checkbox/CheckboxSelectionButton.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-radio-select-label-description"><!></span>`), CheckboxSelectionButton[FILENAME], [[51, 16]]);
+	var root_1$2 = add_locations(template(`<span class="qc-radio-select-label-description"><!></span>`), CheckboxSelectionButton[FILENAME], [[55, 16]]);
 
 	var root$3 = add_locations(template(`<div><label class="qc-radio-select"><input> <span class="qc-radio-select-label-span"><span class="qc-radio-select-label-choice"> </span> <!></span></label> <!></div>`), CheckboxSelectionButton[FILENAME], [
 		[
@@ -9574,9 +9575,9 @@
 			0,
 			[
 				[
-					34,
+					38,
 					4,
-					[[35, 8], [48, 8, [[49, 12]]]]
+					[[39, 8], [52, 8, [[53, 12]]]]
 				]
 			]
 		]
@@ -9686,6 +9687,7 @@
 
 		template_effect(() => {
 			set_class(div, 1, clsx([
+				"qc-checkbox-select-main-div",
 				!hasParentGroup() && "checkbox-select-single",
 				invalid() && "checkbox-select-single-invalid"
 			]));
