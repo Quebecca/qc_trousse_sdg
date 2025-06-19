@@ -35,8 +35,11 @@
 
 </script>
 
-<div class={[!parentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
-    <div class={["qc-check-row", !parentGroup && compact && "qc-compact"]}>
+{#snippet checkboxRow()}
+    <div class={[
+        "qc-check-row",
+        !parentGroup && compact && "qc-compact",
+        ]}>
         <input
             type="checkbox"
             {value}
@@ -59,4 +62,15 @@
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
+{/snippet}
+
+{#if parentGroup}
+    {@render checkboxRow()}
+{:else}
+<div class={[
+        "qc-checkbox-single",
+        invalid && "qc-checkbox-single-invalid"
+        ]}>
+    {@render checkboxRow()}
 </div>
+{/if}

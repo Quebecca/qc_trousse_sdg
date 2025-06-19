@@ -2,44 +2,40 @@
 @use "fieldset" as *;
 @use "checkRow" as *;
 
-.qc-check-row {
-  input[type="checkbox"] {
+input[type="checkbox"] {
+  .qc-check-row &:checked {
 
-    &:checked {
-      background-color: token-value(color blue regular);
-      &::before {
-        width: rem(12);
-        height: rem(7);
-        border: rem(3) solid token-value(color, blue, regular);
-        border-top: 0;
-        border-right: 0;
-        transform: rotate(-45deg);
-        top: rem(2);
-      }
+    background-color: token-value(color blue regular);
 
-      &::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        mask-image: getImageUrl(checkmark, $base64: false);
-        mask-size: contain;
-        mask-repeat: no-repeat;
-        mask-position: center;
-        background-color: token-value(color, white);
-        width: token-value(spacer, md);
-        height: rem(18);
+    &::before {
+      width: rem(12);
+      height: rem(7);
+      border: rem(3) solid token-value(color, blue, regular);
+      border-top: 0;
+      border-right: 0;
+      transform: rotate(-45deg);
+      top: rem(2);
+    }
 
-      }
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      mask-image: getImageUrl(checkmark, $base64: false);
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      background-color: token-value(color, white);
+      width: token-value(spacer, md);
+      height: rem(18);
+
     }
   }
 
-}
+  .qc-compact &:checked {
 
-.qc-compact {
-
-  input[type=checkbox]:checked {
     &::before {
       width: rem(8);
       height: rem(5);
@@ -55,13 +51,14 @@
       height: rem(12);
     }
   }
+
 }
 
 
-.checkbox-single {
+.qc-checkbox-single {
   margin-bottom: token-value(spacer content-block mb);
 
-  &.checkbox-single-invalid {
+  &.qc-checkbox-single-invalid {
     @extend .qc-fieldset-invalid;
   }
 }

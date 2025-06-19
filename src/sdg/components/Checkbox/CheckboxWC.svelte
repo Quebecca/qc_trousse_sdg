@@ -25,9 +25,7 @@
 }} />
 
 <script>
-    import { run } from "svelte/legacy";
     import Checkbox from "./Checkbox.svelte";
-    import { onMount } from "svelte";
 
     let {
         parentGroup,

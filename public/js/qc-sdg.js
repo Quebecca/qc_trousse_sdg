@@ -3349,6 +3349,7 @@
 		}
 
 		if (typeof handler !== 'function' && (has_side_effects || handler != null || error)) {
+			component?.[FILENAME];
 			const phase = args[0]?.eventPhase < Event.BUBBLING_PHASE ? 'capture' : '';
 			args[0]?.type + phase;
 
@@ -6730,7 +6731,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$d = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$c = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6758,7 +6759,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$d();
+		var div = root$c();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6840,7 +6841,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$c = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$b = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -6897,7 +6898,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$c();
+		var fragment = root$b();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -7066,7 +7067,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_1$4 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
-	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
+	var root_2$2 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7083,7 +7084,7 @@
 	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
 
-	var root$b = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$a = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
 			59,
 			0,
@@ -7164,7 +7165,7 @@
 
 		inspect(() => ["piv header slots", slots()]);
 
-		var fragment = root$b();
+		var fragment = root$a();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -7198,7 +7199,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$1();
+				var div_5 = root_2$2();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -7703,10 +7704,10 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$1 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
-	var root$a = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
+	var root$9 = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
 		[52, 0]
 	]);
@@ -7729,7 +7730,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var fragment = root$a();
+		var fragment = root$9();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -7767,7 +7768,7 @@
 
 				src();
 
-				var img = root_2();
+				var img = root_2$1();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -8033,7 +8034,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$9 = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$8 = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8060,7 +8061,7 @@
 					'class'
 				]);
 
-		var button = root$9();
+		var button = root$8();
 		let attributes;
 		var node = child(button);
 
@@ -8176,7 +8177,7 @@
 		]
 	]);
 
-	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -8203,7 +8204,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$8();
+		var fragment = root$7();
 		var node = first_child(fragment);
 
 		{
@@ -8379,7 +8380,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$7 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$6 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8423,7 +8424,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$7();
+		var a = root$6();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8504,7 +8505,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$6 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$5 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8586,7 +8587,7 @@
 			});
 		});
 
-		var span_1 = root$6();
+		var span_1 = root$5();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -8624,7 +8625,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$5 = add_locations(template(`<div class="qc-search-input"><input> <!></div>`), SearchInput[FILENAME], [[18, 0, [[19, 4]]]]);
+	var root$4 = add_locations(template(`<div class="qc-search-input"><input> <!></div>`), SearchInput[FILENAME], [[18, 0, [[19, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8648,7 +8649,7 @@
 				]);
 
 		let searchInput;
-		var div = root$5();
+		var div = root$4();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -8728,7 +8729,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$4 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[40, 0]]);
+	var root$3 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[40, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -8772,7 +8773,7 @@
 			set(submitProps, submitAttrs, true);
 		});
 
-		var div = root$4();
+		var div = root$3();
 		let classes;
 		var node = child(div);
 
@@ -8943,7 +8944,7 @@
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
 	var root_1$2 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
-	var root$3 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
+	var root$2 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -8952,7 +8953,7 @@
 		let invalid = prop($$props, 'invalid', 7),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		var div = root$3();
+		var div = root$2();
 		var node = child(div);
 
 		{
@@ -9007,7 +9008,7 @@
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
 	var root_1$1 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
-	var root$2 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
+	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9033,12 +9034,12 @@
 			legendElement.after(...formFieldElements());
 		});
 
-		var fieldset = root$2();
+		var fieldset = root$1();
 
 		set_attribute(fieldset, 'aria-describedby', legendId);
 
 		fieldset.__change = function (...$$args) {
-			apply(updateValue, this, $$args);
+			apply(updateValue, this, $$args, Fieldset);
 		};
 
 		var legend_1 = child(fieldset);
@@ -9477,19 +9478,91 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[55, 16]]);
-
-	var root$1 = add_locations(template(`<div><div><input> <label> <!></label></div> <!></div>`), Checkbox[FILENAME], [
-		[
-			38,
-			0,
-			[[39, 4, [[40, 8], [52, 8]]]]
-		]
-	]);
+	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[58, 16]]);
+	var root_1 = add_locations(template(`<div><input> <label> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[39, 4, [[43, 8], [55, 8]]]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[70, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
+
+		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
+			validate_snippet_args(...arguments);
+
+			var fragment = root_1();
+			var div = first_child(fragment);
+			var input = child(div);
+
+			remove_input_defaults(input);
+
+			var event_handler = () => {
+				if (checked()) invalid(false);
+			};
+
+			let attributes;
+			var label_1 = sibling(input, 2);
+			var text = child(label_1);
+			var node = sibling(text);
+
+			{
+				var consequent = ($$anchor) => {
+					var span = root_2();
+
+					append($$anchor, span);
+				};
+
+				if_block(node, ($$render) => {
+					if (!parentGroup() && required()) $$render(consequent);
+				});
+			}
+
+			reset(label_1);
+			reset(div);
+
+			var node_1 = sibling(div, 2);
+
+			{
+				var consequent_1 = ($$anchor) => {
+					FormError($$anchor, {
+						get invalid() {
+							return invalid();
+						},
+						get invalidText() {
+							return invalidText();
+						}
+					});
+				};
+
+				if_block(node_1, ($$render) => {
+					if (!parentGroup()) $$render(consequent_1);
+				});
+			}
+
+			template_effect(() => {
+				set_class(div, 1, clsx([
+					"qc-check-row",
+					!parentGroup() && compact() && "qc-compact"
+				]));
+
+				attributes = set_attributes(input, attributes, {
+					type: 'checkbox',
+					value: value(),
+					name: name(),
+					id: get(id),
+					disabled: disabled(),
+					'aria-required': required(),
+					'aria-invalid': invalid(),
+					...get(restProps),
+					onchange: event_handler
+				});
+
+				set_attribute(label_1, 'for', get(id));
+				set_text(text, `${label() ?? ''} `);
+			});
+
+			bind_checked(input, checked);
+			append($$anchor, fragment);
+		});
 
 		const lang = Utils.getPageLanguage();
 
@@ -9544,86 +9617,35 @@
 			invalid()
 		]);
 
-		var div = root$1();
-		var div_1 = child(div);
-		var input = child(div_1);
-
-		remove_input_defaults(input);
-
-		var event_handler = () => {
-			if (checked()) invalid(false);
-		};
-
-		let attributes;
-		var label_1 = sibling(input, 2);
-		var text = child(label_1);
-		var node = sibling(text);
+		var fragment_2 = comment();
+		var node_2 = first_child(fragment_2);
 
 		{
-			var consequent = ($$anchor) => {
-				var span = root_1();
-
-				append($$anchor, span);
+			var consequent_2 = ($$anchor) => {
+				checkboxRow($$anchor);
 			};
 
-			if_block(node, ($$render) => {
-				if (!parentGroup() && required()) $$render(consequent);
+			var alternate = ($$anchor) => {
+				var div_1 = root_5();
+				var node_3 = child(div_1);
+
+				checkboxRow(node_3);
+				reset(div_1);
+
+				template_effect(() => set_class(div_1, 1, clsx([
+					"qc-checkbox-single",
+					invalid() && "qc-checkbox-single-invalid"
+				])));
+
+				append($$anchor, div_1);
+			};
+
+			if_block(node_2, ($$render) => {
+				if (parentGroup()) $$render(consequent_2); else $$render(alternate, false);
 			});
 		}
 
-		reset(label_1);
-		reset(div_1);
-
-		var node_1 = sibling(div_1, 2);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				FormError($$anchor, {
-					get invalid() {
-						return invalid();
-					},
-					get invalidText() {
-						return invalidText();
-					}
-				});
-			};
-
-			if_block(node_1, ($$render) => {
-				if (!parentGroup()) $$render(consequent_1);
-			});
-		}
-
-		reset(div);
-
-		template_effect(() => {
-			set_class(div, 1, clsx([
-				!parentGroup() && "checkbox-single",
-				invalid() && "checkbox-single-invalid"
-			]));
-
-			set_class(div_1, 1, clsx([
-				"qc-check-row",
-				!parentGroup() && compact() && "qc-compact"
-			]));
-
-			attributes = set_attributes(input, attributes, {
-				type: 'checkbox',
-				value: value(),
-				name: name(),
-				id: get(id),
-				disabled: disabled(),
-				'aria-required': required(),
-				'aria-invalid': invalid(),
-				...get(restProps),
-				onchange: event_handler
-			});
-
-			set_attribute(label_1, 'for', get(id));
-			set_text(text, `${label() ?? ''} `);
-		});
-
-		bind_checked(input, checked);
-		append($$anchor, div);
+		append($$anchor, fragment_2);
 
 		return pop({
 			get value() {

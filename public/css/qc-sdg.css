@@ -1964,14 +1964,14 @@ qc-search-bar {
   margin-left: var(--qc-spacer-xs);
 }
 
-.qc-fieldset-invalid, .checkbox-single.checkbox-single-invalid,
+.qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
 .qc-fieldset-invalid legend,
-.checkbox-single.checkbox-single-invalid legend {
+.qc-checkbox-single.qc-checkbox-single-invalid legend {
   border-left: 2px solid var(--qc-color-red-regular);
   padding-left: var(--qc-spacer-xs);
 }
 
-.qc-fieldset-invalid legend, .checkbox-single.checkbox-single-invalid legend {
+.qc-fieldset-invalid legend, .qc-checkbox-single.qc-checkbox-single-invalid legend {
   margin-left: calc(-1 * var(--qc-spacer-xs) - 2px);
 }
 
@@ -2005,7 +2005,6 @@ qc-search-bar {
   width: var(--qc-spacer-md);
   height: 1.8rem;
 }
-
 .qc-compact input[type=checkbox]:checked::before {
   width: 0.8rem;
   height: 0.5rem;
@@ -2020,7 +2019,7 @@ qc-search-bar {
   height: 1.2rem;
 }
 
-.checkbox-single {
+.qc-checkbox-single {
   margin-bottom: var(--qc-spacer-content-block-mb);
 }
 .qc-form-error {
