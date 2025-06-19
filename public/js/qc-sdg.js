@@ -9007,8 +9007,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$3 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
-	var root$3 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
+	var root_1$3 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[40, 12]]);
+	var root$3 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[29, 0, [[37, 4], [43, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9018,20 +9018,23 @@
 
 		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
+			grid = prop($$props, 'grid', 7, false),
+			flowDirection = prop($$props, 'flowDirection', 7, "column"),
+			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			compact = prop($$props, 'compact', 7),
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
-			children = prop($$props, 'children', 7),
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
-			formFieldElements = prop($$props, 'formFieldElements', 7);
+			formFieldElements = prop($$props, 'formFieldElements', 7),
+			children = prop($$props, 'children', 7);
 
-		let legendElement,
+		let groupSelection = state(void 0),
 			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
 
 		onMount(() => {
-			legendElement.after(...formFieldElements());
+			get(groupSelection).append(...formFieldElements());
 		});
 
 		var fieldset = root$3();
@@ -9065,13 +9068,15 @@
 		}
 
 		reset(legend_1);
-		bind_this(legend_1, ($$value) => legendElement = $$value, () => legendElement);
 
-		var node_2 = sibling(legend_1, 2);
+		var div = sibling(legend_1, 2);
+		var node_2 = child(div);
 
 		snippet(node_2, () => children() ?? noop);
+		reset(div);
+		bind_this(div, ($$value) => set(groupSelection, $$value), () => get(groupSelection));
 
-		var node_3 = sibling(node_2, 2);
+		var node_3 = sibling(div, 2);
 
 		FormError(node_3, {
 			get invalid() {
@@ -9084,12 +9089,17 @@
 
 		reset(fieldset);
 
-		template_effect(() => set_class(fieldset, 1, clsx([
-			invalid() && "qc-fieldset-invalid",
-			"qc-fieldset",
-			compact() && "qc-compact",
-			disabled() && "qc-fieldset-disabled"
-		])));
+		template_effect(() => {
+			set_class(fieldset, 1, clsx([
+				invalid() && "qc-fieldset-invalid",
+				"qc-fieldset",
+				compact() && "qc-compact",
+				disabled() && "qc-fieldset-disabled"
+			]));
+
+			set_class(div, 1, clsx(grid() ? `qc-field-elements-grid-${flowDirection()}` : ""));
+			set_style(div, `--elements-per-row-or-col: ${elementsPerRowOrCol() ?? ''}`);
+		});
 
 		append($$anchor, fieldset);
 
@@ -9106,6 +9116,27 @@
 			},
 			set name($$value) {
 				name($$value);
+				flushSync();
+			},
+			get grid() {
+				return grid();
+			},
+			set grid($$value = false) {
+				grid($$value);
+				flushSync();
+			},
+			get flowDirection() {
+				return flowDirection();
+			},
+			set flowDirection($$value = "column") {
+				flowDirection($$value);
+				flushSync();
+			},
+			get elementsPerRowOrCol() {
+				return elementsPerRowOrCol();
+			},
+			set elementsPerRowOrCol($$value = 1) {
+				elementsPerRowOrCol($$value);
 				flushSync();
 			},
 			get compact() {
@@ -9145,13 +9176,6 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get children() {
-				return children();
-			},
-			set children($$value) {
-				children($$value);
-				flushSync();
-			},
 			get updateValue() {
 				return updateValue();
 			},
@@ -9166,6 +9190,13 @@
 				formFieldElements($$value);
 				flushSync();
 			},
+			get children() {
+				return children();
+			},
+			set children($$value) {
+				children($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9177,14 +9208,17 @@
 		{
 			legend: {},
 			name: {},
+			grid: {},
+			flowDirection: {},
+			elementsPerRowOrCol: {},
 			compact: {},
 			required: {},
 			disabled: {},
 			invalid: {},
 			invalidText: {},
-			children: {},
 			updateValue: {},
-			formFieldElements: {}
+			formFieldElements: {},
+			children: {}
 		},
 		[],
 		[],
@@ -9203,7 +9237,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			tiled = prop($$props, 'tiled', 7, false),
+			grid = prop($$props, 'grid', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7, "column"),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
@@ -9217,7 +9251,7 @@
 					'checked',
 					'invalid',
 					'value',
-					'tiled',
+					'grid',
 					'flowDirection',
 					'elementsPerRowOrCol'
 				]);
@@ -9239,30 +9273,44 @@
 			$$ownership_validator.binding('checked', Fieldset, checked);
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-			Fieldset($$anchor, spread_props(() => restProps, {
-				updateValue,
-				get formFieldElements() {
-					return formFieldElements();
+			Fieldset($$anchor, spread_props(
+				{
+					get grid() {
+						return grid();
+					},
+					get flowDirection() {
+						return flowDirection();
+					},
+					get elementsPerRowOrCol() {
+						return elementsPerRowOrCol();
+					}
 				},
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				},
-				get checked() {
-					return checked();
-				},
-				set checked($$value) {
-					checked($$value);
-				},
-				get invalid() {
-					return invalid();
-				},
-				set invalid($$value) {
-					invalid($$value);
+				() => restProps,
+				{
+					updateValue,
+					get formFieldElements() {
+						return formFieldElements();
+					},
+					get value() {
+						return value();
+					},
+					set value($$value) {
+						value($$value);
+					},
+					get checked() {
+						return checked();
+					},
+					set checked($$value) {
+						checked($$value);
+					},
+					get invalid() {
+						return invalid();
+					},
+					set invalid($$value) {
+						invalid($$value);
+					}
 				}
-			}));
+			));
 		}
 
 		return pop({
@@ -9294,11 +9342,11 @@
 				value($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get grid() {
+				return grid();
 			},
-			set tiled($$value = false) {
-				tiled($$value);
+			set grid($$value = false) {
+				grid($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -9326,7 +9374,7 @@
 			checked: {},
 			invalid: {},
 			value: {},
-			tiled: {},
+			grid: {},
 			flowDirection: {},
 			elementsPerRowOrCol: {}
 		},
@@ -9353,7 +9401,7 @@
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
-			tiled = prop($$props, 'tiled', 7),
+			grid = prop($$props, 'grid', 7),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
 
@@ -9384,8 +9432,8 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get tiled() {
-					return tiled();
+				get grid() {
+					return grid();
 				},
 				get flowDirection() {
 					return flowDirection();
@@ -9485,11 +9533,11 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get grid() {
+				return grid();
 			},
-			set tiled($$value) {
-				tiled($$value);
+			set grid($$value) {
+				grid($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -9518,7 +9566,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			tiled: { attribute: 'tiled', type: 'Boolean' },
+			grid: { attribute: 'grid', type: 'Boolean' },
 			flowDirection: { attribute: 'flow-direction', type: 'String' },
 			elementsPerRowOrCol: {
 				attribute: 'elements-per-row-or-col',
@@ -10513,7 +10561,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			tiled = prop($$props, 'tiled', 7, false),
+			grid = prop($$props, 'grid', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7, "column"),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
@@ -10527,7 +10575,7 @@
 					'checked',
 					'invalid',
 					'value',
-					'tiled',
+					'grid',
 					'flowDirection',
 					'elementsPerRowOrCol'
 				]);
@@ -10545,29 +10593,43 @@
 			$$ownership_validator.binding('checked', Fieldset, checked);
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-			Fieldset($$anchor, spread_props(() => restProps, {
-				get formFieldElements() {
-					return formFieldElements();
+			Fieldset($$anchor, spread_props(
+				{
+					get grid() {
+						return grid();
+					},
+					get flowDirection() {
+						return flowDirection();
+					},
+					get elementsPerRowOrCol() {
+						return elementsPerRowOrCol();
+					}
 				},
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				},
-				get checked() {
-					return checked();
-				},
-				set checked($$value) {
-					checked($$value);
-				},
-				get invalid() {
-					return invalid();
-				},
-				set invalid($$value) {
-					invalid($$value);
+				() => restProps,
+				{
+					get formFieldElements() {
+						return formFieldElements();
+					},
+					get value() {
+						return value();
+					},
+					set value($$value) {
+						value($$value);
+					},
+					get checked() {
+						return checked();
+					},
+					set checked($$value) {
+						checked($$value);
+					},
+					get invalid() {
+						return invalid();
+					},
+					set invalid($$value) {
+						invalid($$value);
+					}
 				}
-			}));
+			));
 		}
 
 		return pop({
@@ -10599,11 +10661,11 @@
 				value($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get grid() {
+				return grid();
 			},
-			set tiled($$value = false) {
-				tiled($$value);
+			set grid($$value = false) {
+				grid($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -10631,7 +10693,7 @@
 			checked: {},
 			invalid: {},
 			value: {},
-			tiled: {},
+			grid: {},
 			flowDirection: {},
 			elementsPerRowOrCol: {}
 		},
@@ -10658,7 +10720,7 @@
 			invalidText = prop($$props, 'invalidText', 7),
 			value = prop($$props, 'value', 15, ""),
 			checked = prop($$props, 'checked', 15, false),
-			tiled = prop($$props, 'tiled', 7),
+			grid = prop($$props, 'grid', 7),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
 
@@ -10691,8 +10753,8 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get tiled() {
-					return tiled();
+				get grid() {
+					return grid();
 				},
 				get flowDirection() {
 					return flowDirection();
@@ -10786,11 +10848,11 @@
 				checked($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get grid() {
+				return grid();
 			},
-			set tiled($$value) {
-				tiled($$value);
+			set grid($$value) {
+				grid($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -10822,7 +10884,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			tiled: { attribute: 'tiled', type: 'Boolean' },
+			grid: { attribute: 'grid', type: 'Boolean' },
 			flowDirection: { attribute: 'flow-direction', type: 'String' },
 			elementsPerRowOrCol: {
 				attribute: 'elements-per-row-or-col',

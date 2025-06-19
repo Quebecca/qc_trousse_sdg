@@ -6,7 +6,7 @@
         checked = $bindable(false),
         invalid = $bindable(false),
         value = $bindable([]),
-        tiled = false,
+        grid = false,
         flowDirection = "column",
         elementsPerRowOrCol = 1,
         ...restProps
@@ -21,6 +21,9 @@
 </script>
 
 <Fieldset
+        {grid}
+        {flowDirection}
+        {elementsPerRowOrCol}
         {...restProps}
         bind:value
         bind:checked

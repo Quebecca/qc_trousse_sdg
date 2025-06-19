@@ -10,7 +10,7 @@
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
-        tiled: {attribute: 'tiled', type: 'Boolean'},
+        grid: {attribute: 'grid', type: 'Boolean'},
         flowDirection: {attribute: 'flow-direction', type: 'String'},
         elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
@@ -47,7 +47,7 @@
         invalidText,
         value = $bindable(""),
         checked=$bindable(false),
-        tiled,
+        grid,
         flowDirection,
         elementsPerRowOrCol
     } = $props();
@@ -65,7 +65,7 @@
     {invalidText}
     bind:value
     bind:checked
-    {tiled}
+    {grid}
     {flowDirection}
     {elementsPerRowOrCol}
 />

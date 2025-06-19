@@ -2042,12 +2042,10 @@ qc-search-bar {
 }
 
 .qc-fieldset {
-  display: flex;
-  flex-direction: column;
   border: none;
   padding: 0;
   margin: 0 0 var(--qc-spacer-content-block-mb);
-  justify-items: center;
+  justify-items: start;
   row-gap: var(--qc-spacer-sm);
 }
 .qc-fieldset legend {
@@ -2081,6 +2079,21 @@ qc-search-bar {
 
 .qc-fieldset-invalid legend, .qc-checkbox-single.qc-checkbox-single-invalid legend {
   margin-left: calc(-1 * var(--qc-spacer-xs) - 2px);
+}
+
+.qc-field-elements-grid-column, .qc-field-elements-grid-row {
+  display: grid;
+  grid-gap: var(--qc-spacer-xs);
+}
+
+.qc-field-elements-grid-row {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(var(--elements-per-row-or-col), 1fr);
+}
+
+.qc-field-elements-grid-column {
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--elements-per-row-or-col), 1fr);
 }
 
 .qc-check-row input[type=checkbox]:checked {

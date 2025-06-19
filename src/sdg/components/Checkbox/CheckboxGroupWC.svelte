@@ -7,7 +7,7 @@
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' },
-        tiled: {attribute: 'tiled', type: 'Boolean'},
+        grid: {attribute: 'grid', type: 'Boolean'},
         flowDirection: {attribute: 'flow-direction', type: 'String'},
         elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
@@ -41,7 +41,7 @@
         disabled,
         invalid = $bindable(false),
         invalidText,
-        tiled,
+        grid,
         flowDirection,
         elementsPerRowOrCol
     } = $props();
@@ -59,7 +59,7 @@
     bind:invalid
     {disabled}
     {invalidText}
-    {tiled}
+    {grid}
     {flowDirection}
     {elementsPerRowOrCol}
 />

@@ -1,12 +1,12 @@
 @use "qc-sdg-lib" as *;
 
 .qc-fieldset {
-  display: flex;
-  flex-direction: column;
+  //display: flex;
+  //flex-direction: column;
   border: none;
   padding: 0;
   margin: 0 0 token-value(spacer content-block mb);
-  justify-items: center;
+  justify-items: start;
   row-gap: token-value(spacer, sm);
   legend {
     font-weight: token-value(font weight content bold);
@@ -41,6 +41,19 @@ $invalid-border-width: 2px;
   margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
 }
 
+%grid {
+  display: grid;
+  grid-gap: token-value(spacer, xs);
+}
 
+.qc-field-elements-grid-row {
+  @extend %grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(var(--elements-per-row-or-col), 1fr);
+}
 
-
+.qc-field-elements-grid-column {
+  @extend %grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--elements-per-row-or-col), 1fr);
+}
