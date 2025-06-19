@@ -2,46 +2,26 @@
     tag: 'qc-checkbox-group',
     shadow: 'none',
     props: {
-        shared: {attribute:'shared'},
-        size: { attribute: 'size', type: 'String' },
-        required: { attribute: 'required', type: 'String' },
-        invalid: { attribute: 'invalid', type: 'String' },
+        compact: { attribute: 'compact', type: 'Boolean' },
+        required: { attribute: 'required', type: 'Boolean' },
+        disabled: {attribute: 'disabled', type: 'Boolean'},
+        invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' },
-        tiled: {attribute: 'tiled', type: 'String'},
+        tiled: {attribute: 'tiled', type: 'Boolean'},
         flowDirection: {attribute: 'flow-direction', type: 'String'},
         elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
-            static inners;
+            static formFieldElements;
             constructor() {
                 super();
-                this.inners = Array.from(this.querySelectorAll('qc-checkbox'));
-
+                this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
                 const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
                 tiles.forEach((tile) => {
                     tile.classList.add('qc-radio-select-parent');
                 })
-                this.inners.push(...tiles);
-
-                function setUpInner(inner, i) {
-                    inner.setAttribute('slot', `slot${i + 1}`);
-                }
-
-                const observer = new MutationObserver((mutationsList) => {
-                    for (const mutation of mutationsList) {
-                        if (mutation.type === 'childList') {
-                            for (const node of mutation.addedNodes) {
-                                if (node.tagName === 'QC-CHECKBOX-INNER') {
-                                    setUpInner(node, this.inners.length);
-                                    this.inners = [...this.inners, node];
-                                }
-                            }
-                        }
-                    }
-                });
-
-                observer.observe(this, { childList: true, subtree: false });
+                this.formFieldElements.push(...tiles);
             }
         };
     }
@@ -49,41 +29,35 @@
 
 <script>
     import CheckboxGroup from "./CheckboxGroup.svelte";
-    import { onMount } from "svelte";
 
     let {
-        inners,
+        formFieldElements,
+        value = $bindable([]),
+        checked = $bindable(false),
         legend,
         name,
-        size = "md",
+        compact,
         required,
-        invalid,
+        disabled,
+        invalid = $bindable(false),
         invalidText,
         tiled,
         flowDirection,
         elementsPerRowOrCol
     } = $props();
 
-    onMount(() => {
-        if (required === "") {
-            required = "true";
-        }
-        if (invalid === "") {
-            invalid = "true";
-        }
-        if (tiled === "") {
-            tiled = "true";
-        }
-    });
 </script>
 
 <CheckboxGroup
-    {inners}
+    {formFieldElements}
+    bind:value
+    bind:checked
     {legend}
     {name}
-    {size}
+    {compact}
     {required}
-    {invalid}
+    bind:invalid
+    {disabled}
     {invalidText}
     {tiled}
     {flowDirection}

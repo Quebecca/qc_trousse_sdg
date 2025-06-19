@@ -1,52 +1,38 @@
 <script>
-    import { setContext, onMount } from 'svelte';
-    import { Utils } from "../utils";
-    import Icon from "../Icon/Icon.svelte";
-
-    const lang = Utils.getPageLanguage();
+    import Fieldset from "../Fieldset/Fieldset.svelte";
 
     let {
-        inners,
-        legend,
-        name,
-        size = "md",
-        required = false,
-        invalid = false,
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field"
+        formFieldElements,
+        checked = $bindable(false),
+        invalid = $bindable(false),
+        value = $bindable([]),
+        tiled = false,
+        flowDirection = "column",
+        elementsPerRowOrCol = 1,
+        ...restProps
     } = $props();
 
-    let checkboxes = $state();
-    setContext('name', {name});
-    setContext('size', {size});
 
-    onMount(() => {
-        inners.forEach(
-            inner => checkboxes.appendChild(inner)
-        );
-    });
+    let updateValue = function () {
+        console.log("updateValue", formFieldElements)
+        value = formFieldElements
+            .map(cb => cb.checked ? cb.value : false)
+            .filter(x => x);
+        checked = value.length > 0;
+        if (checked) {
+            invalid = false;
+        }
+    }
+    $inspect("CB group svelte invalid", invalid)
+
 </script>
 
-<div class={Utils.isTruthy(invalid) ? " qc-fieldset-invalid" : ""}>
-    <fieldset class="qc-checkbox-fieldset" aria-describedby={`id_${name}`}>
-        <legend class="qc-checkbox-legend" id={`id_${name}`}>
-            {legend}
-            {#if Utils.isTruthy(required)}
-                <span class="qc-checkbox-required" aria-hidden="true">*</span>
-            {/if}
-        </legend>
-        <div class="qc-checkbox-group-{size}" bind:this={checkboxes} onchange={() => invalid = false}></div>
+<Fieldset
+        {...restProps}
+        bind:value
+        bind:checked
+        bind:invalid
+        {updateValue}
+        {formFieldElements}
+/>
 
-        <div class={`qc-checkbox-invalid${Utils.isTruthy(invalid) ? " qc-checkbox-invalid-visible" : ""}`} role="alert">
-            {#if Utils.isTruthy(invalid)}
-                <div class="qc-checkbox-invalid-icon">
-                    <Icon
-                        type="warning"
-                        color="red-regular"
-                        size="md"
-                    />
-                </div>
-                <span>{invalidText}</span>
-            {/if}
-        </div>
-    </fieldset>
-</div>

@@ -6,21 +6,24 @@
     let {
         legend,
         name,
+        grid = false,
+        flowDirection = "column",
+        elementsPerRowOrCol = 1,
         compact,
         required = false,
         disabled,
         invalid = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        children,
         updateValue = () => {},
-        formFieldElements
+        formFieldElements,
+        children
     } = $props();
-    let legendElement,
+    let groupSelection = $state(),
         legendId = name
             ? "id_" + name
             : "legend-" + Math.floor(Math.random() * 1000000 );
     onMount(() => {
-        legendElement.after(...formFieldElements);
+        groupSelection.append(...formFieldElements);
     });
 </script>
 <fieldset class={[
@@ -31,15 +34,19 @@
           aria-describedby={legendId}
           onchange={updateValue}
     >
-    <legend id={legendId}
-            bind:this={legendElement}
-    >
+    <legend id={legendId}>
         {@html legend}
         {#if required}
             <span class="qc-fieldset-required" aria-hidden="true">*</span>
         {/if}
     </legend>
-    {@render children?.()}
+    <div
+        class={grid ? `qc-field-elements-grid-${flowDirection}` : ""}
+        style="--elements-per-row-or-col: {elementsPerRowOrCol}"
+        bind:this={groupSelection}
+    >
+        {@render children?.()}
+    </div>
     <FormError {invalid} {invalidText} />
 
 </fieldset>

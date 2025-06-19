@@ -3,29 +3,31 @@
     shadow: 'none',
     props: {
         name: {attribute: 'name', type: 'String'},
+        value: {attribute: 'value', type: 'String'},
         legend: {attribute:'legend', type: 'String'},
-        size: {attribute:'size', type: 'String'},
-        required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'},
+        compact: {attribute:'compact', type: 'Boolean'},
+        required: {attribute: 'required', type: 'Boolean'},
+        disabled: {attribute: 'disabled', type: 'Boolean'},
+        invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
-        tiled: {attribute: 'tiled', type: 'String'},
+        tiled: {attribute: 'tiled', type: 'Boolean'},
         flowDirection: {attribute: 'flow-direction', type: 'String'},
         elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
-            static radioButtons;
+            static formFieldElements;
 
             constructor() {
                 super();
-                this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+                this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
 
                 const tiles = Array.from(this.querySelectorAll('qc-radio-selection-button'));
                 tiles.forEach((tile) => {
                     tile.classList.add('qc-radio-select-parent');
                 })
-                this.radioButtons.push(...tiles);
+                this.formFieldElements.push(...tiles);
             }
         }
     }
@@ -37,35 +39,32 @@
     let {
         name,
         legend,
-        size = "md",
-        radioButtons,
+        compact,
+        formFieldElements,
         required,
-        invalid,
+        disabled,
+        invalid = $bindable(false),
         invalidText,
+        value = $bindable(""),
+        checked=$bindable(false),
         tiled,
         flowDirection,
         elementsPerRowOrCol
     } = $props();
 
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
-    if (tiled === "") {
-        tiled = "true";
-    }
 </script>
 
 <RadioGroup
     {name}
     {legend}
-    {size}
-    {radioButtons}
+    {compact}
+    {formFieldElements}
     {required}
+    {disabled}
     {invalid}
     {invalidText}
+    bind:value
+    bind:checked
     {tiled}
     {flowDirection}
     {elementsPerRowOrCol}
