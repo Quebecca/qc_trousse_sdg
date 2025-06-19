@@ -149,3 +149,8 @@
   @include content-font(sm);
   margin: 0;
 }
+
+.qc-check-row-parent {
+  display: flex;
+  flex-grow: 1;
+}

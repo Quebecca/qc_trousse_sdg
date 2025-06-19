@@ -4,6 +4,7 @@
     props: {
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
+        description: {attribute: 'description', type: 'String'},
         name: { attribute: 'name', type: 'String' },
         disabled: { attribute: 'disabled', type: 'Boolean' },
         checked: { attribute: 'checked', type: 'Boolean', reflect: true },
@@ -31,6 +32,7 @@
         parentGroup,
         value,
         label,
+        description,
         name,
         disabled,
         checked = $bindable(false),
@@ -53,11 +55,13 @@
 <Checkbox
     bind:value={effectiveValue}
     {label}
+    {description}
     name={effectiveName}
     disabled={parentGroup?.disabled ?? disabled}
     bind:checked
     required={parentGroup?.required ?? required}
     {compact}
+    selectionButton={parentGroup?.grid ?? false}
     bind:invalid
     {invalidText}
     {parentGroup}

@@ -4,6 +4,7 @@
     props: {
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
+        description: {attribute: 'description', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
         disabled: {attribute:'disabled', type: 'Boolean'},
         required: {attribute: 'required', type: 'Boolean'}
@@ -31,6 +32,7 @@
         name,
         value,
         label,
+        description,
         checked = $bindable(false),
         disabled,
         required = $bindable(false),
@@ -52,6 +54,7 @@
     {value}
     bind:groupValue={parent.value}
     {label}
+    {description}
     selectionButton={parent.grid}
     compact={parent.compact}
     {checked}

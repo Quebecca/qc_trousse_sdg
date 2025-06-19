@@ -12,6 +12,7 @@
         checked = $bindable(false),
         required = false,
         compact,
+        selectionButton,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
@@ -38,24 +39,27 @@
         "qc-check-row",
         !parentGroup && compact && "qc-compact",
         ]}>
-        <input
-            type="checkbox"
-            {value}
-            {name}
-            {id}
-            {disabled}
-            bind:checked
-            aria-required = {required}
-            aria-invalid={invalid}
-            {...restProps}
-            onchange={() => { if (checked) invalid = false}}
-        />
         <label for={id}>
-            {label}
-            {#if !parentGroup && required}
-                <span class="qc-fieldset-required">*</span>
-            {/if}
+            <input
+                    type="checkbox"
+                    {value}
+                    {name}
+                    {id}
+                    {disabled}
+                    bind:checked
+                    aria-required = {required}
+                    aria-invalid={invalid}
+                    {...restProps}
+                    onchange={() => { if (checked) invalid = false}}
+            />
+            <span class="qc-check-text">
+                <span class="qc-check-label">{label}</span>
+                {#if description}
+                    <span class="qc-check-description">{@html description}</span>
+                {/if}
+            </span>
         </label>
+
     </div>
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />

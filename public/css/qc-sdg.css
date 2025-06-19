@@ -2005,6 +2005,11 @@ qc-search-bar {
   margin: 0;
 }
 
+.qc-check-row-parent {
+  display: flex;
+  flex-grow: 1;
+}
+
 input[type=radio] {
   border-radius: 100%;
 }
@@ -2018,11 +2023,6 @@ input[type=radio]:checked::before {
 input[type=radio]:checked:not(.qc-compact)::before {
   width: 1.4rem;
   height: 1.4rem;
-}
-
-.qc-radio-select-parent {
-  display: flex;
-  flex-grow: 1;
 }
 
 .qc-radio-select {
