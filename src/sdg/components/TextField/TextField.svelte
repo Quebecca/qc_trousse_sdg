@@ -28,7 +28,7 @@
     }
 </script>
 
-<div class="qc-textfield-container">
+<div class={`qc-textfield-container ${disabled ? 'disabled' : ''}`}>
     {#if label}
         <label>
             {label}
@@ -40,7 +40,7 @@
         <div class="qc-textfield-description">{description}</div>
     {/if}
 
-    <div class={`qc-textfield ${sizeClass} ${Utils.isTruthy(invalid) ? 'error' : ''}`}>
+    <div class={`qc-textfield ${sizeClass} ${Utils.isTruthy(invalid) ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
         {#if isTextArea}
       <textarea
               {placeholder}
@@ -65,5 +65,7 @@
         {/if}
     </div>
 
-    <FormError {invalid} {invalidText} />
+    {#if invalid}
+        <FormError {invalid} {invalidText} />
+    {/if}
 </div>

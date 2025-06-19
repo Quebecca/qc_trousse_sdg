@@ -65,6 +65,12 @@ qc-textfield {
   margin-bottom: token-value(spacer, md);
 }
 
+.qc-textfield-container.disabled {
+  label {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
+  }
+}
 
 // Required
 .qc-textfield-required {
@@ -78,12 +84,24 @@ qc-textfield {
   color: token-value(color, grey, medium);
 }
 
+// Disabled
+.qc-textfield.disabled {
+  &::before {
+    border: 1px solid token-value(color, grey, regular);
+    background-color: token-value(color, grey, pale);
+  }
+
+  input[type="text"],
+  textarea {
+    color: token-value(color, grey, medium);
+    cursor: not-allowed;
+  }
+}
+
 // Message d'erreur
 .qc-textfield-error-message {
-  display: none;
   margin-top: rem(4);
   color: token-value(color, red, regular);
-  font-size: rem(14);
 
   .error & {
     display: block;

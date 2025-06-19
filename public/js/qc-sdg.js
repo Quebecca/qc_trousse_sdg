@@ -10162,7 +10162,7 @@
 	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[40, 8]]);
 	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[45, 6]]);
 	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[55, 12]]);
-	var root$1 = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div> <!></div>`), TextField[FILENAME], [[31, 0, [[43, 4]]]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!></div>`), TextField[FILENAME], [[31, 0, [[43, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10288,20 +10288,34 @@
 
 		var node_4 = sibling(div_2, 2);
 
-		FormError(node_4, {
-			get invalid() {
-				return invalid();
-			},
-			get invalidText() {
-				return invalidText();
-			}
-		});
+		{
+			var consequent_4 = ($$anchor) => {
+				FormError($$anchor, {
+					get invalid() {
+						return invalid();
+					},
+					get invalidText() {
+						return invalidText();
+					}
+				});
+			};
+
+			if_block(node_4, ($$render) => {
+				if (invalid()) $$render(consequent_4);
+			});
+		}
 
 		reset(div);
 
-		template_effect(($0) => set_class(div_2, 1, $0), [
-			() => `qc-textfield ${get(sizeClass)} ${Utils.isTruthy(invalid()) ? 'error' : ''}`
-		]);
+		template_effect(
+			($0) => {
+				set_class(div, 1, `qc-textfield-container ${disabled() ? 'disabled' : ''}`);
+				set_class(div_2, 1, $0);
+			},
+			[
+				() => `qc-textfield ${get(sizeClass)} ${Utils.isTruthy(invalid()) ? 'error' : ''} ${disabled() ? 'disabled' : ''}`
+			]
+		);
 
 		append($$anchor, div);
 
