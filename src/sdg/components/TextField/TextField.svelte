@@ -1,23 +1,15 @@
 <script>
-  let {
-    name = '',
-    label = '',
-    placeholder = '',
-    value = $bindable(''),
-    size = 'medium',
-    disabled = false,
-    required = false,
-    description = '',
+    let {
+        name = '',
+        label = '',
+        placeholder = '',
+        value = $bindable(''),
+        size = 'medium',
+        disabled = false,
+        required = false,
+        description = '',
+        maxlength = null
   } = $props();
-
-  // Mapping des tailles aux longueurs maximales
-  const sizeToMaxLength = {
-    'xl': 58,
-    'lg': 26,
-    'md': 16,
-    'sm': 5,
-    'xxl': null
-  };
 
   // Classe CSS selon la taille
   let sizeClass = $derived(`qc-textfield--${size}`);
@@ -45,6 +37,7 @@
         bind:value
         {disabled}
         {required}
+        {maxlength}
       ></textarea>
   {:else}
       <input
@@ -53,6 +46,7 @@
         bind:value
         {disabled}
         {required}
+        {maxlength}
       />
   {/if}
 </div>

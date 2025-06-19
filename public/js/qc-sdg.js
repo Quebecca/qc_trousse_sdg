@@ -10182,12 +10182,12 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[33, 20]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[31, 4]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[38, 4]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[43, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[50, 6]]);
-	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div></div>`), TextField[FILENAME], [[29, 0, [[41, 2]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[25, 20]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[23, 4]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[30, 4]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[35, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[43, 6]]);
+	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div></div>`), TextField[FILENAME], [[21, 0, [[33, 2]]]]);
 	const $$css = { hash: 'qc-hash-32ttx', code: '\n\n' };
 
 	function TextField($$anchor, $$props) {
@@ -10202,7 +10202,8 @@
 			size = prop($$props, 'size', 7, 'medium'),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
-			description = prop($$props, 'description', 7, '');
+			description = prop($$props, 'description', 7, ''),
+			maxlength = prop($$props, 'maxlength', 7, null);
 
 		// Classe CSS selon la taille
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
@@ -10269,6 +10270,7 @@
 					set_attribute(textarea, 'placeholder', placeholder());
 					textarea.disabled = disabled();
 					textarea.required = required();
+					set_attribute(textarea, 'maxlength', maxlength());
 				});
 
 				bind_value(textarea, value);
@@ -10284,6 +10286,7 @@
 					set_attribute(input, 'placeholder', placeholder());
 					input.disabled = disabled();
 					input.required = required();
+					set_attribute(input, 'maxlength', maxlength());
 				});
 
 				bind_value(input, value);
@@ -10357,6 +10360,13 @@
 				description($$value);
 				flushSync();
 			},
+			get maxlength() {
+				return maxlength();
+			},
+			set maxlength($$value = null) {
+				maxlength($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10371,7 +10381,8 @@
 			size: {},
 			disabled: {},
 			required: {},
-			description: {}
+			description: {},
+			maxlength: {}
 		},
 		[],
 		[],
@@ -10391,7 +10402,8 @@
 			size = prop($$props, 'size', 7, 'medium'),
 			disabled = prop($$props, 'disabled', 7, ''),
 			required = prop($$props, 'required', 7, ''),
-			description = prop($$props, 'description', 7, '');
+			description = prop($$props, 'description', 7, ''),
+			maxlength = prop($$props, 'maxlength', 7, '');
 
 		const expression = user_derived(() => size() || 'medium');
 		const expression_1 = user_derived(() => strict_equals(disabled(), 'true'));
@@ -10421,6 +10433,9 @@
 			},
 			get description() {
 				return description();
+			},
+			get maxlength() {
+				return maxlength();
 			}
 		});
 
@@ -10481,6 +10496,13 @@
 				description($$value);
 				flushSync();
 			},
+			get maxlength() {
+				return maxlength();
+			},
+			set maxlength($$value = '') {
+				maxlength($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10495,7 +10517,8 @@
 			size: { attribute: 'size', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
-			description: { attribute: 'description', type: 'String' }
+			description: { attribute: 'description', type: 'String' },
+			maxlength: { attribute: 'maxlength', type: 'String' }
 		},
 		[],
 		[],
