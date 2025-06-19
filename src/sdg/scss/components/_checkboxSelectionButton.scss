@@ -9,7 +9,7 @@
   appearance: none;
 
   position: relative;
-  margin: rem(4) token-value(spacer, xs) 0 0;
+  margin-right: token-value(spacer, xs);
 
   width: token-value(spacer, sm);
   height: token-value(spacer, sm);

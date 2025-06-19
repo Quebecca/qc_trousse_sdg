@@ -2098,12 +2098,12 @@ qc-search-bar {
   display: flex;
   flex-direction: column;
   row-gap: var(--qc-spacer-xs);
+  min-height: var(--qc-spacer-md);
 }
 .qc-radio-select .qc-radio-select-label-choice {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-semi-bold);
-  min-height: var(--qc-spacer-md);
 }
 .qc-radio-select .qc-radio-select-label-description {
   font-size: var(--qc-font-size-sm);
@@ -2119,7 +2119,7 @@ qc-search-bar {
   position: relative;
   min-width: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-sm);
-  margin: 0.4rem var(--qc-spacer-xs) 0 0;
+  margin-right: var(--qc-spacer-xs);
   background-color: var(--qc-color-white);
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
@@ -2328,7 +2328,7 @@ qc-search-bar {
      -moz-appearance: none;
           appearance: none;
   position: relative;
-  margin: 0.4rem var(--qc-spacer-xs) 0 0;
+  margin-right: var(--qc-spacer-xs);
   width: var(--qc-spacer-sm);
   height: var(--qc-spacer-sm);
   border-style: solid;
