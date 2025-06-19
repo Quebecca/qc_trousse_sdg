@@ -3,20 +3,22 @@
     shadow: 'none',
     props: {
         name: {attribute: 'name', type: 'String'},
+        value: {attribute: 'value', type: 'String'},
         legend: {attribute:'legend', type: 'String'},
-        size: {attribute:'size', type: 'String'},
-        required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'},
+        compact: {attribute:'compact', type: 'Boolean'},
+        required: {attribute: 'required', type: 'Boolean'},
+        disabled: {attribute: 'disabled', type: 'Boolean'},
+        invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
-            static radioButtons;
+            static formFieldElements;
 
             constructor() {
                 super();
-                this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+                this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
             }
         }
     }
@@ -28,28 +30,28 @@
     let {
         name,
         legend,
-        size = "md",
-        radioButtons,
+        compact,
+        formFieldElements,
         required,
-        invalid,
-        invalidText
+        disabled,
+        invalid = $bindable(false),
+        invalidText,
+        value = $bindable(""),
+        checked=$bindable(false),
     } = $props();
 
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
 </script>
 
 <RadioGroup
     {name}
     {legend}
-    {size}
-    {radioButtons}
+    {compact}
+    {formFieldElements}
     {required}
+    {disabled}
     {invalid}
     {invalidText}
+    bind:value
+    bind:checked
 />
 

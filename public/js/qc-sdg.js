@@ -263,6 +263,38 @@
 
 
 	/**
+	 * `%binding%` (%location%) is binding to a non-reactive property
+	 * @param {string} binding
+	 * @param {string | undefined | null} [location]
+	 */
+	function binding_property_non_reactive(binding, location) {
+		{
+			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
+		}
+	}
+
+	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
+	 * %handler% should be a function. Did you mean to %suggestion%?
+	 * @param {string} handler
+	 * @param {string} suggestion
+	 */
+	function event_handler_invalid(handler, suggestion) {
+		{
+			console.warn(`https://svelte.dev/e/event_handler_invalid`);
+		}
+	}
+
+	/**
 	 * Hydration failed because the initial UI does not match what was rendered on the server. The error occurred near %location%
 	 * @param {string | undefined | null} [location]
 	 */
@@ -794,6 +826,14 @@
 		}
 
 		return value;
+	}
+
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 */
+	function is(a, b) {
+		return Object.is(get_proxied_value(a), get_proxied_value(b));
 	}
 
 	/**
@@ -2647,6 +2687,23 @@
 	}
 
 	/**
+	 * The current component function. Different from current component context:
+	 * ```html
+	 * <!-- App.svelte -->
+	 * <Foo>
+	 *   <Bar /> <!-- context == Foo.svelte, function == App.svelte -->
+	 * </Foo>
+	 * ```
+	 * @type {ComponentContext['function']}
+	 */
+	let dev_current_component_function = null;
+
+	/** @param {ComponentContext['function']} fn */
+	function set_dev_current_component_function(fn) {
+		dev_current_component_function = fn;
+	}
+
+	/**
 	 * Associates an arbitrary `context` object with the current component and the specified `key`
 	 * and returns that object. The context is then available to children of the component
 	 * (including slotted content) with `getContext`.
@@ -3261,6 +3318,47 @@
 			set_active_reaction(previous_reaction);
 			set_active_effect(previous_effect);
 		}
+	}
+
+	/**
+	 * In dev, warn if an event handler is not a function, as it means the
+	 * user probably called the handler or forgot to add a `() =>`
+	 * @param {() => (event: Event, ...args: any) => void} thunk
+	 * @param {EventTarget} element
+	 * @param {[Event, ...any]} args
+	 * @param {any} component
+	 * @param {[number, number]} [loc]
+	 * @param {boolean} [remove_parens]
+	 */
+	function apply(
+		thunk,
+		element,
+		args,
+		component,
+		loc,
+		has_side_effects = false,
+		remove_parens = false
+	) {
+		let handler;
+		let error;
+
+		try {
+			handler = thunk();
+		} catch (e) {
+			error = e;
+		}
+
+		if (typeof handler !== 'function' && (has_side_effects || handler != null || error)) {
+			const phase = args[0]?.eventPhase < Event.BUBBLING_PHASE ? 'capture' : '';
+			args[0]?.type + phase;
+
+			event_handler_invalid();
+
+			if (error) {
+				throw error;
+			}
+		}
+		handler?.apply(element, args);
 	}
 
 	/** @param {string} html */
@@ -4591,10 +4689,13 @@
 	 */
 	function wrap_snippet(component, fn) {
 		const snippet = (/** @type {TemplateNode} */ node, /** @type {any[]} */ ...args) => {
+			var previous_component_function = dev_current_component_function;
+			set_dev_current_component_function(component);
 
 			try {
 				return fn(node, ...args);
 			} finally {
+				set_dev_current_component_function(previous_component_function);
 			}
 		};
 
@@ -5424,6 +5525,105 @@
 		});
 	}
 
+	/** @type {Set<HTMLInputElement[]>} */
+	const pending = new Set();
+
+	/**
+	 * @param {HTMLInputElement[]} inputs
+	 * @param {null | [number]} group_index
+	 * @param {HTMLInputElement} input
+	 * @param {() => unknown} get
+	 * @param {(value: unknown) => void} set
+	 * @returns {void}
+	 */
+	function bind_group(inputs, group_index, input, get, set = get) {
+		var is_checkbox = input.getAttribute('type') === 'checkbox';
+		var binding_group = inputs;
+
+		// needs to be let or related code isn't treeshaken out if it's always false
+		let hydration_mismatch = false;
+
+		if (group_index !== null) {
+			for (var index of group_index) {
+				// @ts-expect-error
+				binding_group = binding_group[index] ??= [];
+			}
+		}
+
+		binding_group.push(input);
+
+		listen_to_event_and_reset_event(
+			input,
+			'change',
+			() => {
+				// @ts-ignore
+				var value = input.__value;
+
+				if (is_checkbox) {
+					value = get_binding_group_value(binding_group, value, input.checked);
+				}
+
+				set(value);
+			},
+			// TODO better default value handling
+			() => set(is_checkbox ? [] : null)
+		);
+
+		render_effect(() => {
+			var value = get();
+
+			// If we are hydrating and the value has since changed, then use the update value
+			// from the input instead.
+			if (hydrating && input.defaultChecked !== input.checked) {
+				hydration_mismatch = true;
+				return;
+			}
+
+			if (is_checkbox) {
+				value = value || [];
+				// @ts-ignore
+				input.checked = value.includes(input.__value);
+			} else {
+				// @ts-ignore
+				input.checked = is(input.__value, value);
+			}
+		});
+
+		teardown(() => {
+			var index = binding_group.indexOf(input);
+
+			if (index !== -1) {
+				binding_group.splice(index, 1);
+			}
+		});
+
+		if (!pending.has(binding_group)) {
+			pending.add(binding_group);
+
+			queue_micro_task(() => {
+				// necessary to maintain binding group order in all insertion scenarios
+				binding_group.sort((a, b) => (a.compareDocumentPosition(b) === 4 ? -1 : 1));
+				pending.delete(binding_group);
+			});
+		}
+
+		queue_micro_task(() => {
+			if (hydration_mismatch) {
+				var value;
+
+				if (is_checkbox) {
+					value = get_binding_group_value(binding_group, value, input.checked);
+				} else {
+					var hydration_input = binding_group.find((input) => input.checked);
+					// @ts-ignore
+					value = hydration_input?.__value;
+				}
+
+				set(value);
+			}
+		});
+	}
+
 	/**
 	 * @param {HTMLInputElement} input
 	 * @param {() => unknown} get
@@ -5450,6 +5650,30 @@
 			var value = get();
 			input.checked = Boolean(value);
 		});
+	}
+
+	/**
+	 * @template V
+	 * @param {Array<HTMLInputElement>} group
+	 * @param {V} __value
+	 * @param {boolean} checked
+	 * @returns {V[]}
+	 */
+	function get_binding_group_value(group, __value, checked) {
+		var value = new Set();
+
+		for (var i = 0; i < group.length; i += 1) {
+			if (group[i].checked) {
+				// @ts-ignore
+				value.add(group[i].__value);
+			}
+		}
+
+		if (!checked) {
+			value.delete(__value);
+		}
+
+		return Array.from(value);
 	}
 
 	/**
@@ -5875,6 +6099,49 @@
 
 			return get(current_value);
 		};
+	}
+
+	/**
+	 * @param {string} binding
+	 * @param {() => Record<string, any>} get_object
+	 * @param {() => string} get_property
+	 * @param {number} line
+	 * @param {number} column
+	 */
+	function validate_binding(binding, get_object, get_property, line, column) {
+		var warned = false;
+
+		dev_current_component_function?.[FILENAME];
+
+		render_effect(() => {
+			if (warned) return;
+
+			var [object, is_store_sub] = capture_store_binding(get_object);
+
+			if (is_store_sub) return;
+
+			var property = get_property();
+
+			var ran = false;
+
+			// by making the (possibly false, but it would be an extreme edge case) assumption
+			// that a getter has a corresponding setter, we can determine if a property is
+			// reactive by seeing if this effect has dependencies
+			var effect = render_effect(() => {
+				if (ran) return;
+
+				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+				object[property];
+			});
+
+			ran = true;
+
+			if (effect.deps === null) {
+				binding_property_non_reactive();
+
+				warned = true;
+			}
+		});
 	}
 
 	/** @import { ComponentConstructorOptions, ComponentType, SvelteComponent, Component } from 'svelte' */
@@ -6351,6 +6618,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -6432,7 +6730,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$e = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$d = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6460,7 +6758,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$e();
+		var div = root$d();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6542,7 +6840,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$d = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$c = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -6599,7 +6897,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$d();
+		var fragment = root$c();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -6767,7 +7065,7 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
+	var root_1$4 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
 	var root_2$1 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -6785,7 +7083,7 @@
 	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
 
-	var root$c = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$b = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
 			59,
 			0,
@@ -6866,14 +7164,14 @@
 
 		inspect(() => ["piv header slots", slots()]);
 
-		var fragment = root$c();
+		var fragment = root$b();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$5();
+				var div_2 = root_1$4();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7408,7 +7706,7 @@
 	var root_2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
-	var root$b = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
+	var root$a = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
 		[52, 0]
 	]);
@@ -7431,7 +7729,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var fragment = root$b();
+		var fragment = root$a();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -7735,7 +8033,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$a = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$9 = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -7762,7 +8060,7 @@
 					'class'
 				]);
 
-		var button = root$a();
+		var button = root$9();
 		let attributes;
 		var node = child(button);
 
@@ -7864,7 +8162,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$4 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$3 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -7878,7 +8176,7 @@
 		]
 	]);
 
-	var root$9 = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
+	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -7905,12 +8203,12 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$9();
+		var fragment = root$8();
 		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$4();
+				var div = root_1$3();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8081,7 +8379,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$8 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[69, 0, [[79, 3]]]]);
+	var root$7 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8125,7 +8423,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$8();
+		var a = root$7();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8206,7 +8504,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$7 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$6 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8288,7 +8586,7 @@
 			});
 		});
 
-		var span_1 = root$7();
+		var span_1 = root$6();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -8326,7 +8624,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$6 = add_locations(template(`<div class="qc-search-input"><input> <!></div>`), SearchInput[FILENAME], [[18, 0, [[19, 4]]]]);
+	var root$5 = add_locations(template(`<div class="qc-search-input"><input> <!></div>`), SearchInput[FILENAME], [[18, 0, [[19, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8350,7 +8648,7 @@
 				]);
 
 		let searchInput;
-		var div = root$6();
+		var div = root$5();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -8430,7 +8728,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$5 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[40, 0]]);
+	var root$4 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[40, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -8474,7 +8772,7 @@
 			set(submitProps, submitAttrs, true);
 		});
 
-		var div = root$5();
+		var div = root$4();
 		let classes;
 		var node = child(div);
 
@@ -8644,8 +8942,8 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_1$3 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
+	var root_1$2 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root$3 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -8654,12 +8952,12 @@
 		let invalid = prop($$props, 'invalid', 7),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		var div = root$4();
+		var div = root$3();
 		var node = child(div);
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$3();
+				var fragment = root_1$2();
 				var node_1 = first_child(fragment);
 
 				Icon(node_1, {
@@ -8706,70 +9004,75 @@
 
 	create_custom_element(FormError, { invalid: {}, invalidText: {} }, [], [], true);
 
-	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
+	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-checkbox-required" aria-hidden="true">*</span>`), CheckboxGroup[FILENAME], [[37, 16]]);
-	var on_change$1 = (_, invalid) => invalid(false);
+	var root_1$1 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
+	var root$2 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
 
-	var root$3 = add_locations(template(`<div><fieldset class="qc-checkbox-fieldset"><legend class="qc-checkbox-legend"> <!></legend> <div></div> <!></fieldset></div>`), CheckboxGroup[FILENAME], [
-		[
-			30,
-			0,
-			[[31, 4, [[34, 8], [40, 8]]]]
-		]
-	]);
-
-	function CheckboxGroup($$anchor, $$props) {
+	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const lang = Utils.getPageLanguage();
 
-		let inners = prop($$props, 'inners', 7),
-			legend = prop($$props, 'legend', 7),
+		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			size = prop($$props, 'size', 7, "md"),
+			compact = prop($$props, 'compact', 7),
 			required = prop($$props, 'required', 7, false),
-			invalid = prop($$props, 'invalid', 7, false),
-			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field");
+			disabled = prop($$props, 'disabled', 7),
+			invalid = prop($$props, 'invalid', 15, false),
+			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
+			children = prop($$props, 'children', 7),
+			updateValue = prop($$props, 'updateValue', 7, () => {}),
+			formFieldElements = prop($$props, 'formFieldElements', 7);
 
-		let checkboxes = state(void 0);
-
-		setContext('name', { name: name() });
-		setContext('size', { size: size() });
+		let legendElement,
+			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
 
 		onMount(() => {
-			inners().forEach((inner) => get(checkboxes).appendChild(inner));
+			legendElement.after(...formFieldElements());
 		});
 
-		var div = root$3();
-		var fieldset = child(div);
+		var fieldset = root$2();
+
+		set_attribute(fieldset, 'aria-describedby', legendId);
+
+		fieldset.__change = function (...$$args) {
+			apply(updateValue, this, $$args);
+		};
+
 		var legend_1 = child(fieldset);
-		var text = child(legend_1);
-		var node = sibling(text);
+
+		set_attribute(legend_1, 'id', legendId);
+
+		var node = child(legend_1);
+
+		html(node, legend);
+
+		var node_1 = sibling(node, 2);
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$2();
+				var span = root_1$1();
 
 				append($$anchor, span);
 			};
 
-			if_block(node, ($$render) => {
-				if (Utils.isTruthy(required())) $$render(consequent);
+			if_block(node_1, ($$render) => {
+				if (required()) $$render(consequent);
 			});
 		}
 
 		reset(legend_1);
+		bind_this(legend_1, ($$value) => legendElement = $$value, () => legendElement);
 
-		var div_1 = sibling(legend_1, 2);
+		var node_2 = sibling(legend_1, 2);
 
-		div_1.__change = [on_change$1, invalid];
-		bind_this(div_1, ($$value) => set(checkboxes, $$value), () => get(checkboxes));
+		snippet(node_2, () => children() ?? noop);
 
-		var node_1 = sibling(div_1, 2);
+		var node_3 = sibling(node_2, 2);
 
-		FormError(node_1, {
+		FormError(node_3, {
 			get invalid() {
 				return invalid();
 			},
@@ -8779,31 +9082,17 @@
 		});
 
 		reset(fieldset);
-		reset(div);
 
-		template_effect(
-			($0) => {
-				set_class(div, 1, $0);
-				set_attribute(fieldset, 'aria-describedby', `id_${name()}`);
-				set_attribute(legend_1, 'id', `id_${name()}`);
-				set_text(text, `${legend() ?? ''} `);
-				set_class(div_1, 1, `qc-checkbox-group-${size() ?? ''}`);
-			},
-			[
-				() => clsx(Utils.isTruthy(invalid()) ? " qc-fieldset-invalid" : "")
-			]
-		);
+		template_effect(() => set_class(fieldset, 1, clsx([
+			invalid() && "qc-fieldset-invalid",
+			"qc-fieldset",
+			compact() && "qc-compact",
+			disabled() && "qc-fieldset-disabled"
+		])));
 
-		append($$anchor, div);
+		append($$anchor, fieldset);
 
 		return pop({
-			get inners() {
-				return inners();
-			},
-			set inners($$value) {
-				inners($$value);
-				flushSync();
-			},
 			get legend() {
 				return legend();
 			},
@@ -8818,11 +9107,11 @@
 				name($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value = "md") {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
 			get required() {
@@ -8830,6 +9119,13 @@
 			},
 			set required($$value = false) {
 				required($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -8848,6 +9144,27 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get children() {
+				return children();
+			},
+			set children($$value) {
+				children($$value);
+				flushSync();
+			},
+			get updateValue() {
+				return updateValue();
+			},
+			set updateValue($$value = () => {}) {
+				updateValue($$value);
+				flushSync();
+			},
+			get formFieldElements() {
+				return formFieldElements();
+			},
+			set formFieldElements($$value) {
+				formFieldElements($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -8855,15 +9172,132 @@
 	delegate(['change']);
 
 	create_custom_element(
-		CheckboxGroup,
+		Fieldset,
 		{
-			inners: {},
 			legend: {},
 			name: {},
-			size: {},
+			compact: {},
 			required: {},
+			disabled: {},
 			invalid: {},
-			invalidText: {}
+			invalidText: {},
+			children: {},
+			updateValue: {},
+			formFieldElements: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
+
+	function CheckboxGroup($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		var $$ownership_validator = create_ownership_validator($$props);
+
+		let formFieldElements = prop($$props, 'formFieldElements', 7),
+			checked = prop($$props, 'checked', 15, false),
+			invalid = prop($$props, 'invalid', 15, false),
+			value = prop($$props, 'value', 31, () => proxy([])),
+			restProps = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'formFieldElements',
+					'checked',
+					'invalid',
+					'value'
+				]);
+
+		let updateValue = function () {
+			console.log(...log_if_contains_state('log', "updateValue", formFieldElements()));
+			value(formFieldElements().map((cb) => cb.checked ? cb.value : false).filter((x) => x));
+			checked(value().length > 0);
+
+			if (checked()) {
+				invalid(false);
+			}
+		};
+
+		inspect(() => ["CB group svelte invalid", invalid()]);
+
+		{
+			$$ownership_validator.binding('value', Fieldset, value);
+			$$ownership_validator.binding('checked', Fieldset, checked);
+			$$ownership_validator.binding('invalid', Fieldset, invalid);
+
+			Fieldset($$anchor, spread_props(() => restProps, {
+				updateValue,
+				get formFieldElements() {
+					return formFieldElements();
+				},
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
+				}
+			}));
+		}
+
+		return pop({
+			get formFieldElements() {
+				return formFieldElements();
+			},
+			set formFieldElements($$value) {
+				formFieldElements($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = []) {
+				value($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	create_custom_element(
+		CheckboxGroup,
+		{
+			formFieldElements: {},
+			checked: {},
+			invalid: {},
+			value: {}
 		},
 		[],
 		[],
@@ -8876,54 +9310,87 @@
 		check_target(new.target);
 		push($$props, true);
 
-		let inners = prop($$props, 'inners', 7),
+		var $$ownership_validator = create_ownership_validator($$props);
+
+		let formFieldElements = prop($$props, 'formFieldElements', 7),
+			value = prop($$props, 'value', 31, () => proxy([])),
+			checked = prop($$props, 'checked', 15, false),
 			legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			size = prop($$props, 'size', 7, "md"),
+			compact = prop($$props, 'compact', 7),
 			required = prop($$props, 'required', 7),
-			invalid = prop($$props, 'invalid', 7),
+			disabled = prop($$props, 'disabled', 7),
+			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		onMount(() => {
-			if (strict_equals(required(), "")) {
-				required("true");
-			}
+		{
+			$$ownership_validator.binding('value', CheckboxGroup, value);
+			$$ownership_validator.binding('checked', CheckboxGroup, checked);
+			$$ownership_validator.binding('invalid', CheckboxGroup, invalid);
 
-			if (strict_equals(invalid(), "")) {
-				invalid("true");
-			}
-		});
-
-		CheckboxGroup($$anchor, {
-			get inners() {
-				return inners();
-			},
-			get legend() {
-				return legend();
-			},
-			get name() {
-				return name();
-			},
-			get size() {
-				return size();
-			},
-			get required() {
-				return required();
-			},
-			get invalid() {
-				return invalid();
-			},
-			get invalidText() {
-				return invalidText();
-			}
-		});
+			CheckboxGroup($$anchor, {
+				get formFieldElements() {
+					return formFieldElements();
+				},
+				get legend() {
+					return legend();
+				},
+				get name() {
+					return name();
+				},
+				get compact() {
+					return compact();
+				},
+				get required() {
+					return required();
+				},
+				get disabled() {
+					return disabled();
+				},
+				get invalidText() {
+					return invalidText();
+				},
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
+				}
+			});
+		}
 
 		return pop({
-			get inners() {
-				return inners();
+			get formFieldElements() {
+				return formFieldElements();
 			},
-			set inners($$value) {
-				inners($$value);
+			set formFieldElements($$value) {
+				formFieldElements($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = []) {
+				value($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
 				flushSync();
 			},
 			get legend() {
@@ -8940,11 +9407,11 @@
 				name($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value = "md") {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
 			get required() {
@@ -8954,10 +9421,17 @@
 				required($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value) {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
@@ -8975,12 +9449,14 @@
 	customElements.define('qc-checkbox-group', create_custom_element(
 		CheckboxGroupWC,
 		{
-			shared: { attribute: 'shared' },
-			size: { attribute: 'size', type: 'String' },
-			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
+			compact: { attribute: 'compact', type: 'Boolean' },
+			required: { attribute: 'required', type: 'Boolean' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			inners: {},
+			formFieldElements: {},
+			value: {},
+			checked: {},
 			legend: {},
 			name: {}
 		},
@@ -8989,31 +9465,11 @@
 		false,
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
-				static inners;
+				static formFieldElements;
 
 				constructor() {
 					super();
-					this.inners = Array.from(this.querySelectorAll('qc-checkbox'));
-					this.inners.forEach(setUpInner);
-
-					function setUpInner(inner, i) {
-						inner.setAttribute('slot', `slot${i + 1}`);
-					}
-
-					const observer = new MutationObserver((mutationsList) => {
-						for (const mutation of mutationsList) {
-							if (mutation.type === 'childList') {
-								for (const node of mutation.addedNodes) {
-									if (node.tagName === 'QC-CHECKBOX-INNER') {
-										setUpInner(node, this.inners.length);
-										this.inners = [...this.inners, node];
-									}
-								}
-							}
-						}
-					});
-
-					observer.observe(this, { childList: true, subtree: false });
+					this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
 				}
 			};
 		}
@@ -9021,13 +9477,13 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-checkbox-required">*</span>`), Checkbox[FILENAME], [[51, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[55, 16]]);
 
-	var root$2 = add_locations(template(`<div><div><input> <label> <!></label></div> <!></div>`), Checkbox[FILENAME], [
+	var root$1 = add_locations(template(`<div><div><input> <label> <!></label></div> <!></div>`), Checkbox[FILENAME], [
 		[
-			34,
+			38,
 			0,
-			[[35, 4, [[36, 8], [48, 8]]]]
+			[[39, 4, [[40, 8], [52, 8]]]]
 		]
 	]);
 
@@ -9043,10 +9499,10 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7, false),
-			size = prop($$props, 'size', 7, "md"),
+			compact = prop($$props, 'compact', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
-			hasParentGroup = prop($$props, 'hasParentGroup', 7, false),
+			parentGroup = prop($$props, 'parentGroup', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -9060,10 +9516,10 @@
 					'disabled',
 					'checked',
 					'required',
-					'size',
+					'compact',
 					'invalid',
 					'invalidText',
-					'hasParentGroup'
+					'parentGroup'
 				]);
 
 		let id = user_derived(() => name() + "_" + value());
@@ -9075,6 +9531,12 @@
 			set(restProps, inputProps, true);
 		});
 
+		user_effect(() => {
+			if (checked()) {
+				invalid(false);
+			}
+		});
+
 		inspect(() => [
 			"checked svelte",
 			checked(),
@@ -9082,7 +9544,7 @@
 			invalid()
 		]);
 
-		var div = root$2();
+		var div = root$1();
 		var div_1 = child(div);
 		var input = child(div_1);
 
@@ -9099,13 +9561,13 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$1();
+				var span = root_1();
 
 				append($$anchor, span);
 			};
 
 			if_block(node, ($$render) => {
-				if (!hasParentGroup() && required()) $$render(consequent);
+				if (!parentGroup() && required()) $$render(consequent);
 			});
 		}
 
@@ -9127,7 +9589,7 @@
 			};
 
 			if_block(node_1, ($$render) => {
-				if (!hasParentGroup()) $$render(consequent_1);
+				if (!parentGroup()) $$render(consequent_1);
 			});
 		}
 
@@ -9135,11 +9597,14 @@
 
 		template_effect(() => {
 			set_class(div, 1, clsx([
-				!hasParentGroup() && "checkbox-single",
+				!parentGroup() && "checkbox-single",
 				invalid() && "checkbox-single-invalid"
 			]));
 
-			set_class(div_1, 1, `checkbox-${size()}`);
+			set_class(div_1, 1, clsx([
+				"qc-check-row",
+				!parentGroup() && compact() && "qc-compact"
+			]));
 
 			attributes = set_attributes(input, attributes, {
 				type: 'checkbox',
@@ -9203,11 +9668,11 @@
 				required($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value = "md") {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9226,11 +9691,11 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get hasParentGroup() {
-				return hasParentGroup();
+			get parentGroup() {
+				return parentGroup();
 			},
-			set hasParentGroup($$value = false) {
-				hasParentGroup($$value);
+			set parentGroup($$value) {
+				parentGroup($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -9246,10 +9711,10 @@
 			disabled: {},
 			checked: {},
 			required: {},
-			size: {},
+			compact: {},
 			invalid: {},
 			invalidText: {},
-			hasParentGroup: {}
+			parentGroup: {}
 		},
 		[],
 		[],
@@ -9264,15 +9729,14 @@
 
 		var $$ownership_validator = create_ownership_validator($$props);
 
-		let inner = prop($$props, 'inner', 7),
-			outer = prop($$props, 'outer', 7),
+		let parentGroup = prop($$props, 'parentGroup', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7),
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7),
-			size = prop($$props, 'size', 7),
+			compact = prop($$props, 'compact', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			rest = rest_props(
@@ -9282,39 +9746,28 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'inner',
-					'outer',
+					'parentGroup',
 					'value',
 					'label',
 					'name',
 					'disabled',
 					'checked',
 					'required',
-					'size',
+					'compact',
 					'invalid',
 					'invalidText'
 				]);
 
 		let effectiveValue = user_derived(() => value() || label());
-		let effectiveName = user_derived(() => outer()?.getAttribute('name') || name() || '');
-		let effectiveSize = user_derived(() => outer()?.getAttribute('size') || size() || 'md');
+		let effectiveName = user_derived(() => parentGroup()?.getAttribute('name') || name() || '');
 
-		onMount(() => {
-			if (strict_equals(invalid(), "")) {
-				invalid("true");
-			}
-		});
+		if (parentGroup()) {
+			compact(parentGroup().compact);
+			invalid(parentGroup().invalid);
+		}
 
-		inspect(() => [
-			"checked wc",
-			checked(),
-			", invalid wc",
-			invalid()
-		]);
-
-		const expression = user_derived(() => outer()?.disabled ?? disabled());
-		const expression_1 = user_derived(() => outer()?.required ?? required());
-		const expression_2 = user_derived(() => strict_equals(outer(), null, false) && strict_equals(outer(), undefined, false));
+		const expression = user_derived(() => parentGroup()?.disabled ?? disabled());
+		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9334,14 +9787,14 @@
 					get required() {
 						return get(expression_1);
 					},
-					get size() {
-						return get(effectiveSize);
+					get compact() {
+						return compact();
 					},
 					get invalidText() {
 						return invalidText();
 					},
-					get hasParentGroup() {
-						return get(expression_2);
+					get parentGroup() {
+						return parentGroup();
 					}
 				},
 				() => rest,
@@ -9369,18 +9822,11 @@
 		}
 
 		return pop({
-			get inner() {
-				return inner();
+			get parentGroup() {
+				return parentGroup();
 			},
-			set inner($$value) {
-				inner($$value);
-				flushSync();
-			},
-			get outer() {
-				return outer();
-			},
-			set outer($$value) {
-				outer($$value);
+			set parentGroup($$value) {
+				parentGroup($$value);
 				flushSync();
 			},
 			get value() {
@@ -9425,11 +9871,11 @@
 				required($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value) {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9463,24 +9909,21 @@
 				type: 'Boolean'
 			},
 			required: { attribute: 'required', type: 'Boolean' },
-			size: { attribute: 'size', type: 'String' },
+			compact: { attribute: 'compact', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			inner: {},
-			outer: {}
+			parentGroup: {}
 		},
 		[],
 		[],
 		false,
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
-				static inner;
-				static outer;
+				static parentGroup;
 
 				constructor() {
 					super();
-					this.inner = this;
-					this.outer = this.parentNode.tagName === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
+					this.parentGroup = this.closest('qc-checkbox-group');
 				}
 			};
 		}
@@ -9488,133 +9931,80 @@
 
 	RadioGroup[FILENAME] = 'src/sdg/components/RadioButton/RadioGroup.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-radio-required" aria-hidden="true">*</span>`), RadioGroup[FILENAME], [[40, 16]]);
-	var on_change = (_, invalid) => invalid(false);
-
-	var root$1 = add_locations(template(`<div><fieldset class="qc-radio-fieldset"><legend class="qc-radio-legend"> <!></legend> <div><!></div> <!></fieldset></div>`), RadioGroup[FILENAME], [
-		[
-			33,
-			0,
-			[[34, 4, [[36, 8], [44, 8]]]]
-		]
-	]);
-
 	function RadioGroup($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		var $$ownership_validator = create_ownership_validator($$props);
 
-		let name = prop($$props, 'name', 7, ""),
-			legend = prop($$props, 'legend', 7, ""),
-			size = prop($$props, 'size', 7, "md"),
-			radioButtons = prop($$props, 'radioButtons', 23, () => []),
-			required = prop($$props, 'required', 7, false),
-			invalid = prop($$props, 'invalid', 7, false),
-			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
-			children = prop($$props, 'children', 7);
+		let formFieldElements = prop($$props, 'formFieldElements', 7),
+			checked = prop($$props, 'checked', 15, false),
+			invalid = prop($$props, 'invalid', 15, false),
+			value = prop($$props, 'value', 31, () => proxy([])),
+			restProps = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'formFieldElements',
+					'checked',
+					'invalid',
+					'value'
+				]);
 
-		let group = state(void 0),
-			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
+		user_effect((_) => {
+			checked(!!value());
 
-		onMount(() => {
-			radioButtons().forEach((btn) => {
-				get(group).appendChild(btn);
-			});
-		});
-
-		var div = root$1();
-		var fieldset = child(div);
-
-		set_attribute(fieldset, 'aria-describedby', legendId);
-
-		var legend_1 = child(fieldset);
-
-		set_attribute(legend_1, 'id', legendId);
-
-		var text = child(legend_1);
-		var node = sibling(text);
-
-		{
-			var consequent = ($$anchor) => {
-				var span = root_1();
-
-				append($$anchor, span);
-			};
-
-			if_block(node, ($$render) => {
-				if (Utils.isTruthy(required())) $$render(consequent);
-			});
-		}
-
-		reset(legend_1);
-
-		var div_1 = sibling(legend_1, 2);
-
-		div_1.__change = [on_change, invalid];
-
-		var node_1 = child(div_1);
-
-		snippet(node_1, () => children() ?? noop);
-		reset(div_1);
-		bind_this(div_1, ($$value) => set(group, $$value), () => get(group));
-
-		var node_2 = sibling(div_1, 2);
-
-		FormError(node_2, {
-			get invalid() {
-				return invalid();
-			},
-			get invalidText() {
-				return invalidText();
+			if (checked()) {
+				invalid(false);
 			}
 		});
 
-		reset(fieldset);
-		reset(div);
+		{
+			$$ownership_validator.binding('value', Fieldset, value);
+			$$ownership_validator.binding('checked', Fieldset, checked);
+			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-		template_effect(() => {
-			set_class(div, 1, clsx([invalid() && "qc-fieldset-invalid"]));
-			set_text(text, `${legend() ?? ''} `);
-			set_class(div_1, 1, `qc-radio-group-${size()}`);
-		});
-
-		append($$anchor, div);
+			Fieldset($$anchor, spread_props(() => restProps, {
+				get formFieldElements() {
+					return formFieldElements();
+				},
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
+				}
+			}));
+		}
 
 		return pop({
-			get name() {
-				return name();
+			get formFieldElements() {
+				return formFieldElements();
 			},
-			set name($$value = "") {
-				name($$value);
+			set formFieldElements($$value) {
+				formFieldElements($$value);
 				flushSync();
 			},
-			get legend() {
-				return legend();
+			get checked() {
+				return checked();
 			},
-			set legend($$value = "") {
-				legend($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value = "md") {
-				size($$value);
-				flushSync();
-			},
-			get radioButtons() {
-				return radioButtons();
-			},
-			set radioButtons($$value = []) {
-				radioButtons($$value);
-				flushSync();
-			},
-			get required() {
-				return required();
-			},
-			set required($$value = false) {
-				required($$value);
+			set checked($$value = false) {
+				checked($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9624,39 +10014,24 @@
 				invalid($$value);
 				flushSync();
 			},
-			get invalidText() {
-				return invalidText();
+			get value() {
+				return value();
 			},
-			set invalidText(
-				$$value = lang === "fr" ? "Champ obligatoire" : "Required field"
-			) {
-				invalidText($$value);
-				flushSync();
-			},
-			get children() {
-				return children();
-			},
-			set children($$value) {
-				children($$value);
+			set value($$value = []) {
+				value($$value);
 				flushSync();
 			},
 			...legacy_api()
 		});
 	}
 
-	delegate(['change']);
-
 	create_custom_element(
 		RadioGroup,
 		{
-			name: {},
-			legend: {},
-			size: {},
-			radioButtons: {},
-			required: {},
+			formFieldElements: {},
+			checked: {},
 			invalid: {},
-			invalidText: {},
-			children: {}
+			value: {}
 		},
 		[],
 		[],
@@ -9669,45 +10044,62 @@
 		check_target(new.target);
 		push($$props, true);
 
+		var $$ownership_validator = create_ownership_validator($$props);
+
 		let name = prop($$props, 'name', 7),
 			legend = prop($$props, 'legend', 7),
-			size = prop($$props, 'size', 7, "md"),
-			radioButtons = prop($$props, 'radioButtons', 7),
+			compact = prop($$props, 'compact', 7),
+			formFieldElements = prop($$props, 'formFieldElements', 7),
 			required = prop($$props, 'required', 7),
-			invalid = prop($$props, 'invalid', 7),
-			invalidText = prop($$props, 'invalidText', 7);
+			disabled = prop($$props, 'disabled', 7),
+			invalid = prop($$props, 'invalid', 15, false),
+			invalidText = prop($$props, 'invalidText', 7),
+			value = prop($$props, 'value', 15, ""),
+			checked = prop($$props, 'checked', 15, false);
 
-		if (strict_equals(required(), "")) {
-			required("true");
+		{
+			$$ownership_validator.binding('value', RadioGroup, value);
+			$$ownership_validator.binding('checked', RadioGroup, checked);
+
+			RadioGroup($$anchor, {
+				get name() {
+					return name();
+				},
+				get legend() {
+					return legend();
+				},
+				get compact() {
+					return compact();
+				},
+				get formFieldElements() {
+					return formFieldElements();
+				},
+				get required() {
+					return required();
+				},
+				get disabled() {
+					return disabled();
+				},
+				get invalid() {
+					return invalid();
+				},
+				get invalidText() {
+					return invalidText();
+				},
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				}
+			});
 		}
-
-		if (strict_equals(invalid(), "")) {
-			invalid("true");
-		}
-
-		RadioGroup($$anchor, {
-			get name() {
-				return name();
-			},
-			get legend() {
-				return legend();
-			},
-			get size() {
-				return size();
-			},
-			get radioButtons() {
-				return radioButtons();
-			},
-			get required() {
-				return required();
-			},
-			get invalid() {
-				return invalid();
-			},
-			get invalidText() {
-				return invalidText();
-			}
-		});
 
 		return pop({
 			get name() {
@@ -9724,18 +10116,18 @@
 				legend($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value = "md") {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
-			get radioButtons() {
-				return radioButtons();
+			get formFieldElements() {
+				return formFieldElements();
 			},
-			set radioButtons($$value) {
-				radioButtons($$value);
+			set formFieldElements($$value) {
+				formFieldElements($$value);
 				flushSync();
 			},
 			get required() {
@@ -9745,10 +10137,17 @@
 				required($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value) {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
@@ -9759,6 +10158,20 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get value() {
+				return value();
+			},
+			set value($$value = "") {
+				value($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9767,23 +10180,26 @@
 		RadioGroupWC,
 		{
 			name: { attribute: 'name', type: 'String' },
+			value: { attribute: 'value', type: 'String' },
 			legend: { attribute: 'legend', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
-			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
+			compact: { attribute: 'compact', type: 'Boolean' },
+			required: { attribute: 'required', type: 'Boolean' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			radioButtons: {}
+			formFieldElements: {},
+			checked: {}
 		},
 		[],
 		[],
 		false,
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
-				static radioButtons;
+				static formFieldElements;
 
 				constructor() {
 					super();
-					this.radioButtons = Array.from(this.querySelectorAll('qc-radio-button'));
+					this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
 				}
 			};
 		}
@@ -9791,20 +10207,23 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root = add_locations(template(`<div><input> <label> </label></div>`), RadioButton[FILENAME], [[39, 0, [[40, 4], [50, 4]]]]);
+	var root = add_locations(template(`<div><input> <label> </label></div>`), RadioButton[FILENAME], [[26, 0, [[28, 4], [40, 4]]]]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
+		const binding_group = [];
+
 		let name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, "sm"),
-			checked = prop($$props, 'checked', 7, false),
+			compact = prop($$props, 'compact', 7),
+			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7, false),
-			invalid = prop($$props, 'invalid', 7, false),
+			required = prop($$props, 'required', 7),
+			invalid = prop($$props, 'invalid', 15, false),
+			groupValue = prop($$props, 'groupValue', 15),
 			rest = rest_props(
 				$$props,
 				[
@@ -9815,27 +10234,13 @@
 					'name',
 					'value',
 					'label',
-					'size',
+					'compact',
 					'checked',
 					'disabled',
 					'required',
-					'invalid'
+					'invalid',
+					'groupValue'
 				]);
-
-		let boolAttributes = user_derived(() => {
-			let truthyProps = {
-				checked: Utils.isTruthy(checked()),
-				disabled: Utils.isTruthy(disabled())
-			};
-
-			for (const prop in truthyProps) {
-				if (!truthyProps[prop]) {
-					delete truthyProps[prop];
-				}
-			}
-
-			return truthyProps;
-		});
 
 		let restProps = state(proxy({}));
 
@@ -9857,28 +10262,34 @@
 		reset(label_1);
 		reset(div);
 
-		template_effect(
-			($0, $1) => {
-				set_class(div, 1, `qc-radio-${size()}`);
+		template_effect(() => {
+			set_class(div, 1, clsx(["qc-check-row", compact() && "qc-compact"]));
 
-				attributes = set_attributes(input, attributes, {
-					type: 'radio',
-					id: `${name()}_${value()}`,
-					name: name(),
-					value: value(),
-					'aria-required': $0,
-					'aria-invalid': $1,
-					...get(boolAttributes),
-					...get(restProps)
-				});
+			attributes = set_attributes(input, attributes, {
+				type: 'radio',
+				id: `${name()}_${value()}`,
+				name: name(),
+				value: value(),
+				'aria-required': required(),
+				'aria-invalid': invalid(),
+				required: required(),
+				...get(restProps),
+				checked: checked()
+			});
 
-				set_attribute(label_1, 'for', `${name()}_${value()}`);
-				set_text(text, label());
+			set_attribute(label_1, 'for', `${name()}_${value()}`);
+			set_text(text, label());
+		});
+
+		bind_group(
+			binding_group,
+			[],
+			input,
+			() => {
+				value();
+				return groupValue();
 			},
-			[
-				() => Utils.isTruthy(required()),
-				() => Utils.isTruthy(invalid())
-			]
+			groupValue
 		);
 
 		append($$anchor, div);
@@ -9905,17 +10316,17 @@
 				label($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
+			get compact() {
+				return compact();
 			},
-			set size($$value = "sm") {
-				size($$value);
+			set compact($$value) {
+				compact($$value);
 				flushSync();
 			},
 			get checked() {
 				return checked();
 			},
-			set checked($$value = false) {
+			set checked($$value) {
 				checked($$value);
 				flushSync();
 			},
@@ -9929,7 +10340,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value = false) {
+			set required($$value) {
 				required($$value);
 				flushSync();
 			},
@@ -9938,6 +10349,13 @@
 			},
 			set invalid($$value = false) {
 				invalid($$value);
+				flushSync();
+			},
+			get groupValue() {
+				return groupValue();
+			},
+			set groupValue($$value) {
+				groupValue($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -9950,11 +10368,12 @@
 			name: {},
 			value: {},
 			label: {},
-			size: {},
+			compact: {},
 			checked: {},
 			disabled: {},
 			required: {},
-			invalid: {}
+			invalid: {},
+			groupValue: {}
 		},
 		[],
 		[],
@@ -9967,15 +10386,16 @@
 		check_target(new.target);
 		push($$props, true);
 
+		var $$ownership_validator = create_ownership_validator($$props);
+
 		let parent = prop($$props, 'parent', 7),
 			name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7),
-			checked = prop($$props, 'checked', 7),
+			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 7),
-			invalid = prop($$props, 'invalid', 7),
+			required = prop($$props, 'required', 15, false),
+			invalid = prop($$props, 'invalid', 15, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -9987,63 +10407,78 @@
 					'name',
 					'value',
 					'label',
-					'size',
 					'checked',
 					'disabled',
 					'required',
 					'invalid'
 				]);
 
-		if (strict_equals(checked(), "")) {
-			checked("true");
-		}
+		let Component = RadioButton;
 
-		if (strict_equals(disabled(), "")) {
-			disabled("true");
-		}
+		user_effect(() => {
+			if (checked()) {
+				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 44, 12);
+			}
+		});
 
-		if (strict_equals(required(), "")) {
-			required("true");
-		}
+		var fragment = comment();
+		var node = first_child(fragment);
 
-		if (strict_equals(invalid(), "")) {
-			invalid("true");
-		}
+		{
+			var consequent = ($$anchor) => {
+				validate_binding('bind:groupValue={parent.value}', parent, () => 'value');
 
-		const expression = user_derived(() => parent()?.name ?? name());
-		const expression_1 = user_derived(() => parent()?.size ?? size());
-		const expression_2 = user_derived(() => parent()?.required ?? required());
-		const expression_3 = user_derived(() => parent()?.invalid ?? invalid());
+				const expression = user_derived(() => disabled() ?? parent().disabled);
 
-		RadioButton($$anchor, spread_props(
-			{
-				get name() {
-					return get(expression);
-				},
-				get value() {
-					return value();
-				},
-				get label() {
-					return label();
-				},
-				get size() {
-					return get(expression_1);
-				},
-				get checked() {
-					return checked();
-				},
-				get disabled() {
-					return disabled();
-				},
-				get required() {
-					return get(expression_2);
-				},
-				get invalid() {
-					return get(expression_3);
+				{
+					$$ownership_validator.binding('parent', Component, () => parent().value);
+
+					Component($$anchor, spread_props(
+						{
+							get name() {
+								return parent().name;
+							},
+							get value() {
+								return value();
+							},
+							get label() {
+								return label();
+							},
+							get compact() {
+								return parent().compact;
+							},
+							get checked() {
+								return checked();
+							},
+							get disabled() {
+								return get(expression);
+							},
+							get required() {
+								return required();
+							},
+							get invalid() {
+								return parent().invalid;
+							}
+						},
+						() => rest,
+						{
+							get groupValue() {
+								return parent().value;
+							},
+							set groupValue($$value) {
+								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 53, 21);
+							}
+						}
+					));
 				}
-			},
-			() => rest
-		));
+			};
+
+			if_block(node, ($$render) => {
+				if (parent()) $$render(consequent);
+			});
+		}
+
+		append($$anchor, fragment);
 
 		return pop({
 			get parent() {
@@ -10074,17 +10509,10 @@
 				label($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
-			set checked($$value) {
+			set checked($$value = false) {
 				checked($$value);
 				flushSync();
 			},
@@ -10098,14 +10526,14 @@
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value) {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
@@ -10116,15 +10544,14 @@
 	customElements.define('qc-radio-button', create_custom_element(
 		RadioButtonWC,
 		{
-			name: { attribute: 'name', type: 'String' },
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
-			checked: { attribute: 'checked', type: 'String' },
-			disabled: { attribute: 'disabled', type: 'String' },
-			required: { attribute: 'required', type: 'String' },
-			invalid: { attribute: 'invalid', type: 'String' },
-			parent: {}
+			checked: { attribute: 'checked', type: 'Boolean' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			required: { attribute: 'required', type: 'Boolean' },
+			parent: {},
+			name: {},
+			invalid: {}
 		},
 		[],
 		[],

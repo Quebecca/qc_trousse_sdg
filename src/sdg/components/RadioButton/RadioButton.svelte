@@ -6,27 +6,14 @@
         name,
         value,
         label,
-        size = "sm",
-        checked = false,
+        compact,
+        checked,
         disabled = false,
-        required = false,
-        invalid = false,
+        required,
+        invalid = $bindable(false),
+        groupValue = $bindable(),
         ...rest
     } = $props();
-
-    let boolAttributes = $derived.by(() => {
-        let truthyProps = {
-            checked : Utils.isTruthy(checked),
-            disabled : Utils.isTruthy(disabled),
-        }
-
-        for (const prop in truthyProps) {
-            if (!truthyProps[prop]) {
-                delete truthyProps[prop];
-            }
-        }
-        return truthyProps;
-    })
 
     let restProps = $state({});
     onMount(() => {
@@ -36,16 +23,19 @@
     });
 </script>
 
-<div class={`qc-radio-${size}`}>
+<div class={["qc-check-row", compact && "qc-compact"]}>
+    <!-- svelte-ignore a11y_role_supports_aria_props_implicit -->
     <input
         type="radio"
         id={`${name}_${value}`}
         {name}
         {value}
-        aria-required={Utils.isTruthy(required)}
-        aria-invalid={Utils.isTruthy(invalid)}
-        {...boolAttributes}
+        bind:group={groupValue}
+        aria-required={required}
+        aria-invalid={invalid}
+        {required}
         {...restProps}
+        {checked}
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>

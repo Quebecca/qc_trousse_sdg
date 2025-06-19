@@ -1,0 +1,46 @@
+@use "qc-sdg-lib" as *;
+
+.qc-fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  padding: 0;
+  margin: 0 0 token-value(spacer content-block mb);
+  justify-items: center;
+  row-gap: token-value(spacer, sm);
+  legend {
+    font-weight: token-value(font weight content bold);
+    display: -webkit-box;
+    margin-bottom: token-value(spacer, sm);
+  }
+  &.qc-compact {
+    margin-bottom: token-value(spacer, sm);
+  }
+}
+.qc-fieldset-disabled {
+  legend {
+    color: token-value(color, grey, regular);
+  }
+}
+
+.qc-fieldset-required {
+  @include content-font(md, bold);
+  display: flex;
+  color: token-value(color, red, regular);
+  margin-left: token-value(spacer, xs);
+}
+
+$invalid-offset: token-value(spacer, xs);
+$invalid-border-width: 2px;
+.qc-fieldset-invalid,
+.qc-fieldset-invalid legend {
+  border-left: $invalid-border-width solid token-value(color, red, regular);
+  padding-left: $invalid-offset;
+}
+.qc-fieldset-invalid legend {
+  margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
+}
+
+
+
+

@@ -12,10 +12,10 @@
         disabled = false,
         checked = $bindable(false),
         required = false,
-        size = "md",
+        compact,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        hasParentGroup = false,
+        parentGroup,
         ...rest
     } = $props();
     
@@ -24,15 +24,19 @@
     let restProps = $state({});
     $effect(() => {
         const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
-
         restProps = inputProps;
+    });
+    $effect(() => {
+        if (checked) {
+            invalid = false;
+        }
     });
     $inspect("checked svelte", checked, ", invalid svelte", invalid)
 
 </script>
 
-<div class={[!hasParentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
-    <div class={`checkbox-${size}`}>
+<div class={[!parentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
+    <div class={["qc-check-row", !parentGroup && compact && "qc-compact"]}>
         <input
             type="checkbox"
             {value}
@@ -47,13 +51,12 @@
         />
         <label for={id}>
             {label}
-            {#if !hasParentGroup && required}
-                <span class="qc-checkbox-required">*</span>
+            {#if !parentGroup && required}
+                <span class="qc-fieldset-required">*</span>
             {/if}
         </label>
     </div>
-    {#if !hasParentGroup}
+    {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
-
 </div>

@@ -1,14 +1,21 @@
 @use "qc-sdg-lib" as *;
-@use "groupsMixins" as *;
-@use "checkMixin" as *;
+@use "fieldset" as *;
+@use "checkRow" as *;
 
-.checkbox-md, .checkbox-sm {
-
-
+.qc-check-row {
   input[type="checkbox"] {
 
     &:checked {
       background-color: token-value(color blue regular);
+      &::before {
+        width: rem(12);
+        height: rem(7);
+        border: rem(3) solid token-value(color, blue, regular);
+        border-top: 0;
+        border-right: 0;
+        transform: rotate(-45deg);
+        top: rem(2);
+      }
 
       &::after {
         content: "";
@@ -16,57 +23,45 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M8.76,56.2c-6.38-6.34,3.26-16,9.64-9.69L38,65.88,80.56,23.29c6.38-6.38,16.07,3.32,9.69,9.69L42.84,80.37a6.83,6.83,0,0,1-9.65,0Z'/%3E%3C/svg%3E");
+        mask-image: getImageUrl(checkmark, $base64: false);
         mask-size: contain;
         mask-repeat: no-repeat;
         mask-position: center;
         background-color: token-value(color, white);
+        width: token-value(spacer, md);
+        height: rem(18);
+
       }
+    }
+  }
+
+}
+
+.qc-compact {
+
+  input[type=checkbox]:checked {
+    &::before {
+      width: rem(8);
+      height: rem(5);
+      border: rem(2) solid token-value(color, blue, regular);
+      border-top: 0;
+      border-right: 0;
+      transform: rotate(-45deg);
+      top: rem(1);
+    }
+
+    &::after {
+      width: token-value(spacer, sm);
+      height: rem(12);
     }
   }
 }
 
-.checkbox-sm {
-  @include check-style(checkbox, sm);
-
-  input[type=checkbox]:checked::before {
-    width: rem(8);
-    height: rem(5);
-    border: rem(2) solid token-value(color, blue, regular);
-    border-top: 0;
-    border-right: 0;
-    transform: rotate(-45deg);
-    top: rem(1);
-  }
-
-  input[type=checkbox]:checked::after {
-    width: token-value(spacer, sm);
-    height: rem(12);
-  }
-}
-
-.checkbox-md {
-  @include check-style(checkbox, md);
-
-  input[type=checkbox]:checked::before {
-    width: rem(12);
-    height: rem(7);
-    border: rem(3) solid token-value(color, blue, regular);
-    border-top: 0;
-    border-right: 0;
-    transform: rotate(-45deg);
-    top: rem(2);
-  }
-  input[type=checkbox]:checked::after {
-    width: token-value(spacer, md);
-    height: rem(18);
-  }
-}
 
 .checkbox-single {
   margin-bottom: token-value(spacer content-block mb);
 
   &.checkbox-single-invalid {
-    @extend %fieldset-invalid;
+    @extend .qc-fieldset-invalid;
   }
 }

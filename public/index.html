@@ -54,7 +54,7 @@
                 <li><a href='#search-bar'>Barre de recherche</a></li>
                 <li><a href='#piv'>Composants du PIV</a>
                     <ul>
-                        <li><a href='#piv-header'>Bandeau d'en-tête du PIV</a>
+                        <li><a href='#piv-header'>Bandeau d’en-tête du PIV</a>
                         <li><a href='#piv-footer'>Pied de page du PIV</a>
                     </ul>
                 </li>
@@ -314,8 +314,8 @@
                     <img src="img/figure-sample.png"
                          alt="Image avec légende">
                     <figcaption>
-                        <p>La légende de l'image <br>
-                            <em>La source de l'image</em>
+                        <p>La légende de l’image <br>
+                            <em>La source de l’image</em>
                         </p>
                     </figcaption>
                 </figure>
@@ -366,7 +366,7 @@
 
             <p>Le composant <code>qc-external-link</code> ajoute une icône à la fin du lien, séparée du dernier mot par
                 une espace insécable.</p>
-            <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d'ombre (<i>shadow
+            <p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d’ombre (<i>shadow
                 DOM</i>).</p>
 
             <h4>Exemples</h4>
@@ -602,16 +602,16 @@
                    id="show-qc-alert"
                    hidden
                 >
-                    Réafficher l'alerte
+                    Réafficher l’alerte
                 </a>
             </p>
 
             <qc-doc-exemple id="alert-warning"
-                            caption="Exemple d'alerte jaune">
+                            caption="Exemple d’alerte jaune">
                 <qc-alert id="alerte-masquable"
                           type="warning"
                           maskable="true"
-                          content="Alerte jaune d'importance élevée"
+                          content="Alerte jaune d’importance élevée"
                 >
                 </qc-alert>
             </qc-doc-exemple>
@@ -619,10 +619,10 @@
 
             <h4>Alerte bleue</h4>
             <qc-doc-exemple id="alert-general"
-                            caption="Exemple d'alerte générale">
+                            caption="Exemple d’alerte générale">
                 <qc-alert type="general"
                           maskable="false">
-                    <p>Alerte bleue d'importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+                    <p>Alerte bleue d’importance modérée <a href="javascript:;">avec un lien textuel</a></p>
                 </qc-alert>
             </qc-doc-exemple>
 
@@ -645,25 +645,25 @@
                         <td>type</td>
                         <td>"general" ou "warning"</td>
                         <td>"general"</td>
-                        <td>Type de l'alerte : s'il s'agit d'une alerte bleue ou jaune</td>
+                        <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
                     </tr>
                     <tr>
                         <td>maskable</td>
                         <td>"true" ou "false"</td>
                         <td>"true"</td>
-                        <td>Afficher le bouton de fermeture de l'alerte</td>
+                        <td>Afficher le bouton de fermeture de l’alerte</td>
                     </tr>
                     <tr>
                         <td>content</td>
                         <td>Texte</td>
                         <td>Chaine vide</td>
-                        <td>Afficher le contenu de l'alerte</td>
+                        <td>Afficher le contenu de l’alerte</td>
                     </tr>
                     <tr>
                         <td>hide</td>
                         <td>"true" ou "false"</td>
                         <td>"false"</td>
-                        <td>Masque ou affiche l'alerte</td>
+                        <td>Masque ou affiche l’alerte</td>
                     </tr>
                     <tr>
                         <td>full-width</td>
@@ -679,9 +679,9 @@
             <h4>Événement JS</h4>
 
             <p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de
-                l'alerte</p>
+                l’alerte</p>
             <script id="qc-alert-event-exemple">
-                /* Fermer l'alerte jaune pour voir un message dans la console de votre navigateur */
+                /* Fermer l’alerte jaune pour voir un message dans la console de votre navigateur */
                 document.addEventListener(
                     'qc.alert.hide',
                     (e) => {
@@ -692,10 +692,10 @@
             <qc-code target-id="qc-alert-event-exemple"
                      language="javascript"></qc-code>
 
-            <h4>Zone d'ajout de contenu HTML</h4>
+            <h4>Zone d’ajout de contenu HTML</h4>
 
-            <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
-            <qc-doc-exemple caption="Présentation des zone d'ajout de contenu"
+            <p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+            <qc-doc-exemple caption="Présentation des zone d’ajout de contenu"
                             hide-code
             >
                 <qc-alert id="qc-alert-slots">
@@ -758,7 +758,7 @@
                             caption="Exemple d’avis de succès"
             >
                 <qc-notice type="success"
-                           title="Votre demande d'inscription a été reçue"
+                           title="Votre demande d’inscription a été reçue"
                            content="Votre code de confirmation sera envoyé par courriel.">
                 </qc-notice>
             </qc-doc-exemple>
@@ -804,25 +804,25 @@
                         <td>title</td>
                         <td>Texte</td>
                         <td>Chaine vide</td>
-                        <td>Titre de l'avis</td>
+                        <td>Titre de l’avis</td>
                     </tr>
                     <tr>
                         <td>type</td>
                         <td>information, warning, success, error, advice, note</td>
                         <td>information (si absence de type)</td>
-                        <td>Le type d'avis</td>
+                        <td>Le type d’avis</td>
                     </tr>
                     <tr>
                         <td>content</td>
                         <td>Texte</td>
                         <td>Chaîne vide</td>
-                        <td>Le contenu de l'avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
+                        <td>Le contenu de l’avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
                     </tr>
                     <tr>
                         <td>header</td>
                         <td>h1,h3,h2,h3,h4,h5,h6</td>
                         <td>h2</td>
-                        <td>La balise du niveau de titre de l'avis</td>
+                        <td>La balise du niveau de titre de l’avis</td>
                     </tr>
                     <tr>
                         <td>icon</td>
@@ -836,9 +836,9 @@
                     </tbody>
                 </table>
             </div>
-            <h4>Zone d'ajout de contenu HTML</h4>
+            <h4>Zone d’ajout de contenu HTML</h4>
 
-            <p>Ci-dessous, la zone d'ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+            <p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
 
             <qc-doc-exemple id="presentation-slots-avis"
                             caption="Présentation des emplacements disponibles dans les avis."
@@ -964,7 +964,7 @@
                     </tr>
                     <tr>
                         <td>piv-background</td>
-                        <td>Aucune (simplement ajouter l'attribut)</td>
+                        <td>Aucune (simplement ajouter l’attribut)</td>
                         <td>False</td>
                         <td>Indique que la barre de recherche est sur fond bleu PIV</td>
                     </tr>
@@ -972,16 +972,16 @@
                 </table>
             </div>
 
-            <h3>Zone d'ajout de contenu HTML</h3>
-            <p>Aucune zone d'ajout de contenu n'est définie pour ce composant</p>
+            <h3>Zone d’ajout de contenu HTML</h3>
+            <p>Aucune zone d’ajout de contenu n'est définie pour ce composant</p>
 
             <h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
-            <p>Ce composant ne contient pas de DOM d'ombre.</p>
+            <p>Ce composant ne contient pas de DOM d’ombre.</p>
 
             <!-- PIV -->
             <h2 id="piv">Composants du PIV</h2>
-            <!-- bandeau d'entête PIV -->
-            <h3 id="piv-header">Bandeau d'en-tête du PIV (qc-piv-header)</h3>
+            <!-- bandeau d’entête PIV -->
+            <h3 id="piv-header">Bandeau d’en-tête du PIV (qc-piv-header)</h3>
 
             <h4>Exemples</h4>
             <!-- TODO remplacer les aria-label des qc-doc-exemple par aria-labelby et cibler le titre -->
@@ -1068,7 +1068,7 @@
 
                         <td>Adresse</td>
                         <td>/</td>
-                        <td>Url de l'hyperlien du titre</td>
+                        <td>Url de l’hyperlien du titre</td>
                     </tr>
                     <tr>
                         <td>logo-url</td>
@@ -1098,7 +1098,7 @@
                         <td>alt-language-url</td>
                         <td>Adresse</td>
                         <td>vide</td>
-                        <td>L'url de l'autre langue. Si vide, le lien n'apparaît pas.</td>
+                        <td>l’url de l’autre langue. Si vide, le lien n'apparaît pas.</td>
                     </tr>
                     <tr>
                         <td>join-us-text</td>
@@ -1163,7 +1163,7 @@
                         <td>display-search-text</td>
                         <td>Texte</td>
                         <td>Cliquer pour faire une recherche / Click to search</td>
-                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour afficher la
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour afficher la
                             barre de recherche.
                         </td>
                     </tr>
@@ -1171,18 +1171,18 @@
                         <td>hide-search-text</td>
                         <td>Texte</td>
                         <td>Masquer la barre de recherche / Hide search bar</td>
-                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d'écran pour masquer la
+                        <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour masquer la
                             barre de recherche.
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <h5>Zones d'ajout de contenu HTML</h5>
+            <h5>Zones d’ajout de contenu HTML</h5>
 
-            <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
+            <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
             <qc-doc-exemple id="qc-piv-header-slots"
-                            caption="Présentation des zones d'ajout de contenu dans le PIV"
+                            caption="Présentation des zones d’ajout de contenu dans le PIV"
                             hide-code
             >
                 <qc-piv-header
@@ -1215,9 +1215,9 @@
                         <ul>
                             <li><a href="/">Accessibilité</a></li>
                             <li><a href="/">Plan du site</a></li>
-                            <li><a href="/">Accès à l'information</a></li>
+                            <li><a href="/">Accès à l’information</a></li>
                             <li><a href="/">Politique de confidentialité</a></li>
-                            <li><a href="/">Condition d'utilisation</a></li>
+                            <li><a href="/">Condition d’utilisation</a></li>
                             <li><a href="/">À propos de Québec.ca</a></li>
                         </ul>
                     </nav>
@@ -1276,16 +1276,16 @@
                         <td>logo-src</td>
                         <td>Le chemin de l’image en thème clair.</td>
                         <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
-                        <td>Adresse de l'image du pied de page en thème clair (fond transparent, texte et drapeaux en
-                            couleur, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).
+                        <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
+                            couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
                         </td>
                     </tr>
                     <tr>
                         <td>logo-src-dark-theme</td>
                         <td>Le chemin de l’image en thème sombre.</td>
                         <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
-                        <td>Adresse de l'image du pied de page en thème sombre (fond transparent, texte et drapeaux en
-                            blanc, voir <a href="#piv-footer-ex-2">l'exemple de pied de page PIV personnalisé</a>).
+                        <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
+                            blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
                         </td>
                     </tr>
                     <tr>
@@ -1299,7 +1299,7 @@
                                 <dd>Logo of government of Québec</dd>
                             </dl>
                         </td>
-                        <td>Texte alternatif du logo pour les lecteurs d'écran</td>
+                        <td>Texte alternatif du logo pour les lecteurs d’écran</td>
                     </tr>
                     <tr>
                         <td>logo-width</td>
@@ -1330,7 +1330,7 @@
                                 <dd>https://www.quebec.ca/en/copyright</dd>
                             </dl>
                         </td>
-                        <td>L'adresse de la page du droit d'auteur sur quebec.ca</td>
+                        <td>l’adresse de la page du droit d’auteur sur quebec.ca</td>
                     </tr>
                     </tbody>
                 </table>
@@ -1343,11 +1343,11 @@
                 </qc-external-link>
             </qc-notice>
 
-            <h5>Zones d'ajout de contenu HTML</h5>
+            <h5>Zones d’ajout de contenu HTML</h5>
 
-            <p>Ci-dessous, les zones d'ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
+            <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
             <qc-doc-exemple id="qc-piv-footer-slots"
-                            caption="Présentation des zones d'ajout de contenu du pied-de-page PIV">
+                            caption="Présentation des zones d’ajout de contenu du pied-de-page PIV">
                 <qc-piv-footer>
                     <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
                         Contenu par défaut
@@ -1365,9 +1365,9 @@
             <!-- haut de page -->
             <h2 id="toTop">Haut de page</h2>
             <p>
-                Le composant <i>haut de page</i> est la flèche qui permet à l'utilisateur de remonter vers le haut de
-                page. Il s'affiche quand l'utilisateur commence à défiler vers le haut.
-                Il disparaît quand l'utilisateur commence à défiler vers le bas.
+                Le composant <i>haut de page</i> est la flèche qui permet à l’utilisateur de remonter vers le haut de
+                page. Il s'affiche quand l’utilisateur commence à défiler vers le haut.
+                Il disparaît quand l’utilisateur commence à défiler vers le bas.
             </p>
             <h4>Exemple</h4>
             <qc-doc-exemple caption="Présentation du composant retour en haut de page"
@@ -1397,7 +1397,7 @@
                         <td>text</td>
                         <td>Texte</td>
                         <td>Retour en haut / Back to top</td>
-                        <td>la valeur de l'attribut "text" de l'élément.</td>
+                        <td>la valeur de l’attribut "text" de l’élément.</td>
                     </tr>
                     <tr>
                         <td>demo</td>
@@ -1416,19 +1416,22 @@
             <h3>Exemples</h3>
 
             <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
-                <qc-radio-group id="exemple-radio-md" legend="Choisissez une option :" name="ex-md" size="md">
+                <qc-radio-group id="exemple-radio-md"
+                                legend="Choisissez une option :"
+                                name="ex-md"
+                                >
                     <qc-radio-button
                             label="Option 1"
-                            value="undefined"
+                            value="option 1"
                             checked
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 2"
-                            value="null"
+                            value="option 2"
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 3 (désactivée)"
-                            value="null"
+                            value="option 3"
                             disabled
                     ></qc-radio-button>
                 </qc-radio-group>
@@ -1438,13 +1441,14 @@
 
                     group.addEventListener("change", () => {
                         const checkedValue = group.querySelector("input:checked").value;
-                        console.log(checkedValue);
                     });
                 </script>
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
-                <qc-radio-group legend="Choisissez une option :" name="ex-sm" size="sm">
+                <qc-radio-group legend="Choisissez une option :"
+                                name="ex-sm"
+                                compact >
                     <qc-radio-button
                             label="Option 1"
                             value="1"
@@ -1465,6 +1469,7 @@
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
                     <qc-radio-group
+                            id="radio-group"
                             legend="Quel est votre niveau de scolarité?"
                             name="ex-md-form"
                             required
@@ -1488,7 +1493,9 @@
                         ></qc-radio-button>
                     </qc-radio-group>
 
-                    <qc-radio-group legend="Êtes-vous présentement aux études?" name="ex-md-form-2" size="sm">
+                    <qc-radio-group legend="Êtes-vous présentement aux études?"
+                                    name="ex-md-form-2"
+                        >
                         <qc-radio-button
                                 label="Oui"
                                 value="oui"
@@ -1505,32 +1512,29 @@
                 </form>
 
                 <script>
-                    const form = document.getElementById("radio-form");
-                    form.addEventListener("submit", (event) => validateRadioForm(event, form));
-                    function validateRadioForm(event, formToValidate) {
-                        event.preventDefault();
 
-                        const groups = formToValidate.querySelectorAll("qc-radio-group");
-                        let validForm = true;
-                        groups.forEach((group) => {
-                            const checkedValues = Array.from(group.querySelectorAll(`input[name="${group.name}"]`))
-                                .find(r => r.checked);
-                            if (group.required && !checkedValues) {
-                                group.invalid = true;
-                                validForm = false;
+                    document
+                        .getElementById("radio-form")
+                        .addEventListener("submit", (e) => {
+                            event.preventDefault();
+                            let doSubmit = true;
+                            e.target.querySelectorAll("[required]").forEach(group => {
+                                if (!group.checked) {
+                                    group.invalid = true;
+                                    doSubmit = false;
+                                }
+                            })
+                            if(doSubmit) {
+                                alert("Formulaire soumis");
                             }
-                        });
-
-                        if (validForm) {
-                            alert("Formulaire soumis");
-                        }
-                    }
+                        })
                 </script>
             </qc-doc-exemple>
 
             <h4>Documentation technique</h4>
 
             <h5>Attributs de qc-radio-group</h5>
+
             <div class="table-overflow">
                 <table class="qc-table qc-striped">
                     <thead>
@@ -1546,46 +1550,56 @@
                         <td>name</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Nom du groupe de boutons radio</td>
+                        <td>Nom de l’ensemble des boutons radios du groupe</td>
                     </tr>
                     <tr>
                         <td>legend</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Texte indiquant ce que le choix à sélectionner représente</td>
+                        <td>Libellé du groupe</td>
                     </tr>
                     <tr>
-                        <td>size</td>
-                        <td>"sm" ou "md"</td>
-                        <td>"md"</td>
-                        <td>Taille des boutons radio et de leurs étiquettes</td>
+                        <td>compact</td>
+                        <td>na</td>
+                        <td>na</td>
+                        <td>Affiche les boutons radios au format compact</td>
                     </tr>
                     <tr>
                         <td>required</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Indique si le groupe est requis</td>
+                        <td>na</td>
+                        <td>na</td>
+                        <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+                    </tr>
+                    <tr>
+                        <td>disabled</td>
+                        <td>na</td>
+                        <td>na</td>
+                        <td>Désactive le groupe</td>
                     </tr>
                     <tr>
                         <td>invalid</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
+                        <td>na</td>
+                        <td>na</td>
                         <td>
-                            Indique si le groupe est dans un état invalide
-                            (ajuster cette valeur au lors de la validation d'un formulaire)
+                            Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
+                            (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de formulaire avec des boutons radio ».)
+                            <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
                         </td>
                     </tr>
                     <tr>
                         <td>invalid-text</td>
                         <td>Texte</td>
                         <td>Champ obligatoire/Required field</td>
-                        <td>Texte qui s'affiche sous les boutons radio en cas d'état invalide</td>
+                        <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
 
             <h5>Attributs de qc-radio-button</h5>
+
+            <p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
+
             <div class="table-overflow">
                 <table class="qc-table qc-striped">
                     <thead>
@@ -1597,12 +1611,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>name</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Nom du groupe de boutons radio. Hérité du groupe parent si une valeur y est présente.</td>
-                    </tr>
                     <tr>
                         <td>value</td>
                         <td>Texte</td>
@@ -1613,49 +1621,21 @@
                         <td>label</td>
                         <td>Texte</td>
                         <td></td>
-                        <td>Texte de l'étiquette s'affichant à droite du bouton radio</td>
-                    </tr>
-                    <tr>
-                        <td>size</td>
-                        <td>"sm" ou "md"</td>
-                        <td>"md"</td>
-                        <td>Taille des boutons radio et de leurs étiquettes. Hérité du groupe parent si une valeur y est présente.</td>
+                        <td>Libellé du bouton radio</td>
                     </tr>
                     <tr>
                         <td>checked</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
+                        <td>na</td>
+                        <td>na</td>
                         <td>
-                            Indique si le bouton est initialement sélectionné au chargement de la page.
-                            Si plusieurs boutons radio d'un même groupe ont l'attribut "checked" à "true",
-                            le dernier bouton à "true" sera sélectionné.
+                            Indique que le bouton est sélectionné par défaut.
                         </td>
                     </tr>
                     <tr>
                         <td>disabled</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>Indique si un bouton radio ne peut pas être sélectionné</td>
-                    </tr>
-                    <tr>
-                        <td>required</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>
-                            Indique la valeur <code class="qc-bg-color-grey-pale">aria-required</code> du bouton radio.
-                            Hérité du groupe parent si une valeur y est présente. Permet aux lecteurs d'écran d'indiquer
-                            que le groupe de boutons radio est requis.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>invalid</td>
-                        <td>"true" ou "false"</td>
-                        <td>"false"</td>
-                        <td>
-                            Indique la valeur <code class="qc-bg-color-grey-pale">aria-invalid</code> du bouton radio.
-                            Hérité du groupe parent si une valeur y est présente. Permet aux lecteurs d'écran d'indiquer
-                            que l'état du groupe de boutons radio est invalide.
-                        </td>
+                        <td>na</td>
+                        <td>na</td>
+                        <td>Désactive le bouton radio</td>
                     </tr>
                     <tr>
                         <td>radio-*</td>
@@ -1663,8 +1643,7 @@
                         <td></td>
                         <td>
                             Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
-                            comme attribut au bouton radio brut. Utile pour ajouter de la validation de formulaire par
-                            contraintes HTML.
+                            comme attribut au bouton radio brut.
                         </td>
                     </tr>
                     </tbody>
@@ -1675,15 +1654,16 @@
 
             <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
 
-            <qc-doc-exemple caption="Exemple d'une case à cocher seule obligatoire">
+            <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
                 <form id="exemple-tos-form">
                     <qc-checkbox
                             id="exemple-une-case"
-                            label="J'accepte les conditions d'utilisation"
-                            required="true"
+                            label="J’accepte les conditions d’utilisation"
+                            required
                     ></qc-checkbox>
 
-                    <button class="btn btn-sm btn-primary" type="submit">
+                    <button class="btn btn-sm btn-primary"
+                            type="submit">
                         S'inscrire
                     </button>
                 </form>
@@ -1692,7 +1672,6 @@
                     const tosForm = document.getElementById("exemple-tos-form");
                     const termsAcceptance = document.getElementById("exemple-une-case")
                     tosForm.addEventListener("submit", (event) => {
-                        console.log(termsAcceptance.checked);
                         event.preventDefault();
                         if(termsAcceptance.checked) {
                             alert("Formulaire soumis");
@@ -1703,7 +1682,7 @@
                 </script>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher avec différents états">
+            <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
                 <qc-checkbox-group legend="Sélectionnez vos options">
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
@@ -1711,11 +1690,11 @@
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple d'un groupe de cases à cocher au petit format">
+            <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">
                 <qc-checkbox-group
                         legend="Sélectionnez vos options"
                         name="options"
-                        size="sm"
+                        compact
                 >
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2"></qc-checkbox>
@@ -1747,7 +1726,7 @@
 
                     <qc-checkbox-group
                             legend="Sur quel navigateur consultez-vous www.quebec.ca?"
-                            name="ex-checkbox-form-2" size="sm"
+                            name="ex-checkbox-form-2"
                     >
                         <qc-checkbox
                                 label="Chrome"
@@ -1769,28 +1748,25 @@
                 </form>
 
                 <script>
-                    const checkboxForm = document.getElementById("checkbox-form");
-                    checkboxForm.addEventListener("submit", (event) => validateCheckboxForm(event, checkboxForm));
-                    function validateCheckboxForm(event, formToValidate) {
-                        event.preventDefault();
 
-                        const groups = formToValidate.querySelectorAll("qc-checkbox-group");
-                        let validForm = true;
-                        groups.forEach((group) => {
-                            const checkedValues = Array.from(group.querySelectorAll(`input[name="${group.name}"]`))
-                                .find(r => r.checked);
-                            if (group.required && !checkedValues) {
-                                group.invalid = true;
-                                validForm = false;
+                    document
+                        .getElementById("checkbox-form")
+                        .addEventListener("submit", (event) => {
+                            event.preventDefault();
+                            let doSubmit = true;
+                            event.target.querySelectorAll("[required]").forEach(group => {
+                                if (!group.checked) {
+                                    group.invalid = true;
+                                    doSubmit = false;
+                                }
+                            })
+                            if(doSubmit) {
+                                alert("Formulaire soumis");
                             }
-                        });
-
-                        if (validForm) {
-                            alert("Formulaire soumis");
-                        }
-                    }
+                        })
                 </script>
             </qc-doc-exemple>
+
 
             <h3>Documentation technique</h3>
 
@@ -1807,58 +1783,56 @@
                     </thead>
                     <tbody>
                         <tr>
-                        <td>name</td>
+                            <td>name</td>
                             <td>Texte</td>
                             <td>""</td>
-                        <td>Nom du champ de formulaire</td>
+                            <td>Nom du champ de formulaire</td>
                         </tr>
                         <tr>
-                        <td>label</td>
+                            <td>label</td>
                             <td>Texte</td>
-                        <td>""</td>
-                        <td>Texte de l'étiquette s'affichant à droite de la case à cocher</td>
+                            <td>""</td>
+                            <td>Libellé de la case à cocher</td>
                         </tr>
                         <tr>
-                        <td>value</td>
+                            <td>value</td>
                             <td>Texte</td>
-                        <td>Valeur de l'attribut label</td>
-                        <td>Valeur envoyée lors de la soumission du formulaire</td>
+                            <td>Valeur de l’attribut label</td>
+                            <td>Valeur du champ</td>
                         </tr>
                         <tr>
-                            <td>disabled</td>
-                        <td>"true" ou "false"</td>
-                            <td>false</td>
-                        <td>Désactive la case à cocher lorsque true</td>
-                        </tr>
-                        <tr>
-                            <td>checked</td>
-                        <td>"true" ou "false"</td>
-                            <td>false</td>
-                        <td>Coche la case par défaut lorsque true</td>
+                            <td>compact</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Affiche les boutons radios au format compact</td>
                         </tr>
                         <tr>
                             <td>required</td>
-                        <td>"true" ou "false"</td>
-                            <td>false</td>
-                        <td>Rend la case à cocher obligatoire lorsque true</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
                         </tr>
                         <tr>
-                            <td>size</td>
-                            <td>"sm" ou "md"</td>
-                            <td>"md"</td>
-                            <td>Taille de la case à cocher</td>
+                            <td>disabled</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Désactive le groupe</td>
                         </tr>
                         <tr>
                             <td>invalid</td>
-                            <td>"true" ou "false"</td>
-                            <td>false</td>
-                            <td>Indique si la case est invalide.  La case à cocher devient invalide si on tente de soumettre la case non cochée alors qu'elle est obligatoire.</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>
+                                Indique si le groupe est dans un état invalide
+                                (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
+                                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+                            </td>
                         </tr>
                         <tr>
                             <td>invalid-text</td>
                             <td>Texte</td>
                             <td>"Champ obligatoire" ou "Required field"</td>
-                            <td>Message d'erreur à afficher lorsque la case est invalide</td>
+                            <td>Message d’erreur à afficher lorsque la case est invalide</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1890,28 +1864,38 @@
                             <td>Nom commun pour toutes les cases à cocher du groupe</td>
                         </tr>
                         <tr>
-                            <td>size</td>
-                            <td>"sm" ou "md"</td>
-                            <td>"md"</td>
-                            <td>Taille des cases à cocher du groupe</td>
+                            <td>compact</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Affiche les boutons radios au format compact</td>
                         </tr>
                         <tr>
                             <td>required</td>
-                            <td>"true" ou "false"</td>
-                            <td>false</td>
-                            <td>Indique qu'au moins une case du groupe doit être cochée lorsque true</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+                        </tr>
+                        <tr>
+                            <td>disabled</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>Désactive le groupe</td>
                         </tr>
                         <tr>
                             <td>invalid</td>
-                            <td>"true" ou "false"</td>
-                            <td>false</td>
-                            <td>Indique si le groupe est invalide.  Le groupe devient invalide si on tente de soumettre le groupe avec aucune case cochée alors qu'il est obligatoire.</td>
+                            <td>na</td>
+                            <td>na</td>
+                            <td>
+                                Indique si le groupe est dans un état invalide
+                                (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
+                                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+                            </td>
                         </tr>
                         <tr>
                             <td>invalid-text</td>
                             <td>Texte</td>
                             <td>"Champ obligatoire" ou "Required field"</td>
-                            <td>Message d'erreur à afficher lorsque le groupe est invalide</td>
+                            <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
                         </tr>
                         <tr>
                             <td>checkbox-*</td>
@@ -1919,8 +1903,7 @@
                             <td></td>
                             <td>
                                 Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-                                comme attribut à la case à cocher brute. Utile pour ajouter de la validation de formulaire par
-                                contraintes HTML.
+                                comme attribut à la case à cocher.
                             </td>
                         </tr>
                     </tbody>

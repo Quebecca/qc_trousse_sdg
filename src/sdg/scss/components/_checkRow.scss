@@ -1,38 +1,27 @@
 @use "qc-sdg-lib" as *;
 
-@mixin check-style($type, $size: md) {
+.qc-check-row {
+
   display: flex;
   align-items: center;
   min-height: token-value(spacer, md);
   margin: 0;
   padding: 0;
 
-  input[type="#{$type}"] {
-
-    width: token-value(spacer, $size);
-    height: token-value(spacer, $size);
-    @if $size == "md" {
-      border-width: 2px;
-    }
-    @else  {
-      border-width: 1px;
-    }
-
-    appearance: none;
-    cursor: pointer;
-
+  input[type="radio"],
+  input[type="checkbox"] {
     display: flex;
     position: relative;
-
+    appearance: none;
+    cursor: pointer;
     margin: 0;
-
     background-color: token-value(color, white);
     border-style: solid;
     border-color: token-value(color, blue, dark);
-    @if $type == "radio" {
-      border-radius: 100%;
-    }
 
+    width: token-value(spacer, md);
+    height: token-value(spacer, md);
+    border-width: 2px;
 
     &::before {
       content: "";
@@ -52,15 +41,6 @@
 
     &:checked {
       border-color: token-value(color blue regular);
-
-      @if $type == "radio" {
-          &::before {
-            opacity: 1;
-            border-radius: 100%;
-            background-color: token-value(color, blue, regular);
-          }
-      }
-
     }
 
     &:disabled {
@@ -68,7 +48,7 @@
       border-color: token-value(color, grey, light);
     }
 
-    &:disabled+label {
+    &:disabled + label {
       color: token-value(color, grey, regular);
       cursor: not-allowed;
     }
@@ -84,3 +64,13 @@
     @include content-font(md);
   }
 }
+
+.qc-compact  {
+  input[type="radio"],
+  input[type="checkbox"] {
+    width: token-value(spacer, sm);
+    height: token-value(spacer, sm);
+    border-width: 1px;
+  }
+}
+

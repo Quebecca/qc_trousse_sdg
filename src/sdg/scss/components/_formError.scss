@@ -3,9 +3,11 @@
 .qc-form-error {
   display: flex;
   color: token-value(color, red, regular);
-  margin-top: token-value(spacer, sm);
   align-items: center;
-  font-weight: token-value(font weight bold);
+  font-weight: token-value(font weight content medium);
+  > * {
+    margin-top: token-value(spacer, sm);
+  }
   .qc-icon {
       display: flex;
       align-items: center;

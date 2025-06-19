@@ -2,14 +2,11 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        name: {attribute: 'name', type: 'String'},
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
-        size: {attribute: 'size', type: 'String'},
-        checked: {attribute: 'checked', type: 'String'},
-        disabled: {attribute:'disabled', type: 'String'},
-        required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'}
+        checked: {attribute: 'checked', type: 'Boolean'},
+        disabled: {attribute:'disabled', type: 'Boolean'},
+        required: {attribute: 'required', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -34,36 +31,32 @@
         name,
         value,
         label,
-        size,
-        checked,
+        checked = $bindable(false),
         disabled,
-        required,
-        invalid,
+        required = $bindable(false),
+        invalid = $bindable(false),
+        // groupValue= $bindable(""),
         ...rest
     } = $props();
+    let Component = RadioButton
+    $effect(() => {
+        if(checked) {
+            parent.value = value;
+        }
+    })
 
-    if (checked === "") {
-        checked = "true";
-    }
-    if (disabled === "") {
-        disabled = "true";
-    }
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
 </script>
-
-<RadioButton
-    name={parent?.name ?? name}
+{#if parent}
+<Component
+    name={parent.name}
     {value}
+    bind:groupValue={parent.value}
     {label}
-    size={parent?.size ?? size}
+    compact={parent.compact}
     {checked}
-    {disabled}
-    required={parent?.required ?? required}
-    invalid={parent?.invalid ?? invalid}
+    disabled={disabled ?? parent.disabled}
+    {required}
+    invalid={parent.invalid}
     {...rest}
 />
+{/if}
