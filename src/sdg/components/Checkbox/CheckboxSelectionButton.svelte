@@ -11,35 +11,33 @@
         disabled = false,
         checked = $bindable(false),
         required = false,
-        compact,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        parentGroup,
+        description,
+        hasParentGroup = false,
         ...rest
     } = $props();
-    
+
     let id = $derived(name + "_" + value);
 
     let restProps = $state({});
     $effect(() => {
         const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
+
         restProps = inputProps;
     });
-    $effect(() => {
-        if (checked) {
-            invalid = false;
-        }
-    });
-    $inspect("checked svelte", checked, ", invalid svelte", invalid)
+    // $inspect("checked svelte", checked, ", invalid svelte", invalid)
 
 </script>
 
-{#snippet checkboxRow()}
-    <div class={[
-        "qc-check-row",
-        !parentGroup && compact && "qc-compact",
-        ]}>
+<div class={[
+        "qc-checkbox-select-main-div",
+        !hasParentGroup && "checkbox-select-single",
+        invalid && "checkbox-select-single-invalid"
+    ]} >
+    <label for={id} class="qc-radio-select">
         <input
+            class="qc-checkbox-select-input"
             type="checkbox"
             {value}
             {name}
@@ -51,25 +49,15 @@
             {...restProps}
             onchange={() => { if (checked) invalid = false}}
         />
-        <label for={id}>
-            {label}
-            {#if !parentGroup && required}
-                <span class="qc-fieldset-required">*</span>
+        <span class="qc-radio-select-label-span">
+            <span class="qc-radio-select-label-choice">{label}</span>
+            {#if description}
+                <span class="qc-radio-select-label-description">{@html description}</span>
             {/if}
-        </label>
-    </div>
-    {#if !parentGroup}
+        </span>
+    </label>
+    {#if !hasParentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
-{/snippet}
 
-{#if parentGroup}
-    {@render checkboxRow()}
-{:else}
-<div class={[
-        "qc-checkbox-single",
-        invalid && "qc-checkbox-single-invalid"
-        ]}>
-    {@render checkboxRow()}
 </div>
-{/if}

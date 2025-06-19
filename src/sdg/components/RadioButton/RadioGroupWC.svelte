@@ -9,7 +9,10 @@
         required: {attribute: 'required', type: 'Boolean'},
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean'},
-        invalidText: {attribute: 'invalid-text', type: 'String'}
+        invalidText: {attribute: 'invalid-text', type: 'String'},
+        tiled: {attribute: 'tiled', type: 'Boolean'},
+        flowDirection: {attribute: 'flow-direction', type: 'String'},
+        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -19,6 +22,12 @@
             constructor() {
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
+
+                const tiles = Array.from(this.querySelectorAll('qc-radio-selection-button'));
+                tiles.forEach((tile) => {
+                    tile.classList.add('qc-radio-select-parent');
+                })
+                this.formFieldElements.push(...tiles);
             }
         }
     }
@@ -38,6 +47,9 @@
         invalidText,
         value = $bindable(""),
         checked=$bindable(false),
+        tiled,
+        flowDirection,
+        elementsPerRowOrCol
     } = $props();
 
 </script>
@@ -53,5 +65,8 @@
     {invalidText}
     bind:value
     bind:checked
+    {tiled}
+    {flowDirection}
+    {elementsPerRowOrCol}
 />
 

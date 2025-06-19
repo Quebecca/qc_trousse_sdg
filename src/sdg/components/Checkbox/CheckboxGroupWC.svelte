@@ -6,7 +6,10 @@
         required: { attribute: 'required', type: 'Boolean' },
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
-        invalidText: { attribute: 'invalid-text', type: 'String' }
+        invalidText: { attribute: 'invalid-text', type: 'String' },
+        tiled: {attribute: 'tiled', type: 'Boolean'},
+        flowDirection: {attribute: 'flow-direction', type: 'String'},
+        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -14,6 +17,11 @@
             constructor() {
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
+                const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
+                tiles.forEach((tile) => {
+                    tile.classList.add('qc-radio-select-parent');
+                })
+                this.formFieldElements.push(...tiles);
             }
         };
     }
@@ -32,7 +40,10 @@
         required,
         disabled,
         invalid = $bindable(false),
-        invalidText
+        invalidText,
+        tiled,
+        flowDirection,
+        elementsPerRowOrCol
     } = $props();
 
 </script>
@@ -48,4 +59,7 @@
     bind:invalid
     {disabled}
     {invalidText}
+    {tiled}
+    {flowDirection}
+    {elementsPerRowOrCol}
 />

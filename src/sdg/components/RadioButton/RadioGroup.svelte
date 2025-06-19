@@ -6,6 +6,9 @@
         checked = $bindable(false),
         invalid = $bindable(false),
         value = $bindable([]),
+        tiled = false,
+        flowDirection = "column",
+        elementsPerRowOrCol = 1,
         ...restProps
     } = $props();
 
