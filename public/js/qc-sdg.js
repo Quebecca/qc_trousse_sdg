@@ -10603,7 +10603,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },
 			description: { attribute: 'description', type: 'String' },
-			maxlength: { attribute: 'maxlength', type: 'String' },
+			maxlength: { attribute: 'max-length', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' }
 		},

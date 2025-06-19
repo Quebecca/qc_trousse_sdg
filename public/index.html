@@ -1036,6 +1036,7 @@
                         label="Champ obligatoire"
                         size="md"
                         required="true"
+                        invalid-text="Exemple de message d'erreur"
                 ></qc-textfield>
                 <button type="submit">Envoyer</button>
             </form>
@@ -1066,19 +1067,19 @@
                         <td>label</td>
                         <td>Texte</td>
                         <td>""</td>
-                        <td>Étiquette du champ</td>
+                        <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
                     </tr>
                     <tr>
                         <td>placeholder</td>
                         <td>Texte</td>
                         <td>""</td>
-                        <td>Texte indicatif</td>
+                        <td>Texte indicatif affiché lorsque le champ est vide</td>
                     </tr>
                     <tr>
                         <td>value</td>
                         <td>Texte</td>
                         <td>""</td>
-                        <td>Valeur du champ</td>
+                        <td>Valeur envoyée lors de la soumission du formulaire</td>
                     </tr>
                     <tr>
                         <td>size</td>
@@ -1102,7 +1103,25 @@
                         <td>description</td>
                         <td>Texte</td>
                         <td>""</td>
-                        <td>Texte d'aide sous le champ</td>
+                        <td>Texte descriptif affiché sous l'étiquette</td>
+                    </tr>
+                    <tr>
+                        <td>max-length</td>
+                        <td>Nombre</td>
+                        <td>null</td>
+                        <td>Nombre maximum de caractères autorisés pour ce champ</td>
+                    </tr>
+                    <tr>
+                        <td>invalid</td>
+                        <td>"true", "false"</td>
+                        <td>"false"</td>
+                        <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
+                    </tr>
+                    <tr>
+                        <td>invalid-text</td>
+                        <td>Texte</td>
+                        <td>"Champ obligatoire" ou "Required field"</td>
+                        <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
                     </tr>
                     </tbody>
                 </table>
