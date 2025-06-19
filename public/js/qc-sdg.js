@@ -9406,11 +9406,11 @@
 
 					const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
 
-					tiles.forEach((tile) => {
-						tile.classList.add('qc-radio-select-parent');
-					});
-
 					this.formFieldElements.push(...tiles);
+
+					this.formFieldElements.forEach((element) => {
+						element.classList.add('qc-check-row-parent');
+					});
 				}
 			};
 		}
@@ -9418,9 +9418,26 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[56, 16]]);
-	var root_1$3 = add_locations(template(`<div><input> <label> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[37, 4, [[41, 8], [53, 8]]]]);
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[68, 0]]);
+	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[58, 20]]);
+
+	var root_1$3 = add_locations(template(`<div><label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label></div> <!>`, 1), Checkbox[FILENAME], [
+		[
+			38,
+			4,
+			[
+				[
+					42,
+					8,
+					[
+						[43, 12],
+						[55, 12, [[56, 16]]]
+					]
+				]
+			]
+		]
+	]);
+
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[72, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9431,7 +9448,8 @@
 
 			var fragment = root_1$3();
 			var div = first_child(fragment);
-			var input = child(div);
+			var label_1 = child(div);
+			var input = child(label_1);
 
 			remove_input_defaults(input);
 
@@ -9440,26 +9458,34 @@
 			};
 
 			let attributes;
-			var label_1 = sibling(input, 2);
-			var text = child(label_1);
-			var node = sibling(text);
+			var span = sibling(input, 2);
+			var span_1 = child(span);
+			var text = child(span_1, true);
+
+			reset(span_1);
+
+			var node = sibling(span_1, 2);
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root_2();
+					var span_2 = root_2();
+					var node_1 = child(span_2);
 
-					append($$anchor, span);
+					html(node_1, () => description);
+					reset(span_2);
+					append($$anchor, span_2);
 				};
 
 				if_block(node, ($$render) => {
-					if (!parentGroup() && required()) $$render(consequent);
+					if (description) $$render(consequent);
 				});
 			}
 
+			reset(span);
 			reset(label_1);
 			reset(div);
 
-			var node_1 = sibling(div, 2);
+			var node_2 = sibling(div, 2);
 
 			{
 				var consequent_1 = ($$anchor) => {
@@ -9473,7 +9499,7 @@
 					});
 				};
 
-				if_block(node_1, ($$render) => {
+				if_block(node_2, ($$render) => {
 					if (!parentGroup()) $$render(consequent_1);
 				});
 			}
@@ -9483,6 +9509,8 @@
 					"qc-check-row",
 					!parentGroup() && compact() && "qc-compact"
 				]));
+
+				set_attribute(label_1, 'for', get(id));
 
 				attributes = set_attributes(input, attributes, {
 					type: 'checkbox',
@@ -9496,8 +9524,7 @@
 					onchange: event_handler
 				});
 
-				set_attribute(label_1, 'for', get(id));
-				set_text(text, `${label() ?? ''} `);
+				set_text(text, label());
 			});
 
 			bind_checked(input, checked);
@@ -9513,6 +9540,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
 			parentGroup = prop($$props, 'parentGroup', 7),
@@ -9530,6 +9558,7 @@
 					'checked',
 					'required',
 					'compact',
+					'selectionButton',
 					'invalid',
 					'invalidText',
 					'parentGroup'
@@ -9551,7 +9580,7 @@
 		});
 
 		var fragment_2 = comment();
-		var node_2 = first_child(fragment_2);
+		var node_3 = first_child(fragment_2);
 
 		{
 			var consequent_2 = ($$anchor) => {
@@ -9560,9 +9589,9 @@
 
 			var alternate = ($$anchor) => {
 				var div_1 = root_5();
-				var node_3 = child(div_1);
+				var node_4 = child(div_1);
 
-				checkboxRow(node_3);
+				checkboxRow(node_4);
 				reset(div_1);
 
 				template_effect(() => set_class(div_1, 1, clsx([
@@ -9573,7 +9602,7 @@
 				append($$anchor, div_1);
 			};
 
-			if_block(node_2, ($$render) => {
+			if_block(node_3, ($$render) => {
 				if (parentGroup()) $$render(consequent_2); else $$render(alternate, false);
 			});
 		}
@@ -9630,6 +9659,13 @@
 				compact($$value);
 				flushSync();
 			},
+			get selectionButton() {
+				return selectionButton();
+			},
+			set selectionButton($$value) {
+				selectionButton($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
@@ -9667,6 +9703,7 @@
 			checked: {},
 			required: {},
 			compact: {},
+			selectionButton: {},
 			invalid: {},
 			invalidText: {},
 			parentGroup: {}
@@ -9687,6 +9724,7 @@
 		let parentGroup = prop($$props, 'parentGroup', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7),
 			checked = prop($$props, 'checked', 15, false),
@@ -9704,6 +9742,7 @@
 					'parentGroup',
 					'value',
 					'label',
+					'description',
 					'name',
 					'disabled',
 					'checked',
@@ -9723,6 +9762,7 @@
 
 		const expression = user_derived(() => parentGroup()?.disabled ?? disabled());
 		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
+		const expression_2 = user_derived(() => parentGroup()?.grid ?? false);
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9732,6 +9772,9 @@
 				{
 					get label() {
 						return label();
+					},
+					get description() {
+						return description();
 					},
 					get name() {
 						return get(effectiveName);
@@ -9744,6 +9787,9 @@
 					},
 					get compact() {
 						return compact();
+					},
+					get selectionButton() {
+						return get(expression_2);
 					},
 					get invalidText() {
 						return invalidText();
@@ -9796,6 +9842,13 @@
 			},
 			set label($$value) {
 				label($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
 				flushSync();
 			},
 			get name() {
@@ -9856,6 +9909,7 @@
 		{
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
+			description: { attribute: 'description', type: 'String' },
 			name: { attribute: 'name', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			checked: {
@@ -10709,11 +10763,11 @@
 
 					const tiles = Array.from(this.querySelectorAll('qc-radio-selection-button'));
 
-					tiles.forEach((tile) => {
-						tile.classList.add('qc-radio-select-parent');
-					});
-
 					this.formFieldElements.push(...tiles);
+
+					this.formFieldElements.forEach((element) => {
+						element.classList.add('qc-check-row-parent');
+					});
 				}
 			};
 		}
@@ -10960,6 +11014,7 @@
 			name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 15, false),
@@ -10975,6 +11030,7 @@
 					'name',
 					'value',
 					'label',
+					'description',
 					'checked',
 					'disabled',
 					'required',
@@ -10985,7 +11041,7 @@
 
 		user_effect(() => {
 			if (checked()) {
-				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 44, 12);
+				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 46, 12);
 			}
 		});
 
@@ -11012,6 +11068,9 @@
 							get label() {
 								return label();
 							},
+							get description() {
+								return description();
+							},
 							get selectionButton() {
 								return parent().grid;
 							},
@@ -11037,7 +11096,7 @@
 								return parent().value;
 							},
 							set groupValue($$value) {
-								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 53, 21);
+								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 55, 21);
 							}
 						}
 					));
@@ -11080,6 +11139,13 @@
 				label($$value);
 				flushSync();
 			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -11117,6 +11183,7 @@
 		{
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
+			description: { attribute: 'description', type: 'String' },
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },

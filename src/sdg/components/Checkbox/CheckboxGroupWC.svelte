@@ -18,10 +18,10 @@
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
                 const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
-                tiles.forEach((tile) => {
-                    tile.classList.add('qc-radio-select-parent');
-                })
                 this.formFieldElements.push(...tiles);
+                this.formFieldElements.forEach((element) => {
+                    element.classList.add('qc-check-row-parent');
+                })
             }
         };
     }
