@@ -52,8 +52,6 @@
         displaySearchForm = true;
       }
     });
-
-    $inspect("piv header slots", slots)
 </script>
 
 <div role="banner"

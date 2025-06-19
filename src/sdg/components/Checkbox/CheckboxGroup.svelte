@@ -7,14 +7,13 @@
         invalid = $bindable(false),
         value = $bindable([]),
         grid = false,
-        flowDirection = "column",
+        flowDirection,
         elementsPerRowOrCol = 1,
         ...restProps
     } = $props();
 
 
     let updateValue = function () {
-        console.log("updateValue", formFieldElements)
         value = formFieldElements
             .map(cb => cb.checked ? cb.value : false)
             .filter(x => x);
@@ -23,13 +22,12 @@
             invalid = false;
         }
     }
-    $inspect("CB group svelte invalid", invalid)
 
 </script>
 
 <Fieldset
         {grid}
-        {flowDirection}
+        flowDirection={flowDirection === "column" ? flowDirection : "row"}
         {elementsPerRowOrCol}
         {...restProps}
         bind:value

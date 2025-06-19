@@ -7,7 +7,7 @@
         invalid = $bindable(false),
         value = $bindable([]),
         grid = false,
-        flowDirection = "column",
+        flowDirection,
         elementsPerRowOrCol = 1,
         ...restProps
     } = $props();
@@ -22,7 +22,7 @@
 
 <Fieldset
         {grid}
-        {flowDirection}
+        flowDirection={flowDirection === "column" ? flowDirection : "row"}
         {elementsPerRowOrCol}
         {...restProps}
         bind:value
