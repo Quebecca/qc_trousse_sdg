@@ -10182,12 +10182,12 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[25, 20]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[23, 4]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[30, 4]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[35, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[43, 6]]);
-	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div></div>`), TextField[FILENAME], [[21, 0, [[33, 2]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[26, 20]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[24, 4]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[31, 4]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[36, 10]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[44, 10]]);
+	var root = add_locations(template(`<div class="qc-textfield-container"><!> <!> <div><!></div></div>`), TextField[FILENAME], [[22, 0, [[34, 4]]]]);
 	const $$css = { hash: 'qc-hash-32ttx', code: '\n\n' };
 
 	function TextField($$anchor, $$props) {
@@ -10203,7 +10203,8 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
 			description = prop($$props, 'description', 7, ''),
-			maxlength = prop($$props, 'maxlength', 7, null);
+			maxlength = prop($$props, 'maxlength', 7, null),
+			invalid = prop($$props, 'invalid', 7, false);
 
 		// Classe CSS selon la taille
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
@@ -10300,7 +10301,7 @@
 
 		reset(div_2);
 		reset(div);
-		template_effect(() => set_class(div_2, 1, `qc-textfield ${get(sizeClass) ?? ''}`));
+		template_effect(() => set_class(div_2, 1, `qc-textfield ${get(sizeClass)} ${invalid() ? 'error' : ''}`));
 		append($$anchor, div);
 
 		return pop({
@@ -10367,6 +10368,13 @@
 				maxlength($$value);
 				flushSync();
 			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10382,7 +10390,8 @@
 			disabled: {},
 			required: {},
 			description: {},
-			maxlength: {}
+			maxlength: {},
+			invalid: {}
 		},
 		[],
 		[],
@@ -10403,11 +10412,13 @@
 			disabled = prop($$props, 'disabled', 7, ''),
 			required = prop($$props, 'required', 7, ''),
 			description = prop($$props, 'description', 7, ''),
-			maxlength = prop($$props, 'maxlength', 7, '');
+			maxlength = prop($$props, 'maxlength', 7, ''),
+			invalid = prop($$props, 'invalid', 7, '');
 
 		const expression = user_derived(() => size() || 'medium');
 		const expression_1 = user_derived(() => strict_equals(disabled(), 'true'));
 		const expression_2 = user_derived(() => strict_equals(required(), 'true'));
+		const expression_3 = user_derived(() => strict_equals(invalid(), 'true'));
 
 		TextField($$anchor, {
 			get name() {
@@ -10436,6 +10447,9 @@
 			},
 			get maxlength() {
 				return maxlength();
+			},
+			get invalid() {
+				return get(expression_3);
 			}
 		});
 
@@ -10503,6 +10517,13 @@
 				maxlength($$value);
 				flushSync();
 			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = '') {
+				invalid($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10518,7 +10539,8 @@
 			disabled: { attribute: 'disabled', type: 'String' },
 			required: { attribute: 'required', type: 'String' },
 			description: { attribute: 'description', type: 'String' },
-			maxlength: { attribute: 'maxlength', type: 'String' }
+			maxlength: { attribute: 'maxlength', type: 'String' },
+			invalid: { attribute: 'invalid', type: 'String' }
 		},
 		[],
 		[],

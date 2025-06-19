@@ -8,7 +8,8 @@
         disabled = false,
         required = false,
         description = '',
-        maxlength = null
+        maxlength = null,
+        invalid = false
   } = $props();
 
   // Classe CSS selon la taille
@@ -30,26 +31,26 @@
     <div class="qc-textfield-description">{description}</div>
   {/if}
 
-  <div class="qc-textfield {sizeClass}">
-  {#if isTextArea}
-      <textarea
-        {placeholder}
-        bind:value
-        {disabled}
-        {required}
-        {maxlength}
-      ></textarea>
-  {:else}
-      <input
-        type="text"
-        {placeholder}
-        bind:value
-        {disabled}
-        {required}
-        {maxlength}
-      />
-  {/if}
-</div>
+    <div class={`qc-textfield ${sizeClass} ${invalid ? 'error' : ''}`}>
+      {#if isTextArea}
+          <textarea
+            {placeholder}
+            bind:value
+            {disabled}
+            {required}
+            {maxlength}
+          ></textarea>
+      {:else}
+          <input
+            type="text"
+            {placeholder}
+            bind:value
+            {disabled}
+            {required}
+            {maxlength}
+          />
+      {/if}
+    </div>
 </div>
 
 <style>

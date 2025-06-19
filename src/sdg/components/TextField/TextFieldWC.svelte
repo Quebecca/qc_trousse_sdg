@@ -11,6 +11,7 @@
         required: { attribute: 'required', type: 'String' },
         description: { attribute: 'description', type: 'String' },
         maxlength: { attribute: 'maxlength', type: 'String' },
+        invalid: { attribute: 'invalid', type: 'String' },
     }
   }}
 />
@@ -27,7 +28,8 @@
         disabled = '',
         required = '',
         description = '',
-        maxlength = ''
+        maxlength = '',
+        invalid = ''
     } = $props();
 
 </script>
@@ -42,4 +44,5 @@
   required={required === 'true'}
   {description}
   {maxlength}
+  invalid={invalid === 'true'}
 />
