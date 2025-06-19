@@ -492,6 +492,7 @@ dl.qc-list-inline dt::before {
 .table-overflow {
   width: 100%;
   overflow-x: auto;
+  margin-bottom: var(--qc-spacer-content-block-mb);
 }
 
 hr {

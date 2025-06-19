@@ -91,7 +91,6 @@ let
     }
     , svelteOptions = {
         compilerOptions: {
-            dev: dev_process,
             // enable run-time checks
             customElement: true,
             dev: dev_process,
@@ -141,15 +140,7 @@ let
                     }}
                     , scssOptions
                 )),
-                build_process && copy({
-                    targets: [
-                        {
-                            src: 'dist/img/*',
-                            dest: [`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
+
             ],
         },
         {
