@@ -1,24 +1,22 @@
 @use "qc-sdg-lib" as *;
-@use "checkRow" as *;
+@use "checkRow";
 
 input[type=radio] {
-  .qc-check-row & {
+  border-radius: 100%;
+
+  &::before {
     border-radius: 100%;
-
-    &::before {
-      width: rem(14);
-      height: rem(14);
-      border-radius: 100%;
-      background-color: token-value(color, blue, regular);
-    }
-
-    &:checked::before {
-      opacity: 1;
-    }
+    background-color: token-value(color, blue, regular);
   }
 
-  .qc-compact &::before {
-    width: rem(10);
-    height: rem(10);
+  &:checked {
+    &::before {
+      opacity: 1;
+    }
+
+    &:not(.qc-compact)::before {
+      width: rem(14);
+      height: rem(14);
+    }
   }
 }

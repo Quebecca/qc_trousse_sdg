@@ -30,7 +30,6 @@
             invalid = false;
         }
     });
-    $inspect("checked svelte", checked, ", invalid svelte", invalid)
 
 </script>
 

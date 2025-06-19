@@ -14,7 +14,6 @@
 
 
     let updateValue = function () {
-        console.log("updateValue", formFieldElements)
         value = formFieldElements
             .map(cb => cb.checked ? cb.value : false)
             .filter(x => x);
@@ -23,7 +22,6 @@
             invalid = false;
         }
     }
-    $inspect("CB group svelte invalid", invalid)
 
 </script>
 

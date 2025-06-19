@@ -130,7 +130,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -270,16 +269,6 @@
 	function binding_property_non_reactive(binding, location) {
 		{
 			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
-		}
-	}
-
-	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
 		}
 	}
 
@@ -425,108 +414,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1332,11 +1219,6 @@
 			var signal = effect(fn);
 			return signal;
 		}
-	}
-
-	/** @param {() => void | (() => void)} fn */
-	function inspect_effect(fn) {
-		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3821,39 +3703,6 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} [inspector]
-	 */
-	// eslint-disable-next-line no-console
-	function inspect(get_value, inspector = console.log) {
-		validate_effect();
-
-		let initial = true;
-
-		inspect_effect(() => {
-			/** @type {any} */
-			var value = UNINITIALIZED;
-
-			// Capturing the value might result in an exception due to the inspect effect being
-			// sync and thus operating on stale data. In the case we encounter an exception we
-			// can bail-out of reporting the value. Instead we simply console.error the error
-			// so at least it's known that an error occured, but we don't stop execution
-			try {
-				value = get_value();
-			} catch (error) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-			}
-
-			if (value !== UNINITIALIZED) {
-				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
-			}
-
-			initial = false;
-		});
 	}
 
 	/**
@@ -6619,37 +6468,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -7066,8 +6884,8 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$6 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[65, 6, [[66, 8]]]]);
-	var root_2$2 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[83, 16, [[84, 20]]]]);
+	var root_1$7 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_2$2 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7078,39 +6896,39 @@
 		});
 	};
 
-	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[95, 10, [[106, 12]]]]);
-	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
-	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 32, [[121, 36]]]]);
-	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
-	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
+	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
+	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
+	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
+	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[131, 10]]);
 
 	var root$c = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
-			59,
+			57,
 			0,
 			[
 				[
-					63,
+					61,
 					2,
 					[
 						[
-							72,
+							70,
 							4,
 							[
 								[
-									73,
+									71,
 									8,
-									[[74, 12, [[79, 16]]]]
+									[[72, 12, [[77, 16]]]]
 								],
-								[93, 6, [[109, 8]]]
+								[91, 6, [[107, 8]]]
 							]
 						],
-						[131, 4]
+						[129, 4]
 					]
 				]
 			]
 		],
-		[142, 0]
+		[140, 0]
 	]);
 
 	function PivHeader($$anchor, $$props) {
@@ -7163,8 +6981,6 @@
 			}
 		});
 
-		inspect(() => ["piv header slots", slots()]);
-
 		var fragment = root$c();
 		var div = first_child(fragment);
 		var div_1 = child(div);
@@ -7172,7 +6988,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$6();
+				var div_2 = root_1$7();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -8163,7 +7979,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$5 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$6 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8209,7 +8025,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$5();
+				var div = root_1$6();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8943,7 +8759,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_1$4 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_1$5 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
 	var root$4 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8958,7 +8774,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$4();
+				var fragment = root_1$5();
 				var node_1 = first_child(fragment);
 
 				Icon(node_1, {
@@ -9007,7 +8823,7 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$3 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[40, 12]]);
+	var root_1$4 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[40, 12]]);
 	var root$3 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[29, 0, [[37, 4], [43, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
@@ -9057,7 +8873,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$3();
+				var span = root_1$4();
 
 				append($$anchor, span);
 			};
@@ -9097,7 +8913,7 @@
 				disabled() && "qc-fieldset-disabled"
 			]));
 
-			set_class(div, 1, clsx(grid() ? `qc-field-elements-grid-${flowDirection()}` : ""));
+			set_class(div, 1, clsx(grid() ? `qc-field-elements-grid-${flowDirection()}` : "qc-field-elements-flex"));
 			set_style(div, `--elements-per-row-or-col: ${elementsPerRowOrCol() ?? ''}`);
 		});
 
@@ -9238,7 +9054,7 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
 			grid = prop($$props, 'grid', 7, false),
-			flowDirection = prop($$props, 'flowDirection', 7, "column"),
+			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
 				$$props,
@@ -9257,7 +9073,6 @@
 				]);
 
 		let updateValue = function () {
-			console.log(...log_if_contains_state('log', "updateValue", formFieldElements()));
 			value(formFieldElements().map((cb) => cb.checked ? cb.value : false).filter((x) => x));
 			checked(value().length > 0);
 
@@ -9266,7 +9081,7 @@
 			}
 		};
 
-		inspect(() => ["CB group svelte invalid", invalid()]);
+		const expression = user_derived(() => strict_equals(flowDirection(), "column") ? flowDirection() : "row");
 
 		{
 			$$ownership_validator.binding('value', Fieldset, value);
@@ -9279,7 +9094,7 @@
 						return grid();
 					},
 					get flowDirection() {
-						return flowDirection();
+						return get(expression);
 					},
 					get elementsPerRowOrCol() {
 						return elementsPerRowOrCol();
@@ -9352,7 +9167,7 @@
 			get flowDirection() {
 				return flowDirection();
 			},
-			set flowDirection($$value = "column") {
+			set flowDirection($$value) {
 				flowDirection($$value);
 				flushSync();
 			},
@@ -9603,9 +9418,9 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[57, 16]]);
-	var root_1$2 = add_locations(template(`<div><input> <label> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[38, 4, [[42, 8], [54, 8]]]]);
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[69, 0]]);
+	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[56, 16]]);
+	var root_1$3 = add_locations(template(`<div><input> <label> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[37, 4, [[41, 8], [53, 8]]]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[68, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9614,7 +9429,7 @@
 		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1$2();
+			var fragment = root_1$3();
 			var div = first_child(fragment);
 			var input = child(div);
 
@@ -9734,13 +9549,6 @@
 				invalid(false);
 			}
 		});
-
-		inspect(() => [
-			"checked svelte",
-			checked(),
-			", invalid svelte",
-			invalid()
-		]);
 
 		var fragment_2 = comment();
 		var node_2 = first_child(fragment_2);
@@ -10078,17 +9886,17 @@
 
 	CheckboxSelectionButton[FILENAME] = 'src/sdg/components/Checkbox/CheckboxSelectionButton.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-radio-select-label-description"><!></span>`), CheckboxSelectionButton[FILENAME], [[55, 16]]);
+	var root_1$2 = add_locations(template(`<span class="qc-radio-select-label-description"><!></span>`), CheckboxSelectionButton[FILENAME], [[54, 16]]);
 
 	var root$2 = add_locations(template(`<div><label class="qc-radio-select"><input> <span class="qc-radio-select-label-span"><span class="qc-radio-select-label-choice"> </span> <!></span></label> <!></div>`), CheckboxSelectionButton[FILENAME], [
 		[
-			33,
+			32,
 			0,
 			[
 				[
-					38,
+					37,
 					4,
-					[[39, 8], [52, 8, [[53, 12]]]]
+					[[38, 8], [51, 8, [[52, 12]]]]
 				]
 			]
 		]
@@ -10159,7 +9967,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_2 = root_1$1();
+				var span_2 = root_1$2();
 				var node_1 = child(span_2);
 
 				html(node_1, description);
@@ -10368,13 +10176,6 @@
 			}
 		});
 
-		inspect(() => [
-			"checked wc",
-			checked(),
-			", invalid wc",
-			invalid()
-		]);
-
 		const expression = user_derived(() => outer()?.disabled ?? disabled());
 		const expression_1 = user_derived(() => outer()?.required ?? required());
 		const expression_2 = user_derived(() => strict_equals(outer(), null, false) && strict_equals(outer(), undefined, false));
@@ -10562,7 +10363,7 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
 			grid = prop($$props, 'grid', 7, false),
-			flowDirection = prop($$props, 'flowDirection', 7, "column"),
+			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
 				$$props,
@@ -10588,6 +10389,8 @@
 			}
 		});
 
+		const expression = user_derived(() => strict_equals(flowDirection(), "column") ? flowDirection() : "row");
+
 		{
 			$$ownership_validator.binding('value', Fieldset, value);
 			$$ownership_validator.binding('checked', Fieldset, checked);
@@ -10599,7 +10402,7 @@
 						return grid();
 					},
 					get flowDirection() {
-						return flowDirection();
+						return get(expression);
 					},
 					get elementsPerRowOrCol() {
 						return elementsPerRowOrCol();
@@ -10671,7 +10474,7 @@
 			get flowDirection() {
 				return flowDirection();
 			},
-			set flowDirection($$value = "column") {
+			set flowDirection($$value) {
 				flowDirection($$value);
 				flushSync();
 			},
@@ -10918,7 +10721,15 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root$1 = add_locations(template(`<div><input> <label> </label></div>`), RadioButton[FILENAME], [[26, 0, [[28, 4], [40, 4]]]]);
+	var root_1$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[52, 16]]);
+
+	var root$1 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
+		[
+			27,
+			4,
+			[[35, 8], [49, 8, [[50, 12]]]]
+		]
+	]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10929,7 +10740,9 @@
 		let name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			compact = prop($$props, 'compact', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7),
@@ -10945,7 +10758,9 @@
 					'name',
 					'value',
 					'label',
+					'description',
 					'compact',
+					'selectionButton',
 					'checked',
 					'disabled',
 					'required',
@@ -10961,26 +10776,53 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		var div = root$1();
-		var input = child(div);
+		var label_1 = root$1();
+		var input = child(label_1);
 
 		remove_input_defaults(input);
 
 		let attributes;
-		var label_1 = sibling(input, 2);
-		var text = child(label_1, true);
+		var span = sibling(input, 2);
+		var span_1 = child(span);
+		var text = child(span_1, true);
 
+		reset(span_1);
+
+		var node = sibling(span_1, 2);
+
+		{
+			var consequent = ($$anchor) => {
+				var span_2 = root_1$1();
+				var node_1 = child(span_2);
+
+				html(node_1, description);
+				reset(span_2);
+				append($$anchor, span_2);
+			};
+
+			if_block(node, ($$render) => {
+				if (description()) $$render(consequent);
+			});
+		}
+
+		reset(span);
 		reset(label_1);
-		reset(div);
 
 		template_effect(() => {
-			set_class(div, 1, clsx(["qc-check-row", compact() && "qc-compact"]));
+			set_attribute(label_1, 'for', `${name()}_${value()}`);
+
+			set_class(label_1, 1, clsx([
+				!selectionButton() && "qc-check-row",
+				selectionButton() && "qc-selection-button"
+			]));
 
 			attributes = set_attributes(input, attributes, {
+				class: compact() || selectionButton() ? "qc-compact" : "",
 				type: 'radio',
 				id: `${name()}_${value()}`,
 				name: name(),
 				value: value(),
+				disabled: disabled(),
 				'aria-required': required(),
 				'aria-invalid': invalid(),
 				required: required(),
@@ -10988,7 +10830,6 @@
 				checked: checked()
 			});
 
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
 			set_text(text, label());
 		});
 
@@ -11003,7 +10844,7 @@
 			groupValue
 		);
 
-		append($$anchor, div);
+		append($$anchor, label_1);
 
 		return pop({
 			get name() {
@@ -11027,11 +10868,25 @@
 				label($$value);
 				flushSync();
 			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get compact() {
 				return compact();
 			},
 			set compact($$value) {
 				compact($$value);
+				flushSync();
+			},
+			get selectionButton() {
+				return selectionButton();
+			},
+			set selectionButton($$value) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get checked() {
@@ -11079,7 +10934,9 @@
 			name: {},
 			value: {},
 			label: {},
+			description: {},
 			compact: {},
+			selectionButton: {},
 			checked: {},
 			disabled: {},
 			required: {},
@@ -11154,6 +11011,9 @@
 							},
 							get label() {
 								return label();
+							},
+							get selectionButton() {
+								return parent().grid;
 							},
 							get compact() {
 								return parent().compact;

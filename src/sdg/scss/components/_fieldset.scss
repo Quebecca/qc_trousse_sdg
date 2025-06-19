@@ -1,8 +1,6 @@
 @use "qc-sdg-lib" as *;
 
 .qc-fieldset {
-  //display: flex;
-  //flex-direction: column;
   border: none;
   padding: 0;
   margin: 0 0 token-value(spacer content-block mb);
@@ -39,6 +37,12 @@ $invalid-border-width: 2px;
 }
 .qc-fieldset-invalid legend {
   margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
+}
+
+.qc-field-elements-flex {
+  display: flex;
+  flex-direction: column;
+  row-gap: token-value(spacer, sm);
 }
 
 %grid {

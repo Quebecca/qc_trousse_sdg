@@ -41,7 +41,7 @@
         {/if}
     </legend>
     <div
-        class={grid ? `qc-field-elements-grid-${flowDirection}` : ""}
+        class={grid ? `qc-field-elements-grid-${flowDirection}` : "qc-field-elements-flex"}
         style="--elements-per-row-or-col: {elementsPerRowOrCol}"
         bind:this={groupSelection}
     >
