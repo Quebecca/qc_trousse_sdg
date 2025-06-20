@@ -10174,7 +10174,7 @@
 			label = prop($$props, 'label', 7, ''),
 			placeholder = prop($$props, 'placeholder', 7, ''),
 			value = prop($$props, 'value', 15, ''),
-			size = prop($$props, 'size', 7, 'md'),
+			size = prop($$props, 'size', 7, 'xl'),
 			disabled = prop($$props, 'disabled', 7, false),
 			required = prop($$props, 'required', 7, false),
 			description = prop($$props, 'description', 7, ''),
@@ -10183,7 +10183,7 @@
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, 'fr') ? 'Ce champ est requis.' : 'This field is required.');
 
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
-		let isTextArea = user_derived(() => strict_equals(size(), 'xxl'));
+		let isTextArea = user_derived(() => strict_equals(size(), 'zone-xl') || strict_equals(size(), 'zone-xxl'));
 
 		function clearInvalid() {
 			if (invalid()) {
@@ -10351,7 +10351,7 @@
 			get size() {
 				return size();
 			},
-			set size($$value = 'md') {
+			set size($$value = 'xl') {
 				size($$value);
 				flushSync();
 			},

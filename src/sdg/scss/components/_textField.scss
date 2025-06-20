@@ -3,13 +3,11 @@
 qc-textfield {
   display: block;
   width: 100%;
-  max-width: rem(548);
 }
 
 .qc-textfield {
   @extend %qc-formcontrol-box;
   position: relative;
-  margin-bottom: rem(24);
 
   &::before {
     border: 1px solid token-value(color formfield border);
@@ -46,7 +44,10 @@ qc-textfield {
   &--md { width: rem(156); }
   &--lg { width: rem(249); }
   &--xl { width: rem(528); }
-  &--xxl { width: rem(528); }
+  &--xxl { width: 100%; }
+
+  &--zone-xl { width: rem(528); }
+  &--zone-xxl { width: 100%; }
 
   // Gestion des erreurs
   &.error {
@@ -59,9 +60,6 @@ qc-textfield {
 
 // Conteneur
 .qc-textfield-container {
-  display: flex;
-  flex-direction: column;
-  gap: token-value(spacer, xs);
   margin-bottom: token-value(spacer, md);
 }
 

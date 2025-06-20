@@ -9,7 +9,7 @@
         label = '',
         placeholder = '',
         value = $bindable(''),
-        size = 'md',
+        size = 'xl',
         disabled = false,
         required = false,
         description = '',
@@ -19,7 +19,7 @@
     } = $props();
 
     let sizeClass = $derived(`qc-textfield--${size}`);
-    let isTextArea = $derived(size === 'xxl');
+    let isTextArea = $derived(size === 'zone-xl' || size === 'zone-xxl');
 
     function clearInvalid() {
         if (invalid) {
