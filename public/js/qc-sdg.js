@@ -9353,8 +9353,8 @@
 			legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
 			compact = prop($$props, 'compact', 7),
-			required = prop($$props, 'required', 7),
-			disabled = prop($$props, 'disabled', 7),
+			required = prop($$props, 'required', 15, false),
+			disabled = prop($$props, 'disabled', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			grid = prop($$props, 'grid', 7),
@@ -9464,14 +9464,14 @@
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
 			get disabled() {
 				return disabled();
 			},
-			set disabled($$value) {
+			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
@@ -9667,10 +9667,10 @@
 		let value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7),
-			disabled = prop($$props, 'disabled', 7, false),
+			disabled = prop($$props, 'disabled', 15, false),
 			description = prop($$props, 'description', 7),
-			checked = prop($$props, 'checked', 15, false),
-			required = prop($$props, 'required', 7, false),
+			checked = prop($$props, 'checked', 7),
+			required = prop($$props, 'required', 15, false),
 			compact = prop($$props, 'compact', 7),
 			selectionButton = prop($$props, 'selectionButton', 7),
 			invalid = prop($$props, 'invalid', 15, false),
@@ -9783,7 +9783,7 @@
 			get checked() {
 				return checked();
 			},
-			set checked($$value = false) {
+			set checked($$value) {
 				checked($$value);
 				flushSync();
 			},
@@ -9869,9 +9869,9 @@
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
 			name = prop($$props, 'name', 7),
-			disabled = prop($$props, 'disabled', 7),
-			checked = prop($$props, 'checked', 15, false),
-			required = prop($$props, 'required', 7),
+			disabled = prop($$props, 'disabled', 15, false),
+			checked = prop($$props, 'checked', 7),
+			required = prop($$props, 'required', 15, false),
 			compact = prop($$props, 'compact', 7),
 			selectionButton = prop($$props, 'selectionButton', 7),
 			invalid = prop($$props, 'invalid', 15, false),
@@ -10006,21 +10006,21 @@
 			get disabled() {
 				return disabled();
 			},
-			set disabled($$value) {
+			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
 			get checked() {
 				return checked();
 			},
-			set checked($$value = false) {
+			set checked($$value) {
 				checked($$value);
 				flushSync();
 			},
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -10954,8 +10954,8 @@
 			compact = prop($$props, 'compact', 7),
 			selectionButton = prop($$props, 'selectionButton', 7),
 			checked = prop($$props, 'checked', 7),
-			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7),
+			disabled = prop($$props, 'disabled', 15, false),
+			required = prop($$props, 'required', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			groupValue = prop($$props, 'groupValue', 15),
 			rest = rest_props(
@@ -11116,7 +11116,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -11171,8 +11171,8 @@
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
-			checked = prop($$props, 'checked', 15, false),
-			disabled = prop($$props, 'disabled', 7),
+			checked = prop($$props, 'checked', 7),
+			disabled = prop($$props, 'disabled', 15, false),
 			required = prop($$props, 'required', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			rest = rest_props(
@@ -11305,14 +11305,14 @@
 			get checked() {
 				return checked();
 			},
-			set checked($$value = false) {
+			set checked($$value) {
 				checked($$value);
 				flushSync();
 			},
 			get disabled() {
 				return disabled();
 			},
-			set disabled($$value) {
+			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
