@@ -2210,6 +2210,19 @@ input[type=checkbox]:checked::after {
   width: var(--qc-spacer-md);
   height: 1.8rem;
 }
+input[type=checkbox]:checked.qc-compact::before {
+  width: 0.8rem;
+  height: 0.5rem;
+  border: 0.2rem solid var(--qc-color-blue-regular);
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(-45deg);
+  top: 0.1rem;
+}
+input[type=checkbox]:checked.qc-compact::after {
+  width: var(--qc-spacer-sm);
+  height: 1.2rem;
+}
 .qc-compact input[type=checkbox]:checked::before {
   width: 0.8rem;
   height: 0.5rem;

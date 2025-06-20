@@ -32,8 +32,6 @@
             invalid = false;
         }
     });
-
-    $inspect(selectionButton);
 </script>
 
 {#snippet checkboxRow()}
