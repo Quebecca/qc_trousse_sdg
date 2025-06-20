@@ -1921,14 +1921,6 @@ qc-search-bar {
 .qc-check-row input[type=checkbox]:checked {
   border-color: var(--qc-color-blue-regular);
 }
-.qc-check-row .qc-check-label {
-  display: flex;
-  flex-grow: 0;
-}
-.qc-check-row .qc-check-description {
-  display: flex;
-  flex-grow: 0;
-}
 
 .qc-selection-button {
   position: relative;
