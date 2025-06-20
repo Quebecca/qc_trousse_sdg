@@ -24,20 +24,32 @@
         restProps = {...inputProps};
     });
 </script>
-
-<div class={["qc-check-row", compact && "qc-compact"]}>
-    <!-- svelte-ignore a11y_role_supports_aria_props_implicit -->
-    <input
-        type="radio"
-        id={`${name}_${value}`}
-        {name}
-        {value}
-        bind:group={groupValue}
-        aria-required={required}
-        aria-invalid={invalid}
-        {required}
-        {...restProps}
-        {checked}
-    />
-    <label for={`${name}_${value}`}>{label}</label>
-</div>
+    <label
+        for={`${name}_${value}`}
+        class={[
+            !selectionButton && "qc-check-row",
+            selectionButton && "qc-selection-button",
+        ]}
+    >
+        <!-- svelte-ignore a11y_role_supports_aria_props_implicit -->
+        <input
+                class={compact || selectionButton ? "qc-compact" : ""}
+                type="radio"
+                id={`${name}_${value}`}
+                {name}
+                {value}
+                {disabled}
+                bind:group={groupValue}
+                aria-required={required}
+                aria-invalid={invalid}
+                {required}
+                {...restProps}
+                {checked}
+        />
+        <span class="qc-check-text">
+            <span class="qc-check-label">{label}</span>
+            {#if description}
+                <span class="qc-check-description">{@html description}</span>
+            {/if}
+        </span>
+    </label>
