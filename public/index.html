@@ -1415,7 +1415,7 @@
             <h2 id="radio-button">Boutons radio</h2>
             <h3>Exemples</h3>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
+            <qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec différents états">
                 <qc-radio-group id="exemple-radio-md"
                                 legend="Choisissez une option :"
                                 name="ex-md"
@@ -1445,14 +1445,36 @@
                 </script>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
+            <qc-doc-exemple caption="Exemple de boutons radio au format compact">
                 <qc-radio-group legend="Choisissez une option :"
                                 name="ex-sm"
                                 compact >
                     <qc-radio-button
                             label="Option 1"
                             value="1"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3"
+                            value="3"
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+                <qc-radio-group legend="Choisissez une option :"
+                                name="ex-radio-select"
+                                grid
+                                elements-per-row-or-col="2"
+                >
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
                             checked
+                            description="Ceci est une longue description servant à montrer l'affichage des boutons de sélection."
                     ></qc-radio-button>
                     <qc-radio-button
                             label="Option 2"
@@ -1559,6 +1581,12 @@
                         <td>Nom de l’ensemble des boutons radios du groupe</td>
                     </tr>
                     <tr>
+                        <td>value</td>
+                        <td></td>
+                        <td></td>
+                        <td>Variable contenant la valeur sélectionnée du groupe</td>
+                    </tr>
+                    <tr>
                         <td>legend</td>
                         <td>Texte</td>
                         <td></td>
@@ -1598,6 +1626,30 @@
                         <td>Champ obligatoire/Required field</td>
                         <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
                     </tr>
+                    <tr>
+                        <td>grid</td>
+                        <td>"true" ou "false"</td>
+                        <td>"false"</td>
+                        <td>Affiche les boutons radio en boutons de sélection dans une grille</td>
+                    </tr>
+                    <tr>
+                        <td>flow-direction</td>
+                        <td>"row" ou "column"</td>
+                        <td>"row"</td>
+                        <td>
+                            Détermine l'orientation dans laquelle les éléments sont ajoutées
+                            à la grille du groupe
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>elements-per-row-or-col</td>
+                        <td>Nombre</td>
+                        <td>1</td>
+                        <td>
+                            Détermine le nombre d'éléments maximal qu'une rangée ou colonne peut avoir avant d'en créer
+                            une nouvelle dans la grille du groupe
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -1628,6 +1680,12 @@
                         <td>Texte</td>
                         <td></td>
                         <td>Libellé du bouton radio</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>Contenu HTML</td>
+                        <td></td>
+                        <td>Description qui accompagne l'étiquette pour ajouter des précisions</td>
                     </tr>
                     <tr>
                         <td>checked</td>
@@ -1682,6 +1740,7 @@
             <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
                 <form id="exemple-tos-form">
                     <qc-checkbox
+                            name="exemple-une-case-validation"
                             id="exemple-une-case"
                             label="J’accepte les conditions d’utilisation"
                             required
@@ -1708,22 +1767,39 @@
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
-                <qc-checkbox-group legend="Sélectionnez vos options">
+                <qc-checkbox-group name="exemple-checkbox-base" legend="Sélectionnez vos options">
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
                     <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">
+            <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au format compact">
                 <qc-checkbox-group
                         legend="Sélectionnez vos options"
-                        name="options"
+                        name="exemple-checkbox-compact"
                         compact
                 >
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2"></qc-checkbox>
                     <qc-checkbox label="Option 3"></qc-checkbox>
+                </qc-checkbox-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple
+                caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
+            >
+                <qc-checkbox-group
+                    name="exemple-checkbox-select"
+                    legend="Sélectionnez vos options"
+                    grid
+                    elements-per-row-or-col="2">
+                    <qc-checkbox
+                            label="Option 1"
+                            description="Ceci est une longue description servant à montrer l'affichage des boutons de sélection."
+                    ></qc-checkbox>
+                    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
+                    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
@@ -1826,6 +1902,12 @@
                             <td>Libellé de la case à cocher</td>
                         </tr>
                         <tr>
+                            <td>description</td>
+                            <td>Contenu HTML</td>
+                            <td></td>
+                            <td>Description qui accompagne l'étiquette pour ajouter des précisions</td>
+                        </tr>
+                        <tr>
                             <td>value</td>
                             <td>Texte</td>
                             <td>Valeur de l’attribut label</td>
@@ -1895,6 +1977,12 @@
                             <td>Nom commun pour toutes les cases à cocher du groupe</td>
                         </tr>
                         <tr>
+                            <td>value</td>
+                            <td></td>
+                            <td></td>
+                            <td>Variable contenant les valeurs sélectionnées du groupe</td>
+                        </tr>
+                        <tr>
                             <td>compact</td>
                             <td>na</td>
                             <td>na</td>
@@ -1927,6 +2015,30 @@
                             <td>Texte</td>
                             <td>"Champ obligatoire" ou "Required field"</td>
                             <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+                        </tr>
+                        <tr>
+                            <td>grid</td>
+                            <td>"true" ou "false"</td>
+                            <td>"false"</td>
+                            <td>Affiche les cases à cocher en boutons de sélection dans une grille</td>
+                        </tr>
+                        <tr>
+                            <td>flow-direction</td>
+                            <td>"row" ou "column"</td>
+                            <td>"row"</td>
+                            <td>
+                                Détermine l'orientation dans laquelle les éléments sont ajoutées
+                                à la grille du groupe
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>elements-per-row-or-col</td>
+                            <td>Nombre</td>
+                            <td>1</td>
+                            <td>
+                                Détermine le nombre d'éléments maximal qu'une rangée ou colonne peut avoir avant d'en créer
+                                une nouvelle dans la grille du groupe
+                            </td>
                         </tr>
                         <tr>
                             <td>checkbox-*</td>

@@ -11,7 +11,7 @@
         selectionButton,
         checked,
         disabled = $bindable(false),
-        required =$bindable(false),
+        required = $bindable(false),
         invalid = $bindable(false),
         groupValue = $bindable(),
         ...rest

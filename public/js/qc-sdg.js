@@ -9905,7 +9905,7 @@
 			invalid(parentGroup().invalid);
 		}
 
-		const expression = user_derived(() => parentGroup()?.disabled ?? disabled());
+		const expression = user_derived(() => disabled() ?? parentGroup()?.disabled);
 		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
 		const expression_2 = user_derived(() => parentGroup()?.grid ?? selectionButton());
 

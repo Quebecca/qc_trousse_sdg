@@ -59,7 +59,7 @@
     {label}
     {description}
     name={effectiveName}
-    disabled={parentGroup?.disabled ?? disabled}
+    disabled={disabled ?? parentGroup?.disabled}
     bind:checked
     required={parentGroup?.required ?? required}
     {compact}
