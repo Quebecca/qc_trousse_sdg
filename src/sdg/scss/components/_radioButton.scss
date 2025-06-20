@@ -18,5 +18,10 @@ input[type=radio] {
       width: rem(14);
       height: rem(14);
     }
+
+    &.qc-compact::before {
+      width: rem(10);
+      height: rem(10);
+    }
   }
 }

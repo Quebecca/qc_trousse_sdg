@@ -33,16 +33,18 @@
         }
     });
 
+    $inspect(selectionButton);
 </script>
 
 {#snippet checkboxRow()}
     <label
         class={[
-        "qc-check-row",
-        !parentGroup && compact && "qc-compact",
+            !selectionButton && "qc-check-row",
+            selectionButton && "qc-selection-button",
         ]}
         for={id}>
         <input
+                class={(!parentGroup && compact) || selectionButton ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}

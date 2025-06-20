@@ -3,7 +3,7 @@
 @use "checkRow" as *;
 
 input[type="checkbox"] {
-  .qc-check-row &:checked {
+  &:checked {
 
     background-color: token-value(color blue regular);
 
