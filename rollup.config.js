@@ -13,6 +13,7 @@ import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
+import buildHtmlDoc from './plugins/buildHtmlDoc.js'; // adapte le chemin si besoin
 
 
 const
@@ -211,6 +212,10 @@ if (!build_process) {
         },
         plugins: [
             replace(replacements),
+            buildHtmlDoc({
+                input: 'src/doc/_index.html',
+                output: 'public/index.html'
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,
