@@ -20,8 +20,8 @@
 }} />
 
 <script>
-    import CheckboxGroup from "./CheckboxGroup.svelte";
-
+    // import CheckboxGroup from "./CheckboxGroup.svelte";
+    import CheckFieldGroup from "./CheckFieldGroup.svelte";
     let {
         formFieldElements,
         value = $bindable([]),
@@ -35,9 +35,15 @@
         invalidText
     } = $props();
 
+    let updateValue = function () {
+        value = formFieldElements
+            .map(cb => cb.checked ? cb.value : false)
+            .filter(x => x);
+    }
+
 </script>
 
-<CheckboxGroup
+<CheckFieldGroup
     {formFieldElements}
     bind:value
     bind:checked
@@ -48,4 +54,5 @@
     bind:invalid
     {disabled}
     {invalidText}
+    {updateValue}
 />

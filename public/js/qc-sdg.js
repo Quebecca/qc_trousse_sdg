@@ -274,16 +274,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -852,6 +842,20 @@
 		} catch {}
 
 		return (a === b) === equal;
+	}
+
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 * @param {boolean} equal
+	 * @returns {boolean}
+	 */
+	function equals$1(a, b, equal = true) {
+		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
+			state_proxy_equality_mismatch();
+		}
+
+		return (a == b) === equal;
 	}
 
 	/** @import { TemplateNode } from '#client' */
@@ -6619,37 +6623,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -9191,9 +9164,9 @@
 		true
 	);
 
-	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
+	CheckFieldGroup[FILENAME] = 'src/sdg/components/CheckFieldGroup/CheckFieldGroup.svelte';
 
-	function CheckboxGroup($$anchor, $$props) {
+	function CheckFieldGroup($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -9203,6 +9176,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
+			updateValue = prop($$props, 'updateValue', 7, () => {}),
 			restProps = rest_props(
 				$$props,
 				[
@@ -9213,20 +9187,24 @@
 					'formFieldElements',
 					'checked',
 					'invalid',
-					'value'
+					'value',
+					'updateValue'
 				]);
 
-		let updateValue = function () {
-			console.log(...log_if_contains_state('log', "updateValue", formFieldElements()));
-			value(formFieldElements().map((cb) => cb.checked ? cb.value : false).filter((x) => x));
-			checked(value().length > 0);
+		user_effect((_) => {
+			// console.log("cb group svelte effect")
+			checked(!(!value() || equals$1(value().length, 0)));
 
 			if (checked()) {
 				invalid(false);
 			}
-		};
+		});
 
-		inspect(() => ["CB group svelte invalid", invalid()]);
+		inspect(() => [
+			"cb group svelte ",
+			value(),
+			checked()
+		]);
 
 		{
 			$$ownership_validator.binding('value', Fieldset, value);
@@ -9234,7 +9212,9 @@
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
 			Fieldset($$anchor, spread_props(() => restProps, {
-				updateValue,
+				get updateValue() {
+					return updateValue();
+				},
 				get formFieldElements() {
 					return formFieldElements();
 				},
@@ -9288,24 +9268,32 @@
 				value($$value);
 				flushSync();
 			},
+			get updateValue() {
+				return updateValue();
+			},
+			set updateValue($$value = () => {}) {
+				updateValue($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
 
 	create_custom_element(
-		CheckboxGroup,
+		CheckFieldGroup,
 		{
 			formFieldElements: {},
 			checked: {},
 			invalid: {},
-			value: {}
+			value: {},
+			updateValue: {}
 		},
 		[],
 		[],
 		true
 	);
 
-	CheckboxGroupWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroupWC.svelte';
+	CheckboxGroupWC[FILENAME] = 'src/sdg/components/CheckFieldGroup/CheckboxGroupWC.svelte';
 
 	function CheckboxGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -9324,12 +9312,16 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		{
-			$$ownership_validator.binding('value', CheckboxGroup, value);
-			$$ownership_validator.binding('checked', CheckboxGroup, checked);
-			$$ownership_validator.binding('invalid', CheckboxGroup, invalid);
+		let updateValue = function () {
+			value(formFieldElements().map((cb) => cb.checked ? cb.value : false).filter((x) => x));
+		};
 
-			CheckboxGroup($$anchor, {
+		{
+			$$ownership_validator.binding('value', CheckFieldGroup, value);
+			$$ownership_validator.binding('checked', CheckFieldGroup, checked);
+			$$ownership_validator.binding('invalid', CheckFieldGroup, invalid);
+
+			CheckFieldGroup($$anchor, {
 				get formFieldElements() {
 					return formFieldElements();
 				},
@@ -9351,6 +9343,7 @@
 				get invalidText() {
 					return invalidText();
 				},
+				updateValue,
 				get value() {
 					return value();
 				},
@@ -9951,116 +9944,7 @@
 		}
 	));
 
-	RadioGroup[FILENAME] = 'src/sdg/components/RadioButton/RadioGroup.svelte';
-
-	function RadioGroup($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let formFieldElements = prop($$props, 'formFieldElements', 7),
-			checked = prop($$props, 'checked', 15, false),
-			invalid = prop($$props, 'invalid', 15, false),
-			value = prop($$props, 'value', 31, () => proxy([])),
-			restProps = rest_props(
-				$$props,
-				[
-					'$$slots',
-					'$$events',
-					'$$legacy',
-					'$$host',
-					'formFieldElements',
-					'checked',
-					'invalid',
-					'value'
-				]);
-
-		user_effect((_) => {
-			checked(!!value());
-
-			if (checked()) {
-				invalid(false);
-			}
-		});
-
-		{
-			$$ownership_validator.binding('value', Fieldset, value);
-			$$ownership_validator.binding('checked', Fieldset, checked);
-			$$ownership_validator.binding('invalid', Fieldset, invalid);
-
-			Fieldset($$anchor, spread_props(() => restProps, {
-				get formFieldElements() {
-					return formFieldElements();
-				},
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				},
-				get checked() {
-					return checked();
-				},
-				set checked($$value) {
-					checked($$value);
-				},
-				get invalid() {
-					return invalid();
-				},
-				set invalid($$value) {
-					invalid($$value);
-				}
-			}));
-		}
-
-		return pop({
-			get formFieldElements() {
-				return formFieldElements();
-			},
-			set formFieldElements($$value) {
-				formFieldElements($$value);
-				flushSync();
-			},
-			get checked() {
-				return checked();
-			},
-			set checked($$value = false) {
-				checked($$value);
-				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value = false) {
-				invalid($$value);
-				flushSync();
-			},
-			get value() {
-				return value();
-			},
-			set value($$value = []) {
-				value($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	create_custom_element(
-		RadioGroup,
-		{
-			formFieldElements: {},
-			checked: {},
-			invalid: {},
-			value: {}
-		},
-		[],
-		[],
-		true
-	);
-
-	RadioGroupWC[FILENAME] = 'src/sdg/components/RadioButton/RadioGroupWC.svelte';
+	RadioGroupWC[FILENAME] = 'src/sdg/components/CheckFieldGroup/RadioGroupWC.svelte';
 
 	function RadioGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10080,10 +9964,11 @@
 			checked = prop($$props, 'checked', 15, false);
 
 		{
-			$$ownership_validator.binding('value', RadioGroup, value);
-			$$ownership_validator.binding('checked', RadioGroup, checked);
+			$$ownership_validator.binding('invalid', CheckFieldGroup, invalid);
+			$$ownership_validator.binding('value', CheckFieldGroup, value);
+			$$ownership_validator.binding('checked', CheckFieldGroup, checked);
 
-			RadioGroup($$anchor, {
+			CheckFieldGroup($$anchor, {
 				get name() {
 					return name();
 				},
@@ -10102,11 +9987,14 @@
 				get disabled() {
 					return disabled();
 				},
+				get invalidText() {
+					return invalidText();
+				},
 				get invalid() {
 					return invalid();
 				},
-				get invalidText() {
-					return invalidText();
+				set invalid($$value) {
+					invalid($$value);
 				},
 				get value() {
 					return value();

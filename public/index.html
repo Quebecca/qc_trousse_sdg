@@ -1525,7 +1525,13 @@
                                 }
                             })
                             if(doSubmit) {
-                                alert("Formulaire soumis");
+                                alert(
+                                    "Formulaire soumis\n"
+                                    + Array.from(event.target.querySelectorAll("qc-radio-group"))
+                                        .map(group => `Valeur pour ${group.name} : ${group.value  ? group.value : "vide"}`)
+                                        .join("\n")
+
+                                );
                             }
                         })
                 </script>
@@ -1761,7 +1767,13 @@
                                 }
                             })
                             if(doSubmit) {
-                                alert("Formulaire soumis");
+                                alert(
+                                    "Formulaire soumis\n"
+                                    + Array.from(event.target.querySelectorAll("qc-checkbox-group"))
+                                        .map(group => `Valeur pour ${group.name} : ${group.value.join(',')  ? group.value.join(',') : "vide"}`)
+                                        .join("\n")
+
+                                );
                             }
                         })
                 </script>

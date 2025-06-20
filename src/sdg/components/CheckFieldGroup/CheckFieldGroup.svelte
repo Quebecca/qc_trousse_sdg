@@ -6,15 +6,21 @@
         checked = $bindable(false),
         invalid = $bindable(false),
         value = $bindable([]),
+        updateValue = () => {},
         ...restProps
     } = $props();
 
+
+
+
     $effect(_ => {
-        checked = !!value
+        // console.log("cb group svelte effect")
+        checked = !(!value || value.length == 0)
         if (checked) {
             invalid = false;
         }
     });
+    $inspect("cb group svelte ", value, checked)
 </script>
 
 <Fieldset
@@ -22,6 +28,7 @@
         bind:value
         bind:checked
         bind:invalid
+        {updateValue}
         {formFieldElements}
 />
 
