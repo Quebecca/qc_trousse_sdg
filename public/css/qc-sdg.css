@@ -1908,14 +1908,13 @@ qc-search-bar {
 .qc-check-row input[type=checkbox] {
   min-width: var(--qc-spacer-md);
   min-height: var(--qc-spacer-md);
-  border-width: 2px;
+  border-width: 0.2rem;
 }
 .qc-check-row input[type=radio]:focus,
 .qc-check-row input[type=checkbox]:focus {
   outline: 2px solid var(--qc-color-blue-light);
   outline-offset: 0;
   border-color: var(--qc-color-blue-dark) !important;
-  border-width: 2px;
 }
 .qc-check-row input[type=radio]:checked,
 .qc-check-row input[type=checkbox]:checked {
@@ -1949,7 +1948,7 @@ qc-search-bar {
   min-width: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-sm);
   margin-top: 0.4rem;
-  border-width: 1px;
+  border-width: 0.1rem;
 }
 .qc-selection-button::before {
   border-style: solid;
@@ -1977,10 +1976,6 @@ qc-search-bar {
   min-height: var(--qc-spacer-sm);
   margin-top: 0.4rem;
   border-width: 1px;
-}
-.qc-compact input[type=radio]::before {
-  width: 1rem;
-  height: 1rem;
 }
 
 .qc-check-text {
@@ -2015,6 +2010,10 @@ input[type=radio]:checked::before {
 input[type=radio]:checked:not(.qc-compact)::before {
   width: 1.4rem;
   height: 1.4rem;
+}
+input[type=radio]:checked.qc-compact::before {
+  width: 1rem;
+  height: 1rem;
 }
 
 .qc-radio-select {
@@ -2181,10 +2180,10 @@ input[type=radio]:checked:not(.qc-compact)::before {
   grid-template-rows: repeat(var(--elements-per-row-or-col), 1fr);
 }
 
-.qc-check-row input[type=checkbox]:checked {
+input[type=checkbox]:checked {
   background-color: var(--qc-color-blue-regular);
 }
-.qc-check-row input[type=checkbox]:checked::before {
+input[type=checkbox]:checked::before {
   width: 1.2rem;
   height: 0.7rem;
   border: 0.3rem solid var(--qc-color-blue-regular);
@@ -2193,7 +2192,7 @@ input[type=radio]:checked:not(.qc-compact)::before {
   transform: rotate(-45deg);
   top: 0.2rem;
 }
-.qc-check-row input[type=checkbox]:checked::after {
+input[type=checkbox]:checked::after {
   content: "";
   position: absolute;
   left: 50%;

@@ -130,6 +130,7 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -414,6 +415,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1219,6 +1322,11 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function inspect_effect(fn) {
+		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3703,6 +3811,39 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} [inspector]
+	 */
+	// eslint-disable-next-line no-console
+	function inspect(get_value, inspector = console.log) {
+		validate_effect();
+
+		let initial = true;
+
+		inspect_effect(() => {
+			/** @type {any} */
+			var value = UNINITIALIZED;
+
+			// Capturing the value might result in an exception due to the inspect effect being
+			// sync and thus operating on stale data. In the case we encounter an exception we
+			// can bail-out of reporting the value. Instead we simply console.error the error
+			// so at least it's known that an error occured, but we don't stop execution
+			try {
+				value = get_value();
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+
+			if (value !== UNINITIALIZED) {
+				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
+			}
+
+			initial = false;
+		});
 	}
 
 	/**
@@ -9418,17 +9559,17 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[60, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[62, 16]]);
 
 	var root_1$3 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
-			39,
+			40,
 			4,
-			[[45, 8], [57, 8, [[58, 12]]]]
+			[[46, 8], [59, 8, [[60, 12]]]]
 		]
 	]);
 
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[73, 0]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[75, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9495,13 +9636,14 @@
 
 			template_effect(() => {
 				set_class(label_1, 1, clsx([
-					"qc-check-row",
-					!parentGroup() && compact() && "qc-compact"
+					!selectionButton() && "qc-check-row",
+					selectionButton() && "qc-selection-button"
 				]));
 
 				set_attribute(label_1, 'for', get(id));
 
 				attributes = set_attributes(input, attributes, {
+					class: !parentGroup() && compact() || selectionButton() ? "qc-compact" : "",
 					type: 'checkbox',
 					value: value(),
 					name: name(),
@@ -9569,6 +9711,8 @@
 				invalid(false);
 			}
 		});
+
+		inspect(() => [selectionButton()]);
 
 		var fragment_2 = comment();
 		var node_3 = first_child(fragment_2);
@@ -9729,6 +9873,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7),
 			compact = prop($$props, 'compact', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			rest = rest_props(
@@ -9747,6 +9892,7 @@
 					'checked',
 					'required',
 					'compact',
+					'selectionButton',
 					'invalid',
 					'invalidText'
 				]);
@@ -9761,7 +9907,7 @@
 
 		const expression = user_derived(() => parentGroup()?.disabled ?? disabled());
 		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
-		const expression_2 = user_derived(() => parentGroup()?.grid ?? false);
+		const expression_2 = user_derived(() => parentGroup()?.grid ?? selectionButton());
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9885,6 +10031,13 @@
 				compact($$value);
 				flushSync();
 			},
+			get selectionButton() {
+				return selectionButton();
+			},
+			set selectionButton($$value) {
+				selectionButton($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
@@ -9918,6 +10071,10 @@
 			},
 			required: { attribute: 'required', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
+			selectionButton: {
+				attribute: 'selection-button',
+				type: 'Boolean'
+			},
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			parentGroup: {}
