@@ -9418,26 +9418,17 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[58, 20]]);
+	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[60, 16]]);
 
-	var root_1$3 = add_locations(template(`<div><label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label></div> <!>`, 1), Checkbox[FILENAME], [
+	var root_1$3 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
-			38,
+			39,
 			4,
-			[
-				[
-					42,
-					8,
-					[
-						[43, 12],
-						[55, 12, [[56, 16]]]
-					]
-				]
-			]
+			[[45, 8], [57, 8, [[58, 12]]]]
 		]
 	]);
 
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[72, 0]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[73, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9447,8 +9438,7 @@
 			validate_snippet_args(...arguments);
 
 			var fragment = root_1$3();
-			var div = first_child(fragment);
-			var label_1 = child(div);
+			var label_1 = first_child(fragment);
 			var input = child(label_1);
 
 			remove_input_defaults(input);
@@ -9471,21 +9461,20 @@
 					var span_2 = root_2();
 					var node_1 = child(span_2);
 
-					html(node_1, () => description);
+					html(node_1, description);
 					reset(span_2);
 					append($$anchor, span_2);
 				};
 
 				if_block(node, ($$render) => {
-					if (description) $$render(consequent);
+					if (description()) $$render(consequent);
 				});
 			}
 
 			reset(span);
 			reset(label_1);
-			reset(div);
 
-			var node_2 = sibling(div, 2);
+			var node_2 = sibling(label_1, 2);
 
 			{
 				var consequent_1 = ($$anchor) => {
@@ -9505,7 +9494,7 @@
 			}
 
 			template_effect(() => {
-				set_class(div, 1, clsx([
+				set_class(label_1, 1, clsx([
 					"qc-check-row",
 					!parentGroup() && compact() && "qc-compact"
 				]));
@@ -9537,6 +9526,7 @@
 			label = prop($$props, 'label', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7, false),
+			description = prop($$props, 'description', 7),
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7),
@@ -9555,6 +9545,7 @@
 					'label',
 					'name',
 					'disabled',
+					'description',
 					'checked',
 					'required',
 					'compact',
@@ -9588,18 +9579,18 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_1 = root_5();
-				var node_4 = child(div_1);
+				var div = root_5();
+				var node_4 = child(div);
 
 				checkboxRow(node_4);
-				reset(div_1);
+				reset(div);
 
-				template_effect(() => set_class(div_1, 1, clsx([
+				template_effect(() => set_class(div, 1, clsx([
 					"qc-checkbox-single",
 					invalid() && "qc-checkbox-single-invalid"
 				])));
 
-				append($$anchor, div_1);
+				append($$anchor, div);
 			};
 
 			if_block(node_3, ($$render) => {
@@ -9636,6 +9627,13 @@
 			},
 			set disabled($$value = false) {
 				disabled($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
 				flushSync();
 			},
 			get checked() {
@@ -9700,6 +9698,7 @@
 			label: {},
 			name: {},
 			disabled: {},
+			description: {},
 			checked: {},
 			required: {},
 			compact: {},

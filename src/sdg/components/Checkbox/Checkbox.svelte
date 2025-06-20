@@ -9,6 +9,7 @@
         label,
         name,
         disabled = false,
+        description,
         checked = $bindable(false),
         required = false,
         compact,
@@ -35,32 +36,32 @@
 </script>
 
 {#snippet checkboxRow()}
-    <div class={[
+    <label
+        class={[
         "qc-check-row",
         !parentGroup && compact && "qc-compact",
-        ]}>
-        <label for={id}>
-            <input
-                    type="checkbox"
-                    {value}
-                    {name}
-                    {id}
-                    {disabled}
-                    bind:checked
-                    aria-required = {required}
-                    aria-invalid={invalid}
-                    {...restProps}
-                    onchange={() => { if (checked) invalid = false}}
-            />
-            <span class="qc-check-text">
-                <span class="qc-check-label">{label}</span>
-                {#if description}
-                    <span class="qc-check-description">{@html description}</span>
-                {/if}
-            </span>
-        </label>
+        ]}
+        for={id}>
+        <input
+                type="checkbox"
+                {value}
+                {name}
+                {id}
+                {disabled}
+                bind:checked
+                aria-required = {required}
+                aria-invalid={invalid}
+                {...restProps}
+                onchange={() => { if (checked) invalid = false}}
+        />
+        <span class="qc-check-text">
+            <span class="qc-check-label">{label}</span>
+            {#if description}
+                <span class="qc-check-description">{@html description}</span>
+            {/if}
+        </span>
+    </label>
 
-    </div>
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
