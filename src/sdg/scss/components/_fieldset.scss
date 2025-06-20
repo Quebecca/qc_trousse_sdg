@@ -23,9 +23,9 @@
 
 .qc-fieldset-required {
   @include content-font(md, bold);
-  display: flex;
+  display: inline-flex;
   color: token-value(color, red, regular);
-  margin-left: token-value(spacer, xs);
+  margin: 0 0 0 token-value(spacer, xs);
 }
 
 $invalid-offset: token-value(spacer, xs);

@@ -2040,9 +2040,9 @@ input[type=radio]:checked.qc-compact::before {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
-  display: flex;
+  display: inline-flex;
   color: var(--qc-color-red-regular);
-  margin-left: var(--qc-spacer-xs);
+  margin: 0 0 0 var(--qc-spacer-xs);
 }
 
 .qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
