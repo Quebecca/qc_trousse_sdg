@@ -2025,10 +2025,13 @@ input[type=radio]:checked.qc-compact::before {
 }
 .qc-fieldset legend {
   font-weight: var(--qc-font-weight-content-bold);
-  display: -webkit-box;
-  margin-bottom: var(--qc-spacer-sm);
+  display: inline-block;
+  margin-bottom: var(--qc-spacer-md);
 }
 .qc-fieldset.qc-compact {
+  margin-bottom: var(--qc-spacer-sm);
+}
+.qc-fieldset.qc-compact legend {
   margin-bottom: var(--qc-spacer-sm);
 }
 
@@ -2040,9 +2043,8 @@ input[type=radio]:checked.qc-compact::before {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
-  display: inline-flex;
   color: var(--qc-color-red-regular);
-  margin: 0 0 0 var(--qc-spacer-xs);
+  margin: 0 0 0 0.4rem;
 }
 
 .qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
