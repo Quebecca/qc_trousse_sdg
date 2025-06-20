@@ -10,8 +10,8 @@
         compact,
         selectionButton,
         checked,
-        disabled = false,
-        required,
+        disabled = $bindable(false),
+        required =$bindable(false),
         invalid = $bindable(false),
         groupValue = $bindable(),
         ...rest
