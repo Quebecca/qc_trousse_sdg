@@ -17,8 +17,6 @@
             constructor() {
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
-                const tiles = Array.from(this.querySelectorAll('qc-checkbox-selection-button'));
-                this.formFieldElements.push(...tiles);
                 this.formFieldElements.forEach((element) => {
                     element.classList.add('qc-check-row-parent');
                 })
