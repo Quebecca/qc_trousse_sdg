@@ -1,0 +1,30 @@
+@use "qc-sdg-lib" as *;
+
+img {
+  border: none;
+  vertical-align: middle;
+}
+
+figure {
+  margin: 0 0 token-value(spacer content-block mb);
+  display: table;
+  overflow-x: auto;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+figcaption {
+  display: table-caption;
+  caption-side: bottom;
+  @include content-font(sm);
+  max-inline-size: token-value(max-content-width);
+  background-color: token-value(color, grey, pale);
+  padding: rem($base-spacer);
+  margin-top: rem($base-spacer);
+  p {
+    @include content-font(sm);
+    margin-bottom: 0;
+  }
+}
+

@@ -1,0 +1,12 @@
+@use "qc-sdg-lib" as *;
+@use "sass:map";
+
+@mixin generate-color-classes($colors) {
+  @include map-deep-parse($colors) using ($path,$value)
+  {
+    .qc-bg-#{deep-implode($path, '-')} {
+      background-color: token-value($path);
+    }
+  };
+}
+@include generate-color-classes((color : map.get($lg-tokens, color)));

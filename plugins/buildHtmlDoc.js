@@ -11,7 +11,8 @@ function buildHtmlDoc({ input, output }) {
             const inputFileName = path.basename(inputPath);
             let html = fs.readFileSync(inputPath, 'utf-8');
 
-            // Recherche tous les fichiers _*.html dans /src
+            this.addWatchFile(inputPath);
+
             const partialPaths = glob.sync('**/_*.html', {
                 cwd: srcRoot,
                 absolute: true,
@@ -19,6 +20,8 @@ function buildHtmlDoc({ input, output }) {
             });
 
             for (const partialPath of partialPaths) {
+                this.addWatchFile(partialPath);
+
                 const partialName = path.basename(partialPath);
                 const marker = `<!-- ${partialName} -->`;
                 const content = fs.readFileSync(partialPath, 'utf-8');
