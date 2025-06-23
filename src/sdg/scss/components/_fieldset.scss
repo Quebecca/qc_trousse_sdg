@@ -41,25 +41,32 @@ $invalid-border-width: 2px;
   margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
 }
 
-.qc-field-elements-flex {
+%tiled-gap {
+  gap: token-value(spacer, xs);
+}
+
+.qc-field-elements-tiled-flex-row {
+  @extend %tiled-gap;
   display: flex;
+}
+
+.qc-field-elements-tiled {
+  @extend %tiled-gap;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+}
+
+%not-tiled-flex {
+  display: flex;
+  gap: token-value(spacer, sm);
+}
+
+.qc-field-elements-flex-row {
+  @extend %not-tiled-flex;
+}
+
+.qc-field-elements-flex {
+  @extend %not-tiled-flex;
   flex-direction: column;
-  row-gap: token-value(spacer, sm);
 }
 
-%grid {
-  display: grid;
-  grid-gap: token-value(spacer, xs);
-}
-
-.qc-field-elements-grid-row {
-  @extend %grid;
-  grid-auto-flow: row;
-  grid-template-columns: repeat(var(--elements-per-row-or-col), 1fr);
-}
-
-.qc-field-elements-grid-column {
-  @extend %grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(var(--elements-per-row-or-col), 1fr);
-}

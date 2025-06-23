@@ -11,8 +11,7 @@
         invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
         tiled: {attribute: 'tiled', type: 'Boolean'},
-        flowDirection: {attribute: 'flow-direction', type: 'String'},
-        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
+        columnCount: {attribute: 'column-count', type: 'String'}
     },
 
     extend: (customElementConstructor) => {
@@ -45,8 +44,7 @@
         value = $bindable(""),
         checked=$bindable(false),
         tiled,
-        flowDirection,
-        elementsPerRowOrCol
+        columnCount
     } = $props();
 
 </script>
@@ -63,7 +61,6 @@
     bind:value
     bind:checked
     {tiled}
-    {flowDirection}
-    {elementsPerRowOrCol}
+    {columnCount}
 />
 

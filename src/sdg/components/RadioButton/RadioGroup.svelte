@@ -6,9 +6,6 @@
         checked = $bindable(false),
         invalid = $bindable(false),
         value = $bindable([]),
-        tiled = false,
-        flowDirection = "column",
-        elementsPerRowOrCol = 1,
         ...restProps
     } = $props();
 
@@ -21,10 +18,10 @@
 </script>
 
 <Fieldset
-        {...restProps}
-        bind:value
-        bind:checked
-        bind:invalid
-        {formFieldElements}
+    {...restProps}
+    bind:value
+    bind:checked
+    bind:invalid
+    {formFieldElements}
 />
 

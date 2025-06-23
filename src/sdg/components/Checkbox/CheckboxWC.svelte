@@ -10,7 +10,7 @@
         checked: { attribute: 'checked', type: 'Boolean', reflect: true },
         required: { attribute: 'required', type: 'Boolean' },
         compact: { attribute: 'compact', type: 'Boolean' },
-        selectionButton: {attribute: 'selection-button', type: 'Boolean'},
+        tiled: {attribute: 'tiled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' }
     },
@@ -39,7 +39,7 @@
         required = $bindable(false),
         checked = $bindable(false),
         compact,
-        selectionButton,
+        tiled,
         invalid = $bindable(false),
         invalidText,
         ...rest
@@ -63,7 +63,7 @@
     bind:checked
     required={parentGroup?.required ?? required}
     {compact}
-    selectionButton={parentGroup?.selectionButton ?? selectionButton}
+    tiled={parentGroup?.tiled ?? tiled}
     bind:invalid
     {invalidText}
     {parentGroup}

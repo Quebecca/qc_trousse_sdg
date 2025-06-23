@@ -6,9 +6,9 @@
     let {
         legend,
         name,
-        selectionButton = false,
-        flowDirection = "column",
-        elementsPerRowOrCol = 1,
+        tiled = false,
+        inline = false,
+        columnCount = 1,
         compact,
         required = false,
         disabled,
@@ -25,7 +25,24 @@
     onMount(() => {
         groupSelection.append(...formFieldElements);
     });
+
+    function chooseDivCLass(inline, tiled) {
+        if (tiled) {
+            if (inline) {
+                return "qc-field-elements-tiled-flex-row";
+            } else {
+                return "qc-field-elements-tiled";
+            }
+        } else {
+            if (inline) {
+                return "qc-field-elements-flex-row";
+            } else {
+                return "qc-field-elements-flex";
+            }
+        }
+    }
 </script>
+
 <fieldset class={[
             invalid && "qc-fieldset-invalid",
             "qc-fieldset",
@@ -41,8 +58,8 @@
         {/if}
     </legend>
     <div
-        class={selectionButton ? `qc-field-elements-grid-${flowDirection}` : "qc-field-elements-flex"}
-        style="--elements-per-row-or-col: {elementsPerRowOrCol}"
+        class={chooseDivCLass(inline, tiled)}
+        style="--column-count: {columnCount}"
         bind:this={groupSelection}
     >
         {@render children?.()}

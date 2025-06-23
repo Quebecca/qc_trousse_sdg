@@ -2058,25 +2058,26 @@ input[type=radio]:checked.qc-compact::before {
   margin-left: calc(-1 * var(--qc-spacer-xs) - 2px);
 }
 
-.qc-field-elements-flex {
+.qc-field-elements-tiled, .qc-field-elements-tiled-flex-row {
+  gap: var(--qc-spacer-xs);
+}
+
+.qc-field-elements-tiled-flex-row {
   display: flex;
+}
+
+.qc-field-elements-tiled {
+  display: inline-grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+}
+
+.qc-field-elements-flex, .qc-field-elements-flex-row {
+  display: flex;
+  gap: var(--qc-spacer-sm);
+}
+
+.qc-field-elements-flex {
   flex-direction: column;
-  row-gap: var(--qc-spacer-sm);
-}
-
-.qc-field-elements-grid-column, .qc-field-elements-grid-row {
-  display: grid;
-  grid-gap: var(--qc-spacer-xs);
-}
-
-.qc-field-elements-grid-row {
-  grid-auto-flow: row;
-  grid-template-columns: repeat(var(--elements-per-row-or-col), 1fr);
-}
-
-.qc-field-elements-grid-column {
-  grid-auto-flow: column;
-  grid-template-rows: repeat(var(--elements-per-row-or-col), 1fr);
 }
 
 input[type=checkbox]:checked {

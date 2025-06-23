@@ -8823,8 +8823,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[40, 12]]);
-	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[29, 0, [[37, 4], [43, 4]]]]);
+	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[57, 12]]);
+	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[46, 0, [[54, 4], [60, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -8834,9 +8834,9 @@
 
 		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			selectionButton = prop($$props, 'selectionButton', 7, false),
-			flowDirection = prop($$props, 'flowDirection', 7, "column"),
-			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
+			tiled = prop($$props, 'tiled', 7, false),
+			inline = prop($$props, 'inline', 7, false),
+			columnCount = prop($$props, 'columnCount', 7, 1),
 			compact = prop($$props, 'compact', 7),
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7),
@@ -8852,6 +8852,22 @@
 		onMount(() => {
 			get(groupSelection).append(...formFieldElements());
 		});
+
+		function chooseDivCLass(inline, tiled) {
+			if (tiled) {
+				if (inline) {
+					return "qc-field-elements-tiled-flex-row";
+				} else {
+					return "qc-field-elements-tiled";
+				}
+			} else {
+				if (inline) {
+					return "qc-field-elements-flex-row";
+				} else {
+					return "qc-field-elements-flex";
+				}
+			}
+		}
 
 		var fieldset = root$1();
 
@@ -8905,17 +8921,22 @@
 
 		reset(fieldset);
 
-		template_effect(() => {
-			set_class(fieldset, 1, clsx([
-				invalid() && "qc-fieldset-invalid",
-				"qc-fieldset",
-				compact() && "qc-compact",
-				disabled() && "qc-fieldset-disabled"
-			]));
+		template_effect(
+			($0) => {
+				set_class(fieldset, 1, clsx([
+					invalid() && "qc-fieldset-invalid",
+					"qc-fieldset",
+					compact() && "qc-compact",
+					disabled() && "qc-fieldset-disabled"
+				]));
 
-			set_class(div, 1, clsx(selectionButton() ? `qc-field-elements-grid-${flowDirection()}` : "qc-field-elements-flex"));
-			set_style(div, `--elements-per-row-or-col: ${elementsPerRowOrCol() ?? ''}`);
-		});
+				set_class(div, 1, $0);
+				set_style(div, `--column-count: ${columnCount() ?? ''}`);
+			},
+			[
+				() => clsx(chooseDivCLass(inline(), tiled()))
+			]
+		);
 
 		append($$anchor, fieldset);
 
@@ -8934,25 +8955,25 @@
 				name($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value = false) {
-				selectionButton($$value);
+			set tiled($$value = false) {
+				tiled($$value);
 				flushSync();
 			},
-			get flowDirection() {
-				return flowDirection();
+			get inline() {
+				return inline();
 			},
-			set flowDirection($$value = "column") {
-				flowDirection($$value);
+			set inline($$value = false) {
+				inline($$value);
 				flushSync();
 			},
-			get elementsPerRowOrCol() {
-				return elementsPerRowOrCol();
+			get columnCount() {
+				return columnCount();
 			},
-			set elementsPerRowOrCol($$value = 1) {
-				elementsPerRowOrCol($$value);
+			set columnCount($$value = 1) {
+				columnCount($$value);
 				flushSync();
 			},
 			get compact() {
@@ -9024,9 +9045,9 @@
 		{
 			legend: {},
 			name: {},
-			selectionButton: {},
-			flowDirection: {},
-			elementsPerRowOrCol: {},
+			tiled: {},
+			inline: {},
+			columnCount: {},
 			compact: {},
 			required: {},
 			disabled: {},
@@ -9053,9 +9074,6 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			selectionButton = prop($$props, 'selectionButton', 7, false),
-			flowDirection = prop($$props, 'flowDirection', 7),
-			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
 				$$props,
 				[
@@ -9066,10 +9084,7 @@
 					'formFieldElements',
 					'checked',
 					'invalid',
-					'value',
-					'selectionButton',
-					'flowDirection',
-					'elementsPerRowOrCol'
+					'value'
 				]);
 
 		let updateValue = function () {
@@ -9081,51 +9096,35 @@
 			}
 		};
 
-		const expression = user_derived(() => strict_equals(flowDirection(), "column") ? flowDirection() : "row");
-
 		{
 			$$ownership_validator.binding('value', Fieldset, value);
 			$$ownership_validator.binding('checked', Fieldset, checked);
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-			Fieldset($$anchor, spread_props(
-				{
-					get selectionButton() {
-						return selectionButton();
-					},
-					get flowDirection() {
-						return get(expression);
-					},
-					get elementsPerRowOrCol() {
-						return elementsPerRowOrCol();
-					}
+			Fieldset($$anchor, spread_props(() => restProps, {
+				updateValue,
+				get formFieldElements() {
+					return formFieldElements();
 				},
-				() => restProps,
-				{
-					updateValue,
-					get formFieldElements() {
-						return formFieldElements();
-					},
-					get value() {
-						return value();
-					},
-					set value($$value) {
-						value($$value);
-					},
-					get checked() {
-						return checked();
-					},
-					set checked($$value) {
-						checked($$value);
-					},
-					get invalid() {
-						return invalid();
-					},
-					set invalid($$value) {
-						invalid($$value);
-					}
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
 				}
-			));
+			}));
 		}
 
 		return pop({
@@ -9157,27 +9156,6 @@
 				value($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
-			},
-			set selectionButton($$value = false) {
-				selectionButton($$value);
-				flushSync();
-			},
-			get flowDirection() {
-				return flowDirection();
-			},
-			set flowDirection($$value) {
-				flowDirection($$value);
-				flushSync();
-			},
-			get elementsPerRowOrCol() {
-				return elementsPerRowOrCol();
-			},
-			set elementsPerRowOrCol($$value = 1) {
-				elementsPerRowOrCol($$value);
-				flushSync();
-			},
 			...legacy_api()
 		});
 	}
@@ -9188,10 +9166,7 @@
 			formFieldElements: {},
 			checked: {},
 			invalid: {},
-			value: {},
-			selectionButton: {},
-			flowDirection: {},
-			elementsPerRowOrCol: {}
+			value: {}
 		},
 		[],
 		[],
@@ -9216,9 +9191,8 @@
 			disabled = prop($$props, 'disabled', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
-			selectionButton = prop($$props, 'selectionButton', 7),
-			flowDirection = prop($$props, 'flowDirection', 7),
-			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
+			tiled = prop($$props, 'tiled', 7),
+			columnCount = prop($$props, 'columnCount', 7);
 
 		{
 			$$ownership_validator.binding('value', CheckboxGroup, value);
@@ -9247,14 +9221,11 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get selectionButton() {
-					return selectionButton();
+				get tiled() {
+					return tiled();
 				},
-				get flowDirection() {
-					return flowDirection();
-				},
-				get elementsPerRowOrCol() {
-					return elementsPerRowOrCol();
+				get columnCount() {
+					return columnCount();
 				},
 				get value() {
 					return value();
@@ -9348,25 +9319,18 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value) {
-				selectionButton($$value);
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
-			get flowDirection() {
-				return flowDirection();
+			get columnCount() {
+				return columnCount();
 			},
-			set flowDirection($$value) {
-				flowDirection($$value);
-				flushSync();
-			},
-			get elementsPerRowOrCol() {
-				return elementsPerRowOrCol();
-			},
-			set elementsPerRowOrCol($$value) {
-				elementsPerRowOrCol($$value);
+			set columnCount($$value) {
+				columnCount($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -9381,15 +9345,8 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			selectionButton: {
-				attribute: 'selection-button',
-				type: 'Boolean'
-			},
-			flowDirection: { attribute: 'flow-direction', type: 'String' },
-			elementsPerRowOrCol: {
-				attribute: 'elements-per-row-or-col',
-				type: 'String'
-			},
+			tiled: { attribute: 'tiled', type: 'Boolean' },
+			columnCount: { attribute: 'column-count', type: 'String' },
 			formFieldElements: {},
 			value: {},
 			checked: {},
@@ -9494,14 +9451,14 @@
 
 			template_effect(() => {
 				set_class(label_1, 1, clsx([
-					!selectionButton() && "qc-check-row",
-					selectionButton() && "qc-selection-button"
+					!tiled() && "qc-check-row",
+					tiled() && "qc-selection-button"
 				]));
 
 				set_attribute(label_1, 'for', get(id));
 
 				attributes = set_attributes(input, attributes, {
-					class: !parentGroup() && compact() || selectionButton() ? "qc-compact" : "",
+					class: !parentGroup() && compact() || tiled() ? "qc-compact" : "",
 					type: 'checkbox',
 					value: value(),
 					name: name(),
@@ -9530,7 +9487,7 @@
 			checked = prop($$props, 'checked', 7),
 			required = prop($$props, 'required', 15, false),
 			compact = prop($$props, 'compact', 7),
-			selectionButton = prop($$props, 'selectionButton', 7),
+			tiled = prop($$props, 'tiled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
 			parentGroup = prop($$props, 'parentGroup', 7),
@@ -9549,7 +9506,7 @@
 					'checked',
 					'required',
 					'compact',
-					'selectionButton',
+					'tiled',
 					'invalid',
 					'invalidText',
 					'parentGroup'
@@ -9657,11 +9614,11 @@
 				compact($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value) {
-				selectionButton($$value);
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9702,7 +9659,7 @@
 			checked: {},
 			required: {},
 			compact: {},
-			selectionButton: {},
+			tiled: {},
 			invalid: {},
 			invalidText: {},
 			parentGroup: {}
@@ -9729,7 +9686,7 @@
 			checked = prop($$props, 'checked', 7),
 			required = prop($$props, 'required', 15, false),
 			compact = prop($$props, 'compact', 7),
-			selectionButton = prop($$props, 'selectionButton', 7),
+			tiled = prop($$props, 'tiled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			rest = rest_props(
@@ -9748,7 +9705,7 @@
 					'checked',
 					'required',
 					'compact',
-					'selectionButton',
+					'tiled',
 					'invalid',
 					'invalidText'
 				]);
@@ -9763,7 +9720,7 @@
 
 		const expression = user_derived(() => disabled() ?? parentGroup()?.disabled);
 		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
-		const expression_2 = user_derived(() => parentGroup()?.selectionButton ?? selectionButton());
+		const expression_2 = user_derived(() => parentGroup()?.tiled ?? tiled());
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9789,7 +9746,7 @@
 					get compact() {
 						return compact();
 					},
-					get selectionButton() {
+					get tiled() {
 						return get(expression_2);
 					},
 					get invalidText() {
@@ -9887,11 +9844,11 @@
 				compact($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value) {
-				selectionButton($$value);
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9927,10 +9884,7 @@
 			},
 			required: { attribute: 'required', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
-			selectionButton: {
-				attribute: 'selection-button',
-				type: 'Boolean'
-			},
+			tiled: { attribute: 'tiled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			parentGroup: {}
@@ -9962,9 +9916,6 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			selectionButton = prop($$props, 'selectionButton', 7, false),
-			flowDirection = prop($$props, 'flowDirection', 7),
-			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
 				$$props,
 				[
@@ -9975,10 +9926,7 @@
 					'formFieldElements',
 					'checked',
 					'invalid',
-					'value',
-					'selectionButton',
-					'flowDirection',
-					'elementsPerRowOrCol'
+					'value'
 				]);
 
 		user_effect((_) => {
@@ -9989,50 +9937,34 @@
 			}
 		});
 
-		const expression = user_derived(() => strict_equals(flowDirection(), "column") ? flowDirection() : "row");
-
 		{
 			$$ownership_validator.binding('value', Fieldset, value);
 			$$ownership_validator.binding('checked', Fieldset, checked);
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-			Fieldset($$anchor, spread_props(
-				{
-					get selectionButton() {
-						return selectionButton();
-					},
-					get flowDirection() {
-						return get(expression);
-					},
-					get elementsPerRowOrCol() {
-						return elementsPerRowOrCol();
-					}
+			Fieldset($$anchor, spread_props(() => restProps, {
+				get formFieldElements() {
+					return formFieldElements();
 				},
-				() => restProps,
-				{
-					get formFieldElements() {
-						return formFieldElements();
-					},
-					get value() {
-						return value();
-					},
-					set value($$value) {
-						value($$value);
-					},
-					get checked() {
-						return checked();
-					},
-					set checked($$value) {
-						checked($$value);
-					},
-					get invalid() {
-						return invalid();
-					},
-					set invalid($$value) {
-						invalid($$value);
-					}
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
 				}
-			));
+			}));
 		}
 
 		return pop({
@@ -10064,27 +9996,6 @@
 				value($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
-			},
-			set selectionButton($$value = false) {
-				selectionButton($$value);
-				flushSync();
-			},
-			get flowDirection() {
-				return flowDirection();
-			},
-			set flowDirection($$value) {
-				flowDirection($$value);
-				flushSync();
-			},
-			get elementsPerRowOrCol() {
-				return elementsPerRowOrCol();
-			},
-			set elementsPerRowOrCol($$value = 1) {
-				elementsPerRowOrCol($$value);
-				flushSync();
-			},
 			...legacy_api()
 		});
 	}
@@ -10095,10 +10006,7 @@
 			formFieldElements: {},
 			checked: {},
 			invalid: {},
-			value: {},
-			selectionButton: {},
-			flowDirection: {},
-			elementsPerRowOrCol: {}
+			value: {}
 		},
 		[],
 		[],
@@ -10123,9 +10031,8 @@
 			invalidText = prop($$props, 'invalidText', 7),
 			value = prop($$props, 'value', 15, ""),
 			checked = prop($$props, 'checked', 15, false),
-			selectionButton = prop($$props, 'selectionButton', 7),
-			flowDirection = prop($$props, 'flowDirection', 7),
-			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
+			tiled = prop($$props, 'tiled', 7),
+			columnCount = prop($$props, 'columnCount', 7);
 
 		{
 			$$ownership_validator.binding('value', RadioGroup, value);
@@ -10156,14 +10063,11 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get selectionButton() {
-					return selectionButton();
+				get tiled() {
+					return tiled();
 				},
-				get flowDirection() {
-					return flowDirection();
-				},
-				get elementsPerRowOrCol() {
-					return elementsPerRowOrCol();
+				get columnCount() {
+					return columnCount();
 				},
 				get value() {
 					return value();
@@ -10251,25 +10155,18 @@
 				checked($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value) {
-				selectionButton($$value);
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
-			get flowDirection() {
-				return flowDirection();
+			get columnCount() {
+				return columnCount();
 			},
-			set flowDirection($$value) {
-				flowDirection($$value);
-				flushSync();
-			},
-			get elementsPerRowOrCol() {
-				return elementsPerRowOrCol();
-			},
-			set elementsPerRowOrCol($$value) {
-				elementsPerRowOrCol($$value);
+			set columnCount($$value) {
+				columnCount($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -10287,15 +10184,8 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			selectionButton: {
-				attribute: 'selection-button',
-				type: 'Boolean'
-			},
-			flowDirection: { attribute: 'flow-direction', type: 'String' },
-			elementsPerRowOrCol: {
-				attribute: 'elements-per-row-or-col',
-				type: 'String'
-			},
+			tiled: { attribute: 'tiled', type: 'Boolean' },
+			columnCount: { attribute: 'column-count', type: 'String' },
 			formFieldElements: {},
 			checked: {}
 		},
@@ -10341,7 +10231,7 @@
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
 			compact = prop($$props, 'compact', 7),
-			selectionButton = prop($$props, 'selectionButton', 7),
+			tiled = prop($$props, 'tiled', 7),
 			checked = prop($$props, 'checked', 7),
 			disabled = prop($$props, 'disabled', 15, false),
 			required = prop($$props, 'required', 15, false),
@@ -10359,7 +10249,7 @@
 					'label',
 					'description',
 					'compact',
-					'selectionButton',
+					'tiled',
 					'checked',
 					'disabled',
 					'required',
@@ -10411,12 +10301,12 @@
 			set_attribute(label_1, 'for', `${name()}_${value()}`);
 
 			set_class(label_1, 1, clsx([
-				!selectionButton() && "qc-check-row",
-				selectionButton() && "qc-selection-button"
+				!tiled() && "qc-check-row",
+				tiled() && "qc-selection-button"
 			]));
 
 			attributes = set_attributes(input, attributes, {
-				class: compact() || selectionButton() ? "qc-compact" : "",
+				class: compact() || tiled() ? "qc-compact" : "",
 				type: 'radio',
 				id: `${name()}_${value()}`,
 				name: name(),
@@ -10481,11 +10371,11 @@
 				compact($$value);
 				flushSync();
 			},
-			get selectionButton() {
-				return selectionButton();
+			get tiled() {
+				return tiled();
 			},
-			set selectionButton($$value) {
-				selectionButton($$value);
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
 			get checked() {
@@ -10535,7 +10425,7 @@
 			label: {},
 			description: {},
 			compact: {},
-			selectionButton: {},
+			tiled: {},
 			checked: {},
 			disabled: {},
 			required: {},
@@ -10614,8 +10504,8 @@
 							get description() {
 								return description();
 							},
-							get selectionButton() {
-								return parent().selectionButton;
+							get tiled() {
+								return parent().tiled;
 							},
 							get compact() {
 								return parent().compact;

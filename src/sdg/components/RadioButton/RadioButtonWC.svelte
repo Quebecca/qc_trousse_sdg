@@ -55,7 +55,7 @@
         bind:groupValue={parent.value}
         {label}
         {description}
-        selectionButton={parent.selectionButton}
+        tiled={parent.tiled}
         compact={parent.compact}
         {checked}
         disabled={disabled ?? parent.disabled}

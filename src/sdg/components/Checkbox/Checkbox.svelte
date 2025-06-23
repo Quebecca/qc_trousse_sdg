@@ -13,7 +13,7 @@
         checked,
         required = $bindable(false),
         compact,
-        selectionButton,
+        tiled,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
@@ -37,12 +37,12 @@
 {#snippet checkboxRow()}
     <label
         class={[
-            !selectionButton && "qc-check-row",
-            selectionButton && "qc-selection-button",
+            !tiled && "qc-check-row",
+            tiled && "qc-selection-button",
         ]}
         for={id}>
         <input
-                class={(!parentGroup && compact) || selectionButton ? "qc-compact" : ""}
+                class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}
