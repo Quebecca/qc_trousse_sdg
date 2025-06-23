@@ -6794,7 +6794,7 @@
 	var root_3$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[95, 10, [[106, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 32, [[121, 36]]]]);
-	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
+	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
 
 	var root$e = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
@@ -6979,7 +6979,7 @@
 
 				{
 					var consequent_6 = ($$anchor) => {
-						var nav = root_6();
+						var nav = root_6$1();
 						var ul = child(nav);
 						var node_6 = child(ul);
 
@@ -10157,12 +10157,13 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[35, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[33, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[40, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[45, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[55, 12]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!></div>`), TextField[FILENAME], [[31, 0, [[43, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[48, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[46, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[53, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[58, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[68, 12]]);
+	var root_6 = add_locations(template(`<div class="qc-textfield-charcount"> </div>`), TextField[FILENAME], [[82, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[44, 0, [[56, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10184,6 +10185,20 @@
 
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
 		let isTextArea = user_derived(() => strict_equals(size(), 'zone-xl') || strict_equals(size(), 'zone-xxl'));
+
+		let charCountText = user_derived(() => () => {
+			if (strict_equals(maxlength(), null, false)) {
+				const currentLength = value()?.length || 0;
+
+				if (strict_equals(currentLength, 0)) {
+					return `Maximum ${maxlength()} ${strict_equals(lang, 'fr') ? 'caractères' : 'characters'}`;
+				} else {
+					return `${currentLength} / ${maxlength()} ${strict_equals(lang, 'fr') ? 'caractères' : 'characters'}`;
+				}
+			}
+
+			return null;
+		});
 
 		function clearInvalid() {
 			if (invalid()) {
@@ -10290,6 +10305,23 @@
 
 		{
 			var consequent_4 = ($$anchor) => {
+				var div_3 = root_6();
+				var text_2 = child(div_3, true);
+
+				reset(div_3);
+				template_effect(($0) => set_text(text_2, $0), [() => get(charCountText)()]);
+				append($$anchor, div_3);
+			};
+
+			if_block(node_4, ($$render) => {
+				if (strict_equals(maxlength(), null, false)) $$render(consequent_4);
+			});
+		}
+
+		var node_5 = sibling(node_4, 2);
+
+		{
+			var consequent_5 = ($$anchor) => {
 				FormError($$anchor, {
 					get invalid() {
 						return invalid();
@@ -10300,8 +10332,8 @@
 				});
 			};
 
-			if_block(node_4, ($$render) => {
-				if (invalid()) $$render(consequent_4);
+			if_block(node_5, ($$render) => {
+				if (invalid()) $$render(consequent_5);
 			});
 		}
 

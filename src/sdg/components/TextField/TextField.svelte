@@ -20,6 +20,19 @@
 
     let sizeClass = $derived(`qc-textfield--${size}`);
     let isTextArea = $derived(size === 'zone-xl' || size === 'zone-xxl');
+    let charCountText = $derived(() => {
+        if (maxlength !== null) {
+            const currentLength = value?.length || 0;
+            if (currentLength === 0) {
+                return `Maximum ${maxlength} ${lang === 'fr' ? 'caractères' : 'characters'}`;
+            } else {
+                return `${currentLength} / ${maxlength} ${lang === 'fr' ? 'caractères' : 'characters'}`;
+            }
+        }
+        return null;
+    });
+
+
 
     function clearInvalid() {
         if (invalid) {
@@ -64,6 +77,12 @@
             />
         {/if}
     </div>
+
+    {#if maxlength !== null}
+        <div class="qc-textfield-charcount">
+            {charCountText()}
+        </div>
+    {/if}
 
     {#if invalid}
         <FormError {invalid} {invalidText} />
