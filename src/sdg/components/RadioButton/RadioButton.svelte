@@ -34,8 +34,10 @@
         aria-required={required}
         aria-invalid={invalid}
         {required}
-        {...restProps}
         {checked}
+        {disabled}
+        {...restProps}
+
     />
     <label for={`${name}_${value}`}>{label}</label>
 </div>

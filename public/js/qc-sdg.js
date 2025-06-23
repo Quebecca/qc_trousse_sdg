@@ -10229,7 +10229,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root = add_locations(template(`<div><input> <label> </label></div>`), RadioButton[FILENAME], [[26, 0, [[28, 4], [40, 4]]]]);
+	var root = add_locations(template(`<div><input> <label> </label></div>`), RadioButton[FILENAME], [[26, 0, [[28, 4], [42, 4]]]]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10295,8 +10295,9 @@
 				'aria-required': required(),
 				'aria-invalid': invalid(),
 				required: required(),
-				...get(restProps),
-				checked: checked()
+				checked: checked(),
+				disabled: disabled(),
+				...get(restProps)
 			});
 
 			set_attribute(label_1, 'for', `${name()}_${value()}`);
