@@ -63,7 +63,7 @@
     bind:checked
     required={parentGroup?.required ?? required}
     {compact}
-    selectionButton={parentGroup?.grid ?? selectionButton}
+    selectionButton={parentGroup?.selectionButton ?? selectionButton}
     bind:invalid
     {invalidText}
     {parentGroup}

@@ -8834,7 +8834,7 @@
 
 		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			grid = prop($$props, 'grid', 7, false),
+			selectionButton = prop($$props, 'selectionButton', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7, "column"),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			compact = prop($$props, 'compact', 7),
@@ -8913,7 +8913,7 @@
 				disabled() && "qc-fieldset-disabled"
 			]));
 
-			set_class(div, 1, clsx(grid() ? `qc-field-elements-grid-${flowDirection()}` : "qc-field-elements-flex"));
+			set_class(div, 1, clsx(selectionButton() ? `qc-field-elements-grid-${flowDirection()}` : "qc-field-elements-flex"));
 			set_style(div, `--elements-per-row-or-col: ${elementsPerRowOrCol() ?? ''}`);
 		});
 
@@ -8934,11 +8934,11 @@
 				name($$value);
 				flushSync();
 			},
-			get grid() {
-				return grid();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set grid($$value = false) {
-				grid($$value);
+			set selectionButton($$value = false) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -9024,7 +9024,7 @@
 		{
 			legend: {},
 			name: {},
-			grid: {},
+			selectionButton: {},
 			flowDirection: {},
 			elementsPerRowOrCol: {},
 			compact: {},
@@ -9053,7 +9053,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			grid = prop($$props, 'grid', 7, false),
+			selectionButton = prop($$props, 'selectionButton', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
@@ -9067,7 +9067,7 @@
 					'checked',
 					'invalid',
 					'value',
-					'grid',
+					'selectionButton',
 					'flowDirection',
 					'elementsPerRowOrCol'
 				]);
@@ -9090,8 +9090,8 @@
 
 			Fieldset($$anchor, spread_props(
 				{
-					get grid() {
-						return grid();
+					get selectionButton() {
+						return selectionButton();
 					},
 					get flowDirection() {
 						return get(expression);
@@ -9157,11 +9157,11 @@
 				value($$value);
 				flushSync();
 			},
-			get grid() {
-				return grid();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set grid($$value = false) {
-				grid($$value);
+			set selectionButton($$value = false) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -9189,7 +9189,7 @@
 			checked: {},
 			invalid: {},
 			value: {},
-			grid: {},
+			selectionButton: {},
 			flowDirection: {},
 			elementsPerRowOrCol: {}
 		},
@@ -9216,7 +9216,7 @@
 			disabled = prop($$props, 'disabled', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
-			grid = prop($$props, 'grid', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
 
@@ -9247,8 +9247,8 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get grid() {
-					return grid();
+				get selectionButton() {
+					return selectionButton();
 				},
 				get flowDirection() {
 					return flowDirection();
@@ -9348,11 +9348,11 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get grid() {
-				return grid();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set grid($$value) {
-				grid($$value);
+			set selectionButton($$value) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -9381,7 +9381,10 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			grid: { attribute: 'grid', type: 'Boolean' },
+			selectionButton: {
+				attribute: 'selection-button',
+				type: 'Boolean'
+			},
 			flowDirection: { attribute: 'flow-direction', type: 'String' },
 			elementsPerRowOrCol: {
 				attribute: 'elements-per-row-or-col',
@@ -9760,7 +9763,7 @@
 
 		const expression = user_derived(() => disabled() ?? parentGroup()?.disabled);
 		const expression_1 = user_derived(() => parentGroup()?.required ?? required());
-		const expression_2 = user_derived(() => parentGroup()?.grid ?? selectionButton());
+		const expression_2 = user_derived(() => parentGroup()?.selectionButton ?? selectionButton());
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9959,7 +9962,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			grid = prop($$props, 'grid', 7, false),
+			selectionButton = prop($$props, 'selectionButton', 7, false),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7, 1),
 			restProps = rest_props(
@@ -9973,7 +9976,7 @@
 					'checked',
 					'invalid',
 					'value',
-					'grid',
+					'selectionButton',
 					'flowDirection',
 					'elementsPerRowOrCol'
 				]);
@@ -9995,8 +9998,8 @@
 
 			Fieldset($$anchor, spread_props(
 				{
-					get grid() {
-						return grid();
+					get selectionButton() {
+						return selectionButton();
 					},
 					get flowDirection() {
 						return get(expression);
@@ -10061,11 +10064,11 @@
 				value($$value);
 				flushSync();
 			},
-			get grid() {
-				return grid();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set grid($$value = false) {
-				grid($$value);
+			set selectionButton($$value = false) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -10093,7 +10096,7 @@
 			checked: {},
 			invalid: {},
 			value: {},
-			grid: {},
+			selectionButton: {},
 			flowDirection: {},
 			elementsPerRowOrCol: {}
 		},
@@ -10120,7 +10123,7 @@
 			invalidText = prop($$props, 'invalidText', 7),
 			value = prop($$props, 'value', 15, ""),
 			checked = prop($$props, 'checked', 15, false),
-			grid = prop($$props, 'grid', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			flowDirection = prop($$props, 'flowDirection', 7),
 			elementsPerRowOrCol = prop($$props, 'elementsPerRowOrCol', 7);
 
@@ -10153,8 +10156,8 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get grid() {
-					return grid();
+				get selectionButton() {
+					return selectionButton();
 				},
 				get flowDirection() {
 					return flowDirection();
@@ -10248,11 +10251,11 @@
 				checked($$value);
 				flushSync();
 			},
-			get grid() {
-				return grid();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set grid($$value) {
-				grid($$value);
+			set selectionButton($$value) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get flowDirection() {
@@ -10284,7 +10287,10 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			grid: { attribute: 'grid', type: 'Boolean' },
+			selectionButton: {
+				attribute: 'selection-button',
+				type: 'Boolean'
+			},
 			flowDirection: { attribute: 'flow-direction', type: 'String' },
 			elementsPerRowOrCol: {
 				attribute: 'elements-per-row-or-col',
@@ -10576,8 +10582,6 @@
 					'invalid'
 				]);
 
-		let Component = RadioButton;
-
 		user_effect(() => {
 			if (checked()) {
 				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 46, 12);
@@ -10594,9 +10598,9 @@
 				const expression = user_derived(() => disabled() ?? parent().disabled);
 
 				{
-					$$ownership_validator.binding('parent', Component, () => parent().value);
+					$$ownership_validator.binding('parent', RadioButton, () => parent().value);
 
-					Component($$anchor, spread_props(
+					RadioButton($$anchor, spread_props(
 						{
 							get name() {
 								return parent().name;
@@ -10611,7 +10615,7 @@
 								return description();
 							},
 							get selectionButton() {
-								return parent().grid;
+								return parent().selectionButton;
 							},
 							get compact() {
 								return parent().compact;
@@ -10635,7 +10639,7 @@
 								return parent().value;
 							},
 							set groupValue($$value) {
-								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 55, 21);
+								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 55, 25);
 							}
 						}
 					));

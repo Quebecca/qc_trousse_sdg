@@ -6,7 +6,7 @@
     let {
         legend,
         name,
-        grid = false,
+        selectionButton = false,
         flowDirection = "column",
         elementsPerRowOrCol = 1,
         compact,
@@ -41,7 +41,7 @@
         {/if}
     </legend>
     <div
-        class={grid ? `qc-field-elements-grid-${flowDirection}` : "qc-field-elements-flex"}
+        class={selectionButton ? `qc-field-elements-grid-${flowDirection}` : "qc-field-elements-flex"}
         style="--elements-per-row-or-col: {elementsPerRowOrCol}"
         bind:this={groupSelection}
     >

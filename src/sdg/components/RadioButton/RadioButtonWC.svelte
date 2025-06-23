@@ -40,7 +40,7 @@
         // groupValue= $bindable(""),
         ...rest
     } = $props();
-    let Component = RadioButton
+
     $effect(() => {
         if(checked) {
             parent.value = value;
@@ -49,18 +49,18 @@
 
 </script>
 {#if parent}
-<Component
-    name={parent.name}
-    {value}
-    bind:groupValue={parent.value}
-    {label}
-    {description}
-    selectionButton={parent.grid}
-    compact={parent.compact}
-    {checked}
-    disabled={disabled ?? parent.disabled}
-    {required}
-    invalid={parent.invalid}
-    {...rest}
-/>
+    <RadioButton
+        name={parent.name}
+        {value}
+        bind:groupValue={parent.value}
+        {label}
+        {description}
+        selectionButton={parent.selectionButton}
+        compact={parent.compact}
+        {checked}
+        disabled={disabled ?? parent.disabled}
+        {required}
+        invalid={parent.invalid}
+        {...rest}
+    />
 {/if}
