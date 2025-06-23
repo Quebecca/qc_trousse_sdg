@@ -8823,8 +8823,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[57, 12]]);
-	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[46, 0, [[54, 4], [60, 4]]]]);
+	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[52, 12]]);
+	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[41, 0, [[49, 4], [55, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -8860,13 +8860,9 @@
 				} else {
 					return "qc-field-elements-tiled";
 				}
-			} else {
-				if (inline) {
-					return "qc-field-elements-flex-row";
-				} else {
-					return "qc-field-elements-flex";
-				}
 			}
+
+			return "qc-field-elements-flex";
 		}
 
 		var fieldset = root$1();

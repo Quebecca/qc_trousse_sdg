@@ -56,17 +56,9 @@ $invalid-border-width: 2px;
   grid-template-columns: repeat(var(--column-count), 1fr);
 }
 
-%not-tiled-flex {
+.qc-field-elements-flex {
   display: flex;
   gap: token-value(spacer, sm);
-}
-
-.qc-field-elements-flex-row {
-  @extend %not-tiled-flex;
-}
-
-.qc-field-elements-flex {
-  @extend %not-tiled-flex;
   flex-direction: column;
 }
 

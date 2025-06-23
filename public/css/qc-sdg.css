@@ -2071,12 +2071,9 @@ input[type=radio]:checked.qc-compact::before {
   grid-template-columns: repeat(var(--column-count), 1fr);
 }
 
-.qc-field-elements-flex, .qc-field-elements-flex-row {
+.qc-field-elements-flex {
   display: flex;
   gap: var(--qc-spacer-sm);
-}
-
-.qc-field-elements-flex {
   flex-direction: column;
 }
 

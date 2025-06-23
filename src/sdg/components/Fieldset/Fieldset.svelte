@@ -33,13 +33,8 @@
             } else {
                 return "qc-field-elements-tiled";
             }
-        } else {
-            if (inline) {
-                return "qc-field-elements-flex-row";
-            } else {
-                return "qc-field-elements-flex";
-            }
         }
+        return "qc-field-elements-flex";
     }
 </script>
 
