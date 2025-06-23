@@ -15,12 +15,6 @@
         ...rest
     } = $props();
 
-    let restProps = $state({});
-    onMount(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
-
-        restProps = {...inputProps};
-    });
 </script>
 
 <div class={["qc-check-row", compact && "qc-compact"]}>
@@ -36,8 +30,7 @@
         {required}
         {checked}
         {disabled}
-        {...restProps}
-
+        {...rest}
     />
     <label for={`${name}_${value}`}>{@html label}</label>
 </div>

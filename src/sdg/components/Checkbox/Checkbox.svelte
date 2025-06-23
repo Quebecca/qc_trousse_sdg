@@ -21,11 +21,6 @@
     
     let id = $derived(name + "_" + value);
 
-    let restProps = $state({});
-    $effect(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
-        restProps = inputProps;
-    });
     $effect(() => {
         if (checked) {
             invalid = false;
@@ -49,7 +44,7 @@
             bind:checked
             aria-required = {required}
             aria-invalid={invalid}
-            {...restProps}
+            {...rest}
             onchange={() => { if (checked) invalid = false}}
         />
         <label for={id}>

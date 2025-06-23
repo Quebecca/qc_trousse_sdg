@@ -22,23 +22,21 @@
             "aria-label": lang === "fr" ? "Lancer la recherche" : "Submit search"
         }
     };
-
-    let inputProps = $state({});
-    let submitProps = $state({});
-
-
-    $effect(() => {
-        const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input","submit"], defaultsAttributes, rest);
-        inputProps = {
-            ...inputAttrs,
+    let inputProps = $derived({
+            ...defaultsAttributes.input,
+            ...Utils.computeFieldsAttributes("input", rest),
             name,
-        };
-        submitProps = submitAttrs;
-    });
+        }),
+        submitProps = $derived({
+            ...defaultsAttributes.input,
+            ...Utils.computeFieldsAttributes("submit", rest)
+        });
+    ;
 </script>
 
 <div class="qc-search-bar" class:piv-background={pivBackground}>
-    <SearchInput bind:value {...inputProps}/>
+    <SearchInput bind:value
+                 {...inputProps}/>
         <IconButton
                 type="submit"
                 iconColor={pivBackground ? 'blue-piv' : 'background'}

@@ -6879,25 +6879,29 @@
 	    }
 
 	    /**
-	     * Produces an array of props objects, with each object containing all props that start with the associated prefix
-	     * passed in tags
-	     * @param tags
-	     * @param defaultsAttributes
-	     * @param restProps
-	     * @returns {*} The array of props objects
+	     * extract and clean prefixed attributes
+	     * example:
+	     *  computeFieldsAttributes("radio" , {"radio-class":"my-radio", "radio-data-foo":"foo", "other":"other value"})
+	     *  return {"class":"my-radio", "data-foo":"foo"}
+	     *
+	     </div>
+	     * @param {(string|string[])} prefix - Une chaîne de caractères ou un tableau de chaînes.
+	     * @param restProps - ojbect of attributes
+	     * @returns {*} - object of attributes
 	     */
-	    static computeFieldsAttributes(tags, defaultsAttributes, restProps) {
-	        return tags.map(control => {
-	            const prefix = `${control}-`;
-	            return {
-	                ...defaultsAttributes[control],
-	                ...Object.fromEntries(
-	                    Object.entries(restProps)
-	                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
-	                        .filter(Boolean) // élimine les éléments null
-	                )
-	            };
-	        });
+	    static computeFieldsAttributes(prefix , restProps) {
+	        let output = {},
+	            _prefix = prefix + '-';
+	        Object
+	            .entries(restProps)
+	            .forEach(([prop,value]) => {
+	                if (prop.startsWith(_prefix)) {
+	                    const prefixProp = prop.replace(new RegExp('^' + _prefix), '');
+	                    output[prefixProp] = value;
+	                }
+	            });
+
+	        return output;
 	    }
 
 	}
@@ -8902,7 +8906,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$2 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[40, 0]]);
+	var root$2 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -8936,15 +8940,15 @@
 			}
 		};
 
-		let inputProps = state(proxy({}));
-		let submitProps = state(proxy({}));
-
-		user_effect(() => {
-			const [inputAttrs, submitAttrs] = Utils.computeFieldsAttributes(["input", "submit"], defaultsAttributes, rest);
-
-			set(inputProps, { ...inputAttrs, name: name() }, true);
-			set(submitProps, submitAttrs, true);
-		});
+		let inputProps = user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("input", rest),
+				name: name()
+			})),
+			submitProps = user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("submit", rest)
+			}));
 
 		var div = root$2();
 		let classes;
@@ -9658,9 +9662,9 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[58, 16]]);
-	var root_1 = add_locations(template(`<div><input> <label><!> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[39, 4, [[43, 8], [55, 8]]]]);
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[70, 0]]);
+	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
+	var root_1 = add_locations(template(`<div><input> <label><!> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[34, 4, [[38, 8], [50, 8]]]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[65, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9735,7 +9739,7 @@
 					disabled: disabled(),
 					'aria-required': required(),
 					'aria-invalid': invalid(),
-					...get(restProps),
+					...rest,
 					onchange: event_handler
 				});
 
@@ -9778,13 +9782,6 @@
 				]);
 
 		let id = user_derived(() => name() + "_" + value());
-		let restProps = state(proxy({}));
-
-		user_effect(() => {
-			const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
-
-			set(restProps, inputProps, true);
-		});
 
 		user_effect(() => {
 			if (checked()) {
@@ -9962,16 +9959,16 @@
 					'invalidText'
 				]);
 
-		let effectiveName = user_derived(() => parentGroup()?.name || name() || '');
-
 		if (parentGroup()) {
 			compact(parentGroup().compact);
 			invalid(parentGroup().invalid);
+			name(parentGroup().name);
 		}
 
 		const expression = user_derived(() => label() ?? value());
 		const expression_1 = user_derived(() => parentGroup()?.disabled ?? disabled());
 		const expression_2 = user_derived(() => parentGroup()?.required ?? required());
+		var spread_element = user_derived(() => Utils.computeFieldsAttributes("checkbox", rest));
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -9986,7 +9983,7 @@
 						return get(expression);
 					},
 					get name() {
-						return get(effectiveName);
+						return name();
 					},
 					get disabled() {
 						return get(expression_1);
@@ -10004,7 +10001,7 @@
 						return parentGroup();
 					}
 				},
-				() => rest,
+				() => get(spread_element),
 				{
 					get checked() {
 						return checked();
@@ -10408,7 +10405,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root = add_locations(template(`<div><input> <label><!></label></div>`), RadioButton[FILENAME], [[26, 0, [[28, 4], [42, 4]]]]);
+	var root = add_locations(template(`<div><input> <label><!></label></div>`), RadioButton[FILENAME], [[20, 0, [[22, 4], [35, 4]]]]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10443,14 +10440,6 @@
 					'groupValue'
 				]);
 
-		let restProps = state(proxy({}));
-
-		onMount(() => {
-			const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
-
-			set(restProps, { ...inputProps }, true);
-		});
-
 		var div = root();
 		var input = child(div);
 
@@ -10477,7 +10466,7 @@
 				required: required(),
 				checked: checked(),
 				disabled: disabled(),
-				...get(restProps)
+				...rest
 			});
 
 			set_attribute(label_1, 'for', `${name()}_${value()}`);
@@ -10596,7 +10585,6 @@
 			label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			rest = rest_props(
 				$$props,
@@ -10611,15 +10599,12 @@
 					'label',
 					'checked',
 					'disabled',
-					'required',
 					'invalid'
 				]);
 
-		let Component = RadioButton;
-
 		user_effect(() => {
 			if (checked()) {
-				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 44, 12);
+				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 42, 12);
 			}
 		});
 
@@ -10631,11 +10616,12 @@
 				validate_binding('bind:groupValue={parent.value}', parent, () => 'value');
 
 				const expression = user_derived(() => disabled() ?? parent().disabled);
+				var spread_element = user_derived(() => Utils.computeFieldsAttributes("radio", rest));
 
 				{
-					$$ownership_validator.binding('parent', Component, () => parent().value);
+					$$ownership_validator.binding('parent', RadioButton, () => parent().value);
 
-					Component($$anchor, spread_props(
+					RadioButton($$anchor, spread_props(
 						{
 							get name() {
 								return parent().name;
@@ -10656,19 +10642,19 @@
 								return get(expression);
 							},
 							get required() {
-								return required();
+								return parent().required;
 							},
 							get invalid() {
 								return parent().invalid;
 							}
 						},
-						() => rest,
+						() => get(spread_element),
 						{
 							get groupValue() {
 								return parent().value;
 							},
 							set groupValue($$value) {
-								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 53, 21);
+								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 51, 21);
 							}
 						}
 					));
@@ -10725,13 +10711,6 @@
 				disabled($$value);
 				flushSync();
 			},
-			get required() {
-				return required();
-			},
-			set required($$value = false) {
-				required($$value);
-				flushSync();
-			},
 			get invalid() {
 				return invalid();
 			},
@@ -10750,7 +10729,6 @@
 			label: { attribute: 'label', type: 'String' },
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
-			required: { attribute: 'required', type: 'Boolean' },
 			parent: {},
 			name: {},
 			invalid: {}
