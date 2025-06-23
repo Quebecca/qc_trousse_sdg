@@ -2209,6 +2209,7 @@ qc-textfield {
   background: transparent;
   padding: 0.8rem 0.8rem;
   border: 0;
+  margin-top: 0.4rem;
 }
 .qc-textfield input[type=text]::-moz-placeholder, .qc-textfield textarea::-moz-placeholder {
   color: var(--qc-color-grey-medium);
@@ -2255,7 +2256,10 @@ qc-textfield {
 }
 
 .qc-textfield-container {
-  margin-bottom: var(--qc-spacer-md);
+  margin-bottom: 3.2rem;
+}
+.qc-textfield-container label {
+  margin: 0;
 }
 
 .qc-textfield-container.disabled label {
