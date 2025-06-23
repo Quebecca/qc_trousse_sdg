@@ -39,5 +39,5 @@
         {...restProps}
 
     />
-    <label for={`${name}_${value}`}>{label}</label>
+    <label for={`${name}_${value}`}>{@html label}</label>
 </div>

@@ -41,8 +41,7 @@
         ...rest
     } = $props();
 
-    let effectiveValue = $derived(value || label);
-    let effectiveName = $derived(parentGroup?.getAttribute('name') || name || '');
+    let effectiveName = $derived(parentGroup?.name || name || '');
     if (parentGroup) {
         compact = parentGroup.compact
         invalid = parentGroup.invalid
@@ -51,8 +50,8 @@
 </script>
 
 <Checkbox
-    bind:value={effectiveValue}
-    {label}
+    {value}
+    label={label ?? value}
     name={effectiveName}
     disabled={parentGroup?.disabled ?? disabled}
     bind:checked

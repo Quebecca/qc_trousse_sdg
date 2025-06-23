@@ -53,7 +53,7 @@
             onchange={() => { if (checked) invalid = false}}
         />
         <label for={id}>
-            {label}
+            {@html label}
             {#if !parentGroup && required}
                 <span class="qc-fieldset-required">*</span>
             {/if}
