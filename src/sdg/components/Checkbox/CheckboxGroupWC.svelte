@@ -2,14 +2,16 @@
     tag: 'qc-checkbox-group',
     shadow: 'none',
     props: {
+        name: {attribute: 'name', type: 'String'},
+        value: {attribute: 'value', type: 'String'},
         compact: { attribute: 'compact', type: 'Boolean' },
         required: { attribute: 'required', type: 'Boolean' },
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' },
         tiled: {attribute: 'tiled', type: 'Boolean'},
-        flowDirection: {attribute: 'flow-direction', type: 'String'},
-        elementsPerRowOrCol: {attribute: 'elements-per-row-or-col', type: 'String'}
+        columnCount: {attribute: 'column-count', type: 'String'},
+        inline: {attribute: 'inline', type: 'Boolean'}
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -40,8 +42,8 @@
         invalid = $bindable(false),
         invalidText,
         tiled,
-        flowDirection,
-        elementsPerRowOrCol
+        columnCount,
+        inline,
     } = $props();
 
 </script>
@@ -58,6 +60,6 @@
     {disabled}
     {invalidText}
     {tiled}
-    {flowDirection}
-    {elementsPerRowOrCol}
+    {columnCount}
+    {inline}
 />

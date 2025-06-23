@@ -2063,7 +2063,11 @@ input[type=radio]:checked.qc-compact::before {
 }
 
 .qc-field-elements-tiled-flex-row {
-  display: flex;
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+.qc-field-elements-tiled-flex-row .qc-check-row-parent {
+  flex-grow: 0;
 }
 
 .qc-field-elements-tiled {

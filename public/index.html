@@ -1464,30 +1464,6 @@
                 </qc-radio-group>
             </qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
-                <qc-radio-group legend="Choisissez une option :"
-                                name="ex-radio-select"
-                                tiled
-                                column-count="2"
-                >
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                            checked
-                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3 (désactivée)"
-                            value="3"
-                            disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
-
             <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
                 <form id="radio-form">
                     <qc-radio-group
@@ -1630,24 +1606,20 @@
                         <td>tiled</td>
                         <td>NA</td>
                         <td>NA</td>
-                        <td>Affiche les boutons radio en boutons de sélection dans une grille</td>
+                        <td>Affiche les boutons radio en boutons de sélection</td>
                     </tr>
                     <tr>
-                        <td>flow-direction</td>
-                        <td>"row" ou "column"</td>
-                        <td>"row"</td>
-                        <td>
-                            Détermine l'orientation dans laquelle les éléments sont ajoutées
-                            à la grille du groupe
-                        </td>
+                        <td>inline</td>
+                        <td>NA</td>
+                        <td>NA</td>
+                        <td>Si les boutons radio sont `tiled`, affiche ceux-ci sur une rangée.</td>
                     </tr>
                     <tr>
                         <td>column-count</td>
                         <td>Nombre</td>
                         <td>1</td>
                         <td>
-                            Détermine le nombre d'éléments maximal qu'une rangée ou colonne peut avoir avant d'en créer
-                            une nouvelle dans la grille du groupe
+                            Nombre de colonnes de chaque rangée de boutons de sélection dans la grille du groupe
                         </td>
                     </tr>
                     </tbody>
@@ -1783,23 +1755,6 @@
                     <qc-checkbox label="Option 1"></qc-checkbox>
                     <qc-checkbox label="Option 2"></qc-checkbox>
                     <qc-checkbox label="Option 3"></qc-checkbox>
-                </qc-checkbox-group>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple
-                caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
-            >
-                <qc-checkbox-group
-                    name="exemple-checkbox-select"
-                    legend="Sélectionnez vos options"
-                    tiled
-                    column-count="2">
-                    <qc-checkbox
-                            label="Option 1"
-                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                    ></qc-checkbox>
-                    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-                    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
                 </qc-checkbox-group>
             </qc-doc-exemple>
 
@@ -2029,24 +1984,20 @@
                             <td>tiled</td>
                             <td>NA</td>
                             <td>NA</td>
-                            <td>Affiche les cases à cocher en boutons de sélection dans une grille</td>
+                            <td>Affiche les cases à cocher en boutons de sélection</td>
                         </tr>
                         <tr>
-                            <td>flow-direction</td>
-                            <td>"row" ou "column"</td>
-                            <td>"row"</td>
-                            <td>
-                                Détermine l'orientation dans laquelle les éléments sont ajoutées
-                                à la grille du groupe
-                            </td>
+                            <td>inline</td>
+                            <td>NA</td>
+                            <td>NA</td>
+                            <td>Si les cases à cocher sont `tiled`, affiche celles-ci sur une rangée.</td>
                         </tr>
                         <tr>
                             <td>column-count</td>
                             <td>Nombre</td>
                             <td>1</td>
                             <td>
-                                Détermine le nombre d'éléments maximal qu'une rangée ou colonne peut avoir avant d'en créer
-                                une nouvelle dans la grille du groupe
+                                Nombre de colonnes de chaque rangée de boutons de sélection dans la grille du groupe
                             </td>
                         </tr>
                         <tr>
@@ -2071,6 +2022,85 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Boutons de sélection -->
+
+            <h2 id="selecion-button">Boutons de sélection</h2>
+
+            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+                <qc-radio-group legend="Choisissez une option :"
+                                name="ex-radio-select"
+                                tiled
+                                column-count="2"
+                >
+                    <qc-radio-button
+                            label="Option 1"
+                            value="1"
+                            checked
+                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="Option 3 (désactivée)"
+                            value="3"
+                            disabled
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple
+                    caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
+            >
+                <qc-checkbox-group
+                        name="exemple-checkbox-select"
+                        legend="Sélectionnez vos options"
+                        tiled
+                        column-count="2">
+                    <qc-checkbox
+                            label="Option 1"
+                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+                    ></qc-checkbox>
+                    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
+                    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
+                </qc-checkbox-group>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
+                <qc-radio-group legend="Choisissez une option :"
+                                name="ex-radio-select-inline"
+                                tiled
+                                inline
+                >
+                    <qc-radio-button
+                            label="1"
+                            value="1"
+                            checked
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="2"
+                            value="2"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="3"
+                            value="3"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="4"
+                            value="4"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="5"
+                            value="5"
+                    ></qc-radio-button>
+                    <qc-radio-button
+                            label="6"
+                            value="6"
+                    ></qc-radio-button>
+                </qc-radio-group>
+            </qc-doc-exemple>
 
         </div>
     </main>

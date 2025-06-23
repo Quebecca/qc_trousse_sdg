@@ -9188,7 +9188,8 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			tiled = prop($$props, 'tiled', 7),
-			columnCount = prop($$props, 'columnCount', 7);
+			columnCount = prop($$props, 'columnCount', 7),
+			inline = prop($$props, 'inline', 7);
 
 		{
 			$$ownership_validator.binding('value', CheckboxGroup, value);
@@ -9222,6 +9223,9 @@
 				},
 				get columnCount() {
 					return columnCount();
+				},
+				get inline() {
+					return inline();
 				},
 				get value() {
 					return value();
@@ -9329,6 +9333,13 @@
 				columnCount($$value);
 				flushSync();
 			},
+			get inline() {
+				return inline();
+			},
+			set inline($$value) {
+				inline($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9336,6 +9347,8 @@
 	customElements.define('qc-checkbox-group', create_custom_element(
 		CheckboxGroupWC,
 		{
+			name: { attribute: 'name', type: 'String' },
+			value: { attribute: 'value', type: 'String' },
 			compact: { attribute: 'compact', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
@@ -9343,11 +9356,10 @@
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			tiled: { attribute: 'tiled', type: 'Boolean' },
 			columnCount: { attribute: 'column-count', type: 'String' },
+			inline: { attribute: 'inline', type: 'Boolean' },
 			formFieldElements: {},
-			value: {},
 			checked: {},
-			legend: {},
-			name: {}
+			legend: {}
 		},
 		[],
 		[],
@@ -10028,7 +10040,8 @@
 			value = prop($$props, 'value', 15, ""),
 			checked = prop($$props, 'checked', 15, false),
 			tiled = prop($$props, 'tiled', 7),
-			columnCount = prop($$props, 'columnCount', 7);
+			columnCount = prop($$props, 'columnCount', 7),
+			inline = prop($$props, 'inline', 7);
 
 		{
 			$$ownership_validator.binding('value', RadioGroup, value);
@@ -10064,6 +10077,9 @@
 				},
 				get columnCount() {
 					return columnCount();
+				},
+				get inline() {
+					return inline();
 				},
 				get value() {
 					return value();
@@ -10165,6 +10181,13 @@
 				columnCount($$value);
 				flushSync();
 			},
+			get inline() {
+				return inline();
+			},
+			set inline($$value) {
+				inline($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10182,6 +10205,7 @@
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			tiled: { attribute: 'tiled', type: 'Boolean' },
 			columnCount: { attribute: 'column-count', type: 'String' },
+			inline: { attribute: 'inline', type: 'Boolean' },
 			formFieldElements: {},
 			checked: {}
 		},

@@ -47,7 +47,12 @@ $invalid-border-width: 2px;
 
 .qc-field-elements-tiled-flex-row {
   @extend %tiled-gap;
-  display: flex;
+  display: inline-flex;
+  flex-wrap: wrap;
+
+  .qc-check-row-parent {
+    flex-grow: 0;
+  }
 }
 
 .qc-field-elements-tiled {

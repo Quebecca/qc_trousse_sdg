@@ -11,7 +11,8 @@
         invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
         tiled: {attribute: 'tiled', type: 'Boolean'},
-        columnCount: {attribute: 'column-count', type: 'String'}
+        columnCount: {attribute: 'column-count', type: 'String'},
+        inline: {attribute: 'inline', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -44,7 +45,8 @@
         value = $bindable(""),
         checked=$bindable(false),
         tiled,
-        columnCount
+        columnCount,
+        inline
     } = $props();
 
 </script>
@@ -62,5 +64,6 @@
     bind:checked
     {tiled}
     {columnCount}
+    {inline}
 />
 
