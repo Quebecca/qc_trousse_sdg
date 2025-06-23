@@ -2291,6 +2291,13 @@ qc-textfield {
   display: block;
 }
 
+.qc-textfield-charcount {
+  text-align: right;
+  margin-top: 0.4rem;
+  color: var(--qc-color-grey-medium);
+  font-size: var(--qc-font-size-sm);
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);

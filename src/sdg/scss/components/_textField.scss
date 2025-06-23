@@ -105,3 +105,10 @@ qc-textfield {
     display: block;
   }
 }
+
+.qc-textfield-charcount {
+  text-align: right;
+  margin-top: rem(4);
+  color: token-value(color, grey, medium);
+  font-size: token-value(font, size, sm);
+}
