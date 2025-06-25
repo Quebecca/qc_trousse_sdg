@@ -14,8 +14,10 @@
 
 
     let updateValue = function () {
+        console.log("called");
+        console.log(formFieldElements);
         value = formFieldElements
-            .map(cb => cb.checked ? cb.value : false)
+            .map(cb => cb.querySelector("input").checked ? cb.value : false)
             .filter(x => x);
         checked = value.length > 0;
         if (checked) {

@@ -1684,28 +1684,9 @@
                             comme attribut au bouton radio.
                         </td>
                     </tr>
-                    <tr>
-                        <td>radio-*</td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
-                            comme attribut au bouton radio brut. Utile pour ajouter de la validation de formulaire par
-                            contraintes HTML.
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
-            </div>zzz
-
-            <h4>Événement JS</h4>
-            <p>
-                Un événement JS <code class="qc-bg-color-grey-pale">qc.radio.removeInvalidFor${name}</code>
-                est émis au clic du bouton radio d'un groupe.
-                Celui-ci est attrapé par le <code class="qc-bg-color-grey-pale">qc-radio-group</code> parent pour ajuster
-                l'attribut <code class="qc-bg-color-grey-pale">invalid</code> à <code class="qc-bg-color-grey-pale">false</code>
-                à celui-ci et tous les boutons radio enfants.
-            </p>
+            </div>
 
             <h2 id="checkbox">Cases à cocher</h2>
 
@@ -1735,7 +1716,7 @@
                     const termsAcceptance = document.getElementById("exemple-une-case")
                     tosForm.addEventListener("submit", (event) => {
                         event.preventDefault();
-                        if(termsAcceptance.checked) {
+                        if (termsAcceptance.querySelector("input").checked) {
                             alert("Formulaire soumis");
                         } else {
                             termsAcceptance.invalid = true;
@@ -1817,7 +1798,7 @@
                             event.preventDefault();
                             let doSubmit = true;
                             event.target.querySelectorAll("[required]").forEach(group => {
-                                if (!group.checked) {
+                                if (!(group.querySelectorAll("input").checked)) {
                                     group.invalid = true;
                                     doSubmit = false;
                                 }
@@ -2013,16 +1994,6 @@
                             <td>
                                 Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
                                 comme attribut à la case à cocher.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>checkbox-*</td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-                                comme attribut à la case à cocher brute. Utile pour ajouter de la validation de formulaire par
-                                contraintes HTML.
                             </td>
                         </tr>
                     </tbody>
