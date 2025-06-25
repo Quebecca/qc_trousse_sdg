@@ -45,7 +45,7 @@ qc-textfield {
   &--md { width: rem(156); }
   &--lg { width: rem(249); }
   &--xl { width: rem(528); }
-  &--xxl { width: 100%; }
+  &--xxl { width: 100%; max-width: rem(825); }
 
   &--zone-xl { width: rem(528); }
   &--zone-xxl { width: 100%; }
@@ -78,7 +78,7 @@ qc-textfield {
 // Required
 .qc-textfield-required {
   color: token-value(color, red, regular);
-  margin-left: token-value(spacer, xs);
+  margin-left: rem(4);
 }
 
 // Description
@@ -111,9 +111,16 @@ qc-textfield {
   }
 }
 
+// Compteur de caractère
 .qc-textfield-charcount {
   text-align: right;
   margin-top: rem(4);
   color: token-value(color, grey, medium);
   font-size: token-value(font, size, sm);
+}
+
+// Caractères maximum atteint
+.qc-textfield-charcount.max-reached {
+  color: token-value(color, red, regular);
+  font-weight: bold;
 }

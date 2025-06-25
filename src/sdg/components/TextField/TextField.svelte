@@ -31,6 +31,9 @@
         }
         return null;
     });
+    let isMaxReached = $derived(() => {
+        return maxlength !== null && (value?.length || 0) >= maxlength;
+    });
 
 
 
@@ -79,10 +82,11 @@
     </div>
 
     {#if maxlength !== null}
-        <div class="qc-textfield-charcount">
+        <div class={`qc-textfield-charcount ${isMaxReached() ? 'max-reached' : ''}`}>
             {charCountText()}
         </div>
     {/if}
+
 
     {#if invalid}
         <FormError {invalid} {invalidText} />

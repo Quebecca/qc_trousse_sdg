@@ -983,82 +983,65 @@
             <h2 id="textfield">Champ de texte (qc-textfield)</h2>
             <h4>Exemples</h4>
 
-            <qc-doc-exemple caption="Exemples de champs de texte de différents formats">
-                <qc-textfield
-                        name="text-sm"
-                        label="Entrez votre âge"
-                        size="sm"
-                        placeholder="ex : 24"
-                ></qc-textfield>
-
-                <qc-textfield
-                        name="text-md"
-                        label="Entrez votre code postal"
-                        size="md"
-                        placeholder="ex : G1A 1A1"
-                ></qc-textfield>
-
-                <qc-textfield
-                        name="text-lg"
-                        label="Entrez votre nom"
-                        size="lg"
-                        placeholder="ex : Jean Tremblay"
-                ></qc-textfield>
-
-                <qc-textfield
-                        name="text-xl"
-                        label="Entrez votre adresse courriel"
-                        size="xl"
-                        placeholder="ex : jeantremblay@exemple.com"
-                ></qc-textfield>
-
-                <qc-textfield
-                        name="text-xxl"
-                        label="Entrez votre adresse"
-                        size="xxl"
-                        placeholder="ex : 1234 rue du Moulin"
-                ></qc-textfield>
-            </qc-doc-exemple>
-
-            <qc-doc-exemple caption="Exemples de zones de texte de formats xl et xxl, respectivement">
-                <qc-textfield
-                        name="zone-xl"
-                        label="Commentaires"
-                        description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-                        size="zone-xl"
-                ></qc-textfield>
-
-                <qc-textfield
-                        name="zone-xxl"
-                        label="Suggestions"
-                        description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-                        size="zone-xxl"
-                        max-length="500"
-                ></qc-textfield>
-            </qc-doc-exemple>
-
-
-            <qc-doc-exemple caption="Exemple de champ de texte obligatoire">
+            <qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
                 <form>
-                <qc-textfield
-                        name="text-required"
-                        label="Champ obligatoire"
-                        size="md"
-                        required="true"
-                        invalid-text="Exemple de message d'erreur"
-                ></qc-textfield>
-                <button type="submit">Envoyer</button>
-            </form>
-            </qc-doc-exemple>
+                    <qc-textfield
+                            name="text-sm"
+                            label="Entrez votre âge"
+                            size="sm"
+                            placeholder="ex : 24"
+                    ></qc-textfield>
 
-            <qc-doc-exemple caption="Exemple de champ de texte désactivé">
-                <qc-textfield
-                        name="text-disabled"
-                        label="Champ désactivé"
-                        size="xl"
-                        placeholder="Ce champ est désactivé."
-                        disabled="true"
-                ></qc-textfield>
+                    <qc-textfield
+                            name="text-md"
+                            label="Entrez votre code postal"
+                            size="md"
+                            placeholder="ex : G1A 1A1"
+                    ></qc-textfield>
+
+                    <qc-textfield
+                            name="text-lg"
+                            label="Entrez votre nom"
+                            size="lg"
+                            placeholder="ex : Jean Tremblay"
+                    ></qc-textfield>
+
+                    <qc-textfield
+                            name="text-xl"
+                            label="Entrez votre adresse courriel"
+                            size="xl"
+                            placeholder="ex : jeantremblay@exemple.com"
+                            required="true"
+                    ></qc-textfield>
+
+                    <qc-textfield
+                            name="text-xxl"
+                            label="Entrez votre adresse"
+                            size="xxl"
+                            placeholder="ex : 1234 rue du Moulin"
+                            disabled="true"
+                    ></qc-textfield>
+
+                    <qc-textfield
+                            name="zone-xl"
+                            label="Commentaires"
+                            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
+                            size="zone-xl"
+                    ></qc-textfield>
+
+                    <qc-textfield
+                            name="zone-xxl"
+                            label="Suggestions"
+                            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
+                            size="zone-xxl"
+                            max-length="500"
+                            required="true"
+                            invalid-text="Message d'erreur personnalisé"
+                    ></qc-textfield>
+
+                <button type="submit" class="btn  btn-sm btn-primary">Envoyer</button>
+                </form>
+
             </qc-doc-exemple>
 
 

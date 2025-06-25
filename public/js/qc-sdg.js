@@ -10157,13 +10157,13 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[48, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[46, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[53, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[58, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[68, 12]]);
-	var root_6 = add_locations(template(`<div class="qc-textfield-charcount"> </div>`), TextField[FILENAME], [[82, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[44, 0, [[56, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[51, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[49, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[56, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[61, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[71, 12]]);
+	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[85, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[47, 0, [[59, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10198,6 +10198,10 @@
 			}
 
 			return null;
+		});
+
+		let isMaxReached = user_derived(() => () => {
+			return strict_equals(maxlength(), null, false) && (value()?.length || 0) >= maxlength();
 		});
 
 		function clearInvalid() {
@@ -10309,7 +10313,18 @@
 				var text_2 = child(div_3, true);
 
 				reset(div_3);
-				template_effect(($0) => set_text(text_2, $0), [() => get(charCountText)()]);
+
+				template_effect(
+					($0, $1) => {
+						set_class(div_3, 1, $0);
+						set_text(text_2, $1);
+					},
+					[
+						() => `qc-textfield-charcount ${get(isMaxReached)() ? 'max-reached' : ''}`,
+						() => get(charCountText)()
+					]
+				);
+
 				append($$anchor, div_3);
 			};
 
