@@ -73,6 +73,12 @@ input[type="checkbox"] {
 
 .qc-checkbox-single {
   margin-bottom: token-value(spacer content-block mb);
+  display: flex;
+  flex-grow: 0;
+
+  label {
+    flex-grow: 0;
+  }
 
   &.qc-checkbox-single-invalid {
     @extend .qc-fieldset-invalid;

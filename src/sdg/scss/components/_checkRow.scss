@@ -125,7 +125,7 @@
 .qc-check-text {
   display: flex;
   flex-direction: column;
-  row-gap: token-value(spacer, sm);
+  gap: token-value(spacer, xs);
   min-height: token-value(spacer, md);
 }
 

@@ -38,7 +38,7 @@
     <label
         class={[
             !tiled && "qc-check-row",
-            tiled && "qc-selection-button",
+            tiled && "qc-selection-button"
         ]}
         for={id}>
         <input
@@ -73,7 +73,7 @@
 <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
-        ]}>
+    ]}>
     {@render checkboxRow()}
 </div>
 {/if}

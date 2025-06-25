@@ -1981,7 +1981,7 @@ qc-search-bar {
 .qc-check-text {
   display: flex;
   flex-direction: column;
-  row-gap: var(--qc-spacer-sm);
+  gap: var(--qc-spacer-xs);
   min-height: var(--qc-spacer-md);
 }
 
@@ -2140,6 +2140,11 @@ input[type=checkbox]:checked.qc-compact::after {
 
 .qc-checkbox-single {
   margin-bottom: var(--qc-spacer-content-block-mb);
+  display: flex;
+  flex-grow: 0;
+}
+.qc-checkbox-single label {
+  flex-grow: 0;
 }
 .qc-form-error {
   display: flex;
