@@ -2140,8 +2140,8 @@ input[type=checkbox]:checked.qc-compact::after {
 
 .qc-checkbox-single {
   margin-bottom: var(--qc-spacer-content-block-mb);
-  display: flex;
-  flex-grow: 0;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 .qc-checkbox-single label {
   flex-grow: 0;
