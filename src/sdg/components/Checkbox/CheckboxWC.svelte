@@ -54,7 +54,6 @@
             invalid = "true";
         }
     });
-    $inspect("checked wc", checked, ", invalid wc", invalid)
 
 </script>
 

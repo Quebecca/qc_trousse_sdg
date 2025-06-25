@@ -27,7 +27,6 @@
 
         restProps = inputProps;
     });
-    $inspect("checked svelte", checked, ", invalid svelte", invalid)
 
 </script>
 
