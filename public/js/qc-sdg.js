@@ -6792,7 +6792,7 @@
 	};
 
 	var root_3$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[95, 10, [[106, 12]]]]);
-	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
+	var root_7$1 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[118, 32, [[118, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 32, [[121, 36]]]]);
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[115, 20, [[116, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[133, 10]]);
@@ -6985,7 +6985,7 @@
 
 						{
 							var consequent_4 = ($$anchor) => {
-								var li = root_7();
+								var li = root_7$1();
 								var a_4 = child(li);
 								var text_3 = child(a_4, true);
 
@@ -10157,13 +10157,20 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required">*</span>`), TextField[FILENAME], [[51, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[49, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[56, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[61, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[71, 12]]);
-	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[85, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[47, 0, [[59, 4]]]]);
+	function clearInvalid(_, invalid) {
+		if (invalid()) {
+			invalid(false);
+		}
+	}
+
+	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[68, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[66, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[73, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[78, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[91, 12]]);
+	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[108, 8]]);
+	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[115, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[64, 0, [[76, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10204,11 +10211,22 @@
 			return strict_equals(maxlength(), null, false) && (value()?.length || 0) >= maxlength();
 		});
 
-		function clearInvalid() {
-			if (invalid()) {
-				invalid(false);
-			}
-		}
+		// Génération des ID pour le aria-describedby
+		const uid = Math.random().toString(36).substring(2, 10);
+		const inputId = `textfield-${uid}`;
+		const labelId = `label-${uid}`;
+		const descriptionId = `description-${uid}`;
+		const errorId = `error-${uid}`;
+		const charCountId = `charcount-${uid}`;
+
+		let describedBy = user_derived(() => () => {
+			const ids = [];
+
+			if (invalid()) ids.push(errorId);
+			if (description()) ids.push(descriptionId);
+			if (strict_equals(maxlength(), null, false)) ids.push(charCountId);
+			return ids.length > 0 ? ids.join(' ') : undefined;
+		});
 
 		var div = root$1();
 		var node = child(div);
@@ -10216,6 +10234,10 @@
 		{
 			var consequent_1 = ($$anchor) => {
 				var label_1 = root_1();
+
+				set_attribute(label_1, 'for', inputId);
+				set_attribute(label_1, 'id', labelId);
+
 				var text = child(label_1);
 				var node_1 = sibling(text);
 
@@ -10246,6 +10268,9 @@
 		{
 			var consequent_2 = ($$anchor) => {
 				var div_1 = root_3();
+
+				set_attribute(div_1, 'id', descriptionId);
+
 				var text_1 = child(div_1, true);
 
 				reset(div_1);
@@ -10266,17 +10291,23 @@
 				var textarea = root_4();
 
 				remove_textarea_child(textarea);
+				set_attribute(textarea, 'id', inputId);
+				textarea.__input = [clearInvalid, invalid];
 
-				template_effect(() => {
-					set_attribute(textarea, 'placeholder', placeholder());
-					textarea.disabled = disabled();
-					set_attribute(textarea, 'aria-required', required());
-					set_attribute(textarea, 'aria-invalid', invalid());
-					set_attribute(textarea, 'maxlength', maxlength());
-				});
+				template_effect(
+					($0) => {
+						set_attribute(textarea, 'name', name());
+						set_attribute(textarea, 'aria-describedby', $0);
+						set_attribute(textarea, 'placeholder', placeholder());
+						textarea.disabled = disabled();
+						set_attribute(textarea, 'aria-required', required());
+						set_attribute(textarea, 'aria-invalid', invalid());
+						set_attribute(textarea, 'maxlength', maxlength());
+					},
+					[() => get(describedBy)()]
+				);
 
 				bind_value(textarea, value);
-				event('input', textarea, clearInvalid);
 				append($$anchor, textarea);
 			};
 
@@ -10284,17 +10315,23 @@
 				var input = root_5();
 
 				remove_input_defaults(input);
+				set_attribute(input, 'id', inputId);
+				input.__input = [clearInvalid, invalid];
 
-				template_effect(() => {
-					set_attribute(input, 'placeholder', placeholder());
-					input.disabled = disabled();
-					set_attribute(input, 'aria-required', required());
-					set_attribute(input, 'aria-invalid', invalid());
-					set_attribute(input, 'maxlength', maxlength());
-				});
+				template_effect(
+					($0) => {
+						set_attribute(input, 'name', name());
+						set_attribute(input, 'aria-describedby', $0);
+						set_attribute(input, 'placeholder', placeholder());
+						input.disabled = disabled();
+						set_attribute(input, 'aria-required', required());
+						set_attribute(input, 'aria-invalid', invalid());
+						set_attribute(input, 'maxlength', maxlength());
+					},
+					[() => get(describedBy)()]
+				);
 
 				bind_value(input, value);
-				event('input', input, clearInvalid);
 				append($$anchor, input);
 			};
 
@@ -10310,6 +10347,9 @@
 		{
 			var consequent_4 = ($$anchor) => {
 				var div_3 = root_6();
+
+				set_attribute(div_3, 'id', charCountId);
+
 				var text_2 = child(div_3, true);
 
 				reset(div_3);
@@ -10337,7 +10377,13 @@
 
 		{
 			var consequent_5 = ($$anchor) => {
-				FormError($$anchor, {
+				var div_4 = root_7();
+
+				set_attribute(div_4, 'id', errorId);
+
+				var node_6 = child(div_4);
+
+				FormError(node_6, {
 					get invalid() {
 						return invalid();
 					},
@@ -10345,6 +10391,9 @@
 						return invalidText();
 					}
 				});
+
+				reset(div_4);
+				append($$anchor, div_4);
 			};
 
 			if_block(node_5, ($$render) => {
@@ -10449,6 +10498,8 @@
 			...legacy_api()
 		});
 	}
+
+	delegate(['input']);
 
 	create_custom_element(
 		TextField,
