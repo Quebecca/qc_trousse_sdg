@@ -2328,7 +2328,7 @@ input[type=checkbox]:checked.qc-compact::after {
   bottom: 0;
   background-color: var(--qc-color-grey-light);
   transition: all 0.3s ease-out;
-  border-radius: var(--qc-spacer-sm);
+  border-radius: 1.6rem;
 }
 .qc-switch-slider::before {
   position: absolute;
