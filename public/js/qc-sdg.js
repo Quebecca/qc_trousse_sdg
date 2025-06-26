@@ -9691,8 +9691,8 @@
 			description = prop($$props, 'description', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 15, false),
-			checked = prop($$props, 'checked', 7),
 			required = prop($$props, 'required', 15, false),
+			checked = prop($$props, 'checked', 15, false),
 			compact = prop($$props, 'compact', 7),
 			tiled = prop($$props, 'tiled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
@@ -9710,8 +9710,8 @@
 					'description',
 					'name',
 					'disabled',
-					'checked',
 					'required',
+					'checked',
 					'compact',
 					'tiled',
 					'invalid',
@@ -9831,18 +9831,18 @@
 				disabled($$value);
 				flushSync();
 			},
-			get checked() {
-				return checked();
-			},
-			set checked($$value) {
-				checked($$value);
-				flushSync();
-			},
 			get required() {
 				return required();
 			},
 			set required($$value = false) {
 				required($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
 				flushSync();
 			},
 			get compact() {

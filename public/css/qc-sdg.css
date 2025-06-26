@@ -2083,6 +2083,7 @@ input[type=radio]:checked.qc-compact::before {
 
 input[type=checkbox]:checked {
   background-color: var(--qc-color-blue-regular);
+  transition: all 160ms ease-in-out;
 }
 input[type=checkbox]:checked::before {
   width: 1.2rem;
@@ -2146,6 +2147,13 @@ input[type=checkbox]:checked.qc-compact::after {
 .qc-checkbox-single label {
   flex-grow: 0;
 }
+.checkbox-single {
+  padding-left: var(--qc-spacer-xs);
+}
+.checkbox-single.checkbox-single-invalid {
+  box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
