@@ -4,6 +4,7 @@
     props: {
         switchId: {attribute: 'switch-id', type: 'String'},
         name: {attribute: 'name', type: 'String'},
+        label: {attribute: 'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
     },
 }} />
@@ -12,16 +13,12 @@
     import ToggleSwitch from "./ToggleSwitch.svelte";
 
     let {
-        switchId,
-        name,
         checked = $bindable(false),
         ...rest
     } = $props();
 </script>
 
 <ToggleSwitch
-    {switchId}
-    {name}
     {checked}
     {...rest}
 />

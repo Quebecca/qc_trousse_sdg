@@ -5,6 +5,7 @@
     let {
         switchId,
         name,
+        label,
         checked = $bindable(false),
         ...rest
     } = $props();
@@ -27,6 +28,6 @@
         aria-checked={checked}
         {...restProps}
     />
-    <span class="qc-switch-label">Lorem ipsum generator</span>
+    <span class="qc-switch-label">{@html label}</span>
     <span class="qc-switch-slider"></span>
 </label>
