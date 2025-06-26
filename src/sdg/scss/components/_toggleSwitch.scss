@@ -6,8 +6,10 @@ $height: 32;
 $border: 2;
 
 .qc-switch {
-  display: inline-flex;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-grow: 1;
   position: relative;
   cursor: pointer;
 
@@ -26,10 +28,6 @@ input[type=checkbox]:checked ~ .qc-switch-slider {
   &::before {
     transform: translateX(rem($width - $height));
   }
-}
-
-.qc-switch-label {
-  display: inline-flex;
 }
 
 .qc-switch-slider {
