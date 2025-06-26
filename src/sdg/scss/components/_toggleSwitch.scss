@@ -1,10 +1,15 @@
 @use "qc-sdg-lib" as *;
+@use "sass:math";
+
+$width: 56;
+$height: 32;
+$border: 2;
 
 .qc-switch {
   display: inline-block;
   position: relative;
-  width: rem(56);
-  height: rem(32);
+  width: rem($width);
+  height: rem($height);
 
   input[type=checkbox] {
     opacity: 0;
@@ -15,7 +20,7 @@
       background-color: token-value(color, blue, regular);
 
       &::before {
-        transform: translateX(rem(24));
+        transform: translateX(rem($width - $height));
       }
     }
   }
@@ -30,15 +35,15 @@
   bottom: 0;
   background-color: token-value(color, grey, light);
   transition: all .3s ease-out;
-  border-radius: token-value(spacer, sm);
+  border-radius: rem(math.div($height, 2));
 
   &::before {
     position: absolute;
     content: "";
-    height: rem(28);
-    width: rem(28);
-    left: rem(2);
-    bottom: rem(2);
+    height: rem($height - 2 * $border);
+    width: rem($height - 2 * $border);
+    left: rem($border);
+    bottom: rem($border);
     background-color: token-value(color, white);
     border-radius: 50%;
     transition: all .3s ease-out;
