@@ -2302,8 +2302,10 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 
 .qc-switch {
-  display: inline-flex;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-grow: 1;
   position: relative;
   cursor: pointer;
 }
@@ -2319,10 +2321,6 @@ input[type=checkbox]:checked ~ .qc-switch-slider {
 }
 input[type=checkbox]:checked ~ .qc-switch-slider::before {
   transform: translateX(2.4rem);
-}
-
-.qc-switch-label {
-  display: inline-flex;
 }
 
 .qc-switch-slider {

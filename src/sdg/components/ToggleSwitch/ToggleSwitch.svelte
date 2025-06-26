@@ -18,7 +18,7 @@
     });
 </script>
 
-<label class="qc-switch">
+<label class="qc-switch" for="{switchId}">
     <input
         id={switchId}
         type="checkbox"
