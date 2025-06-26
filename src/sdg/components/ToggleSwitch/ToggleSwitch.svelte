@@ -18,7 +18,6 @@
 </script>
 
 <label class="qc-switch">
-    <span class="qc-switch-label">Lorem ipsum generator</span>
     <input
         id={switchId}
         type="checkbox"
@@ -28,5 +27,6 @@
         aria-checked={checked}
         {...restProps}
     />
+    <span class="qc-switch-label">Lorem ipsum generator</span>
     <span class="qc-switch-slider"></span>
 </label>
