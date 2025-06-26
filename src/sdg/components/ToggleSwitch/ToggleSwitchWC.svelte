@@ -2,8 +2,8 @@
     tag: 'qc-toggle-switch',
     shadow: 'none',
     props: {
+        switchId: {attribute: 'switch-id', type: 'String'},
         name: {attribute: 'name', type: 'String'},
-        handleOnChange: {attribute: 'handle-on-change', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
     },
 }} />
@@ -12,16 +12,16 @@
     import ToggleSwitch from "./ToggleSwitch.svelte";
 
     let {
+        switchId,
         name,
-        handleOnChange,
         checked = $bindable(false),
         ...rest
     } = $props();
 </script>
 
 <ToggleSwitch
+    {switchId}
     {name}
-    {handleOnChange}
     {checked}
     {...rest}
 />
