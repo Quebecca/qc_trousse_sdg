@@ -3,8 +3,8 @@
     import {Utils} from "../utils";
 
     let {
+        switchId,
         name,
-        handleOnChange,
         checked = $bindable(false),
         ...rest
     } = $props();
@@ -18,13 +18,14 @@
 </script>
 
 <label class="qc-switch">
+    <span class="qc-switch-label">Lorem ipsum generator</span>
     <input
+        id={switchId}
         type="checkbox"
         role="switch"
         {name}
         bind:checked={checked}
         aria-checked={checked}
-        onchange={handleOnChange}
         {...restProps}
     />
     <span class="qc-switch-slider"></span>
