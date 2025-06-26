@@ -10727,14 +10727,18 @@
 		next(2);
 		reset(label_1);
 
-		template_effect(() => attributes = set_attributes(input, attributes, {
-			id: switchId(),
-			type: 'checkbox',
-			role: 'switch',
-			name: name(),
-			'aria-checked': checked(),
-			...get(restProps)
-		}));
+		template_effect(() => {
+			set_attribute(label_1, 'for', switchId());
+
+			attributes = set_attributes(input, attributes, {
+				id: switchId(),
+				type: 'checkbox',
+				role: 'switch',
+				name: name(),
+				'aria-checked': checked(),
+				...get(restProps)
+			});
+		});
 
 		bind_checked(input, checked);
 		append($$anchor, label_1);
