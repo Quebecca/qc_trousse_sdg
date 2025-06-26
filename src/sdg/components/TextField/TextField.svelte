@@ -23,14 +23,22 @@
     let charCountText = $derived(() => {
         if (maxlength !== null) {
             const currentLength = value?.length || 0;
-            if (currentLength === 0) {
-                return `Maximum ${maxlength} ${lang === 'fr' ? 'caractères' : 'characters'}`;
+            const remaining = maxlength - currentLength;
+
+            if (remaining >= 0) {
+                return lang === 'fr'
+                    ? `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`
+                    : `${remaining} character${remaining > 1 ? 's' : ''} remaining`;
             } else {
-                return `${currentLength} / ${maxlength} ${lang === 'fr' ? 'caractères' : 'characters'}`;
+                const over = Math.abs(remaining);
+                return lang === 'fr'
+                    ? `${over} caractère${over > 1 ? 's' : ''} en trop`
+                    : `${over} character${over > 1 ? 's' : ''} over the limit`;
             }
         }
         return null;
     });
+
     let isMaxReached = $derived(() => {
         return maxlength !== null && (value?.length || 0) >= maxlength;
     });
@@ -84,7 +92,6 @@
               {disabled}
               aria-required={required}
               aria-invalid={invalid}
-              {maxlength}
               oninput={clearInvalid}
       ></textarea>
         {:else}
@@ -98,7 +105,6 @@
                 {disabled}
                 aria-required={required}
                 aria-invalid={invalid}
-                {maxlength}
                 oninput={clearInvalid}
             />
         {/if}

@@ -37,11 +37,20 @@
     } = $props();
 
     function validate(event) {
+        let isInvalid = false;
+
         if (required && value.trim() === '') {
-            invalid = true;
+            isInvalid = true;
+        }
+
+        if (maxlength !== null && value.length > parseInt(maxlength)) {
+            isInvalid = true;
+        }
+
+        invalid = isInvalid;
+
+        if (isInvalid) {
             event.preventDefault();
-        } else {
-            invalid = false;
         }
     }
 

@@ -10006,14 +10006,14 @@
 		}
 	}
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[68, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[66, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[73, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[78, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[91, 12]]);
-	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[108, 8]]);
-	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[115, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[64, 0, [[76, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[76, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[74, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[81, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[86, 6]]);
+	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[98, 12]]);
+	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[114, 8]]);
+	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[121, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[72, 0, [[84, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10039,11 +10039,14 @@
 		let charCountText = user_derived(() => () => {
 			if (strict_equals(maxlength(), null, false)) {
 				const currentLength = value()?.length || 0;
+				const remaining = maxlength() - currentLength;
 
-				if (strict_equals(currentLength, 0)) {
-					return `Maximum ${maxlength()} ${strict_equals(lang, 'fr') ? 'caractères' : 'characters'}`;
+				if (remaining >= 0) {
+					return strict_equals(lang, 'fr') ? `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}` : `${remaining} character${remaining > 1 ? 's' : ''} remaining`;
 				} else {
-					return `${currentLength} / ${maxlength()} ${strict_equals(lang, 'fr') ? 'caractères' : 'characters'}`;
+					const over = Math.abs(remaining);
+
+					return strict_equals(lang, 'fr') ? `${over} caractère${over > 1 ? 's' : ''} en trop` : `${over} character${over > 1 ? 's' : ''} over the limit`;
 				}
 			}
 
@@ -10145,7 +10148,6 @@
 						textarea.disabled = disabled();
 						set_attribute(textarea, 'aria-required', required());
 						set_attribute(textarea, 'aria-invalid', invalid());
-						set_attribute(textarea, 'maxlength', maxlength());
 					},
 					[() => get(describedBy)()]
 				);
@@ -10169,7 +10171,6 @@
 						input.disabled = disabled();
 						set_attribute(input, 'aria-required', required());
 						set_attribute(input, 'aria-invalid', invalid());
-						set_attribute(input, 'maxlength', maxlength());
 					},
 					[() => get(describedBy)()]
 				);
@@ -10366,7 +10367,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root = add_locations(template(`<div><!></div>`), TextFieldWC[FILENAME], [[62, 0]]);
+	var root = add_locations(template(`<div><!></div>`), TextFieldWC[FILENAME], [[71, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10388,11 +10389,20 @@
 			invalidText = prop($$props, 'invalidText', 7);
 
 		function validate(event) {
+			let isInvalid = false;
+
 			if (required() && strict_equals(value().trim(), '')) {
-				invalid(true);
+				isInvalid = true;
+			}
+
+			if (strict_equals(maxlength(), null, false) && value().length > parseInt(maxlength())) {
+				isInvalid = true;
+			}
+
+			invalid(isInvalid);
+
+			if (isInvalid) {
 				event.preventDefault();
-			} else {
-				invalid(false);
 			}
 		}
 
