@@ -10676,11 +10676,11 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root = add_locations(template(`<label class="qc-switch"><input> <span class="qc-switch-label">Lorem ipsum generator</span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+	var root = add_locations(template(`<label class="qc-switch"><input> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
-			20,
+			21,
 			0,
-			[[21, 4], [30, 4], [31, 4]]
+			[[22, 4], [31, 4], [32, 4]]
 		]
 	]);
 
@@ -10690,6 +10690,7 @@
 
 		let switchId = prop($$props, 'switchId', 7),
 			name = prop($$props, 'name', 7),
+			label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
 			rest = rest_props(
 				$$props,
@@ -10700,6 +10701,7 @@
 					'$$host',
 					'switchId',
 					'name',
+					'label',
 					'checked'
 				]);
 
@@ -10711,15 +10713,19 @@
 			set(restProps, { ...inputProps }, true);
 		});
 
-		var label = root();
-		var input = child(label);
+		var label_1 = root();
+		var input = child(label_1);
 
 		remove_input_defaults(input);
 
 		let attributes;
+		var span = sibling(input, 2);
+		var node = child(span);
 
-		next(4);
-		reset(label);
+		html(node, label);
+		reset(span);
+		next(2);
+		reset(label_1);
 
 		template_effect(() => attributes = set_attributes(input, attributes, {
 			id: switchId(),
@@ -10731,7 +10737,7 @@
 		}));
 
 		bind_checked(input, checked);
-		append($$anchor, label);
+		append($$anchor, label_1);
 
 		return pop({
 			get switchId() {
@@ -10746,6 +10752,13 @@
 			},
 			set name($$value) {
 				name($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
 				flushSync();
 			},
 			get checked() {
@@ -10759,7 +10772,18 @@
 		});
 	}
 
-	create_custom_element(ToggleSwitch, { switchId: {}, name: {}, checked: {} }, [], [], true);
+	create_custom_element(
+		ToggleSwitch,
+		{
+			switchId: {},
+			name: {},
+			label: {},
+			checked: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	ToggleSwitchWC[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte';
 
@@ -10767,9 +10791,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		let switchId = prop($$props, 'switchId', 7),
-			name = prop($$props, 'name', 7),
-			checked = prop($$props, 'checked', 15, false),
+		let checked = prop($$props, 'checked', 15, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -10777,19 +10799,11 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'switchId',
-					'name',
 					'checked'
 				]);
 
 		ToggleSwitch($$anchor, spread_props(
 			{
-				get switchId() {
-					return switchId();
-				},
-				get name() {
-					return name();
-				},
 				get checked() {
 					return checked();
 				}
@@ -10798,20 +10812,6 @@
 		));
 
 		return pop({
-			get switchId() {
-				return switchId();
-			},
-			set switchId($$value) {
-				switchId($$value);
-				flushSync();
-			},
-			get name() {
-				return name();
-			},
-			set name($$value) {
-				name($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -10828,6 +10828,7 @@
 		{
 			switchId: { attribute: 'switch-id', type: 'String' },
 			name: { attribute: 'name', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
 			checked: { attribute: 'checked', type: 'Boolean' }
 		},
 		[],

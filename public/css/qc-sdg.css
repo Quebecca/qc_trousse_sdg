@@ -2171,7 +2171,7 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 
 .qc-switch {
-  display: inline-block;
+  display: inline-flex;
   align-items: center;
   position: relative;
   cursor: pointer;
