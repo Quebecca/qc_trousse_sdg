@@ -10011,8 +10011,8 @@
 	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[81, 8]]);
 	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[86, 6]]);
 	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[98, 12]]);
-	var root_6 = add_locations(template(`<div> </div>`), TextField[FILENAME], [[114, 8]]);
-	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[121, 8]]);
+	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[114, 8]]);
+	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[126, 8]]);
 	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[72, 0, [[84, 4]]]]);
 
 	function TextField($$anchor, $$props) {

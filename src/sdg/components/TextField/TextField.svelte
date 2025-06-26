@@ -111,10 +111,15 @@
     </div>
 
     {#if maxlength !== null}
-        <div id={charCountId} class={`qc-textfield-charcount ${isMaxReached() ? 'max-reached' : ''}`}>
+        <div
+            id={charCountId}
+            class={`qc-textfield-charcount ${isMaxReached() ? 'max-reached' : ''}`}
+            aria-live="polite"
+        >
             {charCountText()}
         </div>
     {/if}
+
 
 
     {#if invalid}
