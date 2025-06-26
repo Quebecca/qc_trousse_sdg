@@ -2146,6 +2146,13 @@ input[type=checkbox]:checked.qc-compact::after {
 .qc-checkbox-single label {
   flex-grow: 0;
 }
+.checkbox-single {
+  padding-left: var(--qc-spacer-xs);
+}
+.checkbox-single.checkbox-single-invalid {
+  box-shadow: 0.2rem 0 var(--qc-color-red-regular) inset;
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);

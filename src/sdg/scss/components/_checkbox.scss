@@ -7,8 +7,6 @@ input[type="checkbox"] {
 
     background-color: token-value(color blue regular);
 
-    transition: all 160ms ease-in-out;
-
     &::before {
       width: rem(12);
       height: rem(7);

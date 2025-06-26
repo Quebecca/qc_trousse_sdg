@@ -2083,7 +2083,6 @@ input[type=radio]:checked.qc-compact::before {
 
 input[type=checkbox]:checked {
   background-color: var(--qc-color-blue-regular);
-  transition: all 160ms ease-in-out;
 }
 input[type=checkbox]:checked::before {
   width: 1.2rem;
