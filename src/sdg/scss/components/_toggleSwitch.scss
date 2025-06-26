@@ -7,28 +7,37 @@ $border: 2;
 
 .qc-switch {
   display: inline-block;
+  align-items: center;
   position: relative;
-  width: rem($width);
-  height: rem($height);
+  cursor: pointer;
 
   input[type=checkbox] {
     opacity: 0;
     width: 0;
     height: 0;
 
-    &:checked + .qc-switch-slider {
-      background-color: token-value(color, blue, regular);
-
-      &::before {
-        transform: translateX(rem($width - $height));
-      }
-    }
+    position: absolute;
   }
 }
 
+input[type=checkbox]:checked ~ .qc-switch-slider {
+  background-color: token-value(color, blue, regular);
+
+  &::before {
+    transform: translateX(rem($width - $height));
+  }
+}
+
+.qc-switch-label {
+  display: inline-flex;
+}
+
 .qc-switch-slider {
-  position: absolute;
+  display: inline-flex;
+  position: relative;
   cursor: pointer;
+  width: rem($width);
+  height: rem($height);
   top: 0;
   left: 0;
   right: 0;
