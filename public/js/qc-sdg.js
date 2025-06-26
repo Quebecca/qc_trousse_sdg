@@ -10676,11 +10676,11 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root = add_locations(template(`<label class="qc-switch"><span class="qc-switch-label">Lorem ipsum generator</span> <input> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+	var root = add_locations(template(`<label class="qc-switch"><input> <span class="qc-switch-label">Lorem ipsum generator</span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
 			20,
 			0,
-			[[21, 4], [22, 4], [31, 4]]
+			[[21, 4], [30, 4], [31, 4]]
 		]
 	]);
 
@@ -10712,13 +10712,13 @@
 		});
 
 		var label = root();
-		var input = sibling(child(label), 2);
+		var input = child(label);
 
 		remove_input_defaults(input);
 
 		let attributes;
 
-		next(2);
+		next(4);
 		reset(label);
 
 		template_effect(() => attributes = set_attributes(input, attributes, {
