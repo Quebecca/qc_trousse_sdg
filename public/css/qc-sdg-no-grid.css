@@ -2314,16 +2314,19 @@ input[type=checkbox]:checked.qc-compact::after {
   height: 0;
   position: absolute;
 }
+.qc-switch input[type=checkbox]:checked ~ .qc-switch-slider {
+  background-color: var(--qc-color-blue-regular);
+}
+.qc-switch input[type=checkbox]:checked ~ .qc-switch-slider::before {
+  transform: translateX(2.4rem);
+}
+.qc-switch input[type=checkbox]:focus ~ .qc-switch-slider {
+  outline: 0.2rem solid var(--qc-color-blue-light);
+  outline-offset: 0.2rem;
+}
 .qc-switch.qc-switch-justify {
   flex-grow: 1;
   justify-content: space-between;
-}
-
-input[type=checkbox]:checked ~ .qc-switch-slider {
-  background-color: var(--qc-color-blue-regular);
-}
-input[type=checkbox]:checked ~ .qc-switch-slider::before {
-  transform: translateX(2.4rem);
 }
 
 .qc-switch-slider {
@@ -2337,7 +2340,7 @@ input[type=checkbox]:checked ~ .qc-switch-slider::before {
   right: 0;
   bottom: 0;
   background-color: var(--qc-color-grey-light);
-  transition: all 0.3s ease-out;
+  transition: background-color 0.3s ease-out;
   border-radius: 1.6rem;
 }
 .qc-switch-slider::before {
