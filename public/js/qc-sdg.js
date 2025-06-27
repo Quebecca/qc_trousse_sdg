@@ -10676,11 +10676,11 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root = add_locations(template(`<label class="qc-switch"><input> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+	var root = add_locations(template(`<label><input> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
-			21,
+			22,
 			0,
-			[[22, 4], [31, 4], [32, 4]]
+			[[23, 4], [32, 4], [33, 4]]
 		]
 	]);
 
@@ -10692,6 +10692,7 @@
 			name = prop($$props, 'name', 7),
 			label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
+			justify = prop($$props, 'justify', 7, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -10702,7 +10703,8 @@
 					'switchId',
 					'name',
 					'label',
-					'checked'
+					'checked',
+					'justify'
 				]);
 
 		let restProps = state(proxy({}));
@@ -10728,6 +10730,11 @@
 		reset(label_1);
 
 		template_effect(() => {
+			set_class(label_1, 1, clsx([
+				"qc-switch",
+				justify() && "qc-switch-justify"
+			]));
+
 			set_attribute(label_1, 'for', switchId());
 
 			attributes = set_attributes(input, attributes, {
@@ -10772,6 +10779,13 @@
 				checked($$value);
 				flushSync();
 			},
+			get justify() {
+				return justify();
+			},
+			set justify($$value = false) {
+				justify($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10782,7 +10796,8 @@
 			switchId: {},
 			name: {},
 			label: {},
-			checked: {}
+			checked: {},
+			justify: {}
 		},
 		[],
 		[],
@@ -10833,7 +10848,8 @@
 			switchId: { attribute: 'switch-id', type: 'String' },
 			name: { attribute: 'name', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
-			checked: { attribute: 'checked', type: 'Boolean' }
+			checked: { attribute: 'checked', type: 'Boolean' },
+			justify: { attribute: 'justify', type: 'Boolean' }
 		},
 		[],
 		[],
