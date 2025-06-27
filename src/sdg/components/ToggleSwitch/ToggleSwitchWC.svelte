@@ -6,6 +6,7 @@
         name: {attribute: 'name', type: 'String'},
         label: {attribute: 'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
+        justify: {attribute: 'justify', type: 'Boolean'},
     },
 }} />
 

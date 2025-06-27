@@ -2172,9 +2172,8 @@ input[type=checkbox]:checked.qc-compact::after {
 
 .qc-switch {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-grow: 1;
+  gap: var(--qc-spacer-sm);
   position: relative;
   cursor: pointer;
 }
@@ -2183,6 +2182,10 @@ input[type=checkbox]:checked.qc-compact::after {
   width: 0;
   height: 0;
   position: absolute;
+}
+.qc-switch.qc-switch-justify {
+  flex-grow: 1;
+  justify-content: space-between;
 }
 
 input[type=checkbox]:checked ~ .qc-switch-slider {
