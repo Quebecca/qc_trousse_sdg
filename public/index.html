@@ -2092,7 +2092,6 @@
                     switch-id="exemple-switch"
                     name="exemple-switch-name"
                     label="Afficher l'état du commutateur à la console"
-                    justify
                 ></qc-toggle-switch>
 
                 <script>
@@ -2101,6 +2100,30 @@
                             console.log(event.target.checked);
                         });
                 </script>
+            </qc-doc-exemple>
+
+            <qc-doc-exemple caption="Exemple de commutateurs en groupe">
+                <p><b>Préférences de notifications de messages</b></p>
+                <div style="display: inline-flex; flex-direction: column; gap: 0.8rem;">
+                    <qc-toggle-switch
+                            switch-id="exemple-switch-group-1"
+                            name="exemple-switch-group"
+                            label="Nouveaux messages"
+                            justify
+                    ></qc-toggle-switch>
+                    <qc-toggle-switch
+                            switch-id="exemple-switch-group-2"
+                            name="exemple-switch-group"
+                            label="Modifications de messages"
+                            justify
+                    ></qc-toggle-switch>
+                    <qc-toggle-switch
+                            switch-id="exemple-switch-group-3"
+                            name="exemple-switch-group"
+                            label="Messages où je suis mentionné(e)"
+                            justify
+                    ></qc-toggle-switch>
+                </div>
             </qc-doc-exemple>
 
             <h3>Documentation technique</h3>
