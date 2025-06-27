@@ -7,6 +7,7 @@
         name,
         label,
         checked = $bindable(false),
+        justify = false,
         ...rest
     } = $props();
 
@@ -18,7 +19,7 @@
     });
 </script>
 
-<label class="qc-switch" for="{switchId}">
+<label class={["qc-switch", justify && "qc-switch-justify"]} for="{switchId}">
     <input
         id={switchId}
         type="checkbox"
