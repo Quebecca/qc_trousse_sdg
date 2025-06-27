@@ -56,6 +56,8 @@ input[type=checkbox]:checked ~ .qc-switch-slider {
     left: rem($border);
     bottom: rem($border);
     background-color: token-value(color, white);
+    border: rem(1) solid;
+    border-color: rgba(token-value(color, blue, dark), 0.5);
     border-radius: 50%;
     transition: all .3s ease-out;
   }
