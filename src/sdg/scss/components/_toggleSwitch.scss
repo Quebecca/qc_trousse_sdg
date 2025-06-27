@@ -40,6 +40,8 @@
     left: rem(2);
     bottom: rem(2);
     background-color: token-value(color, white);
+    border: rem(1) solid;
+    border-color: rgba(token-value(color, blue, dark), 0.5);
     border-radius: 50%;
     transition: all .3s ease-out;
   }
