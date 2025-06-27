@@ -2308,6 +2308,20 @@ qc-textfield {
   font-weight: bold;
 }
 
+@media (min-width: 992px) {
+  .qc-textfield-group {
+    white-space: nowrap;
+  }
+  .qc-textfield-group > qc-textfield {
+    display: inline-block;
+    vertical-align: top;
+    width: auto;
+  }
+  .qc-textfield-group > qc-textfield {
+    margin-right: var(--qc-spacer-sm);
+  }
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
