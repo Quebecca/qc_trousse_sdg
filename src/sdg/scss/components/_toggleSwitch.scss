@@ -18,19 +18,24 @@ $border: 2;
     height: 0;
 
     position: absolute;
+
+    &:checked ~ .qc-switch-slider {
+      background-color: token-value(color, blue, regular);
+
+      &::before {
+        transform: translateX(rem($width - $height));
+      }
+    }
+
+    &:focus ~ .qc-switch-slider {
+      outline: rem(2) solid token-value(color, blue, light);
+      outline-offset: rem(2);
+    }
   }
 
   &.qc-switch-justify {
     flex-grow: 1;
     justify-content: space-between;
-  }
-}
-
-input[type=checkbox]:checked ~ .qc-switch-slider {
-  background-color: token-value(color, blue, regular);
-
-  &::before {
-    transform: translateX(rem($width - $height));
   }
 }
 
@@ -45,7 +50,7 @@ input[type=checkbox]:checked ~ .qc-switch-slider {
   right: 0;
   bottom: 0;
   background-color: token-value(color, grey, light);
-  transition: all .3s ease-out;
+  transition: background-color .3s ease-out;
   border-radius: rem(math.div($height, 2));
 
   &::before {
