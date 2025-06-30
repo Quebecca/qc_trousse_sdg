@@ -1,13 +1,14 @@
 <svelte:options customElement="{{
     tag: 'qc-doc-top-nav',
     shadow: 'none',
-   props: {
-
-  }
+    props: {}
 }}" />
+
 <script>
-    import Switch from "./Switch.svelte";
+    import ToggleSwitch from "../../sdg/components/ToggleSwitch/ToggleSwitch.svelte";
     let value = $state(localStorage.getItem('dark-theme') === "true");
+
+    console.log(localStorage.getItem('dark-theme'));
 
     $effect(() => {
         document.documentElement.classList.toggle('qc-dark-theme', value);
@@ -18,13 +19,15 @@
 <div role="complementary">
     <div class="qc-container top-nav">
         <div class="switch-control">
-            <label for="switch">Activer le thème sombre</label>
-            <Switch id="switch" bind:value />
+            <ToggleSwitch
+                label="<label for='dark-mode'>Activer le thème sombre</label>"
+                bind:checked={value}
+            />
         </div>
     </div>
 </div>
-<style lang="scss">
 
+<style lang="scss">
   [role=complementary] {
     position: sticky;
     z-index: 100;
@@ -51,6 +54,4 @@
       }
     }
   }
-
-
 </style>
