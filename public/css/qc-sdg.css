@@ -2302,11 +2302,14 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 
 .qc-switch {
-  display: flex;
+  margin: 0;
   align-items: center;
   gap: var(--qc-spacer-sm);
   position: relative;
   cursor: pointer;
+}
+.qc-switch:not(.qc-switch-justify) {
+  display: inline-flex;
 }
 .qc-switch input[type=checkbox] {
   opacity: 0;
@@ -2325,6 +2328,7 @@ input[type=checkbox]:checked.qc-compact::after {
   outline-offset: 0.2rem;
 }
 .qc-switch.qc-switch-justify {
+  display: flex;
   flex-grow: 1;
   justify-content: space-between;
 }
