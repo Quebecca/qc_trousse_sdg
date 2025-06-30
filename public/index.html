@@ -2089,13 +2089,12 @@
             <h3>Exemples</h3>
             <qc-doc-exemple caption="Exemple de commutateurs avec étiquettes simples">
                 <qc-toggle-switch
-                    switch-id="exemple-switch"
-                    name="exemple-switch-name"
-                    label="Afficher l'état du commutateur à la console"
+                        id="switch-status"
+                        label="Afficher l'état du commutateur à la console"
                 ></qc-toggle-switch>
 
                 <script>
-                    document.querySelector("qc-toggle-switch[name='exemple-switch-name']")
+                    document.getElementById("switch-status")
                         .addEventListener("change", (event) => {
                             console.log(event.target.checked);
                         });
@@ -2106,20 +2105,14 @@
                 <p><b>Préférences de notifications de messages</b></p>
                 <div style="display: inline-flex; flex-direction: column; gap: 0.8rem;">
                     <qc-toggle-switch
-                            switch-id="exemple-switch-group-1"
-                            name="exemple-switch-group"
                             label="Nouveaux messages"
                             justify
                     ></qc-toggle-switch>
                     <qc-toggle-switch
-                            switch-id="exemple-switch-group-2"
-                            name="exemple-switch-group"
                             label="Modifications de messages"
                             justify
                     ></qc-toggle-switch>
                     <qc-toggle-switch
-                            switch-id="exemple-switch-group-3"
-                            name="exemple-switch-group"
                             label="Messages où je suis mentionné(e)"
                             justify
                     ></qc-toggle-switch>
@@ -2138,18 +2131,6 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>switch-id</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>ID du commutateur</td>
-                    </tr>
-                    <tr>
-                        <td>name</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Nom du groupe du commutateur</td>
-                    </tr>
-                    <tr>
                         <td>label</td>
                         <td>Contenu HTML</td>
                         <td></td>
@@ -2166,15 +2147,6 @@
                         <td>na</td>
                         <td>na</td>
                         <td>Permet au commutateur et son libelé de prendre tout l'espace horizontal disponible</td>
-                    </tr>
-                    <tr>
-                        <td>switch-*</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>
-                            Tout attribut commençant par <code class="qc-bg-color-grey-pale">switch-</code> sera ajouté
-                            comme attribut au commutateur.
-                        </td>
                     </tr>
                 </tbody>
             </table>

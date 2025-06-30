@@ -6,7 +6,12 @@ $height: 32;
 $border: 2;
 
 .qc-switch {
-  display: flex;
+  margin: 0;
+
+  &:not(.qc-switch-justify) {
+    display: inline-flex;
+  }
+
   align-items: center;
   gap: token-value(spacer, sm);
   position: relative;
@@ -34,6 +39,7 @@ $border: 2;
   }
 
   &.qc-switch-justify {
+    display: flex;
     flex-grow: 1;
     justify-content: space-between;
   }
