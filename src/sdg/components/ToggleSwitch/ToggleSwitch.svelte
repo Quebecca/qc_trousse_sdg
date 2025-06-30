@@ -1,33 +1,20 @@
 <script>
-    import {onMount} from "svelte";
-    import {Utils} from "../utils";
-
     let {
-        switchId,
-        name,
         label,
         checked = $bindable(false),
         justify = false,
-        ...rest
     } = $props();
 
-    let restProps = $state({});
-    onMount(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["switch"], {}, rest);
-
-        restProps = {...inputProps};
-    });
+    const generatedId = label.replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
 </script>
 
-<label class={["qc-switch", justify && "qc-switch-justify"]} for="{switchId}">
+<label class={["qc-switch", justify && "qc-switch-justify"]} for="{generatedId}">
     <input
-        id={switchId}
+        id={generatedId}
         type="checkbox"
         role="switch"
-        {name}
         bind:checked={checked}
         aria-checked={checked}
-        {...restProps}
     />
     <span class="qc-switch-label">{@html label}</span>
     <span class="qc-switch-slider"></span>
