@@ -215,6 +215,16 @@
 
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * Hydration failed because the initial UI does not match what was rendered on the server. The error occurred near %location%
 	 * @param {string | undefined | null} [location]
 	 */
@@ -319,6 +329,108 @@
 			var next = /** @type {TemplateNode} */ (get_next_sibling(node));
 			node.remove();
 			node = next;
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -4967,6 +5079,37 @@
 		});
 		Component.element = /** @type {any} */ Class;
 		return Class;
+	}
+
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
 	}
 
 	function getDefaultExportFromCjs (x) {
@@ -72908,7 +73051,7 @@
 		);
 	}
 
-	var root$4 = add_locations(
+	var root$5 = add_locations(
 		template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button class="btn btn-sm btn-primary">
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
@@ -72960,7 +73103,7 @@
 
 		user_effect(() => updateHLCode(rawCode(), targetId()));
 
-		var pre = root$4();
+		var pre = root$5();
 		var code = child(pre);
 		var button = child(code);
 
@@ -73023,7 +73166,7 @@
 
 	Color_doc[FILENAME] = 'src/doc/components/color-doc.svelte';
 
-	var root$3 = add_locations(template(`<div class="color-details qc-hash-1v55k4q"><div></div> <div class="color-description qc-hash-1v55k4q"><strong> </strong><br> <code> </code></div></div>`), Color_doc[FILENAME], [
+	var root$4 = add_locations(template(`<div class="color-details qc-hash-1v55k4q"><div></div> <div class="color-description qc-hash-1v55k4q"><strong> </strong><br> <code> </code></div></div>`), Color_doc[FILENAME], [
 		[
 			16,
 			0,
@@ -73052,7 +73195,7 @@
 			token = prop($$props, 'token', 7),
 			border = prop($$props, 'border', 7, null);
 
-		var div = root$3();
+		var div = root$4();
 		var div_1 = child(div);
 		let classes;
 		var div_2 = sibling(div_1, 2);
@@ -73123,11 +73266,136 @@
 		true
 	));
 
-	Switch[FILENAME] = 'src/doc/components/Switch.svelte';
+	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$2 = add_locations(template(`<div class="switch qc-hash-qsg5d6"><input> <span class="slider round qc-hash-qsg5d6"></span></div>`), Switch[FILENAME], [[18, 0, [[24, 4], [31, 4]]]]);
+	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+		[
+			11,
+			0,
+			[[12, 4], [19, 4], [20, 4]]
+		]
+	]);
+
+	function ToggleSwitch($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let label = prop($$props, 'label', 7),
+			checked = prop($$props, 'checked', 15, false),
+			justify = prop($$props, 'justify', 7, false);
+
+		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
+		var label_1 = root$3();
+
+		set_attribute(label_1, 'for', generatedId);
+
+		var input = child(label_1);
+
+		remove_input_defaults(input);
+		set_attribute(input, 'id', generatedId);
+
+		var span = sibling(input, 2);
+		var node = child(span);
+
+		html$1(node, label);
+		reset(span);
+		next(2);
+		reset(label_1);
+
+		template_effect(() => {
+			set_class(label_1, 1, clsx([
+				"qc-switch",
+				justify() && "qc-switch-justify"
+			]));
+
+			set_attribute(input, 'aria-checked', checked());
+		});
+
+		bind_checked(input, checked);
+		append($$anchor, label_1);
+
+		return pop({
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
+				flushSync();
+			},
+			get justify() {
+				return justify();
+			},
+			set justify($$value = false) {
+				justify($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	create_custom_element(ToggleSwitch, { label: {}, checked: {}, justify: {} }, [], [], true);
+
+	TopNav[FILENAME] = 'src/doc/components/TopNav.svelte';
+
+	var root$2 = add_locations(template(`<div role="complementary" class="qc-hash-1qt294a"><div class="qc-container top-nav qc-hash-1qt294a"><div class="switch-control qc-hash-1qt294a"><!></div></div></div>`), TopNav[FILENAME], [
+		[19, 0, [[20, 4, [[21, 8]]]]]
+	]);
 
 	const $$css$2 = {
+		hash: 'qc-hash-1qt294a',
+		code: '[role=complementary].qc-hash-1qt294a {\n  position: sticky;\n  z-index: 100;\n  top: 0;\n  background-color: var(--qc-color-blue-medium);\n  color: var(--qc-color-grey-pale);\n  min-height: 7.2rem;\n  height: 7.2rem;\n}\n\n.top-nav.qc-hash-1qt294a {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: end;\n  padding-bottom: var(--qc-spacer-sm);\n}\n.top-nav.qc-hash-1qt294a .switch-control:where(.qc-hash-1qt294a) {\n  margin-left: auto;\n  margin-right: 0;\n  display: flex;\n  align-items: center;\n}\n/* (unused) .top-nav .switch-control label:first-child {\n  margin-right: 1.6rem;\n}*/'
+	};
+
+	function TopNav($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+		append_styles$1($$anchor, $$css$2);
+
+		let value = state(proxy(strict_equals(localStorage.getItem('dark-theme'), "true")));
+
+		console.log(...log_if_contains_state('log', localStorage.getItem('dark-theme')));
+
+		user_effect(() => {
+			document.documentElement.classList.toggle('qc-dark-theme', get(value));
+			localStorage.setItem('dark-theme', get(value));
+		});
+
+		var div = root$2();
+		var div_1 = child(div);
+		var div_2 = child(div_1);
+		var node = child(div_2);
+
+		ToggleSwitch(node, {
+			label: '<label for=\'dark-mode\'>Activer le thème sombre</label>',
+			get checked() {
+				return get(value);
+			},
+			set checked($$value) {
+				set(value, $$value, true);
+			}
+		});
+
+		reset(div_2);
+		reset(div_1);
+		reset(div);
+		append($$anchor, div);
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-doc-top-nav', create_custom_element(TopNav, {}, [], [], false));
+
+	Switch[FILENAME] = 'src/doc/components/Switch.svelte';
+
+	var root$1 = add_locations(template(`<div class="switch qc-hash-qsg5d6"><input> <span class="slider round qc-hash-qsg5d6"></span></div>`), Switch[FILENAME], [[18, 0, [[24, 4], [31, 4]]]]);
+
+	const $$css$1 = {
 		hash: 'qc-hash-qsg5d6',
 		code: '/* The switch - the box around the slider */\n.switch.qc-hash-qsg5d6 {\n  position: relative;\n  display: inline-block;\n  width: 5.6rem;\n  height: 3.2rem;\n}\n\n/* Hide default HTML checkbox */\ninput.qc-hash-qsg5d6 {\n  z-index: 10;\n  opacity: 0;\n  position: absolute;\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  inset: 0;\n  height: auto;\n  width: auto;\n}\n\n/* The slider */\n.slider.qc-hash-qsg5d6 {\n  z-index: 5;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: var(--unchecked-bg-color);\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n}\n\n.slider.qc-hash-qsg5d6::before {\n  position: absolute;\n  content: "";\n  height: 2.8rem;\n  width: 2.8rem;\n  left: 0.2rem;\n  bottom: 0.2rem;\n  background-color: var(--slider-color);\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n}\n\ninput.qc-hash-qsg5d6:checked + .slider:where(.qc-hash-qsg5d6) {\n  background-color: var(--checked-bg-color);\n}\n\ninput.qc-hash-qsg5d6:focus + .slider:where(.qc-hash-qsg5d6) {\n  box-shadow: 0 0 1px var(--qc-bok-shadow-color);\n}\n\ninput.qc-hash-qsg5d6:checked + .slider:where(.qc-hash-qsg5d6)::before {\n  transform: translateX(2.4rem);\n}\n\n.slider.round.qc-hash-qsg5d6, input.qc-hash-qsg5d6 {\n  border-radius: 3.2rem;\n}\n\n.slider.round.qc-hash-qsg5d6::before {\n  border-radius: 50%;\n}'
 	};
@@ -73135,7 +73403,7 @@
 	function Switch($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$2);
+		append_styles$1($$anchor, $$css$1);
 
 		let value = prop($$props, 'value', 15, false),
 			name = prop($$props, 'name', 7, 'switch'),
@@ -73156,7 +73424,7 @@
 					'color'
 				]);
 
-		var div = root$2();
+		var div = root$1();
 		var input = child(div);
 
 		remove_input_defaults(input);
@@ -73222,59 +73490,6 @@
 	}
 
 	customElements.define('qc-switch', create_custom_element(Switch, { value: {}, name: {}, color: {} }, [], [], false));
-
-	TopNav[FILENAME] = 'src/doc/components/TopNav.svelte';
-
-	var root$1 = add_locations(template(`<div role="complementary" class="qc-hash-1qt294a"><div class="qc-container top-nav qc-hash-1qt294a"><div class="switch-control qc-hash-1qt294a"><label for="switch" class="qc-hash-1qt294a">Activer le thème sombre</label> <!></div></div></div>`), TopNav[FILENAME], [
-		[
-			18,
-			0,
-			[
-				[19, 4, [[20, 8, [[21, 12]]]]]
-			]
-		]
-	]);
-
-	const $$css$1 = {
-		hash: 'qc-hash-1qt294a',
-		code: '[role=complementary].qc-hash-1qt294a {\n  position: sticky;\n  z-index: 100;\n  top: 0;\n  background-color: var(--qc-color-blue-medium);\n  color: var(--qc-color-grey-pale);\n  min-height: 7.2rem;\n  height: 7.2rem;\n}\n\n.top-nav.qc-hash-1qt294a {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: end;\n  padding-bottom: var(--qc-spacer-sm);\n}\n.top-nav.qc-hash-1qt294a .switch-control:where(.qc-hash-1qt294a) {\n  margin-left: auto;\n  margin-right: 0;\n  display: flex;\n  align-items: center;\n}\n.top-nav.qc-hash-1qt294a .switch-control:where(.qc-hash-1qt294a) label:where(.qc-hash-1qt294a):first-child {\n  margin-right: 1.6rem;\n}'
-	};
-
-	function TopNav($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-		append_styles$1($$anchor, $$css$1);
-
-		let value = state(proxy(strict_equals(localStorage.getItem('dark-theme'), "true")));
-
-		user_effect(() => {
-			document.documentElement.classList.toggle('qc-dark-theme', get(value));
-			localStorage.setItem('dark-theme', get(value));
-		});
-
-		var div = root$1();
-		var div_1 = child(div);
-		var div_2 = child(div_1);
-		var node = sibling(child(div_2), 2);
-
-		Switch(node, {
-			id: 'switch',
-			get value() {
-				return get(value);
-			},
-			set value($$value) {
-				set(value, $$value, true);
-			}
-		});
-
-		reset(div_2);
-		reset(div_1);
-		reset(div);
-		append($$anchor, div);
-		return pop({ ...legacy_api() });
-	}
-
-	customElements.define('qc-doc-top-nav', create_custom_element(TopNav, {}, [], [], false));
 
 	Exemple[FILENAME] = 'src/doc/components/Exemple.svelte';
 
