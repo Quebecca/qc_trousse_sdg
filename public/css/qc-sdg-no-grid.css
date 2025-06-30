@@ -2337,8 +2337,8 @@ input[type=checkbox]:checked.qc-compact::after {
   display: inline-flex;
   position: relative;
   cursor: pointer;
-  width: 5.6rem;
-  height: 3.2rem;
+  min-width: 5.6rem;
+  min-height: 3.2rem;
   top: 0;
   left: 0;
   right: 0;
