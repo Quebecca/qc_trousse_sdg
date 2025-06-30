@@ -2102,11 +2102,15 @@
             </qc-doc-exemple>
 
             <qc-doc-exemple caption="Exemple de commutateurs en groupe">
-                <p><b>Préférences de notifications de messages</b></p>
-                <div style="display: inline-flex; flex-direction: column; gap: 0.8rem;">
+                <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
+                <div
+                        style="display: inline-flex; flex-direction: column; gap: 0.8rem;"
+                        id="switch-group"
+                >
                     <qc-toggle-switch
                             label="Nouveaux messages"
                             justify
+                            checked
                     ></qc-toggle-switch>
                     <qc-toggle-switch
                             label="Modifications de messages"
@@ -2117,6 +2121,13 @@
                             justify
                     ></qc-toggle-switch>
                 </div>
+
+                <script>
+                    document.getElementById("switch-group")
+                        .addEventListener("change", (event) => {
+                            console.log(`${event.target.id} mis à ${event.target.checked}`);
+                        });
+                </script>
             </qc-doc-exemple>
 
             <h3>Documentation technique</h3>
