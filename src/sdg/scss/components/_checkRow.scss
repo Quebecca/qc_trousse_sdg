@@ -85,6 +85,10 @@
     min-height: token-value(spacer, sm);
     margin-top: rem(4);
     border-width: rem(1);
+
+    &:focus {
+      outline: none;
+    }
   }
 
   padding: token-value(spacer, sm);

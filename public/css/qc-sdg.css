@@ -1950,6 +1950,10 @@ qc-search-bar {
   margin-top: 0.4rem;
   border-width: 0.1rem;
 }
+.qc-selection-button input[type=radio]:focus,
+.qc-selection-button input[type=checkbox]:focus {
+  outline: none;
+}
 .qc-selection-button::before {
   border-style: solid;
   border-width: 0.1rem;
