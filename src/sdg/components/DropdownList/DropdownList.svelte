@@ -1,6 +1,8 @@
 
 
 <script>
+    import { run, handlers, preventDefault, stopPropagation } from 'svelte/legacy';
+
     /*
     Il reste du travail. Ce code est copié depuis quebec.ca, avec des ajustements pour qu'il compile
     et fonctionne.
@@ -29,59 +31,70 @@
         Tout ceci est à discuter au moment de démarrer les travaux
      */
     import {Utils} from '../utils'
-    import {createEventDispatcher,onMount} from 'svelte';
+    import {createEventDispatcher} from 'svelte';
 
     const dispatch = createEventDispatcher();
 
-    export let
+    /**
+     * @typedef {Object} Props
+     * @property {any} [id]
+     * @property {string} [label]
+     * @property {any} value
+     * @property {any} items
+     * @property {string} [noValueMessage]
+     * @property {string} [noOptionsMessage]
+     * @property {boolean} [enableSearch]
+     * @property {boolean} [ariaRequired]
+     * @property {string} [error]
+     * @property {string} [searchPlaceholder]
+     * @property {string} [emptyOptionSrMessage]
+     * @property {boolean} [isMultiSelect]
+     */
+
+    /** @type {Props & { [key: string]: any }} */
+    let {
         id = Math.floor(Math.random() * 1000),
         label = '',
-        value,
+        value = $bindable(),
         items,
         noValueMessage = '',
         noOptionsMessage = ' Aucune option disponible',
         enableSearch = true,
-        // comboAriaLabel = '',
-        ariaRequired = false, // remplacer par required
-        error = '', // remplacer par invalid
-        // remplacer par invalid
+        ariaRequired = false,
+        error = $bindable(''),
         searchPlaceholder = '',
-        // ajouter disabled
-        emptyOptionSrMessage = '', // remplacer par placeholder et ajuster pour lecture SR
-        isMultiSelect = false // multiple
-    ;
-    // let searchInputLabel = "Chercher parmi les éléments de la liste" (+ an)
+        emptyOptionSrMessage = '',
+        isMultiSelect = false,
+        ...rest
+    } = $props();
     let
-        isCustomElement = false,
-        hidden = true,
+        hidden = $state(true),
         ids = {
             control: id + '-control',
             box: id + '-box',
             label: id + '-control-label',
             search: id + '-options-search',
         },
-        search = '',
-        filteredOptions = [],
-        focusIn = false,
-        comboButton,
-        searchInput,
-        listBox,
-        ariaActiveDescendant,
+        search = $state(''),
+        filteredOptions = $state([]),
+        focusIn = $state(false),
+        comboButton = $state(),
+        searchInput = $state(),
+        listBox = $state(),
+        ariaActiveDescendant = $derived(valueLabel !== "" ? {"aria-activedescendant": selectedElementId} : {}),
         // si un tableau qui n'est pas dans le format Object.entries() est passé en paramètre, les libellés sont les valeurs,
-        labelAsValue,
-        options,
-        cleanOptions, //
-        valueLabel = '',
-        root,
-        lastValue,
-        rootInput
+        labelAsValue = $derived(Array.isArray(items) && items.length > 0 && !Array.isArray(items[0])),
+        options = $state(),
+        cleanOptions = $derived(Object.fromEntries(
+            options.map(option => [
+                getOptionValue(option),
+                Utils.cleanWord(getOptionLabel(option))
+            ])
+        )), //
+        valueLabel = $state(''),
+        root = $state(),
+        lastValue
     ;
-
-    onMount(_ => {
-        isCustomElement = rootInput.parentNode instanceof ShadowRoot;
-    })
-
-
 
     // la fonction select() n'est appelée pour la selection multiple qu'en passant par le clavier.
     function select(option) {
@@ -371,45 +384,49 @@
     }
 
 
-    $: labelAsValue = Array.isArray(items) && items.length > 0 && !Array.isArray(items[0]);
+    
     // $: console.log(items[Symbol])
-    $: options = getOptions(items)
-    $: cleanOptions =
-        Object.fromEntries(
-            options.map(option => [
-                getOptionValue(option),
-                Utils.cleanWord(getOptionLabel(option))
-            ])
-        )
+    run(() => {
+        options = getOptions(items)
+    });
+    
     // réinitialisation de la valeur en cas de mise à jour de la liste
-    $: refreshValue(options)
+    run(() => {
+        refreshValue(options)
+    });
     // selection de l'option quand maj de la valeur
-    $: if (!isMultiSelect) selectOption(value)
+    run(() => {
+        if (!isMultiSelect) selectOption(value)
+    });
     // $: console.log('combo value update', value, id)
-    $: selectedElementId = value ? getOptionElementId(value) : ''
-    $: filteredOptions =
-        enableSearch && search !== ''
-            ? searchIntoOptions(options, search)
-            : options
+    let selectedElementId = $derived(value ? getOptionElementId(value) : '')
+    run(() => {
+        filteredOptions =
+            enableSearch && search !== ''
+                ? searchIntoOptions(options, search)
+                : options
+    });
     // ,console.log(filteredOptions)
-    $: error = value ? '' : error
-    $: ariaActiveDescendant = valueLabel !== "" ? {"aria-activedescendant": selectedElementId} : {}
+    run(() => {
+        error = value ? '' : error
+    });
+    
 
 
 </script>
-<svelte:document on:click={checkOutterEvent}/>
+<svelte:document onclick={checkOutterEvent}/>
 <input type="hidden"
        value="{value}"
        bind:this={rootInput}
-       id="{$$restProps.id}"
-       name="{$$restProps.name}"
+       id="{rest.id}"
+       name="{rest.name}"
 >
-<!-- svelte-ignore a11y-no-static-element-interactions a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions, a11y_click_events_have_key_events -->
 <div bind:this={root}
      class:qc-combo-filter={true}
-     on:click={markInnerEvent}
-     on:focusin={() => focusIn = true}
-     on:focusout={() =>
+     onclick={markInnerEvent}
+     onfocusin={() => focusIn = true}
+     onfocusout={() =>
         // si un focusIn n'est pas suivi
         // d'un focusOut après un temps très court
         // on referme la popup
@@ -419,15 +436,13 @@
           }
           focusIn = false
         }, 5)}
-     on:keydown={handleTextKeyDown}
-     on:keydown={debounceKeyDown}
-     on:keydown={handleEscape}
-     {...$$restProps}
+     onkeydown={handlers(handleTextKeyDown, debounceKeyDown, handleEscape)}
+     {...rest}
 >
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <label id="{ids.label}"
            for="{ids.control}"
-           on:click={e => comboButton.focus()}
+           onclick={e => comboButton.focus()}
     >{label}
         {#if ariaRequired}<span class="required mandatory" aria-hidden="true">*</span>{/if}
     </label>
@@ -442,8 +457,8 @@
                 aria-haspopup="true"
                 aria-labelledby="{ids.label}"
                 aria-required={ariaRequired}
-                on:click|preventDefault={toggleBox}
-                on:keydown={handleComboKeyDown}
+                onclick={preventDefault(toggleBox)}
+                onkeydown={handleComboKeyDown}
                 disabled="{options.length === 0}"
                 aria-invalid={error != ''}
                 {...ariaActiveDescendant}
@@ -464,7 +479,7 @@
                            bind:value={search}
                            tabindex="0"
                            aria-label="Recherche parmi les {comboAriaLabel}"
-                           on:keydown|stopPropagation={handleSearchArrowKey}
+                           onkeydown={stopPropagation(handleSearchArrowKey)}
                     />
                 {/if}
 
@@ -478,7 +493,7 @@
                                     class="form-check"
                                     id="{getOptionElementId(option)}"
                                     tabindex="0"
-                                    on:keydown={e => handleOptionKeyDown(e,option)}
+                                    onkeydown={e => handleOptionKeyDown(e,option)}
                                     aria-selected="{value && value.includes(getOptionValue(option))}"
                             >
                                 <label>
@@ -496,8 +511,8 @@
                         {:else}
                             <li id="{getOptionElementId(option)}"
                                 tabindex="0"
-                                on:click={() => select(option)}
-                                on:keydown={e => handleOptionKeyDown(e,option)}
+                                onclick={() => select(option)}
+                                onkeydown={e => handleOptionKeyDown(e,option)}
                                 role="option"
                                 aria-selected="{getOptionValue(option) == value ? 'true' : 'false'}"
                             >
