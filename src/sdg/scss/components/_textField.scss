@@ -114,15 +114,13 @@ qc-textfield {
 // Compteur de caractère
 .qc-textfield-charcount {
   text-align: right;
-  margin-top: rem(4);
   color: token-value(color, grey, medium);
   font-size: token-value(font, size, sm);
-}
 
-// Caractères maximum atteint
-.qc-textfield-charcount.max-reached {
-  color: token-value(color, red, regular);
-  font-weight: bold;
+  &.max-reached {
+    color: token-value(color, red, regular);
+    font-weight: bold;
+  }
 }
 
 // Champs côte à côte (pour desktop seulement)

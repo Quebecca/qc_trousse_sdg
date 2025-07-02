@@ -41,8 +41,6 @@
         }
     });
 
-    let isMaxReached = $derived(() => maxlength && value.length >= maxlength);
-
     function clearInvalid() {
         invalid = false;
     }
@@ -114,12 +112,13 @@
     {#if maxlength !== null}
         <div
             id={charCountId}
-            class={`qc-textfield-charcount ${isMaxReached() ? 'max-reached' : ''}`}
+            class={`qc-textfield-charcount ${(maxlength && value.length >= maxlength) && 'max-reached'}`}
             aria-live="polite"
         >
             {charCountText()}
         </div>
     {/if}
+
 
     {#if invalid}
         <div id={errorId}>

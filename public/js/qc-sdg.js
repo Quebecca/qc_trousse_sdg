@@ -10000,14 +10000,14 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[75, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[73, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[80, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[85, 6]]);
-	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[98, 12]]);
-	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[115, 8]]);
-	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[125, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[71, 0, [[83, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[73, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[71, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[78, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[83, 6]]);
+	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[96, 12]]);
+	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[113, 8]]);
+	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[124, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[69, 0, [[81, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10066,8 +10066,6 @@
 				}
 			}
 		});
-
-		let isMaxReached = user_derived(() => () => maxlength() && value().length >= maxlength());
 
 		function clearInvalid() {
 			invalid(false);
@@ -10219,14 +10217,11 @@
 				reset(div_3);
 
 				template_effect(
-					($0, $1) => {
-						set_class(div_3, 1, $0);
-						set_text(text_2, $1);
+					($0) => {
+						set_class(div_3, 1, `qc-textfield-charcount ${maxlength() && value().length >= maxlength() && 'max-reached'}`);
+						set_text(text_2, $0);
 					},
-					[
-						() => `qc-textfield-charcount ${get(isMaxReached)() ? 'max-reached' : ''}`,
-						() => get(charCountText)()
-					]
+					[() => get(charCountText)()]
 				);
 
 				append($$anchor, div_3);

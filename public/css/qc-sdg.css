@@ -2298,11 +2298,9 @@ qc-textfield {
 
 .qc-textfield-charcount {
   text-align: right;
-  margin-top: 0.4rem;
   color: var(--qc-color-grey-medium);
   font-size: var(--qc-font-size-sm);
 }
-
 .qc-textfield-charcount.max-reached {
   color: var(--qc-color-red-regular);
   font-weight: bold;
