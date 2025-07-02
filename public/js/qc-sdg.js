@@ -10000,20 +10000,14 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	function clearInvalid(_, invalid) {
-		if (invalid()) {
-			invalid(false);
-		}
-	}
-
-	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[76, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[74, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[81, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[86, 6]]);
-	var root_5 = add_locations(template(`<input type="text">`), TextField[FILENAME], [[98, 12]]);
-	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[114, 8]]);
-	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[126, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[72, 0, [[84, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[75, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[73, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[80, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[85, 6]]);
+	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[98, 12]]);
+	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[115, 8]]);
+	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[125, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[71, 0, [[83, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10031,31 +10025,53 @@
 			description = prop($$props, 'description', 7, ''),
 			maxlength = prop($$props, 'maxlength', 7, null),
 			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, 'fr') ? 'Ce champ est requis.' : 'This field is required.');
+			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, 'fr') ? 'Ce champ est requis.' : 'This field is required.'),
+			display = prop($$props, 'display', 7, 'inline'),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'name',
+					'label',
+					'placeholder',
+					'value',
+					'size',
+					'disabled',
+					'required',
+					'description',
+					'maxlength',
+					'invalid',
+					'invalidText',
+					'display'
+				]);
 
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
-		let isTextArea = user_derived(() => strict_equals(size(), 'zone-xl') || strict_equals(size(), 'zone-xxl'));
+		let isTextArea = user_derived(() => strict_equals(display(), 'area'));
 
 		let charCountText = user_derived(() => () => {
 			if (strict_equals(maxlength(), null, false)) {
 				const currentLength = value()?.length || 0;
 				const remaining = maxlength() - currentLength;
+				const s = Math.abs(remaining) > 1 ? 's' : '';
 
 				if (remaining >= 0) {
-					return strict_equals(lang, 'fr') ? `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}` : `${remaining} character${remaining > 1 ? 's' : ''} remaining`;
+					return strict_equals(lang, 'fr') ? `${remaining} caractère${s} restant${s}` : `${remaining} character${s} remaining`;
 				} else {
 					const over = Math.abs(remaining);
 
-					return strict_equals(lang, 'fr') ? `${over} caractère${over > 1 ? 's' : ''} en trop` : `${over} character${over > 1 ? 's' : ''} over the limit`;
+					return strict_equals(lang, 'fr') ? `${over} caractère${s} en trop` : `${over} character${s} over the limit`;
 				}
 			}
-
-			return null;
 		});
 
-		let isMaxReached = user_derived(() => () => {
-			return strict_equals(maxlength(), null, false) && (value()?.length || 0) >= maxlength();
-		});
+		let isMaxReached = user_derived(() => () => maxlength() && value().length >= maxlength());
+
+		function clearInvalid() {
+			invalid(false);
+		}
 
 		// Génération des ID pour le aria-describedby
 		const uid = Math.random().toString(36).substring(2, 10);
@@ -10065,14 +10081,11 @@
 		const errorId = `error-${uid}`;
 		const charCountId = `charcount-${uid}`;
 
-		let describedBy = user_derived(() => () => {
-			const ids = [];
-
-			if (invalid()) ids.push(errorId);
-			if (description()) ids.push(descriptionId);
-			if (strict_equals(maxlength(), null, false)) ids.push(charCountId);
-			return ids.length > 0 ? ids.join(' ') : undefined;
-		});
+		let describedBy = user_derived(() => [
+			invalid() && errorId,
+			description() && descriptionId,
+			maxlength() && charCountId
+		].filter(Boolean));
 
 		var div = root$1();
 		var node = child(div);
@@ -10137,19 +10150,22 @@
 				var textarea = root_4();
 
 				remove_textarea_child(textarea);
-				set_attribute(textarea, 'id', inputId);
-				textarea.__input = [clearInvalid, invalid];
+
+				let attributes;
 
 				template_effect(
-					($0) => {
-						set_attribute(textarea, 'name', name());
-						set_attribute(textarea, 'aria-describedby', $0);
-						set_attribute(textarea, 'placeholder', placeholder());
-						textarea.disabled = disabled();
-						set_attribute(textarea, 'aria-required', required());
-						set_attribute(textarea, 'aria-invalid', invalid());
-					},
-					[() => get(describedBy)()]
+					($0) => attributes = set_attributes(textarea, attributes, {
+						id: inputId,
+						name: name(),
+						'aria-describedby': $0,
+						placeholder: placeholder(),
+						disabled: disabled(),
+						'aria-required': required(),
+						'aria-invalid': invalid(),
+						oninput: clearInvalid,
+						...rest
+					}),
+					[() => get(describedBy).join(' ')]
 				);
 
 				bind_value(textarea, value);
@@ -10160,19 +10176,23 @@
 				var input = root_5();
 
 				remove_input_defaults(input);
-				set_attribute(input, 'id', inputId);
-				input.__input = [clearInvalid, invalid];
+
+				let attributes_1;
 
 				template_effect(
-					($0) => {
-						set_attribute(input, 'name', name());
-						set_attribute(input, 'aria-describedby', $0);
-						set_attribute(input, 'placeholder', placeholder());
-						input.disabled = disabled();
-						set_attribute(input, 'aria-required', required());
-						set_attribute(input, 'aria-invalid', invalid());
-					},
-					[() => get(describedBy)()]
+					($0) => attributes_1 = set_attributes(input, attributes_1, {
+						id: inputId,
+						name: name(),
+						'aria-describedby': $0,
+						type: 'text',
+						placeholder: placeholder(),
+						disabled: disabled(),
+						'aria-required': required(),
+						'aria-invalid': invalid(),
+						oninput: clearInvalid,
+						...rest
+					}),
+					[() => get(describedBy).join(' ')]
 				);
 
 				bind_value(input, value);
@@ -10247,15 +10267,10 @@
 
 		reset(div);
 
-		template_effect(
-			($0) => {
-				set_class(div, 1, `qc-textfield-container ${disabled() ? 'disabled' : ''}`);
-				set_class(div_2, 1, $0);
-			},
-			[
-				() => `qc-textfield ${get(sizeClass)} ${Utils.isTruthy(invalid()) ? 'error' : ''} ${disabled() ? 'disabled' : ''}`
-			]
-		);
+		template_effect(() => {
+			set_class(div, 1, `qc-textfield-container ${disabled() ? 'disabled' : ''}`);
+			set_class(div_2, 1, `qc-textfield ${get(sizeClass)} ${invalid() && 'qc-formfield-error'} ${disabled() && 'disabled'}`);
+		});
 
 		append($$anchor, div);
 
@@ -10339,11 +10354,16 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get display() {
+				return display();
+			},
+			set display($$value = 'inline') {
+				display($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
-
-	delegate(['input']);
 
 	create_custom_element(
 		TextField,
@@ -10358,7 +10378,8 @@
 			description: {},
 			maxlength: {},
 			invalid: {},
-			invalidText: {}
+			invalidText: {},
+			display: {}
 		},
 		[],
 		[],
@@ -10367,7 +10388,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root = add_locations(template(`<div><!></div>`), TextFieldWC[FILENAME], [[71, 0]]);
+	var root = add_locations(template(`<div><!></div>`), TextFieldWC[FILENAME], [[34, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10376,86 +10397,27 @@
 		var $$ownership_validator = create_ownership_validator($$props);
 		let element = state(void 0);
 
-		let name = prop($$props, 'name', 7),
-			label = prop($$props, 'label', 7),
-			placeholder = prop($$props, 'placeholder', 7),
-			value = prop($$props, 'value', 15, ''),
-			size = prop($$props, 'size', 7),
-			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 7),
-			description = prop($$props, 'description', 7),
-			maxlength = prop($$props, 'maxlength', 7),
+		let value = prop($$props, 'value', 15, ''),
 			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7);
-
-		function validate(event) {
-			let isInvalid = false;
-
-			if (required() && strict_equals(value().trim(), '')) {
-				isInvalid = true;
-			}
-
-			if (strict_equals(maxlength(), null, false) && value().length > parseInt(maxlength())) {
-				isInvalid = true;
-			}
-
-			invalid(isInvalid);
-
-			if (isInvalid) {
-				event.preventDefault();
-			}
-		}
-
-		onMount(() => {
-			const form = get(element)?.closest('form');
-
-			if (form) {
-				form.addEventListener('submit', validate);
-			}
-
-			return () => {
-				if (form) {
-					form.removeEventListener('submit', validate);
-				}
-			};
-		});
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'value',
+					'invalid'
+				]);
 
 		var div = root();
 		var node = child(div);
-		const expression = user_derived(() => size() || 'md');
 
 		{
 			$$ownership_validator.binding('value', TextField, value);
 			$$ownership_validator.binding('invalid', TextField, invalid);
 
-			TextField(node, {
-				get name() {
-					return name();
-				},
-				get label() {
-					return label();
-				},
-				get placeholder() {
-					return placeholder();
-				},
-				get size() {
-					return get(expression);
-				},
-				get disabled() {
-					return disabled();
-				},
-				get required() {
-					return required();
-				},
-				get description() {
-					return description();
-				},
-				get maxlength() {
-					return maxlength();
-				},
-				get invalidText() {
-					return invalidText();
-				},
+			TextField(node, spread_props(() => rest, {
 				get value() {
 					return value();
 				},
@@ -10468,7 +10430,7 @@
 				set invalid($$value) {
 					invalid($$value);
 				}
-			});
+			}));
 		}
 
 		reset(div);
@@ -10476,27 +10438,6 @@
 		append($$anchor, div);
 
 		return pop({
-			get name() {
-				return name();
-			},
-			set name($$value) {
-				name($$value);
-				flushSync();
-			},
-			get label() {
-				return label();
-			},
-			set label($$value) {
-				label($$value);
-				flushSync();
-			},
-			get placeholder() {
-				return placeholder();
-			},
-			set placeholder($$value) {
-				placeholder($$value);
-				flushSync();
-			},
 			get value() {
 				return value();
 			},
@@ -10504,53 +10445,11 @@
 				value($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value) {
-				disabled($$value);
-				flushSync();
-			},
-			get required() {
-				return required();
-			},
-			set required($$value) {
-				required($$value);
-				flushSync();
-			},
-			get description() {
-				return description();
-			},
-			set description($$value) {
-				description($$value);
-				flushSync();
-			},
-			get maxlength() {
-				return maxlength();
-			},
-			set maxlength($$value) {
-				maxlength($$value);
-				flushSync();
-			},
 			get invalid() {
 				return invalid();
 			},
 			set invalid($$value = false) {
 				invalid($$value);
-				flushSync();
-			},
-			get invalidText() {
-				return invalidText();
-			},
-			set invalidText($$value) {
-				invalidText($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -10570,7 +10469,8 @@
 			description: { attribute: 'description', type: 'String' },
 			maxlength: { attribute: 'max-length', type: 'String' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' }
+			invalidText: { attribute: 'invalid-text', type: 'String' },
+			display: { attribute: 'display', type: 'String' }
 		},
 		[],
 		[],

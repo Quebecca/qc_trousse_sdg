@@ -15,38 +15,36 @@
         description = '',
         maxlength = null,
         invalid = $bindable(false),
-        invalidText = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.'
+        invalidText = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.',
+        display = 'inline',
+        ...rest
     } = $props();
 
     let sizeClass = $derived(`qc-textfield--${size}`);
-    let isTextArea = $derived(size === 'zone-xl' || size === 'zone-xxl');
+    let isTextArea = $derived(display === 'area');
     let charCountText = $derived(() => {
         if (maxlength !== null) {
             const currentLength = value?.length || 0;
             const remaining = maxlength - currentLength;
+            const s = Math.abs(remaining) > 1 ? 's' : '';
 
             if (remaining >= 0) {
                 return lang === 'fr'
-                    ? `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`
-                    : `${remaining} character${remaining > 1 ? 's' : ''} remaining`;
+                    ? `${remaining} caractère${s} restant${s}`
+                    : `${remaining} character${s} remaining`;
             } else {
                 const over = Math.abs(remaining);
                 return lang === 'fr'
-                    ? `${over} caractère${over > 1 ? 's' : ''} en trop`
-                    : `${over} character${over > 1 ? 's' : ''} over the limit`;
+                    ? `${over} caractère${s} en trop`
+                    : `${over} character${s} over the limit`;
             }
         }
-        return null;
     });
 
-    let isMaxReached = $derived(() => {
-        return maxlength !== null && (value?.length || 0) >= maxlength;
-    });
+    let isMaxReached = $derived(() => maxlength && value.length >= maxlength);
 
     function clearInvalid() {
-        if (invalid) {
-            invalid = false;
-        }
+        invalid = false;
     }
 
     // Génération des ID pour le aria-describedby
@@ -57,14 +55,15 @@
     const errorId = `error-${uid}`;
     const charCountId = `charcount-${uid}`;
 
-    let describedBy = $derived(() => {
-        const ids = [];
-        if (invalid) ids.push(errorId);
-        if (description) ids.push(descriptionId);
-        if (maxlength !== null) ids.push(charCountId);
 
-        return ids.length > 0 ? ids.join(' ') : undefined;
-    });
+    let describedBy = $derived(
+        [
+            invalid && errorId,
+            description && descriptionId,
+            maxlength && charCountId,
+        ].filter(Boolean)
+    );
+
 
 
 </script>
@@ -81,24 +80,25 @@
         <div id={descriptionId} class="qc-textfield-description">{description}</div>
     {/if}
 
-    <div class={`qc-textfield ${sizeClass} ${Utils.isTruthy(invalid) ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
+    <div class={`qc-textfield ${sizeClass} ${invalid && 'qc-formfield-error'} ${disabled && 'disabled'}`}>
         {#if isTextArea}
       <textarea
               id={inputId}
               name={name}
-              aria-describedby={describedBy()}
+              aria-describedby={describedBy.join(' ')}
               {placeholder}
               bind:value
               {disabled}
               aria-required={required}
               aria-invalid={invalid}
               oninput={clearInvalid}
+              {...rest}
       ></textarea>
         {:else}
             <input
                 id={inputId}
                 name={name}
-                aria-describedby={describedBy()}
+                aria-describedby={describedBy.join(' ')}
                 type="text"
                 {placeholder}
                 bind:value
@@ -106,6 +106,7 @@
                 aria-required={required}
                 aria-invalid={invalid}
                 oninput={clearInvalid}
+                {...rest}
             />
         {/if}
     </div>
@@ -119,8 +120,6 @@
             {charCountText()}
         </div>
     {/if}
-
-
 
     {#if invalid}
         <div id={errorId}>

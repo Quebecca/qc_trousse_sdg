@@ -12,74 +12,31 @@
     description: { attribute: 'description', type: 'String' },
     maxlength: { attribute: 'max-length', type: 'String' },
     invalid: { attribute: 'invalid', type: 'Boolean' },
-    invalidText: { attribute: 'invalid-text', type: 'String' }
+    invalidText: { attribute: 'invalid-text', type: 'String' },
+    display: { attribute: 'display', type: 'String' }
   }
 }} />
 
 <script>
-    import { onMount } from "svelte";
     import TextField from './TextField.svelte';
 
     let element = $state();
 
+
     let {
-        name,
-        label,
-        placeholder,
         value = $bindable(''),
-        size,
-        disabled,
-        required,
-        description,
-        maxlength,
         invalid = $bindable(false),
-        invalidText
+        ...rest
     } = $props();
 
-    function validate(event) {
-        let isInvalid = false;
-
-        if (required && value.trim() === '') {
-            isInvalid = true;
-        }
-
-        if (maxlength !== null && value.length > parseInt(maxlength)) {
-            isInvalid = true;
-        }
-
-        invalid = isInvalid;
-
-        if (isInvalid) {
-            event.preventDefault();
-        }
-    }
-
-    onMount(() => {
-        const form = element?.closest('form');
-        if (form) {
-            form.addEventListener('submit', validate);
-        }
-
-        return () => {
-            if (form) {
-                form.removeEventListener('submit', validate);
-            }
-        };
-    });
 </script>
 
 <div bind:this={element}>
+
     <TextField
-            {name}
-            {label}
-            {placeholder}
-            bind:value
-            size={size || 'md'}
-            disabled={disabled}
-            required={required}
-            {description}
-            {maxlength}
-            bind:invalid
-            {invalidText}
+        bind:value
+        bind:invalid
+        {...rest}
     />
+
 </div>
