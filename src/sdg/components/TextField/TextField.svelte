@@ -80,7 +80,7 @@
         <div id={descriptionId} class="qc-textfield-description">{description}</div>
     {/if}
 
-    <div class={`qc-textfield ${sizeClass} ${invalid && 'qc-formfield-error'} ${disabled && 'disabled'}`}>
+    <div class={`qc-textfield ${sizeClass} ${invalid ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
         {#if isTextArea}
       <textarea
               id={inputId}

@@ -10269,7 +10269,7 @@
 
 		template_effect(() => {
 			set_class(div, 1, `qc-textfield-container ${disabled() ? 'disabled' : ''}`);
-			set_class(div_2, 1, `qc-textfield ${get(sizeClass)} ${invalid() && 'qc-formfield-error'} ${disabled() && 'disabled'}`);
+			set_class(div_2, 1, `qc-textfield ${get(sizeClass)} ${invalid() ? 'error' : ''} ${disabled() ? 'disabled' : ''}`);
 		});
 
 		append($$anchor, div);
