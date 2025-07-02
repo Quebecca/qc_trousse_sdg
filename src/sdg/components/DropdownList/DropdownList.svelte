@@ -9,8 +9,8 @@
 
     @todo
     - lire https://developer.mozilla.org/fr/docs/Web/Accessibility/ARIA/Reference/Roles/listbox_role
-        - réfléchir au nom : qc-select-box ? qc-list-box ? qc-select ?
-        - convertir en svelte 5
+        - réfléchir au nom : qc-select-box ? qc-list-box ? qc-select ? Choix retenu: DropdownList [x]
+        - convertir en svelte 5 [x]
         - réparer la css (image, thème sombre, padding des éléments)
         - mettre le bon comportement de focus (couleur et largeur ; utiliser le même que celui du searchInput)
         - faire fonctionner le thème sombre
@@ -44,11 +44,12 @@
      * @property {string} [noValueMessage]
      * @property {string} [noOptionsMessage]
      * @property {boolean} [enableSearch]
+     * @property {string} [comboAriaLabel]
      * @property {boolean} [ariaRequired]
      * @property {string} [error]
      * @property {string} [searchPlaceholder]
      * @property {string} [emptyOptionSrMessage]
-     * @property {boolean} [isMultiSelect]
+     * @property {boolean} [multiple]
      */
 
     /** @type {Props & { [key: string]: any }} */
@@ -60,11 +61,12 @@
         noValueMessage = '',
         noOptionsMessage = ' Aucune option disponible',
         enableSearch = true,
+        comboAriaLabel = '',
         ariaRequired = false,
         error = $bindable(''),
         searchPlaceholder = '',
         emptyOptionSrMessage = '',
-        isMultiSelect = false,
+        multiple = false,
         ...rest
     } = $props();
     let
@@ -98,7 +100,7 @@
 
     // la fonction select() n'est appelée pour la selection multiple qu'en passant par le clavier.
     function select(option) {
-        if (isMultiSelect) {
+        if (multiple) {
             if (!value.includes(getOptionValue(option))) {
                 value = [...value, getOptionValue(option)];
             }
@@ -114,13 +116,13 @@
         dispatch('select', {'value': value})
         valueLabel = getOptionLabel(option)
         search = ''
-        if (!isMultiSelect) {
+        if (!multiple) {
             hideBox()
         }
         if (!root) { // peut arriver en cas de destruction/reconstruction du composant
             return
         }
-        if (!isMultiSelect) {
+        if (!multiple) {
             comboButton.focus()
         }
         let e = new CustomEvent('select', {
@@ -179,7 +181,7 @@
 
     function handleTextKeyDown(e) {
         // un seul caractère (donc, in Tab, Shift, etc)
-        if (!/^.{1}$/i.test(e.key)) {
+        if (!/^.$/i.test(e.key)) {
             return;
         }
         showBox();
@@ -328,13 +330,13 @@
     function getOptions(items) {
         lastValue = value;
         value = null;
-        if (isMultiSelect) {
+        if (multiple) {
             value = [];
         }
         if (Array.isArray(items)) {
             return items.length && Array.isArray(items[0])
                 ? items // array of array, we assume items are in entries format
-                : Object.entries(items) // just array, so we take the entries
+                : Object.entries(items) // it's an array, so we take the entries
         }
         if (typeof items === 'object') {
             let options = [];
@@ -377,7 +379,7 @@
             return noOptionsMessage;
         }
         // ne pas afficher la valeur sélectionnée quand on a une sélection multiple
-        if (value && valueLabel !== "" && !isMultiSelect) {
+        if (value && valueLabel !== "" && !multiple) {
             return valueLabel;
         }
         return noValueMessage;
@@ -396,7 +398,7 @@
     });
     // selection de l'option quand maj de la valeur
     run(() => {
-        if (!isMultiSelect) selectOption(value)
+        if (!multiple) selectOption(value)
     });
     // $: console.log('combo value update', value, id)
     let selectedElementId = $derived(value ? getOptionElementId(value) : '')
@@ -417,7 +419,6 @@
 <svelte:document onclick={checkOutterEvent}/>
 <input type="hidden"
        value="{value}"
-       bind:this={rootInput}
        id="{rest.id}"
        name="{rest.name}"
 >
@@ -488,7 +489,7 @@
                     bind:this={listBox}
                 >
                     {#each filteredOptions as option}
-                        {#if isMultiSelect}
+                        {#if multiple}
                             <li
                                     class="form-check"
                                     id="{getOptionElementId(option)}"
