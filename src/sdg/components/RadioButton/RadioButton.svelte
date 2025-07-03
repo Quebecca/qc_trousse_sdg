@@ -27,7 +27,6 @@
         bind:group={groupValue}
         aria-required={required}
         aria-invalid={invalid}
-        {required}
         {checked}
         {disabled}
         {...rest}

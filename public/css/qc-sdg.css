@@ -2090,7 +2090,6 @@ qc-search-bar {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   color: var(--qc-color-red-regular);
-  margin-left: var(--qc-spacer-xs);
 }
 
 .qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
