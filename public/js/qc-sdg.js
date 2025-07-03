@@ -11064,7 +11064,7 @@
 
 						set_class(span, 1, clsx([
 							"qc-dropdown-button-icon",
-							!get(expanded) && "qc-dropdown-button-icon-collapsed"
+							get(expanded) && "qc-dropdown-button-icon-expanded"
 						]));
 					});
 
