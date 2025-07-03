@@ -2209,7 +2209,6 @@ qc-textfield {
   background: transparent;
   padding: 0.8rem 0.8rem;
   border: 0;
-  margin-top: 0.4rem;
 }
 .qc-textfield input[type=text]::-moz-placeholder, .qc-textfield textarea::-moz-placeholder {
   color: var(--qc-color-grey-medium);
@@ -2254,9 +2253,8 @@ qc-textfield {
   margin-bottom: 3.2rem;
 }
 .qc-textfield-container label {
-  margin: 0;
+  margin-bottom: 0.4rem;
 }
-
 .qc-textfield-container.disabled label {
   color: var(--qc-color-grey-regular);
   cursor: not-allowed;
@@ -2282,16 +2280,9 @@ qc-textfield {
   cursor: not-allowed;
 }
 
-.qc-textfield-error-message {
-  margin-top: 0.4rem;
-  color: var(--qc-color-red-regular);
-}
-.error .qc-textfield-error-message {
-  display: block;
-}
-
 .qc-textfield-charcount {
   text-align: right;
+  margin-top: 0.4rem;
   color: var(--qc-color-grey-medium);
   font-size: var(--qc-font-size-sm);
 }

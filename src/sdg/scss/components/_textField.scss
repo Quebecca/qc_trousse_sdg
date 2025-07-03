@@ -22,7 +22,6 @@ qc-textfield {
     background: transparent;
     padding: rem(8) rem(8);
     border: 0;
-    margin-top: rem(4);
 
     &::placeholder {
       color: token-value(color grey medium);
@@ -40,14 +39,12 @@ qc-textfield {
     resize: vertical;
   }
 
-  // Tailles
   &--sm { width: rem(63); }
   &--md { width: rem(156); }
   &--lg { width: rem(249); }
   &--xl { width: rem(528); }
   &--xxl { width: 100%; max-width: rem(825); }
 
-  // Gestion des erreurs
   &.error {
     &::before {
       border-color: token-value(color, red, regular);
@@ -56,35 +53,31 @@ qc-textfield {
   }
 }
 
-// Conteneur
 .qc-textfield-container {
-  margin-bottom: rem(32); // Il n'y a pas de token pour 32px
+  margin-bottom: rem(32);
 
   label {
-    margin: 0;
+    margin-bottom: rem(4);
+  }
+
+  &.disabled {
+    label {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
+    }
   }
 }
 
-.qc-textfield-container.disabled {
-  label {
-    color: token-value(color, grey, regular);
-    cursor: not-allowed;
-  }
-}
-
-// Required
 .qc-textfield-required {
   color: token-value(color, red, regular);
   margin-left: rem(4);
 }
 
-// Description
 .qc-textfield-description {
   font-size: token-value(font, size, sm);
   color: token-value(color, grey, medium);
 }
 
-// Disabled
 .qc-textfield.disabled {
   &::before {
     border: 1px solid token-value(color, grey, regular);
@@ -98,19 +91,9 @@ qc-textfield {
   }
 }
 
-// Message d'erreur
-.qc-textfield-error-message {
-  margin-top: rem(4);
-  color: token-value(color, red, regular);
-
-  .error & {
-    display: block;
-  }
-}
-
-// Compteur de caractère
 .qc-textfield-charcount {
   text-align: right;
+  margin-top: rem(4);
   color: token-value(color, grey, medium);
   font-size: token-value(font, size, sm);
 
