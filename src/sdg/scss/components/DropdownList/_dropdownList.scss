@@ -24,9 +24,12 @@ $max-height: 370;
 }
 
 .qc-dropdown-button-icon {
-  .qc-dropdown-button-icon-collapsed {
-    transform: rotate(180deg);
-  }
+  rotate: 180deg;
+  transition: transform .3s ease-out;
+}
+
+.qc-dropdown-button-icon-expanded {
+  transform: rotate(180deg);
 }
 
 .qc-dropdown-list-items {
