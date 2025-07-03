@@ -2,12 +2,13 @@
 import {Utils} from "../utils";
 import Icon from "../Icon/Icon.svelte";
 
-let {invalid , invalidText} = $props();
+let {invalid , invalidText, id} = $props();
 
 </script>
 
 <div class="qc-form-error"
-     role="alert">
+     role="alert"
+     {id}>
     {#if invalid}
         <Icon
                 type="warning"

@@ -21,7 +21,6 @@
     } = $props();
 
     let sizeClass = $derived(`qc-textfield--${size}`);
-    let isTextArea = $derived(display === 'area');
     let charCountText = $derived(() => {
         if (maxlength !== null) {
             const currentLength = value?.length || 0;
@@ -53,7 +52,6 @@
     const errorId = `error-${uid}`;
     const charCountId = `charcount-${uid}`;
 
-
     let describedBy = $derived(
         [
             invalid && errorId,
@@ -61,8 +59,6 @@
             maxlength && charCountId,
         ].filter(Boolean)
     );
-
-
 
 </script>
 
@@ -79,19 +75,19 @@
     {/if}
 
     <div class={`qc-textfield ${sizeClass} ${invalid ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
-        {#if isTextArea}
-      <textarea
-              id={inputId}
-              name={name}
-              aria-describedby={describedBy.join(' ')}
-              {placeholder}
-              bind:value
-              {disabled}
-              aria-required={required}
-              aria-invalid={invalid}
-              oninput={clearInvalid}
-              {...rest}
-      ></textarea>
+        {#if display === 'area'}
+            <textarea
+                  id={inputId}
+                  name={name}
+                  aria-describedby={describedBy.join(' ')}
+                  {placeholder}
+                  bind:value
+                  {disabled}
+                  aria-required={required}
+                  aria-invalid={invalid}
+                  oninput={clearInvalid}
+                  {...rest}
+            ></textarea>
         {:else}
             <input
                 id={inputId}
@@ -121,8 +117,6 @@
 
 
     {#if invalid}
-        <div id={errorId}>
-            <FormError {invalid} {invalidText} />
-        </div>
+        <FormError id={errorId} {invalid} {invalidText} />
     {/if}
 </div>

@@ -6651,7 +6651,7 @@
 	};
 
 	var root_3$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[94, 10, [[105, 12]]]]);
-	var root_7$1 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
+	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[120, 32, [[120, 36]]]]);
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[114, 20, [[115, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[132, 10]]);
@@ -6842,7 +6842,7 @@
 
 						{
 							var consequent_4 = ($$anchor) => {
-								var li = root_7$1();
+								var li = root_7();
 								var a_4 = child(li);
 								var text_3 = child(a_4, true);
 
@@ -8513,7 +8513,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_1$4 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_1$4 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[19, 8]]);
 	var root$6 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8521,7 +8521,8 @@
 		push($$props, true);
 
 		let invalid = prop($$props, 'invalid', 7),
-			invalidText = prop($$props, 'invalidText', 7);
+			invalidText = prop($$props, 'invalidText', 7),
+			id = prop($$props, 'id', 7);
 
 		var div = root$6();
 		var node = child(div);
@@ -8552,6 +8553,7 @@
 		}
 
 		reset(div);
+		template_effect(() => set_attribute(div, 'id', id()));
 		append($$anchor, div);
 
 		return pop({
@@ -8569,11 +8571,18 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get id() {
+				return id();
+			},
+			set id($$value) {
+				id($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(FormError, { invalid: {}, invalidText: {} }, [], [], true);
+	create_custom_element(FormError, { invalid: {}, invalidText: {}, id: {} }, [], [], true);
 
 	CheckboxGroup[FILENAME] = 'src/sdg/components/Checkbox/CheckboxGroup.svelte';
 
@@ -10000,14 +10009,13 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[73, 26]]);
-	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[71, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[78, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[83, 6]]);
-	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[96, 12]]);
-	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[113, 8]]);
-	var root_7 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[124, 8]]);
-	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[69, 0, [[81, 4]]]]);
+	var root_2 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[69, 26]]);
+	var root_1 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[67, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[74, 8]]);
+	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[79, 12]]);
+	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[92, 12]]);
+	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[109, 8]]);
+	var root$1 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[65, 0, [[77, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10049,7 +10057,6 @@
 				]);
 
 		let sizeClass = user_derived(() => `qc-textfield--${size()}`);
-		let isTextArea = user_derived(() => strict_equals(display(), 'area'));
 
 		let charCountText = user_derived(() => () => {
 			if (strict_equals(maxlength(), null, false)) {
@@ -10198,7 +10205,7 @@
 			};
 
 			if_block(node_3, ($$render) => {
-				if (get(isTextArea)) $$render(consequent_3); else $$render(alternate, false);
+				if (strict_equals(display(), 'area')) $$render(consequent_3); else $$render(alternate, false);
 			});
 		}
 
@@ -10236,13 +10243,8 @@
 
 		{
 			var consequent_5 = ($$anchor) => {
-				var div_4 = root_7();
-
-				set_attribute(div_4, 'id', errorId);
-
-				var node_6 = child(div_4);
-
-				FormError(node_6, {
+				FormError($$anchor, {
+					id: errorId,
 					get invalid() {
 						return invalid();
 					},
@@ -10250,9 +10252,6 @@
 						return invalidText();
 					}
 				});
-
-				reset(div_4);
-				append($$anchor, div_4);
 			};
 
 			if_block(node_5, ($$render) => {
