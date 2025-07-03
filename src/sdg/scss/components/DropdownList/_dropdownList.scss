@@ -1,12 +1,47 @@
 @use "qc-sdg-lib" as *;
 
+$min-height: 40;
+$max-height: 370;
+
+.qc-dropdown-list {
+  border: rem(1) solid token-value(color, grey, medium);
+  width: var(--dropdown-width);
+  min-height: rem($min-height);
+  background-color: token-value(color, background);
+}
 .qc-dropdown-button {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
+  height: rem($min-height);
+  align-items: center;
   background-color: token-value(color, background);
   border: none;
-  padding: 0;
+  padding-left: token-value(spacer, xs);
+  padding-right: token-value(spacer, xs);
+
+  @include qc-formcontrol-box();
+}
+
+.qc-dropdown-button-icon {
+  .qc-dropdown-button-icon-collapsed {
+    transform: rotate(180deg);
+  }
 }
 
 .qc-dropdown-list-items {
-  border: rem(2) solid token-value(color, grey, medium);
+  max-height: rem($max-height - $min-height);
+  overflow-y: auto;
+
+  scrollbar-color: token-value(color, blue, regular) token-value(color, background);
+
+  .qc-check-row {
+    height: rem($min-height);
+    padding-left: token-value(spacer, xs);
+    padding-top: token-value(spacer, xs);
+  }
+
+  *:hover {
+    background-color: token-value(color, blue, pale);
+  }
 }

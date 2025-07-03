@@ -6946,7 +6946,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_1$6 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
-	var root_2$2 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
+	var root_2$3 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
 	var on_click$2 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7076,7 +7076,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$2();
+				var div_5 = root_2$3();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -7581,7 +7581,7 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$1 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$a = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
@@ -7645,7 +7645,7 @@
 
 				src();
 
-				var img = root_2$1();
+				var img = root_2$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -9445,7 +9445,7 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[60, 16]]);
+	var root_2$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[60, 16]]);
 
 	var root_1$2 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
@@ -9485,7 +9485,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span_2 = root_2();
+					var span_2 = root_2$1();
 					var node_1 = child(span_2);
 
 					html(node_1, description);
@@ -10890,8 +10890,7 @@
 		push($$props, true);
 
 		let items = prop($$props, 'items', 7),
-			name = prop($$props, 'name', 7),
-			expanded = prop($$props, 'expanded', 15, false);
+			name = prop($$props, 'name', 7);
 
 		var fragment = comment();
 		var node = first_child(fragment);
@@ -10931,23 +10930,20 @@
 				name($$value);
 				flushSync();
 			},
-			get expanded() {
-				return expanded();
-			},
-			set expanded($$value = false) {
-				expanded($$value);
-				flushSync();
-			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(DropdownListMultiple, { items: {}, name: {}, expanded: {} }, [], [], true);
+	create_custom_element(DropdownListMultiple, { items: {}, name: {} }, [], [], true);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
 	var on_click = (_, expanded) => set(expanded, !get(expanded));
-	var root_1 = add_locations(template(`<div class="qc-dropdown-list-items"><button class="qc-dropdown-button">Choisissez une option</button> <!></div>`), DropdownList[FILENAME], [[53, 4, [[54, 8]]]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-items"><!></div>`), DropdownList[FILENAME], [[77, 12]]);
+
+	var root_1 = add_locations(template(`<div class="qc-dropdown-list"><button class="qc-dropdown-button">Choisissez une option <span><!></span></button> <!></div>`), DropdownList[FILENAME], [
+		[67, 4, [[69, 8, [[72, 12]]]]]
+	]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -10957,6 +10953,7 @@
 		let id = prop($$props, 'id', 23, () => Math.floor(Math.random() * 1000)),
 			legend = prop($$props, 'legend', 7, ''),
 			value = prop($$props, 'value', 15, ""),
+			width = prop($$props, 'width', 7, "auto"),
 			items = prop($$props, 'items', 7),
 			noValueMessage = prop($$props, 'noValueMessage', 7, ''),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, ' Aucune option disponible'),
@@ -10977,6 +10974,7 @@
 					'id',
 					'legend',
 					'value',
+					'width',
 					'items',
 					'noValueMessage',
 					'noOptionsMessage',
@@ -10991,6 +10989,18 @@
 
 		const name = Math.random().toString(36).substring(2, 15);
 		let expanded = state(false);
+
+		let usedWidth = user_derived(() => {
+			if (strict_equals(width(), "sm")) {
+				return 156;
+			} else if (strict_equals(width(), "md")) {
+				return 342;
+			} else if (strict_equals(width(), "lg")) {
+				return 528;
+			} else {
+				return 342;
+			}
+		});
 
 		Fieldset($$anchor, spread_props(
 			{
@@ -11016,28 +11026,48 @@
 
 					button.__click = [on_click, expanded];
 
-					var node = sibling(button, 2);
+					var span = sibling(child(button));
+					var node = child(span);
+
+					Icon(node, { type: 'chevron-white' });
+					reset(span);
+					reset(button);
+
+					var node_1 = sibling(button, 2);
 
 					{
 						var consequent = ($$anchor) => {
-							DropdownListMultiple($$anchor, {
+							var div_1 = root_2();
+							var node_2 = child(div_1);
+
+							DropdownListMultiple(node_2, {
 								get items() {
 									return items();
 								},
-								name,
-								get expanded() {
-									return get(expanded);
-								}
+								name
 							});
+
+							reset(div_1);
+							append($$anchor, div_1);
 						};
 
-						if_block(node, ($$render) => {
+						if_block(node_1, ($$render) => {
 							if (get(expanded)) $$render(consequent);
 						});
 					}
 
 					reset(div);
-					template_effect(() => set_attribute(button, 'aria-expanded', get(expanded)));
+
+					template_effect(() => {
+						set_style(div, `--dropdown-width: ${get(usedWidth) ?? ''}px;`);
+						set_attribute(button, 'aria-expanded', get(expanded));
+
+						set_class(span, 1, clsx([
+							"qc-dropdown-button-icon",
+							!get(expanded) && "qc-dropdown-button-icon-collapsed"
+						]));
+					});
+
 					append($$anchor, div);
 				}),
 				$$slots: { default: true }
@@ -11066,6 +11096,13 @@
 			},
 			set value($$value = "") {
 				value($$value);
+				flushSync();
+			},
+			get width() {
+				return width();
+			},
+			set width($$value = "auto") {
+				width($$value);
 				flushSync();
 			},
 			get items() {
@@ -11150,6 +11187,7 @@
 			id: {},
 			legend: {},
 			value: {},
+			width: {},
 			items: {},
 			noValueMessage: {},
 			noOptionsMessage: {},
