@@ -56,6 +56,9 @@ input[type="checkbox"] {
 
 
 .qc-checkbox-single {
+  display: flex;
+  flex-direction: column;
+  gap: rem(16);
   margin-bottom: token-value(spacer content-block mb);
 
   &.qc-checkbox-single-invalid {

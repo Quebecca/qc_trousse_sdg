@@ -54,25 +54,29 @@ export class Utils {
     }
 
     /**
-     * Produces an array of props objects, with each object containing all props that start with the associated prefix
-     * passed in tags
-     * @param tags
-     * @param defaultsAttributes
-     * @param restProps
-     * @returns {*} The array of props objects
+     * extract and clean prefixed attributes
+     * example:
+     *  computeFieldsAttributes("radio" , {"radio-class":"my-radio", "radio-data-foo":"foo", "other":"other value"})
+     *  return {"class":"my-radio", "data-foo":"foo"}
+     *
+     </div>
+     * @param {(string|string[])} prefix - Une chaîne de caractères ou un tableau de chaînes.
+     * @param restProps - ojbect of attributes
+     * @returns {*} - object of attributes
      */
-    static computeFieldsAttributes(tags, defaultsAttributes, restProps) {
-        return tags.map(control => {
-            const prefix = `${control}-`;
-            return {
-                ...defaultsAttributes[control],
-                ...Object.fromEntries(
-                    Object.entries(restProps)
-                        .map(([k,v]) => k.startsWith(prefix) ? [k.replace(prefix, ''),v] : null)
-                        .filter(Boolean) // élimine les éléments null
-                )
-            };
-        });
+    static computeFieldsAttributes(prefix , restProps) {
+        let output = {},
+            _prefix = prefix + '-'
+        Object
+            .entries(restProps)
+            .forEach(([prop,value]) => {
+                if (prop.startsWith(_prefix)) {
+                    const prefixProp = prop.replace(new RegExp('^' + _prefix), '')
+                    output[prefixProp] = value;
+                }
+            })
+
+        return output;
     }
 
 }

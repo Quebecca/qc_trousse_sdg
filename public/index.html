@@ -1448,6 +1448,7 @@
                   compact >
     <qc-radio-button
             label="Option 1"
+                            radio-foo="foo"
             value="1"
             checked
     ></qc-radio-button>
@@ -1660,7 +1661,9 @@
   <form id="exemple-tos-form">
     <qc-checkbox
             id="exemple-une-case"
-            label="J’accepte les conditions d’utilisation"
+                            name="consentement"
+                            label="J’accepte les conditions d’utilisation J’accepte les conditions d’utilisation J’accepte les conditions d’utilisation J’accepte les conditions d’utilisation J’accepte les conditions d’utilisation J’accepte les conditions d’utilisation "
+                            value="oui"
             required
     ></qc-checkbox>
 
@@ -1676,7 +1679,12 @@
     tosForm.addEventListener("submit", (event) => {
       event.preventDefault();
       if(termsAcceptance.checked) {
-        alert("Formulaire soumis");
+                            const formData = new FormData(event.target);
+                            let alertParts = ["Formulaire soumis avec les données suivantees :"];
+                            for (const [key, value] of formData.entries()) {
+                                alertParts.push(`${key} : ${value}`);
+                            };
+                            alert(alertParts.join("\n"));
       } else {
         termsAcceptance.invalid = true;
       }
@@ -1698,9 +1706,9 @@
           name="options"
           compact
   >
-    <qc-checkbox label="Option 1"></qc-checkbox>
-    <qc-checkbox label="Option 2"></qc-checkbox>
-    <qc-checkbox label="Option 3"></qc-checkbox>
+                    <qc-checkbox value="Option 1"></qc-checkbox>
+                    <qc-checkbox value="Option 2"></qc-checkbox>
+                    <qc-checkbox value="Option 3"></qc-checkbox>
   </qc-checkbox-group>
 </qc-doc-exemple>
 

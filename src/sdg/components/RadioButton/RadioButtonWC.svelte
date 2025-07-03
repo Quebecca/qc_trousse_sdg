@@ -5,8 +5,7 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
-        disabled: {attribute:'disabled', type: 'Boolean'},
-        required: {attribute: 'required', type: 'Boolean'}
+        disabled: {attribute:'disabled', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -25,6 +24,7 @@
 
 <script>
     import RadioButton from "./RadioButton.svelte";
+    import {Utils} from '../utils.js';
 
     let {
         parent,
@@ -33,12 +33,10 @@
         label,
         checked = $bindable(false),
         disabled,
-        required = $bindable(false),
         invalid = $bindable(false),
-        // groupValue= $bindable(""),
         ...rest
     } = $props();
-    let Component = RadioButton
+
     $effect(() => {
         if(checked) {
             parent.value = value;
@@ -47,7 +45,7 @@
 
 </script>
 {#if parent}
-<Component
+<RadioButton
     name={parent.name}
     {value}
     bind:groupValue={parent.value}
@@ -55,8 +53,8 @@
     compact={parent.compact}
     {checked}
     disabled={disabled ?? parent.disabled}
-    {required}
+    required={parent.required}
     invalid={parent.invalid}
-    {...rest}
+    {...Utils.computeFieldsAttributes("radio", rest)}
 />
 {/if}

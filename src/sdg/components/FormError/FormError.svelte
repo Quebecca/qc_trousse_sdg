@@ -1,20 +1,21 @@
 <script>
-import {Utils} from "../utils";
 import Icon from "../Icon/Icon.svelte";
-
+import { tick } from "svelte";
 let {invalid , invalidText} = $props();
-
 </script>
-
+{#if invalid}
 <div class="qc-form-error"
      role="alert">
-    {#if invalid}
-        <Icon
+    {#await tick()}
+    <!-- svelte-ignore block_empty -->
+    {:then}
+    <Icon
                 type="warning"
                 color="red-regular"
                 width="var(--error-icon-width)"
                 height="var(--error-icon-height)"
         />
-        <span>{invalidText}</span>
-    {/if}
+        <span>{@html invalidText}</span>
+    {/await}
 </div>
+{/if}
