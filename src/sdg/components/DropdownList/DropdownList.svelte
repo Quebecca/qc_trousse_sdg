@@ -69,7 +69,7 @@
         <button class="qc-dropdown-button"
                 onclick={() => expanded = !expanded} aria-expanded={expanded}>
             Choisissez une option
-            <span class={["qc-dropdown-button-icon", !expanded && "qc-dropdown-button-icon-collapsed"]}>
+            <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon type="chevron-white" />
             </span>
         </button>

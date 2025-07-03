@@ -2410,7 +2410,12 @@ input[type=checkbox]:checked.qc-compact::after {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 
-.qc-dropdown-button-icon .qc-dropdown-button-icon-collapsed {
+.qc-dropdown-button-icon {
+  rotate: 180deg;
+  transition: transform 0.3s ease-out;
+}
+
+.qc-dropdown-button-icon-expanded {
   transform: rotate(180deg);
 }
 
