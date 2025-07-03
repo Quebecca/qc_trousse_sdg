@@ -4,7 +4,6 @@
     let {
         items,
         name,
-        expanded = $bindable(false)
     } = $props();
 </script>
 

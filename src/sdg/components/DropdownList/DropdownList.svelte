@@ -18,12 +18,14 @@
 
     import Fieldset from "../Fieldset/Fieldset.svelte";
     import DropdownListMultiple from "./DropdownListMultiple.svelte";
+    import Icon from "../Icon/Icon.svelte";
 
     /** @type {Props & { [key: string]: any }} */
     let {
         id = Math.floor(Math.random() * 1000),
         legend = '',
         value = $bindable(""),
+        width = "auto",
         items,
         noValueMessage = '',
         noOptionsMessage = ' Aucune option disponible',
@@ -40,6 +42,18 @@
     const name = Math.random().toString(36).substring(2, 15);
 
     let expanded = $state(false);
+
+    let usedWidth = $derived.by(() => {
+        if (width ==="sm") {
+            return 156;
+        } else if (width ==="md") {
+            return 342;
+        } else if (width ==="lg") {
+            return 528;
+        } else {
+            return 342;
+        }
+    });
 </script>
 
 <Fieldset
@@ -50,12 +64,19 @@
         compact="true"
         {...rest}
 >
-    <div class="qc-dropdown-list-items">
-        <button
-                class="qc-dropdown-button"
-                onclick={() => expanded = !expanded} aria-expanded={expanded}>Choisissez une option</button>
+    <div class="qc-dropdown-list"
+         style="--dropdown-width: {usedWidth}px;">
+        <button class="qc-dropdown-button"
+                onclick={() => expanded = !expanded} aria-expanded={expanded}>
+            Choisissez une option
+            <span class={["qc-dropdown-button-icon", !expanded && "qc-dropdown-button-icon-collapsed"]}>
+                <Icon type="chevron-white" />
+            </span>
+        </button>
         {#if expanded}
-            <DropdownListMultiple {items} {name} {expanded} />
+            <div class="qc-dropdown-list-items">
+                <DropdownListMultiple {items} {name} />
+            </div>
         {/if}
     </div>
 </Fieldset>
