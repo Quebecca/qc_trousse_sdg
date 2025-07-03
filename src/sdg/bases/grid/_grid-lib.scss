@@ -7,9 +7,9 @@
 @use 'sass:map';
 @use 'sass:list';
 @use 'sass:meta';
-@use "settings/base";
-@use "settings/tokens";
-@use "lib/functions" as *;
+@use "../../scss/settings/base";
+@use "../../scss/settings/tokens";
+@use "../../scss/lib/functions" as *;
 
 $enable-grid-classes: base.$enable-grid-classes;
 $enable-deprecation-messages : false;

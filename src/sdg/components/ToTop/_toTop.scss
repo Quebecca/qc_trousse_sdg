@@ -1,5 +1,5 @@
-@use "qc-sdg-lib" as *;
-@use "base/shadings" as *;
+@use "../../scss/qc-sdg-lib" as *;
+@use "../../bases/shadings/shadings" as *;
 
 .qc-to-top {
   &[demo="false"] {

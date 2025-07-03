@@ -1,4 +1,4 @@
-@use "qc-sdg-lib" as *;
+@use "../../scss/qc-sdg-lib" as *;
 
 :root {
   font-size: token-value(font size root-percent);
@@ -40,6 +40,3 @@ body {
   }
 }
 
-legend {
-  padding: 0;
-}

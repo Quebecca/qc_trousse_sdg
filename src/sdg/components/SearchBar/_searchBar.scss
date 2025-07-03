@@ -1,5 +1,5 @@
-@use "qc-sdg-lib" as *;
-@use "searchInput" as *;
+@use "../../scss/qc-sdg-lib" as *;
+@use "../SearchInput/searchInput" as *;
 
 qc-search-bar {
   position: relative;

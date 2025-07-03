@@ -1,6 +1,6 @@
-@use "qc-sdg-lib" as *;
-@use "fieldset" as *;
-@use "checkRow" as *;
+@use "../../scss/qc-sdg-lib" as *;
+@use "../Fieldset/fieldset" as *;
+@use "../CheckFieldGroup/checkRow" as *;
 
 input[type="checkbox"] {
   .qc-check-row &:checked {

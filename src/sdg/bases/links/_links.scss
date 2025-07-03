@@ -1,0 +1,37 @@
+@use "qc-sdg-lib" as *;
+
+a {
+  color: token-value(color, link, text);
+  &:visited {
+    color: token-value(color, link, visited);
+  }
+  &:hover {
+    @include hover-link();
+  }
+  &:focus, &:focus-visible {
+    @include focus-link();
+  }
+  &:active {
+    @include active-link();
+  }
+  //DEPRECATED: use <qc-external-link> instead.
+  // to assure non breaking space inter last word and icon
+  .qc-external-link-tail {
+    white-space: nowrap;
+    img {
+      @include external-link-img();
+      content:getImageUrl(external-link);
+    }
+  }
+  .img-wrap {
+    white-space: nowrap;
+  }
+
+
+}
+span.qc-ext-link-img {
+  @include external-link-img();
+  .img-wrap + & {
+    display: none;
+  }
+}

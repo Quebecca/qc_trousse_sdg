@@ -5,7 +5,7 @@
 @use "settings/base" as *;
 
 @use "functions" as *;
-@use "../grid/grid-lib" as grid;
+@use "../../bases/grid/grid-lib" as grid;
 
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG

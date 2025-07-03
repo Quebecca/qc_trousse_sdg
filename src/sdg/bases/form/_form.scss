@@ -1,4 +1,4 @@
-@use "qc-sdg-lib" as *;
+@use "../../scss/qc-sdg-lib" as *;
 // Inherit fonts for inputs and buttons
 input,
 button,
@@ -11,4 +11,8 @@ label {
   @include content-font('md', 'bold');
   display: inline-block;
   margin-bottom: rem(4);
+}
+
+legend {
+  padding: 0;
 }
