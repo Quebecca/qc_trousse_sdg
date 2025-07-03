@@ -12,6 +12,9 @@
 
 	const EACH_ITEM_REACTIVE = 1;
 	const EACH_INDEX_REACTIVE = 1 << 1;
+	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
+	const EACH_IS_CONTROLLED = 1 << 2;
+	const EACH_IS_ANIMATED = 1 << 3;
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
@@ -3921,7 +3924,9 @@
 		/** @type {EachState} */
 		var state = { flags, items: new Map(), first: null };
 
-		{
+		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
+
+		if (is_controlled) {
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
@@ -4070,6 +4075,8 @@
 	 * @returns {void}
 	 */
 	function reconcile(array, state, anchor, render_fn, flags, get_key, get_collection) {
+		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
@@ -4081,6 +4088,9 @@
 
 		/** @type {EachItem | null} */
 		var prev = null;
+
+		/** @type {undefined | Set<EachItem>} */
+		var to_animate;
 
 		/** @type {EachItem[]} */
 		var matched = [];
@@ -4099,6 +4109,19 @@
 
 		/** @type {number} */
 		var i;
+
+		if (is_animated) {
+			for (i = 0; i < length; i += 1) {
+				value = array[i];
+				key = get_key(value, i);
+				item = items.get(key);
+
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
+				}
+			}
+		}
 
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
@@ -4130,12 +4153,16 @@
 				continue;
 			}
 
-			{
-				update_item(item, value, i);
+			if (should_update) {
+				update_item(item, value, i, flags);
 			}
 
 			if ((item.e.f & INERT) !== 0) {
 				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
+				}
 			}
 
 			if (item !== current) {
@@ -4222,10 +4249,29 @@
 			var destroy_length = to_destroy.length;
 
 			if (destroy_length > 0) {
-				var controlled_anchor = length === 0 ? anchor : null;
+				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
+
+				if (is_animated) {
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.measure();
+					}
+
+					for (i = 0; i < destroy_length; i += 1) {
+						to_destroy[i].a?.fix();
+					}
+				}
 
 				pause_effects(state, to_destroy, controlled_anchor, items);
 			}
+		}
+
+		if (is_animated) {
+			queue_micro_task(() => {
+				if (to_animate === undefined) return;
+				for (item of to_animate) {
+					item.a?.apply();
+				}
+			});
 		}
 
 		/** @type {Effect} */ (active_effect).first = state.first && state.first.e;
@@ -4240,11 +4286,13 @@
 	 * @returns {void}
 	 */
 	function update_item(item, value, index, type) {
-		{
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
 			internal_set(item.v, value);
 		}
 
-		{
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
 			item.i = index;
 		}
 	}
@@ -6897,10 +6945,10 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_1$6 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 	var root_2$2 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
-	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$2 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 
@@ -7001,7 +7049,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$5();
+				var div_2 = root_1$6();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7058,7 +7106,7 @@
 				var a_3 = root_3();
 
 				a_3.__click = [
-					on_click$1,
+					on_click$2,
 					displaySearchForm,
 					focusOnSearchInput
 				];
@@ -7992,7 +8040,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$4 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$5 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8038,7 +8086,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$4();
+				var div = root_1$5();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8208,7 +8256,7 @@
 		}
 	}
 
-	var on_click = (e, scrollToTop) => scrollToTop(e);
+	var on_click$1 = (e, scrollToTop) => scrollToTop(e);
 	var root$7 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
@@ -8259,7 +8307,7 @@
 
 		let classes;
 
-		a.__click = [on_click, scrollToTop];
+		a.__click = [on_click$1, scrollToTop];
 		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
@@ -8772,7 +8820,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_1$3 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_1$4 = add_locations(template(`<!> <span> </span>`, 1), FormError[FILENAME], [[18, 8]]);
 	var root$3 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8787,7 +8835,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$3();
+				var fragment = root_1$4();
 				var node_1 = first_child(fragment);
 
 				Icon(node_1, {
@@ -8836,8 +8884,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[52, 12]]);
-	var root$2 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[41, 0, [[49, 4], [55, 4]]]]);
+	var root_1$3 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[54, 12]]);
+	var root$2 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[43, 0, [[51, 4], [57, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -8863,7 +8911,9 @@
 			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
 
 		onMount(() => {
-			get(groupSelection).append(...formFieldElements());
+			if (formFieldElements()) {
+				get(groupSelection).append(...formFieldElements());
+			}
 		});
 
 		function chooseDivCLass(inline, tiled) {
@@ -8898,7 +8948,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$2();
+				var span = root_1$3();
 
 				append($$anchor, span);
 			};
@@ -9397,7 +9447,7 @@
 
 	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[60, 16]]);
 
-	var root_1$1 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
+	var root_1$2 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
 			38,
 			4,
@@ -9414,7 +9464,7 @@
 		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1$1();
+			var fragment = root_1$2();
 			var label_1 = first_child(fragment);
 			var input = child(label_1);
 
@@ -10243,7 +10293,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[53, 12]]);
+	var root_1$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[53, 12]]);
 
 	var root$1 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
 		[
@@ -10314,7 +10364,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_2 = root_1();
+				var span_2 = root_1$1();
 				var node_1 = child(span_2);
 
 				html(node_1, description);
@@ -10827,6 +10877,382 @@
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justify: { attribute: 'justify', type: 'Boolean' }
+		},
+		[],
+		[],
+		false
+	));
+
+	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
+
+	function DropdownListMultiple($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let items = prop($$props, 'items', 7),
+			name = prop($$props, 'name', 7),
+			expanded = prop($$props, 'expanded', 15, false);
+
+		var fragment = comment();
+		var node = first_child(fragment);
+
+		each(node, 17, items, index, ($$anchor, item) => {
+			Checkbox($$anchor, {
+				get value() {
+					return get(item).value;
+				},
+				get label() {
+					return get(item).label;
+				},
+				get name() {
+					return name();
+				},
+				get disabled() {
+					return get(item).disabled;
+				},
+				parentGroup: 'true'
+			});
+		});
+
+		append($$anchor, fragment);
+
+		return pop({
+			get items() {
+				return items();
+			},
+			set items($$value) {
+				items($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get expanded() {
+				return expanded();
+			},
+			set expanded($$value = false) {
+				expanded($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	create_custom_element(DropdownListMultiple, { items: {}, name: {}, expanded: {} }, [], [], true);
+
+	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
+
+	var on_click = (_, expanded) => set(expanded, !get(expanded));
+	var root_1 = add_locations(template(`<div class="qc-dropdown-list-items"><button class="qc-dropdown-button">Choisissez une option</button> <!></div>`), DropdownList[FILENAME], [[53, 4, [[54, 8]]]]);
+
+	function DropdownList($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		/** @type {Props & { [key: string]: any }} */
+		let id = prop($$props, 'id', 23, () => Math.floor(Math.random() * 1000)),
+			legend = prop($$props, 'legend', 7, ''),
+			value = prop($$props, 'value', 15, ""),
+			items = prop($$props, 'items', 7),
+			noValueMessage = prop($$props, 'noValueMessage', 7, ''),
+			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, ' Aucune option disponible'),
+			enableSearch = prop($$props, 'enableSearch', 7, true),
+			comboAriaLabel = prop($$props, 'comboAriaLabel', 7, ''),
+			ariaRequired = prop($$props, 'ariaRequired', 7, false),
+			invalid = prop($$props, 'invalid', 15, ''),
+			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ''),
+			emptyOptionSrMessage = prop($$props, 'emptyOptionSrMessage', 7, ''),
+			multiple = prop($$props, 'multiple', 7, false),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'id',
+					'legend',
+					'value',
+					'items',
+					'noValueMessage',
+					'noOptionsMessage',
+					'enableSearch',
+					'comboAriaLabel',
+					'ariaRequired',
+					'invalid',
+					'searchPlaceholder',
+					'emptyOptionSrMessage',
+					'multiple'
+				]);
+
+		const name = Math.random().toString(36).substring(2, 15);
+		let expanded = state(false);
+
+		Fieldset($$anchor, spread_props(
+			{
+				get id() {
+					return id();
+				},
+				get legend() {
+					return legend();
+				},
+				get invalid() {
+					return invalid();
+				},
+				get ariaRequired() {
+					return ariaRequired();
+				},
+				compact: 'true'
+			},
+			() => rest,
+			{
+				children: wrap_snippet(DropdownList, ($$anchor, $$slotProps) => {
+					var div = root_1();
+					var button = child(div);
+
+					button.__click = [on_click, expanded];
+
+					var node = sibling(button, 2);
+
+					{
+						var consequent = ($$anchor) => {
+							DropdownListMultiple($$anchor, {
+								get items() {
+									return items();
+								},
+								name,
+								get expanded() {
+									return get(expanded);
+								}
+							});
+						};
+
+						if_block(node, ($$render) => {
+							if (get(expanded)) $$render(consequent);
+						});
+					}
+
+					reset(div);
+					template_effect(() => set_attribute(button, 'aria-expanded', get(expanded)));
+					append($$anchor, div);
+				}),
+				$$slots: { default: true }
+			}
+		));
+
+		return pop({
+			get id() {
+				return id();
+			},
+			set id(
+				$$value = Math.floor(Math.random() * 1000)
+			) {
+				id($$value);
+				flushSync();
+			},
+			get legend() {
+				return legend();
+			},
+			set legend($$value = '') {
+				legend($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = "") {
+				value($$value);
+				flushSync();
+			},
+			get items() {
+				return items();
+			},
+			set items($$value) {
+				items($$value);
+				flushSync();
+			},
+			get noValueMessage() {
+				return noValueMessage();
+			},
+			set noValueMessage($$value = '') {
+				noValueMessage($$value);
+				flushSync();
+			},
+			get noOptionsMessage() {
+				return noOptionsMessage();
+			},
+			set noOptionsMessage($$value = ' Aucune option disponible') {
+				noOptionsMessage($$value);
+				flushSync();
+			},
+			get enableSearch() {
+				return enableSearch();
+			},
+			set enableSearch($$value = true) {
+				enableSearch($$value);
+				flushSync();
+			},
+			get comboAriaLabel() {
+				return comboAriaLabel();
+			},
+			set comboAriaLabel($$value = '') {
+				comboAriaLabel($$value);
+				flushSync();
+			},
+			get ariaRequired() {
+				return ariaRequired();
+			},
+			set ariaRequired($$value = false) {
+				ariaRequired($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = '') {
+				invalid($$value);
+				flushSync();
+			},
+			get searchPlaceholder() {
+				return searchPlaceholder();
+			},
+			set searchPlaceholder($$value = '') {
+				searchPlaceholder($$value);
+				flushSync();
+			},
+			get emptyOptionSrMessage() {
+				return emptyOptionSrMessage();
+			},
+			set emptyOptionSrMessage($$value = '') {
+				emptyOptionSrMessage($$value);
+				flushSync();
+			},
+			get multiple() {
+				return multiple();
+			},
+			set multiple($$value = false) {
+				multiple($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	delegate(['click']);
+
+	create_custom_element(
+		DropdownList,
+		{
+			id: {},
+			legend: {},
+			value: {},
+			items: {},
+			noValueMessage: {},
+			noOptionsMessage: {},
+			enableSearch: {},
+			comboAriaLabel: {},
+			ariaRequired: {},
+			invalid: {},
+			searchPlaceholder: {},
+			emptyOptionSrMessage: {},
+			multiple: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	DropdownListWC[FILENAME] = 'src/sdg/components/DropdownList/DropdownListWC.svelte';
+
+	function DropdownListWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let value = prop($$props, 'value', 15, ""),
+			invalid = prop($$props, 'invalid', 15, false),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'value',
+					'invalid'
+				]);
+
+		let items = state(proxy([]));
+
+		onMount(() => {
+			const optionsValues = [];
+
+			Array.from($$props.$$host.querySelectorAll("option")).forEach((node) => {
+				$$props.$$host.removeChild(node);
+
+				optionsValues.push({
+					label: node.innerHTML,
+					value: node.value,
+					disabled: node.disabled
+				});
+			});
+
+			set(items, optionsValues, true);
+		});
+
+		DropdownList($$anchor, spread_props(
+			{
+				get items() {
+					return get(items);
+				}
+			},
+			() => rest
+		));
+
+		return pop({
+			get value() {
+				return value();
+			},
+			set value($$value = "") {
+				value($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value = false) {
+				invalid($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	customElements.define('qc-dropdown-list', create_custom_element(
+		DropdownListWC,
+		{
+			id: { attribute: 'id', type: 'String' },
+			value: { attribute: 'value', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
+			enableSearch: { attribute: 'enable-search', type: 'Boolean' },
+			comboAriaLabel: { attribute: 'combo-aria-label', type: 'String' },
+			ariaRequired: {
+				attribute: 'combo-aria-required',
+				type: 'Boolean'
+			},
+			invalid: { attribute: 'invalid', type: 'Boolean' },
+			searchPlaceholder: {
+				attribute: 'search-placeholder',
+				type: 'String'
+			},
+			emptyOptionSrMessage: {
+				attribute: 'empty-option-sr-message',
+				type: 'String'
+			},
+			isMultiSelect: { attribute: 'multiple', type: 'Boolean' }
 		},
 		[],
 		[],

@@ -1,0 +1,12 @@
+@use "qc-sdg-lib" as *;
+
+.qc-dropdown-button {
+  display: flex;
+  background-color: token-value(color, background);
+  border: none;
+  padding: 0;
+}
+
+.qc-dropdown-list-items {
+  border: rem(2) solid token-value(color, grey, medium);
+}

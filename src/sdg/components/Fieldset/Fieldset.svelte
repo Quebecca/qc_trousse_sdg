@@ -23,7 +23,9 @@
             ? "id_" + name
             : "legend-" + Math.floor(Math.random() * 1000000 );
     onMount(() => {
-        groupSelection.append(...formFieldElements);
+        if (formFieldElements) {
+            groupSelection.append(...formFieldElements);
+        }
     });
 
     function chooseDivCLass(inline, tiled) {
