@@ -23,9 +23,10 @@ const
 ;
 const verbose = false;
 const  includePaths = [
+        dev_process && 'src/doc/scss',
         'src/sdg/scss',
-        'src/doc/scss'
-];
+        "src",
+].filter(Boolean);
 
 // const path = require('path');
 
@@ -65,7 +66,8 @@ const scssOptions = {
             autoprefixer(),
             cssReplace({
                 data: {
-                    'pkg-version': pkg.version
+                    'pkg-version': pkg.version,
+                    'dev-env': dev_process ? 'true' : 'false',
                 }
             })
         ])
@@ -81,6 +83,7 @@ const scssOptions = {
     outputStyle: build_process ? 'compressed' : 'expanded',
     watch: ['src/sdg/scss', 'src/doc/scss'],
     silenceDeprecations: ['legacy-js-api'],
+
 };
 
 let
