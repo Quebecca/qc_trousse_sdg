@@ -999,20 +999,18 @@
                             placeholder="ex : G1A 1A1"
                     ></qc-textfield>
 
-                    <div class="qc-textfield-group">
-                        <qc-textfield
-                                name="phone"
-                                label="Téléphone"
-                                placeholder="(123) 456-7890"
-                                size="md"
-                        ></qc-textfield>
-                        <qc-textfield
-                                name="poste"
-                                label="Poste"
-                                placeholder="1234"
-                                size="sm"
-                        ></qc-textfield>
-                    </div>
+                    <qc-textfield
+                            name="phone"
+                            label="Téléphone"
+                            placeholder="(123) 456-7890"
+                            size="md"
+                    ></qc-textfield>
+                    <qc-textfield
+                            name="poste"
+                            label="Poste"
+                            placeholder="1234"
+                            size="sm"
+                    ></qc-textfield>
 
                     <qc-textfield
                             name="text-xl"
@@ -1034,16 +1032,19 @@
                             name="zone-xl"
                             label="Commentaires"
                             description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-                            size="zone-xl"
+                            size="xl"
+                            display="area"
                     ></qc-textfield>
 
                     <qc-textfield
                             name="zone-xxl"
                             label="Suggestions"
                             description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-                            size="zone-xxl"
-                            max-length="500"
+                            size="xxl"
+                            display="area"
+                            max-length="50"
                             required="true"
+                            invalid="true"
                             invalid-text="Message d'erreur personnalisé"
                     ></qc-textfield>
 
@@ -1093,9 +1094,15 @@
                     </tr>
                     <tr>
                         <td>size</td>
-                        <td>"sm", "md", "lg", "xl", "xxl", "zone-xl", "zone-xxl"</td>
+                        <td>"sm", "md", "lg", "xl", "xxl", "xl", "xxl"</td>
                         <td>"xl"</td>
                         <td>Taille du champ</td>
+                    </tr>
+                    <tr>
+                        <td>display</td>
+                        <td>"inline", "area"</td>
+                        <td>"inline"</td>
+                        <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
                     </tr>
                     <tr>
                         <td>disabled</td>

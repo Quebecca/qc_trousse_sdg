@@ -2245,12 +2245,6 @@ qc-textfield {
   width: 100%;
   max-width: 82.5rem;
 }
-.qc-textfield--zone-xl {
-  width: 52.8rem;
-}
-.qc-textfield--zone-xxl {
-  width: 100%;
-}
 .qc-textfield.error::before {
   border-color: var(--qc-color-red-regular);
   border-width: 2px;
@@ -2304,20 +2298,6 @@ qc-textfield {
 .qc-textfield-charcount.max-reached {
   color: var(--qc-color-red-regular);
   font-weight: bold;
-}
-
-@media (min-width: 992px) {
-  .qc-textfield-group {
-    white-space: nowrap;
-  }
-  .qc-textfield-group > qc-textfield {
-    display: inline-block;
-    vertical-align: top;
-    width: auto;
-  }
-  .qc-textfield-group > qc-textfield {
-    margin-right: var(--qc-spacer-sm);
-  }
 }
 
 .qc-form-error {

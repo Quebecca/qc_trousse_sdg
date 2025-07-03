@@ -47,9 +47,6 @@ qc-textfield {
   &--xl { width: rem(528); }
   &--xxl { width: 100%; max-width: rem(825); }
 
-  &--zone-xl { width: rem(528); }
-  &--zone-xxl { width: 100%; }
-
   // Gestion des erreurs
   &.error {
     &::before {
@@ -120,23 +117,6 @@ qc-textfield {
   &.max-reached {
     color: token-value(color, red, regular);
     font-weight: bold;
-  }
-}
-
-// Champs côte à côte (pour desktop seulement)
-.qc-textfield-group {
-  @include media-desktop() {
-    white-space: nowrap;
-
-    > qc-textfield {
-      display: inline-block;
-      vertical-align: top;
-      width: auto;
-    }
-
-    > qc-textfield {
-      margin-right: token-value(spacer sm);
-    }
   }
 }
 
