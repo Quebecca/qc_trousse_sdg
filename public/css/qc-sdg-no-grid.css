@@ -2372,3 +2372,14 @@ input[type=checkbox]:checked.qc-compact::after {
   border-radius: 50%;
   transition: all 0.3s ease-out;
 }
+
+.qc-dropdown-button {
+  display: flex;
+  background-color: var(--qc-color-background);
+  border: none;
+  padding: 0;
+}
+
+.qc-dropdown-list-items {
+  border: 0.2rem solid var(--qc-color-grey-medium);
+}

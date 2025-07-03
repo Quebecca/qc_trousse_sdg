@@ -14,21 +14,34 @@
         isMultiSelect: {attribute: 'multiple', type: 'Boolean'},
     }
 }}"/>
-<script>
-    import DropdownList from "./DropdownList.svelte";
-    import {onMount} from "svelte";
 
-    let { ...rest } = $props();
+<script>
+    import {onMount} from "svelte";
+    import DropdownList from "./DropdownList.svelte";
+
+    let {
+        value = $bindable(""),
+        invalid = $bindable(false),
+        ...rest
+    } = $props();
 
     let items = $state([]);
     onMount(() => {
         const optionsValues = [];
 
-        $host().childNodes.forEach(node => {
-            optionsValues.push(node.value);
+        Array.from($host().querySelectorAll("option"))
+            .forEach(node => {
+            $host().removeChild(node);
+
+            optionsValues.push({
+                label: node.innerHTML,
+                value: node.value,
+                disabled: node.disabled,
+            });
         });
 
         items = optionsValues;
     });
 </script>
+
 <DropdownList {items} {...rest} />
