@@ -7075,7 +7075,7 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$4 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[64, 6, [[65, 8]]]]);
+	var root_1$5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[64, 6, [[65, 8]]]]);
 	var root_2$3 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[82, 16, [[83, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -7179,7 +7179,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$4();
+				var div_2 = root_1$5();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -8170,7 +8170,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$3 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$4 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8216,7 +8216,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$3();
+				var div = root_1$4();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8951,7 +8951,7 @@
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
 	var root_2$1 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[18, 8]]);
-	var root_1$2 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[7, 0]]);
+	var root_1$3 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[7, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -8965,7 +8965,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$2();
+				var div = root_1$3();
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor) => {
@@ -9021,8 +9021,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
-	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
+	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[52, 12]]);
+	var root$1 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[41, 0, [[49, 4], [55, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9032,21 +9032,36 @@
 
 		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
+			tiled = prop($$props, 'tiled', 7, false),
+			inline = prop($$props, 'inline', 7, false),
+			columnCount = prop($$props, 'columnCount', 7, 1),
 			compact = prop($$props, 'compact', 7),
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
-			children = prop($$props, 'children', 7),
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
-			formFieldElements = prop($$props, 'formFieldElements', 7);
+			formFieldElements = prop($$props, 'formFieldElements', 7),
+			children = prop($$props, 'children', 7);
 
-		let legendElement,
+		let groupSelection = state(void 0),
 			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
 
 		onMount(() => {
-			legendElement.after(...formFieldElements());
+			get(groupSelection).append(...formFieldElements());
 		});
+
+		function chooseDivCLass(inline, tiled) {
+			if (tiled) {
+				if (inline) {
+					return "qc-field-elements-tiled-flex-row";
+				} else {
+					return "qc-field-elements-tiled";
+				}
+			}
+
+			return "qc-field-elements-flex";
+		}
 
 		var fieldset = root$1();
 
@@ -9068,7 +9083,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$1();
+				var span = root_1$2();
 
 				append($$anchor, span);
 			};
@@ -9079,13 +9094,15 @@
 		}
 
 		reset(legend_1);
-		bind_this(legend_1, ($$value) => legendElement = $$value, () => legendElement);
 
-		var node_2 = sibling(legend_1, 2);
+		var div = sibling(legend_1, 2);
+		var node_2 = child(div);
 
 		snippet(node_2, () => children() ?? noop);
+		reset(div);
+		bind_this(div, ($$value) => set(groupSelection, $$value), () => get(groupSelection));
 
-		var node_3 = sibling(node_2, 2);
+		var node_3 = sibling(div, 2);
 
 		FormError(node_3, {
 			get invalid() {
@@ -9098,12 +9115,22 @@
 
 		reset(fieldset);
 
-		template_effect(() => set_class(fieldset, 1, clsx([
-			invalid() && "qc-fieldset-invalid",
-			"qc-fieldset",
-			compact() && "qc-compact",
-			disabled() && "qc-fieldset-disabled"
-		])));
+		template_effect(
+			($0) => {
+				set_class(fieldset, 1, clsx([
+					invalid() && "qc-fieldset-invalid",
+					"qc-fieldset",
+					compact() && "qc-compact",
+					disabled() && "qc-fieldset-disabled"
+				]));
+
+				set_class(div, 1, $0);
+				set_style(div, `--column-count: ${columnCount() ?? ''}`);
+			},
+			[
+				() => clsx(chooseDivCLass(inline(), tiled()))
+			]
+		);
 
 		append($$anchor, fieldset);
 
@@ -9120,6 +9147,27 @@
 			},
 			set name($$value) {
 				name($$value);
+				flushSync();
+			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value = false) {
+				tiled($$value);
+				flushSync();
+			},
+			get inline() {
+				return inline();
+			},
+			set inline($$value = false) {
+				inline($$value);
+				flushSync();
+			},
+			get columnCount() {
+				return columnCount();
+			},
+			set columnCount($$value = 1) {
+				columnCount($$value);
 				flushSync();
 			},
 			get compact() {
@@ -9159,13 +9207,6 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get children() {
-				return children();
-			},
-			set children($$value) {
-				children($$value);
-				flushSync();
-			},
 			get updateValue() {
 				return updateValue();
 			},
@@ -9180,6 +9221,13 @@
 				formFieldElements($$value);
 				flushSync();
 			},
+			get children() {
+				return children();
+			},
+			set children($$value) {
+				children($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9191,14 +9239,17 @@
 		{
 			legend: {},
 			name: {},
+			tiled: {},
+			inline: {},
+			columnCount: {},
 			compact: {},
 			required: {},
 			disabled: {},
 			invalid: {},
 			invalidText: {},
-			children: {},
 			updateValue: {},
-			formFieldElements: {}
+			formFieldElements: {},
+			children: {}
 		},
 		[],
 		[],
@@ -9345,7 +9396,10 @@
 			required = prop($$props, 'required', 7),
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7);
+			invalidText = prop($$props, 'invalidText', 7),
+			tiled = prop($$props, 'tiled', 7),
+			columnCount = prop($$props, 'columnCount', 7),
+			inline = prop($$props, 'inline', 7);
 
 		let updateValue = function () {
 			value(formFieldElements().map((cb) => cb.checked ? cb.value : false).filter((x) => x));
@@ -9377,6 +9431,15 @@
 				},
 				get invalidText() {
 					return invalidText();
+				},
+				get tiled() {
+					return tiled();
+				},
+				get columnCount() {
+					return columnCount();
+				},
+				get inline() {
+					return inline();
 				},
 				updateValue,
 				get value() {
@@ -9471,6 +9534,27 @@
 				invalidText($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
+				flushSync();
+			},
+			get columnCount() {
+				return columnCount();
+			},
+			set columnCount($$value) {
+				columnCount($$value);
+				flushSync();
+			},
+			get inline() {
+				return inline();
+			},
+			set inline($$value) {
+				inline($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9483,6 +9567,9 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
+			tiled: { attribute: 'tiled', type: 'Boolean' },
+			columnCount: { attribute: 'column-count', type: 'String' },
+			inline: { attribute: 'inline', type: 'Boolean' },
 			formFieldElements: {},
 			value: {},
 			checked: {},
@@ -9499,6 +9586,10 @@
 				constructor() {
 					super();
 					this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
+
+					this.formFieldElements.forEach((element) => {
+						element.classList.add('qc-check-row-parent');
+					});
 				}
 			};
 		}
@@ -9506,9 +9597,17 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
-	var root_1 = add_locations(template(`<div><input> <label><!> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[34, 4, [[38, 8], [50, 8]]]]);
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[65, 0]]);
+	var root_2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[58, 16]]);
+
+	var root_1$1 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
+		[
+			36,
+			4,
+			[[42, 8], [55, 8, [[56, 12]]]]
+		]
+	]);
+
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[71, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9517,9 +9616,9 @@
 		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1();
-			var div = first_child(fragment);
-			var input = child(div);
+			var fragment = root_1$1();
+			var label_1 = first_child(fragment);
+			var input = child(label_1);
 
 			remove_input_defaults(input);
 
@@ -9528,29 +9627,33 @@
 			};
 
 			let attributes;
-			var label_1 = sibling(input, 2);
-			var node = child(label_1);
+			var span = sibling(input, 2);
+			var span_1 = child(span);
+			var text = child(span_1, true);
 
-			html(node, label);
+			reset(span_1);
 
-			var node_1 = sibling(node, 2);
+			var node = sibling(span_1, 2);
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root_2();
+					var span_2 = root_2();
+					var node_1 = child(span_2);
 
-					append($$anchor, span);
+					html(node_1, description);
+					reset(span_2);
+					append($$anchor, span_2);
 				};
 
-				if_block(node_1, ($$render) => {
-					if (!parentGroup() && required()) $$render(consequent);
+				if_block(node, ($$render) => {
+					if (description()) $$render(consequent);
 				});
 			}
 
+			reset(span);
 			reset(label_1);
-			reset(div);
 
-			var node_2 = sibling(div, 2);
+			var node_2 = sibling(label_1, 2);
 
 			{
 				var consequent_1 = ($$anchor) => {
@@ -9570,12 +9673,15 @@
 			}
 
 			template_effect(() => {
-				set_class(div, 1, clsx([
-					"qc-check-row",
-					!parentGroup() && compact() && "qc-compact"
+				set_class(label_1, 1, clsx([
+					!tiled() && "qc-check-row",
+					tiled() && "qc-selection-button"
 				]));
 
+				set_attribute(label_1, 'for', get(id));
+
 				attributes = set_attributes(input, attributes, {
+					class: !parentGroup() && compact() || tiled() ? "qc-compact" : "",
 					type: 'checkbox',
 					value: value(),
 					name: name(),
@@ -9587,7 +9693,7 @@
 					onchange: event_handler
 				});
 
-				set_attribute(label_1, 'for', get(id));
+				set_text(text, label());
 			});
 
 			bind_checked(input, checked);
@@ -9603,6 +9709,8 @@
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7),
+			tiled = prop($$props, 'tiled', 7),
+			description = prop($$props, 'description', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
 			parentGroup = prop($$props, 'parentGroup', 7),
@@ -9620,6 +9728,8 @@
 					'checked',
 					'required',
 					'compact',
+					'tiled',
+					'description',
 					'invalid',
 					'invalidText',
 					'parentGroup'
@@ -9642,18 +9752,18 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_1 = root_5();
-				var node_4 = child(div_1);
+				var div = root_5();
+				var node_4 = child(div);
 
 				checkboxRow(node_4);
-				reset(div_1);
+				reset(div);
 
-				template_effect(() => set_class(div_1, 1, clsx([
+				template_effect(() => set_class(div, 1, clsx([
 					"qc-checkbox-single",
 					invalid() && "qc-checkbox-single-invalid"
 				])));
 
-				append($$anchor, div_1);
+				append($$anchor, div);
 			};
 
 			if_block(node_3, ($$render) => {
@@ -9713,6 +9823,20 @@
 				compact($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
@@ -9750,6 +9874,8 @@
 			checked: {},
 			required: {},
 			compact: {},
+			tiled: {},
+			description: {},
 			invalid: {},
 			invalidText: {},
 			parentGroup: {}
@@ -9770,11 +9896,13 @@
 		let parentGroup = prop($$props, 'parentGroup', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7),
 			checked = prop($$props, 'checked', 15, false),
 			required = prop($$props, 'required', 7),
 			compact = prop($$props, 'compact', 7),
+			tiled = prop($$props, 'tiled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			rest = rest_props(
@@ -9787,11 +9915,13 @@
 					'parentGroup',
 					'value',
 					'label',
+					'description',
 					'name',
 					'disabled',
 					'checked',
 					'required',
 					'compact',
+					'tiled',
 					'invalid',
 					'invalidText'
 				]);
@@ -9805,6 +9935,7 @@
 		const expression = user_derived(() => label() ?? value());
 		const expression_1 = user_derived(() => parentGroup()?.disabled ?? disabled());
 		const expression_2 = user_derived(() => parentGroup()?.required ?? required());
+		const expression_3 = user_derived(() => parentGroup()?.tiled ?? tiled());
 		var spread_element = user_derived(() => Utils.computeFieldsAttributes("checkbox", rest));
 
 		{
@@ -9822,11 +9953,17 @@
 					get name() {
 						return name();
 					},
+					get description() {
+						return description();
+					},
 					get disabled() {
 						return get(expression_1);
 					},
 					get required() {
 						return get(expression_2);
+					},
+					get tiled() {
+						return get(expression_3);
 					},
 					get compact() {
 						return compact();
@@ -9878,6 +10015,13 @@
 				label($$value);
 				flushSync();
 			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get name() {
 				return name();
 			},
@@ -9913,6 +10057,13 @@
 				compact($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
+				flushSync();
+			},
 			get invalid() {
 				return invalid();
 			},
@@ -9936,6 +10087,7 @@
 		{
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
+			description: { attribute: 'description', type: 'String' },
 			name: { attribute: 'name', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			checked: {
@@ -9945,6 +10097,7 @@
 			},
 			required: { attribute: 'required', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
+			tiled: { attribute: 'tiled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			parentGroup: {}
@@ -9981,7 +10134,10 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			value = prop($$props, 'value', 15, ""),
-			checked = prop($$props, 'checked', 15, false);
+			checked = prop($$props, 'checked', 15, false),
+			tiled = prop($$props, 'tiled', 7),
+			columnCount = prop($$props, 'columnCount', 7),
+			inline = prop($$props, 'inline', 7);
 
 		{
 			$$ownership_validator.binding('invalid', CheckFieldGroup, invalid);
@@ -10009,6 +10165,15 @@
 				},
 				get invalidText() {
 					return invalidText();
+				},
+				get tiled() {
+					return tiled();
+				},
+				get columnCount() {
+					return columnCount();
+				},
+				get inline() {
+					return inline();
 				},
 				get invalid() {
 					return invalid();
@@ -10102,6 +10267,27 @@
 				checked($$value);
 				flushSync();
 			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
+				flushSync();
+			},
+			get columnCount() {
+				return columnCount();
+			},
+			set columnCount($$value) {
+				columnCount($$value);
+				flushSync();
+			},
+			get inline() {
+				return inline();
+			},
+			set inline($$value) {
+				inline($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10117,6 +10303,9 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
+			tiled: { attribute: 'tiled', type: 'Boolean' },
+			columnCount: { attribute: 'column-count', type: 'String' },
+			inline: { attribute: 'inline', type: 'Boolean' },
 			formFieldElements: {},
 			checked: {}
 		},
@@ -10130,6 +10319,10 @@
 				constructor() {
 					super();
 					this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
+
+					this.formFieldElements.forEach((element) => {
+						element.classList.add('qc-check-row-parent');
+					});
 				}
 			};
 		}
@@ -10137,7 +10330,15 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root = add_locations(template(`<div><input> <label><!></label></div>`), RadioButton[FILENAME], [[20, 0, [[22, 4], [34, 4]]]]);
+	var root_1 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
+
+	var root = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
+		[
+			22,
+			0,
+			[[30, 4], [43, 4, [[44, 8]]]]
+		]
+	]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10148,10 +10349,12 @@
 		let name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			compact = prop($$props, 'compact', 7),
+			tiled = prop($$props, 'tiled', 7),
 			checked = prop($$props, 'checked', 7),
-			disabled = prop($$props, 'disabled', 7, false),
-			required = prop($$props, 'required', 7),
+			disabled = prop($$props, 'disabled', 15, false),
+			required = prop($$props, 'required', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			groupValue = prop($$props, 'groupValue', 15),
 			rest = rest_props(
@@ -10164,7 +10367,9 @@
 					'name',
 					'value',
 					'label',
+					'description',
 					'compact',
+					'tiled',
 					'checked',
 					'disabled',
 					'required',
@@ -10172,25 +10377,51 @@
 					'groupValue'
 				]);
 
-		var div = root();
-		var input = child(div);
+		let inputId = user_derived(() => $$props.id ?? `${name()}_${value()}`);
+		var label_1 = root();
+		var input = child(label_1);
 
 		remove_input_defaults(input);
 
 		let attributes;
-		var label_1 = sibling(input, 2);
-		var node = child(label_1);
+		var span = sibling(input, 2);
+		var span_1 = child(span);
+		var text = child(span_1, true);
 
-		html(node, label);
+		reset(span_1);
+
+		var node = sibling(span_1, 2);
+
+		{
+			var consequent = ($$anchor) => {
+				var span_2 = root_1();
+				var node_1 = child(span_2);
+
+				html(node_1, description);
+				reset(span_2);
+				append($$anchor, span_2);
+			};
+
+			if_block(node, ($$render) => {
+				if (description()) $$render(consequent);
+			});
+		}
+
+		reset(span);
 		reset(label_1);
-		reset(div);
 
 		template_effect(() => {
-			set_class(div, 1, clsx(["qc-check-row", compact() && "qc-compact"]));
+			set_attribute(label_1, 'for', get(inputId));
+
+			set_class(label_1, 1, clsx([
+				!tiled() && "qc-check-row",
+				tiled() && "qc-selection-button"
+			]));
 
 			attributes = set_attributes(input, attributes, {
+				class: compact() || tiled() ? "qc-compact" : "",
 				type: 'radio',
-				id: `${name()}_${value()}`,
+				id: get(inputId),
 				name: name(),
 				value: value(),
 				'aria-required': required(),
@@ -10200,7 +10431,7 @@
 				...rest
 			});
 
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
+			set_text(text, label());
 		});
 
 		bind_group(
@@ -10214,7 +10445,7 @@
 			groupValue
 		);
 
-		append($$anchor, div);
+		append($$anchor, label_1);
 
 		return pop({
 			get name() {
@@ -10238,11 +10469,25 @@
 				label($$value);
 				flushSync();
 			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get compact() {
 				return compact();
 			},
 			set compact($$value) {
 				compact($$value);
+				flushSync();
+			},
+			get tiled() {
+				return tiled();
+			},
+			set tiled($$value) {
+				tiled($$value);
 				flushSync();
 			},
 			get checked() {
@@ -10262,7 +10507,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -10290,7 +10535,9 @@
 			name: {},
 			value: {},
 			label: {},
+			description: {},
 			compact: {},
+			tiled: {},
 			checked: {},
 			disabled: {},
 			required: {},
@@ -10314,6 +10561,7 @@
 			name = prop($$props, 'name', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			description = prop($$props, 'description', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
@@ -10328,6 +10576,7 @@
 					'name',
 					'value',
 					'label',
+					'description',
 					'checked',
 					'disabled',
 					'invalid'
@@ -10335,7 +10584,7 @@
 
 		user_effect(() => {
 			if (checked()) {
-				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 42, 12);
+				$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = value(), 45, 12);
 			}
 		});
 
@@ -10366,6 +10615,12 @@
 							get compact() {
 								return parent().compact;
 							},
+							get description() {
+								return description();
+							},
+							get tiled() {
+								return parent().tiled;
+							},
 							get checked() {
 								return checked();
 							},
@@ -10385,7 +10640,7 @@
 								return parent().value;
 							},
 							set groupValue($$value) {
-								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 51, 21);
+								$$ownership_validator.mutation('parent', ['parent', 'value'], parent().value = $$value, 54, 21);
 							}
 						}
 					));
@@ -10428,6 +10683,13 @@
 				label($$value);
 				flushSync();
 			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get checked() {
 				return checked();
 			},
@@ -10460,6 +10722,7 @@
 			label: { attribute: 'label', type: 'String' },
 			checked: { attribute: 'checked', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
+			description: { attribute: 'description', type: 'String' },
 			parent: {},
 			name: {},
 			invalid: {}

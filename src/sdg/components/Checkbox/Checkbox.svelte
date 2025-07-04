@@ -13,6 +13,8 @@
         checked = $bindable(false),
         required = false,
         compact,
+        tiled,
+        description,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
@@ -31,29 +33,33 @@
 </script>
 
 {#snippet checkboxRow()}
-    <div class={[
-        "qc-check-row",
-        !parentGroup && compact && "qc-compact",
-        ]}>
+    <label
+            class={[
+            !tiled && "qc-check-row",
+            tiled && "qc-selection-button"
+        ]}
+            for={id}>
         <input
-            type="checkbox"
-            {value}
-            {name}
-            {id}
-            {disabled}
-            bind:checked
-            aria-required = {required}
-            aria-invalid={invalid}
-            {...rest}
-            onchange={() => { if (checked) invalid = false}}
+                class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
+                type="checkbox"
+                {value}
+                {name}
+                {id}
+                {disabled}
+                bind:checked
+                aria-required = {required}
+                aria-invalid={invalid}
+                {...rest}
+                onchange={() => { if (checked) invalid = false}}
         />
-        <label for={id}>
-            {@html label}
-            {#if !parentGroup && required}
-                <span class="qc-fieldset-required">*</span>
+        <span class="qc-check-text">
+            <span class="qc-check-label">{label}</span>
+            {#if description}
+                <span class="qc-check-description">{@html description}</span>
             {/if}
-        </label>
-    </div>
+        </span>
+    </label>
+
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
@@ -62,10 +68,10 @@
 {#if parentGroup}
     {@render checkboxRow()}
 {:else}
-<div class={[
+    <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
-        ]}>
-    {@render checkboxRow()}
-</div>
+    ]}>
+        {@render checkboxRow()}
+    </div>
 {/if}

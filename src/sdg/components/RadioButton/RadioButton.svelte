@@ -6,30 +6,44 @@
         name,
         value,
         label,
+        description,
         compact,
+        tiled,
         checked,
-        disabled = false,
-        required,
+        disabled = $bindable(false),
+        required = $bindable(false),
         invalid = $bindable(false),
         groupValue = $bindable(),
         ...rest
     } = $props();
-
+    let inputId = $derived(rest.id ?? `${name}_${value}`);
 </script>
 
-<div class={["qc-check-row", compact && "qc-compact"]}>
+<label
+        for={inputId}
+        class={[
+        !tiled && "qc-check-row",
+        tiled && "qc-selection-button",
+    ]}
+>
     <!-- svelte-ignore a11y_role_supports_aria_props_implicit -->
     <input
-        type="radio"
-        id={`${name}_${value}`}
-        {name}
-        {value}
-        bind:group={groupValue}
-        aria-required={required}
-        aria-invalid={invalid}
-        {checked}
+            class={compact || tiled ? "qc-compact" : ""}
+            type="radio"
+            id={inputId}
+            {name}
+            {value}
+            bind:group={groupValue}
+            aria-required={required}
+            aria-invalid={invalid}
+            {checked}
         {disabled}
         {...rest}
     />
-    <label for={`${name}_${value}`}>{@html label}</label>
-</div>
+    <span class="qc-check-text">
+        <span class="qc-check-label">{label}</span>
+        {#if description}
+            <span class="qc-check-description">{@html description}</span>
+        {/if}
+    </span>
+</label>

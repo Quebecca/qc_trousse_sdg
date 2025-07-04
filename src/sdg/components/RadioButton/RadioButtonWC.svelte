@@ -5,7 +5,9 @@
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
-        disabled: {attribute:'disabled', type: 'Boolean'}
+        disabled: {attribute:'disabled', type: 'Boolean'},
+        description: {attribute: 'description', type: 'String'},
+
     },
 
     extend: (customElementConstructor) => {
@@ -31,6 +33,7 @@
         name,
         value,
         label,
+        description,
         checked = $bindable(false),
         disabled,
         invalid = $bindable(false),
@@ -51,6 +54,8 @@
     bind:groupValue={parent.value}
     {label}
     compact={parent.compact}
+    {description}
+    tiled={parent.tiled}
     {checked}
     disabled={disabled ?? parent.disabled}
     required={parent.required}
