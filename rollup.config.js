@@ -82,9 +82,8 @@ const scssOptions = {
         @use "qc-sdg-lib" as *;
     `,
     outputStyle: build_process ? 'compressed' : 'expanded',
-    watch: ['src/sdg/scss', 'src/doc/scss'],
+    watch: ['src'],
     silenceDeprecations: ['legacy-js-api'],
-
 };
 
 let

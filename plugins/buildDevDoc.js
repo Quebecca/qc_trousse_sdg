@@ -23,14 +23,11 @@ function buildHtmlDoc({ input }) {
             for (const partialPath of partialPaths) {
                 this.addWatchFile(partialPath);
                 const partialName = path.basename(partialPath, ".html")
-                const partialDir = path.dirname(partialPath);
-                const relativePath = path.relative(partialDir, publicRoot);
                 const content = fs.readFileSync(partialPath, 'utf-8');
-                const outputPath = partialDir + "/" + partialName.replace("_", "") + ".dev.html"
+                const outputPath = publicRoot + "/" + partialName.replace("_", "") + ".dev.html"
                 fs.writeFileSync(outputPath
                     , html
                         .replace(new RegExp(partialMarker, 'g'), content)
-                        .replace(new RegExp(relativePathMarker, 'g'), relativePath)
                     , 'utf-8');
             }
         }
