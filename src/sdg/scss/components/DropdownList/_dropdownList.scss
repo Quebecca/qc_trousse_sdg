@@ -25,6 +25,12 @@ $border: 1;
   padding-right: token-value(spacer, xs);
 
   @include qc-formcontrol-box();
+  @include content-font(md);
+  color: token-value(color, grey, medium);
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .qc-dropdown-button-icon {
@@ -54,9 +60,15 @@ $border: 1;
   border-bottom: rem($border) solid token-value(color, grey, medium);
 
   scrollbar-color: token-value(color, blue, regular) token-value(color, background);
+
+  &::-webkit-scrollbar-track {
+    background: token-value(color, background);
+  }
+
   &::-webkit-scrollbar-thumb {
     background-color: token-value(color, blue, regular);
   }
+
 
   .qc-check-row {
     height: rem($min-height);
