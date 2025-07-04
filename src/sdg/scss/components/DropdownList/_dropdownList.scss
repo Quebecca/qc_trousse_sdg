@@ -1,14 +1,18 @@
 @use "qc-sdg-lib" as *;
+@use "sass:math";
 
 $min-height: 40;
 $max-height: 370;
+$border: 1;
 
 .qc-dropdown-list {
-  border: rem(1) solid token-value(color, grey, medium);
+  position: relative;
+  border: rem($border) solid token-value(color, grey, medium);
   width: var(--dropdown-width);
   min-height: rem($min-height);
   background-color: token-value(color, background);
 }
+
 .qc-dropdown-button {
   display: flex;
   width: 100%;
@@ -24,6 +28,8 @@ $max-height: 370;
 }
 
 .qc-dropdown-button-icon {
+  display: flex;
+  align-items: center;
   rotate: 180deg;
   transition: transform .3s ease-out;
 }
@@ -33,10 +39,24 @@ $max-height: 370;
 }
 
 .qc-dropdown-list-items {
+  position: absolute;
   max-height: rem($max-height - $min-height);
+  width: calc(100% + 2px);
+  left: -(rem($border));
+  right: -(rem($border));
+  top: 100%;
+  z-index: 1;
   overflow-y: auto;
 
+  background-color: token-value(color, background);
+  border-left: rem($border) solid token-value(color, grey, medium);
+  border-right: rem($border) solid token-value(color, grey, medium);
+  border-bottom: rem($border) solid token-value(color, grey, medium);
+
   scrollbar-color: token-value(color, blue, regular) token-value(color, background);
+  &::-webkit-scrollbar-thumb {
+    background-color: token-value(color, blue, regular);
+  }
 
   .qc-check-row {
     height: rem($min-height);
