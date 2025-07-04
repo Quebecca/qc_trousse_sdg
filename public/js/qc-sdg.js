@@ -10678,9 +10678,9 @@
 
 	var root = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
-			11,
+			12,
 			0,
-			[[12, 4], [19, 4], [20, 4]]
+			[[13, 4], [21, 4], [22, 4]]
 		]
 	]);
 
@@ -10690,6 +10690,7 @@
 
 		let label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
+			disabled = prop($$props, 'disabled', 15, false),
 			justify = prop($$props, 'justify', 7, false);
 
 		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
@@ -10717,6 +10718,7 @@
 			]));
 
 			set_attribute(input, 'aria-checked', checked());
+			input.disabled = disabled();
 		});
 
 		bind_checked(input, checked);
@@ -10737,6 +10739,13 @@
 				checked($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
 			get justify() {
 				return justify();
 			},
@@ -10748,7 +10757,18 @@
 		});
 	}
 
-	create_custom_element(ToggleSwitch, { label: {}, checked: {}, justify: {} }, [], [], true);
+	create_custom_element(
+		ToggleSwitch,
+		{
+			label: {},
+			checked: {},
+			disabled: {},
+			justify: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	ToggleSwitchWC[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte';
 
@@ -10757,6 +10777,7 @@
 		push($$props, true);
 
 		let checked = prop($$props, 'checked', 15, false),
+			disabled = prop($$props, 'disabled', 15, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -10764,13 +10785,17 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'checked'
+					'checked',
+					'disabled'
 				]);
 
 		ToggleSwitch($$anchor, spread_props(
 			{
 				get checked() {
 					return checked();
+				},
+				get disabled() {
+					return disabled();
 				}
 			},
 			() => rest
@@ -10784,6 +10809,13 @@
 				checked($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10793,6 +10825,7 @@
 		{
 			label: { attribute: 'label', type: 'String' },
 			checked: { attribute: 'checked', type: 'Boolean' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justify: { attribute: 'justify', type: 'Boolean' }
 		},
 		[],

@@ -2,6 +2,7 @@
     let {
         label,
         checked = $bindable(false),
+        disabled = $bindable(false),
         justify = false,
     } = $props();
 
@@ -15,6 +16,7 @@
         role="switch"
         bind:checked={checked}
         aria-checked={checked}
+        {disabled}
     />
     <span class="qc-switch-label">{@html label}</span>
     <span class="qc-switch-slider"></span>
