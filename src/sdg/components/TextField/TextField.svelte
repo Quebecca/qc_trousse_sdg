@@ -20,24 +20,30 @@
         ...rest
     } = $props();
 
+    if (['inline', 'area'].includes(display) === false) {
+        display = 'inline';
+    }
+
     let sizeClass = $derived(`qc-textfield--${size}`);
     let charCountText = $derived(() => {
-        if (maxlength !== null) {
-            const currentLength = value?.length || 0;
-            const remaining = maxlength - currentLength;
-            const s = Math.abs(remaining) > 1 ? 's' : '';
 
-            if (remaining >= 0) {
-                return lang === 'fr'
-                    ? `${remaining} caractère${s} restant${s}`
-                    : `${remaining} character${s} remaining`;
-            } else {
-                const over = Math.abs(remaining);
-                return lang === 'fr'
-                    ? `${over} caractère${s} en trop`
-                    : `${over} character${s} over the limit`;
-            }
+        if (!maxlength) {
+            return;
         }
+        const currentLength = value?.length || 0;
+        const remaining = maxlength - currentLength;
+        const over = Math.abs(remaining);
+        const s = over > 1 ? 's' : '';
+
+        if (remaining >= 0) {
+            return lang === 'fr'
+                ? `${remaining} caractère${s} restant${s}`
+                : `${remaining} character${s} remaining`;
+        }
+
+        return lang === 'fr'
+            ? `${over} caractère${s} en trop`
+            : `${over} character${s} over the limit`;
     });
 
     function clearInvalid() {
@@ -61,12 +67,15 @@
     );
 
 </script>
-
-<div class={`qc-textfield-container ${disabled ? 'disabled' : ''}`}>
+<div class={[
+    'qc-textfield-container',
+     disabled && "qc-disabled"
+    ]}>
     {#if label}
         <label for={inputId} id={labelId}>
             {label}
-            {#if required}<span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
+            {#if required}
+                <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
         </label>
     {/if}
 

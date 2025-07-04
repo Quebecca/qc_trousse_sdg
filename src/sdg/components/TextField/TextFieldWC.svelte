@@ -10,7 +10,7 @@
     disabled: { attribute: 'disabled', type: 'Boolean' },
     required: { attribute: 'required', type: 'Boolean' },
     description: { attribute: 'description', type: 'String' },
-    maxlength: { attribute: 'max-length', type: 'String' },
+    maxlength: { attribute: 'max-length', type: 'Number' },
     invalid: { attribute: 'invalid', type: 'Boolean' },
     invalidText: { attribute: 'invalid-text', type: 'String' },
     display: { attribute: 'display', type: 'String' }
@@ -20,7 +20,7 @@
 <script>
     import TextField from './TextField.svelte';
 
-    let element = $state();
+    let element = $state(); // supprimer
 
 
     let {
@@ -30,7 +30,7 @@
     } = $props();
 
 </script>
-
+<!-- et supprimer le div -->
 <div bind:this={element}>
 
     <TextField
