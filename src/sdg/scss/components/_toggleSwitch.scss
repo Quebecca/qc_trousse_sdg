@@ -12,6 +12,10 @@ $border: 1;
     display: inline-flex;
   }
 
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+
   align-items: center;
   gap: token-value(spacer, sm);
   position: relative;
@@ -26,6 +30,7 @@ $border: 1;
 
     &:checked ~ .qc-switch-slider {
       background-color: token-value(color, blue, regular);
+      border-color: transparent;
 
       &::before {
         transform: translateX(rem($width - $height));
@@ -35,6 +40,15 @@ $border: 1;
     &:focus ~ .qc-switch-slider {
       outline: rem(2) solid token-value(color, blue, light);
       outline-offset: rem(2);
+    }
+
+    &:disabled ~ .qc-switch-slider {
+      border-color: transparent;
+      cursor: not-allowed;
+
+      &::before {
+        border-color: transparent;
+      }
     }
   }
 
@@ -58,16 +72,17 @@ $border: 1;
   background-color: token-value(color, grey, light);
   transition: background-color .3s ease-out;
   border-radius: rem(math.div($height, 2));
+  border: rem($border) solid token-value(color, grey, medium);
 
   &::before {
     position: absolute;
     content: "";
-    height: rem($height - 2 * $border);
-    width: rem($height - 2 * $border);
+    height: rem($height - 4 * $border);
+    width: rem($height - 4 * $border);
     left: rem($border);
     bottom: rem($border);
     background-color: token-value(color, white);
-    border: rem(1) solid rgba(token-value(color, blue, dark, rgb), 50%);
+    border: rem($border) solid rgba(token-value(color, blue, dark, rgb), 50%);
     border-radius: 50%;
     transition: all .3s ease-out;
   }
