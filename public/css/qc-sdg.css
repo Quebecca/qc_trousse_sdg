@@ -2156,7 +2156,7 @@ qc-search-bar {
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
-  align-items: center;
+  align-items: start;
   font-weight: var(--qc-font-weight-content-medium);
 }
 .qc-form-error .qc-icon {

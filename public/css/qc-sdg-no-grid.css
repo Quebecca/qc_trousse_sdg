@@ -2090,7 +2090,6 @@ qc-search-bar {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   color: var(--qc-color-red-regular);
-  margin-left: var(--qc-spacer-xs);
 }
 
 .qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
@@ -2157,7 +2156,7 @@ qc-search-bar {
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
-  align-items: center;
+  align-items: start;
   font-weight: var(--qc-font-weight-content-medium);
 }
 .qc-form-error .qc-icon {

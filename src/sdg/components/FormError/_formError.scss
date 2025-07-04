@@ -3,7 +3,7 @@
 .qc-form-error {
   display: flex;
   color: token-value(color, red, regular);
-  align-items: center;
+  align-items: start;
   font-weight: token-value(font weight content medium);
   .qc-icon {
       display: flex;
