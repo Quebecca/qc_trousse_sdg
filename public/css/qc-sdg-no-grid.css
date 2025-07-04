@@ -2395,6 +2395,10 @@ input[type=checkbox]:checked.qc-compact::after {
   z-index: 10;
   background: transparent;
   border: 0;
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-regular);
+  color: var(--qc-color-grey-medium);
 }
 .qc-dropdown-button::before {
   position: absolute;
@@ -2409,6 +2413,9 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 .qc-dropdown-button:has(input:focus)::before, .qc-dropdown-button:focus::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
+}
+.qc-dropdown-button:hover {
+  cursor: pointer;
 }
 
 .qc-dropdown-button-icon {
@@ -2436,6 +2443,9 @@ input[type=checkbox]:checked.qc-compact::after {
   border-right: 0.1rem solid var(--qc-color-grey-medium);
   border-bottom: 0.1rem solid var(--qc-color-grey-medium);
   scrollbar-color: var(--qc-color-blue-regular) var(--qc-color-background);
+}
+.qc-dropdown-list-items::-webkit-scrollbar-track {
+  background: var(--qc-color-background);
 }
 .qc-dropdown-list-items::-webkit-scrollbar-thumb {
   background-color: var(--qc-color-blue-regular);
