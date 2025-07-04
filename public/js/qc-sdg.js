@@ -11029,7 +11029,7 @@
 					var span = sibling(child(button));
 					var node = child(span);
 
-					Icon(node, { type: 'chevron-white' });
+					Icon(node, { type: 'chevron-white', size: 'sm' });
 					reset(span);
 					reset(button);
 
