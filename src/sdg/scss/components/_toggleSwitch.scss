@@ -13,6 +13,7 @@ $border: 1;
   }
 
   &:has(input:disabled) {
+    color: token-value(color, grey, regular);
     cursor: not-allowed;
   }
 
@@ -47,7 +48,7 @@ $border: 1;
       cursor: not-allowed;
 
       &::before {
-        border-color: transparent;
+        outline: transparent;
       }
     }
   }
@@ -77,12 +78,12 @@ $border: 1;
   &::before {
     position: absolute;
     content: "";
-    height: rem($height - 4 * $border);
-    width: rem($height - 4 * $border);
-    left: rem($border);
-    bottom: rem($border);
+    height: rem($height - 6 * $border);
+    width: rem($height - 6 * $border);
+    left: rem(2*$border);
+    bottom: rem(2*$border);
     background-color: token-value(color, white);
-    border: rem($border) solid rgba(token-value(color, blue, dark, rgb), 50%);
+    outline: rem($border) solid rgba(token-value(color, blue, dark, rgb), 50%);
     border-radius: 50%;
     transition: all .3s ease-out;
   }
