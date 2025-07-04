@@ -10482,7 +10482,7 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button><!></button>`), Button[FILENAME], [[27, 0]]);
+	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[27, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
@@ -10492,6 +10492,10 @@
 			size = prop($$props, 'size', 7),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
+			inverted = prop($$props, 'inverted', 7, false),
+			compact = prop($$props, 'compact', 7, false),
+			rounded = prop($$props, 'rounded', 7, false),
+			label = prop($$props, 'label', 7, ""),
 			rest = rest_props(
 				$$props,
 				[
@@ -10502,37 +10506,45 @@
 					'variant',
 					'size',
 					'type',
-					'disabled'
+					'disabled',
+					'inverted',
+					'compact',
+					'rounded',
+					'label'
 				]);
 
-		let restProps = state(proxy({}));
-		let className;
+		let className = state(void 0);
 
-		onMount(() => {
-			const [buttonProps] = Utils.computeFieldsAttributes(["button"], {}, rest);
-
-			set(restProps, { ...buttonProps }, true);
-
-			className = [
-				"btn",
-				variant() && `btn-${variant()}`,
-				size() && `btn-${size()}`
-			].filter(Boolean).join(" ");
+		user_effect(() => {
+			set(
+				className,
+				[
+					"qc-button",
+					`qc-${variant()}`,
+					inverted() && "inverted",
+					compact() && "qc-button-compact",
+					rounded() && "qc-button-rounded"
+				].filter(Boolean).join(" "),
+				true
+			);
 		});
 
 		var button = root();
 		let attributes;
-		var node = child(button);
+		var text = child(button, true);
 
-		slot(node, $$props, 'default', {});
 		reset(button);
 
-		template_effect(() => attributes = set_attributes(button, attributes, {
-			type: type(),
-			class: className,
-			disabled: disabled(),
-			...get(restProps)
-		}));
+		template_effect(() => {
+			attributes = set_attributes(button, attributes, {
+				type: type(),
+				class: get(className),
+				disabled: disabled(),
+				...rest
+			});
+
+			set_text(text, label());
+		});
 
 		append($$anchor, button);
 
@@ -10565,6 +10577,34 @@
 				disabled($$value);
 				flushSync();
 			},
+			get inverted() {
+				return inverted();
+			},
+			set inverted($$value = false) {
+				inverted($$value);
+				flushSync();
+			},
+			get compact() {
+				return compact();
+			},
+			set compact($$value = false) {
+				compact($$value);
+				flushSync();
+			},
+			get rounded() {
+				return rounded();
+			},
+			set rounded($$value = false) {
+				rounded($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value = "") {
+				label($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10575,9 +10615,13 @@
 			variant: {},
 			size: {},
 			type: {},
-			disabled: {}
+			disabled: {},
+			inverted: {},
+			compact: {},
+			rounded: {},
+			label: {}
 		},
-		['default'],
+		[],
 		[],
 		true
 	);
@@ -10592,6 +10636,10 @@
 			size = prop($$props, 'size', 7),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
+			inverted = prop($$props, 'inverted', 7, false),
+			compact = prop($$props, 'compact', 7, false),
+			rounded = prop($$props, 'rounded', 7, false),
+			label = prop($$props, 'label', 7, ""),
 			rest = rest_props(
 				$$props,
 				[
@@ -10602,7 +10650,11 @@
 					'variant',
 					'size',
 					'type',
-					'disabled'
+					'disabled',
+					'inverted',
+					'compact',
+					'rounded',
+					'label'
 				]);
 
 		Button($$anchor, spread_props(
@@ -10618,19 +10670,21 @@
 				},
 				get disabled() {
 					return disabled();
+				},
+				get inverted() {
+					return inverted();
+				},
+				get compact() {
+					return compact();
+				},
+				get rounded() {
+					return rounded();
+				},
+				get label() {
+					return label();
 				}
 			},
-			() => rest,
-			{
-				children: wrap_snippet(ButtonWC, ($$anchor, $$slotProps) => {
-					var fragment_1 = comment();
-					var node = first_child(fragment_1);
-
-					slot(node, $$props, 'default', {}, null);
-					append($$anchor, fragment_1);
-				}),
-				$$slots: { default: true }
-			}
+			() => rest
 		));
 
 		return pop({
@@ -10662,6 +10716,34 @@
 				disabled($$value);
 				flushSync();
 			},
+			get inverted() {
+				return inverted();
+			},
+			set inverted($$value = false) {
+				inverted($$value);
+				flushSync();
+			},
+			get compact() {
+				return compact();
+			},
+			set compact($$value = false) {
+				compact($$value);
+				flushSync();
+			},
+			get rounded() {
+				return rounded();
+			},
+			set rounded($$value = false) {
+				rounded($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value = "") {
+				label($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10672,9 +10754,13 @@
 			variant: { attribute: 'variant', type: 'String' },
 			size: { attribute: 'size', type: 'String' },
 			type: { attribute: 'type', type: 'String' },
-			disabled: { attribute: 'disabled', type: 'Boolean' }
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			inverted: { attribute: 'inverted', type: 'Boolean' },
+			compact: { attribute: 'compact', type: 'Boolean' },
+			rounded: { attribute: 'rounded', type: 'Boolean' },
+			label: { attribute: 'label', type: 'String' }
 		},
-		['default'],
+		[],
 		[],
 		false
 	));

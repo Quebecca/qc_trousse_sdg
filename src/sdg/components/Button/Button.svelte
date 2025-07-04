@@ -1,34 +1,34 @@
 <script>
-    import {Utils} from "../utils";
-    import {onMount} from "svelte";
-
     let {
         variant = "primary",
         size,
         type = "button",
         disabled = false,
+        inverted = false,
+        compact = false,
+        rounded = false,
+        label = "",
         ...rest
     } = $props();
 
-    let restProps = $state({});
-    let className;
+    let className = $state();
 
-    onMount(() => {
-        const [buttonProps] = Utils.computeFieldsAttributes(["button"], {}, rest);
-        restProps = {...buttonProps};
+    $effect(() => {
         className = [
-            "btn",
-            variant && `btn-${variant}`,
-            size && `btn-${size}`,
+            "qc-button",
+            `qc-${variant}`,
+            inverted && "inverted",
+            compact && "qc-button-compact",
+            rounded && "qc-button-rounded"
         ].filter(Boolean).join(" ");
     });
 </script>
 
-<button 
-    {type}
-    class={className}
-    {disabled}
-    {...restProps}
+<button
+        type={type}
+        class={className}
+        disabled={disabled}
+        {...rest}
 >
-    <slot></slot>
+    {label}
 </button>
