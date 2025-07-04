@@ -20,7 +20,7 @@
     <div class="qc-container top-nav">
         <div class="switch-control">
             <ToggleSwitch
-                label="<label for='dark-mode'>Activer le thème sombre</label>"
+                label="Activer le thème sombre"
                 bind:checked={value}
             />
         </div>
