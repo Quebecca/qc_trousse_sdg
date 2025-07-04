@@ -73393,7 +73393,7 @@
 		var node = child(div_2);
 
 		ToggleSwitch(node, {
-			label: '<label for=\'dark-mode\'>Activer le thème sombre</label>',
+			label: 'Activer le thème sombre',
 			get checked() {
 				return get(value);
 			},
