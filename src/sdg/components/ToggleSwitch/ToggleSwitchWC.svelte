@@ -4,6 +4,7 @@
     props: {
         label: {attribute: 'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
+        disabled: {attribute: 'disabled', type: 'Boolean'},
         justify: {attribute: 'justify', type: 'Boolean'},
     },
 }} />
@@ -13,11 +14,13 @@
 
     let {
         checked = $bindable(false),
+        disabled = $bindable(false),
         ...rest
     } = $props();
 </script>
 
 <ToggleSwitch
     {checked}
+    {disabled}
     {...rest}
 />
