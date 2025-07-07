@@ -78,12 +78,33 @@ $border: 1;
   display: flex;
   align-items: center;
   height: rem($min-height);
-  padding-left: token-value(spacer, xs);
 
   &:hover, &:focus {
     background-color: token-value(color, blue, pale);
     outline: none;
     cursor: pointer;
+  }
+}
+
+.qc-dropdown-list-single {
+  padding-left: token-value(spacer, xs);
+  padding-right: token-value(spacer, xs);
+}
+
+.qc-dropdown-list-multiple {
+  label {
+    padding-left: token-value(spacer, xs);
+    padding-right: token-value(spacer, xs);
+    padding-top: token-value(spacer, xs);
+    flex-grow: 1;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .qc-check-row {
+    height: 100%;
   }
 }
 

@@ -3,7 +3,6 @@
     shadow: 'none',
     props: {
         id: {attribute: 'id', type: 'String'},
-        value: {attribute: 'value', type: 'String'},
         label: {attribute: 'label', type: 'String'},
         enableSearch: {attribute: 'enable-search', type: 'Boolean'},
         comboAriaLabel: {attribute: 'combo-aria-label', type: 'String'},
@@ -20,7 +19,6 @@
     import DropdownList from "./DropdownList.svelte";
 
     let {
-        value = $bindable(""),
         invalid = $bindable(false),
         ...rest
     } = $props();
