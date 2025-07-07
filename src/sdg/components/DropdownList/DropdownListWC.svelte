@@ -11,7 +11,7 @@
         invalid: {attribute: 'invalid', type: 'Boolean'},
         searchPlaceholder: {attribute: 'search-placeholder', type: 'String'},
         emptyOptionSrMessage: {attribute: 'empty-option-sr-message', type: 'String'},
-        isMultiSelect: {attribute: 'multiple', type: 'Boolean'},
+        multiple: {attribute: 'multiple', type: 'Boolean'},
     }
 }}"/>
 

@@ -51,7 +51,7 @@ $border: 1;
   left: -(rem($border));
   right: -(rem($border));
   top: 100%;
-  z-index: 1;
+  z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
   overflow-y: auto;
 
   background-color: token-value(color, background);
@@ -68,15 +68,26 @@ $border: 1;
   &::-webkit-scrollbar-thumb {
     background-color: token-value(color, blue, regular);
   }
+}
 
+.qc-dropdown-list-items-hidden {
+  display: none;
+}
 
-  .qc-check-row {
-    height: rem($min-height);
-    padding-left: token-value(spacer, xs);
-    padding-top: token-value(spacer, xs);
-  }
+.qc-dropdown-list-multiple, .qc-dropdown-list-single {
+  display: flex;
+  align-items: center;
+  height: rem($min-height);
+  padding-left: token-value(spacer, xs);
 
-  *:hover {
+  &:hover, &:focus {
     background-color: token-value(color, blue, pale);
+    outline: none;
+    cursor: pointer;
   }
+}
+
+.qc-dropdown-list-single-selected {
+  background-color: token-value(color, blue, regular) !important;
+  color: token-value(color, white);
 }

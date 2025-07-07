@@ -60,6 +60,8 @@
   input[type="checkbox"] {
     min-width: token-value(spacer, md);
     min-height: token-value(spacer, md);
+    max-width: token-value(spacer, md);
+    max-height: token-value(spacer, md);
     border-width: rem(2);
 
     &:focus {
@@ -121,6 +123,8 @@
   input[type="checkbox"] {
     min-width: token-value(spacer, sm);
     min-height: token-value(spacer, sm);
+    max-width: token-value(spacer, sm);
+    max-height: token-value(spacer, sm);
     margin-top: rem(4);
     border-width: 1px;
   }
