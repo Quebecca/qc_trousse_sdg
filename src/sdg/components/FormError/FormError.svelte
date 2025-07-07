@@ -1,8 +1,9 @@
 <script>
 import Icon from "../Icon/Icon.svelte";
-
 import { tick } from "svelte";
-let {invalid , invalidText} = $props();
+
+let {invalid , invalidText, id} = $props();
+
 </script>
 {#if invalid}
 <div class="qc-form-error"

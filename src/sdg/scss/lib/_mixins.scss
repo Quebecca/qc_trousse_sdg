@@ -131,7 +131,10 @@
     inset: 0;
     z-index: -5
   }
-  &:has(input:focus), &:focus {
+  &:has(input:focus),
+  &:focus,
+  &:has(textarea:focus),
+ {
     outline: 2px solid token-value(color formfield focus outline);
     &::before {
       border: 2px solid token-value(color formfield focus border);

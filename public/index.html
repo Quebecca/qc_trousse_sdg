@@ -61,7 +61,7 @@
     <li><a href="#toTop">Haut de page</a></li>
     <li><a href="#radio-button">Boutons radio</a></li>
     <li><a href="#checkbox">Cases à cocher</a></li>
-    <li><a href="#selection-button">Boutons de sélection</a></li>
+    <li><a href="#textfield">Champ texte</a></li>
 
   </ul>
 </nav>
@@ -1411,10 +1411,9 @@
 
     <!-- Boutons radio -->
     <h2 id="radio-button">Boutons radio</h2>
-<p>Les boutons radio sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.</p>
 <h3>Exemples</h3>
 
-<qc-doc-exemple caption="Exemple de boutons radio avec différents états">
+<qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
   <qc-radio-group id="exemple-radio-md"
                   legend="Choisissez une option :"
                   name="ex-md"
@@ -1439,12 +1438,12 @@
     const group = document.getElementById("exemple-radio-md");
 
     group.addEventListener("change", () => {
-      console.log(group.querySelector("input:checked").value);
+      const checkedValue = group.querySelector("input:checked").value;
     });
   </script>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de boutons radio au format compact">
+<qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
   <qc-radio-group legend="Choisissez une option :"
                   name="ex-sm"
                   compact >
@@ -1515,7 +1514,7 @@
     document
             .getElementById("radio-form")
             .addEventListener("submit", (e) => {
-              e.preventDefault();
+              event.preventDefault();
               let doSubmit = true;
               e.target.querySelectorAll("[required]").forEach(group => {
                 if (!group.checked) {
@@ -1526,7 +1525,7 @@
               if(doSubmit) {
                 alert(
                         "Formulaire soumis\n"
-                        + Array.from(e.target.querySelectorAll("qc-radio-group"))
+                        + Array.from(event.target.querySelectorAll("qc-radio-group"))
                                 .map(group => `Valeur pour ${group.name} : ${group.value  ? group.value : "vide"}`)
                                 .join("\n")
 
@@ -1536,9 +1535,9 @@
   </script>
 </qc-doc-exemple>
 
-<h3 id="radio-button-attributes">Documentation technique</h3>
+<h4>Documentation technique</h4>
 
-<h4>Attributs de qc-radio-group</h4>
+<h5>Attributs de qc-radio-group</h5>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">
@@ -1573,7 +1572,7 @@
       <td>required</td>
       <td>na</td>
       <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
     </tr>
     <tr>
       <td>disabled</td>
@@ -1600,11 +1599,10 @@
     </tbody>
   </table>
 </div>
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-<h4>Attributs de qc-radio-button</h4>
+<h5>Attributs de qc-radio-button</h5>
 
-<p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
+<p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">
@@ -1655,13 +1653,9 @@
     </tbody>
   </table>
 </div>
-    <!-- Cases à cocher -->
     <h2 id="checkbox">Cases à cocher</h2>
 
-<p>
-  Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.
-  <br/> Les cases à cocher sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
-</p>
+<p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
 
 <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
   <form id="exemple-tos-form">
@@ -1686,10 +1680,10 @@
       event.preventDefault();
       if(termsAcceptance.checked) {
         const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        let alertParts = ["Formulaire soumis avec les données suivantees :"];
         for (const [key, value] of formData.entries()) {
           alertParts.push(`${key} : ${value}`);
-        }
+        };
         alert(alertParts.join("\n"));
       } else {
         termsAcceptance.invalid = true;
@@ -1790,7 +1784,7 @@
 </qc-doc-exemple>
 
 
-<h3 id="checkbox-attributes">Documentation technique</h3>
+<h3>Documentation technique</h3>
 
 <h4>Attributs de qc-checkbox</h4>
 <div class="table-overflow">
@@ -1931,230 +1925,172 @@
     </tbody>
   </table>
 </div>
+    <h2 id="textfield">Champ texte</h2>
+<h4>Exemples</h4>
 
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
+<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
+  <form>
+    <qc-textfield
+            name="text-sm"
+            label="Entrez votre âge"
+            size="sm"
+            placeholder="ex : 24"
+    ></qc-textfield>
 
-    <!-- Boutons de sélection -->
-    <h2 id="selection-button">Boutons de sélection</h2>
-<h3>Exemples</h3>
+    <qc-textfield
+            name="text-md"
+            label="Entrez votre code postal"
+            size="md"
+            placeholder="ex : G1A 1A1"
+    ></qc-textfield>
 
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
-    <qc-radio-group legend="Choisissez une option :"
-                    name="ex-radio-select"
-                    tiled
-                    column-count="2"
-    >
-        <qc-radio-button
-                label="Option 1"
-                value="1"
-                checked
-                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 3 (désactivée)"
-                value="3"
-                disabled
-        ></qc-radio-button>
-    </qc-radio-group>
+    <qc-textfield
+            name="phone"
+            label="Téléphone"
+            placeholder="(123) 456-7890"
+            size="md"
+    ></qc-textfield>
+    <qc-textfield
+            name="poste"
+            label="Poste"
+            placeholder="1234"
+            size="sm"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="text-xl"
+            label="Entrez votre adresse courriel"
+            size="xl"
+            placeholder="ex : jeantremblay@exemple.com"
+            required="true"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="text-xxl"
+            label="Entrez votre adresse"
+            size="xxl"
+            placeholder="ex : 1234 rue du Moulin"
+            disabled="true"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="zone-xl"
+            label="Commentaires"
+            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
+            size="xl"
+            display="area"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="zone-xxl"
+            label="Suggestions"
+            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
+            size="xxl"
+            display="area"
+            max-length="50"
+            required="true"
+            invalid="true"
+            invalid-text="Message d'erreur personnalisé"
+    ></qc-textfield>
+
+    <button type="submit" class="btn  btn-sm btn-primary">Envoyer</button>
+  </form>
+
 </qc-doc-exemple>
 
-<qc-doc-exemple
-        caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
->
-    <qc-checkbox-group
-            name="exemple-checkbox-select"
-            legend="Sélectionnez vos options"
-            tiled
-            column-count="2">
-        <qc-checkbox
-                label="Option 1"
-                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                value="1"
-        ></qc-checkbox>
-        <qc-checkbox
-                label="Option 2 cochée par défaut"
-                checked="true"
-                value="2"
-        ></qc-checkbox>
-        <qc-checkbox
-                label="Option 3 désactivée"
-                disabled="true"
-                value="3"
-        ></qc-checkbox>
-    </qc-checkbox-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
-    <qc-radio-group legend="Choisissez une option :"
-                    name="ex-radio-select-inline"
-                    tiled
-                    inline
-    >
-        <qc-radio-button
-                label="1"
-                value="1"
-                checked
-        ></qc-radio-button>
-        <qc-radio-button
-                label="2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="3"
-                value="3"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="4"
-                value="4"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="5"
-                value="5"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="6"
-                value="6"
-        ></qc-radio-button>
-    </qc-radio-group>
-</qc-doc-exemple>
-
-<h3 id="selection-button-attributes">Documentation technique</h3>
-<p>Ces attributs sont appliqués à <code>qc-radio-group</code> et <code>qc-checkbox-group</code></p>
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>tiled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche les boutons radio au format de boutons de sélection dans une grille</td>
-        </tr>
-        <tr>
-            <td>column-count</td>
-            <td>Nombre</td>
-            <td>1</td>
-            <td>
-                Nombre de colonnes de la grille de boutons de sélection.
-                <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
-            </td>
-        </tr>
-        <tr>
-            <td>inline</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche les boutons de sélection sur une rangée</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<p>
-    Pour les attributs spécifiques à chaque variante de boutons de sélection, voir les attributs des
-    <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.
-</p>
-
-
-    <!-- Commutateur -->
-<h2 id="toggle-switch">Commutateur</h2>
-
-<h3>Exemples</h3>
-<qc-doc-exemple caption="Exemple de commutateurs avec étiquettes simples">
-    <qc-toggle-switch
-            id="switch-status"
-            label="Afficher l'état du commutateur à la console"
-    ></qc-toggle-switch>
-
-    <script>
-        document.getElementById("switch-status")
-            .addEventListener("change", (event) => {
-                console.log(event.target.checked);
-            });
-    </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
-    <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
-    <div
-            style="display: inline-flex; flex-direction: column; gap: 0.8rem;"
-            id="switch-group"
-    >
-        <qc-toggle-switch
-                label="Nouveaux messages"
-                justify
-                checked
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Modifications de messages"
-                justify
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Messages où je suis mentionné(e)"
-                justify
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Messages supprimés (indisponible)"
-                justify
-                disabled
-        ></qc-toggle-switch>
-    </div>
-
-    <script>
-        document.getElementById("switch-group")
-            .addEventListener("change", (event) => {
-                console.log(`${event.target.id} mis à ${event.target.checked}`);
-            });
-    </script>
-</qc-doc-exemple>
 
 <h3>Documentation technique</h3>
-<table class="qc-table qc-striped component-attributes-description">
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
     <thead>
     <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td>label</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu du libelé se trouvant à gauche du commutateur</td>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom du champ</td>
     </tr>
     <tr>
-        <td>checked</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Active le commutateur par défaut</td>
+      <td>label</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
     </tr>
     <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le commutateur</td>
+      <td>placeholder</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte indicatif affiché lorsque le champ est vide</td>
     </tr>
     <tr>
-        <td>justify</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Permet au commutateur et son libelé de prendre tout l'espace horizontal disponible</td>
+      <td>value</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Valeur envoyée lors de la soumission du formulaire</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td>"sm", "md", "lg", "xl", "xxl", "xl", "xxl"</td>
+      <td>"xl"</td>
+      <td>Taille du champ</td>
+    </tr>
+    <tr>
+      <td>display</td>
+      <td>"inline", "area"</td>
+      <td>"inline"</td>
+      <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Désactive le champ</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Rend le champ obligatoire</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte descriptif affiché sous l'étiquette</td>
+    </tr>
+    <tr>
+      <td>max-length</td>
+      <td>Nombre</td>
+      <td>null</td>
+      <td>Nombre maximum de caractères autorisés pour ce champ</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
     </tr>
     </tbody>
-</table>
+  </table>
+</div>
+
+<hr/>
+
 
 
   </div>
