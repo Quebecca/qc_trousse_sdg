@@ -23,6 +23,7 @@
     } = $props();
 
     let value = $state('');
+    let focusIn = $state(false);
     const name = Math.random().toString(36).substring(2, 15);
     let expanded = $state(false);
     let usedWidth = $derived.by(() => {
@@ -42,7 +43,7 @@
     }
 
     function handleOuterEvent(event) {
-        if ((event.innerEventFromFilter ?? -1) !== id) {
+        if ((event.innerEventFromFilter ?? -1) !== id && !focusIn) {
             expanded = false;
         }
     }
@@ -77,11 +78,15 @@
         <div class={[
                 "qc-dropdown-list-items",
                 !expanded && "qc-dropdown-list-items-hidden"
-            ]} tabindex="-1">
+            ]}
+             tabindex="-1"
+             onmouseenter={() => focusIn = true}
+             onmouseleave={() => focusIn = false}
+        >
             {#if multiple}
                 <DropdownListMultiple {items} {name} {value} />
             {:else}
-                <DropdownListSingle {items} passValue={(v) => {value = v}} />
+                <DropdownListSingle {items} passValue={(v) => {value = v; expanded = false;}} />
             {/if}
         </div>
     </div>
