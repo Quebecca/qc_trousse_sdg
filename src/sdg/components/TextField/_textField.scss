@@ -1,0 +1,105 @@
+@use "qc-sdg-lib" as *;
+
+qc-textfield {
+  display: block;
+  width: 100%;
+}
+
+.qc-textfield {
+  @extend %qc-formcontrol-box;
+  position: relative;
+
+  &::before {
+    border: 1px solid token-value(color formfield border);
+  }
+
+  input[type=text],
+  textarea {
+    display: block;
+    position: relative;
+    color: token-value(color text primary);
+    width: 100%;
+    background: transparent;
+    padding: rem(8) rem(8);
+    border: 0;
+
+    &::placeholder {
+      color: token-value(color grey medium);
+      font-weight: normal;
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  textarea {
+    min-height: rem(108);
+    resize: vertical;
+  }
+
+  &--sm { width: rem(63); }
+  &--md { width: rem(156); }
+  &--lg { width: rem(249); }
+  &--xl { width: rem(528); }
+  &--xxl { width: 100%; max-width: rem(825); }
+
+  &.error {
+    &::before {
+      border-color: token-value(color, red, regular);
+      border-width: 2px;
+    }
+  }
+}
+
+.qc-textfield-container {
+  margin-bottom: rem(32);
+
+  label {
+    margin-bottom: rem(4);
+  }
+
+  &.disabled {
+    label {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.qc-textfield-required {
+  color: token-value(color, red, regular);
+  margin-left: rem(4);
+}
+
+.qc-textfield-description {
+  font-size: token-value(font, size, sm);
+  color: token-value(color, grey, medium);
+}
+
+.qc-textfield.disabled {
+  &::before {
+    border: 1px solid token-value(color, grey, regular);
+    background-color: token-value(color, grey, pale);
+  }
+
+  input[type="text"],
+  textarea {
+    color: token-value(color, grey, medium);
+    cursor: not-allowed;
+  }
+}
+
+.qc-textfield-charcount {
+  text-align: right;
+  margin-top: rem(4);
+  color: token-value(color, grey, medium);
+  font-size: token-value(font, size, sm);
+
+  &.max-reached {
+    color: token-value(color, red, regular);
+    font-weight: bold;
+  }
+}
+
