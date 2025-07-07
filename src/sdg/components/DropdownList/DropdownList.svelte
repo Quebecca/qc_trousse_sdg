@@ -19,6 +19,7 @@
     import Fieldset from "../Fieldset/Fieldset.svelte";
     import DropdownListMultiple from "./DropdownListMultiple.svelte";
     import Icon from "../Icon/Icon.svelte";
+    import DropdownListSingle from "./DropdownListSingle.svelte";
 
     /** @type {Props & { [key: string]: any }} */
     let {
@@ -64,8 +65,11 @@
         compact="true"
         {...rest}
 >
-    <div class="qc-dropdown-list"
-         style="--dropdown-width: {usedWidth}px;">
+    <div
+            class="qc-dropdown-list"
+            style="--dropdown-width: {usedWidth}px;"
+            role="listbox"
+    >
         <button class="qc-dropdown-button"
                 onclick={() => expanded = !expanded} aria-expanded={expanded}>
             Choisissez une option
@@ -73,10 +77,15 @@
                 <Icon type="chevron-white" size="sm" />
             </span>
         </button>
-        {#if expanded}
-            <div class="qc-dropdown-list-items">
+        <div class={[
+                "qc-dropdown-list-items",
+                !expanded && "qc-dropdown-list-items-hidden"
+            ]} tabindex="-1">
+            {#if multiple}
                 <DropdownListMultiple {items} {name} />
-            </div>
-        {/if}
+            {:else}
+                <DropdownListSingle {items} />
+            {/if}
+        </div>
     </div>
 </Fieldset>
