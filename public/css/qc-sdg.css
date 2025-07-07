@@ -2463,12 +2463,29 @@ input[type=checkbox]:checked.qc-compact::after {
   display: flex;
   align-items: center;
   height: 4rem;
-  padding-left: var(--qc-spacer-xs);
 }
 .qc-dropdown-list-multiple:hover, .qc-dropdown-list-multiple:focus, .qc-dropdown-list-single:hover, .qc-dropdown-list-single:focus {
   background-color: var(--qc-color-blue-pale);
   outline: none;
   cursor: pointer;
+}
+
+.qc-dropdown-list-single {
+  padding-left: var(--qc-spacer-xs);
+  padding-right: var(--qc-spacer-xs);
+}
+
+.qc-dropdown-list-multiple label {
+  padding-left: var(--qc-spacer-xs);
+  padding-right: var(--qc-spacer-xs);
+  padding-top: var(--qc-spacer-xs);
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qc-dropdown-list-multiple .qc-check-row {
+  height: 100%;
 }
 
 .qc-dropdown-list-single-selected {

@@ -1,12 +1,11 @@
 <script>
-    let { items } = $props();
+    let { items, passValue = () => {} } = $props();
 
     let predecessor = $state();
     let selectedValue = $state();
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
     function handleEvent(thisElement, value) {
-        console.log(predecessor);
         if (predecessor) {
             predecessor.classList.toggle(selectedElementCLass,);
         }
@@ -15,7 +14,7 @@
         predecessor = thisElement;
 
         selectedValue = value;
-        console.log(selectedValue);
+        passValue(value);
     }
 
     function handleKeyDown (event, value) {

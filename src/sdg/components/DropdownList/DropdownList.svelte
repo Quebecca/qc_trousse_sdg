@@ -1,31 +1,13 @@
 <script>
-    /**
-     * @typedef {Object} Props
-     * @property {any} [id]
-     * @property {string} [label]
-     * @property {any} value
-     * @property {any} items
-     * @property {string} [noValueMessage]
-     * @property {string} [noOptionsMessage]
-     * @property {boolean} [enableSearch]
-     * @property {string} [comboAriaLabel]
-     * @property {boolean} [ariaRequired]
-     * @property {string} [invalid]
-     * @property {string} [searchPlaceholder]
-     * @property {string} [emptyOptionSrMessage]
-     * @property {boolean} [multiple]
-     */
-
     import Fieldset from "../Fieldset/Fieldset.svelte";
     import DropdownListMultiple from "./DropdownListMultiple.svelte";
     import Icon from "../Icon/Icon.svelte";
     import DropdownListSingle from "./DropdownListSingle.svelte";
+    import {Utils} from "../utils";
 
-    /** @type {Props & { [key: string]: any }} */
     let {
         id = Math.floor(Math.random() * 1000),
         legend = '',
-        value = $bindable(""),
         width = "auto",
         items,
         noValueMessage = '',
@@ -40,22 +22,33 @@
         ...rest
     } = $props();
 
+    let value = $state('');
     const name = Math.random().toString(36).substring(2, 15);
-
     let expanded = $state(false);
-
     let usedWidth = $derived.by(() => {
-        if (width ==="sm") {
-            return 156;
-        } else if (width ==="md") {
-            return 342;
-        } else if (width ==="lg") {
-            return 528;
-        } else {
-            return 342;
+        switch (width) {
+            case "sm":
+                return 156;
+            case "lg":
+                return 528;
+            default:
+                return 342;
         }
     });
+
+    function handleDropdownButtonClick(event) {
+        expanded = !expanded
+        event.innerEventFromFilter = id
+    }
+
+    function handleOuterEvent(event) {
+        if ((event.innerEventFromFilter ?? -1) !== id) {
+            expanded = false;
+        }
+    }
 </script>
+
+<svelte:document onclick={handleOuterEvent} />
 
 <Fieldset
         {id}
@@ -67,12 +60,16 @@
 >
     <div
             class="qc-dropdown-list"
-            style="--dropdown-width: {usedWidth}px;"
+            style="--dropdown-width: {usedWidth/10}rem;"
             role="listbox"
     >
         <button class="qc-dropdown-button"
-                onclick={() => expanded = !expanded} aria-expanded={expanded}>
-            Choisissez une option
+                onclick={handleDropdownButtonClick} aria-expanded={expanded}>
+            {#if Utils.isTruthy(value)}
+                {value}
+            {:else}
+                Choisissez une option
+            {/if}
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon type="chevron-white" size="sm" />
             </span>
@@ -82,9 +79,9 @@
                 !expanded && "qc-dropdown-list-items-hidden"
             ]} tabindex="-1">
             {#if multiple}
-                <DropdownListMultiple {items} {name} />
+                <DropdownListMultiple {items} {name} {value} />
             {:else}
-                <DropdownListSingle {items} />
+                <DropdownListSingle {items} passValue={(v) => {value = v}} />
             {/if}
         </div>
     </div>
