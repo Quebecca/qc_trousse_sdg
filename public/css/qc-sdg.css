@@ -1,10 +1,10 @@
-.qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
+.qc-textfield, .qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
   position: relative;
   z-index: 10;
   background: transparent;
   border: 0;
 }
-.qc-search-input::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-bar button::before {
+.qc-textfield::before, .qc-search-input::before, .qc-search-input button::before, .qc-search-bar::before, .qc-search-bar button::before {
   position: absolute;
   display: block;
   content: "";
@@ -12,10 +12,10 @@
   inset: 0;
   z-index: -5;
 }
-.qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus {
+.qc-textfield:has(input:focus), .qc-search-input:has(input:focus), .qc-search-input button:has(input:focus), .qc-search-bar:has(input:focus), .qc-search-bar button:has(input:focus), .qc-textfield:focus, .qc-search-input:focus, .qc-search-input button:focus, .qc-search-bar:focus, .qc-search-bar button:focus, .qc-textfield:has(textarea:focus), .qc-search-input:has(textarea:focus), .qc-search-input button:has(textarea:focus), .qc-search-bar:has(textarea:focus), .qc-search-bar button:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before {
+.qc-textfield:has(input:focus)::before, .qc-search-input:has(input:focus)::before, .qc-search-input button:has(input:focus)::before, .qc-search-bar:has(input:focus)::before, .qc-search-bar button:has(input:focus)::before, .qc-textfield:focus::before, .qc-search-input:focus::before, .qc-search-input button:focus::before, .qc-search-bar:focus::before, .qc-search-bar button:focus::before, .qc-textfield:has(textarea:focus)::before, .qc-search-input:has(textarea:focus)::before, .qc-search-input button:has(textarea:focus)::before, .qc-search-bar:has(textarea:focus)::before, .qc-search-bar button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 
@@ -1804,10 +1804,10 @@ qc-piv-footer a:hover {
   inset: 0;
   z-index: -5;
 }
-.qc-general-alert button:has(input:focus), .qc-general-alert button:focus {
+.qc-general-alert button:has(input:focus), .qc-general-alert button:focus, .qc-general-alert button:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-.qc-general-alert button:has(input:focus)::before, .qc-general-alert button:focus::before {
+.qc-general-alert button:has(input:focus)::before, .qc-general-alert button:focus::before, .qc-general-alert button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
 .qc-general-alert button::before {
@@ -2154,6 +2154,108 @@ qc-search-bar {
   gap: 1.6rem;
   margin-bottom: var(--qc-spacer-content-block-mb);
 }
+qc-textfield {
+  display: block;
+  width: 100%;
+}
+
+.qc-textfield {
+  position: relative;
+}
+.qc-textfield::before {
+  border: 1px solid var(--qc-color-formfield-border);
+}
+.qc-textfield input[type=text],
+.qc-textfield textarea {
+  display: block;
+  position: relative;
+  color: var(--qc-color-text-primary);
+  width: 100%;
+  background: transparent;
+  padding: 0.8rem 0.8rem;
+  border: 0;
+}
+.qc-textfield input[type=text]::-moz-placeholder, .qc-textfield textarea::-moz-placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-textfield input[type=text]::placeholder,
+.qc-textfield textarea::placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-textfield input[type=text]:focus, .qc-textfield input[type=text]:focus-visible,
+.qc-textfield textarea:focus,
+.qc-textfield textarea:focus-visible {
+  outline: none;
+}
+.qc-textfield textarea {
+  min-height: 10.8rem;
+  resize: vertical;
+}
+.qc-textfield--sm {
+  width: 6.3rem;
+}
+.qc-textfield--md {
+  width: 15.6rem;
+}
+.qc-textfield--lg {
+  width: 24.9rem;
+}
+.qc-textfield--xl {
+  width: 52.8rem;
+}
+.qc-textfield--xxl {
+  width: 100%;
+  max-width: 82.5rem;
+}
+.qc-textfield.error::before {
+  border-color: var(--qc-color-red-regular);
+  border-width: 2px;
+}
+
+.qc-textfield-container {
+  margin-bottom: 3.2rem;
+}
+.qc-textfield-container label {
+  margin-bottom: 0.4rem;
+}
+.qc-textfield-container.disabled label {
+  color: var(--qc-color-grey-regular);
+  cursor: not-allowed;
+}
+
+.qc-textfield-required {
+  color: var(--qc-color-red-regular);
+  margin-left: 0.4rem;
+}
+
+.qc-textfield-description {
+  font-size: var(--qc-font-size-sm);
+  color: var(--qc-color-grey-medium);
+}
+
+.qc-textfield.disabled::before {
+  border: 1px solid var(--qc-color-grey-regular);
+  background-color: var(--qc-color-grey-pale);
+}
+.qc-textfield.disabled input[type=text],
+.qc-textfield.disabled textarea {
+  color: var(--qc-color-grey-medium);
+  cursor: not-allowed;
+}
+
+.qc-textfield-charcount {
+  text-align: right;
+  margin-top: 0.4rem;
+  color: var(--qc-color-grey-medium);
+  font-size: var(--qc-font-size-sm);
+}
+.qc-textfield-charcount.max-reached {
+  color: var(--qc-color-red-regular);
+  font-weight: bold;
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);

@@ -1,0 +1,165 @@
+<h2 id="textfield">Champ texte</h2>
+<h4>Exemples</h4>
+
+<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
+  <form>
+    <qc-textfield
+            name="text-sm"
+            label="Entrez votre âge"
+            size="sm"
+            placeholder="ex : 24"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="text-md"
+            label="Entrez votre code postal"
+            size="md"
+            placeholder="ex : G1A 1A1"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="phone"
+            label="Téléphone"
+            placeholder="(123) 456-7890"
+            size="md"
+    ></qc-textfield>
+    <qc-textfield
+            name="poste"
+            label="Poste"
+            placeholder="1234"
+            size="sm"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="text-xl"
+            label="Entrez votre adresse courriel"
+            size="xl"
+            placeholder="ex : jeantremblay@exemple.com"
+            required="true"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="text-xxl"
+            label="Entrez votre adresse"
+            size="xxl"
+            placeholder="ex : 1234 rue du Moulin"
+            disabled="true"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="zone-xl"
+            label="Commentaires"
+            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
+            size="xl"
+            display="area"
+    ></qc-textfield>
+
+    <qc-textfield
+            name="zone-xxl"
+            label="Suggestions"
+            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
+            size="xxl"
+            display="area"
+            max-length="50"
+            required="true"
+            invalid="true"
+            invalid-text="Message d'erreur personnalisé"
+    ></qc-textfield>
+
+    <button type="submit" class="btn  btn-sm btn-primary">Envoyer</button>
+  </form>
+
+</qc-doc-exemple>
+
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom du champ</td>
+    </tr>
+    <tr>
+      <td>label</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
+    </tr>
+    <tr>
+      <td>placeholder</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte indicatif affiché lorsque le champ est vide</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Valeur envoyée lors de la soumission du formulaire</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td>"sm", "md", "lg", "xl", "xxl", "xl", "xxl"</td>
+      <td>"xl"</td>
+      <td>Taille du champ</td>
+    </tr>
+    <tr>
+      <td>display</td>
+      <td>"inline", "area"</td>
+      <td>"inline"</td>
+      <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Désactive le champ</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Rend le champ obligatoire</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte descriptif affiché sous l'étiquette</td>
+    </tr>
+    <tr>
+      <td>max-length</td>
+      <td>Nombre</td>
+      <td>null</td>
+      <td>Nombre maximum de caractères autorisés pour ce champ</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>"true", "false"</td>
+      <td>"false"</td>
+      <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
