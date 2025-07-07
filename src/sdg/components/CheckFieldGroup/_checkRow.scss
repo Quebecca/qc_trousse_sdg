@@ -1,0 +1,76 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+.qc-check-row {
+
+  display: flex;
+  align-items: start;
+  min-height: token-value(spacer, md);
+  margin: 0;
+  padding: 0;
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    display: flex;
+    position: relative;
+    appearance: none;
+    flex-shrink: 0;
+    cursor: pointer;
+    margin: 0;
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+
+    width: token-value(spacer, md);
+    height: token-value(spacer, md);
+    border-width: 2px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    &:focus {
+      outline: 2px solid token-value(color, blue, light);
+      outline-offset: 0;
+      border-color: token-value(color, blue, dark) !important;
+      border-width: 2px;
+    }
+
+    &:checked {
+      border-color: token-value(color blue regular);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+
+    &:disabled + label {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
+    }
+  }
+
+  label {
+    cursor: pointer;
+    padding-left: token-value(spacer, xs);
+    padding-right: token-value(spacer, xs);
+    margin-bottom: 0;
+    @include content-font(md);
+  }
+}
+
+.qc-compact  {
+  input[type="radio"],
+  input[type="checkbox"] {
+    width: token-value(spacer, sm);
+    height: token-value(spacer, sm);
+    border-width: 1px;
+    top: rem(4)
+  }
+}
+

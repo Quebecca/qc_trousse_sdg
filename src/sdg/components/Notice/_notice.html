@@ -1,0 +1,141 @@
+<h2 id="notice">Avis (qc-notice)</h2>
+<h3>Exemples</h3>
+
+<qc-doc-exemple id="exemple-avis-neutre"
+                caption="Exemple d’avis neutres"
+>
+  <qc-notice type="advice"
+             icon="ampoule"
+             title="Nouvelle règlementation"
+             content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+  </qc-notice>
+  <qc-notice type="note"
+             icon="note"
+             title="Nouvelle règlementation"
+             content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+  </qc-notice>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple d’information">
+  <qc-notice type="information"
+             title="Nouvelle règlementation"
+             content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
+  </qc-notice>
+</qc-doc-exemple>
+<!--            <qc-code target-id="exemple-avis-neutre" ></qc-code>-->
+
+
+<qc-doc-exemple id="exemple-avis-avertissement"
+                caption="Exemple d’avertissement (avec et sans <i><code>slot</code></i>)"
+>
+  <qc-notice type="warning"
+             title="Migration des <i>contenus</i>"
+             content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
+  </qc-notice>
+
+  <qc-notice type="warning">
+    <h2>Migration des <i>contenus</i></h2>
+    <p>Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20
+      avril.</p>
+  </qc-notice>
+</qc-doc-exemple>
+
+<!--            <qc-code target-id="exemple-avis-avertissement" ></qc-code>-->
+
+
+<qc-doc-exemple id="exemple-avis-succes"
+                caption="Exemple d’avis de succès"
+>
+  <qc-notice type="success"
+             title="Votre demande d’inscription a été reçue"
+             content="Votre code de confirmation sera envoyé par courriel.">
+  </qc-notice>
+</qc-doc-exemple>
+<!--            <qc-code target-id="exemple-avis-succes" ></qc-code>-->
+
+
+<qc-doc-exemple id="exemple-avis-erreur"
+                caption="Exemple d’avis d’erreur"
+>
+  <qc-notice type="error"
+             title="Des erreurs sont présentes dans le formulaire.">
+    <ul>
+      <li>
+        <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
+      </li>
+      <li>
+        <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
+      </li>
+      <li>
+        <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
+      </li>
+    </ul>
+  </qc-notice>
+</qc-doc-exemple>
+
+<!--            <qc-code target-id="exemple-avis-erreur" ></qc-code>-->
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>title</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Titre de l’avis</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>information, warning, success, error, advice, note</td>
+      <td>information (si absence de type)</td>
+      <td>Le type d’avis</td>
+    </tr>
+    <tr>
+      <td>content</td>
+      <td>Texte</td>
+      <td>Chaîne vide</td>
+      <td>Le contenu de l’avis, il doit contenir du texte structuré avec des balises sémantiques.</td>
+    </tr>
+    <tr>
+      <td>header</td>
+      <td>h1,h3,h2,h3,h4,h5,h6</td>
+      <td>h2</td>
+      <td>La balise du niveau de titre de l’avis</td>
+    </tr>
+    <tr>
+      <td>icon</td>
+      <td>Toute clé de la map $images dans settings/_base.scss</td>
+      <td>information
+        <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon>
+        (si absence de type)
+      </td>
+      <td>Défini l’icône pour les avis neutres</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+
+<qc-doc-exemple id="presentation-slots-avis"
+                caption="Présentation des emplacements disponibles dans les avis."
+                hide-code
+>
+  <qc-notice id="qc-notice-slots">
+    <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
+      Contenu par défaut
+    </div>
+  </qc-notice>
+</qc-doc-exemple>

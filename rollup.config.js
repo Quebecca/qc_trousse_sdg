@@ -13,6 +13,8 @@ import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
+import buildHtmlDoc from './plugins/buildHtmlDoc.js';
+import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
 
 
 const
@@ -22,9 +24,10 @@ const
 ;
 const verbose = false;
 const  includePaths = [
+        dev_process && 'src/doc/scss',
         'src/sdg/scss',
-        'src/doc/scss'
-];
+        "src",
+].filter(Boolean);
 
 // const path = require('path');
 
@@ -64,7 +67,8 @@ const scssOptions = {
             autoprefixer(),
             cssReplace({
                 data: {
-                    'pkg-version': pkg.version
+                    'pkg-version': pkg.version,
+                    'dev-env': dev_process ? 'true' : 'false',
                 }
             })
         ])
@@ -78,7 +82,7 @@ const scssOptions = {
         @use "qc-sdg-lib" as *;
     `,
     outputStyle: build_process ? 'compressed' : 'expanded',
-    watch: ['src/sdg/scss', 'src/doc/scss'],
+    watch: ['src'],
     silenceDeprecations: ['legacy-js-api'],
 };
 
@@ -91,7 +95,6 @@ let
     }
     , svelteOptions = {
         compilerOptions: {
-            dev: dev_process,
             // enable run-time checks
             customElement: true,
             dev: dev_process,
@@ -141,15 +144,7 @@ let
                     }}
                     , scssOptions
                 )),
-                build_process && copy({
-                    targets: [
-                        {
-                            src: 'dist/img/*',
-                            dest: [`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
+
             ],
         },
         {
@@ -220,6 +215,13 @@ if (!build_process) {
         },
         plugins: [
             replace(replacements),
+            buildHtmlDoc({
+                input: 'src/doc/_index.html',
+                output: 'public/index.html'
+            }),
+            buildDevDoc({
+                input: 'src/doc/_dev.html'
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,

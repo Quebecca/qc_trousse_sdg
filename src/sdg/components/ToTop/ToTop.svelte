@@ -15,8 +15,6 @@
    let minimumScrollHeight = 0;
    let toTopElement;
 
-   const src = `${Utils.imagesRelativePath}arrow-up-white.svg`;
-
    function handleScrollUpButton() {
       if (Utils.isTruthy(demo)) {
          return;

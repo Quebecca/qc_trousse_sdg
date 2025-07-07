@@ -2,14 +2,10 @@
     tag: 'qc-radio-button',
     shadow: 'none',
     props: {
-        name: {attribute: 'name', type: 'String'},
         value: {attribute:'value', type: 'String'},
         label: {attribute:'label', type: 'String'},
-        size: {attribute: 'size', type: 'String'},
-        checked: {attribute: 'checked', type: 'String'},
-        disabled: {attribute:'disabled', type: 'String'},
-        required: {attribute: 'required', type: 'String'},
-        invalid: {attribute: 'invalid', type: 'String'}
+        checked: {attribute: 'checked', type: 'Boolean'},
+        disabled: {attribute:'disabled', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -28,42 +24,37 @@
 
 <script>
     import RadioButton from "./RadioButton.svelte";
+    import {Utils} from '../utils.js';
 
     let {
         parent,
         name,
         value,
         label,
-        size,
-        checked,
+        checked = $bindable(false),
         disabled,
-        required,
-        invalid,
+        invalid = $bindable(false),
         ...rest
     } = $props();
 
-    if (checked === "") {
-        checked = "true";
-    }
-    if (disabled === "") {
-        disabled = "true";
-    }
-    if (required === "") {
-        required = "true";
-    }
-    if (invalid === "") {
-        invalid = "true";
-    }
-</script>
+    $effect(() => {
+        if(checked) {
+            parent.value = value;
+        }
+    })
 
+</script>
+{#if parent}
 <RadioButton
-    name={parent?.name ?? name}
+    name={parent.name}
     {value}
+    bind:groupValue={parent.value}
     {label}
-    size={parent?.size ?? size}
+    compact={parent.compact}
     {checked}
-    {disabled}
-    required={parent?.required ?? required}
-    invalid={parent?.invalid ?? invalid}
-    {...rest}
+    disabled={disabled ?? parent.disabled}
+    required={parent.required}
+    invalid={parent.invalid}
+    {...Utils.computeFieldsAttributes("radio", rest)}
 />
+{/if}

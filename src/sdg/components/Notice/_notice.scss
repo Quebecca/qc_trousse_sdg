@@ -1,0 +1,88 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "sass:list" as *;
+
+@mixin qc-notice-title() {
+  h1,h2,h3,h4,h5,h6,[role=heading] {
+    margin: 0;
+    padding: 0;
+    @include content-font(sm, bold);
+    font-family: token-value(font, family, content);
+  }
+}
+
+.qc-notice {
+  max-inline-size: token-value(max-content-width);
+  display: flex;
+  border: 1px solid token-value(color,grey,light);
+  background-color: token-value(color,white);
+  word-break: break-word;
+  @include content-font(sm);
+
+
+  .icon-container {
+    display: flex;  
+    padding: token-value(spacer, md) token-value(spacer, xs);
+    background-color: token-value(color,blue,pale);      
+
+    .qc-icon {
+      background-size: 100% auto;
+      min-width: token-value(spacer, md);      
+      height: token-value(spacer, md);
+    }    
+  }
+  .content-container {
+    width: 100%;
+  }
+
+  @include qc-notice-title();
+
+  //TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG.
+
+
+  .content {
+      margin:
+          token-value(spacer md)
+          token-value(spacer md)
+          token-value(spacer md)
+          token-value(spacer, sm);
+  }
+
+  @each $type, $color in (
+      "information": ("blue", "piv"),
+      "warning": ("yellow" , "dark"),
+      "neutral": ("grey", "dark"),
+      "error": ("red", "regular"),
+      "success": ("green","regular"),
+  ) {
+    &.qc-#{$type} .icon-container {
+      background-color: token-value(color, nth($color, 1), pale);
+      [role=img] {
+        background-color: token-value(color,nth($color, 1), nth($color, 2));
+      }
+    }
+  }
+}
+
+// Links in a error notice (eg. error summary)
+qc-notice {
+  display: block;
+  @include qc-notice-title();
+  ul {
+    padding-left: token-value(spacer, sm) !important;
+    //margin-top: token-value(spacer, sm) !important;
+  }
+  &[type="error"] ul li {
+     &::marker {
+       color:token-value(color text primary);
+     }
+     color: token-value(color, red, regular);
+     a {
+      color: inherit;
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+  margin-bottom: rem(4 * $base-spacer);
+
+}

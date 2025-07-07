@@ -1,0 +1,4 @@
+@forward "sdg/scss/settings/base";
+@use "sdg/scss/settings/base" as *;
+$google-font-path : "../../dist/fonts";
+$env: "dev";

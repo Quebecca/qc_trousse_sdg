@@ -1,5 +1,5 @@
 @use "qc-sdg-lib" as *;
-@use "base/shadings" as *;
+@use "../../../sdg/bases/shadings/shadings" as *;
 
 @mixin button-border-and-padding($border-size, $padding-y, $padding-x) {
   padding: calc(#{token-value(spacer $padding-y)} - #{$border-size}) calc(#{token-value(spacer $padding-x)} - #{$border-size});

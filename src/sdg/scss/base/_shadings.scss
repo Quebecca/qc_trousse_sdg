@@ -1,8 +1,0 @@
-@use "qc-sdg-lib" as *;
-@use "sass:map";
-
-@each $index,$settings in map.get($lg-tokens, box_shadow) {
-  .qc-shading-#{$index} {
-    @include qc-shading($index)
-  }
-}

@@ -1,0 +1,104 @@
+<h2 id="liens">Liens</h2>
+<qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
+    <dl>
+        <dt>Lien interne</dt>
+        <dd><a href="javascript:;" class="not-visited">Lien interne</a></dd>
+        <dd>
+            <qc-external-link><a href="javascript:;" class="not-visited">Lien externe</a></qc-external-link>
+        </dd>
+
+        <dt>Lien au survol (pseudo-classe :hover)</dt>
+        <dd><a href="javascript:;" class="pseudo-hover">Lien interne</a></dd>
+        <dd>
+            <qc-external-link><a href="javascript:;" class="pseudo-hover">Lien externe</a>
+            </qc-external-link>
+        </dd>
+        <dt>Lien au focus (pseudo-classe :focus)</dt>
+        <dd><a href="javascript:;" class="pseudo-focus">Lien interne</a></dd>
+        <dd>
+            <qc-external-link><a href="javascript:;" class="pseudo-focus">Lien externe</a>
+            </qc-external-link>
+        </dd>
+        <dt>Lien au clic (pseudo-classe :active)</dt>
+        <dd><a href="javascript:;" class="pseudo-active">Lien interne</a></dd>
+        <dd>
+            <qc-external-link><a href="javascript:;" class="pseudo-active">Lien externe</a>
+            </qc-external-link>
+        </dd>
+        <dt>Lien visité (pseudo-classe :visited)</dt>
+        <dd><a href="javascript:;" class="pseudo-visited">Lien interne</a></dd>
+        <dd>
+            <qc-external-link><a href="javascript:;" class="pseudo-visited">Lien externe</a>
+            </qc-external-link>
+        </dd>
+    </dl>
+</qc-doc-exemple>
+
+
+<h3>Lien externe (qc-external-link)</h3>
+
+<p>Le composant <code>qc-external-link</code> ajoute une icône à la fin du lien, séparée du dernier mot par
+    une espace insécable.</p>
+<p>NB : le composant <code>qc-external-link</code> est ouvert, c-à-d. qu'il ne contient pas de DOM d’ombre (<i>shadow
+    DOM</i>).</p>
+
+<h4>Exemples</h4>
+
+<qc-doc-exemple
+        caption="Exemple de lien externe avec différentes tailles de police. Réduire la fenêtre pour constater que l’icône ne se sépare pas du lien au passage à la ligne.">
+    <p class="qc-font-size-xl">
+        Lorem ipsum
+        <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+            adipiscing</a></qc-external-link>
+        elit
+    </p>
+    <p class="qc-font-size-lg">
+        Lorem ipsum
+        <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+            adipiscing</a></qc-external-link>
+        elit
+    </p>
+    <p class="qc-font-size-md">
+        Lorem ipsum
+        <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+            adipiscing</a></qc-external-link>
+        elit
+    </p>
+    <p class="qc-font-size-sm">
+        Lorem ipsum
+        <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur
+            adipiscing</a></qc-external-link>
+        elit
+    </p>
+
+
+</qc-doc-exemple>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>img-alt</td>
+            <td>Texte</td>
+            <td>
+                <dl>
+                    <dt>Français</dt>
+                    <dd>Ce lien dirige vers un autre site.</dd>
+                    <dt>Anglais</dt>
+                    <dd>This link directs to another site.</dd>
+                </dl>
+            </td>
+            <td>Texte alternatif de l’image du lien externe.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

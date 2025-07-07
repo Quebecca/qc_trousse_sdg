@@ -22,7 +22,7 @@
     </div>
 </div>
 <style lang="scss">
-    @use "base/colors";
+    @use "sdg/bases/colors/colors" as *;
     .color-details {
         display: flex;
         justify-content: flex-start;

@@ -8,19 +8,17 @@
         disabled: { attribute: 'disabled', type: 'Boolean' },
         checked: { attribute: 'checked', type: 'Boolean', reflect: true },
         required: { attribute: 'required', type: 'Boolean' },
-        size: { attribute: 'size', type: 'String' },
+        compact: { attribute: 'compact', type: 'Boolean' },
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' }
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
-            static inner;
-            static outer;
+            static parentGroup;
 
             constructor() {
                 super();
-                this.inner = this;
-                this.outer = this.parentNode.tagName === "QC-CHECKBOX-GROUP" ? this.parentNode : null;
+                this.parentGroup = this.closest('qc-checkbox-group');
             }
         };
     }
@@ -28,45 +26,42 @@
 
 <script>
     import Checkbox from "./Checkbox.svelte";
-    import { onMount } from "svelte";
+    import {Utils} from '../utils.js';
 
     let {
-        inner, 
-        outer, 
+        parentGroup,
         value, 
         label, 
-        name, 
+        name,
         disabled, 
         checked = $bindable(false),
         required, 
-        size,
+        compact,
         invalid = $bindable(false),
         invalidText,
         ...rest
     } = $props();
 
-    let effectiveValue = $derived(value || label);
-    let effectiveName = $derived(outer?.getAttribute('name') || name || '');
-    let effectiveSize = $derived(outer?.getAttribute('size') || size || 'md');
 
-    onMount(() => {
-        if (invalid === "") {
-            invalid = "true";
-        }
-    });
+    if (parentGroup) {
+        compact = parentGroup.compact
+        invalid = parentGroup.invalid
+        name = parentGroup.name
+    }
+
 
 </script>
 
 <Checkbox
-    bind:value={effectiveValue}
-    {label}
-    name={effectiveName}
-    disabled={outer?.disabled ?? disabled}
+    {value}
+    label={label ?? value}
+    {name}
+    disabled={parentGroup?.disabled ?? disabled}
     bind:checked
-    required={outer?.required ?? required}
-    size={effectiveSize}
+    required={parentGroup?.required ?? required}
+    {compact}
     bind:invalid
     {invalidText}
-    hasParentGroup={outer !== null && outer !== undefined}
-    {...rest}
+    {parentGroup}
+    {...Utils.computeFieldsAttributes("checkbox", rest)}
 ></Checkbox>

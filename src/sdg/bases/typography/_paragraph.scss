@@ -1,0 +1,33 @@
+@use "qc-sdg-lib" as *;
+
+p {
+  margin-top: 0;
+  margin-bottom: token-value(spacer,md);
+  max-inline-size: token-value(max-content-width);
+}
+
+code, .qc-code {
+  font-family: token-value(font, family, code);
+}
+
+// pour les très petites résolutions, on ajoute des tirets aux mots.
+@media (max-width: 320px) {
+  body {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+.qc-font-size-sm {
+  @include content-font("sm");
+}
+
+.qc-font-size-lg {
+  @include content-font("lg");
+}
+.qc-font-size-xl {
+  @include content-font("xl");
+}
+.qc-font-size-md {
+  @include content-font("md");
+}

@@ -12,26 +12,29 @@
         disabled = false,
         checked = $bindable(false),
         required = false,
-        size = "md",
+        compact,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        hasParentGroup = false,
+        parentGroup,
         ...rest
     } = $props();
     
     let id = $derived(name + "_" + value);
 
-    let restProps = $state({});
     $effect(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
-
-        restProps = inputProps;
+        if (checked) {
+            invalid = false;
+        }
     });
+
 
 </script>
 
-<div class={[!hasParentGroup && "checkbox-single", invalid && "checkbox-single-invalid"]} >
-    <div class={`checkbox-${size}`}>
+{#snippet checkboxRow()}
+    <div class={[
+        "qc-check-row",
+        !parentGroup && compact && "qc-compact",
+        ]}>
         <input
             type="checkbox"
             {value}
@@ -41,18 +44,28 @@
             bind:checked
             aria-required = {required}
             aria-invalid={invalid}
-            {...restProps}
+            {...rest}
             onchange={() => { if (checked) invalid = false}}
         />
         <label for={id}>
-            {label}
-            {#if !hasParentGroup && required}
-                <span class="qc-checkbox-required">*</span>
+            {@html label}
+            {#if !parentGroup && required}
+                <span class="qc-fieldset-required">*</span>
             {/if}
         </label>
     </div>
-    {#if !hasParentGroup}
+    {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
+{/snippet}
 
+{#if parentGroup}
+    {@render checkboxRow()}
+{:else}
+<div class={[
+        "qc-checkbox-single",
+        invalid && "qc-checkbox-single-invalid"
+        ]}>
+    {@render checkboxRow()}
 </div>
+{/if}
