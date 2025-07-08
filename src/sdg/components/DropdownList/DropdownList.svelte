@@ -7,33 +7,37 @@
 
     let {
         id = Math.floor(Math.random() * 1000),
-        legend = '',
+        legend = "",
         width = "md",
         items,
-        noValueMessage = '',
-        noOptionsMessage = ' Aucune option disponible',
+        noValueMessage = "",
+        noOptionsMessage = "Aucune option disponible",
         enableSearch = true,
-        comboAriaLabel = '',
+        comboAriaLabel = "",
         ariaRequired = false,
-        invalid = $bindable(''),
-        searchPlaceholder = '',
-        emptyOptionSrMessage = '',
+        invalid = $bindable(""),
+        searchPlaceholder = "",
+        emptyOptionSrMessage = "",
         multiple = false,
         ...rest
     } = $props();
 
-    let value = $state('');
-    let focusIn = $state(false);
-    let expanded = $state(false);
-    let usedWidth = $derived.by(() => {
-        switch (width) {
-            case "sm":
-                return 156;
-            case "lg":
-                return 528;
-            default:
-                return 342;
-        }
+    const precentRootFontSize = 62.5
+    let value = $state(""),
+        focusIn = $state(false),
+        expanded = $state(false),
+        usedWidth = $derived.by(() => {
+            switch (width) {
+                case "sm":
+                    return 156;
+                case "lg":
+                    return 528;
+                default:
+                    if (width.match(/^\d+$/)) {
+                        return width;
+                    }
+                    return 342;
+            }
     });
 
     function handleDropdownButtonClick(event) {
@@ -48,13 +52,12 @@
     }
 
     function handleKeyDown(event) {
+        console.log(event.key, focusIn);
 
-        console.log(event.key);
-
-        if (event.key === 'Escape' && expanded) {
+        if (event.key === "Escape" && expanded) {
             expanded = false;
         }
-        if (event.key === 'Tab' && !focusIn) {
+        if (event.key === "Tab" && !focusIn) {
             expanded = false;
         }
     }
@@ -72,7 +75,7 @@
 >
     <div
         class="qc-dropdown-list"
-        style="--dropdown-width: {usedWidth/10}rem;"
+        style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
         onfocusin={() => focusIn = true}
         onfocusout={() => focusIn = false}
@@ -102,7 +105,7 @@
              tabindex="-1"
         >
             {#if multiple}
-                <DropdownListMultiple {items} {value} handleExitTab={() => expanded = false} />
+                <DropdownListMultiple {items} {value} handleExit={() => expanded = false} />
             {:else}
                 <DropdownListSingle
                         {items}
@@ -110,7 +113,7 @@
                             value = v;
                             expanded = false;
                         }}
-                        handleExitTab={() => expanded = false}
+                        handleExit={() => expanded = false}
                 />
             {/if}
         </div>
