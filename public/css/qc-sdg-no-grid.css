@@ -2166,3 +2166,21 @@ qc-search-bar {
   --error-icon-width: 2.4rem!important;
   --error-icon-height: 2.1rem!important;
 }
+
+.qc-label {
+  font-weight: var(--qc-font-weight-content-medium);
+  display: inline-flex;
+  align-items: center;
+}
+.qc-label.qc-label-required {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
+  color: var(--qc-color-red-regular);
+}
+.qc-label.qc-label-compact {
+  font-size: var(--qc-font-size-sm);
+}
+.qc-label.qc-label-disabled {
+  color: var(--qc-color-grey-regular);
+}

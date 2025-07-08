@@ -1,0 +1,20 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+.qc-label {
+  font-weight: token-value(font weight content medium);
+  display: inline-flex;
+  align-items: center;
+
+  &.qc-label-required {
+    @include content-font(md, bold);
+    color: token-value(color, red, regular);
+  }
+
+  &.qc-label-compact {
+    font-size: token-value(font size sm);
+  }
+
+  &.qc-label-disabled {
+    color: token-value(color, grey, regular);
+  }
+}
