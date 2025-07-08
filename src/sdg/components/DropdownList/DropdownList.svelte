@@ -8,7 +8,7 @@
     let {
         id = Math.floor(Math.random() * 1000),
         legend = '',
-        width = "auto",
+        width = "md",
         items,
         noValueMessage = '',
         noOptionsMessage = ' Aucune option disponible',
@@ -60,9 +60,12 @@
         {...rest}
 >
     <div
-            class="qc-dropdown-list"
-            style="--dropdown-width: {usedWidth/10}rem;"
-            role="listbox"
+        class="qc-dropdown-list"
+        style="--dropdown-width: {usedWidth/10}rem;"
+        role="listbox"
+        onmouseenter={() => focusIn = true}
+        onmouseleave={() => focusIn = false}
+        tabindex="-1"
     >
         <button class="qc-dropdown-button"
                 onclick={handleDropdownButtonClick} aria-expanded={expanded}>
@@ -80,13 +83,14 @@
                 !expanded && "qc-dropdown-list-items-hidden"
             ]}
              tabindex="-1"
-             onmouseenter={() => focusIn = true}
-             onmouseleave={() => focusIn = false}
         >
             {#if multiple}
                 <DropdownListMultiple {items} {name} {value} />
             {:else}
-                <DropdownListSingle {items} passValue={(v) => {value = v; expanded = false;}} />
+                <DropdownListSingle {items} passValue={(v) => {
+                    value = v;
+                    expanded = false;
+                }} />
             {/if}
         </div>
     </div>
