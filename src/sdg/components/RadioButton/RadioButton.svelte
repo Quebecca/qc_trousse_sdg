@@ -1,6 +1,7 @@
 <script>
     import {Utils} from "../utils";
     import {onMount} from "svelte";
+    import Label from "../Label/Label.svelte";
 
     let {
         name,
@@ -31,5 +32,10 @@
         {disabled}
         {...rest}
     />
-    <label for={`${name}_${value}`}>{@html label}</label>
+    <Label
+        forId={`${name}_${value}`}
+        text={label}
+        compact={compact}
+        disabled={disabled}
+    />
 </div>
