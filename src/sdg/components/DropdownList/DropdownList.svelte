@@ -24,7 +24,6 @@
 
     let value = $state('');
     let focusIn = $state(false);
-    const name = Math.random().toString(36).substring(2, 15);
     let expanded = $state(false);
     let usedWidth = $derived.by(() => {
         switch (width) {
@@ -47,6 +46,18 @@
             expanded = false;
         }
     }
+
+    function handleKeyDown(event) {
+
+        console.log(event.key);
+
+        if (event.key === 'Escape' && expanded) {
+            expanded = false;
+        }
+        if (event.key === 'Tab' && !focusIn) {
+            expanded = false;
+        }
+    }
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
@@ -63,17 +74,23 @@
         class="qc-dropdown-list"
         style="--dropdown-width: {usedWidth/10}rem;"
         role="listbox"
-        onmouseenter={() => focusIn = true}
-        onmouseleave={() => focusIn = false}
+        onfocusin={() => focusIn = true}
+        onfocusout={() => focusIn = false}
         tabindex="-1"
     >
-        <button class="qc-dropdown-button"
-                onclick={handleDropdownButtonClick} aria-expanded={expanded}>
-            {#if Utils.isTruthy(value)}
-                {value}
-            {:else}
-                Choisissez une option
-            {/if}
+        <button
+                class="qc-dropdown-button"
+                onclick={handleDropdownButtonClick}
+                onkeydown={handleKeyDown}
+                aria-expanded={expanded}
+        >
+            <span class="qc-dropdown-placeholder">
+                {#if Utils.isTruthy(value)}
+                    {value}
+                {:else}
+                    Choisissez une option
+                {/if}
+            </span>
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon type="chevron-white" size="sm" />
             </span>
@@ -85,12 +102,16 @@
              tabindex="-1"
         >
             {#if multiple}
-                <DropdownListMultiple {items} {name} {value} />
+                <DropdownListMultiple {items} {value} handleExitTab={() => expanded = false} />
             {:else}
-                <DropdownListSingle {items} passValue={(v) => {
-                    value = v;
-                    expanded = false;
-                }} />
+                <DropdownListSingle
+                        {items}
+                        passValue={(v) => {
+                            value = v;
+                            expanded = false;
+                        }}
+                        handleExitTab={() => expanded = false}
+                />
             {/if}
         </div>
     </div>

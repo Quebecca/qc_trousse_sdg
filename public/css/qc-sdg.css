@@ -2433,6 +2433,10 @@ input[type=checkbox]:checked.qc-compact::after {
   transform: rotate(180deg);
 }
 
+.qc-dropdown-placeholder {
+  align-items: start;
+}
+
 .qc-dropdown-list-items {
   position: absolute;
   max-height: 33rem;
@@ -2443,8 +2447,6 @@ input[type=checkbox]:checked.qc-compact::after {
   z-index: 11;
   overflow-y: auto;
   overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   background-color: var(--qc-color-background);
   border-left: 0.1rem solid var(--qc-color-grey-medium);
   border-right: 0.1rem solid var(--qc-color-grey-medium);
