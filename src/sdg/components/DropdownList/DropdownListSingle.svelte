@@ -1,5 +1,9 @@
 <script>
-    let { items, passValue = () => {}, handleExitTab = () => {} } = $props();
+    let {
+        items,
+        passValue = () => {},
+        handleExit = () => {}
+    } = $props();
 
     let predecessor = $state();
     let selectedValue = $state();
@@ -18,13 +22,17 @@
     }
 
     function handleKeyDown (event, value, index) {
-        if (event.key === 'Enter' || event.key === ' ') {
+        if (event.key === "Enter" || event.key === " ") {
             handleEvent(event.target, value);
         }
 
-        if (event.key === "Tab" && index === items.length - 1) {
-            handleExitTab();
+        if (canExit(event, index)) {
+            handleExit();
         }
+    }
+
+    function canExit(event, index) {
+        return event.key === "Escape" || (event.key === "Tab" && index === items.length - 1);
     }
 </script>
 
@@ -33,7 +41,7 @@
         class="qc-dropdown-list-single"
         tabindex="0"
         role="option"
-        aria-selected="{selectedValue === item.value ? 'true' : 'false'}"
+        aria-selected={selectedValue === item.value ? "true" : "false"}
         onclick={(event) => handleEvent(event.target, item.value)}
         onkeydown={(event) => handleKeyDown(event, item.value, index)}
     >

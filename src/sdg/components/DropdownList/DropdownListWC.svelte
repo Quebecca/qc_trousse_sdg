@@ -42,4 +42,4 @@
     });
 </script>
 
-<DropdownList {items} {...rest} />
+<DropdownList {items} {invalid} {...rest} />

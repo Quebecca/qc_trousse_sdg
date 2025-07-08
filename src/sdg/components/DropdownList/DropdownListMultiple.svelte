@@ -1,13 +1,21 @@
 <script>
     import Checkbox from "../Checkbox/Checkbox.svelte";
 
-    let { items, value = $bindable(""), handleExitTab = () => {} } = $props();
+    let {
+        items,
+        value = $bindable(""),
+        handleExit = () => {}
+    } = $props();
 
     const name = Math.random().toString(36).substring(2, 15);
     function handleKeyDown(event, index) {
-        if (event.key === "Tab" && index === items.length - 1) {
-            handleExitTab();
+        if (canExit(event, index)) {
+            handleExit();
         }
+    }
+
+    function canExit(event, index) {
+        return event.key === "Escape" || (event.key === "Tab" && index === items.length - 1);
     }
 </script>
 
