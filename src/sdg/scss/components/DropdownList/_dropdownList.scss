@@ -53,6 +53,9 @@ $border: 1;
   top: 100%;
   z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
   overflow-y: auto;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   background-color: token-value(color, background);
   border-left: rem($border) solid token-value(color, grey, medium);
@@ -67,6 +70,12 @@ $border: 1;
 
   &::-webkit-scrollbar-thumb {
     background-color: token-value(color, blue, regular);
+  }
+
+  * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
@@ -97,10 +106,6 @@ $border: 1;
     padding-right: token-value(spacer, xs);
     padding-top: token-value(spacer, xs);
     flex-grow: 1;
-
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .qc-check-row {

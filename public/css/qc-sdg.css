@@ -2442,6 +2442,9 @@ input[type=checkbox]:checked.qc-compact::after {
   top: 100%;
   z-index: 11;
   overflow-y: auto;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   background-color: var(--qc-color-background);
   border-left: 0.1rem solid var(--qc-color-grey-medium);
   border-right: 0.1rem solid var(--qc-color-grey-medium);
@@ -2453,6 +2456,11 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 .qc-dropdown-list-items::-webkit-scrollbar-thumb {
   background-color: var(--qc-color-blue-regular);
+}
+.qc-dropdown-list-items * {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .qc-dropdown-list-items-hidden {
@@ -2480,9 +2488,6 @@ input[type=checkbox]:checked.qc-compact::after {
   padding-right: var(--qc-spacer-xs);
   padding-top: var(--qc-spacer-xs);
   flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .qc-dropdown-list-multiple .qc-check-row {
   height: 100%;
