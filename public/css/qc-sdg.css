@@ -2169,10 +2169,9 @@ qc-search-bar {
 
 .qc-label {
   font-weight: var(--qc-font-weight-content-medium);
-  display: inline-flex;
-  align-items: center;
+  display: block;
 }
-.qc-label.qc-label-required {
+.qc-label .qc-label-required {
   font-size: var(--qc-font-size-md);
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);

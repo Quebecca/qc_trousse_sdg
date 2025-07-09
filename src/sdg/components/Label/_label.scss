@@ -2,10 +2,9 @@
 
 .qc-label {
   font-weight: token-value(font weight content medium);
-  display: inline-flex;
-  align-items: center;
+  display: block;
 
-  &.qc-label-required {
+  .qc-label-required {
     @include content-font(md, bold);
     color: token-value(color, red, regular);
   }

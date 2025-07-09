@@ -2,6 +2,7 @@
     import { Utils } from "../utils";
     import Icon from "../Icon/Icon.svelte";
     import FormError from "../FormError/FormError.svelte";
+    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -47,12 +48,13 @@
             {...rest}
             onchange={() => { if (checked) invalid = false}}
         />
-        <label for={id}>
-            {@html label}
-            {#if !parentGroup && required}
-                <span class="qc-fieldset-required">*</span>
-            {/if}
-        </label>
+        <Label
+                forId={id}
+                text={label}
+                required={!parentGroup && required}
+                compact={compact}
+                disabled={disabled}
+        />
     </div>
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />
