@@ -3,12 +3,14 @@ $img-dir: "../img";
 $enable-dark-theme: true !default;
 $base-spacer: 8 !default;
 // for local fonts, cf https://google-webfonts-helper.herokuapp.com/fonts
-$google-api-font: true !default;
+$google-api-font: false !default;
 $google-fonts : (
   roboto: (Roboto, sans-serif),
   open-sans: ('Open Sans', sans-serif),
   roboto-mono: ('Roboto Mono', monospace)
 );
+$google-font-path : "../fonts" !default;
+$env: "build" !default;
 
 $enable-grid-classes: true;
 $grid-aliases: (

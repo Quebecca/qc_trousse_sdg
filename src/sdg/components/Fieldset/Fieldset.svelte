@@ -45,7 +45,7 @@
             disabled && "qc-fieldset-disabled"]}
           aria-describedby={legendId}
           onchange={updateValue}
-    >
+>
     <legend id={legendId}>
         {@html legend}
         {#if required}
@@ -53,9 +53,9 @@
         {/if}
     </legend>
     <div
-        class={chooseDivCLass(inline, tiled)}
-        style="--column-count: {columnCount}"
-        bind:this={groupSelection}
+            class={chooseDivCLass(inline, tiled)}
+            style="--column-count: {columnCount}"
+            bind:this={groupSelection}
     >
         {@render children?.()}
     </div>

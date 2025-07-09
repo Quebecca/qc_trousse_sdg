@@ -1,0 +1,144 @@
+@use "qc-sdg-lib" as *;
+
+%check-row {
+  display: flex;
+  align-items: start;
+  margin: 0;
+
+  &:not(:has(input:disabled)):hover {
+    cursor: pointer;
+  }
+
+  &:has(input:disabled) {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    display: flex;
+    position: relative;
+    appearance: none;
+    margin: 0 token-value(spacer, xs) 0 0;
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+
+    &:not(:disabled):hover {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    &:checked {
+      border-color: token-value(color blue regular);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+  }
+
+  .qc-check-label {
+    @include content-font(md);
+  }
+}
+
+.qc-check-row {
+  @extend %check-row;
+  flex-grow: 0;
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    min-width: token-value(spacer, md);
+    min-height: token-value(spacer, md);
+    border-width: rem(2);
+
+    &:focus {
+      outline: 2px solid token-value(color, blue, light);
+      outline-offset: 0;
+      border-color: token-value(color, blue, dark) !important;
+    }
+
+    &:checked {
+      border-color: token-value(color blue regular);
+    }
+  }
+}
+
+.qc-selection-button {
+  @extend %check-row;
+  @include qc-formcontrol-box();
+  flex-grow: 1;
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    min-width: token-value(spacer, sm);
+    min-height: token-value(spacer, sm);
+    margin-top: rem(4);
+    border-width: rem(1);
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  padding: token-value(spacer, sm);
+
+  &::before {
+    border-style: solid;
+    border-width: rem(1);
+    border-color: token-value(color, grey, light);
+  }
+
+  &:not(:has(input:focus, input:disabled)):hover::before {
+    border-color: token-value(color, blue, light);
+  }
+
+  &:has(input:checked)::before {
+    background-color: token-value(color, blue, pale);
+  }
+
+  &:has(input:disabled)::before {
+    background-color: token-value(color, grey, pale);
+  }
+
+  .qc-check-label {
+    @include content-font(md, semi-bold);
+  }
+}
+
+.qc-compact {
+  input[type="radio"],
+  input[type="checkbox"] {
+    min-width: token-value(spacer, sm);
+    min-height: token-value(spacer, sm);
+    margin-top: rem(4);
+    border-width: 1px;
+  }
+}
+
+.qc-check-text {
+  display: flex;
+  flex-direction: column;
+  gap: token-value(spacer, xs);
+  min-height: token-value(spacer, md);
+}
+
+.qc-check-description {
+  @include content-font(sm);
+  margin: 0;
+}
+
+.qc-check-row-parent {
+  display: flex;
+  flex-grow: 1;
+}

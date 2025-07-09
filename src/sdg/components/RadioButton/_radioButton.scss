@@ -1,0 +1,31 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "../CheckFieldGroup/checkRow" as *;
+
+input[type=radio] {
+  border-radius: 100%;
+  .qc-check-row &,
+  .qc-selection-button & {
+
+    &::before {
+      width: rem(14);
+      height: rem(14);
+      border-radius: 100%;
+      background-color: token-value(color, blue, regular);
+    }
+
+    &:checked::before {
+      opacity: 1;
+    }
+  }
+
+  .qc-compact,
+  .qc-selection-button & {
+    &::before {
+      width: rem(10);
+      height: rem(10);
+    }
+  }
+}
+
+
+

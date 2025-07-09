@@ -8,39 +8,36 @@
         value,
         label,
         name,
-        disabled = $bindable(false),
-        description,
-        checked,
-        required = $bindable(false),
+        disabled = false,
+        checked = $bindable(false),
+        required = false,
         compact,
         tiled,
+        description,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
         ...rest
     } = $props();
-
+    
     let id = $derived(name + "_" + value);
 
-    let restProps = $state({});
-    $effect(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["checkbox"], {}, rest);
-        restProps = inputProps;
-    });
     $effect(() => {
         if (checked) {
             invalid = false;
         }
     });
+
+
 </script>
 
 {#snippet checkboxRow()}
     <label
-        class={[
+            class={[
             !tiled && "qc-check-row",
             tiled && "qc-selection-button"
         ]}
-        for={id}>
+            for={id}>
         <input
                 class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
                 type="checkbox"
@@ -51,7 +48,7 @@
                 bind:checked
                 aria-required = {required}
                 aria-invalid={invalid}
-                {...restProps}
+                {...rest}
                 onchange={() => { if (checked) invalid = false}}
         />
         <span class="qc-check-text">
@@ -70,10 +67,10 @@
 {#if parentGroup}
     {@render checkboxRow()}
 {:else}
-<div class={[
+    <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
     ]}>
-    {@render checkboxRow()}
-</div>
+        {@render checkboxRow()}
+    </div>
 {/if}

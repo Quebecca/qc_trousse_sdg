@@ -1,0 +1,5 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+hr {
+  @include ruler();
+}

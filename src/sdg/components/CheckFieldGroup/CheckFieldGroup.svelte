@@ -20,7 +20,7 @@
             invalid = false;
         }
     });
-    $inspect("cb group svelte ", value, checked)
+
 </script>
 
 <Fieldset

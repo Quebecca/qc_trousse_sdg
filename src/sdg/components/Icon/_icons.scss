@@ -1,0 +1,169 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+qc-icon {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+// TODO retirer une fois toutes les icônes remplacées par Icon dans les composants
+.qc-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--img-width);
+  height: var(--img-height);
+  // TODO questionner une échelle [0 - 10 ou 100]
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      height: rem($size);
+      width: rem($size);
+    }
+  }
+  background-color: var(--img-color);
+  @each $name, $url in $images {
+    &[data-img-type=#{$name}] {
+      mask: getImageUrl($name) no-repeat;
+      mask-size: 100% 100%;
+    }
+  }
+
+  &.qc-icon-sm {
+    min-width: 12px;
+    height: 12px;
+  }
+
+  &.qc-icon-md {
+    min-width: 20px;
+    height: 20px;
+  }
+
+  &.qc-icon-lg {
+    min-width: 40px;
+    height: 40px;
+  }
+
+  &.qc-external-link {
+    background-image: getImageUrl(external-link);
+  }
+
+  &.qc-warning {
+    background-image: getImageUrl(warning);
+  }
+
+  &.qc-arrow-up-white {
+    background-image: getImageUrl(arrow-up-white);
+  }
+
+
+  &.qc-clipboard {
+    background-image: getImageUrl(clipboard);
+  }
+
+  &.qc-error {
+    background-image: getImageUrl(error);
+  }
+
+  &.qc-error-white {
+    background-image: getImageUrl(error-white);
+  }
+
+  &.qc-information {
+    background-image: getImageUrl(information);
+  }
+
+  &.qc-information-white {
+    background-image: getImageUrl(information-white);
+  }
+
+  &.qc-minus {
+    background-image: getImageUrl(minus);
+  }
+
+  &.qc-plus {
+    background-image: getImageUrl(plus);
+  }
+
+  &.qc-question-mark {
+    background-image: getImageUrl(question-mark);
+  }
+
+  &.qc-success {
+    background-image: getImageUrl(success);
+  }
+  &.qc-success-white {
+    background-image: getImageUrl(success-white);
+  }
+
+  &.qc-xclose-white {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background-image: getImageUrl(xclose-white);
+  }
+  &.qc-xclose-blue {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    background-image: getImageUrl(xclose-blue);
+  }
+
+  &.qc-chevron-blue,
+  &.qc-chevron-white {
+    width: 16px;
+    min-width: 16px;
+    height: 10px;
+  }
+
+  &.qc-chevron-blue {
+    background-image: getImageUrl(chevron-blue);
+  }
+
+  &.qc-chevron-white {
+    background-image: getImageUrl(chevron-white);
+  }
+
+  &.qc-facebook {
+    background-image: getImageUrl(facebook);
+  }
+
+  &.qc-linkedin {
+    background-image: getImageUrl(linkedin);
+    height: 30px;
+  }
+
+  &.qc-twitter {
+    background-image: getImageUrl(twitter);
+  }
+
+  &.qc-youtube {
+    background-image: getImageUrl(youtube);
+  }
+
+  &.qc-warning-alert-icon {
+    background-image: getImageUrl(warning);
+  }
+
+  &.qc-general-alert-icon {
+    background-image: getImageUrl(information);
+  }
+
+  &.qc-search {
+    background-image: getImageUrl(loupe-piv-droite);
+  }
+  &.qc-search-submit {
+    background-image: getImageUrl(loupe-piv-fonce);
+  }
+
+}
+
+.qc-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    @each $size-type, $size in ( sm: 16, md: 20, nm: 24, lg: 32, xl: 40) {
+      &[data-button-size=#{$size-type}] {
+        height: rem($size);
+        width: rem($size);
+      }
+    }
+  }

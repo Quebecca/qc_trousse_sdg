@@ -1,0 +1,64 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+qc-search-input {
+  display: block;
+  width: 100%;
+  // TODO mettre un token
+  max-width: rem(548);
+}
+
+%qc-search-wrapper {
+  @extend %qc-formcontrol-box;
+  display: flex;
+  align-items: stretch;
+  &::before {
+    border: 1px solid token-value(color formfield border);
+  }
+  button {
+    @extend %qc-formcontrol-box;
+    &::before {
+      background: transparent;
+    }
+    width: rem(40);
+    flex-shrink: 0;
+  }
+}
+
+.qc-search-input {
+  @extend %qc-search-wrapper;
+  input[type=search] {
+    display: block;
+    position: relative;
+    color: token-value(color text primary);
+    width: 100%;
+    background: transparent;
+    //height: auto;
+    margin-right: 0;
+    padding: rem(8) rem(0) rem(8) rem(8);
+    border: 0;
+    // clears the ‘X’ from Chrome
+    &::-webkit-search-decoration,
+    &::-webkit-search-cancel-button,
+    &::-webkit-search-results-button,
+    &::-webkit-search-results-decoration {
+      display: none;
+    }
+    &::placeholder {
+      color: token-value(color grey medium);
+      font-weight: normal;
+    }
+    &:focus,&:focus-visible {
+      outline: none;
+    }
+  }
+
+  button {
+    @extend %qc-formcontrol-box;
+    &::before {
+      background: transparent;
+    }
+    cursor: pointer;
+  }
+}
+
+

@@ -16,36 +16,29 @@
         groupValue = $bindable(),
         ...rest
     } = $props();
-
-    let restProps = $state({});
-    onMount(() => {
-        const [inputProps] = Utils.computeFieldsAttributes(["radio"], {}, rest);
-
-        restProps = {...inputProps};
-    });
+    let inputId = $derived(rest.id ?? `${name}_${value}`);
 </script>
 
 <label
-    for={`${name}_${value}`}
-    class={[
+        for={inputId}
+        class={[
         !tiled && "qc-check-row",
         tiled && "qc-selection-button",
     ]}
 >
     <!-- svelte-ignore a11y_role_supports_aria_props_implicit -->
     <input
-        class={compact || tiled ? "qc-compact" : ""}
-        type="radio"
-        id={`${name}_${value}`}
-        {name}
-        {value}
+            class={compact || tiled ? "qc-compact" : ""}
+            type="radio"
+            id={inputId}
+            {name}
+            {value}
+            bind:group={groupValue}
+            aria-required={required}
+            aria-invalid={invalid}
+            {checked}
         {disabled}
-        bind:group={groupValue}
-        aria-required={required}
-        aria-invalid={invalid}
-        {required}
-        {...restProps}
-        {checked}
+        {...rest}
     />
     <span class="qc-check-text">
         <span class="qc-check-label">{label}</span>

@@ -9,7 +9,10 @@
         required: {attribute: 'required', type: 'Boolean'},
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean'},
-        invalidText: {attribute: 'invalid-text', type: 'String'}
+        invalidText: {attribute: 'invalid-text', type: 'String'},
+        tiled: {attribute: 'tiled', type: 'Boolean'},
+        columnCount: {attribute: 'column-count', type: 'String'},
+        inline: {attribute: 'inline', type: 'Boolean'}
     },
 
     extend: (customElementConstructor) => {
@@ -19,6 +22,9 @@
             constructor() {
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
+                this.formFieldElements.forEach((element) => {
+                    element.classList.add('qc-check-row-parent');
+                })
             }
         }
     }
@@ -39,20 +45,26 @@
         invalidText,
         value = $bindable(""),
         checked=$bindable(false),
+        tiled,
+        columnCount,
+        inline
     } = $props();
 
 </script>
 
 <CheckFieldGroup
-    {name}
-    {legend}
-    {compact}
-    {formFieldElements}
-    {required}
-    {disabled}
-    bind:invalid
-    {invalidText}
-    bind:value
-    bind:checked
+        {name}
+        {legend}
+        {compact}
+        {formFieldElements}
+        {required}
+        {disabled}
+        bind:invalid
+        {invalidText}
+        bind:value
+        bind:checked
+        {tiled}
+        {columnCount}
+        {inline}
 />
 

@@ -28,10 +28,11 @@
 
 <script>
     import Checkbox from "./Checkbox.svelte";
+    import {Utils} from '../utils.js';
 
     let {
         parentGroup,
-        value,
+        value, 
         label,
         description,
         name,
@@ -45,27 +46,27 @@
         ...rest
     } = $props();
 
-    let effectiveValue = $derived(value || label);
-    let effectiveName = $derived(parentGroup?.getAttribute('name') || name || '');
+
     if (parentGroup) {
         compact = parentGroup.compact
         invalid = parentGroup.invalid
+        name = parentGroup.name
     }
 
 </script>
 
 <Checkbox
-    bind:value={effectiveValue}
-    {label}
+    {value}
+    label={label ?? value}
+    {name}
     {description}
-    name={effectiveName}
-    disabled={disabled ?? parentGroup?.disabled}
+    disabled={parentGroup?.disabled ?? disabled}
     bind:checked
     required={parentGroup?.required ?? required}
-    {compact}
     tiled={parentGroup?.tiled ?? tiled}
+    {compact}
     bind:invalid
     {invalidText}
     {parentGroup}
-    {...rest}
+    {...Utils.computeFieldsAttributes("checkbox", rest)}
 ></Checkbox>
