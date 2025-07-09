@@ -79,4 +79,21 @@ export class Utils {
         return output;
     }
 
+    /**
+     * Checks if the current node or one of its children is currently in focus
+     * @param node The element's node to check
+     * @returns {boolean} If the current node or one of its children is currently in focus
+     */
+    static componentIsActive(node) {
+        return node.contains(document.activeElement);
+    }
+
+    /**
+     * Waits for a specified amount of time
+     * @param ms The amount of time to wait
+     * @returns {Promise<unknown>} The resolution of the sleep action
+     */
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
