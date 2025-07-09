@@ -10237,7 +10237,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root = add_locations(template(`<div><input> <label><!></label></div>`), RadioButton[FILENAME], [[20, 0, [[22, 4], [34, 4]]]]);
+	var root = add_locations(template(`<div><input> <!></div>`), RadioButton[FILENAME], [[21, 0, [[23, 4]]]]);
 
 	function RadioButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10278,11 +10278,24 @@
 		remove_input_defaults(input);
 
 		let attributes;
-		var label_1 = sibling(input, 2);
-		var node = child(label_1);
+		var node = sibling(input, 2);
+		const expression = user_derived(() => `${name()}_${value()}`);
 
-		html(node, label);
-		reset(label_1);
+		Label(node, {
+			get forId() {
+				return get(expression);
+			},
+			get text() {
+				return label();
+			},
+			get compact() {
+				return compact();
+			},
+			get disabled() {
+				return disabled();
+			}
+		});
+
 		reset(div);
 
 		template_effect(() => {
@@ -10299,8 +10312,6 @@
 				disabled: disabled(),
 				...rest
 			});
-
-			set_attribute(label_1, 'for', `${name()}_${value()}`);
 		});
 
 		bind_group(

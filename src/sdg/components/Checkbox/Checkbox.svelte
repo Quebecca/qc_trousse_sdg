@@ -49,11 +49,11 @@
             onchange={() => { if (checked) invalid = false}}
         />
         <Label
-                forId={id}
-                text={label}
-                required={!parentGroup && required}
-                compact={compact}
-                disabled={disabled}
+            forId={id}
+            text={label}
+            required={!parentGroup && required}
+            compact={compact}
+            disabled={disabled}
         />
     </div>
     {#if !parentGroup}
