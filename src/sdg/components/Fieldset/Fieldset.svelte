@@ -27,7 +27,7 @@
             invalid && "qc-fieldset-invalid",
             "qc-fieldset",
             compact && "qc-compact",
-            disabled && "qc-fieldset-disabled"]}
+            disabled && "qc-disabled"]}
           aria-describedby={legendId}
           onchange={updateValue}
     >
@@ -36,7 +36,7 @@
     >
         {@html legend}
         {#if required}
-            <span class="qc-fieldset-required" aria-hidden="true">*</span>
+            <span class="qc-required" aria-hidden="true">*</span>
         {/if}
     </legend>
     {@render children?.()}

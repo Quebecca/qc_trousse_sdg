@@ -1,0 +1,13 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+.qc-required {
+  @include content-font(md, bold);
+  color: token-value(color, red, regular);
+}
+
+// Utiliser `.qc-disabled` pour les composants personnalisés (Label, Fieldset, etc.)
+// Les styles natifs (input:disabled + label) sont gérés dans src/sdg/components/CheckFieldGroup/_checkRow.scss
+.qc-disabled {
+  color: token-value(color, grey, regular);
+  cursor: not-allowed;
+}
