@@ -9,15 +9,15 @@
 </script>
 
 <label
-        for={forId}
-        class={[
-    "qc-label",
-    compact && "qc-label-compact",
-    disabled && "qc-label-disabled"
+    for={forId}
+    class={[
+        "qc-label",
+        compact && "qc-label-compact",
+        disabled && "qc-disabled"
   ]}
 >
     {@html text}
     {#if required}
-        <span class="qc-label-required" aria-hidden="true">*</span>
+        <span class="qc-required" aria-hidden="true">*</span>
     {/if}
 </label>

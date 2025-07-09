@@ -20,16 +20,6 @@
     }
   }
 }
-.qc-fieldset-disabled {
-  legend {
-    color: token-value(color, grey, regular);
-  }
-}
-
-.qc-fieldset-required {
-  @include content-font(md, bold);
-  color: token-value(color, red, regular);
-}
 
 $invalid-offset: token-value(spacer, xs);
 $invalid-border-width: 2px;

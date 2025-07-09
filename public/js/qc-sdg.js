@@ -9021,7 +9021,7 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$2 = add_locations(template(`<span class="qc-fieldset-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
+	var root_1$2 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[39, 12]]);
 	var root$2 = add_locations(template(`<fieldset><legend><!> <!></legend> <!> <!></fieldset>`), Fieldset[FILENAME], [[26, 0, [[34, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
@@ -9102,7 +9102,7 @@
 			invalid() && "qc-fieldset-invalid",
 			"qc-fieldset",
 			compact() && "qc-compact",
-			disabled() && "qc-fieldset-disabled"
+			disabled() && "qc-disabled"
 		])));
 
 		append($$anchor, fieldset);
@@ -9506,7 +9506,7 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-label-required" aria-hidden="true">*</span>`), Label[FILENAME], [[21, 8]]);
+	var root_1$1 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[21, 8]]);
 	var root$1 = add_locations(template(`<label><!> <!></label>`), Label[FILENAME], [[11, 0]]);
 
 	function Label($$anchor, $$props) {
@@ -9546,7 +9546,7 @@
 			set_class(label, 1, clsx([
 				"qc-label",
 				compact() && "qc-label-compact",
-				disabled() && "qc-label-disabled"
+				disabled() && "qc-disabled"
 			]));
 		});
 

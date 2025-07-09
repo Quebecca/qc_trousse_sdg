@@ -1,0 +1,11 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+.qc-required {
+  @include content-font(md, bold);
+  color: token-value(color, red, regular);
+}
+
+.qc-disabled {
+  color: token-value(color, grey, regular);
+  cursor: not-allowed;
+}
