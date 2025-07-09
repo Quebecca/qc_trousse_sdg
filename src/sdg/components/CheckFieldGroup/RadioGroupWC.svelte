@@ -31,7 +31,6 @@
 }}" />
 
 <script>
-    // import RadioGroup from "./RadioGroup.svelte";
     import CheckFieldGroup from "./CheckFieldGroup.svelte";
 
     let {

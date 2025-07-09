@@ -4,6 +4,7 @@
     props: {
         name: {attribute: 'name', type: 'String'},
         value: {attribute: 'value', type: 'String'},
+        legend: {attribute:'legend', type: 'String'},
         compact: { attribute: 'compact', type: 'Boolean' },
         required: { attribute: 'required', type: 'Boolean' },
         disabled: {attribute: 'disabled', type: 'Boolean'},

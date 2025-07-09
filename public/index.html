@@ -61,6 +61,7 @@
     <li><a href="#toTop">Haut de page</a></li>
     <li><a href="#radio-button">Boutons radio</a></li>
     <li><a href="#checkbox">Cases à cocher</a></li>
+    <li><a href="#selection-button">Boutons de sélection</a></li>
 
   </ul>
 </nav>
@@ -1410,9 +1411,10 @@
 
     <!-- Boutons radio -->
     <h2 id="radio-button">Boutons radio</h2>
+<p>Les boutons radio sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.</p>
 <h3>Exemples</h3>
 
-<qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
+<qc-doc-exemple caption="Exemple de boutons radio avec différents états">
   <qc-radio-group id="exemple-radio-md"
                   legend="Choisissez une option :"
                   name="ex-md"
@@ -1437,28 +1439,30 @@
     const group = document.getElementById("exemple-radio-md");
 
     group.addEventListener("change", () => {
-      const checkedValue = group.querySelector("input:checked").value;
+      console.log(group.querySelector("input:checked").value);
     });
   </script>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de boutons radio au format compact">
-    <qc-radio-group legend="Choisissez une option :"
-                    name="ex-sm"
-                    compact >
-        <qc-radio-button
-                label="Option 1"
-                value="1"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 3"
-                value="3"
-        ></qc-radio-button>
-    </qc-radio-group>
+  <qc-radio-group legend="Choisissez une option :"
+                  name="ex-sm"
+                  compact >
+    <qc-radio-button
+            label="Option 1"
+            value="1"
+            checked
+    ></qc-radio-button>
+    <qc-radio-button
+            label="Option 2"
+            value="2"
+    ></qc-radio-button>
+    <qc-radio-button
+            label="Option 3 (désactivée)"
+            value="3"
+            disabled
+    ></qc-radio-button>
+  </qc-radio-group>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
@@ -1511,7 +1515,7 @@
     document
             .getElementById("radio-form")
             .addEventListener("submit", (e) => {
-              event.preventDefault();
+              e.preventDefault();
               let doSubmit = true;
               e.target.querySelectorAll("[required]").forEach(group => {
                 if (!group.checked) {
@@ -1522,7 +1526,7 @@
               if(doSubmit) {
                 alert(
                         "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("qc-radio-group"))
+                        + Array.from(e.target.querySelectorAll("qc-radio-group"))
                                 .map(group => `Valeur pour ${group.name} : ${group.value  ? group.value : "vide"}`)
                                 .join("\n")
 
@@ -1532,164 +1536,132 @@
   </script>
 </qc-doc-exemple>
 
-<h4 id="radio-button-attributes">Documentation technique</h4>
+<h4>Documentation technique</h4>
 
 <h5>Attributs de qc-radio-group</h5>
 
-            <div class="table-overflow">
-                <table class="qc-table qc-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Valeur attendue</th>
-                        <th>Valeur par défaut</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>name</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Nom de l’ensemble des boutons radios du groupe</td>
-                    </tr>
-                    <tr>
-                        <td>value</td>
-                        <td></td>
-                        <td></td>
-                        <td>Variable contenant la valeur sélectionnée du groupe</td>
-                    </tr>
-                    <tr>
-                        <td>legend</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Libellé du groupe</td>
-                    </tr>
-                    <tr>
-                        <td>compact</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Affiche les boutons radios au format compact</td>
-                    </tr>
-                    <tr>
-                        <td>required</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-                    </tr>
-                    <tr>
-                        <td>disabled</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Désactive le groupe</td>
-                    </tr>
-                    <tr>
-                        <td>invalid</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>
-                            Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
-                            (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de formulaire avec des boutons radio ».)
-                            <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>invalid-text</td>
-                        <td>Texte</td>
-                        <td>Champ obligatoire/Required field</td>
-                        <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
-                    </tr>
-                    <tr>
-                        <td>tiled</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Affiche les boutons radio au format de <a href="#selection-button">boutons de sélection</a></td>
-                    </tr>
-                    <tr>
-                        <td>inline</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Si les boutons radio sont `tiled`, affiche ceux-ci sur une rangée.</td>
-                    </tr>
-                    <tr>
-                        <td>column-count</td>
-                        <td>Nombre</td>
-                        <td>1</td>
-                        <td>
-                            Nombre de colonnes de chaque rangée de <a href="#selection-button">boutons de sélection</a> dans la grille du groupe
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td></td>
+      <td>Nom de l’ensemble des boutons radios du groupe</td>
+    </tr>
+    <tr>
+      <td>legend</td>
+      <td>Texte</td>
+      <td></td>
+      <td>Libellé du groupe</td>
+    </tr>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les boutons radios au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Désactive le groupe</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
+        (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de formulaire avec des boutons radio ».)
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>Champ obligatoire/Required field</td>
+      <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
 <h5>Attributs de qc-radio-button</h5>
 
-<p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
+<p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
 
-            <div class="table-overflow">
-                <table class="qc-table qc-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Valeur attendue</th>
-                        <th>Valeur par défaut</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>value</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Valeur associée au bouton radio</td>
-                    </tr>
-                    <tr>
-                        <td>label</td>
-                        <td>Texte</td>
-                        <td></td>
-                        <td>Libellé du bouton radio</td>
-                    </tr>
-                    <tr>
-                        <td>description</td>
-                        <td>Contenu HTML</td>
-                        <td></td>
-                        <td>Description qui accompagne l'étiquette pour ajouter des précisions</td>
-                    </tr>
-                    <tr>
-                        <td>checked</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>
-                            Indique que le bouton est sélectionné par défaut.
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>disabled</td>
-                        <td>na</td>
-                        <td>na</td>
-                        <td>Désactive le bouton radio</td>
-                    </tr>
-                    <tr>
-                        <td>radio-*</td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
-                            comme attribut au bouton radio.
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>value</td>
+      <td>Texte</td>
+      <td></td>
+      <td>Valeur associée au bouton radio</td>
+    </tr>
+    <tr>
+      <td>label</td>
+      <td>Texte</td>
+      <td></td>
+      <td>Libellé du bouton radio</td>
+    </tr>
+    <tr>
+      <td>checked</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Indique que le bouton est sélectionné par défaut.
+      </td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Désactive le bouton radio</td>
+    </tr>
+    <tr>
+      <td>radio-*</td>
+      <td></td>
+      <td></td>
+      <td>
+        Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
+        comme attribut au bouton radio brut.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+    <!-- Cases à cocher -->
+    <h2 id="checkbox">Cases à cocher</h2>
 
-            <h2 id="checkbox">Cases à cocher</h2>
-
-            <p>
-                Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple.
-                Il peut être utilisé seul ou en groupe.
-                Ce composant est aussi disponible au format de <a href="#selection-button">boutons de sélection</a>.
-            </p>
+<p>
+  Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.
+  <br/> Les cases à cocher sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+</p>
 
 <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
   <form id="exemple-tos-form">
@@ -1714,10 +1686,10 @@
       event.preventDefault();
       if(termsAcceptance.checked) {
         const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantees :"];
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
         for (const [key, value] of formData.entries()) {
           alertParts.push(`${key} : ${value}`);
-        };
+        }
         alert(alertParts.join("\n"));
       } else {
         termsAcceptance.invalid = true;
@@ -1817,277 +1789,277 @@
   </script>
 </qc-doc-exemple>
 
-            <h3 id="checkbox-attributes">Documentation technique</h3>
 
-            <h4>Attributs de qc-checkbox</h4>
-            <div class="table-overflow">
-                <table class="qc-table qc-striped component-attributes-description">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Valeur attendue</th>
-                            <th>Valeur par défaut</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>name</td>
-                            <td>Texte</td>
-                            <td>""</td>
-                            <td>Nom du champ de formulaire</td>
-                        </tr>
-                        <tr>
-                            <td>label</td>
-                            <td>Texte</td>
-                            <td>""</td>
-                            <td>Libellé de la case à cocher</td>
-                        </tr>
-                        <tr>
-                            <td>description</td>
-                            <td>Contenu HTML</td>
-                            <td></td>
-                            <td>Description qui accompagne l'étiquette pour ajouter des précisions</td>
-                        </tr>
-                        <tr>
-                            <td>value</td>
-                            <td>Texte</td>
-                            <td>Valeur de l’attribut label</td>
-                            <td>Valeur du champ</td>
-                        </tr>
-                        <tr>
-                            <td>compact</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Affiche les boutons radios au format compact</td>
-                        </tr>
-                        <tr>
-                            <td>tiled</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>
-                                Affiche les cases à cocher au format de bouton de sélection. Valeur héritée du
-                                <code class="qc-bg-color-grey-pale">qc-checkbox-group</code> parent si présent.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>required</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-                        </tr>
-                        <tr>
-                            <td>disabled</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Désactive le groupe</td>
-                        </tr>
-                        <tr>
-                            <td>invalid</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>
-                                Indique si le groupe est dans un état invalide
-                                (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
-                                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>invalid-text</td>
-                            <td>Texte</td>
-                            <td>"Champ obligatoire" ou "Required field"</td>
-                            <td>Message d’erreur à afficher lorsque la case est invalide</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<h3>Documentation technique</h3>
+
+<h4>Attributs de qc-checkbox</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom du champ de formulaire</td>
+    </tr>
+    <tr>
+      <td>label</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Libellé de la case à cocher</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>Texte</td>
+      <td>Valeur de l’attribut label</td>
+      <td>Valeur du champ</td>
+    </tr>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les boutons radios au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Désactive le groupe</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Indique si le groupe est dans un état invalide
+        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d’erreur à afficher lorsque la case est invalide</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
 
-            <h4>Attributs de qc-checkbox-group</h4>
-            <div class="table-overflow">
-                <table class="qc-table qc-striped component-attributes-description">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Valeur attendue</th>
-                            <th>Valeur par défaut</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>legend</td>
-                            <td>Texte</td>
-                            <td>""</td>
-                            <td>Légende du groupe de cases à cocher</td>
-                        </tr>
-                        <tr>
-                            <td>name</td>
-                            <td>Texte</td>
-                            <td>""</td>
-                            <td>Nom commun pour toutes les cases à cocher du groupe</td>
-                        </tr>
-                        <tr>
-                            <td>value</td>
-                            <td></td>
-                            <td></td>
-                            <td>Variable contenant les valeurs sélectionnées du groupe</td>
-                        </tr>
-                        <tr>
-                            <td>compact</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Affiche les boutons radios au format compact</td>
-                        </tr>
-                        <tr>
-                            <td>required</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-                        </tr>
-                        <tr>
-                            <td>disabled</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Désactive le groupe</td>
-                        </tr>
-                        <tr>
-                            <td>invalid</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>
-                                Indique si le groupe est dans un état invalide
-                                (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
-                                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>invalid-text</td>
-                            <td>Texte</td>
-                            <td>"Champ obligatoire" ou "Required field"</td>
-                            <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
-                        </tr>
-                        <tr>
-                            <td>tiled</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Affiche les cases à cocher en boutons de sélection</td>
-                        </tr>
-                        <tr>
-                            <td>inline</td>
-                            <td>na</td>
-                            <td>na</td>
-                            <td>Si les cases à cocher sont `tiled`, affiche celles-ci sur une rangée.</td>
-                        </tr>
-                        <tr>
-                            <td>column-count</td>
-                            <td>Nombre</td>
-                            <td>1</td>
-                            <td>
-                                Nombre de colonnes de chaque rangée de boutons de sélection dans la grille du groupe
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>checkbox-*</td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-                                comme attribut à la case à cocher.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<h4>Attributs de qc-checkbox-group</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>legend</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Légende du groupe de cases à cocher</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom commun pour toutes les cases à cocher du groupe</td>
+    </tr>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les boutons radios au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Désactive le groupe</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Indique si le groupe est dans un état invalide
+        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+    </tr>
+    <tr>
+      <td>checkbox-*</td>
+      <td></td>
+      <td></td>
+      <td>
+        Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
+        comme attribut à la case à cocher.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
-            <!-- Boutons de sélection -->
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-            <h2 id="selection-button">Boutons de sélection</h2>
-            <h3>Exemples</h3>
+    <!-- Boutons de sélection -->
+    <h2 id="selection-button">Boutons de sélection</h2>
+<h3>Exemples</h3>
 
-            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
-                <qc-radio-group legend="Choisissez une option :"
-                                name="ex-radio-select"
-                                tiled
-                                column-count="2"
-                >
-                    <qc-radio-button
-                            label="Option 1"
-                            value="1"
-                            checked
-                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="Option 3 (désactivée)"
-                            value="3"
-                            disabled
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
+<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+    <qc-radio-group legend="Choisissez une option :"
+                    name="ex-radio-select"
+                    tiled
+                    column-count="2"
+    >
+        <qc-radio-button
+                label="Option 1"
+                value="1"
+                checked
+                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+        ></qc-radio-button>
+        <qc-radio-button
+                label="Option 2"
+                value="2"
+        ></qc-radio-button>
+        <qc-radio-button
+                label="Option 3 (désactivée)"
+                value="3"
+                disabled
+        ></qc-radio-button>
+    </qc-radio-group>
+</qc-doc-exemple>
 
-            <qc-doc-exemple
-                    caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
-            >
-                <qc-checkbox-group
-                        name="exemple-checkbox-select"
-                        legend="Sélectionnez vos options"
-                        tiled
-                        column-count="2">
-                    <qc-checkbox
-                            label="Option 1"
-                            description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                    ></qc-checkbox>
-                    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-                    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
-                </qc-checkbox-group>
-            </qc-doc-exemple>
+<qc-doc-exemple
+        caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
+>
+    <qc-checkbox-group
+            name="exemple-checkbox-select"
+            legend="Sélectionnez vos options"
+            tiled
+            column-count="2">
+        <qc-checkbox
+                label="Option 1"
+                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+        ></qc-checkbox>
+        <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
+        <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
+    </qc-checkbox-group>
+</qc-doc-exemple>
 
-            <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
-                <qc-radio-group legend="Choisissez une option :"
-                                name="ex-radio-select-inline"
-                                tiled
-                                inline
-                >
-                    <qc-radio-button
-                            label="1"
-                            value="1"
-                            checked
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="2"
-                            value="2"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="3"
-                            value="3"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="4"
-                            value="4"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="5"
-                            value="5"
-                    ></qc-radio-button>
-                    <qc-radio-button
-                            label="6"
-                            value="6"
-                    ></qc-radio-button>
-                </qc-radio-group>
-            </qc-doc-exemple>
+<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
+    <qc-radio-group legend="Choisissez une option :"
+                    name="ex-radio-select-inline"
+                    tiled
+                    inline
+    >
+        <qc-radio-button
+                label="1"
+                value="1"
+                checked
+        ></qc-radio-button>
+        <qc-radio-button
+                label="2"
+                value="2"
+        ></qc-radio-button>
+        <qc-radio-button
+                label="3"
+                value="3"
+        ></qc-radio-button>
+        <qc-radio-button
+                label="4"
+                value="4"
+        ></qc-radio-button>
+        <qc-radio-button
+                label="5"
+                value="5"
+        ></qc-radio-button>
+        <qc-radio-button
+                label="6"
+                value="6"
+        ></qc-radio-button>
+    </qc-radio-group>
+</qc-doc-exemple>
 
-            <h3>Documentation technique</h3>
-            <p>Voir les attributs des <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.</p>
+<h3 id="selection-button-attributes">Documentation technique</h3>
+<p>Ces attributs sont appliqués à <code>qc-radio-group</code> et <code>qc-checkbox-group</code></p>
+<div class="table-overflow">
+    <table class="qc-table qc-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>tiled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche les boutons radio au format de boutons de sélection dans une grille</td>
+        </tr>
+        <tr>
+            <td>column-count</td>
+            <td>Nombre</td>
+            <td>1</td>
+            <td>Nombre de colonnes de la grille de boutons de sélection</td>
+        </tr>
+        <tr>
+            <td>inline</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche les boutons de sélection sur une rangée</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
-        </div>
-    </main>
-    <footer>
-        <qc-piv-footer></qc-piv-footer>
-    </footer>
-    <script src='js/qc-doc-exemple.js'></script>
-    </body>
-    </html>
+<p>
+    Pour les attributs spécifiques à chaque variante de boutons de sélection, voir les attributs des
+    <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.
+</p>
+
+
+
+  </div>
+</main>
+<footer>
+  <qc-piv-footer></qc-piv-footer>
+</footer>
+<script src='js/qc-doc-exemple.js'></script>
+</body>
+</html>

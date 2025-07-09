@@ -3,29 +3,25 @@
 
 input[type=radio] {
   border-radius: 100%;
-  .qc-check-row &,
-  .qc-selection-button & {
 
-    &::before {
-      width: rem(14);
-      height: rem(14);
-      border-radius: 100%;
-      background-color: token-value(color, blue, regular);
-    }
-
-    &:checked::before {
-      opacity: 1;
-    }
+  &::before {
+    border-radius: 100%;
+    background-color: token-value(color, blue, regular);
   }
 
-  .qc-compact,
-  .qc-selection-button & {
+  &:checked {
     &::before {
+      opacity: 1;
+    }
+
+    &:not(.qc-compact)::before {
+      width: rem(14);
+      height: rem(14);
+    }
+
+    &.qc-compact::before {
       width: rem(10);
       height: rem(10);
     }
   }
 }
-
-
-

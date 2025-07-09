@@ -60,7 +60,7 @@
     label={label ?? value}
     {name}
     {description}
-    disabled={parentGroup?.disabled ?? disabled}
+    disabled={disabled ?? parentGroup?.disabled}
     bind:checked
     required={parentGroup?.required ?? required}
     tiled={parentGroup?.tiled ?? tiled}
