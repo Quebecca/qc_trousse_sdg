@@ -23,8 +23,8 @@
     } = $props();
 
     const precentRootFontSize = 62.5
-    let value = $state(""),
-        focusIn = $state(false),
+    let instance = $state(),
+        value = $state(""),
         expanded = $state(false),
         usedWidth = $derived.by(() => {
             switch (width) {
@@ -46,20 +46,20 @@
     }
 
     function handleOuterEvent(event) {
-        if ((event.innerEventFromFilter ?? -1) !== id && !focusIn) {
+        if ((event.innerEventFromFilter ?? -1) !== id && !Utils.componentIsActive(instance)) {
             expanded = false;
         }
     }
 
     function handleKeyDown(event) {
-        console.log(event.key, focusIn);
-
-        if (event.key === "Escape" && expanded) {
-            expanded = false;
-        }
-        if (event.key === "Tab" && !focusIn) {
-            expanded = false;
-        }
+        Utils.sleep(5).then(() => {
+            if (event.key === "Escape" && expanded) {
+                expanded = false;
+            }
+            if (event.key === "Tab" && !Utils.componentIsActive(instance)) {
+                expanded = false;
+            }
+        }).catch(console.error);
     }
 </script>
 
@@ -77,9 +77,8 @@
         class="qc-dropdown-list"
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
-        onfocusin={() => focusIn = true}
-        onfocusout={() => focusIn = false}
         tabindex="-1"
+        bind:this={instance}
     >
         <button
                 class="qc-dropdown-button"
