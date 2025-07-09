@@ -24,7 +24,9 @@
 
     const precentRootFontSize = 62.5
     let instance = $state(),
+        button = $state(),
         value = $state(""),
+        placeholderText = $state(""),
         expanded = $state(false),
         usedWidth = $derived.by(() => {
             switch (width) {
@@ -61,6 +63,11 @@
             }
         }).catch(console.error);
     }
+
+    function closeDropdown() {
+        expanded = false;
+        button.focus();
+    }
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
@@ -85,14 +92,13 @@
                 onclick={handleDropdownButtonClick}
                 onkeydown={handleKeyDown}
                 aria-expanded={expanded}
+                bind:this={button}
         >
-            <span class="qc-dropdown-placeholder">
                 {#if Utils.isTruthy(value)}
-                    {value}
+                    <span class="qc-dropdown-choice">{placeholderText}</span>
                 {:else}
-                    Choisissez une option
+                    <span class="qc-dropdown-placeholder">Choisissez une option</span>
                 {/if}
-            </span>
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon type="chevron-white" size="sm" />
             </span>
@@ -104,15 +110,16 @@
              tabindex="-1"
         >
             {#if multiple}
-                <DropdownListMultiple {items} {value} handleExit={() => expanded = false} />
+                <DropdownListMultiple {items} {value} handleExit={() => closeDropdown()} />
             {:else}
                 <DropdownListSingle
                         {items}
-                        passValue={(v) => {
+                        passValue={(l, v) => {
+                            placeholderText = l;
                             value = v;
                             expanded = false;
                         }}
-                        handleExit={() => expanded = false}
+                        handleExit={() => closeDropdown()}
                 />
             {/if}
         </div>
