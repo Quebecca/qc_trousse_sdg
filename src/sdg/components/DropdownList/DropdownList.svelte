@@ -110,7 +110,14 @@
              tabindex="-1"
         >
             {#if multiple}
-                <DropdownListMultiple {items} {value} handleExit={() => closeDropdown()} />
+                <DropdownListMultiple
+                        {items}
+                        passValue={(l, v) => {
+                            placeholderText = l;
+                            value = v;
+                        }}
+                        handleExit={() => closeDropdown()}
+                />
             {:else}
                 <DropdownListSingle
                         {items}
