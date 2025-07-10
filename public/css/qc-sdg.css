@@ -1870,7 +1870,7 @@ qc-search-input {
 
 .qc-search-bar, .qc-search-input {
   display: flex;
-  align-items: stretch;
+  align-items: center;
 }
 .qc-search-bar::before, .qc-search-input::before {
   border: 1px solid var(--qc-color-formfield-border);
@@ -1906,6 +1906,9 @@ qc-search-input {
 }
 .qc-search-input input[type=search]:focus, .qc-search-input input[type=search]:focus-visible {
   outline: none;
+}
+.qc-search-input.qc-search-live-refresh {
+  padding-left: var(--qc-spacer-xs);
 }
 .qc-search-input button {
   cursor: pointer;

@@ -4,6 +4,7 @@
     import Icon from "../Icon/Icon.svelte";
     import DropdownListSingle from "./DropdownListSingle.svelte";
     import {Utils} from "../utils";
+    import SearchInput from "../SearchInput/SearchInput.svelte";
 
     let {
         id = Math.floor(Math.random() * 1000),
@@ -12,7 +13,7 @@
         items,
         noValueMessage = "",
         noOptionsMessage = "Aucune option disponible",
-        enableSearch = true,
+        enableSearch = false,
         comboAriaLabel = "",
         ariaRequired = false,
         invalid = $bindable(""),
@@ -28,6 +29,8 @@
         value = $state(""),
         placeholderText = $state(""),
         expanded = $state(false),
+        searchText = $state(""),
+        displayedItems = $state(items),
         usedWidth = $derived.by(() => {
             switch (width) {
                 case "sm":
@@ -68,6 +71,21 @@
         expanded = false;
         button.focus();
     }
+
+    function filterItems(searchText) {
+        console.log(searchText);
+
+    }
+
+    $effect(() => {
+        if (searchText.length > 0) {
+            displayedItems = items.filter(item => {
+                item.label.toLowerCase().includes(searchText.toLowerCase())
+            });
+        } else {
+            displayedItems = items;
+        }
+    })
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
@@ -109,9 +127,18 @@
             ]}
              tabindex="-1"
         >
+            {#if enableSearch}
+                <SearchInput
+                        value={searchText}
+                        placeholder={searchPlaceholder}
+                        liveRefresh="true"
+                        onchange={(e) => filterItems(e.target.value)}
+                />
+            {/if}
+
             {#if multiple}
                 <DropdownListMultiple
-                        {items}
+                        items={displayedItems}
                         passValue={(l, v) => {
                             placeholderText = l;
                             value = v;
@@ -120,7 +147,7 @@
                 />
             {:else}
                 <DropdownListSingle
-                        {items}
+                        items={displayedItems}
                         passValue={(l, v) => {
                             placeholderText = l;
                             value = v;
