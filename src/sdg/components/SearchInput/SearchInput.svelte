@@ -1,6 +1,7 @@
 <script>
     import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
+    import Icon from "../Icon/Icon.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -9,13 +10,17 @@
         value = $bindable(''),
         ariaLabel = lang === "fr" ? "Rechercher…" : "Search_",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
+        liveRefresh = false,
         ...rest
     } = $props();
 
     let searchInput;
 </script>
 
-<div class="qc-search-input">
+<div class={["qc-search-input", liveRefresh && "qc-search-live-refresh"]}>
+    {#if liveRefresh}
+        <Icon type="loupe-piv-fine" iconColor="grey-regular" size="lg" />
+    {/if}
     <input  bind:this={searchInput}
             bind:value={value}
             type="search"

@@ -10,7 +10,7 @@ qc-search-input {
 %qc-search-wrapper {
   @extend %qc-formcontrol-box;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   &::before {
     border: 1px solid token-value(color formfield border);
   }
@@ -50,6 +50,10 @@ qc-search-input {
     &:focus,&:focus-visible {
       outline: none;
     }
+  }
+
+  &.qc-search-live-refresh {
+    padding-left: token-value(spacer, xs);
   }
 
   button {

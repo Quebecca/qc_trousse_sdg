@@ -288,6 +288,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -442,6 +452,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6706,6 +6818,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -8700,7 +8843,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$4 = add_locations(template(`<div class="qc-search-input"><input> <!></div>`), SearchInput[FILENAME], [[18, 0, [[19, 4]]]]);
+	var root$4 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[20, 0, [[24, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8711,6 +8854,7 @@
 		let value = prop($$props, 'value', 15, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher…" : "Search_"),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
+			liveRefresh = prop($$props, 'liveRefresh', 7, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -8720,12 +8864,29 @@
 					'$$host',
 					'value',
 					'ariaLabel',
-					'clearAriaLabel'
+					'clearAriaLabel',
+					'liveRefresh'
 				]);
 
 		let searchInput;
 		var div = root$4();
-		var input = child(div);
+		var node = child(div);
+
+		{
+			var consequent = ($$anchor) => {
+				Icon($$anchor, {
+					type: 'loupe-piv-fine',
+					iconColor: 'grey-regular',
+					size: 'lg'
+				});
+			};
+
+			if_block(node, ($$render) => {
+				if (liveRefresh()) $$render(consequent);
+			});
+		}
+
+		var input = sibling(node, 2);
 
 		remove_input_defaults(input);
 
@@ -8733,10 +8894,10 @@
 
 		bind_this(input, ($$value) => searchInput = $$value, () => searchInput);
 
-		var node = sibling(input, 2);
+		var node_1 = sibling(input, 2);
 
 		{
-			var consequent = ($$anchor) => {
+			var consequent_1 = ($$anchor) => {
 				IconButton($$anchor, {
 					type: 'button',
 					icon: 'clear-input',
@@ -8753,19 +8914,26 @@
 				});
 			};
 
-			if_block(node, ($$render) => {
-				if (value()) $$render(consequent);
+			if_block(node_1, ($$render) => {
+				if (value()) $$render(consequent_1);
 			});
 		}
 
 		reset(div);
 
-		template_effect(() => attributes = set_attributes(input, attributes, {
-			type: 'search',
-			autocomplete: 'off',
-			'aria-label': ariaLabel(),
-			...rest
-		}));
+		template_effect(() => {
+			set_class(div, 1, clsx([
+				"qc-search-input",
+				liveRefresh() && "qc-search-live-refresh"
+			]));
+
+			attributes = set_attributes(input, attributes, {
+				type: 'search',
+				autocomplete: 'off',
+				'aria-label': ariaLabel(),
+				...rest
+			});
+		});
 
 		bind_value(input, value);
 		append($$anchor, div);
@@ -8796,11 +8964,29 @@
 				clearAriaLabel($$value);
 				flushSync();
 			},
+			get liveRefresh() {
+				return liveRefresh();
+			},
+			set liveRefresh($$value = false) {
+				liveRefresh($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(SearchInput, { value: {}, ariaLabel: {}, clearAriaLabel: {} }, [], [], true);
+	create_custom_element(
+		SearchInput,
+		{
+			value: {},
+			ariaLabel: {},
+			clearAriaLabel: {},
+			liveRefresh: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
@@ -11284,16 +11470,16 @@
 		}).catch(console.error);
 	}
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[98, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[100, 20]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[116, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[118, 20]]);
 
-	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!></div></div>`), DropdownList[FILENAME], [
+	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <!></div></div>`), DropdownList[FILENAME], [
 		[
-			83,
+			101,
 			4,
 			[
-				[90, 8, [[102, 12]]],
-				[106, 8]
+				[108, 8, [[120, 12]]],
+				[124, 8]
 			]
 		]
 	]);
@@ -11308,7 +11494,7 @@
 			items = prop($$props, 'items', 7),
 			noValueMessage = prop($$props, 'noValueMessage', 7, ""),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, "Aucune option disponible"),
-			enableSearch = prop($$props, 'enableSearch', 7, true),
+			enableSearch = prop($$props, 'enableSearch', 7, false),
 			comboAriaLabel = prop($$props, 'comboAriaLabel', 7, ""),
 			ariaRequired = prop($$props, 'ariaRequired', 7, false),
 			invalid = prop($$props, 'invalid', 15, ""),
@@ -11344,6 +11530,8 @@
 			value = state(""),
 			placeholderText = state(""),
 			expanded = state(false),
+			searchText = state(""),
+			displayedItems = state(proxy(items())),
 			usedWidth = user_derived(() => {
 				switch (width()) {
 					case "sm":
@@ -11375,6 +11563,24 @@
 			set(expanded, false);
 			get(button).focus();
 		}
+
+		function filterItems(searchText) {
+			console.log(...log_if_contains_state('log', searchText));
+		}
+
+		user_effect(() => {
+			if (get(searchText).length > 0) {
+				set(
+					displayedItems,
+					items().filter((item) => {
+						item.label.toLowerCase().includes(get(searchText).toLowerCase());
+					}),
+					true
+				);
+			} else {
+				set(displayedItems, items(), true);
+			}
+		});
 
 		event('click', $document, handleOuterEvent);
 
@@ -11439,9 +11645,30 @@
 
 					{
 						var consequent_1 = ($$anchor) => {
+							SearchInput($$anchor, {
+								get value() {
+									return get(searchText);
+								},
+								get placeholder() {
+									return searchPlaceholder();
+								},
+								liveRefresh: 'true',
+								onchange: (e) => filterItems(e.target.value)
+							});
+						};
+
+						if_block(node_2, ($$render) => {
+							if (enableSearch()) $$render(consequent_1);
+						});
+					}
+
+					var node_3 = sibling(node_2, 2);
+
+					{
+						var consequent_2 = ($$anchor) => {
 							DropdownListMultiple($$anchor, {
 								get items() {
-									return items();
+									return get(displayedItems);
 								},
 								passValue: (l, v) => {
 									set(placeholderText, l, true);
@@ -11454,7 +11681,7 @@
 						var alternate_1 = ($$anchor) => {
 							DropdownListSingle($$anchor, {
 								get items() {
-									return items();
+									return get(displayedItems);
 								},
 								passValue: (l, v) => {
 									set(placeholderText, l, true);
@@ -11465,8 +11692,8 @@
 							});
 						};
 
-						if_block(node_2, ($$render) => {
-							if (multiple()) $$render(consequent_1); else $$render(alternate_1, false);
+						if_block(node_3, ($$render) => {
+							if (multiple()) $$render(consequent_2); else $$render(alternate_1, false);
 						});
 					}
 
@@ -11543,7 +11770,7 @@
 			get enableSearch() {
 				return enableSearch();
 			},
-			set enableSearch($$value = true) {
+			set enableSearch($$value = false) {
 				enableSearch($$value);
 				flushSync();
 			},
