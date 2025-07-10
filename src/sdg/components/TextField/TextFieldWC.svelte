@@ -20,9 +20,6 @@
 <script>
     import TextField from './TextField.svelte';
 
-    let element = $state(); // supprimer
-
-
     let {
         value = $bindable(''),
         invalid = $bindable(false),
@@ -30,13 +27,9 @@
     } = $props();
 
 </script>
-<!-- et supprimer le div -->
-<div bind:this={element}>
 
-    <TextField
-        bind:value
-        bind:invalid
-        {...rest}
-    />
-
-</div>
+<TextField
+    bind:value
+    bind:invalid
+    {...rest}
+/>
