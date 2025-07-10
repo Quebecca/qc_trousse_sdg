@@ -2205,6 +2205,11 @@ input[type=radio]:checked.qc-compact::before {
   display: inline-grid;
   grid-template-columns: repeat(var(--column-count), 1fr);
 }
+@media (max-width: 767.98px) {
+  .qc-field-elements-tiled {
+    grid-template-columns: 1fr;
+  }
+}
 
 .qc-field-elements-flex {
   display: flex;

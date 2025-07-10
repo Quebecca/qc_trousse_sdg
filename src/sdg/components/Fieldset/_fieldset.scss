@@ -1,4 +1,4 @@
-@use "qc-sdg-lib" as *;
+@use "../../scss/qc-sdg-lib" as *;
 
 .qc-fieldset {
   border: none;
@@ -59,6 +59,10 @@ $invalid-border-width: 2px;
   @extend %tiled-gap;
   display: inline-grid;
   grid-template-columns: repeat(var(--column-count), 1fr);
+
+  @include media-mobile() {
+    grid-template-columns: 1fr;
+  }
 }
 
 .qc-field-elements-flex {
