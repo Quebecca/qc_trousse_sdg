@@ -18,6 +18,7 @@
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
+        handleChange = () => {},
         ...rest
     } = $props();
     
@@ -49,8 +50,13 @@
                 bind:checked
                 aria-required = {required}
                 aria-invalid={invalid}
-                {...rest}
-                onchange={() => { if (checked) invalid = false}}
+                {...Utils.computeFieldsAttributes("checkbox", rest)}
+                onchange={(e) => {
+                    if (checked) {
+                        invalid = false;
+                    }
+                    handleChange(e, value);
+                }}
         />
         <span class="qc-check-text">
             <span class="qc-check-label">{label}</span>

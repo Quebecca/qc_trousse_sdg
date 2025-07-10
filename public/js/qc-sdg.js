@@ -288,16 +288,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -452,108 +442,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6818,37 +6706,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -9793,17 +9650,17 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[57, 16]]);
+	var root_2$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[63, 16]]);
 
 	var root_1$4 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
-			35,
+			36,
 			4,
-			[[41, 8], [54, 8, [[55, 12]]]]
+			[[42, 8], [60, 8, [[61, 12]]]]
 		]
 	]);
 
-	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[70, 4]]);
+	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[76, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9818,8 +9675,12 @@
 
 			remove_input_defaults(input);
 
-			var event_handler = () => {
-				if (checked()) invalid(false);
+			var event_handler = (e) => {
+				if (checked()) {
+					invalid(false);
+				}
+
+				handleChange()(e, value());
 			};
 
 			let attributes;
@@ -9868,29 +9729,34 @@
 				});
 			}
 
-			template_effect(() => {
-				set_class(label_1, 1, clsx([
-					!tiled() && "qc-check-row",
-					tiled() && "qc-selection-button"
-				]));
+			template_effect(
+				($0) => {
+					set_class(label_1, 1, clsx([
+						!tiled() && "qc-check-row",
+						tiled() && "qc-selection-button"
+					]));
 
-				set_attribute(label_1, 'for', get(id));
+					set_attribute(label_1, 'for', get(id));
 
-				attributes = set_attributes(input, attributes, {
-					class: !parentGroup() && compact() || tiled() ? "qc-compact" : "",
-					type: 'checkbox',
-					value: value(),
-					name: name(),
-					id: get(id),
-					disabled: disabled(),
-					'aria-required': required(),
-					'aria-invalid': invalid(),
-					...rest,
-					onchange: event_handler
-				});
+					attributes = set_attributes(input, attributes, {
+						class: !parentGroup() && compact() || tiled() ? "qc-compact" : "",
+						type: 'checkbox',
+						value: value(),
+						name: name(),
+						id: get(id),
+						disabled: disabled(),
+						'aria-required': required(),
+						'aria-invalid': invalid(),
+						...$0,
+						onchange: event_handler
+					});
 
-				set_text(text, label());
-			});
+					set_text(text, label());
+				},
+				[
+					() => Utils.computeFieldsAttributes("checkbox", rest)
+				]
+			);
 
 			bind_checked(input, checked);
 			append($$anchor, fragment);
@@ -9910,6 +9776,7 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
 			parentGroup = prop($$props, 'parentGroup', 7),
+			handleChange = prop($$props, 'handleChange', 7, () => {}),
 			rest = rest_props(
 				$$props,
 				[
@@ -9928,7 +9795,8 @@
 					'description',
 					'invalid',
 					'invalidText',
-					'parentGroup'
+					'parentGroup',
+					'handleChange'
 				]);
 
 		let id = user_derived(() => name() + "_" + value());
@@ -10056,6 +9924,13 @@
 				parentGroup($$value);
 				flushSync();
 			},
+			get handleChange() {
+				return handleChange();
+			},
+			set handleChange($$value = () => {}) {
+				handleChange($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10074,7 +9949,8 @@
 			description: {},
 			invalid: {},
 			invalidText: {},
-			parentGroup: {}
+			parentGroup: {},
+			handleChange: {}
 		},
 		[],
 		[],
@@ -10132,7 +10008,6 @@
 		const expression_1 = user_derived(() => disabled() ?? parentGroup()?.disabled);
 		const expression_2 = user_derived(() => parentGroup()?.required ?? required());
 		const expression_3 = user_derived(() => parentGroup()?.tiled ?? tiled());
-		var spread_element = user_derived(() => Utils.computeFieldsAttributes("checkbox", rest));
 
 		{
 			$$ownership_validator.binding('checked', Checkbox, checked);
@@ -10171,7 +10046,7 @@
 						return parentGroup();
 					}
 				},
-				() => get(spread_element),
+				() => rest,
 				{
 					get checked() {
 						return checked();
@@ -11206,17 +11081,18 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_1$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[41, 4]]);
+	var root_1$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[40, 4]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let items = prop($$props, 'items', 7),
-			value = prop($$props, 'value', 15, ""),
-			handleExit = prop($$props, 'handleExit', 7, () => {});
+			handleExit = prop($$props, 'handleExit', 7, () => {}),
+			passValue = prop($$props, 'passValue', 7, () => {});
 
 		const name = Math.random().toString(36).substring(2, 15);
+		let selectedValues = [], selectedLabels = [];
 
 		function handleKeyDown(event, index) {
 			if (canExit(event, index)) {
@@ -11228,22 +11104,18 @@
 			return strict_equals(event.key, "Escape") || strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
 		}
 
-		function handleChange(event) {
-			console.log(...log_if_contains_state('log', event.target.checked));
-		}
-
-		function pushValue(v) {
-			if (strict_equals(value().indexOf(v), -1)) {
-				value().push(v);
+		function handleChange(event, label, itemValue) {
+			if (event.target.checked) {
+				if (!selectedValues.includes(itemValue)) {
+					selectedValues = [...selectedValues, itemValue];
+					selectedLabels = [...selectedLabels, label];
+				}
+			} else {
+				selectedValues = selectedValues.filter((v) => strict_equals(v, itemValue, false));
+				selectedLabels = selectedLabels.filter((l) => strict_equals(l, label, false));
 			}
-		}
 
-		function removeValue(v) {
-			const valueIndex = value().indexOf(v);
-
-			if (strict_equals(valueIndex, -1, false)) {
-				value().splice(valueIndex, 1);
-			}
+			passValue()(selectedLabels.join(", "), selectedValues.join(", "));
 		}
 
 		var fragment = comment();
@@ -11267,15 +11139,7 @@
 				parentGroup: 'true',
 				'checkbox-onkeydown': (e) => handleKeyDown(e, index),
 				'checkbox-aria-role': 'option',
-				onchange: (e) => {
-					handleChange(e);
-
-					if (e.target.checked) {
-						pushValue(get(item).value);
-					} else {
-						removeValue(get(item).value);
-					}
-				}
+				handleChange: (e) => handleChange(e, get(item).label, get(item).value)
 			});
 
 			reset(div);
@@ -11292,13 +11156,6 @@
 				items($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value = "") {
-				value($$value);
-				flushSync();
-			},
 			get handleExit() {
 				return handleExit();
 			},
@@ -11306,11 +11163,18 @@
 				handleExit($$value);
 				flushSync();
 			},
+			get passValue() {
+				return passValue();
+			},
+			set passValue($$value = () => {}) {
+				passValue($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(DropdownListMultiple, { items: {}, value: {}, handleExit: {} }, [], [], true);
+	create_custom_element(DropdownListMultiple, { items: {}, handleExit: {}, passValue: {} }, [], [], true);
 
 	DropdownListSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListSingle.svelte';
 
@@ -11579,8 +11443,9 @@
 								get items() {
 									return items();
 								},
-								get value() {
-									return get(value);
+								passValue: (l, v) => {
+									set(placeholderText, l, true);
+									set(value, v, true);
 								},
 								handleExit: () => closeDropdown()
 							});
