@@ -2388,6 +2388,13 @@ input[type=checkbox]:checked.qc-compact::after {
   background-color: var(--qc-color-background);
 }
 
+.qc-dropdown-list-search {
+  margin: var(--qc-spacer-sm) var(--qc-spacer-xs);
+}
+.qc-dropdown-list-search * {
+  z-index: 12 !important;
+}
+
 .qc-dropdown-button {
   display: flex;
   width: 100%;

@@ -1,4 +1,4 @@
-@use "qc-sdg-lib" as *;
+@use "../../scss/qc-sdg-lib" as *;
 @use "sass:math";
 
 $min-height: 40;
@@ -11,6 +11,14 @@ $border: 1;
   width: var(--dropdown-width);
   min-height: rem($min-height);
   background-color: token-value(color, background);
+}
+
+.qc-dropdown-list-search {
+  margin: token-value(spacer, sm) token-value(spacer, xs);
+
+  * {
+    z-index: 12 !important;
+  }
 }
 
 .qc-dropdown-button {
