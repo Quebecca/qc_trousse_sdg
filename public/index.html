@@ -1925,11 +1925,8 @@
     </tbody>
   </table>
 </div>
-    <h2 id="textfield">Champ texte</h2>
-<h4>Exemples</h4>
-
-<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
-  <form>
+    <qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
+  <form id="formulaire-champs-textes">
     <qc-textfield
             name="text-sm"
             label="Entrez votre âge"
@@ -1950,6 +1947,7 @@
             placeholder="(123) 456-7890"
             size="md"
     ></qc-textfield>
+
     <qc-textfield
             name="poste"
             label="Poste"
@@ -1962,7 +1960,7 @@
             label="Entrez votre adresse courriel"
             size="xl"
             placeholder="ex : jeantremblay@exemple.com"
-            required="true"
+            required
     ></qc-textfield>
 
     <qc-textfield
@@ -1970,7 +1968,7 @@
             label="Entrez votre adresse"
             size="xxl"
             placeholder="ex : 1234 rue du Moulin"
-            disabled="true"
+            disabled
     ></qc-textfield>
 
     <qc-textfield
@@ -1988,14 +1986,44 @@
             size="xxl"
             display="area"
             max-length="50"
-            required="true"
-            invalid="true"
+            required
             invalid-text="Message d'erreur personnalisé"
     ></qc-textfield>
 
-    <button type="submit" class="btn  btn-sm btn-primary">Envoyer</button>
+    <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
   </form>
 
+  <script>
+    const form = document.getElementById("formulaire-champs-textes");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      let isValid = true;
+
+      const requiredFields = form.querySelectorAll("qc-textfield[required]");
+
+      requiredFields.forEach(field => {
+        const value = field.value?.trim();
+
+        if (!value) {
+          field.invalid = true;
+          isValid = false;
+        } else {
+          field.invalid = false;
+        }
+      });
+
+      if (isValid) {
+        const formData = new FormData(form);
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        for (const [key, val] of formData.entries()) {
+          alertParts.push(`${key} : ${val}`);
+        }
+        alert(alertParts.join("\n"));
+      }
+    });
+  </script>
 </qc-doc-exemple>
 
 
