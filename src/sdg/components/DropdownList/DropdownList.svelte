@@ -43,7 +43,18 @@
                     }
                     return 342;
             }
-    });
+        }),
+        usedHeight = $derived.by(() => {
+            const maxItemsHeight = 330;
+            const searchInputTotalHeight = 56;
+
+            if (enableSearch) {
+                return maxItemsHeight - searchInputTotalHeight;
+            } else {
+                return maxItemsHeight;
+            }
+        })
+    ;
 
     function handleDropdownButtonClick(event) {
         expanded = !expanded
@@ -95,7 +106,8 @@
 >
     <div
         class="qc-dropdown-list"
-        style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;"
+        style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
+               --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
         tabindex="-1"
         bind:this={instance}
@@ -117,8 +129,8 @@
             </span>
         </button>
         <div class={[
-                "qc-dropdown-list-items",
-                !expanded && "qc-dropdown-list-items-hidden"
+                "qc-dropdown-list-expanded",
+                !expanded && "qc-dropdown-list-hidden"
             ]}
              tabindex="-1"
         >
@@ -132,26 +144,30 @@
                 </div>
             {/if}
 
-            {#if multiple}
-                <DropdownListMultiple
-                        items={displayedItems}
-                        passValue={(l, v) => {
-                            placeholderText = l;
-                            value = v;
-                        }}
-                        handleExit={() => closeDropdown()}
-                />
-            {:else}
-                <DropdownListSingle
-                        items={displayedItems}
-                        passValue={(l, v) => {
-                            placeholderText = l;
-                            value = v;
-                            expanded = false;
-                        }}
-                        handleExit={() => closeDropdown()}
-                />
-            {/if}
+            <div class="qc-dropdown-list-items">
+                {#if multiple}
+                    <DropdownListMultiple
+                            items={displayedItems}
+                            {noOptionsMessage}
+                            passValue={(l, v) => {
+                                placeholderText = l;
+                                value = v;
+                            }}
+                            handleExit={() => closeDropdown()}
+                    />
+                {:else}
+                    <DropdownListSingle
+                            items={displayedItems}
+                            {noOptionsMessage}
+                            passValue={(l, v) => {
+                                placeholderText = l;
+                                value = v;
+                                expanded = false;
+                            }}
+                            handleExit={() => closeDropdown()}
+                    />
+                {/if}
+            </div>
         </div>
     </div>
 </Fieldset>
