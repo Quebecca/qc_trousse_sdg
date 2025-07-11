@@ -11,7 +11,7 @@
     required: { attribute: 'required', type: 'Boolean' },
     description: { attribute: 'description', type: 'String' },
     maxlength: { attribute: 'max-length', type: 'Number' },
-    invalid: { attribute: 'invalid', type: 'Boolean' },
+    invalid: { attribute: 'invalid', type: 'Boolean', reflect: true },
     invalidText: { attribute: 'invalid-text', type: 'String' },
     display: { attribute: 'display', type: 'String' }
   }
