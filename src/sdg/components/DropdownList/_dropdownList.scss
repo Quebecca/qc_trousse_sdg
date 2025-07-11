@@ -87,14 +87,26 @@ $border: 1;
   overflow-y: auto;
   overflow-x: hidden;
 
-  scrollbar-color: token-value(color, blue, regular) token-value(color, background);
+  &::-webkit-scrollbar {
+    width: token-value(spacer, xs);
+    margin-left: token-value(spacer, xs);
+    margin-right: token-value(spacer, xs);
+  }
 
   &::-webkit-scrollbar-track {
-    background: token-value(color, background);
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: token-value(color, blue, regular);
+    background: token-value(color, blue, piv);
+    border-radius: rem(4);
+
+    border: none;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: token-value(color, blue, piv) transparent;
+    scrollbar-width: thin;
   }
 
   * {

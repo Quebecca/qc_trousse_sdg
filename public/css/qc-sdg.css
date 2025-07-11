@@ -2475,13 +2475,25 @@ input[type=checkbox]:checked.qc-compact::after {
   max-height: var(--dropdown-items-height);
   overflow-y: auto;
   overflow-x: hidden;
-  scrollbar-color: var(--qc-color-blue-regular) var(--qc-color-background);
+}
+.qc-dropdown-list-items::-webkit-scrollbar {
+  width: var(--qc-spacer-xs);
+  margin-left: var(--qc-spacer-xs);
+  margin-right: var(--qc-spacer-xs);
 }
 .qc-dropdown-list-items::-webkit-scrollbar-track {
-  background: var(--qc-color-background);
+  background: transparent;
 }
 .qc-dropdown-list-items::-webkit-scrollbar-thumb {
-  background-color: var(--qc-color-blue-regular);
+  background: var(--qc-color-blue-piv);
+  border-radius: 0.4rem;
+  border: none;
+}
+@supports not selector(::-webkit-scrollbar) {
+  .qc-dropdown-list-items {
+    scrollbar-color: var(--qc-color-blue-piv) transparent;
+    scrollbar-width: thin;
+  }
 }
 .qc-dropdown-list-items * {
   overflow: hidden;

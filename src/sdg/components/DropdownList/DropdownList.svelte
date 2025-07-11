@@ -144,7 +144,7 @@
                 </div>
             {/if}
 
-            <div class="qc-dropdown-list-items">
+            <div class="qc-dropdown-list-items" tabindex="-1">
                 {#if multiple}
                     <DropdownListMultiple
                             items={displayedItems}
