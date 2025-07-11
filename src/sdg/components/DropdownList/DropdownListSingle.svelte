@@ -8,6 +8,11 @@
 
     let predecessor = $state();
     let selectedValue = $state();
+    let mouseDownElement = $state(null);
+
+    // $effect(() => {
+    //     $inspect(mouseDownElement);
+    // });
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
     function handleEvent(thisElement, label, value) {
@@ -20,6 +25,21 @@
 
         selectedValue = value;
         passValue(label, value);
+    }
+
+    function handleMouseUp(event, label, value) {
+        console.log(mouseDownElement);
+        console.log(event.target);
+        console.log(event.target === mouseDownElement);
+        if (event.target === mouseDownElement) {
+            handleEvent(event.target, label, value);
+        }
+        mouseDownElement = null;
+
+    }
+
+    function handleMouseDown(event) {
+        mouseDownElement = event.target;
     }
 
     function handleKeyDown (event, label, value, index) {
@@ -40,11 +60,13 @@
 {#if items.length > 0}
     {#each items as item, index}
         <div
+                id={Math.random().toString(36).substring(2, 15)}
                 class="qc-dropdown-list-single"
                 tabindex="0"
                 role="option"
                 aria-selected={selectedValue === item.value ? "true" : "false"}
-                onclick={(event) => handleEvent(event.target, item.label, item.value)}
+                onmousedown={(event) => handleMouseDown(event)}
+                onmouseup={(event) => handleMouseUp(event, item.label, item.value)}
                 onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
         >
             {item.label}
