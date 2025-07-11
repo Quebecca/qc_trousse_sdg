@@ -11414,7 +11414,7 @@
 	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[125, 20]]);
 	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[138, 16]]);
 
-	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items"><!></div></div></div>`), DropdownList[FILENAME], [
+	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div>`), DropdownList[FILENAME], [
 		[
 			107,
 			4,
