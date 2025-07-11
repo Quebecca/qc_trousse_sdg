@@ -137,6 +137,7 @@
             {#if enableSearch}
                 <div class="qc-dropdown-list-search">
                     <SearchInput
+                            id="{id}-search"
                             bind:value={searchText}
                             placeholder={searchPlaceholder}
                             liveRefresh="true"

@@ -288,6 +288,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -442,6 +452,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6706,6 +6818,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -7146,7 +7289,7 @@
 	var root_1$6 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 	var root_2$6 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
-	var on_click$2 = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 
@@ -7304,7 +7447,7 @@
 				var a_3 = root_3$3();
 
 				a_3.__click = [
-					on_click$2,
+					on_click$1,
 					displaySearchForm,
 					focusOnSearchInput
 				];
@@ -8454,7 +8597,7 @@
 		}
 	}
 
-	var on_click$1 = (e, scrollToTop) => scrollToTop(e);
+	var on_click = (e, scrollToTop) => scrollToTop(e);
 	var root$6 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
@@ -8505,7 +8648,7 @@
 
 		let classes;
 
-		a.__click = [on_click$1, scrollToTop];
+		a.__click = [on_click, scrollToTop];
 		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
@@ -11261,9 +11404,10 @@
 
 	DropdownListSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListSingle.svelte';
 
-	var on_click = (event, handleEvent, item) => handleEvent(event.target, get(item).label, get(item).value);
-	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-single" tabindex="0" role="option"> </div>`), DropdownListSingle[FILENAME], [[42, 8]]);
-	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[54, 4]]);
+	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
+	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
+	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-single" tabindex="0" role="option"> </div>`), DropdownListSingle[FILENAME], [[62, 8]]);
+	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[76, 4]]);
 
 	function DropdownListSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11276,6 +11420,10 @@
 
 		let predecessor = state(void 0);
 		let selectedValue = state(void 0);
+		let mouseDownElement = state(null);
+		// $effect(() => {
+		//     $inspect(mouseDownElement);
+		// });
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		function handleEvent(thisElement, label, value) {
@@ -11287,6 +11435,22 @@
 			set(predecessor, thisElement, true);
 			set(selectedValue, value, true);
 			passValue()(label, value);
+		}
+
+		function handleMouseUp(event, label, value) {
+			console.log(...log_if_contains_state('log', get(mouseDownElement)));
+			console.log(...log_if_contains_state('log', event.target));
+			console.log(...log_if_contains_state('log', strict_equals(event.target, get(mouseDownElement))));
+
+			if (strict_equals(event.target, get(mouseDownElement))) {
+				handleEvent(event.target, label, value);
+			}
+
+			set(mouseDownElement, null);
+		}
+
+		function handleMouseDown(event) {
+			set(mouseDownElement, event.target, true);
 		}
 
 		function handleKeyDown(event, label, value, index) {
@@ -11314,7 +11478,9 @@
 				each(node_1, 17, items, index, ($$anchor, item, index) => {
 					var div = root_2$1();
 
-					div.__click = [on_click, handleEvent, item];
+					set_attribute(div, 'id', Math.random().toString(36).substring(2, 15));
+					div.__mousedown = [on_mousedown, handleMouseDown];
+					div.__mouseup = [on_mouseup, handleMouseUp, item];
 					div.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
 
 					var text = child(div, true);
@@ -11381,7 +11547,7 @@
 		});
 	}
 
-	delegate(['click', 'keydown']);
+	delegate(['mousedown', 'mouseup', 'keydown']);
 
 	create_custom_element(
 		DropdownListSingle,
@@ -11420,7 +11586,7 @@
 			4,
 			[
 				[115, 8, [[127, 12]]],
-				[131, 8, [[147, 12]]]
+				[131, 8, [[148, 12]]]
 			]
 		]
 	]);
@@ -11596,6 +11762,9 @@
 							var node_3 = child(div_2);
 
 							SearchInput(node_3, {
+								get id() {
+									return `${id() ?? ''}-search`;
+								},
 								get placeholder() {
 									return searchPlaceholder();
 								},
