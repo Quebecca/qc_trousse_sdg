@@ -2269,6 +2269,10 @@ qc-textfield {
   --error-icon-height: 2.1rem!important;
 }
 
+.qc-textfield-container .qc-form-error {
+  margin-top: var(--qc-spacer-xs);
+}
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-lg,
