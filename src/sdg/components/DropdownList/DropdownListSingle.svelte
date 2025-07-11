@@ -1,6 +1,7 @@
 <script>
     let {
         items,
+        noOptionsMessage,
         passValue = () => {},
         handleExit = () => {}
     } = $props();
@@ -36,15 +37,19 @@
     }
 </script>
 
-{#each items as item, index}
-    <div
-        class="qc-dropdown-list-single"
-        tabindex="0"
-        role="option"
-        aria-selected={selectedValue === item.value ? "true" : "false"}
-        onclick={(event) => handleEvent(event.target, item.label, item.value)}
-        onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
-    >
-        {item.label}
-    </div>
-{/each}
+{#if items.length > 0}
+    {#each items as item, index}
+        <div
+                class="qc-dropdown-list-single"
+                tabindex="0"
+                role="option"
+                aria-selected={selectedValue === item.value ? "true" : "false"}
+                onclick={(event) => handleEvent(event.target, item.label, item.value)}
+                onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
+        >
+            {item.label}
+        </div>
+    {/each}
+{:else}
+    <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
+{/if}

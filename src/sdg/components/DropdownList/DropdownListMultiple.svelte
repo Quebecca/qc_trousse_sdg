@@ -3,6 +3,7 @@
 
     let {
         items,
+        noOptionsMessage,
         handleExit = () => {},
         passValue = () => {},
     } = $props();
@@ -36,17 +37,20 @@
     }
 </script>
 
-{#each items as item, index}
-    <div class="qc-dropdown-list-multiple">
-        <Checkbox
-            value={item.value}
-            label={item.label}
-            {name}
-            disabled={item.disabled}
-            parentGroup="true"
-            checkbox-onkeydown={(e) => handleKeyDown(e, index)}
-            checkbox-aria-role="option"
-            handleChange={(e) => handleChange(e, item.label, item.value)}
-        />
-    </div>
-{/each}
+{#if items.length > 0}
+    {#each items as item, index}
+        <div class="qc-dropdown-list-multiple">
+            <Checkbox
+                value={item.value}
+                label={item.label}
+                {name}
+                disabled={item.disabled}
+                parentGroup="true"
+                checkbox-onkeydown={(e) => handleKeyDown(e, index)}
+                handleChange={(e) => handleChange(e, item.label, item.value)}
+            />
+        </div>
+    {/each}
+{:else}
+    <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
+{/if}

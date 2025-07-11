@@ -21,6 +21,11 @@ $border: 1;
   }
 }
 
+.qc-dropdown-list-no-options {
+  margin-left: token-value(spacer, xs);
+  margin-right: token-value(spacer, xs);
+}
+
 .qc-dropdown-button {
   display: flex;
   width: 100%;
@@ -58,21 +63,29 @@ $border: 1;
   color: token-value(color, blue, dark);
 }
 
-.qc-dropdown-list-items {
+.qc-dropdown-list-expanded {
   position: absolute;
-  max-height: rem($max-height - $min-height);
   width: calc(100% + 2px);
   left: -(rem($border));
   right: -(rem($border));
   top: 100%;
   z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
-  overflow-y: auto;
-  overflow-x: hidden;
+
 
   background-color: token-value(color, background);
   border-left: rem($border) solid token-value(color, grey, medium);
   border-right: rem($border) solid token-value(color, grey, medium);
   border-bottom: rem($border) solid token-value(color, grey, medium);
+}
+
+.qc-dropdown-list-hidden {
+  display: none;
+}
+
+.qc-dropdown-list-items {
+  max-height: var(--dropdown-items-height);
+  overflow-y: auto;
+  overflow-x: hidden;
 
   scrollbar-color: token-value(color, blue, regular) token-value(color, background);
 
@@ -89,10 +102,6 @@ $border: 1;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-}
-
-.qc-dropdown-list-items-hidden {
-  display: none;
 }
 
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {
