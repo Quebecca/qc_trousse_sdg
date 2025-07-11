@@ -72,15 +72,10 @@
         button.focus();
     }
 
-    function filterItems(searchText) {
-        console.log(searchText);
-
-    }
-
     $effect(() => {
         if (searchText.length > 0) {
-            displayedItems = items.filter(item => {
-                item.label.toLowerCase().includes(searchText.toLowerCase())
+            displayedItems = items.filter((item) => {
+                return item.label.toLowerCase().includes(searchText.toLowerCase())
             });
         } else {
             displayedItems = items;
@@ -128,12 +123,13 @@
              tabindex="-1"
         >
             {#if enableSearch}
-                <SearchInput
-                        value={searchText}
-                        placeholder={searchPlaceholder}
-                        liveRefresh="true"
-                        onchange={(e) => filterItems(e.target.value)}
-                />
+                <div class="qc-dropdown-list-search">
+                    <SearchInput
+                            bind:value={searchText}
+                            placeholder={searchPlaceholder}
+                            liveRefresh="true"
+                    />
+                </div>
             {/if}
 
             {#if multiple}

@@ -288,16 +288,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -452,108 +442,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6818,37 +6706,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -7923,7 +7780,7 @@
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
 	var root_2$3 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
+	var root_4$1 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$9 = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
@@ -8013,7 +7870,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_4();
+				var a_1 = root_4$1();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -8876,8 +8733,7 @@
 			var consequent = ($$anchor) => {
 				Icon($$anchor, {
 					type: 'loupe-piv-fine',
-					iconColor: 'grey-regular',
-					size: 'lg'
+					iconColor: 'grey-regular'
 				});
 			};
 
@@ -11470,16 +11326,17 @@
 		}).catch(console.error);
 	}
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[116, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[118, 20]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[111, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[113, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[126, 16]]);
 
 	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <!></div></div>`), DropdownList[FILENAME], [
 		[
-			101,
+			96,
 			4,
 			[
-				[108, 8, [[120, 12]]],
-				[124, 8]
+				[103, 8, [[115, 12]]],
+				[119, 8]
 			]
 		]
 	]);
@@ -11564,16 +11421,12 @@
 			get(button).focus();
 		}
 
-		function filterItems(searchText) {
-			console.log(...log_if_contains_state('log', searchText));
-		}
-
 		user_effect(() => {
 			if (get(searchText).length > 0) {
 				set(
 					displayedItems,
 					items().filter((item) => {
-						item.label.toLowerCase().includes(get(searchText).toLowerCase());
+						return item.label.toLowerCase().includes(get(searchText).toLowerCase());
 					}),
 					true
 				);
@@ -11645,16 +11498,24 @@
 
 					{
 						var consequent_1 = ($$anchor) => {
-							SearchInput($$anchor, {
-								get value() {
-									return get(searchText);
-								},
+							var div_2 = root_4();
+							var node_3 = child(div_2);
+
+							SearchInput(node_3, {
 								get placeholder() {
 									return searchPlaceholder();
 								},
 								liveRefresh: 'true',
-								onchange: (e) => filterItems(e.target.value)
+								get value() {
+									return get(searchText);
+								},
+								set value($$value) {
+									set(searchText, $$value, true);
+								}
 							});
+
+							reset(div_2);
+							append($$anchor, div_2);
 						};
 
 						if_block(node_2, ($$render) => {
@@ -11662,7 +11523,7 @@
 						});
 					}
 
-					var node_3 = sibling(node_2, 2);
+					var node_4 = sibling(node_2, 2);
 
 					{
 						var consequent_2 = ($$anchor) => {
@@ -11692,7 +11553,7 @@
 							});
 						};
 
-						if_block(node_3, ($$render) => {
+						if_block(node_4, ($$render) => {
 							if (multiple()) $$render(consequent_2); else $$render(alternate_1, false);
 						});
 					}

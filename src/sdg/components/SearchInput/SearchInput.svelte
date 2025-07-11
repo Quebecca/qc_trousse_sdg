@@ -19,7 +19,7 @@
 
 <div class={["qc-search-input", liveRefresh && "qc-search-live-refresh"]}>
     {#if liveRefresh}
-        <Icon type="loupe-piv-fine" iconColor="grey-regular" size="lg" />
+        <Icon type="loupe-piv-fine" iconColor="grey-regular" />
     {/if}
     <input  bind:this={searchInput}
             bind:value={value}
