@@ -4,8 +4,8 @@
 
     let {
         name,
-        value,
         label,
+        value = label,
         description,
         compact,
         tiled,
@@ -16,7 +16,7 @@
         groupValue = $bindable(),
         ...rest
     } = $props();
-    let inputId = $derived(rest.id ?? `${name}_${value}`);
+    let inputId = $derived(rest.id ?? `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`);
 </script>
 
 <label

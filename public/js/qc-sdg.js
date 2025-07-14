@@ -9671,8 +9671,8 @@
 
 		const lang = Utils.getPageLanguage();
 
-		let value = prop($$props, 'value', 7),
-			label = prop($$props, 'label', 7),
+		let label = prop($$props, 'label', 7),
+			value = prop($$props, 'value', 23, label),
 			name = prop($$props, 'name', 7),
 			disabled = prop($$props, 'disabled', 7, false),
 			checked = prop($$props, 'checked', 15, false),
@@ -9690,8 +9690,8 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'value',
 					'label',
+					'value',
 					'name',
 					'disabled',
 					'checked',
@@ -9704,7 +9704,7 @@
 					'parentGroup'
 				]);
 
-		let id = user_derived(() => name() + "_" + value());
+		let id = user_derived(() => $$props.id ?? `${name()}-${value()}-${Math.random().toString(36).substring(2, 15)}`);
 
 		user_effect(() => {
 			if (checked()) {
@@ -9743,18 +9743,18 @@
 		append($$anchor, fragment_2);
 
 		return pop({
-			get value() {
-				return value();
-			},
-			set value($$value) {
-				value($$value);
-				flushSync();
-			},
 			get label() {
 				return label();
 			},
 			set label($$value) {
 				label($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = label) {
+				value($$value);
 				flushSync();
 			},
 			get name() {
@@ -9836,8 +9836,8 @@
 	create_custom_element(
 		Checkbox,
 		{
-			value: {},
 			label: {},
+			value: {},
 			name: {},
 			disabled: {},
 			checked: {},
@@ -10421,8 +10421,8 @@
 		const binding_group = [];
 
 		let name = prop($$props, 'name', 7),
-			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
+			value = prop($$props, 'value', 23, label),
 			description = prop($$props, 'description', 7),
 			compact = prop($$props, 'compact', 7),
 			tiled = prop($$props, 'tiled', 7),
@@ -10439,8 +10439,8 @@
 					'$$legacy',
 					'$$host',
 					'name',
-					'value',
 					'label',
+					'value',
 					'description',
 					'compact',
 					'tiled',
@@ -10451,7 +10451,7 @@
 					'groupValue'
 				]);
 
-		let inputId = user_derived(() => $$props.id ?? `${name()}_${value()}`);
+		let inputId = user_derived(() => $$props.id ?? `${name()}-${value()}-${Math.random().toString(36).substring(2, 15)}`);
 		var label_1 = root();
 		var input = child(label_1);
 
@@ -10529,18 +10529,18 @@
 				name($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value) {
-				value($$value);
-				flushSync();
-			},
 			get label() {
 				return label();
 			},
 			set label($$value) {
 				label($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = label) {
+				value($$value);
 				flushSync();
 			},
 			get description() {
@@ -10607,8 +10607,8 @@
 		RadioButton,
 		{
 			name: {},
-			value: {},
 			label: {},
+			value: {},
 			description: {},
 			compact: {},
 			tiled: {},

@@ -15,7 +15,7 @@
 
     $effect(_ => {
         // console.log("cb group svelte effect")
-        checked = !(!value || value.length == 0)
+        checked = !(!value || value.length === 0)
         if (checked) {
             invalid = false;
         }

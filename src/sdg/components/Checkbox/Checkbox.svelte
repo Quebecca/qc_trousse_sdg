@@ -5,8 +5,8 @@
     const lang = Utils.getPageLanguage();
 
     let {
-        value,
         label,
+        value = label,
         name,
         disabled = false,
         checked = $bindable(false),
@@ -20,7 +20,7 @@
         ...rest
     } = $props();
     
-    let id = $derived(name + "_" + value);
+    let id = $derived(rest.id ?? `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`);
 
     $effect(() => {
         if (checked) {

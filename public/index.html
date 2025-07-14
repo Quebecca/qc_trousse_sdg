@@ -1536,9 +1536,9 @@
   </script>
 </qc-doc-exemple>
 
-<h4>Documentation technique</h4>
+<h3 id="radio-button-attributes">Documentation technique</h3>
 
-<h5>Attributs de qc-radio-group</h5>
+<h4>Attributs de qc-radio-group</h4>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">
@@ -1602,7 +1602,7 @@
 </div>
 <p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-<h5>Attributs de qc-radio-button</h5>
+<h4>Attributs de qc-radio-button</h4>
 
 <p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
 
@@ -1790,7 +1790,7 @@
 </qc-doc-exemple>
 
 
-<h3>Documentation technique</h3>
+<h3 id="checkbox-attributes">Documentation technique</h3>
 
 <h4>Attributs de qc-checkbox</h4>
 <div class="table-overflow">
@@ -1973,9 +1973,18 @@
         <qc-checkbox
                 label="Option 1"
                 description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+                value="1"
         ></qc-checkbox>
-        <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-        <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
+        <qc-checkbox
+                label="Option 2 cochée par défaut"
+                checked="true"
+                value="2"
+        ></qc-checkbox>
+        <qc-checkbox
+                label="Option 3 désactivée"
+                disabled="true"
+                value="3"
+        ></qc-checkbox>
     </qc-checkbox-group>
 </qc-doc-exemple>
 
