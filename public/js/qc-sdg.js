@@ -11283,12 +11283,12 @@
 
 		function handleKeyDown(event, index) {
 			if (canExit(event, index)) {
-				handleExit()();
+				handleExit()(event.key);
 			}
 		}
 
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
+			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
 		}
 
 		function handleChange(event, label, itemValue) {
@@ -11459,12 +11459,12 @@
 			}
 
 			if (canExit(event, index)) {
-				handleExit()();
+				handleExit()(event.key);
 			}
 		}
 
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
+			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
 		}
 
 		var fragment = comment();
@@ -11564,29 +11564,25 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	function handleKeyDown(event, expanded, instance) {
+	function handleTab(event, instance, expanded) {
 		Utils.sleep(5).then(() => {
-			if (strict_equals(event.key, "Escape") && get(expanded)) {
-				set(expanded, false);
-			}
-
 			if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
 				set(expanded, false);
 			}
 		}).catch(console.error);
 	}
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[123, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[125, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[138, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[122, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[124, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[137, 16]]);
 
 	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div>`), DropdownList[FILENAME], [
 		[
-			107,
+			106,
 			4,
 			[
-				[115, 8, [[127, 12]]],
-				[131, 8, [[148, 12]]]
+				[114, 8, [[126, 12]]],
+				[130, 8, [[147, 12]]]
 			]
 		]
 	]);
@@ -11676,9 +11672,12 @@
 			}
 		}
 
-		function closeDropdown() {
+		function closeDropdown(key) {
 			set(expanded, false);
-			get(button).focus();
+
+			if (strict_equals(key, "Escape")) {
+				get(button).focus();
+			}
 		}
 
 		user_effect(() => {
@@ -11720,7 +11719,7 @@
 					var button_1 = child(div);
 
 					button_1.__click = handleDropdownButtonClick;
-					button_1.__keydown = [handleKeyDown, expanded, instance];
+					button_1.__keydown = [handleTab, instance, expanded];
 
 					var node = child(button_1);
 
@@ -11802,7 +11801,7 @@
 									set(placeholderText, l, true);
 									set(value, v, true);
 								},
-								handleExit: () => closeDropdown()
+								handleExit: (key) => closeDropdown(key)
 							});
 						};
 
@@ -11819,7 +11818,7 @@
 									set(value, v, true);
 									set(expanded, false);
 								},
-								handleExit: () => closeDropdown()
+								handleExit: (key) => closeDropdown(key)
 							});
 						};
 

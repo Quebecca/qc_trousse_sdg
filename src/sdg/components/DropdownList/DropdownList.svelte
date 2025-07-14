@@ -67,20 +67,19 @@
         }
     }
 
-    function handleKeyDown(event) {
+    function handleTab(event) {
         Utils.sleep(5).then(() => {
-            if (event.key === "Escape" && expanded) {
-                expanded = false;
-            }
             if (event.key === "Tab" && !Utils.componentIsActive(instance)) {
                 expanded = false;
             }
         }).catch(console.error);
     }
 
-    function closeDropdown() {
+    function closeDropdown(key) {
         expanded = false;
-        button.focus();
+        if (key === "Escape") {
+            button.focus();
+        }
     }
 
     $effect(() => {
@@ -115,7 +114,7 @@
         <button
                 class="qc-dropdown-button"
                 onclick={handleDropdownButtonClick}
-                onkeydown={handleKeyDown}
+                onkeydown={handleTab}
                 aria-expanded={expanded}
                 bind:this={button}
         >
@@ -154,7 +153,7 @@
                                 placeholderText = l;
                                 value = v;
                             }}
-                            handleExit={() => closeDropdown()}
+                            handleExit={(key) => closeDropdown(key)}
                     />
                 {:else}
                     <DropdownListSingle
@@ -165,7 +164,7 @@
                                 value = v;
                                 expanded = false;
                             }}
-                            handleExit={() => closeDropdown()}
+                            handleExit={(key) => closeDropdown(key)}
                     />
                 {/if}
             </div>

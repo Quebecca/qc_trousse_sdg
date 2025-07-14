@@ -48,12 +48,12 @@
         }
 
         if (canExit(event, index)) {
-            handleExit();
+            handleExit(event.key);
         }
     }
 
     function canExit(event, index) {
-        return event.key === "Escape" || (event.key === "Tab" && index === items.length - 1);
+        return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === items.length - 1);
     }
 </script>
 
