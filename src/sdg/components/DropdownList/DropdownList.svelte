@@ -17,6 +17,7 @@
         comboAriaLabel = "",
         ariaRequired = false,
         invalid = $bindable(""),
+        invalidText,
         searchPlaceholder = "",
         emptyOptionSrMessage = "",
         multiple = false,
@@ -99,6 +100,7 @@
         {id}
         {legend}
         {invalid}
+        {invalidText}
         {ariaRequired}
         compact="true"
         {...rest}

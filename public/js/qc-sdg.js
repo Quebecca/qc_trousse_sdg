@@ -11266,8 +11266,8 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[42, 8]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[55, 4]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[43, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[57, 4]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11292,6 +11292,8 @@
 		}
 
 		function handleChange(event, label, itemValue) {
+			console.log(...log_if_contains_state('log', event.target.checked));
+
 			if (event.target.checked) {
 				if (!selectedValues.includes(itemValue)) {
 					selectedValues = [...selectedValues, itemValue];
@@ -11317,6 +11319,8 @@
 					var div = root_2$2();
 					var node_2 = child(div);
 
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
+
 					Checkbox(node_2, {
 						get value() {
 							return get(item).value;
@@ -11330,7 +11334,13 @@
 						},
 						parentGroup: 'true',
 						'checkbox-onkeydown': (e) => handleKeyDown(e, index),
-						handleChange: (e) => handleChange(e, get(item).label, get(item).value)
+						handleChange: (e) => handleChange(e, get(item).label, get(item).value),
+						get checked() {
+							return get(item).checked;
+						},
+						set checked($$value) {
+							(get(item).checked = $$value);
+						}
 					});
 
 					reset(div);
@@ -11572,17 +11582,17 @@
 		}).catch(console.error);
 	}
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[122, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[124, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[137, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[124, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[126, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[139, 16]]);
 
 	var root_1 = add_locations(template(`<div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div>`), DropdownList[FILENAME], [
 		[
-			106,
+			108,
 			4,
 			[
-				[114, 8, [[126, 12]]],
-				[130, 8, [[147, 12]]]
+				[116, 8, [[128, 12]]],
+				[132, 8, [[149, 12]]]
 			]
 		]
 	]);
@@ -11601,6 +11611,7 @@
 			comboAriaLabel = prop($$props, 'comboAriaLabel', 7, ""),
 			ariaRequired = prop($$props, 'ariaRequired', 7, false),
 			invalid = prop($$props, 'invalid', 15, ""),
+			invalidText = prop($$props, 'invalidText', 7),
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
 			emptyOptionSrMessage = prop($$props, 'emptyOptionSrMessage', 7, ""),
 			multiple = prop($$props, 'multiple', 7, false),
@@ -11621,6 +11632,7 @@
 					'comboAriaLabel',
 					'ariaRequired',
 					'invalid',
+					'invalidText',
 					'searchPlaceholder',
 					'emptyOptionSrMessage',
 					'multiple'
@@ -11706,6 +11718,9 @@
 				},
 				get invalid() {
 					return invalid();
+				},
+				get invalidText() {
+					return invalidText();
 				},
 				get ariaRequired() {
 					return ariaRequired();
@@ -11928,6 +11943,13 @@
 				invalid($$value);
 				flushSync();
 			},
+			get invalidText() {
+				return invalidText();
+			},
+			set invalidText($$value) {
+				invalidText($$value);
+				flushSync();
+			},
 			get searchPlaceholder() {
 				return searchPlaceholder();
 			},
@@ -11968,6 +11990,7 @@
 			comboAriaLabel: {},
 			ariaRequired: {},
 			invalid: {},
+			invalidText: {},
 			searchPlaceholder: {},
 			emptyOptionSrMessage: {},
 			multiple: {}
@@ -12005,7 +12028,8 @@
 				optionsValues.push({
 					label: node.innerHTML,
 					value: node.value,
-					disabled: node.disabled
+					disabled: node.disabled,
+					checked: false
 				});
 			});
 
@@ -12047,7 +12071,11 @@
 				attribute: 'combo-aria-required',
 				type: 'Boolean'
 			},
-			invalid: { attribute: 'invalid', type: 'Boolean' },
+			invalid: {
+				attribute: 'invalid',
+				reflect: true,
+				type: 'Boolean'
+			},
 			searchPlaceholder: {
 				attribute: 'search-placeholder',
 				type: 'String'

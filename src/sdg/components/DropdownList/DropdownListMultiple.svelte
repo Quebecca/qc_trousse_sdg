@@ -24,6 +24,7 @@
     }
 
     function handleChange(event, label, itemValue) {
+        console.log(event.target.checked);
         if (event.target.checked) {
             if (!selectedValues.includes(itemValue)) {
                 selectedValues = [...selectedValues, itemValue];
@@ -41,6 +42,7 @@
     {#each items as item, index}
         <div class="qc-dropdown-list-multiple">
             <Checkbox
+                bind:checked={item.checked}
                 value={item.value}
                 label={item.label}
                 {name}
