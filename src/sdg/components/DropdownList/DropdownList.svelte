@@ -110,7 +110,6 @@
             <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
     </label>
     <div
-        id={inputId}
         class="qc-dropdown-list"
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
                --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
@@ -119,6 +118,7 @@
         bind:this={instance}
     >
         <button
+                id={inputId}
                 class="qc-dropdown-button"
                 onclick={handleDropdownButtonClick}
                 onkeydown={handleTab}

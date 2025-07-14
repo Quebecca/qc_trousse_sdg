@@ -12087,7 +12087,7 @@
 					112,
 					4,
 					[
-						[121, 8, [[133, 12]]],
+						[120, 8, [[133, 12]]],
 						[137, 8, [[154, 12]]]
 					]
 				]
@@ -12213,11 +12213,9 @@
 		reset(label);
 
 		var div_1 = sibling(label, 2);
-
-		set_attribute(div_1, 'id', inputId);
-
 		var button_1 = child(div_1);
 
+		set_attribute(button_1, 'id', inputId);
 		button_1.__click = handleDropdownButtonClick;
 		button_1.__keydown = [handleTab, instance, expanded];
 
