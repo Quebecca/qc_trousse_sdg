@@ -1,13 +1,13 @@
 <script>
-    import Fieldset from "../Fieldset/Fieldset.svelte";
     import DropdownListMultiple from "./DropdownListMultiple.svelte";
     import Icon from "../Icon/Icon.svelte";
     import DropdownListSingle from "./DropdownListSingle.svelte";
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
+    import FormError from "../FormError/FormError.svelte";
 
     let {
-        id = Math.floor(Math.random() * 1000),
+        id = Math.random().toString(36).substring(2, 15),
         legend = "",
         width = "md",
         items,
@@ -18,17 +18,17 @@
         ariaRequired = false,
         required = false,
         disabled = false,
-        invalid = $bindable(""),
+        invalid = $bindable(false),
         invalidText,
         searchPlaceholder = "",
         emptyOptionSrMessage = "",
         multiple = false,
-        ...rest
     } = $props();
 
-    const precentRootFontSize = 62.5
+    const precentRootFontSize = 62.5;
     const inputId = `${id}-input`;
     const labelId = `${id}-label`;
+    const errorId = `${id}-error`;
     
     let instance = $state(),
         button = $state(),
@@ -110,7 +110,11 @@
             <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
     </label>
     <div
-        class="qc-dropdown-list"
+        class={[
+            "qc-dropdown-list",
+            invalid && "qc-dropdown-list-invalid",
+            disabled && "qc-dropdown-list-disabled"
+        ]}
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
                --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
@@ -120,8 +124,10 @@
         <button
                 id={inputId}
                 class="qc-dropdown-button"
+
                 onclick={handleDropdownButtonClick}
                 onkeydown={handleTab}
+                {disabled}
                 aria-expanded={expanded}
                 bind:this={button}
         >
@@ -177,4 +183,8 @@
             </div>
         </div>
     </div>
+
+    {#if invalid}
+        <FormError id={errorId} {invalid} {invalidText} />
+    {/if}
 </div>

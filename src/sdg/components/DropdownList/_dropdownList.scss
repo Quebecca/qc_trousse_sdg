@@ -11,6 +11,14 @@ $border: 1;
   max-width: var(--dropdown-width);
   min-height: rem($min-height);
   background-color: token-value(color, background);
+
+  &.qc-dropdown-list-invalid {
+    border: rem(2) solid token-value(color, red, regular) !important;
+  }
+
+  &.qc-dropdown-list-disabled {
+    background-color: token-value(color, grey, pale) !important;
+  }
 }
 
 .qc-dropdown-list-search {

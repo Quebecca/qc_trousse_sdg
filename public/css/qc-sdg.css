@@ -2493,6 +2493,12 @@ qc-textfield {
   min-height: 4rem;
   background-color: var(--qc-color-background);
 }
+.qc-dropdown-list.qc-dropdown-list-invalid {
+  border: 0.2rem solid var(--qc-color-red-regular) !important;
+}
+.qc-dropdown-list.qc-dropdown-list-disabled {
+  background-color: var(--qc-color-grey-pale) !important;
+}
 
 .qc-dropdown-list-search {
   margin: var(--qc-spacer-sm) var(--qc-spacer-xs);

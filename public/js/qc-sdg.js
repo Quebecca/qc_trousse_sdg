@@ -12073,11 +12073,11 @@
 	}
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[129, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[131, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[144, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[135, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[137, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[150, 16]]);
 
-	var root = add_locations(template(`<div><label> <!></label> <div class="qc-dropdown-list" role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div></div>`), DropdownList[FILENAME], [
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
 			103,
 			0,
@@ -12087,8 +12087,8 @@
 					112,
 					4,
 					[
-						[120, 8, [[133, 12]]],
-						[137, 8, [[154, 12]]]
+						[124, 8, [[139, 12]]],
+						[143, 8, [[160, 12]]]
 					]
 				]
 			]
@@ -12099,7 +12099,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		let id = prop($$props, 'id', 23, () => Math.floor(Math.random() * 1000)),
+		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			legend = prop($$props, 'legend', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 7),
@@ -12110,7 +12110,7 @@
 			ariaRequired = prop($$props, 'ariaRequired', 7, false),
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
-			invalid = prop($$props, 'invalid', 15, ""),
+			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
 			emptyOptionSrMessage = prop($$props, 'emptyOptionSrMessage', 7, ""),
@@ -12119,6 +12119,7 @@
 		const precentRootFontSize = 62.5;
 		const inputId = `${id()}-input`;
 		const labelId = `${id()}-label`;
+		const errorId = `${id()}-error`;
 
 		let instance = state(void 0),
 			button = state(void 0),
@@ -12329,6 +12330,27 @@
 		reset(div_2);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(instance, $$value), () => get(instance));
+
+		var node_6 = sibling(div_1, 2);
+
+		{
+			var consequent_4 = ($$anchor) => {
+				FormError($$anchor, {
+					id: errorId,
+					get invalid() {
+						return invalid();
+					},
+					get invalidText() {
+						return invalidText();
+					}
+				});
+			};
+
+			if_block(node_6, ($$render) => {
+				if (invalid()) $$render(consequent_4);
+			});
+		}
+
 		reset(div);
 
 		template_effect(() => {
@@ -12339,9 +12361,16 @@
 
 			set_text(text, `${legend() ?? ''} `);
 
+			set_class(div_1, 1, clsx([
+				"qc-dropdown-list",
+				invalid() && "qc-dropdown-list-invalid",
+				disabled() && "qc-dropdown-list-disabled"
+			]));
+
 			set_style(div_1, `--dropdown-width: ${get(usedWidth) / (0.16 * precentRootFontSize)}rem;
                --dropdown-items-height: ${get(usedHeight) / (0.16 * precentRootFontSize)}rem;`);
 
+			button_1.disabled = disabled();
 			set_attribute(button_1, 'aria-expanded', get(expanded));
 
 			set_class(span_3, 1, clsx([
@@ -12362,7 +12391,7 @@
 				return id();
 			},
 			set id(
-				$$value = Math.floor(Math.random() * 1000)
+				$$value = Math.random().toString(36).substring(2, 15)
 			) {
 				id($$value);
 				flushSync();
@@ -12440,7 +12469,7 @@
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value = "") {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
@@ -12574,11 +12603,7 @@
 				attribute: 'combo-aria-required',
 				type: 'Boolean'
 			},
-			invalid: {
-				attribute: 'invalid',
-				reflect: true,
-				type: 'Boolean'
-			},
+			invalid: { attribute: 'invalid', type: 'Boolean' },
 			searchPlaceholder: {
 				attribute: 'search-placeholder',
 				type: 'String'

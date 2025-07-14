@@ -45,11 +45,9 @@ qc-textfield {
   &--xl { width: rem(528); }
   &--xxl { width: 100%; max-width: rem(825); }
 
-  &.error {
-    &::before {
-      border-color: token-value(color, red, regular);
-      border-width: 2px;
-    }
+  &.error::before {
+    border-color: token-value(color, red, regular);
+    border-width: 2px;
   }
 }
 
