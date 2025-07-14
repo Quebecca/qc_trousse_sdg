@@ -38,21 +38,24 @@
     }
 </script>
 
-{#if items.length > 0}
-    {#each items as item, index}
-        <div class="qc-dropdown-list-multiple">
-            <Checkbox
-                bind:checked={item.checked}
-                value={item.value}
-                label={item.label}
-                {name}
-                disabled={item.disabled}
-                parentGroup="true"
-                checkbox-onkeydown={(e) => handleKeyDown(e, index)}
-                handleChange={(e) => handleChange(e, item.label, item.value)}
-            />
-        </div>
-    {/each}
-{:else}
-    <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
-{/if}
+<div class="qc-compact">
+    {#if items.length > 0}
+        {#each items as item, index}
+            <div class="qc-dropdown-list-multiple">
+                <Checkbox
+                    bind:checked={item.checked}
+                    value={item.value}
+                    label={item.label}
+                    {name}
+                    disabled={item.disabled}
+                    parentGroup="true"
+                    compact="true"
+                    checkbox-onkeydown={(e) => handleKeyDown(e, index)}
+                    handleChange={(e) => handleChange(e, item.label, item.value)}
+                />
+            </div>
+        {/each}
+    {:else}
+        <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
+    {/if}
+</div>

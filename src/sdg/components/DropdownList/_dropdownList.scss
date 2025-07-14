@@ -8,7 +8,7 @@ $border: 1;
 .qc-dropdown-list {
   position: relative;
   border: rem($border) solid token-value(color, grey, medium);
-  width: var(--dropdown-width);
+  max-width: var(--dropdown-width);
   min-height: rem($min-height);
   background-color: token-value(color, background);
 }
@@ -137,8 +137,10 @@ $border: 1;
   label {
     padding-left: token-value(spacer, xs);
     padding-right: token-value(spacer, xs);
-    padding-top: token-value(spacer, xs);
+
     flex-grow: 1;
+    justify-items: center;
+    align-items: center;
   }
 
   .qc-check-row {

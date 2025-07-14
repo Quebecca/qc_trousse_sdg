@@ -16,6 +16,8 @@
         enableSearch = false,
         comboAriaLabel = "",
         ariaRequired = false,
+        required = false,
+        disabled = false,
         invalid = $bindable(""),
         invalidText,
         searchPlaceholder = "",
@@ -25,6 +27,9 @@
     } = $props();
 
     const precentRootFontSize = 62.5
+    const inputId = `${id}-input`;
+    const labelId = `${id}-label`;
+    
     let instance = $state(),
         button = $state(),
         value = $state(""),
@@ -95,17 +100,17 @@
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
-
-<Fieldset
-        {id}
+<div class={[
+    'qc-textfield-container',
+     disabled && "qc-disabled"
+]}>
+    <label for={inputId} id={labelId}>
         {legend}
-        {invalid}
-        {invalidText}
-        {ariaRequired}
-        compact="true"
-        {...rest}
->
+        {#if required}
+            <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
+    </label>
     <div
+        id={inputId}
         class="qc-dropdown-list"
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
                --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
@@ -172,4 +177,4 @@
             </div>
         </div>
     </div>
-</Fieldset>
+</div>
