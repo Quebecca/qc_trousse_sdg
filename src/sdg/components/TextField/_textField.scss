@@ -39,11 +39,11 @@ qc-textfield {
     resize: vertical;
   }
 
-  &--sm { width: rem(63); }
-  &--md { width: rem(156); }
-  &--lg { width: rem(249); }
-  &--xl { width: rem(528); }
-  &--xxl { width: 100%; max-width: rem(825); }
+  &--sm { max-width: rem(63); }
+  &--md { max-width: rem(156); }
+  &--lg { max-width: rem(249); }
+  &--xl { max-width: rem(528); }
+  &--xxl { max-width: rem(825); }
 
   &.error {
     &::before {

@@ -2194,19 +2194,18 @@ qc-textfield {
   resize: vertical;
 }
 .qc-textfield--sm {
-  width: 6.3rem;
+  max-width: 6.3rem;
 }
 .qc-textfield--md {
-  width: 15.6rem;
+  max-width: 15.6rem;
 }
 .qc-textfield--lg {
-  width: 24.9rem;
+  max-width: 24.9rem;
 }
 .qc-textfield--xl {
-  width: 52.8rem;
+  max-width: 52.8rem;
 }
 .qc-textfield--xxl {
-  width: 100%;
   max-width: 82.5rem;
 }
 .qc-textfield.error::before {
@@ -2268,6 +2267,10 @@ qc-textfield {
   margin-right: var(--qc-spacer-xs);
   --error-icon-width: 2.4rem!important;
   --error-icon-height: 2.1rem!important;
+}
+
+.qc-textfield-container .qc-form-error {
+  margin-top: var(--qc-spacer-xs);
 }
 
 .qc-label {
