@@ -28,9 +28,6 @@
     }
 
     function handleMouseUp(event, label, value) {
-        console.log(mouseDownElement);
-        console.log(event.target);
-        console.log(event.target === mouseDownElement);
         if (event.target === mouseDownElement) {
             handleEvent(event.target, label, value);
         }

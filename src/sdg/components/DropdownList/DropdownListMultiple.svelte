@@ -24,7 +24,6 @@
     }
 
     function handleChange(event, label, itemValue) {
-        console.log(event.target.checked);
         if (event.target.checked) {
             if (!selectedValues.includes(itemValue)) {
                 selectedValues = [...selectedValues, itemValue];
