@@ -9506,8 +9506,8 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[21, 8]]);
-	var root$1 = add_locations(template(`<label><!> <!></label>`), Label[FILENAME], [[11, 0]]);
+	var root_1$1 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[23, 8]]);
+	var root$1 = add_locations(template(`<label><!> <!></label>`), Label[FILENAME], [[12, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -9517,7 +9517,8 @@
 			text = prop($$props, 'text', 7),
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7, false),
-			disabled = prop($$props, 'disabled', 7, false);
+			disabled = prop($$props, 'disabled', 7, false),
+			bold = prop($$props, 'bold', 7, false);
 
 		var label = root$1();
 		var node = child(label);
@@ -9546,7 +9547,8 @@
 			set_class(label, 1, clsx([
 				"qc-label",
 				compact() && "qc-label-compact",
-				disabled() && "qc-disabled"
+				disabled() && "qc-disabled",
+				bold() && "qc-label-bold"
 			]));
 		});
 
@@ -9588,6 +9590,13 @@
 				disabled($$value);
 				flushSync();
 			},
+			get bold() {
+				return bold();
+			},
+			set bold($$value = false) {
+				bold($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9599,7 +9608,8 @@
 			text: {},
 			required: {},
 			compact: {},
-			disabled: {}
+			disabled: {},
+			bold: {}
 		},
 		[],
 		[],

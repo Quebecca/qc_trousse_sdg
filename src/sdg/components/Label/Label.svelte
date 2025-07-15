@@ -4,7 +4,8 @@
         text,
         required = false,
         compact = false,
-        disabled = false
+        disabled = false,
+        bold = false
     } = $props();
 </script>
 
@@ -13,7 +14,8 @@
     class={[
         "qc-label",
         compact && "qc-label-compact",
-        disabled && "qc-disabled"
+        disabled && "qc-disabled",
+        bold && "qc-label-bold"
   ]}
 >
     {@html text}

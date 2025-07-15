@@ -7,4 +7,8 @@
   &.qc-label-compact {
     font-size: token-value(font size sm);
   }
+
+  &.qc-label-bold {
+    font-weight: token-value(font weight content bold);
+  }
 }

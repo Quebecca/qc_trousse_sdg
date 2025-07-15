@@ -2175,3 +2175,6 @@ qc-search-bar {
 .qc-label.qc-label-compact {
   font-size: var(--qc-font-size-sm);
 }
+.qc-label.qc-label-bold {
+  font-weight: var(--qc-font-weight-content-bold);
+}
