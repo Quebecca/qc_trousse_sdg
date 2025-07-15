@@ -133,10 +133,15 @@ $border: 1;
   align-items: center;
   height: rem($min-height);
 
-  &:hover, &:focus, &:has(input[type=checkbox]:focus) {
+  &:hover{
     background-color: token-value(color, blue, pale);
     outline: none;
     cursor: pointer;
+  }
+
+  &:focus, &:has(input[type=checkbox]:focus) {
+    outline: rem(2) solid token-value(color, blue, light);
+    outline-offset: -(rem(2));
   }
 }
 
