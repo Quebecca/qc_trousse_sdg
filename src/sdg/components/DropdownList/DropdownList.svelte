@@ -29,7 +29,7 @@
     const inputId = `${id}-input`;
     const labelId = `${id}-label`;
     const errorId = `${id}-error`;
-    
+
     let instance = $state(),
         button = $state(),
         value = $state(""),
@@ -48,6 +48,7 @@
                     return 249;
             }
         }),
+        widthClass = $derived(`qc-dropdown-list--${width}`),
         usedHeight = $derived.by(() => {
             const maxItemsHeight = 330;
             const searchInputTotalHeight = 56;
@@ -115,7 +116,7 @@
     </label>
     <div
         class={[
-            "qc-dropdown-list",
+            `qc-dropdown-list ${widthClass}`,
             invalid && "qc-dropdown-list-invalid",
         ]}
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;

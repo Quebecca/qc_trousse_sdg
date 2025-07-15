@@ -166,6 +166,10 @@
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
+  --qc-spacer-input-sm: 6.3rem;
+  --qc-spacer-input-md: 15.6rem;
+  --qc-spacer-input-lg: 24.9rem;
+  --qc-spacer-input-xl: 52.8rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 768px;
@@ -2501,12 +2505,20 @@ qc-textfield {
 .qc-dropdown-list {
   position: relative;
   border: 0.1rem solid var(--qc-color-grey-medium);
-  max-width: var(--dropdown-width);
   min-height: 4rem;
   background-color: var(--qc-color-background);
 }
 .qc-dropdown-list.qc-dropdown-list-invalid {
   border: 0.2rem solid var(--qc-color-red-regular) !important;
+}
+.qc-dropdown-list--sm {
+  max-width: var(--qc-spacer-input-md);
+}
+.qc-dropdown-list--md {
+  max-width: var(--qc-spacer-input-lg);
+}
+.qc-dropdown-list--lg {
+  max-width: var(--qc-spacer-input-xl);
 }
 
 .qc-dropdown-list-search {

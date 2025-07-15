@@ -205,6 +205,12 @@ $lg-tokens: (
         list-item : (
             mb: token-value(spacer sm),
         ),
+        input: (
+            sm: rem(63),
+            md: rem(156),
+            lg: rem(249),
+            xl: rem(528),
+        )
     ),
     grid: (
         gutter: 32px,

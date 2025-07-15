@@ -288,16 +288,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -452,108 +442,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6830,37 +6718,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -11753,9 +11610,9 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[44, 12]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[59, 8]]);
-	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[41, 0]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[43, 12]]);
+	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[58, 8]]);
+	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[40, 0]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11780,8 +11637,6 @@
 		}
 
 		function handleChange(event, label, itemValue) {
-			console.log(...log_if_contains_state('log', event.target.checked));
-
 			if (event.target.checked) {
 				if (!selectedValues.includes(itemValue)) {
 					selectedValues = [...selectedValues, itemValue];
@@ -11906,8 +11761,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-single" tabindex="0" role="option"> </div>`), DropdownListSingle[FILENAME], [[62, 8]]);
-	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[76, 4]]);
+	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-single" tabindex="0" role="option"> </div>`), DropdownListSingle[FILENAME], [[59, 8]]);
+	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[73, 4]]);
 
 	function DropdownListSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11938,10 +11793,6 @@
 		}
 
 		function handleMouseUp(event, label, value) {
-			console.log(...log_if_contains_state('log', get(mouseDownElement)));
-			console.log(...log_if_contains_state('log', event.target));
-			console.log(...log_if_contains_state('log', strict_equals(event.target, get(mouseDownElement))));
-
 			if (strict_equals(event.target, get(mouseDownElement))) {
 				handleEvent(event.target, label, value);
 			}
@@ -12072,23 +11923,23 @@
 		}).catch(console.error);
 	}
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[114, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[137, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[139, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[155, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[115, 12]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[138, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[140, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[156, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			107,
+			108,
 			0,
 			[
-				[111, 4],
+				[112, 4],
 				[
-					116,
+					117,
 					4,
 					[
-						[127, 8, [[141, 12]]],
-						[148, 8, [[165, 12]]]
+						[128, 8, [[142, 12]]],
+						[149, 8, [[166, 12]]]
 					]
 				]
 			]
@@ -12141,6 +11992,7 @@
 						return 249;
 				}
 			}),
+			widthClass = user_derived(() => `qc-dropdown-list--${width()}`),
 			usedHeight = user_derived(() => {
 				const maxItemsHeight = 330;
 				const searchInputTotalHeight = 56;
@@ -12376,7 +12228,7 @@
 			set_text(text, `${legend() ?? ''} `);
 
 			set_class(div_1, 1, clsx([
-				"qc-dropdown-list",
+				`qc-dropdown-list ${get(widthClass)}`,
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
