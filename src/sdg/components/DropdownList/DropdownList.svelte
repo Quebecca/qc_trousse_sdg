@@ -135,7 +135,10 @@
                     <span class="qc-dropdown-placeholder">Choisissez une option</span>
                 {/if}
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
-                <Icon type="chevron-white" size="sm" />
+                <Icon
+                    type={disabled ? "chevron-grey-thin" : "chevron-blue-thin"}
+                    size="sm"
+                />
             </span>
         </button>
         <div class={[

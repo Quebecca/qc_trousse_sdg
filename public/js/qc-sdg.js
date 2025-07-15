@@ -12075,7 +12075,7 @@
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
 	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[133, 20]]);
 	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[135, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 16]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[151, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -12088,7 +12088,7 @@
 					4,
 					[
 						[123, 8, [[137, 12]]],
-						[141, 8, [[158, 12]]]
+						[144, 8, [[161, 12]]]
 					]
 				]
 			]
@@ -12245,8 +12245,15 @@
 
 		var span_3 = sibling(node_1, 2);
 		var node_2 = child(span_3);
+		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
 
-		Icon(node_2, { type: 'chevron-white', size: 'sm' });
+		Icon(node_2, {
+			get type() {
+				return get(expression);
+			},
+			size: 'sm'
+		});
+
 		reset(span_3);
 		reset(button_1);
 		bind_this(button_1, ($$value) => set(button, $$value), () => get(button));
