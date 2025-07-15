@@ -12072,23 +12072,23 @@
 		}).catch(console.error);
 	}
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[133, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[135, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[151, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[114, 12]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[137, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[139, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[155, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			103,
+			107,
 			0,
 			[
-				[107, 4],
+				[111, 4],
 				[
-					112,
+					116,
 					4,
 					[
-						[123, 8, [[137, 12]]],
-						[144, 8, [[161, 12]]]
+						[127, 8, [[141, 12]]],
+						[148, 8, [[165, 12]]]
 					]
 				]
 			]
@@ -12103,7 +12103,7 @@
 			legend = prop($$props, 'legend', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 7),
-			noValueMessage = prop($$props, 'noValueMessage', 7, ""),
+			placeholder = prop($$props, 'placeholder', 7, "Choisissez une option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, "Aucune option disponible"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
 			comboAriaLabel = prop($$props, 'comboAriaLabel', 7, ""),
@@ -12124,11 +12124,12 @@
 		let instance = state(void 0),
 			button = state(void 0),
 			value = state(""),
-			placeholderText = state(""),
+			selectedOptionsText = state(""),
 			expanded = state(false),
 			searchText = state(""),
 			displayedItems = state(proxy(items())),
 			usedWidth = user_derived(() => {
+				// TODO transformer ces valeurs en tokens
 				switch (width()) {
 					case "sm":
 						return 156;
@@ -12137,10 +12138,7 @@
 						return 528;
 
 					default:
-						if (width().match(/^\d+$/)) {
-							return width();
-						}
-						return 342;
+						return 249;
 				}
 			}),
 			usedHeight = user_derived(() => {
@@ -12187,6 +12185,12 @@
 			}
 		});
 
+		user_effect(() => {
+			if (Utils.isTruthy(get(value))) {
+				invalid(false);
+			}
+		});
+
 		var div = root();
 
 		event('click', $document, handleOuterEvent);
@@ -12228,13 +12232,16 @@
 				var text_1 = child(span_1, true);
 
 				reset(span_1);
-				template_effect(() => set_text(text_1, get(placeholderText)));
+				template_effect(() => set_text(text_1, get(selectedOptionsText)));
 				append($$anchor, span_1);
 			};
 
 			var alternate = ($$anchor) => {
 				var span_2 = root_3();
+				var text_2 = child(span_2, true);
 
+				reset(span_2);
+				template_effect(() => set_text(text_2, placeholder()));
 				append($$anchor, span_2);
 			};
 
@@ -12304,7 +12311,7 @@
 						return noOptionsMessage();
 					},
 					passValue: (l, v) => {
-						set(placeholderText, l, true);
+						set(selectedOptionsText, l, true);
 						set(value, v, true);
 					},
 					handleExit: (key) => closeDropdown(key)
@@ -12320,7 +12327,7 @@
 						return noOptionsMessage();
 					},
 					passValue: (l, v) => {
-						set(placeholderText, l, true);
+						set(selectedOptionsText, l, true);
 						set(value, v, true);
 						set(expanded, false);
 					},
@@ -12423,11 +12430,11 @@
 				items($$value);
 				flushSync();
 			},
-			get noValueMessage() {
-				return noValueMessage();
+			get placeholder() {
+				return placeholder();
 			},
-			set noValueMessage($$value = "") {
-				noValueMessage($$value);
+			set placeholder($$value = "Choisissez une option:") {
+				placeholder($$value);
 				flushSync();
 			},
 			get noOptionsMessage() {
@@ -12520,7 +12527,7 @@
 			legend: {},
 			width: {},
 			items: {},
-			noValueMessage: {},
+			placeholder: {},
 			noOptionsMessage: {},
 			enableSearch: {},
 			comboAriaLabel: {},

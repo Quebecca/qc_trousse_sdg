@@ -11,7 +11,7 @@
         legend = "",
         width = "md",
         items,
-        noValueMessage = "",
+        placeholder = "Choisissez une option:",
         noOptionsMessage = "Aucune option disponible",
         enableSearch = false,
         comboAriaLabel = "",
@@ -33,21 +33,19 @@
     let instance = $state(),
         button = $state(),
         value = $state(""),
-        placeholderText = $state(""),
+        selectedOptionsText = $state(""),
         expanded = $state(false),
         searchText = $state(""),
         displayedItems = $state(items),
         usedWidth = $derived.by(() => {
+            // TODO transformer ces valeurs en tokens
             switch (width) {
                 case "sm":
                     return 156;
                 case "lg":
                     return 528;
                 default:
-                    if (width.match(/^\d+$/)) {
-                        return width;
-                    }
-                    return 342;
+                    return 249;
             }
         }),
         usedHeight = $derived.by(() => {
@@ -97,6 +95,12 @@
             displayedItems = items;
         }
     })
+
+    $effect(() => {
+        if (Utils.isTruthy(value)) {
+            invalid = false;
+        }
+    })
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
@@ -130,9 +134,9 @@
                 bind:this={button}
         >
                 {#if Utils.isTruthy(value)}
-                    <span class="qc-dropdown-choice">{placeholderText}</span>
+                    <span class="qc-dropdown-choice">{selectedOptionsText}</span>
                 {:else}
-                    <span class="qc-dropdown-placeholder">Choisissez une option</span>
+                    <span class="qc-dropdown-placeholder">{placeholder}</span>
                 {/if}
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon
@@ -164,7 +168,7 @@
                             items={displayedItems}
                             {noOptionsMessage}
                             passValue={(l, v) => {
-                                placeholderText = l;
+                                selectedOptionsText = l;
                                 value = v;
                             }}
                             handleExit={(key) => closeDropdown(key)}
@@ -174,7 +178,7 @@
                             items={displayedItems}
                             {noOptionsMessage}
                             passValue={(l, v) => {
-                                placeholderText = l;
+                                selectedOptionsText = l;
                                 value = v;
                                 expanded = false;
                             }}
