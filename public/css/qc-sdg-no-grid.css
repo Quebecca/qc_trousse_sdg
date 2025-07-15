@@ -2496,9 +2496,6 @@ qc-textfield {
 .qc-dropdown-list.qc-dropdown-list-invalid {
   border: 0.2rem solid var(--qc-color-red-regular) !important;
 }
-.qc-dropdown-list.qc-dropdown-list-disabled {
-  background-color: var(--qc-color-grey-pale) !important;
-}
 
 .qc-dropdown-list-search {
   margin: var(--qc-spacer-sm) var(--qc-spacer-xs);
@@ -2546,6 +2543,12 @@ qc-textfield {
 }
 .qc-dropdown-button:hover {
   cursor: pointer;
+}
+.qc-dropdown-button:disabled {
+  cursor: not-allowed;
+}
+.qc-dropdown-button:disabled::before {
+  background-color: var(--qc-color-grey-pale);
 }
 
 .qc-dropdown-button-icon {

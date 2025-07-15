@@ -12073,9 +12073,9 @@
 	}
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[135, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[137, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[150, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[133, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder">Choisissez une option</span>`), DropdownList[FILENAME], [[135, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -12087,8 +12087,8 @@
 					112,
 					4,
 					[
-						[124, 8, [[139, 12]]],
-						[143, 8, [[160, 12]]]
+						[123, 8, [[137, 12]]],
+						[141, 8, [[158, 12]]]
 					]
 				]
 			]
@@ -12363,8 +12363,7 @@
 
 			set_class(div_1, 1, clsx([
 				"qc-dropdown-list",
-				invalid() && "qc-dropdown-list-invalid",
-				disabled() && "qc-dropdown-list-disabled"
+				invalid() && "qc-dropdown-list-invalid"
 			]));
 
 			set_style(div_1, `--dropdown-width: ${get(usedWidth) / (0.16 * precentRootFontSize)}rem;
@@ -12603,6 +12602,7 @@
 				attribute: 'combo-aria-required',
 				type: 'Boolean'
 			},
+			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			searchPlaceholder: {
 				attribute: 'search-placeholder',

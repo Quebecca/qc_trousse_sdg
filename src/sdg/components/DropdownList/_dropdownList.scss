@@ -15,10 +15,6 @@ $border: 1;
   &.qc-dropdown-list-invalid {
     border: rem(2) solid token-value(color, red, regular) !important;
   }
-
-  &.qc-dropdown-list-disabled {
-    background-color: token-value(color, grey, pale) !important;
-  }
 }
 
 .qc-dropdown-list-search {
@@ -50,6 +46,14 @@ $border: 1;
 
   &:hover {
     cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    &::before {
+      background-color: token-value(color, grey, pale);
+    }
   }
 }
 

@@ -113,7 +113,6 @@
         class={[
             "qc-dropdown-list",
             invalid && "qc-dropdown-list-invalid",
-            disabled && "qc-dropdown-list-disabled"
         ]}
         style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
                --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
@@ -124,7 +123,6 @@
         <button
                 id={inputId}
                 class="qc-dropdown-button"
-
                 onclick={handleDropdownButtonClick}
                 onkeydown={handleTab}
                 {disabled}
