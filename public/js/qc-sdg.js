@@ -10483,14 +10483,13 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[27, 0]]);
+	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[26, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let variant = prop($$props, 'variant', 7, "primary"),
-			size = prop($$props, 'size', 7),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
 			inverted = prop($$props, 'inverted', 7, false),
@@ -10505,7 +10504,6 @@
 					'$$legacy',
 					'$$host',
 					'variant',
-					'size',
 					'type',
 					'disabled',
 					'inverted',
@@ -10555,13 +10553,6 @@
 			},
 			set variant($$value = "primary") {
 				variant($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
 				flushSync();
 			},
 			get type() {
@@ -10614,7 +10605,6 @@
 		Button,
 		{
 			variant: {},
-			size: {},
 			type: {},
 			disabled: {},
 			inverted: {},
@@ -10634,7 +10624,6 @@
 		push($$props, true);
 
 		let variant = prop($$props, 'variant', 7, "primary"),
-			size = prop($$props, 'size', 7),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
 			inverted = prop($$props, 'inverted', 7, false),
@@ -10649,7 +10638,6 @@
 					'$$legacy',
 					'$$host',
 					'variant',
-					'size',
 					'type',
 					'disabled',
 					'inverted',
@@ -10662,9 +10650,6 @@
 			{
 				get variant() {
 					return variant();
-				},
-				get size() {
-					return size();
 				},
 				get type() {
 					return type();
@@ -10694,13 +10679,6 @@
 			},
 			set variant($$value = "primary") {
 				variant($$value);
-				flushSync();
-			},
-			get size() {
-				return size();
-			},
-			set size($$value) {
-				size($$value);
 				flushSync();
 			},
 			get type() {
@@ -10753,7 +10731,6 @@
 		ButtonWC,
 		{
 			variant: { attribute: 'variant', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
 			type: { attribute: 'type', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			inverted: { attribute: 'inverted', type: 'Boolean' },

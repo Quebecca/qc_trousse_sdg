@@ -3,7 +3,6 @@
   shadow: 'none',
   props: {
     variant: { attribute: 'variant', type: 'String' },
-    size: { attribute: 'size', type: 'String' },
     type: { attribute: 'type', type: 'String' },
     disabled: { attribute: 'disabled', type: 'Boolean' },
     inverted: { attribute: 'inverted', type: 'Boolean' },
@@ -18,7 +17,6 @@
 
     let {
         variant = "primary",
-        size,
         type = "button",
         disabled = false,
         inverted = false,
@@ -31,7 +29,6 @@
 
 <Button
         {variant}
-        {size}
         {type}
         {disabled}
         {inverted}

@@ -1,7 +1,6 @@
 <script>
     let {
         variant = "primary",
-        size,
         type = "button",
         disabled = false,
         inverted = false,
