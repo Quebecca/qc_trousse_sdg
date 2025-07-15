@@ -1,6 +1,7 @@
 <script>
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
+    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -53,7 +54,6 @@
     // Génération des ID pour le aria-describedby
     const uid = Math.random().toString(36).substring(2, 10);
     const inputId = `textfield-${uid}`;
-    const labelId = `label-${uid}`;
     const descriptionId = `description-${uid}`;
     const errorId = `error-${uid}`;
     const charCountId = `charcount-${uid}`;
@@ -72,11 +72,13 @@
      disabled && "qc-disabled"
     ]}>
     {#if label}
-        <label for={inputId} id={labelId}>
-            {label}
-            {#if required}
-                <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
-        </label>
+        <Label
+            forId={inputId}
+            text={label}
+            {required}
+            {disabled}
+            bold
+        />
     {/if}
 
     {#if description}
