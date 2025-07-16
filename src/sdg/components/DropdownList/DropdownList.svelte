@@ -9,7 +9,7 @@
     let {
         id = Math.random().toString(36).substring(2, 15),
         legend = "",
-        width = "md",
+        width = "lg",
         items,
         placeholder = "Choisissez une option:",
         noOptionsMessage = "Aucune option disponible",

@@ -11956,7 +11956,7 @@
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			legend = prop($$props, 'legend', 7, ""),
-			width = prop($$props, 'width', 7, "md"),
+			width = prop($$props, 'width', 7, "lg"),
 			items = prop($$props, 'items', 7),
 			placeholder = prop($$props, 'placeholder', 7, "Choisissez une option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, "Aucune option disponible"),
@@ -12270,7 +12270,7 @@
 			get width() {
 				return width();
 			},
-			set width($$value = "md") {
+			set width($$value = "lg") {
 				width($$value);
 				flushSync();
 			},
