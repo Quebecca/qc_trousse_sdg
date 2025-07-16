@@ -128,11 +128,14 @@
                 aria-expanded={expanded}
                 bind:this={button}
         >
+            <span class="qc-dropdown-text">
                 {#if Utils.isTruthy(value)}
                     <span class="qc-dropdown-choice">{selectedOptionsText}</span>
                 {:else}
                     <span class="qc-dropdown-placeholder">{placeholder}</span>
                 {/if}
+            </span>
+
             <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
                 <Icon
                     type={disabled ? "chevron-grey-thin" : "chevron-blue-thin"}

@@ -11928,11 +11928,11 @@
 	}
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[132, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[134, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[150, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[133, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[135, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[153, 16]]);
 
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
 			103,
 			0,
@@ -11942,8 +11942,8 @@
 					112,
 					4,
 					[
-						[122, 8, [[136, 12]]],
-						[143, 8, [[160, 12]]]
+						[122, 8, [[131, 12], [139, 12]]],
+						[146, 8, [[163, 12]]]
 					]
 				]
 			]
@@ -12074,25 +12074,26 @@
 		button_1.__click = handleDropdownButtonClick;
 		button_1.__keydown = [handleTab, instance, expanded];
 
-		var node_1 = child(button_1);
+		var span_1 = child(button_1);
+		var node_1 = child(span_1);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var span_1 = root_2();
-				var text_1 = child(span_1, true);
+				var span_2 = root_2();
+				var text_1 = child(span_2, true);
 
-				reset(span_1);
+				reset(span_2);
 				template_effect(() => set_text(text_1, get(selectedOptionsText)));
-				append($$anchor, span_1);
+				append($$anchor, span_2);
 			};
 
 			var alternate = ($$anchor) => {
-				var span_2 = root_3();
-				var text_2 = child(span_2, true);
+				var span_3 = root_3();
+				var text_2 = child(span_3, true);
 
-				reset(span_2);
+				reset(span_3);
 				template_effect(() => set_text(text_2, placeholder()));
-				append($$anchor, span_2);
+				append($$anchor, span_3);
 			};
 
 			if_block(node_1, ($$render) => {
@@ -12100,8 +12101,10 @@
 			});
 		}
 
-		var span_3 = sibling(node_1, 2);
-		var node_2 = child(span_3);
+		reset(span_1);
+
+		var span_4 = sibling(span_1, 2);
+		var node_2 = child(span_4);
 		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
 
 		Icon(node_2, {
@@ -12111,7 +12114,7 @@
 			size: 'sm'
 		});
 
-		reset(span_3);
+		reset(span_4);
 		reset(button_1);
 		bind_this(button_1, ($$value) => set(button, $$value), () => get(button));
 
@@ -12234,7 +12237,7 @@
 			button_1.disabled = disabled();
 			set_attribute(button_1, 'aria-expanded', get(expanded));
 
-			set_class(span_3, 1, clsx([
+			set_class(span_4, 1, clsx([
 				"qc-dropdown-button-icon",
 				get(expanded) && "qc-dropdown-button-icon-expanded"
 			]));

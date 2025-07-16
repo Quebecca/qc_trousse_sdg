@@ -2550,6 +2550,7 @@ qc-textfield {
   border: none;
   padding-left: var(--qc-spacer-xs);
   padding-right: var(--qc-spacer-xs);
+  gap: var(--qc-spacer-xs);
   position: relative;
   z-index: 10;
   background: transparent;
@@ -2582,8 +2583,13 @@ qc-textfield {
   background-color: var(--qc-color-grey-pale);
 }
 
-.qc-dropdown-button-icon {
+.qc-dropdown-text {
   display: flex;
+  justify-items: start;
+  overflow: hidden;
+}
+
+.qc-dropdown-button-icon {
   align-items: center;
   rotate: 180deg;
 }
@@ -2592,8 +2598,13 @@ qc-textfield {
   transform: rotate(180deg);
 }
 
-.qc-dropdown-placeholder .qc-dropdown-choice {
+.qc-dropdown-choice, .qc-dropdown-placeholder {
+  display: block;
+  justify-content: start;
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
