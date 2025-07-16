@@ -1,193 +1,91 @@
 @use "qc-sdg-lib" as *;
-@use "sass:map";
 
-@mixin button(){
-  font-family: token-value(font family content);
-  font-size: rem(16);
-  line-height: rem(24);
+.qc-button {
+  font-family: "Open Sans";
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
   display: inline-block;
+  box-sizing: border-box;
+  min-width: 112px;
+  padding: 16px 24px;
+  transition: all 0.24s ease-in-out;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
-  transition: all 0.24s ease-in-out;
-  cursor: pointer;
-}
-
-@mixin button-common($color : null, $border : null, $background : null){
-  $properties: (color: $color, border-color: $border, background-color: $background);
-
-  @each $property, $value in $properties {
-    @if $value != null {
-      #{$property}: $value;
-    }
-  }
-}
-
-@mixin pseudo($Bhover, $BGhover, $Bfocus, $BGfocus, $Bvisited, $BGvisited, $Bdisabled, $BGdisabled){
-  &:hover {
-    border-color: $Bhover;
-    background-color: $BGhover;
-  }
-
-  &:focus {
-    border-color: $Bfocus; //token-value(color blue dark);
-    background-color: $BGfocus;
-    box-shadow: 0 0 0 2px token-value(color blue light);
-  }
-
-  &:visited {
-    border-color: $Bvisited;
-    background-color: $BGvisited;
-  }
-
-  &[disabled]  {
-    $inverted-color: if($BGdisabled != transparent, token-value(color grey regular), token-value(color grey light));
-    $standard-color: if($BGdisabled != transparent, token-value(color grey medium), token-value(color grey regular));
-    &:not(.inverted){
-      color: $inverted-color;
-    }
-    color: $standard-color;
-    border-color: $Bdisabled;
-    background-color: $BGdisabled;
-    box-shadow: none;
-    cursor: not-allowed;
-  }
-}
-
-.qc-button {
-  @include button;
-  font-weight: token-value(font weight bold);
-  min-width: rem(112);
-  min-height: rem(56);
-  padding: rem(16) rem(24);
-  margin: rem(24) rem(32) rem(24) 0;
   border: 2px solid transparent;
   border-radius: 0;
+  cursor: pointer;
+  margin-right: rem(32);
+  margin-bottom: token-value(spacer, md);
 
-  @include media-mobile(){
-    width: 100%;
-    height: 100%;
-    margin: 0 0 rem(24) 0;
+  &.qc-button-compact {
+    font-weight: 600;
+    min-width: 80px;
+    padding: 7px 15px;
+    border-width: 1px;
+  }
+
+  &.qc-button-rounded {
+    border-radius: 4px;
   }
 
   &.qc-primary {
-    @include button-common(token-value(color white), token-value(color blue piv), token-value(color blue piv));
-    box-shadow: 0 1px 4px token-value(box-shadow color);
+    color: token-value(color white);
+    border-color: token-value(color blue piv);
+    background-color: token-value(color blue piv);
+    box-shadow: 0 1px 4px token-value(color box_shadow);
 
-    @include pseudo(
-                    token-value(color blue regular), token-value(color blue regular),
-                    token-value(color blue dark), token-value(color blue regular),
-                    token-value(color blue light), token-value(color blue light),
-                    token-value(color grey light), token-value(color grey light)
-    );
-
-    &.inverted {
-      @include button-common(token-value(color blue dark), token-value(color white), token-value(color white));
-
-      @include pseudo(
-                      token-value(color blue pale), token-value(color blue pale),
-                      token-value(color blue dark), token-value(color blue pale),
-                      token-value(color grey extra), token-value(color grey extra),
-                      token-value(color grey regular), token-value(color grey regular)
-      );
+    &:hover:not(:disabled) {
+      border-color: token-value(color blue, regular);
+      background-color: token-value(color blue, regular);
     }
 
-  }
+    &:focus:not(:disabled) {
+      border-color: token-value(color blue, dark);
+      background-color: token-value(color blue, regular);
+      box-shadow:
+        0 2px 8px token-value(color, box_shadow),
+        0 0 0 2px token-value(color blue, light);
+    }
 
-  &.qc-secondary{
-    @include button-common(token-value(color blue piv), token-value(color blue piv), null);
-
-    @include pseudo(
-                    token-value(color blue piv), token-value(color blue pale),
-                    token-value(color blue dark), token-value(color blue pale),
-                    token-value(color blue piv), token-value(color blue extra),
-                    token-value(color grey light), transparent
-    );
-
-    &.inverted {
-      @include button-common(token-value(color white), token-value(color white), transparent);
-
-      @include pseudo(
-                      token-value(color white), rgba(map.get(map.get($xl-tokens, color), blue, pale), 0.07),
-                      token-value(color white), rgba(map.get(map.get($xl-tokens, color), blue, pale), 0.07),
-                      token-value(color white), rgba(map.get(map.get($xl-tokens, color), blue, pale), 0.1),
-                      token-value(color grey regular), transparent
-      );
+    &:active:not(:disabled) {
+      border-color: token-value(color blue, regular_light);
+      background-color: token-value(color blue, regular_light);
     }
   }
 
-  &.qc-tertiary{
-    @include button-common(token-value(color blue piv), null, null);
+  &.qc-secondary {
+    color: token-value(color blue, piv);
+    border-color: token-value(color blue, piv);
 
-    @include pseudo(
-                    token-value(color grey pale), token-value(color grey pale),
-                    token-value(color blue dark), token-value(color grey pale),
-                    token-value(color grey extra), token-value(color grey extra),
-                    transparent, transparent
-    );
-
-    &:hover,
-    &:focus,
-    &:visited {
-      text-decoration: underline;
+    &:not(:disabled):hover {
+      background-color: rgba(token-value(color blue, piv), 0.16);
     }
 
-    &.inverted {
-      @include button-common(token-value(color white), transparent, transparent);
+    &:not(:disabled):focus {
+      border-color: token-value(color blue, dark);
+      background-color: rgba(token-value(color blue, piv), 0.16);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
 
-      @include pseudo(
-                      transparent, rgba(map.get(map.get($xl-tokens, color), blue, pale), 0.07),
-                      rgba(map.get(map.get($xl-tokens, color), blue, light), 0.07) , rgba(map.get(map.get($xl-tokens, color), blue, pale), 0.07),
-                      token-value(color blue pale), token-value(color blue pale),
-                      transparent, transparent
-      );
+    &:not(:disabled):active {
+      background-color: rgba(token-value(color blue, piv), 0.08);
     }
   }
 
-  &.qc-danger{
-    @include button-common(token-value(color white), token-value(color red regular), token-value(color red regular));
 
-    @include pseudo(
-                    token-value(color red medium), token-value(color red medium),
-                    token-value(color blue dark), token-value(color red medium),
-                    token-value(color pink regular), token-value(color pink regular),
-                    token-value(color grey light), token-value(color grey light)
-    );
+  &:disabled,
+  &.disabled {
+    background-color: token-value(color grey, light);
+    border-color: token-value(color grey, light);
+    color: token-value(color, white);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 1;
   }
 
-  .qc-icon{
-    min-width: rem(16);
-    height: rem(16);
-    margin: -2px rem(8) 0 0;
+  &.inverted {
+
   }
-
-  .custom-icon {
-    background-image: url(#{$img-dir}/qc-sprite.svg?v={{pkg-version}}#arrow-right-white);
-    position: relative;
-    top: rem(2);
-  }
-
-  .icon-next{
-    margin: 0 0 0 rem(8);
-  }
-}
-
-.qc-button-compact{
-  @extend .qc-button;
-  font-weight: token-value(font weight semi-bold);
-  min-width: rem(80);
-  min-height: rem(40);
-  padding: rem(7) rem(15);
-  margin: rem(16) rem(24) rem(16) 0;
-  border: 1px solid transparent;
-}
-
-.qc-button-rounded{
-  @extend .qc-button;
-  border-radius: rem(4);
-}
-
-#boutons-exemple5{
-  background-color: token-value(color blue medium);
-  padding: 0 rem(24);
 }
