@@ -11610,9 +11610,9 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[43, 12]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[58, 8]]);
-	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[40, 0]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[48, 12]]);
+	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[63, 8]]);
+	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[45, 0]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11647,7 +11647,11 @@
 				selectedLabels = selectedLabels.filter((l) => strict_equals(l, label, false));
 			}
 
-			passValue()(selectedLabels.join(", "), selectedValues.join(", "));
+			if (selectedValues.length > 2) {
+				passValue()(`${selectedValues.length} options sélectionnées`, selectedValues.join(", "));
+			} else {
+				passValue()(selectedLabels.join(", "), selectedValues.join(", "));
+			}
 		}
 
 		var div = root$1();
@@ -11923,23 +11927,23 @@
 		}).catch(console.error);
 	}
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[115, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[138, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[140, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[156, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[132, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[134, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[150, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><!> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			108,
+			103,
 			0,
 			[
-				[112, 4],
+				[107, 4],
 				[
-					117,
+					112,
 					4,
 					[
-						[128, 8, [[142, 12]]],
-						[149, 8, [[166, 12]]]
+						[122, 8, [[136, 12]]],
+						[143, 8, [[160, 12]]]
 					]
 				]
 			]
@@ -11971,6 +11975,7 @@
 		const inputId = `${id()}-input`;
 		const labelId = `${id()}-label`;
 		const errorId = `${id()}-error`;
+		const availableWidths = ["sm", "md", "lg", "xl", "xxl"];
 
 		let instance = state(void 0),
 			button = state(void 0),
@@ -11979,20 +11984,13 @@
 			expanded = state(false),
 			searchText = state(""),
 			displayedItems = state(proxy(items())),
-			usedWidth = user_derived(() => {
-				// TODO transformer ces valeurs en tokens
-				switch (width()) {
-					case "sm":
-						return 156;
-
-					case "lg":
-						return 528;
-
-					default:
-						return 249;
+			widthClass = user_derived(() => {
+				if (availableWidths.includes(width())) {
+					return `qc-dropdown-list-${width()}`;
 				}
+
+				return `qc-dropdown-list-lg`;
 			}),
-			widthClass = user_derived(() => `qc-dropdown-list--${width()}`),
 			usedHeight = user_derived(() => {
 				const maxItemsHeight = 330;
 				const searchInputTotalHeight = 56;
@@ -12232,9 +12230,7 @@
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
-			set_style(div_1, `--dropdown-width: ${get(usedWidth) / (0.16 * precentRootFontSize)}rem;
-               --dropdown-items-height: ${get(usedHeight) / (0.16 * precentRootFontSize)}rem;`);
-
+			set_style(div_1, `--dropdown-items-height: ${get(usedHeight) / (0.16 * precentRootFontSize)}rem;`);
 			button_1.disabled = disabled();
 			set_attribute(button_1, 'aria-expanded', get(expanded));
 

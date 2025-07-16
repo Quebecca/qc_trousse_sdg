@@ -29,6 +29,7 @@
     const inputId = `${id}-input`;
     const labelId = `${id}-label`;
     const errorId = `${id}-error`;
+    const availableWidths = ["sm", "md", "lg", "xl", "xxl"];
 
     let instance = $state(),
         button = $state(),
@@ -37,18 +38,12 @@
         expanded = $state(false),
         searchText = $state(""),
         displayedItems = $state(items),
-        usedWidth = $derived.by(() => {
-            // TODO transformer ces valeurs en tokens
-            switch (width) {
-                case "sm":
-                    return 156;
-                case "lg":
-                    return 528;
-                default:
-                    return 249;
+        widthClass = $derived.by(() => {
+            if (availableWidths.includes(width)) {
+                return `qc-dropdown-list-${width}`;
             }
+            return `qc-dropdown-list-lg`;
         }),
-        widthClass = $derived(`qc-dropdown-list--${width}`),
         usedHeight = $derived.by(() => {
             const maxItemsHeight = 330;
             const searchInputTotalHeight = 56;
@@ -119,8 +114,7 @@
             `qc-dropdown-list ${widthClass}`,
             invalid && "qc-dropdown-list-invalid",
         ]}
-        style="--dropdown-width: {usedWidth / (0.16 * precentRootFontSize)}rem;
-               --dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
+        style="--dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
         tabindex="-1"
         bind:this={instance}

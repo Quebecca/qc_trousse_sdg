@@ -33,7 +33,12 @@
             selectedValues = selectedValues.filter(v => v !== itemValue);
             selectedLabels = selectedLabels.filter(l => l !== label);
         }
-        passValue(selectedLabels.join(", "), selectedValues.join(", "));
+
+        if (selectedValues.length > 2) {
+            passValue(`${selectedValues.length} options sélectionnées`, selectedValues.join(", "));
+        } else {
+            passValue(selectedLabels.join(", "), selectedValues.join(", "));
+        }
     }
 </script>
 
