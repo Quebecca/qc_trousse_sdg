@@ -19,7 +19,7 @@
         required = false,
         disabled = false,
         invalid = $bindable(false),
-        invalidText,
+        invalidText = "Veuillez sélectionner au moins une option.",
         searchPlaceholder = "",
         emptyOptionSrMessage = "",
         multiple = false,

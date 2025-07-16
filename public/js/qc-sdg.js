@@ -11986,7 +11986,7 @@
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
+			invalidText = prop($$props, 'invalidText', 7, "Veuillez sélectionner au moins une option."),
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
 			emptyOptionSrMessage = prop($$props, 'emptyOptionSrMessage', 7, ""),
 			multiple = prop($$props, 'multiple', 7, false);
@@ -12360,7 +12360,9 @@
 			get invalidText() {
 				return invalidText();
 			},
-			set invalidText($$value) {
+			set invalidText(
+				$$value = "Veuillez sélectionner au moins une option."
+			) {
 				invalidText($$value);
 				flushSync();
 			},
