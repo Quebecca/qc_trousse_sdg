@@ -52,7 +52,6 @@
         displaySearchForm = true;
       }
     });
-
 </script>
 
 <div role="banner"

@@ -1,5 +1,6 @@
 <script>
 import Icon from "../Icon/Icon.svelte";
+
 import { tick } from "svelte";
 let {invalid , invalidText} = $props();
 </script>
@@ -8,8 +9,8 @@ let {invalid , invalidText} = $props();
      role="alert">
     {#await tick()}
     <!-- svelte-ignore block_empty -->
-    {:then}
-    <Icon
+    {:then _}
+        <Icon
                 type="warning"
                 color="red-regular"
                 width="var(--error-icon-width)"

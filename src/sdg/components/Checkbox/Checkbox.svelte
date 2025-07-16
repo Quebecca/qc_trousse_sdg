@@ -1,26 +1,27 @@
 <script>
     import { Utils } from "../utils";
-    import Icon from "../Icon/Icon.svelte";
     import FormError from "../FormError/FormError.svelte";
     import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
     let {
-        value,
         label,
+        value = label,
         name,
         disabled = false,
         checked = $bindable(false),
         required = false,
         compact,
+        tiled,
+        description,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
         ...rest
     } = $props();
     
-    let id = $derived(name + "_" + value);
+    let id = $derived(rest.id ?? `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`);
 
     $effect(() => {
         if (checked) {
@@ -32,30 +33,33 @@
 </script>
 
 {#snippet checkboxRow()}
-    <div class={[
-        "qc-check-row",
-        !parentGroup && compact && "qc-compact",
-        ]}>
+    <label
+            class={[
+            !tiled && "qc-check-row",
+            tiled && "qc-selection-button"
+        ]}
+            for={id}>
         <input
-            type="checkbox"
-            {value}
-            {name}
-            {id}
-            {disabled}
-            bind:checked
-            aria-required = {required}
-            aria-invalid={invalid}
-            {...rest}
-            onchange={() => { if (checked) invalid = false}}
+                class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
+                type="checkbox"
+                {value}
+                {name}
+                {id}
+                {disabled}
+                bind:checked
+                aria-required = {required}
+                aria-invalid={invalid}
+                {...rest}
+                onchange={() => { if (checked) invalid = false}}
         />
-        <Label
-            forId={id}
-            text={label}
-            required={!parentGroup && required}
-            compact={compact}
-            disabled={disabled}
-        />
-    </div>
+        <span class="qc-check-text">
+            <span class="qc-check-label">{label}</span>
+            {#if description}
+                <span class="qc-check-description">{@html description}</span>
+            {/if}
+        </span>
+    </label>
+
     {#if !parentGroup}
         <FormError {invalid} {invalidText} />
     {/if}
@@ -64,10 +68,10 @@
 {#if parentGroup}
     {@render checkboxRow()}
 {:else}
-<div class={[
+    <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
-        ]}>
-    {@render checkboxRow()}
-</div>
+    ]}>
+        {@render checkboxRow()}
+    </div>
 {/if}

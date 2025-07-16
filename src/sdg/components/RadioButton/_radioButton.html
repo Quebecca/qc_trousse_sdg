@@ -1,7 +1,8 @@
 <h2 id="radio-button">Boutons radio</h2>
+<p>Les boutons radio sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.</p>
 <h3>Exemples</h3>
 
-<qc-doc-exemple caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
+<qc-doc-exemple caption="Exemple de boutons radio avec différents états">
   <qc-radio-group id="exemple-radio-md"
                   legend="Choisissez une option :"
                   name="ex-md"
@@ -26,12 +27,12 @@
     const group = document.getElementById("exemple-radio-md");
 
     group.addEventListener("change", () => {
-      const checkedValue = group.querySelector("input:checked").value;
+      console.log(group.querySelector("input:checked").value);
     });
   </script>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
+<qc-doc-exemple caption="Exemple de boutons radio au format compact">
   <qc-radio-group legend="Choisissez une option :"
                   name="ex-sm"
                   compact >
@@ -102,7 +103,7 @@
     document
             .getElementById("radio-form")
             .addEventListener("submit", (e) => {
-              event.preventDefault();
+              e.preventDefault();
               let doSubmit = true;
               e.target.querySelectorAll("[required]").forEach(group => {
                 if (!group.checked) {
@@ -113,7 +114,7 @@
               if(doSubmit) {
                 alert(
                         "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("qc-radio-group"))
+                        + Array.from(e.target.querySelectorAll("qc-radio-group"))
                                 .map(group => `Valeur pour ${group.name} : ${group.value  ? group.value : "vide"}`)
                                 .join("\n")
 
@@ -123,9 +124,9 @@
   </script>
 </qc-doc-exemple>
 
-<h4>Documentation technique</h4>
+<h3 id="radio-button-attributes">Documentation technique</h3>
 
-<h5>Attributs de qc-radio-group</h5>
+<h4>Attributs de qc-radio-group</h4>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">
@@ -160,7 +161,7 @@
       <td>required</td>
       <td>na</td>
       <td>na</td>
-      <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
     </tr>
     <tr>
       <td>disabled</td>
@@ -187,10 +188,11 @@
     </tbody>
   </table>
 </div>
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-<h5>Attributs de qc-radio-button</h5>
+<h4>Attributs de qc-radio-button</h4>
 
-<p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
+<p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">

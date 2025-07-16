@@ -5,6 +5,7 @@
   color: token-value(color, red, regular);
   align-items: start;
   font-weight: token-value(font weight content medium);
+  margin-top: token-value(spacer, sm);
   .qc-icon {
       display: flex;
       align-items: center;
