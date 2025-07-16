@@ -1537,9 +1537,9 @@
   </script>
 </qc-doc-exemple>
 
-<h4>Documentation technique</h4>
+<h3 id="radio-button-attributes">Documentation technique</h3>
 
-<h5>Attributs de qc-radio-group</h5>
+<h4>Attributs de qc-radio-group</h4>
 
 <div class="table-overflow">
   <table class="qc-table qc-striped">
@@ -1603,7 +1603,7 @@
 </div>
 <p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-<h5>Attributs de qc-radio-button</h5>
+<h4>Attributs de qc-radio-button</h4>
 
 <p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
 
@@ -1791,7 +1791,7 @@
 </qc-doc-exemple>
 
 
-<h3>Documentation technique</h3>
+<h3 id="checkbox-attributes">Documentation technique</h3>
 
 <h4>Attributs de qc-checkbox</h4>
 <div class="table-overflow">
@@ -1974,9 +1974,18 @@
         <qc-checkbox
                 label="Option 1"
                 description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
+                value="1"
         ></qc-checkbox>
-        <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-        <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
+        <qc-checkbox
+                label="Option 2 cochée par défaut"
+                checked="true"
+                value="2"
+        ></qc-checkbox>
+        <qc-checkbox
+                label="Option 3 désactivée"
+                disabled="true"
+                value="3"
+        ></qc-checkbox>
     </qc-checkbox-group>
 </qc-doc-exemple>
 
@@ -2037,7 +2046,10 @@
             <td>column-count</td>
             <td>Nombre</td>
             <td>1</td>
-            <td>Nombre de colonnes de la grille de boutons de sélection</td>
+            <td>
+                Nombre de colonnes de la grille de boutons de sélection.
+                <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
+            </td>
         </tr>
         <tr>
             <td>inline</td>
@@ -2053,6 +2065,97 @@
     Pour les attributs spécifiques à chaque variante de boutons de sélection, voir les attributs des
     <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.
 </p>
+
+
+    <!-- Commutateur -->
+<h2 id="toggle-switch">Commutateur</h2>
+
+<h3>Exemples</h3>
+<qc-doc-exemple caption="Exemple de commutateurs avec étiquettes simples">
+    <qc-toggle-switch
+            id="switch-status"
+            label="Afficher l'état du commutateur à la console"
+    ></qc-toggle-switch>
+
+    <script>
+        document.getElementById("switch-status")
+            .addEventListener("change", (event) => {
+                console.log(event.target.checked);
+            });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
+    <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
+    <div
+            style="display: inline-flex; flex-direction: column; gap: 0.8rem;"
+            id="switch-group"
+    >
+        <qc-toggle-switch
+                label="Nouveaux messages"
+                justify
+                checked
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Modifications de messages"
+                justify
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages où je suis mentionné(e)"
+                justify
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages supprimés (indisponible)"
+                justify
+                disabled
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-group")
+            .addEventListener("change", (event) => {
+                console.log(`${event.target.id} mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>label</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu du libelé se trouvant à gauche du commutateur</td>
+    </tr>
+    <tr>
+        <td>checked</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active le commutateur par défaut</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le commutateur</td>
+    </tr>
+    <tr>
+        <td>justify</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Permet au commutateur et son libelé de prendre tout l'espace horizontal disponible</td>
+    </tr>
+    </tbody>
+</table>
 
     <h2 id="textfield">Champ texte</h2>
 
@@ -2256,97 +2359,6 @@
 </div>
 
 <hr/>
-
-    <!-- Commutateur -->
-<h2 id="toggle-switch">Commutateur</h2>
-
-<h3>Exemples</h3>
-<qc-doc-exemple caption="Exemple de commutateurs avec étiquettes simples">
-    <qc-toggle-switch
-            id="switch-status"
-            label="Afficher l'état du commutateur à la console"
-    ></qc-toggle-switch>
-
-    <script>
-        document.getElementById("switch-status")
-            .addEventListener("change", (event) => {
-                console.log(event.target.checked);
-            });
-    </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
-    <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
-    <div
-            style="display: inline-flex; flex-direction: column; gap: 0.8rem;"
-            id="switch-group"
-    >
-        <qc-toggle-switch
-                label="Nouveaux messages"
-                justify
-                checked
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Modifications de messages"
-                justify
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Messages où je suis mentionné(e)"
-                justify
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                label="Messages supprimés (indisponible)"
-                justify
-                disabled
-        ></qc-toggle-switch>
-    </div>
-
-    <script>
-        document.getElementById("switch-group")
-            .addEventListener("change", (event) => {
-                console.log(`${event.target.id} mis à ${event.target.checked}`);
-            });
-    </script>
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-<table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>label</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu du libelé se trouvant à gauche du commutateur</td>
-    </tr>
-    <tr>
-        <td>checked</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Active le commutateur par défaut</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le commutateur</td>
-    </tr>
-    <tr>
-        <td>justify</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Permet au commutateur et son libelé de prendre tout l'espace horizontal disponible</td>
-    </tr>
-    </tbody>
-</table>
-
 
   </div>
 </main>
