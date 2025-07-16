@@ -73,6 +73,10 @@
     &:checked {
       border-color: token-value(color blue regular);
     }
+
+    &.qc-compact {
+      margin-top: rem(4);
+    }
   }
 }
 
@@ -125,7 +129,6 @@
     min-height: token-value(spacer, sm);
     max-width: token-value(spacer, sm);
     max-height: token-value(spacer, sm);
-    margin-top: rem(4);
     border-width: 1px;
   }
 }

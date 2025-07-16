@@ -9712,17 +9712,17 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$4 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[63, 16]]);
+	var root_2$4 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[69, 16]]);
 
 	var root_1$3 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
-			36,
+			45,
 			4,
-			[[42, 8], [60, 8, [[61, 12]]]]
+			[[48, 8], [66, 8, [[67, 12]]]]
 		]
 	]);
 
-	var root_5$1 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[76, 4]]);
+	var root_5$1 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[82, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -9792,12 +9792,8 @@
 			}
 
 			template_effect(
-				($0) => {
-					set_class(label_1, 1, clsx([
-						!tiled() && "qc-check-row",
-						tiled() && "qc-selection-button"
-					]));
-
+				($0, $1) => {
+					set_class(label_1, 1, $0);
 					set_attribute(label_1, 'for', get(id));
 
 					attributes = set_attributes(input, attributes, {
@@ -9809,13 +9805,14 @@
 						disabled: disabled(),
 						'aria-required': required(),
 						'aria-invalid': invalid(),
-						...$0,
+						...$1,
 						onchange: event_handler
 					});
 
 					set_text(text, label());
 				},
 				[
+					() => clsx(chooseCheckboxClass()),
 					() => Utils.computeFieldsAttributes("checkbox", rest)
 				]
 			);
@@ -9834,6 +9831,7 @@
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7),
 			tiled = prop($$props, 'tiled', 7),
+			dropdownListItem = prop($$props, 'dropdownListItem', 7),
 			description = prop($$props, 'description', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
@@ -9854,6 +9852,7 @@
 					'required',
 					'compact',
 					'tiled',
+					'dropdownListItem',
 					'description',
 					'invalid',
 					'invalidText',
@@ -9868,6 +9867,18 @@
 				invalid(false);
 			}
 		});
+
+		function chooseCheckboxClass() {
+			if (tiled()) {
+				return "qc-selection-button";
+			}
+
+			if (dropdownListItem()) {
+				return "qc-dropdown-list-checkbox";
+			}
+
+			return "qc-check-row";
+		}
 
 		var fragment_2 = comment();
 		var node_3 = first_child(fragment_2);
@@ -9956,6 +9967,13 @@
 				tiled($$value);
 				flushSync();
 			},
+			get dropdownListItem() {
+				return dropdownListItem();
+			},
+			set dropdownListItem($$value) {
+				dropdownListItem($$value);
+				flushSync();
+			},
 			get description() {
 				return description();
 			},
@@ -10008,6 +10026,7 @@
 			required: {},
 			compact: {},
 			tiled: {},
+			dropdownListItem: {},
 			description: {},
 			invalid: {},
 			invalidText: {},
@@ -11611,7 +11630,7 @@
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
 	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[48, 12]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[63, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[64, 8]]);
 	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[45, 0]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
@@ -11680,6 +11699,7 @@
 							return get(item).disabled;
 						},
 						parentGroup: 'true',
+						dropdownListItem: 'true',
 						compact: 'true',
 						'checkbox-onkeydown': (e) => handleKeyDown(e, index),
 						handleChange: (e) => handleChange(e, get(item).label, get(item).value),

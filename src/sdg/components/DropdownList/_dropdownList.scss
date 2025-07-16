@@ -175,6 +175,7 @@ $border: 1;
 
 .qc-dropdown-list-multiple {
   label {
+    margin: 0;
     padding-left: token-value(spacer, xs);
     padding-right: token-value(spacer, xs);
 

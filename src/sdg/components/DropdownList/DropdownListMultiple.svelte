@@ -53,6 +53,7 @@
                     {name}
                     disabled={item.disabled}
                     parentGroup="true"
+                    dropdownListItem="true"
                     compact="true"
                     checkbox-onkeydown={(e) => handleKeyDown(e, index)}
                     handleChange={(e) => handleChange(e, item.label, item.value)}

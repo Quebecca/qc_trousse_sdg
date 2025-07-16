@@ -14,6 +14,7 @@
         required = false,
         compact,
         tiled,
+        dropdownListItem,
         description,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
@@ -30,15 +31,20 @@
         }
     });
 
-
+    function chooseCheckboxClass() {
+        if (tiled) {
+            return "qc-selection-button";
+        }
+        if (dropdownListItem) {
+            return "qc-dropdown-list-checkbox";
+        }
+        return "qc-check-row";
+    }
 </script>
 
 {#snippet checkboxRow()}
     <label
-            class={[
-            !tiled && "qc-check-row",
-            tiled && "qc-selection-button"
-        ]}
+            class={chooseCheckboxClass()}
             for={id}>
         <input
                 class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
