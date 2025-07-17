@@ -104,8 +104,12 @@
   --qc-color-pink-regular-rgb: 229, 130, 113;
   --qc-color-red-pale: var(--qc-color-pink-pale);
   --qc-color-red-light: var(--qc-color-pink-regular);
+  --qc-color-red-regular_light: #eb705a;
+  --qc-color-red-regular_light-rgb: 235, 112, 90;
   --qc-color-red-regular: #cb381f;
   --qc-color-red-regular-rgb: 203, 56, 31;
+  --qc-color-red-medium: #b52e16;
+  --qc-color-red-medium-rgb: 181, 46, 22;
   --qc-color-red-dark: #692519;
   --qc-color-red-dark-rgb: 105, 37, 25;
   --qc-color-green-pale: #d7f0bb;
@@ -224,8 +228,12 @@
   --qc-color-pink-pale-rgb: 79, 24, 14;
   --qc-color-pink-regular: #BB3A23;
   --qc-color-pink-regular-rgb: 187, 58, 35;
+  --qc-color-red-regular_light: #D34027;
+  --qc-color-red-regular_light-rgb: 211, 64, 39;
   --qc-color-red-regular: #F26049;
   --qc-color-red-regular-rgb: 242, 96, 73;
+  --qc-color-red-medium: #F19387;
+  --qc-color-red-medium-rgb: 241, 147, 135;
   --qc-color-red-dark: #F3BCB6;
   --qc-color-red-dark-rgb: 243, 188, 182;
   --qc-color-green-pale: #1E2F17;
@@ -376,8 +384,16 @@ body:focus-within {
   background-color: var(--qc-color-red-light);
 }
 
+.qc-bg-color-red-regular_light {
+  background-color: var(--qc-color-red-regular_light);
+}
+
 .qc-bg-color-red-regular {
   background-color: var(--qc-color-red-regular);
+}
+
+.qc-bg-color-red-medium {
+  background-color: var(--qc-color-red-medium);
 }
 
 .qc-bg-color-red-dark {
@@ -2229,6 +2245,39 @@ qc-search-bar {
 }
 .qc-button.qc-secondary:active:not(:disabled) {
   background-color: rgba(9, 87, 151, 0.08);
+}
+.qc-button.qc-tertiary {
+  color: var(--qc-color-blue-piv);
+  border-color: var(--qc-color-white);
+  background-color: var(--qc-color-white);
+}
+.qc-button.qc-tertiary:hover:not(:disabled) {
+  background-color: rgba(197, 202, 210, 0.24);
+  text-decoration: underline;
+}
+.qc-button.qc-tertiary:focus:not(:disabled) {
+  border-color: var(--qc-color-blue-dark);
+  background-color: rgba(197, 202, 210, 0.24);
+  box-shadow: 0 0 0 2px var(--qc-color-blue-light);
+}
+.qc-button.qc-tertiary:active:not(:disabled) {
+  background-color: rgba(197, 202, 210, 0.16);
+}
+.qc-button.qc-danger {
+  color: var(--qc-color-white);
+  border-color: var(--qc-color-white);
+  background-color: var(--qc-color-red-regular);
+}
+.qc-button.qc-danger:hover:not(:disabled) {
+  background-color: var(--qc-color-red-medium);
+}
+.qc-button.qc-danger:focus:not(:disabled) {
+  border-color: var(--qc-color-blue-dark);
+  background-color: var(--qc-color-red-medium);
+  box-shadow: 0 0 0 2px var(--qc-color-blue-light);
+}
+.qc-button.qc-danger:active:not(:disabled) {
+  background-color: var(--qc-color-red-regular_light);
 }
 .qc-button:disabled, .qc-button.disabled {
   background-color: var(--qc-color-grey-light);

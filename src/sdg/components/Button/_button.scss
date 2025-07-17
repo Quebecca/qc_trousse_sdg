@@ -76,6 +76,46 @@
     }
   }
 
+  &.qc-tertiary {
+    color: token-value(color blue, piv);
+    border-color: token-value(color white);
+    background-color: token-value(color white);
+
+    &:hover:not(:disabled) {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      text-decoration: underline;
+    }
+
+    &:focus:not(:disabled) {
+      border-color: token-value(color blue, dark);
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled) {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.16);
+    }
+  }
+
+  &.qc-danger {
+    color: token-value(color white);
+    border-color: token-value(color white);
+    background-color: token-value(color red regular);
+
+    &:hover:not(:disabled) {
+      background-color: token-value(color red medium);
+    }
+
+    &:focus:not(:disabled) {
+      border-color: token-value(color blue, dark);
+      background-color: token-value(color red medium);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled) {
+      background-color: token-value(color red regular_light);
+    }
+  }
 
   &:disabled,
   &.disabled {

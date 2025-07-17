@@ -83,8 +83,12 @@
   --qc-color-pink-regular-rgb: 229, 130, 113;
   --qc-color-red-pale: var(--qc-color-pink-pale);
   --qc-color-red-light: var(--qc-color-pink-regular);
+  --qc-color-red-regular_light: #eb705a;
+  --qc-color-red-regular_light-rgb: 235, 112, 90;
   --qc-color-red-regular: #cb381f;
   --qc-color-red-regular-rgb: 203, 56, 31;
+  --qc-color-red-medium: #b52e16;
+  --qc-color-red-medium-rgb: 181, 46, 22;
   --qc-color-red-dark: #692519;
   --qc-color-red-dark-rgb: 105, 37, 25;
   --qc-color-green-pale: #d7f0bb;
@@ -203,8 +207,12 @@
   --qc-color-pink-pale-rgb: 79, 24, 14;
   --qc-color-pink-regular: #BB3A23;
   --qc-color-pink-regular-rgb: 187, 58, 35;
+  --qc-color-red-regular_light: #D34027;
+  --qc-color-red-regular_light-rgb: 211, 64, 39;
   --qc-color-red-regular: #F26049;
   --qc-color-red-regular-rgb: 242, 96, 73;
+  --qc-color-red-medium: #F19387;
+  --qc-color-red-medium-rgb: 241, 147, 135;
   --qc-color-red-dark: #F3BCB6;
   --qc-color-red-dark-rgb: 243, 188, 182;
   --qc-color-green-pale: #1E2F17;
