@@ -2307,10 +2307,8 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 
 .qc-switch {
-  display: flex;
-  grid-template-columns: auto 1fr;
+  display: inline-flex;
   margin: 0;
-  justify-content: flex-end;
   gap: var(--qc-spacer-sm);
   position: relative;
   cursor: pointer;
@@ -2347,6 +2345,9 @@ input[type=checkbox]:checked.qc-compact::after {
 
 .qc-switch-label {
   margin-top: 0.3rem;
+}
+
+.qc-switch-label-left {
   justify-self: end;
 }
 

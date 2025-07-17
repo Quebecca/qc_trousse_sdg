@@ -6,10 +6,8 @@ $height: 32;
 $border: 1;
 
 .qc-switch {
-  display: flex;
-  grid-template-columns: auto 1fr;
+  display: inline-flex;
   margin: 0;
-  justify-content: flex-end;
   gap: token-value(spacer, sm);
   position: relative;
   cursor: pointer;
@@ -54,6 +52,9 @@ $border: 1;
 
 .qc-switch-label {
   margin-top: rem(3);
+}
+
+.qc-switch-label-left {
   justify-self: end;
 }
 

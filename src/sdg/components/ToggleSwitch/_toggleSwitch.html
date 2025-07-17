@@ -19,7 +19,7 @@
 <qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
     <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
     <div
-            style="display: inline-flex; flex-direction: column; gap: 2.4rem;"
+            style="display: inline-flex; flex-direction: column; align-items: end; gap: 2.4rem;"
             id="switch-group"
     >
         <qc-toggle-switch
@@ -50,6 +50,40 @@
     </script>
 </qc-doc-exemple>
 
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec étiquette à droite dans différents états">
+    <h4 style="margin-bottom: 2.4rem; margin-top: 0;">Préférences de notifications de messages</h4>
+    <div
+            style="display: inline-flex; flex-direction: column; gap: 2.4rem;"
+            id="switch-group-right"
+    >
+        <qc-toggle-switch
+                label="Nouveaux messages"
+                checked
+                label-position="right"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Modifications de messages"
+                label-position="right"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages où je suis mentionné(e)"
+                label-position="right"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages supprimés (indisponible)"
+                label-position="right"
+                disabled
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-group-right")
+            .addEventListener("change", (event) => {
+                console.log(`${event.target.id} mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
 <h3>Documentation technique</h3>
 <table class="qc-table qc-striped component-attributes-description">
     <thead>
@@ -65,7 +99,7 @@
         <td>label</td>
         <td>Contenu HTML</td>
         <td></td>
-        <td>Contenu du libelé se trouvant à gauche du commutateur</td>
+        <td>Contenu du libellé du commutateur</td>
     </tr>
     <tr>
         <td>checked</td>
@@ -80,10 +114,10 @@
         <td>Désactive le commutateur</td>
     </tr>
     <tr>
-        <td>justify</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Permet au commutateur et son libelé de prendre tout l'espace horizontal disponible</td>
+        <td>label-position</td>
+        <td>"left" ou "right"</td>
+        <td>"left"</td>
+        <td>Position du libellé par rapport au commutateur</td>
     </tr>
     </tbody>
 </table>
