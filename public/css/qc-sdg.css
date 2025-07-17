@@ -2307,14 +2307,13 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 
 .qc-switch {
+  display: flex;
+  grid-template-columns: auto 1fr;
   margin: 0;
-  align-items: center;
+  justify-content: flex-end;
   gap: var(--qc-spacer-sm);
   position: relative;
   cursor: pointer;
-}
-.qc-switch:not(.qc-switch-justify) {
-  display: inline-flex;
 }
 .qc-switch:has(input:disabled) {
   color: var(--qc-color-grey-regular);
@@ -2344,10 +2343,10 @@ input[type=checkbox]:checked.qc-compact::after {
 .qc-switch input[type=checkbox]:disabled ~ .qc-switch-slider::before {
   outline: transparent;
 }
-.qc-switch.qc-switch-justify {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
+
+.qc-switch-label {
+  margin-top: 0.3rem;
+  justify-self: end;
 }
 
 .qc-switch-slider {
@@ -2356,6 +2355,8 @@ input[type=checkbox]:checked.qc-compact::after {
   cursor: pointer;
   min-width: 5.6rem;
   min-height: 3.2rem;
+  max-width: 5.6rem;
+  max-height: 3.2rem;
   top: 0;
   left: 0;
   right: 0;
