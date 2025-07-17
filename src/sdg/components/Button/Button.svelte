@@ -3,7 +3,6 @@
         variant = "primary",
         type = "button",
         disabled = false,
-        inverted = false,
         compact = false,
         rounded = false,
         label = "",
@@ -16,7 +15,6 @@
         className = [
             "qc-button",
             `qc-${variant}`,
-            inverted && "inverted",
             compact && "qc-button-compact",
             rounded && "qc-button-rounded"
         ].filter(Boolean).join(" ");

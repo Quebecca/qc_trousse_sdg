@@ -10483,7 +10483,7 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[26, 0]]);
+	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[24, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
@@ -10492,7 +10492,6 @@
 		let variant = prop($$props, 'variant', 7, "primary"),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
-			inverted = prop($$props, 'inverted', 7, false),
 			compact = prop($$props, 'compact', 7, false),
 			rounded = prop($$props, 'rounded', 7, false),
 			label = prop($$props, 'label', 7, ""),
@@ -10506,7 +10505,6 @@
 					'variant',
 					'type',
 					'disabled',
-					'inverted',
 					'compact',
 					'rounded',
 					'label'
@@ -10520,7 +10518,6 @@
 				[
 					"qc-button",
 					`qc-${variant()}`,
-					inverted() && "inverted",
 					compact() && "qc-button-compact",
 					rounded() && "qc-button-rounded"
 				].filter(Boolean).join(" "),
@@ -10569,13 +10566,6 @@
 				disabled($$value);
 				flushSync();
 			},
-			get inverted() {
-				return inverted();
-			},
-			set inverted($$value = false) {
-				inverted($$value);
-				flushSync();
-			},
 			get compact() {
 				return compact();
 			},
@@ -10607,7 +10597,6 @@
 			variant: {},
 			type: {},
 			disabled: {},
-			inverted: {},
 			compact: {},
 			rounded: {},
 			label: {}
@@ -10626,7 +10615,6 @@
 		let variant = prop($$props, 'variant', 7, "primary"),
 			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
-			inverted = prop($$props, 'inverted', 7, false),
 			compact = prop($$props, 'compact', 7, false),
 			rounded = prop($$props, 'rounded', 7, false),
 			label = prop($$props, 'label', 7, ""),
@@ -10640,7 +10628,6 @@
 					'variant',
 					'type',
 					'disabled',
-					'inverted',
 					'compact',
 					'rounded',
 					'label'
@@ -10656,9 +10643,6 @@
 				},
 				get disabled() {
 					return disabled();
-				},
-				get inverted() {
-					return inverted();
 				},
 				get compact() {
 					return compact();
@@ -10695,13 +10679,6 @@
 				disabled($$value);
 				flushSync();
 			},
-			get inverted() {
-				return inverted();
-			},
-			set inverted($$value = false) {
-				inverted($$value);
-				flushSync();
-			},
 			get compact() {
 				return compact();
 			},
@@ -10733,7 +10710,6 @@
 			variant: { attribute: 'variant', type: 'String' },
 			type: { attribute: 'type', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
-			inverted: { attribute: 'inverted', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
 			rounded: { attribute: 'rounded', type: 'Boolean' },
 			label: { attribute: 'label', type: 'String' }
