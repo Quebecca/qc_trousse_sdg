@@ -16,6 +16,8 @@
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         updateValue = () => {},
         formFieldElements,
+        elementsGap = "sm",
+        justifyEnd = false,
         children
     } = $props();
     let groupSelection = $state(),
@@ -23,7 +25,9 @@
             ? "id_" + name
             : "legend-" + Math.floor(Math.random() * 1000000 );
     onMount(() => {
-        groupSelection.append(...formFieldElements);
+        if (formFieldElements) {
+            groupSelection.append(...formFieldElements);
+        }
     });
 
     function chooseDivCLass(inline, tiled) {
@@ -53,7 +57,11 @@
         {/if}
     </legend>
     <div
-            class={chooseDivCLass(inline, tiled)}
+            class={[
+                chooseDivCLass(inline, tiled),
+                // justifyEnd && "qc-justify-end",
+                !tiled && `qc-field-elements-flex-${elementsGap}`,
+            ]}
             style="--column-count: {columnCount}"
             bind:this={groupSelection}
     >

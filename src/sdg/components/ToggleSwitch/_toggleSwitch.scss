@@ -56,6 +56,8 @@ $border: 1;
 
 .qc-switch-label-left {
   justify-self: end;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .qc-switch-slider {
