@@ -12128,31 +12128,29 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	function handleTab(event, instance, expanded) {
-		Utils.sleep(5).then(() => {
-			if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
-				set(expanded, false);
-			}
-		}).catch(console.error);
-	}
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[110, 12]]);
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[133, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[135, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[153, 16]]);
+	var on_keydown = (e, handleTab, handleEscape) => {
+		handleTab(e);
+		handleEscape(e);
+	};
+
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[139, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[141, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[159, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			103,
+			109,
 			0,
 			[
-				[107, 4],
+				[113, 4],
 				[
-					112,
+					118,
 					4,
 					[
-						[122, 8, [[131, 12], [139, 12]]],
-						[146, 8, [[163, 12]]]
+						[128, 8, [[137, 12], [145, 12]]],
+						[152, 8, [[169, 12]]]
 					]
 				]
 			]
@@ -12164,6 +12162,7 @@
 		push($$props, true);
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
+			value = prop($$props, 'value', 15, null),
 			legend = prop($$props, 'legend', 7, ""),
 			width = prop($$props, 'width', 7, "lg"),
 			items = prop($$props, 'items', 7),
@@ -12188,7 +12187,6 @@
 
 		let instance = state(void 0),
 			button = state(void 0),
-			value = state(""),
 			selectedOptionsText = state(""),
 			expanded = state(false),
 			searchText = state(""),
@@ -12222,6 +12220,20 @@
 			}
 		}
 
+		function handleTab(event) {
+			Utils.sleep(5).then(() => {
+				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
+					set(expanded, false);
+				}
+			}).catch(console.error);
+		}
+
+		function handleEscape(event) {
+			if (strict_equals(event.key, "Escape")) {
+				set(expanded, false);
+			}
+		}
+
 		function closeDropdown(key) {
 			set(expanded, false);
 
@@ -12245,7 +12257,7 @@
 		});
 
 		user_effect(() => {
-			if (Utils.isTruthy(get(value))) {
+			if (Utils.isTruthy(value())) {
 				invalid(false);
 			}
 		});
@@ -12281,7 +12293,7 @@
 
 		set_attribute(button_1, 'id', inputId);
 		button_1.__click = handleDropdownButtonClick;
-		button_1.__keydown = [handleTab, instance, expanded];
+		button_1.__keydown = [on_keydown, handleTab, handleEscape];
 
 		var span_1 = child(button_1);
 		var node_1 = child(span_1);
@@ -12306,7 +12318,7 @@
 			};
 
 			if_block(node_1, ($$render) => {
-				if (Utils.isTruthy(get(value))) $$render(consequent_1); else $$render(alternate, false);
+				if (Utils.isTruthy(value())) $$render(consequent_1); else $$render(alternate, false);
 			});
 		}
 
@@ -12374,7 +12386,7 @@
 					},
 					passValue: (l, v) => {
 						set(selectedOptionsText, l, true);
-						set(value, v, true);
+						value(v);
 					},
 					handleExit: (key) => closeDropdown(key)
 				});
@@ -12390,7 +12402,7 @@
 					},
 					passValue: (l, v) => {
 						set(selectedOptionsText, l, true);
-						set(value, v, true);
+						value(v);
 						set(expanded, false);
 					},
 					handleExit: (key) => closeDropdown(key)
@@ -12467,6 +12479,13 @@
 				$$value = Math.random().toString(36).substring(2, 15)
 			) {
 				id($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = null) {
+				value($$value);
 				flushSync();
 			},
 			get legend() {
@@ -12586,6 +12605,7 @@
 		DropdownList,
 		{
 			id: {},
+			value: {},
 			legend: {},
 			width: {},
 			items: {},
@@ -12613,7 +12633,10 @@
 		check_target(new.target);
 		push($$props, true);
 
+		var $$ownership_validator = create_ownership_validator($$props);
+
 		let invalid = prop($$props, 'invalid', 15, false),
+			value = prop($$props, 'value', 15, null),
 			rest = rest_props(
 				$$props,
 				[
@@ -12621,7 +12644,8 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'invalid'
+					'invalid',
+					'value'
 				]);
 
 		let items = state(proxy([]));
@@ -12643,17 +12667,29 @@
 			set(items, optionsValues, true);
 		});
 
-		DropdownList($$anchor, spread_props(
-			{
-				get items() {
-					return get(items);
+		{
+			$$ownership_validator.binding('value', DropdownList, value);
+
+			DropdownList($$anchor, spread_props(
+				{
+					get items() {
+						return get(items);
+					},
+					get invalid() {
+						return invalid();
+					}
 				},
-				get invalid() {
-					return invalid();
+				() => rest,
+				{
+					get value() {
+						return value();
+					},
+					set value($$value) {
+						value($$value);
+					}
 				}
-			},
-			() => rest
-		));
+			));
+		}
 
 		return pop({
 			get invalid() {
@@ -12661,6 +12697,13 @@
 			},
 			set invalid($$value = false) {
 				invalid($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value = null) {
+				value($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -12672,6 +12715,11 @@
 		{
 			id: { attribute: 'id', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
+			value: {
+				attribute: 'value',
+				reflect: true,
+				type: 'String'
+			},
 			enableSearch: { attribute: 'enable-search', type: 'Boolean' },
 			comboAriaLabel: { attribute: 'combo-aria-label', type: 'String' },
 			ariaRequired: {

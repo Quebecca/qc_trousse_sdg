@@ -8,6 +8,7 @@
 
     let {
         id = Math.random().toString(36).substring(2, 15),
+        value = $bindable(null),
         legend = "",
         width = "lg",
         items,
@@ -33,7 +34,6 @@
 
     let instance = $state(),
         button = $state(),
-        value = $state(""),
         selectedOptionsText = $state(""),
         expanded = $state(false),
         searchText = $state(""),
@@ -73,6 +73,12 @@
                 expanded = false;
             }
         }).catch(console.error);
+    }
+
+    function handleEscape(event) {
+        if (event.key === "Escape") {
+            expanded = false;
+        }
     }
 
     function closeDropdown(key) {
@@ -123,7 +129,7 @@
                 id={inputId}
                 class="qc-dropdown-button"
                 onclick={handleDropdownButtonClick}
-                onkeydown={handleTab}
+                onkeydown={(e) => {handleTab(e); handleEscape(e)}}
                 {disabled}
                 aria-expanded={expanded}
                 bind:this={button}

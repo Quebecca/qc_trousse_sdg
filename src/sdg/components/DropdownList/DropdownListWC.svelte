@@ -4,6 +4,7 @@
     props: {
         id: {attribute: 'id', type: 'String'},
         label: {attribute: 'label', type: 'String'},
+        value: {attribute: 'value', type: 'String', reflect: true},
         enableSearch: {attribute: 'enable-search', type: 'Boolean'},
         comboAriaLabel: {attribute: 'combo-aria-label', type: 'String'},
         ariaRequired: {attribute: 'combo-aria-required', type: 'Boolean'},
@@ -21,6 +22,7 @@
 
     let {
         invalid = $bindable(false),
+        value = $bindable(null),
         ...rest
     } = $props();
 
@@ -44,4 +46,4 @@
     });
 </script>
 
-<DropdownList {items} {invalid} {...rest} />
+<DropdownList {items} {invalid} bind:value {...rest} />
