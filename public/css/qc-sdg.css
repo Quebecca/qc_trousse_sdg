@@ -2331,6 +2331,7 @@ input[type=checkbox]:checked.qc-compact::after {
 }
 .qc-switch input[type=checkbox]:checked ~ .qc-switch-slider::before {
   transform: translateX(2.4rem);
+  outline: 0.1rem solid var(--qc-color-blue-piv);
 }
 .qc-switch input[type=checkbox]:focus ~ .qc-switch-slider {
   outline: 0.2rem solid var(--qc-color-blue-light);
@@ -2374,7 +2375,7 @@ input[type=checkbox]:checked.qc-compact::after {
   left: 0.2rem;
   bottom: 0.2rem;
   background-color: var(--qc-color-white);
-  outline: 0.1rem solid rgba(var(--qc-color-blue-dark-rgb), 50%);
+  outline: 0.1rem solid #464F5B;
   border-radius: 50%;
   transition: all 0.3s ease-out;
 }

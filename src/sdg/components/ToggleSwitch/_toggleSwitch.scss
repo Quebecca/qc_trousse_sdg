@@ -32,6 +32,7 @@ $border: 1;
 
       &::before {
         transform: translateX(rem($width - $height));
+        outline: rem($border) solid token-value(color, blue, piv);
       }
     }
 
@@ -81,7 +82,7 @@ $border: 1;
     left: rem(2*$border);
     bottom: rem(2*$border);
     background-color: token-value(color, white);
-    outline: rem($border) solid rgba(token-value(color, blue, dark, rgb), 50%);
+    outline: rem($border) solid #464F5B;
     border-radius: 50%;
     transition: all .3s ease-out;
   }
