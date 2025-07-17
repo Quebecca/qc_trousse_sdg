@@ -7,6 +7,7 @@
         invalid = $bindable(false),
         value = $bindable([]),
         updateValue = () => {},
+        children,
         ...restProps
     } = $props();
 
@@ -30,5 +31,7 @@
         bind:invalid
         {updateValue}
         {formFieldElements}
-/>
+>
+    {@render children?.()}
+</Fieldset>
 

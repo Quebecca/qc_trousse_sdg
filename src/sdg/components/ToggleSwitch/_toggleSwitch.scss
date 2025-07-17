@@ -6,21 +6,16 @@ $height: 32;
 $border: 1;
 
 .qc-switch {
+  display: inline-flex;
   margin: 0;
-
-  &:not(.qc-switch-justify) {
-    display: inline-flex;
-  }
+  gap: token-value(spacer, sm);
+  position: relative;
+  cursor: pointer;
 
   &:has(input:disabled) {
     color: token-value(color, grey, regular);
     cursor: not-allowed;
   }
-
-  align-items: center;
-  gap: token-value(spacer, sm);
-  position: relative;
-  cursor: pointer;
 
   input[type=checkbox] {
     opacity: 0;
@@ -35,6 +30,7 @@ $border: 1;
 
       &::before {
         transform: translateX(rem($width - $height));
+        outline: rem($border) solid token-value(color, blue, piv);
       }
     }
 
@@ -52,12 +48,16 @@ $border: 1;
       }
     }
   }
+}
 
-  &.qc-switch-justify {
-    display: flex;
-    flex-grow: 1;
-    justify-content: space-between;
-  }
+.qc-switch-label {
+  margin-top: rem(3);
+}
+
+.qc-switch-label-left {
+  justify-self: end;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .qc-switch-slider {
@@ -66,6 +66,8 @@ $border: 1;
   cursor: pointer;
   min-width: rem($width);
   min-height: rem($height);
+  max-width: rem($width);
+  max-height: rem($height);
   top: 0;
   left: 0;
   right: 0;
@@ -83,7 +85,7 @@ $border: 1;
     left: rem(2*$border);
     bottom: rem(2*$border);
     background-color: token-value(color, white);
-    outline: rem($border) solid rgba(token-value(color, blue, dark, rgb), 50%);
+    outline: rem($border) solid #464F5B;
     border-radius: 50%;
     transition: all .3s ease-out;
   }

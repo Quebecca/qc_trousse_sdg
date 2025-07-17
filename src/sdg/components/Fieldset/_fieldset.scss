@@ -5,7 +5,6 @@
   padding: 0;
   margin: 0 0 token-value(spacer content-block mb);
   justify-items: start;
-  row-gap: token-value(spacer, sm);
   legend {
     font-weight: token-value(font weight content bold);
     display: inline-block;
@@ -56,7 +55,19 @@ $invalid-border-width: 2px;
 
 .qc-field-elements-flex {
   display: flex;
-  gap: token-value(spacer, sm);
   flex-direction: column;
+  max-width: fit-content;
+}
+
+.qc-field-elements-flex-sm {
+  gap: token-value(spacer, sm);
+}
+
+.qc-field-elements-flex-md {
+  gap: token-value(spacer, md);
+}
+
+.qc-justify-end {
+  justify-items: end;
 }
 

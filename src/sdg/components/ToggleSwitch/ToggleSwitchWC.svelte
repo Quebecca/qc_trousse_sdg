@@ -5,7 +5,7 @@
         label: {attribute: 'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean'},
         disabled: {attribute: 'disabled', type: 'Boolean'},
-        justify: {attribute: 'justify', type: 'Boolean'},
+        labelPosition: {attribute: 'label-position', type: 'String'},
     },
 }} />
 

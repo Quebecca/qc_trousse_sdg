@@ -16,6 +16,8 @@
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         updateValue = () => {},
         formFieldElements,
+        elementsGap = "sm",
+        justifyEnd = false,
         children
     } = $props();
     let groupSelection = $state(),
@@ -55,7 +57,11 @@
         {/if}
     </legend>
     <div
-            class={chooseDivCLass(inline, tiled)}
+            class={[
+                chooseDivCLass(inline, tiled),
+                // justifyEnd && "qc-justify-end",
+                !tiled && `qc-field-elements-flex-${elementsGap}`,
+            ]}
             style="--column-count: {columnCount}"
             bind:this={groupSelection}
     >

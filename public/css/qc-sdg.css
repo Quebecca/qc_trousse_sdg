@@ -2196,7 +2196,6 @@ input[type=radio]:checked.qc-compact::before {
   padding: 0;
   margin: 0 0 var(--qc-spacer-content-block-mb);
   justify-items: start;
-  row-gap: var(--qc-spacer-sm);
 }
 .qc-fieldset legend {
   font-weight: var(--qc-font-weight-content-bold);
@@ -2245,8 +2244,21 @@ input[type=radio]:checked.qc-compact::before {
 
 .qc-field-elements-flex {
   display: flex;
-  gap: var(--qc-spacer-sm);
   flex-direction: column;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.qc-field-elements-flex-sm {
+  gap: var(--qc-spacer-sm);
+}
+
+.qc-field-elements-flex-md {
+  gap: var(--qc-spacer-md);
+}
+
+.qc-justify-end {
+  justify-items: end;
 }
 
 input[type=checkbox]:checked {
@@ -2453,14 +2465,11 @@ qc-textfield {
 }
 
 .qc-switch {
+  display: inline-flex;
   margin: 0;
-  align-items: center;
   gap: var(--qc-spacer-sm);
   position: relative;
   cursor: pointer;
-}
-.qc-switch:not(.qc-switch-justify) {
-  display: inline-flex;
 }
 .qc-switch:has(input:disabled) {
   color: var(--qc-color-grey-regular);
@@ -2478,6 +2487,7 @@ qc-textfield {
 }
 .qc-switch input[type=checkbox]:checked ~ .qc-switch-slider::before {
   transform: translateX(2.4rem);
+  outline: 0.1rem solid var(--qc-color-blue-piv);
 }
 .qc-switch input[type=checkbox]:focus ~ .qc-switch-slider {
   outline: 0.2rem solid var(--qc-color-blue-light);
@@ -2490,10 +2500,15 @@ qc-textfield {
 .qc-switch input[type=checkbox]:disabled ~ .qc-switch-slider::before {
   outline: transparent;
 }
-.qc-switch.qc-switch-justify {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
+
+.qc-switch-label {
+  margin-top: 0.3rem;
+}
+
+.qc-switch-label-left {
+  justify-self: end;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .qc-switch-slider {
@@ -2502,6 +2517,8 @@ qc-textfield {
   cursor: pointer;
   min-width: 5.6rem;
   min-height: 3.2rem;
+  max-width: 5.6rem;
+  max-height: 3.2rem;
   top: 0;
   left: 0;
   right: 0;
@@ -2519,7 +2536,7 @@ qc-textfield {
   left: 0.2rem;
   bottom: 0.2rem;
   background-color: var(--qc-color-white);
-  outline: 0.1rem solid rgba(var(--qc-color-blue-dark-rgb), 50%);
+  outline: 0.1rem solid #464F5B;
   border-radius: 50%;
   transition: all 0.3s ease-out;
 }

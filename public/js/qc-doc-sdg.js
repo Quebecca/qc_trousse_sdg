@@ -14,6 +14,8 @@
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
+
+	const TEMPLATE_FRAGMENT = 1;
 	const TEMPLATE_USE_IMPORT_NODE = 1 << 1;
 
 	const HYDRATION_START = '[';
@@ -859,6 +861,26 @@
 
 		set_hydrate_node(child);
 		return child;
+	}
+
+	/**
+	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
+	 * @param {DocumentFragment | TemplateNode[]} fragment
+	 * @param {boolean} is_text
+	 * @returns {Node | null}
+	 */
+	function first_child(fragment, is_text) {
+		if (!hydrating) {
+			// when not hydrating, `fragment` is a `DocumentFragment` (the result of calling `open_frag`)
+			var first = /** @type {DocumentFragment} */ (get_first_child(/** @type {Node} */ (fragment)));
+
+			// TODO prevent user comments with the empty string when preserveComments is true
+			if (first instanceof Comment && first.data === '') return get_next_sibling(first);
+
+			return first;
+		}
+
+		return hydrate_node;
 	}
 
 	/**
@@ -3054,6 +3076,7 @@
 	 */
 	/*#__NO_SIDE_EFFECTS__*/
 	function template(content, flags) {
+		var is_fragment = (flags & TEMPLATE_FRAGMENT) !== 0;
 		var use_import_node = (flags & TEMPLATE_USE_IMPORT_NODE) !== 0;
 
 		/** @type {Node} */
@@ -3073,14 +3096,19 @@
 
 			if (node === undefined) {
 				node = create_fragment_from_html(has_start ? content : '<!>' + content);
-				node = /** @type {Node} */ (get_first_child(node));
+				if (!is_fragment) node = /** @type {Node} */ (get_first_child(node));
 			}
 
 			var clone = /** @type {TemplateNode} */ (
 				use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true)
 			);
 
-			{
+			if (is_fragment) {
+				var start = /** @type {TemplateNode} */ (get_first_child(clone));
+				var end = /** @type {TemplateNode} */ (clone.lastChild);
+
+				assign_nodes(start, end);
+			} else {
 				assign_nodes(clone, clone);
 			}
 
@@ -73268,13 +73296,9 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
-		[
-			12,
-			0,
-			[[13, 4], [21, 4], [22, 4]]
-		]
-	]);
+	var root_1 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
+	var root_2 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
+	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -73283,10 +73307,16 @@
 		let label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 15, false),
-			justify = prop($$props, 'justify', 7, false);
+			labelPosition = prop($$props, 'labelPosition', 7, "left");
 
 		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
+		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
 		var label_1 = root$3();
+
+		set_class(label_1, 1, clsx([
+			"qc-switch",
+			strict_equals(usedLabelPosition, "left") && "qc-switch-label-left"
+		]));
 
 		set_attribute(label_1, 'for', generatedId);
 
@@ -73295,20 +73325,38 @@
 		remove_input_defaults(input);
 		set_attribute(input, 'id', generatedId);
 
-		var span = sibling(input, 2);
-		var node = child(span);
+		var node = sibling(input, 2);
 
-		html$1(node, label);
-		reset(span);
-		next(2);
+		{
+			var consequent = ($$anchor) => {
+				var fragment = root_1();
+				var span = sibling(first_child(fragment), 2);
+				var node_1 = child(span);
+
+				html$1(node_1, label);
+				reset(span);
+				append($$anchor, fragment);
+			};
+
+			var alternate = ($$anchor) => {
+				var fragment_1 = root_2();
+				var span_1 = first_child(fragment_1);
+				var node_2 = child(span_1);
+
+				html$1(node_2, label);
+				reset(span_1);
+				next(2);
+				append($$anchor, fragment_1);
+			};
+
+			if_block(node, ($$render) => {
+				if (strict_equals(usedLabelPosition, "right")) $$render(consequent); else $$render(alternate, false);
+			});
+		}
+
 		reset(label_1);
 
 		template_effect(() => {
-			set_class(label_1, 1, clsx([
-				"qc-switch",
-				justify() && "qc-switch-justify"
-			]));
-
 			set_attribute(input, 'aria-checked', checked());
 			input.disabled = disabled();
 		});
@@ -73338,11 +73386,11 @@
 				disabled($$value);
 				flushSync();
 			},
-			get justify() {
-				return justify();
+			get labelPosition() {
+				return labelPosition();
 			},
-			set justify($$value = false) {
-				justify($$value);
+			set labelPosition($$value = "left") {
+				labelPosition($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -73355,7 +73403,7 @@
 			label: {},
 			checked: {},
 			disabled: {},
-			justify: {}
+			labelPosition: {}
 		},
 		[],
 		[],
