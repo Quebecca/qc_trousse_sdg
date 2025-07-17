@@ -1,4 +1,5 @@
 @use "qc-sdg-lib" as *;
+@use "sass:map";
 
 .qc-button {
   font-family: "Open Sans";
@@ -58,19 +59,20 @@
   &.qc-secondary {
     color: token-value(color blue, piv);
     border-color: token-value(color blue, piv);
+    background-color: token-value(color white);
 
-    &:not(:disabled):hover {
-      background-color: rgba(token-value(color blue, piv), 0.16);
+    &:hover:not(:disabled) {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
     }
 
-    &:not(:disabled):focus {
+    &:focus:not(:disabled) {
       border-color: token-value(color blue, dark);
-      background-color: rgba(token-value(color blue, piv), 0.16);
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
-    &:not(:disabled):active {
-      background-color: rgba(token-value(color blue, piv), 0.08);
+    &:active:not(:disabled) {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.08);
     }
   }
 

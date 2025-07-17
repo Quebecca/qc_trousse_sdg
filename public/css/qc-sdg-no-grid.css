@@ -2217,17 +2217,18 @@ qc-search-bar {
 .qc-button.qc-secondary {
   color: var(--qc-color-blue-piv);
   border-color: var(--qc-color-blue-piv);
+  background-color: var(--qc-color-white);
 }
-.qc-button.qc-secondary:not(:disabled):hover {
-  background-color: rgba(var(--qc-color-blue-piv), 0.16);
+.qc-button.qc-secondary:hover:not(:disabled) {
+  background-color: rgba(9, 87, 151, 0.16);
 }
-.qc-button.qc-secondary:not(:disabled):focus {
+.qc-button.qc-secondary:focus:not(:disabled) {
   border-color: var(--qc-color-blue-dark);
-  background-color: rgba(var(--qc-color-blue-piv), 0.16);
+  background-color: rgba(9, 87, 151, 0.16);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-secondary:not(:disabled):active {
-  background-color: rgba(var(--qc-color-blue-piv), 0.08);
+.qc-button.qc-secondary:active:not(:disabled) {
+  background-color: rgba(9, 87, 151, 0.08);
 }
 .qc-button:disabled, .qc-button.disabled {
   background-color: var(--qc-color-grey-light);
