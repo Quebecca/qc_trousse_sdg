@@ -2184,28 +2184,27 @@ qc-search-bar {
 }
 
 .qc-button {
-  font-family: "Open Sans";
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 24px;
+  font-family: var(--qc-font-family-content);
+  font-size: var(--qc-font-size-md);
+  font-weight: var(--qc-font-weight-bold);
+  line-height: var(--qc-line-height-md);
   display: inline-block;
   box-sizing: border-box;
   min-width: 112px;
+  min-height: 56px;
   padding: 16px 24px;
   transition: all 0.24s ease-in-out;
-  text-align: center;
   vertical-align: middle;
-  text-decoration: none;
   border: 2px solid transparent;
-  border-radius: 0;
   cursor: pointer;
   margin-right: 3.2rem;
   margin-bottom: var(--qc-spacer-md);
 }
 .qc-button.qc-button-compact {
-  font-weight: 600;
+  font-weight: var(--qc-font-weight-semi-bold);
   min-width: 80px;
-  padding: 7px 15px;
+  min-height: 40px;
+  padding: 8px 16px;
   border-width: 1px;
 }
 .qc-button.qc-button-rounded {
@@ -2287,6 +2286,7 @@ qc-search-bar {
   box-shadow: none;
   opacity: 1;
 }
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-lg,

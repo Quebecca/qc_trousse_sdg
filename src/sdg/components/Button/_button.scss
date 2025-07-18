@@ -2,28 +2,27 @@
 @use "sass:map";
 
 .qc-button {
-  font-family: "Open Sans";
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 24px;
+  font-family: token-value(font family, content);
+  font-size: token-value(font size, md);
+  font-weight: token-value(font weight, bold);
+  line-height: token-value(line height, md);
   display: inline-block;
   box-sizing: border-box;
   min-width: 112px;
+  min-height: 56px;
   padding: 16px 24px;
   transition: all 0.24s ease-in-out;
-  text-align: center;
   vertical-align: middle;
-  text-decoration: none;
   border: 2px solid transparent;
-  border-radius: 0;
   cursor: pointer;
   margin-right: rem(32);
   margin-bottom: token-value(spacer, md);
 
   &.qc-button-compact {
-    font-weight: 600;
+    font-weight: token-value(font weight, semi-bold);
     min-width: 80px;
-    padding: 7px 15px;
+    min-height: 40px;
+    padding: 8px 16px;
     border-width: 1px;
   }
 
@@ -125,9 +124,5 @@
     cursor: not-allowed;
     box-shadow: none;
     opacity: 1;
-  }
-
-  &.inverted {
-
   }
 }
