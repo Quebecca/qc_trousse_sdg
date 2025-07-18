@@ -1,0 +1,45 @@
+<script>
+    import {Utils} from "../../utils";
+    import DropdownListItemsSingle from "./DropdownListItemsSingle/DropdownListItemsSingle.svelte";
+    import DropdownListItemsMultiple from "./DropdownListItemsMultiple/DropdownListItemsMultiple.svelte";
+
+    let {
+        multiple,
+        displayedItems,
+        noOptionsMessage,
+        passValueSingle = () => {},
+        passValueMultiple = () => {},
+        handleExitSingle = () => {},
+        handleExitMultiple = () => {},
+    } = $props()
+</script>
+
+<div class="qc-dropdown-list-items" tabindex="-1" role="status">
+    {#if multiple}
+        <DropdownListItemsMultiple
+                items={displayedItems}
+                {noOptionsMessage}
+                passValue={(l, v) => {
+                    passValueMultiple(l, v)
+                }}
+                handleExit={(key) => handleExitMultiple(key)}
+        />
+    {:else}
+        <DropdownListItemsSingle
+                items={displayedItems}
+                {noOptionsMessage}
+                passValue={(l, v) => {
+                    passValueSingle(l, v)
+                }}
+                handleExit={(key) => handleExitSingle(key)}
+        />
+    {/if}
+
+    <div class="qc-dropdown-list-no-options" role="alert">
+        {#if displayedItems.length <= 0}
+            {#await Utils.sleep(100) then _}
+                {noOptionsMessage}
+            {/await}
+        {/if}
+    </div>
+</div>

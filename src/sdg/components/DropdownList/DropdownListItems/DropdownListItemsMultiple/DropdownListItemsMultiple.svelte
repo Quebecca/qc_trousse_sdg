@@ -1,6 +1,6 @@
 <script>
-    import {Utils} from "../utils";
-    import Checkbox from "../Checkbox/Checkbox.svelte";
+    import {Utils} from "../../../utils";
+    import Checkbox from "../../../Checkbox/Checkbox.svelte";
 
     let {
         items,

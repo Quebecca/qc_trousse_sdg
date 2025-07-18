@@ -1,10 +1,9 @@
 <script>
-    import DropdownListMultiple from "./DropdownListMultiple.svelte";
     import Icon from "../Icon/Icon.svelte";
-    import DropdownListSingle from "./DropdownListSingle.svelte";
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
     import FormError from "../FormError/FormError.svelte";
+    import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
 
     let {
         id = Math.random().toString(36).substring(2, 15),
@@ -149,6 +148,7 @@
                 />
             </span>
         </button>
+
         <div class={[
                 "qc-dropdown-list-expanded",
                 !expanded && "qc-dropdown-list-hidden"
@@ -166,38 +166,22 @@
                 </div>
             {/if}
 
-            <div class="qc-dropdown-list-items" tabindex="-1" role="status">
-                {#if multiple}
-                    <DropdownListMultiple
-                            items={displayedItems}
-                            {noOptionsMessage}
-                            passValue={(l, v) => {
-                                selectedOptionsText = l;
-                                value = v;
-                            }}
-                            handleExit={(key) => closeDropdown(key)}
-                    />
-                {:else}
-                    <DropdownListSingle
-                            items={displayedItems}
-                            {noOptionsMessage}
-                            passValue={(l, v) => {
-                                selectedOptionsText = l;
-                                value = v;
-                                expanded = false;
-                            }}
-                            handleExit={(key) => closeDropdown(key)}
-                    />
-                {/if}
-
-                <div class="qc-dropdown-list-no-options" role="alert">
-                    {#if displayedItems.length <= 0}
-                        {#await Utils.sleep(100) then _}
-                            {noOptionsMessage}
-                        {/await}
-                    {/if}
-                </div>
-            </div>
+            <DropdownListItems
+                {multiple}
+                {displayedItems}
+                {noOptionsMessage}
+                passValueSingle={(l, v) => {
+                    selectedOptionsText = l;
+                    value = v;
+                    expanded = false;
+                }}
+                passValueMultiple={(l, v) => {
+                    selectedOptionsText = l;
+                    value = v;
+                }}
+                handleExitSingle={(key) => closeDropdown(key)}
+                handleExitMultiple={(key) => closeDropdown(key)}
+            />
         </div>
     </div>
 

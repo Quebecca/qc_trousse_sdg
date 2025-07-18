@@ -6843,7 +6843,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$f = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$g = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6871,7 +6871,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$f();
+		var div = root$g();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6953,7 +6953,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$e = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$f = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -7010,7 +7010,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$e();
+		var fragment = root$f();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -7196,7 +7196,7 @@
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[131, 10]]);
 
-	var root$d = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$e = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7275,7 +7275,7 @@
 			}
 		});
 
-		var fragment = root$d();
+		var fragment = root$e();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -7817,7 +7817,7 @@
 	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
-	var root$c = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
+	var root$d = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
 		[52, 0]
 	]);
@@ -7840,7 +7840,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var fragment = root$c();
+		var fragment = root$d();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -8144,7 +8144,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$b = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$c = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8171,7 +8171,7 @@
 					'class'
 				]);
 
-		var button = root$b();
+		var button = root$c();
 		let attributes;
 		var node = child(button);
 
@@ -8287,7 +8287,7 @@
 		]
 	]);
 
-	var root$a = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
+	var root$b = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -8314,7 +8314,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$a();
+		var fragment = root$b();
 		var node = first_child(fragment);
 
 		{
@@ -8490,7 +8490,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$9 = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$a = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8534,7 +8534,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$9();
+		var a = root$a();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8615,7 +8615,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$8 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$9 = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8697,7 +8697,7 @@
 			});
 		});
 
-		var span_1 = root$8();
+		var span_1 = root$9();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -8735,7 +8735,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$7 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[20, 0, [[24, 4]]]]);
+	var root$8 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[20, 0, [[24, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8761,7 +8761,7 @@
 				]);
 
 		let searchInput;
-		var div = root$7();
+		var div = root$8();
 		var node = child(div);
 
 		{
@@ -8881,7 +8881,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$6 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$7 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -8925,7 +8925,7 @@
 				...Utils.computeFieldsAttributes("submit", rest)
 			}));
 
-		var div = root$6();
+		var div = root$7();
 		let classes;
 		var node = child(div);
 
@@ -9175,7 +9175,7 @@
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
 	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[56, 12]]);
-	var root$5 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
+	var root$6 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9220,7 +9220,7 @@
 			return "qc-field-elements-flex";
 		}
 
-		var fieldset = root$5();
+		var fieldset = root$6();
 
 		set_attribute(fieldset, 'aria-describedby', legendId);
 
@@ -10564,7 +10564,7 @@
 
 	var root_1$5 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
 
-	var root$4 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
+	var root$5 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
 		[
 			22,
 			0,
@@ -10610,7 +10610,7 @@
 				]);
 
 		let inputId = user_derived(() => $$props.id ?? `${name()}-${value()}-${Math.random().toString(36).substring(2, 15)}`);
-		var label_1 = root$4();
+		var label_1 = root$5();
 		var input = child(label_1);
 
 		remove_input_defaults(input);
@@ -10984,7 +10984,7 @@
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
-	var root$3 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[70, 0, [[86, 4]]]]);
+	var root$4 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[70, 0, [[86, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -11066,7 +11066,7 @@
 			maxlength() && charCountId
 		].filter(Boolean));
 
-		var div = root$3();
+		var div = root$4();
 		var node = child(div);
 
 		{
@@ -11447,7 +11447,7 @@
 
 	var root_1$3 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
 	var root_2$3 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
-	var root$2 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
+	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -11460,7 +11460,7 @@
 
 		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
 		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
-		var label_1 = root$2();
+		var label_1 = root$3();
 
 		set_class(label_1, 1, clsx([
 			"qc-switch",
@@ -11727,13 +11727,140 @@
 		false
 	));
 
-	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
+	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListMultiple[FILENAME], [[51, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListMultiple[FILENAME], [[49, 8]]);
-	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[47, 0]]);
+	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
+	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListItemsSingle[FILENAME], [[58, 12]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[56, 4]]);
 
-	function DropdownListMultiple($$anchor, $$props) {
+	function DropdownListItemsSingle($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let items = prop($$props, 'items', 7),
+			passValue = prop($$props, 'passValue', 7, () => {}),
+			handleExit = prop($$props, 'handleExit', 7, () => {});
+
+		let predecessor = state(void 0);
+		let selectedValue = state(void 0);
+		let mouseDownElement = null;
+		let hoveredElement = null;
+		const selectedElementCLass = "qc-dropdown-list-single-selected";
+
+		function handleSelection(thisElement, label, value) {
+			if (get(predecessor)) {
+				get(predecessor).classList.toggle(selectedElementCLass);
+			}
+
+			thisElement.classList.toggle(selectedElementCLass);
+			set(predecessor, thisElement, true);
+			set(selectedValue, value, true);
+			passValue()(label, value);
+		}
+
+		function handleMouseUp(event, label, value) {
+			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
+				handleSelection(event.target, label, value);
+			}
+		}
+
+		function handleMouseDown(event) {
+			mouseDownElement = event.target;
+		}
+
+		function handleKeyDown(event, label, value, index) {
+			Utils.sleep(5).then(() => {
+				if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
+					handleSelection(event.target, label, value);
+				}
+
+				if (canExit(event, index)) {
+					handleExit()(event.key);
+				}
+			}).catch(console.error);
+		}
+
+		function canExit(event, index) {
+			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
+		}
+
+		var fragment = comment();
+		var node = first_child(fragment);
+
+		{
+			var consequent = ($$anchor) => {
+				var ul = root_1$2();
+
+				each(ul, 21, items, index, ($$anchor, item, index) => {
+					var li = root_2$2();
+
+					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
+					li.__mousedown = [on_mousedown, handleMouseDown];
+					li.__mouseup = [on_mouseup, handleMouseUp, item];
+					li.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
+
+					var text = child(li, true);
+
+					reset(li);
+
+					template_effect(() => {
+						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
+						set_text(text, get(item).label);
+					});
+
+					event('mouseenter', li, (event) => hoveredElement = event.target);
+					event('mouseleave', li, () => hoveredElement = null);
+					append($$anchor, li);
+				});
+
+				reset(ul);
+				append($$anchor, ul);
+			};
+
+			if_block(node, ($$render) => {
+				if (items().length > 0) $$render(consequent);
+			});
+		}
+
+		append($$anchor, fragment);
+
+		return pop({
+			get items() {
+				return items();
+			},
+			set items($$value) {
+				items($$value);
+				flushSync();
+			},
+			get passValue() {
+				return passValue();
+			},
+			set passValue($$value = () => {}) {
+				passValue($$value);
+				flushSync();
+			},
+			get handleExit() {
+				return handleExit();
+			},
+			set handleExit($$value = () => {}) {
+				handleExit($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	delegate(['mousedown', 'mouseup', 'keydown']);
+	create_custom_element(DropdownListItemsSingle, { items: {}, passValue: {}, handleExit: {} }, [], [], true);
+
+	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
+
+	var root_2$1 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[51, 16]]);
+	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[49, 8]]);
+	var root$2 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[47, 0]]);
+
+	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -11774,15 +11901,15 @@
 			}
 		}
 
-		var div = root$1();
+		var div = root$2();
 		var node = child(div);
 
 		{
 			var consequent = ($$anchor) => {
-				var ul = root_1$2();
+				var ul = root_1$1();
 
 				each(ul, 21, items, index, ($$anchor, item, index) => {
-					var li = root_2$2();
+					var li = root_2$1();
 					var node_1 = child(li);
 
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
@@ -11853,164 +11980,185 @@
 		});
 	}
 
-	create_custom_element(DropdownListMultiple, { items: {}, handleExit: {}, passValue: {} }, [], [], true);
+	create_custom_element(DropdownListItemsMultiple, { items: {}, handleExit: {}, passValue: {} }, [], [], true);
 
-	DropdownListSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListSingle.svelte';
+	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
-	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$1 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListSingle[FILENAME], [[58, 12]]);
-	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListSingle[FILENAME], [[56, 4]]);
+	var root$1 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[17, 0, [[38, 4]]]]);
 
-	function DropdownListSingle($$anchor, $$props) {
+	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let items = prop($$props, 'items', 7),
-			passValue = prop($$props, 'passValue', 7, () => {}),
-			handleExit = prop($$props, 'handleExit', 7, () => {});
+		let multiple = prop($$props, 'multiple', 7),
+			displayedItems = prop($$props, 'displayedItems', 7),
+			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
+			passValueSingle = prop($$props, 'passValueSingle', 7, () => {}),
+			passValueMultiple = prop($$props, 'passValueMultiple', 7, () => {}),
+			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
+			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {});
 
-		let predecessor = state(void 0);
-		let selectedValue = state(void 0);
-		let mouseDownElement = null;
-		let hoveredElement = null;
-		const selectedElementCLass = "qc-dropdown-list-single-selected";
-
-		function handleSelection(thisElement, label, value) {
-			if (get(predecessor)) {
-				get(predecessor).classList.toggle(selectedElementCLass);
-			}
-
-			thisElement.classList.toggle(selectedElementCLass);
-			set(predecessor, thisElement, true);
-			set(selectedValue, value, true);
-			passValue()(label, value);
-		}
-
-		function handleMouseUp(event, label, value) {
-			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
-				handleSelection(event.target, label, value);
-			}
-		}
-
-		function handleMouseDown(event) {
-			mouseDownElement = event.target;
-		}
-
-		function handleKeyDown(event, label, value, index) {
-			Utils.sleep(5).then(() => {
-				if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
-					handleSelection(event.target, label, value);
-				}
-
-				if (canExit(event, index)) {
-					handleExit()(event.key);
-				}
-			}).catch(console.error);
-		}
-
-		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
-		}
-
-		var fragment = comment();
-		var node = first_child(fragment);
+		var div = root$1();
+		var node = child(div);
 
 		{
 			var consequent = ($$anchor) => {
-				var ul = root_1$1();
-
-				each(ul, 21, items, index, ($$anchor, item, index) => {
-					var li = root_2$1();
-
-					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
-					li.__mousedown = [on_mousedown, handleMouseDown];
-					li.__mouseup = [on_mouseup, handleMouseUp, item];
-					li.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
-
-					var text = child(li, true);
-
-					reset(li);
-
-					template_effect(() => {
-						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
-						set_text(text, get(item).label);
-					});
-
-					event('mouseenter', li, (event) => hoveredElement = event.target);
-					event('mouseleave', li, () => hoveredElement = null);
-					append($$anchor, li);
+				DropdownListItemsMultiple($$anchor, {
+					get items() {
+						return displayedItems();
+					},
+					get noOptionsMessage() {
+						return noOptionsMessage();
+					},
+					passValue: (l, v) => {
+						passValueMultiple()(l, v);
+					},
+					handleExit: (key) => handleExitMultiple()(key)
 				});
+			};
 
-				reset(ul);
-				append($$anchor, ul);
+			var alternate = ($$anchor) => {
+				DropdownListItemsSingle($$anchor, {
+					get items() {
+						return displayedItems();
+					},
+					get noOptionsMessage() {
+						return noOptionsMessage();
+					},
+					passValue: (l, v) => {
+						passValueSingle()(l, v);
+					},
+					handleExit: (key) => handleExitSingle()(key)
+				});
 			};
 
 			if_block(node, ($$render) => {
-				if (items().length > 0) $$render(consequent);
+				if (multiple()) $$render(consequent); else $$render(alternate, false);
 			});
 		}
 
-		append($$anchor, fragment);
+		var div_1 = sibling(node, 2);
+		var node_1 = child(div_1);
+
+		{
+			var consequent_1 = ($$anchor) => {
+				var fragment_2 = comment();
+				var node_2 = first_child(fragment_2);
+
+				await_block(node_2, () => Utils.sleep(100), null, ($$anchor, _) => {
+					var text$1 = text();
+
+					template_effect(() => set_text(text$1, noOptionsMessage()));
+					append($$anchor, text$1);
+				});
+
+				append($$anchor, fragment_2);
+			};
+
+			if_block(node_1, ($$render) => {
+				if (displayedItems().length <= 0) $$render(consequent_1);
+			});
+		}
+
+		reset(div_1);
+		reset(div);
+		append($$anchor, div);
 
 		return pop({
-			get items() {
-				return items();
+			get multiple() {
+				return multiple();
 			},
-			set items($$value) {
-				items($$value);
+			set multiple($$value) {
+				multiple($$value);
 				flushSync();
 			},
-			get passValue() {
-				return passValue();
+			get displayedItems() {
+				return displayedItems();
 			},
-			set passValue($$value = () => {}) {
-				passValue($$value);
+			set displayedItems($$value) {
+				displayedItems($$value);
 				flushSync();
 			},
-			get handleExit() {
-				return handleExit();
+			get noOptionsMessage() {
+				return noOptionsMessage();
 			},
-			set handleExit($$value = () => {}) {
-				handleExit($$value);
+			set noOptionsMessage($$value) {
+				noOptionsMessage($$value);
+				flushSync();
+			},
+			get passValueSingle() {
+				return passValueSingle();
+			},
+			set passValueSingle($$value = () => {}) {
+				passValueSingle($$value);
+				flushSync();
+			},
+			get passValueMultiple() {
+				return passValueMultiple();
+			},
+			set passValueMultiple($$value = () => {}) {
+				passValueMultiple($$value);
+				flushSync();
+			},
+			get handleExitSingle() {
+				return handleExitSingle();
+			},
+			set handleExitSingle($$value = () => {}) {
+				handleExitSingle($$value);
+				flushSync();
+			},
+			get handleExitMultiple() {
+				return handleExitMultiple();
+			},
+			set handleExitMultiple($$value = () => {}) {
+				handleExitMultiple($$value);
 				flushSync();
 			},
 			...legacy_api()
 		});
 	}
 
-	delegate(['mousedown', 'mouseup', 'keydown']);
-	create_custom_element(DropdownListSingle, { items: {}, passValue: {}, handleExit: {} }, [], [], true);
+	create_custom_element(
+		DropdownListItems,
+		{
+			multiple: {},
+			displayedItems: {},
+			noOptionsMessage: {},
+			passValueSingle: {},
+			passValueMultiple: {},
+			handleExitSingle: {},
+			handleExitMultiple: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[115, 12]]);
 
 	var on_keydown = (e, handleTab, handleEscape) => {
 		handleTab(e);
 		handleEscape(e);
 	};
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[139, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[141, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[159, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[138, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[140, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[158, 16]]);
 
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options" role="alert"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <!></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			109,
+			108,
 			0,
 			[
-				[113, 4],
+				[112, 4],
 				[
-					118,
+					117,
 					4,
 					[
-						[128, 8, [[137, 12], [145, 12]]],
-						[
-							152,
-							8,
-							[[169, 12, [[193, 16]]]]
-						]
+						[127, 8, [[136, 12], [144, 12]]],
+						[151, 8]
 					]
 				]
 			]
@@ -12130,8 +12278,8 @@
 		set_attribute(label, 'for', inputId);
 		set_attribute(label, 'id', labelId);
 
-		var text$1 = child(label);
-		var node = sibling(text$1);
+		var text = child(label);
+		var node = sibling(text);
 
 		{
 			var consequent = ($$anchor) => {
@@ -12231,81 +12379,39 @@
 			});
 		}
 
-		var div_4 = sibling(node_3, 2);
-		var node_5 = child(div_4);
+		var node_5 = sibling(node_3, 2);
 
-		{
-			var consequent_3 = ($$anchor) => {
-				DropdownListMultiple($$anchor, {
-					get items() {
-						return get(displayedItems);
-					},
-					get noOptionsMessage() {
-						return noOptionsMessage();
-					},
-					passValue: (l, v) => {
-						set(selectedOptionsText, l, true);
-						value(v);
-					},
-					handleExit: (key) => closeDropdown(key)
-				});
-			};
+		DropdownListItems(node_5, {
+			get multiple() {
+				return multiple();
+			},
+			get displayedItems() {
+				return get(displayedItems);
+			},
+			get noOptionsMessage() {
+				return noOptionsMessage();
+			},
+			passValueSingle: (l, v) => {
+				set(selectedOptionsText, l, true);
+				value(v);
+				set(expanded, false);
+			},
+			passValueMultiple: (l, v) => {
+				set(selectedOptionsText, l, true);
+				value(v);
+			},
+			handleExitSingle: (key) => closeDropdown(key),
+			handleExitMultiple: (key) => closeDropdown(key)
+		});
 
-			var alternate_1 = ($$anchor) => {
-				DropdownListSingle($$anchor, {
-					get items() {
-						return get(displayedItems);
-					},
-					get noOptionsMessage() {
-						return noOptionsMessage();
-					},
-					passValue: (l, v) => {
-						set(selectedOptionsText, l, true);
-						value(v);
-						set(expanded, false);
-					},
-					handleExit: (key) => closeDropdown(key)
-				});
-			};
-
-			if_block(node_5, ($$render) => {
-				if (multiple()) $$render(consequent_3); else $$render(alternate_1, false);
-			});
-		}
-
-		var div_5 = sibling(node_5, 2);
-		var node_6 = child(div_5);
-
-		{
-			var consequent_4 = ($$anchor) => {
-				var fragment_2 = comment();
-				var node_7 = first_child(fragment_2);
-
-				await_block(node_7, () => Utils.sleep(100), null, ($$anchor, _) => {
-					var text_3 = text();
-
-					template_effect(() => set_text(text_3, noOptionsMessage()));
-					append($$anchor, text_3);
-				});
-
-				append($$anchor, fragment_2);
-			};
-
-			if_block(node_6, ($$render) => {
-				if (get(displayedItems).length <= 0) $$render(consequent_4);
-			});
-		}
-
-		reset(div_5);
-		reset(div_4);
 		reset(div_2);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(instance, $$value), () => get(instance));
 
-		var node_8 = sibling(div_1, 2);
+		var node_6 = sibling(div_1, 2);
 
 		{
-			var consequent_5 = ($$anchor) => {
+			var consequent_3 = ($$anchor) => {
 				FormError($$anchor, {
 					id: errorId,
 					get invalid() {
@@ -12317,8 +12423,8 @@
 				});
 			};
 
-			if_block(node_8, ($$render) => {
-				if (invalid()) $$render(consequent_5);
+			if_block(node_6, ($$render) => {
+				if (invalid()) $$render(consequent_3);
 			});
 		}
 
@@ -12330,7 +12436,7 @@
 				disabled() && "qc-disabled"
 			]));
 
-			set_text(text$1, `${legend() ?? ''} `);
+			set_text(text, `${legend() ?? ''} `);
 
 			set_class(div_1, 1, clsx([
 				`qc-dropdown-list ${get(widthClass)}`,
