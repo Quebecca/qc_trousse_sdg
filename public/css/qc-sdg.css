@@ -2585,8 +2585,8 @@ qc-textfield {
 }
 
 .qc-dropdown-list-no-options {
-  margin-left: var(--qc-spacer-xs);
-  margin-right: var(--qc-spacer-xs);
+  padding: var(--qc-spacer-xs);
+  color: var(--qc-color-grey-medium);
 }
 
 .qc-dropdown-button {

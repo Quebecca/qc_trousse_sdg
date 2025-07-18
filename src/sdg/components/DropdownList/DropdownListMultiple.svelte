@@ -4,7 +4,6 @@
 
     let {
         items,
-        noOptionsMessage,
         handleExit = () => {},
         passValue = () => {},
     } = $props();
@@ -65,7 +64,5 @@
                 </li>
             {/each}
         </ul>
-    {:else}
-        <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
     {/if}
 </div>

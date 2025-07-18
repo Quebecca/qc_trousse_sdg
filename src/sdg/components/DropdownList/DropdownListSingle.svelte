@@ -3,17 +3,17 @@
 
     let {
         items,
-        noOptionsMessage,
         passValue = () => {},
         handleExit = () => {}
     } = $props();
 
     let predecessor = $state();
     let selectedValue = $state();
-    let mouseDownElement = $state(null);
+    let mouseDownElement = null;
+    let hoveredElement = null;
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
-    function handleEvent(thisElement, label, value) {
+    function handleSelection(thisElement, label, value) {
         if (predecessor) {
             predecessor.classList.toggle(selectedElementCLass);
         }
@@ -26,11 +26,9 @@
     }
 
     function handleMouseUp(event, label, value) {
-        if (event.target === mouseDownElement) {
-            handleEvent(event.target, label, value);
+        if (event.target === hoveredElement && event.target === mouseDownElement) {
+            handleSelection(event.target, label, value);
         }
-        mouseDownElement = null;
-
     }
 
     function handleMouseDown(event) {
@@ -40,7 +38,7 @@
     function handleKeyDown (event, label, value, index) {
         Utils.sleep(5).then(() => {
             if (event.key === "Enter" || event.key === " ") {
-                handleEvent(event.target, label, value);
+                handleSelection(event.target, label, value);
             }
 
             if (canExit(event, index)) {
@@ -65,12 +63,12 @@
                     aria-selected={selectedValue === item.value ? "true" : "false"}
                     onmousedown={(event) => handleMouseDown(event)}
                     onmouseup={(event) => handleMouseUp(event, item.label, item.value)}
+                    onmouseenter={(event) => hoveredElement = event.target}
+                    onmouseleave={() => hoveredElement = null}
                     onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
             >
                 {item.label}
             </li>
         {/each}
     </ul>
-{:else}
-    <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
 {/if}

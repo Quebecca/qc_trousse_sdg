@@ -13,24 +13,22 @@
         width = "lg",
         items,
         placeholder = "Choisissez une option:",
-        noOptionsMessage = "Aucune option disponible",
+        noOptionsMessage = "Aucun élément",
         enableSearch = false,
-        comboAriaLabel = "",
-        ariaRequired = false,
         required = false,
         disabled = false,
         invalid = $bindable(false),
         invalidText = "Veuillez sélectionner au moins une option.",
         searchPlaceholder = "",
-        emptyOptionSrMessage = "",
         multiple = false,
     } = $props();
 
-    const precentRootFontSize = 62.5;
-    const inputId = `${id}-input`;
-    const labelId = `${id}-label`;
-    const errorId = `${id}-error`;
-    const availableWidths = ["sm", "md", "lg", "xl", "xxl"];
+    const precentRootFontSize = 62.5,
+        inputId = `${id}-input`,
+        labelId = `${id}-label`,
+        errorId = `${id}-error`,
+        availableWidths = ["sm", "md", "lg", "xl", "xxl"]
+    ;
 
     let instance = $state(),
         button = $state(),
@@ -107,7 +105,7 @@
     })
 </script>
 
-<svelte:document onmouseup={handleOuterEvent} />
+<svelte:document onclick={handleOuterEvent} />
 <div class={[
     'qc-textfield-container',
      disabled && "qc-disabled"
@@ -168,7 +166,7 @@
                 </div>
             {/if}
 
-            <div class="qc-dropdown-list-items" tabindex="-1">
+            <div class="qc-dropdown-list-items" tabindex="-1" role="status">
                 {#if multiple}
                     <DropdownListMultiple
                             items={displayedItems}
@@ -191,6 +189,14 @@
                             handleExit={(key) => closeDropdown(key)}
                     />
                 {/if}
+
+                <div class="qc-dropdown-list-no-options" role="alert">
+                    {#if displayedItems.length <= 0}
+                        {#await Utils.sleep(100) then _}
+                            {noOptionsMessage}
+                        {/await}
+                    {/if}
+                </div>
             </div>
         </div>
     </div>

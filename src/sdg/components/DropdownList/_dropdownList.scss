@@ -31,8 +31,8 @@ $border: 1;
 }
 
 .qc-dropdown-list-no-options {
-  margin-left: token-value(spacer, xs);
-  margin-right: token-value(spacer, xs);
+  padding: token-value(spacer, xs);
+  color: token-value(color, grey, medium);
 }
 
 .qc-dropdown-button {

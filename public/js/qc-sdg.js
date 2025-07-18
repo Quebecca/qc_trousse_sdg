@@ -3356,6 +3356,29 @@
 		};
 	}
 
+	/**
+	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
+	 * @param {any} value
+	 */
+	function text(value = '') {
+		if (!hydrating) {
+			var t = create_text(value + '');
+			assign_nodes(t, t);
+			return t;
+		}
+
+		var node = hydrate_node;
+
+		if (node.nodeType !== 3) {
+			// if an {expression} is empty during SSR, we need to insert an empty text node
+			node.before((node = create_text()));
+			set_hydrate_node(node);
+		}
+
+		assign_nodes(node, node);
+		return node;
+	}
+
 	function comment() {
 		// we're not delegating to `template` here for performance reasons
 		if (hydrating) {
@@ -7167,7 +7190,7 @@
 		});
 	};
 
-	var root_3$4 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_3$2 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
@@ -7313,7 +7336,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$4();
+				var a_3 = root_3$2();
 
 				a_3.__click = [
 					on_click$1,
@@ -10957,7 +10980,7 @@
 
 	var root_2$4 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[78, 16]]);
 	var root_1$4 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
-	var root_3$3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
+	var root_3$1 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
@@ -11082,7 +11105,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var div_1 = root_3$3();
+				var div_1 = root_3$1();
 
 				set_attribute(div_1, 'id', descriptionId);
 
@@ -11706,17 +11729,15 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListMultiple[FILENAME], [[52, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListMultiple[FILENAME], [[50, 8]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[69, 8]]);
-	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[48, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListMultiple[FILENAME], [[51, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListMultiple[FILENAME], [[49, 8]]);
+	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[47, 0]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let items = prop($$props, 'items', 7),
-			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			passValue = prop($$props, 'passValue', 7, () => {});
 
@@ -11798,17 +11819,8 @@
 				append($$anchor, ul);
 			};
 
-			var alternate = ($$anchor) => {
-				var div_1 = root_3$2();
-				var text = child(div_1, true);
-
-				reset(div_1);
-				template_effect(() => set_text(text, noOptionsMessage()));
-				append($$anchor, div_1);
-			};
-
 			if_block(node, ($$render) => {
-				if (items().length > 0) $$render(consequent); else $$render(alternate, false);
+				if (items().length > 0) $$render(consequent);
 			});
 		}
 
@@ -11821,13 +11833,6 @@
 			},
 			set items($$value) {
 				items($$value);
-				flushSync();
-			},
-			get noOptionsMessage() {
-				return noOptionsMessage();
-			},
-			set noOptionsMessage($$value) {
-				noOptionsMessage($$value);
 				flushSync();
 			},
 			get handleExit() {
@@ -11848,42 +11853,30 @@
 		});
 	}
 
-	create_custom_element(
-		DropdownListMultiple,
-		{
-			items: {},
-			noOptionsMessage: {},
-			handleExit: {},
-			passValue: {}
-		},
-		[],
-		[],
-		true
-	);
+	create_custom_element(DropdownListMultiple, { items: {}, handleExit: {}, passValue: {} }, [], [], true);
 
 	DropdownListSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListSingle.svelte';
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$1 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListSingle[FILENAME], [[60, 12]]);
-	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListSingle[FILENAME], [[58, 4]]);
-	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[75, 4]]);
+	var root_2$1 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListSingle[FILENAME], [[58, 12]]);
+	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListSingle[FILENAME], [[56, 4]]);
 
 	function DropdownListSingle($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let items = prop($$props, 'items', 7),
-			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
 			passValue = prop($$props, 'passValue', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {});
 
 		let predecessor = state(void 0);
 		let selectedValue = state(void 0);
-		let mouseDownElement = state(null);
+		let mouseDownElement = null;
+		let hoveredElement = null;
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
-		function handleEvent(thisElement, label, value) {
+		function handleSelection(thisElement, label, value) {
 			if (get(predecessor)) {
 				get(predecessor).classList.toggle(selectedElementCLass);
 			}
@@ -11895,21 +11888,19 @@
 		}
 
 		function handleMouseUp(event, label, value) {
-			if (strict_equals(event.target, get(mouseDownElement))) {
-				handleEvent(event.target, label, value);
+			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
+				handleSelection(event.target, label, value);
 			}
-
-			set(mouseDownElement, null);
 		}
 
 		function handleMouseDown(event) {
-			set(mouseDownElement, event.target, true);
+			mouseDownElement = event.target;
 		}
 
 		function handleKeyDown(event, label, value, index) {
 			Utils.sleep(5).then(() => {
 				if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
-					handleEvent(event.target, label, value);
+					handleSelection(event.target, label, value);
 				}
 
 				if (canExit(event, index)) {
@@ -11946,6 +11937,8 @@
 						set_text(text, get(item).label);
 					});
 
+					event('mouseenter', li, (event) => hoveredElement = event.target);
+					event('mouseleave', li, () => hoveredElement = null);
 					append($$anchor, li);
 				});
 
@@ -11953,17 +11946,8 @@
 				append($$anchor, ul);
 			};
 
-			var alternate = ($$anchor) => {
-				var div = root_3$1();
-				var text_1 = child(div, true);
-
-				reset(div);
-				template_effect(() => set_text(text_1, noOptionsMessage()));
-				append($$anchor, div);
-			};
-
 			if_block(node, ($$render) => {
-				if (items().length > 0) $$render(consequent); else $$render(alternate, false);
+				if (items().length > 0) $$render(consequent);
 			});
 		}
 
@@ -11975,13 +11959,6 @@
 			},
 			set items($$value) {
 				items($$value);
-				flushSync();
-			},
-			get noOptionsMessage() {
-				return noOptionsMessage();
-			},
-			set noOptionsMessage($$value) {
-				noOptionsMessage($$value);
 				flushSync();
 			},
 			get passValue() {
@@ -12003,45 +11980,37 @@
 	}
 
 	delegate(['mousedown', 'mouseup', 'keydown']);
-
-	create_custom_element(
-		DropdownListSingle,
-		{
-			items: {},
-			noOptionsMessage: {},
-			passValue: {},
-			handleExit: {}
-		},
-		[],
-		[],
-		true
-	);
+	create_custom_element(DropdownListSingle, { items: {}, passValue: {}, handleExit: {} }, [], [], true);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[118, 12]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
 
 	var on_keydown = (e, handleTab, handleEscape) => {
 		handleTab(e);
 		handleEscape(e);
 	};
 
-	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[141, 20]]);
-	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[143, 20]]);
-	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[161, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownList[FILENAME], [[139, 20]]);
+	var root_3 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownList[FILENAME], [[141, 20]]);
+	var root_4 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[159, 16]]);
 
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button> <div tabindex="-1"><!> <div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options" role="alert"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			111,
+			109,
 			0,
 			[
-				[115, 4],
+				[113, 4],
 				[
-					120,
+					118,
 					4,
 					[
-						[130, 8, [[139, 12], [147, 12]]],
-						[154, 8, [[171, 12]]]
+						[128, 8, [[137, 12], [145, 12]]],
+						[
+							152,
+							8,
+							[[169, 12, [[193, 16]]]]
+						]
 					]
 				]
 			]
@@ -12058,23 +12027,20 @@
 			width = prop($$props, 'width', 7, "lg"),
 			items = prop($$props, 'items', 7),
 			placeholder = prop($$props, 'placeholder', 7, "Choisissez une option:"),
-			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, "Aucune option disponible"),
+			noOptionsMessage = prop($$props, 'noOptionsMessage', 7, "Aucun élément"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
-			comboAriaLabel = prop($$props, 'comboAriaLabel', 7, ""),
-			ariaRequired = prop($$props, 'ariaRequired', 7, false),
 			required = prop($$props, 'required', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7, "Veuillez sélectionner au moins une option."),
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
-			emptyOptionSrMessage = prop($$props, 'emptyOptionSrMessage', 7, ""),
 			multiple = prop($$props, 'multiple', 7, false);
 
-		const precentRootFontSize = 62.5;
-		const inputId = `${id()}-input`;
-		const labelId = `${id()}-label`;
-		const errorId = `${id()}-error`;
-		const availableWidths = ["sm", "md", "lg", "xl", "xxl"];
+		const precentRootFontSize = 62.5,
+			inputId = `${id()}-input`,
+			labelId = `${id()}-label`,
+			errorId = `${id()}-error`,
+			availableWidths = ["sm", "md", "lg", "xl", "xxl"];
 
 		let instance = state(void 0),
 			button = state(void 0),
@@ -12157,15 +12123,15 @@
 
 		var div = root();
 
-		event('mouseup', $document, handleOuterEvent);
+		event('click', $document, handleOuterEvent);
 
 		var label = child(div);
 
 		set_attribute(label, 'for', inputId);
 		set_attribute(label, 'id', labelId);
 
-		var text = child(label);
-		var node = sibling(text);
+		var text$1 = child(label);
+		var node = sibling(text$1);
 
 		{
 			var consequent = ($$anchor) => {
@@ -12307,15 +12273,39 @@
 			});
 		}
 
+		var div_5 = sibling(node_5, 2);
+		var node_6 = child(div_5);
+
+		{
+			var consequent_4 = ($$anchor) => {
+				var fragment_2 = comment();
+				var node_7 = first_child(fragment_2);
+
+				await_block(node_7, () => Utils.sleep(100), null, ($$anchor, _) => {
+					var text_3 = text();
+
+					template_effect(() => set_text(text_3, noOptionsMessage()));
+					append($$anchor, text_3);
+				});
+
+				append($$anchor, fragment_2);
+			};
+
+			if_block(node_6, ($$render) => {
+				if (get(displayedItems).length <= 0) $$render(consequent_4);
+			});
+		}
+
+		reset(div_5);
 		reset(div_4);
 		reset(div_2);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(instance, $$value), () => get(instance));
 
-		var node_6 = sibling(div_1, 2);
+		var node_8 = sibling(div_1, 2);
 
 		{
-			var consequent_4 = ($$anchor) => {
+			var consequent_5 = ($$anchor) => {
 				FormError($$anchor, {
 					id: errorId,
 					get invalid() {
@@ -12327,8 +12317,8 @@
 				});
 			};
 
-			if_block(node_6, ($$render) => {
-				if (invalid()) $$render(consequent_4);
+			if_block(node_8, ($$render) => {
+				if (invalid()) $$render(consequent_5);
 			});
 		}
 
@@ -12340,7 +12330,7 @@
 				disabled() && "qc-disabled"
 			]));
 
-			set_text(text, `${legend() ?? ''} `);
+			set_text(text$1, `${legend() ?? ''} `);
 
 			set_class(div_1, 1, clsx([
 				`qc-dropdown-list ${get(widthClass)}`,
@@ -12412,7 +12402,7 @@
 			get noOptionsMessage() {
 				return noOptionsMessage();
 			},
-			set noOptionsMessage($$value = "Aucune option disponible") {
+			set noOptionsMessage($$value = "Aucun élément") {
 				noOptionsMessage($$value);
 				flushSync();
 			},
@@ -12421,20 +12411,6 @@
 			},
 			set enableSearch($$value = false) {
 				enableSearch($$value);
-				flushSync();
-			},
-			get comboAriaLabel() {
-				return comboAriaLabel();
-			},
-			set comboAriaLabel($$value = "") {
-				comboAriaLabel($$value);
-				flushSync();
-			},
-			get ariaRequired() {
-				return ariaRequired();
-			},
-			set ariaRequired($$value = false) {
-				ariaRequired($$value);
 				flushSync();
 			},
 			get required() {
@@ -12474,13 +12450,6 @@
 				searchPlaceholder($$value);
 				flushSync();
 			},
-			get emptyOptionSrMessage() {
-				return emptyOptionSrMessage();
-			},
-			set emptyOptionSrMessage($$value = "") {
-				emptyOptionSrMessage($$value);
-				flushSync();
-			},
 			get multiple() {
 				return multiple();
 			},
@@ -12505,14 +12474,11 @@
 			placeholder: {},
 			noOptionsMessage: {},
 			enableSearch: {},
-			comboAriaLabel: {},
-			ariaRequired: {},
 			required: {},
 			disabled: {},
 			invalid: {},
 			invalidText: {},
 			searchPlaceholder: {},
-			emptyOptionSrMessage: {},
 			multiple: {}
 		},
 		[],
