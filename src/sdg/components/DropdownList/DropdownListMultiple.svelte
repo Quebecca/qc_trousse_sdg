@@ -1,4 +1,5 @@
 <script>
+    import {Utils} from "../utils";
     import Checkbox from "../Checkbox/Checkbox.svelte";
 
     let {
@@ -14,9 +15,11 @@
         selectedLabels = [];
 
     function handleKeyDown(event, index) {
-        if (canExit(event, index)) {
-            handleExit(event.key);
-        }
+        Utils.sleep(5).then(() => {
+            if (canExit(event, index)) {
+                handleExit(event.key);
+            }
+        }).catch(console.error);
     }
 
     function canExit(event, index) {

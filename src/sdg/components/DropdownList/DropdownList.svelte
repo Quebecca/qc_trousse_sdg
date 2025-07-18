@@ -8,7 +8,7 @@
 
     let {
         id = Math.random().toString(36).substring(2, 15),
-        value = $bindable(null),
+        value = $bindable(),
         legend = "",
         width = "lg",
         items,
@@ -68,6 +68,8 @@
     }
 
     function handleTab(event) {
+        // Le changement de focus a lieu après le lancement de l'événement clavier.
+        // Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
         Utils.sleep(5).then(() => {
             if (event.key === "Tab" && !Utils.componentIsActive(instance)) {
                 expanded = false;
@@ -105,7 +107,7 @@
     })
 </script>
 
-<svelte:document onclick={handleOuterEvent} />
+<svelte:document onmouseup={handleOuterEvent} />
 <div class={[
     'qc-textfield-container',
      disabled && "qc-disabled"
@@ -135,7 +137,7 @@
                 bind:this={button}
         >
             <span class="qc-dropdown-text">
-                {#if Utils.isTruthy(value)}
+                {#if selectedOptionsText.length > 0}
                     <span class="qc-dropdown-choice">{selectedOptionsText}</span>
                 {:else}
                     <span class="qc-dropdown-placeholder">{placeholder}</span>

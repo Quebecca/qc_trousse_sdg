@@ -1,4 +1,6 @@
 <script>
+    import {Utils} from "../utils";
+
     let {
         items,
         noOptionsMessage,
@@ -9,10 +11,6 @@
     let predecessor = $state();
     let selectedValue = $state();
     let mouseDownElement = $state(null);
-
-    // $effect(() => {
-    //     $inspect(mouseDownElement);
-    // });
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
     function handleEvent(thisElement, label, value) {
@@ -40,13 +38,15 @@
     }
 
     function handleKeyDown (event, label, value, index) {
-        if (event.key === "Enter" || event.key === " ") {
-            handleEvent(event.target, label, value);
-        }
+        Utils.sleep(5).then(() => {
+            if (event.key === "Enter" || event.key === " ") {
+                handleEvent(event.target, label, value);
+            }
 
-        if (canExit(event, index)) {
-            handleExit(event.key);
-        }
+            if (canExit(event, index)) {
+                handleExit(event.key);
+            }
+        }).catch(console.error);
     }
 
     function canExit(event, index) {

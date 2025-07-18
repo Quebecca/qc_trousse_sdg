@@ -1,7 +1,6 @@
 <script>
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
-    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 

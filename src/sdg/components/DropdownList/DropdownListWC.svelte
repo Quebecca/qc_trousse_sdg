@@ -22,7 +22,7 @@
 
     let {
         invalid = $bindable(false),
-        value = $bindable(null),
+        value = $bindable(),
         ...rest
     } = $props();
 
