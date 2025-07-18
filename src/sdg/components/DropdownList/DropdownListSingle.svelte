@@ -55,20 +55,22 @@
 </script>
 
 {#if items.length > 0}
-    {#each items as item, index}
-        <div
-                id={Math.random().toString(36).substring(2, 15)}
-                class="qc-dropdown-list-single"
-                tabindex="0"
-                role="option"
-                aria-selected={selectedValue === item.value ? "true" : "false"}
-                onmousedown={(event) => handleMouseDown(event)}
-                onmouseup={(event) => handleMouseUp(event, item.label, item.value)}
-                onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
-        >
-            {item.label}
-        </div>
-    {/each}
+    <ul>
+        {#each items as item, index}
+            <li
+                    id={Math.random().toString(36).substring(2, 15)}
+                    class="qc-dropdown-list-single"
+                    tabindex="0"
+                    role="option"
+                    aria-selected={selectedValue === item.value ? "true" : "false"}
+                    onmousedown={(event) => handleMouseDown(event)}
+                    onmouseup={(event) => handleMouseUp(event, item.label, item.value)}
+                    onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
+            >
+                {item.label}
+            </li>
+        {/each}
+    </ul>
 {:else}
     <div class="qc-dropdown-list-no-options">{noOptionsMessage}</div>
 {/if}

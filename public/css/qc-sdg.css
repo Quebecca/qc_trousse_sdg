@@ -2706,6 +2706,9 @@ qc-textfield {
     scrollbar-width: thin;
   }
 }
+.qc-dropdown-list-items ul {
+  padding: 0;
+}
 .qc-dropdown-list-items * {
   overflow: hidden;
   white-space: nowrap;
@@ -2730,8 +2733,12 @@ qc-textfield {
 .qc-dropdown-list-single {
   padding-left: var(--qc-spacer-xs);
   padding-right: var(--qc-spacer-xs);
+  margin: 0;
 }
 
+.qc-dropdown-list-multiple {
+  margin: 0;
+}
 .qc-dropdown-list-multiple label {
   margin: 0;
   padding-left: var(--qc-spacer-xs);

@@ -7155,7 +7155,7 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$8 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_1$a = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 	var root_2$8 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -7259,7 +7259,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$8();
+				var div_2 = root_1$a();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -8250,7 +8250,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$7 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$9 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8296,7 +8296,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$7();
+				var div = root_1$9();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -9073,7 +9073,7 @@
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
 	var root_2$6 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[20, 8]]);
-	var root_1$6 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
+	var root_1$8 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -9088,7 +9088,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$6();
+				var div = root_1$8();
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
@@ -9151,7 +9151,7 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[56, 12]]);
+	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[56, 12]]);
 	var root$5 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
@@ -9217,7 +9217,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$5();
+				var span = root_1$7();
 
 				append($$anchor, span);
 			};
@@ -9982,7 +9982,7 @@
 
 	var root_2$5 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[69, 16]]);
 
-	var root_1$4 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
+	var root_1$6 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
 			45,
 			4,
@@ -9999,7 +9999,7 @@
 		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1$4();
+			var fragment = root_1$6();
 			var label_1 = first_child(fragment);
 			var input = child(label_1);
 
@@ -10539,7 +10539,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root_1$3 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
+	var root_1$5 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
 
 	var root$4 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
 		[
@@ -10603,7 +10603,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_2 = root_1$3();
+				var span_2 = root_1$5();
 				var node_1 = child(span_2);
 
 				html(node_1, description);
@@ -10956,7 +10956,7 @@
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
 	var root_2$4 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[78, 16]]);
-	var root_1$2 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
+	var root_1$4 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
 	var root_3$3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
@@ -11048,7 +11048,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var label_1 = root_1$2();
+				var label_1 = root_1$4();
 
 				set_attribute(label_1, 'for', inputId);
 				set_attribute(label_1, 'id', labelId);
@@ -11422,7 +11422,7 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
+	var root_1$3 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
 	var root_2$3 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
 	var root$2 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
 
@@ -11455,7 +11455,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$1();
+				var fragment = root_1$3();
 				var span = sibling(first_child(fragment), 2);
 				var node_1 = child(span);
 
@@ -11706,8 +11706,9 @@
 
 	DropdownListMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-multiple"><!></div>`), DropdownListMultiple[FILENAME], [[51, 12]]);
-	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[67, 8]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListMultiple[FILENAME], [[52, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListMultiple[FILENAME], [[50, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListMultiple[FILENAME], [[69, 8]]);
 	var root$1 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListMultiple[FILENAME], [[48, 0]]);
 
 	function DropdownListMultiple($$anchor, $$props) {
@@ -11757,16 +11758,15 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = comment();
-				var node_1 = first_child(fragment);
+				var ul = root_1$2();
 
-				each(node_1, 17, items, index, ($$anchor, item, index) => {
-					var div_1 = root_2$2();
-					var node_2 = child(div_1);
+				each(ul, 21, items, index, ($$anchor, item, index) => {
+					var li = root_2$2();
+					var node_1 = child(li);
 
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
 
-					Checkbox(node_2, {
+					Checkbox(node_1, {
 						get value() {
 							return get(item).value;
 						},
@@ -11790,20 +11790,21 @@
 						}
 					});
 
-					reset(div_1);
-					append($$anchor, div_1);
+					reset(li);
+					append($$anchor, li);
 				});
 
-				append($$anchor, fragment);
+				reset(ul);
+				append($$anchor, ul);
 			};
 
 			var alternate = ($$anchor) => {
-				var div_2 = root_3$2();
-				var text = child(div_2, true);
+				var div_1 = root_3$2();
+				var text = child(div_1, true);
 
-				reset(div_2);
+				reset(div_1);
 				template_effect(() => set_text(text, noOptionsMessage()));
-				append($$anchor, div_2);
+				append($$anchor, div_1);
 			};
 
 			if_block(node, ($$render) => {
@@ -11864,8 +11865,9 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-single" tabindex="0" role="option"> </div>`), DropdownListSingle[FILENAME], [[59, 8]]);
-	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[73, 4]]);
+	var root_2$1 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListSingle[FILENAME], [[60, 12]]);
+	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListSingle[FILENAME], [[58, 4]]);
+	var root_3$1 = add_locations(template(`<div class="qc-dropdown-list-no-options"> </div>`), DropdownListSingle[FILENAME], [[75, 4]]);
 
 	function DropdownListSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11925,39 +11927,39 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
+				var ul = root_1$1();
 
-				each(node_1, 17, items, index, ($$anchor, item, index) => {
-					var div = root_2$1();
+				each(ul, 21, items, index, ($$anchor, item, index) => {
+					var li = root_2$1();
 
-					set_attribute(div, 'id', Math.random().toString(36).substring(2, 15));
-					div.__mousedown = [on_mousedown, handleMouseDown];
-					div.__mouseup = [on_mouseup, handleMouseUp, item];
-					div.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
+					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
+					li.__mousedown = [on_mousedown, handleMouseDown];
+					li.__mouseup = [on_mouseup, handleMouseUp, item];
+					li.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
 
-					var text = child(div, true);
+					var text = child(li, true);
 
-					reset(div);
+					reset(li);
 
 					template_effect(() => {
-						set_attribute(div, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
+						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
 						set_text(text, get(item).label);
 					});
 
-					append($$anchor, div);
+					append($$anchor, li);
 				});
 
-				append($$anchor, fragment_1);
+				reset(ul);
+				append($$anchor, ul);
 			};
 
 			var alternate = ($$anchor) => {
-				var div_1 = root_3$1();
-				var text_1 = child(div_1, true);
+				var div = root_3$1();
+				var text_1 = child(div, true);
 
-				reset(div_1);
+				reset(div);
 				template_effect(() => set_text(text_1, noOptionsMessage()));
-				append($$anchor, div_1);
+				append($$anchor, div);
 			};
 
 			if_block(node, ($$render) => {

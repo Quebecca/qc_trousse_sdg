@@ -144,6 +144,10 @@ $border: 1;
     scrollbar-width: thin;
   }
 
+  ul {
+    padding: 0;
+  }
+
   * {
     overflow: hidden;
     white-space: nowrap;
@@ -171,9 +175,12 @@ $border: 1;
 .qc-dropdown-list-single {
   padding-left: token-value(spacer, xs);
   padding-right: token-value(spacer, xs);
+  margin: 0;
 }
 
 .qc-dropdown-list-multiple {
+  margin: 0;
+
   label {
     margin: 0;
     padding-left: token-value(spacer, xs);
