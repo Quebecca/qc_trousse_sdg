@@ -3356,29 +3356,6 @@
 		};
 	}
 
-	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {any} value
-	 */
-	function text(value = '') {
-		if (!hydrating) {
-			var t = create_text(value + '');
-			assign_nodes(t, t);
-			return t;
-		}
-
-		var node = hydrate_node;
-
-		if (node.nodeType !== 3) {
-			// if an {expression} is empty during SSR, we need to insert an empty text node
-			node.before((node = create_text()));
-			set_hydrate_node(node);
-		}
-
-		assign_nodes(node, node);
-		return node;
-	}
-
 	function comment() {
 		// we're not delegating to `template` here for performance reasons
 		if (hydrating) {
@@ -7815,7 +7792,7 @@
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
 	var root_2$8 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_4$1 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
+	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$e = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
@@ -7905,7 +7882,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_4$1();
+				var a_1 = root_4$2();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -10981,7 +10958,7 @@
 	var root_2$5 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[78, 16]]);
 	var root_1$5 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
 	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
-	var root_4 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
+	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
 	var root$5 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[70, 0, [[86, 4]]]]);
@@ -11126,7 +11103,7 @@
 
 		{
 			var consequent_3 = ($$anchor) => {
-				var textarea = root_4();
+				var textarea = root_4$1();
 
 				remove_textarea_child(textarea);
 
@@ -11984,7 +11961,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[17, 0, [[38, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"> </span>`), DropdownListItems[FILENAME], [[41, 16]]);
+	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[17, 0, [[38, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12046,10 +12024,12 @@
 				var node_2 = first_child(fragment_2);
 
 				await_block(node_2, () => Utils.sleep(100), null, ($$anchor, _) => {
-					var text$1 = text();
+					var span = root_4();
+					var text = child(span, true);
 
-					template_effect(() => set_text(text$1, noOptionsMessage()));
-					append($$anchor, text$1);
+					reset(span);
+					template_effect(() => set_text(text, noOptionsMessage()));
+					append($$anchor, span);
 				});
 
 				append($$anchor, fragment_2);
@@ -12299,16 +12279,16 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[146, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[115, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[145, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			109,
+			108,
 			0,
 			[
-				[113, 4],
-				[118, 4, [[139, 8]]]
+				[112, 4],
+				[117, 4, [[138, 8]]]
 			]
 		]
 	]);

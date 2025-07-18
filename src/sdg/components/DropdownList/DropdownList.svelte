@@ -1,5 +1,4 @@
 <script>
-    import Icon from "../Icon/Icon.svelte";
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
     import FormError from "../FormError/FormError.svelte";

@@ -1,4 +1,6 @@
 @use "../../scss/qc-sdg-lib" as *;
+@use "DropdownListItems/dropdownListItems";
+@use "DropdownListButton/dropdownListButton";
 @use "sass:math";
 
 $min-height: 40;
@@ -30,74 +32,6 @@ $border: 1;
   }
 }
 
-.qc-dropdown-list-no-options {
-  padding: token-value(spacer, xs);
-  color: token-value(color, grey, medium);
-}
-
-.qc-dropdown-button {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  height: rem($min-height);
-  align-items: center;
-  background-color: token-value(color, background);
-  border: none;
-  padding-left: token-value(spacer, xs);
-  padding-right: token-value(spacer, xs);
-  gap: token-value(spacer, xs);
-
-  @include qc-formcontrol-box();
-  @include content-font(md);
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-
-    &::before {
-      background-color: token-value(color, grey, pale);
-    }
-  }
-}
-
-.qc-dropdown-text {
-  display: flex;
-  justify-items: start;
-  overflow: hidden;
-}
-
-.qc-dropdown-button-icon {
-  align-items: center;
-  rotate: 180deg;
-}
-
-.qc-dropdown-button-icon-expanded {
-  transform: rotate(180deg);
-}
-
-%dropdown-placeholder-text {
-  display: block;
-  justify-content: start;
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.qc-dropdown-placeholder {
-  @extend %dropdown-placeholder-text;
-  color: token-value(color, grey, medium);
-}
-
-.qc-dropdown-choice {
-  @extend %dropdown-placeholder-text;
-  color: token-value(color, blue, dark);
-}
-
 .qc-dropdown-list-expanded {
   position: absolute;
   width: calc(100% + 2px);
@@ -117,44 +51,6 @@ $border: 1;
   display: none;
 }
 
-.qc-dropdown-list-items {
-  max-height: var(--dropdown-items-height);
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  &::-webkit-scrollbar {
-    width: token-value(spacer, xs);
-    margin-left: token-value(spacer, xs);
-    margin-right: token-value(spacer, xs);
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: token-value(color, blue, piv);
-    border-radius: rem(4);
-
-    border: none;
-  }
-
-  @supports not selector(::-webkit-scrollbar) {
-    scrollbar-color: token-value(color, blue, piv) transparent;
-    scrollbar-width: thin;
-  }
-
-  ul {
-    padding: 0;
-  }
-
-  * {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-}
-
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {
   display: flex;
   align-items: center;
@@ -170,33 +66,4 @@ $border: 1;
     outline: rem(2) solid token-value(color, blue, light);
     outline-offset: -(rem(2));
   }
-}
-
-.qc-dropdown-list-single {
-  padding-left: token-value(spacer, xs);
-  padding-right: token-value(spacer, xs);
-  margin: 0;
-}
-
-.qc-dropdown-list-multiple {
-  margin: 0;
-
-  label {
-    margin: 0;
-    padding-left: token-value(spacer, xs);
-    padding-right: token-value(spacer, xs);
-
-    flex-grow: 1;
-    justify-items: center;
-    align-items: center;
-  }
-
-  .qc-check-row {
-    height: 100%;
-  }
-}
-
-.qc-dropdown-list-single-selected {
-  background-color: token-value(color, blue, regular) !important;
-  color: token-value(color, white);
 }

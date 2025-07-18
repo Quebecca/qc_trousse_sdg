@@ -35,10 +35,10 @@
         />
     {/if}
 
-    <div class="qc-dropdown-list-no-options" role="alert">
+    <div class="qc-dropdown-list-no-options-container" role="alert">
         {#if displayedItems.length <= 0}
             {#await Utils.sleep(100) then _}
-                {noOptionsMessage}
+                <span class="qc-dropdown-list-no-options">{noOptionsMessage}</span>
             {/await}
         {/if}
     </div>
