@@ -4,6 +4,7 @@
     import SearchInput from "../SearchInput/SearchInput.svelte";
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
+    import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
 
     let {
         id = Math.random().toString(36).substring(2, 15),
@@ -82,7 +83,7 @@
 
     function closeDropdown(key) {
         expanded = false;
-        if (key === "Escape") {
+        if (key === "Escape" && button) {
             button.focus();
         }
     }
@@ -124,30 +125,16 @@
         tabindex="-1"
         bind:this={instance}
     >
-        <button
-                id={inputId}
-                class="qc-dropdown-button"
-                onclick={handleDropdownButtonClick}
-                onkeydown={(e) => {handleTab(e); handleEscape(e)}}
-                {disabled}
-                aria-expanded={expanded}
-                bind:this={button}
-        >
-            <span class="qc-dropdown-text">
-                {#if selectedOptionsText.length > 0}
-                    <span class="qc-dropdown-choice">{selectedOptionsText}</span>
-                {:else}
-                    <span class="qc-dropdown-placeholder">{placeholder}</span>
-                {/if}
-            </span>
-
-            <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
-                <Icon
-                    type={disabled ? "chevron-grey-thin" : "chevron-blue-thin"}
-                    size="sm"
-                />
-            </span>
-        </button>
+        <DropdownListButton
+            {inputId}
+            {disabled}
+            {expanded}
+            {selectedOptionsText}
+            {placeholder}
+            handleClick={handleDropdownButtonClick}
+            handleKeyDown={(e) => {handleTab(e); handleEscape(e);}}
+            bind:this={button}
+        />
 
         <div class={[
                 "qc-dropdown-list-expanded",
@@ -174,6 +161,7 @@
                     selectedOptionsText = l;
                     value = v;
                     expanded = false;
+                    button?.focus();
                 }}
                 passValueMultiple={(l, v) => {
                     selectedOptionsText = l;
