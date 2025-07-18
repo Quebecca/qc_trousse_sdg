@@ -9,6 +9,7 @@
   display: inline-block;
   box-sizing: border-box;
   min-width: 112px;
+  width: auto;
   min-height: 56px;
   padding: 16px 24px;
   transition: all 0.24s ease-in-out;
@@ -18,12 +19,20 @@
   margin-right: rem(32);
   margin-bottom: token-value(spacer, md);
 
+  @include media-mobile() {
+    width: 100%;
+  }
+
   &.qc-button-compact {
     font-weight: token-value(font weight, semi-bold);
     min-width: 80px;
     min-height: 40px;
     padding: 8px 16px;
     border-width: 1px;
+
+    @include media-mobile() {
+      width: 100%;
+    }
   }
 
   &.qc-button-rounded {
@@ -34,7 +43,7 @@
     color: token-value(color white);
     border-color: token-value(color blue piv);
     background-color: token-value(color blue piv);
-    box-shadow: 0 1px 4px token-value(color box_shadow);
+    box-shadow: 0 1px 4px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24);
 
     &:hover:not(:disabled) {
       border-color: token-value(color blue, regular);
@@ -45,7 +54,7 @@
       border-color: token-value(color blue, dark);
       background-color: token-value(color blue, regular);
       box-shadow:
-        0 2px 8px token-value(color, box_shadow),
+        0 2px 8px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24),
         0 0 0 2px token-value(color blue, light);
     }
 
