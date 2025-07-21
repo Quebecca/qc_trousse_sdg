@@ -2727,7 +2727,7 @@ qc-textfield {
   margin: var(--qc-spacer-xs);
 }
 .qc-dropdown-list-search * {
-  z-index: 12 !important;
+  z-index: 12;
 }
 
 .qc-dropdown-list-expanded {
@@ -2741,10 +2741,6 @@ qc-textfield {
   border-left: 0.1rem solid var(--qc-color-grey-medium);
   border-right: 0.1rem solid var(--qc-color-grey-medium);
   border-bottom: 0.1rem solid var(--qc-color-grey-medium);
-}
-
-.qc-dropdown-list-hidden {
-  display: none;
 }
 
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {

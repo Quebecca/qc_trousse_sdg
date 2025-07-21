@@ -28,7 +28,7 @@ $border: 1;
   margin: token-value(spacer, xs);
 
   * {
-    z-index: 12 !important;
+    z-index: 12;
   }
 }
 
@@ -40,15 +40,10 @@ $border: 1;
   top: 100%;
   z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
 
-
   background-color: token-value(color, background);
   border-left: rem($border) solid token-value(color, grey, medium);
   border-right: rem($border) solid token-value(color, grey, medium);
   border-bottom: rem($border) solid token-value(color, grey, medium);
-}
-
-.qc-dropdown-list-hidden {
-  display: none;
 }
 
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {

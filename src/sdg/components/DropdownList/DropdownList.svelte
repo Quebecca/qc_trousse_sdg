@@ -135,41 +135,44 @@
             bind:this={button}
         />
 
-        <div class={[
-                "qc-dropdown-list-expanded",
-                !expanded && "qc-dropdown-list-hidden"
-            ]}
-             tabindex="-1"
-        >
-            {#if enableSearch}
-                <div class="qc-dropdown-list-search">
-                    <SearchInput
-                            id="{id}-search"
-                            bind:value={searchText}
-                            placeholder={searchPlaceholder}
-                            liveRefresh="true"
-                    />
-                </div>
-            {/if}
+        {#if expanded}
+            <div class={[
+                    "qc-dropdown-list-expanded",
+                ]}
+                 tabindex="-1"
+            >
 
-            <DropdownListItems
-                {multiple}
-                {displayedItems}
-                {noOptionsMessage}
-                passValueSingle={(l, v) => {
-                    selectedOptionsText = l;
-                    value = v;
-                    expanded = false;
-                    button?.focus();
-                }}
-                passValueMultiple={(l, v) => {
-                    selectedOptionsText = l;
-                    value = v;
-                }}
-                handleExitSingle={(key) => closeDropdown(key)}
-                handleExitMultiple={(key) => closeDropdown(key)}
-            />
-        </div>
+                {#if enableSearch}
+                    <div class="qc-dropdown-list-search">
+                        <SearchInput
+                                id="{id}-search"
+                                bind:value={searchText}
+                                placeholder={searchPlaceholder}
+                                liveRefresh="true"
+                        />
+                    </div>
+                {/if}
+
+                <DropdownListItems
+                    {multiple}
+                    {displayedItems}
+                    {noOptionsMessage}
+                    passValueSingle={(l, v) => {
+                        selectedOptionsText = l;
+                        value = v;
+                        expanded = false;
+                        button?.focus();
+                    }}
+                    passValueMultiple={(l, v) => {
+                        selectedOptionsText = l;
+                        value = v;
+                    }}
+                    handleExitSingle={(key) => closeDropdown(key)}
+                    handleExitMultiple={(key) => closeDropdown(key)}
+                />
+
+            </div>
+        {/if}
     </div>
 
     {#if invalid}
