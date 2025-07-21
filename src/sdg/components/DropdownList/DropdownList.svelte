@@ -42,7 +42,7 @@
             return `qc-dropdown-list-lg`;
         }),
         usedHeight = $derived.by(() => {
-            const maxItemsHeight = 330;
+            const maxItemsHeight = 329; // Compensation de 1 pixel pour la bordure
             const searchInputTotalHeight = 56;
 
             if (enableSearch) {
@@ -54,8 +54,9 @@
     ;
 
     function handleDropdownButtonClick(event) {
-        expanded = !expanded
-        event.innerEventFromFilter = id
+        event.preventDefault();
+        expanded = !expanded;
+        event.innerEventFromFilter = id;
     }
 
     function handleOuterEvent(event) {
@@ -98,7 +99,7 @@
     })
 
     $effect(() => {
-        if (Utils.isTruthy(value)) {
+        if (value) {
             invalid = false;
         }
     })
@@ -112,7 +113,8 @@
     <label for={inputId} id={labelId}>
         {legend}
         {#if required}
-            <span class="qc-textfield-required" aria-hidden="true">*</span>{/if}
+            <span class="qc-textfield-required" aria-hidden="true">*</span>
+        {/if}
     </label>
     <div
         class={[

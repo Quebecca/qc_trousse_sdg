@@ -1,7 +1,7 @@
 <script>
-    import {Utils} from "../../utils";
     import DropdownListItemsSingle from "./DropdownListItemsSingle/DropdownListItemsSingle.svelte";
     import DropdownListItemsMultiple from "./DropdownListItemsMultiple/DropdownListItemsMultiple.svelte";
+    import {tick} from "svelte";
 
     let {
         multiple,
@@ -37,7 +37,7 @@
 
     <div class="qc-dropdown-list-no-options-container" role="alert">
         {#if displayedItems.length <= 0}
-            {#await Utils.sleep(100) then _}
+            {#await tick() then _}
                 <span class="qc-dropdown-list-no-options">{noOptionsMessage}</span>
             {/await}
         {/if}

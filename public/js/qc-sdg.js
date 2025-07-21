@@ -12023,7 +12023,7 @@
 				var fragment_2 = comment();
 				var node_2 = first_child(fragment_2);
 
-				await_block(node_2, () => Utils.sleep(100), null, ($$anchor, _) => {
+				await_block(node_2, tick, null, ($$anchor, _) => {
 					var span = root_4();
 					var text = child(span, true);
 
@@ -12279,10 +12279,10 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[115, 12]]);
-	var root_3 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[146, 20]]);
-	var root_2 = add_locations(template(`<div tabindex="-1"><!> <!></div>`), DropdownList[FILENAME], [[139, 12]]);
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <!></div> <!></div>`), DropdownList[FILENAME], [[108, 0, [[112, 4], [117, 4]]]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
+	var root_3 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 20]]);
+	var root_2 = add_locations(template(`<div tabindex="-1"><!> <!></div>`), DropdownList[FILENAME], [[141, 12]]);
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <!></div> <!></div>`), DropdownList[FILENAME], [[109, 0, [[113, 4], [119, 4]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -12323,7 +12323,7 @@
 				return `qc-dropdown-list-lg`;
 			}),
 			usedHeight = user_derived(() => {
-				const maxItemsHeight = 330;
+				const maxItemsHeight = 329; // Compensation de 1 pixel pour la bordure
 				const searchInputTotalHeight = 56;
 
 				if (enableSearch()) {
@@ -12334,6 +12334,7 @@
 			});
 
 		function handleDropdownButtonClick(event) {
+			event.preventDefault();
 			set(expanded, !get(expanded));
 			event.innerEventFromFilter = id();
 		}
@@ -12383,7 +12384,7 @@
 		});
 
 		user_effect(() => {
-			if (Utils.isTruthy(value())) {
+			if (value()) {
 				invalid(false);
 			}
 		});
@@ -12777,7 +12778,7 @@
 		DropdownListWC,
 		{
 			id: { attribute: 'id', type: 'String' },
-			label: { attribute: 'label', type: 'String' },
+			legend: { attribute: 'legend', type: 'String' },
 			value: {
 				attribute: 'value',
 				reflect: true,
@@ -12785,12 +12786,14 @@
 			},
 			enableSearch: { attribute: 'enable-search', type: 'Boolean' },
 			comboAriaLabel: { attribute: 'combo-aria-label', type: 'String' },
-			ariaRequired: {
-				attribute: 'combo-aria-required',
+			required: { attribute: 'required', type: 'Boolean' },
+			disabled: { attribute: 'disabled', type: 'Boolean' },
+			invalid: {
+				attribute: 'invalid',
+				reflect: true,
 				type: 'Boolean'
 			},
-			disabled: { attribute: 'disabled', type: 'Boolean' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
+			invalidText: { attribute: 'invalid-text', type: 'String' },
 			searchPlaceholder: {
 				attribute: 'search-placeholder',
 				type: 'String'
