@@ -10,15 +10,15 @@
         value = $bindable(''),
         ariaLabel = lang === "fr" ? "Rechercher…" : "Search_",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
-        liveRefresh = false,
+        leftIcon = false,
         ...rest
     } = $props();
 
     let searchInput;
 </script>
 
-<div class={["qc-search-input", liveRefresh && "qc-search-live-refresh"]}>
-    {#if liveRefresh}
+<div class={["qc-search-input", leftIcon && "qc-search-left-icon"]}>
+    {#if leftIcon}
         <Icon type="loupe-piv-fine" iconColor="grey-regular" />
     {/if}
     <input  bind:this={searchInput}

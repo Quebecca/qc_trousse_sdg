@@ -7167,7 +7167,7 @@
 		});
 	};
 
-	var root_3$2 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_3$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
@@ -7313,7 +7313,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$2();
+				var a_3 = root_3$1();
 
 				a_3.__click = [
 					on_click$2,
@@ -8723,7 +8723,7 @@
 		let value = prop($$props, 'value', 15, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher…" : "Search_"),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
-			liveRefresh = prop($$props, 'liveRefresh', 7, false),
+			leftIcon = prop($$props, 'leftIcon', 7, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -8734,7 +8734,7 @@
 					'value',
 					'ariaLabel',
 					'clearAriaLabel',
-					'liveRefresh'
+					'leftIcon'
 				]);
 
 		let searchInput;
@@ -8750,7 +8750,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (liveRefresh()) $$render(consequent);
+				if (leftIcon()) $$render(consequent);
 			});
 		}
 
@@ -8792,7 +8792,7 @@
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-search-input",
-				liveRefresh() && "qc-search-live-refresh"
+				leftIcon() && "qc-search-left-icon"
 			]));
 
 			attributes = set_attributes(input, attributes, {
@@ -8832,11 +8832,11 @@
 				clearAriaLabel($$value);
 				flushSync();
 			},
-			get liveRefresh() {
-				return liveRefresh();
+			get leftIcon() {
+				return leftIcon();
 			},
-			set liveRefresh($$value = false) {
-				liveRefresh($$value);
+			set leftIcon($$value = false) {
+				leftIcon($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -8849,7 +8849,7 @@
 			value: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
-			liveRefresh: {}
+			leftIcon: {}
 		},
 		[],
 		[],
@@ -10957,7 +10957,7 @@
 
 	var root_2$5 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[78, 16]]);
 	var root_1$5 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
-	var root_3$1 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
@@ -11082,7 +11082,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var div_1 = root_3$1();
+				var div_1 = root_3();
 
 				set_attribute(div_1, 'id', descriptionId);
 
@@ -12280,9 +12280,18 @@
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
-	var root_3 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 20]]);
-	var root_2 = add_locations(template(`<div tabindex="-1"><!> <!></div>`), DropdownList[FILENAME], [[141, 12]]);
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <!></div> <!></div>`), DropdownList[FILENAME], [[109, 0, [[113, 4], [119, 4]]]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 16]]);
+
+	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!></div></div> <!></div>`), DropdownList[FILENAME], [
+		[
+			109,
+			0,
+			[
+				[113, 4],
+				[119, 4, [[140, 8]]]
+			]
+		]
+	]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -12443,88 +12452,73 @@
 			() => get(button)
 		);
 
-		var node_2 = sibling(node_1, 2);
+		var div_2 = sibling(node_1, 2);
+		var node_2 = child(div_2);
 
 		{
-			var consequent_2 = ($$anchor) => {
-				var div_2 = root_2();
+			var consequent_1 = ($$anchor) => {
+				var div_3 = root_2();
+				var node_3 = child(div_3);
 
-				set_class(div_2, 1, clsx(["qc-dropdown-list-expanded"]));
-
-				var node_3 = child(div_2);
-
-				{
-					var consequent_1 = ($$anchor) => {
-						var div_3 = root_3();
-						var node_4 = child(div_3);
-
-						SearchInput(node_4, {
-							get id() {
-								return `${id() ?? ''}-search`;
-							},
-							get placeholder() {
-								return searchPlaceholder();
-							},
-							liveRefresh: 'true',
-							get value() {
-								return get(searchText);
-							},
-							set value($$value) {
-								set(searchText, $$value, true);
-							}
-						});
-
-						reset(div_3);
-						append($$anchor, div_3);
-					};
-
-					if_block(node_3, ($$render) => {
-						if (enableSearch()) $$render(consequent_1);
-					});
-				}
-
-				var node_5 = sibling(node_3, 2);
-
-				DropdownListItems(node_5, {
-					get multiple() {
-						return multiple();
+				SearchInput(node_3, {
+					get id() {
+						return `${id() ?? ''}-search`;
 					},
-					get displayedItems() {
-						return get(displayedItems);
+					get placeholder() {
+						return searchPlaceholder();
 					},
-					get noOptionsMessage() {
-						return noOptionsMessage();
+					leftIcon: 'true',
+					get value() {
+						return get(searchText);
 					},
-					passValueSingle: (l, v) => {
-						set(selectedOptionsText, l, true);
-						value(v);
-						set(expanded, false);
-						get(button)?.focus();
-					},
-					passValueMultiple: (l, v) => {
-						set(selectedOptionsText, l, true);
-						value(v);
-					},
-					handleExitSingle: (key) => closeDropdown(key),
-					handleExitMultiple: (key) => closeDropdown(key)
+					set value($$value) {
+						set(searchText, $$value, true);
+					}
 				});
 
-				reset(div_2);
-				append($$anchor, div_2);
+				reset(div_3);
+				append($$anchor, div_3);
 			};
 
 			if_block(node_2, ($$render) => {
-				if (get(expanded)) $$render(consequent_2);
+				if (enableSearch()) $$render(consequent_1);
 			});
 		}
 
+		var node_4 = sibling(node_2, 2);
+
+		DropdownListItems(node_4, {
+			get multiple() {
+				return multiple();
+			},
+			get displayedItems() {
+				return get(displayedItems);
+			},
+			get noOptionsMessage() {
+				return noOptionsMessage();
+			},
+			passValueSingle: (l, v) => {
+				set(selectedOptionsText, l, true);
+				value(v);
+				set(expanded, false);
+				get(button)?.focus();
+			},
+			passValueMultiple: (l, v) => {
+				set(selectedOptionsText, l, true);
+				value(v);
+			},
+			handleExitSingle: (key) => closeDropdown(key),
+			handleExitMultiple: (key) => closeDropdown(key)
+		});
+
+		reset(div_2);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(instance, $$value), () => get(instance));
 
-		var node_6 = sibling(div_1, 2);
+		var node_5 = sibling(div_1, 2);
 
 		{
-			var consequent_3 = ($$anchor) => {
+			var consequent_2 = ($$anchor) => {
 				FormError($$anchor, {
 					id: errorId,
 					get invalid() {
@@ -12536,8 +12530,8 @@
 				});
 			};
 
-			if_block(node_6, ($$render) => {
-				if (invalid()) $$render(consequent_3);
+			if_block(node_5, ($$render) => {
+				if (invalid()) $$render(consequent_2);
 			});
 		}
 
@@ -12557,6 +12551,11 @@
 			]));
 
 			set_style(div_1, `--dropdown-items-height: ${get(usedHeight) / (0.16 * precentRootFontSize)}rem;`);
+
+			set_class(div_2, 1, clsx([
+				"qc-dropdown-list-expanded",
+				!get(expanded) && "qc-dropdown-list-hidden"
+			]));
 		});
 
 		append($$anchor, div);

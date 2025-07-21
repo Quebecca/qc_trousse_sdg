@@ -44,15 +44,20 @@ qc-search-input {
       display: none;
     }
     &::placeholder {
+      width: 100%;
       color: token-value(color grey medium);
       font-weight: normal;
+      overflow: hidden;
+    }
+    &:placeholder-shown {
+      text-overflow: ellipsis;
     }
     &:focus,&:focus-visible {
       outline: none;
     }
   }
 
-  &.qc-search-live-refresh {
+  &.qc-search-left-icon {
     padding-left: token-value(spacer, xs);
   }
 

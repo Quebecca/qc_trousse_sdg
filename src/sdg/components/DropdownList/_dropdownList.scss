@@ -45,6 +45,10 @@ $border: 1;
   border-bottom: rem($border) solid token-value(color, grey, medium);
 }
 
+.qc-dropdown-list-hidden {
+  display: none;
+}
+
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {
   display: flex;
   align-items: center;
