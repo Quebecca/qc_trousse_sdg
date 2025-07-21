@@ -2297,3 +2297,14 @@ qc-search-bar {
   box-shadow: none;
   opacity: 1;
 }
+
+.qc-button .qc-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  background-color: currentColor;
+}
