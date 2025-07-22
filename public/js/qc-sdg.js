@@ -6004,6 +6004,23 @@
 		}
 	}
 
+	/**
+	 * Schedules a callback to run immediately before the component is unmounted.
+	 *
+	 * Out of `onMount`, `beforeUpdate`, `afterUpdate` and `onDestroy`, this is the
+	 * only one that runs inside a server-side component.
+	 *
+	 * @param {() => any} fn
+	 * @returns {void}
+	 */
+	function onDestroy(fn) {
+		if (component_context === null) {
+			lifecycle_outside_component();
+		}
+
+		onMount(() => () => untrack(fn));
+	}
+
 	/** @import { StoreReferencesContainer } from '#client' */
 	/** @import { Store } from '#shared' */
 
@@ -11251,6 +11268,10 @@
 
 				index = get(parent).items.length - 1; // parent.removeChild($host());
 			}
+		});
+
+		onDestroy(() => {
+			get(parent).items.splice(index, 1);
 		});
 
 		user_effect(() => {

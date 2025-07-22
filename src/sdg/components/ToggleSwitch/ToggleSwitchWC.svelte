@@ -12,7 +12,7 @@
 
 <script>
     import ToggleSwitch from "./ToggleSwitch.svelte";
-    import {onMount} from "svelte";
+    import {onMount, onDestroy} from "svelte";
 
     let {
         id,
@@ -39,6 +39,9 @@
             // parent.removeChild($host());
         }
     });
+    onDestroy(() => {
+        parent.items.splice(index, 1);
+    })
     $effect(() => {
         if (parent) {
             checked = parent.items[index].checked;
