@@ -6,28 +6,28 @@
         <button class="qc-button qc-primary">Principal</button>
         <button class="qc-button qc-primary qc-button-rounded">Principal</button>
         <button class="qc-button qc-primary" disabled>Principal</button>
-        <button class="qc-button qc-primary qc-button-compact">Principal</button>
+        <button class="qc-button qc-primary qc-compact">Principal</button>
     </div>
 
     <div>
         <button class="qc-button qc-secondary">Secondaire</button>
         <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
         <button class="qc-button qc-secondary" disabled>Secondaire</button>
-        <button class="qc-button qc-secondary qc-button-compact">Secondaire</button>
+        <button class="qc-button qc-secondary qc-compact">Secondaire</button>
     </div>
 
     <div>
         <button class="qc-button qc-tertiary">Tertiaire</button>
         <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
         <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-button-compact">Tertiaire</button>
+        <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
     </div>
 
     <div>
         <button class="qc-button qc-danger">Avertissement</button>
         <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
         <button class="qc-button qc-danger" disabled>Avertissement</button>
-        <button class="qc-button qc-danger qc-button-compact">Avertissement</button>
+        <button class="qc-button qc-danger qc-compact">Avertissement</button>
     </div>
 
 </qc-doc-exemple>
@@ -35,14 +35,62 @@
 <qc-doc-exemple caption="Exemples de boutons avec un icone.">
     <div>
         <button class="qc-button qc-primary">
-            <qc-icon icon="plus" label="Précédent" style="margin-right: 8px;"></qc-icon>
+            <qc-icon icon="plus" label="Précédent"></qc-icon>
             Précédent
         </button>
 
         <button class="qc-button qc-primary">
             Suivant
-            <qc-icon icon="plus" label="Précédent" style="margin-left: 8px;"></qc-icon>
+            <qc-icon icon="plus" label="Précédent"></qc-icon>
         </button>
     </div>
 
 </qc-doc-exemple>
+
+<h3>Classes CSS</h3>
+
+<div class="table-overflow">
+
+    <table class="qc-table qc-striped">
+        <thead>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>.qc-button</code></td>
+            <td>Classe de base pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-compact</code></td>
+            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-button-rounded</code></td>
+            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-primary</code></td>
+            <td>Bouton principal avec fond bleu et texte blanc. Comporte des effets au survol, focus et clic.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-secondary</code></td>
+            <td>Bouton secondaire avec fond blanc et texte bleu. Comporte des effets subtils au survol, focus et clic.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-tertiary</code></td>
+            <td>Bouton tertiaire avec fond blanc et texte bleu. Moins accentué visuellement, avec effet de soulignement au survol.</td>
+        </tr>
+        <tr>
+            <td><code>.qc-danger</code></td>
+            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
+        </tr>
+        <tr>
+            <td><code>.disabled</code></td>
+            <td>État désactivé du bouton. Change l’apparence et désactive les interactions.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

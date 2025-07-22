@@ -23,7 +23,7 @@
     width: 100%;
   }
 
-  &.qc-button-compact {
+  &.qc-compact {
     font-weight: token-value(font weight, semi-bold);
     min-width: 80px;
     min-height: 40px;
@@ -143,4 +143,12 @@
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
   background-color: currentColor;
+
+  &:first-child {
+    margin-right: 8px;
+  }
+
+  &:last-child {
+    margin-left: 8px;
+  }
 }
