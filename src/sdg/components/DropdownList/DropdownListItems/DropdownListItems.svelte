@@ -38,7 +38,7 @@
     <div class="qc-dropdown-list-no-options-container" role="alert">
         {#if displayedItems.length <= 0}
             {#await tick() then _}
-                <span class="qc-dropdown-list-no-options">{noOptionsMessage}</span>
+                <span class="qc-dropdown-list-no-options">{@html noOptionsMessage}</span>
             {/await}
         {/if}
     </div>

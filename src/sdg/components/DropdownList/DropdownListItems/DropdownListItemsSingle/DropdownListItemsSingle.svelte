@@ -67,7 +67,7 @@
                     onmouseleave={() => hoveredElement = null}
                     onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
             >
-                {item.label}
+                {@html item.label}
             </li>
         {/each}
     </ul>

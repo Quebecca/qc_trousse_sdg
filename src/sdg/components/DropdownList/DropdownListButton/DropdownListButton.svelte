@@ -28,9 +28,9 @@
 >
     <span class="qc-dropdown-text">
         {#if selectedOptionsText.length > 0}
-            <span class="qc-dropdown-choice">{selectedOptionsText}</span>
+            <span class="qc-dropdown-choice">{@html selectedOptionsText}</span>
         {:else}
-            <span class="qc-dropdown-placeholder">{placeholder}</span>
+            <span class="qc-dropdown-placeholder">{@html placeholder}</span>
         {/if}
     </span>
 

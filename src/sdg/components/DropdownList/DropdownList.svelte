@@ -176,7 +176,5 @@
         </div>
     </div>
 
-    {#if invalid}
-        <FormError id={errorId} {invalid} {invalidText} />
-    {/if}
+    <FormError id={errorId} {invalid} {invalidText} />
 </div>

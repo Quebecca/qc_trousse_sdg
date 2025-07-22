@@ -11708,7 +11708,7 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"> </li>`), DropdownListItemsSingle[FILENAME], [[58, 12]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[58, 12]]);
 	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[56, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
@@ -11777,15 +11777,11 @@
 					li.__mouseup = [on_mouseup, handleMouseUp, item];
 					li.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
 
-					var text = child(li, true);
+					var node_1 = child(li);
 
+					html(node_1, () => get(item).label);
 					reset(li);
-
-					template_effect(() => {
-						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
-						set_text(text, get(item).label);
-					});
-
+					template_effect(() => set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false"));
 					event('mouseenter', li, (event) => hoveredElement = event.target);
 					event('mouseleave', li, () => hoveredElement = null);
 					append($$anchor, li);
@@ -11961,7 +11957,7 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"> </span>`), DropdownListItems[FILENAME], [[41, 16]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[41, 16]]);
 	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[17, 0, [[38, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
@@ -12025,10 +12021,10 @@
 
 				await_block(node_2, tick, null, ($$anchor, _) => {
 					var span = root_4();
-					var text = child(span, true);
+					var node_3 = child(span);
 
+					html(node_3, noOptionsMessage);
 					reset(span);
-					template_effect(() => set_text(text, noOptionsMessage()));
 					append($$anchor, span);
 				});
 
@@ -12118,8 +12114,8 @@
 
 	var on_click = (e, handleClick) => handleClick()(e);
 	var on_keydown = (e, handleKeyDown) => handleKeyDown()(e);
-	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"> </span>`), DropdownListButton[FILENAME], [[31, 12]]);
-	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"> </span>`), DropdownListButton[FILENAME], [[33, 12]]);
+	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[31, 12]]);
+	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[33, 12]]);
 	var root$1 = add_locations(template(`<button class="qc-dropdown-button"><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[20, 0, [[29, 4], [37, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
@@ -12151,19 +12147,19 @@
 		{
 			var consequent = ($$anchor) => {
 				var span_1 = root_1$1();
-				var text = child(span_1, true);
+				var node_1 = child(span_1);
 
+				html(node_1, selectedOptionsText);
 				reset(span_1);
-				template_effect(() => set_text(text, selectedOptionsText()));
 				append($$anchor, span_1);
 			};
 
 			var alternate = ($$anchor) => {
 				var span_2 = root_2$1();
-				var text_1 = child(span_2, true);
+				var node_2 = child(span_2);
 
+				html(node_2, placeholder);
 				reset(span_2);
-				template_effect(() => set_text(text_1, placeholder()));
 				append($$anchor, span_2);
 			};
 
@@ -12175,10 +12171,10 @@
 		reset(span);
 
 		var span_3 = sibling(span, 2);
-		var node_1 = child(span_3);
+		var node_3 = child(span_3);
 		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
 
-		Icon(node_1, {
+		Icon(node_3, {
 			get type() {
 				return get(expression);
 			},
@@ -12517,23 +12513,15 @@
 
 		var node_5 = sibling(div_1, 2);
 
-		{
-			var consequent_2 = ($$anchor) => {
-				FormError($$anchor, {
-					id: errorId,
-					get invalid() {
-						return invalid();
-					},
-					get invalidText() {
-						return invalidText();
-					}
-				});
-			};
-
-			if_block(node_5, ($$render) => {
-				if (invalid()) $$render(consequent_2);
-			});
-		}
+		FormError(node_5, {
+			id: errorId,
+			get invalid() {
+				return invalid();
+			},
+			get invalidText() {
+				return invalidText();
+			}
+		});
 
 		reset(div);
 
