@@ -11240,7 +11240,9 @@
 					var fragment_1 = comment();
 					var node = first_child(fragment_1);
 
-					each(node, 17, () => get(items), index, ($$anchor, item) => {
+					each(node, 17, () => get(items), index, ($$anchor, item, $$index) => {
+						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 45, 12);
+
 						const expression_1 = user_derived(() => get(item).disabled ?? disabled());
 
 						ToggleSwitch($$anchor, {
@@ -11250,14 +11252,17 @@
 							get label() {
 								return get(item).label;
 							},
-							get checked() {
-								return get(item).checked;
-							},
 							get disabled() {
 								return get(expression_1);
 							},
 							get labelPosition() {
 								return labelPosition();
+							},
+							get checked() {
+								return get(item).checked;
+							},
+							set checked($$value) {
+								(get(item).checked = $$value);
 							}
 						});
 					});

@@ -11,7 +11,6 @@
 <script>
     import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.svelte";
     import CheckFieldGroup from "./CheckFieldGroup.svelte";
-    import {onMount} from "svelte";
 
     let {
         disabled = $bindable(false),
@@ -20,9 +19,7 @@
     } = $props();
 
 
-    let items = $state(
-        []
-    );
+    let items = $state([]);
 
     export function addItem(id, label, checked, disabled) {
         // clearCustomElements();
@@ -45,7 +42,7 @@
         <ToggleSwitch
             id={item.id}
             label={item.label}
-            checked={item.checked}
+            bind:checked={item.checked}
             disabled={item.disabled ?? disabled}
             {labelPosition}
         />
