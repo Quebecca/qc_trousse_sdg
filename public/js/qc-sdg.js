@@ -10833,7 +10833,7 @@
 
 				template_effect(
 					($0) => {
-						set_class(div_3, 1, `qc-textfield-charcount ${maxlength() && value().length >= maxlength() && 'max-reached'}`);
+						set_class(div_3, 1, `qc-textfield-charcount ${maxlength() && value().length > maxlength() && 'max-reached'}`);
 						set_text(text_1, $0);
 					},
 					[() => get(charCountText)()]

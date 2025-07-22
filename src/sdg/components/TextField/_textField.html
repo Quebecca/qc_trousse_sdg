@@ -83,13 +83,21 @@
 
       requiredFields.forEach(field => {
         const value = field.value?.trim();
+        const maxLength = parseInt(field.getAttribute("max-length"), 10);
 
         if (!value) {
           field.invalid = true;
           isValid = false;
-        } else {
-          field.invalid = false;
+          return;
         }
+
+        if (!isNaN(maxLength) && value.length > maxLength) {
+          field.invalid = true;
+          isValid = false;
+          return;
+        }
+
+        field.invalid = false;
       });
 
       if (isValid) {

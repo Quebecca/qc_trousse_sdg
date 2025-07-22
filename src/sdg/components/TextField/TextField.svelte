@@ -119,7 +119,7 @@
     {#if maxlength !== null}
         <div
             id={charCountId}
-            class={`qc-textfield-charcount ${(maxlength && value.length >= maxlength) && 'max-reached'}`}
+            class={`qc-textfield-charcount ${(maxlength && value.length > maxlength) && 'max-reached'}`}
             aria-live="polite"
         >
             {charCountText()}

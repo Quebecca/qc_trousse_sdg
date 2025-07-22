@@ -65,6 +65,10 @@ qc-textfield {
       color: token-value(color, grey, regular);
       cursor: not-allowed;
     }
+
+    .qc-textfield-description {
+      color: token-value(color, grey, regular);
+    }
   }
 }
 
@@ -75,7 +79,7 @@ qc-textfield {
 
 .qc-textfield-description {
   font-size: token-value(font, size, sm);
-  color: token-value(color, grey, medium);
+  color: token-value(color blue dark);
 }
 
 .qc-textfield.disabled {
@@ -94,7 +98,7 @@ qc-textfield {
 .qc-textfield-charcount {
   text-align: right;
   margin-top: rem(4);
-  color: token-value(color, grey, medium);
+  color: token-value(color blue dark);
   font-size: token-value(font, size, sm);
 
   &.max-reached {

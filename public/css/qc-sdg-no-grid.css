@@ -2223,6 +2223,9 @@ qc-textfield {
   color: var(--qc-color-grey-regular);
   cursor: not-allowed;
 }
+.qc-textfield-container.disabled .qc-textfield-description {
+  color: var(--qc-color-grey-regular);
+}
 
 .qc-textfield-required {
   color: var(--qc-color-red-regular);
@@ -2231,7 +2234,7 @@ qc-textfield {
 
 .qc-textfield-description {
   font-size: var(--qc-font-size-sm);
-  color: var(--qc-color-grey-medium);
+  color: var(--qc-color-blue-dark);
 }
 
 .qc-textfield.disabled::before {
@@ -2247,7 +2250,7 @@ qc-textfield {
 .qc-textfield-charcount {
   text-align: right;
   margin-top: 0.4rem;
-  color: var(--qc-color-grey-medium);
+  color: var(--qc-color-blue-dark);
   font-size: var(--qc-font-size-sm);
 }
 .qc-textfield-charcount.max-reached {
