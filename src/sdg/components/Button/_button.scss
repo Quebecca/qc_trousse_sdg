@@ -8,10 +8,11 @@
   line-height: token-value(line height, md);
   display: inline-block;
   box-sizing: border-box;
-  min-width: 112px;
+  min-width: rem(112);
   width: auto;
-  min-height: 56px;
-  padding: 16px 24px;
+  max-width: rem(360);
+  min-height: rem(56);
+  padding: rem(16) rem(24);
   transition: all 0.24s ease-in-out;
   vertical-align: middle;
   border: 2px solid transparent;
@@ -25,9 +26,9 @@
 
   &.qc-compact {
     font-weight: token-value(font weight, semi-bold);
-    min-width: 80px;
-    min-height: 40px;
-    padding: 8px 16px;
+    min-width: rem(80);
+    min-height: rem(40);
+    padding: rem(8) rem(16);
     border-width: 1px;
 
     @include media-mobile() {
@@ -36,7 +37,7 @@
   }
 
   &.qc-button-rounded {
-    border-radius: 4px;
+    border-radius: rem(4);
   }
 
   &.qc-primary {
@@ -145,10 +146,10 @@
   background-color: currentColor;
 
   &:first-child {
-    margin-right: 8px;
+    margin-right: rem(8);
   }
 
   &:last-child {
-    margin-left: 8px;
+    margin-left: rem(8);
   }
 }

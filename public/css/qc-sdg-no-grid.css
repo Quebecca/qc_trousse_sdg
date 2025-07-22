@@ -2190,10 +2190,11 @@ qc-search-bar {
   line-height: var(--qc-line-height-md);
   display: inline-block;
   box-sizing: border-box;
-  min-width: 112px;
+  min-width: 11.2rem;
   width: auto;
-  min-height: 56px;
-  padding: 16px 24px;
+  max-width: 36rem;
+  min-height: 5.6rem;
+  padding: 1.6rem 2.4rem;
   transition: all 0.24s ease-in-out;
   vertical-align: middle;
   border: 2px solid transparent;
@@ -2208,9 +2209,9 @@ qc-search-bar {
 }
 .qc-button.qc-compact {
   font-weight: var(--qc-font-weight-semi-bold);
-  min-width: 80px;
-  min-height: 40px;
-  padding: 8px 16px;
+  min-width: 8rem;
+  min-height: 4rem;
+  padding: 0.8rem 1.6rem;
   border-width: 1px;
 }
 @media (max-width: 767.98px) {
@@ -2219,7 +2220,7 @@ qc-search-bar {
   }
 }
 .qc-button.qc-button-rounded {
-  border-radius: 4px;
+  border-radius: 0.4rem;
 }
 .qc-button.qc-primary {
   color: var(--qc-color-white);
@@ -2309,8 +2310,8 @@ qc-search-bar {
   background-color: currentColor;
 }
 .qc-button .qc-icon:first-child {
-  margin-right: 8px;
+  margin-right: 0.8rem;
 }
 .qc-button .qc-icon:last-child {
-  margin-left: 8px;
+  margin-left: 0.8rem;
 }
