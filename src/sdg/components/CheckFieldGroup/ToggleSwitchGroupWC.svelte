@@ -11,6 +11,7 @@
 <script>
     import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.svelte";
     import CheckFieldGroup from "./CheckFieldGroup.svelte";
+    import {onMount} from "svelte";
 
     let {
         disabled = $bindable(false),
@@ -18,18 +19,21 @@
         ...rest
     } = $props();
 
-    const formFieldElements = Array.from($host().querySelectorAll("qc-toggle-switch"));
-    formFieldElements.forEach(element => {
-        $host().removeChild(element);
-    });
-    const items = formFieldElements.map(element => {
-        return {
-            value: element.value,
-            label: element.label,
-            checked: element.checked,
-            disabled: element.disabled,
-        };
-    });
+
+    let items = $state(
+        []
+    );
+
+    export function addItem(id, label, checked, disabled) {
+        // clearCustomElements();
+
+        items.push({
+            id: id ?? undefined,
+            label: label,
+            checked: checked,
+            disabled: disabled
+        });
+    }
 </script>
 
 <CheckFieldGroup
@@ -39,8 +43,9 @@
 >
     {#each items as item}
         <ToggleSwitch
+            id={item.id}
             label={item.label}
-            value={item.value}
+            checked={item.checked}
             disabled={item.disabled ?? disabled}
             {labelPosition}
         />

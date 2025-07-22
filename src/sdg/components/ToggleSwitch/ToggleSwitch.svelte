@@ -1,12 +1,14 @@
 <script>
     let {
         label,
+        id,
         checked = $bindable(false),
         disabled = $bindable(false),
         labelPosition = "left",
     } = $props();
 
-    const generatedId = label.replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
+    const usedId = id ?
+        id : Math.random().toString(36);
     const usedLabelPosition = labelPosition.toLowerCase() === "right" ? "right" : "left";
 </script>
 
@@ -14,21 +16,20 @@
         "qc-switch",
         usedLabelPosition === "left" && "qc-switch-label-left"
     ]}
-    for="{generatedId}"
+    for={usedId}
 >
     <input
-            id={generatedId}
+            id={usedId}
             type="checkbox"
             role="switch"
             bind:checked={checked}
-            aria-checked={checked}
             {disabled}
     />
-    {#if usedLabelPosition === "right"}
-        <span class="qc-switch-slider"></span>
+    {#if usedLabelPosition === "left"}
         <span class="qc-switch-label">{@html label}</span>
+        <span class="qc-switch-slider"></span>
     {:else}
-        <span class="qc-switch-label">{@html label}</span>
         <span class="qc-switch-slider"></span>
+        <span class="qc-switch-label">{@html label}</span>
     {/if}
 </label>

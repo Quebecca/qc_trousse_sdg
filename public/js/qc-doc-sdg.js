@@ -73296,20 +73296,21 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
-	var root_2 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
-	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
+	var root_1 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[29, 8], [30, 8]]);
+	var root_2 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[32, 8], [33, 8]]);
+	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[15, 0, [[21, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let label = prop($$props, 'label', 7),
+			id = prop($$props, 'id', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 15, false),
 			labelPosition = prop($$props, 'labelPosition', 7, "left");
 
-		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
+		const usedId = id() ? id() : Math.random().toString(36);
 		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
 		var label_1 = root$3();
 
@@ -73318,49 +73319,44 @@
 			strict_equals(usedLabelPosition, "left") && "qc-switch-label-left"
 		]));
 
-		set_attribute(label_1, 'for', generatedId);
+		set_attribute(label_1, 'for', usedId);
 
 		var input = child(label_1);
 
 		remove_input_defaults(input);
-		set_attribute(input, 'id', generatedId);
+		set_attribute(input, 'id', usedId);
 
 		var node = sibling(input, 2);
 
 		{
 			var consequent = ($$anchor) => {
 				var fragment = root_1();
-				var span = sibling(first_child(fragment), 2);
+				var span = first_child(fragment);
 				var node_1 = child(span);
 
 				html$1(node_1, label);
 				reset(span);
+				next(2);
 				append($$anchor, fragment);
 			};
 
 			var alternate = ($$anchor) => {
 				var fragment_1 = root_2();
-				var span_1 = first_child(fragment_1);
+				var span_1 = sibling(first_child(fragment_1), 2);
 				var node_2 = child(span_1);
 
 				html$1(node_2, label);
 				reset(span_1);
-				next(2);
 				append($$anchor, fragment_1);
 			};
 
 			if_block(node, ($$render) => {
-				if (strict_equals(usedLabelPosition, "right")) $$render(consequent); else $$render(alternate, false);
+				if (strict_equals(usedLabelPosition, "left")) $$render(consequent); else $$render(alternate, false);
 			});
 		}
 
 		reset(label_1);
-
-		template_effect(() => {
-			set_attribute(input, 'aria-checked', checked());
-			input.disabled = disabled();
-		});
-
+		template_effect(() => input.disabled = disabled());
 		bind_checked(input, checked);
 		append($$anchor, label_1);
 
@@ -73370,6 +73366,13 @@
 			},
 			set label($$value) {
 				label($$value);
+				flushSync();
+			},
+			get id() {
+				return id();
+			},
+			set id($$value) {
+				id($$value);
 				flushSync();
 			},
 			get checked() {
@@ -73401,6 +73404,7 @@
 		ToggleSwitch,
 		{
 			label: {},
+			id: {},
 			checked: {},
 			disabled: {},
 			labelPosition: {}

@@ -2093,12 +2093,12 @@
     <script>
         document.getElementById("switch-status")
             .addEventListener("change", (event) => {
-                console.log(`${event.target.id} mis à ${event.target.checked}`);
+                console.log(`'switch-status' mis à ${event.target.checked}`);
             });
 
         document.getElementById("switch-status-right")
             .addEventListener("change", (event) => {
-                console.log(`${event.target.id} mis à ${event.target.checked}`);
+                console.log(`'switch-status-right' mis à ${event.target.checked}`);
             });
     </script>
 </qc-doc-exemple>
@@ -2109,26 +2109,41 @@
         legend="Préférences de notifications de messages"
     >
         <qc-toggle-switch
+                id="nouveaux-messages"
                 label="Nouveaux messages"
-                checked
         ></qc-toggle-switch>
         <qc-toggle-switch
+                id="modifications-messages"
                 label="Modifications de messages"
         ></qc-toggle-switch>
         <qc-toggle-switch
-                label="Messages où je suis mentionné(e)"
-        ></qc-toggle-switch>
-        <qc-toggle-switch
+                id="messages-supprimes"
                 label="Messages supprimés (indisponible)"
                 disabled
         ></qc-toggle-switch>
     </qc-toggle-switch-group>
 
     <script>
-        document.getElementById("switch-group")
-            .addEventListener("change", (event) => {
-                console.log(`${event.target.id} mis à ${event.target.checked}`);
-            });
+        setTimeout(() => {
+            // document.getElementById("nouveaux-messages")
+            //     .addEventListener("change", (event) => {
+            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
+            //     });
+            // document.getElementById("modifications-messages")
+            //     .addEventListener("change", (event) => {
+            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
+            //     });
+            // document.getElementById("messages-supprimes")
+            //     .addEventListener("change", (event) => {
+            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
+            //     });
+            const addedSwitch = document.createElement("qc-toggle-switch");
+            addedSwitch.id = "added-switch";
+            addedSwitch.setAttribute("label", "Messages");
+            document.getElementById("switch-group").appendChild(addedSwitch);
+
+            console.log(document.getElementById("added-switch"));
+        }, 1000);
     </script>
 </qc-doc-exemple>
 
