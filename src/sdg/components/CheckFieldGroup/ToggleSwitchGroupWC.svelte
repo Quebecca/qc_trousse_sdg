@@ -15,22 +15,12 @@
     let {
         disabled = $bindable(false),
         labelPosition = "left",
+        items = $bindable([]),
         ...rest
     } = $props();
 
 
-    let items = $state([]);
 
-    export function addItem(id, label, checked, disabled) {
-        // clearCustomElements();
-
-        items.push({
-            id: id ?? undefined,
-            label: label,
-            checked: checked,
-            disabled: disabled
-        });
-    }
 </script>
 
 <CheckFieldGroup
@@ -38,7 +28,7 @@
     justifyEnd={labelPosition !== "right"}
     {...rest}
 >
-    {#each items as item}
+    {#each items as item, _id}
         <ToggleSwitch
             id={item.id}
             label={item.label}

@@ -2124,6 +2124,9 @@
     </qc-toggle-switch-group>
 
     <script>
+        document.getElementById("nouveaux-messages")
+            .addEventListener("change", (event) => {console.log('switch change', event.target.checked)})
+
         setTimeout(() => {
             // document.getElementById("nouveaux-messages")
             //     .addEventListener("change", (event) => {

@@ -17,21 +17,35 @@
     let {
         id,
         label,
-        checked = false,
+        checked = $bindable(false),
         disabled = false,
         ...rest
     } = $props();
 
     let parent = $state();
+    let index;
     onMount(() => {
         parent = $host().closest("qc-toggle-switch-group");
 
         if (parent) {
             // $host().setAttribute("id", id + "-custom-element");
-            parent.addItem(id, label, checked, disabled);
-            parent.removeChild($host());
+            parent.items.push({
+                id,
+                label,
+                disabled,
+                checked
+            });
+            index = parent.items.length - 1;
+            // parent.removeChild($host());
         }
     });
+    $effect(() => {
+        if (parent) {
+            checked = parent.items[index].checked;
+            $host().dispatchEvent(new Event("change"));
+        }
+    })
+    $inspect("ToggleSwitch wc ", checked)
 </script>
 
 {#if !parent}

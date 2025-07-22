@@ -145,6 +145,7 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -442,6 +443,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1247,6 +1350,11 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function inspect_effect(fn) {
+		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3731,6 +3839,39 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} [inspector]
+	 */
+	// eslint-disable-next-line no-console
+	function inspect(get_value, inspector = console.log) {
+		validate_effect();
+
+		let initial = true;
+
+		inspect_effect(() => {
+			/** @type {any} */
+			var value = UNINITIALIZED;
+
+			// Capturing the value might result in an exception due to the inspect effect being
+			// sync and thus operating on stale data. In the case we encounter an exception we
+			// can bail-out of reporting the value. Instead we simply console.error the error
+			// so at least it's known that an error occured, but we don't stop execution
+			try {
+				value = get_value();
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+
+			if (value !== UNINITIALIZED) {
+				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
+			}
+
+			initial = false;
+		});
 	}
 
 	/**
@@ -10947,9 +11088,9 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[29, 8], [30, 8]]);
-	var root_2 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[32, 8], [33, 8]]);
-	var root = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[15, 0, [[21, 4]]]]);
+	var root_1 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
+	var root_2 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[34, 8], [35, 8]]);
+	var root = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[17, 0, [[23, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -10961,8 +11102,11 @@
 			disabled = prop($$props, 'disabled', 15, false),
 			labelPosition = prop($$props, 'labelPosition', 7, "left");
 
-		const usedId = id() ? id() : Math.random().toString(36);
+		const usedId = "inpupt-" + (id() ? id() : Math.random().toString(36));
 		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
+
+		inspect(() => ["ToggleSwitch svelte ", checked()]);
+
 		var label_1 = root();
 
 		set_class(label_1, 1, clsx([
@@ -11075,7 +11219,7 @@
 
 		let id = prop($$props, 'id', 7),
 			label = prop($$props, 'label', 7),
-			checked = prop($$props, 'checked', 7, false),
+			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			rest = rest_props(
 				$$props,
@@ -11091,16 +11235,32 @@
 				]);
 
 		let parent = state(void 0);
+		let index;
 
 		onMount(() => {
 			set(parent, $$props.$$host.closest("qc-toggle-switch-group"), true);
 
 			if (get(parent)) {
 				// $host().setAttribute("id", id + "-custom-element");
-				get(parent).addItem(id(), label(), checked(), disabled());
-				get(parent).removeChild($$props.$$host);
+				get(parent).items.push({
+					id: id(),
+					label: label(),
+					disabled: disabled(),
+					checked: checked()
+				});
+
+				index = get(parent).items.length - 1; // parent.removeChild($host());
 			}
 		});
+
+		user_effect(() => {
+			if (get(parent)) {
+				checked(get(parent).items[index].checked);
+				$$props.$$host.dispatchEvent(new Event("change"));
+			}
+		});
+
+		inspect(() => ["ToggleSwitch wc ", checked()]);
 
 		var fragment = comment();
 		var node = first_child(fragment);
@@ -11202,6 +11362,7 @@
 
 		let disabled = prop($$props, 'disabled', 15, false),
 			labelPosition = prop($$props, 'labelPosition', 7, "left"),
+			items = prop($$props, 'items', 31, () => proxy([])),
 			rest = rest_props(
 				$$props,
 				[
@@ -11210,20 +11371,9 @@
 					'$$legacy',
 					'$$host',
 					'disabled',
-					'labelPosition'
+					'labelPosition',
+					'items'
 				]);
-
-		let items = state(proxy([]));
-
-		function addItem(id, label, checked, disabled) {
-			// clearCustomElements();
-			get(items).push({
-				id: id ?? undefined,
-				label,
-				checked,
-				disabled
-			});
-		}
 
 		const expression = user_derived(() => strict_equals(labelPosition(), "right", false));
 
@@ -11240,8 +11390,8 @@
 					var fragment_1 = comment();
 					var node = first_child(fragment_1);
 
-					each(node, 17, () => get(items), index, ($$anchor, item, $$index) => {
-						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 45, 12);
+					each(node, 17, items, index, ($$anchor, item, _id) => {
+						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 35, 12);
 
 						const expression_1 = user_derived(() => get(item).disabled ?? disabled());
 
@@ -11274,9 +11424,6 @@
 		));
 
 		return pop({
-			get addItem() {
-				return addItem;
-			},
 			get disabled() {
 				return disabled();
 			},
@@ -11291,6 +11438,13 @@
 				labelPosition($$value);
 				flushSync();
 			},
+			get items() {
+				return items();
+			},
+			set items($$value = []) {
+				items($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -11300,10 +11454,11 @@
 		{
 			legend: { attribute: 'legend', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
-			labelPosition: { attribute: 'label-position', type: 'String' }
+			labelPosition: { attribute: 'label-position', type: 'String' },
+			items: {}
 		},
 		[],
-		['addItem'],
+		[],
 		false
 	));
 
