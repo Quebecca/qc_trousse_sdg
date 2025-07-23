@@ -7,6 +7,7 @@
         handleExit = () => {}
     } = $props();
 
+    let self = $state();
     let predecessor = $state();
     let selectedValue = $state();
     let mouseDownElement = null;
@@ -36,13 +37,33 @@
     }
 
     function handleKeyDown (event, label, value, index) {
-        Utils.sleep(5).then(() => {
-            if (event.key === "Enter" || event.key === " ") {
-                handleSelection(event.target, label, value);
-            }
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            event.stopPropagation();
 
+            const listElements = self.querySelectorAll("li");
+            if (listElements.length > 0 && index < items.length - 1) {
+                listElements[index + 1].focus();
+            }
+        }
+
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const listElements = self.querySelectorAll("li");
+            if (listElements.length > 0 && index > 0) {
+                listElements[index - 1].focus();
+            }
+        }
+
+        Utils.sleep(5).then(() => {
             if (canExit(event, index)) {
                 handleExit(event.key);
+            }
+
+            if (event.key === "Enter" || event.key === " ") {
+                handleSelection(event.target, label, value);
             }
         }).catch(console.error);
     }
@@ -53,7 +74,7 @@
 </script>
 
 {#if items.length > 0}
-    <ul>
+    <ul bind:this={self}>
         {#each items as item, index}
             <li
                     id={Math.random().toString(36).substring(2, 15)}

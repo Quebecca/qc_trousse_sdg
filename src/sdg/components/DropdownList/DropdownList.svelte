@@ -4,6 +4,9 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
+    import {derived} from "svelte/store";
+
+    const lang = Utils.getPageLanguage();
 
     let {
         id = Math.random().toString(36).substring(2, 15),
@@ -11,13 +14,13 @@
         legend = "",
         width = "lg",
         items,
-        placeholder = "Choisissez une option:",
-        noOptionsMessage = "Aucun élément",
+        placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
+        noOptionsMessage = lang=== "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
         required = false,
         disabled = false,
         invalid = $bindable(false),
-        invalidText = "Veuillez sélectionner au moins une option.",
+        invalidText,
         searchPlaceholder = "",
         multiple = false,
     } = $props();
@@ -26,7 +29,8 @@
         inputId = `${id}-input`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
-        availableWidths = ["sm", "md", "lg", "xl", "xxl"]
+        availableWidths = ["sm", "md", "lg", "xl", "xxl"],
+        defaultInvalidText = `Le champ ${legend} est obligatoire.`
     ;
 
     let instance = $state(),
@@ -40,6 +44,15 @@
                 return `qc-dropdown-list-${width}`;
             }
             return `qc-dropdown-list-lg`;
+        }),
+        itemsCountText = $derived.by(() => {
+            if (displayedItems.length > 0) {
+                return  lang === "fr" ?
+                    `${displayedItems.length} résultats disponibles. Utilisez les flèches directionnelles pour vous déplacer dans la liste.`
+                    : `${displayedItems.length} results available. Use arrow keys to navigate through the list.`;
+            }
+
+            return "";
         })
     ;
 
@@ -163,8 +176,10 @@
                 handleExitMultiple={(key) => closeDropdown(key)}
             />
 
+            <!-- Pour les lecteurs d'écran: affiche le nombre de résultats -->
+            <div aria-label={itemsCountText} role="status" aria-live="polite" aria-atomic="true"></div>
         </div>
     </div>
 
-    <FormError id={errorId} {invalid} {invalidText} />
+    <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} />
 </div>

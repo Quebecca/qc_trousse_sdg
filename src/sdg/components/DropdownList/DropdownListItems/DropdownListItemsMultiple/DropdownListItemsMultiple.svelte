@@ -10,10 +10,33 @@
 
     const name = Math.random().toString(36).substring(2, 15);
 
-    let selectedValues = [],
-        selectedLabels = [];
+    let
+        selectedValues = [],
+        selectedLabels = [],
+        self = $state()
+    ;
 
     function handleKeyDown(event, index) {
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const listElements = self.querySelectorAll("input[type='checkbox']");
+            if (listElements.length > 0 && index < items.length - 1) {
+                listElements[index + 1].focus();
+            }
+        }
+
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const listElements = self.querySelectorAll("input[type='checkbox']");
+            if (listElements.length > 0 && index > 0) {
+                listElements[index - 1].focus();
+            }
+        }
+
         Utils.sleep(5).then(() => {
             if (canExit(event, index)) {
                 handleExit(event.key);
@@ -46,7 +69,7 @@
 
 <div class="qc-compact">
     {#if items.length > 0}
-        <ul>
+        <ul bind:this={self}>
             {#each items as item, index}
                 <li class="qc-dropdown-list-multiple">
                     <Checkbox

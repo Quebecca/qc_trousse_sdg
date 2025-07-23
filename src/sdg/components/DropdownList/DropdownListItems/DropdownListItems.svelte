@@ -16,7 +16,8 @@
 
     const
         precentRootFontSize = 62.5,
-        remRatio = 0.16;
+        remRatio = 0.16
+    ;
 
     let usedHeight = $derived.by(() => {
         const maxItemsHeight = 336;
@@ -62,7 +63,7 @@
         />
     {/if}
 
-    <div class="qc-dropdown-list-no-options-container" role="alert">
+    <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true">
         {#if displayedItems.length <= 0}
             {#await tick() then _}
                 <span class="qc-dropdown-list-no-options">{@html noOptionsMessage}</span>
