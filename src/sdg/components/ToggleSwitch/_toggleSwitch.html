@@ -43,6 +43,7 @@
         <qc-toggle-switch
                 id="nouveaux-messages"
                 label="Nouveaux messages"
+                checked
         ></qc-toggle-switch>
         <qc-toggle-switch
                 id="modifications-messages"
@@ -56,29 +57,12 @@
     </qc-toggle-switch-group>
 
     <script>
-        document.getElementById("nouveaux-messages")
-            .addEventListener("change", (event) => {console.log('switch change', event.target.checked)})
-
-        setTimeout(() => {
-            // document.getElementById("nouveaux-messages")
-            //     .addEventListener("change", (event) => {
-            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
-            //     });
-            // document.getElementById("modifications-messages")
-            //     .addEventListener("change", (event) => {
-            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
-            //     });
-            // document.getElementById("messages-supprimes")
-            //     .addEventListener("change", (event) => {
-            //         console.log(`${event.target.id} mis à ${event.target.checked}`);
-            //     });
-            const addedSwitch = document.createElement("qc-toggle-switch");
-            addedSwitch.id = "added-switch";
-            addedSwitch.setAttribute("label", "Messages");
-            document.getElementById("switch-group").appendChild(addedSwitch);
-
-            console.log(document.getElementById("added-switch"));
-        }, 1000);
+        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
+            .forEach(switchElement => {
+                switchElement.addEventListener("change", (event) => {
+                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
+                });
+            });
     </script>
 </qc-doc-exemple>
 
@@ -119,7 +103,7 @@
         <td>"left"</td>
         <td>
             Position du libellé par rapport au commutateur
-            <br> N.B: le commutateur et son étiquette sont alignées sur la droite lorsque <code>label-position</code>
+            <br> N.B. : le commutateur et son étiquette sont alignées sur la droite du parent lorsque <code>label-position</code>
             est à "left".
         </td>
     </tr>
@@ -155,7 +139,7 @@
         <td>"left"</td>
         <td>
             Position des libellés par rapport aux commutateurs.
-            <br> N.B: les commutateurs et leurs étiquettes sont alignées sur la droite lorsque <code>label-position</code>
+            <br> N.B. : les commutateurs et leurs étiquettes sont alignées sur la droite du parent lorsque <code>label-position</code>
             est à "left".
         </td>
     </tr>

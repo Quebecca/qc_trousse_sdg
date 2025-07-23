@@ -28,7 +28,6 @@
         parent = $host().closest("qc-toggle-switch-group");
 
         if (parent) {
-            // $host().setAttribute("id", id + "-custom-element");
             parent.items.push({
                 id,
                 label,
@@ -36,7 +35,6 @@
                 checked
             });
             index = parent.items.length - 1;
-            // parent.removeChild($host());
         }
     });
     onDestroy(() => {
@@ -48,7 +46,6 @@
             $host().dispatchEvent(new Event("change"));
         }
     })
-    $inspect("ToggleSwitch wc ", checked)
 </script>
 
 {#if !parent}

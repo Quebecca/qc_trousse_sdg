@@ -10,8 +10,6 @@
     const usedId = "inpupt-" + (id ?
         id : Math.random().toString(36));
     const usedLabelPosition = labelPosition.toLowerCase() === "right" ? "right" : "left";
-
-    $inspect("ToggleSwitch svelte ", checked)
 </script>
 
 <label class={[
