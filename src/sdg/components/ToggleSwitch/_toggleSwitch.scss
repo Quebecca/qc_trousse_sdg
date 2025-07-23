@@ -30,7 +30,6 @@ $border: 1;
 
       &::before {
         transform: translateX(rem($width - $height));
-        outline: rem($border) solid token-value(color, blue, piv);
       }
     }
 
@@ -44,7 +43,7 @@ $border: 1;
       cursor: not-allowed;
 
       &::before {
-        outline: transparent;
+        border: none;
       }
     }
   }
@@ -80,12 +79,12 @@ $border: 1;
   &::before {
     position: absolute;
     content: "";
-    height: rem($height - 6 * $border);
-    width: rem($height - 6 * $border);
-    left: rem(2*$border);
-    bottom: rem(2*$border);
+    height: rem($height - 4 * $border);
+    width: rem($height - 4 * $border);
+    left: rem($border);
+    bottom: rem($border);
     background-color: token-value(color, white);
-    outline: rem($border) solid #464F5B;
+    border: rem($border) solid token-value(color, grey, dark);
     border-radius: 50%;
     transition: all .3s ease-out;
   }
