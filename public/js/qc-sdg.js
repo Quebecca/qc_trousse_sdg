@@ -11957,20 +11957,43 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[41, 16]]);
-	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[17, 0, [[38, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[68, 16]]);
+	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="alert"><!></div></div>`), DropdownListItems[FILENAME], [[39, 0, [[65, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let multiple = prop($$props, 'multiple', 7),
+		let enableSearch = prop($$props, 'enableSearch', 7),
+			multiple = prop($$props, 'multiple', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
 			passValueSingle = prop($$props, 'passValueSingle', 7, () => {}),
 			passValueMultiple = prop($$props, 'passValueMultiple', 7, () => {}),
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {});
+
+		const precentRootFontSize = 62.5,
+			remRatio = 0.16;
+
+		let usedHeight = user_derived(() => {
+			const maxItemsHeight = 336;
+			const searchInputTotalHeight = 56;
+
+			if (enableSearch()) {
+				if (displayedItems().length > 7) {
+					return maxItemsHeight - searchInputTotalHeight - 17;
+				}
+
+				return maxItemsHeight - searchInputTotalHeight;
+			} else {
+				if (displayedItems().length > 8) {
+					return maxItemsHeight - 33;
+				}
+
+				return maxItemsHeight;
+			}
+		});
 
 		var div = root$2();
 		var node = child(div);
@@ -12038,9 +12061,17 @@
 
 		reset(div_1);
 		reset(div);
+		template_effect(() => set_style(div, `--dropdown-items-height: ${get(usedHeight) / (remRatio * precentRootFontSize)}rem;`));
 		append($$anchor, div);
 
 		return pop({
+			get enableSearch() {
+				return enableSearch();
+			},
+			set enableSearch($$value) {
+				enableSearch($$value);
+				flushSync();
+			},
 			get multiple() {
 				return multiple();
 			},
@@ -12097,6 +12128,7 @@
 	create_custom_element(
 		DropdownListItems,
 		{
+			enableSearch: {},
 			multiple: {},
 			displayedItems: {},
 			noOptionsMessage: {},
@@ -12275,16 +12307,16 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[116, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[148, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[106, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[137, 16]]);
 
 	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			109,
+			99,
 			0,
 			[
-				[113, 4],
-				[119, 4, [[140, 8]]]
+				[103, 4],
+				[109, 4, [[129, 8]]]
 			]
 		]
 	]);
@@ -12308,8 +12340,7 @@
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
 			multiple = prop($$props, 'multiple', 7, false);
 
-		const precentRootFontSize = 62.5,
-			inputId = `${id()}-input`,
+		const inputId = `${id()}-input`,
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
 			availableWidths = ["sm", "md", "lg", "xl", "xxl"];
@@ -12326,16 +12357,6 @@
 				}
 
 				return `qc-dropdown-list-lg`;
-			}),
-			usedHeight = user_derived(() => {
-				const maxItemsHeight = 329; // Compensation de 1 pixel pour la bordure
-				const searchInputTotalHeight = 56;
-
-				if (enableSearch()) {
-					return maxItemsHeight - searchInputTotalHeight;
-				} else {
-					return maxItemsHeight;
-				}
 			});
 
 		function handleDropdownButtonClick(event) {
@@ -12484,6 +12505,9 @@
 		var node_4 = sibling(node_2, 2);
 
 		DropdownListItems(node_4, {
+			get enableSearch() {
+				return enableSearch();
+			},
 			get multiple() {
 				return multiple();
 			},
@@ -12537,8 +12561,6 @@
 				`qc-dropdown-list ${get(widthClass)}`,
 				invalid() && "qc-dropdown-list-invalid"
 			]));
-
-			set_style(div_1, `--dropdown-items-height: ${get(usedHeight) / (0.16 * precentRootFontSize)}rem;`);
 
 			set_class(div_2, 1, clsx([
 				"qc-dropdown-list-expanded",

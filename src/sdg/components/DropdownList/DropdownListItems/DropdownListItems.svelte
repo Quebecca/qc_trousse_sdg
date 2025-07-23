@@ -4,6 +4,7 @@
     import {tick} from "svelte";
 
     let {
+        enableSearch,
         multiple,
         displayedItems,
         noOptionsMessage,
@@ -12,9 +13,35 @@
         handleExitSingle = () => {},
         handleExitMultiple = () => {},
     } = $props()
+
+    const
+        precentRootFontSize = 62.5,
+        remRatio = 0.16;
+
+    let usedHeight = $derived.by(() => {
+        const maxItemsHeight = 336;
+        const searchInputTotalHeight = 56;
+
+        if (enableSearch) {
+            if (displayedItems.length > 7) {
+                return maxItemsHeight - searchInputTotalHeight - 17;
+            }
+            return maxItemsHeight - searchInputTotalHeight;
+        } else {
+            if (displayedItems.length > 8) {
+                return maxItemsHeight - 33;
+            }
+            return maxItemsHeight;
+        }
+    })
 </script>
 
-<div class="qc-dropdown-list-items" tabindex="-1" role="status">
+<div
+    class="qc-dropdown-list-items"
+    tabindex="-1"
+    role="status"
+    style="--dropdown-items-height: {usedHeight / (remRatio * precentRootFontSize)}rem;"
+>
     {#if multiple}
         <DropdownListItemsMultiple
                 items={displayedItems}

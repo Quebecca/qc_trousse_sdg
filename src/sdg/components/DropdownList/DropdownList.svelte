@@ -22,7 +22,7 @@
         multiple = false,
     } = $props();
 
-    const precentRootFontSize = 62.5,
+    const
         inputId = `${id}-input`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
@@ -40,16 +40,6 @@
                 return `qc-dropdown-list-${width}`;
             }
             return `qc-dropdown-list-lg`;
-        }),
-        usedHeight = $derived.by(() => {
-            const maxItemsHeight = 329; // Compensation de 1 pixel pour la bordure
-            const searchInputTotalHeight = 56;
-
-            if (enableSearch) {
-                return maxItemsHeight - searchInputTotalHeight;
-            } else {
-                return maxItemsHeight;
-            }
         })
     ;
 
@@ -121,7 +111,6 @@
             `qc-dropdown-list ${widthClass}`,
             invalid && "qc-dropdown-list-invalid",
         ]}
-        style="--dropdown-items-height: {usedHeight / (0.16 * precentRootFontSize)}rem;"
         role="listbox"
         tabindex="-1"
         bind:this={instance}
@@ -156,6 +145,7 @@
             {/if}
 
             <DropdownListItems
+                {enableSearch}
                 {multiple}
                 {displayedItems}
                 {noOptionsMessage}
