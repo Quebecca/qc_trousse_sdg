@@ -8,6 +8,7 @@
     } = $props();
 
     let self = $state();
+    let listElements = $derived(self.querySelectorAll("li"));
     let predecessor = $state();
     let selectedValue = $state();
     let mouseDownElement = null;
@@ -41,7 +42,6 @@
             event.preventDefault();
             event.stopPropagation();
 
-            const listElements = self.querySelectorAll("li");
             if (listElements.length > 0 && index < items.length - 1) {
                 listElements[index + 1].focus();
             }
@@ -51,7 +51,6 @@
             event.preventDefault();
             event.stopPropagation();
 
-            const listElements = self.querySelectorAll("li");
             if (listElements.length > 0 && index > 0) {
                 listElements[index - 1].focus();
             }

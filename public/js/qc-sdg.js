@@ -11708,8 +11708,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[79, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[77, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[78, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[76, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11720,6 +11720,7 @@
 			handleExit = prop($$props, 'handleExit', 7, () => {});
 
 		let self = state(void 0);
+		let listElements = user_derived(() => get(self).querySelectorAll("li"));
 		let predecessor = state(void 0);
 		let selectedValue = state(void 0);
 		let mouseDownElement = null;
@@ -11752,10 +11753,8 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				const listElements = get(self).querySelectorAll("li");
-
-				if (listElements.length > 0 && index < items().length - 1) {
-					listElements[index + 1].focus();
+				if (get(listElements).length > 0 && index < items().length - 1) {
+					get(listElements)[index + 1].focus();
 				}
 			}
 
@@ -11763,10 +11762,8 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				const listElements = get(self).querySelectorAll("li");
-
-				if (listElements.length > 0 && index > 0) {
-					listElements[index - 1].focus();
+				if (get(listElements).length > 0 && index > 0) {
+					get(listElements)[index - 1].focus();
 				}
 			}
 
@@ -11853,9 +11850,9 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[74, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[72, 8]]);
-	var root$3 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[70, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[73, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[71, 8]]);
+	var root$3 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[69, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11869,17 +11866,16 @@
 
 		let selectedValues = [],
 			selectedLabels = [],
-			self = state(void 0);
+			self = state(void 0),
+			listElements = user_derived(() => get(self).querySelectorAll("input[type='checkbox']"));
 
 		function handleKeyDown(event, index) {
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 				event.stopPropagation();
 
-				const listElements = get(self).querySelectorAll("input[type='checkbox']");
-
-				if (listElements.length > 0 && index < items().length - 1) {
-					listElements[index + 1].focus();
+				if (get(listElements).length > 0 && index < items().length - 1) {
+					get(listElements)[index + 1].focus();
 				}
 			}
 
@@ -11887,10 +11883,8 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				const listElements = get(self).querySelectorAll("input[type='checkbox']");
-
-				if (listElements.length > 0 && index > 0) {
-					listElements[index - 1].focus();
+				if (get(listElements).length > 0 && index > 0) {
+					get(listElements)[index - 1].focus();
 				}
 			}
 

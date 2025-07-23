@@ -13,7 +13,8 @@
     let
         selectedValues = [],
         selectedLabels = [],
-        self = $state()
+        self = $state(),
+        listElements = $derived(self.querySelectorAll("input[type='checkbox']"))
     ;
 
     function handleKeyDown(event, index) {
@@ -21,7 +22,6 @@
             event.preventDefault();
             event.stopPropagation();
 
-            const listElements = self.querySelectorAll("input[type='checkbox']");
             if (listElements.length > 0 && index < items.length - 1) {
                 listElements[index + 1].focus();
             }
@@ -31,7 +31,6 @@
             event.preventDefault();
             event.stopPropagation();
 
-            const listElements = self.querySelectorAll("input[type='checkbox']");
             if (listElements.length > 0 && index > 0) {
                 listElements[index - 1].focus();
             }
