@@ -60,7 +60,7 @@ qc-textfield {
     margin-bottom: rem(4);
   }
 
-  &.disabled {
+  &.qc-disabled {
     label {
       color: token-value(color, grey, regular);
       cursor: not-allowed;
@@ -80,6 +80,8 @@ qc-textfield {
 .qc-textfield-description {
   font-size: token-value(font, size, sm);
   color: token-value(color blue dark);
+  height: rem(20);
+  line-height: rem(20);
 }
 
 .qc-textfield.disabled {
@@ -100,6 +102,8 @@ qc-textfield {
   margin-top: rem(4);
   color: token-value(color blue dark);
   font-size: token-value(font, size, sm);
+  height: rem(20);
+  line-height: rem(20);
 
   &.max-reached {
     color: token-value(color, red, regular);
