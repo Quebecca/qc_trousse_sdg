@@ -111,3 +111,13 @@ qc-textfield {
   }
 }
 
+.qc-textfield-row {
+  display: flex;
+  gap: rem(32);
+
+  > qc-textfield {
+    display: block;
+    width: auto;
+  }
+}
+

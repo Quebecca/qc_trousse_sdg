@@ -2262,6 +2262,15 @@ qc-textfield {
   font-weight: bold;
 }
 
+.qc-textfield-row {
+  display: flex;
+  gap: 3.2rem;
+}
+.qc-textfield-row > qc-textfield {
+  display: block;
+  width: auto;
+}
+
 .qc-form-error {
   display: flex;
   color: var(--qc-color-red-regular);
