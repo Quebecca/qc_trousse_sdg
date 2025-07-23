@@ -22,6 +22,8 @@ qc-textfield {
     background: transparent;
     padding: rem(8) rem(8);
     border: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     &::placeholder {
       color: token-value(color grey medium);
@@ -31,6 +33,9 @@ qc-textfield {
     &:focus,
     &:focus-visible {
       outline: none;
+      &::placeholder {
+        color: transparent;
+      }
     }
   }
 
@@ -82,6 +87,7 @@ qc-textfield {
   color: token-value(color blue dark);
   height: rem(20);
   line-height: rem(20);
+  margin-bottom: rem(4);
 }
 
 .qc-textfield.disabled {

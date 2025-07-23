@@ -2174,6 +2174,8 @@ qc-textfield {
   background: transparent;
   padding: 0.8rem 0.8rem;
   border: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 .qc-textfield input[type=text]::-moz-placeholder, .qc-textfield textarea::-moz-placeholder {
   color: var(--qc-color-grey-medium);
@@ -2188,6 +2190,14 @@ qc-textfield {
 .qc-textfield textarea:focus,
 .qc-textfield textarea:focus-visible {
   outline: none;
+}
+.qc-textfield input[type=text]:focus::-moz-placeholder, .qc-textfield input[type=text]:focus-visible::-moz-placeholder, .qc-textfield textarea:focus::-moz-placeholder, .qc-textfield textarea:focus-visible::-moz-placeholder {
+  color: transparent;
+}
+.qc-textfield input[type=text]:focus::placeholder, .qc-textfield input[type=text]:focus-visible::placeholder,
+.qc-textfield textarea:focus::placeholder,
+.qc-textfield textarea:focus-visible::placeholder {
+  color: transparent;
 }
 .qc-textfield textarea {
   min-height: 10.8rem;
@@ -2237,6 +2247,7 @@ qc-textfield {
   color: var(--qc-color-blue-dark);
   height: 2rem;
   line-height: 2rem;
+  margin-bottom: 0.4rem;
 }
 
 .qc-textfield.disabled::before {
