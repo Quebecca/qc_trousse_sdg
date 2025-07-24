@@ -12,7 +12,8 @@
         passValueMultiple = () => {},
         handleExitSingle = () => {},
         handleExitMultiple = () => {},
-        focusOnOuterElement = () => {}
+        focusOnOuterElement = () => {},
+        handlePrintableCharacter = () => {},
     } = $props()
 
     const
@@ -43,6 +44,12 @@
             itemsComponent.focusOnFirstElement();
         }
     }
+
+    export function focusOnFirstMatchingElement(value) {
+        if (itemsComponent) {
+            itemsComponent.focusOnFirstMatchingElement(value);
+        }
+    }
 </script>
 
 <div
@@ -60,6 +67,7 @@
                 }}
                 handleExit={(key) => handleExitMultiple(key)}
                 focusOnOuterElement={focusOnOuterElement}
+                handlePrintableCharacter={handlePrintableCharacter}
                 bind:this={itemsComponent}
         />
     {:else}
@@ -71,6 +79,7 @@
                 }}
                 handleExit={(key) => handleExitSingle(key)}
                 focusOnOuterElement={focusOnOuterElement}
+                handlePrintableCharacter={handlePrintableCharacter}
                 bind:this={itemsComponent}
         />
     {/if}

@@ -6,7 +6,8 @@
         items,
         handleExit = () => {},
         passValue = () => {},
-        focusOnOuterElement = () => {}
+        focusOnOuterElement = () => {},
+        handlePrintableCharacter = () => {}
     } = $props();
 
     const name = Math.random().toString(36).substring(2, 15);
@@ -15,7 +16,7 @@
         selectedValues = [],
         selectedLabels = [],
         self = $state(),
-        listElements = $derived(self.querySelectorAll("input[type='checkbox']"))
+        listElements = $derived(Array.from(self.querySelectorAll("input[type='checkbox']")))
     ;
 
     export function focusOnFirstElement() {
@@ -24,7 +25,18 @@
         }
     }
 
-    function handleKeyDown(event, index) {
+    export function focusOnFirstMatchingElement(value) {
+        if (listElements && listElements.length > 0) {
+            const foundElement = listElements.find(
+                element => element.value.toLowerCase().includes(value.toLowerCase())
+            );
+            if (foundElement) {
+                foundElement.focus();
+            }
+        }
+    }
+
+    function handleComboKey(event, index) {
         if (event.key === "ArrowDown") {
             event.preventDefault();
             event.stopPropagation();
@@ -50,6 +62,14 @@
                 handleExit(event.key);
             }
         }).catch(console.error);
+    }
+
+    function handleKeyDown(event, index) {
+        if (event.key.match(/^\w$/i)) {
+            handlePrintableCharacter(event);
+        } else {
+            handleComboKey(event, index);
+        }
     }
 
     function canExit(event, index) {

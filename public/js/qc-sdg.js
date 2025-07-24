@@ -5290,6 +5290,29 @@
 	}
 
 	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
 	 * Sets the `selected` attribute on an `option` element.
 	 * Not set through the property because that doesn't reflect to the DOM,
 	 * which means it wouldn't be taken into account when a form is reset.
@@ -11770,8 +11793,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[88, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[86, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[108, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[106, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11780,10 +11803,11 @@
 		let items = prop($$props, 'items', 7),
 			passValue = prop($$props, 'passValue', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {});
+			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
+			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		let self = state(void 0);
-		let listElements = user_derived(() => get(self).querySelectorAll("li"));
+		let listElements = user_derived(() => Array.from(get(self).querySelectorAll("li")));
 		let predecessor = state(void 0);
 		let selectedValue = state(void 0);
 		let mouseDownElement = null;
@@ -11793,6 +11817,16 @@
 		function focusOnFirstElement() {
 			if (get(listElements).length > 0) {
 				get(listElements)[0].focus();
+			}
+		}
+
+		function focusOnFirstMatchingElement(value) {
+			if (get(listElements) && get(listElements).length > 0) {
+				const foundElement = get(listElements).find((element) => element.value.toString().toLowerCase().includes(value.toLowerCase()));
+
+				if (foundElement) {
+					foundElement.focus();
+				}
 			}
 		}
 
@@ -11817,7 +11851,7 @@
 			mouseDownElement = event.target;
 		}
 
-		function handleKeyDown(event, label, value, index) {
+		function handleComboKey(event, label, value, index) {
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -11849,6 +11883,14 @@
 			}).catch(console.error);
 		}
 
+		function handleKeyDown(event, label, value, index) {
+			if (event.key.match(/^\w$/i)) {
+				handlePrintableCharacter()(event);
+			} else {
+				handleComboKey(event, label, value, index);
+			}
+		}
+
 		function canExit(event, index) {
 			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
 		}
@@ -11872,7 +11914,12 @@
 
 					html(node_1, () => get(item).label);
 					reset(li);
-					template_effect(() => set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false"));
+
+					template_effect(() => {
+						set_value(li, get(item).value);
+						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
+					});
+
 					event('mouseenter', li, (event) => hoveredElement = event.target);
 					event('mouseleave', li, () => hoveredElement = null);
 					append($$anchor, li);
@@ -11893,6 +11940,9 @@
 		return pop({
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
+			},
+			get focusOnFirstMatchingElement() {
+				return focusOnFirstMatchingElement;
 			},
 			get items() {
 				return items();
@@ -11922,6 +11972,13 @@
 				focusOnOuterElement($$value);
 				flushSync();
 			},
+			get handlePrintableCharacter() {
+				return handlePrintableCharacter();
+			},
+			set handlePrintableCharacter($$value = () => {}) {
+				handlePrintableCharacter($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -11934,18 +11991,22 @@
 			items: {},
 			passValue: {},
 			handleExit: {},
-			focusOnOuterElement: {}
+			focusOnOuterElement: {},
+			handlePrintableCharacter: {}
 		},
 		[],
-		['focusOnFirstElement'],
+		[
+			'focusOnFirstElement',
+			'focusOnFirstMatchingElement'
+		],
 		true
 	);
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[82, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[80, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[78, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[102, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[100, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[98, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11954,14 +12015,15 @@
 		let items = prop($$props, 'items', 7),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			passValue = prop($$props, 'passValue', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {});
+			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
+			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		const name = Math.random().toString(36).substring(2, 15);
 
 		let selectedValues = [],
 			selectedLabels = [],
 			self = state(void 0),
-			listElements = user_derived(() => get(self).querySelectorAll("input[type='checkbox']"));
+			listElements = user_derived(() => Array.from(get(self).querySelectorAll("input[type='checkbox']")));
 
 		function focusOnFirstElement() {
 			if (get(listElements).length > 0) {
@@ -11969,7 +12031,17 @@
 			}
 		}
 
-		function handleKeyDown(event, index) {
+		function focusOnFirstMatchingElement(value) {
+			if (get(listElements) && get(listElements).length > 0) {
+				const foundElement = get(listElements).find((element) => element.value.toLowerCase().includes(value.toLowerCase()));
+
+				if (foundElement) {
+					foundElement.focus();
+				}
+			}
+		}
+
+		function handleComboKey(event, index) {
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -11995,6 +12067,14 @@
 					handleExit()(event.key);
 				}
 			}).catch(console.error);
+		}
+
+		function handleKeyDown(event, index) {
+			if (event.key.match(/^\w$/i)) {
+				handlePrintableCharacter()(event);
+			} else {
+				handleComboKey(event, index);
+			}
 		}
 
 		function canExit(event, index) {
@@ -12077,6 +12157,9 @@
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
+			get focusOnFirstMatchingElement() {
+				return focusOnFirstMatchingElement;
+			},
 			get items() {
 				return items();
 			},
@@ -12105,6 +12188,13 @@
 				focusOnOuterElement($$value);
 				flushSync();
 			},
+			get handlePrintableCharacter() {
+				return handlePrintableCharacter();
+			},
+			set handlePrintableCharacter($$value = () => {}) {
+				handlePrintableCharacter($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12115,17 +12205,21 @@
 			items: {},
 			handleExit: {},
 			passValue: {},
-			focusOnOuterElement: {}
+			focusOnOuterElement: {},
+			handlePrintableCharacter: {}
 		},
 		[],
-		['focusOnFirstElement'],
+		[
+			'focusOnFirstElement',
+			'focusOnFirstMatchingElement'
+		],
 		true
 	);
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[81, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[48, 0, [[78, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[90, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[55, 0, [[87, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12139,7 +12233,8 @@
 			passValueMultiple = prop($$props, 'passValueMultiple', 7, () => {}),
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {});
+			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
+			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		const precentRootFontSize = 62.5,
 			remRatio = 0.16;
@@ -12171,6 +12266,12 @@
 			}
 		}
 
+		function focusOnFirstMatchingElement(value) {
+			if (get(itemsComponent)) {
+				get(itemsComponent).focusOnFirstMatchingElement(value);
+			}
+		}
+
 		var div = root$3();
 		var node = child(div);
 
@@ -12190,6 +12291,9 @@
 						handleExit: (key) => handleExitMultiple()(key),
 						get focusOnOuterElement() {
 							return focusOnOuterElement();
+						},
+						get handlePrintableCharacter() {
+							return handlePrintableCharacter();
 						}
 					}),
 					($$value) => set(itemsComponent, $$value, true),
@@ -12212,6 +12316,9 @@
 						handleExit: (key) => handleExitSingle()(key),
 						get focusOnOuterElement() {
 							return focusOnOuterElement();
+						},
+						get handlePrintableCharacter() {
+							return handlePrintableCharacter();
 						}
 					}),
 					($$value) => set(itemsComponent, $$value, true),
@@ -12257,6 +12364,9 @@
 		return pop({
 			get focus() {
 				return focus;
+			},
+			get focusOnFirstMatchingElement() {
+				return focusOnFirstMatchingElement;
 			},
 			get enableSearch() {
 				return enableSearch();
@@ -12321,6 +12431,13 @@
 				focusOnOuterElement($$value);
 				flushSync();
 			},
+			get handlePrintableCharacter() {
+				return handlePrintableCharacter();
+			},
+			set handlePrintableCharacter($$value = () => {}) {
+				handlePrintableCharacter($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12336,10 +12453,11 @@
 			passValueMultiple: {},
 			handleExitSingle: {},
 			handleExitMultiple: {},
-			focusOnOuterElement: {}
+			focusOnOuterElement: {},
+			handlePrintableCharacter: {}
 		},
 		[],
-		['focus'],
+		['focus', 'focusOnFirstMatchingElement'],
 		true
 	);
 
@@ -12500,19 +12618,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[135, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[174, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[174, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[207, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			128,
+			167,
 			0,
 			[
-				[132, 4],
+				[171, 4],
 				[
-					138,
+					177,
 					4,
-					[[166, 8, [[211, 12]]]]
+					[[199, 8, [[245, 12]]]]
 				]
 			]
 		]
@@ -12552,6 +12670,7 @@
 			selectedOptionsText = state(""),
 			expanded = state(false),
 			searchText = state(""),
+			hiddenSearchText = state(""),
 			displayedItems = state(proxy(items())),
 			widthClass = user_derived(() => {
 				if (availableWidths.includes(width())) {
@@ -12606,12 +12725,45 @@
 		function handleArrowDown(event, targetComponent) {
 			if (strict_equals(event.key, "ArrowDown") && targetComponent) {
 				event.preventDefault();
+				set(expanded, true);
 				targetComponent.focus();
+			}
+		}
+
+		function handleComboKey(event, targetComponent) {
+			handleEscape(event);
+			handleTab(event);
+			handleArrowDown(event, targetComponent);
+
+			if (strict_equals(event.key, "ArrowUp")) {
+				event.preventDefault();
+				set(expanded, false);
+			}
+		}
+
+		function handlePrintableCharacter(event) {
+			if (enableSearch()) {
+				get(searchInput)?.focus();
+			} else {
+				set(hiddenSearchText, get(hiddenSearchText) + event.key);
+
+				if (get(hiddenSearchText).length > 0 && get(expanded)) {
+					get(dropdownItems)?.focusOnFirstMatchingElement(get(hiddenSearchText));
+				}
+			}
+		}
+
+		function handleKeyDown(event, targetComponent) {
+			if (event.key.match(/^\w$/i)) {
+				handlePrintableCharacter(event);
+			} else {
+				handleComboKey(event, targetComponent);
 			}
 		}
 
 		function closeDropdown(key) {
 			set(expanded, false);
+			set(hiddenSearchText, "");
 
 			if (strict_equals(key, "Escape") && get(button)) {
 				get(button).focus();
@@ -12635,6 +12787,13 @@
 		user_effect(() => {
 			if (value()) {
 				invalid(false);
+			}
+		});
+
+		user_effect(() => {
+			if (!get(expanded)) {
+				set(hiddenSearchText, "");
+				set(searchText, "");
 			}
 		});
 
@@ -12684,14 +12843,7 @@
 				},
 				onclick: handleDropdownButtonClick,
 				onkeydown: (e) => {
-					handleEscape(e);
-					handleTab(e);
-					handleArrowDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
-
-					if (strict_equals(e.key, "ArrowUp")) {
-						e.preventDefault();
-						set(expanded, false);
-					}
+					handleKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
 				}
 			}),
 			($$value) => set(button, $$value, true),
@@ -12767,7 +12919,8 @@
 				},
 				handleExitSingle: (key) => closeDropdown(key),
 				handleExitMultiple: (key) => closeDropdown(key),
-				focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus()
+				focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
+				handlePrintableCharacter
 			}),
 			($$value) => set(dropdownItems, $$value, true),
 			() => get(dropdownItems)

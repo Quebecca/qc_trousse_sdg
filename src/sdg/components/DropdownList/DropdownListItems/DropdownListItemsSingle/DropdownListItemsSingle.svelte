@@ -5,11 +5,12 @@
         items,
         passValue = () => {},
         handleExit = () => {},
-        focusOnOuterElement = () => {}
+        focusOnOuterElement = () => {},
+        handlePrintableCharacter = () => {}
     } = $props();
 
     let self = $state();
-    let listElements = $derived(self.querySelectorAll("li"));
+    let listElements = $derived(Array.from(self.querySelectorAll("li")));
     let predecessor = $state();
     let selectedValue = $state();
     let mouseDownElement = null;
@@ -20,6 +21,17 @@
     export function focusOnFirstElement() {
         if (listElements.length > 0) {
             listElements[0].focus();
+        }
+    }
+
+    export function focusOnFirstMatchingElement(value) {
+        if (listElements && listElements.length > 0) {
+            const foundElement = listElements.find(
+                    element => element.value.toString().toLowerCase().includes(value.toLowerCase())
+            );
+            if (foundElement) {
+                foundElement.focus();
+            }
         }
     }
 
@@ -45,7 +57,7 @@
         mouseDownElement = event.target;
     }
 
-    function handleKeyDown (event, label, value, index) {
+    function handleComboKey(event, label, value, index) {
         if (event.key === "ArrowDown") {
             event.preventDefault();
             event.stopPropagation();
@@ -77,6 +89,14 @@
         }).catch(console.error);
     }
 
+    function handleKeyDown (event, label, value, index) {
+        if (event.key.match(/^\w$/i)) {
+            handlePrintableCharacter(event);
+        } else {
+            handleComboKey(event, label, value, index);
+        }
+    }
+
     function canExit(event, index) {
         return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === items.length - 1);
     }
@@ -87,6 +107,7 @@
         {#each items as item, index}
             <li
                     id={Math.random().toString(36).substring(2, 15)}
+                    value={item.value}
                     class="qc-dropdown-list-single"
                     tabindex="0"
                     role="option"

@@ -4,7 +4,7 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
-    import {derived} from "svelte/store";
+    import * as sea from "node:sea";
 
     const lang = Utils.getPageLanguage();
 
@@ -40,6 +40,7 @@
         selectedOptionsText = $state(""),
         expanded = $state(false),
         searchText = $state(""),
+        hiddenSearchText = $state(""),
         displayedItems = $state(items),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
@@ -96,12 +97,43 @@
     function handleArrowDown(event, targetComponent) {
         if (event.key === "ArrowDown" && targetComponent) {
             event.preventDefault();
+            expanded = true;
             targetComponent.focus();
+        }
+    }
+
+    function handleComboKey(event, targetComponent) {
+        handleEscape(event);
+        handleTab(event);
+        handleArrowDown(event, targetComponent);
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            expanded = false;
+        }
+    }
+
+    function handlePrintableCharacter(event) {
+        if (enableSearch) {
+            searchInput?.focus();
+        } else {
+            hiddenSearchText += event.key;
+            if (hiddenSearchText.length > 0 && expanded) {
+                dropdownItems?.focusOnFirstMatchingElement(hiddenSearchText);
+            }
+        }
+    }
+
+    function handleKeyDown(event, targetComponent) {
+        if (event.key.match(/^\w$/i)) {
+            handlePrintableCharacter(event);
+        } else {
+            handleComboKey(event, targetComponent);
         }
     }
 
     function closeDropdown(key) {
         expanded = false;
+        hiddenSearchText = "";
         if (key === "Escape" && button) {
             button.focus();
         }
@@ -120,6 +152,13 @@
     $effect(() => {
         if (value) {
             invalid = false;
+        }
+    })
+
+    $effect(() => {
+        if (!expanded) {
+            hiddenSearchText = "";
+            searchText = "";
         }
     })
 </script>
@@ -152,13 +191,7 @@
             {placeholder}
             onclick={handleDropdownButtonClick}
             onkeydown={(e) => {
-                handleEscape(e);
-                handleTab(e);
-                handleArrowDown(e, enableSearch ? searchInput : dropdownItems);
-                if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    expanded = false;
-                }
+                handleKeyDown(e, enableSearch ? searchInput : dropdownItems);
             }}
             bind:this={button}
         />
@@ -204,6 +237,7 @@
                 handleExitSingle={(key) => closeDropdown(key)}
                 handleExitMultiple={(key) => closeDropdown(key)}
                 focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
+                handlePrintableCharacter={handlePrintableCharacter}
                 bind:this={dropdownItems}
             />
 
