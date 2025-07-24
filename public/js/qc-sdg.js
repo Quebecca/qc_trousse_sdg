@@ -18,6 +18,7 @@
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
+	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
@@ -145,6 +146,8 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
+	const LEGACY_DERIVED_PROP = 1 << 17;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -445,7 +448,12 @@
 		}
 	}
 
+	let legacy_mode_flag = false;
 	let tracing_mode_flag = false;
+
+	function enable_legacy_mode_flag() {
+		legacy_mode_flag = true;
+	}
 
 	/** @import { Source } from '#client' */
 
@@ -2483,6 +2491,12 @@
 			s.equals = safe_equals;
 		}
 
+		// bind the signal to the component context, in case we need to
+		// track updates to trigger beforeUpdate/afterUpdate callbacks
+		if (legacy_mode_flag && component_context !== null && component_context.l !== null) {
+			(component_context.l.s ??= []).push(s);
+		}
+
 		return s;
 	}
 
@@ -2544,6 +2558,7 @@
 			// properly for itself, we need to ensure the current effect actually gets
 			// scheduled. i.e: `$effect(() => x++)`
 			if (
+				is_runes() &&
 				active_effect !== null &&
 				(active_effect.f & CLEAN) !== 0 &&
 				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
@@ -2567,6 +2582,8 @@
 	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
+
+		var runes = is_runes();
 		var length = reactions.length;
 
 		for (var i = 0; i < length; i++) {
@@ -2575,6 +2592,9 @@
 
 			// Skip any effects that are already dirty
 			if ((flags & DIRTY) !== 0) continue;
+
+			// In legacy mode, skip the current effect to prevent infinite loops
+			if (!runes && reaction === active_effect) continue;
 
 			set_signal_status(reaction, status);
 
@@ -2653,6 +2673,15 @@
 			l: null
 		});
 
+		if (legacy_mode_flag && !runes) {
+			component_context.l = {
+				s: null,
+				u: null,
+				r1: [],
+				r2: source(false)
+			};
+		}
+
 		teardown(() => {
 			/** @type {ComponentContext} */ (ctx).d = true;
 		});
@@ -2696,7 +2725,7 @@
 
 	/** @returns {boolean} */
 	function is_runes() {
-		return true;
+		return !legacy_mode_flag || (component_context !== null && component_context.l === null);
 	}
 
 	/**
@@ -3785,6 +3814,7 @@
 		}
 
 		var anchor = node;
+		var runes = is_runes();
 		var active_component_context = component_context;
 
 		/** @type {V | Promise<V> | typeof UNINITIALIZED} */
@@ -3799,8 +3829,8 @@
 		/** @type {Effect | null} */
 		var catch_effect;
 
-		var input_source = (source )(/** @type {V} */ (undefined));
-		var error_source = (source )(undefined);
+		var input_source = (runes ? source : mutable_source)(/** @type {V} */ (undefined));
+		var error_source = (runes ? source : mutable_source)(undefined);
 		var resolved = false;
 
 		/**
@@ -5565,6 +5595,7 @@
 	 * @returns {void}
 	 */
 	function bind_value(input, get, set = get) {
+		var runes = is_runes();
 
 		listen_to_event_and_reset_event(input, 'input', (is_reset) => {
 
@@ -5575,7 +5606,7 @@
 
 			// In runes mode, respect any validation in accessors (doesn't apply in legacy mode,
 			// because we use mutable state which ensures the render effect always runs)
-			if (value !== (value = get())) {
+			if (runes && value !== (value = get())) {
 				var start = input.selectionStart;
 				var end = input.selectionEnd;
 
@@ -5871,12 +5902,23 @@
 			lifecycle_outside_component();
 		}
 
-		{
+		if (legacy_mode_flag && component_context.l !== null) {
+			init_update_callbacks(component_context).m.push(fn);
+		} else {
 			user_effect(() => {
 				const cleanup = untrack(fn);
 				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
 			});
 		}
+	}
+
+	/**
+	 * Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
+	 * @param {ComponentContext} context
+	 */
+	function init_update_callbacks(context) {
+		var l = /** @type {ComponentContextLegacy} */ (context).l;
+		return (l.u ??= { a: [], b: [], m: [] });
 	}
 
 	/** @import { StoreReferencesContainer } from '#client' */
@@ -6057,7 +6099,7 @@
 	 */
 	function prop(props, key, flags, fallback) {
 		var immutable = (flags & PROPS_IS_IMMUTABLE) !== 0;
-		var runes = true;
+		var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 		var is_store_sub = false;
@@ -6108,13 +6150,25 @@
 
 		/** @type {() => V} */
 		var getter;
-		{
+		if (runes) {
 			getter = () => {
 				var value = /** @type {V} */ (props[key]);
 				if (value === undefined) return get_fallback();
 				fallback_dirty = true;
 				fallback_used = false;
 				return value;
+			};
+		} else {
+			// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
+			// Replicate that behavior through using a derived
+			var derived_getter = (immutable ? derived : derived_safe_equal)(
+				() => /** @type {V} */ (props[key])
+			);
+			derived_getter.f |= LEGACY_DERIVED_PROP;
+			getter = () => {
+				var value = get(derived_getter);
+				if (value !== undefined) fallback_value = /** @type {V} */ (undefined);
+				return value === undefined ? fallback_value : value;
 			};
 		}
 
@@ -6133,7 +6187,7 @@
 					// In that case the state proxy (if it exists) should take care of the notification.
 					// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
 					// has changed because the parent will not be able to detect the change otherwise.
-					if (!mutation || legacy_parent || is_store_sub) {
+					if (!runes || !mutation || legacy_parent || is_store_sub) {
 						/** @type {Function} */ (setter)(mutation ? getter() : value);
 					}
 					return value;
@@ -6172,7 +6226,7 @@
 		return function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
 
 			if (arguments.length > 0) {
-				const new_value = mutation ? get(current_value) : bindable ? proxy(value) : value;
+				const new_value = mutation ? get(current_value) : runes && bindable ? proxy(value) : value;
 
 				if (!current_value.equals(new_value)) {
 					from_child = true;
@@ -6820,7 +6874,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$h = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$i = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6848,7 +6902,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$h();
+		var div = root$i();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6930,7 +6984,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$g = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$h = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -6987,7 +7041,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$g();
+		var fragment = root$h();
 		var div = first_child(fragment);
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
@@ -7173,7 +7227,7 @@
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[131, 10]]);
 
-	var root$f = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$g = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7252,7 +7306,7 @@
 			}
 		});
 
-		var fragment = root$f();
+		var fragment = root$g();
 		var div = first_child(fragment);
 		var div_1 = child(div);
 		var node = child(div_1);
@@ -7794,7 +7848,7 @@
 	var root_2$8 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
-	var root$e = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
+	var root$f = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
 		[20, 0, [[25, 4], [41, 4]]],
 		[52, 0]
 	]);
@@ -7817,7 +7871,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var fragment = root$e();
+		var fragment = root$f();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -8121,7 +8175,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$d = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$e = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8148,7 +8202,7 @@
 					'class'
 				]);
 
-		var button = root$d();
+		var button = root$e();
 		let attributes;
 		var node = child(button);
 
@@ -8264,7 +8318,7 @@
 		]
 	]);
 
-	var root$c = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
+	var root$d = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -8291,7 +8345,7 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$c();
+		var fragment = root$d();
 		var node = first_child(fragment);
 
 		{
@@ -8467,7 +8521,7 @@
 	}
 
 	var on_click = (e, scrollToTop) => scrollToTop(e);
-	var root$b = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$c = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8511,7 +8565,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$b();
+		var a = root$c();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8592,7 +8646,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$a = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$b = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8674,7 +8728,7 @@
 			});
 		});
 
-		var span_1 = root$a();
+		var span_1 = root$b();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -8712,7 +8766,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$9 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[24, 0, [[28, 4]]]]);
+	var root$a = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[24, 0, [[28, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8743,7 +8797,7 @@
 			searchInput?.focus();
 		}
 
-		var div = root$9();
+		var div = root$a();
 		var node = child(div);
 
 		{
@@ -8866,7 +8920,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$8 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$9 = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -8910,7 +8964,7 @@
 				...Utils.computeFieldsAttributes("submit", rest)
 			}));
 
-		var div = root$8();
+		var div = root$9();
 		let classes;
 		var node = child(div);
 
@@ -9160,7 +9214,7 @@
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
 	var root_1$8 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[56, 12]]);
-	var root$7 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
+	var root$8 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9205,7 +9259,7 @@
 			return "qc-field-elements-flex";
 		}
 
-		var fieldset = root$7();
+		var fieldset = root$8();
 
 		set_attribute(fieldset, 'aria-describedby', legendId);
 
@@ -10549,7 +10603,7 @@
 
 	var root_1$6 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
 
-	var root$6 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
+	var root$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
 		[
 			22,
 			0,
@@ -10595,7 +10649,7 @@
 				]);
 
 		let inputId = user_derived(() => $$props.id ?? `${name()}-${value()}-${Math.random().toString(36).substring(2, 15)}`);
-		var label_1 = root$6();
+		var label_1 = root$7();
 		var input = child(label_1);
 
 		remove_input_defaults(input);
@@ -10969,7 +11023,7 @@
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
-	var root$5 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[70, 0, [[86, 4]]]]);
+	var root$6 = add_locations(template(`<div><!> <!> <div><!></div> <!> <!></div>`), TextField[FILENAME], [[70, 0, [[86, 4]]]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -11051,7 +11105,7 @@
 			maxlength() && charCountId
 		].filter(Boolean));
 
-		var div = root$5();
+		var div = root$6();
 		var node = child(div);
 
 		{
@@ -11432,7 +11486,7 @@
 
 	var root_1$4 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[28, 8], [29, 8]]);
 	var root_2$4 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[31, 8], [32, 8]]);
-	var root$4 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
+	var root$5 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[13, 0, [[19, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -11445,7 +11499,7 @@
 
 		const generatedId = label().replace(/\s/g, '-').toLowerCase() + '-' + Math.random().toString(36);
 		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
-		var label_1 = root$4();
+		var label_1 = root$5();
 
 		set_class(label_1, 1, clsx([
 			"qc-switch",
@@ -11891,7 +11945,7 @@
 
 	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[82, 16]]);
 	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[80, 8]]);
-	var root$3 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[78, 0]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[78, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11965,7 +12019,7 @@
 			}
 		}
 
-		var div = root$3();
+		var div = root$4();
 		var node = child(div);
 
 		{
@@ -12071,7 +12125,7 @@
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
 	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[81, 16]]);
-	var root$2 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[48, 0, [[78, 4]]]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[48, 0, [[78, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12117,7 +12171,7 @@
 			}
 		}
 
-		var div = root$2();
+		var div = root$3();
 		var node = child(div);
 
 		{
@@ -12293,7 +12347,7 @@
 
 	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[29, 12]]);
 	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[31, 12]]);
-	var root$1 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[27, 4], [35, 4]]]]);
+	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[27, 4], [35, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -12324,7 +12378,7 @@
 			button?.focus();
 		}
 
-		var button_1 = root$1();
+		var button_1 = root$2();
 		let attributes;
 		var span = child(button_1);
 		var node = child(span);
@@ -12449,7 +12503,7 @@
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[135, 12]]);
 	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[174, 16]]);
 
-	var root = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root$1 = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
 			128,
 			0,
@@ -12584,7 +12638,7 @@
 			}
 		});
 
-		var div = root();
+		var div = root$1();
 
 		event('click', $document, handleOuterEvent);
 
@@ -12916,24 +12970,14 @@
 					'value'
 				]);
 
-		let items = state(proxy([]));
-
-		onMount(() => {
-			const optionsValues = [];
-
-			Array.from($$props.$$host.querySelectorAll("option")).forEach((node) => {
-				$$props.$$host.removeChild(node);
-
-				optionsValues.push({
-					label: node.innerHTML,
-					value: node.value,
-					disabled: node.disabled,
-					checked: false
-				});
-			});
-
-			set(items, optionsValues, true);
-		});
+		let items = state(proxy([
+			...Array.from($$props.$$host.querySelectorAll("qc-option")).map((node) => ({
+				label: node.label ?? node.innerHTML,
+				value: node.value,
+				disabled: node.disabled,
+				checked: node.selected ?? false
+			}))
+		]));
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
@@ -13011,6 +13055,46 @@
 		[],
 		[],
 		false
+	));
+
+	enable_legacy_mode_flag();
+
+	OptionWC[FILENAME] = 'src/sdg/components/Option/OptionWC.svelte';
+
+	var root = add_locations(template(`<div style="display: none"><!></div>`), OptionWC[FILENAME], [[14, 0]]);
+
+	function OptionWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, false);
+
+		var div = root();
+		var node = child(div);
+
+		slot(node, $$props, 'default', {});
+		reset(div);
+		append($$anchor, div);
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-option', create_custom_element(
+		OptionWC,
+		{
+			label: { attribute: 'label', type: 'String' },
+			value: { attribute: 'value', type: 'String' },
+			disabled: {
+				attribute: 'disabled',
+				reflect: true,
+				type: 'Boolean'
+			},
+			selected: {
+				attribute: 'selected',
+				reflect: true,
+				type: 'Boolean'
+			}
+		},
+		['default'],
+		[],
+		true
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;

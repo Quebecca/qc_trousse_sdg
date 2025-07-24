@@ -18,7 +18,6 @@
 }}"/>
 
 <script>
-    import {onMount} from "svelte";
     import DropdownList from "./DropdownList.svelte";
 
     let {
@@ -27,24 +26,15 @@
         ...rest
     } = $props();
 
-    let items = $state([]);
-    onMount(() => {
-        const optionsValues = [];
-
-        Array.from($host().querySelectorAll("option"))
-            .forEach(node => {
-            $host().removeChild(node);
-
-            optionsValues.push({
-                label: node.innerHTML,
+    let items = $state([
+        ...Array.from($host().querySelectorAll("qc-option"))
+            .map(node => ({
+                label: node.label ?? node.innerHTML,
                 value: node.value,
                 disabled: node.disabled,
-                checked: false
-            });
-        });
-
-        items = optionsValues;
-    });
+                checked: node.selected ?? false,
+            }))
+    ]);
 </script>
 
 <DropdownList {items} {invalid} bind:value {...rest} />
