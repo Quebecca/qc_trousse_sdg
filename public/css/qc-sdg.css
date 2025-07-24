@@ -2790,6 +2790,37 @@ a.qc-button {
   column-gap: var(--qc-spacer-md);
 }
 
+qc-note-link sup a {
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0 0.4rem;
+  background-color: var(--qc-color-blue-pale);
+  white-space: nowrap;
+}
+qc-note-link sup a:focus {
+  outline-offset: 0;
+}
+
+qc-note {
+  display: flex;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-regular);
+  gap: 4px;
+}
+qc-note span.note-index a {
+  display: inline-block;
+  margin-right: 0.4rem;
+}
+qc-note span.note-index a.selected {
+  font-weight: bold;
+}
+
+qc-note-container {
+  display: block;
+  margin-bottom: var(--qc-spacer-content-block-mb);
+}
+
 .qc-container,
 .qc-container-fluid,
 .qc-container-lg,

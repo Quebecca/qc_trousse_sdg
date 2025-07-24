@@ -13,7 +13,7 @@
 }}" />
 <script>
     import {onMount} from "svelte";
-    import Icon from "../Icon.svelte";
+    import Icon from "../Icon/Icon.svelte";
     import {noteStore} from "./NoteStore";
     export let
         self,
