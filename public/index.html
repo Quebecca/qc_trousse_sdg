@@ -2423,12 +2423,12 @@
 
 <h3>Exemples</h3>
 
-<qc-doc-exemple caption="Exemple de liste déroulante en sélection unique sans barre de recherche">
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection unique sans barre de recherche">
     <qc-dropdown-list
         id="dropdown-list-single-choice"
         legend="Faites un choix:"
     >
-        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="1" selected>Option 1</qc-option>
         <qc-option value="2">Option 2</qc-option>
         <qc-option value="3">Option 3</qc-option>
         <qc-option value="4">Option 4</qc-option>
@@ -2445,6 +2445,12 @@
         <qc-option value="15">Option 15</qc-option>
         <qc-option value="16">Option 16</qc-option>
     </qc-dropdown-list>
+
+    <qc-dropdown-list
+        id="dropdown-list-disabled"
+        legend="Faites un choix:"
+        disabled
+    ></qc-dropdown-list>
 
     <script>
         function mutationCallback(mutationsList, _) {
