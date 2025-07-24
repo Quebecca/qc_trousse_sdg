@@ -35,6 +35,8 @@
 
     let instance = $state(),
         button = $state(),
+        searchInput = $state(),
+        dropdownItems = $state(),
         selectedOptionsText = $state(""),
         expanded = $state(false),
         searchText = $state(""),
@@ -46,7 +48,7 @@
             return `qc-dropdown-list-lg`;
         }),
         itemsCountText = $derived.by(() => {
-            if (displayedItems.length > 0) {
+            if (displayedItems.length > 0 && expanded) {
                 return  lang === "fr" ?
                     `${displayedItems.length} résultats disponibles. Utilisez les flèches directionnelles pour vous déplacer dans la liste.`
                     : `${displayedItems.length} results available. Use arrow keys to navigate through the list.`;
@@ -81,6 +83,20 @@
     function handleEscape(event) {
         if (event.key === "Escape") {
             expanded = false;
+        }
+    }
+
+    function handleArrowUp(event, targetComponent) {
+        if (event.key === "ArrowUp" && targetComponent) {
+            event.preventDefault();
+            targetComponent.focus();
+        }
+    }
+
+    function handleArrowDown(event, targetComponent) {
+        if (event.key === "ArrowDown" && targetComponent) {
+            event.preventDefault();
+            targetComponent.focus();
         }
     }
 
@@ -134,8 +150,16 @@
             {expanded}
             {selectedOptionsText}
             {placeholder}
-            handleClick={handleDropdownButtonClick}
-            handleKeyDown={(e) => {handleTab(e); handleEscape(e);}}
+            onclick={handleDropdownButtonClick}
+            onkeydown={(e) => {
+                handleEscape(e);
+                handleTab(e);
+                handleArrowDown(e, enableSearch ? searchInput : dropdownItems);
+                if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    expanded = false;
+                }
+            }}
             bind:this={button}
         />
 
@@ -153,6 +177,11 @@
                             bind:value={searchText}
                             placeholder={searchPlaceholder}
                             leftIcon="true"
+                            bind:this={searchInput}
+                            onkeydown={(e) => {
+                                handleArrowDown(e, dropdownItems);
+                                handleArrowUp(e, button);
+                            }}
                     />
                 </div>
             {/if}
@@ -174,6 +203,8 @@
                 }}
                 handleExitSingle={(key) => closeDropdown(key)}
                 handleExitMultiple={(key) => closeDropdown(key)}
+                focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
+                bind:this={dropdownItems}
             />
 
             <!-- Pour les lecteurs d'écran: affiche le nombre de résultats -->

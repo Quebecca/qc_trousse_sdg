@@ -4,7 +4,8 @@
     let {
         items,
         passValue = () => {},
-        handleExit = () => {}
+        handleExit = () => {},
+        focusOnOuterElement = () => {}
     } = $props();
 
     let self = $state();
@@ -15,6 +16,13 @@
     let hoveredElement = null;
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
+
+    export function focusOnFirstElement() {
+        if (listElements.length > 0) {
+            listElements[0].focus();
+        }
+    }
+
     function handleSelection(thisElement, label, value) {
         if (predecessor) {
             predecessor.classList.toggle(selectedElementCLass);
@@ -53,6 +61,8 @@
 
             if (listElements.length > 0 && index > 0) {
                 listElements[index - 1].focus();
+            } else {
+                focusOnOuterElement();
             }
         }
 

@@ -15,6 +15,10 @@
     } = $props();
 
     let searchInput;
+
+    export function focus() {
+        searchInput?.focus();
+    }
 </script>
 
 <div class={["qc-search-input", leftIcon && "qc-search-left-icon"]}>

@@ -12,6 +12,7 @@
         passValueMultiple = () => {},
         handleExitSingle = () => {},
         handleExitMultiple = () => {},
+        focusOnOuterElement = () => {}
     } = $props()
 
     const
@@ -19,6 +20,7 @@
         remRatio = 0.16
     ;
 
+    let itemsComponent = $state();
     let usedHeight = $derived.by(() => {
         const maxItemsHeight = 336;
         const searchInputTotalHeight = 56;
@@ -34,7 +36,13 @@
             }
             return maxItemsHeight;
         }
-    })
+    });
+
+    export function focus() {
+        if (itemsComponent) {
+            itemsComponent.focusOnFirstElement();
+        }
+    }
 </script>
 
 <div
@@ -51,6 +59,8 @@
                     passValueMultiple(l, v)
                 }}
                 handleExit={(key) => handleExitMultiple(key)}
+                focusOnOuterElement={focusOnOuterElement}
+                bind:this={itemsComponent}
         />
     {:else}
         <DropdownListItemsSingle
@@ -60,6 +70,8 @@
                     passValueSingle(l, v)
                 }}
                 handleExit={(key) => handleExitSingle(key)}
+                focusOnOuterElement={focusOnOuterElement}
+                bind:this={itemsComponent}
         />
     {/if}
 

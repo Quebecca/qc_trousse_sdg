@@ -7,8 +7,7 @@
         expanded,
         selectedOptionsText,
         placeholder,
-        handleClick = () => {},
-        handleKeyDown = () => {},
+        ...rest
     } = $props()
 
     let button;
@@ -20,11 +19,10 @@
 <button
     id={inputId}
     class="qc-dropdown-button"
-    onclick={(e) => handleClick(e)}
-    onkeydown={(e) => handleKeyDown(e)}
     {disabled}
     aria-expanded={expanded}
     bind:this={button}
+    {...rest}
 >
     <span class="qc-dropdown-text">
         {#if selectedOptionsText.length > 0}

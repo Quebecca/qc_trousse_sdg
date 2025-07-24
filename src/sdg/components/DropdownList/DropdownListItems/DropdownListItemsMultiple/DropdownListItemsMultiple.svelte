@@ -6,6 +6,7 @@
         items,
         handleExit = () => {},
         passValue = () => {},
+        focusOnOuterElement = () => {}
     } = $props();
 
     const name = Math.random().toString(36).substring(2, 15);
@@ -16,6 +17,12 @@
         self = $state(),
         listElements = $derived(self.querySelectorAll("input[type='checkbox']"))
     ;
+
+    export function focusOnFirstElement() {
+        if (listElements.length > 0) {
+            listElements[0].focus();
+        }
+    }
 
     function handleKeyDown(event, index) {
         if (event.key === "ArrowDown") {
@@ -33,6 +40,8 @@
 
             if (listElements.length > 0 && index > 0) {
                 listElements[index - 1].focus();
+            } else {
+                focusOnOuterElement();
             }
         }
 
