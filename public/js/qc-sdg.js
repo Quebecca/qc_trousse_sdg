@@ -12238,14 +12238,15 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[99, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[64, 0, [[96, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[101, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[65, 0, [[98, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let enableSearch = prop($$props, 'enableSearch', 7),
+		let id = prop($$props, 'id', 7),
+			enableSearch = prop($$props, 'enableSearch', 7),
 			multiple = prop($$props, 'multiple', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
@@ -12386,7 +12387,12 @@
 
 		reset(div_1);
 		reset(div);
-		template_effect(() => set_style(div, `--dropdown-items-height: ${get(usedHeight) / (remRatio * precentRootFontSize)}rem;`));
+
+		template_effect(() => {
+			set_attribute(div, 'id', id());
+			set_style(div, `--dropdown-items-height: ${get(usedHeight) / (remRatio * precentRootFontSize)}rem;`);
+		});
+
 		append($$anchor, div);
 
 		return pop({
@@ -12398,6 +12404,13 @@
 			},
 			get focusOnFirstMatchingElement() {
 				return focusOnFirstMatchingElement;
+			},
+			get id() {
+				return id();
+			},
+			set id($$value) {
+				id($$value);
+				flushSync();
 			},
 			get enableSearch() {
 				return enableSearch();
@@ -12476,6 +12489,7 @@
 	create_custom_element(
 		DropdownListItems,
 		{
+			id: {},
 			enableSearch: {},
 			multiple: {},
 			displayedItems: {},
@@ -12498,17 +12512,15 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[29, 12]]);
-	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[31, 12]]);
-	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[27, 4], [35, 4]]]]);
+	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[27, 12]]);
+	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[29, 12]]);
+	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[17, 0, [[25, 4], [33, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let inputId = prop($$props, 'inputId', 7),
-			disabled = prop($$props, 'disabled', 7),
-			expanded = prop($$props, 'expanded', 7),
 			selectedOptionsText = prop($$props, 'selectedOptionsText', 7),
 			placeholder = prop($$props, 'placeholder', 7),
 			rest = rest_props(
@@ -12519,8 +12531,6 @@
 					'$$legacy',
 					'$$host',
 					'inputId',
-					'disabled',
-					'expanded',
 					'selectedOptionsText',
 					'placeholder'
 				]);
@@ -12563,13 +12573,16 @@
 		reset(span);
 
 		var span_3 = sibling(span, 2);
+
+		set_class(span_3, 1, clsx([
+			"qc-dropdown-button-icon",
+			expanded && "qc-dropdown-button-icon-expanded"
+		]));
+
 		var node_3 = child(span_3);
-		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
 
 		Icon(node_3, {
-			get type() {
-				return get(expression);
-			},
+			type: disabled ? "chevron-grey-thin" : "chevron-blue-thin",
 			size: 'sm'
 		});
 
@@ -12577,20 +12590,13 @@
 		reset(button_1);
 		bind_this(button_1, ($$value) => button = $$value, () => button);
 
-		template_effect(() => {
-			attributes = set_attributes(button_1, attributes, {
-				id: inputId(),
-				class: 'qc-dropdown-button',
-				disabled: disabled(),
-				'aria-expanded': expanded(),
-				...rest
-			});
-
-			set_class(span_3, 1, clsx([
-				"qc-dropdown-button-icon",
-				expanded() && "qc-dropdown-button-icon-expanded"
-			]));
-		});
+		template_effect(() => attributes = set_attributes(button_1, attributes, {
+			type: 'button',
+			id: inputId(),
+			class: 'qc-dropdown-button',
+			role: 'combobox',
+			...rest
+		}));
 
 		append($$anchor, button_1);
 
@@ -12603,20 +12609,6 @@
 			},
 			set inputId($$value) {
 				inputId($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value) {
-				disabled($$value);
-				flushSync();
-			},
-			get expanded() {
-				return expanded();
-			},
-			set expanded($$value) {
-				expanded($$value);
 				flushSync();
 			},
 			get selectedOptionsText() {
@@ -12641,8 +12633,6 @@
 		DropdownListButton,
 		{
 			inputId: {},
-			disabled: {},
-			expanded: {},
 			selectedOptionsText: {},
 			placeholder: {}
 		},
@@ -12653,19 +12643,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[194, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[227, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[195, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[234, 16]]);
 
-	var root$1 = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			187,
+			188,
 			0,
 			[
-				[191, 4],
+				[192, 4],
 				[
-					197,
+					198,
 					4,
-					[[219, 8, [[265, 12]]]]
+					[[226, 8, [[273, 12]]]]
 				]
 			]
 		]
@@ -12693,6 +12683,7 @@
 			multiple = prop($$props, 'multiple', 7, false);
 
 		const inputId = `${id()}-input`,
+			itemsId = `${id()}-items`,
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
 			availableWidths = ["sm", "md", "lg", "xl", "xxl"],
@@ -12890,8 +12881,21 @@
 				get disabled() {
 					return disabled();
 				},
-				get expanded() {
+				'aria-labelledby': labelId,
+				'aria-controls': itemsId,
+				get 'aria-required'() {
+					return required();
+				},
+				get 'aria-expanded'() {
 					return get(expanded);
+				},
+				'aria-haspopup': 'listbox',
+				'aria-owns': itemsId,
+				get 'aria-invalid'() {
+					return invalid();
+				},
+				get 'aria-label'() {
+					return get(selectedOptionsText);
 				},
 				get selectedOptionsText() {
 					return get(selectedOptionsText);
@@ -12953,6 +12957,7 @@
 
 		bind_this(
 			DropdownListItems(node_4, {
+				id: itemsId,
 				get enableSearch() {
 					return enableSearch();
 				},
@@ -13018,11 +13023,7 @@
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
-			set_class(div_2, 1, clsx([
-				"qc-dropdown-list-expanded",
-				!get(expanded) && "qc-dropdown-list-hidden"
-			]));
-
+			div_2.hidden = !get(expanded);
 			set_attribute(div_4, 'aria-label', get(itemsCountText));
 		});
 
@@ -13181,14 +13182,12 @@
 					'value'
 				]);
 
-		let items = state(proxy([
-			...Array.from($$props.$$host.querySelectorAll("qc-option")).map((node) => ({
-				label: node.label ?? node.innerHTML,
-				value: node.value,
-				disabled: node.disabled,
-				checked: node.selected ?? false
-			}))
-		]));
+		let items = state(proxy(Array.from($$props.$$host.querySelectorAll("qc-option")).map((node) => ({
+			label: node.label ?? node.innerHTML,
+			value: node.value,
+			disabled: node.disabled,
+			checked: node.selected ?? false
+		}))));
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
@@ -13272,7 +13271,7 @@
 
 	OptionWC[FILENAME] = 'src/sdg/components/Option/OptionWC.svelte';
 
-	var root = add_locations(template(`<div style="display: none"><!></div>`), OptionWC[FILENAME], [[14, 0]]);
+	var root = add_locations(template(`<div hidden><!></div>`), OptionWC[FILENAME], [[14, 0]]);
 
 	function OptionWC($$anchor, $$props) {
 		check_target(new.target);

@@ -26,15 +26,15 @@
         ...rest
     } = $props();
 
-    let items = $state([
-        ...Array.from($host().querySelectorAll("qc-option"))
+    let items = $state(
+        Array.from($host().querySelectorAll("qc-option"))
             .map(node => ({
                 label: node.label ?? node.innerHTML,
                 value: node.value,
                 disabled: node.disabled,
                 checked: node.selected ?? false,
             }))
-    ]);
+    );
 </script>
 
 <DropdownList {items} {invalid} bind:value {...rest} />

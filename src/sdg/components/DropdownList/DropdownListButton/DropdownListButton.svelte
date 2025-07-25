@@ -3,8 +3,6 @@
 
     let {
         inputId,
-        disabled,
-        expanded,
         selectedOptionsText,
         placeholder,
         ...rest
@@ -17,10 +15,10 @@
 </script>
 
 <button
+    type="button"
     id={inputId}
     class="qc-dropdown-button"
-    {disabled}
-    aria-expanded={expanded}
+    role="combobox"
     bind:this={button}
     {...rest}
 >

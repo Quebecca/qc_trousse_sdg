@@ -11,6 +11,6 @@
     }
 }}"/>
 
-<div style="display: none">
+<div hidden>
     <slot />
 </div>

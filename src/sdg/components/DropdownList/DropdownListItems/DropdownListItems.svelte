@@ -5,6 +5,7 @@
     import {Utils} from "../../utils";
 
     let {
+        id,
         enableSearch,
         multiple,
         displayedItems,
@@ -62,6 +63,7 @@
 </script>
 
 <div
+    id={id}
     class="qc-dropdown-list-items"
     tabindex="-1"
     role="status"

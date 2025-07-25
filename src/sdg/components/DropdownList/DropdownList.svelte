@@ -26,6 +26,7 @@
 
     const
         inputId = `${id}-input`,
+        itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
         availableWidths = ["sm", "md", "lg", "xl", "xxl"],
@@ -199,14 +200,20 @@
             `qc-dropdown-list ${widthClass}`,
             invalid && "qc-dropdown-list-invalid",
         ]}
-        role="listbox"
         tabindex="-1"
         bind:this={instance}
     >
         <DropdownListButton
             {inputId}
             {disabled}
-            {expanded}
+            aria-labelledby={labelId}
+            aria-controls={itemsId}
+            aria-required={required}
+            aria-expanded={expanded}
+            aria-haspopup="listbox"
+            aria-owns={itemsId}
+            aria-invalid={invalid}
+            aria-label={selectedOptionsText}
             {selectedOptionsText}
             {placeholder}
             onclick={handleDropdownButtonClick}
@@ -216,11 +223,11 @@
             bind:this={button}
         />
 
-        <div class={[
-                "qc-dropdown-list-expanded",
-                !expanded && "qc-dropdown-list-hidden",
-            ]}
-             tabindex="-1"
+        <div
+            class="qc-dropdown-list-expanded"
+            tabindex="-1"
+            hidden={!expanded}
+            role="listbox"
         >
 
             {#if enableSearch}
@@ -240,6 +247,7 @@
             {/if}
 
             <DropdownListItems
+                id={itemsId}
                 {enableSearch}
                 {multiple}
                 {displayedItems}
