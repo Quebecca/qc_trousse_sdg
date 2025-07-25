@@ -4,7 +4,6 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
-    import * as sea from "node:sea";
 
     const lang = Utils.getPageLanguage();
 
@@ -59,6 +58,18 @@
         })
     ;
 
+    function focusOnSelectedOption(value) {
+        if (value && value.length > 0) {
+            if (displayedItems.length > 0) {
+                Utils.sleep(5).then(() => {
+                    dropdownItems?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
+                }).catch(console.error);
+            } else {
+                dropdownItems?.focusOnFirstElement();
+            }
+        }
+    }
+
     function handleDropdownButtonClick(event) {
         event.preventDefault();
         expanded = !expanded;
@@ -102,13 +113,15 @@
         }
     }
 
-    function handleComboKey(event, targetComponent) {
+    function handleButtonComboKey(event, targetComponent) {
         handleEscape(event);
         handleTab(event);
         handleArrowDown(event, targetComponent);
         if (event.key === "ArrowUp") {
             event.preventDefault();
-            expanded = false;
+            if (expanded) {
+                dropdownItems?.focusOnLastElement();
+            }
         }
     }
 
@@ -123,11 +136,18 @@
         }
     }
 
-    function handleKeyDown(event, targetComponent) {
+    function handleButtonKeyDown(event, targetComponent) {
         if (event.key.match(/^\w$/i)) {
             handlePrintableCharacter(event);
         } else {
-            handleComboKey(event, targetComponent);
+            handleButtonComboKey(event, targetComponent);
+            if (event.key === "ArrowDown") {
+                if (displayedItems.length > 0) {
+                    focusOnSelectedOption(displayedItems[0]?.value);
+                } else {
+                    dropdownItems?.focusOnFirstElement();
+                }
+            }
         }
     }
 
@@ -191,7 +211,7 @@
             {placeholder}
             onclick={handleDropdownButtonClick}
             onkeydown={(e) => {
-                handleKeyDown(e, enableSearch ? searchInput : dropdownItems);
+                handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
             }}
             bind:this={button}
         />

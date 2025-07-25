@@ -2,6 +2,7 @@
     import DropdownListItemsSingle from "./DropdownListItemsSingle/DropdownListItemsSingle.svelte";
     import DropdownListItemsMultiple from "./DropdownListItemsMultiple/DropdownListItemsMultiple.svelte";
     import {tick} from "svelte";
+    import {Utils} from "../../utils";
 
     let {
         enableSearch,
@@ -45,9 +46,17 @@
         }
     }
 
-    export function focusOnFirstMatchingElement(value) {
+    export function focusOnLastElement() {
         if (itemsComponent) {
-            itemsComponent.focusOnFirstMatchingElement(value);
+            itemsComponent.focusOnLastElement();
+        }
+    }
+
+    export function focusOnFirstMatchingElement(value) {
+        if (itemsComponent && value && value.length > 0) {
+            Utils.sleep(5).then(() => {
+                itemsComponent?.focusOnFirstMatchingElement(value);
+            }).catch(console.error);
         }
     }
 </script>

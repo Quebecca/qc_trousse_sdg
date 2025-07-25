@@ -11793,8 +11793,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[108, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[106, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11817,6 +11817,12 @@
 		function focusOnFirstElement() {
 			if (get(listElements).length > 0) {
 				get(listElements)[0].focus();
+			}
+		}
+
+		function focusOnLastElement() {
+			if (get(listElements).length > 0) {
+				get(listElements)[get(listElements).length - 1].focus();
 			}
 		}
 
@@ -11941,6 +11947,9 @@
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
+			get focusOnLastElement() {
+				return focusOnLastElement;
+			},
 			get focusOnFirstMatchingElement() {
 				return focusOnFirstMatchingElement;
 			},
@@ -11997,6 +12006,7 @@
 		[],
 		[
 			'focusOnFirstElement',
+			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
 		true
@@ -12004,9 +12014,9 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[102, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[100, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[98, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[108, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[106, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[104, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12028,6 +12038,12 @@
 		function focusOnFirstElement() {
 			if (get(listElements).length > 0) {
 				get(listElements)[0].focus();
+			}
+		}
+
+		function focusOnLastElement() {
+			if (get(listElements).length > 0) {
+				get(listElements)[get(listElements).length - 1].focus();
 			}
 		}
 
@@ -12157,6 +12173,9 @@
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
+			get focusOnLastElement() {
+				return focusOnLastElement;
+			},
 			get focusOnFirstMatchingElement() {
 				return focusOnFirstMatchingElement;
 			},
@@ -12211,6 +12230,7 @@
 		[],
 		[
 			'focusOnFirstElement',
+			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
 		true
@@ -12218,8 +12238,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[90, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[55, 0, [[87, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[99, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[64, 0, [[96, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12266,9 +12286,17 @@
 			}
 		}
 
-		function focusOnFirstMatchingElement(value) {
+		function focusOnLastElement() {
 			if (get(itemsComponent)) {
-				get(itemsComponent).focusOnFirstMatchingElement(value);
+				get(itemsComponent).focusOnLastElement();
+			}
+		}
+
+		function focusOnFirstMatchingElement(value) {
+			if (get(itemsComponent) && value && value.length > 0) {
+				Utils.sleep(5).then(() => {
+					get(itemsComponent)?.focusOnFirstMatchingElement(value);
+				}).catch(console.error);
 			}
 		}
 
@@ -12365,6 +12393,9 @@
 			get focus() {
 				return focus;
 			},
+			get focusOnLastElement() {
+				return focusOnLastElement;
+			},
 			get focusOnFirstMatchingElement() {
 				return focusOnFirstMatchingElement;
 			},
@@ -12457,7 +12488,11 @@
 			handlePrintableCharacter: {}
 		},
 		[],
-		['focus', 'focusOnFirstMatchingElement'],
+		[
+			'focus',
+			'focusOnLastElement',
+			'focusOnFirstMatchingElement'
+		],
 		true
 	);
 
@@ -12618,19 +12653,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[174, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[207, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[194, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[227, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div role="listbox" tabindex="-1"><!> <div tabindex="-1"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			167,
+			187,
 			0,
 			[
-				[171, 4],
+				[191, 4],
 				[
-					177,
+					197,
 					4,
-					[[199, 8, [[245, 12]]]]
+					[[219, 8, [[265, 12]]]]
 				]
 			]
 		]
@@ -12687,6 +12722,18 @@
 				return "";
 			});
 
+		function focusOnSelectedOption(value) {
+			if (value && value.length > 0) {
+				if (get(displayedItems).length > 0) {
+					Utils.sleep(5).then(() => {
+						get(dropdownItems)?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
+					}).catch(console.error);
+				} else {
+					get(dropdownItems)?.focusOnFirstElement();
+				}
+			}
+		}
+
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
 			set(expanded, !get(expanded));
@@ -12730,14 +12777,17 @@
 			}
 		}
 
-		function handleComboKey(event, targetComponent) {
+		function handleButtonComboKey(event, targetComponent) {
 			handleEscape(event);
 			handleTab(event);
 			handleArrowDown(event, targetComponent);
 
 			if (strict_equals(event.key, "ArrowUp")) {
 				event.preventDefault();
-				set(expanded, false);
+
+				if (get(expanded)) {
+					get(dropdownItems)?.focusOnLastElement();
+				}
 			}
 		}
 
@@ -12753,11 +12803,19 @@
 			}
 		}
 
-		function handleKeyDown(event, targetComponent) {
+		function handleButtonKeyDown(event, targetComponent) {
 			if (event.key.match(/^\w$/i)) {
 				handlePrintableCharacter(event);
 			} else {
-				handleComboKey(event, targetComponent);
+				handleButtonComboKey(event, targetComponent);
+
+				if (strict_equals(event.key, "ArrowDown")) {
+					if (get(displayedItems).length > 0) {
+						focusOnSelectedOption(get(displayedItems)[0]?.value);
+					} else {
+						get(dropdownItems)?.focusOnFirstElement();
+					}
+				}
 			}
 		}
 
@@ -12843,7 +12901,7 @@
 				},
 				onclick: handleDropdownButtonClick,
 				onkeydown: (e) => {
-					handleKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
+					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
 				}
 			}),
 			($$value) => set(button, $$value, true),

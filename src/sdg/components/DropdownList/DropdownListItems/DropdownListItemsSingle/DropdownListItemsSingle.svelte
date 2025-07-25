@@ -24,6 +24,12 @@
         }
     }
 
+    export function focusOnLastElement() {
+        if (listElements.length > 0) {
+            listElements[listElements.length - 1].focus();
+        }
+    }
+
     export function focusOnFirstMatchingElement(value) {
         if (listElements && listElements.length > 0) {
             const foundElement = listElements.find(
