@@ -3,6 +3,8 @@
 
     let {
         inputId,
+        expanded,
+        disabled,
         selectedOptionsText,
         placeholder,
         ...rest
@@ -17,6 +19,7 @@
 <button
     type="button"
     id={inputId}
+    {disabled}
     class="qc-dropdown-button"
     role="combobox"
     bind:this={button}

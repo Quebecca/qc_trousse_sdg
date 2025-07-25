@@ -11793,8 +11793,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[115, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[113, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11836,13 +11836,15 @@
 			}
 		}
 
-		function handleSelection(thisElement, label, value) {
+		function handleSelection(event, label, value) {
+			event.preventDefault();
+
 			if (get(predecessor)) {
 				get(predecessor).classList.toggle(selectedElementCLass);
 			}
 
-			thisElement.classList.toggle(selectedElementCLass);
-			set(predecessor, thisElement, true);
+			event.target.classList.toggle(selectedElementCLass);
+			set(predecessor, event.target, true);
 			set(selectedValue, value, true);
 			passValue()(label, value);
 		}
@@ -11878,13 +11880,13 @@
 				}
 			}
 
+			if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
+				handleSelection(event, label, value);
+			}
+
 			Utils.sleep(5).then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
-				}
-
-				if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
-					handleSelection(event.target, label, value);
 				}
 			}).catch(console.error);
 		}
@@ -12282,15 +12284,15 @@
 		});
 
 		function focus() {
-			if (get(itemsComponent)) {
-				get(itemsComponent).focusOnFirstElement();
-			}
+			Utils.sleep(5).then(() => {
+				get(itemsComponent)?.focusOnFirstElement();
+			}).catch(console.error);
 		}
 
 		function focusOnLastElement() {
-			if (get(itemsComponent)) {
-				get(itemsComponent).focusOnLastElement();
-			}
+			Utils.sleep(5).then(() => {
+				get(itemsComponent)?.focusOnLastElement();
+			}).catch(console.error);
 		}
 
 		function focusOnFirstMatchingElement(value) {
@@ -12512,15 +12514,17 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[27, 12]]);
-	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[29, 12]]);
-	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[17, 0, [[25, 4], [33, 4]]]]);
+	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[30, 12]]);
+	var root_2$1 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[32, 12]]);
+	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[28, 4], [36, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let inputId = prop($$props, 'inputId', 7),
+			expanded = prop($$props, 'expanded', 7),
+			disabled = prop($$props, 'disabled', 7),
 			selectedOptionsText = prop($$props, 'selectedOptionsText', 7),
 			placeholder = prop($$props, 'placeholder', 7),
 			rest = rest_props(
@@ -12531,6 +12535,8 @@
 					'$$legacy',
 					'$$host',
 					'inputId',
+					'expanded',
+					'disabled',
 					'selectedOptionsText',
 					'placeholder'
 				]);
@@ -12573,16 +12579,13 @@
 		reset(span);
 
 		var span_3 = sibling(span, 2);
-
-		set_class(span_3, 1, clsx([
-			"qc-dropdown-button-icon",
-			expanded && "qc-dropdown-button-icon-expanded"
-		]));
-
 		var node_3 = child(span_3);
+		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
 
 		Icon(node_3, {
-			type: disabled ? "chevron-grey-thin" : "chevron-blue-thin",
+			get type() {
+				return get(expression);
+			},
 			size: 'sm'
 		});
 
@@ -12590,13 +12593,21 @@
 		reset(button_1);
 		bind_this(button_1, ($$value) => button = $$value, () => button);
 
-		template_effect(() => attributes = set_attributes(button_1, attributes, {
-			type: 'button',
-			id: inputId(),
-			class: 'qc-dropdown-button',
-			role: 'combobox',
-			...rest
-		}));
+		template_effect(() => {
+			attributes = set_attributes(button_1, attributes, {
+				type: 'button',
+				id: inputId(),
+				disabled: disabled(),
+				class: 'qc-dropdown-button',
+				role: 'combobox',
+				...rest
+			});
+
+			set_class(span_3, 1, clsx([
+				"qc-dropdown-button-icon",
+				expanded() && "qc-dropdown-button-icon-expanded"
+			]));
+		});
 
 		append($$anchor, button_1);
 
@@ -12609,6 +12620,20 @@
 			},
 			set inputId($$value) {
 				inputId($$value);
+				flushSync();
+			},
+			get expanded() {
+				return expanded();
+			},
+			set expanded($$value) {
+				expanded($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
 				flushSync();
 			},
 			get selectedOptionsText() {
@@ -12633,6 +12658,8 @@
 		DropdownListButton,
 		{
 			inputId: {},
+			expanded: {},
+			disabled: {},
 			selectedOptionsText: {},
 			placeholder: {}
 		},
@@ -12643,19 +12670,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[195, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[234, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[197, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[237, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			188,
+			190,
 			0,
 			[
-				[192, 4],
+				[194, 4],
 				[
-					198,
+					200,
 					4,
-					[[226, 8, [[273, 12]]]]
+					[[229, 8, [[276, 12]]]]
 				]
 			]
 		]
@@ -12714,13 +12741,11 @@
 			});
 
 		function focusOnSelectedOption(value) {
-			if (value && value.length > 0) {
-				if (get(displayedItems).length > 0) {
-					Utils.sleep(5).then(() => {
-						get(dropdownItems)?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
-					}).catch(console.error);
+			if (get(displayedItems).length > 0) {
+				if (value && value.length > 0) {
+					get(dropdownItems)?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
 				} else {
-					get(dropdownItems)?.focusOnFirstElement();
+					get(dropdownItems)?.focus();
 				}
 			}
 		}
@@ -12771,7 +12796,18 @@
 		function handleButtonComboKey(event, targetComponent) {
 			handleEscape(event);
 			handleTab(event);
-			handleArrowDown(event, targetComponent);
+
+			if (strict_equals(event.key, "ArrowDown")) {
+				event.preventDefault();
+
+				if (get(expanded)) {
+					set(expanded, true);
+					targetComponent.focus();
+				} else {
+					set(expanded, true);
+					focusOnSelectedOption(value());
+				}
+			}
 
 			if (strict_equals(event.key, "ArrowUp")) {
 				event.preventDefault();
@@ -12799,14 +12835,6 @@
 				handlePrintableCharacter(event);
 			} else {
 				handleButtonComboKey(event, targetComponent);
-
-				if (strict_equals(event.key, "ArrowDown")) {
-					if (get(displayedItems).length > 0) {
-						focusOnSelectedOption(get(displayedItems)[0]?.value);
-					} else {
-						get(dropdownItems)?.focusOnFirstElement();
-					}
-				}
 			}
 		}
 
@@ -12880,6 +12908,9 @@
 				inputId,
 				get disabled() {
 					return disabled();
+				},
+				get expanded() {
+					return get(expanded);
 				},
 				'aria-labelledby': labelId,
 				'aria-controls': itemsId,

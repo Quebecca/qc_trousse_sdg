@@ -41,13 +41,14 @@
         }
     }
 
-    function handleSelection(thisElement, label, value) {
+    function handleSelection(event, label, value) {
+        event.preventDefault();
         if (predecessor) {
             predecessor.classList.toggle(selectedElementCLass);
         }
 
-        thisElement.classList.toggle(selectedElementCLass);
-        predecessor = thisElement;
+        event.target.classList.toggle(selectedElementCLass);
+        predecessor = event.target;
 
         selectedValue = value;
         passValue(label, value);
@@ -84,13 +85,13 @@
             }
         }
 
+        if (event.key === "Enter" || event.key === " ") {
+            handleSelection(event, label, value);
+        }
+
         Utils.sleep(5).then(() => {
             if (canExit(event, index)) {
                 handleExit(event.key);
-            }
-
-            if (event.key === "Enter" || event.key === " ") {
-                handleSelection(event.target, label, value);
             }
         }).catch(console.error);
     }

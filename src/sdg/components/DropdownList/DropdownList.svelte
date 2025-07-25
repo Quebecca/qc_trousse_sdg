@@ -60,13 +60,11 @@
     ;
 
     function focusOnSelectedOption(value) {
-        if (value && value.length > 0) {
-            if (displayedItems.length > 0) {
-                Utils.sleep(5).then(() => {
-                    dropdownItems?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
-                }).catch(console.error);
+        if (displayedItems.length > 0) {
+            if (value && value.length > 0) {
+                dropdownItems?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
             } else {
-                dropdownItems?.focusOnFirstElement();
+                dropdownItems?.focus();
             }
         }
     }
@@ -117,7 +115,18 @@
     function handleButtonComboKey(event, targetComponent) {
         handleEscape(event);
         handleTab(event);
-        handleArrowDown(event, targetComponent);
+
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            if (expanded) {
+                expanded = true;
+                targetComponent.focus();
+            } else {
+                expanded = true;
+                focusOnSelectedOption(value);
+            }
+        }
+
         if (event.key === "ArrowUp") {
             event.preventDefault();
             if (expanded) {
@@ -142,13 +151,6 @@
             handlePrintableCharacter(event);
         } else {
             handleButtonComboKey(event, targetComponent);
-            if (event.key === "ArrowDown") {
-                if (displayedItems.length > 0) {
-                    focusOnSelectedOption(displayedItems[0]?.value);
-                } else {
-                    dropdownItems?.focusOnFirstElement();
-                }
-            }
         }
     }
 
@@ -206,6 +208,7 @@
         <DropdownListButton
             {inputId}
             {disabled}
+            {expanded}
             aria-labelledby={labelId}
             aria-controls={itemsId}
             aria-required={required}

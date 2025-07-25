@@ -42,15 +42,15 @@
     });
 
     export function focus() {
-        if (itemsComponent) {
-            itemsComponent.focusOnFirstElement();
-        }
+        Utils.sleep(5).then(() => {
+            itemsComponent?.focusOnFirstElement();
+        }).catch(console.error);
     }
 
     export function focusOnLastElement() {
-        if (itemsComponent) {
-            itemsComponent.focusOnLastElement();
-        }
+        Utils.sleep(5).then(() => {
+            itemsComponent?.focusOnLastElement();
+        }).catch(console.error);
     }
 
     export function focusOnFirstMatchingElement(value) {
