@@ -236,15 +236,15 @@
             {#if enableSearch}
                 <div class="qc-dropdown-list-search">
                     <SearchInput
-                            id="{id}-search"
-                            bind:value={searchText}
-                            placeholder={searchPlaceholder}
-                            leftIcon="true"
-                            bind:this={searchInput}
-                            onkeydown={(e) => {
-                                handleArrowDown(e, dropdownItems);
-                                handleArrowUp(e, button);
-                            }}
+                        id="{id}-search"
+                        bind:value={searchText}
+                        placeholder={searchPlaceholder}
+                        leftIcon="true"
+                        bind:this={searchInput}
+                        onkeydown={(e) => {
+                            handleArrowDown(e, dropdownItems);
+                            handleArrowUp(e, button);
+                        }}
                     />
                 </div>
             {/if}

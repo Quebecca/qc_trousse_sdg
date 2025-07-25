@@ -10,7 +10,7 @@
     } = $props();
 
     let self = $state();
-    let listElements = $derived(Array.from(self.querySelectorAll("li")));
+    let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
     let predecessor = $state();
     let selectedValue = $state();
     let mouseDownElement = null;
@@ -19,13 +19,13 @@
     const selectedElementCLass = "qc-dropdown-list-single-selected";
 
     export function focusOnFirstElement() {
-        if (listElements.length > 0) {
+        if (listElements && listElements.length > 0) {
             listElements[0].focus();
         }
     }
 
     export function focusOnLastElement() {
-        if (listElements.length > 0) {
+        if (listElements && listElements.length > 0) {
             listElements[listElements.length - 1].focus();
         }
     }

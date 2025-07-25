@@ -16,17 +16,17 @@
         selectedValues = [],
         selectedLabels = [],
         self = $state(),
-        listElements = $derived(Array.from(self.querySelectorAll("input[type='checkbox']")))
+        listElements = $derived(self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : [])
     ;
 
     export function focusOnFirstElement() {
-        if (listElements.length > 0) {
+        if (listElements && listElements.length > 0) {
             listElements[0].focus();
         }
     }
 
     export function focusOnLastElement() {
-        if (listElements.length > 0) {
+        if (listElements && listElements.length > 0) {
             listElements[listElements.length - 1].focus();
         }
     }

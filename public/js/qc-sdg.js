@@ -11807,7 +11807,7 @@
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		let self = state(void 0);
-		let listElements = user_derived(() => Array.from(get(self).querySelectorAll("li")));
+		let listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("li")) : []);
 		let predecessor = state(void 0);
 		let selectedValue = state(void 0);
 		let mouseDownElement = null;
@@ -11815,13 +11815,13 @@
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		function focusOnFirstElement() {
-			if (get(listElements).length > 0) {
+			if (get(listElements) && get(listElements).length > 0) {
 				get(listElements)[0].focus();
 			}
 		}
 
 		function focusOnLastElement() {
-			if (get(listElements).length > 0) {
+			if (get(listElements) && get(listElements).length > 0) {
 				get(listElements)[get(listElements).length - 1].focus();
 			}
 		}
@@ -12035,16 +12035,16 @@
 		let selectedValues = [],
 			selectedLabels = [],
 			self = state(void 0),
-			listElements = user_derived(() => Array.from(get(self).querySelectorAll("input[type='checkbox']")));
+			listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("input[type='checkbox']")) : []);
 
 		function focusOnFirstElement() {
-			if (get(listElements).length > 0) {
+			if (get(listElements) && get(listElements).length > 0) {
 				get(listElements)[0].focus();
 			}
 		}
 
 		function focusOnLastElement() {
-			if (get(listElements).length > 0) {
+			if (get(listElements) && get(listElements).length > 0) {
 				get(listElements)[get(listElements).length - 1].focus();
 			}
 		}
