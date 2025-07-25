@@ -12,11 +12,21 @@
     let self = $state();
     let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
     let predecessor = $state();
-    let selectedValue = $state();
+    let selectedValue = $state(items && items.length > 0 ? items.find((item) => item.checked) : null);
     let mouseDownElement = null;
     let hoveredElement = null;
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
+
+    $inspect(items);
+
+    $effect(() => {
+        console.log(items.find((item) => item.checked))
+        if (selectedValue) {
+            listElements?.find(element => element.value === selectedValue)
+                ?.classList.add(selectedElementCLass);
+        }
+    });
 
     export function focusOnFirstElement() {
         if (listElements && listElements.length > 0) {
@@ -47,16 +57,15 @@
             predecessor.classList.toggle(selectedElementCLass);
         }
 
-        event.target.classList.toggle(selectedElementCLass);
         predecessor = event.target;
-
         selectedValue = value;
+
         passValue(label, value);
     }
 
     function handleMouseUp(event, label, value) {
         if (event.target === hoveredElement && event.target === mouseDownElement) {
-            handleSelection(event.target, label, value);
+            handleSelection(event, label, value);
         }
     }
 

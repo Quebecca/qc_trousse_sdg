@@ -16,6 +16,7 @@
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {},
+        closeDropdown = () => {},
     } = $props()
 
     const
@@ -74,7 +75,7 @@
                 items={displayedItems}
                 {noOptionsMessage}
                 passValue={(l, v) => {
-                    passValueMultiple(l, v)
+                    passValueMultiple(l, v);
                 }}
                 handleExit={(key) => handleExitMultiple(key)}
                 focusOnOuterElement={focusOnOuterElement}
@@ -86,7 +87,8 @@
                 items={displayedItems}
                 {noOptionsMessage}
                 passValue={(l, v) => {
-                    passValueSingle(l, v)
+                    passValueSingle(l, v);
+                    closeDropdown();
                 }}
                 handleExit={(key) => handleExitSingle(key)}
                 focusOnOuterElement={focusOnOuterElement}

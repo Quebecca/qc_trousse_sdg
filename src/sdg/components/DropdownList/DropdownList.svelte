@@ -37,7 +37,11 @@
         button = $state(),
         searchInput = $state(),
         dropdownItems = $state(),
-        selectedOptionsText = $state(""),
+        selectedOptionsText = $state(
+            items.length > 0 ?
+                items.filter((item) => item.checked).map((item) => item.label).join(", ")
+                : ""
+        ),
         expanded = $state(false),
         searchText = $state(""),
         hiddenSearchText = $state(""),
@@ -269,6 +273,7 @@
                 handleExitMultiple={(key) => closeDropdown(key)}
                 focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
                 handlePrintableCharacter={handlePrintableCharacter}
+                closeDropdown={() => expanded = false}
                 bind:this={dropdownItems}
             />
 

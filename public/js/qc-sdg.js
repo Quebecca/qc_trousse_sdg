@@ -148,6 +148,7 @@
 	const EFFECT_TRANSPARENT = 1 << 16;
 	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
 	const LEGACY_DERIVED_PROP = 1 << 17;
+	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -287,6 +288,16 @@
 	function binding_property_non_reactive(binding, location) {
 		{
 			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
+		}
+	}
+
+	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
 		}
 	}
 
@@ -445,6 +456,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1259,6 +1372,11 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function inspect_effect(fn) {
+		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3776,6 +3894,39 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} [inspector]
+	 */
+	// eslint-disable-next-line no-console
+	function inspect(get_value, inspector = console.log) {
+		validate_effect();
+
+		let initial = true;
+
+		inspect_effect(() => {
+			/** @type {any} */
+			var value = UNINITIALIZED;
+
+			// Capturing the value might result in an exception due to the inspect effect being
+			// sync and thus operating on stale data. In the case we encounter an exception we
+			// can bail-out of reporting the value. Instead we simply console.error the error
+			// so at least it's known that an error occured, but we don't stop execution
+			try {
+				value = get_value();
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+
+			if (value !== UNINITIALIZED) {
+				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
+			}
+
+			initial = false;
+		});
 	}
 
 	/**
@@ -6793,6 +6944,37 @@
 		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
+	}
+
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
 	}
 
 	class Utils {
@@ -11793,8 +11975,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[115, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[113, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[124, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[122, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11809,10 +11991,20 @@
 		let self = state(void 0);
 		let listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("li")) : []);
 		let predecessor = state(void 0);
-		let selectedValue = state(void 0);
+		let selectedValue = state(proxy(items() && items().length > 0 ? items().find((item) => item.checked) : null));
 		let mouseDownElement = null;
 		let hoveredElement = null;
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
+
+		inspect(() => [items()]);
+
+		user_effect(() => {
+			console.log(...log_if_contains_state('log', items().find((item) => item.checked)));
+
+			if (get(selectedValue)) {
+				get(listElements)?.find((element) => strict_equals(element.value, get(selectedValue)))?.classList.add(selectedElementCLass);
+			}
+		});
 
 		function focusOnFirstElement() {
 			if (get(listElements) && get(listElements).length > 0) {
@@ -11843,7 +12035,6 @@
 				get(predecessor).classList.toggle(selectedElementCLass);
 			}
 
-			event.target.classList.toggle(selectedElementCLass);
 			set(predecessor, event.target, true);
 			set(selectedValue, value, true);
 			passValue()(label, value);
@@ -11851,7 +12042,7 @@
 
 		function handleMouseUp(event, label, value) {
 			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
-				handleSelection(event.target, label, value);
+				handleSelection(event, label, value);
 			}
 		}
 
@@ -12240,8 +12431,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[101, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[65, 0, [[98, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[103, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[66, 0, [[100, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12257,7 +12448,8 @@
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
-			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
+			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {}),
+			closeDropdown = prop($$props, 'closeDropdown', 7, () => {});
 
 		const precentRootFontSize = 62.5,
 			remRatio = 0.16;
@@ -12343,6 +12535,7 @@
 						},
 						passValue: (l, v) => {
 							passValueSingle()(l, v);
+							closeDropdown()();
 						},
 						handleExit: (key) => handleExitSingle()(key),
 						get focusOnOuterElement() {
@@ -12484,6 +12677,13 @@
 				handlePrintableCharacter($$value);
 				flushSync();
 			},
+			get closeDropdown() {
+				return closeDropdown();
+			},
+			set closeDropdown($$value = () => {}) {
+				closeDropdown($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12501,7 +12701,8 @@
 			handleExitSingle: {},
 			handleExitMultiple: {},
 			focusOnOuterElement: {},
-			handlePrintableCharacter: {}
+			handlePrintableCharacter: {},
+			closeDropdown: {}
 		},
 		[],
 		[
@@ -12670,19 +12871,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[197, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[237, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[201, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[241, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			190,
+			194,
 			0,
 			[
-				[194, 4],
+				[198, 4],
 				[
-					200,
+					204,
 					4,
-					[[229, 8, [[276, 12]]]]
+					[[233, 8, [[281, 12]]]]
 				]
 			]
 		]
@@ -12720,7 +12921,7 @@
 			button = state(void 0),
 			searchInput = state(void 0),
 			dropdownItems = state(void 0),
-			selectedOptionsText = state(""),
+			selectedOptionsText = state(proxy(items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label).join(", ") : "")),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
@@ -13014,7 +13215,8 @@
 				handleExitSingle: (key) => closeDropdown(key),
 				handleExitMultiple: (key) => closeDropdown(key),
 				focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
-				handlePrintableCharacter
+				handlePrintableCharacter,
+				closeDropdown: () => set(expanded, false)
 			}),
 			($$value) => set(dropdownItems, $$value, true),
 			() => get(dropdownItems)
