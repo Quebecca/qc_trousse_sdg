@@ -10,8 +10,8 @@
         multiple,
         displayedItems,
         noOptionsMessage,
-        passValueSingle = () => {},
-        passValueMultiple = () => {},
+        selectionCallbackSingle = () => {},
+        selectionCallbackMultiple = () => {},
         handleExitSingle = () => {},
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
@@ -61,6 +61,10 @@
             }).catch(console.error);
         }
     }
+
+    $effect(() => {
+        console.log(displayedItems.map(item => item.checked));
+    })
 </script>
 
 <div
@@ -74,8 +78,8 @@
         <DropdownListItemsMultiple
                 items={displayedItems}
                 {noOptionsMessage}
-                passValue={(l, v) => {
-                    passValueMultiple(l, v);
+                passValue={() => {
+                    selectionCallbackMultiple();
                 }}
                 handleExit={(key) => handleExitMultiple(key)}
                 focusOnOuterElement={focusOnOuterElement}
@@ -86,8 +90,8 @@
         <DropdownListItemsSingle
                 items={displayedItems}
                 {noOptionsMessage}
-                passValue={(l, v) => {
-                    passValueSingle(l, v);
+                selectionCallback={() => {
+                    selectionCallbackSingle();
                     closeDropdown();
                 }}
                 handleExit={(key) => handleExitSingle(key)}

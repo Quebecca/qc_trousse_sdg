@@ -889,20 +889,6 @@
 		return (a === b) === equal;
 	}
 
-	/**
-	 * @param {any} a
-	 * @param {any} b
-	 * @param {boolean} equal
-	 * @returns {boolean}
-	 */
-	function equals$1(a, b, equal = true) {
-		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
-			state_proxy_equality_mismatch();
-		}
-
-		return (a == b) === equal;
-	}
-
 	/** @import { TemplateNode } from '#client' */
 
 	// export these for reference in the compiled code, making global name deduplication unnecessary
@@ -5413,29 +5399,6 @@
 		input.__on_r = remove_defaults;
 		queue_idle_task(remove_defaults);
 		add_form_reset_listener();
-	}
-
-	/**
-	 * @param {Element} element
-	 * @param {any} value
-	 */
-	function set_value(element, value) {
-		var attributes = get_attributes(element);
-
-		if (
-			attributes.value ===
-				(attributes.value =
-					// treat null and undefined the same for the initial value
-					value ?? undefined) ||
-			// @ts-expect-error
-			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.value = value ?? '';
 	}
 
 	/**
@@ -11950,8 +11913,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[141, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[139, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[136, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[134, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11960,7 +11923,7 @@
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		let items = prop($$props, 'items', 7),
-			passValue = prop($$props, 'passValue', 7, () => {}),
+			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
@@ -11971,7 +11934,8 @@
 
 		let selectedElement = user_derived(() => {
 			if (get(selectedValue) && get(listElements) && get(listElements).length > 0) {
-				return get(listElements).find((element) => equals$1(element.value, get(selectedValue)));
+				console.log(...log_if_contains_state('log', get(listElements)));
+				return get(listElements).find((element) => strict_equals(element.value.toString(), get(selectedValue).toString()));
 			}
 
 			return null;
@@ -11987,20 +11951,12 @@
 			}
 
 			if (get(previousElement) && strict_equals(get(previousElement), get(selectedElement), false)) {
-				console.log(...log_if_contains_state('log', get(previousElement), "previousElement"));
 				get(previousElement).classList.remove(selectedElementCLass);
 			}
 
 			get(selectedElement).classList.add(selectedElementCLass);
 			set(previousElement, get(selectedElement), true);
-		});
-
-		user_effect(() => {
-			console.log(...log_if_contains_state('log', items().map((item) => item.checked)));
-		});
-
-		user_effect(() => {
-			console.log(...log_if_contains_state('log', get(selectedElement), "selectedElement"));
+			console.log(...log_if_contains_state('log', get(previousElement), "previousElement"));
 		});
 
 		function focusOnFirstElement() {
@@ -12017,7 +11973,7 @@
 
 		function focusOnFirstMatchingElement(value) {
 			if (get(listElements) && get(listElements).length > 0) {
-				const foundElement = get(listElements).find((element) => element.value.toString().toLowerCase().includes(value.toLowerCase()));
+				const foundElement = get(listElements).find((element) => element.dataset.itemValue.toString().toLowerCase().includes(value.toLowerCase()));
 
 				if (foundElement) {
 					foundElement.focus();
@@ -12027,10 +11983,10 @@
 
 		function handleSelection(event, item) {
 			event.preventDefault();
-			passValue()(item.label, item.value);
+			selectionCallback()();
 
 			if (get(previousElement)) {
-				items().find((item) => equals$1(item.value, get(previousElement).value)).checked = false;
+				items().find((item) => strict_equals(item.value.toString(), get(previousElement).dataset.itemValue.toString())).checked = false;
 			}
 
 			item.checked = true;
@@ -12111,7 +12067,7 @@
 					reset(li);
 
 					template_effect(() => {
-						set_value(li, get(item).value);
+						set_attribute(li, 'data-item-value', get(item).value);
 						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
 					});
 
@@ -12149,11 +12105,11 @@
 				items($$value);
 				flushSync();
 			},
-			get passValue() {
-				return passValue();
+			get selectionCallback() {
+				return selectionCallback();
 			},
-			set passValue($$value = () => {}) {
-				passValue($$value);
+			set selectionCallback($$value = () => {}) {
+				selectionCallback($$value);
 				flushSync();
 			},
 			get handleExit() {
@@ -12187,7 +12143,7 @@
 		DropdownListItemsSingle,
 		{
 			items: {},
-			passValue: {},
+			selectionCallback: {},
 			handleExit: {},
 			focusOnOuterElement: {},
 			handlePrintableCharacter: {}
@@ -12203,9 +12159,9 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[123, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[121, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[119, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[115, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[113, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[111, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12213,13 +12169,12 @@
 
 		let items = prop($$props, 'items', 7),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
-			passValue = prop($$props, 'passValue', 7, () => {}),
+			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
-		const lang = Utils.getPageLanguage();
+		Utils.getPageLanguage();
 		const name = Math.random().toString(36).substring(2, 15);
-		const groupedSelectionDisplayThreshold = 3;
 
 		let selectedValues = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.value) : [])),
 			selectedLabels = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label) : [])),
@@ -12299,11 +12254,7 @@
 				set(selectedLabels, get(selectedLabels).filter((l) => strict_equals(l, label, false)), true);
 			}
 
-			if (get(selectedValues).length >= groupedSelectionDisplayThreshold) {
-				passValue()(strict_equals(lang, "fr") ? `${get(selectedValues).length} options sélectionnées` : `${get(selectedValues).length} selected options`, get(selectedValues).join(", "));
-			} else {
-				passValue()(get(selectedLabels).join(", "), get(selectedValues).join(", "));
-			}
+			selectionCallback()();
 		}
 
 		var div = root$4();
@@ -12384,11 +12335,11 @@
 				handleExit($$value);
 				flushSync();
 			},
-			get passValue() {
-				return passValue();
+			get selectionCallback() {
+				return selectionCallback();
 			},
-			set passValue($$value = () => {}) {
-				passValue($$value);
+			set selectionCallback($$value = () => {}) {
+				selectionCallback($$value);
 				flushSync();
 			},
 			get focusOnOuterElement() {
@@ -12414,7 +12365,7 @@
 		{
 			items: {},
 			handleExit: {},
-			passValue: {},
+			selectionCallback: {},
 			focusOnOuterElement: {},
 			handlePrintableCharacter: {}
 		},
@@ -12429,8 +12380,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[103, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[66, 0, [[100, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[107, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[70, 0, [[104, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12441,8 +12392,8 @@
 			multiple = prop($$props, 'multiple', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
-			passValueSingle = prop($$props, 'passValueSingle', 7, () => {}),
-			passValueMultiple = prop($$props, 'passValueMultiple', 7, () => {}),
+			selectionCallbackSingle = prop($$props, 'selectionCallbackSingle', 7, () => {}),
+			selectionCallbackMultiple = prop($$props, 'selectionCallbackMultiple', 7, () => {}),
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -12493,6 +12444,10 @@
 			}
 		}
 
+		user_effect(() => {
+			console.log(...log_if_contains_state('log', displayedItems().map((item) => item.checked)));
+		});
+
 		var div = root$3();
 		var node = child(div);
 
@@ -12506,8 +12461,8 @@
 						get noOptionsMessage() {
 							return noOptionsMessage();
 						},
-						passValue: (l, v) => {
-							passValueMultiple()(l, v);
+						passValue: () => {
+							selectionCallbackMultiple()();
 						},
 						handleExit: (key) => handleExitMultiple()(key),
 						get focusOnOuterElement() {
@@ -12531,8 +12486,8 @@
 						get noOptionsMessage() {
 							return noOptionsMessage();
 						},
-						passValue: (l, v) => {
-							passValueSingle()(l, v);
+						selectionCallback: () => {
+							selectionCallbackSingle()();
 							closeDropdown()();
 						},
 						handleExit: (key) => handleExitSingle()(key),
@@ -12633,18 +12588,18 @@
 				noOptionsMessage($$value);
 				flushSync();
 			},
-			get passValueSingle() {
-				return passValueSingle();
+			get selectionCallbackSingle() {
+				return selectionCallbackSingle();
 			},
-			set passValueSingle($$value = () => {}) {
-				passValueSingle($$value);
+			set selectionCallbackSingle($$value = () => {}) {
+				selectionCallbackSingle($$value);
 				flushSync();
 			},
-			get passValueMultiple() {
-				return passValueMultiple();
+			get selectionCallbackMultiple() {
+				return selectionCallbackMultiple();
 			},
-			set passValueMultiple($$value = () => {}) {
-				passValueMultiple($$value);
+			set selectionCallbackMultiple($$value = () => {}) {
+				selectionCallbackMultiple($$value);
 				flushSync();
 			},
 			get handleExitSingle() {
@@ -12694,8 +12649,8 @@
 			multiple: {},
 			displayedItems: {},
 			noOptionsMessage: {},
-			passValueSingle: {},
-			passValueMultiple: {},
+			selectionCallbackSingle: {},
+			selectionCallbackMultiple: {},
 			handleExitSingle: {},
 			handleExitMultiple: {},
 			focusOnOuterElement: {},
@@ -12869,19 +12824,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[214, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[254, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[210, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[250, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			207,
+			203,
 			0,
 			[
-				[211, 4],
+				[207, 4],
 				[
-					217,
+					213,
 					4,
-					[[246, 8, [[294, 12]]]]
+					[[242, 8, [[284, 12]]]]
 				]
 			]
 		]
@@ -12919,7 +12874,7 @@
 			button = state(void 0),
 			searchInput = state(void 0),
 			dropdownItems = state(void 0),
-			selectedOptionsText = state(proxy(items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label).join(", ") : "")),
+			selectedOptionsText = user_derived(() => items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label).join(", ") : ""),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
@@ -12940,12 +12895,8 @@
 			});
 
 		user_effect(() => {
-			console.log(...log_if_contains_state('log', get(displayedItems), "displayedItems"));
-		});
-
-		user_effect(() => {
 			get(displayedItems).forEach((displayedItem) => {
-				items().find((item) => equals$1(displayedItem.value, item.value)).checked = displayedItem.checked;
+				items().find((item) => strict_equals(displayedItem.value, item.value)).checked = displayedItem.checked;
 			});
 		});
 
@@ -13214,14 +13165,9 @@
 				get noOptionsMessage() {
 					return noOptionsMessage();
 				},
-				passValueSingle: (l, v) => {
-					set(selectedOptionsText, l, true);
-					// value = v;
+				selectionCallbackSingle: () => {
 					set(expanded, false);
 					get(button)?.focus();
-				},
-				passValueMultiple: (l, v) => {
-					set(selectedOptionsText, l, true); // value = v;
 				},
 				handleExitSingle: (key) => closeDropdown(key),
 				handleExitMultiple: (key) => closeDropdown(key),

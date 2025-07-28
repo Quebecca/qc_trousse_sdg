@@ -5,7 +5,8 @@
     let {
         items,
         handleExit = () => {},
-        passValue = () => {},
+        selectionCallback = () => {
+        },
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
@@ -103,16 +104,7 @@
             selectedLabels = selectedLabels.filter(l => l !== label);
         }
 
-        if (selectedValues.length >= groupedSelectionDisplayThreshold) {
-            passValue(
-                lang === "fr" ?
-                    `${selectedValues.length} options sélectionnées`
-                    : `${selectedValues.length} selected options`
-                , selectedValues.join(", ")
-            );
-        } else {
-            passValue(selectedLabels.join(", "), selectedValues.join(", "));
-        }
+        selectionCallback();
     }
 </script>
 

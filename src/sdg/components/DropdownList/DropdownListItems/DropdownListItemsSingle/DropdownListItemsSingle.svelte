@@ -5,7 +5,7 @@
 
     let {
         items,
-        passValue = () => {},
+        selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
@@ -16,7 +16,8 @@
     let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
     let selectedElement = $derived.by(() => {
         if (selectedValue && listElements && listElements.length > 0) {
-            return listElements.find(element => element.value == selectedValue);
+            console.log(listElements);
+            return listElements.find(element => element.value.toString() === selectedValue.toString());
         }
         return null;
     });
@@ -31,21 +32,13 @@
         }
 
         if (previousElement && previousElement !== selectedElement) {
-            console.log(previousElement, "previousElement");
             previousElement.classList.remove(selectedElementCLass);
         }
 
         selectedElement.classList.add(selectedElementCLass);
         previousElement = selectedElement;
+        console.log(previousElement, "previousElement");
     });
-
-    $effect(() => {
-        console.log(items.map(item => item.checked));
-    })
-    $effect(() => {
-        console.log(selectedElement, "selectedElement");
-    })
-
 
     export function focusOnFirstElement() {
         if (listElements && listElements.length > 0) {
@@ -62,7 +55,7 @@
     export function focusOnFirstMatchingElement(value) {
         if (listElements && listElements.length > 0) {
             const foundElement = listElements.find(
-                element => element.value.toString().toLowerCase().includes(value.toLowerCase())
+                element => element.dataset.itemValue.toString().toLowerCase().includes(value.toLowerCase())
             );
             if (foundElement) {
                 foundElement.focus();
@@ -72,10 +65,12 @@
 
     function handleSelection(event, item) {
         event.preventDefault();
-        passValue(item.label, item.value);
+        selectionCallback();
 
         if (previousElement) {
-            items.find(item => item.value == previousElement.value).checked = false;
+            items.find(
+                item => item.value.toString() === previousElement.dataset.itemValue.toString()
+            ).checked = false;
         }
         item.checked = true;
     }
@@ -140,7 +135,7 @@
         {#each items as item, index}
             <li
                 id={Math.random().toString(36).substring(2, 15)}
-                value={item.value}
+                data-item-value={item.value}
                 class="qc-dropdown-list-single"
                 tabindex="0"
                 role="option"

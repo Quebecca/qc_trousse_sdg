@@ -14,7 +14,7 @@
         items,
         value = $bindable(),
         placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
-        noOptionsMessage = lang=== "fr" ? "Aucun élément" : "No item",
+        noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
         required = false,
         disabled = false,
@@ -37,7 +37,7 @@
         button = $state(),
         searchInput = $state(),
         dropdownItems = $state(),
-        selectedOptionsText = $state(
+        selectedOptionsText = $derived(
             items.length > 0 ?
                 items.filter((item) => item.checked).map((item) => item.label).join(", ")
                 : ""
@@ -64,16 +64,12 @@
     ;
 
     $effect(() => {
-        console.log(displayedItems, "displayedItems");
-    })
-
-    $effect(() => {
         displayedItems.forEach((displayedItem) => {
-            items.find(item => displayedItem.value == item.value).checked = displayedItem.checked;
+            items.find(item => displayedItem.value === item.value).checked = displayedItem.checked;
         });
     });
     $effect(() => {
-       value = items?.filter(item => item.checked).map(item => item.value).join(", ")
+        value = items?.filter(item => item.checked).map(item => item.value).join(", ");
     });
 
     function focusOnSelectedOption(value) {
@@ -272,15 +268,9 @@
                 {multiple}
                 {displayedItems}
                 {noOptionsMessage}
-                passValueSingle={(l, v) => {
-                    selectedOptionsText = l;
-                    // value = v;
+                selectionCallbackSingle={() => {
                     expanded = false;
                     button?.focus();
-                }}
-                passValueMultiple={(l, v) => {
-                    selectedOptionsText = l;
-                    // value = v;
                 }}
                 handleExitSingle={(key) => closeDropdown(key)}
                 handleExitMultiple={(key) => closeDropdown(key)}
