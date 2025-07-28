@@ -6,7 +6,9 @@
     disabled: { attribute: 'disabled', type: 'Boolean' },
     compact: { attribute: 'compact', type: 'Boolean' },
     rounded: { attribute: 'rounded', type: 'Boolean' },
-    label: { attribute: 'label', type: 'String' }
+    label: { attribute: 'label', type: 'String' },
+    icon: { attribute: 'icon', type: 'String' },
+    iconPosition: { attribute: 'icon-position', type: 'String' },
   }
 }} />
 

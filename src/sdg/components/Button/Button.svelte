@@ -1,10 +1,14 @@
 <script>
+    import Icon from "../../components/Icon/Icon.svelte";
+
     let {
         variant = "primary",
         disabled = false,
         compact = false,
         rounded = false,
         label = "",
+        icon = "",
+        iconPosition = "left",
         ...rest
     } = $props();
 
@@ -25,5 +29,13 @@
         disabled={disabled}
         {...rest}
 >
+    {#if icon && iconPosition === "left"}
+        <Icon type={icon} />
+    {/if}
+
     {label}
+
+    {#if icon && iconPosition === "right"}
+        <Icon type={icon} />
+    {/if}
 </button>

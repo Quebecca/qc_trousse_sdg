@@ -10483,7 +10483,7 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[23, 0]]);
+	var root = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[27, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
@@ -10494,6 +10494,8 @@
 			compact = prop($$props, 'compact', 7, false),
 			rounded = prop($$props, 'rounded', 7, false),
 			label = prop($$props, 'label', 7, ""),
+			icon = prop($$props, 'icon', 7, ""),
+			iconPosition = prop($$props, 'iconPosition', 7, "left"),
 			rest = rest_props(
 				$$props,
 				[
@@ -10505,7 +10507,9 @@
 					'disabled',
 					'compact',
 					'rounded',
-					'label'
+					'label',
+					'icon',
+					'iconPosition'
 				]);
 
 		let className = state(void 0);
@@ -10525,7 +10529,38 @@
 
 		var button = root();
 		let attributes;
-		var text = child(button, true);
+		var node = child(button);
+
+		{
+			var consequent = ($$anchor) => {
+				Icon($$anchor, {
+					get type() {
+						return icon();
+					}
+				});
+			};
+
+			if_block(node, ($$render) => {
+				if (icon() && strict_equals(iconPosition(), "left")) $$render(consequent);
+			});
+		}
+
+		var text = sibling(node);
+		var node_1 = sibling(text);
+
+		{
+			var consequent_1 = ($$anchor) => {
+				Icon($$anchor, {
+					get type() {
+						return icon();
+					}
+				});
+			};
+
+			if_block(node_1, ($$render) => {
+				if (icon() && strict_equals(iconPosition(), "right")) $$render(consequent_1);
+			});
+		}
 
 		reset(button);
 
@@ -10536,7 +10571,7 @@
 				...rest
 			});
 
-			set_text(text, label());
+			set_text(text, ` ${label() ?? ''} `);
 		});
 
 		append($$anchor, button);
@@ -10577,6 +10612,20 @@
 				label($$value);
 				flushSync();
 			},
+			get icon() {
+				return icon();
+			},
+			set icon($$value = "") {
+				icon($$value);
+				flushSync();
+			},
+			get iconPosition() {
+				return iconPosition();
+			},
+			set iconPosition($$value = "left") {
+				iconPosition($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10588,7 +10637,9 @@
 			disabled: {},
 			compact: {},
 			rounded: {},
-			label: {}
+			label: {},
+			icon: {},
+			iconPosition: {}
 		},
 		[],
 		[],
@@ -10688,7 +10739,9 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
 			rounded: { attribute: 'rounded', type: 'Boolean' },
-			label: { attribute: 'label', type: 'String' }
+			label: { attribute: 'label', type: 'String' },
+			icon: { attribute: 'icon', type: 'String' },
+			iconPosition: { attribute: 'icon-position', type: 'String' }
 		},
 		[],
 		[],
