@@ -1,7 +1,6 @@
 <script>
     let {
         variant = "primary",
-        type = "button",
         disabled = false,
         compact = false,
         rounded = false,
@@ -22,7 +21,6 @@
 </script>
 
 <button
-        type={type}
         class={className}
         disabled={disabled}
         {...rest}

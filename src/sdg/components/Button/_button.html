@@ -46,49 +46,49 @@
 
 </qc-doc-exemple>
 
-<h3>Classes CSS</h3>
+<h3>Documentation technique</h3>
 
+<h4>Attributs de qc-button</h4>
 <div class="table-overflow">
-
-    <table class="qc-table qc-striped">
+    <table class="qc-table qc-striped component-attributes-description">
         <thead>
         <tr>
-            <th>Classe</th>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
             <th>Description</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td><code>.qc-button</code></td>
-            <td>Classe de base pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
+            <td>variant</td>
+            <td>Texte</td>
+            <td>"primary"</td>
+            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
         </tr>
         <tr>
-            <td><code>.qc-compact</code></td>
-            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
+            <td>label</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte affiché dans le bouton.</td>
         </tr>
         <tr>
-            <td><code>.qc-button-rounded</code></td>
-            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
+            <td>compact</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Affiche le bouton dans un format plus petit.</td>
         </tr>
         <tr>
-            <td><code>.qc-primary</code></td>
-            <td>Bouton principal avec fond bleu et texte blanc. Comporte des effets au survol, focus et clic.</td>
+            <td>rounded</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
         </tr>
         <tr>
-            <td><code>.qc-secondary</code></td>
-            <td>Bouton secondaire avec fond blanc et texte bleu. Comporte des effets subtils au survol, focus et clic.</td>
-        </tr>
-        <tr>
-            <td><code>.qc-tertiary</code></td>
-            <td>Bouton tertiaire avec fond blanc et texte bleu. Moins accentué visuellement, avec effet de soulignement au survol.</td>
-        </tr>
-        <tr>
-            <td><code>.qc-danger</code></td>
-            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
-        </tr>
-        <tr>
-            <td><code>.disabled</code></td>
-            <td>État désactivé du bouton. Change l’apparence et désactive les interactions.</td>
+            <td>disabled</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Désactive le bouton et empêche toute interaction.</td>
         </tr>
         </tbody>
     </table>

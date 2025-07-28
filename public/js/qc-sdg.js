@@ -10483,14 +10483,13 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[24, 0]]);
+	var root = add_locations(template(`<button> </button>`), Button[FILENAME], [[23, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let variant = prop($$props, 'variant', 7, "primary"),
-			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
 			compact = prop($$props, 'compact', 7, false),
 			rounded = prop($$props, 'rounded', 7, false),
@@ -10503,7 +10502,6 @@
 					'$$legacy',
 					'$$host',
 					'variant',
-					'type',
 					'disabled',
 					'compact',
 					'rounded',
@@ -10533,7 +10531,6 @@
 
 		template_effect(() => {
 			attributes = set_attributes(button, attributes, {
-				type: type(),
 				class: get(className),
 				disabled: disabled(),
 				...rest
@@ -10550,13 +10547,6 @@
 			},
 			set variant($$value = "primary") {
 				variant($$value);
-				flushSync();
-			},
-			get type() {
-				return type();
-			},
-			set type($$value = "button") {
-				type($$value);
 				flushSync();
 			},
 			get disabled() {
@@ -10595,7 +10585,6 @@
 		Button,
 		{
 			variant: {},
-			type: {},
 			disabled: {},
 			compact: {},
 			rounded: {},
@@ -10613,7 +10602,6 @@
 		push($$props, true);
 
 		let variant = prop($$props, 'variant', 7, "primary"),
-			type = prop($$props, 'type', 7, "button"),
 			disabled = prop($$props, 'disabled', 7, false),
 			compact = prop($$props, 'compact', 7, false),
 			rounded = prop($$props, 'rounded', 7, false),
@@ -10626,7 +10614,6 @@
 					'$$legacy',
 					'$$host',
 					'variant',
-					'type',
 					'disabled',
 					'compact',
 					'rounded',
@@ -10637,9 +10624,6 @@
 			{
 				get variant() {
 					return variant();
-				},
-				get type() {
-					return type();
 				},
 				get disabled() {
 					return disabled();
@@ -10663,13 +10647,6 @@
 			},
 			set variant($$value = "primary") {
 				variant($$value);
-				flushSync();
-			},
-			get type() {
-				return type();
-			},
-			set type($$value = "button") {
-				type($$value);
 				flushSync();
 			},
 			get disabled() {
@@ -10708,7 +10685,6 @@
 		ButtonWC,
 		{
 			variant: { attribute: 'variant', type: 'String' },
-			type: { attribute: 'type', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			compact: { attribute: 'compact', type: 'Boolean' },
 			rounded: { attribute: 'rounded', type: 'Boolean' },

@@ -3,7 +3,6 @@
   shadow: 'none',
   props: {
     variant: { attribute: 'variant', type: 'String' },
-    type: { attribute: 'type', type: 'String' },
     disabled: { attribute: 'disabled', type: 'Boolean' },
     compact: { attribute: 'compact', type: 'Boolean' },
     rounded: { attribute: 'rounded', type: 'Boolean' },
@@ -16,7 +15,6 @@
 
     let {
         variant = "primary",
-        type = "button",
         disabled = false,
         compact = false,
         rounded = false,
@@ -27,7 +25,6 @@
 
 <Button
         {variant}
-        {type}
         {disabled}
         {compact}
         {rounded}
