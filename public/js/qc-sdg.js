@@ -148,7 +148,6 @@
 	const EFFECT_TRANSPARENT = 1 << 16;
 	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
 	const LEGACY_DERIVED_PROP = 1 << 17;
-	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -288,16 +287,6 @@
 	function binding_property_non_reactive(binding, location) {
 		{
 			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
-		}
-	}
-
-	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
 		}
 	}
 
@@ -456,108 +445,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -888,6 +775,20 @@
 		} catch {}
 
 		return (a === b) === equal;
+	}
+
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 * @param {boolean} equal
+	 * @returns {boolean}
+	 */
+	function equals$1(a, b, equal = true) {
+		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
+			state_proxy_equality_mismatch();
+		}
+
+		return (a == b) === equal;
 	}
 
 	/** @import { TemplateNode } from '#client' */
@@ -1372,11 +1273,6 @@
 			var signal = effect(fn);
 			return signal;
 		}
-	}
-
-	/** @param {() => void | (() => void)} fn */
-	function inspect_effect(fn) {
-		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3894,39 +3790,6 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} [inspector]
-	 */
-	// eslint-disable-next-line no-console
-	function inspect(get_value, inspector = console.log) {
-		validate_effect();
-
-		let initial = true;
-
-		inspect_effect(() => {
-			/** @type {any} */
-			var value = UNINITIALIZED;
-
-			// Capturing the value might result in an exception due to the inspect effect being
-			// sync and thus operating on stale data. In the case we encounter an exception we
-			// can bail-out of reporting the value. Instead we simply console.error the error
-			// so at least it's known that an error occured, but we don't stop execution
-			try {
-				value = get_value();
-			} catch (error) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-			}
-
-			if (value !== UNINITIALIZED) {
-				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
-			}
-
-			initial = false;
-		});
 	}
 
 	/**
@@ -6944,37 +6807,6 @@
 		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
-	}
-
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
 	}
 
 	class Utils {
@@ -11975,8 +11807,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[124, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[122, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[122, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[120, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11990,19 +11822,24 @@
 
 		let self = state(void 0);
 		let listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("li")) : []);
+		let selectedValue = state(proxy(items() && items().length > 0 ? items().find((item) => item.checked)?.value : null));
 		let predecessor = state(void 0);
-		let selectedValue = state(proxy(items() && items().length > 0 ? items().find((item) => item.checked) : null));
 		let mouseDownElement = null;
 		let hoveredElement = null;
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
-		inspect(() => [items()]);
-
 		user_effect(() => {
-			console.log(...log_if_contains_state('log', items().find((item) => item.checked)));
-
 			if (get(selectedValue)) {
-				get(listElements)?.find((element) => strict_equals(element.value, get(selectedValue)))?.classList.add(selectedElementCLass);
+				if (get(predecessor)) {
+					get(predecessor).classList.remove(selectedElementCLass);
+				}
+
+				const matchingElement = get(listElements)?.find((element) => equals$1(element.value, get(selectedValue)));
+
+				if (matchingElement) {
+					matchingElement.classList.add(selectedElementCLass);
+					set(predecessor, matchingElement, true);
+				}
 			}
 		});
 
@@ -12030,12 +11867,6 @@
 
 		function handleSelection(event, label, value) {
 			event.preventDefault();
-
-			if (get(predecessor)) {
-				get(predecessor).classList.toggle(selectedElementCLass);
-			}
-
-			set(predecessor, event.target, true);
 			set(selectedValue, value, true);
 			passValue()(label, value);
 		}

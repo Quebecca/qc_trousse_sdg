@@ -11,20 +11,24 @@
 
     let self = $state();
     let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
+    let selectedValue = $state(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
     let predecessor = $state();
-    let selectedValue = $state(items && items.length > 0 ? items.find((item) => item.checked) : null);
     let mouseDownElement = null;
     let hoveredElement = null;
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
 
-    $inspect(items);
-
     $effect(() => {
-        console.log(items.find((item) => item.checked))
         if (selectedValue) {
-            listElements?.find(element => element.value === selectedValue)
-                ?.classList.add(selectedElementCLass);
+            if (predecessor) {
+                predecessor.classList.remove(selectedElementCLass);
+            }
+
+            const matchingElement = listElements?.find(element => element.value == selectedValue);
+            if (matchingElement) {
+                matchingElement.classList.add(selectedElementCLass);
+                predecessor = matchingElement;
+            }
         }
     });
 
@@ -53,13 +57,7 @@
 
     function handleSelection(event, label, value) {
         event.preventDefault();
-        if (predecessor) {
-            predecessor.classList.toggle(selectedElementCLass);
-        }
-
-        predecessor = event.target;
         selectedValue = value;
-
         passValue(label, value);
     }
 
