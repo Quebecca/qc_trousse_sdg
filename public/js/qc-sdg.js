@@ -291,6 +291,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -445,6 +455,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6809,6 +6921,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -11806,13 +11949,15 @@
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
-	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item).label, get(item).value);
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[122, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[120, 4]]);
+	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[141, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[139, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
+
+		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		let items = prop($$props, 'items', 7),
 			passValue = prop($$props, 'passValue', 7, () => {}),
@@ -11822,25 +11967,40 @@
 
 		let self = state(void 0);
 		let listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("li")) : []);
-		let selectedValue = state(proxy(items() && items().length > 0 ? items().find((item) => item.checked)?.value : null));
-		let predecessor = state(void 0);
+		let selectedValue = user_derived(() => items() && items().length > 0 ? items().find((item) => item.checked)?.value : null);
+
+		let selectedElement = user_derived(() => {
+			if (get(selectedValue) && get(listElements) && get(listElements).length > 0) {
+				return get(listElements).find((element) => equals$1(element.value, get(selectedValue)));
+			}
+
+			return null;
+		});
+
+		let previousElement = state(void 0);
 		let mouseDownElement = null;
 		let hoveredElement = null;
-		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		user_effect(() => {
-			if (get(selectedValue)) {
-				if (get(predecessor)) {
-					get(predecessor).classList.remove(selectedElementCLass);
-				}
-
-				const matchingElement = get(listElements)?.find((element) => equals$1(element.value, get(selectedValue)));
-
-				if (matchingElement) {
-					matchingElement.classList.add(selectedElementCLass);
-					set(predecessor, matchingElement, true);
-				}
+			if (!get(selectedElement)) {
+				return;
 			}
+
+			if (get(previousElement) && strict_equals(get(previousElement), get(selectedElement), false)) {
+				console.log(...log_if_contains_state('log', get(previousElement), "previousElement"));
+				get(previousElement).classList.remove(selectedElementCLass);
+			}
+
+			get(selectedElement).classList.add(selectedElementCLass);
+			set(previousElement, get(selectedElement), true);
+		});
+
+		user_effect(() => {
+			console.log(...log_if_contains_state('log', items().map((item) => item.checked)));
+		});
+
+		user_effect(() => {
+			console.log(...log_if_contains_state('log', get(selectedElement), "selectedElement"));
 		});
 
 		function focusOnFirstElement() {
@@ -11865,15 +12025,20 @@
 			}
 		}
 
-		function handleSelection(event, label, value) {
+		function handleSelection(event, item) {
 			event.preventDefault();
-			set(selectedValue, value, true);
-			passValue()(label, value);
+			passValue()(item.label, item.value);
+
+			if (get(previousElement)) {
+				items().find((item) => equals$1(item.value, get(previousElement).value)).checked = false;
+			}
+
+			item.checked = true;
 		}
 
-		function handleMouseUp(event, label, value) {
+		function handleMouseUp(event, item) {
 			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
-				handleSelection(event, label, value);
+				handleSelection(event, item);
 			}
 		}
 
@@ -11881,7 +12046,7 @@
 			mouseDownElement = event.target;
 		}
 
-		function handleComboKey(event, label, value, index) {
+		function handleComboKey(event, index, item) {
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -11903,7 +12068,7 @@
 			}
 
 			if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
-				handleSelection(event, label, value);
+				handleSelection(event, item);
 			}
 
 			Utils.sleep(5).then(() => {
@@ -11913,11 +12078,11 @@
 			}).catch(console.error);
 		}
 
-		function handleKeyDown(event, label, value, index) {
+		function handleKeyDown(event, index, item) {
 			if (event.key.match(/^\w$/i)) {
 				handlePrintableCharacter()(event);
 			} else {
-				handleComboKey(event, label, value, index);
+				handleComboKey(event, index, item);
 			}
 		}
 
@@ -11938,7 +12103,7 @@
 					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
 					li.__mousedown = [on_mousedown, handleMouseDown];
 					li.__mouseup = [on_mouseup, handleMouseUp, item];
-					li.__keydown = (event) => handleKeyDown(event, get(item).label, get(item).value, index);
+					li.__keydown = (event) => handleKeyDown(event, index, get(item));
 
 					var node_1 = child(li);
 
@@ -12038,9 +12203,9 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[108, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[106, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[104, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[123, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[121, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[119, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12052,10 +12217,12 @@
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
+		const lang = Utils.getPageLanguage();
 		const name = Math.random().toString(36).substring(2, 15);
+		const groupedSelectionDisplayThreshold = 3;
 
-		let selectedValues = [],
-			selectedLabels = [],
+		let selectedValues = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.value) : [])),
+			selectedLabels = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label) : [])),
 			self = state(void 0),
 			listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("input[type='checkbox']")) : []);
 
@@ -12123,19 +12290,19 @@
 
 		function handleChange(event, label, itemValue) {
 			if (event.target.checked) {
-				if (!selectedValues.includes(itemValue)) {
-					selectedValues = [...selectedValues, itemValue];
-					selectedLabels = [...selectedLabels, label];
+				if (!get(selectedValues).includes(itemValue)) {
+					set(selectedValues, [...get(selectedValues), itemValue], true);
+					set(selectedLabels, [...get(selectedLabels), label], true);
 				}
 			} else {
-				selectedValues = selectedValues.filter((v) => strict_equals(v, itemValue, false));
-				selectedLabels = selectedLabels.filter((l) => strict_equals(l, label, false));
+				set(selectedValues, get(selectedValues).filter((v) => strict_equals(v, itemValue, false)), true);
+				set(selectedLabels, get(selectedLabels).filter((l) => strict_equals(l, label, false)), true);
 			}
 
-			if (selectedValues.length > 2) {
-				passValue()(`${selectedValues.length} options sélectionnées`, selectedValues.join(", "));
+			if (get(selectedValues).length >= groupedSelectionDisplayThreshold) {
+				passValue()(strict_equals(lang, "fr") ? `${get(selectedValues).length} options sélectionnées` : `${get(selectedValues).length} selected options`, get(selectedValues).join(", "));
 			} else {
-				passValue()(selectedLabels.join(", "), selectedValues.join(", "));
+				passValue()(get(selectedLabels).join(", "), get(selectedValues).join(", "));
 			}
 		}
 
@@ -12702,19 +12869,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[201, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[241, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[214, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[254, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			194,
+			207,
 			0,
 			[
-				[198, 4],
+				[211, 4],
 				[
-					204,
+					217,
 					4,
-					[[233, 8, [[281, 12]]]]
+					[[246, 8, [[294, 12]]]]
 				]
 			]
 		]
@@ -12727,10 +12894,10 @@
 		const lang = Utils.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
-			value = prop($$props, 'value', 15),
 			legend = prop($$props, 'legend', 7, ""),
 			width = prop($$props, 'width', 7, "lg"),
 			items = prop($$props, 'items', 7),
+			value = prop($$props, 'value', 15),
 			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
@@ -12764,13 +12931,27 @@
 
 				return `qc-dropdown-list-lg`;
 			}),
-			itemsCountText = user_derived(() => {
+			srItemsCountText = user_derived(() => {
 				if (get(displayedItems).length > 0 && get(expanded)) {
 					return strict_equals(lang, "fr") ? `${get(displayedItems).length} résultats disponibles. Utilisez les flèches directionnelles pour vous déplacer dans la liste.` : `${get(displayedItems).length} results available. Use arrow keys to navigate through the list.`;
 				}
 
 				return "";
 			});
+
+		user_effect(() => {
+			console.log(...log_if_contains_state('log', get(displayedItems), "displayedItems"));
+		});
+
+		user_effect(() => {
+			get(displayedItems).forEach((displayedItem) => {
+				items().find((item) => equals$1(displayedItem.value, item.value)).checked = displayedItem.checked;
+			});
+		});
+
+		user_effect(() => {
+			value(items()?.filter((item) => item.checked).map((item) => item.value).join(", "));
+		});
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -13035,13 +13216,12 @@
 				},
 				passValueSingle: (l, v) => {
 					set(selectedOptionsText, l, true);
-					value(v);
+					// value = v;
 					set(expanded, false);
 					get(button)?.focus();
 				},
 				passValueMultiple: (l, v) => {
-					set(selectedOptionsText, l, true);
-					value(v);
+					set(selectedOptionsText, l, true); // value = v;
 				},
 				handleExitSingle: (key) => closeDropdown(key),
 				handleExitMultiple: (key) => closeDropdown(key),
@@ -13088,7 +13268,7 @@
 			]));
 
 			div_2.hidden = !get(expanded);
-			set_attribute(div_4, 'aria-label', get(itemsCountText));
+			set_attribute(div_4, 'aria-label', get(srItemsCountText));
 		});
 
 		append($$anchor, div);
@@ -13101,13 +13281,6 @@
 				$$value = Math.random().toString(36).substring(2, 15)
 			) {
 				id($$value);
-				flushSync();
-			},
-			get value() {
-				return value();
-			},
-			set value($$value) {
-				value($$value);
 				flushSync();
 			},
 			get legend() {
@@ -13129,6 +13302,13 @@
 			},
 			set items($$value) {
 				items($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
 				flushSync();
 			},
 			get placeholder() {
@@ -13206,10 +13386,10 @@
 		DropdownList,
 		{
 			id: {},
-			value: {},
 			legend: {},
 			width: {},
 			items: {},
+			value: {},
 			placeholder: {},
 			noOptionsMessage: {},
 			enableSearch: {},

@@ -9,10 +9,10 @@
 
     let {
         id = Math.random().toString(36).substring(2, 15),
-        value = $bindable(),
         legend = "",
         width = "lg",
         items,
+        value = $bindable(),
         placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
         noOptionsMessage = lang=== "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
@@ -52,7 +52,7 @@
             }
             return `qc-dropdown-list-lg`;
         }),
-        itemsCountText = $derived.by(() => {
+        srItemsCountText = $derived.by(() => {
             if (displayedItems.length > 0 && expanded) {
                 return  lang === "fr" ?
                     `${displayedItems.length} résultats disponibles. Utilisez les flèches directionnelles pour vous déplacer dans la liste.`
@@ -62,6 +62,19 @@
             return "";
         })
     ;
+
+    $effect(() => {
+        console.log(displayedItems, "displayedItems");
+    })
+
+    $effect(() => {
+        displayedItems.forEach((displayedItem) => {
+            items.find(item => displayedItem.value == item.value).checked = displayedItem.checked;
+        });
+    });
+    $effect(() => {
+       value = items?.filter(item => item.checked).map(item => item.value).join(", ")
+    });
 
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
@@ -261,13 +274,13 @@
                 {noOptionsMessage}
                 passValueSingle={(l, v) => {
                     selectedOptionsText = l;
-                    value = v;
+                    // value = v;
                     expanded = false;
                     button?.focus();
                 }}
                 passValueMultiple={(l, v) => {
                     selectedOptionsText = l;
-                    value = v;
+                    // value = v;
                 }}
                 handleExitSingle={(key) => closeDropdown(key)}
                 handleExitMultiple={(key) => closeDropdown(key)}
@@ -278,7 +291,7 @@
             />
 
             <!-- Pour les lecteurs d'écran: affiche le nombre de résultats -->
-            <div aria-label={itemsCountText} role="status" aria-live="polite" aria-atomic="true"></div>
+            <div aria-label={srItemsCountText} role="status" aria-live="polite" aria-atomic="true"></div>
         </div>
     </div>
 

@@ -1,6 +1,8 @@
 <script>
     import {Utils} from "../../../utils";
 
+    const selectedElementCLass = "qc-dropdown-list-single-selected";
+
     let {
         items,
         passValue = () => {},
@@ -11,26 +13,39 @@
 
     let self = $state();
     let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
-    let selectedValue = $state(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
-    let predecessor = $state();
+    let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
+    let selectedElement = $derived.by(() => {
+        if (selectedValue && listElements && listElements.length > 0) {
+            return listElements.find(element => element.value == selectedValue);
+        }
+        return null;
+    });
+    let previousElement = $state();
+
     let mouseDownElement = null;
     let hoveredElement = null;
 
-    const selectedElementCLass = "qc-dropdown-list-single-selected";
+    $effect(() => {
+        if (!selectedElement) {
+            return;
+        }
+
+        if (previousElement && previousElement !== selectedElement) {
+            console.log(previousElement, "previousElement");
+            previousElement.classList.remove(selectedElementCLass);
+        }
+
+        selectedElement.classList.add(selectedElementCLass);
+        previousElement = selectedElement;
+    });
 
     $effect(() => {
-        if (selectedValue) {
-            if (predecessor) {
-                predecessor.classList.remove(selectedElementCLass);
-            }
+        console.log(items.map(item => item.checked));
+    })
+    $effect(() => {
+        console.log(selectedElement, "selectedElement");
+    })
 
-            const matchingElement = listElements?.find(element => element.value == selectedValue);
-            if (matchingElement) {
-                matchingElement.classList.add(selectedElementCLass);
-                predecessor = matchingElement;
-            }
-        }
-    });
 
     export function focusOnFirstElement() {
         if (listElements && listElements.length > 0) {
@@ -47,7 +62,7 @@
     export function focusOnFirstMatchingElement(value) {
         if (listElements && listElements.length > 0) {
             const foundElement = listElements.find(
-                    element => element.value.toString().toLowerCase().includes(value.toLowerCase())
+                element => element.value.toString().toLowerCase().includes(value.toLowerCase())
             );
             if (foundElement) {
                 foundElement.focus();
@@ -55,15 +70,19 @@
         }
     }
 
-    function handleSelection(event, label, value) {
+    function handleSelection(event, item) {
         event.preventDefault();
-        selectedValue = value;
-        passValue(label, value);
+        passValue(item.label, item.value);
+
+        if (previousElement) {
+            items.find(item => item.value == previousElement.value).checked = false;
+        }
+        item.checked = true;
     }
 
-    function handleMouseUp(event, label, value) {
+    function handleMouseUp(event, item) {
         if (event.target === hoveredElement && event.target === mouseDownElement) {
-            handleSelection(event, label, value);
+            handleSelection(event, item);
         }
     }
 
@@ -71,7 +90,7 @@
         mouseDownElement = event.target;
     }
 
-    function handleComboKey(event, label, value, index) {
+    function handleComboKey(event, index, item) {
         if (event.key === "ArrowDown") {
             event.preventDefault();
             event.stopPropagation();
@@ -93,7 +112,7 @@
         }
 
         if (event.key === "Enter" || event.key === " ") {
-            handleSelection(event, label, value);
+            handleSelection(event, item);
         }
 
         Utils.sleep(5).then(() => {
@@ -103,11 +122,11 @@
         }).catch(console.error);
     }
 
-    function handleKeyDown (event, label, value, index) {
+    function handleKeyDown (event, index, item) {
         if (event.key.match(/^\w$/i)) {
             handlePrintableCharacter(event);
         } else {
-            handleComboKey(event, label, value, index);
+            handleComboKey(event, index, item);
         }
     }
 
@@ -120,17 +139,17 @@
     <ul bind:this={self}>
         {#each items as item, index}
             <li
-                    id={Math.random().toString(36).substring(2, 15)}
-                    value={item.value}
-                    class="qc-dropdown-list-single"
-                    tabindex="0"
-                    role="option"
-                    aria-selected={selectedValue === item.value ? "true" : "false"}
-                    onmousedown={(event) => handleMouseDown(event)}
-                    onmouseup={(event) => handleMouseUp(event, item.label, item.value)}
-                    onmouseenter={(event) => hoveredElement = event.target}
-                    onmouseleave={() => hoveredElement = null}
-                    onkeydown={(event) => handleKeyDown(event, item.label, item.value, index)}
+                id={Math.random().toString(36).substring(2, 15)}
+                value={item.value}
+                class="qc-dropdown-list-single"
+                tabindex="0"
+                role="option"
+                aria-selected={selectedValue === item.value ? "true" : "false"}
+                onmousedown={(event) => handleMouseDown(event)}
+                onmouseup={(event) => handleMouseUp(event, item)}
+                onmouseenter={(event) => hoveredElement = event.target}
+                onmouseleave={() => hoveredElement = null}
+                onkeydown={(event) => handleKeyDown(event, index, item)}
             >
                 {@html item.label}
             </li>

@@ -10,11 +10,21 @@
         handlePrintableCharacter = () => {}
     } = $props();
 
+    const lang = Utils.getPageLanguage();
     const name = Math.random().toString(36).substring(2, 15);
+    const groupedSelectionDisplayThreshold = 3;
 
     let
-        selectedValues = [],
-        selectedLabels = [],
+        selectedValues = $state(
+            items && items.length > 0 ?
+                items.filter(item => item.checked).map(item => item.value)
+                : []
+        ),
+        selectedLabels = $state(
+            items && items.length > 0 ?
+                items.filter(item => item.checked).map(item => item.label)
+                : []
+        ),
         self = $state(),
         listElements = $derived(self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : [])
     ;
@@ -93,8 +103,13 @@
             selectedLabels = selectedLabels.filter(l => l !== label);
         }
 
-        if (selectedValues.length > 2) {
-            passValue(`${selectedValues.length} options sélectionnées`, selectedValues.join(", "));
+        if (selectedValues.length >= groupedSelectionDisplayThreshold) {
+            passValue(
+                lang === "fr" ?
+                    `${selectedValues.length} options sélectionnées`
+                    : `${selectedValues.length} selected options`
+                , selectedValues.join(", ")
+            );
         } else {
             passValue(selectedLabels.join(", "), selectedValues.join(", "));
         }
