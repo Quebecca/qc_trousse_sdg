@@ -9,6 +9,7 @@
     label: { attribute: 'label', type: 'String' },
     icon: { attribute: 'icon', type: 'String' },
     iconPosition: { attribute: 'icon-position', type: 'String' },
+    iconSrc: { attribute: 'icon-src', type: 'String' }
   }
 }} />
 

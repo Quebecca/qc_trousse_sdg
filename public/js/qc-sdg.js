@@ -7076,7 +7076,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_1$4 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[64, 6, [[65, 8]]]]);
-	var root_2$3 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[82, 16, [[83, 20]]]]);
+	var root_2$4 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[82, 16, [[83, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7090,7 +7090,7 @@
 	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[94, 10, [[105, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[120, 32, [[120, 36]]]]);
-	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[114, 20, [[115, 24]]]]);
+	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[114, 20, [[115, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[132, 10]]);
 
 	var root$a = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
@@ -7206,7 +7206,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$3();
+				var div_5 = root_2$4();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -7273,7 +7273,7 @@
 
 				{
 					var consequent_6 = ($$anchor) => {
-						var nav = root_6();
+						var nav = root_6$1();
 						var ul = child(nav);
 						var node_6 = child(ul);
 
@@ -7711,7 +7711,7 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$3 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$9 = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
@@ -7775,7 +7775,7 @@
 
 				src();
 
-				var img = root_2$2();
+				var img = root_2$3();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -8950,7 +8950,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$1 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_2$2 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[18, 8]]);
 	var root_1$2 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[7, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8969,7 +8969,7 @@
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor) => {
-					var fragment_1 = root_2$1();
+					var fragment_1 = root_2$2();
 					var node_2 = first_child(fragment_1);
 
 					Icon(node_2, {
@@ -9506,7 +9506,7 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
+	var root_2$1 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
 	var root_1 = add_locations(template(`<div><input> <label><!> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[34, 4, [[38, 8], [50, 8]]]]);
 	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[65, 0]]);
 
@@ -9537,7 +9537,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root_2();
+					var span = root_2$1();
 
 					append($$anchor, span);
 				};
@@ -10483,7 +10483,9 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[27, 0]]);
+	var root_2 = add_locations(template(`<img class="qc-icon" alt="">`), Button[FILENAME], [[35, 12]]);
+	var root_6 = add_locations(template(`<img class="qc-icon" alt="">`), Button[FILENAME], [[45, 12]]);
+	var root = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[28, 0]]);
 
 	function Button($$anchor, $$props) {
 		check_target(new.target);
@@ -10496,6 +10498,7 @@
 			label = prop($$props, 'label', 7, ""),
 			icon = prop($$props, 'icon', 7, ""),
 			iconPosition = prop($$props, 'iconPosition', 7, "left"),
+			iconSrc = prop($$props, 'iconSrc', 7, ""),
 			rest = rest_props(
 				$$props,
 				[
@@ -10509,7 +10512,8 @@
 					'rounded',
 					'label',
 					'icon',
-					'iconPosition'
+					'iconPosition',
+					'iconSrc'
 				]);
 
 		let className = state(void 0);
@@ -10532,33 +10536,97 @@
 		var node = child(button);
 
 		{
-			var consequent = ($$anchor) => {
-				Icon($$anchor, {
-					get type() {
-						return icon();
-					}
-				});
+			var consequent_2 = ($$anchor) => {
+				var fragment = comment();
+				var node_1 = first_child(fragment);
+
+				{
+					var consequent = ($$anchor) => {
+						var img = root_2();
+
+						template_effect(() => set_attribute(img, 'src', iconSrc()));
+						append($$anchor, img);
+					};
+
+					var alternate = ($$anchor, $$elseif) => {
+						{
+							var consequent_1 = ($$anchor) => {
+								Icon($$anchor, {
+									get type() {
+										return icon();
+									}
+								});
+							};
+
+							if_block(
+								$$anchor,
+								($$render) => {
+									if (icon()) $$render(consequent_1);
+								},
+								$$elseif
+							);
+						}
+					};
+
+					if_block(node_1, ($$render) => {
+						if (iconSrc()) $$render(consequent); else $$render(alternate, false);
+					});
+				}
+
+				append($$anchor, fragment);
 			};
 
 			if_block(node, ($$render) => {
-				if (icon() && strict_equals(iconPosition(), "left")) $$render(consequent);
+				if (strict_equals(iconPosition(), "left")) $$render(consequent_2);
 			});
 		}
 
 		var text = sibling(node);
-		var node_1 = sibling(text);
+		var node_2 = sibling(text);
 
 		{
-			var consequent_1 = ($$anchor) => {
-				Icon($$anchor, {
-					get type() {
-						return icon();
-					}
-				});
+			var consequent_5 = ($$anchor) => {
+				var fragment_2 = comment();
+				var node_3 = first_child(fragment_2);
+
+				{
+					var consequent_3 = ($$anchor) => {
+						var img_1 = root_6();
+
+						template_effect(() => set_attribute(img_1, 'src', iconSrc()));
+						append($$anchor, img_1);
+					};
+
+					var alternate_1 = ($$anchor, $$elseif) => {
+						{
+							var consequent_4 = ($$anchor) => {
+								Icon($$anchor, {
+									get type() {
+										return icon();
+									}
+								});
+							};
+
+							if_block(
+								$$anchor,
+								($$render) => {
+									if (icon()) $$render(consequent_4);
+								},
+								$$elseif
+							);
+						}
+					};
+
+					if_block(node_3, ($$render) => {
+						if (iconSrc()) $$render(consequent_3); else $$render(alternate_1, false);
+					});
+				}
+
+				append($$anchor, fragment_2);
 			};
 
-			if_block(node_1, ($$render) => {
-				if (icon() && strict_equals(iconPosition(), "right")) $$render(consequent_1);
+			if_block(node_2, ($$render) => {
+				if (icon() && strict_equals(iconPosition(), "right")) $$render(consequent_5);
 			});
 		}
 
@@ -10626,6 +10694,13 @@
 				iconPosition($$value);
 				flushSync();
 			},
+			get iconSrc() {
+				return iconSrc();
+			},
+			set iconSrc($$value = "") {
+				iconSrc($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10639,7 +10714,8 @@
 			rounded: {},
 			label: {},
 			icon: {},
-			iconPosition: {}
+			iconPosition: {},
+			iconSrc: {}
 		},
 		[],
 		[],
@@ -10741,7 +10817,8 @@
 			rounded: { attribute: 'rounded', type: 'Boolean' },
 			label: { attribute: 'label', type: 'String' },
 			icon: { attribute: 'icon', type: 'String' },
-			iconPosition: { attribute: 'icon-position', type: 'String' }
+			iconPosition: { attribute: 'icon-position', type: 'String' },
+			iconSrc: { attribute: 'icon-src', type: 'String' }
 		},
 		[],
 		[],

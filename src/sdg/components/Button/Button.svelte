@@ -9,6 +9,7 @@
         label = "",
         icon = "",
         iconPosition = "left",
+        iconSrc = "",
         ...rest
     } = $props();
 
@@ -29,13 +30,21 @@
         disabled={disabled}
         {...rest}
 >
-    {#if icon && iconPosition === "left"}
-        <Icon type={icon} />
+    {#if iconPosition === "left"}
+        {#if iconSrc}
+            <img class="qc-icon" src={iconSrc} alt="" />
+        {:else if icon}
+            <Icon type={icon} />
+        {/if}
     {/if}
 
     {label}
 
     {#if icon && iconPosition === "right"}
-        <Icon type={icon} />
+        {#if iconSrc}
+            <img class="qc-icon" src={iconSrc} alt="" />
+        {:else if icon}
+            <Icon type={icon} />
+        {/if}
     {/if}
 </button>
