@@ -12808,7 +12808,7 @@
 		const lang = Utils.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
-			legend = prop($$props, 'legend', 7, ""),
+			label = prop($$props, 'label', 7, ""),
 			width = prop($$props, 'width', 7, "lg"),
 			items = prop($$props, 'items', 7),
 			value = prop($$props, 'value', 15),
@@ -12827,7 +12827,7 @@
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
 			availableWidths = ["sm", "md", "lg", "xl", "xxl"],
-			defaultInvalidText = `Le champ ${legend()} est obligatoire.`;
+			defaultInvalidText = `Le champ ${label()} est obligatoire.`;
 
 		let instance = state(void 0),
 			button = state(void 0),
@@ -12995,13 +12995,13 @@
 
 		event('click', $document, handleOuterEvent);
 
-		var label = child(div);
+		var label_1 = child(div);
 
-		set_attribute(label, 'for', inputId);
-		set_attribute(label, 'id', labelId);
-		label.__click = [on_click, button];
+		set_attribute(label_1, 'for', inputId);
+		set_attribute(label_1, 'id', labelId);
+		label_1.__click = [on_click, button];
 
-		var text = child(label);
+		var text = child(label_1);
 		var node = sibling(text);
 
 		{
@@ -13016,9 +13016,9 @@
 			});
 		}
 
-		reset(label);
+		reset(label_1);
 
-		var div_1 = sibling(label, 2);
+		var div_1 = sibling(label_1, 2);
 		var node_1 = child(div_1);
 
 		bind_this(
@@ -13163,7 +13163,7 @@
 				disabled() && "qc-disabled"
 			]));
 
-			set_text(text, `${legend() ?? ''} `);
+			set_text(text, `${label() ?? ''} `);
 
 			set_class(div_1, 1, clsx([
 				`qc-dropdown-list ${get(widthClass)}`,
@@ -13186,11 +13186,11 @@
 				id($$value);
 				flushSync();
 			},
-			get legend() {
-				return legend();
+			get label() {
+				return label();
 			},
-			set legend($$value = "") {
-				legend($$value);
+			set label($$value = "") {
+				label($$value);
 				flushSync();
 			},
 			get width() {
@@ -13291,7 +13291,7 @@
 		DropdownList,
 		{
 			id: {},
-			legend: {},
+			label: {},
 			width: {},
 			items: {},
 			value: {},
@@ -13385,14 +13385,13 @@
 		DropdownListWC,
 		{
 			id: { attribute: 'id', type: 'String' },
-			legend: { attribute: 'legend', type: 'String' },
+			label: { attribute: 'label', type: 'String' },
 			value: {
 				attribute: 'value',
 				reflect: true,
 				type: 'String'
 			},
 			enableSearch: { attribute: 'enable-search', type: 'Boolean' },
-			comboAriaLabel: { attribute: 'combo-aria-label', type: 'String' },
 			required: { attribute: 'required', type: 'Boolean' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: {
@@ -13405,8 +13404,8 @@
 				attribute: 'search-placeholder',
 				type: 'String'
 			},
-			emptyOptionSrMessage: {
-				attribute: 'empty-option-sr-message',
+			noOptionsMessage: {
+				attribute: 'no-options-message',
 				type: 'String'
 			},
 			multiple: { attribute: 'multiple', type: 'Boolean' }

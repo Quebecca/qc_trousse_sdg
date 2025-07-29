@@ -3,17 +3,16 @@
     shadow: 'none',
     props: {
         id: {attribute: 'id', type: 'String'},
-        legend: {attribute: 'legend', type: 'String'},
+        label: {attribute: 'label', type: 'String'},
         value: {attribute: 'value', type: 'String', reflect: true},
         enableSearch: {attribute: 'enable-search', type: 'Boolean'},
-        comboAriaLabel: {attribute: 'combo-aria-label', type: 'String'},
         required: {attribute: 'required', type: 'Boolean'},
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean', reflect: true},
         invalidText: {attribute: 'invalid-text', type: 'String'},
         searchPlaceholder: {attribute: 'search-placeholder', type: 'String'},
-        emptyOptionSrMessage: {attribute: 'empty-option-sr-message', type: 'String'},
-        multiple: {attribute: 'multiple', type: 'Boolean'},
+        noOptionsMessage: {attribute: 'no-options-message', type: 'String'},
+        multiple: {attribute: 'multiple', type: 'Boolean'}
     }
 }}"/>
 

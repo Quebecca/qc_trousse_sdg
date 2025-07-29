@@ -9,7 +9,7 @@
 
     let {
         id = Math.random().toString(36).substring(2, 15),
-        legend = "",
+        label = "",
         width = "lg",
         items,
         value = $bindable(),
@@ -30,7 +30,7 @@
         labelId = `${id}-label`,
         errorId = `${id}-error`,
         availableWidths = ["sm", "md", "lg", "xl", "xxl"],
-        defaultInvalidText = `Le champ ${legend} est obligatoire.`
+        defaultInvalidText = `Le champ ${label} est obligatoire.`
     ;
 
     let instance = $state(),
@@ -211,7 +211,7 @@
             button.focus();
         }}
     >
-        {legend}
+        {label}
         {#if required}
             <span class="qc-textfield-required" aria-hidden="true">*</span>
         {/if}

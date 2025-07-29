@@ -2426,7 +2426,7 @@
 <qc-doc-exemple caption="Exemple de listes déroulantes en sélection unique sans barre de recherche">
     <qc-dropdown-list
         id="dropdown-list-single-choice"
-        legend="Faites un choix:"
+        label="Faites un choix:"
     >
         <qc-option value="1" selected>Option 1</qc-option>
         <qc-option value="2">Option 2</qc-option>
@@ -2448,7 +2448,7 @@
 
     <qc-dropdown-list
         id="dropdown-list-disabled"
-        legend="Faites un choix:"
+        label="Faites un choix:"
         disabled
     ></qc-dropdown-list>
 
@@ -2476,7 +2476,7 @@
     <form id="dropdown-list-form">
         <qc-dropdown-list
             id="dropdown-list-restaurants"
-            legend="Type de restaurant"
+            label="Type de restaurant"
             placeholder="Type de restaurant"
             enable-search
             search-placeholder="Rechercher un type restaurant"
@@ -2494,7 +2494,7 @@
 
         <qc-dropdown-list
             id="dropdown-list-regions"
-            legend="Régions desservies"
+            label="Régions desservies"
             placeholder="Sélectionner une région"
             width="xl"
             enable-search
@@ -2539,7 +2539,7 @@
                 const formEntries = dropdownListForm.querySelectorAll("qc-dropdown-list");
                 let alertParts = ["Formulaire soumis avec les données suivantes :"];
                 formEntries.forEach((field) => {
-                    alertParts.push(`${field.legend}: ${field.value}`);
+                    alertParts.push(`${field.label}: ${field.value}`);
                 });
                 alert(alertParts.join("\n"));
             }
