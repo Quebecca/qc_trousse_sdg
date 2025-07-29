@@ -12530,7 +12530,7 @@
 		let inputId = prop($$props, 'inputId', 7),
 			expanded = prop($$props, 'expanded', 7),
 			disabled = prop($$props, 'disabled', 7),
-			selectedOptionsText = prop($$props, 'selectedOptionsText', 7),
+			selectedOptionsText = prop($$props, 'selectedOptionsText', 7, ""),
 			placeholder = prop($$props, 'placeholder', 7),
 			rest = rest_props(
 				$$props,
@@ -12644,7 +12644,7 @@
 			get selectedOptionsText() {
 				return selectedOptionsText();
 			},
-			set selectedOptionsText($$value) {
+			set selectedOptionsText($$value = "") {
 				selectedOptionsText($$value);
 				flushSync();
 			},
@@ -12675,19 +12675,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[210, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[250, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[212, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[252, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			203,
+			205,
 			0,
 			[
-				[207, 4],
+				[209, 4],
 				[
-					213,
+					215,
 					4,
-					[[242, 8, [[284, 12]]]]
+					[[244, 8, [[286, 12]]]]
 				]
 			]
 		]
@@ -12725,7 +12725,7 @@
 			button = state(void 0),
 			searchInput = state(void 0),
 			dropdownItems = state(void 0),
-			selectedOptionsText = user_derived(() => items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label).join(", ") : ""),
+			selectedOptionsText = user_derived(() => items().length > 0 ? multiple() ? items().filter((item) => item.checked)?.map((item) => item.label).join(", ") : items().find((item) => item.checked)?.label : ""),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),

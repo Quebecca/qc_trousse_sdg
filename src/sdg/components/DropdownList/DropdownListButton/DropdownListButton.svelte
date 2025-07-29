@@ -5,7 +5,7 @@
         inputId,
         expanded,
         disabled,
-        selectedOptionsText,
+        selectedOptionsText = "",
         placeholder,
         ...rest
     } = $props()

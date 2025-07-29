@@ -39,7 +39,9 @@
         dropdownItems = $state(),
         selectedOptionsText = $derived(
             items.length > 0 ?
-                items.filter((item) => item.checked).map((item) => item.label).join(", ")
+                multiple ?
+                    items.filter((item) => item.checked)?.map((item) => item.label).join(", ")
+                    : items.find((item) => item.checked)?.label
                 : ""
         ),
         expanded = $state(false),
