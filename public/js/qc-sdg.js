@@ -291,16 +291,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -455,108 +445,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6884,37 +6772,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -7355,7 +7212,7 @@
 	var root_1$b = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 	var root_2$9 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
-	var on_click$2 = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 
@@ -7513,7 +7370,7 @@
 				var a_3 = root_3$1();
 
 				a_3.__click = [
-					on_click$2,
+					on_click$3,
 					displaySearchForm,
 					focusOnSearchInput
 				];
@@ -8663,7 +8520,7 @@
 		}
 	}
 
-	var on_click$1 = (e, scrollToTop) => scrollToTop(e);
+	var on_click$2 = (e, scrollToTop) => scrollToTop(e);
 	var root$c = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
@@ -8714,7 +8571,7 @@
 
 		let classes;
 
-		a.__click = [on_click$1, scrollToTop];
+		a.__click = [on_click$2, scrollToTop];
 		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
@@ -12175,27 +12032,16 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var on_keydown = (e, preventEventDefault) => {
-		console.log(...log_if_contains_state('log', e.target));
-
-		if (strict_equals(e.target.tabIndex.toString(), "0")) {
-			preventEventDefault(e);
-		}
-	};
-
-	var on_click = (e, preventEventDefault) => {
-		if (strict_equals(e.target.tabIndex.toString(), "0")) {
-			preventEventDefault(e);
-		}
-	};
-
-	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[135, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[129, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[127, 0]]);
+	var on_click$1 = (e, handleLiClick, item) => handleLiClick(e, get(item));
+	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[169, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[163, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[161, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
+
+		var $$ownership_validator = create_ownership_validator($$props);
 
 		let displayedItems = prop($$props, 'displayedItems', 7),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
@@ -12222,8 +12068,6 @@
 
 		function focusOnLastElement() {
 			if (get(listElements) && get(listElements).length > 0) {
-				console.log(...log_if_contains_state('log', get(listElements)));
-
 				if (get(listElements)[get(listElements).length - 1].disabled) {
 					get(listElements)[get(listElements).length - 1].closest("li").focus();
 				} else {
@@ -12252,7 +12096,11 @@
 				event.stopPropagation();
 
 				if (get(listElements).length > 0 && index < displayedItems().length - 1) {
-					get(listElements)[index + 1].focus();
+					if (get(listElements)[index + 1].disabled) {
+						get(listElements)[index + 1].closest("li").focus();
+					} else {
+						get(listElements)[index + 1].focus();
+					}
 				}
 			}
 
@@ -12261,9 +12109,23 @@
 				event.stopPropagation();
 
 				if (get(listElements).length > 0 && index > 0) {
-					get(listElements)[index - 1].focus();
+					if (get(listElements)[index - 1].disabled) {
+						get(listElements)[index - 1].closest("li").focus();
+					} else {
+						get(listElements)[index - 1].focus();
+					}
 				} else {
 					focusOnOuterElement()();
+				}
+			}
+
+			if (strict_equals(event.key, "Enter")) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (get(listElements).length > 0 && !get(listElements)[index].disabled) {
+					event.target.checked = !event.target.checked;
+					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 101, 16);
 				}
 			}
 
@@ -12279,6 +12141,28 @@
 				handlePrintableCharacter()(event);
 			} else {
 				handleComboKey(event, index);
+			}
+		}
+
+		function handleLiKeyDown(event, index) {
+			if (strict_equals(event.target.tagName, "INPUT", false)) {
+				handleKeyDown(event, index);
+
+				if (strict_equals(event.key, "Tab", false)) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
+			}
+		}
+
+		function handleLiClick(event, item) {
+			if (strict_equals(event.target.tagName, "INPUT", false)) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (!item.disabled) {
+					item.checked = !item.checked;
+				}
 			}
 		}
 
@@ -12300,11 +12184,6 @@
 			selectionCallback()();
 		}
 
-		function preventEventDefault(event) {
-			event.preventDefault();
-			event.stopPropagation();
-		}
-
 		var div = root$4();
 		var node = child(div);
 
@@ -12315,8 +12194,8 @@
 				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
 					var li = root_2$2();
 
-					li.__keydown = [on_keydown, preventEventDefault];
-					li.__click = [on_click, preventEventDefault];
+					li.__keydown = (e) => handleLiKeyDown(e, index);
+					li.__click = [on_click$1, handleLiClick, item];
 
 					var node_1 = child(li);
 
@@ -12899,19 +12778,24 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[207, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[247, 16]]);
+	var on_click = (e, button) => {
+		e.preventDefault();
+		get(button).focus();
+	};
+
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[216, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[256, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
 			200,
 			0,
 			[
-				[204, 4],
+				[206, 4],
 				[
-					210,
+					219,
 					4,
-					[[239, 8, [[282, 12]]]]
+					[[248, 8, [[291, 12]]]]
 				]
 			]
 		]
@@ -13115,6 +12999,7 @@
 
 		set_attribute(label, 'for', inputId);
 		set_attribute(label, 'id', labelId);
+		label.__click = [on_click, button];
 
 		var text = child(label);
 		var node = sibling(text);
@@ -13399,6 +13284,8 @@
 			...legacy_api()
 		});
 	}
+
+	delegate(['click']);
 
 	create_custom_element(
 		DropdownList,

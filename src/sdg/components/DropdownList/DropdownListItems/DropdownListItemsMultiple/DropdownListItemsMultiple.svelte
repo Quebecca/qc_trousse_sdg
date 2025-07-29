@@ -40,7 +40,6 @@
 
     export function focusOnLastElement() {
         if (listElements && listElements.length > 0) {
-            console.log(listElements);
             if (listElements[listElements.length - 1].disabled) {
                 listElements[listElements.length - 1].closest("li").focus();
             } else {
@@ -70,7 +69,11 @@
             event.stopPropagation();
 
             if (listElements.length > 0 && index < displayedItems.length - 1) {
-                listElements[index + 1].focus();
+                if (listElements[index + 1].disabled) {
+                    listElements[index + 1].closest("li").focus();
+                } else {
+                    listElements[index + 1].focus();
+                }
             }
         }
 
@@ -79,9 +82,23 @@
             event.stopPropagation();
 
             if (listElements.length > 0 && index > 0) {
-                listElements[index - 1].focus();
+                if (listElements[index - 1].disabled) {
+                    listElements[index - 1].closest("li").focus();
+                } else {
+                    listElements[index - 1].focus();
+                }
             } else {
                 focusOnOuterElement();
+            }
+        }
+
+        if (event.key === "Enter") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (listElements.length > 0 && !listElements[index].disabled) {
+                event.target.checked = !event.target.checked;
+                displayedItems[index].checked = event.target.checked;
             }
         }
 
@@ -97,6 +114,28 @@
             handlePrintableCharacter(event);
         } else {
             handleComboKey(event, index);
+        }
+    }
+
+    function handleLiKeyDown(event, index) {
+        if (event.target.tagName !== "INPUT") {
+            handleKeyDown(event, index);
+
+            if (event.key !== "Tab") {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        }
+    }
+
+    function handleLiClick(event, item) {
+        if (event.target.tagName !== "INPUT") {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!item.disabled) {
+                item.checked = !item.checked;
+            }
         }
     }
 
@@ -117,11 +156,6 @@
 
         selectionCallback();
     }
-
-    function preventEventDefault(event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
 </script>
 
 <div class="qc-compact">
@@ -138,17 +172,8 @@
                         item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
                     ]}
                     tabindex={item.disabled ? "0" : "-1"}
-                    onkeydown={(e) => {
-                        console.log(e.target);
-                        if (e.target.tabIndex.toString() === "0") {
-                            preventEventDefault(e)
-                        }
-                    }}
-                    onclick={(e) => {
-                        if (e.target.tabIndex.toString() === "0") {
-                            preventEventDefault(e)
-                        }
-                    }}
+                    onkeydown={(e) => handleLiKeyDown(e, index)}
+                    onclick={(e) => handleLiClick(e, item)}
                 >
                     <Checkbox
                         bind:checked={item.checked}

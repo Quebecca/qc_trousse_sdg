@@ -201,7 +201,16 @@
     'qc-textfield-container',
      disabled && "qc-disabled"
 ]}>
-    <label for={inputId} id={labelId}>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <label
+        for={inputId}
+        id={labelId}
+        onclick={(e) => {
+            e.preventDefault();
+            button.focus();
+        }}
+    >
         {legend}
         {#if required}
             <span class="qc-textfield-required" aria-hidden="true">*</span>
