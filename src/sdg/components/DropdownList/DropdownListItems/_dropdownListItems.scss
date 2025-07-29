@@ -43,6 +43,25 @@ $min-height: 40;
   }
 }
 
+.qc-dropdown-list-multiple, .qc-dropdown-list-single {
+  display: flex;
+  align-items: center;
+  height: rem($min-height);
+
+  &.qc-dropdown-list-active {
+    &:hover {
+      background-color: token-value(color, blue, pale);
+      outline: none;
+      cursor: pointer;
+    }
+  }
+
+  &:focus, &:has(input[type=checkbox]:focus) {
+    outline: rem(2) solid token-value(color, blue, light);
+    outline-offset: -(rem(2));
+  }
+}
+
 .qc-dropdown-list-no-options-container {
   display: flex;
 }

@@ -2622,6 +2622,21 @@ qc-textfield {
   text-overflow: ellipsis;
 }
 
+.qc-dropdown-list-multiple, .qc-dropdown-list-single {
+  display: flex;
+  align-items: center;
+  height: 4rem;
+}
+.qc-dropdown-list-multiple.qc-dropdown-list-active:hover, .qc-dropdown-list-single.qc-dropdown-list-active:hover {
+  background-color: var(--qc-color-blue-pale);
+  outline: none;
+  cursor: pointer;
+}
+.qc-dropdown-list-multiple:focus, .qc-dropdown-list-multiple:has(input[type=checkbox]:focus), .qc-dropdown-list-single:focus, .qc-dropdown-list-single:has(input[type=checkbox]:focus) {
+  outline: 0.2rem solid var(--qc-color-blue-light);
+  outline-offset: -0.2rem;
+}
+
 .qc-dropdown-list-no-options-container {
   display: flex;
 }
@@ -2755,19 +2770,4 @@ qc-textfield {
 
 .qc-dropdown-list-hidden {
   display: none;
-}
-
-.qc-dropdown-list-multiple, .qc-dropdown-list-single {
-  display: flex;
-  align-items: center;
-  height: 4rem;
-}
-.qc-dropdown-list-multiple:hover, .qc-dropdown-list-single:hover {
-  background-color: var(--qc-color-blue-pale);
-  outline: none;
-  cursor: pointer;
-}
-.qc-dropdown-list-multiple:focus, .qc-dropdown-list-multiple:has(input[type=checkbox]:focus), .qc-dropdown-list-single:focus, .qc-dropdown-list-single:has(input[type=checkbox]:focus) {
-  outline: 0.2rem solid var(--qc-color-blue-light);
-  outline-offset: -0.2rem;
 }

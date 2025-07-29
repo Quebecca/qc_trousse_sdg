@@ -30,13 +30,22 @@
 
     export function focusOnFirstElement() {
         if (listElements && listElements.length > 0) {
-            listElements[0].focus();
+            if (listElements[0].disabled) {
+                listElements[0].closest("li").focus();
+            } else {
+                listElements[0].focus();
+            }
         }
     }
 
     export function focusOnLastElement() {
         if (listElements && listElements.length > 0) {
-            listElements[listElements.length - 1].focus();
+            console.log(listElements);
+            if (listElements[listElements.length - 1].disabled) {
+                listElements[listElements.length - 1].closest("li").focus();
+            } else {
+                listElements[listElements.length - 1].focus();
+            }
         }
     }
 
@@ -46,7 +55,11 @@
                 element => element.value.toLowerCase().includes(value.toLowerCase())
             );
             if (foundElement) {
-                foundElement.focus();
+                if (foundElement.disabled) {
+                    foundElement.closest("li").focus();
+                } else {
+                    foundElement.focus();
+                }
             }
         }
     }
@@ -104,13 +117,39 @@
 
         selectionCallback();
     }
+
+    function preventEventDefault(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
 </script>
 
 <div class="qc-compact">
     {#if displayedItems.length > 0}
         <ul bind:this={self}>
             {#each displayedItems as item, index}
-                <li class="qc-dropdown-list-multiple">
+                <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <!-- Pour conserver la navigation d'un élément <select>, le focus doit pouvoir se faire sur les éléments
+                 <li> dont le <Checkbox> interne est disabled.-->
+                <li
+                    class={[
+                        "qc-dropdown-list-multiple",
+                        item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
+                    ]}
+                    tabindex={item.disabled ? "0" : "-1"}
+                    onkeydown={(e) => {
+                        console.log(e.target);
+                        if (e.target.tabIndex.toString() === "0") {
+                            preventEventDefault(e)
+                        }
+                    }}
+                    onclick={(e) => {
+                        if (e.target.tabIndex.toString() === "0") {
+                            preventEventDefault(e)
+                        }
+                    }}
+                >
                     <Checkbox
                         bind:checked={item.checked}
                         value={item.value}

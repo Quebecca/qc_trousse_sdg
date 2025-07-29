@@ -64,14 +64,17 @@
 
     function handleSelection(event, item) {
         event.preventDefault();
-        selectionCallback();
 
-        if (previousElement) {
-            items.find(
-                item => item.value.toString() === previousElement.dataset.itemValue.toString()
-            ).checked = false;
+        if (!item.disabled) {
+            selectionCallback();
+
+            if (previousElement) {
+                items.find(
+                    item => item.value.toString() === previousElement.dataset.itemValue.toString()
+                ).checked = false;
+            }
+            item.checked = true;
         }
-        item.checked = true;
     }
 
     function handleMouseUp(event, item) {
@@ -135,7 +138,10 @@
             <li
                 id={Math.random().toString(36).substring(2, 15)}
                 data-item-value={item.value}
-                class="qc-dropdown-list-single"
+                class={[
+                    "qc-dropdown-list-single",
+                    item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
+                ]}
                 tabindex="0"
                 role="option"
                 aria-selected={selectedValue === item.value ? "true" : "false"}

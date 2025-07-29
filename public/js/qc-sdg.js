@@ -291,6 +291,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -445,6 +455,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -6772,6 +6884,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -7212,7 +7355,7 @@
 	var root_1$b = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 	var root_2$9 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
-	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$2 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 
@@ -7370,7 +7513,7 @@
 				var a_3 = root_3$1();
 
 				a_3.__click = [
-					on_click$1,
+					on_click$2,
 					displaySearchForm,
 					focusOnSearchInput
 				];
@@ -8520,7 +8663,7 @@
 		}
 	}
 
-	var on_click = (e, scrollToTop) => scrollToTop(e);
+	var on_click$1 = (e, scrollToTop) => scrollToTop(e);
 	var root$c = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
@@ -8571,7 +8714,7 @@
 
 		let classes;
 
-		a.__click = [on_click, scrollToTop];
+		a.__click = [on_click$1, scrollToTop];
 		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
@@ -11770,8 +11913,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[135, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[133, 4]]);
+	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[138, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[136, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11839,13 +11982,16 @@
 
 		function handleSelection(event, item) {
 			event.preventDefault();
-			selectionCallback()();
 
-			if (get(previousElement)) {
-				items().find((item) => strict_equals(item.value.toString(), get(previousElement).dataset.itemValue.toString())).checked = false;
+			if (!item.disabled) {
+				selectionCallback()();
+
+				if (get(previousElement)) {
+					items().find((item) => strict_equals(item.value.toString(), get(previousElement).dataset.itemValue.toString())).checked = false;
+				}
+
+				item.checked = true;
 			}
-
-			item.checked = true;
 		}
 
 		function handleMouseUp(event, item) {
@@ -11924,6 +12070,12 @@
 
 					template_effect(() => {
 						set_attribute(li, 'data-item-value', get(item).value);
+
+						set_class(li, 1, clsx([
+							"qc-dropdown-list-single",
+							get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
+						]));
+
 						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
 					});
 
@@ -12023,9 +12175,23 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[113, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[111, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[109, 0]]);
+	var on_keydown = (e, preventEventDefault) => {
+		console.log(...log_if_contains_state('log', e.target));
+
+		if (strict_equals(e.target.tabIndex.toString(), "0")) {
+			preventEventDefault(e);
+		}
+	};
+
+	var on_click = (e, preventEventDefault) => {
+		if (strict_equals(e.target.tabIndex.toString(), "0")) {
+			preventEventDefault(e);
+		}
+	};
+
+	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[135, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[129, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[127, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12046,13 +12212,23 @@
 
 		function focusOnFirstElement() {
 			if (get(listElements) && get(listElements).length > 0) {
-				get(listElements)[0].focus();
+				if (get(listElements)[0].disabled) {
+					get(listElements)[0].closest("li").focus();
+				} else {
+					get(listElements)[0].focus();
+				}
 			}
 		}
 
 		function focusOnLastElement() {
 			if (get(listElements) && get(listElements).length > 0) {
-				get(listElements)[get(listElements).length - 1].focus();
+				console.log(...log_if_contains_state('log', get(listElements)));
+
+				if (get(listElements)[get(listElements).length - 1].disabled) {
+					get(listElements)[get(listElements).length - 1].closest("li").focus();
+				} else {
+					get(listElements)[get(listElements).length - 1].focus();
+				}
 			}
 		}
 
@@ -12061,7 +12237,11 @@
 				const foundElement = get(listElements).find((element) => element.value.toLowerCase().includes(value.toLowerCase()));
 
 				if (foundElement) {
-					foundElement.focus();
+					if (foundElement.disabled) {
+						foundElement.closest("li").focus();
+					} else {
+						foundElement.focus();
+					}
 				}
 			}
 		}
@@ -12120,6 +12300,11 @@
 			selectionCallback()();
 		}
 
+		function preventEventDefault(event) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+
 		var div = root$4();
 		var node = child(div);
 
@@ -12129,6 +12314,10 @@
 
 				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
 					var li = root_2$2();
+
+					li.__keydown = [on_keydown, preventEventDefault];
+					li.__click = [on_click, preventEventDefault];
+
 					var node_1 = child(li);
 
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
@@ -12158,6 +12347,16 @@
 					});
 
 					reset(li);
+
+					template_effect(() => {
+						set_class(li, 1, clsx([
+							"qc-dropdown-list-multiple",
+							get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
+						]));
+
+						set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
+					});
+
 					append($$anchor, li);
 				});
 
@@ -12222,6 +12421,8 @@
 			...legacy_api()
 		});
 	}
+
+	delegate(['keydown', 'click']);
 
 	create_custom_element(
 		DropdownListItemsMultiple,

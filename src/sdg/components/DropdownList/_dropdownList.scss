@@ -48,20 +48,3 @@ $border: 1;
 .qc-dropdown-list-hidden {
   display: none;
 }
-
-.qc-dropdown-list-multiple, .qc-dropdown-list-single {
-  display: flex;
-  align-items: center;
-  height: rem($min-height);
-
-  &:hover{
-    background-color: token-value(color, blue, pale);
-    outline: none;
-    cursor: pointer;
-  }
-
-  &:focus, &:has(input[type=checkbox]:focus) {
-    outline: rem(2) solid token-value(color, blue, light);
-    outline-offset: -(rem(2));
-  }
-}
