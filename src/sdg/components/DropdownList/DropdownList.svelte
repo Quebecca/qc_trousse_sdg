@@ -65,15 +65,6 @@
         })
     ;
 
-    $effect(() => {
-        displayedItems.forEach((displayedItem) => {
-            items.find(item => displayedItem.value === item.value).checked = displayedItem.checked;
-        });
-    });
-    $effect(() => {
-        value = items?.filter(item => item.checked).map(item => item.value).join(", ");
-    });
-
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
             if (value && value.length > 0) {
@@ -185,20 +176,24 @@
         } else {
             displayedItems = items;
         }
-    })
+    });
 
     $effect(() => {
         if (value) {
             invalid = false;
         }
-    })
+    });
 
     $effect(() => {
         if (!expanded) {
             hiddenSearchText = "";
             searchText = "";
         }
-    })
+    });
+
+    $effect(() => {
+        value = items?.filter(item => item.checked).map(item => item.value).join(", ");
+    });
 </script>
 
 <svelte:document onclick={handleOuterEvent} />
@@ -268,6 +263,7 @@
                 id={itemsId}
                 {enableSearch}
                 {multiple}
+                {items}
                 {displayedItems}
                 {noOptionsMessage}
                 selectionCallbackSingle={() => {

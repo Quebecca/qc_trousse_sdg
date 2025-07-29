@@ -1,6 +1,3 @@
-<script>
-</script>
-
 <svelte:options customElement="{{
     tag: 'qc-option',
     props: {

@@ -3,7 +3,7 @@
     import Checkbox from "../../../Checkbox/Checkbox.svelte";
 
     let {
-        items,
+        displayedItems,
         handleExit = () => {},
         selectionCallback = () => {
         },
@@ -11,19 +11,17 @@
         handlePrintableCharacter = () => {}
     } = $props();
 
-    const lang = Utils.getPageLanguage();
     const name = Math.random().toString(36).substring(2, 15);
-    const groupedSelectionDisplayThreshold = 3;
 
     let
         selectedValues = $state(
-            items && items.length > 0 ?
-                items.filter(item => item.checked).map(item => item.value)
+            displayedItems && displayedItems.length > 0 ?
+                displayedItems.filter(item => item.checked).map(item => item.value)
                 : []
         ),
         selectedLabels = $state(
-            items && items.length > 0 ?
-                items.filter(item => item.checked).map(item => item.label)
+            displayedItems && displayedItems.length > 0 ?
+                displayedItems.filter(item => item.checked).map(item => item.label)
                 : []
         ),
         self = $state(),
@@ -58,7 +56,7 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index < items.length - 1) {
+            if (listElements.length > 0 && index < displayedItems.length - 1) {
                 listElements[index + 1].focus();
             }
         }
@@ -90,7 +88,7 @@
     }
 
     function canExit(event, index) {
-        return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === items.length - 1);
+        return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
 
     function handleChange(event, label, itemValue) {
@@ -109,9 +107,9 @@
 </script>
 
 <div class="qc-compact">
-    {#if items.length > 0}
+    {#if displayedItems.length > 0}
         <ul bind:this={self}>
-            {#each items as item, index}
+            {#each displayedItems as item, index}
                 <li class="qc-dropdown-list-multiple">
                     <Checkbox
                         bind:checked={item.checked}

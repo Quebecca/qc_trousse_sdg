@@ -11770,8 +11770,8 @@
 
 	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
 	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[134, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[132, 4]]);
+	var root_2$3 = add_locations(template(`<li class="qc-dropdown-list-single" tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[135, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[133, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11780,6 +11780,7 @@
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
 
 		let items = prop($$props, 'items', 7),
+			displayedItems = prop($$props, 'displayedItems', 7),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -11862,7 +11863,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index < items().length - 1) {
+				if (get(listElements).length > 0 && index < displayedItems().length - 1) {
 					get(listElements)[index + 1].focus();
 				}
 			}
@@ -11898,7 +11899,7 @@
 		}
 
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
+			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
 		}
 
 		var fragment = comment();
@@ -11908,7 +11909,7 @@
 			var consequent = ($$anchor) => {
 				var ul = root_1$3();
 
-				each(ul, 21, items, index, ($$anchor, item, index) => {
+				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
 					var li = root_2$3();
 
 					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
@@ -11937,7 +11938,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (items().length > 0) $$render(consequent);
+				if (displayedItems().length > 0) $$render(consequent);
 			});
 		}
 
@@ -11958,6 +11959,13 @@
 			},
 			set items($$value) {
 				items($$value);
+				flushSync();
+			},
+			get displayedItems() {
+				return displayedItems();
+			},
+			set displayedItems($$value) {
+				displayedItems($$value);
 				flushSync();
 			},
 			get selectionCallback() {
@@ -11998,6 +12006,7 @@
 		DropdownListItemsSingle,
 		{
 			items: {},
+			displayedItems: {},
 			selectionCallback: {},
 			handleExit: {},
 			focusOnOuterElement: {},
@@ -12014,25 +12023,24 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[115, 16]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[113, 8]]);
-	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[111, 0]]);
+	var root_2$2 = add_locations(template(`<li class="qc-dropdown-list-multiple"><!></li>`), DropdownListItemsMultiple[FILENAME], [[113, 16]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[111, 8]]);
+	var root$4 = add_locations(template(`<div class="qc-compact"><!></div>`), DropdownListItemsMultiple[FILENAME], [[109, 0]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let items = prop($$props, 'items', 7),
+		let displayedItems = prop($$props, 'displayedItems', 7),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
-		Utils.getPageLanguage();
 		const name = Math.random().toString(36).substring(2, 15);
 
-		let selectedValues = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.value) : [])),
-			selectedLabels = state(proxy(items() && items().length > 0 ? items().filter((item) => item.checked).map((item) => item.label) : [])),
+		let selectedValues = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.value) : [])),
+			selectedLabels = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.label) : [])),
 			self = state(void 0),
 			listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("input[type='checkbox']")) : []);
 
@@ -12063,7 +12071,7 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index < items().length - 1) {
+				if (get(listElements).length > 0 && index < displayedItems().length - 1) {
 					get(listElements)[index + 1].focus();
 				}
 			}
@@ -12095,7 +12103,7 @@
 		}
 
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, items().length - 1);
+			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
 		}
 
 		function handleChange(event, label, itemValue) {
@@ -12119,7 +12127,7 @@
 			var consequent = ($$anchor) => {
 				var ul = root_1$2();
 
-				each(ul, 21, items, index, ($$anchor, item, index) => {
+				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
 					var li = root_2$2();
 					var node_1 = child(li);
 
@@ -12159,7 +12167,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (items().length > 0) $$render(consequent);
+				if (displayedItems().length > 0) $$render(consequent);
 			});
 		}
 
@@ -12176,11 +12184,11 @@
 			get focusOnFirstMatchingElement() {
 				return focusOnFirstMatchingElement;
 			},
-			get items() {
-				return items();
+			get displayedItems() {
+				return displayedItems();
 			},
-			set items($$value) {
-				items($$value);
+			set displayedItems($$value) {
+				displayedItems($$value);
 				flushSync();
 			},
 			get handleExit() {
@@ -12218,7 +12226,7 @@
 	create_custom_element(
 		DropdownListItemsMultiple,
 		{
-			items: {},
+			displayedItems: {},
 			handleExit: {},
 			selectionCallback: {},
 			focusOnOuterElement: {},
@@ -12235,8 +12243,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[103, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[66, 0, [[100, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[106, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[103, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12245,6 +12253,7 @@
 		let id = prop($$props, 'id', 7),
 			enableSearch = prop($$props, 'enableSearch', 7),
 			multiple = prop($$props, 'multiple', 7),
+			items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
 			selectionCallbackSingle = prop($$props, 'selectionCallbackSingle', 7, () => {}),
@@ -12307,6 +12316,9 @@
 				bind_this(
 					DropdownListItemsMultiple($$anchor, {
 						get items() {
+							return items();
+						},
+						get displayedItems() {
 							return displayedItems();
 						},
 						get noOptionsMessage() {
@@ -12332,6 +12344,9 @@
 				bind_this(
 					DropdownListItemsSingle($$anchor, {
 						get items() {
+							return items();
+						},
+						get displayedItems() {
 							return displayedItems();
 						},
 						get noOptionsMessage() {
@@ -12425,6 +12440,13 @@
 				multiple($$value);
 				flushSync();
 			},
+			get items() {
+				return items();
+			},
+			set items($$value) {
+				items($$value);
+				flushSync();
+			},
 			get displayedItems() {
 				return displayedItems();
 			},
@@ -12498,6 +12520,7 @@
 			id: {},
 			enableSearch: {},
 			multiple: {},
+			items: {},
 			displayedItems: {},
 			noOptionsMessage: {},
 			selectionCallbackSingle: {},
@@ -12675,19 +12698,19 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[212, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[252, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[207, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[247, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			205,
+			200,
 			0,
 			[
-				[209, 4],
+				[204, 4],
 				[
-					215,
+					210,
 					4,
-					[[244, 8, [[286, 12]]]]
+					[[239, 8, [[282, 12]]]]
 				]
 			]
 		]
@@ -12744,16 +12767,6 @@
 
 				return "";
 			});
-
-		user_effect(() => {
-			get(displayedItems).forEach((displayedItem) => {
-				items().find((item) => strict_equals(displayedItem.value, item.value)).checked = displayedItem.checked;
-			});
-		});
-
-		user_effect(() => {
-			value(items()?.filter((item) => item.checked).map((item) => item.value).join(", "));
-		});
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -12889,6 +12902,10 @@
 			}
 		});
 
+		user_effect(() => {
+			value(items()?.filter((item) => item.checked).map((item) => item.value).join(", "));
+		});
+
 		var div = root$1();
 
 		event('click', $document, handleOuterEvent);
@@ -13009,6 +13026,9 @@
 				},
 				get multiple() {
 					return multiple();
+				},
+				get items() {
+					return items();
 				},
 				get displayedItems() {
 					return get(displayedItems);
@@ -13312,7 +13332,7 @@
 
 	OptionWC[FILENAME] = 'src/sdg/components/Option/OptionWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div>`), OptionWC[FILENAME], [[14, 0]]);
+	var root = add_locations(template(`<div hidden><!></div>`), OptionWC[FILENAME], [[11, 0]]);
 
 	function OptionWC($$anchor, $$props) {
 		check_target(new.target);

@@ -8,6 +8,7 @@
         id,
         enableSearch,
         multiple,
+        items,
         displayedItems,
         noOptionsMessage,
         selectionCallbackSingle = () => {},
@@ -72,28 +73,30 @@
 >
     {#if multiple}
         <DropdownListItemsMultiple
-                items={displayedItems}
-                {noOptionsMessage}
-                passValue={() => {
-                    selectionCallbackMultiple();
-                }}
-                handleExit={(key) => handleExitMultiple(key)}
-                focusOnOuterElement={focusOnOuterElement}
-                handlePrintableCharacter={handlePrintableCharacter}
-                bind:this={itemsComponent}
+            {items}
+            {displayedItems}
+            {noOptionsMessage}
+            passValue={() => {
+                selectionCallbackMultiple();
+            }}
+            handleExit={(key) => handleExitMultiple(key)}
+            focusOnOuterElement={focusOnOuterElement}
+            handlePrintableCharacter={handlePrintableCharacter}
+            bind:this={itemsComponent}
         />
     {:else}
         <DropdownListItemsSingle
-                items={displayedItems}
-                {noOptionsMessage}
-                selectionCallback={() => {
-                    selectionCallbackSingle();
-                    closeDropdown();
-                }}
-                handleExit={(key) => handleExitSingle(key)}
-                focusOnOuterElement={focusOnOuterElement}
-                handlePrintableCharacter={handlePrintableCharacter}
-                bind:this={itemsComponent}
+            {items}
+            {displayedItems}
+            {noOptionsMessage}
+            selectionCallback={() => {
+                selectionCallbackSingle();
+                closeDropdown();
+            }}
+            handleExit={(key) => handleExitSingle(key)}
+            focusOnOuterElement={focusOnOuterElement}
+            handlePrintableCharacter={handlePrintableCharacter}
+            bind:this={itemsComponent}
         />
     {/if}
 

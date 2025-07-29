@@ -5,6 +5,7 @@
 
     let {
         items,
+        displayedItems,
         selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
@@ -88,7 +89,7 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index < items.length - 1) {
+            if (listElements.length > 0 && index < displayedItems.length - 1) {
                 listElements[index + 1].focus();
             }
         }
@@ -124,13 +125,13 @@
     }
 
     function canExit(event, index) {
-        return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === items.length - 1);
+        return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
 </script>
 
-{#if items.length > 0}
+{#if displayedItems.length > 0}
     <ul bind:this={self}>
-        {#each items as item, index}
+        {#each displayedItems as item, index}
             <li
                 id={Math.random().toString(36).substring(2, 15)}
                 data-item-value={item.value}
