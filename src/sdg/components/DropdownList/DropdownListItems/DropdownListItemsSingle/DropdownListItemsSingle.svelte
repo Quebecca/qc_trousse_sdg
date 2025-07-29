@@ -16,8 +16,7 @@
     let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
     let selectedElement = $derived.by(() => {
         if (selectedValue && listElements && listElements.length > 0) {
-            console.log(listElements);
-            return listElements.find(element => element.value.toString() === selectedValue.toString());
+            return listElements.find(element => element.dataset.itemValue === selectedValue);
         }
         return null;
     });
@@ -37,7 +36,6 @@
 
         selectedElement.classList.add(selectedElementCLass);
         previousElement = selectedElement;
-        console.log(previousElement, "previousElement");
     });
 
     export function focusOnFirstElement() {

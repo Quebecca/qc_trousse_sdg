@@ -61,10 +61,6 @@
             }).catch(console.error);
         }
     }
-
-    $effect(() => {
-        console.log(displayedItems.map(item => item.checked));
-    })
 </script>
 
 <div
