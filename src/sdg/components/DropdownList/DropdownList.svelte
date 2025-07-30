@@ -78,11 +78,10 @@
     function handleDropdownButtonClick(event) {
         event.preventDefault();
         expanded = !expanded;
-        event.innerEventFromFilter = id;
     }
 
-    function handleOuterEvent(event) {
-        if ((event.innerEventFromFilter ?? -1) !== id && !Utils.componentIsActive(instance)) {
+    function handleOuterEvent() {
+        if (!Utils.componentIsActive(instance)) {
             expanded = false;
         }
     }
@@ -196,7 +195,7 @@
     });
 </script>
 
-<svelte:document onclick={handleOuterEvent} />
+<svelte:document onclick={handleOuterEvent} onkeydown={handleTab} />
 <div class={[
     'qc-textfield-container',
      disabled && "qc-disabled"
@@ -263,6 +262,9 @@
                         onkeydown={(e) => {
                             handleArrowDown(e, dropdownItems);
                             handleArrowUp(e, button);
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                            }
                         }}
                     />
                 </div>

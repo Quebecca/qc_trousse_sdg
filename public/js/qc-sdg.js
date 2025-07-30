@@ -12784,19 +12784,19 @@
 		get(button).focus();
 	};
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[216, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[256, 16]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[215, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[255, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			200,
+			199,
 			0,
 			[
-				[206, 4],
+				[205, 4],
 				[
-					219,
+					218,
 					4,
-					[[248, 8, [[291, 12]]]]
+					[[247, 8, [[293, 12]]]]
 				]
 			]
 		]
@@ -12867,11 +12867,10 @@
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
 			set(expanded, !get(expanded));
-			event.innerEventFromFilter = id();
 		}
 
-		function handleOuterEvent(event) {
-			if (strict_equals(event.innerEventFromFilter ?? -1, id(), false) && !Utils.componentIsActive(get(instance))) {
+		function handleOuterEvent() {
+			if (!Utils.componentIsActive(get(instance))) {
 				set(expanded, false);
 			}
 		}
@@ -12995,6 +12994,7 @@
 		var div = root$1();
 
 		event('click', $document, handleOuterEvent);
+		event('keydown', $document, handleTab);
 
 		var label_1 = child(div);
 
@@ -13082,6 +13082,10 @@
 						onkeydown: (e) => {
 							handleArrowDown(e, get(dropdownItems));
 							handleArrowUp(e, get(button));
+
+							if (strict_equals(e.key, "Enter")) {
+								e.preventDefault();
+							}
 						},
 						get value() {
 							return get(searchText);
