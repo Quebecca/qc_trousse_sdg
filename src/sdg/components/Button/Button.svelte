@@ -19,7 +19,7 @@
         className = [
             "qc-button",
             `qc-${variant}`,
-            compact && "qc-button-compact",
+            compact && "qc-compact",
             rounded && "qc-button-rounded"
         ].filter(Boolean).join(" ");
     });
