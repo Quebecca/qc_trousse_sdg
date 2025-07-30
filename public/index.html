@@ -2547,6 +2547,150 @@
     </script>
 </qc-doc-exemple>
 
+<h3>Documentation technique</h3>
+
+<h4>Attributs de <code>qc-dropdown-list</code></h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Nombre aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>Libellé de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"sm", "md", "lg", "xl", "xxl"</td>
+            <td>"lg"</td>
+            <td>Largeur de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> contient une donnée.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ `label` est obligatoire.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Active la sélection multiple</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h4>Attributs de <code>qc-option</code></h4>
+<p> Ce composant ne produit aucun contenu HTML dans la page. Il fournit des données à son élément parent.</p>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>Corps du <code>qc-option</code></td>
+            <td>Texte de l'option.</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Valeur de l'option</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive l'option</td>
+        </tr>
+        <tr>
+            <td>selected</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique que l'option est présélectionnée au chargement de la page.
+                <br> N.B. : Si l'attribut est absent de la liste déroulante parente, la première option ayant l'attribut <code>selected</code>
+                sera présélectionnée.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
   </div>
 </main>

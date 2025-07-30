@@ -13386,6 +13386,7 @@
 		{
 			id: { attribute: 'id', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
+			width: { attribute: 'width', type: 'String' },
 			value: {
 				attribute: 'value',
 				reflect: true,
@@ -13400,6 +13401,7 @@
 				type: 'Boolean'
 			},
 			invalidText: { attribute: 'invalid-text', type: 'String' },
+			placeholder: { attribute: 'placeholder', type: 'String' },
 			searchPlaceholder: {
 				attribute: 'search-placeholder',
 				type: 'String'
