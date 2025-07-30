@@ -6,7 +6,10 @@
   font-size: token-value(font size, md);
   font-weight: token-value(font weight, bold);
   line-height: token-value(line height, md);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
   box-sizing: border-box;
   min-width: rem(112);
   width: auto;
@@ -127,7 +130,7 @@
   }
 
   &:disabled,
-  &.disabled {
+  &.qc-disabled {
     background-color: token-value(color grey, light);
     border-color: token-value(color grey, light);
     color: token-value(color, white);
@@ -139,17 +142,44 @@
 
 .qc-button .qc-icon {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: rem(16);
+  height: rem(16);
+  background-color: currentColor;
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
-  background-color: currentColor;
+  flex-shrink: 0;
+}
 
-  &:first-child {
-    margin-right: rem(8);
+
+.qc-button.qc-simple {
+  color: token-value(color blue, piv);
+  background-color: transparent;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    text-decoration: underline;
   }
 
-  &:last-child {
-    margin-left: rem(8);
+  &:focus:not(:disabled) {
+    border-color: token-value(color blue, light);
+    box-shadow: 0 0 0 2px token-value(color blue, light);
   }
+
+  &:active:not(:disabled) {
+    text-decoration: underline;
+  }
+
+  &.qc-compact {
+    font-size: rem(14);
+    line-height: rem(20);
+  }
+
+  &:disabled,
+  &.qc-disabled {
+    color: token-value(color, grey regular);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 1;
+  }
+
 }
