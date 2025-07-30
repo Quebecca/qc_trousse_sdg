@@ -12688,10 +12688,11 @@
 
 		var span_3 = sibling(span, 2);
 		var node_3 = child(span_3);
-		const expression = user_derived(() => disabled() ? "chevron-grey-thin" : "chevron-blue-thin");
+		const expression = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
 
 		Icon(node_3, {
-			get type() {
+			type: 'chevron-grey-thin',
+			get color() {
 				return get(expression);
 			},
 			size: 'sm'
