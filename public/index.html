@@ -2423,10 +2423,10 @@
 
 <h3>Exemples</h3>
 
-<qc-doc-exemple caption="Exemple de listes déroulantes en sélection unique sans barre de recherche">
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
     <qc-dropdown-list
         id="dropdown-list-single-choice"
-        label="Faites un choix:"
+        label="Choix unique:"
     >
         <qc-option value="1" selected>Option 1</qc-option>
         <qc-option value="2">Option 2</qc-option>
@@ -2443,12 +2443,58 @@
         <qc-option value="13">Option 13</qc-option>
         <qc-option value="14">Option 14</qc-option>
         <qc-option value="15">Option 15</qc-option>
-        <qc-option value="16" disabled>Option 16</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-single-choice-no-scroll"
+            label="Choix unique avec recherche:"
+            enable-search
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16">Option 16</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-multiple-choices"
+            label="Choix multiples:"
+            multiple
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
     </qc-dropdown-list>
 
     <qc-dropdown-list
         id="dropdown-list-disabled"
-        label="Faites un choix:"
+        label="Désactivé:"
         disabled
     ></qc-dropdown-list>
 
@@ -2456,7 +2502,7 @@
         function mutationCallback(mutationsList, _) {
             mutationsList.forEach(mutation => {
                 if (mutation.type === 'attributes') {
-                    console.log(mutation.attributeName, mutation.target.value);
+                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
                 }
             });
         }
@@ -2464,7 +2510,12 @@
         const mutationObserver = new MutationObserver(mutationCallback);
 
         const singleChoice = document.getElementById("dropdown-list-single-choice");
+        const singleChoiceNoScroll = document.getElementById("dropdown-list-single-choice-no-scroll");
+        const multipleChoice = document.getElementById("dropdown-list-multiple-choices");
+
         mutationObserver.observe(singleChoice, { attributes: true });
+        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
+        mutationObserver.observe(multipleChoice, { attributes: true });
 
         window.onbeforeunload = () => {
             mutationObserver.disconnect();
@@ -2595,7 +2646,7 @@
             <td>required</td>
             <td>na</td>
             <td>na</td>
-            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
         </tr>
         <tr>
             <td>disabled</td>
