@@ -10483,8 +10483,8 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root_2 = add_locations(template(`<img class="qc-icon" alt="">`), Button[FILENAME], [[35, 12]]);
-	var root_6 = add_locations(template(`<img class="qc-icon" alt="">`), Button[FILENAME], [[45, 12]]);
+	var root_2 = add_locations(template(`<img class="qc-icon custom" alt="">`), Button[FILENAME], [[35, 12]]);
+	var root_6 = add_locations(template(`<img class="qc-icon custom" alt="">`), Button[FILENAME], [[45, 12]]);
 	var root = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[28, 0]]);
 
 	function Button($$anchor, $$props) {
