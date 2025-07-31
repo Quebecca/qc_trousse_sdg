@@ -66,8 +66,6 @@
         })
     ;
 
-    $inspect(displayedItems);
-
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
             if (value && value.length > 0) {
@@ -290,8 +288,8 @@
                 bind:this={dropdownItems}
             />
 
-            <!-- Pour les lecteurs d'écran: affiche le nombre de résultats -->
-            <span style="display: none" role="status">{srItemsCountText}</span>
+            <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->
+            <span role="status" class="qc-sr-only">{srItemsCountText}</span>
         </div>
     </div>
 
