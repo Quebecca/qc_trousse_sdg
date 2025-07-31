@@ -11931,6 +11931,7 @@
 							get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
 						]));
 
+						set_attribute(li, 'data-item-value', get(item).value);
 						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
 					});
 

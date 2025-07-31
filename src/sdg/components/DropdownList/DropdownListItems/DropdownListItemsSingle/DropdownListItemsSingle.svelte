@@ -141,6 +141,7 @@
                     "qc-dropdown-list-single",
                     item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
                 ]}
+                data-item-value={item.value}
                 tabindex="0"
                 role="option"
                 aria-selected={selectedValue === item.value ? "true" : "false"}
