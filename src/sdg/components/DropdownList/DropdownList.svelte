@@ -289,7 +289,11 @@
             />
 
             <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->
-            <span role="status" class="qc-sr-only">{srItemsCountText}</span>
+            <div role="status" class="qc-sr-only">
+                {#key searchText}
+                    <span>{srItemsCountText}</span>
+                {/key}
+            </div>
         </div>
     </div>
 

@@ -981,6 +981,15 @@
 			: a !== b || (a !== null && typeof a === 'object') || typeof a === 'function';
 	}
 
+	/**
+	 * @param {unknown} a
+	 * @param {unknown} b
+	 * @returns {boolean}
+	 */
+	function not_equal(a, b) {
+		return a !== b;
+	}
+
 	/** @type {Equals} */
 	function safe_equals(value) {
 		return !safe_not_equal(value, this.v);
@@ -4069,6 +4078,45 @@
 				update_branch(null, null);
 			}
 		}, flags);
+
+		if (hydrating) {
+			anchor = hydrate_node;
+		}
+	}
+
+	/** @import { Effect, TemplateNode } from '#client' */
+
+	/**
+	 * @template V
+	 * @param {TemplateNode} node
+	 * @param {() => V} get_key
+	 * @param {(anchor: Node) => TemplateNode | void} render_fn
+	 * @returns {void}
+	 */
+	function key_block(node, get_key, render_fn) {
+		if (hydrating) {
+			hydrate_next();
+		}
+
+		var anchor = node;
+
+		/** @type {V | typeof UNINITIALIZED} */
+		var key = UNINITIALIZED;
+
+		/** @type {Effect} */
+		var effect;
+
+		var changed = is_runes() ? not_equal : safe_not_equal;
+
+		block(() => {
+			if (changed(key, (key = get_key()))) {
+				if (effect) {
+					pause_effect(effect);
+				}
+
+				effect = branch(() => render_fn(anchor));
+			}
+		});
 
 		if (hydrating) {
 			anchor = hydrate_node;
@@ -7221,7 +7269,7 @@
 		});
 	};
 
-	var root_3$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_3$2 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
 	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
@@ -7367,7 +7415,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$1();
+				var a_3 = root_3$2();
 
 				a_3.__click = [
 					on_click$3,
@@ -11019,7 +11067,7 @@
 
 	var root_2$5 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), TextField[FILENAME], [[78, 16]]);
 	var root_1$5 = add_locations(template(`<label> <!></label>`), TextField[FILENAME], [[75, 8]]);
-	var root_3 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
+	var root_3$1 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[83, 8]]);
 	var root_4$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[88, 12]]);
 	var root_5 = add_locations(template(`<input>`), TextField[FILENAME], [[101, 12]]);
 	var root_6 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[118, 8]]);
@@ -11144,7 +11192,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var div_1 = root_3();
+				var div_1 = root_3$1();
 
 				set_attribute(div_1, 'id', descriptionId);
 
@@ -12783,8 +12831,9 @@
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[216, 12]]);
 	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[253, 16]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[294, 20]]);
 
-	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <span role="status" class="qc-sr-only"> </span></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
 			200,
 			0,
@@ -13137,18 +13186,27 @@
 			() => get(dropdownItems)
 		);
 
-		var span_1 = sibling(node_4, 2);
-		var text_1 = child(span_1, true);
+		var div_4 = sibling(node_4, 2);
+		var node_5 = child(div_4);
 
-		reset(span_1);
+		key_block(node_5, () => get(searchText), ($$anchor) => {
+			var span_1 = root_3();
+			var text_1 = child(span_1, true);
+
+			reset(span_1);
+			template_effect(() => set_text(text_1, get(srItemsCountText)));
+			append($$anchor, span_1);
+		});
+
+		reset(div_4);
 		reset(div_2);
 		reset(div_1);
 		bind_this(div_1, ($$value) => set(instance, $$value), () => get(instance));
 
-		var node_5 = sibling(div_1, 2);
+		var node_6 = sibling(div_1, 2);
 		const expression_1 = user_derived(() => invalidText() ?? defaultInvalidText);
 
-		FormError(node_5, {
+		FormError(node_6, {
 			id: errorId,
 			get invalid() {
 				return invalid();
@@ -13174,7 +13232,6 @@
 			]));
 
 			div_2.hidden = !get(expanded);
-			set_text(text_1, get(srItemsCountText));
 		});
 
 		append($$anchor, div);
