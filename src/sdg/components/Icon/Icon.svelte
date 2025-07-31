@@ -6,6 +6,7 @@
         color = 'text-primary',
         width='auto',
         height='auto',
+        src='',
         ...rest
     } = $props();
 
@@ -13,11 +14,12 @@
 </script>
 
 <div role="img"
-     class="qc-icon"
+     class={['qc-icon', {src} && "qc-custom-icon"]}
      aria-label={label}
      style="--img-color:var(--qc-color-{color});
             --img-width:{width};
             --img-height:{height};
+            --img-src:{src}
         "
      data-img-type={type}
      {...attributes}
