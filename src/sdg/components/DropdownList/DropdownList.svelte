@@ -253,6 +253,7 @@
                         id="{id}-search"
                         bind:value={searchText}
                         placeholder={searchPlaceholder}
+                        ariaLabel={searchPlaceholder ? searchPlaceholder : undefined}
                         leftIcon="true"
                         bind:this={searchInput}
                         onkeydown={(e) => {
