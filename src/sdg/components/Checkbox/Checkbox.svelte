@@ -46,7 +46,7 @@
             class={chooseCheckboxClass()}
             for={id}>
         <input
-                class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
+                class={compact || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}

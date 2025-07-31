@@ -10127,7 +10127,7 @@
 					set_attribute(label_1, 'for', get(id));
 
 					attributes = set_attributes(input, attributes, {
-						class: !parentGroup() && compact() || tiled() ? "qc-compact" : "",
+						class: compact() || tiled() ? "qc-compact" : "",
 						type: 'checkbox',
 						value: value(),
 						name: name(),
