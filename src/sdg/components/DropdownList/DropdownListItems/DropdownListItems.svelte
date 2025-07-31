@@ -69,6 +69,8 @@
     class="qc-dropdown-list-items"
     tabindex="-1"
     role="status"
+    aria-live="polite"
+    aria-atomic="true"
     style="--dropdown-items-height: {usedHeight / (remRatio * precentRootFontSize)}rem;"
 >
     {#if multiple}
@@ -100,11 +102,8 @@
         />
     {/if}
 
-    <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true">
-        {#if displayedItems.length <= 0}
-            {#await tick() then _}
-                <span class="qc-dropdown-list-no-options">{@html noOptionsMessage}</span>
-            {/await}
-        {/if}
-    </div>
+    {#if displayedItems.length <= 0}
+        <span class="qc-dropdown-list-no-options">{@html noOptionsMessage}</span>
+    {/if}
+
 </div>

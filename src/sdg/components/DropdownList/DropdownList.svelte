@@ -228,13 +228,9 @@
             {disabled}
             {expanded}
             aria-labelledby={labelId}
-            aria-controls={itemsId}
             aria-required={required}
             aria-expanded={expanded}
             aria-haspopup="listbox"
-            aria-owns={itemsId}
-            aria-invalid={invalid}
-            aria-label={selectedOptionsText}
             {selectedOptionsText}
             {placeholder}
             onclick={handleDropdownButtonClick}
