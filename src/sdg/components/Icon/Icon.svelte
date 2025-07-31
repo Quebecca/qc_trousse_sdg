@@ -14,13 +14,13 @@
 </script>
 
 <div role="img"
-     class={['qc-icon', {src} && "qc-custom-icon"]}
+     class={`qc-icon${src ? ' qc-custom-icon' : ''}`}
      aria-label={label}
-     style="--img-color:var(--qc-color-{color});
-            --img-width:{width};
-            --img-height:{height};
-            --img-src:{src}
-        "
+     style={`--img-color: var(--qc-color-${color});
+        --img-width: ${width};
+        --img-height: ${height};
+        --img-src: url('${src}');
+    `}
      data-img-type={type}
      {...attributes}
      {...rest}

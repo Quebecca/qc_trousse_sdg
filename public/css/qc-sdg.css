@@ -2310,8 +2310,11 @@ qc-search-bar {
           mask-repeat: no-repeat;
   flex-shrink: 0;
 }
-.qc-button .qc-icon.custom {
-  background-color: unset;
+.qc-button .qc-icon.qc-custom-icon {
+  -webkit-mask: var(--img-src);
+          mask: var(--img-src);
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
 }
 .qc-button.qc-simple {
   color: var(--qc-color-blue-piv);

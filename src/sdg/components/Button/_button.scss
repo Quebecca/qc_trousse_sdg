@@ -149,8 +149,9 @@
     mask-repeat: no-repeat;
     flex-shrink: 0;
 
-    &.custom {
-      background-color: unset;
+    &.qc-custom-icon {
+      mask:var(--img-src);
+      mask-size: 100% 100%;
     }
   }
 

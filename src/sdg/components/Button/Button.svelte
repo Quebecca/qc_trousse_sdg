@@ -32,7 +32,7 @@
 >
     {#if iconPosition === "left"}
         {#if iconSrc}
-            <img class="qc-icon custom" src={iconSrc} alt="" />
+            <Icon src={iconSrc} />
         {:else if icon}
             <Icon type={icon} />
         {/if}
@@ -42,7 +42,7 @@
 
     {#if icon && iconPosition === "right"}
         {#if iconSrc}
-            <img class="qc-icon custom" src={iconSrc} alt="" />
+            <Icon src={iconSrc} />
         {:else if icon}
             <Icon type={icon} />
         {/if}

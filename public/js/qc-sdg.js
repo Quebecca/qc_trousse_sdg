@@ -6740,7 +6740,7 @@
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$c = add_locations(template(`<div></div>`), Icon[FILENAME], [[15, 0]]);
+	var root$c = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6752,6 +6752,7 @@
 			color = prop($$props, 'color', 7, 'text-primary'),
 			width = prop($$props, 'width', 7, 'auto'),
 			height = prop($$props, 'height', 7, 'auto'),
+			src = prop($$props, 'src', 7, ''),
 			rest = rest_props(
 				$$props,
 				[
@@ -6764,7 +6765,8 @@
 					'size',
 					'color',
 					'width',
-					'height'
+					'height',
+					'src'
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
@@ -6773,12 +6775,13 @@
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
 			role: 'img',
-			class: 'qc-icon',
+			class: `qc-icon${src() ? ' qc-custom-icon' : ''}`,
 			'aria-label': label(),
-			style: `--img-color:var(--qc-color-${color() ?? ''});
-            --img-width:${width() ?? ''};
-            --img-height:${height() ?? ''};
-        `,
+			style: `--img-color: var(--qc-color-${color()});
+        --img-width: ${width()};
+        --img-height: ${height()};
+        --img-src: url('${src()}');
+    `,
 			'data-img-type': type(),
 			...get(attributes),
 			...rest
@@ -6829,6 +6832,13 @@
 				height($$value);
 				flushSync();
 			},
+			get src() {
+				return src();
+			},
+			set src($$value = '') {
+				src($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -6841,7 +6851,8 @@
 			size: {},
 			color: {},
 			width: {},
-			height: {}
+			height: {},
+			src: {}
 		},
 		[],
 		[],
@@ -7076,7 +7087,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_1$4 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[64, 6, [[65, 8]]]]);
-	var root_2$4 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[82, 16, [[83, 20]]]]);
+	var root_2$3 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[82, 16, [[83, 20]]]]);
 
 	var on_click$1 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7090,7 +7101,7 @@
 	var root_3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[94, 10, [[105, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[120, 32, [[120, 36]]]]);
-	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[114, 20, [[115, 24]]]]);
+	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[114, 20, [[115, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[132, 10]]);
 
 	var root$a = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
@@ -7206,7 +7217,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$4();
+				var div_5 = root_2$3();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -7273,7 +7284,7 @@
 
 				{
 					var consequent_6 = ($$anchor) => {
-						var nav = root_6$1();
+						var nav = root_6();
 						var ul = child(nav);
 						var node_6 = child(ul);
 
@@ -7711,7 +7722,7 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$3 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$2 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$9 = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
@@ -7775,7 +7786,7 @@
 
 				src();
 
-				var img = root_2$3();
+				var img = root_2$2();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -8915,7 +8926,8 @@
 			color: { attribute: 'color' },
 			size: { attribute: 'size' },
 			width: { attribute: 'width' },
-			height: { attribute: 'height' }
+			height: { attribute: 'height' },
+			src: { attribute: 'src' }
 		},
 		[],
 		[],
@@ -8950,7 +8962,7 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$2 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[18, 8]]);
+	var root_2$1 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[18, 8]]);
 	var root_1$2 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[7, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -8969,7 +8981,7 @@
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor) => {
-					var fragment_1 = root_2$2();
+					var fragment_1 = root_2$1();
 					var node_2 = first_child(fragment_1);
 
 					Icon(node_2, {
@@ -9506,7 +9518,7 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$1 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
+	var root_2 = add_locations(template(`<span class="qc-fieldset-required">*</span>`), Checkbox[FILENAME], [[53, 16]]);
 	var root_1 = add_locations(template(`<div><input> <label><!> <!></label></div> <!>`, 1), Checkbox[FILENAME], [[34, 4, [[38, 8], [50, 8]]]]);
 	var root_5 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[65, 0]]);
 
@@ -9537,7 +9549,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root_2$1();
+					var span = root_2();
 
 					append($$anchor, span);
 				};
@@ -10483,8 +10495,6 @@
 
 	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
 
-	var root_2 = add_locations(template(`<img class="qc-icon custom" alt="">`), Button[FILENAME], [[35, 12]]);
-	var root_6 = add_locations(template(`<img class="qc-icon custom" alt="">`), Button[FILENAME], [[45, 12]]);
 	var root = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[28, 0]]);
 
 	function Button($$anchor, $$props) {
@@ -10542,10 +10552,11 @@
 
 				{
 					var consequent = ($$anchor) => {
-						var img = root_2();
-
-						template_effect(() => set_attribute(img, 'src', iconSrc()));
-						append($$anchor, img);
+						Icon($$anchor, {
+							get src() {
+								return iconSrc();
+							}
+						});
 					};
 
 					var alternate = ($$anchor, $$elseif) => {
@@ -10586,15 +10597,16 @@
 
 		{
 			var consequent_5 = ($$anchor) => {
-				var fragment_2 = comment();
-				var node_3 = first_child(fragment_2);
+				var fragment_3 = comment();
+				var node_3 = first_child(fragment_3);
 
 				{
 					var consequent_3 = ($$anchor) => {
-						var img_1 = root_6();
-
-						template_effect(() => set_attribute(img_1, 'src', iconSrc()));
-						append($$anchor, img_1);
+						Icon($$anchor, {
+							get src() {
+								return iconSrc();
+							}
+						});
 					};
 
 					var alternate_1 = ($$anchor, $$elseif) => {
@@ -10622,7 +10634,7 @@
 					});
 				}
 
-				append($$anchor, fragment_2);
+				append($$anchor, fragment_3);
 			};
 
 			if_block(node_2, ($$render) => {
