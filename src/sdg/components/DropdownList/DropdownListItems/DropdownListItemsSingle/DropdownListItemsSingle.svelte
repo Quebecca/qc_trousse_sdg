@@ -137,7 +137,6 @@
         {#each displayedItems as item, index}
             <li
                 id={Math.random().toString(36).substring(2, 15)}
-                data-item-value={item.value}
                 class={[
                     "qc-dropdown-list-single",
                     item.disabled ? "qc-disabled" : "qc-dropdown-list-active"

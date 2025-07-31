@@ -158,37 +158,35 @@
     }
 </script>
 
-<div class="qc-compact">
-    {#if displayedItems.length > 0}
-        <ul bind:this={self}>
-            {#each displayedItems as item, index}
-                <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-                <!-- Pour conserver la navigation d'un élément <select>, le focus doit pouvoir se faire sur les éléments
-                 <li> dont le <Checkbox> interne est disabled.-->
-                <li
-                    class={[
-                        "qc-dropdown-list-multiple",
-                        item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
-                    ]}
-                    tabindex={item.disabled ? "0" : "-1"}
-                    onkeydown={(e) => handleLiKeyDown(e, index)}
-                    onclick={(e) => handleLiClick(e, item)}
-                >
-                    <Checkbox
-                        bind:checked={item.checked}
-                        value={item.value}
-                        label={item.label}
-                        {name}
-                        disabled={item.disabled}
-                        parentGroup="true"
-                        dropdownListItem="true"
-                        compact="true"
-                        checkbox-onkeydown={(e) => handleKeyDown(e, index)}
-                        handleChange={(e) => handleChange(e, item.label, item.value)}
-                    />
-                </li>
-            {/each}
-        </ul>
-    {/if}
-</div>
+{#if displayedItems.length > 0}
+    <ul bind:this={self} class="qc-compact">
+        {#each displayedItems as item, index}
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+            <!-- Pour conserver la navigation d'un élément <select>, le focus doit pouvoir se faire sur les éléments
+             <li> dont le <Checkbox> interne est disabled.-->
+            <li
+                class={[
+                    "qc-dropdown-list-multiple",
+                    item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
+                ]}
+                tabindex={item.disabled ? "0" : "-1"}
+                onkeydown={(e) => handleLiKeyDown(e, index)}
+                onclick={(e) => handleLiClick(e, item)}
+            >
+                <Checkbox
+                    bind:checked={item.checked}
+                    value={item.value}
+                    label={item.label}
+                    {name}
+                    disabled={item.disabled}
+                    parentGroup="true"
+                    dropdownListItem="true"
+                    compact="true"
+                    checkbox-onkeydown={(e) => handleKeyDown(e, index)}
+                    handleChange={(e) => handleChange(e, item.label, item.value)}
+                />
+            </li>
+        {/each}
+    </ul>
+{/if}
