@@ -12,7 +12,6 @@
   gap: rem(8);
   box-sizing: border-box;
   min-width: rem(112);
-  width: auto;
   max-width: rem(360);
   min-height: rem(56);
   padding: rem(16) rem(24);
@@ -22,6 +21,7 @@
   cursor: pointer;
   margin-right: rem(32);
   margin-bottom: token-value(spacer, md);
+
 
   @include media-mobile() {
     width: 100%;
@@ -45,41 +45,42 @@
 
   &.qc-primary {
     color: token-value(color white);
-    border-color: token-value(color blue piv);
     background-color: token-value(color blue piv);
+    border-color: token-value(color blue piv);
     box-shadow: 0 1px 4px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24);
 
     &:hover:not(:disabled) {
-      border-color: token-value(color blue, regular);
       background-color: token-value(color blue, regular);
+      border-color: token-value(color blue, regular);
     }
 
     &:focus:not(:disabled) {
-      border-color: token-value(color blue, dark);
       background-color: token-value(color blue, regular);
+      border-color: token-value(color blue, dark);
       box-shadow:
-        0 2px 8px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24),
-        0 0 0 2px token-value(color blue, light);
+              0 2px 8px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24),
+              0 0 0 2px token-value(color blue, light);
     }
 
     &:active:not(:disabled) {
-      border-color: token-value(color blue, regular_light);
       background-color: token-value(color blue, regular_light);
+      border-color: token-value(color blue, regular_light);
     }
   }
 
   &.qc-secondary {
     color: token-value(color blue, piv);
-    border-color: token-value(color blue, piv);
     background-color: token-value(color white);
+    border-color: token-value(color blue, piv);
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled),
+    &:focus:not(:disabled),
+    &:active:not(:disabled) {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
     }
 
     &:focus:not(:disabled) {
       border-color: token-value(color blue, dark);
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
@@ -90,8 +91,8 @@
 
   &.qc-tertiary {
     color: token-value(color blue, piv);
-    border-color: token-value(color white);
     background-color: token-value(color white);
+    border-color: token-value(color white);
 
     &:hover:not(:disabled) {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
@@ -99,8 +100,8 @@
     }
 
     &:focus:not(:disabled) {
-      border-color: token-value(color blue, dark);
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
@@ -111,16 +112,16 @@
 
   &.qc-danger {
     color: token-value(color white);
-    border-color: token-value(color white);
     background-color: token-value(color red regular);
+    border-color: token-value(color white);
 
     &:hover:not(:disabled) {
       background-color: token-value(color red medium);
     }
 
     &:focus:not(:disabled) {
-      border-color: token-value(color blue, dark);
       background-color: token-value(color red medium);
+      border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
@@ -133,53 +134,51 @@
   &.qc-disabled {
     background-color: token-value(color grey, light);
     border-color: token-value(color grey, light);
-    color: token-value(color, white);
-    cursor: not-allowed;
-    box-shadow: none;
-    opacity: 1;
-  }
-}
-
-.qc-button .qc-icon {
-  display: inline-block;
-  width: rem(16);
-  height: rem(16);
-  background-color: currentColor;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  flex-shrink: 0;
-}
-
-
-.qc-button.qc-simple {
-  color: token-value(color blue, piv);
-  background-color: transparent;
-  border-color: transparent;
-
-  &:hover:not(:disabled) {
-    text-decoration: underline;
-  }
-
-  &:focus:not(:disabled) {
-    border-color: token-value(color blue, light);
-    box-shadow: 0 0 0 2px token-value(color blue, light);
-  }
-
-  &:active:not(:disabled) {
-    text-decoration: underline;
-  }
-
-  &.qc-compact {
-    font-size: rem(14);
-    line-height: rem(20);
-  }
-
-  &:disabled,
-  &.qc-disabled {
-    color: token-value(color, grey regular);
+    color: token-value(color white);
     cursor: not-allowed;
     box-shadow: none;
     opacity: 1;
   }
 
+  .qc-icon {
+    display: inline-block;
+    width: rem(16);
+    height: rem(16);
+    background-color: currentColor;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    flex-shrink: 0;
+  }
+
+  &.qc-simple {
+    color: token-value(color blue, piv);
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+    min-width: unset;
+    min-height: unset;
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      text-decoration: underline;
+    }
+
+    &:focus:not(:disabled) {
+      border-color: token-value(color blue, light);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &.qc-compact {
+      font-size: token-value(font size, sm);
+      line-height: token-value(line height, sm);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      color: token-value(color, grey regular);
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 1;
+    }
+  }
 }

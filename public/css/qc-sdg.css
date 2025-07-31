@@ -2194,7 +2194,6 @@ qc-search-bar {
   gap: 0.8rem;
   box-sizing: border-box;
   min-width: 11.2rem;
-  width: auto;
   max-width: 36rem;
   min-height: 5.6rem;
   padding: 1.6rem 2.4rem;
@@ -2227,34 +2226,33 @@ qc-search-bar {
 }
 .qc-button.qc-primary {
   color: var(--qc-color-white);
-  border-color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-blue-piv);
+  border-color: var(--qc-color-blue-piv);
   box-shadow: 0 1px 4px rgba(34, 54, 84, 0.24);
 }
 .qc-button.qc-primary:hover:not(:disabled) {
-  border-color: var(--qc-color-blue-regular);
   background-color: var(--qc-color-blue-regular);
+  border-color: var(--qc-color-blue-regular);
 }
 .qc-button.qc-primary:focus:not(:disabled) {
-  border-color: var(--qc-color-blue-dark);
   background-color: var(--qc-color-blue-regular);
+  border-color: var(--qc-color-blue-dark);
   box-shadow: 0 2px 8px rgba(34, 54, 84, 0.24), 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-primary:active:not(:disabled) {
-  border-color: var(--qc-color-blue-regular_light);
   background-color: var(--qc-color-blue-regular_light);
+  border-color: var(--qc-color-blue-regular_light);
 }
 .qc-button.qc-secondary {
   color: var(--qc-color-blue-piv);
-  border-color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-white);
+  border-color: var(--qc-color-blue-piv);
 }
-.qc-button.qc-secondary:hover:not(:disabled) {
+.qc-button.qc-secondary:hover:not(:disabled), .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary:active:not(:disabled) {
   background-color: rgba(9, 87, 151, 0.16);
 }
 .qc-button.qc-secondary:focus:not(:disabled) {
   border-color: var(--qc-color-blue-dark);
-  background-color: rgba(9, 87, 151, 0.16);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-secondary:active:not(:disabled) {
@@ -2262,16 +2260,16 @@ qc-search-bar {
 }
 .qc-button.qc-tertiary {
   color: var(--qc-color-blue-piv);
-  border-color: var(--qc-color-white);
   background-color: var(--qc-color-white);
+  border-color: var(--qc-color-white);
 }
 .qc-button.qc-tertiary:hover:not(:disabled) {
   background-color: rgba(197, 202, 210, 0.24);
   text-decoration: underline;
 }
 .qc-button.qc-tertiary:focus:not(:disabled) {
-  border-color: var(--qc-color-blue-dark);
   background-color: rgba(197, 202, 210, 0.24);
+  border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-tertiary:active:not(:disabled) {
@@ -2279,15 +2277,15 @@ qc-search-bar {
 }
 .qc-button.qc-danger {
   color: var(--qc-color-white);
-  border-color: var(--qc-color-white);
   background-color: var(--qc-color-red-regular);
+  border-color: var(--qc-color-white);
 }
 .qc-button.qc-danger:hover:not(:disabled) {
   background-color: var(--qc-color-red-medium);
 }
 .qc-button.qc-danger:focus:not(:disabled) {
-  border-color: var(--qc-color-blue-dark);
   background-color: var(--qc-color-red-medium);
+  border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-danger:active:not(:disabled) {
@@ -2301,7 +2299,6 @@ qc-search-bar {
   box-shadow: none;
   opacity: 1;
 }
-
 .qc-button .qc-icon {
   display: inline-block;
   width: 1.6rem;
@@ -2313,25 +2310,24 @@ qc-search-bar {
           mask-repeat: no-repeat;
   flex-shrink: 0;
 }
-
 .qc-button.qc-simple {
   color: var(--qc-color-blue-piv);
   background-color: transparent;
   border-color: transparent;
+  padding: 0;
+  min-width: unset;
+  min-height: unset;
 }
-.qc-button.qc-simple:hover:not(:disabled) {
+.qc-button.qc-simple:hover:not(:disabled), .qc-button.qc-simple:active:not(:disabled) {
   text-decoration: underline;
 }
 .qc-button.qc-simple:focus:not(:disabled) {
   border-color: var(--qc-color-blue-light);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-simple:active:not(:disabled) {
-  text-decoration: underline;
-}
 .qc-button.qc-simple.qc-compact {
-  font-size: 1.4rem;
-  line-height: 2rem;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
 }
 .qc-button.qc-simple:disabled, .qc-button.qc-simple.qc-disabled {
   color: var(--qc-color-grey-regular);
