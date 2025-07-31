@@ -55,10 +55,11 @@
             return `qc-dropdown-list-lg`;
         }),
         srItemsCountText = $derived.by(() => {
-            if (displayedItems.length > 0 && expanded) {
+            const s = displayedItems.length > 1 ? "s" : "";
+            if (displayedItems.length > 0) {
                 return  lang === "fr" ?
-                    `${displayedItems.length} résultats disponibles. Utilisez les flèches directionnelles pour vous déplacer dans la liste.`
-                    : `${displayedItems.length} results available. Use arrow keys to navigate through the list.`;
+                    `${displayedItems.length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
+                    : `${displayedItems.length} result${s} available. Use up and down arrow keys to navigate through the list.`;
             }
 
             return "";

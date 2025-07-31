@@ -48,12 +48,9 @@ $min-height: 40;
   align-items: center;
   height: rem($min-height);
 
-  &.qc-dropdown-list-active {
-    &:hover {
-      background-color: token-value(color, blue, pale);
-      outline: none;
-      cursor: pointer;
-    }
+  &.qc-dropdown-list-active:hover {
+    background-color: token-value(color, blue, pale);
+    cursor: pointer;
   }
 
   &:focus, &:has(input[type=checkbox]:focus) {
