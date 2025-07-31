@@ -99,7 +99,7 @@
         />
     {/if}
 
-    <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true">
+    <div class="qc-dropdown-list-no-options-container" role="status">
         {#if displayedItems.length <= 0}
             {#await tick() then _}
                 <span class="qc-dropdown-list-no-options">{@html noOptionsMessage}</span>

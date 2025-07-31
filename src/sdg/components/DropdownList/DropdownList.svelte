@@ -66,6 +66,8 @@
         })
     ;
 
+    $inspect(displayedItems);
+
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
             if (value && value.length > 0) {
@@ -232,6 +234,7 @@
             aria-required={required}
             aria-expanded={expanded}
             aria-haspopup="listbox"
+            aria-controls={itemsId}
             {selectedOptionsText}
             {placeholder}
             onclick={handleDropdownButtonClick}
@@ -288,7 +291,7 @@
             />
 
             <!-- Pour les lecteurs d'écran: affiche le nombre de résultats -->
-            <div aria-label={srItemsCountText} role="status" aria-live="polite" aria-atomic="true"></div>
+            <span style="display: none" role="status">{srItemsCountText}</span>
         </div>
     </div>
 
