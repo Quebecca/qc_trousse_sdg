@@ -68,7 +68,6 @@
     id={id}
     class="qc-dropdown-list-items"
     tabindex="-1"
-    role="status"
     style="--dropdown-items-height: {usedHeight / (remRatio * precentRootFontSize)}rem;"
 >
     {#if multiple}
@@ -107,4 +106,5 @@
             {/await}
         {/if}
     </div>
+
 </div>

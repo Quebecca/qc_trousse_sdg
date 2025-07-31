@@ -62,11 +62,8 @@ $min-height: 40;
   }
 }
 
-.qc-dropdown-list-no-options-container {
-  display: flex;
-}
-
 .qc-dropdown-list-no-options {
+  display: flex;
   padding: token-value(spacer, xs);
   color: token-value(color, grey, medium);
   height: rem($min-height);

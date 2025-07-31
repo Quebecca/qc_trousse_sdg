@@ -2637,11 +2637,8 @@ qc-textfield {
   outline-offset: -0.2rem;
 }
 
-.qc-dropdown-list-no-options-container {
-  display: flex;
-}
-
 .qc-dropdown-list-no-options {
+  display: flex;
   padding: var(--qc-spacer-xs);
   color: var(--qc-color-grey-medium);
   height: 4rem;

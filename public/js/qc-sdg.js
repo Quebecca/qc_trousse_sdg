@@ -12323,8 +12323,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[106, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1" role="status"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[103, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[105, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status" aria-live="polite" aria-atomic="true"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[102, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12785,7 +12785,7 @@
 	};
 
 	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[215, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[255, 16]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[251, 16]]);
 
 	var root$1 = add_locations(template(`<div><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" aria-live="polite" aria-atomic="true"></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -12796,7 +12796,7 @@
 				[
 					218,
 					4,
-					[[247, 8, [[293, 12]]]]
+					[[243, 8, [[289, 12]]]]
 				]
 			]
 		]
@@ -13032,7 +13032,6 @@
 					return get(expanded);
 				},
 				'aria-labelledby': labelId,
-				'aria-controls': itemsId,
 				get 'aria-required'() {
 					return required();
 				},
@@ -13040,13 +13039,6 @@
 					return get(expanded);
 				},
 				'aria-haspopup': 'listbox',
-				'aria-owns': itemsId,
-				get 'aria-invalid'() {
-					return invalid();
-				},
-				get 'aria-label'() {
-					return get(selectedOptionsText);
-				},
 				get selectedOptionsText() {
 					return get(selectedOptionsText);
 				},
