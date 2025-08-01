@@ -12819,7 +12819,7 @@
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
-			width = prop($$props, 'width', 7, "lg"),
+			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 7),
 			value = prop($$props, 'value', 15),
 			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
@@ -12836,7 +12836,7 @@
 			itemsId = `${id()}-items`,
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
-			availableWidths = ["sm", "md", "lg", "xl", "xxl"],
+			availableWidths = ["xs", "sm", "md", "lg", "xl"],
 			defaultInvalidText = `Le champ ${label()} est obligatoire.`;
 
 		let instance = state(void 0),
@@ -13215,7 +13215,7 @@
 			get width() {
 				return width();
 			},
-			set width($$value = "lg") {
+			set width($$value = "md") {
 				width($$value);
 				flushSync();
 			},

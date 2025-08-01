@@ -206,11 +206,11 @@ $lg-tokens: (
             mb: token-value(spacer sm),
         ),
         input: (
-            sm: rem(63),
-            md: rem(156),
-            lg: rem(249),
-            xl: rem(528),
-            xxl: rem(825)
+            xs: rem(63),
+            sm: rem(156),
+            md: rem(249),
+            lg: rem(528),
+            xl: rem(825)
         )
     ),
     grid: (

@@ -10,7 +10,7 @@
     let {
         id = Math.random().toString(36).substring(2, 15),
         label = "",
-        width = "lg",
+        width = "md",
         items,
         value = $bindable(),
         placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
@@ -29,7 +29,7 @@
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
-        availableWidths = ["sm", "md", "lg", "xl", "xxl"],
+        availableWidths = ["xs", "sm", "md", "lg", "xl"],
         defaultInvalidText = `Le champ ${label} est obligatoire.`
     ;
 
