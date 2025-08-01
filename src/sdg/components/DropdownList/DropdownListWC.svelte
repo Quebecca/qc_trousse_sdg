@@ -24,18 +24,13 @@
     let {
         invalid = $bindable(false),
         value = $bindable(),
+        items = $bindable([]),
         ...rest
     } = $props();
 
-    let items = $state(
-        Array.from($host().querySelectorAll("qc-option"))
-            .map(node => ({
-                label: node.label ?? node.innerHTML,
-                value: node.value,
-                disabled: node.disabled,
-                checked: node.selected ?? false,
-            }))
-    );
+    export function addOption(label, value, disabled = false, checked = false) {
+        items.push({ label: label, value: value, disabled: disabled, checked: checked });
+    }
 </script>
 
 <DropdownList {items} {invalid} bind:value {...rest} />

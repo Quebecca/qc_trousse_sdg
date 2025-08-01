@@ -18,7 +18,6 @@
 	const EACH_ITEM_IMMUTABLE = 1 << 4;
 
 	const PROPS_IS_IMMUTABLE = 1;
-	const PROPS_IS_RUNES = 1 << 1;
 	const PROPS_IS_UPDATED = 1 << 2;
 	const PROPS_IS_BINDABLE = 1 << 3;
 	const PROPS_IS_LAZY_INITIAL = 1 << 4;
@@ -146,8 +145,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	/** Svelte 4 legacy mode props need to be handled with deriveds and be recognized elsewhere, hence the dedicated flag */
-	const LEGACY_DERIVED_PROP = 1 << 17;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -448,12 +445,7 @@
 		}
 	}
 
-	let legacy_mode_flag = false;
 	let tracing_mode_flag = false;
-
-	function enable_legacy_mode_flag() {
-		legacy_mode_flag = true;
-	}
 
 	/** @import { Source } from '#client' */
 
@@ -2500,12 +2492,6 @@
 			s.equals = safe_equals;
 		}
 
-		// bind the signal to the component context, in case we need to
-		// track updates to trigger beforeUpdate/afterUpdate callbacks
-		if (legacy_mode_flag && component_context !== null && component_context.l !== null) {
-			(component_context.l.s ??= []).push(s);
-		}
-
 		return s;
 	}
 
@@ -2567,7 +2553,6 @@
 			// properly for itself, we need to ensure the current effect actually gets
 			// scheduled. i.e: `$effect(() => x++)`
 			if (
-				is_runes() &&
 				active_effect !== null &&
 				(active_effect.f & CLEAN) !== 0 &&
 				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
@@ -2591,8 +2576,6 @@
 	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
-
-		var runes = is_runes();
 		var length = reactions.length;
 
 		for (var i = 0; i < length; i++) {
@@ -2601,9 +2584,6 @@
 
 			// Skip any effects that are already dirty
 			if ((flags & DIRTY) !== 0) continue;
-
-			// In legacy mode, skip the current effect to prevent infinite loops
-			if (!runes && reaction === active_effect) continue;
 
 			set_signal_status(reaction, status);
 
@@ -2682,15 +2662,6 @@
 			l: null
 		});
 
-		if (legacy_mode_flag && !runes) {
-			component_context.l = {
-				s: null,
-				u: null,
-				r1: [],
-				r2: source(false)
-			};
-		}
-
 		teardown(() => {
 			/** @type {ComponentContext} */ (ctx).d = true;
 		});
@@ -2734,7 +2705,7 @@
 
 	/** @returns {boolean} */
 	function is_runes() {
-		return !legacy_mode_flag || (component_context !== null && component_context.l === null);
+		return true;
 	}
 
 	/**
@@ -3823,7 +3794,6 @@
 		}
 
 		var anchor = node;
-		var runes = is_runes();
 		var active_component_context = component_context;
 
 		/** @type {V | Promise<V> | typeof UNINITIALIZED} */
@@ -3838,8 +3808,8 @@
 		/** @type {Effect | null} */
 		var catch_effect;
 
-		var input_source = (runes ? source : mutable_source)(/** @type {V} */ (undefined));
-		var error_source = (runes ? source : mutable_source)(undefined);
+		var input_source = (source )(/** @type {V} */ (undefined));
+		var error_source = (source )(undefined);
 		var resolved = false;
 
 		/**
@@ -4106,7 +4076,7 @@
 		/** @type {Effect} */
 		var effect;
 
-		var changed = is_runes() ? not_equal : safe_not_equal;
+		var changed = not_equal ;
 
 		block(() => {
 			if (changed(key, (key = get_key()))) {
@@ -5643,7 +5613,6 @@
 	 * @returns {void}
 	 */
 	function bind_value(input, get, set = get) {
-		var runes = is_runes();
 
 		listen_to_event_and_reset_event(input, 'input', (is_reset) => {
 
@@ -5654,7 +5623,7 @@
 
 			// In runes mode, respect any validation in accessors (doesn't apply in legacy mode,
 			// because we use mutable state which ensures the render effect always runs)
-			if (runes && value !== (value = get())) {
+			if (value !== (value = get())) {
 				var start = input.selectionStart;
 				var end = input.selectionEnd;
 
@@ -5950,9 +5919,7 @@
 			lifecycle_outside_component();
 		}
 
-		if (legacy_mode_flag && component_context.l !== null) {
-			init_update_callbacks(component_context).m.push(fn);
-		} else {
+		{
 			user_effect(() => {
 				const cleanup = untrack(fn);
 				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
@@ -5961,12 +5928,20 @@
 	}
 
 	/**
-	 * Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
-	 * @param {ComponentContext} context
+	 * Schedules a callback to run immediately before the component is unmounted.
+	 *
+	 * Out of `onMount`, `beforeUpdate`, `afterUpdate` and `onDestroy`, this is the
+	 * only one that runs inside a server-side component.
+	 *
+	 * @param {() => any} fn
+	 * @returns {void}
 	 */
-	function init_update_callbacks(context) {
-		var l = /** @type {ComponentContextLegacy} */ (context).l;
-		return (l.u ??= { a: [], b: [], m: [] });
+	function onDestroy(fn) {
+		if (component_context === null) {
+			lifecycle_outside_component();
+		}
+
+		onMount(() => () => untrack(fn));
 	}
 
 	/** @import { StoreReferencesContainer } from '#client' */
@@ -6147,7 +6122,7 @@
 	 */
 	function prop(props, key, flags, fallback) {
 		var immutable = (flags & PROPS_IS_IMMUTABLE) !== 0;
-		var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
+		var runes = true;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 		var is_store_sub = false;
@@ -6198,25 +6173,13 @@
 
 		/** @type {() => V} */
 		var getter;
-		if (runes) {
+		{
 			getter = () => {
 				var value = /** @type {V} */ (props[key]);
 				if (value === undefined) return get_fallback();
 				fallback_dirty = true;
 				fallback_used = false;
 				return value;
-			};
-		} else {
-			// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
-			// Replicate that behavior through using a derived
-			var derived_getter = (immutable ? derived : derived_safe_equal)(
-				() => /** @type {V} */ (props[key])
-			);
-			derived_getter.f |= LEGACY_DERIVED_PROP;
-			getter = () => {
-				var value = get(derived_getter);
-				if (value !== undefined) fallback_value = /** @type {V} */ (undefined);
-				return value === undefined ? fallback_value : value;
 			};
 		}
 
@@ -6235,7 +6198,7 @@
 					// In that case the state proxy (if it exists) should take care of the notification.
 					// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
 					// has changed because the parent will not be able to detect the change otherwise.
-					if (!runes || !mutation || legacy_parent || is_store_sub) {
+					if (!mutation || legacy_parent || is_store_sub) {
 						/** @type {Function} */ (setter)(mutation ? getter() : value);
 					}
 					return value;
@@ -6274,7 +6237,7 @@
 		return function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
 
 			if (arguments.length > 0) {
-				const new_value = mutation ? get(current_value) : runes && bindable ? proxy(value) : value;
+				const new_value = mutation ? get(current_value) : bindable ? proxy(value) : value;
 
 				if (!current_value.equals(new_value)) {
 					from_child = true;
@@ -13380,6 +13343,7 @@
 
 		let invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 15),
+			items = prop($$props, 'items', 31, () => proxy([])),
 			rest = rest_props(
 				$$props,
 				[
@@ -13388,15 +13352,18 @@
 					'$$legacy',
 					'$$host',
 					'invalid',
-					'value'
+					'value',
+					'items'
 				]);
 
-		let items = state(proxy(Array.from($$props.$$host.querySelectorAll("qc-option")).map((node) => ({
-			label: node.label ?? node.innerHTML,
-			value: node.value,
-			disabled: node.disabled,
-			checked: node.selected ?? false
-		}))));
+		function addOption(
+			label,
+			value,
+			disabled = false,
+			checked = false
+		) {
+			items().push({ label, value, disabled, checked });
+		}
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
@@ -13404,7 +13371,7 @@
 			DropdownList($$anchor, spread_props(
 				{
 					get items() {
-						return get(items);
+						return items();
 					},
 					get invalid() {
 						return invalid();
@@ -13423,6 +13390,9 @@
 		}
 
 		return pop({
+			get addOption() {
+				return addOption;
+			},
 			get invalid() {
 				return invalid();
 			},
@@ -13435,6 +13405,13 @@
 			},
 			set value($$value) {
 				value($$value);
+				flushSync();
+			},
+			get items() {
+				return items();
+			},
+			set items($$value = []) {
+				items($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -13470,22 +13447,52 @@
 				attribute: 'no-options-message',
 				type: 'String'
 			},
-			multiple: { attribute: 'multiple', type: 'Boolean' }
+			multiple: { attribute: 'multiple', type: 'Boolean' },
+			items: {}
 		},
 		[],
-		[],
+		['addOption'],
 		false
 	));
 
-	enable_legacy_mode_flag();
-
 	OptionWC[FILENAME] = 'src/sdg/components/Option/OptionWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div>`), OptionWC[FILENAME], [[11, 0]]);
+	var root = add_locations(template(`<div hidden><!></div>`), OptionWC[FILENAME], [[39, 0]]);
 
 	function OptionWC($$anchor, $$props) {
 		check_target(new.target);
-		push($$props, false);
+		push($$props, true);
+
+		let label = prop($$props, 'label', 7),
+			value = prop($$props, 'value', 7),
+			disabled = prop($$props, 'disabled', 7),
+			selected = prop($$props, 'selected', 7);
+
+		let index;
+		let parent = state(void 0);
+
+		onMount(() => {
+			set(parent, $$props.$$host.closest("qc-dropdown-list"), true);
+
+			if (get(parent)) {
+				get(parent).addOption(label() ?? $$props.$$host.innerHTML, value(), disabled(), selected());
+			}
+
+			index = get(parent).items.length - 1;
+		});
+
+		onDestroy(() => {
+			if (get(parent)) {
+				get(parent).items.splice(index, 1);
+			}
+		});
+
+		user_effect(() => {
+			if (get(parent)) {
+				selected(get(parent).items[index].checked);
+				$$props.$$host.dispatchEvent(new Event("change"));
+			}
+		});
 
 		var div = root();
 		var node = child(div);
@@ -13493,7 +13500,38 @@
 		slot(node, $$props, 'default', {});
 		reset(div);
 		append($$anchor, div);
-		return pop({ ...legacy_api() });
+
+		return pop({
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+			get selected() {
+				return selected();
+			},
+			set selected($$value) {
+				selected($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
 	}
 
 	customElements.define('qc-option', create_custom_element(
