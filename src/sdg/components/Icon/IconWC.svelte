@@ -7,7 +7,8 @@
       color: {attribute: 'color'},
       size: {attribute: 'size'},
       width: {attribute: 'width'},
-      height: {attribute: 'height'}
+      height: {attribute: 'height'},
+      src: {attribute: 'src'},
   }
 }}" />
 

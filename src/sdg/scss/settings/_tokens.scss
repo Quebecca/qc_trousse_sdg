@@ -96,7 +96,9 @@ $lg-tokens: (
           red: (
               pale: token-value(color pink pale),
               light: token-value(color pink regular),
+              regular_light: #eb705a,
               regular: #cb381f,
+              medium: #b52e16,
               dark: #692519,
           ),
           green: (
@@ -283,7 +285,9 @@ $themes-tokens: (
             regular: #BB3A23,
         ),
         red: (
+            regular_light: #D34027,
             regular: #F26049,
+            medium: #F19387,
             dark: #F3BCB6,
         ),
         green: (
