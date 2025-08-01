@@ -10,7 +10,7 @@ qc-search-input {
 %qc-search-wrapper {
   @extend %qc-formcontrol-box;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   &::before {
     border: 1px solid token-value(color formfield border);
   }
@@ -44,12 +44,21 @@ qc-search-input {
       display: none;
     }
     &::placeholder {
+      width: 100%;
       color: token-value(color grey medium);
       font-weight: normal;
+      overflow: hidden;
+    }
+    &:placeholder-shown {
+      text-overflow: ellipsis;
     }
     &:focus,&:focus-visible {
       outline: none;
     }
+  }
+
+  &.qc-search-left-icon {
+    padding-left: token-value(spacer, xs);
   }
 
   button {

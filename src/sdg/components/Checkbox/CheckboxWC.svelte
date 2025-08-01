@@ -28,7 +28,6 @@
 
 <script>
     import Checkbox from "./Checkbox.svelte";
-    import {Utils} from '../utils.js';
 
     let {
         parentGroup,
@@ -68,5 +67,5 @@
     bind:invalid
     {invalidText}
     {parentGroup}
-    {...Utils.computeFieldsAttributes("checkbox", rest)}
+    {...rest}
 ></Checkbox>

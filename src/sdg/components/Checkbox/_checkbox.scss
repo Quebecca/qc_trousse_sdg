@@ -91,3 +91,13 @@ input[type="checkbox"] {
     box-shadow: rem(2) 0 token-value(color, red, regular) inset;
   }
 }
+
+.qc-dropdown-list-checkbox {
+  @extend %check-row;
+  align-items: center;
+  flex-grow: 1;
+
+  input[type="checkbox"]:focus {
+    outline: none;
+  }
+}

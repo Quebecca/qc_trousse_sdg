@@ -1,0 +1,12 @@
+@use "../../../../scss/qc-sdg-lib" as *;
+
+.qc-dropdown-list-single {
+  padding-left: token-value(spacer, xs);
+  padding-right: token-value(spacer, xs);
+  margin: 0;
+}
+
+.qc-dropdown-list-single-selected {
+  background-color: token-value(color, blue, regular) !important;
+  color: token-value(color, white);
+}

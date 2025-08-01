@@ -52,7 +52,6 @@
     <li><a href='#alert'>Alerte générale</a></li>
     <li><a href='#notice'>Avis</a></li>
     <li><a href='#search-bar'>Barre de recherche</a></li>
-    <li><a href='#buttons'>Boutons</a></li>
     <li><a href='#piv'>Composants du PIV</a>
       <ul>
         <li><a href='#piv-header'>Bandeau d’en-tête du PIV</a>
@@ -65,6 +64,7 @@
     <li><a href="#selection-button">Boutons de sélection</a></li>
     <li><a href="#toggle-switch">Commutateur</a></li>
     <li><a href="#textfield">Champ texte</a></li>
+    <li><a href="#dropdown-list">Liste déroulante</a></li>
 
   </ul>
 </nav>
@@ -982,242 +982,6 @@
 
 <h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
 <p>Ce composant ne contient pas de DOM d’ombre.</p>
-
-    <h2 id="buttons">Boutons</h2>
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemples des différentes options de boutons.">
-    <div>
-        <qc-button variant="primary" label="Principal"></qc-button>
-        <qc-button variant="primary" rounded label="Principal"></qc-button>
-        <qc-button variant="primary" disabled label="Principal"></qc-button>
-        <qc-button variant="primary" compact label="Principal"></qc-button>
-    </div>
-
-    <div>
-        <qc-button variant="secondary" label="Secondaire"></qc-button>
-        <qc-button variant="secondary" rounded label="Secondaire"></qc-button>
-        <qc-button variant="secondary" disabled label="Secondaire"></qc-button>
-        <qc-button variant="secondary" compact label="Secondaire"></qc-button>
-    </div>
-
-    <div>
-        <qc-button variant="tertiary" label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" rounded label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" disabled label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" compact label="Tertiaire"></qc-button>
-    </div>
-
-    <div>
-        <qc-button variant="danger" label="Avertissement"></qc-button>
-        <qc-button variant="danger" rounded label="Avertissement"></qc-button>
-        <qc-button variant="danger" disabled label="Avertissement"></qc-button>
-        <qc-button variant="danger" compact label="Avertissement"></qc-button>
-    </div>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons avec un icone.">
-    <div>
-        <qc-button
-                variant="primary"
-                label="Ajouter"
-                icon="plus"
-                icon-position="left"
-        ></qc-button>
-
-        <qc-button
-                variant="primary"
-                label="Information"
-                icon="information"
-                icon-position="right"
-        ></qc-button>
-    </div>
-
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
-    <qc-button
-            variant="primary"
-            label="Questions"
-            icon-src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
-    ></qc-button>
-    <qc-button
-            variant="primary"
-            label="Questions"
-            icon-src="../../../../public/img/question.svg"
-    ></qc-button>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons simples.">
-    <div>
-        <qc-button variant="simple" label="Action" icon="information"></qc-button>
-        <qc-button variant="simple" disabled label="Action" icon="plus"></qc-button>
-        <qc-button variant="simple" compact label="Action" icon="external-link"></qc-button>
-    </div>
-</qc-doc-exemple>
-
-
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs de qc-button</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>variant</td>
-            <td>Texte</td>
-            <td>"primary"</td>
-            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
-        </tr>
-        <tr>
-            <td>label</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte affiché dans le bouton.</td>
-        </tr>
-        <tr>
-            <td>compact</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Affiche le bouton dans un format plus petit.</td>
-        </tr>
-        <tr>
-            <td>rounded</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
-        </tr>
-        <tr>
-            <td>disabled</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Désactive le bouton et empêche toute interaction.</td>
-        </tr>
-        <tr>
-            <td>icon</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Nom d’une icône présente dans la librairie du projet.</td>
-        </tr>
-        <tr>
-            <td>icon-position</td>
-            <td>"left" ou "right"</td>
-            <td>"left"</td>
-            <td>Positionne l’icône à gauche ou à droite du texte dans le bouton.</td>
-        </tr>
-        <tr>
-            <td>icon-src</td>
-            <td>Texte (base64)</td>
-            <td>""</td>
-            <td>Permet d’afficher une image personnalisée encodée en base64 à la place d’une icône de la librairie.</td>
-        </tbody>
-    </table>
-</div>
-
-<h4>Icônes disponibles</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Aperçu</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>arrow-up-white</td>
-            <td><qc-icon type="arrow-up-white"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>chevron-blue</td>
-            <td><qc-icon type="chevron-blue"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>chevron-white</td>
-            <td><qc-icon type="chevron-white"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>clipboard</td>
-            <td><qc-icon type="clipboard"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>error</td>
-            <td><qc-icon type="error"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>error-white</td>
-            <td><qc-icon type="error-white"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>external-link</td>
-            <td><qc-icon type="external-link"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>information</td>
-            <td><qc-icon type="information"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>information-white</td>
-            <td><qc-icon type="information-white"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>linkedin</td>
-            <td><qc-icon type="linkedin"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>loupe-piv-droite</td>
-            <td><qc-icon type="loupe-piv-droite"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>loupe-piv-fonce</td>
-            <td><qc-icon type="loupe-piv-fonce"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>minus</td>
-            <td><qc-icon type="minus"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>plus</td>
-            <td><qc-icon type="plus"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>question-mark</td>
-            <td><qc-icon type="question-mark"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>success</td>
-            <td><qc-icon type="success"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>success-white</td>
-            <td><qc-icon type="success-white"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>warning</td>
-            <td><qc-icon type="warning"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>xclose-blue</td>
-            <td><qc-icon type="xclose-blue"></qc-icon></td>
-        </tr>
-        <tr>
-            <td>xclose-white</td>
-            <td><qc-icon type="xclose-white"></qc-icon></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-
 
     <!-- bandeau d’entête PIV -->
     <h2 id="piv-header">Bandeau d’en-tête du PIV (qc-piv-header)</h2>
@@ -2304,13 +2068,164 @@
     <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.
 </p>
 
+
+    <!-- Commutateur -->
+<h2 id="toggle-switch">Commutateur</h2>
+<p>
+    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
+    commutateur agit immédiatement sur la page où il est inséré.
+</p>
+
+<h3>Exemples</h3>
+<qc-doc-exemple
+        caption="Exemple de commutateurs seuls avec leurs étiquettes respectivement à droite et à gauche"
+>
+    <div style="display: flex; flex-direction: column; gap: 2.4rem">
+        <qc-toggle-switch
+                id="switch-status"
+                label="Afficher l'état du commutateur à la console"
+        ></qc-toggle-switch>
+
+        <qc-toggle-switch
+                id="switch-status-right"
+                label="Afficher l'état du commutateur 2 à la console"
+                label-position="right"
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-status")
+            .addEventListener("change", (event) => {
+                console.log(`${event.target.id} mis à ${event.target.checked}`);
+            });
+
+        document.getElementById("switch-status-right")
+            .addEventListener("change", (event) => {
+                console.log(`${event.target.id} mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
+    <qc-toggle-switch-group
+        id="switch-group"
+        legend="Préférences de notifications de messages"
+    >
+        <qc-toggle-switch
+                label="Nouveaux messages"
+                checked
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Modifications de messages"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages où je suis mentionné(e)"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                label="Messages supprimés (indisponible)"
+                disabled
+        ></qc-toggle-switch>
+    </qc-toggle-switch-group>
+
+    <script>
+        document.getElementById("switch-group")
+            .addEventListener("change", (event) => {
+                console.log(`${event.target.id} mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs de <code>qc-toggle-switch</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>label</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu du libellé du commutateur</td>
+    </tr>
+    <tr>
+        <td>checked</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active le commutateur par défaut</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le commutateur</td>
+    </tr>
+    <tr>
+        <td>label-position</td>
+        <td>"left" ou "right"</td>
+        <td>"left"</td>
+        <td>
+            Position du libellé par rapport au commutateur
+            <br> N.B: le commutateur et son étiquette sont alignées sur la droite lorsque <code>label-position</code>
+            est à "left".
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Attributs de <code>qc-toggle-switch-group</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>legend</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu de la légende du groupe de commutateur</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>label-position</td>
+        <td>"left" ou "right"</td>
+        <td>"left"</td>
+        <td>
+            Position des libellés par rapport aux commutateurs.
+            <br> N.B: les commutateurs et leurs étiquettes sont alignées sur la droite lorsque <code>label-position</code>
+            est à "left".
+        </td>
+    </tr>
+    </tbody>
+</table>
+
     <h2 id="textfield">Champ texte</h2>
 
 <p>Le champ texte est un espace dans lequel est saisie une information qui tient sur une ou plusieurs lignes de texte.
   Il peut s’agir d’une combinaison de lettres, de chiffres et de symboles.</p>
 
 <qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
-  <form id="formulaire-champs-textes">
+  <form id="formulaire-champs-textes"
+        style="display: flex;
+               flex-direction: column;
+               gap: 3.2rem;"
+  >
     <qc-textfield
             name="text-sm"
             label="Entrez votre âge"
@@ -2325,28 +2240,18 @@
             placeholder="ex : G1A 1A1"
     ></qc-textfield>
 
-    <div class="qc-textfield-row">
-      <qc-textfield
-              name="telephone"
-              label="Téléphone"
-              size="md"
-              placeholder="(123) 456-7890"
-      ></qc-textfield>
-
-      <qc-textfield
-              name="poste"
-              label="Poste"
-              size="sm"
-              placeholder="1234"
-      ></qc-textfield>
-    </div>
-
+    <qc-textfield
+            name="phone"
+            label="Téléphone"
+            placeholder="(123) 456-7890"
+            size="md"
+    ></qc-textfield>
 
     <qc-textfield
-            name="text-lg"
-            label="Entrez votre ville"
-            size="lg"
-            placeholder="Ceci est un très long placeholder"
+            name="poste"
+            label="Poste"
+            placeholder="1234"
+            size="sm"
     ></qc-textfield>
 
     <qc-textfield
@@ -2399,21 +2304,13 @@
 
       requiredFields.forEach(field => {
         const value = field.value?.trim();
-        const maxLength = parseInt(field.getAttribute("max-length"), 10);
 
         if (!value) {
           field.invalid = true;
           isValid = false;
-          return;
+        } else {
+          field.invalid = false;
         }
-
-        if (!isNaN(maxLength) && value.length > maxLength) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        field.invalid = false;
       });
 
       if (isValid) {
@@ -2521,154 +2418,330 @@
 
 <hr/>
 
-    <!-- Commutateur -->
-<h2 id="toggle-switch">Commutateur</h2>
-<p>
-    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
-    commutateur agit immédiatement sur la page où il est inséré.
-</p>
+    <!-- Liste déroulante -->
+<h2 id="dropdown-list">Liste déroulante</h2>
 
 <h3>Exemples</h3>
-<qc-doc-exemple
-        caption="Exemple de commutateurs seuls avec leurs étiquettes respectivement à droite et à gauche"
->
-    <div style="display: flex; flex-direction: column; gap: 2.4rem">
-        <qc-toggle-switch
-                id="switch-status"
-                label="Afficher l'état du commutateur à la console"
-        ></qc-toggle-switch>
 
-        <qc-toggle-switch
-                id="switch-status-right"
-                label="Afficher l'état du commutateur 2 à la console"
-                label-position="right"
-        ></qc-toggle-switch>
-    </div>
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
+    <qc-dropdown-list
+        id="dropdown-list-single-choice"
+        label="Choix unique:"
+    >
+        <qc-option value="1" selected>Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-single-choice-no-scroll"
+            label="Choix unique avec recherche:"
+            enable-search
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16">Option 16</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-multiple-choices"
+            label="Choix multiples:"
+            multiple
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+        id="dropdown-list-disabled"
+        label="Désactivé:"
+        disabled
+    ></qc-dropdown-list>
 
     <script>
-        document.getElementById("switch-status")
-            .addEventListener("change", (event) => {
-                console.log(`'switch-status' mis à ${event.target.checked}`);
+        function mutationCallback(mutationsList, _) {
+            mutationsList.forEach(mutation => {
+                if (mutation.type === 'attributes') {
+                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
+                }
             });
+        }
 
-        document.getElementById("switch-status-right")
-            .addEventListener("change", (event) => {
-                console.log(`'switch-status-right' mis à ${event.target.checked}`);
-            });
+        const mutationObserver = new MutationObserver(mutationCallback);
+
+        const singleChoice = document.getElementById("dropdown-list-single-choice");
+        const singleChoiceNoScroll = document.getElementById("dropdown-list-single-choice-no-scroll");
+        const multipleChoice = document.getElementById("dropdown-list-multiple-choices");
+
+        mutationObserver.observe(singleChoice, { attributes: true });
+        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
+        mutationObserver.observe(multipleChoice, { attributes: true });
+
+        window.onbeforeunload = () => {
+            mutationObserver.disconnect();
+        }
     </script>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
-    <qc-toggle-switch-group
-        id="switch-group"
-        legend="Préférences de notifications de messages"
-    >
-        <qc-toggle-switch
-                id="nouveaux-messages"
-                label="Nouveaux messages"
-                checked
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="modifications-messages"
-                label="Modifications de messages"
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="messages-supprimes"
-                label="Messages supprimés (indisponible)"
-                disabled
-        ></qc-toggle-switch>
-    </qc-toggle-switch-group>
+<qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
+    <form id="dropdown-list-form">
+        <qc-dropdown-list
+            id="dropdown-list-restaurants"
+            label="Type de restaurant"
+            placeholder="Type de restaurant"
+            enable-search
+            search-placeholder="Rechercher un type restaurant"
+            required
+            invalid-text="Veuillez choisir un type de restaurant."
+        >
+            <qc-option value="Pizzeria">Pizzeria</qc-option>
+            <qc-option value="Pâtisserie">Pâtisserie</qc-option>
+            <qc-option value="Steakhouse">Steakhouse</qc-option>
+            <qc-option value="Bar">Bar</qc-option>
+            <qc-option value="Casse-croûte">Casse-croûte</qc-option>
+            <qc-option value="Boîte à pâtes">Boîte à pâtes</qc-option>
+            <qc-option value="Restaurant à burgers">Restaurant à burgers</qc-option>
+        </qc-dropdown-list>
+
+        <qc-dropdown-list
+            id="dropdown-list-regions"
+            label="Régions desservies"
+            placeholder="Sélectionner une région"
+            width="lg"
+            enable-search
+            search-placeholder="Rechercher les régions"
+            multiple
+        >
+            <qc-option value="Capitale-nationale">Capitale-nationale</qc-option>
+            <qc-option value="Centre-du-Québec" selected>Centre-du-Québec</qc-option>
+            <qc-option value="Montérégie" selected>Montérégie</qc-option>
+            <qc-option value="Outaouais">Outaouais</qc-option>
+            <qc-option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</qc-option>
+            <qc-option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</qc-option>
+            <qc-option value="Nord-du-Québec">Nord-du-Québec</qc-option>
+            <qc-option value="Bas-Saint-Laurent">Bas-Saint-Laurent</qc-option>
+        </qc-dropdown-list>
+
+        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+    </form>
 
     <script>
-        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
-            .forEach(switchElement => {
-                switchElement.addEventListener("change", (event) => {
-                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
-                });
+        const dropdownListForm = document.getElementById("dropdown-list-form");
+
+        dropdownListForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let isValid = true;
+
+            const requiredFields = dropdownListForm.querySelectorAll("qc-dropdown-list[required]");
+
+            requiredFields.forEach(field => {
+                const value = field.value?.trim();
+
+                if (!value) {
+                    field.invalid = true;
+                    isValid = false;
+                } else {
+                    field.invalid = false;
+                }
             });
+
+            if (isValid) {
+                const formEntries = dropdownListForm.querySelectorAll("qc-dropdown-list");
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                formEntries.forEach((field) => {
+                    alertParts.push(`${field.label}: ${field.value}`);
+                });
+                alert(alertParts.join("\n"));
+            }
+        });
     </script>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
 
-<h4>Attributs de <code>qc-toggle-switch</code></h4>
-<table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>label</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu du libellé du commutateur</td>
-    </tr>
-    <tr>
-        <td>checked</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Active le commutateur par défaut</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le commutateur</td>
-    </tr>
-    <tr>
-        <td>label-position</td>
-        <td>"left" ou "right"</td>
-        <td>"left"</td>
-        <td>
-            Position du libellé par rapport au commutateur
-            <br> N.B. : le commutateur et son étiquette sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
-        </td>
-    </tr>
-    </tbody>
-</table>
+<h4>Attributs de <code>qc-dropdown-list</code></h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Nombre aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>Libellé de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>"md"</td>
+            <td>Largeur de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> contient une donnée.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ `label` est obligatoire.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Active la sélection multiple</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
-<h4>Attributs de <code>qc-toggle-switch-group</code></h4>
-<table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>legend</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu de la légende du groupe de commutateur</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le groupe de commutateurs</td>
-    </tr>
-    <tr>
-        <td>label-position</td>
-        <td>"left" ou "right"</td>
-        <td>"left"</td>
-        <td>
-            Position des libellés par rapport aux commutateurs.
-            <br> N.B. : les commutateurs et leurs étiquettes sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
-        </td>
-    </tr>
-    </tbody>
-</table>
-
+<h4>Attributs de <code>qc-option</code></h4>
+<p> Ce composant ne produit aucun contenu HTML dans la page. Il fournit des données à son élément parent.</p>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>Corps du <code>qc-option</code></td>
+            <td>Texte de l'option</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Valeur de l'option</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive l'option</td>
+        </tr>
+        <tr>
+            <td>selected</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                État de sélection de l'option
+                <br> N.B. : Si l'attribut <code>multiple</code> est absent de la liste déroulante parente ou est mis à <code>false</code>,
+                la première option ayant l'attribut <code>selected</code> sera présélectionnée.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
   </div>
 </main>

@@ -1,0 +1,19 @@
+@use "../../../../scss/qc-sdg-lib" as *;
+
+.qc-dropdown-list-multiple {
+  margin: 0;
+
+  label {
+    margin: 0;
+    padding-left: token-value(spacer, xs);
+    padding-right: token-value(spacer, xs);
+
+    flex-grow: 1;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .qc-check-row {
+    height: 100%;
+  }
+}

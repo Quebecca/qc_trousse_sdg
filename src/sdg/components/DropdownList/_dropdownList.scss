@@ -1,0 +1,50 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "DropdownListItems/dropdownListItems";
+@use "DropdownListButton/dropdownListButton";
+@use "sass:math";
+
+$min-height: 40;
+$border: 1;
+
+.qc-dropdown-list {
+  position: relative;
+  border: rem($border) solid token-value(color, grey, medium);
+  min-height: rem($min-height);
+  background-color: token-value(color, background);
+
+  &.qc-dropdown-list-invalid {
+    border: rem(2) solid token-value(color, red, regular) !important;
+  }
+
+  &-xs { max-width: token-value(spacer, input, xs); }
+  &-sm { max-width: token-value(spacer, input, sm); }
+  &-md { max-width: token-value(spacer, input, md); }
+  &-lg { max-width: token-value(spacer, input, lg); }
+  &-xl { max-width: token-value(spacer, input, xl); }
+}
+
+.qc-dropdown-list-search {
+  margin: token-value(spacer, xs);
+
+  * {
+    z-index: 12;
+  }
+}
+
+.qc-dropdown-list-expanded {
+  position: absolute;
+  width: calc(100% + 2px);
+  left: -(rem($border));
+  right: -(rem($border));
+  top: 100%;
+  z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
+
+  background-color: token-value(color, background);
+  border-left: rem($border) solid token-value(color, grey, medium);
+  border-right: rem($border) solid token-value(color, grey, medium);
+  border-bottom: rem($border) solid token-value(color, grey, medium);
+}
+
+.qc-dropdown-list-hidden {
+  display: none;
+}

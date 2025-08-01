@@ -1,0 +1,324 @@
+<!-- Liste déroulante -->
+<h2 id="dropdown-list">Liste déroulante</h2>
+
+<h3>Exemples</h3>
+
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
+    <qc-dropdown-list
+        id="dropdown-list-single-choice"
+        label="Choix unique:"
+    >
+        <qc-option value="1" selected>Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-single-choice-no-scroll"
+            label="Choix unique avec recherche:"
+            enable-search
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16">Option 16</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+            id="dropdown-list-multiple-choices"
+            label="Choix multiples:"
+            multiple
+    >
+        <qc-option value="1">Option 1</qc-option>
+        <qc-option value="2">Option 2</qc-option>
+        <qc-option value="3">Option 3</qc-option>
+        <qc-option value="4">Option 4</qc-option>
+        <qc-option value="5">Option 5</qc-option>
+        <qc-option value="6">Option 6</qc-option>
+        <qc-option value="7">Option 7</qc-option>
+        <qc-option value="8">Option 8</qc-option>
+        <qc-option value="9">Option 9</qc-option>
+        <qc-option value="10">Option 10</qc-option>
+        <qc-option value="11">Option 11</qc-option>
+        <qc-option value="12">Option 12</qc-option>
+        <qc-option value="13">Option 13</qc-option>
+        <qc-option value="14">Option 14</qc-option>
+        <qc-option value="15">Option 15</qc-option>
+        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+    </qc-dropdown-list>
+
+    <qc-dropdown-list
+        id="dropdown-list-disabled"
+        label="Désactivé:"
+        disabled
+    ></qc-dropdown-list>
+
+    <script>
+        function mutationCallback(mutationsList, _) {
+            mutationsList.forEach(mutation => {
+                if (mutation.type === 'attributes') {
+                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
+                }
+            });
+        }
+
+        const mutationObserver = new MutationObserver(mutationCallback);
+
+        const singleChoice = document.getElementById("dropdown-list-single-choice");
+        const singleChoiceNoScroll = document.getElementById("dropdown-list-single-choice-no-scroll");
+        const multipleChoice = document.getElementById("dropdown-list-multiple-choices");
+
+        mutationObserver.observe(singleChoice, { attributes: true });
+        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
+        mutationObserver.observe(multipleChoice, { attributes: true });
+
+        window.onbeforeunload = () => {
+            mutationObserver.disconnect();
+        }
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
+    <form id="dropdown-list-form">
+        <qc-dropdown-list
+            id="dropdown-list-restaurants"
+            label="Type de restaurant"
+            placeholder="Type de restaurant"
+            enable-search
+            search-placeholder="Rechercher un type restaurant"
+            required
+            invalid-text="Veuillez choisir un type de restaurant."
+        >
+            <qc-option value="Pizzeria">Pizzeria</qc-option>
+            <qc-option value="Pâtisserie">Pâtisserie</qc-option>
+            <qc-option value="Steakhouse">Steakhouse</qc-option>
+            <qc-option value="Bar">Bar</qc-option>
+            <qc-option value="Casse-croûte">Casse-croûte</qc-option>
+            <qc-option value="Boîte à pâtes">Boîte à pâtes</qc-option>
+            <qc-option value="Restaurant à burgers">Restaurant à burgers</qc-option>
+        </qc-dropdown-list>
+
+        <qc-dropdown-list
+            id="dropdown-list-regions"
+            label="Régions desservies"
+            placeholder="Sélectionner une région"
+            width="lg"
+            enable-search
+            search-placeholder="Rechercher les régions"
+            multiple
+        >
+            <qc-option value="Capitale-nationale">Capitale-nationale</qc-option>
+            <qc-option value="Centre-du-Québec" selected>Centre-du-Québec</qc-option>
+            <qc-option value="Montérégie" selected>Montérégie</qc-option>
+            <qc-option value="Outaouais">Outaouais</qc-option>
+            <qc-option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</qc-option>
+            <qc-option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</qc-option>
+            <qc-option value="Nord-du-Québec">Nord-du-Québec</qc-option>
+            <qc-option value="Bas-Saint-Laurent">Bas-Saint-Laurent</qc-option>
+        </qc-dropdown-list>
+
+        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+    </form>
+
+    <script>
+        const dropdownListForm = document.getElementById("dropdown-list-form");
+
+        dropdownListForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let isValid = true;
+
+            const requiredFields = dropdownListForm.querySelectorAll("qc-dropdown-list[required]");
+
+            requiredFields.forEach(field => {
+                const value = field.value?.trim();
+
+                if (!value) {
+                    field.invalid = true;
+                    isValid = false;
+                } else {
+                    field.invalid = false;
+                }
+            });
+
+            if (isValid) {
+                const formEntries = dropdownListForm.querySelectorAll("qc-dropdown-list");
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                formEntries.forEach((field) => {
+                    alertParts.push(`${field.label}: ${field.value}`);
+                });
+                alert(alertParts.join("\n"));
+            }
+        });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs de <code>qc-dropdown-list</code></h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Nombre aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>Libellé de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>"md"</td>
+            <td>Largeur de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> contient une donnée.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ `label` est obligatoire.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Active la sélection multiple</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h4>Attributs de <code>qc-option</code></h4>
+<p> Ce composant ne produit aucun contenu HTML dans la page. Il fournit des données à son élément parent.</p>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>Corps du <code>qc-option</code></td>
+            <td>Texte de l'option</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Valeur de l'option</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive l'option</td>
+        </tr>
+        <tr>
+            <td>selected</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                État de sélection de l'option
+                <br> N.B. : Si l'attribut <code>multiple</code> est absent de la liste déroulante parente ou est mis à <code>false</code>,
+                la première option ayant l'attribut <code>selected</code> sera présélectionnée.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

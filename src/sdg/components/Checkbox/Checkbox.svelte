@@ -1,7 +1,6 @@
 <script>
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
-    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -14,10 +13,12 @@
         required = false,
         compact,
         tiled,
+        dropdownListItem,
         description,
         invalid  = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         parentGroup,
+        handleChange = () => {},
         ...rest
     } = $props();
     
@@ -29,18 +30,23 @@
         }
     });
 
-
+    function chooseCheckboxClass() {
+        if (tiled) {
+            return "qc-selection-button";
+        }
+        if (dropdownListItem) {
+            return "qc-dropdown-list-checkbox";
+        }
+        return "qc-check-row";
+    }
 </script>
 
 {#snippet checkboxRow()}
     <label
-            class={[
-            !tiled && "qc-check-row",
-            tiled && "qc-selection-button"
-        ]}
+            class={chooseCheckboxClass()}
             for={id}>
         <input
-                class={(!parentGroup && compact) || tiled ? "qc-compact" : ""}
+                class={compact || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}
@@ -49,8 +55,13 @@
                 bind:checked
                 aria-required = {required}
                 aria-invalid={invalid}
-                {...rest}
-                onchange={() => { if (checked) invalid = false}}
+                {...Utils.computeFieldsAttributes("checkbox", rest)}
+                onchange={(e) => {
+                    if (checked) {
+                        invalid = false;
+                    }
+                    handleChange(e, value);
+                }}
         />
         <span class="qc-check-text">
             <span class="qc-check-label">{label}</span>
