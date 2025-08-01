@@ -1,6 +1,9 @@
 <h2 id="checkbox">Cases à cocher</h2>
 
-<p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
+<p>
+  Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.
+  <br/> Les cases à cocher sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+</p>
 
 <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
   <form id="exemple-tos-form">
@@ -25,10 +28,10 @@
       event.preventDefault();
       if(termsAcceptance.checked) {
         const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantees :"];
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
         for (const [key, value] of formData.entries()) {
           alertParts.push(`${key} : ${value}`);
-        };
+        }
         alert(alertParts.join("\n"));
       } else {
         termsAcceptance.invalid = true;
@@ -129,7 +132,7 @@
 </qc-doc-exemple>
 
 
-<h3>Documentation technique</h3>
+<h3 id="checkbox-attributes">Documentation technique</h3>
 
 <h4>Attributs de qc-checkbox</h4>
 <div class="table-overflow">
@@ -270,3 +273,5 @@
     </tbody>
   </table>
 </div>
+
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>

@@ -6,22 +6,19 @@
         checked = $bindable(false),
         invalid = $bindable(false),
         value = $bindable([]),
-        updateValue = () => {},
-        children,
         ...restProps
     } = $props();
 
 
-
-
-    $effect(_ => {
-        // console.log("cb group svelte effect")
-        checked = !(!value || value.length === 0)
+    let updateValue = function () {
+        value = formFieldElements
+            .map(cb => cb.querySelector("input").checked ? cb.value : false)
+            .filter(x => x);
+        checked = value.length > 0;
         if (checked) {
             invalid = false;
         }
-    });
-
+    }
 </script>
 
 <Fieldset
@@ -31,7 +28,5 @@
         bind:invalid
         {updateValue}
         {formFieldElements}
->
-    {@render children?.()}
-</Fieldset>
+/>
 

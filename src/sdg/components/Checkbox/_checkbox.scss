@@ -3,7 +3,7 @@
 @use "../CheckFieldGroup/checkRow" as *;
 
 input[type="checkbox"] {
-  .qc-check-row &:checked {
+  &:checked {
 
     background-color: token-value(color blue regular);
 
@@ -32,10 +32,26 @@ input[type="checkbox"] {
       height: rem(18);
 
     }
+
+    &.qc-compact {
+      &::before {
+        width: rem(8);
+        height: rem(5);
+        border: rem(2) solid token-value(color, blue, regular);
+        border-top: 0;
+        border-right: 0;
+        transform: rotate(-45deg);
+        top: rem(1);
+      }
+
+      &::after {
+        width: token-value(spacer, sm);
+        height: rem(12);
+      }
+    }
   }
 
   .qc-compact &:checked {
-
     &::before {
       width: rem(8);
       height: rem(5);
@@ -51,17 +67,27 @@ input[type="checkbox"] {
       height: rem(12);
     }
   }
-
 }
-
 
 .qc-checkbox-single {
   display: flex;
   flex-direction: column;
-  gap: rem(16);
   margin-bottom: token-value(spacer content-block mb);
+  width: fit-content;
+
+  label {
+    flex-grow: 0;
+  }
 
   &.qc-checkbox-single-invalid {
     @extend .qc-fieldset-invalid;
+  }
+}
+
+.checkbox-single {
+  padding-left: token-value(spacer, xs);
+
+  &.checkbox-single-invalid {
+    box-shadow: rem(2) 0 token-value(color, red, regular) inset;
   }
 }

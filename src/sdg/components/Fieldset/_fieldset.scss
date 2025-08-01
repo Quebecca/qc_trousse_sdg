@@ -1,16 +1,13 @@
 @use "../../scss/qc-sdg-lib" as *;
 
 .qc-fieldset {
-  display: flex;
-  flex-direction: column;
   border: none;
   padding: 0;
   margin: 0 0 token-value(spacer content-block mb);
-  justify-items: center;
-  row-gap: token-value(spacer, sm);
+  justify-items: start;
   legend {
     font-weight: token-value(font weight content bold);
-    display: block;
+    display: inline-block;
     margin-bottom: token-value(spacer, md);
   }
   &.qc-compact {
@@ -32,6 +29,45 @@ $invalid-border-width: 2px;
   margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
 }
 
+%tiled-gap {
+  gap: token-value(spacer, xs);
+}
 
+.qc-field-elements-tiled-flex-row {
+  @extend %tiled-gap;
+  display: inline-flex;
+  flex-wrap: wrap;
 
+  .qc-check-row-parent {
+    flex-grow: 0;
+  }
+}
+
+.qc-field-elements-tiled {
+  @extend %tiled-gap;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+
+  @include media-mobile() {
+    grid-template-columns: 1fr;
+  }
+}
+
+.qc-field-elements-flex {
+  display: flex;
+  flex-direction: column;
+  max-width: fit-content;
+}
+
+.qc-field-elements-flex-sm {
+  gap: token-value(spacer, sm);
+}
+
+.qc-field-elements-flex-md {
+  gap: token-value(spacer, md);
+}
+
+.qc-justify-end {
+  justify-items: end;
+}
 

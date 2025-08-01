@@ -6,7 +6,10 @@
         required: { attribute: 'required', type: 'Boolean' },
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
-        invalidText: { attribute: 'invalid-text', type: 'String' }
+        invalidText: { attribute: 'invalid-text', type: 'String' },
+        tiled: {attribute: 'tiled', type: 'Boolean'},
+        columnCount: {attribute: 'column-count', type: 'String'},
+        inline: {attribute: 'inline', type: 'Boolean'}
     },
     extend: (customElementConstructor) => {
         return class extends customElementConstructor {
@@ -14,6 +17,9 @@
             constructor() {
                 super();
                 this.formFieldElements = Array.from(this.querySelectorAll('qc-checkbox'));
+                this.formFieldElements.forEach((element) => {
+                    element.classList.add('qc-check-row-parent');
+                })
             }
         };
     }
@@ -32,7 +38,10 @@
         required,
         disabled,
         invalid = $bindable(false),
-        invalidText
+        invalidText,
+        tiled,
+        columnCount,
+        inline,
     } = $props();
 
     let updateValue = function () {
@@ -54,5 +63,8 @@
     bind:invalid
     {disabled}
     {invalidText}
+    {tiled}
+    {columnCount}
+    {inline}
     {updateValue}
 />

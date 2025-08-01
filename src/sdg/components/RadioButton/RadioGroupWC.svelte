@@ -31,7 +31,7 @@
 }}" />
 
 <script>
-    import CheckFieldGroup from "./CheckFieldGroup.svelte";
+    import RadioGroup from "./RadioGroup.svelte";
 
     let {
         name,
@@ -51,19 +51,19 @@
 
 </script>
 
-<CheckFieldGroup
-        {name}
-        {legend}
-        {compact}
-        {formFieldElements}
-        {required}
-        {disabled}
-        bind:invalid
-        {invalidText}
-        bind:value
-        bind:checked
-        {tiled}
-        {columnCount}
-        {inline}
+<RadioGroup
+    {name}
+    {legend}
+    {compact}
+    {formFieldElements}
+    {required}
+    {disabled}
+    {invalid}
+    {invalidText}
+    bind:value
+    bind:checked
+    {tiled}
+    {columnCount}
+    {inline}
 />
 

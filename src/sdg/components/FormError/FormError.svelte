@@ -6,19 +6,18 @@ let {invalid , invalidText, id} = $props();
 
 </script>
 {#if invalid}
-    <div class="qc-form-error"
-         role="alert"
-         {id}>
-        {#await tick()}
-            <!-- svelte-ignore block_empty -->
-        {:then}
-            <Icon
-                    type="warning"
-                    color="red-regular"
-                    width="var(--error-icon-width)"
-                    height="var(--error-icon-height)"
-            />
-            <span>{@html invalidText}</span>
-        {/await}
-    </div>
+<div class="qc-form-error"
+     role="alert">
+    {#await tick()}
+    <!-- svelte-ignore block_empty -->
+    {:then _}
+        <Icon
+                type="warning"
+                color="red-regular"
+                width="var(--error-icon-width)"
+                height="var(--error-icon-height)"
+        />
+        <span>{@html invalidText}</span>
+    {/await}
+</div>
 {/if}

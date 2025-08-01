@@ -1,0 +1,41 @@
+<svelte:options customElement={{
+    tag: 'qc-toggle-switch-group',
+    shadow: 'none',
+    props: {
+        legend: {attribute:'legend', type: 'String'},
+        disabled: {attribute:'disabled', type: 'Boolean'},
+        labelPosition: {attribute:'label-position', type: 'String'},
+    }
+}} />
+
+<script>
+    import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.svelte";
+    import CheckFieldGroup from "./CheckFieldGroup.svelte";
+
+    let {
+        disabled = $bindable(false),
+        labelPosition = "left",
+        items = $bindable([]),
+        ...rest
+    } = $props();
+
+
+
+</script>
+
+<CheckFieldGroup
+    elementsGap="md"
+    justifyEnd={labelPosition !== "right"}
+    {...rest}
+>
+    {#each items as item, _id}
+        <ToggleSwitch
+            id={item.id}
+            label={item.label}
+            bind:checked={item.checked}
+            disabled={item.disabled ?? disabled}
+            {labelPosition}
+        />
+    {/each}
+</CheckFieldGroup>
+

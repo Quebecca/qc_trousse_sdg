@@ -4,11 +4,13 @@
     props: {
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
+        description: {attribute: 'description', type: 'String'},
         name: { attribute: 'name', type: 'String' },
         disabled: { attribute: 'disabled', type: 'Boolean' },
         checked: { attribute: 'checked', type: 'Boolean', reflect: true },
         required: { attribute: 'required', type: 'Boolean' },
         compact: { attribute: 'compact', type: 'Boolean' },
+        tiled: {attribute: 'tiled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' }
     },
@@ -31,12 +33,14 @@
     let {
         parentGroup,
         value, 
-        label, 
+        label,
+        description,
         name,
-        disabled, 
+        disabled = $bindable(false),
+        required = $bindable(false),
         checked = $bindable(false),
-        required, 
         compact,
+        tiled,
         invalid = $bindable(false),
         invalidText,
         ...rest
@@ -49,16 +53,17 @@
         name = parentGroup.name
     }
 
-
 </script>
 
 <Checkbox
     {value}
     label={label ?? value}
     {name}
-    disabled={parentGroup?.disabled ?? disabled}
+    {description}
+    disabled={disabled ?? parentGroup?.disabled}
     bind:checked
     required={parentGroup?.required ?? required}
+    tiled={parentGroup?.tiled ?? tiled}
     {compact}
     bind:invalid
     {invalidText}

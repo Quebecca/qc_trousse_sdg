@@ -6,23 +6,42 @@
     let {
         legend,
         name,
+        tiled = false,
+        inline = false,
+        columnCount = 1,
         compact,
         required = false,
         disabled,
         invalid = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        children,
         updateValue = () => {},
-        formFieldElements
+        formFieldElements,
+        elementsGap = "sm",
+        justifyEnd = false,
+        children
     } = $props();
-    let legendElement,
+    let groupSelection = $state(),
         legendId = name
             ? "id_" + name
             : "legend-" + Math.floor(Math.random() * 1000000 );
     onMount(() => {
-        legendElement.after(...formFieldElements);
+        if (formFieldElements) {
+            groupSelection.append(...formFieldElements);
+        }
     });
+
+    function chooseDivCLass(inline, tiled) {
+        if (tiled) {
+            if (inline) {
+                return "qc-field-elements-tiled-flex-row";
+            } else {
+                return "qc-field-elements-tiled";
+            }
+        }
+        return "qc-field-elements-flex";
+    }
 </script>
+
 <fieldset class={[
             invalid && "qc-fieldset-invalid",
             "qc-fieldset",
@@ -30,16 +49,24 @@
             disabled && "qc-disabled"]}
           aria-describedby={legendId}
           onchange={updateValue}
-    >
-    <legend id={legendId}
-            bind:this={legendElement}
-    >
+>
+    <legend id={legendId}>
         {@html legend}
         {#if required}
             <span class="qc-required" aria-hidden="true">*</span>
         {/if}
     </legend>
-    {@render children?.()}
+    <div
+            class={[
+                chooseDivCLass(inline, tiled),
+                // justifyEnd && "qc-justify-end",
+                !tiled && `qc-field-elements-flex-${elementsGap}`,
+            ]}
+            style="--column-count: {columnCount}"
+            bind:this={groupSelection}
+    >
+        {@render children?.()}
+    </div>
     <FormError {invalid} {invalidText} />
 
 </fieldset>

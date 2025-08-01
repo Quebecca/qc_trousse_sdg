@@ -1,0 +1,147 @@
+<!-- Commutateur -->
+<h2 id="toggle-switch">Commutateur</h2>
+<p>
+    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
+    commutateur agit immédiatement sur la page où il est inséré.
+</p>
+
+<h3>Exemples</h3>
+<qc-doc-exemple
+        caption="Exemple de commutateurs seuls avec leurs étiquettes respectivement à droite et à gauche"
+>
+    <div style="display: flex; flex-direction: column; gap: 2.4rem">
+        <qc-toggle-switch
+                id="switch-status"
+                label="Afficher l'état du commutateur à la console"
+        ></qc-toggle-switch>
+
+        <qc-toggle-switch
+                id="switch-status-right"
+                label="Afficher l'état du commutateur 2 à la console"
+                label-position="right"
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-status")
+            .addEventListener("change", (event) => {
+                console.log(`'switch-status' mis à ${event.target.checked}`);
+            });
+
+        document.getElementById("switch-status-right")
+            .addEventListener("change", (event) => {
+                console.log(`'switch-status-right' mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
+    <qc-toggle-switch-group
+        id="switch-group"
+        legend="Préférences de notifications de messages"
+    >
+        <qc-toggle-switch
+                id="nouveaux-messages"
+                label="Nouveaux messages"
+                checked
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="modifications-messages"
+                label="Modifications de messages"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="messages-supprimes"
+                label="Messages supprimés (indisponible)"
+                disabled
+        ></qc-toggle-switch>
+    </qc-toggle-switch-group>
+
+    <script>
+        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
+            .forEach(switchElement => {
+                switchElement.addEventListener("change", (event) => {
+                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
+                });
+            });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs de <code>qc-toggle-switch</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>label</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu du libellé du commutateur</td>
+    </tr>
+    <tr>
+        <td>checked</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active le commutateur par défaut</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le commutateur</td>
+    </tr>
+    <tr>
+        <td>label-position</td>
+        <td>"left" ou "right"</td>
+        <td>"left"</td>
+        <td>
+            Position du libellé par rapport au commutateur
+            <br> N.B. : le commutateur et son étiquette sont alignées sur la droite du parent lorsque <code>label-position</code>
+            est à "left".
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Attributs de <code>qc-toggle-switch-group</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>legend</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu de la légende du groupe de commutateur</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>label-position</td>
+        <td>"left" ou "right"</td>
+        <td>"left"</td>
+        <td>
+            Position des libellés par rapport aux commutateurs.
+            <br> N.B. : les commutateurs et leurs étiquettes sont alignées sur la droite du parent lorsque <code>label-position</code>
+            est à "left".
+        </td>
+    </tr>
+    </tbody>
+</table>
