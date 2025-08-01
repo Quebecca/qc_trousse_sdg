@@ -602,92 +602,128 @@
 <h3>Exemples</h3>
 
 <qc-doc-exemple
-        caption="Exemple de boutons radio de taille moyenne avec une option désactivée et une option présélectionnée">
-    <fieldset aria-describedby="id_ex-md" class="qc-fieldset">
-        <legend id="id_ex-md">Choisissez une option : </legend>
-            <div class="qc-check-row"><input type="radio" id="ex-md_option 1" name="ex-md" value="option 1"
-                                             aria-invalid="false"> <label for="ex-md_option 1" class="qc-label">Option 1
-                 </label></div>
+        caption="Exemple de boutons radio avec différents états">
+    <fieldset id="base-exemple-radio-md" aria-describedby="base-id_ex-md" class="qc-fieldset">
+        <legend id="base-id_ex-md">Choisissez une option :</legend>
 
-            <div class="qc-check-row"><input type="radio" id="ex-md_option 2" name="ex-md" value="option 2"
-                                             aria-invalid="false"> <label for="ex-md_option 2" class="qc-label">Option 2
-                 </label></div>
-            <div class="qc-check-row"><input type="radio" id="ex-md_option 3" name="ex-md" value="option 3"
-                                             aria-invalid="false" disabled=""> <label for="ex-md_option 3"
-                                                                                      class="qc-label qc-disabled">Option
-                3 (désactivée) </label></div>
-        </fieldset>
+        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+            <label for="base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 1-fxwctmlnrb" name="base-ex-md" value="option 1" aria-required="false" aria-invalid="false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 1</span>
+                </span>
+            </label>
+
+            <label for="base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 2-b3fdtujwgpi" name="base-ex-md" value="option 2" aria-required="false" aria-invalid="false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 2</span>
+                </span>
+            </label>
+
+            <label for="base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-md" value="option 3" aria-required="false" aria-invalid="false" disabled="">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 3 (désactivée)</span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
 
     <script>
-        const group = document.getElementById("exemple-radio-md");
+        const baseGroup = document.getElementById("base-exemple-radio-md");
 
-        group.addEventListener("change", () => {
-            const checkedValue = group.querySelector("input:checked").value;
+        baseGroup.addEventListener("change", () => {
+            console.log(baseGroup.querySelector("input:checked").value);
         });
     </script>
 </qc-doc-exemple>
 
 <qc-doc-exemple
         caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
-    <qc-radio-group legend="Choisissez une option :"
-                    name="ex-sm"
-                    compact>
-        <qc-radio-button
-                label="Option 1"
-                value="1"
-                checked
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 3 (désactivée)"
-                value="3"
-                disabled
-        ></qc-radio-button>
-    </qc-radio-group>
+    <fieldset id="compact-base-exemple-radio-md" aria-describedby="base-id_ex-sm" class="qc-fieldset qc-compact">
+        <legend id="compact-base-id_ex-md">Choisissez une option :</legend>
+
+        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+            <label for="compact-base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 1-fxwctmlnrb" name="base-ex-sm" value="option 1" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 1</span>
+                    </span>
+            </label>
+
+            <label for="compact-base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 2-b3fdtujwgpi" name="base-ex-sm" value="option 2" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 2</span>
+                    </span>
+            </label>
+
+            <label for="compact-base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-sm" value="option 3" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 3</span>
+                    </span>
+            </label>
+        </div>
+    </fieldset>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
-    <form id="radio-form">
-        <qc-radio-group
-                id="radio-group"
-                legend="Quel est votre niveau de scolarité?"
-                name="ex-md-form"
-                required
-                invalid-text="Veuillez sélectionner un niveau de scolarité."
-        >
-            <qc-radio-button
-                    label="Secondaire"
-                    value="secondaire"
-            ></qc-radio-button>
-            <qc-radio-button
-                    label="Professionnel"
-                    value="professionnel"
-            ></qc-radio-button>
-            <qc-radio-button
-                    label="Collégial"
-                    value="collegial"
-            ></qc-radio-button>
-            <qc-radio-button
-                    label="Universitaire"
-                    value="universitaire"
-            ></qc-radio-button>
-        </qc-radio-group>
+    <form id="base-radio-form">
+        <fieldset id="base-exemple-radio-form" aria-describedby="base-id_ex-form" class="qc-fieldset">
+            <legend id="base-id_ex-form">Quel est votre niveau de scolarité?</legend>
 
-        <qc-radio-group legend="Êtes-vous présentement aux études?"
-                        name="ex-md-form-2"
-        >
-            <qc-radio-button
-                    label="Oui"
-                    value="oui"
-            ></qc-radio-button>
-            <qc-radio-button
-                    label="Non"
-                    value="non"
-            ></qc-radio-button>
-        </qc-radio-group>
+            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;" data-required="true">
+                <label for="base-ex-form-option 1-fxwctmlnrb" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 1-fxwctmlnrb" name="base-ex-form" value="Secondaire" aria-required="true" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Secondaire</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 2-b3fdtujwgpi" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 2-b3fdtujwgpi" name="base-ex-form" value="Professionnel" aria-required="true" aria-invalid="false">
+                        <span class="qc-check-text">
+                    <span class="qc-check-label">Professionnel</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 3-b2gsaxhwn6a" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 3-b2gsaxhwn6a" name="base-ex-form" value="Collégial" aria-required="true" aria-invalid="false">
+                        <span class="qc-check-text">
+                    <span class="qc-check-label">Collégial</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 4-b2gsaxhwn6a" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 4-b2gsaxhwn6a" name="base-ex-form" value="Universitaire" aria-required="true" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Universitaire</span>
+                    </span>
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset id="base-exemple-radio-form-2" aria-describedby="base-id_ex-form-2" class="qc-fieldset" data-required="false">
+            <legend id="base-id_ex-form-2">Êtes-vous présentement aux études?</legend>
+
+            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+                <label for="base-ex-form-2-option 1-fxwctmlnrb" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-2-option 1-fxwctmlnrb" name="base-ex-form-2" value="oui" aria-required="false" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Oui</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-2-option 2-b3fdtujwgpi" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-2-option 2-b3fdtujwgpi" name="base-ex-form-2" value="non" aria-required="false" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Non</span>
+                    </span>
+                </label>
+            </div>
+        </fieldset>
 
         <button class="btn btn-sm btn-primary" type="submit">
             Soumettre
@@ -695,13 +731,13 @@
     </form>
 
     <script>
-
         document
-            .getElementById("radio-form")
-            .addEventListener("submit", (e) => {
+            .getElementById("base-radio-form")
+            .addEventListener("submit", (event) => {
                 event.preventDefault();
+                console.log("called");
                 let doSubmit = true;
-                e.target.querySelectorAll("[required]").forEach(group => {
+                event.target.querySelectorAll("div[data-required='true']").forEach(group => {
                     if (!group.checked) {
                         group.invalid = true;
                         doSubmit = false;
