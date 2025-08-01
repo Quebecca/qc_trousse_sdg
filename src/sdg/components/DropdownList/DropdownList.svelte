@@ -197,13 +197,11 @@
 </script>
 
 <svelte:document onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class={[
-    'qc-textfield-container',
-     disabled && "qc-disabled"
-]}>
+<div class="qc-textfield-container">
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <label
+        class={disabled && "qc-disabled"}
         for={inputId}
         id={labelId}
         onclick={(e) => {
