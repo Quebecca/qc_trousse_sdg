@@ -18,10 +18,12 @@
   "author": "MCE",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^24.1.0",
     "autoprefixer": "^10.4.7",
     "del": "^8.0.0",
     "highlight.js": "^11.8.0",
@@ -41,6 +43,7 @@
     "svelte": "^5.28.6"
   },
   "dependencies": {
+    "playwright": "^1.54.2",
     "postcss-import": "^16.1.0",
     "postcss-scss": "^4.0.9",
     "rollup-plugin-postcss": "^4.0.2",
