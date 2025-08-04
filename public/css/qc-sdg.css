@@ -2242,7 +2242,6 @@ qc-textfield {
 .qc-textfield-description {
   font-size: var(--qc-font-size-sm);
   color: var(--qc-color-blue-dark);
-  height: 2rem;
   line-height: 2rem;
 }
 
@@ -2261,7 +2260,6 @@ qc-textfield {
   margin-top: 0.4rem;
   color: var(--qc-color-blue-dark);
   font-size: var(--qc-font-size-sm);
-  height: 2rem;
   line-height: 2rem;
 }
 .qc-textfield-charcount.max-reached {
