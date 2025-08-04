@@ -1,272 +1,272 @@
-<h2 id="checkbox">Cases à cocher</h2>
+<!--<h2 id="checkbox">Cases à cocher</h2>-->
 
-<p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
+<!--<p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>-->
 
-<qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
-  <form id="exemple-tos-form">
-    <qc-checkbox
-            id="exemple-une-case"
-            name="consentement"
-            label="J’accepte les conditions d’utilisation"
-            value="oui"
-            required
-    ></qc-checkbox>
+<!--<qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">-->
+<!--  <form id="exemple-tos-form">-->
+<!--    <qc-checkbox-->
+<!--            id="exemple-une-case"-->
+<!--            name="consentement"-->
+<!--            label="J’accepte les conditions d’utilisation"-->
+<!--            value="oui"-->
+<!--            required-->
+<!--    ></qc-checkbox>-->
 
-    <button class="btn btn-sm btn-primary"
-            type="submit">
-      S'inscrire
-    </button>
-  </form>
+<!--    <button class="btn btn-sm btn-primary"-->
+<!--            type="submit">-->
+<!--      S'inscrire-->
+<!--    </button>-->
+<!--  </form>-->
 
-  <script>
-    const tosForm = document.getElementById("exemple-tos-form");
-    const termsAcceptance = document.getElementById("exemple-une-case")
-    tosForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if(termsAcceptance.checked) {
-        const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantees :"];
-        for (const [key, value] of formData.entries()) {
-          alertParts.push(`${key} : ${value}`);
-        };
-        alert(alertParts.join("\n"));
-      } else {
-        termsAcceptance.invalid = true;
-      }
-    })
-  </script>
-</qc-doc-exemple>
+<!--  <script>-->
+<!--    const tosForm = document.getElementById("exemple-tos-form");-->
+<!--    const termsAcceptance = document.getElementById("exemple-une-case")-->
+<!--    tosForm.addEventListener("submit", (event) => {-->
+<!--      event.preventDefault();-->
+<!--      if(termsAcceptance.checked) {-->
+<!--        const formData = new FormData(event.target);-->
+<!--        let alertParts = ["Formulaire soumis avec les données suivantees :"];-->
+<!--        for (const [key, value] of formData.entries()) {-->
+<!--          alertParts.push(`${key} : ${value}`);-->
+<!--        };-->
+<!--        alert(alertParts.join("\n"));-->
+<!--      } else {-->
+<!--        termsAcceptance.invalid = true;-->
+<!--      }-->
+<!--    })-->
+<!--  </script>-->
+<!--</qc-doc-exemple>-->
 
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
-  <qc-checkbox-group legend="Sélectionnez vos options">
-    <qc-checkbox label="Option 1"></qc-checkbox>
-    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
-  </qc-checkbox-group>
-</qc-doc-exemple>
+<!--<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">-->
+<!--  <qc-checkbox-group legend="Sélectionnez vos options">-->
+<!--    <qc-checkbox label="Option 1"></qc-checkbox>-->
+<!--    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>-->
+<!--    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>-->
+<!--  </qc-checkbox-group>-->
+<!--</qc-doc-exemple>-->
 
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">
-  <qc-checkbox-group
-          legend="Sélectionnez vos options"
-          name="options"
-          compact
-  >
-    <qc-checkbox value="Option 1"></qc-checkbox>
-    <qc-checkbox value="Option 2"></qc-checkbox>
-    <qc-checkbox value="Option 3"></qc-checkbox>
-  </qc-checkbox-group>
-</qc-doc-exemple>
+<!--<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">-->
+<!--  <qc-checkbox-group-->
+<!--          legend="Sélectionnez vos options"-->
+<!--          name="options"-->
+<!--          compact-->
+<!--  >-->
+<!--    <qc-checkbox value="Option 1"></qc-checkbox>-->
+<!--    <qc-checkbox value="Option 2"></qc-checkbox>-->
+<!--    <qc-checkbox value="Option 3"></qc-checkbox>-->
+<!--  </qc-checkbox-group>-->
+<!--</qc-doc-exemple>-->
 
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">
-  <form id="checkbox-form">
-    <qc-checkbox-group
-            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
-            name="ex-checkbox-form"
-            required
-            invalid-text="Veuillez sélectionner une plateforme."
-    >
-      <qc-checkbox
-              label="Ordinateur"
-              value="ordinateur"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Tablette"
-              value="tablette"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Téléphone intelligent"
-              value="telephone_intelligent"
-      ></qc-checkbox>
-    </qc-checkbox-group>
+<!--<qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">-->
+<!--  <form id="checkbox-form">-->
+<!--    <qc-checkbox-group-->
+<!--            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"-->
+<!--            name="ex-checkbox-form"-->
+<!--            required-->
+<!--            invalid-text="Veuillez sélectionner une plateforme."-->
+<!--    >-->
+<!--      <qc-checkbox-->
+<!--              label="Ordinateur"-->
+<!--              value="ordinateur"-->
+<!--      ></qc-checkbox>-->
+<!--      <qc-checkbox-->
+<!--              label="Tablette"-->
+<!--              value="tablette"-->
+<!--      ></qc-checkbox>-->
+<!--      <qc-checkbox-->
+<!--              label="Téléphone intelligent"-->
+<!--              value="telephone_intelligent"-->
+<!--      ></qc-checkbox>-->
+<!--    </qc-checkbox-group>-->
 
-    <qc-checkbox-group
-            legend="Sur quel navigateur consultez-vous www.quebec.ca?"
-            name="ex-checkbox-form-2"
-    >
-      <qc-checkbox
-              label="Chrome"
-              value="chrome"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Safari"
-              value="safari"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Firefox"
-              value="firefox"
-      ></qc-checkbox>
-    </qc-checkbox-group>
+<!--    <qc-checkbox-group-->
+<!--            legend="Sur quel navigateur consultez-vous www.quebec.ca?"-->
+<!--            name="ex-checkbox-form-2"-->
+<!--    >-->
+<!--      <qc-checkbox-->
+<!--              label="Chrome"-->
+<!--              value="chrome"-->
+<!--      ></qc-checkbox>-->
+<!--      <qc-checkbox-->
+<!--              label="Safari"-->
+<!--              value="safari"-->
+<!--      ></qc-checkbox>-->
+<!--      <qc-checkbox-->
+<!--              label="Firefox"-->
+<!--              value="firefox"-->
+<!--      ></qc-checkbox>-->
+<!--    </qc-checkbox-group>-->
 
-    <button class="btn btn-sm btn-primary" type="submit">
-      Soumettre
-    </button>
-  </form>
+<!--    <button class="btn btn-sm btn-primary" type="submit">-->
+<!--      Soumettre-->
+<!--    </button>-->
+<!--  </form>-->
 
-  <script>
+<!--  <script>-->
 
-    document
-            .getElementById("checkbox-form")
-            .addEventListener("submit", (event) => {
-              event.preventDefault();
-              let doSubmit = true;
-              event.target.querySelectorAll("[required]").forEach(group => {
-                if (!group.checked) {
-                  group.invalid = true;
-                  doSubmit = false;
-                }
-              })
-              if(doSubmit) {
-                alert(
-                        "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("qc-checkbox-group"))
-                                .map(group => `Valeur pour ${group.name} : ${group.value.join(',')  ? group.value.join(',') : "vide"}`)
-                                .join("\n")
+<!--    document-->
+<!--            .getElementById("checkbox-form")-->
+<!--            .addEventListener("submit", (event) => {-->
+<!--              event.preventDefault();-->
+<!--              let doSubmit = true;-->
+<!--              event.target.querySelectorAll("[required]").forEach(group => {-->
+<!--                if (!group.checked) {-->
+<!--                  group.invalid = true;-->
+<!--                  doSubmit = false;-->
+<!--                }-->
+<!--              })-->
+<!--              if(doSubmit) {-->
+<!--                alert(-->
+<!--                        "Formulaire soumis\n"-->
+<!--                        + Array.from(event.target.querySelectorAll("qc-checkbox-group"))-->
+<!--                                .map(group => `Valeur pour ${group.name} : ${group.value.join(',')  ? group.value.join(',') : "vide"}`)-->
+<!--                                .join("\n")-->
 
-                );
-              }
-            })
-  </script>
-</qc-doc-exemple>
-
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs de qc-checkbox</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ de formulaire</td>
-    </tr>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Libellé de la case à cocher</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>Valeur de l’attribut label</td>
-      <td>Valeur du champ</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<!--                );-->
+<!--              }-->
+<!--            })-->
+<!--  </script>-->
+<!--</qc-doc-exemple>-->
 
 
-<h4>Attributs de qc-checkbox-group</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>legend</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Légende du groupe de cases à cocher</td>
-    </tr>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom commun pour toutes les cases à cocher du groupe</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
-    </tr>
-    <tr>
-      <td>checkbox-*</td>
-      <td></td>
-      <td></td>
-      <td>
-        Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-        comme attribut à la case à cocher.
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<!--<h3>Documentation technique</h3>-->
+
+<!--<h4>Attributs de qc-checkbox</h4>-->
+<!--<div class="table-overflow">-->
+<!--  <table class="qc-table qc-striped component-attributes-description">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--      <th>Nom</th>-->
+<!--      <th>Valeur attendue</th>-->
+<!--      <th>Valeur par défaut</th>-->
+<!--      <th>Description</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--      <td>name</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>""</td>-->
+<!--      <td>Nom du champ de formulaire</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>label</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>""</td>-->
+<!--      <td>Libellé de la case à cocher</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>value</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>Valeur de l’attribut label</td>-->
+<!--      <td>Valeur du champ</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>compact</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Affiche les boutons radios au format compact</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>required</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>disabled</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Désactive le groupe</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>invalid</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>-->
+<!--        Indique si le groupe est dans un état invalide-->
+<!--        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)-->
+<!--        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>invalid-text</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>"Champ obligatoire" ou "Required field"</td>-->
+<!--      <td>Message d’erreur à afficher lorsque la case est invalide</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
+<!--</div>-->
+
+
+<!--<h4>Attributs de qc-checkbox-group</h4>-->
+<!--<div class="table-overflow">-->
+<!--  <table class="qc-table qc-striped component-attributes-description">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--      <th>Nom</th>-->
+<!--      <th>Valeur attendue</th>-->
+<!--      <th>Valeur par défaut</th>-->
+<!--      <th>Description</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--      <td>legend</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>""</td>-->
+<!--      <td>Légende du groupe de cases à cocher</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>name</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>""</td>-->
+<!--      <td>Nom commun pour toutes les cases à cocher du groupe</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>compact</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Affiche les boutons radios au format compact</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>required</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>disabled</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>Désactive le groupe</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>invalid</td>-->
+<!--      <td>na</td>-->
+<!--      <td>na</td>-->
+<!--      <td>-->
+<!--        Indique si le groupe est dans un état invalide-->
+<!--        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)-->
+<!--        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>invalid-text</td>-->
+<!--      <td>Texte</td>-->
+<!--      <td>"Champ obligatoire" ou "Required field"</td>-->
+<!--      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--      <td>checkbox-*</td>-->
+<!--      <td></td>-->
+<!--      <td></td>-->
+<!--      <td>-->
+<!--        Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté-->
+<!--        comme attribut à la case à cocher.-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--  </table>-->
+<!--</div>-->

@@ -2,6 +2,7 @@
     tag: 'qc-checkbox',
     shadow: 'none',
     props: {
+        id: { attribute: 'id', type: 'String' },
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
         description: {attribute: 'description', type: 'String'},
@@ -30,6 +31,9 @@
     import Checkbox from "./Checkbox.svelte";
 
     let {
+        // Il est nécessaire de déclarer une valeur par défaut pour id dans le wrapper en raison de cycles de vie
+        // d'éléments HTML et props.
+        id = `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`,
         parentGroup,
         value, 
         label,

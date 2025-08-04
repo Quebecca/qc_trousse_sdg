@@ -21,7 +21,7 @@
         handleChange = () => {},
         ...rest
     } = $props();
-    
+
     let id = $derived(rest.id ?? `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`);
 
     $effect(() => {
