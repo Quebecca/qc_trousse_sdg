@@ -24,6 +24,7 @@ qc-textfield {
     border: 0;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-top: rem(4);
 
     &::placeholder {
       color: token-value(color grey medium);
@@ -61,10 +62,6 @@ qc-textfield {
 .qc-textfield-container {
   margin-bottom: rem(32);
 
-  label {
-    margin-bottom: rem(4);
-  }
-
   &.qc-disabled {
     label {
       color: token-value(color, grey, regular);
@@ -87,7 +84,6 @@ qc-textfield {
   color: token-value(color blue dark);
   height: rem(20);
   line-height: rem(20);
-  margin-bottom: rem(4);
 }
 
 .qc-textfield.disabled {

@@ -517,7 +517,6 @@ label {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   display: inline-block;
-  margin-bottom: 0.4rem;
 }
 
 legend {
@@ -2176,6 +2175,7 @@ qc-textfield {
   border: 0;
   text-overflow: ellipsis;
   overflow: hidden;
+  margin-top: 0.4rem;
 }
 .qc-textfield input[type=text]::-moz-placeholder, .qc-textfield textarea::-moz-placeholder {
   color: var(--qc-color-grey-medium);
@@ -2226,9 +2226,6 @@ qc-textfield {
 .qc-textfield-container {
   margin-bottom: 3.2rem;
 }
-.qc-textfield-container label {
-  margin-bottom: 0.4rem;
-}
 .qc-textfield-container.qc-disabled label {
   color: var(--qc-color-grey-regular);
   cursor: not-allowed;
@@ -2247,7 +2244,6 @@ qc-textfield {
   color: var(--qc-color-blue-dark);
   height: 2rem;
   line-height: 2rem;
-  margin-bottom: 0.4rem;
 }
 
 .qc-textfield.disabled::before {
