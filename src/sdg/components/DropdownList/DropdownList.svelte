@@ -26,6 +26,7 @@
 
     const
         inputId = `${id}-input`,
+        popupId = `${id}-popup`,
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
@@ -241,6 +242,7 @@
         />
 
         <div
+            id={popupId}
             class="qc-dropdown-list-expanded"
             tabindex="-1"
             hidden={!expanded}

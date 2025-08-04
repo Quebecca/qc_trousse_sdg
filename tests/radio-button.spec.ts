@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-const path = require('path');
+import path = require('path');
 
 test('test', async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/radioButton.dev.html');

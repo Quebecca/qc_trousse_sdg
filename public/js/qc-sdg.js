@@ -13349,20 +13349,20 @@
 		get(button).focus();
 	};
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[214, 12]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[251, 16]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[292, 20]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[215, 12]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[253, 16]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[294, 20]]);
 
 	var root$1 = add_locations(template(`<div class="qc-textfield-container"><label> <!></label> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			200,
+			201,
 			0,
 			[
-				[203, 4],
+				[204, 4],
 				[
-					217,
+					218,
 					4,
-					[[243, 8, [[290, 12]]]]
+					[[244, 8, [[292, 12]]]]
 				]
 			]
 		]
@@ -13390,6 +13390,7 @@
 			multiple = prop($$props, 'multiple', 7, false);
 
 		const inputId = `${id()}-input`,
+			popupId = `${id()}-popup`,
 			itemsId = `${id()}-items`,
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
@@ -13624,6 +13625,9 @@
 		);
 
 		var div_2 = sibling(node_1, 2);
+
+		set_attribute(div_2, 'id', popupId);
+
 		var node_2 = child(div_2);
 
 		{
