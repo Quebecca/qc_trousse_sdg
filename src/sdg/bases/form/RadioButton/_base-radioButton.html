@@ -8,7 +8,7 @@
 
         <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
             <label for="base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
-                <input type="radio" id="base-ex-md-option 1-fxwctmlnrb" name="base-ex-md" value="option 1" aria-required="false" aria-invalid="false">
+                <input type="radio" id="base-ex-md-option 1-fxwctmlnrb" name="base-ex-md" value="option 1" aria-required="false" aria-invalid="false" checked>
                 <span class="qc-check-text">
                     <span class="qc-check-label">Option 1</span>
                 </span>
@@ -71,10 +71,10 @@
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
     <form id="base-radio-form">
-        <fieldset id="base-exemple-radio-form" aria-describedby="base-id_ex-form" class="qc-fieldset">
+        <fieldset id="base-exemple-radio-form" aria-describedby="base-id_ex-form" class="qc-fieldset" data-required="true">
             <legend id="base-id_ex-form">Quel est votre niveau de scolarité?</legend>
 
-            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;" data-required="true">
+            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
                 <label for="base-ex-form-option 1-fxwctmlnrb" class="qc-check-row">
                     <input type="radio" id="base-ex-form-option 1-fxwctmlnrb" name="base-ex-form" value="Secondaire" aria-required="true" aria-invalid="false">
                     <span class="qc-check-text">
@@ -103,6 +103,18 @@
                     </span>
                 </label>
             </div>
+
+            <div class="qc-form-error" role="alert">
+                <div role="img"
+                    class=`qc-icon`
+                    style="--img-color: var(--qc-color-red-regular);
+                    --img-width: 24px;
+                    --img-height: 21px;
+                    "
+                    data-img-type="warning"
+                ></div>
+                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
+            </div>
         </fieldset>
 
         <fieldset id="base-exemple-radio-form-2" aria-describedby="base-id_ex-form-2" class="qc-fieldset" data-required="false">
@@ -123,6 +135,18 @@
                     </span>
                 </label>
             </div>
+
+            <div class="qc-form-error" role="alert">
+                <div role="img"
+                    class=`qc-icon`
+                    style="--img-color: var(--qc-color-red-regular);
+                    --img-width: 24px;
+                    --img-height: 21px;
+                    "
+                    data-img-type="warning"
+                ></div>
+                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
+            </div>
         </fieldset>
 
         <button class="btn btn-sm btn-primary" type="submit">
@@ -131,27 +155,46 @@
     </form>
 
     <script>
-        document
-            .getElementById("base-radio-form")
+        const baseRadioForm = document.getElementById("base-radio-form");
+
+        baseRadioForm
             .addEventListener("submit", (event) => {
                 event.preventDefault();
-                console.log("called");
                 let doSubmit = true;
-                event.target.querySelectorAll("div[data-required='true']").forEach(group => {
-                    if (!group.checked) {
-                        group.invalid = true;
+                event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
+                    if (!group.querySelector("input:checked")) {
+                        group.classList.add("qc-fieldset-invalid");
+                        group.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
+                        group.querySelectorAll("input[type='radio']").forEach(input => {
+                            input.setAttribute("aria-invalid", "true");
+                        });
                         doSubmit = false;
                     }
                 })
                 if (doSubmit) {
                     alert(
                         "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("qc-radio-group"))
-                            .map(group => `Valeur pour ${group.name} : ${group.value ? group.value : "vide"}`)
+                        + Array.from(event.target.querySelectorAll("fieldset"))
+                            .map((group) => {
+                                    const legend = group.querySelector("legend").innerHTML;
+                                    const value = group.querySelector("input:checked")?.value;
+                                    return `Valeur pour "${legend}" : ${value ? value : "vide"}`;
+                                }
+                            )
                             .join("\n")
                     );
                 }
+            });
+
+        baseRadioForm.querySelectorAll("fieldset").forEach(fieldset => {
+            fieldset.querySelectorAll("input[type='radio']").forEach(input => {
+                input.addEventListener("change", () => {
+                        fieldset.classList.remove("qc-fieldset-invalid");
+                        fieldset.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
+                    }
+                );
             })
+        });
     </script>
 </qc-doc-exemple>
 
