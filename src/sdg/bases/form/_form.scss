@@ -10,7 +10,6 @@ select {
 label {
   @include content-font('md', 'bold');
   display: inline-block;
-  margin-bottom: rem(4);
 }
 
 legend {
