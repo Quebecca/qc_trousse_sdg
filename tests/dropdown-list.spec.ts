@@ -3,7 +3,7 @@ import path = require('path');
 
 test.beforeEach(async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.dev.html');
-    page.goto(`file://${htmlFilePath}`).catch(console.error);
+    await page.goto(`file://${htmlFilePath}`);
 })
 
 test('Soit Option 1 présélectionnée dans Choix unique, lorsque la page charge, alors Option 1 apparaît dans l\'input', async ({ page }) => {
@@ -23,6 +23,63 @@ test('En cliquant sur la liste déroulante, alors la popup s\'affiche', async ({
     await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'true');
 });
 
+test('Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors focus placé sur les options suivantes de la liste', async ({ page, browserName }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('Tab');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 1$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 1', exact: true }).press('Tab');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 2$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 2' }).press('Shift+Tab');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 1$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 1', exact: true }).press('Shift+Tab');
+
+    test.skip(
+        browserName === 'webkit',
+        'Playwright avec Webkit ne réalise pas le focus de Tab correctement sur les éléments combobox.' +
+        'Voir l\'issue https://github.com/microsoft/playwright/issues/32269' +
+        ' et la PR https://github.com/microsoft/playwright/pull/31325'
+    )
+    await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+});
+
+test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alors focus placé sur les options suivantes de la liste', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 1$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 1', exact: true }).press('ArrowDown');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 2$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 2' }).press('ArrowUp');
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 1$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('option', { name: 'Option 1', exact: true }).press('ArrowUp');
+    await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+});
+
 test('En sélectionnant une option désactivée, alors rien ne se passe', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByRole('option', { name: 'Option 16 (désactivée)' }).click();
@@ -33,6 +90,30 @@ test('En sélectionnant une option désactivée, alors rien ne se passe', async 
 test('En sélectionnant une option activée, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByRole('option', { name: 'Option 5' }).click();
+
+    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 5');
+    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('En sélectionnant une option activée au clavier, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 1$/gm) })
+        .press('ArrowDown');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 2$/gm) })
+        .press('ArrowDown');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 3$/gm) })
+        .press('ArrowDown');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 4$/gm) })
+        .press('ArrowDown');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 5$/gm) })
+        .press('Enter');
 
     await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
     await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 5');
@@ -97,7 +178,11 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cl
 
 test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée', async ({ page }) => {
     page.on('dialog', async dialog => {
-        expect(dialog.message()).toBe('Formulaire soumis avec les données suivantes :\nType de restaurant: Pâtisserie\nRégions desservies: Centre-du-Québec, Montérégie');
+        expect(dialog.message()).toBe(
+            'Formulaire soumis avec les données suivantes :\n' +
+            'Type de restaurant: Pâtisserie\n' +
+            'Régions desservies: Centre-du-Québec, Montérégie'
+        );
         await dialog.accept();
     });
 
