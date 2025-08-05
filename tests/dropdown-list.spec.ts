@@ -39,6 +39,12 @@ test('En sélectionnant une option activée, alors referme la popup et affiche l
     await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
+test('Soit focus placé sur la liste déroulante de Choix unique et liste ouverte, en tapant flèche vers le haut, alors focus placé sur la dernière option', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowUp');
+
+    await expect(page.getByRole('option', { name: 'Option 16' })).toBeFocused();
+});
 test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
@@ -87,11 +93,17 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cl
           - img
           - text: Veuillez choisir un type de restaurant.
     `);
-    // await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
-    // await page.getByRole('option', { name: 'Pâtisserie' }).click();
-    // page.once('dialog', dialog => {
-    //     console.log(`Dialog message: ${dialog.message()}`);
-    //     dialog.dismiss().catch(() => {});
-    // });
-    // await page.getByRole('button', { name: 'Envoyer' }).click();
+});
+
+test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée', async ({ page }) => {
+    page.on('dialog', async dialog => {
+        expect(dialog.message()).toBe('Formulaire soumis avec les données suivantes :\nType de restaurant: Pâtisserie\nRégions desservies: Centre-du-Québec, Montérégie');
+        await dialog.accept();
+    });
+
+    await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
+    await page.getByRole('option', { name: 'Pâtisserie' }).click();
+    await page.getByRole('button', { name: 'Envoyer' }).click();
+
+    await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'false');
 });
