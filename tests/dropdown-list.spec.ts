@@ -80,6 +80,16 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alor
     await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
 });
 
+test('En survolant une option, alors l\'indicateur de survol apparaît', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+
+    await page.getByRole('option', { name: 'Option 5' }).hover();
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 5$/gm) })
+    ).toHaveCSS('background-color', 'rgb(218, 230, 240)'); // La résolution de variable est faite au moment d'exécuter le test, ce qui force le hardcoding.
+})
+
 test('En sélectionnant une option désactivée, alors rien ne se passe', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByRole('option', { name: 'Option 16 (désactivée)' }).click();
@@ -177,6 +187,11 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cl
 });
 
 test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
+    await page.getByRole('option', { name: 'Pâtisserie' }).click();
+    await page.getByRole('button', { name: 'Envoyer' }).click();
+
+    await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'false');
     page.on('dialog', async dialog => {
         expect(dialog.message()).toBe(
             'Formulaire soumis avec les données suivantes :\n' +
@@ -185,10 +200,4 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en s�
         );
         await dialog.accept();
     });
-
-    await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
-    await page.getByRole('option', { name: 'Pâtisserie' }).click();
-    await page.getByRole('button', { name: 'Envoyer' }).click();
-
-    await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'false');
 });
