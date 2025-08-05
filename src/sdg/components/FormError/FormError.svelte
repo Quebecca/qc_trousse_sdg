@@ -6,7 +6,8 @@ let {invalid , invalidText, id} = $props();
 
 </script>
 {#if invalid}
-<div class="qc-form-error"
+<div {id}
+     class="qc-form-error"
      role="alert">
     {#await tick()}
     <!-- svelte-ignore block_empty -->

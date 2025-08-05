@@ -232,6 +232,7 @@
             aria-expanded={expanded}
             aria-haspopup="listbox"
             aria-controls={itemsId}
+            aria-invalid={invalid}
             {selectedOptionsText}
             {placeholder}
             onclick={handleDropdownButtonClick}
