@@ -2999,7 +2999,7 @@
 
     <hr />
 
-    <h2 id="base-radio-button">Boutons radio</h2>
+    <h2 id="radio-button">Boutons radio</h2>
 <h3>Exemples</h3>
 
 <qc-doc-exemple
@@ -3049,22 +3049,22 @@
             <label for="compact-base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
                 <input type="radio" id="compact-base-ex-md-option 1-fxwctmlnrb" name="base-ex-sm" value="option 1" aria-required="false" aria-invalid="false" class="qc-compact">
                 <span class="qc-check-text">
-                        <span class="qc-check-label">Option 1</span>
-                    </span>
+                    <span class="qc-check-label">Option 1</span>
+                </span>
             </label>
 
             <label for="compact-base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
                 <input type="radio" id="compact-base-ex-md-option 2-b3fdtujwgpi" name="base-ex-sm" value="option 2" aria-required="false" aria-invalid="false" class="qc-compact">
                 <span class="qc-check-text">
-                        <span class="qc-check-label">Option 2</span>
-                    </span>
+                    <span class="qc-check-label">Option 2</span>
+                </span>
             </label>
 
             <label for="compact-base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
                 <input type="radio" id="compact-base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-sm" value="option 3" aria-required="false" aria-invalid="false" class="qc-compact">
                 <span class="qc-check-text">
-                        <span class="qc-check-label">Option 3</span>
-                    </span>
+                    <span class="qc-check-label">Option 3</span>
+                </span>
             </label>
         </div>
     </fieldset>
@@ -3107,12 +3107,13 @@
 
             <div class="qc-form-error" role="alert">
                 <div role="img"
-                    class=`qc-icon`
+                    class="qc-icon"
+                    data-img-type="warning"
                     style="--img-color: var(--qc-color-red-regular);
                     --img-width: 24px;
                     --img-height: 21px;
+                    display: none;
                     "
-                    data-img-type="warning"
                 ></div>
                 <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
             </div>
@@ -3136,18 +3137,6 @@
                     </span>
                 </label>
             </div>
-
-            <div class="qc-form-error" role="alert">
-                <div role="img"
-                    class=`qc-icon`
-                    style="--img-color: var(--qc-color-red-regular);
-                    --img-width: 24px;
-                    --img-height: 21px;
-                    "
-                    data-img-type="warning"
-                ></div>
-                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
-            </div>
         </fieldset>
 
         <button class="btn btn-sm btn-primary" type="submit">
@@ -3166,6 +3155,7 @@
                     if (!group.querySelector("input:checked")) {
                         group.classList.add("qc-fieldset-invalid");
                         group.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
+                        group.querySelector(".qc-icon").style.display = "flex";
                         group.querySelectorAll("input[type='radio']").forEach(input => {
                             input.setAttribute("aria-invalid", "true");
                         });
@@ -3192,6 +3182,7 @@
                 input.addEventListener("change", () => {
                         fieldset.classList.remove("qc-fieldset-invalid");
                         fieldset.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
+                        fieldset.querySelector(".qc-icon").style.display = "none";
                     }
                 );
             })
@@ -3199,120 +3190,50 @@
     </script>
 </qc-doc-exemple>
 
-<h4>Documentation technique</h4>
-
-<h5>Attributs de qc-radio-group</h5>
+<h3>Documentation technique</h3>
 
 <div class="table-overflow">
     <table class="qc-table qc-striped">
         <thead>
         <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
+            <th>Nom de classe ou variable</th>
+            <th>Description des propriétés</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>name</td>
-            <td>Texte</td>
-            <td></td>
-            <td>Nom de l’ensemble des boutons radios du groupe</td>
+            <td>qc-fieldset</td>
+            <td>Disposition des éléments <code>fieldset</code> et leur contenu</td>
         </tr>
         <tr>
-            <td>legend</td>
-            <td>Texte</td>
-            <td></td>
-            <td>Libellé du groupe</td>
+            <td>qc-field-elements-flex</td>
+            <td>Affiche les éléments du fieldset en disposition <code>flex</code> sur colonne</td>
         </tr>
         <tr>
-            <td>compact</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche les boutons radios au format compact</td>
+            <td>qc-field-elements-flex-sm</td>
+            <td>Spécifie l'espacement entre les éléments de <code>fieldset</code> au token `small`</td>
         </tr>
         <tr>
-            <td>required</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+            <td>qc-check-row</td>
+            <td>Taille et disposition des boutons radio et leurs libellés</td>
         </tr>
         <tr>
-            <td>disabled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Désactive le groupe</td>
+            <td>qc-check-text</td>
+            <td>Disposition des libellés et de leurs descriptions (pour les boutons de sélection)</td>
         </tr>
         <tr>
-            <td>invalid</td>
-            <td>na</td>
-            <td>na</td>
+            <td>qc-check-label</td>
+            <td>Affiche les libellés en gras</td>
+        </tr>
+        <tr>
+            <td>qc-compact</td>
+            <td>Affiche les boutons radio au format compact</td>
+        </tr>
+        <tr>
+            <td>--column-count</td>
             <td>
-                Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
-                (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de
-                formulaire avec des boutons radio ».)
-                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-            </td>
-        </tr>
-        <tr>
-            <td>invalid-text</td>
-            <td>Texte</td>
-            <td>Champ obligatoire/Required field</td>
-            <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<h5>Attributs de qc-radio-button</h5>
-
-<p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
-
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>value</td>
-            <td>Texte</td>
-            <td></td>
-            <td>Valeur associée au bouton radio</td>
-        </tr>
-        <tr>
-            <td>label</td>
-            <td>Texte</td>
-            <td></td>
-            <td>Libellé du bouton radio</td>
-        </tr>
-        <tr>
-            <td>checked</td>
-            <td>na</td>
-            <td>na</td>
-            <td>
-                Indique que le bouton est sélectionné par défaut.
-            </td>
-        </tr>
-        <tr>
-            <td>disabled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Désactive le bouton radio</td>
-        </tr>
-        <tr>
-            <td>radio-*</td>
-            <td></td>
-            <td></td>
-            <td>
-                Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
-                comme attribut au bouton radio brut.
+                Nombre de colonnes pour un affichage en grille des boutons radio
+                <br>Note : À utiliser pour les boutons de sélection seulement
             </td>
         </tr>
         </tbody>
