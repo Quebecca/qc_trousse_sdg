@@ -7243,10 +7243,10 @@
 		});
 	};
 
-	var root_3$2 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_3$3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
 	var root_7 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
-	var root_6 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
+	var root_6$1 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
 	var root_9 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[131, 10]]);
 
 	var root$h = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
@@ -7389,7 +7389,7 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var a_3 = root_3$2();
+				var a_3 = root_3$3();
 
 				a_3.__click = [
 					on_click$3,
@@ -7429,7 +7429,7 @@
 
 				{
 					var consequent_6 = ($$anchor) => {
-						var nav = root_6();
+						var nav = root_6$1();
 						var ul = child(nav);
 						var node_6 = child(ul);
 
@@ -10065,9 +10065,10 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[69, 16]]);
+	var root_2$6 = add_locations(template(`<span class="qc-required">*</span>`), Checkbox[FILENAME], [[70, 20]]);
+	var root_3$2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[74, 16]]);
 
-	var root_1$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
+	var root_1$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> <!></span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
 			45,
 			4,
@@ -10075,7 +10076,7 @@
 		]
 	]);
 
-	var root_5$1 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[82, 4]]);
+	var root_6 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[87, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10101,34 +10102,47 @@
 			let attributes;
 			var span = sibling(input, 2);
 			var span_1 = child(span);
-			var text = child(span_1, true);
-
-			reset(span_1);
-
-			var node = sibling(span_1, 2);
+			var text = child(span_1);
+			var node = sibling(text);
 
 			{
 				var consequent = ($$anchor) => {
 					var span_2 = root_2$6();
-					var node_1 = child(span_2);
 
-					html(node_1, description);
-					reset(span_2);
 					append($$anchor, span_2);
 				};
 
 				if_block(node, ($$render) => {
-					if (description()) $$render(consequent);
+					if (required()) $$render(consequent);
+				});
+			}
+
+			reset(span_1);
+
+			var node_1 = sibling(span_1, 2);
+
+			{
+				var consequent_1 = ($$anchor) => {
+					var span_3 = root_3$2();
+					var node_2 = child(span_3);
+
+					html(node_2, description);
+					reset(span_3);
+					append($$anchor, span_3);
+				};
+
+				if_block(node_1, ($$render) => {
+					if (description()) $$render(consequent_1);
 				});
 			}
 
 			reset(span);
 			reset(label_1);
 
-			var node_2 = sibling(label_1, 2);
+			var node_3 = sibling(label_1, 2);
 
 			{
-				var consequent_1 = ($$anchor) => {
+				var consequent_2 = ($$anchor) => {
 					FormError($$anchor, {
 						get invalid() {
 							return invalid();
@@ -10139,8 +10153,8 @@
 					});
 				};
 
-				if_block(node_2, ($$render) => {
-					if (!parentGroup()) $$render(consequent_1);
+				if_block(node_3, ($$render) => {
+					if (!parentGroup()) $$render(consequent_2);
 				});
 			}
 
@@ -10162,7 +10176,7 @@
 						onchange: event_handler
 					});
 
-					set_text(text, label());
+					set_text(text, `${label() ?? ''} `);
 				},
 				[
 					() => clsx(chooseCheckboxClass()),
@@ -10234,18 +10248,18 @@
 		}
 
 		var fragment_2 = comment();
-		var node_3 = first_child(fragment_2);
+		var node_4 = first_child(fragment_2);
 
 		{
-			var consequent_2 = ($$anchor) => {
+			var consequent_3 = ($$anchor) => {
 				checkboxRow($$anchor);
 			};
 
 			var alternate = ($$anchor) => {
-				var div = root_5$1();
-				var node_4 = child(div);
+				var div = root_6();
+				var node_5 = child(div);
 
-				checkboxRow(node_4);
+				checkboxRow(node_5);
 				reset(div);
 
 				template_effect(() => set_class(div, 1, clsx([
@@ -10256,8 +10270,8 @@
 				append($$anchor, div);
 			};
 
-			if_block(node_3, ($$render) => {
-				if (parentGroup()) $$render(consequent_2); else $$render(alternate, false);
+			if_block(node_4, ($$render) => {
+				if (parentGroup()) $$render(consequent_3); else $$render(alternate, false);
 			});
 		}
 

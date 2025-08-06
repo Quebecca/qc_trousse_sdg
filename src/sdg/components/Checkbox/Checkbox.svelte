@@ -64,7 +64,12 @@
                 }}
         />
         <span class="qc-check-text">
-            <span class="qc-check-label">{label}</span>
+            <span class="qc-check-label">
+                {label}
+                {#if required}
+                    <span class="qc-required">*</span>
+                {/if}
+            </span>
             {#if description}
                 <span class="qc-check-description">{@html description}</span>
             {/if}
