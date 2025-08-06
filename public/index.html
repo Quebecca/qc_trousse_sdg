@@ -3368,6 +3368,16 @@
                 <input type="text" id="text-xl" name="text-xl" placeholder="ex : jeantremblay@exemple.com" required />
             </div>
             <div id="error-text-xl" class="qc-form-error" role="alert" style="display: none;">
+                <div
+                    class="qc-icon"
+                    data-img-type="warning"
+                    style="
+                      --img-color: var(--qc-color-red-regular);
+                      --img-width: 24px;
+                      --img-height: 21px;
+                    "
+                    aria-label="Avertissement"
+                ></div>
                 <span>Ce champ est requis.</span>
             </div>
         </div>
@@ -3399,6 +3409,16 @@
             </div>
             <div id="charcount-zone-xxl" class="qc-textfield-charcount" aria-live="polite"></div>
             <div id="error-zone-xxl" class="qc-form-error" role="alert" style="display: none;">
+                <div
+                    class="qc-icon"
+                    data-img-type="warning"
+                    style="
+                      --img-color: var(--qc-color-red-regular);
+                      --img-width: 24px;
+                      --img-height: 21px;
+                    "
+                    aria-label="Avertissement"
+                ></div>
                 <span>Ce champ est requis.</span>
             </div>
         </div>
@@ -3445,11 +3465,15 @@
 
             if (hasError) {
                 container?.classList.add("error");
-                if (errorMessage) errorMessage.style.display = "flex";
+                if (errorMessage) {
+                    errorMessage.style.display = "flex";
+                }
                 return false;
             } else {
                 container?.classList.remove("error");
-                if (errorMessage) errorMessage.style.display = "none";
+                if (errorMessage) {
+                    errorMessage.style.display = "none";
+                }
                 return true;
             }
         }
