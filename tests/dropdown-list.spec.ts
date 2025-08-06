@@ -4,7 +4,7 @@ import path = require('path');
 test.beforeEach(async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.dev.html');
     await page.goto(`file://${htmlFilePath}`);
-})
+});
 
 test('Soit Option 1 présélectionnée dans Choix unique, lorsque la page charge, alors Option 1 apparaît dans l\'input', async ({ page }) => {
     await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 1');
@@ -88,7 +88,15 @@ test('En survolant une option, alors l\'indicateur de survol apparaît', async (
         page.locator('#dropdown-list-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 5$/gm) })
     ).toHaveCSS('background-color', 'rgb(218, 230, 240)'); // La résolution de variable est faite au moment d'exécuter le test, ce qui force le hardcoding.
-})
+});
+
+test('Sit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByText('Liste déroulante Exemples').click();
+
+    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+});
 
 test('En sélectionnant une option désactivée, alors rien ne se passe', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
@@ -136,15 +144,78 @@ test('Soit focus placé sur la liste déroulante de Choix unique et liste ouvert
 
     await expect(page.getByRole('option', { name: 'Option 16' })).toBeFocused();
 });
+
+test('Soit une option sélectionnée, liste déroulante fermée et focus placé sur l\'input,' +
+    'en tapant flèche du bas, alors le focus est placé sur l\'option sélectionnée', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('option', { name: 'Option 5' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
+
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 5$/gm) })
+    ).toBeFocused();
+});
+
 test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
 
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('12');
+    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+      - list:
+        - option "Option 12"
+      - status
+    `);
 
     await page.getByRole('button', { name: 'Effacer le texte' }).click();
 
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
+    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+      - list:
+        - option "Option 1"
+        - option "Option 2"
+        - option "Option 3"
+        - option "Option 4"
+        - option "Option 5"
+        - option "Option 6"
+        - option "Option 7"
+        - option "Option 8"
+        - option "Option 9"
+        - option "Option 10"
+        - option "Option 11"
+        - option "Option 12"
+        - option "Option 13"
+        - option "Option 14"
+        - option "Option 15"
+        - option "Option 16"
+      - status
+    `);
+
+    await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
+    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
+    await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
+    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+      - list:
+        - option "Option 1"
+        - option "Option 2"
+        - option "Option 3"
+        - option "Option 4"
+        - option "Option 5"
+        - option "Option 6"
+        - option "Option 7"
+        - option "Option 8"
+        - option "Option 9"
+        - option "Option 10"
+        - option "Option 11"
+        - option "Option 12"
+        - option "Option 13"
+        - option "Option 14"
+        - option "Option 15"
+        - option "Option 16"
+      - status
+    `);
 });
 
 test('En sélectionnant des options de Choix multiples, alors la popup reste ouverte et affiche tous les choix', async ({ page }) => {
@@ -175,7 +246,7 @@ test('En sélectionnant une option de Choix multiples et en la désélectionnant
 
 });
 
-test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée', async ({ page }) => {
+test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {
     await page.getByRole('button', { name: 'Envoyer' }).click();
 
     await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'true');
@@ -184,6 +255,11 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cl
           - img
           - text: Veuillez choisir un type de restaurant.
     `);
+
+    await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
+    await page.getByRole('option', { name: 'Pâtisserie' }).click();
+
+    await expect(page.locator('#dropdown-list-restaurants-error')).toHaveCount(0);
 });
 
 test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée', async ({ page }) => {
