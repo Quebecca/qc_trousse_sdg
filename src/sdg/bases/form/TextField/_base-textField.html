@@ -86,39 +86,42 @@
     <script>
         const form_BaseTextField = document.getElementById("formulaire-base-champs-textes");
 
+        function validateField(field) {
+            const value = field.value?.trim();
+            const maxLength = parseInt(field.getAttribute("maxlength"), 10);
+            const container = field.closest(".qc-textfield");
+            const errorMessage = document.getElementById(`error-${field.id}`);
+
+            let hasError = false;
+
+            if (!value) {
+                hasError = true;
+                if (errorMessage) errorMessage.querySelector("span").textContent = "Ce champ est requis.";
+            } else if (!isNaN(maxLength) && value.length > maxLength) {
+                hasError = true;
+                if (errorMessage) errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
+            }
+
+            if (hasError) {
+                container?.classList.add("error");
+                if (errorMessage) errorMessage.style.display = "flex";
+                return false;
+            } else {
+                container?.classList.remove("error");
+                if (errorMessage) errorMessage.style.display = "none";
+                return true;
+            }
+        }
+
         form_BaseTextField.addEventListener("submit", (event) => {
             event.preventDefault();
 
             let isValid = true;
-
             const requiredFields = form_BaseTextField.querySelectorAll("[required]");
 
             requiredFields.forEach(field => {
-                const value = field.value?.trim();
-                const maxLength = parseInt(field.getAttribute("maxlength"), 10);
-                const container = field.closest(".qc-textfield");
-                const errorMessage = document.getElementById(`error-${field.id}`);
-
-                // Réinitialiser l'état d'erreur
-                container?.classList.remove("error");
-                if (errorMessage) errorMessage.style.display = "none";
-
-                if (!value) {
-                    container?.classList.add("error");
-                    if (errorMessage) {
-                        errorMessage.querySelector("span").textContent = "Ce champ est requis.";
-                        errorMessage.style.display = "flex";
-                    }
-                    isValid = false;
-                    return;
-                }
-
-                if (!isNaN(maxLength) && value.length > maxLength) {
-                    container?.classList.add("error");
-                    if (errorMessage) {
-                        errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
-                        errorMessage.style.display = "flex";
-                    }
+                const fieldIsValid = validateField(field);
+                if (!fieldIsValid) {
                     isValid = false;
                 }
             });
@@ -133,35 +136,16 @@
             }
         });
 
-        // Gestion du compteur de caractères
+        // Validation à chaque saisie
         document.addEventListener("DOMContentLoaded", () => {
-            const fieldsWithMax = form_BaseTextField.querySelectorAll("textarea[maxlength]");
+            const requiredFields = form_BaseTextField.querySelectorAll("[required]");
 
-            fieldsWithMax.forEach(field => {
-                const counterId = `charcount-${field.id}`;
-                const counter = document.getElementById(counterId);
-                const container = field.closest(".qc-textfield");
-
-                const updateCharCount = () => {
-                    const maxLength = parseInt(field.getAttribute("maxlength"), 10);
-                    const currentLength = field.value.length;
-                    const remaining = maxLength - currentLength;
-
-                    if (remaining >= 0) {
-                        counter.textContent = `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`;
-                        counter.classList.remove("max-reached");
-                        container?.classList.remove("error");
-                    } else {
-                        const over = Math.abs(remaining);
-                        counter.textContent = `${over} caractère${over > 1 ? 's' : ''} en trop`;
-                        counter.classList.add("max-reached");
-                        container?.classList.add("error");
-                    }
-                };
-
-                updateCharCount();
-                field.addEventListener("input", updateCharCount);
+            requiredFields.forEach(field => {
+                field.addEventListener("input", () => {
+                    validateField(field);
+                });
             });
         });
+
     </script>
 </qc-doc-exemple>
