@@ -3395,7 +3395,7 @@
                 Vous pouvez entrer des suggestions dans la zone de texte ci-dessous.
             </div>
             <div class="qc-textfield qc-textfield--xxl">
-                <textarea id="zone-xxl" name="zone-xxl" maxlength="50" required></textarea>
+                <textarea id="zone-xxl" name="zone-xxl" data-maxlength="50" required></textarea>
             </div>
             <div id="charcount-zone-xxl" class="qc-textfield-charcount" aria-live="polite"></div>
             <div id="error-zone-xxl" class="qc-form-error" role="alert" style="display: none;">
@@ -3411,18 +3411,36 @@
 
         function validateField(field) {
             const value = field.value?.trim();
-            const maxLength = parseInt(field.getAttribute("maxlength"), 10);
+            const maxLength = parseInt(field.getAttribute("data-maxlength"), 10);
             const container = field.closest(".qc-textfield");
             const errorMessage = document.getElementById(`error-${field.id}`);
+            const charCount = document.getElementById(`charcount-${field.id}`);
 
             let hasError = false;
 
+            // Gestion du compteur de caractères
+            if (!isNaN(maxLength) && charCount) {
+                const remaining = maxLength - value.length;
+                if (remaining >= 0) {
+                    charCount.textContent = `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`;
+                    charCount.classList.remove("max-reached");
+                } else {
+                    const over = Math.abs(remaining);
+                    charCount.textContent = `${over} caractère${over > 1 ? 's' : ''} en trop`;
+                    charCount.classList.add("max-reached");
+                }
+            }
+
             if (!value) {
                 hasError = true;
-                if (errorMessage) errorMessage.querySelector("span").textContent = "Ce champ est requis.";
+                if (errorMessage) {
+                    errorMessage.querySelector("span").textContent = "Ce champ est requis.";
+                }
             } else if (!isNaN(maxLength) && value.length > maxLength) {
                 hasError = true;
-                if (errorMessage) errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
+                if (errorMessage) {
+                    errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
+                }
             }
 
             if (hasError) {
