@@ -1,216 +1,258 @@
-<h2 id="textfield">Champ texte</h2>
-
-<p>Le champ texte est un espace dans lequel est saisie une information qui tient sur une ou plusieurs lignes de texte.
-  Il peut s’agir d’une combinaison de lettres, de chiffres et de symboles.</p>
+<h2 id="base-champ-texte">Champ texte</h2>
 
 <qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
-  <form id="formulaire-champs-textes">
-    <qc-textfield
-            name="text-sm"
-            label="Entrez votre âge"
-            size="sm"
-            placeholder="ex : 24"
-    ></qc-textfield>
+    <form id="formulaire-base-champs-textes" novalidate>
+        <div class="qc-textfield-container">
+            <label for="text-sm">Entrez votre âge</label>
+            <div class="qc-textfield qc-textfield--sm">
+                <input type="text" id="text-sm" name="text-sm" />
+            </div>
+        </div>
 
-    <qc-textfield
-            name="text-md"
-            label="Entrez votre code postal"
-            size="md"
-            placeholder="ex : G1A 1A1"
-    ></qc-textfield>
+        <div class="qc-textfield-container">
+            <label for="text-md">Entrez votre code postal</label>
+            <div class="qc-textfield qc-textfield--md">
+                <input type="text" id="text-md" name="text-md" placeholder="ex : G1A 1A1" />
+            </div>
+        </div>
 
-    <div class="qc-textfield-row">
-      <qc-textfield
-              name="telephone"
-              label="Téléphone"
-              size="md"
-              placeholder="(123) 456-7890"
-      ></qc-textfield>
+        <div class="qc-textfield-row">
+            <div class="qc-textfield-container">
+                <label for="telephone">Téléphone</label>
+                <div class="qc-textfield qc-textfield--md">
+                    <input type="text" id="telephone" name="telephone" placeholder="(123) 456-7890" />
+                </div>
+            </div>
 
-      <qc-textfield
-              name="poste"
-              label="Poste"
-              size="sm"
-              placeholder="1234"
-      ></qc-textfield>
-    </div>
+            <div class="qc-textfield-container">
+                <label for="poste">Poste</label>
+                <div class="qc-textfield qc-textfield--sm">
+                    <input type="text" id="poste" name="poste" placeholder="1234" />
+                </div>
+            </div>
+        </div>
 
+        <div class="qc-textfield-container">
+            <label for="text-lg">Entrez votre ville</label>
+            <div class="qc-textfield qc-textfield--lg">
+                <input type="text" id="text-lg" name="text-lg" placeholder="Ceci est un très long placeholder" />
+            </div>
+        </div>
 
-    <qc-textfield
-            name="text-lg"
-            label="Entrez votre ville"
-            size="lg"
-            placeholder="Ceci est un très long placeholder"
-    ></qc-textfield>
+        <div class="qc-textfield-container">
+            <label for="text-xl">Entrez votre adresse courriel <span class="qc-textfield-required">*</span></label>
+            <div class="qc-textfield qc-textfield--xl">
+                <input type="text" id="text-xl" name="text-xl" placeholder="ex : jeantremblay@exemple.com" required />
+            </div>
+            <div id="error-text-xl" class="qc-form-error" role="alert" style="display: none;">
+                <div
+                    class="qc-icon"
+                    data-img-type="warning"
+                    style="
+                      --img-color: var(--qc-color-red-regular);
+                      --img-width: 24px;
+                      --img-height: 21px;
+                    "
+                    aria-label="Avertissement"
+                ></div>
+                <span>Ce champ est requis.</span>
+            </div>
+        </div>
 
-    <qc-textfield
-            name="text-xl"
-            label="Entrez votre adresse courriel"
-            size="xl"
-            placeholder="ex : jeantremblay@exemple.com"
-            required
-    ></qc-textfield>
+        <div class="qc-textfield-container qc-disabled">
+            <label for="text-xxl">Entrez votre adresse</label>
+            <div class="qc-textfield qc-textfield--xxl disabled">
+                <input type="text" id="text-xxl" name="text-xxl" placeholder="ex : 1234 rue du Moulin" disabled />
+            </div>
+        </div>
 
-    <qc-textfield
-            name="text-xxl"
-            label="Entrez votre adresse"
-            size="xxl"
-            placeholder="ex : 1234 rue du Moulin"
-            disabled
-    ></qc-textfield>
+        <div class="qc-textfield-container">
+            <label for="zone-xl">Commentaires</label>
+            <div id="description-zone-xl" class="qc-textfield-description">
+                Vous pouvez entrer des commentaires dans la zone de texte ci-dessous.
+            </div>
+            <div class="qc-textfield qc-textfield--xl">
+                <textarea id="zone-xl" name="zone-xl"></textarea>
+            </div>
+        </div>
 
-    <qc-textfield
-            name="zone-xl"
-            label="Commentaires"
-            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-            size="xl"
-            display="area"
-    ></qc-textfield>
+        <div class="qc-textfield-container">
+            <label for="zone-xxl">Suggestions <span class="qc-textfield-required">*</span></label>
+            <div id="description-zone-xxl" class="qc-textfield-description">
+                Vous pouvez entrer des suggestions dans la zone de texte ci-dessous.
+            </div>
+            <div class="qc-textfield qc-textfield--xxl">
+                <textarea id="zone-xxl" name="zone-xxl" data-maxlength="50" required></textarea>
+            </div>
+            <div id="charcount-zone-xxl" class="qc-textfield-charcount" aria-live="polite"></div>
+            <div id="error-zone-xxl" class="qc-form-error" role="alert" style="display: none;">
+                <div
+                    class="qc-icon"
+                    data-img-type="warning"
+                    style="
+                      --img-color: var(--qc-color-red-regular);
+                      --img-width: 24px;
+                      --img-height: 21px;
+                    "
+                    aria-label="Avertissement"
+                ></div>
+                <span>Ce champ est requis.</span>
+            </div>
+        </div>
 
-    <qc-textfield
-            name="zone-xxl"
-            label="Suggestions"
-            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-            size="xxl"
-            display="area"
-            max-length="50"
-            required
-            invalid-text="Message d'erreur personnalisé"
-    ></qc-textfield>
+        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+    </form>
 
-    <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
-  </form>
+    <script>
+        const form_BaseTextField = document.getElementById("formulaire-base-champs-textes");
 
-  <script>
-    const form = document.getElementById("formulaire-champs-textes");
+        function validateField(field) {
+            const value = field.value?.trim();
+            const maxLength = parseInt(field.getAttribute("data-maxlength"), 10);
+            const container = field.closest(".qc-textfield");
+            const errorMessage = document.getElementById(`error-${field.id}`);
+            const charCount = document.getElementById(`charcount-${field.id}`);
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+            let hasError = false;
 
-      let isValid = true;
+            // Gestion du compteur de caractères
+            if (!isNaN(maxLength) && charCount) {
+                const remaining = maxLength - value.length;
+                if (remaining >= 0) {
+                    charCount.textContent = `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`;
+                    charCount.classList.remove("max-reached");
+                } else {
+                    const over = Math.abs(remaining);
+                    charCount.textContent = `${over} caractère${over > 1 ? 's' : ''} en trop`;
+                    charCount.classList.add("max-reached");
+                }
+            }
 
-      const requiredFields = form.querySelectorAll("qc-textfield[required]");
+            if (!value) {
+                hasError = true;
+                if (errorMessage) {
+                    errorMessage.querySelector("span").textContent = "Ce champ est requis.";
+                }
+            } else if (!isNaN(maxLength) && value.length > maxLength) {
+                hasError = true;
+                if (errorMessage) {
+                    errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
+                }
+            }
 
-      requiredFields.forEach(field => {
-        const value = field.value?.trim();
-        const maxLength = parseInt(field.getAttribute("max-length"), 10);
-
-        if (!value) {
-          field.invalid = true;
-          isValid = false;
-          return;
+            if (hasError) {
+                container?.classList.add("error");
+                if (errorMessage) {
+                    errorMessage.style.display = "flex";
+                }
+                return false;
+            } else {
+                container?.classList.remove("error");
+                if (errorMessage) {
+                    errorMessage.style.display = "none";
+                }
+                return true;
+            }
         }
 
-        if (!isNaN(maxLength) && value.length > maxLength) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
+        form_BaseTextField.addEventListener("submit", (event) => {
+            event.preventDefault();
 
-        field.invalid = false;
-      });
+            let isValid = true;
+            const requiredFields = form_BaseTextField.querySelectorAll("[required]");
 
-      if (isValid) {
-        const formData = new FormData(form);
-        let alertParts = ["Formulaire soumis avec les données suivantes :"];
-        for (const [key, val] of formData.entries()) {
-          alertParts.push(`${key} : ${val}`);
-        }
-        alert(alertParts.join("\n"));
-      }
-    });
-  </script>
+            requiredFields.forEach(field => {
+                const fieldIsValid = validateField(field);
+                if (!fieldIsValid) {
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                const formData = new FormData(form_BaseTextField);
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                for (const [key, val] of formData.entries()) {
+                    alertParts.push(`${key} : ${val}`);
+                }
+                alert(alertParts.join("\n"));
+            }
+        });
+
+        // Validation à chaque saisie
+        document.addEventListener("DOMContentLoaded", () => {
+            const requiredFields = form_BaseTextField.querySelectorAll("[required]");
+
+            requiredFields.forEach(field => {
+                field.addEventListener("input", () => {
+                    validateField(field);
+                });
+            });
+        });
+
+    </script>
 </qc-doc-exemple>
-
 
 <h3>Documentation technique</h3>
 
-<h4>Attributs</h4>
+<h4>Classes CSS</h4>
 <div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ</td>
-    </tr>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
-    </tr>
-    <tr>
-      <td>placeholder</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte indicatif affiché lorsque le champ est vide</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Valeur envoyée lors de la soumission du formulaire</td>
-    </tr>
-    <tr>
-      <td>size</td>
-      <td>"sm", "md", "lg", "xl", "xxl"</td>
-      <td>"xl"</td>
-      <td>Taille du champ</td>
-    </tr>
-    <tr>
-      <td>display</td>
-      <td>"inline", "area"</td>
-      <td>"inline"</td>
-      <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Désactive le champ</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Rend le champ obligatoire</td>
-    </tr>
-    <tr>
-      <td>description</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte descriptif affiché sous l'étiquette</td>
-    </tr>
-    <tr>
-      <td>max-length</td>
-      <td>Nombre</td>
-      <td>null</td>
-      <td>Nombre maximum de caractères autorisés pour ce champ</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
-    </tr>
-    </tbody>
-  </table>
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-textfield-container</code></td>
+            <td>Conteneur principal du champ de texte, incluant le libellé, le champ et les messages d’erreur.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield</code></td>
+            <td>Boîte englobante du champ de saisie (input ou textarea), stylisée selon l’état et la taille.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield--sm</code>, <code>--md</code>, <code>--lg</code>, <code>--xl</code>, <code>--xxl</code></td>
+            <td>Classes de taille qui définissent la largeur maximale du champ.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield-row</code></td>
+            <td>Disposition horizontale de plusieurs champs de texte côte à côte.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield-description</code></td>
+            <td>Texte descriptif affiché sous le label pour donner des instructions ou du contexte.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield-required</code></td>
+            <td>Indicateur visuel (astérisque rouge) pour les champs obligatoires.</td>
+        </tr>
+        <tr>
+            <td><code>qc-textfield-charcount</code></td>
+            <td>Affiche le nombre de caractères restants ou en trop, selon la limite définie.</td>
+        </tr>
+        <tr>
+            <td><code>max-reached</code></td>
+            <td>Appliqué au compteur de caractères lorsque la limite est dépassée.</td>
+        </tr>
+        <tr>
+            <td><code>error</code></td>
+            <td>Appliqué au champ lorsqu’il est invalide (vide ou trop long).</td>
+        </tr>
+        <tr>
+            <td><code>qc-form-error</code></td>
+            <td>Conteneur du message d’erreur affiché sous le champ, incluant l’icône et le texte.</td>
+        </tr>
+        <tr>
+            <td><code>qc-icon</code></td>
+            <td>Icône utilisée dans le message d’erreur, stylisée selon le type.</td>
+        </tr>
+        <tr>
+            <td><code>qc-disabled</code></td>
+            <td>Appliqué au conteneur pour désactiver le champ et ses éléments.</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<hr/>
