@@ -7231,8 +7231,8 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_1$b = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
-	var root_2$9 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
+	var root_1$a = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_2$8 = add_locations(template(`<div class="title"><a class="title"> </a></div>`), PivHeader[FILENAME], [[81, 16, [[82, 20]]]]);
 
 	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7335,7 +7335,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div_2 = root_1$b();
+				var div_2 = root_1$a();
 				var a = child(div_2);
 				var text = child(a, true);
 
@@ -7362,7 +7362,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_5 = root_2$9();
+				var div_5 = root_2$8();
 				var a_2 = child(div_5);
 				var text_1 = child(a_2, true);
 
@@ -7867,7 +7867,7 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$8 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 
 	var root$g = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
@@ -7931,7 +7931,7 @@
 
 				src();
 
-				var img = root_2$8();
+				var img = root_2$7();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -8326,7 +8326,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$a = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$9 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8372,7 +8372,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$a();
+				var div = root_1$9();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -9157,8 +9157,8 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$7 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[20, 8]]);
-	var root_1$9 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
+	var root_2$6 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[20, 8]]);
+	var root_1$8 = add_locations(template(`<div class="qc-form-error" role="alert"><!></div>`), FormError[FILENAME], [[9, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -9173,11 +9173,11 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$9();
+				var div = root_1$8();
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-					var fragment_1 = root_2$7();
+					var fragment_1 = root_2$6();
 					var node_2 = first_child(fragment_1);
 
 					Icon(node_2, {
@@ -9236,8 +9236,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$8 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[56, 12]]);
-	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[45, 0, [[53, 4], [59, 4]]]]);
+	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[55, 12]]);
+	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[44, 0, [[52, 4], [58, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9258,7 +9258,6 @@
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
 			formFieldElements = prop($$props, 'formFieldElements', 7),
 			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
-			justifyEnd = prop($$props, 'justifyEnd', 7, false),
 			children = prop($$props, 'children', 7);
 
 		let groupSelection = state(void 0),
@@ -9302,7 +9301,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$8();
+				var span = root_1$7();
 
 				append($$anchor, span);
 			};
@@ -9349,7 +9348,6 @@
 			[
 				() => clsx([
 					chooseDivCLass(inline(), tiled()),
-					// justifyEnd && "qc-justify-end",
 					!tiled() && `qc-field-elements-flex-${elementsGap()}`
 				])
 			]
@@ -9451,13 +9449,6 @@
 				elementsGap($$value);
 				flushSync();
 			},
-			get justifyEnd() {
-				return justifyEnd();
-			},
-			set justifyEnd($$value = false) {
-				justifyEnd($$value);
-				flushSync();
-			},
 			get children() {
 				return children();
 			},
@@ -9487,7 +9478,6 @@
 			updateValue: {},
 			formFieldElements: {},
 			elementsGap: {},
-			justifyEnd: {},
 			children: {}
 		},
 		[],
@@ -9525,7 +9515,6 @@
 				]);
 
 		user_effect((_) => {
-			// console.log("cb group svelte effect")
 			checked(!(!value() || strict_equals(value().length, 0)));
 
 			if (checked()) {
@@ -10065,9 +10054,9 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[69, 16]]);
+	var root_2$5 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[69, 16]]);
 
-	var root_1$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
+	var root_1$6 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
 			45,
 			4,
@@ -10084,7 +10073,7 @@
 		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1$7();
+			var fragment = root_1$6();
 			var label_1 = first_child(fragment);
 			var input = child(label_1);
 
@@ -10109,7 +10098,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span_2 = root_2$6();
+					var span_2 = root_2$5();
 					var node_1 = child(span_2);
 
 					html(node_1, description);
@@ -10624,7 +10613,7 @@
 
 	RadioButton[FILENAME] = 'src/sdg/components/RadioButton/RadioButton.svelte';
 
-	var root_1$6 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
+	var root_1$5 = add_locations(template(`<span class="qc-check-description"><!></span>`), RadioButton[FILENAME], [[46, 12]]);
 
 	var root$8 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> </span> <!></span></label>`), RadioButton[FILENAME], [
 		[
@@ -10688,7 +10677,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_2 = root_1$6();
+				var span_2 = root_1$5();
 				var node_1 = child(span_2);
 
 				html(node_1, description);
@@ -11040,7 +11029,7 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[23, 8]]);
+	var root_1$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[23, 8]]);
 	var root$7 = add_locations(template(`<label><!> <!></label>`), Label[FILENAME], [[12, 0]]);
 
 	function Label($$anchor, $$props) {
@@ -11063,7 +11052,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$5();
+				var span = root_1$4();
 
 				append($$anchor, span);
 			};
@@ -11152,7 +11141,7 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_2$5 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[85, 8]]);
+	var root_2$4 = add_locations(template(`<div class="qc-textfield-description"> </div>`), TextField[FILENAME], [[85, 8]]);
 	var root_3$1 = add_locations(template(`<textarea></textarea>`), TextField[FILENAME], [[90, 12]]);
 	var root_4$1 = add_locations(template(`<input>`), TextField[FILENAME], [[103, 12]]);
 	var root_5 = add_locations(template(`<div aria-live="polite"> </div>`), TextField[FILENAME], [[120, 8]]);
@@ -11266,7 +11255,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_1 = root_2$5();
+				var div_1 = root_2$4();
 
 				set_attribute(div_1, 'id', descriptionId);
 
@@ -11950,9 +11939,13 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root_1$4 = add_locations(template(`<span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span>`, 1), ToggleSwitch[FILENAME], [[29, 8], [30, 8]]);
-	var root_2$4 = add_locations(template(`<span class="qc-switch-slider"></span> <span class="qc-switch-label"><!></span>`, 1), ToggleSwitch[FILENAME], [[32, 8], [33, 8]]);
-	var root$4 = add_locations(template(`<label><input type="checkbox" role="switch"> <!></label>`), ToggleSwitch[FILENAME], [[15, 0, [[21, 4]]]]);
+	var root$4 = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+		[
+			14,
+			0,
+			[[15, 4], [23, 4], [24, 4]]
+		]
+	]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -11962,16 +11955,10 @@
 			id = prop($$props, 'id', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 15, false),
-			labelPosition = prop($$props, 'labelPosition', 7, "left");
+			justified = prop($$props, 'justified', 7);
 
-		const usedId = "inpupt-" + (id() ? id() : Math.random().toString(36));
-		const usedLabelPosition = strict_equals(labelPosition().toLowerCase(), "right") ? "right" : "left";
+		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
 		var label_1 = root$4();
-
-		set_class(label_1, 1, clsx([
-			"qc-switch",
-			strict_equals(usedLabelPosition, "left") && "qc-switch-label-left"
-		]));
 
 		set_attribute(label_1, 'for', usedId);
 
@@ -11980,37 +11967,23 @@
 		remove_input_defaults(input);
 		set_attribute(input, 'id', usedId);
 
-		var node = sibling(input, 2);
+		var span = sibling(input, 2);
+		var node = child(span);
 
-		{
-			var consequent = ($$anchor) => {
-				var fragment = root_1$4();
-				var span = first_child(fragment);
-				var node_1 = child(span);
-
-				html(node_1, label);
-				reset(span);
-				next(2);
-				append($$anchor, fragment);
-			};
-
-			var alternate = ($$anchor) => {
-				var fragment_1 = root_2$4();
-				var span_1 = sibling(first_child(fragment_1), 2);
-				var node_2 = child(span_1);
-
-				html(node_2, label);
-				reset(span_1);
-				append($$anchor, fragment_1);
-			};
-
-			if_block(node, ($$render) => {
-				if (strict_equals(usedLabelPosition, "left")) $$render(consequent); else $$render(alternate, false);
-			});
-		}
-
+		html(node, label);
+		reset(span);
+		next(2);
 		reset(label_1);
-		template_effect(() => input.disabled = disabled());
+
+		template_effect(() => {
+			set_class(label_1, 1, clsx([
+				"qc-switch",
+				justified() && "qc-switch-justified"
+			]));
+
+			input.disabled = disabled();
+		});
+
 		bind_checked(input, checked);
 		append($$anchor, label_1);
 
@@ -12043,11 +12016,11 @@
 				disabled($$value);
 				flushSync();
 			},
-			get labelPosition() {
-				return labelPosition();
+			get justified() {
+				return justified();
 			},
-			set labelPosition($$value = "left") {
-				labelPosition($$value);
+			set justified($$value) {
+				justified($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -12061,7 +12034,7 @@
 			id: {},
 			checked: {},
 			disabled: {},
-			labelPosition: {}
+			justified: {}
 		},
 		[],
 		[],
@@ -12207,7 +12180,11 @@
 				reflect: true,
 				type: 'Boolean'
 			},
-			labelPosition: { attribute: 'label-position', type: 'String' }
+			justified: {
+				attribute: 'justified',
+				reflect: true,
+				type: 'Boolean'
+			}
 		},
 		[],
 		[],
@@ -12221,8 +12198,8 @@
 		push($$props, true);
 
 		let disabled = prop($$props, 'disabled', 15, false),
-			labelPosition = prop($$props, 'labelPosition', 7, "left"),
 			items = prop($$props, 'items', 31, () => proxy([])),
+			justified = prop($$props, 'justified', 7, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -12231,57 +12208,47 @@
 					'$$legacy',
 					'$$host',
 					'disabled',
-					'labelPosition',
-					'items'
+					'items',
+					'justified'
 				]);
 
-		const expression = user_derived(() => strict_equals(labelPosition(), "right", false));
+		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md' }, () => rest, {
+			children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				var node = first_child(fragment_1);
 
-		CheckFieldGroup($$anchor, spread_props(
-			{
-				elementsGap: 'md',
-				get justifyEnd() {
-					return get(expression);
-				}
-			},
-			() => rest,
-			{
-				children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
-					var fragment_1 = comment();
-					var node = first_child(fragment_1);
+				each(node, 17, items, index, ($$anchor, item, $$index) => {
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 31, 12);
 
-					each(node, 17, items, index, ($$anchor, item, _id) => {
-						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 35, 12);
+					const expression = user_derived(() => get(item).disabled ?? disabled());
+					const expression_1 = user_derived(() => justified() ?? get(item).justified);
 
-						const expression_1 = user_derived(() => get(item).disabled ?? disabled());
-
-						ToggleSwitch($$anchor, {
-							get id() {
-								return get(item).id;
-							},
-							get label() {
-								return get(item).label;
-							},
-							get disabled() {
-								return get(expression_1);
-							},
-							get labelPosition() {
-								return labelPosition();
-							},
-							get checked() {
-								return get(item).checked;
-							},
-							set checked($$value) {
-								(get(item).checked = $$value);
-							}
-						});
+					ToggleSwitch($$anchor, {
+						get id() {
+							return get(item).id;
+						},
+						get label() {
+							return get(item).label;
+						},
+						get disabled() {
+							return get(expression);
+						},
+						get justified() {
+							return get(expression_1);
+						},
+						get checked() {
+							return get(item).checked;
+						},
+						set checked($$value) {
+							(get(item).checked = $$value);
+						}
 					});
+				});
 
-					append($$anchor, fragment_1);
-				}),
-				$$slots: { default: true }
-			}
-		));
+				append($$anchor, fragment_1);
+			}),
+			$$slots: { default: true }
+		}));
 
 		return pop({
 			get disabled() {
@@ -12291,18 +12258,18 @@
 				disabled($$value);
 				flushSync();
 			},
-			get labelPosition() {
-				return labelPosition();
-			},
-			set labelPosition($$value = "left") {
-				labelPosition($$value);
-				flushSync();
-			},
 			get items() {
 				return items();
 			},
 			set items($$value = []) {
 				items($$value);
+				flushSync();
+			},
+			get justified() {
+				return justified();
+			},
+			set justified($$value = false) {
+				justified($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -12314,7 +12281,7 @@
 		{
 			legend: { attribute: 'legend', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
-			labelPosition: { attribute: 'label-position', type: 'String' },
+			justified: { attribute: 'justified', type: 'Boolean' },
 			items: {}
 		},
 		[],

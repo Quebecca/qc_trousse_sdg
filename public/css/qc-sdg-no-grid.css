@@ -2283,10 +2283,6 @@ input[type=radio]:checked.qc-compact::before {
   gap: var(--qc-spacer-md);
 }
 
-.qc-justify-end {
-  justify-items: end;
-}
-
 input[type=checkbox]:checked {
   background-color: var(--qc-color-blue-regular);
 }
@@ -2556,12 +2552,6 @@ qc-textfield {
   margin-top: 0.3rem;
 }
 
-.qc-switch-label-left {
-  justify-self: end;
-  justify-content: flex-end;
-  text-align: right;
-}
-
 .qc-switch-slider {
   display: inline-flex;
   position: relative;
@@ -2590,6 +2580,10 @@ qc-textfield {
   border: 0.1rem solid var(--qc-color-grey-dark);
   border-radius: 50%;
   transition: all 0.3s ease-out;
+}
+
+.qc-switch-justified {
+  justify-content: space-between;
 }
 
 .qc-label {

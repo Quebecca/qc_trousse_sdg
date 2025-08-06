@@ -4,32 +4,22 @@
         id,
         checked = $bindable(false),
         disabled = $bindable(false),
-        labelPosition = "left",
+        justified
     } = $props();
 
-    const usedId = "inpupt-" + (id ?
+    const usedId = "toggle-switch-" + (id ?
         id : Math.random().toString(36));
-    const usedLabelPosition = labelPosition.toLowerCase() === "right" ? "right" : "left";
 </script>
 
-<label class={[
-        "qc-switch",
-        usedLabelPosition === "left" && "qc-switch-label-left"
-    ]}
-    for={usedId}
->
+<label class={["qc-switch", justified && "qc-switch-justified"]} for={usedId}>
     <input
-            id={usedId}
-            type="checkbox"
-            role="switch"
-            bind:checked={checked}
-            {disabled}
+        id={usedId}
+        type="checkbox"
+        role="switch"
+        bind:checked={checked}
+        {disabled}
     />
-    {#if usedLabelPosition === "left"}
-        <span class="qc-switch-label">{@html label}</span>
-        <span class="qc-switch-slider"></span>
-    {:else}
-        <span class="qc-switch-slider"></span>
-        <span class="qc-switch-label">{@html label}</span>
-    {/if}
+
+    <span class="qc-switch-label">{@html label}</span>
+    <span class="qc-switch-slider"></span>
 </label>

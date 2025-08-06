@@ -53,12 +53,6 @@ $border: 1;
   margin-top: rem(3);
 }
 
-.qc-switch-label-left {
-  justify-self: end;
-  justify-content: flex-end;
-  text-align: right;
-}
-
 .qc-switch-slider {
   display: inline-flex;
   position: relative;
@@ -88,4 +82,8 @@ $border: 1;
     border-radius: 50%;
     transition: all .3s ease-out;
   }
+}
+
+.qc-switch-justified {
+  justify-content: space-between;
 }

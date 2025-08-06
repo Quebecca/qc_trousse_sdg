@@ -2321,23 +2321,12 @@
                 id="switch-status"
                 label="Afficher l'état du commutateur à la console"
         ></qc-toggle-switch>
-
-        <qc-toggle-switch
-                id="switch-status-right"
-                label="Afficher l'état du commutateur 2 à la console"
-                label-position="right"
-        ></qc-toggle-switch>
     </div>
 
     <script>
         document.getElementById("switch-status")
             .addEventListener("change", (event) => {
                 console.log(`'switch-status' mis à ${event.target.checked}`);
-            });
-
-        document.getElementById("switch-status-right")
-            .addEventListener("change", (event) => {
-                console.log(`'switch-status-right' mis à ${event.target.checked}`);
             });
     </script>
 </qc-doc-exemple>
@@ -2346,6 +2335,7 @@
     <qc-toggle-switch-group
         id="switch-group"
         legend="Préférences de notifications de messages"
+        justified
     >
         <qc-toggle-switch
                 id="nouveaux-messages"
@@ -2405,13 +2395,11 @@
         <td>Désactive le commutateur</td>
     </tr>
     <tr>
-        <td>label-position</td>
-        <td>"left" ou "right"</td>
-        <td>"left"</td>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
         <td>
-            Position du libellé par rapport au commutateur
-            <br> N.B. : le commutateur et son étiquette sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
+            Permet au commutateur et son libellé de prendre toute la largeur disponible
         </td>
     </tr>
     </tbody>
@@ -2444,10 +2432,13 @@
         <td>label-position</td>
         <td>"left" ou "right"</td>
         <td>"left"</td>
+    <tr>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
         <td>
-            Position des libellés par rapport aux commutateurs.
-            <br> N.B. : les commutateurs et leurs étiquettes sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
+            Permet au commutateur et son libellé de prendre toute la largeur disponible.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
         </td>
     </tr>
     </tbody>

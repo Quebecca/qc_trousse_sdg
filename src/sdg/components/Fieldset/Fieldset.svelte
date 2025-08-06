@@ -17,7 +17,6 @@
         updateValue = () => {},
         formFieldElements,
         elementsGap = "sm",
-        justifyEnd = false,
         children
     } = $props();
     let groupSelection = $state(),
@@ -57,13 +56,12 @@
         {/if}
     </legend>
     <div
-            class={[
-                chooseDivCLass(inline, tiled),
-                // justifyEnd && "qc-justify-end",
-                !tiled && `qc-field-elements-flex-${elementsGap}`,
-            ]}
-            style="--column-count: {columnCount}"
-            bind:this={groupSelection}
+        class={[
+            chooseDivCLass(inline, tiled),
+            !tiled && `qc-field-elements-flex-${elementsGap}`,
+        ]}
+        style="--column-count: {columnCount}"
+        bind:this={groupSelection}
     >
         {@render children?.()}
     </div>

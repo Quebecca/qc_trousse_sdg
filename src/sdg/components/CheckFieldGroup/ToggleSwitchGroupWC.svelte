@@ -4,7 +4,7 @@
     props: {
         legend: {attribute:'legend', type: 'String'},
         disabled: {attribute:'disabled', type: 'Boolean'},
-        labelPosition: {attribute:'label-position', type: 'String'},
+        justified: {attribute:'justified', type: 'Boolean'},
     }
 }} />
 
@@ -14,27 +14,23 @@
 
     let {
         disabled = $bindable(false),
-        labelPosition = "left",
         items = $bindable([]),
+        justified = false,
         ...rest
     } = $props();
-
-
-
 </script>
 
 <CheckFieldGroup
     elementsGap="md"
-    justifyEnd={labelPosition !== "right"}
     {...rest}
 >
-    {#each items as item, _id}
+    {#each items as item}
         <ToggleSwitch
             id={item.id}
             label={item.label}
             bind:checked={item.checked}
             disabled={item.disabled ?? disabled}
-            {labelPosition}
+            justified={justified ?? item.justified}
         />
     {/each}
 </CheckFieldGroup>
