@@ -3367,6 +3367,9 @@
             <div class="qc-textfield qc-textfield--xl">
                 <input type="text" id="text-xl" name="text-xl" placeholder="ex : jeantremblay@exemple.com" required />
             </div>
+            <div id="error-text-xl" class="qc-form-error" role="alert" style="display: none;">
+                <span>Ce champ est requis.</span>
+            </div>
         </div>
 
         <div class="qc-textfield-container qc-disabled">
@@ -3395,6 +3398,9 @@
                 <textarea id="zone-xxl" name="zone-xxl" maxlength="50" required></textarea>
             </div>
             <div id="charcount-zone-xxl" class="qc-textfield-charcount" aria-live="polite"></div>
+            <div id="error-zone-xxl" class="qc-form-error" role="alert" style="display: none;">
+                <span>Ce champ est requis.</span>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
@@ -3414,20 +3420,29 @@
                 const value = field.value?.trim();
                 const maxLength = parseInt(field.getAttribute("maxlength"), 10);
                 const container = field.closest(".qc-textfield");
+                const errorMessage = document.getElementById(`error-${field.id}`);
 
                 // Réinitialiser l'état d'erreur
                 container?.classList.remove("error");
+                if (errorMessage) errorMessage.style.display = "none";
 
                 if (!value) {
                     container?.classList.add("error");
+                    if (errorMessage) {
+                        errorMessage.querySelector("span").textContent = "Ce champ est requis.";
+                        errorMessage.style.display = "flex";
+                    }
                     isValid = false;
                     return;
                 }
 
                 if (!isNaN(maxLength) && value.length > maxLength) {
                     container?.classList.add("error");
+                    if (errorMessage) {
+                        errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
+                        errorMessage.style.display = "flex";
+                    }
                     isValid = false;
-                    return;
                 }
             });
 
