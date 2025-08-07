@@ -1,7 +1,108 @@
-<h2 id="base-selection-button">Boutons de sélection</h2>
+<h2 id="base-base-selection-button">Boutons de sélection</h2>
 
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+    <fieldset aria-describedby="base-id_ex-radio-select" class="qc-fieldset">
+        <legend id="base-id_ex-radio-select">Choisissez une option :</legend>
+        
+        <div class="qc-field-elements-tiled" style="--column-count: 2;">
+            <label for="base-ex-radio-select-1-07wzbagv1j7-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-1-07wzbagv1j7-input" name="ex-radio-select" value="1" aria-required="false" aria-invalid="base-false" checked>
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 1</span>
+                    <span class="qc-check-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+                </span>
+            </label>
 
+            <label for="base-ex-radio-select-2-f6bvh8pbh5s-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-2-f6bvh8pbh5s-input" name="ex-radio-select" value="2" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 2</span>
+                </span>
+            </label>
+
+            <label for="base-ex-radio-select-3-yxtu495l8ba-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-3-yxtu495l8ba-input" name="ex-radio-select" value="3" aria-required="false" aria-invalid="base-false" disabled="">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 3 (désactivée)</span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
+</qc-doc-exemple>
+    
+<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états">
+    <fieldset aria-describedby="base-id_exemple-checkbox-select" class="qc-fieldset">
+        <legend id="base-id_exemple-checkbox-select">Sélectionnez vos options</legend>
+
+        <div class="qc-field-elements-tiled" style="--column-count: 2;">
+            <label class="qc-selection-button" for="base-exemple-checkbox-select10.c4slvplnh2-input">
+                <input id="base-exemple-checkbox-select10.c4slvplnh2-input" class="qc-compact" type="checkbox" value="1" name="exemple-checkbox-select" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 1 </span>
+                    <span class="qc-check-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+                </span>
+            </label>
+
+            <label class="qc-selection-button" for="base-exemple-checkbox-select20.nf6c2k98c1-input">
+                <input id="base-exemple-checkbox-select20.nf6c2k98c1-input" class="qc-compact" type="checkbox" value="2" name="exemple-checkbox-select" aria-required="false" aria-invalid="base-false" checked>
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 2 cochée par défaut</span>
+                </span>
+            </label>
+
+            <label class="qc-selection-button" for="base-exemple-checkbox-select30.gia4dr5skyk-input">
+                <input id="base-exemple-checkbox-select30.gia4dr5skyk-input" class="qc-compact" type="checkbox" value="3" name="exemple-checkbox-select" disabled="" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 3 désactivée</span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
+    <fieldset aria-describedby="base-id_ex-radio-select-inline" class="qc-fieldset">
+        <legend id="base-id_ex-radio-select-inline">Choisissez une option : </legend>
+        
+        <div class="qc-field-elements-tiled-flex-row" style="--column-count: 1;">
+            <label for="base-ex-radio-select-inline-1-gsv4etzzb9-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-1-gsv4etzzb9-input" name="ex-radio-select-inline" value="1" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">1</span>
+                </span>
+            </label>
+            <label for="base-ex-radio-select-inline-2-a6tphrc4nxs-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-2-a6tphrc4nxs-input" name="ex-radio-select-inline" value="2" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">2</span>
+                </span>
+            </label>
+            <label for="base-ex-radio-select-inline-3-3j103yk0b8-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-3-3j103yk0b8-input" name="ex-radio-select-inline" value="3" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">3</span>
+                </span>
+            </label>
+            <label for="base-ex-radio-select-inline-4-1cqqin7kwpn-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-4-1cqqin7kwpn-input" name="ex-radio-select-inline" value="4" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">4</span>
+                </span>
+            </label>
+            <label for="base-ex-radio-select-inline-5-d1upuvhliij-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-5-d1upuvhliij-input" name="ex-radio-select-inline" value="5" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">5</span>
+                </span>
+            </label>
+            <label for="base-ex-radio-select-inline-6-jm6gm6grsac-input" class="qc-selection-button">
+                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-6-jm6gm6grsac-input" name="ex-radio-select-inline" value="6" aria-required="false" aria-invalid="base-false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">6</span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
 </qc-doc-exemple>
