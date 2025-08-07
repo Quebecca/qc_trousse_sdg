@@ -10113,7 +10113,7 @@
 				};
 
 				if_block(node, ($$render) => {
-					if (required()) $$render(consequent);
+					if (!parentGroup() && required()) $$render(consequent);
 				});
 			}
 

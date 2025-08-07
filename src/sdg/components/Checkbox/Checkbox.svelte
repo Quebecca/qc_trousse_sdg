@@ -66,7 +66,7 @@
         <span class="qc-check-text">
             <span class="qc-check-label">
                 {label}
-                {#if required}
+                {#if !parentGroup && required}
                     <span class="qc-required">*</span>
                 {/if}
             </span>
