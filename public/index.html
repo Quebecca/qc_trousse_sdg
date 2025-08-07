@@ -3265,19 +3265,6 @@
           </span>
         </span>
       </label>
-
-      <div class="qc-form-error" role="alert">
-        <div role="img"
-             class="qc-icon"
-             data-img-type="warning"
-             style="--img-color: var(--qc-color-red-regular);
-                    --img-width: 24px;
-                    --img-height: 21px;
-                    display: none;
-                    "
-        ></div>
-        <span class="qc-form-error-message" hidden>Le champ "J'accepte les conditions d'utilisation" est obligatoire.</span>
-      </div>
     </div>
 
     <button class="btn btn-sm btn-primary"
@@ -3300,9 +3287,26 @@
         alert(alertParts.join("\n"));
       } else {
         baseTermsAcceptance.invalid = true;
+
+        const alert = document.createElement("div");
+        alert.classList.add("qc-form-error");
+        alert.setAttribute("role", "alert");
+        setTimeout(() => {
+          alert.innerHTML = `
+              <div role="img"
+                   class="qc-icon"
+                   data-img-type="warning"
+                   style="--img-color: var(--qc-color-red-regular);
+                            --img-width: 24px;
+                            --img-height: 21px;
+                            display: none;
+                            "
+              ></div>
+              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
+              `;
+        }, 10);
+        baseTosForm.querySelector(".qc-checkbox-single").appendChild(alert);
         baseTosForm.querySelector(".qc-checkbox-single").classList.add("qc-checkbox-single-invalid");
-        baseTosForm.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
-        baseTosForm.querySelector(".qc-icon").style.display = "flex";
       }
     })
 
@@ -3311,6 +3315,11 @@
       baseTermsAcceptance.invalid = false;
       baseTosForm.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
       baseTosForm.querySelector(".qc-icon").style.display = "none";
+
+      baseTermsAcceptance.ariaInvalid = "false";
+      const parentFieldset = baseTermsAcceptance.parentElement.parentElement.parentElement;
+      parentFieldset.classList.remove("qc-fieldset-invalid");
+      parentFieldset.querySelector(".qc-form-error")?.remove();
     });
   </script>
 </qc-doc-exemple>
@@ -3375,7 +3384,7 @@
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">
   <form id="base-checkbox-form">
-    <fieldset aria-describedby="id_ex-checkbox-form" class="qc-fieldset" data-required="false">
+    <fieldset aria-describedby="id_ex-checkbox-form" class="qc-fieldset" data-required="true">
       <legend id="id_ex-checkbox-form">
         Sur quelle plateforme consultez-vous www.quebec.ca?
         <span class="qc-required" aria-hidden="true">*</span>
@@ -3404,19 +3413,6 @@
         </label>
       </div>
     </fieldset>
-
-    <div class="qc-form-error" role="alert">
-      <div role="img"
-           class="qc-icon"
-           data-img-type="warning"
-           style="--img-color: var(--qc-color-red-regular);
-                    --img-width: 24px;
-                    --img-height: 21px;
-                    display: none;
-                    "
-      ></div>
-      <span class="qc-form-error-message" hidden>Veuillez sélectionner une plateforme.</span>
-    </div>
 
     <fieldset aria-describedby="id_ex-checkbox-form-2" class="qc-fieldset">
       <legend id="id_ex-checkbox-form-2">Sur quel navigateur consultez-vous www.quebec.ca?</legend>
@@ -3456,25 +3452,57 @@
       .addEventListener("submit", (event) => {
         event.preventDefault();
         let doSubmit = true;
+        console.log(event.target.querySelectorAll("fieldset[data-required='true']"));
         event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
-          if (!group.querySelectorAll("input:checked").length <= 0) {
+          if (group.querySelectorAll("input:checked").length <= 0) {
             group.querySelectorAll("input").forEach(input => {
               input.ariaInvalid = true;
             });
             doSubmit = false;
+
+            const alert = document.createElement("div");
+            alert.classList.add("qc-form-error");
+            alert.setAttribute("role", "alert");
+            setTimeout(() => {
+              alert.innerHTML = `
+              <div role="img"
+                   class="qc-icon"
+                   data-img-type="warning"
+                   style="--img-color: var(--qc-color-red-regular);
+                            --img-width: 24px;
+                            --img-height: 21px;
+                            display: none;
+                            "
+              ></div>
+              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
+              `;
+            }, 10);
+            group.appendChild(alert);
+            group.classList.add("qc-fieldset-invalid");
           }
-        })
-        if(doSubmit) {
+        });
+
+        if (doSubmit) {
           const platformValues = Array.from(event.target.querySelectorAll("input[name='base-ex-checkbox-form']:checked")).map(input => input.value);
           const browserValues = Array.from(event.target.querySelectorAll("input[name='base-ex-checkbox-form-2']:checked")).map(input => input.value);
 
           alert(
             "Formulaire soumis\n"
-                  + `Valeur pour 'Plateforme' : ${platformValues ? platformValues.join(',') : "vide"}`
-                  + `\nValeur pour 'Navigateur' : ${browserValues ? browserValues.join(',') : "vide"}`
+                  + `Valeur pour 'Plateforme' : ${platformValues.length > 0 ? platformValues.join(',') : "vide"}`
+                  + `\nValeur pour 'Navigateur' : ${browserValues.length > 0 ? browserValues.join(',') : "vide"}`
           );
         }
       })
+
+    document.getElementById("base-checkbox-form")
+            .querySelectorAll("input").forEach(input => {
+              input.addEventListener("change", () => {
+                input.ariaInvalid = "false";
+                const parentFieldset = input.parentElement.parentElement.parentElement;
+                parentFieldset.classList.remove("qc-fieldset-invalid");
+                parentFieldset.querySelector(".qc-form-error")?.remove();
+              });
+            });
   </script>
 </qc-doc-exemple>
 
