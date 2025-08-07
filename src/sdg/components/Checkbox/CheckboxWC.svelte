@@ -2,6 +2,7 @@
     tag: 'qc-checkbox',
     shadow: 'none',
     props: {
+        id: { attribute: 'id', type: 'String' },
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
         description: {attribute: 'description', type: 'String'},
@@ -35,7 +36,7 @@
         label,
         description,
         name,
-        id = name + value + Math.random().toString(36).substring(2, 15),
+        id,
         disabled = $bindable(false),
         required = $bindable(false),
         checked = $bindable(false),

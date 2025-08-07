@@ -3314,9 +3314,6 @@
 
     baseTermsAcceptance.addEventListener("change", () => {
       baseTosForm.querySelector(".qc-checkbox-single").classList.remove("qc-checkbox-single-invalid");
-      baseTermsAcceptance.invalid = false;
-      baseTosForm.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
-      baseTosForm.querySelector(".qc-icon").style.display = "none";
 
       baseTermsAcceptance.ariaInvalid = "false";
       const parentFieldset = baseTermsAcceptance.parentElement.parentElement.parentElement;

@@ -145,7 +145,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -443,108 +442,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1363,11 +1260,6 @@
 			var signal = effect(fn);
 			return signal;
 		}
-	}
-
-	/** @param {() => void | (() => void)} fn */
-	function inspect_effect(fn) {
-		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3864,39 +3756,6 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} [inspector]
-	 */
-	// eslint-disable-next-line no-console
-	function inspect(get_value, inspector = console.log) {
-		validate_effect();
-
-		let initial = true;
-
-		inspect_effect(() => {
-			/** @type {any} */
-			var value = UNINITIALIZED;
-
-			// Capturing the value might result in an exception due to the inspect effect being
-			// sync and thus operating on stale data. In the case we encounter an exception we
-			// can bail-out of reporting the value. Instead we simply console.error the error
-			// so at least it's known that an error occured, but we don't stop execution
-			try {
-				value = get_value();
-			} catch (error) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-			}
-
-			if (value !== UNINITIALIZED) {
-				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
-			}
-
-			initial = false;
-		});
 	}
 
 	/**
@@ -10206,18 +10065,18 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-required">*</span>`), Checkbox[FILENAME], [[72, 20]]);
-	var root_3$2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[76, 16]]);
+	var root_2$6 = add_locations(template(`<span class="qc-required">*</span>`), Checkbox[FILENAME], [[71, 20]]);
+	var root_3$2 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[75, 16]]);
 
 	var root_1$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> <!></span> <!></span></label> <!>`, 1), Checkbox[FILENAME], [
 		[
-			47,
+			46,
 			4,
-			[[50, 8], [68, 8, [[69, 12]]]]
+			[[49, 8], [67, 8, [[68, 12]]]]
 		]
 	]);
 
-	var root_6 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[89, 4]]);
+	var root_6 = add_locations(template(`<div><!></div>`), Checkbox[FILENAME], [[88, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10302,10 +10161,10 @@
 			template_effect(
 				($0, $1) => {
 					set_class(label_1, 1, $0);
-					set_attribute(label_1, 'for', get(usedId));
+					set_attribute(label_1, 'for', get(usedId) + "-input");
 
 					attributes = set_attributes(input, attributes, {
-						id: get(usedId),
+						id: get(usedId) + "-input",
 						class: compact() || tiled() ? "qc-compact" : "",
 						type: 'checkbox',
 						value: value(),
@@ -10389,9 +10248,6 @@
 		}
 
 		let usedId = user_derived(() => id() ?? name() + value() + Math.random().toString(36));
-
-		inspect(() => [get(usedId)]);
-
 		var fragment_2 = comment();
 		var node_4 = first_child(fragment_2);
 
@@ -10571,7 +10427,7 @@
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
 			name = prop($$props, 'name', 7),
-			id = prop($$props, 'id', 23, () => name() + value() + Math.random().toString(36).substring(2, 15)),
+			id = prop($$props, 'id', 7),
 			disabled = prop($$props, 'disabled', 15, false),
 			required = prop($$props, 'required', 15, false),
 			checked = prop($$props, 'checked', 15, false),
@@ -10709,9 +10565,7 @@
 			get id() {
 				return id();
 			},
-			set id(
-				$$value = name + value + Math.random().toString(36).substring(2, 15)
-			) {
+			set id($$value) {
 				id($$value);
 				flushSync();
 			},
@@ -10771,6 +10625,7 @@
 	customElements.define('qc-checkbox', create_custom_element(
 		CheckboxWC,
 		{
+			id: { attribute: 'id', type: 'String' },
 			value: { attribute: 'value', type: 'String' },
 			label: { attribute: 'label', type: 'String' },
 			description: { attribute: 'description', type: 'String' },
@@ -10786,8 +10641,7 @@
 			tiled: { attribute: 'tiled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			parentGroup: {},
-			id: {}
+			parentGroup: {}
 		},
 		[],
 		[],
@@ -10887,7 +10741,7 @@
 		reset(label_1);
 
 		template_effect(() => {
-			set_attribute(label_1, 'for', get(inputId));
+			set_attribute(label_1, 'for', get(inputId) + "-input");
 
 			set_class(label_1, 1, clsx([
 				!tiled() && "qc-check-row",
@@ -10897,7 +10751,7 @@
 			attributes = set_attributes(input, attributes, {
 				class: compact() || tiled() ? "qc-compact" : "",
 				type: 'radio',
-				id: get(inputId),
+				id: get(inputId) + "-input",
 				name: name(),
 				value: value(),
 				'aria-required': required(),

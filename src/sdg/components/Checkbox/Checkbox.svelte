@@ -40,15 +40,14 @@
     }
 
     let usedId = $derived(id ?? name + value + Math.random().toString(36));
-    $inspect(usedId)
 </script>
 
 {#snippet checkboxRow()}
     <label
             class={chooseCheckboxClass()}
-            for={usedId}>
+            for={usedId + "-input"}>
         <input
-                id={usedId}
+                id={usedId + "-input"}
                 class={compact || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}

@@ -20,7 +20,7 @@
 </script>
 
 <label
-        for={inputId}
+        for={inputId + "-input"}
         class={[
         !tiled && "qc-check-row",
         tiled && "qc-selection-button",
@@ -30,7 +30,7 @@
     <input
             class={compact || tiled ? "qc-compact" : ""}
             type="radio"
-            id={inputId}
+            id={inputId + "-input"}
             {name}
             {value}
             bind:group={groupValue}
