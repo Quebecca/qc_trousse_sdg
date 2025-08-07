@@ -3107,19 +3107,6 @@
                     </span>
                 </label>
             </div>
-
-            <div class="qc-form-error" role="alert">
-                <div role="img"
-                    class="qc-icon"
-                    data-img-type="warning"
-                    style="--img-color: var(--qc-color-red-regular);
-                    --img-width: 24px;
-                    --img-height: 21px;
-                    display: none;
-                    "
-                ></div>
-                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
-            </div>
         </fieldset>
 
         <fieldset id="base-exemple-radio-form-2" aria-describedby="base-id_ex-form-2" class="qc-fieldset" data-required="false">
@@ -3156,13 +3143,30 @@
                 let doSubmit = true;
                 event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
                     if (!group.querySelector("input:checked")) {
-                        group.classList.add("qc-fieldset-invalid");
-                        group.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
-                        group.querySelector(".qc-icon").style.display = "flex";
                         group.querySelectorAll("input[type='radio']").forEach(input => {
                             input.setAttribute("aria-invalid", "true");
                         });
                         doSubmit = false;
+
+                        const alert = document.createElement("div");
+                        alert.classList.add("qc-form-error");
+                        alert.setAttribute("role", "alert");
+                        setTimeout(() => {
+                            alert.innerHTML = `
+                              <div role="img"
+                                   class="qc-icon"
+                                   data-img-type="warning"
+                                   style="--img-color: var(--qc-color-red-regular);
+                                            --img-width: 24px;
+                                            --img-height: 21px;
+                                            display: none;
+                                            "
+                              ></div>
+                              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
+                              `;
+                        }, 10);
+                        group.appendChild(alert);
+                        group.classList.add("qc-fieldset-invalid");
                     }
                 })
                 if (doSubmit) {
@@ -3180,15 +3184,13 @@
                 }
             });
 
-        baseRadioForm.querySelectorAll("fieldset").forEach(fieldset => {
-            fieldset.querySelectorAll("input[type='radio']").forEach(input => {
-                input.addEventListener("change", () => {
-                        fieldset.classList.remove("qc-fieldset-invalid");
-                        fieldset.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
-                        fieldset.querySelector(".qc-icon").style.display = "none";
-                    }
-                );
-            })
+        baseRadioForm.querySelectorAll("input").forEach(input => {
+            input.addEventListener("change", () => {
+                input.ariaInvalid = "false";
+                const parentFieldset = input.parentElement.parentElement.parentElement;
+                parentFieldset.classList.remove("qc-fieldset-invalid");
+                parentFieldset.querySelector(".qc-form-error")?.remove();
+            });
         });
     </script>
 </qc-doc-exemple>
