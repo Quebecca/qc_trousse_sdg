@@ -69,6 +69,7 @@
   </ul>
   <h2 class="qc-h4">Version HTML des composants</h2>
   <ul>
+    <li><a href="#base-button">Boutons</a></li>
     <li><a href="#base-radio-button">Boutons radio</a></li>
     <li><a href="#base-champ-texte">Champ texte</a></li>
   </ul>
@@ -3000,6 +3001,242 @@
 
     <hr />
     <h2 class="qc-h2">Version HTML des composants</h2>
+
+    <h2 id="base-button">Boutons</h2>
+<h3>Exemples</h3>
+
+<qc-doc-exemple caption="Exemples des différentes options de boutons.">
+    <div>
+        <qc-button variant="primary" label="Principal"></qc-button>
+        <qc-button variant="primary" rounded label="Principal"></qc-button>
+        <qc-button variant="primary" disabled label="Principal"></qc-button>
+        <qc-button variant="primary" compact label="Principal"></qc-button>
+    </div>
+
+    <div>
+        <qc-button variant="secondary" label="Secondaire"></qc-button>
+        <qc-button variant="secondary" rounded label="Secondaire"></qc-button>
+        <qc-button variant="secondary" disabled label="Secondaire"></qc-button>
+        <qc-button variant="secondary" compact label="Secondaire"></qc-button>
+    </div>
+
+    <div>
+        <qc-button variant="tertiary" label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" rounded label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" disabled label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" compact label="Tertiaire"></qc-button>
+    </div>
+
+    <div>
+        <qc-button variant="danger" label="Avertissement"></qc-button>
+        <qc-button variant="danger" rounded label="Avertissement"></qc-button>
+        <qc-button variant="danger" disabled label="Avertissement"></qc-button>
+        <qc-button variant="danger" compact label="Avertissement"></qc-button>
+    </div>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemples de boutons avec un icone.">
+    <div>
+        <qc-button
+                variant="primary"
+                label="Ajouter"
+                icon="plus"
+                icon-position="left"
+        ></qc-button>
+
+        <qc-button
+                variant="primary"
+                label="Information"
+                icon="information"
+                icon-position="right"
+        ></qc-button>
+    </div>
+
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
+    <qc-button
+            variant="primary"
+            label="Questions"
+            icon-src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+    ></qc-button>
+    <qc-button
+            variant="primary"
+            label="Questions"
+            icon-src="../../../../public/img/question.svg"
+    ></qc-button>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemples de boutons simples.">
+    <div>
+        <qc-button variant="simple" label="Action" icon="information"></qc-button>
+        <qc-button variant="simple" disabled label="Action" icon="plus"></qc-button>
+        <qc-button variant="simple" compact label="Action" icon="external-link"></qc-button>
+    </div>
+</qc-doc-exemple>
+
+
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs de qc-button</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>variant</td>
+            <td>Texte</td>
+            <td>"primary"</td>
+            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte affiché dans le bouton.</td>
+        </tr>
+        <tr>
+            <td>compact</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Affiche le bouton dans un format plus petit.</td>
+        </tr>
+        <tr>
+            <td>rounded</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Désactive le bouton et empêche toute interaction.</td>
+        </tr>
+        <tr>
+            <td>icon</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom d’une icône présente dans la librairie du projet.</td>
+        </tr>
+        <tr>
+            <td>icon-position</td>
+            <td>"left" ou "right"</td>
+            <td>"left"</td>
+            <td>Positionne l’icône à gauche ou à droite du texte dans le bouton.</td>
+        </tr>
+        <tr>
+            <td>icon-src</td>
+            <td>Texte (base64)</td>
+            <td>""</td>
+            <td>Permet d’afficher une image personnalisée encodée en base64 à la place d’une icône de la librairie.</td>
+        </tbody>
+    </table>
+</div>
+
+<h4>Icônes disponibles</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Aperçu</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>arrow-up-white</td>
+            <td><qc-icon type="arrow-up-white"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>chevron-blue</td>
+            <td><qc-icon type="chevron-blue"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>chevron-white</td>
+            <td><qc-icon type="chevron-white"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>clipboard</td>
+            <td><qc-icon type="clipboard"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>error</td>
+            <td><qc-icon type="error"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>error-white</td>
+            <td><qc-icon type="error-white"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>external-link</td>
+            <td><qc-icon type="external-link"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>information</td>
+            <td><qc-icon type="information"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>information-white</td>
+            <td><qc-icon type="information-white"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>linkedin</td>
+            <td><qc-icon type="linkedin"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>loupe-piv-droite</td>
+            <td><qc-icon type="loupe-piv-droite"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>loupe-piv-fonce</td>
+            <td><qc-icon type="loupe-piv-fonce"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>minus</td>
+            <td><qc-icon type="minus"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>plus</td>
+            <td><qc-icon type="plus"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>question-mark</td>
+            <td><qc-icon type="question-mark"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>success</td>
+            <td><qc-icon type="success"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>success-white</td>
+            <td><qc-icon type="success-white"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>warning</td>
+            <td><qc-icon type="warning"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>xclose-blue</td>
+            <td><qc-icon type="xclose-blue"></qc-icon></td>
+        </tr>
+        <tr>
+            <td>xclose-white</td>
+            <td><qc-icon type="xclose-white"></qc-icon></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
 
     <h2 id="base-radio-button">Boutons radio</h2>
 <h3>Exemples</h3>
