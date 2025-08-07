@@ -35,6 +35,7 @@
         label,
         description,
         name,
+        id = name + value + Math.random().toString(36).substring(2, 15),
         disabled = $bindable(false),
         required = $bindable(false),
         checked = $bindable(false),
@@ -55,6 +56,7 @@
 </script>
 
 <Checkbox
+    {id}
     {value}
     label={label ?? value}
     {name}
