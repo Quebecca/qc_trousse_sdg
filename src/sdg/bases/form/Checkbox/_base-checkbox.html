@@ -1,4 +1,4 @@
-<h2 id="checkbox">Cases à cocher</h2>
+<h2 id="base-checkbox">Cases à cocher</h2>
 
 <p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
 
@@ -43,11 +43,11 @@
   </form>
 
   <script>
-    const tosForm = document.getElementById("base-exemple-tos-form");
-    const termsAcceptance = document.getElementById("base-exemple-une-case")
-    tosForm.addEventListener("submit", (event) => {
+    const baseTosForm = document.getElementById("base-exemple-tos-form");
+    const baseTermsAcceptance = document.getElementById("base-exemple-une-case")
+    baseTosForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if(termsAcceptance.checked) {
+      if(baseTermsAcceptance.checked) {
         const formData = new FormData(event.target);
         let alertParts = ["Formulaire soumis avec les données suivantees :"];
         for (const [key, value] of formData.entries()) {
@@ -55,18 +55,18 @@
         }
         alert(alertParts.join("\n"));
       } else {
-        termsAcceptance.invalid = true;
-        tosForm.querySelector(".qc-checkbox-single").classList.add("qc-checkbox-single-invalid");
-        tosForm.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
-        tosForm.querySelector(".qc-icon").style.display = "flex";
+        baseTermsAcceptance.invalid = true;
+        baseTosForm.querySelector(".qc-checkbox-single").classList.add("qc-checkbox-single-invalid");
+        baseTosForm.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
+        baseTosForm.querySelector(".qc-icon").style.display = "flex";
       }
     })
 
-    termsAcceptance.addEventListener("change", () => {
-      tosForm.querySelector(".qc-checkbox-single").classList.remove("qc-checkbox-single-invalid");
-      termsAcceptance.invalid = false;
-      tosForm.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
-      tosForm.querySelector(".qc-icon").style.display = "none";
+    baseTermsAcceptance.addEventListener("change", () => {
+      baseTosForm.querySelector(".qc-checkbox-single").classList.remove("qc-checkbox-single-invalid");
+      baseTermsAcceptance.invalid = false;
+      baseTosForm.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
+      baseTosForm.querySelector(".qc-icon").style.display = "none";
     });
   </script>
 </qc-doc-exemple>
@@ -237,140 +237,49 @@
 
 <h3>Documentation technique</h3>
 
-<h4>Attributs de qc-checkbox</h4>
+<h4>Classes</h4>
 <div class="table-overflow">
   <table class="qc-table qc-striped component-attributes-description">
     <thead>
     <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
+      <th>Nom de classe ou variable</th>
+      <th>Description des propriétés</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ de formulaire</td>
+      <td>qc-fieldset</td>
+      <td>Disposition des éléments <code>fieldset</code> et leur contenu</td>
     </tr>
     <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Libellé de la case à cocher</td>
+      <td>qc-field-elements-flex</td>
+      <td>Affiche les éléments du fieldset en disposition <code>flex</code> sur colonne</td>
     </tr>
     <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>Valeur de l’attribut label</td>
-      <td>Valeur du champ</td>
+      <td>qc-field-elements-flex-sm</td>
+      <td>Spécifie l'espacement entre les éléments de <code>fieldset</code> au token `small`</td>
     </tr>
     <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
+      <td>qc-check-row</td>
+      <td>Taille et disposition des cases à cocher et leurs libellés</td>
     </tr>
     <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>qc-check-text</td>
+      <td>Disposition des libellés et de leurs descriptions (pour les boutons de sélection)</td>
     </tr>
     <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
+      <td>qc-check-label</td>
+      <td>Affiche le libellé en gras</td>
     </tr>
     <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
+      <td>qc-compact</td>
+      <td>Affiche la case à cocher au format compact</td>
+    </tr>
+    <tr>
+      <td>--column-count</td>
       <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-
-<h4>Attributs de qc-checkbox-group</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>legend</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Légende du groupe de cases à cocher</td>
-    </tr>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom commun pour toutes les cases à cocher du groupe</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
-    </tr>
-    <tr>
-      <td>checkbox-*</td>
-      <td></td>
-      <td></td>
-      <td>
-        Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-        comme attribut à la case à cocher.
+        Nombre de colonnes pour un affichage en grille des cases à cocher
+        <br>Note : À utiliser pour les boutons de sélection seulement
       </td>
     </tr>
     </tbody>
