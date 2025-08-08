@@ -2552,6 +2552,10 @@ qc-textfield {
   margin-top: 0.3rem;
 }
 
+.qc-switch-label-end {
+  text-align: end;
+}
+
 .qc-switch-slider {
   display: inline-flex;
   position: relative;

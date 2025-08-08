@@ -977,6 +977,20 @@
 	}
 
 	/**
+	 * @template V
+	 * @param {() => V} fn
+	 * @returns {Derived<V>}
+	 */
+	/*#__NO_SIDE_EFFECTS__*/
+	function user_derived(fn) {
+		const d = derived(fn);
+
+		push_reaction_value(d);
+
+		return d;
+	}
+
+	/**
 	 * @param {Derived} derived
 	 * @returns {void}
 	 */
@@ -73268,11 +73282,11 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+	var root$3 = add_locations(template(`<label><input type="checkbox" role="switch"> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
-			14,
+			17,
 			0,
-			[[15, 4], [23, 4], [24, 4]]
+			[[18, 4], [26, 4], [27, 4]]
 		]
 	]);
 
@@ -73284,9 +73298,11 @@
 			id = prop($$props, 'id', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 15, false),
-			justified = prop($$props, 'justified', 7);
+			justified = prop($$props, 'justified', 7),
+			textAlign = prop($$props, 'textAlign', 7);
 
 		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
+		let usedLabelTextAlignment = user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start");
 		var label_1 = root$3();
 
 		set_attribute(label_1, 'for', usedId);
@@ -73311,6 +73327,11 @@
 			]));
 
 			input.disabled = disabled();
+
+			set_class(span, 1, clsx([
+				"qc-switch-label",
+				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
+			]));
 		});
 
 		bind_checked(input, checked);
@@ -73352,6 +73373,13 @@
 				justified($$value);
 				flushSync();
 			},
+			get textAlign() {
+				return textAlign();
+			},
+			set textAlign($$value) {
+				textAlign($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -73363,7 +73391,8 @@
 			id: {},
 			checked: {},
 			disabled: {},
-			justified: {}
+			justified: {},
+			textAlign: {}
 		},
 		[],
 		[],

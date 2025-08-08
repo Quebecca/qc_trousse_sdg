@@ -11939,11 +11939,11 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$4 = add_locations(template(`<label><input type="checkbox" role="switch"> <span class="qc-switch-label"><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
+	var root$4 = add_locations(template(`<label><input type="checkbox" role="switch"> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [
 		[
-			14,
+			17,
 			0,
-			[[15, 4], [23, 4], [24, 4]]
+			[[18, 4], [26, 4], [27, 4]]
 		]
 	]);
 
@@ -11955,9 +11955,11 @@
 			id = prop($$props, 'id', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 15, false),
-			justified = prop($$props, 'justified', 7);
+			justified = prop($$props, 'justified', 7),
+			textAlign = prop($$props, 'textAlign', 7);
 
 		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
+		let usedLabelTextAlignment = user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start");
 		var label_1 = root$4();
 
 		set_attribute(label_1, 'for', usedId);
@@ -11982,6 +11984,11 @@
 			]));
 
 			input.disabled = disabled();
+
+			set_class(span, 1, clsx([
+				"qc-switch-label",
+				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
+			]));
 		});
 
 		bind_checked(input, checked);
@@ -12023,6 +12030,13 @@
 				justified($$value);
 				flushSync();
 			},
+			get textAlign() {
+				return textAlign();
+			},
+			set textAlign($$value) {
+				textAlign($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12034,7 +12048,8 @@
 			id: {},
 			checked: {},
 			disabled: {},
-			justified: {}
+			justified: {},
+			textAlign: {}
 		},
 		[],
 		[],
@@ -12053,6 +12068,8 @@
 			label = prop($$props, 'label', 7),
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7, false),
+			justified = prop($$props, 'justified', 7, false),
+			textAlign = prop($$props, 'textAlign', 7, "start"),
 			rest = rest_props(
 				$$props,
 				[
@@ -12063,7 +12080,9 @@
 					'id',
 					'label',
 					'checked',
-					'disabled'
+					'disabled',
+					'justified',
+					'textAlign'
 				]);
 
 		let parent = state(void 0);
@@ -12077,7 +12096,9 @@
 					id: id(),
 					label: label(),
 					disabled: disabled(),
-					checked: checked()
+					checked: checked(),
+					justified: justified(),
+					textAlign: textAlign()
 				});
 
 				index = get(parent).items.length - 1;
@@ -12110,6 +12131,12 @@
 							},
 							get disabled() {
 								return disabled();
+							},
+							get justified() {
+								return justified();
+							},
+							get textAlign() {
+								return textAlign();
 							}
 						},
 						() => rest,
@@ -12161,6 +12188,20 @@
 				disabled($$value);
 				flushSync();
 			},
+			get justified() {
+				return justified();
+			},
+			set justified($$value = false) {
+				justified($$value);
+				flushSync();
+			},
+			get textAlign() {
+				return textAlign();
+			},
+			set textAlign($$value = "start") {
+				textAlign($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12184,7 +12225,8 @@
 				attribute: 'justified',
 				reflect: true,
 				type: 'Boolean'
-			}
+			},
+			textAlign: { attribute: 'text-align', type: 'String' }
 		},
 		[],
 		[],
@@ -12200,6 +12242,7 @@
 		let disabled = prop($$props, 'disabled', 15, false),
 			items = prop($$props, 'items', 31, () => proxy([])),
 			justified = prop($$props, 'justified', 7, false),
+			textAlign = prop($$props, 'textAlign', 7, 'left'),
 			rest = rest_props(
 				$$props,
 				[
@@ -12209,8 +12252,11 @@
 					'$$host',
 					'disabled',
 					'items',
-					'justified'
+					'justified',
+					'textAlign'
 				]);
+
+		const usedLabelTextAlignment = strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start";
 
 		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md' }, () => rest, {
 			children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
@@ -12218,10 +12264,11 @@
 				var node = first_child(fragment_1);
 
 				each(node, 17, items, index, ($$anchor, item, $$index) => {
-					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 31, 12);
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 35, 12);
 
 					const expression = user_derived(() => get(item).disabled ?? disabled());
 					const expression_1 = user_derived(() => justified() ?? get(item).justified);
+					const expression_2 = user_derived(() => get(item).textAlign ?? usedLabelTextAlignment);
 
 					ToggleSwitch($$anchor, {
 						get id() {
@@ -12235,6 +12282,9 @@
 						},
 						get justified() {
 							return get(expression_1);
+						},
+						get textAlign() {
+							return get(expression_2);
 						},
 						get checked() {
 							return get(item).checked;
@@ -12272,6 +12322,13 @@
 				justified($$value);
 				flushSync();
 			},
+			get textAlign() {
+				return textAlign();
+			},
+			set textAlign($$value = 'left') {
+				textAlign($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12282,6 +12339,7 @@
 			legend: { attribute: 'legend', type: 'String' },
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justified: { attribute: 'justified', type: 'Boolean' },
+			textAlign: { attribute: 'text-align', type: 'String' },
 			items: {}
 		},
 		[],
