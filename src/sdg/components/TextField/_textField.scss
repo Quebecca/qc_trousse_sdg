@@ -59,6 +59,8 @@ qc-textfield {
 }
 
 .qc-textfield-container {
+  display: flex;
+  flex-direction: column;
   margin-bottom: rem(32);
 
   label {
