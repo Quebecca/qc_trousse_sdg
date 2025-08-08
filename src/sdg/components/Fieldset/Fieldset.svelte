@@ -17,12 +17,19 @@
         updateValue = () => {},
         formFieldElements,
         elementsGap = "sm",
+        width,
         children
     } = $props();
+
+    // console.log(width);
+
     let groupSelection = $state(),
         legendId = name
             ? "id_" + name
-            : "legend-" + Math.floor(Math.random() * 1000000 );
+            : "legend-" + Math.floor(Math.random() * 1000000);
+
+    const usedWidth = width?.toLowerCase() === "100%" || width?.toLowerCase() === "full" ? "100%" : "fit-content";
+
     onMount(() => {
         if (formFieldElements) {
             groupSelection.append(...formFieldElements);
@@ -60,7 +67,10 @@
             chooseDivCLass(inline, tiled),
             !tiled && `qc-field-elements-flex-${elementsGap}`,
         ]}
-        style="--column-count: {columnCount}"
+        style="
+        --column-count: {columnCount};
+        --fieldset-width: {usedWidth};
+        "
         bind:this={groupSelection}
     >
         {@render children?.()}

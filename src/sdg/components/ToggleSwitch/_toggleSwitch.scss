@@ -6,7 +6,7 @@ $height: 32;
 $border: 1;
 
 .qc-switch {
-  display: inline-flex;
+  display: flex;
   margin: 0;
   gap: token-value(spacer, sm);
   position: relative;
@@ -51,7 +51,6 @@ $border: 1;
 
 .qc-switch-label {
   display: flex;
-  flex-grow: 1;
   margin-top: rem(3);
 }
 

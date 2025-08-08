@@ -56,7 +56,11 @@ $invalid-border-width: 2px;
 .qc-field-elements-flex {
   display: flex;
   flex-direction: column;
-  max-width: fit-content;
+  width: var(--fieldset-width);
+
+  .qc-switch-label {
+    flex-grow: 1;
+  }
 }
 
 .qc-field-elements-flex-sm {

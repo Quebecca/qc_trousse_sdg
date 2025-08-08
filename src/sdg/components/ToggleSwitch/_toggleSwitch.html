@@ -14,6 +14,11 @@
                 id="switch-status"
                 label="Afficher l'état du commutateur à la console"
         ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="switch-status-2"
+                label="Afficher l'état du commutateur à la console"
+                text-align="end"
+        ></qc-toggle-switch>
     </div>
 
     <script>
@@ -29,6 +34,7 @@
         id="switch-group"
         legend="Préférences de notifications de messages"
         justified
+        width="100%"
     >
         <qc-toggle-switch
                 id="nouveaux-messages"
@@ -166,6 +172,12 @@
             Alignement du texte des libellés des commutateurs
             <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
         </td>
+    </tr>
+    <tr>
+        <td>width</td>
+        <td>"full", "100% ou "fit-content"</td>
+        <td>"fit-content"</td>
+        <td>Largeur que prend le groupe de commutateurs dans son contenant</td>
     </tr>
     </tbody>
 </table>

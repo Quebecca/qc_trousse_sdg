@@ -11,16 +11,12 @@
         ...restProps
     } = $props();
 
-
-
-
-    $effect(_ => {
+    $effect(() => {
         checked = !(!value || value.length === 0)
         if (checked) {
             invalid = false;
         }
     });
-
 </script>
 
 <Fieldset

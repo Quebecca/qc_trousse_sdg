@@ -9236,8 +9236,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[55, 12]]);
-	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[44, 0, [[52, 4], [58, 4]]]]);
+	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[62, 12]]);
+	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[51, 0, [[59, 4], [65, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9258,10 +9258,14 @@
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
 			formFieldElements = prop($$props, 'formFieldElements', 7),
 			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
+			width = prop($$props, 'width', 7),
 			children = prop($$props, 'children', 7);
 
+		// console.log(width);
 		let groupSelection = state(void 0),
 			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
+
+		const usedWidth = strict_equals(width()?.toLowerCase(), "100%") || strict_equals(width()?.toLowerCase(), "full") ? "100%" : "fit-content";
 
 		onMount(() => {
 			if (formFieldElements()) {
@@ -9343,7 +9347,11 @@
 				]));
 
 				set_class(div, 1, $0);
-				set_style(div, `--column-count: ${columnCount() ?? ''}`);
+
+				set_style(div, `
+        --column-count: ${columnCount() ?? ''};
+        --fieldset-width: ${usedWidth};
+        `);
 			},
 			[
 				() => clsx([
@@ -9449,6 +9457,13 @@
 				elementsGap($$value);
 				flushSync();
 			},
+			get width() {
+				return width();
+			},
+			set width($$value) {
+				width($$value);
+				flushSync();
+			},
 			get children() {
 				return children();
 			},
@@ -9478,6 +9493,7 @@
 			updateValue: {},
 			formFieldElements: {},
 			elementsGap: {},
+			width: {},
 			children: {}
 		},
 		[],
@@ -9514,7 +9530,7 @@
 					'children'
 				]);
 
-		user_effect((_) => {
+		user_effect(() => {
 			checked(!(!value() || strict_equals(value().length, 0)));
 
 			if (checked()) {
@@ -12263,7 +12279,7 @@
 				var node = first_child(fragment_1);
 
 				each(node, 17, items, index, ($$anchor, item, $$index) => {
-					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 33, 12);
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 34, 12);
 
 					const expression = user_derived(() => get(item).disabled ?? disabled());
 					const expression_1 = user_derived(() => justified() ?? get(item).justified);
@@ -12339,6 +12355,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justified: { attribute: 'justified', type: 'Boolean' },
 			textAlign: { attribute: 'text-align', type: 'String' },
+			width: { attribute: 'width', type: 'String' },
 			items: {}
 		},
 		[],

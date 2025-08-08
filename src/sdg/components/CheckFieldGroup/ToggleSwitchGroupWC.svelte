@@ -6,6 +6,7 @@
         disabled: {attribute:'disabled', type: 'Boolean'},
         justified: {attribute:'justified', type: 'Boolean'},
         textAlign: {attribute:'text-align', type: 'String'},
+        width: {attribute:'width', type: 'String'},
     }
 }} />
 
