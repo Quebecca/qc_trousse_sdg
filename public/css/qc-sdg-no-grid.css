@@ -2549,11 +2549,14 @@ qc-textfield {
 }
 
 .qc-switch-label {
+  display: flex;
+  flex-grow: 1;
   margin-top: 0.3rem;
 }
 
 .qc-switch-label-end {
-  text-align: end;
+  justify-content: end;
+  text-align: right;
 }
 
 .qc-switch-slider {

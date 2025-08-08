@@ -17,11 +17,9 @@
         disabled = $bindable(false),
         items = $bindable([]),
         justified = false,
-        textAlign = 'left',
+        textAlign,
         ...rest
     } = $props();
-
-    const usedLabelTextAlignment = textAlign?.toLowerCase() === "end" ? "end" : "start";
 </script>
 
 <CheckFieldGroup
@@ -35,7 +33,7 @@
             bind:checked={item.checked}
             disabled={item.disabled ?? disabled}
             justified={justified ?? item.justified}
-            textAlign={item.textAlign ?? usedLabelTextAlignment}
+            textAlign={item.textAlign ?? textAlign}
         />
     {/each}
 </CheckFieldGroup>

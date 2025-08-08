@@ -11943,7 +11943,7 @@
 		[
 			17,
 			0,
-			[[18, 4], [26, 4], [27, 4]]
+			[[20, 4], [28, 4], [33, 4]]
 		]
 	]);
 
@@ -11959,7 +11959,7 @@
 			textAlign = prop($$props, 'textAlign', 7);
 
 		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
-		let usedLabelTextAlignment = user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start");
+		let usedLabelTextAlignment = strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start";
 		var label_1 = root$4();
 
 		set_attribute(label_1, 'for', usedId);
@@ -11970,6 +11970,12 @@
 		set_attribute(input, 'id', usedId);
 
 		var span = sibling(input, 2);
+
+		set_class(span, 1, clsx([
+			"qc-switch-label",
+			strict_equals(usedLabelTextAlignment, "end") && "qc-switch-label-end"
+		]));
+
 		var node = child(span);
 
 		html(node, label);
@@ -11984,11 +11990,6 @@
 			]));
 
 			input.disabled = disabled();
-
-			set_class(span, 1, clsx([
-				"qc-switch-label",
-				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
-			]));
 		});
 
 		bind_checked(input, checked);
@@ -12069,7 +12070,7 @@
 			checked = prop($$props, 'checked', 15, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			justified = prop($$props, 'justified', 7, false),
-			textAlign = prop($$props, 'textAlign', 7, "start"),
+			textAlign = prop($$props, 'textAlign', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -12198,7 +12199,7 @@
 			get textAlign() {
 				return textAlign();
 			},
-			set textAlign($$value = "start") {
+			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
 			},
@@ -12242,7 +12243,7 @@
 		let disabled = prop($$props, 'disabled', 15, false),
 			items = prop($$props, 'items', 31, () => proxy([])),
 			justified = prop($$props, 'justified', 7, false),
-			textAlign = prop($$props, 'textAlign', 7, 'left'),
+			textAlign = prop($$props, 'textAlign', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -12256,19 +12257,17 @@
 					'textAlign'
 				]);
 
-		const usedLabelTextAlignment = strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start";
-
 		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md' }, () => rest, {
 			children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
 				var fragment_1 = comment();
 				var node = first_child(fragment_1);
 
 				each(node, 17, items, index, ($$anchor, item, $$index) => {
-					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 35, 12);
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 33, 12);
 
 					const expression = user_derived(() => get(item).disabled ?? disabled());
 					const expression_1 = user_derived(() => justified() ?? get(item).justified);
-					const expression_2 = user_derived(() => get(item).textAlign ?? usedLabelTextAlignment);
+					const expression_2 = user_derived(() => get(item).textAlign ?? textAlign());
 
 					ToggleSwitch($$anchor, {
 						get id() {
@@ -12325,7 +12324,7 @@
 			get textAlign() {
 				return textAlign();
 			},
-			set textAlign($$value = 'left') {
+			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
 			},

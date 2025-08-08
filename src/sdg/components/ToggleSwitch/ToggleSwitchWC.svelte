@@ -21,7 +21,7 @@
         checked = $bindable(false),
         disabled = false,
         justified = false,
-        textAlign = "start",
+        textAlign,
         ...rest
     } = $props();
 

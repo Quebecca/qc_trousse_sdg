@@ -977,20 +977,6 @@
 	}
 
 	/**
-	 * @template V
-	 * @param {() => V} fn
-	 * @returns {Derived<V>}
-	 */
-	/*#__NO_SIDE_EFFECTS__*/
-	function user_derived(fn) {
-		const d = derived(fn);
-
-		push_reaction_value(d);
-
-		return d;
-	}
-
-	/**
 	 * @param {Derived} derived
 	 * @returns {void}
 	 */
@@ -73286,7 +73272,7 @@
 		[
 			17,
 			0,
-			[[18, 4], [26, 4], [27, 4]]
+			[[20, 4], [28, 4], [33, 4]]
 		]
 	]);
 
@@ -73302,7 +73288,7 @@
 			textAlign = prop($$props, 'textAlign', 7);
 
 		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
-		let usedLabelTextAlignment = user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start");
+		let usedLabelTextAlignment = strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start";
 		var label_1 = root$3();
 
 		set_attribute(label_1, 'for', usedId);
@@ -73313,6 +73299,12 @@
 		set_attribute(input, 'id', usedId);
 
 		var span = sibling(input, 2);
+
+		set_class(span, 1, clsx([
+			"qc-switch-label",
+			strict_equals(usedLabelTextAlignment, "end") && "qc-switch-label-end"
+		]));
+
 		var node = child(span);
 
 		html$1(node, label);
@@ -73327,11 +73319,6 @@
 			]));
 
 			input.disabled = disabled();
-
-			set_class(span, 1, clsx([
-				"qc-switch-label",
-				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
-			]));
 		});
 
 		bind_checked(input, checked);
