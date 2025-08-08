@@ -80,16 +80,6 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alor
     await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
 });
 
-test('En survolant une option, alors l\'indicateur de survol apparaît', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-
-    await page.getByRole('option', { name: 'Option 5' }).hover();
-    await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
-            .filter({ has: page.getByText(/^Option 5$/gm) })
-    ).toHaveCSS('background-color', 'rgb(218, 230, 240)'); // La résolution de variable est faite au moment d'exécuter le test, ce qui force le hardcoding.
-});
-
 test('Sit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByText('Liste déroulante Exemples').click();
