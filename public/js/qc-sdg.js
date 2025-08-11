@@ -8788,7 +8788,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$b = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[26, 0, [[30, 4]]]]);
+	var root$b = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[31, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8815,6 +8815,7 @@
 
 		leftIcon(strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), ""));
 
+		const isDisabled = strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "");
 		let searchInput;
 
 		function focus() {
@@ -8882,6 +8883,7 @@
 				type: 'search',
 				autocomplete: 'off',
 				'aria-label': ariaLabel(),
+				class: isDisabled ? "qc-disabled" : "",
 				...rest
 			});
 		});

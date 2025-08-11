@@ -5,6 +5,7 @@
     <qc-search-input
             placeholder="Rechercher un article"
             aria-label="Rechercher un article"
+            clear-aria-label="Effacer le texte"
             left-icon
     ></qc-search-input>
 </qc-doc-exemple>
@@ -14,6 +15,7 @@
             value="Climat"
             placeholder="Rechercher un sujet"
             aria-label="Rechercher un sujet"
+            clear-aria-label="Effacer le texte"
             left-icon
     ></qc-search-input>
 </qc-doc-exemple>
@@ -23,19 +25,8 @@
             placeholder="Recherche désactivée"
             aria-label="Recherche désactivée"
             disabled
+            clear-aria-label="Effacer le texte"
     ></qc-search-input>
-</qc-doc-exemple>
-
-<qc-doc-exemple>
-    <form>
-        <qc-search-input
-                name="recherche"
-                placeholder="Rechercher un produit"
-                aria-label="Rechercher un produit"
-                required
-        ></qc-search-input>
-        <button type="submit">Soumettre</button>
-    </form>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -80,7 +71,7 @@
             <td>disabled</td>
             <td>"true", "false"</td>
             <td>"false"</td>
-            <td>Désactive le champ</td>
+            <td>Désactive le champ.</td>
         </tr>
         <tr>
             <td>name</td>
