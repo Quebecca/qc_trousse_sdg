@@ -1,1 +1,97 @@
 <h2 id="base-search-input">Champ de recherche</h2>
+
+<qc-doc-exemple caption="Exemple de champ de recherche de base">
+    <div class="qc-search-input qc-search-left-icon">
+        <div class="qc-icon" role="img" aria-label="Loupe"
+             data-img-type="loupe-piv-fine"
+             style="
+                 --img-color: var(--qc-color-text-primary);
+                 --img-width: 20px;
+                 --img-height: 20px;
+            ">
+        </div>
+
+        <input type="search"
+               name="search"
+               placeholder="Rechercher un article"
+               aria-label="Rechercher un article"
+               autocomplete="off"
+               class="qc-search-field"
+               oninput="toggleClearButton(this)"
+        />
+
+        <button type="button"
+                class="qc-icon-button"
+                aria-label="Effacer le texte"
+                onclick="clearSearch(this)"
+                style="display: none">
+
+            <div class="qc-icon"
+                 data-img-type="clear-input"
+                 style="
+                     --img-color: var(--qc-color-blue-piv);
+                     --img-width: 16px;
+                     --img-height: 16px;
+                "
+                 aria-hidden="true">
+            </div>
+        </button>
+    </div>
+
+    <script>
+        function toggleClearButton(input) {
+            const button = input.parentElement.querySelector('button');
+            button.style.display = input.value ? 'flex' : 'none';
+        }
+
+        function clearSearch(button) {
+            const input = button.parentElement.querySelector('input');
+            input.value = '';
+            input.focus();
+            toggleClearButton(input);
+        }
+
+    </script>
+
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Classes CSS</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-search-input</code></td>
+            <td>Conteneur principal du champ de recherche. Il englobe l'icône, le champ de saisie et le bouton d'effacement.</td>
+        </tr>
+        <tr>
+            <td><code>qc-search-left-icon</code></td>
+            <td>Ajoute un espacement à gauche du champ pour accueillir une icône de recherche.</td>
+        </tr>
+        <tr>
+            <td><code>qc-search-field</code></td>
+            <td>Champ de saisie de type <code>search</code>, stylisé pour correspondre au design du champ de recherche.</td>
+        </tr>
+        <tr>
+            <td><code>qc-icon</code></td>
+            <td>Icône SVG stylisée via <code>mask</code> ou <code>background-image</code>, utilisée pour la loupe et le bouton d’effacement.</td>
+        </tr>
+        <tr>
+            <td><code>qc-icon-button</code></td>
+            <td>Bouton contenant une icône, utilisé pour effacer le champ de recherche.</td>
+        </tr>
+        <tr>
+            <td><code>qc-disabled</code></td>
+            <td>Classe appliquée au conteneur lorsque le champ est désactivé.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
