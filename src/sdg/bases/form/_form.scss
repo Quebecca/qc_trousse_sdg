@@ -16,14 +16,12 @@ select {
 
   padding: token-value(spacer, xs);
 
-  background-image: getImageUrl("chevron-blue-thin", $base64: true);
-  //background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8ZyBpZD0iSWPDtG5lIiB0cmFuc2Zvcm09InJvdGF0ZSgxODAgOCA4KSB0cmFuc2xhdGUoMCAtMC4wMDEpIj4KICAgIDxyZWN0IGlkPSJTdXBwb3J0X8OgX2ljw7RuZSIgZGF0YS1uYW1lPSJTdXBwb3J0IMOgIGljw7RuZSIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDAuMDAxKSIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggaWQ9Imljb25lX2NoZXZyb25fYmFzIiBkYXRhLW5hbWU9Imljb25lIGNoZXZyb24gYmFzIiBkPSJNMjAsMjQ3OC4xYS4zOTIuMzkyLDAsMCwwLC4xMjMuMjgzLjQzNy40MzcsMCwwLDAsLjYsMEwyOCwyNDcxLjQ2Nmw3LjI4MSw2LjkxN2EuNDM3LjQzNywwLDAsMCwuNiwwLC4zODcuMzg3LDAsMCwwLDAtLjU2NmwtNy41NzktNy4yYS40MzcuNDM3LDAsMCwwLS42LDBsLTcuNTc5LDcuMmEuMzg5LjM4OSwwLDAsMC0uMTIzLjI4M1oiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMC4wMDEgLTI0NjYuNDk5KSIgZmlsbD0iIzA5NTc5NyIvPgogIDwvZz4KPC9zdmc+Cg==');
+  background-image: getImageUrl("chevron-blue-thin-not-64", $base64: false);
   background-repeat: no-repeat;
   background-position: right token-value(spacer, xs) top 50%;
 
   &:disabled {
-    //background-image: getImageUrl("chevron-grey-thin", $base64: true);
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8ZyBpZD0iSWPDtG5lIiB0cmFuc2Zvcm09InJvdGF0ZSgxODAgOCA4KSB0cmFuc2xhdGUoMCAtMC4wMDEpIj4KICAgIDxyZWN0IGlkPSJTdXBwb3J0X8OgX2ljw7RuZSIgZGF0YS1uYW1lPSJTdXBwb3J0IMOgIGljw7RuZSIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDAuMDAxKSIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggaWQ9Imljb25lX2NoZXZyb25fYmFzIiBkYXRhLW5hbWU9Imljb25lIGNoZXZyb24gYmFzIiBkPSJNMjAsMjQ3OC4xYS4zOTIuMzkyLDAsMCwwLC4xMjMuMjgzLjQzNy40MzcsMCwwLDAsLjYsMEwyOCwyNDcxLjQ2Nmw3LjI4MSw2LjkxN2EuNDM3LjQzNywwLDAsMCwuNiwwLC4zODcuMzg3LDAsMCwwLDAtLjU2NmwtNy41NzktNy4yYS40MzcuNDM3LDAsMCwwLS42LDBsLTcuNTc5LDcuMmEuMzg5LjM4OSwwLDAsMC0uMTIzLjI4M1oiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMC4wMDEgLTI0NjYuNDk5KSIgZmlsbD0iIzg4OTNBMiIvPgogIDwvZz4KPC9zdmc+Cg==');
+    background-image: getImageUrl("chevron-grey-thin-not-64", $base64: false);
     background-color: token-value(color, grey, pale);
     color: token-value(color, grey, medium);
     cursor: not-allowed;
