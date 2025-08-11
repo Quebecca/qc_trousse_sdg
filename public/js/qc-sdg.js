@@ -8788,7 +8788,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$b = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[24, 0, [[28, 4]]]]);
+	var root$b = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[31, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8797,7 +8797,7 @@
 		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
-			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher…" : "Search_"),
+			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
 			rest = rest_props(
@@ -8813,6 +8813,9 @@
 					'leftIcon'
 				]);
 
+		leftIcon(strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), ""));
+
+		const isDisabled = strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "");
 		let searchInput;
 
 		function focus() {
@@ -8880,6 +8883,7 @@
 				type: 'search',
 				autocomplete: 'off',
 				'aria-label': ariaLabel(),
+				class: isDisabled ? "qc-disabled" : "",
 				...rest
 			});
 		});
@@ -8902,7 +8906,7 @@
 				return ariaLabel();
 			},
 			set ariaLabel(
-				$$value = lang === "fr" ? "Rechercher…" : "Search_"
+				$$value = lang === "fr" ? "Rechercher..." : "Search..."
 			) {
 				ariaLabel($$value);
 				flushSync();
@@ -9094,7 +9098,8 @@
 		SearchInputWC,
 		{
 			ariaLabel: { attribute: 'aria-label' },
-			clearAriaLabel: { attribute: 'clear-aria-label' }
+			clearAriaLabel: { attribute: 'clear-aria-label' },
+			leftIcon: { attribute: 'left-icon' }
 		},
 		[],
 		[],

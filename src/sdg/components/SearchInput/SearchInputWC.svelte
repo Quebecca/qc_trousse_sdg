@@ -3,7 +3,8 @@
     shadow: 'none',
     props: {
         ariaLabel: {attribute:'aria-label'},
-        clearAriaLabel: {attribute: 'clear-aria-label'}
+        clearAriaLabel: {attribute: 'clear-aria-label'},
+        leftIcon: {attribute: 'left-icon'}
     }
 }}" />
 
