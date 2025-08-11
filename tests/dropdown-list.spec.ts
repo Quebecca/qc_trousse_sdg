@@ -46,13 +46,15 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors foc
 
     await page.getByRole('option', { name: 'Option 1', exact: true }).press('Shift+Tab');
 
-    test.skip(
-        browserName === 'webkit',
-        'Playwright avec Webkit ne réalise pas le focus de Tab correctement sur les éléments combobox.' +
-        'Voir l\'issue https://github.com/microsoft/playwright/issues/32269' +
-        ' et la PR https://github.com/microsoft/playwright/pull/31325'
-    )
-    await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+    if (browserName !== 'webkit') {
+        await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+    } else {
+        console.log(
+            "La vérification du focus se fait incorrectement avec Webkit." +
+            " Voir l'issue https://github.com/microsoft/playwright/issues/32269" +
+            " et la PR https://github.com/microsoft/playwright/pull/31325"
+        );
+    }
 });
 
 test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alors focus placé sur les options suivantes de la liste', async ({ page }) => {
@@ -80,7 +82,7 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alor
     await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
 });
 
-test('Sit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
+test('Soit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByText('Liste déroulante Exemples').click();
 
@@ -128,7 +130,9 @@ test('En sélectionnant une option activée au clavier, alors referme la popup e
     await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('Soit focus placé sur la liste déroulante de Choix unique et liste ouverte, en tapant flèche vers le haut, alors focus placé sur la dernière option', async ({ page }) => {
+test('Soit focus placé sur la liste déroulante de Choix unique et liste ouverte,' +
+    'en tapant flèche vers le haut, alors focus placé sur la dernière option',
+    async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
     await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowUp');
 
@@ -147,7 +151,7 @@ test('Soit une option sélectionnée, liste déroulante fermée et focus placé 
     ).toBeFocused();
 });
 
-test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page }) => {
+test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page, browserName }) => {
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
 
@@ -157,6 +161,17 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
         - option "Option 12"
       - status
     `);
+
+    await page.getByRole('searchbox', { name: 'Rechercher…' }).press('Tab');
+    if (browserName !== "webkit") {
+        await expect(page.getByRole('button', { name: 'Effacer le texte' })).toBeFocused();
+    } else {
+        console.log(
+            "La vérification du focus se fait incorrectement avec Webkit." +
+            " Voir l'issue https://github.com/microsoft/playwright/issues/32269" +
+            " et la PR https://github.com/microsoft/playwright/pull/31325"
+        );
+    }
 
     await page.getByRole('button', { name: 'Effacer le texte' }).click();
 
@@ -206,6 +221,31 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
         - option "Option 16"
       - status
     `);
+});
+
+test('Soit liste déroulante sans champ de recherche, en tapant un caractère imprimable, alors focus sur le premier élément correspondant', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('1');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 1$/gm) })
+        .press('2');
+
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 12$/gm) })
+    ).toBeFocused();
+
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique:' }).press('1');
+    await page.locator('#dropdown-list-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 1$/gm) })
+        .press('2');
+
+    await expect(
+        page.locator('#dropdown-list-single-choice-items >> li')
+            .filter({ has: page.getByText(/^Option 12$/gm) })
+    ).toBeFocused();
 });
 
 test('En sélectionnant des options de Choix multiples, alors la popup reste ouverte et affiche tous les choix', async ({ page }) => {

@@ -10400,8 +10400,7 @@
 
 		var $$ownership_validator = create_ownership_validator($$props);
 
-		let id = prop($$props, 'id', 23, () => `${name()}-${value()}-${Math.random().toString(36).substring(2, 15)}`),
-			parentGroup = prop($$props, 'parentGroup', 7),
+		let parentGroup = prop($$props, 'parentGroup', 7),
 			value = prop($$props, 'value', 7),
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
@@ -10420,7 +10419,6 @@
 					'$$events',
 					'$$legacy',
 					'$$host',
-					'id',
 					'parentGroup',
 					'value',
 					'label',
@@ -10502,15 +10500,6 @@
 		}
 
 		return pop({
-			get id() {
-				return id();
-			},
-			set id(
-				$$value = `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`
-			) {
-				id($$value);
-				flushSync();
-			},
 			get parentGroup() {
 				return parentGroup();
 			},
