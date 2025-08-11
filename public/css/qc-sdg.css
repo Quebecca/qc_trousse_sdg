@@ -2271,7 +2271,7 @@ input[type=radio]:checked.qc-compact::before {
 .qc-field-elements-flex {
   display: flex;
   flex-direction: column;
-  width: var(--fieldset-width);
+  max-width: var(--fieldset-width);
 }
 .qc-field-elements-flex .qc-switch-label {
   flex-grow: 1;

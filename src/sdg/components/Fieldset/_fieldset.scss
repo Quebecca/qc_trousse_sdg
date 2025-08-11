@@ -56,7 +56,7 @@ $invalid-border-width: 2px;
 .qc-field-elements-flex {
   display: flex;
   flex-direction: column;
-  width: var(--fieldset-width);
+  max-width: var(--fieldset-width);
 
   .qc-switch-label {
     flex-grow: 1;

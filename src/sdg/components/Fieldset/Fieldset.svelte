@@ -17,18 +17,14 @@
         updateValue = () => {},
         formFieldElements,
         elementsGap = "sm",
-        width,
+        width = "fit-content",
         children
     } = $props();
-
-    // console.log(width);
 
     let groupSelection = $state(),
         legendId = name
             ? "id_" + name
             : "legend-" + Math.floor(Math.random() * 1000000);
-
-    const usedWidth = width?.toLowerCase() === "100%" || width?.toLowerCase() === "full" ? "100%" : "fit-content";
 
     onMount(() => {
         if (formFieldElements) {
@@ -69,7 +65,7 @@
         ]}
         style="
         --column-count: {columnCount};
-        --fieldset-width: {usedWidth};
+        --fieldset-width: {width};
         "
         bind:this={groupSelection}
     >

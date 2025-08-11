@@ -6,7 +6,6 @@
         disabled: {attribute:'disabled', type: 'Boolean'},
         justified: {attribute:'justified', type: 'Boolean'},
         textAlign: {attribute:'text-align', type: 'String'},
-        width: {attribute:'width', type: 'String'},
     }
 }} />
 
@@ -21,10 +20,13 @@
         textAlign,
         ...rest
     } = $props();
+
+    const width = "25.6rem";
 </script>
 
 <CheckFieldGroup
     elementsGap="md"
+    {width}
     {...rest}
 >
     {#each items as item}

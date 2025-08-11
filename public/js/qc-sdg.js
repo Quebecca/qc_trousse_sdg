@@ -9236,8 +9236,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[62, 12]]);
-	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[51, 0, [[59, 4], [65, 4]]]]);
+	var root_1$7 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[58, 12]]);
+	var root$9 = add_locations(template(`<fieldset><legend><!> <!></legend> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[47, 0, [[55, 4], [61, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9258,14 +9258,11 @@
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
 			formFieldElements = prop($$props, 'formFieldElements', 7),
 			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
-			width = prop($$props, 'width', 7),
+			width = prop($$props, 'width', 7, "fit-content"),
 			children = prop($$props, 'children', 7);
 
-		// console.log(width);
 		let groupSelection = state(void 0),
 			legendId = name() ? "id_" + name() : "legend-" + Math.floor(Math.random() * 1000000);
-
-		const usedWidth = strict_equals(width()?.toLowerCase(), "100%") || strict_equals(width()?.toLowerCase(), "full") ? "100%" : "fit-content";
 
 		onMount(() => {
 			if (formFieldElements()) {
@@ -9350,7 +9347,7 @@
 
 				set_style(div, `
         --column-count: ${columnCount() ?? ''};
-        --fieldset-width: ${usedWidth};
+        --fieldset-width: ${width() ?? ''};
         `);
 			},
 			[
@@ -9460,7 +9457,7 @@
 			get width() {
 				return width();
 			},
-			set width($$value) {
+			set width($$value = "fit-content") {
 				width($$value);
 				flushSync();
 			},
@@ -12273,13 +12270,15 @@
 					'textAlign'
 				]);
 
-		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md' }, () => rest, {
+		const width = "25.6rem";
+
+		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md', width }, () => rest, {
 			children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
 				var fragment_1 = comment();
 				var node = first_child(fragment_1);
 
 				each(node, 17, items, index, ($$anchor, item, $$index) => {
-					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 34, 12);
+					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 36, 12);
 
 					const expression = user_derived(() => get(item).disabled ?? disabled());
 					const expression_1 = user_derived(() => justified() ?? get(item).justified);
@@ -12355,7 +12354,6 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justified: { attribute: 'justified', type: 'Boolean' },
 			textAlign: { attribute: 'text-align', type: 'String' },
-			width: { attribute: 'width', type: 'String' },
 			items: {}
 		},
 		[],
