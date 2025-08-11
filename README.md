@@ -307,6 +307,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
   - correction d'un bug dans le composant lien externe lorsqu'il contient un retour à la ligne ;
   - évolution dans le composant lien externe pour gérer les débordements des chaînes très longues (par exemple les url) ;
   - Ajout des boutons radios et cases à cocher ;
+  - Correction d'un bug visuel avec le bandeau PIV en basse résolution.
 - Derniers changements
   - Mise à jour des dépendances nodejs ,
   - Ajout de scripts pour le versionnage du projet (liés à npm version);

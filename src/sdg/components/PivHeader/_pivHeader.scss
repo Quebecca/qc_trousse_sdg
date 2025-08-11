@@ -1,4 +1,4 @@
-@use "../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 @use "sass:map";
 
 $colors : map.get($themes-tokens, light, lg, color);
@@ -37,71 +37,42 @@ qc-piv-header {
 
 .qc-piv-header {
   color: map.get($colors, white);
+  container-type: normal;
+  container-name: piv-header;
   .go-to-content {
     position: relative;
   }
   .piv-top {
     display: flex;
-    flex-wrap: wrap;
-    //justify-content: space-between;
     align-items: start;
-    > * {
-      min-height: rem(72);
-    }
-    .signature-group {
+    min-width: rem(72);
+    .logo {
       display: flex;
-      flex-grow: 1;
-      flex-wrap: wrap;
-      align-items: start;
-      margin-right: auto;
-      * {
+      flex-basis: rem(256);
+      margin-right: 0;
+      [role=img] {
+        background-image: var(--logo-src);
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-position: center;
+        margin-right: 16px;
+        min-width: 150px;
+        width: 100%;
+        max-width: rem(200);
         min-height: rem(72);
       }
-      .logo {
-        display: flex;
-        flex-basis: rem(256);
-        //margin-right: rem(64);
-        [role=img] {
-          background-image: var(--logo-src);
-          background-repeat: no-repeat;
-          background-size: 100%;
-          background-position: center;
-          margin-right: 16px;
-          min-width: 150px;
-          //object-fit: fill;
-          width: 100%;
-          max-width: rem(200);
-          min-height: rem(72);
-        }
-      }
-      .title {
-        display: flex;
-        flex-grow: 1;
-        align-items: center;
-        @include content-font(100);
-        flex-basis: fit-content;
-        //margin-top: auto;
-        //margin-bottom: auto;
-        //margin-right: auto;
-        //padding-right: 40px;
-        > * {
-          //display: -webkit-box;
-          //-webkit-line-clamp: 2;
-          //-webkit-box-orient: vertical;
-          //overflow: hidden;
-          //max-height: rem(72);
-        }
-      }
     }
-
-
-
-
+    .title {
+      align-items: center;
+      align-self: center;
+    }
     .right-section {
       min-width: fit-content;
       display: flex;
+      align-self: center;
       align-items: center;
       flex-basis: fit-content;
+      margin-left: auto;
       .links ul {
         @extend %piv-links;
       }
@@ -109,24 +80,27 @@ qc-piv-header {
       @include media-mobile() {
         min-width: auto;
       }
+
+      .qc-search {
+        background-image: getImageUrl(loupe-piv-droite);
+        background-repeat: no-repeat;
+        min-width: rem(24);
+        height: rem(24);
+        margin-right: token-value(spacer md);;
+        @include media-mobile() {
+          margin-right: token-value(spacer sm);
+        }
+
+        span {
+          @include sr-only();
+        }
+      }
+    }
+    & + .title {
+      display: none;
     }
 
-    .qc-search {
-      background-image: getImageUrl(loupe-piv-droite);
-      background-repeat: no-repeat;
-      min-width: rem(24);
-      height: rem(24);
-      margin-right: token-value(spacer md);;
-      @include media-mobile() {
-        margin-right: token-value(spacer sm);
-      }
-
-      span {
-        @include sr-only();
-      }
-    }
   }
-
   .piv-bottom {
     .search-zone {
       padding-bottom: token-value(spacer md);
@@ -182,9 +156,9 @@ qc-piv-header,
 @include media-mobile(){
   .qc-piv-header {
     .piv-top {
-      flex-wrap: wrap;
+      //flex-wrap: wrap;
       .logo {
-        flex-shrink: 1;
+        flex: 1 1 auto;
         margin-right: auto;
         min-width: 0;
         img {
@@ -194,26 +168,30 @@ qc-piv-header,
       }
 
       .title {
-        min-width: 100%;
-        padding: 0;
-        //height: auto;
-        height: fit-content;
-        max-height: fit-content;
-        order: 2;
-        margin-left: 0;
-        margin-right: 0;
-        display: flex;
-        align-items: center;
+        display: none;
       }
-
       .right-section {
+        flex: 0 1 fit-content;
         min-width: 0;
         margin-right: 0;
-        margin-left: 0;
+        margin-left: auto;
+      }
+
+      & + .title {
+        display: block;
+        padding: 0 0 rem(16)
       }
     }
+
   }
 }
+@media (max-width: 400px) {
+  .piv-top {
+    flex-wrap: wrap;
+  }
+}
+
+
 
 
 

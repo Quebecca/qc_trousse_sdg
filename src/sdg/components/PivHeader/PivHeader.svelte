@@ -66,28 +66,26 @@
         </a>
       </div>
     {/if}
+      {#snippet title()}
+          {#if titleUrl && titleText}
+          <div class="title">
+              <a href="{titleUrl}">
+                  {titleText}
+              </a>
+          </div>
+          {/if}
+      {/snippet}
+      <div class="piv-top">
 
-    <div class="piv-top">
-        <div class="signature-group">
-            <a href="{logoUrl}"
-               class="logo"
+        <a href="{logoUrl}"
+           class="logo"
                rel="noreferrer"
                aria-label="{logoAlt}"
             >
                 <div role="img"></div>
-            </a>
+        </a>
 
-            {#if titleText}
-                <div class="title">
-                    <a href="{titleUrl}"
-                       class="title">
-                        {titleText}
-                    </a>
-                </div>
-
-            {/if}
-        </div>
-
+        {@render title()}
       <div class="right-section">
         {#if Utils.isTruthy(enableSearch)}
           <a  class="qc-search"
@@ -125,8 +123,9 @@
         </div>
       </div>
     </div>
+      {@render title()}
 
-    <div class="piv-bottom">
+      <div class="piv-bottom">
       {#if displaySearchForm}
           <div class="search-zone" bind:this={searchZone}>
               {#if searchZoneSlot}

@@ -1568,33 +1568,23 @@ qc-piv-header {
 }
 .qc-piv-header {
   color: #ffffff;
+  container-type: normal;
+  container-name: piv-header;
 }
 .qc-piv-header .go-to-content {
   position: relative;
 }
 .qc-piv-header .piv-top {
   display: flex;
-  flex-wrap: wrap;
   align-items: start;
+  min-width: 7.2rem;
 }
-.qc-piv-header .piv-top > * {
-  min-height: 7.2rem;
-}
-.qc-piv-header .piv-top .signature-group {
-  display: flex;
-  flex-grow: 1;
-  flex-wrap: wrap;
-  align-items: start;
-  margin-right: auto;
-}
-.qc-piv-header .piv-top .signature-group * {
-  min-height: 7.2rem;
-}
-.qc-piv-header .piv-top .signature-group .logo {
+.qc-piv-header .piv-top .logo {
   display: flex;
   flex-basis: 25.6rem;
+  margin-right: 0;
 }
-.qc-piv-header .piv-top .signature-group .logo [role=img] {
+.qc-piv-header .piv-top .logo [role=img] {
   background-image: var(--logo-src);
   background-repeat: no-repeat;
   background-size: 100%;
@@ -1605,28 +1595,25 @@ qc-piv-header {
   max-width: 20rem;
   min-height: 7.2rem;
 }
-.qc-piv-header .piv-top .signature-group .title {
-  display: flex;
-  flex-grow: 1;
+.qc-piv-header .piv-top .title {
   align-items: center;
-  font-size: var(--qc-font-size-100);
-  line-height: var(--qc-line-height-100);
-  font-weight: var(--qc-font-weight-regular);
-  flex-basis: fit-content;
+  align-self: center;
 }
 .qc-piv-header .piv-top .right-section {
   min-width: -moz-fit-content;
   min-width: fit-content;
   display: flex;
+  align-self: center;
   align-items: center;
   flex-basis: fit-content;
+  margin-left: auto;
 }
 @media (max-width: 767.98px) {
   .qc-piv-header .piv-top .right-section {
     min-width: auto;
   }
 }
-.qc-piv-header .piv-top .qc-search {
+.qc-piv-header .piv-top .right-section .qc-search {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=");
   background-repeat: no-repeat;
   min-width: 2.4rem;
@@ -1634,11 +1621,11 @@ qc-piv-header {
   margin-right: var(--qc-spacer-md);
 }
 @media (max-width: 767.98px) {
-  .qc-piv-header .piv-top .qc-search {
+  .qc-piv-header .piv-top .right-section .qc-search {
     margin-right: var(--qc-spacer-sm);
   }
 }
-.qc-piv-header .piv-top .qc-search span {
+.qc-piv-header .piv-top .right-section .qc-search span {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1648,6 +1635,9 @@ qc-piv-header {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+.qc-piv-header .piv-top + .title {
+  display: none;
 }
 .qc-piv-header .piv-bottom .search-zone {
   padding-bottom: var(--qc-spacer-md);
@@ -1702,11 +1692,8 @@ qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
 }
 
 @media (max-width: 767.98px) {
-  .qc-piv-header .piv-top {
-    flex-wrap: wrap;
-  }
   .qc-piv-header .piv-top .logo {
-    flex-shrink: 1;
+    flex: 1 1 auto;
     margin-right: auto;
     min-width: 0;
   }
@@ -1715,22 +1702,22 @@ qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
     margin-right: 1.6rem;
   }
   .qc-piv-header .piv-top .title {
-    min-width: 100%;
-    padding: 0;
-    height: -moz-fit-content;
-    height: fit-content;
-    max-height: -moz-fit-content;
-    max-height: fit-content;
-    order: 2;
-    margin-left: 0;
-    margin-right: 0;
-    display: flex;
-    align-items: center;
+    display: none;
   }
   .qc-piv-header .piv-top .right-section {
+    flex: 0 1 fit-content;
     min-width: 0;
     margin-right: 0;
-    margin-left: 0;
+    margin-left: auto;
+  }
+  .qc-piv-header .piv-top + .title {
+    display: block;
+    padding: 0 0 1.6rem;
+  }
+}
+@media (max-width: 400px) {
+  .piv-top {
+    flex-wrap: wrap;
   }
 }
 qc-piv-footer {
