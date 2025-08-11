@@ -8,11 +8,13 @@
 
     let {
         value = $bindable(''),
-        ariaLabel = lang === "fr" ? "Rechercher…" : "Search_",
+        ariaLabel = lang === "fr" ? "Rechercher..." : "Search...",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
         leftIcon = false,
         ...rest
     } = $props();
+
+    leftIcon = leftIcon === true || leftIcon === "true" || leftIcon === "";
 
     let searchInput;
 
