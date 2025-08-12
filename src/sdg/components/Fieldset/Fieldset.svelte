@@ -17,7 +17,7 @@
         updateValue = () => {},
         formFieldElements,
         elementsGap = "sm",
-        width = "fit-content",
+        maxWidth = "fit-content",
         children
     } = $props();
 
@@ -65,7 +65,7 @@
         ]}
         style="
         --column-count: {columnCount};
-        --fieldset-width: {width};
+        --fieldset-width: {maxWidth};
         "
         bind:this={groupSelection}
     >

@@ -6,6 +6,7 @@
         disabled: {attribute:'disabled', type: 'Boolean'},
         justified: {attribute:'justified', type: 'Boolean'},
         textAlign: {attribute:'text-align', type: 'String'},
+        maxWidth: {attribute:'max-width', type: 'String'},
     }
 }} />
 
@@ -18,15 +19,28 @@
         items = $bindable([]),
         justified = false,
         textAlign,
+        maxWidth = "fit-content",
         ...rest
     } = $props();
 
-    const width = "25.6rem";
+    let usedWidth = $derived.by(() => {
+        if (
+            maxWidth.match(/^\d+px$/)
+            || maxWidth.match(/^\d+rem$/)
+            || maxWidth.match(/^\d+em$/)
+            || maxWidth.match(/^\d+%$/)
+            || maxWidth === "100%"
+        ) {
+            return maxWidth;
+        } else {
+            return "fit-content";
+        }
+    });
 </script>
 
 <CheckFieldGroup
     elementsGap="md"
-    {width}
+    maxWidth={usedWidth}
     {...rest}
 >
     {#each items as item}

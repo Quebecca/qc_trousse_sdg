@@ -9258,7 +9258,7 @@
 			updateValue = prop($$props, 'updateValue', 7, () => {}),
 			formFieldElements = prop($$props, 'formFieldElements', 7),
 			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
-			width = prop($$props, 'width', 7, "fit-content"),
+			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
 			children = prop($$props, 'children', 7);
 
 		let groupSelection = state(void 0),
@@ -9347,7 +9347,7 @@
 
 				set_style(div, `
         --column-count: ${columnCount() ?? ''};
-        --fieldset-width: ${width() ?? ''};
+        --fieldset-width: ${maxWidth() ?? ''};
         `);
 			},
 			[
@@ -9454,11 +9454,11 @@
 				elementsGap($$value);
 				flushSync();
 			},
-			get width() {
-				return width();
+			get maxWidth() {
+				return maxWidth();
 			},
-			set width($$value = "fit-content") {
-				width($$value);
+			set maxWidth($$value = "fit-content") {
+				maxWidth($$value);
 				flushSync();
 			},
 			get children() {
@@ -9490,7 +9490,7 @@
 			updateValue: {},
 			formFieldElements: {},
 			elementsGap: {},
-			width: {},
+			maxWidth: {},
 			children: {}
 		},
 		[],
@@ -12257,6 +12257,7 @@
 			items = prop($$props, 'items', 31, () => proxy([])),
 			justified = prop($$props, 'justified', 7, false),
 			textAlign = prop($$props, 'textAlign', 7),
+			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
 			rest = rest_props(
 				$$props,
 				[
@@ -12267,52 +12268,68 @@
 					'disabled',
 					'items',
 					'justified',
-					'textAlign'
+					'textAlign',
+					'maxWidth'
 				]);
 
-		const width = "25.6rem";
+		let usedWidth = user_derived(() => {
+			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d+rem$/) || maxWidth().match(/^\d+em$/) || maxWidth().match(/^\d+%$/) || strict_equals(maxWidth(), "100%")) {
+				return maxWidth();
+			} else {
+				return "fit-content";
+			}
+		});
 
-		CheckFieldGroup($$anchor, spread_props({ elementsGap: 'md', width }, () => rest, {
-			children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
-				var fragment_1 = comment();
-				var node = first_child(fragment_1);
+		CheckFieldGroup($$anchor, spread_props(
+			{
+				elementsGap: 'md',
+				get maxWidth() {
+					return get(usedWidth);
+				}
+			},
+			() => rest,
+			{
+				children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
+					var fragment_1 = comment();
+					var node = first_child(fragment_1);
 
-				each(node, 17, items, index, ($$anchor, item, $$index) => {
-					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 36, 12);
+					each(node, 17, items, index, ($$anchor, item, $$index) => {
+						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 50, 12);
 
-					const expression = user_derived(() => get(item).disabled ?? disabled());
-					const expression_1 = user_derived(() => justified() ?? get(item).justified);
-					const expression_2 = user_derived(() => get(item).textAlign ?? textAlign());
+						const expression = user_derived(() => get(item).disabled ?? disabled());
+						const expression_1 = user_derived(() => justified() ?? get(item).justified);
+						const expression_2 = user_derived(() => get(item).textAlign ?? textAlign());
 
-					ToggleSwitch($$anchor, {
-						get id() {
-							return get(item).id;
-						},
-						get label() {
-							return get(item).label;
-						},
-						get disabled() {
-							return get(expression);
-						},
-						get justified() {
-							return get(expression_1);
-						},
-						get textAlign() {
-							return get(expression_2);
-						},
-						get checked() {
-							return get(item).checked;
-						},
-						set checked($$value) {
-							(get(item).checked = $$value);
-						}
+						ToggleSwitch($$anchor, {
+							get id() {
+								return get(item).id;
+							},
+							get label() {
+								return get(item).label;
+							},
+							get disabled() {
+								return get(expression);
+							},
+							get justified() {
+								return get(expression_1);
+							},
+							get textAlign() {
+								return get(expression_2);
+							},
+							get checked() {
+								return get(item).checked;
+							},
+							set checked($$value) {
+								(get(item).checked = $$value);
+							}
+						});
 					});
-				});
 
-				append($$anchor, fragment_1);
-			}),
-			$$slots: { default: true }
-		}));
+					append($$anchor, fragment_1);
+				}),
+				$$slots: { default: true }
+			}
+		));
 
 		return pop({
 			get disabled() {
@@ -12343,6 +12360,13 @@
 				textAlign($$value);
 				flushSync();
 			},
+			get maxWidth() {
+				return maxWidth();
+			},
+			set maxWidth($$value = "fit-content") {
+				maxWidth($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -12354,6 +12378,7 @@
 			disabled: { attribute: 'disabled', type: 'Boolean' },
 			justified: { attribute: 'justified', type: 'Boolean' },
 			textAlign: { attribute: 'text-align', type: 'String' },
+			maxWidth: { attribute: 'max-width', type: 'String' },
 			items: {}
 		},
 		[],
