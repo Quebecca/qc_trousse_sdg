@@ -50,7 +50,7 @@
             bind:checked={item.checked}
             disabled={item.disabled ?? disabled}
             justified={justified ?? item.justified}
-            textAlign={item.textAlign ?? textAlign}
+            textAlign={textAlign ?? item.textAlign}
         />
     {/each}
 </CheckFieldGroup>

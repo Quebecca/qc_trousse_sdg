@@ -12298,7 +12298,7 @@
 
 						const expression = user_derived(() => get(item).disabled ?? disabled());
 						const expression_1 = user_derived(() => justified() ?? get(item).justified);
-						const expression_2 = user_derived(() => get(item).textAlign ?? textAlign());
+						const expression_2 = user_derived(() => textAlign() ?? get(item).textAlign);
 
 						ToggleSwitch($$anchor, {
 							get id() {
