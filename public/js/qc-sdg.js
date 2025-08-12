@@ -14271,14 +14271,17 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[53, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[67, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
+		var $$ownership_validator = create_ownership_validator($$props);
+
 		let invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 15),
+			multiple = prop($$props, 'multiple', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -14287,7 +14290,8 @@
 					'$$legacy',
 					'$$host',
 					'invalid',
-					'value'
+					'value',
+					'multiple'
 				]);
 
 		let selectElement = state(void 0);
@@ -14318,6 +14322,20 @@
 			}
 		});
 
+		user_effect(() => {
+			if (multiple()) {
+				const valueArray = value()?.split(", ") ?? [];
+
+				if (strict_equals(get(selectElement).options.length, valueArray.length, false)) {
+					for (const option of get(selectElement).options) {
+						option.selected = valueArray.includes(option.value);
+					}
+				}
+			} else {
+				get(selectElement).value = value();
+			}
+		});
+
 		var fragment = root();
 		var div = first_child(fragment);
 		var node = child(div);
@@ -14329,20 +14347,32 @@
 
 		{
 			var consequent = ($$anchor) => {
-				DropdownList($$anchor, spread_props(
-					{
-						get items() {
-							return get(items);
+				{
+					$$ownership_validator.binding('value', DropdownList, value);
+
+					DropdownList($$anchor, spread_props(
+						{
+							get items() {
+								return get(items);
+							},
+							get invalid() {
+								return invalid();
+							},
+							get multiple() {
+								return multiple();
+							}
 						},
-						get value() {
-							return value();
-						},
-						get invalid() {
-							return invalid();
+						() => rest,
+						{
+							get value() {
+								return value();
+							},
+							set value($$value) {
+								value($$value);
+							}
 						}
-					},
-					() => rest
-				));
+					));
+				}
 			};
 
 			if_block(node_1, ($$render) => {
@@ -14365,6 +14395,13 @@
 			},
 			set value($$value) {
 				value($$value);
+				flushSync();
+			},
+			get multiple() {
+				return multiple();
+			},
+			set multiple($$value) {
+				multiple($$value);
 				flushSync();
 			},
 			...legacy_api()

@@ -24,6 +24,7 @@
     let {
         invalid = $bindable(false),
         value = $bindable(),
+        multiple,
         ...rest
     } = $props();
 
@@ -48,6 +49,19 @@
             }
         }
     })
+
+    $effect(() => {
+        if (multiple) {
+            const valueArray = value?.split(", ") ?? [];
+            if (selectElement.options.length !== valueArray.length) {
+                for (const option of selectElement.options) {
+                    option.selected = valueArray.includes(option.value);
+                }
+            }
+        } else {
+            selectElement.value = value;
+        }
+    });
 </script>
 
 <div hidden>
@@ -55,5 +69,5 @@
 </div>
 
 {#if items && items.length > 0}
-    <DropdownList {items} {value} {invalid} {...rest} />
+    <DropdownList {items} bind:value {invalid} {multiple} {...rest} />
 {/if}
