@@ -78,6 +78,7 @@
 
     function handleDropdownButtonClick(event) {
         event.preventDefault();
+        event.stopPropagation();
         expanded = !expanded;
     }
 
@@ -170,9 +171,9 @@
 
     $effect(() => {
         if (searchText.length > 0) {
-            displayedItems = items.filter((item) => {
-                return item.label.toLowerCase().includes(searchText.toLowerCase())
-            });
+            displayedItems = items.filter(
+                (item) => item.label.toLowerCase().includes(searchText.toLowerCase())
+            );
         } else {
             displayedItems = items;
         }
@@ -275,14 +276,13 @@
                 {displayedItems}
                 {noOptionsMessage}
                 selectionCallbackSingle={() => {
-                    expanded = false;
+                    closeDropdown("");
                     button?.focus();
                 }}
                 handleExitSingle={(key) => closeDropdown(key)}
                 handleExitMultiple={(key) => closeDropdown(key)}
                 focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
                 handlePrintableCharacter={handlePrintableCharacter}
-                closeDropdown={() => expanded = false}
                 bind:this={dropdownItems}
             />
 
@@ -297,3 +297,5 @@
 
     <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} />
 </div>
+
+<link rel='stylesheet' href='{Utils.cssPath}'>
