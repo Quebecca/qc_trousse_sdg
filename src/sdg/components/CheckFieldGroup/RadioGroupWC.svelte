@@ -1,6 +1,5 @@
 <svelte:options customElement="{{
     tag: 'qc-radio-group',
-    shadow: 'none',
     props: {
         name: {attribute: 'name', type: 'String'},
         value: {attribute: 'value', type: 'String'},
@@ -15,29 +14,16 @@
         inline: {attribute: 'inline', type: 'Boolean'}
     },
 
-    extend: (customElementConstructor) => {
-        return class extends customElementConstructor {
-            static formFieldElements;
 
-            constructor() {
-                super();
-                this.formFieldElements = Array.from(this.querySelectorAll('qc-radio-button'));
-                this.formFieldElements.forEach((element) => {
-                    element.classList.add('qc-check-row-parent');
-                })
-            }
-        }
-    }
 }}" />
 
 <script>
     import CheckFieldGroup from "./CheckFieldGroup.svelte";
-
+    import {updateInput} from "../Checkbox/updateInput.svelte";
     let {
         name,
         legend,
         compact,
-        formFieldElements,
         required,
         disabled,
         invalid = $bindable(false),
@@ -49,13 +35,13 @@
         inline
     } = $props();
 
-</script>
+    $effect(() =>  updateInput($host(), required, invalid, name))
 
+</script>
 <CheckFieldGroup
         {name}
         {legend}
         {compact}
-        {formFieldElements}
         {required}
         {disabled}
         bind:invalid
@@ -65,5 +51,7 @@
         {tiled}
         {columnCount}
         {inline}
-/>
+>
+    <slot/>
+</CheckFieldGroup>
 

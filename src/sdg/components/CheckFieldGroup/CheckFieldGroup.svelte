@@ -1,12 +1,13 @@
 <script>
     import Fieldset from "../Fieldset/Fieldset.svelte";
-
+    import {Utils} from "../utils";
+    const lang = Utils.getPageLanguage();
     let {
         formFieldElements,
         checked = $bindable(false),
         invalid = $bindable(false),
+        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         value = $bindable([]),
-        updateValue = () => {},
         children,
         ...restProps
     } = $props();
@@ -17,16 +18,23 @@
             invalid = false;
         }
     });
-</script>
+    let onchange = e => {
+        if (invalid && e.target.checked) {
+            invalid = false;
+        }
+    }
 
+
+</script>
 <Fieldset
     {...restProps}
     bind:value
     bind:checked
     bind:invalid
-    {updateValue}
-    {formFieldElements}
+        {invalidText}
+        {onchange}
 >
-    {@render children?.()}
+    {@render children()}
 </Fieldset>
+<link rel='stylesheet' href='{Utils.cssPath}'>
 

@@ -1,4 +1,4 @@
-@use "../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 @use "../CheckFieldGroup/checkRow" as *;
 
 input[type=radio] {
@@ -14,14 +14,18 @@ input[type=radio] {
       opacity: 1;
     }
 
-    &:not(.qc-compact)::before {
+    &::before {
       width: rem(14);
       height: rem(14);
     }
 
-    &.qc-compact::before {
-      width: rem(10);
-      height: rem(10);
+    [compact] &,
+    [tiled] & {
+      &::before {
+        width: rem(10);
+        height: rem(10);
+      }
     }
+
   }
 }

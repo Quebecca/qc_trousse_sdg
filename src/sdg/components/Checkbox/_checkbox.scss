@@ -32,8 +32,11 @@ input[type="checkbox"] {
       height: rem(18);
 
     }
+  }
 
-    &.qc-compact {
+  [compact] &,
+  [tiled] & {
+    &:checked {
       &::before {
         width: rem(8);
         height: rem(5);
