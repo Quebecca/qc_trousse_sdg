@@ -2,6 +2,7 @@
     tag: 'qc-checkbox',
     shadow: 'none',
     props: {
+        id: { attribute: 'id', type: 'String' },
         value: { attribute: 'value', type: 'String' },
         label: { attribute: 'label', type: 'String' },
         description: {attribute: 'description', type: 'String'},

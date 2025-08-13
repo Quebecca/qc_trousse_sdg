@@ -1,0 +1,319 @@
+<h2 id="radio-button">Boutons radio</h2>
+<h3>Exemples</h3>
+
+<qc-doc-exemple
+        caption="Exemple de boutons radio avec différents états">
+    <fieldset id="base-exemple-radio-md" aria-describedby="base-id_ex-md" class="qc-fieldset">
+        <legend id="base-id_ex-md">Choisissez une option :</legend>
+
+        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+            <label for="base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 1-fxwctmlnrb" name="base-ex-md" value="option 1" aria-required="false" aria-invalid="false" checked>
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 1</span>
+                </span>
+            </label>
+
+            <label for="base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 2-b3fdtujwgpi" name="base-ex-md" value="option 2" aria-required="false" aria-invalid="false">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 2</span>
+                </span>
+            </label>
+
+            <label for="base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
+                <input type="radio" id="base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-md" value="option 3" aria-required="false" aria-invalid="false" disabled="">
+                <span class="qc-check-text">
+                    <span class="qc-check-label">Option 3 (désactivée)</span>
+                </span>
+            </label>
+        </div>
+    </fieldset>
+
+    <script>
+        const baseGroup = document.getElementById("base-exemple-radio-md");
+
+        baseGroup.addEventListener("change", () => {
+            console.log(baseGroup.querySelector("input:checked").value);
+        });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple
+        caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
+    <fieldset id="compact-base-exemple-radio-md" aria-describedby="base-id_ex-sm" class="qc-fieldset qc-compact">
+        <legend id="compact-base-id_ex-md">Choisissez une option :</legend>
+
+        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+            <label for="compact-base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 1-fxwctmlnrb" name="base-ex-sm" value="option 1" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 1</span>
+                    </span>
+            </label>
+
+            <label for="compact-base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 2-b3fdtujwgpi" name="base-ex-sm" value="option 2" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 2</span>
+                    </span>
+            </label>
+
+            <label for="compact-base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
+                <input type="radio" id="compact-base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-sm" value="option 3" aria-required="false" aria-invalid="false" class="qc-compact">
+                <span class="qc-check-text">
+                        <span class="qc-check-label">Option 3</span>
+                    </span>
+            </label>
+        </div>
+    </fieldset>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
+    <form id="base-radio-form">
+        <fieldset id="base-exemple-radio-form" aria-describedby="base-id_ex-form" class="qc-fieldset" data-required="true">
+            <legend id="base-id_ex-form">Quel est votre niveau de scolarité?</legend>
+
+            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+                <label for="base-ex-form-option 1-fxwctmlnrb" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 1-fxwctmlnrb" name="base-ex-form" value="Secondaire" aria-required="true" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Secondaire</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 2-b3fdtujwgpi" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 2-b3fdtujwgpi" name="base-ex-form" value="Professionnel" aria-required="true" aria-invalid="false">
+                        <span class="qc-check-text">
+                    <span class="qc-check-label">Professionnel</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 3-b2gsaxhwn6a" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 3-b2gsaxhwn6a" name="base-ex-form" value="Collégial" aria-required="true" aria-invalid="false">
+                        <span class="qc-check-text">
+                    <span class="qc-check-label">Collégial</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-option 4-b2gsaxhwn6a" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-option 4-b2gsaxhwn6a" name="base-ex-form" value="Universitaire" aria-required="true" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Universitaire</span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="qc-form-error" role="alert">
+                <div role="img"
+                    class=`qc-icon`
+                    style="--img-color: var(--qc-color-red-regular);
+                    --img-width: 24px;
+                    --img-height: 21px;
+                    "
+                    data-img-type="warning"
+                ></div>
+                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
+            </div>
+        </fieldset>
+
+        <fieldset id="base-exemple-radio-form-2" aria-describedby="base-id_ex-form-2" class="qc-fieldset" data-required="false">
+            <legend id="base-id_ex-form-2">Êtes-vous présentement aux études?</legend>
+
+            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
+                <label for="base-ex-form-2-option 1-fxwctmlnrb" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-2-option 1-fxwctmlnrb" name="base-ex-form-2" value="oui" aria-required="false" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Oui</span>
+                    </span>
+                </label>
+
+                <label for="base-ex-form-2-option 2-b3fdtujwgpi" class="qc-check-row">
+                    <input type="radio" id="base-ex-form-2-option 2-b3fdtujwgpi" name="base-ex-form-2" value="non" aria-required="false" aria-invalid="false">
+                    <span class="qc-check-text">
+                        <span class="qc-check-label">Non</span>
+                    </span>
+                </label>
+            </div>
+
+            <div class="qc-form-error" role="alert">
+                <div role="img"
+                    class=`qc-icon`
+                    style="--img-color: var(--qc-color-red-regular);
+                    --img-width: 24px;
+                    --img-height: 21px;
+                    "
+                    data-img-type="warning"
+                ></div>
+                <span class="qc-form-error-message" hidden>Le champ "Quel est votre niveau de scolarité?" est obligatoire.</span>
+            </div>
+        </fieldset>
+
+        <button class="btn btn-sm btn-primary" type="submit">
+            Soumettre
+        </button>
+    </form>
+
+    <script>
+        const baseRadioForm = document.getElementById("base-radio-form");
+
+        baseRadioForm
+            .addEventListener("submit", (event) => {
+                event.preventDefault();
+                let doSubmit = true;
+                event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
+                    if (!group.querySelector("input:checked")) {
+                        group.classList.add("qc-fieldset-invalid");
+                        group.querySelector(".qc-form-error-message")?.removeAttribute("hidden");
+                        group.querySelectorAll("input[type='radio']").forEach(input => {
+                            input.setAttribute("aria-invalid", "true");
+                        });
+                        doSubmit = false;
+                    }
+                })
+                if (doSubmit) {
+                    alert(
+                        "Formulaire soumis\n"
+                        + Array.from(event.target.querySelectorAll("fieldset"))
+                            .map((group) => {
+                                    const legend = group.querySelector("legend").innerHTML;
+                                    const value = group.querySelector("input:checked")?.value;
+                                    return `Valeur pour "${legend}" : ${value ? value : "vide"}`;
+                                }
+                            )
+                            .join("\n")
+                    );
+                }
+            });
+
+        baseRadioForm.querySelectorAll("fieldset").forEach(fieldset => {
+            fieldset.querySelectorAll("input[type='radio']").forEach(input => {
+                input.addEventListener("change", () => {
+                        fieldset.classList.remove("qc-fieldset-invalid");
+                        fieldset.querySelector(".qc-form-error-message")?.setAttribute("hidden", "");
+                    }
+                );
+            })
+        });
+    </script>
+</qc-doc-exemple>
+
+<h4>Documentation technique</h4>
+
+<h5>Attributs de qc-radio-group</h5>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>name</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Nom de l’ensemble des boutons radios du groupe</td>
+        </tr>
+        <tr>
+            <td>legend</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Libellé du groupe</td>
+        </tr>
+        <tr>
+            <td>compact</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche les boutons radios au format compact</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internaute que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le groupe</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
+                (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de
+                formulaire avec des boutons radio ».)
+                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Champ obligatoire/Required field</td>
+            <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h5>Attributs de qc-radio-button</h5>
+
+<p>Ce composant ne peut être utilisé en dehors d’un groupe (`qc-radio-group`)</p>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur associée au bouton radio</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Libellé du bouton radio</td>
+        </tr>
+        <tr>
+            <td>checked</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique que le bouton est sélectionné par défaut.
+            </td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le bouton radio</td>
+        </tr>
+        <tr>
+            <td>radio-*</td>
+            <td></td>
+            <td></td>
+            <td>
+                Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
+                comme attribut au bouton radio brut.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

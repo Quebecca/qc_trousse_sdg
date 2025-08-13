@@ -26,6 +26,7 @@
 
     const
         inputId = `${id}-input`,
+        popupId = `${id}-popup`,
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
@@ -231,6 +232,7 @@
             aria-expanded={expanded}
             aria-haspopup="listbox"
             aria-controls={itemsId}
+            aria-invalid={invalid}
             {selectedOptionsText}
             {placeholder}
             onclick={handleDropdownButtonClick}
@@ -241,6 +243,7 @@
         />
 
         <div
+            id={popupId}
             class="qc-dropdown-list-expanded"
             tabindex="-1"
             hidden={!expanded}

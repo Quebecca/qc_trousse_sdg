@@ -10,3 +10,8 @@ node_modules/
 /public/js/assets/asset-*
 *dev.html
 
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
