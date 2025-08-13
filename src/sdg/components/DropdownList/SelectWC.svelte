@@ -18,7 +18,7 @@
 }}"/>
 
 <script>
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import DropdownList from "./DropdownList.svelte";
 
     let {
@@ -30,23 +30,21 @@
 
     let selectElement = $state();
     let items = $state();
+    let observer;
+
     onMount(() => {
         selectElement = $host().querySelector("select");
+        setupItemsList();
+        setupObserver();
     });
+
+    onDestroy(() => {
+        observer?.disconnect();
+    })
 
     $effect(() => {
         if (selectElement) {
-            const options = selectElement?.querySelectorAll("option");
-            if (options && options.length > 0) {
-                items = Array.from(options).map(option => ({
-                    value: option.value,
-                    label: option.label ?? option.innerHTML,
-                    checked: option.selected,
-                    disabled: option.disabled,
-                }));
-            } else {
-                items = [];
-            }
+            setupObserver();
         }
     })
 
@@ -54,7 +52,6 @@
         const valueArray = value?.split(", ") ?? [];
 
         if (selectElement && selectElement.options && selectElement.options.length > 0) {
-            console.log(selectElement.options);
             for (const option of selectElement.options) {
                 if (valueArray.includes(option.value)) {
                     option.setAttribute('selected', '');
@@ -66,6 +63,34 @@
             }
         }
     });
+
+    function setupItemsList() {
+        const options = selectElement?.querySelectorAll("option");
+        if (options && options.length > 0) {
+            items = Array.from(options).map(option => ({
+                value: option.value,
+                label: option.label ?? option.innerHTML,
+                checked: option.selected,
+                disabled: option.disabled,
+            }));
+        } else {
+            items = [];
+        }
+    }
+
+    function setupObserver() {
+        if (selectElement) {
+            observer?.disconnect();
+            observer = new MutationObserver(setupItemsList);
+            observer.observe(selectElement, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true,
+                attributeFilter: ["label", "value", "disabled", "selected"]
+            });
+        }
+    }
 </script>
 
 <div hidden>

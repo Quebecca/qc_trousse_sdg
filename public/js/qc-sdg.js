@@ -289,16 +289,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6932,37 +6922,6 @@
 		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
-	}
-
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
 	}
 
 	class Utils {
@@ -14312,7 +14271,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[71, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[96, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14337,29 +14296,21 @@
 
 		let selectElement = state(void 0);
 		let items = state(void 0);
+		let observer;
 
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
+			setupItemsList();
+			setupObserver();
+		});
+
+		onDestroy(() => {
+			observer?.disconnect();
 		});
 
 		user_effect(() => {
 			if (get(selectElement)) {
-				const options = get(selectElement)?.querySelectorAll("option");
-
-				if (options && options.length > 0) {
-					set(
-						items,
-						Array.from(options).map((option) => ({
-							value: option.value,
-							label: option.label ?? option.innerHTML,
-							checked: option.selected,
-							disabled: option.disabled
-						})),
-						true
-					);
-				} else {
-					set(items, [], true);
-				}
+				setupObserver();
 			}
 		});
 
@@ -14367,8 +14318,6 @@
 			const valueArray = value()?.split(", ") ?? [];
 
 			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0) {
-				console.log(...log_if_contains_state('log', get(selectElement).options));
-
 				for (const option of get(selectElement).options) {
 					if (valueArray.includes(option.value)) {
 						option.setAttribute('selected', '');
@@ -14380,6 +14329,40 @@
 				}
 			}
 		});
+
+		function setupItemsList() {
+			const options = get(selectElement)?.querySelectorAll("option");
+
+			if (options && options.length > 0) {
+				set(
+					items,
+					Array.from(options).map((option) => ({
+						value: option.value,
+						label: option.label ?? option.innerHTML,
+						checked: option.selected,
+						disabled: option.disabled
+					})),
+					true
+				);
+			} else {
+				set(items, [], true);
+			}
+		}
+
+		function setupObserver() {
+			if (get(selectElement)) {
+				observer?.disconnect();
+				observer = new MutationObserver(setupItemsList);
+
+				observer.observe(get(selectElement), {
+					childList: true,
+					subtree: true,
+					characterData: true,
+					attributes: true,
+					attributeFilter: ["label", "value", "disabled", "selected"]
+				});
+			}
+		}
 
 		var fragment = root();
 		var div = first_child(fragment);
