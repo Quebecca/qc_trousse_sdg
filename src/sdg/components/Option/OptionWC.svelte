@@ -14,6 +14,7 @@
     let { label, value, disabled, selected } = $props();
     let index;
     let parent = $state();
+    let observer;
 
     onMount(() => {
         parent = $host().closest("qc-dropdown-list");
@@ -22,18 +23,38 @@
         }
 
         index = parent.items.length - 1;
+
+        setupObserver();
     });
     onDestroy(() => {
         if (parent) {
             parent.items.splice(index, 1);
         }
+
+        observer?.disconnect();
     });
     $effect(() => {
         if (parent) {
             selected = parent.items[index].checked;
-            $host().dispatchEvent(new Event("change"));
         }
     });
+
+    function setupObserver() {
+        if (parent) {
+            observer?.disconnect();
+            observer = new MutationObserver(() => {
+                parent.updateOption(index, label ?? $host().innerHTML, value, disabled, selected);
+                $host().dispatchEvent(new Event("change"));
+            });
+            observer.observe($host(), {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true,
+                attributeFilter: ["label", "value", "disabled", "selected"]
+            });
+        }
+    }
 </script>
 
 <div hidden>

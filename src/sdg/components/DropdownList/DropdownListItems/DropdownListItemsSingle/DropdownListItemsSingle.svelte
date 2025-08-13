@@ -26,8 +26,6 @@
     let mouseDownElement = null;
     let hoveredElement = null;
 
-    $inspect(displayedItems);
-
     $effect(() => {
         if (!selectedElement) {
             return;
