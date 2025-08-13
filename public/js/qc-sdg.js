@@ -14163,7 +14163,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[96, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[97, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14188,10 +14188,12 @@
 
 		let selectElement = state(void 0);
 		let items = state(void 0);
+		let label = state(void 0);
 		let observer;
 
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
+			set(label, $$props.$$host.querySelector("label"), true);
 			setupItemsList();
 			setupObserver();
 		});
@@ -14264,12 +14266,16 @@
 		reset(div);
 
 		var node_1 = sibling(div, 2);
+		const expression = user_derived(() => get(label)?.innerHTML);
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
 
 			DropdownList(node_1, spread_props(
 				{
+					get label() {
+						return get(expression);
+					},
 					get items() {
 						return get(items);
 					},
@@ -14324,7 +14330,6 @@
 		SelectWC,
 		{
 			id: { attribute: 'id', type: 'String' },
-			label: { attribute: 'label', type: 'String' },
 			width: { attribute: 'width', type: 'String' },
 			value: {
 				attribute: 'value',

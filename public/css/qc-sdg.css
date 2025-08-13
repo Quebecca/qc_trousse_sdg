@@ -2792,6 +2792,11 @@ qc-textfield {
   transform: rotate(180deg);
 }
 
+label {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .qc-dropdown-list {
   position: relative;
   border: 0.1rem solid var(--qc-color-grey-medium);

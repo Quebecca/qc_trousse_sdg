@@ -2,7 +2,6 @@
     tag: 'qc-select',
     props: {
         id: {attribute: 'id', type: 'String'},
-        label: {attribute: 'label', type: 'String'},
         width: {attribute: 'width', type: 'String'},
         value: {attribute: 'value', type: 'String', reflect: true},
         enableSearch: {attribute: 'enable-search', type: 'Boolean'},
@@ -30,10 +29,12 @@
 
     let selectElement = $state();
     let items = $state();
+    let label = $state();
     let observer;
 
     onMount(() => {
         selectElement = $host().querySelector("select");
+        label = $host().querySelector("label");
         setupItemsList();
         setupObserver();
     });
@@ -97,5 +98,5 @@
     <slot />
 </div>
 
-<DropdownList {items} bind:value {invalid} {multiple} {...rest} />
+<DropdownList label={label?.innerHTML} {items} bind:value {invalid} {multiple} {...rest} />
 

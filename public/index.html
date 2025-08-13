@@ -4359,9 +4359,9 @@
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <div class="qc-textfield-container">
+    <qc-select>
         <label for="select-single-choice">Choix unique</label>
-        <select id="select-single-choice" class="qc-dropdown-list qc-dropdown-list-md">
+        <select id="select-single-choice">
             <option value="1" selected>Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -4379,11 +4379,11 @@
             <option value="15">Option 15</option>
             <option value="16" disabled>Option 16 (désactivée)</option>
         </select>
-    </div>
+    </qc-select>
 
-    <div class="qc-textfield-container">
-        <label for="select-single-choice-disabled" class="qc-disabled">Désactivé</label>
-        <select id="select-single-choice-disabled" class="qc-dropdown-list qc-dropdown-list-md" disabled>
+    <qc-select enable-search>
+        <label for="select-single-choice-disabled" class="qc-disabled">Choix unique avec recherche:</label>
+        <select id="select-single-choice-disabled">
             <option value="1" selected>Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -4401,10 +4401,11 @@
             <option value="15">Option 15</option>
             <option value="16" >Option 16</option>
         </select>
-    </div>
+    </qc-select>
 
     <qc-select multiple>
-        <select multiple id="select-single-choice-foo" class="qc-dropdown-list qc-dropdown-list-md">
+        <label for="select-qc-select">Choix multiple:</label>
+        <select multiple id="select-qc-select">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
             <option value="3" selected>Option 3</option>
@@ -4422,6 +4423,11 @@
             <option value="15">Option 15</option>
             <option value="16" disabled>Option 16 (désactivée)</option>
         </select>
+    </qc-select>
+
+    <qc-select disabled>
+        <label for="qc-select-disabled">Désactivé:</label>
+        <select id="qc-select-disabled">disabled</select>
     </qc-select>
 </qc-doc-exemple>
 

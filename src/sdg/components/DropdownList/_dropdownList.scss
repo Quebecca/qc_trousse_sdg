@@ -6,6 +6,10 @@
 $min-height: 40;
 $border: 1;
 
+label {
+  width: fit-content;
+}
+
 .qc-dropdown-list {
   position: relative;
   border: rem($border) solid token-value(color, grey, medium);
