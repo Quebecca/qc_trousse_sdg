@@ -1,25 +1,20 @@
 <h2 id="icons">Icônes</h2>
 
 <h3>Exemples</h3>
-<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés.">
+<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
+  id="icons-exemple">
   <qc-icon type="error" color="error" size="xs"></qc-icon>
   <qc-icon type="error" color="error" size="sm"></qc-icon>
   <qc-icon type="error" color="error" size="md"></qc-icon>
   <qc-icon type="error" color="error" size="lg"></qc-icon>
   <qc-icon type="error" color="error" size="xl"></qc-icon>
-  <br/>
-  <qc-icon type="warning" color="danger" size="xs"></qc-icon>
-  <qc-icon type="warning" color="danger" size="sm"></qc-icon>
-  <qc-icon type="warning" color="danger" size="md"></qc-icon>
-  <qc-icon type="warning" color="danger" size="lg"></qc-icon>
-  <qc-icon type="warning" color="danger" size="xl"></qc-icon>
-  <br/>
-  <qc-icon type="success" color="success" size="xs"></qc-icon>
-  <qc-icon type="success" color="success" size="sm"></qc-icon>
-  <qc-icon type="success" color="success" size="md"></qc-icon>
-  <qc-icon type="success" color="success" size="lg"></qc-icon>
-  <qc-icon type="success" color="success" size="xl"></qc-icon>
+
 </qc-doc-exemple>
+<style>
+  #icons-exemple qc-icon {
+    margin-right: var(--qc-spacer-sm);
+  }
+</style>
 
 <h3>Documentation technique</h3>
 
@@ -55,9 +50,9 @@
     </tr>
     <tr>
       <td>color</td>
-      <td>Texte</td>
-      <td>"text-primary"</td>
-      <td>Couleur appliquée à l’icône.</td>
+      <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+      <td>text-primary</td>
+      <td>Couleur de l'icône.</td>
     </tr>
     <tr>
       <td>width</td>
