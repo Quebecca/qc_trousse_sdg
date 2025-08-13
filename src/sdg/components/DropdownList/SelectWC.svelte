@@ -51,15 +51,19 @@
     })
 
     $effect(() => {
-        if (multiple) {
-            const valueArray = value?.split(", ") ?? [];
-            if (selectElement.options.length !== valueArray.length) {
-                for (const option of selectElement.options) {
-                    option.selected = valueArray.includes(option.value);
+        const valueArray = value?.split(", ") ?? [];
+
+        if (selectElement && selectElement.options && selectElement.options.length > 0) {
+            console.log(selectElement.options);
+            for (const option of selectElement.options) {
+                if (valueArray.includes(option.value)) {
+                    option.setAttribute('selected', '');
+                    option.selected = true;
+                } else {
+                    option.removeAttribute('selected');
+                    option.selected = false;
                 }
             }
-        } else {
-            selectElement.value = value;
         }
     });
 </script>

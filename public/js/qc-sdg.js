@@ -289,6 +289,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6922,6 +6932,37 @@
 		}
 		Component.element = /** @type {any} */ Class;
 		return Class;
+	}
+
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
 	}
 
 	class Utils {
@@ -14271,7 +14312,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[67, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[71, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14323,16 +14364,20 @@
 		});
 
 		user_effect(() => {
-			if (multiple()) {
-				const valueArray = value()?.split(", ") ?? [];
+			const valueArray = value()?.split(", ") ?? [];
 
-				if (strict_equals(get(selectElement).options.length, valueArray.length, false)) {
-					for (const option of get(selectElement).options) {
-						option.selected = valueArray.includes(option.value);
+			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0) {
+				console.log(...log_if_contains_state('log', get(selectElement).options));
+
+				for (const option of get(selectElement).options) {
+					if (valueArray.includes(option.value)) {
+						option.setAttribute('selected', '');
+						option.selected = true;
+					} else {
+						option.removeAttribute('selected');
+						option.selected = false;
 					}
 				}
-			} else {
-				get(selectElement).value = value();
 			}
 		});
 
