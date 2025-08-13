@@ -15,6 +15,7 @@ import pkg from './package.json';
 import fs from "fs";
 import buildHtmlDoc from './plugins/buildHtmlDoc.js';
 import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
+import buildTestFixtures from "./plugins/buildTestFixtures";
 
 
 const
@@ -221,6 +222,9 @@ if (!build_process) {
             }),
             buildDevDoc({
                 input: 'src/doc/_dev.html'
+            }),
+            buildTestFixtures({
+                input: 'src/doc/_test.html'
             }),
             svelte(svelteOptions),
             resolve({
