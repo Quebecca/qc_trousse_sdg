@@ -6,11 +6,26 @@
 $min-height: 40;
 $border: 1;
 
+.qc-textfield-container {
+  &-xs { max-width: token-value(spacer, input, xs); }
+  &-sm { max-width: token-value(spacer, input, sm); }
+  &-md { max-width: token-value(spacer, input, md); }
+  &-lg { max-width: token-value(spacer, input, lg); }
+  &-xl { max-width: token-value(spacer, input, xl); }
+}
+
+.qc-dropdown-list-label-container {
+  display: flex;
+
+  justify-content: space-between;
+}
+
 label {
   width: fit-content;
 }
 
 .qc-dropdown-list {
+  display: flex;
   position: relative;
   border: rem($border) solid token-value(color, grey, medium);
   min-height: rem($min-height);
@@ -19,12 +34,6 @@ label {
   &.qc-dropdown-list-invalid {
     border: rem(2) solid token-value(color, red, regular) !important;
   }
-
-  &-xs { max-width: token-value(spacer, input, xs); }
-  &-sm { max-width: token-value(spacer, input, sm); }
-  &-md { max-width: token-value(spacer, input, md); }
-  &-lg { max-width: token-value(spacer, input, lg); }
-  &-xl { max-width: token-value(spacer, input, xl); }
 }
 
 .qc-dropdown-list-search {

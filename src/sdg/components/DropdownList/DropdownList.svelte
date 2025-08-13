@@ -37,11 +37,12 @@
         button = $state(),
         searchInput = $state(),
         dropdownItems = $state(),
+        selectedItems = $derived(items.filter((item) => item.checked) ?? []),
         selectedOptionsText = $derived(
             items.length > 0 ?
                 multiple ?
-                    items.filter((item) => item.checked)?.map((item) => item.label).join(", ")
-                    : items.find((item) => item.checked)?.label
+                    selectedItems?.map((item) => item.label).join(", ")
+                    : selectedItems[0]?.label
                 : ""
         ),
         expanded = $state(false),
@@ -50,9 +51,9 @@
         displayedItems = $state(items),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
-                return `qc-dropdown-list-${width}`;
+                return `qc-textfield-container-${width}`;
             }
-            return `qc-dropdown-list-lg`;
+            return `qc-textfield-container-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
@@ -193,31 +194,42 @@
     });
 
     $effect(() => {
-        value = items?.filter(item => item.checked).map(item => item.value).join(", ");
+        value = selectedItems?.map(item => item.value).join(", ");
     });
 </script>
 
 <svelte:document onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class="qc-textfield-container">
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <label
-        class={disabled && "qc-disabled"}
-        for={inputId}
-        id={labelId}
-        onclick={(e) => {
-            e.preventDefault();
-            button.focus();
-        }}
-    >
-        {label}
-        {#if required}
-            <span class="qc-textfield-required" aria-hidden="true">*</span>
+<div class={`qc-textfield-container ${widthClass}`}>
+    <div class="qc-dropdown-list-label-container">
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+        <label
+            class={disabled && "qc-disabled"}
+            for={inputId}
+            id={labelId}
+            onclick={(e) => {
+                e.preventDefault();
+                button.focus();
+            }}
+        >
+            {label}
+            {#if required}
+                <span class="qc-textfield-required" aria-hidden="true">*</span>
+            {/if}
+        </label>
+        {#if multiple && selectedItems.length > 0}
+            <div class="qc-dropdown-list-selection-count">
+                {#if lang === "fr"}
+                    {selectedItems.length} sélection{selectedItems.length > 1 ? "s" : ""}
+                {:else}
+                    {selectedItems.length} selection{selectedItems.length > 1 ? "s" : ""}
+                {/if}
+            </div>
         {/if}
-    </label>
+    </div>
     <div
         class={[
-            `qc-dropdown-list ${widthClass}`,
+            `qc-dropdown-list`,
             invalid && "qc-dropdown-list-invalid",
         ]}
         tabindex="-1"
