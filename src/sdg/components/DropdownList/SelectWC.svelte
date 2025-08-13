@@ -97,6 +97,5 @@
     <slot />
 </div>
 
-{#if items && items.length > 0}
-    <DropdownList {items} bind:value {invalid} {multiple} {...rest} />
-{/if}
+<DropdownList {items} bind:value {invalid} {multiple} {...rest} />
+

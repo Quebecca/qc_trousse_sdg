@@ -11,7 +11,7 @@
         id = Math.random().toString(36).substring(2, 15),
         label = "",
         width = "md",
-        items,
+        items = [],
         value = $bindable(),
         placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",

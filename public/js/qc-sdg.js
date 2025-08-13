@@ -13397,7 +13397,7 @@
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
-			items = prop($$props, 'items', 7),
+			items = prop($$props, 'items', 23, () => []),
 			value = prop($$props, 'value', 15),
 			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
@@ -13797,7 +13797,7 @@
 			get items() {
 				return items();
 			},
-			set items($$value) {
+			set items($$value = []) {
 				items($$value);
 				flushSync();
 			},
@@ -14266,38 +14266,30 @@
 		var node_1 = sibling(div, 2);
 
 		{
-			var consequent = ($$anchor) => {
+			$$ownership_validator.binding('value', DropdownList, value);
+
+			DropdownList(node_1, spread_props(
 				{
-					$$ownership_validator.binding('value', DropdownList, value);
-
-					DropdownList($$anchor, spread_props(
-						{
-							get items() {
-								return get(items);
-							},
-							get invalid() {
-								return invalid();
-							},
-							get multiple() {
-								return multiple();
-							}
-						},
-						() => rest,
-						{
-							get value() {
-								return value();
-							},
-							set value($$value) {
-								value($$value);
-							}
-						}
-					));
+					get items() {
+						return get(items);
+					},
+					get invalid() {
+						return invalid();
+					},
+					get multiple() {
+						return multiple();
+					}
+				},
+				() => rest,
+				{
+					get value() {
+						return value();
+					},
+					set value($$value) {
+						value($$value);
+					}
 				}
-			};
-
-			if_block(node_1, ($$render) => {
-				if (get(items) && get(items).length > 0) $$render(consequent);
-			});
+			));
 		}
 
 		append($$anchor, fragment);
