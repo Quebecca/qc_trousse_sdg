@@ -2157,7 +2157,8 @@ qc-search-bar {
 }
 
 .qc-compact input[type=radio],
-.qc-compact input[type=checkbox] {
+.qc-compact input[type=checkbox], [compact] input[type=radio],
+[compact] input[type=checkbox] {
   min-width: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-sm);
   max-width: var(--qc-spacer-sm);
