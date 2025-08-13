@@ -2341,6 +2341,7 @@
         id="switch-group"
         legend="Préférences de notifications de messages"
         justified
+        max-wdith="25.6rem"
     >
         <qc-toggle-switch
                 id="nouveaux-messages"
@@ -2357,29 +2358,6 @@
                 disabled
         ></qc-toggle-switch>
     </qc-toggle-switch-group>
-
-    <qc-toggle-switch-group
-            id="switch-group-end"
-            legend="Préférences de notifications de messages"
-            justified
-            text-align="end"
-    >
-        <qc-toggle-switch
-                id="nouveaux-messages-end"
-                label="Nouveaux messages"
-                checked
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="modifications-messages-end"
-                label="Modifications de messages"
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="messages-supprimes-end"
-                label="Messages supprimés (indisponible)"
-                disabled
-        ></qc-toggle-switch>
-    </qc-toggle-switch-group>
-
     <script>
         document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
             .forEach(switchElement => {
@@ -2481,7 +2459,7 @@
     </tr>
     <tr>
         <td>max-width</td>
-        <td>"fit-content", "[x]px", "[x]rem", "[x]em, "[x]%", où [x] est un nombre</td>
+        <td>"fit-content", "[x]px", "[x]rem", "[x]em", "[x]%", où [x] est un nombre</td>
         <td>"fit-content"</td>
         <td>Largeur maximale des commutateurs dans le groupe</td>
     </tr>

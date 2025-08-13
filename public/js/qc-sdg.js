@@ -12273,7 +12273,7 @@
 				]);
 
 		let usedWidth = user_derived(() => {
-			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d+rem$/) || maxWidth().match(/^\d+em$/) || maxWidth().match(/^\d+%$/) || strict_equals(maxWidth(), "100%")) {
+			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d+\.?\d*rem$/) || maxWidth().match(/^\d+\.?\d*em$/) || maxWidth().match(/^\d+\.?\d*%$/)) {
 				return maxWidth();
 			} else {
 				return "fit-content";
@@ -12294,7 +12294,7 @@
 					var node = first_child(fragment_1);
 
 					each(node, 17, items, index, ($$anchor, item, $$index) => {
-						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 50, 12);
+						validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked', 49, 12);
 
 						const expression = user_derived(() => get(item).disabled ?? disabled());
 						const expression_1 = user_derived(() => justified() ?? get(item).justified);
