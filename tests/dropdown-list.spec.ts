@@ -6,8 +6,13 @@ test.beforeEach(async ({ page }) => {
     await page.goto(`file://${htmlFilePath}`);
 });
 
-test('Soit Option 1 présélectionnée dans Choix unique, lorsque la page charge, alors Option 1 apparaît dans l\'input', async ({ page }) => {
-    await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 1');
+test('Test de rendu', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
+    await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
+    await page.getByRole('button', { name: 'Envoyer' }).click();
+
+    await expect(page).toHaveScreenshot({fullPage: true});
 });
 
 test('En cliquant sur un libellé, alors le liste est en focus', async ({ page }) => {
