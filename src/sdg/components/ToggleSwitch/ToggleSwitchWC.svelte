@@ -6,7 +6,8 @@
         label: {attribute: 'label', type: 'String'},
         checked: {attribute: 'checked', type: 'Boolean', reflect: true},
         disabled: {attribute: 'disabled', type: 'Boolean', reflect: true},
-        labelPosition: {attribute: 'label-position', type: 'String'},
+        justified: {attribute: 'justified', type: 'Boolean', reflect: true},
+        textAlign: {attribute: 'text-align', type: 'String'},
     }
 }} />
 
@@ -19,6 +20,8 @@
         label,
         checked = $bindable(false),
         disabled = false,
+        justified = false,
+        textAlign,
         ...rest
     } = $props();
 
@@ -32,7 +35,9 @@
                 id,
                 label,
                 disabled,
-                checked
+                checked,
+                justified,
+                textAlign,
             });
             index = parent.items.length - 1;
         }
@@ -53,6 +58,8 @@
         {label}
         bind:checked
         {disabled}
+        {justified}
+        {textAlign}
         {...rest}
     />
 {/if}

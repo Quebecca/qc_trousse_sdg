@@ -56,7 +56,11 @@ $invalid-border-width: 2px;
 .qc-field-elements-flex {
   display: flex;
   flex-direction: column;
-  max-width: fit-content;
+  max-width: var(--fieldset-width);
+
+  .qc-switch-label {
+    flex-grow: 1;
+  }
 }
 
 .qc-field-elements-flex-sm {
@@ -66,8 +70,3 @@ $invalid-border-width: 2px;
 .qc-field-elements-flex-md {
   gap: token-value(spacer, md);
 }
-
-.qc-justify-end {
-  justify-items: end;
-}
-

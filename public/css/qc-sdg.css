@@ -2309,8 +2309,10 @@ input[type=radio]:checked.qc-compact::before {
 .qc-field-elements-flex {
   display: flex;
   flex-direction: column;
-  max-width: -moz-fit-content;
-  max-width: fit-content;
+  max-width: var(--fieldset-width);
+}
+.qc-field-elements-flex .qc-switch-label {
+  flex-grow: 1;
 }
 
 .qc-field-elements-flex-sm {
@@ -2319,10 +2321,6 @@ input[type=radio]:checked.qc-compact::before {
 
 .qc-field-elements-flex-md {
   gap: var(--qc-spacer-md);
-}
-
-.qc-justify-end {
-  justify-items: end;
 }
 
 input[type=checkbox]:checked {
@@ -2532,7 +2530,7 @@ qc-textfield {
 }
 
 .qc-switch {
-  display: inline-flex;
+  display: flex;
   margin: 0;
   gap: var(--qc-spacer-sm);
   position: relative;
@@ -2568,12 +2566,12 @@ qc-textfield {
 }
 
 .qc-switch-label {
+  display: flex;
   margin-top: 0.3rem;
 }
 
-.qc-switch-label-left {
-  justify-self: end;
-  justify-content: flex-end;
+.qc-switch-label-end {
+  justify-content: end;
   text-align: right;
 }
 
@@ -2605,6 +2603,10 @@ qc-textfield {
   border: 0.1rem solid var(--qc-color-grey-dark);
   border-radius: 50%;
   transition: all 0.3s ease-out;
+}
+
+.qc-switch-justified {
+  justify-content: space-between;
 }
 
 .qc-label {

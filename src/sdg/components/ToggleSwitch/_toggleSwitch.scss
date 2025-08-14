@@ -6,7 +6,7 @@ $height: 32;
 $border: 1;
 
 .qc-switch {
-  display: inline-flex;
+  display: flex;
   margin: 0;
   gap: token-value(spacer, sm);
   position: relative;
@@ -50,12 +50,12 @@ $border: 1;
 }
 
 .qc-switch-label {
+  display: flex;
   margin-top: rem(3);
 }
 
-.qc-switch-label-left {
-  justify-self: end;
-  justify-content: flex-end;
+.qc-switch-label-end {
+  justify-content: end;
   text-align: right;
 }
 
@@ -88,4 +88,8 @@ $border: 1;
     border-radius: 50%;
     transition: all .3s ease-out;
   }
+}
+
+.qc-switch-justified {
+  justify-content: space-between;
 }

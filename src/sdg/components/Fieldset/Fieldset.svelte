@@ -17,13 +17,15 @@
         updateValue = () => {},
         formFieldElements,
         elementsGap = "sm",
-        justifyEnd = false,
+        maxWidth = "fit-content",
         children
     } = $props();
+
     let groupSelection = $state(),
         legendId = name
             ? "id_" + name
-            : "legend-" + Math.floor(Math.random() * 1000000 );
+            : "legend-" + Math.floor(Math.random() * 1000000);
+
     onMount(() => {
         if (formFieldElements) {
             groupSelection.append(...formFieldElements);
@@ -57,13 +59,15 @@
         {/if}
     </legend>
     <div
-            class={[
-                chooseDivCLass(inline, tiled),
-                // justifyEnd && "qc-justify-end",
-                !tiled && `qc-field-elements-flex-${elementsGap}`,
-            ]}
-            style="--column-count: {columnCount}"
-            bind:this={groupSelection}
+        class={[
+            chooseDivCLass(inline, tiled),
+            !tiled && `qc-field-elements-flex-${elementsGap}`,
+        ]}
+        style="
+        --column-count: {columnCount};
+        --fieldset-width: {maxWidth};
+        "
+        bind:this={groupSelection}
     >
         {@render children?.()}
     </div>

@@ -14,11 +14,10 @@
                 id="switch-status"
                 label="Afficher l'état du commutateur à la console"
         ></qc-toggle-switch>
-
         <qc-toggle-switch
-                id="switch-status-right"
-                label="Afficher l'état du commutateur 2 à la console"
-                label-position="right"
+                id="switch-status-2"
+                label="Libellé aligné sur la droite (afficher au format mobile pour voir la différence)"
+                text-align="end"
         ></qc-toggle-switch>
     </div>
 
@@ -27,11 +26,6 @@
             .addEventListener("change", (event) => {
                 console.log(`'switch-status' mis à ${event.target.checked}`);
             });
-
-        document.getElementById("switch-status-right")
-            .addEventListener("change", (event) => {
-                console.log(`'switch-status-right' mis à ${event.target.checked}`);
-            });
     </script>
 </qc-doc-exemple>
 
@@ -39,6 +33,8 @@
     <qc-toggle-switch-group
         id="switch-group"
         legend="Préférences de notifications de messages"
+        justified
+        max-width="25.6rem"
     >
         <qc-toggle-switch
                 id="nouveaux-messages"
@@ -55,7 +51,6 @@
                 disabled
         ></qc-toggle-switch>
     </qc-toggle-switch-group>
-
     <script>
         document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
             .forEach(switchElement => {
@@ -98,14 +93,18 @@
         <td>Désactive le commutateur</td>
     </tr>
     <tr>
-        <td>label-position</td>
-        <td>"left" ou "right"</td>
-        <td>"left"</td>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
         <td>
-            Position du libellé par rapport au commutateur
-            <br> N.B. : le commutateur et son étiquette sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
+            Permet au commutateur et son libellé de prendre toute la largeur disponible
         </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>Alignement du texte du libellé</td>
     </tr>
     </tbody>
 </table>
@@ -134,14 +133,28 @@
         <td>Désactive le groupe de commutateurs</td>
     </tr>
     <tr>
-        <td>label-position</td>
-        <td>"left" ou "right"</td>
-        <td>"left"</td>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
         <td>
-            Position des libellés par rapport aux commutateurs.
-            <br> N.B. : les commutateurs et leurs étiquettes sont alignées sur la droite du parent lorsque <code>label-position</code>
-            est à "left".
+            Permet au commutateur et son libellé de prendre toute la largeur disponible.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
         </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>
+            Alignement du texte des libellés des commutateurs
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+        </td>
+    </tr>
+    <tr>
+        <td>max-width</td>
+        <td>"fit-content", "[x]px", "[x]rem", "[x]em", "[x]%", où [x] est un nombre</td>
+        <td>"fit-content"</td>
+        <td>Largeur maximale des commutateurs dans le groupe</td>
     </tr>
     </tbody>
 </table>
