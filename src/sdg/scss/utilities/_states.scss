@@ -3,7 +3,6 @@
 .qc-required {
   @include content-font(md, bold);
   color: token-value(color, red, regular);
-  margin-left: rem(3.85); // 8px - espace implicite de 4.15px
 }
 
 .qc-disabled {
