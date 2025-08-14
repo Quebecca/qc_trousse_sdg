@@ -18,9 +18,10 @@ $border: 1;
   display: flex;
 
   justify-content: space-between;
+  margin-bottom: rem(4);
 }
 
-label {
+.qc-label {
   width: fit-content;
 }
 

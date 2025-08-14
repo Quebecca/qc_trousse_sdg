@@ -9,7 +9,7 @@ pre {
   margin: 0;
   padding: 0;
   white-space: pre-wrap;
-  overflow: scroll;
+  overflow: auto;
 
   code, .qc-code {
     font-family: token-value(font, family, code);

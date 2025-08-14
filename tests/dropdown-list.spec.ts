@@ -2,12 +2,16 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test.beforeEach(async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.dev.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.test.html');
     await page.goto(`file://${htmlFilePath}`);
 });
 
-test('Soit Option 1 présélectionnée dans Choix unique, lorsque la page charge, alors Option 1 apparaît dans l\'input', async ({ page }) => {
-    await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 1');
+test('Test de rendu', async ({ page }) => {
+    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
+    await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
+    await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
+
+    await expect(page).toHaveScreenshot({fullPage: true});
 });
 
 test('En cliquant sur un libellé, alors le liste est en focus', async ({ page }) => {
@@ -84,7 +88,7 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alor
 
 test('Soit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
     await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByText('Liste déroulante Exemples').click();
+    await page.locator('div').filter({ hasText: 'Option 1 Option 2 Option 3' }).first().click();
 
     await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
     await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');

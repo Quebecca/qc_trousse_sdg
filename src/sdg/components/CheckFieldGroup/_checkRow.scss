@@ -83,7 +83,6 @@
 .qc-selection-button {
   @extend %check-row;
   @include qc-formcontrol-box();
-  width: 100%;
 
   input[type="radio"],
   input[type="checkbox"] {

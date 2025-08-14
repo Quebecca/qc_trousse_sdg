@@ -5,6 +5,10 @@ qc-textfield {
   width: 100%;
 }
 
+.qc-label {
+  margin-bottom: rem(4);
+}
+
 .qc-textfield {
   @extend %qc-formcontrol-box;
   position: relative;
