@@ -1139,6 +1139,7 @@ hr {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   color: var(--qc-color-red-regular);
+  margin-left: 0.385rem;
 }
 
 .qc-disabled {
@@ -2159,7 +2160,6 @@ qc-search-bar {
   z-index: 10;
   background: transparent;
   border: 0;
-  width: 100%;
   padding: var(--qc-spacer-sm);
 }
 .qc-selection-button::before {
@@ -2304,6 +2304,9 @@ input[type=radio]:checked.qc-compact::before {
   .qc-field-elements-tiled {
     grid-template-columns: 1fr;
   }
+}
+.qc-field-elements-tiled > .qc-selection-button {
+  width: 100%;
 }
 
 .qc-field-elements-flex {

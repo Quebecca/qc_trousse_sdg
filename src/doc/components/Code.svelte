@@ -44,7 +44,6 @@
       prettyCode = language === 'javascript'
                     ? jsBeautify(rawCode)
                     : pretty(rawCode, {wrap_attributes: 'force-aligned'});
-      ;
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   }
 
