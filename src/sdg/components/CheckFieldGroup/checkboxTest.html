@@ -56,7 +56,9 @@
             <qc-checkbox name="consentement-2"
                          label="J’accepte les conditions d’utilisation"
                          value="oui"
-                         invalid></qc-checkbox>
+                         required
+                         invalid
+                         required></qc-checkbox>
 
             <qc-checkbox-group legend="Exemple de base"
                             name="base-1"
@@ -80,6 +82,7 @@
             <qc-checkbox-group legend="Invalid"
                             name="base-1"
                             invalid
+                               required
             >
                 <qc-checkbox
                         label="Option 1"
@@ -107,7 +110,8 @@
                          label="J’accepte les conditions d’utilisation"
                          value="oui"
                          compact
-                         invalid></qc-checkbox>
+                         invalid
+                         required></qc-checkbox>
 
             <qc-checkbox-group legend="Compact"
                             name="compact-1"
@@ -133,6 +137,7 @@
                             name="compact-2"
                             compact
                             invalid
+                               required
             >
                 <qc-checkbox
                         label="Option 1"
