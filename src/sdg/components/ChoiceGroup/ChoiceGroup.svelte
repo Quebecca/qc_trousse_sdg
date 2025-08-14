@@ -3,8 +3,6 @@
     import {Utils} from "../utils";
     const lang = Utils.getPageLanguage();
     let {
-        formFieldElements,
-        checked = $bindable(false),
         invalid = $bindable(false),
         invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
         children,
@@ -20,10 +18,9 @@
 </script>
 <Fieldset
     {...restProps}
-    bind:checked
     bind:invalid
-        {invalidText}
-        {onchange}
+    {invalidText}
+    {onchange}
 >
     {@render children()}
 </Fieldset>

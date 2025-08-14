@@ -7,13 +7,16 @@
 
 <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
   <form id="exemple-tos-form">
-    <qc-checkbox
-            id="exemple-une-case"
-            name="consentement"
-            label="J’accepte les conditions d’utilisation"
-            value="oui"
-            required
-    ></qc-checkbox>
+    <qc-checkbox id="consentement"
+                 required >
+      <label>
+        <input type="checkbox"
+               name="consentement"
+               value="oui"
+        />
+        <span >J’accepte les conditions d’utilisation</span>
+      </label>
+    </qc-checkbox>
 
     <button class="btn btn-sm btn-primary"
             type="submit">
@@ -23,7 +26,7 @@
 
   <script>
     const tosForm = document.getElementById("exemple-tos-form");
-    const termsAcceptance = document.getElementById("exemple-une-case");
+    const consentement = document.getElementById("consentement");
     tosForm.addEventListener("submit", (event) => {
       event.preventDefault();
       if(termsAcceptance.checked) {

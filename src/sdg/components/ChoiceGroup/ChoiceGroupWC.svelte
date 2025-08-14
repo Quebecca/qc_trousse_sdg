@@ -21,10 +21,8 @@
         legend,
         compact,
         required,
-        disabled,
         invalid = $bindable(false),
         invalidText,
-        checked=$bindable(false),
         tiled,
         columnCount,
         inline
@@ -38,10 +36,8 @@
         {legend}
         {compact}
         {required}
-        {disabled}
         bind:invalid
         {invalidText}
-        bind:checked
         {tiled}
         {columnCount}
         {inline}
