@@ -1,5 +1,5 @@
 @use "qc-sdg-lib" as *;
-@use "../CheckFieldGroup/checkRow" as *;
+@use "../ChoiceGroup/choiceGroup" as *;
 
 input[type=radio] {
   border-radius: 100%;

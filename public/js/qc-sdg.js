@@ -9414,11 +9414,11 @@
 		true
 	);
 
-	CheckFieldGroup[FILENAME] = 'src/sdg/components/CheckFieldGroup/CheckFieldGroup.svelte';
+	ChoiceGroup[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroup.svelte';
 
-	var root$b = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckFieldGroup[FILENAME], [[39, 0]]);
+	var root$b = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroup[FILENAME], [[30, 0]]);
 
-	function CheckFieldGroup($$anchor, $$props) {
+	function ChoiceGroup($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -9429,7 +9429,6 @@
 			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, "fr") ? "Champ obligatoire" : "Required field"),
-			value = prop($$props, 'value', 31, () => proxy([])),
 			children = prop($$props, 'children', 7),
 			restProps = rest_props(
 				$$props,
@@ -9442,17 +9441,8 @@
 					'checked',
 					'invalid',
 					'invalidText',
-					'value',
 					'children'
 				]);
-
-		user_effect(() => {
-			checked(!(!value() || strict_equals(value().length, 0)));
-
-			if (checked()) {
-				invalid(false);
-			}
-		});
 
 		let onchange = (e) => {
 			if (invalid() && e.target.checked) {
@@ -9464,7 +9454,6 @@
 		var node = first_child(fragment);
 
 		{
-			$$ownership_validator.binding('value', Fieldset, value);
 			$$ownership_validator.binding('checked', Fieldset, checked);
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
@@ -9473,12 +9462,6 @@
 					return invalidText();
 				},
 				onchange,
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				},
 				get checked() {
 					return checked();
 				},
@@ -9491,7 +9474,7 @@
 				set invalid($$value) {
 					invalid($$value);
 				},
-				children: wrap_snippet(CheckFieldGroup, ($$anchor, $$slotProps) => {
+				children: wrap_snippet(ChoiceGroup, ($$anchor, $$slotProps) => {
 					var fragment_1 = comment();
 					var node_1 = first_child(fragment_1);
 
@@ -9538,13 +9521,6 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value = []) {
-				value($$value);
-				flushSync();
-			},
 			get children() {
 				return children();
 			},
@@ -9557,13 +9533,12 @@
 	}
 
 	create_custom_element(
-		CheckFieldGroup,
+		ChoiceGroup,
 		{
 			formFieldElements: {},
 			checked: {},
 			invalid: {},
 			invalidText: {},
-			value: {},
 			children: {}
 		},
 		[],
@@ -9584,9 +9559,9 @@
 		});
 	}
 
-	CheckboxGroupWC[FILENAME] = 'src/sdg/components/CheckFieldGroup/CheckboxGroupWC.svelte';
+	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	function CheckboxGroupWC($$anchor, $$props) {
+	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
@@ -9599,26 +9574,18 @@
 			disabled = prop($$props, 'disabled', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
-			value = prop($$props, 'value', 15, ""),
 			checked = prop($$props, 'checked', 15, false),
 			tiled = prop($$props, 'tiled', 7),
 			columnCount = prop($$props, 'columnCount', 7),
 			inline = prop($$props, 'inline', 7);
 
-		let single = state(false);
-
-		onMount(() => {
-			set(single, strict_equals($$props.$$host.children.length, 1));
-		});
-
 		user_effect(() => updateInput($$props.$$host, required(), invalid(), name()));
 
 		{
-			$$ownership_validator.binding('invalid', CheckFieldGroup, invalid);
-			$$ownership_validator.binding('value', CheckFieldGroup, value);
-			$$ownership_validator.binding('checked', CheckFieldGroup, checked);
+			$$ownership_validator.binding('invalid', ChoiceGroup, invalid);
+			$$ownership_validator.binding('checked', ChoiceGroup, checked);
 
-			CheckFieldGroup($$anchor, {
+			ChoiceGroup($$anchor, {
 				get name() {
 					return name();
 				},
@@ -9646,20 +9613,11 @@
 				get inline() {
 					return inline();
 				},
-				get single() {
-					return get(single);
-				},
 				get invalid() {
 					return invalid();
 				},
 				set invalid($$value) {
 					invalid($$value);
-				},
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
 				},
 				get checked() {
 					return checked();
@@ -9667,7 +9625,7 @@
 				set checked($$value) {
 					checked($$value);
 				},
-				children: wrap_snippet(CheckboxGroupWC, ($$anchor, $$slotProps) => {
+				children: wrap_snippet(ChoiceGroupWC, ($$anchor, $$slotProps) => {
 					var fragment_1 = comment();
 					var node = first_child(fragment_1);
 
@@ -9728,13 +9686,6 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value = "") {
-				value($$value);
-				flushSync();
-			},
 			get checked() {
 				return checked();
 			},
@@ -9767,215 +9718,19 @@
 		});
 	}
 
-	customElements.define('qc-checkbox-group', create_custom_element(
-		CheckboxGroupWC,
-		{
-			compact: { attribute: 'compact', type: 'Boolean' },
-			required: { attribute: 'required', type: 'Boolean' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' },
-			tiled: { attribute: 'tiled', type: 'Boolean' },
-			columnCount: { attribute: 'column-count', type: 'String' },
-			inline: { attribute: 'inline', type: 'Boolean' },
-			name: {},
-			legend: {},
-			value: {},
-			checked: {}
-		},
-		['default'],
-		[],
-		true
-	));
-
-	RadioGroupWC[FILENAME] = 'src/sdg/components/CheckFieldGroup/RadioGroupWC.svelte';
-
-	function RadioGroupWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let name = prop($$props, 'name', 7),
-			legend = prop($$props, 'legend', 7),
-			compact = prop($$props, 'compact', 7),
-			required = prop($$props, 'required', 7),
-			disabled = prop($$props, 'disabled', 7),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			value = prop($$props, 'value', 15, ""),
-			checked = prop($$props, 'checked', 15, false),
-			tiled = prop($$props, 'tiled', 7),
-			columnCount = prop($$props, 'columnCount', 7),
-			inline = prop($$props, 'inline', 7);
-
-		user_effect(() => updateInput($$props.$$host, required(), invalid(), name()));
-
-		{
-			$$ownership_validator.binding('invalid', CheckFieldGroup, invalid);
-			$$ownership_validator.binding('value', CheckFieldGroup, value);
-			$$ownership_validator.binding('checked', CheckFieldGroup, checked);
-
-			CheckFieldGroup($$anchor, {
-				get name() {
-					return name();
-				},
-				get legend() {
-					return legend();
-				},
-				get compact() {
-					return compact();
-				},
-				get required() {
-					return required();
-				},
-				get disabled() {
-					return disabled();
-				},
-				get invalidText() {
-					return invalidText();
-				},
-				get tiled() {
-					return tiled();
-				},
-				get columnCount() {
-					return columnCount();
-				},
-				get inline() {
-					return inline();
-				},
-				get invalid() {
-					return invalid();
-				},
-				set invalid($$value) {
-					invalid($$value);
-				},
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				},
-				get checked() {
-					return checked();
-				},
-				set checked($$value) {
-					checked($$value);
-				},
-				children: wrap_snippet(RadioGroupWC, ($$anchor, $$slotProps) => {
-					var fragment_1 = comment();
-					var node = first_child(fragment_1);
-
-					slot(node, $$props, 'default', {}, null);
-					append($$anchor, fragment_1);
-				}),
-				$$slots: { default: true }
-			});
-		}
-
-		return pop({
-			get name() {
-				return name();
-			},
-			set name($$value) {
-				name($$value);
-				flushSync();
-			},
-			get legend() {
-				return legend();
-			},
-			set legend($$value) {
-				legend($$value);
-				flushSync();
-			},
-			get compact() {
-				return compact();
-			},
-			set compact($$value) {
-				compact($$value);
-				flushSync();
-			},
-			get required() {
-				return required();
-			},
-			set required($$value) {
-				required($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value) {
-				disabled($$value);
-				flushSync();
-			},
-			get invalid() {
-				return invalid();
-			},
-			set invalid($$value = false) {
-				invalid($$value);
-				flushSync();
-			},
-			get invalidText() {
-				return invalidText();
-			},
-			set invalidText($$value) {
-				invalidText($$value);
-				flushSync();
-			},
-			get value() {
-				return value();
-			},
-			set value($$value = "") {
-				value($$value);
-				flushSync();
-			},
-			get checked() {
-				return checked();
-			},
-			set checked($$value = false) {
-				checked($$value);
-				flushSync();
-			},
-			get tiled() {
-				return tiled();
-			},
-			set tiled($$value) {
-				tiled($$value);
-				flushSync();
-			},
-			get columnCount() {
-				return columnCount();
-			},
-			set columnCount($$value) {
-				columnCount($$value);
-				flushSync();
-			},
-			get inline() {
-				return inline();
-			},
-			set inline($$value) {
-				inline($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	customElements.define('qc-radio-group', create_custom_element(
-		RadioGroupWC,
+	customElements.define('qc-choice-group', create_custom_element(
+		ChoiceGroupWC,
 		{
 			name: { attribute: 'name', type: 'String' },
-			value: { attribute: 'value', type: 'String' },
 			legend: { attribute: 'legend', type: 'String' },
 			compact: { attribute: 'compact', type: 'Boolean' },
 			required: { attribute: 'required', type: 'Boolean' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
 			tiled: { attribute: 'tiled', type: 'Boolean' },
 			columnCount: { attribute: 'column-count', type: 'String' },
 			inline: { attribute: 'inline', type: 'Boolean' },
+			disabled: {},
 			checked: {}
 		},
 		['default'],
@@ -11450,7 +11205,7 @@
 		false
 	));
 
-	ToggleSwitchGroupWC[FILENAME] = 'src/sdg/components/CheckFieldGroup/ToggleSwitchGroupWC.svelte';
+	ToggleSwitchGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte';
 
 	function ToggleSwitchGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11483,7 +11238,7 @@
 			}
 		});
 
-		CheckFieldGroup($$anchor, spread_props(
+		ChoiceGroup($$anchor, spread_props(
 			{
 				elementsGap: 'md',
 				get maxWidth() {

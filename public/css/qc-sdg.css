@@ -2067,8 +2067,7 @@ qc-search-bar {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }
 
-.qc-dropdown-list-checkbox, qc-radio-group label,
-qc-checkbox-group label,
+.qc-dropdown-list-checkbox, qc-choice-group label,
 qc-checkbox label {
   display: flex;
   align-items: start;
@@ -2076,18 +2075,15 @@ qc-checkbox label {
   cursor: pointer;
   font-weight: normal;
 }
-.qc-dropdown-list-checkbox:has(input:disabled), qc-radio-group label:has(input:disabled),
-qc-checkbox-group label:has(input:disabled),
+.qc-dropdown-list-checkbox:has(input:disabled), qc-choice-group label:has(input:disabled),
 qc-checkbox label:has(input:disabled) {
   color: var(--qc-color-grey-regular);
   cursor: not-allowed;
 }
-.qc-dropdown-list-checkbox input[type=radio], qc-radio-group label input[type=radio],
-qc-checkbox-group label input[type=radio],
+.qc-dropdown-list-checkbox input[type=radio], qc-choice-group label input[type=radio],
 qc-checkbox label input[type=radio],
 .qc-dropdown-list-checkbox input[type=checkbox],
-qc-radio-group label input[type=checkbox],
-qc-checkbox-group label input[type=checkbox],
+qc-choice-group label input[type=checkbox],
 qc-checkbox label input[type=checkbox] {
   display: flex;
   position: relative;
@@ -2099,21 +2095,17 @@ qc-checkbox label input[type=checkbox] {
   border-style: solid;
   border-color: var(--qc-color-blue-dark);
 }
-.qc-dropdown-list-checkbox input[type=radio]:not(:disabled):hover, qc-radio-group label input[type=radio]:not(:disabled):hover,
-qc-checkbox-group label input[type=radio]:not(:disabled):hover,
+.qc-dropdown-list-checkbox input[type=radio]:not(:disabled):hover, qc-choice-group label input[type=radio]:not(:disabled):hover,
 qc-checkbox label input[type=radio]:not(:disabled):hover,
 .qc-dropdown-list-checkbox input[type=checkbox]:not(:disabled):hover,
-qc-radio-group label input[type=checkbox]:not(:disabled):hover,
-qc-checkbox-group label input[type=checkbox]:not(:disabled):hover,
+qc-choice-group label input[type=checkbox]:not(:disabled):hover,
 qc-checkbox label input[type=checkbox]:not(:disabled):hover {
   cursor: pointer;
 }
-.qc-dropdown-list-checkbox input[type=radio]::before, qc-radio-group label input[type=radio]::before,
-qc-checkbox-group label input[type=radio]::before,
+.qc-dropdown-list-checkbox input[type=radio]::before, qc-choice-group label input[type=radio]::before,
 qc-checkbox label input[type=radio]::before,
 .qc-dropdown-list-checkbox input[type=checkbox]::before,
-qc-radio-group label input[type=checkbox]::before,
-qc-checkbox-group label input[type=checkbox]::before,
+qc-choice-group label input[type=checkbox]::before,
 qc-checkbox label input[type=checkbox]::before {
   content: "";
   position: absolute;
@@ -2122,30 +2114,24 @@ qc-checkbox label input[type=checkbox]::before {
   overflow: hidden;
   opacity: 0;
 }
-.qc-dropdown-list-checkbox input[type=radio]:checked, qc-radio-group label input[type=radio]:checked,
-qc-checkbox-group label input[type=radio]:checked,
+.qc-dropdown-list-checkbox input[type=radio]:checked, qc-choice-group label input[type=radio]:checked,
 qc-checkbox label input[type=radio]:checked,
 .qc-dropdown-list-checkbox input[type=checkbox]:checked,
-qc-radio-group label input[type=checkbox]:checked,
-qc-checkbox-group label input[type=checkbox]:checked,
+qc-choice-group label input[type=checkbox]:checked,
 qc-checkbox label input[type=checkbox]:checked {
   border-color: var(--qc-color-blue-regular);
 }
-.qc-dropdown-list-checkbox input[type=radio]:disabled, qc-radio-group label input[type=radio]:disabled,
-qc-checkbox-group label input[type=radio]:disabled,
+.qc-dropdown-list-checkbox input[type=radio]:disabled, qc-choice-group label input[type=radio]:disabled,
 qc-checkbox label input[type=radio]:disabled,
 .qc-dropdown-list-checkbox input[type=checkbox]:disabled,
-qc-radio-group label input[type=checkbox]:disabled,
-qc-checkbox-group label input[type=checkbox]:disabled,
+qc-choice-group label input[type=checkbox]:disabled,
 qc-checkbox label input[type=checkbox]:disabled {
   cursor: not-allowed;
   border-color: var(--qc-color-grey-light);
 }
 
-qc-radio-group label input[type=radio],
-qc-radio-group label input[type=checkbox],
-qc-checkbox-group label input[type=radio],
-qc-checkbox-group label input[type=checkbox],
+qc-choice-group label input[type=radio],
+qc-choice-group label input[type=checkbox],
 qc-checkbox label input[type=radio],
 qc-checkbox label input[type=checkbox] {
   cursor: pointer;
@@ -2156,20 +2142,16 @@ qc-checkbox label input[type=checkbox] {
   border-width: 0.2rem;
   flex-grow: 0;
 }
-qc-radio-group label input[type=radio]:focus,
-qc-radio-group label input[type=checkbox]:focus,
-qc-checkbox-group label input[type=radio]:focus,
-qc-checkbox-group label input[type=checkbox]:focus,
+qc-choice-group label input[type=radio]:focus,
+qc-choice-group label input[type=checkbox]:focus,
 qc-checkbox label input[type=radio]:focus,
 qc-checkbox label input[type=checkbox]:focus {
   outline: 2px solid var(--qc-color-blue-light);
   outline-offset: 0;
   border-color: var(--qc-color-blue-dark) !important;
 }
-qc-radio-group label input[type=radio]:checked,
-qc-radio-group label input[type=checkbox]:checked,
-qc-checkbox-group label input[type=radio]:checked,
-qc-checkbox-group label input[type=checkbox]:checked,
+qc-choice-group label input[type=radio]:checked,
+qc-choice-group label input[type=checkbox]:checked,
 qc-checkbox label input[type=radio]:checked,
 qc-checkbox label input[type=checkbox]:checked {
   border-color: var(--qc-color-blue-regular);

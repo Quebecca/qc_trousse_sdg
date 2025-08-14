@@ -12,7 +12,7 @@
 
 <script>
     import ToggleSwitch from "../ToggleSwitch/ToggleSwitch.svelte";
-    import CheckFieldGroup from "./CheckFieldGroup.svelte";
+    import ChoiceGroup from "./ChoiceGroup.svelte";
 
     let {
         disabled = $bindable(false),
@@ -37,7 +37,7 @@
     });
 </script>
 
-<CheckFieldGroup
+<ChoiceGroup
     elementsGap="md"
     maxWidth={usedWidth}
     {...rest}
@@ -52,5 +52,5 @@
             textAlign={textAlign ?? item.textAlign}
         />
     {/each}
-</CheckFieldGroup>
+</ChoiceGroup>
 
