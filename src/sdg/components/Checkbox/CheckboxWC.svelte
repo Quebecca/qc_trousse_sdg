@@ -36,6 +36,7 @@
         label,
         description,
         name,
+        id,
         disabled = $bindable(false),
         required = $bindable(false),
         checked = $bindable(false),
@@ -56,6 +57,7 @@
 </script>
 
 <Checkbox
+    {id}
     {value}
     label={label ?? value}
     {name}

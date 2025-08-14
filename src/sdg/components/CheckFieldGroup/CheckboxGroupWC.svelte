@@ -26,7 +26,6 @@
 }} />
 
 <script>
-    // import CheckboxGroup from "./CheckboxGroup.svelte";
     import CheckFieldGroup from "./CheckFieldGroup.svelte";
     let {
         formFieldElements,

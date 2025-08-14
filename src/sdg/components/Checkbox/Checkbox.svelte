@@ -8,6 +8,7 @@
         label,
         value = label,
         name,
+        id,
         disabled = false,
         checked = $bindable(false),
         required = false,
@@ -21,8 +22,6 @@
         handleChange = () => {},
         ...rest
     } = $props();
-
-    let id = $derived(rest.id ?? `${name}-${value}-${Math.random().toString(36).substring(2, 15)}`);
 
     $effect(() => {
         if (checked) {
@@ -39,18 +38,20 @@
         }
         return "qc-check-row";
     }
+
+    let usedId = $derived(id ?? name + value + Math.random().toString(36));
 </script>
 
 {#snippet checkboxRow()}
     <label
             class={chooseCheckboxClass()}
-            for={id}>
+            for={usedId + "-input"}>
         <input
+                id={usedId + "-input"}
                 class={compact || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}
-                {id}
                 {disabled}
                 bind:checked
                 aria-required = {required}
@@ -64,7 +65,12 @@
                 }}
         />
         <span class="qc-check-text">
-            <span class="qc-check-label">{label}</span>
+            <span class="qc-check-label">
+                {label}
+                {#if !parentGroup && required}
+                    <span class="qc-required">*</span>
+                {/if}
+            </span>
             {#if description}
                 <span class="qc-check-description">{@html description}</span>
             {/if}

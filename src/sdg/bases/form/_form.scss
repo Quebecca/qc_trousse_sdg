@@ -7,6 +7,27 @@ select {
   font: inherit;
 }
 
+select {
+  appearance: none;
+
+  color: token-value(color, text, primary);
+  @include content-font('md');
+  @include qc-formcontrol-box();
+
+  padding: token-value(spacer, xs);
+
+  background-image: getImageUrl("chevron-blue-thin-not-64", $base64: false);
+  background-repeat: no-repeat;
+  background-position: right token-value(spacer, xs) top 50%;
+
+  &:disabled {
+    background-image: getImageUrl("chevron-grey-thin-not-64", $base64: false);
+    background-color: token-value(color, grey, pale);
+    color: token-value(color, grey, medium);
+    cursor: not-allowed;
+  }
+}
+
 label {
   @include content-font('md', 'bold');
   display: inline-block;

@@ -17,7 +17,6 @@
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {},
-        closeDropdown = () => {},
     } = $props()
 
     const
@@ -90,7 +89,6 @@
             {noOptionsMessage}
             selectionCallback={() => {
                 selectionCallbackSingle();
-                closeDropdown();
             }}
             handleExit={(key) => handleExitSingle(key)}
             focusOnOuterElement={focusOnOuterElement}

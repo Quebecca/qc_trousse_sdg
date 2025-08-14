@@ -31,6 +31,10 @@
     export function addOption(label, value, disabled = false, checked = false) {
         items.push({ label: label, value: value, disabled: disabled, checked: checked });
     }
+
+    export function updateOption(index, label, value, disabled = false, checked = false) {
+        items[index] = { label: label, value: value, disabled: disabled, checked: checked };
+    }
 </script>
 
 <DropdownList {items} {invalid} bind:value {...rest} />
