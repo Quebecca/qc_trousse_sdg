@@ -146,6 +146,32 @@
   @include qc-formcontrol-box();
 }
 
+@mixin qc-scrollbar() {
+  // Style pour Chrome et Safari
+  &::-webkit-scrollbar {
+    width: token-value(spacer, xs);
+    margin-left: token-value(spacer, xs);
+    margin-right: token-value(spacer, xs);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: token-value(color, blue, piv);
+    border-radius: rem(4);
+
+    border: none;
+  }
+
+  // Style pour Firefox
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: token-value(color, blue, piv) transparent;
+    scrollbar-width: thin;
+  }
+}
+
 @mixin heading($i) {
   @include header-font(h#{$i});
   max-inline-size: token-value(max-content-width);

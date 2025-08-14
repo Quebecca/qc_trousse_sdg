@@ -8,28 +8,7 @@ $min-height: 40;
   max-height: var(--dropdown-items-height);
   overflow-y: auto;
   overflow-x: hidden;
-
-  &::-webkit-scrollbar {
-    width: token-value(spacer, xs);
-    margin-left: token-value(spacer, xs);
-    margin-right: token-value(spacer, xs);
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: token-value(color, blue, piv);
-    border-radius: rem(4);
-
-    border: none;
-  }
-
-  @supports not selector(::-webkit-scrollbar) {
-    scrollbar-color: token-value(color, blue, piv) transparent;
-    scrollbar-width: thin;
-  }
+  @include qc-scrollbar();
 
   ul {
     padding: 0;
