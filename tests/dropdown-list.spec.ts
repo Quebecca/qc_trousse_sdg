@@ -153,7 +153,7 @@ test('Soit une option sélectionnée, liste déroulante fermée et focus placé 
 
 test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page, browserName }) => {
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
-    await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
+    await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
 
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('12');
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
@@ -162,7 +162,7 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
       - status
     `);
 
-    await page.getByRole('searchbox', { name: 'Rechercher…' }).press('Tab');
+    await page.getByRole('searchbox', { name: 'Rechercher...' }).press('Tab');
     if (browserName !== "webkit") {
         await expect(page.getByRole('button', { name: 'Effacer le texte' })).toBeFocused();
     } else {
@@ -197,7 +197,7 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
       - status
     `);
 
-    await page.getByRole('searchbox', { name: 'Rechercher…' }).fill('12');
+    await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
