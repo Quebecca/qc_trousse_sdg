@@ -2607,6 +2607,7 @@ qc-textfield {
 
 .qc-switch-justified {
   justify-content: space-between;
+  width: 100%;
 }
 
 .qc-label {
