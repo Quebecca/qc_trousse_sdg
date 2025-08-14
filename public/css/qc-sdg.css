@@ -2159,7 +2159,7 @@ qc-search-bar {
   z-index: 10;
   background: transparent;
   border: 0;
-  flex-grow: 1;
+  width: 100%;
   padding: var(--qc-spacer-sm);
 }
 .qc-selection-button::before {

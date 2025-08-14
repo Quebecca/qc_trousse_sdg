@@ -83,7 +83,7 @@
 .qc-selection-button {
   @extend %check-row;
   @include qc-formcontrol-box();
-  flex-grow: 1;
+  width: 100%;
 
   input[type="radio"],
   input[type="checkbox"] {
