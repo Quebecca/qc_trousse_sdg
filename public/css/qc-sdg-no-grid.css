@@ -2393,6 +2393,10 @@ qc-textfield {
   width: 100%;
 }
 
+.qc-label {
+  margin-bottom: 0.4rem;
+}
+
 .qc-textfield {
   position: relative;
 }
@@ -2798,9 +2802,10 @@ qc-textfield {
 .qc-dropdown-list-label-container {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 0.4rem;
 }
 
-label {
+.qc-label {
   width: -moz-fit-content;
   width: fit-content;
 }

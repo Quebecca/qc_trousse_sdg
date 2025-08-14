@@ -7,10 +7,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Test de rendu', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
     await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
     await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
-    await page.getByRole('button', { name: 'Envoyer' }).click();
 
     await expect(page).toHaveScreenshot({fullPage: true});
 });

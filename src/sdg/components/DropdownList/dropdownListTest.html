@@ -20,12 +20,14 @@
   <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
 </qc-dropdown-list>
 
+
+<div style="height: 40rem;">
 <qc-dropdown-list
         id="dropdown-list-single-choice-no-scroll"
         label="Choix unique avec recherche:"
         enable-search
 >
-  <qc-option value="1">Option 1</qc-option>
+  <qc-option value="1" selected>Option 1</qc-option>
   <qc-option value="2">Option 2</qc-option>
   <qc-option value="3">Option 3</qc-option>
   <qc-option value="4">Option 4</qc-option>
@@ -42,6 +44,7 @@
   <qc-option value="15">Option 15</qc-option>
   <qc-option value="16">Option 16</qc-option>
 </qc-dropdown-list>
+</div>
 
 <qc-dropdown-list
         id="dropdown-list-multiple-choices"
@@ -67,34 +70,33 @@
 </qc-dropdown-list>
 
 <qc-dropdown-list
+        id="dropdown-list-invalid"
+        label="État invalide:"
+        invalid
+>
+  <qc-option value="1">Option 1</qc-option>
+  <qc-option value="2">Option 2</qc-option>
+  <qc-option value="3">Option 3</qc-option>
+  <qc-option value="4">Option 4</qc-option>
+  <qc-option value="5">Option 5</qc-option>
+  <qc-option value="6">Option 6</qc-option>
+  <qc-option value="7">Option 7</qc-option>
+  <qc-option value="8">Option 8</qc-option>
+  <qc-option value="9">Option 9</qc-option>
+  <qc-option value="10">Option 10</qc-option>
+  <qc-option value="11">Option 11</qc-option>
+  <qc-option value="12">Option 12</qc-option>
+  <qc-option value="13">Option 13</qc-option>
+  <qc-option value="14">Option 14</qc-option>
+  <qc-option value="15">Option 15</qc-option>
+  <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
+</qc-dropdown-list>
+
+<qc-dropdown-list
         id="dropdown-list-disabled"
         label="Désactivé:"
         disabled
 ></qc-dropdown-list>
-
-<script>
-  function mutationCallback(mutationsList, _) {
-    mutationsList.forEach(mutation => {
-      if (mutation.type === 'attributes') {
-        console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
-      }
-    });
-  }
-
-  const mutationObserver = new MutationObserver(mutationCallback);
-
-  const singleChoice = document.getElementById("dropdown-list-single-choice");
-  const singleChoiceNoScroll = document.getElementById("dropdown-list-single-choice-no-scroll");
-  const multipleChoice = document.getElementById("dropdown-list-multiple-choices");
-
-  mutationObserver.observe(singleChoice, { attributes: true });
-  mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
-  mutationObserver.observe(multipleChoice, { attributes: true });
-
-  window.onbeforeunload = () => {
-    mutationObserver.disconnect();
-  }
-</script>
 
 <form id="dropdown-list-form">
   <qc-dropdown-list

@@ -13471,10 +13471,10 @@
 		get(button).focus();
 	};
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[218, 16]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-selection-count"><!></div>`), DropdownList[FILENAME], [[222, 12]]);
-	var root_5 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[267, 16]]);
-	var root_6 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[307, 20]]);
+	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[222, 16]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-selection-count"><!></div>`), DropdownList[FILENAME], [[226, 12]]);
+	var root_5 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[271, 16]]);
+	var root_6 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[311, 20]]);
 
 	var root$2 = add_locations(template(`<div><div class="qc-dropdown-list-label-container"><label> <!></label> <!></div> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div> <!></div> <link rel="stylesheet">`, 1), DropdownList[FILENAME], [
 		[
@@ -13483,13 +13483,13 @@
 			[
 				[204, 4, [[207, 8]]],
 				[
-					231,
+					235,
 					4,
-					[[258, 8, [[305, 12]]]]
+					[[262, 8, [[309, 12]]]]
 				]
 			]
 		],
-		[316, 0]
+		[320, 0]
 	]);
 
 	function DropdownList($$anchor, $$props) {
@@ -13908,7 +13908,13 @@
 
 		template_effect(() => {
 			set_class(div, 1, `qc-textfield-container ${get(widthClass)}`);
-			set_class(label_1, 1, clsx(disabled() && "qc-disabled"));
+
+			set_class(label_1, 1, clsx([
+				"qc-label",
+				"qc-label-bold",
+				disabled() && "qc-disabled"
+			]));
+
 			set_text(text$1, `${label() ?? ''} `);
 
 			set_class(div_3, 1, clsx([
