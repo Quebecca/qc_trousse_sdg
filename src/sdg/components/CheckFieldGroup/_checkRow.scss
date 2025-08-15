@@ -83,7 +83,10 @@
 .qc-selection-button {
   @extend %check-row;
   @include qc-formcontrol-box();
-
+  width: 100%;
+  [inline]#{&} {
+    width: auto;
+  }
   input[type="radio"],
   input[type="checkbox"] {
     min-width: token-value(spacer, sm);

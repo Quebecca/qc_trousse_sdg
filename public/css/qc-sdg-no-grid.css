@@ -2160,6 +2160,7 @@ qc-search-bar {
   z-index: 10;
   background: transparent;
   border: 0;
+  width: 100%;
   padding: var(--qc-spacer-sm);
 }
 .qc-selection-button::before {
@@ -2175,6 +2176,9 @@ qc-search-bar {
 }
 .qc-selection-button:has(input:focus)::before, .qc-selection-button:focus::before, .qc-selection-button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
+}
+.qc-selection-button [inline].qc-selection-button {
+  width: auto;
 }
 .qc-selection-button input[type=radio],
 .qc-selection-button input[type=checkbox] {
