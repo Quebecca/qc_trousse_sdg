@@ -6,6 +6,6 @@
   margin: 0;
 }
 
-.qc-dropdown-list-single-selected {
+li[aria-selected="true"] {
   background-color: token-value(color, blue, pale) !important;
 }

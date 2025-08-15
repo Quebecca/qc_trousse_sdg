@@ -11,8 +11,8 @@
 }}"/>
 
 <script>
-
     import Alert from "./Alert.svelte";
+    import {Utils} from "../utils";
 
     const props = $props();
 
@@ -22,3 +22,4 @@
     {...props}
     slotContent = {`<slot />`}
  />
+<link rel='stylesheet' href='{Utils.cssPath}'>

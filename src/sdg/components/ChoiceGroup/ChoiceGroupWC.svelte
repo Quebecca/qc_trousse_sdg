@@ -16,6 +16,8 @@
 <script>
     import ChoiceGroup from "./ChoiceGroup.svelte";
     import {updateInput} from "../Checkbox/updateInput.svelte";
+    import {Utils} from "../utils";
+
     let {
         name,
         legend,
@@ -44,4 +46,4 @@
 >
     <slot/>
 </ChoiceGroup>
-
+<link rel='stylesheet' href='{Utils.cssPath}'>

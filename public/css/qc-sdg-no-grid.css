@@ -170,13 +170,13 @@
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
-  --qc-size-max-width-sm: 6.3rem;
-  --qc-size-max-width-md: 15.6rem;
-  --qc-size-max-width-lg: 24.9rem;
-  --qc-size-max-width-xl: 52.8rem;
-  --qc-size-max-width-xxl: 82.5rem;
-  --qc-size-input-max-width: var(--qc-size-max-width-lg);
-  --qc-size-textarea-max-width: var(--qc-size-max-width-xl);
+  --qc-size-max-width-xs: 6.3rem;
+  --qc-size-max-width-sm: 15.6rem;
+  --qc-size-max-width-md: 24.9rem;
+  --qc-size-max-width-lg: 52.8rem;
+  --qc-size-max-width-xl: 82.5rem;
+  --qc-size-input-max-width: var(--qc-size-max-width-md);
+  --qc-size-textarea-max-width: var(--qc-size-max-width-lg);
   --qc-size-textarea-min-height: 10.8rem;
   --qc-size-search-bar-max-width: 64rem;
   --qc-grid-gutter: 32px;
@@ -1916,6 +1916,8 @@ qc-search-bar {
 .qc-dropdown-list-checkbox, qc-choice-group label,
 qc-checkbox label {
   display: flex;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
   align-items: start;
   margin: 0;
   cursor: pointer;
@@ -2007,7 +2009,7 @@ qc-checkbox label input[type=checkbox]:checked {
   background: transparent;
   border: 0;
   padding: var(--qc-spacer-sm);
-  width: 100%;
+  min-width: 100%;
 }
 [tiled] label::before {
   position: absolute;
@@ -2043,7 +2045,7 @@ qc-checkbox label input[type=checkbox]:checked {
   border-color: var(--qc-color-grey-light);
 }
 [tiled][inline] label {
-  width: auto;
+  min-width: auto;
 }
 
 .qc-tile {
@@ -2068,7 +2070,9 @@ qc-checkbox label input[type=checkbox]:checked {
 [compact] input[type=radio],
 [compact] input[type=checkbox],
 [tiled] input[type=radio],
-[tiled] input[type=checkbox] {
+[tiled] input[type=checkbox],
+qc-select input[type=radio],
+qc-select input[type=checkbox] {
   min-width: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-sm);
   max-width: var(--qc-spacer-sm);
@@ -2369,6 +2373,8 @@ qc-textfield textarea + .qc-textfield-charcount {
 
 .qc-switch {
   display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
   margin: 0;
   gap: var(--qc-spacer-sm);
   position: relative;
@@ -2456,8 +2462,9 @@ qc-textfield textarea + .qc-textfield-charcount {
   padding-left: var(--qc-spacer-xs);
   padding-right: var(--qc-spacer-xs);
   flex-grow: 1;
-  justify-items: center;
-  align-items: center;
+}
+.qc-dropdown-list-multiple label input[type=checkbox] {
+  margin-top: 0;
 }
 .qc-dropdown-list-multiple .qc-check-row {
   height: 100%;
@@ -2469,7 +2476,7 @@ qc-textfield textarea + .qc-textfield-charcount {
   margin: 0;
 }
 
-.qc-dropdown-list-single-selected {
+li[aria-selected=true] {
   background-color: var(--qc-color-blue-pale) !important;
 }
 
@@ -2603,20 +2610,24 @@ qc-textfield textarea + .qc-textfield-charcount {
   transform: rotate(180deg);
 }
 
-.qc-textfield-container-xs {
-  max-width: var(--qc-spacer-input-xs);
+.qc-dropdown-list-container {
+  margin-bottom: 3.2rem;
 }
-.qc-textfield-container-sm {
-  max-width: var(--qc-spacer-input-sm);
+
+.qc-dropdown-list-container-xs {
+  max-width: var(--qc-size-max-width-xs);
 }
-.qc-textfield-container-md {
-  max-width: var(--qc-spacer-input-md);
+.qc-dropdown-list-container-sm {
+  max-width: var(--qc-size-max-width-sm);
 }
-.qc-textfield-container-lg {
-  max-width: var(--qc-spacer-input-lg);
+.qc-dropdown-list-container-md {
+  max-width: var(--qc-size-max-width-md);
 }
-.qc-textfield-container-xl {
-  max-width: var(--qc-spacer-input-xl);
+.qc-dropdown-list-container-lg {
+  max-width: var(--qc-size-max-width-lg);
+}
+.qc-dropdown-list-container-xl {
+  max-width: var(--qc-size-max-width-xl);
 }
 
 .qc-dropdown-list-label-container {

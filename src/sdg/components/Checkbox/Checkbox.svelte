@@ -8,24 +8,31 @@
         qcCheckoxContext = getContext("qc-checkbox");
 
     let {
+        id,
+        name,
+        value,
+        description,
         required = $bindable(false),
+        disabled,
         compact,
+        checked = $bindable(false),
         invalid = $bindable(false),
         invalidText,
         children,
         onchange,
         labelElement,
-        input
+        input,
+        ...rest
     } = $props();
 
-    let label = $state(),
+    let label = $state(rest.label),
         rootElement = $state()
     ;
 
     onMount(() => {
         if (qcCheckoxContext) return;
-        labelElement = rootElement.querySelector('label')
-        input = rootElement.querySelector('input')
+        labelElement = rootElement?.querySelector('label')
+        input = rootElement?.querySelector('input')
     })
 
     $effect(() => {
@@ -36,20 +43,68 @@
 
     $effect(_ => updateInput(input, required, invalid))
 
+    let checkboxInput = $state();
+    let usedId = $derived(id ?? name + value + Math.random().toString(36));
+
+    export function focus() {
+        checkboxInput?.focus();
+    }
+
+    export function closest(tag) {
+        return checkboxInput?.closest(tag);
+    }
 </script>
 
-<div class={[
+{#snippet checkboxRow()}
+    <label
+            class={"qc-dropdown-list-checkbox"}
+            for={usedId + "-input"}
+            {compact}
+    >
+        <input
+                id={usedId + "-input"}
+                type="checkbox"
+                {value}
+                {name}
+                {disabled}
+                bind:checked
+                bind:this={checkboxInput}
+                aria-required = {required}
+                aria-invalid={invalid}
+                onchange={onchange}
+                {...Utils.computeFieldsAttributes("checkbox", rest)}
+        />
+        <span class="qc-check-text">
+            <span class="qc-check-label">
+                {label}
+                {#if required}
+                    <span class="qc-required">*</span>
+                {/if}
+            </span>
+            {#if description}
+                <span class="qc-check-description">{@html description}</span>
+            {/if}
+        </span>
+    </label>
+{/snippet}
+
+
+{#if children}
+    <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
     ]}
-     {compact}
-     bind:this={rootElement}
-     {onchange}
->
-    {@render children?.()}
-    <FormError {invalid}
-               {invalidText}
-               {label}
-    />
-</div>
-<link rel='stylesheet' href='{Utils.cssPath}'>
+         {compact}
+         bind:this={rootElement}
+         {onchange}
+    >
+        {@render children?.()}
+        <FormError {invalid}
+                   {invalidText}
+                   {label}
+        />
+    </div>
+
+{:else}
+    {@render checkboxRow()}
+{/if}

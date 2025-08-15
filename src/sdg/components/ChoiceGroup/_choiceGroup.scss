@@ -2,6 +2,7 @@
 
 %check-row {
   display: flex;
+  max-width: fit-content;
   align-items: start;
   margin: 0;
   cursor: pointer;
@@ -79,13 +80,11 @@ qc-checkbox {
   }
 }
 
-
 [tiled] {
   label {
-    //@extend %check-row;
     @include qc-formcontrol-box();
     padding: token-value(spacer, sm);
-    width: 100%;
+    min-width: 100%;
 
     input[type="radio"],
     input[type="checkbox"] {
@@ -114,13 +113,12 @@ qc-checkbox {
       border-color: token-value(color, grey, light);
     }
   }
+
   &[inline] label {
-    width: auto;
+    min-width: auto;
   }
 
 }
-
-
 
 .qc-tile {
   display: flex;
@@ -140,7 +138,8 @@ qc-checkbox {
 }
 
 [compact],
-[tiled] {
+[tiled],
+qc-select {
   input[type="radio"],
   input[type="checkbox"] {
     min-width: token-value(spacer, sm);

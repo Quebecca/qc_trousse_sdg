@@ -85,7 +85,12 @@ export class Utils {
      * @returns {boolean} If the current node or one of its children is currently in focus
      */
     static componentIsActive(node) {
-        return node.contains(document.activeElement);
+        if (!node) {
+            return false;
+        }
+
+        const root = node.getRootNode();
+        return node.contains(root.activeElement);
     }
 
     /**
@@ -101,4 +106,33 @@ export class Utils {
         return prefix + "-" + (Math.floor(Math.random() * 90000) + 10000);
     }
 
+
+    /**
+     * Returns the word in lowercase and with accented letters replaced by their non-accented counterparts
+     * @param str
+     * @returns {string}
+     */
+    static cleanupSearchPrompt(str) {
+        let word = String(str)
+
+        const replaceAccents = (str, search, replace) => {
+            return str.replaceAll(new RegExp(search, 'gi'), replace);
+        }
+
+        // Supprime les accents.
+        word = replaceAccents(word, /[éèêë]/gi, 'e');
+        word = replaceAccents(word, /[àäâ]/gi, 'a');
+        word = replaceAccents(word, /[ùûü]/gi, 'u');
+        word = replaceAccents(word, /[ïî]/gi, 'i');
+        word = replaceAccents(word, /[ôö]/gi, 'i');
+        word = replaceAccents(word, /[œ]/gi, 'oe');
+        word = replaceAccents(word, /[æ]/gi, 'ae');
+
+        // Remplace les caractères spéciaux par des espaces.
+        word = word.replaceAll(/[-_—–]/gi, ' ');
+        word = word.replaceAll(/’/gi, "'");
+
+        // Convertit le mot en minuscules.
+        return word.toLowerCase();
+    }
 }
