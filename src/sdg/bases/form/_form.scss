@@ -7,7 +7,16 @@ select {
   font: inherit;
 }
 
-select {
+label {
+  @include content-font('md', 'bold');
+  display: inline-block;
+}
+
+legend {
+  padding: 0;
+}
+
+qc-select select {
   appearance: none;
 
   color: token-value(color, text, primary);
@@ -26,13 +35,4 @@ select {
     color: token-value(color, grey, medium);
     cursor: not-allowed;
   }
-}
-
-label {
-  @include content-font('md', 'bold');
-  display: inline-block;
-}
-
-legend {
-  padding: 0;
 }

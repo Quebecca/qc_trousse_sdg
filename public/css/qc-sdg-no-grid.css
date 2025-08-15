@@ -534,7 +534,18 @@ select {
   font: inherit;
 }
 
-select {
+label {
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
+  display: inline-block;
+}
+
+legend {
+  padding: 0;
+}
+
+qc-select select {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -551,7 +562,7 @@ select {
   background-repeat: no-repeat;
   background-position: right var(--qc-spacer-xs) top 50%;
 }
-select::before {
+qc-select select::before {
   position: absolute;
   display: block;
   content: "";
@@ -559,28 +570,17 @@ select::before {
   inset: 0;
   z-index: -5;
 }
-select:has(input:focus), select:focus, select:has(textarea:focus) {
+qc-select select:has(input:focus), qc-select select:focus, qc-select select:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-select:has(input:focus)::before, select:focus::before, select:has(textarea:focus)::before {
+qc-select select:has(input:focus)::before, qc-select select:focus::before, qc-select select:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
-select:disabled {
+qc-select select:disabled {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cg id='Icône' transform='rotate(180 8 8) translate(0 -0.001)'%3E%3Crect id='Support_à_icône' data-name='Support à icône' width='16' height='16' transform='translate(0 0.001)' fill='none'/%3E%3Cpath id='icone_chevron_bas' data-name='icone chevron bas' d='M20,2478.1a.392.392,0,0,0,.123.283.437.437,0,0,0,.6,0L28,2471.466l7.281,6.917a.437.437,0,0,0,.6,0,.387.387,0,0,0,0-.566l-7.579-7.2a.437.437,0,0,0-.6,0l-7.579,7.2a.389.389,0,0,0-.123.283Z' transform='translate(-20.001 -2466.499)' fill='%238893A2'/%3E%3C/g%3E%3C/svg%3E%0A");
   background-color: var(--qc-color-grey-pale);
   color: var(--qc-color-grey-medium);
   cursor: not-allowed;
-}
-
-label {
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-bold);
-  display: inline-block;
-}
-
-legend {
-  padding: 0;
 }
 
 h1, .qc-h1 {
