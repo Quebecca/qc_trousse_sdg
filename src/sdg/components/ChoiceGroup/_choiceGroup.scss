@@ -120,8 +120,6 @@ qc-checkbox {
 
 }
 
-
-
 .qc-tile {
   display: flex;
   flex-direction: column;
@@ -140,7 +138,8 @@ qc-checkbox {
 }
 
 [compact],
-[tiled] {
+[tiled],
+qc-select {
   input[type="radio"],
   input[type="checkbox"] {
     min-width: token-value(spacer, sm);

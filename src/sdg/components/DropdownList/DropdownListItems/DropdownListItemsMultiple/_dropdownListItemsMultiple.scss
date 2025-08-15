@@ -9,8 +9,10 @@
     padding-right: token-value(spacer, xs);
 
     flex-grow: 1;
-    justify-items: center;
-    align-items: center;
+
+    input[type="checkbox"] {
+      margin-top: 0;
+    }
   }
 
   .qc-check-row {

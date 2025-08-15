@@ -184,7 +184,7 @@
                     dropdownListItem="true"
                     compact="true"
                     checkbox-onkeydown={(e) => handleKeyDown(e, index)}
-                    handleChange={(e) => handleChange(e, item.label, item.value)}
+                    onchange={(e) => handleChange(e, item.label, item.value)}
                 />
             </li>
         {/each}

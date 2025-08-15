@@ -59,3 +59,4 @@
     >
     <slot />
 </Checkbox>
+<link rel='stylesheet' href='{Utils.cssPath}'>

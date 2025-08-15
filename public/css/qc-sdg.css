@@ -1993,7 +1993,9 @@ qc-checkbox label input[type=checkbox]:checked {
 [compact] input[type=radio],
 [compact] input[type=checkbox],
 [tiled] input[type=radio],
-[tiled] input[type=checkbox] {
+[tiled] input[type=checkbox],
+qc-select input[type=radio],
+qc-select input[type=checkbox] {
   min-width: var(--qc-spacer-sm);
   min-height: var(--qc-spacer-sm);
   max-width: var(--qc-spacer-sm);
@@ -2391,8 +2393,9 @@ qc-textfield textarea + .qc-textfield-charcount {
   padding-left: var(--qc-spacer-xs);
   padding-right: var(--qc-spacer-xs);
   flex-grow: 1;
-  justify-items: center;
-  align-items: center;
+}
+.qc-dropdown-list-multiple label input[type=checkbox] {
+  margin-top: 0;
 }
 .qc-dropdown-list-multiple .qc-check-row {
   height: 100%;
