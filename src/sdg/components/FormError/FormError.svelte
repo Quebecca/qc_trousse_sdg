@@ -1,13 +1,23 @@
 <script>
 import Icon from "../Icon/Icon.svelte";
-import { tick } from "svelte";
+import {onMount, tick} from "svelte";
+import {Utils} from "../utils";
 
-let {invalid , invalidText, id} = $props();
+let {invalid ,
+    invalidText,
+    id = $bindable(),
+    extraClasses = [],
+    rootElement = $bindable(),
+} = $props();
 
+onMount(() => {
+    id = Utils.generateId('qc-form-error')
+})
 </script>
 {#if invalid}
 <div {id}
-     class="qc-form-error"
+     bind:this={rootElement}
+     class={['qc-form-error', ...extraClasses]}
      role="alert">
     {#await tick()}
     <!-- svelte-ignore block_empty -->

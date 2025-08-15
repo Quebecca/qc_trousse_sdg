@@ -4,22 +4,19 @@
         text,
         required = false,
         compact = false,
-        disabled = false,
-        bold = false
+        bold = false,
+        rootElement = $bindable()
     } = $props();
 </script>
 
 <label
+    bind:this={rootElement}
     for={forId}
     class={[
         "qc-label",
-        compact && "qc-label-compact",
-        disabled && "qc-disabled",
-        bold && "qc-label-bold"
+        compact && "qc-compact",
+        bold && "qc-bold"
   ]}
 >
-    {@html text}
-    {#if required}
-        <span class="qc-required" aria-hidden="true">*</span>
-    {/if}
+    {@html text}{#if required}<span class="qc-required" aria-hidden="true">*</span>{/if}
 </label>

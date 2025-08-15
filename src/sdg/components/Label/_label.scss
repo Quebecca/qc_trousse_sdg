@@ -1,14 +1,20 @@
-@use "../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 
 .qc-label {
   font-weight: token-value(font weight content medium);
   display: block;
+  margin-bottom: rem(4);
 
-  &.qc-label-compact {
+  &.qc-compact {
     font-size: token-value(font size sm);
   }
 
-  &.qc-label-bold {
+  &.qc-bold {
     font-weight: token-value(font weight content bold);
+  }
+
+  &:has(~ :disabled) {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
   }
 }

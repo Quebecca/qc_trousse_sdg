@@ -1,34 +1,46 @@
 @use "qc-sdg-lib" as *;
 
-qc-textfield {
-  display: block;
-  width: 100%;
-}
-
-.qc-label {
-  margin-bottom: rem(4);
-}
-
+qc-textfield,
 .qc-textfield {
-  @extend %qc-formcontrol-box;
-  position: relative;
+  display: block;
+  margin-bottom: rem(32);
 
-  &::before {
-    border: 1px solid token-value(color formfield border);
+  .qc-description {
+    @include content-font(sm);
+    color: token-value(color blue dark);
+    &:has(~ :disabled) {
+      color: token-value(color, grey, regular);
+    }
   }
+}
 
-  input[type=text],
-  textarea {
+@mixin size() {
+  [size=sm] > & { max-width: rem(63); }
+  [size=md] > & { max-width: rem(156); }
+  [size=lg] > & { max-width: rem(249); }
+  [size=xl] > & { max-width: rem(528); }
+  [size=xxl] > & { max-width: rem(825); }
+}
+
+input,
+textarea,
+.qc-textfield-charcount {
+  @include size();
+}
+
+input,
+textarea {
+  .qc-textfield &,
+  qc-textfield & {
     display: block;
+    width: 100%;
     position: relative;
     color: token-value(color text primary);
-    width: 100%;
-    background: transparent;
-    padding: rem(8) rem(8);
-    border: 0;
+    padding: rem(8);
     text-overflow: ellipsis;
     overflow: hidden;
     margin-top: rem(4);
+    border: 1px solid token-value(color formfield border);
 
     &::placeholder {
       color: token-value(color grey medium);
@@ -37,93 +49,53 @@ qc-textfield {
 
     &:focus,
     &:focus-visible {
-      outline: none;
+      outline: 2px solid token-value(color formfield focus outline);
+      border: 2px solid token-value(color formfield focus border);
+      padding: rem(7);
       &::placeholder {
-        color: transparent;
+        //color: transparent;
       }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: token-value(color grey pale);
+      border: 1px solid token-value(color, grey, regular);
     }
   }
 
-  textarea {
+  [invalid] > & {
+    border-color: token-value(color, red, regular);
+    border-width: 2px;
+    padding: rem(7);
+  }
+
+}
+
+textarea {
+  .qc-textfield &,
+  qc-textfield & {
     min-height: rem(108);
     resize: vertical;
   }
-
-  &--sm { max-width: rem(63); }
-  &--md { max-width: rem(156); }
-  &--lg { max-width: rem(249); }
-  &--xl { max-width: rem(528); }
-  &--xxl { max-width: rem(825); }
-
-  &.error {
-    &::before {
-      border-color: token-value(color, red, regular);
-      border-width: 2px;
-    }
-  }
 }
 
-.qc-textfield-container {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: rem(32);
-
-  &.qc-disabled {
-    label {
-      color: token-value(color, grey, regular);
-      cursor: not-allowed;
-    }
-
-    .qc-textfield-description {
-      color: token-value(color, grey, regular);
-    }
-  }
-}
-
-.qc-textfield-required {
-  color: token-value(color, red, regular);
-  margin-left: rem(4);
-}
-
-.qc-textfield-description {
+.qc-description {
   font-size: token-value(font, size, sm);
   color: token-value(color blue dark);
   line-height: rem(20);
-}
-
-.qc-textfield.disabled {
-  &::before {
-    border: 1px solid token-value(color, grey, regular);
-    background-color: token-value(color, grey, pale);
-  }
-
-  input[type="text"],
-  textarea {
-    color: token-value(color, grey, medium);
-    cursor: not-allowed;
-  }
 }
 
 .qc-textfield-charcount {
+  @include content-font(sm);
   text-align: right;
   margin-top: rem(4);
   color: token-value(color blue dark);
-  font-size: token-value(font, size, sm);
-  line-height: rem(20);
-
-  &.max-reached {
+  &.qc-max-reached {
     color: token-value(color, red, regular);
-    font-weight: bold;
+    font-weight: token-value(font weight content bold);
   }
 }
 
-.qc-textfield-row {
-  display: flex;
-  gap: rem(32);
 
-  > qc-textfield {
-    display: block;
-    width: auto;
-  }
-}
 

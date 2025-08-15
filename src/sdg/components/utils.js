@@ -96,4 +96,9 @@ export class Utils {
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    static generateId(prefix = '') {
+        return prefix + "-" + (Math.floor(Math.random() * 90000) + 10000);
+    }
+
 }

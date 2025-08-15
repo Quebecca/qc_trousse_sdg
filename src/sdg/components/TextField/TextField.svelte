@@ -1,33 +1,35 @@
 <script>
     import { Utils } from "../utils";
-    import FormError from "../FormError/FormError.svelte";
     import Label from "../Label/Label.svelte";
+    import {getContext} from "svelte";
+    import FormError from "../FormError/FormError.svelte";
 
     const lang = Utils.getPageLanguage();
 
     let {
-        name = '',
         label = '',
-        placeholder = '',
-        value = $bindable(''),
         size = 'xl',
-        disabled = false,
-        required = false,
-        description = '',
+        required = $bindable(false),
+        description,
         maxlength = null,
+        value = "",
         invalid = $bindable(false),
         invalidText = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.',
-        display = 'inline',
-        ...rest
+        describedBy = $bindable([]),
+        labelElement = $bindable(),
+        formErrorElement = $bindable(),
+        descriptionElement = $bindable(),
+        maxlengthElement = $bindable(),
+        input,
+        children
     } = $props();
+    $inspect("svelte value", value)
+    const webComponentMode = getContext('webComponentMode');
 
-    if (['inline', 'area'].includes(display) === false) {
-        display = 'inline';
-    }
+    let errorId = $state(),
+        charCountText = $state();
 
-    let sizeClass = $derived(`qc-textfield--${size}`);
-    let charCountText = $derived(() => {
-
+    $effect(() => {
         if (!maxlength) {
             return;
         }
@@ -35,99 +37,86 @@
         const remaining = maxlength - currentLength;
         const over = Math.abs(remaining);
         const s = over > 1 ? 's' : '';
+        charCountText = remaining >= 0
+                        ? lang === 'fr'
+                            ? `${remaining} caractère${s} restant${s}`
+                            : `${remaining} character${s} remaining`
+                        :   lang === 'fr'
+                            ? `${over} caractère${s} en trop`
+                            : `${over} character${s} over the limit`
 
-        if (remaining >= 0) {
-            return lang === 'fr'
-                ? `${remaining} caractère${s} restant${s}`
-                : `${remaining} character${s} remaining`;
-        }
-
-        return lang === 'fr'
-            ? `${over} caractère${s} en trop`
-            : `${over} character${s} over the limit`;
     });
 
-    function clearInvalid() {
-        invalid = false;
-    }
-
     // Génération des ID pour le aria-describedby
-    const uid = Math.random().toString(36).substring(2, 10);
-    const inputId = `textfield-${uid}`;
-    const descriptionId = `description-${uid}`;
-    const errorId = `error-${uid}`;
-    const charCountId = `charcount-${uid}`;
+    const descriptionId = Utils.generateId('description-'),
+          charCountId = Utils.generateId('charcount-');
+    ;
 
-    let describedBy = $derived(
-        [
-            invalid && errorId,
-            description && descriptionId,
-            maxlength && charCountId,
-        ].filter(Boolean)
-    );
-
+    $effect(() => {
+        if (!input) return;
+        input.setAttribute(
+            "aria-describedby",
+            [
+                description && descriptionId,
+                invalid && errorId,
+                maxlength && charCountId,
+            ].filter(Boolean)
+            .join(' ')
+        )
+    });
 </script>
-<div class={[
-    'qc-textfield-container',
-     disabled && "qc-disabled"
-    ]}>
+
+{#snippet textfield()}
+
     {#if label}
         <Label
-            forId={inputId}
-            text={label}
-            {required}
-            {disabled}
-            bold
-        />
+                {required}
+                disabled={input?.disabled}
+                text={label}
+                forId={input?.id}
+                bind:rootElement={labelElement}
+            />
     {/if}
 
     {#if description}
-        <div id={descriptionId} class="qc-textfield-description">{description}</div>
-    {/if}
-
-    <div class={`qc-textfield ${sizeClass} ${invalid ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
-        {#if display === 'area'}
-            <textarea
-                  id={inputId}
-                  name={name}
-                  aria-describedby={describedBy.join(' ')}
-                  {placeholder}
-                  bind:value
-                  {disabled}
-                  aria-required={required}
-                  aria-invalid={invalid}
-                  oninput={clearInvalid}
-                  {...rest}
-            ></textarea>
-        {:else}
-            <input
-                id={inputId}
-                name={name}
-                aria-describedby={describedBy.join(' ')}
-                type="text"
-                {placeholder}
-                bind:value
-                {disabled}
-                aria-required={required}
-                aria-invalid={invalid}
-                oninput={clearInvalid}
-                {...rest}
-            />
-        {/if}
-    </div>
-
-    {#if maxlength !== null}
         <div
-            id={charCountId}
-            class={`qc-textfield-charcount ${(maxlength && value.length > maxlength) && 'max-reached'}`}
-            aria-live="polite"
-        >
-            {charCountText()}
+            bind:this={descriptionElement}
+            id={descriptionId}
+            class="qc-description">
+            {@html description}
         </div>
     {/if}
 
+    {@render children()}
 
-    {#if invalid}
-        <FormError id={errorId} {invalid} {invalidText} />
+    {#if maxlength !== null}
+        <div
+            bind:this={maxlengthElement}
+            id={charCountId}
+            class={[
+                'qc-textfield-charcount',
+                (maxlength && value.length > maxlength) && 'qc-max-reached'
+            ]}
+            aria-live="polite"
+        >
+            {@html charCountText}
+        </div>
     {/if}
-</div>
+
+    <FormError {invalid}
+               {invalidText}
+               bind:id={errorId}
+               extraClasses={['qc-xs-mt']}
+               bind:rootElement={formErrorElement}
+    />
+{/snippet}
+{#if webComponentMode}
+    {@render textfield()}
+{:else}
+    <div class="qc-textfield"
+         {size}
+         {invalid}
+    >
+        {@render textfield()}
+    </div>
+{/if}
