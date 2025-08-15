@@ -48,6 +48,3 @@
         {/if}
     </span>
 </div>
-
-<link rel='stylesheet' href='{Utils.cssPath}'>
-

@@ -80,4 +80,3 @@ le denaturaliser.-->
     </div>
   </div>
 </div>
-<link rel='stylesheet' href='{Utils.cssPath}'>

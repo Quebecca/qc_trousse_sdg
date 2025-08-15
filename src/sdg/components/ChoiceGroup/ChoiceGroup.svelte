@@ -1,6 +1,7 @@
 <script>
     import Fieldset from "../Fieldset/Fieldset.svelte";
     import {Utils} from "../utils";
+
     const lang = Utils.getPageLanguage();
     let {
         invalid = $bindable(false),
@@ -24,5 +25,3 @@
 >
     {@render children()}
 </Fieldset>
-<link rel='stylesheet' href='{Utils.cssPath}'>
-

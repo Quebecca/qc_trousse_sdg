@@ -25,6 +25,7 @@
 
 <script>
     import PivFooter from "./PivFooter.svelte";
+    import { Utils } from "../utils"
 
     let {
        self,
@@ -40,3 +41,4 @@
         <slot name="copyright" />
     {/snippet}
 </PivFooter>
+<link rel='stylesheet' href='{Utils.cssPath}'>

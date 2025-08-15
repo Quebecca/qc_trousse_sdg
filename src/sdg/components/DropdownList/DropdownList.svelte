@@ -316,5 +316,3 @@
 
     <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} />
 </div>
-
-<link rel='stylesheet' href='{Utils.cssPath}'>

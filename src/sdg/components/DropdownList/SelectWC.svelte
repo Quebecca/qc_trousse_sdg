@@ -19,6 +19,7 @@
 <script>
     import {onDestroy, onMount} from "svelte";
     import DropdownList from "./DropdownList.svelte";
+    import {Utils} from "../utils";
 
     let {
         invalid = $bindable(false),
@@ -99,4 +100,4 @@
 </div>
 
 <DropdownList label={label?.innerHTML} {items} bind:value {invalid} {multiple} {...rest} />
-
+<link rel='stylesheet' href='{Utils.cssPath}'>

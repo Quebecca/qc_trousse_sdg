@@ -64,6 +64,3 @@
         </div>
     </div>
 {/if}
-
-<link rel='stylesheet'
-      href='{Utils.cssPath}'>
