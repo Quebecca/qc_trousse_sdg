@@ -98,16 +98,23 @@
 
 
 {#if children}
-    {@render children()}
-    <FormError {invalid} {invalidText} />
+    <div class={[
+        "qc-checkbox-single",
+        invalid && "qc-checkbox-single-invalid"
+    ]}
+         {onchange}
+    >
+        {@render children()}
+        <FormError {invalid} {invalidText} />
+    </div>
 {:else}
     {#if parentGroup}
         {@render checkboxRow()}
     {:else}
         <div class={[
-        "qc-checkbox-single",
-        invalid && "qc-checkbox-single-invalid"
-    ]}
+            "qc-checkbox-single",
+            invalid && "qc-checkbox-single-invalid"
+        ]}
      {compact}
      bind:this={rootElement}
      {onchange}

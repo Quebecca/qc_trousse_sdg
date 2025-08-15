@@ -159,7 +159,7 @@
 </script>
 
 {#if displayedItems.length > 0}
-    <ul bind:this={self} class="qc-compact">
+    <ul bind:this={self}>
         {#each displayedItems as item, index}
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

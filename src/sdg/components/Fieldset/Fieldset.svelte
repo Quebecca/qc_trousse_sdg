@@ -18,7 +18,6 @@
         elementsGap = "sm",
         maxWidth = "fit-content",
         children,
-        slotContent
     } = $props();
 
     let groupSelection = $state(),

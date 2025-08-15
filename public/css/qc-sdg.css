@@ -1839,6 +1839,8 @@ qc-search-bar {
 .qc-dropdown-list-checkbox, qc-choice-group label,
 qc-checkbox label {
   display: flex;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
   align-items: start;
   margin: 0;
   cursor: pointer;
@@ -1932,7 +1934,7 @@ qc-checkbox label input[type=checkbox]:checked {
   background: transparent;
   border: 0;
   padding: var(--qc-spacer-sm);
-  width: 100%;
+  min-width: 100%;
 }
 [tiled] label::before {
   position: absolute;
@@ -1968,7 +1970,7 @@ qc-checkbox label input[type=checkbox]:checked {
   border-color: var(--qc-color-grey-light);
 }
 [tiled][inline] label {
-  width: auto;
+  min-width: auto;
 }
 
 .qc-tile {
