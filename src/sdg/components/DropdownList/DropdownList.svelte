@@ -174,7 +174,7 @@
     $effect(() => {
         if (searchText.length > 0) {
             displayedItems = items.filter(
-                (item) => item.label.toLowerCase().includes(searchText.toLowerCase())
+                (item) => Utils.cleanupSearchPrompt(item.label).includes(Utils.cleanupSearchPrompt(searchText))
             );
         } else {
             displayedItems = items;

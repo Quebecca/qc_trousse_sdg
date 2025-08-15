@@ -101,4 +101,40 @@ export class Utils {
         return prefix + "-" + (Math.floor(Math.random() * 90000) + 10000);
     }
 
+
+    /**
+     * Returns the word in lowercase and with accented letters replaced by their non-accented counterparts
+     * @param str
+     * @returns {string}
+     */
+    static cleanupSearchPrompt(str) {
+        let word = String(str)
+
+        // Supprime les accents.
+        word = replaceAccents(word, /[éèêë]/gi, 'e');
+        word = replaceAccents(word, /[àäâ]/gi, 'a');
+        word = replaceAccents(word, /[ùûü]/gi, 'u');
+        word = replaceAccents(word, /[ïî]/gi, 'i');
+        word = replaceAccents(word, /[ôö]/gi, 'i');
+        word = replaceAccents(word, /[œ]/gi, 'oe');
+        word = replaceAccents(word, /[æ]/gi, 'ae');
+
+        // Remplace les caractères spéciaux par des espaces.
+        word = word.replaceAll(/[-_—–]/gi, ' ');
+        word = word.replaceAll(/’/gi, "'");
+
+        // Convertit le mot en minuscules.
+        return word.toLowerCase();
+    }
+}
+
+/**
+ * Remplace les lettres accentuées par leur version non accentuée.
+ * @param {string} str La chaîne de caractères à traiter.
+ * @param {string} search Les caractères accentués à rechercher.
+ * @param {string} replace Le caractère de remplacement.
+ * @returns {string} La chaîne de caractères avec les accents remplacés.
+ */
+function replaceAccents(str, search, replace) {
+    return str.replaceAll(new RegExp(search, 'gi'), replace);
 }
