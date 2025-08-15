@@ -2308,6 +2308,8 @@ qc-textfield textarea + .qc-textfield-charcount {
 
 .qc-switch {
   display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
   margin: 0;
   gap: var(--qc-spacer-sm);
   position: relative;
