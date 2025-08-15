@@ -25,8 +25,14 @@
                 : []
         ),
         self = $state(),
-        listElements = $derived(self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : [])
+        listElements = $state()
     ;
+
+    $effect(() => {
+       if (displayedItems && displayedItems.length > 0) {
+           self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : []
+       }
+    });
 
     export function focusOnFirstElement() {
         if (listElements && listElements.length > 0) {

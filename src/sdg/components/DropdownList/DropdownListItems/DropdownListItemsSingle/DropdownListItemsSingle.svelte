@@ -12,10 +12,8 @@
         handlePrintableCharacter = () => {}
     } = $props();
 
-    let debugCounter = 1;
-
     let self = $state();
-    let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
+    let listElements = $state();
     let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
     let selectedElement = $derived.by(() => {
         if (selectedValue && listElements && listElements.length > 0) {
@@ -28,20 +26,25 @@
     let mouseDownElement = null;
     let hoveredElement = null;
 
-    $effect(() => {
-        console.log("effect", debugCounter++);
-        debugCounter++;
+    // $inspect(items, "items");
+    // $inspect(displayedItems, "displayedItems");
+    $inspect(listElements, "listElements");
 
+    $effect(() => {
+        if (displayedItems && displayedItems.length > 0) {
+            listElements = self ? Array.from(self.querySelectorAll("li")) : [];
+        }
+    })
+
+    $effect(() => {
         if (!selectedElement) {
             return;
         }
 
         if (previousElement && previousElement !== selectedElement) {
-            console.log("previousElement", previousElement.innerHTML);
             previousElement.classList.remove(selectedElementCLass);
         }
 
-        console.log("selectedElement", selectedElement.innerHTML);
         selectedElement.classList.add(selectedElementCLass);
         previousElement = selectedElement;
     });

@@ -85,6 +85,7 @@
     }
 
     function handleOuterEvent() {
+        console.log("outer event");
         if (!Utils.componentIsActive(instance)) {
             expanded = false;
         }
@@ -199,7 +200,7 @@
     });
 </script>
 
-<svelte:document onclick={handleOuterEvent} onkeydown={handleTab} />
+<svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
 <div class={`qc-textfield-container ${widthClass}`}>
     <div class="qc-dropdown-list-label-container">
         <!-- svelte-ignore a11y_click_events_have_key_events -->
