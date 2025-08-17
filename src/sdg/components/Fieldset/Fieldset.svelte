@@ -24,7 +24,7 @@
     let groupSelection = $state(),
         legendId = name
             ? "id_" + name
-            : "legend-" + Math.floor(Math.random() * 1000000 );
+            : Utils.generateId("legend");
 
     function chooseDivCLass(inline, tiled) {
         if (tiled) {
