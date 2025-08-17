@@ -89,6 +89,8 @@
             ].filter(Boolean)
             .join(' ')
         )
+        if (invalid) input.setAttribute('aria-invalid', invalid)
+        if (required) input.setAttribute('aria-required', required)
     })
 
 </script>

@@ -10115,10 +10115,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[109, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[120, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[111, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[122, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[143, 4]]);
+	var root_6$1 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[145, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10317,6 +10317,9 @@
 				invalid() && get(errorId),
 				maxlength() && charCountId
 			].filter(Boolean).join(' '));
+
+			if (invalid()) input().setAttribute('aria-invalid', invalid());
+			if (required()) input().setAttribute('aria-required', required());
 		});
 
 		var fragment_2 = comment();
