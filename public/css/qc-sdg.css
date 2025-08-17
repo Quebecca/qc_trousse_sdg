@@ -2421,11 +2421,53 @@ qc-textfield .qc-description:has(~ :disabled),
 .qc-textfield .qc-description:has(~ :disabled) {
   color: var(--qc-color-grey-regular);
 }
-input,
-textarea,
-.qc-textfield-charcount {
-  max-width: 15.6rem;
+.qc-textfield input, qc-textfield input,
+.qc-textfield textarea,
+qc-textfield textarea {
+  display: block;
+  width: 100%;
+  max-width: 24.9rem;
+  position: relative;
+  color: var(--qc-color-text-primary);
+  padding: 0.8rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top: 0.4rem;
+  border: 1px solid var(--qc-color-formfield-border);
 }
+.qc-textfield input::-moz-placeholder, qc-textfield input::-moz-placeholder, .qc-textfield textarea::-moz-placeholder, qc-textfield textarea::-moz-placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-textfield input::placeholder, qc-textfield input::placeholder,
+.qc-textfield textarea::placeholder,
+qc-textfield textarea::placeholder {
+  color: var(--qc-color-grey-medium);
+  font-weight: normal;
+}
+.qc-textfield input:focus, .qc-textfield input:focus-visible, qc-textfield input:focus, qc-textfield input:focus-visible,
+.qc-textfield textarea:focus,
+.qc-textfield textarea:focus-visible,
+qc-textfield textarea:focus,
+qc-textfield textarea:focus-visible {
+  outline: 2px solid var(--qc-color-formfield-focus-outline);
+  border: 2px solid var(--qc-color-formfield-focus-border);
+  padding: 0.7rem;
+}
+.qc-textfield input:disabled, qc-textfield input:disabled,
+.qc-textfield textarea:disabled,
+qc-textfield textarea:disabled {
+  cursor: not-allowed;
+  background-color: var(--qc-color-grey-pale);
+  border: 1px solid var(--qc-color-grey-regular);
+}
+[invalid] > input,
+[invalid] > textarea {
+  border-color: var(--qc-color-red-regular);
+  border-width: 2px;
+  padding: 0.7rem;
+}
+
 .qc-sm > input,
 .qc-sm > textarea,
 .qc-sm > .qc-textfield-charcount {
@@ -2531,52 +2573,6 @@ textarea,
   .qc-large-desktop-xxl > .qc-textfield-charcount {
     max-width: 82.5rem;
   }
-}
-
-.qc-textfield input, qc-textfield input,
-.qc-textfield textarea,
-qc-textfield textarea {
-  display: block;
-  width: 100%;
-  position: relative;
-  color: var(--qc-color-text-primary);
-  padding: 0.8rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: 0.4rem;
-  border: 1px solid var(--qc-color-formfield-border);
-}
-.qc-textfield input::-moz-placeholder, qc-textfield input::-moz-placeholder, .qc-textfield textarea::-moz-placeholder, qc-textfield textarea::-moz-placeholder {
-  color: var(--qc-color-grey-medium);
-  font-weight: normal;
-}
-.qc-textfield input::placeholder, qc-textfield input::placeholder,
-.qc-textfield textarea::placeholder,
-qc-textfield textarea::placeholder {
-  color: var(--qc-color-grey-medium);
-  font-weight: normal;
-}
-.qc-textfield input:focus, .qc-textfield input:focus-visible, qc-textfield input:focus, qc-textfield input:focus-visible,
-.qc-textfield textarea:focus,
-.qc-textfield textarea:focus-visible,
-qc-textfield textarea:focus,
-qc-textfield textarea:focus-visible {
-  outline: 2px solid var(--qc-color-formfield-focus-outline);
-  border: 2px solid var(--qc-color-formfield-focus-border);
-  padding: 0.7rem;
-}
-.qc-textfield input:disabled, qc-textfield input:disabled,
-.qc-textfield textarea:disabled,
-qc-textfield textarea:disabled {
-  cursor: not-allowed;
-  background-color: var(--qc-color-grey-pale);
-  border: 1px solid var(--qc-color-grey-regular);
-}
-[invalid] > input,
-[invalid] > textarea {
-  border-color: var(--qc-color-red-regular);
-  border-width: 2px;
-  padding: 0.7rem;
 }
 
 .qc-textfield textarea, qc-textfield textarea {
