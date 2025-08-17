@@ -32,7 +32,8 @@
         descriptionElement = $state(),
         maxlengthElement = $state(),
         value = $state(),
-        input = $state()
+        input = $state(),
+        textFieldRow = $state()
     ;
     onMount(() => {
         input = $host().querySelector('input,textarea');
@@ -44,6 +45,7 @@
             value = input.value;
             invalid = false;
         })
+        textFieldRow = input.closest('.qc-textfield-row');
     })
     $effect(() => {
         if (!input) return;
@@ -54,7 +56,12 @@
             input.before(descriptionElement);
         }
         if (invalid) {
-            input.after(formErrorElement);
+            if (textFieldRow) {
+                textFieldRow.appendChild(formErrorElement);
+            }
+            else {
+                input.after(formErrorElement);
+            }
         }
         if (maxlength) {
             input.after(maxlengthElement);

@@ -1,4 +1,5 @@
 @use "qc-sdg-lib" as *;
+@use "../Label/label" as *;
 
 qc-textfield,
 .qc-textfield {
@@ -11,6 +12,9 @@ qc-textfield,
     &:has(~ :disabled) {
       color: token-value(color, grey, regular);
     }
+  }
+  label {
+    @extend .qc-label
   }
 }
 
@@ -94,6 +98,25 @@ textarea {
   &.qc-max-reached {
     color: token-value(color, red, regular);
     font-weight: token-value(font weight content bold);
+  }
+}
+
+.qc-textfield-row {
+  display: flex;
+  gap: 0 rem(32);
+  flex-wrap: wrap;
+  margin-bottom: rem(32);
+
+  > qc-textfield {
+    display: block;
+    width: auto;
+  }
+  > .qc-form-error {
+    width: 100%;
+  }
+  qc-textfield,
+  .qc-textfield {
+    margin-bottom: 0;
   }
 }
 

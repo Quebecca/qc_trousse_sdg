@@ -145,7 +145,6 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
-	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -443,108 +442,6 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
-	/** @import { Snapshot } from './types' */
-
-	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @returns {Snapshot<T>}
-	 */
-	function snapshot(value, skip_warning = false) {
-
-		return clone(value, new Map(), '', empty);
-	}
-
-	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
-	 * @returns {Snapshot<T>}
-	 */
-	function clone(value, cloned, path, paths, original = null) {
-		if (typeof value === 'object' && value !== null) {
-			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
-			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var i = 0; i < value.length; i += 1) {
-					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths);
-					}
-				}
-
-				return copy;
-			}
-
-			if (get_prototype_of(value) === object_prototype) {
-				/** @type {Snapshot<any>} */
-				copy = {};
-				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key in value) {
-					// @ts-expect-error
-					copy[key] = clone(value[key], cloned, path, paths);
-				}
-
-				return copy;
-			}
-
-			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
-			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
-		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
-		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
-		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -1355,11 +1252,6 @@
 			var signal = effect(fn);
 			return signal;
 		}
-	}
-
-	/** @param {() => void | (() => void)} fn */
-	function inspect_effect(fn) {
-		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3882,39 +3774,6 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} [inspector]
-	 */
-	// eslint-disable-next-line no-console
-	function inspect(get_value, inspector = console.log) {
-		validate_effect();
-
-		let initial = true;
-
-		inspect_effect(() => {
-			/** @type {any} */
-			var value = UNINITIALIZED;
-
-			// Capturing the value might result in an exception due to the inspect effect being
-			// sync and thus operating on stale data. In the case we encounter an exception we
-			// can bail-out of reporting the value. Instead we simply console.error the error
-			// so at least it's known that an error occured, but we don't stop execution
-			try {
-				value = get_value();
-			} catch (error) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-			}
-
-			if (value !== UNINITIALIZED) {
-				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
-			}
-
-			initial = false;
-		});
 	}
 
 	/**
@@ -10238,10 +10097,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[82, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[93, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[94, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[105, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[116, 4]]);
+	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[128, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10392,12 +10251,16 @@
 			input = prop($$props, 'input', 7),
 			children = prop($$props, 'children', 7);
 
-		inspect(() => ["svelte value", value()]);
-
 		const webComponentMode = getContext('webComponentMode');
 
 		let errorId = state(void 0),
 			charCountText = state(void 0);
+
+		user_effect(() => {
+			if (webComponentMode) return;
+			if (!invalid()) return;
+			input().closest('.qc-textfield-row').appendChild(formErrorElement());
+		});
 
 		user_effect(() => {
 			if (!maxlength()) {
@@ -10594,7 +10457,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[82, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[89, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10616,7 +10479,8 @@
 			descriptionElement = state(void 0),
 			maxlengthElement = state(void 0),
 			value = state(void 0),
-			input = state(void 0);
+			input = state(void 0),
+			textFieldRow = state(void 0);
 
 		onMount(() => {
 			set(input, $$props.$$host.querySelector('input,textarea'), true);
@@ -10631,6 +10495,8 @@
 				set(value, get(input).value, true);
 				invalid(false);
 			});
+
+			set(textFieldRow, get(input).closest('.qc-textfield-row'), true);
 		});
 
 		user_effect(() => {
@@ -10645,7 +10511,11 @@
 			}
 
 			if (invalid()) {
-				get(input).after(get(formErrorElement));
+				if (get(textFieldRow)) {
+					get(textFieldRow).appendChild(get(formErrorElement));
+				} else {
+					get(input).after(get(formErrorElement));
+				}
 			}
 
 			if (maxlength()) {

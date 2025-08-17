@@ -1,7 +1,7 @@
 <script>
     import { Utils } from "../utils";
     import Label from "../Label/Label.svelte";
-    import {getContext} from "svelte";
+    import {getContext, onMount} from "svelte";
     import FormError from "../FormError/FormError.svelte";
 
     const lang = Utils.getPageLanguage();
@@ -23,11 +23,21 @@
         input,
         children
     } = $props();
-    $inspect("svelte value", value)
+
     const webComponentMode = getContext('webComponentMode');
 
     let errorId = $state(),
-        charCountText = $state();
+        charCountText = $state(),
+        textfieldRow = $state()
+    ;
+
+    $effect(() => {
+        if (webComponentMode) return;
+        if (! invalid) return;
+        input
+            .closest('.qc-textfield-row')
+            .appendChild(formErrorElement);
+    })
 
     $effect(() => {
         if (!maxlength) {
@@ -37,13 +47,14 @@
         const remaining = maxlength - currentLength;
         const over = Math.abs(remaining);
         const s = over > 1 ? 's' : '';
-        charCountText = remaining >= 0
-                        ? lang === 'fr'
-                            ? `${remaining} caractère${s} restant${s}`
-                            : `${remaining} character${s} remaining`
-                        :   lang === 'fr'
-                            ? `${over} caractère${s} en trop`
-                            : `${over} character${s} over the limit`
+        charCountText =
+            remaining >= 0
+            ? lang === 'fr'
+                ? `${remaining} caractère${s} restant${s}`
+                : `${remaining} character${s} remaining`
+            : lang === 'fr'
+                ? `${over} caractère${s} en trop`
+                : `${over} character${s} over the limit`
 
     });
 
@@ -64,6 +75,7 @@
             .join(' ')
         )
     });
+
 </script>
 
 {#snippet textfield()}

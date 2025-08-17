@@ -2385,6 +2385,26 @@ input[type=checkbox]:checked::after {
   outline: none;
 }
 
+.qc-label, qc-textfield label,
+.qc-textfield label {
+  font-weight: var(--qc-font-weight-content-medium);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.qc-label.qc-compact, qc-textfield label.qc-compact,
+.qc-textfield label.qc-compact {
+  font-size: var(--qc-font-size-sm);
+}
+.qc-label.qc-bold, qc-textfield label.qc-bold,
+.qc-textfield label.qc-bold {
+  font-weight: var(--qc-font-weight-content-bold);
+}
+.qc-label:has(~ :disabled), qc-textfield label:has(~ :disabled),
+.qc-textfield label:has(~ :disabled) {
+  color: var(--qc-color-grey-regular);
+  cursor: not-allowed;
+}
+
 qc-textfield,
 .qc-textfield {
   display: block;
@@ -2401,7 +2421,6 @@ qc-textfield .qc-description:has(~ :disabled),
 .qc-textfield .qc-description:has(~ :disabled) {
   color: var(--qc-color-grey-regular);
 }
-
 [size=sm] > input,
 [size=sm] > textarea,
 [size=sm] > .qc-textfield-charcount {
@@ -2496,6 +2515,24 @@ qc-textfield textarea:disabled {
 .qc-textfield-charcount.qc-max-reached {
   color: var(--qc-color-red-regular);
   font-weight: var(--qc-font-weight-content-bold);
+}
+
+.qc-textfield-row {
+  display: flex;
+  gap: 0 3.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.2rem;
+}
+.qc-textfield-row > qc-textfield {
+  display: block;
+  width: auto;
+}
+.qc-textfield-row > .qc-form-error {
+  width: 100%;
+}
+.qc-textfield-row qc-textfield,
+.qc-textfield-row .qc-textfield {
+  margin-bottom: 0;
 }
 
 .qc-form-error {
@@ -2595,22 +2632,6 @@ qc-textfield textarea:disabled {
 .qc-switch-justified {
   justify-content: space-between;
   width: 100%;
-}
-
-.qc-label {
-  font-weight: var(--qc-font-weight-content-medium);
-  display: block;
-  margin-bottom: 0.4rem;
-}
-.qc-label.qc-compact {
-  font-size: var(--qc-font-size-sm);
-}
-.qc-label.qc-bold {
-  font-weight: var(--qc-font-weight-content-bold);
-}
-.qc-label:has(~ :disabled) {
-  color: var(--qc-color-grey-regular);
-  cursor: not-allowed;
 }
 
 .qc-dropdown-list-multiple {
