@@ -1,12 +1,12 @@
 <qc-textfield label="Petit"
-              size="sm">
+              class="qc-sm">
     <input type="text"
            name="text-sm"
            placeholder="25"
     />
 </qc-textfield>
 
-<qc-textfield size="md">
+<qc-textfield class="qc-md">
     <label for="text-md">Moyen</label>
     <input type="text"
            id="text-md"
@@ -16,7 +16,7 @@
 </qc-textfield>
 
 <qc-textfield label="Large"
-              size="lg"
+              class="qc-lg"
               invalid
 >
     <input type="text"
@@ -27,7 +27,7 @@
 
 <qc-textfield name="text-xl"
               label="Très large"
-              size="xl"
+              class="qc-xl"
               placeholder="Long placeholder lorem ipsum dolor sit amet"
               required>
     <input type="text"
@@ -37,7 +37,7 @@
 
 <qc-textfield
         label="Extra large"
-        size="xxl"
+        class="qc-xxl"
 
 >
     <input type="text"
@@ -50,7 +50,7 @@
 <div class="qc-textfield-row">
     <qc-textfield
             label="Combiné 1"
-            size="md"
+            class="qc-md"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -60,7 +60,7 @@
 
     <qc-textfield
             label="Combiné 2"
-            size="sm"
+            class="qc-sm"
     >
         <input type="text"
                name="combo-2"
@@ -70,7 +70,7 @@
 <div class="qc-textfield-row">
     <qc-textfield
             label="Combiné 1 invalide"
-            size="md"
+            class="qc-md"
             invalid
             invalid-text="Lorsque combinés, le message d'erreur décale les champs…"
     >
@@ -81,7 +81,7 @@
 
     <qc-textfield
             label="Combiné 2"
-            size="sm"
+            class="qc-sm"
     >
         <input type="text"
                name="invalid-combo-2"
@@ -91,7 +91,7 @@
 </div>
 
 <qc-textfield for="zone-xl"
-        size="xl"
+              class="qc-xl"
 >
     <label>Commentaires</label>
     <div     class="qc-description">Vous pouvez entrer des commentaires dans la zone de texte ci-dessous.</div>
@@ -101,7 +101,7 @@
 <qc-textfield
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-        size="xxl"
+        class="qc-xxl"
         max-length="50"
         required
 >
@@ -110,7 +110,7 @@
 
 <qc-textfield label="Suggestions"
               description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-              size="xxl"
+              class="qc-xxl"
               max-length="50"
               required
               invalid-text="Message d'erreur personnalisé"
@@ -120,4 +120,3 @@
               id="zone-xxl-invalid"
     ></textarea>
 </qc-textfield>
-

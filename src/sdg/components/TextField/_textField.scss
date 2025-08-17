@@ -1,5 +1,6 @@
 @use "qc-sdg-lib" as *;
 @use "../Label/label" as *;
+@use "sass:map";
 
 qc-textfield,
 .qc-textfield {
@@ -18,18 +19,36 @@ qc-textfield,
   }
 }
 
-@mixin size() {
-  [size=sm] > & { max-width: rem(63); }
-  [size=md] > & { max-width: rem(156); }
-  [size=lg] > & { max-width: rem(249); }
-  [size=xl] > & { max-width: rem(528); }
-  [size=xxl] > & { max-width: rem(825); }
+$sizes: (
+    sm: 63,
+    md: 156,
+    lg: 249,
+    xl: 528,
+    xxl: 825
+);
+@mixin size($sizes, $breakpoint: '') {
+  @each $size, $width in $sizes {
+    $prefix: if($breakpoint != '', $breakpoint + '-', '');
+    .qc-#{$prefix}#{$size} > & {
+      max-width: rem($width);
+    }
+  }
 }
 
 input,
 textarea,
 .qc-textfield-charcount {
-  @include size();
+  max-width: rem(map.get($sizes, md));
+  @include size($sizes);
+  @include media-tablet() {
+    @include size($sizes, tablet);
+  }
+  @include media-desktop() {
+    @include size($sizes,desktop);
+  }
+  @include media-large-desktop() {
+    @include size($sizes, large-desktop);
+  }
 }
 
 input,

@@ -6,14 +6,14 @@ import TextField from "./TextField.svelte";
 import {Utils} from '../utils.js';
 </script>
 <TextField label="Petit"
-              size="sm">
+              classList={["qc-sm"]}>
     <input type="text"
            name="text-sm"
            placeholder="25"
     />
 </TextField>
 
-<TextField size="md">
+<TextField classList={["qc-md"]}>
     <label for="text-md">Moyen</label>
     <input type="text"
            id="text-md"
@@ -23,7 +23,7 @@ import {Utils} from '../utils.js';
 </TextField>
 
 <TextField label="Large"
-              size="lg"
+              classList={["qc-lg"]}
               invalid
 >
     <input type="text"
@@ -34,7 +34,7 @@ import {Utils} from '../utils.js';
 
 <TextField name="text-xl"
               label="Très large"
-              size="xl"
+              classList={["qc-xl"]}
               placeholder="Long placeholder lorem ipsum dolor sit amet"
               required>
     <input type="text"
@@ -44,7 +44,7 @@ import {Utils} from '../utils.js';
 
 <TextField
         label="Extra large"
-        size="xxl"
+        classList={["qc-xxl"]}
 
 >
     <input type="text"
@@ -57,7 +57,7 @@ import {Utils} from '../utils.js';
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1"
-            size="md"
+            classList={["qc-md"]}
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -67,7 +67,7 @@ import {Utils} from '../utils.js';
 
     <TextField
             label="Combiné 2"
-            size="sm"
+            classList={["qc-sm"]}
     >
         <input type="text"
                name="combo-2"
@@ -77,7 +77,7 @@ import {Utils} from '../utils.js';
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1 invalide"
-            size="md"
+            classList={["qc-md"]}
             invalid
             invalidText="Lorsque combinés, le message d'erreur décale les champs…"
     >
@@ -88,7 +88,7 @@ import {Utils} from '../utils.js';
 
     <TextField
             label="Combiné 2"
-            size="sm"
+            classList={["qc-sm"]}
     >
         <input type="text"
                name="invalid-combo-2"
@@ -99,7 +99,7 @@ import {Utils} from '../utils.js';
 
 <TextField
         label="Commentaires"
-        size="xl"
+        classList={["qc-xl"]}
         description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
     <textarea name="zone-xl" id="zone-xl"></textarea>
@@ -108,7 +108,7 @@ import {Utils} from '../utils.js';
 <TextField
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-        size="xxl"
+        classList={["qc-xxl"]}
         maxlength="50"
         required
 >
@@ -117,7 +117,7 @@ import {Utils} from '../utils.js';
 
 <TextField label="Suggestions"
               description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-              size="xxl"
+              classList={["qc-xxl"]}
               maxlength="50"
               required
               invalidText="Message d'erreur personnalisé"

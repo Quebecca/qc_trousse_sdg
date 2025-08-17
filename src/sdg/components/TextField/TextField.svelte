@@ -9,9 +9,9 @@
 
     let {
         label = '',
-        size = 'xl',
         required = $bindable(),
         description,
+        classList = [],
         maxlength = null,
         value = "",
         invalid = $bindable(),
@@ -140,8 +140,10 @@
 {#if webComponentMode}
     {@render textfield()}
 {:else}
-    <div class="qc-textfield"
-         {size}
+    <div class={[
+        'qc-textfield',
+        ...classList
+    ]}
          invalid={invalid ? true : undefined}
          bind:this={rootElement}
     >

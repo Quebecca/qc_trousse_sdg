@@ -10118,7 +10118,7 @@
 	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[109, 8]]);
 	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[120, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[143, 4]]);
+	var root_6$1 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[143, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10254,9 +10254,9 @@
 		const lang = Utils.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
-			size = prop($$props, 'size', 7, 'xl'),
 			required = prop($$props, 'required', 15),
 			description = prop($$props, 'description', 7),
+			classList = prop($$props, 'classList', 23, () => []),
 			maxlength = prop($$props, 'maxlength', 7, null),
 			value = prop($$props, 'value', 7, ""),
 			invalid = prop($$props, 'invalid', 15),
@@ -10335,10 +10335,15 @@
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
-				template_effect(() => {
-					set_attribute(div_2, 'size', size());
-					set_attribute(div_2, 'invalid', invalid() ? true : undefined);
-				});
+				template_effect(
+					($0) => {
+						set_class(div_2, 1, $0);
+						set_attribute(div_2, 'invalid', invalid() ? true : undefined);
+					},
+					[
+						() => clsx(['qc-textfield', ...classList()])
+					]
+				);
 
 				append($$anchor, div_2);
 			};
@@ -10358,13 +10363,6 @@
 				label($$value);
 				flushSync();
 			},
-			get size() {
-				return size();
-			},
-			set size($$value = 'xl') {
-				size($$value);
-				flushSync();
-			},
 			get required() {
 				return required();
 			},
@@ -10377,6 +10375,13 @@
 			},
 			set description($$value) {
 				description($$value);
+				flushSync();
+			},
+			get classList() {
+				return classList();
+			},
+			set classList($$value = []) {
+				classList($$value);
 				flushSync();
 			},
 			get maxlength() {
@@ -10466,9 +10471,9 @@
 		TextField,
 		{
 			label: {},
-			size: {},
 			required: {},
 			description: {},
+			classList: {},
 			maxlength: {},
 			value: {},
 			invalid: {},
@@ -10488,7 +10493,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[86, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[85, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10671,7 +10676,6 @@
 		TextFieldWC,
 		{
 			label: { attribute: 'label', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
 			required: { attribute: 'required', type: 'Boolean' },
 			description: { attribute: 'description', type: 'String' },
 			maxlength: { attribute: 'max-length', type: 'Number' },

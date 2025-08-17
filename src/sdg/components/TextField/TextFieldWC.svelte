@@ -2,7 +2,6 @@
   tag: 'qc-textfield',
   props: {
     label: { attribute: 'label', type: 'String' },
-    size: { attribute: 'size', type: 'String' },
     required: { attribute: 'required', type: 'Boolean' },
     description: { attribute: 'description', type: 'String' },
     maxlength: { attribute: 'max-length', type: 'Number' },
@@ -25,7 +24,7 @@
             label,
             description,
             required,
-            maxlength
+            maxlength,
         } = $props();
     let
         labelElement = $state(),
