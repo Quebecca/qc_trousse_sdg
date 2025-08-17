@@ -15,6 +15,7 @@
     import TextField from './TextField.svelte';
     import {onMount, setContext} from "svelte";
     import {Utils} from '../utils.js';
+    import {onMountInput} from "./textFieldUtils";
 
     setContext('webComponentMode', true)
 
@@ -37,15 +38,11 @@
     ;
     onMount(() => {
         input = $host().querySelector('input,textarea');
-        if (!input.id) {
-            input.id =  Utils.generateId(input.type);
-        }
-        value = input.value;
-        input.addEventListener('input', () => {
-            value = input.value;
-            invalid = false;
-        })
-        textFieldRow = input.closest('.qc-textfield-row');
+        onMountInput(input,
+            v => textFieldRow = v,
+            v => value = v,
+            v => invalid = v
+        )
     })
     $effect(() => {
         if (!input) return;

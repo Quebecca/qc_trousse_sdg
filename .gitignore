@@ -17,3 +17,4 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /tests/**/*.png
+/public/js/qc-sdg-test.js

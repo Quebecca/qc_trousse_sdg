@@ -8703,7 +8703,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$e = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[31, 4]]]]);
+	var root$e = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[35, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -10095,12 +10095,30 @@
 		true
 	);
 
+	function onMountInput(input, setTextFieldRow, setValue, setInvalid) {
+	    if (!input) return;
+	    if (!input.autocomplete) {
+	        input.autocomplete = "off";
+	    }
+	    if (!input.id) {
+	        input.id =  Utils.generateId(input.type);
+	    }
+	    setValue(input.value);
+	    input.addEventListener(
+	        'input',
+	        () => {
+	            setValue(input.value);
+	            setInvalid(false);
+	    });
+	    setTextFieldRow(input.closest('.qc-textfield-row'));
+	}
+
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[94, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[105, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[109, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[120, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[128, 4]]);
+	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[143, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10191,7 +10209,7 @@
 
 					template_effect(() => set_class(div_1, 1, clsx([
 						'qc-textfield-charcount',
-						maxlength() && value().length > maxlength() && 'qc-max-reached'
+						value().length > maxlength() && 'qc-max-reached'
 					])));
 
 					append($$anchor, div_1);
@@ -10237,11 +10255,11 @@
 
 		let label = prop($$props, 'label', 7, ''),
 			size = prop($$props, 'size', 7, 'xl'),
-			required = prop($$props, 'required', 15, false),
+			required = prop($$props, 'required', 15),
 			description = prop($$props, 'description', 7),
 			maxlength = prop($$props, 'maxlength', 7, null),
 			value = prop($$props, 'value', 7, ""),
-			invalid = prop($$props, 'invalid', 15, false),
+			invalid = prop($$props, 'invalid', 15),
 			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, 'fr') ? 'Ce champ est requis.' : 'This field is required.'),
 			describedBy = prop($$props, 'describedBy', 31, () => proxy([])),
 			labelElement = prop($$props, 'labelElement', 15),
@@ -10254,18 +10272,30 @@
 		const webComponentMode = getContext('webComponentMode');
 
 		let errorId = state(void 0),
-			charCountText = state(void 0);
+			charCountText = state(void 0),
+			rootElement = state(void 0),
+			textFieldRow = state(void 0);
 
-		user_effect(() => {
+		onMount(() => {
 			if (webComponentMode) return;
-			if (!invalid()) return;
-			input().closest('.qc-textfield-row').appendChild(formErrorElement());
+
+			if (!input()) {
+				input(get(rootElement).querySelector('input,textarea'));
+			}
+
+			onMountInput(input(), (v) => set(textFieldRow, v, true), (v) => value(v), (v) => invalid(v));
 		});
 
 		user_effect(() => {
-			if (!maxlength()) {
-				return;
+			if (webComponentMode) return;
+
+			if (invalid() && get(textFieldRow)) {
+				get(textFieldRow).appendChild(formErrorElement());
 			}
+		});
+
+		user_effect(() => {
+			if (!maxlength()) return;
 
 			const currentLength = value()?.length || 0;
 			const remaining = maxlength() - currentLength;
@@ -10303,10 +10333,11 @@
 
 				textfield(node_8);
 				reset(div_2);
+				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
 				template_effect(() => {
 					set_attribute(div_2, 'size', size());
-					set_attribute(div_2, 'invalid', invalid());
+					set_attribute(div_2, 'invalid', invalid() ? true : undefined);
 				});
 
 				append($$anchor, div_2);
@@ -10337,7 +10368,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value = false) {
+			set required($$value) {
 				required($$value);
 				flushSync();
 			},
@@ -10365,7 +10396,7 @@
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value = false) {
+			set invalid($$value) {
 				invalid($$value);
 				flushSync();
 			},
@@ -10457,7 +10488,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[89, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[86, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10484,19 +10515,7 @@
 
 		onMount(() => {
 			set(input, $$props.$$host.querySelector('input,textarea'), true);
-
-			if (!get(input).id) {
-				get(input).id = Utils.generateId(get(input).type);
-			}
-
-			set(value, get(input).value, true);
-
-			get(input).addEventListener('input', () => {
-				set(value, get(input).value, true);
-				invalid(false);
-			});
-
-			set(textFieldRow, get(input).closest('.qc-textfield-row'), true);
+			onMountInput(get(input), (v) => set(textFieldRow, v, true), (v) => set(value, v, true), (v) => invalid(v));
 		});
 
 		user_effect(() => {

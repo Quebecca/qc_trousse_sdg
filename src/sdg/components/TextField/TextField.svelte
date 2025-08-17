@@ -3,18 +3,22 @@
     import Label from "../Label/Label.svelte";
     import {getContext, onMount} from "svelte";
     import FormError from "../FormError/FormError.svelte";
+    import {onMountInput} from "./textFieldUtils";
 
     const lang = Utils.getPageLanguage();
 
     let {
         label = '',
         size = 'xl',
-        required = $bindable(false),
+        required = $bindable(),
         description,
         maxlength = null,
         value = "",
-        invalid = $bindable(false),
-        invalidText = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.',
+        invalid = $bindable(),
+        invalidText =
+            lang === 'fr'
+                ? 'Ce champ est requis.'
+                : 'This field is required.',
         describedBy = $bindable([]),
         labelElement = $bindable(),
         formErrorElement = $bindable(),
@@ -28,21 +32,32 @@
 
     let errorId = $state(),
         charCountText = $state(),
-        textfieldRow = $state()
+        rootElement = $state(),
+        textFieldRow = $state()
     ;
 
-    $effect(() => {
+    onMount(() => {
         if (webComponentMode) return;
-        if (! invalid) return;
-        input
-            .closest('.qc-textfield-row')
-            .appendChild(formErrorElement);
+        if (! input) {
+            input = rootElement.querySelector('input,textarea');
+        }
+        onMountInput(
+            input,
+            v => textFieldRow = v,
+            v => value = v,
+            v => invalid = v
+        )
     })
 
     $effect(() => {
-        if (!maxlength) {
-            return;
+        if (webComponentMode) return;
+        if (invalid && textFieldRow) {
+            textFieldRow.appendChild(formErrorElement);
         }
+    })
+
+    $effect(() => {
+        if (!maxlength) return;
         const currentLength = value?.length || 0;
         const remaining = maxlength - currentLength;
         const over = Math.abs(remaining);
@@ -55,12 +70,12 @@
             : lang === 'fr'
                 ? `${over} caractère${s} en trop`
                 : `${over} character${s} over the limit`
-
     });
 
     // Génération des ID pour le aria-describedby
-    const descriptionId = Utils.generateId('description-'),
-          charCountId = Utils.generateId('charcount-');
+    const
+        descriptionId = Utils.generateId('description-'),
+        charCountId = Utils.generateId('charcount-')
     ;
 
     $effect(() => {
@@ -74,7 +89,7 @@
             ].filter(Boolean)
             .join(' ')
         )
-    });
+    })
 
 </script>
 
@@ -107,7 +122,7 @@
             id={charCountId}
             class={[
                 'qc-textfield-charcount',
-                (maxlength && value.length > maxlength) && 'qc-max-reached'
+                value.length > maxlength && 'qc-max-reached'
             ]}
             aria-live="polite"
         >
@@ -127,7 +142,8 @@
 {:else}
     <div class="qc-textfield"
          {size}
-         {invalid}
+         invalid={invalid ? true : undefined}
+         bind:this={rootElement}
     >
         {@render textfield()}
     </div>

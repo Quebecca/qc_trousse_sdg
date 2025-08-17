@@ -1,21 +1,28 @@
-<qc-textfield label="Petit"
+<svelte:options customElement={{
+  tag: 'qc-textfield-embedded-test'
+}} />
+<script>
+import TextField from "./TextField.svelte";
+import {Utils} from '../utils.js';
+</script>
+<TextField label="Petit"
               size="sm">
     <input type="text"
            name="text-sm"
            placeholder="25"
     />
-</qc-textfield>
+</TextField>
 
-<qc-textfield size="md">
+<TextField size="md">
     <label for="text-md">Moyen</label>
     <input type="text"
            id="text-md"
            name="text-md"
            placeholder="25"
     />
-</qc-textfield>
+</TextField>
 
-<qc-textfield label="Large"
+<TextField label="Large"
               size="lg"
               invalid
 >
@@ -23,9 +30,9 @@
            name="text-lg"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
     />
-</qc-textfield>
+</TextField>
 
-<qc-textfield name="text-xl"
+<TextField name="text-xl"
               label="Très large"
               size="xl"
               placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -33,9 +40,9 @@
     <input type="text"
            name="text-xl"
     />
-</qc-textfield>
+</TextField>
 
-<qc-textfield
+<TextField
         label="Extra large"
         size="xxl"
 
@@ -45,10 +52,10 @@
            name="text-xxl"
            disabled
     />
-</qc-textfield>
+</TextField>
 
 <div class="qc-textfield-row">
-    <qc-textfield
+    <TextField
             label="Combiné 1"
             size="md"
     >
@@ -56,68 +63,68 @@
                placeholder="Long placeholder lorem ipsum dolor sit amet"
                name="combo-1"
         />
-    </qc-textfield>
+    </TextField>
 
-    <qc-textfield
+    <TextField
             label="Combiné 2"
             size="sm"
     >
         <input type="text"
                name="combo-2"
         />
-    </qc-textfield>
+    </TextField>
 </div>
 <div class="qc-textfield-row">
-    <qc-textfield
+    <TextField
             label="Combiné 1 invalide"
             size="md"
             invalid
-            invalid-text="Lorsque combinés, le message d'erreur décale les champs…"
+            invalidText="Lorsque combinés, le message d'erreur décale les champs…"
     >
         <input type="text"
                name="invalid-combo-1"
         />
-    </qc-textfield>
+    </TextField>
 
-    <qc-textfield
+    <TextField
             label="Combiné 2"
             size="sm"
     >
         <input type="text"
                name="invalid-combo-2"
         />
-    </qc-textfield>
+    </TextField>
 
 </div>
 
-<qc-textfield for="zone-xl"
+<TextField
+        label="Commentaires"
         size="xl"
+        description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
-    <label>Commentaires</label>
-    <div     class="qc-description">Vous pouvez entrer des commentaires dans la zone de texte ci-dessous.</div>
     <textarea name="zone-xl" id="zone-xl"></textarea>
-</qc-textfield>
+</TextField>
 
-<qc-textfield
+<TextField
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
         size="xxl"
-        max-length="50"
+        maxlength="50"
         required
 >
     <textarea name="zone-xxl"></textarea>
-</qc-textfield>
+</TextField>
 
-<qc-textfield label="Suggestions"
+<TextField label="Suggestions"
               description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
               size="xxl"
-              max-length="50"
+              maxlength="50"
               required
-              invalid-text="Message d'erreur personnalisé"
+              invalidText="Message d'erreur personnalisé"
               invalid
 >
     <textarea name="zone-xxl-invalid"
               id="zone-xxl-invalid"
     ></textarea>
-</qc-textfield>
-
+</TextField>
+<link rel='stylesheet' href='{Utils.cssPath}'>
