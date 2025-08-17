@@ -56,9 +56,6 @@ textarea {
       outline: 2px solid token-value(color formfield focus outline);
       border: 2px solid token-value(color formfield focus border);
       padding: rem(7);
-      &::placeholder {
-        //color: transparent;
-      }
     }
 
     &:disabled {
@@ -84,12 +81,6 @@ textarea {
   }
 }
 
-.qc-description {
-  font-size: token-value(font, size, sm);
-  color: token-value(color blue dark);
-  line-height: rem(20);
-}
-
 .qc-textfield-charcount {
   @include content-font(sm);
   text-align: right;
@@ -107,15 +98,13 @@ textarea {
   flex-wrap: wrap;
   margin-bottom: rem(32);
 
-  > qc-textfield {
-    display: block;
-    width: auto;
-  }
   > .qc-form-error {
     width: 100%;
   }
   qc-textfield,
   .qc-textfield {
+    display: block;
+    width: auto;
     margin-bottom: 0;
   }
 }

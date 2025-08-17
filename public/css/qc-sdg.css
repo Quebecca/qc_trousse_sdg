@@ -2498,12 +2498,6 @@ qc-textfield textarea:disabled {
   resize: vertical;
 }
 
-.qc-description {
-  font-size: var(--qc-font-size-sm);
-  color: var(--qc-color-blue-dark);
-  line-height: 2rem;
-}
-
 .qc-textfield-charcount {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
@@ -2523,15 +2517,13 @@ qc-textfield textarea:disabled {
   flex-wrap: wrap;
   margin-bottom: 3.2rem;
 }
-.qc-textfield-row > qc-textfield {
-  display: block;
-  width: auto;
-}
 .qc-textfield-row > .qc-form-error {
   width: 100%;
 }
 .qc-textfield-row qc-textfield,
 .qc-textfield-row .qc-textfield {
+  display: block;
+  width: auto;
   margin-bottom: 0;
 }
 
