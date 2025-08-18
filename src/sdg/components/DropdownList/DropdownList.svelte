@@ -50,6 +50,14 @@
         searchText = $state(""),
         hiddenSearchText = $state(""),
         displayedItems = $state(items),
+        itemsForSearch = $derived(items.map((item) => {
+            return {
+                label: Utils.cleanupSearchPrompt(item.label),
+                value: item.value,
+                disabled: item.disabled,
+                checked: item.checked,
+            }
+        })),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
                 return `qc-textfield-container-${width}`;
@@ -172,9 +180,14 @@
 
     $effect(() => {
         if (searchText.length > 0) {
-            displayedItems = items.filter(
-                (item) => Utils.cleanupSearchPrompt(item.label).includes(Utils.cleanupSearchPrompt(searchText))
-            );
+            let newDisplayedItems = [];
+            for (let i = 0; i < items.length; i++) {
+                if (itemsForSearch[i].label.includes(Utils.cleanupSearchPrompt(searchText))) {
+                    newDisplayedItems.push(items[i]);
+                }
+            }
+
+            displayedItems = newDisplayedItems;
         } else {
             displayedItems = items;
         }

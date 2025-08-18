@@ -85,7 +85,12 @@ export class Utils {
      * @returns {boolean} If the current node or one of its children is currently in focus
      */
     static componentIsActive(node) {
-        return node.contains(document.activeElement);
+        if (!node) {
+            return false;
+        }
+
+        const root = node.getRootNode();
+        return node.contains(root.activeElement);
     }
 
     /**
@@ -109,6 +114,10 @@ export class Utils {
      */
     static cleanupSearchPrompt(str) {
         let word = String(str)
+
+        const replaceAccents = (str, search, replace) => {
+            return str.replaceAll(new RegExp(search, 'gi'), replace);
+        }
 
         // Supprime les accents.
         word = replaceAccents(word, /[éèêë]/gi, 'e');
@@ -135,15 +144,4 @@ export class Utils {
     static stripEndingColon(str) {
         return str.replace(/:$/, '');
     }
-}
-
-/**
- * Remplace les lettres accentuées par leur version non accentuée.
- * @param {string} str La chaîne de caractères à traiter.
- * @param {string} search Les caractères accentués à rechercher.
- * @param {string} replace Le caractère de remplacement.
- * @returns {string} La chaîne de caractères avec les accents remplacés.
- */
-function replaceAccents(str, search, replace) {
-    return str.replaceAll(new RegExp(search, 'gi'), replace);
 }
