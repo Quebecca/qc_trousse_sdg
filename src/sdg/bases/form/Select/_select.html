@@ -1,9 +1,9 @@
-<h2 id="select">Liste déroulante (select)</h2>
+<h2 id="select">Liste déroulante</h2>
 
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <qc-select>
+    <qc-select id="qc-select-single-choice">
         <label for="select-single-choice">Choix unique</label>
         <select id="select-single-choice">
             <option value="1" selected>Option 1</option>
@@ -25,9 +25,9 @@
         </select>
     </qc-select>
 
-    <qc-select enable-search>
-        <label for="select-single-choice-disabled" class="qc-disabled">Choix unique avec recherche</label>
-        <select id="select-single-choice-disabled">
+    <qc-select id="qc-select-single-choice-search" enable-search>
+        <label for="select-single-choice-search">Choix unique avec recherche</label>
+        <select id="select-single-choice-search">
             <option value="1" selected>Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -47,9 +47,9 @@
         </select>
     </qc-select>
 
-    <qc-select multiple>
-        <label for="select-qc-select">Choix multiple</label>
-        <select multiple id="select-qc-select">
+    <qc-select id="qc-select-multiple-choices" multiple>
+        <label for="select-multiple-choices">Choix multiple</label>
+        <select multiple id="select-multiple-choices">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
             <option value="3" selected>Option 3</option>
@@ -69,10 +69,34 @@
         </select>
     </qc-select>
 
-    <qc-select disabled>
-        <label for="qc-select-disabled">Désactivé</label>
-        <select id="qc-select-disabled">disabled</select>
+    <qc-select id="qc-select-disabled" disabled>
+        <label for="select-disabled">Désactivé</label>
+        <select id="select-disabled">disabled</select>
     </qc-select>
+
+    <script>
+        function mutationCallback(mutationsList, _) {
+            mutationsList.forEach(mutation => {
+                if (mutation.type === 'attributes') {
+                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
+                }
+            });
+        }
+
+        const mutationObserver = new MutationObserver(mutationCallback);
+
+        const singleChoice = document.getElementById("qc-select-single-choice");
+        const singleChoiceNoScroll = document.getElementById("qc-select-single-choice-search");
+        const multipleChoice = document.getElementById("qc-select-multiple-choices");
+
+        mutationObserver.observe(singleChoice, { attributes: true });
+        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
+        mutationObserver.observe(multipleChoice, { attributes: true });
+
+        window.onbeforeunload = () => {
+            mutationObserver.disconnect();
+        }
+    </script>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
@@ -154,3 +178,118 @@
         });
     </script>
 </qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Chaîne de caractères aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>
+                Libellé de la liste déroulante.
+                <br> Si le libellé est absent, le contenu de l'élément <code>label</code> en slot est utilisé.
+            </td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>"md"</td>
+            <td>Largeur de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> contient une donnée.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ `label` est obligatoire.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Active la sélection multiple</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
+<ul>
+    <li>Ce composant contient un DOM d'ombre.</li>
+    <li>
+        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
+        <ul>
+            <li><code>label</code></li>
+            <li><code>select</code></li>
+        </ul>
+    </li>
+</ul>

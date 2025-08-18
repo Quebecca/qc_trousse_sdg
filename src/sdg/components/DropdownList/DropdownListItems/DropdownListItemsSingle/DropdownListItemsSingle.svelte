@@ -26,10 +26,6 @@
     let mouseDownElement = null;
     let hoveredElement = null;
 
-    // $inspect(items, "items");
-    // $inspect(displayedItems, "displayedItems");
-    $inspect(listElements, "listElements");
-
     $effect(() => {
         if (displayedItems && displayedItems.length > 0) {
             listElements = self ? Array.from(self.querySelectorAll("li")) : [];
