@@ -126,6 +126,15 @@ export class Utils {
         // Convertit le mot en minuscules.
         return word.toLowerCase();
     }
+
+    /**
+     * Strips the colon at the end of a string
+     * @param str
+     * @returns {*}
+     */
+    static stripEndingColon(str) {
+        return str.replace(/:$/, '');
+    }
 }
 
 /**

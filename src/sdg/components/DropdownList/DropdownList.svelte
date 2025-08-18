@@ -31,7 +31,7 @@
         labelId = `${id}-label`,
         errorId = `${id}-error`,
         availableWidths = ["xs", "sm", "md", "lg", "xl"],
-        defaultInvalidText = `Le champ ${label} est obligatoire.`
+        defaultInvalidText = `Le champ ${Utils.stripEndingColon(label)} est obligatoire.`
     ;
 
     let instance = $state(),
