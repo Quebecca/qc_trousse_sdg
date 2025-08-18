@@ -2,8 +2,8 @@
   tag: 'qc-textfield-embedded-test'
 }} />
 <script>
-import TextField from "./TextField.svelte";
-import {Utils} from '../utils.js';
+import TextField from "../TextField.svelte";
+import {Utils} from '../../utils.js';
 </script>
 <TextField label="Petit"
               classList={["qc-sm"]}>
