@@ -2493,33 +2493,6 @@ qc-textfield textarea:disabled {
 .qc-xxl > .qc-textfield-charcount {
   max-width: 82.5rem;
 }
-@media (max-width: 991.98px) {
-  .qc-tablet-sm > input,
-  .qc-tablet-sm > textarea,
-  .qc-tablet-sm > .qc-textfield-charcount {
-    max-width: 6.3rem;
-  }
-  .qc-tablet-md > input,
-  .qc-tablet-md > textarea,
-  .qc-tablet-md > .qc-textfield-charcount {
-    max-width: 15.6rem;
-  }
-  .qc-tablet-lg > input,
-  .qc-tablet-lg > textarea,
-  .qc-tablet-lg > .qc-textfield-charcount {
-    max-width: 24.9rem;
-  }
-  .qc-tablet-xl > input,
-  .qc-tablet-xl > textarea,
-  .qc-tablet-xl > .qc-textfield-charcount {
-    max-width: 52.8rem;
-  }
-  .qc-tablet-xxl > input,
-  .qc-tablet-xxl > textarea,
-  .qc-tablet-xxl > .qc-textfield-charcount {
-    max-width: 82.5rem;
-  }
-}
 @media (min-width: 992px) {
   .qc-desktop-sm > input,
   .qc-desktop-sm > textarea,
@@ -2574,6 +2547,60 @@ qc-textfield textarea:disabled {
     max-width: 82.5rem;
   }
 }
+@media (max-width: 991.98px) {
+  .qc-tablet-sm > input,
+  .qc-tablet-sm > textarea,
+  .qc-tablet-sm > .qc-textfield-charcount {
+    max-width: 6.3rem;
+  }
+  .qc-tablet-md > input,
+  .qc-tablet-md > textarea,
+  .qc-tablet-md > .qc-textfield-charcount {
+    max-width: 15.6rem;
+  }
+  .qc-tablet-lg > input,
+  .qc-tablet-lg > textarea,
+  .qc-tablet-lg > .qc-textfield-charcount {
+    max-width: 24.9rem;
+  }
+  .qc-tablet-xl > input,
+  .qc-tablet-xl > textarea,
+  .qc-tablet-xl > .qc-textfield-charcount {
+    max-width: 52.8rem;
+  }
+  .qc-tablet-xxl > input,
+  .qc-tablet-xxl > textarea,
+  .qc-tablet-xxl > .qc-textfield-charcount {
+    max-width: 82.5rem;
+  }
+}
+@media (max-width: 767.98px) {
+  .qc-mobile-sm > input,
+  .qc-mobile-sm > textarea,
+  .qc-mobile-sm > .qc-textfield-charcount {
+    max-width: 6.3rem;
+  }
+  .qc-mobile-md > input,
+  .qc-mobile-md > textarea,
+  .qc-mobile-md > .qc-textfield-charcount {
+    max-width: 15.6rem;
+  }
+  .qc-mobile-lg > input,
+  .qc-mobile-lg > textarea,
+  .qc-mobile-lg > .qc-textfield-charcount {
+    max-width: 24.9rem;
+  }
+  .qc-mobile-xl > input,
+  .qc-mobile-xl > textarea,
+  .qc-mobile-xl > .qc-textfield-charcount {
+    max-width: 52.8rem;
+  }
+  .qc-mobile-xxl > input,
+  .qc-mobile-xxl > textarea,
+  .qc-mobile-xxl > .qc-textfield-charcount {
+    max-width: 82.5rem;
+  }
+}
 
 .qc-textfield textarea, qc-textfield textarea {
   min-height: 10.8rem;
@@ -2598,12 +2625,14 @@ qc-textfield textarea:disabled {
   gap: 0 3.2rem;
   flex-wrap: wrap;
   margin-bottom: 3.2rem;
+  margin-top: -0.8rem;
 }
 .qc-textfield-row > .qc-form-error {
   width: 100%;
 }
 .qc-textfield-row qc-textfield,
 .qc-textfield-row .qc-textfield {
+  margin-top: 0.8rem;
   display: block;
   width: auto;
   margin-bottom: 0;

@@ -81,14 +81,17 @@ input,
 textarea,
 .qc-textfield-charcount {
   @include size($sizes);
-  @include media-tablet() {
-    @include size($sizes, tablet);
-  }
   @include media-desktop() {
-    @include size($sizes,desktop);
+    @include size($sizes, desktop);
   }
   @include media-large-desktop() {
     @include size($sizes, large-desktop);
+  }
+  @include media-tablet() {
+    @include size($sizes, tablet);
+  }
+  @include media-mobile() {
+    @include size($sizes, mobile);
   }
 }
 
@@ -116,12 +119,14 @@ textarea {
   gap: 0 rem(32);
   flex-wrap: wrap;
   margin-bottom: rem(32);
+  margin-top: rem(-8);
 
   > .qc-form-error {
     width: 100%;
   }
   qc-textfield,
   .qc-textfield {
+    margin-top: rem(8);
     display: block;
     width: auto;
     margin-bottom: 0;
