@@ -80,12 +80,10 @@
 
     function handleDropdownButtonClick(event) {
         event.preventDefault();
-        event.stopPropagation();
         expanded = !expanded;
     }
 
     function handleOuterEvent() {
-        console.log("outer event");
         if (!Utils.componentIsActive(instance)) {
             expanded = false;
         }
