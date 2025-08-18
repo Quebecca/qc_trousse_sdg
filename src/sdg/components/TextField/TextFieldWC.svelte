@@ -19,12 +19,14 @@
     setContext('webComponentMode', true)
 
     let {
-            invalid = $bindable(false),
+            invalid,
             invalidText,
             label,
             description,
             required,
             maxlength,
+            maxlengthReached = $bindable(false),
+            invalidAtSubmit = $bindable(false),
         } = $props();
     let
         labelElement = $state(),
@@ -74,6 +76,8 @@
     {value}
     bind:invalid
     bind:invalidText
+    bind:maxlengthReached
+    bind:invalidAtSubmit
     bind:labelElement
     bind:formErrorElement
     bind:descriptionElement

@@ -73,7 +73,6 @@
             label="Combiné 1 invalide"
             class="qc-md"
             invalid
-            invalid-text="Lorsque combinés, le message d'erreur décale les champs…"
     >
         <input type="text"
                name="invalid-combo-1"
@@ -83,6 +82,7 @@
     <qc-textfield
             label="Combiné 2"
             class="qc-sm"
+            invalid
     >
         <input type="text"
                name="invalid-combo-2"
@@ -114,10 +114,9 @@
               class="qc-xxl"
               max-length="50"
               required
-              invalid-text="Message d'erreur personnalisé"
               invalid
 >
     <textarea name="zone-xxl-invalid"
               id="zone-xxl-invalid"
-    ></textarea>
+    >Lorem ipsum dolor sit amet, consectetur adipiscing elit</textarea>
 </qc-textfield>

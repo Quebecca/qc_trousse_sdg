@@ -2413,27 +2413,27 @@
 <hr/>
     <h2 id="textfield">Champ texte</h2>
 
-<p>Le champ texte est un espace dans lequel est saisie une information qui tient sur une ou plusieurs lignes de texte.
-  Il peut s’agir d’une combinaison de lettres, de chiffres et de symboles.</p>
-
 <qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
   <form id="formulaire-champs-textes">
     <qc-textfield
-            label="Entrez votre âge"
-            size="sm"
+            label="Nom complet"
+            size="lg"
+            required
     >
       <input type="text"
-             name="text-sm"
-             placeholder="25" />
+             name="code-postal"
+             placeholder="ex : Jean Tremblay"
+      />
     </qc-textfield>
 
     <qc-textfield
-            label="Entrez votre code postal"
-            size="md"
+            label="Champ désactivé"
+            size="lg"
     >
       <input type="text"
-             name="text-md"
-             placeholder="ex : G1A 1A1"
+             name="disabled-field"
+             placeholder="Ce champ est désactivé"
+             disabled
       />
     </qc-textfield>
 
@@ -2441,61 +2441,32 @@
       <qc-textfield
               label="Téléphone"
               size="md"
-              placeholder="(123) 456-7890"
-      ><input type="text"
-              name="text-md"
-              placeholder="ex : G1A 1A1"
+        ><input type="text"
+                name="telephone"
+                placeholder="(123) 456-7890"
+                required
       /></qc-textfield>
 
       <qc-textfield
-              name="poste"
               label="Poste"
               size="sm"
-              placeholder="1234"
-      ></qc-textfield>
+      >
+        <input type="text"
+               name="poste"
+        />
+      </qc-textfield>
     </div>
 
-
     <qc-textfield
-            name="text-lg"
-            label="Entrez votre ville"
-            size="lg"
-            placeholder="Ceci est un très long placeholder"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="text-xl"
-            label="Entrez votre adresse courriel"
-            size="xl"
-            placeholder="ex : jeantremblay@exemple.com"
-            required
-    ></qc-textfield>
-
-    <qc-textfield
-            name="text-xxl"
-            label="Entrez votre adresse"
+            label="Champ de texte multiligne"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             size="xxl"
-            disabled
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xl"
-            label="Commentaires"
-            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-            size="xl"
-            display="area"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xxl"
-            label="Suggestions"
-            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-            size="xxl"
-            display="area"
-            max-length="50"
+            max-length="10"
             required
             invalid-text="Message d'erreur personnalisé"
-    ></qc-textfield>
+    >
+      <textarea name="zone-xxl"></textarea>
+    </qc-textfield>
 
     <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
   </form>
@@ -2505,22 +2476,15 @@
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-
       let isValid = true;
 
-      const requiredFields = form.querySelectorAll("qc-textfield[required]");
+      const requiredFields = form.querySelectorAll("[required]");
 
       requiredFields.forEach(field => {
         const value = field.value?.trim();
         const maxLength = parseInt(field.getAttribute("max-length"), 10);
 
         if (!value) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        if (!isNaN(maxLength) && value.length > maxLength) {
           field.invalid = true;
           isValid = false;
           return;

@@ -12,13 +12,12 @@
         required = $bindable(),
         description,
         classList = [],
-        maxlength = null,
+        maxlength,
+        maxlengthReached = $bindable(false),
+        invalidAtSubmit = $bindable(false),
         value = "",
         invalid = $bindable(),
-        invalidText =
-            lang === 'fr'
-                ? 'Ce champ est requis.'
-                : 'This field is required.',
+        invalidText,
         describedBy = $bindable([]),
         labelElement = $bindable(),
         formErrorElement = $bindable(),
@@ -33,7 +32,13 @@
     let errorId = $state(),
         charCountText = $state(),
         rootElement = $state(),
-        textFieldRow = $state()
+        textFieldRow = $state(),
+        defaultInvalidText = $derived.by(() => {
+            if (!maxlengthReached) return '';
+            return lang === 'fr'
+                ? `La limite de caractères du champ ${label} est dépassée.`
+                : `The character limit for the ${label} field has been exceeded.`
+        })
     ;
 
     onMount(() => {
@@ -50,6 +55,10 @@
     })
 
     $effect(() => {
+        invalidAtSubmit = (required && !value) || maxlengthReached;
+    })
+
+    $effect(() => {
         if (webComponentMode) return;
         if (invalid && textFieldRow) {
             textFieldRow.appendChild(formErrorElement);
@@ -61,6 +70,7 @@
         const currentLength = value?.length || 0;
         const remaining = maxlength - currentLength;
         const over = Math.abs(remaining);
+        maxlengthReached = remaining < 0;
         const s = over > 1 ? 's' : '';
         charCountText =
             remaining >= 0
@@ -70,6 +80,7 @@
             : lang === 'fr'
                 ? `${over} caractère${s} en trop`
                 : `${over} character${s} over the limit`
+
     });
 
     // Génération des ID pour le aria-describedby
@@ -133,7 +144,8 @@
     {/if}
 
     <FormError {invalid}
-               {invalidText}
+               invalidText={invalidText ? invalidText :  defaultInvalidText}
+               {label}
                bind:id={errorId}
                extraClasses={['qc-xs-mt']}
                bind:rootElement={formErrorElement}

@@ -9077,18 +9077,24 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$5 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[31, 8]]);
-	var root_1$8 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[18, 0]]);
+	var root_2$5 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[43, 8]]);
+	var root_1$8 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[30, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
+		const lang = Utils.getPageLanguage();
+
 		let invalid = prop($$props, 'invalid', 7),
+			label = prop($$props, 'label', 7),
 			invalidText = prop($$props, 'invalidText', 7),
 			id = prop($$props, 'id', 15),
 			extraClasses = prop($$props, 'extraClasses', 23, () => []),
 			rootElement = prop($$props, 'rootElement', 15);
+
+		let cleanLabel = user_derived(() => label().replace(/:\s*$/, '')),
+			defaultInvalidText = user_derived(() => strict_equals(lang, 'fr') ? `Le champ ${get(cleanLabel)} est requis.` : `${get(cleanLabel)} is required.`);
 
 		onMount(() => {
 			id(Utils.generateId('qc-form-error'));
@@ -9116,7 +9122,7 @@
 					var span = sibling(node_2, 2);
 					var node_3 = child(span);
 
-					html(node_3, invalidText);
+					html(node_3, () => invalidText() ? invalidText() : get(defaultInvalidText));
 					reset(span);
 					append($$anchor, fragment_1);
 				});
@@ -9150,6 +9156,13 @@
 			},
 			set invalid($$value) {
 				invalid($$value);
+				flushSync();
+			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
 				flushSync();
 			},
 			get invalidText() {
@@ -9188,6 +9201,7 @@
 		FormError,
 		{
 			invalid: {},
+			label: {},
 			invalidText: {},
 			id: {},
 			extraClasses: {},
@@ -10115,10 +10129,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[111, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[122, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[122, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[133, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[145, 4]]);
+	var root_6$1 = add_locations(template(`<div><!></div>`), TextField[FILENAME], [[157, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10221,6 +10235,7 @@
 			}
 
 			var node_6 = sibling(node_4, 2);
+			const expression_2 = user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
 
 			{
 				$$ownership_validator.binding('formErrorElement', FormError, formErrorElement);
@@ -10230,7 +10245,10 @@
 						return invalid();
 					},
 					get invalidText() {
-						return invalidText();
+						return get(expression_2);
+					},
+					get label() {
+						return label();
 					},
 					extraClasses: ['qc-xs-mt'],
 					get id() {
@@ -10257,10 +10275,12 @@
 			required = prop($$props, 'required', 15),
 			description = prop($$props, 'description', 7),
 			classList = prop($$props, 'classList', 23, () => []),
-			maxlength = prop($$props, 'maxlength', 7, null),
+			maxlength = prop($$props, 'maxlength', 7),
+			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
+			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false),
 			value = prop($$props, 'value', 7, ""),
 			invalid = prop($$props, 'invalid', 15),
-			invalidText = prop($$props, 'invalidText', 23, () => strict_equals(lang, 'fr') ? 'Ce champ est requis.' : 'This field is required.'),
+			invalidText = prop($$props, 'invalidText', 7),
 			describedBy = prop($$props, 'describedBy', 31, () => proxy([])),
 			labelElement = prop($$props, 'labelElement', 15),
 			formErrorElement = prop($$props, 'formErrorElement', 15),
@@ -10274,7 +10294,11 @@
 		let errorId = state(void 0),
 			charCountText = state(void 0),
 			rootElement = state(void 0),
-			textFieldRow = state(void 0);
+			textFieldRow = state(void 0),
+			defaultInvalidText = user_derived(() => {
+				if (!maxlengthReached()) return '';
+				return strict_equals(lang, 'fr') ? `La limite de caractères du champ ${label()} est dépassée.` : `The character limit for the ${label()} field has been exceeded.`;
+			});
 
 		onMount(() => {
 			if (webComponentMode) return;
@@ -10284,6 +10308,10 @@
 			}
 
 			onMountInput(input(), (v) => set(textFieldRow, v, true), (v) => value(v), (v) => invalid(v));
+		});
+
+		user_effect(() => {
+			invalidAtSubmit(required() && !value() || maxlengthReached());
 		});
 
 		user_effect(() => {
@@ -10300,6 +10328,9 @@
 			const currentLength = value()?.length || 0;
 			const remaining = maxlength() - currentLength;
 			const over = Math.abs(remaining);
+
+			maxlengthReached(remaining < 0);
+
 			const s = over > 1 ? 's' : '';
 
 			set(charCountText, remaining >= 0 ? strict_equals(lang, 'fr') ? `${remaining} caractère${s} restant${s}` : `${remaining} character${s} remaining` : strict_equals(lang, 'fr') ? `${over} caractère${s} en trop` : `${over} character${s} over the limit`, true);
@@ -10390,8 +10421,22 @@
 			get maxlength() {
 				return maxlength();
 			},
-			set maxlength($$value = null) {
+			set maxlength($$value) {
 				maxlength($$value);
+				flushSync();
+			},
+			get maxlengthReached() {
+				return maxlengthReached();
+			},
+			set maxlengthReached($$value = false) {
+				maxlengthReached($$value);
+				flushSync();
+			},
+			get invalidAtSubmit() {
+				return invalidAtSubmit();
+			},
+			set invalidAtSubmit($$value = false) {
+				invalidAtSubmit($$value);
 				flushSync();
 			},
 			get value() {
@@ -10411,9 +10456,7 @@
 			get invalidText() {
 				return invalidText();
 			},
-			set invalidText(
-				$$value = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.'
-			) {
+			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
@@ -10478,6 +10521,8 @@
 			description: {},
 			classList: {},
 			maxlength: {},
+			maxlengthReached: {},
+			invalidAtSubmit: {},
 			value: {},
 			invalid: {},
 			invalidText: {},
@@ -10496,7 +10541,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[85, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[89, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10506,12 +10551,14 @@
 
 		setContext('webComponentMode', true);
 
-		let invalid = prop($$props, 'invalid', 15, false),
+		let invalid = prop($$props, 'invalid', 7),
 			invalidText = prop($$props, 'invalidText', 7),
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
 			required = prop($$props, 'required', 7),
-			maxlength = prop($$props, 'maxlength', 7);
+			maxlength = prop($$props, 'maxlength', 7),
+			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
+			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false);
 
 		let labelElement = state(void 0),
 			formErrorElement = state(void 0),
@@ -10556,6 +10603,8 @@
 		{
 			$$ownership_validator.binding('invalid', TextField, invalid);
 			$$ownership_validator.binding('invalidText', TextField, invalidText);
+			$$ownership_validator.binding('maxlengthReached', TextField, maxlengthReached);
+			$$ownership_validator.binding('invalidAtSubmit', TextField, invalidAtSubmit);
 
 			TextField(node, {
 				get label() {
@@ -10587,6 +10636,18 @@
 				},
 				set invalidText($$value) {
 					invalidText($$value);
+				},
+				get maxlengthReached() {
+					return maxlengthReached();
+				},
+				set maxlengthReached($$value) {
+					maxlengthReached($$value);
+				},
+				get invalidAtSubmit() {
+					return invalidAtSubmit();
+				},
+				set invalidAtSubmit($$value) {
+					invalidAtSubmit($$value);
 				},
 				get labelElement() {
 					return get(labelElement);
@@ -10632,7 +10693,7 @@
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value = false) {
+			set invalid($$value) {
 				invalid($$value);
 				flushSync();
 			},
@@ -10671,6 +10732,20 @@
 				maxlength($$value);
 				flushSync();
 			},
+			get maxlengthReached() {
+				return maxlengthReached();
+			},
+			set maxlengthReached($$value = false) {
+				maxlengthReached($$value);
+				flushSync();
+			},
+			get invalidAtSubmit() {
+				return invalidAtSubmit();
+			},
+			set invalidAtSubmit($$value = false) {
+				invalidAtSubmit($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -10687,7 +10762,9 @@
 				reflect: true,
 				type: 'Boolean'
 			},
-			invalidText: { attribute: 'invalid-text', type: 'String' }
+			invalidText: { attribute: 'invalid-text', type: 'String' },
+			maxlengthReached: {},
+			invalidAtSubmit: {}
 		},
 		['default'],
 		[],

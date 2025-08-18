@@ -79,7 +79,6 @@ import {Utils} from '../../utils.js';
             label="Combiné 1 invalide"
             classList={["qc-md"]}
             invalid
-            invalidText="Lorsque combinés, le message d'erreur décale les champs…"
     >
         <input type="text"
                name="invalid-combo-1"
@@ -89,6 +88,7 @@ import {Utils} from '../../utils.js';
     <TextField
             label="Combiné 2"
             classList={["qc-sm"]}
+            invalid
     >
         <input type="text"
                name="invalid-combo-2"
@@ -120,11 +120,10 @@ import {Utils} from '../../utils.js';
               classList={["qc-xxl"]}
               maxlength="50"
               required
-              invalidText="Message d'erreur personnalisé"
               invalid
 >
     <textarea name="zone-xxl-invalid"
               id="zone-xxl-invalid"
-    ></textarea>
+    >Lorem ipsum dolor sit amet, consectetur adipiscing elit</textarea>
 </TextField>
 <link rel='stylesheet' href='{Utils.cssPath}'>
