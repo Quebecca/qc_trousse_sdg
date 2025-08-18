@@ -6,7 +6,7 @@ import {Utils} from "../utils";
 const lang = Utils.getPageLanguage();
 
 let {invalid ,
-    label,
+    label = '',
     invalidText,
     id = $bindable(),
     extraClasses = [],
@@ -15,9 +15,13 @@ let {invalid ,
 
 let cleanLabel = $derived(label.replace(/:\s*$/, '')),
     defaultInvalidText = $derived(
-        lang === 'fr'
-            ? `Le champ ${cleanLabel} est requis.`
-            : `${cleanLabel} is required.`
+        label
+            ? lang === 'fr'
+                ? `Le champ ${cleanLabel} est requis.`
+                : `${cleanLabel} is required.`
+            : lang === 'fr'
+                ? `Ce champ est requis.`
+                : `This field is required.`
     )
 ;
 

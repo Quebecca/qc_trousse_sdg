@@ -10,7 +10,9 @@
 
 <script>
     import Checkbox from "./Checkbox.svelte";
-    import {updateInput} from "./updateInput.svelte";
+    import {onMount, setContext} from "svelte";
+
+    setContext('qc-checkbox', true);
 
     let {
         required = $bindable(false),
@@ -18,32 +20,41 @@
         invalid = $bindable(false),
         invalidText
     } = $props();
-    let requiredSpan = $state(null);
+    let requiredSpan = $state(null),
+        labelElement = $state(),
+        input = $state()
+    ;
     let onchange = e => {
         if (invalid && e.target.checked) {
             invalid = false;
         }
     }
+
+    onMount(() => {
+        labelElement = $host()
+            .querySelector('label')
+        input = $host().querySelector('input')
+    })
+
     $effect(() => {
         if (!required) return;
-        $host()
-            .querySelector('label')
-            .appendChild(requiredSpan);
+        labelElement.appendChild(requiredSpan);
     })
-    $effect(() =>  updateInput($host(), required, invalid, name))
 
 </script>
 {#if required}
 <span class="qc-required"
       aria-hidden="true"
       bind:this={requiredSpan}
-> *</span>
+>*</span>
 {/if}
 <Checkbox
     bind:invalid
-    bind:required
-    bind:invalidText
-    bind:compact
+    {compact}
+    {required}
+    {invalidText}
+    {labelElement}
+    {input}
     {onchange}
     >
     <slot />

@@ -4,7 +4,7 @@
     const lang = Utils.getPageLanguage();
     let {
         invalid = $bindable(false),
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
+        invalidText,
         children,
         ...restProps
     } = $props();

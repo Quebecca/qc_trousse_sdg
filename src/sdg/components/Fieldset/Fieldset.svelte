@@ -67,6 +67,6 @@
     >
         {@render children?.()}
     </div>
-    <FormError {invalid} {invalidText} />
+    <FormError {invalid} {invalidText} label={legend} />
 
 </fieldset>
