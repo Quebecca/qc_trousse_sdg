@@ -1,7 +1,6 @@
 export function genericOptions() {
     let genericOptions = [];
-    for (let i = 1; i < 16; i++) {
-        console.log(i);
+    for (let i = 1; i <= 16; i++) {
         genericOptions.push({
             value: i,
             label: `Option ${i}`,

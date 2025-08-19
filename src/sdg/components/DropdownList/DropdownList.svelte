@@ -178,6 +178,18 @@
         }
     }
 
+    function handleSearchKeyDown(event) {
+        if (event.key === "ArrowDown" && displayedItems?.length > 0) {
+            event.preventDefault();
+            // event.stopPropagation();
+            dropdownItems?.focus();
+        }
+
+        if (event.key === "ArrowUp") {
+            button?.focus();
+        }
+    }
+
     $effect(() => {
         if (searchText.length > 0) {
             let newDisplayedItems = [];
@@ -289,11 +301,12 @@
                         leftIcon="true"
                         bind:this={searchInput}
                         onkeydown={(e) => {
-                            handleArrowDown(e, dropdownItems);
-                            handleArrowUp(e, button);
-                            if (e.key === "Enter") {
-                                e.preventDefault();
-                            }
+                            // handleArrowDown(e, dropdownItems);
+                            // handleArrowUp(e, button);
+                            // if (e.key === "Enter") {
+                            //     e.preventDefault();
+                            // }
+                            handleSearchKeyDown(e);
                         }}
                     />
                 </div>

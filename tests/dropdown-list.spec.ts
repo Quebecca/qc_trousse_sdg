@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Select WC', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique avec recherche' }).click();
+    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
     await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
     await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
 
@@ -18,7 +18,7 @@ test('Select Svelte', async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/dropdownListSvelte.test.html');
     await page.goto(`file://${htmlFilePath}`);
 
-    await page.getByRole('combobox', { name: 'Choix unique avec recherche' }).click();
+    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
     await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
 
     await expect(page).toHaveScreenshot({fullPage: true});
@@ -166,7 +166,7 @@ test('Soit une option sélectionnée, liste déroulante fermée et focus placé 
 });
 
 test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page, browserName }) => {
-    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
+    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
     await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
 
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('12');
@@ -212,8 +212,8 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
     `);
 
     await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
-    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique avec recherche:' }).click();
+    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
+    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
     await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
       - list:

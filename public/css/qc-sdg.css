@@ -2411,7 +2411,7 @@ qc-textfield textarea + .qc-textfield-charcount {
   margin: 0;
 }
 
-.qc-dropdown-list-single-selected {
+li[aria-selected=true] {
   background-color: var(--qc-color-blue-pale) !important;
 }
 
