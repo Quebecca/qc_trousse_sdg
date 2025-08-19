@@ -27,6 +27,11 @@
     width: 100%;
   }
 
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
   &.qc-compact {
     font-weight: token-value(font weight, semi-bold);
     min-width: rem(80);

@@ -2209,6 +2209,9 @@ qc-search-bar {
     width: 100%;
   }
 }
+.qc-button:focus, .qc-button:focus-visible {
+  outline: none;
+}
 .qc-button.qc-compact {
   font-weight: var(--qc-font-weight-semi-bold);
   min-width: 8rem;
