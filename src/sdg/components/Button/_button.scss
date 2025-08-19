@@ -52,7 +52,7 @@
     color: token-value(color white);
     background-color: token-value(color blue piv);
     border-color: token-value(color blue piv);
-    box-shadow: 0 1px 4px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24);
+    box-shadow: 0 1px 4px token-value(color box_shadow);
 
     &:hover:not(:disabled) {
       background-color: token-value(color blue, regular);
@@ -63,7 +63,7 @@
       background-color: token-value(color blue, regular);
       border-color: token-value(color blue, dark);
       box-shadow:
-              0 2px 8px rgba(map.get(map.get(map.get($xl-tokens, color), blue), dark), 0.24),
+              0 2px 8px token-value(color box_shadow),
               0 0 0 2px token-value(color blue, light);
     }
 
