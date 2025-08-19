@@ -2218,6 +2218,8 @@ qc-search-bar {
   min-height: 4rem;
   padding: 0.8rem 1.6rem;
   border-width: 1px;
+  margin-right: var(--qc-spacer-md);
+  margin-bottom: var(--qc-spacer-sm);
 }
 @media (max-width: 767.98px) {
   .qc-button.qc-compact {

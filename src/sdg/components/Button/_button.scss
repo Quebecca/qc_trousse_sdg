@@ -38,6 +38,8 @@
     min-height: rem(40);
     padding: rem(8) rem(16);
     border-width: 1px;
+    margin-right: token-value(spacer, md);
+    margin-bottom: token-value(spacer, sm);
 
     @include media-mobile() {
       width: 100%;
