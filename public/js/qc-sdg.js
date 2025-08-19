@@ -9094,7 +9094,7 @@
 			rootElement = prop($$props, 'rootElement', 15);
 
 		let cleanLabel = user_derived(() => label().replace(/:\s*$/, '')),
-			defaultInvalidText = user_derived(() => label() ? strict_equals(lang, 'fr') ? `Le champ ${get(cleanLabel)} est requis.` : `${get(cleanLabel)} is required.` : strict_equals(lang, 'fr') ? `Ce champ est requis.` : `This field is required.`);
+			defaultInvalidText = user_derived(() => label() ? strict_equals(lang, 'fr') ? `Le champ ${get(cleanLabel)} est obligatoire.` : `${get(cleanLabel)} field is required.` : strict_equals(lang, 'fr') ? `Ce champ est obligatoire.` : `This field is required.`);
 
 		onMount(() => {
 			id(Utils.generateId('qc-form-error'));

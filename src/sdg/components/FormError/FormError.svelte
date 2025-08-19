@@ -17,10 +17,10 @@ let cleanLabel = $derived(label.replace(/:\s*$/, '')),
     defaultInvalidText = $derived(
         label
             ? lang === 'fr'
-                ? `Le champ ${cleanLabel} est requis.`
-                : `${cleanLabel} is required.`
+                ? `Le champ ${cleanLabel} est obligatoire.`
+                : `${cleanLabel} field is required.`
             : lang === 'fr'
-                ? `Ce champ est requis.`
+                ? `Ce champ est obligatoire.`
                 : `This field is required.`
     )
 ;
