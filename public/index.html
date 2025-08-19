@@ -1094,145 +1094,137 @@
 <h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
 <p>Ce composant ne contient pas de DOM d’ombre.</p>
 
-    <h2 id="base-button">Boutons</h2>
+    <h2 id="buttons">Boutons</h2>
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemples des différentes options de boutons.">
     <div>
-        <button class="qc-button qc-primary">Principal</button>
-        <button class="qc-button qc-primary qc-button-rounded">Principal</button>
-        <button class="qc-button qc-primary" disabled>Principal</button>
-        <button class="qc-button qc-primary qc-compact">Principal</button>
-        <button class="qc-button qc-primary qc-compact qc-button-rounded">Principal</button>
+        <qc-button variant="primary" label="Principal"></qc-button>
+        <qc-button variant="primary" rounded label="Principal"></qc-button>
+        <qc-button variant="primary" disabled label="Principal"></qc-button>
+        <qc-button variant="primary" compact label="Principal"></qc-button>
     </div>
 
     <div>
-        <button class="qc-button qc-secondary">Secondaire</button>
-        <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
-        <button class="qc-button qc-secondary" disabled>Secondaire</button>
-        <button class="qc-button qc-secondary qc-compact">Secondaire</button>
-        <button class="qc-button qc-secondary qc-compact qc-button-rounded">Secondaire</button>
+        <qc-button variant="secondary" label="Secondaire"></qc-button>
+        <qc-button variant="secondary" rounded label="Secondaire"></qc-button>
+        <qc-button variant="secondary" disabled label="Secondaire"></qc-button>
+        <qc-button variant="secondary" compact label="Secondaire"></qc-button>
     </div>
 
     <div>
-        <button class="qc-button qc-tertiary">Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
-        <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-compact qc-button-rounded">Tertiaire</button>
+        <qc-button variant="tertiary" label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" rounded label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" disabled label="Tertiaire"></qc-button>
+        <qc-button variant="tertiary" compact label="Tertiaire"></qc-button>
     </div>
 
     <div>
-        <button class="qc-button qc-danger">Avertissement</button>
-        <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
-        <button class="qc-button qc-danger" disabled>Avertissement</button>
-        <button class="qc-button qc-danger qc-compact">Avertissement</button>
-        <button class="qc-button qc-danger qc-compact qc-button-rounded">Avertissement</button>
+        <qc-button variant="danger" label="Avertissement"></qc-button>
+        <qc-button variant="danger" rounded label="Avertissement"></qc-button>
+        <qc-button variant="danger" disabled label="Avertissement"></qc-button>
+        <qc-button variant="danger" compact label="Avertissement"></qc-button>
     </div>
-
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemples de boutons avec un icone.">
     <div>
-        <button class="qc-button qc-primary">
-            <qc-icon type="plus"></qc-icon>
-            Ajouter
-        </button>
+        <qc-button
+                variant="primary"
+                label="Ajouter"
+                icon="plus"
+                icon-position="left"
+        ></qc-button>
 
-        <button class="qc-button qc-primary">
-            Information
-            <qc-icon type="information"></qc-icon>
-        </button>
+        <qc-button
+                variant="primary"
+                label="Information"
+                icon="information"
+                icon-position="right"
+        ></qc-button>
     </div>
+
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
-    <button class="qc-button qc-primary">
-        <qc-icon src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
-        ></qc-icon>
-        Questions
-    </button>
+<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée.">
+    <qc-button
+            variant="primary"
+            label="Questions"
+            icon-src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="973.1" height="973.1" viewBox="0 0 973.1 973.1"><path d="M502.29,788.199h-47c-33.1,0-60,26.9-60,60v64.9c0,33.1,26.9,60,60,60h47c33.101,0,60-26.9,60-60v-64.9 C562.29,815,535.391,788.199,502.29,788.199z" fill="%23fff"/><path d="M170.89,285.8l86.7,10.8c27.5,3.4,53.6-12.4,63.5-38.3c12.5-32.7,29.9-58.5,52.2-77.3c31.601-26.6,70.9-40,117.9-40 c48.7,0,87.5,12.8,116.3,38.3c28.8,25.6,43.1,56.2,43.1,92.1c0,25.8-8.1,49.4-24.3,70.8c-10.5,13.6-42.8,42.2-96.7,85.9 c-54,43.7-89.899,83.099-107.899,118.099c-18.4,35.801-24.8,75.5-26.4,115.301c-1.399,34.1,25.8,62.5,60,62.5h49 c31.2,0,57-23.9,59.8-54.9c2-22.299,5.7-39.199,11.301-50.699c9.399-19.701,33.699-45.701,72.699-78.1 C723.59,477.8,772.79,428.4,795.891,392c23-36.3,34.6-74.8,34.6-115.5c0-73.5-31.3-138-94-193.4c-62.6-55.4-147-83.1-253-83.1 c-100.8,0-182.1,27.3-244.1,82c-52.8,46.6-84.9,101.8-96.2,165.5C139.69,266.1,152.39,283.5,170.89,285.8z" fill="%23fff"/></svg>'
+    ></qc-button>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemples de boutons simples.">
     <div>
-        <button class="qc-button qc-simple">
-            <qc-icon type="information"></qc-icon>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple" disabled>
-            <qc-icon type="plus"></qc-icon>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple qc-compact">
-            <qc-icon type="external-link"></qc-icon>
-            Action
-        </button>
+        <qc-button variant="simple" label="Action" icon="information"></qc-button>
+        <qc-button variant="simple" disabled label="Action" icon="plus"></qc-button>
+        <qc-button variant="simple" compact label="Action" icon="external-link"></qc-button>
     </div>
 </qc-doc-exemple>
 
 
-<h3>Classes CSS</h3>
 
+<h3>Documentation technique</h3>
+
+<h4>Attributs de qc-button</h4>
 <div class="table-overflow">
-    <table class="qc-table qc-striped">
+    <table class="qc-table qc-striped component-attributes-description">
         <thead>
         <tr>
-            <th>Classe / Attribut</th>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
             <th>Description</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td><code>qc-button</code></td>
-            <td>Classe de base obligatoire pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
+            <td>variant</td>
+            <td>Texte</td>
+            <td>"primary"</td>
+            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
         </tr>
         <tr>
-            <td><code>qc-compact</code></td>
-            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
+            <td>label</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte affiché dans le bouton.</td>
         </tr>
         <tr>
-            <td><code>qc-button-rounded</code></td>
-            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
+            <td>compact</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Affiche le bouton dans un format plus petit.</td>
         </tr>
         <tr>
-            <td><code>qc-primary</code></td>
-            <td>Bouton principal avec fond bleu et texte blanc.</td>
+            <td>rounded</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
         </tr>
         <tr>
-            <td><code>qc-secondary</code></td>
-            <td>Bouton secondaire avec fond blanc et texte bleu.</td>
+            <td>disabled</td>
+            <td>"True" ou "False"</td>
+            <td>False</td>
+            <td>Désactive le bouton et empêche toute interaction.</td>
         </tr>
         <tr>
-            <td><code>qc-tertiary</code></td>
-            <td>Bouton tertiaire avec fond blanc et texte bleu.</td>
+            <td>icon</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom d’une icône présente dans la librairie du projet. (voir la section <a href="#icons">icônes</a>)</td>
         </tr>
         <tr>
-            <td><code>qc-danger</code></td>
-            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
+            <td>icon-position</td>
+            <td>"left" ou "right"</td>
+            <td>"left"</td>
+            <td>Positionne l’icône à gauche ou à droite du texte dans le bouton.</td>
         </tr>
         <tr>
-            <td><code>qc-simple</code></td>
-            <td>Bouton sans fond ni bordure.</td>
-        </tr>
-        <tr>
-            <td><code>disabled</code></td>
-            <td>État désactivé du bouton. Change l’apparence et désactive les interactions.</td>
-        </tr>
-        <tr>
-            <td><code>&lt;qc-icon&gt;</code></td>
-            <td>Composant permettant d'afficher une icône. Peut être placé avant ou après le texte.</td>
-        </tr>
-        <tr>
-            <td>type (dans qc-icon)</td>
-            <td>Type d'icône à afficher. (voir la section <a href="#icons">icônes</a>)</td>
-        </tr>
-        <tr>
-            <td>src (dans qc-icon)</td>
-            <td>Permet d'afficher une icône personnalisée en base64.</td>
-        </tr>
+            <td>icon-src</td>
+            <td>Tout format accepté par la fonction css url()</td>
+            <td>""</td>
+            <td>Permet d’afficher une image personnalisée.</td>
         </tbody>
     </table>
 </div>
@@ -2041,6 +2033,11 @@
 
 <p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
+
     <h3 id="selection-button">Boutons de sélection</h3>
 
 
@@ -2421,27 +2418,27 @@
 <hr/>
     <h2 id="textfield">Champ texte</h2>
 
-<p>Le champ texte est un espace dans lequel est saisie une information qui tient sur une ou plusieurs lignes de texte.
-  Il peut s’agir d’une combinaison de lettres, de chiffres et de symboles.</p>
-
-<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
+<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états. Soumettre le formulaire pour voir les messages d'erreur.">
   <form id="formulaire-champs-textes">
     <qc-textfield
-            label="Entrez votre âge"
-            size="sm"
+            label="Nom complet"
+            size="lg"
+            required
     >
       <input type="text"
-             name="text-sm"
-             placeholder="25" />
+             name="code-postal"
+             placeholder="ex : Jean Tremblay"
+      />
     </qc-textfield>
 
     <qc-textfield
-            label="Entrez votre code postal"
-            size="md"
+            label="Champ désactivé"
+            size="lg"
     >
       <input type="text"
-             name="text-md"
-             placeholder="ex : G1A 1A1"
+             name="disabled-field"
+             placeholder="Ce champ est désactivé"
+             disabled
       />
     </qc-textfield>
 
@@ -2449,94 +2446,48 @@
       <qc-textfield
               label="Téléphone"
               size="md"
-              placeholder="(123) 456-7890"
-      ><input type="text"
-              name="text-md"
-              placeholder="ex : G1A 1A1"
+              required
+        ><input type="text"
+                name="telephone"
+                placeholder="(123) 456-7890"
       /></qc-textfield>
 
       <qc-textfield
-              name="poste"
               label="Poste"
               size="sm"
-              placeholder="1234"
-      ></qc-textfield>
+      >
+        <input type="text"
+               name="poste"
+        />
+      </qc-textfield>
     </div>
 
-
     <qc-textfield
-            name="text-lg"
-            label="Entrez votre ville"
-            size="lg"
-            placeholder="Ceci est un très long placeholder"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="text-xl"
-            label="Entrez votre adresse courriel"
+            label="Champ de texte multiligne"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             size="xl"
-            placeholder="ex : jeantremblay@exemple.com"
+            max-length="10"
             required
-    ></qc-textfield>
-
-    <qc-textfield
-            name="text-xxl"
-            label="Entrez votre adresse"
-            size="xxl"
-            disabled
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xl"
-            label="Commentaires"
-            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-            size="xl"
-            display="area"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xxl"
-            label="Suggestions"
-            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-            size="xxl"
-            display="area"
-            max-length="50"
-            required
-            invalid-text="Message d'erreur personnalisé"
-    ></qc-textfield>
+    >
+      <textarea name="zone-xxl"></textarea>
+    </qc-textfield>
 
     <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
   </form>
 
   <script>
     const form = document.getElementById("formulaire-champs-textes");
-
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-
       let isValid = true;
-
-      const requiredFields = form.querySelectorAll("qc-textfield[required]");
-
-      requiredFields.forEach(field => {
-        const value = field.value?.trim();
-        const maxLength = parseInt(field.getAttribute("max-length"), 10);
-
-        if (!value) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        if (!isNaN(maxLength) && value.length > maxLength) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        field.invalid = false;
-      });
-
+      form
+          .querySelectorAll("qc-textfield[required]")
+          .forEach(formfield => {
+            if (formfield.invalidAtSubmit) {
+              formfield.invalid = true;
+              isValid = false;
+            }
+          })
       if (isValid) {
         const formData = new FormData(form);
         let alertParts = ["Formulaire soumis avec les données suivantes :"];
@@ -2552,6 +2503,11 @@
 
 <h3>Documentation technique</h3>
 
+<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
+
+<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne causent pas décalage. <br/>
+  Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
+
 <h4>Attributs</h4>
 <div class="table-overflow">
   <table class="qc-table qc-striped component-attributes-description">
@@ -2565,52 +2521,24 @@
     </thead>
     <tbody>
     <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ</td>
-    </tr>
-    <tr>
       <td>label</td>
       <td>Texte</td>
       <td>""</td>
-      <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
-    </tr>
-    <tr>
-      <td>placeholder</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte indicatif affiché lorsque le champ est vide</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Valeur envoyée lors de la soumission du formulaire</td>
+      <td>Texte du libellé du champ</td>
     </tr>
     <tr>
       <td>size</td>
       <td>"sm", "md", "lg", "xl", "xxl"</td>
-      <td>"xl"</td>
-      <td>Taille du champ</td>
-    </tr>
-    <tr>
-      <td>display</td>
-      <td>"inline", "area"</td>
-      <td>"inline"</td>
-      <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Désactive le champ</td>
+      <td>lg pour les champs simple (<code>input</code>) <br>
+        xl pour les champs multilignes (<code>textarea</code>),
+      </td>
+      <td>Largeur du champ</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Rend le champ obligatoire</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Marque le champ comme obligatoire</td>
     </tr>
     <tr>
       <td>description</td>
@@ -2622,25 +2550,63 @@
       <td>max-length</td>
       <td>Nombre</td>
       <td>null</td>
-      <td>Nombre maximum de caractères autorisés pour ce champ</td>
+      <td>Indique la limite de caractères pour le champ</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique que le champ est invalide en affichant un message selon l'erreur.
+      <dl>
+        <dt>Français</dt>
+        <dd>Le champ XXX est obligatoire.</dd>
+        <dd>La limite de caractères du champ XXX est dépassée.</dd>
+        <dt>Anglais</dt>
+        <dd>XXX field is required.</dd>
+        <dd>The character limit for the ${label} field has been exceeded..</dd>
+      </dl>
+      </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>aucune</td>
       <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
     </tr>
     </tbody>
   </table>
 </div>
 
-<hr/>
+<h4>Propriété js</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>invalidAtSubmit</td>
+        <td>Booléen</td>
+        <td>Indique si le champ serait invalide s'il était soumis. La vérification porte sur <code>required</code> et <code>max-length</code></td>
+      </tr>
+      <tr>
+      <tr>
+        <td>maxlengthReached</td>
+        <td>Booléen</td>
+        <td>Indique si la limite de caractère est dépassée.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
     <h2 id="select">Liste déroulante (qc-select)</h2>
 
 <h3>Exemples</h3>
