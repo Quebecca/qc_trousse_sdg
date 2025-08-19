@@ -11,7 +11,7 @@
         label = '',
         required = $bindable(),
         description,
-        classList = [],
+        size,
         maxlength,
         maxlengthReached = $bindable(false),
         invalidAtSubmit = $bindable(false),
@@ -154,10 +154,8 @@
 {#if webComponentMode}
     {@render textfield()}
 {:else}
-    <div class={[
-        'qc-textfield',
-        ...classList
-    ]}
+    <div class='qc-textfield'
+         {size}
          invalid={invalid ? true : undefined}
          bind:this={rootElement}
     >

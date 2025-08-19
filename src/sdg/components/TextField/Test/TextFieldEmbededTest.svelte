@@ -1,19 +1,19 @@
 <svelte:options customElement={{
   tag: 'qc-textfield-embedded-test'
-}} />
+}}/>
 <script>
-import TextField from "../TextField.svelte";
-import {Utils} from '../../utils.js';
+    import TextField from "../TextField.svelte";
+    import {Utils} from '../../utils.js';
 </script>
 <TextField label="Petit"
-              classList={["qc-sm"]}>
+           size="sm">
     <input type="text"
            name="text-sm"
            placeholder="25"
     />
 </TextField>
 
-<TextField classList={["qc-md"]}>
+<TextField size="md">
     <label for="text-md">Moyen</label>
     <input type="text"
            id="text-md"
@@ -23,8 +23,8 @@ import {Utils} from '../../utils.js';
 </TextField>
 
 <TextField label="Large"
-              classList={["qc-lg"]}
-              invalid
+           size="lg"
+           invalid
 >
     <input type="text"
            name="text-lg"
@@ -33,10 +33,10 @@ import {Utils} from '../../utils.js';
 </TextField>
 
 <TextField name="text-xl"
-              label="Très large"
-              classList={["qc-xl"]}
-              placeholder="Long placeholder lorem ipsum dolor sit amet"
-              required>
+           label="Très large"
+           size="xl"
+           placeholder="Long placeholder lorem ipsum dolor sit amet"
+           required>
     <input type="text"
            name="text-xl"
     />
@@ -44,7 +44,7 @@ import {Utils} from '../../utils.js';
 
 <TextField
         label="Extra large"
-        classList={["qc-xxl"]}
+        size="xxl"
 
 >
     <input type="text"
@@ -57,7 +57,7 @@ import {Utils} from '../../utils.js';
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1"
-            classList={["qc-md"]}
+            size="md"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -67,7 +67,7 @@ import {Utils} from '../../utils.js';
 
     <TextField
             label="Combiné 2"
-            classList={["qc-sm"]}
+            size="sm"
     >
         <input type="text"
                name="combo-2"
@@ -77,7 +77,7 @@ import {Utils} from '../../utils.js';
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1 invalide"
-            classList={["qc-md"]}
+            size="md"
             invalid
     >
         <input type="text"
@@ -87,7 +87,7 @@ import {Utils} from '../../utils.js';
 
     <TextField
             label="Combiné 2"
-            classList={["qc-sm"]}
+            size="sm"
             invalid
     >
         <input type="text"
@@ -99,7 +99,7 @@ import {Utils} from '../../utils.js';
 
 <TextField
         label="Commentaires"
-        classList={["qc-xl"]}
+        size="xl"
         description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
     <textarea name="zone-xl" id="zone-xl"></textarea>
@@ -108,7 +108,7 @@ import {Utils} from '../../utils.js';
 <TextField
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-        classList={["qc-xxl"]}
+        size="xxl"
         maxlength="50"
         required
 >
@@ -116,11 +116,11 @@ import {Utils} from '../../utils.js';
 </TextField>
 
 <TextField label="Suggestions"
-              description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-              classList={["qc-xxl"]}
-              maxlength="50"
-              required
-              invalid
+           description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
+           size="xxl"
+           maxlength="50"
+           required
+           invalid
 >
     <textarea name="zone-xxl-invalid"
               id="zone-xxl-invalid"

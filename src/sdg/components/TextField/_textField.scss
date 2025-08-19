@@ -19,29 +19,12 @@ qc-textfield,
   }
 }
 
-$sizes: (
-    sm: 63,
-    md: 156,
-    lg: 249,
-    xl: 528,
-    xxl: 825
-);
-@mixin size($sizes, $breakpoint: '') {
-  @each $size, $width in $sizes {
-    $prefix: if($breakpoint != '', $breakpoint + '-', '');
-    .qc-#{$prefix}#{$size} > & {
-      max-width: rem($width);
-    }
-  }
-}
-
 input,
 textarea {
   .qc-textfield &,
   qc-textfield & {
     display: block;
     width: 100%;
-    max-width: rem(map.get($sizes, lg));
     position: relative;
     color: token-value(color text primary);
     padding: rem(8);
@@ -77,21 +60,35 @@ textarea {
 
 }
 
+$sizes: (
+    sm: 63,
+    md: 156,
+    lg: 249,
+    xl: 528,
+    xxl: 825
+);
+
+input {
+  .qc-textfield &,
+  qc-textfield & {
+    max-width: rem(map.get($sizes, lg));
+  }
+}
+textarea,
+.qc-textfield-charcount {
+  .qc-textfield &,
+  qc-textfield & {
+    max-width: rem(map.get($sizes, xl));
+  }
+}
+
 input,
 textarea,
 .qc-textfield-charcount {
-  @include size($sizes);
-  @include media-desktop() {
-    @include size($sizes, desktop);
-  }
-  @include media-large-desktop() {
-    @include size($sizes, large-desktop);
-  }
-  @include media-tablet() {
-    @include size($sizes, tablet);
-  }
-  @include media-mobile() {
-    @include size($sizes, mobile);
+  @each $size, $width in $sizes {
+    [size="#{$size}"] & {
+      max-width: rem($width);
+    }
   }
 }
 

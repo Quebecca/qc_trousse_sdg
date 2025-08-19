@@ -4,6 +4,7 @@
     label: { attribute: 'label', type: 'String' },
     required: { attribute: 'required', type: 'Boolean' },
     description: { attribute: 'description', type: 'String' },
+    size: { attribute: 'size', type: 'String' },
     maxlength: { attribute: 'max-length', type: 'Number' },
     invalid: { attribute: 'invalid', type: 'Boolean', reflect: true },
     invalidText: { attribute: 'invalid-text', type: 'String' },

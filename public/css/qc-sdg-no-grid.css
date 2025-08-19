@@ -2426,7 +2426,6 @@ qc-textfield .qc-description:has(~ :disabled),
 qc-textfield textarea {
   display: block;
   width: 100%;
-  max-width: 24.9rem;
   position: relative;
   color: var(--qc-color-text-primary);
   padding: 0.8rem;
@@ -2468,138 +2467,40 @@ qc-textfield textarea:disabled {
   padding: 0.7rem;
 }
 
-.qc-sm > input,
-.qc-sm > textarea,
-.qc-sm > .qc-textfield-charcount {
-  max-width: 6.3rem;
-}
-.qc-md > input,
-.qc-md > textarea,
-.qc-md > .qc-textfield-charcount {
-  max-width: 15.6rem;
-}
-.qc-lg > input,
-.qc-lg > textarea,
-.qc-lg > .qc-textfield-charcount {
+.qc-textfield input, qc-textfield input {
   max-width: 24.9rem;
 }
-.qc-xl > input,
-.qc-xl > textarea,
-.qc-xl > .qc-textfield-charcount {
+
+.qc-textfield textarea, qc-textfield textarea,
+.qc-textfield .qc-textfield-charcount,
+qc-textfield .qc-textfield-charcount {
   max-width: 52.8rem;
 }
-.qc-xxl > input,
-.qc-xxl > textarea,
-.qc-xxl > .qc-textfield-charcount {
+
+[size=sm] input,
+[size=sm] textarea,
+[size=sm] .qc-textfield-charcount {
+  max-width: 6.3rem;
+}
+[size=md] input,
+[size=md] textarea,
+[size=md] .qc-textfield-charcount {
+  max-width: 15.6rem;
+}
+[size=lg] input,
+[size=lg] textarea,
+[size=lg] .qc-textfield-charcount {
+  max-width: 24.9rem;
+}
+[size=xl] input,
+[size=xl] textarea,
+[size=xl] .qc-textfield-charcount {
+  max-width: 52.8rem;
+}
+[size=xxl] input,
+[size=xxl] textarea,
+[size=xxl] .qc-textfield-charcount {
   max-width: 82.5rem;
-}
-@media (min-width: 992px) {
-  .qc-desktop-sm > input,
-  .qc-desktop-sm > textarea,
-  .qc-desktop-sm > .qc-textfield-charcount {
-    max-width: 6.3rem;
-  }
-  .qc-desktop-md > input,
-  .qc-desktop-md > textarea,
-  .qc-desktop-md > .qc-textfield-charcount {
-    max-width: 15.6rem;
-  }
-  .qc-desktop-lg > input,
-  .qc-desktop-lg > textarea,
-  .qc-desktop-lg > .qc-textfield-charcount {
-    max-width: 24.9rem;
-  }
-  .qc-desktop-xl > input,
-  .qc-desktop-xl > textarea,
-  .qc-desktop-xl > .qc-textfield-charcount {
-    max-width: 52.8rem;
-  }
-  .qc-desktop-xxl > input,
-  .qc-desktop-xxl > textarea,
-  .qc-desktop-xxl > .qc-textfield-charcount {
-    max-width: 82.5rem;
-  }
-}
-@media (min-width: 1200px) {
-  .qc-large-desktop-sm > input,
-  .qc-large-desktop-sm > textarea,
-  .qc-large-desktop-sm > .qc-textfield-charcount {
-    max-width: 6.3rem;
-  }
-  .qc-large-desktop-md > input,
-  .qc-large-desktop-md > textarea,
-  .qc-large-desktop-md > .qc-textfield-charcount {
-    max-width: 15.6rem;
-  }
-  .qc-large-desktop-lg > input,
-  .qc-large-desktop-lg > textarea,
-  .qc-large-desktop-lg > .qc-textfield-charcount {
-    max-width: 24.9rem;
-  }
-  .qc-large-desktop-xl > input,
-  .qc-large-desktop-xl > textarea,
-  .qc-large-desktop-xl > .qc-textfield-charcount {
-    max-width: 52.8rem;
-  }
-  .qc-large-desktop-xxl > input,
-  .qc-large-desktop-xxl > textarea,
-  .qc-large-desktop-xxl > .qc-textfield-charcount {
-    max-width: 82.5rem;
-  }
-}
-@media (max-width: 991.98px) {
-  .qc-tablet-sm > input,
-  .qc-tablet-sm > textarea,
-  .qc-tablet-sm > .qc-textfield-charcount {
-    max-width: 6.3rem;
-  }
-  .qc-tablet-md > input,
-  .qc-tablet-md > textarea,
-  .qc-tablet-md > .qc-textfield-charcount {
-    max-width: 15.6rem;
-  }
-  .qc-tablet-lg > input,
-  .qc-tablet-lg > textarea,
-  .qc-tablet-lg > .qc-textfield-charcount {
-    max-width: 24.9rem;
-  }
-  .qc-tablet-xl > input,
-  .qc-tablet-xl > textarea,
-  .qc-tablet-xl > .qc-textfield-charcount {
-    max-width: 52.8rem;
-  }
-  .qc-tablet-xxl > input,
-  .qc-tablet-xxl > textarea,
-  .qc-tablet-xxl > .qc-textfield-charcount {
-    max-width: 82.5rem;
-  }
-}
-@media (max-width: 767.98px) {
-  .qc-mobile-sm > input,
-  .qc-mobile-sm > textarea,
-  .qc-mobile-sm > .qc-textfield-charcount {
-    max-width: 6.3rem;
-  }
-  .qc-mobile-md > input,
-  .qc-mobile-md > textarea,
-  .qc-mobile-md > .qc-textfield-charcount {
-    max-width: 15.6rem;
-  }
-  .qc-mobile-lg > input,
-  .qc-mobile-lg > textarea,
-  .qc-mobile-lg > .qc-textfield-charcount {
-    max-width: 24.9rem;
-  }
-  .qc-mobile-xl > input,
-  .qc-mobile-xl > textarea,
-  .qc-mobile-xl > .qc-textfield-charcount {
-    max-width: 52.8rem;
-  }
-  .qc-mobile-xxl > input,
-  .qc-mobile-xxl > textarea,
-  .qc-mobile-xxl > .qc-textfield-charcount {
-    max-width: 82.5rem;
-  }
 }
 
 .qc-textfield textarea, qc-textfield textarea {
