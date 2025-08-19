@@ -2545,6 +2545,9 @@ qc-textfield textarea + .qc-textfield-charcount {
   transform: rotate(180deg);
 }
 
+.qc-textfield-container {
+  margin-bottom: 3.2rem;
+}
 .qc-textfield-container-xs {
   max-width: var(--qc-spacer-input-xs);
 }

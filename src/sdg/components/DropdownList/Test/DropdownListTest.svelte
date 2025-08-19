@@ -5,52 +5,83 @@
 <script>
     import DropdownList from "../DropdownList.svelte";
     import {Utils} from "../../utils";
-    import {onMount} from "svelte";
+    import * as dropdownListTest from "./dropdownListTestUtils";
+    import Button from "../../Button/Button.svelte";
 
-    let genericOptionsDisplay = $state([]);
-    onMount(() => {
-        let genericOptions = [];
-        for (let i = 0; i < 16; i++) {
-            console.log(i);
-            genericOptions.push({
-                value: i,
-                label: `Option ${i}`,
-                disabled: false,
-                checked: false,
-            });
-        }
-        genericOptionsDisplay = genericOptions;
-    });
+    let singleChoiceOptions = $state(dropdownListTest.genericOptions());
+    let singleChoiceWithSearchOptions = $state(dropdownListTest.genericOptions());
+    let multipleChoiceOptions = $state(dropdownListTest.genericOptions());
+    let invalidOptions = $state(dropdownListTest.genericOptions());
+    let restaurants = $state(dropdownListTest.restaurantsArray());
+    let regions = $state(dropdownListTest.regionsArray());
 
-    $inspect(genericOptionsDisplay);
+    singleChoiceOptions[0].checked = true;
+    singleChoiceWithSearchOptions[0].checked = true;
+
+    let restaurantsList = $state();
+    let regionsList = $state();
 </script>
-<div style="background-color: white; width: 200px; height: 40px;"></div>
 
-    <DropdownList
-            id="dropdown-list-single-choice"
-            label="Choix unique:"
-            items={JSON.parse(JSON.stringify(genericOptionsDisplay))}
-    />
+<DropdownList
+        id="dropdown-list-single-choice"
+        label="Choix unique:"
+        items={singleChoiceOptions}
+/>
 
+<div style="height: 40rem;">
+<DropdownList
+        id="dropdown-list-single-choice"
+        label="Choix unique avec recherche"
+        enableSearch={true}
+        items={singleChoiceWithSearchOptions}
+/>
+</div>
+
+<DropdownList
+        id="dropdown-list-multiple-choices"
+        label="Choix multiples"
+        multiple
+        items={multipleChoiceOptions}
+/>
+
+<DropdownList
+        id="dropdown-list-invalid"
+        label="État invalide"
+        invalid="true"
+        items={invalidOptions}
+/>
+
+<DropdownList
+        id="dropdown-list-disabled"
+        label="Désactivé"
+        disabled="true"
+        items={JSON.parse(JSON.stringify(multipleChoiceOptions))}
+/>
+
+<form id="dropdown-list-embedded-test-form">
     <DropdownList
-            id="dropdown-list-single-choice"
-            label="Choix unique avec recherche"
+            bind:this={restaurantsList}
+            label="Type de restaurant"
+            required="true"
+            placeholder="Type de restaurant"
             enableSearch={true}
-            items={JSON.parse(JSON.stringify(genericOptionsDisplay))}
+            searchPlaceholder="Rechercher un restaurant"
+            items={restaurants}
+            invalidText="Veuillez choisir un type de restaurant."
     />
 
     <DropdownList
-            id="dropdown-list-multiple-choices"
-            label="Choix multiples"
-            multiple
-            items={JSON.parse(JSON.stringify(genericOptionsDisplay))}
+            bind:this={regionsList}
+            label="Régions desservies"
+            multiple="true"
+            placeholder="Sélectionner une région"
+            enableSearch={true}
+            searchPlaceholder="Rechercher les régions"
+            items={regions}
+            width="lg"
     />
 
-    <DropdownList
-            id="dropdown-list-invalid"
-            label="État invalide"
-            disabled
-            items={JSON.parse(JSON.stringify(genericOptionsDisplay))}
-    />
+    <Button label="Envoyer" type="submit" compact="true" style="margin: 0;" />
+</form>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>

@@ -231,7 +231,7 @@
         >
             {label}
             {#if required}
-                <span class="qc-textfield-required" aria-hidden="true">*</span>
+                <span class="qc-required" aria-hidden="true">*</span>
             {/if}
         </label>
         {#if multiple && selectedItems.length > 0}

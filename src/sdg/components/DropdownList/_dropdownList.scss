@@ -7,6 +7,8 @@ $min-height: 40;
 $border: 1;
 
 .qc-textfield-container {
+  margin-bottom: rem(32);
+
   &-xs { max-width: token-value(spacer, input, xs); }
   &-sm { max-width: token-value(spacer, input, sm); }
   &-md { max-width: token-value(spacer, input, md); }
