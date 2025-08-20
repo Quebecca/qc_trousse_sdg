@@ -2,7 +2,7 @@
     import {Utils} from "../../../utils";
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
-    const groupId = Math.random().toString(36).substring(2, 15);
+    const groupId = Utils.generateId();
 
     let {
         items,
@@ -22,32 +22,15 @@
                 return foundElement;
             }
         }
-        return previousElement && self && self.getRootNode().contains(previousElement)
-            ? previousElement
+        return previousSelectedElement && self && self.getRootNode().contains(previousSelectedElement)
+            ? previousSelectedElement
             : null;
     });
-    let previousElement = $state();
-
-    let mouseDownElement = null;
-    let hoveredElement = null;
+    let previousSelectedElement = $state();
 
     $inspect(selectedElement, "selectedElement");
-    $inspect(previousElement, "previousElement");
+    $inspect(previousSelectedElement, "previousElement");
     $inspect(displayedItems, "displayedItems");
-    //
-    // $effect(() => {
-    //     const el = selectedElement && self.getRootNode().contains(selectedElement) ? selectedElement : null;
-    //     if (!el) {
-    //         return;
-    //     }
-    //
-    //     if (previousElement && previousElement !== el && self.getRootNode().contains(previousElement)) {
-    //         previousElement.classList.remove(selectedElementCLass);
-    //     }
-    //
-    //     el.classList.add(selectedElementCLass);
-    //     previousElement = el;
-    // });
 
     export function focusOnFirstElement() {
         if (displayedItems && displayedItems.length > 0) {
@@ -56,7 +39,6 @@
     }
 
     export function focusOnLastElement() {
-        const snapshot = $state.snapshot(displayedItems);
         if (displayedItems && displayedItems.length > 0) {
             displayedItems[displayedItems.length - 1].element.focus();
         }
@@ -77,25 +59,14 @@
         event.preventDefault();
 
         if (!item.disabled) {
+            items.forEach(item => item.checked = false);
+            items.find(option => option.value === item.value).checked = true;
             selectionCallback();
-
-            if (previousElement) {
-                items.find(
-                    item => item.value.toString() === previousElement.dataset.itemValue.toString()
-                ).checked = false;
-            }
-            item.checked = true;
         }
     }
 
     function handleMouseUp(event, item) {
-        if (event.target === hoveredElement && event.target === mouseDownElement) {
-            handleSelection(event, item);
-        }
-    }
-
-    function handleMouseDown(event) {
-        mouseDownElement = event.target;
+        handleSelection(event, item);
     }
 
     function handleComboKey(event, index, item) {
@@ -158,10 +129,7 @@
                 tabindex="0"
                 role="option"
                 aria-selected={selectedValue === item.value ? "true" : "false"}
-                onmousedown={(event) => handleMouseDown(event)}
-                onmouseup={(event) => handleMouseUp(event, item)}
-                onmouseenter={(event) => hoveredElement = event.target}
-                onmouseleave={() => hoveredElement = null}
+                onclick={(event) => handleMouseUp(event, item)}
                 onkeydown={(event) => handleKeyDown(event, index, item)}
             >
                 {@html item.label}

@@ -55,28 +55,28 @@
 <!--        items={JSON.parse(JSON.stringify(multipleChoiceOptions))}-->
 <!--/>-->
 
-<!--<form id="dropdown-list-embedded-test-form">-->
-<!--    <DropdownList-->
-<!--            label="Type de restaurant"-->
-<!--            required="true"-->
-<!--            placeholder="Type de restaurant"-->
-<!--            enableSearch={true}-->
-<!--            searchPlaceholder="Rechercher un restaurant"-->
-<!--            items={restaurants}-->
-<!--            invalidText="Veuillez choisir un type de restaurant."-->
-<!--    />-->
+<form id="dropdown-list-embedded-test-form">
+    <DropdownList
+            label="Type de restaurant"
+            required="true"
+            placeholder="Type de restaurant"
+            enableSearch={true}
+            searchPlaceholder="Rechercher un restaurant"
+            items={restaurants}
+            invalidText="Veuillez choisir un type de restaurant."
+    />
 
-<!--    <DropdownList-->
-<!--            label="Régions desservies"-->
-<!--            multiple="true"-->
-<!--            placeholder="Sélectionner une région"-->
-<!--            enableSearch={true}-->
-<!--            searchPlaceholder="Rechercher les régions"-->
-<!--            items={regions}-->
-<!--            width="lg"-->
-<!--    />-->
+    <DropdownList
+            label="Régions desservies"
+            multiple="true"
+            placeholder="Sélectionner une région"
+            enableSearch={true}
+            searchPlaceholder="Rechercher les régions"
+            items={regions}
+            width="lg"
+    />
 
-<!--    <Button label="Envoyer" type="submit" compact="true" style="margin: 0;" />-->
-<!--</form>-->
+    <Button label="Envoyer" type="submit" compact="true" style="margin: 0;" />
+</form>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>
