@@ -19,41 +19,41 @@
     singleChoiceWithSearchOptions[0].checked = true;
 </script>
 
-<!--<DropdownList-->
-<!--        id="dropdown-list-single-choice"-->
-<!--        label="Choix unique:"-->
-<!--        items={singleChoiceOptions}-->
-<!--/>-->
+<DropdownList
+        id="dropdown-list-single-choice"
+        label="Choix unique:"
+        items={singleChoiceOptions}
+/>
 
-<!--<div style="height: 40rem;">-->
-<!--<DropdownList-->
-<!--        id="dropdown-list-single-choice-no-scroll"-->
-<!--        label="Choix unique avec recherche"-->
-<!--        enableSearch={true}-->
-<!--        items={singleChoiceWithSearchOptions}-->
-<!--/>-->
-<!--</div>-->
+<div style="height: 40rem;">
+<DropdownList
+        id="dropdown-list-single-choice-no-scroll"
+        label="Choix unique avec recherche"
+        enableSearch={true}
+        items={singleChoiceWithSearchOptions}
+/>
+</div>
 
-<!--<DropdownList-->
-<!--        id="dropdown-list-multiple-choices"-->
-<!--        label="Choix multiples"-->
-<!--        multiple-->
-<!--        items={multipleChoiceOptions}-->
-<!--/>-->
+<DropdownList
+        id="dropdown-list-multiple-choices"
+        label="Choix multiples"
+        multiple
+        items={multipleChoiceOptions}
+/>
 
-<!--<DropdownList-->
-<!--        id="dropdown-list-invalid"-->
-<!--        label="État invalide"-->
-<!--        invalid="true"-->
-<!--        items={invalidOptions}-->
-<!--/>-->
+<DropdownList
+        id="dropdown-list-invalid"
+        label="État invalide"
+        invalid="true"
+        items={invalidOptions}
+/>
 
-<!--<DropdownList-->
-<!--        id="dropdown-list-disabled"-->
-<!--        label="Désactivé"-->
-<!--        disabled="true"-->
-<!--        items={JSON.parse(JSON.stringify(multipleChoiceOptions))}-->
-<!--/>-->
+<DropdownList
+        id="dropdown-list-disabled"
+        label="Désactivé"
+        disabled="true"
+        items={JSON.parse(JSON.stringify(multipleChoiceOptions))}
+/>
 
 <form id="dropdown-list-embedded-test-form">
     <DropdownList

@@ -4,9 +4,9 @@
 
     let {
         displayedItems,
+        value = $bindable(),
         handleExit = () => {},
-        selectionCallback = () => {
-        },
+        selectionCallback = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
@@ -23,19 +23,16 @@
             displayedItems && displayedItems.length > 0 ?
                 displayedItems.filter(item => item.checked).map(item => item.label)
                 : []
-        )
+        ),
+        displayedItemsElements = $state(new Array(displayedItems.length))
     ;
-
-    $effect(() => {
-       console.log("displayedItems", displayedItems.map(item => item.element));
-    });
 
     export function focusOnFirstElement() {
         if (displayedItems && displayedItems.length > 0) {
             if (displayedItems[0].disabled) {
-                displayedItems[0].element.closest("li").focus();
+                displayedItemsElements[0].closest("li").focus();
             } else {
-                displayedItems[0].element.focus();
+                displayedItemsElements[0].focus();
             }
         }
     }
@@ -43,18 +40,18 @@
     export function focusOnLastElement() {
         if (displayedItems && displayedItems.length > 0) {
             if (displayedItems[displayedItems.length - 1].disabled) {
-                displayedItems[displayedItems.length - 1].element.closest("li").focus();
+                displayedItemsElements[displayedItemsElements.length - 1].closest("li").focus();
             } else {
-                displayedItems[displayedItems.length - 1].element.focus();
+                displayedItemsElements[displayedItemsElements.length - 1].focus();
             }
         }
     }
 
     export function focusOnFirstMatchingElement(value) {
-        if (displayedItems && displayedItems.length > 0) {
-            const foundElement = displayedItems.find(
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            const foundElement = displayedItemsElements.find(
                 element => element.value.toLowerCase().includes(value.toLowerCase())
-            ).element;
+            );
             if (foundElement) {
                 if (foundElement.disabled) {
                     foundElement.closest("li").focus();
@@ -72,9 +69,9 @@
 
             if (displayedItems.length > 0 && index < displayedItems.length - 1) {
                 if (displayedItems[index + 1].disabled) {
-                    displayedItems[index + 1].element.closest("li").focus();
+                    displayedItemsElements[index + 1].closest("li").focus();
                 } else {
-                    displayedItems[index + 1].element.focus();
+                    displayedItemsElements[index + 1].focus();
                 }
             }
         }
@@ -85,9 +82,9 @@
 
             if (displayedItems.length > 0 && index > 0) {
                 if (displayedItems[index - 1].disabled) {
-                    displayedItems[index - 1].element.closest("li").focus();
+                    displayedItemsElements[index - 1].closest("li").focus();
                 } else {
-                    displayedItems[index - 1].element.focus();
+                    displayedItemsElements[index - 1].focus();
                 }
             } else {
                 focusOnOuterElement();
@@ -156,6 +153,7 @@
             selectedLabels = selectedLabels.filter(l => l !== label);
         }
 
+        value = selectedValues.length > 0 ? selectedValues : [];
         selectionCallback();
     }
 
@@ -171,7 +169,7 @@
 </script>
 
 {#if displayedItems.length > 0 && itemsHaveIds()}
-    <ul bind:this={self}>
+    <ul>
         {#each displayedItems as item, index (item.id)}
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -188,7 +186,7 @@
             >
                 <Checkbox
                     bind:checked={item.checked}
-                    bind:this={displayedItems[index].element}
+                    bind:this={displayedItemsElements[index]}
                     value={item.value}
                     label={item.label}
                     {name}

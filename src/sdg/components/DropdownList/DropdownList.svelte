@@ -4,7 +4,6 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
-    import {onMount} from "svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -226,127 +225,131 @@
     $effect(() => {
         items.forEach((item) => {
             if (!item.id) {
-                item.id = `${id}-${item.label.replace(/[^a-zA-Z0-9]/g, "-")}-${item.value.replace(/[^a-zA-Z0-9]/g, "-")}`;
+                item.id = `${id}-${item.label}-${item.value}`;
             }
         });
     });
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class={`qc-textfield-container ${widthClass}`}>
-    <div class="qc-dropdown-list-label-container">
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <label
-            class={[
-                "qc-label",
-                "qc-label-bold",
-                disabled && "qc-disabled"
-            ]}
-            for={inputId}
-            id={labelId}
-            onclick={(e) => {
-                e.preventDefault();
-                button.focus();
-            }}
-        >
-            {label}
-            {#if required}
-                <span class="qc-required" aria-hidden="true">*</span>
-            {/if}
-        </label>
-        {#if multiple && selectedItems.length > 0}
-            <div class="qc-dropdown-list-selection-count">
-                {#if lang === "fr"}
-                    {selectedItems.length} sélection{selectedItems.length > 1 ? "s" : ""}
-                {:else}
-                    {selectedItems.length} selection{selectedItems.length > 1 ? "s" : ""}
+<div>
+    <div class={`qc-textfield-container ${widthClass}`}>
+        <div class="qc-dropdown-list-label-container">
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+            <label
+                class={[
+                    "qc-label",
+                    "qc-label-bold",
+                    disabled && "qc-disabled"
+                ]}
+                for={inputId}
+                id={labelId}
+                onclick={(e) => {
+                    e.preventDefault();
+                    button.focus();
+                }}
+            >
+                {label}
+                {#if required}
+                    <span class="qc-required" aria-hidden="true">*</span>
                 {/if}
-            </div>
-        {/if}
-    </div>
-    <div
-        class={[
-            `qc-dropdown-list`,
-            invalid && "qc-dropdown-list-invalid",
-        ]}
-        tabindex="-1"
-        bind:this={instance}
-    >
-        <DropdownListButton
-            {inputId}
-            {disabled}
-            {expanded}
-            aria-labelledby={labelId}
-            aria-required={required}
-            aria-expanded={expanded}
-            aria-haspopup="listbox"
-            aria-controls={itemsId}
-            aria-invalid={invalid}
-            {selectedOptionsText}
-            {placeholder}
-            onclick={handleDropdownButtonClick}
-            onkeydown={(e) => {
-                handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
-            }}
-            bind:this={button}
-        />
-
-        <div
-            id={popupId}
-            class="qc-dropdown-list-expanded"
-            tabindex="-1"
-            hidden={!expanded}
-            role="listbox"
-        >
-
-            {#if enableSearch}
-                <div class="qc-dropdown-list-search">
-                    <SearchInput
-                        id="{id}-search"
-                        bind:value={searchText}
-                        placeholder={searchPlaceholder}
-                        ariaLabel={searchPlaceholder ? searchPlaceholder : undefined}
-                        leftIcon="true"
-                        bind:this={searchInput}
-                        onkeydown={(e) => {
-                            // handleArrowDown(e, dropdownItems);
-                            // handleArrowUp(e, button);
-                            // if (e.key === "Enter") {
-                            //     e.preventDefault();
-                            // }
-                            handleSearchKeyDown(e);
-                        }}
-                    />
+            </label>
+            {#if multiple && selectedItems.length > 0}
+                <div class="qc-dropdown-list-selection-count">
+                    {#if lang === "fr"}
+                        {selectedItems.length} sélection{selectedItems.length > 1 ? "s" : ""}
+                    {:else}
+                        {selectedItems.length} selection{selectedItems.length > 1 ? "s" : ""}
+                    {/if}
                 </div>
             {/if}
-
-            <DropdownListItems
-                id={itemsId}
-                {enableSearch}
-                {multiple}
-                {items}
-                {displayedItems}
-                {noOptionsMessage}
-                selectionCallbackSingle={() => {
-                    closeDropdown("");
-                    button?.focus();
+        </div>
+        <div
+            class={[
+                `qc-dropdown-list`,
+                invalid && "qc-dropdown-list-invalid",
+            ]}
+            tabindex="-1"
+            bind:this={instance}
+        >
+            <DropdownListButton
+                {inputId}
+                {disabled}
+                {expanded}
+                aria-labelledby={labelId}
+                aria-required={required}
+                aria-expanded={expanded}
+                aria-haspopup="listbox"
+                aria-controls={itemsId}
+                aria-invalid={invalid}
+                {selectedOptionsText}
+                {placeholder}
+                onclick={handleDropdownButtonClick}
+                onkeydown={(e) => {
+                    handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
                 }}
-                handleExitSingle={(key) => closeDropdown(key)}
-                handleExitMultiple={(key) => closeDropdown(key)}
-                focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
-                handlePrintableCharacter={handlePrintableCharacter}
-                bind:this={dropdownItems}
+                bind:this={button}
             />
 
-            <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->
-            <div role="status" class="qc-sr-only">
-                {#key searchText}
-                    <span>{srItemsCountText}</span>
-                {/key}
+            <div
+                id={popupId}
+                class="qc-dropdown-list-expanded"
+                tabindex="-1"
+                hidden={!expanded}
+                role="listbox"
+            >
+
+                {#if enableSearch}
+                    <div class="qc-dropdown-list-search">
+                        <SearchInput
+                            id="{id}-search"
+                            bind:value={searchText}
+                            placeholder={searchPlaceholder}
+                            ariaLabel={searchPlaceholder ? searchPlaceholder : undefined}
+                            leftIcon="true"
+                            bind:this={searchInput}
+                            onkeydown={(e) => {
+                                handleArrowDown(e, dropdownItems);
+                                handleArrowUp(e, button);
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                }
+                                handleSearchKeyDown(e);
+                            }}
+                        />
+                    </div>
+                {/if}
+
+                <DropdownListItems
+                    id={itemsId}
+                    {enableSearch}
+                    {multiple}
+                    {items}
+                    {displayedItems}
+                    {noOptionsMessage}
+                    selectionCallbackSingle={() => {
+                        closeDropdown("");
+                        button?.focus();
+                    }}
+                    handleExitSingle={(key) => closeDropdown(key)}
+                    handleExitMultiple={(key) => closeDropdown(key)}
+                    focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
+                    handlePrintableCharacter={handlePrintableCharacter}
+                    bind:this={dropdownItems}
+                    bind:value={value}
+                />
+
+                <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->
+                <div role="status" class="qc-sr-only">
+                    {#key searchText}
+                        <span>{srItemsCountText}</span>
+                    {/key}
+                </div>
             </div>
         </div>
+
     </div>
 
-    <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} />
+    <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} extraClasses={["qc-xs-mt"]} />
 </div>

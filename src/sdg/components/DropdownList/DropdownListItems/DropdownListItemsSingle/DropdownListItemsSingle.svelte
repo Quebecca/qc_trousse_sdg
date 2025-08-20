@@ -2,34 +2,37 @@
     import {Utils} from "../../../utils";
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
-    const groupId = Utils.generateId();
 
     let {
         items,
         displayedItems,
+        value = $bindable(),
         selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
 
+    let displayedItemsElements = $state(new Array(displayedItems.length));
+
     export function focusOnFirstElement() {
-        if (displayedItems && displayedItems.length > 0) {
-            displayedItems[0].element.focus();
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            displayedItemsElements[0].focus();
         }
     }
 
     export function focusOnLastElement() {
-        if (displayedItems && displayedItems.length > 0) {
-            displayedItems[displayedItems.length - 1].element.focus();
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            displayedItemsElements[displayedItemsElements.length - 1].focus();
         }
     }
 
-    export function focusOnFirstMatchingElement(value) {
-        if (displayedItems && displayedItems.length > 0) {
-            const foundElement = displayedItems.find(
-                item => item.value.toString() === value.toString()
-            )?.element;
+    export function focusOnFirstMatchingElement(passedValue) {
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            console.log($state.snapshot(displayedItemsElements));
+            const foundElement = displayedItemsElements.find(
+                el => el.dataset.itemValue.toString() === passedValue.toString()
+            );
             if (foundElement) {
                 foundElement.focus();
             }
@@ -43,6 +46,7 @@
             items.forEach(item => item.checked = false);
             items.find(option => option.value === item.value).checked = true;
             selectionCallback();
+            value = [item.value];
         }
     }
 
@@ -55,8 +59,8 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (displayedItems.length > 0 && index < displayedItems.length - 1) {
-                displayedItems[index + 1].element.focus();
+            if (displayedItemsElements.length > 0 && index < displayedItemsElements.length - 1) {
+                displayedItemsElements[index + 1].focus();
             }
         }
 
@@ -64,8 +68,8 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (displayedItems.length > 0 && index > 0) {
-                displayedItems[index - 1].element.focus();
+            if (displayedItemsElements.length > 0 && index > 0) {
+                displayedItemsElements[index - 1].focus();
             } else {
                 focusOnOuterElement();
             }
@@ -106,11 +110,11 @@
 </script>
 
 {#if displayedItems.length > 0 && itemsHaveIds()}
-    <ul bind:this={self}>
+    <ul>
         {#each displayedItems as item, index (item.id)}
             <li
-                bind:this={displayedItems[index].element}
-                id={`${index}-${groupId}-${item.label}-${item.value}`}
+                bind:this={displayedItemsElements[index]}
+                id={item.id}
                 class={[
                     "qc-dropdown-list-single",
                     item.disabled ? "qc-disabled" : "qc-dropdown-list-active",

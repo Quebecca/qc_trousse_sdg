@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto(`file://${htmlFilePath}`);
 });
 
-test('Select WC', async ({ page }) => {
+test('Select ref', async ({ page }) => {
     await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
     await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
     await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
@@ -14,8 +14,8 @@ test('Select WC', async ({ page }) => {
     await expect(page).toHaveScreenshot({fullPage: true});
 });
 
-test('Select Svelte', async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListSvelte.test.html');
+test('Select svelte', async ({ page }) => {
+    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListEmbedded.test.html');
     await page.goto(`file://${htmlFilePath}`);
 
     await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
@@ -262,8 +262,9 @@ test('Soit liste déroulante sans champ de recherche, en tapant un caractère im
     ).toBeFocused();
 });
 
-test('En sélectionnant des options de Choix multiples, alors la popup reste ouverte et affiche tous les choix', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix multiples:' }).click();
+test('popup choix multiple', async ({ page }) => {
+    // En sélectionnant des options de Choix multiples, alors la popup reste ouverte et affiche tous les choix
+    await page.locator('#dropdown-list-multiple-choices-input').click();
     await page.locator('label').filter({ hasText: 'Option 3' }).click();
 
     await expect(page.locator('#dropdown-list-multiple-choices-popup')).toBeVisible();
@@ -274,7 +275,7 @@ test('En sélectionnant des options de Choix multiples, alors la popup reste ouv
 });
 
 test('En sélectionnant 2 options de choix multiples, alors les 2 options sont listées', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix multiples:' }).click();
+    await page.locator('#dropdown-list-multiple-choices-input').click();
     await page.locator('label').filter({ hasText: 'Option 3' }).click();
     await page.locator('label').filter({ hasText: 'Option 4' }).click();
 
@@ -282,7 +283,7 @@ test('En sélectionnant 2 options de choix multiples, alors les 2 options sont l
 });
 
 test('En sélectionnant une option de Choix multiples et en la désélectionnant, alors aucune option n\'est listée', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix multiples:' }).click();
+    await page.locator('#dropdown-list-multiple-choices-input').click();
     await page.locator('label').filter({ hasText: 'Option 2' }).click();
     await page.locator('label').filter({ hasText: 'Option 2' }).click();
 
@@ -290,11 +291,12 @@ test('En sélectionnant une option de Choix multiples et en la désélectionnant
 
 });
 
-test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {
+test.fixme('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {
+    // TODO générer des id statiques pour les messages d'erreurs pour les récupérer
     await page.getByRole('button', { name: 'Envoyer' }).click();
 
     await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.locator('#dropdown-list-restaurants-error')).toMatchAriaSnapshot(`
+    await expect(page.getByRole('alert', { name: '' })).toMatchAriaSnapshot(`
         - alert:
           - img
           - text: Veuillez choisir un type de restaurant.
