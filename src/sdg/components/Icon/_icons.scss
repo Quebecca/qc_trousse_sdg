@@ -14,6 +14,7 @@ qc-icon {
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
   background-color: var(--img-color);
+  transform: rotate(var(--img-rotate));
   // TODO questionner une échelle [0 - 10 ou 100]
   @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
     &[data-img-size=#{$size-type}] {

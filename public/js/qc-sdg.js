@@ -6798,6 +6798,7 @@
 			width = prop($$props, 'width', 7, 'auto'),
 			height = prop($$props, 'height', 7, 'auto'),
 			src = prop($$props, 'src', 7, ''),
+			rotate = prop($$props, 'rotate', 7, 0),
 			rest = rest_props(
 				$$props,
 				[
@@ -6811,7 +6812,8 @@
 					'color',
 					'width',
 					'height',
-					'src'
+					'src',
+					'rotate'
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
@@ -6829,7 +6831,10 @@
     `,
 			'data-img-type': type(),
 			...get(attributes),
-			...rest
+			...rest,
+			[STYLE]: {
+				'--img-rotate': rotate() && rotate() + "deg"
+			}
 		}));
 
 		append($$anchor, div);
@@ -6884,6 +6889,13 @@
 				src($$value);
 				flushSync();
 			},
+			get rotate() {
+				return rotate();
+			},
+			set rotate($$value = 0) {
+				rotate($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -6897,7 +6909,8 @@
 			color: {},
 			width: {},
 			height: {},
-			src: {}
+			src: {},
+			rotate: {}
 		},
 		[],
 		[],
@@ -9042,7 +9055,8 @@
 			size: { attribute: 'size' },
 			width: { attribute: 'width' },
 			height: { attribute: 'height' },
-			src: { attribute: 'src' }
+			src: { attribute: 'src' },
+			rotate: { attribute: 'rotate' }
 		},
 		[],
 		[],

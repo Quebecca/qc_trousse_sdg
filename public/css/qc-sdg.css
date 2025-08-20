@@ -1133,6 +1133,7 @@ qc-icon {
   -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
   background-color: var(--img-color);
+  transform: rotate(var(--img-rotate));
 }
 .qc-icon[data-img-size=xs] {
   height: 1.2rem;

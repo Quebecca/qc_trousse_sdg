@@ -7,9 +7,9 @@
         width='auto',
         height='auto',
         src='',
+        rotate = 0,
         ...rest
     } = $props();
-
     let attributes = $derived(width === 'auto' ? { 'data-img-size': size } : {});
 </script>
 
@@ -24,6 +24,8 @@
         --img-height: ${height};
         --img-src: url('${src}');
     `}
+     style:--img-rotate={rotate && rotate + "deg"}
+
      data-img-type={type}
      {...attributes}
      {...rest}
