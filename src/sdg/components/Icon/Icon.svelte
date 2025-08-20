@@ -14,7 +14,10 @@
 </script>
 
 <div role="img"
-     class={`qc-icon${src ? ' qc-custom-icon' : ''}`}
+     class={[
+         "qc-icon",
+         src && "qc-icon-custom"
+     ]}
      aria-label={label}
      style={`--img-color: var(--qc-color-${color});
         --img-width: ${width};

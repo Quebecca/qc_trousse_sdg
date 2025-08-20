@@ -28,7 +28,7 @@
         "qc-search-input",
         leftIcon && "qc-search-left-icon"]} >
     {#if leftIcon}
-        <Icon type="loupe-piv-fine"
+        <Icon type="search-thin"
               iconColor="grey-regular"
         />
     {/if}
@@ -42,7 +42,7 @@
     />
     {#if value}
     <IconButton type="button"
-                icon="clear-input"
+                icon="xclose"
                 iconColor="blue-piv"
                 iconSize="sm"
                 aria-label={clearAriaLabel}

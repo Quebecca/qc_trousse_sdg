@@ -37,7 +37,6 @@
   <h2 class="qc-h4">Bases</h2>
   <ul>
     <li><a href='#couleurs'>Couleurs</a></li>
-    <li><a href="#icon-list">Icônes</a></li>
     <li><a href='#grille'>Grille horizontale</a></li>
     <li><a href='#figures'>Figures</a></li>
     <li><a href='#liens'>Liens</a></li>
@@ -195,104 +194,6 @@
     <qc-color-doc token="purple"
                   title="Violet"
     ></qc-color-doc>
-</section>
-
-    <hr />
-    <section id="icon-list">
-  <h2>Icônes</h2>
-
-  <div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-      <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Aperçu</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>arrow-up-white</td>
-        <td><qc-icon type="arrow-up-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>chevron-blue</td>
-        <td><qc-icon type="chevron-blue"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>chevron-white</td>
-        <td><qc-icon type="chevron-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>clipboard</td>
-        <td><qc-icon type="clipboard"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>error</td>
-        <td><qc-icon type="error"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>error-white</td>
-        <td><qc-icon type="error-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>external-link</td>
-        <td><qc-icon type="external-link"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>information</td>
-        <td><qc-icon type="information"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>information-white</td>
-        <td><qc-icon type="information-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>linkedin</td>
-        <td><qc-icon type="linkedin"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>loupe-piv-droite</td>
-        <td><qc-icon type="loupe-piv-droite"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>loupe-piv-fonce</td>
-        <td><qc-icon type="loupe-piv-fonce"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>minus</td>
-        <td><qc-icon type="minus"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>plus</td>
-        <td><qc-icon type="plus"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>question-mark</td>
-        <td><qc-icon type="question-mark"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>success</td>
-        <td><qc-icon type="success"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>success-white</td>
-        <td><qc-icon type="success-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>warning</td>
-        <td><qc-icon type="warning"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>xclose-blue</td>
-        <td><qc-icon type="xclose-blue"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>xclose-white</td>
-        <td><qc-icon type="xclose-white"></qc-icon></td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
 </section>
 
     <hr/>
@@ -831,7 +732,7 @@
                 caption="Exemple d’avis neutres"
 >
   <qc-notice type="advice"
-             icon="ampoule"
+             icon="ligth-bulb"
              title="Nouvelle règlementation"
              content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
   </qc-notice>
@@ -1094,137 +995,145 @@
 <h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
 <p>Ce composant ne contient pas de DOM d’ombre.</p>
 
-    <h2 id="buttons">Boutons</h2>
+    <h2 id="base-button">Boutons</h2>
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemples des différentes options de boutons.">
     <div>
-        <qc-button variant="primary" label="Principal"></qc-button>
-        <qc-button variant="primary" rounded label="Principal"></qc-button>
-        <qc-button variant="primary" disabled label="Principal"></qc-button>
-        <qc-button variant="primary" compact label="Principal"></qc-button>
+        <button class="qc-button qc-primary">Principal</button>
+        <button class="qc-button qc-primary qc-button-rounded">Principal</button>
+        <button class="qc-button qc-primary" disabled>Principal</button>
+        <button class="qc-button qc-primary qc-compact">Principal</button>
+        <button class="qc-button qc-primary qc-compact qc-button-rounded">Principal</button>
     </div>
 
     <div>
-        <qc-button variant="secondary" label="Secondaire"></qc-button>
-        <qc-button variant="secondary" rounded label="Secondaire"></qc-button>
-        <qc-button variant="secondary" disabled label="Secondaire"></qc-button>
-        <qc-button variant="secondary" compact label="Secondaire"></qc-button>
+        <button class="qc-button qc-secondary">Secondaire</button>
+        <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
+        <button class="qc-button qc-secondary" disabled>Secondaire</button>
+        <button class="qc-button qc-secondary qc-compact">Secondaire</button>
+        <button class="qc-button qc-secondary qc-compact qc-button-rounded">Secondaire</button>
     </div>
 
     <div>
-        <qc-button variant="tertiary" label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" rounded label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" disabled label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" compact label="Tertiaire"></qc-button>
+        <button class="qc-button qc-tertiary">Tertiaire</button>
+        <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
+        <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
+        <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
+        <button class="qc-button qc-tertiary qc-compact qc-button-rounded">Tertiaire</button>
     </div>
 
     <div>
-        <qc-button variant="danger" label="Avertissement"></qc-button>
-        <qc-button variant="danger" rounded label="Avertissement"></qc-button>
-        <qc-button variant="danger" disabled label="Avertissement"></qc-button>
-        <qc-button variant="danger" compact label="Avertissement"></qc-button>
+        <button class="qc-button qc-danger">Avertissement</button>
+        <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
+        <button class="qc-button qc-danger" disabled>Avertissement</button>
+        <button class="qc-button qc-danger qc-compact">Avertissement</button>
+        <button class="qc-button qc-danger qc-compact qc-button-rounded">Avertissement</button>
     </div>
+
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemples de boutons avec un icone.">
     <div>
-        <qc-button
-                variant="primary"
-                label="Ajouter"
-                icon="plus"
-                icon-position="left"
-        ></qc-button>
+        <button class="qc-button qc-primary">
+            <qc-icon type="plus"></qc-icon>
+            Ajouter
+        </button>
 
-        <qc-button
-                variant="primary"
-                label="Information"
-                icon="information"
-                icon-position="right"
-        ></qc-button>
+        <button class="qc-button qc-primary">
+            Information
+            <qc-icon type="information"></qc-icon>
+        </button>
     </div>
-
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée.">
-    <qc-button
-            variant="primary"
-            label="Questions"
-            icon-src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="973.1" height="973.1" viewBox="0 0 973.1 973.1"><path d="M502.29,788.199h-47c-33.1,0-60,26.9-60,60v64.9c0,33.1,26.9,60,60,60h47c33.101,0,60-26.9,60-60v-64.9 C562.29,815,535.391,788.199,502.29,788.199z" fill="%23fff"/><path d="M170.89,285.8l86.7,10.8c27.5,3.4,53.6-12.4,63.5-38.3c12.5-32.7,29.9-58.5,52.2-77.3c31.601-26.6,70.9-40,117.9-40 c48.7,0,87.5,12.8,116.3,38.3c28.8,25.6,43.1,56.2,43.1,92.1c0,25.8-8.1,49.4-24.3,70.8c-10.5,13.6-42.8,42.2-96.7,85.9 c-54,43.7-89.899,83.099-107.899,118.099c-18.4,35.801-24.8,75.5-26.4,115.301c-1.399,34.1,25.8,62.5,60,62.5h49 c31.2,0,57-23.9,59.8-54.9c2-22.299,5.7-39.199,11.301-50.699c9.399-19.701,33.699-45.701,72.699-78.1 C723.59,477.8,772.79,428.4,795.891,392c23-36.3,34.6-74.8,34.6-115.5c0-73.5-31.3-138-94-193.4c-62.6-55.4-147-83.1-253-83.1 c-100.8,0-182.1,27.3-244.1,82c-52.8,46.6-84.9,101.8-96.2,165.5C139.69,266.1,152.39,283.5,170.89,285.8z" fill="%23fff"/></svg>'
-    ></qc-button>
+<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
+    <button class="qc-button qc-primary">
+        <qc-icon src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+        ></qc-icon>
+        Questions
+    </button>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemples de boutons simples.">
     <div>
-        <qc-button variant="simple" label="Action" icon="information"></qc-button>
-        <qc-button variant="simple" disabled label="Action" icon="plus"></qc-button>
-        <qc-button variant="simple" compact label="Action" icon="external-link"></qc-button>
+        <button class="qc-button qc-simple">
+            <qc-icon type="information"></qc-icon>
+            Action
+        </button>
+
+        <button class="qc-button qc-simple" disabled>
+            <qc-icon type="plus"></qc-icon>
+            Action
+        </button>
+
+        <button class="qc-button qc-simple qc-compact">
+            <qc-icon type="external-link"></qc-icon>
+            Action
+        </button>
     </div>
 </qc-doc-exemple>
 
 
+<h3>Classes CSS</h3>
 
-<h3>Documentation technique</h3>
-
-<h4>Attributs de qc-button</h4>
 <div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+    <table class="qc-table qc-striped">
         <thead>
         <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
+            <th>Classe / Attribut</th>
             <th>Description</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>variant</td>
-            <td>Texte</td>
-            <td>"primary"</td>
-            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
+            <td><code>qc-button</code></td>
+            <td>Classe de base obligatoire pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
         </tr>
         <tr>
-            <td>label</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte affiché dans le bouton.</td>
+            <td><code>qc-compact</code></td>
+            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
         </tr>
         <tr>
-            <td>compact</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Affiche le bouton dans un format plus petit.</td>
+            <td><code>qc-button-rounded</code></td>
+            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
         </tr>
         <tr>
-            <td>rounded</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
+            <td><code>qc-primary</code></td>
+            <td>Bouton principal avec fond bleu et texte blanc.</td>
         </tr>
         <tr>
-            <td>disabled</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Désactive le bouton et empêche toute interaction.</td>
+            <td><code>qc-secondary</code></td>
+            <td>Bouton secondaire avec fond blanc et texte bleu.</td>
         </tr>
         <tr>
-            <td>icon</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Nom d’une icône présente dans la librairie du projet. (voir la section <a href="#icons">icônes</a>)</td>
+            <td><code>qc-tertiary</code></td>
+            <td>Bouton tertiaire avec fond blanc et texte bleu.</td>
         </tr>
         <tr>
-            <td>icon-position</td>
-            <td>"left" ou "right"</td>
-            <td>"left"</td>
-            <td>Positionne l’icône à gauche ou à droite du texte dans le bouton.</td>
+            <td><code>qc-danger</code></td>
+            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
         </tr>
         <tr>
-            <td>icon-src</td>
-            <td>Tout format accepté par la fonction css url()</td>
-            <td>""</td>
-            <td>Permet d’afficher une image personnalisée.</td>
+            <td><code>qc-simple</code></td>
+            <td>Bouton sans fond ni bordure.</td>
+        </tr>
+        <tr>
+            <td><code>disabled</code></td>
+            <td>État désactivé du bouton. Change l’apparence et désactive les interactions.</td>
+        </tr>
+        <tr>
+            <td><code>&lt;qc-icon&gt;</code></td>
+            <td>Composant permettant d'afficher une icône. Peut être placé avant ou après le texte.</td>
+        </tr>
+        <tr>
+            <td>type (dans qc-icon)</td>
+            <td>Type d'icône à afficher. (voir la section <a href="#icons">icônes</a>)</td>
+        </tr>
+        <tr>
+            <td>src (dans qc-icon)</td>
+            <td>Permet d'afficher une icône personnalisée en base64.</td>
+        </tr>
         </tbody>
     </table>
 </div>
@@ -2778,16 +2687,18 @@
     </table>
 </div>
 
-    <h2 id="icons">Icônes</h2>
+    <h2 id="icons">Icônes (qc-icon)</h2>
+
+<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
   id="icons-exemple">
-  <qc-icon type="error" color="error" size="xs"></qc-icon>
-  <qc-icon type="error" color="error" size="sm"></qc-icon>
-  <qc-icon type="error" color="error" size="md"></qc-icon>
-  <qc-icon type="error" color="error" size="lg"></qc-icon>
-  <qc-icon type="error" color="error" size="xl"></qc-icon>
+  <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
+  <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
+  <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
+  <qc-icon type="success" color="purple" size="lg"></qc-icon>
+  <qc-icon type="success" color="success" size="xl"></qc-icon>
 
 </qc-doc-exemple>
 <style>
@@ -2814,7 +2725,7 @@
       <td>type</td>
       <td>Texte</td>
       <td>""</td>
-      <td>Nom de l’icône à afficher.</td>
+      <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
     </tr>
     <tr>
       <td>label</td>
@@ -2851,6 +2762,101 @@
       <td>URL</td>
       <td>""</td>
       <td>Chemin vers une image personnalisée à utiliser comme icône.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Liste des icônes</h4>
+
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Aperçu</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>arrow-up</td>
+      <td><qc-icon type="arrow-up"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>checkmark</td>
+      <td><qc-icon type="checkmark"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>chevron-up-thin</td>
+      <td><qc-icon type="chevron-up-thin"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>chevron-up</td>
+      <td><qc-icon type="chevron-up"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>clipboard</td>
+      <td><qc-icon type="clipboard"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>error</td>
+      <td><qc-icon type="error"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>exclamation</td>
+      <td><qc-icon type="exclamation"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>external-link</td>
+      <td><qc-icon type="external-link"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>information</td>
+      <td><qc-icon type="information"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>ligth-bulb</td>
+      <td><qc-icon type="ligth-bulb"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>minus</td>
+      <td><qc-icon type="minus"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>note</td>
+      <td><qc-icon type="note"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>plus</td>
+      <td><qc-icon type="plus"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>question-mark</td>
+      <td><qc-icon type="question-mark"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>search-thin</td>
+      <td><qc-icon type="search-thin"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>search</td>
+      <td><qc-icon type="search"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>success</td>
+      <td><qc-icon type="success"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>warning</td>
+      <td><qc-icon type="warning"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>xclose-thin</td>
+      <td><qc-icon type="xclose-thin"></qc-icon></td>
+    </tr>
+    <tr>
+      <td>xclose</td>
+      <td><qc-icon type="xclose"></qc-icon></td>
     </tr>
     </tbody>
   </table>

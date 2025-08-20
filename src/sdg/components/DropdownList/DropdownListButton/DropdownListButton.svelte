@@ -35,7 +35,7 @@
 
     <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
         <Icon
-            type="chevron-grey-thin"
+            type="chevron-up-thin"
             color={disabled ? "grey-regular" : "blue-piv"}
             size="sm"
         />

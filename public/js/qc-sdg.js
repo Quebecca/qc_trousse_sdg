@@ -6820,7 +6820,7 @@
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
 			role: 'img',
-			class: `qc-icon${src() ? ' qc-custom-icon' : ''}`,
+			class: ["qc-icon", src() && "qc-icon-custom"],
 			'aria-label': label(),
 			style: `--img-color: var(--qc-color-${color()});
         --img-width: ${width()};
@@ -8329,7 +8329,7 @@
 							'aria-label': closeLabel,
 							onclick: hideAlert,
 							size: 'nm',
-							icon: 'clear-input',
+							icon: 'xclose',
 							iconSize: 'sm',
 							iconColor: 'text-primary'
 						});
@@ -8513,7 +8513,7 @@
 
 		var node = child(a);
 
-		Icon(node, { type: 'arrow-up-white', color: 'background' });
+		Icon(node, { type: 'arrow-up', color: 'background' });
 
 		var span = sibling(node, 2);
 		var text_1 = child(span, true);
@@ -8743,7 +8743,7 @@
 		{
 			var consequent = ($$anchor) => {
 				Icon($$anchor, {
-					type: 'loupe-piv-fine',
+					type: 'search-thin',
 					iconColor: 'grey-regular'
 				});
 			};
@@ -8767,7 +8767,7 @@
 			var consequent_1 = ($$anchor) => {
 				IconButton($$anchor, {
 					type: 'button',
-					icon: 'clear-input',
+					icon: 'xclose',
 					iconColor: 'blue-piv',
 					iconSize: 'sm',
 					get 'aria-label'() {
@@ -8931,7 +8931,7 @@
 				get iconColor() {
 					return get(expression);
 				},
-				icon: 'loupe-piv-fine',
+				icon: 'search-thin',
 				iconSize: 'md'
 			},
 			() => get(submitProps)
@@ -12495,7 +12495,7 @@
 		const expression = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
 
 		Icon(node_3, {
-			type: 'chevron-grey-thin',
+			type: 'chevron-up-thin',
 			get color() {
 				return get(expression);
 			},

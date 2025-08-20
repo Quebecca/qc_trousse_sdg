@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <g id="Icône" transform="rotate(0 8 8) translate(0 -0.001)">
+        <path id="icone_chevron_bas" data-name="icone chevron bas" d="M20,2478.1a.392.392,0,0,0,.123.283.437.437,0,0,0,.6,0L28,2471.466l7.281,6.917a.437.437,0,0,0,.6,0,.387.387,0,0,0,0-.566l-7.579-7.2a.437.437,0,0,0-.6,0l-7.579,7.2a.389.389,0,0,0-.123.283Z" transform="translate(-20.001 -2466.499)" />
+    </g>
+</svg>

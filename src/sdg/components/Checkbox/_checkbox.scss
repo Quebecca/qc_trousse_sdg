@@ -23,7 +23,7 @@ input[type="checkbox"] {
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      mask-image: getImageUrl(checkmark, $base64: false);
+      mask-image: getImageUrl(checkmark);
       mask-size: contain;
       mask-repeat: no-repeat;
       mask-position: center;

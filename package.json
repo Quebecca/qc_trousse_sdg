@@ -9,7 +9,8 @@
     "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
     "start": "sirv public",
-    "rewrite-bootstrap": "gulp rewriteBs"
+    "rewrite-bootstrap": "gulp rewriteBs",
+    "build-images-scss-map" : "node ./scripts/buildImagesMap.js"
   },
   "repository": {
     "type": "git",
