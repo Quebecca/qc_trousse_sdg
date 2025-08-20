@@ -51,7 +51,11 @@
 <div>
     <Button label="Action" variant="simple" icon="information" iconPosition="left" />
     <Button label="Action" variant="simple" icon="plus" iconPosition="left" disabled />
-    <Button label="Action" variant="simple" icon="external-link" iconPosition="left" compact />
 </div>
+<div>
+    <Button label="Action" variant="simple" icon="information" iconPosition="left" compact />
+    <Button label="Action" variant="simple" icon="plus" iconPosition="left" disabled compact />
+</div>
+
 
 <link rel='stylesheet' href='{Utils.cssPath}' />
