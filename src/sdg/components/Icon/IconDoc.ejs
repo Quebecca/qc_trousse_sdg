@@ -96,107 +96,12 @@
         </tr>
         </thead>
         <tbody>
-        
+        <% icons.forEach(function(icon){ %>
             <tr>
-                <td>arrow-up</td>
-                <td><qc-icon type="arrow-up"></qc-icon></td>
+                <td><%= icon %></td>
+                <td><qc-icon type="<%= icon %>"></qc-icon></td>
             </tr>
-        
-            <tr>
-                <td>checkmark</td>
-                <td><qc-icon type="checkmark"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>chevron-up-thin</td>
-                <td><qc-icon type="chevron-up-thin"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>chevron-up</td>
-                <td><qc-icon type="chevron-up"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>clipboard</td>
-                <td><qc-icon type="clipboard"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>error</td>
-                <td><qc-icon type="error"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>exclamation</td>
-                <td><qc-icon type="exclamation"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>external-link</td>
-                <td><qc-icon type="external-link"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>information</td>
-                <td><qc-icon type="information"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>ligth-bulb</td>
-                <td><qc-icon type="ligth-bulb"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>minus</td>
-                <td><qc-icon type="minus"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>note</td>
-                <td><qc-icon type="note"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>plus</td>
-                <td><qc-icon type="plus"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>question-mark</td>
-                <td><qc-icon type="question-mark"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>search-thin</td>
-                <td><qc-icon type="search-thin"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>search</td>
-                <td><qc-icon type="search"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>success</td>
-                <td><qc-icon type="success"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>warning</td>
-                <td><qc-icon type="warning"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>xclose-thin</td>
-                <td><qc-icon type="xclose-thin"></qc-icon></td>
-            </tr>
-        
-            <tr>
-                <td>xclose</td>
-                <td><qc-icon type="xclose"></qc-icon></td>
-            </tr>
-        
+        <% }); %>
         </tbody>
     </table>
 </div>
