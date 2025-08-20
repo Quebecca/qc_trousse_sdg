@@ -60,34 +60,32 @@ textarea {
 
 }
 
-$sizes: (
-    sm: 63,
-    md: 156,
-    lg: 249,
-    xl: 528,
-    xxl: 825
-);
+$sizes: map.get($lg-tokens, size, textfield);
 
-input {
+input ,
+input + .qc-textfield-charcount {
   .qc-textfield &,
   qc-textfield & {
-    max-width: rem(map.get($sizes, lg));
+    max-width: token-value(size input default);
   }
 }
 textarea,
-.qc-textfield-charcount {
+textarea + .qc-textfield-charcount {
   .qc-textfield &,
   qc-textfield & {
-    max-width: rem(map.get($sizes, xl));
+    max-width: token-value(size textarea default);
   }
 }
 
 input,
 textarea,
-.qc-textfield-charcount {
-  @each $size, $width in $sizes {
-    [size="#{$size}"] & {
-      max-width: rem($width);
+ {
+  &,
+  & + .qc-textfield-charcount {
+    @each $size, $width in $sizes {
+      [size="#{$size}"] & {
+        max-width: $width;
+      }
     }
   }
 }
@@ -95,7 +93,7 @@ textarea,
 textarea {
   .qc-textfield &,
   qc-textfield & {
-    min-height: rem(108);
+    min-height: token-value(size textarea default-min-height);
     resize: vertical;
   }
 }

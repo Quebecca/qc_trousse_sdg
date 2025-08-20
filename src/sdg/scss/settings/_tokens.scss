@@ -207,13 +207,25 @@ $lg-tokens: (
         list-item : (
             mb: token-value(spacer sm),
         ),
-        input: (
-            xs: rem(63),
-            sm: rem(156),
-            md: rem(249),
-            lg: rem(528),
-            xl: rem(825)
-        )
+    ),
+    size: (
+      textfield: (
+          sm: rem(63),
+          md: rem(156),
+          lg: rem(249),
+          xl: rem(528),
+          xxl: rem(825)
+      ),
+      input: (
+        default: lg,
+      ),
+      textarea: (
+        default: xl,
+        default-min-height: rem(108)
+      ),
+      searchbar: (
+        default: rem(640),
+      )
     ),
     grid: (
         gutter: 32px,

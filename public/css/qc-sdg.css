@@ -2648,7 +2648,6 @@ qc-textfield textarea + .qc-textfield-charcount {
 }
 @media (max-width: 767.98px) {
   .qc-button {
-    max-width: 100%;
     width: 100%;
   }
 }
