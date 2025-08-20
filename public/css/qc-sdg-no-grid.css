@@ -2980,12 +2980,17 @@ qc-textfield textarea:disabled {
     width: 100%;
   }
 }
+.qc-button:focus, .qc-button:focus-visible {
+  outline: none;
+}
 .qc-button.qc-compact {
   font-weight: var(--qc-font-weight-semi-bold);
   min-width: 8rem;
   min-height: 4rem;
   padding: 0.8rem 1.6rem;
   border-width: 1px;
+  margin-right: var(--qc-spacer-md);
+  margin-bottom: var(--qc-spacer-sm);
 }
 @media (max-width: 767.98px) {
   .qc-button.qc-compact {
@@ -2999,7 +3004,7 @@ qc-textfield textarea:disabled {
   color: var(--qc-color-white);
   background-color: var(--qc-color-blue-piv);
   border-color: var(--qc-color-blue-piv);
-  box-shadow: 0 1px 4px rgba(34, 54, 84, 0.24);
+  box-shadow: 0 1px 4px var(--qc-color-box_shadow);
 }
 .qc-button.qc-primary:hover:not(:disabled) {
   background-color: var(--qc-color-blue-regular);
@@ -3008,7 +3013,7 @@ qc-textfield textarea:disabled {
 .qc-button.qc-primary:focus:not(:disabled) {
   background-color: var(--qc-color-blue-regular);
   border-color: var(--qc-color-blue-dark);
-  box-shadow: 0 2px 8px rgba(34, 54, 84, 0.24), 0 0 0 2px var(--qc-color-blue-light);
+  box-shadow: 0 2px 8px var(--qc-color-box_shadow), 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-primary:active:not(:disabled) {
   background-color: var(--qc-color-blue-regular_light);
