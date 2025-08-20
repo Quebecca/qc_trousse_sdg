@@ -4,6 +4,7 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
+    import {onMount} from "svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -220,6 +221,14 @@
 
     $effect(() => {
         value = selectedItems?.map(item => item.value).join(", ");
+    });
+
+    $effect(() => {
+        items.forEach((item) => {
+            if (!item.id) {
+                item.id = `${id}-${item.label.replace(/[^a-zA-Z0-9]/g, "-")}-${item.value.replace(/[^a-zA-Z0-9]/g, "-")}`;
+            }
+        });
     });
 </script>
 

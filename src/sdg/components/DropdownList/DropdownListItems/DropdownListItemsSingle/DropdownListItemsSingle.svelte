@@ -13,25 +13,6 @@
         handlePrintableCharacter = () => {}
     } = $props();
 
-    let self = $state();
-    let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
-    let selectedElement = $derived.by(() => {
-        if (selectedValue && displayedItems && displayedItems.length > 0) {
-            const foundElement = displayedItems.find(item => item.value === selectedValue)?.element;
-            if (foundElement) {
-                return foundElement;
-            }
-        }
-        return previousSelectedElement && self && self.getRootNode().contains(previousSelectedElement)
-            ? previousSelectedElement
-            : null;
-    });
-    let previousSelectedElement = $state();
-
-    $inspect(selectedElement, "selectedElement");
-    $inspect(previousSelectedElement, "previousElement");
-    $inspect(displayedItems, "displayedItems");
-
     export function focusOnFirstElement() {
         if (displayedItems && displayedItems.length > 0) {
             displayedItems[0].element.focus();
@@ -112,11 +93,21 @@
     function canExit(event, index) {
         return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
+
+    function itemsHaveIds() {
+        let valid = true;
+        displayedItems.forEach(item => {
+            if (!item.id) {
+                valid = false;
+            }
+        });
+        return valid;
+    }
 </script>
 
-{#if displayedItems.length > 0}
+{#if displayedItems.length > 0 && itemsHaveIds()}
     <ul bind:this={self}>
-        {#each displayedItems as item, index}
+        {#each displayedItems as item, index (item.id)}
             <li
                 bind:this={displayedItems[index].element}
                 id={`${index}-${groupId}-${item.label}-${item.value}`}
@@ -128,7 +119,7 @@
                 data-item-value={item.value}
                 tabindex="0"
                 role="option"
-                aria-selected={selectedValue === item.value ? "true" : "false"}
+                aria-selected={!!item.checked}
                 onclick={(event) => handleMouseUp(event, item)}
                 onkeydown={(event) => handleKeyDown(event, index, item)}
             >

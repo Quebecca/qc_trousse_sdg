@@ -23,42 +23,38 @@
             displayedItems && displayedItems.length > 0 ?
                 displayedItems.filter(item => item.checked).map(item => item.label)
                 : []
-        ),
-        self = $state(),
-        listElements = $state()
+        )
     ;
 
     $effect(() => {
-       if (displayedItems && displayedItems.length > 0) {
-           self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : []
-       }
+       console.log("displayedItems", displayedItems.map(item => item.element));
     });
 
     export function focusOnFirstElement() {
-        if (listElements && listElements.length > 0) {
-            if (listElements[0].disabled) {
-                listElements[0].closest("li").focus();
+        if (displayedItems && displayedItems.length > 0) {
+            if (displayedItems[0].disabled) {
+                displayedItems[0].element.closest("li").focus();
             } else {
-                listElements[0].focus();
+                displayedItems[0].element.focus();
             }
         }
     }
 
     export function focusOnLastElement() {
-        if (listElements && listElements.length > 0) {
-            if (listElements[listElements.length - 1].disabled) {
-                listElements[listElements.length - 1].closest("li").focus();
+        if (displayedItems && displayedItems.length > 0) {
+            if (displayedItems[displayedItems.length - 1].disabled) {
+                displayedItems[displayedItems.length - 1].element.closest("li").focus();
             } else {
-                listElements[listElements.length - 1].focus();
+                displayedItems[displayedItems.length - 1].element.focus();
             }
         }
     }
 
     export function focusOnFirstMatchingElement(value) {
-        if (listElements && listElements.length > 0) {
-            const foundElement = listElements.find(
+        if (displayedItems && displayedItems.length > 0) {
+            const foundElement = displayedItems.find(
                 element => element.value.toLowerCase().includes(value.toLowerCase())
-            );
+            ).element;
             if (foundElement) {
                 if (foundElement.disabled) {
                     foundElement.closest("li").focus();
@@ -74,11 +70,11 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index < displayedItems.length - 1) {
-                if (listElements[index + 1].disabled) {
-                    listElements[index + 1].closest("li").focus();
+            if (displayedItems.length > 0 && index < displayedItems.length - 1) {
+                if (displayedItems[index + 1].disabled) {
+                    displayedItems[index + 1].element.closest("li").focus();
                 } else {
-                    listElements[index + 1].focus();
+                    displayedItems[index + 1].element.focus();
                 }
             }
         }
@@ -87,11 +83,11 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index > 0) {
-                if (listElements[index - 1].disabled) {
-                    listElements[index - 1].closest("li").focus();
+            if (displayedItems.length > 0 && index > 0) {
+                if (displayedItems[index - 1].disabled) {
+                    displayedItems[index - 1].element.closest("li").focus();
                 } else {
-                    listElements[index - 1].focus();
+                    displayedItems[index - 1].element.focus();
                 }
             } else {
                 focusOnOuterElement();
@@ -102,7 +98,7 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && !listElements[index].disabled) {
+            if (displayedItems.length > 0 && !displayedItems[index].disabled) {
                 event.target.checked = !event.target.checked;
                 displayedItems[index].checked = event.target.checked;
             }
@@ -162,11 +158,21 @@
 
         selectionCallback();
     }
+
+    function itemsHaveIds() {
+        let valid = true;
+        displayedItems.forEach(item => {
+            if (!item.id) {
+                valid = false;
+            }
+        });
+        return valid;
+    }
 </script>
 
-{#if displayedItems.length > 0}
+{#if displayedItems.length > 0 && itemsHaveIds()}
     <ul bind:this={self}>
-        {#each displayedItems as item, index}
+        {#each displayedItems as item, index (item.id)}
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <!-- Pour conserver la navigation d'un élément <select>, le focus doit pouvoir se faire sur les éléments
@@ -182,6 +188,7 @@
             >
                 <Checkbox
                     bind:checked={item.checked}
+                    bind:this={displayedItems[index].element}
                     value={item.value}
                     label={item.label}
                     {name}

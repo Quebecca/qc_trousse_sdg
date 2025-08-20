@@ -25,14 +25,14 @@
 <!--        items={singleChoiceOptions}-->
 <!--/>-->
 
-<div style="height: 40rem;">
-<DropdownList
-        id="dropdown-list-single-choice-no-scroll"
-        label="Choix unique avec recherche"
-        enableSearch={true}
-        items={singleChoiceWithSearchOptions}
-/>
-</div>
+<!--<div style="height: 40rem;">-->
+<!--<DropdownList-->
+<!--        id="dropdown-list-single-choice-no-scroll"-->
+<!--        label="Choix unique avec recherche"-->
+<!--        enableSearch={true}-->
+<!--        items={singleChoiceWithSearchOptions}-->
+<!--/>-->
+<!--</div>-->
 
 <!--<DropdownList-->
 <!--        id="dropdown-list-multiple-choices"-->

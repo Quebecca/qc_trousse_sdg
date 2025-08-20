@@ -57,7 +57,16 @@
         return "qc-check-row";
     }
 
+    let checkboxInput = $state();
     let usedId = $derived(id ?? name + value + Math.random().toString(36));
+
+    export function focus() {
+        checkboxInput?.focus();
+    }
+
+    export function closest(tag) {
+        return checkboxInput?.closest(tag);
+    }
 </script>
 
 {#snippet checkboxRow()}
@@ -73,6 +82,7 @@
                 {name}
                 {disabled}
                 bind:checked
+                bind:this={checkboxInput}
                 aria-required = {required}
                 aria-invalid={invalid}
                 onchange={onchange}
