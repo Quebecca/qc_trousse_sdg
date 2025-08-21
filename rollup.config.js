@@ -4,12 +4,9 @@ import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser';
-// import scss from 'rollup-plugin-sass'
 import scss from 'rollup-plugin-scss'
-import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
-import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
@@ -65,7 +62,6 @@ const scssOptions = {
     includePaths: includePaths,
     processor: css =>
         postcss([
-            autoprefixer(),
             cssReplace({
                 data: {
                     'pkg-version': pkg.version,
