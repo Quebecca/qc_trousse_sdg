@@ -13989,7 +13989,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[98, 0], [103, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[106, 0], [111, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14000,6 +14000,7 @@
 		let invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 15),
 			multiple = prop($$props, 'multiple', 7),
+			label = prop($$props, 'label', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -14009,17 +14010,18 @@
 					'$$host',
 					'invalid',
 					'value',
-					'multiple'
+					'multiple',
+					'label'
 				]);
 
 		let selectElement = state(void 0);
 		let items = state(void 0);
-		let label = state(void 0);
+		let usedLabel = state(proxy($$props.label ?? null));
 		let observer;
 
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
-			set(label, $$props.$$host.querySelector("label"), true);
+			set(usedLabel, $$props.$$host.querySelector("label"), true);
 			setupItemsList();
 			setupObserver();
 		});
@@ -14047,6 +14049,12 @@
 						option.selected = false;
 					}
 				}
+			}
+		});
+
+		user_effect(() => {
+			if (get(usedLabel)) {
+				label(get(usedLabel).innerHTML);
 			}
 		});
 
@@ -14092,7 +14100,7 @@
 		reset(div);
 
 		var node_1 = sibling(div, 2);
-		const expression = user_derived(() => get(label)?.innerHTML);
+		const expression = user_derived(() => get(usedLabel)?.innerHTML);
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
@@ -14151,6 +14159,13 @@
 				multiple($$value);
 				flushSync();
 			},
+			get label() {
+				return label();
+			},
+			set label($$value) {
+				label($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -14159,6 +14174,11 @@
 		SelectWC,
 		{
 			id: { attribute: 'id', type: 'String' },
+			label: {
+				attribute: 'label',
+				reflect: true,
+				type: 'String'
+			},
 			width: { attribute: 'width', type: 'String' },
 			value: {
 				attribute: 'value',

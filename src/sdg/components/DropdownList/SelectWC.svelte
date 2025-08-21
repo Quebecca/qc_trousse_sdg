@@ -2,6 +2,7 @@
     tag: 'qc-select',
     props: {
         id: {attribute: 'id', type: 'String'},
+        label: {attribute: 'label', type: 'String', reflect: true},
         width: {attribute: 'width', type: 'String'},
         value: {attribute: 'value', type: 'String', reflect: true},
         enableSearch: {attribute: 'enable-search', type: 'Boolean'},
@@ -25,17 +26,18 @@
         invalid = $bindable(false),
         value = $bindable(),
         multiple,
+        label,
         ...rest
     } = $props();
 
     let selectElement = $state();
     let items = $state();
-    let label = $state();
+    let usedLabel = $state(rest.label ?? null);
     let observer;
 
     onMount(() => {
         selectElement = $host().querySelector("select");
-        label = $host().querySelector("label");
+        usedLabel = $host().querySelector("label");
         setupItemsList();
         setupObserver();
     });
@@ -63,6 +65,12 @@
                     option.selected = false;
                 }
             }
+        }
+    });
+
+    $effect(() => {
+        if (usedLabel) {
+            label = usedLabel.innerHTML;
         }
     });
 
@@ -99,5 +107,5 @@
     <slot />
 </div>
 
-<DropdownList label={label?.innerHTML} {items} bind:value {invalid} {multiple} {...rest} />
+<DropdownList label={usedLabel?.innerHTML} {items} bind:value {invalid} {multiple} {...rest} />
 <link rel='stylesheet' href='{Utils.cssPath}'>
