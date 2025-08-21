@@ -3,10 +3,11 @@
 .qc-required {
   @include content-font(md, bold);
   color: token-value(color, red, regular);
-  margin-left: rem(3.85); // 8px - espace implicite de 4.15px
+  margin-left: rem(8);
 }
 
 .qc-disabled {
   color: token-value(color, grey, regular);
   cursor: not-allowed;
 }
+

@@ -1,35 +1,90 @@
 <svelte:options customElement={{
   tag: 'qc-textfield',
-  shadow: 'none',
   props: {
-    name: { attribute: 'name', type: 'String' },
     label: { attribute: 'label', type: 'String' },
-    placeholder: { attribute: 'placeholder', type: 'String' },
-    value: { attribute: 'value', type: 'String' },
-    size: { attribute: 'size', type: 'String' },
-    disabled: { attribute: 'disabled', type: 'Boolean' },
     required: { attribute: 'required', type: 'Boolean' },
     description: { attribute: 'description', type: 'String' },
+    size: { attribute: 'size', type: 'String' },
     maxlength: { attribute: 'max-length', type: 'Number' },
     invalid: { attribute: 'invalid', type: 'Boolean', reflect: true },
     invalidText: { attribute: 'invalid-text', type: 'String' },
-    display: { attribute: 'display', type: 'String' }
   }
 }} />
 
 <script>
     import TextField from './TextField.svelte';
+    import {onMount, setContext} from "svelte";
+    import {Utils} from '../utils.js';
+    import {onMountInput} from "./textFieldUtils";
+
+    setContext('webComponentMode', true)
 
     let {
-        value = $bindable(''),
-        invalid = $bindable(false),
-        ...rest
-    } = $props();
-
+            invalid,
+            invalidText,
+            label,
+            description,
+            required,
+            maxlength,
+            maxlengthReached = $bindable(false),
+            invalidAtSubmit = $bindable(false),
+        } = $props();
+    let
+        labelElement = $state(),
+        formErrorElement = $state(),
+        descriptionElement = $state(),
+        maxlengthElement = $state(),
+        value = $state(),
+        input = $state(),
+        textFieldRow = $state()
+    ;
+    onMount(() => {
+        input = $host().querySelector('input,textarea');
+        onMountInput(input,
+            v => textFieldRow = v,
+            v => value = v,
+            v => invalid = v
+        )
+    })
+    $effect(() => {
+        if (!input) return;
+        if (label) {
+            input.before(labelElement);
+        }
+        if (description) {
+            input.before(descriptionElement);
+        }
+        if (invalid) {
+            if (textFieldRow) {
+                textFieldRow.appendChild(formErrorElement);
+            }
+            else {
+                input.after(formErrorElement);
+            }
+        }
+        if (maxlength) {
+            input.after(maxlengthElement);
+        }
+    })
 </script>
 
 <TextField
-    bind:value
+    {label}
+    {description}
+    {input}
+    {required}
+    {maxlength}
+    {value}
     bind:invalid
-    {...rest}
-/>
+    bind:invalidText
+    bind:maxlengthReached
+    bind:invalidAtSubmit
+    bind:labelElement
+    bind:formErrorElement
+    bind:descriptionElement
+    bind:maxlengthElement
+>
+    <slot></slot>
+</TextField>
+
+<link rel='stylesheet' href='{Utils.cssPath}'>

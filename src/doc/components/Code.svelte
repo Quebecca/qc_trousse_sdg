@@ -53,7 +53,7 @@
 
 <pre
     ><code class="hljs"
-        ><button class="btn btn-sm btn-primary"
+        ><button class="qc-button qc-compact qc-primary"
                  onclick={copy}>
             <span class="copy">copier</span>
             <span class="copied">copié !</span>

@@ -1,0 +1,291 @@
+<h3 id="choice-group">Groupe de boutons radios et de cases à cocher (qc-choice-group)</h3>
+
+<h4>Exemples</h4>
+<p>
+  Les groupes d'éléments de choix sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+</p>
+
+<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple d’un groupe au petit format">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+                   compact
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+                   compact
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
+  <form id="checkbox-form">
+    <qc-choice-group
+            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
+            name="plateforme"
+            required
+            invalid-text="Veuillez sélectionner une plateforme."
+    >
+      <label>
+        <input type="checkbox"
+               value="ordinateur"
+        />
+        <span>Ordinateur</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="tablette"
+        />
+        <span>Tablette</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="telephone_intelligent"
+        />
+        <span>Téléphone intelligent</span>
+      </label>
+    </qc-choice-group>
+
+    <qc-choice-group
+            legend="Quel thème préférez-vous ?"
+            name="theme"
+            required
+            invalid-text="Veuillez sélectionner une plateforme."
+    >
+      <label>
+        <input type="radio"
+               value="clair"
+        />
+        <span>Le thème clair</span>
+      </label>
+      <label>
+        <input type="radio"
+               value="sombre"
+        />
+        <span>Le thème sombre</span>
+      </label>
+
+    </qc-choice-group>
+
+    <button class="qc-button qc-primary qc-compact" type="submit">
+      Soumettre
+    </button>
+  </form>
+
+  <script>
+
+    document
+            .getElementById("checkbox-form")
+            .addEventListener("submit", (event) => {
+              event.preventDefault();
+              let doSubmit = true;
+              event
+                      .target
+                      .querySelectorAll("qc-choice-group[required]")
+                      .forEach(group => {
+                        let valid = false;
+                        group.querySelectorAll("input")
+                                .forEach(checkbox => {
+                                  if (checkbox.checked) {
+                                    valid = true;
+                                  }
+                                })
+                        if (!valid) {
+                          group.invalid = true;
+                          doSubmit = false;
+                        }
+                      })
+              if(doSubmit) {
+                const formData = new FormData(event.target);
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                for (const [key, value] of formData.entries()) {
+                  alertParts.push(`${key} : ${value}`);
+                }
+                alert(alertParts.join("\n"));
+              }
+            })
+  </script>
+</qc-doc-exemple>
+
+
+<h4 id="choice-group-doc">Attributs de qc-choice-group</h4>
+
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>legend</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Légende du groupe</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom commun à tous les champs du groupe</td>
+    </tr>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les champs au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Marque la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Affiche le message d'erreur,  cf « Exemple de validation de formulaire avec des groupes de choix ».)
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+    </tr>
+    <tr>
+      <td>tiled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les champs au format de boutons de sélection dans une grille</td>
+    </tr>
+    <tr>
+      <td>column-count</td>
+      <td>Nombre</td>
+      <td>1</td>
+      <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
+        <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
+      </td>
+    </tr>
+    <tr>
+      <td>inline</td>
+      <td>na</td>
+      <td>na</td>
+      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+

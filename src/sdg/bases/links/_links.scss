@@ -1,4 +1,6 @@
 @use "qc-sdg-lib" as *;
+@use "../../Components/Icon/icons" as *;
+@use "sass:math";
 
 a {
   color: token-value(color, link, text);
@@ -14,23 +16,35 @@ a {
   &:active {
     @include active-link();
   }
-  //DEPRECATED: use <qc-external-link> instead.
-  // to assure non breaking space inter last word and icon
-  .qc-external-link-tail {
-    white-space: nowrap;
-    img {
-      @include external-link-img();
-      content:getImageUrl(external-link);
-    }
-  }
   .img-wrap {
     white-space: nowrap;
   }
 
-
 }
 span.qc-ext-link-img {
-  @include external-link-img();
+
+  @extend %icon-external-link;
+  $ratio : math.div(11,16) * 1em;
+  height: $ratio;
+  width: $ratio;
+  display: inline-block;
+  background: token-value(color link text);
+  mask-size: $ratio;
+  margin-left: 4px;
+  a:visited  & {
+    background: token-value(color link visited);
+  }
+  a:focus  & {
+    background: token-value(color link hover);
+  }
+  a:hover  & {
+    background: token-value(color link hover);
+  }
+  a:active  & {
+    background: token-value(color link active);
+  }
+
+
   .img-wrap + & {
     display: none;
   }

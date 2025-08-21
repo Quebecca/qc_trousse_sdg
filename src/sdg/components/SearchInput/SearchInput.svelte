@@ -24,12 +24,16 @@
     }
 </script>
 
-<div class={["qc-search-input", leftIcon && "qc-search-left-icon"]}>
+<div class={[
+        "qc-search-input",
+        leftIcon && "qc-search-left-icon"]} >
     {#if leftIcon}
-        <Icon type="loupe-piv-fine" iconColor="grey-regular" />
+        <Icon type="search-thin"
+              iconColor="grey-regular"
+        />
     {/if}
     <input  bind:this={searchInput}
-            bind:value={value}
+            bind:value
             type="search"
             autocomplete="off"
             aria-label={ariaLabel}
@@ -38,7 +42,7 @@
     />
     {#if value}
     <IconButton type="button"
-                icon="clear-input"
+                icon="xclose"
                 iconColor="blue-piv"
                 iconSize="sm"
                 aria-label={clearAriaLabel}

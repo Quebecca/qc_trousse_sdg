@@ -9,7 +9,8 @@
     "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
     "start": "sirv public",
-    "rewrite-bootstrap": "gulp rewriteBs"
+    "rewrite-bootstrap": "gulp rewriteBs",
+    "build-images-scss-map": "node ./scripts/buildImagesMap.js"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "@types/node": "^24.1.0",
     "autoprefixer": "^10.4.7",
     "del": "^8.0.0",
+    "ejs": "^3.1.10",
     "highlight.js": "^11.8.0",
     "js-beautify": "^1.15.4",
     "postcss": "^8.5.1",
@@ -36,6 +38,7 @@
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-css-only": "^4.5.2",
     "rollup-plugin-delete": "^3.0.1",
+    "rollup-plugin-ejs": "^4.0.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-svelte": "^7.2.2",
     "sass": "^1.84.0",

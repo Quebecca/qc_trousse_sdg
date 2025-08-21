@@ -1,13 +1,39 @@
 <script>
 import Icon from "../Icon/Icon.svelte";
-import { tick } from "svelte";
+import {onMount, tick} from "svelte";
+import {Utils} from "../utils";
 
-let {invalid , invalidText, id} = $props();
+const lang = Utils.getPageLanguage();
+
+let {invalid ,
+    label = '',
+    invalidText,
+    id = $bindable(),
+    extraClasses = [],
+    rootElement = $bindable(),
+} = $props();
+
+let cleanLabel = $derived(label.replace(/:\s*$/, '')),
+    defaultInvalidText = $derived(
+        label
+            ? lang === 'fr'
+                ? `Le champ ${cleanLabel} est obligatoire.`
+                : `${cleanLabel} field is required.`
+            : lang === 'fr'
+                ? `Ce champ est obligatoire.`
+                : `This field is required.`
+    )
+;
+
+onMount(() => {
+    id = Utils.generateId('qc-form-error')
+})
 
 </script>
 {#if invalid}
 <div {id}
-     class="qc-form-error"
+     bind:this={rootElement}
+     class={['qc-form-error', ...extraClasses]}
      role="alert">
     {#await tick()}
     <!-- svelte-ignore block_empty -->
@@ -18,7 +44,7 @@ let {invalid , invalidText, id} = $props();
                 width="var(--error-icon-width)"
                 height="var(--error-icon-height)"
         />
-        <span>{@html invalidText}</span>
+        <span>{@html invalidText ? invalidText : defaultInvalidText}</span>
     {/await}
 </div>
 {/if}

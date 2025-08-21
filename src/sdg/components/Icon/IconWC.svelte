@@ -9,6 +9,7 @@
       width: {attribute: 'width'},
       height: {attribute: 'height'},
       src: {attribute: 'src'},
+      rotate: {attribute: 'rotate'},
   }
 }}" />
 

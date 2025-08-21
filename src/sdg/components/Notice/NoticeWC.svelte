@@ -11,6 +11,7 @@
 
 <script>
     import Notice from './Notice.svelte';
+    import { Utils } from "../utils"
 
     const props = $props();
 </script>
@@ -23,3 +24,5 @@
         <slot />
     {/snippet}
 </Notice>
+<link rel='stylesheet' href='{Utils.cssPath}'>
+

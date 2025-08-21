@@ -6,55 +6,32 @@
     let {
         items,
         displayedItems,
+        value = $bindable(),
         selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
 
-    let self = $state();
-    let listElements = $derived(self ? Array.from(self.querySelectorAll("li")) : []);
-    let selectedValue = $derived(items && items.length > 0 ? items.find((item) => item.checked)?.value : null);
-    let selectedElement = $derived.by(() => {
-        if (selectedValue && listElements && listElements.length > 0) {
-            return listElements.find(element => element.dataset.itemValue === selectedValue);
-        }
-        return null;
-    });
-    let previousElement = $state();
-
-    let mouseDownElement = null;
-    let hoveredElement = null;
-
-    $effect(() => {
-        if (!selectedElement) {
-            return;
-        }
-
-        if (previousElement && previousElement !== selectedElement) {
-            previousElement.classList.remove(selectedElementCLass);
-        }
-
-        selectedElement.classList.add(selectedElementCLass);
-        previousElement = selectedElement;
-    });
+    let displayedItemsElements = $state(new Array(displayedItems.length));
 
     export function focusOnFirstElement() {
-        if (listElements && listElements.length > 0) {
-            listElements[0].focus();
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            displayedItemsElements[0].focus();
         }
     }
 
     export function focusOnLastElement() {
-        if (listElements && listElements.length > 0) {
-            listElements[listElements.length - 1].focus();
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            displayedItemsElements[displayedItemsElements.length - 1].focus();
         }
     }
 
-    export function focusOnFirstMatchingElement(value) {
-        if (listElements && listElements.length > 0) {
-            const foundElement = listElements.find(
-                element => element.dataset.itemValue.toString().toLowerCase().includes(value.toLowerCase())
+    export function focusOnFirstMatchingElement(passedValue) {
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            console.log($state.snapshot(displayedItemsElements));
+            const foundElement = displayedItemsElements.find(
+                el => el.dataset.itemValue.toString() === passedValue.toString()
             );
             if (foundElement) {
                 foundElement.focus();
@@ -66,25 +43,15 @@
         event.preventDefault();
 
         if (!item.disabled) {
+            items.forEach(item => item.checked = false);
+            items.find(option => option.value === item.value).checked = true;
             selectionCallback();
-
-            if (previousElement) {
-                items.find(
-                    item => item.value.toString() === previousElement.dataset.itemValue.toString()
-                ).checked = false;
-            }
-            item.checked = true;
+            value = [item.value];
         }
     }
 
     function handleMouseUp(event, item) {
-        if (event.target === hoveredElement && event.target === mouseDownElement) {
-            handleSelection(event, item);
-        }
-    }
-
-    function handleMouseDown(event) {
-        mouseDownElement = event.target;
+        handleSelection(event, item);
     }
 
     function handleComboKey(event, index, item) {
@@ -92,8 +59,8 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index < displayedItems.length - 1) {
-                listElements[index + 1].focus();
+            if (displayedItemsElements.length > 0 && index < displayedItemsElements.length - 1) {
+                displayedItemsElements[index + 1].focus();
             }
         }
 
@@ -101,8 +68,8 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index > 0) {
-                listElements[index - 1].focus();
+            if (displayedItemsElements.length > 0 && index > 0) {
+                displayedItemsElements[index - 1].focus();
             } else {
                 focusOnOuterElement();
             }
@@ -130,25 +97,34 @@
     function canExit(event, index) {
         return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
+
+    function itemsHaveIds() {
+        let valid = true;
+        displayedItems.forEach(item => {
+            if (!item.id) {
+                valid = false;
+            }
+        });
+        return valid;
+    }
 </script>
 
-{#if displayedItems.length > 0}
-    <ul bind:this={self}>
-        {#each displayedItems as item, index}
+{#if displayedItems.length > 0 && itemsHaveIds()}
+    <ul>
+        {#each displayedItems as item, index (item.id)}
             <li
-                id={Math.random().toString(36).substring(2, 15)}
+                bind:this={displayedItemsElements[index]}
+                id={item.id}
                 class={[
                     "qc-dropdown-list-single",
-                    item.disabled ? "qc-disabled" : "qc-dropdown-list-active"
+                    item.disabled ? "qc-disabled" : "qc-dropdown-list-active",
+                    item.checked ? selectedElementCLass : "",
                 ]}
                 data-item-value={item.value}
                 tabindex="0"
                 role="option"
-                aria-selected={selectedValue === item.value ? "true" : "false"}
-                onmousedown={(event) => handleMouseDown(event)}
-                onmouseup={(event) => handleMouseUp(event, item)}
-                onmouseenter={(event) => hoveredElement = event.target}
-                onmouseleave={() => hoveredElement = null}
+                aria-selected={!!item.checked}
+                onclick={(event) => handleMouseUp(event, item)}
                 onkeydown={(event) => handleKeyDown(event, index, item)}
             >
                 {@html item.label}

@@ -4,9 +4,9 @@
 
     let {
         displayedItems,
+        value = $bindable(),
         handleExit = () => {},
-        selectionCallback = () => {
-        },
+        selectionCallback = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
@@ -24,33 +24,32 @@
                 displayedItems.filter(item => item.checked).map(item => item.label)
                 : []
         ),
-        self = $state(),
-        listElements = $derived(self ? Array.from(self.querySelectorAll("input[type='checkbox']")) : [])
+        displayedItemsElements = $state(new Array(displayedItems.length))
     ;
 
     export function focusOnFirstElement() {
-        if (listElements && listElements.length > 0) {
-            if (listElements[0].disabled) {
-                listElements[0].closest("li").focus();
+        if (displayedItems && displayedItems.length > 0) {
+            if (displayedItems[0].disabled) {
+                displayedItemsElements[0].closest("li").focus();
             } else {
-                listElements[0].focus();
+                displayedItemsElements[0].focus();
             }
         }
     }
 
     export function focusOnLastElement() {
-        if (listElements && listElements.length > 0) {
-            if (listElements[listElements.length - 1].disabled) {
-                listElements[listElements.length - 1].closest("li").focus();
+        if (displayedItems && displayedItems.length > 0) {
+            if (displayedItems[displayedItems.length - 1].disabled) {
+                displayedItemsElements[displayedItemsElements.length - 1].closest("li").focus();
             } else {
-                listElements[listElements.length - 1].focus();
+                displayedItemsElements[displayedItemsElements.length - 1].focus();
             }
         }
     }
 
     export function focusOnFirstMatchingElement(value) {
-        if (listElements && listElements.length > 0) {
-            const foundElement = listElements.find(
+        if (displayedItemsElements && displayedItemsElements.length > 0) {
+            const foundElement = displayedItemsElements.find(
                 element => element.value.toLowerCase().includes(value.toLowerCase())
             );
             if (foundElement) {
@@ -68,11 +67,11 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index < displayedItems.length - 1) {
-                if (listElements[index + 1].disabled) {
-                    listElements[index + 1].closest("li").focus();
+            if (displayedItems.length > 0 && index < displayedItems.length - 1) {
+                if (displayedItems[index + 1].disabled) {
+                    displayedItemsElements[index + 1].closest("li").focus();
                 } else {
-                    listElements[index + 1].focus();
+                    displayedItemsElements[index + 1].focus();
                 }
             }
         }
@@ -81,11 +80,11 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && index > 0) {
-                if (listElements[index - 1].disabled) {
-                    listElements[index - 1].closest("li").focus();
+            if (displayedItems.length > 0 && index > 0) {
+                if (displayedItems[index - 1].disabled) {
+                    displayedItemsElements[index - 1].closest("li").focus();
                 } else {
-                    listElements[index - 1].focus();
+                    displayedItemsElements[index - 1].focus();
                 }
             } else {
                 focusOnOuterElement();
@@ -96,7 +95,7 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (listElements.length > 0 && !listElements[index].disabled) {
+            if (displayedItems.length > 0 && !displayedItems[index].disabled) {
                 event.target.checked = !event.target.checked;
                 displayedItems[index].checked = event.target.checked;
             }
@@ -154,13 +153,24 @@
             selectedLabels = selectedLabels.filter(l => l !== label);
         }
 
+        value = selectedValues.length > 0 ? selectedValues : [];
         selectionCallback();
+    }
+
+    function itemsHaveIds() {
+        let valid = true;
+        displayedItems.forEach(item => {
+            if (!item.id) {
+                valid = false;
+            }
+        });
+        return valid;
     }
 </script>
 
-{#if displayedItems.length > 0}
-    <ul bind:this={self} class="qc-compact">
-        {#each displayedItems as item, index}
+{#if displayedItems.length > 0 && itemsHaveIds()}
+    <ul>
+        {#each displayedItems as item, index (item.id)}
             <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <!-- Pour conserver la navigation d'un élément <select>, le focus doit pouvoir se faire sur les éléments
@@ -176,6 +186,7 @@
             >
                 <Checkbox
                     bind:checked={item.checked}
+                    bind:this={displayedItemsElements[index]}
                     value={item.value}
                     label={item.label}
                     {name}
@@ -184,7 +195,7 @@
                     dropdownListItem="true"
                     compact="true"
                     checkbox-onkeydown={(e) => handleKeyDown(e, index)}
-                    handleChange={(e) => handleChange(e, item.label, item.value)}
+                    onchange={(e) => handleChange(e, item.label, item.value)}
                 />
             </li>
         {/each}

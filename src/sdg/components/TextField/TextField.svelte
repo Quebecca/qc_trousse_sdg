@@ -1,133 +1,164 @@
 <script>
     import { Utils } from "../utils";
-    import FormError from "../FormError/FormError.svelte";
     import Label from "../Label/Label.svelte";
+    import {getContext, onMount} from "svelte";
+    import FormError from "../FormError/FormError.svelte";
+    import {onMountInput} from "./textFieldUtils";
 
     const lang = Utils.getPageLanguage();
 
     let {
-        name = '',
         label = '',
-        placeholder = '',
-        value = $bindable(''),
-        size = 'xl',
-        disabled = false,
-        required = false,
-        description = '',
-        maxlength = null,
-        invalid = $bindable(false),
-        invalidText = lang === 'fr' ? 'Ce champ est requis.' : 'This field is required.',
-        display = 'inline',
-        ...rest
+        required = $bindable(),
+        description,
+        size,
+        maxlength,
+        maxlengthReached = $bindable(false),
+        invalidAtSubmit = $bindable(false),
+        value = "",
+        invalid = $bindable(),
+        invalidText,
+        describedBy = $bindable([]),
+        labelElement = $bindable(),
+        formErrorElement = $bindable(),
+        descriptionElement = $bindable(),
+        maxlengthElement = $bindable(),
+        input,
+        children
     } = $props();
 
-    if (['inline', 'area'].includes(display) === false) {
-        display = 'inline';
-    }
+    const webComponentMode = getContext('webComponentMode');
 
-    let sizeClass = $derived(`qc-textfield--${size}`);
-    let charCountText = $derived(() => {
+    let errorId = $state(),
+        charCountText = $state(),
+        rootElement = $state(),
+        textFieldRow = $state(),
+        defaultInvalidText = $derived.by(() => {
+            if (!maxlengthReached) return '';
+            return lang === 'fr'
+                ? `La limite de caractères du champ ${label} est dépassée.`
+                : `The character limit for the ${label} field has been exceeded.`
+        })
+    ;
 
-        if (!maxlength) {
-            return;
+    onMount(() => {
+        if (webComponentMode) return;
+        if (! input) {
+            input = rootElement.querySelector('input,textarea');
         }
+        onMountInput(
+            input,
+            v => textFieldRow = v,
+            v => value = v,
+            v => invalid = v
+        )
+    })
+
+    $effect(() => {
+        invalidAtSubmit = (required && !value) || maxlengthReached;
+    })
+
+    $effect(() => {
+        if (webComponentMode) return;
+        if (invalid && textFieldRow) {
+            textFieldRow.appendChild(formErrorElement);
+        }
+    })
+
+    $effect(() => {
+        if (!maxlength) return;
         const currentLength = value?.length || 0;
         const remaining = maxlength - currentLength;
         const over = Math.abs(remaining);
+        maxlengthReached = remaining < 0;
         const s = over > 1 ? 's' : '';
-
-        if (remaining >= 0) {
-            return lang === 'fr'
+        charCountText =
+            remaining >= 0
+            ? lang === 'fr'
                 ? `${remaining} caractère${s} restant${s}`
-                : `${remaining} character${s} remaining`;
-        }
+                : `${remaining} character${s} remaining`
+            : lang === 'fr'
+                ? `${over} caractère${s} en trop`
+                : `${over} character${s} over the limit`
 
-        return lang === 'fr'
-            ? `${over} caractère${s} en trop`
-            : `${over} character${s} over the limit`;
     });
 
-    function clearInvalid() {
-        invalid = false;
-    }
-
     // Génération des ID pour le aria-describedby
-    const uid = Math.random().toString(36).substring(2, 10);
-    const inputId = `textfield-${uid}`;
-    const descriptionId = `description-${uid}`;
-    const errorId = `error-${uid}`;
-    const charCountId = `charcount-${uid}`;
+    const
+        descriptionId = Utils.generateId('description-'),
+        charCountId = Utils.generateId('charcount-')
+    ;
 
-    let describedBy = $derived(
-        [
-            invalid && errorId,
-            description && descriptionId,
-            maxlength && charCountId,
-        ].filter(Boolean)
-    );
+    $effect(() => {
+        if (!input) return;
+        input.setAttribute(
+            "aria-describedby",
+            [
+                description && descriptionId,
+                invalid && errorId,
+                maxlength && charCountId,
+            ].filter(Boolean)
+            .join(' ')
+        )
+        if (invalid) input.setAttribute('aria-invalid', invalid)
+        if (required) input.setAttribute('aria-required', required)
+    })
 
 </script>
-<div class={[
-    'qc-textfield-container',
-     disabled && "qc-disabled"
-    ]}>
+
+{#snippet textfield()}
+
     {#if label}
         <Label
-            forId={inputId}
-            text={label}
-            {required}
-            {disabled}
-            bold
-        />
+                {required}
+                disabled={input?.disabled}
+                text={label}
+                forId={input?.id}
+                bind:rootElement={labelElement}
+            />
     {/if}
 
     {#if description}
-        <div id={descriptionId} class="qc-textfield-description">{description}</div>
-    {/if}
-
-    <div class={`qc-textfield ${sizeClass} ${invalid ? 'error' : ''} ${disabled ? 'disabled' : ''}`}>
-        {#if display === 'area'}
-            <textarea
-                  id={inputId}
-                  name={name}
-                  aria-describedby={describedBy.join(' ')}
-                  {placeholder}
-                  bind:value
-                  {disabled}
-                  aria-required={required}
-                  aria-invalid={invalid}
-                  oninput={clearInvalid}
-                  {...rest}
-            ></textarea>
-        {:else}
-            <input
-                id={inputId}
-                name={name}
-                aria-describedby={describedBy.join(' ')}
-                type="text"
-                {placeholder}
-                bind:value
-                {disabled}
-                aria-required={required}
-                aria-invalid={invalid}
-                oninput={clearInvalid}
-                {...rest}
-            />
-        {/if}
-    </div>
-
-    {#if maxlength !== null}
         <div
-            id={charCountId}
-            class={`qc-textfield-charcount ${(maxlength && value.length > maxlength) && 'max-reached'}`}
-            aria-live="polite"
-        >
-            {charCountText()}
+            bind:this={descriptionElement}
+            id={descriptionId}
+            class="qc-description">
+            {@html description}
         </div>
     {/if}
 
+    {@render children()}
 
-    {#if invalid}
-        <FormError id={errorId} {invalid} {invalidText} />
+    {#if maxlength !== null}
+        <div
+            bind:this={maxlengthElement}
+            id={charCountId}
+            class={[
+                'qc-textfield-charcount',
+                value.length > maxlength && 'qc-max-reached'
+            ]}
+            aria-live="polite"
+        >
+            {@html charCountText}
+        </div>
     {/if}
-</div>
+
+    <FormError {invalid}
+               invalidText={invalidText ? invalidText :  defaultInvalidText}
+               {label}
+               bind:id={errorId}
+               extraClasses={['qc-xs-mt']}
+               bind:rootElement={formErrorElement}
+    />
+{/snippet}
+{#if webComponentMode}
+    {@render textfield()}
+{:else}
+    <div class='qc-textfield'
+         {size}
+         invalid={invalid ? true : undefined}
+         bind:this={rootElement}
+    >
+        {@render textfield()}
+    </div>
+{/if}

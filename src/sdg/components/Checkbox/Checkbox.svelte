@@ -1,73 +1,83 @@
 <script>
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
+    import {getContext, onMount} from "svelte";
+    import {updateInput} from "./updateInput.svelte";
 
-    const lang = Utils.getPageLanguage();
+    const lang = Utils.getPageLanguage(),
+        qcCheckoxContext = getContext("qc-checkbox");
 
     let {
-        label,
-        value = label,
-        name,
         id,
-        disabled = false,
-        checked = $bindable(false),
-        required = false,
-        compact,
-        tiled,
-        dropdownListItem,
+        name,
+        value,
         description,
-        invalid  = $bindable(false),
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        parentGroup,
-        handleChange = () => {},
+        required = $bindable(false),
+        disabled,
+        compact,
+        checked = $bindable(false),
+        invalid = $bindable(false),
+        invalidText,
+        children,
+        onchange,
+        labelElement,
+        input,
         ...rest
     } = $props();
 
-    $effect(() => {
-        if (checked) {
-            invalid = false;
-        }
-    });
+    let label = $state(rest.label),
+        rootElement = $state()
+    ;
 
-    function chooseCheckboxClass() {
-        if (tiled) {
-            return "qc-selection-button";
+    onMount(() => {
+        if (qcCheckoxContext) return;
+        labelElement = rootElement?.querySelector('label')
+        input = rootElement?.querySelector('input')
+    })
+
+    $effect(() => {
+        if (labelElement) {
+            label = labelElement.querySelector('span')?.textContent;
         }
-        if (dropdownListItem) {
-            return "qc-dropdown-list-checkbox";
-        }
-        return "qc-check-row";
+    })
+
+    $effect(_ => updateInput(input, required, invalid))
+
+    let checkboxInput = $state();
+    let usedId = $derived(id ?? name + value + Math.random().toString(36));
+
+    export function focus() {
+        checkboxInput?.focus();
     }
 
-    let usedId = $derived(id ?? name + value + Math.random().toString(36));
+    export function closest(tag) {
+        return checkboxInput?.closest(tag);
+    }
 </script>
 
 {#snippet checkboxRow()}
     <label
-            class={chooseCheckboxClass()}
-            for={usedId + "-input"}>
+            class={"qc-dropdown-list-checkbox"}
+            for={usedId + "-input"}
+            {compact}
+    >
         <input
                 id={usedId + "-input"}
-                class={compact || tiled ? "qc-compact" : ""}
                 type="checkbox"
                 {value}
                 {name}
                 {disabled}
                 bind:checked
+                bind:this={checkboxInput}
                 aria-required = {required}
                 aria-invalid={invalid}
+                onchange={onchange}
                 {...Utils.computeFieldsAttributes("checkbox", rest)}
-                onchange={(e) => {
-                    if (checked) {
-                        invalid = false;
-                    }
-                    handleChange(e, value);
-                }}
         />
         <span class="qc-check-text">
             <span class="qc-check-label">
                 {label}
-                {#if !parentGroup && required}
+                {#if required}
                     <span class="qc-required">*</span>
                 {/if}
             </span>
@@ -76,19 +86,25 @@
             {/if}
         </span>
     </label>
-
-    {#if !parentGroup}
-        <FormError {invalid} {invalidText} />
-    {/if}
 {/snippet}
 
-{#if parentGroup}
-    {@render checkboxRow()}
-{:else}
+
+{#if children}
     <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
-    ]}>
-        {@render checkboxRow()}
+    ]}
+         {compact}
+         bind:this={rootElement}
+         {onchange}
+    >
+        {@render children?.()}
+        <FormError {invalid}
+                   {invalidText}
+                   {label}
+        />
     </div>
+
+{:else}
+    {@render checkboxRow()}
 {/if}

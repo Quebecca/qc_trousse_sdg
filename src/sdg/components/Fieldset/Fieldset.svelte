@@ -2,7 +2,7 @@
     import FormError from '../FormError/FormError.svelte';
     import { onMount } from 'svelte';
     import {Utils} from "../utils";
-    const lang = Utils.getPageLanguage();
+
     let {
         legend,
         name,
@@ -13,24 +13,17 @@
         required = false,
         disabled,
         invalid = $bindable(false),
-        invalidText = lang === "fr" ? "Champ obligatoire" : "Required field",
-        updateValue = () => {},
-        formFieldElements,
+        invalidText,
+        onchange = () => {},
         elementsGap = "sm",
         maxWidth = "fit-content",
-        children
+        children,
     } = $props();
 
     let groupSelection = $state(),
         legendId = name
             ? "id_" + name
-            : "legend-" + Math.floor(Math.random() * 1000000);
-
-    onMount(() => {
-        if (formFieldElements) {
-            groupSelection.append(...formFieldElements);
-        }
-    });
+            : Utils.generateId("legend");
 
     function chooseDivCLass(inline, tiled) {
         if (tiled) {
@@ -50,14 +43,16 @@
             compact && "qc-compact",
             disabled && "qc-disabled"]}
           aria-describedby={legendId}
-          onchange={updateValue}
+          {onchange}
 >
+  {#if legend}
     <legend id={legendId}>
         {@html legend}
         {#if required}
             <span class="qc-required" aria-hidden="true">*</span>
         {/if}
     </legend>
+  {/if}
     <div
         class={[
             chooseDivCLass(inline, tiled),
@@ -71,6 +66,6 @@
     >
         {@render children?.()}
     </div>
-    <FormError {invalid} {invalidText} />
+    <FormError {invalid} {invalidText} label={legend} />
 
 </fieldset>

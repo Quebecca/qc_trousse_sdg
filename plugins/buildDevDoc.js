@@ -19,7 +19,6 @@ function buildHtmlDoc({ input }) {
                 absolute: true,
             });
             const partialMarker = `<!-- _partial.html -->`;
-            const relativePathMarker = `--relativePath--`;
             for (const partialPath of partialPaths) {
                 this.addWatchFile(partialPath);
                 const partialName = path.basename(partialPath, ".html")

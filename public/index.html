@@ -37,7 +37,6 @@
   <h2 class="qc-h4">Bases</h2>
   <ul>
     <li><a href='#couleurs'>Couleurs</a></li>
-    <li><a href="#icon-list">Icônes</a></li>
     <li><a href='#grille'>Grille horizontale</a></li>
     <li><a href='#figures'>Figures</a></li>
     <li><a href='#liens'>Liens</a></li>
@@ -61,26 +60,24 @@
       </ul>
     </li>
     <li><a href="#toTop">Haut de page</a></li>
-    <li><a href="#radio-button">Boutons radio</a></li>
+    <li><a href="#radios-checkboxes">Boutons radios et cases à cocher</a>
+      <ul>
+        <li><a href="#checkbox">Case à cocher unique</a></li>
+        <li><a href="#choice-group">Groupe de boutons radio et de cases à cocher</a></li>
+        <li><a href="#selection-button">Boutons de sélection</a></li>
+      </ul>
+    </li>
+
     <li><a href="#checkbox">Cases à cocher</a></li>
     <li><a href="#selection-button">Boutons de sélection</a></li>
     <li><a href="#toggle-switch">Commutateur</a></li>
     <li><a href="#search-input">Champ de recherche</a></li>
     <li><a href="#textfield">Champ texte</a></li>
-    <li><a href="#dropdown-list">Liste déroulante</a></li>
+    <li><a href="#select">Liste déroulante</a></li>
     <li><a href="#icons">Icônes</a></li>
 
   </ul>
-  <h2 class="qc-h4">Version HTML des composants</h2>
-  <ul>
-    <li><a href="#base-button">Boutons</a></li>
-    <li><a href="#base-radio-button">Boutons radio</a></li>
-    <li><a href="#base-checkbox">Cases à cocher</a></li>
-    <li><a href="#base-selection-button">Boutons de sélection</a></li>
-    <li><a href="#base-textfield">Champ texte</a></li>
-    <li><a href="#base-search-input">Champ de recherche</a></li>
-    <li><a href="#select">Sélecteur</a></li>
-  </ul>
+
 </nav>
 </div>
 <main id="main">
@@ -197,104 +194,6 @@
     <qc-color-doc token="purple"
                   title="Violet"
     ></qc-color-doc>
-</section>
-
-    <hr />
-    <section id="icon-list">
-  <h2>Icônes</h2>
-
-  <div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-      <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Aperçu</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>arrow-up-white</td>
-        <td><qc-icon type="arrow-up-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>chevron-blue</td>
-        <td><qc-icon type="chevron-blue"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>chevron-white</td>
-        <td><qc-icon type="chevron-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>clipboard</td>
-        <td><qc-icon type="clipboard"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>error</td>
-        <td><qc-icon type="error"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>error-white</td>
-        <td><qc-icon type="error-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>external-link</td>
-        <td><qc-icon type="external-link"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>information</td>
-        <td><qc-icon type="information"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>information-white</td>
-        <td><qc-icon type="information-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>linkedin</td>
-        <td><qc-icon type="linkedin"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>loupe-piv-droite</td>
-        <td><qc-icon type="loupe-piv-droite"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>loupe-piv-fonce</td>
-        <td><qc-icon type="loupe-piv-fonce"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>minus</td>
-        <td><qc-icon type="minus"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>plus</td>
-        <td><qc-icon type="plus"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>question-mark</td>
-        <td><qc-icon type="question-mark"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>success</td>
-        <td><qc-icon type="success"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>success-white</td>
-        <td><qc-icon type="success-white"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>warning</td>
-        <td><qc-icon type="warning"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>xclose-blue</td>
-        <td><qc-icon type="xclose-blue"></qc-icon></td>
-      </tr>
-      <tr>
-        <td>xclose-white</td>
-        <td><qc-icon type="xclose-white"></qc-icon></td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
 </section>
 
     <hr/>
@@ -833,7 +732,7 @@
                 caption="Exemple d’avis neutres"
 >
   <qc-notice type="advice"
-             icon="ampoule"
+             icon="ligth-bulb"
              title="Nouvelle règlementation"
              content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
   </qc-notice>
@@ -1100,133 +999,169 @@
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemples des différentes options de boutons.">
-    <div>
-        <qc-button variant="primary" label="Principal"></qc-button>
-        <qc-button variant="primary" rounded label="Principal"></qc-button>
-        <qc-button variant="primary" disabled label="Principal"></qc-button>
-        <qc-button variant="primary" compact label="Principal"></qc-button>
+    <div class="qc-row">
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-primary">Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary qc-button-rounded">Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary" disabled>Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary qc-compact">Principal</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-secondary">Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary" disabled>Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary qc-compact">Secondaire</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-tertiary">Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-danger">Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger" disabled>Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger qc-compact">Avertissement</button>
+            </div>
+        </div>
     </div>
 
     <div>
-        <qc-button variant="secondary" label="Secondaire"></qc-button>
-        <qc-button variant="secondary" rounded label="Secondaire"></qc-button>
-        <qc-button variant="secondary" disabled label="Secondaire"></qc-button>
-        <qc-button variant="secondary" compact label="Secondaire"></qc-button>
+        <button class="qc-button qc-simple">
+            <qc-icon type="information"></qc-icon>
+            Action
+        </button>
+
+        <button class="qc-button qc-simple" disabled>
+            <qc-icon type="plus"></qc-icon>
+            Action
+        </button>
+    </div>
+    <div>
+        <button class="qc-button qc-simple qc-compact">
+            <qc-icon type="information"></qc-icon>
+            Action
+        </button>
+
+        <button class="qc-button qc-simple qc-compact" disabled>
+            <qc-icon type="plus"></qc-icon>
+            Action
+        </button>
     </div>
 
-    <div>
-        <qc-button variant="tertiary" label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" rounded label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" disabled label="Tertiaire"></qc-button>
-        <qc-button variant="tertiary" compact label="Tertiaire"></qc-button>
-    </div>
+</qc-doc-exemple>
 
+<qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détail concernant le composant <code>qc-icon</code>">
     <div>
-        <qc-button variant="danger" label="Avertissement"></qc-button>
-        <qc-button variant="danger" rounded label="Avertissement"></qc-button>
-        <qc-button variant="danger" disabled label="Avertissement"></qc-button>
-        <qc-button variant="danger" compact label="Avertissement"></qc-button>
+        <button class="qc-button qc-primary">
+            <qc-icon type="plus"></qc-icon>
+            Ajouter
+        </button>
+
+        <button class="qc-button qc-primary">
+            Information
+            <qc-icon type="information"></qc-icon>
+        </button>
     </div>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemples de boutons avec un icone.">
-    <div>
-        <qc-button
-                variant="primary"
-                label="Ajouter"
-                icon="plus"
-                icon-position="left"
-        ></qc-button>
-
-        <qc-button
-                variant="primary"
-                label="Information"
-                icon="information"
-                icon-position="right"
-        ></qc-button>
-    </div>
-
+<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
+    <button class="qc-button qc-primary">
+        <qc-icon src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+        ></qc-icon>
+        Questions
+    </button>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée.">
-    <qc-button
-            variant="primary"
-            label="Questions"
-            icon-src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="973.1" height="973.1" viewBox="0 0 973.1 973.1"><path d="M502.29,788.199h-47c-33.1,0-60,26.9-60,60v64.9c0,33.1,26.9,60,60,60h47c33.101,0,60-26.9,60-60v-64.9 C562.29,815,535.391,788.199,502.29,788.199z" fill="%23fff"/><path d="M170.89,285.8l86.7,10.8c27.5,3.4,53.6-12.4,63.5-38.3c12.5-32.7,29.9-58.5,52.2-77.3c31.601-26.6,70.9-40,117.9-40 c48.7,0,87.5,12.8,116.3,38.3c28.8,25.6,43.1,56.2,43.1,92.1c0,25.8-8.1,49.4-24.3,70.8c-10.5,13.6-42.8,42.2-96.7,85.9 c-54,43.7-89.899,83.099-107.899,118.099c-18.4,35.801-24.8,75.5-26.4,115.301c-1.399,34.1,25.8,62.5,60,62.5h49 c31.2,0,57-23.9,59.8-54.9c2-22.299,5.7-39.199,11.301-50.699c9.399-19.701,33.699-45.701,72.699-78.1 C723.59,477.8,772.79,428.4,795.891,392c23-36.3,34.6-74.8,34.6-115.5c0-73.5-31.3-138-94-193.4c-62.6-55.4-147-83.1-253-83.1 c-100.8,0-182.1,27.3-244.1,82c-52.8,46.6-84.9,101.8-96.2,165.5C139.69,266.1,152.39,283.5,170.89,285.8z" fill="%23fff"/></svg>'
-    ></qc-button>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons simples.">
-    <div>
-        <qc-button variant="simple" label="Action" icon="information"></qc-button>
-        <qc-button variant="simple" disabled label="Action" icon="plus"></qc-button>
-        <qc-button variant="simple" compact label="Action" icon="external-link"></qc-button>
-    </div>
+<qc-doc-exemple caption="Exemples avec un lien et un champ de soumission">
+        <a href="javascript:void(0);"
+           class="qc-button qc-primary"
+           role="button"
+        >
+            Action
+        </a>
+        <input type="submit" value="Action" class="qc-button qc-primary" />
 </qc-doc-exemple>
 
 
+<h3>Classes CSS</h3>
 
-<h3>Documentation technique</h3>
-
-<h4>Attributs de qc-button</h4>
 <div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+    <table class="qc-table qc-striped">
         <thead>
         <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
+            <th>Classe / Attribut</th>
             <th>Description</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>variant</td>
-            <td>Texte</td>
-            <td>"primary"</td>
-            <td>Définit le style visuel du bouton. Valeurs possibles : <code>primary</code>, <code>secondary</code>, <code>tertiary</code>, <code>danger</code>.</td>
+            <td><code>qc‑button</code></td>
+            <td>Classe de base obligatoire pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
         </tr>
         <tr>
-            <td>label</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte affiché dans le bouton.</td>
+            <td><code>qc‑compact</code></td>
+            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
         </tr>
         <tr>
-            <td>compact</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Affiche le bouton dans un format plus petit.</td>
+            <td><code>qc‑button‑rounded</code></td>
+            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
         </tr>
         <tr>
-            <td>rounded</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Ajoute un rayon aux coins du bouton pour un style arrondi.</td>
+            <td><code>qc‑primary</code></td>
+            <td>Bouton principal avec fond bleu et texte blanc.</td>
         </tr>
         <tr>
-            <td>disabled</td>
-            <td>"True" ou "False"</td>
-            <td>False</td>
-            <td>Désactive le bouton et empêche toute interaction.</td>
+            <td><code>qc‑secondary</code></td>
+            <td>Bouton secondaire avec fond blanc et texte bleu.</td>
         </tr>
         <tr>
-            <td>icon</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Nom d’une icône présente dans la librairie du projet. (voir la section <a href="#icons">icônes</a>)</td>
+            <td><code>qc‑tertiary</code></td>
+            <td>Bouton tertiaire avec fond blanc et texte bleu.</td>
         </tr>
         <tr>
-            <td>icon-position</td>
-            <td>"left" ou "right"</td>
-            <td>"left"</td>
-            <td>Positionne l’icône à gauche ou à droite du texte dans le bouton.</td>
+            <td><code>qc‑danger</code></td>
+            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
         </tr>
         <tr>
-            <td>icon-src</td>
-            <td>Tout format accepté par la fonction css url()</td>
-            <td>""</td>
-            <td>Permet d’afficher une image personnalisée.</td>
+            <td><code>qc‑simple</code></td>
+            <td>Bouton sans fond ni bordure.</td>
+        </tr>
         </tbody>
     </table>
 </div>
@@ -1660,272 +1595,25 @@
 </div>
 
     <hr />
+    <h2 id="radios-checkboxes">Boutons radios et cases à cocher</h2>
+    
 
-    <!-- Boutons radio -->
-    <h2 id="radio-button">Boutons radio</h2>
-<p>Les boutons radio sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.</p>
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemple de boutons radio avec différents états">
-  <qc-radio-group id="exemple-radio-md"
-                  legend="Choisissez une option :"
-                  name="ex-md"
-  >
-    <qc-radio-button
-            label="Option 1"
-            value="option 1"
-            checked
-    ></qc-radio-button>
-    <qc-radio-button
-            label="Option 2"
-            value="option 2"
-    ></qc-radio-button>
-    <qc-radio-button
-            label="Option 3 (désactivée)"
-            value="option 3"
-            disabled
-    ></qc-radio-button>
-  </qc-radio-group>
-
-  <script>
-    const group = document.getElementById("exemple-radio-md");
-
-    group.addEventListener("change", () => {
-      console.log(group.querySelector("input:checked").value);
-    });
-  </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de boutons radio au format compact">
-  <qc-radio-group legend="Choisissez une option :"
-                  name="ex-sm"
-                  compact >
-    <qc-radio-button
-            label="Option 1"
-            value="1"
-            checked
-    ></qc-radio-button>
-    <qc-radio-button
-            label="Option 2"
-            value="2"
-    ></qc-radio-button>
-    <qc-radio-button
-            label="Option 3 (désactivée)"
-            value="3"
-            disabled
-    ></qc-radio-button>
-  </qc-radio-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
-  <form id="radio-form">
-    <qc-radio-group
-            id="radio-group"
-            legend="Quel est votre niveau de scolarité?"
-            name="ex-md-form"
-            required
-            invalid-text="Veuillez sélectionner un niveau de scolarité."
-    >
-      <qc-radio-button
-              label="Secondaire"
-              value="secondaire"
-      ></qc-radio-button>
-      <qc-radio-button
-              label="Professionnel"
-              value="professionnel"
-      ></qc-radio-button>
-      <qc-radio-button
-              label="Collégial"
-              value="collegial"
-      ></qc-radio-button>
-      <qc-radio-button
-              label="Universitaire"
-              value="universitaire"
-      ></qc-radio-button>
-    </qc-radio-group>
-
-    <qc-radio-group legend="Êtes-vous présentement aux études?"
-                    name="ex-md-form-2"
-    >
-      <qc-radio-button
-              label="Oui"
-              value="oui"
-      ></qc-radio-button>
-      <qc-radio-button
-              label="Non"
-              value="non"
-      ></qc-radio-button>
-    </qc-radio-group>
-
-    <button class="btn btn-sm btn-primary" type="submit">
-      Soumettre
-    </button>
-  </form>
-
-  <script>
-
-    document
-            .getElementById("radio-form")
-            .addEventListener("submit", (e) => {
-              e.preventDefault();
-              let doSubmit = true;
-              e.target.querySelectorAll("[required]").forEach(group => {
-                if (!group.checked) {
-                  group.invalid = true;
-                  doSubmit = false;
-                }
-              })
-              if(doSubmit) {
-                alert(
-                        "Formulaire soumis\n"
-                        + Array.from(e.target.querySelectorAll("qc-radio-group"))
-                                .map(group => `Valeur pour ${group.name} : ${group.value  ? group.value : "vide"}`)
-                                .join("\n")
-
-                );
-              }
-            })
-  </script>
-</qc-doc-exemple>
-
-<h3 id="radio-button-attributes">Documentation technique</h3>
-
-<h4>Attributs de qc-radio-group</h4>
-
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td></td>
-      <td>Nom de l’ensemble des boutons radios du groupe</td>
-    </tr>
-    <tr>
-      <td>legend</td>
-      <td>Texte</td>
-      <td></td>
-      <td>Libellé du groupe</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Indique que le groupe est dans un état invalide, et affiche le message d’erreur.
-        (Cette valeur est à ajuster lors de la validation du formulaire, cf « Exemple de validation de formulaire avec des boutons radio ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>Champ obligatoire/Required field</td>
-      <td>Texte qui s'affiche sous les boutons radio en cas d’état invalide</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
-
-<h4>Attributs de qc-radio-button</h4>
-
-<p>Ce composant ne peut être utilisé en dehors d’un groupe (<code>qc-radio-group</code>)</p>
-
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td></td>
-      <td>Valeur associée au bouton radio</td>
-    </tr>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td></td>
-      <td>Libellé du bouton radio</td>
-    </tr>
-    <tr>
-      <td>checked</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Indique que le bouton est sélectionné par défaut.
-      </td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le bouton radio</td>
-    </tr>
-    <tr>
-      <td>radio-*</td>
-      <td></td>
-      <td></td>
-      <td>
-        Tout attribut commençant par <code class="qc-bg-color-grey-pale">radio-</code> sera ajouté
-        comme attribut au bouton radio brut.
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-    <!-- Cases à cocher -->
-    <h2 id="checkbox">Cases à cocher</h2>
-
-<p>
-  Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.
-  <br/> Les cases à cocher sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
-</p>
+<h3 id="checkbox">Case à cocher unique (qc-checkbox)</h3>
 
 <qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
   <form id="exemple-tos-form">
-    <qc-checkbox
-            id="exemple-une-case"
-            name="consentement"
-            label="J’accepte les conditions d’utilisation"
-            value="oui"
-            required
-    ></qc-checkbox>
+    <qc-checkbox required >
+      <label>
+        <input type="checkbox"
+               name="consentement"
+               value="oui"
+               id="consentement"
+        />
+        <span >J’accepte les conditions d’utilisation</span>
+      </label>
+    </qc-checkbox>
 
-    <button class="btn btn-sm btn-primary"
+    <button class="qc-button qc-primary qc-compact"
             type="submit">
       S'inscrire
     </button>
@@ -1933,10 +1621,10 @@
 
   <script>
     const tosForm = document.getElementById("exemple-tos-form");
-    const termsAcceptance = document.getElementById("exemple-une-case");
+    const consentement = document.getElementById("consentement");
     tosForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      if(termsAcceptance.checked) {
+      if(consentement.checked) {
         const formData = new FormData(event.target);
         let alertParts = ["Formulaire soumis avec les données suivantes :"];
         for (const [key, value] of formData.entries()) {
@@ -1944,105 +1632,12 @@
         }
         alert(alertParts.join("\n"));
       } else {
-        termsAcceptance.invalid = true;
+        consentement.closest('qc-checkbox').invalid = true;
       }
     })
   </script>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
-  <qc-checkbox-group legend="Sélectionnez vos options">
-    <qc-checkbox label="Option 1"></qc-checkbox>
-    <qc-checkbox label="Option 2 cochée par défaut" checked="true"></qc-checkbox>
-    <qc-checkbox label="Option 3 désactivée" disabled="true"></qc-checkbox>
-  </qc-checkbox-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">
-  <qc-checkbox-group
-          legend="Sélectionnez vos options"
-          name="options"
-          compact
-  >
-    <qc-checkbox value="Option 1"></qc-checkbox>
-    <qc-checkbox value="Option 2"></qc-checkbox>
-    <qc-checkbox value="Option 3"></qc-checkbox>
-  </qc-checkbox-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">
-  <form id="checkbox-form">
-    <qc-checkbox-group
-            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
-            name="ex-checkbox-form"
-            required
-            invalid-text="Veuillez sélectionner une plateforme."
-    >
-      <qc-checkbox
-              label="Ordinateur"
-              value="ordinateur"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Tablette"
-              value="tablette"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Téléphone intelligent"
-              value="telephone_intelligent"
-      ></qc-checkbox>
-    </qc-checkbox-group>
-
-    <qc-checkbox-group
-            legend="Sur quel navigateur consultez-vous www.quebec.ca?"
-            name="ex-checkbox-form-2"
-    >
-      <qc-checkbox
-              label="Chrome"
-              value="chrome"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Safari"
-              value="safari"
-      ></qc-checkbox>
-      <qc-checkbox
-              label="Firefox"
-              value="firefox"
-      ></qc-checkbox>
-    </qc-checkbox-group>
-
-    <button class="btn btn-sm btn-primary" type="submit">
-      Soumettre
-    </button>
-  </form>
-
-  <script>
-
-    document
-            .getElementById("checkbox-form")
-            .addEventListener("submit", (event) => {
-              event.preventDefault();
-              let doSubmit = true;
-              event.target.querySelectorAll("[required]").forEach(group => {
-                if (!group.checked) {
-                  group.invalid = true;
-                  doSubmit = false;
-                }
-              })
-              if(doSubmit) {
-                alert(
-                        "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("qc-checkbox-group"))
-                                .map(group => `Valeur pour ${group.name} : ${group.value.join(',')  ? group.value.join(',') : "vide"}`)
-                                .join("\n")
-
-                );
-              }
-            })
-  </script>
-</qc-doc-exemple>
-
-
-<h3 id="checkbox-attributes">Documentation technique</h3>
 
 <h4>Attributs de qc-checkbox</h4>
 <div class="table-overflow">
@@ -2057,28 +1652,10 @@
     </thead>
     <tbody>
     <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ de formulaire</td>
-    </tr>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Libellé de la case à cocher</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>Valeur de l’attribut label</td>
-      <td>Valeur du champ</td>
-    </tr>
-    <tr>
       <td>compact</td>
       <td>na</td>
       <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
+      <td>Affiche les champs au format compact</td>
     </tr>
     <tr>
       <td>required</td>
@@ -2087,19 +1664,12 @@
       <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
     </tr>
     <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
-    </tr>
-    <tr>
       <td>invalid</td>
       <td>na</td>
       <td>na</td>
       <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple d’une case à cocher seule obligatoire ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+        Affiche le message d'erreur, cf « Exemple d’une case à cocher seule obligatoire ».
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
       </td>
     </tr>
     <tr>
@@ -2113,7 +1683,211 @@
 </div>
 
 
-<h4>Attributs de qc-checkbox-group</h4>
+    <h3 id="choice-group">Groupe de boutons radios et de cases à cocher (qc-choice-group)</h3>
+
+<h4>Exemples</h4>
+<p>
+  Les groupes d'éléments de choix sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+</p>
+
+<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple d’un groupe au petit format">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+                   compact
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+                   compact
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
+  <form id="checkbox-form">
+    <qc-choice-group
+            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
+            name="plateforme"
+            required
+            invalid-text="Veuillez sélectionner une plateforme."
+    >
+      <label>
+        <input type="checkbox"
+               value="ordinateur"
+        />
+        <span>Ordinateur</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="tablette"
+        />
+        <span>Tablette</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="telephone_intelligent"
+        />
+        <span>Téléphone intelligent</span>
+      </label>
+    </qc-choice-group>
+
+    <qc-choice-group
+            legend="Quel thème préférez-vous ?"
+            name="theme"
+            required
+            invalid-text="Veuillez sélectionner une plateforme."
+    >
+      <label>
+        <input type="radio"
+               value="clair"
+        />
+        <span>Le thème clair</span>
+      </label>
+      <label>
+        <input type="radio"
+               value="sombre"
+        />
+        <span>Le thème sombre</span>
+      </label>
+
+    </qc-choice-group>
+
+    <button class="qc-button qc-primary qc-compact" type="submit">
+      Soumettre
+    </button>
+  </form>
+
+  <script>
+
+    document
+            .getElementById("checkbox-form")
+            .addEventListener("submit", (event) => {
+              event.preventDefault();
+              let doSubmit = true;
+              event
+                      .target
+                      .querySelectorAll("qc-choice-group[required]")
+                      .forEach(group => {
+                        let valid = false;
+                        group.querySelectorAll("input")
+                                .forEach(checkbox => {
+                                  if (checkbox.checked) {
+                                    valid = true;
+                                  }
+                                })
+                        if (!valid) {
+                          group.invalid = true;
+                          doSubmit = false;
+                        }
+                      })
+              if(doSubmit) {
+                const formData = new FormData(event.target);
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                for (const [key, value] of formData.entries()) {
+                  alertParts.push(`${key} : ${value}`);
+                }
+                alert(alertParts.join("\n"));
+              }
+            })
+  </script>
+</qc-doc-exemple>
+
+
+<h4 id="choice-group-doc">Attributs de qc-choice-group</h4>
+
 <div class="table-overflow">
   <table class="qc-table qc-striped component-attributes-description">
     <thead>
@@ -2129,40 +1903,33 @@
       <td>legend</td>
       <td>Texte</td>
       <td>""</td>
-      <td>Légende du groupe de cases à cocher</td>
+      <td>Légende du groupe</td>
     </tr>
     <tr>
       <td>name</td>
       <td>Texte</td>
       <td>""</td>
-      <td>Nom commun pour toutes les cases à cocher du groupe</td>
+      <td>Nom commun à tous les champs du groupe</td>
     </tr>
     <tr>
       <td>compact</td>
       <td>na</td>
       <td>na</td>
-      <td>Affiche les boutons radios au format compact</td>
+      <td>Affiche les champs au format compact</td>
     </tr>
     <tr>
       <td>required</td>
       <td>na</td>
       <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Désactive le groupe</td>
+      <td>Marque la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
     </tr>
     <tr>
       <td>invalid</td>
       <td>na</td>
       <td>na</td>
       <td>
-        Indique si le groupe est dans un état invalide
-        (ajuster cette valeur lors de la validation d’un formulaire, cf « Exemple de validation de formulaire avec des cases à cocher ».)
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un bouton est coché.
+        Affiche le message d'erreur,  cf « Exemple de validation de formulaire avec des groupes de choix ».)
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
       </td>
     </tr>
     <tr>
@@ -2172,13 +1939,30 @@
       <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
     </tr>
     <tr>
-      <td>checkbox-*</td>
-      <td></td>
-      <td></td>
-      <td>
-        Tout attribut commençant par <code class="qc-bg-color-grey-pale">checkbox-</code> sera ajouté
-        comme attribut à la case à cocher.
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+    </tr>
+    <tr>
+      <td>tiled</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les champs au format de boutons de sélection dans une grille</td>
+    </tr>
+    <tr>
+      <td>column-count</td>
+      <td>Nombre</td>
+      <td>1</td>
+      <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
+        <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
       </td>
+    </tr>
+    <tr>
+      <td>inline</td>
+      <td>na</td>
+      <td>na</td>
+      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée</td>
     </tr>
     </tbody>
   </table>
@@ -2186,137 +1970,143 @@
 
 <p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
 
-    <!-- Boutons de sélection -->
-    <h2 id="selection-button">Boutons de sélection</h2>
-<h3>Exemples</h3>
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
+
+    <h3 id="selection-button">Boutons de sélection</h3>
+
 
 <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
-    <qc-radio-group legend="Choisissez une option :"
+    <qc-choice-group legend="Sélectionnez une option :"
                     name="ex-radio-select"
                     tiled
                     column-count="2"
     >
-        <qc-radio-button
-                label="Option 1"
-                value="1"
-                checked
-                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="Option 3 (désactivée)"
-                value="3"
-                disabled
-        ></qc-radio-button>
-    </qc-radio-group>
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
 </qc-doc-exemple>
 
 <qc-doc-exemple
         caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
 >
-    <qc-checkbox-group
+    <qc-choice-group
             name="exemple-checkbox-select"
             legend="Sélectionnez vos options"
             tiled
             column-count="2">
-        <qc-checkbox
-                label="Option 1"
-                description="Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection."
-                value="1"
-        ></qc-checkbox>
-        <qc-checkbox
-                label="Option 2 cochée par défaut"
-                checked="true"
-                value="2"
-        ></qc-checkbox>
-        <qc-checkbox
-                label="Option 3 désactivée"
-                disabled="true"
-                value="3"
-        ></qc-checkbox>
-    </qc-checkbox-group>
+        <label>
+            <input type="checkbox"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="checkbox"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
-    <qc-radio-group legend="Choisissez une option :"
+    <qc-choice-group legend="Choisissez une option :"
                     name="ex-radio-select-inline"
                     tiled
                     inline
     >
-        <qc-radio-button
-                label="1"
-                value="1"
-                checked
-        ></qc-radio-button>
-        <qc-radio-button
-                label="2"
-                value="2"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="3"
-                value="3"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="4"
-                value="4"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="5"
-                value="5"
-        ></qc-radio-button>
-        <qc-radio-button
-                label="6"
-                value="6"
-        ></qc-radio-button>
-    </qc-radio-group>
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span>1</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span>2</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+            />
+            <span>3</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="4"
+            />
+            <span>4</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="5"
+            />
+            <span>5</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="6"
+                   disabled
+            />
+            <span>6</span>
+        </label>
+
+    </qc-choice-group>
 </qc-doc-exemple>
 
-<h3 id="selection-button-attributes">Documentation technique</h3>
-<p>Ces attributs sont appliqués à <code>qc-radio-group</code> et <code>qc-checkbox-group</code></p>
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>tiled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche les boutons radio au format de boutons de sélection dans une grille</td>
-        </tr>
-        <tr>
-            <td>column-count</td>
-            <td>Nombre</td>
-            <td>1</td>
-            <td>
-                Nombre de colonnes de la grille de boutons de sélection.
-                <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
-            </td>
-        </tr>
-        <tr>
-            <td>inline</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche les boutons de sélection sur une rangée</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<h4>Documentation technique</h4>
+<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a></p>
 
-<p>
-    Pour les attributs spécifiques à chaque variante de boutons de sélection, voir les attributs des
-    <a href="#radio-button-attributes">boutons radio</a> et des <a href="#checkbox-attributes">cases à cocher</a>.
-</p>
 
+    <!-- _choiceGroupDoc.html -->
     <!-- Commutateur -->
 <h2 id="toggle-switch">Commutateur</h2>
 <p>
@@ -2565,115 +2355,76 @@
 <hr/>
     <h2 id="textfield">Champ texte</h2>
 
-<p>Le champ texte est un espace dans lequel est saisie une information qui tient sur une ou plusieurs lignes de texte.
-  Il peut s’agir d’une combinaison de lettres, de chiffres et de symboles.</p>
-
-<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
+<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états. Soumettre le formulaire pour voir les messages d'erreur.">
   <form id="formulaire-champs-textes">
     <qc-textfield
-            name="text-sm"
-            label="Entrez votre âge"
-            size="sm"
-            placeholder="25"
-    ></qc-textfield>
+            label="Nom complet"
+            size="md"
+            required
+    >
+      <input type="text"
+             name="code-postal"
+             placeholder="ex : Jean Tremblay"
+      />
+    </qc-textfield>
 
     <qc-textfield
-            name="text-md"
-            label="Entrez votre code postal"
+            label="Champ désactivé"
             size="md"
-            placeholder="ex : G1A 1A1"
-    ></qc-textfield>
+    >
+      <input type="text"
+             name="disabled-field"
+             placeholder="Ce champ est désactivé"
+             disabled
+      />
+    </qc-textfield>
 
     <div class="qc-textfield-row">
       <qc-textfield
-              name="telephone"
               label="Téléphone"
-              size="md"
-              placeholder="(123) 456-7890"
-      ></qc-textfield>
+              size="sm"
+              required
+        ><input type="text"
+                name="telephone"
+                placeholder="(123) 456-7890"
+      /></qc-textfield>
 
       <qc-textfield
-              name="poste"
               label="Poste"
-              size="sm"
-              placeholder="1234"
-      ></qc-textfield>
+              size="xs"
+      >
+        <input type="text"
+               name="poste"
+        />
+      </qc-textfield>
     </div>
 
-
     <qc-textfield
-            name="text-lg"
-            label="Entrez votre ville"
+            label="Champ de texte multiligne"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             size="lg"
-            placeholder="Ceci est un très long placeholder"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="text-xl"
-            label="Entrez votre adresse courriel"
-            size="xl"
-            placeholder="ex : jeantremblay@exemple.com"
+            max-length="10"
             required
-    ></qc-textfield>
+    >
+      <textarea name="zone-xxl"></textarea>
+    </qc-textfield>
 
-    <qc-textfield
-            name="text-xxl"
-            label="Entrez votre adresse"
-            size="xxl"
-            disabled
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xl"
-            label="Commentaires"
-            description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
-            size="xl"
-            display="area"
-    ></qc-textfield>
-
-    <qc-textfield
-            name="zone-xxl"
-            label="Suggestions"
-            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-            size="xxl"
-            display="area"
-            max-length="50"
-            required
-            invalid-text="Message d'erreur personnalisé"
-    ></qc-textfield>
-
-    <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+    <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
   </form>
 
   <script>
     const form = document.getElementById("formulaire-champs-textes");
-
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-
       let isValid = true;
-
-      const requiredFields = form.querySelectorAll("qc-textfield[required]");
-
-      requiredFields.forEach(field => {
-        const value = field.value?.trim();
-        const maxLength = parseInt(field.getAttribute("max-length"), 10);
-
-        if (!value) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        if (!isNaN(maxLength) && value.length > maxLength) {
-          field.invalid = true;
-          isValid = false;
-          return;
-        }
-
-        field.invalid = false;
-      });
-
+      form
+          .querySelectorAll("qc-textfield[required]")
+          .forEach(formfield => {
+            if (formfield.invalidAtSubmit) {
+              formfield.invalid = true;
+              isValid = false;
+            }
+          })
       if (isValid) {
         const formData = new FormData(form);
         let alertParts = ["Formulaire soumis avec les données suivantes :"];
@@ -2689,6 +2440,11 @@
 
 <h3>Documentation technique</h3>
 
+<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
+
+<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne causent pas décalage. <br/>
+  Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
+
 <h4>Attributs</h4>
 <div class="table-overflow">
   <table class="qc-table qc-striped component-attributes-description">
@@ -2702,52 +2458,24 @@
     </thead>
     <tbody>
     <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom du champ</td>
-    </tr>
-    <tr>
       <td>label</td>
       <td>Texte</td>
       <td>""</td>
-      <td>Étiquette du champ. Ce texte apparaît au-dessus du champ à remplir.</td>
-    </tr>
-    <tr>
-      <td>placeholder</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte indicatif affiché lorsque le champ est vide</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Valeur envoyée lors de la soumission du formulaire</td>
+      <td>Texte du libellé du champ</td>
     </tr>
     <tr>
       <td>size</td>
-      <td>"sm", "md", "lg", "xl", "xxl"</td>
-      <td>"xl"</td>
-      <td>Taille du champ</td>
-    </tr>
-    <tr>
-      <td>display</td>
-      <td>"inline", "area"</td>
-      <td>"inline"</td>
-      <td>Détermine si le champ est un champ de texte simple ou une zone de texte multilignes</td>
-    </tr>
-    <tr>
-      <td>disabled</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Désactive le champ</td>
+      <td>"xs", "sm", "md", "lg", "xl"</td>
+      <td>lg pour les champs simple (<code>input</code>) <br>
+        xl pour les champs multilignes (<code>textarea</code>),
+      </td>
+      <td>Largeur du champ</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Rend le champ obligatoire</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Marque le champ comme obligatoire</td>
     </tr>
     <tr>
       <td>description</td>
@@ -2759,104 +2487,138 @@
       <td>max-length</td>
       <td>Nombre</td>
       <td>null</td>
-      <td>Nombre maximum de caractères autorisés pour ce champ</td>
+      <td>Indique la limite de caractères pour le champ</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>"true", "false"</td>
-      <td>"false"</td>
-      <td>Indique si le champ est invalide. Le champ devient dans l'état invalide si on tente de soumettre le champ vide alors qu'il est obligatoire.</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique que le champ est invalide en affichant un message selon l'erreur.
+      <dl>
+        <dt>Français</dt>
+        <dd>Le champ XXX est obligatoire.</dd>
+        <dd>La limite de caractères du champ XXX est dépassée.</dd>
+        <dt>Anglais</dt>
+        <dd>XXX field is required.</dd>
+        <dd>The character limit for the ${label} field has been exceeded..</dd>
+      </dl>
+      </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
+      <td>aucune</td>
       <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
     </tr>
     </tbody>
   </table>
 </div>
 
-<hr/>
-    <!-- Liste déroulante -->
-<h2 id="dropdown-list">Liste déroulante</h2>
+<h4>Propriété js</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>invalidAtSubmit</td>
+        <td>Booléen</td>
+        <td>Indique si le champ serait invalide s'il était soumis. La vérification porte sur <code>required</code> et <code>max-length</code></td>
+      </tr>
+      <tr>
+      <tr>
+        <td>maxlengthReached</td>
+        <td>Booléen</td>
+        <td>Indique si la limite de caractère est dépassée.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
+    <h2 id="select">Liste déroulante</h2>
 
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <qc-dropdown-list
-        id="dropdown-list-single-choice"
-        label="Choix unique:"
-    >
-        <qc-option value="1" selected>Option 1</qc-option>
-        <qc-option value="2">Option 2</qc-option>
-        <qc-option value="3">Option 3</qc-option>
-        <qc-option value="4">Option 4</qc-option>
-        <qc-option value="5">Option 5</qc-option>
-        <qc-option value="6">Option 6</qc-option>
-        <qc-option value="7">Option 7</qc-option>
-        <qc-option value="8">Option 8</qc-option>
-        <qc-option value="9">Option 9</qc-option>
-        <qc-option value="10">Option 10</qc-option>
-        <qc-option value="11">Option 11</qc-option>
-        <qc-option value="12">Option 12</qc-option>
-        <qc-option value="13">Option 13</qc-option>
-        <qc-option value="14">Option 14</qc-option>
-        <qc-option value="15">Option 15</qc-option>
-        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
-    </qc-dropdown-list>
+    <qc-select id="qc-select-single-choice">
+        <label for="select-single-choice">Choix unique</label>
+        <select id="select-single-choice">
+            <option value="1" selected>Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16" disabled>Option 16 (désactivée)</option>
+        </select>
+    </qc-select>
 
-    <qc-dropdown-list
-            id="dropdown-list-single-choice-no-scroll"
-            label="Choix unique avec recherche:"
-            enable-search
-    >
-        <qc-option value="1">Option 1</qc-option>
-        <qc-option value="2">Option 2</qc-option>
-        <qc-option value="3">Option 3</qc-option>
-        <qc-option value="4">Option 4</qc-option>
-        <qc-option value="5">Option 5</qc-option>
-        <qc-option value="6">Option 6</qc-option>
-        <qc-option value="7">Option 7</qc-option>
-        <qc-option value="8">Option 8</qc-option>
-        <qc-option value="9">Option 9</qc-option>
-        <qc-option value="10">Option 10</qc-option>
-        <qc-option value="11">Option 11</qc-option>
-        <qc-option value="12">Option 12</qc-option>
-        <qc-option value="13">Option 13</qc-option>
-        <qc-option value="14">Option 14</qc-option>
-        <qc-option value="15">Option 15</qc-option>
-        <qc-option value="16">Option 16</qc-option>
-    </qc-dropdown-list>
+    <qc-select id="qc-select-single-choice-search" enable-search>
+        <label for="select-single-choice-search">Choix unique avec recherche</label>
+        <select id="select-single-choice-search">
+            <option value="1" selected>Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16" >Option 16</option>
+        </select>
+    </qc-select>
 
-    <qc-dropdown-list
-            id="dropdown-list-multiple-choices"
-            label="Choix multiples:"
-            multiple
-    >
-        <qc-option value="1">Option 1</qc-option>
-        <qc-option value="2">Option 2</qc-option>
-        <qc-option value="3">Option 3</qc-option>
-        <qc-option value="4">Option 4</qc-option>
-        <qc-option value="5">Option 5</qc-option>
-        <qc-option value="6">Option 6</qc-option>
-        <qc-option value="7">Option 7</qc-option>
-        <qc-option value="8">Option 8</qc-option>
-        <qc-option value="9">Option 9</qc-option>
-        <qc-option value="10">Option 10</qc-option>
-        <qc-option value="11">Option 11</qc-option>
-        <qc-option value="12">Option 12</qc-option>
-        <qc-option value="13">Option 13</qc-option>
-        <qc-option value="14">Option 14</qc-option>
-        <qc-option value="15">Option 15</qc-option>
-        <qc-option value="16" disabled>Option 16 (désactivée)</qc-option>
-    </qc-dropdown-list>
+    <qc-select id="qc-select-multiple-choices" multiple>
+        <label for="select-multiple-choices">Choix multiple</label>
+        <select multiple id="select-multiple-choices">
+            <option value="1">Option 1</option>
+            <option value="2" selected>Option 2</option>
+            <option value="3" selected>Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16" disabled>Option 16 (désactivée)</option>
+        </select>
+    </qc-select>
 
-    <qc-dropdown-list
-        id="dropdown-list-disabled"
-        label="Désactivé:"
-        disabled
-    ></qc-dropdown-list>
+    <qc-select id="qc-select-disabled" disabled>
+        <label for="select-disabled">Désactivé</label>
+        <select id="select-disabled">disabled</select>
+    </qc-select>
 
     <script>
         function mutationCallback(mutationsList, _) {
@@ -2869,9 +2631,9 @@
 
         const mutationObserver = new MutationObserver(mutationCallback);
 
-        const singleChoice = document.getElementById("dropdown-list-single-choice");
-        const singleChoiceNoScroll = document.getElementById("dropdown-list-single-choice-no-scroll");
-        const multipleChoice = document.getElementById("dropdown-list-multiple-choices");
+        const singleChoice = document.getElementById("qc-select-single-choice");
+        const singleChoiceNoScroll = document.getElementById("qc-select-single-choice-search");
+        const multipleChoice = document.getElementById("qc-select-multiple-choices");
 
         mutationObserver.observe(singleChoice, { attributes: true });
         mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
@@ -2885,44 +2647,48 @@
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
     <form id="dropdown-list-form">
-        <qc-dropdown-list
-            id="dropdown-list-restaurants"
-            label="Type de restaurant"
-            placeholder="Type de restaurant"
-            enable-search
-            search-placeholder="Rechercher un type restaurant"
-            required
-            invalid-text="Veuillez choisir un type de restaurant."
+        <qc-select
+                id="dropdown-list-restaurants"
+                placeholder="Type de restaurant"
+                enable-search
+                search-placeholder="Rechercher un type restaurant"
+                required
+                invalid-text="Veuillez choisir un type de restaurant."
         >
-            <qc-option value="Pizzeria">Pizzeria</qc-option>
-            <qc-option value="Pâtisserie">Pâtisserie</qc-option>
-            <qc-option value="Steakhouse">Steakhouse</qc-option>
-            <qc-option value="Bar">Bar</qc-option>
-            <qc-option value="Casse-croûte">Casse-croûte</qc-option>
-            <qc-option value="Boîte à pâtes">Boîte à pâtes</qc-option>
-            <qc-option value="Restaurant à burgers">Restaurant à burgers</qc-option>
-        </qc-dropdown-list>
+            <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+            <select id="dropdown-list-restaurants-select">
+                <option value="Pizzeria">Pizzeria</option>
+                <option value="Pâtisserie">Pâtisserie</option>
+                <option value="Steakhouse">Steakhouse</option>
+                <option value="Bar">Bar</option>
+                <option value="Casse-croûte">Casse-croûte</option>
+                <option value="Boîte à pâtes">Boîte à pâtes</option>
+                <option value="Restaurant à burgers">Restaurant à burgers</option>
+            </select>
+        </qc-select>
 
-        <qc-dropdown-list
-            id="dropdown-list-regions"
-            label="Régions desservies"
-            placeholder="Sélectionner une région"
-            width="lg"
-            enable-search
-            search-placeholder="Rechercher les régions"
-            multiple
+        <qc-select
+                id="dropdown-list-regions"
+                placeholder="Sélectionner une région"
+                width="lg"
+                enable-search
+                search-placeholder="Rechercher les régions"
+                multiple
         >
-            <qc-option value="Capitale-nationale">Capitale-nationale</qc-option>
-            <qc-option value="Centre-du-Québec" selected>Centre-du-Québec</qc-option>
-            <qc-option value="Montérégie" selected>Montérégie</qc-option>
-            <qc-option value="Outaouais">Outaouais</qc-option>
-            <qc-option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</qc-option>
-            <qc-option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</qc-option>
-            <qc-option value="Nord-du-Québec">Nord-du-Québec</qc-option>
-            <qc-option value="Bas-Saint-Laurent">Bas-Saint-Laurent</qc-option>
-        </qc-dropdown-list>
+            <label for="dropdown-list-regions-select">Régions desservies</label>
+            <select id="dropdown-list-regions-select" multiple>
+                <option value="Capitale-nationale">Capitale-nationale</option>
+                <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
+                <option value="Montérégie" selected>Montérégie</option>
+                <option value="Outaouais">Outaouais</option>
+                <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+                <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+                <option value="Nord-du-Québec">Nord-du-Québec</option>
+                <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+            </select>
+        </qc-select>
 
-        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+        <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
     </form>
 
     <script>
@@ -2933,7 +2699,8 @@
 
             let isValid = true;
 
-            const requiredFields = dropdownListForm.querySelectorAll("qc-dropdown-list[required]");
+            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
+            console.log(requiredFields);
 
             requiredFields.forEach(field => {
                 const value = field.value?.trim();
@@ -2947,7 +2714,7 @@
             });
 
             if (isValid) {
-                const formEntries = dropdownListForm.querySelectorAll("qc-dropdown-list");
+                const formEntries = dropdownListForm.querySelectorAll("qc-select");
                 let alertParts = ["Formulaire soumis avec les données suivantes :"];
                 formEntries.forEach((field) => {
                     alertParts.push(`${field.label}: ${field.value}`);
@@ -2960,7 +2727,7 @@
 
 <h3>Documentation technique</h3>
 
-<h4>Attributs de <code>qc-dropdown-list</code></h4>
+<h4>Attributs</h4>
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
@@ -2975,14 +2742,17 @@
         <tr>
             <td>id</td>
             <td>Texte</td>
-            <td>Nombre aléatoire</td>
+            <td>Chaîne de caractères aléatoire</td>
             <td>Identifiant de la liste déroulante</td>
         </tr>
         <tr>
             <td>label</td>
             <td>Contenu HTML</td>
             <td>""</td>
-            <td>Libellé de la liste déroulante</td>
+            <td>
+                Libellé de la liste déroulante.
+                <br> Si le libellé est absent, le contenu de l'élément <code>label</code> en slot est utilisé.
+            </td>
         </tr>
         <tr>
             <td>width</td>
@@ -3058,8 +2828,41 @@
     </table>
 </div>
 
-<h4>Attributs de <code>qc-option</code></h4>
-<p> Ce composant ne produit aucun contenu HTML dans la page. Il fournit des données à son élément parent.</p>
+<h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
+<ul>
+    <li>Ce composant contient un DOM d'ombre.</li>
+    <li>
+        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
+        <ul>
+            <li><code>label</code></li>
+            <li><code>select</code></li>
+        </ul>
+    </li>
+</ul>
+    
+<h2 id="icons">Icônes (qc-icon)</h2>
+
+<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+
+<h3>Exemples</h3>
+<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
+                id="icons-exemple">
+    <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
+    <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
+    <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
+    <qc-icon type="success" color="purple" size="lg"></qc-icon>
+    <qc-icon type="success" color="success" size="xl"></qc-icon>
+
+</qc-doc-exemple>
+<style>
+    #icons-exemple qc-icon {
+        margin-right: var(--qc-spacer-sm);
+    }
+</style>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
@@ -3072,1455 +2875,175 @@
         </thead>
         <tbody>
         <tr>
-            <td>label</td>
-            <td>Contenu HTML</td>
-            <td>Corps du <code>qc-option</code></td>
-            <td>Texte de l'option</td>
-        </tr>
-        <tr>
-            <td>value</td>
+            <td>type</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Valeur de l'option</td>
+            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
         </tr>
         <tr>
-            <td>disabled</td>
+            <td>label</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran.</td>
+        </tr>
+        <tr>
+            <td>rotate</td>
+            <td>Nombre</td>
             <td>na</td>
-            <td>na</td>
-            <td>Désactive l'option</td>
+            <td>Rotation de l'image en degrés dans le sens horaire.</td>
         </tr>
         <tr>
-            <td>selected</td>
-            <td>na</td>
-            <td>na</td>
-            <td>
-                État de sélection de l'option
-                <br> N.B. : Si l'attribut <code>multiple</code> est absent de la liste déroulante parente ou est mis à <code>false</code>,
-                la première option ayant l'attribut <code>selected</code> sera présélectionnée.
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-    <h2 id="icons">Icônes</h2>
-
-<h3>Exemples</h3>
-<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
-  id="icons-exemple">
-  <qc-icon type="error" color="error" size="xs"></qc-icon>
-  <qc-icon type="error" color="error" size="sm"></qc-icon>
-  <qc-icon type="error" color="error" size="md"></qc-icon>
-  <qc-icon type="error" color="error" size="lg"></qc-icon>
-  <qc-icon type="error" color="error" size="xl"></qc-icon>
-
-</qc-doc-exemple>
-<style>
-  #icons-exemple qc-icon {
-    margin-right: var(--qc-spacer-sm);
-  }
-</style>
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>type</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom de l’icône à afficher.</td>
-    </tr>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran.</td>
-    </tr>
-    <tr>
-      <td>size</td>
-      <td>"xs", "sm", "md", "lg" ou "xl"</td>
-      <td>"md"</td>
-      <td>Taille de l’icône.</td>
-    </tr>
-    <tr>
-      <td>color</td>
-      <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
-      <td>text-primary</td>
-      <td>Couleur de l'icône.</td>
-    </tr>
-    <tr>
-      <td>width</td>
-      <td>Texte</td>
-      <td>"auto"</td>
-      <td>Largeur personnalisée de l’icône.</td>
-    </tr>
-    <tr>
-      <td>height</td>
-      <td>Texte</td>
-      <td>"auto"</td>
-      <td>Hauteur personnalisée de l’icône.</td>
-    </tr>
-    <tr>
-      <td>src</td>
-      <td>URL</td>
-      <td>""</td>
-      <td>Chemin vers une image personnalisée à utiliser comme icône.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-
-    <hr />
-    <h2 class="qc-h2">Version HTML des composants</h2>
-
-    <h2 id="base-button">Boutons</h2>
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemples des différentes options de boutons.">
-    <div>
-        <button class="qc-button qc-primary">Principal</button>
-        <button class="qc-button qc-primary qc-button-rounded">Principal</button>
-        <button class="qc-button qc-primary" disabled>Principal</button>
-        <button class="qc-button qc-primary qc-compact">Principal</button>
-    </div>
-
-    <div>
-        <button class="qc-button qc-secondary">Secondaire</button>
-        <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
-        <button class="qc-button qc-secondary" disabled>Secondaire</button>
-        <button class="qc-button qc-secondary qc-compact">Secondaire</button>
-    </div>
-
-    <div>
-        <button class="qc-button qc-tertiary">Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
-        <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
-    </div>
-
-    <div>
-        <button class="qc-button qc-danger">Avertissement</button>
-        <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
-        <button class="qc-button qc-danger" disabled>Avertissement</button>
-        <button class="qc-button qc-danger qc-compact">Avertissement</button>
-    </div>
-
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons avec un icone.">
-    <div>
-        <button class="qc-button qc-primary">
-      <span
-          class="qc-icon"
-          data-img-type="plus"
-          aria-label="Ajouter"
-          style="--img-color: var(--qc-color-text-primary);"
-      ></span>
-            Ajouter
-        </button>
-
-        <button class="qc-button qc-primary">
-            Information
-            <span
-                class="qc-icon"
-                data-img-type="information"
-                aria-label="Information"
-                style="--img-color: var(--qc-color-text-primary);"
-            ></span>
-        </button>
-    </div>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de bouton avec une image personnalisée en base64.">
-    <button class="qc-button qc-primary">
-      <span
-          class="qc-icon qc-custom-icon"
-          aria-label="Questions"
-          style="
-              --img-color: var(--qc-color-text-primary);
-              mask-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
-          "
-      ></span>
-            Questions
-    </button>
-
-    <button class="qc-button qc-primary">
-      <span
-          class="qc-icon qc-custom-icon"
-          aria-label="Questions"
-          style="
-              --img-color: var(--qc-color-text-primary);
-              mask-image: url('../../../../../public/img/question.svg');
-          "
-      ></span>
-            Questions
-    </button>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons simples.">
-    <div>
-        <button class="qc-button qc-simple">
-      <span
-              class="qc-icon"
-              data-img-type="information"
-              aria-label="Information"
-              style="--img-color: var(--qc-color-text-primary);"
-      ></span>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple" disabled>
-      <span
-              class="qc-icon"
-              data-img-type="plus"
-              aria-label="Ajouter"
-              style="--img-color: var(--qc-color-text-primary);"
-      ></span>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple qc-compact">
-      <span
-          class="qc-icon"
-          data-img-type="external-link"
-          aria-label="Lien externe"
-          style="--img-color: var(--qc-color-text-primary);"
-      ></span>
-            Action
-        </button>
-    </div>
-</qc-doc-exemple>
-
-
-<h3>Classes CSS</h3>
-
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
-        <thead>
-        <tr>
-            <th>Classe / Attribut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><code>qc-button</code></td>
-            <td>Classe de base pour tous les boutons. Définit la typographie, la taille, les marges, le padding, et le comportement responsive.</td>
+            <td>size</td>
+            <td>"xs", "sm", "md", "lg" ou "xl"</td>
+            <td>"md"</td>
+            <td>Taille de l’icône.</td>
         </tr>
         <tr>
-            <td><code>qc-compact</code></td>
-            <td>Variante compacte du bouton avec des dimensions réduites et un padding plus petit.</td>
+            <td>color</td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>text-primary</td>
+            <td>Couleur de l'icône.</td>
         </tr>
         <tr>
-            <td><code>qc-button-rounded</code></td>
-            <td>Ajoute un rayon de bordure pour arrondir les coins du bouton.</td>
+            <td>width</td>
+            <td>Texte</td>
+            <td>"auto"</td>
+            <td>Largeur personnalisée de l’icône.</td>
         </tr>
         <tr>
-            <td><code>qc-primary</code></td>
-            <td>Bouton principal avec fond bleu et texte blanc.</td>
+            <td>height</td>
+            <td>Texte</td>
+            <td>"auto"</td>
+            <td>Hauteur personnalisée de l’icône.</td>
         </tr>
         <tr>
-            <td><code>qc-secondary</code></td>
-            <td>Bouton secondaire avec fond blanc et texte bleu.</td>
-        </tr>
-        <tr>
-            <td><code>qc-tertiary</code></td>
-            <td>Bouton tertiaire avec fond blanc et texte bleu.</td>
-        </tr>
-        <tr>
-            <td><code>qc-danger</code></td>
-            <td>Bouton d’avertissement avec fond rouge et texte blanc.</td>
-        </tr>
-        <tr>
-            <td><code>qc-simple</code></td>
-            <td>Bouton sans fond ni bordure.</td>
-        </tr>
-        <tr>
-            <td><code>disabled</code></td>
-            <td>État désactivé du bouton. Change l’apparence et désactive les interactions.</td>
-        </tr>
-        <tr>
-            <td><code>qc-icon</code></td>
-            <td>Classe de base pour les icônes intégrées dans les boutons. Utilise <code>mask-image</code> pour afficher une icône SVG.</td>
-        </tr>
-        <tr>
-            <td><code>qc-custom-icon</code></td>
-            <td>Classe à ajouter à <code>qc-icon</code> pour afficher une image personnalisée via <code>mask-image</code> (base64 ou URL).</td>
-        </tr>
-        <tr>
-            <td><code>data-img-type</code></td>
-            <td>Nom de l’icône à afficher.</td>
-        </tr>
-        <tr>
-            <td><code>--img-color</code></td>
-            <td>Couleur de l’icône.</td>
-        </tr>
-        <tr>
-            <td><code>mask-image</code></td>
-            <td>Permet d’afficher une icône personnalisée en SVG ou base64. À définir dans l’attribut <code>style</code>.</td>
+            <td>src</td>
+            <td>URL</td>
+            <td>""</td>
+            <td>Chemin vers une image personnalisée à utiliser comme icône.</td>
         </tr>
         </tbody>
     </table>
 </div>
 
+<h4>Liste des icônes</h4>
 
-    <h2 id="base-radio-button">Boutons radio</h2>
-<h3>Exemples</h3>
-
-<qc-doc-exemple
-        caption="Exemple de boutons radio avec différents états">
-    <fieldset id="base-exemple-radio-md" aria-describedby="base-id_ex-md" class="qc-fieldset">
-        <legend id="base-id_ex-md">Choisissez une option :</legend>
-
-        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-            <label for="base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
-                <input type="radio" id="base-ex-md-option 1-fxwctmlnrb" name="base-ex-md" value="option 1" aria-required="false" aria-invalid="false" checked>
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 1</span>
-                </span>
-            </label>
-
-            <label for="base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
-                <input type="radio" id="base-ex-md-option 2-b3fdtujwgpi" name="base-ex-md" value="option 2" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 2</span>
-                </span>
-            </label>
-
-            <label for="base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
-                <input type="radio" id="base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-md" value="option 3" aria-required="false" aria-invalid="false" disabled="">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 3 (désactivée)</span>
-                </span>
-            </label>
-        </div>
-    </fieldset>
-
-    <script>
-        const baseGroup = document.getElementById("base-exemple-radio-md");
-
-        baseGroup.addEventListener("change", () => {
-            console.log(baseGroup.querySelector("input:checked").value);
-        });
-    </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple
-        caption="Exemple de boutons radio de petite taille avec une option désactivée et une option présélectionnée">
-    <fieldset id="compact-base-exemple-radio-md" aria-describedby="base-id_ex-sm" class="qc-fieldset qc-compact">
-        <legend id="compact-base-id_ex-md">Choisissez une option :</legend>
-
-        <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-            <label for="compact-base-ex-md-option 1-fxwctmlnrb" class="qc-check-row">
-                <input type="radio" id="compact-base-ex-md-option 1-fxwctmlnrb" name="base-ex-sm" value="option 1" aria-required="false" aria-invalid="false" class="qc-compact">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 1</span>
-                </span>
-            </label>
-
-            <label for="compact-base-ex-md-option 2-b3fdtujwgpi" class="qc-check-row">
-                <input type="radio" id="compact-base-ex-md-option 2-b3fdtujwgpi" name="base-ex-sm" value="option 2" aria-required="false" aria-invalid="false" class="qc-compact">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 2</span>
-                </span>
-            </label>
-
-            <label for="compact-base-ex-md-option 3-b2gsaxhwn6a" class="qc-check-row">
-                <input type="radio" id="compact-base-ex-md-option 3-b2gsaxhwn6a" name="base-ex-sm" value="option 3" aria-required="false" aria-invalid="false" class="qc-compact">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 3</span>
-                </span>
-            </label>
-        </div>
-    </fieldset>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des boutons radio">
-    <form id="base-radio-form">
-        <fieldset id="base-exemple-radio-form" aria-describedby="base-id_ex-form" class="qc-fieldset" data-required="true">
-            <legend id="base-id_ex-form">Quel est votre niveau de scolarité?</legend>
-
-            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-                <label for="base-ex-form-option 1-fxwctmlnrb" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-option 1-fxwctmlnrb" name="base-ex-form" value="Secondaire" aria-required="true" aria-invalid="false">
-                    <span class="qc-check-text">
-                        <span class="qc-check-label">Secondaire</span>
-                    </span>
-                </label>
-
-                <label for="base-ex-form-option 2-b3fdtujwgpi" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-option 2-b3fdtujwgpi" name="base-ex-form" value="Professionnel" aria-required="true" aria-invalid="false">
-                        <span class="qc-check-text">
-                    <span class="qc-check-label">Professionnel</span>
-                    </span>
-                </label>
-
-                <label for="base-ex-form-option 3-b2gsaxhwn6a" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-option 3-b2gsaxhwn6a" name="base-ex-form" value="Collégial" aria-required="true" aria-invalid="false">
-                        <span class="qc-check-text">
-                    <span class="qc-check-label">Collégial</span>
-                    </span>
-                </label>
-
-                <label for="base-ex-form-option 4-b2gsaxhwn6a" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-option 4-b2gsaxhwn6a" name="base-ex-form" value="Universitaire" aria-required="true" aria-invalid="false">
-                    <span class="qc-check-text">
-                        <span class="qc-check-label">Universitaire</span>
-                    </span>
-                </label>
-            </div>
-        </fieldset>
-
-        <fieldset id="base-exemple-radio-form-2" aria-describedby="base-id_ex-form-2" class="qc-fieldset" data-required="false">
-            <legend id="base-id_ex-form-2">Êtes-vous présentement aux études?</legend>
-
-            <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-                <label for="base-ex-form-2-option 1-fxwctmlnrb" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-2-option 1-fxwctmlnrb" name="base-ex-form-2" value="oui" aria-required="false" aria-invalid="false">
-                    <span class="qc-check-text">
-                        <span class="qc-check-label">Oui</span>
-                    </span>
-                </label>
-
-                <label for="base-ex-form-2-option 2-b3fdtujwgpi" class="qc-check-row">
-                    <input type="radio" id="base-ex-form-2-option 2-b3fdtujwgpi" name="base-ex-form-2" value="non" aria-required="false" aria-invalid="false">
-                    <span class="qc-check-text">
-                        <span class="qc-check-label">Non</span>
-                    </span>
-                </label>
-            </div>
-        </fieldset>
-
-        <button class="btn btn-sm btn-primary" type="submit">
-            Soumettre
-        </button>
-    </form>
-
-    <script>
-        const baseRadioForm = document.getElementById("base-radio-form");
-
-        baseRadioForm
-            .addEventListener("submit", (event) => {
-                event.preventDefault();
-                let doSubmit = true;
-                event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
-                    if (!group.querySelector("input:checked")) {
-                        group.querySelectorAll("input[type='radio']").forEach(input => {
-                            input.setAttribute("aria-invalid", "true");
-                        });
-                        doSubmit = false;
-
-                        const alert = document.createElement("div");
-                        alert.classList.add("qc-form-error");
-                        alert.setAttribute("role", "alert");
-                        setTimeout(() => {
-                            alert.innerHTML = `
-                              <div role="img"
-                                   class="qc-icon"
-                                   data-img-type="warning"
-                                   style="--img-color: var(--qc-color-red-regular);
-                                            --img-width: 24px;
-                                            --img-height: 21px;
-                                            display: none;
-                                            "
-                              ></div>
-                              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
-                              `;
-                        }, 10);
-                        group.appendChild(alert);
-                        group.classList.add("qc-fieldset-invalid");
-                    }
-                })
-                if (doSubmit) {
-                    alert(
-                        "Formulaire soumis\n"
-                        + Array.from(event.target.querySelectorAll("fieldset"))
-                            .map((group) => {
-                                    const legend = group.querySelector("legend").innerHTML;
-                                    const value = group.querySelector("input:checked")?.value;
-                                    return `Valeur pour "${legend}" : ${value ? value : "vide"}`;
-                                }
-                            )
-                            .join("\n")
-                    );
-                }
-            });
-
-        baseRadioForm.querySelectorAll("input").forEach(input => {
-            input.addEventListener("change", () => {
-                input.ariaInvalid = "false";
-                const parentFieldset = input.parentElement.parentElement.parentElement;
-                parentFieldset.classList.remove("qc-fieldset-invalid");
-                parentFieldset.querySelector(".qc-form-error")?.remove();
-            });
-        });
-    </script>
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
-        <thead>
-        <tr>
-            <th>Nom de classe ou variable</th>
-            <th>Description des propriétés</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>qc-fieldset</td>
-            <td>Disposition des éléments <code>fieldset</code> et leur contenu</td>
-        </tr>
-        <tr>
-            <td>qc-field-elements-flex</td>
-            <td>Affiche les éléments du fieldset en disposition <code>flex</code> sur colonne</td>
-        </tr>
-        <tr>
-            <td>qc-field-elements-flex-sm</td>
-            <td>Spécifie l'espacement entre les éléments de <code>fieldset</code> au token `small`</td>
-        </tr>
-        <tr>
-            <td>qc-check-row</td>
-            <td>Taille et disposition des boutons radio et leurs libellés</td>
-        </tr>
-        <tr>
-            <td>qc-check-text</td>
-            <td>Disposition des libellés et de leurs descriptions (pour les boutons de sélection)</td>
-        </tr>
-        <tr>
-            <td>qc-check-label</td>
-            <td>Affiche les libellés en gras</td>
-        </tr>
-        <tr>
-            <td>qc-compact</td>
-            <td>Affiche les boutons radio au format compact</td>
-        </tr>
-        <tr>
-            <td>--column-count</td>
-            <td>
-                Nombre de colonnes pour un affichage en grille des boutons radio
-                <br>Note : À utiliser pour les boutons de sélection seulement
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-    <h2 id="base-checkbox">Cases à cocher</h2>
-
-<p>Le composant de case à cocher permet de créer des éléments de formulaire pour la sélection multiple. Il peut être utilisé seul ou en groupe.</p>
-
-<qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
-  <form id="base-exemple-tos-form">
-    <div class="qc-checkbox-single">
-      <label class="qc-check-row" for="base-exemple-une-case">
-        <input
-          id="base-exemple-une-case"
-          type="checkbox"
-          value="oui"
-          name="base-consentement"
-          aria-required="true"
-          aria-invalid="false"
-        >
-        <span class="qc-check-text">
-          <span class="qc-check-label">
-            J’accepte les conditions d’utilisation
-            <span class="qc-required">*</span>
-          </span>
-        </span>
-      </label>
-    </div>
-
-    <button class="btn btn-sm btn-primary"
-            type="submit">
-      S'inscrire
-    </button>
-  </form>
-
-  <script>
-    const baseTosForm = document.getElementById("base-exemple-tos-form");
-    const baseTermsAcceptance = document.getElementById("base-exemple-une-case")
-    baseTosForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if(baseTermsAcceptance.checked) {
-        const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantees :"];
-        for (const [key, value] of formData.entries()) {
-          alertParts.push(`${key} : ${value}`);
-        }
-        alert(alertParts.join("\n"));
-      } else {
-        baseTermsAcceptance.invalid = true;
-
-        const alert = document.createElement("div");
-        alert.classList.add("qc-form-error");
-        alert.setAttribute("role", "alert");
-        setTimeout(() => {
-          alert.innerHTML = `
-              <div role="img"
-                   class="qc-icon"
-                   data-img-type="warning"
-                   style="--img-color: var(--qc-color-red-regular);
-                            --img-width: 24px;
-                            --img-height: 21px;
-                            display: none;
-                            "
-              ></div>
-              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
-              `;
-        }, 10);
-        baseTosForm.querySelector(".qc-checkbox-single").appendChild(alert);
-        baseTosForm.querySelector(".qc-checkbox-single").classList.add("qc-checkbox-single-invalid");
-      }
-    })
-
-    baseTermsAcceptance.addEventListener("change", () => {
-      baseTosForm.querySelector(".qc-checkbox-single").classList.remove("qc-checkbox-single-invalid");
-
-      baseTermsAcceptance.ariaInvalid = "false";
-      const parentFieldset = baseTermsAcceptance.parentElement.parentElement.parentElement;
-      parentFieldset.classList.remove("qc-fieldset-invalid");
-      parentFieldset.querySelector(".qc-form-error")?.remove();
-    });
-  </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
-  <fieldset aria-describedby="base-legend-895684" class="qc-fieldset" data-required="true">
-    <legend id="base-legend-895684">Sélectionnez vos options</legend>
-    <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-      <label class="qc-check-row" for="base-Option 1-kf8af3zoax">
-        <input type="checkbox" name="base-checkbox-group" value="Option 1" id="base-Option 1-kf8af3zoax" aria-required="false" aria-invalid="false">
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 1</span>
-        </span>
-      </label>
-
-
-      <label class="qc-check-row" for="base-Option 2 cochée par défaut-6dtqm2cbwna">
-        <input type="checkbox" name="base-checkbox-group" value="Option 2 cochée par défaut" id="base-Option 2 cochée par défaut-6dtqm2cbwna" aria-required="false" aria-invalid="false" checked>
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 2 cochée par défaut</span>
-        </span>
-      </label>
-
-      <label class="qc-check-row" for="base-Option 3 désactivée-8plxpo1egnp">
-        <input type="checkbox" name="base-checkbox-group" value="Option 3 désactivée" id="base-Option 3 désactivée-8plxpo1egnp" disabled="" aria-required="false" aria-invalid="false">
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 3 désactivée</span>
-        </span>
-      </label>
-    </div>
-  </fieldset>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au petit format">
-  <fieldset aria-describedby="base-legend-compact" class="qc-fieldset qc-compact">
-    <legend id="base-legend-compact">Sélectionnez vos options</legend>
-    <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-      <label class="qc-check-row" for="base-Option 1-compact">
-        <input type="checkbox" name="base-checkbox-group" value="Option 1" id="base-Option 1-compact" aria-required="false" aria-invalid="false" class="qc-compact">
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 1</span>
-        </span>
-      </label>
-
-
-      <label class="qc-check-row" for="base-Option 2 cochée par défaut-compact">
-        <input type="checkbox" name="base-checkbox-group" value="Option 2 cochée par défaut" id="base-Option 2 cochée par défaut-compact" aria-required="false" aria-invalid="false" class="qc-compact">
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 2 cochée par défaut</span>
-        </span>
-      </label>
-
-      <label class="qc-check-row" for="base-Option 3 désactivée-compact">
-        <input type="checkbox" name="base-checkbox-group" value="Option 3 désactivée" id="base-Option 3 désactivée-compact" aria-required="false" aria-invalid="false" class="qc-compact">
-        <span class="qc-check-text">
-          <span class="qc-check-label">Option 3 désactivée</span>
-        </span>
-      </label>
-    </div>
-  </fieldset>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des cases à cocher">
-  <form id="base-checkbox-form">
-    <fieldset aria-describedby="id_ex-checkbox-form" class="qc-fieldset" data-required="true">
-      <legend id="id_ex-checkbox-form">
-        Sur quelle plateforme consultez-vous www.quebec.ca?
-        <span class="qc-required" aria-hidden="true">*</span>
-      </legend>
-
-      <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-        <label class="qc-check-row" for="ex-checkbox-form-ordinateur-base">
-          <input type="checkbox" value="ordinateur" name="base-ex-checkbox-form" id="ex-checkbox-form-ordinateur-base" aria-required="true" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Ordinateur</span>
-          </span>
-        </label>
-
-        <label class="qc-check-row" for="ex-checkbox-form-tablette-base">
-          <input type="checkbox" value="tablette" name="base-ex-checkbox-form" id="ex-checkbox-form-tablette-base" aria-required="true" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Tablette</span>
-          </span>
-        </label>
-
-        <label class="qc-check-row" for="ex-checkbox-form-telephone_intelligent-base">
-          <input type="checkbox" value="telephone_intelligent" name="base-ex-checkbox-form" id="ex-checkbox-form-telephone_intelligent-base" aria-required="true" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Téléphone intelligent</span>
-          </span>
-        </label>
-      </div>
-    </fieldset>
-
-    <fieldset aria-describedby="id_ex-checkbox-form-2" class="qc-fieldset">
-      <legend id="id_ex-checkbox-form-2">Sur quel navigateur consultez-vous www.quebec.ca?</legend>
-
-      <div class="qc-field-elements-flex qc-field-elements-flex-sm" style="--column-count: 1;">
-        <label class="qc-check-row" for="ex-checkbox-form-2-chrome-51n8m5rxecg">
-          <input type="checkbox" value="chrome" name="base-ex-checkbox-form-2" id="ex-checkbox-form-2-chrome-51n8m5rxecg" aria-required="false" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Chrome </span>
-          </span>
-        </label>
-
-        <label class="qc-check-row" for="ex-checkbox-form-2-safari-hhai3z61kb8">
-          <input type="checkbox" value="safari" name="base-ex-checkbox-form-2" id="ex-checkbox-form-2-safari-hhai3z61kb8" aria-required="false" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Safari</span>
-          </span>
-        </label>
-
-        <label class="qc-check-row" for="ex-checkbox-form-2-firefox-mjzmiagh4p">
-          <input type="checkbox" value="firefox" name="base-ex-checkbox-form-2" id="ex-checkbox-form-2-firefox-mjzmiagh4p" aria-required="false" aria-invalid="false">
-          <span class="qc-check-text">
-            <span class="qc-check-label">Firefox</span>
-          </span>
-        </label>
-      </div>
-    </fieldset>
-
-    <button class="btn btn-sm btn-primary" type="submit">
-      Soumettre
-    </button>
-  </form>
-
-  <script>
-    document
-      .getElementById("base-checkbox-form")
-      .addEventListener("submit", (event) => {
-        event.preventDefault();
-        let doSubmit = true;
-        console.log(event.target.querySelectorAll("fieldset[data-required='true']"));
-        event.target.querySelectorAll("fieldset[data-required='true']").forEach(group => {
-          if (group.querySelectorAll("input:checked").length <= 0) {
-            group.querySelectorAll("input").forEach(input => {
-              input.ariaInvalid = true;
-            });
-            doSubmit = false;
-
-            const alert = document.createElement("div");
-            alert.classList.add("qc-form-error");
-            alert.setAttribute("role", "alert");
-            setTimeout(() => {
-              alert.innerHTML = `
-              <div role="img"
-                   class="qc-icon"
-                   data-img-type="warning"
-                   style="--img-color: var(--qc-color-red-regular);
-                            --img-width: 24px;
-                            --img-height: 21px;
-                            display: none;
-                            "
-              ></div>
-              <span class="qc-form-error-message">Veuillez sélectionner une plateforme.</span>
-              `;
-            }, 10);
-            group.appendChild(alert);
-            group.classList.add("qc-fieldset-invalid");
-          }
-        });
-
-        if (doSubmit) {
-          const platformValues = Array.from(event.target.querySelectorAll("input[name='base-ex-checkbox-form']:checked")).map(input => input.value);
-          const browserValues = Array.from(event.target.querySelectorAll("input[name='base-ex-checkbox-form-2']:checked")).map(input => input.value);
-
-          alert(
-            "Formulaire soumis\n"
-                  + `Valeur pour 'Plateforme' : ${platformValues.length > 0 ? platformValues.join(',') : "vide"}`
-                  + `\nValeur pour 'Navigateur' : ${browserValues.length > 0 ? browserValues.join(',') : "vide"}`
-          );
-        }
-      })
-
-    document.getElementById("base-checkbox-form")
-            .querySelectorAll("input").forEach(input => {
-              input.addEventListener("change", () => {
-                input.ariaInvalid = "false";
-                const parentFieldset = input.parentElement.parentElement.parentElement;
-                parentFieldset.classList.remove("qc-fieldset-invalid");
-                parentFieldset.querySelector(".qc-form-error")?.remove();
-              });
-            });
-  </script>
-</qc-doc-exemple>
-
-
-<h3>Documentation technique</h3>
-
-<h4>Classes</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom de classe ou variable</th>
-      <th>Description des propriétés</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>qc-fieldset</td>
-      <td>Disposition des éléments <code>fieldset</code> et leur contenu</td>
-    </tr>
-    <tr>
-      <td>qc-field-elements-flex</td>
-      <td>Affiche les éléments du fieldset en disposition <code>flex</code> sur colonne</td>
-    </tr>
-    <tr>
-      <td>qc-field-elements-flex-sm</td>
-      <td>Spécifie l'espacement entre les éléments de <code>fieldset</code> au token `small`</td>
-    </tr>
-    <tr>
-      <td>qc-check-row</td>
-      <td>Taille et disposition des cases à cocher et leurs libellés</td>
-    </tr>
-    <tr>
-      <td>qc-check-text</td>
-      <td>Disposition des libellés et de leurs descriptions (pour les boutons de sélection)</td>
-    </tr>
-    <tr>
-      <td>qc-check-label</td>
-      <td>Affiche le libellé en gras</td>
-    </tr>
-    <tr>
-      <td>qc-compact</td>
-      <td>Affiche la case à cocher au format compact</td>
-    </tr>
-    <tr>
-      <td>--column-count</td>
-      <td>
-        Nombre de colonnes pour un affichage en grille des cases à cocher
-        <br>Note : À utiliser pour les boutons de sélection seulement
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-    <h2 id="base-selection-button">Boutons de sélection</h2>
-
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
-    <fieldset aria-describedby="base-id_ex-radio-select" class="qc-fieldset">
-        <legend id="base-id_ex-radio-select">Choisissez une option :</legend>
-        
-        <div class="qc-field-elements-tiled" style="--column-count: 2;">
-            <label for="base-ex-radio-select-1-07wzbagv1j7-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-1-07wzbagv1j7-input" name="base-ex-radio-select" value="1" aria-required="false" aria-invalid="false" checked>
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 1</span>
-                    <span class="qc-check-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
-                </span>
-            </label>
-
-            <label for="base-ex-radio-select-2-f6bvh8pbh5s-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-2-f6bvh8pbh5s-input" name="base-ex-radio-select" value="2" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 2</span>
-                </span>
-            </label>
-
-            <label for="base-ex-radio-select-3-yxtu495l8ba-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-3-yxtu495l8ba-input" name="base-ex-radio-select" value="3" aria-required="false" aria-invalid="false" disabled="">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 3 (désactivée)</span>
-                </span>
-            </label>
-        </div>
-    </fieldset>
-</qc-doc-exemple>
-    
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états">
-    <fieldset aria-describedby="base-id_exemple-checkbox-select" class="qc-fieldset">
-        <legend id="base-id_exemple-checkbox-select">Sélectionnez vos options</legend>
-
-        <div class="qc-field-elements-tiled" style="--column-count: 2;">
-            <label class="qc-selection-button" for="base-exemple-checkbox-select10.c4slvplnh2-input">
-                <input id="base-exemple-checkbox-select10.c4slvplnh2-input" class="qc-compact" type="checkbox" value="1" name="base-exemple-checkbox-select" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 1 </span>
-                    <span class="qc-check-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
-                </span>
-            </label>
-
-            <label class="qc-selection-button" for="base-exemple-checkbox-select20.nf6c2k98c1-input">
-                <input id="base-exemple-checkbox-select20.nf6c2k98c1-input" class="qc-compact" type="checkbox" value="2" name="base-exemple-checkbox-select" aria-required="false" aria-invalid="false" checked>
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 2 cochée par défaut</span>
-                </span>
-            </label>
-
-            <label class="qc-selection-button" for="base-exemple-checkbox-select30.gia4dr5skyk-input">
-                <input id="base-exemple-checkbox-select30.gia4dr5skyk-input" class="qc-compact" type="checkbox" value="3" name="base-exemple-checkbox-select" disabled="" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">Option 3 désactivée</span>
-                </span>
-            </label>
-        </div>
-    </fieldset>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
-    <fieldset aria-describedby="base-id_ex-radio-select-inline" class="qc-fieldset">
-        <legend id="base-id_ex-radio-select-inline">Choisissez une option : </legend>
-        
-        <div class="qc-field-elements-tiled-flex-row" style="--column-count: 1;">
-            <label for="base-ex-radio-select-inline-1-gsv4etzzb9-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-1-gsv4etzzb9-input" name="base-ex-radio-select-inline" value="1" aria-required="false" aria-invalid="false" checked>
-                <span class="qc-check-text">
-                    <span class="qc-check-label">1</span>
-                </span>
-            </label>
-            <label for="base-ex-radio-select-inline-2-a6tphrc4nxs-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-2-a6tphrc4nxs-input" name="base-ex-radio-select-inline" value="2" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">2</span>
-                </span>
-            </label>
-            <label for="base-ex-radio-select-inline-3-3j103yk0b8-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-3-3j103yk0b8-input" name="base-ex-radio-select-inline" value="3" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">3</span>
-                </span>
-            </label>
-            <label for="base-ex-radio-select-inline-4-1cqqin7kwpn-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-4-1cqqin7kwpn-input" name="base-ex-radio-select-inline" value="4" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">4</span>
-                </span>
-            </label>
-            <label for="base-ex-radio-select-inline-5-d1upuvhliij-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-5-d1upuvhliij-input" name="base-ex-radio-select-inline" value="5" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">5</span>
-                </span>
-            </label>
-            <label for="base-ex-radio-select-inline-6-jm6gm6grsac-input" class="qc-selection-button">
-                <input class="qc-compact" type="radio" id="base-ex-radio-select-inline-6-jm6gm6grsac-input" name="base-ex-radio-select-inline" value="6" aria-required="false" aria-invalid="false">
-                <span class="qc-check-text">
-                    <span class="qc-check-label">6</span>
-                </span>
-            </label>
-        </div>
-    </fieldset>
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<h4>Classes</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom de classe ou variable</th>
-            <th>Description des propriétés</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>qc-fieldset</td>
-            <td>Disposition des éléments <code>fieldset</code> et leur contenu</td>
-        </tr>
-        <tr>
-            <td>qc-field-elements-tiled</td>
-            <td>Affiche les éléments du fieldset en disposition <code>inline-grid</code></td>
-        </tr>
-        <tr>
-            <td>qc-selection-button</td>
-            <td>Affiche les boutons radio et cases à cocher du <code>fieldset</code> en boutons de sélection</td>
-        </tr>
-        <tr>
-            <td>qc-check-text</td>
-            <td>Disposition des libellés et de leurs descriptions</td>
-        </tr>
-        <tr>
-            <td>qc-check-label</td>
-            <td>Affiche le libellé en gras</td>
-        </tr>
-        <tr>
-            <td>qc-check-description</td>
-            <td>Style de la description d'un bouton de sélection</td>
-        </tr>
-        <tr>
-            <td>qc-compact</td>
-            <td>Affiche le bouton radio ou la case à cocher au format compact dans le bouton de sélection</td>
-        </tr>
-        <tr>
-            <td>--column-count</td>
-            <td>
-                Nombre de colonnes pour un affichage en grille des boutons de sélection
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-    <h2 id="base-textfield">Champ texte</h2>
-
-<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états">
-    <form id="formulaire-base-champs-textes" novalidate>
-        <div class="qc-textfield-container">
-            <label for="text-sm">Entrez votre âge</label>
-            <div class="qc-textfield qc-textfield--sm">
-                <input type="text" id="text-sm" name="text-sm" />
-            </div>
-        </div>
-
-        <div class="qc-textfield-container">
-            <label for="text-md">Entrez votre code postal</label>
-            <div class="qc-textfield qc-textfield--md">
-                <input type="text" id="text-md" name="text-md" placeholder="ex : G1A 1A1" />
-            </div>
-        </div>
-
-        <div class="qc-textfield-row">
-            <div class="qc-textfield-container">
-                <label for="telephone">Téléphone</label>
-                <div class="qc-textfield qc-textfield--md">
-                    <input type="text" id="telephone" name="telephone" placeholder="(123) 456-7890" />
-                </div>
-            </div>
-
-            <div class="qc-textfield-container">
-                <label for="poste">Poste</label>
-                <div class="qc-textfield qc-textfield--sm">
-                    <input type="text" id="poste" name="poste" placeholder="1234" />
-                </div>
-            </div>
-        </div>
-
-        <div class="qc-textfield-container">
-            <label for="text-lg">Entrez votre ville</label>
-            <div class="qc-textfield qc-textfield--lg">
-                <input type="text" id="text-lg" name="text-lg" placeholder="Ceci est un très long placeholder" />
-            </div>
-        </div>
-
-        <div class="qc-textfield-container">
-            <label for="text-xl">Entrez votre adresse courriel <span class="qc-textfield-required">*</span></label>
-            <div class="qc-textfield qc-textfield--xl">
-                <input type="text" id="text-xl" name="text-xl" placeholder="ex : jeantremblay@exemple.com" required />
-            </div>
-            <div id="error-text-xl" class="qc-form-error" role="alert" style="display: none;">
-                <div
-                    class="qc-icon"
-                    data-img-type="warning"
-                    style="
-                      --img-color: var(--qc-color-red-regular);
-                      --img-width: 24px;
-                      --img-height: 21px;
-                    "
-                    aria-label="Avertissement"
-                ></div>
-                <span>Ce champ est requis.</span>
-            </div>
-        </div>
-
-        <div class="qc-textfield-container qc-disabled">
-            <label for="text-xxl">Entrez votre adresse</label>
-            <div class="qc-textfield qc-textfield--xxl disabled">
-                <input type="text" id="text-xxl" name="text-xxl" placeholder="ex : 1234 rue du Moulin" disabled />
-            </div>
-        </div>
-
-        <div class="qc-textfield-container">
-            <label for="zone-xl">Commentaires</label>
-            <div id="description-zone-xl" class="qc-textfield-description">
-                Vous pouvez entrer des commentaires dans la zone de texte ci-dessous.
-            </div>
-            <div class="qc-textfield qc-textfield--xl">
-                <textarea id="zone-xl" name="zone-xl"></textarea>
-            </div>
-        </div>
-
-        <div class="qc-textfield-container">
-            <label for="zone-xxl">Suggestions <span class="qc-textfield-required">*</span></label>
-            <div id="description-zone-xxl" class="qc-textfield-description">
-                Vous pouvez entrer des suggestions dans la zone de texte ci-dessous.
-            </div>
-            <div class="qc-textfield qc-textfield--xxl">
-                <textarea id="zone-xxl" name="zone-xxl" data-maxlength="50" required></textarea>
-            </div>
-            <div id="charcount-zone-xxl" class="qc-textfield-charcount" aria-live="polite"></div>
-            <div id="error-zone-xxl" class="qc-form-error" role="alert" style="display: none;">
-                <div
-                    class="qc-icon"
-                    data-img-type="warning"
-                    style="
-                      --img-color: var(--qc-color-red-regular);
-                      --img-width: 24px;
-                      --img-height: 21px;
-                    "
-                    aria-label="Avertissement"
-                ></div>
-                <span>Ce champ est requis.</span>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
-    </form>
-
-    <script>
-        const form_BaseTextField = document.getElementById("formulaire-base-champs-textes");
-
-        function validateField(field) {
-            const value = field.value?.trim();
-            const maxLength = parseInt(field.getAttribute("data-maxlength"), 10);
-            const container = field.closest(".qc-textfield");
-            const errorMessage = document.getElementById(`error-${field.id}`);
-            const charCount = document.getElementById(`charcount-${field.id}`);
-
-            let hasError = false;
-
-            // Gestion du compteur de caractères
-            if (!isNaN(maxLength) && charCount) {
-                const remaining = maxLength - value.length;
-                if (remaining >= 0) {
-                    charCount.textContent = `${remaining} caractère${remaining > 1 ? 's' : ''} restant${remaining > 1 ? 's' : ''}`;
-                    charCount.classList.remove("max-reached");
-                } else {
-                    const over = Math.abs(remaining);
-                    charCount.textContent = `${over} caractère${over > 1 ? 's' : ''} en trop`;
-                    charCount.classList.add("max-reached");
-                }
-            }
-
-            if (!value) {
-                hasError = true;
-                if (errorMessage) {
-                    errorMessage.querySelector("span").textContent = "Ce champ est requis.";
-                }
-            } else if (!isNaN(maxLength) && value.length > maxLength) {
-                hasError = true;
-                if (errorMessage) {
-                    errorMessage.querySelector("span").textContent = "Ce champ dépasse la longueur maximale.";
-                }
-            }
-
-            if (hasError) {
-                container?.classList.add("error");
-                if (errorMessage) {
-                    errorMessage.style.display = "flex";
-                }
-                return false;
-            } else {
-                container?.classList.remove("error");
-                if (errorMessage) {
-                    errorMessage.style.display = "none";
-                }
-                return true;
-            }
-        }
-
-        form_BaseTextField.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            let isValid = true;
-            const requiredFields = form_BaseTextField.querySelectorAll("[required]");
-
-            requiredFields.forEach(field => {
-                const fieldIsValid = validateField(field);
-                if (!fieldIsValid) {
-                    isValid = false;
-                }
-            });
-
-            if (isValid) {
-                const formData = new FormData(form_BaseTextField);
-                let alertParts = ["Formulaire soumis avec les données suivantes :"];
-                for (const [key, val] of formData.entries()) {
-                    alertParts.push(`${key} : ${val}`);
-                }
-                alert(alertParts.join("\n"));
-            }
-        });
-
-        // Validation à chaque saisie
-        document.addEventListener("DOMContentLoaded", () => {
-            const requiredFields = form_BaseTextField.querySelectorAll("[required]");
-
-            requiredFields.forEach(field => {
-                field.addEventListener("input", () => {
-                    validateField(field);
-                });
-            });
-        });
-
-    </script>
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<h4>Classes CSS</h4>
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
         <tr>
             <th>Nom</th>
-            <th>Description</th>
+            <th>Aperçu</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td><code>qc-textfield-container</code></td>
-            <td>Conteneur principal du champ de texte, incluant le libellé, le champ et les messages d’erreur.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield</code></td>
-            <td>Boîte englobante du champ de saisie (input ou textarea), stylisée selon l’état et la taille.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield--sm</code>, <code>--md</code>, <code>--lg</code>, <code>--xl</code>, <code>--xxl</code></td>
-            <td>Classes de taille qui définissent la largeur maximale du champ.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield-row</code></td>
-            <td>Disposition horizontale de plusieurs champs de texte côte à côte.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield-description</code></td>
-            <td>Texte descriptif affiché sous le label pour donner des instructions ou du contexte.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield-required</code></td>
-            <td>Indicateur visuel (astérisque rouge) pour les champs obligatoires.</td>
-        </tr>
-        <tr>
-            <td><code>qc-textfield-charcount</code></td>
-            <td>Affiche le nombre de caractères restants ou en trop, selon la limite définie.</td>
-        </tr>
-        <tr>
-            <td><code>max-reached</code></td>
-            <td>Appliqué au compteur de caractères lorsque la limite est dépassée.</td>
-        </tr>
-        <tr>
-            <td><code>error</code></td>
-            <td>Appliqué au champ lorsqu’il est invalide (vide ou trop long).</td>
-        </tr>
-        <tr>
-            <td><code>qc-form-error</code></td>
-            <td>Conteneur du message d’erreur affiché sous le champ, incluant l’icône et le texte.</td>
-        </tr>
-        <tr>
-            <td><code>qc-icon</code></td>
-            <td>Icône utilisée dans le message d’erreur, stylisée selon le type.</td>
-        </tr>
-        <tr>
-            <td><code>qc-disabled</code></td>
-            <td>Appliqué au conteneur pour désactiver le champ et ses éléments.</td>
-        </tr>
+        
+            <tr>
+                <td>arrow-up</td>
+                <td><qc-icon type="arrow-up" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>checkmark</td>
+                <td><qc-icon type="checkmark" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>chevron-up-thin</td>
+                <td><qc-icon type="chevron-up-thin" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>chevron-up</td>
+                <td><qc-icon type="chevron-up" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>clipboard</td>
+                <td><qc-icon type="clipboard" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>error</td>
+                <td><qc-icon type="error" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>exclamation</td>
+                <td><qc-icon type="exclamation" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>external-link</td>
+                <td><qc-icon type="external-link" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>information</td>
+                <td><qc-icon type="information" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>ligth-bulb</td>
+                <td><qc-icon type="ligth-bulb" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>minus</td>
+                <td><qc-icon type="minus" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>note</td>
+                <td><qc-icon type="note" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>plus</td>
+                <td><qc-icon type="plus" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>question-mark</td>
+                <td><qc-icon type="question-mark" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>search-thin</td>
+                <td><qc-icon type="search-thin" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>search</td>
+                <td><qc-icon type="search" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>success</td>
+                <td><qc-icon type="success" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>warning</td>
+                <td><qc-icon type="warning" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>xclose-thin</td>
+                <td><qc-icon type="xclose-thin" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>xclose</td>
+                <td><qc-icon type="xclose" size="lg" /></td>
+            </tr>
+        
         </tbody>
     </table>
 </div>
 
 
-    <h2 id="base-search-input">Champ de recherche</h2>
 
-<qc-doc-exemple caption="Exemple de champ de recherche de base">
-    <div class="qc-search-input qc-search-left-icon">
-        <div class="qc-icon" role="img" aria-label="Loupe"
-             data-img-type="loupe-piv-fine"
-             style="
-                 --img-color: var(--qc-color-text-primary);
-                 --img-width: 20px;
-                 --img-height: 20px;
-            ">
-        </div>
-
-        <input type="search"
-               name="search"
-               placeholder="Rechercher un article"
-               aria-label="Rechercher un article"
-               autocomplete="off"
-               class="qc-search-field"
-               oninput="toggleClearButton(this)"
-        />
-
-        <button type="button"
-                class="qc-icon-button"
-                aria-label="Effacer le texte"
-                onclick="clearSearch(this)"
-                style="display: none">
-
-            <div class="qc-icon"
-                 data-img-type="clear-input"
-                 style="
-                     --img-color: var(--qc-color-blue-piv);
-                     --img-width: 16px;
-                     --img-height: 16px;
-                "
-                 aria-hidden="true">
-            </div>
-        </button>
-    </div>
-
-    <script>
-        function toggleClearButton(input) {
-            const button = input.parentElement.querySelector('button');
-            button.style.display = input.value ? 'flex' : 'none';
-        }
-
-        function clearSearch(button) {
-            const input = button.parentElement.querySelector('input');
-            input.value = '';
-            input.focus();
-            toggleClearButton(input);
-        }
-
-    </script>
-
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<h4>Classes CSS</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><code>qc-search-input</code></td>
-            <td>Conteneur principal du champ de recherche. Il englobe l'icône, le champ de saisie et le bouton d'effacement.</td>
-        </tr>
-        <tr>
-            <td><code>qc-search-left-icon</code></td>
-            <td>Ajoute un espacement à gauche du champ pour accueillir une icône de recherche.</td>
-        </tr>
-        <tr>
-            <td><code>qc-search-field</code></td>
-            <td>Champ de saisie de type <code>search</code>, stylisé pour correspondre au design du champ de recherche.</td>
-        </tr>
-        <tr>
-            <td><code>qc-icon</code></td>
-            <td>Icône SVG stylisée via <code>mask</code> ou <code>background-image</code>, utilisée pour la loupe et le bouton d’effacement.</td>
-        </tr>
-        <tr>
-            <td><code>qc-icon-button</code></td>
-            <td>Bouton contenant une icône, utilisé pour effacer le champ de recherche.</td>
-        </tr>
-        <tr>
-            <td><code>qc-disabled</code></td>
-            <td>Classe appliquée au conteneur lorsque le champ est désactivé.</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-
-    <h2 id="select">Liste déroulante (select)</h2>
-
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <qc-select>
-        <label for="select-single-choice">Choix unique</label>
-        <select id="select-single-choice">
-            <option value="1" selected>Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16" disabled>Option 16 (désactivée)</option>
-        </select>
-    </qc-select>
-
-    <qc-select enable-search>
-        <label for="select-single-choice-disabled" class="qc-disabled">Choix unique avec recherche:</label>
-        <select id="select-single-choice-disabled">
-            <option value="1" selected>Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16" >Option 16</option>
-        </select>
-    </qc-select>
-
-    <qc-select multiple>
-        <label for="select-qc-select">Choix multiple:</label>
-        <select multiple id="select-qc-select">
-            <option value="1">Option 1</option>
-            <option value="2" selected>Option 2</option>
-            <option value="3" selected>Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16" disabled>Option 16 (désactivée)</option>
-        </select>
-    </qc-select>
-
-    <qc-select disabled>
-        <label for="qc-select-disabled">Désactivé:</label>
-        <select id="qc-select-disabled">disabled</select>
-    </qc-select>
-</qc-doc-exemple>
 
   </div>
 </main>

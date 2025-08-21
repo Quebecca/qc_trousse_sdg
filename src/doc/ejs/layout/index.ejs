@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="css/qc-sdg.css">
+    <link rel="stylesheet"
+          href="css/qc-doc-sdg.css">
+    <title>Documentation technique du Système de design gouvernemental</title>
+    <script defer
+            src='js/qc-sdg.js'
+            sdg-css-filename="qc-sdg.css">
+    </script>
+    <script defer
+            src='js/qc-doc-sdg.js'
+            sdg-css-filename="qc-doc-sdg.css">
+    </script>
+</head>
+<body>
+<header>
+    <qc-piv-header id="pivEntete"
+                   title-text="Trousse de développement du Système de design gouvernemental"
+                   alt-logo="Signature du gouvernement du Québec. Accédez au Système de design gouvernemental.">
+    </qc-piv-header>
+</header>
+<qc-doc-top-nav></qc-doc-top-nav>
+<div class="qc-container">
+    <%- include('../_nav') %>
+</div>
+<main id="main">
+    <div class="qc-container">
+        <hr/>
+        <%- include('../_colors') %>
+
+        <hr/>
+        <%- include('../_iconList') %>
+
+        <hr/>
+
+        <!-- grille horizontale -->
+        <%- include('../_grid') %>
+
+        <hr/>
+
+        <!-- images -->
+        <%- include('../_figure') %>
+
+        <hr/>
+
+        <!-- liens -->
+        <%- include('../_links') %>
+
+        <hr/>
+
+        <!-- liste -->
+        <%- include('../_lists') %>
+
+        <hr/>
+
+        <!-- niveaux de titres -->
+        <%- include('../_headings') %>
+
+        <hr/>
+
+        <!-- ombrages -->
+        <%- include('../_shadings') %>
+
+        <hr/>
+
+        <!-- paragraphes -->
+        <%- include('../_paragraph') %>
+
+        <hr/>
+
+        <!-- polices de caractères -->
+        <%- include('../_font') %>
+
+        <hr/>
+        <!-- Séparateur -->
+        <%- include('../_separator') %>
+
+
+        <hr/>
+
+        <!-- alerte générale -->
+        <%- include('../_alert') %>
+
+        <hr/>
+
+        <!-- avis -->
+        <%- include('../_notice') %>
+
+        <hr/>
+
+        <%- include('../_searchBar') %>
+
+        <%- include('../_button') %>
+
+        <!-- bandeau d'entête PIV -->
+        <%- include('../_pivHeader') %>
+        <hr/>
+        <%- include('../_pivFooter') %>
+        <hr/>
+
+        <%- include('../_toTop') %>
+
+        <hr/>
+        <h2 id="radios-checkboxes">Boutons radios et cases à cocher</h2>
+        <%- include('../_checkbox') %>
+        <%- include('../_choiceGroup') %>
+        <%- include('../_selectionButtons') %>
+        <%- include('../_choiceGroupDoc') %>
+        <%- include('../_toggleSwitch') %>
+        <%- include('../_searchInput') %>
+        <%- include('../_textField') %>
+        <%- include('../_select') %>
+        <%- include('../_icon') %>
+
+    </div>
+</main>
+<footer>
+    <qc-piv-footer></qc-piv-footer>
+</footer>
+<script src='js/qc-doc-exemple.js'></script>
+</body>
+</html>

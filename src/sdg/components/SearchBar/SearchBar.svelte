@@ -40,7 +40,7 @@
         <IconButton
                 type="submit"
                 iconColor={pivBackground ? 'blue-piv' : 'background'}
-                icon="loupe-piv-fine"
+                icon="search-thin"
                 iconSize="md"
                 {...submitProps}
         />

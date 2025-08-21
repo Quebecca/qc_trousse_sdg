@@ -34,6 +34,7 @@
 
 <script>
     import PivHeader from "./PivHeader.svelte";
+    import { Utils } from "../utils"
 
     let {
         self,
@@ -52,3 +53,5 @@
         <slot name="search-zone" />
     {/snippet}
 </PivHeader>
+<link rel='stylesheet' href='{Utils.cssPath}'>
+

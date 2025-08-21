@@ -1,0 +1,130 @@
+<h3 id="selection-button">Boutons de sélection</h3>
+
+
+<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+    <qc-choice-group legend="Sélectionnez une option :"
+                    name="ex-radio-select"
+                    tiled
+                    column-count="2"
+    >
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple
+        caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
+>
+    <qc-choice-group
+            name="exemple-checkbox-select"
+            legend="Sélectionnez vos options"
+            tiled
+            column-count="2">
+        <label>
+            <input type="checkbox"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="checkbox"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
+    <qc-choice-group legend="Choisissez une option :"
+                    name="ex-radio-select-inline"
+                    tiled
+                    inline
+    >
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span>1</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span>2</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+            />
+            <span>3</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="4"
+            />
+            <span>4</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="5"
+            />
+            <span>5</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="6"
+                   disabled
+            />
+            <span>6</span>
+        </label>
+
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<h4>Documentation technique</h4>
+<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a></p>
+

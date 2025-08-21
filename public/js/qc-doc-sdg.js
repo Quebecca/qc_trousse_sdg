@@ -73052,7 +73052,7 @@
 	}
 
 	var root$5 = add_locations(
-		template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button class="btn btn-sm btn-primary">
+		template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button class="qc-button qc-compact qc-primary">
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
         </button><!></code></pre>`),

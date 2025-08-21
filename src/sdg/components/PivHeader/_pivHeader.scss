@@ -82,7 +82,7 @@ qc-piv-header {
       }
 
       .qc-search {
-        background-image: getImageUrl(loupe-piv-droite);
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=');
         background-repeat: no-repeat;
         min-width: rem(24);
         height: rem(24);

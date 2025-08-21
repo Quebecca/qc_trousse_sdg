@@ -1,74 +1,62 @@
 <svelte:options customElement={{
     tag: 'qc-checkbox',
-    shadow: 'none',
     props: {
-        id: { attribute: 'id', type: 'String' },
-        value: { attribute: 'value', type: 'String' },
-        label: { attribute: 'label', type: 'String' },
-        description: {attribute: 'description', type: 'String'},
-        name: { attribute: 'name', type: 'String' },
-        disabled: { attribute: 'disabled', type: 'Boolean' },
-        checked: { attribute: 'checked', type: 'Boolean', reflect: true },
         required: { attribute: 'required', type: 'Boolean' },
         compact: { attribute: 'compact', type: 'Boolean' },
-        tiled: {attribute: 'tiled', type: 'Boolean'},
         invalid: { attribute: 'invalid', type: 'Boolean' },
         invalidText: { attribute: 'invalid-text', type: 'String' }
-    },
-    extend: (customElementConstructor) => {
-        return class extends customElementConstructor {
-            static parentGroup;
-
-            constructor() {
-                super();
-                this.parentGroup = this.closest('qc-checkbox-group');
-            }
-        };
     }
 }} />
 
 <script>
     import Checkbox from "./Checkbox.svelte";
+    import {onMount, setContext} from "svelte";
+
+    setContext('qc-checkbox', true);
 
     let {
-        parentGroup,
-        value, 
-        label,
-        description,
-        name,
-        id,
-        disabled = $bindable(false),
         required = $bindable(false),
-        checked = $bindable(false),
         compact,
-        tiled,
         invalid = $bindable(false),
-        invalidText,
-        ...rest
+        invalidText
     } = $props();
-
-
-    if (parentGroup) {
-        compact = parentGroup.compact
-        invalid = parentGroup.invalid
-        name = parentGroup.name
+    let requiredSpan = $state(null),
+        labelElement = $state(),
+        input = $state()
+    ;
+    let onchange = e => {
+        if (invalid && e.target.checked) {
+            invalid = false;
+        }
     }
 
-</script>
+    onMount(() => {
+        labelElement = $host()
+            .querySelector('label')
+        input = $host().querySelector('input')
+    })
 
+    $effect(() => {
+        if (!required) return;
+        labelElement.appendChild(requiredSpan);
+    })
+
+</script>
+{#if required}
+<span class="qc-required"
+      aria-hidden="true"
+      bind:this={requiredSpan}
+>*</span>
+{/if}
 <Checkbox
-    {id}
-    {value}
-    label={label ?? value}
-    {name}
-    {description}
-    disabled={disabled ?? parentGroup?.disabled}
-    bind:checked
-    required={parentGroup?.required ?? required}
-    tiled={parentGroup?.tiled ?? tiled}
-    {compact}
     bind:invalid
+    {compact}
+    {required}
     {invalidText}
-    {parentGroup}
-    {...rest}
-></Checkbox>
+    {labelElement}
+    {input}
+    {onchange}
+    >
+    <slot />
+</Checkbox>
+<link rel='stylesheet' href='{Utils.cssPath}'>

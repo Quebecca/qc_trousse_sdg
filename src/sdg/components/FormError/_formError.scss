@@ -13,10 +13,9 @@
       --error-icon-width: #{rem(24)}!important;
       --error-icon-height: #{rem(21)}!important;
   }
-}
-
-.qc-textfield-container {
-  .qc-form-error {
+  &.qc-xs-mt {
     margin-top: token-value(spacer, xs);
   }
 }
+
+

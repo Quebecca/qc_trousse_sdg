@@ -55,7 +55,7 @@
                     <IconButton aria-label={closeLabel}
                                 onclick={hideAlert}
                                 size="nm"
-                                icon="clear-input"
+                                icon="xclose"
                                 iconSize="sm"
                                 iconColor="text-primary"
                     />
@@ -64,6 +64,3 @@
         </div>
     </div>
 {/if}
-
-<link rel='stylesheet'
-      href='{Utils.cssPath}'>

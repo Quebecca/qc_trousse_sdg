@@ -73,6 +73,6 @@
    tabindex={visible ? 0 : -1}
    {demo}
 >
-   <Icon type="arrow-up-white" color="background"/>
+   <Icon type="arrow-up" color="background"/>
    <span>{text}</span>
 </a>

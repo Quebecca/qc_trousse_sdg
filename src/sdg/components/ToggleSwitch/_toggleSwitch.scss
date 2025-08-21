@@ -1,4 +1,4 @@
-@use "qc-sdg-lib" as *;
+@use "../../scss/qc-sdg-lib" as *;
 @use "sass:math";
 
 $width: 56;
@@ -7,6 +7,7 @@ $border: 1;
 
 .qc-switch {
   display: flex;
+  width: fit-content;
   margin: 0;
   gap: token-value(spacer, sm);
   position: relative;

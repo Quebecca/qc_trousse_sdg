@@ -4,12 +4,9 @@ import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser';
-// import scss from 'rollup-plugin-sass'
 import scss from 'rollup-plugin-scss'
-import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
-import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
@@ -65,7 +62,6 @@ const scssOptions = {
     includePaths: includePaths,
     processor: css =>
         postcss([
-            autoprefixer(),
             cssReplace({
                 data: {
                     'pkg-version': pkg.version,
@@ -201,8 +197,7 @@ let
                     , scssOptions
                 )),
             ],
-        },
-
+        }
     ]
 ;
 
@@ -247,7 +242,25 @@ if (!build_process) {
             //uncomment to enable the Hot Reload,
             // livereload('public'),
         ],
-    },)
+    },
+        {
+            // token only css file
+            input: 'src/sdg/qc-sdg-test.js',
+            output: {
+                file: 'public/js/qc-sdg-test.js',
+                format: 'iife',
+            },
+            plugins: [
+                svelte(svelteOptions),
+                resolve({
+                    browser: true,
+                    // Force resolving for these modules to root's node_modules that helps
+                    // to prevent bundling the same package multiple times if package is
+                    // imported from dependencies.
+                    dedupe: ['svelte']
+                }),
+            ],
+        },)
 }
 
 export default rollupOptions;
