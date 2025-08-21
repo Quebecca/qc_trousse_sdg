@@ -6906,7 +6906,7 @@
 		return objects;
 	}
 
-	let Utils$1 = class Utils {
+	class Utils {
 
 	    static assetsBasePath =
 	        document
@@ -7043,7 +7043,7 @@
 	        // Convertit le mot en minuscules.
 	        return word.toLowerCase();
 	    }
-	};
+	}
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
@@ -7196,7 +7196,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const isFr = strict_equals(Utils$1.getPageLanguage(), 'fr');
+		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
 		const defaultHeader = 'h2';
 		const defaultType = 'information';
 
@@ -7387,7 +7387,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 		return pop({ ...legacy_api() });
 	}
@@ -7454,12 +7454,12 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'),
 			titleUrl = prop($$props, 'titleUrl', 7, '/'),
 			titleText = prop($$props, 'titleText', 7, ''),
@@ -7588,7 +7588,7 @@
 				};
 
 				if_block(node_3, ($$render) => {
-					if (Utils$1.isTruthy(enableSearch())) $$render(consequent_2);
+					if (Utils.isTruthy(enableSearch())) $$render(consequent_2);
 				});
 			}
 
@@ -7763,7 +7763,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'
+				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -8009,7 +8009,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -8072,11 +8072,11 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + '/QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils$1.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
@@ -8194,7 +8194,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils$1.imagesRelativePath + '/QUEBEC_couleur.svg'
+				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -8203,7 +8203,7 @@
 				return logoSrcDarkTheme();
 			},
 			set logoSrcDarkTheme(
-				$$value = Utils$1.imagesRelativePath + '/QUEBEC_blanc.svg'
+				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
 			) {
 				logoSrcDarkTheme($$value);
 				flushSync();
@@ -8350,7 +8350,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -8549,7 +8549,7 @@
 			fullWidth = prop($$props, 'fullWidth', 7, "false"),
 			slotContent = prop($$props, 'slotContent', 7);
 
-		const language = Utils$1.getPageLanguage();
+		const language = Utils.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 		const warningLabel = strict_equals(language, 'fr') ? "Information d'importance élevée" : "Information of high importance";
@@ -8617,7 +8617,7 @@
 					};
 
 					if_block(node_4, ($$render) => {
-						if (Utils$1.isTruthy(maskable())) $$render(consequent);
+						if (Utils.isTruthy(maskable())) $$render(consequent);
 					});
 				}
 
@@ -8629,7 +8629,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (!Utils$1.isTruthy(hide())) $$render(consequent_1);
+				if (!Utils.isTruthy(hide())) $$render(consequent_1);
 			});
 		}
 
@@ -8713,7 +8713,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 		return pop({ ...legacy_api() });
 	}
@@ -8751,7 +8751,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
@@ -8763,7 +8763,7 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (Utils$1.isTruthy(demo())) {
+			if (Utils.isTruthy(demo())) {
 				return;
 			}
 
@@ -8876,7 +8876,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils$1.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
+		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
 		let imgElement = state(void 0);
 
 		function createVisibleNodesTreeWalker() {
@@ -8963,7 +8963,7 @@
 				return externalIconAlt();
 			},
 			set externalIconAlt(
-				$$value = Utils$1.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
+				$$value = Utils.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
 			) {
 				externalIconAlt($$value);
 				flushSync();
@@ -8996,7 +8996,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
@@ -9155,7 +9155,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
@@ -9184,12 +9184,12 @@
 
 		let inputProps = user_derived(() => ({
 				...defaultsAttributes.input,
-				...Utils$1.computeFieldsAttributes("input", rest),
+				...Utils.computeFieldsAttributes("input", rest),
 				name: name()
 			})),
 			submitProps = user_derived(() => ({
 				...defaultsAttributes.input,
-				...Utils$1.computeFieldsAttributes("submit", rest)
+				...Utils.computeFieldsAttributes("submit", rest)
 			}));
 
 		var div = root$c();
@@ -9372,7 +9372,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 7),
 			label = prop($$props, 'label', 7, ''),
@@ -9385,7 +9385,7 @@
 			defaultInvalidText = user_derived(() => label() ? strict_equals(lang, 'fr') ? `Le champ ${get(cleanLabel)} est obligatoire.` : `${get(cleanLabel)} field is required.` : strict_equals(lang, 'fr') ? `Ce champ est obligatoire.` : `This field is required.`);
 
 		onMount(() => {
-			id(Utils$1.generateId('qc-form-error'));
+			id(Utils.generateId('qc-form-error'));
 		});
 
 		var fragment = comment();
@@ -9526,7 +9526,7 @@
 			children = prop($$props, 'children', 7);
 
 		let groupSelection = state(void 0),
-			legendId = name() ? "id_" + name() : Utils$1.generateId("legend");
+			legendId = name() ? "id_" + name() : Utils.generateId("legend");
 
 		function chooseDivCLass(inline, tiled) {
 			if (tiled) {
@@ -9767,7 +9767,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		Utils$1.getPageLanguage();
+		Utils.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
@@ -9923,7 +9923,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -10105,7 +10105,7 @@
 					set_text(text, `${get(label) ?? ''} `);
 				},
 				[
-					() => Utils$1.computeFieldsAttributes("checkbox", rest)
+					() => Utils.computeFieldsAttributes("checkbox", rest)
 				]
 			);
 
@@ -10113,7 +10113,7 @@
 			append($$anchor, label_1);
 		});
 
-		Utils$1.getPageLanguage();
+		Utils.getPageLanguage();
 			const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
@@ -10372,8 +10372,8 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root_1$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), CheckboxWC[FILENAME], [[46, 0]]);
-	var root$9 = add_locations(template(`<!> <!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[62, 0]]);
+	var root_1$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), CheckboxWC[FILENAME], [[47, 0]]);
+	var root$9 = add_locations(template(`<!> <!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[63, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10465,7 +10465,7 @@
 
 		var link = sibling(node_1, 2);
 
-		set_attribute(link, 'href', Utils.cssPath);
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -10632,7 +10632,7 @@
 	        input.autocomplete = "off";
 	    }
 	    if (!input.id) {
-	        input.id =  Utils$1.generateId(input.type);
+	        input.id =  Utils.generateId(input.type);
 	    }
 	    setValue(input.value);
 	    input.addEventListener(
@@ -10786,7 +10786,7 @@
 			append($$anchor, fragment);
 		});
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15),
@@ -10854,8 +10854,8 @@
 		});
 
 		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils$1.generateId('description-'),
-			charCountId = Utils$1.generateId('charcount-');
+		const descriptionId = Utils.generateId('description-'),
+			charCountId = Utils.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -11198,7 +11198,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -12150,7 +12150,7 @@
 				handleSelection(event, item);
 			}
 
-			Utils$1.sleep(5).then(() => {
+			Utils.sleep(5).then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -12413,7 +12413,7 @@
 				}
 			}
 
-			Utils$1.sleep(5).then(() => {
+			Utils.sleep(5).then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -12679,13 +12679,13 @@
 		});
 
 		function focus() {
-			Utils$1.sleep(5).then(() => {
+			Utils.sleep(5).then(() => {
 				get(itemsComponent)?.focusOnFirstElement();
 			}).catch(console.error);
 		}
 
 		function focusOnLastElement() {
-			Utils$1.sleep(5).then(() => {
+			Utils.sleep(5).then(() => {
 				get(itemsComponent)?.focusOnLastElement();
 			}).catch(console.error);
 		}
@@ -12694,7 +12694,7 @@
 			console.log(...log_if_contains_state('log', value));
 
 			if (get(itemsComponent) && value && value.length > 0) {
-				Utils$1.sleep(5).then(() => {
+				Utils.sleep(5).then(() => {
 					get(itemsComponent)?.focusOnFirstMatchingElement(value);
 				}).catch(console.error);
 			}
@@ -13118,7 +13118,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
@@ -13155,7 +13155,7 @@
 			displayedItems = state(proxy(items())),
 			itemsForSearch = user_derived(() => items().map((item) => {
 				return {
-					label: Utils$1.cleanupSearchPrompt(item.label),
+					label: Utils.cleanupSearchPrompt(item.label),
 					value: item.value,
 					disabled: item.disabled,
 					checked: item.checked
@@ -13194,7 +13194,7 @@
 		}
 
 		function handleOuterEvent() {
-			if (!Utils$1.componentIsActive(get(instance))) {
+			if (!Utils.componentIsActive(get(instance))) {
 				set(expanded, false);
 			}
 		}
@@ -13202,8 +13202,8 @@
 		function handleTab(event) {
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
-			Utils$1.sleep(5).then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils$1.componentIsActive(get(instance))) {
+			Utils.sleep(5).then(() => {
+				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
 					set(expanded, false);
 				}
 			}).catch(console.error);
@@ -13301,7 +13301,7 @@
 				let newDisplayedItems = [];
 
 				for (let i = 0; i < items().length; i++) {
-					if (get(itemsForSearch)[i].label.includes(Utils$1.cleanupSearchPrompt(get(searchText)))) {
+					if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) {
 						newDisplayedItems.push(items()[i]);
 					}
 				}
@@ -14134,7 +14134,7 @@
 
 		var link = sibling(node_1, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({

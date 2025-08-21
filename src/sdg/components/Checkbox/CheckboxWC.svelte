@@ -11,6 +11,7 @@
 <script>
     import Checkbox from "./Checkbox.svelte";
     import {onMount, setContext} from "svelte";
+    import {Utils} from "../utils";
 
     setContext('qc-checkbox', true);
 
