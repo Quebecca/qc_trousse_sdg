@@ -999,36 +999,89 @@
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemples des différentes options de boutons.">
-    <div>
-        <button class="qc-button qc-primary">Principal</button>
-        <button class="qc-button qc-primary qc-button-rounded">Principal</button>
-        <button class="qc-button qc-primary" disabled>Principal</button>
-        <button class="qc-button qc-primary qc-compact">Principal</button>
-        <button class="qc-button qc-primary qc-compact qc-button-rounded">Principal</button>
+    <div class="qc-row">
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-primary">Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary qc-button-rounded">Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary" disabled>Principal</button>
+            </div>
+            <div>
+                <button class="qc-button qc-primary qc-compact">Principal</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-secondary">Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary" disabled>Secondaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-secondary qc-compact">Secondaire</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-tertiary">Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
+            </div>
+            <div>
+                <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
+            </div>
+        </div>
+
+        <div class="qc-col-sm-12 qc-col-lg-3">
+            <div>
+                <button class="qc-button qc-danger">Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger" disabled>Avertissement</button>
+            </div>
+            <div>
+                <button class="qc-button qc-danger qc-compact">Avertissement</button>
+            </div>
+        </div>
     </div>
 
     <div>
-        <button class="qc-button qc-secondary">Secondaire</button>
-        <button class="qc-button qc-secondary qc-button-rounded">Secondaire</button>
-        <button class="qc-button qc-secondary" disabled>Secondaire</button>
-        <button class="qc-button qc-secondary qc-compact">Secondaire</button>
-        <button class="qc-button qc-secondary qc-compact qc-button-rounded">Secondaire</button>
-    </div>
+        <button class="qc-button qc-simple">
+            <qc-icon type="information"></qc-icon>
+            Action
+        </button>
 
-    <div>
-        <button class="qc-button qc-tertiary">Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-button-rounded">Tertiaire</button>
-        <button class="qc-button qc-tertiary" disabled>Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-compact">Tertiaire</button>
-        <button class="qc-button qc-tertiary qc-compact qc-button-rounded">Tertiaire</button>
+        <button class="qc-button qc-simple" disabled>
+            <qc-icon type="plus"></qc-icon>
+            Action
+        </button>
     </div>
-
     <div>
-        <button class="qc-button qc-danger">Avertissement</button>
-        <button class="qc-button qc-danger qc-button-rounded">Avertissement</button>
-        <button class="qc-button qc-danger" disabled>Avertissement</button>
-        <button class="qc-button qc-danger qc-compact">Avertissement</button>
-        <button class="qc-button qc-danger qc-compact qc-button-rounded">Avertissement</button>
+        <button class="qc-button qc-simple qc-compact">
+            <qc-icon type="information"></qc-icon>
+            Action
+        </button>
+
+        <button class="qc-button qc-simple qc-compact" disabled>
+            <qc-icon type="plus"></qc-icon>
+            Action
+        </button>
     </div>
 
 </qc-doc-exemple>
@@ -1053,31 +1106,6 @@
         ></qc-icon>
         Questions
     </button>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemples de boutons simples avec leur variante compacte.">
-    <div>
-        <button class="qc-button qc-simple">
-            <qc-icon type="information"></qc-icon>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple" disabled>
-            <qc-icon type="plus"></qc-icon>
-            Action
-        </button>
-    </div>
-    <div>
-        <button class="qc-button qc-simple qc-compact">
-            <qc-icon type="information"></qc-icon>
-            Action
-        </button>
-
-        <button class="qc-button qc-simple qc-compact" disabled>
-            <qc-icon type="plus"></qc-icon>
-            Action
-        </button>
-    </div>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemples avec un lien et un champ de soumission">
