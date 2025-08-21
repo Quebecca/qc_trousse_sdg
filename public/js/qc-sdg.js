@@ -181,6 +181,19 @@
 	}
 
 	/**
+	 * Keyed each block has duplicate key `%value%` at indexes %a% and %b%
+	 * @param {string} a
+	 * @param {string} b
+	 * @param {string | undefined | null} [value]
+	 * @returns {never}
+	 */
+	function each_key_duplicate(a, b, value) {
+		{
+			throw new Error(`https://svelte.dev/e/each_key_duplicate`);
+		}
+	}
+
+	/**
 	 * `%rune%` cannot be used inside an effect cleanup function
 	 * @param {string} rune
 	 * @returns {never}
@@ -277,6 +290,17 @@
 
 
 	/**
+	 * Assignment to `%property%` property (%location%) will evaluate to the right-hand side, not the value of `%property%` following the assignment. This may result in unexpected behaviour.
+	 * @param {string} property
+	 * @param {string} location
+	 */
+	function assignment_value_stale(property, location) {
+		{
+			console.warn(`https://svelte.dev/e/assignment_value_stale`);
+		}
+	}
+
+	/**
 	 * `%binding%` (%location%) is binding to a non-reactive property
 	 * @param {string} binding
 	 * @param {string | undefined | null} [location]
@@ -284,6 +308,16 @@
 	function binding_property_non_reactive(binding, location) {
 		{
 			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
+		}
+	}
+
+	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
 		}
 	}
 
@@ -442,6 +476,108 @@
 	function dynamic_void_element_content(tag) {
 		{
 			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
+		}
+	}
+
+	/** @import { Snapshot } from './types' */
+
+	/**
+	 * In dev, we keep track of which properties could not be cloned. In prod
+	 * we don't bother, but we keep a dummy array around so that the
+	 * signature stays the same
+	 * @type {string[]}
+	 */
+	const empty = [];
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {boolean} [skip_warning]
+	 * @returns {Snapshot<T>}
+	 */
+	function snapshot(value, skip_warning = false) {
+
+		return clone(value, new Map(), '', empty);
+	}
+
+	/**
+	 * @template T
+	 * @param {T} value
+	 * @param {Map<T, Snapshot<T>>} cloned
+	 * @param {string} path
+	 * @param {string[]} paths
+	 * @param {null | T} original The original value, if `value` was produced from a `toJSON` call
+	 * @returns {Snapshot<T>}
+	 */
+	function clone(value, cloned, path, paths, original = null) {
+		if (typeof value === 'object' && value !== null) {
+			var unwrapped = cloned.get(value);
+			if (unwrapped !== undefined) return unwrapped;
+
+			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
+			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
+
+			if (is_array(value)) {
+				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var i = 0; i < value.length; i += 1) {
+					var element = value[i];
+					if (i in value) {
+						copy[i] = clone(element, cloned, path, paths);
+					}
+				}
+
+				return copy;
+			}
+
+			if (get_prototype_of(value) === object_prototype) {
+				/** @type {Snapshot<any>} */
+				copy = {};
+				cloned.set(value, copy);
+
+				if (original !== null) {
+					cloned.set(original, copy);
+				}
+
+				for (var key in value) {
+					// @ts-expect-error
+					copy[key] = clone(value[key], cloned, path, paths);
+				}
+
+				return copy;
+			}
+
+			if (value instanceof Date) {
+				return /** @type {Snapshot<T>} */ (structuredClone(value));
+			}
+
+			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function') {
+				return clone(
+					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
+					cloned,
+					path,
+					paths,
+					// Associate the instance with the toJSON clone
+					value
+				);
+			}
+		}
+
+		if (value instanceof EventTarget) {
+			// can't be cloned
+			return /** @type {Snapshot<T>} */ (value);
+		}
+
+		try {
+			return /** @type {Snapshot<T>} */ (structuredClone(value));
+		} catch (e) {
+
+			return /** @type {Snapshot<T>} */ (value);
 		}
 	}
 
@@ -2876,6 +3012,36 @@
 	 */
 	function sanitize_location(location) {
 		return /** @type {T} */ (location?.replace(/\//g, '/\u200b'));
+	}
+
+	/**
+	 *
+	 * @param {any} a
+	 * @param {any} b
+	 * @param {string} property
+	 * @param {string} location
+	 */
+	function compare(a, b, property, location) {
+		if (a !== b) {
+			assignment_value_stale(property, /** @type {string} */ (sanitize_location(location)));
+		}
+
+		return a;
+	}
+
+	/**
+	 * @param {any} object
+	 * @param {string} property
+	 * @param {any} value
+	 * @param {string} location
+	 */
+	function assign(object, property, value, location) {
+		return compare(
+			(object[property] = value),
+			untrack(() => object[property]),
+			property,
+			location
+		);
 	}
 
 	/** @import { SourceLocation } from '#shared' */
@@ -5764,7 +5930,7 @@
 			render_effect(() => {
 				old_parts = parts;
 				// We only track changes to the parts, not the value itself to avoid unnecessary reruns.
-				parts = [];
+				parts = get_parts?.() || [];
 
 				untrack(() => {
 					if (element_or_component !== get_value(...parts)) {
@@ -6159,6 +6325,37 @@
 
 			return get(current_value);
 		};
+	}
+
+	/**
+	 * @param {() => any} collection
+	 * @param {(item: any, index: number) => string} key_fn
+	 * @returns {void}
+	 */
+	function validate_each_keys(collection, key_fn) {
+		render_effect(() => {
+			const keys = new Map();
+			const maybe_array = collection();
+			const array = is_array(maybe_array)
+				? maybe_array
+				: maybe_array == null
+					? []
+					: Array.from(maybe_array);
+			const length = array.length;
+			for (let i = 0; i < length; i++) {
+				const key = key_fn(array[i], i);
+				if (keys.has(key)) {
+					String(keys.get(key));
+
+					/** @type {string | null} */
+					let k = String(key);
+					if (k.startsWith('[object ')) k = null;
+
+					each_key_duplicate();
+				}
+				keys.set(key, i);
+			}
+		});
 	}
 
 	/**
@@ -6678,7 +6875,38 @@
 		return Class;
 	}
 
-	class Utils {
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
+	let Utils$1 = class Utils {
 
 	    static assetsBasePath =
 	        document
@@ -6765,7 +6993,12 @@
 	     * @returns {boolean} If the current node or one of its children is currently in focus
 	     */
 	    static componentIsActive(node) {
-	        return node.contains(document.activeElement);
+	        if (!node) {
+	            return false;
+	        }
+
+	        const root = node.getRootNode();
+	        return node.contains(root.activeElement);
 	    }
 
 	    /**
@@ -6781,11 +7014,40 @@
 	        return prefix + "-" + (Math.floor(Math.random() * 90000) + 10000);
 	    }
 
-	}
+
+	    /**
+	     * Returns the word in lowercase and with accented letters replaced by their non-accented counterparts
+	     * @param str
+	     * @returns {string}
+	     */
+	    static cleanupSearchPrompt(str) {
+	        let word = String(str);
+
+	        const replaceAccents = (str, search, replace) => {
+	            return str.replaceAll(new RegExp(search, 'gi'), replace);
+	        };
+
+	        // Supprime les accents.
+	        word = replaceAccents(word, /[éèêë]/gi, 'e');
+	        word = replaceAccents(word, /[àäâ]/gi, 'a');
+	        word = replaceAccents(word, /[ùûü]/gi, 'u');
+	        word = replaceAccents(word, /[ïî]/gi, 'i');
+	        word = replaceAccents(word, /[ôö]/gi, 'i');
+	        word = replaceAccents(word, /[œ]/gi, 'oe');
+	        word = replaceAccents(word, /[æ]/gi, 'ae');
+
+	        // Remplace les caractères spéciaux par des espaces.
+	        word = word.replaceAll(/[-_—–]/gi, ' ');
+	        word = word.replaceAll(/’/gi, "'");
+
+	        // Convertit le mot en minuscules.
+	        return word.toLowerCase();
+	    }
+	};
 
 	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
 
-	var root$m = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
+	var root$o = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -6817,7 +7079,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$m();
+		var div = root$o();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -6919,7 +7181,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$l = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div> <link rel="stylesheet">`, 1), Notice[FILENAME], [
+	var root$n = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -6927,15 +7189,14 @@
 				[60, 2, [[61, 4]]],
 				[69, 2, [[70, 4]]]
 			]
-		],
-		[83, 0]
+		]
 	]);
 
 	function Notice($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
+		const isFr = strict_equals(Utils$1.getPageLanguage(), 'fr');
 		const defaultHeader = 'h2';
 		const defaultType = 'information';
 
@@ -6976,8 +7237,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var fragment = root$l();
-		var div = first_child(fragment);
+		var div = root$n();
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
 
@@ -6998,8 +7258,8 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment_1 = comment();
-				var node_3 = first_child(fragment_1);
+				var fragment = comment();
+				var node_3 = first_child(fragment);
 
 				validate_void_dynamic_element(() => usedHeader);
 				validate_dynamic_element_tag(() => usedHeader);
@@ -7009,14 +7269,14 @@
 					() => usedHeader,
 					false,
 					($$element, $$anchor) => {
-						var fragment_2 = comment();
-						var node_4 = first_child(fragment_2);
+						var fragment_1 = comment();
+						var node_4 = first_child(fragment_1);
 
 						html(node_4, title);
-						append($$anchor, fragment_2);
+						append($$anchor, fragment_1);
 					});
 
-				append($$anchor, fragment_1);
+				append($$anchor, fragment);
 			};
 
 			if_block(node_2, ($$render) => {
@@ -7035,11 +7295,7 @@
 		bind_this(div_4, ($$value) => set(noticeElement, $$value), () => get(noticeElement));
 		reset(div_3);
 		reset(div);
-
-		var link = sibling(div, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
+		append($$anchor, div);
 
 		return pop({
 			get title() {
@@ -7105,26 +7361,34 @@
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
 
+	var root$m = add_locations(template(`<!> <link rel="stylesheet">`, 1), NoticeWC[FILENAME], [[27, 0]]);
+
 	function NoticeWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		var fragment = root$m();
+		var node = first_child(fragment);
 
 		{
 			const slotContent = wrap_snippet(NoticeWC, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
 				var fragment_1 = comment();
-				var node = first_child(fragment_1);
+				var node_1 = first_child(fragment_1);
 
-				slot(node, $$props, 'default', {}, null);
+				slot(node_1, $$props, 'default', {}, null);
 				append($$anchor, fragment_1);
 			});
 
-			Notice($$anchor, spread_props(() => props, { slotContent, $$slots: { slotContent: true } }));
+			Notice(node, spread_props(() => props, { slotContent, $$slots: { slotContent: true } }));
 		}
 
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		append($$anchor, fragment);
 		return pop({ ...legacy_api() });
 	}
 
@@ -7144,10 +7408,10 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_2$7 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
-	var root_3$1 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_2$8 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
+	var root_3$2 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 
-	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
+	var on_click$4 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
 		set(displaySearchForm, !get(displaySearchForm));
 
@@ -7156,13 +7420,13 @@
 		});
 	};
 
-	var root_4$3 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[91, 10, [[102, 12]]]]);
+	var root_4$4 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[91, 10, [[102, 12]]]]);
 	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[114, 32, [[114, 36]]]]);
 	var root_9 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
 	var root_7 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[111, 20, [[112, 24]]]]);
 	var root_10 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[130, 10]]);
 
-	var root$k = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div> <link rel="stylesheet">`, 1), PivHeader[FILENAME], [
+	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7183,20 +7447,19 @@
 					]
 				]
 			]
-		],
-		[139, 0]
+		]
 	]);
 
 	function PivHeader($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of government of Québec'),
 			titleUrl = prop($$props, 'titleUrl', 7, '/'),
 			titleText = prop($$props, 'titleText', 7, ''),
@@ -7237,20 +7500,19 @@
 			}
 		});
 
-		var fragment = root$k();
-		var div = first_child(fragment);
+		var div = root$l();
 		var div_1 = child(div);
 
 		{
 			const title = wrap_snippet(PivHeader, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
-				var fragment_1 = comment();
-				var node = first_child(fragment_1);
+				var fragment = comment();
+				var node = first_child(fragment);
 
 				{
 					var consequent = ($$anchor) => {
-						var div_2 = root_2$7();
+						var div_2 = root_2$8();
 						var a = child(div_2);
 						var text = child(a, true);
 
@@ -7270,14 +7532,14 @@
 					});
 				}
 
-				append($$anchor, fragment_1);
+				append($$anchor, fragment);
 			});
 
 			var node_1 = child(div_1);
 
 			{
 				var consequent_1 = ($$anchor) => {
-					var div_3 = root_3$1();
+					var div_3 = root_3$2();
 					var a_1 = child(div_3);
 					var text_1 = child(a_1, true);
 
@@ -7308,10 +7570,10 @@
 
 			{
 				var consequent_2 = ($$anchor) => {
-					var a_3 = root_4$3();
+					var a_3 = root_4$4();
 
 					a_3.__click = [
-						on_click$3,
+						on_click$4,
 						displaySearchForm,
 						focusOnSearchInput
 					];
@@ -7326,7 +7588,7 @@
 				};
 
 				if_block(node_3, ($$render) => {
-					if (Utils.isTruthy(enableSearch())) $$render(consequent_2);
+					if (Utils$1.isTruthy(enableSearch())) $$render(consequent_2);
 				});
 			}
 
@@ -7335,16 +7597,16 @@
 
 			{
 				var consequent_3 = ($$anchor) => {
-					var fragment_2 = comment();
-					var node_5 = first_child(fragment_2);
+					var fragment_1 = comment();
+					var node_5 = first_child(fragment_1);
 
 					snippet(node_5, linksSlot);
-					append($$anchor, fragment_2);
+					append($$anchor, fragment_1);
 				};
 
 				var alternate = ($$anchor) => {
-					var fragment_3 = comment();
-					var node_6 = first_child(fragment_3);
+					var fragment_2 = comment();
+					var node_6 = first_child(fragment_2);
 
 					{
 						var consequent_6 = ($$anchor) => {
@@ -7409,7 +7671,7 @@
 						});
 					}
 
-					append($$anchor, fragment_3);
+					append($$anchor, fragment_2);
 				};
 
 				if_block(node_4, ($$render) => {
@@ -7435,11 +7697,11 @@
 
 					{
 						var consequent_7 = ($$anchor) => {
-							var fragment_4 = comment();
-							var node_12 = first_child(fragment_4);
+							var fragment_3 = comment();
+							var node_12 = first_child(fragment_3);
 
 							snippet(node_12, searchZoneSlot);
-							append($$anchor, fragment_4);
+							append($$anchor, fragment_3);
 						};
 
 						if_block(node_11, ($$render) => {
@@ -7468,15 +7730,12 @@
 
 		reset(div);
 
-		var link = sibling(div, 2);
-
 		template_effect(() => {
 			set_style(div, `--logo-src:url(${logoSrc() ?? ''})`);
 			set_class(div_1, 1, get(containerClass));
-			set_attribute(link, 'href', Utils.cssPath);
 		});
 
-		append($$anchor, fragment);
+		append($$anchor, div);
 
 		return pop({
 			get customElementParent() {
@@ -7504,7 +7763,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
+				$$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -7688,6 +7947,8 @@
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
 
+	var root$k = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
+
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
 
@@ -7706,14 +7967,17 @@
 					'self'
 				]);
 
+		var fragment = root$k();
+		var node = first_child(fragment);
+
 		{
 			const linksSlot = wrap_snippet(PivHeaderWC, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
 				var fragment_1 = comment();
-				var node = first_child(fragment_1);
+				var node_1 = first_child(fragment_1);
 
-				slot(node, $$props, 'links', {}, null);
+				slot(node_1, $$props, 'links', {}, null);
 				append($$anchor, fragment_1);
 			});
 
@@ -7721,13 +7985,13 @@
 				validate_snippet_args(...arguments);
 
 				var fragment_2 = comment();
-				var node_1 = first_child(fragment_2);
+				var node_2 = first_child(fragment_2);
 
-				slot(node_1, $$props, 'search-zone', {}, null);
+				slot(node_2, $$props, 'search-zone', {}, null);
 				append($$anchor, fragment_2);
 			});
 
-			PivHeader($$anchor, spread_props(
+			PivHeader(node, spread_props(
 				{
 					get customElementParent() {
 						return self();
@@ -7742,6 +8006,11 @@
 				}
 			));
 		}
+
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		append($$anchor, fragment);
 
 		return pop({
 			get self() {
@@ -7795,23 +8064,19 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$6 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-
-	var root$j = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div> <link rel="stylesheet">`, 1), PivFooter[FILENAME], [
-		[20, 0, [[25, 4], [41, 4]]],
-		[52, 0]
-	]);
+	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_4$3 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
+	var root$j = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
 	function PivFooter($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + '/QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils$1.imagesRelativePath + '/QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
@@ -7821,17 +8086,16 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var fragment = root$j();
-		var div = first_child(fragment);
+		var div = root$j();
 		var node = child(div);
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
+				var fragment = comment();
+				var node_1 = first_child(fragment);
 
 				snippet(node_1, mainSlot);
-				append($$anchor, fragment_1);
+				append($$anchor, fragment);
 			};
 
 			if_block(node, ($$render) => {
@@ -7859,7 +8123,7 @@
 
 				src();
 
-				var img = root_2$6();
+				var img = root_2$7();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -7878,15 +8142,15 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var fragment_2 = comment();
-				var node_3 = first_child(fragment_2);
+				var fragment_1 = comment();
+				var node_3 = first_child(fragment_1);
 
 				snippet(node_3, copyrightSlot);
-				append($$anchor, fragment_2);
+				append($$anchor, fragment_1);
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_4$2();
+				var a_1 = root_4$3();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -7907,8 +8171,6 @@
 		reset(span);
 		reset(div);
 
-		var link = sibling(div, 2);
-
 		template_effect(() => {
 			set_attribute(a, 'href', logoUrl());
 
@@ -7916,11 +8178,9 @@
 				'--logo-width': logoWidth(),
 				'--logo-height': logoHeight()
 			});
-
-			set_attribute(link, 'href', Utils.cssPath);
 		});
 
-		append($$anchor, fragment);
+		append($$anchor, div);
 
 		return pop({
 			get logoUrl() {
@@ -7934,7 +8194,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
+				$$value = Utils$1.imagesRelativePath + '/QUEBEC_couleur.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -7943,7 +8203,7 @@
 				return logoSrcDarkTheme();
 			},
 			set logoSrcDarkTheme(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+				$$value = Utils$1.imagesRelativePath + '/QUEBEC_blanc.svg'
 			) {
 				logoSrcDarkTheme($$value);
 				flushSync();
@@ -8036,6 +8296,8 @@
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
 
+	var root$i = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivFooterWC[FILENAME], [[44, 0]]);
+
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
 
@@ -8054,14 +8316,17 @@
 					'self'
 				]);
 
+		var fragment = root$i();
+		var node = first_child(fragment);
+
 		{
 			const mainSlot = wrap_snippet(PivFooterWC, function ($$anchor) {
 				validate_snippet_args(...arguments);
 
 				var fragment_1 = comment();
-				var node = first_child(fragment_1);
+				var node_1 = first_child(fragment_1);
 
-				slot(node, $$props, 'default', {}, null);
+				slot(node_1, $$props, 'default', {}, null);
 				append($$anchor, fragment_1);
 			});
 
@@ -8069,19 +8334,24 @@
 				validate_snippet_args(...arguments);
 
 				var fragment_2 = comment();
-				var node_1 = first_child(fragment_2);
+				var node_2 = first_child(fragment_2);
 
-				slot(node_1, $$props, 'copyright', {}, null);
+				slot(node_2, $$props, 'copyright', {}, null);
 				append($$anchor, fragment_2);
 			});
 
-			PivFooter($$anchor, spread_props(() => props, {
+			PivFooter(node, spread_props(() => props, {
 				slots: $$slots,
 				mainSlot,
 				copyrightSlot,
 				$$slots: { mainSlot: true, copyrightSlot: true }
 			}));
 		}
+
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		append($$anchor, fragment);
 
 		return pop({
 			get self() {
@@ -8125,7 +8395,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$i = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$h = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8152,7 +8422,7 @@
 					'class'
 				]);
 
-		var button = root$i();
+		var button = root$h();
 		let attributes;
 		var node = child(button);
 
@@ -8254,7 +8524,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$9 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$a = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8268,8 +8538,6 @@
 		]
 	]);
 
-	var root$h = add_locations(template(`<!> <link rel="stylesheet">`, 1), Alert[FILENAME], [[68, 0]]);
-
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
@@ -8281,7 +8549,7 @@
 			fullWidth = prop($$props, 'fullWidth', 7, "false"),
 			slotContent = prop($$props, 'slotContent', 7);
 
-		const language = Utils.getPageLanguage();
+		const language = Utils$1.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 		const warningLabel = strict_equals(language, 'fr') ? "Information d'importance élevée" : "Information of high importance";
@@ -8295,12 +8563,12 @@
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
 		}
 
-		var fragment = root$h();
+		var fragment = comment();
 		var node = first_child(fragment);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$9();
+				var div = root_1$a();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8349,7 +8617,7 @@
 					};
 
 					if_block(node_4, ($$render) => {
-						if (Utils.isTruthy(maskable())) $$render(consequent);
+						if (Utils$1.isTruthy(maskable())) $$render(consequent);
 					});
 				}
 
@@ -8361,13 +8629,10 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (!Utils.isTruthy(hide())) $$render(consequent_1);
+				if (!Utils$1.isTruthy(hide())) $$render(consequent_1);
 			});
 		}
 
-		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -8434,13 +8699,22 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
+	var root$g = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[25, 0]]);
+
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		var fragment = root$g();
+		var node = first_child(fragment);
 
-		Alert($$anchor, spread_props(() => props, { slotContent: `<slot />` }));
+		Alert(node, spread_props(() => props, { slotContent: `<slot />` }));
+
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		append($$anchor, fragment);
 		return pop({ ...legacy_api() });
 	}
 
@@ -8470,14 +8744,14 @@
 		}
 	}
 
-	var on_click$2 = (e, scrollToTop) => scrollToTop(e);
-	var root$g = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var on_click$3 = (e, scrollToTop) => scrollToTop(e);
+	var root$f = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
@@ -8489,7 +8763,7 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (Utils.isTruthy(demo())) {
+			if (Utils$1.isTruthy(demo())) {
 				return;
 			}
 
@@ -8515,13 +8789,13 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$g();
+		var a = root$f();
 
 		event('scroll', $window, handleScrollUpButton);
 
 		let classes;
 
-		a.__click = [on_click$2, scrollToTop];
+		a.__click = [on_click$3, scrollToTop];
 		a.__keydown = [handleEnterAndSpace, scrollToTop];
 
 		var node = child(a);
@@ -8596,13 +8870,13 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$f = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$e = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
+		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils$1.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
 		let imgElement = state(void 0);
 
 		function createVisibleNodesTreeWalker() {
@@ -8678,7 +8952,7 @@
 			});
 		});
 
-		var span_1 = root$f();
+		var span_1 = root$e();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -8689,7 +8963,7 @@
 				return externalIconAlt();
 			},
 			set externalIconAlt(
-				$$value = Utils.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
+				$$value = Utils$1.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
 			) {
 				externalIconAlt($$value);
 				flushSync();
@@ -8716,13 +8990,13 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$e = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[35, 4]]]]);
+	var root$d = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[35, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
@@ -8750,7 +9024,7 @@
 			searchInput?.focus();
 		}
 
-		var div = root$e();
+		var div = root$d();
 		var node = child(div);
 
 		{
@@ -8874,14 +9148,14 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$d = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$c = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
@@ -8910,15 +9184,15 @@
 
 		let inputProps = user_derived(() => ({
 				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("input", rest),
+				...Utils$1.computeFieldsAttributes("input", rest),
 				name: name()
 			})),
 			submitProps = user_derived(() => ({
 				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("submit", rest)
+				...Utils$1.computeFieldsAttributes("submit", rest)
 			}));
 
-		var div = root$d();
+		var div = root$c();
 		let classes;
 		var node = child(div);
 
@@ -9091,14 +9365,14 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$5 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[47, 8]]);
-	var root_1$8 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[34, 0]]);
+	var root_2$6 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[47, 8]]);
+	var root_1$9 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[34, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 7),
 			label = prop($$props, 'label', 7, ''),
@@ -9111,7 +9385,7 @@
 			defaultInvalidText = user_derived(() => label() ? strict_equals(lang, 'fr') ? `Le champ ${get(cleanLabel)} est obligatoire.` : `${get(cleanLabel)} field is required.` : strict_equals(lang, 'fr') ? `Ce champ est obligatoire.` : `This field is required.`);
 
 		onMount(() => {
-			id(Utils.generateId('qc-form-error'));
+			id(Utils$1.generateId('qc-form-error'));
 		});
 
 		var fragment = comment();
@@ -9119,11 +9393,11 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$8();
+				var div = root_1$9();
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-					var fragment_1 = root_2$5();
+					var fragment_1 = root_2$6();
 					var node_2 = first_child(fragment_1);
 
 					Icon(node_2, {
@@ -9228,9 +9502,9 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[53, 12]]);
-	var root_1$7 = add_locations(template(`<legend><!> <!></legend>`), Fieldset[FILENAME], [[50, 4]]);
-	var root$c = add_locations(template(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[41, 0, [[57, 4]]]]);
+	var root_2$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[52, 12]]);
+	var root_1$8 = add_locations(template(`<legend><!> <!></legend>`), Fieldset[FILENAME], [[49, 4]]);
+	var root$b = add_locations(template(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[40, 0, [[56, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9249,11 +9523,10 @@
 			onchange = prop($$props, 'onchange', 7, () => {}),
 			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
 			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
-			children = prop($$props, 'children', 7),
-			slotContent = prop($$props, 'slotContent', 7);
+			children = prop($$props, 'children', 7);
 
 		let groupSelection = state(void 0),
-			legendId = name() ? "id_" + name() : Utils.generateId("legend");
+			legendId = name() ? "id_" + name() : Utils$1.generateId("legend");
 
 		function chooseDivCLass(inline, tiled) {
 			if (tiled) {
@@ -9267,19 +9540,19 @@
 			return "qc-field-elements-flex";
 		}
 
-		var fieldset = root$c();
+		var fieldset = root$b();
 
 		set_attribute(fieldset, 'aria-describedby', legendId);
 
 		fieldset.__change = function (...$$args) {
-			apply(onchange, this, $$args, Fieldset, [47, 11]);
+			apply(onchange, this, $$args, Fieldset, [46, 11]);
 		};
 
 		var node = child(fieldset);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var legend_1 = root_1$7();
+				var legend_1 = root_1$8();
 
 				set_attribute(legend_1, 'id', legendId);
 
@@ -9291,7 +9564,7 @@
 
 				{
 					var consequent = ($$anchor) => {
-						var span = root_2$4();
+						var span = root_2$5();
 
 						append($$anchor, span);
 					};
@@ -9458,13 +9731,6 @@
 				children($$value);
 				flushSync();
 			},
-			get slotContent() {
-				return slotContent();
-			},
-			set slotContent($$value) {
-				slotContent($$value);
-				flushSync();
-			},
 			...legacy_api()
 		});
 	}
@@ -9487,8 +9753,7 @@
 			onchange: {},
 			elementsGap: {},
 			maxWidth: {},
-			children: {},
-			slotContent: {}
+			children: {}
 		},
 		[],
 		[],
@@ -9497,14 +9762,12 @@
 
 	ChoiceGroup[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroup.svelte';
 
-	var root$b = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroup[FILENAME], [[27, 0]]);
-
 	function ChoiceGroup($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		Utils.getPageLanguage();
+		Utils$1.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
@@ -9527,13 +9790,10 @@
 			}
 		};
 
-		var fragment = root$b();
-		var node = first_child(fragment);
-
 		{
 			$$ownership_validator.binding('invalid', Fieldset, invalid);
 
-			Fieldset(node, spread_props(() => restProps, {
+			Fieldset($$anchor, spread_props(() => restProps, {
 				get invalidText() {
 					return invalidText();
 				},
@@ -9546,19 +9806,14 @@
 				},
 				children: wrap_snippet(ChoiceGroup, ($$anchor, $$slotProps) => {
 					var fragment_1 = comment();
-					var node_1 = first_child(fragment_1);
+					var node = first_child(fragment_1);
 
-					snippet(node_1, children);
+					snippet(node, children);
 					append($$anchor, fragment_1);
 				}),
 				$$slots: { default: true }
 			}));
 		}
-
-		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
 
 		return pop({
 			get invalid() {
@@ -9598,6 +9853,8 @@
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
+	var root$a = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroupWC[FILENAME], [[49, 0]]);
+
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
@@ -9616,10 +9873,13 @@
 
 		user_effect(() => updateInput($$props.$$host, required(), invalid(), name()));
 
+		var fragment = root$a();
+		var node = first_child(fragment);
+
 		{
 			$$ownership_validator.binding('invalid', ChoiceGroup, invalid);
 
-			ChoiceGroup($$anchor, {
+			ChoiceGroup(node, {
 				get name() {
 					return name();
 				},
@@ -9652,14 +9912,19 @@
 				},
 				children: wrap_snippet(ChoiceGroupWC, ($$anchor, $$slotProps) => {
 					var fragment_1 = comment();
-					var node = first_child(fragment_1);
+					var node_1 = first_child(fragment_1);
 
-					slot(node, $$props, 'default', {}, null);
+					slot(node_1, $$props, 'default', {}, null);
 					append($$anchor, fragment_1);
 				}),
 				$$slots: { default: true }
 			});
 		}
+
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		append($$anchor, fragment);
 
 		return pop({
 			get name() {
@@ -9749,31 +10014,152 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root$a = add_locations(template(`<div><!> <!></div> <link rel="stylesheet">`, 1), Checkbox[FILENAME], [[41, 0], [55, 0]]);
+	var root_2$4 = add_locations(template(`<span class="qc-required">*</span>`), Checkbox[FILENAME], [[81, 20]]);
+	var root_3$1 = add_locations(template(`<span class="qc-check-description"><!></span>`), Checkbox[FILENAME], [[85, 16]]);
+
+	var root_1$7 = add_locations(template(`<label><input> <span class="qc-check-text"><span class="qc-check-label"> <!></span> <!></span></label>`), Checkbox[FILENAME], [
+		[
+			59,
+			4,
+			[[64, 8], [77, 8, [[78, 12]]]]
+		]
+	]);
+
+	var root_4$2 = add_locations(template(`<div><!> <!></div>`), Checkbox[FILENAME], [[93, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		Utils.getPageLanguage();
+		const checkboxRow = wrap_snippet(Checkbox, function ($$anchor) {
+			validate_snippet_args(...arguments);
+
+			var label_1 = root_1$7();
+
+			set_class(label_1, 1, "qc-dropdown-list-checkbox");
+
+			var input_1 = child(label_1);
+
+			remove_input_defaults(input_1);
+
+			let attributes;
+
+			bind_this(input_1, ($$value) => set(checkboxInput, $$value), () => get(checkboxInput));
+
+			var span = sibling(input_1, 2);
+			var span_1 = child(span);
+			var text = child(span_1);
+			var node = sibling(text);
+
+			{
+				var consequent = ($$anchor) => {
+					var span_2 = root_2$4();
+
+					append($$anchor, span_2);
+				};
+
+				if_block(node, ($$render) => {
+					if (required()) $$render(consequent);
+				});
+			}
+
+			reset(span_1);
+
+			var node_1 = sibling(span_1, 2);
+
+			{
+				var consequent_1 = ($$anchor) => {
+					var span_3 = root_3$1();
+					var node_2 = child(span_3);
+
+					html(node_2, description);
+					reset(span_3);
+					append($$anchor, span_3);
+				};
+
+				if_block(node_1, ($$render) => {
+					if (description()) $$render(consequent_1);
+				});
+			}
+
+			reset(span);
+			reset(label_1);
+
+			template_effect(
+				($0) => {
+					set_attribute(label_1, 'for', get(usedId) + "-input");
+					set_attribute(label_1, 'compact', compact());
+
+					attributes = set_attributes(input_1, attributes, {
+						id: get(usedId) + "-input",
+						type: 'checkbox',
+						value: value(),
+						name: name(),
+						disabled: disabled(),
+						'aria-required': required(),
+						'aria-invalid': invalid(),
+						onchange: onchange(),
+						...$0
+					});
+
+					set_text(text, `${get(label) ?? ''} `);
+				},
+				[
+					() => Utils$1.computeFieldsAttributes("checkbox", rest)
+				]
+			);
+
+			bind_checked(input_1, checked);
+			append($$anchor, label_1);
+		});
+
+		Utils$1.getPageLanguage();
 			const qcCheckoxContext = getContext("qc-checkbox");
 
-		let required = prop($$props, 'required', 15, false),
+		let id = prop($$props, 'id', 7),
+			name = prop($$props, 'name', 7),
+			value = prop($$props, 'value', 7),
+			description = prop($$props, 'description', 7),
+			required = prop($$props, 'required', 15, false),
+			disabled = prop($$props, 'disabled', 7),
 			compact = prop($$props, 'compact', 7),
+			checked = prop($$props, 'checked', 15, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			children = prop($$props, 'children', 7),
 			onchange = prop($$props, 'onchange', 7),
 			labelElement = prop($$props, 'labelElement', 7),
-			input = prop($$props, 'input', 7);
+			input = prop($$props, 'input', 7),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'id',
+					'name',
+					'value',
+					'description',
+					'required',
+					'disabled',
+					'compact',
+					'checked',
+					'invalid',
+					'invalidText',
+					'children',
+					'onchange',
+					'labelElement',
+					'input'
+				]);
 
-		let label = state(void 0),
+		let label = state(proxy($$props.label)),
 			rootElement = state(void 0);
 
 		onMount(() => {
 			if (qcCheckoxContext) return;
-			labelElement(get(rootElement).querySelector('label'));
-			input(get(rootElement).querySelector('input'));
+			labelElement(get(rootElement)?.querySelector('label'));
+			input(get(rootElement)?.querySelector('input'));
 		});
 
 		user_effect(() => {
@@ -9784,49 +10170,107 @@
 
 		user_effect((_) => updateInput(input(), required(), invalid()));
 
-		var fragment = root$a();
-		var div = first_child(fragment);
+		let checkboxInput = state(void 0);
+		let usedId = user_derived(() => id() ?? name() + value() + Math.random().toString(36));
 
-		div.__change = function (...$$args) {
-			apply(onchange, this, $$args, Checkbox, [47, 6]);
-		};
+		function focus() {
+			get(checkboxInput)?.focus();
+		}
 
-		var node = child(div);
+		function closest(tag) {
+			return get(checkboxInput)?.closest(tag);
+		}
 
-		snippet(node, () => children() ?? noop);
+		var fragment = comment();
+		var node_3 = first_child(fragment);
 
-		var node_1 = sibling(node, 2);
+		{
+			var consequent_2 = ($$anchor) => {
+				var div = root_4$2();
 
-		FormError(node_1, {
-			get invalid() {
-				return invalid();
-			},
-			get invalidText() {
-				return invalidText();
-			},
-			get label() {
-				return get(label);
-			}
-		});
+				div.__change = function (...$$args) {
+					apply(onchange, this, $$args, Checkbox, [99, 10]);
+				};
 
-		reset(div);
-		bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
+				var node_4 = child(div);
 
-		var link = sibling(div, 2);
+				snippet(node_4, () => children() ?? noop);
 
-		template_effect(() => {
-			set_class(div, 1, clsx([
-				"qc-checkbox-single",
-				invalid() && "qc-checkbox-single-invalid"
-			]));
+				var node_5 = sibling(node_4, 2);
 
-			set_attribute(div, 'compact', compact());
-			set_attribute(link, 'href', Utils.cssPath);
-		});
+				FormError(node_5, {
+					get invalid() {
+						return invalid();
+					},
+					get invalidText() {
+						return invalidText();
+					},
+					get label() {
+						return get(label);
+					}
+				});
+
+				reset(div);
+				bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
+
+				template_effect(() => {
+					set_class(div, 1, clsx([
+						"qc-checkbox-single",
+						invalid() && "qc-checkbox-single-invalid"
+					]));
+
+					set_attribute(div, 'compact', compact());
+				});
+
+				append($$anchor, div);
+			};
+
+			var alternate = ($$anchor) => {
+				checkboxRow($$anchor);
+			};
+
+			if_block(node_3, ($$render) => {
+				if (children()) $$render(consequent_2); else $$render(alternate, false);
+			});
+		}
 
 		append($$anchor, fragment);
 
 		return pop({
+			get focus() {
+				return focus;
+			},
+			get closest() {
+				return closest;
+			},
+			get id() {
+				return id();
+			},
+			set id($$value) {
+				id($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value) {
+				name($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
 			get required() {
 				return required();
 			},
@@ -9834,11 +10278,25 @@
 				required($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
 			get compact() {
 				return compact();
 			},
 			set compact($$value) {
 				compact($$value);
+				flushSync();
+			},
+			get checked() {
+				return checked();
+			},
+			set checked($$value = false) {
+				checked($$value);
 				flushSync();
 			},
 			get invalid() {
@@ -9892,8 +10350,14 @@
 	create_custom_element(
 		Checkbox,
 		{
+			id: {},
+			name: {},
+			value: {},
+			description: {},
 			required: {},
+			disabled: {},
 			compact: {},
+			checked: {},
 			invalid: {},
 			invalidText: {},
 			children: {},
@@ -9902,14 +10366,14 @@
 			input: {}
 		},
 		[],
-		[],
+		['focus', 'closest'],
 		true
 	);
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
 	var root_1$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), CheckboxWC[FILENAME], [[46, 0]]);
-	var root$9 = add_locations(template(`<!> <!>`, 1), CheckboxWC[FILENAME], []);
+	var root$9 = add_locations(template(`<!> <!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[62, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -9999,6 +10463,9 @@
 			});
 		}
 
+		var link = sibling(node_1, 2);
+
+		set_attribute(link, 'href', Utils.cssPath);
 		append($$anchor, fragment);
 
 		return pop({
@@ -10165,7 +10632,7 @@
 	        input.autocomplete = "off";
 	    }
 	    if (!input.id) {
-	        input.id =  Utils.generateId(input.type);
+	        input.id =  Utils$1.generateId(input.type);
 	    }
 	    setValue(input.value);
 	    input.addEventListener(
@@ -10319,7 +10786,7 @@
 			append($$anchor, fragment);
 		});
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15),
@@ -10387,8 +10854,8 @@
 		});
 
 		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils.generateId('description-'),
-			charCountId = Utils.generateId('charcount-');
+		const descriptionId = Utils$1.generateId('description-'),
+			charCountId = Utils$1.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -10731,7 +11198,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop({
@@ -11599,10 +12066,9 @@
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var on_mousedown = (event, handleMouseDown) => handleMouseDown(event);
-	var on_mouseup = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[138, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[136, 4]]);
+	var on_click$2 = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
+	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[115, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[113, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -11612,55 +12078,31 @@
 
 		let items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
+			value = prop($$props, 'value', 15),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
-		let self = state(void 0);
-		let listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("li")) : []);
-		let selectedValue = user_derived(() => items() && items().length > 0 ? items().find((item) => item.checked)?.value : null);
-
-		let selectedElement = user_derived(() => {
-			if (get(selectedValue) && get(listElements) && get(listElements).length > 0) {
-				return get(listElements).find((element) => strict_equals(element.dataset.itemValue, get(selectedValue)));
-			}
-
-			return null;
-		});
-
-		let previousElement = state(void 0);
-		let mouseDownElement = null;
-		let hoveredElement = null;
-
-		user_effect(() => {
-			if (!get(selectedElement)) {
-				return;
-			}
-
-			if (get(previousElement) && strict_equals(get(previousElement), get(selectedElement), false)) {
-				get(previousElement).classList.remove(selectedElementCLass);
-			}
-
-			get(selectedElement).classList.add(selectedElementCLass);
-			set(previousElement, get(selectedElement), true);
-		});
+		let displayedItemsElements = state(proxy(new Array(displayedItems().length)));
 
 		function focusOnFirstElement() {
-			if (get(listElements) && get(listElements).length > 0) {
-				get(listElements)[0].focus();
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
+				get(displayedItemsElements)[0].focus();
 			}
 		}
 
 		function focusOnLastElement() {
-			if (get(listElements) && get(listElements).length > 0) {
-				get(listElements)[get(listElements).length - 1].focus();
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
+				get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
 			}
 		}
 
-		function focusOnFirstMatchingElement(value) {
-			if (get(listElements) && get(listElements).length > 0) {
-				const foundElement = get(listElements).find((element) => element.dataset.itemValue.toString().toLowerCase().includes(value.toLowerCase()));
+		function focusOnFirstMatchingElement(passedValue) {
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
+				console.log(...log_if_contains_state('log', snapshot(get(displayedItemsElements))));
+
+				const foundElement = get(displayedItemsElements).find((el) => strict_equals(el.dataset.itemValue.toString(), passedValue.toString()));
 
 				if (foundElement) {
 					foundElement.focus();
@@ -11672,24 +12114,15 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
+				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:46:34'));
+				items().find((option) => strict_equals(option.value, item.value)).checked = true;
 				selectionCallback()();
-
-				if (get(previousElement)) {
-					items().find((item) => strict_equals(item.value.toString(), get(previousElement).dataset.itemValue.toString())).checked = false;
-				}
-
-				item.checked = true;
+				value([item.value]);
 			}
 		}
 
 		function handleMouseUp(event, item) {
-			if (strict_equals(event.target, hoveredElement) && strict_equals(event.target, mouseDownElement)) {
-				handleSelection(event, item);
-			}
-		}
-
-		function handleMouseDown(event) {
-			mouseDownElement = event.target;
+			handleSelection(event, item);
 		}
 
 		function handleComboKey(event, index, item) {
@@ -11697,8 +12130,8 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index < displayedItems().length - 1) {
-					get(listElements)[index + 1].focus();
+				if (get(displayedItemsElements).length > 0 && index < get(displayedItemsElements).length - 1) {
+					get(displayedItemsElements)[index + 1].focus();
 				}
 			}
 
@@ -11706,8 +12139,8 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index > 0) {
-					get(listElements)[index - 1].focus();
+				if (get(displayedItemsElements).length > 0 && index > 0) {
+					get(displayedItemsElements)[index - 1].focus();
 				} else {
 					focusOnOuterElement()();
 				}
@@ -11717,7 +12150,7 @@
 				handleSelection(event, item);
 			}
 
-			Utils.sleep(5).then(() => {
+			Utils$1.sleep(5).then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -11736,6 +12169,18 @@
 			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
 		}
 
+		function itemsHaveIds() {
+			let valid = true;
+
+			displayedItems().forEach((item) => {
+				if (!item.id) {
+					valid = false;
+				}
+			});
+
+			return valid;
+		}
+
 		var fragment = comment();
 		var node = first_child(fragment);
 
@@ -11743,41 +12188,43 @@
 			var consequent = ($$anchor) => {
 				var ul = root_1$3();
 
-				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
+				validate_each_keys(displayedItems, (item) => item.id);
+
+				each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
 					var li = root_2$3();
 
-					set_attribute(li, 'id', Math.random().toString(36).substring(2, 15));
-					li.__mousedown = [on_mousedown, handleMouseDown];
-					li.__mouseup = [on_mouseup, handleMouseUp, item];
-					li.__keydown = (event) => handleKeyDown(event, index, get(item));
+					li.__click = [on_click$2, handleMouseUp, item];
+					li.__keydown = (event) => handleKeyDown(event, get(index), get(item));
 
 					var node_1 = child(li);
 
 					html(node_1, () => get(item).label);
 					reset(li);
+					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
+					bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
 					template_effect(() => {
+						set_attribute(li, 'id', get(item).id);
+
 						set_class(li, 1, clsx([
 							"qc-dropdown-list-single",
-							get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
+							get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
+							get(item).checked ? selectedElementCLass : ""
 						]));
 
 						set_attribute(li, 'data-item-value', get(item).value);
-						set_attribute(li, 'aria-selected', strict_equals(get(selectedValue), get(item).value) ? "true" : "false");
+						set_attribute(li, 'aria-selected', !!get(item).checked);
 					});
 
-					event('mouseenter', li, (event) => hoveredElement = event.target);
-					event('mouseleave', li, () => hoveredElement = null);
 					append($$anchor, li);
 				});
 
 				reset(ul);
-				bind_this(ul, ($$value) => set(self, $$value), () => get(self));
 				append($$anchor, ul);
 			};
 
 			if_block(node, ($$render) => {
-				if (displayedItems().length > 0) $$render(consequent);
+				if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent);
 			});
 		}
 
@@ -11805,6 +12252,13 @@
 			},
 			set displayedItems($$value) {
 				displayedItems($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
 				flushSync();
 			},
 			get selectionCallback() {
@@ -11839,13 +12293,14 @@
 		});
 	}
 
-	delegate(['mousedown', 'mouseup', 'keydown']);
+	delegate(['click', 'keydown']);
 
 	create_custom_element(
 		DropdownListItemsSingle,
 		{
 			items: {},
 			displayedItems: {},
+			value: {},
 			selectionCallback: {},
 			handleExit: {},
 			focusOnOuterElement: {},
@@ -11863,8 +12318,8 @@
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
 	var on_click$1 = (e, handleLiClick, item) => handleLiClick(e, get(item));
-	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[168, 12]]);
-	var root_1$2 = add_locations(template(`<ul class="qc-compact"></ul>`), DropdownListItemsMultiple[FILENAME], [[162, 4]]);
+	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[178, 12]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[172, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -11873,6 +12328,7 @@
 		var $$ownership_validator = create_ownership_validator($$props);
 
 		let displayedItems = prop($$props, 'displayedItems', 7),
+			value = prop($$props, 'value', 15),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -11882,32 +12338,31 @@
 
 		let selectedValues = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.value) : [])),
 			selectedLabels = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.label) : [])),
-			self = state(void 0),
-			listElements = user_derived(() => get(self) ? Array.from(get(self).querySelectorAll("input[type='checkbox']")) : []);
+			displayedItemsElements = state(proxy(new Array(displayedItems().length)));
 
 		function focusOnFirstElement() {
-			if (get(listElements) && get(listElements).length > 0) {
-				if (get(listElements)[0].disabled) {
-					get(listElements)[0].closest("li").focus();
+			if (displayedItems() && displayedItems().length > 0) {
+				if (displayedItems()[0].disabled) {
+					get(displayedItemsElements)[0].closest("li").focus();
 				} else {
-					get(listElements)[0].focus();
+					get(displayedItemsElements)[0].focus();
 				}
 			}
 		}
 
 		function focusOnLastElement() {
-			if (get(listElements) && get(listElements).length > 0) {
-				if (get(listElements)[get(listElements).length - 1].disabled) {
-					get(listElements)[get(listElements).length - 1].closest("li").focus();
+			if (displayedItems() && displayedItems().length > 0) {
+				if (displayedItems()[displayedItems().length - 1].disabled) {
+					get(displayedItemsElements)[get(displayedItemsElements).length - 1].closest("li").focus();
 				} else {
-					get(listElements)[get(listElements).length - 1].focus();
+					get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
 				}
 			}
 		}
 
 		function focusOnFirstMatchingElement(value) {
-			if (get(listElements) && get(listElements).length > 0) {
-				const foundElement = get(listElements).find((element) => element.value.toLowerCase().includes(value.toLowerCase()));
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
+				const foundElement = get(displayedItemsElements).find((element) => element.value.toLowerCase().includes(value.toLowerCase()));
 
 				if (foundElement) {
 					if (foundElement.disabled) {
@@ -11924,11 +12379,11 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index < displayedItems().length - 1) {
-					if (get(listElements)[index + 1].disabled) {
-						get(listElements)[index + 1].closest("li").focus();
+				if (displayedItems().length > 0 && index < displayedItems().length - 1) {
+					if (displayedItems()[index + 1].disabled) {
+						get(displayedItemsElements)[index + 1].closest("li").focus();
 					} else {
-						get(listElements)[index + 1].focus();
+						get(displayedItemsElements)[index + 1].focus();
 					}
 				}
 			}
@@ -11937,11 +12392,11 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && index > 0) {
-					if (get(listElements)[index - 1].disabled) {
-						get(listElements)[index - 1].closest("li").focus();
+				if (displayedItems().length > 0 && index > 0) {
+					if (displayedItems()[index - 1].disabled) {
+						get(displayedItemsElements)[index - 1].closest("li").focus();
 					} else {
-						get(listElements)[index - 1].focus();
+						get(displayedItemsElements)[index - 1].focus();
 					}
 				} else {
 					focusOnOuterElement()();
@@ -11952,13 +12407,13 @@
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (get(listElements).length > 0 && !get(listElements)[index].disabled) {
+				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
 					event.target.checked = !event.target.checked;
-					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 101, 16);
+					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 100, 16);
 				}
 			}
 
-			Utils.sleep(5).then(() => {
+			Utils$1.sleep(5).then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -12010,7 +12465,20 @@
 				set(selectedLabels, get(selectedLabels).filter((l) => strict_equals(l, label, false)), true);
 			}
 
+			value(get(selectedValues).length > 0 ? get(selectedValues) : []);
 			selectionCallback()();
+		}
+
+		function itemsHaveIds() {
+			let valid = true;
+
+			displayedItems().forEach((item) => {
+				if (!item.id) {
+					valid = false;
+				}
+			});
+
+			return valid;
 		}
 
 		var fragment = comment();
@@ -12020,39 +12488,47 @@
 			var consequent = ($$anchor) => {
 				var ul = root_1$2();
 
-				each(ul, 21, displayedItems, index, ($$anchor, item, index) => {
+				validate_each_keys(displayedItems, (item) => item.id);
+
+				each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
 					var li = root_2$2();
 
-					li.__keydown = (e) => handleLiKeyDown(e, index);
+					li.__keydown = (e) => handleLiKeyDown(e, get(index));
 					li.__click = [on_click$1, handleLiClick, item];
 
 					var node_1 = child(li);
 
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
+					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
 
-					Checkbox(node_1, {
-						get value() {
-							return get(item).value;
-						},
-						get label() {
-							return get(item).label;
-						},
-						name,
-						get disabled() {
-							return get(item).disabled;
-						},
-						parentGroup: 'true',
-						dropdownListItem: 'true',
-						compact: 'true',
-						'checkbox-onkeydown': (e) => handleKeyDown(e, index),
-						handleChange: (e) => handleChange(e, get(item).label, get(item).value),
-						get checked() {
-							return get(item).checked;
-						},
-						set checked($$value) {
-							(get(item).checked = $$value);
-						}
-					});
+					bind_this(
+						Checkbox(node_1, {
+							get value() {
+								return get(item).value;
+							},
+							get label() {
+								return get(item).label;
+							},
+							name,
+							get disabled() {
+								return get(item).disabled;
+							},
+							parentGroup: 'true',
+							dropdownListItem: 'true',
+							compact: 'true',
+							'checkbox-onkeydown': (e) => handleKeyDown(e, get(index)),
+							onchange: (e) => handleChange(e, get(item).label, get(item).value),
+							get checked() {
+								return get(item).checked;
+							},
+							set checked($$value) {
+								(get(item).checked = $$value);
+							}
+						}),
+						($$value, index) => get(displayedItemsElements)[index] = $$value,
+						(index) => get(displayedItemsElements)?.[index],
+						() => [get(index)]
+					);
 
 					reset(li);
 
@@ -12069,12 +12545,11 @@
 				});
 
 				reset(ul);
-				bind_this(ul, ($$value) => set(self, $$value), () => get(self));
 				append($$anchor, ul);
 			};
 
 			if_block(node, ($$render) => {
-				if (displayedItems().length > 0) $$render(consequent);
+				if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent);
 			});
 		}
 
@@ -12095,6 +12570,13 @@
 			},
 			set displayedItems($$value) {
 				displayedItems($$value);
+				flushSync();
+			},
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
 				flushSync();
 			},
 			get handleExit() {
@@ -12135,6 +12617,7 @@
 		DropdownListItemsMultiple,
 		{
 			displayedItems: {},
+			value: {},
 			handleExit: {},
 			selectionCallback: {},
 			focusOnOuterElement: {},
@@ -12151,8 +12634,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[103, 16]]);
-	var root$4 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[66, 0, [[100, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[104, 16]]);
+	var root$4 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[101, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12196,20 +12679,22 @@
 		});
 
 		function focus() {
-			Utils.sleep(5).then(() => {
+			Utils$1.sleep(5).then(() => {
 				get(itemsComponent)?.focusOnFirstElement();
 			}).catch(console.error);
 		}
 
 		function focusOnLastElement() {
-			Utils.sleep(5).then(() => {
+			Utils$1.sleep(5).then(() => {
 				get(itemsComponent)?.focusOnLastElement();
 			}).catch(console.error);
 		}
 
 		function focusOnFirstMatchingElement(value) {
+			console.log(...log_if_contains_state('log', value));
+
 			if (get(itemsComponent) && value && value.length > 0) {
-				Utils.sleep(5).then(() => {
+				Utils$1.sleep(5).then(() => {
 					get(itemsComponent)?.focusOnFirstMatchingElement(value);
 				}).catch(console.error);
 			}
@@ -12602,32 +13087,38 @@
 		get(button).focus();
 	};
 
-	var root_1 = add_locations(template(`<span class="qc-textfield-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[222, 16]]);
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-selection-count"><!></div>`), DropdownList[FILENAME], [[226, 12]]);
-	var root_5 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[271, 16]]);
-	var root_6 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[311, 20]]);
+	var root_1 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), DropdownList[FILENAME], [[255, 20]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-selection-count"><!></div>`), DropdownList[FILENAME], [[259, 16]]);
+	var root_5 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[304, 20]]);
+	var root_6 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[346, 24]]);
 
-	var root$2 = add_locations(template(`<div><div class="qc-dropdown-list-label-container"><label> <!></label> <!></div> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div> <!></div> <link rel="stylesheet">`, 1), DropdownList[FILENAME], [
+	var root$2 = add_locations(template(`<div class="qc-dropdown-list-container"><div><div class="qc-dropdown-list-label-container"><label> <!></label> <!></div> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			203,
+			235,
 			0,
 			[
-				[204, 4, [[207, 8]]],
 				[
-					235,
+					236,
 					4,
-					[[262, 8, [[309, 12]]]]
+					[
+						[237, 8, [[240, 12]]],
+						[
+							268,
+							8,
+							[[295, 12, [[344, 16]]]]
+						]
+					]
 				]
 			]
-		],
-		[320, 0]
+		]
 	]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		var $$ownership_validator = create_ownership_validator($$props);
+		const lang = Utils$1.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
@@ -12662,12 +13153,20 @@
 			searchText = state(""),
 			hiddenSearchText = state(""),
 			displayedItems = state(proxy(items())),
+			itemsForSearch = user_derived(() => items().map((item) => {
+				return {
+					label: Utils$1.cleanupSearchPrompt(item.label),
+					value: item.value,
+					disabled: item.disabled,
+					checked: item.checked
+				};
+			})),
 			widthClass = user_derived(() => {
 				if (availableWidths.includes(width())) {
-					return `qc-textfield-container-${width()}`;
+					return `qc-dropdown-list-container-${width()}`;
 				}
 
-				return `qc-textfield-container-md`;
+				return `qc-dropdown-list-container-md`;
 			}),
 			srItemsCountText = user_derived(() => {
 				const s = get(displayedItems).length > 1 ? "s" : "";
@@ -12691,12 +13190,11 @@
 
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
-			event.stopPropagation();
 			set(expanded, !get(expanded));
 		}
 
 		function handleOuterEvent() {
-			if (!Utils.componentIsActive(get(instance))) {
+			if (!Utils$1.componentIsActive(get(instance))) {
 				set(expanded, false);
 			}
 		}
@@ -12704,8 +13202,8 @@
 		function handleTab(event) {
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
-			Utils.sleep(5).then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
+			Utils$1.sleep(5).then(() => {
+				if (strict_equals(event.key, "Tab") && !Utils$1.componentIsActive(get(instance))) {
 					set(expanded, false);
 				}
 			}).catch(console.error);
@@ -12786,9 +13284,29 @@
 			}
 		}
 
+		function handleSearchKeyDown(event) {
+			if (strict_equals(event.key, "ArrowDown") && get(displayedItems)?.length > 0) {
+				event.preventDefault();
+				// event.stopPropagation();
+				get(dropdownItems)?.focus();
+			}
+
+			if (strict_equals(event.key, "ArrowUp")) {
+				get(button)?.focus();
+			}
+		}
+
 		user_effect(() => {
 			if (get(searchText).length > 0) {
-				set(displayedItems, items().filter((item) => item.label.toLowerCase().includes(get(searchText).toLowerCase())), true);
+				let newDisplayedItems = [];
+
+				for (let i = 0; i < items().length; i++) {
+					if (get(itemsForSearch)[i].label.includes(Utils$1.cleanupSearchPrompt(get(searchText)))) {
+						newDisplayedItems.push(items()[i]);
+					}
+				}
+
+				set(displayedItems, newDisplayedItems, true);
 			} else {
 				set(displayedItems, items(), true);
 			}
@@ -12811,14 +13329,22 @@
 			value(get(selectedItems)?.map((item) => item.value).join(", "));
 		});
 
-		var fragment = root$2();
+		user_effect(() => {
+			items().forEach((item) => {
+				if (!item.id) {
+					item.id = `${id()}-${item.label}-${item.value}`;
+				}
+			});
+		});
 
-		event('click', $document, handleOuterEvent);
-		event('keydown', $document, handleTab);
+		var div = root$2();
 
-		var div = first_child(fragment);
+		event('click', $document.body, handleOuterEvent);
+		event('keydown', $document.body, handleTab);
+
 		var div_1 = child(div);
-		var label_1 = child(div_1);
+		var div_2 = child(div_1);
+		var label_1 = child(div_2);
 
 		set_attribute(label_1, 'for', inputId);
 		set_attribute(label_1, 'id', labelId);
@@ -12845,8 +13371,8 @@
 
 		{
 			var consequent_2 = ($$anchor) => {
-				var div_2 = root_2();
-				var node_2 = child(div_2);
+				var div_3 = root_2();
+				var node_2 = child(div_3);
 
 				{
 					var consequent_1 = ($$anchor) => {
@@ -12868,8 +13394,8 @@
 					});
 				}
 
-				reset(div_2);
-				append($$anchor, div_2);
+				reset(div_3);
+				append($$anchor, div_3);
 			};
 
 			if_block(node_1, ($$render) => {
@@ -12877,10 +13403,10 @@
 			});
 		}
 
-		reset(div_1);
+		reset(div_2);
 
-		var div_3 = sibling(div_1, 2);
-		var node_3 = child(div_3);
+		var div_4 = sibling(div_2, 2);
+		var node_3 = child(div_4);
 
 		bind_this(
 			DropdownListButton(node_3, {
@@ -12918,16 +13444,16 @@
 			() => get(button)
 		);
 
-		var div_4 = sibling(node_3, 2);
+		var div_5 = sibling(node_3, 2);
 
-		set_attribute(div_4, 'id', popupId);
+		set_attribute(div_5, 'id', popupId);
 
-		var node_4 = child(div_4);
+		var node_4 = child(div_5);
 
 		{
 			var consequent_3 = ($$anchor) => {
-				var div_5 = root_5();
-				var node_5 = child(div_5);
+				var div_6 = root_5();
+				var node_5 = child(div_6);
 				const expression = user_derived(() => searchPlaceholder() ? searchPlaceholder() : undefined);
 
 				bind_this(
@@ -12949,6 +13475,8 @@
 							if (strict_equals(e.key, "Enter")) {
 								e.preventDefault();
 							}
+
+							handleSearchKeyDown(e);
 						},
 						get value() {
 							return get(searchText);
@@ -12961,8 +13489,8 @@
 					() => get(searchInput)
 				);
 
-				reset(div_5);
-				append($$anchor, div_5);
+				reset(div_6);
+				append($$anchor, div_6);
 			};
 
 			if_block(node_4, ($$render) => {
@@ -12972,39 +13500,49 @@
 
 		var node_6 = sibling(node_4, 2);
 
-		bind_this(
-			DropdownListItems(node_6, {
-				id: itemsId,
-				get enableSearch() {
-					return enableSearch();
-				},
-				get multiple() {
-					return multiple();
-				},
-				get items() {
-					return items();
-				},
-				get displayedItems() {
-					return get(displayedItems);
-				},
-				get noOptionsMessage() {
-					return noOptionsMessage();
-				},
-				selectionCallbackSingle: () => {
-					closeDropdown("");
-					get(button)?.focus();
-				},
-				handleExitSingle: (key) => closeDropdown(key),
-				handleExitMultiple: (key) => closeDropdown(key),
-				focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
-				handlePrintableCharacter
-			}),
-			($$value) => set(dropdownItems, $$value, true),
-			() => get(dropdownItems)
-		);
+		{
+			$$ownership_validator.binding('value', DropdownListItems, value);
 
-		var div_6 = sibling(node_6, 2);
-		var node_7 = child(div_6);
+			bind_this(
+				DropdownListItems(node_6, {
+					id: itemsId,
+					get enableSearch() {
+						return enableSearch();
+					},
+					get multiple() {
+						return multiple();
+					},
+					get items() {
+						return items();
+					},
+					get displayedItems() {
+						return get(displayedItems);
+					},
+					get noOptionsMessage() {
+						return noOptionsMessage();
+					},
+					selectionCallbackSingle: () => {
+						closeDropdown("");
+						get(button)?.focus();
+					},
+					handleExitSingle: (key) => closeDropdown(key),
+					handleExitMultiple: (key) => closeDropdown(key),
+					focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
+					handlePrintableCharacter,
+					get value() {
+						return value();
+					},
+					set value($$value) {
+						value($$value);
+					}
+				}),
+				($$value) => set(dropdownItems, $$value, true),
+				() => get(dropdownItems)
+			);
+		}
+
+		var div_7 = sibling(node_6, 2);
+		var node_7 = child(div_7);
 
 		key_block(node_7, () => get(searchText), ($$anchor) => {
 			var span_1 = root_6();
@@ -13015,12 +13553,13 @@
 			append($$anchor, span_1);
 		});
 
-		reset(div_6);
+		reset(div_7);
+		reset(div_5);
 		reset(div_4);
-		reset(div_3);
-		bind_this(div_3, ($$value) => set(instance, $$value), () => get(instance));
+		bind_this(div_4, ($$value) => set(instance, $$value), () => get(instance));
+		reset(div_1);
 
-		var node_8 = sibling(div_3, 2);
+		var node_8 = sibling(div_1, 2);
 		const expression_1 = user_derived(() => invalidText() ?? defaultInvalidText);
 
 		FormError(node_8, {
@@ -13030,34 +13569,32 @@
 			},
 			get invalidText() {
 				return get(expression_1);
-			}
+			},
+			extraClasses: ["qc-xs-mt"]
 		});
 
 		reset(div);
 
-		var link = sibling(div, 2);
-
 		template_effect(() => {
-			set_class(div, 1, `qc-textfield-container ${get(widthClass)}`);
+			set_class(div_1, 1, `${get(widthClass)}`);
 
 			set_class(label_1, 1, clsx([
 				"qc-label",
-				"qc-label-bold",
+				"qc-bold",
 				disabled() && "qc-disabled"
 			]));
 
 			set_text(text$1, `${label() ?? ''} `);
 
-			set_class(div_3, 1, clsx([
+			set_class(div_4, 1, clsx([
 				`qc-dropdown-list`,
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
-			div_4.hidden = !get(expanded);
-			set_attribute(link, 'href', Utils.cssPath);
+			div_5.hidden = !get(expanded);
 		});
 
-		append($$anchor, fragment);
+		append($$anchor, div);
 
 		return pop({
 			get id() {
@@ -13452,7 +13989,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!>`, 1), SelectWC[FILENAME], [[97, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[98, 0], [103, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13587,6 +14124,9 @@
 			));
 		}
 
+		var link = sibling(node_1, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop({

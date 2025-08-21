@@ -11,7 +11,6 @@
         id,
         name,
         value,
-        label,
         description,
         required = $bindable(false),
         disabled,
@@ -22,21 +21,18 @@
         children,
         onchange,
         labelElement,
-        input
-        dropdownListItem,
-        tiled,
-        parentGroup,
+        input,
         ...rest
     } = $props();
 
-    let label = $state(),
+    let label = $state(rest.label),
         rootElement = $state()
     ;
 
     onMount(() => {
         if (qcCheckoxContext) return;
-        labelElement = rootElement.querySelector('label')
-        input = rootElement.querySelector('input')
+        labelElement = rootElement?.querySelector('label')
+        input = rootElement?.querySelector('input')
     })
 
     $effect(() => {
@@ -46,16 +42,6 @@
     })
 
     $effect(_ => updateInput(input, required, invalid))
-
-    function chooseCheckboxClass() {
-        if (tiled) {
-            return "qc-selection-button";
-        }
-        if (dropdownListItem) {
-            return "qc-dropdown-list-checkbox";
-        }
-        return "qc-check-row";
-    }
 
     let checkboxInput = $state();
     let usedId = $derived(id ?? name + value + Math.random().toString(36));
@@ -71,7 +57,7 @@
 
 {#snippet checkboxRow()}
     <label
-            class={chooseCheckboxClass()}
+            class={"qc-dropdown-list-checkbox"}
             for={usedId + "-input"}
             {compact}
     >
@@ -91,7 +77,7 @@
         <span class="qc-check-text">
             <span class="qc-check-label">
                 {label}
-                {#if !parentGroup && required}
+                {#if required}
                     <span class="qc-required">*</span>
                 {/if}
             </span>
@@ -100,10 +86,6 @@
             {/if}
         </span>
     </label>
-
-    {#if !parentGroup}
-        <FormError {invalid} {invalidText} />
-    {/if}
 {/snippet}
 
 
@@ -112,33 +94,17 @@
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
     ]}
+         {compact}
+         bind:this={rootElement}
          {onchange}
     >
-        {@render children()}
-        <FormError {invalid} {invalidText} />
+        {@render children?.()}
+        <FormError {invalid}
+                   {invalidText}
+                   {label}
+        />
     </div>
-{:else}
-    {#if parentGroup}
-        {@render checkboxRow()}
-    {:else}
-        <div class={[
-            "qc-checkbox-single",
-            invalid && "qc-checkbox-single-invalid"
-        ]}
-     {compact}
-     bind:this={rootElement}
-     {onchange}
->
-    {@render children?.()}
-    <FormError {invalid}
-               {invalidText}
-               {label}
-    />
-</div>
-<link rel='stylesheet' href='{Utils.cssPath}'>
-    ]}>
-            {@render checkboxRow()}
-        </div>
-    {/if}
-{/if}
 
+{:else}
+    {@render checkboxRow()}
+{/if}

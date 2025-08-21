@@ -60,9 +60,9 @@
         })),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
-                return `qc-textfield-container-${width}`;
+                return `qc-dropdown-list-container-${width}`;
             }
-            return `qc-textfield-container-md`;
+            return `qc-dropdown-list-container-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
@@ -232,15 +232,15 @@
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
-<div>
-    <div class={`qc-textfield-container ${widthClass}`}>
+<div class="qc-dropdown-list-container">
+    <div class={`${widthClass}`}>
         <div class="qc-dropdown-list-label-container">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <label
                 class={[
                     "qc-label",
-                    "qc-label-bold",
+                    "qc-bold",
                     disabled && "qc-disabled"
                 ]}
                 for={inputId}

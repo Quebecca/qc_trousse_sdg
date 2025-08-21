@@ -2331,7 +2331,7 @@
   <form id="formulaire-champs-textes">
     <qc-textfield
             label="Nom complet"
-            size="lg"
+            size="md"
             required
     >
       <input type="text"
@@ -2342,7 +2342,7 @@
 
     <qc-textfield
             label="Champ désactivé"
-            size="lg"
+            size="md"
     >
       <input type="text"
              name="disabled-field"
@@ -2354,7 +2354,7 @@
     <div class="qc-textfield-row">
       <qc-textfield
               label="Téléphone"
-              size="md"
+              size="sm"
               required
         ><input type="text"
                 name="telephone"
@@ -2363,7 +2363,7 @@
 
       <qc-textfield
               label="Poste"
-              size="sm"
+              size="xs"
       >
         <input type="text"
                name="poste"
@@ -2374,7 +2374,7 @@
     <qc-textfield
             label="Champ de texte multiligne"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-            size="xl"
+            size="lg"
             max-length="10"
             required
     >
@@ -2437,7 +2437,7 @@
     </tr>
     <tr>
       <td>size</td>
-      <td>"sm", "md", "lg", "xl", "xxl"</td>
+      <td>"xs", "sm", "md", "lg", "xl"</td>
       <td>lg pour les champs simple (<code>input</code>) <br>
         xl pour les champs multilignes (<code>textarea</code>),
       </td>
@@ -2516,12 +2516,13 @@
 
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
 
-    <h2 id="select">Liste déroulante (qc-select)</h2>
+    <h2 id="select">Liste déroulante</h2>
 
 <h3>Exemples</h3>
 
 <qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <qc-select label="Choix unique">
+    <qc-select id="qc-select-single-choice">
+        <label for="select-single-choice">Choix unique</label>
         <select id="select-single-choice">
             <option value="1" selected>Option 1</option>
             <option value="2">Option 2</option>
@@ -2542,10 +2543,9 @@
         </select>
     </qc-select>
 
-    <qc-select enable-search>
-        <label for="select-single-choice-disabled"
-               >Choix unique avec recherche:</label>
-        <select id="select-single-choice-disabled">
+    <qc-select id="qc-select-single-choice-search" enable-search>
+        <label for="select-single-choice-search">Choix unique avec recherche</label>
+        <select id="select-single-choice-search">
             <option value="1" selected>Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
@@ -2565,9 +2565,9 @@
         </select>
     </qc-select>
 
-    <qc-select multiple>
-        <label for="select-qc-select">Choix multiple:</label>
-        <select multiple id="select-qc-select">
+    <qc-select id="qc-select-multiple-choices" multiple>
+        <label for="select-multiple-choices">Choix multiple</label>
+        <select multiple id="select-multiple-choices">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
             <option value="3" selected>Option 3</option>
@@ -2587,14 +2587,119 @@
         </select>
     </qc-select>
 
-    <qc-select disabled>
-        <label for="qc-select-disabled">Désactivé:</label>
-        <select id="qc-select-disabled">disabled</select>
+    <qc-select id="qc-select-disabled" disabled>
+        <label for="select-disabled">Désactivé</label>
+        <select id="select-disabled">disabled</select>
     </qc-select>
+
+    <script>
+        function mutationCallback(mutationsList, _) {
+            mutationsList.forEach(mutation => {
+                if (mutation.type === 'attributes') {
+                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
+                }
+            });
+        }
+
+        const mutationObserver = new MutationObserver(mutationCallback);
+
+        const singleChoice = document.getElementById("qc-select-single-choice");
+        const singleChoiceNoScroll = document.getElementById("qc-select-single-choice-search");
+        const multipleChoice = document.getElementById("qc-select-multiple-choices");
+
+        mutationObserver.observe(singleChoice, { attributes: true });
+        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
+        mutationObserver.observe(multipleChoice, { attributes: true });
+
+        window.onbeforeunload = () => {
+            mutationObserver.disconnect();
+        }
+    </script>
 </qc-doc-exemple>
 
+<qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
+    <form id="dropdown-list-form">
+        <qc-select
+                id="dropdown-list-restaurants"
+                placeholder="Type de restaurant"
+                enable-search
+                search-placeholder="Rechercher un type restaurant"
+                required
+                invalid-text="Veuillez choisir un type de restaurant."
+        >
+            <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+            <select id="dropdown-list-restaurants-select">
+                <option value="Pizzeria">Pizzeria</option>
+                <option value="Pâtisserie">Pâtisserie</option>
+                <option value="Steakhouse">Steakhouse</option>
+                <option value="Bar">Bar</option>
+                <option value="Casse-croûte">Casse-croûte</option>
+                <option value="Boîte à pâtes">Boîte à pâtes</option>
+                <option value="Restaurant à burgers">Restaurant à burgers</option>
+            </select>
+        </qc-select>
 
-<h4>Attributs de <code>qc-dropdown-list</code></h4>
+        <qc-select
+                id="dropdown-list-regions"
+                placeholder="Sélectionner une région"
+                width="lg"
+                enable-search
+                search-placeholder="Rechercher les régions"
+                multiple
+        >
+            <label for="dropdown-list-regions-select">Régions desservies</label>
+            <select id="dropdown-list-regions-select" multiple>
+                <option value="Capitale-nationale">Capitale-nationale</option>
+                <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
+                <option value="Montérégie" selected>Montérégie</option>
+                <option value="Outaouais">Outaouais</option>
+                <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+                <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+                <option value="Nord-du-Québec">Nord-du-Québec</option>
+                <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+            </select>
+        </qc-select>
+
+        <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+    </form>
+
+    <script>
+        const dropdownListForm = document.getElementById("dropdown-list-form");
+
+        dropdownListForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let isValid = true;
+
+            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
+            console.log(requiredFields);
+
+            requiredFields.forEach(field => {
+                const value = field.value?.trim();
+
+                if (!value) {
+                    field.invalid = true;
+                    isValid = false;
+                } else {
+                    field.invalid = false;
+                }
+            });
+
+            if (isValid) {
+                const formEntries = dropdownListForm.querySelectorAll("qc-select");
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                formEntries.forEach((field) => {
+                    alertParts.push(`${field.label}: ${field.value}`);
+                });
+                alert(alertParts.join("\n"));
+            }
+        });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
@@ -2607,11 +2712,18 @@
         </thead>
         <tbody>
         <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Chaîne de caractères aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
             <td>label</td>
             <td>Contenu HTML</td>
             <td>""</td>
-            <td>Libellé de la liste déroulante<br/>
-                NB : l'autre possibilité est d'ajouter un élément <code>&lt;label&gt;</code> dans le composant.
+            <td>
+                Libellé de la liste déroulante.
+                <br> Si le libellé est absent, le contenu de l'élément <code>label</code> en slot est utilisé.
             </td>
         </tr>
         <tr>
@@ -2636,7 +2748,7 @@
             <td>required</td>
             <td>na</td>
             <td>na</td>
-            <td>Marque le champ comme obligatoire en ajoutant un astérisque dans le libellé</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
         </tr>
         <tr>
             <td>disabled</td>
@@ -2649,8 +2761,9 @@
             <td>na</td>
             <td>na</td>
             <td>
-                Affiche le message d'erreur.
-                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code> dès qu'une donnée est sélectionnée..
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> contient une donnée.
             </td>
         </tr>
         <tr>
@@ -2663,19 +2776,19 @@
             <td>placeholder</td>
             <td>Texte</td>
             <td>""</td>
-            <td><i>Placeholder</i> de la boîte de la liste déroulante</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
         </tr>
         <tr>
             <td>search-placeholder</td>
             <td>Texte</td>
             <td>""</td>
-            <td><i>Placeholder</i> réservé du champ de recherche</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
         </tr>
         <tr>
             <td>no-options-message</td>
             <td>Contenu HTML</td>
             <td>Aucun élément/No item</td>
-            <td>Texte en cas d'absence d'options dans la liste</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
         </tr>
         <tr>
             <td>multiple</td>
@@ -2687,6 +2800,17 @@
     </table>
 </div>
 
+<h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
+<ul>
+    <li>Ce composant contient un DOM d'ombre.</li>
+    <li>
+        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
+        <ul>
+            <li><code>label</code></li>
+            <li><code>select</code></li>
+        </ul>
+    </li>
+</ul>
     
 <h2 id="icons">Icônes (qc-icon)</h2>
 

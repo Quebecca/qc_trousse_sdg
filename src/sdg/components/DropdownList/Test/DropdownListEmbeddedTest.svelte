@@ -21,7 +21,7 @@
 
 <DropdownList
         id="dropdown-list-single-choice"
-        label="Choix unique:"
+        label="Choix unique"
         items={singleChoiceOptions}
 />
 

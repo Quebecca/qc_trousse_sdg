@@ -210,17 +210,17 @@ $lg-tokens: (
     ),
     size: (
       max-width: (
-          sm: rem(63),
-          md: rem(156),
-          lg: rem(249),
-          xl: rem(528),
-          xxl: rem(825)
+          xs: rem(63),
+          sm: rem(156),
+          md: rem(249),
+          lg: rem(528),
+          xl: rem(825)
       ),
       input: (
-        max-width: token-value(size max-width lg),
+        max-width: token-value(size max-width md),
       ),
       textarea: (
-        max-width: token-value(size max-width xl),
+        max-width: token-value(size max-width lg),
         min-height: rem(108)
       ),
       search-bar: (
