@@ -29,7 +29,6 @@
 
     export function focusOnFirstMatchingElement(passedValue) {
         if (displayedItemsElements && displayedItemsElements.length > 0) {
-            console.log($state.snapshot(displayedItemsElements));
             const foundElement = displayedItemsElements.find(
                 el => el.dataset.itemValue.toString() === passedValue.toString()
             );

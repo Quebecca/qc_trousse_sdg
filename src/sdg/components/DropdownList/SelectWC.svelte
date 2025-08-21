@@ -47,17 +47,15 @@
     })
 
     $effect(() => {
-        if (selectElement) {
-            setupObserver();
-        }
-    })
-
-    $effect(() => {
-        const valueArray = value?.split(", ") ?? [];
-
-        if (selectElement && selectElement.options && selectElement.options.length > 0) {
+        if (
+            selectElement
+            && selectElement.options
+            && selectElement.options.length > 0
+            && value
+            && value.length > 0
+        ) {
             for (const option of selectElement.options) {
-                if (valueArray.includes(option.value)) {
+                if (value.includes(option.value)) {
                     option.setAttribute('selected', '');
                     option.selected = true;
                 } else {
@@ -90,12 +88,12 @@
 
     function setupObserver() {
         if (selectElement) {
-            observer?.disconnect();
+            if (observer) {
+                return;
+            }
             observer = new MutationObserver(setupItemsList);
             observer.observe(selectElement, {
                 childList: true,
-                subtree: true,
-                characterData: true,
                 attributes: true,
                 attributeFilter: ["label", "value", "disabled", "selected"]
             });

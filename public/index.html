@@ -2767,7 +2767,7 @@
             console.log(requiredFields);
 
             requiredFields.forEach(field => {
-                const value = field.value?.trim();
+                const value = field.value;
 
                 if (!value) {
                     field.invalid = true;
@@ -2781,7 +2781,7 @@
                 const formEntries = dropdownListForm.querySelectorAll("qc-select");
                 let alertParts = ["Formulaire soumis avec les données suivantes :"];
                 formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value}`);
+                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
                 });
                 alert(alertParts.join("\n"));
             }

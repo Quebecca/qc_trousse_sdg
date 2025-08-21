@@ -79,7 +79,7 @@
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
             if (value && value.length > 0) {
-                dropdownItems?.focusOnFirstMatchingElement(value.split(", ")?.sort()[0]);
+                dropdownItems?.focusOnFirstMatchingElement($state.snapshot(value)?.sort()[0]);
             } else {
                 dropdownItems?.focus();
             }
@@ -178,18 +178,6 @@
         }
     }
 
-    function handleSearchKeyDown(event) {
-        if (event.key === "ArrowDown" && displayedItems?.length > 0) {
-            event.preventDefault();
-            // event.stopPropagation();
-            dropdownItems?.focus();
-        }
-
-        if (event.key === "ArrowUp") {
-            button?.focus();
-        }
-    }
-
     $effect(() => {
         if (searchText.length > 0) {
             let newDisplayedItems = [];
@@ -219,7 +207,7 @@
     });
 
     $effect(() => {
-        value = selectedItems?.map(item => item.value).join(", ");
+        value = selectedItems?.map(item => item.value);
     });
 
     $effect(() => {
@@ -311,7 +299,6 @@
                                 if (e.key === "Enter") {
                                     e.preventDefault();
                                 }
-                                handleSearchKeyDown(e);
                             }}
                         />
                     </div>

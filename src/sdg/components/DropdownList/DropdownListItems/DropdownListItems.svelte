@@ -55,7 +55,6 @@
     }
 
     export function focusOnFirstMatchingElement(value) {
-        console.log(value);
         if (itemsComponent && value && value.length > 0) {
             Utils.sleep(5).then(() => {
                 itemsComponent?.focusOnFirstMatchingElement(value);
