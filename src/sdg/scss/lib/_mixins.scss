@@ -51,30 +51,6 @@
   outline-offset: 1px;
 }
 
-@mixin external-link-img() {
-  $ratio : math.div(11,16) * 1em;
-  height: $ratio;
-  width: $ratio;
-  display: inline-block;
-  mask: getImageUrl(external-link) no-repeat;
-  background: token-value(color link text);
-  mask-size: $ratio;
-  margin-left: 4px;
-  a:visited  & {
-    background: token-value(color link visited);
-  }
-  a:focus  & {
-    background: token-value(color link hover);
-  }
-  a:hover  & {
-    background: token-value(color link hover);
-  }
-  a:active  & {
-    background: token-value(color link active);
-  }
-
-}
-
 @mixin sr-only() {
   position: absolute;
   width: 1px;

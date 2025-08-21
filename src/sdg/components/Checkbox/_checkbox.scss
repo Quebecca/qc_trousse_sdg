@@ -1,6 +1,7 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "../Fieldset/fieldset" as *;
 @use "../ChoiceGroup/choiceGroup" as *;
+@use "../Icon/icons" as icons;
 
 input[type="checkbox"] {
   &:checked {
@@ -18,12 +19,12 @@ input[type="checkbox"] {
     }
 
     &::after {
+      @extend %icon-checkmark;
       content: "";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      mask-image: getImageUrl(checkmark);
       mask-size: contain;
       mask-repeat: no-repeat;
       mask-position: center;

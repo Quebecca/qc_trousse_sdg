@@ -383,8 +383,7 @@ a.pseudo-active span.qc-ext-link-img {
 }
 
 p, h1, h2, h3, h4, h5, h6 {
-  -webkit-hyphens: auto;
-          hyphens: auto;
+  hyphens: auto;
 }
 
 table.component-attributes-description td:first-child {
