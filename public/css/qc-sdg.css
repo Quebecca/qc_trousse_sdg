@@ -2716,16 +2716,16 @@ qc-textfield textarea + .qc-textfield-charcount {
   border-color: var(--qc-color-blue-piv);
   box-shadow: 0 1px 4px var(--qc-color-box_shadow);
 }
-.qc-button.qc-primary:hover:not(:disabled) {
+.qc-button.qc-primary:hover:not(:disabled), .qc-button.qc-primary.qc-hover {
   background-color: var(--qc-color-blue-regular);
   border-color: var(--qc-color-blue-regular);
 }
-.qc-button.qc-primary:focus:not(:disabled) {
+.qc-button.qc-primary:focus:not(:disabled), .qc-button.qc-primary.qc-focus {
   background-color: var(--qc-color-blue-regular);
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 2px 8px var(--qc-color-box_shadow), 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-primary:active:not(:disabled) {
+.qc-button.qc-primary:active:not(:disabled), .qc-button.qc-primary.qc-active {
   background-color: var(--qc-color-blue-regular_light);
   border-color: var(--qc-color-blue-regular_light);
 }
@@ -2734,14 +2734,14 @@ qc-textfield textarea + .qc-textfield-charcount {
   background-color: var(--qc-color-white);
   border-color: var(--qc-color-blue-piv);
 }
-.qc-button.qc-secondary:hover:not(:disabled), .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary:active:not(:disabled) {
+.qc-button.qc-secondary:hover:not(:disabled), .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-hover, .qc-button.qc-secondary.qc-focus, .qc-button.qc-secondary.qc-active {
   background-color: rgba(9, 87, 151, 0.16);
 }
-.qc-button.qc-secondary:focus:not(:disabled) {
+.qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary.qc-focus {
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-secondary:active:not(:disabled) {
+.qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-active {
   background-color: rgba(9, 87, 151, 0.08);
 }
 .qc-button.qc-tertiary {
@@ -2749,16 +2749,16 @@ qc-textfield textarea + .qc-textfield-charcount {
   background-color: var(--qc-color-white);
   border-color: var(--qc-color-white);
 }
-.qc-button.qc-tertiary:hover:not(:disabled) {
+.qc-button.qc-tertiary:hover:not(:disabled), .qc-button.qc-tertiary.qc-hover {
   background-color: rgba(197, 202, 210, 0.24);
   text-decoration: underline;
 }
-.qc-button.qc-tertiary:focus:not(:disabled) {
+.qc-button.qc-tertiary:focus:not(:disabled), .qc-button.qc-tertiary.qc-focus {
   background-color: rgba(197, 202, 210, 0.24);
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-tertiary:active:not(:disabled) {
+.qc-button.qc-tertiary:active:not(:disabled), .qc-button.qc-tertiary.qc-active {
   background-color: rgba(197, 202, 210, 0.16);
 }
 .qc-button.qc-danger {
@@ -2766,15 +2766,15 @@ qc-textfield textarea + .qc-textfield-charcount {
   background-color: var(--qc-color-red-regular);
   border-color: var(--qc-color-white);
 }
-.qc-button.qc-danger:hover:not(:disabled) {
+.qc-button.qc-danger:hover:not(:disabled), .qc-button.qc-danger.qc-hover {
   background-color: var(--qc-color-red-medium);
 }
-.qc-button.qc-danger:focus:not(:disabled) {
+.qc-button.qc-danger:focus:not(:disabled), .qc-button.qc-danger.qc-focus {
   background-color: var(--qc-color-red-medium);
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
-.qc-button.qc-danger:active:not(:disabled) {
+.qc-button.qc-danger:active:not(:disabled), .qc-button.qc-danger.qc-active {
   background-color: var(--qc-color-red-regular_light);
 }
 .qc-button:disabled, .qc-button.qc-disabled {

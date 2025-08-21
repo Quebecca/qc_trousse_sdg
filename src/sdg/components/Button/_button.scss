@@ -56,12 +56,14 @@
     border-color: token-value(color blue piv);
     box-shadow: 0 1px 4px token-value(color box_shadow);
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled),
+    &.qc-hover {
       background-color: token-value(color blue, regular);
       border-color: token-value(color blue, regular);
     }
 
-    &:focus:not(:disabled) {
+    &:focus:not(:disabled),
+    &.qc-focus {
       background-color: token-value(color blue, regular);
       border-color: token-value(color blue, dark);
       box-shadow:
@@ -69,7 +71,8 @@
               0 0 0 2px token-value(color blue, light);
     }
 
-    &:active:not(:disabled) {
+    &:active:not(:disabled),
+    &.qc-active {
       background-color: token-value(color blue, regular_light);
       border-color: token-value(color blue, regular_light);
     }
@@ -82,16 +85,19 @@
 
     &:hover:not(:disabled),
     &:focus:not(:disabled),
-    &:active:not(:disabled) {
+    &:active:not(:disabled),
+    &.qc-hover, &.qc-focus, &.qc-active {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
     }
 
-    &:focus:not(:disabled) {
+    &:focus:not(:disabled),
+    &.qc-focus {
       border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
-    &:active:not(:disabled) {
+    &:active:not(:disabled),
+    &.qc-active {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.08);
     }
   }
@@ -101,18 +107,21 @@
     background-color: token-value(color white);
     border-color: token-value(color white);
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled),
+    &.qc-hover{
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
       text-decoration: underline;
     }
 
-    &:focus:not(:disabled) {
+    &:focus:not(:disabled),
+    &.qc-focus {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
       border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
-    &:active:not(:disabled) {
+    &:active:not(:disabled),
+    &.qc-active {
       background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.16);
     }
   }
@@ -122,17 +131,20 @@
     background-color: token-value(color red regular);
     border-color: token-value(color white);
 
-    &:hover:not(:disabled) {
+    &:hover:not(:disabled),
+    &.qc-hover {
       background-color: token-value(color red medium);
     }
 
-    &:focus:not(:disabled) {
+    &:focus:not(:disabled),
+    &.qc-focus {
       background-color: token-value(color red medium);
       border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
-    &:active:not(:disabled) {
+    &:active:not(:disabled),
+    &.qc-active {
       background-color: token-value(color red regular_light);
     }
   }
