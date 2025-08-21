@@ -2687,7 +2687,6 @@ li[aria-selected=true] {
   max-width: 36rem;
   min-height: 5.6rem;
   padding: 1.6rem 2.4rem;
-  transition: all 0.24s ease-in-out;
   vertical-align: middle;
   border: 2px solid transparent;
   cursor: pointer;
