@@ -1916,7 +1916,6 @@ qc-search-bar {
 .qc-dropdown-list-checkbox, qc-choice-group label,
 qc-checkbox label {
   display: flex;
-  max-width: -moz-fit-content;
   max-width: fit-content;
   align-items: start;
   margin: 0;
@@ -2373,7 +2372,6 @@ qc-textfield textarea + .qc-textfield-charcount {
 
 .qc-switch {
   display: flex;
-  width: -moz-fit-content;
   width: fit-content;
   margin: 0;
   gap: var(--qc-spacer-sm);
