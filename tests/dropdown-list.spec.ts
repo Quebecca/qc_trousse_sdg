@@ -25,43 +25,43 @@ test('Select svelte', async ({ page }) => {
 });
 
 test('En cliquant sur un libellé, alors le liste est en focus', async ({ page }) => {
-    await page.getByText('Choix unique:', { exact: true }).click();
+    await page.locator('#qc-select-single-choice-label').click();
 
-    await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+    await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
 });
 
 test('En cliquant sur la liste déroulante, alors la popup s\'affiche', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
 
-    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeVisible();
-    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeVisible();
+    await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'true');
 });
 
 test('Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors focus placé sur les options suivantes de la liste', async ({ page, browserName }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
 
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('Tab');
+    await page.locator('#qc-select-single-choice-input').press('Tab');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 1', exact: true }).press('Tab');
+    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('Tab');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 2$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 2' }).press('Shift+Tab');
+    await page.locator('[id="qc-select-single-choice-Option 2-2"]').press('Shift+Tab');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 1', exact: true }).press('Shift+Tab');
+    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('Shift+Tab');
 
     if (browserName !== 'webkit') {
-        await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+        await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
     } else {
         console.log(
             "La vérification du focus se fait incorrectement avec Webkit." +
@@ -72,43 +72,43 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors foc
 });
 
 test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alors focus placé sur les options suivantes de la liste', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
 
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
+    await page.locator('#qc-select-single-choice-input').press('ArrowDown');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 1', exact: true }).press('ArrowDown');
+    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('ArrowDown');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 2$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 2' }).press('ArrowUp');
+    await page.locator('[id="qc-select-single-choice-Option 2-2"]').press('ArrowUp');
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('option', { name: 'Option 1', exact: true }).press('ArrowUp');
-    await expect(page.locator('#dropdown-list-single-choice-input')).toBeFocused();
+    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('ArrowUp');
+    await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
 });
 
 test('Soit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
     await page.locator('div').filter({ hasText: 'Option 1 Option 2 Option 3' }).first().click();
 
-    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
-    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
 test('En sélectionnant une option désactivée, alors rien ne se passe', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('option', { name: 'Option 16 (désactivée)' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('[id="qc-select-single-choice-Option 16 (désactivée)-16"]').click();
 
-    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeVisible();
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeVisible();
 });
 
 test('En sélectionnant une option activée, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
