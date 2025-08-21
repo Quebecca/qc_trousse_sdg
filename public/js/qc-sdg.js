@@ -10824,7 +10824,7 @@
 				input(get(rootElement).querySelector('input,textarea'));
 			}
 
-			onMountInput(input(), (v) => set(textFieldRow, v, true), (v) => value(v), (v) => invalid(v));
+			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam));
 		});
 
 		user_effect(() => {
@@ -11082,7 +11082,7 @@
 
 		onMount(() => {
 			set(input, $$props.$$host.querySelector('input,textarea'), true);
-			onMountInput(get(input), (v) => set(textFieldRow, v, true), (v) => set(value, v, true), (v) => invalid(v));
+			onMountInput(get(input), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => set(value, valueParam, true), (invalidParam) => invalid(invalidParam));
 		});
 
 		user_effect(() => {
