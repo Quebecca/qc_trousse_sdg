@@ -209,7 +209,7 @@ $lg-tokens: (
         ),
     ),
     size: (
-      textfield: (
+      max-width: (
           sm: rem(63),
           md: rem(156),
           lg: rem(249),
@@ -217,14 +217,14 @@ $lg-tokens: (
           xxl: rem(825)
       ),
       input: (
-        default: lg,
+        max-width: token-value(size max-width lg),
       ),
       textarea: (
-        default: xl,
-        default-min-height: rem(108)
+        max-width: token-value(size max-width xl),
+        min-height: rem(108)
       ),
-      searchbar: (
-        default: rem(640),
+      search-bar: (
+        max-width: rem(640)
       )
     ),
     grid: (

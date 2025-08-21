@@ -170,15 +170,15 @@
   --qc-spacer-content-block-mb: var(--qc-spacer-md);
   --qc-spacer-list-pl: var(--qc-spacer-sm);
   --qc-spacer-list-item-mb: var(--qc-spacer-sm);
-  --qc-size-textfield-sm: 6.3rem;
-  --qc-size-textfield-md: 15.6rem;
-  --qc-size-textfield-lg: 24.9rem;
-  --qc-size-textfield-xl: 52.8rem;
-  --qc-size-textfield-xxl: 82.5rem;
-  --qc-size-input-default: lg;
-  --qc-size-textarea-default: xl;
-  --qc-size-textarea-default-min-height: 10.8rem;
-  --qc-size-searchbar-default: 64rem;
+  --qc-size-max-width-sm: 6.3rem;
+  --qc-size-max-width-md: 15.6rem;
+  --qc-size-max-width-lg: 24.9rem;
+  --qc-size-max-width-xl: 52.8rem;
+  --qc-size-max-width-xxl: 82.5rem;
+  --qc-size-input-max-width: var(--qc-size-max-width-lg);
+  --qc-size-textarea-max-width: var(--qc-size-max-width-xl);
+  --qc-size-textarea-min-height: 10.8rem;
+  --qc-size-search-bar-max-width: 64rem;
   --qc-grid-gutter: 32px;
   --qc-grid-breakpoint-xs: 0;
   --qc-grid-breakpoint-sm: 768px;
@@ -1785,7 +1785,7 @@ qc-search-bar {
 }
 
 .qc-search-bar {
-  max-width: var(--qc-size-search-bar-default);
+  max-width: var(--qc-size-search-bar-max-width);
   width: 100%;
   border: 0;
 }
@@ -2239,43 +2239,17 @@ qc-textfield textarea:disabled {
 .qc-textfield input, qc-textfield input,
 .qc-textfield input + .qc-textfield-charcount,
 qc-textfield input + .qc-textfield-charcount {
-  max-width: var(--qc-size-input-default);
+  max-width: var(--qc-size-input-max-width);
 }
 
 .qc-textfield textarea, qc-textfield textarea,
 .qc-textfield textarea + .qc-textfield-charcount,
 qc-textfield textarea + .qc-textfield-charcount {
-  max-width: var(--qc-size-textarea-default);
-}
-
-[size=sm] input, [size=sm] input + .qc-textfield-charcount,
-[size=sm] textarea,
-[size=sm] textarea + .qc-textfield-charcount {
-  max-width: 6.3rem;
-}
-[size=md] input, [size=md] input + .qc-textfield-charcount,
-[size=md] textarea,
-[size=md] textarea + .qc-textfield-charcount {
-  max-width: 15.6rem;
-}
-[size=lg] input, [size=lg] input + .qc-textfield-charcount,
-[size=lg] textarea,
-[size=lg] textarea + .qc-textfield-charcount {
-  max-width: 24.9rem;
-}
-[size=xl] input, [size=xl] input + .qc-textfield-charcount,
-[size=xl] textarea,
-[size=xl] textarea + .qc-textfield-charcount {
-  max-width: 52.8rem;
-}
-[size=xxl] input, [size=xxl] input + .qc-textfield-charcount,
-[size=xxl] textarea,
-[size=xxl] textarea + .qc-textfield-charcount {
-  max-width: 82.5rem;
+  max-width: var(--qc-size-textarea-max-width);
 }
 
 .qc-textfield textarea, qc-textfield textarea {
-  min-height: var(--qc-size-textarea-default-min-height);
+  min-height: var(--qc-size-textarea-min-height);
   resize: vertical;
 }
 

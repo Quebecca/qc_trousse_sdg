@@ -7,7 +7,7 @@ qc-search-bar {
 }
 .qc-search-bar {
   @extend %qc-search-wrapper;
-  max-width: token-value(size search-bar default);
+  max-width: token-value(size search-bar max-width);
   width: 100%;
   border: 0;
   &:has(input:focus) {

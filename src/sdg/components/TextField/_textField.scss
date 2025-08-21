@@ -61,19 +61,18 @@ textarea {
 }
 
 $sizes: map.get($lg-tokens, size, textfield);
-
 input ,
 input + .qc-textfield-charcount {
   .qc-textfield &,
   qc-textfield & {
-    max-width: token-value(size input default);
+    max-width: token-value(size input max-width);
   }
 }
 textarea,
 textarea + .qc-textfield-charcount {
   .qc-textfield &,
   qc-textfield & {
-    max-width: token-value(size textarea default);
+    max-width: token-value(size textarea max-width);
   }
 }
 
@@ -93,7 +92,7 @@ textarea,
 textarea {
   .qc-textfield &,
   qc-textfield & {
-    min-height: token-value(size textarea default-min-height);
+    min-height: token-value(size textarea min-height);
     resize: vertical;
   }
 }
