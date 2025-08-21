@@ -48,9 +48,9 @@
         }
         onMountInput(
             input,
-            v => textFieldRow = v,
-            v => value = v,
-            v => invalid = v
+            textFieldRowParam => textFieldRow = textFieldRowParam,
+            valueParam => value = valueParam,
+            invalidParam => invalid = invalidParam
         )
     })
 
