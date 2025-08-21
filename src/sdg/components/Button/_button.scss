@@ -193,4 +193,8 @@
       opacity: 1;
     }
   }
+
+  @at-root a#{&}{
+    text-decoration: none;
+  }
 }

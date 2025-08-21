@@ -2763,3 +2763,6 @@ qc-textfield textarea + .qc-textfield-charcount {
   box-shadow: none;
   opacity: 1;
 }
+a.qc-button {
+  text-decoration: none;
+}
