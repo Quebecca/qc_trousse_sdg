@@ -10753,6 +10753,7 @@
 
 			var node_6 = sibling(node_4, 2);
 			const expression_2 = user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
+			const expression_3 = user_derived(() => label() ? label() : input()?.getAttribute("aria-label"));
 
 			{
 				$$ownership_validator.binding('formErrorElement', FormError, formErrorElement);
@@ -10765,7 +10766,7 @@
 						return get(expression_2);
 					},
 					get label() {
-						return label();
+						return get(expression_3);
 					},
 					extraClasses: ['qc-xs-mt'],
 					get id() {

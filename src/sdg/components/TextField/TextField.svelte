@@ -145,7 +145,7 @@
 
     <FormError {invalid}
                invalidText={invalidText ? invalidText :  defaultInvalidText}
-               {label}
+               label={label ? label : input?.getAttribute("aria-label")}
                bind:id={errorId}
                extraClasses={['qc-xs-mt']}
                bind:rootElement={formErrorElement}
