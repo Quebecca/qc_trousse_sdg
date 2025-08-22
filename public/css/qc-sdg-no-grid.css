@@ -2685,11 +2685,6 @@ li[aria-selected=true] {
   margin-right: 3.2rem;
   margin-bottom: var(--qc-spacer-md);
 }
-@media (max-width: 767.98px) {
-  .qc-button {
-    width: 100%;
-  }
-}
 .qc-button:focus, .qc-button:focus-visible {
   outline: none;
 }
@@ -2701,11 +2696,6 @@ li[aria-selected=true] {
   border-width: 1px;
   margin-right: var(--qc-spacer-md);
   margin-bottom: var(--qc-spacer-sm);
-}
-@media (max-width: 767.98px) {
-  .qc-button.qc-compact {
-    width: 100%;
-  }
 }
 .qc-button.qc-button-rounded {
   border-radius: 0.4rem;
