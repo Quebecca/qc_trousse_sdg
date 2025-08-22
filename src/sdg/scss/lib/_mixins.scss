@@ -196,4 +196,11 @@
     @content;
   }
 }
+// classes pour les icônes
+@each $name, $url in $images {
+  %icon-#{$name} {
+    mask-image: getImageUrl($name);
+  }
+}
+
 

@@ -1,12 +1,5 @@
 @use "qc-sdg-lib" as *;
 
-@each $name, $url in $images {
-  %icon-#{$name} {
-    mask-image: getImageUrl($name);
-  }
-}
-
-
 qc-icon {
   display: inline-flex;
   align-items: stretch;
