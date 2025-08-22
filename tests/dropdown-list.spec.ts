@@ -323,3 +323,44 @@ test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en s�
         await dialog.accept();
     });
 });
+
+test('select navigation détaillée', async ({ page }) => {
+    await page.locator('#dropdown-list-restaurants-input').click();
+    await page.locator('#dropdown-list-restaurants-search').fill('p');
+
+    await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
+    - list:
+        - listitem:
+            - checkbox "Pizzeria"
+            - text: Pizzeria
+        - listitem:
+            - checkbox "Pâtisserie"
+            - text: Pâtisserie
+        - listitem:
+            - checkbox "Boîte à pâtes"
+            - text: Boîte à pâtes
+    - status
+    `);
+
+    await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').click();
+    await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').press('Escape');
+    await page.locator('#dropdown-list-restaurants-input').click();
+
+    await page.locator('#dropdown-list-restaurants-search').click();
+    await page.locator('#dropdown-list-restaurants-search').fill('st');
+
+    await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
+    - list:
+        - listitem:
+            - checkbox "Steakhouse"
+            - text: Steakhouse
+        - listitem:
+            - checkbox "Restaurant à burgers"
+            - text: Restaurant à burgers
+    - status
+    `);
+
+    await page.locator('#dropdown-list-restaurants-items').getByText('Steakhouse').click();
+
+    await expect(page.locator('#dropdown-list-restaurants-input')).toContainText('Pâtisserie, Steakhouse');
+});
