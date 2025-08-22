@@ -5,5 +5,4 @@ export function updateInput(input, required, invalid, name) {
     if (name && !input.hasAttribute('name')) {
         input.setAttribute('name', name)
     }
-
 }

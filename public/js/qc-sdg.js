@@ -9857,7 +9857,7 @@
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	var root$a = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroupWC[FILENAME], [[49, 0]]);
+	var root$a = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroupWC[FILENAME], [[51, 0]]);
 
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -9875,7 +9875,7 @@
 			columnCount = prop($$props, 'columnCount', 7),
 			inline = prop($$props, 'inline', 7);
 
-		user_effect(() => updateInput($$props.$$host, required(), invalid(), name()));
+		user_effect(() => $$props.$$host.querySelectorAll('input').forEach((input) => updateInput(input, required(), invalid(), name())));
 
 		var fragment = root$a();
 		var node = first_child(fragment);

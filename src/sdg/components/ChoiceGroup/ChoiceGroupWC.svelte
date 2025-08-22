@@ -30,7 +30,9 @@
         inline
     } = $props();
 
-    $effect(() =>  updateInput($host(), required, invalid, name))
+    $effect(() =>  $host()
+                    .querySelectorAll('input')
+                    .forEach(input => updateInput(input, required, invalid, name)));
 
 </script>
 <ChoiceGroup
