@@ -17,6 +17,8 @@
 
     singleChoiceOptions[0].checked = true;
     singleChoiceWithSearchOptions[0].checked = true;
+
+    $inspect(singleChoiceOptions);
 </script>
 
 <DropdownList

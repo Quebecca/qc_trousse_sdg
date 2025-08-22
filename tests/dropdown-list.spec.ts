@@ -7,9 +7,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Select ref', async ({ page }) => {
-    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
-    await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
-    await page.getByRole('option', { name: 'Option 2', exact: true }).hover();
+    await page.locator('#qc-select-single-choice-search-input').click();
+    await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
+    await page.locator('#qc-select-single-choice-search-Option-2-2').hover();
 
     await expect(page).toHaveScreenshot({fullPage: true});
 });
@@ -19,7 +19,8 @@ test('Select svelte', async ({ page }) => {
     await page.goto(`file://${htmlFilePath}`);
 
     await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
-    await page.getByRole('option', { name: 'Option 1', exact: true }).focus();
+    await page.locator('#dropdown-list-single-choice-no-scroll-Option-1-1').focus();
+    await page.locator('#dropdown-list-single-choice-no-scroll-Option-2-2').hover();
 
     await expect(page).toHaveScreenshot({fullPage: true});
 });
@@ -46,19 +47,19 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors foc
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('Tab');
+    await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Tab');
     await expect(
         page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 2$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 2-2"]').press('Shift+Tab');
+    await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('Shift+Tab');
     await expect(
         page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('Shift+Tab');
+    await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Shift+Tab');
 
     if (browserName !== 'webkit') {
         await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
@@ -80,19 +81,19 @@ test('Soit une liste déroulante ouverte, lorsque navigation avec flèches, alor
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('ArrowDown');
+    await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowDown');
     await expect(
         page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 2$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 2-2"]').press('ArrowUp');
+    await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('ArrowUp');
     await expect(
         page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 1$/gm) })
     ).toBeFocused();
 
-    await page.locator('[id="qc-select-single-choice-Option 1-1"]').press('ArrowUp');
+    await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowUp');
     await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
 });
 
@@ -106,71 +107,71 @@ test('Soit une liste déroulante ouverte, en cliquant à l\'extérieur de la lis
 
 test('En sélectionnant une option désactivée, alors rien ne se passe', async ({ page }) => {
     await page.locator('#qc-select-single-choice-input').click();
-    await page.locator('[id="qc-select-single-choice-Option 16 (désactivée)-16"]').click();
+    await page.locator('[id="qc-select-single-choice-Option-16 désactivée-16"]').click();
 
     await expect(page.locator('#qc-select-single-choice-popup')).toBeVisible();
 });
 
 test('En sélectionnant une option activée, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('option', { name: 'Option 5' }).click();
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
 
-    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
-    await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 5');
-    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+    await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
 test('En sélectionnant une option activée au clavier, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('#qc-select-single-choice-input').press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 1$/gm) })
         .press('ArrowDown');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 2$/gm) })
         .press('ArrowDown');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 3$/gm) })
         .press('ArrowDown');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 4$/gm) })
         .press('ArrowDown');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 5$/gm) })
         .press('Enter');
 
-    await expect(page.locator('#dropdown-list-single-choice-popup')).toBeHidden();
-    await expect(page.locator('#dropdown-list-single-choice-input')).toContainText('Option 5');
-    await expect(page.locator('#dropdown-list-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+    await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
 test('Soit focus placé sur la liste déroulante de Choix unique et liste ouverte,' +
     'en tapant flèche vers le haut, alors focus placé sur la dernière option',
     async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowUp');
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('#qc-select-single-choice-input').press('ArrowUp');
 
-    await expect(page.getByRole('option', { name: 'Option 16' })).toBeFocused();
+    await expect(page.locator('[id="qc-select-single-choice-Option-16 désactivée-16"]')).toBeFocused();
 });
 
 test('Soit une option sélectionnée, liste déroulante fermée et focus placé sur l\'input,' +
     'en tapant flèche du bas, alors le focus est placé sur l\'option sélectionnée', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('option', { name: 'Option 5' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('ArrowDown');
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
+    await page.locator('#qc-select-single-choice-input').press('ArrowDown');
 
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 5$/gm) })
     ).toBeFocused();
 });
 
 test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche', async ({ page, browserName }) => {
-    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
+    await page.locator('#qc-select-single-choice-search-input').click();
     await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
 
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('12');
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+    await expect(page.locator('#qc-select-single-choice-search-search')).toHaveValue('12');
+    await expect(page.locator('#qc-select-single-choice-search-items')).toMatchAriaSnapshot(`
       - list:
         - option "Option 12"
       - status
@@ -189,8 +190,8 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
 
     await page.getByRole('button', { name: 'Effacer le texte' }).click();
 
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+    await expect(page.locator('#qc-select-single-choice-search-search')).toHaveValue('');
+    await expect(page.locator('#qc-select-single-choice-search-items')).toMatchAriaSnapshot(`
       - list:
         - option "Option 1"
         - option "Option 2"
@@ -212,10 +213,10 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
     `);
 
     await page.getByRole('searchbox', { name: 'Rechercher...' }).fill('12');
-    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
-    await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-search')).toHaveValue('');
-    await expect(page.locator('#dropdown-list-single-choice-no-scroll-items')).toMatchAriaSnapshot(`
+    await page.locator('#qc-select-single-choice-search-input').click();
+    await page.locator('#qc-select-single-choice-search-input').click();
+    await expect(page.locator('#qc-select-single-choice-search-search')).toHaveValue('');
+    await expect(page.locator('#qc-select-single-choice-search-items')).toMatchAriaSnapshot(`
       - list:
         - option "Option 1"
         - option "Option 2"
@@ -238,80 +239,79 @@ test('Soit liste déroulante avec champ de recherche est ouverte, en tapant un c
 });
 
 test('Soit liste déroulante sans champ de recherche, en tapant un caractère imprimable, alors focus sur le premier élément correspondant', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('1');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('#qc-select-single-choice-input').press('1');
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 1$/gm) })
         .press('2');
 
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 12$/gm) })
     ).toBeFocused();
 
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).click();
-    await page.getByRole('combobox', { name: 'Choix unique:' }).press('1');
-    await page.locator('#dropdown-list-single-choice-items >> li')
+    await page.locator('#qc-select-single-choice-input').click({clickCount: 2});
+    await page.locator('#qc-select-single-choice-input').press('1');
+    await page.locator('#qc-select-single-choice-items >> li')
         .filter({ has: page.getByText(/^Option 1$/gm) })
         .press('2');
 
     await expect(
-        page.locator('#dropdown-list-single-choice-items >> li')
+        page.locator('#qc-select-single-choice-items >> li')
             .filter({ has: page.getByText(/^Option 12$/gm) })
     ).toBeFocused();
 });
 
 test('popup choix multiple', async ({ page }) => {
     // En sélectionnant des options de Choix multiples, alors la popup reste ouverte et affiche tous les choix
-    await page.locator('#dropdown-list-multiple-choices-input').click();
-    await page.locator('label').filter({ hasText: 'Option 3' }).click();
+    await page.locator('#qc-select-multiple-choices-input').click();
+    await page.locator('#qc-select-multiple-choices-items').getByText('Option 3').click();
 
-    await expect(page.locator('#dropdown-list-multiple-choices-popup')).toBeVisible();
+    await expect(page.locator('#qc-select-multiple-choices-popup')).toBeVisible();
 
-    await page.locator('#dropdown-list-multiple-choices-items').getByText('Option 4').click();
+    await page.locator('#qc-select-multiple-choices-items').getByText('Option 4').click();
 
-    await expect(page.locator('#dropdown-list-multiple-choices-popup')).toBeVisible();
+    await expect(page.locator('#qc-select-multiple-choices-popup')).toBeVisible();
 });
 
 test('En sélectionnant 2 options de choix multiples, alors les 2 options sont listées', async ({ page }) => {
-    await page.locator('#dropdown-list-multiple-choices-input').click();
-    await page.locator('label').filter({ hasText: 'Option 3' }).click();
-    await page.locator('label').filter({ hasText: 'Option 4' }).click();
+    await page.locator('#qc-select-multiple-choices-input').click();
+    await page.locator('#qc-select-multiple-choices-items').getByText('Option 3').click();
+    await page.locator('#qc-select-multiple-choices-items').getByText('Option 4').click();
 
-    await expect(page.locator('#dropdown-list-multiple-choices-input')).toContainText('Option 3, Option 4');
+    await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('Option 3, Option 4');
 });
 
 test('En sélectionnant une option de Choix multiples et en la désélectionnant, alors aucune option n\'est listée', async ({ page }) => {
-    await page.locator('#dropdown-list-multiple-choices-input').click();
-    await page.locator('label').filter({ hasText: 'Option 2' }).click();
-    await page.locator('label').filter({ hasText: 'Option 2' }).click();
+    await page.locator('#qc-select-multiple-choices-input').click();
+    await page.getByRole('listitem').filter({ hasText: 'Option 2' }).locator('label').click();
+    await page.getByRole('listitem').filter({ hasText: 'Option 2' }).locator('label').click();
 
-    await expect(page.locator('#dropdown-list-multiple-choices-input')).toContainText('');
+    await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('');
 
 });
 
-test.fixme('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {
-    // TODO générer des id statiques pour les messages d'erreurs pour les récupérer
+test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {
     await page.getByRole('button', { name: 'Envoyer' }).click();
 
     await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.getByRole('alert', { name: '' })).toMatchAriaSnapshot(`
+    await expect(page.locator('#dropdown-list-restaurants-error')).toMatchAriaSnapshot(`
         - alert:
           - img
           - text: Veuillez choisir un type de restaurant.
     `);
 
     await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
-    await page.getByRole('option', { name: 'Pâtisserie' }).click();
+    await page.getByRole('listitem').filter({ hasText: 'Pâtisserie' }).click();
 
     await expect(page.locator('#dropdown-list-restaurants-error')).toHaveCount(0);
 });
 
 test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée', async ({ page }) => {
-    await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
-    await page.getByRole('option', { name: 'Pâtisserie' }).click();
-    await page.getByRole('button', { name: 'Envoyer' }).click();
+    await page.locator('#dropdown-list-restaurants-input').click();
+    await page.getByRole('listitem').filter({ hasText: 'Pâtisserie' }).click();
+    await page.locator('#dropdown-list-restaurants-input').click();
+    await page.locator('#qc-select-form-test-submit').click();
 
     await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'false');
     page.on('dialog', async dialog => {

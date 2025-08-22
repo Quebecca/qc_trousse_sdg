@@ -44,7 +44,7 @@
 
     onDestroy(() => {
         observer?.disconnect();
-    })
+    });
 
     $effect(() => {
         if (

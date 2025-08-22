@@ -26,6 +26,7 @@ let cleanLabel = $derived(label.replace(/:\s*$/, '')),
 ;
 
 onMount(() => {
+    if (id) return;
     id = Utils.generateId('qc-form-error')
 })
 

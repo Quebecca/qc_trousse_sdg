@@ -2713,13 +2713,13 @@
     <form id="dropdown-list-form">
         <qc-select
                 id="dropdown-list-restaurants"
-                placeholder="Type de restaurant"
+                placeholder="Types de restaurant"
                 enable-search
-                search-placeholder="Rechercher un type restaurant"
+                search-placeholder="Rechercher des types restaurant"
                 required
                 invalid-text="Veuillez choisir un type de restaurant."
         >
-            <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+            <label for="dropdown-list-restaurants-select">Types de restaurant</label>
             <select id="dropdown-list-restaurants-select">
                 <option value="Pizzeria">Pizzeria</option>
                 <option value="Pâtisserie">Pâtisserie</option>
@@ -2886,7 +2886,11 @@
             <td>multiple</td>
             <td>na</td>
             <td>na</td>
-            <td>Active la sélection multiple</td>
+            <td>
+                Active la sélection multiple.
+                <br> Si <code>multiple</code> est définie dans l'élément <code>select</code> en slot, cette valeur a
+                priorité.
+            </td>
         </tr>
         </tbody>
     </table>

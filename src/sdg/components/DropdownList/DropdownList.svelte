@@ -194,7 +194,7 @@
     });
 
     $effect(() => {
-        if (value) {
+        if (value && value.length > 0) {
             invalid = false;
         }
     });
@@ -213,7 +213,7 @@
     $effect(() => {
         items.forEach((item) => {
             if (!item.id) {
-                item.id = `${id}-${item.label}-${item.value}`;
+                item.id = `${id}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
             }
         });
     });
