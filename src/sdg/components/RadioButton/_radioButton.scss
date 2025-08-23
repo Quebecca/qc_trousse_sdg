@@ -18,7 +18,7 @@ input[type=radio].qc-choicefield {
       width: rem(14);
       height: rem(14);
     }
-
+    .qc-compact &,
     [compact] &,
     [tiled] & {
       &::before {

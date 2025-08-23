@@ -1933,7 +1933,7 @@ input[type=radio].qc-choicefield:checked::before {
   width: 1.4rem;
   height: 1.4rem;
 }
-[compact] input[type=radio].qc-choicefield:checked::before, [tiled] input[type=radio].qc-choicefield:checked::before {
+.qc-compact input[type=radio].qc-choicefield:checked::before, [compact] input[type=radio].qc-choicefield:checked::before, [tiled] input[type=radio].qc-choicefield:checked::before {
   width: 1rem;
   height: 1rem;
 }

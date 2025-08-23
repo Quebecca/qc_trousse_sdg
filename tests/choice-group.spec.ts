@@ -7,6 +7,13 @@ test('choice-group radios ref', async ({ page }) => {
       await page.goto(`file://${htmlFilePath}`);
       await expect(page).toHaveScreenshot('radios.png', {fullPage: true});
 });
+test('choice-group radios svelte', async ({ page }) => {
+    const htmlFilePath = path.resolve(__dirname, '../public/radiosEmbedded.test.html');
+      // Navigue vers le fichier en utilisant le protocole file://
+      await page.goto(`file://${htmlFilePath}`);
+      await expect(page).toHaveScreenshot('radios.png', {fullPage: true});
+});
+
 test('choice-group checkbox ref', async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/checkbox.test.html');
       // Navigue vers le fichier en utilisant le protocole file://
