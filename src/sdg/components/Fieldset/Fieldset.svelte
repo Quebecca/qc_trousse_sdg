@@ -18,6 +18,7 @@
         elementsGap = "sm",
         maxWidth = "fit-content",
         children,
+        rootElement = $bindable(),
     } = $props();
 
     let groupSelection = $state(),
@@ -37,13 +38,17 @@
     }
 </script>
 
-<fieldset class={[
+<fieldset bind:this={rootElement}
+            class={[
+            "qc-choice-group",
             invalid && "qc-fieldset-invalid",
             "qc-fieldset",
             compact && "qc-compact",
             disabled && "qc-disabled"]}
           aria-describedby={legendId}
           {onchange}
+          tiled={tiled ? tiled : undefined}
+          inline={inline ? inline : undefined}
 >
   {#if legend}
     <legend id={legendId}>

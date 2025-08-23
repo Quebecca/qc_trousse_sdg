@@ -1,7 +1,7 @@
 @use "qc-sdg-lib" as *;
 @use "../ChoiceGroup/choiceGroup" as *;
 
-input[type=radio] {
+input[type=radio].qc-choicefield {
   border-radius: 100%;
 
   &::before {

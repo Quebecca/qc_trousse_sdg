@@ -1,11 +1,11 @@
-@use "../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 @use "../Fieldset/fieldset" as *;
-@use "../ChoiceGroup/choiceGroup" as *;
 
-input[type="checkbox"] {
+
+input[type="checkbox"].qc-choicefield {
   &:checked {
 
-    background-color: token-value(color blue regular);
+    background-color: token-value(color blue regular)!important;
 
     &::before {
       width: rem(12);
@@ -33,7 +33,7 @@ input[type="checkbox"] {
 
     }
   }
-
+  .qc-compact &,
   [compact] &,
   [tiled] & {
     &:checked {

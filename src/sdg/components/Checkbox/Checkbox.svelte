@@ -21,6 +21,7 @@
         children,
         onchange,
         labelElement,
+        requiredSpan = $bindable(),
         input,
         ...rest
     } = $props();
@@ -53,7 +54,20 @@
     export function closest(tag) {
         return checkboxInput?.closest(tag);
     }
+
+    $effect(() => {
+        if (!required) return;
+        if (!labelElement) return;
+        labelElement.appendChild(requiredSpan);
+    })
 </script>
+
+{#snippet requiredSpanSnippet()}
+    <span class="qc-required"
+          aria-hidden="true"
+          bind:this={requiredSpan}
+    >*</span>
+{/snippet}
 
 {#snippet checkboxRow()}
     <label
@@ -78,8 +92,9 @@
             <span class="qc-check-label">
                 {label}
                 {#if required}
-                    <span class="qc-required">*</span>
+                    {@render requiredSpanSnippet()}
                 {/if}
+
             </span>
             {#if description}
                 <span class="qc-check-description">{@html description}</span>
@@ -98,6 +113,7 @@
          bind:this={rootElement}
          {onchange}
     >
+        {@render requiredSpanSnippet()}
         {@render children?.()}
         <FormError {invalid}
                    {invalidText}

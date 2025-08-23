@@ -203,4 +203,51 @@
   }
 }
 
+%check-row {
+  display: flex;
+  max-width: fit-content;
+  align-items: start;
+  margin: 0;
+  cursor: pointer;
+  font-weight: normal;
+
+
+  &:has(input:disabled) {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
+  }
+
+  input.qc-choicefield {
+    display: flex;
+    position: relative;
+    appearance: none;
+    margin: 0 token-value(spacer, xs) 0 0;
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+
+    &:not(:disabled):hover {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    &:checked {
+      border-color: token-value(color blue regular);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+  }
+}
+
 

@@ -1,11 +1,22 @@
+<svelte:options customElement={{
+  tag: 'qc-choicegroup-embedded-test'
+}}/>
+<script>
+    
+    import {Utils} from '../../utils.js';
+    import ChoiceGroup from "../ChoiceGroup.svelte";
+    import Checkbox from "../../Checkbox/Checkbox.svelte";
+    let {type} = $props()
+</script>
 
-<qc-choice-group legend="Boutons de sélection"
-                tiled
-                column-count="2"
+<ChoiceGroup legend="Boutons de sélection"
+                 tiled
+                 columnCount="2"
+                 name="tile-1"
 >
     <label>
-        <input type="checkbox"
-               name="tile-1"
+        <input {type}
+
                value="1"
                checked
         />
@@ -16,8 +27,8 @@
     </label>
 
     <label>
-        <input type="checkbox"
-               name="tile-1"
+        <input {type}
+
                value="2"
         />
         <span class="qc-tile">
@@ -25,8 +36,8 @@
             </span>
     </label>
     <label>
-        <input type="checkbox"
-               name="tile-1"
+        <input {type}
+
                value="3"
                disabled
         />
@@ -34,17 +45,17 @@
                 <span class="qc-tile-text">Option 3 (désactivée)</span>
             </span>
     </label>
-</qc-choice-group>
+</ChoiceGroup>
 
-<qc-choice-group legend="Boutons de sélection inline"
-                name="tile-2"
-                tiled
-                inline
-                column-count="2"
+<ChoiceGroup legend="Boutons de sélection inline"
+                 name="tile-2"
+                 tiled
+                 inline
+                 columnCount="2"
 >
     <label>
-        <input type="checkbox"
-               name="tile-2"
+        <input {type}
+
                value="1"
                checked
         />
@@ -54,8 +65,8 @@
     </label>
 
     <label>
-        <input type="checkbox"
-               name="tile-2"
+        <input {type}
+
                value="2"
         />
         <span class="qc-tile">
@@ -63,8 +74,8 @@
             </span>
     </label>
     <label>
-        <input type="checkbox"
-               name="tile-2"
+        <input {type}
+
                value="3"
                disabled
         />
@@ -72,187 +83,184 @@
                 <span class="qc-tile-text">Option 3 (désactivée)</span>
             </span>
     </label>
-</qc-choice-group>
+</ChoiceGroup>
 
 <div class="qc-row">
     <div class="qc-col-sm-12 qc-col-lg-6">
-
-
-
-        <qc-checkbox
-            required
+        {#if type === 'checkbox'}
+        <Checkbox
+                required
         >
             <label>
-                <input type="checkbox"
+                <input {type}
                        name="consentement-1"
                        value="oui"
                 />
                 <span >J’accepte les conditions d’utilisation</span>
             </label>
-        </qc-checkbox>
+        </Checkbox>
 
-        <qc-checkbox
-                           required
-                           invalid
-                           invalid-text="Veuillez accepter les conditions d’utilisation"
+        <Checkbox
+                required
+                invalid
+                invalidText="Veuillez accepter les conditions d’utilisation"
         >
             <label>
-                <input type="checkbox"
+                <input {type}
                        name="consentement-2"
                        value="oui"
                 />
                 <span >J’accepte les conditions d’utilisation</span>
             </label>
-        </qc-checkbox>
+        </Checkbox>
+        {/if}
 
-
-        <qc-choice-group legend="Exemple de base"
-                        name="base-1"
+        <ChoiceGroup legend="Exemple de base"
+                         name="base-1"
         >
             <label>
-                <input type="checkbox"
-                       name="base-1"
+                <input {type}
+
                        value="1"
                        checked
                 />
                 <span >Option 1</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="base-1"
+                <input {type}
+
                        value="2"
                 />
                 <span >Option 2</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="base-1"
+                <input {type}
+
                        value="3"
                        disabled
                 />
                 <span >Option 3 (désactivée)</span>
             </label>
-        </qc-choice-group>
+        </ChoiceGroup>
 
-        <qc-choice-group legend="Invalid"
-                        name="base-1"
-                        invalid
-                           required
+        <ChoiceGroup legend="Invalid"
+                         name="base-2"
+                         invalid
+                         required
         >
             <label>
-                <input type="checkbox"
+                <input {type}
                        value="1"
-                       name="base-2"
+
                 />
                 <span >Option 1</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="base-2"
+                <input {type}
+
                        value="2"
                 />
                 <span >Option 2</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="base-2"
+                <input {type}
                        value="3"
                        disabled
                 />
                 <span >Option 3 (désactivée)</span>
             </label>
-        </qc-choice-group>
+        </ChoiceGroup>
     </div>
     <div class="qc-col-sm-12 qc-col-lg-6">
-        <qc-checkbox compact
+        {#if type === 'checkbox'}
+        <Checkbox compact
                      required
         >
             <label>
-                <input type="checkbox"
+                <input {type}
                        name="consentement-compact-1"
                        value="oui"
                 />
                 <span >J’accepte les conditions d’utilisation</span>
             </label>
-        </qc-checkbox>
+        </Checkbox>
 
 
 
-        <qc-checkbox
+        <Checkbox
                 compact
-               invalid
-               required
-                invalid-text="Veuillez accepter les conditions d’utilisation"
+                invalid
+                required
+                invalidText="Veuillez accepter les conditions d’utilisation"
         >
             <label>
-                <input type="checkbox"
+                <input {type}
                        name="consentement-compact-2"
                        value="oui"
                 />
                 <span >J’accepte les conditions d’utilisation</span>
             </label>
-        </qc-checkbox>
+        </Checkbox>
+        {/if}
 
-        <qc-choice-group legend="Compact"
-                        name="compact-1"
-                        compact
+        <ChoiceGroup legend="Compact"
+                         name="compact-1"
+                         compact
         >
             <label>
-                <input type="checkbox"
-                       name="compact-1"
+                <input {type}
+
                        value="1"
                        checked
                 />
                 <span >Option 1</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="compact-1"
+                <input {type}
+
                        value="2"
                 />
                 <span >Option 2</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="compact-1"
+                <input {type}
+
                        value="3"
                        disabled
                 />
                 <span >Option 3 (désactivée)</span>
             </label>
-        </qc-choice-group>
+        </ChoiceGroup>
 
-        <qc-choice-group legend="Invalid"
-                        name="compact-2"
-                        compact
-                        invalid
-                        required
+        <ChoiceGroup legend="Invalid"
+                         name="compact-2"
+                         compact
+                         invalid
+                         required
         >
             <label>
-                <input type="checkbox"
-                       name="compact-2"
+                <input {type}
+
                        value="1"
                 />
                 <span >Option 1</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="compact-2"
+                <input {type}
+
                        value="2"
                 />
                 <span >Option 2</span>
             </label>
             <label>
-                <input type="checkbox"
-                       name="compact-2"
+                <input {type}
+
                        value="3"
                        disabled
                 />
                 <span >Option 3 (désactivée)</span>
             </label>
-        </qc-choice-group>
+        </ChoiceGroup>
     </div>
 </div>
-
-
-
+<link rel='stylesheet' href='{Utils.cssPath}'>

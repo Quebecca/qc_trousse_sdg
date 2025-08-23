@@ -1,98 +1,37 @@
 @use "qc-sdg-lib" as *;
 
-%check-row {
-  display: flex;
-  max-width: fit-content;
-  align-items: start;
-  margin: 0;
-  cursor: pointer;
-  font-weight: normal;
-
-
-  &:has(input:disabled) {
-    color: token-value(color, grey, regular);
-    cursor: not-allowed;
-  }
-
-  input[type="radio"],
-  input[type="checkbox"] {
-    display: flex;
-    position: relative;
-    appearance: none;
-    margin: 0 token-value(spacer, xs) 0 0;
-    background-color: token-value(color, white);
-    border-style: solid;
-    border-color: token-value(color, blue, dark);
-
-    &:not(:disabled):hover {
-      cursor: pointer;
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      margin: auto;
-      inset: 0;
-      overflow: hidden;
-      opacity: 0;
-    }
-
-    &:checked {
-      border-color: token-value(color blue regular);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      border-color: token-value(color, grey, light);
-    }
-  }
+label.qc-choicefield-label {
+  @extend %check-row;
 }
+input.qc-choicefield {
 
-qc-choice-group,
-qc-checkbox {
-  label {
-    @extend %check-row;
+  cursor: pointer;
 
-    input[type="radio"],
-    input[type="checkbox"] {
+  min-width: token-value(spacer, md);
+  min-height: token-value(spacer, md);
+  max-width: token-value(spacer, md);
+  max-height: token-value(spacer, md);
+  border-width: rem(2);
 
-      cursor: pointer;
+  flex-grow: 0;
 
-      min-width: token-value(spacer, md);
-      min-height: token-value(spacer, md);
-      max-width: token-value(spacer, md);
-      max-height: token-value(spacer, md);
-      border-width: rem(2);
-
-      flex-grow: 0;
-
-      &:focus {
-        outline: 2px solid token-value(color, blue, light);
-        outline-offset: 0;
-        border-color: token-value(color, blue, dark) !important;
-      }
-
-      &:checked {
-        border-color: token-value(color blue regular);
-      }
-
-    }
+  &:focus {
+    outline: 2px solid token-value(color, blue, light);
+    outline-offset: 0;
+    border-color: token-value(color, blue, dark) !important;
   }
+
+  &:checked {
+    border-color: token-value(color blue regular);
+  }
+
 }
 
 [tiled] {
-  label {
+  label.qc-choicefield-label {
     @include qc-formcontrol-box();
     padding: token-value(spacer, sm);
     min-width: 100%;
-
-    input[type="radio"],
-    input[type="checkbox"] {
-
-      &:focus {
-        outline: none;
-      }
-    }
 
     &::before {
       border-style: solid;
@@ -114,10 +53,16 @@ qc-checkbox {
     }
   }
 
-  &[inline] label {
+  &[inline] label.qc-choicefield-label {
     min-width: auto;
   }
 
+  input.qc-choicefield {
+
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
 .qc-tile {
@@ -137,18 +82,18 @@ qc-checkbox {
   display: block;
 }
 
+.qc-compact,
 [compact],
 [tiled],
 qc-select {
-  input[type="radio"],
-  input[type="checkbox"] {
+  input.qc-choicefield {
     min-width: token-value(spacer, sm);
     min-height: token-value(spacer, sm);
     max-width: token-value(spacer, sm);
     max-height: token-value(spacer, sm);
 
     border-width: 1px;
-    margin-top: rem(4);
+    margin-top: rem(4)!important;
   }
 }
 

@@ -30,10 +30,6 @@
         inline
     } = $props();
 
-    $effect(() =>  $host()
-                    .querySelectorAll('input')
-                    .forEach(input => updateInput(input, required, invalid, name)));
-
 </script>
 <ChoiceGroup
         {name}
@@ -45,6 +41,7 @@
         {tiled}
         {columnCount}
         {inline}
+        host={$host()}
 >
     <slot/>
 </ChoiceGroup>

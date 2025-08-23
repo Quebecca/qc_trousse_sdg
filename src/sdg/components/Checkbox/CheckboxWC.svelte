@@ -37,18 +37,9 @@
         input = $host().querySelector('input')
     })
 
-    $effect(() => {
-        if (!required) return;
-        labelElement.appendChild(requiredSpan);
-    })
+
 
 </script>
-{#if required}
-<span class="qc-required"
-      aria-hidden="true"
-      bind:this={requiredSpan}
->*</span>
-{/if}
 <Checkbox
     bind:invalid
     {compact}
@@ -57,6 +48,7 @@
     {labelElement}
     {input}
     {onchange}
+    bind:requiredSpan
     >
     <slot />
 </Checkbox>

@@ -13,3 +13,9 @@ test('choice-group checkbox ref', async ({ page }) => {
       await page.goto(`file://${htmlFilePath}`);
       await expect(page).toHaveScreenshot('checkbox.png',{fullPage: true});
 });
+test('choice-group checkbox svelte', async ({ page }) => {
+    const htmlFilePath = path.resolve(__dirname, '../public/checkboxEmbedded.test.html');
+      // Navigue vers le fichier en utilisant le protocole file://
+      await page.goto(`file://${htmlFilePath}`);
+      await expect(page).toHaveScreenshot('checkbox.png',{fullPage: true});
+});
