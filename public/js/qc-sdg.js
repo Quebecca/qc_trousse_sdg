@@ -12408,7 +12408,18 @@
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
 	var on_click$1 = (e, handleLiClick, item) => handleLiClick(e, get(item));
-	var root_2$2 = add_locations(template(`<li><!></li>`), DropdownListItemsMultiple[FILENAME], [[178, 12]]);
+	var on_change = (e, handleChange, item) => handleChange(e, get(item).label, get(item).value);
+
+	var root_2$2 = add_locations(template(`<li><label class="qc-dropdown-list-checkbox" compact=""><input type="checkbox" class="qc-choicefield"> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [
+		[
+			178,
+			12,
+			[
+				[189, 16, [[193, 20], [203, 20]]]
+			]
+		]
+	]);
+
 	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[172, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
@@ -12586,41 +12597,26 @@
 					li.__keydown = (e) => handleLiKeyDown(e, get(index));
 					li.__click = [on_click$1, handleLiClick, item];
 
-					var node_1 = child(li);
+					var label_1 = child(li);
+					var input = child(label_1);
 
+					remove_input_defaults(input);
+
+					var input_value;
+
+					set_attribute(input, 'name', name);
+					input.__change = [on_change, handleChange, item];
+					input.__keydown = (e) => handleKeyDown(e, get(index));
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
-					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
 
-					bind_this(
-						Checkbox(node_1, {
-							get value() {
-								return get(item).value;
-							},
-							get label() {
-								return get(item).label;
-							},
-							name,
-							get disabled() {
-								return get(item).disabled;
-							},
-							parentGroup: 'true',
-							dropdownListItem: 'true',
-							compact: 'true',
-							'checkbox-onkeydown': (e) => handleKeyDown(e, get(index)),
-							onchange: (e) => handleChange(e, get(item).label, get(item).value),
-							get checked() {
-								return get(item).checked;
-							},
-							set checked($$value) {
-								(get(item).checked = $$value);
-							}
-						}),
-						($$value, index) => get(displayedItemsElements)[index] = $$value,
-						(index) => get(displayedItemsElements)?.[index],
-						() => [get(index)]
-					);
+					var span = sibling(input, 2);
+					var text = child(span, true);
 
+					reset(span);
+					reset(label_1);
 					reset(li);
+					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
+					bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
 					template_effect(() => {
 						set_class(li, 1, clsx([
@@ -12629,8 +12625,16 @@
 						]));
 
 						set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
+
+						if (input_value !== (input_value = get(item).value)) {
+							input.value = (input.__value = get(item).value) ?? '';
+						}
+
+						input.disabled = get(item).disabled;
+						set_text(text, get(item).label);
 					});
 
+					bind_checked(input, () => get(item).checked, ($$value) => (get(item).checked = $$value));
 					append($$anchor, li);
 				});
 
@@ -12701,7 +12705,7 @@
 		});
 	}
 
-	delegate(['keydown', 'click']);
+	delegate(['keydown', 'click', 'change']);
 
 	create_custom_element(
 		DropdownListItemsMultiple,
