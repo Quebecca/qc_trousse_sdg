@@ -32,12 +32,12 @@
 
     let selectElement = $state();
     let items = $state();
-    let usedLabel = $state(rest.label ?? null);
+    let labelElement = $state();
     let observer;
 
     onMount(() => {
         selectElement = $host().querySelector("select");
-        usedLabel = $host().querySelector("label");
+        labelElement = $host().querySelector("label");
         setupItemsList();
         setupObserver();
     });
@@ -69,8 +69,8 @@
     });
 
     $effect(() => {
-        if (usedLabel) {
-            label = usedLabel.innerHTML;
+        if (labelElement) {
+            label = labelElement.innerHTML;
         }
     });
 
@@ -107,5 +107,11 @@
     <slot />
 </div>
 
-<DropdownList label={usedLabel?.innerHTML} {items} bind:value {invalid} {multiple} {...rest} />
+<DropdownList
+        {label}
+        {items}
+        bind:value
+        {invalid}
+        {multiple}
+        {...rest} />
 <link rel='stylesheet' href='{Utils.cssPath}'>

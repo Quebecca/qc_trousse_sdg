@@ -4,6 +4,7 @@
     import FormError from "../FormError/FormError.svelte";
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
+    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -30,8 +31,7 @@
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
-        availableWidths = ["xs", "sm", "md", "lg", "xl"],
-        defaultInvalidText = `Le champ ${label} est obligatoire.`
+        availableWidths = ["xs", "sm", "md", "lg", "xl"]
     ;
 
     let instance = $state(),
@@ -237,24 +237,20 @@
         <div class="qc-dropdown-list-label-container">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-            <label
-                class={[
-                    "qc-label",
-                    "qc-bold",
-                    disabled && "qc-disabled"
-                ]}
-                for={inputId}
-                id={labelId}
-                onclick={(e) => {
-                    e.preventDefault();
-                    button.focus();
-                }}
-            >
-                {label}
-                {#if required}
-                    <span class="qc-required" aria-hidden="true">*</span>
-                {/if}
-            </label>
+            {#if label}
+                <Label
+                        {required}
+                        {disabled}
+                        text={label}
+                        forId={inputId}
+                        onclick={(e) => {
+                            e.preventDefault();
+                            console.log("label clicked");
+                            button.focus();
+                        }}
+                        bold={true}
+                />
+            {/if}
             {#if multiple && selectedItems.length > 0}
                 <div class="qc-dropdown-list-selection-count">
                     {#if lang === "fr"}
@@ -351,5 +347,10 @@
 
     </div>
 
-    <FormError id={errorId} {invalid} invalidText={invalidText ?? defaultInvalidText} extraClasses={["qc-xs-mt"]} />
+    <FormError id={errorId}
+               {invalid}
+               {invalidText}
+               extraClasses={["qc-xs-mt"]}
+               {label}
+    />
 </div>

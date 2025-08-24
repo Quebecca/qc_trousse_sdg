@@ -6,7 +6,8 @@
         compact = false,
         bold = false,
         disabled = false,
-        rootElement = $bindable()
+        rootElement = $bindable(),
+        ...rest
     } = $props();
 </script>
 
@@ -18,7 +19,8 @@
         compact && "qc-compact",
         bold && "qc-bold",
         disabled && "qc-disabled"
-  ]}
+    ]}
+    {...rest}
 >
     {@html text}{#if required}<span class="qc-required" aria-hidden="true">*</span>{/if}
 </label>
