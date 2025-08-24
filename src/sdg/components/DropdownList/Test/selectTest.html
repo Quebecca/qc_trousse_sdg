@@ -1,0 +1,184 @@
+<qc-select
+        id="dropdown-list-single-choice"
+        label="Choix unique :"
+>
+    <select>
+        <option value="1" selected>Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+        <option value="5">Option 5</option>
+        <option value="6">Option 6</option>
+        <option value="7">Option 7</option>
+        <option value="8">Option 8</option>
+        <option value="9">Option 9</option>
+        <option value="10">Option 10</option>
+        <option value="11">Option 11</option>
+        <option value="12">Option 12</option>
+        <option value="13">Option 13</option>
+        <option value="14">Option 14</option>
+        <option value="15">Option 15</option>
+        <option value="16" disabled>Option 16 (désactivée)</option>
+    </select>
+</qc-select>
+
+
+<div style="height: 40rem;">
+    <qc-select
+            id="dropdown-list-single-choice-no-scroll"
+            label="Choix unique avec recherche"
+            enable-search
+    >
+        <select>
+            <option value="1" selected>Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16">Option 16</option>
+        </select>
+    </qc-select>
+</div>
+
+<qc-select
+        id="dropdown-list-multiple-choices"
+        label="Choix multiples"
+        multiple
+>
+    <select multiple>
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+        <option value="5">Option 5</option>
+        <option value="6">Option 6</option>
+        <option value="7">Option 7</option>
+        <option value="8">Option 8</option>
+        <option value="9">Option 9</option>
+        <option value="10">Option 10</option>
+        <option value="11">Option 11</option>
+        <option value="12">Option 12</option>
+        <option value="13">Option 13</option>
+        <option value="14">Option 14</option>
+        <option value="15">Option 15</option>
+        <option value="16" disabled>Option 16 (désactivée)</option>
+    </select>
+</qc-select>
+
+<qc-select
+        id="dropdown-list-invalid"
+        label="État invalide"
+        invalid
+>
+    <select>
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+        <option value="5">Option 5</option>
+        <option value="6">Option 6</option>
+        <option value="7">Option 7</option>
+        <option value="8">Option 8</option>
+        <option value="9">Option 9</option>
+        <option value="10">Option 10</option>
+        <option value="11">Option 11</option>
+        <option value="12">Option 12</option>
+        <option value="13">Option 13</option>
+        <option value="14">Option 14</option>
+        <option value="15">Option 15</option>
+        <option value="16" disabled>Option 16 (désactivée)</option>
+    </select>
+</qc-select>
+
+<qc-select
+        id="dropdown-list-disabled"
+        label="Désactivé"
+        disabled
+></qc-select>
+
+<form id="dropdown-list-form">
+    <qc-select
+            id="dropdown-list-restaurants"
+            label="Type de restaurant"
+            placeholder="Type de restaurant"
+            enable-search
+            search-placeholder="Rechercher un type restaurant"
+            required
+            invalid-text="Veuillez choisir un type de restaurant."
+    >
+        <select>
+            <option value="Pizzeria">Pizzeria</option>
+            <option value="Pâtisserie">Pâtisserie</option>
+            <option value="Steakhouse">Steakhouse</option>
+            <option value="Bar">Bar</option>
+            <option value="Casse-croûte">Casse-croûte</option>
+            <option value="Boîte à pâtes">Boîte à pâtes</option>
+            <option value="Restaurant à burgers">Restaurant à burgers</option>
+        </select>
+    </qc-select>
+
+    <qc-select
+            id="dropdown-list-regions"
+            label="Régions desservies"
+            placeholder="Sélectionner une région"
+            width="lg"
+            enable-search
+            search-placeholder="Rechercher les régions"
+            multiple
+    >
+        <select multiple>
+            <option value="Capitale-nationale">Capitale-nationale</option>
+            <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
+            <option value="Montérégie" selected>Montérégie</option>
+            <option value="Outaouais">Outaouais</option>
+            <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+            <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+            <option value="Nord-du-Québec">Nord-du-Québec</option>
+            <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+        </select>
+    </qc-select>
+
+    <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
+</form>
+
+<script>
+    const dropdownListForm = document.getElementById("dropdown-list-form");
+
+    dropdownListForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
+
+        requiredFields.forEach(field => {
+            const value = field.value?.trim();
+
+            if (!value) {
+                field.invalid = true;
+                isValid = false;
+            } else {
+                field.invalid = false;
+            }
+        });
+
+        if (isValid) {
+            const formEntries = dropdownListForm.querySelectorAll("qc-select");
+            let alertParts = ["Formulaire soumis avec les données suivantes :"];
+            formEntries.forEach((field) => {
+                alertParts.push(`${field.label}: ${field.value}`);
+            });
+            alert(alertParts.join("\n"));
+        }
+    });
+</script>
