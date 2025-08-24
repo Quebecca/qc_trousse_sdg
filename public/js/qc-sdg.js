@@ -10474,8 +10474,8 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[21, 30]]);
-	var root$8 = add_locations(template(`<label><!><!></label>`), Label[FILENAME], [[12, 0]]);
+	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Label[FILENAME], [[23, 30]]);
+	var root$8 = add_locations(template(`<label><!><!></label>`), Label[FILENAME], [[13, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -10486,6 +10486,7 @@
 			required = prop($$props, 'required', 7, false),
 			compact = prop($$props, 'compact', 7, false),
 			bold = prop($$props, 'bold', 7, false),
+			disabled = prop($$props, 'disabled', 7, false),
 			rootElement = prop($$props, 'rootElement', 15);
 
 		var label = root$8();
@@ -10516,7 +10517,8 @@
 			set_class(label, 1, clsx([
 				"qc-label",
 				compact() && "qc-compact",
-				bold() && "qc-bold"
+				bold() && "qc-bold",
+				disabled() && "qc-disabled"
 			]));
 		});
 
@@ -10558,6 +10560,13 @@
 				bold($$value);
 				flushSync();
 			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
 			get rootElement() {
 				return rootElement();
 			},
@@ -10577,6 +10586,7 @@
 			required: {},
 			compact: {},
 			bold: {},
+			disabled: {},
 			rootElement: {}
 		},
 		[],
