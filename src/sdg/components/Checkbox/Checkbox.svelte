@@ -69,42 +69,7 @@
     >*</span>
 {/snippet}
 
-{#snippet checkboxRow()}
-    <label
-            class={"qc-dropdown-list-checkbox"}
-            for={usedId + "-input"}
-            {compact}
-    >
-        <input
-                id={usedId + "-input"}
-                type="checkbox"
-                {value}
-                {name}
-                {disabled}
-                bind:checked
-                bind:this={checkboxInput}
-                aria-required = {required}
-                aria-invalid={invalid}
-                onchange={onchange}
-                {...Utils.computeFieldsAttributes("checkbox", rest)}
-        />
-        <span class="qc-check-text">
-            <span class="qc-check-label">
-                {label}
-                {#if required}
-                    {@render requiredSpanSnippet()}
-                {/if}
 
-            </span>
-            {#if description}
-                <span class="qc-check-description">{@html description}</span>
-            {/if}
-        </span>
-    </label>
-{/snippet}
-
-
-{#if children}
     <div class={[
         "qc-checkbox-single",
         invalid && "qc-checkbox-single-invalid"
@@ -120,7 +85,3 @@
                    {label}
         />
     </div>
-
-{:else}
-    {@render checkboxRow()}
-{/if}
