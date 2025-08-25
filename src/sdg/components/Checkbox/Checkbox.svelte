@@ -63,10 +63,12 @@
 </script>
 
 {#snippet requiredSpanSnippet()}
+    {#if required}
     <span class="qc-required"
           aria-hidden="true"
           bind:this={requiredSpan}
     >*</span>
+    {/if}
 {/snippet}
 
 
