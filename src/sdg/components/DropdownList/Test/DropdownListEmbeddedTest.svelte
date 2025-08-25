@@ -17,7 +17,27 @@
 
     singleChoiceOptions[0].checked = true;
     singleChoiceWithSearchOptions[0].checked = true;
+    let selection = $state(1);
 </script>
+<p>Changer la valeur dans la liste ci-dessous pour constater que la valeur sélectionnée n'est pas mise à jour.</p>
+<qc-select
+        label="Test avec qc-select"
+>
+    <select bind:value={selection}>
+        {#each singleChoiceOptions as option}
+        <option value={option.value}
+                disabled={option.disabled}
+                checked={option.checked}
+            >{option.label}
+        </option>
+        {/each}
+    </select>
+</qc-select>
+
+<div>
+    Valeur sélectionnée : {selection}
+</div>
+
 
 <DropdownList
         id="dropdown-list-single-choice"
