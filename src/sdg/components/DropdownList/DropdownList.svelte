@@ -68,9 +68,9 @@
         })),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
-                return `qc-dropdown-list-container-${width}`;
+                return `qc-dropdown-list-root-${width}`;
             }
-            return `qc-dropdown-list-container-md`;
+            return `qc-dropdown-list-root-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
@@ -81,6 +81,12 @@
             }
 
             return "";
+        }),
+        usedWidth = $derived.by(() => {
+            if (availableWidths.includes(width)) {
+                return width;
+            }
+            return "md";
         })
     ;
 
@@ -235,10 +241,13 @@
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class={[
+<div
+    class={[
+        widthClass,
         !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
-    ]} bind:this={rootElement}>
-    <div class={`qc-dropdown-list-container ${widthClass}`}>
+    ]} bind:this={rootElement}
+>
+    <div class={`qc-dropdown-list-container`}>
         <div class="qc-dropdown-list-label-container">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
