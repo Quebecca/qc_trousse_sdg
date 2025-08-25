@@ -2069,7 +2069,6 @@ input[type=checkbox].qc-choicefield:checked::after {
 .qc-textfield label {
   font-weight: var(--qc-font-weight-content-medium);
   display: block;
-  margin-bottom: 0.4rem;
 }
 .qc-label.qc-compact, qc-textfield label.qc-compact,
 .qc-textfield label.qc-compact {

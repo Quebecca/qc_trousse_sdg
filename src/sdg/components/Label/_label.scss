@@ -3,7 +3,6 @@
 .qc-label {
   font-weight: token-value(font weight content medium);
   display: block;
-  margin-bottom: rem(4);
 
   &.qc-compact {
     font-size: token-value(font size sm);
