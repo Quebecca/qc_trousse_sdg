@@ -1,49 +1,49 @@
-<qc-textfield label="Petit"
-              size="sm">
+<qc-textfield label="Très petit"
+              size="xs">
     <input type="text"
+           name="text-xs"
+           placeholder="25"
+    />
+</qc-textfield>
+
+<qc-textfield size="sm"
+>
+    <label for="text-sm">Petit</label>
+    <input type="text"
+           id="text-sm"
            name="text-sm"
            placeholder="25"
     />
 </qc-textfield>
 
-<qc-textfield size="md"
->
-    <label for="text-md">Moyen</label>
-    <input type="text"
-           id="text-md"
-           name="text-md"
-           placeholder="25"
-    />
-</qc-textfield>
-
-<qc-textfield label="Large"
-              size="lg"
+<qc-textfield label="Moyen"
+              size="md"
               invalid
 >
     <input type="text"
-           name="text-lg"
+           name="text-md"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
     />
 </qc-textfield>
 
-<qc-textfield name="text-xl"
-              label="Très large"
-              size="xl"
+<qc-textfield name="text-lg"
+              label="Large"
+              size="lg"
               placeholder="Long placeholder lorem ipsum dolor sit amet"
               required>
     <input type="text"
-           name="text-xl"
+           name="text-lg"
     />
 </qc-textfield>
 
 <qc-textfield
-        label="Extra large"
-        size="xxl"
+        label="Très large"
+        size="xl"
 
 >
     <input type="text"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
-           name="text-xxl"
+           name="text-xl"
            disabled
     />
 </qc-textfield>
@@ -51,7 +51,7 @@
 <div class="qc-textfield-row">
     <qc-textfield
             label="Combiné 1"
-            size="md"
+            size="sm"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -61,7 +61,7 @@
 
     <qc-textfield
             label="Combiné 2"
-            size="sm"
+            size="xs"
     >
         <input type="text"
                name="combo-2"
@@ -71,7 +71,7 @@
 <div class="qc-textfield-row">
     <qc-textfield
             label="Combiné 1 invalide"
-            size="md"
+            size="sm"
             invalid
     >
         <input type="text"
@@ -81,7 +81,7 @@
 
     <qc-textfield
             label="Combiné 2"
-            size="sm"
+            size="xs"
             invalid
     >
         <input type="text"
@@ -91,32 +91,31 @@
 
 </div>
 
-<qc-textfield for="zone-xl"
-              size="xl"
-              label="Commentaires"
+<qc-textfield label="Commentaires"
+              size="lg"
               description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
-    <textarea name="zone-xl" id="zone-xl"></textarea>
+    <textarea name="zone-lg" id="zone-lg"></textarea>
 </qc-textfield>
 
 <qc-textfield
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-        size="xxl"
-        max-length="50"
+        size="xl"
+        max-length="10"
         required
 >
-    <textarea name="zone-xxl"></textarea>
+    <textarea name="zone-xl"></textarea>
 </qc-textfield>
 
 <qc-textfield label="Suggestions"
               description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-              size="xxl"
-              max-length="50"
+              size="xl"
+              max-length="10"
               required
               invalid
 >
-    <textarea name="zone-xxl-invalid"
-              id="zone-xxl-invalid"
+    <textarea name="zone-xl-invalid"
+              id="zone-xl-invalid"
     >Lorem ipsum dolor sit amet, consectetur adipiscing elit</textarea>
 </qc-textfield>

@@ -5,51 +5,51 @@
     import TextField from "../TextField.svelte";
     import {Utils} from '../../utils.js';
 </script>
-<TextField label="Petit"
-           size="sm">
+<TextField label="Très petit"
+           size="xs">
     <input type="text"
+           name="text-xs"
+           placeholder="25"
+    />
+</TextField>
+
+<TextField size="sm">
+    <label for="text-sm">Petit</label>
+    <input type="text"
+           id="text-sm"
            name="text-sm"
            placeholder="25"
     />
 </TextField>
 
-<TextField size="md">
-    <label for="text-md">Moyen</label>
-    <input type="text"
-           id="text-md"
-           name="text-md"
-           placeholder="25"
-    />
-</TextField>
-
-<TextField label="Large"
-           size="lg"
+<TextField label="Moyen"
+           size="md"
            invalid
 >
     <input type="text"
-           name="text-lg"
+           name="text-md"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
     />
 </TextField>
 
-<TextField name="text-xl"
-           label="Très large"
-           size="xl"
+<TextField name="text-lg"
+           label="Large"
+           size="lg"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
            required>
     <input type="text"
-           name="text-xl"
+           name="text-lg"
     />
 </TextField>
 
 <TextField
-        label="Extra large"
-        size="xxl"
+        label="Très large"
+        size="xl"
 
 >
     <input type="text"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
-           name="text-xxl"
+           name="text-xl"
            disabled
     />
 </TextField>
@@ -57,7 +57,7 @@
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1"
-            size="md"
+            size="sm"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -67,7 +67,7 @@
 
     <TextField
             label="Combiné 2"
-            size="sm"
+            size="xs"
     >
         <input type="text"
                name="combo-2"
@@ -77,7 +77,7 @@
 <div class="qc-textfield-row">
     <TextField
             label="Combiné 1 invalide"
-            size="md"
+            size="sm"
             invalid
     >
         <input type="text"
@@ -87,7 +87,7 @@
 
     <TextField
             label="Combiné 2"
-            size="sm"
+            size="xs"
             invalid
     >
         <input type="text"
@@ -99,31 +99,31 @@
 
 <TextField
         label="Commentaires"
-        size="xl"
+        size="lg"
         description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
-    <textarea name="zone-xl" id="zone-xl"></textarea>
+    <textarea name="zone-lg" id="zone-lg"></textarea>
 </TextField>
 
 <TextField
         label="Suggestions"
         description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-        size="xxl"
-        maxlength="50"
+        size="xl"
+        maxlength="10"
         required
 >
-    <textarea name="zone-xxl"></textarea>
+    <textarea name="zone-xl"></textarea>
 </TextField>
 
 <TextField label="Suggestions"
            description="Vous pouvez entrer des suggestions dans la zone de texte ci-dessous."
-           size="xxl"
-           maxlength="50"
+           size="xl"
+           maxlength="10"
            required
            invalid
 >
-    <textarea name="zone-xxl-invalid"
-              id="zone-xxl-invalid"
+    <textarea name="zone-xl-invalid"
+              id="zone-xl-invalid"
     >Lorem ipsum dolor sit amet, consectetur adipiscing elit</textarea>
 </TextField>
 <link rel='stylesheet' href='{Utils.cssPath}'>

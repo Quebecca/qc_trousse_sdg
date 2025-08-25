@@ -3,6 +3,7 @@ export * from './components/color-doc.svelte'
 export * from './components/TopNav.svelte'
 export * from './components/Switch.svelte'
 export * from './components/Exemple.svelte'
+export * from '../sdg/components/TextField/Doc/TextFieldDemo.svelte'
 import './scss/qc-doc-sdg.scss';
 
 if (document.getElementById("version")) {
