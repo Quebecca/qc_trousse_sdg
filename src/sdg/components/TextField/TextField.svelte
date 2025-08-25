@@ -66,6 +66,13 @@
     })
 
     $effect(() => {
+        if (maxlength && maxlength < 1) {
+            maxlength = 0;
+        }
+    })
+
+    $effect(() => {
+        charCountText = ''
         if (!maxlength) return;
         const currentLength = value?.length || 0;
         const remaining = maxlength - currentLength;
@@ -135,7 +142,7 @@
             id={charCountId}
             class={[
                 'qc-textfield-charcount',
-                value.length > maxlength && 'qc-max-reached'
+                maxlengthReached && 'qc-max-reached'
             ]}
             aria-live="polite"
         >

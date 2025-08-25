@@ -3440,8 +3440,6 @@
 		}
 
 		if (typeof handler !== 'function' && (has_side_effects || handler != null || error)) {
-			const filename = component?.[FILENAME];
-			loc ? ` at ${filename}:${loc[0]}:${loc[1]}` : ` in ${filename}`;
 			const phase = args[0]?.eventPhase < Event.BUBBLING_PHASE ? 'capture' : '';
 			args[0]?.type + phase;
 
@@ -76154,10 +76152,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[122, 8]]);
-	var root_4$2 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[133, 8]]);
+	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
+	var root_4$2 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[140, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$2 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[157, 4]]);
+	var root_6$2 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[164, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -76248,14 +76246,14 @@
 
 					template_effect(() => set_class(div_1, 1, clsx([
 						'qc-textfield-charcount',
-						value().length > maxlength() && 'qc-max-reached'
+						maxlengthReached() && 'qc-max-reached'
 					])));
 
 					append($$anchor, div_1);
 				};
 
 				if_block(node_4, ($$render) => {
-					if (maxlength()) $$render(consequent_2);
+					if (strict_equals(maxlength(), null, false)) $$render(consequent_2);
 				});
 			}
 
@@ -76349,6 +76347,13 @@
 		});
 
 		user_effect(() => {
+			if (maxlength() && maxlength() < 1) {
+				maxlength(0);
+			}
+		});
+
+		user_effect(() => {
+			set(charCountText, '');
 			if (!maxlength()) return;
 
 			const currentLength = value()?.length || 0;
@@ -76662,11 +76667,6 @@
 		});
 
 		var div = root$7();
-
-		div.__change = function (...$$args) {
-			apply(() => onchange, this, $$args, Checkbox, [82, 10]);
-		};
-
 		var node_1 = child(div);
 
 		requiredSpanSnippet(node_1);
@@ -76811,8 +76811,6 @@
 			...legacy_api()
 		});
 	}
-
-	delegate(['change']);
 
 	create_custom_element(
 		Checkbox,
@@ -78831,7 +78829,7 @@
 		set_attribute(fieldset, 'aria-describedby', legendId);
 
 		fieldset.__change = function (...$$args) {
-			apply(onchange, this, $$args, Fieldset, [49, 11]);
+			apply(onchange, this, $$args);
 		};
 
 		var node = child(fieldset);
