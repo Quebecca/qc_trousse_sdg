@@ -34,6 +34,9 @@
     let items = $state();
     let labelElement = $state();
     let observer;
+    let instance = $state();
+    let errorElement = $state();
+    let parentRow = $derived($host().closest(".qc-textfield-row"));
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -72,6 +75,12 @@
         }
     });
 
+    $effect(() => {
+       if (parentRow && errorElement) {
+           parentRow.appendChild(errorElement);
+       }
+    });
+
     function setupItemsList() {
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
@@ -108,8 +117,13 @@
 <DropdownList
         {label}
         {items}
+        webComponentMode={true}
+        webComponentParentRow={parentRow}
         bind:value
-        {invalid}
+        bind:errorElement
+        bind:invalid
+        bind:rootElement={instance}
         {multiple}
-        {...rest} />
+        {...rest}
+/>
 <link rel='stylesheet' href='{Utils.cssPath}'>

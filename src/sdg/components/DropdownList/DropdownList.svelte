@@ -23,7 +23,13 @@
         invalidText,
         searchPlaceholder = "",
         multiple = false,
+        rootElement = $bindable(),
+        errorElement = $bindable(),
+        webComponentMode = false,
+        webComponentParentRow,
     } = $props();
+
+    console.log("webComponentMode", webComponentMode);
 
     const
         inputId = `${id}-input`,
@@ -34,7 +40,9 @@
         availableWidths = ["xs", "sm", "md", "lg", "xl"]
     ;
 
-    let instance = $state(),
+    let
+        instance = $state(),
+        parentRow = $derived(instance?.closest(".qc-textfield-row")),
         button = $state(),
         searchInput = $state(),
         dropdownItems = $state(),
@@ -216,10 +224,18 @@
             }
         });
     });
+
+    $effect(() => {
+        if (parentRow && errorElement && !webComponentMode) {
+            parentRow.appendChild($state.snapshot(errorElement));
+        }
+    });
+
+    $inspect(parentRow);
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class="qc-dropdown-list-container">
+<div class={[!(parentRow || webComponentParentRow) && "qc-dropdown-list-container"]} bind:this={rootElement}>
     <div class={`${widthClass}`}>
         <div class="qc-dropdown-list-label-container">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -334,6 +350,7 @@
     </div>
 
     <FormError id={errorId}
+               bind:rootElement={errorElement}
                {invalid}
                {invalidText}
                extraClasses={["qc-xs-mt"]}

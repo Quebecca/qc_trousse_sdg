@@ -43,12 +43,19 @@
         items={multipleChoiceOptions}
 />
 
-<DropdownList
-        id="dropdown-list-invalid"
-        label="État invalide"
-        invalid="true"
-        items={invalidOptions}
-/>
+<div class="qc-textfield-row">
+    <DropdownList
+            id="dropdown-list-invalid"
+            label="État invalide"
+            invalid="true"
+            items={invalidOptions}
+    />
+    <DropdownList
+            id="dropdown-list-single-choice-other"
+            label="Autre choix"
+            items={singleChoiceOptions}
+    />
+</div>
 
 <DropdownList
         id="dropdown-list-disabled"
