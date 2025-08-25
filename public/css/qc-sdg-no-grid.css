@@ -2107,6 +2107,7 @@ qc-textfield textarea {
   width: 100%;
   position: relative;
   color: var(--qc-color-text-primary);
+  background-color: var(--qc-color-background);
   padding: 0.8rem;
   text-overflow: ellipsis;
   overflow: hidden;

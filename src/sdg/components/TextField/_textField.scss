@@ -27,6 +27,7 @@ textarea {
     width: 100%;
     position: relative;
     color: token-value(color text primary);
+    background-color: token-value(color background);
     padding: rem(8);
     text-overflow: ellipsis;
     overflow: hidden;
