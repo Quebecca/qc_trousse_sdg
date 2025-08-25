@@ -79,7 +79,6 @@
     ]}
          {compact}
          bind:this={rootElement}
-         {onchange}
     >
         {@render requiredSpanSnippet()}
         {@render children?.()}
