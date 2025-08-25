@@ -6,11 +6,13 @@
 $min-height: 40;
 $border: 1;
 
-.qc-dropdown-list-container {
+.qc-dropdown-list-margin {
   margin-bottom: rem(32);
 }
 
 .qc-dropdown-list-container {
+  width: 100%;
+
   &-xs { max-width: token-value(size, max-width, xs); }
   &-sm { max-width: token-value(size, max-width, sm); }
   &-md { max-width: token-value(size, max-width, md); }

@@ -2473,10 +2473,13 @@ li[aria-selected=true] {
   transform: rotate(180deg);
 }
 
-.qc-dropdown-list-container {
+.qc-dropdown-list-margin {
   margin-bottom: 3.2rem;
 }
 
+.qc-dropdown-list-container {
+  width: 100%;
+}
 .qc-dropdown-list-container-xs {
   max-width: var(--qc-size-max-width-xs);
 }

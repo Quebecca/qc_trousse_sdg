@@ -235,8 +235,10 @@
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
-<div class={[!(parentRow || webComponentParentRow) && "qc-dropdown-list-container"]} bind:this={rootElement}>
-    <div class={`${widthClass}`}>
+<div class={[
+        !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
+    ]} bind:this={rootElement}>
+    <div class={`qc-dropdown-list-container ${widthClass}`}>
         <div class="qc-dropdown-list-label-container">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
