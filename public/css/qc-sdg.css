@@ -2326,8 +2326,8 @@ qc-textfield textarea + .qc-textfield-charcount {
   padding-right: var(--qc-spacer-xs);
   flex-grow: 1;
 }
-.qc-dropdown-list-multiple label input[type=checkbox] {
-  margin-top: 0;
+.qc-dropdown-list-multiple label .qc-choicefield {
+  margin-top: 0 !important;
 }
 .qc-dropdown-list-multiple .qc-check-row {
   height: 100%;
