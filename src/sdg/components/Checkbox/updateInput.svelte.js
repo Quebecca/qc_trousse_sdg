@@ -8,3 +8,10 @@ export function updateInput(input, required, invalid, name) {
         input.setAttribute('name', name)
     }
 }
+
+export function onChange(input, setInvalid) {
+    input.addEventListener(
+        'change',
+        () => setInvalid(false)
+    )
+}

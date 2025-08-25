@@ -7408,7 +7408,7 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_2$7 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
+	var root_2$8 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
 	var root_3$1 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 
 	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
@@ -7512,7 +7512,7 @@
 
 				{
 					var consequent = ($$anchor) => {
-						var div_2 = root_2$7();
+						var div_2 = root_2$8();
 						var a = child(div_2);
 						var text = child(a, true);
 
@@ -8064,7 +8064,7 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$6 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$2 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
 	var root$k = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
@@ -8123,7 +8123,7 @@
 
 				src();
 
-				var img = root_2$6();
+				var img = root_2$7();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -8524,7 +8524,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$8 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$7 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8568,7 +8568,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$8();
+				var div = root_1$7();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -9365,8 +9365,8 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$5 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[47, 8]]);
-	var root_1$7 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[34, 0]]);
+	var root_2$6 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[47, 8]]);
+	var root_1$6 = add_locations(template(`<div role="alert"><!></div>`), FormError[FILENAME], [[34, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -9393,11 +9393,11 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$7();
+				var div = root_1$6();
 				var node_1 = child(div);
 
 				await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-					var fragment_1 = root_2$5();
+					var fragment_1 = root_2$6();
 					var node_2 = first_child(fragment_1);
 
 					Icon(node_2, {
@@ -9502,8 +9502,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[57, 12]]);
-	var root_1$6 = add_locations(template(`<legend><!> <!></legend>`), Fieldset[FILENAME], [[54, 4]]);
+	var root_2$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Fieldset[FILENAME], [[57, 12]]);
+	var root_1$5 = add_locations(template(`<legend><!> <!></legend>`), Fieldset[FILENAME], [[54, 4]]);
 	var root$c = add_locations(template(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[41, 0, [[61, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
@@ -9553,7 +9553,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var legend_1 = root_1$6();
+				var legend_1 = root_1$5();
 
 				set_attribute(legend_1, 'id', legendId);
 
@@ -9565,7 +9565,7 @@
 
 				{
 					var consequent = ($$anchor) => {
-						var span = root_2$4();
+						var span = root_2$5();
 
 						append($$anchor, span);
 					};
@@ -9785,6 +9785,10 @@
 		if (name && !input.hasAttribute('name')) {
 			input.setAttribute('name', name);
 		}
+	}
+
+	function onChange(input, setInvalid) {
+		input.addEventListener('change', () => setInvalid(false));
 	}
 
 	ChoiceGroup[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroup.svelte';
@@ -10091,8 +10095,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[66, 4]]);
-	var root$a = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[73, 4]]);
+	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[68, 4]]);
+	var root$a = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[76, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10101,10 +10105,23 @@
 		const requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var span = root_1$5();
+			var fragment = comment();
+			var node = first_child(fragment);
 
-			bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
-			append($$anchor, span);
+			{
+				var consequent = ($$anchor) => {
+					var span = root_2$4();
+
+					bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
+					append($$anchor, span);
+				};
+
+				if_block(node, ($$render) => {
+					if (required()) $$render(consequent);
+				});
+			}
+
+			append($$anchor, fragment);
 		});
 
 		Utils.getPageLanguage();
@@ -10121,7 +10138,6 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			children = prop($$props, 'children', 7),
-			onchange = prop($$props, 'onchange', 7),
 			labelElement = prop($$props, 'labelElement', 7),
 			requiredSpan = prop($$props, 'requiredSpan', 15),
 			input = prop($$props, 'input', 7);
@@ -10133,6 +10149,7 @@
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
 			input(get(rootElement)?.querySelector('input'));
+			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
 		user_effect(() => {
@@ -10162,20 +10179,20 @@
 		var div = root$a();
 
 		div.__change = function (...$$args) {
-			apply(onchange, this, $$args, Checkbox, [79, 10]);
+			apply(() => onchange, this, $$args, Checkbox, [82, 10]);
 		};
 
-		var node = child(div);
+		var node_1 = child(div);
 
-		requiredSpanSnippet(node);
-
-		var node_1 = sibling(node, 2);
-
-		snippet(node_1, () => children() ?? noop);
+		requiredSpanSnippet(node_1);
 
 		var node_2 = sibling(node_1, 2);
 
-		FormError(node_2, {
+		snippet(node_2, () => children() ?? noop);
+
+		var node_3 = sibling(node_2, 2);
+
+		FormError(node_3, {
 			get invalid() {
 				return invalid();
 			},
@@ -10285,13 +10302,6 @@
 				children($$value);
 				flushSync();
 			},
-			get onchange() {
-				return onchange();
-			},
-			set onchange($$value) {
-				onchange($$value);
-				flushSync();
-			},
 			get labelElement() {
 				return labelElement();
 			},
@@ -10333,7 +10343,6 @@
 			invalid: {},
 			invalidText: {},
 			children: {},
-			onchange: {},
 			labelElement: {},
 			requiredSpan: {},
 			input: {}
@@ -10345,7 +10354,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$9 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[55, 0]]);
+	var root$9 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[49, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10364,15 +10373,10 @@
 			labelElement = state(void 0),
 			input = state(void 0);
 
-		let onchange = (e) => {
-			if (invalid() && e.target.checked) {
-				invalid(false);
-			}
-		};
-
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector('label'), true);
 			set(input, $$props.$$host.querySelector('input'), true);
+			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
 		var fragment = root$9();
@@ -10397,7 +10401,6 @@
 				get input() {
 					return get(input);
 				},
-				onchange,
 				get invalid() {
 					return invalid();
 				},

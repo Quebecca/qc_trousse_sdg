@@ -2,7 +2,7 @@
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
     import {getContext, onMount} from "svelte";
-    import {updateInput} from "./updateInput.svelte";
+    import {updateInput, onChange} from "./updateInput.svelte";
 
     const lang = Utils.getPageLanguage(),
         qcCheckoxContext = getContext("qc-checkbox");
@@ -19,7 +19,6 @@
         invalid = $bindable(false),
         invalidText,
         children,
-        onchange,
         labelElement,
         requiredSpan = $bindable(),
         input,
@@ -34,6 +33,7 @@
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
         input = rootElement?.querySelector('input')
+        onChange(input, _invalid => invalid = _invalid)
     })
 
     $effect(() => {
@@ -54,6 +54,7 @@
     export function closest(tag) {
         return checkboxInput?.closest(tag);
     }
+
 
     $effect(() => {
         if (!required) return;
