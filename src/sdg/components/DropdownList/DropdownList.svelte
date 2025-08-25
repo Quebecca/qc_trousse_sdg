@@ -135,7 +135,6 @@
         if (event.key === "ArrowDown") {
             event.preventDefault();
             if (expanded) {
-                expanded = true;
                 targetComponent.focus();
             } else {
                 expanded = true;
@@ -233,10 +232,10 @@
                         forId={inputId}
                         onclick={(e) => {
                             e.preventDefault();
-                            console.log("label clicked");
                             button.focus();
                         }}
                         bold={true}
+                        id={labelId}
                 />
             {/if}
             {#if multiple && selectedItems.length > 0}
