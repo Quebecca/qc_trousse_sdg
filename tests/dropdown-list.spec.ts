@@ -145,6 +145,30 @@ test('En sélectionnant une option activée au clavier, alors referme la popup e
     await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
 });
 
+test('En sélectionnant une option activée avec Espace, alors referme la popup et affiche la nouvelle option sélectionnée', async ({ page }) => {
+    await page.locator('#qc-select-single-choice-input').click();
+    await page.locator('#qc-select-single-choice-input').press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 1$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 2$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 3$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 4$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-single-choice-items >> li')
+        .filter({ has: page.getByText(/^Option 5$/gm) })
+        .press(' ');
+
+    await expect(page.locator('#qc-select-single-choice-popup')).toBeHidden();
+    await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+    await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
+});
+
 test('Soit focus placé sur la liste déroulante de Choix unique et liste ouverte,' +
     'en tapant flèche vers le haut, alors focus placé sur la dernière option',
     async ({ page }) => {
@@ -289,6 +313,21 @@ test('En sélectionnant une option de Choix multiples et en la désélectionnant
 
     await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('');
 
+});
+
+test('Choix multiple sélection avec flèches', async ({ page }) => {
+    await page.locator('#qc-select-multiple-choices-input').click();
+    await page.locator('#qc-select-multiple-choices-input').press('ArrowDown');
+    await page.locator('#qc-select-multiple-choices-items')
+        .filter({ has: page.getByText(/^Option 1$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-multiple-choices-items')
+        .filter({ has: page.getByText(/^Option 2$/gm) })
+        .press('ArrowDown');
+    await page.locator('#qc-select-multiple-choices-Option-3-3-checkbox')
+        .press(' ');
+
+    await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('Option 3');
 });
 
 test('Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée', async ({ page }) => {

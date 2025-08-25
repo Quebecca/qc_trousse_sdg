@@ -182,24 +182,26 @@
                 tabindex={item.disabled ? "0" : "-1"}
                 onkeydown={(e) => handleLiKeyDown(e, index)}
                 onclick={(e) => handleLiClick(e, item)}
-                bind:this={displayedItemsElements[index]}
             >
 
                 <label
                         class="qc-dropdown-list-checkbox"
                         compact
+                        for={item.id + "-checkbox"}
                 >
                     <input
+                            id={item.id + "-checkbox"}
                             type="checkbox"
                             class="qc-choicefield"
                             value={item.value}
                             {name}
                             disabled={item.disabled}
                             bind:checked={item.checked}
+                            bind:this={displayedItemsElements[index]}
                             onchange={(e) => handleChange(e, item.label, item.value)}
                             onkeydown={(e) => handleKeyDown(e, index)}
                     />
-                    <span>  {item.label}</span>
+                    <span>{item.label}</span>
                 </label>
             </li>
         {/each}
