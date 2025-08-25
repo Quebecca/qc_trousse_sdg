@@ -2154,6 +2154,32 @@ qc-textfield textarea + .qc-textfield-charcount {
   max-width: var(--qc-size-textarea-max-width);
 }
 
+[size=xs] input, [size=xs] input + .qc-textfield-charcount,
+[size=xs] textarea,
+[size=xs] textarea + .qc-textfield-charcount {
+  max-width: 6.3rem;
+}
+[size=sm] input, [size=sm] input + .qc-textfield-charcount,
+[size=sm] textarea,
+[size=sm] textarea + .qc-textfield-charcount {
+  max-width: 15.6rem;
+}
+[size=md] input, [size=md] input + .qc-textfield-charcount,
+[size=md] textarea,
+[size=md] textarea + .qc-textfield-charcount {
+  max-width: 24.9rem;
+}
+[size=lg] input, [size=lg] input + .qc-textfield-charcount,
+[size=lg] textarea,
+[size=lg] textarea + .qc-textfield-charcount {
+  max-width: 52.8rem;
+}
+[size=xl] input, [size=xl] input + .qc-textfield-charcount,
+[size=xl] textarea,
+[size=xl] textarea + .qc-textfield-charcount {
+  max-width: 82.5rem;
+}
+
 .qc-textfield textarea, qc-textfield textarea {
   min-height: var(--qc-size-textarea-min-height);
   resize: vertical;

@@ -60,7 +60,7 @@ textarea {
 
 }
 
-$sizes: map.get($lg-tokens, size, textfield);
+$sizes: map.get($lg-tokens, size, max-width);
 input ,
 input + .qc-textfield-charcount {
   .qc-textfield &,

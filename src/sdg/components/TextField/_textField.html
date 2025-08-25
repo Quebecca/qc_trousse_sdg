@@ -44,6 +44,26 @@
       </qc-textfield>
     </div>
 
+      <qc-textfield
+              label="Adresse courriel"
+              size="lg"
+              required
+      >
+          <input type="text"
+                 name="courriel"
+          />
+      </qc-textfield>
+
+      <qc-textfield
+              label="Commentaires"
+              size="xl"
+              description="Vous pouvez entrer des commentaires dans ce champ de texte."
+      >
+          <input type="text"
+                 name="commentaires"
+          />
+      </qc-textfield>
+
     <qc-textfield
             label="Champ de texte multiligne"
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
@@ -51,8 +71,18 @@
             max-length="10"
             required
     >
-      <textarea name="zone-xxl"></textarea>
+      <textarea name="zone-lg"></textarea>
     </qc-textfield>
+
+      <qc-textfield
+              label="Grand champ de texte multiligne"
+              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+              size="xl"
+              max-length="10"
+              required
+      >
+          <textarea name="zone-xl"></textarea>
+      </qc-textfield>
 
     <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
   </form>
