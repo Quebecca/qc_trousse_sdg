@@ -6,7 +6,6 @@
     let {
         items,
         displayedItems,
-        value = $bindable(),
         selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
@@ -45,7 +44,6 @@
             items.forEach(item => item.checked = false);
             items.find(option => option.value === item.value).checked = true;
             selectionCallback();
-            value = [item.value];
         }
     }
 

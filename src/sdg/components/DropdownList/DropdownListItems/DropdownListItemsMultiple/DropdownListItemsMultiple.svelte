@@ -3,7 +3,6 @@
 
     let {
         displayedItems,
-        value = $bindable(),
         handleExit = () => {},
         selectionCallback = () => {},
         focusOnOuterElement = () => {},
@@ -12,19 +11,7 @@
 
     const name = Math.random().toString(36).substring(2, 15);
 
-    let
-        selectedValues = $state(
-            displayedItems && displayedItems.length > 0 ?
-                displayedItems.filter(item => item.checked).map(item => item.value)
-                : []
-        ),
-        selectedLabels = $state(
-            displayedItems && displayedItems.length > 0 ?
-                displayedItems.filter(item => item.checked).map(item => item.label)
-                : []
-        ),
-        displayedItemsElements = $state(new Array(displayedItems.length))
-    ;
+    let displayedItemsElements = $state(new Array(displayedItems.length));
 
     export function focusOnFirstElement() {
         if (displayedItems && displayedItems.length > 0) {
@@ -141,18 +128,7 @@
         return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
 
-    function handleChange(event, label, itemValue) {
-        if (event.target.checked) {
-            if (!selectedValues.includes(itemValue)) {
-                selectedValues = [...selectedValues, itemValue];
-                selectedLabels = [...selectedLabels, label];
-            }
-        } else {
-            selectedValues = selectedValues.filter(v => v !== itemValue);
-            selectedLabels = selectedLabels.filter(l => l !== label);
-        }
-
-        value = selectedValues.length > 0 ? selectedValues : [];
+    function handleChange() {
         selectionCallback();
     }
 
@@ -198,7 +174,7 @@
                             disabled={item.disabled}
                             bind:checked={item.checked}
                             bind:this={displayedItemsElements[index]}
-                            onchange={(e) => handleChange(e, item.label, item.value)}
+                            onchange={handleChange}
                             onkeydown={(e) => handleKeyDown(e, index)}
                     />
                     <span>{item.label}</span>

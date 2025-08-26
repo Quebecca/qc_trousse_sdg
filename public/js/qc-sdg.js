@@ -12029,8 +12029,8 @@
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
 	var on_click$1 = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
+	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[112, 12]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[110, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -12040,7 +12040,6 @@
 
 		let items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
-			value = prop($$props, 'value', 15),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -12074,10 +12073,9 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
-				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:45:34'));
+				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:44:34'));
 				items().find((option) => strict_equals(option.value, item.value)).checked = true;
 				selectionCallback()();
-				value([item.value]);
 			}
 		}
 
@@ -12214,13 +12212,6 @@
 				displayedItems($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value) {
-				value($$value);
-				flushSync();
-			},
 			get selectionCallback() {
 				return selectionCallback();
 			},
@@ -12260,7 +12251,6 @@
 		{
 			items: {},
 			displayedItems: {},
-			value: {},
 			selectionCallback: {},
 			handleExit: {},
 			focusOnOuterElement: {},
@@ -12277,20 +12267,23 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
+	function handleChange(_, selectionCallback) {
+		selectionCallback()();
+	}
+
 	var on_click = (e, handleLiClick, item) => handleLiClick(e, get(item));
-	var on_change = (e, handleChange, item) => handleChange(e, get(item).label, get(item).value);
 
 	var root_2$2 = add_locations(template(`<li><label class="qc-dropdown-list-checkbox" compact=""><input type="checkbox" class="qc-choicefield qc-compact"> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [
 		[
-			177,
+			153,
 			12,
 			[
-				[187, 16, [[192, 20], [204, 20]]]
+				[163, 16, [[168, 20], [180, 20]]]
 			]
 		]
 	]);
 
-	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[171, 4]]);
+	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[147, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12299,17 +12292,13 @@
 		var $$ownership_validator = create_ownership_validator($$props);
 
 		let displayedItems = prop($$props, 'displayedItems', 7),
-			value = prop($$props, 'value', 15),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		const name = Math.random().toString(36).substring(2, 15);
-
-		let selectedValues = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.value) : [])),
-			selectedLabels = state(proxy(displayedItems() && displayedItems().length > 0 ? displayedItems().filter((item) => item.checked).map((item) => item.label) : [])),
-			displayedItemsElements = state(proxy(new Array(displayedItems().length)));
+		let displayedItemsElements = state(proxy(new Array(displayedItems().length)));
 
 		function focusOnFirstElement() {
 			if (displayedItems() && displayedItems().length > 0) {
@@ -12380,7 +12369,7 @@
 
 				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
 					event.target.checked = !event.target.checked;
-					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 99, 16);
+					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 86, 16);
 				}
 			}
 
@@ -12425,21 +12414,6 @@
 			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
 		}
 
-		function handleChange(event, label, itemValue) {
-			if (event.target.checked) {
-				if (!get(selectedValues).includes(itemValue)) {
-					set(selectedValues, [...get(selectedValues), itemValue], true);
-					set(selectedLabels, [...get(selectedLabels), label], true);
-				}
-			} else {
-				set(selectedValues, get(selectedValues).filter((v) => strict_equals(v, itemValue, false)), true);
-				set(selectedLabels, get(selectedLabels).filter((l) => strict_equals(l, label, false)), true);
-			}
-
-			value(get(selectedValues).length > 0 ? get(selectedValues) : []);
-			selectionCallback()();
-		}
-
 		function itemsHaveIds() {
 			let valid = true;
 
@@ -12467,15 +12441,15 @@
 					li.__keydown = (e) => handleLiKeyDown(e, get(index));
 					li.__click = [on_click, handleLiClick, item];
 
-					var label_1 = child(li);
-					var input = child(label_1);
+					var label = child(li);
+					var input = child(label);
 
 					remove_input_defaults(input);
 
 					var input_value;
 
 					set_attribute(input, 'name', name);
-					input.__change = [on_change, handleChange, item];
+					input.__change = [handleChange, selectionCallback];
 					input.__keydown = (e) => handleKeyDown(e, get(index));
 					validate_binding('bind:checked={item.checked}', () => get(item), () => 'checked');
 					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
@@ -12485,7 +12459,7 @@
 					var text = child(span, true);
 
 					reset(span);
-					reset(label_1);
+					reset(label);
 					reset(li);
 
 					template_effect(() => {
@@ -12495,7 +12469,7 @@
 						]));
 
 						set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
-						set_attribute(label_1, 'for', get(item).id + "-checkbox");
+						set_attribute(label, 'for', get(item).id + "-checkbox");
 						set_attribute(input, 'id', get(item).id + "-checkbox");
 
 						if (input_value !== (input_value = get(item).value)) {
@@ -12538,13 +12512,6 @@
 				displayedItems($$value);
 				flushSync();
 			},
-			get value() {
-				return value();
-			},
-			set value($$value) {
-				value($$value);
-				flushSync();
-			},
 			get handleExit() {
 				return handleExit();
 			},
@@ -12583,7 +12550,6 @@
 		DropdownListItemsMultiple,
 		{
 			displayedItems: {},
-			value: {},
 			handleExit: {},
 			selectionCallback: {},
 			focusOnOuterElement: {},
