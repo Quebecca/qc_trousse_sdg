@@ -29,8 +29,6 @@
         webComponentParentRow,
     } = $props();
 
-    console.log("webComponentMode", webComponentMode);
-
     const
         inputId = `${id}-input`,
         popupId = `${id}-popup`,
@@ -77,15 +75,17 @@
             }
         })),
         widthClass = $derived.by(() => {
+            const keyword = webComponentMode ? "container" : "root";
+
             if (availableWidths.includes(width)) {
-                return `qc-dropdown-list-container-${width}`;
+                return `qc-dropdown-list-${keyword}-${width}`;
             }
-            return `qc-dropdown-list-container-md`;
+            return `qc-dropdown-list-${keyword}-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
             if (displayedItems.length > 0) {
-                return  lang === "fr" ?
+                return lang === "fr" ?
                     `${displayedItems.length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
                     : `${displayedItems.length} result${s} available. Use up and down arrow keys to navigate through the list.`;
             }
@@ -242,14 +242,18 @@
     });
 </script>
 
-<svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
+<svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
 <div
-    class={[
+        class={[
         "qc-dropdown-list-root",
+        !webComponentMode && widthClass,
         !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
     ]} bind:this={rootElement}
 >
-    <div class={`qc-dropdown-list-container ${widthClass}`}>
+    <div class={[
+            "qc-dropdown-list-container",
+            webComponentMode && widthClass
+        ]}>
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         {#if label}
@@ -267,50 +271,50 @@
             />
         {/if}
         <div
-            class={[
+                class={[
                 `qc-dropdown-list`,
                 invalid && "qc-dropdown-list-invalid",
             ]}
-            tabindex="-1"
-            bind:this={instance}
+                tabindex="-1"
+                bind:this={instance}
         >
             <DropdownListButton
-                {inputId}
-                {disabled}
-                {expanded}
-                aria-labelledby={labelId}
-                aria-required={required}
-                aria-expanded={expanded}
-                aria-haspopup="listbox"
-                aria-controls={itemsId}
-                aria-invalid={invalid}
-                {selectedOptionsText}
-                {placeholder}
-                onclick={handleDropdownButtonClick}
-                onkeydown={(e) => {
+                    {inputId}
+                    {disabled}
+                    {expanded}
+                    aria-labelledby={labelId}
+                    aria-required={required}
+                    aria-expanded={expanded}
+                    aria-haspopup="listbox"
+                    aria-controls={itemsId}
+                    aria-invalid={invalid}
+                    {selectedOptionsText}
+                    {placeholder}
+                    onclick={handleDropdownButtonClick}
+                    onkeydown={(e) => {
                     handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
                 }}
-                bind:this={button}
+                    bind:this={button}
             />
 
             <div
-                id={popupId}
-                class="qc-dropdown-list-expanded"
-                tabindex="-1"
-                hidden={!expanded}
-                role="listbox"
+                    id={popupId}
+                    class="qc-dropdown-list-expanded"
+                    tabindex="-1"
+                    hidden={!expanded}
+                    role="listbox"
             >
 
                 {#if enableSearch}
                     <div class="qc-dropdown-list-search">
                         <SearchInput
-                            id="{id}-search"
-                            bind:value={searchText}
-                            placeholder={searchPlaceholder}
-                            ariaLabel={searchPlaceholder ? searchPlaceholder : undefined}
-                            leftIcon="true"
-                            bind:this={searchInput}
-                            onkeydown={(e) => {
+                                id="{id}-search"
+                                bind:value={searchText}
+                                placeholder={searchPlaceholder}
+                                ariaLabel={searchPlaceholder ? searchPlaceholder : undefined}
+                                leftIcon="true"
+                                bind:this={searchInput}
+                                onkeydown={(e) => {
                                 handleArrowDown(e, dropdownItems);
                                 handleArrowUp(e, button);
                                 if (e.key === "Enter") {
@@ -322,22 +326,22 @@
                 {/if}
 
                 <DropdownListItems
-                    id={itemsId}
-                    {enableSearch}
-                    {multiple}
-                    {items}
-                    {displayedItems}
-                    {noOptionsMessage}
-                    selectionCallbackSingle={() => {
+                        id={itemsId}
+                        {enableSearch}
+                        {multiple}
+                        {items}
+                        {displayedItems}
+                        {noOptionsMessage}
+                        selectionCallbackSingle={() => {
                         closeDropdown("");
                         button?.focus();
                     }}
-                    handleExitSingle={(key) => closeDropdown(key)}
-                    handleExitMultiple={(key) => closeDropdown(key)}
-                    focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
-                    handlePrintableCharacter={handlePrintableCharacter}
-                    bind:this={dropdownItems}
-                    bind:value={value}
+                        handleExitSingle={(key) => closeDropdown(key)}
+                        handleExitMultiple={(key) => closeDropdown(key)}
+                        focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
+                        handlePrintableCharacter={handlePrintableCharacter}
+                        bind:this={dropdownItems}
+                        bind:value={value}
                 />
 
                 <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->

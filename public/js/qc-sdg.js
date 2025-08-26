@@ -13049,22 +13049,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[305, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[346, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
 
 	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			246,
+			248,
 			0,
 			[
 				[
-					252,
+					255,
 					4,
 					[
 						[
-							269,
+							275,
 							8,
-							[[296, 12, [[344, 16]]]]
+							[[302, 12, [[350, 16]]]]
 						]
 					]
 				]
@@ -13145,11 +13145,13 @@
 				};
 			})),
 			widthClass = user_derived(() => {
+				const keyword = webComponentMode() ? "container" : "root";
+
 				if (availableWidths.includes(width())) {
-					return `qc-dropdown-list-container-${width()}`;
+					return `qc-dropdown-list-${keyword}-${width()}`;
 				}
 
-				return `qc-dropdown-list-container-md`;
+				return `qc-dropdown-list-${keyword}-md`;
 			}),
 			srItemsCountText = user_derived(() => {
 				const s = get(displayedItems).length > 1 ? "s" : "";
@@ -13532,10 +13534,14 @@
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-dropdown-list-root",
+				!webComponentMode() && get(widthClass),
 				!(get(parentRow) || webComponentParentRow()) && "qc-dropdown-list-margin"
 			]));
 
-			set_class(div_1, 1, `qc-dropdown-list-container ${get(widthClass)}`);
+			set_class(div_1, 1, clsx([
+				"qc-dropdown-list-container",
+				webComponentMode() && get(widthClass)
+			]));
 
 			set_class(div_2, 1, clsx([
 				`qc-dropdown-list`,
