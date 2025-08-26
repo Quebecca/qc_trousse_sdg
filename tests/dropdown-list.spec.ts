@@ -15,7 +15,7 @@ test.describe('Rendu visuel',
         await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
         await page.locator('#qc-select-single-choice-search-Option-2-2').hover();
 
-        await expect(page).toHaveScreenshot({fullPage: true});
+        await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
     });
 
     test('Select svelte', {
@@ -28,7 +28,7 @@ test.describe('Rendu visuel',
         await page.locator('#dropdown-list-single-choice-no-scroll-Option-1-1').focus();
         await page.locator('#dropdown-list-single-choice-no-scroll-Option-2-2').hover();
 
-        await expect(page).toHaveScreenshot({fullPage: true});
+        await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
     });
 });
 
