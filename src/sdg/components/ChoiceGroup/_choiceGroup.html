@@ -1,8 +1,8 @@
-<h3 id="choice-group">Groupe de boutons radios et de cases à cocher (qc-choice-group)</h3>
+<h3 id="choice-group">Groupe de boutons radio et de cases à cocher (qc-choice-group)</h3>
 
 <h4>Exemples</h4>
 <p>
-  Les groupes d'éléments de choix sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+  Les groupes d'éléments de choix sont également disponibles sous forme de <a href="#selection-button">boutons de sélection</a>.
 </p>
 
 <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
@@ -114,7 +114,7 @@
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
   <form id="checkbox-form">
     <qc-choice-group
-            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
+            legend="Sur quelle plateforme consultez-vous www.quebec.ca ?"
             name="plateforme"
             required
             invalid-text="Veuillez sélectionner une plateforme."
@@ -143,7 +143,7 @@
             legend="Quel thème préférez-vous ?"
             name="theme"
             required
-            invalid-text="Veuillez sélectionner une plateforme."
+            invalid-text="Veuillez sélectionner un thème."
     >
       <label>
         <input type="radio"
@@ -228,42 +228,36 @@
     </tr>
     <tr>
       <td>compact</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>Affiche les champs au format compact</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Marque la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>
-        Affiche le message d'erreur,  cf « Exemple de validation de formulaire avec des groupes de choix ».)
+        Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
         <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
       </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
     </tr>
     <tr>
       <td>selection-button</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format de boutons de sélection dans une grille</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
     </tr>
     <tr>
       <td>column-count</td>
@@ -275,9 +269,9 @@
     </tr>
     <tr>
       <td>inline</td>
-      <td>na</td>
-      <td>na</td>
-      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
     </tr>
     </tbody>
   </table>

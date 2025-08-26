@@ -1616,7 +1616,7 @@
 
 <h3 id="checkbox">Case à cocher unique (qc-checkbox)</h3>
 
-<qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
+<qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
   <form id="exemple-tos-form">
     <qc-checkbox required >
       <label>
@@ -1669,41 +1669,41 @@
     <tbody>
     <tr>
       <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format compact</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche la case à cocher au format compact</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>
-        Affiche le message d'erreur, cf « Exemple d’une case à cocher seule obligatoire ».
+          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
         <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
       </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
     </tr>
     </tbody>
   </table>
 </div>
 
 
-    <h3 id="choice-group">Groupe de boutons radios et de cases à cocher (qc-choice-group)</h3>
+    <h3 id="choice-group">Groupe de boutons radio et de cases à cocher (qc-choice-group)</h3>
 
 <h4>Exemples</h4>
 <p>
-  Les groupes d'éléments de choix sont aussi disponibles au format de <a href="#selection-button">boutons de sélection</a>.
+  Les groupes d'éléments de choix sont également disponibles sous forme de <a href="#selection-button">boutons de sélection</a>.
 </p>
 
 <qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
@@ -1815,7 +1815,7 @@
 <qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
   <form id="checkbox-form">
     <qc-choice-group
-            legend="Sur quelle plateforme consultez-vous www.quebec.ca?"
+            legend="Sur quelle plateforme consultez-vous www.quebec.ca ?"
             name="plateforme"
             required
             invalid-text="Veuillez sélectionner une plateforme."
@@ -1844,7 +1844,7 @@
             legend="Quel thème préférez-vous ?"
             name="theme"
             required
-            invalid-text="Veuillez sélectionner une plateforme."
+            invalid-text="Veuillez sélectionner un thème."
     >
       <label>
         <input type="radio"
@@ -1929,42 +1929,36 @@
     </tr>
     <tr>
       <td>compact</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>Affiche les champs au format compact</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Marque la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>
-        Affiche le message d'erreur,  cf « Exemple de validation de formulaire avec des groupes de choix ».)
+        Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
         <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
       </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
     </tr>
     <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide</td>
-    </tr>
-    <tr>
-      <td>selection-button</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format de boutons de sélection dans une grille</td>
+      <td>tiled</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
     </tr>
     <tr>
       <td>column-count</td>
@@ -1976,9 +1970,9 @@
     </tr>
     <tr>
       <td>inline</td>
-      <td>na</td>
-      <td>na</td>
-      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
     </tr>
     </tbody>
   </table>
@@ -1994,10 +1988,10 @@
     <h3 id="selection-button">Boutons de sélection</h3>
 
 
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection avec différents états">
+<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection avec différents états.">
     <qc-choice-group legend="Sélectionnez une option :"
                     name="ex-radio-select"
-                    selection-button
+                    tiled
                     column-count="2"
     >
         <label>
@@ -2032,12 +2026,12 @@
 </qc-doc-exemple>
 
 <qc-doc-exemple
-        caption="Exemple d’un groupe de cases à cocher au format de boutons de sélection avec différents états"
+        caption="Exemple d’un groupe de cases à cocher sous forme de boutons de sélection avec différents états."
 >
     <qc-choice-group
             name="exemple-checkbox-select"
             legend="Sélectionnez vos options"
-            selection-button
+            tiled
             column-count="2">
         <label>
             <input type="checkbox"
@@ -2070,10 +2064,10 @@
     </qc-choice-group>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de boutons radio au format de boutons de sélection sur une rangée">
+<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection sur une rangée.">
     <qc-choice-group legend="Choisissez une option :"
                     name="ex-radio-select-inline"
-                    selection-button
+                    tiled
                     inline
     >
         <label>
@@ -2119,7 +2113,7 @@
 </qc-doc-exemple>
 
 <h4>Documentation technique</h4>
-<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a></p>
+<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a>.</p>
 
 
     <!-- _choiceGroupDoc.html -->
@@ -2371,8 +2365,7 @@
 <hr/>
     <h2 id="textfield">Champ texte</h2>
 
-
-<qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
+<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états. Soumettre le formulaire pour voir les messages d'erreur.">
   <form id="formulaire-champs-textes">
     <qc-textfield
             label="Nom complet"
@@ -2396,7 +2389,7 @@
       />
     </qc-textfield>
 
-    <div class="qc-formfield-row">
+    <div class="qc-textfield-row">
       <qc-textfield
               label="Téléphone"
               size="sm"
@@ -2658,7 +2651,7 @@
     </qc-select>
 
     <qc-select id="qc-select-multiple-choices" multiple>
-        <label for="select-multiple-choices">Choix multiples</label>
+        <label for="select-multiple-choices">Choix multiple</label>
         <select multiple id="select-multiple-choices">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
@@ -2713,13 +2706,13 @@
     <form id="dropdown-list-form">
         <qc-select
                 id="dropdown-list-restaurants"
-                placeholder="Types de restaurant"
+                placeholder="Type de restaurant"
                 enable-search
-                search-placeholder="Rechercher des types restaurant"
+                search-placeholder="Rechercher un type restaurant"
                 required
                 invalid-text="Veuillez choisir un type de restaurant."
         >
-            <label for="dropdown-list-restaurants-select">Types de restaurants</label>
+            <label for="dropdown-list-restaurants-select">Type de restaurant</label>
             <select id="dropdown-list-restaurants-select">
                 <option value="Pizzeria">Pizzeria</option>
                 <option value="Pâtisserie">Pâtisserie</option>
@@ -2767,7 +2760,7 @@
             console.log(requiredFields);
 
             requiredFields.forEach(field => {
-                const value = field.value;
+                const value = field.value?.trim();
 
                 if (!value) {
                     field.invalid = true;
@@ -2781,7 +2774,7 @@
                 const formEntries = dropdownListForm.querySelectorAll("qc-select");
                 let alertParts = ["Formulaire soumis avec les données suivantes :"];
                 formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
+                    alertParts.push(`${field.label}: ${field.value}`);
                 });
                 alert(alertParts.join("\n"));
             }
@@ -2886,11 +2879,7 @@
             <td>multiple</td>
             <td>na</td>
             <td>na</td>
-            <td>
-                Active la sélection multiple.
-                <br> Si <code>multiple</code> est définie dans l'élément <code>select</code> en slot, cette valeur a
-                priorité.
-            </td>
+            <td>Active la sélection multiple</td>
         </tr>
         </tbody>
     </table>

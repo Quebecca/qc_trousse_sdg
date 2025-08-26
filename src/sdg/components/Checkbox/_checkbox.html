@@ -2,7 +2,7 @@
 
 <h3 id="checkbox">Case à cocher unique (qc-checkbox)</h3>
 
-<qc-doc-exemple caption="Exemple d’une case à cocher seule obligatoire">
+<qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
   <form id="exemple-tos-form">
     <qc-checkbox required >
       <label>
@@ -55,30 +55,30 @@
     <tbody>
     <tr>
       <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format compact</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche la case à cocher au format compact</td>
     </tr>
     <tr>
       <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans la légende</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
     </tr>
     <tr>
       <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
       <td>
-        Affiche le message d'erreur, cf « Exemple d’une case à cocher seule obligatoire ».
+          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
         <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
       </td>
     </tr>
     <tr>
       <td>invalid-text</td>
       <td>Texte</td>
-      <td>"Champ obligatoire" ou "Required field"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
     </tr>
     </tbody>
   </table>
