@@ -8,7 +8,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Rendu visuel',
     () => {
-    test('Select ref', async ({ page }) => {
+    test('Select baseline', {
+        tag: ['@baseline', '@visual']
+    }, async ({ page }) => {
         await page.locator('#qc-select-single-choice-search-input').click();
         await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
         await page.locator('#qc-select-single-choice-search-Option-2-2').hover();
@@ -16,7 +18,9 @@ test.describe('Rendu visuel',
         await expect(page).toHaveScreenshot({fullPage: true});
     });
 
-    test('Select svelte', async ({ page }) => {
+    test('Select svelte', {
+        tag: ['@svelte', '@visual']
+    }, async ({ page }) => {
         const htmlFilePath = path.resolve(__dirname, '../public/dropdownListEmbedded.test.html');
         await page.goto(`file://${htmlFilePath}`);
 
