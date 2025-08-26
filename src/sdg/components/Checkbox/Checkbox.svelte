@@ -14,7 +14,7 @@
         description,
         required = $bindable(false),
         disabled,
-        compact,
+        compact = false,
         checked = $bindable(false),
         invalid = $bindable(false),
         invalidText,

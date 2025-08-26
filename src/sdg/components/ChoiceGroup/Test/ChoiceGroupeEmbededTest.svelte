@@ -205,7 +205,6 @@
         >
             <label>
                 <input {type}
-
                        value="1"
                        checked
                 />

@@ -134,6 +134,14 @@ input[type=checkbox].qc-choicefield:checked::after, .qc-icon[data-img-type=check
   cursor: not-allowed;
   border-color: var(--qc-color-grey-light);
 }
+.qc-dropdown-list-checkbox input.qc-choicefield.qc-compact, label.qc-choicefield-label input.qc-choicefield.qc-compact {
+  min-width: var(--qc-spacer-sm);
+  min-height: var(--qc-spacer-sm);
+  max-width: var(--qc-spacer-sm);
+  max-height: var(--qc-spacer-sm);
+  border-width: 1px;
+  margin-top: 0.4rem;
+}
 
 :root {
   --qc-font-family-roboto: Roboto,sans-serif;
@@ -1907,18 +1915,6 @@ input.qc-choicefield:checked {
   display: block;
 }
 
-.qc-compact input.qc-choicefield,
-[compact] input.qc-choicefield,
-[tiled] input.qc-choicefield,
-qc-select input.qc-choicefield {
-  min-width: var(--qc-spacer-sm);
-  min-height: var(--qc-spacer-sm);
-  max-width: var(--qc-spacer-sm);
-  max-height: var(--qc-spacer-sm);
-  border-width: 1px;
-  margin-top: 0.4rem !important;
-}
-
 input[type=radio].qc-choicefield {
   border-radius: 100%;
 }
@@ -1933,7 +1929,7 @@ input[type=radio].qc-choicefield:checked::before {
   width: 1.4rem;
   height: 1.4rem;
 }
-.qc-compact input[type=radio].qc-choicefield:checked::before, [compact] input[type=radio].qc-choicefield:checked::before, [tiled] input[type=radio].qc-choicefield:checked::before {
+input[type=radio].qc-choicefield:checked.qc-compact::before {
   width: 1rem;
   height: 1rem;
 }
@@ -2034,7 +2030,7 @@ input[type=checkbox].qc-choicefield:checked::after {
   width: var(--qc-spacer-md);
   height: 1.8rem;
 }
-.qc-compact input[type=checkbox].qc-choicefield:checked::before, [compact] input[type=checkbox].qc-choicefield:checked::before, [tiled] input[type=checkbox].qc-choicefield:checked::before {
+input[type=checkbox].qc-choicefield.qc-compact:checked::before {
   width: 0.8rem;
   height: 0.5rem;
   border: 0.2rem solid var(--qc-color-blue-regular);
@@ -2043,7 +2039,7 @@ input[type=checkbox].qc-choicefield:checked::after {
   transform: rotate(-45deg);
   top: 0.1rem;
 }
-.qc-compact input[type=checkbox].qc-choicefield:checked::after, [compact] input[type=checkbox].qc-choicefield:checked::after, [tiled] input[type=checkbox].qc-choicefield:checked::after {
+input[type=checkbox].qc-choicefield.qc-compact:checked::after {
   width: var(--qc-spacer-sm);
   height: 1.2rem;
 }

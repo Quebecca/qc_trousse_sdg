@@ -33,9 +33,7 @@ input[type="checkbox"].qc-choicefield {
 
     }
   }
-  .qc-compact &,
-  [compact] &,
-  [tiled] & {
+  &.qc-compact {
     &:checked {
       &::before {
         width: rem(8);

@@ -7,6 +7,8 @@
         invalid = $bindable(false),
         invalidText,
         children,
+        compact = false,
+        tiled = false,
         host,
         name,
         required,
@@ -14,22 +16,31 @@
     } = $props();
     let fieldsetElement = $state();
 
-    onMount(() => {
-        (host ? host : fieldsetElement)
-            .querySelectorAll('input, .qc-choicefield')
-            .forEach(input => updateInput(input, required, invalid, name))
-
-    })
-
     let onchange = e => {
         if (invalid && e.target.checked) {
             invalid = false;
         }
     }
+    $effect(() => {
+        (host ? host : fieldsetElement)
+            .querySelectorAll('input, .qc-choicefield')
+            .forEach(
+                input =>
+                    updateInput(
+                        input,
+                        required,
+                        invalid,
+                        compact ? compact : tiled,
+                        name)
+            )
+    })
+
 
 </script>
 <Fieldset
     {required}
+    {compact}
+    {tiled}
     bind:invalid
     {invalidText}
     {onchange}

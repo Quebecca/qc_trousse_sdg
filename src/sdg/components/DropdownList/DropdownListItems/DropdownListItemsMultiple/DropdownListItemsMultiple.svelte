@@ -192,7 +192,7 @@
                     <input
                             id={item.id + "-checkbox"}
                             type="checkbox"
-                            class="qc-choicefield"
+                            class="qc-choicefield qc-compact"
                             value={item.value}
                             {name}
                             disabled={item.disabled}

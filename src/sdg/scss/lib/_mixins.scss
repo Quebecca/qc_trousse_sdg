@@ -247,6 +247,16 @@
       cursor: not-allowed;
       border-color: token-value(color, grey, light);
     }
+
+    &.qc-compact {
+      min-width: token-value(spacer, sm);
+      min-height: token-value(spacer, sm);
+      max-width: token-value(spacer, sm);
+      max-height: token-value(spacer, sm);
+
+      border-width: 1px;
+      margin-top: rem(4);
+    }
   }
 }
 
