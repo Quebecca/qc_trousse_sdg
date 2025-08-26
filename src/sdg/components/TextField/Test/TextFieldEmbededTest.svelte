@@ -54,7 +54,7 @@
     />
 </TextField>
 
-<div class="qc-textfield-row">
+<div class="qc-formfield-row">
     <TextField
             label="Combiné 1"
             size="sm"
@@ -74,7 +74,7 @@
         />
     </TextField>
 </div>
-<div class="qc-textfield-row">
+<div class="qc-formfield-row">
     <TextField
             label="Combiné 1 invalide"
             size="sm"

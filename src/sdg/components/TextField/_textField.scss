@@ -108,29 +108,3 @@ textarea {
     font-weight: token-value(font weight content bold);
   }
 }
-
-.qc-textfield-row {
-  display: flex;
-  gap: 0 rem(32);
-  flex-wrap: wrap;
-  margin-bottom: rem(32);
-  margin-top: rem(-8);
-
-  > .qc-form-error {
-    width: 100%;
-  }
-  qc-textfield,
-  .qc-textfield {
-    margin-top: token-value(spacer, xs);
-    display: block;
-    width: auto;
-    margin-bottom: 0;
-  }
-  .qc-dropdown-list-root {
-    margin-top: token-value(spacer, xs);
-    margin-bottom: 0;
-  }
-}
-
-
-

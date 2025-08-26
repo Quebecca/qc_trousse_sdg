@@ -15,5 +15,5 @@ export function onMountInput(input, setTextFieldRow, setValue, setInvalid) {
             setValue(input.value);
             setInvalid(false);
     })
-    setTextFieldRow(input.closest('.qc-textfield-row'))
+    setTextFieldRow(input.closest('.qc-formfield-row'))
 }

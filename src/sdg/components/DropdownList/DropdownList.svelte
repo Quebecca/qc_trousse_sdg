@@ -40,7 +40,7 @@
 
     let
         instance = $state(),
-        parentRow = $derived(instance?.closest(".qc-textfield-row")),
+        parentRow = $derived(instance?.closest(".qc-formfield-row")),
         button = $state(),
         searchInput = $state(),
         dropdownItems = $state(),

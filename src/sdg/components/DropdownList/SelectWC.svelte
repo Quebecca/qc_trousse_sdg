@@ -39,7 +39,7 @@
     let observer;
     let instance = $state();
     let errorElement = $state();
-    let parentRow = $derived($host().closest(".qc-textfield-row"));
+    let parentRow = $derived($host().closest(".qc-formfield-row"));
     let widthClass = $derived.by(() => {
         if (availableWidths.includes(width)) {
             return `qc-dropdown-list-root-${width}`;

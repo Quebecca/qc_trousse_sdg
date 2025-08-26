@@ -74,3 +74,26 @@ $invalid-border-width: 2px;
 .qc-field-elements-flex-md {
   gap: token-value(spacer, md);
 }
+
+.qc-formfield-row {
+  display: flex;
+  gap: 0 rem(32);
+  flex-wrap: wrap;
+  margin-bottom: rem(32);
+  margin-top: rem(-8);
+
+  > .qc-form-error {
+    width: 100%;
+  }
+  qc-textfield,
+  .qc-textfield {
+    margin-top: token-value(spacer, xs);
+    display: block;
+    width: auto;
+    margin-bottom: 0;
+  }
+  .qc-dropdown-list-root {
+    margin-top: token-value(spacer, xs);
+    margin-bottom: 0;
+  }
+}

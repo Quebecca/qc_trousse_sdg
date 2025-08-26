@@ -41,7 +41,7 @@
         items={multipleChoiceOptions}
 />
 
-<div class="qc-textfield-row">
+<div class="qc-formfield-row">
     <DropdownList
             id="dropdown-list-invalid"
             label="État invalide"
@@ -64,9 +64,9 @@
 
 <form id="dropdown-list-embedded-test-form">
     <DropdownList
-            label="Type de restaurant"
+            label="Types de restaurants"
             required="true"
-            placeholder="Type de restaurant"
+            placeholder="Types de restaurants"
             enableSearch={true}
             searchPlaceholder="Rechercher un restaurant"
             items={restaurants}
