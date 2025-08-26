@@ -42,19 +42,7 @@
         }
     })
 
-    $effect(_ => updateInput(input, required, invalid))
-
-    let checkboxInput = $state();
-    let usedId = $derived(id ?? name + value + Math.random().toString(36));
-
-    export function focus() {
-        checkboxInput?.focus();
-    }
-
-    export function closest(tag) {
-        return checkboxInput?.closest(tag);
-    }
-
+    $effect(_ => updateInput(input, required, invalid, compact))
 
     $effect(() => {
         if (!required) return;

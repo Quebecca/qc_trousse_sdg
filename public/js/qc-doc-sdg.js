@@ -76609,8 +76609,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[68, 4]]);
-	var root$7 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[76, 4]]);
+	var root_2$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[56, 4]]);
+	var root$7 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -76672,17 +76672,7 @@
 			}
 		});
 
-		user_effect((_) => updateInput(input(), required(), invalid()));
-
-		let checkboxInput = state(void 0);
-
-		function focus() {
-			get(checkboxInput)?.focus();
-		}
-
-		function closest(tag) {
-			return get(checkboxInput)?.closest(tag);
-		}
+		user_effect((_) => updateInput(input(), required(), invalid(), compact()));
 
 		user_effect(() => {
 			if (!required()) return;
@@ -76728,12 +76718,6 @@
 		append($$anchor, div);
 
 		return pop({
-			get focus() {
-				return focus;
-			},
-			get closest() {
-				return closest;
-			},
 			get id() {
 				return id();
 			},
@@ -76855,7 +76839,7 @@
 			input: {}
 		},
 		[],
-		['focus', 'closest'],
+		[],
 		true
 	);
 
