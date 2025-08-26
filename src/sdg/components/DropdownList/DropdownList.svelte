@@ -13,7 +13,7 @@
         label = "",
         width = "md",
         items = [],
-        value = $bindable(),
+        value = $bindable([]),
         placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
@@ -62,6 +62,7 @@
 
             return "";
         }),
+        previousValue = $state(value),
         expanded = $state(false),
         searchText = $state(""),
         hiddenSearchText = $state(""),
@@ -211,7 +212,7 @@
     });
 
     $effect(() => {
-        if (value && value.length > 0) {
+        if (previousValue?.toString() !== value?.toString()) {
             invalid = false;
         }
     });

@@ -78120,22 +78120,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[310, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[351, 24]]);
 
 	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			248,
+			247,
 			0,
 			[
 				[
-					255,
+					254,
 					4,
 					[
 						[
-							275,
+							274,
 							8,
-							[[302, 12, [[350, 16]]]]
+							[[301, 12, [[349, 16]]]]
 						]
 					]
 				]
@@ -78154,7 +78154,7 @@
 			label = prop($$props, 'label', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
-			value = prop($$props, 'value', 15),
+			value = prop($$props, 'value', 31, () => proxy([])),
 			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
@@ -78168,8 +78168,6 @@
 			errorElement = prop($$props, 'errorElement', 15),
 			webComponentMode = prop($$props, 'webComponentMode', 7, false),
 			webComponentParentRow = prop($$props, 'webComponentParentRow', 7);
-
-		console.log(...log_if_contains_state('log', "webComponentMode", webComponentMode()));
 
 		const inputId = `${id()}-input`,
 			popupId = `${id()}-popup`,
@@ -78203,6 +78201,7 @@
 
 				return "";
 			}),
+			previousValue = state(proxy(value())),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
@@ -78356,7 +78355,7 @@
 		});
 
 		user_effect(() => {
-			if (value() && value().length > 0) {
+			if (strict_equals(get(previousValue)?.toString(), value()?.toString(), false)) {
 				invalid(false);
 			}
 		});
@@ -78658,7 +78657,7 @@
 			get value() {
 				return value();
 			},
-			set value($$value) {
+			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},

@@ -24,7 +24,7 @@
 
     let {
         invalid = $bindable(false),
-        value = $bindable(),
+        value = $bindable([]),
         multiple,
         label,
         width,

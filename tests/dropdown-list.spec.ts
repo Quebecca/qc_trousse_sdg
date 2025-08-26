@@ -441,7 +441,7 @@ test.describe('formulaire', () => {
           - text: Veuillez choisir un type de restaurant.
     `);
 
-        await page.getByRole('combobox', { name: 'Type de restaurant' }).click();
+        await page.getByRole('combobox', { name: 'Types de restaurant' }).click();
         await page.getByRole('listitem').filter({ hasText: 'Pâtisserie' }).click();
 
         await expect(page.locator('#dropdown-list-restaurants-error')).toHaveCount(0);

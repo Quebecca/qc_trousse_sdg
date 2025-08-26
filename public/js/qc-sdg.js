@@ -312,16 +312,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6851,37 +6841,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -13049,22 +13008,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[310, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[351, 24]]);
 
 	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			248,
+			247,
 			0,
 			[
 				[
-					255,
+					254,
 					4,
 					[
 						[
-							275,
+							274,
 							8,
-							[[302, 12, [[350, 16]]]]
+							[[301, 12, [[349, 16]]]]
 						]
 					]
 				]
@@ -13083,7 +13042,7 @@
 			label = prop($$props, 'label', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
-			value = prop($$props, 'value', 15),
+			value = prop($$props, 'value', 31, () => proxy([])),
 			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
@@ -13097,8 +13056,6 @@
 			errorElement = prop($$props, 'errorElement', 15),
 			webComponentMode = prop($$props, 'webComponentMode', 7, false),
 			webComponentParentRow = prop($$props, 'webComponentParentRow', 7);
-
-		console.log(...log_if_contains_state('log', "webComponentMode", webComponentMode()));
 
 		const inputId = `${id()}-input`,
 			popupId = `${id()}-popup`,
@@ -13132,6 +13089,7 @@
 
 				return "";
 			}),
+			previousValue = state(proxy(value())),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
@@ -13285,7 +13243,7 @@
 		});
 
 		user_effect(() => {
-			if (value() && value().length > 0) {
+			if (strict_equals(get(previousValue)?.toString(), value()?.toString(), false)) {
 				invalid(false);
 			}
 		});
@@ -13587,7 +13545,7 @@
 			get value() {
 				return value();
 			},
-			set value($$value) {
+			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
@@ -13976,7 +13934,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[130, 0], [147, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[129, 0], [146, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13985,7 +13943,7 @@
 		var $$ownership_validator = create_ownership_validator($$props);
 
 		let invalid = prop($$props, 'invalid', 15, false),
-			value = prop($$props, 'value', 15),
+			value = prop($$props, 'value', 31, () => proxy([])),
 			multiple = prop($$props, 'multiple', 7),
 			label = prop($$props, 'label', 7),
 			width = prop($$props, 'width', 7),
@@ -14013,8 +13971,6 @@
 		let parentRow = user_derived(() => $$props.$$host.closest(".qc-textfield-row"));
 
 		let widthClass = user_derived(() => {
-			console.log(...log_if_contains_state('log', width()));
-
 			if (availableWidths.includes(width())) {
 				return `qc-dropdown-list-root-${width()}`;
 			}
@@ -14179,7 +14135,7 @@
 			get value() {
 				return value();
 			},
-			set value($$value) {
+			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
