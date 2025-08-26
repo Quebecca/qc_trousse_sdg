@@ -13012,22 +13012,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[310, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[351, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
 
 	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			247,
+			248,
 			0,
 			[
 				[
-					254,
+					255,
 					4,
 					[
 						[
-							274,
+							275,
 							8,
-							[[301, 12, [[349, 16]]]]
+							[[302, 12, [[350, 16]]]]
 						]
 					]
 				]
@@ -13044,6 +13044,7 @@
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
+			ariaLabel = prop($$props, 'ariaLabel', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
 			value = prop($$props, 'value', 31, () => proxy([])),
@@ -13465,6 +13466,7 @@
 		reset(div_1);
 
 		var node_6 = sibling(div_1, 2);
+		const expression_1 = user_derived(() => label() ?? ariaLabel());
 
 		{
 			$$ownership_validator.binding('errorElement', FormError, errorElement);
@@ -13479,7 +13481,7 @@
 				},
 				extraClasses: ["qc-xs-mt"],
 				get label() {
-					return label();
+					return get(expression_1);
 				},
 				get rootElement() {
 					return errorElement();
@@ -13530,6 +13532,13 @@
 			},
 			set label($$value = "") {
 				label($$value);
+				flushSync();
+			},
+			get ariaLabel() {
+				return ariaLabel();
+			},
+			set ariaLabel($$value = "") {
+				ariaLabel($$value);
 				flushSync();
 			},
 			get width() {
@@ -13657,6 +13666,7 @@
 		{
 			id: {},
 			label: {},
+			ariaLabel: {},
 			width: {},
 			items: {},
 			value: {},
@@ -13938,7 +13948,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[129, 0], [146, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[129, 0], [147, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14069,6 +14079,7 @@
 		reset(div);
 
 		var node_1 = sibling(div, 2);
+		const expression = user_derived(() => get(selectElement)?.getAttribute("aria-label"));
 
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
@@ -14078,6 +14089,9 @@
 				{
 					get label() {
 						return label();
+					},
+					get ariaLabel() {
+						return get(expression);
 					},
 					get items() {
 						return get(items);

@@ -132,6 +132,7 @@
 
 <DropdownList
         {label}
+        ariaLabel={selectElement?.getAttribute("aria-label")}
         {items}
         {width}
         webComponentMode={true}

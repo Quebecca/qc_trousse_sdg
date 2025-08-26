@@ -11,6 +11,7 @@
     let {
         id = Math.random().toString(36).substring(2, 15),
         label = "",
+        ariaLabel = "",
         width = "md",
         items = [],
         value = $bindable([]),
@@ -361,6 +362,6 @@
                {invalid}
                {invalidText}
                extraClasses={["qc-xs-mt"]}
-               {label}
+               label={label ?? ariaLabel}
     />
 </div>
