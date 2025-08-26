@@ -2477,6 +2477,9 @@ li[aria-selected=true] {
   margin-bottom: 3.2rem;
 }
 
+.qc-dropdown-list-root {
+  width: 100%;
+}
 .qc-dropdown-list-root-xs {
   max-width: var(--qc-size-max-width-xs);
 }

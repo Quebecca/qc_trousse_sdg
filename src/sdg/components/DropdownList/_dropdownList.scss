@@ -11,6 +11,8 @@ $border: 1;
 }
 
 .qc-dropdown-list-root {
+  width: 100%;
+
   &-xs { max-width: token-value(size, max-width, xs); }
   &-sm { max-width: token-value(size, max-width, sm); }
   &-md { max-width: token-value(size, max-width, md); }

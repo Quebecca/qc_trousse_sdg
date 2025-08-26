@@ -81,12 +81,6 @@
             }
 
             return "";
-        }),
-        usedWidth = $derived.by(() => {
-            if (availableWidths.includes(width)) {
-                return width;
-            }
-            return "md";
         })
     ;
 
@@ -236,13 +230,12 @@
             parentRow.appendChild($state.snapshot(errorElement));
         }
     });
-
-    $inspect(parentRow);
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab} />
 <div
     class={[
+        "qc-dropdown-list-root",
         widthClass,
         !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
     ]} bind:this={rootElement}

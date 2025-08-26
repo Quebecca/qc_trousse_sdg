@@ -27,8 +27,11 @@
         value = $bindable(),
         multiple,
         label,
+        width,
         ...rest
     } = $props();
+
+    const availableWidths = ["xs", "sm", "md", "lg", "xl"];
 
     let selectElement = $state();
     let items = $state();
@@ -37,6 +40,12 @@
     let instance = $state();
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-textfield-row"));
+    let widthClass = $derived.by(() => {
+        if (availableWidths.includes(width)) {
+            return `qc-dropdown-list-root-${width}`;
+        }
+        return `qc-dropdown-list-root-md`;
+    });
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -78,6 +87,13 @@
     $effect(() => {
        if (parentRow && errorElement) {
            parentRow.appendChild(errorElement);
+       }
+    });
+
+    $effect(() => {
+       if (widthClass) {
+           $host().classList.add("qc-dropdown-list-root");
+           $host().classList.add(widthClass);
        }
     });
 
