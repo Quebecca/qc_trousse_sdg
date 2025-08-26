@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('Rendu visuel',
     () => {
     test('Select baseline', {
-        tag: ['@baseline', '@visual']
+        tag: ['@baseline', '@dropdownlist']
     }, async ({ page }) => {
         await page.locator('#qc-select-single-choice-search-input').click();
         await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
@@ -19,7 +19,7 @@ test.describe('Rendu visuel',
     });
 
     test('Select svelte', {
-        tag: ['@svelte', '@visual']
+        tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {
         const htmlFilePath = path.resolve(__dirname, '../public/dropdownListEmbedded.test.html');
         await page.goto(`file://${htmlFilePath}`);
@@ -32,8 +32,157 @@ test.describe('Rendu visuel',
     });
 });
 
+test.describe('navigation au clavier', () => {
+    test('Navigation avec Tab', {
+            tag: ['@keyboard', '@dropdownlist'],
+            annotation: {
+                type: 'description',
+                description: 'Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors focus placé sur les options suivantes de la liste'
+            }
+        },
+        async ({ page, browserName }) => {
+            await page.locator('#qc-select-single-choice-input').click();
+
+            await page.locator('#qc-select-single-choice-input').press('Tab');
+            await expect(
+                page.locator('#qc-select-single-choice-items >> li')
+                    .filter({ has: page.getByText(/^Option 1$/gm) })
+            ).toBeFocused();
+
+            await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Tab');
+            await expect(
+                page.locator('#qc-select-single-choice-items >> li')
+                    .filter({ has: page.getByText(/^Option 2$/gm) })
+            ).toBeFocused();
+
+            await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('Shift+Tab');
+            await expect(
+                page.locator('#qc-select-single-choice-items >> li')
+                    .filter({ has: page.getByText(/^Option 1$/gm) })
+            ).toBeFocused();
+
+            await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Shift+Tab');
+
+            if (browserName !== 'webkit') {
+                await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
+            } else {
+                console.log(
+                    "La vérification du focus se fait incorrectement avec Webkit." +
+                    " Voir l'issue https://github.com/microsoft/playwright/issues/32269" +
+                    " et la PR https://github.com/microsoft/playwright/pull/31325"
+                );
+            }
+        });
+
+    test('Navigation avec flèches', {
+        tag: ['@keyboard', '@dropdownlist'],
+        annotation: {
+            type: 'description',
+            description: 'Soit une liste déroulante ouverte, lorsque navigation avec flèches, alors focus placé sur les options suivantes de la liste'
+        }
+    }, async ({ page }) => {
+        await page.locator('#qc-select-single-choice-input').click();
+
+        await page.locator('#qc-select-single-choice-input').press('ArrowDown');
+        await expect(
+            page.locator('#qc-select-single-choice-items >> li')
+                .filter({ has: page.getByText(/^Option 1$/gm) })
+        ).toBeFocused();
+
+        await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowDown');
+        await expect(
+            page.locator('#qc-select-single-choice-items >> li')
+                .filter({ has: page.getByText(/^Option 2$/gm) })
+        ).toBeFocused();
+
+        await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('ArrowUp');
+        await expect(
+            page.locator('#qc-select-single-choice-items >> li')
+                .filter({ has: page.getByText(/^Option 1$/gm) })
+        ).toBeFocused();
+
+        await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowUp');
+        await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
+    });
+
+    test('Navigation vers dernière option avec flèche vers le haut', {
+            tag: ['@keyboard', '@dropdownlist'],
+            annotation: {
+                type: 'description',
+                description: 'Soit focus placé sur la liste déroulante de Choix unique et liste ouverte, en tapant flèche vers le haut, alors focus placé sur la dernière option'
+            }
+        },
+        async ({ page }) => {
+            await page.locator('#qc-select-single-choice-input').click();
+            await page.locator('#qc-select-single-choice-input').press('ArrowUp');
+
+            await expect(page.locator('[id="qc-select-single-choice-Option-16 désactivée-16"]')).toBeFocused();
+        });
+
+    test('Flèche du bas sur liste déroulante fermée', {
+        tag: ['@keyboard', '@dropdownlist'],
+        annotation: {
+            type: 'description',
+            description: 'Soit une option sélectionnée, liste déroulante fermée et focus placé sur l\'input, en tapant flèche du bas, alors le focus est placé sur l\'option sélectionnée'
+        }
+    }, async ({ page }) => {
+        await page.locator('#qc-select-single-choice-input').click();
+        await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
+        await page.locator('#qc-select-single-choice-input').press('ArrowDown');
+
+        await expect(
+            page.locator('#qc-select-single-choice-items >> li')
+                .filter({ has: page.getByText(/^Option 5$/gm) })
+        ).toBeFocused();
+    });
+
+    test('select navigation détaillée', {
+        tag: ['@keyboard', '@dropdownlist'],
+    }, async ({ page }) => {
+        await page.locator('#dropdown-list-restaurants-input').click();
+        await page.locator('#dropdown-list-restaurants-search').fill('p');
+
+        await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
+    - list:
+        - listitem:
+            - checkbox "Pizzeria"
+            - text: Pizzeria
+        - listitem:
+            - checkbox "Pâtisserie"
+            - text: Pâtisserie
+        - listitem:
+            - checkbox "Boîte à pâtes"
+            - text: Boîte à pâtes
+    - status
+    `);
+
+        await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').click();
+        await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').press('Escape');
+        await page.locator('#dropdown-list-restaurants-input').click();
+
+        await page.locator('#dropdown-list-restaurants-search').click();
+        await page.locator('#dropdown-list-restaurants-search').fill('st');
+
+        await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
+    - list:
+        - listitem:
+            - checkbox "Steakhouse"
+            - text: Steakhouse
+        - listitem:
+            - checkbox "Restaurant à burgers"
+            - text: Restaurant à burgers
+    - status
+    `);
+
+        await page.locator('#dropdown-list-restaurants-items').getByText('Steakhouse').click();
+
+        await expect(page.locator('#dropdown-list-restaurants-input')).toContainText('Pâtisserie, Steakhouse');
+    });
+});
+
 test.describe('Interactions sélection unique', () => {
         test('Clic sur libellé', {
+                tag: ['@single', '@dropdownlist'],
                 annotation: {
                     type: 'description',
                     description: 'En cliquant sur un libellé, alors le liste est en focus'
@@ -46,6 +195,7 @@ test.describe('Interactions sélection unique', () => {
             });
 
         test('Clic sur input', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'En cliquant sur la liste déroulante, alors la popup s\'affiche'
@@ -57,77 +207,8 @@ test.describe('Interactions sélection unique', () => {
             await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'true');
         });
 
-        test('Navigation avec Tab', {
-                annotation: {
-                    type: 'description',
-                    description: 'Soit une liste déroulante ouverte, lorsque navigation avec Tab, alors focus placé sur les options suivantes de la liste'
-                }
-            },
-            async ({ page, browserName }) => {
-                await page.locator('#qc-select-single-choice-input').click();
-
-                await page.locator('#qc-select-single-choice-input').press('Tab');
-                await expect(
-                    page.locator('#qc-select-single-choice-items >> li')
-                        .filter({ has: page.getByText(/^Option 1$/gm) })
-                ).toBeFocused();
-
-                await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Tab');
-                await expect(
-                    page.locator('#qc-select-single-choice-items >> li')
-                        .filter({ has: page.getByText(/^Option 2$/gm) })
-                ).toBeFocused();
-
-                await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('Shift+Tab');
-                await expect(
-                    page.locator('#qc-select-single-choice-items >> li')
-                        .filter({ has: page.getByText(/^Option 1$/gm) })
-                ).toBeFocused();
-
-                await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('Shift+Tab');
-
-                if (browserName !== 'webkit') {
-                    await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
-                } else {
-                    console.log(
-                        "La vérification du focus se fait incorrectement avec Webkit." +
-                        " Voir l'issue https://github.com/microsoft/playwright/issues/32269" +
-                        " et la PR https://github.com/microsoft/playwright/pull/31325"
-                    );
-                }
-            });
-
-        test('Navigation avec flèches', {
-            annotation: {
-                type: 'description',
-                description: 'Soit une liste déroulante ouverte, lorsque navigation avec flèches, alors focus placé sur les options suivantes de la liste'
-            }
-        }, async ({ page }) => {
-            await page.locator('#qc-select-single-choice-input').click();
-
-            await page.locator('#qc-select-single-choice-input').press('ArrowDown');
-            await expect(
-                page.locator('#qc-select-single-choice-items >> li')
-                    .filter({ has: page.getByText(/^Option 1$/gm) })
-            ).toBeFocused();
-
-            await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowDown');
-            await expect(
-                page.locator('#qc-select-single-choice-items >> li')
-                    .filter({ has: page.getByText(/^Option 2$/gm) })
-            ).toBeFocused();
-
-            await page.locator('[id="qc-select-single-choice-Option-2-2"]').press('ArrowUp');
-            await expect(
-                page.locator('#qc-select-single-choice-items >> li')
-                    .filter({ has: page.getByText(/^Option 1$/gm) })
-            ).toBeFocused();
-
-            await page.locator('[id="qc-select-single-choice-Option-1-1"]').press('ArrowUp');
-            await expect(page.locator('#qc-select-single-choice-input')).toBeFocused();
-        });
-
         test('Clic extérieur', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'Soit une liste déroulante ouverte, en cliquant à l\'extérieur de la liste, alors la popup se ferme'
@@ -141,6 +222,7 @@ test.describe('Interactions sélection unique', () => {
         });
 
         test('Sélection option désactivée', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'En sélectionnant une option désactivée, alors rien ne se passe'
@@ -153,6 +235,7 @@ test.describe('Interactions sélection unique', () => {
         });
 
         test('Sélection choix unique', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'En sélectionnant une option activée, alors referme la popup et affiche la nouvelle option sélectionnée'
@@ -167,6 +250,7 @@ test.describe('Interactions sélection unique', () => {
         });
 
         test('Sélection choix unique avec Entrée', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'En sélectionnant une option activée au clavier, alors referme la popup et affiche la nouvelle option sélectionnée'
@@ -196,6 +280,7 @@ test.describe('Interactions sélection unique', () => {
         });
 
         test('Sélection choix unique avec Espace', {
+            tag: ['@single', '@dropdownlist'],
             annotation: {
                 type: 'description',
                 description: 'En sélectionnant une option activée avec Espace, alors referme la popup et affiche la nouvelle option sélectionnée'
@@ -223,41 +308,12 @@ test.describe('Interactions sélection unique', () => {
             await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
             await expect(page.locator('#qc-select-single-choice-input')).toHaveAttribute('aria-expanded', 'false');
         });
-
-        test('Navigation vers dernière option avec flèche vers le haut',
-            {
-                annotation: {
-                    type: 'description',
-                    description: 'Soit focus placé sur la liste déroulante de Choix unique et liste ouverte, en tapant flèche vers le haut, alors focus placé sur la dernière option'
-                }
-            },
-            async ({ page }) => {
-                await page.locator('#qc-select-single-choice-input').click();
-                await page.locator('#qc-select-single-choice-input').press('ArrowUp');
-
-                await expect(page.locator('[id="qc-select-single-choice-Option-16 désactivée-16"]')).toBeFocused();
-            });
-
-        test('Flèche du bas sur liste déroulante fermée', {
-            annotation: {
-                type: 'description',
-                description: 'Soit une option sélectionnée, liste déroulante fermée et focus placé sur l\'input, en tapant flèche du bas, alors le focus est placé sur l\'option sélectionnée'
-            }
-        }, async ({ page }) => {
-            await page.locator('#qc-select-single-choice-input').click();
-            await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
-            await page.locator('#qc-select-single-choice-input').press('ArrowDown');
-
-            await expect(
-                page.locator('#qc-select-single-choice-items >> li')
-                    .filter({ has: page.getByText(/^Option 5$/gm) })
-            ).toBeFocused();
-        });
     }
 );
 
 test.describe('recherche', () => {
     test('Test de recherche avec champ de recherche', {
+        tag: ['@search', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit liste déroulante avec champ de recherche est ouverte, en tapant un caractère imprimable, alors ajoute le texte à la recherche'
@@ -335,6 +391,7 @@ test.describe('recherche', () => {
     });
 
     test('Test de recherche sans champ de recherche', {
+        tag: ['@search', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit liste déroulante sans champ de recherche, en tapant un caractère imprimable, alors focus sur le premier élément correspondant'
@@ -366,6 +423,7 @@ test.describe('recherche', () => {
 
 test.describe('choix multiples', () => {
     test('popup choix multiple', {
+        tag: ['@multiple', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit la liste déroulante Choix multiples, en cliquant sur Option 3 et Option 4, alors la popup reste ouverte'
@@ -382,6 +440,7 @@ test.describe('choix multiples', () => {
     });
 
     test('choix multiple sélection', {
+        tag: ['@multiple', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit la liste déroulante Choix multiples, en cliquant sur Option 3 et Option 4, alors les 2 options sont listées'
@@ -395,6 +454,7 @@ test.describe('choix multiples', () => {
     });
 
     test('choix multiples 2 clics par option', {
+        tag: ['@multiple', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'En sélectionnant une option de Choix multiples et en la désélectionnant, alors aucune option n\'est listée'
@@ -409,6 +469,7 @@ test.describe('choix multiples', () => {
     });
 
     test('Choix multiple sélection avec flèches', {
+        tag: ['@multiple', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit une option de choix multiple atteinte avec les flèches, en appuyant sur Espace, alors l\'option est sélectionnée'
@@ -431,6 +492,7 @@ test.describe('choix multiples', () => {
 
 test.describe('formulaire', () => {
     test('formulaire incomplet', {
+        tag: ['@form', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit un formulaire de liste déroulante avec champ obligatoire vide, en cliquant sur envoyer, alors erreur affichée et peut être ensuite retirée'
@@ -452,6 +514,7 @@ test.describe('formulaire', () => {
     });
 
     test('envoi formulaire', {
+        tag: ['@form', '@dropdownlist'],
         annotation: {
             type: 'description',
             description: 'Soit un formulaire de liste déroulante avec champ obligatoire vide, en sélectionnant une option et en soumettant, alors alerte d\'envoi de donnée affichée'
@@ -472,45 +535,4 @@ test.describe('formulaire', () => {
             await dialog.accept();
         });
     });
-});
-
-test('select navigation détaillée', async ({ page }) => {
-    await page.locator('#dropdown-list-restaurants-input').click();
-    await page.locator('#dropdown-list-restaurants-search').fill('p');
-
-    await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
-    - list:
-        - listitem:
-            - checkbox "Pizzeria"
-            - text: Pizzeria
-        - listitem:
-            - checkbox "Pâtisserie"
-            - text: Pâtisserie
-        - listitem:
-            - checkbox "Boîte à pâtes"
-            - text: Boîte à pâtes
-    - status
-    `);
-
-    await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').click();
-    await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').press('Escape');
-    await page.locator('#dropdown-list-restaurants-input').click();
-
-    await page.locator('#dropdown-list-restaurants-search').click();
-    await page.locator('#dropdown-list-restaurants-search').fill('st');
-
-    await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
-    - list:
-        - listitem:
-            - checkbox "Steakhouse"
-            - text: Steakhouse
-        - listitem:
-            - checkbox "Restaurant à burgers"
-            - text: Restaurant à burgers
-    - status
-    `);
-
-    await page.locator('#dropdown-list-restaurants-items').getByText('Steakhouse').click();
-
-    await expect(page.locator('#dropdown-list-restaurants-input')).toContainText('Pâtisserie, Steakhouse');
 });
