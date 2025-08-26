@@ -47,13 +47,23 @@
         searchInput = $state(),
         dropdownItems = $state(),
         selectedItems = $derived(items.filter((item) => item.checked) ?? []),
-        selectedOptionsText = $derived(
-            items.length > 0 ?
-                multiple ?
-                    selectedItems?.map((item) => item.label).join(", ")
-                    : selectedItems[0]?.label
-                : ""
-        ),
+        selectedOptionsText = $derived.by(() => {
+            if (selectedItems.length >= 3) {
+                if (lang === "fr") {
+                    return `${selectedItems.length} options sélectionnées`;
+                }
+                return `${selectedItems.length} selected options`;
+            }
+
+            if (selectedItems.length > 0) {
+                if (multiple) {
+                    return selectedItems.map((item) => item.label).join(", ");
+                }
+                return selectedItems[0].label;
+            }
+
+            return "";
+        }),
         expanded = $state(false),
         searchText = $state(""),
         hiddenSearchText = $state(""),
@@ -68,9 +78,9 @@
         })),
         widthClass = $derived.by(() => {
             if (availableWidths.includes(width)) {
-                return `qc-dropdown-list-root-${width}`;
+                return `qc-dropdown-list-container-${width}`;
             }
-            return `qc-dropdown-list-root-md`;
+            return `qc-dropdown-list-container-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
@@ -236,38 +246,26 @@
 <div
     class={[
         "qc-dropdown-list-root",
-        widthClass,
         !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
     ]} bind:this={rootElement}
 >
-    <div class={`qc-dropdown-list-container`}>
-        <div class="qc-dropdown-list-label-container">
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-            {#if label}
-                <Label
-                        {required}
-                        {disabled}
-                        text={label}
-                        forId={inputId}
-                        onclick={(e) => {
-                            e.preventDefault();
-                            button.focus();
-                        }}
-                        bold={true}
-                        id={labelId}
-                />
-            {/if}
-            {#if multiple && selectedItems.length > 0}
-                <div class="qc-dropdown-list-selection-count">
-                    {#if lang === "fr"}
-                        {selectedItems.length} sélection{selectedItems.length > 1 ? "s" : ""}
-                    {:else}
-                        {selectedItems.length} selection{selectedItems.length > 1 ? "s" : ""}
-                    {/if}
-                </div>
-            {/if}
-        </div>
+    <div class={`qc-dropdown-list-container ${widthClass}`}>
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+        {#if label}
+            <Label
+                    {required}
+                    {disabled}
+                    text={label}
+                    forId={inputId}
+                    onclick={(e) => {
+                        e.preventDefault();
+                        button.focus();
+                    }}
+                    bold={true}
+                    id={labelId}
+            />
+        {/if}
         <div
             class={[
                 `qc-dropdown-list`,

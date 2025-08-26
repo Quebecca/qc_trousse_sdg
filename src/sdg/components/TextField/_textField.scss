@@ -121,9 +121,13 @@ textarea {
   }
   qc-textfield,
   .qc-textfield {
-    margin-top: rem(8);
+    margin-top: token-value(spacer, xs);
     display: block;
     width: auto;
+    margin-bottom: 0;
+  }
+  .qc-dropdown-list-root {
+    margin-top: token-value(spacer, xs);
     margin-bottom: 0;
   }
 }

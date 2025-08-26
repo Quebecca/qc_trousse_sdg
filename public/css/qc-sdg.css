@@ -2211,9 +2211,13 @@ qc-textfield textarea + .qc-textfield-charcount {
 }
 .qc-textfield-row qc-textfield,
 .qc-textfield-row .qc-textfield {
-  margin-top: 0.8rem;
+  margin-top: var(--qc-spacer-xs);
   display: block;
   width: auto;
+  margin-bottom: 0;
+}
+.qc-textfield-row .qc-dropdown-list-root {
+  margin-top: var(--qc-spacer-xs);
   margin-bottom: 0;
 }
 
@@ -2499,15 +2503,23 @@ li[aria-selected=true] {
 .qc-dropdown-list-container {
   width: 100%;
 }
-
-.qc-dropdown-list-label-container {
-  display: flex;
-  justify-content: space-between;
+.qc-dropdown-list-container .qc-label {
   margin-bottom: 0.4rem;
 }
-
-.qc-label {
-  width: fit-content;
+.qc-dropdown-list-container-xs {
+  max-width: var(--qc-size-max-width-xs);
+}
+.qc-dropdown-list-container-sm {
+  max-width: var(--qc-size-max-width-sm);
+}
+.qc-dropdown-list-container-md {
+  max-width: var(--qc-size-max-width-md);
+}
+.qc-dropdown-list-container-lg {
+  max-width: var(--qc-size-max-width-lg);
+}
+.qc-dropdown-list-container-xl {
+  max-width: var(--qc-size-max-width-xl);
 }
 
 .qc-dropdown-list {

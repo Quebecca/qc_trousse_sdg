@@ -3520,29 +3520,6 @@
 		};
 	}
 
-	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {any} value
-	 */
-	function text(value = '') {
-		if (!hydrating) {
-			var t = create_text(value + '');
-			assign_nodes(t, t);
-			return t;
-		}
-
-		var node = hydrate_node;
-
-		if (node.nodeType !== 3) {
-			// if an {expression} is empty during SSR, we need to insert an empty text node
-			node.before((node = create_text()));
-			set_hydrate_node(node);
-		}
-
-		assign_nodes(node, node);
-		return node;
-	}
-
 	function comment() {
 		// we're not delegating to `template` here for performance reasons
 		if (hydrating) {
@@ -76153,10 +76130,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
+	var root_3$1 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
 	var root_4$2 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[140, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$2 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[164, 4]]);
+	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[164, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -76210,7 +76187,7 @@
 
 			{
 				var consequent_1 = ($$anchor) => {
-					var div = root_3();
+					var div = root_3$1();
 
 					set_attribute(div, 'id', descriptionId);
 
@@ -76394,7 +76371,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_2 = root_6$2();
+				var div_2 = root_6$1();
 				var node_8 = child(div_2);
 
 				textfield(node_8);
@@ -78143,24 +78120,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-selection-count"><!></div>`), DropdownList[FILENAME], [[262, 16]]);
-	var root_5$1 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[307, 20]]);
-	var root_6$1 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[348, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[305, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[346, 24]]);
 
-	var root$2 = add_locations(template(`<div><div><div class="qc-dropdown-list-label-container"><!> <!></div> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
+	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			236,
+			246,
 			0,
 			[
 				[
-					243,
+					252,
 					4,
 					[
-						[244, 8],
 						[
-							271,
+							269,
 							8,
-							[[298, 12, [[346, 16]]]]
+							[[296, 12, [[344, 16]]]]
 						]
 					]
 				]
@@ -78209,7 +78184,25 @@
 			searchInput = state(void 0),
 			dropdownItems = state(void 0),
 			selectedItems = user_derived(() => items().filter((item) => item.checked) ?? []),
-			selectedOptionsText = user_derived(() => items().length > 0 ? multiple() ? get(selectedItems)?.map((item) => item.label).join(", ") : get(selectedItems)[0]?.label : ""),
+			selectedOptionsText = user_derived(() => {
+				if (get(selectedItems).length >= 3) {
+					if (strict_equals(lang, "fr")) {
+						return `${get(selectedItems).length} options sélectionnées`;
+					}
+
+					return `${get(selectedItems).length} selected options`;
+				}
+
+				if (get(selectedItems).length > 0) {
+					if (multiple()) {
+						return get(selectedItems).map((item) => item.label).join(", ");
+					}
+
+					return get(selectedItems)[0].label;
+				}
+
+				return "";
+			}),
 			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
@@ -78224,10 +78217,10 @@
 			})),
 			widthClass = user_derived(() => {
 				if (availableWidths.includes(width())) {
-					return `qc-dropdown-list-root-${width()}`;
+					return `qc-dropdown-list-container-${width()}`;
 				}
 
-				return `qc-dropdown-list-root-md`;
+				return `qc-dropdown-list-container-md`;
 			}),
 			srItemsCountText = user_derived(() => {
 				const s = get(displayedItems).length > 1 ? "s" : "";
@@ -78397,11 +78390,7 @@
 		event('keydown', $document.body, handleTab);
 
 		var div_1 = child(div);
-
-		set_class(div_1, 1, `qc-dropdown-list-container`);
-
-		var div_2 = child(div_1);
-		var node = child(div_2);
+		var node = child(div_1);
 
 		{
 			var consequent = ($$anchor) => {
@@ -78430,49 +78419,11 @@
 			});
 		}
 
-		var node_1 = sibling(node, 2);
-
-		{
-			var consequent_2 = ($$anchor) => {
-				var div_3 = root_2$2();
-				var node_2 = child(div_3);
-
-				{
-					var consequent_1 = ($$anchor) => {
-						var text$1 = text();
-
-						template_effect(() => set_text(text$1, `${get(selectedItems).length ?? ''} sélection${get(selectedItems).length > 1 ? "s" : ""}`));
-						append($$anchor, text$1);
-					};
-
-					var alternate = ($$anchor) => {
-						var text_1 = text();
-
-						template_effect(() => set_text(text_1, `${get(selectedItems).length ?? ''} selection${get(selectedItems).length > 1 ? "s" : ""}`));
-						append($$anchor, text_1);
-					};
-
-					if_block(node_2, ($$render) => {
-						if (strict_equals(lang, "fr")) $$render(consequent_1); else $$render(alternate, false);
-					});
-				}
-
-				reset(div_3);
-				append($$anchor, div_3);
-			};
-
-			if_block(node_1, ($$render) => {
-				if (multiple() && get(selectedItems).length > 0) $$render(consequent_2);
-			});
-		}
-
-		reset(div_2);
-
-		var div_4 = sibling(div_2, 2);
-		var node_3 = child(div_4);
+		var div_2 = sibling(node, 2);
+		var node_1 = child(div_2);
 
 		bind_this(
-			DropdownListButton(node_3, {
+			DropdownListButton(node_1, {
 				inputId,
 				get disabled() {
 					return disabled();
@@ -78507,20 +78458,20 @@
 			() => get(button)
 		);
 
-		var div_5 = sibling(node_3, 2);
+		var div_3 = sibling(node_1, 2);
 
-		set_attribute(div_5, 'id', popupId);
+		set_attribute(div_3, 'id', popupId);
 
-		var node_4 = child(div_5);
+		var node_2 = child(div_3);
 
 		{
-			var consequent_3 = ($$anchor) => {
-				var div_6 = root_5$1();
-				var node_5 = child(div_6);
+			var consequent_1 = ($$anchor) => {
+				var div_4 = root_2$2();
+				var node_3 = child(div_4);
 				const expression = user_derived(() => searchPlaceholder() ? searchPlaceholder() : undefined);
 
 				bind_this(
-					SearchInput(node_5, {
+					SearchInput(node_3, {
 						get id() {
 							return `${id() ?? ''}-search`;
 						},
@@ -78550,22 +78501,22 @@
 					() => get(searchInput)
 				);
 
-				reset(div_6);
-				append($$anchor, div_6);
+				reset(div_4);
+				append($$anchor, div_4);
 			};
 
-			if_block(node_4, ($$render) => {
-				if (enableSearch()) $$render(consequent_3);
+			if_block(node_2, ($$render) => {
+				if (enableSearch()) $$render(consequent_1);
 			});
 		}
 
-		var node_6 = sibling(node_4, 2);
+		var node_4 = sibling(node_2, 2);
 
 		{
 			$$ownership_validator.binding('value', DropdownListItems, value);
 
 			bind_this(
-				DropdownListItems(node_6, {
+				DropdownListItems(node_4, {
 					id: itemsId,
 					get enableSearch() {
 						return enableSearch();
@@ -78602,30 +78553,30 @@
 			);
 		}
 
-		var div_7 = sibling(node_6, 2);
-		var node_7 = child(div_7);
+		var div_5 = sibling(node_4, 2);
+		var node_5 = child(div_5);
 
-		key_block(node_7, () => get(searchText), ($$anchor) => {
-			var span = root_6$1();
-			var text_2 = child(span, true);
+		key_block(node_5, () => get(searchText), ($$anchor) => {
+			var span = root_3();
+			var text = child(span, true);
 
 			reset(span);
-			template_effect(() => set_text(text_2, get(srItemsCountText)));
+			template_effect(() => set_text(text, get(srItemsCountText)));
 			append($$anchor, span);
 		});
 
-		reset(div_7);
 		reset(div_5);
-		reset(div_4);
-		bind_this(div_4, ($$value) => set(instance, $$value), () => get(instance));
+		reset(div_3);
+		reset(div_2);
+		bind_this(div_2, ($$value) => set(instance, $$value), () => get(instance));
 		reset(div_1);
 
-		var node_8 = sibling(div_1, 2);
+		var node_6 = sibling(div_1, 2);
 
 		{
 			$$ownership_validator.binding('errorElement', FormError, errorElement);
 
-			FormError(node_8, {
+			FormError(node_6, {
 				id: errorId,
 				get invalid() {
 					return invalid();
@@ -78652,16 +78603,17 @@
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-dropdown-list-root",
-				get(widthClass),
 				!(get(parentRow) || webComponentParentRow()) && "qc-dropdown-list-margin"
 			]));
 
-			set_class(div_4, 1, clsx([
+			set_class(div_1, 1, `qc-dropdown-list-container ${get(widthClass)}`);
+
+			set_class(div_2, 1, clsx([
 				`qc-dropdown-list`,
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
-			div_5.hidden = !get(expanded);
+			div_3.hidden = !get(expanded);
 		});
 
 		append($$anchor, div);
