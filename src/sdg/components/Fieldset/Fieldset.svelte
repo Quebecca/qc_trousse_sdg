@@ -2,6 +2,7 @@
     import FormError from '../FormError/FormError.svelte';
     import { onMount } from 'svelte';
     import {Utils} from "../utils";
+    import LabelText from "../Label/LabelText.svelte";
 
     let {
         legend,
@@ -52,10 +53,7 @@
 >
   {#if legend}
     <legend id={legendId}>
-        {@html legend}
-        {#if required}
-            <span class="qc-required" aria-hidden="true">*</span>
-        {/if}
+        <LabelText text={legend} {required} />
     </legend>
   {/if}
     <div

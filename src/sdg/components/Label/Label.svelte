@@ -1,4 +1,6 @@
 <script>
+    import LabelText from "./LabelText.svelte";
+
     let {
         forId,
         text,
@@ -22,5 +24,5 @@
     ]}
     {...rest}
 >
-    {@html text}{#if required}<span class="qc-required" aria-hidden="true">*</span>{/if}
+    <LabelText {text} {required} />
 </label>

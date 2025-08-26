@@ -88,9 +88,7 @@
 <div class="qc-row">
     <div class="qc-col-sm-12 qc-col-lg-6">
         {#if type === 'checkbox'}
-        <Checkbox
-                required
-        >
+        <Checkbox>
             <label>
                 <input {type}
                        name="consentement-1"
@@ -173,9 +171,7 @@
     </div>
     <div class="qc-col-sm-12 qc-col-lg-6">
         {#if type === 'checkbox'}
-        <Checkbox compact
-                     required
-        >
+        <Checkbox compact >
             <label>
                 <input {type}
                        name="consentement-compact-1"
