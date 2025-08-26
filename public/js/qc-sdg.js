@@ -9492,8 +9492,8 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_1$4 = add_locations(template(`<legend><!></legend>`), Fieldset[FILENAME], [[55, 4]]);
-	var root$c = add_locations(template(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[42, 0, [[59, 4]]]]);
+	var root_1$4 = add_locations(template(`<legend><!></legend>`), Fieldset[FILENAME], [[44, 4]]);
+	var root$c = add_locations(template(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[48, 4]]]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -9501,7 +9501,7 @@
 
 		let legend = prop($$props, 'legend', 7),
 			name = prop($$props, 'name', 7),
-			tiled = prop($$props, 'tiled', 7, false),
+			selectionButton = prop($$props, 'selectionButton', 7, false),
 			inline = prop($$props, 'inline', 7, false),
 			columnCount = prop($$props, 'columnCount', 7, 1),
 			compact = prop($$props, 'compact', 7),
@@ -9517,18 +9517,6 @@
 
 		let groupSelection = state(void 0),
 			legendId = name() ? "id_" + name() : Utils.generateId("legend");
-
-		function chooseDivCLass(inline, tiled) {
-			if (tiled) {
-				if (inline) {
-					return "qc-field-elements-tiled-flex-row";
-				} else {
-					return "qc-field-elements-tiled";
-				}
-			}
-
-			return "qc-field-elements-flex";
-		}
 
 		var fieldset = root$c();
 
@@ -9590,32 +9578,30 @@
 		reset(fieldset);
 		bind_this(fieldset, ($$value) => rootElement($$value), () => rootElement());
 
-		template_effect(
-			($0) => {
-				set_class(fieldset, 1, clsx([
-					"qc-choice-group",
-					invalid() && "qc-fieldset-invalid",
-					"qc-fieldset",
-					compact() && "qc-compact",
-					disabled() && "qc-disabled"
-				]));
+		template_effect(() => {
+			set_class(fieldset, 1, clsx([
+				"qc-choice-group",
+				invalid() && "qc-fieldset-invalid",
+				"qc-fieldset",
+				compact() && "qc-compact",
+				disabled() && "qc-disabled"
+			]));
 
-				set_attribute(fieldset, 'tiled', tiled() ? tiled() : undefined);
-				set_attribute(fieldset, 'inline', inline() ? inline() : undefined);
-				set_class(div, 1, $0);
+			set_attribute(fieldset, 'selection-button', selectionButton() ? selectionButton() : undefined);
+			set_attribute(fieldset, 'inline', inline() ? inline() : undefined);
 
-				set_style(div, `
+			set_class(div, 1, clsx([
+				selectionButton() && !inline() && "qc-field-elements-selection-button",
+				selectionButton() && inline() && "qc-field-elements-selection-button-flex-row",
+				!selectionButton() && "qc-field-elements-flex",
+				!selectionButton() && `qc-field-elements-flex-${elementsGap()}`
+			]));
+
+			set_style(div, `
         --column-count: ${columnCount() ?? ''};
         --fieldset-width: ${maxWidth() ?? ''};
         `);
-			},
-			[
-				() => clsx([
-					chooseDivCLass(inline(), tiled()),
-					!tiled() && `qc-field-elements-flex-${elementsGap()}`
-				])
-			]
-		);
+		});
 
 		append($$anchor, fieldset);
 
@@ -9634,11 +9620,11 @@
 				name($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set tiled($$value = false) {
-				tiled($$value);
+			set selectionButton($$value = false) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get inline() {
@@ -9736,7 +9722,7 @@
 		{
 			legend: {},
 			name: {},
-			tiled: {},
+			selectionButton: {},
 			inline: {},
 			columnCount: {},
 			compact: {},
@@ -9786,7 +9772,7 @@
 			invalidText = prop($$props, 'invalidText', 7),
 			children = prop($$props, 'children', 7),
 			compact = prop($$props, 'compact', 7, false),
-			tiled = prop($$props, 'tiled', 7, false),
+			selectionButton = prop($$props, 'selectionButton', 7, false),
 			host = prop($$props, 'host', 7),
 			name = prop($$props, 'name', 7),
 			required = prop($$props, 'required', 7),
@@ -9801,7 +9787,7 @@
 					'invalidText',
 					'children',
 					'compact',
-					'tiled',
+					'selectionButton',
 					'host',
 					'name',
 					'required'
@@ -9816,7 +9802,7 @@
 		};
 
 		user_effect(() => {
-			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateInput(input, required(), invalid(), compact() ? compact() : tiled(), name()));
+			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateInput(input, required(), invalid(), compact() ? compact() : selectionButton(), name()));
 		});
 
 		{
@@ -9830,8 +9816,8 @@
 					get compact() {
 						return compact();
 					},
-					get tiled() {
-						return tiled();
+					get selectionButton() {
+						return selectionButton();
 					},
 					get invalidText() {
 						return invalidText();
@@ -9893,11 +9879,11 @@
 				compact($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set tiled($$value = false) {
-				tiled($$value);
+			set selectionButton($$value = false) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get host() {
@@ -9932,7 +9918,7 @@
 			invalidText: {},
 			children: {},
 			compact: {},
-			tiled: {},
+			selectionButton: {},
 			host: {},
 			name: {},
 			required: {}
@@ -9958,7 +9944,7 @@
 			required = prop($$props, 'required', 7),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
-			tiled = prop($$props, 'tiled', 7),
+			selectionButton = prop($$props, 'selectionButton', 7),
 			columnCount = prop($$props, 'columnCount', 7),
 			inline = prop($$props, 'inline', 7);
 
@@ -9984,8 +9970,8 @@
 				get invalidText() {
 					return invalidText();
 				},
-				get tiled() {
-					return tiled();
+				get selectionButton() {
+					return selectionButton();
 				},
 				get columnCount() {
 					return columnCount();
@@ -10059,11 +10045,11 @@
 				invalidText($$value);
 				flushSync();
 			},
-			get tiled() {
-				return tiled();
+			get selectionButton() {
+				return selectionButton();
 			},
-			set tiled($$value) {
-				tiled($$value);
+			set selectionButton($$value) {
+				selectionButton($$value);
 				flushSync();
 			},
 			get columnCount() {
@@ -10093,7 +10079,10 @@
 			required: { attribute: 'required', type: 'Boolean' },
 			invalid: { attribute: 'invalid', type: 'Boolean' },
 			invalidText: { attribute: 'invalid-text', type: 'String' },
-			tiled: { attribute: 'tiled', type: 'Boolean' },
+			selectionButton: {
+				attribute: 'selection-button',
+				type: 'Boolean'
+			},
 			columnCount: { attribute: 'column-count', type: 'String' },
 			inline: { attribute: 'inline', type: 'Boolean' }
 		},

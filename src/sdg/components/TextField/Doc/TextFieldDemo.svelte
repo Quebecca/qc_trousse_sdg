@@ -73,7 +73,7 @@ $effect(() => {
             Multiligne
         </label>
     </Checkbox>
-    <ChoiceGroup legend="Size" tiled inline>
+    <ChoiceGroup legend="Size" selectionButton inline>
         {#each ['xs','sm','md','lg','xl'] as _size}
             <label>
                 <input type="radio"

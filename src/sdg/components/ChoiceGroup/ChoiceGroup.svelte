@@ -8,7 +8,7 @@
         invalidText,
         children,
         compact = false,
-        tiled = false,
+        selectionButton = false,
         host,
         name,
         required,
@@ -30,7 +30,7 @@
                         input,
                         required,
                         invalid,
-                        compact ? compact : tiled,
+                        compact ? compact : selectionButton,
                         name)
             )
     })
@@ -40,7 +40,7 @@
 <Fieldset
     {required}
     {compact}
-    {tiled}
+    {selectionButton}
     bind:invalid
     {invalidText}
     {onchange}

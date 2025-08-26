@@ -7,7 +7,7 @@
     let {
         legend,
         name,
-        tiled = false,
+        selectionButton = false,
         inline = false,
         columnCount = 1,
         compact,
@@ -26,17 +26,6 @@
         legendId = name
             ? "id_" + name
             : Utils.generateId("legend");
-
-    function chooseDivCLass(inline, tiled) {
-        if (tiled) {
-            if (inline) {
-                return "qc-field-elements-tiled-flex-row";
-            } else {
-                return "qc-field-elements-tiled";
-            }
-        }
-        return "qc-field-elements-flex";
-    }
 </script>
 
 <fieldset bind:this={rootElement}
@@ -48,7 +37,7 @@
             disabled && "qc-disabled"]}
           aria-describedby={legendId}
           {onchange}
-          tiled={tiled ? tiled : undefined}
+          selection-button={selectionButton ? selectionButton : undefined}
           inline={inline ? inline : undefined}
 >
   {#if legend}
@@ -58,8 +47,10 @@
   {/if}
     <div
         class={[
-            chooseDivCLass(inline, tiled),
-            !tiled && `qc-field-elements-flex-${elementsGap}`,
+            selectionButton && !inline && "qc-field-elements-selection-button",
+            selectionButton && inline && "qc-field-elements-selection-button-flex-row",
+            !selectionButton && "qc-field-elements-flex",
+            !selectionButton && `qc-field-elements-flex-${elementsGap}`,
         ]}
         style="
         --column-count: {columnCount};

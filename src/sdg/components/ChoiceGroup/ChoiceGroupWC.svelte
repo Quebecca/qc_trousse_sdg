@@ -7,7 +7,7 @@
         required: {attribute: 'required', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
-        tiled: {attribute: 'tiled', type: 'Boolean'},
+        selectionButton: {attribute: 'selection-button', type: 'Boolean'},
         columnCount: {attribute: 'column-count', type: 'String'},
         inline: {attribute: 'inline', type: 'Boolean'}
     }
@@ -25,7 +25,7 @@
         required,
         invalid = $bindable(false),
         invalidText,
-        tiled,
+        selectionButton,
         columnCount,
         inline
     } = $props();
@@ -38,7 +38,7 @@
         {required}
         bind:invalid
         {invalidText}
-        {tiled}
+        {selectionButton}
         {columnCount}
         {inline}
         host={$host()}

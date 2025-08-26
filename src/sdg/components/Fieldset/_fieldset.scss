@@ -29,12 +29,12 @@ $invalid-border-width: 2px;
   margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
 }
 
-%tiled-gap {
+%selection-button-gap {
   gap: token-value(spacer, xs);
 }
 
-.qc-field-elements-tiled-flex-row {
-  @extend %tiled-gap;
+.qc-field-elements-selection-button-flex-row {
+  @extend %selection-button-gap;
   display: inline-flex;
   flex-wrap: wrap;
 
@@ -43,8 +43,8 @@ $invalid-border-width: 2px;
   }
 }
 
-.qc-field-elements-tiled {
-  @extend %tiled-gap;
+.qc-field-elements-selection-button {
+  @extend %selection-button-gap;
   display: inline-grid;
   grid-template-columns: repeat(var(--column-count), 1fr);
 

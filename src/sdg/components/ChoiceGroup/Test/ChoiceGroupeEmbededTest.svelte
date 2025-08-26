@@ -10,7 +10,7 @@
 </script>
 
 <ChoiceGroup legend="Boutons de sélection"
-                 tiled
+                 selectionButton
                  columnCount="2"
                  name="tile-1"
 >
@@ -49,7 +49,7 @@
 
 <ChoiceGroup legend="Boutons de sélection inline"
                  name="tile-2"
-                 tiled
+                 selectionButton
                  inline
                  columnCount="2"
 >

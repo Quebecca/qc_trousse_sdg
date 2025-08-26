@@ -1852,7 +1852,7 @@ input.qc-choicefield:checked {
   border-color: var(--qc-color-blue-regular);
 }
 
-[tiled] label.qc-choicefield-label {
+[selection-button] label.qc-choicefield-label {
   position: relative;
   z-index: 10;
   background: transparent;
@@ -1860,7 +1860,7 @@ input.qc-choicefield:checked {
   padding: var(--qc-spacer-sm);
   min-width: 100%;
 }
-[tiled] label.qc-choicefield-label::before {
+[selection-button] label.qc-choicefield-label::before {
   position: absolute;
   display: block;
   content: "";
@@ -1868,31 +1868,31 @@ input.qc-choicefield:checked {
   inset: 0;
   z-index: -5;
 }
-[tiled] label.qc-choicefield-label:has(input:focus), [tiled] label.qc-choicefield-label:focus, [tiled] label.qc-choicefield-label:has(textarea:focus) {
+[selection-button] label.qc-choicefield-label:has(input:focus), [selection-button] label.qc-choicefield-label:focus, [selection-button] label.qc-choicefield-label:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-[tiled] label.qc-choicefield-label:has(input:focus)::before, [tiled] label.qc-choicefield-label:focus::before, [tiled] label.qc-choicefield-label:has(textarea:focus)::before {
+[selection-button] label.qc-choicefield-label:has(input:focus)::before, [selection-button] label.qc-choicefield-label:focus::before, [selection-button] label.qc-choicefield-label:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
-[tiled] label.qc-choicefield-label::before {
+[selection-button] label.qc-choicefield-label::before {
   border-style: solid;
   border-width: 0.1rem;
   border-color: var(--qc-color-grey-light);
 }
-[tiled] label.qc-choicefield-label:hover::before {
+[selection-button] label.qc-choicefield-label:hover::before {
   border-color: var(--qc-color-blue-light);
 }
-[tiled] label.qc-choicefield-label:has(input:checked)::before {
+[selection-button] label.qc-choicefield-label:has(input:checked)::before {
   background-color: var(--qc-color-blue-pale);
 }
-[tiled] label.qc-choicefield-label:has(input:disabled)::before {
+[selection-button] label.qc-choicefield-label:has(input:disabled)::before {
   background-color: var(--qc-color-grey-pale);
   border-color: var(--qc-color-grey-light);
 }
-[tiled][inline] label.qc-choicefield-label {
+[selection-button][inline] label.qc-choicefield-label {
   min-width: auto;
 }
-[tiled] input.qc-choicefield:focus {
+[selection-button] input.qc-choicefield:focus {
   outline: none;
 }
 
@@ -1963,28 +1963,28 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   margin-left: calc(-1 * var(--qc-spacer-xs) - 2px);
 }
 
-.qc-field-elements-tiled, .qc-field-elements-tiled-flex-row {
+.qc-field-elements-selection-button, .qc-field-elements-selection-button-flex-row {
   gap: var(--qc-spacer-xs);
 }
 
-.qc-field-elements-tiled-flex-row {
+.qc-field-elements-selection-button-flex-row {
   display: inline-flex;
   flex-wrap: wrap;
 }
-.qc-field-elements-tiled-flex-row .qc-check-row-parent {
+.qc-field-elements-selection-button-flex-row .qc-check-row-parent {
   flex-grow: 0;
 }
 
-.qc-field-elements-tiled {
+.qc-field-elements-selection-button {
   display: inline-grid;
   grid-template-columns: repeat(var(--column-count), 1fr);
 }
 @media (max-width: 767.98px) {
-  .qc-field-elements-tiled {
+  .qc-field-elements-selection-button {
     grid-template-columns: 1fr;
   }
 }
-.qc-field-elements-tiled > .qc-selection-button {
+.qc-field-elements-selection-button > .qc-selection-button {
   width: 100%;
 }
 

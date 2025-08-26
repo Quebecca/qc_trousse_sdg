@@ -27,7 +27,7 @@ input.qc-choicefield {
 
 }
 
-[tiled] {
+[selection-button] {
   label.qc-choicefield-label {
     @include qc-formcontrol-box();
     padding: token-value(spacer, sm);
