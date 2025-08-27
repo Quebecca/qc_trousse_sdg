@@ -2449,7 +2449,7 @@
   </script>
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Illustration des différentes tailles de champs texte.">
+<qc-doc-exemple id="textfield-sizes" caption="Illustration des différentes tailles de champs texte.">
 
     <qc-textfield
             label="Taille extra-petite"
@@ -2630,6 +2630,20 @@
         </select>
     </qc-select>
 
+    <qc-select id="qc-select-single-choice-no-scroll">
+        <label for="select-single-choice-no-scroll">Choix unique sans défilement</label>
+        <select id="select-single-choice-no-scroll">
+            <option value="1" selected>Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+        </select>
+    </qc-select>
+
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -2678,73 +2692,50 @@
         <label for="select-disabled">Désactivé</label>
         <select id="select-disabled" disabled></select>
     </qc-select>
-
-    <script>
-        function mutationCallback(mutationsList, _) {
-            mutationsList.forEach(mutation => {
-                if (mutation.type === 'attributes') {
-                    console.log(`Valeur de '${mutation.target.id}': ${mutation.target.value}`);
-                }
-            });
-        }
-
-        const mutationObserver = new MutationObserver(mutationCallback);
-
-        const singleChoice = document.getElementById("qc-select-single-choice");
-        const singleChoiceNoScroll = document.getElementById("qc-select-single-choice-search");
-        const multipleChoice = document.getElementById("qc-select-multiple-choices");
-
-        mutationObserver.observe(singleChoice, { attributes: true });
-        mutationObserver.observe(singleChoiceNoScroll, { attributes: true });
-        mutationObserver.observe(multipleChoice, { attributes: true });
-
-        window.onbeforeunload = () => {
-            mutationObserver.disconnect();
-        }
-    </script>
 </qc-doc-exemple>
 
 <qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
     <form id="dropdown-list-form">
-        <qc-select
-                id="dropdown-list-restaurants"
-                placeholder="Types de restaurant"
-                enable-search
-                search-placeholder="Rechercher des types restaurant"
-                required
-                invalid-text="Veuillez choisir un type de restaurant."
-        >
-            <label for="dropdown-list-restaurants-select">Types de restaurants</label>
-            <select id="dropdown-list-restaurants-select">
-                <option value="Pizzeria">Pizzeria</option>
-                <option value="Pâtisserie">Pâtisserie</option>
-                <option value="Steakhouse">Steakhouse</option>
-                <option value="Bar">Bar</option>
-                <option value="Casse-croûte">Casse-croûte</option>
-                <option value="Boîte à pâtes">Boîte à pâtes</option>
-                <option value="Restaurant à burgers">Restaurant à burgers</option>
-            </select>
-        </qc-select>
+        <div class="qc-formfield-row">
+            <qc-select
+                    id="dropdown-list-restaurants"
+                    placeholder="Types de restaurant"
+                    enable-search
+                    search-placeholder="Rechercher des types restaurant"
+                    required
+                    invalid-text="Veuillez choisir un type de restaurant."
+            >
+                <label for="dropdown-list-restaurants-select">Types de restaurants</label>
+                <select id="dropdown-list-restaurants-select" multiple>
+                    <option value="Pizzeria">Pizzeria</option>
+                    <option value="Pâtisserie">Pâtisserie</option>
+                    <option value="Steakhouse">Steakhouse</option>
+                    <option value="Bar">Bar</option>
+                    <option value="Casse-croûte">Casse-croûte</option>
+                    <option value="Boîte à pâtes">Boîte à pâtes</option>
+                    <option value="Restaurant à burgers">Restaurant à burgers</option>
+                </select>
+            </qc-select>
 
-        <qc-select
-                id="dropdown-list-regions"
-                placeholder="Sélectionner une région"
-                width="lg"
-                enable-search
-                search-placeholder="Rechercher les régions"
-        >
-            <label for="dropdown-list-regions-select">Régions desservies</label>
-            <select id="dropdown-list-regions-select" multiple>
-                <option value="Capitale-nationale">Capitale-nationale</option>
-                <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
-                <option value="Montérégie" selected>Montérégie</option>
-                <option value="Outaouais">Outaouais</option>
-                <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
-                <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
-                <option value="Nord-du-Québec">Nord-du-Québec</option>
-                <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
-            </select>
-        </qc-select>
+            <qc-select
+                    id="dropdown-list-regions"
+                    placeholder="Sélectionner une région"
+                    enable-search
+                    search-placeholder="Rechercher les régions"
+            >
+                <label for="dropdown-list-regions-select">Régions desservies</label>
+                <select id="dropdown-list-regions-select" multiple>
+                    <option value="Capitale-nationale">Capitale-nationale</option>
+                    <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
+                    <option value="Montérégie" selected>Montérégie</option>
+                    <option value="Outaouais">Outaouais</option>
+                    <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+                    <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+                    <option value="Nord-du-Québec">Nord-du-Québec</option>
+                    <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+                </select>
+            </qc-select>
+        </div>
 
         <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
     </form>
@@ -2756,14 +2747,12 @@
             event.preventDefault();
 
             let isValid = true;
-
             const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
-            console.log(requiredFields);
 
             requiredFields.forEach(field => {
                 const value = field.value;
 
-                if (!value) {
+                if (!value || value.length <= 0) {
                     field.invalid = true;
                     isValid = false;
                 } else {
@@ -2816,7 +2805,10 @@
             <td>width</td>
             <td>"xs", "sm", "md", "lg", "xl"</td>
             <td>"md"</td>
-            <td>Largeur de la liste déroulante</td>
+            <td>
+                Largeur de la liste déroulante. Voir <a href="#textfield-sizes">l'illustration des tailles de champ texte</a>
+                pour une indication visuelle des tailles disponibles.
+            </td>
         </tr>
         <tr>
             <td>value</td>
