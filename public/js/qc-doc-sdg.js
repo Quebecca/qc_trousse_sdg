@@ -76601,10 +76601,11 @@
 		name
 	) {
 		if (!input) return;
-		input.classList.add('qc-choicefield');
+		if (strict_equals(input.role, "switch")) return;
 
 		let label = input.closest('label');
 
+		input.classList.add('qc-choicefield');
 		label.classList.add('qc-choicefield-label');
 		input.classList.toggle('qc-selection-button', selectionButton);
 		label.classList.toggle('qc-selection-button', selectionButton);
