@@ -1,5 +1,6 @@
 @use "qc-sdg-lib" as *;
 
+
 qc-icon {
   display: inline-flex;
   align-items: stretch;
@@ -23,9 +24,15 @@ qc-icon {
     }
   }
   @each $name, $url in $images {
+    // classes pour les icônes
+      @at-root .icon-#{$name} {
+        mask-image: getImageUrl($name);
+      }
     &[data-img-type=#{$name}] {
-      @extend %icon-#{$name};
+      @extend .icon-#{$name};
     }
+
+
   }
   &.qc-icon-custom {
     mask-image: var(--img-src);

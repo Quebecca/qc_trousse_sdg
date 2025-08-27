@@ -1,5 +1,6 @@
 @use "qc-sdg-lib" as *;
 @use "sass:math";
+@use "../../components/Icon/icons" as *;
 
 a {
   color: token-value(color, link, text);
@@ -22,7 +23,7 @@ a {
 }
 span.qc-ext-link-img {
 
-  @extend %icon-external-link;
+  @extend .icon-external-link;
   $ratio : math.div(11,16) * 1em;
   height: $ratio;
   width: $ratio;

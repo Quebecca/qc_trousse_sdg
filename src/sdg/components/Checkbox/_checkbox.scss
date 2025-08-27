@@ -1,5 +1,6 @@
 @use "qc-sdg-lib" as *;
 @use "../Fieldset/fieldset" as *;
+@use "../Icon/icons" as *;
 
 
 input[type="checkbox"].qc-choicefield {
@@ -18,7 +19,7 @@ input[type="checkbox"].qc-choicefield {
     }
 
     &::after {
-      @extend %icon-checkmark;
+      @extend .icon-checkmark;
       content: "";
       position: absolute;
       left: 50%;
