@@ -1955,7 +1955,7 @@
       <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
     </tr>
     <tr>
-      <td>tiled</td>
+      <td>selection-button</td>
       <td>"true" ou "false"</td>
       <td>"false"</td>
       <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
@@ -1991,7 +1991,7 @@
 <qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection avec différents états.">
     <qc-choice-group legend="Sélectionnez une option :"
                     name="ex-radio-select"
-                    tiled
+                    selection-button
                     column-count="2"
     >
         <label>
@@ -2031,7 +2031,7 @@
     <qc-choice-group
             name="exemple-checkbox-select"
             legend="Sélectionnez vos options"
-            tiled
+            selection-button
             column-count="2">
         <label>
             <input type="checkbox"
@@ -2067,7 +2067,7 @@
 <qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection sur une rangée.">
     <qc-choice-group legend="Choisissez une option :"
                     name="ex-radio-select-inline"
-                    tiled
+                    selection-button
                     inline
     >
         <label>
@@ -2365,7 +2365,8 @@
 <hr/>
     <h2 id="textfield">Champ texte</h2>
 
-<qc-doc-exemple caption="Exemples de champs de texte de différents formats et différents états. Soumettre le formulaire pour voir les messages d'erreur.">
+
+<qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
   <form id="formulaire-champs-textes">
     <qc-textfield
             label="Nom complet"
@@ -2389,7 +2390,7 @@
       />
     </qc-textfield>
 
-    <div class="qc-textfield-row">
+    <div class="qc-formfield-row">
       <qc-textfield
               label="Téléphone"
               size="sm"
@@ -2651,7 +2652,7 @@
     </qc-select>
 
     <qc-select id="qc-select-multiple-choices" multiple>
-        <label for="select-multiple-choices">Choix multiple</label>
+        <label for="select-multiple-choices">Choix multiples</label>
         <select multiple id="select-multiple-choices">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
@@ -2706,13 +2707,13 @@
     <form id="dropdown-list-form">
         <qc-select
                 id="dropdown-list-restaurants"
-                placeholder="Type de restaurant"
+                placeholder="Types de restaurant"
                 enable-search
-                search-placeholder="Rechercher un type restaurant"
+                search-placeholder="Rechercher des types restaurant"
                 required
                 invalid-text="Veuillez choisir un type de restaurant."
         >
-            <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+            <label for="dropdown-list-restaurants-select">Types de restaurants</label>
             <select id="dropdown-list-restaurants-select">
                 <option value="Pizzeria">Pizzeria</option>
                 <option value="Pâtisserie">Pâtisserie</option>
@@ -2760,7 +2761,7 @@
             console.log(requiredFields);
 
             requiredFields.forEach(field => {
-                const value = field.value?.trim();
+                const value = field.value;
 
                 if (!value) {
                     field.invalid = true;
@@ -2774,7 +2775,7 @@
                 const formEntries = dropdownListForm.querySelectorAll("qc-select");
                 let alertParts = ["Formulaire soumis avec les données suivantes :"];
                 formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value}`);
+                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
                 });
                 alert(alertParts.join("\n"));
             }
@@ -2879,7 +2880,11 @@
             <td>multiple</td>
             <td>na</td>
             <td>na</td>
-            <td>Active la sélection multiple</td>
+            <td>
+                Active la sélection multiple.
+                <br> Si <code>multiple</code> est définie dans l'élément <code>select</code> en slot, cette valeur a
+                priorité.
+            </td>
         </tr>
         </tbody>
     </table>
