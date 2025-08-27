@@ -1,10 +1,14 @@
-export function updateInput(input, required, invalid, compact, name) {
+export function updateInput(input, required, invalid, compact, selectionButton, inline, name) {
     if (!input) return;
     input.classList.add('qc-choicefield')
-    input.closest('label').classList.add('qc-choicefield-label')
-    input.setAttribute('aria-required', required ? 'true' : "false")
+    let label = input.closest('label');
+    label.classList.add('qc-choicefield-label')
+    input.classList.toggle('qc-selection-button', selectionButton)
+    label.classList.toggle('qc-selection-button', selectionButton)
+    label.classList.toggle('qc-selection-button-inline', inline)
+    input.setAttribute('aria-required', required ? 'true' : "false");
     input.setAttribute('aria-invalid', invalid ? 'true' : "false")
-    input.classList.toggle('qc-compact', compact)
+    input.classList.toggle('qc-compact', compact ? compact : selectionButton)
     if (name && !input.hasAttribute('name')) {
         input.setAttribute('name', name)
     }

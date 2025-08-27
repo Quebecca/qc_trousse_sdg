@@ -1834,25 +1834,7 @@ qc-search-bar {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }
 
-input.qc-choicefield {
-  cursor: pointer;
-  min-width: var(--qc-spacer-md);
-  min-height: var(--qc-spacer-md);
-  max-width: var(--qc-spacer-md);
-  max-height: var(--qc-spacer-md);
-  border-width: 0.2rem;
-  flex-grow: 0;
-}
-input.qc-choicefield:focus {
-  outline: 2px solid var(--qc-color-blue-light);
-  outline-offset: 0;
-  border-color: var(--qc-color-blue-dark) !important;
-}
-input.qc-choicefield:checked {
-  border-color: var(--qc-color-blue-regular);
-}
-
-[selection-button] label.qc-choicefield-label {
+label.qc-selection-button {
   position: relative;
   z-index: 10;
   background: transparent;
@@ -1860,7 +1842,7 @@ input.qc-choicefield:checked {
   padding: var(--qc-spacer-sm);
   min-width: 100%;
 }
-[selection-button] label.qc-choicefield-label::before {
+label.qc-selection-button::before {
   position: absolute;
   display: block;
   content: "";
@@ -1868,31 +1850,33 @@ input.qc-choicefield:checked {
   inset: 0;
   z-index: -5;
 }
-[selection-button] label.qc-choicefield-label:has(input:focus), [selection-button] label.qc-choicefield-label:focus, [selection-button] label.qc-choicefield-label:has(textarea:focus) {
+label.qc-selection-button:has(input:focus), label.qc-selection-button:focus, label.qc-selection-button:has(textarea:focus) {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
 }
-[selection-button] label.qc-choicefield-label:has(input:focus)::before, [selection-button] label.qc-choicefield-label:focus::before, [selection-button] label.qc-choicefield-label:has(textarea:focus)::before {
+label.qc-selection-button:has(input:focus)::before, label.qc-selection-button:focus::before, label.qc-selection-button:has(textarea:focus)::before {
   border: 2px solid var(--qc-color-formfield-focus-border);
 }
-[selection-button] label.qc-choicefield-label::before {
+label.qc-selection-button::before {
   border-style: solid;
   border-width: 0.1rem;
   border-color: var(--qc-color-grey-light);
 }
-[selection-button] label.qc-choicefield-label:hover::before {
+label.qc-selection-button:hover::before {
   border-color: var(--qc-color-blue-light);
 }
-[selection-button] label.qc-choicefield-label:has(input:checked)::before {
+label.qc-selection-button:has(input:checked)::before {
   background-color: var(--qc-color-blue-pale);
 }
-[selection-button] label.qc-choicefield-label:has(input:disabled)::before {
+label.qc-selection-button:has(input:disabled)::before {
   background-color: var(--qc-color-grey-pale);
   border-color: var(--qc-color-grey-light);
 }
-[selection-button][inline] label.qc-choicefield-label {
+
+label.qc-selection-button-inline {
   min-width: auto;
 }
-[selection-button] input.qc-choicefield:focus {
+
+input.qc-selection-button:focus {
   outline: none;
 }
 
@@ -1913,6 +1897,24 @@ input.qc-choicefield:checked {
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
   display: block;
+}
+
+input.qc-choicefield {
+  cursor: pointer;
+  min-width: var(--qc-spacer-md);
+  min-height: var(--qc-spacer-md);
+  max-width: var(--qc-spacer-md);
+  max-height: var(--qc-spacer-md);
+  border-width: 0.2rem;
+  flex-grow: 0;
+}
+input.qc-choicefield:focus {
+  outline: 2px solid var(--qc-color-blue-light);
+  outline-offset: 0;
+  border-color: var(--qc-color-blue-dark) !important;
+}
+input.qc-choicefield:checked {
+  border-color: var(--qc-color-blue-regular);
 }
 
 input[type=radio].qc-choicefield {

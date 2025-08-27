@@ -1,8 +1,10 @@
 @use "qc-sdg-lib" as *;
+@use "selectionButton" as *;
 
 label.qc-choicefield-label {
   @extend %check-row;
 }
+
 input.qc-choicefield {
 
   cursor: pointer;
@@ -24,62 +26,7 @@ input.qc-choicefield {
   &:checked {
     border-color: token-value(color blue regular);
   }
-
 }
 
-[selection-button] {
-  label.qc-choicefield-label {
-    @include qc-formcontrol-box();
-    padding: token-value(spacer, sm);
-    min-width: 100%;
-
-    &::before {
-      border-style: solid;
-      border-width: rem(1);
-      border-color: token-value(color, grey, light);
-    }
-
-    &:hover::before {
-      border-color: token-value(color, blue, light);
-    }
-
-    &:has(input:checked)::before {
-      background-color: token-value(color, blue, pale);
-    }
-
-    &:has(input:disabled)::before {
-      background-color: token-value(color, grey, pale);
-      border-color: token-value(color, grey, light);
-    }
-  }
-
-  &[inline] label.qc-choicefield-label {
-    min-width: auto;
-  }
-
-  input.qc-choicefield {
-
-    &:focus {
-      outline: none;
-    }
-  }
-}
-
-.qc-tile {
-  display: flex;
-  flex-direction: column;
-  gap: token-value(spacer, xs);
-  min-height: token-value(spacer, md);
-}
-
-.qc-tile-text {
-  font-weight: token-value(font weight semi-bold);
-  min-height: token-value(spacer, md);
-}
-
-.qc-tile-description {
-  @include content-font(sm);
-  display: block;
-}
 
 

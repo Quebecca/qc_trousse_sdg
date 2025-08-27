@@ -9,6 +9,7 @@
         children,
         compact = false,
         selectionButton = false,
+        inline = false,
         host,
         name,
         required,
@@ -30,7 +31,9 @@
                         input,
                         required,
                         invalid,
-                        compact ? compact : selectionButton,
+                        compact,
+                        selectionButton,
+                        inline,
                         name)
             )
     })
@@ -41,6 +44,7 @@
     {required}
     {compact}
     {selectionButton}
+    {inline}
     bind:invalid
     {invalidText}
     {onchange}

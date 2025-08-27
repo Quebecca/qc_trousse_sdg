@@ -42,7 +42,7 @@
         }
     })
 
-    $effect(_ => updateInput(input, required, invalid, compact))
+    $effect(_ => updateInput(input, required, invalid, compact, false, false))
 
     $effect(() => {
         if (!required) return;
