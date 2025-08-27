@@ -83,7 +83,7 @@
             width="lg"
     />
 
-    <Button label="Envoyer" type="submit" compact="true" style="margin: 0;" />
+    <Button label="Envoyer" type="submit" compact="true" />
 </form>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>
