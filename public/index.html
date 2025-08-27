@@ -2671,20 +2671,7 @@
         <select multiple id="select-multiple-choices">
             <option value="1">Option 1</option>
             <option value="2" selected>Option 2</option>
-            <option value="3" selected>Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16" disabled>Option 16 (désactivée)</option>
+            <option value="3" selected disabled>Option 3 (désactivée)</option>
         </select>
     </qc-select>
 
@@ -2692,21 +2679,20 @@
         <label for="select-disabled">Désactivé</label>
         <select id="select-disabled" disabled></select>
     </qc-select>
-</qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemple de validation de formulaire avec listes déroulantes">
     <form id="dropdown-list-form">
         <div class="qc-formfield-row">
             <qc-select
                     id="dropdown-list-restaurants"
-                    placeholder="Types de restaurant"
+                    placeholder="Type de restaurant"
                     enable-search
-                    search-placeholder="Rechercher des types restaurant"
+                    search-placeholder="Rechercher un type de restaurant"
                     required
                     invalid-text="Veuillez choisir un type de restaurant."
             >
-                <label for="dropdown-list-restaurants-select">Types de restaurants</label>
-                <select id="dropdown-list-restaurants-select" multiple>
+                <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+                <select id="dropdown-list-restaurants-select">
+                    <option value="">Type de restaurant</option>
                     <option value="Pizzeria">Pizzeria</option>
                     <option value="Pâtisserie">Pâtisserie</option>
                     <option value="Steakhouse">Steakhouse</option>
@@ -2750,7 +2736,7 @@
             const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
 
             requiredFields.forEach(field => {
-                const value = field.value;
+                const value = field.querySelector("select").value;
 
                 if (!value || value.length <= 0) {
                     field.invalid = true;
