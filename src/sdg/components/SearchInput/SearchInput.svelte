@@ -11,6 +11,7 @@
         ariaLabel = lang === "fr" ? "Rechercher..." : "Search...",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
         leftIcon = false,
+        id = `qc-search-input-${Math.random().toString(36).slice(2, 11)}`,
         ...rest
     } = $props();
 
@@ -41,6 +42,7 @@
             autocomplete="off"
             aria-label={ariaLabel}
             class={isDisabled ? "qc-disabled" : ""}
+            id={id}
             {...rest}
     />
     {#if value}

@@ -76989,7 +76989,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$5 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[38, 4]]]]);
+	var root$5 = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -77001,6 +77001,7 @@
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
+			id = prop($$props, 'id', 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`),
 			rest = rest_props(
 				$$props,
 				[
@@ -77011,7 +77012,8 @@
 					'value',
 					'ariaLabel',
 					'clearAriaLabel',
-					'leftIcon'
+					'leftIcon',
+					'id'
 				]);
 
 		leftIcon(strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), ""));
@@ -77087,6 +77089,7 @@
 				autocomplete: 'off',
 				'aria-label': ariaLabel(),
 				class: isDisabled ? "qc-disabled" : "",
+				id: id(),
 				...rest
 			});
 		});
@@ -77130,6 +77133,15 @@
 				leftIcon($$value);
 				flushSync();
 			},
+			get id() {
+				return id();
+			},
+			set id(
+				$$value = `qc-search-input-${Math.random().toString(36).slice(2, 11)}`
+			) {
+				id($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -77140,7 +77152,8 @@
 			value: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
-			leftIcon: {}
+			leftIcon: {},
+			id: {}
 		},
 		[],
 		['focus'],
