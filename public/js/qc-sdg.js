@@ -12300,7 +12300,7 @@
 
 	var on_click = (e, handleLiClick, item) => handleLiClick(e, get(item));
 
-	var root_2$2 = add_locations(template(`<li><label class="qc-dropdown-list-checkbox" compact=""><input type="checkbox" class="qc-choicefield qc-compact"> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [
+	var root_2$2 = add_locations(template(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [
 		[
 			153,
 			12,

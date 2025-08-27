@@ -67,13 +67,3 @@ input[type="checkbox"].qc-choicefield {
     @extend .qc-fieldset-invalid;
   }
 }
-
-.qc-dropdown-list-checkbox {
-  @extend %check-row;
-  align-items: center;
-  flex-grow: 1;
-
-  input[type="checkbox"]:focus {
-    outline: none;
-  }
-}

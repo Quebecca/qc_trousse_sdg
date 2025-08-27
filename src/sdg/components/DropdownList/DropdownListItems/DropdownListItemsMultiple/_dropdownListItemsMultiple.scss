@@ -1,4 +1,4 @@
-@use "../../../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
 
 .qc-dropdown-list-multiple {
   margin: 0;
@@ -7,15 +7,13 @@
     margin: 0;
     padding-left: token-value(spacer, xs);
     padding-right: token-value(spacer, xs);
-
     flex-grow: 1;
-
-    .qc-choicefield {
-      margin-top: 0 !important;
-    }
+    align-items: center;
   }
-
-  .qc-check-row {
-    height: 100%;
+  .qc-choicefield {
+    margin-top: 0 !important;
+    &:focus {
+      outline: none;
+    }
   }
 }

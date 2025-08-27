@@ -161,7 +161,7 @@
             >
 
                 <label
-                        class="qc-dropdown-list-checkbox"
+                        class="qc-choicefield-label"
                         compact
                         for={item.id + "-checkbox"}
                 >
