@@ -44,7 +44,7 @@
   </qc-select>
 </div>
 
-<qc-select id="qc-select-multiple-choices" multiple>
+<qc-select id="qc-select-multiple-choices">
   <label for="select-multiple-choices">Choix multiples</label>
   <select multiple id="select-multiple-choices">
     <option value="1">Option 1</option>
@@ -67,7 +67,7 @@
 </qc-select>
 
 <div class="qc-formfield-row">
-  <qc-select id="qc-select-invalid" multiple invalid>
+  <qc-select id="qc-select-invalid" invalid>
     <label for="select-invalid">État invalide</label>
     <select multiple id="select-invalid">
       <option value="1">Option 1</option>
@@ -112,16 +112,15 @@
   </qc-select>
 </div>
 
-<qc-select id="qc-select-disabled" disabled>
+<qc-select id="qc-select-disabled">
   <label for="select-disabled">Désactivé</label>
-  <select id="select-disabled">disabled</select>
+  <select id="select-disabled" disabled>disabled</select>
 </qc-select>
 
 <form id="dropdown-list-form">
   <qc-select
           id="dropdown-list-restaurants"
-          placeholder="Type de restaurant"
-          multiple
+          placeholder="Types de restaurants"
           enable-search
           search-placeholder="Rechercher un type restaurant"
           required
@@ -145,7 +144,6 @@
           width="lg"
           enable-search
           search-placeholder="Rechercher les régions"
-          multiple
   >
     <label for="dropdown-list-regions-select">Régions desservies</label>
     <select id="dropdown-list-regions-select" multiple>
@@ -170,9 +168,7 @@
     event.preventDefault();
 
     let isValid = true;
-
     const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
-    console.log(requiredFields);
 
     requiredFields.forEach(field => {
       const value = field.value;

@@ -13734,7 +13734,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[129, 0], [147, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[134, 0], [154, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13745,6 +13745,8 @@
 		let invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => proxy([])),
 			multiple = prop($$props, 'multiple', 7),
+			disabled = prop($$props, 'disabled', 7),
+			required = prop($$props, 'required', 7),
 			label = prop($$props, 'label', 7),
 			width = prop($$props, 'width', 7),
 			rest = rest_props(
@@ -13757,6 +13759,8 @@
 					'invalid',
 					'value',
 					'multiple',
+					'disabled',
+					'required',
 					'label',
 					'width'
 				]);
@@ -13781,6 +13785,16 @@
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
 			set(labelElement, $$props.$$host.querySelector("label"), true);
+
+			if (get(labelElement)) {
+				label(get(labelElement).innerHTML);
+			}
+
+			if (get(selectElement)) {
+				multiple(get(selectElement).multiple);
+				disabled(get(selectElement).disabled);
+			}
+
 			setupItemsList();
 			setupObserver();
 		});
@@ -13800,12 +13814,6 @@
 						option.selected = false;
 					}
 				}
-			}
-		});
-
-		user_effect(() => {
-			if (get(labelElement)) {
-				label(get(labelElement).innerHTML);
 			}
 		});
 
@@ -13891,6 +13899,12 @@
 					},
 					get multiple() {
 						return multiple();
+					},
+					get disabled() {
+						return disabled();
+					},
+					get required() {
+						return required();
 					}
 				},
 				() => rest,
@@ -13948,6 +13962,20 @@
 			},
 			set multiple($$value) {
 				multiple($$value);
+				flushSync();
+			},
+			get disabled() {
+				return disabled();
+			},
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+			get required() {
+				return required();
+			},
+			set required($$value) {
+				required($$value);
 				flushSync();
 			},
 			get label() {

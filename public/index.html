@@ -2674,9 +2674,9 @@
         </select>
     </qc-select>
 
-    <qc-select id="qc-select-disabled" disabled>
+    <qc-select id="qc-select-disabled">
         <label for="select-disabled">Désactivé</label>
-        <select id="select-disabled">disabled</select>
+        <select id="select-disabled" disabled></select>
     </qc-select>
 
     <script>
@@ -2732,7 +2732,6 @@
                 width="lg"
                 enable-search
                 search-placeholder="Rechercher les régions"
-                multiple
         >
             <label for="dropdown-list-regions-select">Régions desservies</label>
             <select id="dropdown-list-regions-select" multiple>
@@ -2810,7 +2809,7 @@
             <td>""</td>
             <td>
                 Libellé de la liste déroulante.
-                <br> Si le libellé est absent, le contenu de l'élément <code>label</code> en slot est utilisé.
+                <br>N.B. : Le contenu de l'élément <code>label</code> en slot est utilisé en priorité.
             </td>
         </tr>
         <tr>
@@ -2841,7 +2840,10 @@
             <td>disabled</td>
             <td>na</td>
             <td>na</td>
-            <td>Désactive la liste déroulante</td>
+            <td>
+                Désactive la liste déroulante
+                <br>N.B. : L'attribut <code>disabled</code> de l'élément <code>select</code> en slot est utilisé en priorité.
+            </td>
         </tr>
         <tr>
             <td>invalid</td>
@@ -2850,7 +2852,7 @@
             <td>
                 Indique si la liste déroulante est dans un état invalide
                 <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
-                dès que l'attribut <code>value</code> contient une donnée.
+                dès que l'attribut <code>value</code> est modifié.
             </td>
         </tr>
         <tr>
@@ -2883,8 +2885,7 @@
             <td>na</td>
             <td>
                 Active la sélection multiple.
-                <br> Si <code>multiple</code> est définie dans l'élément <code>select</code> en slot, cette valeur a
-                priorité.
+                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> en slot est utilisé en priorité.
             </td>
         </tr>
         </tbody>

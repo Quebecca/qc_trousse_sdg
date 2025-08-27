@@ -26,6 +26,8 @@
         invalid = $bindable(false),
         value = $bindable([]),
         multiple,
+        disabled,
+        required,
         label,
         width,
         ...rest
@@ -50,6 +52,15 @@
     onMount(() => {
         selectElement = $host().querySelector("select");
         labelElement = $host().querySelector("label");
+
+        if (labelElement) {
+            label = labelElement.innerHTML;
+        }
+        if (selectElement) {
+            multiple = selectElement.multiple;
+            disabled = selectElement.disabled;
+        }
+
         setupItemsList();
         setupObserver();
     });
@@ -75,12 +86,6 @@
                     option.selected = false;
                 }
             }
-        }
-    });
-
-    $effect(() => {
-        if (labelElement) {
-            label = labelElement.innerHTML;
         }
     });
 
@@ -131,7 +136,7 @@
 </div>
 
 <DropdownList
-        {label}
+        label={label}
         ariaLabel={selectElement?.getAttribute("aria-label")}
         {items}
         {width}
@@ -142,6 +147,8 @@
         bind:invalid
         bind:rootElement={instance}
         {multiple}
+        {disabled}
+        {required}
         {...rest}
 />
 <link rel='stylesheet' href='{Utils.cssPath}'>
