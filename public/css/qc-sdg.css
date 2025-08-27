@@ -1251,6 +1251,10 @@ qc-icon {
 .qc-icon.qc-icon-custom {
   mask-image: var(--img-src);
 }
+.qc-icon.is-disabled {
+  cursor: not-allowed;
+  background-color: var(--qc-color-grey-regular);
+}
 
 .qc-icon-button {
   display: flex;
@@ -1742,6 +1746,12 @@ qc-search-input {
   background: transparent;
 }
 
+.qc-search-input.qc-search-left-icon-disabled qc-icon, .qc-search-input.qc-search-left-icon-disabled::before {
+  background-color: var(--qc-color-grey-pale);
+  border: 1px solid var(--qc-color-grey-regular);
+  cursor: not-allowed;
+}
+
 .qc-search-input input[type=search] {
   display: block;
   position: relative;
@@ -1776,7 +1786,6 @@ qc-search-input {
 .qc-search-input button::before {
   background: transparent;
 }
-
 qc-search-bar {
   position: relative;
   display: block;

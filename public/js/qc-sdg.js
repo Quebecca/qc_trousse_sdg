@@ -8925,7 +8925,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$e = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[35, 4]]]]);
+	var root$e = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[27, 0, [[38, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -8966,7 +8966,8 @@
 			var consequent = ($$anchor) => {
 				Icon($$anchor, {
 					type: 'search-thin',
-					iconColor: 'grey-regular'
+					iconColor: 'grey-regular',
+					class: `qc-icon${isDisabled ? ' is-disabled' : ''}`
 				});
 			};
 
@@ -9013,7 +9014,8 @@
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-search-input",
-				leftIcon() && "qc-search-left-icon"
+				leftIcon() && "qc-search-left-icon",
+				leftIcon() && isDisabled && "qc-search-left-icon-disabled"
 			]));
 
 			attributes = set_attributes(input, attributes, {

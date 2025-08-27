@@ -25,11 +25,14 @@
 </script>
 
 <div class={[
-        "qc-search-input",
-        leftIcon && "qc-search-left-icon"]} >
+            "qc-search-input",
+            leftIcon && "qc-search-left-icon",
+            leftIcon && isDisabled && "qc-search-left-icon-disabled"
+        ]} >
     {#if leftIcon}
         <Icon type="search-thin"
               iconColor="grey-regular"
+              class={`qc-icon${isDisabled ? ' is-disabled' : ''}`}
         />
     {/if}
     <input  bind:this={searchInput}

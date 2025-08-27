@@ -30,6 +30,11 @@ qc-icon {
   &.qc-icon-custom {
     mask-image: var(--img-src);
   }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    background-color: token-value(color grey regular);
+  }
 }
 
 

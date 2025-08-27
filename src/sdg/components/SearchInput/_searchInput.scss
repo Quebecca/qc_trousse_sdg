@@ -24,6 +24,12 @@ qc-search-input {
   }
 }
 
+%qc-search-disabled {
+  background-color: token-value(color grey pale);
+  border: 1px solid token-value(color, grey, regular);
+  cursor: not-allowed;
+}
+
 .qc-search-input {
   @extend %qc-search-wrapper;
   input[type=search] {
@@ -67,6 +73,16 @@ qc-search-input {
       background: transparent;
     }
     cursor: pointer;
+  }
+
+  &.qc-search-left-icon-disabled {
+    &::before {
+      @extend %qc-search-disabled;
+    }
+
+    qc-icon {
+      @extend %qc-search-disabled;
+    }
   }
 }
 
