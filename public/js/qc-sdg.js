@@ -13131,7 +13131,7 @@
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Choisissez une option:" : "Choose an option:"),
+			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option:"),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
 			required = prop($$props, 'required', 7, false),
@@ -13657,7 +13657,7 @@
 				return placeholder();
 			},
 			set placeholder(
-				$$value = lang === "fr" ? "Choisissez une option:" : "Choose an option:"
+				$$value = lang === "fr" ? "Faire une sélection" : "Select an option:"
 			) {
 				placeholder($$value);
 				flushSync();

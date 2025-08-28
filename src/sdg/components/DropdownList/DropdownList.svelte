@@ -15,7 +15,7 @@
         width = "md",
         items = [],
         value = $bindable([]),
-        placeholder = lang === "fr" ? "Choisissez une option:" : "Choose an option:",
+        placeholder = lang === "fr" ? "Faire une sélection" : "Select an option:",
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
         required = false,
