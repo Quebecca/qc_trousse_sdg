@@ -2459,7 +2459,6 @@
         <div class="qc-formfield-row">
             <qc-select
                     id="dropdown-list-restaurants"
-                    placeholder="Type de restaurant"
                     enable-search
                     search-placeholder="Rechercher un type de restaurant"
                     required
@@ -2573,7 +2572,7 @@
         </tr>
         <tr>
             <td>value</td>
-            <td>Texte</td>
+            <td>Tableau de chaîne de caractères</td>
             <td></td>
             <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
         </tr>
@@ -2581,7 +2580,7 @@
             <td>enable-search</td>
             <td>na</td>
             <td>na</td>
-            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+            <td>Affiche un champ de recherche instantanée dans le haut des options de la liste déroulante</td>
         </tr>
         <tr>
             <td>required</td>
@@ -2618,7 +2617,11 @@
             <td>placeholder</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+            <td>
+                Texte d'espace réservé de la boîte de la liste déroulante
+                <br> N.B. : Si une option a une valeur nulle, l'attribut <code>placeholder</code> prend la valeur au libellé de cette option.
+                Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
+            </td>
         </tr>
         <tr>
             <td>search-placeholder</td>
@@ -2645,17 +2648,9 @@
     </table>
 </div>
 
-<h4>Précision concernant le DOM d’ombre (Shadow dom)</h4>
-<ul>
-    <li>Ce composant contient un DOM d'ombre.</li>
-    <li>
-        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
-        <ul>
-            <li><code>label</code></li>
-            <li><code>select</code></li>
-        </ul>
-    </li>
-</ul>
+<h3>Zone d'ajout de contenu HTML</h3>
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
+
     <hr/>
     <h2 id="toTop">Haut de page</h2>
 <p>
