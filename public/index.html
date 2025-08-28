@@ -68,6 +68,7 @@
         <li><a href="#search-input">Champ de recherche</a></li>
         <li><a href="#toggle-switch">Commutateur</a></li>
         <li><a href="#select">Liste déroulante</a></li>
+        <li><a href="#champs-alignes">Champs alignés horizontalement</a></li>
       </ul>
 
     </li>
@@ -2459,7 +2460,6 @@
         <div class="qc-formfield-row">
             <qc-select
                     id="dropdown-list-restaurants"
-                    placeholder="Type de restaurant"
                     enable-search
                     search-placeholder="Rechercher un type de restaurant"
                     required
@@ -2573,7 +2573,7 @@
         </tr>
         <tr>
             <td>value</td>
-            <td>Texte</td>
+            <td>Tableau de chaîne de caractères</td>
             <td></td>
             <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
         </tr>
@@ -2581,7 +2581,7 @@
             <td>enable-search</td>
             <td>na</td>
             <td>na</td>
-            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+            <td>Affiche un champ de recherche instantanée dans le haut des options de la liste déroulante</td>
         </tr>
         <tr>
             <td>required</td>
@@ -2618,7 +2618,12 @@
             <td>placeholder</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+            <td>
+                Texte d'espace réservé de la boîte de la liste déroulante
+                <br> N.B. : Si une option a une valeur vide (<code>value=""</code>), l'attribut <code>placeholder</code>
+                prend le libellé de cette option.
+                Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
+            </td>
         </tr>
         <tr>
             <td>search-placeholder</td>
@@ -2645,17 +2650,127 @@
     </table>
 </div>
 
-<h4>Précision concernant le DOM d’ombre (Shadow dom)</h4>
-<ul>
-    <li>Ce composant contient un DOM d'ombre.</li>
-    <li>
-        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
-        <ul>
-            <li><code>label</code></li>
-            <li><code>select</code></li>
-        </ul>
-    </li>
-</ul>
+<h3>Zone d'ajout de contenu HTML</h3>
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
+
+    <hr/>
+    <h3 id="champs-alignes">Champs alignés horizontalement (classe <code>qc‑textfield‑row</code>)</h3>
+
+<p>Les champs regroupés sur une ligne doivent être placés dans un div avec la classe <code>qc-textfield-row</code> pour correctement afficher les messages d’erreur en cas de soumission invalide.</p>
+
+<h4>Exemple</h4>
+<qc-doc-exemple caption="Exemple de champs sur une seule ligne">
+    <form id="formulaire-champ-alignes">
+        <div class="qc-formfield-row">
+            <qc-textfield
+                    label="Téléphone"
+                    size="sm"
+                    required
+            ><input type="text"
+                    name="telephone"
+                    placeholder="(123) 456-7890"
+            /></qc-textfield>
+
+            <qc-textfield
+                    label="Poste"
+                    size="xs"
+                    required
+            >
+                <input type="text"
+                       name="poste"
+                />
+            </qc-textfield>
+        </div>
+        <div class="qc-formfield-row">
+            <qc-select
+                    id="dropdown-list-restaurants"
+                    placeholder="Type de restaurant"
+                    enable-search
+                    search-placeholder="Rechercher un type de restaurant"
+                    required
+                    invalid-text="Veuillez choisir un type de restaurant."
+            >
+                <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+                <select id="dropdown-list-restaurants-select"
+                        name="restaurants">
+                    <option value="">Veuillez faire un choix</option>
+                    <option value="Pizzeria">Pizzeria</option>
+                    <option value="Pâtisserie">Pâtisserie</option>
+                    <option value="Steakhouse">Steakhouse</option>
+                    <option value="Bar">Bar</option>
+                    <option value="Casse-croûte">Casse-croûte</option>
+                    <option value="Boîte à pâtes">Boîte à pâtes</option>
+                    <option value="Restaurant à burgers">Restaurant à burgers</option>
+                </select>
+            </qc-select>
+
+            <qc-select
+                    id="dropdown-list-regions"
+                    placeholder="Sélectionner une région"
+                    enable-search
+                    required
+                    search-placeholder="Rechercher les régions"
+            >
+                <label for="dropdown-list-regions-select">Régions desservies</label>
+                <select id="dropdown-list-regions-select" multiple name="regions">
+                    <option value="Capitale-nationale">Capitale-nationale</option>
+                    <option value="Centre-du-Québec" >Centre-du-Québec</option>
+                    <option value="Montérégie" >Montérégie</option>
+                    <option value="Outaouais">Outaouais</option>
+                    <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+                    <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+                    <option value="Nord-du-Québec">Nord-du-Québec</option>
+                    <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+                </select>
+            </qc-select>
+        </div>
+        <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
+    </form>
+
+
+</qc-doc-exemple>
+<script>
+    const form = document.getElementById("formulaire-champ-alignes");
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        let isValid = true;
+        form
+            .querySelectorAll("qc-textfield[required], [required] select")
+            .forEach(formfield => {
+                console.log(formfield, formfield.value ?? "no value")
+                if ((formfield.invalidAtSubmit ?? false)) { // textfield
+                    formfield.invalid = true;
+                    isValid = false;
+                }
+                if ((formfield.value === "")) { // select
+                    formfield.closest("qc-select").invalid = true;
+                    isValid = false;
+                }
+            })
+        form
+            .querySelectorAll("[required] select")
+            .forEach(formfield => {
+                if (formfield.invalidAtSubmit) {
+                    formfield.invalid = true;
+                    isValid = false;
+                }
+            })
+        if (isValid) {
+            const formData = new FormData(form);
+            let alertParts = ["Formulaire soumis avec les données suivantes :"];
+            for (const [key, val] of formData.entries()) {
+                alertParts.push(`${key} : ${val}`);
+            }
+            alert(alertParts.join("\n"));
+        }
+    });
+</script>
+
+<h4>Documentation technique</h4>
+<p>Placer les champs à regrouper sur une seule ligne dans un div avec la classe <code>qc-formfield-row</code></p>
+
+
+
     <hr/>
     <h2 id="toTop">Haut de page</h2>
 <p>
