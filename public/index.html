@@ -37,9 +37,8 @@
   <h2 class="qc-h4">Bases</h2>
   <ul>
     <li><a href='#couleurs'>Couleurs</a></li>
-    <li><a href='#grille'>Grille horizontale (grille de 8 px)</a></li>
-    <li><a href='#images'>Images</a></li>
-    <li><a href="#icons">Iconographie</a></li>
+    <li><a href='#grille'>Grille horizontale</a></li>
+    <li><a href='#figures'>Figures</a></li>
     <li><a href='#liens'>Liens</a></li>
     <li><a href='#liste'>Liste</a></li>
     <li><a href='#titre'>Niveaux de titres</a></li>
@@ -54,30 +53,29 @@
     <li><a href='#notice'>Avis</a></li>
     <li><a href='#search-bar'>Barre de recherche</a></li>
     <li><a href='#buttons'>Boutons</a></li>
-    <li>
-      <a href='#formulaires'>Formulaires</a>
+    <li><a href='#piv'>Composants du PIV</a>
       <ul>
-        <li><a href="#radios-checkboxes">Boutons radios et cases à cocher</a>
-          <ul>
-            <li><a href="#checkbox">Case à cocher unique</a></li>
-            <li><a href="#choice-group">Groupe de boutons radio et de cases à cocher</a></li>
-            <li><a href="#selection-button">Boutons de sélection</a></li>
-          </ul>
-        </li>
-        <li><a href="#textfield">Champ texte</a></li>
-        <li><a href="#search-input">Champ de recherche</a></li>
-        <li><a href="#toggle-switch">Commutateur</a></li>
-        <li><a href="#select">Liste déroulante</a></li>
+        <li><a href='#piv-header'>Bandeau d’en-tête du PIV</a>
+        <li><a href='#piv-footer'>Pied de page du PIV</a>
       </ul>
-
     </li>
     <li><a href="#toTop">Haut de page</a></li>
+    <li><a href="#radios-checkboxes">Boutons radios et cases à cocher</a>
+      <ul>
+        <li><a href="#checkbox">Case à cocher unique</a></li>
+        <li><a href="#choice-group">Groupe de boutons radio et de cases à cocher</a></li>
+        <li><a href="#selection-button">Boutons de sélection</a></li>
+      </ul>
+    </li>
 
-    <h2 class="qc-h4">Modèles</h2>
-    <ul>
-      <li><a href='#piv-header'>Bandeau d’en-tête du PIV</a>
-      <li><a href='#piv-footer'>Pied de page du PIV</a>
-    </ul>
+    <li><a href="#checkbox">Cases à cocher</a></li>
+    <li><a href="#selection-button">Boutons de sélection</a></li>
+    <li><a href="#toggle-switch">Commutateur</a></li>
+    <li><a href="#search-input">Champ de recherche</a></li>
+    <li><a href="#textfield">Champ texte</a></li>
+    <li><a href="#select">Liste déroulante</a></li>
+    <li><a href="#icons">Icônes</a></li>
+
   </ul>
 
 </nav>
@@ -319,8 +317,11 @@
   <strong>Gouttière</strong><br/>
   <code>--qc-breakpoint-gutter</code>
 </p>
+
     <hr/>
-    <h2 id="images">Images</h2>
+
+    <!-- images -->
+    <h2 id="figures">Figures</h2>
 <p>Les figures servent en général pour l’affichage des images.</p>
 <qc-doc-exemple id="exemple-figure"
                 caption="Exemple d’affichage d’une image"
@@ -336,232 +337,10 @@
   </figure>
 </qc-doc-exemple>
 <!--            <qc-code target-id="exemple-figure"></qc-code>-->
-    <hr/>
-    
-<h2 id="icons">Iconographie (qc-icon)</h2>
-
-<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
-
-<h3>Exemples</h3>
-<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
-                id="icons-exemple">
-    <div>
-        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
-        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
-        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
-        <qc-icon type="success" color="purple" size="lg"></qc-icon>
-        <qc-icon type="success" color="success" size="xl"></qc-icon>
-    </div>
-    <div>
-        <qc-icon type="arrow-up"  size="lg"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="45"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="135"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="225"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="-45"></qc-icon>
-    </div>
-
-
-</qc-doc-exemple>
-<style>
-    #icons-exemple  {
-        div:has(> qc-icon) {
-            margin-bottom: var(--qc-spacer-content-block-mb);
-        }
-        qc-icon {
-            margin-right: var(--qc-spacer-sm);
-        }
-    }
-</style>
-
-<qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
-        <qc-icon
-                src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
-        />
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>type</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
-        </tr>
-        <tr>
-            <td>label</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran.</td>
-        </tr>
-        <tr>
-            <td>rotate</td>
-            <td>Nombre</td>
-            <td>na</td>
-            <td>Rotation de l'image en degrés dans le sens horaire.</td>
-        </tr>
-        <tr>
-            <td>size</td>
-            <td>xs, sm, md, lg ou xl</td>
-            <td>md</td>
-            <td>Taille de l’icône.</td>
-        </tr>
-        <tr>
-            <td>color</td>
-            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
-            <td>text-primary</td>
-            <td>Couleur de l'icône.</td>
-        </tr>
-        <tr>
-            <td>width</td>
-            <td>Toute valeur acceptée par la directive css <code>width</code></td>
-            <td>auto</td>
-            <td>Largeur personnalisée de l’icône.</td>
-        </tr>
-        <tr>
-            <td>height</td>
-            <td>Toute valeur acceptée par la directive css <code>height</code></td>
-            <td>auto</td>
-            <td>Hauteur personnalisée de l’icône.</td>
-        </tr>
-        <tr>
-            <td>src</td>
-            <td>Toute valeur acceptée par la fonction css <code>url()</code></td>
-            <td>na</td>
-            <td>Chemin pour afficher une icône personnalisée.</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<h4>Liste des icônes</h4>
-
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Aperçu</th>
-        </tr>
-        </thead>
-        <tbody>
-        
-            <tr>
-                <td>arrow-up</td>
-                <td><qc-icon type="arrow-up" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>checkmark</td>
-                <td><qc-icon type="checkmark" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>chevron-up-thin</td>
-                <td><qc-icon type="chevron-up-thin" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>chevron-up</td>
-                <td><qc-icon type="chevron-up" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>clipboard</td>
-                <td><qc-icon type="clipboard" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>error</td>
-                <td><qc-icon type="error" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>exclamation</td>
-                <td><qc-icon type="exclamation" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>external-link</td>
-                <td><qc-icon type="external-link" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>information</td>
-                <td><qc-icon type="information" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>ligth-bulb</td>
-                <td><qc-icon type="ligth-bulb" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>minus</td>
-                <td><qc-icon type="minus" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>note</td>
-                <td><qc-icon type="note" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>plus</td>
-                <td><qc-icon type="plus" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>question-mark</td>
-                <td><qc-icon type="question-mark" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>search-thin</td>
-                <td><qc-icon type="search-thin" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>search</td>
-                <td><qc-icon type="search" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>success</td>
-                <td><qc-icon type="success" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>warning</td>
-                <td><qc-icon type="warning" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>xclose</td>
-                <td><qc-icon type="xclose" size="lg" /></td>
-            </tr>
-        
-        </tbody>
-    </table>
-</div>
-
-
 
     <hr/>
+
+    <!-- liens -->
     <h2 id="liens">Liens</h2>
 <qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
     <dl>
@@ -666,7 +445,10 @@
         </tbody>
     </table>
 </div>
+
     <hr/>
+
+    <!-- liste -->
     <h2 id="liste">Liste</h2>
 <qc-doc-exemple caption="Exemple de listes">
 
@@ -704,7 +486,10 @@
   </dl>
   <p>Lorem ipsum dolor sit amet</p>
 </qc-doc-exemple>
+
     <hr/>
+
+    <!-- niveaux de titres -->
     <h2 id="titre">Niveaux de titres</h2>
 <qc-doc-exemple caption="Exemples de titres"
                 code-target-id="liste-titres"
@@ -723,7 +508,10 @@
     <h6 class="qc-h6">Titre de niveau 6</h6>
   </div>
 </qc-doc-exemple>
+
     <hr/>
+
+    <!-- ombrages -->
     <h2 id="ombrages">Ombrages</h2>
 <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>,
     X étant le niveau d’élévation. </p>
@@ -738,7 +526,10 @@
         <div class="qc-shading-4">Élévation 4</div>
     </div>
 </qc-doc-exemple>
+
     <hr/>
+
+    <!-- paragraphes -->
     <h2 id="paragraphes">Paragraphes</h2>
 <qc-doc-exemple caption="Exemple de paragraphe">
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor porttitor.
@@ -756,7 +547,10 @@
         aliquam. Sed aliquam semper est in imperdiet. Pellentesque non ultrices nibh. Nullam hendrerit
         dictum gravida. Aliquam vel arcu in odio dapibus malesuada.</p>
 </qc-doc-exemple>
+
     <hr/>
+
+    <!-- polices de caractères -->
     <h2 id="polices">Polices de caractères</h2>
 <div class="font-titles">
   <h3><strong>Roboto</strong></h3>
@@ -802,7 +596,9 @@
   </qc-doc-exemple>
   <!--                <qc-code target-id="font-open-sans"></qc-code>-->
 </div>
+
     <hr/>
+    <!-- Séparateur -->
     <h2 id="separator">Séparateur</h2>
 
 <qc-doc-exemple caption="Exemple de séparateur">
@@ -810,7 +606,11 @@
     <hr/>
     <p>A autem consequuntur cum cupiditate dignissimos, dolore doloribus,</p>
 </qc-doc-exemple>
+
+
     <hr/>
+
+    <!-- alerte générale -->
     <h2 id="alert">Alerte générale (qc-alert)</h2>
 <h3>Exemples</h3>
 <h4>Alerte jaune</h4>
@@ -921,7 +721,10 @@
     </div>
   </qc-alert>
 </qc-doc-exemple>
+
     <hr/>
+
+    <!-- avis -->
     <h2 id="notice">Avis (qc-notice)</h2>
 <h3>Exemples</h3>
 
@@ -1063,7 +866,9 @@
     </div>
   </qc-notice>
 </qc-doc-exemple>
+
     <hr/>
+
     <h2 id="search-bar">Barre de recherche</h2>
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemple de barre de recherche lançant une recherche dans quebec.ca">
@@ -1189,7 +994,7 @@
 
 <h3>Précision concernant le DOM d’ombre (Shadow DOM)</h3>
 <p>Ce composant ne contient pas de DOM d’ombre.</p>
-    <hr/>
+
     <h2 id="buttons">Boutons</h2>
 <h3>Exemples</h3>
 
@@ -1377,1328 +1182,8 @@
     </table>
 </div>
 
-    <hr/>
-    <h2 id="formulaires">Formulaires</h2>
-    <h3 id="radios-checkboxes">Boutons radios et cases à cocher</h3>
-    
 
-<h4 id="checkbox">Case à cocher unique (qc-checkbox)</h4>
-
-<qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
-  <form id="exemple-tos-form">
-    <qc-checkbox required >
-      <label>
-        <input type="checkbox"
-               name="consentement"
-               value="oui"
-               id="consentement"
-        />
-        <span >J’accepte les conditions d’utilisation</span>
-      </label>
-    </qc-checkbox>
-
-    <button class="qc-button qc-primary qc-compact"
-            type="submit">
-      S'inscrire
-    </button>
-  </form>
-
-  <script>
-    const tosForm = document.getElementById("exemple-tos-form");
-    const consentement = document.getElementById("consentement");
-    tosForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if(consentement.checked) {
-        const formData = new FormData(event.target);
-        let alertParts = ["Formulaire soumis avec les données suivantes :"];
-        for (const [key, value] of formData.entries()) {
-          alertParts.push(`${key} : ${value}`);
-        }
-        alert(alertParts.join("\n"));
-      } else {
-        consentement.closest('qc-checkbox').invalid = true;
-      }
-    })
-  </script>
-</qc-doc-exemple>
-
-
-<h4>Attributs de qc-checkbox</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche la case à cocher au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-
-    <hr/>
-    <h4 id="choice-group">Groupe de boutons radio et de cases à cocher (qc-choice-group)</h4>
-
-<h5>Exemples</h5>
-<p>
-  Les groupes d'éléments de choix sont également disponibles sous forme de <a href="#selection-button">boutons de sélection</a>.
-</p>
-
-<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
-  <qc-choice-group legend="Sélectionnez vos options"
-                   name="options-multiples"
-  >
-    <label>
-      <input type="checkbox"
-             value="1"
-             checked
-      />
-      <span >Option 1</span>
-    </label>
-    <label>
-      <input type="checkbox"
-             value="2"
-      />
-      <span >Option 2</span>
-    </label>
-    <label>
-      <input type="checkbox"
-             value="3"
-             disabled
-      />
-      <span >Option 3 (désactivée)</span>
-    </label>
-  </qc-choice-group>
-
-  <qc-choice-group legend="Sélectionnez une option"
-                   name="choix-unique"
-  >
-    <label>
-      <input type="radio"
-             value="1"
-             checked
-      />
-      <span >Option 1</span>
-    </label>
-    <label>
-      <input type="radio"
-             value="2"
-      />
-      <span >Option 2</span>
-    </label>
-    <label>
-      <input type="radio"
-             value="3"
-             disabled
-      />
-      <span >Option 3 (désactivée)</span>
-    </label>
-  </qc-choice-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple d’un groupe au petit format">
-  <qc-choice-group legend="Sélectionnez vos options"
-                   name="options-multiples"
-                   compact
-  >
-    <label>
-      <input type="checkbox"
-             value="1"
-             checked
-      />
-      <span >Option 1</span>
-    </label>
-    <label>
-      <input type="checkbox"
-             value="2"
-      />
-      <span >Option 2</span>
-    </label>
-    <label>
-      <input type="checkbox"
-             value="3"
-             disabled
-      />
-      <span >Option 3 (désactivée)</span>
-    </label>
-  </qc-choice-group>
-
-  <qc-choice-group legend="Sélectionnez une option"
-                   name="choix-unique"
-                   compact
-  >
-    <label>
-      <input type="radio"
-             value="1"
-             checked
-      />
-      <span >Option 1</span>
-    </label>
-    <label>
-      <input type="radio"
-             value="2"
-      />
-      <span >Option 2</span>
-    </label>
-    <label>
-      <input type="radio"
-             value="3"
-             disabled
-      />
-      <span >Option 3 (désactivée)</span>
-    </label>
-  </qc-choice-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
-  <form id="checkbox-form">
-    <qc-choice-group
-            legend="Sur quelle plateforme consultez-vous www.quebec.ca ?"
-            name="plateforme"
-            required
-            invalid-text="Veuillez sélectionner une plateforme."
-    >
-      <label>
-        <input type="checkbox"
-               value="ordinateur"
-        />
-        <span>Ordinateur</span>
-      </label>
-      <label>
-        <input type="checkbox"
-               value="tablette"
-        />
-        <span>Tablette</span>
-      </label>
-      <label>
-        <input type="checkbox"
-               value="telephone_intelligent"
-        />
-        <span>Téléphone intelligent</span>
-      </label>
-    </qc-choice-group>
-
-    <qc-choice-group
-            legend="Quel thème préférez-vous ?"
-            name="theme"
-            required
-            invalid-text="Veuillez sélectionner un thème."
-    >
-      <label>
-        <input type="radio"
-               value="clair"
-        />
-        <span>Le thème clair</span>
-      </label>
-      <label>
-        <input type="radio"
-               value="sombre"
-        />
-        <span>Le thème sombre</span>
-      </label>
-
-    </qc-choice-group>
-
-    <button class="qc-button qc-primary qc-compact" type="submit">
-      Soumettre
-    </button>
-  </form>
-
-  <script>
-
-    document
-            .getElementById("checkbox-form")
-            .addEventListener("submit", (event) => {
-              event.preventDefault();
-              let doSubmit = true;
-              event
-                      .target
-                      .querySelectorAll("qc-choice-group[required]")
-                      .forEach(group => {
-                        let valid = false;
-                        group.querySelectorAll("input")
-                                .forEach(checkbox => {
-                                  if (checkbox.checked) {
-                                    valid = true;
-                                  }
-                                })
-                        if (!valid) {
-                          group.invalid = true;
-                          doSubmit = false;
-                        }
-                      })
-              if(doSubmit) {
-                const formData = new FormData(event.target);
-                let alertParts = ["Formulaire soumis avec les données suivantes :"];
-                for (const [key, value] of formData.entries()) {
-                  alertParts.push(`${key} : ${value}`);
-                }
-                alert(alertParts.join("\n"));
-              }
-            })
-  </script>
-</qc-doc-exemple>
-
-
-<h5 id="choice-group-doc">Attributs de qc-choice-group</h5>
-
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>legend</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Légende du groupe</td>
-    </tr>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom commun à tous les champs du groupe</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
-    </tr>
-    <tr>
-      <td>selection-button</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
-    </tr>
-    <tr>
-      <td>column-count</td>
-      <td>Nombre</td>
-      <td>1</td>
-      <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
-        <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
-      </td>
-    </tr>
-    <tr>
-      <td>inline</td>
-      <td>na</td>
-      <td>na</td>
-      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
-
-<h5>Zone d’ajout de contenu HTML</h5>
-
-<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
-
-
-    <hr/>
-    <h4 id="selection-button">Boutons de sélection</h4>
-
-<h5>Exemples</h5>
-<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection avec différents états.">
-    <qc-choice-group legend="Sélectionnez une option :"
-                    name="ex-radio-select"
-                    selection-button
-                    column-count="2"
-    >
-        <label>
-            <input type="radio"
-                   value="1"
-                   checked
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 1</span>
-                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
-            </span>
-        </label>
-
-        <label>
-            <input type="radio"
-                   value="2"
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 2</span>
-            </span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="3"
-                   disabled
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 3 (désactivée)</span>
-            </span>
-        </label>
-    </qc-choice-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple
-        caption="Exemple d’un groupe de cases à cocher sous forme de boutons de sélection avec différents états."
->
-    <qc-choice-group
-            name="exemple-checkbox-select"
-            legend="Sélectionnez vos options"
-            selection-button
-            column-count="2">
-        <label>
-            <input type="checkbox"
-                   value="1"
-                   checked
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 1</span>
-                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
-            </span>
-        </label>
-
-        <label>
-            <input type="checkbox"
-                   value="2"
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 2</span>
-            </span>
-        </label>
-        <label>
-            <input type="checkbox"
-                   value="3"
-                   disabled
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 3 (désactivée)</span>
-            </span>
-        </label>
-    </qc-choice-group>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection sur une rangée.">
-    <qc-choice-group legend="Choisissez une option :"
-                    name="ex-radio-select-inline"
-                    selection-button
-                    inline
-    >
-        <label>
-            <input type="radio"
-                   value="1"
-                   checked
-            />
-            <span>1</span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="2"
-            />
-            <span>2</span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="3"
-            />
-            <span>3</span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="4"
-            />
-            <span>4</span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="5"
-            />
-            <span>5</span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="6"
-                   disabled
-            />
-            <span>6</span>
-        </label>
-
-    </qc-choice-group>
-</qc-doc-exemple>
-
-<h5>Documentation technique</h5>
-<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a>.</p>
-
-
-    <hr/>
-    <h3 id="textfield">Champ texte</h3>
-<h4>Exemples</h4>
-
-<qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
-  <form id="formulaire-champs-textes">
-    <qc-textfield
-            label="Nom complet"
-            size="md"
-            required
-    >
-      <input type="text"
-             name="code-postal"
-             placeholder="ex : Jean Tremblay"
-      />
-    </qc-textfield>
-
-    <qc-textfield
-            label="Champ désactivé"
-            size="md"
-    >
-      <input type="text"
-             name="disabled-field"
-             placeholder="Ce champ est désactivé"
-             disabled
-      />
-    </qc-textfield>
-
-    <div class="qc-formfield-row">
-      <qc-textfield
-              label="Téléphone"
-              size="sm"
-              required
-        ><input type="text"
-                name="telephone"
-                placeholder="(123) 456-7890"
-      /></qc-textfield>
-
-      <qc-textfield
-              label="Poste"
-              size="xs"
-      >
-        <input type="text"
-               name="poste"
-        />
-      </qc-textfield>
-    </div>
-
-    <qc-textfield
-            label="Champ de texte multiligne"
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-            size="lg"
-            max-length="10"
-            required
-    >
-      <textarea name="zone-xxl"></textarea>
-    </qc-textfield>
-
-    <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
-  </form>
-
-  <script>
-    const form = document.getElementById("formulaire-champs-textes");
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      let isValid = true;
-      form
-          .querySelectorAll("qc-textfield[required]")
-          .forEach(formfield => {
-            if (formfield.invalidAtSubmit) {
-              formfield.invalid = true;
-              isValid = false;
-            }
-          })
-      if (isValid) {
-        const formData = new FormData(form);
-        let alertParts = ["Formulaire soumis avec les données suivantes :"];
-        for (const [key, val] of formData.entries()) {
-          alertParts.push(`${key} : ${val}`);
-        }
-        alert(alertParts.join("\n"));
-      }
-    });
-  </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple id="textfield-sizes" caption="Illustration des différentes tailles de champs texte.">
-
-    <qc-textfield
-            label="Taille extra-petite"
-            size="xs"
-    >
-      <input type="text"
-             placeholder="xs"
-      />
-    </qc-textfield>
-
-    <qc-textfield
-            label="Taille petite"
-            size="sm"
-    >
-      <input type="text"
-             placeholder="sm"
-      />
-    </qc-textfield>
-
-  <qc-textfield
-          label="Taille moyenne"
-          size="md"
-  >
-    <input type="text"
-           placeholder="md"
-    />
-  </qc-textfield>
-  <qc-textfield
-          label="Taille large"
-          size="lg"
-  >
-    <input type="text"
-           placeholder="lg"
-    />
-  </qc-textfield>
-  <qc-textfield
-          label="Taille extra-large"
-          size="xl"
-  >
-    <input type="text"
-           placeholder="xl"
-    />
-  </qc-textfield>
-
-</qc-doc-exemple>
-
-
-<h4>Documentation technique</h4>
-
-<h5>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h5>
-
-<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne provoquent pas de décalage. <br/>
-  Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
-
-<h5>Attributs</h5>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>label</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte du libellé du champ</td>
-    </tr>
-    <tr>
-      <td>size</td>
-      <td>"xs", "sm", "md", "lg", "xl"</td>
-      <td>lg pour les champs simple (<code>input</code>) <br>
-        xl pour les champs multilignes (<code>textarea</code>),
-      </td>
-      <td>Largeur du champ</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Marque le champ comme obligatoire</td>
-    </tr>
-    <tr>
-      <td>description</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Texte descriptif affiché sous l'étiquette</td>
-    </tr>
-    <tr>
-      <td>max-length</td>
-      <td>Nombre</td>
-      <td>null</td>
-      <td>Indique la limite de caractères pour le champ</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique que le champ est invalide en affichant un message selon l'erreur.
-      <dl>
-        <dt>Français</dt>
-        <dd>Le champ XXX est obligatoire.</dd>
-        <dd>La limite de caractères du champ XXX est dépassée.</dd>
-        <dt>Anglais</dt>
-        <dd>XXX field is required.</dd>
-        <dd>The character limit for the ${label} field has been exceeded..</dd>
-      </dl>
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>aucune</td>
-      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-<h5>Propriété js</h5>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>invalidAtSubmit</td>
-        <td>Booléen</td>
-        <td>Indique si le champ serait invalide s'il était soumis. La vérification porte sur <code>required</code> et <code>max-length</code></td>
-      </tr>
-      <tr>
-      <tr>
-        <td>maxlengthReached</td>
-        <td>Booléen</td>
-        <td>Indique si la limite de caractère est dépassée.</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<h5>Zone d’ajout de contenu HTML</h5>
-
-<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
-
-    <hr/>
-    <h2 id="search-input">Champ de recherche</h2>
-<h3>Exemples</h3>
-
-<qc-doc-exemple caption="Exemples de champs de recherche">
-    <qc-search-input
-            placeholder="Rechercher un article"
-            aria-label="Rechercher un article"
-            clear-aria-label="Effacer le texte"
-            left-icon
-    ></qc-search-input>
-
-    <br>
-
-    <qc-search-input
-            value="Climat"
-            placeholder="Rechercher un sujet"
-            aria-label="Rechercher un sujet"
-            clear-aria-label="Effacer le texte"
-            left-icon
-    ></qc-search-input>
-
-    <br>
-
-    <qc-search-input
-            placeholder="Recherche désactivée"
-            aria-label="Recherche désactivée"
-            disabled
-            left-icon
-            clear-aria-label="Effacer le texte"
-    ></qc-search-input>
-</qc-doc-exemple>
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs</h4>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>value</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Valeur inscrite par défaut dans le champ de recherche.</td>
-        </tr>
-        <tr>
-            <td>placeholder</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte indicatif affiché lorsque le champ est vide.</td>
-        </tr>
-        <tr>
-            <td>aria-label</td>
-            <td>Texte</td>
-            <td>"Rechercher..." ou "Search..."</td>
-            <td>Libellé accessible pour les lecteurs d'écran.</td>
-        </tr>
-        <tr>
-            <td>clear-aria-label</td>
-            <td>Texte</td>
-            <td>"Effacer le texte" ou "Clear text"</td>
-            <td>Libellé accessible du bouton pour effacer le champ.</td>
-        </tr>
-        <tr>
-            <td>disabled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Désactive le champ.</td>
-        </tr>
-        <tr>
-            <td>name</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Nom du champ utilisé lors de la soumission du formulaire.</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-    <hr/>
-    <!-- Commutateur -->
-<h3 id="toggle-switch">Commutateur</h3>
-<p>
-    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
-    commutateur agit immédiatement sur la page où il est inséré.
-</p>
-
-<h4>Exemples</h4>
-<qc-doc-exemple
-        caption="Exemple de commutateurs seuls avec leurs libellés respectivement à gauche et à droite."
->
-    <div style="display: flex; flex-direction: column; gap: 2.4rem">
-        <qc-toggle-switch
-                id="switch-status"
-                label="Afficher l'état du commutateur à la console."
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="switch-status-2"
-                label="Libellé aligné à droite (afficher au format mobile pour voir la différence)."
-                text-align="end"
-        ></qc-toggle-switch>
-    </div>
-
-    <script>
-        document.getElementById("switch-status")
-            .addEventListener("change", (event) => {
-                console.log(`'switch-status' mis à ${event.target.checked}`);
-            });
-    </script>
-</qc-doc-exemple>
-
-<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
-    <qc-toggle-switch-group
-        id="switch-group"
-        legend="Préférences de notifications de messages"
-        justified
-        max-width="25.6rem"
-    >
-        <qc-toggle-switch
-                id="nouveaux-messages"
-                label="Nouveaux messages"
-                checked
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="modifications-messages"
-                label="Modifications de messages"
-        ></qc-toggle-switch>
-        <qc-toggle-switch
-                id="messages-supprimes"
-                label="Messages supprimés (désactivé)"
-                disabled
-        ></qc-toggle-switch>
-    </qc-toggle-switch-group>
-    <script>
-        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
-            .forEach(switchElement => {
-                switchElement.addEventListener("change", (event) => {
-                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
-                });
-            });
-    </script>
-</qc-doc-exemple>
-
-<h4>Documentation technique</h4>
-
-<h5>Attributs de <code>qc-toggle-switch</code></h5>
-<table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>label</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu du libellé du commutateur</td>
-    </tr>
-    <tr>
-        <td>checked</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Active le commutateur par défaut</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le commutateur</td>
-    </tr>
-    <tr>
-        <td>justified</td>
-        <td>na</td>
-        <td>na</td>
-        <td>
-            Permet au commutateur et son libellé de prendre toute la largeur disponible
-        </td>
-    </tr>
-    <tr>
-        <td>text-align</td>
-        <td>"start" ou "end"</td>
-        <td>"start"</td>
-        <td>Alignement du texte du libellé</td>
-    </tr>
-    </tbody>
-</table>
-
-<h5>Attributs de <code>qc-toggle-switch-group</code></h5>
-<table class="qc-table qc-striped component-attributes-description">
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>legend</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu de la légende du groupe de commutateurs</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le groupe de commutateurs</td>
-    </tr>
-    <tr>
-        <td>justified</td>
-        <td>na</td>
-        <td>na</td>
-        <td>
-            Permet au commutateur et son libellé de prendre toute la largeur disponible.
-            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
-        </td>
-    </tr>
-    <tr>
-        <td>text-align</td>
-        <td>"start" ou "end"</td>
-        <td>"start"</td>
-        <td>
-            Alignement du texte des libellés des commutateurs.
-            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
-        </td>
-    </tr>
-    <tr>
-        <td>max-width</td>
-        <td>"fit-content", "[x]px", "[x]rem", "[x]em", "[x]%", où [x] est un nombre</td>
-        <td>"fit-content"</td>
-        <td>Largeur maximale des commutateurs dans le groupe</td>
-    </tr>
-    </tbody>
-</table>
-    <hr/>
-    <h3 id="select">Liste déroulante</h3>
-
-<h4>Exemples</h4>
-
-<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
-    <qc-select id="qc-select-single-choice">
-        <label for="select-single-choice">Choix unique</label>
-        <select id="select-single-choice">
-            <option value="" selected>Choisissez une option</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16" disabled>Option 16 (désactivée)</option>
-        </select>
-    </qc-select>
-
-    <qc-select id="qc-select-single-choice-no-scroll">
-        <label for="select-single-choice-no-scroll">Choix unique sans défilement</label>
-        <select id="select-single-choice-no-scroll">
-            <option value="1" selected>Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-        </select>
-    </qc-select>
-
-    <qc-select id="qc-select-single-choice-search" enable-search>
-        <label for="select-single-choice-search">Choix unique avec recherche</label>
-        <select id="select-single-choice-search">
-            <option value="" selected>Choisissez une option</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-            <option value="9">Option 9</option>
-            <option value="10">Option 10</option>
-            <option value="11">Option 11</option>
-            <option value="12">Option 12</option>
-            <option value="13">Option 13</option>
-            <option value="14">Option 14</option>
-            <option value="15">Option 15</option>
-            <option value="16">Option 16</option>
-        </select>
-    </qc-select>
-
-    <qc-select id="qc-select-multiple-choices" multiple>
-        <label for="select-multiple-choices">Choix multiples</label>
-        <select multiple id="select-multiple-choices">
-            <option value="1">Option 1</option>
-            <option value="2" selected>Option 2</option>
-            <option value="3" selected>Option 3</option>
-            <option value="4" disabled>Option 4 (désactivée)</option>
-        </select>
-    </qc-select>
-
-    <qc-select id="qc-select-disabled">
-        <label for="select-disabled">Désactivé</label>
-        <select id="select-disabled" disabled></select>
-    </qc-select>
-
-    <form id="dropdown-list-form">
-        <div class="qc-formfield-row">
-            <qc-select
-                    id="dropdown-list-restaurants"
-                    enable-search
-                    search-placeholder="Rechercher un type de restaurant"
-                    required
-                    invalid-text="Veuillez choisir un type de restaurant."
-            >
-                <label for="dropdown-list-restaurants-select">Type de restaurant</label>
-                <select id="dropdown-list-restaurants-select">
-                    <option value="">Type de restaurant</option>
-                    <option value="Pizzeria">Pizzeria</option>
-                    <option value="Pâtisserie">Pâtisserie</option>
-                    <option value="Steakhouse">Steakhouse</option>
-                    <option value="Bar">Bar</option>
-                    <option value="Casse-croûte">Casse-croûte</option>
-                    <option value="Boîte à pâtes">Boîte à pâtes</option>
-                    <option value="Restaurant à burgers">Restaurant à burgers</option>
-                </select>
-            </qc-select>
-
-            <qc-select
-                    id="dropdown-list-regions"
-                    placeholder="Sélectionner une région"
-                    enable-search
-                    search-placeholder="Rechercher les régions"
-            >
-                <label for="dropdown-list-regions-select">Régions desservies</label>
-                <select id="dropdown-list-regions-select" multiple>
-                    <option value="Capitale-nationale">Capitale-nationale</option>
-                    <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
-                    <option value="Montérégie" selected>Montérégie</option>
-                    <option value="Outaouais">Outaouais</option>
-                    <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
-                    <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
-                    <option value="Nord-du-Québec">Nord-du-Québec</option>
-                    <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
-                </select>
-            </qc-select>
-        </div>
-
-        <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
-    </form>
-
-    <script>
-        const dropdownListForm = document.getElementById("dropdown-list-form");
-
-        dropdownListForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            let isValid = true;
-            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
-
-            requiredFields.forEach(field => {
-                const value = field.querySelector("select").value;
-
-                if (!value || value.length <= 0) {
-                    field.invalid = true;
-                    isValid = false;
-                } else {
-                    field.invalid = false;
-                }
-            });
-
-            if (isValid) {
-                const formEntries = dropdownListForm.querySelectorAll("qc-select");
-                let alertParts = ["Formulaire soumis avec les données suivantes :"];
-                formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
-                });
-                alert(alertParts.join("\n"));
-            }
-        });
-    </script>
-</qc-doc-exemple>
-
-<h4>Documentation technique</h4>
-
-<h5>Attributs</h5>
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Valeur attendue</th>
-            <th>Valeur par défaut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>id</td>
-            <td>Texte</td>
-            <td>Chaîne de caractères aléatoire</td>
-            <td>Identifiant de la liste déroulante</td>
-        </tr>
-        <tr>
-            <td>label</td>
-            <td>Contenu HTML</td>
-            <td>""</td>
-            <td>
-                Libellé de la liste déroulante.
-                <br>N.B. : Le contenu de l'élément <code>label</code> en slot est utilisé en priorité.
-            </td>
-        </tr>
-        <tr>
-            <td>width</td>
-            <td>"xs", "sm", "md", "lg", "xl"</td>
-            <td>"md"</td>
-            <td>
-                Largeur de la liste déroulante. Voir <a href="#textfield-sizes">l'illustration des tailles de champ texte</a>
-                pour une indication visuelle des tailles disponibles.
-            </td>
-        </tr>
-        <tr>
-            <td>value</td>
-            <td>Tableau de chaîne de caractères</td>
-            <td></td>
-            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
-        </tr>
-        <tr>
-            <td>enable-search</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Affiche un champ de recherche instantanée dans le haut des options de la liste déroulante</td>
-        </tr>
-        <tr>
-            <td>required</td>
-            <td>na</td>
-            <td>na</td>
-            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
-        </tr>
-        <tr>
-            <td>disabled</td>
-            <td>na</td>
-            <td>na</td>
-            <td>
-                Désactive la liste déroulante
-                <br>N.B. : L'attribut <code>disabled</code> de l'élément <code>select</code> en slot est utilisé en priorité.
-            </td>
-        </tr>
-        <tr>
-            <td>invalid</td>
-            <td>na</td>
-            <td>na</td>
-            <td>
-                Indique si la liste déroulante est dans un état invalide
-                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
-                dès que l'attribut <code>value</code> est modifié.
-            </td>
-        </tr>
-        <tr>
-            <td>invalid-text</td>
-            <td>Texte</td>
-            <td>Le champ `label` est obligatoire.</td>
-            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
-        </tr>
-        <tr>
-            <td>placeholder</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>
-                Texte d'espace réservé de la boîte de la liste déroulante
-                <br> N.B. : Si une option a une valeur vide (<code>value=""</code>), l'attribut <code>placeholder</code>
-                prend le libellé de cette option.
-                Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
-            </td>
-        </tr>
-        <tr>
-            <td>search-placeholder</td>
-            <td>Texte</td>
-            <td>""</td>
-            <td>Texte d'espace réservé du champ de recherche</td>
-        </tr>
-        <tr>
-            <td>no-options-message</td>
-            <td>Contenu HTML</td>
-            <td>Aucun élément/No item</td>
-            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
-        </tr>
-        <tr>
-            <td>multiple</td>
-            <td>na</td>
-            <td>na</td>
-            <td>
-                Active la sélection multiple.
-                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> en slot est utilisé en priorité.
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<h3>Zone d'ajout de contenu HTML</h3>
-<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
-
-    <hr/>
-    <h2 id="toTop">Haut de page</h2>
-<p>
-  Le composant <i>haut de page</i> est la flèche qui permet à l’utilisateur de revenir en haut de la
-  page. Il s'affiche quand l’utilisateur commence à défiler vers le haut.
-  Il disparaît quand l’utilisateur commence à défiler vers le bas.
-</p>
-<h4>Exemple</h4>
-<qc-doc-exemple caption="Présentation du composant retour en haut de page"
-                code-target-id="to-top-exemple"
->
-  <qc-to-top demo="true"/>
-</qc-doc-exemple>
-<div id="to-top-exemple">
-  <qc-to-top></qc-to-top>
-</div>
-
-<h3>Documentation technique</h3>
-
-<h4>Attributs</h4>
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>text</td>
-      <td>Texte</td>
-      <td>Retour en haut / Back to top</td>
-      <td>la valeur de l’attribut "text" de l’élément.</td>
-    </tr>
-    <tr>
-      <td>demo</td>
-      <td>"true" ou "false"</td>
-      <td>false</td>
-      <td>Pour utiliser le composant en démonstration uniquement.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-    <hr/>
+    <!-- bandeau d’entête PIV -->
     <h2 id="piv-header">Bandeau d’en-tête du PIV (qc-piv-header)</h2>
 
 <h3>Exemples</h3>
@@ -3078,6 +1563,1552 @@
   </qc-piv-footer>
 </qc-doc-exemple>
     <hr/>
+
+ <h2 id="toTop">Haut de page</h2>
+<p>
+  Le composant <i>haut de page</i> est la flèche qui permet à l’utilisateur de revenir en haut de la
+  page. Il s'affiche quand l’utilisateur commence à défiler vers le haut.
+  Il disparaît quand l’utilisateur commence à défiler vers le bas.
+</p>
+<h4>Exemple</h4>
+<qc-doc-exemple caption="Présentation du composant retour en haut de page"
+                code-target-id="to-top-exemple"
+>
+  <qc-to-top demo="true"/>
+</qc-doc-exemple>
+<div id="to-top-exemple">
+  <qc-to-top></qc-to-top>
+</div>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>text</td>
+      <td>Texte</td>
+      <td>Retour en haut / Back to top</td>
+      <td>la valeur de l’attribut "text" de l’élément.</td>
+    </tr>
+    <tr>
+      <td>demo</td>
+      <td>"true" ou "false"</td>
+      <td>false</td>
+      <td>Pour utiliser le composant en démonstration uniquement.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+    <hr />
+    <h2 id="radios-checkboxes">Boutons radios et cases à cocher</h2>
+    
+
+<h3 id="checkbox">Case à cocher unique (qc-checkbox)</h3>
+
+<qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
+  <form id="exemple-tos-form">
+    <qc-checkbox required >
+      <label>
+        <input type="checkbox"
+               name="consentement"
+               value="oui"
+               id="consentement"
+        />
+        <span >J’accepte les conditions d’utilisation</span>
+      </label>
+    </qc-checkbox>
+
+    <button class="qc-button qc-primary qc-compact"
+            type="submit">
+      S'inscrire
+    </button>
+  </form>
+
+  <script>
+    const tosForm = document.getElementById("exemple-tos-form");
+    const consentement = document.getElementById("consentement");
+    tosForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if(consentement.checked) {
+        const formData = new FormData(event.target);
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        for (const [key, value] of formData.entries()) {
+          alertParts.push(`${key} : ${value}`);
+        }
+        alert(alertParts.join("\n"));
+      } else {
+        consentement.closest('qc-checkbox').invalid = true;
+      }
+    })
+  </script>
+</qc-doc-exemple>
+
+
+<h4>Attributs de qc-checkbox</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche la case à cocher au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+
+    <h3 id="choice-group">Groupe de boutons radio et de cases à cocher (qc-choice-group)</h3>
+
+<h4>Exemples</h4>
+<p>
+  Les groupes d'éléments de choix sont également disponibles sous forme de <a href="#selection-button">boutons de sélection</a>.
+</p>
+
+<qc-doc-exemple caption="Exemple d’un groupe de cases à cocher avec différents états">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple d’un groupe au petit format">
+  <qc-choice-group legend="Sélectionnez vos options"
+                   name="options-multiples"
+                   compact
+  >
+    <label>
+      <input type="checkbox"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="checkbox"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+
+  <qc-choice-group legend="Sélectionnez une option"
+                   name="choix-unique"
+                   compact
+  >
+    <label>
+      <input type="radio"
+             value="1"
+             checked
+      />
+      <span >Option 1</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="2"
+      />
+      <span >Option 2</span>
+    </label>
+    <label>
+      <input type="radio"
+             value="3"
+             disabled
+      />
+      <span >Option 3 (désactivée)</span>
+    </label>
+  </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de validation de formulaire avec des groupes de choix">
+  <form id="checkbox-form">
+    <qc-choice-group
+            legend="Sur quelle plateforme consultez-vous www.quebec.ca ?"
+            name="plateforme"
+            required
+            invalid-text="Veuillez sélectionner une plateforme."
+    >
+      <label>
+        <input type="checkbox"
+               value="ordinateur"
+        />
+        <span>Ordinateur</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="tablette"
+        />
+        <span>Tablette</span>
+      </label>
+      <label>
+        <input type="checkbox"
+               value="telephone_intelligent"
+        />
+        <span>Téléphone intelligent</span>
+      </label>
+    </qc-choice-group>
+
+    <qc-choice-group
+            legend="Quel thème préférez-vous ?"
+            name="theme"
+            required
+            invalid-text="Veuillez sélectionner un thème."
+    >
+      <label>
+        <input type="radio"
+               value="clair"
+        />
+        <span>Le thème clair</span>
+      </label>
+      <label>
+        <input type="radio"
+               value="sombre"
+        />
+        <span>Le thème sombre</span>
+      </label>
+
+    </qc-choice-group>
+
+    <button class="qc-button qc-primary qc-compact" type="submit">
+      Soumettre
+    </button>
+  </form>
+
+  <script>
+
+    document
+            .getElementById("checkbox-form")
+            .addEventListener("submit", (event) => {
+              event.preventDefault();
+              let doSubmit = true;
+              event
+                      .target
+                      .querySelectorAll("qc-choice-group[required]")
+                      .forEach(group => {
+                        let valid = false;
+                        group.querySelectorAll("input")
+                                .forEach(checkbox => {
+                                  if (checkbox.checked) {
+                                    valid = true;
+                                  }
+                                })
+                        if (!valid) {
+                          group.invalid = true;
+                          doSubmit = false;
+                        }
+                      })
+              if(doSubmit) {
+                const formData = new FormData(event.target);
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                for (const [key, value] of formData.entries()) {
+                  alertParts.push(`${key} : ${value}`);
+                }
+                alert(alertParts.join("\n"));
+              }
+            })
+  </script>
+</qc-doc-exemple>
+
+
+<h4 id="choice-group-doc">Attributs de qc-choice-group</h4>
+
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>legend</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Légende du groupe</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Nom commun à tous les champs du groupe</td>
+    </tr>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les champs au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+        Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
+    </tr>
+    <tr>
+      <td>selection-button</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
+    </tr>
+    <tr>
+      <td>column-count</td>
+      <td>Nombre</td>
+      <td>1</td>
+      <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
+        <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
+      </td>
+    </tr>
+    <tr>
+      <td>inline</td>
+      <td>na</td>
+      <td>na</td>
+      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
+
+    <h3 id="selection-button">Boutons de sélection</h3>
+
+
+<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection avec différents états.">
+    <qc-choice-group legend="Sélectionnez une option :"
+                    name="ex-radio-select"
+                    selection-button
+                    column-count="2"
+    >
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple
+        caption="Exemple d’un groupe de cases à cocher sous forme de boutons de sélection avec différents états."
+>
+    <qc-choice-group
+            name="exemple-checkbox-select"
+            legend="Sélectionnez vos options"
+            selection-button
+            column-count="2">
+        <label>
+            <input type="checkbox"
+                   value="1"
+                   checked
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 1</span>
+                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+            </span>
+        </label>
+
+        <label>
+            <input type="checkbox"
+                   value="2"
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 2</span>
+            </span>
+        </label>
+        <label>
+            <input type="checkbox"
+                   value="3"
+                   disabled
+            />
+            <span class="qc-tile">
+                <span class="qc-tile-text">Option 3 (désactivée)</span>
+            </span>
+        </label>
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de boutons radio sous forme de boutons de sélection sur une rangée.">
+    <qc-choice-group legend="Choisissez une option :"
+                    name="ex-radio-select-inline"
+                    selection-button
+                    inline
+    >
+        <label>
+            <input type="radio"
+                   value="1"
+                   checked
+            />
+            <span>1</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="2"
+            />
+            <span>2</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="3"
+            />
+            <span>3</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="4"
+            />
+            <span>4</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="5"
+            />
+            <span>5</span>
+        </label>
+        <label>
+            <input type="radio"
+                   value="6"
+                   disabled
+            />
+            <span>6</span>
+        </label>
+
+    </qc-choice-group>
+</qc-doc-exemple>
+
+<h4>Documentation technique</h4>
+<p>Voir <a href="#choice-group-doc">la documentation technique du composant qc-choice-group</a>.</p>
+
+
+    <!-- _choiceGroupDoc.html -->
+    <!-- Commutateur -->
+<h2 id="toggle-switch">Commutateur</h2>
+<p>
+    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
+    commutateur agit immédiatement sur la page où il est inséré.
+</p>
+
+<h3>Exemples</h3>
+<qc-doc-exemple
+        caption="Exemple de commutateurs seuls avec leurs libellés respectivement à gauche et à droite."
+>
+    <div style="display: flex; flex-direction: column; gap: 2.4rem">
+        <qc-toggle-switch
+                id="switch-status"
+                label="Afficher l'état du commutateur à la console."
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="switch-status-2"
+                label="Libellé aligné à droite (afficher au format mobile pour voir la différence)."
+                text-align="end"
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-status")
+            .addEventListener("change", (event) => {
+                console.log(`'switch-status' mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
+    <qc-toggle-switch-group
+        id="switch-group"
+        legend="Préférences de notifications de messages"
+        justified
+        max-width="25.6rem"
+    >
+        <qc-toggle-switch
+                id="nouveaux-messages"
+                label="Nouveaux messages"
+                checked
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="modifications-messages"
+                label="Modifications de messages"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="messages-supprimes"
+                label="Messages supprimés (désactivé)"
+                disabled
+        ></qc-toggle-switch>
+    </qc-toggle-switch-group>
+    <script>
+        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
+            .forEach(switchElement => {
+                switchElement.addEventListener("change", (event) => {
+                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
+                });
+            });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs de <code>qc-toggle-switch</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>label</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu du libellé du commutateur</td>
+    </tr>
+    <tr>
+        <td>checked</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active le commutateur par défaut</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le commutateur</td>
+    </tr>
+    <tr>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
+        <td>
+            Permet au commutateur et son libellé de prendre toute la largeur disponible
+        </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>Alignement du texte du libellé</td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Attributs de <code>qc-toggle-switch-group</code></h4>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>legend</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu de la légende du groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
+        <td>
+            Permet au commutateur et son libellé de prendre toute la largeur disponible.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+        </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>
+            Alignement du texte des libellés des commutateurs.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+        </td>
+    </tr>
+    <tr>
+        <td>max-width</td>
+        <td>"fit-content", "[x]px", "[x]rem", "[x]em", "[x]%", où [x] est un nombre</td>
+        <td>"fit-content"</td>
+        <td>Largeur maximale des commutateurs dans le groupe</td>
+    </tr>
+    </tbody>
+</table>
+    <h2 id="search-input">Champ de recherche</h2>
+<h3>Exemples</h3>
+
+<qc-doc-exemple caption="Exemples de champs de recherche">
+    <qc-search-input
+            placeholder="Rechercher un article"
+            aria-label="Rechercher un article"
+            clear-aria-label="Effacer le texte"
+            left-icon
+    ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            value="Climat"
+            placeholder="Rechercher un sujet"
+            aria-label="Rechercher un sujet"
+            clear-aria-label="Effacer le texte"
+            left-icon
+    ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            placeholder="Recherche désactivée"
+            aria-label="Recherche désactivée"
+            disabled
+            left-icon
+            clear-aria-label="Effacer le texte"
+    ></qc-search-input>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Valeur inscrite par défaut dans le champ de recherche.</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte indicatif affiché lorsque le champ est vide.</td>
+        </tr>
+        <tr>
+            <td>aria-label</td>
+            <td>Texte</td>
+            <td>"Rechercher..." ou "Search..."</td>
+            <td>Libellé accessible pour les lecteurs d'écrans.</td>
+        </tr>
+        <tr>
+            <td>clear-aria-label</td>
+            <td>Texte</td>
+            <td>"Effacer le texte" ou "Clear text"</td>
+            <td>Libellé accessible du bouton pour effacer le champ.</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le champ.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom du champ utilisé lors de la soumission du formulaire.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr/>
+    <h2 id="textfield">Champ texte</h2>
+
+
+<qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
+  <form id="formulaire-champs-textes">
+    <qc-textfield
+            label="Nom complet"
+            size="md"
+            required
+    >
+      <input type="text"
+             name="code-postal"
+             placeholder="ex : Jean Tremblay"
+      />
+    </qc-textfield>
+
+    <qc-textfield
+            label="Champ désactivé"
+            size="md"
+    >
+      <input type="text"
+             name="disabled-field"
+             placeholder="Ce champ est désactivé"
+             disabled
+      />
+    </qc-textfield>
+
+    <div class="qc-formfield-row">
+      <qc-textfield
+              label="Téléphone"
+              size="sm"
+              required
+        ><input type="text"
+                name="telephone"
+                placeholder="(123) 456-7890"
+      /></qc-textfield>
+
+      <qc-textfield
+              label="Poste"
+              size="xs"
+      >
+        <input type="text"
+               name="poste"
+        />
+      </qc-textfield>
+    </div>
+
+    <qc-textfield
+            label="Champ de texte multiligne"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            size="lg"
+            max-length="10"
+            required
+    >
+      <textarea name="zone-xxl"></textarea>
+    </qc-textfield>
+
+    <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("formulaire-champs-textes");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let isValid = true;
+      form
+          .querySelectorAll("qc-textfield[required]")
+          .forEach(formfield => {
+            if (formfield.invalidAtSubmit) {
+              formfield.invalid = true;
+              isValid = false;
+            }
+          })
+      if (isValid) {
+        const formData = new FormData(form);
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        for (const [key, val] of formData.entries()) {
+          alertParts.push(`${key} : ${val}`);
+        }
+        alert(alertParts.join("\n"));
+      }
+    });
+  </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple id="textfield-sizes" caption="Illustration des différentes tailles de champs texte.">
+
+    <qc-textfield
+            label="Taille extra-petite"
+            size="xs"
+    >
+      <input type="text"
+             placeholder="xs"
+      />
+    </qc-textfield>
+
+    <qc-textfield
+            label="Taille petite"
+            size="sm"
+    >
+      <input type="text"
+             placeholder="sm"
+      />
+    </qc-textfield>
+
+  <qc-textfield
+          label="Taille moyenne"
+          size="md"
+  >
+    <input type="text"
+           placeholder="md"
+    />
+  </qc-textfield>
+  <qc-textfield
+          label="Taille large"
+          size="lg"
+  >
+    <input type="text"
+           placeholder="lg"
+    />
+  </qc-textfield>
+  <qc-textfield
+          label="Taille extra-large"
+          size="xl"
+  >
+    <input type="text"
+           placeholder="xl"
+    />
+  </qc-textfield>
+
+</qc-doc-exemple>
+
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>label</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte du libellé du champ</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td>"xs", "sm", "md", "lg", "xl"</td>
+      <td>lg pour les champs simple (<code>input</code>) <br>
+        xl pour les champs multilignes (<code>textarea</code>),
+      </td>
+      <td>Largeur du champ</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Marque le champ comme obligatoire</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte descriptif affiché sous l'étiquette</td>
+    </tr>
+    <tr>
+      <td>max-length</td>
+      <td>Nombre</td>
+      <td>null</td>
+      <td>Indique la limite de caractères pour le champ</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique que le champ est invalide en affichant un message selon l'erreur.
+      <dl>
+        <dt>Français</dt>
+        <dd>Le champ XXX est obligatoire.</dd>
+        <dd>La limite de caractères du champ XXX est dépassée.</dd>
+        <dt>Anglais</dt>
+        <dd>XXX field is required.</dd>
+        <dd>The character limit for the ${label} field has been exceeded.</dd>
+      </dl>
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>aucune</td>
+      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
+
+<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne provoquent pas de décalage. <br/>
+    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
+
+<h4>Propriété js</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>invalidAtSubmit</td>
+        <td>Booléen</td>
+        <td>Indique si le champ serait invalide s'il était soumis. La vérification porte sur <code>required</code> et <code>max-length</code></td>
+      </tr>
+      <tr>
+      <tr>
+        <td>maxlengthReached</td>
+        <td>Booléen</td>
+        <td>Indique si la limite de caractère est dépassée.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
+
+    <h2 id="select">Liste déroulante</h2>
+
+<h3>Exemples</h3>
+
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
+    <qc-select id="qc-select-single-choice">
+        <label for="select-single-choice">Choix unique</label>
+        <select id="select-single-choice">
+            <option value="" selected>Choisissez une option</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16" disabled>Option 16 (désactivée)</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-single-choice-no-scroll">
+        <label for="select-single-choice-no-scroll">Choix unique sans défilement</label>
+        <select id="select-single-choice-no-scroll">
+            <option value="1" selected>Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-single-choice-search" enable-search>
+        <label for="select-single-choice-search">Choix unique avec recherche</label>
+        <select id="select-single-choice-search">
+            <option value="" selected>Choisissez une option</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16">Option 16</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-multiple-choices" multiple>
+        <label for="select-multiple-choices">Choix multiples</label>
+        <select multiple id="select-multiple-choices">
+            <option value="1">Option 1</option>
+            <option value="2" selected>Option 2</option>
+            <option value="3" selected>Option 3</option>
+            <option value="4" disabled>Option 4 (désactivée)</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-disabled">
+        <label for="select-disabled">Désactivé</label>
+        <select id="select-disabled" disabled></select>
+    </qc-select>
+
+    <form id="dropdown-list-form">
+        <div class="qc-formfield-row">
+            <qc-select
+                    id="dropdown-list-restaurants"
+                    placeholder="Type de restaurant"
+                    enable-search
+                    search-placeholder="Rechercher un type de restaurant"
+                    required
+                    invalid-text="Veuillez choisir un type de restaurant."
+            >
+                <label for="dropdown-list-restaurants-select">Type de restaurant</label>
+                <select id="dropdown-list-restaurants-select">
+                    <option value="">Type de restaurant</option>
+                    <option value="Pizzeria">Pizzeria</option>
+                    <option value="Pâtisserie">Pâtisserie</option>
+                    <option value="Steakhouse">Steakhouse</option>
+                    <option value="Bar">Bar</option>
+                    <option value="Casse-croûte">Casse-croûte</option>
+                    <option value="Boîte à pâtes">Boîte à pâtes</option>
+                    <option value="Restaurant à burgers">Restaurant à burgers</option>
+                </select>
+            </qc-select>
+
+            <qc-select
+                    id="dropdown-list-regions"
+                    placeholder="Sélectionner une région"
+                    enable-search
+                    search-placeholder="Rechercher les régions"
+            >
+                <label for="dropdown-list-regions-select">Régions desservies</label>
+                <select id="dropdown-list-regions-select" multiple>
+                    <option value="Capitale-nationale">Capitale-nationale</option>
+                    <option value="Centre-du-Québec" selected>Centre-du-Québec</option>
+                    <option value="Montérégie" selected>Montérégie</option>
+                    <option value="Outaouais">Outaouais</option>
+                    <option value="Saguenay-Lac-Saint-Jean">Saguenay-Lac-Saint-Jean</option>
+                    <option value="Gaspésie-Îles-de-la-Madeleine">Gaspésie-Îles-de-la-Madeleine</option>
+                    <option value="Nord-du-Québec">Nord-du-Québec</option>
+                    <option value="Bas-Saint-Laurent">Bas-Saint-Laurent</option>
+                </select>
+            </qc-select>
+        </div>
+
+        <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
+    </form>
+
+    <script>
+        const dropdownListForm = document.getElementById("dropdown-list-form");
+
+        dropdownListForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let isValid = true;
+            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
+
+            requiredFields.forEach(field => {
+                const value = field.querySelector("select").value;
+
+                if (!value || value.length <= 0) {
+                    field.invalid = true;
+                    isValid = false;
+                } else {
+                    field.invalid = false;
+                }
+            });
+
+            if (isValid) {
+                const formEntries = dropdownListForm.querySelectorAll("qc-select");
+                let alertParts = ["Formulaire soumis avec les données suivantes :"];
+                formEntries.forEach((field) => {
+                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
+                });
+                alert(alertParts.join("\n"));
+            }
+        });
+    </script>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Chaîne de caractères aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>
+                Libellé de la liste déroulante.
+                <br>N.B. : Le contenu de l'élément <code>label</code> en slot est utilisé en priorité.
+            </td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>"md"</td>
+            <td>
+                Largeur de la liste déroulante. Voir <a href="#textfield-sizes">l'illustration des tailles de champ texte</a>
+                pour une indication visuelle des tailles disponibles.
+            </td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td></td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Désactive la liste déroulante
+                <br>N.B. : L'attribut <code>disabled</code> de l'élément <code>select</code> en slot est utilisé en priorité.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> est modifié.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ `label` est obligatoire.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte d'espace réservé du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Active la sélection multiple.
+                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> en slot est utilisé en priorité.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h3>Précision concernant le DOM d’ombre (Shadow dom)</h3>
+<ul>
+    <li>Ce composant contient un DOM d'ombre.</li>
+    <li>
+        Les éléments suivants sont à ajouter dans le slot pour que la liste déroulante s'affiche correctement :
+        <ul>
+            <li><code>label</code></li>
+            <li><code>select</code></li>
+        </ul>
+    </li>
+</ul>
+    
+<h2 id="icons">Icônes (qc-icon)</h2>
+
+<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+
+<h3>Exemples</h3>
+<qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
+                id="icons-exemple">
+    <div>
+        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
+        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
+        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
+        <qc-icon type="success" color="purple" size="lg"></qc-icon>
+        <qc-icon type="success" color="success" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon type="arrow-up"  size="lg"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="45"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="135"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="225"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
+        <qc-icon type="arrow-up"  size="lg" rotate="-45"></qc-icon>
+    </div>
+
+
+</qc-doc-exemple>
+<style>
+    #icons-exemple  {
+        div:has(> qc-icon) {
+            margin-bottom: var(--qc-spacer-content-block-mb);
+        }
+        qc-icon {
+            margin-right: var(--qc-spacer-sm);
+        }
+    }
+</style>
+
+<qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
+        <qc-icon
+                src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
+        />
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>type</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran.</td>
+        </tr>
+        <tr>
+            <td>rotate</td>
+            <td>Nombre</td>
+            <td>na</td>
+            <td>Rotation de l'image en degrés dans le sens horaire.</td>
+        </tr>
+        <tr>
+            <td>size</td>
+            <td>xs, sm, md, lg ou xl</td>
+            <td>md</td>
+            <td>Taille de l’icône.</td>
+        </tr>
+        <tr>
+            <td>color</td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>text-primary</td>
+            <td>Couleur de l'icône.</td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>Toute valeur acceptée par la directive css <code>width</code></td>
+            <td>auto</td>
+            <td>Largeur personnalisée de l’icône.</td>
+        </tr>
+        <tr>
+            <td>height</td>
+            <td>Toute valeur acceptée par la directive css <code>height</code></td>
+            <td>auto</td>
+            <td>Hauteur personnalisée de l’icône.</td>
+        </tr>
+        <tr>
+            <td>src</td>
+            <td>Toute valeur acceptée par la fonction css <code>url()</code></td>
+            <td>na</td>
+            <td>Chemin pour afficher une icône personnalisée.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h4>Liste des icônes</h4>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Aperçu</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+            <tr>
+                <td>arrow-up</td>
+                <td><qc-icon type="arrow-up" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>checkmark</td>
+                <td><qc-icon type="checkmark" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>chevron-up-thin</td>
+                <td><qc-icon type="chevron-up-thin" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>chevron-up</td>
+                <td><qc-icon type="chevron-up" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>clipboard</td>
+                <td><qc-icon type="clipboard" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>error</td>
+                <td><qc-icon type="error" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>exclamation</td>
+                <td><qc-icon type="exclamation" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>external-link</td>
+                <td><qc-icon type="external-link" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>information</td>
+                <td><qc-icon type="information" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>ligth-bulb</td>
+                <td><qc-icon type="ligth-bulb" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>minus</td>
+                <td><qc-icon type="minus" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>note</td>
+                <td><qc-icon type="note" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>plus</td>
+                <td><qc-icon type="plus" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>question-mark</td>
+                <td><qc-icon type="question-mark" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>search-thin</td>
+                <td><qc-icon type="search-thin" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>search</td>
+                <td><qc-icon type="search" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>success</td>
+                <td><qc-icon type="success" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>warning</td>
+                <td><qc-icon type="warning" size="lg" /></td>
+            </tr>
+        
+            <tr>
+                <td>xclose</td>
+                <td><qc-icon type="xclose" size="lg" /></td>
+            </tr>
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
   </div>
 </main>
 <footer>
