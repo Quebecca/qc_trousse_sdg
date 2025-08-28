@@ -54,7 +54,7 @@
                 return `${selectedItems.length} selected options`;
             }
 
-            if (selectedItems.length > 0) {
+            if (selectedItems.length > 0 && value.length > 0) {
                 if (multiple) {
                     return selectedItems.map((item) => item.label).join(", ");
                 }
@@ -95,6 +95,8 @@
             return "";
         })
     ;
+
+    $inspect(value);
 
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
@@ -226,7 +228,12 @@
     });
 
     $effect(() => {
-        value = selectedItems?.map(item => item.value);
+        const tempValue = selectedItems?.map(item => item.value);
+        if (tempValue?.toString() !== "") {
+            value = tempValue;
+        } else {
+            value = [];
+        }
     });
 
     $effect(() => {

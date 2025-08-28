@@ -29,6 +29,7 @@
         disabled,
         required,
         label,
+        placeholder,
         width,
         ...rest
     } = $props();
@@ -63,6 +64,11 @@
 
         setupItemsList();
         setupObserver();
+
+        const optionWithEmptyValue = findOptionWithEmptyValue();
+        if (optionWithEmptyValue) {
+            placeholder = optionWithEmptyValue.label;
+        }
     });
 
     onDestroy(() => {
@@ -129,6 +135,14 @@
             });
         }
     }
+
+    function findOptionWithEmptyValue() {
+        return items?.find(
+            item => item.value === ""
+            || item.value === null
+            || item.value === undefined
+        );
+    }
 </script>
 
 <div hidden>
@@ -136,9 +150,10 @@
 </div>
 
 <DropdownList
-        label={label}
+        {label}
         ariaLabel={selectElement?.getAttribute("aria-label")}
         {items}
+        {placeholder}
         {width}
         webComponentMode={true}
         webComponentParentRow={parentRow}

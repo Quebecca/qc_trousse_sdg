@@ -145,6 +145,7 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -1378,6 +1379,11 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function inspect_effect(fn) {
+		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3906,6 +3912,39 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} [inspector]
+	 */
+	// eslint-disable-next-line no-console
+	function inspect(get_value, inspector = console.log) {
+		validate_effect();
+
+		let initial = true;
+
+		inspect_effect(() => {
+			/** @type {any} */
+			var value = UNINITIALIZED;
+
+			// Capturing the value might result in an exception due to the inspect effect being
+			// sync and thus operating on stale data. In the case we encounter an exception we
+			// can bail-out of reporting the value. Instead we simply console.error the error
+			// so at least it's known that an error occured, but we don't stop execution
+			try {
+				value = get_value();
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+
+			if (value !== UNINITIALIZED) {
+				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
+			}
+
+			initial = false;
+		});
 	}
 
 	/**
@@ -13056,22 +13095,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[318, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[359, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			248,
+			255,
 			0,
 			[
 				[
-					255,
+					262,
 					4,
 					[
 						[
-							275,
+							282,
 							8,
-							[[302, 12, [[350, 16]]]]
+							[[309, 12, [[357, 16]]]]
 						]
 					]
 				]
@@ -13128,7 +13167,7 @@
 					return `${get(selectedItems).length} selected options`;
 				}
 
-				if (get(selectedItems).length > 0) {
+				if (get(selectedItems).length > 0 && value().length > 0) {
 					if (multiple()) {
 						return get(selectedItems).map((item) => item.label).join(", ");
 					}
@@ -13169,6 +13208,8 @@
 
 				return "";
 			});
+
+		inspect(() => [value()]);
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -13305,7 +13346,13 @@
 		});
 
 		user_effect(() => {
-			value(get(selectedItems)?.map((item) => item.value));
+			const tempValue = get(selectedItems)?.map((item) => item.value);
+
+			if (strict_equals(tempValue?.toString(), "", false)) {
+				value(tempValue);
+			} else {
+				value([]);
+			}
 		});
 
 		user_effect(() => {
@@ -13735,7 +13782,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[134, 0], [154, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[148, 0], [169, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13749,6 +13796,7 @@
 			disabled = prop($$props, 'disabled', 7),
 			required = prop($$props, 'required', 7),
 			label = prop($$props, 'label', 7),
+			placeholder = prop($$props, 'placeholder', 7),
 			width = prop($$props, 'width', 7),
 			rest = rest_props(
 				$$props,
@@ -13763,6 +13811,7 @@
 					'disabled',
 					'required',
 					'label',
+					'placeholder',
 					'width'
 				]);
 
@@ -13798,6 +13847,12 @@
 
 			setupItemsList();
 			setupObserver();
+
+			const optionWithEmptyValue = findOptionWithEmptyValue();
+
+			if (optionWithEmptyValue) {
+				placeholder(optionWithEmptyValue.label);
+			}
 		});
 
 		onDestroy(() => {
@@ -13866,6 +13921,10 @@
 			}
 		}
 
+		function findOptionWithEmptyValue() {
+			return get(items)?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
+		}
+
 		var fragment = root();
 		var div = first_child(fragment);
 		var node = child(div);
@@ -13890,6 +13949,9 @@
 					},
 					get items() {
 						return get(items);
+					},
+					get placeholder() {
+						return placeholder();
 					},
 					get width() {
 						return width();
@@ -13984,6 +14046,13 @@
 			},
 			set label($$value) {
 				label($$value);
+				flushSync();
+			},
+			get placeholder() {
+				return placeholder();
+			},
+			set placeholder($$value) {
+				placeholder($$value);
 				flushSync();
 			},
 			get width() {

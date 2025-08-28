@@ -78147,22 +78147,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[311, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[352, 24]]);
+	var root_2$1 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[318, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[359, 24]]);
 
 	var root$2 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			248,
+			255,
 			0,
 			[
 				[
-					255,
+					262,
 					4,
 					[
 						[
-							275,
+							282,
 							8,
-							[[302, 12, [[350, 16]]]]
+							[[309, 12, [[357, 16]]]]
 						]
 					]
 				]
@@ -78219,7 +78219,7 @@
 					return `${get(selectedItems).length} selected options`;
 				}
 
-				if (get(selectedItems).length > 0) {
+				if (get(selectedItems).length > 0 && value().length > 0) {
 					if (multiple()) {
 						return get(selectedItems).map((item) => item.label).join(", ");
 					}
@@ -78260,6 +78260,8 @@
 
 				return "";
 			});
+
+		inspect(() => [value()]);
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -78396,7 +78398,13 @@
 		});
 
 		user_effect(() => {
-			value(get(selectedItems)?.map((item) => item.value));
+			const tempValue = get(selectedItems)?.map((item) => item.value);
+
+			if (strict_equals(tempValue?.toString(), "", false)) {
+				value(tempValue);
+			} else {
+				value([]);
+			}
 		});
 
 		user_effect(() => {

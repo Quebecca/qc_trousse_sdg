@@ -82,7 +82,6 @@
         <div class="qc-formfield-row">
             <qc-select
                     id="dropdown-list-restaurants"
-                    placeholder="Type de restaurant"
                     enable-search
                     search-placeholder="Rechercher un type de restaurant"
                     required
@@ -196,7 +195,7 @@
         </tr>
         <tr>
             <td>value</td>
-            <td>Texte</td>
+            <td>Tableau de chaîne de caractères</td>
             <td></td>
             <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
         </tr>
@@ -204,7 +203,7 @@
             <td>enable-search</td>
             <td>na</td>
             <td>na</td>
-            <td>Affiche un champ de recherche dans le haut des options de la liste déroulante</td>
+            <td>Affiche un champ de recherche instantanée dans le haut des options de la liste déroulante</td>
         </tr>
         <tr>
             <td>required</td>
@@ -241,7 +240,11 @@
             <td>placeholder</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte d'espace réservé de la boîte de la liste déroulante</td>
+            <td>
+                Texte d'espace réservé de la boîte de la liste déroulante
+                <br> N.B. : Si une option a une valeur nulle, l'attribut <code>placeholder</code> prend la valeur au libellé de cette option.
+                Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
+            </td>
         </tr>
         <tr>
             <td>search-placeholder</td>
