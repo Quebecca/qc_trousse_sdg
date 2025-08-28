@@ -1,5 +1,5 @@
 <script>
-import Icon from "../Icon/Icon.svelte";
+import Icon from "../../bases/Icon/Icon.svelte";
 import {onMount, tick} from "svelte";
 import {Utils} from "../utils";
 

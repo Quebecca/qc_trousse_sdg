@@ -1,6 +1,6 @@
 <script>
   import { Utils } from "../utils"
-  import Icon from "../Icon/Icon.svelte";
+  import Icon from "../../bases/Icon/Icon.svelte";
 
   const isFr = Utils.getPageLanguage() === 'fr';
   const defaultHeader = 'h2';

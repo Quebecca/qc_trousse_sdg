@@ -34,9 +34,9 @@ try {
 
 
     // Génération de la documentation HTML des icônes
-    const ejsFilePath = 'src/sdg/components/Icon/IconDoc.ejs';
+    const ejsFilePath = 'src/sdg/bases/Icon/IconDoc.ejs';
     // chemin du partiel
-    const htmlFilePath = 'src/sdg/components/Icon/_icon.html';
+    const htmlFilePath = 'src/sdg/bases/Icon/_icon.html';
 
     // Lecture du template EJS
     fs.readFile(ejsFilePath, 'utf-8', (err, ejsTemplate) => {

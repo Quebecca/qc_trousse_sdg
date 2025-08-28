@@ -75884,7 +75884,7 @@
 		true
 	);
 
-	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
+	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
 	var root$8 = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
 

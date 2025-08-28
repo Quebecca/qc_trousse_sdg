@@ -1,6 +1,6 @@
 <script>
    import { Utils } from "../utils";
-   import Icon from "../Icon/Icon.svelte";
+   import Icon from "../../bases/Icon/Icon.svelte";
    import {setContext} from "svelte";
 
    const lang = Utils.getPageLanguage();

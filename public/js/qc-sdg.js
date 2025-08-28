@@ -6980,7 +6980,7 @@
 	    }
 	}
 
-	Icon[FILENAME] = 'src/sdg/components/Icon/Icon.svelte';
+	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
 	var root$p = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
 
@@ -9259,7 +9259,7 @@
 		false
 	));
 
-	IconWC[FILENAME] = 'src/sdg/components/Icon/IconWC.svelte';
+	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
 
 	function IconWC($$anchor, $$props) {
 		check_target(new.target);

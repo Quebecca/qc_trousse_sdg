@@ -1,7 +1,7 @@
 <script>
     import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
-    import Icon from "../Icon/Icon.svelte";
+    import Icon from "../../bases/Icon/Icon.svelte";
 
     const lang = Utils.getPageLanguage();
 

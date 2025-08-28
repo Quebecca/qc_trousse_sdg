@@ -1,5 +1,5 @@
 <script>
-    import Icon from "../../components/Icon/Icon.svelte";
+    import Icon from "../../bases/Icon/Icon.svelte";
 
     let {
         variant = "primary",
