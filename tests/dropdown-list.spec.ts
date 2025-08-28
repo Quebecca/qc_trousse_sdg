@@ -143,18 +143,13 @@ test.describe('navigation au clavier', () => {
         await page.locator('#dropdown-list-restaurants-search').fill('p');
 
         await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
-    - list:
-        - listitem:
-            - checkbox "Pizzeria"
-            - text: Pizzeria
-        - listitem:
-            - checkbox "Pâtisserie"
-            - text: Pâtisserie
-        - listitem:
-            - checkbox "Boîte à pâtes"
-            - text: Boîte à pâtes
-    - status
-    `);
+          - list:
+            - option "Types de restaurants" [selected]
+            - option "Pizzeria"
+            - option "Pâtisserie"
+            - option "Boîte à pâtes"
+          - status
+        `);
 
         await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').click();
         await page.locator('#dropdown-list-restaurants-items').getByText('Pâtisserie').press('Escape');
@@ -164,19 +159,16 @@ test.describe('navigation au clavier', () => {
         await page.locator('#dropdown-list-restaurants-search').fill('st');
 
         await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
-    - list:
-        - listitem:
-            - checkbox "Steakhouse"
-            - text: Steakhouse
-        - listitem:
-            - checkbox "Restaurant à burgers"
-            - text: Restaurant à burgers
-    - status
-    `);
+          - list:
+            - option "Types de restaurants"
+            - option "Steakhouse"
+            - option "Restaurant à burgers"
+          - status
+        `);
 
         await page.locator('#dropdown-list-restaurants-items').getByText('Steakhouse').click();
 
-        await expect(page.locator('#dropdown-list-restaurants-input')).toContainText('Pâtisserie, Steakhouse');
+        await expect(page.locator('#dropdown-list-restaurants-input')).toContainText('Steakhouse');
     });
 });
 
@@ -507,8 +499,8 @@ test.describe('formulaire', () => {
           - text: Veuillez choisir un type de restaurant.
     `);
 
-        await page.getByRole('combobox', { name: 'Types de restaurants' }).click();
-        await page.getByRole('listitem').filter({ hasText: 'Pâtisserie' }).click();
+        await page.locator('#dropdown-list-restaurants-input').click();
+        await page.locator('[id="dropdown-list-restaurants-Pâtisserie-Pâtisserie"]').click();
 
         await expect(page.locator('#dropdown-list-restaurants-error')).toHaveCount(0);
     });
@@ -521,8 +513,7 @@ test.describe('formulaire', () => {
         }
     }, async ({ page }) => {
         await page.locator('#dropdown-list-restaurants-input').click();
-        await page.getByRole('listitem').filter({ hasText: 'Pâtisserie' }).click();
-        await page.locator('#dropdown-list-restaurants-input').click();
+        await page.locator('[id="dropdown-list-restaurants-Pâtisserie-Pâtisserie"]').click();
         await page.locator('#qc-select-form-test-submit').click();
 
         await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'false');
