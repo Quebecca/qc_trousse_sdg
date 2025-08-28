@@ -26,9 +26,9 @@
     let usedWidth = $derived.by(() => {
         if (
             maxWidth.match(/^\d+px$/)
-            || maxWidth.match(/^\d+\.?\d*rem$/)
-            || maxWidth.match(/^\d+\.?\d*em$/)
-            || maxWidth.match(/^\d+\.?\d*%$/)
+            || maxWidth.match(/^\d*\.?\d*rem$/)
+            || maxWidth.match(/^\d*\.?\d*em$/)
+            || maxWidth.match(/^\d*\.?\d*%$/)
         ) {
             return maxWidth;
         } else {

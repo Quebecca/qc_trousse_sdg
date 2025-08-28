@@ -11957,7 +11957,7 @@
 				]);
 
 		let usedWidth = user_derived(() => {
-			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d+\.?\d*rem$/) || maxWidth().match(/^\d+\.?\d*em$/) || maxWidth().match(/^\d+\.?\d*%$/)) {
+			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d*\.?\d*rem$/) || maxWidth().match(/^\d*\.?\d*em$/) || maxWidth().match(/^\d*\.?\d*%$/)) {
 				return maxWidth();
 			} else {
 				return "fit-content";
