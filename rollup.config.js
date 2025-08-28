@@ -13,6 +13,7 @@ import fs from "fs";
 import buildHtmlDoc from './plugins/buildHtmlDoc.js';
 import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
 import buildTestFixtures from "./plugins/buildTestFixtures";
+import buildSvelteTests from "./plugins/buildSvelteTests";
 
 
 const
@@ -219,8 +220,12 @@ if (!build_process) {
                 input: 'src/doc/_dev.html'
             }),
             buildTestFixtures({
-                input: 'src/doc/_test.html'
+                input: 'src/doc/_test.html',
+                ignorePaths: [
+                    'tests/buttonBaseline.spec.ts'
+                ]
             }),
+            buildSvelteTests({input: 'tests'}),
             svelte(svelteOptions),
             resolve({
                 browser: true,
