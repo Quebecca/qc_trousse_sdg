@@ -221,11 +221,11 @@ if (!build_process) {
             }),
             buildTestFixtures({
                 input: 'src/doc/_test.html',
-                ignorePaths: [
-                    'tests/buttonBaseline.spec.ts'
-                ]
             }),
-            buildSvelteTests({input: 'tests'}),
+            buildSvelteTests({
+                input: 'tests',
+                ignorePathsFile: 'buildSvelteTestsIgnore.json'
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,

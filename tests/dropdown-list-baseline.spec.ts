@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test.beforeEach(async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListBaseline.test.html');
     await page.goto(`file://${htmlFilePath}`);
 });
 
@@ -14,19 +14,6 @@ test.describe('Rendu visuel',
         await page.locator('#qc-select-single-choice-search-input').click();
         await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
         await page.locator('#qc-select-single-choice-search-Option-2-2').hover();
-
-        await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
-    });
-
-    test('Select svelte', {
-        tag: ['@svelte', '@dropdownlist']
-    }, async ({ page }) => {
-        const htmlFilePath = path.resolve(__dirname, '../public/dropdownListEmbedded.test.html');
-        await page.goto(`file://${htmlFilePath}`);
-
-        await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
-        await page.locator('#dropdown-list-single-choice-no-scroll-Option-1-1').focus();
-        await page.locator('#dropdown-list-single-choice-no-scroll-Option-2-2').hover();
 
         await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
     });

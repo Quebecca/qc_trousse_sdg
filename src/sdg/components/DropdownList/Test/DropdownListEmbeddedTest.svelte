@@ -17,17 +17,31 @@
 
     singleChoiceOptions[0].checked = true;
     singleChoiceWithSearchOptions[0].checked = true;
+
+    let restaurantsInstance = $state();
+    let regionsInstance = $state();
+    function submitForm(event) {
+        event.preventDefault();
+
+        if (restaurantsInstance && regionsInstance&& restaurantsInstance.value.length > 0) {
+            alert(
+                "Formulaire soumis avec les données suivantes :\n" +
+                restaurantsInstance.label + ": " + restaurantsInstance.value.join(", ") + "\n" +
+                regionsInstance.label + ": " + regionsInstance.value.join(", ")
+            );
+        }
+    }
 </script>
 
 <DropdownList
-        id="dropdown-list-single-choice"
+        id="qc-select-single-choice"
         label="Choix unique"
         items={singleChoiceOptions}
 />
 
 <div style="height: 40rem;">
 <DropdownList
-        id="dropdown-list-single-choice-no-scroll"
+        id="qc-select-single-choice-search"
         label="Choix unique avec recherche"
         enableSearch={true}
         items={singleChoiceWithSearchOptions}
@@ -35,7 +49,7 @@
 </div>
 
 <DropdownList
-        id="dropdown-list-multiple-choices"
+        id="qc-select-list-multiple-choices"
         label="Choix multiples"
         multiple
         items={multipleChoiceOptions}
@@ -43,27 +57,29 @@
 
 <div class="qc-formfield-row">
     <DropdownList
-            id="dropdown-list-invalid"
+            id="qc-select-invalid"
             label="État invalide"
             invalid="true"
             items={invalidOptions}
     />
     <DropdownList
-            id="dropdown-list-single-choice-other"
+            id="qc-select-single-choice-other"
             label="Autre choix"
             items={singleChoiceOptions}
     />
 </div>
 
 <DropdownList
-        id="dropdown-list-disabled"
+        id="qc-select-disabled"
         label="Désactivé"
         disabled="true"
         items={JSON.parse(JSON.stringify(multipleChoiceOptions))}
 />
 
-<form id="dropdown-list-embedded-test-form">
+<form id="dropdown-list-form">
     <DropdownList
+            bind:this={restaurantsInstance}
+            id="dropdown-list-restaurants"
             label="Types de restaurants"
             required="true"
             placeholder="Types de restaurants"
@@ -74,6 +90,8 @@
     />
 
     <DropdownList
+            bind:this={regionsInstance}
+            id="dropdown-list-regions"
             label="Régions desservies"
             multiple="true"
             placeholder="Sélectionner une région"
@@ -83,7 +101,7 @@
             width="lg"
     />
 
-    <Button label="Envoyer" type="submit" compact="true" />
+    <Button label="Envoyer" type="submit" compact="true" onsubmit={submitForm}/>
 </form>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>
