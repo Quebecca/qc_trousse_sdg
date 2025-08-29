@@ -91,14 +91,6 @@
                     isValid = false;
                 }
             })
-        formfieldRowForm
-            .querySelectorAll("[required] select")
-            .forEach(formfield => {
-                if (formfield.invalidAtSubmit) {
-                    formfield.invalid = true;
-                    isValid = false;
-                }
-            })
         if (isValid) {
             const formData = new FormData(formfieldRowForm);
             let alertParts = ["Formulaire soumis avec les données suivantes :"];

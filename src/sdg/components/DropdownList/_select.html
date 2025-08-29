@@ -26,20 +26,6 @@
         </select>
     </qc-select>
 
-    <qc-select id="qc-select-single-choice-no-scroll">
-        <label for="select-single-choice-no-scroll">Choix unique sans défilement</label>
-        <select id="select-single-choice-no-scroll">
-            <option value="1" selected>Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-            <option value="4">Option 4</option>
-            <option value="5">Option 5</option>
-            <option value="6">Option 6</option>
-            <option value="7">Option 7</option>
-            <option value="8">Option 8</option>
-        </select>
-    </qc-select>
-
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -76,6 +62,18 @@
     <qc-select id="qc-select-disabled">
         <label for="select-disabled">Désactivé</label>
         <select id="select-disabled" disabled></select>
+    </qc-select>
+
+    <qc-select id="qc-select-invalid"
+               invalid
+               required >
+        <label for="select-invalid">État invalide</label>
+        <select  id="select-invalid"
+                >
+            <option value=""></option>
+            <option value="1" >Option 1</option>
+            <option value="2">Option 2</option>
+        </select>
     </qc-select>
 </qc-doc-exemple>
 
@@ -151,17 +149,16 @@
         <tr>
             <td>invalid-text</td>
             <td>Texte</td>
-            <td>Le champ `label` est obligatoire.</td>
+            <td>Le champ (libellé du champ) est obligatoire. / (libellé du champ) field is required.</td>
             <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
         </tr>
         <tr>
             <td>placeholder</td>
             <td>Texte</td>
-            <td>""</td>
+            <td>Faire une sélection / Select an option</td>
             <td>
                 <i>Placeholder</i> de la boîte de la liste déroulante
-                <br> N.B. : Si une option a une valeur vide (<code>value=""</code>), l'attribut <code>placeholder</code>
-                prend le libellé de cette option.
+                <br> N.B. : Si non précisé, le <i>placeholder</i> prend le texte de la première option avec une valeur vide (<code>value=""</code>).
                 Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
             </td>
         </tr>
@@ -175,7 +172,7 @@
             <td>no-options-message</td>
             <td>Contenu HTML</td>
             <td>Aucun élément/No item</td>
-            <td>Texte indiquant l'absence d'options pouvant être affichées</td>
+            <td>Texte indiquant l'absence d'options dans la liste.</td>
         </tr>
         <tr>
             <td>multiple</td>
@@ -183,7 +180,7 @@
             <td>na</td>
             <td>
                 Active la sélection multiple.
-                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> en slot est utilisé en priorité.
+                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> est utilisé en priorité.
             </td>
         </tr>
         </tbody>
