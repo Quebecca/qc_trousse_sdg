@@ -17,7 +17,10 @@
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {},
+        placeholder,
     } = $props()
+
+    $inspect("DropdownListItems:", placeholder)
 
     const
         precentRootFontSize = 62.5,
@@ -93,6 +96,7 @@
             handleExit={(key) => handleExitSingle(key)}
             focusOnOuterElement={focusOnOuterElement}
             handlePrintableCharacter={handlePrintableCharacter}
+            {placeholder}
             bind:this={itemsComponent}
         />
     {/if}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+          href="css/qc-sdg.css">
+    <link rel="stylesheet"
+          href="css/qc-doc-sdg.css">
+    <title>Documentation technique du Système de design gouvernemental</title>
+    <script defer
+            src='js/qc-sdg.js'
+            sdg-css-filename="qc-sdg.css">
+    </script>
+    <script defer
+            src='js/qc-doc-sdg.js'
+            sdg-css-filename="qc-doc-sdg.css">
+    </script>
+</head>
+<body>
+<header>
+
+</header>
+<qc-doc-top-nav></qc-doc-top-nav>
+
+<main id="main">
+    <div class="qc-container" style="padding-top: var(--qc-spacer-xl);">
+
+        <table class="qc-table qc-striped">
+            <tr>
+                <th>État de la première option</th>
+                <th>&lt;qc-select placeholder="Mon placeholder"&gt;</th>
+                <th>&lt;qc-select&gt; (Pas de placeholder)</th>
+            </tr>
+            <tr>
+                <td>&lt;option value="1"&gt;Option 1&lt;/option&gt;</td>
+                <td>
+                    <qc-select placeholder="Mon placeholder">
+                        <select>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                </td>
+                <td>
+                    <qc-select >
+                        <select>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                </td>
+            </tr>
+            <tr>
+                <td>&lt;option value=""&gt;&lt;/option&gt;</td>
+                <td>
+                    <qc-select placeholder="Mon placeholder">
+                        <select>
+                            <option value=""></option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                </td>
+                <td>
+                    <qc-select >
+                        <select>
+                            <option value=""></option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                    <p>(placeholder par défaut)</p>
+                </td>
+            </tr>
+            <tr>
+                <td>&lt;option value=""&gt;Mon label&lt;/option&gt;</td>
+                <td>
+                    <qc-select placeholder="Mon placeholder">
+                        <select>
+                            <option value="">Mon label</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                </td>
+                <td>
+                    <qc-select >
+                        <select>
+                            <option value="">Mon label</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                    </qc-select>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</main>
+<footer>
+    <qc-piv-footer></qc-piv-footer>
+</footer>
+<script src='js/qc-doc-exemple.js'></script>
+</body>
+</html>
