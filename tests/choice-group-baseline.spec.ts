@@ -2,18 +2,18 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test('choice-group radios ref', {
-    tag: ['@baseline', '@radios']
+    tag: ['@svelte', '@radios']
 }, async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/radiosBaseline.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/radiosSvelte.test.html');
       // Navigue vers le fichier en utilisant le protocole file://
       await page.goto(`file://${htmlFilePath}`);
       await expect(page).toHaveScreenshot('radios.png', {fullPage: true});
 });
 
 test('choice-group checkbox ref', {
-    tag: ['@baseline', '@checkbox']
+    tag: ['@svelte', '@checkbox']
 }, async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/checkboxBaseline.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/checkboxSvelte.test.html');
       // Navigue vers le fichier en utilisant le protocole file://
       await page.goto(`file://${htmlFilePath}`);
       await expect(page).toHaveScreenshot('checkbox.png',{fullPage: true});
