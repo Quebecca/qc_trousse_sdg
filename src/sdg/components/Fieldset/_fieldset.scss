@@ -3,7 +3,7 @@
 .qc-fieldset {
   border: none;
   padding: 0;
-  margin: 0 0 token-value(spacer content-block mb);
+  margin: 0 0 rem(32);
   justify-items: start;
   legend {
     font-weight: token-value(font weight content bold);

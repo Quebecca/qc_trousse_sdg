@@ -1948,7 +1948,7 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
 .qc-fieldset {
   border: none;
   padding: 0;
-  margin: 0 0 var(--qc-spacer-content-block-mb);
+  margin: 0 0 3.2rem;
   justify-items: start;
 }
 .qc-fieldset legend {
