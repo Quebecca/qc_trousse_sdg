@@ -1,0 +1,43 @@
+<qc-piv-header alt-logo="Accédez à Québec.ca"
+               join-us-url="#join-us"
+               alt-language-url="#fakeEnglish">
+</qc-piv-header>
+
+<br>
+
+<qc-piv-header title-text="Titre du site ou du service"
+               title-url="https://www.quebec.ca/"
+               alt-logo="Accédez à Québec.ca">
+    <nav slot="links"
+         aria-label="Navigation PIV">
+        <ul>
+            <li><a href="#fakeEnglish">English</a>
+            </li>
+            <li><a href="javascript:;">Nous joindre</a>
+            </li>
+        </ul>
+    </nav>
+</qc-piv-header>
+
+<br>
+
+<div id="pivEnteteExempleRecherchePersonnalisee">
+    <qc-piv-header title-text="Titre du site ou du service"
+                   alt-logo="Accédez à Québec.ca"
+                   enable-search="true"
+                   show-search="true">
+        <ul slot="links">
+            <li><a href="#fakeEnglish">English</a>
+            </li>
+            <li><a href="javascript:;">Nous joindre</a>
+            </li>
+        </ul>
+
+        <form slot="search-zone"
+              method="get"
+              action="https://www.google.ca/search">
+            <qc-search-bar name="q"
+                           piv-background=""></qc-search-bar>
+        </form>
+    </qc-piv-header>
+</div>
