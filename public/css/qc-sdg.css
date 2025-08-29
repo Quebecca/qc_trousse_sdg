@@ -1963,15 +1963,9 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   margin-bottom: var(--qc-spacer-sm);
 }
 
-.qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid,
-.qc-fieldset-invalid legend,
-.qc-checkbox-single.qc-checkbox-single-invalid legend {
+.qc-fieldset-invalid, .qc-checkbox-single.qc-checkbox-single-invalid {
   border-left: 2px solid var(--qc-color-red-regular);
   padding-left: var(--qc-spacer-xs);
-}
-
-.qc-fieldset-invalid legend, .qc-checkbox-single.qc-checkbox-single-invalid legend {
-  margin-left: calc(-1 * var(--qc-spacer-xs) - 2px);
 }
 
 .qc-field-elements-selection-button, .qc-field-elements-selection-button-flex-row {

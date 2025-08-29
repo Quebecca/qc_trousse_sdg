@@ -20,13 +20,9 @@
 
 $invalid-offset: token-value(spacer, xs);
 $invalid-border-width: 2px;
-.qc-fieldset-invalid,
-.qc-fieldset-invalid legend {
+.qc-fieldset-invalid {
   border-left: $invalid-border-width solid token-value(color, red, regular);
   padding-left: $invalid-offset;
-}
-.qc-fieldset-invalid legend {
-  margin-left: calc(-1 * #{$invalid-offset} - $invalid-border-width);
 }
 
 %selection-button-gap {

@@ -27,11 +27,10 @@
             ? "id_" + name
             : Utils.generateId("legend");
 </script>
-
+{#snippet fieldset()}
 <fieldset bind:this={rootElement}
             class={[
             "qc-choice-group",
-            invalid && "qc-fieldset-invalid",
             "qc-fieldset",
             compact && "qc-compact",
             disabled && "qc-disabled"]}
@@ -63,3 +62,12 @@
     <FormError {invalid} {invalidText} label={legend} />
 
 </fieldset>
+{/snippet}
+
+{#if !invalid}
+    {@render fieldset()}
+{:else}
+    <div class="qc-fieldset-invalid">
+        {@render fieldset()}
+    </div>
+{/if}
