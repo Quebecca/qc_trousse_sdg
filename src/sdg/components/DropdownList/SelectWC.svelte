@@ -64,11 +64,6 @@
 
         setupItemsList();
         setupObserver();
-
-        const optionWithEmptyValue = findOptionWithEmptyValue();
-        if (optionWithEmptyValue) {
-            placeholder = optionWithEmptyValue.label;
-        }
     });
 
     onDestroy(() => {
@@ -136,13 +131,7 @@
         }
     }
 
-    function findOptionWithEmptyValue() {
-        return items?.find(
-            item => item.value === ""
-            || item.value === null
-            || item.value === undefined
-        );
-    }
+
 </script>
 
 <div hidden>

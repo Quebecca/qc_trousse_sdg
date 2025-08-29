@@ -6,6 +6,7 @@
     let {
         items,
         displayedItems,
+        placeholder,
         selectionCallback = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
@@ -124,7 +125,11 @@
                 onclick={(event) => handleMouseUp(event, item)}
                 onkeydown={(event) => handleKeyDown(event, index, item)}
             >
-                {@html item.label}
+                {#if !item.value && !item.label}
+                    <span class="qc-sr-only">{@html placeholder}</span>
+                {:else}
+                    {@html item.label}
+                {/if}
             </li>
         {/each}
     </ul>

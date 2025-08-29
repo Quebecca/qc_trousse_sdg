@@ -17,6 +17,7 @@
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {},
+        placeholder,
     } = $props()
 
     const
@@ -93,6 +94,7 @@
             handleExit={(key) => handleExitSingle(key)}
             focusOnOuterElement={focusOnOuterElement}
             handlePrintableCharacter={handlePrintableCharacter}
+            {placeholder}
             bind:this={itemsComponent}
         />
     {/if}

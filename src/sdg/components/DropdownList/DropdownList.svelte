@@ -15,7 +15,7 @@
         width = "md",
         items = [],
         value = $bindable([]),
-        placeholder = lang === "fr" ? "Faire une sélection" : "Select an option:",
+        placeholder,
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
         required = false,
@@ -31,6 +31,7 @@
     } = $props();
 
     const
+        defaultPlaceholder = lang === "fr" ? "Faire une sélection" : "Select an option",
         inputId = `${id}-input`,
         popupId = `${id}-popup`,
         itemsId = `${id}-items`,
@@ -249,6 +250,26 @@
             parentRow.appendChild($state.snapshot(errorElement));
         }
     });
+
+    $effect(() => {
+        if (placeholder)  return;
+        const optionWithEmptyValue = findOptionWithEmptyValue();
+        if (!optionWithEmptyValue) return;
+        placeholder =
+            optionWithEmptyValue.label !== ""
+                ?  optionWithEmptyValue.label
+                : defaultPlaceholder
+        ;
+    })
+
+
+    function findOptionWithEmptyValue() {
+        return items?.find(
+            item => item.value === ""
+                || item.value === null
+                || item.value === undefined
+        );
+    }
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
@@ -337,6 +358,7 @@
                 <DropdownListItems
                         id={itemsId}
                         {enableSearch}
+                        {placeholder}
                         {multiple}
                         {items}
                         {displayedItems}
