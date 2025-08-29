@@ -76175,7 +76175,7 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$1 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
 	var root_4$3 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[140, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
 	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[164, 4]]);
@@ -76232,7 +76232,7 @@
 
 			{
 				var consequent_1 = ($$anchor) => {
-					var div = root_3$1();
+					var div = root_3$2();
 
 					set_attribute(div, 'id', descriptionId);
 
@@ -77163,8 +77163,9 @@
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
 	var on_click$1 = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_2$5 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[112, 12]]);
-	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[110, 4]]);
+	var root_3$1 = add_locations(template(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[129, 20]]);
+	var root_2$5 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[113, 12]]);
+	var root_1$3 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[111, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -77174,6 +77175,7 @@
 
 		let items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
+			placeholder = prop($$props, 'placeholder', 7),
 			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -77207,7 +77209,7 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
-				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:44:34'));
+				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:45:34'));
 				items().find((option) => strict_equals(option.value, item.value)).checked = true;
 				selectionCallback()();
 			}
@@ -77277,7 +77279,7 @@
 		var node = first_child(fragment);
 
 		{
-			var consequent = ($$anchor) => {
+			var consequent_1 = ($$anchor) => {
 				var ul = root_1$3();
 
 				validate_each_keys(displayedItems, (item) => item.id);
@@ -77290,7 +77292,29 @@
 
 					var node_1 = child(li);
 
-					html$1(node_1, () => get(item).label);
+					{
+						var consequent = ($$anchor) => {
+							var span = root_3$1();
+							var node_2 = child(span);
+
+							html$1(node_2, placeholder);
+							reset(span);
+							append($$anchor, span);
+						};
+
+						var alternate = ($$anchor) => {
+							var fragment_1 = comment();
+							var node_3 = first_child(fragment_1);
+
+							html$1(node_3, () => get(item).label);
+							append($$anchor, fragment_1);
+						};
+
+						if_block(node_1, ($$render) => {
+							if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, false);
+						});
+					}
+
 					reset(li);
 					validate_binding('bind:this={displayedItemsElements[index]}', () => get(displayedItemsElements), () => get(index));
 					bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
@@ -77316,7 +77340,7 @@
 			};
 
 			if_block(node, ($$render) => {
-				if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent);
+				if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent_1);
 			});
 		}
 
@@ -77344,6 +77368,13 @@
 			},
 			set displayedItems($$value) {
 				displayedItems($$value);
+				flushSync();
+			},
+			get placeholder() {
+				return placeholder();
+			},
+			set placeholder($$value) {
+				placeholder($$value);
 				flushSync();
 			},
 			get selectionCallback() {
@@ -77385,6 +77416,7 @@
 		{
 			items: {},
 			displayedItems: {},
+			placeholder: {},
 			selectionCallback: {},
 			handleExit: {},
 			focusOnOuterElement: {},
@@ -77700,8 +77732,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4$2 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[103, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[66, 0, [[100, 4]]]]);
+	var root_4$2 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[105, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[102, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -77718,7 +77750,8 @@
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
-			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
+			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {}),
+			placeholder = prop($$props, 'placeholder', 7);
 
 		const precentRootFontSize = 62.5,
 			remRatio = 0.16;
@@ -77817,6 +77850,9 @@
 						},
 						get handlePrintableCharacter() {
 							return handlePrintableCharacter();
+						},
+						get placeholder() {
+							return placeholder();
 						}
 					}),
 					($$value) => set(itemsComponent, $$value, true),
@@ -77958,6 +77994,13 @@
 				handlePrintableCharacter($$value);
 				flushSync();
 			},
+			get placeholder() {
+				return placeholder();
+			},
+			set placeholder($$value) {
+				placeholder($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -77976,7 +78019,8 @@
 			handleExitSingle: {},
 			handleExitMultiple: {},
 			focusOnOuterElement: {},
-			handlePrintableCharacter: {}
+			handlePrintableCharacter: {},
+			placeholder: {}
 		},
 		[],
 		[
@@ -78146,22 +78190,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[316, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[357, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[337, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[379, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			253,
+			274,
 			0,
 			[
 				[
-					260,
+					281,
 					4,
 					[
 						[
-							280,
+							301,
 							8,
-							[[307, 12, [[355, 16]]]]
+							[[328, 12, [[377, 16]]]]
 						]
 					]
 				]
@@ -78182,7 +78226,7 @@
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
 			value = prop($$props, 'value', 31, () => proxy([])),
-			placeholder = prop($$props, 'placeholder', 23, () => strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option:"),
+			placeholder = prop($$props, 'placeholder', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
 			required = prop($$props, 'required', 7, false),
@@ -78196,7 +78240,8 @@
 			webComponentMode = prop($$props, 'webComponentMode', 7, false),
 			webComponentParentRow = prop($$props, 'webComponentParentRow', 7);
 
-		const inputId = `${id()}-input`,
+		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
+			inputId = `${id()}-input`,
 			popupId = `${id()}-popup`,
 			itemsId = `${id()}-items`,
 			labelId = `${id()}-label`,
@@ -78418,6 +78463,19 @@
 			}
 		});
 
+		user_effect(() => {
+			if (placeholder()) return;
+
+			const optionWithEmptyValue = findOptionWithEmptyValue();
+
+			if (!optionWithEmptyValue) return;
+			placeholder(strict_equals(optionWithEmptyValue.label, "", false) ? optionWithEmptyValue.label : defaultPlaceholder);
+		});
+
+		function findOptionWithEmptyValue() {
+			return items()?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
+		}
+
 		var div = root$1();
 
 		event('click', $document.body, handleOuterEvent);
@@ -78554,6 +78612,9 @@
 					id: itemsId,
 					get enableSearch() {
 						return enableSearch();
+					},
+					get placeholder() {
+						return placeholder();
 					},
 					get multiple() {
 						return multiple();
@@ -78705,9 +78766,7 @@
 			get placeholder() {
 				return placeholder();
 			},
-			set placeholder(
-				$$value = lang === "fr" ? "Faire une sélection" : "Select an option:"
-			) {
+			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			},
