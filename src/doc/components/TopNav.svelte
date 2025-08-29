@@ -8,8 +8,6 @@
     import ToggleSwitch from "../../sdg/components/ToggleSwitch/ToggleSwitch.svelte";
     let value = $state(localStorage.getItem('dark-theme') === "true");
 
-    console.log(localStorage.getItem('dark-theme'));
-
     $effect(() => {
         document.documentElement.classList.toggle('qc-dark-theme', value);
         localStorage.setItem('dark-theme', value);

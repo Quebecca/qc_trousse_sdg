@@ -74,11 +74,11 @@
 
 </qc-doc-exemple>
 <script>
-    const form = document.getElementById("formulaire-champ-alignes");
-    form.addEventListener("submit", (event) => {
+    const formfieldRowForm = document.getElementById("formulaire-champ-alignes");
+    formfieldRowForm.addEventListener("submit", (event) => {
         event.preventDefault();
         let isValid = true;
-        form
+        formfieldRowForm
             .querySelectorAll("qc-textfield[required], [required] select")
             .forEach(formfield => {
                 console.log(formfield, formfield.value ?? "no value")
@@ -91,7 +91,7 @@
                     isValid = false;
                 }
             })
-        form
+        formfieldRowForm
             .querySelectorAll("[required] select")
             .forEach(formfield => {
                 if (formfield.invalidAtSubmit) {
@@ -100,7 +100,7 @@
                 }
             })
         if (isValid) {
-            const formData = new FormData(form);
+            const formData = new FormData(formfieldRowForm);
             let alertParts = ["Formulaire soumis avec les données suivantes :"];
             for (const [key, val] of formData.entries()) {
                 alertParts.push(`${key} : ${val}`);

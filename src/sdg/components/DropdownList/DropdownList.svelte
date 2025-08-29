@@ -97,8 +97,6 @@
         })
     ;
 
-    $inspect(value);
-
     function focusOnSelectedOption(value) {
         if (displayedItems.length > 0) {
             if (value && value.length > 0) {

@@ -1915,11 +1915,11 @@
   </form>
 
   <script>
-    const form = document.getElementById("formulaire-champs-textes");
-    form.addEventListener("submit", (event) => {
+    const textfieldForm = document.getElementById("formulaire-champs-textes");
+    textfieldForm.addEventListener("submit", (event) => {
       event.preventDefault();
       let isValid = true;
-      form
+      textfieldForm
           .querySelectorAll("qc-textfield[required]")
           .forEach(formfield => {
             if (formfield.invalidAtSubmit) {
@@ -1928,7 +1928,7 @@
             }
           })
       if (isValid) {
-        const formData = new FormData(form);
+        const formData = new FormData(textfieldForm);
         let alertParts = ["Formulaire soumis avec les données suivantes :"];
         for (const [key, val] of formData.entries()) {
           alertParts.push(`${key} : ${val}`);
@@ -2421,37 +2421,6 @@
         <label for="select-disabled">Désactivé</label>
         <select id="select-disabled" disabled></select>
     </qc-select>
-
-    <script>
-        const dropdownListForm = document.getElementById("dropdown-list-form");
-
-        dropdownListForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            let isValid = true;
-            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
-
-            requiredFields.forEach(field => {
-                const value = field.querySelector("select").value;
-
-                if (!value || value.length <= 0) {
-                    field.invalid = true;
-                    isValid = false;
-                } else {
-                    field.invalid = false;
-                }
-            });
-
-            if (isValid) {
-                const formEntries = dropdownListForm.querySelectorAll("qc-select");
-                let alertParts = ["Formulaire soumis avec les données suivantes :"];
-                formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
-                });
-                alert(alertParts.join("\n"));
-            }
-        });
-    </script>
 </qc-doc-exemple>
 
 <h4>Documentation technique</h4>
@@ -2666,11 +2635,11 @@
 
 </qc-doc-exemple>
 <script>
-    const form = document.getElementById("formulaire-champ-alignes");
-    form.addEventListener("submit", (event) => {
+    const formfieldRowForm = document.getElementById("formulaire-champ-alignes");
+    formfieldRowForm.addEventListener("submit", (event) => {
         event.preventDefault();
         let isValid = true;
-        form
+        formfieldRowForm
             .querySelectorAll("qc-textfield[required], [required] select")
             .forEach(formfield => {
                 console.log(formfield, formfield.value ?? "no value")
@@ -2683,7 +2652,7 @@
                     isValid = false;
                 }
             })
-        form
+        formfieldRowForm
             .querySelectorAll("[required] select")
             .forEach(formfield => {
                 if (formfield.invalidAtSubmit) {
@@ -2692,7 +2661,7 @@
                 }
             })
         if (isValid) {
-            const formData = new FormData(form);
+            const formData = new FormData(formfieldRowForm);
             let alertParts = ["Formulaire soumis avec les données suivantes :"];
             for (const [key, val] of formData.entries()) {
                 alertParts.push(`${key} : ${val}`);

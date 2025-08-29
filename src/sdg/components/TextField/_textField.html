@@ -39,11 +39,11 @@
   </form>
 
   <script>
-    const form = document.getElementById("formulaire-champs-textes");
-    form.addEventListener("submit", (event) => {
+    const textfieldForm = document.getElementById("formulaire-champs-textes");
+    textfieldForm.addEventListener("submit", (event) => {
       event.preventDefault();
       let isValid = true;
-      form
+      textfieldForm
           .querySelectorAll("qc-textfield[required]")
           .forEach(formfield => {
             if (formfield.invalidAtSubmit) {
@@ -52,7 +52,7 @@
             }
           })
       if (isValid) {
-        const formData = new FormData(form);
+        const formData = new FormData(textfieldForm);
         let alertParts = ["Formulaire soumis avec les données suivantes :"];
         for (const [key, val] of formData.entries()) {
           alertParts.push(`${key} : ${val}`);

@@ -77,37 +77,6 @@
         <label for="select-disabled">Désactivé</label>
         <select id="select-disabled" disabled></select>
     </qc-select>
-
-    <script>
-        const dropdownListForm = document.getElementById("dropdown-list-form");
-
-        dropdownListForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            let isValid = true;
-            const requiredFields = dropdownListForm.querySelectorAll("qc-select[required]");
-
-            requiredFields.forEach(field => {
-                const value = field.querySelector("select").value;
-
-                if (!value || value.length <= 0) {
-                    field.invalid = true;
-                    isValid = false;
-                } else {
-                    field.invalid = false;
-                }
-            });
-
-            if (isValid) {
-                const formEntries = dropdownListForm.querySelectorAll("qc-select");
-                let alertParts = ["Formulaire soumis avec les données suivantes :"];
-                formEntries.forEach((field) => {
-                    alertParts.push(`${field.label}: ${field.value.join(", ")}`);
-                });
-                alert(alertParts.join("\n"));
-            }
-        });
-    </script>
 </qc-doc-exemple>
 
 <h4>Documentation technique</h4>
