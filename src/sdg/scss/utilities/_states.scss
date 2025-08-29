@@ -3,7 +3,7 @@
 .qc-required {
   @include content-font(md, bold);
   color: token-value(color, red, regular);
-  margin-left: rem(8);
+  margin-left: rem(6);
 }
 
 .qc-disabled {

@@ -1248,7 +1248,7 @@ hr {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   color: var(--qc-color-red-regular);
-  margin-left: 0.8rem;
+  margin-left: 0.6rem;
 }
 
 .qc-disabled {
