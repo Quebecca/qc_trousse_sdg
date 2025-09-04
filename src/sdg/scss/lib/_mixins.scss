@@ -5,7 +5,7 @@
 @use "settings/base" as *;
 
 @use "functions" as *;
-@use "../grid/grid-lib" as grid;
+@use "../../bases/grid/grid-lib" as grid;
 
 // toujours utiliser ces mixins pour la déclarations des tailles de police:
 // cela garantit que la taille police est conforme aux exigences du SDG
@@ -49,30 +49,6 @@
   @include hover-link();
   outline: 2px solid token-value(color link focus outline);
   outline-offset: 1px;
-}
-
-@mixin external-link-img() {
-  $ratio : math.div(11,16) * 1em;
-  height: $ratio;
-  width: $ratio;
-  display: inline-block;
-  mask: getImageUrl(external-link) no-repeat;
-  background: token-value(color link text);
-  mask-size: $ratio;
-  margin-left: 4px;
-  a:visited  & {
-    background: token-value(color link visited);
-  }
-  a:focus  & {
-    background: token-value(color link hover);
-  }
-  a:hover  & {
-    background: token-value(color link hover);
-  }
-  a:active  & {
-    background: token-value(color link active);
-  }
-
 }
 
 @mixin sr-only() {
@@ -131,7 +107,10 @@
     inset: 0;
     z-index: -5
   }
-  &:has(input:focus), &:focus {
+  &:has(input:focus),
+  &:focus,
+  &:has(textarea:focus),
+ {
     outline: 2px solid token-value(color formfield focus outline);
     &::before {
       border: 2px solid token-value(color formfield focus border);
@@ -217,4 +196,62 @@
     @content;
   }
 }
+
+%check-row {
+  display: flex;
+  max-width: fit-content;
+  align-items: start;
+  margin: 0;
+  cursor: pointer;
+  font-weight: normal;
+
+
+  &:has(input:disabled) {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
+  }
+
+  input.qc-choicefield {
+    display: flex;
+    position: relative;
+    appearance: none;
+    margin: 0 token-value(spacer, xs) 0 0;
+    background-color: token-value(color, white);
+    border-style: solid;
+    border-color: token-value(color, blue, dark);
+
+    &:not(:disabled):hover {
+      cursor: pointer;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      margin: auto;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    &:checked {
+      border-color: token-value(color blue regular);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      border-color: token-value(color, grey, light);
+    }
+
+    &.qc-compact {
+      min-width: token-value(spacer, sm);
+      min-height: token-value(spacer, sm);
+      max-width: token-value(spacer, sm);
+      max-height: token-value(spacer, sm);
+
+      border-width: 1px;
+      margin-top: rem(4);
+    }
+  }
+}
+
 

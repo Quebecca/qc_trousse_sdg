@@ -1,0 +1,218 @@
+<h3 id="textfield">Champ texte</h3>
+<h4>Exemples</h4>
+
+<qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
+  <form id="formulaire-champs-textes">
+    <qc-textfield
+            label="Nom complet"
+            size="md"
+            required
+    >
+      <input type="text"
+             name="code-postal"
+             placeholder="ex : Jean Tremblay"
+      />
+    </qc-textfield>
+
+    <qc-textfield
+            label="Champ désactivé"
+            size="md"
+    >
+      <input type="text"
+             name="disabled-field"
+             placeholder="Ce champ est désactivé"
+             disabled
+      />
+    </qc-textfield>
+
+    <qc-textfield
+            label="Champ de texte multiligne"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            size="lg"
+            max-length="10"
+            required
+    >
+      <textarea name="zone-xxl"></textarea>
+    </qc-textfield>
+
+    <button type="submit" class="qc-button qc-primary qc-compact">Envoyer</button>
+  </form>
+
+  <script>
+    const textfieldForm = document.getElementById("formulaire-champs-textes");
+    textfieldForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let isValid = true;
+      textfieldForm
+          .querySelectorAll("qc-textfield[required]")
+          .forEach(formfield => {
+            if (formfield.invalidAtSubmit) {
+              formfield.invalid = true;
+              isValid = false;
+            }
+          })
+      if (isValid) {
+        const formData = new FormData(textfieldForm);
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        for (const [key, val] of formData.entries()) {
+          alertParts.push(`${key} : ${val}`);
+        }
+        alert(alertParts.join("\n"));
+      }
+    });
+  </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple id="textfield-sizes" caption="Illustration des différentes tailles de champs texte.">
+
+    <qc-textfield
+            label="Taille extra-petite"
+            size="xs"
+    >
+      <input type="text"
+             placeholder="xs"
+      />
+    </qc-textfield>
+
+    <qc-textfield
+            label="Taille petite"
+            size="sm"
+    >
+      <input type="text"
+             placeholder="sm"
+      />
+    </qc-textfield>
+
+  <qc-textfield
+          label="Taille moyenne"
+          size="md"
+  >
+    <input type="text"
+           placeholder="md"
+    />
+  </qc-textfield>
+  <qc-textfield
+          label="Taille large"
+          size="lg"
+  >
+    <input type="text"
+           placeholder="lg"
+    />
+  </qc-textfield>
+  <qc-textfield
+          label="Taille extra-large"
+          size="xl"
+  >
+    <input type="text"
+           placeholder="xl"
+    />
+  </qc-textfield>
+
+</qc-doc-exemple>
+
+
+<h4>Documentation technique</h4>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>label</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte du libellé du champ</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td>"xs", "sm", "md", "lg", "xl"</td>
+      <td>lg pour les champs simple (<code>input</code>) <br>
+        xl pour les champs multilignes (<code>textarea</code>),
+      </td>
+      <td>Largeur du champ</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Marque le champ comme obligatoire</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>""</td>
+      <td>Texte descriptif affiché sous l'étiquette</td>
+    </tr>
+    <tr>
+      <td>max-length</td>
+      <td>Nombre</td>
+      <td>null</td>
+      <td>Indique la limite de caractères pour le champ</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Indique que le champ est invalide en affichant un message selon l'erreur.
+      <dl>
+        <dt>Français</dt>
+        <dd>Le champ XXX est obligatoire.</dd>
+        <dd>La limite de caractères du champ XXX est dépassée.</dd>
+        <dt>Anglais</dt>
+        <dd>XXX field is required.</dd>
+        <dd>The character limit for the ${label} field has been exceeded.</dd>
+      </dl>
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>aucune</td>
+      <td>Message d'erreur personnalisé affiché lorsque le champ est invalide</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
+
+<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne provoquent pas de décalage. <br/>
+    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
+
+<h4>Propriété js</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>invalidAtSubmit</td>
+        <td>Booléen</td>
+        <td>Indique si le champ serait invalide s'il était soumis. La vérification porte sur <code>required</code> et <code>max-length</code></td>
+      </tr>
+      <tr>
+      <tr>
+        <td>maxlengthReached</td>
+        <td>Booléen</td>
+        <td>Indique si la limite de caractère est dépassée.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h5>Zone d’ajout de contenu HTML</h5>
+
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>

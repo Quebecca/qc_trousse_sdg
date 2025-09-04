@@ -1,0 +1,160 @@
+<!-- Commutateur -->
+<h3 id="toggle-switch">Commutateur</h3>
+<p>
+    Le commutateur peut être utilisé seul ou en groupe. Contrairement aux <a href="#checkbox">cases à cocher</a>, le
+    commutateur agit immédiatement sur la page où il est inséré.
+</p>
+
+<h4>Exemples</h4>
+<qc-doc-exemple
+        caption="Exemple de commutateurs seuls avec leurs libellés respectivement à gauche et à droite."
+>
+    <div style="display: flex; flex-direction: column; gap: 2.4rem">
+        <qc-toggle-switch
+                id="switch-status"
+                label="Afficher l'état du commutateur à la console."
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="switch-status-2"
+                label="Libellé aligné à droite (afficher au format mobile pour voir la différence)."
+                text-align="end"
+        ></qc-toggle-switch>
+    </div>
+
+    <script>
+        document.getElementById("switch-status")
+            .addEventListener("change", (event) => {
+                console.log(`'switch-status' mis à ${event.target.checked}`);
+            });
+    </script>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de commutateurs en groupe avec différents états">
+    <qc-toggle-switch-group
+        id="switch-group"
+        legend="Préférences de notifications de messages"
+        justified
+        max-width="25.6rem"
+    >
+        <qc-toggle-switch
+                id="nouveaux-messages"
+                label="Nouveaux messages"
+                checked
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="modifications-messages"
+                label="Modifications de messages"
+        ></qc-toggle-switch>
+        <qc-toggle-switch
+                id="messages-supprimes"
+                label="Messages supprimés (désactivé)"
+                disabled
+        ></qc-toggle-switch>
+    </qc-toggle-switch-group>
+    <script>
+        document.getElementById("switch-group").querySelectorAll("qc-toggle-switch")
+            .forEach(switchElement => {
+                switchElement.addEventListener("change", (event) => {
+                    console.log(`'${event.target.id}' mis à ${event.target.checked}`);
+                });
+            });
+    </script>
+</qc-doc-exemple>
+
+<h4>Documentation technique</h4>
+
+<h5>Attributs de <code>qc-toggle-switch</code></h5>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>label</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu du libellé du commutateur</td>
+    </tr>
+    <tr>
+        <td>checked</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active le commutateur par défaut</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le commutateur</td>
+    </tr>
+    <tr>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
+        <td>
+            Permet au commutateur et son libellé de prendre toute la largeur disponible
+        </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>Alignement du texte du libellé</td>
+    </tr>
+    </tbody>
+</table>
+
+<h5>Attributs de <code>qc-toggle-switch-group</code></h5>
+<table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Valeur attendue</th>
+        <th>Valeur par défaut</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>legend</td>
+        <td>Contenu HTML</td>
+        <td></td>
+        <td>Contenu de la légende du groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>disabled</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Désactive le groupe de commutateurs</td>
+    </tr>
+    <tr>
+        <td>justified</td>
+        <td>na</td>
+        <td>na</td>
+        <td>
+            Permet au commutateur et son libellé de prendre toute la largeur disponible.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+        </td>
+    </tr>
+    <tr>
+        <td>text-align</td>
+        <td>"start" ou "end"</td>
+        <td>"start"</td>
+        <td>
+            Alignement du texte des libellés des commutateurs.
+            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+        </td>
+    </tr>
+    <tr>
+        <td>max-width</td>
+        <td>"fit-content", "[x]px", "[x]rem", "[x]em", "[x]%", où [x] est un nombre</td>
+        <td>"fit-content"</td>
+        <td>Largeur maximale des commutateurs dans le groupe</td>
+    </tr>
+    </tbody>
+</table>

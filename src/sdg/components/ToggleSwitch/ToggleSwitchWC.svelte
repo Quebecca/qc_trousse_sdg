@@ -1,0 +1,66 @@
+<svelte:options customElement = {{
+    tag: 'qc-toggle-switch',
+    shadow: 'none',
+    props: {
+        id: {attribute: 'id', type: 'String'},
+        label: {attribute: 'label', type: 'String'},
+        checked: {attribute: 'checked', type: 'Boolean', reflect: true},
+        disabled: {attribute: 'disabled', type: 'Boolean', reflect: true},
+        justified: {attribute: 'justified', type: 'Boolean', reflect: true},
+        textAlign: {attribute: 'text-align', type: 'String'},
+    }
+}} />
+
+<script>
+    import ToggleSwitch from "./ToggleSwitch.svelte";
+    import {onMount, onDestroy} from "svelte";
+
+    let {
+        id,
+        label,
+        checked = $bindable(false),
+        disabled = false,
+        justified = false,
+        textAlign,
+        ...rest
+    } = $props();
+
+    let parent = $state();
+    let index;
+    onMount(() => {
+        parent = $host().closest("qc-toggle-switch-group");
+
+        if (parent) {
+            parent.items.push({
+                id,
+                label,
+                disabled,
+                checked,
+                justified,
+                textAlign,
+            });
+            index = parent.items.length - 1;
+        }
+    });
+    onDestroy(() => {
+        parent.items.splice(index, 1);
+    })
+    $effect(() => {
+        if (parent) {
+            checked = parent.items[index].checked;
+            $host().dispatchEvent(new Event("change"));
+        }
+    })
+</script>
+
+{#if !parent}
+    <ToggleSwitch
+        {label}
+        bind:checked
+        {disabled}
+        {justified}
+        {textAlign}
+        {...rest}
+    />
+{/if}
+

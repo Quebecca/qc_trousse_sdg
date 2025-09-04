@@ -1,0 +1,29 @@
+@use "qc-sdg-lib" as *;
+@use "../ChoiceGroup/choiceGroup" as *;
+
+input[type=radio].qc-choicefield {
+  border-radius: 100%;
+
+  &::before {
+    border-radius: 100%;
+    background-color: token-value(color, blue, regular);
+  }
+
+  &:checked {
+    &::before {
+      opacity: 1;
+    }
+
+    &::before {
+      width: rem(14);
+      height: rem(14);
+    }
+    &.qc-compact {
+      &::before {
+        width: rem(10);
+        height: rem(10);
+      }
+    }
+
+  }
+}

@@ -1,0 +1,153 @@
+<h2 id="piv-footer">Pied de page du PIV (qc-piv-footer)</h2>
+
+<h3>Exemples</h3>
+
+
+<qc-doc-exemple id="piv-footer-1"
+                caption="Exemple de pied de page du PIV de base">
+  <qc-piv-footer>
+    <nav aria-label="Navigation du pied de page">
+      <ul>
+        <li><a href="/">Accessibilité</a></li>
+        <li><a href="/">Plan du site</a></li>
+        <li><a href="/">Accès à l’information</a></li>
+        <li><a href="/">Politique de confidentialité</a></li>
+        <li><a href="/">Conditions d’utilisation</a></li>
+        <li><a href="/">À propos de Québec.ca</a></li>
+      </ul>
+    </nav>
+  </qc-piv-footer>
+</qc-doc-exemple>
+<!--            <qc-code target-id="piv-footer-1"></qc-code>-->
+
+<qc-doc-exemple id="piv-footer-ex-2"
+                caption="Exemple de pied de page du PIV personnalisé."
+>
+  <qc-piv-footer
+          logo-src="img/piv-MCE-theme-clair.svg"
+          logo-src-dark-theme="img/piv-MCE-theme-sombre.svg"
+  >
+    <nav aria-label="Navigation du pied de page">
+      <ul>
+        <li><a href="/">Accès à l’information</a></li>
+        <li><a href="/">Politique de confidentialité</a></li>
+      </ul>
+    </nav>
+    <qc-external-link slot="copyright">
+      <a
+              target="_blank"
+              rel="noopener"
+              href="https://www.quebec.ca/droit-auteur">
+        © Gouvernement du Québec, 2023
+      </a>
+    </qc-external-link>
+  </qc-piv-footer>
+</qc-doc-exemple>
+<!--            <qc-code target-id="piv-footer-ex-2"></qc-code>-->
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>logo-url</td>
+      <td>Adresse du lien au clic sur l’image</td>
+      <td>/</td>
+      <td>Cible du lien contenant le logo</td>
+    </tr>
+    <tr>
+      <td>logo-src</td>
+      <td>Le chemin de l’image en thème clair.</td>
+      <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
+      <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
+        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+      </td>
+    </tr>
+    <tr>
+      <td>logo-src-dark-theme</td>
+      <td>Le chemin de l’image en thème sombre.</td>
+      <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
+      <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
+        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+      </td>
+    </tr>
+    <tr>
+      <td>logo-alt</td>
+      <td>Texte</td>
+      <td>
+        <dl>
+          <dt>Français</dt>
+          <dd>Logo du gouvernement du Québec</dd>
+          <dt>Anglais</dt>
+          <dd>Logo of government of Québec</dd>
+        </dl>
+      </td>
+      <td>Texte alternatif du logo pour les lecteurs d’écran</td>
+    </tr>
+    <tr>
+      <td>logo-width</td>
+      <td>Nombre</td>
+      <td>139</td>
+      <td>Largeur de l’image en px</td>
+    </tr>
+    <tr>
+      <td>logo-height</td>
+      <td>Nombre</td>
+      <td>35</td>
+      <td>Hauteur de l’image en px</td>
+    </tr>
+    <tr>
+      <td>copyright-text</td>
+      <td>Texte</td>
+      <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
+      <td>Texte du lien de droit d'auteur affiché dans le pied de page.</td>
+    </tr>
+    <tr>
+      <td>copyright-url</td>
+      <td>Adresse</td>
+      <td>
+        <dl>
+          <dt>Français</dt>
+          <dd>https://www.quebec.ca/droit-auteur</dd>
+          <dt>Anglais</dt>
+          <dd>https://www.quebec.ca/en/copyright</dd>
+        </dl>
+      </td>
+      <td>L’adresse de la page du droit d’auteur sur quebec.ca</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<qc-notice type="information">Les images du pied de page PIV doivent respecter
+  <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les
+    normes graphiques du système d’identification visuelle.</a>. Nous vous invitons à privilégier le format
+    SVG, qui permet de conserver la lisibilité de l’image en cas de zoom.
+  </qc-external-link>
+</qc-notice>
+
+<h4>Zones d’ajout de contenu HTML</h4>
+
+<p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
+<qc-doc-exemple id="qc-piv-footer-slots"
+                caption="Présentation des zones d’ajout de contenu du pied de page PIV">
+  <qc-piv-footer>
+    <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      Contenu par défaut
+    </div>
+    <div slot="copyright"
+         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      slot="copyright"
+    </div>
+  </qc-piv-footer>
+</qc-doc-exemple>

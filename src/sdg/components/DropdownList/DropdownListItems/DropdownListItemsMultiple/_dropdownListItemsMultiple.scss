@@ -1,0 +1,19 @@
+@use "qc-sdg-lib" as *;
+
+.qc-dropdown-list-multiple {
+  margin: 0;
+
+  label {
+    margin: 0;
+    padding-left: token-value(spacer, xs);
+    padding-right: token-value(spacer, xs);
+    flex-grow: 1;
+    align-items: center;
+  }
+  .qc-choicefield {
+    margin-top: 0 !important;
+    &:focus {
+      outline: none;
+    }
+  }
+}

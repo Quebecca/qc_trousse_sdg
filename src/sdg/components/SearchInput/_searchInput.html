@@ -1,0 +1,85 @@
+<h2 id="search-input">Champ de recherche</h2>
+<h3>Exemples</h3>
+
+<qc-doc-exemple caption="Exemples de champs de recherche">
+    <qc-search-input
+            placeholder="Rechercher un article"
+            aria-label="Rechercher un article"
+            clear-aria-label="Effacer le texte"
+            left-icon
+    ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            value="Climat"
+            placeholder="Rechercher un sujet"
+            aria-label="Rechercher un sujet"
+            clear-aria-label="Effacer le texte"
+            left-icon
+    ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            placeholder="Recherche désactivée"
+            aria-label="Recherche désactivée"
+            disabled
+            left-icon
+            clear-aria-label="Effacer le texte"
+    ></qc-search-input>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Valeur inscrite par défaut dans le champ de recherche.</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Texte indicatif affiché lorsque le champ est vide.</td>
+        </tr>
+        <tr>
+            <td>aria-label</td>
+            <td>Texte</td>
+            <td>"Rechercher..." ou "Search..."</td>
+            <td>Libellé accessible pour les lecteurs d'écrans.</td>
+        </tr>
+        <tr>
+            <td>clear-aria-label</td>
+            <td>Texte</td>
+            <td>"Effacer le texte" ou "Clear text"</td>
+            <td>Libellé accessible du bouton pour effacer le champ.</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le champ.</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom du champ utilisé lors de la soumission du formulaire.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

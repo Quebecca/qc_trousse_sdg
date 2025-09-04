@@ -1,0 +1,11 @@
+@use "../../../../scss/qc-sdg-lib" as *;
+
+.qc-dropdown-list-single {
+  padding-left: token-value(spacer, xs);
+  padding-right: token-value(spacer, xs);
+  margin: 0;
+}
+
+li[aria-selected="true"] {
+  background-color: token-value(color, blue, pale) !important;
+}

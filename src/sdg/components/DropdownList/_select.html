@@ -1,0 +1,212 @@
+<h3 id="select">Liste déroulante</h3>
+
+<h4>Exemples</h4>
+
+<qc-doc-exemple caption="Exemple de listes déroulantes en sélection dans différents états">
+    <qc-select id="qc-select-single-choice">
+        <label for="select-single-choice">Choix unique</label>
+        <select id="select-single-choice">
+            <option value="" selected>Faire une sélection</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16" disabled>Option 16 (désactivée)</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-single-choice-search" enable-search>
+        <label for="select-single-choice-search">Choix unique avec recherche</label>
+        <select id="select-single-choice-search">
+            <option value="" selected>Faire une sélection</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+            <option value="5">Option 5</option>
+            <option value="6">Option 6</option>
+            <option value="7">Option 7</option>
+            <option value="8">Option 8</option>
+            <option value="9">Option 9</option>
+            <option value="10">Option 10</option>
+            <option value="11">Option 11</option>
+            <option value="12">Option 12</option>
+            <option value="13">Option 13</option>
+            <option value="14">Option 14</option>
+            <option value="15">Option 15</option>
+            <option value="16">Option 16</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-multiple-choices">
+        <label for="select-multiple-choices">Choix multiples</label>
+        <select multiple id="select-multiple-choices">
+            <option value="1">Option 1</option>
+            <option value="2" selected>Option 2</option>
+            <option value="3" selected>Option 3</option>
+            <option value="4" disabled>Option 4 (désactivée)</option>
+        </select>
+    </qc-select>
+
+    <qc-select id="qc-select-disabled">
+        <label for="select-disabled">Désactivé</label>
+        <select id="select-disabled" disabled></select>
+    </qc-select>
+
+    <qc-select id="qc-select-invalid"
+               invalid
+               required >
+        <label for="select-invalid">État invalide</label>
+        <select  id="select-invalid"
+                >
+            <option value=""></option>
+            <option value="1" >Option 1</option>
+            <option value="2">Option 2</option>
+        </select>
+    </qc-select>
+</qc-doc-exemple>
+
+<h4>Documentation technique</h4>
+
+<h5>Attributs</h5>
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>id</td>
+            <td>Texte</td>
+            <td>Chaîne de caractères aléatoire</td>
+            <td>Identifiant de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td>""</td>
+            <td>
+                Libellé de la liste déroulante.
+                <br>N.B. : Le contenu de l'élément <code>label</code> en slot est utilisé en priorité.
+            </td>
+        </tr>
+        <tr>
+            <td>width</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>"md"</td>
+            <td>
+                Largeur de la liste déroulante. Voir <a href="#textfield-sizes">l'illustration des tailles de champ texte</a>
+                pour une indication visuelle des tailles disponibles.
+            </td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche un champ de recherche instantanée dans le haut des options de la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique aux internautes que la sélection est obligatoire en ajoutant un astérisque dans le libellé</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Désactive la liste déroulante
+                <br>N.B. : L'attribut <code>disabled</code> de l'élément <code>select</code> en slot est utilisé en priorité.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Indique si la liste déroulante est dans un état invalide
+                <br/>NB : <code>invalid</code> prend automatiquement la valeur <code>false</code>
+                dès que l'attribut <code>value</code> est modifié.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>Le champ (libellé du champ) est obligatoire. / (libellé du champ) field is required.</td>
+            <td>Message d’erreur à afficher lorsque la liste déroulante est invalide</td>
+        </tr>
+        <tr>
+            <td>placeholder</td>
+            <td>Texte</td>
+            <td>Faire une sélection / Select an option</td>
+            <td>
+                <i>Placeholder</i> de la boîte de la liste déroulante
+                <br> N.B. : Si non précisé, le <i>placeholder</i> prend le texte de la première option avec une valeur vide (<code>value=""</code>).
+                Voir l'exemple de <a href="#qc-select-single-choice">liste déroulante avec choix unique</a>.
+            </td>
+        </tr>
+        <tr>
+            <td>search-placeholder</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td><i>Placeholder</i> du champ de recherche</td>
+        </tr>
+        <tr>
+            <td>no-options-message</td>
+            <td>Contenu HTML</td>
+            <td>Aucun élément/No item</td>
+            <td>Texte indiquant l'absence d'options dans la liste.</td>
+        </tr>
+        <tr>
+            <td>multiple</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Active la sélection multiple.
+                <br>N.B. : L'attribut <code>multiple</code> de l'élément <code>select</code> est utilisé en priorité.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h5>Propriété JS</h5>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>value</td>
+                <td>Tableau de chaîne de caractères</td>
+                <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h5>Zone d'ajout de contenu HTML</h5>
+<p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>

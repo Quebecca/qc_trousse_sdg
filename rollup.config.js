@@ -4,15 +4,16 @@ import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser';
-// import scss from 'rollup-plugin-sass'
 import scss from 'rollup-plugin-scss'
-import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
-import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
+import buildHtmlDoc from './plugins/buildHtmlDoc.js';
+import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
+import buildTestFixtures from "./plugins/buildTestFixtures";
+import buildSvelteTests from "./plugins/buildSvelteTests";
 
 
 const
@@ -22,9 +23,10 @@ const
 ;
 const verbose = false;
 const  includePaths = [
+        dev_process && 'src/doc/scss',
         'src/sdg/scss',
-        'src/doc/scss'
-];
+        "src",
+].filter(Boolean);
 
 // const path = require('path');
 
@@ -61,10 +63,10 @@ const scssOptions = {
     includePaths: includePaths,
     processor: css =>
         postcss([
-            autoprefixer(),
             cssReplace({
                 data: {
-                    'pkg-version': pkg.version
+                    'pkg-version': pkg.version,
+                    'dev-env': dev_process ? 'true' : 'false',
                 }
             })
         ])
@@ -78,7 +80,7 @@ const scssOptions = {
         @use "qc-sdg-lib" as *;
     `,
     outputStyle: build_process ? 'compressed' : 'expanded',
-    watch: ['src/sdg/scss', 'src/doc/scss'],
+    watch: ['src'],
     silenceDeprecations: ['legacy-js-api'],
 };
 
@@ -93,6 +95,7 @@ let
         compilerOptions: {
             // enable run-time checks
             customElement: true,
+            dev: dev_process,
             cssHash: ({ hash, name, filename, css }) => {
                 // replacement of default `svelte-${hash(css)}`
                 return `qc-hash-${hash(css)}`;
@@ -139,15 +142,7 @@ let
                     }}
                     , scssOptions
                 )),
-                build_process && copy({
-                    targets: [
-                        {
-                            src: 'dist/img/*',
-                            dest: [`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
+
             ],
         },
         {
@@ -203,8 +198,7 @@ let
                     , scssOptions
                 )),
             ],
-        },
-
+        }
     ]
 ;
 
@@ -218,6 +212,20 @@ if (!build_process) {
         },
         plugins: [
             replace(replacements),
+            buildHtmlDoc({
+                input: 'src/doc/_index.html',
+                output: 'public/index.html'
+            }),
+            buildDevDoc({
+                input: 'src/doc/_dev.html'
+            }),
+            buildTestFixtures({
+                input: 'src/doc/_test.html',
+            }),
+            buildSvelteTests({
+                input: 'tests',
+                ignorePathsFile: 'buildSvelteTestsIgnore.json'
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,
@@ -239,7 +247,25 @@ if (!build_process) {
             //uncomment to enable the Hot Reload,
             // livereload('public'),
         ],
-    },)
+    },
+        {
+            // token only css file
+            input: 'src/sdg/qc-sdg-test.js',
+            output: {
+                file: 'public/js/qc-sdg-test.js',
+                format: 'iife',
+            },
+            plugins: [
+                svelte(svelteOptions),
+                resolve({
+                    browser: true,
+                    // Force resolving for these modules to root's node_modules that helps
+                    // to prevent bundling the same package multiple times if package is
+                    // imported from dependencies.
+                    dedupe: ['svelte']
+                }),
+            ],
+        },)
 }
 
 export default rollupOptions;

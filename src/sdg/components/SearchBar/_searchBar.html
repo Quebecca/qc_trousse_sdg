@@ -1,0 +1,125 @@
+<h2 id="search-bar">Barre de recherche</h2>
+<h3>Exemples</h3>
+<qc-doc-exemple caption="Exemple de barre de recherche">
+  <form action="http://www.quebec.ca/resultats-de-recherche">
+    <qc-search-bar name="tx_solr[q]"></qc-search-bar>
+  </form>
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Exemple de barre de recherche sur fond blanc et bleu PIV">
+
+  <qc-search-bar></qc-search-bar>
+
+  <div style="margin: var(--qc-spacer-content-block-mb) 0 0;
+                            padding: var(--qc-spacer-md);
+                            background-color: var(--qc-color-blue-piv);">
+    <qc-search-bar piv-background></qc-search-bar>
+  </div>
+
+</qc-doc-exemple>
+
+<h3>Saisie semi-automatique (<i>autocomplete</i>)</h3>
+
+<p>La barre de recherche n’offre pas encore la possibilité d’ajouter des suggestions à la saisie de texte.
+  Cependant il vous est possible d’utiliser votre propre bibliothèque javascript. Voici un exemple avec
+  jQuery UI.</p>
+
+<qc-doc-exemple caption="Exemple de barre de recherche avec saisie semi-automatique basée sur jQuery UI">
+
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+  <qc-search-bar class="autocomplete-search-bar"
+                 input-placeholder="Tapez 'aaa' pour faire apparaître de nombreuses suggestions…"
+                 style="margin-bottom: var(--qc-spacer-content-block-mb)"
+  ></qc-search-bar>
+
+  <script>
+    $(function () {
+      $.widget("ui.autocomplete", $.ui.autocomplete, {
+        _resizeMenu: function () {
+          // pour donner au panneau des suggestions la largeur de la barre de recherche
+          let component = this.element.closest("qc-search-bar");
+          this.menu.element.outerWidth(component.outerWidth());
+        },
+      });
+      // personnalisation des messages jquery ui pour le lecteur d’écran en français
+      $.extend($.ui.autocomplete.prototype.options.messages, {
+        noResults: "Aucun résultat trouvé.",
+        results: function (count) {
+          let s = count > 1 ? "s" : ''
+          return `${count} résultat${s} disponible${s}, utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`;
+        }
+      });
+
+      $(".autocomplete-search-bar input[type=search]").autocomplete({
+        source: [...Array(1000)].map((v, k) => "aaaa - " + k)
+      });
+    })
+
+
+  </script>
+
+</qc-doc-exemple>
+
+
+<h3>Attributs</h3>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>name</td>
+      <td>Texte</td>
+      <td>q</td>
+      <td>Nom du champ dans le formulaire</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>Texte</td>
+      <td>Chaîne vide</td>
+      <td>Valeur du champ dans le formulaire</td>
+    </tr>
+    <tr>
+      <td>input-*</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Tout attribut commençant par <code>input-</code> sera ajouté au champ texte du composant.
+      </td>
+    </tr>
+    <tr>
+      <td>submit-aria-label</td>
+      <td>Texte</td>
+      <td>Lancer la recherche/Submit search</td>
+      <td>Valeur de l’attribut aria-label du bouton</td>
+    </tr>
+    <tr>
+      <td>submit-*</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Tout attribut commençant par <code>submit-</code> sera ajouté au bouton du composant. Utile
+        par exemple pour lui donner un nom et une valeur.
+      </td>
+    </tr>
+    <tr>
+      <td>piv-background</td>
+      <td>Aucune (simplement ajouter l’attribut)</td>
+      <td>False</td>
+      <td>Indique que la barre de recherche est sur fond bleu PIV</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Zone d’ajout de contenu HTML</h3>
+<p>Aucune zone d’ajout de contenu n'est définie pour ce composant.</p>
+
+<h3>Précision concernant le DOM d’ombre (Shadow DOM)</h3>
+<p>Ce composant ne contient pas de DOM d’ombre.</p>

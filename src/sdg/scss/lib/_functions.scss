@@ -49,9 +49,17 @@ $rem-ratio: math.div(1, .16 * $percent-root-font-size);
   @return string.unquote(deep-implode(map.get($google-fonts, $font), ','));
 }
 
-@function getImageUrl($nom, $images: $images) {
+@function getImageUrl($nom, $images: $images, $base64: true) {
   $image: map.get($images, $nom);
-  @return url('data:image/svg+xml;base64,#{$image}');
+  $prefix: '';
+  @if $base64 {
+    $prefix: 'data:image/svg+xml;base64,';
+    @return url('#{$prefix}#{$image}');
+  }
+  @else {
+    @return url('#{$image}');
+  }
+
 }
 
 

@@ -1,0 +1,67 @@
+@use "../../../scss/qc-sdg-lib" as *;
+@use "DropdownListItemsMultiple/dropdownListItemsMultiple";
+@use "DropdownListItemsSingle/dropdownListItemsSingle";
+
+$min-height: 40;
+
+.qc-dropdown-list-items {
+  max-height: var(--dropdown-items-height);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: token-value(spacer, xs);
+    margin-left: token-value(spacer, xs);
+    margin-right: token-value(spacer, xs);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: token-value(color, blue, piv);
+    border-radius: rem(4);
+
+    border: none;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: token-value(color, blue, piv) transparent;
+    scrollbar-width: thin;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+
+  * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.qc-dropdown-list-multiple, .qc-dropdown-list-single {
+  display: flex;
+  align-items: center;
+  height: rem($min-height);
+
+  &.qc-dropdown-list-active:hover {
+    background-color: token-value(color, grey, pale);
+    cursor: pointer;
+  }
+
+  &:focus, &:has(input[type=checkbox]:focus) {
+    outline: rem(2) solid token-value(color, blue, regular);
+    outline-offset: -(rem(2));
+  }
+}
+
+.qc-dropdown-list-no-options {
+  display: flex;
+  padding: token-value(spacer, xs);
+  color: token-value(color, grey, medium);
+  height: rem($min-height);
+}

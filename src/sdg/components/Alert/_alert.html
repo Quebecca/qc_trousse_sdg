@@ -1,0 +1,110 @@
+<h2 id="alert">Alerte générale (qc-alert)</h2>
+<h3>Exemples</h3>
+<h4>Alerte jaune</h4>
+<p>
+  <a href="javascript:;"
+     id="show-qc-alert"
+     hidden
+  >
+    Réafficher l’alerte
+  </a>
+</p>
+
+<qc-doc-exemple id="alert-warning"
+                caption="Exemple d’alerte jaune">
+  <qc-alert id="alerte-masquable"
+            type="warning"
+            maskable="true"
+            content="Alerte jaune d’importance élevée"
+  >
+  </qc-alert>
+</qc-doc-exemple>
+<!--            <qc-code target-id="alert-warning"></qc-code>-->
+
+<h4>Alerte bleue</h4>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d’alerte générale">
+  <qc-alert type="general"
+            maskable="false">
+    <p>Alerte bleue d’importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+  </qc-alert>
+</qc-doc-exemple>
+
+<!--            <qc-code target-id="alert-general"></qc-code>-->
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tr>
+      <td>type</td>
+      <td>"general" ou "warning"</td>
+      <td>"general"</td>
+      <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
+    </tr>
+    <tr>
+      <td>maskable</td>
+      <td>"true" ou "false"</td>
+      <td>"true"</td>
+      <td>Afficher le bouton de fermeture de l’alerte</td>
+    </tr>
+    <tr>
+      <td>content</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Afficher le contenu de l’alerte</td>
+    </tr>
+    <tr>
+      <td>hide</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Masque ou affiche l’alerte</td>
+    </tr>
+    <tr>
+      <td>full-width</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
+        qc-container-fluid)
+      </td>
+    </tr>
+  </table>
+</div>
+
+<h4>Événement JS</h4>
+
+<p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de
+  l’alerte</p>
+<script id="qc-alert-event-exemple">
+  /* Fermer l’alerte jaune pour voir un message dans la console de votre navigateur */
+  document.addEventListener(
+          'qc.alert.hide',
+          (e) => {
+            console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');
+          }
+  )
+</script>
+<qc-code target-id="qc-alert-event-exemple"
+         language="javascript"></qc-code>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+<qc-doc-exemple caption="Présentation des zone d’ajout de contenu"
+                hide-code
+>
+  <qc-alert id="qc-alert-slots">
+    <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
+      Contenu par défaut
+    </div>
+  </qc-alert>
+</qc-doc-exemple>

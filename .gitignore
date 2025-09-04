@@ -8,4 +8,13 @@ node_modules/
 /dist/js/qc-sdg-design-tokens.js
 /dist/js/qc-sdg-no-grid.js
 /public/js/assets/asset-*
-/public/dev.html
+*dev.html
+
+# Playwright
+*.test.html
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/tests/**/*.png
+/public/js/qc-sdg-test.js

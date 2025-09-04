@@ -1,0 +1,110 @@
+@use "qc-sdg-lib" as *;
+@use "../Label/label" as *;
+@use "sass:map";
+
+qc-textfield,
+.qc-textfield {
+  display: block;
+  margin-bottom: rem(32);
+
+  .qc-description {
+    @include content-font(sm);
+    color: token-value(color blue dark);
+    &:has(~ :disabled) {
+      color: token-value(color, grey, regular);
+    }
+  }
+  label {
+    @extend .qc-label
+  }
+}
+
+input,
+textarea {
+  .qc-textfield &,
+  qc-textfield & {
+    display: block;
+    width: 100%;
+    position: relative;
+    color: token-value(color text primary);
+    background-color: token-value(color background);
+    padding: rem(8);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-top: rem(4);
+    border: 1px solid token-value(color formfield border);
+
+    &::placeholder {
+      color: token-value(color grey medium);
+      font-weight: normal;
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: 2px solid token-value(color formfield focus outline);
+      border: 2px solid token-value(color formfield focus border);
+      padding: rem(7);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: token-value(color grey pale);
+      border: 1px solid token-value(color, grey, regular);
+    }
+  }
+
+  [invalid] > & {
+    border-color: token-value(color, red, regular);
+    border-width: 2px;
+    padding: rem(7);
+  }
+
+}
+
+$sizes: map.get($lg-tokens, size, max-width);
+input ,
+input + .qc-textfield-charcount {
+  .qc-textfield &,
+  qc-textfield & {
+    max-width: token-value(size input max-width);
+  }
+}
+textarea,
+textarea + .qc-textfield-charcount {
+  .qc-textfield &,
+  qc-textfield & {
+    max-width: token-value(size textarea max-width);
+  }
+}
+
+input,
+textarea,
+ {
+  &,
+  & + .qc-textfield-charcount {
+    @each $size, $width in $sizes {
+      [size="#{$size}"] & {
+        max-width: $width;
+      }
+    }
+  }
+}
+
+textarea {
+  .qc-textfield &,
+  qc-textfield & {
+    min-height: token-value(size textarea min-height);
+    resize: vertical;
+  }
+}
+
+.qc-textfield-charcount {
+  @include content-font(sm);
+  text-align: right;
+  margin-top: rem(4);
+  color: token-value(color blue dark);
+  &.qc-max-reached {
+    color: token-value(color, red, regular);
+    font-weight: token-value(font weight content bold);
+  }
+}

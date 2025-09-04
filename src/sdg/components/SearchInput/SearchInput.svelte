@@ -1,47 +1,60 @@
-<svelte:options customElement="{{
-    tag: 'qc-search-input',
-    shadow: 'none',
-    props: {
-        ariaLabel: {attribute:'aria-label'},
-        clearAriaLabel: {attribute: 'clear-aria-label'}
-    }
-}}" />
 <script>
-    import IconButton from "../Button/IconButton.svelte";
+    import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
-    const
-        lang = Utils.getPageLanguage();
+    import Icon from "../../bases/Icon/Icon.svelte";
 
-    export let
-        value,
-        ariaLabel = lang === "fr"
-            ? "Rechercher…"
-            : "Search_",
-        clearAriaLabel = lang === "fr"
-            ? "Effacer le texte"
-            : "Clear text"
-    ;
+    const lang = Utils.getPageLanguage();
+
+
+    let {
+        value = $bindable(''),
+        ariaLabel = lang === "fr" ? "Rechercher..." : "Search...",
+        clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
+        leftIcon = false,
+        id = `qc-search-input-${Math.random().toString(36).slice(2, 11)}`,
+        ...rest
+    } = $props();
+
+    leftIcon = leftIcon === true || leftIcon === "true" || leftIcon === "";
+    const isDisabled = rest.disabled === true || rest.disabled === "true" || rest.disabled === "";
+
     let searchInput;
 
+    export function focus() {
+        searchInput?.focus();
+    }
 </script>
-<div class="qc-search-input">
+
+<div class={[
+            "qc-search-input",
+            leftIcon && "qc-search-left-icon",
+            leftIcon && isDisabled && "qc-search-left-icon-disabled"
+        ]} >
+    {#if leftIcon}
+        <Icon type="search-thin"
+              iconColor="grey-regular"
+              class={`qc-icon${isDisabled ? ' is-disabled' : ''}`}
+        />
+    {/if}
     <input  bind:this={searchInput}
             bind:value
             type="search"
             autocomplete="off"
-            {...(ariaLabel ? {"aria-label": ariaLabel} : {})}
-            {...$$restProps}
+            aria-label={ariaLabel}
+            class={isDisabled ? "qc-disabled" : ""}
+            id={id}
+            {...rest}
     />
     {#if value}
     <IconButton type="button"
-                icon="clear-input"
+                icon="xclose"
                 iconColor="blue-piv"
                 iconSize="sm"
                 aria-label={clearAriaLabel}
-                on:click={e => {
+                onclick={(e) => {
                     e.preventDefault();
                     value = "";
-                    searchInput.focus();
+                    searchInput?.focus();
                 }}
         />
     {/if}

@@ -1,0 +1,47 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+
+qc-icon {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+// TODO retirer une fois toutes les icônes remplacées par Icon dans les composants
+.qc-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--img-width);
+  height: var(--img-height);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  background-color: var(--img-color);
+  transform: rotate(var(--img-rotate));
+  // TODO questionner une échelle [0 - 10 ou 100]
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      height: rem($size);
+      width: rem($size);
+    }
+  }
+  @each $name, $url in $images {
+    // classes pour les icônes
+      @at-root .icon-#{$name} {
+        mask-image: getImageUrl($name);
+      }
+    &[data-img-type=#{$name}] {
+      @extend .icon-#{$name};
+    }
+
+
+  }
+  &.qc-icon-custom {
+    mask-image: var(--img-src);
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    background-color: token-value(color grey regular);
+  }
+}
+
+
