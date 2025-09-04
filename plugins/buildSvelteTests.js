@@ -2,17 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
 
-function buildSvelteTests({input, ignorePathsFile}) {
+function buildSvelteTests({input, ignorePaths: ignorePaths = []}) {
     return {
         name: "build-svelte-tests",
         buildStart() {
             const testsRoot = path.resolve(input);
-            const resolvedIgnorePathsFile = ignorePathsFile ? `${testsRoot}/${ignorePathsFile}` : null;
-            const ignorePaths = resolvedIgnorePathsFile ?
-                JSON.parse(fs.readFileSync(resolvedIgnorePathsFile, 'utf-8'))
-                : [];
+            const ignorePathComment = "// buildSvelteTests-ignore";
 
-            const partialPaths = glob.sync('**/*-baseline.spec.ts', {
+            const partialPaths = glob.sync('**/*Baseline.spec.ts', {
                 cwd: testsRoot,
                 absolute: true,
                 ignore: ignorePaths
@@ -22,11 +19,14 @@ function buildSvelteTests({input, ignorePathsFile}) {
                 this.addWatchFile(partialPath);
 
                 let testCode = fs.readFileSync(partialPath, 'utf-8');
+                if (testCode.includes(ignorePathComment)) {
+                    return;
+                }
 
                 testCode = testCode.replace(/Baseline\.test\.html/g, "Svelte.test.html");
                 testCode = testCode.replace(/baseline/g, "svelte");
 
-                const outputPath = partialPath.replace(/-baseline\.spec\.ts/g, "-svelte.spec.ts");
+                const outputPath = partialPath.replace(/Baseline\.spec\.ts/g, "Svelte.spec.ts");
                 fs.writeFileSync(outputPath, testCode, 'utf-8');
             });
         }
