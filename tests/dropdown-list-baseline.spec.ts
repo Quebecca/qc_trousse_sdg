@@ -2,14 +2,14 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test.beforeEach(async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListSvelte.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListBaseline.test.html');
     await page.goto(`file://${htmlFilePath}`);
 });
 
 test.describe('Rendu visuel',
     () => {
-    test('Select svelte', {
-        tag: ['@svelte', '@dropdownlist']
+    test('Select baseline', {
+        tag: ['@baseline', '@dropdownlist']
     }, async ({ page }) => {
         await page.locator('#qc-select-single-choice-search-input').click();
         await page.locator('#qc-select-single-choice-search-Option-1-1').focus();
