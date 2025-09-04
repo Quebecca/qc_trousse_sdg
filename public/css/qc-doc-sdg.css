@@ -206,6 +206,7 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
 
 .ui-autocomplete {
   max-height: calc(16rem + 2px) !important;
+  max-width: calc(var(--qc-size-search-bar-max-width) + 2px);
   overflow-y: auto !important;
   list-style-type: none !important;
   padding-left: 0 !important;
