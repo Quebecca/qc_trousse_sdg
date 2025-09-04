@@ -300,7 +300,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-- develop:
+- 1.4.0:
   - Ajout de composants :
     - boutons radios et cases à cocher ;
     - boutons de sélection ;
@@ -317,11 +317,9 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
   - Réorganisation du code :
     - Passage à svelte 5 ;
     - Organisation des composants par dossier ;
-    - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un custom element ;
+    - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un _custom element_ ;
     - Ajout de tests playwright ;
-- Derniers changements
-  - Mise à jour des dépendances nodejs ,
-  - Ajout de scripts pour le versionnage du projet (liés à npm version);
+    - Ajout de scripts pour le versionnage du projet (liés à npm version);
 - 1.3.3 :
   - PR dependabot
 - 1.3.2 :
