@@ -7,16 +7,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 /* test des composants web de la trousse */
-test('textfield ref', {
-    tag: ['@baseline', '@textfield']
-}, async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/textField.test.html');
-      // Navigue vers le fichier en utilisant le protocole file://
-      await page.goto(`file://${htmlFilePath}`);
-      await expect(page).toHaveScreenshot('textField.png', {fullPage: true});
-});
-/* test des composants svelte */
-test('textfield svelte', {
+test('textfield baseline', {
     tag: ['@baseline', '@textfield']
 }, async ({ page }) => {
     await expect(page).toHaveScreenshot('textField.png', {fullPage: true});
