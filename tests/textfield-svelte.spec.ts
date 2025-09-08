@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 /* test des composants web de la trousse */
-test('textfield ref', {
+test('textfield svelte', {
     tag: ['@svelte', '@textfield']
 }, async ({ page }) => {
     await expect(page).toHaveScreenshot('textField.png', {fullPage: true});
