@@ -76175,10 +76175,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[143, 8]]);
-	var root_4$3 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[154, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[142, 8]]);
+	var root_4$3 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[153, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[178, 4]]);
+	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -76379,7 +76379,7 @@
 		user_effect(() => {
 			if (!input()) return;
 
-			if (input().value && input().value.length > 0 && input().value.length < maxlength() && strict_equals(input().value, get(previousValue), false)) {
+			if (input().value && input().value.length < maxlength() && strict_equals(input().value, get(previousValue), false)) {
 				invalid(false);
 			}
 
