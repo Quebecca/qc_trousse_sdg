@@ -2467,12 +2467,6 @@ li[aria-selected=true] {
   background-color: var(--qc-color-grey-pale);
 }
 
-.qc-dropdown-text {
-  display: flex;
-  justify-items: start;
-  overflow: hidden;
-}
-
 .qc-dropdown-choice, .qc-dropdown-placeholder {
   display: block;
   justify-content: start;
@@ -2492,11 +2486,8 @@ li[aria-selected=true] {
 
 .qc-dropdown-button-icon {
   align-items: center;
-  rotate: 180deg;
-}
-
-.qc-dropdown-button-icon-expanded {
-  transform: rotate(180deg);
+  margin: 0;
+  padding: 0;
 }
 
 .qc-dropdown-list-margin {
