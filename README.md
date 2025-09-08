@@ -300,6 +300,10 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.1:
+  - Correction de bugs :
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/16
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/15
 - 1.4.0:
   - Ajout de composants :
     - boutons radios et cases à cocher ;
