@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test.beforeEach(async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/dropdownList.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/dropdownListBaseline.test.html');
     await page.goto(`file://${htmlFilePath}`);
 });
 

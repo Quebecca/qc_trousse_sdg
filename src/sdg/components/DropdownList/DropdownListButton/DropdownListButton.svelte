@@ -25,19 +25,18 @@
     bind:this={button}
     {...rest}
 >
-    <span class="qc-dropdown-text">
-        {#if selectedOptionsText.length > 0}
-            <span class="qc-dropdown-choice">{@html selectedOptionsText}</span>
-        {:else}
-            <span class="qc-dropdown-placeholder">{@html placeholder}</span>
-        {/if}
-    </span>
+    {#if selectedOptionsText.length > 0}
+        <span class="qc-dropdown-choice">{@html selectedOptionsText}</span>
+    {:else}
+        <span class="qc-dropdown-placeholder">{@html placeholder}</span>
+    {/if}
 
-    <span class={["qc-dropdown-button-icon", expanded && "qc-dropdown-button-icon-expanded"]}>
+    <span class={["qc-dropdown-button-icon"]}>
         <Icon
             type="chevron-up-thin"
             color={disabled ? "grey-regular" : "blue-piv"}
             size="sm"
+            rotate={expanded ? 0 : 180}
         />
     </span>
 </button>

@@ -78033,9 +78033,9 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[30, 12]]);
-	var root_2$3 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[32, 12]]);
-	var root$2 = add_locations(template(`<button><span class="qc-dropdown-text"><!></span> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[28, 4], [36, 4]]]]);
+	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[29, 8]]);
+	var root_2$3 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[31, 8]]);
+	var root$2 = add_locations(template(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[34, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -78068,26 +78068,25 @@
 
 		var button_1 = root$2();
 		let attributes;
-		var span = child(button_1);
-		var node = child(span);
+		var node = child(button_1);
 
 		{
 			var consequent = ($$anchor) => {
-				var span_1 = root_1$1();
-				var node_1 = child(span_1);
+				var span = root_1$1();
+				var node_1 = child(span);
 
 				html$1(node_1, selectedOptionsText);
-				reset(span_1);
-				append($$anchor, span_1);
+				reset(span);
+				append($$anchor, span);
 			};
 
 			var alternate = ($$anchor) => {
-				var span_2 = root_2$3();
-				var node_2 = child(span_2);
+				var span_1 = root_2$3();
+				var node_2 = child(span_1);
 
 				html$1(node_2, placeholder);
-				reset(span_2);
-				append($$anchor, span_2);
+				reset(span_1);
+				append($$anchor, span_1);
 			};
 
 			if_block(node, ($$render) => {
@@ -78095,39 +78094,37 @@
 			});
 		}
 
-		reset(span);
+		var span_2 = sibling(node, 2);
 
-		var span_3 = sibling(span, 2);
-		var node_3 = child(span_3);
+		set_class(span_2, 1, clsx(["qc-dropdown-button-icon"]));
+
+		var node_3 = child(span_2);
 		const expression = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
+		const expression_1 = user_derived(() => expanded() ? 0 : 180);
 
 		Icon(node_3, {
 			type: 'chevron-up-thin',
 			get color() {
 				return get(expression);
 			},
-			size: 'sm'
+			size: 'sm',
+			get rotate() {
+				return get(expression_1);
+			}
 		});
 
-		reset(span_3);
+		reset(span_2);
 		reset(button_1);
 		bind_this(button_1, ($$value) => button = $$value, () => button);
 
-		template_effect(() => {
-			attributes = set_attributes(button_1, attributes, {
-				type: 'button',
-				id: inputId(),
-				disabled: disabled(),
-				class: 'qc-dropdown-button',
-				role: 'combobox',
-				...rest
-			});
-
-			set_class(span_3, 1, clsx([
-				"qc-dropdown-button-icon",
-				expanded() && "qc-dropdown-button-icon-expanded"
-			]));
-		});
+		template_effect(() => attributes = set_attributes(button_1, attributes, {
+			type: 'button',
+			id: inputId(),
+			disabled: disabled(),
+			class: 'qc-dropdown-button',
+			role: 'combobox',
+			...rest
+		}));
 
 		append($$anchor, button_1);
 
