@@ -14,11 +14,15 @@ test('textfield ref', {
 });
 
 test.describe('Aria', () => {
-    test('aria-required', async ({ page }) => {
+    test('aria-required', {
+        tag: ['@aria', '@svelte', '@textfield']
+    }, async ({ page }) => {
         await expect(page.getByRole('textbox', { name: 'Large', exact: true })).toHaveAttribute('aria-required', 'true');
     });
 
-    test('aria-invalid', async ({ page }) => {
+    test('aria-invalid', {
+        tag: ['@aria', '@svelte', '@textfield']
+    }, async ({ page }) => {
         await expect(page.getByRole('textbox', { name: 'Moyen', exact: true })).toHaveAttribute('aria-invalid', 'true');
 
         await page.getByRole('textbox', { name: 'Moyen' }).click();
