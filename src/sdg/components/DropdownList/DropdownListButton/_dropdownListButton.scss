@@ -50,7 +50,6 @@ $min-height: 40;
 }
 
 .qc-dropdown-button-icon {
-  align-items: center;
-  margin: 0;
-  padding: 0;
+  display: flex;
+  align-content: center;
 }

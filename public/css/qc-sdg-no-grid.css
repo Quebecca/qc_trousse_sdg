@@ -2485,9 +2485,8 @@ li[aria-selected=true] {
 }
 
 .qc-dropdown-button-icon {
-  align-items: center;
-  margin: 0;
-  padding: 0;
+  display: flex;
+  align-content: center;
 }
 
 .qc-dropdown-list-margin {
