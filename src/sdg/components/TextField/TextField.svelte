@@ -76,7 +76,6 @@
        if (!input) return;
        if (
            input.value
-           && input.value.length > 0
            && input.value.length < maxlength
            && input.value !== previousValue
        ) {
