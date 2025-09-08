@@ -76175,10 +76175,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[129, 8]]);
-	var root_4$3 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[140, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[143, 8]]);
+	var root_4$3 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[154, 8]]);
 	var root_1$4 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[164, 4]]);
+	var root_6$1 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[178, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -76319,7 +76319,7 @@
 		const lang = Utils.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
-			required = prop($$props, 'required', 7, false),
+			required = prop($$props, 'required', 15),
 			description = prop($$props, 'description', 7),
 			size = prop($$props, 'size', 7),
 			maxlength = prop($$props, 'maxlength', 7),
@@ -76342,6 +76342,7 @@
 			charCountText = state(void 0),
 			rootElement = state(void 0),
 			textFieldRow = state(void 0),
+			previousValue = state(void 0),
 			defaultInvalidText = user_derived(() => {
 				if (!maxlengthReached()) return '';
 				return strict_equals(lang, 'fr') ? `La limite de caractères du champ ${label()} est dépassée.` : `The character limit for the ${label()} field has been exceeded.`;
@@ -76373,6 +76374,16 @@
 			if (maxlength() && maxlength() < 1) {
 				maxlength(0);
 			}
+		});
+
+		user_effect(() => {
+			if (!input()) return;
+
+			if (input().value && input().value.length > 0 && input().value.length < maxlength() && strict_equals(input().value, get(previousValue), false)) {
+				invalid(false);
+			}
+
+			set(previousValue, value(), true);
 		});
 
 		user_effect(() => {
@@ -76449,7 +76460,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value = false) {
+			set required($$value) {
 				required($$value);
 				flushSync();
 			},
@@ -79769,7 +79780,7 @@
 	));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.4.0`;
+	    document.getElementById("version").textContent = `v1.4.0-develop.1`;
 	}
 
 	// Show maskable "general alert" component

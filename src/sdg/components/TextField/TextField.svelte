@@ -9,7 +9,7 @@
 
     let {
         label = '',
-        required = false,
+        required = $bindable(),
         description,
         size,
         maxlength,
@@ -33,6 +33,7 @@
         charCountText = $state(),
         rootElement = $state(),
         textFieldRow = $state(),
+        previousValue = $state(),
         defaultInvalidText = $derived.by(() => {
             if (!maxlengthReached) return '';
             return lang === 'fr'
@@ -70,6 +71,19 @@
             maxlength = 0;
         }
     })
+
+    $effect(() => {
+       if (!input) return;
+       if (
+           input.value
+           && input.value.length > 0
+           && input.value.length < maxlength
+           && input.value !== previousValue
+       ) {
+           invalid = false;
+       }
+       previousValue = value;
+    });
 
     $effect(() => {
         charCountText = ''
