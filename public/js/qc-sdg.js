@@ -10816,14 +10816,14 @@
 		const lang = Utils.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
-			required = prop($$props, 'required', 15),
+			required = prop($$props, 'required', 7, false),
 			description = prop($$props, 'description', 7),
 			size = prop($$props, 'size', 7),
 			maxlength = prop($$props, 'maxlength', 7),
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false),
-			value = prop($$props, 'value', 7, ""),
-			invalid = prop($$props, 'invalid', 15),
+			value = prop($$props, 'value', 15, ""),
+			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			describedBy = prop($$props, 'describedBy', 31, () => proxy([])),
 			labelElement = prop($$props, 'labelElement', 15),
@@ -10900,8 +10900,8 @@
 				maxlength() && charCountId
 			].filter(Boolean).join(' '));
 
-			if (invalid()) input().setAttribute('aria-invalid', invalid());
-			if (required()) input().setAttribute('aria-required', required());
+			input().setAttribute('aria-invalid', invalid());
+			input().setAttribute('aria-required', required());
 		});
 
 		var fragment_2 = comment();
@@ -10946,7 +10946,7 @@
 			get required() {
 				return required();
 			},
-			set required($$value) {
+			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
@@ -10995,7 +10995,7 @@
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value) {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
@@ -11097,7 +11097,7 @@
 
 		setContext('webComponentMode', true);
 
-		let invalid = prop($$props, 'invalid', 7),
+		let invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
 			label = prop($$props, 'label', 7),
 			description = prop($$props, 'description', 7),
@@ -11239,7 +11239,7 @@
 			get invalid() {
 				return invalid();
 			},
-			set invalid($$value) {
+			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
