@@ -76,7 +76,7 @@
        if (!input) return;
        if (
            input.value
-           && input.value.length < maxlength
+           && (!maxlength || input.value.length < maxlength)
            && input.value !== previousValue
        ) {
            invalid = false;

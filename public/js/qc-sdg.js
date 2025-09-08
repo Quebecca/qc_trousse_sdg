@@ -10876,7 +10876,7 @@
 		user_effect(() => {
 			if (!input()) return;
 
-			if (input().value && input().value.length < maxlength() && strict_equals(input().value, get(previousValue), false)) {
+			if (input().value && (!maxlength() || input().value.length < maxlength()) && strict_equals(input().value, get(previousValue), false)) {
 				invalid(false);
 			}
 
