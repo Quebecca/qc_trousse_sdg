@@ -9,14 +9,14 @@
 
     let {
         label = '',
-        required = $bindable(),
+        required = $bindable(false),
         description,
         size,
         maxlength,
         maxlengthReached = $bindable(false),
         invalidAtSubmit = $bindable(false),
-        value = "",
-        invalid = $bindable(),
+        value = $bindable(""),
+        invalid = $bindable(false),
         invalidText,
         describedBy = $bindable([]),
         labelElement = $bindable(),
@@ -71,6 +71,8 @@
         }
     })
 
+
+
     $effect(() => {
         charCountText = ''
         if (!maxlength) return;
@@ -107,8 +109,8 @@
             ].filter(Boolean)
             .join(' ')
         )
-        if (invalid) input.setAttribute('aria-invalid', invalid)
-        if (required) input.setAttribute('aria-required', required)
+        input.setAttribute('aria-invalid', invalid)
+        input.setAttribute('aria-required', required)
     })
 
 </script>

@@ -2,22 +2,13 @@ import { test, expect } from '@playwright/test';
 import path = require('path');
 
 test.beforeEach(async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/textFieldBaseline.test.html');
+    const htmlFilePath = path.resolve(__dirname, '../public/textFieldSvelte.test.html');
     await page.goto(`file://${htmlFilePath}`);
 })
 
 /* test des composants web de la trousse */
 test('textfield ref', {
-    tag: ['@baseline', '@textfield']
-}, async ({ page }) => {
-    const htmlFilePath = path.resolve(__dirname, '../public/textField.test.html');
-      // Navigue vers le fichier en utilisant le protocole file://
-      await page.goto(`file://${htmlFilePath}`);
-      await expect(page).toHaveScreenshot('textField.png', {fullPage: true});
-});
-/* test des composants svelte */
-test('textfield svelte', {
-    tag: ['@baseline', '@textfield']
+    tag: ['@svelte', '@textfield']
 }, async ({ page }) => {
     await expect(page).toHaveScreenshot('textField.png', {fullPage: true});
 });

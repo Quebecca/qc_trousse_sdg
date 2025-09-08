@@ -20,7 +20,7 @@
     setContext('webComponentMode', true)
 
     let {
-            invalid,
+            invalid = $bindable(false),
             invalidText,
             label,
             description,
