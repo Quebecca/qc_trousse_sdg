@@ -10672,10 +10672,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[142, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[153, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[127, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[138, 8]]);
 	var root_1$3 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
+	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[162, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10839,7 +10839,6 @@
 			charCountText = state(void 0),
 			rootElement = state(void 0),
 			textFieldRow = state(void 0),
-			previousValue = state(void 0),
 			defaultInvalidText = user_derived(() => {
 				if (!maxlengthReached()) return '';
 				return strict_equals(lang, 'fr') ? `La limite de caractères du champ ${label()} est dépassée.` : `The character limit for the ${label()} field has been exceeded.`;
@@ -10871,16 +10870,6 @@
 			if (maxlength() && maxlength() < 1) {
 				maxlength(0);
 			}
-		});
-
-		user_effect(() => {
-			if (!input()) return;
-
-			if (input().value && (!maxlength() || input().value.length < maxlength()) && strict_equals(input().value, get(previousValue), false)) {
-				invalid(false);
-			}
-
-			set(previousValue, value(), true);
 		});
 
 		user_effect(() => {

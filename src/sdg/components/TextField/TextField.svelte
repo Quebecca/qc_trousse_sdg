@@ -33,7 +33,6 @@
         charCountText = $state(),
         rootElement = $state(),
         textFieldRow = $state(),
-        previousValue = $state(),
         defaultInvalidText = $derived.by(() => {
             if (!maxlengthReached) return '';
             return lang === 'fr'
@@ -65,25 +64,11 @@
             textFieldRow.appendChild(formErrorElement);
         }
     })
-
     $effect(() => {
         if (maxlength && maxlength < 1) {
             maxlength = 0;
         }
     })
-
-    $effect(() => {
-       if (!input) return;
-       if (
-           input.value
-           && (!maxlength || input.value.length < maxlength)
-           && input.value !== previousValue
-       ) {
-           invalid = false;
-       }
-       previousValue = value;
-    });
-
     $effect(() => {
         charCountText = ''
         if (!maxlength) return;
