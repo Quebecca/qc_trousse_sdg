@@ -8,7 +8,7 @@
     "preversion": "./scripts/check-release-note.sh",
     "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
-    "start": "sirv public",
+    "start": "sirv .",
     "rewrite-bootstrap": "gulp rewriteBs",
     "build-images-scss-map": "node ./scripts/buildImagesMap.js"
   },
