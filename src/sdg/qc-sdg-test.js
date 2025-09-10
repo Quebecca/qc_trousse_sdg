@@ -5,3 +5,4 @@ export * from "./components/ChoiceGroup/Test/ChoiceGroupeEmbededTest.svelte";
 export * from "./components/ToggleSwitch/Test/ToggleSwitchEmbeddedTest.svelte";
 export * from "./components/PivHeader/Test/pivHeaderEmbeddedTest.svelte";
 export * from "./components/Alert/Test/AlertSvelteTest.svelte";
+export * from "./components/Notice/Test/NoticeSvelteTest.svelte";

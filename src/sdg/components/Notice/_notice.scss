@@ -1,12 +1,25 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "sass:list" as *;
 
-@mixin qc-notice-title() {
+%qc-notice-title {
   h1,h2,h3,h4,h5,h6,[role=heading] {
     margin: 0;
     padding: 0;
     @include content-font(sm, bold);
     font-family: token-value(font, family, content);
+  }
+}
+
+%qc-notice-error {
+  color: token-value(color, red, regular);
+  &::marker {
+    color:token-value(color text primary);
+  }
+  & a {
+    color: inherit;
+    &:hover, &:focus {
+      text-decoration: none;
+    }
   }
 }
 
@@ -18,6 +31,10 @@
   word-break: break-word;
   @include content-font(sm);
 
+  @extend %qc-notice-title;
+  & ul {
+    padding-left: token-value(spacer, sm) !important;
+  }
 
   .icon-container {
     display: flex;  
@@ -33,8 +50,6 @@
   .content-container {
     width: 100%;
   }
-
-  @include qc-notice-title();
 
   //TODO Quelle est la marge entre le titre et le texte? Rien de spécifié dans le SDG.
 
@@ -61,28 +76,17 @@
       }
     }
   }
-}
 
-// Links in a error notice (eg. error summary)
-qc-notice {
-  display: block;
-  @include qc-notice-title();
-  ul {
-    padding-left: token-value(spacer, sm) !important;
-    //margin-top: token-value(spacer, sm) !important;
-  }
-  &[type="error"] ul li {
-     &::marker {
-       color:token-value(color text primary);
-     }
-     color: token-value(color, red, regular);
-     a {
-      color: inherit;
-      &:hover, &:focus {
-        text-decoration: none;
-      }
-    }
+  &.qc-error * ul li {
+    @extend %qc-notice-error;
   }
   margin-bottom: rem(4 * $base-spacer);
+}
 
+qc-notice {
+  @extend %qc-notice-title;
+
+  &[type="error"] ul li {
+    @extend %qc-notice-error;
+  }
 }

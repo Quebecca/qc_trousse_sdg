@@ -46,6 +46,8 @@
     const computedType = shouldUseIcon ? "neutral" : usedType;
     const iconType = shouldUseIcon ? (icon ?? "note") : usedType;
     const iconLabel = typesDescriptions[type] ?? typesDescriptions['information'];
+
+    console.log(usedHeader);
 </script>
 
 <!-- TODO Confirmer tabindex. On pense que c'est important de recevoir le focus (notamment dans les formulaires) en fait pour nous c'est très important, sinon en mode formulaire au lecteur écran (nav avec TAB, ce n'est jamais lu). -->
