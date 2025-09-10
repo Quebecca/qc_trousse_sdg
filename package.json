@@ -1,6 +1,6 @@
 {
   "name": "qc-trousse-sdg",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
   "scripts": {
