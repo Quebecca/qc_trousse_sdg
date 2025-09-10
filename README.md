@@ -300,6 +300,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.2:
+  - Correction de bugs :
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/20
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/19
+  - Ajout de tests PW pour les composants Svelte.
 - 1.4.1:
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/16
