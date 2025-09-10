@@ -3006,13 +3006,19 @@
     </nav>
     <qc-external-link slot="copyright">
       <a
+              id="copyright-link"
               target="_blank"
               rel="noopener"
               href="https://www.quebec.ca/droit-auteur">
-        © Gouvernement du Québec, 2023
       </a>
     </qc-external-link>
   </qc-piv-footer>
+
+  <script>
+    const copyrightSlot = document.getElementById('copyright-link');
+    const date = new Date();
+    copyrightSlot.innerHTML = `© Gouvernement du Québec, ${date.getFullYear()}`;
+  </script>
 </qc-doc-exemple>
 <!--            <qc-code target-id="piv-footer-ex-2"></qc-code>-->
 
