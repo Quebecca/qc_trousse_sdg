@@ -9096,224 +9096,6 @@
 		true
 	);
 
-	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
-
-	var root$c = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
-
-	function SearchBar($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
-
-		let value = prop($$props, 'value', 15, ''),
-			name = prop($$props, 'name', 7, 'q'),
-			pivBackground = prop($$props, 'pivBackground', 7, false),
-			rest = rest_props(
-				$$props,
-				[
-					'$$slots',
-					'$$events',
-					'$$legacy',
-					'$$host',
-					'value',
-					'name',
-					'pivBackground'
-				]);
-
-		let defaultsAttributes = {
-			input: {
-				"placeholder": strict_equals(lang, "fr") ? "Rechercher…" : "Search",
-				"aria-label": strict_equals(lang, "fr") ? "Rechercher…" : "Search"
-			},
-			submit: {
-				"aria-label": strict_equals(lang, "fr") ? "Lancer la recherche" : "Submit search"
-			}
-		};
-
-		let inputProps = user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("input", rest),
-				name: name()
-			})),
-			submitProps = user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("submit", rest)
-			}));
-
-		var div = root$c();
-		let classes;
-		var node = child(div);
-
-		{
-			$$ownership_validator.binding('value', SearchInput, value);
-
-			SearchInput(node, spread_props(() => get(inputProps), {
-				get value() {
-					return value();
-				},
-				set value($$value) {
-					value($$value);
-				}
-			}));
-		}
-
-		var node_1 = sibling(node, 2);
-		const expression = user_derived(() => pivBackground() ? 'blue-piv' : 'background');
-
-		IconButton(node_1, spread_props(
-			{
-				type: 'submit',
-				get iconColor() {
-					return get(expression);
-				},
-				icon: 'search-thin',
-				iconSize: 'md'
-			},
-			() => get(submitProps)
-		));
-
-		reset(div);
-
-		template_effect(($0) => classes = set_class(div, 1, 'qc-search-bar', null, classes, $0), [
-			() => ({ 'piv-background': pivBackground() })
-		]);
-
-		append($$anchor, div);
-
-		return pop({
-			get value() {
-				return value();
-			},
-			set value($$value = '') {
-				value($$value);
-				flushSync();
-			},
-			get name() {
-				return name();
-			},
-			set name($$value = 'q') {
-				name($$value);
-				flushSync();
-			},
-			get pivBackground() {
-				return pivBackground();
-			},
-			set pivBackground($$value = false) {
-				pivBackground($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], true);
-
-	SearchBarWC[FILENAME] = 'src/sdg/components/SearchBar/SearchBarWC.svelte';
-
-	function SearchBarWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-
-		SearchBar($$anchor, spread_props(() => props));
-		return pop({ ...legacy_api() });
-	}
-
-	customElements.define('qc-search-bar', create_custom_element(
-		SearchBarWC,
-		{
-			value: { attribute: 'input-value', type: 'String' },
-			name: { attribute: 'input-name', type: 'String' },
-			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
-		},
-		[],
-		[],
-		false
-	));
-
-	SearchInputWC[FILENAME] = 'src/sdg/components/SearchInput/SearchInputWC.svelte';
-
-	function SearchInputWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-
-		SearchInput($$anchor, spread_props(() => props));
-		return pop({ ...legacy_api() });
-	}
-
-	customElements.define('qc-search-input', create_custom_element(
-		SearchInputWC,
-		{
-			id: { attribute: 'id' },
-			ariaLabel: { attribute: 'aria-label' },
-			clearAriaLabel: { attribute: 'clear-aria-label' },
-			leftIcon: { attribute: 'left-icon' }
-		},
-		[],
-		[],
-		false
-	));
-
-	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
-
-	function IconWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-
-		Icon($$anchor, spread_props(() => props));
-		return pop({ ...legacy_api() });
-	}
-
-	customElements.define('qc-icon', create_custom_element(
-		IconWC,
-		{
-			type: { attribute: 'icon' },
-			label: { attribute: 'label' },
-			color: { attribute: 'color' },
-			size: { attribute: 'size' },
-			width: { attribute: 'width' },
-			height: { attribute: 'height' },
-			src: { attribute: 'src' },
-			rotate: { attribute: 'rotate' }
-		},
-		[],
-		[],
-		false
-	));
-
-	IconButtonWC[FILENAME] = 'src/sdg/components/IconButton/IconButtonWC.svelte';
-
-	function IconButtonWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-
-		IconButton($$anchor, spread_props(() => props));
-		return pop({ ...legacy_api() });
-	}
-
-	customElements.define('qc-icon-button', create_custom_element(
-		IconButtonWC,
-		{
-			size: { attribute: 'size' },
-			label: { attribute: 'label' },
-			icon: { attribute: 'icon' },
-			iconSize: { attribute: 'icon-size' },
-			iconColor: { attribute: 'icon-color' }
-		},
-		[],
-		[],
-		false
-	));
-
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
 	var root_2$6 = add_locations(template(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
@@ -9451,6 +9233,276 @@
 		[],
 		true
 	);
+
+	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
+
+	var root$c = add_locations(template(`<div><!> <!></div> <!>`, 1), SearchBar[FILENAME], [[40, 0]]);
+
+	function SearchBar($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		var $$ownership_validator = create_ownership_validator($$props);
+		const lang = Utils.getPageLanguage();
+
+		let value = prop($$props, 'value', 15, ''),
+			name = prop($$props, 'name', 7, 'q'),
+			pivBackground = prop($$props, 'pivBackground', 7, false),
+			invalid = prop($$props, 'invalid', 7),
+			invalidText = prop($$props, 'invalidText', 7),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'value',
+					'name',
+					'pivBackground',
+					'invalid',
+					'invalidText'
+				]);
+
+		let defaultsAttributes = {
+			input: {
+				"placeholder": strict_equals(lang, "fr") ? "Rechercher…" : "Search",
+				"aria-label": strict_equals(lang, "fr") ? "Rechercher…" : "Search"
+			},
+			submit: {
+				"aria-label": strict_equals(lang, "fr") ? "Lancer la recherche" : "Submit search"
+			}
+		};
+
+		let inputProps = user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("input", rest),
+				name: name()
+			})),
+			submitProps = user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("submit", rest)
+			}));
+
+		var fragment = root$c();
+		var div = first_child(fragment);
+		let classes;
+		var node = child(div);
+
+		{
+			$$ownership_validator.binding('value', SearchInput, value);
+
+			SearchInput(node, spread_props(() => get(inputProps), {
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				}
+			}));
+		}
+
+		var node_1 = sibling(node, 2);
+		const expression = user_derived(() => pivBackground() ? 'blue-piv' : 'background');
+
+		IconButton(node_1, spread_props(
+			{
+				type: 'submit',
+				get iconColor() {
+					return get(expression);
+				},
+				icon: 'search-thin',
+				iconSize: 'md'
+			},
+			() => get(submitProps)
+		));
+
+		reset(div);
+
+		var node_2 = sibling(div, 2);
+
+		{
+			var consequent = ($$anchor) => {
+				FormError($$anchor, {
+					get invalid() {
+						return invalid();
+					},
+					get invalidText() {
+						return invalidText();
+					}
+				});
+			};
+
+			if_block(node_2, ($$render) => {
+				if (invalid()) $$render(consequent);
+			});
+		}
+
+		template_effect(($0) => classes = set_class(div, 1, 'qc-search-bar', null, classes, $0), [
+			() => ({ 'piv-background': pivBackground() })
+		]);
+
+		append($$anchor, fragment);
+
+		return pop({
+			get value() {
+				return value();
+			},
+			set value($$value = '') {
+				value($$value);
+				flushSync();
+			},
+			get name() {
+				return name();
+			},
+			set name($$value = 'q') {
+				name($$value);
+				flushSync();
+			},
+			get pivBackground() {
+				return pivBackground();
+			},
+			set pivBackground($$value = false) {
+				pivBackground($$value);
+				flushSync();
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+				flushSync();
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			set invalidText($$value) {
+				invalidText($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
+	}
+
+	create_custom_element(
+		SearchBar,
+		{
+			value: {},
+			name: {},
+			pivBackground: {},
+			invalid: {},
+			invalidText: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	SearchBarWC[FILENAME] = 'src/sdg/components/SearchBar/SearchBarWC.svelte';
+
+	function SearchBarWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		SearchBar($$anchor, spread_props(() => props));
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-search-bar', create_custom_element(
+		SearchBarWC,
+		{
+			value: { attribute: 'input-value', type: 'String' },
+			name: { attribute: 'input-name', type: 'String' },
+			pivBackground: { attribute: 'piv-background', type: 'Boolean' },
+			invalid: { attribute: 'invalid', type: 'Boolean' },
+			invalidText: { attribute: 'invalid-text', type: 'String' }
+		},
+		[],
+		[],
+		false
+	));
+
+	SearchInputWC[FILENAME] = 'src/sdg/components/SearchInput/SearchInputWC.svelte';
+
+	function SearchInputWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		SearchInput($$anchor, spread_props(() => props));
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-search-input', create_custom_element(
+		SearchInputWC,
+		{
+			id: { attribute: 'id' },
+			ariaLabel: { attribute: 'aria-label' },
+			clearAriaLabel: { attribute: 'clear-aria-label' },
+			leftIcon: { attribute: 'left-icon' }
+		},
+		[],
+		[],
+		false
+	));
+
+	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
+
+	function IconWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		Icon($$anchor, spread_props(() => props));
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-icon', create_custom_element(
+		IconWC,
+		{
+			type: { attribute: 'icon' },
+			label: { attribute: 'label' },
+			color: { attribute: 'color' },
+			size: { attribute: 'size' },
+			width: { attribute: 'width' },
+			height: { attribute: 'height' },
+			src: { attribute: 'src' },
+			rotate: { attribute: 'rotate' }
+		},
+		[],
+		[],
+		false
+	));
+
+	IconButtonWC[FILENAME] = 'src/sdg/components/IconButton/IconButtonWC.svelte';
+
+	function IconButtonWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+
+		IconButton($$anchor, spread_props(() => props));
+		return pop({ ...legacy_api() });
+	}
+
+	customElements.define('qc-icon-button', create_custom_element(
+		IconButtonWC,
+		{
+			size: { attribute: 'size' },
+			label: { attribute: 'label' },
+			icon: { attribute: 'icon' },
+			iconSize: { attribute: 'icon-size' },
+			iconColor: { attribute: 'icon-color' }
+		},
+		[],
+		[],
+		false
+	));
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 

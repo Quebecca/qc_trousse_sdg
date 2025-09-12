@@ -2,6 +2,7 @@
     import {Utils} from "../utils";
     import SearchInput from "../SearchInput/SearchInput.svelte";
     import IconButton from "../IconButton/IconButton.svelte";
+    import FormError from "../FormError/FormError.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -9,6 +10,8 @@
         value = $bindable(''),
         name = 'q',
         pivBackground = false,
+        invalid,
+        invalidText,
         ...rest
     } = $props();
 
@@ -45,3 +48,6 @@
                 {...submitProps}
         />
 </div>
+{#if invalid}
+    <FormError {invalid} {invalidText} />
+    {/if}
