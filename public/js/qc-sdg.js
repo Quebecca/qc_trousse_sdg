@@ -7029,6 +7029,7 @@
 			'data-img-type': type(),
 			...get(attributes),
 			...rest,
+			'aria-hidden': label() ? undefined : true,
 			[STYLE]: {
 				'--img-rotate': rotate() && rotate() + "deg"
 			}

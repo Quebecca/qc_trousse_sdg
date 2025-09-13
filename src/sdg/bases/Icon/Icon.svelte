@@ -29,5 +29,6 @@
      data-img-type={type}
      {...attributes}
      {...rest}
+     aria-hidden={label ? undefined : true}
     >
 </div>
