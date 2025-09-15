@@ -7,3 +7,4 @@ export * from "./components/PivHeader/Test/pivHeaderEmbeddedTest.svelte";
 export * from "./components/Alert/Test/AlertSvelteTest.svelte";
 export * from "./components/Notice/Test/NoticeSvelteTest.svelte";
 export * from "./components/SearchBar/Test/SearchBarSvelteTest.svelte";
+export * from "./components/SearchInput/Test/SearchInputSvelteTest.svelte";
