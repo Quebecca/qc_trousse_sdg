@@ -1745,12 +1745,12 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
 qc-search-input {
   display: block;
   width: 100%;
+  max-width: 54.8rem;
 }
 
 .qc-search-bar, .qc-search-input {
   display: flex;
   align-items: center;
-  max-width: 54.8rem;
 }
 .qc-search-bar::before, .qc-search-input::before {
   border: 1px solid var(--qc-color-formfield-border);
