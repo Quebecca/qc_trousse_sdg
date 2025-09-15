@@ -1,11 +1,9 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "../SearchInput/searchInput" as *;
 
-qc-search-bar {
-  position: relative;
-  display: block;
-}
 .qc-search-bar {
+  position: relative;
+
   @extend %qc-search-wrapper;
   max-width: token-value(size search-bar max-width);
   width: 100%;

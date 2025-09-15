@@ -1803,12 +1803,8 @@ qc-search-input {
 .qc-search-input button::before {
   background: transparent;
 }
-qc-search-bar {
-  position: relative;
-  display: block;
-}
-
 .qc-search-bar {
+  position: relative;
   max-width: var(--qc-size-search-bar-max-width);
   width: 100%;
   border: 0;
