@@ -312,16 +312,6 @@
 	}
 
 	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6851,37 +6841,6 @@
 		return Class;
 	}
 
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
-				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {}
-		});
-
-		return objects;
-	}
-
 	class Utils {
 
 	    static assetsBasePath =
@@ -7159,11 +7118,11 @@
 
 	var root$n = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
 		[
-			59,
+			57,
 			0,
 			[
-				[62, 2, [[63, 4]]],
-				[71, 2, [[72, 4]]]
+				[60, 2, [[61, 4]]],
+				[69, 2, [[70, 4]]]
 			]
 		]
 	]);
@@ -7213,9 +7172,6 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-
-		console.log(...log_if_contains_state('log', usedHeader));
-
 		var div = root$n();
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);

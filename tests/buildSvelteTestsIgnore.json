@@ -1,4 +1,5 @@
 [
   "**/button-baseline.spec.ts",
-  "**/dropdown-list-baseline.spec.ts"
+  "**/dropdown-list-baseline.spec.ts",
+  "**/piv-footer-baseline.spec.ts"
 ]
