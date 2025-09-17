@@ -300,6 +300,22 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.3:
+  - Correction de bugs :
+    - Documentation :
+      - Changement de la couleur de fond du menu de thème sombre
+    - Boutons :
+      - Correction de la hauteur des boutons
+      - Gestion des espacements horizontaux à partir de la classe `qc-button-group` sur l'élément parent
+    - Boutons de sélection :
+      - Ajustement de la couleur des boutons de sélection à l'état sélectionné : gris pâle -> bleu clair
+    - Champs texte :
+      - Correction de la hauteur des champs texte
+      - Correction de la graisse des libellés
+    - Haut de page :
+      - Correction de l'offset de l'outline du bouton de haut de page
+    - Liste déroulante :
+      - Correction de la hauteur de la liste déroulante à l'état fermé
 - 1.4.2:
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/20
