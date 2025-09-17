@@ -1,7 +1,7 @@
 @use "qc-sdg-lib" as *;
 
 .qc-label {
-  font-weight: token-value(font weight content medium);
+  font-weight: token-value(font weight content bold);
   display: block;
 
   &.qc-compact {

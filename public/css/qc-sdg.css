@@ -2114,7 +2114,7 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 }
 .qc-label, qc-textfield label,
 .qc-textfield label {
-  font-weight: var(--qc-font-weight-content-medium);
+  font-weight: var(--qc-font-weight-content-bold);
   display: block;
 }
 .qc-label.qc-compact, qc-textfield label.qc-compact,
@@ -2160,6 +2160,7 @@ qc-textfield textarea {
   overflow: hidden;
   margin-top: 0.4rem;
   border: 1px solid var(--qc-color-formfield-border);
+  z-index: 11;
 }
 .qc-textfield input::placeholder, qc-textfield input::placeholder,
 .qc-textfield textarea::placeholder,
@@ -2174,7 +2175,7 @@ qc-textfield textarea:focus,
 qc-textfield textarea:focus-visible {
   outline: 2px solid var(--qc-color-formfield-focus-outline);
   border: 2px solid var(--qc-color-formfield-focus-border);
-  padding: 0.7rem;
+  padding: 0.6rem;
 }
 .qc-textfield input:disabled, qc-textfield input:disabled,
 .qc-textfield textarea:disabled,
