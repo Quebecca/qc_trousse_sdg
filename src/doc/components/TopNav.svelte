@@ -30,10 +30,10 @@
     position: sticky;
     z-index: 100;
     top: 0;
-    background-color: token-value(color blue medium);
-    color: token-value(color grey pale);
+    background-color: token-value(color background);
     min-height: rem(72);
     height: rem(72);
+    border-bottom: solid rem(1) token-value(color grey light);
   }
   .top-nav {
     position: absolute;

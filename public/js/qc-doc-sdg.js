@@ -75275,13 +75275,13 @@
 
 	TopNav[FILENAME] = 'src/doc/components/TopNav.svelte';
 
-	var root$c = add_locations(template(`<div role="complementary" class="qc-hash-1qt294a"><div class="qc-container top-nav qc-hash-1qt294a"><div class="switch-control qc-hash-1qt294a"><!></div></div></div>`), TopNav[FILENAME], [
+	var root$c = add_locations(template(`<div role="complementary" class="qc-hash-ogsj9p"><div class="qc-container top-nav qc-hash-ogsj9p"><div class="switch-control qc-hash-ogsj9p"><!></div></div></div>`), TopNav[FILENAME], [
 		[17, 0, [[18, 4, [[19, 8]]]]]
 	]);
 
 	const $$css$3 = {
-		hash: 'qc-hash-1qt294a',
-		code: '[role=complementary].qc-hash-1qt294a {\n  position: sticky;\n  z-index: 100;\n  top: 0;\n  background-color: var(--qc-color-blue-medium);\n  color: var(--qc-color-grey-pale);\n  min-height: 7.2rem;\n  height: 7.2rem;\n}\n\n.top-nav.qc-hash-1qt294a {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: end;\n  padding-bottom: var(--qc-spacer-sm);\n}\n.top-nav.qc-hash-1qt294a .switch-control:where(.qc-hash-1qt294a) {\n  margin-left: auto;\n  margin-right: 0;\n  display: flex;\n  align-items: center;\n}\n/* (unused) .top-nav .switch-control label:first-child {\n  margin-right: 1.6rem;\n}*/'
+		hash: 'qc-hash-ogsj9p',
+		code: '[role=complementary].qc-hash-ogsj9p {\n  position: sticky;\n  z-index: 100;\n  top: 0;\n  background-color: var(--qc-color-background);\n  min-height: 7.2rem;\n  height: 7.2rem;\n  border-bottom: solid 0.1rem var(--qc-color-grey-light);\n}\n\n.top-nav.qc-hash-ogsj9p {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: end;\n  padding-bottom: var(--qc-spacer-sm);\n}\n.top-nav.qc-hash-ogsj9p .switch-control:where(.qc-hash-ogsj9p) {\n  margin-left: auto;\n  margin-right: 0;\n  display: flex;\n  align-items: center;\n}\n/* (unused) .top-nav .switch-control label:first-child {\n  margin-right: 1.6rem;\n}*/'
 	};
 
 	function TopNav($$anchor, $$props) {
