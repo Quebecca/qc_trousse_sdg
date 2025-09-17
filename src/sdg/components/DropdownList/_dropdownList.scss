@@ -43,6 +43,10 @@ $border: 1;
 
   &.qc-dropdown-list-invalid {
     border: rem(2) solid token-value(color, red, regular) !important;
+
+    & > .qc-dropdown-button {
+      height: rem(36);
+    }
   }
 }
 

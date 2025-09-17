@@ -6,7 +6,7 @@ $min-height: 40;
   display: flex;
   width: 100%;
   justify-content: space-between;
-  height: rem($min-height);
+  height: rem($min-height - 2);
   align-items: center;
   background-color: token-value(color, background);
   border: none;
