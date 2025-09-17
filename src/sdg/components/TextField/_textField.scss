@@ -33,7 +33,6 @@ textarea {
     overflow: hidden;
     margin-top: rem(4);
     border: 1px solid token-value(color formfield border);
-    z-index: 11;
 
     &::placeholder {
       color: token-value(color grey medium);
