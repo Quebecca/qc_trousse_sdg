@@ -2155,7 +2155,7 @@ qc-textfield textarea {
   position: relative;
   color: var(--qc-color-text-primary);
   background-color: var(--qc-color-background);
-  padding: 0.8rem;
+  padding: 0.7rem;
   text-overflow: ellipsis;
   overflow: hidden;
   margin-top: 0.4rem;
@@ -2187,7 +2187,7 @@ qc-textfield textarea:disabled {
 [invalid] > textarea {
   border-color: var(--qc-color-red-regular);
   border-width: 2px;
-  padding: 0.7rem;
+  padding: 0.6rem;
 }
 
 .qc-textfield input, qc-textfield input,

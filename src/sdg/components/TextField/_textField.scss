@@ -28,7 +28,7 @@ textarea {
     position: relative;
     color: token-value(color text primary);
     background-color: token-value(color background);
-    padding: rem(8);
+    padding: rem(7);
     text-overflow: ellipsis;
     overflow: hidden;
     margin-top: rem(4);
@@ -56,7 +56,7 @@ textarea {
   [invalid] > & {
     border-color: token-value(color, red, regular);
     border-width: 2px;
-    padding: rem(7);
+    padding: rem(6);
   }
 
 }
