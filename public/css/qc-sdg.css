@@ -2432,7 +2432,7 @@ li[aria-selected=true] {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  height: 4rem;
+  height: 3.8rem;
   align-items: center;
   background-color: var(--qc-color-background);
   border: none;
@@ -2547,6 +2547,9 @@ li[aria-selected=true] {
 }
 .qc-dropdown-list.qc-dropdown-list-invalid {
   border: 0.2rem solid var(--qc-color-red-regular) !important;
+}
+.qc-dropdown-list.qc-dropdown-list-invalid > .qc-dropdown-button {
+  height: 3.6rem;
 }
 
 .qc-dropdown-list-search {
