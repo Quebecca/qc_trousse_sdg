@@ -19,7 +19,6 @@
   vertical-align: middle;
   border: rem(2) solid transparent;
   cursor: pointer;
-  margin-right: rem(32);
   margin-bottom: token-value(spacer, md);
 
   &:focus,
@@ -34,7 +33,6 @@
     // Compensation pour la bordure en retirant 1px de padding de chaque côté
     padding: rem(7) rem(15);
     border-width: rem(1);
-    margin-right: token-value(spacer, md);
     margin-bottom: token-value(spacer, sm);
   }
 
@@ -205,17 +203,10 @@
 
 .qc-button-group {
   display: flex;
-  row-gap: rem(4 * $base-spacer);
-  column-gap: token-value(spacer, md);
-
-  & button {
-    margin: 0;
-  }
+  flex-wrap: wrap;
+  column-gap: rem(4 * $base-spacer);
 
   &.qc-compact {
-    row-gap: token-value(spacer, md);
-    column-gap: token-value(spacer, sm);
+    column-gap: token-value(spacer, md);
   }
-
-  margin-bottom: token-value(spacer, md)
 }
