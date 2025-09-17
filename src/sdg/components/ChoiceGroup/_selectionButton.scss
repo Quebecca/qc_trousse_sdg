@@ -17,6 +17,11 @@ label.qc-selection-button {
 
   &:has(input:checked)::before {
     background-color: token-value(color, blue, pale);
+    border-color: token-value(color, blue, light);
+  }
+
+  &:focus, &:has(input:focus)::before {
+    border-color: inherit;
   }
 
   &:has(input:disabled)::before {
