@@ -1732,6 +1732,7 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
   background-color: var(--qc-color-blue-regular);
   outline: 2px solid var(--qc-color-blue-light);
   border: 2px solid var(--qc-color-blue-dark);
+  outline-offset: 0;
   box-shadow: 0 var(--qc-box_shadow-2-offset) var(--qc-box_shadow-2-blur) var(--qc-color-box_shadow);
 }
 .qc-to-top:active {

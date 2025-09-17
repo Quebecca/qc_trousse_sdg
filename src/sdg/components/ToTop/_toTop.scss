@@ -29,6 +29,7 @@
     background-color: token-value( color blue regular);
     outline: 2px solid token-value(color blue light);
     border: 2px solid token-value(color blue dark);
+    outline-offset: 0;
     @include qc-shading(2);
   }
   &:active {
