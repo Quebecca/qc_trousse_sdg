@@ -14,9 +14,10 @@
   min-width: rem(112);
   max-width: rem(360);
   min-height: rem(56);
-  padding: rem(16) rem(24);
+  // Compensation pour la bordure en retirant 2px de padding de chaque côté
+  padding: rem(14) rem(22);
   vertical-align: middle;
-  border: 2px solid transparent;
+  border: rem(2) solid transparent;
   cursor: pointer;
   margin-right: rem(32);
   margin-bottom: token-value(spacer, md);
@@ -30,8 +31,9 @@
     font-weight: token-value(font weight, semi-bold);
     min-width: rem(80);
     min-height: rem(40);
-    padding: rem(8) rem(16);
-    border-width: 1px;
+    // Compensation pour la bordure en retirant 1px de padding de chaque côté
+    padding: rem(7) rem(15);
+    border-width: rem(1);
     margin-right: token-value(spacer, md);
     margin-bottom: token-value(spacer, sm);
   }
@@ -199,4 +201,21 @@
   @at-root a#{&}{
     text-decoration: none;
   }
+}
+
+.qc-button-group {
+  display: flex;
+  row-gap: rem(4 * $base-spacer);
+  column-gap: token-value(spacer, md);
+
+  & button {
+    margin: 0;
+  }
+
+  &.qc-compact {
+    row-gap: token-value(spacer, md);
+    column-gap: token-value(spacer, sm);
+  }
+
+  margin-bottom: token-value(spacer, md)
 }

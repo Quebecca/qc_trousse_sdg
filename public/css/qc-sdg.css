@@ -2582,9 +2582,9 @@ li[aria-selected=true] {
   min-width: 11.2rem;
   max-width: 36rem;
   min-height: 5.6rem;
-  padding: 1.6rem 2.4rem;
+  padding: 1.4rem 2.2rem;
   vertical-align: middle;
-  border: 2px solid transparent;
+  border: 0.2rem solid transparent;
   cursor: pointer;
   margin-right: 3.2rem;
   margin-bottom: var(--qc-spacer-md);
@@ -2596,8 +2596,8 @@ li[aria-selected=true] {
   font-weight: var(--qc-font-weight-semi-bold);
   min-width: 8rem;
   min-height: 4rem;
-  padding: 0.8rem 1.6rem;
-  border-width: 1px;
+  padding: 0.7rem 1.5rem;
+  border-width: 0.1rem;
   margin-right: var(--qc-spacer-md);
   margin-bottom: var(--qc-spacer-sm);
 }
@@ -2719,6 +2719,20 @@ li[aria-selected=true] {
 }
 a.qc-button {
   text-decoration: none;
+}
+
+.qc-button-group {
+  display: flex;
+  row-gap: 3.2rem;
+  column-gap: var(--qc-spacer-md);
+  margin-bottom: var(--qc-spacer-md);
+}
+.qc-button-group button {
+  margin: 0;
+}
+.qc-button-group.qc-compact {
+  row-gap: var(--qc-spacer-md);
+  column-gap: var(--qc-spacer-sm);
 }
 
 .qc-container,
