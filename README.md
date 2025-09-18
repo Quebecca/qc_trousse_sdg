@@ -305,7 +305,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
     - Documentation :
       - Changement de la couleur de fond du menu de thème sombre
     - Boutons :
-      - Correction de la hauteur des boutons
+      - Correction de la hauteur des boutons : https://github.com/Quebecca/qc_trousse_sdg/issues/23
       - Gestion des espacements horizontaux à partir de la classe `qc-button-group` sur l'élément parent
     - Boutons de sélection :
       - Ajustement de la couleur des boutons de sélection à l'état sélectionné : gris pâle -> bleu clair

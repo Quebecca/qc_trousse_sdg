@@ -2161,7 +2161,6 @@ qc-textfield textarea {
   overflow: hidden;
   margin-top: 0.4rem;
   border: 1px solid var(--qc-color-formfield-border);
-  z-index: 11;
 }
 .qc-textfield input::placeholder, qc-textfield input::placeholder,
 .qc-textfield textarea::placeholder,
