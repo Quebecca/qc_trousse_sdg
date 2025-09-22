@@ -29,8 +29,8 @@
 
     onMount(() => {
         labelElement = $host()
-            .querySelector('label')
-        input = $host().querySelector('input')
+            .querySelector("label")
+        input = $host().querySelector("input[type='radio']")
         onChange(input, _invalid => invalid = _invalid)
     })
 

@@ -10422,8 +10422,8 @@
 			input = state(void 0);
 
 		onMount(() => {
-			set(labelElement, $$props.$$host.querySelector('label'), true);
-			set(input, $$props.$$host.querySelector('input'), true);
+			set(labelElement, $$props.$$host.querySelector("label"), true);
+			set(input, $$props.$$host.querySelector("input[type='radio']"), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
