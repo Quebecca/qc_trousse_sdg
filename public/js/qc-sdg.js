@@ -10423,7 +10423,7 @@
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-			set(input, $$props.$$host.querySelector("input[type='radio']"), true);
+			set(input, $$props.$$host.querySelector("input[type='checkbox']"), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
