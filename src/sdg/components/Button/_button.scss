@@ -215,9 +215,7 @@
     &:disabled,
     &.qc-disabled {
       color: token-value(color, grey regular);
-      cursor: not-allowed;
-      box-shadow: none;
-      opacity: 1;
+      @extend %button-disabled;
     }
   }
 

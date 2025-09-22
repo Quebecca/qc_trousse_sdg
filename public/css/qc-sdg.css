@@ -2577,7 +2577,7 @@ li[aria-selected=true] {
   display: none;
 }
 
-.qc-button.qc-danger:disabled, .qc-button.qc-danger.qc-disabled, .qc-button.qc-tertiary:disabled, .qc-button.qc-tertiary.qc-disabled, .qc-button.qc-secondary:disabled, .qc-button.qc-secondary.qc-disabled, .qc-button.qc-primary:disabled, .qc-button.qc-primary.qc-disabled {
+.qc-button.qc-simple:disabled, .qc-button.qc-simple.qc-disabled, .qc-button.qc-danger:disabled, .qc-button.qc-danger.qc-disabled, .qc-button.qc-tertiary:disabled, .qc-button.qc-tertiary.qc-disabled, .qc-button.qc-secondary:disabled, .qc-button.qc-secondary.qc-disabled, .qc-button.qc-primary:disabled, .qc-button.qc-primary.qc-disabled {
   cursor: not-allowed;
   box-shadow: none;
   opacity: 1;
@@ -2734,9 +2734,6 @@ li[aria-selected=true] {
 }
 .qc-button.qc-simple:disabled, .qc-button.qc-simple.qc-disabled {
   color: var(--qc-color-grey-regular);
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: 1;
 }
 a.qc-button {
   text-decoration: none;
