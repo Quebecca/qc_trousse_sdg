@@ -4,8 +4,8 @@
 
     let {
         logoUrl = '/',
-        logoSrc = Utils.imagesRelativePath + '/QUEBEC_couleur.svg',
-        logoSrcDarkTheme = Utils.imagesRelativePath + '/QUEBEC_blanc.svg',
+        logoSrc = Utils.imagesRelativePath + 'QUEBEC_couleur.svg',
+        logoSrcDarkTheme = Utils.imagesRelativePath + 'QUEBEC_blanc.svg',
         logoAlt = lang === 'fr' ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government',
         logoWidth = 139,
         logoHeight = 50,

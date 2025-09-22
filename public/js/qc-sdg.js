@@ -8011,8 +8011,8 @@
 		const lang = Utils.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
@@ -8130,7 +8130,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
+				$$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -8139,7 +8139,7 @@
 				return logoSrcDarkTheme();
 			},
 			set logoSrcDarkTheme(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
 			) {
 				logoSrcDarkTheme($$value);
 				flushSync();
