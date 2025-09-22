@@ -2577,6 +2577,12 @@ li[aria-selected=true] {
   display: none;
 }
 
+.qc-button.qc-simple:disabled, .qc-button.qc-simple.qc-disabled, .qc-button.qc-danger:disabled, .qc-button.qc-danger.qc-disabled, .qc-button.qc-tertiary:disabled, .qc-button.qc-tertiary.qc-disabled, .qc-button.qc-secondary:disabled, .qc-button.qc-secondary.qc-disabled, .qc-button.qc-primary:disabled, .qc-button.qc-primary.qc-disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
+}
+
 .qc-button {
   font-family: var(--qc-font-family-content);
   font-size: var(--qc-font-size-md);
@@ -2629,6 +2635,11 @@ li[aria-selected=true] {
   background-color: var(--qc-color-blue-regular_light);
   border-color: var(--qc-color-blue-regular_light);
 }
+.qc-button.qc-primary:disabled, .qc-button.qc-primary.qc-disabled {
+  background-color: var(--qc-color-grey-light);
+  border-color: var(--qc-color-grey-light);
+  color: var(--qc-color-white);
+}
 .qc-button.qc-secondary {
   color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-white);
@@ -2643,6 +2654,10 @@ li[aria-selected=true] {
 }
 .qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-active {
   background-color: rgba(9, 87, 151, 0.08);
+}
+.qc-button.qc-secondary:disabled, .qc-button.qc-secondary.qc-disabled {
+  border-color: var(--qc-color-grey-regular);
+  color: var(--qc-color-grey-regular);
 }
 .qc-button.qc-tertiary {
   color: var(--qc-color-blue-piv);
@@ -2661,6 +2676,9 @@ li[aria-selected=true] {
 .qc-button.qc-tertiary:active:not(:disabled), .qc-button.qc-tertiary.qc-active {
   background-color: rgba(197, 202, 210, 0.16);
 }
+.qc-button.qc-tertiary:disabled, .qc-button.qc-tertiary.qc-disabled {
+  color: var(--qc-color-grey-regular);
+}
 .qc-button.qc-danger {
   color: var(--qc-color-white);
   background-color: var(--qc-color-red-regular);
@@ -2677,13 +2695,10 @@ li[aria-selected=true] {
 .qc-button.qc-danger:active:not(:disabled), .qc-button.qc-danger.qc-active {
   background-color: var(--qc-color-red-regular_light);
 }
-.qc-button:disabled, .qc-button.qc-disabled {
+.qc-button.qc-danger:disabled, .qc-button.qc-danger.qc-disabled {
   background-color: var(--qc-color-grey-light);
   border-color: var(--qc-color-grey-light);
   color: var(--qc-color-white);
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: 1;
 }
 .qc-button .qc-icon {
   display: inline-block;
@@ -2719,9 +2734,6 @@ li[aria-selected=true] {
 }
 .qc-button.qc-simple:disabled, .qc-button.qc-simple.qc-disabled {
   color: var(--qc-color-grey-regular);
-  cursor: not-allowed;
-  box-shadow: none;
-  opacity: 1;
 }
 a.qc-button {
   text-decoration: none;
