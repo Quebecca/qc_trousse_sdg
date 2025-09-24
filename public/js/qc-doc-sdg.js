@@ -76626,8 +76626,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
-	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
+	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[59, 4]]);
+	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[67, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -76675,6 +76675,8 @@
 
 		let label = state(proxy($$props.label)),
 			rootElement = state(void 0);
+
+		console.log('version doc-query-inputs');
 
 		onMount(() => {
 			if (qcCheckoxContext) return;
