@@ -10166,8 +10166,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[56, 4]]);
-	var root$9 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
+	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
+	var root$9 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10219,7 +10219,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input:not([type="hidden"])'));
+			input(Array.from(get(rootElement)?.querySelectorAll('input[type="checkbox"]')).filter((checkbox) => !checkbox.hidden)[0]);
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
@@ -10402,7 +10402,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[49, 0]]);
+	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[50, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10423,7 +10423,7 @@
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-			set(input, $$props.$$host.querySelector('input:not([type="hidden"])'), true);
+			set(input, Array.from($$props.$$host.querySelectorAll('input[type="checkbox"]')).filter((checkbox) => !checkbox.hidden)[0], true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
