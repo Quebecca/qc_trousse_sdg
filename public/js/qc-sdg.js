@@ -9799,6 +9799,7 @@
 	) {
 		if (!input) return;
 		if (strict_equals(input.role, "switch")) return;
+		if (strict_equals(input.type, "hidden")) return;
 
 		let label = input.closest('label');
 
@@ -10219,7 +10220,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(Array.from(get(rootElement)?.querySelectorAll('input[type="checkbox"]')).filter((checkbox) => !checkbox.hidden)[0]);
+			input(Array.from(get(rootElement)?.querySelectorAll('input')).find((i) => strict_equals(i.getAttribute('type'), 'checkbox')));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
@@ -10423,7 +10424,7 @@
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-			set(input, Array.from($$props.$$host.querySelectorAll('input[type="checkbox"]')).filter((checkbox) => !checkbox.hidden)[0], true);
+			set(input, Array.from($$props.$$host.querySelectorAll('input')).find((i) => strict_equals(i.getAttribute('type'), 'checkbox')), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 

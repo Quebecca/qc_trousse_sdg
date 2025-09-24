@@ -32,8 +32,8 @@
     onMount(() => {
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
-        input = Array.from(rootElement?.querySelectorAll('input[type="checkbox"]'))
-            .filter(checkbox => !checkbox.hidden)[0]
+        input = Array.from(rootElement?.querySelectorAll('input'))
+            .find(i => i.getAttribute('type') === 'checkbox')
         onChange(input, _invalid => invalid = _invalid)
     })
 
