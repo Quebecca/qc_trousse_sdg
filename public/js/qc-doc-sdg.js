@@ -76678,7 +76678,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input'));
+			input(get(rootElement)?.querySelector('input [type="checkbox"]'));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
@@ -79767,7 +79767,7 @@
 	));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.4.3`;
+	    document.getElementById("version").textContent = `v1.4.4`;
 	}
 
 	// Show maskable "general alert" component

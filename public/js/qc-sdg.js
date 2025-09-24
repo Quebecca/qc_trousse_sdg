@@ -10219,7 +10219,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input'));
+			input(get(rootElement)?.querySelector('input [type="checkbox"]'));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
