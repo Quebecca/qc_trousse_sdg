@@ -30,7 +30,7 @@
     onMount(() => {
         labelElement = $host()
             .querySelector("label")
-        input = $host().querySelector("input[type='checkbox']")
+        input = $host().querySelector('input:not([type="hidden"])')
         onChange(input, _invalid => invalid = _invalid)
     })
 

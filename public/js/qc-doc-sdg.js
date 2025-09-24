@@ -76678,7 +76678,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input [type="checkbox"]'));
+			input(get(rootElement)?.querySelector('input:not([type="hidden"])'));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 

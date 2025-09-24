@@ -32,7 +32,7 @@
     onMount(() => {
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
-        input = rootElement?.querySelector('input [type="checkbox"]')
+        input = rootElement?.querySelector('input:not([type="hidden"])')
         onChange(input, _invalid => invalid = _invalid)
     })
 

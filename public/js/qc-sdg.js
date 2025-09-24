@@ -10219,7 +10219,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input [type="checkbox"]'));
+			input(get(rootElement)?.querySelector('input:not([type="hidden"])'));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
@@ -10423,7 +10423,7 @@
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-			set(input, $$props.$$host.querySelector("input[type='checkbox']"), true);
+			set(input, $$props.$$host.querySelector('input:not([type="hidden"])'), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
