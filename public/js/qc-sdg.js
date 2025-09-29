@@ -10468,7 +10468,7 @@
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
 			set(input, Array.from($$props.$$host.querySelectorAll('input')).find((i) => strict_equals(i.getAttribute('type'), 'checkbox')), true);
-			console.log(...log_if_contains_state('log', snapshot(get(input))));
+			console.log(...log_if_contains_state('log', $$props.$$host.querySelector("input")));
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
