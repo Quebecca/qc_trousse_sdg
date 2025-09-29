@@ -32,6 +32,7 @@
             .querySelector("label")
         input = Array.from($host().querySelectorAll('input'))
             .find(i => i.getAttribute('type') === 'checkbox')
+        console.log($state.snapshot(input));
         onChange(input, _invalid => invalid = _invalid)
     })
 

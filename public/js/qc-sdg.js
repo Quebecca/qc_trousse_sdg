@@ -312,6 +312,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6841,6 +6851,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -10405,7 +10446,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[50, 0]]);
+	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[51, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10427,6 +10468,7 @@
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
 			set(input, Array.from($$props.$$host.querySelectorAll('input')).find((i) => strict_equals(i.getAttribute('type'), 'checkbox')), true);
+			console.log(...log_if_contains_state('log', snapshot(get(input))));
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
