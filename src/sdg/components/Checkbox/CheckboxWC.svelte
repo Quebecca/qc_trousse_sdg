@@ -30,9 +30,7 @@
     onMount(() => {
         labelElement = $host()
             .querySelector("label")
-        input = Array.from($host().querySelectorAll('input'))
-            .find(i => i.getAttribute('type') === 'checkbox')
-        console.log($host().querySelectorAll("input"));
+        input = $host().querySelector('input[type="checkbox"]')
         onChange(input, _invalid => invalid = _invalid)
     })
 
