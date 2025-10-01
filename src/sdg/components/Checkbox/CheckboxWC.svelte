@@ -12,7 +12,7 @@
     import Checkbox from "./Checkbox.svelte";
     import {onMount, setContext} from "svelte";
     import {Utils} from "../utils";
-    import {onChange} from "./updateInput.svelte";
+    import {onBlur, onChange} from "./updateInput.svelte";
 
     setContext('qc-checkbox', true);
 
@@ -32,8 +32,8 @@
             .querySelector("label")
         input = $host().querySelector('input[type="checkbox"]')
         onChange(input, _invalid => invalid = _invalid)
+        onBlur(input, _invalid => invalid = _invalid)
     })
-
 </script>
 <Checkbox
     bind:invalid

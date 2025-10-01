@@ -76624,10 +76624,16 @@
 		input.addEventListener('change', () => setInvalid(false));
 	}
 
+	function onBlur(input, setInvalid) {
+		input.addEventListener('blur', () => {
+			setInvalid(!input.checked);
+		});
+	}
+
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
-	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
+	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[59, 4]]);
+	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[67, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -76683,6 +76689,7 @@
 			labelElement(get(rootElement)?.querySelector('label'));
 			input(get(rootElement)?.querySelector('input[type="checkbox"]'));
 			onChange(input(), (_invalid) => invalid(_invalid));
+			onBlur(input(), (_invalid) => invalid(_invalid));
 		});
 
 		user_effect(() => {
