@@ -2,7 +2,7 @@
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
     import {getContext, onMount} from "svelte";
-    import {updateInput, onChange} from "./updateInput.svelte";
+    import {updateChoiceInput, onChange} from "./updateChoiceInput.svelte.js";
 
     const lang = Utils.getPageLanguage(),
         qcCheckoxContext = getContext("qc-checkbox");
@@ -44,7 +44,7 @@
         }
     })
 
-    $effect(_ => updateInput(input, required, invalid, compact, false, false))
+    $effect(_ => updateChoiceInput(input, required, invalid, compact, false, false))
 
     $effect(() => {
         if (!required) return;
