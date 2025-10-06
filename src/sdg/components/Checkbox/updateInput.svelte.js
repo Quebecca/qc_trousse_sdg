@@ -1,7 +1,9 @@
 export function updateInput(input, required, invalid, compact, selectionButton, inline, name) {
     if (!input ) return;
     if (input.role === "switch") return;
-    if (input.type === "hidden") return;
+    // if (input.type === "hidden") return;
+    console.log(typeof input.type);
+    if (!(input.type === "checkbox" || input.type === "radio")) return;
     let label = input.closest('label');
     input.classList.add('qc-choicefield')
     label.classList.add('qc-choicefield-label')

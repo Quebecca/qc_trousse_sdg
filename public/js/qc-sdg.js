@@ -312,6 +312,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6841,6 +6851,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -9799,7 +9840,9 @@
 	) {
 		if (!input) return;
 		if (strict_equals(input.role, "switch")) return;
-		if (strict_equals(input.type, "hidden")) return;
+		// if (input.type === "hidden") return;
+		console.log(...log_if_contains_state('log', typeof input.type));
+		if (!(strict_equals(input.type, "checkbox") || strict_equals(input.type, "radio"))) return;
 
 		let label = input.closest('label');
 

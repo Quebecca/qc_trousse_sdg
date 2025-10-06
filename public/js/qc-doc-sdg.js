@@ -76602,7 +76602,9 @@
 	) {
 		if (!input) return;
 		if (strict_equals(input.role, "switch")) return;
-		if (strict_equals(input.type, "hidden")) return;
+		// if (input.type === "hidden") return;
+		console.log(...log_if_contains_state('log', typeof input.type));
+		if (!(strict_equals(input.type, "checkbox") || strict_equals(input.type, "radio"))) return;
 
 		let label = input.closest('label');
 
