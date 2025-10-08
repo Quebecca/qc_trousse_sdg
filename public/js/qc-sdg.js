@@ -7385,8 +7385,10 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_2$8 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
-	var root_3$3 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_3$3 = add_locations(template(`<a> </a>`), PivHeader[FILENAME], [[73, 22]]);
+	var root_4$4 = add_locations(template(`<span> </span>`), PivHeader[FILENAME], [[75, 22]]);
+	var root_2$8 = add_locations(template(`<div class="title"><!></div>`), PivHeader[FILENAME], [[71, 14]]);
+	var root_5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
 
 	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7397,11 +7399,11 @@
 		});
 	};
 
-	var root_4$4 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[91, 10, [[102, 12]]]]);
-	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[114, 32, [[114, 36]]]]);
-	var root_9 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
-	var root_7 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[111, 20, [[112, 24]]]]);
-	var root_10 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[130, 10]]);
+	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
+	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
+	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
+	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
+	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[132, 10]]);
 
 	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
@@ -7413,14 +7415,14 @@
 					2,
 					[
 						[
-							78,
+							80,
 							6,
 							[
-								[80, 8, [[85, 16]]],
-								[89, 6, [[105, 8]]]
+								[82, 8, [[87, 16]]],
+								[91, 6, [[107, 8]]]
 							]
 						],
-						[128, 6]
+						[130, 6]
 					]
 				]
 			]
@@ -7488,66 +7490,87 @@
 				var node = first_child(fragment);
 
 				{
-					var consequent = ($$anchor) => {
+					var consequent_1 = ($$anchor) => {
 						var div_2 = root_2$8();
-						var a = child(div_2);
-						var text = child(a, true);
+						var node_1 = child(div_2);
 
-						reset(a);
+						{
+							var consequent = ($$anchor) => {
+								var a = root_3$3();
+								var text = child(a, true);
+
+								reset(a);
+
+								template_effect(() => {
+									set_attribute(a, 'href', titleUrl());
+									set_text(text, titleText());
+								});
+
+								append($$anchor, a);
+							};
+
+							var alternate = ($$anchor) => {
+								var span = root_4$4();
+								var text_1 = child(span, true);
+
+								reset(span);
+								template_effect(() => set_text(text_1, titleText()));
+								append($$anchor, span);
+							};
+
+							if_block(node_1, ($$render) => {
+								if (titleUrl() && strict_equals(titleUrl(), '', false) && strict_equals(titleUrl(), '#', false) && strict_equals(titleUrl(), '/', false)) $$render(consequent); else $$render(alternate, false);
+							});
+						}
+
 						reset(div_2);
-
-						template_effect(() => {
-							set_attribute(a, 'href', titleUrl());
-							set_text(text, titleText());
-						});
-
 						append($$anchor, div_2);
 					};
 
 					if_block(node, ($$render) => {
-						if (titleUrl() && titleText()) $$render(consequent);
+						if (titleText()) $$render(consequent_1);
 					});
 				}
 
 				append($$anchor, fragment);
 			});
 
-			var node_1 = child(div_1);
+			var node_2 = child(div_1);
 
 			{
-				var consequent_1 = ($$anchor) => {
-					var div_3 = root_3$3();
+				var consequent_2 = ($$anchor) => {
+					var div_3 = root_5();
 					var a_1 = child(div_3);
-					var text_1 = child(a_1, true);
+					var text_2 = child(a_1, true);
 
 					reset(a_1);
 					reset(div_3);
 
 					template_effect(() => {
 						set_attribute(a_1, 'href', goToContentAnchor());
-						set_text(text_1, goToContentText());
+						set_text(text_2, goToContentText());
 					});
 
 					append($$anchor, div_3);
 				};
 
-				if_block(node_1, ($$render) => {
-					if (strict_equals(goToContent(), 'true')) $$render(consequent_1);
+				if_block(node_2, ($$render) => {
+					if (strict_equals(goToContent(), 'true')) $$render(consequent_2);
 				});
 			}
 
-			var div_4 = sibling(node_1, 2);
+			var div_4 = sibling(node_2, 2);
 			var a_2 = child(div_4);
-			var node_2 = sibling(a_2, 2);
+			var node_3 = sibling(a_2, 2);
 
-			title(node_2);
+			title(node_3);
 
-			var div_5 = sibling(node_2, 2);
-			var node_3 = child(div_5);
+			var div_5 = sibling(node_3, 2);
+			var node_4 = child(div_5);
 
 			{
-				var consequent_2 = ($$anchor) => {
-					var a_3 = root_4$4();
+				var consequent_3 = ($$anchor) => {
+					var a_3 = root_6$1();
 
 					a_3.__click = [
 						on_click$3,
@@ -7555,85 +7578,85 @@
 						focusOnSearchInput
 					];
 
-					var span = child(a_3);
-					var text_2 = child(span, true);
+					var span_1 = child(a_3);
+					var text_3 = child(span_1, true);
 
-					reset(span);
+					reset(span_1);
 					reset(a_3);
-					template_effect(() => set_text(text_2, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
+					template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
 					append($$anchor, a_3);
 				};
 
-				if_block(node_3, ($$render) => {
-					if (Utils.isTruthy(enableSearch())) $$render(consequent_2);
+				if_block(node_4, ($$render) => {
+					if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
 				});
 			}
 
-			var div_6 = sibling(node_3, 2);
-			var node_4 = child(div_6);
+			var div_6 = sibling(node_4, 2);
+			var node_5 = child(div_6);
 
 			{
-				var consequent_3 = ($$anchor) => {
+				var consequent_4 = ($$anchor) => {
 					var fragment_1 = comment();
-					var node_5 = first_child(fragment_1);
+					var node_6 = first_child(fragment_1);
 
-					snippet(node_5, linksSlot);
+					snippet(node_6, linksSlot);
 					append($$anchor, fragment_1);
 				};
 
-				var alternate = ($$anchor) => {
+				var alternate_1 = ($$anchor) => {
 					var fragment_2 = comment();
-					var node_6 = first_child(fragment_2);
+					var node_7 = first_child(fragment_2);
 
 					{
-						var consequent_6 = ($$anchor) => {
-							var nav = root_7();
+						var consequent_7 = ($$anchor) => {
+							var nav = root_9();
 							var ul = child(nav);
-							var node_7 = child(ul);
+							var node_8 = child(ul);
 
 							{
-								var consequent_4 = ($$anchor) => {
-									var li = root_8();
+								var consequent_5 = ($$anchor) => {
+									var li = root_10();
 									var a_4 = child(li);
-									var text_3 = child(a_4, true);
+									var text_4 = child(a_4, true);
 
 									reset(a_4);
 									reset(li);
 
 									template_effect(() => {
 										set_attribute(a_4, 'href', altLanguageUrl());
-										set_text(text_3, altLanguageText());
+										set_text(text_4, altLanguageText());
 									});
 
 									append($$anchor, li);
 								};
 
-								if_block(node_7, ($$render) => {
-									if (altLanguageUrl()) $$render(consequent_4);
+								if_block(node_8, ($$render) => {
+									if (altLanguageUrl()) $$render(consequent_5);
 								});
 							}
 
-							var node_8 = sibling(node_7, 2);
+							var node_9 = sibling(node_8, 2);
 
 							{
-								var consequent_5 = ($$anchor) => {
-									var li_1 = root_9();
+								var consequent_6 = ($$anchor) => {
+									var li_1 = root_11();
 									var a_5 = child(li_1);
-									var text_4 = child(a_5, true);
+									var text_5 = child(a_5, true);
 
 									reset(a_5);
 									reset(li_1);
 
 									template_effect(() => {
 										set_attribute(a_5, 'href', joinUsUrl());
-										set_text(text_4, joinUsText());
+										set_text(text_5, joinUsText());
 									});
 
 									append($$anchor, li_1);
 								};
 
-								if_block(node_8, ($$render) => {
-									if (joinUsUrl()) $$render(consequent_5);
+								if_block(node_9, ($$render) => {
+									if (joinUsUrl()) $$render(consequent_6);
 								});
 							}
 
@@ -7643,16 +7666,16 @@
 							append($$anchor, nav);
 						};
 
-						if_block(node_6, ($$render) => {
-							if (joinUsUrl() || altLanguageUrl()) $$render(consequent_6);
+						if_block(node_7, ($$render) => {
+							if (joinUsUrl() || altLanguageUrl()) $$render(consequent_7);
 						});
 					}
 
 					append($$anchor, fragment_2);
 				};
 
-				if_block(node_4, ($$render) => {
-					if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_3); else $$render(alternate, false);
+				if_block(node_5, ($$render) => {
+					if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, false);
 				});
 			}
 
@@ -7660,29 +7683,29 @@
 			reset(div_5);
 			reset(div_4);
 
-			var node_9 = sibling(div_4, 2);
+			var node_10 = sibling(div_4, 2);
 
-			title(node_9);
+			title(node_10);
 
-			var div_7 = sibling(node_9, 2);
-			var node_10 = child(div_7);
+			var div_7 = sibling(node_10, 2);
+			var node_11 = child(div_7);
 
 			{
-				var consequent_8 = ($$anchor) => {
-					var div_8 = root_10();
-					var node_11 = child(div_8);
+				var consequent_9 = ($$anchor) => {
+					var div_8 = root_12();
+					var node_12 = child(div_8);
 
 					{
-						var consequent_7 = ($$anchor) => {
+						var consequent_8 = ($$anchor) => {
 							var fragment_3 = comment();
-							var node_12 = first_child(fragment_3);
+							var node_13 = first_child(fragment_3);
 
-							snippet(node_12, searchZoneSlot);
+							snippet(node_13, searchZoneSlot);
 							append($$anchor, fragment_3);
 						};
 
-						if_block(node_11, ($$render) => {
-							if (searchZoneSlot()) $$render(consequent_7);
+						if_block(node_12, ($$render) => {
+							if (searchZoneSlot()) $$render(consequent_8);
 						});
 					}
 
@@ -7691,8 +7714,8 @@
 					append($$anchor, div_8);
 				};
 
-				if_block(node_10, ($$render) => {
-					if (get(displaySearchForm)) $$render(consequent_8);
+				if_block(node_11, ($$render) => {
+					if (get(displaySearchForm)) $$render(consequent_9);
 				});
 			}
 

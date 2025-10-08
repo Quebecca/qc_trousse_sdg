@@ -67,12 +67,14 @@
       </div>
     {/if}
       {#snippet title()}
-          {#if titleUrl && titleText}
-          <div class="title">
-              <a href="{titleUrl}">
-                  {titleText}
-              </a>
-          </div>
+          {#if titleText}
+              <div class="title">
+                  {#if titleUrl && titleUrl !== '' && titleUrl !== '#' && titleUrl !== '/'}
+                      <a href="{titleUrl}">{titleText}</a>
+                  {:else}
+                      <span>{titleText}</span>
+                  {/if}
+              </div>
           {/if}
       {/snippet}
       <div class="piv-top">
