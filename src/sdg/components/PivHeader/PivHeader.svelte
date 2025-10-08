@@ -78,16 +78,19 @@
           {/if}
       {/snippet}
       <div class="piv-top">
-
-        <a href="{logoUrl}"
-           class="logo"
+      <div class="signature-group">
+          <div class="logo">
+            <a href="{logoUrl}"
                rel="noreferrer"
                aria-label="{logoAlt}"
             >
                 <div role="img"></div>
-        </a>
+            </a>
+          </div>
 
-        {@render title()}
+          {@render title()}
+      </div>
+
       <div class="right-section">
         {#if Utils.isTruthy(enableSearch)}
           <a  class="qc-search"

@@ -7399,13 +7399,13 @@
 		});
 	};
 
-	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[93, 10, [[104, 12]]]]);
-	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[116, 32, [[116, 36]]]]);
-	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
-	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[113, 20, [[114, 24]]]]);
-	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[132, 10]]);
+	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[96, 10, [[107, 12]]]]);
+	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
+	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 32, [[122, 36]]]]);
+	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 20, [[117, 24]]]]);
+	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 10]]);
 
-	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><div role="img"></div></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7418,11 +7418,21 @@
 							80,
 							6,
 							[
-								[82, 8, [[87, 16]]],
-								[91, 6, [[107, 8]]]
+								[
+									81,
+									6,
+									[
+										[
+											82,
+											10,
+											[[83, 12, [[87, 16]]]]
+										]
+									]
+								],
+								[94, 6, [[110, 8]]]
 							]
 						],
-						[130, 6]
+						[133, 6]
 					]
 				]
 			]
@@ -7560,13 +7570,19 @@
 			}
 
 			var div_4 = sibling(node_2, 2);
-			var a_2 = child(div_4);
-			var node_3 = sibling(a_2, 2);
+			var div_5 = child(div_4);
+			var div_6 = child(div_5);
+			var a_2 = child(div_6);
+
+			reset(div_6);
+
+			var node_3 = sibling(div_6, 2);
 
 			title(node_3);
+			reset(div_5);
 
-			var div_5 = sibling(node_3, 2);
-			var node_4 = child(div_5);
+			var div_7 = sibling(div_5, 2);
+			var node_4 = child(div_7);
 
 			{
 				var consequent_3 = ($$anchor) => {
@@ -7592,8 +7608,8 @@
 				});
 			}
 
-			var div_6 = sibling(node_4, 2);
-			var node_5 = child(div_6);
+			var div_8 = sibling(node_4, 2);
+			var node_5 = child(div_8);
 
 			{
 				var consequent_4 = ($$anchor) => {
@@ -7679,21 +7695,21 @@
 				});
 			}
 
-			reset(div_6);
-			reset(div_5);
+			reset(div_8);
+			reset(div_7);
 			reset(div_4);
 
 			var node_10 = sibling(div_4, 2);
 
 			title(node_10);
 
-			var div_7 = sibling(node_10, 2);
-			var node_11 = child(div_7);
+			var div_9 = sibling(node_10, 2);
+			var node_11 = child(div_9);
 
 			{
 				var consequent_9 = ($$anchor) => {
-					var div_8 = root_12();
-					var node_12 = child(div_8);
+					var div_10 = root_12();
+					var node_12 = child(div_10);
 
 					{
 						var consequent_8 = ($$anchor) => {
@@ -7709,9 +7725,9 @@
 						});
 					}
 
-					reset(div_8);
-					bind_this(div_8, ($$value) => set(searchZone, $$value), () => get(searchZone));
-					append($$anchor, div_8);
+					reset(div_10);
+					bind_this(div_10, ($$value) => set(searchZone, $$value), () => get(searchZone));
+					append($$anchor, div_10);
 				};
 
 				if_block(node_11, ($$render) => {
@@ -7719,7 +7735,7 @@
 				});
 			}
 
-			reset(div_7);
+			reset(div_9);
 			reset(div_1);
 
 			template_effect(() => {
