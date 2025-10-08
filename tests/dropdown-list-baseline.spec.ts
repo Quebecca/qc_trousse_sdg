@@ -494,10 +494,8 @@ test.describe('formulaire', () => {
 
         await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'true');
         await expect(page.locator('#dropdown-list-restaurants-error')).toMatchAriaSnapshot(`
-        - alert:
-          - img
-          - text: Veuillez choisir un type de restaurant.
-    `);
+            - alert: Veuillez choisir un type de restaurant.
+        `);
 
         await page.locator('#dropdown-list-restaurants-input').click();
         await page.locator('[id="dropdown-list-restaurants-Pâtisserie-Pâtisserie"]').click();
