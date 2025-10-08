@@ -1404,6 +1404,10 @@ qc-notice[type=error] ul li a:hover, qc-notice[type=error] ul li a:focus {
   text-decoration: none;
 }
 
+.go-to-content a:focus, .qc-piv-header .piv-top .right-section a:focus, .qc-piv-header .piv-top .signature-group a:focus, qc-piv-header [slot=links] a:focus {
+  outline: #ffffff solid 2px;
+}
+
 .qc-piv-header .piv-top .right-section .links ul, qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
   list-style: none;
   padding: 0;
@@ -1457,7 +1461,8 @@ qc-piv-header {
 }
 .qc-piv-header .piv-top .signature-group .logo a {
   display: block;
-  height: 6.4rem;
+  height: 4rem;
+  outline-offset: 0.4rem;
 }
 .qc-piv-header .piv-top .signature-group .logo a [role=img] {
   background-image: var(--logo-src);
@@ -1596,6 +1601,12 @@ qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
     flex-wrap: wrap;
   }
 }
+.no-link-title {
+  margin: 0;
+  font-weight: var(--qc-font-weight-regular);
+  font-size: var(--qc-font-size-md);
+}
+
 qc-piv-footer {
   margin-top: 4rem;
   padding-bottom: 4rem;

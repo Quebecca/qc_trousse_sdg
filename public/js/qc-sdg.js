@@ -7399,7 +7399,7 @@
 		});
 	};
 
-	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[96, 10, [[107, 12]]]]);
+	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span class="no-link-title" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[96, 10, [[107, 12]]]]);
 	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 32, [[119, 36]]]]);
 	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 32, [[122, 36]]]]);
 	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 20, [[117, 24]]]]);

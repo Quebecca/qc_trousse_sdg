@@ -104,7 +104,7 @@
                     });
               }}
           >
-            <span>{displaySearchForm ? hideSearchText : displaySearchText}</span>
+            <span class="no-link-title" role="heading" aria-level="1">{displaySearchForm ? hideSearchText : displaySearchText}</span>
           </a>
         {/if}
         <div class="links">

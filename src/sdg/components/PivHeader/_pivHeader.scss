@@ -3,6 +3,13 @@
 
 $colors : map.get($themes-tokens, light, lg, color);
 
+%links-focus {
+  a:focus {
+    // couleur du piv indépendante du thème, alors le focus est toujours blanc
+    outline: map.get($colors, white) solid 2px;
+  }
+}
+
 %piv-links {
   &, & ul {
     list-style: none;
@@ -19,6 +26,8 @@ $colors : map.get($themes-tokens, light, lg, color);
     a {
       font-size: rem(12.8);
     }
+
+    @extend %links-focus;
   }
 }
 
@@ -56,6 +65,7 @@ qc-piv-header {
       & > * {
         min-height: rem(72);
       }
+      @extend %links-focus;
 
       .logo {
         display: flex;
@@ -64,7 +74,7 @@ qc-piv-header {
 
         a {
           display: block;
-          height: calc(rem(72) - rem(8));
+          height: rem(40);
           [role=img] {
             background-image: var(--logo-src);
             background-repeat: no-repeat;
@@ -77,8 +87,10 @@ qc-piv-header {
             height: 100%;
             max-width: rem(200);
             min-height: rem(40);
-
           }
+
+          outline-offset: rem(4);
+
         }
       }
     }
@@ -117,6 +129,8 @@ qc-piv-header {
           @include sr-only();
         }
       }
+
+      @extend %links-focus;
     }
     & + .title {
       display: none;
@@ -173,6 +187,8 @@ qc-piv-header,
       margin:0;
     }
   }
+
+  @extend %links-focus;
 }
 
 @include media-mobile(){
@@ -211,6 +227,12 @@ qc-piv-header,
   .piv-top {
     flex-wrap: wrap;
   }
+}
+
+.no-link-title {
+  margin: 0;
+  font-weight: token-value(font weight regular);
+  font-size: token-value(font size md);
 }
 
 
