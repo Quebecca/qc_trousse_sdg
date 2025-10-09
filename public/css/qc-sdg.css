@@ -2194,39 +2194,44 @@ qc-textfield textarea:disabled {
 .qc-textfield input, qc-textfield input,
 .qc-textfield input + .qc-textfield-charcount,
 qc-textfield input + .qc-textfield-charcount {
-  max-width: var(--qc-size-input-max-width);
+  width: var(--qc-size-input-max-width);
 }
 
 .qc-textfield textarea, qc-textfield textarea,
 .qc-textfield textarea + .qc-textfield-charcount,
 qc-textfield textarea + .qc-textfield-charcount {
-  max-width: var(--qc-size-textarea-max-width);
+  width: var(--qc-size-textarea-max-width);
 }
 
 [size=xs] input, [size=xs] input + .qc-textfield-charcount,
 [size=xs] textarea,
 [size=xs] textarea + .qc-textfield-charcount {
   max-width: 6.3rem;
+  width: 6.3rem;
 }
 [size=sm] input, [size=sm] input + .qc-textfield-charcount,
 [size=sm] textarea,
 [size=sm] textarea + .qc-textfield-charcount {
   max-width: 15.6rem;
+  width: 15.6rem;
 }
 [size=md] input, [size=md] input + .qc-textfield-charcount,
 [size=md] textarea,
 [size=md] textarea + .qc-textfield-charcount {
   max-width: 24.9rem;
+  width: 24.9rem;
 }
 [size=lg] input, [size=lg] input + .qc-textfield-charcount,
 [size=lg] textarea,
 [size=lg] textarea + .qc-textfield-charcount {
   max-width: 52.8rem;
+  width: 52.8rem;
 }
 [size=xl] input, [size=xl] input + .qc-textfield-charcount,
 [size=xl] textarea,
 [size=xl] textarea + .qc-textfield-charcount {
   max-width: 82.5rem;
+  width: 82.5rem;
 }
 
 .qc-textfield textarea, qc-textfield textarea {
@@ -2498,23 +2503,20 @@ li[aria-selected=true] {
   margin-bottom: 3.2rem;
 }
 
-.qc-dropdown-list-root {
-  width: 100%;
-}
 .qc-dropdown-list-root-xs {
-  max-width: var(--qc-size-max-width-xs);
+  width: var(--qc-size-max-width-xs);
 }
 .qc-dropdown-list-root-sm {
-  max-width: var(--qc-size-max-width-sm);
+  width: var(--qc-size-max-width-sm);
 }
 .qc-dropdown-list-root-md {
-  max-width: var(--qc-size-max-width-md);
+  width: var(--qc-size-max-width-md);
 }
 .qc-dropdown-list-root-lg {
-  max-width: var(--qc-size-max-width-lg);
+  width: var(--qc-size-max-width-lg);
 }
 .qc-dropdown-list-root-xl {
-  max-width: var(--qc-size-max-width-xl);
+  width: var(--qc-size-max-width-xl);
 }
 
 .qc-dropdown-list-container {
@@ -2524,19 +2526,19 @@ li[aria-selected=true] {
   margin-bottom: 0.4rem;
 }
 .qc-dropdown-list-container-xs {
-  max-width: var(--qc-size-max-width-xs);
+  width: var(--qc-size-max-width-xs);
 }
 .qc-dropdown-list-container-sm {
-  max-width: var(--qc-size-max-width-sm);
+  width: var(--qc-size-max-width-sm);
 }
 .qc-dropdown-list-container-md {
-  max-width: var(--qc-size-max-width-md);
+  width: var(--qc-size-max-width-md);
 }
 .qc-dropdown-list-container-lg {
-  max-width: var(--qc-size-max-width-lg);
+  width: var(--qc-size-max-width-lg);
 }
 .qc-dropdown-list-container-xl {
-  max-width: var(--qc-size-max-width-xl);
+  width: var(--qc-size-max-width-xl);
 }
 
 .qc-dropdown-list {

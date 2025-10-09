@@ -300,6 +300,9 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.5
+  - Correction de bugs :
+    - Correction d'un bug css, concernant la taille des champs de formulaires placés dans des éléments display:flex
 - 1.4.4:
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28

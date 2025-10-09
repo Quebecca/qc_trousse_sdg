@@ -11,13 +11,11 @@ $border: 1;
 }
 
 .qc-dropdown-list-root {
-  width: 100%;
-
-  &-xs { max-width: token-value(size, max-width, xs); }
-  &-sm { max-width: token-value(size, max-width, sm); }
-  &-md { max-width: token-value(size, max-width, md); }
-  &-lg { max-width: token-value(size, max-width, lg); }
-  &-xl { max-width: token-value(size, max-width, xl); }
+  &-xs { width: token-value(size, max-width, xs); }
+  &-sm { width: token-value(size, max-width, sm); }
+  &-md { width: token-value(size, max-width, md); }
+  &-lg { width: token-value(size, max-width, lg); }
+  &-xl { width: token-value(size, max-width, xl); }
 }
 
 .qc-dropdown-list-container {
@@ -27,11 +25,11 @@ $border: 1;
     margin-bottom: rem(4);
   }
 
-  &-xs { max-width: token-value(size, max-width, xs); }
-  &-sm { max-width: token-value(size, max-width, sm); }
-  &-md { max-width: token-value(size, max-width, md); }
-  &-lg { max-width: token-value(size, max-width, lg); }
-  &-xl { max-width: token-value(size, max-width, xl); }
+  &-xs { width: token-value(size, max-width, xs); }
+  &-sm { width: token-value(size, max-width, sm); }
+  &-md { width: token-value(size, max-width, md); }
+  &-lg { width: token-value(size, max-width, lg); }
+  &-xl { width: token-value(size, max-width, xl); }
 }
 
 .qc-dropdown-list {
