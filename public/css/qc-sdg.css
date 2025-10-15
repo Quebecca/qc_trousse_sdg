@@ -2083,9 +2083,28 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
 .qc-formfield-row qc-textfield,
 .qc-formfield-row .qc-textfield {
   margin-top: var(--qc-spacer-xs);
-  display: block;
-  width: auto;
   margin-bottom: 0;
+  min-width: 0;
+}
+[size=xs] .qc-formfield-row qc-textfield input,
+[size=xs] .qc-formfield-row .qc-textfield input {
+  width: 6.3rem;
+}
+[size=sm] .qc-formfield-row qc-textfield input,
+[size=sm] .qc-formfield-row .qc-textfield input {
+  width: 15.6rem;
+}
+[size=md] .qc-formfield-row qc-textfield input,
+[size=md] .qc-formfield-row .qc-textfield input {
+  width: 24.9rem;
+}
+[size=lg] .qc-formfield-row qc-textfield input,
+[size=lg] .qc-formfield-row .qc-textfield input {
+  width: 52.8rem;
+}
+[size=xl] .qc-formfield-row qc-textfield input,
+[size=xl] .qc-formfield-row .qc-textfield input {
+  width: 82.5rem;
 }
 .qc-formfield-row .qc-dropdown-list-root {
   margin-top: var(--qc-spacer-xs);
@@ -2144,6 +2163,7 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 .qc-textfield label {
   font-weight: var(--qc-font-weight-content-bold);
   display: block;
+  width: fit-content;
 }
 .qc-label.qc-compact, qc-textfield label.qc-compact,
 .qc-textfield label.qc-compact {
@@ -2161,7 +2181,8 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 
 qc-textfield,
 .qc-textfield {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 3.2rem;
 }
 qc-textfield .qc-description,
@@ -2179,7 +2200,6 @@ qc-textfield .qc-description:has(~ :disabled),
 .qc-textfield textarea,
 qc-textfield textarea {
   display: block;
-  width: 100%;
   position: relative;
   color: var(--qc-color-text-primary);
   background-color: var(--qc-color-background);
@@ -2216,18 +2236,6 @@ qc-textfield textarea:disabled {
   border-color: var(--qc-color-red-regular);
   border-width: 2px;
   padding: 0.6rem;
-}
-
-.qc-textfield input, qc-textfield input,
-.qc-textfield input + .qc-textfield-charcount,
-qc-textfield input + .qc-textfield-charcount {
-  max-width: var(--qc-size-input-max-width);
-}
-
-.qc-textfield textarea, qc-textfield textarea,
-.qc-textfield textarea + .qc-textfield-charcount,
-qc-textfield textarea + .qc-textfield-charcount {
-  max-width: var(--qc-size-textarea-max-width);
 }
 
 [size=xs] input, [size=xs] input + .qc-textfield-charcount,

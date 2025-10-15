@@ -4,7 +4,9 @@
 
 qc-textfield,
 .qc-textfield {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  //display: grid;
   margin-bottom: rem(32);
 
   .qc-description {
@@ -24,7 +26,6 @@ textarea {
   .qc-textfield &,
   qc-textfield & {
     display: block;
-    width: 100%;
     position: relative;
     color: token-value(color text primary);
     background-color: token-value(color background);
@@ -62,20 +63,20 @@ textarea {
 }
 
 $sizes: map.get($lg-tokens, size, max-width);
-input ,
-input + .qc-textfield-charcount {
-  .qc-textfield &,
-  qc-textfield & {
-    max-width: token-value(size input max-width);
-  }
-}
-textarea,
-textarea + .qc-textfield-charcount {
-  .qc-textfield &,
-  qc-textfield & {
-    max-width: token-value(size textarea max-width);
-  }
-}
+//input ,
+//input + .qc-textfield-charcount {
+//  .qc-textfield &,
+//  qc-textfield & {
+//    max-width: token-value(size input max-width);
+//  }
+//}
+//textarea,
+//textarea + .qc-textfield-charcount {
+//  .qc-textfield &,
+//  qc-textfield & {
+//    max-width: token-value(size textarea max-width);
+//  }
+//}
 
 input,
 textarea,
