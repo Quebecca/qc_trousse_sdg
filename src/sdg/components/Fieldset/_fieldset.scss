@@ -88,11 +88,12 @@ $invalid-border-width: 2px;
     margin-bottom: 0;
     min-width: 0;
 
-    input {
-      $sizes: map.get($lg-tokens, size, max-width);
-      @each $size, $width in $sizes {
-        [size="#{$size}"] & {
+    $sizes: map.get($lg-tokens, size, max-width);
+    @each $size, $width in $sizes {
+      [size="#{$size}"] {
+        input {
           width: $width;
+          max-width: $width;
         }
       }
     }

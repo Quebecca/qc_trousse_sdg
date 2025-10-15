@@ -2086,25 +2086,30 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   margin-bottom: 0;
   min-width: 0;
 }
-[size=xs] .qc-formfield-row qc-textfield input,
-[size=xs] .qc-formfield-row .qc-textfield input {
+.qc-formfield-row qc-textfield [size=xs] input,
+.qc-formfield-row .qc-textfield [size=xs] input {
   width: 6.3rem;
+  max-width: 6.3rem;
 }
-[size=sm] .qc-formfield-row qc-textfield input,
-[size=sm] .qc-formfield-row .qc-textfield input {
+.qc-formfield-row qc-textfield [size=sm] input,
+.qc-formfield-row .qc-textfield [size=sm] input {
   width: 15.6rem;
+  max-width: 15.6rem;
 }
-[size=md] .qc-formfield-row qc-textfield input,
-[size=md] .qc-formfield-row .qc-textfield input {
+.qc-formfield-row qc-textfield [size=md] input,
+.qc-formfield-row .qc-textfield [size=md] input {
   width: 24.9rem;
+  max-width: 24.9rem;
 }
-[size=lg] .qc-formfield-row qc-textfield input,
-[size=lg] .qc-formfield-row .qc-textfield input {
+.qc-formfield-row qc-textfield [size=lg] input,
+.qc-formfield-row .qc-textfield [size=lg] input {
   width: 52.8rem;
+  max-width: 52.8rem;
 }
-[size=xl] .qc-formfield-row qc-textfield input,
-[size=xl] .qc-formfield-row .qc-textfield input {
+.qc-formfield-row qc-textfield [size=xl] input,
+.qc-formfield-row .qc-textfield [size=xl] input {
   width: 82.5rem;
+  max-width: 82.5rem;
 }
 .qc-formfield-row .qc-dropdown-list-root {
   margin-top: var(--qc-spacer-xs);
