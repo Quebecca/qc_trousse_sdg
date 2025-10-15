@@ -64,17 +64,17 @@ pre code.hljs {
 }
 
 code.hljs {
-  padding: 0.4rem;
+  padding: 0.25rem;
 }
 
 pre code.hljs {
   display: block;
   overflow-x: auto;
-  padding: 1.6rem;
+  padding: 1rem;
 }
 
 code.hljs {
-  padding: 0.4rem;
+  padding: 0.25rem;
 }
 
 /* end baseline CSS */
@@ -205,7 +205,7 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
 }
 
 .ui-autocomplete {
-  max-height: calc(16rem + 2px) !important;
+  max-height: calc(10rem + 2px) !important;
   max-width: calc(var(--qc-size-search-bar-max-width) + 2px);
   overflow-y: auto !important;
   list-style-type: none !important;
@@ -223,7 +223,7 @@ table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
 }
 
 .ui-menu-item-wrapper {
-  padding: 0.8rem;
+  padding: 0.5rem;
 }
 
 .ui-state-active {
@@ -296,13 +296,13 @@ qc-color-doc {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  scroll-margin-top: 9.6rem;
+  scroll-margin-top: 6rem;
 }
 
 #grid-samples {
   position: relative;
   text-align: center;
-  margin-top: 4.8rem;
+  margin-top: 3rem;
   margin-bottom: 5%;
 }
 #grid-samples .qc-row {
@@ -313,7 +313,7 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.7;
   height: 100%;
   color: white;
-  padding: 0.8rem 0;
+  padding: 0.5rem 0;
 }
 #grid-samples .qc-row:first-child {
   margin-top: 0;
@@ -340,8 +340,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 #liste-elevation [class*=qc-shading-] {
   display: flex;
-  width: 12rem;
-  height: 12rem;
+  width: 7.5rem;
+  height: 7.5rem;
   justify-content: center;
   align-items: center;
 }
