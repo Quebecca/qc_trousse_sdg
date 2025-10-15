@@ -11,22 +11,18 @@
 <script>
 
   import {HighlightJS} from "highlight.js"
-  // import 'highlight.js/styles/default.css';
   import pretty from "pretty";
-  import { onMount } from "svelte";
-  import { Utils } from "../../sdg/components/utils"
+  import jsBeautify from "js-beautify";
 
-  export let
-      targetId = ''
-      , rawCode = ''
-      , language = 'html'
-      , outerHTML = false
-  ;
+  let {
+      targetId = '',
+      rawCode = '',
+      language = 'html',
+      outerHTML = false
+  } = $props();
 
-  let
-    hlCode
-    , prettyCode
-  ;
+  let hlCode = $state();
+  let prettyCode = $state();
 
   function copy() {
       navigator.clipboard.writeText(prettyCode);
@@ -44,18 +40,21 @@
           . replace('/qc-hash-.*/g', '')
           . replace('/is-external=""/g', 'is-external')
       ;
-      prettyCode = pretty(rawCode, {wrap_attributes: 'force-aligned'});
+      // prettyCode = pretty(rawCode, prettyOptions);
+      prettyCode = language === 'javascript'
+                    ? jsBeautify(rawCode)
+                    : pretty(rawCode, {wrap_attributes: 'force-aligned'});
       hlCode = HighlightJS.highlight(prettyCode, {language:language}).value;
   }
 
-  $: updateHLCode(rawCode, targetId)
+  $effect(() => updateHLCode(rawCode, targetId));
 
 </script>
 
 <pre
     ><code class="hljs"
-        ><button class="btn btn-sm btn-primary"
-                 on:click={copy}>
+        ><button class="qc-button qc-compact qc-primary"
+                 onclick={copy}>
             <span class="copy">copier</span>
             <span class="copied">copié !</span>
         </button

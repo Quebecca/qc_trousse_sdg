@@ -1,0 +1,28 @@
+@use "qc-sdg-lib" as *;
+
+ol,ul {
+    max-inline-size: token-value(max-content-width);
+    margin-top: 0;
+    margin-bottom: token-value(spacer content-block mb);
+    padding-left: token-value(spacer list pl);
+    li {
+        margin-bottom: token-value(spacer list-item mb);
+        margin-top: token-value(spacer list-item mb);
+    }
+    ol,ul {
+        margin-top: 0;
+        margin-bottom: 0;
+
+    }
+}
+ul {
+    list-style: disc;
+    ul {
+        list-style: circle;
+    }
+}
+
+dl,
+dd {
+    margin: 0;
+}

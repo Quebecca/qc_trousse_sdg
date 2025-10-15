@@ -1,0 +1,86 @@
+
+
+<h4 id="checkbox">Case à cocher unique (qc-checkbox)</h4>
+
+<qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
+  <form id="exemple-tos-form">
+    <qc-checkbox required >
+      <label>
+        <input type="checkbox"
+               name="consentement"
+               value="oui"
+               id="consentement"
+        />
+        <span >J’accepte les conditions d’utilisation</span>
+      </label>
+    </qc-checkbox>
+
+    <button class="qc-button qc-primary qc-compact"
+            type="submit">
+      S'inscrire
+    </button>
+  </form>
+
+  <script>
+    const tosForm = document.getElementById("exemple-tos-form");
+    const consentement = document.getElementById("consentement");
+    tosForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if(consentement.checked) {
+        const formData = new FormData(event.target);
+        let alertParts = ["Formulaire soumis avec les données suivantes :"];
+        for (const [key, value] of formData.entries()) {
+          alertParts.push(`${key} : ${value}`);
+        }
+        alert(alertParts.join("\n"));
+      } else {
+        consentement.closest('qc-checkbox').invalid = true;
+      }
+    })
+  </script>
+</qc-doc-exemple>
+
+
+<h4>Attributs de qc-checkbox</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>compact</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Affiche la case à cocher au format compact</td>
+    </tr>
+    <tr>
+      <td>required</td>
+      <td>na</td>
+      <td>na</td>
+      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
+    </tr>
+    <tr>
+      <td>invalid</td>
+      <td>na</td>
+      <td>na</td>
+      <td>
+          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
+        <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
+      </td>
+    </tr>
+    <tr>
+      <td>invalid-text</td>
+      <td>Texte</td>
+      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+

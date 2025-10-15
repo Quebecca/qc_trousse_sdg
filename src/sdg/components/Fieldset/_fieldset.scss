@@ -1,0 +1,95 @@
+@use "qc-sdg-lib" as *;
+
+.qc-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 rem(32);
+  justify-items: start;
+  legend {
+    font-weight: token-value(font weight content bold);
+    display: inline-block;
+    margin-bottom: token-value(spacer, md);
+  }
+  &.qc-compact {
+    margin-bottom: token-value(spacer, sm);
+    legend {
+      margin-bottom: token-value(spacer, sm);
+    }
+  }
+}
+
+$invalid-offset: token-value(spacer, xs);
+$invalid-border-width: 2px;
+.qc-fieldset-invalid {
+  border-left: $invalid-border-width solid token-value(color, red, regular);
+  padding-left: $invalid-offset;
+}
+
+%selection-button-gap {
+  gap: token-value(spacer, xs);
+}
+
+.qc-field-elements-selection-button-flex-row {
+  @extend %selection-button-gap;
+  display: inline-flex;
+  flex-wrap: wrap;
+
+  .qc-check-row-parent {
+    flex-grow: 0;
+  }
+}
+
+.qc-field-elements-selection-button {
+  @extend %selection-button-gap;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+
+  @include media-mobile() {
+    grid-template-columns: 1fr;
+  }
+
+  & > .qc-selection-button {
+    width: 100%
+  }
+}
+
+.qc-field-elements-flex {
+  display: flex;
+  flex-direction: column;
+  max-width: var(--fieldset-width);
+
+  .qc-switch-label {
+    flex-grow: 1;
+  }
+}
+
+.qc-field-elements-flex-sm {
+  gap: token-value(spacer, sm);
+}
+
+.qc-field-elements-flex-md {
+  gap: token-value(spacer, md);
+}
+
+.qc-formfield-row {
+  display: flex;
+  gap: 0 rem(32);
+  flex-wrap: wrap;
+  margin-bottom: rem(32);
+  margin-top: rem(-8);
+
+  > .qc-form-error {
+    width: 100%;
+  }
+  qc-textfield,
+  .qc-textfield {
+    margin-top: token-value(spacer, xs);
+    display: block;
+    width: auto;
+    margin-bottom: 0;
+  }
+  .qc-dropdown-list-root {
+    margin-top: token-value(spacer, xs);
+    margin-bottom: 0;
+  }
+}

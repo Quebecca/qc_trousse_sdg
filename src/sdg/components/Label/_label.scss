@@ -1,0 +1,19 @@
+@use "qc-sdg-lib" as *;
+
+.qc-label {
+  font-weight: token-value(font weight content bold);
+  display: block;
+
+  &.qc-compact {
+    font-size: token-value(font size sm);
+  }
+
+  &.qc-bold {
+    font-weight: token-value(font weight content bold);
+  }
+
+  &:has(~ :disabled) {
+    color: token-value(color, grey, regular);
+    cursor: not-allowed;
+  }
+}

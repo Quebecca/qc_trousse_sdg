@@ -1,7 +1,7 @@
 // retrait de ces utilitaires pour alléger la css
 @use "sass:map";
 @use "lib/gridless-lib" as *;
-@use "grid/grid-lib" as *;
+@use "../../bases/grid/grid-lib" as *;
 
 $spacers : (
     0: 0,

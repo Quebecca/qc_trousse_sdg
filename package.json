@@ -1,13 +1,16 @@
 {
   "name": "qc-trousse-sdg",
-  "version": "1.3.0",
+  "version": "1.4.4",
   "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c -w --bundleConfigAsCjs",
+    "preversion": "./scripts/check-release-note.sh",
+    "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
-    "start": "sirv public",
-    "rewrite-bootstrap": "gulp rewriteBs"
+    "start": "sirv .",
+    "rewrite-bootstrap": "gulp rewriteBs",
+    "build-images-scss-map": "node ./scripts/buildImagesMap.js"
   },
   "repository": {
     "type": "git",
@@ -16,14 +19,17 @@
   "author": "MCE",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^24.1.0",
     "autoprefixer": "^10.4.7",
     "del": "^8.0.0",
+    "ejs": "^3.1.10",
     "highlight.js": "^11.8.0",
-    "js-beautify": "^1.14.7",
+    "js-beautify": "^1.15.4",
     "postcss": "^8.5.1",
     "postcss-replace": "^2.0.0",
     "pretty": "^2.0.0",
@@ -31,14 +37,16 @@
     "rollup": "^4.34.4",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-css-only": "^4.5.2",
-    "rollup-plugin-delete": "^2.1.0",
+    "rollup-plugin-delete": "^3.0.1",
+    "rollup-plugin-ejs": "^4.0.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-svelte": "^7.2.2",
     "sass": "^1.84.0",
     "sirv-cli": "^3.0.0",
-    "svelte": "^4.2.19"
+    "svelte": "^5.28.6"
   },
   "dependencies": {
+    "playwright": "^1.54.2",
     "postcss-import": "^16.1.0",
     "postcss-scss": "^4.0.9",
     "rollup-plugin-postcss": "^4.0.2",

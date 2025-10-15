@@ -4,23 +4,29 @@ import css from 'rollup-plugin-css-only'
 import sveltePreprocess from 'svelte-preprocess';
 import commonjs from '@rollup/plugin-commonjs'
 import terser from '@rollup/plugin-terser';
-// import scss from 'rollup-plugin-sass'
 import scss from 'rollup-plugin-scss'
-import copy from 'rollup-plugin-copy'
 import replace from '@rollup/plugin-replace';
 import postcss from 'postcss'
-import autoprefixer from 'autoprefixer'
 import cssReplace from 'postcss-replace'
 import pkg from './package.json';
 import fs from "fs";
+import buildHtmlDoc from './plugins/buildHtmlDoc.js';
+import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
+import buildTestFixtures from "./plugins/buildTestFixtures";
+import buildSvelteTests from "./plugins/buildSvelteTests";
 
 
-const dev_process = (process.env.npm_lifecycle_event == 'dev');
+const
+    dev_process = (process.env.npm_lifecycle_event == 'dev'),
+    version_process = (process.env.npm_lifecycle_event == 'version'),
+    build_process = (process.env.npm_lifecycle_event == 'build')
+;
 const verbose = false;
 const  includePaths = [
+        dev_process && 'src/doc/scss',
         'src/sdg/scss',
-        'src/doc/scss'
-];
+        "src",
+].filter(Boolean);
 
 // const path = require('path');
 
@@ -57,10 +63,10 @@ const scssOptions = {
     includePaths: includePaths,
     processor: css =>
         postcss([
-            autoprefixer(),
             cssReplace({
                 data: {
-                    'pkg-version': pkg.version
+                    'pkg-version': pkg.version,
+                    'dev-env': dev_process ? 'true' : 'false',
                 }
             })
         ])
@@ -73,8 +79,8 @@ const scssOptions = {
     prependData: `
         @use "qc-sdg-lib" as *;
     `,
-    outputStyle: dev_process ? 'expanded' : 'compressed',
-    watch: ['src/sdg/scss', 'src/doc/scss'],
+    outputStyle: build_process ? 'compressed' : 'expanded',
+    watch: ['src'],
     silenceDeprecations: ['legacy-js-api'],
 };
 
@@ -89,6 +95,7 @@ let
         compilerOptions: {
             // enable run-time checks
             customElement: true,
+            dev: dev_process,
             cssHash: ({ hash, name, filename, css }) => {
                 // replacement of default `svelte-${hash(css)}`
                 return `qc-hash-${hash(css)}`;
@@ -104,9 +111,9 @@ let
             // This `main.js` file we wrote
             input: 'src/sdg/qc-sdg.js',
             output: {
-                file: dev_process
-                        ? 'public/js/qc-sdg.js'
-                        : 'dist/js/qc-sdg.min.js',
+                file: build_process
+                        ? 'dist/js/qc-sdg.min.js'
+                        : 'public/js/qc-sdg.js',
                 format: 'iife',
                 name: 'qcSdg',
             },
@@ -122,34 +129,27 @@ let
                 }),
                 commonjs(),
                 // compress js only when build
-                !dev_process && terser(),
+                build_process && terser(),
 
                 // will output compiled styles to output.css
                 scss(Object.assign({
                     output: (styles, styleNodes) => {
-                        fs.writeFileSync( dev_process
-                            ? 'public/css/qc-sdg.css'
-                            : 'dist/css/qc-sdg.min.css'
+                        fs.writeFileSync(
+                            build_process
+                            ? 'dist/css/qc-sdg.min.css'
+                            : 'public/css/qc-sdg.css'
                             , styles)
                     }}
                     , scssOptions
                 )),
-                !dev_process && copy({
-                    targets: [
-                        {
-                            src: 'dist/img/*',
-                            dest: [`public/img`],
-                        }
-                    ],
-                    verbose: verbose,
-                }),
+
             ],
         },
         {
             // qc-sdg without grid system
             input: 'src/sdg/qc-sdg-no-grid.js',
             output: {
-                file: (dev_process ? 'public': 'dist') + '/js/qc-sdg-no-grid.js',
+                file: (build_process ? 'dist' : 'public') + '/js/qc-sdg-no-grid.js',
                 format: 'iife',
             },
             plugins: [
@@ -164,9 +164,10 @@ let
                 // will output compiled styles to output.css
                 scss(Object.assign({
                         output: (styles, styleNodes) => {
-                            fs.writeFileSync( dev_process
-                                    ? 'public/css/qc-sdg-no-grid.css'
-                                    : 'dist/css/qc-sdg-no-grid.min.css'
+                            fs.writeFileSync(
+                                build_process
+                                    ? 'dist/css/qc-sdg-no-grid.min.css'
+                                    : 'public/css/qc-sdg-no-grid.css'
                                 , styles)
                         }
                     }
@@ -187,22 +188,22 @@ let
                 }),
                 scss(Object.assign({
                         output: (styles, styleNodes) => {
-                            fs.writeFileSync( dev_process
-                                    ? 'public/css/qc-sdg-design-tokens.css'
-                                    : 'dist/css/qc-sdg-design-tokens.min.css'
+                            fs.writeFileSync(
+                                build_process
+                                    ? 'dist/css/qc-sdg-design-tokens.min.css'
+                                    : 'public/css/qc-sdg-design-tokens.css'
                                 , styles)
                         }
                     }
                     , scssOptions
                 )),
             ],
-        },
-
+        }
     ]
 ;
 
 
-if (dev_process) {
+if (!build_process) {
     rollupOptions.unshift({
         input: 'src/doc/qc-doc-sdg.js',
         output: {
@@ -211,6 +212,20 @@ if (dev_process) {
         },
         plugins: [
             replace(replacements),
+            buildHtmlDoc({
+                input: 'src/doc/_index.html',
+                output: 'public/index.html'
+            }),
+            buildDevDoc({
+                input: 'src/doc/_dev.html'
+            }),
+            buildTestFixtures({
+                input: 'src/doc/_test.html'
+            }),
+            buildSvelteTests({
+                input: 'tests',
+                ignorePathsFile: 'buildSvelteTestsIgnore.json'
+            }),
             svelte(svelteOptions),
             resolve({
                 browser: true,
@@ -220,20 +235,37 @@ if (dev_process) {
             scss(
                 Object.assign({
                         output: (styles, styleNodes) => {
-                            fs.writeFileSync( dev_process
-                                    ? 'public/css/qc-doc-sdg.css'
-                                    : 'dist/css/qc-doc-sdg.min.css'
+                            fs.writeFileSync(
+                                'public/css/qc-doc-sdg.css'
                                 , styles)
                         }},
                     scssOptions
                 )
             ),
             css(),
-            serve(),
+            dev_process && serve(),
             //uncomment to enable the Hot Reload,
             // livereload('public'),
         ],
-    },)
+    },
+        {
+            // token only css file
+            input: 'src/sdg/qc-sdg-test.js',
+            output: {
+                file: 'public/js/qc-sdg-test.js',
+                format: 'iife',
+            },
+            plugins: [
+                svelte(svelteOptions),
+                resolve({
+                    browser: true,
+                    // Force resolving for these modules to root's node_modules that helps
+                    // to prevent bundling the same package multiple times if package is
+                    // imported from dependencies.
+                    dedupe: ['svelte']
+                }),
+            ],
+        },)
 }
 
 export default rollupOptions;

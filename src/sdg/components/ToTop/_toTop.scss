@@ -1,0 +1,47 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "../../bases/shadings/shadings" as *;
+
+.qc-to-top {
+  &[demo="false"] {
+    position: fixed;
+    bottom: rem(96);
+    right: rem(32);
+  }
+  display: flex;
+  z-index: 99;
+  cursor: pointer;
+  width: rem(40);
+  height: rem(40);
+  background-color: token-value(color blue piv);
+  align-items: center;
+  justify-content: center;
+  transition: opacity .4s linear;
+  opacity: 0;
+  background-size: rem(16) rem(20);
+
+  @include qc-shading(1);
+
+  &[style*='block']{ display: flex !important; }
+  &:hover {
+    background-color: token-value( color blue regular);
+  }
+  &:focus {
+    background-color: token-value( color blue regular);
+    outline: 2px solid token-value(color blue light);
+    border: 2px solid token-value(color blue dark);
+    outline-offset: 0;
+    @include qc-shading(2);
+  }
+  &:active {
+    background-color: token-value( color blue light);
+  }
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  span {
+    @include sr-only;
+  }
+
+}
+

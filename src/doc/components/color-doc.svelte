@@ -6,11 +6,11 @@
     }
 }}" />
 <script>
-    export let
+    let {
         title,
         token,
         border = null
-    ;
+    } = $props();
 
 </script>
 <div class="color-details">
@@ -22,7 +22,7 @@
     </div>
 </div>
 <style lang="scss">
-    @use "base/colors";
+    @use "sdg/bases/colors/colors" as *;
     .color-details {
         display: flex;
         justify-content: flex-start;

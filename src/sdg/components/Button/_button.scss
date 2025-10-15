@@ -1,0 +1,235 @@
+@use "qc-sdg-lib" as *;
+@use "sass:map";
+
+%button-disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.qc-button {
+  font-family: token-value(font family, content);
+  font-size: token-value(font size, md);
+  font-weight: token-value(font weight, bold);
+  line-height: token-value(line height, md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: rem(8);
+  box-sizing: border-box;
+  min-width: rem(112);
+  max-width: rem(360);
+  min-height: rem(56);
+  // Compensation pour la bordure en retirant 2px de padding de chaque côté
+  padding: rem(14) rem(22);
+  vertical-align: middle;
+  border: rem(2) solid transparent;
+  cursor: pointer;
+  margin-bottom: token-value(spacer, md);
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  &.qc-compact {
+    font-weight: token-value(font weight, semi-bold);
+    min-width: rem(80);
+    min-height: rem(40);
+    // Compensation pour la bordure en retirant 1px de padding de chaque côté
+    padding: rem(7) rem(15);
+    border-width: rem(1);
+    margin-bottom: token-value(spacer, sm);
+  }
+
+  &.qc-button-rounded {
+    border-radius: rem(4);
+  }
+
+  &.qc-primary {
+    color: token-value(color white);
+    background-color: token-value(color blue piv);
+    border-color: token-value(color blue piv);
+    box-shadow: 0 1px 4px token-value(color box_shadow);
+
+    &:hover:not(:disabled),
+    &.qc-hover {
+      background-color: token-value(color blue, regular);
+      border-color: token-value(color blue, regular);
+    }
+
+    &:focus:not(:disabled),
+    &.qc-focus {
+      background-color: token-value(color blue, regular);
+      border-color: token-value(color blue, dark);
+      box-shadow:
+              0 2px 8px token-value(color box_shadow),
+              0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled),
+    &.qc-active {
+      background-color: token-value(color blue, regular_light);
+      border-color: token-value(color blue, regular_light);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      background-color: token-value(color grey, light);
+      border-color: token-value(color grey, light);
+      color: token-value(color white);
+      @extend %button-disabled;
+    }
+  }
+
+  &.qc-secondary {
+    color: token-value(color blue, piv);
+    background-color: token-value(color white);
+    border-color: token-value(color blue, piv);
+
+    &:hover:not(:disabled),
+    &:focus:not(:disabled),
+    &:active:not(:disabled),
+    &.qc-hover, &.qc-focus, &.qc-active {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
+    }
+
+    &:focus:not(:disabled),
+    &.qc-focus {
+      border-color: token-value(color blue, dark);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled),
+    &.qc-active {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.08);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      border-color: token-value(color grey, regular);
+      color: token-value(color grey regular);
+      @extend %button-disabled;
+    }
+  }
+
+  &.qc-tertiary {
+    color: token-value(color blue, piv);
+    background-color: token-value(color white);
+    border-color: token-value(color white);
+
+    &:hover:not(:disabled),
+    &.qc-hover{
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      text-decoration: underline;
+    }
+
+    &:focus:not(:disabled),
+    &.qc-focus {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      border-color: token-value(color blue, dark);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled),
+    &.qc-active {
+      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.16);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      color: token-value(color grey regular);
+      @extend %button-disabled;
+    }
+  }
+
+  &.qc-danger {
+    color: token-value(color white);
+    background-color: token-value(color red regular);
+    border-color: token-value(color white);
+
+    &:hover:not(:disabled),
+    &.qc-hover {
+      background-color: token-value(color red medium);
+    }
+
+    &:focus:not(:disabled),
+    &.qc-focus {
+      background-color: token-value(color red medium);
+      border-color: token-value(color blue, dark);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &:active:not(:disabled),
+    &.qc-active {
+      background-color: token-value(color red regular_light);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      background-color: token-value(color grey, light);
+      border-color: token-value(color grey, light);
+      color: token-value(color white);
+      @extend %button-disabled;
+    }
+  }
+
+  .qc-icon {
+    display: inline-block;
+    width: rem(16);
+    height: rem(16);
+    background-color: currentColor;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    flex-shrink: 0;
+
+    &.qc-custom-icon {
+      mask:var(--img-src);
+      mask-size: 100% 100%;
+    }
+  }
+
+  &.qc-simple {
+    color: token-value(color blue, piv);
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0;
+    min-width: unset;
+    min-height: unset;
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      text-decoration: underline;
+    }
+
+    &:focus:not(:disabled) {
+      border-color: token-value(color blue, light);
+      box-shadow: 0 0 0 2px token-value(color blue, light);
+    }
+
+    &.qc-compact {
+      font-size: token-value(font size, sm);
+      line-height: token-value(line height, sm);
+    }
+
+    &:disabled,
+    &.qc-disabled {
+      color: token-value(color, grey regular);
+      @extend %button-disabled;
+    }
+  }
+
+  @at-root a#{&}{
+    text-decoration: none;
+  }
+}
+
+.qc-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: rem(4 * $base-spacer);
+
+  &.qc-compact {
+    column-gap: token-value(spacer, md);
+  }
+}

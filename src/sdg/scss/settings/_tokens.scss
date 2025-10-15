@@ -96,7 +96,9 @@ $lg-tokens: (
           red: (
               pale: token-value(color pink pale),
               light: token-value(color pink regular),
+              regular_light: #eb705a,
               regular: #cb381f,
+              medium: #b52e16,
               dark: #692519,
           ),
           green: (
@@ -206,6 +208,25 @@ $lg-tokens: (
             mb: token-value(spacer sm),
         ),
     ),
+    size: (
+      max-width: (
+          xs: rem(63),
+          sm: rem(156),
+          md: rem(249),
+          lg: rem(528),
+          xl: rem(825)
+      ),
+      input: (
+        max-width: token-value(size max-width md),
+      ),
+      textarea: (
+        max-width: token-value(size max-width lg),
+        min-height: rem(108)
+      ),
+      search-bar: (
+        max-width: rem(640)
+      )
+    ),
     grid: (
         gutter: 32px,
         breakpoint: (
@@ -283,7 +304,9 @@ $themes-tokens: (
             regular: #BB3A23,
         ),
         red: (
+            regular_light: #D34027,
             regular: #F26049,
+            medium: #F19387,
             dark: #F3BCB6,
         ),
         green: (

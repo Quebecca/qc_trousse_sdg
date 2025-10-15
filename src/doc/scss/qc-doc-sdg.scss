@@ -1,6 +1,5 @@
 @use "qc-sdg-lib" as *;
 @use "components/code" as *;
-@use "components/button" as *;
 @use "tables";
 @use "jQueryUI/jquery-ui.autocomplete";
 
@@ -170,6 +169,7 @@ dl {
 .table-overflow {
   width: 100%;
   overflow-x: auto;
+  margin-bottom: token-value(spacer content-block mb);
 }
 
 hr {

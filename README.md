@@ -304,7 +304,61 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-
+- 1.4.4:
+  - Correction de bugs : 
+    - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28
+- 1.4.3:
+  - Correction de bugs :
+    - Documentation :
+      - Changement de la couleur de fond du menu de thème sombre
+    - Boutons :
+      - Correction de la hauteur des boutons : https://github.com/Quebecca/qc_trousse_sdg/issues/23
+      - Gestion des espacements horizontaux à partir de la classe `qc-button-group` sur l'élément parent
+    - Boutons de sélection :
+      - Ajustement de la couleur des boutons de sélection à l'état sélectionné : gris pâle -> bleu clair
+    - Champs texte :
+      - Correction de la hauteur des champs texte
+      - Correction de la graisse des libellés
+    - Haut de page :
+      - Correction de l'offset de l'outline du bouton de haut de page
+    - Liste déroulante :
+      - Correction de la hauteur de la liste déroulante à l'état fermé
+- 1.4.2:
+  - Correction de bugs :
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/20
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/19
+  - Ajout de tests PW pour les composants Svelte.
+- 1.4.1:
+  - Correction de bugs :
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/16
+    - https://github.com/Quebecca/qc_trousse_sdg/issues/15
+- 1.4.0:
+  - Ajout de composants :
+    - boutons radios et cases à cocher ;
+    - boutons de sélection ;
+    - commutateur ;
+    - champ texte ;
+    - champ de recherche ;
+    - bouton ;
+    - liste déroulante ;
+    - icône ;
+  - Correction de bugs:
+    - correction d'un bug visuel avec le bandeau PIV en basse résolution ;
+    - correction d'un bug dans le composant lien externe lorsqu'il contient un retour à la ligne ;
+    - correction dans le composant lien externe pour gérer les débordements des chaînes très longues (par exemple les url) ;
+  - Réorganisation du code :
+    - Passage à svelte 5 ;
+    - Organisation des composants par dossier ;
+    - Séparation des composants en deux : un composant svelte et un composant web (suffixé WC). De cette façon, quand la trousse est utilisée comme dépendance dans un projet svelte, il est possible d'importer des composants svelte de la trousse sans que cela redéclare un _custom element_ ;
+    - Ajout de tests playwright ;
+    - Ajout de scripts pour le versionnage du projet (liés à npm version);
+- 1.3.3 :
+  - PR dependabot
+- 1.3.2 :
+  - modification de la couleur de focus des liens du bandeau PIV ;
+- 1.3.1 :
+  - suppression des marges par défaut pour les dl/dd ;
+  - modification de la couleur de focus des liens du bandeau PIV ;
 - 1.3.0 : 
   - Ajout du composant `qc-external-link` ; 
   - Ajout du composant `qc-search-bar` ; 

@@ -1,0 +1,25 @@
+@use "qc-sdg-lib" as *;
+@for $i from 1 through 6 {
+  h#{$i}, .qc-h#{$i} {
+    @include heading($i);
+  }
+}
+
+h1, .qc-h1 {
+
+  .qc-subhead {
+    @include content-font(sm, $include-family: 1);
+    color : token-value(color, grey, medium);
+    display: block;
+    margin: 0;
+  }
+
+  &:after {
+    content: "";
+    display:block;
+    margin: 0;
+    width: rem(6 * $base-spacer);
+    padding-top: rem($base-spacer * .5);
+    border-bottom: 4px solid token-value(color, accent);
+  }
+}

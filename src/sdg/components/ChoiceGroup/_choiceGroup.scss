@@ -1,0 +1,32 @@
+@use "qc-sdg-lib" as *;
+@use "selectionButton" as *;
+
+label.qc-choicefield-label {
+  @extend %check-row;
+}
+
+input.qc-choicefield {
+
+  cursor: pointer;
+
+  min-width: token-value(spacer, md);
+  min-height: token-value(spacer, md);
+  max-width: token-value(spacer, md);
+  max-height: token-value(spacer, md);
+  border-width: rem(2);
+
+  flex-grow: 0;
+
+  &:focus {
+    outline: 2px solid token-value(color, blue, light);
+    outline-offset: 0;
+    border-color: token-value(color, blue, dark) !important;
+  }
+
+  &:checked {
+    border-color: token-value(color blue regular);
+  }
+}
+
+
+

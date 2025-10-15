@@ -1,0 +1,77 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "DropdownListItems/dropdownListItems";
+@use "DropdownListButton/dropdownListButton";
+@use "sass:math";
+
+$min-height: 40;
+$border: 1;
+
+.qc-dropdown-list-margin {
+  margin-bottom: rem(32);
+}
+
+.qc-dropdown-list-root {
+  width: 100%;
+
+  &-xs { max-width: token-value(size, max-width, xs); }
+  &-sm { max-width: token-value(size, max-width, sm); }
+  &-md { max-width: token-value(size, max-width, md); }
+  &-lg { max-width: token-value(size, max-width, lg); }
+  &-xl { max-width: token-value(size, max-width, xl); }
+}
+
+.qc-dropdown-list-container {
+  width: 100%;
+
+  .qc-label {
+    margin-bottom: rem(4);
+  }
+
+  &-xs { max-width: token-value(size, max-width, xs); }
+  &-sm { max-width: token-value(size, max-width, sm); }
+  &-md { max-width: token-value(size, max-width, md); }
+  &-lg { max-width: token-value(size, max-width, lg); }
+  &-xl { max-width: token-value(size, max-width, xl); }
+}
+
+.qc-dropdown-list {
+  display: flex;
+  position: relative;
+  border: rem($border) solid token-value(color, grey, medium);
+  min-height: rem($min-height);
+  background-color: token-value(color, background);
+
+  &.qc-dropdown-list-invalid {
+    border: rem(2) solid token-value(color, red, regular) !important;
+
+    & > .qc-dropdown-button {
+      height: rem(36);
+    }
+  }
+}
+
+.qc-dropdown-list-search {
+  margin: token-value(spacer, xs);
+
+  * {
+    z-index: 12;
+  }
+}
+
+.qc-dropdown-list-expanded {
+  position: absolute;
+  width: calc(100% + 2px);
+  left: -(rem($border));
+  right: -(rem($border));
+  top: 100%;
+  z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box
+
+  background-color: token-value(color, background);
+  border-left: rem($border) solid token-value(color, grey, medium);
+  border-right: rem($border) solid token-value(color, grey, medium);
+  border-bottom: rem($border) solid token-value(color, grey, medium);
+}
+
+.qc-dropdown-list-hidden {
+  display: none;
+}

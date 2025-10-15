@@ -1,0 +1,198 @@
+@use "qc-sdg-lib" as *;
+@use "sass:map";
+
+$colors : map.get($themes-tokens, light, lg, color);
+
+%piv-links {
+  &, & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+
+    li {
+      padding: 0;
+      margin: 0;
+      @include content-font(sm);
+    }
+
+    a {
+      font-size: rem(12.8);
+    }
+  }
+}
+
+qc-piv-header {
+  --qc-piv-header-bg: 1;
+  display: block;
+  // pas de token ici ; le PIV a toujours ce fond, indépendamment du thème
+  // on se base donc sur les valeurs scss
+  background-color: map.get($colors, blue, piv);
+  width: 100%;
+
+  [slot=links] {
+    @extend %piv-links;
+  }
+}
+
+.qc-piv-header {
+  color: map.get($colors, white);
+  container-type: normal;
+  container-name: piv-header;
+  .go-to-content {
+    position: relative;
+  }
+  .piv-top {
+    display: flex;
+    align-items: start;
+    min-width: rem(72);
+    .logo {
+      display: flex;
+      flex-basis: rem(256);
+      margin-right: 0;
+      [role=img] {
+        background-image: var(--logo-src);
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-position: center;
+        margin-right: 16px;
+        min-width: 150px;
+        width: 100%;
+        max-width: rem(200);
+        min-height: rem(72);
+      }
+    }
+    .title {
+      align-items: center;
+      align-self: center;
+    }
+    .right-section {
+      min-width: fit-content;
+      display: flex;
+      align-self: center;
+      align-items: center;
+      flex-basis: fit-content;
+      margin-left: auto;
+      .links ul {
+        @extend %piv-links;
+      }
+
+      @include media-mobile() {
+        min-width: auto;
+      }
+
+      .qc-search {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=');
+        background-repeat: no-repeat;
+        min-width: rem(24);
+        height: rem(24);
+        margin-right: token-value(spacer md);;
+        @include media-mobile() {
+          margin-right: token-value(spacer sm);
+        }
+
+        span {
+          @include sr-only();
+        }
+      }
+    }
+    & + .title {
+      display: none;
+    }
+
+  }
+  .piv-bottom {
+    .search-zone {
+      padding-bottom: token-value(spacer md);
+    }
+  }
+}
+
+qc-piv-header,
+.qc-piv-header {
+  a {
+    --qc-color-link-focus-outline: #{token-value(color blue pale)};
+    --qc-color-link-hover: white;
+    --qc-color-link-text: white;
+    --qc-color-link-visited: white;
+    --qc-color-link-active: white;
+
+    font-family: token-value(font family header);
+    text-decoration: none;
+    font-weight: token-value(font weight regular);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  a:focus-visible, a:focus {
+    &:has(img) {
+      outline-offset: -2px;
+    }
+  }
+}
+
+.go-to-content {
+  display: flex;
+  height: 0;
+
+  a {
+    @include sr-only();
+
+    &:focus {
+      top: 2px;
+      width: inherit;
+      height: 24px;
+      overflow: inherit;
+      clip: inherit;
+      white-space: inherit;
+      color: map.get($colors, white);
+      background-color: map.get($colors, blue, piv);
+      margin:0;
+    }
+  }
+}
+
+@include media-mobile(){
+  .qc-piv-header {
+    .piv-top {
+      //flex-wrap: wrap;
+      .logo {
+        flex: 1 1 auto;
+        margin-right: auto;
+        min-width: 0;
+        img {
+          width: 100%;
+          margin-right: rem(16);
+        }
+      }
+
+      .title {
+        display: none;
+      }
+      .right-section {
+        flex: 0 1 fit-content;
+        min-width: 0;
+        margin-right: 0;
+        margin-left: auto;
+      }
+
+      & + .title {
+        display: block;
+        padding: 0 0 rem(16)
+      }
+    }
+
+  }
+}
+@media (max-width: 400px) {
+  .piv-top {
+    flex-wrap: wrap;
+  }
+}
+
+
+
+
+
+
