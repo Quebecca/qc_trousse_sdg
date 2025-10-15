@@ -1,5 +1,5 @@
 <script>
-    import { Utils } from "../utils";
+    import {Utils} from "../utils";
     import Label from "../Label/Label.svelte";
     import {getContext, onMount} from "svelte";
     import FormError from "../FormError/FormError.svelte";
@@ -43,7 +43,7 @@
 
     onMount(() => {
         if (webComponentMode) return;
-        if (! input) {
+        if (!input) {
             input = rootElement.querySelector('input,textarea');
         }
         onMountInput(
@@ -72,7 +72,6 @@
     })
 
 
-
     $effect(() => {
         charCountText = ''
         if (!maxlength) return;
@@ -83,12 +82,12 @@
         const s = over > 1 ? 's' : '';
         charCountText =
             remaining >= 0
-            ? lang === 'fr'
-                ? `${remaining} caractère${s} restant${s}`
-                : `${remaining} character${s} remaining`
-            : lang === 'fr'
-                ? `${over} caractère${s} en trop`
-                : `${over} character${s} over the limit`
+                ? lang === 'fr'
+                    ? `${remaining} caractère${s} restant${s}`
+                    : `${remaining} character${s} remaining`
+                : lang === 'fr'
+                    ? `${over} caractère${s} en trop`
+                    : `${over} character${s} over the limit`
 
     });
 
@@ -107,7 +106,7 @@
                 invalid && errorId,
                 maxlength && charCountId,
             ].filter(Boolean)
-            .join(' ')
+                .join(' ')
         )
         input.setAttribute('aria-invalid', invalid)
         input.setAttribute('aria-required', required)
@@ -124,29 +123,29 @@
                 text={label}
                 forId={input?.id}
                 bind:rootElement={labelElement}
-            />
+        />
     {/if}
 
     {#if description}
         <div
-            bind:this={descriptionElement}
-            id={descriptionId}
-            class="qc-description">
-            {@html description}
+                bind:this={descriptionElement}
+                id={descriptionId}
+                class="qc-description">
+                {@html description}
         </div>
     {/if}
 
     {@render children()}
 
-    {#if maxlength !== null}
+    {#if maxlength && maxlength !== null}
         <div
-            bind:this={maxlengthElement}
-            id={charCountId}
-            class={[
-                'qc-textfield-charcount',
-                maxlengthReached && 'qc-max-reached'
-            ]}
-            aria-live="polite"
+                bind:this={maxlengthElement}
+                id={charCountId}
+                class={[
+                    'qc-textfield-charcount',
+                    maxlengthReached && 'qc-max-reached'
+                ]}
+                aria-live="polite"
         >
             {@html charCountText}
         </div>
