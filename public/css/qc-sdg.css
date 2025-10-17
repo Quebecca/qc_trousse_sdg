@@ -1459,12 +1459,9 @@ qc-piv-header {
 }
 .qc-piv-header .piv-top .signature-group .logo a {
   display: flex;
-  flex-shrink: 1;
   height: fit-content;
   width: fit-content;
-  margin-right: auto;
   outline-offset: 0.4rem;
-  object-fit: contain;
 }
 .qc-piv-header .piv-top .signature-group .logo a img {
   display: flex;
@@ -1475,7 +1472,6 @@ qc-piv-header {
   max-width: 20rem;
   min-height: 4rem;
   max-height: 7.2rem;
-  margin-right: 0;
 }
 .qc-piv-header .piv-top .title {
   display: block;
@@ -1581,9 +1577,6 @@ qc-piv-header a:focus-visible:has(img), qc-piv-header a:focus:has(img),
     flex: 1 1 auto;
     margin-right: auto;
     min-width: 0;
-  }
-  .qc-piv-header .piv-top .logo img {
-    width: 100%;
   }
   .qc-piv-header .piv-top .title {
     display: none;

@@ -1,10 +1,6 @@
-import {Utils} from "./components/utils";
+import {setMcePivHeaderLogoSrc} from "./components/PivHeader/Test/pivHeaderTest";
 
-document.getElementById('piv-header-mce')
-    .setAttribute(
-        'logo-src',
-        `${Utils.imagesRelativePath}piv-mce-theme-sombre.svg`
-    );
+setMcePivHeaderLogoSrc();
 
 export * from './bases/Icon/Test/IconEmbeddedTest.svelte';
 export * from './components/TextField/Test/TextFieldEmbededTest.svelte';

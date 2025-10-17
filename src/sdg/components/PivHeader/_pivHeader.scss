@@ -66,12 +66,9 @@ qc-piv-header {
 
         a {
           display: flex;
-          flex-shrink: 1;
           height: fit-content;
           width: fit-content;
-          margin-right: auto;
           outline-offset: rem(4);
-          object-fit: contain;
 
           img {
             display: flex;
@@ -82,7 +79,6 @@ qc-piv-header {
             max-width: rem(200);
             min-height: rem(40);
             max-height: rem(72);
-            margin-right: 0;
           }
         }
       }
@@ -191,10 +187,6 @@ qc-piv-header,
         flex: 1 1 auto;
         margin-right: auto;
         min-width: 0;
-        img {
-          width: 100%;
-          //margin-right: rem(16);
-        }
       }
 
       .title {
