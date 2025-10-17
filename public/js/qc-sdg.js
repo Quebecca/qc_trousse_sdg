@@ -13914,7 +13914,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[137, 0], [158, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[139, 0], [160, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13996,6 +13996,8 @@
 						option.selected = false;
 					}
 				}
+
+				get(selectElement).dispatchEvent(new Event('change'));
 			}
 		});
 

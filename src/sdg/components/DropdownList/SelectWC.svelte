@@ -87,6 +87,8 @@
                     option.selected = false;
                 }
             }
+
+            selectElement.dispatchEvent(new Event('change'));
         }
     });
 
