@@ -1457,11 +1457,13 @@ qc-piv-header {
 .qc-piv-header .piv-top .signature-group .logo {
   display: flex;
   align-items: center;
-  flex-basis: 25.6rem;
+  flex-basis: 26.4rem;
 }
 .qc-piv-header .piv-top .signature-group .logo a {
-  display: block;
+  display: flex;
+  flex-grow: 1;
   height: 4rem;
+  margin-right: 6.4rem;
   outline-offset: 0.4rem;
 }
 .qc-piv-header .piv-top .signature-group .logo a [role=img] {
@@ -1469,17 +1471,16 @@ qc-piv-header {
   background-repeat: no-repeat;
   background-size: 100%;
   background-position: center;
-  margin-right: 16px;
   min-width: 150px;
+  object-fit: fill;
   width: 100%;
   height: 100%;
   max-width: 20rem;
   min-height: 4rem;
 }
 .qc-piv-header .piv-top .title {
-  display: flex;
-  align-items: center;
-  align-self: center;
+  display: block;
+  align-content: center;
 }
 .qc-piv-header .piv-top .right-section {
   min-width: fit-content;
@@ -1522,6 +1523,10 @@ qc-piv-header {
 }
 .qc-piv-header .piv-bottom .search-zone {
   padding-bottom: var(--qc-spacer-md);
+}
+
+.page-title {
+  display: inline-block;
 }
 
 qc-piv-header a,

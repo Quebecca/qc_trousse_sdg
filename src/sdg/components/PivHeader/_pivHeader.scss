@@ -68,37 +68,40 @@ qc-piv-header {
       @extend %links-focus;
 
       .logo {
+        $flex-basis: 264;
+        $anchor-max-width: 200;
+        $anchor-min-height: 40;
+
         display: flex;
         align-items: center;
-        flex-basis: rem(256);
+        flex-basis: rem($flex-basis);
 
         a {
-          display: block;
+          display: flex;
+          flex-grow: 1;
           height: rem(40);
+          margin-right: rem($flex-basis - $anchor-max-width);
+          outline-offset: rem(4);
+
           [role=img] {
             background-image: var(--logo-src);
             background-repeat: no-repeat;
             background-size: 100%;
             background-position: center;
-            margin-right: 16px;
             min-width: 150px;
-            //object-fit: fill;
+            object-fit: fill;
             width: 100%;
             height: 100%;
-            max-width: rem(200);
-            min-height: rem(40);
+            max-width: rem($anchor-max-width);
+            min-height: rem($anchor-min-height);
           }
-
-          outline-offset: rem(4);
-
         }
       }
     }
 
     .title {
-      display: flex;
-      align-items: center;
-      align-self: center;
+      display: block;
+      align-content: center;
     }
     .right-section {
       min-width: fit-content;
@@ -142,6 +145,10 @@ qc-piv-header {
       padding-bottom: token-value(spacer md);
     }
   }
+}
+
+.page-title {
+  display: inline-block;
 }
 
 qc-piv-header,
