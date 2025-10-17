@@ -7385,10 +7385,10 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_3$3 = add_locations(template(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[73, 24]]);
-	var root_4$4 = add_locations(template(`<span class="page-title"> </span>`), PivHeader[FILENAME], [[75, 24]]);
-	var root_2$8 = add_locations(template(`<div class="title"><!></div>`), PivHeader[FILENAME], [[71, 16]]);
-	var root_5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 12, [[64, 16]]]]);
+	var root_3$3 = add_locations(template(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[72, 24]]);
+	var root_4$4 = add_locations(template(`<span class="page-title"> </span>`), PivHeader[FILENAME], [[74, 24]]);
+	var root_2$8 = add_locations(template(`<div class="title"><!></div>`), PivHeader[FILENAME], [[70, 16]]);
+	var root_5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[62, 12, [[63, 16]]]]);
 
 	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7399,40 +7399,40 @@
 		});
 	};
 
-	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span class="no-link-title" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[97, 20, [[108, 24]]]]);
-	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[121, 40, [[121, 44]]]]);
-	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[124, 40, [[124, 44]]]]);
-	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[118, 28, [[119, 32]]]]);
-	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[137, 16]]);
+	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span class="no-link-title" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[95, 20, [[106, 24]]]]);
+	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 40, [[119, 44]]]]);
+	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 40, [[122, 44]]]]);
+	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 28, [[117, 32]]]]);
+	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 16]]);
 
-	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><div role="img"></div></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
 			[
 				[
-					61,
+					60,
 					4,
 					[
 						[
-							80,
+							79,
 							8,
 							[
 								[
-									81,
+									80,
 									12,
 									[
 										[
-											82,
+											81,
 											16,
-											[[83, 20, [[88, 24]]]]
+											[[82, 20, [[86, 24]]]]
 										]
 									]
 								],
-								[95, 12, [[112, 16]]]
+								[93, 12, [[110, 16]]]
 							]
 						],
-						[135, 8]
+						[133, 8]
 					]
 				]
 			]
@@ -7573,7 +7573,9 @@
 			var div_5 = child(div_4);
 			var div_6 = child(div_5);
 			var a_2 = child(div_6);
+			var img = child(a_2);
 
+			reset(a_2);
 			reset(div_6);
 
 			var node_3 = sibling(div_6, 2);
@@ -7740,17 +7742,13 @@
 
 			template_effect(() => {
 				set_attribute(a_2, 'href', logoUrl());
-				set_attribute(a_2, 'aria-label', logoAlt());
+				set_attribute(img, 'src', logoSrc());
+				set_attribute(img, 'alt', logoAlt());
 			});
 		}
 
 		reset(div);
-
-		template_effect(() => {
-			set_style(div, `--logo-src:url(${logoSrc() ?? ''})`);
-			set_class(div_1, 1, get(containerClass));
-		});
-
+		template_effect(() => set_class(div_1, 1, get(containerClass)));
 		append($$anchor, div);
 
 		return pop({

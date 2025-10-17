@@ -3,13 +3,6 @@
 
 $colors : map.get($themes-tokens, light, lg, color);
 
-%links-focus {
-  a:focus {
-    // couleur du piv indépendante du thème, alors le focus est toujours blanc
-    outline: map.get($colors, white) solid 2px;
-  }
-}
-
 %piv-links {
   &, & ul {
     list-style: none;
@@ -26,8 +19,6 @@ $colors : map.get($themes-tokens, light, lg, color);
     a {
       font-size: rem(12.8);
     }
-
-    @extend %links-focus;
   }
 }
 
@@ -53,6 +44,8 @@ qc-piv-header {
   }
   .piv-top {
     display: flex;
+    flex-wrap: nowrap;
+    gap: token-value(spacer sm);
     align-items: start;
     min-width: rem(72);
 
@@ -65,35 +58,31 @@ qc-piv-header {
       & > * {
         min-height: rem(72);
       }
-      @extend %links-focus;
 
       .logo {
-        $flex-basis: 264;
-        $anchor-max-width: 200;
-        $anchor-min-height: 40;
-
         display: flex;
         align-items: center;
-        flex-basis: rem($flex-basis);
+        flex-basis: rem(264);
 
         a {
           display: flex;
-          flex-grow: 1;
-          height: rem(40);
-          margin-right: rem($flex-basis - $anchor-max-width);
+          flex-shrink: 1;
+          height: fit-content;
+          width: fit-content;
+          margin-right: auto;
           outline-offset: rem(4);
+          object-fit: contain;
 
-          [role=img] {
-            background-image: var(--logo-src);
-            background-repeat: no-repeat;
-            background-size: 100%;
-            background-position: center;
+          img {
+            display: flex;
+            flex-basis: min-content;
             min-width: 150px;
-            object-fit: fill;
             width: 100%;
             height: 100%;
-            max-width: rem($anchor-max-width);
-            min-height: rem($anchor-min-height);
+            max-width: rem(200);
+            min-height: rem(40);
+            max-height: rem(72);
+            margin-right: 0;
           }
         }
       }
@@ -132,8 +121,6 @@ qc-piv-header {
           @include sr-only();
         }
       }
-
-      @extend %links-focus;
     }
     & + .title {
       display: none;
@@ -154,7 +141,7 @@ qc-piv-header {
 qc-piv-header,
 .qc-piv-header {
   a {
-    --qc-color-link-focus-outline: #{token-value(color blue pale)};
+    --qc-color-link-focus-outline: #{map.get($colors, blue, pale)};
     --qc-color-link-hover: white;
     --qc-color-link-text: white;
     --qc-color-link-visited: white;
@@ -194,8 +181,6 @@ qc-piv-header,
       margin:0;
     }
   }
-
-  @extend %links-focus;
 }
 
 @include media-mobile(){
@@ -208,7 +193,7 @@ qc-piv-header,
         min-width: 0;
         img {
           width: 100%;
-          margin-right: rem(16);
+          //margin-right: rem(16);
         }
       }
 
