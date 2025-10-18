@@ -35,7 +35,6 @@
            name="text-lg"
     />
 </qc-textfield>
-
 <qc-textfield
         label="Très large"
         size="xl"
@@ -47,11 +46,23 @@
            disabled
     />
 </qc-textfield>
+<div style="width: 500px; max-width: 100%;padding: 10px; border: 1px solid #ccc;">
+    <qc-textfield
+            label="Très large"
+            size="xl"
 
+    >
+        <input type="text"
+               placeholder="Long placeholder lorem ipsum dolor sit amet"
+               name="text-xl"
+               disabled
+        />
+    </qc-textfield>
+</div>
 <div class="qc-formfield-row">
     <qc-textfield
-            label="Combiné 1"
-            size="sm"
+            label="Combiné 1 Long placeholder lorem ipsum dolor sit amet"
+            size="lg"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -60,7 +71,7 @@
     </qc-textfield>
 
     <qc-textfield
-            label="Combiné 2"
+            label="Combiné 2 Long placeholder lorem ipsum dolor sit amet"
             size="xs"
     >
         <input type="text"
@@ -92,10 +103,18 @@
 </div>
 
 <qc-textfield label="Commentaires"
-              size="lg"
               description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
     <textarea name="zone-lg" id="zone-lg"></textarea>
+</qc-textfield>
+
+<qc-textfield label="Commentaires"
+              description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
+>
+        <input type="text"
+               name="zone-lg-input"
+               placeholder="Long placeholder lorem ipsum dolor sit amet"
+        />
 </qc-textfield>
 
 <qc-textfield

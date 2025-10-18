@@ -10673,10 +10673,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[131, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[142, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[136, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[147, 8]]);
 	var root_1$3 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[166, 4]]);
+	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[171, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10853,6 +10853,12 @@
 			}
 
 			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam));
+		});
+
+		user_effect(() => {
+			if (size()) return;
+			if (!input()) return;
+			size(strict_equals(input().type, 'textarea') ? 'lg' : 'md');
 		});
 
 		user_effect(() => {

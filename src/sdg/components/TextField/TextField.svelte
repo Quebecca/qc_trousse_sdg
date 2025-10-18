@@ -55,6 +55,12 @@
     })
 
     $effect(() => {
+        if (size) return;
+        if (!input) return;
+        size = input.type === 'textarea' ? 'lg' : 'md';
+    })
+
+    $effect(() => {
         invalidAtSubmit = (required && !value) || maxlengthReached;
     })
 
@@ -116,7 +122,6 @@
 </script>
 
 {#snippet textfield()}
-
     {#if label}
         <Label
                 {required}

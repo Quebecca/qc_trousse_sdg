@@ -2191,42 +2191,55 @@ qc-textfield textarea:disabled {
   padding: 0.6rem;
 }
 
-.qc-textfield input, qc-textfield input,
-.qc-textfield input + .qc-textfield-charcount,
-qc-textfield input + .qc-textfield-charcount {
-  max-width: var(--qc-size-input-max-width);
+[size=xs] {
+  max-width: 100%;
 }
 
-.qc-textfield textarea, qc-textfield textarea,
-.qc-textfield textarea + .qc-textfield-charcount,
-qc-textfield textarea + .qc-textfield-charcount {
-  max-width: var(--qc-size-textarea-max-width);
+[size=sm] {
+  max-width: 100%;
+}
+
+[size=md] {
+  max-width: 100%;
+}
+
+[size=lg] {
+  max-width: 100%;
+}
+
+[size=xl] {
+  max-width: 100%;
 }
 
 [size=xs] input, [size=xs] input + .qc-textfield-charcount,
 [size=xs] textarea,
 [size=xs] textarea + .qc-textfield-charcount {
-  max-width: 6.3rem;
+  max-width: 100%;
+  width: 6.3rem;
 }
 [size=sm] input, [size=sm] input + .qc-textfield-charcount,
 [size=sm] textarea,
 [size=sm] textarea + .qc-textfield-charcount {
-  max-width: 15.6rem;
+  max-width: 100%;
+  width: 15.6rem;
 }
 [size=md] input, [size=md] input + .qc-textfield-charcount,
 [size=md] textarea,
 [size=md] textarea + .qc-textfield-charcount {
-  max-width: 24.9rem;
+  max-width: 100%;
+  width: 24.9rem;
 }
 [size=lg] input, [size=lg] input + .qc-textfield-charcount,
 [size=lg] textarea,
 [size=lg] textarea + .qc-textfield-charcount {
-  max-width: 52.8rem;
+  max-width: 100%;
+  width: 52.8rem;
 }
 [size=xl] input, [size=xl] input + .qc-textfield-charcount,
 [size=xl] textarea,
 [size=xl] textarea + .qc-textfield-charcount {
-  max-width: 82.5rem;
+  max-width: 100%;
+  width: 82.5rem;
 }
 
 .qc-textfield textarea, qc-textfield textarea {

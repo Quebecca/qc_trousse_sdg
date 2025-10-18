@@ -304,6 +304,9 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.5:
+- Correction de bugs :
+  - Correction de la mauvaise largeur du champ texte lorsque placé dans un conteneur flex ; 
 - 1.4.4:
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28
