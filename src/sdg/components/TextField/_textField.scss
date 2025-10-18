@@ -62,25 +62,9 @@ textarea {
 }
 
 $sizes: map.get($lg-tokens, size, max-width);
-//input ,
-//input + .qc-textfield-charcount {
-//  .qc-textfield &,
-//  qc-textfield & {
-//    max-width: token-value(size input max-width);
-//  }
-//}
-//textarea,
-//textarea + .qc-textfield-charcount {
-//  .qc-textfield &,
-//  qc-textfield & {
-//    max-width: token-value(size textarea max-width);
-//  }
-//}
 
 @each $size, $width in $sizes {
   [size="#{$size}"] {
-    //width: $width;
-    //flex-basis: $width;
     max-width: 100%;
   }
 }

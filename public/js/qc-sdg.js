@@ -10819,7 +10819,7 @@
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15, false),
 			description = prop($$props, 'description', 7),
-			size = prop($$props, 'size', 7),
+			size = prop($$props, 'size', 15),
 			maxlength = prop($$props, 'maxlength', 7),
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false),
@@ -10858,7 +10858,7 @@
 		user_effect(() => {
 			if (size()) return;
 			if (!input()) return;
-			size(strict_equals(input().type, 'textarea') ? 'lg' : 'md');
+			size(strict_equals(input().tagName, 'INPUT') ? 'md' : 'lg');
 		});
 
 		user_effect(() => {
@@ -11094,7 +11094,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$6 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[90, 0]]);
+	var root$6 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[98, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11110,6 +11110,7 @@
 			description = prop($$props, 'description', 7),
 			required = prop($$props, 'required', 7),
 			maxlength = prop($$props, 'maxlength', 7),
+			size = prop($$props, 'size', 7),
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false);
 
@@ -11124,6 +11125,11 @@
 		onMount(() => {
 			set(input, $$props.$$host.querySelector('input,textarea'), true);
 			onMountInput(get(input), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => set(value, valueParam, true), (invalidParam) => invalid(invalidParam));
+		});
+
+		user_effect(() => {
+			if (!size()) return;
+			$$props.$$host.setAttribute('size', size());
 		});
 
 		user_effect(() => {
@@ -11154,6 +11160,7 @@
 		var node = first_child(fragment);
 
 		{
+			$$ownership_validator.binding('size', TextField, size);
 			$$ownership_validator.binding('invalid', TextField, invalid);
 			$$ownership_validator.binding('invalidText', TextField, invalidText);
 			$$ownership_validator.binding('maxlengthReached', TextField, maxlengthReached);
@@ -11177,6 +11184,12 @@
 				},
 				get value() {
 					return get(value);
+				},
+				get size() {
+					return size();
+				},
+				set size($$value) {
+					size($$value);
 				},
 				get invalid() {
 					return invalid();
@@ -11283,6 +11296,13 @@
 			},
 			set maxlength($$value) {
 				maxlength($$value);
+				flushSync();
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
 				flushSync();
 			},
 			get maxlengthReached() {

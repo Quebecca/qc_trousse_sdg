@@ -11,7 +11,7 @@
         label = '',
         required = $bindable(false),
         description,
-        size,
+        size = $bindable(),
         maxlength,
         maxlengthReached = $bindable(false),
         invalidAtSubmit = $bindable(false),
@@ -57,7 +57,7 @@
     $effect(() => {
         if (size) return;
         if (!input) return;
-        size = input.type === 'textarea' ? 'lg' : 'md';
+        size = input.tagName === 'INPUT' ? 'md' : 'lg';
     })
 
     $effect(() => {

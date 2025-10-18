@@ -76322,7 +76322,7 @@
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15, false),
 			description = prop($$props, 'description', 7),
-			size = prop($$props, 'size', 7),
+			size = prop($$props, 'size', 15),
 			maxlength = prop($$props, 'maxlength', 7),
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false),
@@ -76361,7 +76361,7 @@
 		user_effect(() => {
 			if (size()) return;
 			if (!input()) return;
-			size(strict_equals(input().type, 'textarea') ? 'lg' : 'md');
+			size(strict_equals(input().tagName, 'INPUT') ? 'md' : 'lg');
 		});
 
 		user_effect(() => {

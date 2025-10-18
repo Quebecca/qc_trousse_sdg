@@ -305,8 +305,9 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 
 ## Historique
 - 1.4.5:
-- Correction de bugs :
-  - Correction de la mauvaise largeur du champ texte lorsque placé dans un conteneur flex ; 
+  - Correction de bugs :
+    - Correction de la mauvaise largeur du champ texte lorsque placé dans un conteneur flex ;
+  - Retrait des jetons --qc-size-input-max-width et --qc-size-textarea-max-width, à remplacer au besoin par --qc-size-max-width-md et --qc-size-max-width-lg respectivement. Ces jetons définissaient la largeur maximale des champs de texte par défaut ; elle est désormais gérée dans le composant qc-textfield dont l'attribut size reçoit une valeur par défaut. 
 - 1.4.4:
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28
