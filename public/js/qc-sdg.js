@@ -145,6 +145,7 @@
 	const EFFECT_RAN = 1 << 15;
 	/** 'Transparent' effects do not create a transition boundary */
 	const EFFECT_TRANSPARENT = 1 << 16;
+	const INSPECT_EFFECT = 1 << 18;
 	const HEAD_EFFECT = 1 << 19;
 	const EFFECT_HAS_DERIVED = 1 << 20;
 	const EFFECT_IS_UPDATING = 1 << 21;
@@ -1378,6 +1379,11 @@
 			var signal = effect(fn);
 			return signal;
 		}
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function inspect_effect(fn) {
+		return create_effect(INSPECT_EFFECT, fn, true);
 	}
 
 	/**
@@ -3906,6 +3912,39 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} [inspector]
+	 */
+	// eslint-disable-next-line no-console
+	function inspect(get_value, inspector = console.log) {
+		validate_effect();
+
+		let initial = true;
+
+		inspect_effect(() => {
+			/** @type {any} */
+			var value = UNINITIALIZED;
+
+			// Capturing the value might result in an exception due to the inspect effect being
+			// sync and thus operating on stale data. In the case we encounter an exception we
+			// can bail-out of reporting the value. Instead we simply console.error the error
+			// so at least it's known that an error occured, but we don't stop execution
+			try {
+				value = get_value();
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+
+			if (value !== UNINITIALIZED) {
+				inspector(initial ? 'init' : 'update', ...snapshot(value, true));
+			}
+
+			initial = false;
+		});
 	}
 
 	/**
@@ -13826,7 +13865,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[137, 0], [158, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[135, 0], [156, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13863,7 +13902,15 @@
 		let selectElement = state(void 0);
 		let items = state(void 0);
 		let labelElement = state(void 0);
-		let observer;
+		let observer = new MutationObserver(setupItemsList);
+
+		let observerOptions = {
+			childList: true,
+			attributes: true,
+			subtree: true,
+			attributeFilter: ["label", "value", "disabled", "selected"]
+		};
+
 		let instance = state(void 0);
 		let errorElement = state(void 0);
 		let parentRow = user_derived(() => $$props.$$host.closest(".qc-formfield-row"));
@@ -13887,28 +13934,36 @@
 			if (get(selectElement)) {
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
+				get(selectElement).addEventListener("change", setupItemsList);
 			}
 
 			setupItemsList();
 			setupObserver();
 		});
 
+		inspect(() => ["value", value()]);
+
 		onDestroy(() => {
 			observer?.disconnect();
 		});
 
 		user_effect(() => {
-			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value() && value().length > 0) {
-				for (const option of get(selectElement).options) {
-					if (value().includes(option.value)) {
-						option.setAttribute('selected', '');
-						option.selected = true;
-					} else {
-						option.removeAttribute('selected');
-						option.selected = false;
-					}
+			if (!get(selectElement)) return;
+			if (!get(selectElement).options) return;
+			observer.disconnect();
+
+			for (const option of get(selectElement).options) {
+				// console.log(value, option.value)
+				if (value().includes(option.value)) {
+					option.setAttribute('selected', '');
+					option.selected = true;
+				} else {
+					option.removeAttribute('selected');
+					option.selected = false;
 				}
 			}
+
+			setupObserver();
 		});
 
 		user_effect(() => {
@@ -13944,19 +13999,8 @@
 		}
 
 		function setupObserver() {
-			if (get(selectElement)) {
-				if (observer) {
-					return;
-				}
-
-				observer = new MutationObserver(setupItemsList);
-
-				observer.observe(get(selectElement), {
-					childList: true,
-					attributes: true,
-					attributeFilter: ["label", "value", "disabled", "selected"]
-				});
-			}
+			if (!get(selectElement)) return;
+			observer.observe(get(selectElement), observerOptions);
 		}
 
 		var fragment = root();

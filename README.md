@@ -304,10 +304,13 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-- 1.4.4:
+- 1.4.5 :
+  - Correction de bugs :
+    - Liste déroulante : correction de bugs affectant la synchronisation du select et du qc-select.
+- 1.4.4 :
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28
-- 1.4.3:
+- 1.4.3 :
   - Correction de bugs :
     - Documentation :
       - Changement de la couleur de fond du menu de thème sombre
@@ -323,16 +326,16 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
       - Correction de l'offset de l'outline du bouton de haut de page
     - Liste déroulante :
       - Correction de la hauteur de la liste déroulante à l'état fermé
-- 1.4.2:
+- 1.4.2 :
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/20
     - https://github.com/Quebecca/qc_trousse_sdg/issues/19
   - Ajout de tests PW pour les composants Svelte.
-- 1.4.1:
+- 1.4.1 :
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/16
     - https://github.com/Quebecca/qc_trousse_sdg/issues/15
-- 1.4.0:
+- 1.4.0 :
   - Ajout de composants :
     - boutons radios et cases à cocher ;
     - boutons de sélection ;

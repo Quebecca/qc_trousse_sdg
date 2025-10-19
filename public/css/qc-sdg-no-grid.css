@@ -596,10 +596,6 @@ legend {
   padding: 0;
 }
 
-qc-select select {
-  appearance: none;
-}
-
 h1, .qc-h1 {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h1);
