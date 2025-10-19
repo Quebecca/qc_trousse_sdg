@@ -39,7 +39,13 @@
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
-    let observer;
+    let observer = new MutationObserver(setupItemsList);
+    let observerOptions = {
+        childList: true,
+        attributes: true,
+        subtree: true,
+        attributeFilter: ["label", "value", "disabled", "selected"]
+    };
     let instance = $state();
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
@@ -49,6 +55,7 @@
         }
         return `qc-dropdown-list-root-md`;
     });
+
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -60,34 +67,33 @@
         if (selectElement) {
             multiple = selectElement.multiple;
             disabled = selectElement.disabled;
+            selectElement.addEventListener("change", setupItemsList)
         }
-
         setupItemsList();
         setupObserver();
     });
+
+    $inspect("value", value);
 
     onDestroy(() => {
         observer?.disconnect();
     });
 
     $effect(() => {
-        if (
-            selectElement
-            && selectElement.options
-            && selectElement.options.length > 0
-            && value
-            && value.length > 0
-        ) {
-            for (const option of selectElement.options) {
-                if (value.includes(option.value)) {
-                    option.setAttribute('selected', '');
-                    option.selected = true;
-                } else {
-                    option.removeAttribute('selected');
-                    option.selected = false;
-                }
+        if (!selectElement) return;
+        if (!selectElement.options) return;
+        observer.disconnect()
+        for (const option of selectElement.options) {
+            // console.log(value, option.value)
+            if (value.includes(option.value)) {
+                option.setAttribute('selected', '');
+                option.selected = true;
+            } else {
+                option.removeAttribute('selected');
+                option.selected = false;
             }
         }
+        setupObserver()
     });
 
     $effect(() => {
@@ -118,18 +124,10 @@
     }
 
     function setupObserver() {
-        if (selectElement) {
-            if (observer) {
-                return;
-            }
-            observer = new MutationObserver(setupItemsList);
-            observer.observe(selectElement, {
-                childList: true,
-                attributes: true,
-                attributeFilter: ["label", "value", "disabled", "selected"]
-            });
-        }
+        if (!selectElement) return;
+        observer.observe(selectElement, observerOptions);
     }
+
 
 
 </script>

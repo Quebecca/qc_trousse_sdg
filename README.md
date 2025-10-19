@@ -1,5 +1,9 @@
 # Trousse de développement du Système de design gouvernemental du Québec
 
+## Avertissement
+
+Cette version de la trousse est réglée pour une valeur de `root-font-size` de 62,5 %. Pour un `root-font-size` de 100 %, veuillez consulter la branche `main-rfz100` à cette adresse : https://github.com/Quebecca/qc_trousse_sdg/tree/main-rfz100 
+
 ## Présentation
 
 La trousse de développement du Système de design gouvernemental (SDG) est un projet Node.js dont l’objectif est de générer un jeu de ressources — feuilles de style, images, fichiers JavaScript, etc. — à utiliser pour intégrer les composants du Système de design gouvernemental dans un site Web.
@@ -300,10 +304,13 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
-- 1.4.4:
+- 1.4.5 :
+  - Correction de bugs :
+    - Liste déroulante : correction de bugs affectant la synchronisation du select et du qc-select.
+- 1.4.4 :
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28
-- 1.4.3:
+- 1.4.3 :
   - Correction de bugs :
     - Documentation :
       - Changement de la couleur de fond du menu de thème sombre
@@ -319,16 +326,16 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
       - Correction de l'offset de l'outline du bouton de haut de page
     - Liste déroulante :
       - Correction de la hauteur de la liste déroulante à l'état fermé
-- 1.4.2:
+- 1.4.2 :
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/20
     - https://github.com/Quebecca/qc_trousse_sdg/issues/19
   - Ajout de tests PW pour les composants Svelte.
-- 1.4.1:
+- 1.4.1 :
   - Correction de bugs :
     - https://github.com/Quebecca/qc_trousse_sdg/issues/16
     - https://github.com/Quebecca/qc_trousse_sdg/issues/15
-- 1.4.0:
+- 1.4.0 :
   - Ajout de composants :
     - boutons radios et cases à cocher ;
     - boutons de sélection ;
