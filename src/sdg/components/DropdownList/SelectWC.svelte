@@ -49,6 +49,7 @@
         }
         return `qc-dropdown-list-root-md`;
     });
+    let previousValue = $state(value);
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -76,7 +77,8 @@
             && selectElement.options
             && selectElement.options.length > 0
             && value
-            && value.length > 0
+            // Comparaison sur les strings, car les tableaux ont des références toujours différentes
+            && value.toString() !== previousValue.toString()
         ) {
             for (const option of selectElement.options) {
                 if (value.includes(option.value)) {
@@ -87,8 +89,8 @@
                     option.selected = false;
                 }
             }
-
             selectElement.dispatchEvent(new Event('change'));
+            previousValue = value;
         }
     });
 

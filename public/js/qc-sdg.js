@@ -13912,7 +13912,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[139, 0], [160, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[141, 0], [162, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13962,6 +13962,8 @@
 			return `qc-dropdown-list-root-md`;
 		});
 
+		let previousValue = state(proxy(value()));
+
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
 			set(labelElement, $$props.$$host.querySelector("label"), true);
@@ -13984,7 +13986,7 @@
 		});
 
 		user_effect(() => {
-			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value() && value().length > 0) {
+			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value() && strict_equals(value().toString(), get(previousValue).toString(), false)) {
 				for (const option of get(selectElement).options) {
 					if (value().includes(option.value)) {
 						option.setAttribute('selected', '');
@@ -13996,6 +13998,7 @@
 				}
 
 				get(selectElement).dispatchEvent(new Event('change'));
+				set(previousValue, value(), true);
 			}
 		});
 
