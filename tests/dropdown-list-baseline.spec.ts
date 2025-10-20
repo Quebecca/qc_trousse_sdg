@@ -18,6 +18,14 @@ test.describe('Rendu visuel',
         await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
     });
 
+    test('Select text wrap', {
+        tag: ['@baseline', '@textwrap', '@dropdownlist']
+    }, async ({ page }) => {
+        await page.locator('#qc-select-multiple-choices-sm').click();
+
+        await expect(page).toHaveScreenshot('dropdownListTextWrap.png', {fullPage: true});
+    });
+
     test('Select svelte', {
         tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {

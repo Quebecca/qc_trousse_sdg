@@ -2388,8 +2388,7 @@ qc-textfield textarea:disabled {
 }
 .qc-dropdown-list-multiple label {
   margin: 0;
-  padding-left: var(--qc-spacer-xs);
-  padding-right: var(--qc-spacer-xs);
+  padding: var(--qc-spacer-xs);
   flex-grow: 1;
 }
 .qc-dropdown-list-multiple .qc-choicefield:focus {
@@ -2397,8 +2396,7 @@ qc-textfield textarea:disabled {
 }
 
 .qc-dropdown-list-single {
-  padding-left: var(--qc-spacer-xs);
-  padding-right: var(--qc-spacer-xs);
+  padding: var(--qc-spacer-xs);
   margin: 0;
 }
 

@@ -82,6 +82,13 @@
         items={JSON.parse(JSON.stringify(multipleChoiceOptions))}
 />
 
+<DropdownList
+        id="dropdown-list-multiple-sm"
+        label="Choix unique"
+        multiple
+        items={overflowOptions}
+/>
+
 <form id="dropdown-list-embedded-test-form">
     <DropdownList
             bind:this={restaurantsDropdownList}

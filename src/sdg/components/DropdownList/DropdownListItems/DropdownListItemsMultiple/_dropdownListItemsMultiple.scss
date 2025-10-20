@@ -5,8 +5,7 @@
 
   label {
     margin: 0;
-    padding-left: token-value(spacer, xs);
-    padding-right: token-value(spacer, xs);
+    padding: token-value(spacer, xs);
     flex-grow: 1;
   }
   .qc-choicefield:focus {
