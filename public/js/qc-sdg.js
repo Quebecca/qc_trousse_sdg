@@ -10250,8 +10250,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
-	var root$9 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
+	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[56, 4]]);
+	var root$9 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10299,8 +10299,6 @@
 
 		let label = state(proxy($$props.label)),
 			rootElement = state(void 0);
-
-		console.log('version doc-query-inputs');
 
 		onMount(() => {
 			if (qcCheckoxContext) return;
@@ -13912,7 +13910,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[159, 0], [180, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[158, 0], [179, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14035,8 +14033,6 @@
 		});
 
 		function setupItemsList() {
-			console.log("setupItemsList");
-
 			const options = get(selectElement)?.querySelectorAll("option");
 
 			if (options && options.length > 0) {

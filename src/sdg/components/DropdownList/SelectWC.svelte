@@ -118,7 +118,6 @@
     });
 
     function setupItemsList() {
-        console.log("setupItemsList");
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
             items = Array.from(options).map(option => ({

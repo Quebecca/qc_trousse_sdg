@@ -29,8 +29,6 @@
         rootElement = $state()
     ;
 
-    console.log('version doc-query-inputs');
-
     onMount(() => {
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
