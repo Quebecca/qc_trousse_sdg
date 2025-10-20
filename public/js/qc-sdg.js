@@ -13910,7 +13910,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[158, 0], [179, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[159, 0], [180, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13989,7 +13989,7 @@
 			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value()) // Comparaison sur les strings, car les tableaux ont des références toujours différentes
 			// && value.toString() !== previousValue.toString()
 			{
-				observer?.disconnect();
+				// observer?.disconnect();
 				internalChange = true;
 
 				let newOptionSelected = false;
@@ -14004,8 +14004,7 @@
 					}
 				}
 
-				setupObserver();
-
+				// setupObserver();
 				if (newOptionSelected) {
 					get(selectElement).dispatchEvent(new Event('change'));
 				}
@@ -14033,6 +14032,8 @@
 		});
 
 		function setupItemsList() {
+			console.log("setupItemsList");
+
 			const options = get(selectElement)?.querySelectorAll("option");
 
 			if (options && options.length > 0) {

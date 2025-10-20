@@ -2391,10 +2391,6 @@ qc-textfield textarea:disabled {
   padding-left: var(--qc-spacer-xs);
   padding-right: var(--qc-spacer-xs);
   flex-grow: 1;
-  align-items: center;
-}
-.qc-dropdown-list-multiple .qc-choicefield {
-  margin-top: 0 !important;
 }
 .qc-dropdown-list-multiple .qc-choicefield:focus {
   outline: none;
@@ -2440,14 +2436,12 @@ li[aria-selected=true] {
 }
 .qc-dropdown-list-items * {
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {
   display: flex;
   align-items: center;
-  height: 4rem;
+  min-height: 4rem;
 }
 .qc-dropdown-list-multiple.qc-dropdown-list-active:hover, .qc-dropdown-list-single.qc-dropdown-list-active:hover {
   background-color: var(--qc-color-grey-pale);
