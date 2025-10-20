@@ -13912,7 +13912,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[141, 0], [162, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[159, 0], [180, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13962,7 +13962,7 @@
 			return `qc-dropdown-list-root-md`;
 		});
 
-		let previousValue = state(proxy(value()));
+		let internalChange = false;
 
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
@@ -13975,6 +13975,7 @@
 			if (get(selectElement)) {
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
+				get(selectElement).addEventListener("change", handleSelectChange);
 			}
 
 			setupItemsList();
@@ -13983,22 +13984,40 @@
 
 		onDestroy(() => {
 			observer?.disconnect();
+			get(selectElement).removeEventListener("change", handleSelectChange);
 		});
 
 		user_effect(() => {
-			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value() && strict_equals(value().toString(), get(previousValue).toString(), false)) {
+			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value()) // Comparaison sur les strings, car les tableaux ont des références toujours différentes
+			// && value.toString() !== previousValue.toString()
+			{
+				observer?.disconnect();
+				internalChange = true;
+
+				let newOptionSelected = false;
+
 				for (const option of get(selectElement).options) {
-					if (value().includes(option.value)) {
-						option.setAttribute('selected', '');
-						option.selected = true;
-					} else {
-						option.removeAttribute('selected');
-						option.selected = false;
+					const selected = value().includes(option.value);
+
+					if (strict_equals(selected, option.selected, false)) {
+						option.toggleAttribute("selected", selected);
+						option.selected = selected;
+						newOptionSelected = true;
 					}
 				}
 
-				get(selectElement).dispatchEvent(new Event('change'));
-				set(previousValue, value(), true);
+				setupObserver();
+
+				if (newOptionSelected) {
+					get(selectElement).dispatchEvent(new Event('change'));
+				}
+
+				setTimeout(
+					() => {
+						internalChange = false;
+					},
+					0
+				);
 			}
 		});
 
@@ -14016,6 +14035,8 @@
 		});
 
 		function setupItemsList() {
+			console.log("setupItemsList");
+
 			const options = get(selectElement)?.querySelectorAll("option");
 
 			if (options && options.length > 0) {
@@ -14044,10 +14065,19 @@
 
 				observer.observe(get(selectElement), {
 					childList: true,
+					subtree: true,
 					attributes: true,
 					attributeFilter: ["label", "value", "disabled", "selected"]
 				});
 			}
+		}
+
+		function handleSelectChange() {
+			if (internalChange) {
+				return;
+			}
+
+			setupItemsList();
 		}
 
 		var fragment = root();

@@ -21,7 +21,9 @@
 </qc-select>
 
 <script>
-    document.getElementById("select-single-choice").addEventListener("change", (event) => {
+    const selectElement = document.getElementById("select-single-choice");
+
+    selectElement.addEventListener("change", (event) => {
         console.log("Option sélectionnée :", event.target.value);
     });
 </script>

@@ -49,7 +49,7 @@
         }
         return `qc-dropdown-list-root-md`;
     });
-    let previousValue = $state(value);
+    let internalChange = false;
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -61,6 +61,8 @@
         if (selectElement) {
             multiple = selectElement.multiple;
             disabled = selectElement.disabled;
+
+            selectElement.addEventListener("change", handleSelectChange);
         }
 
         setupItemsList();
@@ -69,6 +71,7 @@
 
     onDestroy(() => {
         observer?.disconnect();
+        selectElement.removeEventListener("change", handleSelectChange);
     });
 
     $effect(() => {
@@ -78,19 +81,26 @@
             && selectElement.options.length > 0
             && value
             // Comparaison sur les strings, car les tableaux ont des références toujours différentes
-            && value.toString() !== previousValue.toString()
+            // && value.toString() !== previousValue.toString()
         ) {
+            observer?.disconnect();
+            internalChange = true;
+            let newOptionSelected = false;
             for (const option of selectElement.options) {
-                if (value.includes(option.value)) {
-                    option.setAttribute('selected', '');
-                    option.selected = true;
-                } else {
-                    option.removeAttribute('selected');
-                    option.selected = false;
+                const selected = value.includes(option.value);
+                if (selected !== option.selected) {
+                    option.toggleAttribute("selected", selected);
+                    option.selected = selected;
+                    newOptionSelected = true;
                 }
             }
-            selectElement.dispatchEvent(new Event('change'));
-            previousValue = value;
+            setupObserver();
+            if (newOptionSelected) {
+                selectElement.dispatchEvent(new Event('change'));
+            }
+            setTimeout(() => {
+                internalChange = false;
+            }, 0);
         }
     });
 
@@ -108,6 +118,7 @@
     });
 
     function setupItemsList() {
+        console.log("setupItemsList");
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
             items = Array.from(options).map(option => ({
@@ -129,13 +140,20 @@
             observer = new MutationObserver(setupItemsList);
             observer.observe(selectElement, {
                 childList: true,
+                subtree: true,
                 attributes: true,
                 attributeFilter: ["label", "value", "disabled", "selected"]
             });
         }
     }
 
+    function handleSelectChange() {
+        if (internalChange) {
+            return;
+        }
 
+        setupItemsList();
+    }
 </script>
 
 <div hidden>
