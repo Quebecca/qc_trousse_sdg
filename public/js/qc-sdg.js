@@ -13720,7 +13720,7 @@
 			set_class(div, 1, clsx([
 				"qc-dropdown-list-root",
 				!webComponentMode() && get(widthClass),
-				!(get(parentRow) || webComponentParentRow()) && "qc-dropdown-list-margin"
+				"qc-dropdown-list-margin"
 			]));
 
 			set_class(div_1, 1, clsx([

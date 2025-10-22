@@ -275,7 +275,7 @@
         class={[
         "qc-dropdown-list-root",
         !webComponentMode && widthClass,
-        !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
+        "qc-dropdown-list-margin"
     ]} bind:this={rootElement}
 >
     <div class={[

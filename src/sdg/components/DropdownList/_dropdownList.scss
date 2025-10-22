@@ -7,7 +7,7 @@ $min-height: 40;
 $border: 1;
 
 .qc-dropdown-list-margin {
-  margin-bottom: rem(32);
+  margin-bottom: var(--qc-select-margin-bottom, rem(32));
 }
 
 .qc-dropdown-list-root {
