@@ -67,6 +67,8 @@
 
         setupItemsList();
         setupObserver();
+
+        $host().classList.add("qc-select");
     });
 
     onDestroy(() => {

@@ -2072,7 +2072,6 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   flex-wrap: wrap;
   margin-bottom: 3.2rem;
   margin-top: -0.8rem;
-  --qc-select-margin-bottom: 0;
 }
 .qc-formfield-row > .qc-form-error {
   width: 100%;
@@ -2523,8 +2522,9 @@ li[aria-selected=true] {
   align-content: center;
 }
 
-.qc-dropdown-list-margin {
-  margin-bottom: var(--qc-select-margin-bottom, 3.2rem);
+.qc-select {
+  display: block;
+  margin-bottom: 3.2rem;
 }
 
 .qc-dropdown-list-root {

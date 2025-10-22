@@ -13720,7 +13720,7 @@
 			set_class(div, 1, clsx([
 				"qc-dropdown-list-root",
 				!webComponentMode() && get(widthClass),
-				"qc-dropdown-list-margin"
+				!get(parentRow) && !webComponentMode() && "qc-select"
 			]));
 
 			set_class(div_1, 1, clsx([
@@ -13910,7 +13910,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[156, 0], [177, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[158, 0], [179, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13978,6 +13978,7 @@
 
 			setupItemsList();
 			setupObserver();
+			$$props.$$host.classList.add("qc-select");
 		});
 
 		onDestroy(() => {
