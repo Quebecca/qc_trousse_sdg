@@ -84,9 +84,10 @@
 
 <DropdownList
         id="dropdown-list-multiple-sm"
-        label="Choix unique"
+        label="Débordement"
         multiple
-        items={overflowOptions}
+        width="sm"
+        items={dropdownListTest.overflowOptions()}
 />
 
 <form id="dropdown-list-embedded-test-form">

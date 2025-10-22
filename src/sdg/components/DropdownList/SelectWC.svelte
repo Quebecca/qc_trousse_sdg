@@ -83,7 +83,6 @@
             // Comparaison sur les strings, car les tableaux ont des références toujours différentes
             // && value.toString() !== previousValue.toString()
         ) {
-            // observer?.disconnect();
             internalChange = true;
             let newOptionSelected = false;
             for (const option of selectElement.options) {
@@ -94,7 +93,6 @@
                     newOptionSelected = true;
                 }
             }
-            // setupObserver();
             if (newOptionSelected) {
                 selectElement.dispatchEvent(new Event('change'));
             }
@@ -118,7 +116,6 @@
     });
 
     function setupItemsList() {
-        console.log("setupItemsList");
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
             items = Array.from(options).map(option => ({

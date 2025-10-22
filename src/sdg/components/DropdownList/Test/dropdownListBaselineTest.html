@@ -22,6 +22,7 @@
 
 <script>
     const selectElement = document.getElementById("select-single-choice");
+    console.log("Select element options[0]:", selectElement.options[0]);
 
     selectElement.addEventListener("change", (event) => {
         console.log("Option sélectionnée :", event.target.value);
@@ -148,7 +149,7 @@
   </qc-select>
 
 <qc-select id="qc-select-multiple-choices-sm" width="sm">
-    <label for="select-multiple-choices-sm">Choix unique</label>
+    <label for="select-multiple-choices-sm">Débordement</label>
     <select id="select-multiple-choices-sm" multiple>
         <option value="1" selected>Option 1 + texte de remplissage</option>
         <option value="2">Option 2 + texte de remplissage</option>
