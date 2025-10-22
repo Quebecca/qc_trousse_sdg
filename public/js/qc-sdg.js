@@ -7386,7 +7386,7 @@
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
 	var root_3$3 = add_locations(template(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[72, 24]]);
-	var root_4$4 = add_locations(template(`<span class="page-title"> </span>`), PivHeader[FILENAME], [[74, 24]]);
+	var root_4$4 = add_locations(template(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[74, 24]]);
 	var root_2$8 = add_locations(template(`<div class="title"><!></div>`), PivHeader[FILENAME], [[70, 16]]);
 	var root_5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[62, 12, [[63, 16]]]]);
 

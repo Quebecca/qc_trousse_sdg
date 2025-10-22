@@ -1471,7 +1471,6 @@ qc-piv-header {
   height: 100%;
   max-width: 20rem;
   min-height: 4rem;
-  max-height: 7.2rem;
 }
 .qc-piv-header .piv-top .title {
   display: block;

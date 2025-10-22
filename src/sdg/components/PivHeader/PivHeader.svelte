@@ -71,7 +71,7 @@
                     {#if titleUrl && titleUrl.length > 0}
                         <a class="page-title" href="{titleUrl}">{titleText}</a>
                     {:else}
-                        <span class="page-title">{titleText}</span>
+                        <span class="page-title" role="heading" aria-level="1">{titleText}</span>
                     {/if}
                 </div>
             {/if}
