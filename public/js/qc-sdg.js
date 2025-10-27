@@ -312,6 +312,16 @@
 	}
 
 	/**
+	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+	 * @param {string} method
+	 */
+	function console_log_state(method) {
+		{
+			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -6841,6 +6851,37 @@
 		return Class;
 	}
 
+	/**
+	 * @param {string} method
+	 * @param  {...any} objects
+	 */
+	function log_if_contains_state(method, ...objects) {
+		untrack(() => {
+			try {
+				let has_state = false;
+				const transformed = [];
+
+				for (const obj of objects) {
+					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
+						transformed.push(snapshot(obj, true));
+						has_state = true;
+					} else {
+						transformed.push(obj);
+					}
+				}
+
+				if (has_state) {
+					console_log_state(method);
+
+					// eslint-disable-next-line no-console
+					console.log('%c[snapshot]', 'color: grey', ...transformed);
+				}
+			} catch {}
+		});
+
+		return objects;
+	}
+
 	class Utils {
 
 	    static assetsBasePath =
@@ -7344,8 +7385,10 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_2$8 = add_locations(template(`<div class="title"><a> </a></div>`), PivHeader[FILENAME], [[71, 10, [[72, 14]]]]);
-	var root_3$3 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 6, [[64, 8]]]]);
+	var root_3$3 = add_locations(template(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[72, 24]]);
+	var root_4$4 = add_locations(template(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[74, 24]]);
+	var root_2$8 = add_locations(template(`<div class="title"><!></div>`), PivHeader[FILENAME], [[70, 16]]);
+	var root_5 = add_locations(template(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[62, 12, [[63, 16]]]]);
 
 	var on_click$3 = (evt, displaySearchForm, focusOnSearchInput) => {
 		evt.preventDefault();
@@ -7356,30 +7399,40 @@
 		});
 	};
 
-	var root_4$4 = add_locations(template(`<a class="qc-search" href="/" role="button"><span> </span></a>`), PivHeader[FILENAME], [[91, 10, [[102, 12]]]]);
-	var root_8 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[114, 32, [[114, 36]]]]);
-	var root_9 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[117, 32, [[117, 36]]]]);
-	var root_7 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[111, 20, [[112, 24]]]]);
-	var root_10 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[130, 10]]);
+	var root_6$1 = add_locations(template(`<a class="qc-search" href="/" role="button"><span class="no-link-title" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[95, 20, [[106, 24]]]]);
+	var root_10 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 40, [[119, 44]]]]);
+	var root_11 = add_locations(template(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 40, [[122, 44]]]]);
+	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 28, [[117, 32]]]]);
+	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 16]]);
 
-	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><a class="logo" rel="noreferrer"><div role="img"></div></a> <!> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
 			[
 				[
-					61,
-					2,
+					60,
+					4,
 					[
 						[
-							78,
-							6,
+							79,
+							8,
 							[
-								[80, 8, [[85, 16]]],
-								[89, 6, [[105, 8]]]
+								[
+									80,
+									12,
+									[
+										[
+											81,
+											16,
+											[[82, 20, [[86, 24]]]]
+										]
+									]
+								],
+								[93, 12, [[110, 16]]]
 							]
 						],
-						[128, 6]
+						[133, 8]
 					]
 				]
 			]
@@ -7447,66 +7500,95 @@
 				var node = first_child(fragment);
 
 				{
-					var consequent = ($$anchor) => {
+					var consequent_1 = ($$anchor) => {
 						var div_2 = root_2$8();
-						var a = child(div_2);
-						var text = child(a, true);
+						var node_1 = child(div_2);
 
-						reset(a);
+						{
+							var consequent = ($$anchor) => {
+								var a = root_3$3();
+								var text = child(a, true);
+
+								reset(a);
+
+								template_effect(() => {
+									set_attribute(a, 'href', titleUrl());
+									set_text(text, titleText());
+								});
+
+								append($$anchor, a);
+							};
+
+							var alternate = ($$anchor) => {
+								var span = root_4$4();
+								var text_1 = child(span, true);
+
+								reset(span);
+								template_effect(() => set_text(text_1, titleText()));
+								append($$anchor, span);
+							};
+
+							if_block(node_1, ($$render) => {
+								if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, false);
+							});
+						}
+
 						reset(div_2);
-
-						template_effect(() => {
-							set_attribute(a, 'href', titleUrl());
-							set_text(text, titleText());
-						});
-
 						append($$anchor, div_2);
 					};
 
 					if_block(node, ($$render) => {
-						if (titleUrl() && titleText()) $$render(consequent);
+						if (titleText()) $$render(consequent_1);
 					});
 				}
 
 				append($$anchor, fragment);
 			});
 
-			var node_1 = child(div_1);
+			var node_2 = child(div_1);
 
 			{
-				var consequent_1 = ($$anchor) => {
-					var div_3 = root_3$3();
+				var consequent_2 = ($$anchor) => {
+					var div_3 = root_5();
 					var a_1 = child(div_3);
-					var text_1 = child(a_1, true);
+					var text_2 = child(a_1, true);
 
 					reset(a_1);
 					reset(div_3);
 
 					template_effect(() => {
 						set_attribute(a_1, 'href', goToContentAnchor());
-						set_text(text_1, goToContentText());
+						set_text(text_2, goToContentText());
 					});
 
 					append($$anchor, div_3);
 				};
 
-				if_block(node_1, ($$render) => {
-					if (strict_equals(goToContent(), 'true')) $$render(consequent_1);
+				if_block(node_2, ($$render) => {
+					if (strict_equals(goToContent(), 'true')) $$render(consequent_2);
 				});
 			}
 
-			var div_4 = sibling(node_1, 2);
-			var a_2 = child(div_4);
-			var node_2 = sibling(a_2, 2);
+			var div_4 = sibling(node_2, 2);
+			var div_5 = child(div_4);
+			var div_6 = child(div_5);
+			var a_2 = child(div_6);
+			var img = child(a_2);
 
-			title(node_2);
+			reset(a_2);
+			reset(div_6);
 
-			var div_5 = sibling(node_2, 2);
-			var node_3 = child(div_5);
+			var node_3 = sibling(div_6, 2);
+
+			title(node_3);
+			reset(div_5);
+
+			var div_7 = sibling(div_5, 2);
+			var node_4 = child(div_7);
 
 			{
-				var consequent_2 = ($$anchor) => {
-					var a_3 = root_4$4();
+				var consequent_3 = ($$anchor) => {
+					var a_3 = root_6$1();
 
 					a_3.__click = [
 						on_click$3,
@@ -7514,85 +7596,85 @@
 						focusOnSearchInput
 					];
 
-					var span = child(a_3);
-					var text_2 = child(span, true);
+					var span_1 = child(a_3);
+					var text_3 = child(span_1, true);
 
-					reset(span);
+					reset(span_1);
 					reset(a_3);
-					template_effect(() => set_text(text_2, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
+					template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
 					append($$anchor, a_3);
 				};
 
-				if_block(node_3, ($$render) => {
-					if (Utils.isTruthy(enableSearch())) $$render(consequent_2);
+				if_block(node_4, ($$render) => {
+					if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
 				});
 			}
 
-			var div_6 = sibling(node_3, 2);
-			var node_4 = child(div_6);
+			var div_8 = sibling(node_4, 2);
+			var node_5 = child(div_8);
 
 			{
-				var consequent_3 = ($$anchor) => {
+				var consequent_4 = ($$anchor) => {
 					var fragment_1 = comment();
-					var node_5 = first_child(fragment_1);
+					var node_6 = first_child(fragment_1);
 
-					snippet(node_5, linksSlot);
+					snippet(node_6, linksSlot);
 					append($$anchor, fragment_1);
 				};
 
-				var alternate = ($$anchor) => {
+				var alternate_1 = ($$anchor) => {
 					var fragment_2 = comment();
-					var node_6 = first_child(fragment_2);
+					var node_7 = first_child(fragment_2);
 
 					{
-						var consequent_6 = ($$anchor) => {
-							var nav = root_7();
+						var consequent_7 = ($$anchor) => {
+							var nav = root_9();
 							var ul = child(nav);
-							var node_7 = child(ul);
+							var node_8 = child(ul);
 
 							{
-								var consequent_4 = ($$anchor) => {
-									var li = root_8();
+								var consequent_5 = ($$anchor) => {
+									var li = root_10();
 									var a_4 = child(li);
-									var text_3 = child(a_4, true);
+									var text_4 = child(a_4, true);
 
 									reset(a_4);
 									reset(li);
 
 									template_effect(() => {
 										set_attribute(a_4, 'href', altLanguageUrl());
-										set_text(text_3, altLanguageText());
+										set_text(text_4, altLanguageText());
 									});
 
 									append($$anchor, li);
 								};
 
-								if_block(node_7, ($$render) => {
-									if (altLanguageUrl()) $$render(consequent_4);
+								if_block(node_8, ($$render) => {
+									if (altLanguageUrl()) $$render(consequent_5);
 								});
 							}
 
-							var node_8 = sibling(node_7, 2);
+							var node_9 = sibling(node_8, 2);
 
 							{
-								var consequent_5 = ($$anchor) => {
-									var li_1 = root_9();
+								var consequent_6 = ($$anchor) => {
+									var li_1 = root_11();
 									var a_5 = child(li_1);
-									var text_4 = child(a_5, true);
+									var text_5 = child(a_5, true);
 
 									reset(a_5);
 									reset(li_1);
 
 									template_effect(() => {
 										set_attribute(a_5, 'href', joinUsUrl());
-										set_text(text_4, joinUsText());
+										set_text(text_5, joinUsText());
 									});
 
 									append($$anchor, li_1);
 								};
 
-								if_block(node_8, ($$render) => {
-									if (joinUsUrl()) $$render(consequent_5);
+								if_block(node_9, ($$render) => {
+									if (joinUsUrl()) $$render(consequent_6);
 								});
 							}
 
@@ -7602,75 +7684,71 @@
 							append($$anchor, nav);
 						};
 
-						if_block(node_6, ($$render) => {
-							if (joinUsUrl() || altLanguageUrl()) $$render(consequent_6);
+						if_block(node_7, ($$render) => {
+							if (joinUsUrl() || altLanguageUrl()) $$render(consequent_7);
 						});
 					}
 
 					append($$anchor, fragment_2);
 				};
 
-				if_block(node_4, ($$render) => {
-					if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_3); else $$render(alternate, false);
+				if_block(node_5, ($$render) => {
+					if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, false);
 				});
 			}
 
-			reset(div_6);
-			reset(div_5);
+			reset(div_8);
+			reset(div_7);
 			reset(div_4);
 
-			var node_9 = sibling(div_4, 2);
+			var node_10 = sibling(div_4, 2);
 
-			title(node_9);
+			title(node_10);
 
-			var div_7 = sibling(node_9, 2);
-			var node_10 = child(div_7);
+			var div_9 = sibling(node_10, 2);
+			var node_11 = child(div_9);
 
 			{
-				var consequent_8 = ($$anchor) => {
-					var div_8 = root_10();
-					var node_11 = child(div_8);
+				var consequent_9 = ($$anchor) => {
+					var div_10 = root_12();
+					var node_12 = child(div_10);
 
 					{
-						var consequent_7 = ($$anchor) => {
+						var consequent_8 = ($$anchor) => {
 							var fragment_3 = comment();
-							var node_12 = first_child(fragment_3);
+							var node_13 = first_child(fragment_3);
 
-							snippet(node_12, searchZoneSlot);
+							snippet(node_13, searchZoneSlot);
 							append($$anchor, fragment_3);
 						};
 
-						if_block(node_11, ($$render) => {
-							if (searchZoneSlot()) $$render(consequent_7);
+						if_block(node_12, ($$render) => {
+							if (searchZoneSlot()) $$render(consequent_8);
 						});
 					}
 
-					reset(div_8);
-					bind_this(div_8, ($$value) => set(searchZone, $$value), () => get(searchZone));
-					append($$anchor, div_8);
+					reset(div_10);
+					bind_this(div_10, ($$value) => set(searchZone, $$value), () => get(searchZone));
+					append($$anchor, div_10);
 				};
 
-				if_block(node_10, ($$render) => {
-					if (get(displaySearchForm)) $$render(consequent_8);
+				if_block(node_11, ($$render) => {
+					if (get(displaySearchForm)) $$render(consequent_9);
 				});
 			}
 
-			reset(div_7);
+			reset(div_9);
 			reset(div_1);
 
 			template_effect(() => {
 				set_attribute(a_2, 'href', logoUrl());
-				set_attribute(a_2, 'aria-label', logoAlt());
+				set_attribute(img, 'src', logoSrc());
+				set_attribute(img, 'alt', logoAlt());
 			});
 		}
 
 		reset(div);
-
-		template_effect(() => {
-			set_style(div, `--logo-src:url(${logoSrc() ?? ''})`);
-			set_class(div_1, 1, get(containerClass));
-		});
-
+		template_effect(() => set_class(div_1, 1, get(containerClass)));
 		append($$anchor, div);
 
 		return pop({
@@ -8011,8 +8089,8 @@
 		const lang = Utils.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + '/QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + '/QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr') ? 'Logo du gouvernement du Québec' : 'Logo of the Quebec government'),
 			logoWidth = prop($$props, 'logoWidth', 7, 139),
 			logoHeight = prop($$props, 'logoHeight', 7, 50),
@@ -8130,7 +8208,7 @@
 				return logoSrc();
 			},
 			set logoSrc(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_couleur.svg'
+				$$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg'
 			) {
 				logoSrc($$value);
 				flushSync();
@@ -8139,7 +8217,7 @@
 				return logoSrcDarkTheme();
 			},
 			set logoSrcDarkTheme(
-				$$value = Utils.imagesRelativePath + '/QUEBEC_blanc.svg'
+				$$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg'
 			) {
 				logoSrcDarkTheme($$value);
 				flushSync();
@@ -9786,9 +9864,9 @@
 		true
 	);
 
-	/* updateInput.svelte.js generated by Svelte v5.28.6 */
+	/* updateChoiceInput.svelte.js generated by Svelte v5.28.6 */
 
-	function updateInput(
+	function updateChoiceInput(
 		input,
 		required,
 		invalid,
@@ -9799,8 +9877,14 @@
 	) {
 		if (!input) return;
 		if (strict_equals(input.role, "switch")) return;
+		if (strict_equals(input.type, "hidden")) return;
 
 		let label = input.closest('label');
+
+		if (!label) {
+			console.warn(...log_if_contains_state('warn', "Pas d'élément label parent pour l'input", input));
+			return;
+		}
 
 		input.classList.add('qc-choicefield');
 		label.classList.add('qc-choicefield-label');
@@ -9864,7 +9948,7 @@
 		};
 
 		user_effect(() => {
-			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateInput(input, required(), invalid(), compact(), selectionButton(), inline(), name()));
+			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateChoiceInput(input, required(), invalid(), compact(), selectionButton(), inline(), name()));
 		});
 
 		{
@@ -10219,7 +10303,7 @@
 		onMount(() => {
 			if (qcCheckoxContext) return;
 			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input'));
+			input(get(rootElement)?.querySelector('input[type="checkbox"]'));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
 
@@ -10229,7 +10313,7 @@
 			}
 		});
 
-		user_effect((_) => updateInput(input(), required(), invalid(), compact(), false, false));
+		user_effect((_) => updateChoiceInput(input(), required(), invalid(), compact(), false, false));
 
 		user_effect(() => {
 			if (!required()) return;
@@ -10422,8 +10506,8 @@
 			input = state(void 0);
 
 		onMount(() => {
-			set(labelElement, $$props.$$host.querySelector('label'), true);
-			set(input, $$props.$$host.querySelector('input'), true);
+			set(labelElement, $$props.$$host.querySelector("label"), true);
+			set(input, $$props.$$host.querySelector('input[type="checkbox"]'), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
@@ -10673,10 +10757,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[136, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[147, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[135, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[146, 8]]);
 	var root_1$3 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[171, 4]]);
+	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[170, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10774,7 +10858,7 @@
 				};
 
 				if_block(node_4, ($$render) => {
-					if (strict_equals(maxlength(), null, false)) $$render(consequent_2);
+					if (maxlength() && strict_equals(maxlength(), null, false)) $$render(consequent_2);
 				});
 			}
 
@@ -13662,7 +13746,7 @@
 			set_class(div, 1, clsx([
 				"qc-dropdown-list-root",
 				!webComponentMode() && get(widthClass),
-				!(get(parentRow) || webComponentParentRow()) && "qc-dropdown-list-margin"
+				!get(parentRow) && !webComponentMode() && "qc-select"
 			]));
 
 			set_class(div_1, 1, clsx([
@@ -13852,7 +13936,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[137, 0], [158, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[158, 0], [179, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13902,6 +13986,8 @@
 			return `qc-dropdown-list-root-md`;
 		});
 
+		let internalChange = false;
+
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
 			set(labelElement, $$props.$$host.querySelector("label"), true);
@@ -13913,27 +13999,47 @@
 			if (get(selectElement)) {
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
+				get(selectElement).addEventListener("change", handleSelectChange);
 			}
 
 			setupItemsList();
 			setupObserver();
+			$$props.$$host.classList.add("qc-select");
 		});
 
 		onDestroy(() => {
 			observer?.disconnect();
+			get(selectElement).removeEventListener("change", handleSelectChange);
 		});
 
 		user_effect(() => {
-			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value() && value().length > 0) {
+			if (get(selectElement) && get(selectElement).options && get(selectElement).options.length > 0 && value()) // Comparaison sur les strings, car les tableaux ont des références toujours différentes
+			// && value.toString() !== previousValue.toString()
+			{
+				internalChange = true;
+
+				let newOptionSelected = false;
+
 				for (const option of get(selectElement).options) {
-					if (value().includes(option.value)) {
-						option.setAttribute('selected', '');
-						option.selected = true;
-					} else {
-						option.removeAttribute('selected');
-						option.selected = false;
+					const selected = value().includes(option.value);
+
+					if (strict_equals(selected, option.selected, false)) {
+						option.toggleAttribute("selected", selected);
+						option.selected = selected;
+						newOptionSelected = true;
 					}
 				}
+
+				if (newOptionSelected) {
+					get(selectElement).dispatchEvent(new Event('change'));
+				}
+
+				setTimeout(
+					() => {
+						internalChange = false;
+					},
+					0
+				);
 			}
 		});
 
@@ -13979,10 +14085,19 @@
 
 				observer.observe(get(selectElement), {
 					childList: true,
+					subtree: true,
 					attributes: true,
 					attributeFilter: ["label", "value", "disabled", "selected"]
 				});
 			}
+		}
+
+		function handleSelectChange() {
+			if (internalChange) {
+				return;
+			}
+
+			setupItemsList();
 		}
 
 		var fragment = root();
