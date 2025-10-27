@@ -154,8 +154,6 @@
   --qc-size-max-width-md: 24.9rem;
   --qc-size-max-width-lg: 52.8rem;
   --qc-size-max-width-xl: 82.5rem;
-  --qc-size-input-max-width: var(--qc-size-max-width-md);
-  --qc-size-textarea-max-width: var(--qc-size-max-width-lg);
   --qc-size-textarea-min-height: 10.8rem;
   --qc-size-search-bar-max-width: 64rem;
   --qc-grid-gutter: 32px;

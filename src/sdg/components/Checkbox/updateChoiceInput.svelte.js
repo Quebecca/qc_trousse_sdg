@@ -1,7 +1,12 @@
-export function updateInput(input, required, invalid, compact, selectionButton, inline, name) {
+export function updateChoiceInput(input, required, invalid, compact, selectionButton, inline, name) {
     if (!input ) return;
     if (input.role === "switch") return;
+    if (input.type === "hidden") return;
     let label = input.closest('label');
+    if (!label) {
+        console.warn("Pas d'élément label parent pour l'input", input);
+        return;
+    }
     input.classList.add('qc-choicefield')
     label.classList.add('qc-choicefield-label')
     input.classList.toggle('qc-selection-button', selectionButton)

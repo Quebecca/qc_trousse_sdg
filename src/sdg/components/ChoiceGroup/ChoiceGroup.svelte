@@ -1,7 +1,7 @@
 <script>
     import Fieldset from "../Fieldset/Fieldset.svelte";
     import {onMount} from "svelte";
-    import {updateInput} from "../Checkbox/updateInput.svelte";
+    import {updateChoiceInput} from "../Checkbox/updateChoiceInput.svelte.js";
 
     let {
         invalid = $bindable(false),
@@ -27,7 +27,7 @@
             .querySelectorAll('input, .qc-choicefield')
             .forEach(
                 input =>
-                    updateInput(
+                    updateChoiceInput(
                         input,
                         required,
                         invalid,

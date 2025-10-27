@@ -18,6 +18,14 @@ test.describe('Rendu visuel',
         await expect(page).toHaveScreenshot('dropdownList.png', {fullPage: true});
     });
 
+    test('Select text wrap', {
+        tag: ['@baseline', '@textwrap', '@dropdownlist']
+    }, async ({ page }) => {
+        await page.locator('#qc-select-multiple-choices-sm').click();
+
+        await expect(page).toHaveScreenshot('dropdownListTextWrap.png', {fullPage: true});
+    });
+
     test('Select svelte', {
         tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {
@@ -494,10 +502,8 @@ test.describe('formulaire', () => {
 
         await expect(page.locator('#dropdown-list-restaurants-input')).toHaveAttribute('aria-invalid', 'true');
         await expect(page.locator('#dropdown-list-restaurants-error')).toMatchAriaSnapshot(`
-        - alert:
-          - img
-          - text: Veuillez choisir un type de restaurant.
-    `);
+            - alert: Veuillez choisir un type de restaurant.
+        `);
 
         await page.locator('#dropdown-list-restaurants-input').click();
         await page.locator('[id="dropdown-list-restaurants-Pâtisserie-Pâtisserie"]').click();
@@ -526,4 +532,45 @@ test.describe('formulaire', () => {
             await dialog.accept();
         });
     });
+});
+
+test.describe('Manipulation du DOM', () => {
+   test('Réordonnancement des options', {
+       tag: ['@dom', '@dropdownlist'],
+       annotation: {
+           type: 'description',
+           description: 'En réordonnant les options dans le select, alors les changement sont reflétés dans la popup'
+       }
+   }, async ({ page }) => {
+       await page.locator('#select-single-choice').evaluate((select: HTMLSelectElement) => {
+           const options = Array.from(select.options);
+           options.reverse();
+
+           select.innerHTML = '';
+           select.append(...options);
+       });
+       await page.locator('#qc-select-single-choice-input').click();
+
+       await expect(page.locator('#qc-select-single-choice-items')).toMatchAriaSnapshot(`
+       - list:
+         - option "Option 16 (désactivée)"
+         - option "Option 15"
+         - option "Option 14"
+         - option "Option 13"
+         - option "Option 12"
+         - option "Option 11"
+         - option "Option 10"
+         - option "Option 9"
+         - option "Option 8"
+         - option "Option 7"
+         - option "Option 6"
+         - option "Option 5"
+         - option "Option 4"
+         - option "Option 3"
+         - option "Option 2"
+         - option "Option 1"
+       - status
+       `
+       );
+   });
 });

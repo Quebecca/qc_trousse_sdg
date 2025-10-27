@@ -44,27 +44,48 @@ qc-piv-header {
   }
   .piv-top {
     display: flex;
+    flex-wrap: nowrap;
+    gap: token-value(spacer sm);
     align-items: start;
     min-width: rem(72);
-    .logo {
+
+    .signature-group {
       display: flex;
-      flex-basis: rem(256);
-      margin-right: 0;
-      [role=img] {
-        background-image: var(--logo-src);
-        background-repeat: no-repeat;
-        background-size: 100%;
-        background-position: center;
-        margin-right: 16px;
-        min-width: 150px;
-        width: 100%;
-        max-width: rem(200);
+      flex-grow: 1;
+      flex-wrap: wrap;
+      align-items: start;
+      margin-right: auto;
+      & > * {
         min-height: rem(72);
       }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        flex-basis: rem(264);
+
+        a {
+          display: flex;
+          height: fit-content;
+          width: fit-content;
+          outline-offset: rem(4);
+
+          img {
+            display: flex;
+            flex-basis: min-content;
+            min-width: 150px;
+            width: 100%;
+            height: 100%;
+            max-width: rem(200);
+            min-height: rem(40);
+          }
+        }
+      }
     }
+
     .title {
-      align-items: center;
-      align-self: center;
+      display: block;
+      align-content: center;
     }
     .right-section {
       min-width: fit-content;
@@ -108,10 +129,14 @@ qc-piv-header {
   }
 }
 
+.page-title {
+  display: inline-block;
+}
+
 qc-piv-header,
 .qc-piv-header {
   a {
-    --qc-color-link-focus-outline: #{token-value(color blue pale)};
+    --qc-color-link-focus-outline: #{map.get($colors, blue, pale)};
     --qc-color-link-hover: white;
     --qc-color-link-text: white;
     --qc-color-link-visited: white;
@@ -161,10 +186,6 @@ qc-piv-header,
         flex: 1 1 auto;
         margin-right: auto;
         min-width: 0;
-        img {
-          width: 100%;
-          margin-right: rem(16);
-        }
       }
 
       .title {
@@ -189,6 +210,12 @@ qc-piv-header,
   .piv-top {
     flex-wrap: wrap;
   }
+}
+
+.no-link-title {
+  margin: 0;
+  font-weight: token-value(font weight regular);
+  font-size: token-value(font size md);
 }
 
 

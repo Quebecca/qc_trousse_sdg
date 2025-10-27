@@ -306,7 +306,20 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ## Historique
 - 1.4.5 :
   - Correction de bugs :
-    - Liste déroulante : correction de bugs affectant la synchronisation du select et du qc-select.
+    - Correction de sélection d'input passé en `slot` dans `qc-checkbox` lorsque plusieurs éléments `input` sont présents
+    - Bandeau d'en-tête du PIV :
+      - Ajustement des dimensions et couleur de la bordure de focus sur la signature et les liens inclus dans le PIV
+      - Ajustement du comportement du titre de site lorsqu'il ne renvoie pas à un lien
+      - Changement des fichiers SVG du logo du Québec pour retirer les marges supérieures et inférieures
+    - Champ texte :
+      - Correction de la mauvaise largeur du champ texte lorsque placé dans un conteneur flex ;
+      - Retrait des jetons --qc-size-input-max-width et --qc-size-textarea-max-width, à remplacer au besoin par --qc-size-max-width-md et --qc-size-max-width-lg respectivement. Ces jetons définissaient la largeur maximale des champs de texte par défaut ; elle est désormais gérée dans le composant qc-textfield dont l'attribut size reçoit une valeur par défaut.
+    - Liste déroulante :
+      - Changement de l'affichage du texte des options pour s'enrouler sur la ligne suivante (précédemment une ellipse)
+      - Ajustement de l'application de la marge inférieure pour être ajustable depuis le DOM clair
+      - Ajout d'un dispatch d'événement `change` lors d'un changement de sélection
+      - Correction de bugs affectant la synchronisation du select et du qc-select.
+  - Bonification des tests Playwright pour couvrir plus de cas
 - 1.4.4 :
   - Correction de bugs : 
     - Correction du style des boutons désactivés : https://github.com/Quebecca/qc_trousse_sdg/issues/28

@@ -1,4 +1,5 @@
 @use "qc-sdg-lib" as *;
+@use "sass:map";
 
 .qc-fieldset {
   border: none;
@@ -84,10 +85,20 @@ $invalid-border-width: 2px;
   qc-textfield,
   .qc-textfield {
     margin-top: token-value(spacer, xs);
-    display: block;
-    width: auto;
     margin-bottom: 0;
+    min-width: 0;
+
+    $sizes: map.get($lg-tokens, size, max-width);
+    @each $size, $width in $sizes {
+      [size="#{$size}"] {
+        input {
+          width: $width;
+          max-width: $width;
+        }
+      }
+    }
   }
+
   .qc-dropdown-list-root {
     margin-top: token-value(spacer, xs);
     margin-bottom: 0;
