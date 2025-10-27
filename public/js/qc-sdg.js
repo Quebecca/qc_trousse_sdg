@@ -7023,7 +7023,7 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root$o = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
+	var root$n = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -7055,7 +7055,7 @@
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$o();
+		var div = root$n();
 		let attributes_1;
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
@@ -7158,7 +7158,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$n = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
+	var root$m = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -7214,7 +7214,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var div = root$n();
+		var div = root$m();
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
 
@@ -7338,14 +7338,14 @@
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
 
-	var root$m = add_locations(template(`<!> <link rel="stylesheet">`, 1), NoticeWC[FILENAME], [[27, 0]]);
+	var root$l = add_locations(template(`<!> <link rel="stylesheet">`, 1), NoticeWC[FILENAME], [[27, 0]]);
 
 	function NoticeWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		var fragment = root$m();
+		var fragment = root$l();
 		var node = first_child(fragment);
 
 		{
@@ -7405,7 +7405,7 @@
 	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 28, [[117, 32]]]]);
 	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 16]]);
 
-	var root$l = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$k = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7489,7 +7489,7 @@
 			}
 		});
 
-		var div = root$l();
+		var div = root$k();
 		var div_1 = child(div);
 
 		{
@@ -7961,7 +7961,7 @@
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
 
-	var root$k = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
+	var root$j = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
 
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
@@ -7981,7 +7981,7 @@
 					'self'
 				]);
 
-		var fragment = root$k();
+		var fragment = root$j();
 		var node = first_child(fragment);
 
 		{
@@ -8080,7 +8080,7 @@
 
 	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$3 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-	var root$j = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
+	var root$i = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
 	function PivFooter($$anchor, $$props) {
 		check_target(new.target);
@@ -8100,7 +8100,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var div = root$j();
+		var div = root$i();
 		var node = child(div);
 
 		{
@@ -8310,7 +8310,7 @@
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
 
-	var root$i = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivFooterWC[FILENAME], [[44, 0]]);
+	var root$h = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivFooterWC[FILENAME], [[44, 0]]);
 
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
@@ -8330,7 +8330,7 @@
 					'self'
 				]);
 
-		var fragment = root$i();
+		var fragment = root$h();
 		var node = first_child(fragment);
 
 		{
@@ -8409,7 +8409,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$h = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$g = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8436,7 +8436,7 @@
 					'class'
 				]);
 
-		var button = root$h();
+		var button = root$g();
 		let attributes;
 		var node = child(button);
 
@@ -8713,14 +8713,14 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var root$g = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[25, 0]]);
+	var root$f = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[25, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		var fragment = root$g();
+		var fragment = root$f();
 		var node = first_child(fragment);
 
 		Alert(node, spread_props(() => props, { slotContent: `<slot />` }));
@@ -8759,7 +8759,7 @@
 	}
 
 	var on_click$2 = (e, scrollToTop) => scrollToTop(e);
-	var root$f = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$e = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8803,7 +8803,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$f();
+		var a = root$e();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8884,7 +8884,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$e = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
+	var root$d = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8966,7 +8966,7 @@
 			});
 		});
 
-		var span_1 = root$e();
+		var span_1 = root$d();
 
 		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
 		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
@@ -9004,7 +9004,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$d = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
+	var root$c = add_locations(template(`<div><!> <input> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -9040,7 +9040,7 @@
 			searchInput?.focus();
 		}
 
-		var div = root$d();
+		var div = root$c();
 		var node = child(div);
 
 		{
@@ -9177,7 +9177,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$c = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$b = add_locations(template(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -9221,7 +9221,7 @@
 				...Utils.computeFieldsAttributes("submit", rest)
 			}));
 
-		var div = root$c();
+		var div = root$b();
 		let classes;
 		var node = child(div);
 
@@ -9534,7 +9534,7 @@
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
 	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[4, 26]]);
-	var root$b = add_locations(template(`<!><!>`, 1), LabelText[FILENAME], []);
+	var root$a = add_locations(template(`<!><!>`, 1), LabelText[FILENAME], []);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -9543,7 +9543,7 @@
 		let text = prop($$props, 'text', 7),
 			required = prop($$props, 'required', 7);
 
-		var fragment = root$b();
+		var fragment = root$a();
 		var node = first_child(fragment);
 
 		html(node, text);
@@ -10087,7 +10087,7 @@
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	var root$a = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
+	var root$9 = add_locations(template(`<!> <link rel="stylesheet">`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
 
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10105,7 +10105,7 @@
 			columnCount = prop($$props, 'columnCount', 7),
 			inline = prop($$props, 'inline', 7);
 
-		var fragment = root$a();
+		var fragment = root$9();
 		var node = first_child(fragment);
 
 		{
@@ -10251,7 +10251,7 @@
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
 	var root_2$4 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[56, 4]]);
-	var root$9 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
+	var root$8 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -10321,7 +10321,7 @@
 			labelElement().appendChild(requiredSpan());
 		});
 
-		var div = root$9();
+		var div = root$8();
 		var node_1 = child(div);
 
 		requiredSpanSnippet(node_1);
@@ -10486,7 +10486,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$8 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[49, 0]]);
+	var root$7 = add_locations(template(`<!> <link rel="stylesheet">`, 1), CheckboxWC[FILENAME], [[49, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10511,7 +10511,7 @@
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
 
-		var fragment = root$8();
+		var fragment = root$7();
 		var node = first_child(fragment);
 
 		{
@@ -10609,7 +10609,7 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root$7 = add_locations(template(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
+	var root$6 = add_locations(template(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -10638,7 +10638,7 @@
 					'rootElement'
 				]);
 
-		var label = root$7();
+		var label = root$6();
 		let attributes;
 		var node = child(label);
 
@@ -11178,7 +11178,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$6 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[98, 0]]);
+	var root$5 = add_locations(template(`<!> <link rel="stylesheet">`, 1), TextFieldWC[FILENAME], [[98, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11240,7 +11240,7 @@
 			}
 		});
 
-		var fragment = root$6();
+		var fragment = root$5();
 		var node = first_child(fragment);
 
 		{
@@ -11427,350 +11427,6 @@
 		['default'],
 		[],
 		true
-	));
-
-	Button[FILENAME] = 'src/sdg/components/Button/Button.svelte';
-
-	var root$5 = add_locations(template(`<button><!> <!></button>`), Button[FILENAME], [[28, 0]]);
-
-	function Button($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let variant = prop($$props, 'variant', 7, "primary"),
-			disabled = prop($$props, 'disabled', 7, false),
-			compact = prop($$props, 'compact', 7, false),
-			rounded = prop($$props, 'rounded', 7, false),
-			label = prop($$props, 'label', 7, ""),
-			icon = prop($$props, 'icon', 7, ""),
-			iconPosition = prop($$props, 'iconPosition', 7, "left"),
-			iconSrc = prop($$props, 'iconSrc', 7, ""),
-			rest = rest_props(
-				$$props,
-				[
-					'$$slots',
-					'$$events',
-					'$$legacy',
-					'$$host',
-					'variant',
-					'disabled',
-					'compact',
-					'rounded',
-					'label',
-					'icon',
-					'iconPosition',
-					'iconSrc'
-				]);
-
-		let className = state(void 0);
-
-		user_effect(() => {
-			set(
-				className,
-				[
-					"qc-button",
-					`qc-${variant()}`,
-					compact() && "qc-compact",
-					rounded() && "qc-button-rounded"
-				].filter(Boolean).join(" "),
-				true
-			);
-		});
-
-		var button = root$5();
-		let attributes;
-		var node = child(button);
-
-		{
-			var consequent_2 = ($$anchor) => {
-				var fragment = comment();
-				var node_1 = first_child(fragment);
-
-				{
-					var consequent = ($$anchor) => {
-						Icon($$anchor, {
-							get src() {
-								return iconSrc();
-							}
-						});
-					};
-
-					var alternate = ($$anchor, $$elseif) => {
-						{
-							var consequent_1 = ($$anchor) => {
-								Icon($$anchor, {
-									get type() {
-										return icon();
-									}
-								});
-							};
-
-							if_block(
-								$$anchor,
-								($$render) => {
-									if (icon()) $$render(consequent_1);
-								},
-								$$elseif
-							);
-						}
-					};
-
-					if_block(node_1, ($$render) => {
-						if (iconSrc()) $$render(consequent); else $$render(alternate, false);
-					});
-				}
-
-				append($$anchor, fragment);
-			};
-
-			if_block(node, ($$render) => {
-				if (strict_equals(iconPosition(), "left")) $$render(consequent_2);
-			});
-		}
-
-		var text = sibling(node);
-		var node_2 = sibling(text);
-
-		{
-			var consequent_5 = ($$anchor) => {
-				var fragment_3 = comment();
-				var node_3 = first_child(fragment_3);
-
-				{
-					var consequent_3 = ($$anchor) => {
-						Icon($$anchor, {
-							get src() {
-								return iconSrc();
-							}
-						});
-					};
-
-					var alternate_1 = ($$anchor, $$elseif) => {
-						{
-							var consequent_4 = ($$anchor) => {
-								Icon($$anchor, {
-									get type() {
-										return icon();
-									}
-								});
-							};
-
-							if_block(
-								$$anchor,
-								($$render) => {
-									if (icon()) $$render(consequent_4);
-								},
-								$$elseif
-							);
-						}
-					};
-
-					if_block(node_3, ($$render) => {
-						if (iconSrc()) $$render(consequent_3); else $$render(alternate_1, false);
-					});
-				}
-
-				append($$anchor, fragment_3);
-			};
-
-			if_block(node_2, ($$render) => {
-				if (icon() && strict_equals(iconPosition(), "right")) $$render(consequent_5);
-			});
-		}
-
-		reset(button);
-
-		template_effect(() => {
-			attributes = set_attributes(button, attributes, {
-				class: get(className),
-				disabled: disabled(),
-				...rest
-			});
-
-			set_text(text, ` ${label() ?? ''} `);
-		});
-
-		append($$anchor, button);
-
-		return pop({
-			get variant() {
-				return variant();
-			},
-			set variant($$value = "primary") {
-				variant($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value = false) {
-				disabled($$value);
-				flushSync();
-			},
-			get compact() {
-				return compact();
-			},
-			set compact($$value = false) {
-				compact($$value);
-				flushSync();
-			},
-			get rounded() {
-				return rounded();
-			},
-			set rounded($$value = false) {
-				rounded($$value);
-				flushSync();
-			},
-			get label() {
-				return label();
-			},
-			set label($$value = "") {
-				label($$value);
-				flushSync();
-			},
-			get icon() {
-				return icon();
-			},
-			set icon($$value = "") {
-				icon($$value);
-				flushSync();
-			},
-			get iconPosition() {
-				return iconPosition();
-			},
-			set iconPosition($$value = "left") {
-				iconPosition($$value);
-				flushSync();
-			},
-			get iconSrc() {
-				return iconSrc();
-			},
-			set iconSrc($$value = "") {
-				iconSrc($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	create_custom_element(
-		Button,
-		{
-			variant: {},
-			disabled: {},
-			compact: {},
-			rounded: {},
-			label: {},
-			icon: {},
-			iconPosition: {},
-			iconSrc: {}
-		},
-		[],
-		[],
-		true
-	);
-
-	ButtonWC[FILENAME] = 'src/sdg/components/Button/ButtonWC.svelte';
-
-	function ButtonWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let variant = prop($$props, 'variant', 7, "primary"),
-			disabled = prop($$props, 'disabled', 7, false),
-			compact = prop($$props, 'compact', 7, false),
-			rounded = prop($$props, 'rounded', 7, false),
-			label = prop($$props, 'label', 7, ""),
-			rest = rest_props(
-				$$props,
-				[
-					'$$slots',
-					'$$events',
-					'$$legacy',
-					'$$host',
-					'variant',
-					'disabled',
-					'compact',
-					'rounded',
-					'label'
-				]);
-
-		Button($$anchor, spread_props(
-			{
-				get variant() {
-					return variant();
-				},
-				get disabled() {
-					return disabled();
-				},
-				get compact() {
-					return compact();
-				},
-				get rounded() {
-					return rounded();
-				},
-				get label() {
-					return label();
-				}
-			},
-			() => rest
-		));
-
-		return pop({
-			get variant() {
-				return variant();
-			},
-			set variant($$value = "primary") {
-				variant($$value);
-				flushSync();
-			},
-			get disabled() {
-				return disabled();
-			},
-			set disabled($$value = false) {
-				disabled($$value);
-				flushSync();
-			},
-			get compact() {
-				return compact();
-			},
-			set compact($$value = false) {
-				compact($$value);
-				flushSync();
-			},
-			get rounded() {
-				return rounded();
-			},
-			set rounded($$value = false) {
-				rounded($$value);
-				flushSync();
-			},
-			get label() {
-				return label();
-			},
-			set label($$value = "") {
-				label($$value);
-				flushSync();
-			},
-			...legacy_api()
-		});
-	}
-
-	customElements.define('qc-button', create_custom_element(
-		ButtonWC,
-		{
-			variant: { attribute: 'variant', type: 'String' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
-			compact: { attribute: 'compact', type: 'Boolean' },
-			rounded: { attribute: 'rounded', type: 'Boolean' },
-			label: { attribute: 'label', type: 'String' },
-			icon: { attribute: 'icon', type: 'String' },
-			iconPosition: { attribute: 'icon-position', type: 'String' },
-			iconSrc: { attribute: 'icon-src', type: 'String' }
-		},
-		[],
-		[],
-		false
 	));
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
