@@ -11,7 +11,7 @@
         label = '',
         required = $bindable(false),
         description,
-        size,
+        size = $bindable(),
         maxlength,
         maxlengthReached = $bindable(false),
         invalidAtSubmit = $bindable(false),
@@ -52,6 +52,12 @@
             valueParam => value = valueParam,
             invalidParam => invalid = invalidParam
         )
+    })
+
+    $effect(() => {
+        if (size) return;
+        if (!input) return;
+        size = input.tagName === 'INPUT' ? 'md' : 'lg';
     })
 
     $effect(() => {
@@ -115,7 +121,6 @@
 </script>
 
 {#snippet textfield()}
-
     {#if label}
         <Label
                 {required}
