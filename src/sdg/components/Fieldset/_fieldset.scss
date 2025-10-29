@@ -99,6 +99,10 @@ $invalid-border-width: 2px;
     }
   }
 
+  .qc-select {
+    margin-bottom: 0;
+  }
+
   .qc-dropdown-list-root {
     margin-top: token-value(spacer, xs);
     margin-bottom: 0;

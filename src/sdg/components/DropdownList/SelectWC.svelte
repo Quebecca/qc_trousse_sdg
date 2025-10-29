@@ -34,8 +34,6 @@
         ...rest
     } = $props();
 
-    const availableWidths = ["xs", "sm", "md", "lg", "xl"];
-
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
@@ -43,12 +41,6 @@
     let instance = $state();
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
-    let widthClass = $derived.by(() => {
-        if (availableWidths.includes(width)) {
-            return `qc-dropdown-list-root-${width}`;
-        }
-        return `qc-dropdown-list-root-md`;
-    });
     let internalChange = false;
 
     onMount(() => {
@@ -107,13 +99,6 @@
     $effect(() => {
        if (parentRow && errorElement) {
            parentRow.appendChild(errorElement);
-       }
-    });
-
-    $effect(() => {
-       if (widthClass) {
-           $host().classList.add("qc-dropdown-list-root");
-           $host().classList.add(widthClass);
        }
     });
 

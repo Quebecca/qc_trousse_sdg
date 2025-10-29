@@ -2104,6 +2104,9 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   width: 82.5rem;
   max-width: 82.5rem;
 }
+.qc-formfield-row .qc-select {
+  margin-bottom: 0;
+}
 .qc-formfield-row .qc-dropdown-list-root {
   margin-top: var(--qc-spacer-xs);
   margin-bottom: 0;
@@ -2602,6 +2605,21 @@ li[aria-selected=true] {
 }
 .qc-dropdown-list.qc-dropdown-list-invalid > .qc-dropdown-button {
   height: 3.6rem;
+}
+.qc-dropdown-list-xs {
+  max-width: var(--qc-size-max-width-xs);
+}
+.qc-dropdown-list-sm {
+  max-width: var(--qc-size-max-width-sm);
+}
+.qc-dropdown-list-md {
+  max-width: var(--qc-size-max-width-md);
+}
+.qc-dropdown-list-lg {
+  max-width: var(--qc-size-max-width-lg);
+}
+.qc-dropdown-list-xl {
+  max-width: var(--qc-size-max-width-xl);
 }
 
 .qc-dropdown-list-search {
