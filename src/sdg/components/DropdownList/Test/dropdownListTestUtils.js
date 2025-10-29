@@ -12,6 +12,20 @@ export function genericOptions() {
     return genericOptions;
 }
 
+export function overflowOptions() {
+    let overflowOptions = [];
+    for (let i = 1; i <= 3; i++) {
+        overflowOptions.push({
+            value: i,
+            label: `Option ${i} + texte de remplissage`,
+            disabled: false,
+            checked: false,
+        });
+    }
+
+    return overflowOptions;
+}
+
 export function restaurantsArray() {
     return [
         {

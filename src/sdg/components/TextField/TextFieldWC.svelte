@@ -26,6 +26,7 @@
             description,
             required,
             maxlength,
+            size,
             maxlengthReached = $bindable(false),
             invalidAtSubmit = $bindable(false),
         } = $props();
@@ -46,6 +47,12 @@
             invalidParam => invalid = invalidParam
         )
     })
+
+    $effect(() => {
+        if (!size) return;
+        $host().setAttribute('size', size);
+    })
+
     $effect(() => {
         if (!input) return;
         if (label) {
@@ -75,6 +82,7 @@
     {required}
     {maxlength}
     {value}
+    bind:size
     bind:invalid
     bind:invalidText
     bind:maxlengthReached

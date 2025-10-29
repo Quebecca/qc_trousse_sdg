@@ -15,6 +15,7 @@
                  name="tile-1"
 >
     <label>
+        <input type="hidden">
         <input {type}
 
                value="1"
@@ -27,6 +28,7 @@
     </label>
 
     <label>
+        <input type="hidden">
         <input {type}
 
                value="2"
@@ -36,6 +38,7 @@
             </span>
     </label>
     <label>
+        <input type="hidden">
         <input {type}
 
                value="3"

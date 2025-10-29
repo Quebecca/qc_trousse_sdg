@@ -2,7 +2,7 @@
     import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
     import {getContext, onMount} from "svelte";
-    import {updateInput, onChange} from "./updateInput.svelte";
+    import {updateChoiceInput, onChange} from "./updateChoiceInput.svelte.js";
 
     const lang = Utils.getPageLanguage(),
         qcCheckoxContext = getContext("qc-checkbox");
@@ -32,7 +32,7 @@
     onMount(() => {
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
-        input = rootElement?.querySelector('input')
+        input = rootElement?.querySelector('input[type="checkbox"]')
         onChange(input, _invalid => invalid = _invalid)
     })
 
@@ -42,7 +42,7 @@
         }
     })
 
-    $effect(_ => updateInput(input, required, invalid, compact, false, false))
+    $effect(_ => updateChoiceInput(input, required, invalid, compact, false, false))
 
     $effect(() => {
         if (!required) return;

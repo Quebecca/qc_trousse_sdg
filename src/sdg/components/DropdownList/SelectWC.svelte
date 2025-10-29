@@ -18,7 +18,7 @@
 }}"/>
 
 <script>
-    import {onDestroy, onMount} from "svelte";
+    import {onDestroy, onMount, tick} from "svelte";
     import DropdownList from "./DropdownList.svelte";
     import {Utils} from "../utils";
 
@@ -34,8 +34,6 @@
         ...rest
     } = $props();
 
-    const availableWidths = ["xs", "sm", "md", "lg", "xl"];
-
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
@@ -49,63 +47,52 @@
     let instance = $state();
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
-    let widthClass = $derived.by(() => {
-        if (availableWidths.includes(width)) {
-            return `qc-dropdown-list-root-${width}`;
-        }
-        return `qc-dropdown-list-root-md`;
-    });
-
+    let internalChange = false;
 
     onMount(() => {
         selectElement = $host().querySelector("select");
         labelElement = $host().querySelector("label");
-
         if (labelElement) {
             label = labelElement.innerHTML;
         }
         if (selectElement) {
             multiple = selectElement.multiple;
             disabled = selectElement.disabled;
-            selectElement.addEventListener("change", setupItemsList)
+
+            selectElement.addEventListener("change", handleSelectChange);
+            observer.observe(selectElement, observerOptions);
         }
         setupItemsList();
-        setupObserver();
+        $host().classList.add("qc-select");
     });
-
-    $inspect("value", value);
 
     onDestroy(() => {
         observer?.disconnect();
+        selectElement.removeEventListener("change", handleSelectChange);
     });
 
     $effect(() => {
         if (!selectElement) return;
         if (!selectElement.options) return;
-        observer.disconnect()
+        internalChange = true;
+        let newOptionSelected = false;
         for (const option of selectElement.options) {
-            // console.log(value, option.value)
-            if (value.includes(option.value)) {
-                option.setAttribute('selected', '');
-                option.selected = true;
-            } else {
-                option.removeAttribute('selected');
-                option.selected = false;
+                const selected = value.includes(option.value);
+                if (selected !== option.selected) {
+                    option.toggleAttribute("selected", selected);
+                    option.selected = selected;
+                    newOptionSelected = true;
             }
         }
-        setupObserver()
+        if (newOptionSelected) {
+            selectElement.dispatchEvent(new Event('change'));
+        }
+        tick().then(() => internalChange = false)
     });
 
     $effect(() => {
        if (parentRow && errorElement) {
            parentRow.appendChild(errorElement);
-       }
-    });
-
-    $effect(() => {
-       if (widthClass) {
-           $host().classList.add("qc-dropdown-list-root");
-           $host().classList.add(widthClass);
        }
     });
 
@@ -123,13 +110,10 @@
         }
     }
 
-    function setupObserver() {
-        if (!selectElement) return;
-        observer.observe(selectElement, observerOptions);
+    function handleSelectChange() {
+        if (internalChange) return;
+        setupItemsList();
     }
-
-
-
 </script>
 
 <div hidden>
@@ -143,7 +127,6 @@
         {placeholder}
         {width}
         webComponentMode={true}
-        webComponentParentRow={parentRow}
         bind:value
         bind:errorElement
         bind:invalid

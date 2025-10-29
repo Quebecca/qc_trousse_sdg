@@ -27,7 +27,6 @@
         rootElement = $bindable(),
         errorElement = $bindable(),
         webComponentMode = false,
-        webComponentParentRow,
     } = $props();
 
     const
@@ -81,9 +80,9 @@
             const keyword = webComponentMode ? "container" : "root";
 
             if (availableWidths.includes(width)) {
-                return `qc-dropdown-list-${keyword}-${width}`;
+                return `qc-dropdown-list-${width}`;
             }
-            return `qc-dropdown-list-${keyword}-md`;
+            return `qc-dropdown-list-md`;
         }),
         srItemsCountText = $derived.by(() => {
             const s = displayedItems.length > 1 ? "s" : "";
@@ -273,14 +272,11 @@
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
 <div
         class={[
-        "qc-dropdown-list-root",
-        !webComponentMode && widthClass,
-        !(parentRow || webComponentParentRow) && "qc-dropdown-list-margin"
+        !parentRow && !webComponentMode && "qc-select"
     ]} bind:this={rootElement}
 >
     <div class={[
             "qc-dropdown-list-container",
-            webComponentMode && widthClass
         ]}>
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -301,6 +297,7 @@
         <div
                 class={[
                 `qc-dropdown-list`,
+                widthClass,
                 invalid && "qc-dropdown-list-invalid",
             ]}
                 tabindex="-1"

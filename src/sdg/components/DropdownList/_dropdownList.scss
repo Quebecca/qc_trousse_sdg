@@ -6,18 +6,11 @@
 $min-height: 40;
 $border: 1;
 
-.qc-dropdown-list-margin {
+.qc-select {
+  display: block;
   margin-bottom: rem(32);
-}
 
-.qc-dropdown-list-root {
-  width: 100%;
-
-  &-xs { max-width: token-value(size, max-width, xs); }
-  &-sm { max-width: token-value(size, max-width, sm); }
-  &-md { max-width: token-value(size, max-width, md); }
-  &-lg { max-width: token-value(size, max-width, lg); }
-  &-xl { max-width: token-value(size, max-width, xl); }
+  max-width: 100%;
 }
 
 .qc-dropdown-list-container {
@@ -26,12 +19,6 @@ $border: 1;
   .qc-label {
     margin-bottom: rem(4);
   }
-
-  &-xs { max-width: token-value(size, max-width, xs); }
-  &-sm { max-width: token-value(size, max-width, sm); }
-  &-md { max-width: token-value(size, max-width, md); }
-  &-lg { max-width: token-value(size, max-width, lg); }
-  &-xl { max-width: token-value(size, max-width, xl); }
 }
 
 .qc-dropdown-list {
@@ -40,6 +27,8 @@ $border: 1;
   border: rem($border) solid token-value(color, grey, medium);
   min-height: rem($min-height);
   background-color: token-value(color, background);
+  max-width: 100%;
+  min-width: 0;
 
   &.qc-dropdown-list-invalid {
     border: rem(2) solid token-value(color, red, regular) !important;
@@ -48,6 +37,12 @@ $border: 1;
       height: rem(36);
     }
   }
+
+  &-xs { width: token-value(size, max-width, xs); }
+  &-sm { width: token-value(size, max-width, sm); }
+  &-md { width: token-value(size, max-width, md); }
+  &-lg { width: token-value(size, max-width, lg); }
+  &-xl { width: token-value(size, max-width, xl); }
 }
 
 .qc-dropdown-list-search {

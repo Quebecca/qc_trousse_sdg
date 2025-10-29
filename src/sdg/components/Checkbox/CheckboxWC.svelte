@@ -12,7 +12,7 @@
     import Checkbox from "./Checkbox.svelte";
     import {onMount, setContext} from "svelte";
     import {Utils} from "../utils";
-    import {onChange} from "./updateInput.svelte";
+    import {onChange} from "./updateChoiceInput.svelte.js";
 
     setContext('qc-checkbox', true);
 
@@ -29,8 +29,8 @@
 
     onMount(() => {
         labelElement = $host()
-            .querySelector('label')
-        input = $host().querySelector('input')
+            .querySelector("label")
+        input = $host().querySelector('input[type="checkbox"]')
         onChange(input, _invalid => invalid = _invalid)
     })
 

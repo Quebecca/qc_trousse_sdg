@@ -1,3 +1,7 @@
+import {setMcePivHeaderLogoSrc} from "./components/PivHeader/Test/pivHeaderTest";
+
+setMcePivHeaderLogoSrc();
+
 export * from './bases/Icon/Test/IconEmbeddedTest.svelte';
 export * from './components/TextField/Test/TextFieldEmbededTest.svelte';
 export * from "./components/DropdownList/Test/DropdownListSvelteTest.svelte";

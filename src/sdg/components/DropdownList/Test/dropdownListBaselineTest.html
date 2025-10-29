@@ -20,6 +20,15 @@
   </select>
 </qc-select>
 
+<script>
+    const selectElement = document.getElementById("select-single-choice");
+    console.log("Select element options[0]:", selectElement.options[0]);
+
+    selectElement.addEventListener("change", (event) => {
+        console.log("Option sélectionnée :", event.target.value);
+    });
+</script>
+
 <div style="height: 40rem;">
   <qc-select id="qc-select-single-choice-search" enable-search>
     <label for="select-single-choice-search">Choix unique avec recherche</label>
@@ -68,7 +77,7 @@
 
 <div class="qc-formfield-row">
   <qc-select id="qc-select-invalid" invalid>
-    <label for="select-invalid">État invalide</label>
+    <label for="select-invalid">État initialement invalide dans .qc-formfield-row</label>
     <select multiple id="select-invalid">
       <option value="1">Option 1</option>
       <option value="2">Option 2</option>
@@ -115,6 +124,15 @@
 <qc-select id="qc-select-disabled">
   <label for="select-disabled">Désactivé</label>
   <select id="select-disabled" disabled>disabled</select>
+</qc-select>
+
+<qc-select id="qc-select-multiple-choices-sm" width="sm">
+    <label for="select-multiple-choices-sm">Débordement</label>
+    <select id="select-multiple-choices-sm" multiple>
+        <option value="1">Option 1 + texte de remplissage</option>
+        <option value="2">Option 2 + texte de remplissage</option>
+        <option value="3">Option 3 + texte de remplissage</option>
+    </select>
 </qc-select>
 
 <form id="dropdown-list-form">

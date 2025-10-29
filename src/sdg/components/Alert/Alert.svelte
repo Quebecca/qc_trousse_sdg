@@ -57,7 +57,7 @@
                                 size="nm"
                                 icon="xclose"
                                 iconSize="sm"
-                                iconColor="text-primary"
+                                iconColor="blue-piv"
                     />
                 {/if}
             </div>

@@ -1,6 +1,6 @@
 <script>
-    import { onMount, tick } from "svelte";
-    import { Utils } from "../utils"
+    import {onMount, tick} from "svelte";
+    import {Utils} from "../utils"
 
     const lang = Utils.getPageLanguage();
 
@@ -46,93 +46,98 @@
     }
 
     onMount(() => {
-      containerClass += fullWidth === 'true' ? '-fluid' : '';
-      if (showSearch === 'true') {
-        enableSearch = 'true'
-        displaySearchForm = true;
-      }
+        containerClass += fullWidth === 'true' ? '-fluid' : '';
+        if (showSearch === 'true') {
+            enableSearch = 'true'
+            displaySearchForm = true;
+        }
     });
 </script>
 
 <div role="banner"
      class="qc-piv-header qc-component"
-     style="--logo-src:url({logoSrc})"
 >
-  <div class="{containerClass}">
-    {#if goToContent === 'true'}
-      <div class="go-to-content">
-        <a href="{goToContentAnchor}">
-          {goToContentText}
-        </a>
-      </div>
-    {/if}
-      {#snippet title()}
-          {#if titleUrl && titleText}
-          <div class="title">
-              <a href="{titleUrl}">
-                  {titleText}
-              </a>
-          </div>
-          {/if}
-      {/snippet}
-      <div class="piv-top">
+    <div class="{containerClass}">
+        {#if goToContent === 'true'}
+            <div class="go-to-content">
+                <a href="{goToContentAnchor}">
+                    {goToContentText}
+                </a>
+            </div>
+        {/if}
+        {#snippet title()}
+            {#if titleText}
+                <div class="title">
+                    {#if titleUrl && titleUrl.length > 0}
+                        <a class="page-title" href="{titleUrl}">{titleText}</a>
+                    {:else}
+                        <span class="page-title" role="heading" aria-level="1">{titleText}</span>
+                    {/if}
+                </div>
+            {/if}
+        {/snippet}
+        <div class="piv-top">
+            <div class="signature-group">
+                <div class="logo">
+                    <a
+                            href="{logoUrl}"
+                            rel="noreferrer"
+                    >
+                        <img src="{logoSrc}" alt="{logoAlt}" />
+                    </a>
+                </div>
 
-        <a href="{logoUrl}"
-           class="logo"
-               rel="noreferrer"
-               aria-label="{logoAlt}"
-            >
-                <div role="img"></div>
-        </a>
+                {@render title()}
+            </div>
 
-        {@render title()}
-      <div class="right-section">
-        {#if Utils.isTruthy(enableSearch)}
-          <a  class="qc-search"
-              href="/"
-              role="button"
-              onclick = {(evt) => {
+            <div class="right-section">
+                {#if Utils.isTruthy(enableSearch)}
+                    <a class="qc-search"
+                       href="/"
+                       role="button"
+                       onclick={(evt) => {
                   evt.preventDefault();
                   displaySearchForm = !displaySearchForm;
                   tick().then(() => {
                             focusOnSearchInput()
                     });
-              }}
-          >
-            <span>{displaySearchForm ? hideSearchText : displaySearchText}</span>
-          </a>
-        {/if}
-        <div class="links">
-            {#if (!slots || slots['links']) && linksSlot }
-                {@render linksSlot()}
-<!--            Le bloc else est present uniquement pour le cas ou PivHeader est utilise sans le wrapper PivHeaderWC.svelte -->
-            {:else}
-                {#if joinUsUrl || altLanguageUrl}
-                    <nav aria-label="{linksLabel}">
-                        <ul>
-                            {#if altLanguageUrl}
-                                <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
-                            {/if}
-                            {#if joinUsUrl}
-                                <li><a href="{joinUsUrl}">{joinUsText}</a></li>
-                            {/if}
-                        </ul>
-                    </nav>
+                }}
+                    >
+                        <span class="no-link-title" role="heading"
+                              aria-level="1">{displaySearchForm ? hideSearchText : displaySearchText}</span>
+                    </a>
                 {/if}
+                <div class="links">
+                    {#if (!slots || slots['links']) && linksSlot }
+                        {@render linksSlot()}
+                        <!--            Le bloc else est present uniquement pour le cas ou PivHeader est utilise sans le wrapper PivHeaderWC.svelte -->
+                    {:else}
+                        {#if joinUsUrl || altLanguageUrl}
+                            <nav aria-label="{linksLabel}">
+                                <ul>
+                                    {#if altLanguageUrl}
+                                        <li><a href="{altLanguageUrl}">{altLanguageText}</a></li>
+                                    {/if}
+                                    {#if joinUsUrl}
+                                        <li><a href="{joinUsUrl}">{joinUsText}</a></li>
+                                    {/if}
+                                </ul>
+                            </nav>
+                        {/if}
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {@render title()}
+
+        <div class="piv-bottom">
+            {#if displaySearchForm}
+                <div class="search-zone" bind:this={searchZone}>
+                    {#if searchZoneSlot}
+                        {@render searchZoneSlot()}
+                    {/if}
+                </div>
             {/if}
         </div>
-      </div>
     </div>
-      {@render title()}
-
-      <div class="piv-bottom">
-      {#if displaySearchForm}
-          <div class="search-zone" bind:this={searchZone}>
-              {#if searchZoneSlot}
-                {@render searchZoneSlot()}
-              {/if}
-          </div>
-      {/if}
-  </div>
-  </div>
 </div>

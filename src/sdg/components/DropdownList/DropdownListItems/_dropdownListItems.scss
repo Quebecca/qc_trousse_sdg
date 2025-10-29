@@ -5,7 +5,7 @@
 $min-height: 40;
 
 .qc-dropdown-list-items {
-  max-height: var(--dropdown-items-height);
+  max-height: calc(var(--dropdown-items-height) * $rem-ratio * 1rem);
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -38,15 +38,13 @@ $min-height: 40;
 
   * {
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 }
 
 .qc-dropdown-list-multiple, .qc-dropdown-list-single {
   display: flex;
   align-items: center;
-  height: rem($min-height);
+  min-height: rem($min-height);
 
   &.qc-dropdown-list-active:hover {
     background-color: token-value(color, grey, pale);
