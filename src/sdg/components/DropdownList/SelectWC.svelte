@@ -127,7 +127,6 @@
         {placeholder}
         {width}
         webComponentMode={true}
-        webComponentParentRow={parentRow}
         bind:value
         bind:errorElement
         bind:invalid

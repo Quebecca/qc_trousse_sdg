@@ -12437,8 +12437,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[105, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[67, 0, [[102, 4]]]]);
+	var root_4 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[100, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[62, 0, [[97, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -12457,9 +12457,6 @@
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {}),
 			placeholder = prop($$props, 'placeholder', 7);
-
-		const precentRootFontSize = 62.5,
-			remRatio = 0.16;
 
 		let itemsComponent = state(void 0);
 
@@ -12600,7 +12597,7 @@
 
 		template_effect(() => {
 			set_attribute(div, 'id', id());
-			set_style(div, `--dropdown-items-height: ${get(usedHeight) / (remRatio * precentRootFontSize)}rem;`);
+			set_style(div, `--dropdown-items-height: ${get(usedHeight) ?? ''};`);
 		});
 
 		append($$anchor, div);
@@ -12892,22 +12889,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[335, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[377, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[334, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[376, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			274,
+			273,
 			0,
 			[
 				[
-					279,
+					278,
 					4,
 					[
 						[
-							298,
+							297,
 							8,
-							[[326, 12, [[375, 16]]]]
+							[[325, 12, [[374, 16]]]]
 						]
 					]
 				]
@@ -12939,8 +12936,7 @@
 			multiple = prop($$props, 'multiple', 7, false),
 			rootElement = prop($$props, 'rootElement', 15),
 			errorElement = prop($$props, 'errorElement', 15),
-			webComponentMode = prop($$props, 'webComponentMode', 7, false),
-			webComponentParentRow = prop($$props, 'webComponentParentRow', 7);
+			webComponentMode = prop($$props, 'webComponentMode', 7, false);
 
 		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
 			inputId = `${id()}-input`,
@@ -13548,13 +13544,6 @@
 				webComponentMode($$value);
 				flushSync();
 			},
-			get webComponentParentRow() {
-				return webComponentParentRow();
-			},
-			set webComponentParentRow($$value) {
-				webComponentParentRow($$value);
-				flushSync();
-			},
 			...legacy_api()
 		});
 	}
@@ -13579,8 +13568,7 @@
 			multiple: {},
 			rootElement: {},
 			errorElement: {},
-			webComponentMode: {},
-			webComponentParentRow: {}
+			webComponentMode: {}
 		},
 		[],
 		[],
@@ -13589,7 +13577,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[119, 0], [140, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[119, 0], [139, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13749,9 +13737,6 @@
 						return width();
 					},
 					webComponentMode: true,
-					get webComponentParentRow() {
-						return get(parentRow);
-					},
 					get multiple() {
 						return multiple();
 					},

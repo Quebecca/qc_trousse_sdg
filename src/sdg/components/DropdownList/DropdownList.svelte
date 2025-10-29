@@ -27,7 +27,6 @@
         rootElement = $bindable(),
         errorElement = $bindable(),
         webComponentMode = false,
-        webComponentParentRow,
     } = $props();
 
     const

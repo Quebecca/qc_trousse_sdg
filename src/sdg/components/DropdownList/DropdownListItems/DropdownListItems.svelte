@@ -20,11 +20,6 @@
         placeholder,
     } = $props()
 
-    const
-        precentRootFontSize = 62.5,
-        remRatio = 0.16
-    ;
-
     let itemsComponent = $state();
     let usedHeight = $derived.by(() => {
         const maxItemsHeight = 336;
@@ -68,7 +63,7 @@
     id={id}
     class="qc-dropdown-list-items"
     tabindex="-1"
-    style="--dropdown-items-height: {usedHeight / (remRatio * precentRootFontSize)}rem;"
+    style="--dropdown-items-height: {usedHeight};"
 >
     {#if multiple}
         <DropdownListItemsMultiple

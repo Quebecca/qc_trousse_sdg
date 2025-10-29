@@ -21,7 +21,7 @@ test.describe('Rendu visuel',
     test('Select text wrap', {
         tag: ['@baseline', '@textwrap', '@dropdownlist']
     }, async ({ page }) => {
-        await page.locator('#qc-select-multiple-choices-sm').click();
+        await page.getByRole('combobox', { name: 'Débordement' }).click();
 
         await expect(page).toHaveScreenshot('dropdownListTextWrap.png', {fullPage: true});
     });
