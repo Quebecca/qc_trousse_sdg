@@ -12892,8 +12892,8 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[337, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[379, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[335, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[377, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -12901,13 +12901,13 @@
 			0,
 			[
 				[
-					281,
+					279,
 					4,
 					[
 						[
-							301,
+							298,
 							8,
-							[[328, 12, [[377, 16]]]]
+							[[326, 12, [[375, 16]]]]
 						]
 					]
 				]
@@ -12989,13 +12989,13 @@
 				};
 			})),
 			widthClass = user_derived(() => {
-				const keyword = webComponentMode() ? "container" : "root";
+				webComponentMode() ? "container" : "root";
 
 				if (availableWidths.includes(width())) {
-					return `qc-dropdown-list-${keyword}-${width()}`;
+					return `qc-dropdown-list-${width()}`;
 				}
 
-				return `qc-dropdown-list-${keyword}-md`;
+				return `qc-dropdown-list-md`;
 			}),
 			srItemsCountText = user_derived(() => {
 				const s = get(displayedItems).length > 1 ? "s" : "";
@@ -13184,6 +13184,9 @@
 		event('keydown', $document.body, handleTab);
 
 		var div_1 = child(div);
+
+		set_class(div_1, 1, clsx(["qc-dropdown-list-container"]));
+
 		var node = child(div_1);
 
 		{
@@ -13400,18 +13403,12 @@
 
 		template_effect(() => {
 			set_class(div, 1, clsx([
-				"qc-dropdown-list-root",
-				!webComponentMode() && get(widthClass),
 				!get(parentRow) && !webComponentMode() && "qc-select"
-			]));
-
-			set_class(div_1, 1, clsx([
-				"qc-dropdown-list-container",
-				webComponentMode() && get(widthClass)
 			]));
 
 			set_class(div_2, 1, clsx([
 				`qc-dropdown-list`,
+				get(widthClass),
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
@@ -13592,7 +13589,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[134, 0], [155, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[119, 0], [140, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13625,7 +13622,6 @@
 					'width'
 				]);
 
-		const availableWidths = ["xs", "sm", "md", "lg", "xl"];
 		let selectElement = state(void 0);
 		let items = state(void 0);
 		let labelElement = state(void 0);
@@ -13641,15 +13637,6 @@
 		let instance = state(void 0);
 		let errorElement = state(void 0);
 		let parentRow = user_derived(() => $$props.$$host.closest(".qc-formfield-row"));
-
-		let widthClass = user_derived(() => {
-			if (availableWidths.includes(width())) {
-				return `qc-dropdown-list-root-${width()}`;
-			}
-
-			return `qc-dropdown-list-root-md`;
-		});
-
 		let internalChange = false;
 
 		onMount(() => {
@@ -13703,13 +13690,6 @@
 		user_effect(() => {
 			if (get(parentRow) && get(errorElement)) {
 				get(parentRow).appendChild(get(errorElement));
-			}
-		});
-
-		user_effect(() => {
-			if (get(widthClass)) {
-				$$props.$$host.classList.add("qc-dropdown-list-root");
-				$$props.$$host.classList.add(get(widthClass));
 			}
 		});
 

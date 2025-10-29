@@ -78200,8 +78200,8 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[336, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[378, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[335, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[377, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -78209,13 +78209,13 @@
 			0,
 			[
 				[
-					280,
+					279,
 					4,
 					[
 						[
-							299,
+							298,
 							8,
-							[[327, 12, [[376, 16]]]]
+							[[326, 12, [[375, 16]]]]
 						]
 					]
 				]
@@ -78711,7 +78711,6 @@
 
 		template_effect(() => {
 			set_class(div, 1, clsx([
-				"qc-dropdown-list-root",
 				!get(parentRow) && !webComponentMode() && "qc-select"
 			]));
 

@@ -9,9 +9,7 @@ $border: 1;
 .qc-select {
   display: block;
   margin-bottom: rem(32);
-}
 
-.qc-dropdown-list-root {
   width: 100%;
 
   &-xs { max-width: token-value(size, max-width, xs); }

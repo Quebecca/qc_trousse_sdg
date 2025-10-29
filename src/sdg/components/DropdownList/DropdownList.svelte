@@ -273,7 +273,6 @@
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
 <div
         class={[
-        "qc-dropdown-list-root",
         !parentRow && !webComponentMode && "qc-select"
     ]} bind:this={rootElement}
 >
