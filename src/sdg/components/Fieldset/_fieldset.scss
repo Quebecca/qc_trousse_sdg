@@ -77,7 +77,8 @@ $invalid-border-width: 2px;
   gap: 0 rem(32);
   flex-wrap: wrap;
   margin-bottom: rem(32);
-  margin-top: rem(-8);
+  $mb : token-value(spacer, xs);
+  margin-top: calc(-1 * $mb);
 
   > .qc-form-error {
     width: 100%;

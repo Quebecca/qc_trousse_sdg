@@ -18,7 +18,7 @@
 }}"/>
 
 <script>
-    import {onDestroy, onMount} from "svelte";
+    import {onDestroy, onMount, tick} from "svelte";
     import DropdownList from "./DropdownList.svelte";
     import {Utils} from "../utils";
 
@@ -37,7 +37,13 @@
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
-    let observer;
+    let observer = new MutationObserver(setupItemsList);
+    let observerOptions = {
+        childList: true,
+        attributes: true,
+        subtree: true,
+        attributeFilter: ["label", "value", "disabled", "selected"]
+    };
     let instance = $state();
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
@@ -46,7 +52,6 @@
     onMount(() => {
         selectElement = $host().querySelector("select");
         labelElement = $host().querySelector("label");
-
         if (labelElement) {
             label = labelElement.innerHTML;
         }
@@ -55,11 +60,9 @@
             disabled = selectElement.disabled;
 
             selectElement.addEventListener("change", handleSelectChange);
+            observer.observe(selectElement, observerOptions);
         }
-
         setupItemsList();
-        setupObserver();
-
         $host().classList.add("qc-select");
     });
 
@@ -69,31 +72,22 @@
     });
 
     $effect(() => {
-        if (
-            selectElement
-            && selectElement.options
-            && selectElement.options.length > 0
-            && value
-            // Comparaison sur les strings, car les tableaux ont des références toujours différentes
-            // && value.toString() !== previousValue.toString()
-        ) {
-            internalChange = true;
-            let newOptionSelected = false;
-            for (const option of selectElement.options) {
+        if (!selectElement) return;
+        if (!selectElement.options) return;
+        internalChange = true;
+        let newOptionSelected = false;
+        for (const option of selectElement.options) {
                 const selected = value.includes(option.value);
                 if (selected !== option.selected) {
                     option.toggleAttribute("selected", selected);
                     option.selected = selected;
                     newOptionSelected = true;
-                }
             }
-            if (newOptionSelected) {
-                selectElement.dispatchEvent(new Event('change'));
-            }
-            setTimeout(() => {
-                internalChange = false;
-            }, 0);
         }
+        if (newOptionSelected) {
+            selectElement.dispatchEvent(new Event('change'));
+        }
+        tick().then(() => internalChange = false)
     });
 
     $effect(() => {
@@ -116,26 +110,8 @@
         }
     }
 
-    function setupObserver() {
-        if (selectElement) {
-            if (observer) {
-                return;
-            }
-            observer = new MutationObserver(setupItemsList);
-            observer.observe(selectElement, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ["label", "value", "disabled", "selected"]
-            });
-        }
-    }
-
     function handleSelectChange() {
-        if (internalChange) {
-            return;
-        }
-
+        if (internalChange) return;
         setupItemsList();
     }
 </script>

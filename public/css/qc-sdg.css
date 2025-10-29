@@ -594,10 +594,6 @@ legend {
   padding: 0;
 }
 
-qc-select select {
-  appearance: none;
-}
-
 h1, .qc-h1 {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h1);
@@ -2068,7 +2064,7 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   gap: 0 3.2rem;
   flex-wrap: wrap;
   margin-bottom: 3.2rem;
-  margin-top: -0.8rem;
+  margin-top: calc(-1 * var(--qc-spacer-xs));
 }
 .qc-formfield-row > .qc-form-error {
   width: 100%;
