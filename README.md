@@ -319,6 +319,8 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
       - Ajustement de l'application de la marge inférieure pour être ajustable depuis le DOM clair ;
       - Ajout d'un dispatch d'événement `change` lors d'un changement de sélection ;
       - Correction de bugs affectant la synchronisation du select et du qc-select.
+    - Alerte :
+      - Ajustement de la couleur du bouton X pour fermer l'alerte: `--qc-color-text-primary` → `--qc-color-blue-piv` ;
   - Bonification des tests Playwright pour couvrir plus de cas ;
 - 1.4.4 :
   - Correction de bugs : 
