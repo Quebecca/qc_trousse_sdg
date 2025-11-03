@@ -1,3 +1,5 @@
+import {Utils} from "../sdg/components/utils";
+
 export * from './components/Code.svelte';
 export * from './components/color-doc.svelte'
 export * from './components/TopNav.svelte'
