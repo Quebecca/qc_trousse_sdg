@@ -139,12 +139,12 @@ export class Utils {
 function getCacheBustingParam(cssPath, currentScriptSrc) {
     const pattern = /\?.*$/;
 
-    const cssCacheBustingParam = cssPath === null ? undefined : cssPath.match(pattern);
+    const cssCacheBustingParam = cssPath?.match(pattern);
     if (cssCacheBustingParam && cssCacheBustingParam.length > 0) {
         return '';
     }
 
-    const scriptCacheBustingParam = currentScriptSrc === null ? undefined : currentScriptSrc.match(pattern);
+    const scriptCacheBustingParam = currentScriptSrc?.match(pattern);
     if (scriptCacheBustingParam && scriptCacheBustingParam.length > 0) {
         return scriptCacheBustingParam[0];
     }
