@@ -600,33 +600,33 @@
 <qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
     <dl>
         <dt>Lien interne</dt>
-        <dd><a href="javascript:;" class="not-visited">Lien interne</a></dd>
+        <dd><a href="#" class="not-visited">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="not-visited">Lien externe</a></qc-external-link>
+            <qc-external-link><a href="#" class="not-visited">Lien externe</a></qc-external-link>
         </dd>
 
         <dt>Lien au survol (pseudo-classe :hover)</dt>
-        <dd><a href="javascript:;" class="pseudo-hover">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-hover">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-hover">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-hover">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien au focus (pseudo-classe :focus)</dt>
-        <dd><a href="javascript:;" class="pseudo-focus">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-focus">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-focus">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-focus">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien au clic (pseudo-classe :active)</dt>
-        <dd><a href="javascript:;" class="pseudo-active">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-active">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-active">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-active">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien visité (pseudo-classe :visited)</dt>
-        <dd><a href="javascript:;" class="pseudo-visited">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-visited">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-visited">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-visited">Lien externe</a>
             </qc-external-link>
         </dd>
     </dl>
@@ -839,7 +839,7 @@
 <h3>Exemples</h3>
 <h4>Alerte jaune</h4>
 <p>
-  <a href="javascript:;"
+  <a href="#"
      id="show-qc-alert"
      hidden
   >
@@ -863,7 +863,7 @@
                 caption="Exemple d’alerte générale">
   <qc-alert type="general"
             maskable="false">
-    <p>Alerte bleue d’importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+    <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
   </qc-alert>
 </qc-doc-exemple>
 
@@ -1009,13 +1009,13 @@
              title="Des erreurs sont présentes dans le formulaire :">
     <ul>
       <li>
-        <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
+        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
       </li>
       <li>
-        <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
+        <a href="#">Le champ « Prénom » est obligatoire ;</a>
       </li>
       <li>
-        <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
+        <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
       </li>
     </ul>
   </qc-notice>
@@ -1708,8 +1708,6 @@
   </table>
 </div>
 
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
-
 <h5>Zone d’ajout de contenu HTML</h5>
 
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
@@ -2119,11 +2117,6 @@
     </tbody>
   </table>
 </div>
-
-<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
-
-<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne provoquent pas de décalage. <br/>
-    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
 
 <h4>Propriété js</h4>
 <div class="table-overflow">
@@ -2627,9 +2620,14 @@
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
 
     <hr/>
-    <h3 id="champs-alignes">Champs alignés horizontalement (classe <code>qc‑textfield‑row</code>)</h3>
+    <h3 id="champs-alignes">Champs alignés horizontalement (classe <code>qc‑formfield‑row</code>)</h3>
 
-<p>Les champs regroupés sur une ligne doivent être placés dans un div avec la classe <code>qc-textfield-row</code> pour correctement afficher les messages d’erreur en cas de soumission invalide.</p>
+<p>
+    Les champs regroupés sur une ligne doivent être placés dans un <code>div</code> avec la classe <code>qc-formfield-row</code>.
+    De cette façon, les messages d'erreur ne provoquent pas de décalage.
+    <br/><br/>
+    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.
+</p>
 
 <h4>Exemple</h4>
 <qc-doc-exemple caption="Exemple de champs sur une seule ligne">
@@ -2731,11 +2729,6 @@
     });
 </script>
 
-<h4>Documentation technique</h4>
-<p>Placer les champs à regrouper sur une seule ligne dans un div avec la classe <code>qc-formfield-row</code></p>
-
-
-
     <hr/>
     <h2 id="toTop">Haut de page</h2>
 <p>
@@ -2811,7 +2804,7 @@
       <ul>
         <li><a href="#fakeEnglish">English</a>
         </li>
-        <li><a href="javascript:;">Nous joindre</a>
+        <li><a href="#">Nous joindre</a>
         </li>
       </ul>
     </nav>
@@ -2832,7 +2825,7 @@
       <ul slot="links">
         <li><a href="#fakeEnglish">English</a>
         </li>
-        <li><a href="javascript:;">Nous joindre</a>
+        <li><a href="#">Nous joindre</a>
         </li>
       </ul>
 

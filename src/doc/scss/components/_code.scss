@@ -10,34 +10,17 @@ pre {
   padding: 0;
   white-space: pre-wrap;
   overflow: auto;
+  position: relative;
 
   code, .qc-code {
     font-family: token-value(font, family, code);
 
     button {
       float: right;
-      //position: absolute;
-      right: token-value(spacer xs);
-      top: token-value(spacer xs);
-      padding: token-value(spacer xs) token-value(spacer sm) ;
-      color : white;
-      background-color: token-value(color blue piv);
-      border: 1px solid;
+      position: absolute;
+      right: token-value(spacer sm);
+      top: token-value(spacer sm);
       white-space: nowrap;
-      transition: none!important;
-      .copy {display: inline;}
-      .copied {display: none;}
-      &.copied {
-        background-color: transparent!important;
-        border-color: transparent!important;;
-        box-shadow: none!important;
-        color: token-value(color blue piv)!important;
-        .copy {display: none;}
-        .copied {
-          display: inline;
-          //animation: fadeout .5s;
-        }
-      }
     }
   }
 }

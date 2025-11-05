@@ -13,7 +13,8 @@
         <ul>
             <li><a href="#fakeEnglish">English</a>
             </li>
-            <li><a href="javascript:;">Nous joindre</a>
+            <!-- svelte-ignore a11y_invalid_attribute -->
+            <li><a href="#">Nous joindre</a>
             </li>
         </ul>
     </nav>
