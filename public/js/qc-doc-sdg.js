@@ -75106,36 +75106,47 @@
 
     Code[FILENAME] = 'src/doc/components/Code.svelte';
 
-    function copy(_, prettyCode) {
+    function copy(_, prettyCode, copied, copyButtonTimeout) {
     	navigator.clipboard.writeText(get(prettyCode));
-    	this.classList.add('copied');
+    	set(copied, true);
 
     	setTimeout(
     		() => {
-    			this.classList.remove('copied');
+    			set(copied, false);
     		},
-    		500
+    		copyButtonTimeout
     	);
     }
 
+    var root_1$7 = add_locations(
+    	template(
+    		`
+                <span class="copy">Copier</span>
+            `,
+    		1
+    	),
+    	Code[FILENAME],
+    	[[64, 16]]
+    );
+
+    var root_2$8 = add_locations(
+    	template(
+    		`
+                <span class="copied">Copié&nbsp!</span>
+            `,
+    		1
+    	),
+    	Code[FILENAME],
+    	[[66, 16]]
+    );
+
     var root$f = add_locations(
-    	template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button class="qc-button qc-compact qc-primary">
-            <span class="copy">copier</span>
-            <span class="copied">copié !</span>
+    	template(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button>
+            <!>
         </button><!></code></pre>`),
     	Code[FILENAME],
     	[
-    		[
-    			54,
-    			0,
-    			[
-    				[
-    					55,
-    					5,
-    					[[56, 9, [[58, 12], [59, 12]]]]
-    				]
-    			]
-    		]
+    		[59, 0, [[60, 5, [[61, 9]]]]]
     	]
     );
 
@@ -75149,6 +75160,8 @@
     	push($$props, true);
     	append_styles$1($$anchor, $$css$5);
 
+    	const copyButtonTimeout = 2000;
+
     	let targetId = prop($$props, 'targetId', 7, ''),
     		rawCode = prop($$props, 'rawCode', 7, ''),
     		language = prop($$props, 'language', 7, 'html'),
@@ -75156,6 +75169,7 @@
 
     	let hlCode = state(void 0);
     	let prettyCode = state(void 0);
+    	let copied = state(false);
 
     	function updateHLCode(rawCode, targetId) {
     		if (!rawCode) {
@@ -75174,13 +75188,39 @@
     	var code = child(pre);
     	var button = child(code);
 
-    	button.__click = [copy, prettyCode];
+    	button.__click = [copy, prettyCode, copied, copyButtonTimeout];
 
-    	var node = sibling(button);
+    	var node = sibling(child(button));
 
-    	html$1(node, () => get(hlCode));
+    	{
+    		var consequent = ($$anchor) => {
+    			var fragment = root_1$7();
+
+    			next(2);
+    			append($$anchor, fragment);
+    		};
+
+    		var alternate = ($$anchor) => {
+    			var fragment_1 = root_2$8();
+
+    			next(2);
+    			append($$anchor, fragment_1);
+    		};
+
+    		if_block(node, ($$render) => {
+    			if (!get(copied)) $$render(consequent); else $$render(alternate, false);
+    		});
+    	}
+
+    	next();
+    	reset(button);
+
+    	var node_1 = sibling(button);
+
+    	html$1(node_1, () => get(hlCode));
     	reset(code);
     	reset(pre);
+    	template_effect(() => set_class(button, 1, `qc-button qc-compact ${get(copied) ? "qc-secondary" : "qc-primary"}`));
     	append($$anchor, pre);
 
     	return pop({

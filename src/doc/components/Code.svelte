@@ -14,6 +14,8 @@
   import pretty from "pretty";
   import jsBeautify from "js-beautify";
 
+  const copyButtonTimeout = 2000;
+
   let {
       targetId = '',
       rawCode = '',
@@ -23,11 +25,14 @@
 
   let hlCode = $state();
   let prettyCode = $state();
+  let copied = $state(false);
 
   function copy() {
       navigator.clipboard.writeText(prettyCode);
-      this.classList.add('copied')
-      setTimeout(() => {this.classList.remove('copied')}, 500)
+      copied = true;
+      setTimeout(() => {
+          copied = false;
+      }, copyButtonTimeout);
   }
 
   function updateHLCode(rawCode, targetId) {
@@ -53,10 +58,13 @@
 
 <pre
     ><code class="hljs"
-        ><button class="qc-button qc-compact qc-primary"
+        ><button class={`qc-button qc-compact ${copied? "qc-secondary" : "qc-primary"}`}
                  onclick={copy}>
-            <span class="copy">copier</span>
-            <span class="copied">copié !</span>
+            {#if !copied}
+                <span class="copy">Copier</span>
+            {:else}
+                <span class="copied">Copié&nbsp!</span>
+            {/if}
         </button
         >{@html hlCode}</code
 ></pre>
