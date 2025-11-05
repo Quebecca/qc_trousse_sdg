@@ -6916,8 +6916,8 @@
 	        }
 
 	    /**
-	     * Get current page language based on html lang attribute
-	     * @returns {string} language code  (fr/en).
+	     * Get current page language based on HTML lang attribute
+	     * @returns {string} language code (fr/en).
 	     */
 	    static getPageLanguage() {
 	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
@@ -6939,12 +6939,12 @@
 	    /**
 	     * extract and clean prefixed attributes
 	     * example:
-	     *  computeFieldsAttributes("radio" , {"radio-class":"my-radio", "radio-data-foo":"foo", "other":"other value"})
+	     *  computeFieldsAttributes("radio", {"radio-class": "my-radio", "radio-data-foo": "foo", "other": "other value"})
 	     *  return {"class":"my-radio", "data-foo":"foo"}
 	     *
 	     </div>
 	     * @param {(string|string[])} prefix - Une chaîne de caractères ou un tableau de chaînes.
-	     * @param restProps - ojbect of attributes
+	     * @param restProps - object of attributes
 	     * @returns {*} - object of attributes
 	     */
 	    static computeFieldsAttributes(prefix , restProps) {
@@ -7008,8 +7008,8 @@
 	        word = replaceAccents(word, /[ùûü]/gi, 'u');
 	        word = replaceAccents(word, /[ïî]/gi, 'i');
 	        word = replaceAccents(word, /[ôö]/gi, 'i');
-	        word = replaceAccents(word, /[œ]/gi, 'oe');
-	        word = replaceAccents(word, /[æ]/gi, 'ae');
+	        word = replaceAccents(word, /œ/gi, 'oe');
+	        word = replaceAccents(word, /æ/gi, 'ae');
 
 	        // Remplace les caractères spéciaux par des espaces.
 	        word = word.replaceAll(/[-_—–]/gi, ' ');
