@@ -18,8 +18,8 @@ pre {
     button {
       float: right;
       position: absolute;
-      right: token-value(spacer xs);
-      top: token-value(spacer xs);
+      right: token-value(spacer sm);
+      top: token-value(spacer sm);
       white-space: nowrap;
     }
   }
