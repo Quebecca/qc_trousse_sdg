@@ -304,6 +304,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.6 :
+  - Ajout d'une gestion de bris de cache (*cache busting*)
+  - Correction de bugs de la documentation :
+    - Correction de la documentation des champs alignés horizontalement
+    - Correction de la position du bouton Copier dans les fragments de code des exemples pour gérer le défilement horizontal
 - 1.4.5 :
   - Correction de bugs :
     - Correction de sélection d'input passé en `slot` dans `qc-checkbox` lorsque plusieurs éléments `input` sont présents ;
