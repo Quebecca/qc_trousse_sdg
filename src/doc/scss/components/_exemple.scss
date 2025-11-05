@@ -1,0 +1,16 @@
+@use "qc-sdg-lib" as *;
+
+.exemple-area > figure {
+  display: block;
+  max-width: token-value(max-content-width);
+  width: 100%;
+  margin-bottom: token-value(spacer content-block mb);
+  .exemple {
+    padding: token-value(spacer sm);
+    @include qc-shading(0);
+  }
+
+  & > figcaption {
+    display: block;
+  }
+}

@@ -150,6 +150,20 @@ code.hljs {
   font-weight: bold;
 }
 
+.exemple-area > figure {
+  display: block;
+  max-width: var(--qc-max-content-width);
+  width: 100%;
+  margin-bottom: var(--qc-spacer-content-block-mb);
+}
+.exemple-area > figure .exemple {
+  padding: var(--qc-spacer-sm);
+  border: 1px solid var(--qc-box_shadow-0-color);
+}
+.exemple-area > figure > figcaption {
+  display: block;
+}
+
 table.qc-table {
   margin-bottom: 0;
   background-color: var(--qc-color-white);
