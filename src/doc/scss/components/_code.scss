@@ -20,25 +20,7 @@ pre {
       position: absolute;
       right: token-value(spacer xs);
       top: token-value(spacer xs);
-      //padding: token-value(spacer xs) token-value(spacer sm) ;
-      //color : white;
-      //background-color: token-value(color blue piv);
-      //border: 1px solid;
       white-space: nowrap;
-      //transition: none!important;
-      //.copy {display: inline;}
-      //.copied {display: none;}
-      //&.copied {
-      //  background-color: transparent!important;
-      //  border-color: transparent!important;;
-      //  box-shadow: none!important;
-      //  color: token-value(color blue piv)!important;
-      //  .copy {display: none;}
-      //  .copied {
-      //    display: inline;
-      //    //animation: fadeout .5s;
-      //  }
-      //}
     }
   }
 }
