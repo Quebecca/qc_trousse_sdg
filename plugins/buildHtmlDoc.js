@@ -29,7 +29,11 @@ function buildHtmlDoc({ input, output }) {
                 if (html.includes(marker)) {
                     html = html.replace(new RegExp(marker, 'g'), content);
                 } else {
-                    this.warn(`⚠️ Le partiel "${partialName}" n'est pas utilisé dans ${inputFileName}`);
+                    const ignoredPartials = ['_dev.html', '_test.html'];
+
+                    if (!ignoredPartials.includes(partialName)) {
+                        this.warn(`⚠️ Le partiel "${partialName}" n'est pas utilisé dans ${inputFileName}`);
+                    }
                 }
             }
 
