@@ -74970,7 +74970,7 @@
 		]
 	);
 
-	const $$css$5 = {
+	const $$css$4 = {
 		hash: 'qc-hash-1fxiy4n',
 		code: 'pre.qc-hash-1fxiy4n {\n  max-inline-size: var(--qc-max-content-width);\n}'
 	};
@@ -74978,7 +74978,7 @@
 	function Code($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$5);
+		append_styles$1($$anchor, $$css$4);
 
 		const copyButtonTimeout = 2000;
 
@@ -75108,7 +75108,7 @@
 		]
 	]);
 
-	const $$css$4 = {
+	const $$css$3 = {
 		hash: 'qc-hash-1we8qc0',
 		code: '.qc-bg-color-white.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-white);\n}\n\n.qc-bg-color-blue-extra-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-extra-pale);\n}\n\n.qc-bg-color-blue-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-pale);\n}\n\n.qc-bg-color-blue-light.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-light);\n}\n\n.qc-bg-color-blue-regular_light.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-regular_light);\n}\n\n.qc-bg-color-blue-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-regular);\n}\n\n.qc-bg-color-blue-piv.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-piv);\n}\n\n.qc-bg-color-blue-medium.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-medium);\n}\n\n.qc-bg-color-blue-dark.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-blue-dark);\n}\n\n.qc-bg-color-purple.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-purple);\n}\n\n.qc-bg-color-grey-extra-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-extra-pale);\n}\n\n.qc-bg-color-grey-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-pale);\n}\n\n.qc-bg-color-grey-light.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-light);\n}\n\n.qc-bg-color-grey-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-regular);\n}\n\n.qc-bg-color-grey-medium.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-medium);\n}\n\n.qc-bg-color-grey-dark.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-grey-dark);\n}\n\n.qc-bg-color-pink-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-pink-pale);\n}\n\n.qc-bg-color-pink-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-pink-regular);\n}\n\n.qc-bg-color-red-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-pale);\n}\n\n.qc-bg-color-red-light.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-light);\n}\n\n.qc-bg-color-red-regular_light.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-regular_light);\n}\n\n.qc-bg-color-red-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-regular);\n}\n\n.qc-bg-color-red-medium.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-medium);\n}\n\n.qc-bg-color-red-dark.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-red-dark);\n}\n\n.qc-bg-color-green-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-green-pale);\n}\n\n.qc-bg-color-green-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-green-regular);\n}\n\n.qc-bg-color-green-dark.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-green-dark);\n}\n\n.qc-bg-color-yellow-pale.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-yellow-pale);\n}\n\n.qc-bg-color-yellow-regular.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-yellow-regular);\n}\n\n.qc-bg-color-yellow-dark.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-yellow-dark);\n}\n\n.qc-bg-color-background.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-background);\n}\n\n.qc-bg-color-text-primary.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-text-primary);\n}\n\n.qc-bg-color-accent.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-accent);\n}\n\n.qc-bg-color-success.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-success);\n}\n\n.qc-bg-color-error.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-error);\n}\n\n.qc-bg-color-danger.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-danger);\n}\n\n.qc-bg-color-link-text.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-link-text);\n}\n\n.qc-bg-color-link-hover.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-link-hover);\n}\n\n.qc-bg-color-link-visited.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-link-visited);\n}\n\n.qc-bg-color-link-active.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-link-active);\n}\n\n.qc-bg-color-link-focus-outline.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-link-focus-outline);\n}\n\n.qc-bg-color-formfield-border.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-formfield-border);\n}\n\n.qc-bg-color-formfield-focus-border.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-formfield-focus-border);\n}\n\n.qc-bg-color-formfield-focus-outline.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-formfield-focus-outline);\n}\n\n.qc-bg-color-searchinput-icon.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-searchinput-icon);\n}\n\n.qc-bg-color-box_shadow.qc-hash-1we8qc0 {\n  background-color: var(--qc-color-box_shadow);\n}\n\n.color-details.qc-hash-1we8qc0 {\n  display: flex;\n  justify-content: flex-start;\n  align-items: center;\n}\n.color-details.qc-hash-1we8qc0 > div:where(.qc-hash-1we8qc0) + div:where(.qc-hash-1we8qc0) {\n  margin-left: var(--qc-spacer-md);\n}\n\n.color-sample.qc-hash-1we8qc0 {\n  width: 4.8rem;\n  height: 4.8rem;\n  border-radius: 50%;\n  flex-shrink: 0;\n}\n\n.border.qc-hash-1we8qc0 {\n  border: 1px solid var(--qc-color-grey-light);\n}'
 	};
@@ -75116,7 +75116,7 @@
 	function Color_doc($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$4);
+		append_styles$1($$anchor, $$css$3);
 
 		let title = prop($$props, 'title', 7),
 			token = prop($$props, 'token', 7),
@@ -75319,7 +75319,7 @@
 		[17, 0, [[18, 4, [[19, 8]]]]]
 	]);
 
-	const $$css$3 = {
+	const $$css$2 = {
 		hash: 'qc-hash-ogsj9p',
 		code: '[role=complementary].qc-hash-ogsj9p {\n  position: sticky;\n  z-index: 100;\n  top: 0;\n  background-color: var(--qc-color-background);\n  min-height: 7.2rem;\n  height: 7.2rem;\n  border-bottom: solid 0.1rem var(--qc-color-grey-light);\n}\n\n.top-nav.qc-hash-ogsj9p {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: end;\n  padding-bottom: var(--qc-spacer-sm);\n}\n.top-nav.qc-hash-ogsj9p .switch-control:where(.qc-hash-ogsj9p) {\n  margin-left: auto;\n  margin-right: 0;\n  display: flex;\n  align-items: center;\n}\n/* (unused) .top-nav .switch-control label:first-child {\n  margin-right: 1.6rem;\n}*/'
 	};
@@ -75327,7 +75327,7 @@
 	function TopNav($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$3);
+		append_styles$1($$anchor, $$css$2);
 
 		let value = state(proxy(strict_equals(localStorage.getItem('dark-theme'), "true")));
 
@@ -75364,7 +75364,7 @@
 
 	var root$b = add_locations(template(`<div class="switch qc-hash-qsg5d6"><input> <span class="slider round qc-hash-qsg5d6"></span></div>`), Switch[FILENAME], [[18, 0, [[24, 4], [31, 4]]]]);
 
-	const $$css$2 = {
+	const $$css$1 = {
 		hash: 'qc-hash-qsg5d6',
 		code: '/* The switch - the box around the slider */\n.switch.qc-hash-qsg5d6 {\n  position: relative;\n  display: inline-block;\n  width: 5.6rem;\n  height: 3.2rem;\n}\n\n/* Hide default HTML checkbox */\ninput.qc-hash-qsg5d6 {\n  z-index: 10;\n  opacity: 0;\n  position: absolute;\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  inset: 0;\n  height: auto;\n  width: auto;\n}\n\n/* The slider */\n.slider.qc-hash-qsg5d6 {\n  z-index: 5;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: var(--unchecked-bg-color);\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n}\n\n.slider.qc-hash-qsg5d6::before {\n  position: absolute;\n  content: "";\n  height: 2.8rem;\n  width: 2.8rem;\n  left: 0.2rem;\n  bottom: 0.2rem;\n  background-color: var(--slider-color);\n  -webkit-transition: 0.4s;\n  transition: 0.4s;\n}\n\ninput.qc-hash-qsg5d6:checked + .slider:where(.qc-hash-qsg5d6) {\n  background-color: var(--checked-bg-color);\n}\n\ninput.qc-hash-qsg5d6:focus + .slider:where(.qc-hash-qsg5d6) {\n  box-shadow: 0 0 1px var(--qc-bok-shadow-color);\n}\n\ninput.qc-hash-qsg5d6:checked + .slider:where(.qc-hash-qsg5d6)::before {\n  transform: translateX(2.4rem);\n}\n\n.slider.round.qc-hash-qsg5d6, input.qc-hash-qsg5d6 {\n  border-radius: 3.2rem;\n}\n\n.slider.round.qc-hash-qsg5d6::before {\n  border-radius: 50%;\n}'
 	};
@@ -75372,7 +75372,7 @@
 	function Switch($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$2);
+		append_styles$1($$anchor, $$css$1);
 
 		let value = prop($$props, 'value', 15, false),
 			name = prop($$props, 'name', 7, 'switch'),
@@ -75462,7 +75462,7 @@
 
 	Exemple[FILENAME] = 'src/doc/components/Exemple.svelte';
 
-	var root$a = add_locations(template(`<div class="exemple-area"><figure><div class="exemple qc-hash-1u5h5rs"></div> <figcaption><!></figcaption></figure> <!></div>`), Exemple[FILENAME], [
+	var root$a = add_locations(template(`<div class="exemple-area"><figure><div class="exemple"></div> <figcaption><!></figcaption></figure> <!></div>`), Exemple[FILENAME], [
 		[
 			45,
 			0,
@@ -75470,15 +75470,9 @@
 		]
 	]);
 
-	const $$css$1 = {
-		hash: 'qc-hash-1u5h5rs',
-		code: 'figure.qc-hash-1u5h5rs {\n  max-width: var(--qc-max-content-width);\n  width: 100%;\n  border: 1px solid var(--qc-box_shadow-0-color);\n  margin-bottom: var(--qc-spacer-content-block-mb);\n}\nfigure.qc-hash-1u5h5rs .exemple:where(.qc-hash-1u5h5rs) {\n  padding: var(--qc-spacer-sm) var(--qc-spacer-sm) 0 var(--qc-spacer-sm);\n  margin-bottom: var(--qc-spacer-sm);\n}'
-	};
-
 	function Exemple($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
-		append_styles$1($$anchor, $$css$1);
 
 		let caption = prop($$props, 'caption', 7, "SVP fournir une description"),
 			codeTargetId = prop($$props, 'codeTargetId', 7),
@@ -75551,7 +75545,7 @@
 
 		reset(div);
 		bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
-		template_effect(() => attributes = set_attributes(figure_1, attributes, { ...restProps }, 'qc-hash-1u5h5rs'));
+		template_effect(() => attributes = set_attributes(figure_1, attributes, { ...restProps }));
 		append($$anchor, div);
 
 		return pop({
