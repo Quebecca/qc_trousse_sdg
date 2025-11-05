@@ -16,8 +16,8 @@ pre code, pre .qc-code {
 pre code button, pre .qc-code button {
   float: right;
   position: absolute;
-  right: var(--qc-spacer-xs);
-  top: var(--qc-spacer-xs);
+  right: var(--qc-spacer-sm);
+  top: var(--qc-spacer-sm);
   white-space: nowrap;
 }
 
