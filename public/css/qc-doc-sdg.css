@@ -155,10 +155,14 @@ code.hljs {
   max-width: var(--qc-max-content-width);
   width: 100%;
   margin-bottom: var(--qc-spacer-content-block-mb);
+  padding-bottom: 1px;
 }
 .exemple-area > figure .exemple {
-  padding: var(--qc-spacer-sm);
+  padding: var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm);
   border: 1px solid var(--qc-box_shadow-0-color);
+}
+.exemple-area > figure .exemple > *:last-child {
+  margin-bottom: 0;
 }
 .exemple-area > figure > figcaption {
   display: block;
