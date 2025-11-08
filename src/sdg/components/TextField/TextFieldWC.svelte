@@ -61,16 +61,18 @@
         if (description) {
             input.before(descriptionElement);
         }
-        if (invalid) {
-            if (textFieldRow) {
-                textFieldRow.appendChild(formErrorElement);
-            }
-            else {
-                input.after(formErrorElement);
-            }
-        }
         if (maxlength) {
             input.after(maxlengthElement);
+        }
+    })
+
+    $effect(() => {
+        if (!formErrorElement) return;
+        if (textFieldRow) {
+            textFieldRow.appendChild(formErrorElement);
+        }
+        else {
+            input.after(formErrorElement);
         }
     })
 </script>
