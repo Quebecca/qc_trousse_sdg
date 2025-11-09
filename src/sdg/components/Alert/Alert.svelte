@@ -2,6 +2,7 @@
     import {Utils} from "../utils";
     import Icon from "../../bases/Icon/Icon.svelte";
     import IconButton from "../IconButton/IconButton.svelte";
+    import {onMount} from "svelte";
 
     let {
         type = "general",
@@ -10,6 +11,10 @@
         hide = "false",
         fullWidth = "false",
         slotContent,
+        id,
+        persistenceKey,
+        persistenceTTL = 86400 * 7,
+        persistHidden = false,
     } = $props();
 
     const language = Utils.getPageLanguage();
@@ -25,14 +30,36 @@
 
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
+    onMount(() => {
+        const key = getPersistenceKey();
+        if (!key) return false;
+        const expire = localStorage.getItem(key) || false;
+        if (!expire) return false;
+        hide = Utils.now() < expire ? "true" : "false";
+    })
+
     function hideAlert() {
         hide = "true";
+        persistHiddenState()
         rootElement.dispatchEvent(
             new CustomEvent('qc.alert.hide', {
                 bubbles: true,
                 composed: true
             })
         );
+    }
+
+    function getPersistenceKey() {
+        if (!persistHidden) return false;
+        const key = persistenceKey || id;
+        if (! key) return false;
+        return'qc-alert:' + key;
+    }
+
+    function persistHiddenState() {
+        const key = getPersistenceKey();
+        if (!key) return;
+        localStorage.setItem(key,Utils.now() + persistenceTTL * 1000);
     }
 </script>
 

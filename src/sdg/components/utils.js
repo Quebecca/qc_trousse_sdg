@@ -135,4 +135,8 @@ export class Utils {
         // Convertit le mot en minuscules.
         return word.toLowerCase();
     }
+
+    static now() {
+        return (new Date()).getTime();
+    }
 }

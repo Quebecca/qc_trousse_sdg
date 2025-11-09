@@ -77854,6 +77854,10 @@
 	        // Convertit le mot en minuscules.
 	        return word.toLowerCase();
 	    }
+
+	    static now() {
+	        return (new Date()).getTime();
+	    }
 	}
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';

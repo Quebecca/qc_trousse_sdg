@@ -9088,6 +9088,10 @@
 	        // Convertit le mot en minuscules.
 	        return word.toLowerCase();
 	    }
+
+	    static now() {
+	        return (new Date()).getTime();
+	    }
 	}
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
@@ -10833,7 +10837,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$7 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[40, 4, [[43, 8, [[44, 12, [[50, 16]]]]]]]]);
+	var root_1$7 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[67, 4, [[70, 8, [[71, 12, [[77, 16]]]]]]]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -10844,7 +10848,11 @@
 			content = prop($$props, 'content', 7, ""),
 			hide = prop($$props, 'hide', 7, "false"),
 			fullWidth = prop($$props, 'fullWidth', 7, "false"),
-			slotContent = prop($$props, 'slotContent', 7);
+			slotContent = prop($$props, 'slotContent', 7),
+			id = prop($$props, 'id', 7),
+			persistenceKey = prop($$props, 'persistenceKey', 7),
+			persistenceTTL = prop($$props, 'persistenceTTL', 7, 86400 * 7),
+			persistHidden = prop($$props, 'persistHidden', 7, false);
 
 		const language = Utils.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
@@ -10859,9 +10867,40 @@
 		let rootElement = tag(state(null), 'rootElement');
 		let containerClass = "qc-container" + (strict_equals(fullWidth(), 'true') ? '-fluid' : '');
 
+		onMount(() => {
+			const key = getPersistenceKey();
+
+			if (!key) return false;
+
+			const expire = localStorage.getItem(key) || false;
+
+			if (!expire) return false;
+
+			hide(Utils.now() < expire ? "true" : "false");
+		});
+
 		function hideAlert() {
 			hide("true");
+			persistHiddenState();
 			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+		}
+
+		function getPersistenceKey() {
+			if (!persistHidden()) return false;
+
+			const key = persistenceKey() || id();
+
+			if (!key) return false;
+
+			return 'qc-alert:' + key;
+		}
+
+		function persistHiddenState() {
+			const key = getPersistenceKey();
+
+			if (!key) return;
+
+			localStorage.setItem(key, Utils.now() + persistenceTTL() * 1000);
 		}
 
 		var $$exports = {
@@ -10919,6 +10958,42 @@
 				flushSync();
 			},
 
+			get id() {
+				return id();
+			},
+
+			set id($$value) {
+				id($$value);
+				flushSync();
+			},
+
+			get persistenceKey() {
+				return persistenceKey();
+			},
+
+			set persistenceKey($$value) {
+				persistenceKey($$value);
+				flushSync();
+			},
+
+			get persistenceTTL() {
+				return persistenceTTL();
+			},
+
+			set persistenceTTL($$value = 86400 * 7) {
+				persistenceTTL($$value);
+				flushSync();
+			},
+
+			get persistHidden() {
+				return persistHidden();
+			},
+
+			set persistHidden($$value = false) {
+				persistHidden($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -10954,7 +11029,7 @@
 						}),
 						'component',
 						Alert,
-						45,
+						72,
 						16,
 						{ componentTag: 'Icon' }
 					);
@@ -10988,7 +11063,7 @@
 							}),
 							'component',
 							Alert,
-							55,
+							82,
 							20,
 							{ componentTag: 'IconButton' }
 						);
@@ -11000,7 +11075,7 @@
 						}),
 						'if',
 						Alert,
-						54,
+						81,
 						16
 					);
 				}
@@ -11024,7 +11099,7 @@
 				}),
 				'if',
 				Alert,
-				39,
+				66,
 				0
 			);
 		}
@@ -11042,7 +11117,11 @@
 			content: {},
 			hide: {},
 			fullWidth: {},
-			slotContent: {}
+			slotContent: {},
+			id: {},
+			persistenceKey: {},
+			persistenceTTL: {},
+			persistHidden: {}
 		},
 		[],
 		[],
@@ -11051,7 +11130,7 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var root$f = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[25, 0]]);
+	var root$f = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[28, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11062,7 +11141,7 @@
 		var fragment = root$f();
 		var node = first_child(fragment);
 
-		add_svelte_meta(() => Alert(node, spread_props(() => props, { slotContent: `<slot />` })), 'component', AlertWC, 21, 1, { componentTag: 'Alert' });
+		add_svelte_meta(() => Alert(node, spread_props(() => props, { slotContent: `<slot />` })), 'component', AlertWC, 24, 1, { componentTag: 'Alert' });
 
 		var link = sibling(node, 2);
 
@@ -11079,7 +11158,10 @@
 			maskable: { attribute: 'maskable' },
 			fullWidth: { attribute: 'full-width' },
 			content: { attribute: 'content' },
-			hide: { attribute: 'hide' }
+			hide: { attribute: 'hide' },
+			persistHidden: { attribute: 'persist-hidden', type: 'Boolean' },
+			persistenceKey: { attribute: 'persistence-key', type: 'String' },
+			persistenceTTL: { attribute: 'persistence-ttl', type: 'Number' }
 		},
 		[],
 		[],
