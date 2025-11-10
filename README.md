@@ -318,7 +318,7 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
     - Correction de la position du bouton Copier dans les fragments de code des exemples pour gérer le défilement horizontal
     - Ajustement de l'affichage des éléments `figure` des exemples pour permettre un meilleur redimensionnement
 - 1.4.6 :
-  - Composant qc-alerte: ajout de la possibilité de faire persister le masquage de l'alerte une fois masquée par l'internaute, de sorte qu'elle ne réapparait pas au rafraîchissement de la page ;
+  - Composant qc-alerte: ajout de la possibilité de faire persister le masquage de l'alerte une fois celle-ci masquée par l'internaute, de sorte qu'elle ne réapparait pas au rafraîchissement de la page ;
 - 1.4.5 :
   - Correction de bugs :
     - Correction de sélection d'input passé en `slot` dans `qc-checkbox` lorsque plusieurs éléments `input` sont présents ;
