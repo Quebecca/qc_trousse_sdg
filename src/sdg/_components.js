@@ -14,3 +14,8 @@ export * from './components/TextField/TextFieldWC.svelte'
 export * from './components/ToggleSwitch/ToggleSwitchWC.svelte'
 export * from './components/ChoiceGroup/ToggleSwitchGroupWC.svelte'
 export * from './components/DropdownList/SelectWC.svelte'
+export * from './components/Note/Note.svelte'
+export * from './components/Note/NoteContainer.svelte'
+export * from './components/Note/NoteLink.svelte'
+
+

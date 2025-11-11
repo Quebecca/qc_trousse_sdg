@@ -73,15 +73,16 @@
         <li><a href="#select">Liste déroulante</a></li>
         <li><a href="#champs-alignes">Champs alignés horizontalement</a></li>
       </ul>
-
     </li>
     <li><a href="#toTop">Haut de page</a></li>
+      <li><a href="#note">Notes de page</a></li>
   </ul>
   <h2 class="qc-h4">Modèles</h2>
   <ul>
     <li><a href='#piv-header'>Bandeau d’en-tête du PIV</a>
     <li><a href='#piv-footer'>Pied de page du PIV</a>
   </ul>
+
 
 </nav>
 </div>
@@ -3161,6 +3162,59 @@
   </qc-piv-footer>
 </qc-doc-exemple>
     <hr/>
+      <h2 id="note">Notes (qc-note)</h2>
+<h3>Exemples</h3>
+<qc-doc-exemple
+                caption="Exemple de notes de bas de page">
+  <p>Lorem ipsum dolor sit amet<qc-note-link target-id="note-1"></qc-note-link>, consectetur adipiscing elit. Pellentesque placerat nisl eu finibus vulputate. Curabitur eu risus vitae tellus consequat convallis. Nulla velit eros, luctus id maximus eget, porta eget diam. Fusce sollicitudin pretium scelerisque. Nulla tristique varius lectus, vel finibus magna lacinia sit amet. Praesent ac arcu scelerisque, sagittis sem mattis, interdum metus. Donec ut magna pretium, mattis enim commodo, blandit mi. Nam egestas lorem turpis, vitae fringilla lectus ullamcorper et. Duis risus lorem, mattis id dui ac, molestie dapibus dolor.
+
+    Quisque non sapien in orci viverra tempus sit amet nec tortor<qc-note-link target-id="note-1"></qc-note-link>. Praesent dictum aliquam blandit. Vivamus sodales, ex at egestas euismod, mi mauris sollicitudin velit, in lacinia odio risus laoreet ligula. Curabitur euismod a ligula ac laoreet. Cras eget nibh est. Vivamus lectus purus, ullamcorper tempor neque a, bibendum malesuada urna. Sed ac libero sollicitudin, suscipit diam quis, interdum eros. Sed auctor lacus vel volutpat dapibus. Aliquam tincidunt mollis orci quis malesuada. Nunc vel fringilla velit. Praesent scelerisque risus nunc, in luctus justo luctus non. Maecenas et ante dapibus, blandit tortor et, viverra dolor. Vivamus ipsum dui, dictum ut ex vitae, pretium efficitur nisl. Duis ut blandit erat.
+
+    Cras vel rhoncus lorem, vitae pulvinar libero<qc-note-link target-id="note-2"></qc-note-link>. Quisque ac aliquet odio. Sed nisi metus, dapibus nec diam a, semper porttitor mauris. Maecenas interdum, augue eget dignissim porttitor, lacus ante mattis risus, ut facilisis orci dui imperdiet mi. Sed maximus porta sapien a tincidunt. Aenean leo ligula, molestie quis felis ut, tristique rutrum est. Quisque vehicula ut enim vestibulum pretium. Pellentesque sit amet magna vitae augue ultricies elementum. Duis eget lobortis tellus, vel pretium mi. Quisque scelerisque bibendum magna maximus vestibulum. Nunc tristique, quam sit amet hendrerit molestie, lectus turpis euismod ligula, luctus maximus sem massa nec sapien.
+
+    Morbi mauris lectus, tristique vitae massa et, suscipit egestas nulla. Nulla erat ante, vestibulum at iaculis in, fermentum et metus. In imperdiet ante vel ex blandit tincidunt. Mauris at pharetra neque. Quisque vel lacus quam. Nulla facilisi. Nam viverra vitae justo a sollicitudin. Mauris vitae arcu in ipsum dictum varius eu a velit. Suspendisse potenti. Suspendisse facilisis nisi eget orci porttitor, ac blandit magna consectetur. Donec non euismod justo. Mauris ut nunc leo. In ut hendrerit massa, vel aliquet nisi. Donec auctor diam in metus ornare porttitor.
+
+    Aliquam erat volutpat. Aliquam euismod nulla in purus gravida hendrerit. Vivamus suscipit malesuada nulla a vehicula. Vivamus fermentum dolor et risus sollicitudin dapibus. Proin et ligula augue. Duis volutpat consectetur dictum. Sed quam elit, elementum vitae magna aliquam, feugiat vulputate mi. Integer vitae sem purus. Integer tempus arcu sagittis arcu maximus, porttitor placerat eros dignissim.
+  </p>
+  <table class="qc-table table-overflow"
+         style="border: 1px solid"
+    >
+    <caption>Une table avec une note</caption>
+    <tr>
+      <th>Entête 1</th>
+      <th>Entête 2</th>
+    </tr>
+    <tr>
+      <td>Une cellule avec une note<qc-note-link target-id="table-note-1"></qc-note-link></td>
+      <td>Une cellule avec une note<qc-note-link target-id="table-note-2"></qc-note-link></td>
+    </tr>
+  </table>
+    <qc-note-container>
+      <qc-note id="table-note-1">Ma note de table 1</qc-note>
+      <qc-note id="table-note-2">Ma note de table 2</qc-note>
+    </qc-note-container>
+
+  <p>Un peu de texte entre le tableau et les notes de bas de page……
+  Morbi mauris lectus, tristique vitae massa et, suscipit egestas nulla. Nulla erat ante, vestibulum at iaculis in, fermentum et metus. In imperdiet ante vel ex blandit tincidunt. Mauris at pharetra neque. Quisque vel lacus quam. Nulla facilisi. Nam viverra vitae justo a sollicitudin. Mauris vitae arcu in ipsum dictum varius eu a velit. Suspendisse potenti. Suspendisse facilisis nisi eget orci porttitor, ac blandit magna consectetur. Donec non euismod justo. Mauris ut nunc leo. In ut hendrerit massa, vel aliquet nisi. Donec auctor diam in metus ornare porttitor.
+    Aliquam erat volutpat. Aliquam euismod nulla in purus gravida hendrerit. Vivamus suscipit malesuada nulla a vehicula. Vivamus fermentum dolor et risus sollicitudin dapibus. Proin et ligula augue. Duis volutpat consectetur dictum. Sed quam elit, elementum vitae magna aliquam, feugiat vulputate mi. Integer vitae sem purus. Integer tempus arcu sagittis arcu maximus, porttitor placerat eros dignissim.
+  </p>
+  <p><b>Notes de bas de page</b></p>
+    <qc-note-container>
+      <qc-note id="note-1">Ma note 1</qc-note>
+      <qc-note id="note-2">Ma note 2</qc-note>
+    </qc-note-container>
+
+</qc-doc-exemple>
+<style>
+  [id] {
+    scroll-margin-top: 100px;
+  }
+  table + qc-note-container {
+    margin-top: 16px;
+  }
+</style>
+
+      <hr/>
   </div>
 </main>
 <footer>
