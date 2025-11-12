@@ -178,6 +178,9 @@ table.qc-table {
   max-width: 100%;
   overflow: auto;
   border-collapse: collapse;
+  /* ----- Striped tables ----- */
+  /* ----- Bordered tables ----- */
+  /* ----- TODO add footer style ----- */
 }
 table.qc-table > thead {
   background-color: var(--qc-color-blue-dark);
@@ -194,20 +197,11 @@ table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
   text-align: left;
   padding: var(--qc-spacer-xs);
 }
-table.qc-table {
-  /* ----- Striped tables ----- */
-}
 table.qc-table.qc-striped tbody tr:nth-of-type(even) {
   background-color: var(--qc-color-grey-pale);
 }
-table.qc-table {
-  /* ----- Bordered tables ----- */
-}
 table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
   border-bottom: 1px solid var(--qc-color-grey-light);
-}
-table.qc-table {
-  /* ----- TODO add footer style ----- */
 }
 
 .ui-autocomplete {

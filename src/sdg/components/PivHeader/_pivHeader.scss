@@ -142,10 +142,6 @@ qc-piv-header,
     --qc-color-link-visited: white;
     --qc-color-link-active: white;
 
-    font-family: token-value(font family header);
-    text-decoration: none;
-    font-weight: token-value(font weight regular);
-
     &:hover {
       text-decoration: underline;
     }
@@ -154,6 +150,12 @@ qc-piv-header,
     &:has(img) {
       outline-offset: -2px;
     }
+  }
+
+  a, span {
+    font-family: token-value(font family header);
+    text-decoration: none;
+    font-weight: token-value(font weight regular);
   }
 }
 
