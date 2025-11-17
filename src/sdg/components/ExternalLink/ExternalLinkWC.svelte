@@ -12,4 +12,4 @@
     const props = $props();
 </script>
 
-<ExternalLink {...props} />
+<ExternalLink containerElement={$host()} {...props} />

@@ -75960,7 +75960,7 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root$7 = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
+	var root$7 = add_locations(template(`<div></div>`), Icon[FILENAME], [[17, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -75974,6 +75974,7 @@
 			height = prop($$props, 'height', 7, 'auto'),
 			src = prop($$props, 'src', 7, ''),
 			rotate = prop($$props, 'rotate', 7, 0),
+			rootElement = prop($$props, 'rootElement', 15),
 			rest = rest_props(
 				$$props,
 				[
@@ -75988,12 +75989,15 @@
 					'width',
 					'height',
 					'src',
-					'rotate'
+					'rotate',
+					'rootElement'
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
 		var div = root$7();
 		let attributes_1;
+
+		bind_this(div, ($$value) => rootElement($$value), () => rootElement());
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
 			role: 'img',
@@ -76072,6 +76076,13 @@
 				rotate($$value);
 				flushSync();
 			},
+			get rootElement() {
+				return rootElement();
+			},
+			set rootElement($$value) {
+				rootElement($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -76086,7 +76097,8 @@
 			width: {},
 			height: {},
 			src: {},
-			rotate: {}
+			rotate: {},
+			rootElement: {}
 		},
 		[],
 		[],

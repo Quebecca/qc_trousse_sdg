@@ -8,6 +8,7 @@
         height='auto',
         src='',
         rotate = 0,
+        rootElement = $bindable(),
         ...rest
     } = $props();
     let attributes = $derived(width === 'auto' ? { 'data-img-size': size } : {});
@@ -30,5 +31,6 @@
      {...attributes}
      {...rest}
      aria-hidden={label ? undefined : true}
+     bind:this={rootElement}
     >
 </div>

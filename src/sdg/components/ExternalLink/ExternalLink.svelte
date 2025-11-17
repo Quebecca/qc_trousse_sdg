@@ -1,14 +1,17 @@
 <script>
 import {Utils} from "../utils";
-import {onMount} from "svelte";
+import Icon from "../../bases/Icon/Icon.svelte";
+import {onDestroy, onMount} from "svelte";
 
-const {
+let {
     externalIconAlt = Utils.getPageLanguage() === 'fr'
         ? "Ce lien dirige vers un autre site."
-        : "This link directs to another site."
+        : "This link directs to another site.",
+    containerElement,
 } = $props();
 
 let imgElement = $state();
+let observer;
 
 function createVisibleNodesTreeWalker() {
     return document.createTreeWalker(
@@ -43,9 +46,9 @@ function createVisibleNodesTreeWalker() {
     );
 }
 
-onMount(() => {
-    imgElement.parentElement.querySelectorAll('a').forEach(link => {
-
+function addExternalLinkIcon() {
+    containerElement.querySelectorAll('a').forEach((link) => {
+        console.log('link', link);
         // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
         const walker = createVisibleNodesTreeWalker();
 
@@ -57,6 +60,7 @@ onMount(() => {
         if (!lastTextNode) {
             return;
         }
+        console.log('lastTextNode', lastTextNode);
 
         // Séparer le contenu du dernier nœud texte en deux parties :
         // le préfixe (éventuel) et le dernier mot
@@ -73,7 +77,7 @@ onMount(() => {
         const span = document.createElement('span');
         span.classList.add('img-wrap')
         span.innerHTML = `${lastWord}`;
-        span.appendChild(imgElement)
+        span.appendChild(imgElement);
 
         // Met à jour le nœud texte : on garde le préfixe et on insère le span après
         if (prefix) {
@@ -83,14 +87,44 @@ onMount(() => {
             lastTextNode.parentNode.replaceChild(span, lastTextNode);
         }
     });
+}
+
+onMount(() => {
+    addExternalLinkIcon();
+
+    observer = new MutationObserver(mutations => {
+        mutations.forEach((mutation) => {
+            console.log('mutation', mutation);
+            addExternalLinkIcon();
+        });
+    });
+
+
+    observer.observe(containerElement, {
+        characterData: true,
+        childList: true,
+        subtree: true
+    });
 });
+
+onDestroy(() => {
+    observer?.disconnect();
+});
+
 </script>
 
-<span bind:this={imgElement}
-      role="img"
-      class="qc-ext-link-img"
-      aria-label={externalIconAlt}>
-</span>
+<!--<span bind:this={imgElement}-->
+<!--      role="img"-->
+<!--      class="qc-ext-link-img"-->
+<!--      aria-label={externalIconAlt}>-->
+<!--</span>-->
+<Icon
+        type="external-link"
+        alt={externalIconAlt}
+        size="xs"
+        bind:rootElement={imgElement}
+        class="qc-ext-link-img"
+/>
 
 
 

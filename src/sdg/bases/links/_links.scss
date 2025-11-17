@@ -21,15 +21,15 @@ a {
   }
 
 }
-span.qc-ext-link-img {
+.qc-ext-link-img {
 
   @extend .icon-external-link;
   $ratio : math.div(11,16) * 1em;
   height: $ratio;
   width: $ratio;
-  display: inline-block;
   background: token-value(color link text);
   mask-size: $ratio;
+  display: inline-block;
   margin-left: 4px;
   a:visited  & {
     background: token-value(color link visited);

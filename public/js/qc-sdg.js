@@ -7064,7 +7064,7 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root$n = add_locations(template(`<div></div>`), Icon[FILENAME], [[16, 0]]);
+	var root$m = add_locations(template(`<div></div>`), Icon[FILENAME], [[17, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -7078,6 +7078,7 @@
 			height = prop($$props, 'height', 7, 'auto'),
 			src = prop($$props, 'src', 7, ''),
 			rotate = prop($$props, 'rotate', 7, 0),
+			rootElement = prop($$props, 'rootElement', 15),
 			rest = rest_props(
 				$$props,
 				[
@@ -7092,12 +7093,15 @@
 					'width',
 					'height',
 					'src',
-					'rotate'
+					'rotate',
+					'rootElement'
 				]);
 
 		let attributes = user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {});
-		var div = root$n();
+		var div = root$m();
 		let attributes_1;
+
+		bind_this(div, ($$value) => rootElement($$value), () => rootElement());
 
 		template_effect(() => attributes_1 = set_attributes(div, attributes_1, {
 			role: 'img',
@@ -7176,6 +7180,13 @@
 				rotate($$value);
 				flushSync();
 			},
+			get rootElement() {
+				return rootElement();
+			},
+			set rootElement($$value) {
+				rootElement($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -7190,7 +7201,8 @@
 			width: {},
 			height: {},
 			src: {},
-			rotate: {}
+			rotate: {},
+			rootElement: {}
 		},
 		[],
 		[],
@@ -7199,7 +7211,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$m = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
+	var root$l = add_locations(template(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [
 		[
 			57,
 			0,
@@ -7255,7 +7267,7 @@
 		const computedType = shouldUseIcon ? "neutral" : usedType;
 		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
 		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
-		var div = root$m();
+		var div = root$l();
 
 		set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
 
@@ -7379,14 +7391,14 @@
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
 
-	var root$l = add_locations(template(`<!> <link rel="stylesheet">`, 1), NoticeWC[FILENAME], [[27, 0]]);
+	var root$k = add_locations(template(`<!> <link rel="stylesheet">`, 1), NoticeWC[FILENAME], [[27, 0]]);
 
 	function NoticeWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		var fragment = root$l();
+		var fragment = root$k();
 		var node = first_child(fragment);
 
 		{
@@ -7446,7 +7458,7 @@
 	var root_9 = add_locations(template(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 28, [[117, 32]]]]);
 	var root_12 = add_locations(template(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 16]]);
 
-	var root$k = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$j = add_locations(template(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -7530,7 +7542,7 @@
 			}
 		});
 
-		var div = root$k();
+		var div = root$j();
 		var div_1 = child(div);
 
 		{
@@ -8002,7 +8014,7 @@
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
 
-	var root$j = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
+	var root$i = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
 
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
@@ -8022,7 +8034,7 @@
 					'self'
 				]);
 
-		var fragment = root$j();
+		var fragment = root$i();
 		var node = first_child(fragment);
 
 		{
@@ -8121,7 +8133,7 @@
 
 	var root_2$7 = add_locations(template(`<img>`), PivFooter[FILENAME], [[34, 12]]);
 	var root_4$3 = add_locations(template(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-	var root$i = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
+	var root$h = add_locations(template(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
 	function PivFooter($$anchor, $$props) {
 		check_target(new.target);
@@ -8141,7 +8153,7 @@
 			copyrightSlot = prop($$props, 'copyrightSlot', 7),
 			slots = prop($$props, 'slots', 23, () => ({}));
 
-		var div = root$i();
+		var div = root$h();
 		var node = child(div);
 
 		{
@@ -8351,7 +8363,7 @@
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
 
-	var root$h = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivFooterWC[FILENAME], [[44, 0]]);
+	var root$g = add_locations(template(`<!> <link rel="stylesheet">`, 1), PivFooterWC[FILENAME], [[44, 0]]);
 
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
@@ -8371,7 +8383,7 @@
 					'self'
 				]);
 
-		var fragment = root$h();
+		var fragment = root$g();
 		var node = first_child(fragment);
 
 		{
@@ -8450,7 +8462,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$g = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$f = add_locations(template(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -8477,7 +8489,7 @@
 					'class'
 				]);
 
-		var button = root$g();
+		var button = root$f();
 		let attributes;
 		var node = child(button);
 
@@ -8754,14 +8766,14 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var root$f = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[25, 0]]);
+	var root$e = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[25, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		var fragment = root$f();
+		var fragment = root$e();
 		var node = first_child(fragment);
 
 		Alert(node, spread_props(() => props, { slotContent: `<slot />` }));
@@ -8800,7 +8812,7 @@
 	}
 
 	var on_click$2 = (e, scrollToTop) => scrollToTop(e);
-	var root$e = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$d = add_locations(template(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -8844,7 +8856,7 @@
 			lastScrollY = window.scrollY;
 		});
 
-		var a = root$e();
+		var a = root$d();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -8925,14 +8937,15 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(template(`<span role="img" class="qc-ext-link-img"></span>`), ExternalLink[FILENAME], [[89, 0]]);
-
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site.");
+		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site."),
+			containerElement = prop($$props, 'containerElement', 7);
+
 		let imgElement = state(void 0);
+		let observer;
 
 		function createVisibleNodesTreeWalker() {
 			return document.createTreeWalker(get(imgElement).parentElement, NodeFilter.SHOW_ALL, {
@@ -8964,8 +8977,10 @@
 			});
 		}
 
-		onMount(() => {
-			get(imgElement).parentElement.querySelectorAll('a').forEach((link) => {
+		function addExternalLinkIcon() {
+			containerElement().querySelectorAll('a').forEach((link) => {
+				console.log(...log_if_contains_state('log', 'link', link));
+
 				// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
 				const walker = createVisibleNodesTreeWalker();
 				let lastTextNode = null;
@@ -8978,6 +8993,8 @@
 				if (!lastTextNode) {
 					return;
 				}
+
+				console.log(...log_if_contains_state('log', 'lastTextNode', lastTextNode));
 
 				// Séparer le contenu du dernier nœud texte en deux parties :
 				// le préfixe (éventuel) et le dernier mot
@@ -9005,13 +9022,43 @@
 					lastTextNode.parentNode.replaceChild(span, lastTextNode);
 				}
 			});
+		}
+
+		onMount(() => {
+			addExternalLinkIcon();
+
+			observer = new MutationObserver((mutations) => {
+				mutations.forEach((mutation) => {
+					console.log(...log_if_contains_state('log', 'mutation', mutation));
+					addExternalLinkIcon();
+				});
+			});
+
+			observer.observe(containerElement(), {
+				characterData: true,
+				childList: true,
+				subtree: true
+			});
 		});
 
-		var span_1 = root$d();
+		onDestroy(() => {
+			observer?.disconnect();
+		});
 
-		bind_this(span_1, ($$value) => set(imgElement, $$value), () => get(imgElement));
-		template_effect(() => set_attribute(span_1, 'aria-label', externalIconAlt()));
-		append($$anchor, span_1);
+		Icon($$anchor, {
+			type: 'external-link',
+			get alt() {
+				return externalIconAlt();
+			},
+			size: 'xs',
+			class: 'qc-ext-link-img',
+			get rootElement() {
+				return get(imgElement);
+			},
+			set rootElement($$value) {
+				set(imgElement, $$value, true);
+			}
+		});
 
 		return pop({
 			get externalIconAlt() {
@@ -9023,11 +9070,18 @@
 				externalIconAlt($$value);
 				flushSync();
 			},
+			get containerElement() {
+				return containerElement();
+			},
+			set containerElement($$value) {
+				containerElement($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(ExternalLink, { externalIconAlt: {} }, [], [], true);
+	create_custom_element(ExternalLink, { externalIconAlt: {}, containerElement: {} }, [], [], true);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
 
@@ -9037,7 +9091,7 @@
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 
-		ExternalLink($$anchor, spread_props(() => props));
+		ExternalLink($$anchor, spread_props({ containerElement: $$props.$$host }, () => props));
 		return pop({ ...legacy_api() });
 	}
 
