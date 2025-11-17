@@ -10799,10 +10799,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[134, 8]]);
-	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[145, 8]]);
+	var root_3$2 = add_locations(template(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[141, 8]]);
+	var root_4$1 = add_locations(template(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[152, 8]]);
 	var root_1$3 = add_locations(template(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[169, 4]]);
+	var root_6 = add_locations(template(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[176, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -10967,7 +10967,10 @@
 			rootElement = state(void 0),
 			textFieldRow = state(void 0),
 			defaultInvalidText = user_derived(() => {
-				if (!maxlengthReached()) return '';
+				if (!maxlengthReached()) {
+					return undefined;
+				}
+
 				return strict_equals(lang, 'fr') ? `La limite de caractères du champ ${label()} est dépassée.` : `The character limit for the ${label()} field has been exceeded.`;
 			});
 
@@ -10975,10 +10978,14 @@
 			if (webComponentMode) return;
 
 			if (!input()) {
-				input(get(rootElement).querySelector('input,textarea'));
+				input(get(rootElement)?.querySelector('input,textarea'));
 			}
 
-			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam));
+			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam), (requiredParam) => {
+				if (requiredParam) {
+					required(requiredParam);
+				}
+			});
 		});
 
 		user_effect(() => {
@@ -11249,14 +11256,14 @@
 			textFieldRow = state(void 0);
 
 		onMount(() => {
-			const initialLabelElement = $$props.$$host.querySelector('label');
+			const initialLabelElement = $$props.$$host?.querySelector('label');
 
 			if (initialLabelElement) {
 				label(initialLabelElement.innerHTML);
 				initialLabelElement.remove();
 			}
 
-			set(input, $$props.$$host.querySelector('input,textarea'), true);
+			set(input, $$props.$$host?.querySelector('input,textarea'), true);
 			console.log(...log_if_contains_state('log', "input", get(input)));
 
 			onMountInput(get(input), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => set(value, valueParam, true), (invalidParam) => invalid(invalidParam), (requiredParam) => {

@@ -34,7 +34,9 @@
         rootElement = $state(),
         textFieldRow = $state(),
         defaultInvalidText = $derived.by(() => {
-            if (!maxlengthReached) return '';
+            if (!maxlengthReached) {
+                return undefined;
+            }
             return lang === 'fr'
                 ? `La limite de caractères du champ ${label} est dépassée.`
                 : `The character limit for the ${label} field has been exceeded.`
@@ -44,13 +46,18 @@
     onMount(() => {
         if (webComponentMode) return;
         if (!input) {
-            input = rootElement.querySelector('input,textarea');
+            input = rootElement?.querySelector('input,textarea');
         }
         onMountInput(
             input,
             textFieldRowParam => textFieldRow = textFieldRowParam,
             valueParam => value = valueParam,
-            invalidParam => invalid = invalidParam
+            invalidParam => invalid = invalidParam,
+            requiredParam => {
+                if (requiredParam) {
+                    required = requiredParam;
+                }
+            }
         )
     })
 
@@ -156,7 +163,7 @@
     {/if}
 
     <FormError {invalid}
-               invalidText={invalidText ? invalidText :  defaultInvalidText}
+               invalidText={invalidText ? invalidText : defaultInvalidText}
                label={label ? label : input?.getAttribute("aria-label")}
                bind:id={errorId}
                extraClasses={['qc-xs-mt']}

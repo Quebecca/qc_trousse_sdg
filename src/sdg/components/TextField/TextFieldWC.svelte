@@ -40,13 +40,13 @@
         textFieldRow = $state()
     ;
     onMount(() => {
-        const initialLabelElement = $host().querySelector('label');
+        const initialLabelElement = $host()?.querySelector('label');
         if (initialLabelElement) {
             label = initialLabelElement.innerHTML;
             initialLabelElement.remove();
         }
 
-        input = $host().querySelector('input,textarea');
+        input = $host()?.querySelector('input,textarea');
         console.log("input", input);
         onMountInput(input,
             textFieldRowParam => textFieldRow = textFieldRowParam,

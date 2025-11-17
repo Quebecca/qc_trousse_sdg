@@ -56,10 +56,24 @@
     />
 </TextField>
 
+<div style="width: 500px; max-width: 100%;padding: 10px; border: 1px solid #ccc;">
+    <TextField
+            label="Très large"
+            size="xl"
+
+    >
+        <input type="text"
+               placeholder="Long placeholder lorem ipsum dolor sit amet"
+               name="text-xl"
+               disabled
+        />
+    </TextField>
+</div>
+
 <div class="qc-formfield-row">
     <TextField
-            label="Combiné 1"
-            size="sm"
+            label="Combiné 1 Long placeholder lorem ipsum dolor sit amet"
+            size="lg"
     >
         <input type="text"
                placeholder="Long placeholder lorem ipsum dolor sit amet"
@@ -68,7 +82,7 @@
     </TextField>
 
     <TextField
-            label="Combiné 2"
+            label="Combiné 2 Long placeholder lorem ipsum dolor sit amet"
             size="xs"
     >
         <input type="text"
