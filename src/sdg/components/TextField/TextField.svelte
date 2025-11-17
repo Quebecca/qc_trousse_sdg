@@ -117,7 +117,6 @@
         input.setAttribute('aria-invalid', invalid)
         input.setAttribute('aria-required', required)
     })
-
 </script>
 
 {#snippet textfield()}
@@ -140,7 +139,7 @@
         </div>
     {/if}
 
-    {@render children()}
+    {@render children?.()}
 
     {#if maxlength && maxlength !== null}
         <div

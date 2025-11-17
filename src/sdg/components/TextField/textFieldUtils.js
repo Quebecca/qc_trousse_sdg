@@ -1,6 +1,6 @@
 import {Utils} from "../utils";
 
-export function onMountInput(input, setTextFieldRow, setValue, setInvalid) {
+export function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
     if (!input) return;
     if (!input.autocomplete) {
         input.autocomplete = "off"
@@ -8,7 +8,8 @@ export function onMountInput(input, setTextFieldRow, setValue, setInvalid) {
     if (!input.id) {
         input.id =  Utils.generateId(input.type);
     }
-    setValue(input.value)
+    setValue(input.value);
+    setRequired(input.required);
     input.addEventListener(
         'input',
         () => {

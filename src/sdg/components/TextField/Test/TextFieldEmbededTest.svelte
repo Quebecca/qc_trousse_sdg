@@ -28,6 +28,7 @@
 >
     <input type="text"
            name="text-md"
+           id="text-md"
            placeholder="Long placeholder lorem ipsum dolor sit amet"
     />
 </TextField>
@@ -39,6 +40,7 @@
            required>
     <input type="text"
            name="text-lg"
+           id="text-lg"
     />
 </TextField>
 
