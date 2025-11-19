@@ -7,7 +7,6 @@ let {
     externalIconAlt = Utils.getPageLanguage() === 'fr'
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site.",
-    containerElement,
     links = [],
     updateLock = $bindable(false)
 } = $props();
@@ -22,7 +21,7 @@ function addExternalLinkIcon(links) {
         }
 
         let linkContent = link.innerHTML;
-        linkContent = linkContent + `&nbsp;${imgElement.outerHTML}`;
+        linkContent = `<span class="qc-ext-link-text">${linkContent}</span>&nbsp;${imgElement.outerHTML}`;
 
         link.innerHTML = linkContent;
         processedLinks.add(linkContent);
@@ -58,6 +57,7 @@ $effect(() => {
             alt={externalIconAlt}
             size="xs"
             bind:rootElement={imgElement}
+            class="qc-ext-link-img"
     />
 </div>
 

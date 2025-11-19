@@ -4,6 +4,10 @@
 
 a {
   color: token-value(color, link, text);
+  &:has(.qc-ext-link-text) {
+    white-space: nowrap;
+    text-decoration: none;
+  }
   &:visited {
     color: token-value(color, link, visited);
   }
@@ -19,8 +23,20 @@ a {
   .img-wrap {
     white-space: nowrap;
   }
-
 }
+
+.qc-external-link {
+  .qc-ext-link-text {
+    white-space: normal;
+    text-decoration: underline;
+  }
+
+  .qc-icon {
+    background-color: token-value(color link text);
+    display: inline;
+  }
+}
+
 .qc-ext-link-img {
 
   @extend .icon-external-link;
@@ -30,7 +46,9 @@ a {
   background: token-value(color link text);
   mask-size: $ratio;
   display: inline-block;
-  margin-left: 4px;
+  mask-repeat: no-repeat;
+  //background-repeat: no-repeat;
+  //margin-left: 4px;
   a:visited  & {
     background: token-value(color link visited);
   }

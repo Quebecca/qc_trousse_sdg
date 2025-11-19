@@ -1,5 +1,6 @@
 [
   "**/button-baseline.spec.ts",
   "**/dropdown-list-baseline.spec.ts",
-  "**/piv-header-baseline.spec.ts"
+  "**/piv-header-baseline.spec.ts",
+  "**/external-link-baseline.spec.ts"
 ]

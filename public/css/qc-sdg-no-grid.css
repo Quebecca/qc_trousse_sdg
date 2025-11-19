@@ -826,11 +826,18 @@ qc-icon {
 a {
   color: var(--qc-color-link-text);
 }
+a:has(.qc-ext-link-text) {
+  white-space: nowrap;
+  text-decoration: none;
+}
 a:visited {
   color: var(--qc-color-link-visited);
 }
 a:hover {
   color: var(--qc-color-link-hover);
+  text-decoration: none;
+}
+a:hover .qc-ext-link-text {
   text-decoration: none;
 }
 a:focus, a:focus-visible {
@@ -839,12 +846,27 @@ a:focus, a:focus-visible {
   outline: 2px solid var(--qc-color-link-focus-outline);
   outline-offset: 1px;
 }
+a:focus .qc-ext-link-text, a:focus-visible .qc-ext-link-text {
+  text-decoration: none;
+}
 a:active {
   color: var(--qc-color-link-active);
   text-decoration: none;
 }
+a:active .qc-ext-link-text {
+  text-decoration: none;
+}
 a .img-wrap {
   white-space: nowrap;
+}
+
+.qc-external-link .qc-ext-link-text {
+  white-space: normal;
+  text-decoration: underline;
+}
+.qc-external-link .qc-icon {
+  background-color: var(--qc-color-link-text);
+  display: inline;
 }
 
 .qc-ext-link-img {
@@ -853,7 +875,7 @@ a .img-wrap {
   background: var(--qc-color-link-text);
   mask-size: 0.6875em;
   display: inline-block;
-  margin-left: 4px;
+  mask-repeat: no-repeat;
 }
 a:visited .qc-ext-link-img {
   background: var(--qc-color-link-visited);

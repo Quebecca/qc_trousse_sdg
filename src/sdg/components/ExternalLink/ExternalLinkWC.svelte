@@ -21,6 +21,7 @@
     }
 
     onMount(() => {
+        $host().classList.add('qc-external-link');
         links = queryLinks();
 
         observer = new MutationObserver(() => {
@@ -45,4 +46,4 @@
     });
 </script>
 
-<ExternalLink containerElement={$host()} {links} {updateLock} {...props} />
+<ExternalLink {links} {updateLock} {...props} />

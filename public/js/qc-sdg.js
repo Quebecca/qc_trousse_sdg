@@ -8937,14 +8937,13 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[55, 0]]);
+	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[54, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site."),
-			containerElement = prop($$props, 'containerElement', 7),
 			links = prop($$props, 'links', 23, () => []),
 			updateLock = prop($$props, 'updateLock', 15, false);
 
@@ -8959,7 +8958,7 @@
 
 				let linkContent = link.innerHTML;
 
-				linkContent = linkContent + `&nbsp;${get(imgElement).outerHTML}`;
+				linkContent = `<span class="qc-ext-link-text">${linkContent}</span>&nbsp;${get(imgElement).outerHTML}`;
 				link.innerHTML = linkContent;
 				processedLinks.add(linkContent);
 			});
@@ -8991,6 +8990,7 @@
 				return externalIconAlt();
 			},
 			size: 'xs',
+			class: 'qc-ext-link-img',
 			get rootElement() {
 				return get(imgElement);
 			},
@@ -9010,13 +9010,6 @@
 				$$value = Utils.getPageLanguage() === 'fr' ? "Ce lien dirige vers un autre site." : "This link directs to another site."
 			) {
 				externalIconAlt($$value);
-				flushSync();
-			},
-			get containerElement() {
-				return containerElement();
-			},
-			set containerElement($$value) {
-				containerElement($$value);
 				flushSync();
 			},
 			get links() {
@@ -9041,7 +9034,6 @@
 		ExternalLink,
 		{
 			externalIconAlt: {},
-			containerElement: {},
 			links: {},
 			updateLock: {}
 		},
@@ -9066,6 +9058,7 @@
 		}
 
 		onMount(() => {
+			$$props.$$host.classList.add('qc-external-link');
 			set(links, queryLinks(), true);
 
 			observer = new MutationObserver(() => {
@@ -9091,7 +9084,6 @@
 
 		ExternalLink($$anchor, spread_props(
 			{
-				containerElement: $$props.$$host,
 				get links() {
 					return get(links);
 				},
