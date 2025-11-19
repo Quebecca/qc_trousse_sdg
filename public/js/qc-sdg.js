@@ -8937,7 +8937,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[54, 0]]);
+	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[52, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8972,8 +8972,6 @@
 			updateLock(true);
 
 			tick().then(() => {
-				console.log(...log_if_contains_state('log', 'links', snapshot(links().map((link) => link.innerHTML))));
-				processedLinks.forEach((link) => console.log(...log_if_contains_state('log', link.innerHTML)));
 				addExternalLinkIcon(links());
 				return tick();
 			}).then(() => {

@@ -36,8 +36,6 @@ $effect(() => {
     updateLock = true;
 
     tick().then(() => {
-        console.log('links', $state.snapshot(links.map(link => link.innerHTML)));
-        processedLinks.forEach(link => console.log(link.innerHTML));
         addExternalLinkIcon(links);
         return tick();
     }).then(() => {
