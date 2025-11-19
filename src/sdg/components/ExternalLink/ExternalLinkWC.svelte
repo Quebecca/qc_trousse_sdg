@@ -1,5 +1,6 @@
 <svelte:options customElement={{
     tag: 'qc-external-link',
+    shadow: 'none',
     props: {
         externalIconAlt: { attribute: 'img-alt' }
     }
@@ -7,13 +8,41 @@
 
 <script>
     import ExternalLink from "./ExternalLink.svelte";
-    import {Utils} from "../utils";
+    import {onDestroy, onMount, tick} from "svelte";
 
     const props = $props();
 
-    const links = Array.from($host().querySelectorAll('a'));
+    let links = $state([]);
+    let observer;
+    let updateLock = $state(false);
+
+    function queryLinks() {
+        return Array.from($host().querySelectorAll('a'));
+    }
+
+    onMount(() => {
+        links = queryLinks();
+
+        observer = new MutationObserver(() => {
+            if (updateLock) {
+                return;
+            }
+            tick().then(() => {
+                links = queryLinks();
+            });
+        });
+
+
+        observer.observe($host(), {
+            characterData: true,
+            childList: true,
+            subtree: true
+        });
+    });
+
+    onDestroy(() => {
+        observer?.disconnect();
+    });
 </script>
 
-<ExternalLink {links} {...props} />
-
-<link rel='stylesheet' href='{Utils.cssPath}'>
+<ExternalLink containerElement={$host()} {links} {updateLock} {...props} />

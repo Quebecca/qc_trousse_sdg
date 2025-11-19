@@ -8591,7 +8591,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$8 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
+	var root_1$7 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
 			40,
 			4,
@@ -8635,7 +8635,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$8();
+				var div = root_1$7();
 
 				set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
 
@@ -8937,80 +8937,70 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root_1$7 = add_locations(template(`<a> <!></a>`), ExternalLink[FILENAME], [[134, 4]]);
+	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[55, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site."),
-			links = prop($$props, 'links', 7);
+			containerElement = prop($$props, 'containerElement', 7),
+			links = prop($$props, 'links', 23, () => []),
+			updateLock = prop($$props, 'updateLock', 15, false);
 
 		let imgElement = state(void 0);
+		let processedLinks = new Set();
 
-		// onMount(() => {
-		//     addExternalLinkIcon();
-		//
-		//     observer = new MutationObserver(mutations => {
-		//         mutations.forEach((mutation) => {
-		//             console.log('mutation', mutation);
-		//             addExternalLinkIcon();
-		//         });
-		//     });
-		//
-		//
-		//     observer.observe(containerElement, {
-		//         characterData: true,
-		//         childList: true,
-		//         subtree: true
-		//     });
-		// });
-		//
-		// onDestroy(() => {
-		//     observer?.disconnect();
-		// });
-		links().forEach((link) => console.log(...log_if_contains_state('log', 'link attributes', link.attributes)));
-
-		var fragment = comment();
-		var node_1 = first_child(fragment);
-
-		each(node_1, 17, links, index, ($$anchor, link) => {
-			var a = root_1$7();
-			const linkAttributes = user_derived(() => Object.fromEntries(Array.from(get(link).attributes).map((attribute) => [attribute.name, attribute.value])));
-
-			get(linkAttributes);
-
-			let attributes;
-			var text = child(a);
-			var node_2 = sibling(text);
-
-			Icon(node_2, {
-				type: 'external-link',
-				get alt() {
-					return externalIconAlt();
-				},
-				size: 'xs',
-				get rootElement() {
-					return get(imgElement);
-				},
-				set rootElement($$value) {
-					set(imgElement, $$value, true);
+		function addExternalLinkIcon(links) {
+			links.forEach((link) => {
+				if (processedLinks.has(link.innerHTML)) {
+					return;
 				}
+
+				let linkContent = link.innerHTML;
+
+				linkContent = linkContent + `&nbsp;${get(imgElement).outerHTML}`;
+				link.innerHTML = linkContent;
+				processedLinks.add(linkContent);
 			});
+		}
 
-			reset(a);
+		user_effect(() => {
+			if (links().length <= 0 || !get(imgElement)) {
+				return;
+			}
 
-			template_effect(() => {
-				attributes = set_attributes(a, attributes, { ...get(linkAttributes) });
+			updateLock(true);
 
-				set_text(text, `${get(link).innerHTML ?? ''}
-          `);
+			tick().then(() => {
+				console.log(...log_if_contains_state('log', 'links', snapshot(links().map((link) => link.innerHTML))));
+				processedLinks.forEach((link) => console.log(...log_if_contains_state('log', link.innerHTML)));
+				addExternalLinkIcon(links());
+				return tick();
+			}).then(() => {
+				updateLock(false);
 			});
-
-			append($$anchor, a);
 		});
 
-		append($$anchor, fragment);
+		var div = root$d();
+		var node = child(div);
+
+		Icon(node, {
+			type: 'external-link',
+			get alt() {
+				return externalIconAlt();
+			},
+			size: 'xs',
+			get rootElement() {
+				return get(imgElement);
+			},
+			set rootElement($$value) {
+				set(imgElement, $$value, true);
+			}
+		});
+
+		reset(div);
+		append($$anchor, div);
 
 		return pop({
 			get externalIconAlt() {
@@ -9022,42 +9012,100 @@
 				externalIconAlt($$value);
 				flushSync();
 			},
+			get containerElement() {
+				return containerElement();
+			},
+			set containerElement($$value) {
+				containerElement($$value);
+				flushSync();
+			},
 			get links() {
 				return links();
 			},
-			set links($$value) {
+			set links($$value = []) {
 				links($$value);
+				flushSync();
+			},
+			get updateLock() {
+				return updateLock();
+			},
+			set updateLock($$value = false) {
+				updateLock($$value);
 				flushSync();
 			},
 			...legacy_api()
 		});
 	}
 
-	create_custom_element(ExternalLink, { externalIconAlt: {}, links: {} }, [], [], true);
+	create_custom_element(
+		ExternalLink,
+		{
+			externalIconAlt: {},
+			containerElement: {},
+			links: {},
+			updateLock: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
-
-	var root$d = add_locations(template(`<!> <link rel="stylesheet">`, 1), ExternalLinkWC[FILENAME], [[19, 0]]);
 
 	function ExternalLinkWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		const links = Array.from($$props.$$host.querySelectorAll('a'));
-		var fragment = root$d();
-		var node = first_child(fragment);
+		let links = state(proxy([]));
+		let observer;
+		let updateLock = state(false);
 
-		ExternalLink(node, spread_props({ links }, () => props));
+		function queryLinks() {
+			return Array.from($$props.$$host.querySelectorAll('a'));
+		}
 
-		var link = sibling(node, 2);
+		onMount(() => {
+			set(links, queryLinks(), true);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
+			observer = new MutationObserver(() => {
+				if (get(updateLock)) {
+					return;
+				}
+
+				tick().then(() => {
+					set(links, queryLinks(), true);
+				});
+			});
+
+			observer.observe($$props.$$host, {
+				characterData: true,
+				childList: true,
+				subtree: true
+			});
+		});
+
+		onDestroy(() => {
+			observer?.disconnect();
+		});
+
+		ExternalLink($$anchor, spread_props(
+			{
+				containerElement: $$props.$$host,
+				get links() {
+					return get(links);
+				},
+				get updateLock() {
+					return get(updateLock);
+				}
+			},
+			() => props
+		));
+
 		return pop({ ...legacy_api() });
 	}
 
-	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], true));
+	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
