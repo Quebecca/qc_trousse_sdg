@@ -55,9 +55,9 @@ $border: 1;
 
 .qc-dropdown-list-expanded {
   position: absolute;
-  width: calc(100% + 2px);
-  left: -(rem($border));
-  right: -(rem($border));
+  width: calc(100% + 2 * var(--dropdown-button-border)px);
+  left: calc(var(--dropdown-button-border) * $rem-ratio * -1rem);
+  right: calc(var(--dropdown-button-border) * $rem-ratio * -1rem);
   top: calc(var(--dropdown-items-top-offset) * $rem-ratio * 1rem);
   //top: 100%;
   z-index: 11; // Index supérieur à l'index du mixin qc-formcontrol-box

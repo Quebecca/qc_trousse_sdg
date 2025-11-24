@@ -12975,8 +12975,8 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[381, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[422, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[382, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[423, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
@@ -12990,7 +12990,7 @@
 						[
 							336,
 							8,
-							[[365, 12, [[420, 16]]]]
+							[[365, 12, [[421, 16]]]]
 						]
 					]
 				]
@@ -13108,10 +13108,10 @@
 				}
 			}),
 			topOffset = user_derived(() => {
-				const borderThickness = invalid() ? 3 : 2;
+				const borderThickness = invalid() ? 4 : 2;
 				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
 
-				return get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight + borderThickness : buttonHeight - borderThickness;
+				return get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness;
 			}),
 			popupTopBorderThickness = user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0),
 			popupBottomBorderThickness = user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0);
@@ -13296,7 +13296,7 @@
 		}
 
 		onMount(() => {
-			set(buttonElementYPosition, get(button).getBoundingClientRect().y, true);
+			setRemainingBottomHeight();
 		});
 
 		var div = root$1();
@@ -13542,6 +13542,7 @@
                     --dropdown-items-height: ${get(usedHeight)};
                     --dropdown-items-bottom-border: ${get(popupBottomBorderThickness)};
                     --dropdown-items-top-border: ${get(popupTopBorderThickness)};
+                    --dropdown-button-border: ${invalid() ? 2 : 1};
                     `);
 
 			div_3.hidden = !get(expanded);

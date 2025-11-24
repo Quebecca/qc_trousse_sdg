@@ -112,11 +112,11 @@
             }
         }),
         topOffset = $derived.by(() => {
-            const borderThickness = invalid ? 3 : 2;
+            const borderThickness = invalid ? 4 : 2;
             const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
 
             return buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
-                -popupHeight + borderThickness
+                -popupHeight
                 : buttonHeight - borderThickness
         }),
         popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
@@ -303,7 +303,7 @@
     }
 
     onMount(() => {
-        buttonElementYPosition = button.getBoundingClientRect().y;
+        setRemainingBottomHeight();
     });
 </script>
 
@@ -370,6 +370,7 @@
                     --dropdown-items-height: ${usedHeight};
                     --dropdown-items-bottom-border: ${popupBottomBorderThickness};
                     --dropdown-items-top-border: ${popupTopBorderThickness};
+                    --dropdown-button-border: ${invalid ? 2 : 1};
                     `}
                     tabindex="-1"
                     hidden={!expanded}

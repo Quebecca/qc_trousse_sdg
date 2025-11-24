@@ -2620,9 +2620,9 @@ li[aria-selected=true] {
 
 .qc-dropdown-list-expanded {
   position: absolute;
-  width: calc(100% + 2px);
-  left: -0.1rem;
-  right: -0.1rem;
+  width: calc(100% + 2 * var(--dropdown-button-border) px);
+  left: calc(var(--dropdown-button-border) * 0.1 * -1rem);
+  right: calc(var(--dropdown-button-border) * 0.1 * -1rem);
   top: calc(var(--dropdown-items-top-offset) * 0.1 * 1rem);
   z-index: 11;
   background-color: var(--qc-color-background);
