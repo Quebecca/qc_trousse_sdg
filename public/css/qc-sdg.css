@@ -2623,12 +2623,13 @@ li[aria-selected=true] {
   width: calc(100% + 2px);
   left: -0.1rem;
   right: -0.1rem;
-  top: 100%;
+  top: calc(var(--dropdown-items-top-offset) * 0.1 * 1rem);
   z-index: 11;
   background-color: var(--qc-color-background);
   border-left: 0.1rem solid var(--qc-color-grey-medium);
   border-right: 0.1rem solid var(--qc-color-grey-medium);
-  border-bottom: 0.1rem solid var(--qc-color-grey-medium);
+  border-bottom: calc(var(--dropdown-items-bottom-border) * 0.1 * 1rem) solid var(--qc-color-grey-medium);
+  border-top: calc(var(--dropdown-items-top-border) * 0.1 * 1rem) solid var(--qc-color-grey-medium);
 }
 
 .qc-dropdown-list-hidden {

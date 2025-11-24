@@ -5,6 +5,7 @@
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
     import Label from "../Label/Label.svelte";
+    import {onMount} from "svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -36,7 +37,7 @@
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
-        availableWidths = ["xs", "sm", "md", "lg", "xl"]
+        availableWidths = ["xs", "sm", "md", "lg", "xl"], buttonHeight = 40
     ;
 
     let
@@ -44,6 +45,7 @@
         parentRow = $derived(instance?.closest(".qc-formfield-row")),
         button = $state(),
         searchInput = $state(),
+        popup = $state(),
         dropdownItems = $state(),
         selectedItems = $derived(items.filter((item) => item.checked) ?? []),
         selectedOptionsText = $derived.by(() => {
@@ -77,8 +79,6 @@
             }
         })),
         widthClass = $derived.by(() => {
-            const keyword = webComponentMode ? "container" : "root";
-
             if (availableWidths.includes(width)) {
                 return `qc-dropdown-list-${width}`;
             }
@@ -93,7 +93,34 @@
             }
 
             return "";
-        })
+        }),
+        buttonElementYPosition = $state(0),
+        usedHeight = $derived.by(() => {
+            const maxItemsHeight = 336;
+            const searchInputTotalHeight = 56;
+
+            if (enableSearch) {
+                if (displayedItems.length > 7) {
+                    return maxItemsHeight - searchInputTotalHeight - 17;
+                }
+                return maxItemsHeight - searchInputTotalHeight;
+            } else {
+                if (displayedItems.length > 8) {
+                    return maxItemsHeight - 33;
+                }
+                return maxItemsHeight;
+            }
+        }),
+        topOffset = $derived.by(() => {
+            const borderThickness = invalid ? 3 : 2;
+            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+
+            return buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
+                -popupHeight + borderThickness
+                : buttonHeight - borderThickness
+        }),
+        popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
+        popupBottomBorderThickness = $derived(topOffset && topOffset >= 0 ? 1 : 0)
     ;
 
     function focusOnSelectedOption(value) {
@@ -267,9 +294,21 @@
                 || item.value === undefined
         );
     }
+
+    function setRemainingBottomHeight() {
+        if (!button) {
+            return;
+        }
+        buttonElementYPosition = button.getBoundingClientRect().y;
+    }
+
+    onMount(() => {
+        buttonElementYPosition = button.getBoundingClientRect().y;
+    });
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
+<svelte:window onscroll={setRemainingBottomHeight} />
 <div
         class={[
         !parentRow && !webComponentMode && "qc-select"
@@ -315,19 +354,27 @@
                     aria-invalid={invalid}
                     {selectedOptionsText}
                     {placeholder}
+                    {usedHeight}
                     onclick={handleDropdownButtonClick}
                     onkeydown={(e) => {
-                    handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
-                }}
-                    bind:this={button}
+                        handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
+                    }}
+                    bind:buttonElement={button}
             />
 
             <div
                     id={popupId}
                     class="qc-dropdown-list-expanded"
+                    style={`
+                    --dropdown-items-top-offset: ${topOffset};
+                    --dropdown-items-height: ${usedHeight};
+                    --dropdown-items-bottom-border: ${popupBottomBorderThickness};
+                    --dropdown-items-top-border: ${popupTopBorderThickness};
+                    `}
                     tabindex="-1"
                     hidden={!expanded}
                     role="listbox"
+                    bind:this={popup}
             >
 
                 {#if enableSearch}
@@ -352,16 +399,15 @@
 
                 <DropdownListItems
                         id={itemsId}
-                        {enableSearch}
                         {placeholder}
                         {multiple}
                         {items}
                         {displayedItems}
                         {noOptionsMessage}
                         selectionCallbackSingle={() => {
-                        closeDropdown("");
-                        button?.focus();
-                    }}
+                            closeDropdown("");
+                            button?.focus();
+                        }}
                         handleExitSingle={(key) => closeDropdown(key)}
                         handleExitMultiple={(key) => closeDropdown(key)}
                         focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}

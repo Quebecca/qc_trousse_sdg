@@ -6,7 +6,6 @@
 
     let {
         id,
-        enableSearch,
         multiple,
         items,
         displayedItems,
@@ -18,25 +17,9 @@
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {},
         placeholder,
-    } = $props()
+    } = $props();
 
     let itemsComponent = $state();
-    let usedHeight = $derived.by(() => {
-        const maxItemsHeight = 336;
-        const searchInputTotalHeight = 56;
-
-        if (enableSearch) {
-            if (displayedItems.length > 7) {
-                return maxItemsHeight - searchInputTotalHeight - 17;
-            }
-            return maxItemsHeight - searchInputTotalHeight;
-        } else {
-            if (displayedItems.length > 8) {
-                return maxItemsHeight - 33;
-            }
-            return maxItemsHeight;
-        }
-    });
 
     export function focus() {
         Utils.sleep(5).then(() => {
@@ -63,7 +46,6 @@
     id={id}
     class="qc-dropdown-list-items"
     tabindex="-1"
-    style="--dropdown-items-height: {usedHeight};"
 >
     {#if multiple}
         <DropdownListItemsMultiple

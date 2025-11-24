@@ -77840,15 +77840,14 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4$2 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[100, 16]]);
-	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[62, 0, [[97, 4]]]]);
+	var root_4$2 = add_locations(template(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
+	var root$3 = add_locations(template(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let id = prop($$props, 'id', 7),
-			enableSearch = prop($$props, 'enableSearch', 7),
 			multiple = prop($$props, 'multiple', 7),
 			items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
@@ -77862,25 +77861,6 @@
 			placeholder = prop($$props, 'placeholder', 7);
 
 		let itemsComponent = state(void 0);
-
-		let usedHeight = user_derived(() => {
-			const maxItemsHeight = 336;
-			const searchInputTotalHeight = 56;
-
-			if (enableSearch()) {
-				if (displayedItems().length > 7) {
-					return maxItemsHeight - searchInputTotalHeight - 17;
-				}
-
-				return maxItemsHeight - searchInputTotalHeight;
-			} else {
-				if (displayedItems().length > 8) {
-					return maxItemsHeight - 33;
-				}
-
-				return maxItemsHeight;
-			}
-		});
 
 		function focus() {
 			Utils.sleep(5).then(() => {
@@ -77997,12 +77977,7 @@
 
 		reset(div_1);
 		reset(div);
-
-		template_effect(() => {
-			set_attribute(div, 'id', id());
-			set_style(div, `--dropdown-items-height: ${get(usedHeight) ?? ''};`);
-		});
-
+		template_effect(() => set_attribute(div, 'id', id()));
 		append($$anchor, div);
 
 		return pop({
@@ -78020,13 +77995,6 @@
 			},
 			set id($$value) {
 				id($$value);
-				flushSync();
-			},
-			get enableSearch() {
-				return enableSearch();
-			},
-			set enableSearch($$value) {
-				enableSearch($$value);
 				flushSync();
 			},
 			get multiple() {
@@ -78114,7 +78082,6 @@
 		DropdownListItems,
 		{
 			id: {},
-			enableSearch: {},
 			multiple: {},
 			items: {},
 			displayedItems: {},
@@ -78138,9 +78105,9 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[29, 8]]);
-	var root_2$3 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[31, 8]]);
-	var root$2 = add_locations(template(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[19, 0, [[34, 4]]]]);
+	var root_1$1 = add_locations(template(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
+	var root_2$3 = add_locations(template(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
+	var root$2 = add_locations(template(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -78151,6 +78118,7 @@
 			disabled = prop($$props, 'disabled', 7),
 			selectedOptionsText = prop($$props, 'selectedOptionsText', 7, ""),
 			placeholder = prop($$props, 'placeholder', 7),
+			buttonElement = prop($$props, 'buttonElement', 15),
 			rest = rest_props(
 				$$props,
 				[
@@ -78162,18 +78130,13 @@
 					'expanded',
 					'disabled',
 					'selectedOptionsText',
-					'placeholder'
+					'placeholder',
+					'buttonElement'
 				]);
 
-		let button;
-
-		function focus() {
-			button?.focus();
-		}
-
-		var button_1 = root$2();
+		var button = root$2();
 		let attributes;
-		var node = child(button_1);
+		var node = child(button);
 
 		{
 			var consequent = ($$anchor) => {
@@ -78219,10 +78182,10 @@
 		});
 
 		reset(span_2);
-		reset(button_1);
-		bind_this(button_1, ($$value) => button = $$value, () => button);
+		reset(button);
+		bind_this(button, ($$value) => buttonElement($$value), () => buttonElement());
 
-		template_effect(() => attributes = set_attributes(button_1, attributes, {
+		template_effect(() => attributes = set_attributes(button, attributes, {
 			type: 'button',
 			id: inputId(),
 			disabled: disabled(),
@@ -78231,12 +78194,9 @@
 			...rest
 		}));
 
-		append($$anchor, button_1);
+		append($$anchor, button);
 
 		return pop({
-			get focus() {
-				return focus;
-			},
 			get inputId() {
 				return inputId();
 			},
@@ -78272,6 +78232,13 @@
 				placeholder($$value);
 				flushSync();
 			},
+			get buttonElement() {
+				return buttonElement();
+			},
+			set buttonElement($$value) {
+				buttonElement($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -78283,31 +78250,32 @@
 			expanded: {},
 			disabled: {},
 			selectedOptionsText: {},
-			placeholder: {}
+			placeholder: {},
+			buttonElement: {}
 		},
 		[],
-		['focus'],
+		[],
 		true
 	);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[334, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[376, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[381, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[422, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			273,
+			312,
 			0,
 			[
 				[
-					278,
+					317,
 					4,
 					[
 						[
-							297,
+							336,
 							8,
-							[[325, 12, [[374, 16]]]]
+							[[365, 12, [[420, 16]]]]
 						]
 					]
 				]
@@ -78347,12 +78315,14 @@
 			itemsId = `${id()}-items`,
 			labelId = `${id()}-label`,
 			errorId = `${id()}-error`,
-			availableWidths = ["xs", "sm", "md", "lg", "xl"];
+			availableWidths = ["xs", "sm", "md", "lg", "xl"],
+			buttonHeight = 40;
 
 		let instance = state(void 0),
 			parentRow = user_derived(() => get(instance)?.closest(".qc-formfield-row")),
 			button = state(void 0),
 			searchInput = state(void 0),
+			popup = state(void 0),
 			dropdownItems = state(void 0),
 			selectedItems = user_derived(() => items().filter((item) => item.checked) ?? []),
 			selectedOptionsText = user_derived(() => {
@@ -78388,8 +78358,6 @@
 				};
 			})),
 			widthClass = user_derived(() => {
-				webComponentMode() ? "container" : "root";
-
 				if (availableWidths.includes(width())) {
 					return `qc-dropdown-list-${width()}`;
 				}
@@ -78404,7 +78372,34 @@
 				}
 
 				return "";
-			});
+			}),
+			buttonElementYPosition = state(0),
+			usedHeight = user_derived(() => {
+				const maxItemsHeight = 336;
+				const searchInputTotalHeight = 56;
+
+				if (enableSearch()) {
+					if (get(displayedItems).length > 7) {
+						return maxItemsHeight - searchInputTotalHeight - 17;
+					}
+
+					return maxItemsHeight - searchInputTotalHeight;
+				} else {
+					if (get(displayedItems).length > 8) {
+						return maxItemsHeight - 33;
+					}
+
+					return maxItemsHeight;
+				}
+			}),
+			topOffset = user_derived(() => {
+				const borderThickness = invalid() ? 3 : 2;
+				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
+
+				return get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight + borderThickness : buttonHeight - borderThickness;
+			}),
+			popupTopBorderThickness = user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0),
+			popupBottomBorderThickness = user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0);
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -78577,10 +78572,23 @@
 			return items()?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
 		}
 
+		function setRemainingBottomHeight() {
+			if (!get(button)) {
+				return;
+			}
+
+			set(buttonElementYPosition, get(button).getBoundingClientRect().y, true);
+		}
+
+		onMount(() => {
+			set(buttonElementYPosition, get(button).getBoundingClientRect().y, true);
+		});
+
 		var div = root$1();
 
 		event('click', $document.body, handleOuterEvent);
 		event('keydown', $document.body, handleTab);
+		event('scroll', $window, setRemainingBottomHeight);
 
 		var div_1 = child(div);
 
@@ -78618,41 +78626,46 @@
 		var div_2 = sibling(node, 2);
 		var node_1 = child(div_2);
 
-		bind_this(
-			DropdownListButton(node_1, {
-				inputId,
-				get disabled() {
-					return disabled();
-				},
-				get expanded() {
-					return get(expanded);
-				},
-				'aria-labelledby': labelId,
-				get 'aria-required'() {
-					return required();
-				},
-				get 'aria-expanded'() {
-					return get(expanded);
-				},
-				'aria-haspopup': 'listbox',
-				'aria-controls': itemsId,
-				get 'aria-invalid'() {
-					return invalid();
-				},
-				get selectedOptionsText() {
-					return get(selectedOptionsText);
-				},
-				get placeholder() {
-					return placeholder();
-				},
-				onclick: handleDropdownButtonClick,
-				onkeydown: (e) => {
-					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
-				}
-			}),
-			($$value) => set(button, $$value, true),
-			() => get(button)
-		);
+		DropdownListButton(node_1, {
+			inputId,
+			get disabled() {
+				return disabled();
+			},
+			get expanded() {
+				return get(expanded);
+			},
+			'aria-labelledby': labelId,
+			get 'aria-required'() {
+				return required();
+			},
+			get 'aria-expanded'() {
+				return get(expanded);
+			},
+			'aria-haspopup': 'listbox',
+			'aria-controls': itemsId,
+			get 'aria-invalid'() {
+				return invalid();
+			},
+			get selectedOptionsText() {
+				return get(selectedOptionsText);
+			},
+			get placeholder() {
+				return placeholder();
+			},
+			get usedHeight() {
+				return get(usedHeight);
+			},
+			onclick: handleDropdownButtonClick,
+			onkeydown: (e) => {
+				handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
+			},
+			get buttonElement() {
+				return get(button);
+			},
+			set buttonElement($$value) {
+				set(button, $$value, true);
+			}
+		});
 
 		var div_3 = sibling(node_1, 2);
 
@@ -78714,9 +78727,6 @@
 			bind_this(
 				DropdownListItems(node_4, {
 					id: itemsId,
-					get enableSearch() {
-						return enableSearch();
-					},
 					get placeholder() {
 						return placeholder();
 					},
@@ -78766,6 +78776,7 @@
 
 		reset(div_5);
 		reset(div_3);
+		bind_this(div_3, ($$value) => set(popup, $$value), () => get(popup));
 		reset(div_2);
 		bind_this(div_2, ($$value) => set(instance, $$value), () => get(instance));
 		reset(div_1);
@@ -78810,6 +78821,13 @@
 				get(widthClass),
 				invalid() && "qc-dropdown-list-invalid"
 			]));
+
+			set_style(div_3, `
+                    --dropdown-items-top-offset: ${get(topOffset)};
+                    --dropdown-items-height: ${get(usedHeight)};
+                    --dropdown-items-bottom-border: ${get(popupBottomBorderThickness)};
+                    --dropdown-items-top-border: ${get(popupTopBorderThickness)};
+                    `);
 
 			div_3.hidden = !get(expanded);
 		});

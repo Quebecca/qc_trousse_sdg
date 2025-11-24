@@ -1,6 +1,5 @@
 import {test} from "@playwright/test";
 import path = require('path');
-import {link} from "node:fs";
 
 test.beforeEach(async ({ page }) => {
     const htmlFilePath = path.resolve(__dirname, '../public/externalLinkBaseline.test.html');
@@ -11,8 +10,6 @@ test.beforeEach(async ({ page }) => {
 // test.describe('Rendu visuel', () => {
 //     test(
 //     'should open in new tab', async ({ page }) => {
-//         await page.getByRole('link', { name: 'https://www.quebec.ca/' }).evaluate(link: HTMLAnchorElement => {
-//             link.
-//             });
+//         await page.getByRole('link', { name: 'https://www.quebec.ca/' });
 //     });
 // });
