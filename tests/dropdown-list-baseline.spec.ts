@@ -26,6 +26,14 @@ test.describe('Rendu visuel',
         await expect(page).toHaveScreenshot('dropdownListTextWrap.png', {fullPage: true});
     });
 
+    test('Select tiroir au-dessus', {
+        tag: ['@baseline', '@popup-above', '@dropdownlist']
+    }, async ({ page }) => {
+        await page.getByRole('combobox', { name: 'Régions desservies' }).click();
+
+        await expect(page).toHaveScreenshot('dropdownListPopupAbove.png', {fullPage: true});
+    });
+
     test('Select svelte', {
         tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {

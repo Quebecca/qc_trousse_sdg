@@ -304,6 +304,13 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.7 :
+  - Lien externe :
+    - Refonte de la structure de `qc-external-link` pour utiliser un algorithme plus simple pour le contrôle des retours à la ligne des icônes ;
+    - Changement du `span` d'icône de lien externe pour le composant `qc-icon`
+  - Liste déroulante : le tiroir à options s'affiche maintenant au-dessus du bouton si l'espace disponible est insuffisant ;
+  - Correction de la marge de l'élément `qc-required` pour être exactement à 8px ;
+  - Ajout de tests Playwright pour les nouveaux rendus visuels ;
 - 1.4.6 :
   - Ajout d'une gestion de bris de cache (*cache busting*)
   - Correction de bugs de la documentation :
