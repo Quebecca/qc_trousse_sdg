@@ -44,16 +44,10 @@ $effect(() => {
 });
 </script>
 
-<!--<span bind:this={imgElement}-->
-<!--      role="img"-->
-<!--      class="qc-ext-link-img"-->
-<!--      aria-label={externalIconAlt}>-->
-<!--</span>-->
 <div hidden>
     <Icon
             type="external-link"
             alt={externalIconAlt}
-            size="xs"
             bind:rootElement={imgElement}
             class="qc-ext-link-img"
     />

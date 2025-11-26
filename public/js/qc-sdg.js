@@ -8937,7 +8937,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[52, 0]]);
+	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[47, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -8987,7 +8987,6 @@
 			get alt() {
 				return externalIconAlt();
 			},
-			size: 'xs',
 			class: 'qc-ext-link-img',
 			get rootElement() {
 				return get(imgElement);

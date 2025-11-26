@@ -47,8 +47,7 @@ a {
   mask-size: $ratio;
   display: inline-block;
   mask-repeat: no-repeat;
-  //background-repeat: no-repeat;
-  //margin-left: 4px;
+
   a:visited  & {
     background: token-value(color link visited);
   }
