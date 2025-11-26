@@ -78264,22 +78264,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[382, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[423, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[385, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[426, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			312,
+			315,
 			0,
 			[
 				[
-					317,
+					320,
 					4,
 					[
 						[
-							336,
+							339,
 							8,
-							[[365, 12, [[421, 16]]]]
+							[[368, 12, [[424, 16]]]]
 						]
 					]
 				]
@@ -78396,12 +78396,7 @@
 					return maxItemsHeight;
 				}
 			}),
-			topOffset = user_derived(() => {
-				const borderThickness = invalid() ? 4 : 2;
-				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
-
-				return get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness;
-			}),
+			topOffset = state(0),
 			popupTopBorderThickness = user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0),
 			popupBottomBorderThickness = user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0);
 
@@ -78570,6 +78565,15 @@
 
 			if (!optionWithEmptyValue) return;
 			placeholder(strict_equals(optionWithEmptyValue.label, "", false) ? optionWithEmptyValue.label : defaultPlaceholder);
+		});
+
+		user_effect(() => {
+			if (get(expanded)) {
+				const borderThickness = 2 * (invalid() ? 2 : 1);
+				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
+
+				set(topOffset, get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness, true);
+			}
 		});
 
 		function findOptionWithEmptyValue() {

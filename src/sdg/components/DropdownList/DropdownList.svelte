@@ -111,14 +111,7 @@
                 return maxItemsHeight;
             }
         }),
-        topOffset = $derived.by(() => {
-            const borderThickness = invalid ? 4 : 2;
-            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
-
-            return buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
-                -popupHeight
-                : buttonHeight - borderThickness
-        }),
+        topOffset = $state(0),
         popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
         popupBottomBorderThickness = $derived(topOffset && topOffset >= 0 ? 1 : 0)
     ;
@@ -284,8 +277,18 @@
                 ?  optionWithEmptyValue.label
                 : defaultPlaceholder
         ;
-    })
+    });
 
+    $effect(() => {
+        if (expanded) {
+            const borderThickness = 2 * (invalid ? 2 : 1);
+            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+
+            topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
+                -popupHeight
+                : buttonHeight - borderThickness;
+        }
+    });
 
     function findOptionWithEmptyValue() {
         return items?.find(
