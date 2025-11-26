@@ -75776,8 +75776,8 @@
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
-	var root_1$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[4, 26]]);
-	var root$9 = add_locations(template(`<!><!>`, 1), LabelText[FILENAME], []);
+	var root_1$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[7, 4]]);
+	var root$9 = add_locations(template(`<!> <!>`, 1), LabelText[FILENAME], []);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -75791,7 +75791,7 @@
 
 		html$1(node, text);
 
-		var node_1 = sibling(node);
+		var node_1 = sibling(node, 2);
 
 		{
 			var consequent = ($$anchor) => {
@@ -76732,8 +76732,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[56, 4]]);
-	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[64, 4]]);
+	var root_2$6 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
+	var root$6 = add_locations(template(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -76798,9 +76798,11 @@
 		user_effect((_) => updateChoiceInput(input(), required(), invalid(), compact(), false, false));
 
 		user_effect(() => {
-			if (!required()) return;
-			if (!labelElement()) return;
-			labelElement().appendChild(requiredSpan());
+			if (required() && get(label) && requiredSpan()) {
+				const textSpan = labelElement().querySelector('span');
+
+				textSpan.appendChild(requiredSpan());
+			}
 		});
 
 		var div = root$6();

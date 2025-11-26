@@ -47,7 +47,6 @@
         }
 
         input = $host()?.querySelector('input,textarea');
-        console.log("input", input);
         onMountInput(input,
             textFieldRowParam => textFieldRow = textFieldRowParam,
             valueParam => value = valueParam,
