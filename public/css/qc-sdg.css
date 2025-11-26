@@ -1292,7 +1292,7 @@ hr {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   color: var(--qc-color-red-regular);
-  margin-left: 0.6rem;
+  margin-left: var(--qc-spacer-xs);
 }
 
 .qc-disabled {
@@ -2027,9 +2027,9 @@ input[type=radio].qc-choicefield:checked.qc-compact::before {
   justify-items: start;
 }
 .qc-fieldset legend {
-  font-weight: var(--qc-font-weight-content-bold);
   display: inline-block;
   margin-bottom: var(--qc-spacer-md);
+  white-space: nowrap;
 }
 .qc-fieldset.qc-compact {
   margin-bottom: var(--qc-spacer-sm);
@@ -2182,9 +2182,10 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 }
 .qc-label, qc-textfield label,
 .qc-textfield label {
-  font-weight: var(--qc-font-weight-content-bold);
-  display: block;
+  display: inline-block;
   width: fit-content;
+  white-space: nowrap;
+  margin: 0;
 }
 .qc-label.qc-compact, qc-textfield label.qc-compact,
 .qc-textfield label.qc-compact {
@@ -2198,6 +2199,14 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 .qc-textfield label:has(~ :disabled) {
   color: var(--qc-color-grey-regular);
   cursor: not-allowed;
+}
+
+.qc-label-text {
+  white-space: wrap;
+  margin: 0;
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-bold);
 }
 
 qc-textfield,

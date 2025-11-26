@@ -9628,8 +9628,8 @@
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
-	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[7, 4]]);
-	var root$a = add_locations(template(`<!> <!>`, 1), LabelText[FILENAME], []);
+	var root_1$5 = add_locations(template(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
+	var root$a = add_locations(template(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -9639,17 +9639,19 @@
 			required = prop($$props, 'required', 7);
 
 		var fragment = root$a();
-		var node = first_child(fragment);
+		var span = first_child(fragment);
+		var node = child(span);
 
 		html(node, text);
+		reset(span);
 
-		var node_1 = sibling(node, 2);
+		var node_1 = sibling(span);
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1$5();
+				var span_1 = root_1$5();
 
-				append($$anchor, span);
+				append($$anchor, span_1);
 			};
 
 			if_block(node_1, ($$render) => {

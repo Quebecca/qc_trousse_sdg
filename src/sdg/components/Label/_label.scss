@@ -1,9 +1,10 @@
 @use "qc-sdg-lib" as *;
 
 .qc-label {
-  font-weight: token-value(font weight content bold);
-  display: block;
+  display: inline-block;
   width: fit-content;
+  white-space: nowrap;
+  margin: 0;
 
   &.qc-compact {
     font-size: token-value(font size sm);
@@ -17,4 +18,11 @@
     color: token-value(color, grey, regular);
     cursor: not-allowed;
   }
+}
+
+.qc-label-text {
+  white-space: wrap;
+  margin: 0;
+
+  @include content-font(md, bold);
 }

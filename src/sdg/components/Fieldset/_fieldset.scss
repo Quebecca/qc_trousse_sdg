@@ -7,9 +7,9 @@
   margin: 0 0 rem(32);
   justify-items: start;
   legend {
-    font-weight: token-value(font weight content bold);
     display: inline-block;
     margin-bottom: token-value(spacer, md);
+    white-space: nowrap;
   }
   &.qc-compact {
     margin-bottom: token-value(spacer, sm);
