@@ -79913,6 +79913,10 @@
 	        }
 	    );
 	}
+
+	if (maskableAlert && displayAlertLink && !maskableAlert.querySelector('.qc-general-alert')) {
+	    displayAlertLink.removeAttribute('hidden');
+	}
 	// add version
 
 })();
