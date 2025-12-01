@@ -8,7 +8,8 @@ let {
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site.",
     links = [],
-    isUpdating = $bindable(false)
+    isUpdating = $bindable(false),
+    nestedExternalLinks = false
 } = $props();
 
 let imgElement = $state();
@@ -29,7 +30,7 @@ function addExternalLinkIcon(links) {
 }
 
 $effect(() => {
-    if (links.length <= 0 || !imgElement) {
+    if (nestedExternalLinks || links.length <= 0 || !imgElement) {
         return;
     }
 

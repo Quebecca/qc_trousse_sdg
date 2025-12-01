@@ -8995,7 +8995,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[47, 0]]);
+	var root$d = add_locations(template(`<div hidden><!></div>`), ExternalLink[FILENAME], [[48, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -9003,7 +9003,8 @@
 
 		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site."),
 			links = prop($$props, 'links', 23, () => []),
-			isUpdating = prop($$props, 'isUpdating', 15, false);
+			isUpdating = prop($$props, 'isUpdating', 15, false),
+			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
 
 		let imgElement = state(void 0);
 		let processedLinks = new Set();
@@ -9023,7 +9024,7 @@
 		}
 
 		user_effect(() => {
-			if (links().length <= 0 || !get(imgElement)) {
+			if (nestedExternalLinks() || links().length <= 0 || !get(imgElement)) {
 				return;
 			}
 
@@ -9081,6 +9082,13 @@
 				isUpdating($$value);
 				flushSync();
 			},
+			get nestedExternalLinks() {
+				return nestedExternalLinks();
+			},
+			set nestedExternalLinks($$value = false) {
+				nestedExternalLinks($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -9090,7 +9098,8 @@
 		{
 			externalIconAlt: {},
 			links: {},
-			isUpdating: {}
+			isUpdating: {},
+			nestedExternalLinks: {}
 		},
 		[],
 		[],
@@ -9104,9 +9113,11 @@
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
 		let links = state(proxy([]));
 		let observer;
 		let isUpdating = state(false);
+		let pendingUpdate = false;
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
@@ -9117,20 +9128,32 @@
 			set(links, queryLinks(), true);
 
 			observer = new MutationObserver(() => {
-				if (get(isUpdating)) {
+				if (get(isUpdating) || pendingUpdate) {
 					return;
 				}
 
+				pendingUpdate = true;
+
 				tick().then(() => {
+					if (get(isUpdating)) {
+						pendingUpdate = false;
+						return;
+					}
+
 					set(links, queryLinks(), true);
+					pendingUpdate = false;
 				});
 			});
 
-			observer.observe($$props.$$host, {
-				characterData: true,
-				childList: true,
-				subtree: true
-			});
+			if (nestedExternalLinks) {
+				console.warn("Imbrication d'éléments 'qc-external-link' détectée.");
+			} else {
+				observer.observe($$props.$$host, {
+					childList: true,
+					characterData: true,
+					subtree: true
+				});
+			}
 		});
 
 		onDestroy(() => {
@@ -9142,11 +9165,17 @@
 				get links() {
 					return get(links);
 				},
+				nestedExternalLinks
+			},
+			() => props,
+			{
 				get isUpdating() {
 					return get(isUpdating);
+				},
+				set isUpdating($$value) {
+					set(isUpdating, $$value, true);
 				}
-			},
-			() => props
+			}
 		));
 
 		return pop({ ...legacy_api() });

@@ -11,10 +11,12 @@
     import {onDestroy, onMount, tick} from "svelte";
 
     const props = $props();
+    const nestedExternalLinks = $host().querySelector('qc-external-link');
 
     let links = $state([]);
     let observer;
     let isUpdating = $state(false);
+    let pendingUpdate = false;
 
     function queryLinks() {
         return Array.from($host().querySelectorAll('a'));
@@ -25,20 +27,33 @@
         links = queryLinks();
 
         observer = new MutationObserver(() => {
-            if (isUpdating) {
+            if (isUpdating || pendingUpdate) {
                 return;
             }
+            pendingUpdate = true;
             tick().then(() => {
+                if (isUpdating) {
+                    pendingUpdate = false;
+                    return;
+                }
+
                 links = queryLinks();
+                pendingUpdate = false;
             });
         });
 
 
-        observer.observe($host(), {
-            characterData: true,
-            childList: true,
-            subtree: true
-        });
+        if (nestedExternalLinks) {
+            console.warn(
+                "Imbrication d'éléments 'qc-external-link' détectée."
+            );
+        } else {
+            observer.observe($host(), {
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+        }
     });
 
     onDestroy(() => {
@@ -46,4 +61,4 @@
     });
 </script>
 
-<ExternalLink {links} {isUpdating} {...props} />
+<ExternalLink {links} bind:isUpdating {nestedExternalLinks} {...props} />
