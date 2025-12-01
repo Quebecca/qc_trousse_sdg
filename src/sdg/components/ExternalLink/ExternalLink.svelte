@@ -8,7 +8,7 @@ let {
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site.",
     links = [],
-    updateLock = $bindable(false)
+    isUpdating = $bindable(false)
 } = $props();
 
 let imgElement = $state();
@@ -33,13 +33,13 @@ $effect(() => {
         return;
     }
 
-    updateLock = true;
+    isUpdating = true;
 
     tick().then(() => {
         addExternalLinkIcon(links);
         return tick();
     }).then(() => {
-        updateLock = false;
+        isUpdating = false;
     });
 });
 </script>

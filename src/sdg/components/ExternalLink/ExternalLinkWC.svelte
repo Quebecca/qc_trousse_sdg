@@ -14,7 +14,7 @@
 
     let links = $state([]);
     let observer;
-    let updateLock = $state(false);
+    let isUpdating = $state(false);
 
     function queryLinks() {
         return Array.from($host().querySelectorAll('a'));
@@ -25,7 +25,7 @@
         links = queryLinks();
 
         observer = new MutationObserver(() => {
-            if (updateLock) {
+            if (isUpdating) {
                 return;
             }
             tick().then(() => {
@@ -46,4 +46,4 @@
     });
 </script>
 
-<ExternalLink {links} {updateLock} {...props} />
+<ExternalLink {links} {isUpdating} {...props} />

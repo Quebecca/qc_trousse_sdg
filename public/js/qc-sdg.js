@@ -8945,7 +8945,7 @@
 
 		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr') ? "Ce lien dirige vers un autre site." : "This link directs to another site."),
 			links = prop($$props, 'links', 23, () => []),
-			updateLock = prop($$props, 'updateLock', 15, false);
+			isUpdating = prop($$props, 'isUpdating', 15, false);
 
 		let imgElement = state(void 0);
 		let processedLinks = new Set();
@@ -8969,13 +8969,13 @@
 				return;
 			}
 
-			updateLock(true);
+			isUpdating(true);
 
 			tick().then(() => {
 				addExternalLinkIcon(links());
 				return tick();
 			}).then(() => {
-				updateLock(false);
+				isUpdating(false);
 			});
 		});
 
@@ -9016,11 +9016,11 @@
 				links($$value);
 				flushSync();
 			},
-			get updateLock() {
-				return updateLock();
+			get isUpdating() {
+				return isUpdating();
 			},
-			set updateLock($$value = false) {
-				updateLock($$value);
+			set isUpdating($$value = false) {
+				isUpdating($$value);
 				flushSync();
 			},
 			...legacy_api()
@@ -9032,7 +9032,7 @@
 		{
 			externalIconAlt: {},
 			links: {},
-			updateLock: {}
+			isUpdating: {}
 		},
 		[],
 		[],
@@ -9048,7 +9048,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		let links = state(proxy([]));
 		let observer;
-		let updateLock = state(false);
+		let isUpdating = state(false);
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
@@ -9059,7 +9059,7 @@
 			set(links, queryLinks(), true);
 
 			observer = new MutationObserver(() => {
-				if (get(updateLock)) {
+				if (get(isUpdating)) {
 					return;
 				}
 
@@ -9084,8 +9084,8 @@
 				get links() {
 					return get(links);
 				},
-				get updateLock() {
-					return get(updateLock);
+				get isUpdating() {
+					return get(isUpdating);
 				}
 			},
 			() => props
