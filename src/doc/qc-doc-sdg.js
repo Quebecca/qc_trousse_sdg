@@ -16,7 +16,8 @@ const maskableAlert = document.getElementById("alerte-masquable");
 if (displayAlertLink) {
     displayAlertLink.addEventListener(
         'click',
-        () => {
+        (evt) => {
+            evt.preventDefault();
             maskableAlert.setAttribute('hide', 'false');
             displayAlertLink.hidden = true;
         }

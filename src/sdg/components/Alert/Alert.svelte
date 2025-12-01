@@ -13,7 +13,6 @@
         slotContent,
         id,
         persistenceKey,
-        persistenceTTL = 86400 * 7,
         persistHidden = false,
     } = $props();
 
@@ -32,15 +31,13 @@
 
     onMount(() => {
         const key = getPersistenceKey();
-        if (!key) return false;
-        const expire = localStorage.getItem(key) || false;
-        if (!expire) return false;
-        hide = Utils.now() < expire ? "true" : "false";
+        if (!key) return;
+        hide = sessionStorage.getItem(key) || "false";
     })
 
     function hideAlert() {
         hide = "true";
-        persistHiddenState()
+        persistHiddenState();
         rootElement.dispatchEvent(
             new CustomEvent('qc.alert.hide', {
                 bubbles: true,
@@ -59,7 +56,7 @@
     function persistHiddenState() {
         const key = getPersistenceKey();
         if (!key) return;
-        localStorage.setItem(key,Utils.now() + persistenceTTL * 1000);
+        sessionStorage.setItem(key, Utils.now());
     }
 </script>
 
