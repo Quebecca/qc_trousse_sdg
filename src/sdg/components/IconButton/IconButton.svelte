@@ -8,6 +8,7 @@ const {
     iconSize,
     iconColor,
     class: className = '',
+    src,
     ...rest
 } = $props();
 
@@ -24,6 +25,7 @@ const {
             color={iconColor}
             aria-hidden="true"
             label={label}
+            src={src ? src : null}
         />
     {/if}
 </button>

@@ -1,0 +1,15 @@
+<svelte:options customElement={{
+  tag: 'qc-tooltip',
+  props: {
+    text: { attribute: 'label', type: 'String' },
+    description: { attribute: 'description', type: 'String' },
+  }
+}} />
+<script>
+
+import Tooltip from "./Tooltip.svelte";
+import {Utils} from "../utils";
+let { ...props } = $props();
+</script>
+<Tooltip {...props} ></Tooltip>
+<link rel='stylesheet' href='{Utils.cssPath}'>
