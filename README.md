@@ -166,6 +166,8 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Intégration dans Bootstrap.
 
 ## Historique
+- 1.5 :
+  - Infobulle : ajout du composant.
 - 1.4.9 :
   - Boutons : corrections concernant les liens en forme de boutons ;
   - Liste déroulante : correction de la réactivité sur l'attribut `value` ;

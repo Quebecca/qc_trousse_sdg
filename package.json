@@ -10,7 +10,8 @@
     "build": "rollup -c --bundleConfigAsCjs",
     "start": "sirv .",
     "rewrite-bootstrap": "gulp rewriteBs",
-    "build-images-scss-map": "node ./scripts/buildImagesMap.js"
+    "build-images-scss-map": "node ./scripts/buildImagesMap.js",
+    "build-grid-tokens": "node ./scripts/buildGridTokens.js"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "svelte": "^5.28.6"
   },
   "dependencies": {
+    "@rollup/plugin-json": "^6.1.0",
     "playwright": "^1.54.2",
     "postcss-import": "^16.1.0",
     "postcss-scss": "^4.0.9",

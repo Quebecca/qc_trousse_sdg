@@ -1,0 +1,113 @@
+<h2 id="tooltip">Infobulle (qc-tooltip)</h2>
+<p>Les infobulles se ferment automatiquement à la perte de focus. Vous pouvez désactiver ce comportement en cochant la case ci-dessous :</p>
+<qc-checkbox>
+  <label><input type="checkbox"
+                id="prevent-closing-onblur"/><span>Empêcher la fermeture des infobulles à la perte de focus<span></span></label>
+</qc-checkbox>
+<script>
+  document.getElementById('prevent-closing-onblur').addEventListener('change', (e) => {
+    document.querySelectorAll('qc-tooltip').forEach(tooltip => tooltip.preventOuterEventClosing = e.target.checked)
+  });
+</script>
+
+<h3>Exemples</h3>
+<h4>Infobulles simples</h4>
+<qc-doc-exemple id="alert-warning"
+                caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
+  <p>Une infobulle vers la <qc-tooltip text="droite" description="Une infobulle vers la droite" position="right"></qc-tooltip>, le <qc-tooltip text="haut" description="Une infobulle vers le haut" position="top"></qc-tooltip> et le <qc-tooltip text="bas" description="Une infobulle vers le bas" position="bottom"></qc-tooltip>, et en <qc-tooltip text="feuille" description="Une infobulle feuille" display-mode="modal"></qc-tooltip></p>
+
+</qc-doc-exemple>
+
+<p>NB : en résolution mobile, les infobulles sont systématiquement affichées en feuilles.</p>
+
+<h4>Insertion de contenu</h4>
+
+<p>Le texte et la description peuvent aussi être ajoutés par <code>slot</code> ou via l'attribut description-id</p>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
+  <p>Lorem ipsum <qc-tooltip>
+      <span slot="text">dolor</span>
+      <span slot="description">
+        Suspendisse at dui ac risus egestas rhoncus nec eu sapien. Morbi in metus a dui commodo convallis quis eget tortor. Morbi non elementum enim, a interdum turpis. Nulla tortor quam, porta non volutpat in, cursus et magna. Cras sit amet turpis quis est cursus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet nec elit quis pharetra. Maecenas at leo pellentesque sapien tincidunt feugiat et non turpis. Morbi porttitor nibh id laoreet laoreet. Nam eleifend nunc at consectetur semper. Sed pellentesque mauris sapien, et finibus dui sollicitudin eu. Integer id viverra dui. Sed lectus eros, pulvinar id elit id, accumsan laoreet enim.
+      </span>
+  </qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+  <p>Lorem ipsum
+      <qc-tooltip description-id="tooltip-1">
+        <span slot="text">dolor</span>
+      </qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+
+  <p id="tooltip-1" style="display: none">Suspendisse at dui ac risus egestas rhoncus nec eu sapien. Morbi in metus a dui commodo convallis quis eget tortor. Morbi non elementum enim, a interdum turpis. Nulla tortor quam, porta non volutpat in, cursus et magna. Cras sit amet turpis quis est cursus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet nec elit quis pharetra. Maecenas at leo pellentesque sapien tincidunt feugiat et non turpis. Morbi porttitor nibh id laoreet laoreet. Nam eleifend nunc at consectetur semper. Sed pellentesque mauris sapien, et finibus dui sollicitudin eu. Integer id viverra dui. Sed lectus eros, pulvinar id elit id, accumsan laoreet enim.</span></qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+</qc-doc-exemple>
+
+<h4>Icône seule</h4>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d'infobulle sans texte (2 icônes possibles)">
+  <p><qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip></p>
+  <p><qc-tooltip description-id="tooltip-1" icon="question"></qc-tooltip></p>
+</qc-doc-exemple>
+
+<h4>Ajout dans un libellé de champ texte</h4>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d'infobulle placée dans un libellé de champ texte">
+  <qc-textfield>
+    <label>Nom complet <qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip> </label>
+    <input type="text"/>
+  </qc-textfield>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tr>
+      <td>text</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Texte lié à l'infobulle</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Contenu de l'infobulle</td>
+    </tr>
+    <tr>
+      <td>icon</td>
+      <td>"information" ou "question"</td>
+      <td>"information"</td>
+      <td>Icône de l'infobulle</td>
+    </tr>
+    <tr>
+      <td>display-mode</td>
+      <td>"popover" ou "modal"</td>
+      <td>"popover"</td>
+      <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
+    </tr>
+    <tr>
+      <td>position</td>
+      <td>"right", "top" ou "bottom"</td>
+      <td>"top"</td>
+      <td>Position du phylactère</td>
+    </tr>
+
+    <tr>
+      <td>description-id</td>
+      <td>Id d'un élément dans le document</td>
+      <td>Nulle</td>
+      <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
+    </tr>
+
+  </table>
+</div>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+<p>Le texte lié et la description peuvent être ajoutés par slot. Voir les exemples d'insertions de contenu. </p>

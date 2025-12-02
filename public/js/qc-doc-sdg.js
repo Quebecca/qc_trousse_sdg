@@ -79415,7 +79415,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -79427,6 +79427,7 @@
 			iconSize = prop($$props, 'iconSize', 7),
 			iconColor = prop($$props, 'iconColor', 7),
 			className = prop($$props, 'class', 7, ''),
+			src = prop($$props, 'src', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -79439,7 +79440,8 @@
 					'icon',
 					'iconSize',
 					'iconColor',
-					'class'
+					'class',
+					'src'
 				]);
 
 		var $$exports = {
@@ -79497,6 +79499,15 @@
 				flushSync();
 			},
 
+			get src() {
+				return src();
+			},
+
+			set src($$value) {
+				src($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -79512,32 +79523,40 @@
 
 		{
 			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Icon($$anchor, {
-						get type() {
-							return icon();
-						},
+				{
+					let $0 = user_derived(() => src() ? src() : null);
 
-						get size() {
-							return iconSize();
-						},
+					add_svelte_meta(
+						() => Icon($$anchor, {
+							get type() {
+								return icon();
+							},
 
-						get color() {
-							return iconColor();
-						},
+							get size() {
+								return iconSize();
+							},
 
-						'aria-hidden': 'true',
+							get color() {
+								return iconColor();
+							},
 
-						get label() {
-							return label();
-						}
-					}),
-					'component',
-					IconButton,
-					22,
-					8,
-					{ componentTag: 'Icon' }
-				);
+							'aria-hidden': 'true',
+
+							get label() {
+								return label();
+							},
+
+							get src() {
+								return get($0);
+							}
+						}),
+						'component',
+						IconButton,
+						23,
+						8,
+						{ componentTag: 'Icon' }
+					);
+				}
 			};
 
 			add_svelte_meta(
@@ -79546,7 +79565,7 @@
 				}),
 				'if',
 				IconButton,
-				21,
+				22,
 				4
 			);
 		}
@@ -79565,7 +79584,8 @@
 			icon: {},
 			iconSize: {},
 			iconColor: {},
-			class: {}
+			class: {},
+			src: {}
 		},
 		[],
 		[],
@@ -80480,7 +80500,7 @@
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
 	var root_4$2 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
-	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
+	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
