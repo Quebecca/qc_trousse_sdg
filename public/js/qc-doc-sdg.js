@@ -71055,7 +71055,7 @@
 
 	var js = {exports: {}};
 
-	var src = {};
+	var src$1 = {};
 
 	var javascript = {exports: {}};
 
@@ -76589,7 +76589,7 @@
 	var hasRequiredSrc;
 
 	function requireSrc () {
-		if (hasRequiredSrc) return src;
+		if (hasRequiredSrc) return src$1;
 		hasRequiredSrc = 1;
 
 		var js_beautify = requireJavascript();
@@ -76603,10 +76603,10 @@
 		}
 		style_html.defaultOptions = html_beautify.defaultOptions;
 
-		src.js = js_beautify;
-		src.css = css_beautify;
-		src.html = style_html;
-		return src;
+		src$1.js = js_beautify;
+		src$1.css = css_beautify;
+		src$1.html = style_html;
+		return src$1;
 	}
 
 	/*jshint node:true */
@@ -79415,7 +79415,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -79427,6 +79427,7 @@
 			iconSize = prop($$props, 'iconSize', 7),
 			iconColor = prop($$props, 'iconColor', 7),
 			className = prop($$props, 'class', 7, ''),
+			src = prop($$props, 'src', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -79439,7 +79440,8 @@
 					'icon',
 					'iconSize',
 					'iconColor',
-					'class'
+					'class',
+					'src'
 				]);
 
 		var $$exports = {
@@ -79497,6 +79499,15 @@
 				flushSync();
 			},
 
+			get src() {
+				return src();
+			},
+
+			set src($$value) {
+				src($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -79512,32 +79523,40 @@
 
 		{
 			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Icon($$anchor, {
-						get type() {
-							return icon();
-						},
+				{
+					let $0 = user_derived(() => src() ? src() : null);
 
-						get size() {
-							return iconSize();
-						},
+					add_svelte_meta(
+						() => Icon($$anchor, {
+							get type() {
+								return icon();
+							},
 
-						get color() {
-							return iconColor();
-						},
+							get size() {
+								return iconSize();
+							},
 
-						'aria-hidden': 'true',
+							get color() {
+								return iconColor();
+							},
 
-						get label() {
-							return label();
-						}
-					}),
-					'component',
-					IconButton,
-					22,
-					8,
-					{ componentTag: 'Icon' }
-				);
+							'aria-hidden': 'true',
+
+							get label() {
+								return label();
+							},
+
+							get src() {
+								return get($0);
+							}
+						}),
+						'component',
+						IconButton,
+						23,
+						8,
+						{ componentTag: 'Icon' }
+					);
+				}
 			};
 
 			add_svelte_meta(
@@ -79546,7 +79565,7 @@
 				}),
 				'if',
 				IconButton,
-				21,
+				22,
 				4
 			);
 		}
@@ -79565,7 +79584,8 @@
 			icon: {},
 			iconSize: {},
 			iconColor: {},
-			class: {}
+			class: {},
+			src: {}
 		},
 		[],
 		[],
