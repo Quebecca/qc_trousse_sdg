@@ -78287,22 +78287,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[385, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[426, 24]]);
+	var root_2$2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			315,
+			316,
 			0,
 			[
 				[
-					320,
+					321,
 					4,
 					[
 						[
-							339,
+							340,
 							8,
-							[[368, 12, [[424, 16]]]]
+							[[369, 12, [[425, 16]]]]
 						]
 					]
 				]
@@ -78546,6 +78546,7 @@
 
 		user_effect(() => {
 			if (strict_equals(get(previousValue)?.toString(), value()?.toString(), false)) {
+				set(previousValue, value(), true);
 				invalid(false);
 			}
 		});

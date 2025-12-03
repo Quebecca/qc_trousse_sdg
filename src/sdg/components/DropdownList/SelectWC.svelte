@@ -50,6 +50,7 @@
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
     let internalChange = false;
+    let previousValue = $state(value);
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -79,19 +80,21 @@
         if (!selectElement) return;
         if (!selectElement.options) return;
         internalChange = true;
-        let newOptionSelected = false;
         for (const option of selectElement.options) {
-                const selected = value.includes(option.value);
-                if (selected !== option.selected) {
-                    option.toggleAttribute("selected", selected);
-                    option.selected = selected;
-                    newOptionSelected = true;
+            const selected = value.includes(option.value);
+            if (selected !== option.selected) {
+                option.toggleAttribute("selected", selected);
+                option.selected = selected;
             }
         }
-        if (newOptionSelected) {
-            selectElement.dispatchEvent(new Event('change'));
-        }
         tick().then(() => internalChange = false);
+    });
+
+    $effect(() => {
+        if (previousValue.toString() !== value.toString()) {
+            previousValue = value;
+            selectElement?.dispatchEvent(new CustomEvent('change', {detail: value}));
+        }
     });
 
     $effect(() => {

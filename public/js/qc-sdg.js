@@ -13141,22 +13141,22 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[385, 20]]);
-	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[426, 24]]);
+	var root_2 = add_locations(template(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
+	var root_3 = add_locations(template(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
 
 	var root$1 = add_locations(template(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [
 		[
-			315,
+			316,
 			0,
 			[
 				[
-					320,
+					321,
 					4,
 					[
 						[
-							339,
+							340,
 							8,
-							[[368, 12, [[424, 16]]]]
+							[[369, 12, [[425, 16]]]]
 						]
 					]
 				]
@@ -13400,6 +13400,7 @@
 
 		user_effect(() => {
 			if (strict_equals(get(previousValue)?.toString(), value()?.toString(), false)) {
+				set(previousValue, value(), true);
 				invalid(false);
 			}
 		});
@@ -13892,7 +13893,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[141, 0], [162, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[144, 0], [165, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13943,6 +13944,7 @@
 		let errorElement = state(void 0);
 		let parentRow = user_derived(() => $$props.$$host.closest(".qc-formfield-row"));
 		let internalChange = false;
+		let previousValue = state(proxy(value()));
 
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
@@ -13973,23 +13975,23 @@
 			if (!get(selectElement).options) return;
 			internalChange = true;
 
-			let newOptionSelected = false;
-
 			for (const option of get(selectElement).options) {
 				const selected = value().includes(option.value);
 
 				if (strict_equals(selected, option.selected, false)) {
 					option.toggleAttribute("selected", selected);
 					option.selected = selected;
-					newOptionSelected = true;
 				}
 			}
 
-			if (newOptionSelected) {
-				get(selectElement).dispatchEvent(new Event('change'));
-			}
-
 			tick().then(() => internalChange = false);
+		});
+
+		user_effect(() => {
+			if (strict_equals(get(previousValue).toString(), value().toString(), false)) {
+				set(previousValue, value(), true);
+				get(selectElement)?.dispatchEvent(new CustomEvent('change', { detail: value() }));
+			}
 		});
 
 		user_effect(() => {

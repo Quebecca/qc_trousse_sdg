@@ -26,6 +26,20 @@
         </select>
     </qc-select>
 
+    <script>
+        const selectElement = document.getElementById("select-single-choice");
+
+        selectElement.addEventListener("change", (event) => {
+            console.log("Option sélectionnée :", event.target.value);
+        });
+        selectElement.addEventListener("qc.select.show", () => {
+            console.log("Options affichées");
+        });
+        selectElement.addEventListener("qc.select.hide", () => {
+            console.log("Options cachées");
+        });
+    </script>
+
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -222,8 +236,12 @@
     </table>
 </div>
 
-<h5>Événement JS</h5>
-<p>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</p>
+<h5>Événements JS</h5>
+<ul>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.show</code> est émis lorsqu'une liste déroulante est ouverte.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.hide</code> est émis lorsqu'une liste déroulante est fermée.</li>
+</ul>
 
 <h5>Zone d'ajout de contenu HTML</h5>
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>

@@ -234,6 +234,7 @@
 
     $effect(() => {
         if (previousValue?.toString() !== value?.toString()) {
+            previousValue = value;
             invalid = false;
         }
     });

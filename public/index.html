@@ -848,7 +848,7 @@
 </p>
 
 <qc-doc-exemple id="alert-warning"
-                caption="Exemple d’alerte jaune masquable. Elle reste masquée après rafraîchissement de la page pendant 5 secondes.">
+                caption="Exemple d’alerte jaune masquable. Elle reste masquée après rafraîchissement de la page tant que la session courante est active.">
   <qc-alert id="alerte-masquable"
             type="warning"
             maskable="true"
@@ -858,7 +858,6 @@
   >
   </qc-alert>
 </qc-doc-exemple>
-<!--            <qc-code target-id="alert-warning"></qc-code>-->
 
 <h4>Alerte bleue</h4>
 <qc-doc-exemple id="alert-general"
@@ -868,8 +867,6 @@
     <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
   </qc-alert>
 </qc-doc-exemple>
-
-<!--            <qc-code target-id="alert-general"></qc-code>-->
 
 <h3>Documentation technique</h3>
 
@@ -2440,6 +2437,20 @@
         </select>
     </qc-select>
 
+    <script>
+        const selectElement = document.getElementById("select-single-choice");
+
+        selectElement.addEventListener("change", (event) => {
+            console.log("Option sélectionnée :", event.target.value);
+        });
+        selectElement.addEventListener("qc.select.show", () => {
+            console.log("Options affichées");
+        });
+        selectElement.addEventListener("qc.select.hide", () => {
+            console.log("Options cachées");
+        });
+    </script>
+
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -2636,8 +2647,12 @@
     </table>
 </div>
 
-<h5>Événement JS</h5>
-<p>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</p>
+<h5>Événements JS</h5>
+<ul>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.show</code> est émis lorsqu'une liste déroulante est ouverte.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.hide</code> est émis lorsqu'une liste déroulante est fermée.</li>
+</ul>
 
 <h5>Zone d'ajout de contenu HTML</h5>
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
@@ -3095,7 +3110,7 @@
       <td>Le chemin de l’image en thème clair.</td>
       <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
       <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
-        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
       </td>
     </tr>
     <tr>
@@ -3103,7 +3118,7 @@
       <td>Le chemin de l’image en thème sombre.</td>
       <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
       <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
-        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
       </td>
     </tr>
     <tr>
@@ -3154,7 +3169,7 @@
   </table>
 </div>
 
-<qc-notice type="information">Les images du pied de page PIV doivent respecter
+<qc-notice type="information">Les images du pied de page du PIV doivent respecter
   <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les
     normes graphiques du système d’identification visuelle.</a>. Nous vous invitons à privilégier le format
     SVG, qui permet de conserver la lisibilité de l’image en cas de zoom.
@@ -3165,7 +3180,7 @@
 
 <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
 <qc-doc-exemple id="qc-piv-footer-slots"
-                caption="Présentation des zones d’ajout de contenu du pied de page PIV">
+                caption="Présentation des zones d’ajout de contenu du pied de page du PIV">
   <qc-piv-footer>
     <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
       Contenu par défaut
