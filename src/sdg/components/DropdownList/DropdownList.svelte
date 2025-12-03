@@ -5,7 +5,7 @@
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
     import Label from "../Label/Label.svelte";
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -140,7 +140,7 @@
     function handleTab(event) {
         // Le changement de focus a lieu après le lancement de l'événement clavier.
         // Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             if (event.key === "Tab" && !Utils.componentIsActive(instance)) {
                 expanded = false;
             }

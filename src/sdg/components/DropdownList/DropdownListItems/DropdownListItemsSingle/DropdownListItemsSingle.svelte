@@ -1,5 +1,6 @@
 <script>
     import {Utils} from "../../../utils";
+    import {tick} from "svelte";
 
     const selectedElementCLass = "qc-dropdown-list-single-selected";
 
@@ -77,7 +78,7 @@
             handleSelection(event, item);
         }
 
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             if (canExit(event, index)) {
                 handleExit(event.key);
             }

@@ -22,20 +22,20 @@
     let itemsComponent = $state();
 
     export function focus() {
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             itemsComponent?.focusOnFirstElement();
         }).catch(console.error);
     }
 
     export function focusOnLastElement() {
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             itemsComponent?.focusOnLastElement();
         }).catch(console.error);
     }
 
     export function focusOnFirstMatchingElement(value) {
         if (itemsComponent && value && value.length > 0) {
-            Utils.sleep(5).then(() => {
+            tick().then(() => {
                 itemsComponent?.focusOnFirstMatchingElement(value);
             }).catch(console.error);
         }

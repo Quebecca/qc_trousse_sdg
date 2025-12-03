@@ -12075,9 +12075,9 @@
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
 	var on_click$1 = (event, handleMouseUp, item) => handleMouseUp(event, get(item));
-	var root_3$1 = add_locations(template(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[129, 20]]);
-	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[113, 12]]);
-	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[111, 4]]);
+	var root_3$1 = add_locations(template(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
+	var root_2$3 = add_locations(template(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
+	var root_1$2 = add_locations(template(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -12121,7 +12121,7 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
-				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:45:34'));
+				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:46:34'));
 				items().find((option) => strict_equals(option.value, item.value)).checked = true;
 				selectionCallback()();
 			}
@@ -12156,7 +12156,7 @@
 				handleSelection(event, item);
 			}
 
-			Utils.sleep(5).then(() => {
+			tick().then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -12353,15 +12353,15 @@
 
 	var root_2$2 = add_locations(template(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [
 		[
-			153,
+			154,
 			12,
 			[
-				[163, 16, [[168, 20], [180, 20]]]
+				[164, 16, [[169, 20], [181, 20]]]
 			]
 		]
 	]);
 
-	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[147, 4]]);
+	var root_1$1 = add_locations(template(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[148, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -12447,11 +12447,11 @@
 
 				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
 					event.target.checked = !event.target.checked;
-					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 86, 16);
+					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 87, 16);
 				}
 			}
 
-			Utils.sleep(5).then(() => {
+			tick().then(() => {
 				if (canExit(event, index)) {
 					handleExit()(event.key);
 				}
@@ -12667,20 +12667,20 @@
 		let itemsComponent = state(void 0);
 
 		function focus() {
-			Utils.sleep(5).then(() => {
+			tick().then(() => {
 				get(itemsComponent)?.focusOnFirstElement();
 			}).catch(console.error);
 		}
 
 		function focusOnLastElement() {
-			Utils.sleep(5).then(() => {
+			tick().then(() => {
 				get(itemsComponent)?.focusOnLastElement();
 			}).catch(console.error);
 		}
 
 		function focusOnFirstMatchingElement(value) {
 			if (get(itemsComponent) && value && value.length > 0) {
-				Utils.sleep(5).then(() => {
+				tick().then(() => {
 					get(itemsComponent)?.focusOnFirstMatchingElement(value);
 				}).catch(console.error);
 			}
@@ -13224,7 +13224,7 @@
 		function handleTab(event) {
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
-			Utils.sleep(5).then(() => {
+			tick().then(() => {
 				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
 					set(expanded, false);
 				}

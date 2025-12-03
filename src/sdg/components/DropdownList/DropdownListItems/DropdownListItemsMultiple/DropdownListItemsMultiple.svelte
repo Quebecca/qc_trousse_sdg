@@ -1,5 +1,6 @@
 <script>
     import {Utils} from "../../../utils";
+    import {tick} from "svelte";
 
     let {
         displayedItems,
@@ -87,7 +88,7 @@
             }
         }
 
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             if (canExit(event, index)) {
                 handleExit(event.key);
             }
