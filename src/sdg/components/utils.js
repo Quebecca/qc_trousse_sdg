@@ -138,6 +138,22 @@ export class Utils {
     static now() {
         return (new Date()).getTime();
     }
+
+    /**
+     * Creates a MutationObserver instance with selector nesting check
+     * @param rootElement
+     * @param selector
+     * @param callback
+     * @returns {MutationObserver | null}
+     */
+    static createMutationObserver(rootElement, selector, callback) {
+        if (rootElement.querySelector(selector)) {
+            console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
+            return null;
+        }
+
+        return new MutationObserver(callback);
+    }
 }
 
 function getCacheBustingParam(cssPath, currentScriptSrc) {

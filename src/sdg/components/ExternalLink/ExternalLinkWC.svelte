@@ -9,12 +9,13 @@
 <script>
     import ExternalLink from "./ExternalLink.svelte";
     import {onDestroy, onMount, tick} from "svelte";
+    import {Utils} from "../utils";
 
     const props = $props();
     const nestedExternalLinks = $host().querySelector('qc-external-link');
 
     let links = $state([]);
-    let observer;
+    const observer = Utils.createMutationObserver($host(), $host().tagName.toLowerCase(), refreshLinks);
     let isUpdating = $state(false);
     let pendingUpdate = false;
 
@@ -22,38 +23,31 @@
         return Array.from($host().querySelectorAll('a'));
     }
 
+    function refreshLinks() {
+        if (isUpdating || pendingUpdate) {
+            return;
+        }
+        pendingUpdate = true;
+        tick().then(() => {
+            if (isUpdating) {
+                pendingUpdate = false;
+                return;
+            }
+
+            links = queryLinks();
+            pendingUpdate = false;
+        });
+    }
+
     onMount(() => {
         $host().classList.add('qc-external-link');
         links = queryLinks();
 
-        observer = new MutationObserver(() => {
-            if (isUpdating || pendingUpdate) {
-                return;
-            }
-            pendingUpdate = true;
-            tick().then(() => {
-                if (isUpdating) {
-                    pendingUpdate = false;
-                    return;
-                }
-
-                links = queryLinks();
-                pendingUpdate = false;
-            });
+        observer?.observe($host(), {
+            childList: true,
+            characterData: true,
+            subtree: true,
         });
-
-
-        if (nestedExternalLinks) {
-            console.warn(
-                "Imbrication d'éléments 'qc-external-link' détectée."
-            );
-        } else {
-            observer.observe($host(), {
-                childList: true,
-                characterData: true,
-                subtree: true,
-            });
-        }
     });
 
     onDestroy(() => {

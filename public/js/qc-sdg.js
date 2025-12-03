@@ -7022,6 +7022,22 @@
 	    static now() {
 	        return (new Date()).getTime();
 	    }
+
+	    /**
+	     * Creates a MutationObserver instance with selector nesting check
+	     * @param rootElement
+	     * @param selector
+	     * @param callback
+	     * @returns {MutationObserver | null}
+	     */
+	    static createMutationObserver(rootElement, selector, callback) {
+	        if (rootElement.querySelector(selector)) {
+	            console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
+	            return null;
+	        }
+
+	        return new MutationObserver(callback);
+	    }
 	}
 
 	function getCacheBustingParam(cssPath, currentScriptSrc) {
@@ -9115,7 +9131,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
 		let links = state(proxy([]));
-		let observer;
+		const observer = Utils.createMutationObserver($$props.$$host, $$props.$$host.tagName.toLowerCase(), refreshLinks);
 		let isUpdating = state(false);
 		let pendingUpdate = false;
 
@@ -9123,37 +9139,33 @@
 			return Array.from($$props.$$host.querySelectorAll('a'));
 		}
 
+		function refreshLinks() {
+			if (get(isUpdating) || pendingUpdate) {
+				return;
+			}
+
+			pendingUpdate = true;
+
+			tick().then(() => {
+				if (get(isUpdating)) {
+					pendingUpdate = false;
+					return;
+				}
+
+				set(links, queryLinks(), true);
+				pendingUpdate = false;
+			});
+		}
+
 		onMount(() => {
 			$$props.$$host.classList.add('qc-external-link');
 			set(links, queryLinks(), true);
 
-			observer = new MutationObserver(() => {
-				if (get(isUpdating) || pendingUpdate) {
-					return;
-				}
-
-				pendingUpdate = true;
-
-				tick().then(() => {
-					if (get(isUpdating)) {
-						pendingUpdate = false;
-						return;
-					}
-
-					set(links, queryLinks(), true);
-					pendingUpdate = false;
-				});
+			observer?.observe($$props.$$host, {
+				childList: true,
+				characterData: true,
+				subtree: true
 			});
-
-			if (nestedExternalLinks) {
-				console.warn("Imbrication d'éléments 'qc-external-link' détectée.");
-			} else {
-				observer.observe($$props.$$host, {
-					childList: true,
-					characterData: true,
-					subtree: true
-				});
-			}
 		});
 
 		onDestroy(() => {
@@ -13807,7 +13819,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[127, 0], [147, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[121, 0], [141, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13840,11 +13852,10 @@
 					'width'
 				]);
 
-		const nestedSelects = $$props.$$host.querySelector("qc-select");
 		let selectElement = state(void 0);
 		let items = state(void 0);
 		let labelElement = state(void 0);
-		let observer = new MutationObserver(setupItemsList);
+		const observer = Utils.createMutationObserver($$props.$$host, $$props.$$host.tagName.toLowerCase(), setupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -13870,12 +13881,7 @@
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
 				get(selectElement).addEventListener("change", handleSelectChange);
-
-				if (nestedSelects) {
-					console.warn("Imbrication d'éléments 'qc-select' détectée.");
-				} else {
-					observer.observe(get(selectElement), observerOptions);
-				}
+				observer?.observe(get(selectElement), observerOptions);
 			}
 
 			setupItemsList();
