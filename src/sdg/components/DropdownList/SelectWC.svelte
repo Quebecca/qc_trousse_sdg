@@ -34,11 +34,13 @@
         ...rest
     } = $props();
 
+    const nestedSelects = $host().querySelector("qc-select");
+
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
     let observer = new MutationObserver(setupItemsList);
-    let observerOptions = {
+    const observerOptions = {
         childList: true,
         attributes: true,
         subtree: true,
@@ -55,12 +57,18 @@
         if (labelElement) {
             label = labelElement.innerHTML;
         }
+
         if (selectElement) {
             multiple = selectElement.multiple;
             disabled = selectElement.disabled;
 
             selectElement.addEventListener("change", handleSelectChange);
-            observer.observe(selectElement, observerOptions);
+
+            if (nestedSelects) {
+                console.warn("Imbrication d'éléments 'qc-select' détectée.");
+            } else {
+                observer.observe(selectElement, observerOptions);
+            }
         }
         setupItemsList();
         $host().classList.add("qc-select");

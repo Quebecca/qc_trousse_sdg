@@ -13807,7 +13807,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[119, 0], [139, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[127, 0], [147, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13840,12 +13840,13 @@
 					'width'
 				]);
 
+		const nestedSelects = $$props.$$host.querySelector("qc-select");
 		let selectElement = state(void 0);
 		let items = state(void 0);
 		let labelElement = state(void 0);
 		let observer = new MutationObserver(setupItemsList);
 
-		let observerOptions = {
+		const observerOptions = {
 			childList: true,
 			attributes: true,
 			subtree: true,
@@ -13869,7 +13870,12 @@
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
 				get(selectElement).addEventListener("change", handleSelectChange);
-				observer.observe(get(selectElement), observerOptions);
+
+				if (nestedSelects) {
+					console.warn("Imbrication d'éléments 'qc-select' détectée.");
+				} else {
+					observer.observe(get(selectElement), observerOptions);
+				}
 			}
 
 			setupItemsList();
