@@ -308,8 +308,11 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
   - Lien externe :
     - Refonte de la structure de `qc-external-link` pour utiliser un algorithme plus simple pour le contrôle des retours à la ligne des icônes ;
     - Changement du `span` d'icône de lien externe pour le composant `qc-icon`
-  - Liste déroulante : le tiroir à options s'affiche maintenant au-dessus du bouton si l'espace disponible est insuffisant ;
+  - Liste déroulante :
+    - Le tiroir à options s'affiche maintenant au-dessus du bouton si l'espace disponible est insuffisant ;
+    - Ajout d'envoi d'événements JS pour l'ouverture et la fermeture d'une liste déroulante
   - Correction de la marge de l'élément `qc-required` pour être exactement à 8px ;
+  - Alerte générale : ajout de la possibilité de faire persister le masquage de l'alerte une fois celle-ci masquée par l'internaute, de sorte qu'elle ne réapparait pas au rafraîchissement de la page ;
   - Ajout de tests Playwright pour les nouveaux rendus visuels ;
 - 1.4.6 :
   - Ajout d'une gestion de bris de cache (*cache busting*)
@@ -317,8 +320,6 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
     - Correction de la documentation des champs alignés horizontalement
     - Correction de la position du bouton Copier dans les fragments de code des exemples pour gérer le défilement horizontal
     - Ajustement de l'affichage des éléments `figure` des exemples pour permettre un meilleur redimensionnement
-- 1.4.6 :
-  - Composant qc-alerte: ajout de la possibilité de faire persister le masquage de l'alerte une fois celle-ci masquée par l'internaute, de sorte qu'elle ne réapparait pas au rafraîchissement de la page ;
 - 1.4.5 :
   - Correction de bugs :
     - Correction de sélection d'input passé en `slot` dans `qc-checkbox` lorsque plusieurs éléments `input` sont présents ;
