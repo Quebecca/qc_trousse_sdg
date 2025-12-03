@@ -28,6 +28,7 @@
         rootElement = $bindable(),
         errorElement = $bindable(),
         webComponentMode = false,
+        expanded = $bindable(false),
     } = $props();
 
     const
@@ -66,7 +67,6 @@
             return "";
         }),
         previousValue = $state(value),
-        expanded = $state(false),
         searchText = $state(""),
         hiddenSearchText = $state(""),
         displayedItems = $state(items),

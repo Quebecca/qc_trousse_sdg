@@ -7026,11 +7026,14 @@
 	    /**
 	     * Creates a MutationObserver instance with selector nesting check
 	     * @param rootElement
-	     * @param selector
 	     * @param callback
+	     * @param selector
 	     * @returns {MutationObserver | null}
 	     */
-	    static createMutationObserver(rootElement, selector, callback) {
+	    static createMutationObserver(rootElement, callback, selector) {
+	        if (!selector) {
+	            selector = rootElement.tagName.toLowerCase();
+	        }
 	        if (rootElement.querySelector(selector)) {
 	            console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
 	            return null;
@@ -8613,13 +8616,13 @@
 
 	var root_1$7 = add_locations(template(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [
 		[
-			64,
+			59,
 			4,
 			[
 				[
-					67,
+					62,
 					8,
-					[[68, 12, [[74, 16]]]]
+					[[63, 12, [[69, 16]]]]
 				]
 			]
 		]
@@ -8632,12 +8635,14 @@
 		let type = prop($$props, 'type', 7, "general"),
 			maskable = prop($$props, 'maskable', 7, ""),
 			content = prop($$props, 'content', 7, ""),
-			hide = prop($$props, 'hide', 7, "false"),
+			hide = prop($$props, 'hide', 15, "false"),
 			fullWidth = prop($$props, 'fullWidth', 7, "false"),
 			slotContent = prop($$props, 'slotContent', 7),
 			id = prop($$props, 'id', 7),
 			persistenceKey = prop($$props, 'persistenceKey', 7),
-			persistHidden = prop($$props, 'persistHidden', 7, false);
+			persistHidden = prop($$props, 'persistHidden', 7, false),
+			rootElement = prop($$props, 'rootElement', 15),
+			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
 
 		const language = Utils.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
@@ -8645,20 +8650,19 @@
 		const warningLabel = strict_equals(language, 'fr') ? "Information d'importance élevée" : "Information of high importance";
 		const generalLabel = strict_equals(language, 'fr') ? "Information importante" : "Important information";
 		const label = strict_equals(type(), 'general') ? generalLabel : warningLabel;
-		let rootElement = state(null);
 		let containerClass = "qc-container" + (strict_equals(fullWidth(), 'true') ? '-fluid' : '');
 
 		onMount(() => {
 			const key = getPersistenceKey();
 
 			if (!key) return;
-			hide(sessionStorage.getItem(key) || "false");
+			hide(sessionStorage.getItem(key) ? "true" : "false");
 		});
 
 		function hideAlert() {
 			hide("true");
 			persistHiddenState();
-			get(rootElement).dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+			hideAlertCallback()();
 		}
 
 		function getPersistenceKey() {
@@ -8738,7 +8742,7 @@
 				reset(div_2);
 				reset(div_1);
 				reset(div);
-				bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
+				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
 				append($$anchor, div);
 			};
 
@@ -8813,6 +8817,20 @@
 				persistHidden($$value);
 				flushSync();
 			},
+			get rootElement() {
+				return rootElement();
+			},
+			set rootElement($$value) {
+				rootElement($$value);
+				flushSync();
+			},
+			get hideAlertCallback() {
+				return hideAlertCallback();
+			},
+			set hideAlertCallback($$value = () => {}) {
+				hideAlertCallback($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -8828,7 +8846,9 @@
 			slotContent: {},
 			id: {},
 			persistenceKey: {},
-			persistHidden: {}
+			persistHidden: {},
+			rootElement: {},
+			hideAlertCallback: {}
 		},
 		[],
 		[],
@@ -8837,23 +8857,69 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var root$f = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[28, 0]]);
+	var root$f = add_locations(template(`<!> <link rel="stylesheet">`, 1), AlertWC[FILENAME], [[40, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		var $$ownership_validator = create_ownership_validator($$props);
+
+		let hide = prop($$props, 'hide', 7, "false"),
+			props = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'hide'
+				]);
+
+		let rootElement = state(void 0);
+
+		function hideAlertCallback() {
+			get(rootElement)?.dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+		}
+
 		var fragment = root$f();
 		var node = first_child(fragment);
 
-		Alert(node, spread_props(() => props, { slotContent: `<slot />` }));
+		{
+			$$ownership_validator.binding('hide', Alert, hide);
+
+			Alert(node, spread_props({ hideAlertCallback }, () => props, {
+				slotContent: `<slot />`,
+				get hide() {
+					return hide();
+				},
+				set hide($$value) {
+					hide($$value);
+				},
+				get rootElement() {
+					return get(rootElement);
+				},
+				set rootElement($$value) {
+					set(rootElement, $$value, true);
+				}
+			}));
+		}
 
 		var link = sibling(node, 2);
 
 		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
-		return pop({ ...legacy_api() });
+
+		return pop({
+			get hide() {
+				return hide();
+			},
+			set hide($$value = "false") {
+				hide($$value);
+				flushSync();
+			},
+			...legacy_api()
+		});
 	}
 
 	customElements.define('qc-alert', create_custom_element(
@@ -8863,10 +8929,9 @@
 			maskable: { attribute: 'maskable' },
 			fullWidth: { attribute: 'full-width' },
 			content: { attribute: 'content' },
-			hide: { attribute: 'hide' },
+			hide: { attribute: 'hide', reflect: true },
 			persistHidden: { attribute: 'persist-hidden', type: 'Boolean' },
-			persistenceKey: { attribute: 'persistence-key', type: 'String' },
-			persistenceTTL: { attribute: 'persistence-ttl', type: 'Number' }
+			persistenceKey: { attribute: 'persistence-key', type: 'String' }
 		},
 		[],
 		[],
@@ -9131,7 +9196,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
 		let links = state(proxy([]));
-		const observer = Utils.createMutationObserver($$props.$$host, $$props.$$host.tagName.toLowerCase(), refreshLinks);
+		const observer = Utils.createMutationObserver($$props.$$host, refreshLinks);
 		let isUpdating = state(false);
 		let pendingUpdate = false;
 
@@ -13123,7 +13188,8 @@
 			multiple = prop($$props, 'multiple', 7, false),
 			rootElement = prop($$props, 'rootElement', 15),
 			errorElement = prop($$props, 'errorElement', 15),
-			webComponentMode = prop($$props, 'webComponentMode', 7, false);
+			webComponentMode = prop($$props, 'webComponentMode', 7, false),
+			expanded = prop($$props, 'expanded', 15, false);
 
 		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
 			inputId = `${id()}-input`,
@@ -13161,7 +13227,6 @@
 				return "";
 			}),
 			previousValue = state(proxy(value())),
-			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
 			displayedItems = state(proxy(items())),
@@ -13224,12 +13289,12 @@
 
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
-			set(expanded, !get(expanded));
+			expanded(!expanded());
 		}
 
 		function handleOuterEvent() {
 			if (!Utils.componentIsActive(get(instance))) {
-				set(expanded, false);
+				expanded(false);
 			}
 		}
 
@@ -13238,14 +13303,14 @@
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
 				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
-					set(expanded, false);
+					expanded(false);
 				}
 			}).catch(console.error);
 		}
 
 		function handleEscape(event) {
 			if (strict_equals(event.key, "Escape")) {
-				set(expanded, false);
+				expanded(false);
 			}
 		}
 
@@ -13259,7 +13324,7 @@
 		function handleArrowDown(event, targetComponent) {
 			if (strict_equals(event.key, "ArrowDown") && targetComponent) {
 				event.preventDefault();
-				set(expanded, true);
+				expanded(true);
 				targetComponent.focus();
 			}
 		}
@@ -13271,10 +13336,10 @@
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 
-				if (get(expanded)) {
+				if (expanded()) {
 					targetComponent.focus();
 				} else {
-					set(expanded, true);
+					expanded(true);
 					focusOnSelectedOption(value());
 				}
 			}
@@ -13282,7 +13347,7 @@
 			if (strict_equals(event.key, "ArrowUp")) {
 				event.preventDefault();
 
-				if (get(expanded)) {
+				if (expanded()) {
 					get(dropdownItems)?.focusOnLastElement();
 				}
 			}
@@ -13294,7 +13359,7 @@
 			} else {
 				set(hiddenSearchText, get(hiddenSearchText) + event.key);
 
-				if (get(hiddenSearchText).length > 0 && get(expanded)) {
+				if (get(hiddenSearchText).length > 0 && expanded()) {
 					get(dropdownItems)?.focusOnFirstMatchingElement(get(hiddenSearchText));
 				}
 			}
@@ -13309,7 +13374,7 @@
 		}
 
 		function closeDropdown(key) {
-			set(expanded, false);
+			expanded(false);
 			set(hiddenSearchText, "");
 
 			if (strict_equals(key, "Escape") && get(button)) {
@@ -13340,7 +13405,7 @@
 		});
 
 		user_effect(() => {
-			if (!get(expanded)) {
+			if (!expanded()) {
 				set(hiddenSearchText, "");
 				set(searchText, "");
 			}
@@ -13380,7 +13445,7 @@
 		});
 
 		user_effect(() => {
-			if (get(expanded)) {
+			if (expanded()) {
 				const borderThickness = 2 * (invalid() ? 2 : 1);
 				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
 
@@ -13452,14 +13517,14 @@
 				return disabled();
 			},
 			get expanded() {
-				return get(expanded);
+				return expanded();
 			},
 			'aria-labelledby': labelId,
 			get 'aria-required'() {
 				return required();
 			},
 			get 'aria-expanded'() {
-				return get(expanded);
+				return expanded();
 			},
 			'aria-haspopup': 'listbox',
 			'aria-controls': itemsId,
@@ -13650,7 +13715,7 @@
                     --dropdown-button-border: ${invalid() ? 2 : 1};
                     `);
 
-			div_3.hidden = !get(expanded);
+			div_3.hidden = !expanded();
 		});
 
 		append($$anchor, div);
@@ -13786,6 +13851,13 @@
 				webComponentMode($$value);
 				flushSync();
 			},
+			get expanded() {
+				return expanded();
+			},
+			set expanded($$value = false) {
+				expanded($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -13810,7 +13882,8 @@
 			multiple: {},
 			rootElement: {},
 			errorElement: {},
-			webComponentMode: {}
+			webComponentMode: {},
+			expanded: {}
 		},
 		[],
 		[],
@@ -13819,7 +13892,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[121, 0], [141, 0]]);
+	var root = add_locations(template(`<div hidden><!></div> <!> <link rel="stylesheet">`, 1), SelectWC[FILENAME], [[141, 0], [162, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13835,6 +13908,7 @@
 			label = prop($$props, 'label', 7),
 			placeholder = prop($$props, 'placeholder', 7),
 			width = prop($$props, 'width', 7),
+			expanded = prop($$props, 'expanded', 15, false),
 			rest = rest_props(
 				$$props,
 				[
@@ -13849,13 +13923,14 @@
 					'required',
 					'label',
 					'placeholder',
-					'width'
+					'width',
+					'expanded'
 				]);
 
 		let selectElement = state(void 0);
 		let items = state(void 0);
 		let labelElement = state(void 0);
-		const observer = Utils.createMutationObserver($$props.$$host, $$props.$$host.tagName.toLowerCase(), setupItemsList);
+		const observer = Utils.createMutationObserver($$props.$$host, setupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -13918,6 +13993,14 @@
 		});
 
 		user_effect(() => {
+			if (expanded()) {
+				get(selectElement)?.dispatchEvent(new CustomEvent('qc.select.show', { bubbles: true, composed: true }));
+			} else {
+				get(selectElement)?.dispatchEvent(new CustomEvent('qc.select.hide', { bubbles: true, composed: true }));
+			}
+		});
+
+		user_effect(() => {
 			if (get(parentRow) && get(errorElement)) {
 				get(parentRow).appendChild(get(errorElement));
 			}
@@ -13960,6 +14043,7 @@
 		{
 			$$ownership_validator.binding('value', DropdownList, value);
 			$$ownership_validator.binding('invalid', DropdownList, invalid);
+			$$ownership_validator.binding('expanded', DropdownList, expanded);
 
 			DropdownList(node_1, spread_props(
 				{
@@ -14014,6 +14098,12 @@
 					},
 					set rootElement($$value) {
 						set(instance, $$value, true);
+					},
+					get expanded() {
+						return expanded();
+					},
+					set expanded($$value) {
+						expanded($$value);
 					}
 				}
 			));
@@ -14081,6 +14171,13 @@
 				width($$value);
 				flushSync();
 			},
+			get expanded() {
+				return expanded();
+			},
+			set expanded($$value = false) {
+				expanded($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -14118,7 +14215,12 @@
 				attribute: 'no-options-message',
 				type: 'String'
 			},
-			multiple: { attribute: 'multiple', type: 'Boolean' }
+			multiple: { attribute: 'multiple', type: 'Boolean' },
+			expanded: {
+				attribute: 'expanded',
+				reflect: true,
+				type: 'Boolean'
+			}
 		},
 		['default'],
 		[],

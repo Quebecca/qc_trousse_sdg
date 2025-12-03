@@ -15,7 +15,7 @@
     const nestedExternalLinks = $host().querySelector('qc-external-link');
 
     let links = $state([]);
-    const observer = Utils.createMutationObserver($host(), $host().tagName.toLowerCase(), refreshLinks);
+    const observer = Utils.createMutationObserver($host(), refreshLinks);
     let isUpdating = $state(false);
     let pendingUpdate = false;
 

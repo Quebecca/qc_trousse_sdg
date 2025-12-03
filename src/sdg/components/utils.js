@@ -142,11 +142,14 @@ export class Utils {
     /**
      * Creates a MutationObserver instance with selector nesting check
      * @param rootElement
-     * @param selector
      * @param callback
+     * @param selector
      * @returns {MutationObserver | null}
      */
-    static createMutationObserver(rootElement, selector, callback) {
+    static createMutationObserver(rootElement, callback, selector) {
+        if (!selector) {
+            selector = rootElement.tagName.toLowerCase();
+        }
         if (rootElement.querySelector(selector)) {
             console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
             return null;

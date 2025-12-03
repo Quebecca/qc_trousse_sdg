@@ -13,7 +13,8 @@
         placeholder: {attribute: 'placeholder', type: 'String'},
         searchPlaceholder: {attribute: 'search-placeholder', type: 'String'},
         noOptionsMessage: {attribute: 'no-options-message', type: 'String'},
-        multiple: {attribute: 'multiple', type: 'Boolean'}
+        multiple: {attribute: 'multiple', type: 'Boolean'},
+        expanded: {attribute: 'expanded', type: 'Boolean', reflect: true},
     }
 }}"/>
 
@@ -31,13 +32,14 @@
         label,
         placeholder,
         width,
+        expanded = $bindable(false),
         ...rest
     } = $props();
 
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
-    const observer = Utils.createMutationObserver($host(), $host().tagName.toLowerCase(), setupItemsList);
+    const observer = Utils.createMutationObserver($host(), setupItemsList);
     const observerOptions = {
         childList: true,
         attributes: true,
@@ -89,7 +91,25 @@
         if (newOptionSelected) {
             selectElement.dispatchEvent(new Event('change'));
         }
-        tick().then(() => internalChange = false)
+        tick().then(() => internalChange = false);
+    });
+
+    $effect(() => {
+        if (expanded) {
+            selectElement?.dispatchEvent(
+                new CustomEvent('qc.select.show', {
+                    bubbles: true,
+                    composed: true
+                })
+            );
+        } else {
+            selectElement?.dispatchEvent(
+                new CustomEvent('qc.select.hide', {
+                    bubbles: true,
+                    composed: true
+                })
+            );
+        }
     });
 
     $effect(() => {
@@ -136,6 +156,7 @@
         {multiple}
         {disabled}
         {required}
+        bind:expanded
         {...rest}
 />
 <link rel='stylesheet' href='{Utils.cssPath}'>

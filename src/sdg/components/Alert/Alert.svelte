@@ -8,12 +8,14 @@
         type = "general",
         maskable = "",
         content = "",
-        hide = "false",
+        hide = $bindable("false"),
         fullWidth = "false",
         slotContent,
         id,
         persistenceKey,
         persistHidden = false,
+        rootElement = $bindable(),
+        hideAlertCallback = () => {},
     } = $props();
 
     const language = Utils.getPageLanguage();
@@ -25,25 +27,18 @@
 
     const label = type === 'general' ? generalLabel : warningLabel;
 
-    let rootElement = $state(null);
-
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
 
     onMount(() => {
         const key = getPersistenceKey();
         if (!key) return;
-        hide = sessionStorage.getItem(key) || "false";
+        hide = sessionStorage.getItem(key) ? "true" : "false";
     })
 
     function hideAlert() {
         hide = "true";
         persistHiddenState();
-        rootElement.dispatchEvent(
-            new CustomEvent('qc.alert.hide', {
-                bubbles: true,
-                composed: true
-            })
-        );
+        hideAlertCallback();
     }
 
     function getPersistenceKey() {

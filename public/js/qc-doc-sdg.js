@@ -75738,11 +75738,14 @@
 	    /**
 	     * Creates a MutationObserver instance with selector nesting check
 	     * @param rootElement
-	     * @param selector
 	     * @param callback
+	     * @param selector
 	     * @returns {MutationObserver | null}
 	     */
-	    static createMutationObserver(rootElement, selector, callback) {
+	    static createMutationObserver(rootElement, callback, selector) {
+	        if (!selector) {
+	            selector = rootElement.tagName.toLowerCase();
+	        }
 	        if (rootElement.querySelector(selector)) {
 	            console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
 	            return null;
@@ -78331,7 +78334,8 @@
 			multiple = prop($$props, 'multiple', 7, false),
 			rootElement = prop($$props, 'rootElement', 15),
 			errorElement = prop($$props, 'errorElement', 15),
-			webComponentMode = prop($$props, 'webComponentMode', 7, false);
+			webComponentMode = prop($$props, 'webComponentMode', 7, false),
+			expanded = prop($$props, 'expanded', 15, false);
 
 		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
 			inputId = `${id()}-input`,
@@ -78369,7 +78373,6 @@
 				return "";
 			}),
 			previousValue = state(proxy(value())),
-			expanded = state(false),
 			searchText = state(""),
 			hiddenSearchText = state(""),
 			displayedItems = state(proxy(items())),
@@ -78432,12 +78435,12 @@
 
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
-			set(expanded, !get(expanded));
+			expanded(!expanded());
 		}
 
 		function handleOuterEvent() {
 			if (!Utils.componentIsActive(get(instance))) {
-				set(expanded, false);
+				expanded(false);
 			}
 		}
 
@@ -78446,14 +78449,14 @@
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
 				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
-					set(expanded, false);
+					expanded(false);
 				}
 			}).catch(console.error);
 		}
 
 		function handleEscape(event) {
 			if (strict_equals(event.key, "Escape")) {
-				set(expanded, false);
+				expanded(false);
 			}
 		}
 
@@ -78467,7 +78470,7 @@
 		function handleArrowDown(event, targetComponent) {
 			if (strict_equals(event.key, "ArrowDown") && targetComponent) {
 				event.preventDefault();
-				set(expanded, true);
+				expanded(true);
 				targetComponent.focus();
 			}
 		}
@@ -78479,10 +78482,10 @@
 			if (strict_equals(event.key, "ArrowDown")) {
 				event.preventDefault();
 
-				if (get(expanded)) {
+				if (expanded()) {
 					targetComponent.focus();
 				} else {
-					set(expanded, true);
+					expanded(true);
 					focusOnSelectedOption(value());
 				}
 			}
@@ -78490,7 +78493,7 @@
 			if (strict_equals(event.key, "ArrowUp")) {
 				event.preventDefault();
 
-				if (get(expanded)) {
+				if (expanded()) {
 					get(dropdownItems)?.focusOnLastElement();
 				}
 			}
@@ -78502,7 +78505,7 @@
 			} else {
 				set(hiddenSearchText, get(hiddenSearchText) + event.key);
 
-				if (get(hiddenSearchText).length > 0 && get(expanded)) {
+				if (get(hiddenSearchText).length > 0 && expanded()) {
 					get(dropdownItems)?.focusOnFirstMatchingElement(get(hiddenSearchText));
 				}
 			}
@@ -78517,7 +78520,7 @@
 		}
 
 		function closeDropdown(key) {
-			set(expanded, false);
+			expanded(false);
 			set(hiddenSearchText, "");
 
 			if (strict_equals(key, "Escape") && get(button)) {
@@ -78548,7 +78551,7 @@
 		});
 
 		user_effect(() => {
-			if (!get(expanded)) {
+			if (!expanded()) {
 				set(hiddenSearchText, "");
 				set(searchText, "");
 			}
@@ -78588,7 +78591,7 @@
 		});
 
 		user_effect(() => {
-			if (get(expanded)) {
+			if (expanded()) {
 				const borderThickness = 2 * (invalid() ? 2 : 1);
 				const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
 
@@ -78660,14 +78663,14 @@
 				return disabled();
 			},
 			get expanded() {
-				return get(expanded);
+				return expanded();
 			},
 			'aria-labelledby': labelId,
 			get 'aria-required'() {
 				return required();
 			},
 			get 'aria-expanded'() {
-				return get(expanded);
+				return expanded();
 			},
 			'aria-haspopup': 'listbox',
 			'aria-controls': itemsId,
@@ -78858,7 +78861,7 @@
                     --dropdown-button-border: ${invalid() ? 2 : 1};
                     `);
 
-			div_3.hidden = !get(expanded);
+			div_3.hidden = !expanded();
 		});
 
 		append($$anchor, div);
@@ -78994,6 +78997,13 @@
 				webComponentMode($$value);
 				flushSync();
 			},
+			get expanded() {
+				return expanded();
+			},
+			set expanded($$value = false) {
+				expanded($$value);
+				flushSync();
+			},
 			...legacy_api()
 		});
 	}
@@ -79018,7 +79028,8 @@
 			multiple: {},
 			rootElement: {},
 			errorElement: {},
-			webComponentMode: {}
+			webComponentMode: {},
+			expanded: {}
 		},
 		[],
 		[],

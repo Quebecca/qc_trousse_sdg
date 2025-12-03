@@ -17,7 +17,6 @@
             maskable="true"
             content="Alerte jaune d’importance élevée"
             persist-hidden
-            persistence-ttl="5"
             persistence-key="hash-1234"
   >
   </qc-alert>
@@ -105,7 +104,7 @@
   document.addEventListener(
           'qc.alert.hide',
           (e) => {
-            console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');
+            console.log(`Fermeture de l'alerte id='${e.target.id}'`);
           }
   )
 </script>
