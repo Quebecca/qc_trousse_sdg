@@ -864,10 +864,6 @@ a .img-wrap {
   white-space: normal;
   text-decoration: underline;
 }
-.qc-external-link .qc-icon {
-  background-color: var(--qc-color-link-text);
-  display: inline;
-}
 
 .qc-ext-link-img {
   height: 0.6875em;
@@ -888,9 +884,6 @@ a:hover .qc-ext-link-img {
 }
 a:active .qc-ext-link-img {
   background: var(--qc-color-link-active);
-}
-.img-wrap + .qc-ext-link-img {
-  display: none;
 }
 
 p {

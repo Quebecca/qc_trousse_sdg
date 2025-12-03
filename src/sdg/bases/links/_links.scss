@@ -30,15 +30,9 @@ a {
     white-space: normal;
     text-decoration: underline;
   }
-
-  .qc-icon {
-    background-color: token-value(color link text);
-    display: inline;
-  }
 }
 
 .qc-ext-link-img {
-
   @extend .icon-external-link;
   $ratio : math.div(11,16) * 1em;
   height: $ratio;
@@ -48,21 +42,16 @@ a {
   display: inline-block;
   mask-repeat: no-repeat;
 
-  a:visited  & {
+  a:visited & {
     background: token-value(color link visited);
   }
-  a:focus  & {
+  a:focus & {
     background: token-value(color link hover);
   }
-  a:hover  & {
+  a:hover & {
     background: token-value(color link hover);
   }
-  a:active  & {
+  a:active & {
     background: token-value(color link active);
-  }
-
-
-  .img-wrap + & {
-    display: none;
   }
 }
