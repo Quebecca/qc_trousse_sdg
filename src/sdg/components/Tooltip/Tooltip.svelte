@@ -122,6 +122,20 @@
         right: -16px;
     }
 
+    .qc-tooltip-top .qc-tooltip-pin {
+        top: calc(-100% + 4px - var(--pin-gap));
+        left: calc(var(--pin-height) - 1px);
+        transform: rotate(-90deg);
+    }
+
+    .qc-tooltip-top .qc-tooltip-panel {
+        /*display: none;*/
+        top: 0;
+        transform: translateY( calc(-100% - var(--pin-gap) - var(--pin-height) + 2px));
+        left:auto;
+        right: -16px;
+    }
+
     .qc-tooltip-content {
         /*font-size: var(--qc-font-size-90);*/
         /*line-height: var(--qc-line-height-90);*/
