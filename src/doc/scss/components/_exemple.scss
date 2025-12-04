@@ -18,4 +18,8 @@
   & > figcaption {
     display: block;
   }
+  &:has(qc-select) {
+    overflow-x: visible;
+  }
 }
+
