@@ -71055,7 +71055,7 @@
 
 	var js = {exports: {}};
 
-	var src$1 = {};
+	var src = {};
 
 	var javascript = {exports: {}};
 
@@ -76589,7 +76589,7 @@
 	var hasRequiredSrc;
 
 	function requireSrc () {
-		if (hasRequiredSrc) return src$1;
+		if (hasRequiredSrc) return src;
 		hasRequiredSrc = 1;
 
 		var js_beautify = requireJavascript();
@@ -76603,10 +76603,10 @@
 		}
 		style_html.defaultOptions = html_beautify.defaultOptions;
 
-		src$1.js = js_beautify;
-		src$1.css = css_beautify;
-		src$1.html = style_html;
-		return src$1;
+		src.js = js_beautify;
+		src.css = css_beautify;
+		src.html = style_html;
+		return src;
 	}
 
 	/*jshint node:true */
