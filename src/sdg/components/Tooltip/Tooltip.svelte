@@ -1,20 +1,106 @@
 <script>
     import {Utils} from "../utils";
+    import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
     let {
         text,
         description,
-        placement
+        placement = "right",
+        host
     } = $props()
-    let src = Utils.imagesRelativePath + "info-tooltip.svg";
+    let tooltipPanel = $state(),
+        tooltipContainer,
+        display = $state(false),
+        visible = $state(false)
+    ;
 
+    onMount(_ => {
+        tooltipContainer
+            .addEventListener("click", markInnerEvent)
+    })
 
-    /**
-     * Vérifie si le bord droit d'un élément dépasse le bord droit de la fenêtre d'affichage.
-     * @param {HTMLElement} element - L'élément DIV à inspecter.
-     * @returns {boolean} - Vrai si l'élément déborde, Faux sinon.
-     */
-    function isElementOverflowingRight(element) {
+    $effect(_ => {
+        if (!display) {
+            visible = false
+        }
+    })
+
+    async function showTooltip(e) {
+
+        e.preventDefault();
+        if (display) {
+            display=false;
+            return;
+        }
+
+        display = true
+        await tick()
+        console.log("Placement initial : " + placement)
+        let tries = getTriesOrder(placement);
+        let start = placement,
+            current =  start
+        ;
+        while (true) {
+            if (tryPlacement(current)) {
+                visible = true;
+                break;
+            }
+            const index = tries.indexOf(current)
+            current = tries[(index + 1) % tries.length]
+            if (current == start) {
+                fallBack()
+                break;
+            }
+            placement = current
+            await waitForNextFrame()
+        }
+    }
+
+    function getTriesOrder(placement) {
+        return {
+            "right": ["right", "top", "bottom"],
+            "top": ["top", "bottom", "right"],
+            "bottom": ["bottom", "top", "right"]
+        }[placement]
+    }
+
+    function waitForNextFrame() {
+        return new Promise(resolve => {
+            // requestAnimationFrame appelle la fonction resolve() juste avant
+            // que le navigateur ne dessine la prochaine frame.
+            window.requestAnimationFrame(resolve);
+        });
+    }
+
+     function tryPlacement(placement) {
+        let result = !isElementOverflowing(tooltipPanel, placement);
+        console.log("Placement selon " + placement + " : "  + result )
+        return result;
+    }
+
+    function fallBack() {
+        console.log("Fallback")
+    }
+
+    function closeIfClickOutEvent(e) {
+        if (e.tooltipContainer === tooltipContainer) return;
+        display = false;
+    }
+
+    function closeIfFocusOutEvent(e) {
+        display = false;
+    }
+
+    function markInnerEvent(e) {
+        e.tooltipContainer = tooltipContainer;
+    }
+
+    function isElementOverflowing(element, direction) {
+        const bounds = {
+            "right" : window.innerWidth || document.documentElement.clientWidth,
+            "top" : 0,
+            "bottom": window.innerHeight || document.documentElement.clientHeight,
+        }
         if (!element) {
             console.error("ERREUR: L'élément spécifié est null.");
             return false;
@@ -22,32 +108,53 @@
 
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
-
-        // Récupère la largeur actuelle de la fenêtre d'affichage
-        const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-
-        // Le débordement se produit si la position du bord droit (rect.right)
-        // est supérieure à la largeur totale du viewport.
-        // L'ajout de 1 est une tolérance pour les imprécisions de rendu.
-        return rect.right >= viewportWidth;
+        console.log("element.getBoundingClientRect()", element.getBoundingClientRect())
+        const border = bounds[direction]
+        console.log("border",border)
+        switch (direction) {
+            case "right":
+            case "bottom":
+                console.log("checking rect[direction] >= border")
+                return rect[direction] >= border;
+            case "top" :
+                console.log("checking rect[direction] <= border")
+                return rect[direction] <= border
+        }
     }
 
 </script>
-<span class="qc-tooltip qc-tooltip-{placement}">
- {#if text}
-     <span class="qc-tooltip-text">{@html text}</span>
- {/if}
- {#if text}
+
+<svelte:document
+        onclick={closeIfClickOutEvent}
+/>
+<svelte:window
+        onblur={e => display = false}
+/>
+
+<span class="qc-tooltip qc-tooltip-{placement}"
+      bind:this={tooltipContainer}
+      onfocusout={markInnerEvent}
+>
+    {#if text}
+     <span class="qc-tooltip-text"
+           onclick={showTooltip}
+           role="button"
+           tabindex="-1"
+        >{@html text}</span>
+    {/if}
+    {#if description}
      <div class="qc-tooltip-container">
          <a role="button"
             class="qc-tooltip-button"
             href="#top"
-            onclick={e => e.preventDefault()}
+            onclick={showTooltip}
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
-
-         <div class="qc-tooltip-pin">
+         {#if display}
+         <div class="qc-tooltip-pin"
+              class:qc-tooltip-visible={visible}
+            >
              <svg
                  width="9"
                  height="15"
@@ -71,23 +178,26 @@
             </svg>
          </div>
 
-         <div class="qc-tooltip-panel  qc-shading-1">
+         <div class="qc-tooltip-panel  qc-shading-1"
+              class:qc-tooltip-visible={visible}
+              bind:this={tooltipPanel}
+            >
              <div class="qc-tooltip-content">
                 {@html description}
              </div>
             <a role="button"
                class="qc-tooltip-xclose"
                href="#top"
-               onclick={e => e.preventDefault()}
+               onclick={e => display = false}
             >
                 <Icon type="xclose"
                       color="blue-piv"
                       size="sm" />
             </a>
          </div>
+         {/if}
      </div>
-
- {/if}
+    {/if}
 </span>
 
 
@@ -130,6 +240,7 @@
     }
 
     .qc-tooltip-panel {
+        visibility: hidden;
         position: absolute;
         top: -16px;
         left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
@@ -142,6 +253,10 @@
         border: 1px solid var(--qc-color-grey-light);
         z-index:199;
         padding: 24px 8px 24px 16px;
+    }
+
+    .qc-tooltip-visible {
+        visibility: visible;
     }
 
     .qc-tooltip-bottom .qc-tooltip-pin {
