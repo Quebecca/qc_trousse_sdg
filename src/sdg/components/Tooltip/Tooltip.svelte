@@ -1,5 +1,4 @@
 <script>
-    import IconButton from '../IconButton/IconButton.svelte'
     import {Utils} from "../utils";
     import Icon from "../../bases/Icon/Icon.svelte";
     let {
@@ -8,10 +7,33 @@
         placement
     } = $props()
     let src = Utils.imagesRelativePath + "info-tooltip.svg";
-</script>
-<span class="qc-tooltip qc-tooltip-{placement}"
 
-    >
+
+    /**
+     * Vérifie si le bord droit d'un élément dépasse le bord droit de la fenêtre d'affichage.
+     * @param {HTMLElement} element - L'élément DIV à inspecter.
+     * @returns {boolean} - Vrai si l'élément déborde, Faux sinon.
+     */
+    function isElementOverflowingRight(element) {
+        if (!element) {
+            console.error("ERREUR: L'élément spécifié est null.");
+            return false;
+        }
+
+        // Récupère les coordonnées de l'élément par rapport au viewport
+        const rect = element.getBoundingClientRect();
+
+        // Récupère la largeur actuelle de la fenêtre d'affichage
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+
+        // Le débordement se produit si la position du bord droit (rect.right)
+        // est supérieure à la largeur totale du viewport.
+        // L'ajout de 1 est une tolérance pour les imprécisions de rendu.
+        return rect.right >= viewportWidth;
+    }
+
+</script>
+<span class="qc-tooltip qc-tooltip-{placement}">
  {#if text}
      <span class="qc-tooltip-text">{@html text}</span>
  {/if}
@@ -25,17 +47,29 @@
             <Icon type="info-tooltip" size="sm" />
         </a>
 
-             <div class="qc-tooltip-pin"><svg
-
-                     width="9"
-                     height="15"
-                     viewBox="0 0 9 15"
-                     fill="none"
-                     xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.02002 14.1667L1.35335 7.50004L8.02002 0.833374L8.02002 14.1667Z" fill="white"/>
-                <path d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"
-                      fill="#C5CAD2"/>
-             </svg></div>
+         <div class="qc-tooltip-pin">
+             <svg
+                 width="9"
+                 height="15"
+                 viewBox="0 0 9 15"
+                 fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+                <style>
+                    .triangle {
+                        fill: var(--qc-color-background);
+                    }
+                    .stroke {
+                        fill: var(--qc-color-grey-light);
+                    }
+                </style>
+                <path
+                        class="triangle"
+                        d="M8.02002 14.1667L1.35335 7.50004L8.02002 0.833374L8.02002 14.1667Z"/>
+                <path
+                        class="stroke"
+                        d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"/>
+            </svg>
+         </div>
 
          <div class="qc-tooltip-panel  qc-shading-1">
              <div class="qc-tooltip-content">
@@ -175,8 +209,6 @@
     ::-webkit-resizer {
         display: none;
     }
-
-
 
     @supports not selector(::-webkit-scrollbar) {
         scrollbar-color:  var(--qc-color-blue-piv) transparent;
