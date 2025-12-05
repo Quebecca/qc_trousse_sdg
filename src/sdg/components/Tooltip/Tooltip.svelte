@@ -32,7 +32,6 @@
             display=false;
             return;
         }
-
         display = true
         await tick()
         console.log("Placement initial : " + placement)
@@ -66,8 +65,6 @@
 
     function waitForNextFrame() {
         return new Promise(resolve => {
-            // requestAnimationFrame appelle la fonction resolve() juste avant
-            // que le navigateur ne dessine la prochaine frame.
             window.requestAnimationFrame(resolve);
         });
     }
