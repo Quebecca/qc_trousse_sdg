@@ -11,7 +11,8 @@
     let tooltipPanel = $state(),
         tooltipContainer,
         display = $state(false),
-        visible = $state(false)
+        visible = $state(false),
+        preventOuterEventClosing = true
     ;
 
     onMount(_ => {
@@ -80,8 +81,14 @@
     }
 
     function closeIfClickOutEvent(e) {
+        if (preventOuterEventClosing) return
         if (e.tooltipContainer === tooltipContainer) return;
         display = false;
+    }
+
+    function closeIfBlur(e) {
+        if (preventOuterEventClosing) return
+        display = false
     }
 
     function closeIfFocusOutEvent(e) {
@@ -125,7 +132,7 @@
         onclick={closeIfClickOutEvent}
 />
 <svelte:window
-        onblur={e => display = false}
+        onblur={closeIfBlur}
 />
 
 <span class="qc-tooltip qc-tooltip-{placement}"
@@ -201,7 +208,7 @@
 <style>
     .qc-tooltip {
         display: inline-flex;
-        align-items: baseline;
+        align-items: center;
         --max-height : 160px;
         --pin-gap: 4px;
         --pin-height: 9px;
@@ -209,6 +216,7 @@
     }
     .qc-tooltip-text {
         border-bottom: 1px dashed var(--qc-color-text-primary);
+        cursor: pointer;
     }
     .qc-tooltip-button {
         align-self: center;
@@ -257,19 +265,19 @@
     }
 
     .qc-tooltip-bottom .qc-tooltip-pin {
-        top: calc(100% - 1px);
+        top: calc(100% + var(--pin-gap) - 1px);
         left: calc(var(--pin-height) - 1px);
         transform: rotate(90deg);
     }
 
     .qc-tooltip-bottom .qc-tooltip-panel {
-        top: calc(100% + var(--pin-height));
+        top: calc(100% + var(--pin-height) + var(--pin-gap));
         left:auto;
         right: -16px;
     }
 
     .qc-tooltip-top .qc-tooltip-pin {
-        top: calc(-100% + 4px - var(--pin-gap));
+        top: calc(-100% - var(--pin-gap) + 2px);
         left: calc(var(--pin-height) - 1px);
         transform: rotate(-90deg);
     }
@@ -277,7 +285,7 @@
     .qc-tooltip-top .qc-tooltip-panel {
         /*display: none;*/
         top: 0;
-        transform: translateY( calc(-100% - var(--pin-gap) - var(--pin-height) + 2px));
+        transform: translateY( calc(-100% - var(--pin-gap) - var(--pin-height)));
         left:auto;
         right: -16px;
     }
