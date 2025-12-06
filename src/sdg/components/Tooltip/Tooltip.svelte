@@ -10,6 +10,7 @@
     } = $props()
     let tooltipPanel = $state(),
         tooltipContainer,
+        tooltipButton,
         display = $state(false),
         visible = $state(false),
         preventOuterEventClosing = true
@@ -72,8 +73,20 @@
 
      function tryPlacement(placement) {
         let result = !isElementOverflowing(tooltipPanel, placement);
+        if (result) {
+            result = adjustPin(tooltipPanel, placement);
+        }
         console.log("Placement selon " + placement + " : "  + result )
         return result;
+    }
+
+    function adjustPin(tooltipPanel, placement) {
+        let orders = getTriesOrder(placement),
+            adjustDirection = placement !== "right"
+                                    ? orders[3]
+                                    : orders[2]
+        ;
+        return true;
     }
 
     function fallBack() {
@@ -152,6 +165,7 @@
             class="qc-tooltip-button"
             href="#top"
             onclick={showTooltip}
+            bind:this={tooltipButton}
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
@@ -247,7 +261,7 @@
     .qc-tooltip-panel {
         visibility: hidden;
         position: absolute;
-        top: -16px;
+        transform: translateY(50%);
         left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
         min-width: 216px;
         max-width: 320px;
@@ -273,7 +287,7 @@
     .qc-tooltip-bottom .qc-tooltip-panel {
         top: calc(100% + var(--pin-height) + var(--pin-gap));
         left:auto;
-        right: -16px;
+        transform: translateX(-50%);
     }
 
     .qc-tooltip-top .qc-tooltip-pin {
@@ -285,9 +299,11 @@
     .qc-tooltip-top .qc-tooltip-panel {
         /*display: none;*/
         top: 0;
-        transform: translateY( calc(-100% - var(--pin-gap) - var(--pin-height)));
+        transform: translate(
+                -50%,
+                calc(-100% - var(--pin-gap) - var(--pin-height))
+        );
         left:auto;
-        right: -16px;
     }
 
     .qc-tooltip-content {
