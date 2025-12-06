@@ -6,14 +6,14 @@
         text,
         description,
         placement = "right",
-        host
+        host,
+        preventOuterEventClosing = false
     } = $props()
     let tooltipPanel = $state(),
         tooltipContainer,
         tooltipButton,
         display = $state(false),
-        visible = $state(false),
-        preventOuterEventClosing = true
+        visible = $state(false)
     ;
 
     onMount(_ => {
@@ -261,7 +261,7 @@
     .qc-tooltip-panel {
         visibility: hidden;
         position: absolute;
-        transform: translateY(50%);
+        transform: translateY(-50%);
         left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
         min-width: 216px;
         max-width: 320px;
