@@ -3,7 +3,8 @@
   props: {
     text: { attribute: 'label', type: 'String' },
     description: { attribute: 'description', type: 'String' },
-    placement: { attribute: 'placement', type: 'String'}
+    placement: { attribute: 'placement', type: 'String'},
+    preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean'}
   }
 }} />
 <script>
