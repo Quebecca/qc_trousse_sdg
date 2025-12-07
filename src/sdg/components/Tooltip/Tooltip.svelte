@@ -6,7 +6,6 @@
         text,
         description,
         placement = "right",
-        host,
         preventOuterEventClosing = false
     } = $props()
     let tooltipPanel = $state(),
@@ -30,7 +29,6 @@
     })
 
     async function showTooltip(e) {
-
         e.preventDefault();
         if (display) {
             display=false;
@@ -90,15 +88,14 @@
 
     function adjustCrossAxis(tooltipPanel, placement) {
         let otherAxisPlacements = getOtherAxisPlacements(placement);
-        let adjustable = true,
-            adjusted = false;
+        let adjustable = true;
 
-            otherAxisPlacements.forEach(otherAxisPlacement => {
+            otherAxisPlacements.forEach(async otherAxisPlacement => {
+                await waitForNextFrame();
                 if (!adjustable) return;
-                if (adjusted) return;
+                console.log(`adjustPin ${otherAxisPlacement}`)
                 if (!isElementOverflowing(tooltipPanel, otherAxisPlacement)) {
-                    console.log(`adjustPin ${placement} : nothing to adjust `)
-                    adjusted = true;
+                    console.log(`adjustPin ${otherAxisPlacement} : nothing to adjust `)
                     return;
                 }
                 const gap = getScreenGap(tooltipButton, otherAxisPlacement, 4);
@@ -112,7 +109,7 @@
                         translateY = `-${gap}px`
                         break;
                     case "bottom":
-                        translateY = `${gap + 16}px`
+                        translateY = `calc(-100% + 20px + ${gap}px)`
                         break;
                     case "right":
                         translateX = `${gap + 16}px`
@@ -121,10 +118,12 @@
                         translateX = `-${gap}px`
                         break;
                 }
-                adjusted = true;
             })
             return adjustable;
     }
+
+    $inspect("translateX", translateX)
+    $inspect("translateY", translateY)
 
     function fallBack() {
         console.log("Fallback")
@@ -318,7 +317,7 @@
 
     .qc-tooltip-bottom .qc-tooltip-pin {
         top: calc(100% + var(--pin-gap) - 1px);
-        left: var(--left);
+        left: 8px;
         transform: rotate(90deg);
     }
 
