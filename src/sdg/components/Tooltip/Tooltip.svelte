@@ -13,7 +13,9 @@
         tooltipContainer,
         tooltipButton,
         display = $state(false),
-        visible = $state(false)
+        visible = $state(false),
+        translateX = $state("-50%"),
+        translateY = $state("calc(-50% + 8px)")
     ;
 
     onMount(_ => {
@@ -74,19 +76,54 @@
      function tryPlacement(placement) {
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
-            result = adjustPin(tooltipPanel, placement);
+            result = adjustCrossAxis(tooltipPanel, placement);
         }
         console.log("Placement selon " + placement + " : "  + result )
         return result;
     }
 
-    function adjustPin(tooltipPanel, placement) {
-        let orders = getTriesOrder(placement),
-            adjustDirection = placement !== "right"
-                                    ? orders[3]
-                                    : orders[2]
-        ;
-        return true;
+    function getOtherAxisPlacements(placement) {
+        return placement === "right"
+                ? ["top", "bottom"]
+                : ["right", "left"];
+    }
+
+    function adjustCrossAxis(tooltipPanel, placement) {
+        let otherAxisPlacements = getOtherAxisPlacements(placement);
+        let adjustable = true,
+            adjusted = false;
+
+            otherAxisPlacements.forEach(otherAxisPlacement => {
+                if (!adjustable) return;
+                if (adjusted) return;
+                if (!isElementOverflowing(tooltipPanel, otherAxisPlacement)) {
+                    console.log(`adjustPin ${placement} : nothing to adjust `)
+                    adjusted = true;
+                    return;
+                }
+                const gap = getScreenGap(tooltipButton, otherAxisPlacement, 4);
+                if (gap < 0) {
+                    console.log(`adjustPin ${placement} : button overflowwing - no adjustement enabled`)
+                    adjustable = false;
+                    return;
+                }
+                switch (otherAxisPlacement) {
+                    case "top":
+                        translateY = `-${gap}px`
+                        break;
+                    case "bottom":
+                        translateY = `${gap + 16}px`
+                        break;
+                    case "right":
+                        translateX = `${gap + 16}px`
+                        break;
+                    case "left":
+                        translateX = `-${gap}px`
+                        break;
+                }
+                adjusted = true;
+            })
+            return adjustable;
     }
 
     function fallBack() {
@@ -113,16 +150,16 @@
     }
 
     function isElementOverflowing(element, direction) {
+        return getScreenGap(element, direction) < 0;
+    }
+
+    function getScreenGap(element, direction, offset = 0) {
         const bounds = {
             "right" : window.innerWidth || document.documentElement.clientWidth,
             "top" : 0,
             "bottom": window.innerHeight || document.documentElement.clientHeight,
+            "left" : 0
         }
-        if (!element) {
-            console.error("ERREUR: L'élément spécifié est null.");
-            return false;
-        }
-
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
         console.log("element.getBoundingClientRect()", element.getBoundingClientRect())
@@ -131,11 +168,10 @@
         switch (direction) {
             case "right":
             case "bottom":
-                console.log("checking rect[direction] >= border")
-                return rect[direction] >= border;
+                return (border - offset) - rect[direction];
             case "top" :
-                console.log("checking rect[direction] <= border")
-                return rect[direction] <= border
+            case "left" :
+                return rect[direction] - (border - offset)
         }
     }
 
@@ -199,6 +235,8 @@
          <div class="qc-tooltip-panel  qc-shading-1"
               class:qc-tooltip-visible={visible}
               bind:this={tooltipPanel}
+              style:--translateY={translateY}
+              style:--translateX={translateX}
             >
              <div class="qc-tooltip-content">
                 {@html description}
@@ -251,7 +289,6 @@
         z-index: 200;
         width: var(--pin-height);
         height: var(--pin-base);
-
     }
 
     svg {
@@ -261,7 +298,8 @@
     .qc-tooltip-panel {
         visibility: hidden;
         position: absolute;
-        transform: translateY(-50%);
+        transform: translateY(var(--translateY));
+        top:0;
         left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
         min-width: 216px;
         max-width: 320px;
@@ -280,14 +318,14 @@
 
     .qc-tooltip-bottom .qc-tooltip-pin {
         top: calc(100% + var(--pin-gap) - 1px);
-        left: calc(var(--pin-height) - 1px);
+        left: var(--left);
         transform: rotate(90deg);
     }
 
     .qc-tooltip-bottom .qc-tooltip-panel {
         top: calc(100% + var(--pin-height) + var(--pin-gap));
         left:auto;
-        transform: translateX(-50%);
+        transform: translateX(var(--translateX));
     }
 
     .qc-tooltip-top .qc-tooltip-pin {
@@ -300,7 +338,7 @@
         /*display: none;*/
         top: 0;
         transform: translate(
-                -50%,
+                var(--translateX),
                 calc(-100% - var(--pin-gap) - var(--pin-height))
         );
         left:auto;
