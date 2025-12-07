@@ -56,7 +56,7 @@
             }
             const index = tries.indexOf(current)
             current = tries[(index + 1) % tries.length]
-            if (current == start) {
+            if (current === start) {
                 fallBack()
                 break;
             }
@@ -94,8 +94,6 @@
                 ? ["top", "bottom"]
                 : ["right", "left"];
     }
-
-
 
     function adjustCrossAxis(tooltipPanel, placement) {
         translateX = defaultTranslateX,
@@ -367,12 +365,15 @@
     }
 
     .qc-tooltip-content {
-        /*font-size: var(--qc-font-size-90);*/
-        /*line-height: var(--qc-line-height-90);*/
         overflow-y: auto;
         max-height:calc(var(--max-height) - 48px);
         scrollbar-gutter: stable;
         padding-right:16px;
+    }
+
+    .qc-tooltip-content:focus-visible {
+        outline: 2px solid var(--qc-color-blue-regular);
+        outline-offset: 1px;
     }
 
     .qc-tooltip-xclose {
