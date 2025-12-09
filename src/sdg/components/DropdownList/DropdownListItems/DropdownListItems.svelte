@@ -44,7 +44,7 @@
 
 <div
     id={id}
-    class="qc-dropdown-list-items"
+    class="qc-dropdown-list-items qc-scrollbar"
     tabindex="-1"
 >
     {#if multiple}
