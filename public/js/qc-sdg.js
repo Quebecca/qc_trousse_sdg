@@ -618,7 +618,7 @@
 	/** @import { Equals } from '#client' */
 
 	/** @type {Equals} */
-	function equals(value) {
+	function equals$1(value) {
 		return value === this.v;
 	}
 
@@ -765,6 +765,62 @@
 	}
 
 	/** @import { Derived, Reaction, Value } from '#client' */
+
+	/**
+	 * @param {string} label
+	 * @returns {Error & { stack: string } | null}
+	 */
+	function get_stack(label) {
+		// @ts-ignore stackTraceLimit doesn't exist everywhere
+		const limit = Error.stackTraceLimit;
+
+		// @ts-ignore
+		Error.stackTraceLimit = Infinity;
+		let error = Error();
+
+		// @ts-ignore
+		Error.stackTraceLimit = limit;
+
+		const stack = error.stack;
+
+		if (!stack) return null;
+
+		const lines = stack.split('\n');
+		const new_lines = ['\n'];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const posixified = line.replaceAll('\\', '/');
+
+			if (line === 'Error') {
+				continue;
+			}
+
+			if (line.includes('validate_each_keys')) {
+				return null;
+			}
+
+			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
+				continue;
+			}
+
+			new_lines.push(line);
+		}
+
+		if (new_lines.length === 1) {
+			return null;
+		}
+
+		define_property(error, 'stack', {
+			value: new_lines.join('\n')
+		});
+
+		define_property(error, 'name', {
+			value: label
+		});
+
+		return /** @type {Error & { stack: string }} */ (error);
+	}
 
 	/**
 	 * @param {Value} source
@@ -2338,6 +2394,21 @@
 		};
 	}
 
+	/**
+	 * Reset `current_async_effect` after the `promise` resolves, so
+	 * that we can emit `await_reactivity_loss` warnings
+	 * @template T
+	 * @param {Promise<T>} promise
+	 * @returns {Promise<() => T>}
+	 */
+	async function track_reactivity_loss(promise) {
+		var value = await promise;
+
+		return () => {
+			return value;
+		};
+	}
+
 	function unset_context() {
 		set_active_effect(null);
 		set_active_reaction(null);
@@ -2371,7 +2442,7 @@
 			ctx: component_context,
 			deps: null,
 			effects: null,
-			equals,
+			equals: equals$1,
 			f: flags,
 			fn,
 			reactions: null,
@@ -2652,7 +2723,7 @@
 			f: 0, // TODO ideally we could skip this altogether, but it causes type errors
 			v,
 			reactions: null,
-			equals,
+			equals: equals$1,
 			rv: 0,
 			wv: 0
 		};
@@ -3167,6 +3238,20 @@
 		return (a === b) === equal;
 	}
 
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 * @param {boolean} equal
+	 * @returns {boolean}
+	 */
+	function equals(a, b, equal = true) {
+		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
+			state_proxy_equality_mismatch();
+		}
+
+		return (a == b) === equal;
+	}
+
 	/** @import { Effect, TemplateNode } from '#client' */
 
 	// export these for reference in the compiled code, making global name deduplication unnecessary
@@ -3626,6 +3711,11 @@
 	 */
 	function create_user_effect(fn) {
 		return create_effect(EFFECT | USER_EFFECT, fn, false);
+	}
+
+	/** @param {() => void | (() => void)} fn */
+	function eager_effect(fn) {
+		return create_effect(EAGER_EFFECT, fn, true);
 	}
 
 	/**
@@ -5889,6 +5979,75 @@
 	}
 
 	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} inspector
+	 * @param {boolean} show_stack
+	 */
+	function inspect(get_value, inspector, show_stack = false) {
+		validate_effect();
+
+		let initial = true;
+		let error = /** @type {any} */ (UNINITIALIZED);
+
+		// Inspect effects runs synchronously so that we can capture useful
+		// stack traces. As a consequence, reading the value might result
+		// in an error (an `$inspect(object.property)` will run before the
+		// `{#if object}...{/if}` that contains it)
+		eager_effect(() => {
+			try {
+				var value = get_value();
+			} catch (e) {
+				error = e;
+				return;
+			}
+
+			var snap = snapshot(value, true, true);
+			untrack(() => {
+				if (show_stack) {
+					inspector(...snap);
+
+					if (!initial) {
+						const stack = get_stack('$inspect(...)');
+						// eslint-disable-next-line no-console
+
+						if (stack) {
+							// eslint-disable-next-line no-console
+							console.groupCollapsed('stack trace');
+							// eslint-disable-next-line no-console
+							console.log(stack);
+							// eslint-disable-next-line no-console
+							console.groupEnd();
+						}
+					}
+				} else {
+					inspector(initial ? 'init' : 'update', ...snap);
+				}
+			});
+
+			initial = false;
+		});
+
+		// If an error occurs, we store it (along with its stack trace).
+		// If the render effect subsequently runs, we log the error,
+		// but if it doesn't run it's because the `$inspect` was
+		// destroyed, meaning we don't need to bother
+		render_effect(() => {
+			try {
+				// call `get_value` so that this runs alongside the inspect effect
+				get_value();
+			} catch {
+				// ignore
+			}
+
+			if (error !== UNINITIALIZED) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+				error = UNINITIALIZED;
+			}
+		});
+	}
+
+	/**
 	 * @param {Node} anchor
 	 * @param {...(()=>any)[]} args
 	 */
@@ -6996,6 +7155,31 @@
 			set_hydrating(true);
 			set_hydrate_node(anchor);
 		}
+	}
+
+	/**
+	 * @param {Node} anchor
+	 * @param {{ hash: string, code: string }} css
+	 */
+	function append_styles$1(anchor, css) {
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		effect(() => {
+			var root = anchor.getRootNode();
+
+			var target = /** @type {ShadowRoot} */ (root).host
+				? /** @type {ShadowRoot} */ (root)
+				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
+
+			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
+			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
+			if (!target.querySelector('#' + css.hash)) {
+				const style = document.createElement('style');
+				style.id = css.hash;
+				style.textContent = css.code;
+
+				target.appendChild(style);
+			}
+		});
 	}
 
 	/** @import { Effect } from '#client' */
@@ -9156,7 +9340,7 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root$n = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[17, 0]]);
+	var root$p = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[17, 0]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -9276,7 +9460,7 @@
 			...legacy_api()
 		};
 
-		var div = root$n();
+		var div = root$p();
 
 		attribute_effect(div, () => ({
 			role: 'img',
@@ -9322,7 +9506,7 @@
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$m = add_locations(from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [[57, 0, [[60, 2, [[61, 4]]], [69, 2, [[70, 4]]]]]]);
+	var root$o = add_locations(from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [[57, 0, [[60, 2, [[61, 4]]], [69, 2, [[70, 4]]]]]]);
 
 	function Notice($$anchor, $$props) {
 		check_target(new.target);
@@ -9435,7 +9619,7 @@
 			...legacy_api()
 		};
 
-		var div = root$m();
+		var div = root$o();
 		var div_1 = child(div);
 		var div_2 = child(div_1);
 		var node_1 = child(div_2);
@@ -9541,7 +9725,7 @@
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
 
-	var root$l = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), NoticeWC[FILENAME], [[27, 0]]);
+	var root$n = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), NoticeWC[FILENAME], [[27, 0]]);
 
 	function NoticeWC($$anchor, $$props) {
 		check_target(new.target);
@@ -9549,7 +9733,7 @@
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
-		var fragment = root$l();
+		var fragment = root$n();
 		var node = first_child(fragment);
 
 		{
@@ -9590,17 +9774,17 @@
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root_3$3 = add_locations(from_html(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[72, 24]]);
-	var root_4$4 = add_locations(from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[74, 24]]);
-	var root_2$8 = add_locations(from_html(`<div class="title"><!></div>`), PivHeader[FILENAME], [[70, 16]]);
-	var root_5 = add_locations(from_html(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[62, 12, [[63, 16]]]]);
+	var root_3$4 = add_locations(from_html(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[72, 24]]);
+	var root_4$5 = add_locations(from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[74, 24]]);
+	var root_2$9 = add_locations(from_html(`<div class="title"><!></div>`), PivHeader[FILENAME], [[70, 16]]);
+	var root_5$1 = add_locations(from_html(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[62, 12, [[63, 16]]]]);
 	var root_6$1 = add_locations(from_html(`<a class="qc-search" href="/" role="button"><span class="no-link-title" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[95, 20, [[106, 24]]]]);
 	var root_10 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[119, 40, [[119, 44]]]]);
 	var root_11 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[122, 40, [[122, 44]]]]);
 	var root_9 = add_locations(from_html(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[116, 28, [[117, 32]]]]);
 	var root_12 = add_locations(from_html(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[135, 16]]);
 
-	var root$k = add_locations(from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$m = add_locations(from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			57,
 			0,
@@ -9900,7 +10084,7 @@
 			...legacy_api()
 		};
 
-		var div = root$k();
+		var div = root$m();
 		var div_1 = child(div);
 
 		{
@@ -9912,12 +10096,12 @@
 
 				{
 					var consequent_1 = ($$anchor) => {
-						var div_2 = root_2$8();
+						var div_2 = root_2$9();
 						var node_1 = child(div_2);
 
 						{
 							var consequent = ($$anchor) => {
-								var a = root_3$3();
+								var a = root_3$4();
 								var text = child(a, true);
 
 								reset(a);
@@ -9931,7 +10115,7 @@
 							};
 
 							var alternate = ($$anchor) => {
-								var span = root_4$4();
+								var span = root_4$5();
 								var text_1 = child(span, true);
 
 								reset(span);
@@ -9972,7 +10156,7 @@
 
 			{
 				var consequent_2 = ($$anchor) => {
-					var div_3 = root_5();
+					var div_3 = root_5$1();
 					var a_1 = child(div_3);
 					var text_2 = child(a_1, true);
 
@@ -10263,7 +10447,7 @@
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
 
-	var root$j = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
+	var root$l = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
 
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10288,7 +10472,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$j();
+		var fragment = root$l();
 		var node = first_child(fragment);
 
 		{
@@ -10383,9 +10567,9 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root_2$7 = add_locations(from_html(`<img/>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_4$3 = add_locations(from_html(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-	var root$i = add_locations(from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
+	var root_2$8 = add_locations(from_html(`<img/>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_4$4 = add_locations(from_html(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
+	var root$k = add_locations(from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
 	function PivFooter($$anchor, $$props) {
 		check_target(new.target);
@@ -10522,7 +10706,7 @@
 			...legacy_api()
 		};
 
-		var div = root$i();
+		var div = root$k();
 		var node = child(div);
 
 		{
@@ -10559,7 +10743,7 @@
 
 				src();
 
-				var img = root_2$7();
+				var img = root_2$8();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -10590,7 +10774,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_4$3();
+				var a_1 = root_4$4();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -10649,7 +10833,7 @@
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
 
-	var root$h = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivFooterWC[FILENAME], [[44, 0]]);
+	var root$j = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivFooterWC[FILENAME], [[44, 0]]);
 
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
@@ -10674,7 +10858,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$h();
+		var fragment = root$j();
 		var node = first_child(fragment);
 
 		{
@@ -10751,7 +10935,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$g = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$i = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -10763,6 +10947,7 @@
 			iconSize = prop($$props, 'iconSize', 7),
 			iconColor = prop($$props, 'iconColor', 7),
 			className = prop($$props, 'class', 7, ''),
+			src = prop($$props, 'src', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -10775,7 +10960,8 @@
 					'icon',
 					'iconSize',
 					'iconColor',
-					'class'
+					'class',
+					'src'
 				]);
 
 		var $$exports = {
@@ -10833,10 +11019,19 @@
 				flushSync();
 			},
 
+			get src() {
+				return src();
+			},
+
+			set src($$value) {
+				src($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
-		var button = root$g();
+		var button = root$i();
 
 		attribute_effect(button, () => ({
 			'data-button-size': size(),
@@ -10848,32 +11043,40 @@
 
 		{
 			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Icon($$anchor, {
-						get type() {
-							return icon();
-						},
+				{
+					let $0 = user_derived(() => src() ? src() : null);
 
-						get size() {
-							return iconSize();
-						},
+					add_svelte_meta(
+						() => Icon($$anchor, {
+							get type() {
+								return icon();
+							},
 
-						get color() {
-							return iconColor();
-						},
+							get size() {
+								return iconSize();
+							},
 
-						'aria-hidden': 'true',
+							get color() {
+								return iconColor();
+							},
 
-						get label() {
-							return label();
-						}
-					}),
-					'component',
-					IconButton,
-					22,
-					8,
-					{ componentTag: 'Icon' }
-				);
+							'aria-hidden': 'true',
+
+							get label() {
+								return label();
+							},
+
+							get src() {
+								return get($0);
+							}
+						}),
+						'component',
+						IconButton,
+						23,
+						8,
+						{ componentTag: 'Icon' }
+					);
+				}
 			};
 
 			add_svelte_meta(
@@ -10882,7 +11085,7 @@
 				}),
 				'if',
 				IconButton,
-				21,
+				22,
 				4
 			);
 		}
@@ -10901,7 +11104,8 @@
 			icon: {},
 			iconSize: {},
 			iconColor: {},
-			class: {}
+			class: {},
+			src: {}
 		},
 		[],
 		[],
@@ -10910,7 +11114,7 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$7 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
+	var root_1$8 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -11080,7 +11284,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root_1$7();
+				var div = root_1$8();
 				var div_1 = child(div);
 				var div_2 = child(div_1);
 				var node_1 = child(div_2);
@@ -11209,7 +11413,7 @@
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var root$f = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[40, 0]]);
+	var root$h = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[40, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11239,7 +11443,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$f();
+		var fragment = root$h();
 		var node = first_child(fragment);
 
 		{
@@ -11299,7 +11503,7 @@
 
 	ToTop[FILENAME] = 'src/sdg/components/ToTop/ToTop.svelte';
 
-	var root$e = add_locations(from_html(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
+	var root$g = add_locations(from_html(`<a href="#top"><!> <span> </span></a>`), ToTop[FILENAME], [[67, 0, [[77, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -11375,7 +11579,7 @@
 			...legacy_api()
 		};
 
-		var a = root$e();
+		var a = root$g();
 
 		event('scroll', $window, handleScrollUpButton);
 
@@ -11437,7 +11641,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[48, 0]]);
+	var root$f = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[48, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -11527,7 +11731,7 @@
 			...legacy_api()
 		};
 
-		var div = root$d();
+		var div = root$f();
 		var node = child(div);
 
 		add_svelte_meta(
@@ -11658,7 +11862,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$c = add_locations(from_html(`<div><!> <input/> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
+	var root$e = add_locations(from_html(`<div><!> <input/> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -11749,7 +11953,7 @@
 			...legacy_api()
 		};
 
-		var div = root$c();
+		var div = root$e();
 		var node = child(div);
 
 		{
@@ -11877,7 +12081,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$b = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$d = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -11959,7 +12163,7 @@
 			...legacy_api()
 		};
 
-		var div = root$b();
+		var div = root$d();
 		let classes;
 		var node = child(div);
 
@@ -12134,8 +12338,8 @@
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$6 = add_locations(from_html(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
-	var root_1$6 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
+	var root_2$7 = add_locations(from_html(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
+	var root_1$7 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -12231,12 +12435,12 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$6();
+				var div = root_1$7();
 				var node_1 = child(div);
 
 				add_svelte_meta(
 					() => await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-						var fragment_1 = root_2$6();
+						var fragment_1 = root_2$7();
 						var node_2 = first_child(fragment_1);
 
 						add_svelte_meta(
@@ -12313,8 +12517,8 @@
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
-	var root_1$5 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root$a = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
+	var root_1$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
+	var root$c = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -12345,7 +12549,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$a();
+		var fragment = root$c();
 		var span = first_child(fragment);
 		var node = child(span);
 
@@ -12356,7 +12560,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_1 = root_1$5();
+				var span_1 = root_1$6();
 
 				append($$anchor, span_1);
 			};
@@ -12381,9 +12585,9 @@
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root_2$5 = add_locations(from_html(`<legend><!></legend>`), Fieldset[FILENAME], [[43, 4]]);
-	var root_1$4 = add_locations(from_html(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[47, 4]]]]);
-	var root_4$2 = add_locations(from_html(`<div class="qc-fieldset-invalid"><!></div>`), Fieldset[FILENAME], [[70, 4]]);
+	var root_2$6 = add_locations(from_html(`<legend><!></legend>`), Fieldset[FILENAME], [[43, 4]]);
+	var root_1$5 = add_locations(from_html(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[47, 4]]]]);
+	var root_4$3 = add_locations(from_html(`<div class="qc-fieldset-invalid"><!></div>`), Fieldset[FILENAME], [[70, 4]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -12392,7 +12596,7 @@
 		const fieldset = wrap_snippet(Fieldset, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fieldset_1 = root_1$4();
+			var fieldset_1 = root_1$5();
 
 			fieldset_1.__change = function (...$$args) {
 				apply(onchange, this, $$args, Fieldset, [38, 11]);
@@ -12402,7 +12606,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var legend_1 = root_2$5();
+					var legend_1 = root_2$6();
 					var node_1 = child(legend_1);
 
 					add_svelte_meta(
@@ -12666,7 +12870,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_1 = root_4$2();
+				var div_1 = root_4$3();
 				var node_5 = child(div_1);
 
 				add_svelte_meta(() => fieldset(node_5), 'render', Fieldset, 71, 8);
@@ -12977,7 +13181,7 @@
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	var root$9 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
+	var root$b = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
 
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13080,7 +13284,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$9();
+		var fragment = root$b();
 		var node = first_child(fragment);
 
 		{
@@ -13176,8 +13380,8 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$4 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
-	var root$8 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
+	var root_2$5 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
+	var root$a = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -13191,7 +13395,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root_2$4();
+					var span = root_2$5();
 
 					bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
 					append($$anchor, span);
@@ -13386,7 +13590,7 @@
 			...legacy_api()
 		};
 
-		var div = root$8();
+		var div = root$a();
 		var node_1 = child(div);
 
 		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 72, 8);
@@ -13460,7 +13664,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$7 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
+	var root$9 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13525,7 +13729,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$7();
+		var fragment = root$9();
 		var node = first_child(fragment);
 
 		{
@@ -13610,7 +13814,7 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root$6 = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
+	var root$8 = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -13706,7 +13910,7 @@
 			...legacy_api()
 		};
 
-		var label = root$6();
+		var label = root$8();
 
 		attribute_effect(label, () => ({
 			for: forId(),
@@ -13784,9 +13988,9 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[141, 8]]);
-	var root_4$1 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[152, 8]]);
-	var root_1$3 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
+	var root_3$3 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[141, 8]]);
+	var root_4$2 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[152, 8]]);
+	var root_1$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
 	var root_6 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[176, 4]]);
 
 	function TextField($$anchor, $$props) {
@@ -13798,7 +14002,7 @@
 		const textfield = wrap_snippet(TextField, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_1$3();
+			var fragment = root_1$4();
 			var node = first_child(fragment);
 
 			{
@@ -13859,7 +14063,7 @@
 
 			{
 				var consequent_1 = ($$anchor) => {
-					var div = root_3$2();
+					var div = root_3$3();
 					var node_2 = child(div);
 
 					html(node_2, description);
@@ -13888,7 +14092,7 @@
 
 			{
 				var consequent_2 = ($$anchor) => {
-					var div_1 = root_4$1();
+					var div_1 = root_4$2();
 					var node_5 = child(div_1);
 
 					html(node_5, () => get(charCountText));
@@ -14315,7 +14519,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$5 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[112, 0]]);
+	var root$7 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[112, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14477,7 +14681,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$5();
+		var fragment = root$7();
 		var node = first_child(fragment);
 
 		{
@@ -14631,7 +14835,7 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$4 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
+	var root$6 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -14705,7 +14909,7 @@
 			...legacy_api()
 		};
 
-		var label_1 = root$4();
+		var label_1 = root$6();
 		var input = child(label_1);
 
 		remove_input_defaults(input);
@@ -15133,9 +15337,9 @@
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root_3$1 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
-	var root_2$3 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
-	var root_1$2 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
+	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
+	var root_2$4 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
+	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -15329,13 +15533,13 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var ul = root_1$2();
+				var ul = root_1$3();
 
 				validate_each_keys(displayedItems, (item) => item.id);
 
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root_2$3();
+						var li = root_2$4();
 
 						li.__click = (event) => handleMouseUp(event, get(item));
 						li.__keydown = (event) => handleKeyDown(event, get(index), get(item));
@@ -15344,7 +15548,7 @@
 
 						{
 							var consequent = ($$anchor) => {
-								var span = root_3$1();
+								var span = root_3$2();
 								var node_2 = child(span);
 
 								html(node_2, placeholder);
@@ -15440,8 +15644,8 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$2 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[154, 12, [[164, 16, [[169, 20], [181, 20]]]]]]);
-	var root_1$1 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[148, 4]]);
+	var root_2$3 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[154, 12, [[164, 16, [[169, 20], [181, 20]]]]]]);
+	var root_1$2 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[148, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -15654,13 +15858,13 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var ul = root_1$1();
+				var ul = root_1$2();
 
 				validate_each_keys(displayedItems, (item) => item.id);
 
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root_2$2();
+						var li = root_2$3();
 
 						li.__keydown = (e) => handleLiKeyDown(e, get(index));
 						li.__click = (e) => handleLiClick(e, get(item));
@@ -15753,8 +15957,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
-	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
+	var root_4$1 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
+	var root$5 = add_locations(from_html(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -15919,7 +16123,7 @@
 			...legacy_api()
 		};
 
-		var div = root$3();
+		var div = root$5();
 		var node = child(div);
 
 		{
@@ -16030,7 +16234,7 @@
 
 				add_svelte_meta(
 					() => await_block(node_2, tick, null, ($$anchor, _) => {
-						var span = root_4();
+						var span = root_4$1();
 						var node_3 = child(span);
 
 						html(node_3, noOptionsMessage);
@@ -16088,9 +16292,9 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
-	var root_2$1 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
-	var root$2 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
+	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
+	var root_2$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
+	var root$4 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -16175,7 +16379,7 @@
 			...legacy_api()
 		};
 
-		var button = root$2();
+		var button = root$4();
 
 		attribute_effect(button, () => ({
 			type: 'button',
@@ -16190,7 +16394,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root_1();
+				var span = root_1$1();
 				var node_1 = child(span);
 
 				html(node_1, selectedOptionsText);
@@ -16199,7 +16403,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var span_1 = root_2$1();
+				var span_1 = root_2$2();
 				var node_2 = child(span_1);
 
 				html(node_2, placeholder);
@@ -16275,9 +16479,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[316, 0, [[321, 4, [[340, 8, [[369, 12, [[425, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[316, 0, [[321, 4, [[340, 8, [[369, 12, [[425, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -16781,7 +16985,7 @@
 			...legacy_api()
 		};
 
-		var div = root$1();
+		var div = root$3();
 
 		event('click', $document.body, handleOuterEvent);
 		event('keydown', $document.body, handleTab);
@@ -16920,7 +17124,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_4 = root_2();
+				var div_4 = root_2$1();
 				var node_3 = child(div_4);
 
 				{
@@ -17052,7 +17256,7 @@
 
 		add_svelte_meta(
 			() => key(node_5, () => get(searchText), ($$anchor) => {
-				var span = root_3();
+				var span = root_3$1();
 				var text = child(span, true);
 
 				reset(span);
@@ -17175,7 +17379,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[144, 0], [165, 0]]);
+	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[144, 0], [165, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -17401,7 +17605,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root();
+		var fragment = root$2();
 		var div = first_child(fragment);
 		var node = child(div);
 
@@ -17532,6 +17736,542 @@
 			expanded: { attribute: 'expanded', reflect: true, type: 'Boolean' }
 		},
 		['default'],
+		[],
+		true
+	));
+
+	Tooltip[FILENAME] = 'src/sdg/components/Tooltip/Tooltip.svelte';
+
+	var root_1 = add_locations(from_html(`<div><div class="qc-tooltip-content qc-hash-1b81cfx"><!></div> <a role="button" class="qc-tooltip-xclose qc-hash-1b81cfx" href="#top"><!></a></div>`), Tooltip[FILENAME], [[289, 4, [[295, 8], [298, 8]]]]);
+	var root_2 = add_locations(from_html(`<span class="qc-tooltip-text qc-hash-1b81cfx" role="button" tabindex="-1"><!></span>`), Tooltip[FILENAME], [[229, 5]]);
+
+	var root_4 = add_locations(
+		from_html(
+			`<div><svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-1b81cfx"><style class="qc-hash-1b81cfx">.triangle {
+                        fill: var(--qc-color-background);
+                    }
+                    .stroke {
+                        fill: var(--qc-color-grey-light);
+                    }</style><path class="triangle qc-hash-1b81cfx" d="M8.02002 14.1667L1.35335 7.50004L8.02002 0.833374L8.02002 14.1667Z"></path><path class="stroke qc-hash-1b81cfx" d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"></path></svg></div> <!>`,
+			1
+		),
+		Tooltip[FILENAME],
+		[[249, 9, [[252, 13, [[258, 16], [266, 16], [269, 16]]]]]]
+	);
+
+	var root_5 = add_locations(from_html(`<dialog class="qc-modal-tooltip qc-hash-1b81cfx"><!></dialog>`), Tooltip[FILENAME], [[277, 13]]);
+	var root_3 = add_locations(from_html(`<div><a role="button" class="qc-tooltip-button qc-hash-1b81cfx" href="#top"><!></a> <!> <!></div>`), Tooltip[FILENAME], [[236, 5, [[240, 9]]]]);
+	var root$1 = add_locations(from_html(`<span class="qc-tooltip qc-hash-1b81cfx"><!> <!></span>`), Tooltip[FILENAME], [[224, 0]]);
+
+	const $$css = {
+		hash: 'qc-hash-1b81cfx',
+		code: '\n    .qc-tooltip.qc-hash-1b81cfx {\n        display: inline-flex;\n        align-items: center;\n        --max-height : 160px;\n        --pin-gap: 4px;\n        --pin-height: 9px;\n        --pin-base: 15px;\n    }\n    .qc-tooltip-text.qc-hash-1b81cfx {\n        border-bottom: 1px dashed var(--qc-color-text-primary);\n        cursor: pointer;\n    }\n    .qc-tooltip-button.qc-hash-1b81cfx {\n        align-self: center;\n        height: 16px;\n        width: 16px;\n        line-height: 16px;\n        margin-left: 4px;\n        display: block;\n        position: relative;\n    }\n    .qc-tooltip-container.qc-hash-1b81cfx {\n        position: relative;\n    }\n    .qc-tooltip-pin.qc-hash-1b81cfx {\n        position: absolute;\n        top:0;\n        left: calc(100% + var(--pin-gap) + 1px);\n        z-index: 200;\n        width: var(--pin-height);\n        height: var(--pin-base);\n    }\n\n    svg.qc-hash-1b81cfx {\n        display: block;\n    }\n\n    .qc-tooltip-popover.qc-hash-1b81cfx {\n        .qc-tooltip-panel:where(.qc-hash-1b81cfx) {\n            visibility: hidden;\n            position: absolute;\n            transform: translateY(var(--translateY));\n            top:0;\n            left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);\n            min-width: 216px;\n            max-width: 320px;\n            width: max-content;\n            min-height: 68px;\n            max-height: var(--max-height);\n            background: var(--qc-color-background);\n            border: 1px solid var(--qc-color-grey-light);\n            z-index:199;\n            padding: 24px 8px 24px 16px;\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-1b81cfx) {\n            top: calc(100% + var(--pin-height) + var(--pin-gap));\n            left:auto;\n            transform: translateX(var(--translateX));\n        }\n\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1b81cfx) {\n            top: calc(-100% - var(--pin-gap) + 2px);\n            left: calc(var(--pin-height) - 1px);\n            transform: rotate(-90deg);\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1b81cfx) {\n            top: calc(100% + var(--pin-gap) - 1px);\n            left: 8px;\n            transform: rotate(90deg);\n        }\n\n        &.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-1b81cfx) {\n            /*display: none;*/\n            top: 0;\n            transform: translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );\n            left:auto;\n        }\n        .qc-tooltip-visible:where(.qc-hash-1b81cfx) {\n            visibility: visible;\n        }\n    }\n\n    .qc-tooltip-modal.qc-hash-1b81cfx {\n        dialog:where(.qc-hash-1b81cfx) {\n            top: auto;\n            bottom:0;\n            left: 0;\n            right: 0;\n            width: 100%;\n            margin: 0;\n            height: 400px;\n        }\n    }\n\n\n\n    .qc-tooltip-content.qc-hash-1b81cfx {\n        overflow-y: auto;\n        max-height:calc(var(--max-height) - 48px);\n        scrollbar-gutter: stable;\n        padding-right:16px;\n    }\n\n    .qc-tooltip-content.qc-hash-1b81cfx:focus-visible {\n        outline: 2px solid var(--qc-color-blue-regular);\n        outline-offset: 1px;\n    }\n\n    .qc-tooltip-xclose.qc-hash-1b81cfx {\n        position: absolute;\n        right: 8px;\n        top: 8px;\n        line-height: 16px;\n        height: 16px;\n    }\n\n    .qc-modal-tooltip.qc-hash-1b81cfx {\n\n    }\n\n    .qc-hash-1b81cfx::-webkit-scrollbar,\n    .qc-hash-1b81cfx::-webkit-scrollbar-track,\n    .qc-hash-1b81cfx::-webkit-scrollbar-thumb\n    {\n        background: transparent;\n        border: none;\n        border-radius: 4px;\n        height: 50%;\n        width: 8px;\n        margin-top: 8px;\n        margin-right: -8px;\n    }\n    .qc-hash-1b81cfx::-webkit-scrollbar-thumb {\n        background: var(--qc-color-blue-piv);\n    }\n\n    .qc-hash-1b81cfx::-webkit-scrollbar-button,\n    .qc-hash-1b81cfx::-webkit-scrollbar-track-piece,\n    .qc-hash-1b81cfx::-webkit-scrollbar-corner,\n    .qc-hash-1b81cfx::-webkit-resizer {\n        display: none;\n    }\n\n    @supports not selector(::-webkit-scrollbar) {\n        scrollbar-color:  var(--qc-color-blue-piv) transparent;\n        scrollbar-width: thin;\n    }\n\n\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiVG9vbHRpcC5zdmVsdGUiLCJzb3VyY2VzIjpbIlRvb2x0aXAuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG4gICAgaW1wb3J0IHtVdGlsc30gZnJvbSBcIi4uL3V0aWxzXCI7XG4gICAgaW1wb3J0IHtvbk1vdW50LCB0aWNrfSBmcm9tIFwic3ZlbHRlXCI7XG4gICAgaW1wb3J0IEljb24gZnJvbSBcIi4uLy4uL2Jhc2VzL0ljb24vSWNvbi5zdmVsdGVcIjtcbiAgICBsZXQge1xuICAgICAgICB0ZXh0LFxuICAgICAgICBkZXNjcmlwdGlvbixcbiAgICAgICAgcmVxdWVzdGVkUG9zaXRpb24gPSBcInJpZ2h0XCIsXG4gICAgICAgIHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZyA9IGZhbHNlLFxuICAgICAgICBkaXNwbGF5TW9kZSA9IFwicG9wb3ZlclwiXG4gICAgfSA9ICRwcm9wcygpXG4gICAgY29uc3RcbiAgICAgICAgZGVmYXVsdFRyYW5zbGF0ZVkgPSBcImNhbGMoLTUwJSArIDhweClcIixcbiAgICAgICAgZGVmYXVsdFRyYW5zbGF0ZVggPSBcIi01MCVcIlxuICAgIDtcbiAgICBsZXQgdG9vbHRpcFBhbmVsID0gJHN0YXRlKCksXG4gICAgICAgIHRvb2x0aXBDb250YWluZXIsXG4gICAgICAgIHRvb2x0aXBCdXR0b24sXG4gICAgICAgIG1vZGFsZSxcbiAgICAgICAgZGlzcGxheSA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIHZpc2libGUgPSAkc3RhdGUoZmFsc2UpLFxuICAgICAgICB0cmFuc2xhdGVYID0gJHN0YXRlKGRlZmF1bHRUcmFuc2xhdGVYKSxcbiAgICAgICAgdHJhbnNsYXRlWSA9ICRzdGF0ZShkZWZhdWx0VHJhbnNsYXRlWSksXG4gICAgICAgIHBvc2l0aW9uID0gJHN0YXRlKHJlcXVlc3RlZFBvc2l0aW9uKVxuICAgIDtcblxuICAgIG9uTW91bnQoXyA9PiB7XG4gICAgICAgIHRvb2x0aXBDb250YWluZXJcbiAgICAgICAgICAgIC5hZGRFdmVudExpc3RlbmVyKFwiY2xpY2tcIiwgbWFya0lubmVyRXZlbnQpXG4gICAgfSlcblxuICAgICRlZmZlY3QoXyA9PiB7XG4gICAgICAgIGlmICghZGlzcGxheSkge1xuICAgICAgICAgICAgdmlzaWJsZSA9IGZhbHNlXG4gICAgICAgIH1cbiAgICB9KVxuXG4gICAgYXN5bmMgZnVuY3Rpb24gc2hvd1Rvb2x0aXAoZSkge1xuICAgICAgICBlLnByZXZlbnREZWZhdWx0KCk7XG4gICAgICAgIGlmIChkaXNwbGF5KSB7XG4gICAgICAgICAgICBkaXNwbGF5PWZhbHNlO1xuICAgICAgICAgICAgcmV0dXJuO1xuICAgICAgICB9XG4gICAgICAgIGRpc3BsYXkgPSB0cnVlXG4gICAgICAgIGF3YWl0IHRpY2soKVxuXG4gICAgICAgIGlmIChkaXNwbGF5TW9kZSA9PT0gXCJwb3BvdmVyXCIpIHtcbiAgICAgICAgICAgIHNob3dQb3BvdmVyKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIHNob3dNb2RhbCgpXG4gICAgICAgIH1cbiAgICB9XG5cbiAgICBhc3luYyBmdW5jdGlvbiBzaG93TW9kYWwoZSkge1xuICAgICAgICBtb2RhbGUuc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgYXN5bmMgZnVuY3Rpb24gc2hvd1BvcG92ZXIoZSkge1xuXG4gICAgICAgIGxldCBzdGFydCA9IHJlcXVlc3RlZFBvc2l0aW9uLFxuICAgICAgICAgICAgY3VycmVudCA9ICBzdGFydFxuICAgICAgICA7XG4gICAgICAgIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKVxuICAgICAgICBjb25zb2xlLmxvZyhcIlBsYWNlbWVudCBpbml0aWFsIDogXCIgKyBzdGFydCwgcmVxdWVzdGVkUG9zaXRpb24pXG4gICAgICAgIGxldCB0cmllcyA9IGdldFRyaWVzT3JkZXIoc3RhcnQpO1xuICAgICAgICB3aGlsZSAodHJ1ZSkge1xuICAgICAgICAgICAgcG9zaXRpb24gPSBjdXJyZW50XG4gICAgICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICAgICAgICAgIGlmICh0cnlQbGFjZW1lbnQoY3VycmVudCkpIHtcbiAgICAgICAgICAgICAgICB2aXNpYmxlID0gdHJ1ZTtcbiAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIGNvbnN0IGluZGV4ID0gdHJpZXMuaW5kZXhPZihjdXJyZW50KVxuICAgICAgICAgICAgY3VycmVudCA9IHRyaWVzWyhpbmRleCArIDEpICUgdHJpZXMubGVuZ3RoXVxuICAgICAgICAgICAgaWYgKGN1cnJlbnQgPT09IHN0YXJ0KSB7XG4gICAgICAgICAgICAgICAgZmFsbEJhY2soKVxuICAgICAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgfVxuICAgICAgICB9XG4gICAgICAgIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldFRyaWVzT3JkZXIocGxhY2VtZW50KSB7XG4gICAgICAgIHJldHVybiB7XG4gICAgICAgICAgICBcInJpZ2h0XCI6IFtcInJpZ2h0XCIsIFwidG9wXCIsIFwiYm90dG9tXCJdLFxuICAgICAgICAgICAgXCJ0b3BcIjogW1widG9wXCIsIFwiYm90dG9tXCIsIFwicmlnaHRcIl0sXG4gICAgICAgICAgICBcImJvdHRvbVwiOiBbXCJib3R0b21cIiwgXCJ0b3BcIiwgXCJyaWdodFwiXVxuICAgICAgICB9W3BsYWNlbWVudF1cbiAgICB9XG5cbiAgICBmdW5jdGlvbiB3YWl0Rm9yTmV4dEZyYW1lKCkge1xuICAgICAgICBjb25zb2xlLmxvZyhcIldhaXRpbmcgZm9yIG5leHQgZnJhbWVcIilcbiAgICAgICAgcmV0dXJuIG5ldyBQcm9taXNlKHJlc29sdmUgPT4ge1xuICAgICAgICAgICAgd2luZG93LnJlcXVlc3RBbmltYXRpb25GcmFtZShyZXNvbHZlKTtcbiAgICAgICAgfSk7XG4gICAgfVxuXG4gICAgIGZ1bmN0aW9uIHRyeVBsYWNlbWVudChwbGFjZW1lbnQpIHtcbiAgICAgICAgY29uc29sZS5sb2coXCJUZW50YXRpdmUgZGUgcGxhY2VtZW50IHNlbG9uIFwiICsgcGxhY2VtZW50IClcbiAgICAgICAgbGV0IHJlc3VsdCA9ICFpc0VsZW1lbnRPdmVyZmxvd2luZyh0b29sdGlwUGFuZWwsIHBsYWNlbWVudCk7XG4gICAgICAgIGlmIChyZXN1bHQpIHtcbiAgICAgICAgICAgIHJlc3VsdCA9IGFkanVzdENyb3NzQXhpcyh0b29sdGlwUGFuZWwsIHBsYWNlbWVudCk7XG4gICAgICAgIH1cbiAgICAgICAgY29uc29sZS5sb2coXCJQbGFjZW1lbnQgc2Vsb24gXCIgKyBwbGFjZW1lbnQgKyBcIiA6IFwiICArIHJlc3VsdCApXG4gICAgICAgIHJldHVybiByZXN1bHQ7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gZ2V0T3RoZXJBeGlzUGxhY2VtZW50cyhwbGFjZW1lbnQpIHtcbiAgICAgICAgcmV0dXJuIHBsYWNlbWVudCA9PT0gXCJyaWdodFwiXG4gICAgICAgICAgICAgICAgPyBbXCJ0b3BcIiwgXCJib3R0b21cIl1cbiAgICAgICAgICAgICAgICA6IFtcInJpZ2h0XCIsIFwibGVmdFwiXTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwb3NpdGlvbikge1xuICAgICAgICB0cmFuc2xhdGVYID0gZGVmYXVsdFRyYW5zbGF0ZVgsXG4gICAgICAgIHRyYW5zbGF0ZVkgPSBkZWZhdWx0VHJhbnNsYXRlWVxuICAgICAgICBsZXQgb3RoZXJBeGlzUG9wc2l0aW9ucyA9IGdldE90aGVyQXhpc1BsYWNlbWVudHMocG9zaXRpb24pO1xuICAgICAgICBsZXQgYWRqdXN0YWJsZSA9IHRydWU7XG5cbiAgICAgICAgb3RoZXJBeGlzUG9wc2l0aW9ucy5mb3JFYWNoKG90aGVyQXhpc1Bvc2l0aW9uID0+IHtcbiAgICAgICAgICAgIC8vIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKTtcbiAgICAgICAgICAgIGlmICghYWRqdXN0YWJsZSkgcmV0dXJuO1xuICAgICAgICAgICAgY29uc29sZS5sb2coYGFkanVzdFBpbiAke290aGVyQXhpc1Bvc2l0aW9ufWApXG4gICAgICAgICAgICBpZiAoIWlzRWxlbWVudE92ZXJmbG93aW5nKHRvb2x0aXBQYW5lbCwgb3RoZXJBeGlzUG9zaXRpb24pKSB7XG4gICAgICAgICAgICAgICAgY29uc29sZS5sb2coYGFkanVzdFBpbiAke290aGVyQXhpc1Bvc2l0aW9ufSA6IG5vdGhpbmcgdG8gYWRqdXN0IGApXG4gICAgICAgICAgICAgICAgcmV0dXJuO1xuICAgICAgICAgICAgfVxuICAgICAgICAgICAgY29uc3QgZ2FwID0gZ2V0U2NyZWVuR2FwKHRvb2x0aXBCdXR0b24sIG90aGVyQXhpc1Bvc2l0aW9uKTtcbiAgICAgICAgICAgIGNvbnNvbGUubG9nKGBhZGp1c3RQaW4gJHtvdGhlckF4aXNQb3NpdGlvbn0gOiBnYXAgdmFsdWUgZm9yIGJ1dHRvbiA6ICR7Z2FwfWAsIGdhcCA8IDAgKVxuICAgICAgICAgICAgaWYgKGdhcCA8IDApIHtcbiAgICAgICAgICAgICAgICBjb25zb2xlLmxvZyhgYWRqdXN0UGluICR7cG9zaXRpb259IDogYnV0dG9uIG92ZXJmbG93d2luZyAtIG5vIGFkanVzdGVtZW50IGVuYWJsZWRgKVxuICAgICAgICAgICAgICAgIGFkanVzdGFibGUgPSBmYWxzZTtcbiAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBzd2l0Y2ggKG90aGVyQXhpc1Bvc2l0aW9uKSB7XG4gICAgICAgICAgICAgICAgY2FzZSBcInRvcFwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYC0ke2dhcH1weGBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImJvdHRvbVwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLTEwMCUgKyAyMHB4ICsgJHtnYXB9cHgpYFxuICAgICAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGAke2dhcCArIDE2fXB4YFxuICAgICAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgICAgICBjYXNlIFwibGVmdFwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVYID0gYC0ke2dhcH1weGBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICB9XG4gICAgICAgIH0pXG4gICAgICAgIGNvbnNvbGUubG9nKGBhZGp1c3RQaW4gJHtwb3NpdGlvbn0gOiBhZGp1c3RhYmxlIDogJHthZGp1c3RhYmxlfWApXG4gICAgICAgIHJldHVybiBhZGp1c3RhYmxlO1xuICAgIH1cblxuICAgICRpbnNwZWN0KFwidHJhbnNsYXRlWFwiLCB0cmFuc2xhdGVYKVxuICAgICRpbnNwZWN0KFwidHJhbnNsYXRlWVwiLCB0cmFuc2xhdGVZKVxuICAgICRpbnNwZWN0KFwicG9zaXRpb25cIiwgcG9zaXRpb24pXG5cbiAgICBmdW5jdGlvbiBmYWxsQmFjaygpIHtcbiAgICAgICAgY29uc29sZS5sb2coXCJGYWxsYmFja1wiKVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlSWZDbGlja091dEV2ZW50KGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGlmIChlLnRvb2x0aXBDb250YWluZXIgPT09IHRvb2x0aXBDb250YWluZXIpIHJldHVybjtcbiAgICAgICAgZGlzcGxheSA9IGZhbHNlO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlSWZCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGRpc3BsYXkgPSBmYWxzZVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlSWZGb2N1c091dEV2ZW50KGUpIHtcbiAgICAgICAgZGlzcGxheSA9IGZhbHNlO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIG1hcmtJbm5lckV2ZW50KGUpIHtcbiAgICAgICAgZS50b29sdGlwQ29udGFpbmVyID0gdG9vbHRpcENvbnRhaW5lcjtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBpc0VsZW1lbnRPdmVyZmxvd2luZyhlbGVtZW50LCBwb3NpdGlvbikge1xuICAgICAgICBjb25zdCBnYXAgPSBnZXRTY3JlZW5HYXAoZWxlbWVudCwgcG9zaXRpb24pO1xuICAgICAgICBjb25zdCBvdmVyZmxvdyA9IGdhcCA8IDA7XG4gICAgICAgIGNvbnNvbGUubG9nKGBPdmVyZmxvdyBmb3IgJHtjb25zb2xlTmFtZShlbGVtZW50KX0gaW4gcG9zaXRpb24gJHtwb3NpdGlvbn0gOiAke292ZXJmbG93fSAoZ2FwOiAke2dhcH0pYClcbiAgICAgICAgcmV0dXJuIG92ZXJmbG93O1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNvbnNvbGVOYW1lKGVsZW1lbnQpIHtcbiAgICAgICAgcmV0dXJuIGVsZW1lbnQgPT0gdG9vbHRpcEJ1dHRvbiA/IFwiYnV0dG9uXCIgOiBcInBhbmVsXCJcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRTY3JlZW5HYXAoZWxlbWVudCwgcG9zaXRpb24sIG9mZnNldCA9IDApIHtcbiAgICAgICAgY29uc3QgYm91bmRzID0ge1xuICAgICAgICAgICAgXCJyaWdodFwiIDogZG9jdW1lbnQuZG9jdW1lbnRFbGVtZW50LmNsaWVudFdpZHRoLFxuICAgICAgICAgICAgXCJ0b3BcIiA6IDAsXG4gICAgICAgICAgICBcImJvdHRvbVwiOiBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xpZW50SGVpZ2h0LFxuICAgICAgICAgICAgXCJsZWZ0XCIgOiAwXG4gICAgICAgIH1cbiAgICAgICAgLy8gUsOpY3Vww6hyZSBsZXMgY29vcmRvbm7DqWVzIGRlIGwnw6lsw6ltZW50IHBhciByYXBwb3J0IGF1IHZpZXdwb3J0XG4gICAgICAgIGNvbnN0IHJlY3QgPSBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpO1xuICAgICAgICBjb25zb2xlLmxvZyhgZWxlbWVudC5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKSBmb3IgJHtjb25zb2xlTmFtZShlbGVtZW50KX0gaW4gcG9zaXRpb24gJHtwb3NpdGlvbn1gLCBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpKVxuICAgICAgICBjb25zdCBib3JkZXIgPSBib3VuZHNbcG9zaXRpb25dXG4gICAgICAgIC8vIGNvbnNvbGUubG9nKFwiYm9yZGVyXCIsYm9yZGVyKVxuICAgICAgICBzd2l0Y2ggKHBvc2l0aW9uKSB7XG4gICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgIGNhc2UgXCJib3R0b21cIjpcbiAgICAgICAgICAgICAgICByZXR1cm4gKGJvcmRlciAtIG9mZnNldCkgLSByZWN0W3Bvc2l0aW9uXTtcbiAgICAgICAgICAgIGNhc2UgXCJ0b3BcIiA6XG4gICAgICAgICAgICBjYXNlIFwibGVmdFwiIDpcbiAgICAgICAgICAgICAgICByZXR1cm4gcmVjdFtwb3NpdGlvbl0gLSAoYm9yZGVyIC0gb2Zmc2V0KVxuICAgICAgICB9XG4gICAgfVxuXG48L3NjcmlwdD5cblxuPHN2ZWx0ZTpkb2N1bWVudFxuICAgICAgICBvbmNsaWNrPXtjbG9zZUlmQ2xpY2tPdXRFdmVudH1cbi8+XG48c3ZlbHRlOndpbmRvd1xuICAgICAgICBvbmJsdXI9e2Nsb3NlSWZCbHVyfVxuLz5cblxuPHNwYW4gY2xhc3M9XCJxYy10b29sdGlwXCJcbiAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcENvbnRhaW5lcn1cbiAgICAgIG9uZm9jdXNvdXQ9e21hcmtJbm5lckV2ZW50fVxuPlxuICAgIHsjaWYgdGV4dH1cbiAgICAgPHNwYW4gY2xhc3M9XCJxYy10b29sdGlwLXRleHRcIlxuICAgICAgICAgICBvbmNsaWNrPXtzaG93VG9vbHRpcH1cbiAgICAgICAgICAgcm9sZT1cImJ1dHRvblwiXG4gICAgICAgICAgIHRhYmluZGV4PVwiLTFcIlxuICAgICAgICA+e0BodG1sIHRleHR9PC9zcGFuPlxuICAgIHsvaWZ9XG4gICAgeyNpZiBkZXNjcmlwdGlvbn1cbiAgICAgPGRpdiBjbGFzcz1cInFjLXRvb2x0aXAtY29udGFpbmVyIHFjLXRvb2x0aXAte3Bvc2l0aW9ufVwiXG4gICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC1wb3BvdmVyPXtkaXNwbGF5TW9kZSA9PT0gXCJwb3BvdmVyXCJ9XG4gICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC1tb2RhbD17ZGlzcGxheU1vZGUgPT09IFwibW9kYWxcIn1cbiAgICAgICAgPlxuICAgICAgICAgPGEgcm9sZT1cImJ1dHRvblwiXG4gICAgICAgICAgICBjbGFzcz1cInFjLXRvb2x0aXAtYnV0dG9uXCJcbiAgICAgICAgICAgIGhyZWY9XCIjdG9wXCJcbiAgICAgICAgICAgIG9uY2xpY2s9e3Nob3dUb29sdGlwfVxuICAgICAgICAgICAgYmluZDp0aGlzPXt0b29sdGlwQnV0dG9ufVxuICAgICAgICAgPlxuICAgICAgICAgICAgPEljb24gdHlwZT1cImluZm8tdG9vbHRpcFwiIHNpemU9XCJzbVwiIC8+XG4gICAgICAgIDwvYT5cbiAgICAgICAgIHsjaWYgZGlzcGxheU1vZGUgPT09IFwicG9wb3ZlclwiICYmIGRpc3BsYXl9XG4gICAgICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1waW5cIlxuICAgICAgICAgICAgICBjbGFzczpxYy10b29sdGlwLXZpc2libGU9e3Zpc2libGV9XG4gICAgICAgICAgICA+XG4gICAgICAgICAgICAgPHN2Z1xuICAgICAgICAgICAgICAgICB3aWR0aD1cIjlcIlxuICAgICAgICAgICAgICAgICBoZWlnaHQ9XCIxNVwiXG4gICAgICAgICAgICAgICAgIHZpZXdCb3g9XCIwIDAgOSAxNVwiXG4gICAgICAgICAgICAgICAgIGZpbGw9XCJub25lXCJcbiAgICAgICAgICAgICAgICAgeG1sbnM9XCJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Z1wiPlxuICAgICAgICAgICAgICAgIDxzdHlsZT5cbiAgICAgICAgICAgICAgICAgICAgLnRyaWFuZ2xlIHtcbiAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw6IHZhcigtLXFjLWNvbG9yLWJhY2tncm91bmQpO1xuICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgIC5zdHJva2Uge1xuICAgICAgICAgICAgICAgICAgICAgICAgZmlsbDogdmFyKC0tcWMtY29sb3ItZ3JleS1saWdodCk7XG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICA8L3N0eWxlPlxuICAgICAgICAgICAgICAgIDxwYXRoXG4gICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz1cInRyaWFuZ2xlXCJcbiAgICAgICAgICAgICAgICAgICAgICAgIGQ9XCJNOC4wMjAwMiAxNC4xNjY3TDEuMzUzMzUgNy41MDAwNEw4LjAyMDAyIDAuODMzMzc0TDguMDIwMDIgMTQuMTY2N1pcIi8+XG4gICAgICAgICAgICAgICAgPHBhdGhcbiAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzPVwic3Ryb2tlXCJcbiAgICAgICAgICAgICAgICAgICAgICAgIGQ9XCJNMS4zNTMzNSA3LjVMOC4wMjAwMiAxNC4xNjY3TDguMDIwMDIgMTVINy4wMjAwMlYxNC41MTE4TDEuOTA3MzVlLTA1IDcuNUw3LjAyMDAyIDAuNDg4MTU3VjBMOC4wMjAwMiAzLjY0MjYyZS0wOEw4LjAyMDAyIDAuODMzMzM1TDEuMzUzMzUgNy41WlwiLz5cbiAgICAgICAgICAgIDwvc3ZnPlxuICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAge0ByZW5kZXIgdG9vbHRpcFBhbmVsU25pcHBldCgpfVxuICAgICAgICAgey9pZn1cbiAgICAgICAgIHsjaWYgZGlzcGxheU1vZGUgPT09IFwibW9kYWxcIiAmJiBkaXNwbGF5fVxuICAgICAgICAgICAgIDxkaWFsb2cgYmluZDp0aGlzPXttb2RhbGV9XG4gICAgICAgICAgICAgICAgICAgICBjbGFzcz1cInFjLW1vZGFsLXRvb2x0aXBcIlxuICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAge0ByZW5kZXIgdG9vbHRpcFBhbmVsU25pcHBldCgpfVxuICAgICAgICAgICAgIDwvZGlhbG9nPlxuICAgICAgICB7L2lmfVxuXG4gICAgIDwvZGl2PlxuICAgIHsvaWZ9XG48L3NwYW4+XG5cbnsjc25pcHBldCB0b29sdGlwUGFuZWxTbmlwcGV0KCl9XG4gICAgPGRpdiBjbGFzcz1cInFjLXRvb2x0aXAtcGFuZWwgIHFjLXNoYWRpbmctMVwiXG4gICAgICAgICBjbGFzczpxYy10b29sdGlwLXZpc2libGU9e3Zpc2libGV9XG4gICAgICAgICBiaW5kOnRoaXM9e3Rvb2x0aXBQYW5lbH1cbiAgICAgICAgIHN0eWxlOi0tdHJhbnNsYXRlWT17dHJhbnNsYXRlWX1cbiAgICAgICAgIHN0eWxlOi0tdHJhbnNsYXRlWD17dHJhbnNsYXRlWH1cbiAgICA+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJxYy10b29sdGlwLWNvbnRlbnRcIj5cbiAgICAgICAgICAgIHtAaHRtbCBkZXNjcmlwdGlvbn1cbiAgICAgICAgPC9kaXY+XG4gICAgICAgIDxhIHJvbGU9XCJidXR0b25cIlxuICAgICAgICAgICBjbGFzcz1cInFjLXRvb2x0aXAteGNsb3NlXCJcbiAgICAgICAgICAgaHJlZj1cIiN0b3BcIlxuICAgICAgICAgICBvbmNsaWNrPXtlID0+IGRpc3BsYXkgPSBmYWxzZX1cbiAgICAgICAgPlxuICAgICAgICAgICAgPEljb24gdHlwZT1cInhjbG9zZVwiXG4gICAgICAgICAgICAgICAgICBjb2xvcj1cImJsdWUtcGl2XCJcbiAgICAgICAgICAgICAgICAgIHNpemU9XCJzbVwiIC8+XG4gICAgICAgIDwvYT5cbiAgICA8L2Rpdj5cbnsvc25pcHBldH1cblxuXG48c3R5bGU+XG4gICAgLnFjLXRvb2x0aXAge1xuICAgICAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgLS1tYXgtaGVpZ2h0IDogMTYwcHg7XG4gICAgICAgIC0tcGluLWdhcDogNHB4O1xuICAgICAgICAtLXBpbi1oZWlnaHQ6IDlweDtcbiAgICAgICAgLS1waW4tYmFzZTogMTVweDtcbiAgICB9XG4gICAgLnFjLXRvb2x0aXAtdGV4dCB7XG4gICAgICAgIGJvcmRlci1ib3R0b206IDFweCBkYXNoZWQgdmFyKC0tcWMtY29sb3ItdGV4dC1wcmltYXJ5KTtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbiAgICAucWMtdG9vbHRpcC1idXR0b24ge1xuICAgICAgICBhbGlnbi1zZWxmOiBjZW50ZXI7XG4gICAgICAgIGhlaWdodDogMTZweDtcbiAgICAgICAgd2lkdGg6IDE2cHg7XG4gICAgICAgIGxpbmUtaGVpZ2h0OiAxNnB4O1xuICAgICAgICBtYXJnaW4tbGVmdDogNHB4O1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIH1cbiAgICAucWMtdG9vbHRpcC1jb250YWluZXIge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLXBpbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOjA7XG4gICAgICAgIGxlZnQ6IGNhbGMoMTAwJSArIHZhcigtLXBpbi1nYXApICsgMXB4KTtcbiAgICAgICAgei1pbmRleDogMjAwO1xuICAgICAgICB3aWR0aDogdmFyKC0tcGluLWhlaWdodCk7XG4gICAgICAgIGhlaWdodDogdmFyKC0tcGluLWJhc2UpO1xuICAgIH1cblxuICAgIHN2ZyB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5xYy10b29sdGlwLXBvcG92ZXIge1xuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkodmFyKC0tdHJhbnNsYXRlWSkpO1xuICAgICAgICAgICAgdG9wOjA7XG4gICAgICAgICAgICBsZWZ0OiBjYWxjKDEwMCUgKyB2YXIoLS1waW4tZ2FwKSArIHZhcigtLXBpbi1oZWlnaHQpIC0gMXB4KTtcbiAgICAgICAgICAgIG1pbi13aWR0aDogMjE2cHg7XG4gICAgICAgICAgICBtYXgtd2lkdGg6IDMyMHB4O1xuICAgICAgICAgICAgd2lkdGg6IG1heC1jb250ZW50O1xuICAgICAgICAgICAgbWluLWhlaWdodDogNjhweDtcbiAgICAgICAgICAgIG1heC1oZWlnaHQ6IHZhcigtLW1heC1oZWlnaHQpO1xuICAgICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tcWMtY29sb3ItYmFja2dyb3VuZCk7XG4gICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1xYy1jb2xvci1ncmV5LWxpZ2h0KTtcbiAgICAgICAgICAgIHotaW5kZXg6MTk5O1xuICAgICAgICAgICAgcGFkZGluZzogMjRweCA4cHggMjRweCAxNnB4O1xuICAgICAgICB9XG5cbiAgICAgICAgJi5xYy10b29sdGlwLWJvdHRvbSAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB0b3A6IGNhbGMoMTAwJSArIHZhcigtLXBpbi1oZWlnaHQpICsgdmFyKC0tcGluLWdhcCkpO1xuICAgICAgICAgICAgbGVmdDphdXRvO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKHZhcigtLXRyYW5zbGF0ZVgpKTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC10b3AgLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygtMTAwJSAtIHZhcigtLXBpbi1nYXApICsgMnB4KTtcbiAgICAgICAgICAgIGxlZnQ6IGNhbGModmFyKC0tcGluLWhlaWdodCkgLSAxcHgpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoLTkwZGVnKTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgLSAxcHgpO1xuICAgICAgICAgICAgbGVmdDogOHB4O1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoOTBkZWcpO1xuICAgICAgICB9XG5cbiAgICAgICAgJi5xYy10b29sdGlwLXRvcCAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICAvKmRpc3BsYXk6IG5vbmU7Ki9cbiAgICAgICAgICAgIHRvcDogMDtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKFxuICAgICAgICAgICAgICAgICAgICB2YXIoLS10cmFuc2xhdGVYKSxcbiAgICAgICAgICAgICAgICAgICAgY2FsYygtMTAwJSAtIHZhcigtLXBpbi1nYXApIC0gdmFyKC0tcGluLWhlaWdodCkpXG4gICAgICAgICAgICApO1xuICAgICAgICAgICAgbGVmdDphdXRvO1xuICAgICAgICB9XG4gICAgICAgIC5xYy10b29sdGlwLXZpc2libGUge1xuICAgICAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5xYy10b29sdGlwLW1vZGFsIHtcbiAgICAgICAgZGlhbG9nIHtcbiAgICAgICAgICAgIHRvcDogYXV0bztcbiAgICAgICAgICAgIGJvdHRvbTowO1xuICAgICAgICAgICAgbGVmdDogMDtcbiAgICAgICAgICAgIHJpZ2h0OiAwO1xuICAgICAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgICAgICBoZWlnaHQ6IDQwMHB4O1xuICAgICAgICB9XG4gICAgfVxuXG5cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQge1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBtYXgtaGVpZ2h0OmNhbGModmFyKC0tbWF4LWhlaWdodCkgLSA0OHB4KTtcbiAgICAgICAgc2Nyb2xsYmFyLWd1dHRlcjogc3RhYmxlO1xuICAgICAgICBwYWRkaW5nLXJpZ2h0OjE2cHg7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAtY29udGVudDpmb2N1cy12aXNpYmxlIHtcbiAgICAgICAgb3V0bGluZTogMnB4IHNvbGlkIHZhcigtLXFjLWNvbG9yLWJsdWUtcmVndWxhcik7XG4gICAgICAgIG91dGxpbmUtb2Zmc2V0OiAxcHg7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAteGNsb3NlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICByaWdodDogOHB4O1xuICAgICAgICB0b3A6IDhweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDE2cHg7XG4gICAgICAgIGhlaWdodDogMTZweDtcbiAgICB9XG5cbiAgICAucWMtbW9kYWwtdG9vbHRpcCB7XG5cbiAgICB9XG5cbiAgICA6Oi13ZWJraXQtc2Nyb2xsYmFyLFxuICAgIDo6LXdlYmtpdC1zY3JvbGxiYXItdHJhY2ssXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYlxuICAgIHtcbiAgICAgICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgICAgICBoZWlnaHQ6IDUwJTtcbiAgICAgICAgd2lkdGg6IDhweDtcbiAgICAgICAgbWFyZ2luLXRvcDogOHB4O1xuICAgICAgICBtYXJnaW4tcmlnaHQ6IC04cHg7XG4gICAgfVxuICAgIDo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWIge1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1xYy1jb2xvci1ibHVlLXBpdik7XG4gICAgfVxuXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci1idXR0b24sXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10cmFjay1waWVjZSxcbiAgICA6Oi13ZWJraXQtc2Nyb2xsYmFyLWNvcm5lcixcbiAgICA6Oi13ZWJraXQtcmVzaXplciB7XG4gICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgfVxuXG4gICAgQHN1cHBvcnRzIG5vdCBzZWxlY3Rvcig6Oi13ZWJraXQtc2Nyb2xsYmFyKSB7XG4gICAgICAgIHNjcm9sbGJhci1jb2xvcjogIHZhcigtLXFjLWNvbG9yLWJsdWUtcGl2KSB0cmFuc3BhcmVudDtcbiAgICAgICAgc2Nyb2xsYmFyLXdpZHRoOiB0aGluO1xuICAgIH1cblxuPC9zdHlsZT4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQXVUQSxJQUFJLDJCQUFXLENBQUM7QUFDaEIsUUFBUSxvQkFBb0I7QUFDNUIsUUFBUSxtQkFBbUI7QUFDM0IsUUFBUSxvQkFBb0I7QUFDNUIsUUFBUSxjQUFjO0FBQ3RCLFFBQVEsaUJBQWlCO0FBQ3pCLFFBQVEsZ0JBQWdCO0FBQ3hCO0FBQ0EsSUFBSSxnQ0FBZ0IsQ0FBQztBQUNyQixRQUFRLHNEQUFzRDtBQUM5RCxRQUFRLGVBQWU7QUFDdkI7QUFDQSxJQUFJLGtDQUFrQixDQUFDO0FBQ3ZCLFFBQVEsa0JBQWtCO0FBQzFCLFFBQVEsWUFBWTtBQUNwQixRQUFRLFdBQVc7QUFDbkIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxnQkFBZ0I7QUFDeEIsUUFBUSxjQUFjO0FBQ3RCLFFBQVEsa0JBQWtCO0FBQzFCO0FBQ0EsSUFBSSxxQ0FBcUIsQ0FBQztBQUMxQixRQUFRLGtCQUFrQjtBQUMxQjtBQUNBLElBQUksK0JBQWUsQ0FBQztBQUNwQixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLEtBQUs7QUFDYixRQUFRLHVDQUF1QztBQUMvQyxRQUFRLFlBQVk7QUFDcEIsUUFBUSx3QkFBd0I7QUFDaEMsUUFBUSx1QkFBdUI7QUFDL0I7O0FBRUEsSUFBSSxtQkFBRyxDQUFDO0FBQ1IsUUFBUSxjQUFjO0FBQ3RCOztBQUVBLElBQUksbUNBQW1CLENBQUM7QUFDeEIsUUFBUSx5Q0FBaUIsQ0FBQztBQUMxQixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLHdDQUF3QztBQUNwRCxZQUFZLEtBQUs7QUFDakIsWUFBWSwyREFBMkQ7QUFDdkUsWUFBWSxnQkFBZ0I7QUFDNUIsWUFBWSxnQkFBZ0I7QUFDNUIsWUFBWSxrQkFBa0I7QUFDOUIsWUFBWSxnQkFBZ0I7QUFDNUIsWUFBWSw2QkFBNkI7QUFDekMsWUFBWSxzQ0FBc0M7QUFDbEQsWUFBWSw0Q0FBNEM7QUFDeEQsWUFBWSxXQUFXO0FBQ3ZCLFlBQVksMkJBQTJCO0FBQ3ZDOztBQUVBLFFBQVEsQ0FBQyxrQkFBa0IsQ0FBQyx5Q0FBaUIsQ0FBQztBQUM5QyxZQUFZLG9EQUFvRDtBQUNoRSxZQUFZLFNBQVM7QUFDckIsWUFBWSx3Q0FBd0M7QUFDcEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyx1Q0FBZSxDQUFDO0FBQ3pDLFlBQVksdUNBQXVDO0FBQ25ELFlBQVksbUNBQW1DO0FBQy9DLFlBQVkseUJBQXlCO0FBQ3JDOztBQUVBLFFBQVEsQ0FBQyxrQkFBa0IsQ0FBQyx1Q0FBZSxDQUFDO0FBQzVDLFlBQVksc0NBQXNDO0FBQ2xELFlBQVksU0FBUztBQUNyQixZQUFZLHdCQUF3QjtBQUNwQzs7QUFFQSxRQUFRLENBQUMsZUFBZSxDQUFDLHlDQUFpQixDQUFDO0FBQzNDO0FBQ0EsWUFBWSxNQUFNO0FBQ2xCLFlBQVk7QUFDWjtBQUNBO0FBQ0EsYUFBYTtBQUNiLFlBQVksU0FBUztBQUNyQjtBQUNBLFFBQVEsMkNBQW1CLENBQUM7QUFDNUIsWUFBWSxtQkFBbUI7QUFDL0I7QUFDQTs7QUFFQSxJQUFJLGlDQUFpQixDQUFDO0FBQ3RCLFFBQVEsOEJBQU0sQ0FBQztBQUNmLFlBQVksU0FBUztBQUNyQixZQUFZLFFBQVE7QUFDcEIsWUFBWSxPQUFPO0FBQ25CLFlBQVksUUFBUTtBQUNwQixZQUFZLFdBQVc7QUFDdkIsWUFBWSxTQUFTO0FBQ3JCLFlBQVksYUFBYTtBQUN6QjtBQUNBOzs7O0FBSUEsSUFBSSxtQ0FBbUIsQ0FBQztBQUN4QixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLHlDQUF5QztBQUNqRCxRQUFRLHdCQUF3QjtBQUNoQyxRQUFRLGtCQUFrQjtBQUMxQjs7QUFFQSxJQUFJLG1DQUFtQixjQUFjLENBQUM7QUFDdEMsUUFBUSwrQ0FBK0M7QUFDdkQsUUFBUSxtQkFBbUI7QUFDM0I7O0FBRUEsSUFBSSxrQ0FBa0IsQ0FBQztBQUN2QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLFVBQVU7QUFDbEIsUUFBUSxRQUFRO0FBQ2hCLFFBQVEsaUJBQWlCO0FBQ3pCLFFBQVEsWUFBWTtBQUNwQjs7QUFFQSxJQUFJLGlDQUFpQixDQUFDOztBQUV0Qjs7QUFFQSxvQkFBSSxtQkFBbUI7QUFDdkIsb0JBQUkseUJBQXlCO0FBQzdCLG9CQUFJO0FBQ0osSUFBSTtBQUNKLFFBQVEsdUJBQXVCO0FBQy9CLFFBQVEsWUFBWTtBQUNwQixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLFdBQVc7QUFDbkIsUUFBUSxVQUFVO0FBQ2xCLFFBQVEsZUFBZTtBQUN2QixRQUFRLGtCQUFrQjtBQUMxQjtBQUNBLG9CQUFJLHlCQUF5QixDQUFDO0FBQzlCLFFBQVEsb0NBQW9DO0FBQzVDOztBQUVBLG9CQUFJLDBCQUEwQjtBQUM5QixvQkFBSSwrQkFBK0I7QUFDbkMsb0JBQUksMEJBQTBCO0FBQzlCLG9CQUFJLGlCQUFpQixDQUFDO0FBQ3RCLFFBQVEsYUFBYTtBQUNyQjs7QUFFQSxJQUFJLDRDQUE0QztBQUNoRCxRQUFRLHNEQUFzRDtBQUM5RCxRQUFRLHFCQUFxQjtBQUM3QiIsImlnbm9yZUxpc3QiOltdfQ== */'
+	};
+
+	function Tooltip($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+		append_styles$1($$anchor, $$css);
+
+		const tooltipPanelSnippet = wrap_snippet(Tooltip, function ($$anchor) {
+			validate_snippet_args(...arguments);
+
+			var div = root_1();
+			let classes;
+			let styles;
+			var div_1 = child(div);
+			var node = child(div_1);
+
+			html(node, description);
+			reset(div_1);
+
+			var a = sibling(div_1, 2);
+
+			a.__click = (e) => set(display, false);
+
+			var node_1 = child(a);
+
+			add_svelte_meta(() => Icon(node_1, { type: 'xclose', color: 'blue-piv', size: 'sm' }), 'component', Tooltip, 303, 12, { componentTag: 'Icon' });
+			reset(a);
+			reset(div);
+			bind_this(div, ($$value) => set(tooltipPanel, $$value), () => get(tooltipPanel));
+
+			template_effect(() => {
+				classes = set_class(div, 1, 'qc-tooltip-panel  qc-shading-1 qc-hash-1b81cfx', null, classes, { 'qc-tooltip-visible': get(visible) });
+
+				styles = set_style(div, '', styles, {
+					'--translateY': get(translateY),
+					'--translateX': get(translateX)
+				});
+			});
+
+			append($$anchor, div);
+		});
+
+		let text = prop($$props, 'text', 7),
+			description = prop($$props, 'description', 7),
+			requestedPosition = prop($$props, 'requestedPosition', 7, "right"),
+			preventOuterEventClosing = prop($$props, 'preventOuterEventClosing', 7, false),
+			displayMode = prop($$props, 'displayMode', 7, "popover");
+
+		const defaultTranslateY = "calc(-50% + 8px)",
+			defaultTranslateX = "-50%";
+
+		let tooltipPanel = tag(state(void 0), 'tooltipPanel'),
+			tooltipContainer,
+			tooltipButton,
+			modale,
+			display = tag(state(false), 'display'),
+			visible = tag(state(false), 'visible'),
+			translateX = tag(state(defaultTranslateX), 'translateX'),
+			translateY = tag(state(defaultTranslateY), 'translateY'),
+			position = tag(state(proxy(requestedPosition())), 'position');
+
+		onMount((_) => {
+			tooltipContainer.addEventListener("click", markInnerEvent);
+		});
+
+		user_effect((_) => {
+			if (!get(display)) {
+				set(visible, false);
+			}
+		});
+
+		async function showTooltip(e) {
+			e.preventDefault();
+
+			if (get(display)) {
+				set(display, false);
+
+				return;
+			}
+
+			set(display, true);
+			(await track_reactivity_loss(tick()))();
+
+			if (strict_equals(displayMode(), "popover")) {
+				showPopover();
+			} else {
+				showModal();
+			}
+		}
+
+		async function showModal(e) {
+			modale.showModal();
+		}
+
+		async function showPopover(e) {
+			let start = requestedPosition(), current = start;
+
+			(await track_reactivity_loss(waitForNextFrame()))();
+			console.log(...log_if_contains_state('log', "Placement initial : " + start, requestedPosition()));
+
+			let tries = getTriesOrder(start);
+
+			while (true) {
+				set(position, current, true);
+				(await track_reactivity_loss(waitForNextFrame()))();
+
+				if (tryPlacement(current)) {
+					set(visible, true);
+
+					break;
+				}
+
+				const index = tries.indexOf(current);
+
+				current = tries[(index + 1) % tries.length];
+
+				if (strict_equals(current, start)) {
+					fallBack();
+
+					break;
+				}
+			}
+
+			(await track_reactivity_loss(waitForNextFrame()))();
+		}
+
+		function getTriesOrder(placement) {
+			return ({
+				"right": ["right", "top", "bottom"],
+				"top": ["top", "bottom", "right"],
+				"bottom": ["bottom", "top", "right"]
+			})[placement];
+		}
+
+		function waitForNextFrame() {
+			console.log("Waiting for next frame");
+
+			return new Promise((resolve) => {
+				window.requestAnimationFrame(resolve);
+			});
+		}
+
+		function tryPlacement(placement) {
+			console.log("Tentative de placement selon " + placement);
+
+			let result = !isElementOverflowing(get(tooltipPanel), placement);
+
+			if (result) {
+				result = adjustCrossAxis(get(tooltipPanel), placement);
+			}
+
+			console.log("Placement selon " + placement + " : " + result);
+
+			return result;
+		}
+
+		function getOtherAxisPlacements(placement) {
+			return strict_equals(placement, "right") ? ["top", "bottom"] : ["right", "left"];
+		}
+
+		function adjustCrossAxis(tooltipPanel, position) {
+			(
+				set(translateX, defaultTranslateX),
+				set(translateY, defaultTranslateY)
+			);
+
+			let otherAxisPopsitions = getOtherAxisPlacements(position);
+			let adjustable = true;
+
+			otherAxisPopsitions.forEach((otherAxisPosition) => {
+				// await waitForNextFrame();
+				if (!adjustable) return;
+
+				console.log(`adjustPin ${otherAxisPosition}`);
+
+				if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) {
+					console.log(`adjustPin ${otherAxisPosition} : nothing to adjust `);
+
+					return;
+				}
+
+				const gap = getScreenGap(tooltipButton, otherAxisPosition);
+
+				console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0);
+
+				if (gap < 0) {
+					console.log(`adjustPin ${position} : button overflowwing - no adjustement enabled`);
+					adjustable = false;
+
+					return;
+				}
+
+				switch (otherAxisPosition) {
+					case "top":
+						set(translateY, `-${gap}px`);
+						break;
+
+					case "bottom":
+						set(translateY, `calc(-100% + 20px + ${gap}px)`);
+						break;
+
+					case "right":
+						set(translateX, `${gap + 16}px`);
+						break;
+
+					case "left":
+						set(translateX, `-${gap}px`);
+						break;
+				}
+			});
+
+			console.log(`adjustPin ${position} : adjustable : ${adjustable}`);
+
+			return adjustable;
+		}
+
+		inspect(() => ["translateX", get(translateX)], (...$$args) => console.log(...$$args), true);
+		inspect(() => ["translateY", get(translateY)], (...$$args) => console.log(...$$args), true);
+		inspect(() => ["position", get(position)], (...$$args) => console.log(...$$args), true);
+
+		function fallBack() {
+			console.log("Fallback");
+		}
+
+		function closeIfClickOutEvent(e) {
+			if (preventOuterEventClosing()) return;
+			if (strict_equals(e.tooltipContainer, tooltipContainer)) return;
+
+			set(display, false);
+		}
+
+		function closeIfBlur(e) {
+			if (preventOuterEventClosing()) return;
+
+			set(display, false);
+		}
+
+		function markInnerEvent(e) {
+			e.tooltipContainer = tooltipContainer;
+		}
+
+		function isElementOverflowing(element, position) {
+			const gap = getScreenGap(element, position);
+			const overflow = gap < 0;
+
+			console.log(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`);
+
+			return overflow;
+		}
+
+		function consoleName(element) {
+			return equals(element, tooltipButton) ? "button" : "panel";
+		}
+
+		function getScreenGap(element, position, offset = 0) {
+			const bounds = {
+				"right": document.documentElement.clientWidth,
+				"top": 0,
+				"bottom": document.documentElement.clientHeight,
+				"left": 0
+			};
+
+			// Récupère les coordonnées de l'élément par rapport au viewport
+			const rect = element.getBoundingClientRect();
+
+			console.log(...log_if_contains_state('log', `element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect()));
+
+			const border = bounds[position];
+
+			// console.log("border",border)
+			switch (position) {
+				case "right":
+
+				case "bottom":
+					return border - offset - rect[position];
+
+				case "top":
+
+				case "left":
+					return rect[position] - (border - offset);
+			}
+		}
+
+		var $$exports = {
+			get text() {
+				return text();
+			},
+
+			set text($$value) {
+				text($$value);
+				flushSync();
+			},
+
+			get description() {
+				return description();
+			},
+
+			set description($$value) {
+				description($$value);
+				flushSync();
+			},
+
+			get requestedPosition() {
+				return requestedPosition();
+			},
+
+			set requestedPosition($$value = "right") {
+				requestedPosition($$value);
+				flushSync();
+			},
+
+			get preventOuterEventClosing() {
+				return preventOuterEventClosing();
+			},
+
+			set preventOuterEventClosing($$value = false) {
+				preventOuterEventClosing($$value);
+				flushSync();
+			},
+
+			get displayMode() {
+				return displayMode();
+			},
+
+			set displayMode($$value = "popover") {
+				displayMode($$value);
+				flushSync();
+			},
+
+			...legacy_api()
+		};
+
+		var span = root$1();
+
+		event('click', $document, closeIfClickOutEvent);
+		event('blur', $window, closeIfBlur);
+		span.__focusout = markInnerEvent;
+
+		var node_2 = child(span);
+
+		{
+			var consequent = ($$anchor) => {
+				var span_1 = root_2();
+
+				span_1.__click = showTooltip;
+
+				var node_3 = child(span_1);
+
+				html(node_3, text);
+				reset(span_1);
+				append($$anchor, span_1);
+			};
+
+			add_svelte_meta(
+				() => if_block(node_2, ($$render) => {
+					if (text()) $$render(consequent);
+				}),
+				'if',
+				Tooltip,
+				228,
+				4
+			);
+		}
+
+		var node_4 = sibling(node_2, 2);
+
+		{
+			var consequent_3 = ($$anchor) => {
+				var div_2 = root_3();
+				let classes_1;
+				var a_1 = child(div_2);
+
+				a_1.__click = showTooltip;
+
+				var node_5 = child(a_1);
+
+				add_svelte_meta(() => Icon(node_5, { type: 'info-tooltip', size: 'sm' }), 'component', Tooltip, 246, 12, { componentTag: 'Icon' });
+				reset(a_1);
+				bind_this(a_1, ($$value) => tooltipButton = $$value, () => tooltipButton);
+
+				var node_6 = sibling(a_1, 2);
+
+				{
+					var consequent_1 = ($$anchor) => {
+						var fragment = root_4();
+						var div_3 = first_child(fragment);
+						let classes_2;
+						var node_7 = sibling(div_3, 2);
+
+						add_svelte_meta(() => tooltipPanelSnippet(node_7), 'render', Tooltip, 274, 13);
+						template_effect(() => classes_2 = set_class(div_3, 1, 'qc-tooltip-pin qc-hash-1b81cfx', null, classes_2, { 'qc-tooltip-visible': get(visible) }));
+						append($$anchor, fragment);
+					};
+
+					add_svelte_meta(
+						() => if_block(node_6, ($$render) => {
+							if (strict_equals(displayMode(), "popover") && get(display)) $$render(consequent_1);
+						}),
+						'if',
+						Tooltip,
+						248,
+						9
+					);
+				}
+
+				var node_8 = sibling(node_6, 2);
+
+				{
+					var consequent_2 = ($$anchor) => {
+						var dialog = root_5();
+						var node_9 = child(dialog);
+
+						add_svelte_meta(() => tooltipPanelSnippet(node_9), 'render', Tooltip, 280, 17);
+						reset(dialog);
+						bind_this(dialog, ($$value) => modale = $$value, () => modale);
+						append($$anchor, dialog);
+					};
+
+					add_svelte_meta(
+						() => if_block(node_8, ($$render) => {
+							if (strict_equals(displayMode(), "modal") && get(display)) $$render(consequent_2);
+						}),
+						'if',
+						Tooltip,
+						276,
+						9
+					);
+				}
+
+				reset(div_2);
+
+				template_effect(() => classes_1 = set_class(div_2, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ''}`, 'qc-hash-1b81cfx', classes_1, {
+					'qc-tooltip-popover': strict_equals(displayMode(), "popover"),
+					'qc-tooltip-modal': strict_equals(displayMode(), "modal")
+				}));
+
+				append($$anchor, div_2);
+			};
+
+			add_svelte_meta(
+				() => if_block(node_4, ($$render) => {
+					if (description()) $$render(consequent_3);
+				}),
+				'if',
+				Tooltip,
+				235,
+				4
+			);
+		}
+
+		reset(span);
+		bind_this(span, ($$value) => tooltipContainer = $$value, () => tooltipContainer);
+		append($$anchor, span);
+
+		return pop($$exports);
+	}
+
+	delegate(['click', 'focusout']);
+
+	create_custom_element(
+		Tooltip,
+		{
+			text: {},
+			description: {},
+			requestedPosition: {},
+			preventOuterEventClosing: {},
+			displayMode: {}
+		},
+		[],
+		[],
+		true
+	);
+
+	TooltipWC[FILENAME] = 'src/sdg/components/Tooltip/TooltipWC.svelte';
+
+	var root = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TooltipWC[FILENAME], [[19, 0]]);
+
+	function TooltipWC($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		var $$exports = { ...legacy_api() };
+		var fragment = root();
+		var node = first_child(fragment);
+
+		add_svelte_meta(() => Tooltip(node, spread_props(() => props)), 'component', TooltipWC, 18, 0, { componentTag: 'Tooltip' });
+
+		var link = sibling(node, 2);
+
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		append($$anchor, fragment);
+
+		return pop($$exports);
+	}
+
+	customElements.define('qc-tooltip', create_custom_element(
+		TooltipWC,
+		{
+			text: { attribute: 'label', type: 'String' },
+			description: { attribute: 'description', type: 'String' },
+			requestedPosition: { attribute: 'placement', type: 'String' },
+			preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean' },
+			displayMode: { attribute: 'display-mode', type: 'String' }
+		},
+		[],
 		[],
 		true
 	));
