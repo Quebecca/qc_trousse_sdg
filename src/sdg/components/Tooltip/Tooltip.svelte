@@ -6,7 +6,8 @@
         text,
         description,
         requestedPosition = "right",
-        preventOuterEventClosing = false
+        preventOuterEventClosing = false,
+        displayMode = "popover"
     } = $props()
     const
         defaultTranslateY = "calc(-50% + 8px)",
@@ -15,6 +16,7 @@
     let tooltipPanel = $state(),
         tooltipContainer,
         tooltipButton,
+        modale,
         display = $state(false),
         visible = $state(false),
         translateX = $state(defaultTranslateX),
@@ -41,6 +43,21 @@
         }
         display = true
         await tick()
+
+        if (displayMode === "popover") {
+            showPopover()
+        }
+        else {
+            showModal()
+        }
+    }
+
+    async function showModal(e) {
+        modale.showModal();
+    }
+
+    async function showPopover(e) {
+
         let start = requestedPosition,
             current =  start
         ;
@@ -80,7 +97,7 @@
     }
 
      function tryPlacement(placement) {
-         console.log("Tentative de placement selon " + placement )
+        console.log("Tentative de placement selon " + placement )
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
             result = adjustCrossAxis(tooltipPanel, placement);
@@ -95,28 +112,28 @@
                 : ["right", "left"];
     }
 
-    function adjustCrossAxis(tooltipPanel, placement) {
+    function adjustCrossAxis(tooltipPanel, position) {
         translateX = defaultTranslateX,
         translateY = defaultTranslateY
-        let otherAxisPlacements = getOtherAxisPlacements(placement);
+        let otherAxisPopsitions = getOtherAxisPlacements(position);
         let adjustable = true;
 
-        otherAxisPlacements.forEach(otherAxisPlacement => {
+        otherAxisPopsitions.forEach(otherAxisPosition => {
             // await waitForNextFrame();
             if (!adjustable) return;
-            console.log(`adjustPin ${otherAxisPlacement}`)
-            if (!isElementOverflowing(tooltipPanel, otherAxisPlacement)) {
-                console.log(`adjustPin ${otherAxisPlacement} : nothing to adjust `)
+            console.log(`adjustPin ${otherAxisPosition}`)
+            if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) {
+                console.log(`adjustPin ${otherAxisPosition} : nothing to adjust `)
                 return;
             }
-            const gap = getScreenGap(tooltipButton, otherAxisPlacement);
-            console.log(`adjustPin ${otherAxisPlacement} : gap value for button : ${gap}`, gap < 0 )
+            const gap = getScreenGap(tooltipButton, otherAxisPosition);
+            console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
-                console.log(`adjustPin ${placement} : button overflowwing - no adjustement enabled`)
+                console.log(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
                 adjustable = false;
                 return;
             }
-            switch (otherAxisPlacement) {
+            switch (otherAxisPosition) {
                 case "top":
                     translateY = `-${gap}px`
                     break;
@@ -131,7 +148,7 @@
                     break;
             }
         })
-        console.log(`adjustPin ${placement} : adjustable : ${adjustable}`)
+        console.log(`adjustPin ${position} : adjustable : ${adjustable}`)
         return adjustable;
     }
 
@@ -204,7 +221,7 @@
         onblur={closeIfBlur}
 />
 
-<span class="qc-tooltip qc-tooltip-{position}"
+<span class="qc-tooltip"
       bind:this={tooltipContainer}
       onfocusout={markInnerEvent}
 >
@@ -216,7 +233,10 @@
         >{@html text}</span>
     {/if}
     {#if description}
-     <div class="qc-tooltip-container">
+     <div class="qc-tooltip-container qc-tooltip-{position}"
+          class:qc-tooltip-popover={displayMode === "popover"}
+          class:qc-tooltip-modal={displayMode === "modal"}
+        >
          <a role="button"
             class="qc-tooltip-button"
             href="#top"
@@ -225,7 +245,7 @@
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
-         {#if display}
+         {#if displayMode === "popover" && display}
          <div class="qc-tooltip-pin"
               class:qc-tooltip-visible={visible}
             >
@@ -251,30 +271,41 @@
                         d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"/>
             </svg>
          </div>
-
-         <div class="qc-tooltip-panel  qc-shading-1"
-              class:qc-tooltip-visible={visible}
-              bind:this={tooltipPanel}
-              style:--translateY={translateY}
-              style:--translateX={translateX}
-            >
-             <div class="qc-tooltip-content">
-                {@html description}
-             </div>
-            <a role="button"
-               class="qc-tooltip-xclose"
-               href="#top"
-               onclick={e => display = false}
-            >
-                <Icon type="xclose"
-                      color="blue-piv"
-                      size="sm" />
-            </a>
-         </div>
+             {@render tooltipPanelSnippet()}
          {/if}
+         {#if displayMode === "modal" && display}
+             <dialog bind:this={modale}
+                     class="qc-modal-tooltip"
+             >
+                 {@render tooltipPanelSnippet()}
+             </dialog>
+        {/if}
+
      </div>
     {/if}
 </span>
+
+{#snippet tooltipPanelSnippet()}
+    <div class="qc-tooltip-panel  qc-shading-1"
+         class:qc-tooltip-visible={visible}
+         bind:this={tooltipPanel}
+         style:--translateY={translateY}
+         style:--translateX={translateX}
+    >
+        <div class="qc-tooltip-content">
+            {@html description}
+        </div>
+        <a role="button"
+           class="qc-tooltip-xclose"
+           href="#top"
+           onclick={e => display = false}
+        >
+            <Icon type="xclose"
+                  color="blue-piv"
+                  size="sm" />
+        </a>
+    </div>
+{/snippet}
 
 
 <style>
@@ -315,54 +346,69 @@
         display: block;
     }
 
-    .qc-tooltip-panel {
-        visibility: hidden;
-        position: absolute;
-        transform: translateY(var(--translateY));
-        top:0;
-        left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
-        min-width: 216px;
-        max-width: 320px;
-        width: max-content;
-        min-height: 68px;
-        max-height: var(--max-height);
-        background: var(--qc-color-background);
-        border: 1px solid var(--qc-color-grey-light);
-        z-index:199;
-        padding: 24px 8px 24px 16px;
+    .qc-tooltip-popover {
+        .qc-tooltip-panel {
+            visibility: hidden;
+            position: absolute;
+            transform: translateY(var(--translateY));
+            top:0;
+            left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
+            min-width: 216px;
+            max-width: 320px;
+            width: max-content;
+            min-height: 68px;
+            max-height: var(--max-height);
+            background: var(--qc-color-background);
+            border: 1px solid var(--qc-color-grey-light);
+            z-index:199;
+            padding: 24px 8px 24px 16px;
+        }
+
+        &.qc-tooltip-bottom .qc-tooltip-panel {
+            top: calc(100% + var(--pin-height) + var(--pin-gap));
+            left:auto;
+            transform: translateX(var(--translateX));
+        }
+
+        &.qc-tooltip-top .qc-tooltip-pin {
+            top: calc(-100% - var(--pin-gap) + 2px);
+            left: calc(var(--pin-height) - 1px);
+            transform: rotate(-90deg);
+        }
+
+        &.qc-tooltip-bottom .qc-tooltip-pin {
+            top: calc(100% + var(--pin-gap) - 1px);
+            left: 8px;
+            transform: rotate(90deg);
+        }
+
+        &.qc-tooltip-top .qc-tooltip-panel {
+            /*display: none;*/
+            top: 0;
+            transform: translate(
+                    var(--translateX),
+                    calc(-100% - var(--pin-gap) - var(--pin-height))
+            );
+            left:auto;
+        }
+        .qc-tooltip-visible {
+            visibility: visible;
+        }
     }
 
-    .qc-tooltip-visible {
-        visibility: visible;
+    .qc-tooltip-modal {
+        dialog {
+            top: auto;
+            bottom:0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            margin: 0;
+            height: 400px;
+        }
     }
 
-    .qc-tooltip-bottom .qc-tooltip-pin {
-        top: calc(100% + var(--pin-gap) - 1px);
-        left: 8px;
-        transform: rotate(90deg);
-    }
 
-    .qc-tooltip-bottom .qc-tooltip-panel {
-        top: calc(100% + var(--pin-height) + var(--pin-gap));
-        left:auto;
-        transform: translateX(var(--translateX));
-    }
-
-    .qc-tooltip-top .qc-tooltip-pin {
-        top: calc(-100% - var(--pin-gap) + 2px);
-        left: calc(var(--pin-height) - 1px);
-        transform: rotate(-90deg);
-    }
-
-    .qc-tooltip-top .qc-tooltip-panel {
-        /*display: none;*/
-        top: 0;
-        transform: translate(
-                var(--translateX),
-                calc(-100% - var(--pin-gap) - var(--pin-height))
-        );
-        left:auto;
-    }
 
     .qc-tooltip-content {
         overflow-y: auto;
@@ -382,6 +428,10 @@
         top: 8px;
         line-height: 16px;
         height: 16px;
+    }
+
+    .qc-modal-tooltip {
+
     }
 
     ::-webkit-scrollbar,
