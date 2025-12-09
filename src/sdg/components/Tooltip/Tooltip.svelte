@@ -233,7 +233,7 @@
         >{@html text}</span>
     {/if}
     {#if description}
-     <div class="qc-tooltip-container qc-tooltip-{position}"
+     <div class="qc-tooltip-container qc-tooltip-{position} qc-scrollbar"
           class:qc-tooltip-popover={displayMode === "popover"}
           class:qc-tooltip-modal={displayMode === "modal"}
           style:--max-height={displayMode === "popover" ? "160px" : "320px"};
@@ -399,12 +399,16 @@
     }
 
     .qc-tooltip-popover {
+
+        .qc-tooltip-content {
+            padding-top: 2px;
+        }
         .qc-tooltip-panel {
             visibility: hidden;
             position: absolute;
             min-width: 216px;
             max-width: 320px;
-            padding: 24px 8px 24px 16px;
+            padding: 22px 8px 24px 16px;
             width: max-content;
             border: 1px solid var(--qc-color-grey-light);
             transform: translateY(var(--translateY));
@@ -449,28 +453,12 @@
     ::-webkit-scrollbar-track,
     ::-webkit-scrollbar-thumb
     {
-        background: transparent;
-        border: none;
-        border-radius: 4px;
         height: 50%;
-        width: 8px;
-        margin-top: 8px;
+        margin-top: 10px;
         margin-right: -8px;
     }
     ::-webkit-scrollbar-thumb {
         background: var(--qc-color-blue-piv);
-    }
-
-    ::-webkit-scrollbar-button,
-    ::-webkit-scrollbar-track-piece,
-    ::-webkit-scrollbar-corner,
-    ::-webkit-resizer {
-        display: none;
-    }
-
-    @supports not selector(::-webkit-scrollbar) {
-        scrollbar-color:  var(--qc-color-blue-piv) transparent;
-        scrollbar-width: thin;
     }
 
 </style>

@@ -1,0 +1,34 @@
+@use "qc-sdg-lib" as *;
+.qc-scrollbar {
+  &::-webkit-scrollbar,
+  ::-webkit-scrollbar{
+    width: token-value(spacer, xs);
+    margin-left: token-value(spacer, xs);
+    margin-right: token-value(spacer, xs);
+  }
+
+  &::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb,
+  ::-webkit-scrollbar-thumb{
+    background: token-value(color, blue, piv);
+    border-radius: rem(4);
+
+    border: none;
+  }
+
+  ::-webkit-scrollbar-button,
+  ::-webkit-scrollbar-track-piece,
+  ::-webkit-scrollbar-corner,
+  ::-webkit-resizer {
+    display: none;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: token-value(color, blue, piv) transparent;
+    scrollbar-width: thin;
+  }
+}
