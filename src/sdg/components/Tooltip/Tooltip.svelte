@@ -236,6 +236,7 @@
      <div class="qc-tooltip-container qc-tooltip-{position}"
           class:qc-tooltip-popover={displayMode === "popover"}
           class:qc-tooltip-modal={displayMode === "modal"}
+          style:--max-height={displayMode === "popover" ? "160px" : "320px"};
         >
          <a role="button"
             class="qc-tooltip-button"
@@ -274,10 +275,10 @@
              {@render tooltipPanelSnippet()}
          {/if}
          {#if displayMode === "modal" && display}
-             <dialog bind:this={modale}
-                     class="qc-modal-tooltip"
-             >
-                 {@render tooltipPanelSnippet()}
+             <dialog bind:this={modale}>
+                <div class="qc-container">
+                    {@render tooltipPanelSnippet()}
+                </div>
              </dialog>
         {/if}
 
@@ -286,8 +287,9 @@
 </span>
 
 {#snippet tooltipPanelSnippet()}
-    <div class="qc-tooltip-panel  qc-shading-1"
+    <div class="qc-tooltip-panel"
          class:qc-tooltip-visible={visible}
+         class:qc-shading-1={displayMode === "popover"}
          bind:this={tooltipPanel}
          style:--translateY={translateY}
          style:--translateX={translateX}
@@ -312,7 +314,6 @@
     .qc-tooltip {
         display: inline-flex;
         align-items: center;
-        --max-height : 160px;
         --pin-gap: 4px;
         --pin-height: 9px;
         --pin-base: 15px;
@@ -346,22 +347,70 @@
         display: block;
     }
 
+    .qc-tooltip-content {
+        overflow-y: auto;
+        max-height:calc(var(--max-height) - 48px);
+        scrollbar-gutter: stable;
+        padding-right:16px;
+    }
+
+    .qc-tooltip-content:focus-visible {
+        outline: 2px solid var(--qc-color-blue-regular);
+        outline-offset: 1px;
+    }
+
+    .qc-tooltip-xclose {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        line-height: 16px;
+        height: 16px;
+    }
+
+    .qc-tooltip-modal {
+        dialog {
+            top: auto;
+            bottom:0;
+            left: 0;
+            right: 0;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            border: 1px solid var(--qc-color-grey-light);
+            &::backdrop {
+                background-color: rgba(var(--qc-color-blue-dark-rgb), .25)
+            }
+        }
+        .qc-tooltip-xclose {
+            right: 0;
+        }
+    }
+
+    .qc-tooltip-panel {
+        position: relative;
+        min-height: 68px;
+        max-height: var(--max-height);
+        background: var(--qc-color-background);
+        width: 100%;
+        max-width: var(--qc-max-content-width);
+        padding: 24px 0;
+    }
+
     .qc-tooltip-popover {
         .qc-tooltip-panel {
             visibility: hidden;
             position: absolute;
+            min-width: 216px;
+            max-width: 320px;
+            padding: 24px 8px 24px 16px;
+            width: max-content;
+            border: 1px solid var(--qc-color-grey-light);
             transform: translateY(var(--translateY));
             top:0;
             left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
-            min-width: 216px;
-            max-width: 320px;
-            width: max-content;
-            min-height: 68px;
-            max-height: var(--max-height);
-            background: var(--qc-color-background);
-            border: 1px solid var(--qc-color-grey-light);
             z-index:199;
-            padding: 24px 8px 24px 16px;
         }
 
         &.qc-tooltip-bottom .qc-tooltip-panel {
@@ -394,44 +443,6 @@
         .qc-tooltip-visible {
             visibility: visible;
         }
-    }
-
-    .qc-tooltip-modal {
-        dialog {
-            top: auto;
-            bottom:0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            margin: 0;
-            height: 400px;
-        }
-    }
-
-
-
-    .qc-tooltip-content {
-        overflow-y: auto;
-        max-height:calc(var(--max-height) - 48px);
-        scrollbar-gutter: stable;
-        padding-right:16px;
-    }
-
-    .qc-tooltip-content:focus-visible {
-        outline: 2px solid var(--qc-color-blue-regular);
-        outline-offset: 1px;
-    }
-
-    .qc-tooltip-xclose {
-        position: absolute;
-        right: 8px;
-        top: 8px;
-        line-height: 16px;
-        height: 16px;
-    }
-
-    .qc-modal-tooltip {
-
     }
 
     ::-webkit-scrollbar,
