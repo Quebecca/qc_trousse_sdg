@@ -1,5 +1,7 @@
 @use "base" as *;
+@use "grid-tokens" as *;
 @use "sass:color";
+@use "sass:map";
 @use "lib/functions" as *;
 
 
@@ -223,20 +225,7 @@ $lg-tokens: (
         max-width: rem(640)
       )
     ),
-    grid: (
-        gutter: 32px,
-        breakpoint: (
-            xs: 0,
-            sm: 768px,
-            md: 992px,
-            lg: 1200px,
-        ),
-        container-max-width: (
-            sm: 768px,
-            md: 992px,
-            lg: 1200px
-        )
-    ),
+    grid: map.get($grid-config, lg),
 ) !default;
 
 // legacy
@@ -262,14 +251,10 @@ $breakpoints-tokens: (
                 mb: rem(1 * $base-spacer),
             )
         ),
-        grid: (
-            gutter: 24px,
-        )
+        grid: map.get($grid-config, md),
     ),
     sm : (
-        grid: (
-            gutter: 16px,
-        )
+        grid: map.get($grid-config, sm),
     ),
 ) !default;
 
