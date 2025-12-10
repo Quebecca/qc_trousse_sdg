@@ -17,7 +17,7 @@
     let tooltipPanel = $state(),
         tooltipId = Utils.generateId("tooltip"),
         tooltipContainer,
-        tooltipButton,
+        tooltipButton = $state(),
         modale = $state(),
         display = $state(false),
         visible = $state(false),
@@ -261,6 +261,7 @@
       onfocusout={markInnerEvent}
 >
     {#if text}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
      <span class="qc-tooltip-text"
            onclick={showTooltip}
            role="button"
@@ -322,6 +323,7 @@
 </span>
 
 {#snippet tooltipPanelSnippet(displayMode)}
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div role="tooltip"
          class="qc-tooltip-panel"
          class:qc-tooltip-visible={visible}
@@ -330,6 +332,12 @@
          style:--translateY={translateY}
          style:--translateX={translateX}
          id={tooltipId}
+         onkeydown={e => {
+             if (isModal()) return;
+             if (e.key === "Escape") {
+                 closeTooltip(e);
+             }
+         }}
     >
         <div class="qc-tooltip-content">
             {@html description}
