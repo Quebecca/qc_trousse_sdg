@@ -23,13 +23,24 @@
         visible = $state(false),
         translateX = $state(defaultTranslateX),
         translateY = $state(defaultTranslateY),
-        position = $state(requestedPosition)
+        position = $state(requestedPosition),
+        mobileFlag = $state(false),
+        modalFlag = $state(false)
     ;
 
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
         console.log("sm bp" , getSmBreakpoint(gridConfig))
+        window.addEventListener("resize", isMobile)
+    })
+
+    $inspect("isMobile", mobileFlag)
+
+    $effect(_ => {
+        if (!display) {
+            visible = false
+        }
     })
 
     $effect(_ => {
@@ -58,7 +69,8 @@
     }
 
     function isModal() {
-        return isMobile() || displayMode === "modal"
+        modalFlag = mobileFlag || displayMode === "modal"
+        return modalFlag;
     }
 
     function toggleModal(e) {
@@ -76,9 +88,9 @@
 
     function isMobile() {
         const bounds = getScreenBounds();
-        const isMobile = bounds.right <= getSmBreakpoint(gridConfig);
-        console.log("isMobile ? : " + isMobile, bounds.right, getSmBreakpoint(gridConfig))
-        return isMobile;
+        mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
+        console.log("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
+        return mobileFlag;
     }
 
     async function showPopover(e) {
@@ -270,9 +282,9 @@
     {/if}
     {#if description}
      <div class="qc-tooltip-container qc-tooltip-{position} qc-scrollbar"
-          class:qc-tooltip-popover={!isModal()}
-          class:qc-tooltip-modal={isModal()}
-          style:--max-height={isModal() ? "320px" : "160px"};
+          class:qc-tooltip-popover={!modalFlag}
+          class:qc-tooltip-modal={modalFlag}
+          style:--max-height={modalFlag ? "320px" : "160px"};
         >
          <a role="button"
             class="qc-tooltip-button"
@@ -283,7 +295,7 @@
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
-         {#if displayMode === "popover" && display}
+         {#if !modalFlag && display}
          <div class="qc-tooltip-pin"
               class:qc-tooltip-visible={visible}
             >
@@ -313,6 +325,7 @@
          {/if}
          <dialog bind:this={modale}
                  ontoggle={toggleModal}
+                 class:qc-desktop={!mobileFlag}
             >
             <div class="qc-container">
                 {@render tooltipPanelSnippet("modal")}
@@ -333,7 +346,7 @@
          style:--translateX={translateX}
          id={tooltipId}
          onkeydown={e => {
-             if (isModal()) return;
+             if (modalFlag) return;
              if (e.key === "Escape") {
                  closeTooltip(e);
              }
@@ -397,11 +410,11 @@
         max-height:calc(var(--max-height) - 48px);
         scrollbar-gutter: stable;
         padding-right:16px;
+        padding-top: 2px;
     }
 
     .qc-tooltip-content:focus-visible {
-        outline: 2px solid var(--qc-color-blue-regular);
-        outline-offset: 1px;
+        outline: none;
     }
 
     .qc-tooltip-xclose {
@@ -425,6 +438,11 @@
         padding: 0;
         border: 1px solid var(--qc-color-grey-light);
         background: var(--qc-color-background);
+
+        &.qc-desktop {
+            padding-top: 8px;
+        }
+
         .qc-tooltip-panel {
             visibility: visible!important;
         }
@@ -446,20 +464,19 @@
         color: var(--qc-color-text-primary);
         width: 100%;
         max-width: var(--qc-max-content-width);
-        padding: 24px 0;
+        padding-top: 22px;
+        padding-bottom: 24px;
     }
 
     .qc-tooltip-popover {
 
-        .qc-tooltip-content {
-            padding-top: 2px;
-        }
         .qc-tooltip-panel {
             visibility: hidden;
             position: absolute;
             min-width: 216px;
             max-width: 320px;
-            padding: 22px 8px 24px 16px;
+            padding-right: 8px;
+            padding-left: 16px;
             width: max-content;
             border: 1px solid var(--qc-color-grey-light);
             transform: translateY(var(--translateY));
@@ -497,6 +514,11 @@
         }
         .qc-tooltip-visible {
             visibility: visible;
+        }
+
+        .qc-tooltip-content:focus-visible {
+            outline: 2px solid var(--qc-color-blue-regular);
+            outline-offset: 1px;
         }
     }
 
