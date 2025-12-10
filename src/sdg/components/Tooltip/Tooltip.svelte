@@ -25,14 +25,15 @@
         translateY = $state(defaultTranslateY),
         position = $state(requestedPosition),
         mobileFlag = $state(false),
-        modalFlag = $state(false)
+        modalFlag = $derived(mobileFlag || displayMode === "modal")
     ;
 
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
         console.log("sm bp" , getSmBreakpoint(gridConfig))
-        window.addEventListener("resize", isMobile)
+        setIsMobile()
+        window.addEventListener("resize", setIsMobile)
     })
 
     $inspect("isMobile", mobileFlag)
@@ -43,15 +44,9 @@
         }
     })
 
-    $effect(_ => {
-        if (!display) {
-            visible = false
-        }
-    })
-
     async function showTooltip(e) {
         e.preventDefault();
-        if (isModal()) {
+        if (modalFlag) {
             showModal()
         }
         else {
@@ -60,17 +55,13 @@
     }
 
     function closeTooltip(e) {
-        if (isModal()) {
+        e.preventDefault();
+        if (modalFlag) {
             modale.close();
         }
         else {
             display = false;
         }
-    }
-
-    function isModal() {
-        modalFlag = mobileFlag || displayMode === "modal"
-        return modalFlag;
     }
 
     function toggleModal(e) {
@@ -86,7 +77,7 @@
         return parseInt(gridConfig.lg.breakpoint.sm.replace("px", ""));
     }
 
-    function isMobile() {
+    function setIsMobile() {
         const bounds = getScreenBounds();
         mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
         console.log("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
@@ -267,10 +258,17 @@
 <svelte:window
         onblur={closeIfBlur}
 />
-
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <span class="qc-tooltip"
       bind:this={tooltipContainer}
       onfocusout={markInnerEvent}
+      onkeydown={e => {
+             console.log("keydown", e.key)
+             if (modalFlag) return;
+             if (e.key === "Escape") {
+                 closeTooltip(e);
+             }
+         }}
 >
     {#if text}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -292,6 +290,12 @@
             onclick={showTooltip}
             bind:this={tooltipButton}
             aria-describedby={tooltipId}
+            onkeydown={e => {
+             if (e.code === "Space") {
+                 tooltipButton.click()
+                 e.preventDefault();
+             }
+            }}
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
@@ -321,7 +325,7 @@
                         d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"/>
             </svg>
          </div>
-             {@render tooltipPanelSnippet("popover")}
+         {@render tooltipPanelSnippet("popover")}
          {/if}
          <dialog bind:this={modale}
                  ontoggle={toggleModal}
@@ -345,12 +349,6 @@
          style:--translateY={translateY}
          style:--translateX={translateX}
          id={tooltipId}
-         onkeydown={e => {
-             if (modalFlag) return;
-             if (e.key === "Escape") {
-                 closeTooltip(e);
-             }
-         }}
     >
         <div class="qc-tooltip-content">
             {@html description}
@@ -359,6 +357,11 @@
            class="qc-tooltip-xclose"
            href="#top"
            onclick={closeTooltip}
+           onkeydown={e => {
+                 if (e.code === "Space") {
+                     closeTooltip(e);
+                 }
+             }}
         >
             <Icon type="xclose"
                   color="blue-piv"
