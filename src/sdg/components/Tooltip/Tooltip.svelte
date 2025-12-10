@@ -2,6 +2,7 @@
     import {Utils} from "../utils";
     import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
+    import gridConfig from '../../../sdg/scss/settings/grid.json';
     let {
         text,
         description,
@@ -27,6 +28,7 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
+        console.log("sm bp" , getSmBreakpoint(gridConfig))
     })
 
     $effect(_ => {
@@ -37,26 +39,49 @@
 
     async function showTooltip(e) {
         e.preventDefault();
-        if (display) {
-            display=false;
-            return;
-        }
-        display = true
-        await tick()
-
-        if (displayMode === "popover") {
-            showPopover()
-        }
-        else {
+        if (isModal()) {
             showModal()
         }
+        else {
+            showPopover()
+        }
+    }
+
+    function closeTooltip(e) {
+        if (isModal()) {
+            modale.close();
+        }
+        else {
+            display = false;
+        }
+    }
+
+    function isModal() {
+        return isMobile() || displayMode === "modal"
     }
 
     async function showModal(e) {
         modale.showModal();
     }
 
+    function getSmBreakpoint(gridConfig) {
+        return parseInt(gridConfig.lg.breakpoint.sm.replace("px", ""));
+    }
+
+    function isMobile() {
+        const bounds = getScreenBounds();
+        const isMobile = bounds.right <= getSmBreakpoint(gridConfig);
+        console.log("isMobile ? : " + isMobile, bounds.right, getSmBreakpoint(gridConfig))
+        return isMobile;
+    }
+
     async function showPopover(e) {
+        if (display) {
+            display=false;
+            return;
+        }
+        display = true
+        await tick()
 
         let start = requestedPosition,
             current =  start
@@ -190,13 +215,17 @@
         return element == tooltipButton ? "button" : "panel"
     }
 
-    function getScreenGap(element, position, offset = 0) {
-        const bounds = {
+    function getScreenBounds() {
+        return {
             "right" : document.documentElement.clientWidth,
             "top" : 0,
             "bottom": document.documentElement.clientHeight,
             "left" : 0
         }
+    }
+
+    function getScreenGap(element, position, offset = 0) {
+        const bounds = getScreenBounds();
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
         console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
@@ -234,9 +263,9 @@
     {/if}
     {#if description}
      <div class="qc-tooltip-container qc-tooltip-{position} qc-scrollbar"
-          class:qc-tooltip-popover={displayMode === "popover"}
-          class:qc-tooltip-modal={displayMode === "modal"}
-          style:--max-height={displayMode === "popover" ? "160px" : "320px"};
+          class:qc-tooltip-popover={!isModal()}
+          class:qc-tooltip-modal={isModal()}
+          style:--max-height={isModal() ? "320px" : "160px"};
         >
          <a role="button"
             class="qc-tooltip-button"
@@ -272,21 +301,18 @@
                         d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"/>
             </svg>
          </div>
-             {@render tooltipPanelSnippet()}
+             {@render tooltipPanelSnippet("popover")}
          {/if}
-         {#if displayMode === "modal" && display}
-             <dialog bind:this={modale}>
-                <div class="qc-container">
-                    {@render tooltipPanelSnippet()}
-                </div>
-             </dialog>
-        {/if}
-
+         <dialog bind:this={modale}>
+            <div class="qc-container">
+                {@render tooltipPanelSnippet("modal")}
+            </div>
+         </dialog>
      </div>
     {/if}
 </span>
 
-{#snippet tooltipPanelSnippet()}
+{#snippet tooltipPanelSnippet(displayMode)}
     <div class="qc-tooltip-panel"
          class:qc-tooltip-visible={visible}
          class:qc-shading-1={displayMode === "popover"}
@@ -300,7 +326,7 @@
         <a role="button"
            class="qc-tooltip-xclose"
            href="#top"
-           onclick={e => display = false}
+           onclick={closeTooltip}
         >
             <Icon type="xclose"
                   color="blue-piv"
@@ -367,22 +393,27 @@
         height: 16px;
     }
 
-    .qc-tooltip-modal {
-        dialog {
-            top: auto;
-            bottom:0;
-            left: 0;
-            right: 0;
-            max-width: 100%;
-            width: 100%;
-            height: auto;
-            margin: 0;
-            padding: 0;
-            border: 1px solid var(--qc-color-grey-light);
-            &::backdrop {
-                background-color: rgba(var(--qc-color-blue-dark-rgb), .25)
-            }
+
+    dialog {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        border: 1px solid var(--qc-color-grey-light);
+
+        .qc-tooltip-panel {
+            visibility: visible!important;
         }
+
+        &::backdrop {
+            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)
+        }
+
         .qc-tooltip-xclose {
             right: 0;
         }
