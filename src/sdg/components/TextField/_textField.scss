@@ -63,12 +63,6 @@ textarea {
 
 $sizes: map.get($lg-tokens, size, max-width);
 
-@each $size, $width in $sizes {
-  [size="#{$size}"] {
-    max-width: 100%;
-  }
-}
-
 input,
 textarea,
  {
