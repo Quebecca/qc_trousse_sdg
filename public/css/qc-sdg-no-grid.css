@@ -2271,26 +2271,6 @@ qc-textfield textarea:disabled {
   padding: 0.6rem;
 }
 
-[size=xs] {
-  max-width: 100%;
-}
-
-[size=sm] {
-  max-width: 100%;
-}
-
-[size=md] {
-  max-width: 100%;
-}
-
-[size=lg] {
-  max-width: 100%;
-}
-
-[size=xl] {
-  max-width: 100%;
-}
-
 [size=xs] input, [size=xs] input + .qc-textfield-charcount,
 [size=xs] textarea,
 [size=xs] textarea + .qc-textfield-charcount {
