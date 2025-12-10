@@ -2796,17 +2796,6 @@ a.qc-button {
   column-gap: var(--qc-spacer-md);
 }
 
-.qc-modal-tooltip {
-  top: auto;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  max-width: 100%;
-  margin: 0;
-  height: 400px;
-  border: none;
-}
-
 .qc-scrollbar::-webkit-scrollbar,
 .qc-scrollbar ::-webkit-scrollbar {
   width: var(--qc-spacer-xs);

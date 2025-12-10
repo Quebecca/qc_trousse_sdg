@@ -17,7 +17,7 @@
     let tooltipPanel = $state(),
         tooltipContainer,
         tooltipButton,
-        modale,
+        modale = $state(),
         display = $state(false),
         visible = $state(false),
         translateX = $state(defaultTranslateX),
@@ -58,6 +58,11 @@
 
     function isModal() {
         return isMobile() || displayMode === "modal"
+    }
+
+    function toggleModal(e) {
+        const body = document.querySelector("body");
+        body.style.overflow = modale.open ? "hidden" : "";
     }
 
     async function showModal(e) {
@@ -303,7 +308,10 @@
          </div>
              {@render tooltipPanelSnippet("popover")}
          {/if}
-         <dialog bind:this={modale}>
+         <dialog bind:this={modale}
+                 ontoggle={toggleModal}
+                 role="tooltip"
+            >
             <div class="qc-container">
                 {@render tooltipPanelSnippet("modal")}
             </div>
@@ -405,7 +413,7 @@
         margin: 0;
         padding: 0;
         border: 1px solid var(--qc-color-grey-light);
-
+        background: var(--qc-color-background);
         .qc-tooltip-panel {
             visibility: visible!important;
         }
@@ -424,6 +432,7 @@
         min-height: 68px;
         max-height: var(--max-height);
         background: var(--qc-color-background);
+        color: var(--qc-color-text-primary);
         width: 100%;
         max-width: var(--qc-max-content-width);
         padding: 24px 0;
