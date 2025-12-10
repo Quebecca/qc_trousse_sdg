@@ -19,8 +19,8 @@
         tooltipContainer,
         tooltipButton = $state(),
         modale = $state(),
-        display = $state(false),
-        visible = $state(false),
+        displayPopover = $state(false),
+        visiblePopover = $state(false),
         translateX = $state(defaultTranslateX),
         translateY = $state(defaultTranslateY),
         position = $state(requestedPosition),
@@ -39,8 +39,8 @@
     $inspect("isMobile", mobileFlag)
 
     $effect(_ => {
-        if (!display) {
-            visible = false
+        if (!displayPopover) {
+            visiblePopover = false
         }
     })
 
@@ -60,7 +60,7 @@
             modale.close();
         }
         else {
-            display = false;
+            displayPopover = false;
         }
     }
 
@@ -85,11 +85,11 @@
     }
 
     async function showPopover(e) {
-        if (display) {
-            display=false;
+        if (displayPopover) {
+            displayPopover=false;
             return;
         }
-        display = true
+        displayPopover = true
         await tick()
 
         let start = requestedPosition,
@@ -102,7 +102,7 @@
             position = current
             await waitForNextFrame()
             if (tryPlacement(current)) {
-                visible = true;
+                visiblePopover = true;
                 break;
             }
             const index = tries.indexOf(current)
@@ -197,16 +197,12 @@
     function closeIfClickOutEvent(e) {
         if (preventOuterEventClosing) return
         if (e.tooltipContainer === tooltipContainer) return;
-        display = false;
+        displayPopover = false;
     }
 
     function closeIfBlur(e) {
         if (preventOuterEventClosing) return
-        display = false
-    }
-
-    function closeIfFocusOutEvent(e) {
-        display = false;
+        displayPopover = false
     }
 
     function markInnerEvent(e) {
@@ -299,9 +295,9 @@
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
-         {#if !modalFlag && display}
+         {#if !modalFlag && displayPopover}
          <div class="qc-tooltip-pin"
-              class:qc-tooltip-visible={visible}
+              class:qc-tooltip-visible={visiblePopover}
             >
              <svg
                  width="9"
@@ -343,7 +339,7 @@
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div role="tooltip"
          class="qc-tooltip-panel"
-         class:qc-tooltip-visible={visible}
+         class:qc-tooltip-visible={visiblePopover}
          class:qc-shading-1={displayMode === "popover"}
          bind:this={tooltipPanel}
          style:--translateY={translateY}
@@ -427,7 +423,6 @@
         line-height: 16px;
         height: 16px;
     }
-
 
     dialog {
         top: auto;
