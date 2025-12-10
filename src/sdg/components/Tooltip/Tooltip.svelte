@@ -15,6 +15,7 @@
         defaultTranslateX = "-50%"
     ;
     let tooltipPanel = $state(),
+        tooltipId = Utils.generateId("tooltip"),
         tooltipContainer,
         tooltipButton,
         modale = $state(),
@@ -277,6 +278,7 @@
             href="#top"
             onclick={showTooltip}
             bind:this={tooltipButton}
+            aria-describedby={tooltipId}
          >
             <Icon type="info-tooltip" size="sm" />
         </a>
@@ -310,7 +312,6 @@
          {/if}
          <dialog bind:this={modale}
                  ontoggle={toggleModal}
-                 role="tooltip"
             >
             <div class="qc-container">
                 {@render tooltipPanelSnippet("modal")}
@@ -321,12 +322,14 @@
 </span>
 
 {#snippet tooltipPanelSnippet(displayMode)}
-    <div class="qc-tooltip-panel"
+    <div role="tooltip"
+         class="qc-tooltip-panel"
          class:qc-tooltip-visible={visible}
          class:qc-shading-1={displayMode === "popover"}
          bind:this={tooltipPanel}
          style:--translateY={translateY}
          style:--translateX={translateX}
+         id={tooltipId}
     >
         <div class="qc-tooltip-content">
             {@html description}
