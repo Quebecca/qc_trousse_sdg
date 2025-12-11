@@ -167,7 +167,7 @@ code.hljs {
 .exemple-area > figure > figcaption {
   display: block;
 }
-.exemple-area > figure:has(qc-select) {
+.exemple-area > figure:has(qc-select, qc-tooltip) {
   overflow-x: visible;
 }
 

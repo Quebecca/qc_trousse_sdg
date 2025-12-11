@@ -6,7 +6,7 @@
     requestedPosition: { attribute: 'position', type: 'String'},
     preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean'},
     displayMode: { attribute: 'display-mode', type: 'String'},
-    targetId: { attribute: 'target-id', type: 'String'}
+    descriptionId: { attribute: 'description-id', type: 'String'}
   }
 }} />
 <script>
@@ -16,7 +16,7 @@ import {Utils} from "../utils";
 import {onMount} from "svelte";
 let { ...props } = $props();
 </script>
-<Tooltip {...props} >
+<Tooltip {...props} slots={$$slots}>
     {#snippet textSlot()}
         <slot name="text" />
     {/snippet}

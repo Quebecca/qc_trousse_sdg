@@ -1,6 +1,6 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "sass:list";
-$noMask: info-tooltip question-tooltip;
+$noMask: information-tooltip question-tooltip;
 
 qc-icon {
   display: inline-flex;
