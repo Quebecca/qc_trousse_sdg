@@ -1,0 +1,107 @@
+<h2 id="tooltip">Infobulle (qc-tooltip)</h2>
+<h3>Exemples</h3>
+<h4>Alerte jaune</h4>
+<qc-doc-exemple id="alert-warning"
+                caption="Exemple d'infobulles phylactères (dans les 3 positions) et en mode feuille (fenêtre modale).">
+  <p>Une infobulle vers la <qc-tooltip text="droite" description="Une infobulle vers la droite"></qc-tooltip>, le <qc-tooltip text="haut" description="Une infobulle vers le haut" position="top"></qc-tooltip> et le <qc-tooltip text="bas" description="Une infobulle vers le bas" position="bottom"></qc-tooltip>, et en <qc-tooltip text="feuille" description="Une infobulle feuille" display-mode="modal"></qc-tooltip></p>
+
+</qc-doc-exemple>
+
+<h4>Alerte bleue</h4>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d’alerte générale">
+  <qc-alert type="general"
+            maskable="false">
+    <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
+  </qc-alert>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<h4>Attributs</h4>
+<div class="table-overflow">
+  <table class="qc-table qc-striped component-attributes-description">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tr>
+      <td>type</td>
+      <td>"general" ou "warning"</td>
+      <td>"general"</td>
+      <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
+    </tr>
+    <tr>
+      <td>content</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Afficher le contenu de l’alerte</td>
+    </tr>
+    <tr>
+      <td>hide</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Masque ou affiche l’alerte</td>
+    </tr>
+    <tr>
+      <td>full-width</td>
+      <td>"true" ou "false"</td>
+      <td>"false"</td>
+      <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
+        qc-container-fluid)
+      </td>
+    </tr>
+    <tr>
+      <td>maskable</td>
+      <td>"true" ou "false"</td>
+      <td>"true"</td>
+      <td>Afficher le bouton de fermeture de l’alerte</td>
+    </tr>
+    <tr>
+      <td>persist-hidden</td>
+      <td>na</td>
+      <td></td>
+      <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+    </tr>
+    <tr>
+      <td>persistence-key</td>
+      <td>Chaîne de caractère</td>
+      <td>Id de l'élément, valeur nulle sinon</td>
+      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+    </tr>
+
+  </table>
+</div>
+
+<h4>Événement JS</h4>
+
+<p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de
+  l’alerte</p>
+<script id="qc-alert-event-exemple">
+  /* Fermer l’alerte jaune pour voir un message dans la console de votre navigateur */
+  document.addEventListener(
+          'qc.alert.hide',
+          (e) => {
+            console.log(`Fermeture de l'alerte id='${e.target.id}'`);
+          }
+  )
+</script>
+<qc-code target-id="qc-alert-event-exemple"
+         language="javascript"></qc-code>
+
+<h4>Zone d’ajout de contenu HTML</h4>
+
+<p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
+<qc-doc-exemple caption="Présentation des zone d’ajout de contenu"
+                hide-code
+>
+  <qc-alert id="qc-alert-slots">
+    <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
+      Contenu par défaut
+    </div>
+  </qc-alert>
+</qc-doc-exemple>
