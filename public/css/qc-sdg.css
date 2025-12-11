@@ -1802,6 +1802,26 @@ qc-search-input {
   width: 100%;
   max-width: 54.8rem;
 }
+qc-search-input[size=xs] {
+  max-width: 100%;
+  width: 6.3rem;
+}
+qc-search-input[size=sm] {
+  max-width: 100%;
+  width: 15.6rem;
+}
+qc-search-input[size=md] {
+  max-width: 100%;
+  width: 24.9rem;
+}
+qc-search-input[size=lg] {
+  max-width: 100%;
+  width: 52.8rem;
+}
+qc-search-input[size=xl] {
+  max-width: 100%;
+  width: 82.5rem;
+}
 
 .qc-search-bar, .qc-search-input {
   display: flex;

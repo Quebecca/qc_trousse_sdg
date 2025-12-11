@@ -1,10 +1,19 @@
-@use "../../scss/qc-sdg-lib" as *;
+@use "qc-sdg-lib" as *;
+@use "sass:map";
 
 qc-search-input {
   display: block;
   width: 100%;
   // TODO mettre un token
   max-width: rem(548);
+
+    $sizes: map.get($lg-tokens, size, max-width);
+    @each $size, $width in $sizes {
+      &[size="#{$size}"] {
+        max-width: 100%;
+        width: $width;
+      }
+    }
 }
 
 %qc-search-wrapper {

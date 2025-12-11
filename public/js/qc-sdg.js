@@ -11656,9 +11656,232 @@
 
 	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
+	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
+
+	var root_1$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
+	var root$c = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
+
+	function LabelText($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let text = prop($$props, 'text', 7),
+			required = prop($$props, 'required', 7);
+
+		var $$exports = {
+			get text() {
+				return text();
+			},
+
+			set text($$value) {
+				text($$value);
+				flushSync();
+			},
+
+			get required() {
+				return required();
+			},
+
+			set required($$value) {
+				required($$value);
+				flushSync();
+			},
+
+			...legacy_api()
+		};
+
+		var fragment = root$c();
+		var span = first_child(fragment);
+		var node = child(span);
+
+		html(node, text);
+		reset(span);
+
+		var node_1 = sibling(span);
+
+		{
+			var consequent = ($$anchor) => {
+				var span_1 = root_1$6();
+
+				append($$anchor, span_1);
+			};
+
+			add_svelte_meta(
+				() => if_block(node_1, ($$render) => {
+					if (required()) $$render(consequent);
+				}),
+				'if',
+				LabelText,
+				5,
+				47
+			);
+		}
+
+		append($$anchor, fragment);
+
+		return pop($$exports);
+	}
+
+	create_custom_element(LabelText, { text: {}, required: {} }, [], [], true);
+
+	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
+
+	var root$b = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
+
+	function Label($$anchor, $$props) {
+		check_target(new.target);
+		push($$props, true);
+
+		let forId = prop($$props, 'forId', 7),
+			text = prop($$props, 'text', 7),
+			required = prop($$props, 'required', 7, false),
+			compact = prop($$props, 'compact', 7, false),
+			bold = prop($$props, 'bold', 7, false),
+			disabled = prop($$props, 'disabled', 7, false),
+			rootElement = prop($$props, 'rootElement', 15),
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'forId',
+					'text',
+					'required',
+					'compact',
+					'bold',
+					'disabled',
+					'rootElement'
+				]);
+
+		var $$exports = {
+			get forId() {
+				return forId();
+			},
+
+			set forId($$value) {
+				forId($$value);
+				flushSync();
+			},
+
+			get text() {
+				return text();
+			},
+
+			set text($$value) {
+				text($$value);
+				flushSync();
+			},
+
+			get required() {
+				return required();
+			},
+
+			set required($$value = false) {
+				required($$value);
+				flushSync();
+			},
+
+			get compact() {
+				return compact();
+			},
+
+			set compact($$value = false) {
+				compact($$value);
+				flushSync();
+			},
+
+			get bold() {
+				return bold();
+			},
+
+			set bold($$value = false) {
+				bold($$value);
+				flushSync();
+			},
+
+			get disabled() {
+				return disabled();
+			},
+
+			set disabled($$value = false) {
+				disabled($$value);
+				flushSync();
+			},
+
+			get rootElement() {
+				return rootElement();
+			},
+
+			set rootElement($$value) {
+				rootElement($$value);
+				flushSync();
+			},
+
+			...legacy_api()
+		};
+
+		var label = root$b();
+
+		attribute_effect(label, () => ({
+			for: forId(),
+
+			class: [
+				"qc-label",
+				compact() && "qc-compact",
+				bold() && "qc-bold",
+				disabled() && "qc-disabled"
+			],
+
+			...rest
+		}));
+
+		var node = child(label);
+
+		add_svelte_meta(
+			() => LabelText(node, {
+				get text() {
+					return text();
+				},
+
+				get required() {
+					return required();
+				}
+			}),
+			'component',
+			Label,
+			27,
+			4,
+			{ componentTag: 'LabelText' }
+		);
+
+		reset(label);
+		bind_this(label, ($$value) => rootElement($$value), () => rootElement());
+		append($$anchor, label);
+
+		return pop($$exports);
+	}
+
+	create_custom_element(
+		Label,
+		{
+			forId: {},
+			text: {},
+			required: {},
+			compact: {},
+			bold: {},
+			disabled: {},
+			rootElement: {}
+		},
+		[],
+		[],
+		true
+	);
+
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$c = add_locations(from_html(`<div><!> <input/> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
+	var root$a = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[38, 0, [[51, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -11667,6 +11890,8 @@
 		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
+			label = prop($$props, 'label', 7, ''),
+			size = prop($$props, 'size', 7, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
@@ -11679,6 +11904,8 @@
 					'$$legacy',
 					'$$host',
 					'value',
+					'label',
+					'size',
 					'ariaLabel',
 					'clearAriaLabel',
 					'leftIcon',
@@ -11705,6 +11932,24 @@
 
 			set value($$value = '') {
 				value($$value);
+				flushSync();
+			},
+
+			get label() {
+				return label();
+			},
+
+			set label($$value = '') {
+				label($$value);
+				flushSync();
+			},
+
+			get size() {
+				return size();
+			},
+
+			set size($$value = '') {
+				size($$value);
 				flushSync();
 			},
 
@@ -11749,11 +11994,49 @@
 			...legacy_api()
 		};
 
-		var div = root$c();
-		var node = child(div);
+		var fragment = root$a();
+		var node = first_child(fragment);
 
 		{
 			var consequent = ($$anchor) => {
+				add_svelte_meta(
+					() => Label($$anchor, {
+						get disabled() {
+							return isDisabled;
+						},
+
+						get text() {
+							return label();
+						},
+
+						get forId() {
+							return id();
+						}
+					}),
+					'component',
+					SearchInput,
+					32,
+					4,
+					{ componentTag: 'Label' }
+				);
+			};
+
+			add_svelte_meta(
+				() => if_block(node, ($$render) => {
+					if (label()) $$render(consequent);
+				}),
+				'if',
+				SearchInput,
+				31,
+				0
+			);
+		}
+
+		var div = sibling(node, 2);
+		var node_1 = child(div);
+
+		{
+			var consequent_1 = ($$anchor) => {
 				{
 					let $0 = user_derived(() => `qc-icon${isDisabled ? ' is-disabled' : ''}`);
 
@@ -11768,7 +12051,7 @@
 						}),
 						'component',
 						SearchInput,
-						34,
+						46,
 						8,
 						{ componentTag: 'Icon' }
 					);
@@ -11776,24 +12059,24 @@
 			};
 
 			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (leftIcon()) $$render(consequent);
+				() => if_block(node_1, ($$render) => {
+					if (leftIcon()) $$render(consequent_1);
 				}),
 				'if',
 				SearchInput,
-				33,
+				45,
 				4
 			);
 		}
 
-		var input = sibling(node, 2);
+		var input = sibling(node_1, 2);
 
 		attribute_effect(
 			input,
 			() => ({
 				type: 'search',
 				autocomplete: 'off',
-				'aria-label': ariaLabel(),
+				'aria-label': label() ? undefined : ariaLabel(),
 				class: isDisabled ? "qc-disabled" : "",
 				id: id(),
 				...rest
@@ -11807,10 +12090,10 @@
 
 		bind_this(input, ($$value) => searchInput = $$value, () => searchInput);
 
-		var node_1 = sibling(input, 2);
+		var node_2 = sibling(input, 2);
 
 		{
-			var consequent_1 = ($$anchor) => {
+			var consequent_2 = ($$anchor) => {
 				add_svelte_meta(
 					() => IconButton($$anchor, {
 						type: 'button',
@@ -11830,33 +12113,37 @@
 					}),
 					'component',
 					SearchInput,
-					49,
+					61,
 					4,
 					{ componentTag: 'IconButton' }
 				);
 			};
 
 			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
-					if (value()) $$render(consequent_1);
+				() => if_block(node_2, ($$render) => {
+					if (value()) $$render(consequent_2);
 				}),
 				'if',
 				SearchInput,
-				48,
+				60,
 				4
 			);
 		}
 
 		reset(div);
 
-		template_effect(() => set_class(div, 1, clsx([
-			"qc-search-input",
-			leftIcon() && "qc-search-left-icon",
-			leftIcon() && isDisabled && "qc-search-left-icon-disabled"
-		])));
+		template_effect(() => {
+			set_class(div, 1, clsx([
+				"qc-search-input",
+				leftIcon() && "qc-search-left-icon",
+				leftIcon() && isDisabled && "qc-search-left-icon-disabled"
+			]));
+
+			set_attribute(div, 'size', size());
+		});
 
 		bind_value(input, value);
-		append($$anchor, div);
+		append($$anchor, fragment);
 
 		return pop($$exports);
 	}
@@ -11865,6 +12152,8 @@
 		SearchInput,
 		{
 			value: {},
+			label: {},
+			size: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
 			leftIcon: {},
@@ -11877,7 +12166,7 @@
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var root$b = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$9 = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -11959,7 +12248,7 @@
 			...legacy_api()
 		};
 
-		var div = root$b();
+		var div = root$9();
 		let classes;
 		var node = child(div);
 
@@ -12055,7 +12344,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
-		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 18, 0, { componentTag: 'SearchInput' });
+		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 20, 0, { componentTag: 'SearchInput' });
 
 		return pop($$exports);
 	}
@@ -12066,6 +12355,8 @@
 			id: { attribute: 'id' },
 			ariaLabel: { attribute: 'aria-label' },
 			clearAriaLabel: { attribute: 'clear-aria-label' },
+			label: { attribute: 'label' },
+			size: { attribute: 'size' },
 			leftIcon: { attribute: 'left-icon' }
 		},
 		[],
@@ -12135,7 +12426,7 @@
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
 	var root_2$6 = add_locations(from_html(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
-	var root_1$6 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
+	var root_1$5 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -12231,7 +12522,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$6();
+				var div = root_1$5();
 				var node_1 = child(div);
 
 				add_svelte_meta(
@@ -12310,74 +12601,6 @@
 		[],
 		true
 	);
-
-	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
-
-	var root_1$5 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root$a = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
-
-	function LabelText($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let text = prop($$props, 'text', 7),
-			required = prop($$props, 'required', 7);
-
-		var $$exports = {
-			get text() {
-				return text();
-			},
-
-			set text($$value) {
-				text($$value);
-				flushSync();
-			},
-
-			get required() {
-				return required();
-			},
-
-			set required($$value) {
-				required($$value);
-				flushSync();
-			},
-
-			...legacy_api()
-		};
-
-		var fragment = root$a();
-		var span = first_child(fragment);
-		var node = child(span);
-
-		html(node, text);
-		reset(span);
-
-		var node_1 = sibling(span);
-
-		{
-			var consequent = ($$anchor) => {
-				var span_1 = root_1$5();
-
-				append($$anchor, span_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
-					if (required()) $$render(consequent);
-				}),
-				'if',
-				LabelText,
-				5,
-				47
-			);
-		}
-
-		append($$anchor, fragment);
-
-		return pop($$exports);
-	}
-
-	create_custom_element(LabelText, { text: {}, required: {} }, [], [], true);
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
@@ -12977,7 +13200,7 @@
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	var root$9 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
+	var root$8 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
 
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13080,7 +13303,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$9();
+		var fragment = root$8();
 		var node = first_child(fragment);
 
 		{
@@ -13177,7 +13400,7 @@
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
 	var root_2$4 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
-	var root$8 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
+	var root$7 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -13386,7 +13609,7 @@
 			...legacy_api()
 		};
 
-		var div = root$8();
+		var div = root$7();
 		var node_1 = child(div);
 
 		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 72, 8);
@@ -13460,7 +13683,7 @@
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$7 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
+	var root$6 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -13525,7 +13748,7 @@
 			...legacy_api()
 		};
 
-		var fragment = root$7();
+		var fragment = root$6();
 		var node = first_child(fragment);
 
 		{
@@ -13607,161 +13830,6 @@
 		[],
 		true
 	));
-
-	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
-
-	var root$6 = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
-
-	function Label($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let forId = prop($$props, 'forId', 7),
-			text = prop($$props, 'text', 7),
-			required = prop($$props, 'required', 7, false),
-			compact = prop($$props, 'compact', 7, false),
-			bold = prop($$props, 'bold', 7, false),
-			disabled = prop($$props, 'disabled', 7, false),
-			rootElement = prop($$props, 'rootElement', 15),
-			rest = rest_props(
-				$$props,
-				[
-					'$$slots',
-					'$$events',
-					'$$legacy',
-					'$$host',
-					'forId',
-					'text',
-					'required',
-					'compact',
-					'bold',
-					'disabled',
-					'rootElement'
-				]);
-
-		var $$exports = {
-			get forId() {
-				return forId();
-			},
-
-			set forId($$value) {
-				forId($$value);
-				flushSync();
-			},
-
-			get text() {
-				return text();
-			},
-
-			set text($$value) {
-				text($$value);
-				flushSync();
-			},
-
-			get required() {
-				return required();
-			},
-
-			set required($$value = false) {
-				required($$value);
-				flushSync();
-			},
-
-			get compact() {
-				return compact();
-			},
-
-			set compact($$value = false) {
-				compact($$value);
-				flushSync();
-			},
-
-			get bold() {
-				return bold();
-			},
-
-			set bold($$value = false) {
-				bold($$value);
-				flushSync();
-			},
-
-			get disabled() {
-				return disabled();
-			},
-
-			set disabled($$value = false) {
-				disabled($$value);
-				flushSync();
-			},
-
-			get rootElement() {
-				return rootElement();
-			},
-
-			set rootElement($$value) {
-				rootElement($$value);
-				flushSync();
-			},
-
-			...legacy_api()
-		};
-
-		var label = root$6();
-
-		attribute_effect(label, () => ({
-			for: forId(),
-
-			class: [
-				"qc-label",
-				compact() && "qc-compact",
-				bold() && "qc-bold",
-				disabled() && "qc-disabled"
-			],
-
-			...rest
-		}));
-
-		var node = child(label);
-
-		add_svelte_meta(
-			() => LabelText(node, {
-				get text() {
-					return text();
-				},
-
-				get required() {
-					return required();
-				}
-			}),
-			'component',
-			Label,
-			27,
-			4,
-			{ componentTag: 'LabelText' }
-		);
-
-		reset(label);
-		bind_this(label, ($$value) => rootElement($$value), () => rootElement());
-		append($$anchor, label);
-
-		return pop($$exports);
-	}
-
-	create_custom_element(
-		Label,
-		{
-			forId: {},
-			text: {},
-			required: {},
-			compact: {},
-			bold: {},
-			disabled: {},
-			rootElement: {}
-		},
-		[],
-		[],
-		true
-	);
 
 	function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
 	    if (!input) return;

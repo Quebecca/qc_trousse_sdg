@@ -2,12 +2,15 @@
     import IconButton from "../IconButton/IconButton.svelte";
     import {Utils} from "../utils";
     import Icon from "../../bases/Icon/Icon.svelte";
+    import Label from "../Label/Label.svelte";
 
     const lang = Utils.getPageLanguage();
 
 
     let {
         value = $bindable(''),
+        label = '',
+        size = '',
         ariaLabel = lang === "fr" ? "Rechercher..." : "Search...",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
         leftIcon = false,
@@ -25,11 +28,20 @@
     }
 </script>
 
+{#if label}
+    <Label
+        disabled={isDisabled}
+        text={label}
+        forId={id}
+    />
+{/if}
 <div class={[
             "qc-search-input",
             leftIcon && "qc-search-left-icon",
             leftIcon && isDisabled && "qc-search-left-icon-disabled"
-        ]} >
+        ]}
+     size={size}>
+
     {#if leftIcon}
         <Icon type="search-thin"
               iconColor="grey-regular"
@@ -40,7 +52,7 @@
             bind:value
             type="search"
             autocomplete="off"
-            aria-label={ariaLabel}
+            aria-label={label ? undefined : ariaLabel}
             class={isDisabled ? "qc-disabled" : ""}
             id={id}
             {...rest}

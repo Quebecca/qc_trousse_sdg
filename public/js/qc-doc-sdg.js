@@ -79574,7 +79574,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$4 = add_locations(from_html(`<div><!> <input/> <!></div>`), SearchInput[FILENAME], [[28, 0, [[39, 4]]]]);
+	var root$4 = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[38, 0, [[51, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -79583,6 +79583,8 @@
 		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
+			label = prop($$props, 'label', 7, ''),
+			size = prop($$props, 'size', 7, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
@@ -79595,6 +79597,8 @@
 					'$$legacy',
 					'$$host',
 					'value',
+					'label',
+					'size',
 					'ariaLabel',
 					'clearAriaLabel',
 					'leftIcon',
@@ -79621,6 +79625,24 @@
 
 			set value($$value = '') {
 				value($$value);
+				flushSync();
+			},
+
+			get label() {
+				return label();
+			},
+
+			set label($$value = '') {
+				label($$value);
+				flushSync();
+			},
+
+			get size() {
+				return size();
+			},
+
+			set size($$value = '') {
+				size($$value);
 				flushSync();
 			},
 
@@ -79665,11 +79687,49 @@
 			...legacy_api()
 		};
 
-		var div = root$4();
-		var node = child(div);
+		var fragment = root$4();
+		var node = first_child(fragment);
 
 		{
 			var consequent = ($$anchor) => {
+				add_svelte_meta(
+					() => Label($$anchor, {
+						get disabled() {
+							return isDisabled;
+						},
+
+						get text() {
+							return label();
+						},
+
+						get forId() {
+							return id();
+						}
+					}),
+					'component',
+					SearchInput,
+					32,
+					4,
+					{ componentTag: 'Label' }
+				);
+			};
+
+			add_svelte_meta(
+				() => if_block(node, ($$render) => {
+					if (label()) $$render(consequent);
+				}),
+				'if',
+				SearchInput,
+				31,
+				0
+			);
+		}
+
+		var div = sibling(node, 2);
+		var node_1 = child(div);
+
+		{
+			var consequent_1 = ($$anchor) => {
 				{
 					let $0 = user_derived(() => `qc-icon${isDisabled ? ' is-disabled' : ''}`);
 
@@ -79684,7 +79744,7 @@
 						}),
 						'component',
 						SearchInput,
-						34,
+						46,
 						8,
 						{ componentTag: 'Icon' }
 					);
@@ -79692,24 +79752,24 @@
 			};
 
 			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (leftIcon()) $$render(consequent);
+				() => if_block(node_1, ($$render) => {
+					if (leftIcon()) $$render(consequent_1);
 				}),
 				'if',
 				SearchInput,
-				33,
+				45,
 				4
 			);
 		}
 
-		var input = sibling(node, 2);
+		var input = sibling(node_1, 2);
 
 		attribute_effect(
 			input,
 			() => ({
 				type: 'search',
 				autocomplete: 'off',
-				'aria-label': ariaLabel(),
+				'aria-label': label() ? undefined : ariaLabel(),
 				class: isDisabled ? "qc-disabled" : "",
 				id: id(),
 				...rest
@@ -79723,10 +79783,10 @@
 
 		bind_this(input, ($$value) => searchInput = $$value, () => searchInput);
 
-		var node_1 = sibling(input, 2);
+		var node_2 = sibling(input, 2);
 
 		{
-			var consequent_1 = ($$anchor) => {
+			var consequent_2 = ($$anchor) => {
 				add_svelte_meta(
 					() => IconButton($$anchor, {
 						type: 'button',
@@ -79746,33 +79806,37 @@
 					}),
 					'component',
 					SearchInput,
-					49,
+					61,
 					4,
 					{ componentTag: 'IconButton' }
 				);
 			};
 
 			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
-					if (value()) $$render(consequent_1);
+				() => if_block(node_2, ($$render) => {
+					if (value()) $$render(consequent_2);
 				}),
 				'if',
 				SearchInput,
-				48,
+				60,
 				4
 			);
 		}
 
 		reset(div);
 
-		template_effect(() => set_class(div, 1, clsx([
-			"qc-search-input",
-			leftIcon() && "qc-search-left-icon",
-			leftIcon() && isDisabled && "qc-search-left-icon-disabled"
-		])));
+		template_effect(() => {
+			set_class(div, 1, clsx([
+				"qc-search-input",
+				leftIcon() && "qc-search-left-icon",
+				leftIcon() && isDisabled && "qc-search-left-icon-disabled"
+			]));
+
+			set_attribute(div, 'size', size());
+		});
 
 		bind_value(input, value);
-		append($$anchor, div);
+		append($$anchor, fragment);
 
 		return pop($$exports);
 	}
@@ -79781,6 +79845,8 @@
 		SearchInput,
 		{
 			value: {},
+			label: {},
+			size: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
 			leftIcon: {},
