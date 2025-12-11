@@ -8,7 +8,10 @@
         description,
         requestedPosition = "right",
         preventOuterEventClosing = false,
-        displayMode = "popover"
+        displayMode = "popover",
+        targetId,
+        descriptionSlot,
+        textSlot
     } = $props()
     const
         defaultTranslateY = "calc(-50% + 8px)",
@@ -25,12 +28,21 @@
         translateY = $state(defaultTranslateY),
         position = $state(requestedPosition),
         mobileFlag = $state(false),
-        modalFlag = $derived(mobileFlag || displayMode === "modal")
+        modalFlag = $derived(mobileFlag || displayMode === "modal"),
+        hasDescription = $derived(description || descriptionSlot),
+        hasText = $derived(text || textSlot)
     ;
     $effect(_ => {
         if (!["popover","modal"].includes(displayMode) ) {
             displayMode = "popover"
         }
+    })
+    $effect(_ => {
+        if (description) return;
+        if (!targetId) return;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        description = target.innerHTML;
     })
 
     onMount(_ => {
@@ -271,15 +283,15 @@
              }
          }}
 >
-    {#if text}
+    {#if hasText}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
      <span class="qc-tooltip-text"
            onclick={showTooltip}
            role="button"
            tabindex="-1"
-        >{@html text}</span>
+        >{@html text}{@render textSlot()}</span>
     {/if}
-    {#if description}
+    {#if hasDescription}
      <div class="qc-tooltip-container qc-tooltip-{position} qc-scrollbar"
           class:qc-tooltip-popover={!modalFlag}
           class:qc-tooltip-modal={modalFlag}
@@ -352,7 +364,7 @@
          id={tooltipId}
     >
         <div class="qc-tooltip-content">
-            {@html description}
+            {@html description}{@render descriptionSlot()}
         </div>
         <a role="button"
            class="qc-tooltip-xclose"
@@ -383,6 +395,7 @@
     .qc-tooltip-text {
         border-bottom: 1px dashed var(--qc-color-text-primary);
         cursor: pointer;
+        white-space: nowrap;
     }
     .qc-tooltip-button {
         align-self: center;
