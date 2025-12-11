@@ -48,7 +48,7 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
-        console.log("sm bp" , getSmBreakpoint(gridConfig))
+        $inspect("sm bp" , getSmBreakpoint(gridConfig))
         setIsMobile()
         window.addEventListener("resize", setIsMobile)
     })
@@ -97,7 +97,7 @@
     function setIsMobile() {
         const bounds = getScreenBounds();
         mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
-        console.log("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
+        $inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
         return mobileFlag;
     }
 
@@ -108,12 +108,11 @@
         }
         displayPopover = true
         await tick()
-
         let start = requestedPosition,
             current =  start
         ;
         await waitForNextFrame()
-        console.log("Placement initial : " + start, requestedPosition)
+        $inspect("Placement initial : " + start, requestedPosition)
         let tries = getTriesOrder(start);
         while (true) {
             position = current
@@ -141,19 +140,19 @@
     }
 
     function waitForNextFrame() {
-        console.log("Waiting for next frame")
+        $inspect("Waiting for next frame")
         return new Promise(resolve => {
             window.requestAnimationFrame(resolve);
         });
     }
 
      function tryPlacement(placement) {
-        console.log("Tentative de placement selon " + placement )
+        $inspect("Tentative de placement selon " + placement )
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
             result = adjustCrossAxis(tooltipPanel, placement);
         }
-        console.log("Placement selon " + placement + " : "  + result )
+        $inspect("Placement selon " + placement + " : "  + result )
         return result;
     }
 
@@ -172,15 +171,15 @@
         otherAxisPopsitions.forEach(otherAxisPosition => {
             // await waitForNextFrame();
             if (!adjustable) return;
-            console.log(`adjustPin ${otherAxisPosition}`)
+            $inspect(`adjustPin ${otherAxisPosition}`)
             if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) {
-                console.log(`adjustPin ${otherAxisPosition} : nothing to adjust `)
+                $inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
                 return;
             }
             const gap = getScreenGap(tooltipButton, otherAxisPosition);
-            console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+            $inspect(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
-                console.log(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
+                $inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
                 adjustable = false;
                 return;
             }
@@ -199,7 +198,7 @@
                     break;
             }
         })
-        console.log(`adjustPin ${position} : adjustable : ${adjustable}`)
+        $inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
         return adjustable;
     }
 
@@ -208,7 +207,7 @@
     $inspect("position", position)
 
     function fallBack() {
-        console.log("Fallback")
+        $inspect("Fallback")
     }
 
     function closeIfClickOutEvent(e) {
@@ -229,12 +228,12 @@
     function isElementOverflowing(element, position) {
         const gap = getScreenGap(element, position);
         const overflow = gap < 0;
-        console.log(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
+        $inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
         return overflow;
     }
 
     function consoleName(element) {
-        return element == tooltipButton ? "button" : "panel"
+        return element === tooltipButton ? "button" : "panel"
     }
 
     function getScreenBounds() {
@@ -250,9 +249,9 @@
         const bounds = getScreenBounds();
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
-        console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+        $inspect(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
         const border = bounds[position]
-        // console.log("border",border)
+        // $inspect("border",border)
         switch (position) {
             case "right":
             case "bottom":
@@ -276,7 +275,7 @@
       bind:this={tooltipContainer}
       onfocusout={markInnerEvent}
       onkeydown={e => {
-             console.log("keydown", e.key)
+             $inspect("keydown", e.key)
              if (modalFlag) return;
              if (e.key === "Escape") {
                  closeTooltip(e);
