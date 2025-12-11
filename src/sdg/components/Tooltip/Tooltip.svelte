@@ -27,6 +27,11 @@
         mobileFlag = $state(false),
         modalFlag = $derived(mobileFlag || displayMode === "modal")
     ;
+    $effect(_ => {
+        if (!["popover","modal"].includes(displayMode) ) {
+            displayMode = "popover"
+        }
+    })
 
     onMount(_ => {
         tooltipContainer
