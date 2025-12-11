@@ -3,13 +3,16 @@
     import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
     import gridConfig from '../../../sdg/scss/settings/grid.json';
+    import {html} from "js-beautify/js/src";
     let {
         text,
         description,
         requestedPosition = "right",
         preventOuterEventClosing = false,
         displayMode = "popover",
-        targetId,
+        icon = "information",
+        descriptionId,
+        slots,
         descriptionSlot,
         textSlot
     } = $props()
@@ -29,18 +32,31 @@
         position = $state(requestedPosition),
         mobileFlag = $state(false),
         modalFlag = $derived(mobileFlag || displayMode === "modal"),
-        hasDescription = $derived(description || descriptionSlot),
-        hasText = $derived(text || textSlot)
+        hasDescription = $derived.by(_ => hasProperty(description, slots["description"], descriptionSlot)),
+        hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
+        tooltipIcon = $derived( icon + "-tooltip")
     ;
+
+    function hasProperty(property, slotExist, snippet) {
+        if (property) return true;
+        if (slots) return slotExist !== undefined
+        return snippet !== null
+    }
+
     $effect(_ => {
         if (!["popover","modal"].includes(displayMode) ) {
             displayMode = "popover"
         }
     })
     $effect(_ => {
+        if (!["information","question"].includes(icon) ) {
+            icon = "information"
+        }
+    })
+    $effect(_ => {
         if (description) return;
-        if (!targetId) return;
-        const target = document.getElementById(targetId);
+        if (!descriptionId) return;
+        const target = document.getElementById(descriptionId);
         if (!target) return;
         description = target.innerHTML;
     })
@@ -48,12 +64,12 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
-        $inspect("sm bp" , getSmBreakpoint(gridConfig))
+        //$inspect("sm bp" , getSmBreakpoint(gridConfig))
         setIsMobile()
         window.addEventListener("resize", setIsMobile)
     })
 
-    $inspect("isMobile", mobileFlag)
+    //$inspect("isMobile", mobileFlag)
 
     $effect(_ => {
         if (!displayPopover) {
@@ -97,7 +113,7 @@
     function setIsMobile() {
         const bounds = getScreenBounds();
         mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
-        $inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
+        //$inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
         return mobileFlag;
     }
 
@@ -112,7 +128,7 @@
             current =  start
         ;
         await waitForNextFrame()
-        $inspect("Placement initial : " + start, requestedPosition)
+        //$inspect("Placement initial : " + start, requestedPosition)
         let tries = getTriesOrder(start);
         while (true) {
             position = current
@@ -140,19 +156,19 @@
     }
 
     function waitForNextFrame() {
-        $inspect("Waiting for next frame")
+        //$inspect("Waiting for next frame")
         return new Promise(resolve => {
             window.requestAnimationFrame(resolve);
         });
     }
 
      function tryPlacement(placement) {
-        $inspect("Tentative de placement selon " + placement )
+        //$inspect("Tentative de placement selon " + placement )
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
             result = adjustCrossAxis(tooltipPanel, placement);
         }
-        $inspect("Placement selon " + placement + " : "  + result )
+        //$inspect("Placement selon " + placement + " : "  + result )
         return result;
     }
 
@@ -171,15 +187,15 @@
         otherAxisPopsitions.forEach(otherAxisPosition => {
             // await waitForNextFrame();
             if (!adjustable) return;
-            $inspect(`adjustPin ${otherAxisPosition}`)
+            //$inspect(`adjustPin ${otherAxisPosition}`)
             if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) {
-                $inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
+                //$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
                 return;
             }
             const gap = getScreenGap(tooltipButton, otherAxisPosition);
-            $inspect(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+            //$inspect(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
-                $inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
+                //$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
                 adjustable = false;
                 return;
             }
@@ -198,16 +214,16 @@
                     break;
             }
         })
-        $inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
+        //$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
         return adjustable;
     }
 
-    $inspect("translateX", translateX)
-    $inspect("translateY", translateY)
-    $inspect("position", position)
+    //$inspect("translateX", translateX)
+    //$inspect("translateY", translateY)
+    //$inspect("position", position)
 
     function fallBack() {
-        $inspect("Fallback")
+        //$inspect("Fallback")
     }
 
     function closeIfClickOutEvent(e) {
@@ -228,7 +244,7 @@
     function isElementOverflowing(element, position) {
         const gap = getScreenGap(element, position);
         const overflow = gap < 0;
-        $inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
+        //$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
         return overflow;
     }
 
@@ -249,9 +265,9 @@
         const bounds = getScreenBounds();
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
-        $inspect(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+        //$inspect(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
         const border = bounds[position]
-        // $inspect("border",border)
+        // //$inspect("border",border)
         switch (position) {
             case "right":
             case "bottom":
@@ -261,7 +277,7 @@
                 return rect[position] - (border - offset)
         }
     }
-
+    $inspect(hasText, hasDescription)
 </script>
 
 <svelte:document
@@ -271,26 +287,29 @@
         onblur={closeIfBlur}
 />
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<span class="qc-tooltip"
+<div class="qc-tooltip"
       bind:this={tooltipContainer}
       onfocusout={markInnerEvent}
       onkeydown={e => {
-             $inspect("keydown", e.key)
+             //$inspect("keydown", e.key)
              if (modalFlag) return;
              if (e.key === "Escape") {
                  closeTooltip(e);
              }
          }}
 >
-    {#if hasText}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
+    {#if hasText}
      <span class="qc-tooltip-text"
            onclick={showTooltip}
            role="button"
            tabindex="-1"
         >{@html text}{@render textSlot()}</span>
+    {:else}
+        <span>&zwj;</span>
     {/if}
     {#if hasDescription}
+
      <div class="qc-tooltip-container qc-tooltip-{position} qc-scrollbar"
           class:qc-tooltip-popover={!modalFlag}
           class:qc-tooltip-modal={modalFlag}
@@ -309,7 +328,7 @@
              }
             }}
          >
-            <Icon type="info-tooltip" size="sm" />
+            <Icon type={tooltipIcon} size="sm" />
         </a>
          {#if !modalFlag && displayPopover}
          <div class="qc-tooltip-pin"
@@ -349,7 +368,7 @@
          </dialog>
      </div>
     {/if}
-</span>
+</div>
 
 {#snippet tooltipPanelSnippet(displayMode)}
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -387,6 +406,7 @@
     .qc-tooltip {
         display: inline-flex;
         align-items: center;
+
         --pin-gap: 4px;
         --pin-height: 9px;
         --pin-base: 15px;
@@ -395,13 +415,13 @@
         border-bottom: 1px dashed var(--qc-color-text-primary);
         cursor: pointer;
         white-space: nowrap;
+        margin-right: calc( .5 * var(--qc-spacer-xs) );
     }
     .qc-tooltip-button {
         align-self: center;
         height: 16px;
         width: 16px;
         line-height: 16px;
-        margin-left: 4px;
         display: block;
         position: relative;
     }

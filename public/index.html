@@ -521,8 +521,8 @@
             </tr>
         
             <tr>
-                <td>info-tooltip</td>
-                <td><qc-icon type="info-tooltip" size="lg" /></td>
+                <td>information-tooltip</td>
+                <td><qc-icon type="information-tooltip" size="lg" /></td>
             </tr>
         
             <tr>
@@ -1113,20 +1113,39 @@
     <hr/>
     <h2 id="tooltip">Infobulle (qc-tooltip)</h2>
 <h3>Exemples</h3>
-<h4>Alerte jaune</h4>
+<h4>Infobulles simples</h4>
 <qc-doc-exemple id="alert-warning"
-                caption="Exemple d'infobulles phylactères (dans les 3 positions) et en mode feuille (fenêtre modale).">
+                caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
   <p>Une infobulle vers la <qc-tooltip text="droite" description="Une infobulle vers la droite"></qc-tooltip>, le <qc-tooltip text="haut" description="Une infobulle vers le haut" position="top"></qc-tooltip> et le <qc-tooltip text="bas" description="Une infobulle vers le bas" position="bottom"></qc-tooltip>, et en <qc-tooltip text="feuille" description="Une infobulle feuille" display-mode="modal"></qc-tooltip></p>
 
 </qc-doc-exemple>
 
-<h4>Alerte bleue</h4>
+<p>NB : en résolution mobile, les infobulles sont systématiquement affichées en feuilles.</p>
+
+<h4>Insertion de contenu</h4>
+
+<p>Le texte et la description peuvent aussi être ajoutés par <code>slot</code> ou via l'attribut description-id</p>
 <qc-doc-exemple id="alert-general"
-                caption="Exemple d’alerte générale">
-  <qc-alert type="general"
-            maskable="false">
-    <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
-  </qc-alert>
+                caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
+  <p>Lorem ipsum <qc-tooltip>
+      <span slot="text">dolor</span>
+      <span slot="description">
+        Suspendisse at dui ac risus egestas rhoncus nec eu sapien. Morbi in metus a dui commodo convallis quis eget tortor. Morbi non elementum enim, a interdum turpis. Nulla tortor quam, porta non volutpat in, cursus et magna. Cras sit amet turpis quis est cursus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet nec elit quis pharetra. Maecenas at leo pellentesque sapien tincidunt feugiat et non turpis. Morbi porttitor nibh id laoreet laoreet. Nam eleifend nunc at consectetur semper. Sed pellentesque mauris sapien, et finibus dui sollicitudin eu. Integer id viverra dui. Sed lectus eros, pulvinar id elit id, accumsan laoreet enim.
+      </span>
+  </qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+  <p>Lorem ipsum
+      <qc-tooltip description-id="tooltip-1">
+        <span slot="text">dolor</span>
+      </qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+
+  <p id="tooltip-1" style="display: none">Suspendisse at dui ac risus egestas rhoncus nec eu sapien. Morbi in metus a dui commodo convallis quis eget tortor. Morbi non elementum enim, a interdum turpis. Nulla tortor quam, porta non volutpat in, cursus et magna. Cras sit amet turpis quis est cursus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet nec elit quis pharetra. Maecenas at leo pellentesque sapien tincidunt feugiat et non turpis. Morbi porttitor nibh id laoreet laoreet. Nam eleifend nunc at consectetur semper. Sed pellentesque mauris sapien, et finibus dui sollicitudin eu. Integer id viverra dui. Sed lectus eros, pulvinar id elit id, accumsan laoreet enim.</span></qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
+</qc-doc-exemple>
+
+<h4>Icône seule</h4>
+<qc-doc-exemple id="alert-general"
+                caption="Exemple d'infobulle sans texte (2 icônes possibles)">
+  <p><qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip></p>
+  <p><qc-tooltip description-id="tooltip-1" icon="question"></qc-tooltip></p>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -1143,81 +1162,49 @@
     </tr>
     </thead>
     <tr>
-      <td>type</td>
-      <td>"general" ou "warning"</td>
-      <td>"general"</td>
-      <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
-    </tr>
-    <tr>
-      <td>content</td>
+      <td>texte</td>
       <td>Texte</td>
       <td>Chaine vide</td>
-      <td>Afficher le contenu de l’alerte</td>
+      <td>Texte lié à l'infobulle</td>
     </tr>
     <tr>
-      <td>hide</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Masque ou affiche l’alerte</td>
+      <td>description</td>
+      <td>Texte</td>
+      <td>Chaine vide</td>
+      <td>Contenu de l'infobulle</td>
     </tr>
     <tr>
-      <td>full-width</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
-        qc-container-fluid)
-      </td>
+      <td>icon</td>
+      <td>"information" ou "question"</td>
+      <td>"information"</td>
+      <td>Icône de l'infobulle</td>
     </tr>
     <tr>
-      <td>maskable</td>
-      <td>"true" ou "false"</td>
-      <td>"true"</td>
-      <td>Afficher le bouton de fermeture de l’alerte</td>
+      <td>display-mode</td>
+      <td>"popover" ou "modal"</td>
+      <td>"popover"</td>
+      <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
     </tr>
     <tr>
-      <td>persist-hidden</td>
-      <td>na</td>
-      <td></td>
-      <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+      <td>position</td>
+      <td>"right", "top" ou "bottom"</td>
+      <td>"right"</td>
+      <td>Position du phylactère</td>
     </tr>
+
     <tr>
-      <td>persistence-key</td>
-      <td>Chaîne de caractère</td>
-      <td>Id de l'élément, valeur nulle sinon</td>
-      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+      <td>description-id</td>
+      <td>Id d'un élément dans le document</td>
+      <td>Nulle</td>
+      <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
     </tr>
 
   </table>
 </div>
 
-<h4>Événement JS</h4>
-
-<p>Un événement JS <code class="qc-bg-color-grey-pale">qc.alert.hide</code> est émis à la fermeture de
-  l’alerte</p>
-<script id="qc-alert-event-exemple">
-  /* Fermer l’alerte jaune pour voir un message dans la console de votre navigateur */
-  document.addEventListener(
-          'qc.alert.hide',
-          (e) => {
-            console.log(`Fermeture de l'alerte id='${e.target.id}'`);
-          }
-  )
-</script>
-<qc-code target-id="qc-alert-event-exemple"
-         language="javascript"></qc-code>
-
 <h4>Zone d’ajout de contenu HTML</h4>
+<p>Le texte lié et la description peuvent être ajouté par slot. Voir les exemples d'insertions de contenu. </p>
 
-<p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
-<qc-doc-exemple caption="Présentation des zone d’ajout de contenu"
-                hide-code
->
-  <qc-alert id="qc-alert-slots">
-    <div style="border:2px dashed; padding: var(--qc-spacer-xs);">
-      Contenu par défaut
-    </div>
-  </qc-alert>
-</qc-doc-exemple>
     <hr/>
     <h2 id="search-bar">Barre de recherche</h2>
 <h3>Exemples</h3>

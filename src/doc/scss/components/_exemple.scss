@@ -18,7 +18,7 @@
   & > figcaption {
     display: block;
   }
-  &:has(qc-select) {
+  &:has(qc-select, qc-tooltip) {
     overflow-x: visible;
   }
 }
