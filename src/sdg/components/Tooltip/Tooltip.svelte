@@ -27,6 +27,7 @@
         modale = $state(),
         displayPopover = $state(false),
         visiblePopover = $state(false),
+        displayModal = $state(false),
         translateX = $state(defaultTranslateX),
         translateY = $state(defaultTranslateY),
         position = $state(requestedPosition),
@@ -91,6 +92,7 @@
         e.preventDefault();
         if (modalFlag) {
             modale.close();
+            displayModal = false;
         }
         else {
             displayPopover = false;
@@ -103,6 +105,8 @@
     }
 
     async function showModal(e) {
+        displayModal = true;
+        await tick()
         modale.showModal();
     }
 
@@ -358,6 +362,7 @@
          </div>
          {@render tooltipPanelSnippet("popover")}
          {/if}
+         {#if modalFlag && displayModal}
          <dialog bind:this={modale}
                  ontoggle={toggleModal}
                  class:qc-desktop={!mobileFlag}
@@ -366,6 +371,7 @@
                 {@render tooltipPanelSnippet("modal")}
             </div>
          </dialog>
+         {/if}
      </div>
     {/if}
 </div>
