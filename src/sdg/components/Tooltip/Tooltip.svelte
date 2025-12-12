@@ -3,7 +3,6 @@
     import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
     import gridConfig from '../../../sdg/scss/settings/grid.json';
-    import {html} from "js-beautify/js/src";
     let {
         text,
         description,
