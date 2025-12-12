@@ -19,7 +19,8 @@
         defaultTranslateY = "calc(-50% + 8px)",
         defaultTranslateX = "-50%"
     ;
-    let tooltipPanel = $state(),
+    let isFr = Utils.getPageLanguage() === "fr",
+        tooltipPanel = $state(),
         tooltipId = Utils.generateId("tooltip"),
         tooltipContainer,
         tooltipButton = $state(),
@@ -34,7 +35,15 @@
         modalFlag = $derived(mobileFlag || displayMode === "modal"),
         hasDescription = $derived.by(_ => hasProperty(description, slots["description"], descriptionSlot)),
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
-        tooltipIcon = $derived( icon + "-tooltip")
+        tooltipIcon = $derived( icon + "-tooltip"),
+        labels = {
+            tooltipButton: {
+                ariaLabel: isFr ? "Afficher l'aide contextuelle" : "Display tooltip",
+            },
+            closeButton: {
+                ariaLabel : isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
+            }
+        }
     ;
 
     function hasProperty(property, slotExist, snippet) {
@@ -305,7 +314,6 @@
     {#if hasText}
      <span class="qc-tooltip-text"
            onclick={showTooltip}
-           role="button"
            tabindex="-1"
         >{@html text}{@render textSlot()}</span>
     {:else}
@@ -321,6 +329,7 @@
          <a role="button"
             class="qc-tooltip-button"
             href="#top"
+            aria-label={labels.tooltipButton.ariaLabel}
             onclick={showTooltip}
             bind:this={tooltipButton}
             aria-describedby={tooltipId}
@@ -336,6 +345,7 @@
          {#if !modalFlag && displayPopover}
          <div class="qc-tooltip-pin"
               class:qc-tooltip-visible={visiblePopover}
+              aria-hidden="true"
             >
              <svg
                  width="9"
@@ -392,6 +402,7 @@
         <a role="button"
            class="qc-tooltip-xclose"
            href="#top"
+           aria-label={labels.closeButton.ariaLabel}
            onclick={closeTooltip}
            onkeydown={e => {
                  if (e.code === "Space") {
