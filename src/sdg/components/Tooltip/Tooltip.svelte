@@ -108,6 +108,7 @@
     }
 
     function toggleModal(e) {
+        if (!modale) return;
         const body = document.querySelector("body");
         body.style.overflow = modale.open ? "hidden" : "";
     }
