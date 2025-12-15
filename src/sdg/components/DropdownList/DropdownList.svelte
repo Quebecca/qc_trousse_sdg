@@ -256,6 +256,14 @@
     });
 
     $effect(() => {
+        if (value) {
+            items.forEach((item) => {
+                item.checked = value.includes(item.value);
+            });
+        }
+    });
+
+    $effect(() => {
         items.forEach((item) => {
             if (!item.id) {
                 item.id = `${id}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
