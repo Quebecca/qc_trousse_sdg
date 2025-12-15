@@ -239,13 +239,13 @@
         //$inspect("Fallback")
     }
 
-    function closeIfClickOutEvent(e) {
+    function closeOnTooltipBlur(e) {
         if (preventOuterEventClosing) return
         if (e.tooltipContainer === tooltipContainer) return;
         displayPopover = false;
     }
 
-    function closeIfBlur(e) {
+    function closeOnWindowBlur(e) {
         if (preventOuterEventClosing) return
         displayPopover = false
     }
@@ -294,10 +294,11 @@
 </script>
 
 <svelte:document
-        onclick={closeIfClickOutEvent}
+        onclick={closeOnTooltipBlur}
+        onfocusin={closeOnTooltipBlur}
 />
 <svelte:window
-        onblur={closeIfBlur}
+        onblur={closeOnWindowBlur}
 />
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="qc-tooltip"
