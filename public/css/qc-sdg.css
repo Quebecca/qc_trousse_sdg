@@ -2796,6 +2796,11 @@ a.qc-button {
   column-gap: var(--qc-spacer-md);
 }
 
+.qc-tooltip-content > :last-child,
+.qc-tooltip-content :last-child > :last-child {
+  margin-bottom: 0;
+}
+
 .qc-scrollbar::-webkit-scrollbar,
 .qc-scrollbar ::-webkit-scrollbar {
   width: var(--qc-spacer-xs);
