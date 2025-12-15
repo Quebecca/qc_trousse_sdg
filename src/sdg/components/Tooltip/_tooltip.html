@@ -1,4 +1,15 @@
 <h2 id="tooltip">Infobulle (qc-tooltip)</h2>
+<p>Les infobulles se ferment automatiquement à la perte de focus. Vous pouvez désactiver ce comportement en cochant la case ci-dessous :</p>
+<qc-checkbox>
+  <label><input type="checkbox"
+                id="prevent-closing-onblur"/><span>Empêcher la fermeture des infobulles à la perte de focus<span></span></label>
+</qc-checkbox>
+<script>
+  document.getElementById('prevent-closing-onblur').addEventListener('change', (e) => {
+    document.querySelectorAll('qc-tooltip').forEach(tooltip => tooltip.preventOuterEventClosing = e.target.checked)
+  });
+</script>
+
 <h3>Exemples</h3>
 <h4>Infobulles simples</h4>
 <qc-doc-exemple id="alert-warning"
