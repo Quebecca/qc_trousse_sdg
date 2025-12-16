@@ -410,7 +410,7 @@
          class="qc-tooltip-panel"
          onclick={e => e.clickIntoPanel = true}
          class:qc-tooltip-visible={visiblePopover}
-         class:qc-shading-1={displayMode === "popover"}
+         class:qc-shading-2={displayMode === "popover"}
          bind:this={tooltipPanel}
          style:--translateY={translateY}
          style:--translateX={translateX}
@@ -486,7 +486,8 @@
         max-height:calc(var(--max-height) - 48px);
         scrollbar-gutter: stable;
         padding-right:16px;
-        padding-top: 2px;
+        padding-top: 3px;
+        padding-left: 3px;
     }
 
     .qc-tooltip-content:focus-visible {
@@ -541,7 +542,8 @@
         color: var(--qc-color-text-primary);
         width: 100%;
         max-width: var(--qc-max-content-width);
-        padding-top: 22px;
+        padding-top: 21px;
+        padding-left: 13px;
         padding-bottom: 24px;
     }
 
@@ -553,7 +555,6 @@
             min-width: 216px;
             max-width: 320px;
             padding-right: 8px;
-            padding-left: 16px;
             width: max-content;
             border: 1px solid var(--qc-color-grey-light);
             transform: translateY(var(--translateY));
