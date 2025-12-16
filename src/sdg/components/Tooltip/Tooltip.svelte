@@ -417,7 +417,9 @@
          id={tooltipId}
     >
         <div class="qc-tooltip-content">
+            <div class="qc-tooltip-content-text">
             {@html description}{@render descriptionSlot()}
+            </div>
         </div>
         <a role="button"
            class="qc-tooltip-xclose"
@@ -483,11 +485,15 @@
 
     .qc-tooltip-content {
         overflow-y: auto;
-        max-height:calc(var(--max-height) - 48px);
+        max-height: calc(var(--max-height) - 48px);
         scrollbar-gutter: stable;
-        padding-right:16px;
+        padding-right: 16px;
         padding-top: 3px;
         padding-left: 3px;
+    }
+
+    .qc-tooltip-content-text {
+        max-inline-size: var(--qc-max-content-width);
     }
 
     .qc-tooltip-content:focus-visible {
@@ -541,7 +547,6 @@
         background: var(--qc-color-background);
         color: var(--qc-color-text-primary);
         width: 100%;
-        max-width: var(--qc-max-content-width);
         padding-top: 21px;
         padding-left: 13px;
         padding-bottom: 24px;
