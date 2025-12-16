@@ -45,6 +45,7 @@
             }
         }
     ;
+    $inspect("modalFlag",modalFlag)
 
     function hasProperty(property, slotExist, snippet) {
         if (property) return true;
@@ -99,7 +100,9 @@
     function closeTooltip(e) {
         e.preventDefault();
         if (modalFlag) {
+            if (!modale) return;
             modale.close();
+            toggleModal(e);
             displayModal = false;
         }
         else {
@@ -110,7 +113,12 @@
     function toggleModal(e) {
         if (!modale) return;
         const body = document.querySelector("body");
-        body.style.overflow = modale.open ? "hidden" : "";
+        if (modale.open) {
+            body.style.overflow = "hidden";
+        }
+        else {
+            body.style.overflow = ""
+        }
     }
 
     async function showModal(e) {
@@ -241,8 +249,10 @@
 
     function closeOnTooltipBlur(e) {
         if (preventOuterEventClosing) return
+        console.log("closeOnTooltipBlur",e.tooltipContainer === undefined)
         if (e.tooltipContainer === tooltipContainer) return;
         displayPopover = false;
+        closeTooltip(e)
     }
 
     function closeOnWindowBlur(e) {
@@ -290,7 +300,6 @@
                 return rect[position] - (border - offset)
         }
     }
-    $inspect(hasText, hasDescription)
 </script>
 
 <svelte:document
@@ -510,6 +519,8 @@
     }
 
     .qc-tooltip-panel {
+        font-size: var(--qc-font-size-sm);
+        line-height: var(--qc-line-height-sm);
         position: relative;
         min-height: 68px;
         max-height: var(--max-height);
