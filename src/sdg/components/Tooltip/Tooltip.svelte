@@ -97,20 +97,25 @@
         }
     }
 
-    function closeTooltip(e) {
-        e.preventDefault();
+    function closeTooltip() {
+        console.log("closeTooltip")
         if (modalFlag) {
-            if (!modale) return;
-            modale.close();
-            toggleModal(e);
-            displayModal = false;
+            closeModale()
         }
         else {
             displayPopover = false;
         }
     }
 
-    function toggleModal(e) {
+    function closeModale() {
+        if (!modale) return;
+
+        modale.close();
+        toggleModal();
+        displayModal = false;
+    }
+
+    function toggleModal() {
         if (!modale) return;
         const body = document.querySelector("body");
         if (modale.open) {
@@ -249,15 +254,13 @@
 
     function closeOnTooltipBlur(e) {
         if (preventOuterEventClosing) return
-        console.log("closeOnTooltipBlur",e.tooltipContainer === undefined)
         if (e.tooltipContainer === tooltipContainer) return;
-        displayPopover = false;
-        closeTooltip(e)
+        closeTooltip()
     }
 
     function closeOnWindowBlur(e) {
         if (preventOuterEventClosing) return
-        displayPopover = false
+        closeTooltip()
     }
 
     function markInnerEvent(e) {
@@ -317,6 +320,7 @@
              //$inspect("keydown", e.key)
              if (modalFlag) return;
              if (e.key === "Escape") {
+                 e.preventDefault()
                  closeTooltip(e);
              }
          }}
@@ -386,6 +390,10 @@
          <dialog bind:this={modale}
                  ontoggle={toggleModal}
                  class:qc-desktop={!mobileFlag}
+                 onclick={e => {
+                     if (e.clickIntoPanel) return;
+                     closeModale();
+                 }}
             >
             <div class="qc-container">
                 {@render tooltipPanelSnippet("modal")}
@@ -397,9 +405,10 @@
 </div>
 
 {#snippet tooltipPanelSnippet(displayMode)}
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions,a11y_click_events_have_key_events -->
     <div role="tooltip"
          class="qc-tooltip-panel"
+         onclick={e => e.clickIntoPanel = true}
          class:qc-tooltip-visible={visiblePopover}
          class:qc-shading-1={displayMode === "popover"}
          bind:this={tooltipPanel}
@@ -414,9 +423,13 @@
            class="qc-tooltip-xclose"
            href="#top"
            aria-label={labels.closeButton.ariaLabel}
-           onclick={closeTooltip}
+           onclick={e => {
+               e.preventDefault();
+               closeTooltip();
+           }}
            onkeydown={e => {
                  if (e.code === "Space") {
+                     e.preventDefault();
                      closeTooltip(e);
                  }
              }}
