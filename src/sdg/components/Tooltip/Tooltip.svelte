@@ -574,15 +574,18 @@
             transform: translateX(var(--translateX));
         }
 
+        &.qc-tooltip-top .qc-tooltip-pin,
+        &.qc-tooltip-bottom .qc-tooltip-pin
+        {
+            left: calc(.5 * var(--pin-height) - 1px);
+        }
         &.qc-tooltip-top .qc-tooltip-pin {
             top: calc(-100% - var(--pin-gap) + 2px);
-            left: calc(var(--pin-height) - 1px);
             transform: rotate(-90deg);
         }
 
         &.qc-tooltip-bottom .qc-tooltip-pin {
             top: calc(100% + var(--pin-gap) - 1px);
-            left: 8px;
             transform: rotate(90deg);
         }
 
