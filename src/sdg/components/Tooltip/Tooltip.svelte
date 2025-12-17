@@ -198,7 +198,7 @@
         return result;
     }
 
-    function getOtherAxisPlacements(placement) {
+    function getOtherAxisPositions(placement) {
         return placement === "right"
                 ? ["top", "bottom"]
                 : ["right", "left"];
@@ -207,10 +207,10 @@
     function adjustCrossAxis(tooltipPanel, position) {
         translateX = defaultTranslateX,
         translateY = defaultTranslateY
-        let otherAxisPopsitions = getOtherAxisPlacements(position);
+        let otherAxisPositions = getOtherAxisPositions(position);
         let adjustable = true;
 
-        otherAxisPopsitions.forEach(otherAxisPosition => {
+        otherAxisPositions.forEach(otherAxisPosition => {
             // await waitForNextFrame();
             if (!adjustable) return;
             //$inspect(`adjustPin ${otherAxisPosition}`)
