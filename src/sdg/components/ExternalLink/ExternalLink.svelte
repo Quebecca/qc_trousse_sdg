@@ -1,12 +1,15 @@
 <script>
 import {Utils} from "../utils";
 import Icon from "../../bases/Icon/Icon.svelte";
+import {tick} from "svelte";
 
 let {
     externalIconAlt = Utils.getPageLanguage() === 'fr'
         ? "Ce lien dirige vers un autre site."
         : "This link directs to another site.",
-    links = $bindable([])
+    links = [],
+    isUpdating = $bindable(false),
+    nestedExternalLinks = false
 } = $props();
 
 let imgElement = $state();
@@ -47,8 +50,6 @@ function createVisibleNodesTreeWalker(link) {
 function addExternalLinkIcon(link) {
     // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
     const walker = createVisibleNodesTreeWalker(link);
-    console.log(link);
-    console.log(walker);
 
     let lastTextNode = null;
     while (walker.nextNode()) {
@@ -85,12 +86,23 @@ function addExternalLinkIcon(link) {
 }
 
 $effect(() => {
-    links.forEach((link) => {
-        addExternalLinkIcon(link);
+    if (nestedExternalLinks || links.length <= 0 || !imgElement) {
+        return;
+    }
+
+    isUpdating = true;
+
+    tick().then(() => {
+        links.forEach(link => {
+            if (!link.querySelector('.qc-ext-link-img')) {
+                addExternalLinkIcon(link);
+            }
+        });
+        return tick();
+    }).then(() => {
+        isUpdating = false;
     });
 });
-
-$inspect(links);
 </script>
 
 <div hidden>

@@ -767,62 +767,6 @@
 	/** @import { Derived, Reaction, Value } from '#client' */
 
 	/**
-	 * @param {string} label
-	 * @returns {Error & { stack: string } | null}
-	 */
-	function get_stack(label) {
-		// @ts-ignore stackTraceLimit doesn't exist everywhere
-		const limit = Error.stackTraceLimit;
-
-		// @ts-ignore
-		Error.stackTraceLimit = Infinity;
-		let error = Error();
-
-		// @ts-ignore
-		Error.stackTraceLimit = limit;
-
-		const stack = error.stack;
-
-		if (!stack) return null;
-
-		const lines = stack.split('\n');
-		const new_lines = ['\n'];
-
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const posixified = line.replaceAll('\\', '/');
-
-			if (line === 'Error') {
-				continue;
-			}
-
-			if (line.includes('validate_each_keys')) {
-				return null;
-			}
-
-			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
-				continue;
-			}
-
-			new_lines.push(line);
-		}
-
-		if (new_lines.length === 1) {
-			return null;
-		}
-
-		define_property(error, 'stack', {
-			value: new_lines.join('\n')
-		});
-
-		define_property(error, 'name', {
-			value: label
-		});
-
-		return /** @type {Error & { stack: string }} */ (error);
-	}
-
-	/**
 	 * @param {Value} source
 	 * @param {string} label
 	 */
@@ -3684,11 +3628,6 @@
 		return create_effect(EFFECT | USER_EFFECT, fn, false);
 	}
 
-	/** @param {() => void | (() => void)} fn */
-	function eager_effect(fn) {
-		return create_effect(EAGER_EFFECT, fn, true);
-	}
-
 	/**
 	 * Internal representation of `$effect.root(...)`
 	 * @param {() => void | (() => void)} fn
@@ -5947,75 +5886,6 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} inspector
-	 * @param {boolean} show_stack
-	 */
-	function inspect(get_value, inspector, show_stack = false) {
-		validate_effect();
-
-		let initial = true;
-		let error = /** @type {any} */ (UNINITIALIZED);
-
-		// Inspect effects runs synchronously so that we can capture useful
-		// stack traces. As a consequence, reading the value might result
-		// in an error (an `$inspect(object.property)` will run before the
-		// `{#if object}...{/if}` that contains it)
-		eager_effect(() => {
-			try {
-				var value = get_value();
-			} catch (e) {
-				error = e;
-				return;
-			}
-
-			var snap = snapshot(value, true, true);
-			untrack(() => {
-				if (show_stack) {
-					inspector(...snap);
-
-					if (!initial) {
-						const stack = get_stack('$inspect(...)');
-						// eslint-disable-next-line no-console
-
-						if (stack) {
-							// eslint-disable-next-line no-console
-							console.groupCollapsed('stack trace');
-							// eslint-disable-next-line no-console
-							console.log(stack);
-							// eslint-disable-next-line no-console
-							console.groupEnd();
-						}
-					}
-				} else {
-					inspector(initial ? 'init' : 'update', ...snap);
-				}
-			});
-
-			initial = false;
-		});
-
-		// If an error occurs, we store it (along with its stack trace).
-		// If the render effect subsequently runs, we log the error,
-		// but if it doesn't run it's because the `$inspect` was
-		// destroyed, meaning we don't need to bother
-		render_effect(() => {
-			try {
-				// call `get_value` so that this runs alongside the inspect effect
-				get_value();
-			} catch {
-				// ignore
-			}
-
-			if (error !== UNINITIALIZED) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-				error = UNINITIALIZED;
-			}
-		});
 	}
 
 	/**
@@ -9081,7 +8951,7 @@
 		return objects;
 	}
 
-	class Utils {
+	let Utils$1 = class Utils {
 
 	    static assetsBasePath =
 	        document
@@ -9240,7 +9110,7 @@
 
 	        return new MutationObserver(callback);
 	    }
-	}
+	};
 
 	function getCacheBustingParam(cssPath, currentScriptSrc) {
 	    const pattern = /\?.*$/;
@@ -9458,7 +9328,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
+		const isFr = strict_equals(Utils$1.getPageLanguage(), 'fr');
 		const defaultHeader = 'h2';
 		const defaultType = 'information';
 
@@ -9698,7 +9568,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -9762,12 +9632,12 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of government of Québec'),
@@ -9846,7 +9716,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10169,7 +10039,7 @@
 
 				add_svelte_meta(
 					() => if_block(node_4, ($$render) => {
-						if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
+						if (Utils$1.isTruthy(enableSearch())) $$render(consequent_3);
 					}),
 					'if',
 					PivHeader,
@@ -10467,7 +10337,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -10521,11 +10391,11 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of the Quebec government'),
@@ -10553,7 +10423,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg') {
+			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10562,7 +10432,7 @@
 				return logoSrcDarkTheme();
 			},
 
-			set logoSrcDarkTheme($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrcDarkTheme($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrcDarkTheme($$value);
 				flushSync();
 			},
@@ -10845,7 +10715,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -11058,7 +10928,7 @@
 			rootElement = prop($$props, 'rootElement', 15),
 			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
 
-		const language = Utils.getPageLanguage();
+		const language = Utils$1.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 
@@ -11099,7 +10969,7 @@
 
 			if (!key) return;
 
-			sessionStorage.setItem(key, Utils.now());
+			sessionStorage.setItem(key, Utils$1.now());
 		}
 
 		var $$exports = {
@@ -11279,7 +11149,7 @@
 
 					add_svelte_meta(
 						() => if_block(node_4, ($$render) => {
-							if (Utils.isTruthy(maskable())) $$render(consequent);
+							if (Utils$1.isTruthy(maskable())) $$render(consequent);
 						}),
 						'if',
 						Alert,
@@ -11303,7 +11173,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (!Utils.isTruthy(hide())) $$render(consequent_1);
+					if (!Utils$1.isTruthy(hide())) $$render(consequent_1);
 				}),
 				'if',
 				Alert,
@@ -11405,7 +11275,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -11435,7 +11305,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
@@ -11447,7 +11317,7 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (Utils.isTruthy(demo())) {
+			if (Utils$1.isTruthy(demo())) {
 				return;
 			}
 
@@ -11567,16 +11437,18 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[96, 0]]);
+	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[108, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr')
+		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils$1.getPageLanguage(), 'fr')
 				? "Ce lien dirige vers un autre site."
 				: "This link directs to another site."),
-			links = prop($$props, 'links', 31, () => tag_proxy(proxy([]), 'links'));
+			links = prop($$props, 'links', 23, () => []),
+			isUpdating = prop($$props, 'isUpdating', 15, false),
+			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
 
 		let imgElement = tag(state(void 0), 'imgElement');
 
@@ -11613,9 +11485,6 @@
 		function addExternalLinkIcon(link) {
 			// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
 			const walker = createVisibleNodesTreeWalker(link);
-
-			console.log(...log_if_contains_state('log', link));
-			console.log(...log_if_contains_state('log', walker));
 
 			let lastTextNode = null;
 
@@ -11657,12 +11526,24 @@
 		}
 
 		user_effect(() => {
-			links().forEach((link) => {
-				addExternalLinkIcon(link);
+			if (nestedExternalLinks() || links().length <= 0 || !get(imgElement)) {
+				return;
+			}
+
+			isUpdating(true);
+
+			tick().then(() => {
+				links().forEach((link) => {
+					if (!link.querySelector('.qc-ext-link-img')) {
+						addExternalLinkIcon(link);
+					}
+				});
+
+				return tick();
+			}).then(() => {
+				isUpdating(false);
 			});
 		});
-
-		inspect(() => [links()], (...$$args) => console.log(...$$args), true);
 
 		var $$exports = {
 			get externalIconAlt() {
@@ -11670,7 +11551,7 @@
 			},
 
 			set externalIconAlt(
-				$$value = Utils.getPageLanguage() === 'fr'
+				$$value = Utils$1.getPageLanguage() === 'fr'
 					? "Ce lien dirige vers un autre site."
 					: "This link directs to another site."
 			) {
@@ -11684,6 +11565,24 @@
 
 			set links($$value = []) {
 				links($$value);
+				flushSync();
+			},
+
+			get isUpdating() {
+				return isUpdating();
+			},
+
+			set isUpdating($$value = false) {
+				isUpdating($$value);
+				flushSync();
+			},
+
+			get nestedExternalLinks() {
+				return nestedExternalLinks();
+			},
+
+			set nestedExternalLinks($$value = false) {
+				nestedExternalLinks($$value);
 				flushSync();
 			},
 
@@ -11713,7 +11612,7 @@
 			}),
 			'component',
 			ExternalLink,
-			97,
+			109,
 			4,
 			{ componentTag: 'Icon' }
 		);
@@ -11724,7 +11623,18 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(ExternalLink, { externalIconAlt: {}, links: {} }, [], [], true);
+	create_custom_element(
+		ExternalLink,
+		{
+			externalIconAlt: {},
+			links: {},
+			isUpdating: {},
+			nestedExternalLinks: {}
+		},
+		[],
+		[],
+		true
+	);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
 
@@ -11734,26 +11644,72 @@
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		let links = tag(state(proxy(queryLinks())), 'links');
+		let isUpdating = tag(state(false), 'isUpdating');
+		let pendingUpdate = false;
+		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
+		const observer = Utils$1.createMutationObserver($$props.$$host, refreshLinks);
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
 		}
 
+		function refreshLinks() {
+			if (get(isUpdating) || pendingUpdate) {
+				return;
+			}
+
+			pendingUpdate = true;
+
+			tick().then(() => {
+				if (get(isUpdating)) {
+					pendingUpdate = false;
+
+					return;
+				}
+
+				set(links, queryLinks(), true);
+				pendingUpdate = false;
+			});
+		}
+
+		onMount(() => {
+			$$props.$$host.classList.add('qc-external-link');
+			observer?.observe($$props.$$host, { childList: true, characterData: true, subtree: true });
+		});
+
+		onDestroy(() => observer?.disconnect());
+
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(
-			() => ExternalLink($$anchor, spread_props(() => props, {
-				get links() {
-					return get(links);
+			() => ExternalLink($$anchor, spread_props(
+				{
+					get nestedExternalLinks() {
+						return nestedExternalLinks;
+					}
 				},
+				() => props,
+				{
+					get links() {
+						return get(links);
+					},
 
-				set links($$value) {
-					set(links, $$value, true);
+					set links($$value) {
+						set(links, $$value, true);
+					},
+
+					get isUpdating() {
+						return get(isUpdating);
+					},
+
+					set isUpdating($$value) {
+						set(isUpdating, $$value, true);
+					}
 				}
-			})),
+			)),
 			'component',
 			ExternalLinkWC,
-			20,
+			54,
 			0,
 			{ componentTag: 'ExternalLink' }
 		);
@@ -11771,7 +11727,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
@@ -11991,7 +11947,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
@@ -12022,7 +11978,7 @@
 		let inputProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("input", rest),
+					...Utils$1.computeFieldsAttributes("input", rest),
 					name: name()
 				})),
 				'inputProps'
@@ -12030,7 +11986,7 @@
 			submitProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("submit", rest)
+					...Utils$1.computeFieldsAttributes("submit", rest)
 				})),
 				'submitProps'
 			);
@@ -12248,7 +12204,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 7),
 			label = prop($$props, 'label', 7, ''),
@@ -12272,7 +12228,7 @@
 		onMount(() => {
 			if (id()) return;
 
-			id(Utils.generateId('qc-form-error'));
+			id(Utils$1.generateId('qc-form-error'));
 		});
 
 		var $$exports = {
@@ -12623,7 +12579,7 @@
 			rootElement = prop($$props, 'rootElement', 15);
 
 		let groupSelection = tag(state(void 0), 'groupSelection'),
-			legendId = name() ? "id_" + name() : Utils.generateId("legend");
+			legendId = name() ? "id_" + name() : Utils$1.generateId("legend");
 
 		var $$exports = {
 			get legend() {
@@ -13257,7 +13213,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13318,7 +13274,7 @@
 			append($$anchor, fragment);
 		});
 
-		Utils.getPageLanguage();
+		Utils$1.getPageLanguage();
 			const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
@@ -13696,7 +13652,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13876,7 +13832,7 @@
 	        input.autocomplete = "off";
 	    }
 	    if (!input.id) {
-	        input.id =  Utils.generateId(input.type);
+	        input.id =  Utils$1.generateId(input.type);
 	    }
 	    setValue(input.value);
 	    setRequired(input.required);
@@ -14076,7 +14032,7 @@
 			append($$anchor, fragment);
 		});
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15, false),
@@ -14181,8 +14137,8 @@
 		});
 
 		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils.generateId('description-'),
-			charCountId = Utils.generateId('charcount-');
+		const descriptionId = Utils$1.generateId('description-'),
+			charCountId = Utils$1.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -14712,7 +14668,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -16391,7 +16347,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
@@ -16458,7 +16414,7 @@
 			itemsForSearch = tag(
 				user_derived(() => items().map((item) => {
 					return {
-						label: Utils.cleanupSearchPrompt(item.label),
+						label: Utils$1.cleanupSearchPrompt(item.label),
 						value: item.value,
 						disabled: item.disabled,
 						checked: item.checked
@@ -16532,7 +16488,7 @@
 		}
 
 		function handleOuterEvent() {
-			if (!Utils.componentIsActive(get(instance))) {
+			if (!Utils$1.componentIsActive(get(instance))) {
 				expanded(false);
 			}
 		}
@@ -16541,7 +16497,7 @@
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
+				if (strict_equals(event.key, "Tab") && !Utils$1.componentIsActive(get(instance))) {
 					expanded(false);
 				}
 			}).catch(console.error);
@@ -16626,7 +16582,7 @@
 				let newDisplayedItems = [];
 
 				for (let i = 0; i < items().length; i++) {
-					if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) {
+					if (get(itemsForSearch)[i].label.includes(Utils$1.cleanupSearchPrompt(get(searchText)))) {
 						newDisplayedItems.push(items()[i]);
 					}
 				}
@@ -17320,7 +17276,7 @@
 		let selectElement = tag(state(void 0), 'selectElement');
 		let items = tag(state(void 0), 'items');
 		let labelElement = tag(state(void 0), 'labelElement');
-		const observer = Utils.createMutationObserver($$props.$$host, setupItemsList);
+		const observer = Utils$1.createMutationObserver($$props.$$host, setupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -17614,7 +17570,7 @@
 
 		var link = sibling(node_1, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
