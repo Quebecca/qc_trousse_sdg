@@ -166,6 +166,9 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Intégration dans Bootstrap.
 
 ## Historique
+- 1.4.8 :
+  - Lien externe : annulation des changements de refonte de la structure HTML de `qc-external-link` en raison des régressions que cela cause ;
+  - Liste déroulante : correction de la réactivité sur l'attribut `value` ;
 - 1.4.7 :
   - Lien externe :
     - Refonte de la structure de `qc-external-link` pour utiliser un algorithme plus simple pour le contrôle des retours à la ligne des icônes ;
