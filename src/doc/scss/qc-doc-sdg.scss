@@ -1,5 +1,6 @@
 @use "qc-sdg-lib" as *;
 @use "components/code" as *;
+@use "components/exemple" as *;
 @use "tables";
 @use "jQueryUI/jquery-ui.autocomplete";
 
@@ -93,24 +94,39 @@ h1,h2,h3,h4,h5,h6 {
 
 a {
 
+  &.pseudo-visited {
+    color: token-value(color,link,visited);
+    & > .qc-ext-link-img {
+      background-color: token-value(color, link, visited);
+    }
+  }
   &.pseudo-hover {
     @include hover-link();
+    & > .qc-ext-link-img {
+      background-color: token-value(color, link, hover);
+    }
   }
   &.pseudo-active {
     @include active-link();
+    & > .qc-ext-link-img {
+      background-color: token-value(color, link, active);
+    }
   }
   &.pseudo-focus {
     @include focus-link();
-  }
-  &.pseudo-visited {
-    color: token-value(color,link,visited)!important;
+    & > .qc-ext-link-img {
+      background-color: token-value(color, link, text);
+    }
   }
   &.not-visited:visited:not(:hover) {
     color: token-value(color,link,text);
+    & > .qc-ext-link-text {
+      color: token-value(color,link,text);
+    }
   }
 }
 
-span.qc-ext-link-img {
+div.qc-ext-link-img {
   a.pseudo-visited  & {
     background: token-value(color link visited)!important;
   }
@@ -122,6 +138,9 @@ span.qc-ext-link-img {
   }
   a.pseudo-active  & {
     background: token-value(color link active)!important;
+  }
+  a.not-visited:visited:not(:hover) & {
+    background: token-value(color link text)!important;
   }
 }
 

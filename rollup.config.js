@@ -18,12 +18,11 @@ import buildSvelteTests from "./plugins/buildSvelteTests";
 
 const
     dev_process = (process.env.npm_lifecycle_event == 'dev'),
-    version_process = (process.env.npm_lifecycle_event == 'version'),
     build_process = (process.env.npm_lifecycle_event == 'build')
 ;
 const verbose = false;
 const  includePaths = [
-        dev_process && 'src/doc/scss',
+        !build_process && 'src/doc/scss',
         'src/sdg/scss',
         "src",
 ].filter(Boolean);
@@ -66,7 +65,7 @@ const scssOptions = {
             cssReplace({
                 data: {
                     'pkg-version': pkg.version,
-                    'dev-env': dev_process ? 'true' : 'false',
+                    'dev-env': !build_process ? 'true' : 'false',
                 }
             })
         ])
@@ -95,7 +94,7 @@ let
         compilerOptions: {
             // enable run-time checks
             customElement: true,
-            dev: dev_process,
+            dev: !build_process,
             cssHash: ({ hash, name, filename, css }) => {
                 // replacement of default `svelte-${hash(css)}`
                 return `qc-hash-${hash(css)}`;

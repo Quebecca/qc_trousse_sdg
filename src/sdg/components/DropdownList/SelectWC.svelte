@@ -13,7 +13,8 @@
         placeholder: {attribute: 'placeholder', type: 'String'},
         searchPlaceholder: {attribute: 'search-placeholder', type: 'String'},
         noOptionsMessage: {attribute: 'no-options-message', type: 'String'},
-        multiple: {attribute: 'multiple', type: 'Boolean'}
+        multiple: {attribute: 'multiple', type: 'Boolean'},
+        expanded: {attribute: 'expanded', type: 'Boolean', reflect: true},
     }
 }}"/>
 
@@ -31,14 +32,15 @@
         label,
         placeholder,
         width,
+        expanded = $bindable(false),
         ...rest
     } = $props();
 
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
-    let observer = new MutationObserver(setupItemsList);
-    let observerOptions = {
+    const observer = Utils.createMutationObserver($host(), setupItemsList);
+    const observerOptions = {
         childList: true,
         attributes: true,
         subtree: true,
@@ -48,6 +50,7 @@
     let errorElement = $state();
     let parentRow = $derived($host().closest(".qc-formfield-row"));
     let internalChange = false;
+    let previousValue = $state(value);
 
     onMount(() => {
         selectElement = $host().querySelector("select");
@@ -55,12 +58,14 @@
         if (labelElement) {
             label = labelElement.innerHTML;
         }
+
         if (selectElement) {
             multiple = selectElement.multiple;
             disabled = selectElement.disabled;
 
             selectElement.addEventListener("change", handleSelectChange);
-            observer.observe(selectElement, observerOptions);
+
+            observer?.observe(selectElement, observerOptions);
         }
         setupItemsList();
         $host().classList.add("qc-select");
@@ -75,19 +80,39 @@
         if (!selectElement) return;
         if (!selectElement.options) return;
         internalChange = true;
-        let newOptionSelected = false;
         for (const option of selectElement.options) {
-                const selected = value.includes(option.value);
-                if (selected !== option.selected) {
-                    option.toggleAttribute("selected", selected);
-                    option.selected = selected;
-                    newOptionSelected = true;
+            const selected = value.includes(option.value);
+            if (selected !== option.selected) {
+                option.toggleAttribute("selected", selected);
+                option.selected = selected;
             }
         }
-        if (newOptionSelected) {
-            selectElement.dispatchEvent(new Event('change'));
+        tick().then(() => internalChange = false);
+    });
+
+    $effect(() => {
+        if (previousValue.toString() !== value.toString()) {
+            previousValue = value;
+            selectElement?.dispatchEvent(new CustomEvent('change', {detail: value}));
         }
-        tick().then(() => internalChange = false)
+    });
+
+    $effect(() => {
+        if (expanded) {
+            selectElement?.dispatchEvent(
+                new CustomEvent('qc.select.show', {
+                    bubbles: true,
+                    composed: true
+                })
+            );
+        } else {
+            selectElement?.dispatchEvent(
+                new CustomEvent('qc.select.hide', {
+                    bubbles: true,
+                    composed: true
+                })
+            );
+        }
     });
 
     $effect(() => {
@@ -134,6 +159,7 @@
         {multiple}
         {disabled}
         {required}
+        bind:expanded
         {...rest}
 />
 <link rel='stylesheet' href='{Utils.cssPath}'>

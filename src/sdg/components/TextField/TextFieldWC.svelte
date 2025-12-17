@@ -40,11 +40,22 @@
         textFieldRow = $state()
     ;
     onMount(() => {
-        input = $host().querySelector('input,textarea');
+        const initialLabelElement = $host()?.querySelector('label');
+        if (initialLabelElement) {
+            label = initialLabelElement.innerHTML;
+            initialLabelElement.remove();
+        }
+
+        input = $host()?.querySelector('input,textarea');
         onMountInput(input,
             textFieldRowParam => textFieldRow = textFieldRowParam,
             valueParam => value = valueParam,
-            invalidParam => invalid = invalidParam
+            invalidParam => invalid = invalidParam,
+            requiredParam => {
+                if (requiredParam) {
+                    required = requiredParam;
+                }
+            }
         )
     })
 
@@ -55,22 +66,25 @@
 
     $effect(() => {
         if (!input) return;
-        if (label) {
-            input.before(labelElement);
-        }
         if (description) {
             input.before(descriptionElement);
         }
-        if (invalid) {
-            if (textFieldRow) {
-                textFieldRow.appendChild(formErrorElement);
-            }
-            else {
-                input.after(formErrorElement);
-            }
-        }
         if (maxlength) {
             input.after(maxlengthElement);
+        }
+    })
+
+    $effect(() => {
+        if (!formErrorElement) return;
+        if (textFieldRow) {
+            textFieldRow.appendChild(formErrorElement);
+        }
+        else {
+            if (maxlengthElement) {
+                maxlengthElement.after(formErrorElement);
+            } else {
+                input.after(formErrorElement);
+            }
         }
     })
 </script>

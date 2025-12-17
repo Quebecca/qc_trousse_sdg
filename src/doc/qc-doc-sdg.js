@@ -16,7 +16,8 @@ const maskableAlert = document.getElementById("alerte-masquable");
 if (displayAlertLink) {
     displayAlertLink.addEventListener(
         'click',
-        () => {
+        (evt) => {
+            evt.preventDefault();
             maskableAlert.setAttribute('hide', 'false');
             displayAlertLink.hidden = true;
         }
@@ -28,6 +29,10 @@ if (displayAlertLink) {
             displayAlertLink.hidden = false;
         }
     )
+}
+
+if (maskableAlert && displayAlertLink && !maskableAlert.querySelector('.qc-general-alert')) {
+    displayAlertLink.removeAttribute('hidden');
 }
 // add version
 

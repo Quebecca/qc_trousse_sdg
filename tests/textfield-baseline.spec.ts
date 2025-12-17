@@ -15,14 +15,14 @@ test('textfield baseline', {
 
 test.describe('Aria', () => {
     test('aria-required', async ({ page }) => {
-        await expect(page.getByRole('textbox', { name: 'Large', exact: true })).toHaveAttribute('aria-required', 'true');
+        await expect(page.locator('#text-lg')).toHaveAttribute('aria-required', 'true');
     });
 
     test('aria-invalid', async ({ page }) => {
-        await expect(page.getByRole('textbox', { name: 'Moyen', exact: true })).toHaveAttribute('aria-invalid', 'true');
+        await expect(page.locator('#text-md')).toHaveAttribute('aria-invalid', 'true');
 
-        await page.getByRole('textbox', { name: 'Moyen' }).click();
-        await page.getByRole('textbox', { name: 'Moyen' }).fill('1');
-        await expect(page.getByRole('textbox', { name: 'Moyen', exact: true })).toHaveAttribute('aria-invalid', 'false');
+        await page.locator('#text-md').click();
+        await page.locator('#text-md').fill('1');
+        await expect(page.locator('#text-md')).toHaveAttribute('aria-invalid', 'false');
     });
 });

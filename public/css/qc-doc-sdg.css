@@ -8,38 +8,17 @@ pre {
   padding: 0;
   white-space: pre-wrap;
   overflow: auto;
+  position: relative;
 }
 pre code, pre .qc-code {
   font-family: var(--qc-font-family-code);
 }
 pre code button, pre .qc-code button {
   float: right;
-  right: var(--qc-spacer-xs);
-  top: var(--qc-spacer-xs);
-  padding: var(--qc-spacer-xs) var(--qc-spacer-sm);
-  color: white;
-  background-color: var(--qc-color-blue-piv);
-  border: 1px solid;
+  position: absolute;
+  right: var(--qc-spacer-sm);
+  top: var(--qc-spacer-sm);
   white-space: nowrap;
-  transition: none !important;
-}
-pre code button .copy, pre .qc-code button .copy {
-  display: inline;
-}
-pre code button .copied, pre .qc-code button .copied {
-  display: none;
-}
-pre code button.copied, pre .qc-code button.copied {
-  background-color: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-  color: var(--qc-color-blue-piv) !important;
-}
-pre code button.copied .copy, pre .qc-code button.copied .copy {
-  display: none;
-}
-pre code button.copied .copied, pre .qc-code button.copied .copied {
-  display: inline;
 }
 
 @keyframes fadeout {
@@ -171,6 +150,27 @@ code.hljs {
   font-weight: bold;
 }
 
+.exemple-area > figure {
+  display: block;
+  max-width: var(--qc-max-content-width);
+  width: 100%;
+  margin-bottom: var(--qc-spacer-content-block-mb);
+  padding-bottom: 1px;
+}
+.exemple-area > figure .exemple {
+  padding: var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm);
+  border: 1px solid var(--qc-box_shadow-0-color);
+}
+.exemple-area > figure .exemple > *:last-child {
+  margin-bottom: 0;
+}
+.exemple-area > figure > figcaption {
+  display: block;
+}
+.exemple-area > figure:has(qc-select) {
+  overflow-x: visible;
+}
+
 table.qc-table {
   margin-bottom: 0;
   background-color: var(--qc-color-white);
@@ -178,9 +178,6 @@ table.qc-table {
   max-width: 100%;
   overflow: auto;
   border-collapse: collapse;
-  /* ----- Striped tables ----- */
-  /* ----- Bordered tables ----- */
-  /* ----- TODO add footer style ----- */
 }
 table.qc-table > thead {
   background-color: var(--qc-color-blue-dark);
@@ -197,11 +194,20 @@ table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
   text-align: left;
   padding: var(--qc-spacer-xs);
 }
+table.qc-table {
+  /* ----- Striped tables ----- */
+}
 table.qc-table.qc-striped tbody tr:nth-of-type(even) {
   background-color: var(--qc-color-grey-pale);
 }
+table.qc-table {
+  /* ----- Bordered tables ----- */
+}
 table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
   border-bottom: 1px solid var(--qc-color-grey-light);
+}
+table.qc-table {
+  /* ----- TODO add footer style ----- */
 }
 
 .ui-autocomplete {
@@ -349,38 +355,67 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--qc-color-grey-light);
 }
 
+a.pseudo-visited {
+  color: var(--qc-color-link-visited);
+}
+a.pseudo-visited > .qc-ext-link-img {
+  background-color: var(--qc-color-link-visited);
+}
 a.pseudo-hover {
   color: var(--qc-color-link-hover);
   text-decoration: none;
+}
+a.pseudo-hover .qc-ext-link-text {
+  text-decoration: none;
+}
+a.pseudo-hover > .qc-ext-link-img {
+  background-color: var(--qc-color-link-hover);
 }
 a.pseudo-active {
   color: var(--qc-color-link-active);
   text-decoration: none;
 }
+a.pseudo-active .qc-ext-link-text {
+  text-decoration: none;
+}
+a.pseudo-active > .qc-ext-link-img {
+  background-color: var(--qc-color-link-active);
+}
 a.pseudo-focus {
   color: var(--qc-color-link-hover);
   text-decoration: none;
+}
+a.pseudo-focus .qc-ext-link-text {
+  text-decoration: none;
+}
+a.pseudo-focus {
   outline: 2px solid var(--qc-color-link-focus-outline);
   outline-offset: 1px;
 }
-a.pseudo-visited {
-  color: var(--qc-color-link-visited) !important;
+a.pseudo-focus > .qc-ext-link-img {
+  background-color: var(--qc-color-link-text);
 }
 a.not-visited:visited:not(:hover) {
   color: var(--qc-color-link-text);
 }
+a.not-visited:visited:not(:hover) > .qc-ext-link-text {
+  color: var(--qc-color-link-text);
+}
 
-a.pseudo-visited span.qc-ext-link-img {
+a.pseudo-visited div.qc-ext-link-img {
   background: var(--qc-color-link-visited) !important;
 }
-a.pseudo-focus span.qc-ext-link-img {
+a.pseudo-focus div.qc-ext-link-img {
   background: var(--qc-color-link-hover) !important;
 }
-a.pseudo-hover span.qc-ext-link-img {
+a.pseudo-hover div.qc-ext-link-img {
   background: var(--qc-color-link-hover) !important;
 }
-a.pseudo-active span.qc-ext-link-img {
+a.pseudo-active div.qc-ext-link-img {
   background: var(--qc-color-link-active) !important;
+}
+a.not-visited:visited:not(:hover) div.qc-ext-link-img {
+  background: var(--qc-color-link-text) !important;
 }
 
 p, h1, h2, h3, h4, h5, h6 {

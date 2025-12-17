@@ -2,7 +2,7 @@
 <h3>Exemples</h3>
 <h4>Alerte jaune</h4>
 <p>
-  <a href="javascript:;"
+  <a href="#"
      id="show-qc-alert"
      hidden
   >
@@ -11,26 +11,25 @@
 </p>
 
 <qc-doc-exemple id="alert-warning"
-                caption="Exemple d’alerte jaune">
+                caption="Exemple d’alerte jaune masquable. Elle reste masquée après rafraîchissement de la page tant que la session courante est active.">
   <qc-alert id="alerte-masquable"
             type="warning"
             maskable="true"
             content="Alerte jaune d’importance élevée"
+            persist-hidden
+            persistence-key="hash-1234"
   >
   </qc-alert>
 </qc-doc-exemple>
-<!--            <qc-code target-id="alert-warning"></qc-code>-->
 
 <h4>Alerte bleue</h4>
 <qc-doc-exemple id="alert-general"
                 caption="Exemple d’alerte générale">
   <qc-alert type="general"
             maskable="false">
-    <p>Alerte bleue d’importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+    <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
   </qc-alert>
 </qc-doc-exemple>
-
-<!--            <qc-code target-id="alert-general"></qc-code>-->
 
 <h3>Documentation technique</h3>
 
@@ -52,12 +51,6 @@
       <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
     </tr>
     <tr>
-      <td>maskable</td>
-      <td>"true" ou "false"</td>
-      <td>"true"</td>
-      <td>Afficher le bouton de fermeture de l’alerte</td>
-    </tr>
-    <tr>
       <td>content</td>
       <td>Texte</td>
       <td>Chaine vide</td>
@@ -77,6 +70,25 @@
         qc-container-fluid)
       </td>
     </tr>
+      <tr>
+          <td>maskable</td>
+          <td>"true" ou "false"</td>
+          <td>"true"</td>
+          <td>Afficher le bouton de fermeture de l’alerte</td>
+      </tr>
+      <tr>
+          <td>persist-hidden</td>
+          <td>na</td>
+          <td></td>
+          <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+      </tr>
+    <tr>
+      <td>persistence-key</td>
+      <td>Chaîne de caractère</td>
+      <td>Id de l'élément, valeur nulle sinon</td>
+      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+    </tr>
+
   </table>
 </div>
 
@@ -89,7 +101,7 @@
   document.addEventListener(
           'qc.alert.hide',
           (e) => {
-            console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');
+            console.log(`Fermeture de l'alerte id='${e.target.id}'`);
           }
   )
 </script>

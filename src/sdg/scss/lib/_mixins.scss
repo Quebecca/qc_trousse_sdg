@@ -38,11 +38,17 @@
 @mixin hover-link() {
   color: token-value(color, link, hover);
   text-decoration: none;
+  .qc-ext-link-text {
+    text-decoration: none;
+  }
 }
 
 @mixin active-link() {
   color: token-value(color, link, active);
   text-decoration: none;
+  .qc-ext-link-text {
+    text-decoration: none;
+  }
 }
 
 @mixin focus-link() {

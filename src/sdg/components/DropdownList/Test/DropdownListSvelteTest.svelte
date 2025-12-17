@@ -61,10 +61,10 @@
         items={multipleChoiceOptions}
 />
 
-<div class="qc-formfield-row">
+<div class="qc-formfield-row" style="margin-top: 0;">
     <DropdownList
             id="dropdown-list-invalid"
-            label="État invalide"
+            label="État initialement invalide dans .qc-formfield-row"
             invalid="true"
             items={invalidOptions}
     />

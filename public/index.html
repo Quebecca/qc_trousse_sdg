@@ -600,33 +600,33 @@
 <qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
     <dl>
         <dt>Lien interne</dt>
-        <dd><a href="javascript:;" class="not-visited">Lien interne</a></dd>
+        <dd><a href="#" class="not-visited">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="not-visited">Lien externe</a></qc-external-link>
+            <qc-external-link><a href="#" class="not-visited">Lien externe</a></qc-external-link>
         </dd>
 
         <dt>Lien au survol (pseudo-classe :hover)</dt>
-        <dd><a href="javascript:;" class="pseudo-hover">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-hover">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-hover">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-hover">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien au focus (pseudo-classe :focus)</dt>
-        <dd><a href="javascript:;" class="pseudo-focus">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-focus">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-focus">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-focus">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien au clic (pseudo-classe :active)</dt>
-        <dd><a href="javascript:;" class="pseudo-active">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-active">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-active">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-active">Lien externe</a>
             </qc-external-link>
         </dd>
         <dt>Lien visité (pseudo-classe :visited)</dt>
-        <dd><a href="javascript:;" class="pseudo-visited">Lien interne</a></dd>
+        <dd><a href="#" class="pseudo-visited">Lien interne</a></dd>
         <dd>
-            <qc-external-link><a href="javascript:;" class="pseudo-visited">Lien externe</a>
+            <qc-external-link><a href="#" class="pseudo-visited">Lien externe</a>
             </qc-external-link>
         </dd>
     </dl>
@@ -839,7 +839,7 @@
 <h3>Exemples</h3>
 <h4>Alerte jaune</h4>
 <p>
-  <a href="javascript:;"
+  <a href="#"
      id="show-qc-alert"
      hidden
   >
@@ -848,26 +848,25 @@
 </p>
 
 <qc-doc-exemple id="alert-warning"
-                caption="Exemple d’alerte jaune">
+                caption="Exemple d’alerte jaune masquable. Elle reste masquée après rafraîchissement de la page tant que la session courante est active.">
   <qc-alert id="alerte-masquable"
             type="warning"
             maskable="true"
             content="Alerte jaune d’importance élevée"
+            persist-hidden
+            persistence-key="hash-1234"
   >
   </qc-alert>
 </qc-doc-exemple>
-<!--            <qc-code target-id="alert-warning"></qc-code>-->
 
 <h4>Alerte bleue</h4>
 <qc-doc-exemple id="alert-general"
                 caption="Exemple d’alerte générale">
   <qc-alert type="general"
             maskable="false">
-    <p>Alerte bleue d’importance modérée <a href="javascript:;">avec un lien textuel</a></p>
+    <p>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
   </qc-alert>
 </qc-doc-exemple>
-
-<!--            <qc-code target-id="alert-general"></qc-code>-->
 
 <h3>Documentation technique</h3>
 
@@ -889,12 +888,6 @@
       <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
     </tr>
     <tr>
-      <td>maskable</td>
-      <td>"true" ou "false"</td>
-      <td>"true"</td>
-      <td>Afficher le bouton de fermeture de l’alerte</td>
-    </tr>
-    <tr>
       <td>content</td>
       <td>Texte</td>
       <td>Chaine vide</td>
@@ -914,6 +907,25 @@
         qc-container-fluid)
       </td>
     </tr>
+      <tr>
+          <td>maskable</td>
+          <td>"true" ou "false"</td>
+          <td>"true"</td>
+          <td>Afficher le bouton de fermeture de l’alerte</td>
+      </tr>
+      <tr>
+          <td>persist-hidden</td>
+          <td>na</td>
+          <td></td>
+          <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+      </tr>
+    <tr>
+      <td>persistence-key</td>
+      <td>Chaîne de caractère</td>
+      <td>Id de l'élément, valeur nulle sinon</td>
+      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+    </tr>
+
   </table>
 </div>
 
@@ -926,7 +938,7 @@
   document.addEventListener(
           'qc.alert.hide',
           (e) => {
-            console.log('Fermeture de l\'alerte id=\'' + e.target.id + '\'');
+            console.log(`Fermeture de l'alerte id='${e.target.id}'`);
           }
   )
 </script>
@@ -1009,13 +1021,13 @@
              title="Des erreurs sont présentes dans le formulaire :">
     <ul>
       <li>
-        <a href="javascript:;">Le champ « Nom de famille » est obligatoire ;</a>
+        <a href="#">Le champ « Nom de famille » est obligatoire ;</a>
       </li>
       <li>
-        <a href="javascript:;">Le champ « Prénom » est obligatoire ;</a>
+        <a href="#">Le champ « Prénom » est obligatoire ;</a>
       </li>
       <li>
-        <a href="javascript:;">Le champ « Numéro de dossier » est obligatoire.</a>
+        <a href="#">Le champ « Numéro de dossier » est obligatoire.</a>
       </li>
     </ul>
   </qc-notice>
@@ -1708,8 +1720,6 @@
   </table>
 </div>
 
-<p>Pour les autres attributs, voir la rubrique de <a href="#selection-button-attributes">boutons de sélection</a>.</p>
-
 <h5>Zone d’ajout de contenu HTML</h5>
 
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu par défaut.</p>
@@ -2120,11 +2130,6 @@
   </table>
 </div>
 
-<h4>Champs alignés horizontalement (classe <code>qc-textfield-row</code>)</h4>
-
-<p>Les champs regroupés sur une ligne peuvent être placés dans un div avec la classe <code>qc-textfield-row</code>. De cette façon, les messages d'erreur ne provoquent pas de décalage. <br/>
-    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.</p>
-
 <h4>Propriété js</h4>
 <div class="table-overflow">
   <table class="qc-table qc-striped component-attributes-description">
@@ -2432,6 +2437,20 @@
         </select>
     </qc-select>
 
+    <script>
+        const selectElement = document.getElementById("select-single-choice");
+
+        selectElement.addEventListener("change", (event) => {
+            console.log("Option sélectionnée :", event.target.value);
+        });
+        selectElement.addEventListener("qc.select.show", () => {
+            console.log("Options affichées");
+        });
+        selectElement.addEventListener("qc.select.hide", () => {
+            console.log("Options cachées");
+        });
+    </script>
+
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -2607,11 +2626,11 @@
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
         </thead>
         <tbody>
             <tr>
@@ -2619,17 +2638,34 @@
                 <td>Tableau de chaîne de caractères</td>
                 <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
             </tr>
+            <tr>
+                <td>expanded</td>
+                <td>Booléen</td>
+                <td>Indique que la liste déroulante est ouverte</td>
+            </tr>
         </tbody>
     </table>
 </div>
+
+<h5>Événements JS</h5>
+<ul>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.show</code> est émis lorsqu'une liste déroulante est ouverte.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.hide</code> est émis lorsqu'une liste déroulante est fermée.</li>
+</ul>
 
 <h5>Zone d'ajout de contenu HTML</h5>
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
 
     <hr/>
-    <h3 id="champs-alignes">Champs alignés horizontalement (classe <code>qc‑textfield‑row</code>)</h3>
+    <h3 id="champs-alignes">Champs alignés horizontalement (classe <code>qc‑formfield‑row</code>)</h3>
 
-<p>Les champs regroupés sur une ligne doivent être placés dans un div avec la classe <code>qc-textfield-row</code> pour correctement afficher les messages d’erreur en cas de soumission invalide.</p>
+<p>
+    Les champs regroupés sur une ligne doivent être placés dans un <code>div</code> avec la classe <code>qc-formfield-row</code>.
+    De cette façon, les messages d'erreur ne provoquent pas de décalage.
+    <br/><br/>
+    Voir le code des champs Téléphone et Poste dans l'exemple ci-dessus.
+</p>
 
 <h4>Exemple</h4>
 <qc-doc-exemple caption="Exemple de champs sur une seule ligne">
@@ -2731,11 +2767,6 @@
     });
 </script>
 
-<h4>Documentation technique</h4>
-<p>Placer les champs à regrouper sur une seule ligne dans un div avec la classe <code>qc-formfield-row</code></p>
-
-
-
     <hr/>
     <h2 id="toTop">Haut de page</h2>
 <p>
@@ -2811,7 +2842,7 @@
       <ul>
         <li><a href="#fakeEnglish">English</a>
         </li>
-        <li><a href="javascript:;">Nous joindre</a>
+        <li><a href="#">Nous joindre</a>
         </li>
       </ul>
     </nav>
@@ -2832,7 +2863,7 @@
       <ul slot="links">
         <li><a href="#fakeEnglish">English</a>
         </li>
-        <li><a href="javascript:;">Nous joindre</a>
+        <li><a href="#">Nous joindre</a>
         </li>
       </ul>
 
@@ -3079,7 +3110,7 @@
       <td>Le chemin de l’image en thème clair.</td>
       <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
       <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
-        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
       </td>
     </tr>
     <tr>
@@ -3087,7 +3118,7 @@
       <td>Le chemin de l’image en thème sombre.</td>
       <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
       <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
-        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page PIV personnalisé</a>).
+        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
       </td>
     </tr>
     <tr>
@@ -3138,7 +3169,7 @@
   </table>
 </div>
 
-<qc-notice type="information">Les images du pied de page PIV doivent respecter
+<qc-notice type="information">Les images du pied de page du PIV doivent respecter
   <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les
     normes graphiques du système d’identification visuelle.</a>. Nous vous invitons à privilégier le format
     SVG, qui permet de conserver la lisibilité de l’image en cas de zoom.
@@ -3149,7 +3180,7 @@
 
 <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
 <qc-doc-exemple id="qc-piv-footer-slots"
-                caption="Présentation des zones d’ajout de contenu du pied de page PIV">
+                caption="Présentation des zones d’ajout de contenu du pied de page du PIV">
   <qc-piv-footer>
     <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
       Contenu par défaut

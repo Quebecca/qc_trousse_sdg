@@ -40,15 +40,16 @@
         if (labelElement) {
             label = labelElement.querySelector('span')?.textContent;
         }
-    })
+    });
 
     $effect(_ => updateChoiceInput(input, required, invalid, compact, false, false))
 
     $effect(() => {
-        if (!required) return;
-        if (!labelElement) return;
-        labelElement.appendChild(requiredSpan);
-    })
+        if (required && label && requiredSpan) {
+            const textSpan = labelElement.querySelector('span');
+            textSpan.appendChild(requiredSpan);
+        }
+    });
 </script>
 
 {#snippet requiredSpanSnippet()}

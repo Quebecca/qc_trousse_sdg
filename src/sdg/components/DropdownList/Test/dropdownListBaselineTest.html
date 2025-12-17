@@ -27,6 +27,13 @@
     selectElement.addEventListener("change", (event) => {
         console.log("Option sélectionnée :", event.target.value);
     });
+
+    selectElement.addEventListener("qc.select.show", (event) => {
+        console.log("qc.select.show event:", event);
+    });
+    selectElement.addEventListener("qc.select.hide", (event) => {
+        console.log("qc.select.hide event:", event);
+    });
 </script>
 
 <div style="height: 40rem;">

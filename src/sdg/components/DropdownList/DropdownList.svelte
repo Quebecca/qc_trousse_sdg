@@ -5,6 +5,7 @@
     import DropdownListItems from "./DropdownListItems/DropdownListItems.svelte";
     import DropdownListButton from "./DropdownListButton/DropdownListButton.svelte";
     import Label from "../Label/Label.svelte";
+    import {onMount, tick} from "svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -27,6 +28,7 @@
         rootElement = $bindable(),
         errorElement = $bindable(),
         webComponentMode = false,
+        expanded = $bindable(false),
     } = $props();
 
     const
@@ -36,7 +38,7 @@
         itemsId = `${id}-items`,
         labelId = `${id}-label`,
         errorId = `${id}-error`,
-        availableWidths = ["xs", "sm", "md", "lg", "xl"]
+        availableWidths = ["xs", "sm", "md", "lg", "xl"], buttonHeight = 40
     ;
 
     let
@@ -44,6 +46,7 @@
         parentRow = $derived(instance?.closest(".qc-formfield-row")),
         button = $state(),
         searchInput = $state(),
+        popup = $state(),
         dropdownItems = $state(),
         selectedItems = $derived(items.filter((item) => item.checked) ?? []),
         selectedOptionsText = $derived.by(() => {
@@ -64,7 +67,6 @@
             return "";
         }),
         previousValue = $state(value),
-        expanded = $state(false),
         searchText = $state(""),
         hiddenSearchText = $state(""),
         displayedItems = $state(items),
@@ -77,8 +79,6 @@
             }
         })),
         widthClass = $derived.by(() => {
-            const keyword = webComponentMode ? "container" : "root";
-
             if (availableWidths.includes(width)) {
                 return `qc-dropdown-list-${width}`;
             }
@@ -93,7 +93,27 @@
             }
 
             return "";
-        })
+        }),
+        buttonElementYPosition = $state(0),
+        usedHeight = $derived.by(() => {
+            const maxItemsHeight = 336;
+            const searchInputTotalHeight = 56;
+
+            if (enableSearch) {
+                if (displayedItems.length > 7) {
+                    return maxItemsHeight - searchInputTotalHeight - 17;
+                }
+                return maxItemsHeight - searchInputTotalHeight;
+            } else {
+                if (displayedItems.length > 8) {
+                    return maxItemsHeight - 33;
+                }
+                return maxItemsHeight;
+            }
+        }),
+        topOffset = $state(0),
+        popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
+        popupBottomBorderThickness = $derived(topOffset && topOffset >= 0 ? 1 : 0)
     ;
 
     function focusOnSelectedOption(value) {
@@ -120,7 +140,7 @@
     function handleTab(event) {
         // Le changement de focus a lieu après le lancement de l'événement clavier.
         // Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
-        Utils.sleep(5).then(() => {
+        tick().then(() => {
             if (event.key === "Tab" && !Utils.componentIsActive(instance)) {
                 expanded = false;
             }
@@ -214,6 +234,7 @@
 
     $effect(() => {
         if (previousValue?.toString() !== value?.toString()) {
+            previousValue = value;
             invalid = false;
         }
     });
@@ -257,8 +278,18 @@
                 ?  optionWithEmptyValue.label
                 : defaultPlaceholder
         ;
-    })
+    });
 
+    $effect(() => {
+        if (expanded) {
+            const borderThickness = 2 * (invalid ? 2 : 1);
+            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+
+            topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
+                -popupHeight
+                : buttonHeight - borderThickness;
+        }
+    });
 
     function findOptionWithEmptyValue() {
         return items?.find(
@@ -267,9 +298,21 @@
                 || item.value === undefined
         );
     }
+
+    function setRemainingBottomHeight() {
+        if (!button) {
+            return;
+        }
+        buttonElementYPosition = button.getBoundingClientRect().y;
+    }
+
+    onMount(() => {
+        setRemainingBottomHeight();
+    });
 </script>
 
 <svelte:body onclick={handleOuterEvent} onkeydown={handleTab}/>
+<svelte:window onscroll={setRemainingBottomHeight} />
 <div
         class={[
         !parentRow && !webComponentMode && "qc-select"
@@ -315,19 +358,28 @@
                     aria-invalid={invalid}
                     {selectedOptionsText}
                     {placeholder}
+                    {usedHeight}
                     onclick={handleDropdownButtonClick}
                     onkeydown={(e) => {
-                    handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
-                }}
-                    bind:this={button}
+                        handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
+                    }}
+                    bind:buttonElement={button}
             />
 
             <div
                     id={popupId}
                     class="qc-dropdown-list-expanded"
+                    style={`
+                    --dropdown-items-top-offset: ${topOffset};
+                    --dropdown-items-height: ${usedHeight};
+                    --dropdown-items-bottom-border: ${popupBottomBorderThickness};
+                    --dropdown-items-top-border: ${popupTopBorderThickness};
+                    --dropdown-button-border: ${invalid ? 2 : 1};
+                    `}
                     tabindex="-1"
                     hidden={!expanded}
                     role="listbox"
+                    bind:this={popup}
             >
 
                 {#if enableSearch}
@@ -352,16 +404,15 @@
 
                 <DropdownListItems
                         id={itemsId}
-                        {enableSearch}
                         {placeholder}
                         {multiple}
                         {items}
                         {displayedItems}
                         {noOptionsMessage}
                         selectionCallbackSingle={() => {
-                        closeDropdown("");
-                        button?.focus();
-                    }}
+                            closeDropdown("");
+                            button?.focus();
+                        }}
                         handleExitSingle={(key) => closeDropdown(key)}
                         handleExitMultiple={(key) => closeDropdown(key)}
                         focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}

@@ -1,0 +1,25 @@
+@use "qc-sdg-lib" as *;
+
+.exemple-area > figure {
+  display: block;
+  max-width: token-value(max-content-width);
+  width: 100%;
+  margin-bottom: token-value(spacer content-block mb);
+  padding-bottom: 1px;
+  .exemple {
+    padding: token-value(spacer sm) token-value(spacer sm) token-value(spacer sm) token-value(spacer sm);
+    @include qc-shading(0);
+
+    & > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  & > figcaption {
+    display: block;
+  }
+  &:has(qc-select) {
+    overflow-x: visible;
+  }
+}
+

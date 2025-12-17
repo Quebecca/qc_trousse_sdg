@@ -2,14 +2,20 @@
     import {Utils} from "../utils";
     import Icon from "../../bases/Icon/Icon.svelte";
     import IconButton from "../IconButton/IconButton.svelte";
+    import {onMount} from "svelte";
 
     let {
         type = "general",
         maskable = "",
         content = "",
-        hide = "false",
+        hide = $bindable("false"),
         fullWidth = "false",
         slotContent,
+        id,
+        persistenceKey,
+        persistHidden = false,
+        rootElement = $bindable(),
+        hideAlertCallback = () => {},
     } = $props();
 
     const language = Utils.getPageLanguage();
@@ -21,18 +27,31 @@
 
     const label = type === 'general' ? generalLabel : warningLabel;
 
-    let rootElement = $state(null);
-
     let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
+
+    onMount(() => {
+        const key = getPersistenceKey();
+        if (!key) return;
+        hide = sessionStorage.getItem(key) ? "true" : "false";
+    })
 
     function hideAlert() {
         hide = "true";
-        rootElement.dispatchEvent(
-            new CustomEvent('qc.alert.hide', {
-                bubbles: true,
-                composed: true
-            })
-        );
+        persistHiddenState();
+        hideAlertCallback();
+    }
+
+    function getPersistenceKey() {
+        if (!persistHidden) return false;
+        const key = persistenceKey || id;
+        if (! key) return false;
+        return'qc-alert:' + key;
+    }
+
+    function persistHiddenState() {
+        const key = getPersistenceKey();
+        if (!key) return;
+        sessionStorage.setItem(key, Utils.now());
     }
 </script>
 

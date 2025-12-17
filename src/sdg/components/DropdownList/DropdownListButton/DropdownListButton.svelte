@@ -7,13 +7,9 @@
         disabled,
         selectedOptionsText = "",
         placeholder,
+        buttonElement = $bindable(),
         ...rest
     } = $props()
-
-    let button;
-    export function focus() {
-        button?.focus();
-    }
 </script>
 
 <button
@@ -22,7 +18,7 @@
     {disabled}
     class="qc-dropdown-button"
     role="combobox"
-    bind:this={button}
+    bind:this={buttonElement}
     {...rest}
 >
     {#if selectedOptionsText.length > 0}

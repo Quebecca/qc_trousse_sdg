@@ -26,6 +26,20 @@
         </select>
     </qc-select>
 
+    <script>
+        const selectElement = document.getElementById("select-single-choice");
+
+        selectElement.addEventListener("change", (event) => {
+            console.log("Option sélectionnée :", event.target.value);
+        });
+        selectElement.addEventListener("qc.select.show", () => {
+            console.log("Options affichées");
+        });
+        selectElement.addEventListener("qc.select.hide", () => {
+            console.log("Options cachées");
+        });
+    </script>
+
     <qc-select id="qc-select-single-choice-search" enable-search>
         <label for="select-single-choice-search">Choix unique avec recherche</label>
         <select id="select-single-choice-search">
@@ -201,11 +215,11 @@
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
         </thead>
         <tbody>
             <tr>
@@ -213,9 +227,21 @@
                 <td>Tableau de chaîne de caractères</td>
                 <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
             </tr>
+            <tr>
+                <td>expanded</td>
+                <td>Booléen</td>
+                <td>Indique que la liste déroulante est ouverte</td>
+            </tr>
         </tbody>
     </table>
 </div>
+
+<h5>Événements JS</h5>
+<ul>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">change</code> est émis lors du changement de valeur sélectionnée dans la liste déroulante.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.show</code> est émis lorsqu'une liste déroulante est ouverte.</li>
+    <li>Un événement JS <code class="qc-bg-color-grey-pale">qc.select.hide</code> est émis lorsqu'une liste déroulante est fermée.</li>
+</ul>
 
 <h5>Zone d'ajout de contenu HTML</h5>
 <p>Ce composant ne comporte qu'une seule zone d'ajout de contenu.</p>
