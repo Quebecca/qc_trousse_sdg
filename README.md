@@ -166,8 +166,11 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Intégration dans Bootstrap.
 
 ## Historique
+- 1.4.9 :
+  - Lien externe : annulation des changements de refonte de la structure HTML de `qc-external-link` en raison des régressions que cela cause ;
+  - Liste déroulante : correction de la réactivité sur l'attribut `value` ;
 - 1.4.8 :
-  - champ de recherche :
+  - Champ de recherche :
     - Ajout du support des propriétés `label` et `size` pour le champ de recherche
   - Correction d'un bug dans `qc-textfield` : les libellés de champs étaient dans le dom d'ombre ;
 - 1.4.7 :
