@@ -767,6 +767,62 @@
 	/** @import { Derived, Reaction, Value } from '#client' */
 
 	/**
+	 * @param {string} label
+	 * @returns {Error & { stack: string } | null}
+	 */
+	function get_stack(label) {
+		// @ts-ignore stackTraceLimit doesn't exist everywhere
+		const limit = Error.stackTraceLimit;
+
+		// @ts-ignore
+		Error.stackTraceLimit = Infinity;
+		let error = Error();
+
+		// @ts-ignore
+		Error.stackTraceLimit = limit;
+
+		const stack = error.stack;
+
+		if (!stack) return null;
+
+		const lines = stack.split('\n');
+		const new_lines = ['\n'];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const posixified = line.replaceAll('\\', '/');
+
+			if (line === 'Error') {
+				continue;
+			}
+
+			if (line.includes('validate_each_keys')) {
+				return null;
+			}
+
+			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
+				continue;
+			}
+
+			new_lines.push(line);
+		}
+
+		if (new_lines.length === 1) {
+			return null;
+		}
+
+		define_property(error, 'stack', {
+			value: new_lines.join('\n')
+		});
+
+		define_property(error, 'name', {
+			value: label
+		});
+
+		return /** @type {Error & { stack: string }} */ (error);
+	}
+
+	/**
 	 * @param {Value} source
 	 * @param {string} label
 	 */
@@ -3628,6 +3684,11 @@
 		return create_effect(EFFECT | USER_EFFECT, fn, false);
 	}
 
+	/** @param {() => void | (() => void)} fn */
+	function eager_effect(fn) {
+		return create_effect(EAGER_EFFECT, fn, true);
+	}
+
 	/**
 	 * Internal representation of `$effect.root(...)`
 	 * @param {() => void | (() => void)} fn
@@ -5886,6 +5947,75 @@
 			$on: () => error('$on(...)'),
 			$set: () => error('$set(...)')
 		};
+	}
+
+	/**
+	 * @param {() => any[]} get_value
+	 * @param {Function} inspector
+	 * @param {boolean} show_stack
+	 */
+	function inspect(get_value, inspector, show_stack = false) {
+		validate_effect();
+
+		let initial = true;
+		let error = /** @type {any} */ (UNINITIALIZED);
+
+		// Inspect effects runs synchronously so that we can capture useful
+		// stack traces. As a consequence, reading the value might result
+		// in an error (an `$inspect(object.property)` will run before the
+		// `{#if object}...{/if}` that contains it)
+		eager_effect(() => {
+			try {
+				var value = get_value();
+			} catch (e) {
+				error = e;
+				return;
+			}
+
+			var snap = snapshot(value, true, true);
+			untrack(() => {
+				if (show_stack) {
+					inspector(...snap);
+
+					if (!initial) {
+						const stack = get_stack('$inspect(...)');
+						// eslint-disable-next-line no-console
+
+						if (stack) {
+							// eslint-disable-next-line no-console
+							console.groupCollapsed('stack trace');
+							// eslint-disable-next-line no-console
+							console.log(stack);
+							// eslint-disable-next-line no-console
+							console.groupEnd();
+						}
+					}
+				} else {
+					inspector(initial ? 'init' : 'update', ...snap);
+				}
+			});
+
+			initial = false;
+		});
+
+		// If an error occurs, we store it (along with its stack trace).
+		// If the render effect subsequently runs, we log the error,
+		// but if it doesn't run it's because the `$inspect` was
+		// destroyed, meaning we don't need to bother
+		render_effect(() => {
+			try {
+				// call `get_value` so that this runs alongside the inspect effect
+				get_value();
+			} catch {
+				// ignore
+			}
+
+			if (error !== UNINITIALIZED) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+				error = UNINITIALIZED;
+			}
+		});
 	}
 
 	/**
@@ -11437,7 +11567,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[48, 0]]);
+	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[96, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -11446,42 +11576,93 @@
 		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr')
 				? "Ce lien dirige vers un autre site."
 				: "This link directs to another site."),
-			links = prop($$props, 'links', 23, () => []),
-			isUpdating = prop($$props, 'isUpdating', 15, false),
-			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
+			links = prop($$props, 'links', 31, () => tag_proxy(proxy([]), 'links'));
 
 		let imgElement = tag(state(void 0), 'imgElement');
-		let processedLinks = new Set();
 
-		function addExternalLinkIcon(links) {
-			links.forEach((link) => {
-				if (processedLinks.has(link.innerHTML)) {
-					return;
+		function createVisibleNodesTreeWalker(link) {
+			return document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
+				acceptNode: (node) => {
+					if (node instanceof Element) {
+						if (node.hasAttribute('hidden')) {
+							return NodeFilter.FILTER_REJECT;
+						}
+
+						const style = window.getComputedStyle(node);
+
+						// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+						if (strict_equals(style.display, 'none') || strict_equals(style.visibility, 'hidden') || strict_equals(style.position, 'absolute')) {
+							return NodeFilter.FILTER_REJECT;
+						}
+					}
+
+					if (!node instanceof Text) {
+						return NodeFilter.FILTER_SKIP;
+					}
+
+					// Ignore les nœuds vides
+					if (!(/\S/).test(node.textContent)) {
+						return NodeFilter.FILTER_SKIP;
+					}
+
+					return NodeFilter.FILTER_ACCEPT;
 				}
-
-				let linkContent = link.innerHTML;
-
-				linkContent = `<span class="qc-ext-link-text">${linkContent}</span>&nbsp;${get(imgElement).outerHTML}`;
-				link.innerHTML = linkContent;
-				processedLinks.add(linkContent);
 			});
 		}
 
-		user_effect(() => {
-			if (nestedExternalLinks() || links().length <= 0 || !get(imgElement)) {
+		function addExternalLinkIcon(link) {
+			// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+			const walker = createVisibleNodesTreeWalker(link);
+
+			console.log(...log_if_contains_state('log', link));
+			console.log(...log_if_contains_state('log', walker));
+
+			let lastTextNode = null;
+
+			while (walker.nextNode()) {
+				lastTextNode = walker.currentNode;
+			}
+
+			// S'il n'y a pas de nœud texte visible, on ne fait rien
+			if (!lastTextNode) {
 				return;
 			}
 
-			isUpdating(true);
+			// Séparer le contenu du dernier nœud texte en deux parties :
+			// le préfixe (éventuel) et le dernier mot
+			const text = lastTextNode.textContent;
 
-			tick().then(() => {
-				addExternalLinkIcon(links());
+			const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
 
-				return tick();
-			}).then(() => {
-				isUpdating(false);
+			if (!match) {
+				return;
+			}
+
+			const prefix = match[1] || "";
+			const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
+
+			// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
+			const span = document.createElement('span');
+
+			span.classList.add('img-wrap');
+			span.innerHTML = `${lastWord}${get(imgElement).outerHTML}`;
+
+			// Met à jour le nœud texte : on garde le préfixe et on insère le span après
+			if (prefix) {
+				lastTextNode.textContent = prefix;
+				lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
+			} else {
+				lastTextNode.parentNode.replaceChild(span, lastTextNode);
+			}
+		}
+
+		user_effect(() => {
+			links().forEach((link) => {
+				addExternalLinkIcon(link);
 			});
 		});
+
+		inspect(() => [links()], (...$$args) => console.log(...$$args), true);
 
 		var $$exports = {
 			get externalIconAlt() {
@@ -11506,32 +11687,14 @@
 				flushSync();
 			},
 
-			get isUpdating() {
-				return isUpdating();
-			},
-
-			set isUpdating($$value = false) {
-				isUpdating($$value);
-				flushSync();
-			},
-
-			get nestedExternalLinks() {
-				return nestedExternalLinks();
-			},
-
-			set nestedExternalLinks($$value = false) {
-				nestedExternalLinks($$value);
-				flushSync();
-			},
-
 			...legacy_api()
 		};
 
 		var div = root$d();
-		var node = child(div);
+		var node_1 = child(div);
 
 		add_svelte_meta(
-			() => Icon(node, {
+			() => Icon(node_1, {
 				type: 'external-link',
 
 				get alt() {
@@ -11550,7 +11713,7 @@
 			}),
 			'component',
 			ExternalLink,
-			49,
+			97,
 			4,
 			{ componentTag: 'Icon' }
 		);
@@ -11561,18 +11724,7 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(
-		ExternalLink,
-		{
-			externalIconAlt: {},
-			links: {},
-			isUpdating: {},
-			nestedExternalLinks: {}
-		},
-		[],
-		[],
-		true
-	);
+	create_custom_element(ExternalLink, { externalIconAlt: {}, links: {} }, [], [], true);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
 
@@ -11581,72 +11733,27 @@
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
-		let links = tag(state(proxy([])), 'links');
-		const observer = Utils.createMutationObserver($$props.$$host, refreshLinks);
-		let isUpdating = tag(state(false), 'isUpdating');
-		let pendingUpdate = false;
+		let links = tag(state(proxy(queryLinks())), 'links');
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
 		}
 
-		function refreshLinks() {
-			if (get(isUpdating) || pendingUpdate) {
-				return;
-			}
-
-			pendingUpdate = true;
-
-			tick().then(() => {
-				if (get(isUpdating)) {
-					pendingUpdate = false;
-
-					return;
-				}
-
-				set(links, queryLinks(), true);
-				pendingUpdate = false;
-			});
-		}
-
-		onMount(() => {
-			$$props.$$host.classList.add('qc-external-link');
-			set(links, queryLinks(), true);
-			observer?.observe($$props.$$host, { childList: true, characterData: true, subtree: true });
-		});
-
-		onDestroy(() => {
-			observer?.disconnect();
-		});
-
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(
-			() => ExternalLink($$anchor, spread_props(
-				{
-					get links() {
-						return get(links);
-					},
-
-					get nestedExternalLinks() {
-						return nestedExternalLinks;
-					}
+			() => ExternalLink($$anchor, spread_props(() => props, {
+				get links() {
+					return get(links);
 				},
-				() => props,
-				{
-					get isUpdating() {
-						return get(isUpdating);
-					},
 
-					set isUpdating($$value) {
-						set(isUpdating, $$value, true);
-					}
+				set links($$value) {
+					set(links, $$value, true);
 				}
-			)),
+			})),
 			'component',
 			ExternalLinkWC,
-			58,
+			20,
 			0,
 			{ componentTag: 'ExternalLink' }
 		);

@@ -755,7 +755,7 @@ qc-icon {
   mask-image: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAzMDEuNjkxIDMwMS42OTEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMwMS42OTEgMzAxLjY5MTsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8Zz4KCTxwb2x5Z29uIHBvaW50cz0iMTE5LjE1MSwwIDEyOS42LDIxOC40MDYgMTcyLjA2LDIxOC40MDYgMTgyLjU0LDAiIC8+Cgk8cmVjdCB4PSIxMzAuNTYzIiB5PSIyNjEuMTY4IiB3aWR0aD0iNDAuNTI1IiBoZWlnaHQ9IjQwLjUyMyIgLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K");
 }
 
-.icon-external-link, .qc-ext-link-img, .qc-icon[data-img-type=external-link] {
+.icon-external-link, div.qc-ext-link-img, .qc-icon[data-img-type=external-link] {
   mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyOS4yMDciIGhlaWdodD0iMjkuNjA4IiB2aWV3Qm94PSIwIDAgMjkuMjA3IDI5LjYwOCI+CiAgPGcgaWQ9Ikdyb3VwZV8zOTQiIGRhdGEtbmFtZT0iR3JvdXBlIDM5NCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTEzOSAtNTQ1LjYyNCkiPgogICAgPGcgaWQ9Ikdyb3VwZV8zOTAiIGRhdGEtbmFtZT0iR3JvdXBlIDM5MCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE3MjIuMDA4IDQzNy41MjQpIj4KICAgICAgPGcgaWQ9Ikdyb3VwZV8zODkiIGRhdGEtbmFtZT0iR3JvdXBlIDM4OSI+CiAgICAgICAgPHBhdGggaWQ9IlRyYWPDqV82NzEiIGRhdGEtbmFtZT0iVHJhY8OpIDY3MSIgZD0iTTE4ODQuMDg3LDEyMC44MTRhMS4xNDUsMS4xNDUsMCwwLDAtMS4xNDUsMS4xNDV2MTMuNDU4SDE4NjMuM3YtMjAuMWgxMy4wNTdhMS4xNDYsMS4xNDYsMCwxLDAsMC0yLjI5MWgtMTUuMzQ4djI0LjY4M2gyNC4yMjVWMTIxLjk1OUExLjE0NiwxLjE0NiwwLDAsMCwxODg0LjA4NywxMjAuODE0WiIgLz4KICAgICAgICA8cGF0aCBpZD0iVHJhY8OpXzY3MiIgZGF0YS1uYW1lPSJUcmFjw6kgNjcyIiBkPSJNMTg3OS43OTIsMTA4LjFhMS4xNDYsMS4xNDYsMCwwLDAsMCwyLjI5MWg2LjUzM2wtMTQuMDE5LDE0LjE3YTEuMTQ2LDEuMTQ2LDAsMCwwLDEuNjI5LDEuNjExbDEzLjk4OS0xNC4xNHY2LjM3N2ExLjE0NiwxLjE0NiwwLDAsMCwyLjI5MSwwVjEwOC4xWiIgLz4KICAgICAgPC9nPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg==");
 }
 
@@ -826,10 +826,6 @@ qc-icon {
 a {
   color: var(--qc-color-link-text);
 }
-a:has(.qc-ext-link-text) {
-  white-space: nowrap;
-  text-decoration: none;
-}
 a:visited {
   color: var(--qc-color-link-visited);
 }
@@ -862,30 +858,28 @@ a .img-wrap {
   white-space: nowrap;
 }
 
-.qc-external-link .qc-ext-link-text {
-  white-space: normal;
-  text-decoration: underline;
-}
-
-.qc-ext-link-img {
+div.qc-ext-link-img {
   height: 0.6875em;
   width: 0.6875em;
+  display: inline-block;
   background: var(--qc-color-link-text);
   mask-size: 0.6875em;
-  display: inline-block;
-  mask-repeat: no-repeat;
+  margin-left: 4px;
 }
-a:visited .qc-ext-link-img {
+a:visited div.qc-ext-link-img {
   background: var(--qc-color-link-visited);
 }
-a:focus .qc-ext-link-img {
+a:focus div.qc-ext-link-img {
   background: var(--qc-color-link-hover);
 }
-a:hover .qc-ext-link-img {
+a:hover div.qc-ext-link-img {
   background: var(--qc-color-link-hover);
 }
-a:active .qc-ext-link-img {
+a:active div.qc-ext-link-img {
   background: var(--qc-color-link-active);
+}
+.img-wrap + div.qc-ext-link-img {
+  display: none;
 }
 
 p {
