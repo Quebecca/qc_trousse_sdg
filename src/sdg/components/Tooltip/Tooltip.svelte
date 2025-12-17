@@ -6,7 +6,7 @@
     let {
         text,
         description,
-        requestedPosition = "right",
+        requestedPosition = "top",
         preventOuterEventClosing = false,
         displayMode = "popover",
         icon = "information",
