@@ -6,7 +6,8 @@
     requestedPosition: { attribute: 'position', type: 'String'},
     preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean'},
     displayMode: { attribute: 'display-mode', type: 'String'},
-    descriptionId: { attribute: 'description-id', type: 'String'}
+    descriptionId: { attribute: 'description-id', type: 'String'},
+    icon: { attribute: 'icon', type: 'String'}
   }
 }} />
 <script>
