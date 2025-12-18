@@ -189,7 +189,7 @@
     }
 
      function tryPlacement(placement) {
-        //$inspect("Tentative de placement selon " + placement )
+        console.log("Tentative de placement selon " + placement )
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
             result = adjustCrossAxis(tooltipPanel, placement);
@@ -219,7 +219,7 @@
                 return;
             }
             const gap = getScreenGap(tooltipButton, otherAxisPosition);
-            //$inspect(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+            console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
                 //$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
                 adjustable = false;
@@ -230,10 +230,10 @@
                     translateY = `-${gap}px`
                     break;
                 case "bottom":
-                    translateY = `calc(-100% + 20px + ${gap}px)`
+                    translateY = `calc(-100% + 16px + ${gap}px)`
                     break;
                 case "right":
-                    translateX = `${gap + 16}px`
+                    translateX = `calc(-100% + 16px + ${gap}px)`
                     break;
                 case "left":
                     translateX = `-${gap}px`
@@ -291,9 +291,9 @@
         const bounds = getScreenBounds();
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
-        //$inspect(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+        console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
         const border = bounds[position]
-        // //$inspect("border",border)
+        console.log("border",border)
         switch (position) {
             case "right":
             case "bottom":
