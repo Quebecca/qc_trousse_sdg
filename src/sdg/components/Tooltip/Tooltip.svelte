@@ -32,7 +32,8 @@
         translateY = $state(defaultTranslateY),
         position = $state(requestedPosition),
         mobileFlag = $state(false),
-        modalFlag = $derived(mobileFlag || displayMode === "modal"),
+        forceModal = $state(false),
+        modalFlag = $derived(mobileFlag || displayMode === "modal" || forceModal),
         hasDescription = $derived.by(_ => hasProperty(description, slots["description"], descriptionSlot)),
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
         tooltipIcon = $derived( icon + "-tooltip"),
@@ -74,12 +75,12 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
-        //$inspect("sm bp" , getSmBreakpoint(gridConfig))
+        $inspect("sm bp" , getSmBreakpoint(gridConfig))
         setIsMobile()
         window.addEventListener("resize", setIsMobile)
     })
 
-    //$inspect("isMobile", mobileFlag)
+    $inspect("isMobile", mobileFlag)
 
     $effect(_ => {
         if (!displayPopover) {
@@ -88,6 +89,7 @@
     })
 
     async function showTooltip(e) {
+        forceModal = false;
         e.preventDefault();
         if (modalFlag) {
             showModal()
@@ -139,7 +141,7 @@
     function setIsMobile() {
         const bounds = getScreenBounds();
         mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
-        //$inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
+        $inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
         return mobileFlag;
     }
 
@@ -154,7 +156,7 @@
             current =  start
         ;
         await waitForNextFrame()
-        //$inspect("Placement initial : " + start, requestedPosition)
+        // $inspect("Placement initial : " + start, requestedPosition)
         let tries = getTriesOrder(start);
         while (true) {
             position = current
@@ -182,19 +184,18 @@
     }
 
     function waitForNextFrame() {
-        //$inspect("Waiting for next frame")
+        // $inspect("Waiting for next frame")
         return new Promise(resolve => {
             window.requestAnimationFrame(resolve);
         });
     }
 
      function tryPlacement(placement) {
-        console.log("Tentative de placement selon " + placement )
         let result = !isElementOverflowing(tooltipPanel, placement);
         if (result) {
             result = adjustCrossAxis(tooltipPanel, placement);
         }
-        //$inspect("Placement selon " + placement + " : "  + result )
+        // $inspect("Placement selon " + placement + " : "  + result )
         return result;
     }
 
@@ -219,7 +220,7 @@
                 return;
             }
             const gap = getScreenGap(tooltipButton, otherAxisPosition);
-            console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+            // console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
                 //$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
                 adjustable = false;
@@ -244,12 +245,10 @@
         return adjustable;
     }
 
-    //$inspect("translateX", translateX)
-    //$inspect("translateY", translateY)
-    //$inspect("position", position)
-
     function fallBack() {
-        //$inspect("Fallback")
+        displayPopover = false;
+        forceModal = true;
+        showModal();
     }
 
     function closeOnTooltipBlur(e) {
@@ -291,9 +290,9 @@
         const bounds = getScreenBounds();
         // Récupère les coordonnées de l'élément par rapport au viewport
         const rect = element.getBoundingClientRect();
-        console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+        // console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
         const border = bounds[position]
-        console.log("border",border)
+        // console.log("border",border)
         switch (position) {
             case "right":
             case "bottom":
