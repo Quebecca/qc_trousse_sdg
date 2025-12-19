@@ -83000,7 +83000,7 @@
 	));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.4.7`;
+	    document.getElementById("version").textContent = `v1.4.8`;
 	}
 
 	// Show maskable "general alert" component
