@@ -66,6 +66,9 @@
 
     $effect(() => {
         if (!input) return;
+        if (labelElement) {
+            input.before(labelElement);
+        }
         if (description) {
             input.before(descriptionElement);
         }

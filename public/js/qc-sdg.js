@@ -14315,7 +14315,7 @@
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$5 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[112, 0]]);
+	var root$5 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[115, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14368,6 +14368,10 @@
 
 		user_effect(() => {
 			if (!get(input)) return;
+
+			if (get(labelElement)) {
+				get(input).before(get(labelElement));
+			}
 
 			if (description()) {
 				get(input).before(get(descriptionElement));
@@ -14597,7 +14601,7 @@
 				}),
 				'component',
 				TextFieldWC,
-				92,
+				95,
 				0,
 				{ componentTag: 'TextField' }
 			);

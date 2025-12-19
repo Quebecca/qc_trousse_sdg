@@ -304,6 +304,8 @@ Dans la version 1.3.0, il suffit d'importer `qc-sdg-lib.scss` pour bénéficier 
 ```
 
 ## Historique
+- 1.4.8 :
+  - Correction d'un bug dans `qc-textfield` : les libellés de champs étaient dans le dom d'ombre ;
 - 1.4.7 :
   - Lien externe :
     - Refonte de la structure de `qc-external-link` pour utiliser un algorithme plus simple pour le contrôle des retours à la ligne des icônes ;
