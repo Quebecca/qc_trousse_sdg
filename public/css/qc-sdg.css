@@ -1804,23 +1804,23 @@ qc-search-input {
 }
 qc-search-input[size=xs] {
   max-width: 100%;
-  width: 6.3rem;
+  width: 3.9375rem;
 }
 qc-search-input[size=sm] {
   max-width: 100%;
-  width: 15.6rem;
+  width: 9.75rem;
 }
 qc-search-input[size=md] {
   max-width: 100%;
-  width: 24.9rem;
+  width: 15.5625rem;
 }
 qc-search-input[size=lg] {
   max-width: 100%;
-  width: 52.8rem;
+  width: 33rem;
 }
 qc-search-input[size=xl] {
   max-width: 100%;
-  width: 82.5rem;
+  width: 51.5625rem;
 }
 
 .qc-search-bar, .qc-search-input {
