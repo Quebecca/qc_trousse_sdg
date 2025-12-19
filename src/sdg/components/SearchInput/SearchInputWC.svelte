@@ -5,6 +5,8 @@
         id: {attribute: 'id'},
         ariaLabel: {attribute:'aria-label'},
         clearAriaLabel: {attribute: 'clear-aria-label'},
+        label: {attribute: 'label'},
+        size: {attribute: 'size'},
         leftIcon: {attribute: 'left-icon'}
     }
 }}" />

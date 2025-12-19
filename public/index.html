@@ -1952,10 +1952,10 @@
 <qc-doc-exemple caption="Exemples 1 - différents champs de texte. Soumettre le formulaire pour voir les messages d'erreur.">
   <form id="formulaire-champs-textes">
     <qc-textfield
-            label="Nom complet"
             size="md"
             required
     >
+      <label>Nom complet</label>
       <input type="text"
              name="code-postal"
              placeholder="ex : Jean Tremblay"
@@ -2191,6 +2191,16 @@
             left-icon
             clear-aria-label="Effacer le texte"
     ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            label="Nom de l'article"
+            size="md"
+            placeholder="Rechercher un article"
+            clear-aria-label="Effacer le texte"
+            left-icon
+    ></qc-search-input>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -2238,10 +2248,16 @@
             <td>Désactive le champ.</td>
         </tr>
         <tr>
-            <td>name</td>
+            <td>label</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Nom du champ utilisé lors de la soumission du formulaire.</td>
+            <td>Texte du libellé du champ. Remplace automatiquement l'aria-label lorsqu'il est défini.</td>
+        </tr>
+        <tr>
+            <td>size</td>
+            <td>"xs", "sm", "md", "lg", "xl"</td>
+            <td>""</td>
+            <td>Largeur du champ</td>
         </tr>
         </tbody>
     </table>
