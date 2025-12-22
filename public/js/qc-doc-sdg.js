@@ -79129,10 +79129,14 @@
 		input.addEventListener('change', () => setInvalid(false));
 	}
 
+	function onBlur(input, setInvalid) {
+		input.addEventListener('blur', setInvalid);
+	}
+
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
-	var root$6 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
+	var root_2$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[65, 4]]);
+	var root$6 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[72, 0]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
@@ -79158,7 +79162,7 @@
 					}),
 					'if',
 					Checkbox,
-					56,
+					64,
 					4
 				);
 			}
@@ -79166,8 +79170,7 @@
 			append($$anchor, fragment);
 		});
 
-		Utils.getPageLanguage();
-			const qcCheckoxContext = getContext("qc-checkbox");
+		const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
 			name = prop($$props, 'name', 7),
@@ -79182,7 +79185,8 @@
 			children = prop($$props, 'children', 7),
 			labelElement = prop($$props, 'labelElement', 7),
 			requiredSpan = prop($$props, 'requiredSpan', 15),
-			input = prop($$props, 'input', 7);
+			input = prop($$props, 'input', 7),
+			invalidOnBlur = prop($$props, 'invalidOnBlur', 7);
 
 		let label = tag(state(proxy($$props.label)), 'label'),
 			rootElement = tag(state(void 0), 'rootElement');
@@ -79192,7 +79196,17 @@
 
 			labelElement(get(rootElement)?.querySelector('label'));
 			input(get(rootElement)?.querySelector('input[type="checkbox"]'));
-			onChange(input(), (_invalid) => invalid(_invalid));
+
+			onChange(input(), (_invalid) => {
+				invalid(_invalid);
+				checked(input().checked);
+			});
+
+			if (invalidOnBlur()) {
+				onBlur(input(), () => {
+					invalid(required() && !checked());
+				});
+			}
 		});
 
 		user_effect(() => {
@@ -79338,17 +79352,26 @@
 				flushSync();
 			},
 
+			get invalidOnBlur() {
+				return invalidOnBlur();
+			},
+
+			set invalidOnBlur($$value) {
+				invalidOnBlur($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
 		var div = root$6();
 		var node_1 = child(div);
 
-		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 72, 8);
+		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 79, 4);
 
 		var node_2 = sibling(node_1, 2);
 
-		add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Checkbox, 73, 8);
+		add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Checkbox, 80, 4);
 
 		var node_3 = sibling(node_2, 2);
 
@@ -79368,8 +79391,8 @@
 			}),
 			'component',
 			Checkbox,
-			74,
-			8,
+			81,
+			4,
 			{ componentTag: 'FormError' }
 		);
 
@@ -79406,7 +79429,8 @@
 			children: {},
 			labelElement: {},
 			requiredSpan: {},
-			input: {}
+			input: {},
+			invalidOnBlur: {}
 		},
 		[],
 		[],

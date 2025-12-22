@@ -4,7 +4,7 @@
 
 <qc-doc-exemple caption="Exemple d’une case à cocher obligatoire.">
   <form id="exemple-tos-form">
-    <qc-checkbox required >
+    <qc-checkbox required invalid-on-blur>
       <label>
         <input type="checkbox"
                name="consentement"
@@ -79,6 +79,12 @@
       <td>Texte</td>
       <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
       <td>Message d’erreur à afficher lorsque la case est invalide.</td>
+    </tr>
+    <tr>
+        <td>invalid-on-blur</td>
+        <td>na</td>
+        <td>na</td>
+        <td>Active la validation de la case à cocher sur un changement de focus</td>
     </tr>
     </tbody>
   </table>

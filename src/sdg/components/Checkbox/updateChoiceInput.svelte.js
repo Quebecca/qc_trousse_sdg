@@ -26,3 +26,9 @@ export function onChange(input, setInvalid) {
         () => setInvalid(false)
     )
 }
+
+export function onBlur(input, setInvalid) {
+    input.addEventListener(
+        'blur', setInvalid
+    );
+}

@@ -1,11 +1,9 @@
 <script>
-    import { Utils } from "../utils";
     import FormError from "../FormError/FormError.svelte";
     import {getContext, onMount} from "svelte";
-    import {updateChoiceInput, onChange} from "./updateChoiceInput.svelte.js";
+    import {updateChoiceInput, onChange, onBlur} from "./updateChoiceInput.svelte.js";
 
-    const lang = Utils.getPageLanguage(),
-        qcCheckoxContext = getContext("qc-checkbox");
+    const qcCheckoxContext = getContext("qc-checkbox");
 
     let {
         id,
@@ -22,6 +20,7 @@
         labelElement,
         requiredSpan = $bindable(),
         input,
+        invalidOnBlur,
         ...rest
     } = $props();
 
@@ -33,7 +32,16 @@
         if (qcCheckoxContext) return;
         labelElement = rootElement?.querySelector('label')
         input = rootElement?.querySelector('input[type="checkbox"]')
-        onChange(input, _invalid => invalid = _invalid)
+        onChange(input, _invalid => {
+            invalid = _invalid;
+            checked = input.checked;
+        });
+
+        if (invalidOnBlur) {
+            onBlur(input, () => {
+                invalid = required && !checked
+            });
+        }
     })
 
     $effect(() => {
@@ -61,18 +69,17 @@
     {/if}
 {/snippet}
 
-
-    <div class={[
-        "qc-checkbox-single",
-        invalid && "qc-checkbox-single-invalid"
-    ]}
-         {compact}
-         bind:this={rootElement}
-    >
-        {@render requiredSpanSnippet()}
-        {@render children?.()}
-        <FormError {invalid}
-                   {invalidText}
-                   {label}
-        />
-    </div>
+<div class={[
+    "qc-checkbox-single",
+    invalid && "qc-checkbox-single-invalid"
+]}
+     {compact}
+     bind:this={rootElement}
+>
+    {@render requiredSpanSnippet()}
+    {@render children?.()}
+    <FormError {invalid}
+               {invalidText}
+               {label}
+    />
+</div>

@@ -261,4 +261,12 @@
         </ChoiceGroup>
     </div>
 </div>
+
+<Checkbox required invalidOnBlur>
+    <label for="on-blur-validation">
+        <input type="checkbox" id="on-blur-validation">
+        <span>Validation on blur</span>
+    </label>
+</Checkbox>
+
 <link rel='stylesheet' href='{Utils.cssPath}'>
