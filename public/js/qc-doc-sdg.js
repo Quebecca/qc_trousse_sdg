@@ -81001,9 +81001,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[316, 0, [[321, 4, [[340, 8, [[369, 12, [[425, 16]]]]]]]]]]);
+	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[394, 20]]);
+	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[435, 24]]);
+	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[324, 0, [[329, 4, [[348, 8, [[377, 12, [[433, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -81281,6 +81281,14 @@
 		});
 
 		user_effect(() => {
+			if (value()) {
+				items().forEach((item) => {
+					item.checked = value().includes(item.value);
+				});
+			}
+		});
+
+		user_effect(() => {
 			items().forEach((item) => {
 				if (!item.id) {
 					item.id = `${id()}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
@@ -81552,7 +81560,7 @@
 					}),
 					'component',
 					DropdownList,
-					327,
+					335,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -81564,7 +81572,7 @@
 				}),
 				'if',
 				DropdownList,
-				326,
+				334,
 				8
 			);
 		}
@@ -81636,7 +81644,7 @@
 			}),
 			'component',
 			DropdownList,
-			349,
+			357,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -81691,7 +81699,7 @@
 						),
 						'component',
 						DropdownList,
-						387,
+						395,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -81707,7 +81715,7 @@
 				}),
 				'if',
 				DropdownList,
-				385,
+				393,
 				16
 			);
 		}
@@ -81767,7 +81775,7 @@
 				),
 				'component',
 				DropdownList,
-				405,
+				413,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -81787,7 +81795,7 @@
 			}),
 			'key',
 			DropdownList,
-			426,
+			434,
 			20
 		);
 
@@ -81835,7 +81843,7 @@
 				}),
 				'component',
 				DropdownList,
-				435,
+				443,
 				4,
 				{ componentTag: 'FormError' }
 			);
