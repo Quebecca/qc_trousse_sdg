@@ -81001,9 +81001,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[394, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[435, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[324, 0, [[329, 4, [[348, 8, [[377, 12, [[433, 16]]]]]]]]]]);
+	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[396, 20]]);
+	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[437, 24]]);
+	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[328, 0, [[333, 4, [[350, 8, [[379, 12, [[435, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -81328,8 +81328,12 @@
 			return items()?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
 		}
 
+		function shouldNotSetRemainingBottomHeight() {
+			return !get(button) || expanded();
+		}
+
 		function setRemainingBottomHeight() {
-			if (!get(button)) {
+			if (shouldNotSetRemainingBottomHeight()) {
 				return;
 			}
 
@@ -81560,7 +81564,7 @@
 					}),
 					'component',
 					DropdownList,
-					335,
+					337,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -81572,7 +81576,7 @@
 				}),
 				'if',
 				DropdownList,
-				334,
+				336,
 				8
 			);
 		}
@@ -81644,7 +81648,7 @@
 			}),
 			'component',
 			DropdownList,
-			357,
+			359,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -81699,7 +81703,7 @@
 						),
 						'component',
 						DropdownList,
-						395,
+						397,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -81715,7 +81719,7 @@
 				}),
 				'if',
 				DropdownList,
-				393,
+				395,
 				16
 			);
 		}
@@ -81775,7 +81779,7 @@
 				),
 				'component',
 				DropdownList,
-				413,
+				415,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -81795,7 +81799,7 @@
 			}),
 			'key',
 			DropdownList,
-			434,
+			436,
 			20
 		);
 
@@ -81843,7 +81847,7 @@
 				}),
 				'component',
 				DropdownList,
-				443,
+				445,
 				4,
 				{ componentTag: 'FormError' }
 			);

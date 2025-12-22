@@ -307,8 +307,12 @@
         );
     }
 
+    function shouldNotSetRemainingBottomHeight() {
+        return !button || expanded
+    }
+
     function setRemainingBottomHeight() {
-        if (!button) {
+        if (shouldNotSetRemainingBottomHeight()) {
             return;
         }
         buttonElementYPosition = button.getBoundingClientRect().y;
@@ -329,8 +333,6 @@
     <div class={[
             "qc-dropdown-list-container",
         ]}>
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         {#if label}
             <Label
                     {required}
