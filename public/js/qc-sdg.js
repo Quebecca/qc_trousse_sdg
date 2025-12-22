@@ -8951,7 +8951,7 @@
 		return objects;
 	}
 
-	class Utils {
+	let Utils$1 = class Utils {
 
 	    static assetsBasePath =
 	        document
@@ -9110,7 +9110,7 @@
 
 	        return new MutationObserver(callback);
 	    }
-	}
+	};
 
 	function getCacheBustingParam(cssPath, currentScriptSrc) {
 	    const pattern = /\?.*$/;
@@ -9328,7 +9328,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
+		const isFr = strict_equals(Utils$1.getPageLanguage(), 'fr');
 		const defaultHeader = 'h2';
 		const defaultType = 'information';
 
@@ -9568,7 +9568,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -9632,12 +9632,12 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of government of Québec'),
@@ -9716,7 +9716,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10039,7 +10039,7 @@
 
 				add_svelte_meta(
 					() => if_block(node_4, ($$render) => {
-						if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
+						if (Utils$1.isTruthy(enableSearch())) $$render(consequent_3);
 					}),
 					'if',
 					PivHeader,
@@ -10337,7 +10337,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -10391,11 +10391,11 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of the Quebec government'),
@@ -10423,7 +10423,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg') {
+			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10432,7 +10432,7 @@
 				return logoSrcDarkTheme();
 			},
 
-			set logoSrcDarkTheme($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrcDarkTheme($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrcDarkTheme($$value);
 				flushSync();
 			},
@@ -10715,7 +10715,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -10928,7 +10928,7 @@
 			rootElement = prop($$props, 'rootElement', 15),
 			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
 
-		const language = Utils.getPageLanguage();
+		const language = Utils$1.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 
@@ -10969,7 +10969,7 @@
 
 			if (!key) return;
 
-			sessionStorage.setItem(key, Utils.now());
+			sessionStorage.setItem(key, Utils$1.now());
 		}
 
 		var $$exports = {
@@ -11149,7 +11149,7 @@
 
 					add_svelte_meta(
 						() => if_block(node_4, ($$render) => {
-							if (Utils.isTruthy(maskable())) $$render(consequent);
+							if (Utils$1.isTruthy(maskable())) $$render(consequent);
 						}),
 						'if',
 						Alert,
@@ -11173,7 +11173,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (!Utils.isTruthy(hide())) $$render(consequent_1);
+					if (!Utils$1.isTruthy(hide())) $$render(consequent_1);
 				}),
 				'if',
 				Alert,
@@ -11275,7 +11275,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -11305,7 +11305,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
@@ -11317,7 +11317,7 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (Utils.isTruthy(demo())) {
+			if (Utils$1.isTruthy(demo())) {
 				return;
 			}
 
@@ -11437,13 +11437,13 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[48, 0]]);
+	var root$d = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[108, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr')
+		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils$1.getPageLanguage(), 'fr')
 				? "Ce lien dirige vers un autre site."
 				: "This link directs to another site."),
 			links = prop($$props, 'links', 23, () => []),
@@ -11451,20 +11451,78 @@
 			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
 
 		let imgElement = tag(state(void 0), 'imgElement');
-		let processedLinks = new Set();
 
-		function addExternalLinkIcon(links) {
-			links.forEach((link) => {
-				if (processedLinks.has(link.innerHTML)) {
-					return;
+		function createVisibleNodesTreeWalker(link) {
+			return document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
+				acceptNode: (node) => {
+					if (node instanceof Element) {
+						if (node.hasAttribute('hidden')) {
+							return NodeFilter.FILTER_REJECT;
+						}
+
+						const style = window.getComputedStyle(node);
+
+						// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
+						if (strict_equals(style.display, 'none') || strict_equals(style.visibility, 'hidden') || strict_equals(style.position, 'absolute')) {
+							return NodeFilter.FILTER_REJECT;
+						}
+					}
+
+					if (!node instanceof Text) {
+						return NodeFilter.FILTER_SKIP;
+					}
+
+					// Ignore les nœuds vides
+					if (!(/\S/).test(node.textContent)) {
+						return NodeFilter.FILTER_SKIP;
+					}
+
+					return NodeFilter.FILTER_ACCEPT;
 				}
-
-				let linkContent = link.innerHTML;
-
-				linkContent = `<span class="qc-ext-link-text">${linkContent}</span>&nbsp;${get(imgElement).outerHTML}`;
-				link.innerHTML = linkContent;
-				processedLinks.add(linkContent);
 			});
+		}
+
+		function addExternalLinkIcon(link) {
+			// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+			const walker = createVisibleNodesTreeWalker(link);
+
+			let lastTextNode = null;
+
+			while (walker.nextNode()) {
+				lastTextNode = walker.currentNode;
+			}
+
+			// S'il n'y a pas de nœud texte visible, on ne fait rien
+			if (!lastTextNode) {
+				return;
+			}
+
+			// Séparer le contenu du dernier nœud texte en deux parties :
+			// le préfixe (éventuel) et le dernier mot
+			const text = lastTextNode.textContent;
+
+			const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
+
+			if (!match) {
+				return;
+			}
+
+			const prefix = match[1] || "";
+			const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
+
+			// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
+			const span = document.createElement('span');
+
+			span.classList.add('img-wrap');
+			span.innerHTML = `${lastWord}${get(imgElement).outerHTML}`;
+
+			// Met à jour le nœud texte : on garde le préfixe et on insère le span après
+			if (prefix) {
+				lastTextNode.textContent = prefix;
+				lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
+			} else {
+				lastTextNode.parentNode.replaceChild(span, lastTextNode);
+			}
 		}
 
 		user_effect(() => {
@@ -11475,7 +11533,11 @@
 			isUpdating(true);
 
 			tick().then(() => {
-				addExternalLinkIcon(links());
+				links().forEach((link) => {
+					if (!link.querySelector('.qc-ext-link-img')) {
+						addExternalLinkIcon(link);
+					}
+				});
 
 				return tick();
 			}).then(() => {
@@ -11489,7 +11551,7 @@
 			},
 
 			set externalIconAlt(
-				$$value = Utils.getPageLanguage() === 'fr'
+				$$value = Utils$1.getPageLanguage() === 'fr'
 					? "Ce lien dirige vers un autre site."
 					: "This link directs to another site."
 			) {
@@ -11528,10 +11590,10 @@
 		};
 
 		var div = root$d();
-		var node = child(div);
+		var node_1 = child(div);
 
 		add_svelte_meta(
-			() => Icon(node, {
+			() => Icon(node_1, {
 				type: 'external-link',
 
 				get alt() {
@@ -11550,7 +11612,7 @@
 			}),
 			'component',
 			ExternalLink,
-			49,
+			109,
 			4,
 			{ componentTag: 'Icon' }
 		);
@@ -11581,11 +11643,11 @@
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
-		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
-		let links = tag(state(proxy([])), 'links');
-		const observer = Utils.createMutationObserver($$props.$$host, refreshLinks);
+		let links = tag(state(proxy(queryLinks())), 'links');
 		let isUpdating = tag(state(false), 'isUpdating');
 		let pendingUpdate = false;
+		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
+		const observer = Utils$1.createMutationObserver($$props.$$host, refreshLinks);
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
@@ -11612,29 +11674,30 @@
 
 		onMount(() => {
 			$$props.$$host.classList.add('qc-external-link');
-			set(links, queryLinks(), true);
 			observer?.observe($$props.$$host, { childList: true, characterData: true, subtree: true });
 		});
 
-		onDestroy(() => {
-			observer?.disconnect();
-		});
+		onDestroy(() => observer?.disconnect());
 
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(
 			() => ExternalLink($$anchor, spread_props(
 				{
-					get links() {
-						return get(links);
-					},
-
 					get nestedExternalLinks() {
 						return nestedExternalLinks;
 					}
 				},
 				() => props,
 				{
+					get links() {
+						return get(links);
+					},
+
+					set links($$value) {
+						set(links, $$value, true);
+					},
+
 					get isUpdating() {
 						return get(isUpdating);
 					},
@@ -11646,7 +11709,7 @@
 			)),
 			'component',
 			ExternalLinkWC,
-			58,
+			54,
 			0,
 			{ componentTag: 'ExternalLink' }
 		);
@@ -11887,7 +11950,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			label = prop($$props, 'label', 7, ''),
@@ -12173,7 +12236,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
@@ -12204,7 +12267,7 @@
 		let inputProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("input", rest),
+					...Utils$1.computeFieldsAttributes("input", rest),
 					name: name()
 				})),
 				'inputProps'
@@ -12212,7 +12275,7 @@
 			submitProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("submit", rest)
+					...Utils$1.computeFieldsAttributes("submit", rest)
 				})),
 				'submitProps'
 			);
@@ -12432,7 +12495,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 7),
 			label = prop($$props, 'label', 7, ''),
@@ -12456,7 +12519,7 @@
 		onMount(() => {
 			if (id()) return;
 
-			id(Utils.generateId('qc-form-error'));
+			id(Utils$1.generateId('qc-form-error'));
 		});
 
 		var $$exports = {
@@ -12739,7 +12802,7 @@
 			rootElement = prop($$props, 'rootElement', 15);
 
 		let groupSelection = tag(state(void 0), 'groupSelection'),
-			legendId = name() ? "id_" + name() : Utils.generateId("legend");
+			legendId = name() ? "id_" + name() : Utils$1.generateId("legend");
 
 		var $$exports = {
 			get legend() {
@@ -13373,7 +13436,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13434,7 +13497,7 @@
 			append($$anchor, fragment);
 		});
 
-		Utils.getPageLanguage();
+		Utils$1.getPageLanguage();
 			const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
@@ -13812,7 +13875,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13837,7 +13900,7 @@
 	        input.autocomplete = "off";
 	    }
 	    if (!input.id) {
-	        input.id =  Utils.generateId(input.type);
+	        input.id =  Utils$1.generateId(input.type);
 	    }
 	    setValue(input.value);
 	    setRequired(input.required);
@@ -14037,7 +14100,7 @@
 			append($$anchor, fragment);
 		});
 
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15, false),
@@ -14142,8 +14205,8 @@
 		});
 
 		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils.generateId('description-'),
-			charCountId = Utils.generateId('charcount-');
+		const descriptionId = Utils$1.generateId('description-'),
+			charCountId = Utils$1.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -14677,7 +14740,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -16356,7 +16419,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils.getPageLanguage();
+		const lang = Utils$1.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
@@ -16423,7 +16486,7 @@
 			itemsForSearch = tag(
 				user_derived(() => items().map((item) => {
 					return {
-						label: Utils.cleanupSearchPrompt(item.label),
+						label: Utils$1.cleanupSearchPrompt(item.label),
 						value: item.value,
 						disabled: item.disabled,
 						checked: item.checked
@@ -16497,7 +16560,7 @@
 		}
 
 		function handleOuterEvent() {
-			if (!Utils.componentIsActive(get(instance))) {
+			if (!Utils$1.componentIsActive(get(instance))) {
 				expanded(false);
 			}
 		}
@@ -16506,7 +16569,7 @@
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
+				if (strict_equals(event.key, "Tab") && !Utils$1.componentIsActive(get(instance))) {
 					expanded(false);
 				}
 			}).catch(console.error);
@@ -16591,7 +16654,7 @@
 				let newDisplayedItems = [];
 
 				for (let i = 0; i < items().length; i++) {
-					if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) {
+					if (get(itemsForSearch)[i].label.includes(Utils$1.cleanupSearchPrompt(get(searchText)))) {
 						newDisplayedItems.push(items()[i]);
 					}
 				}
@@ -17285,7 +17348,7 @@
 		let selectElement = tag(state(void 0), 'selectElement');
 		let items = tag(state(void 0), 'items');
 		let labelElement = tag(state(void 0), 'labelElement');
-		const observer = Utils.createMutationObserver($$props.$$host, setupItemsList);
+		const observer = Utils$1.createMutationObserver($$props.$$host, setupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -17579,7 +17642,7 @@
 
 		var link = sibling(node_1, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
