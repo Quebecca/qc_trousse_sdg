@@ -127,8 +127,9 @@
         size="xl"
         maxlength="10"
         required
+        invalidOnBlur
 >
-    <textarea name="zone-xl"></textarea>
+    <textarea id="suggestions-blur-test" name="zone-xl"></textarea>
 </TextField>
 
 <TextField label="Suggestions"

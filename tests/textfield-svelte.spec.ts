@@ -26,3 +26,10 @@ test.describe('Aria', () => {
         await expect(page.locator('#text-md')).toHaveAttribute('aria-invalid', 'false');
     });
 });
+
+test('Erreur sur blur', async ({ page }) => {
+    await page.locator('#suggestions-blur-test').focus();
+    await page.locator('#suggestions-blur-test').press('Tab');
+
+    await expect(page.locator('#suggestions-blur-test')).toHaveAttribute('aria-invalid', 'true');
+});

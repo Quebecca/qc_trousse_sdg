@@ -78559,10 +78559,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[141, 8]]);
-	var root_4$3 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[152, 8]]);
+	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[148, 8]]);
+	var root_4$3 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[159, 8]]);
 	var root_1$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[176, 4]]);
+	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[183, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -78612,7 +78612,7 @@
 							}),
 							'component',
 							TextField,
-							131,
+							138,
 							8,
 							{ componentTag: 'Label' }
 						);
@@ -78625,7 +78625,7 @@
 					}),
 					'if',
 					TextField,
-					130,
+					137,
 					4
 				);
 			}
@@ -78650,14 +78650,14 @@
 					}),
 					'if',
 					TextField,
-					140,
+					147,
 					4
 				);
 			}
 
 			var node_3 = sibling(node_1, 2);
 
-			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 149, 4);
+			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 156, 4);
 
 			var node_4 = sibling(node_3, 2);
 
@@ -78688,7 +78688,7 @@
 					}),
 					'if',
 					TextField,
-					151,
+					158,
 					4
 				);
 			}
@@ -78735,7 +78735,7 @@
 					}),
 					'component',
 					TextField,
-					165,
+					172,
 					4,
 					{ componentTag: 'FormError' }
 				);
@@ -78756,6 +78756,7 @@
 			value = prop($$props, 'value', 15, ""),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
+			invalidOnBlur = prop($$props, 'invalidOnBlur', 7),
 			describedBy = prop($$props, 'describedBy', 31, () => tag_proxy(proxy([]), 'describedBy')),
 			labelElement = prop($$props, 'labelElement', 15),
 			formErrorElement = prop($$props, 'formErrorElement', 15),
@@ -78790,9 +78791,17 @@
 				input(get(rootElement)?.querySelector('input,textarea'));
 			}
 
+			console.log(...log_if_contains_state('log', input()));
+
 			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam), (requiredParam) => {
 				if (requiredParam) {
 					required(requiredParam);
+				}
+			});
+
+			input()?.addEventListener('blur', () => {
+				if (invalidOnBlur() && required() && !value()) {
+					invalid(true);
 				}
 			});
 		});
@@ -78956,6 +78965,15 @@
 				flushSync();
 			},
 
+			get invalidOnBlur() {
+				return invalidOnBlur();
+			},
+
+			set invalidOnBlur($$value) {
+				invalidOnBlur($$value);
+				flushSync();
+			},
+
 			get describedBy() {
 				return describedBy();
 			},
@@ -79027,14 +79045,14 @@
 
 		{
 			var consequent_3 = ($$anchor) => {
-				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 174, 4);
+				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 181, 4);
 			};
 
 			var alternate = ($$anchor) => {
 				var div_2 = root_6$1();
 				var node_8 = child(div_2);
 
-				add_svelte_meta(() => textfield(node_8), 'render', TextField, 181, 8);
+				add_svelte_meta(() => textfield(node_8), 'render', TextField, 188, 8);
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
@@ -79052,7 +79070,7 @@
 				}),
 				'if',
 				TextField,
-				173,
+				180,
 				0
 			);
 		}
@@ -79075,6 +79093,7 @@
 			value: {},
 			invalid: {},
 			invalidText: {},
+			invalidOnBlur: {},
 			describedBy: {},
 			labelElement: {},
 			formErrorElement: {},

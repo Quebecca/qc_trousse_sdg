@@ -18,6 +18,7 @@
         value = $bindable(""),
         invalid = $bindable(false),
         invalidText,
+        invalidOnBlur,
         describedBy = $bindable([]),
         labelElement = $bindable(),
         formErrorElement = $bindable(),
@@ -48,6 +49,7 @@
         if (!input) {
             input = rootElement?.querySelector('input,textarea');
         }
+        console.log(input);
         onMountInput(
             input,
             textFieldRowParam => textFieldRow = textFieldRowParam,
@@ -59,6 +61,11 @@
                 }
             }
         )
+        input?.addEventListener('blur', () => {
+            if (invalidOnBlur && required && !value) {
+                invalid = true;
+            }
+        });
     })
 
     $effect(() => {

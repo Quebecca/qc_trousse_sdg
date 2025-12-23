@@ -8,6 +8,7 @@
     maxlength: { attribute: 'max-length', type: 'Number' },
     invalid: { attribute: 'invalid', type: 'Boolean', reflect: true },
     invalidText: { attribute: 'invalid-text', type: 'String' },
+    invalidOnBlur: { attribute: 'invalid-on-blur', type: 'Boolean' },
   }
 }} />
 
@@ -29,6 +30,7 @@
             size,
             maxlengthReached = $bindable(false),
             invalidAtSubmit = $bindable(false),
+            invalidOnBlur,
         } = $props();
     let
         labelElement = $state(),
@@ -57,6 +59,11 @@
                 }
             }
         )
+        input?.addEventListener('blur', () => {
+            if (invalidOnBlur && required && !value) {
+                invalid = true;
+            }
+        });
     })
 
     $effect(() => {
@@ -108,6 +115,7 @@
     bind:formErrorElement
     bind:descriptionElement
     bind:maxlengthElement
+    {invalidOnBlur}
 >
     <slot></slot>
 </TextField>
