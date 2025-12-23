@@ -262,11 +262,15 @@
     </div>
 </div>
 
-<Checkbox required invalidOnBlur>
-    <label for="on-blur-validation">
-        <input type="checkbox" id="on-blur-validation">
-        <span>Validation on blur</span>
+<ChoiceGroup legend="Groupe on blur" name="group-on-blur" required invalidOnBlur>
+    <label for="on-blur-validation-group-1">
+        <input type={type} id="on-blur-validation-group-1">
+        <span>Catalogue 1</span>
     </label>
-</Checkbox>
+    <label for="on-blur-validation-group-2">
+        <input type={type} id="on-blur-validation-group-2">
+        <span>Catalogue 2</span>
+    </label>
+</ChoiceGroup>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>

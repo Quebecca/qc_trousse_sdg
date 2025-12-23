@@ -1,185 +1,194 @@
 
-    <qc-choice-group legend="Boutons de sélection"
-                    selection-button
-                    column-count="2"
-                     name="tile-1"
-    >
-        <label>
-            <input type="radio"
+<qc-choice-group legend="Boutons de sélection"
+                selection-button
+                column-count="2"
+                 name="tile-1"
+>
+    <label>
+        <input type="radio"
 
-                   value="1"
-                   checked
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 1</span>
-                <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
-            </span>
-        </label>
+               value="1"
+               checked
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 1</span>
+            <span class="qc-tile-description">Ceci est une <b>longue</b> description servant à montrer l'affichage des boutons de sélection.</span>
+        </span>
+    </label>
 
-        <label>
-            <input type="radio"
-                   value="2"
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 2</span>
-            </span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="3"
-                   disabled
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 3 (désactivée)</span>
-            </span>
-        </label>
-    </qc-choice-group>
+    <label>
+        <input type="radio"
+               value="2"
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 2</span>
+        </span>
+    </label>
+    <label>
+        <input type="radio"
+               value="3"
+               disabled
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 3 (désactivée)</span>
+        </span>
+    </label>
+</qc-choice-group>
 
-    <qc-choice-group legend="Boutons de sélection inline"
-                    selection-button
-                    inline
-                    column-count="2"
-                     name="tile-2"
+<qc-choice-group legend="Boutons de sélection inline"
+                selection-button
+                inline
+                column-count="2"
+                 name="tile-2"
 
-    >
-        <label>
-            <input type="radio"
-                   value="1"
-                   checked
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 1</span>
-            </span>
-        </label>
+>
+    <label>
+        <input type="radio"
+               value="1"
+               checked
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 1</span>
+        </span>
+    </label>
 
-        <label>
-            <input type="radio"
-                   value="2"
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 2</span>
-            </span>
-        </label>
-        <label>
-            <input type="radio"
-                   value="3"
-                   disabled
-            />
-            <span class="qc-tile">
-                <span class="qc-tile-text">Option 3 (désactivée)</span>
-            </span>
-        </label>
-    </qc-choice-group>
+    <label>
+        <input type="radio"
+               value="2"
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 2</span>
+        </span>
+    </label>
+    <label>
+        <input type="radio"
+               value="3"
+               disabled
+        />
+        <span class="qc-tile">
+            <span class="qc-tile-text">Option 3 (désactivée)</span>
+        </span>
+    </label>
+</qc-choice-group>
 
-    <div class="qc-row">
-        <div class="qc-col-sm-12 qc-col-lg-6">
-            <qc-choice-group legend="Exemple de base"
-                            name="base-1"
-            >
-                <label>
-                    <input type="radio"
-                           value="1"
-                           checked
-                    />
-                    <span >Option 1</span>
-                </label>
-                <label>
-                    <input type="radio"
+<div class="qc-row">
+    <div class="qc-col-sm-12 qc-col-lg-6">
+        <qc-choice-group legend="Exemple de base"
+                        name="base-1"
+        >
+            <label>
+                <input type="radio"
+                       value="1"
+                       checked
+                />
+                <span >Option 1</span>
+            </label>
+            <label>
+                <input type="radio"
 
-                           value="2"
-                    />
-                    <span >Option 2</span>
-                </label>
-                <label>
-                    <input type="radio"
+                       value="2"
+                />
+                <span >Option 2</span>
+            </label>
+            <label>
+                <input type="radio"
 
-                           value="3"
-                           disabled
-                    />
-                    <span >Option 3 (désactivée)</span>
-                </label>
-            </qc-choice-group>
+                       value="3"
+                       disabled
+                />
+                <span >Option 3 (désactivée)</span>
+            </label>
+        </qc-choice-group>
 
-            <qc-choice-group legend="Invalid"
-                            name="base-2"
-                            invalid
-                            required
-            >
-                <label>
-                    <input type="radio"
-                           value="1"
-                    />
-                    <span >Option 1</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="2"
-                    />
-                    <span >Option 2</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="3"
-                           disabled
-                    />
-                    <span >Option 3 (désactivée)</span>
-                </label>
-            </qc-choice-group>
-        </div>
-        <div class="qc-col-sm-12 qc-col-lg-6">
-            <qc-choice-group legend="Compact"
-                            name="compact-1"
-                            compact
-            >
-                <label>
-                    <input type="radio"
-                           value="1"
-                           checked
-                    />
-                    <span >Option 1</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="2"
-                    />
-                    <span >Option 2</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="3"
-                           disabled
-                    />
-                    <span >Option 3 (désactivée)</span>
-                </label>
-            </qc-choice-group>
-
-            <qc-choice-group legend="Invalid"
-                            name="compact-2"
-                            compact
-                            invalid
-                            required
-            >
-                <label>
-                    <input type="radio"
-                           value="1"
-                    />
-                    <span >Option 1</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="2"
-                    />
-                    <span >Option 2</span>
-                </label>
-                <label>
-                    <input type="radio"
-                           value="3"
-                           disabled
-                    />
-                    <span >Option 3 (désactivée)</span>
-                </label>
-            </qc-choice-group>
-        </div>
+        <qc-choice-group legend="Invalid"
+                        name="base-2"
+                        invalid
+                        required
+        >
+            <label>
+                <input type="radio"
+                       value="1"
+                />
+                <span >Option 1</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="2"
+                />
+                <span >Option 2</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="3"
+                       disabled
+                />
+                <span >Option 3 (désactivée)</span>
+            </label>
+        </qc-choice-group>
     </div>
+    <div class="qc-col-sm-12 qc-col-lg-6">
+        <qc-choice-group legend="Compact"
+                        name="compact-1"
+                        compact
+        >
+            <label>
+                <input type="radio"
+                       value="1"
+                       checked
+                />
+                <span >Option 1</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="2"
+                />
+                <span >Option 2</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="3"
+                       disabled
+                />
+                <span >Option 3 (désactivée)</span>
+            </label>
+        </qc-choice-group>
 
+        <qc-choice-group legend="Invalid"
+                        name="compact-2"
+                        compact
+                        invalid
+                        required
+        >
+            <label>
+                <input type="radio"
+                       value="1"
+                />
+                <span >Option 1</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="2"
+                />
+                <span >Option 2</span>
+            </label>
+            <label>
+                <input type="radio"
+                       value="3"
+                       disabled
+                />
+                <span >Option 3 (désactivée)</span>
+            </label>
+        </qc-choice-group>
+    </div>
+</div>
 
+<qc-choice-group required invalid-on-blur legend="Groupe on blur" name="group-on-blur">
+    <label for="on-blur-validation-group-1">
+        <input type="radio" id="on-blur-validation-group-1">
+        <span>Catalogue 1</span>
+    </label>
+    <label for="on-blur-validation-group-2">
+        <input type="radio" id="on-blur-validation-group-2">
+        <span>Catalogue 2</span>
+    </label>
+</qc-choice-group>

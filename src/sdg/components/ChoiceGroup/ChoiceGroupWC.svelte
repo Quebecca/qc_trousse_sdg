@@ -7,6 +7,7 @@
         required: {attribute: 'required', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean'},
         invalidText: {attribute: 'invalid-text', type: 'String'},
+        invalidOnBlur: {attribute: 'invalid-on-blur', type: 'Boolean'},
         selectionButton: {attribute: 'selection-button', type: 'Boolean'},
         columnCount: {attribute: 'column-count', type: 'String'},
         inline: {attribute: 'inline', type: 'Boolean'}
@@ -24,6 +25,7 @@
         required,
         invalid = $bindable(false),
         invalidText,
+        invalidOnBlur,
         selectionButton,
         columnCount,
         inline
@@ -37,6 +39,7 @@
         {required}
         bind:invalid
         {invalidText}
+        {invalidOnBlur}
         {selectionButton}
         {columnCount}
         {inline}

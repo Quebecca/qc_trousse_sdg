@@ -82332,6 +82332,7 @@
 
 		let invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
+			invalidOnBlur = prop($$props, 'invalidOnBlur', 7),
 			children = prop($$props, 'children', 7),
 			compact = prop($$props, 'compact', 7, false),
 			selectionButton = prop($$props, 'selectionButton', 7, false),
@@ -82348,6 +82349,7 @@
 					'$$host',
 					'invalid',
 					'invalidText',
+					'invalidOnBlur',
 					'children',
 					'compact',
 					'selectionButton',
@@ -82366,7 +82368,24 @@
 		};
 
 		user_effect(() => {
-			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateChoiceInput(input, required(), invalid(), compact(), selectionButton(), inline(), name()));
+			let inputs = Array.from((host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield'));
+
+			inputs.forEach((input) => {
+				updateChoiceInput(input, required(), invalid(), compact(), selectionButton(), inline(), name());
+
+				if (invalidOnBlur()) {
+					onBlur(input, () => {
+						setTimeout(
+							() => {
+								if (!(Utils.componentIsActive(host() ? host() : get(fieldsetElement)) || inputs.find((input) => input.checked))) {
+									invalid(true);
+								}
+							},
+							0
+						);
+					});
+				}
+			});
 		});
 
 		var $$exports = {
@@ -82385,6 +82404,15 @@
 
 			set invalidText($$value) {
 				invalidText($$value);
+				flushSync();
+			},
+
+			get invalidOnBlur() {
+				return invalidOnBlur();
+			},
+
+			set invalidOnBlur($$value) {
+				invalidOnBlur($$value);
 				flushSync();
 			},
 
@@ -82504,7 +82532,7 @@
 							var fragment_1 = comment();
 							var node = first_child(fragment_1);
 
-							add_svelte_meta(() => snippet(node, children), 'render', ChoiceGroup, 54, 4);
+							add_svelte_meta(() => snippet(node, children), 'render', ChoiceGroup, 65, 4);
 							append($$anchor, fragment_1);
 						}),
 
@@ -82513,7 +82541,7 @@
 				)),
 				'component',
 				ChoiceGroup,
-				43,
+				54,
 				0,
 				{ componentTag: 'Fieldset' }
 			);
@@ -82527,6 +82555,7 @@
 		{
 			invalid: {},
 			invalidText: {},
+			invalidOnBlur: {},
 			children: {},
 			compact: {},
 			selectionButton: {},
