@@ -8,6 +8,7 @@
         selectedOptionsText = "",
         placeholder,
         buttonElement = $bindable(),
+        handleBlurCallback,
         ...rest
     } = $props()
 </script>
@@ -19,6 +20,7 @@
     class="qc-dropdown-button"
     role="combobox"
     bind:this={buttonElement}
+    onblur={handleBlurCallback}
     {...rest}
 >
     {#if selectedOptionsText.length > 0}

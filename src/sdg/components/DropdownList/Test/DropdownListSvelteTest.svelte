@@ -100,6 +100,7 @@
             searchPlaceholder="Rechercher un restaurant"
             items={restaurants}
             invalidText="Veuillez choisir un type de restaurant."
+            invalidOnBlur="true"
     />
 
     <DropdownList

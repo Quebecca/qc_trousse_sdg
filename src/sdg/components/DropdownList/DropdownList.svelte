@@ -23,6 +23,7 @@
         disabled = false,
         invalid = $bindable(false),
         invalidText,
+        invalidOnBlur,
         searchPlaceholder = "",
         multiple = false,
         rootElement = $bindable(),
@@ -299,6 +300,14 @@
         }
     });
 
+    function handleBlur() {
+        setTimeout(() => {
+            if (invalidOnBlur && !Utils.componentIsActive(instance) && value.length <= 0) {
+                invalid = true;
+            }
+        }, 0);
+    }
+
     function findOptionWithEmptyValue() {
         return items?.find(
             item => item.value === ""
@@ -372,6 +381,7 @@
                         handleButtonKeyDown(e, enableSearch ? searchInput : dropdownItems);
                     }}
                     bind:buttonElement={button}
+                    handleBlurCallback={handleBlur}
             />
 
             <div

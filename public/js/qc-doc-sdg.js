@@ -80838,9 +80838,9 @@
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
-	var root_2$3 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
-	var root$2 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
+	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
+	var root_2$3 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[29, 8]]);
+	var root$2 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[16, 0, [[32, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -80852,6 +80852,7 @@
 			selectedOptionsText = prop($$props, 'selectedOptionsText', 7, ""),
 			placeholder = prop($$props, 'placeholder', 7),
 			buttonElement = prop($$props, 'buttonElement', 15),
+			handleBlurCallback = prop($$props, 'handleBlurCallback', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -80864,7 +80865,8 @@
 					'disabled',
 					'selectedOptionsText',
 					'placeholder',
-					'buttonElement'
+					'buttonElement',
+					'handleBlurCallback'
 				]);
 
 		var $$exports = {
@@ -80922,6 +80924,15 @@
 				flushSync();
 			},
 
+			get handleBlurCallback() {
+				return handleBlurCallback();
+			},
+
+			set handleBlurCallback($$value) {
+				handleBlurCallback($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -80933,6 +80944,7 @@
 			disabled: disabled(),
 			class: 'qc-dropdown-button',
 			role: 'combobox',
+			onblur: handleBlurCallback(),
 			...rest
 		}));
 
@@ -80963,7 +80975,7 @@
 				}),
 				'if',
 				DropdownListButton,
-				24,
+				26,
 				4
 			);
 		}
@@ -80994,7 +81006,7 @@
 				}),
 				'component',
 				DropdownListButton,
-				31,
+				33,
 				8,
 				{ componentTag: 'Icon' }
 			);
@@ -81016,7 +81028,8 @@
 			disabled: {},
 			selectedOptionsText: {},
 			placeholder: {},
-			buttonElement: {}
+			buttonElement: {},
+			handleBlurCallback: {}
 		},
 		[],
 		[],
@@ -81025,9 +81038,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[394, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[435, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[324, 0, [[329, 4, [[348, 8, [[377, 12, [[433, 16]]]]]]]]]]);
+	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[404, 20]]);
+	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[445, 24]]);
+	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[333, 0, [[338, 4, [[357, 8, [[387, 12, [[443, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -81049,6 +81062,7 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7),
+			invalidOnBlur = prop($$props, 'invalidOnBlur', 7),
 			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
 			multiple = prop($$props, 'multiple', 7, false),
 			rootElement = prop($$props, 'rootElement', 15),
@@ -81348,6 +81362,17 @@
 			}
 		});
 
+		function handleBlur() {
+			setTimeout(
+				() => {
+					if (invalidOnBlur() && !Utils.componentIsActive(get(instance)) && value().length <= 0) {
+						invalid(true);
+					}
+				},
+				0
+			);
+		}
+
 		function findOptionWithEmptyValue() {
 			return items()?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
 		}
@@ -81482,6 +81507,15 @@
 				flushSync();
 			},
 
+			get invalidOnBlur() {
+				return invalidOnBlur();
+			},
+
+			set invalidOnBlur($$value) {
+				invalidOnBlur($$value);
+				flushSync();
+			},
+
 			get searchPlaceholder() {
 				return searchPlaceholder();
 			},
@@ -81584,7 +81618,7 @@
 					}),
 					'component',
 					DropdownList,
-					335,
+					344,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -81596,7 +81630,7 @@
 				}),
 				'if',
 				DropdownList,
-				334,
+				343,
 				8
 			);
 		}
@@ -81658,6 +81692,8 @@
 					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
 				},
 
+				handleBlurCallback: handleBlur,
+
 				get buttonElement() {
 					return get(button);
 				},
@@ -81668,7 +81704,7 @@
 			}),
 			'component',
 			DropdownList,
-			357,
+			366,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -81723,7 +81759,7 @@
 						),
 						'component',
 						DropdownList,
-						395,
+						405,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -81739,7 +81775,7 @@
 				}),
 				'if',
 				DropdownList,
-				393,
+				403,
 				16
 			);
 		}
@@ -81799,7 +81835,7 @@
 				),
 				'component',
 				DropdownList,
-				413,
+				423,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -81819,7 +81855,7 @@
 			}),
 			'key',
 			DropdownList,
-			434,
+			444,
 			20
 		);
 
@@ -81867,7 +81903,7 @@
 				}),
 				'component',
 				DropdownList,
-				443,
+				453,
 				4,
 				{ componentTag: 'FormError' }
 			);
@@ -81919,6 +81955,7 @@
 			disabled: {},
 			invalid: {},
 			invalidText: {},
+			invalidOnBlur: {},
 			searchPlaceholder: {},
 			multiple: {},
 			rootElement: {},

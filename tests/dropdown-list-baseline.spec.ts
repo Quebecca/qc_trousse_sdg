@@ -536,6 +536,32 @@ test.describe('formulaire', () => {
         await expect(page.locator('#dropdown-list-restaurants-error')).toHaveCount(0);
     });
 
+    test('Erreur sur changement de focus vers externe', {
+        tag: ['@form', '@dropdownlist'],
+        annotation: {
+            type: 'description',
+            description: 'Soit une liste déroulante requise fermée au focus, en retirant le focus, alors vérifie la présence de valeur'
+        }
+    }, async ({ page }) => {
+        await page.locator('#dropdown-list-restaurants-input').focus();
+        await page.locator('#dropdown-list-restaurants-input').blur();
+
+        await expect(page.locator('#dropdown-list-restaurants')).toHaveAttribute('invalid');
+    });
+
+    test('Erreur sur changement de focus vers interne', {
+        tag: ['@form', '@dropdownlist'],
+        annotation: {
+            type: 'description',
+            description: 'Soit une liste déroulante requise ouverte au focus, en déplaçant le focus sur un enfant, alors ne fait aucune validation'
+        }
+    }, async ({ page }) => {
+        await page.locator('#dropdown-list-restaurants-input').click();
+        await page.locator('#dropdown-list-restaurants-input').press('Tab');
+
+        await expect(page.locator('#dropdown-list-restaurants')).not.toHaveAttribute('invalid');
+    });
+
     test('envoi formulaire', {
         tag: ['@form', '@dropdownlist'],
         annotation: {

@@ -10,6 +10,7 @@
         disabled: {attribute: 'disabled', type: 'Boolean'},
         invalid: {attribute: 'invalid', type: 'Boolean', reflect: true},
         invalidText: {attribute: 'invalid-text', type: 'String'},
+        invalidOnBlur: {attribute: 'invalid-on-blur', type: 'Boolean'},
         placeholder: {attribute: 'placeholder', type: 'String'},
         searchPlaceholder: {attribute: 'search-placeholder', type: 'String'},
         noOptionsMessage: {attribute: 'no-options-message', type: 'String'},
