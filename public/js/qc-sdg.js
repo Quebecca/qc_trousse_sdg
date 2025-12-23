@@ -13973,10 +13973,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[148, 8]]);
-	var root_4$1 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[159, 8]]);
+	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[147, 8]]);
+	var root_4$1 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[158, 8]]);
 	var root_1$3 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[183, 4]]);
+	var root_6 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[182, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -14026,7 +14026,7 @@
 							}),
 							'component',
 							TextField,
-							138,
+							137,
 							8,
 							{ componentTag: 'Label' }
 						);
@@ -14039,7 +14039,7 @@
 					}),
 					'if',
 					TextField,
-					137,
+					136,
 					4
 				);
 			}
@@ -14064,14 +14064,14 @@
 					}),
 					'if',
 					TextField,
-					147,
+					146,
 					4
 				);
 			}
 
 			var node_3 = sibling(node_1, 2);
 
-			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 156, 4);
+			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 155, 4);
 
 			var node_4 = sibling(node_3, 2);
 
@@ -14102,7 +14102,7 @@
 					}),
 					'if',
 					TextField,
-					158,
+					157,
 					4
 				);
 			}
@@ -14149,7 +14149,7 @@
 					}),
 					'component',
 					TextField,
-					172,
+					171,
 					4,
 					{ componentTag: 'FormError' }
 				);
@@ -14204,8 +14204,6 @@
 			if (!input()) {
 				input(get(rootElement)?.querySelector('input,textarea'));
 			}
-
-			console.log(...log_if_contains_state('log', input()));
 
 			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam), (requiredParam) => {
 				if (requiredParam) {
@@ -14459,14 +14457,14 @@
 
 		{
 			var consequent_3 = ($$anchor) => {
-				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 181, 4);
+				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 180, 4);
 			};
 
 			var alternate = ($$anchor) => {
 				var div_2 = root_6();
 				var node_8 = child(div_2);
 
-				add_svelte_meta(() => textfield(node_8), 'render', TextField, 188, 8);
+				add_svelte_meta(() => textfield(node_8), 'render', TextField, 187, 8);
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
@@ -14484,7 +14482,7 @@
 				}),
 				'if',
 				TextField,
-				180,
+				179,
 				0
 			);
 		}

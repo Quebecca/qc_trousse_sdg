@@ -49,7 +49,6 @@
         if (!input) {
             input = rootElement?.querySelector('input,textarea');
         }
-        console.log(input);
         onMountInput(
             input,
             textFieldRowParam => textFieldRow = textFieldRowParam,
