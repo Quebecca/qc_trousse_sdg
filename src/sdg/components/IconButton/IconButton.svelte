@@ -28,3 +28,19 @@ const {
     {/if}
 </button>
 
+<style lang="scss">
+  @use "qc-sdg-lib" as *;
+
+  .qc-icon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    @each $size-type, $size in ( sm: 16, md: 20, nm: 24, lg: 32, xl: 40) {
+      &[data-button-size=#{$size-type}] {
+        height: rem($size);
+        width: rem($size);
+      }
+    }
+  }
+</style>

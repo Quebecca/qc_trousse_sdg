@@ -83,3 +83,59 @@
         </div>
     </div>
 {/if}
+
+<style lang="scss">
+  @use "../../scss/qc-sdg-lib" as *;
+
+  .qc-general-alert {
+    padding: token-value(spacer, md) 0;
+
+    @include media-mobile() {
+      padding: token-value(spacer, sm) 0;
+    }
+
+    .qc-general-alert-elements {
+      display: flex;
+    }
+
+    &.warning {
+      background-color: token-value(color, yellow, pale);
+    }
+
+    &.general {
+      background-color: token-value(color, blue, pale);
+    }
+
+    .qc-alert-content {
+      @include content-font(md, semi-bold);
+      margin: 0 token-value(spacer, md);
+      width: 100%;
+
+      @include media-mobile() {
+        @include content-font(sm, semi-bold);
+      }
+    }
+
+    :global(button) {
+      @include qc-formcontrol-box;
+      flex-shrink: 0;
+      &::before {
+        background: transparent;
+      }
+      cursor: pointer;
+    }
+  }
+
+  qc-alert {
+    display: block;
+    [slot], &:not([slot=content]) {
+      * {
+        margin-bottom: 0;
+      }
+
+      a {
+        color: token-value(color blue piv);
+      }
+    }
+  }
+</style>

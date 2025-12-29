@@ -6998,6 +6998,31 @@
 		}
 	}
 
+	/**
+	 * @param {Node} anchor
+	 * @param {{ hash: string, code: string }} css
+	 */
+	function append_styles$1(anchor, css) {
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		effect(() => {
+			var root = anchor.getRootNode();
+
+			var target = /** @type {ShadowRoot} */ (root).host
+				? /** @type {ShadowRoot} */ (root)
+				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
+
+			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
+			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
+			if (!target.querySelector('#' + css.hash)) {
+				const style = document.createElement('style');
+				style.id = css.hash;
+				style.textContent = css.code;
+
+				target.appendChild(style);
+			}
+		});
+	}
+
 	/** @import { Effect } from '#client' */
 
 	// TODO in 6.0 or 7.0, when we remove legacy mode, we can simplify this by
@@ -7568,7 +7593,7 @@
 
 		if (next.class) {
 			next.class = clsx(next.class);
-		} else if (next[CLASS]) {
+		} else if (css_hash || next[CLASS]) {
 			next.class = null; /* force call to set_class() */
 		}
 
@@ -8951,7 +8976,7 @@
 		return objects;
 	}
 
-	let Utils$1 = class Utils {
+	class Utils {
 
 	    static assetsBasePath =
 	        document
@@ -9110,7 +9135,7 @@
 
 	        return new MutationObserver(callback);
 	    }
-	};
+	}
 
 	function getCacheBustingParam(cssPath, currentScriptSrc) {
 	    const pattern = /\?.*$/;
@@ -9328,7 +9353,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const isFr = strict_equals(Utils$1.getPageLanguage(), 'fr');
+		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
 		const defaultHeader = 'h2';
 		const defaultType = 'information';
 
@@ -9568,7 +9593,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -9632,12 +9657,12 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let customElementParent = prop($$props, 'customElementParent', 7),
 			logoUrl = prop($$props, 'logoUrl', 7, '/'),
 			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of government of Québec'),
@@ -9716,7 +9741,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10039,7 +10064,7 @@
 
 				add_svelte_meta(
 					() => if_block(node_4, ($$render) => {
-						if (Utils$1.isTruthy(enableSearch())) $$render(consequent_3);
+						if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
 					}),
 					'if',
 					PivHeader,
@@ -10337,7 +10362,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -10391,11 +10416,11 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg'),
+			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
+			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
 			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
 				? 'Logo du gouvernement du Québec'
 				: 'Logo of the Quebec government'),
@@ -10423,7 +10448,7 @@
 				return logoSrc();
 			},
 
-			set logoSrc($$value = Utils$1.imagesRelativePath + 'QUEBEC_couleur.svg') {
+			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg') {
 				logoSrc($$value);
 				flushSync();
 			},
@@ -10432,7 +10457,7 @@
 				return logoSrcDarkTheme();
 			},
 
-			set logoSrcDarkTheme($$value = Utils$1.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrcDarkTheme($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
 				logoSrcDarkTheme($$value);
 				flushSync();
 			},
@@ -10715,7 +10740,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -10753,9 +10778,15 @@
 
 	var root$g = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
 
+	const $$css$1 = {
+		hash: 'qc-hash-167ul0d',
+		code: '.qc-icon-button.qc-hash-167ul0d {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n.qc-icon-button[data-button-size=sm].qc-hash-167ul0d {\n  height: 1.6rem;\n  width: 1.6rem;\n}\n.qc-icon-button[data-button-size=md].qc-hash-167ul0d {\n  height: 2rem;\n  width: 2rem;\n}\n.qc-icon-button[data-button-size=nm].qc-hash-167ul0d {\n  height: 2.4rem;\n  width: 2.4rem;\n}\n.qc-icon-button[data-button-size=lg].qc-hash-167ul0d {\n  height: 3.2rem;\n  width: 3.2rem;\n}\n.qc-icon-button[data-button-size=xl].qc-hash-167ul0d {\n  height: 4rem;\n  width: 4rem;\n}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiSWNvbkJ1dHRvbi5zdmVsdGUiLCJzb3VyY2VzIjpbIkljb25CdXR0b24uc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG5pbXBvcnQgSWNvbiBmcm9tIFwiLi4vLi4vYmFzZXMvSWNvbi9JY29uLnN2ZWx0ZVwiO1xuXG5jb25zdCB7XG4gICAgc2l6ZSA9ICd4bCcsXG4gICAgbGFiZWwsXG4gICAgaWNvbixcbiAgICBpY29uU2l6ZSxcbiAgICBpY29uQ29sb3IsXG4gICAgY2xhc3M6IGNsYXNzTmFtZSA9ICcnLFxuICAgIC4uLnJlc3Rcbn0gPSAkcHJvcHMoKTtcblxuPC9zY3JpcHQ+XG5cbjxidXR0b25cbiAgICBkYXRhLWJ1dHRvbi1zaXplPXtzaXplfVxuICAgIGNsYXNzPXtgcWMtaWNvbi1idXR0b24gJHtjbGFzc05hbWV9YH1cbiAgICB7Li4ucmVzdH1cbj5cbiAgICB7I2lmIGljb259XG4gICAgICAgIDxJY29uIHR5cGU9e2ljb259XG4gICAgICAgICAgICBzaXplPXtpY29uU2l6ZX1cbiAgICAgICAgICAgIGNvbG9yPXtpY29uQ29sb3J9XG4gICAgICAgICAgICBhcmlhLWhpZGRlbj1cInRydWVcIlxuICAgICAgICAgICAgbGFiZWw9e2xhYmVsfVxuICAgICAgICAvPlxuICAgIHsvaWZ9XG48L2J1dHRvbj5cblxuPHN0eWxlIGxhbmc9XCJzY3NzXCI+LnFjLWljb24tYnV0dG9uIHtcbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gIGZsZXgtc2hyaW5rOiAwO1xufVxuLnFjLWljb24tYnV0dG9uW2RhdGEtYnV0dG9uLXNpemU9c21dIHtcbiAgaGVpZ2h0OiAxLjZyZW07XG4gIHdpZHRoOiAxLjZyZW07XG59XG4ucWMtaWNvbi1idXR0b25bZGF0YS1idXR0b24tc2l6ZT1tZF0ge1xuICBoZWlnaHQ6IDJyZW07XG4gIHdpZHRoOiAycmVtO1xufVxuLnFjLWljb24tYnV0dG9uW2RhdGEtYnV0dG9uLXNpemU9bm1dIHtcbiAgaGVpZ2h0OiAyLjRyZW07XG4gIHdpZHRoOiAyLjRyZW07XG59XG4ucWMtaWNvbi1idXR0b25bZGF0YS1idXR0b24tc2l6ZT1sZ10ge1xuICBoZWlnaHQ6IDMuMnJlbTtcbiAgd2lkdGg6IDMuMnJlbTtcbn1cbi5xYy1pY29uLWJ1dHRvbltkYXRhLWJ1dHRvbi1zaXplPXhsXSB7XG4gIGhlaWdodDogNHJlbTtcbiAgd2lkdGg6IDRyZW07XG59PC9zdHlsZT5cbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUE4QmtCIiwiaWdub3JlTGlzdCI6W119 */'
+	};
+
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
+		append_styles$1($$anchor, $$css$1);
 
 		const size = prop($$props, 'size', 7, 'xl'),
 			label = prop($$props, 'label', 7),
@@ -10838,11 +10869,18 @@
 
 		var button = root$g();
 
-		attribute_effect(button, () => ({
-			'data-button-size': size(),
-			class: `qc-icon-button ${className()}`,
-			...rest
-		}));
+		attribute_effect(
+			button,
+			() => ({
+				'data-button-size': size(),
+				class: `qc-icon-button ${className()}`,
+				...rest
+			}),
+			void 0,
+			void 0,
+			void 0,
+			'qc-hash-167ul0d'
+		);
 
 		var node = child(button);
 
@@ -10910,11 +10948,17 @@
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root_1$7 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
+	var root_1$7 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements qc-hash-12u1h0o"><!> <div class="qc-alert-content qc-hash-12u1h0o"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
+
+	const $$css = {
+		hash: 'qc-hash-12u1h0o',
+		code: '.qc-general-alert.qc-hash-12u1h0o {\n  padding: var(--qc-spacer-md) 0;\n}\n@media (max-width: 767.98px) {\n  .qc-general-alert.qc-hash-12u1h0o {\n    padding: var(--qc-spacer-sm) 0;\n  }\n}\n.qc-general-alert.qc-hash-12u1h0o .qc-general-alert-elements:where(.qc-hash-12u1h0o) {\n  display: flex;\n}\n.qc-general-alert.warning.qc-hash-12u1h0o {\n  background-color: var(--qc-color-yellow-pale);\n}\n.qc-general-alert.general.qc-hash-12u1h0o {\n  background-color: var(--qc-color-blue-pale);\n}\n.qc-general-alert.qc-hash-12u1h0o .qc-alert-content:where(.qc-hash-12u1h0o) {\n  font-size: var(--qc-font-size-md);\n  line-height: var(--qc-line-height-md);\n  font-weight: var(--qc-font-weight-semi-bold);\n  margin: 0 var(--qc-spacer-md);\n  width: 100%;\n}\n@media (max-width: 767.98px) {\n  .qc-general-alert.qc-hash-12u1h0o .qc-alert-content:where(.qc-hash-12u1h0o) {\n    font-size: var(--qc-font-size-sm);\n    line-height: var(--qc-line-height-sm);\n    font-weight: var(--qc-font-weight-semi-bold);\n  }\n}\n.qc-general-alert.qc-hash-12u1h0o button {\n  position: relative;\n  z-index: 10;\n  background: transparent;\n  border: 0;\n}\n.qc-general-alert.qc-hash-12u1h0o button::before {\n  position: absolute;\n  display: block;\n  content: "";\n  background-color: var(--qc-color-background);\n  inset: 0;\n  z-index: -5;\n}\n/* (unused) .qc-general-alert button:has(input:focus),*/ .qc-general-alert.qc-hash-12u1h0o button:focus /* (unused) .qc-general-alert button:has(textarea:focus)*/ {\n  outline: 2px solid var(--qc-color-formfield-focus-outline);\n}\n/* (unused) .qc-general-alert button:has(input:focus)::before,*/ .qc-general-alert.qc-hash-12u1h0o button:focus::before /* (unused) .qc-general-alert button:has(textarea:focus)::before*/ {\n  border: 2px solid var(--qc-color-formfield-focus-border);\n}\n.qc-general-alert.qc-hash-12u1h0o button {\n  flex-shrink: 0;\n}\n.qc-general-alert.qc-hash-12u1h0o button::before {\n  background: transparent;\n}\n.qc-general-alert.qc-hash-12u1h0o button {\n  cursor: pointer;\n}\n\n/* (unused) qc-alert {\n  display: block;\n}*/\n/* (unused) qc-alert [slot] *, qc-alert:not([slot=content]) * {\n  margin-bottom: 0;\n}*/\n/* (unused) qc-alert [slot] a, qc-alert:not([slot=content]) a {\n  color: var(--qc-color-blue-piv);\n}*/\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQWxlcnQuc3ZlbHRlIiwic291cmNlcyI6WyJBbGVydC5zdmVsdGUiXSwic291cmNlc0NvbnRlbnQiOlsiPHNjcmlwdD5cbiAgICBpbXBvcnQge1V0aWxzfSBmcm9tIFwiLi4vdXRpbHNcIjtcbiAgICBpbXBvcnQgSWNvbiBmcm9tIFwiLi4vLi4vYmFzZXMvSWNvbi9JY29uLnN2ZWx0ZVwiO1xuICAgIGltcG9ydCBJY29uQnV0dG9uIGZyb20gXCIuLi9JY29uQnV0dG9uL0ljb25CdXR0b24uc3ZlbHRlXCI7XG4gICAgaW1wb3J0IHtvbk1vdW50fSBmcm9tIFwic3ZlbHRlXCI7XG5cbiAgICBsZXQge1xuICAgICAgICB0eXBlID0gXCJnZW5lcmFsXCIsXG4gICAgICAgIG1hc2thYmxlID0gXCJcIixcbiAgICAgICAgY29udGVudCA9IFwiXCIsXG4gICAgICAgIGhpZGUgPSAkYmluZGFibGUoXCJmYWxzZVwiKSxcbiAgICAgICAgZnVsbFdpZHRoID0gXCJmYWxzZVwiLFxuICAgICAgICBzbG90Q29udGVudCxcbiAgICAgICAgaWQsXG4gICAgICAgIHBlcnNpc3RlbmNlS2V5LFxuICAgICAgICBwZXJzaXN0SGlkZGVuID0gZmFsc2UsXG4gICAgICAgIHJvb3RFbGVtZW50ID0gJGJpbmRhYmxlKCksXG4gICAgICAgIGhpZGVBbGVydENhbGxiYWNrID0gKCkgPT4ge30sXG4gICAgfSA9ICRwcm9wcygpO1xuXG4gICAgY29uc3QgbGFuZ3VhZ2UgPSBVdGlscy5nZXRQYWdlTGFuZ3VhZ2UoKTtcblxuICAgIGNvbnN0IHR5cGVDbGFzcyA9ICh0eXBlICE9PSBcIlwiKSA/IHR5cGUgOiAnZ2VuZXJhbCc7XG4gICAgY29uc3QgY2xvc2VMYWJlbCA9IGxhbmd1YWdlID09PSAnZnInID8gXCJGZXJtZXIgbOKAmWFsZXJ0ZVwiIDogXCJDbG9zZSBs4oCZYWxlcnRlXCI7XG4gICAgY29uc3Qgd2FybmluZ0xhYmVsID0gbGFuZ3VhZ2UgPT09ICdmcicgPyBcIkluZm9ybWF0aW9uIGQnaW1wb3J0YW5jZSDDqWxldsOpZVwiIDogXCJJbmZvcm1hdGlvbiBvZiBoaWdoIGltcG9ydGFuY2VcIjtcbiAgICBjb25zdCBnZW5lcmFsTGFiZWwgPSBsYW5ndWFnZSA9PT0gJ2ZyJyA/IFwiSW5mb3JtYXRpb24gaW1wb3J0YW50ZVwiIDogXCJJbXBvcnRhbnQgaW5mb3JtYXRpb25cIjtcblxuICAgIGNvbnN0IGxhYmVsID0gdHlwZSA9PT0gJ2dlbmVyYWwnID8gZ2VuZXJhbExhYmVsIDogd2FybmluZ0xhYmVsO1xuXG4gICAgbGV0IGNvbnRhaW5lckNsYXNzID0gXCJxYy1jb250YWluZXJcIiArIChmdWxsV2lkdGggPT09ICd0cnVlJyA/ICctZmx1aWQnIDogJycpO1xuXG4gICAgb25Nb3VudCgoKSA9PiB7XG4gICAgICAgIGNvbnN0IGtleSA9IGdldFBlcnNpc3RlbmNlS2V5KCk7XG4gICAgICAgIGlmICgha2V5KSByZXR1cm47XG4gICAgICAgIGhpZGUgPSBzZXNzaW9uU3RvcmFnZS5nZXRJdGVtKGtleSkgPyBcInRydWVcIiA6IFwiZmFsc2VcIjtcbiAgICB9KVxuXG4gICAgZnVuY3Rpb24gaGlkZUFsZXJ0KCkge1xuICAgICAgICBoaWRlID0gXCJ0cnVlXCI7XG4gICAgICAgIHBlcnNpc3RIaWRkZW5TdGF0ZSgpO1xuICAgICAgICBoaWRlQWxlcnRDYWxsYmFjaygpO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldFBlcnNpc3RlbmNlS2V5KCkge1xuICAgICAgICBpZiAoIXBlcnNpc3RIaWRkZW4pIHJldHVybiBmYWxzZTtcbiAgICAgICAgY29uc3Qga2V5ID0gcGVyc2lzdGVuY2VLZXkgfHwgaWQ7XG4gICAgICAgIGlmICghIGtleSkgcmV0dXJuIGZhbHNlO1xuICAgICAgICByZXR1cm4ncWMtYWxlcnQ6JyArIGtleTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBwZXJzaXN0SGlkZGVuU3RhdGUoKSB7XG4gICAgICAgIGNvbnN0IGtleSA9IGdldFBlcnNpc3RlbmNlS2V5KCk7XG4gICAgICAgIGlmICgha2V5KSByZXR1cm47XG4gICAgICAgIHNlc3Npb25TdG9yYWdlLnNldEl0ZW0oa2V5LCBVdGlscy5ub3coKSk7XG4gICAgfVxuPC9zY3JpcHQ+XG5cbnsjaWYgIVV0aWxzLmlzVHJ1dGh5KGhpZGUpfVxuICAgIDxkaXYgYmluZDp0aGlzPXtyb290RWxlbWVudH1cbiAgICAgICAgIGNsYXNzPVwicWMtZ2VuZXJhbC1hbGVydCB7dHlwZUNsYXNzfVwiXG4gICAgICAgICByb2xlPVwiYWxlcnRcIj5cbiAgICAgICAgPGRpdiBjbGFzcz17Y29udGFpbmVyQ2xhc3N9PlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cInFjLWdlbmVyYWwtYWxlcnQtZWxlbWVudHNcIj5cbiAgICAgICAgICAgICAgICA8SWNvbiB0eXBlPXt0eXBlID09PSAnd2FybmluZycgPyAnd2FybmluZycgOiAnaW5mb3JtYXRpb24nfVxuICAgICAgICAgICAgICAgICAgICAgIGNvbG9yPXt0eXBlID09PSAnZ2VuZXJhbCcgPyAnYmx1ZS1waXYnIDogJ3llbGxvdy1kYXJrJ31cbiAgICAgICAgICAgICAgICAgICAgICBzaXplPVwibm1cIlxuICAgICAgICAgICAgICAgICAgICAgIGxhYmVsPXtsYWJlbH1cbiAgICAgICAgICAgICAgICAvPlxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9XCJxYy1hbGVydC1jb250ZW50XCI+XG4gICAgICAgICAgICAgICAgICAgIHtAaHRtbCBjb250ZW50fVxuICAgICAgICAgICAgICAgICAgICB7QGh0bWwgc2xvdENvbnRlbnR9XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgeyNpZiBVdGlscy5pc1RydXRoeShtYXNrYWJsZSl9XG4gICAgICAgICAgICAgICAgICAgIDxJY29uQnV0dG9uIGFyaWEtbGFiZWw9e2Nsb3NlTGFiZWx9XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9uY2xpY2s9e2hpZGVBbGVydH1cbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT1cIm5tXCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWNvbj1cInhjbG9zZVwiXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGljb25TaXplPVwic21cIlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpY29uQ29sb3I9XCJibHVlLXBpdlwiXG4gICAgICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgey9pZn1cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICA8L2Rpdj5cbnsvaWZ9XG5cbjxzdHlsZSBsYW5nPVwic2Nzc1wiPi5xYy1nZW5lcmFsLWFsZXJ0IHtcbiAgcGFkZGluZzogdmFyKC0tcWMtc3BhY2VyLW1kKSAwO1xufVxuQG1lZGlhIChtYXgtd2lkdGg6IDc2Ny45OHB4KSB7XG4gIC5xYy1nZW5lcmFsLWFsZXJ0IHtcbiAgICBwYWRkaW5nOiB2YXIoLS1xYy1zcGFjZXItc20pIDA7XG4gIH1cbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IC5xYy1nZW5lcmFsLWFsZXJ0LWVsZW1lbnRzIHtcbiAgZGlzcGxheTogZmxleDtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0Lndhcm5pbmcge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1xYy1jb2xvci15ZWxsb3ctcGFsZSk7XG59XG4ucWMtZ2VuZXJhbC1hbGVydC5nZW5lcmFsIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tcWMtY29sb3ItYmx1ZS1wYWxlKTtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IC5xYy1hbGVydC1jb250ZW50IHtcbiAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtbWQpO1xuICBsaW5lLWhlaWdodDogdmFyKC0tcWMtbGluZS1oZWlnaHQtbWQpO1xuICBmb250LXdlaWdodDogdmFyKC0tcWMtZm9udC13ZWlnaHQtc2VtaS1ib2xkKTtcbiAgbWFyZ2luOiAwIHZhcigtLXFjLXNwYWNlci1tZCk7XG4gIHdpZHRoOiAxMDAlO1xufVxuQG1lZGlhIChtYXgtd2lkdGg6IDc2Ny45OHB4KSB7XG4gIC5xYy1nZW5lcmFsLWFsZXJ0IC5xYy1hbGVydC1jb250ZW50IHtcbiAgICBmb250LXNpemU6IHZhcigtLXFjLWZvbnQtc2l6ZS1zbSk7XG4gICAgbGluZS1oZWlnaHQ6IHZhcigtLXFjLWxpbmUtaGVpZ2h0LXNtKTtcbiAgICBmb250LXdlaWdodDogdmFyKC0tcWMtZm9udC13ZWlnaHQtc2VtaS1ib2xkKTtcbiAgfVxufVxuLnFjLWdlbmVyYWwtYWxlcnQgOmdsb2JhbChidXR0b24pIHtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICB6LWluZGV4OiAxMDtcbiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG4gIGJvcmRlcjogMDtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTo6YmVmb3JlIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBibG9jaztcbiAgY29udGVudDogXCJcIjtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tcWMtY29sb3ItYmFja2dyb3VuZCk7XG4gIGluc2V0OiAwO1xuICB6LWluZGV4OiAtNTtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTpoYXMoaW5wdXQ6Zm9jdXMpLCAucWMtZ2VuZXJhbC1hbGVydCA6Z2xvYmFsKGJ1dHRvbik6Zm9jdXMsIC5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTpoYXModGV4dGFyZWE6Zm9jdXMpIHtcbiAgb3V0bGluZTogMnB4IHNvbGlkIHZhcigtLXFjLWNvbG9yLWZvcm1maWVsZC1mb2N1cy1vdXRsaW5lKTtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTpoYXMoaW5wdXQ6Zm9jdXMpOjpiZWZvcmUsIC5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTpmb2N1czo6YmVmb3JlLCAucWMtZ2VuZXJhbC1hbGVydCA6Z2xvYmFsKGJ1dHRvbik6aGFzKHRleHRhcmVhOmZvY3VzKTo6YmVmb3JlIHtcbiAgYm9yZGVyOiAycHggc29saWQgdmFyKC0tcWMtY29sb3ItZm9ybWZpZWxkLWZvY3VzLWJvcmRlcik7XG59XG4ucWMtZ2VuZXJhbC1hbGVydCA6Z2xvYmFsKGJ1dHRvbikge1xuICBmbGV4LXNocmluazogMDtcbn1cbi5xYy1nZW5lcmFsLWFsZXJ0IDpnbG9iYWwoYnV0dG9uKTo6YmVmb3JlIHtcbiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG59XG4ucWMtZ2VuZXJhbC1hbGVydCA6Z2xvYmFsKGJ1dHRvbikge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbnFjLWFsZXJ0IHtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5xYy1hbGVydCBbc2xvdF0gKiwgcWMtYWxlcnQ6bm90KFtzbG90PWNvbnRlbnRdKSAqIHtcbiAgbWFyZ2luLWJvdHRvbTogMDtcbn1cbnFjLWFsZXJ0IFtzbG90XSBhLCBxYy1hbGVydDpub3QoW3Nsb3Q9Y29udGVudF0pIGEge1xuICBjb2xvcjogdmFyKC0tcWMtY29sb3ItYmx1ZS1waXYpO1xufTwvc3R5bGU+XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBc0ZrQiIsImlnbm9yZUxpc3QiOltdfQ== */'
+	};
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
+		append_styles$1($$anchor, $$css);
 
 		let type = prop($$props, 'type', 7, "general"),
 			maskable = prop($$props, 'maskable', 7, ""),
@@ -10928,7 +10972,7 @@
 			rootElement = prop($$props, 'rootElement', 15),
 			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
 
-		const language = Utils$1.getPageLanguage();
+		const language = Utils.getPageLanguage();
 		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 
@@ -10969,7 +11013,7 @@
 
 			if (!key) return;
 
-			sessionStorage.setItem(key, Utils$1.now());
+			sessionStorage.setItem(key, Utils.now());
 		}
 
 		var $$exports = {
@@ -11149,7 +11193,7 @@
 
 					add_svelte_meta(
 						() => if_block(node_4, ($$render) => {
-							if (Utils$1.isTruthy(maskable())) $$render(consequent);
+							if (Utils.isTruthy(maskable())) $$render(consequent);
 						}),
 						'if',
 						Alert,
@@ -11164,8 +11208,8 @@
 				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
 
 				template_effect(() => {
-					set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
-					set_class(div_1, 1, clsx(containerClass));
+					set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`, 'qc-hash-12u1h0o');
+					set_class(div_1, 1, clsx(containerClass), 'qc-hash-12u1h0o');
 				});
 
 				append($$anchor, div);
@@ -11173,7 +11217,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (!Utils$1.isTruthy(hide())) $$render(consequent_1);
+					if (!Utils.isTruthy(hide())) $$render(consequent_1);
 				}),
 				'if',
 				Alert,
@@ -11275,7 +11319,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -11305,7 +11349,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
 			demo = prop($$props, 'demo', 7, 'false');
@@ -11317,7 +11361,7 @@
 		let toTopElement;
 
 		function handleScrollUpButton() {
-			if (Utils$1.isTruthy(demo())) {
+			if (Utils.isTruthy(demo())) {
 				return;
 			}
 
@@ -11443,7 +11487,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils$1.getPageLanguage(), 'fr')
+		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr')
 				? "Ce lien dirige vers un autre site."
 				: "This link directs to another site."),
 			links = prop($$props, 'links', 23, () => []),
@@ -11551,7 +11595,7 @@
 			},
 
 			set externalIconAlt(
-				$$value = Utils$1.getPageLanguage() === 'fr'
+				$$value = Utils.getPageLanguage() === 'fr'
 					? "Ce lien dirige vers un autre site."
 					: "This link directs to another site."
 			) {
@@ -11647,7 +11691,7 @@
 		let isUpdating = tag(state(false), 'isUpdating');
 		let pendingUpdate = false;
 		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
-		const observer = Utils$1.createMutationObserver($$props.$$host, refreshLinks);
+		const observer = Utils.createMutationObserver($$props.$$host, refreshLinks);
 
 		function queryLinks() {
 			return Array.from($$props.$$host.querySelectorAll('a'));
@@ -11950,7 +11994,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			label = prop($$props, 'label', 7, ''),
@@ -12236,7 +12280,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
@@ -12267,7 +12311,7 @@
 		let inputProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils$1.computeFieldsAttributes("input", rest),
+					...Utils.computeFieldsAttributes("input", rest),
 					name: name()
 				})),
 				'inputProps'
@@ -12275,7 +12319,7 @@
 			submitProps = tag(
 				user_derived(() => ({
 					...defaultsAttributes.input,
-					...Utils$1.computeFieldsAttributes("submit", rest)
+					...Utils.computeFieldsAttributes("submit", rest)
 				})),
 				'submitProps'
 			);
@@ -12495,7 +12539,7 @@
 		check_target(new.target);
 		push($$props, true);
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let invalid = prop($$props, 'invalid', 7),
 			label = prop($$props, 'label', 7, ''),
@@ -12519,7 +12563,7 @@
 		onMount(() => {
 			if (id()) return;
 
-			id(Utils$1.generateId('qc-form-error'));
+			id(Utils.generateId('qc-form-error'));
 		});
 
 		var $$exports = {
@@ -12802,7 +12846,7 @@
 			rootElement = prop($$props, 'rootElement', 15);
 
 		let groupSelection = tag(state(void 0), 'groupSelection'),
-			legendId = name() ? "id_" + name() : Utils$1.generateId("legend");
+			legendId = name() ? "id_" + name() : Utils.generateId("legend");
 
 		var $$exports = {
 			get legend() {
@@ -13436,7 +13480,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13497,7 +13541,7 @@
 			append($$anchor, fragment);
 		});
 
-		Utils$1.getPageLanguage();
+		Utils.getPageLanguage();
 			const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
@@ -13875,7 +13919,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13900,7 +13944,7 @@
 	        input.autocomplete = "off";
 	    }
 	    if (!input.id) {
-	        input.id =  Utils$1.generateId(input.type);
+	        input.id =  Utils.generateId(input.type);
 	    }
 	    setValue(input.value);
 	    setRequired(input.required);
@@ -14100,7 +14144,7 @@
 			append($$anchor, fragment);
 		});
 
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let label = prop($$props, 'label', 7, ''),
 			required = prop($$props, 'required', 15, false),
@@ -14205,8 +14249,8 @@
 		});
 
 		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils$1.generateId('description-'),
-			charCountId = Utils$1.generateId('charcount-');
+		const descriptionId = Utils.generateId('description-'),
+			charCountId = Utils.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -14740,7 +14784,7 @@
 
 		var link = sibling(node, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -16419,7 +16463,7 @@
 		push($$props, true);
 
 		var $$ownership_validator = create_ownership_validator($$props);
-		const lang = Utils$1.getPageLanguage();
+		const lang = Utils.getPageLanguage();
 
 		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
 			label = prop($$props, 'label', 7, ""),
@@ -16486,7 +16530,7 @@
 			itemsForSearch = tag(
 				user_derived(() => items().map((item) => {
 					return {
-						label: Utils$1.cleanupSearchPrompt(item.label),
+						label: Utils.cleanupSearchPrompt(item.label),
 						value: item.value,
 						disabled: item.disabled,
 						checked: item.checked
@@ -16560,7 +16604,7 @@
 		}
 
 		function handleOuterEvent() {
-			if (!Utils$1.componentIsActive(get(instance))) {
+			if (!Utils.componentIsActive(get(instance))) {
 				expanded(false);
 			}
 		}
@@ -16569,7 +16613,7 @@
 			// Le changement de focus a lieu après le lancement de l'événement clavier.
 			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils$1.componentIsActive(get(instance))) {
+				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
 					expanded(false);
 				}
 			}).catch(console.error);
@@ -16654,7 +16698,7 @@
 				let newDisplayedItems = [];
 
 				for (let i = 0; i < items().length; i++) {
-					if (get(itemsForSearch)[i].label.includes(Utils$1.cleanupSearchPrompt(get(searchText)))) {
+					if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) {
 						newDisplayedItems.push(items()[i]);
 					}
 				}
@@ -17356,7 +17400,7 @@
 		let selectElement = tag(state(void 0), 'selectElement');
 		let items = tag(state(void 0), 'items');
 		let labelElement = tag(state(void 0), 'labelElement');
-		const observer = Utils$1.createMutationObserver($$props.$$host, setupItemsList);
+		const observer = Utils.createMutationObserver($$props.$$host, setupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -17650,7 +17694,7 @@
 
 		var link = sibling(node_1, 2);
 
-		template_effect(() => set_attribute(link, 'href', Utils$1.cssPath));
+		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
 		append($$anchor, fragment);
 
 		return pop($$exports);
