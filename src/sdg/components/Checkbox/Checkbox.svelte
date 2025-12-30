@@ -61,18 +61,17 @@
     {/if}
 {/snippet}
 
-
-    <div class={[
-        "qc-checkbox-single",
-        invalid && "qc-checkbox-single-invalid"
-    ]}
-         {compact}
-         bind:this={rootElement}
-    >
-        {@render requiredSpanSnippet()}
-        {@render children?.()}
-        <FormError {invalid}
-                   {invalidText}
-                   {label}
-        />
-    </div>
+<div class={[
+    "qc-checkbox-single",
+    invalid && "qc-checkbox-single-invalid"
+]}
+     {compact}
+     bind:this={rootElement}
+>
+    {@render requiredSpanSnippet()}
+    {@render children?.()}
+    <FormError {invalid}
+               {invalidText}
+               {label}
+    />
+</div>

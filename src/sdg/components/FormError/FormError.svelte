@@ -49,3 +49,25 @@ onMount(() => {
     {/await}
 </div>
 {/if}
+
+<style lang="scss">
+  //@use "../../scss/qc-sdg-lib" as *;
+  //
+  //:global(.qc-form-error) {
+  //  display: flex;
+  //  color: token-value(color, red, regular);
+  //  align-items: start;
+  //  font-weight: token-value(font weight content medium);
+  //  margin-top: token-value(spacer, sm);
+  //  .qc-icon {
+  //    display: flex;
+  //    align-items: center;
+  //    margin-right: token-value(spacer, xs);
+  //    --error-icon-width: #{rem(24)}!important;
+  //    --error-icon-height: #{rem(21)}!important;
+  //  }
+  //  &.qc-xs-mt {
+  //    margin-top: token-value(spacer, xs);
+  //  }
+  //}
+</style>
