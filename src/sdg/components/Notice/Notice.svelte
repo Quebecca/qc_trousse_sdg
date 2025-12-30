@@ -84,15 +84,7 @@ le denaturaliser.-->
 <style lang="scss">
   @use "../../scss/qc-sdg-lib" as *;
   @use "sass:list" as *;
-
-  //@mixin qc-notice-title() {
-  //  h1,h2,h3,h4,h5,h6,[role=heading] {
-  //    margin: 0;
-  //    padding: 0;
-  //    @include content-font(sm, bold);
-  //    font-family: token-value(font, family, content);
-  //  }
-  //}
+  @use "./notice" as *;
 
   .qc-notice {
     max-inline-size: token-value(max-content-width);
@@ -148,7 +140,7 @@ le denaturaliser.-->
   }
 
   // Links in a error notice (eg. error summary)
-  :global(qc-notice) {
+  qc-notice {
     display: block;
     @include qc-notice-title();
     ul {

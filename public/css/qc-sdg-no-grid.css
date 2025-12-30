@@ -1491,62 +1491,6 @@ qc-piv-header a, qc-piv-header span,
   font-size: var(--qc-font-size-md);
 }
 
-qc-piv-footer {
-  margin-top: 4rem;
-  padding-bottom: 4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: var(--qc-font-size-sm);
-  line-height: var(--qc-line-height-sm);
-  font-weight: var(--qc-font-weight-regular);
-}
-qc-piv-footer ul {
-  max-inline-size: none;
-  margin: 0 0 var(--qc-spacer-sm) 0;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  list-style-type: none;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-qc-piv-footer ul li {
-  padding: 0 var(--qc-spacer-sm) var(--qc-spacer-xs);
-  margin: 0;
-  text-align: center;
-}
-qc-piv-footer a {
-  text-decoration: none;
-}
-qc-piv-footer a:hover {
-  text-decoration: underline;
-}
-
-.qc-piv-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.qc-piv-footer a {
-  text-decoration: none;
-}
-.qc-piv-footer a:hover {
-  text-decoration: underline;
-}
-.qc-piv-footer .logo {
-  display: block;
-  width: calc(var(--logo-width) * 0.1rem);
-  height: calc(var(--logo-height) * 0.1rem);
-}
-.qc-piv-footer .logo img {
-  width: 100%;
-  height: 100%;
-}
-.qc-piv-footer .copyright {
-  margin-top: 0.8rem;
-}
-
 .qc-to-top[demo=false] {
   position: fixed;
   bottom: 9.6rem;
