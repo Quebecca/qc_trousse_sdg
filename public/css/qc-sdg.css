@@ -1873,7 +1873,6 @@ qc-search-input[size=xl] {
   cursor: pointer;
 }
 qc-search-bar {
-  position: relative;
   display: block;
 }
 
@@ -1881,38 +1880,22 @@ qc-search-bar {
   background: var(--qc-color-background);
   display: flex;
   align-items: center;
-  border: 1px solid var(--qc-color-formfield-border);
+  max-width: var(--qc-size-search-bar-max-width);
+  width: 100%;
 }
 .qc-search-bar button {
-  border: none;
-}
-.qc-search-bar button.qc-icon-button {
-  width: 3.8rem;
-  height: 3.8rem;
+  border: 0.1rem solid var(--qc-color-formfield-border);
 }
 .qc-search-bar button:focus {
-  border: solid 2px var(--qc-color-blue-dark);
-  outline: 2px solid var(--qc-color-formfield-focus-outline);
+  border: 0.2rem solid var(--qc-color-formfield-focus-border);
+  outline: 0.2rem solid var(--qc-color-formfield-focus-outline);
 }
 .qc-search-bar button:hover {
   background-color: var(--qc-color-blue-regular);
 }
 .qc-search-bar button {
   background: var(--qc-color-blue-piv);
-  width: 4rem;
   flex-shrink: 0;
-}
-.qc-search-bar:has([type=search]:focus) {
-  border: solid 2px var(--qc-color-blue-dark);
-  outline: 2px solid var(--qc-color-formfield-focus-outline);
-}
-.qc-search-bar {
-  max-width: var(--qc-size-search-bar-max-width);
-  width: 100%;
-}
-.qc-search-bar:has(input:focus) [type=submit] {
-  width: 3.6rem;
-  height: 3.6rem;
 }
 .qc-search-bar .qc-search-input {
   margin: 0;
@@ -1923,26 +1906,52 @@ qc-search-bar {
   content: none !important;
 }
 .qc-search-bar .qc-search-input > input {
-  padding: 0.6rem 0rem 0.6rem 0.7rem;
+  border: 0.1rem solid var(--qc-color-formfield-border);
+  border-right: none;
+  padding: 0.7rem 0rem 0.7rem 0.7rem;
 }
 .qc-search-bar .qc-search-input > input:focus {
   padding: 0.4rem 0 0.4rem 0.6rem;
 }
+.qc-search-bar:has([type=search]:focus) {
+  border: 0.2rem solid var(--qc-color-formfield-focus-border);
+  outline: 0.2rem solid var(--qc-color-formfield-focus-outline);
+}
+.qc-search-bar:has([type=search]:focus) [type=search] {
+  border: none;
+}
+.qc-search-bar:has([type=search]:focus) [type=submit] {
+  border: none;
+  width: 3.8rem;
+  padding-left: var(--qc-spacer-xs);
+  height: 3.6rem;
+}
+.qc-search-bar:has([type=submit]:focus) {
+  gap: 0.2rem;
+}
 
 .qc-search-bar.piv-background {
   --qc-color-formfield-focus-outline: var(--qc-color-blue-pale);
+  --qc-color-formfield-focus-border: var(--qc-color-blue-dark);
 }
 .qc-search-bar.piv-background [type=submit] {
   background: var(--qc-color-background);
+  border-left: none;
 }
 .qc-search-bar.piv-background [type=submit]:focus {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
+  border-left: 0.2rem solid var(--qc-color-formfield-focus-border);
+  padding-left: 0.5rem;
+  z-index: 3;
 }
 .qc-search-bar.piv-background [type=submit]:hover {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
 }
 .qc-search-bar.piv-background [type=submit]:active {
   background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
+}
+.qc-search-bar.piv-background:has([type=search]:focus) [type=submit] {
+  padding-right: 0.7rem;
 }
 
 label.qc-selection-button {

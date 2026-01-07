@@ -1,26 +1,30 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "../SearchInput/searchInput" as *;
+@use "sass:map";
+
+
+
+@function padding-calc($padding, $border) {
+
+}
 
 qc-search-bar {
-  position: relative;
   display: block;
 }
 .qc-search-bar {
   background: token-value(color background);
   display: flex;
   align-items: center;
-  border: 1px solid token-value(color formfield border);
+
+  max-width: token-value(size search-bar max-width);
+  width: 100%;
 
   button {
-    border: none;
-    &.qc-icon-button {
-      width: rem(38);
-      height: rem(38);
-    }
+    border: rem(1) solid token-value(color formfield border);
 
     &:focus {
-      border: solid 2px token-value(color blue dark);
-      outline: 2px solid token-value(color formfield focus outline);
+      border: rem(2) solid token-value(color formfield focus border);
+      outline: rem(2) solid token-value(color formfield focus outline);
     }
 
     &:hover {
@@ -29,23 +33,9 @@ qc-search-bar {
 
     background: token-value(color blue piv);
 
-    width: rem(40);
     flex-shrink: 0;
   }
 
-  &:has([type=search]:focus) {
-    border: solid 2px token-value(color blue dark);
-    outline: 2px solid token-value(color formfield focus outline);
-  }
-
-  max-width: token-value(size search-bar max-width);
-  width: 100%;
-  &:has(input:focus) {
-    [type=submit] {
-      width: rem(36);
-      height: rem(36);
-    }
-  }
   .qc-search-input {
     margin:0;
     width: 100%;
@@ -54,29 +44,66 @@ qc-search-bar {
       content:none!important;
     }
 
-    & > input{
-      padding: rem(6) rem(0) rem(6) rem(7);
+    & > input {
+      border: rem(1) solid token-value(color formfield border);
+      border-right: none;
+      padding: rem(7) rem(0) rem(7) rem(7);
 
       &:focus {
         padding: rem(4) 0 rem(4) rem(6);
       }
     }
   }
+
+  &:has([type=search]:focus) {
+    border:  rem(2) solid token-value(color formfield focus border);
+    outline: rem(2) solid token-value(color formfield focus outline);
+
+    [type=search] {
+      border: none;
+    }
+
+    [type=submit] {
+      border: none;
+      width: rem(38);
+      padding-left: token-value(spacer xs);
+      height: rem(36);
+    }
+  }
+
+  &:has([type=submit]:focus) {
+    // Ce gap contourne un problème de superposition de marges et outlines au focus.
+    gap: rem(2)
+  }
 }
 
 .qc-search-bar.piv-background {
+  $colors : map.get($themes-tokens, light, lg, color);
+
   --qc-color-formfield-focus-outline: #{token-value(color blue pale)};
+  --qc-color-formfield-focus-border: #{map.get($colors, formfield, focus, border)};
+
   [type=submit] {
     background: token-value(color background);
+    border-left: none;
 
     &:focus {
       background-color: rgba(token-value(color grey light rgb), .24);
+      border-left: rem(2) solid token-value(color formfield focus border);
+      padding-left: rem(5);
+      z-index: 3;
     }
     &:hover {
       background-color: rgba(token-value(color grey light rgb), .24);
     }
     &:active {
       background-color: rgba(token-value(color grey light rgb), .16);
+    }
+  }
+
+  &:has([type=search]:focus) {
+    [type=submit] {
+      padding-right: rem(7);
     }
   }
 }
