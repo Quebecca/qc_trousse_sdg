@@ -6,14 +6,44 @@ qc-search-bar {
   display: block;
 }
 .qc-search-bar {
-  @extend %qc-search-wrapper;
+  background: token-value(color background);
+  display: flex;
+  align-items: center;
+  border: 1px solid token-value(color formfield border);
+
+  button {
+    border: none;
+    &.qc-icon-button {
+      width: rem(38);
+      height: rem(38);
+    }
+
+    &:focus {
+      border: solid 2px token-value(color blue dark);
+      outline: 2px solid token-value(color formfield focus outline);
+    }
+
+    &:hover {
+      background-color: token-value(color blue regular);
+    }
+
+    background: token-value(color blue piv);
+
+    width: rem(40);
+    flex-shrink: 0;
+  }
+
+  &:has([type=search]:focus) {
+    border: solid 2px token-value(color blue dark);
+    outline: 2px solid token-value(color formfield focus outline);
+  }
+
   max-width: token-value(size search-bar max-width);
   width: 100%;
-  border: 0;
   &:has(input:focus) {
-    [type=submit]::before {
-      inset: 2px 2px 2px 0;
-      border: 0;
+    [type=submit] {
+      width: rem(36);
+      height: rem(36);
     }
   }
   .qc-search-input {
@@ -23,25 +53,12 @@ qc-search-bar {
     &::before {
       content:none!important;
     }
-  }
 
-  [type=submit] {
-    z-index: 1;
-    background-color: transparent;
-    &::before {
-      z-index: -1;
-      background: token-value(color blue piv);
-      border: 1px solid token-value(color formfield border);
-      transition: background-color .15s;
-    }
-    &:hover {
-      &::before {
-        background-color: token-value(color blue regular);
-      }
-    }
-    &:active {
-      &::before {
-        background-color: token-value(color blue regular_light);
+    & > input{
+      padding: rem(6) rem(0) rem(6) rem(7);
+
+      &:focus {
+        padding: rem(4) 0 rem(4) rem(6);
       }
     }
   }
@@ -50,25 +67,16 @@ qc-search-bar {
 .qc-search-bar.piv-background {
   --qc-color-formfield-focus-outline: #{token-value(color blue pale)};
   [type=submit] {
-    &::before {
-      background: token-value(color background);
-      border-left-width: 0;
-    }
+    background: token-value(color background);
+
     &:focus {
-      &::before {
-        border-left-width: 2px;
-        background-color: rgba(token-value(color grey light rgb), .24);
-      }
+      background-color: rgba(token-value(color grey light rgb), .24);
     }
     &:hover {
-      &::before {
-        background-color: rgba(token-value(color grey light rgb), .24);
-      }
+      background-color: rgba(token-value(color grey light rgb), .24);
     }
     &:active {
-      &::before {
-        background-color: rgba(token-value(color grey light rgb), .16);
-      }
+      background-color: rgba(token-value(color grey light rgb), .16);
     }
   }
 }
