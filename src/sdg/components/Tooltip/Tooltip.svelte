@@ -447,7 +447,9 @@
     .qc-tooltip {
         display: inline-flex;
         align-items: center;
-
+        font-size: var(--qc-font-size-md);
+        font-family: var(--qc-font-family-content);
+        font-weight: var(--qc-font-weight-regular);
         --pin-gap: 4px;
         --pin-height: 9px;
         --pin-base: 15px;
