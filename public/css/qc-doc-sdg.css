@@ -362,12 +362,20 @@ a.pseudo-hover {
 a.pseudo-hover .qc-ext-link-text {
   text-decoration: none;
 }
+a.pseudo-hover {
+  --qc-color-link-visited: var(--qc-color-link-hover);
+}
 a.pseudo-active {
   color: var(--qc-color-link-active);
   text-decoration: none;
 }
 a.pseudo-active .qc-ext-link-text {
   text-decoration: none;
+}
+a.pseudo-active {
+  --qc-color-link-visited: var(--qc-color-link-active);
+  --qc-color-link-focus: var(--qc-color-link-active);
+  --qc-color-link-hover: var(--qc-color-link-active );
 }
 a.pseudo-focus {
   color: var(--qc-color-link-hover);
@@ -379,25 +387,13 @@ a.pseudo-focus .qc-ext-link-text {
 a.pseudo-focus {
   outline: 2px solid var(--qc-color-link-focus-outline);
   outline-offset: 1px;
+  --qc-color-link-visited: var(--qc-color-link-focus);
 }
 a.pseudo-visited {
-  color: var(--qc-color-link-visited) !important;
+  --qc-color-link-text: var(--qc-color-link-visited);
 }
-a.not-visited:visited:not(:hover) {
-  color: var(--qc-color-link-text);
-}
-
-a.pseudo-visited span.qc-ext-link-img {
-  background: var(--qc-color-link-visited) !important;
-}
-a.pseudo-focus span.qc-ext-link-img {
-  background: var(--qc-color-link-hover) !important;
-}
-a.pseudo-hover span.qc-ext-link-img {
-  background: var(--qc-color-link-hover) !important;
-}
-a.pseudo-active span.qc-ext-link-img {
-  background: var(--qc-color-link-active) !important;
+a.not-visited {
+  --qc-color-link-visited: var(--qc-color-link-text);
 }
 
 p, h1, h2, h3, h4, h5, h6 {

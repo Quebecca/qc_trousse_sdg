@@ -49,3 +49,10 @@ div.qc-ext-link-img {
     display: none;
   }
 }
+
+.qc-external-link .qc-button {
+  gap: 0;
+  > .img-wrap::before {
+    content: "\a0";
+  }
+}

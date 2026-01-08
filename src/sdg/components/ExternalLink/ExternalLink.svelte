@@ -111,6 +111,7 @@ $effect(() => {
             alt={externalIconAlt}
             bind:rootElement={imgElement}
             class="qc-ext-link-img"
+            color="link-text"
     />
 </div>
 

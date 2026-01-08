@@ -167,7 +167,7 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 
 ## Historique
 - 1.4.9 :
-  - Lien externe : annulation des changements de refonte de la structure HTML de `qc-external-link` en raison des régressions que cela cause ;
+  - Boutons : corrections concernant les liens en forme de boutons ;
   - Liste déroulante : correction de la réactivité sur l'attribut `value` ;
 - 1.4.8 :
   - Champ de recherche :

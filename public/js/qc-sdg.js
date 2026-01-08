@@ -11601,6 +11601,7 @@
 				},
 
 				class: 'qc-ext-link-img',
+				color: 'link-text',
 
 				get rootElement() {
 					return get(imgElement);

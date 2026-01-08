@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .qc-search-input, .qc-search-input button, .qc-search-bar, .qc-search-bar button {
   position: relative;
   z-index: 10;
@@ -880,6 +881,13 @@ a:active div.qc-ext-link-img {
 }
 .img-wrap + div.qc-ext-link-img {
   display: none;
+}
+
+.qc-external-link .qc-button {
+  gap: 0;
+}
+.qc-external-link .qc-button > .img-wrap::before {
+  content: " ";
 }
 
 p {
@@ -2651,6 +2659,9 @@ li[aria-selected=true] {
 }
 
 .qc-button {
+  --qc-color-link-focus: var(--qc-color-link-text);
+  --qc-color-link-hover: var(--qc-color-link-text);
+  --qc-color-link-visited: var(--qc-color-link-text);
   font-family: var(--qc-font-family-content);
   font-size: var(--qc-font-size-md);
   font-weight: var(--qc-font-weight-bold);
@@ -2658,7 +2669,7 @@ li[aria-selected=true] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
+  gap: var(--qc-spacer-xs);
   box-sizing: border-box;
   min-width: 11.2rem;
   max-width: 36rem;
@@ -2684,6 +2695,7 @@ li[aria-selected=true] {
   border-radius: 0.4rem;
 }
 .qc-button.qc-primary {
+  --qc-color-link-text: var(--qc-color-white);
   color: var(--qc-color-white);
   background-color: var(--qc-color-blue-piv);
   border-color: var(--qc-color-blue-piv);
@@ -2708,40 +2720,42 @@ li[aria-selected=true] {
   color: var(--qc-color-white);
 }
 .qc-button.qc-secondary {
+  --qc-color-link-text: var(--qc-color-blue-piv);
   color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-white);
   border-color: var(--qc-color-blue-piv);
 }
 .qc-button.qc-secondary:hover:not(:disabled), .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-hover, .qc-button.qc-secondary.qc-focus, .qc-button.qc-secondary.qc-active {
-  background-color: rgba(9, 87, 151, 0.16);
+  background-color: rgba(var(--qc-color-blue-piv-rgb), 0.16);
 }
 .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary.qc-focus {
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-active {
-  background-color: rgba(9, 87, 151, 0.08);
+  background-color: rgba(var(--qc-color-blue-piv-rgb), 0.08);
 }
 .qc-button.qc-secondary:disabled, .qc-button.qc-secondary.qc-disabled {
   border-color: var(--qc-color-grey-regular);
   color: var(--qc-color-grey-regular);
 }
 .qc-button.qc-tertiary {
+  --qc-color-link-text: var(--qc-color-blue-piv);
   color: var(--qc-color-blue-piv);
   background-color: var(--qc-color-white);
   border-color: var(--qc-color-white);
 }
 .qc-button.qc-tertiary:hover:not(:disabled), .qc-button.qc-tertiary.qc-hover {
-  background-color: rgba(197, 202, 210, 0.24);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
   text-decoration: underline;
 }
 .qc-button.qc-tertiary:focus:not(:disabled), .qc-button.qc-tertiary.qc-focus {
-  background-color: rgba(197, 202, 210, 0.24);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
   border-color: var(--qc-color-blue-dark);
   box-shadow: 0 0 0 2px var(--qc-color-blue-light);
 }
 .qc-button.qc-tertiary:active:not(:disabled), .qc-button.qc-tertiary.qc-active {
-  background-color: rgba(197, 202, 210, 0.16);
+  background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
 }
 .qc-button.qc-tertiary:disabled, .qc-button.qc-tertiary.qc-disabled {
   color: var(--qc-color-grey-regular);
