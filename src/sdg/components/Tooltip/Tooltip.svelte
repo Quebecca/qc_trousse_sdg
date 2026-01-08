@@ -455,7 +455,7 @@
         --pin-base: 15px;
     }
     .qc-tooltip-text {
-        border-bottom: 1px dashed var(--qc-color-text-primary);
+        border-bottom: 1px dashed var(--qc-color-blue-piv);
         cursor: pointer;
         white-space: nowrap;
         margin-right: calc( .5 * var(--qc-spacer-xs) );
