@@ -12,6 +12,7 @@
         icon = "information",
         descriptionId,
         slots,
+        host,
         descriptionSlot,
         textSlot
     } = $props()
@@ -141,7 +142,6 @@
     function setIsMobile() {
         const bounds = getScreenBounds();
         mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
-        $inspect("isMobile ? : " + mobileFlag, bounds.right, getSmBreakpoint(gridConfig))
         return mobileFlag;
     }
 
@@ -254,6 +254,8 @@
     function closeOnTooltipBlur(e) {
         if (preventOuterEventClosing) return
         if (e.tooltipContainer === tooltipContainer) return;
+        if (!host) return;
+        if (host === e.target) return;
         closeTooltip()
     }
 
@@ -340,6 +342,14 @@
           class:qc-tooltip-modal={modalFlag}
           style:--max-height={modalFlag ? "320px" : "160px"};
         >
+         <!-- svelte-ignore a11y_click_events_have_key_events -->
+         <div class="clickable-gutter"
+              onclick={e => {
+               e.stopImmediatePropagation();
+               tooltipButton.click()
+           }}
+
+         ></div>
          <a role="button"
             class="qc-tooltip-button"
             href="#top"
@@ -453,6 +463,14 @@
         --pin-gap: 4px;
         --pin-height: 9px;
         --pin-base: 15px;
+    }
+    .clickable-gutter {
+        position: absolute;
+        height: 24px;
+        width: 24px;
+        left: -4px;
+        top: -4px;
+        cursor: pointer;
     }
     .qc-tooltip-text {
         border-bottom: 1px dashed var(--qc-color-blue-piv);

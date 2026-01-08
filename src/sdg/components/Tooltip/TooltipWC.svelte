@@ -17,7 +17,7 @@ import {Utils} from "../utils";
 import {onMount} from "svelte";
 let { ...props } = $props();
 </script>
-<Tooltip {...props} slots={$$slots}>
+<Tooltip {...props} slots={$$slots} host={$host()}>
     {#snippet textSlot()}
         <slot name="text" />
     {/snippet}
