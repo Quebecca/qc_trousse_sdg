@@ -304,6 +304,12 @@
                 return rect[position] - (border - offset)
         }
     }
+
+    function clickIconButton(e) {
+        e.stopImmediatePropagation();
+        tooltipButton.focus()
+        tooltipButton.click()
+    }
 </script>
 
 <svelte:document
@@ -329,7 +335,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     {#if hasText}
      <span class="qc-tooltip-text"
-           onclick={showTooltip}
+           onclick={clickIconButton}
            tabindex="-1"
         >{@html text}{@render textSlot()}</span>
     {:else}
@@ -345,11 +351,7 @@
          <!-- ajout d'une zone cliquable de 24px autour du bouton, pour des raisons d'accessibilité -->
          <!-- svelte-ignore a11y_click_events_have_key_events -->
          <div class="clickable-gutter"
-              onclick={e => {
-               e.stopImmediatePropagation();
-               tooltipButton.focus()
-               tooltipButton.click()
-           }}
+              onclick={clickIconButton}
          ></div>
          <a role="button"
             class="qc-tooltip-button"
