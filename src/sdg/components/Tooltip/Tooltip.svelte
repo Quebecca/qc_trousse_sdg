@@ -342,13 +342,14 @@
           class:qc-tooltip-modal={modalFlag}
           style:--max-height={modalFlag ? "320px" : "160px"};
         >
+         <!-- ajout d'une zone cliquable de 24px autour du bouton, pour des raisons d'accessibilité -->
          <!-- svelte-ignore a11y_click_events_have_key_events -->
          <div class="clickable-gutter"
               onclick={e => {
                e.stopImmediatePropagation();
+               tooltipButton.focus()
                tooltipButton.click()
            }}
-
          ></div>
          <a role="button"
             class="qc-tooltip-button"
