@@ -14,7 +14,7 @@ import buildHtmlDoc from './plugins/buildHtmlDoc.js';
 import buildDevDoc from "./plugins/buildDevDoc"; // adapte le chemin si besoin
 import buildTestFixtures from "./plugins/buildTestFixtures";
 import buildSvelteTests from "./plugins/buildSvelteTests";
-
+import json from '@rollup/plugin-json';
 
 const
     dev_process = (process.env.npm_lifecycle_event == 'dev'),
@@ -118,6 +118,7 @@ let
             },
             plugins: [
                 replace(replacements),
+                json(),
                 svelte(svelteOptions),
                 resolve({
                     browser: true,

@@ -167,7 +167,7 @@ code.hljs {
 .exemple-area > figure > figcaption {
   display: block;
 }
-.exemple-area > figure:has(qc-select) {
+.exemple-area > figure:has(qc-select, qc-tooltip) {
   overflow-x: visible;
 }
 
@@ -355,12 +355,6 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--qc-color-grey-light);
 }
 
-a.pseudo-visited {
-  color: var(--qc-color-link-visited);
-}
-a.pseudo-visited > .qc-ext-link-img {
-  background-color: var(--qc-color-link-visited);
-}
 a.pseudo-hover {
   color: var(--qc-color-link-hover);
   text-decoration: none;
@@ -368,8 +362,8 @@ a.pseudo-hover {
 a.pseudo-hover .qc-ext-link-text {
   text-decoration: none;
 }
-a.pseudo-hover > .qc-ext-link-img {
-  background-color: var(--qc-color-link-hover);
+a.pseudo-hover {
+  --qc-color-link-visited: var(--qc-color-link-hover);
 }
 a.pseudo-active {
   color: var(--qc-color-link-active);
@@ -378,8 +372,10 @@ a.pseudo-active {
 a.pseudo-active .qc-ext-link-text {
   text-decoration: none;
 }
-a.pseudo-active > .qc-ext-link-img {
-  background-color: var(--qc-color-link-active);
+a.pseudo-active {
+  --qc-color-link-visited: var(--qc-color-link-active);
+  --qc-color-link-focus: var(--qc-color-link-active);
+  --qc-color-link-hover: var(--qc-color-link-active );
 }
 a.pseudo-focus {
   color: var(--qc-color-link-hover);
@@ -391,31 +387,13 @@ a.pseudo-focus .qc-ext-link-text {
 a.pseudo-focus {
   outline: 2px solid var(--qc-color-link-focus-outline);
   outline-offset: 1px;
+  --qc-color-link-visited: var(--qc-color-link-focus);
 }
-a.pseudo-focus > .qc-ext-link-img {
-  background-color: var(--qc-color-link-text);
+a.pseudo-visited {
+  --qc-color-link-text: var(--qc-color-link-visited);
 }
-a.not-visited:visited:not(:hover) {
-  color: var(--qc-color-link-text);
-}
-a.not-visited:visited:not(:hover) > .qc-ext-link-text {
-  color: var(--qc-color-link-text);
-}
-
-a.pseudo-visited div.qc-ext-link-img {
-  background: var(--qc-color-link-visited) !important;
-}
-a.pseudo-focus div.qc-ext-link-img {
-  background: var(--qc-color-link-hover) !important;
-}
-a.pseudo-hover div.qc-ext-link-img {
-  background: var(--qc-color-link-hover) !important;
-}
-a.pseudo-active div.qc-ext-link-img {
-  background: var(--qc-color-link-active) !important;
-}
-a.not-visited:visited:not(:hover) div.qc-ext-link-img {
-  background: var(--qc-color-link-text) !important;
+a.not-visited {
+  --qc-color-link-visited: var(--qc-color-link-text);
 }
 
 p, h1, h2, h3, h4, h5, h6 {

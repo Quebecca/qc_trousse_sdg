@@ -94,53 +94,25 @@ h1,h2,h3,h4,h5,h6 {
 
 a {
 
-  &.pseudo-visited {
-    color: token-value(color,link,visited);
-    & > .qc-ext-link-img {
-      background-color: token-value(color, link, visited);
-    }
-  }
   &.pseudo-hover {
     @include hover-link();
-    & > .qc-ext-link-img {
-      background-color: token-value(color, link, hover);
-    }
+    --qc-color-link-visited: var(--qc-color-link-hover);
   }
   &.pseudo-active {
     @include active-link();
-    & > .qc-ext-link-img {
-      background-color: token-value(color, link, active);
-    }
+    --qc-color-link-visited: var(--qc-color-link-active);
+    --qc-color-link-focus: var(--qc-color-link-active);
+    --qc-color-link-hover: var(--qc-color-link-active );
   }
   &.pseudo-focus {
     @include focus-link();
-    & > .qc-ext-link-img {
-      background-color: token-value(color, link, text);
-    }
+    --qc-color-link-visited: var(--qc-color-link-focus);
   }
-  &.not-visited:visited:not(:hover) {
-    color: token-value(color,link,text);
-    & > .qc-ext-link-text {
-      color: token-value(color,link,text);
-    }
+  &.pseudo-visited {
+    --qc-color-link-text: var(--qc-color-link-visited);
   }
-}
-
-div.qc-ext-link-img {
-  a.pseudo-visited  & {
-    background: token-value(color link visited)!important;
-  }
-  a.pseudo-focus  & {
-    background: token-value(color link hover)!important;
-  }
-  a.pseudo-hover  & {
-    background: token-value(color link hover)!important;
-  }
-  a.pseudo-active  & {
-    background: token-value(color link active)!important;
-  }
-  a.not-visited:visited:not(:hover) & {
-    background: token-value(color link text)!important;
+  &.not-visited {
+    --qc-color-link-visited: var(--qc-color-link-text);
   }
 }
 

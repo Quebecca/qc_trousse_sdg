@@ -1,0 +1,46 @@
+<qc-tooltip description-id="description"
+            prevent-outer-event-closing
+            id="tooltip"
+               >
+ </qc-tooltip>
+<p></p>
+
+<div id="description" hidden>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In semper erat vitae eros aliquet, vitae imperdiet augue malesuada. Integer ut mi consectetur, blandit dolor dapibus, finibus arcu. Suspendisse potenti. Duis eu tincidunt mi. Vivamus nec neque ante. Curabitur sapien quam, placerat ut mattis sit amet, dapibus ut turpis. Integer tincidunt est eget faucibus porta. Nulla gravida mauris eget dolor vestibulum, suscipit porta odio faucibus. Praesent sit amet ex at quam eleifend tristique vel vitae diam. Duis dapibus a libero et dapibus. Maecenas vel dapibus tortor, sed vehicula arcu.
+</div>
+<style>
+    qc-tooltip {
+        position: absolute;
+    }
+    #tooltip {
+        top: 50%;
+        left: 50%;
+    }
+</style>
+<script>
+    document.querySelector('.qc-container').classList.remove('qc-container')
+    let tooltip = document.getElementById('tooltip');
+    [
+        {top:0, left:0},
+        {top:0, right:0},
+        {top:"50%", left:0},
+        {top:"50%", right:0},
+        {bottom:0, left:0},
+        {bottom:0, right:0}
+    ].forEach(coord => {
+        let clone = tooltip.cloneNode(true)
+        clone.removeAttribute('id')
+        clone.removeAttribute('text')
+        Object.entries(coord).forEach(([prop, value]) => clone.style[prop] = value)
+        document.body.appendChild(clone)
+    })
+
+    function waitForNextFrame() {
+        //$inspect("Waiting for next frame")
+        return new Promise(resolve => {
+            window.requestAnimationFrame(resolve);
+        });
+    }
+
+
+</script>

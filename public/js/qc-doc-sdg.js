@@ -79415,7 +79415,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[16, 0]]);
+	var root$5 = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -79427,6 +79427,7 @@
 			iconSize = prop($$props, 'iconSize', 7),
 			iconColor = prop($$props, 'iconColor', 7),
 			className = prop($$props, 'class', 7, ''),
+			src = prop($$props, 'src', 7),
 			rest = rest_props(
 				$$props,
 				[
@@ -79439,7 +79440,8 @@
 					'icon',
 					'iconSize',
 					'iconColor',
-					'class'
+					'class',
+					'src'
 				]);
 
 		var $$exports = {
@@ -79497,6 +79499,15 @@
 				flushSync();
 			},
 
+			get src() {
+				return src();
+			},
+
+			set src($$value) {
+				src($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -79512,32 +79523,40 @@
 
 		{
 			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Icon($$anchor, {
-						get type() {
-							return icon();
-						},
+				{
+					let $0 = user_derived(() => src() ? src() : null);
 
-						get size() {
-							return iconSize();
-						},
+					add_svelte_meta(
+						() => Icon($$anchor, {
+							get type() {
+								return icon();
+							},
 
-						get color() {
-							return iconColor();
-						},
+							get size() {
+								return iconSize();
+							},
 
-						'aria-hidden': 'true',
+							get color() {
+								return iconColor();
+							},
 
-						get label() {
-							return label();
-						}
-					}),
-					'component',
-					IconButton,
-					22,
-					8,
-					{ componentTag: 'Icon' }
-				);
+							'aria-hidden': 'true',
+
+							get label() {
+								return label();
+							},
+
+							get src() {
+								return get($0);
+							}
+						}),
+						'component',
+						IconButton,
+						23,
+						8,
+						{ componentTag: 'Icon' }
+					);
+				}
 			};
 
 			add_svelte_meta(
@@ -79546,7 +79565,7 @@
 				}),
 				'if',
 				IconButton,
-				21,
+				22,
 				4
 			);
 		}
@@ -79565,7 +79584,8 @@
 			icon: {},
 			iconSize: {},
 			iconColor: {},
-			class: {}
+			class: {},
+			src: {}
 		},
 		[],
 		[],
@@ -80480,7 +80500,7 @@
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
 	var root_4$2 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
-	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-items" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
+	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -81001,9 +81021,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[386, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[427, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[316, 0, [[321, 4, [[340, 8, [[369, 12, [[425, 16]]]]]]]]]]);
+	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[394, 20]]);
+	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[435, 24]]);
+	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[324, 0, [[329, 4, [[348, 8, [[377, 12, [[433, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -81281,6 +81301,14 @@
 		});
 
 		user_effect(() => {
+			if (value()) {
+				items().forEach((item) => {
+					item.checked = value().includes(item.value);
+				});
+			}
+		});
+
+		user_effect(() => {
 			items().forEach((item) => {
 				if (!item.id) {
 					item.id = `${id()}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
@@ -81552,7 +81580,7 @@
 					}),
 					'component',
 					DropdownList,
-					327,
+					335,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -81564,7 +81592,7 @@
 				}),
 				'if',
 				DropdownList,
-				326,
+				334,
 				8
 			);
 		}
@@ -81636,7 +81664,7 @@
 			}),
 			'component',
 			DropdownList,
-			349,
+			357,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -81691,7 +81719,7 @@
 						),
 						'component',
 						DropdownList,
-						387,
+						395,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -81707,7 +81735,7 @@
 				}),
 				'if',
 				DropdownList,
-				385,
+				393,
 				16
 			);
 		}
@@ -81767,7 +81795,7 @@
 				),
 				'component',
 				DropdownList,
-				405,
+				413,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -81787,7 +81815,7 @@
 			}),
 			'key',
 			DropdownList,
-			426,
+			434,
 			20
 		);
 
@@ -81835,7 +81863,7 @@
 				}),
 				'component',
 				DropdownList,
-				435,
+				443,
 				4,
 				{ componentTag: 'FormError' }
 			);
@@ -83000,7 +83028,7 @@
 	));
 
 	if (document.getElementById("version")) {
-	    document.getElementById("version").textContent = `v1.4.8`;
+	    document.getElementById("version").textContent = `v1.5.0`;
 	}
 
 	// Show maskable "general alert" component

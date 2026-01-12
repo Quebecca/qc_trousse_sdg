@@ -8,17 +8,16 @@
 
 <script>
     import ExternalLink from "./ExternalLink.svelte";
-    import {onDestroy, onMount, tick} from "svelte";
     import {Utils} from "../utils";
+    import {onDestroy, onMount, tick} from "svelte";
 
     const props = $props();
-    const nestedExternalLinks = $host().querySelector('qc-external-link');
-
-    let links = $state([]);
-    const observer = Utils.createMutationObserver($host(), refreshLinks);
+    let links = $state(queryLinks());
     let isUpdating = $state(false);
     let pendingUpdate = false;
+    const nestedExternalLinks = $host().querySelector('qc-external-link');
 
+    const observer = Utils.createMutationObserver($host(), refreshLinks);
     function queryLinks() {
         return Array.from($host().querySelectorAll('a'));
     }
@@ -41,7 +40,6 @@
 
     onMount(() => {
         $host().classList.add('qc-external-link');
-        links = queryLinks();
 
         observer?.observe($host(), {
             childList: true,
@@ -50,9 +48,7 @@
         });
     });
 
-    onDestroy(() => {
-        observer?.disconnect();
-    });
+    onDestroy(() => observer?.disconnect());
 </script>
 
-<ExternalLink {links} bind:isUpdating {nestedExternalLinks} {...props} />
+<ExternalLink bind:links bind:isUpdating {nestedExternalLinks} {...props} />

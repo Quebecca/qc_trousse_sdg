@@ -8,6 +8,9 @@
 }
 
 .qc-button {
+  --qc-color-link-focus: var(--qc-color-link-text);
+  --qc-color-link-hover: var(--qc-color-link-text);
+  --qc-color-link-visited: var(--qc-color-link-text);
   font-family: token-value(font family, content);
   font-size: token-value(font size, md);
   font-weight: token-value(font weight, bold);
@@ -15,7 +18,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: rem(8);
+  gap: token-value(spacer, xs);
   box-sizing: border-box;
   min-width: rem(112);
   max-width: rem(360);
@@ -47,6 +50,7 @@
   }
 
   &.qc-primary {
+    --qc-color-link-text: #{token-value(color white)};
     color: token-value(color white);
     background-color: token-value(color blue piv);
     border-color: token-value(color blue piv);
@@ -83,6 +87,7 @@
   }
 
   &.qc-secondary {
+    --qc-color-link-text: #{token-value(color blue, piv)};
     color: token-value(color blue, piv);
     background-color: token-value(color white);
     border-color: token-value(color blue, piv);
@@ -91,7 +96,8 @@
     &:focus:not(:disabled),
     &:active:not(:disabled),
     &.qc-hover, &.qc-focus, &.qc-active {
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.16);
+
+      background-color: rgba(var(--qc-color-blue-piv-rgb), 0.16);
     }
 
     &:focus:not(:disabled),
@@ -102,7 +108,7 @@
 
     &:active:not(:disabled),
     &.qc-active {
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), blue), piv), 0.08);
+      background-color: rgba(var(--qc-color-blue-piv-rgb), 0.08);
     }
 
     &:disabled,
@@ -114,26 +120,28 @@
   }
 
   &.qc-tertiary {
+    --qc-color-link-text: #{token-value(color blue, piv)};
     color: token-value(color blue, piv);
     background-color: token-value(color white);
     border-color: token-value(color white);
 
     &:hover:not(:disabled),
     &.qc-hover{
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+
+      background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
       text-decoration: underline;
     }
 
     &:focus:not(:disabled),
     &.qc-focus {
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.24);
+      background-color: rgba(var(--qc-color-grey-light-rgb), 0.24);
       border-color: token-value(color blue, dark);
       box-shadow: 0 0 0 2px token-value(color blue, light);
     }
 
     &:active:not(:disabled),
     &.qc-active {
-      background-color: rgba(map.get(map.get(map.get($xl-tokens, color), grey), light), 0.16);
+      background-color: rgba(var(--qc-color-grey-light-rgb), 0.16);
     }
 
     &:disabled,

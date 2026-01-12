@@ -1,0 +1,22 @@
+{
+  "lg": {
+    "gutter": "32px",
+    "breakpoint": {
+      "xs": "0",
+      "sm": "768px",
+      "md": "992px",
+      "lg": "1200px"
+    },
+    "container-max-width": {
+      "sm": "768px",
+      "md": "992px",
+      "lg": "1200px"
+    }
+  },
+  "md": {
+    "gutter": "24px"
+  },
+  "sm": {
+    "gutter": "16px"
+  }
+}

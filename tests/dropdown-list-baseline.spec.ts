@@ -160,7 +160,7 @@ test.describe('navigation au clavier', () => {
 
         await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
           - list:
-            - option "Types de restaurants" [selected]
+            - option "Types de restaurants"
             - option "Pizzeria"
             - option "Pâtisserie"
             - option "Boîte à pâtes"
@@ -459,6 +459,23 @@ test.describe('choix multiples', () => {
         await page.locator('#qc-select-multiple-choices-items').getByText('Option 4').click();
 
         await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('Option 3, Option 4');
+    });
+
+    test('manipulation externe de la valeur', {
+        tag: ['@multiple', '@dropdownlist'],
+        annotation: {
+            type: 'description',
+            description: 'Soit la liste déroulante Choix multiples, en changeant value à 1, alors option 1 est cochée.'
+        }
+    }, async ({page}) => {
+        // On ne manipule pas value directement sur l'élément select en slot en raison de limitations avec
+        // les éléments select multiple.
+        await page.locator('#qc-select-multiple-choices').evaluate((qcSelect: HTMLElement) => {
+            // @ts-ignore
+            qcSelect.value = ["1"];
+        });
+
+        await expect(page.locator('#select-multiple-choices > option[value="1"]')).toHaveAttribute("selected");
     });
 
     test('choix multiples 2 clics par option', {
