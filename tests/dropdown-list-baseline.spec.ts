@@ -160,7 +160,7 @@ test.describe('navigation au clavier', () => {
 
         await expect(page.locator('#dropdown-list-restaurants-items')).toMatchAriaSnapshot(`
           - list:
-            - option "Types de restaurants" [selected]
+            - option "Types de restaurants"
             - option "Pizzeria"
             - option "Pâtisserie"
             - option "Boîte à pâtes"
