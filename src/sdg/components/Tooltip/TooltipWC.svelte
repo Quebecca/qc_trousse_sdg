@@ -2,6 +2,7 @@
   tag: 'qc-tooltip',
   props: {
     text: { attribute: 'label', type: 'String' },
+    title: { attribute: 'title', type: 'String' },
     description: { attribute: 'description', type: 'String' },
     requestedPosition: { attribute: 'position', type: 'String'},
     preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean'},
