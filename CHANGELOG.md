@@ -1,5 +1,9 @@
 # Historique des versions
 
+## latest
+### Ajouté
+- **Infobulle** : Ajout d'un attribut pour placer un titre dans le composant.
+
 ## [1.5.0] - 2026-01-12
 ### Ajouté
 - **Infobulle** : Ajout du composant.
