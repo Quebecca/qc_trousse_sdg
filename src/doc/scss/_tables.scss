@@ -1,17 +1,24 @@
 @use "qc-sdg-lib" as *;
 
 table.qc-table {
+
+  caption {
+    @include content-font(lg, bold);
+    margin-bottom: token-value(spacer content-block mb);
+    text-align: left;
+  }
+
   margin-bottom: 0;
-  background-color: token-value(color,white);
+  background-color: token-value(color white);
   width: 100%;
   max-width: 100%;
   overflow: auto;
   border-collapse: collapse;
 
   &>thead {
-    background-color: token-value(color,blue,dark);
-    color: token-value(color,white);
-    border: 1px solid token-value(color,blue,dark);
+    background-color: token-value(color blue medium);
+    color: token-value(color white);
+    border: 1px solid token-value(color blue medium);
 
     th{
       @include content-font(md, bold);
@@ -21,21 +28,18 @@ table.qc-table {
   thead th, tbody th, tbody td {
     vertical-align: middle;
     text-align: left;
-    padding: token-value(spacer, xs);
+    padding: token-value(spacer, sm);
   }
-
+  tbody {
+    th, td {
+      border-bottom: 1px solid token-value(color grey light);
+    }
+  }
 
   /* ----- Striped tables ----- */
   &.qc-striped tbody tr:nth-of-type(even) {
-    background-color:token-value(color,grey,pale);
+    background-color:token-value(color grey pale);
   }
-
-  /* ----- Bordered tables ----- */
-  &.qc-bordered tbody {
-    th, td {
-      border-bottom: 1px solid token-value(color,grey,light);
-    }
-  } 
 
   /* ----- TODO add footer style ----- */  
 }
