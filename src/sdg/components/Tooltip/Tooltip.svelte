@@ -40,8 +40,10 @@
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
         tooltipIcon = $derived( icon + "-tooltip"),
         labels = {
+
             tooltipButton: {
-                ariaLabel: isFr ? "Afficher l'aide contextuelle" : "Display tooltip",
+                ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip")
+                            + (text ? (isFr ? " pour " : " for ") + text : ""),
             },
             closeButton: {
                 ariaLabel : isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
@@ -101,13 +103,17 @@
         }
     }
 
-    function closeTooltip() {
-        console.log("closeTooltip")
+    function closeTooltip(e) {
         if (modalFlag) {
             closeModale()
         }
         else {
             displayPopover = false;
+        }
+        if (e) {
+            e.preventDefault();
+            if (document.activeElement === tooltipButton) return
+            tooltipButton.focus();
         }
     }
 
@@ -276,10 +282,6 @@
         return overflow;
     }
 
-    function consoleName(element) {
-        return element === tooltipButton ? "button" : "panel"
-    }
-
     function getScreenBounds() {
         return {
             "right" : document.documentElement.clientWidth,
@@ -311,6 +313,7 @@
         tooltipButton.focus()
         tooltipButton.click()
     }
+
 </script>
 
 <svelte:document
@@ -328,7 +331,6 @@
              //$inspect("keydown", e.key)
              if (modalFlag) return;
              if (e.key === "Escape") {
-                 e.preventDefault()
                  closeTooltip(e);
              }
          }}
@@ -360,7 +362,6 @@
             aria-label={labels.tooltipButton.ariaLabel}
             onclick={showTooltip}
             bind:this={tooltipButton}
-            aria-describedby={tooltipId}
             onkeydown={e => {
              if (e.code === "Space") {
                  tooltipButton.click()
@@ -428,24 +429,35 @@
          style:--translateY={translateY}
          style:--translateX={translateX}
          id={tooltipId}
+         aria-describedby="{tooltipId}-title"
     >
         <div class="qc-tooltip-content">
-            <div class="qc-tooltip-content-text">
-            {#if title}<h1 class="qc-tooltip-title">{title}</h1>{/if}
-            {@html description}{@render descriptionSlot()}
-            </div>
+            <section class="qc-tooltip-content-text">
+                {#snippet content()}
+                    {@html description}
+                    {@render descriptionSlot()}
+                {/snippet}
+                {#if title}
+                    <header>
+                        <h2 class="qc-tooltip-title"
+                             id="{tooltipId}-title"
+                            >{title}</h2>
+                    </header>
+                    <main>
+                        {@render content()}
+                    </main>
+                {:else}
+                    {@render content()}
+                {/if}
+            </section>
         </div>
         <a role="button"
            class="qc-tooltip-xclose"
            href="#top"
            aria-label={labels.closeButton.ariaLabel}
-           onclick={e => {
-               e.preventDefault();
-               closeTooltip();
-           }}
+           onclick={closeTooltip}
            onkeydown={e => {
                  if (e.code === "Space") {
-                     e.preventDefault();
                      closeTooltip(e);
                  }
              }}
