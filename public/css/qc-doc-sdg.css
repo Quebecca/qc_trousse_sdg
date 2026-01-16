@@ -180,9 +180,9 @@ table.qc-table {
   border-collapse: collapse;
 }
 table.qc-table > thead {
-  background-color: var(--qc-color-blue-dark);
+  background-color: var(--qc-color-blue-medium);
   color: var(--qc-color-white);
-  border: 1px solid var(--qc-color-blue-dark);
+  border: 1px solid var(--qc-color-blue-medium);
 }
 table.qc-table > thead th {
   font-size: var(--qc-font-size-md);
@@ -192,7 +192,7 @@ table.qc-table > thead th {
 table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
   vertical-align: middle;
   text-align: left;
-  padding: var(--qc-spacer-xs);
+  padding: var(--qc-spacer-sm);
 }
 table.qc-table {
   /* ----- Striped tables ----- */
