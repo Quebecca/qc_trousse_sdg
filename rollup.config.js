@@ -103,7 +103,14 @@ let
         emitCss: false,
         preprocess: sveltePreprocess({
             scss: scssOptions
-        })
+        }),
+        onwarn: (warning, handler) => {
+            // Code d'erreur spécifique à ignorer
+            if (warning.code === 'custom_element_props_identifier') return;
+
+            // Laisser passer les autres avertissements vers le gestionnaire par défaut
+            handler(warning);
+        }
     }
     , rollupOptions = [
         {
