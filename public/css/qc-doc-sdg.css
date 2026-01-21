@@ -448,6 +448,10 @@ dl.qc-list-inline dt::before {
   margin: var(--qc-spacer-content-block-mb) 0;
 }
 
+.table-overflow + .table-overflow {
+  margin-top: 4rem;
+}
+
 hr {
   max-width: var(--qc-max-content-width);
 }

@@ -162,6 +162,9 @@ dl {
   overflow-x: auto;
   margin: token-value(spacer content-block mb) 0;
 }
+.table-overflow + .table-overflow {
+  margin-top: rem(40);
+}
 
 hr {
   max-width: token-value(max-content-width);
