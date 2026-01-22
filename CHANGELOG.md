@@ -1,8 +1,10 @@
 # Historique des versions
 
-## latest
+## [1.5.1] - 2026-01-13
 ### Ajouté
-- **Infobulle** : Ajout d'un attribut pour placer un titre dans le composant.
+- **Infobulle** : Ajout d'un attribut pour placer un titre dans le composant ([#33](https://github.com/Quebecca/qc_trousse_sdg/issues/33))
+### Corrigé
+- **Documentation** : Correction du style des tableaux ([#34](https://github.com/Quebecca/qc_trousse_sdg/issues/34)).
 
 ## [1.5.0] - 2026-01-12
 ### Ajouté
