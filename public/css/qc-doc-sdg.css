@@ -449,7 +449,7 @@ dl.qc-list-inline dt::before {
 }
 
 .table-overflow + .table-overflow {
-  margin-top: 4rem;
+  margin-top: 2.5rem;
 }
 
 hr {
