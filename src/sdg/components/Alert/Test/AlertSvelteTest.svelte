@@ -17,6 +17,7 @@
 />
 
 <div hidden>
+    <!-- svelte-ignore a11y_invalid_attribute -->
     <p style="margin: 0;" bind:this={regularAlertContent}>Alerte bleue d’importance modérée <a href="#">avec un lien textuel</a></p>
 </div>
 

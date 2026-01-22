@@ -171,6 +171,13 @@ code.hljs {
   overflow-x: visible;
 }
 
+table.qc-table caption {
+  font-size: var(--qc-font-size-lg);
+  line-height: var(--qc-line-height-lg);
+  font-weight: var(--qc-font-weight-bold);
+  margin-bottom: var(--qc-spacer-content-block-mb);
+  text-align: left;
+}
 table.qc-table {
   margin-bottom: 0;
   background-color: var(--qc-color-white);
@@ -180,9 +187,9 @@ table.qc-table {
   border-collapse: collapse;
 }
 table.qc-table > thead {
-  background-color: var(--qc-color-blue-dark);
+  background-color: var(--qc-color-blue-medium);
   color: var(--qc-color-white);
-  border: 1px solid var(--qc-color-blue-dark);
+  border: 1px solid var(--qc-color-blue-medium);
 }
 table.qc-table > thead th {
   font-size: var(--qc-font-size-md);
@@ -192,19 +199,16 @@ table.qc-table > thead th {
 table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
   vertical-align: middle;
   text-align: left;
-  padding: var(--qc-spacer-xs);
+  padding: var(--qc-spacer-sm);
+}
+table.qc-table tbody th, table.qc-table tbody td {
+  border-bottom: 1px solid var(--qc-color-grey-light);
 }
 table.qc-table {
   /* ----- Striped tables ----- */
 }
 table.qc-table.qc-striped tbody tr:nth-of-type(even) {
   background-color: var(--qc-color-grey-pale);
-}
-table.qc-table {
-  /* ----- Bordered tables ----- */
-}
-table.qc-table.qc-bordered tbody th, table.qc-table.qc-bordered tbody td {
-  border-bottom: 1px solid var(--qc-color-grey-light);
 }
 table.qc-table {
   /* ----- TODO add footer style ----- */
@@ -441,7 +445,11 @@ dl.qc-list-inline dt::before {
 .table-overflow {
   width: 100%;
   overflow-x: auto;
-  margin-bottom: var(--qc-spacer-content-block-mb);
+  margin: var(--qc-spacer-content-block-mb) 0;
+}
+
+.table-overflow + .table-overflow {
+  margin-top: 4rem;
 }
 
 hr {

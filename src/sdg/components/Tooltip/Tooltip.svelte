@@ -5,6 +5,7 @@
     import gridConfig from '../../../sdg/scss/settings/grid.json';
     let {
         text,
+        title,
         description,
         requestedPosition = "top",
         preventOuterEventClosing = false,
@@ -39,8 +40,10 @@
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
         tooltipIcon = $derived( icon + "-tooltip"),
         labels = {
+
             tooltipButton: {
-                ariaLabel: isFr ? "Afficher l'aide contextuelle" : "Display tooltip",
+                ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip")
+                            + (text ? (isFr ? " pour " : " for ") + text : ""),
             },
             closeButton: {
                 ariaLabel : isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
@@ -100,13 +103,17 @@
         }
     }
 
-    function closeTooltip() {
-        console.log("closeTooltip")
+    function closeTooltip(e) {
         if (modalFlag) {
             closeModale()
         }
         else {
             displayPopover = false;
+        }
+        if (e) {
+            e.preventDefault();
+            if (document.activeElement === tooltipButton) return
+            tooltipButton.focus();
         }
     }
 
@@ -275,10 +282,6 @@
         return overflow;
     }
 
-    function consoleName(element) {
-        return element === tooltipButton ? "button" : "panel"
-    }
-
     function getScreenBounds() {
         return {
             "right" : document.documentElement.clientWidth,
@@ -310,6 +313,7 @@
         tooltipButton.focus()
         tooltipButton.click()
     }
+
 </script>
 
 <svelte:document
@@ -327,7 +331,6 @@
              //$inspect("keydown", e.key)
              if (modalFlag) return;
              if (e.key === "Escape") {
-                 e.preventDefault()
                  closeTooltip(e);
              }
          }}
@@ -359,7 +362,6 @@
             aria-label={labels.tooltipButton.ariaLabel}
             onclick={showTooltip}
             bind:this={tooltipButton}
-            aria-describedby={tooltipId}
             onkeydown={e => {
              if (e.code === "Space") {
                  tooltipButton.click()
@@ -427,23 +429,35 @@
          style:--translateY={translateY}
          style:--translateX={translateX}
          id={tooltipId}
+         aria-describedby="{tooltipId}-title"
     >
         <div class="qc-tooltip-content">
-            <div class="qc-tooltip-content-text">
-            {@html description}{@render descriptionSlot()}
-            </div>
+            <section class="qc-tooltip-content-text">
+                {#snippet content()}
+                    {@html description}
+                    {@render descriptionSlot()}
+                {/snippet}
+                {#if title}
+                    <header>
+                        <h2 class="qc-tooltip-title"
+                             id="{tooltipId}-title"
+                            >{title}</h2>
+                    </header>
+                    <main>
+                        {@render content()}
+                    </main>
+                {:else}
+                    {@render content()}
+                {/if}
+            </section>
         </div>
         <a role="button"
            class="qc-tooltip-xclose"
            href="#top"
            aria-label={labels.closeButton.ariaLabel}
-           onclick={e => {
-               e.preventDefault();
-               closeTooltip();
-           }}
+           onclick={closeTooltip}
            onkeydown={e => {
                  if (e.code === "Space") {
-                     e.preventDefault();
                      closeTooltip(e);
                  }
              }}
@@ -517,6 +531,18 @@
     .qc-tooltip-content-text {
         max-inline-size: var(--qc-max-content-width);
     }
+
+    h1,h2,h3,h4,h5,h6,[role="heading"] {
+        font-size: var(--qc-font-size-sm);
+        font-weight: var(--qc-font-weight-bold);
+        line-height: var(--qc-line-height-sm);
+        margin: 0;
+        font-family: var(--qc-font-family-content);
+        &::after{
+            display: none;
+        }
+    }
+
 
     .qc-tooltip-content:focus-visible {
         outline: none;
