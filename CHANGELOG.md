@@ -1,5 +1,9 @@
 # Historique des versions
 
+## [latest]
+### Corrigé
+- Lien externe : correction d'une règle css dans les liens externes par ajout d'une règle !important, pour éviter un éventuel écrasement pour une autre règle qui briserait le rendu de l'image.  
+
 ## [1.5.1] - 2026-01-13
 ### Ajouté
 - **Infobulle** : Ajout d'un attribut pour placer un titre dans le composant ([#33](https://github.com/Quebecca/qc_trousse_sdg/issues/33))

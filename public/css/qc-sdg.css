@@ -876,7 +876,7 @@ a .img-wrap {
 div.qc-ext-link-img {
   height: 0.6875em;
   width: 0.6875em;
-  display: inline-block;
+  display: inline-block !important;
   background: var(--qc-color-link-text);
   mask-size: 0.6875em;
   margin-left: 4px;

@@ -27,7 +27,7 @@ div.qc-ext-link-img {
   $ratio : math.div(11,16) * 1em;
   height: $ratio;
   width: $ratio;
-  display: inline-block;
+  display: inline-block!important;
   background: token-value(color link text);
   mask-size: $ratio;
   margin-left: 4px;
