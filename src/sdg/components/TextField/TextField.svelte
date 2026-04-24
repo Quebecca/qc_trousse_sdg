@@ -131,7 +131,7 @@
     {#if label}
         <Label
                 {required}
-                disabled={disabled}
+                disabled={disabled ?? input?.disabled}
                 text={label}
                 forId={input?.id}
                 bind:rootElement={labelElement}

@@ -78559,10 +78559,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[141, 8]]);
-	var root_4$3 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[152, 8]]);
+	var root_3$2 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[142, 8]]);
+	var root_4$3 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[153, 8]]);
 	var root_1$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[176, 4]]);
+	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -78579,7 +78579,7 @@
 			{
 				var consequent = ($$anchor) => {
 					{
-						let $0 = user_derived(() => input()?.disabled);
+						let $0 = user_derived(() => disabled() ?? input()?.disabled);
 						let $1 = user_derived(() => input()?.id);
 
 						$$ownership_validator.binding('labelElement', Label, labelElement);
@@ -78612,7 +78612,7 @@
 							}),
 							'component',
 							TextField,
-							131,
+							132,
 							8,
 							{ componentTag: 'Label' }
 						);
@@ -78625,7 +78625,7 @@
 					}),
 					'if',
 					TextField,
-					130,
+					131,
 					4
 				);
 			}
@@ -78650,14 +78650,14 @@
 					}),
 					'if',
 					TextField,
-					140,
+					141,
 					4
 				);
 			}
 
 			var node_3 = sibling(node_1, 2);
 
-			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 149, 4);
+			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 150, 4);
 
 			var node_4 = sibling(node_3, 2);
 
@@ -78688,7 +78688,7 @@
 					}),
 					'if',
 					TextField,
-					151,
+					152,
 					4
 				);
 			}
@@ -78735,7 +78735,7 @@
 					}),
 					'component',
 					TextField,
-					165,
+					166,
 					4,
 					{ componentTag: 'FormError' }
 				);
@@ -78762,7 +78762,8 @@
 			descriptionElement = prop($$props, 'descriptionElement', 15),
 			maxlengthElement = prop($$props, 'maxlengthElement', 15),
 			input = prop($$props, 'input', 7),
-			children = prop($$props, 'children', 7);
+			children = prop($$props, 'children', 7),
+			disabled = prop($$props, 'disabled', 7);
 
 		const webComponentMode = getContext('webComponentMode');
 
@@ -79019,6 +79020,15 @@
 				flushSync();
 			},
 
+			get disabled() {
+				return disabled();
+			},
+
+			set disabled($$value) {
+				disabled($$value);
+				flushSync();
+			},
+
 			...legacy_api()
 		};
 
@@ -79027,14 +79037,14 @@
 
 		{
 			var consequent_3 = ($$anchor) => {
-				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 174, 4);
+				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 175, 4);
 			};
 
 			var alternate = ($$anchor) => {
 				var div_2 = root_6$1();
 				var node_8 = child(div_2);
 
-				add_svelte_meta(() => textfield(node_8), 'render', TextField, 181, 8);
+				add_svelte_meta(() => textfield(node_8), 'render', TextField, 182, 8);
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
@@ -79052,7 +79062,7 @@
 				}),
 				'if',
 				TextField,
-				173,
+				174,
 				0
 			);
 		}
@@ -79081,7 +79091,8 @@
 			descriptionElement: {},
 			maxlengthElement: {},
 			input: {},
-			children: {}
+			children: {},
+			disabled: {}
 		},
 		[],
 		[],

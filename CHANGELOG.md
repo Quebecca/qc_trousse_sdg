@@ -1,8 +1,11 @@
 # Historique des versions
 
 ## [latest]
+### Ajouté
+- **qc-textfield** : Ajout de la propriété `disabled` comme attribut explicite du web component, pour une meilleure réactivité avec les frameworks (Angular, etc.) ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).
+- **qc-search-input** : Ajout de la propriété `placeholder` comme attribut explicite du web component ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).
 ### Corrigé
-- Lien externe : correction d'une règle css dans les liens externes par ajout d'une règle !important, pour éviter un éventuel écrasement pour une autre règle qui briserait le rendu de l'image.  
+- **qc-textfield** : Le label conserve un fallback sur `input.disabled` quand la propriété `disabled` n'est pas passée explicitement (rétrocompatibilité Svelte).
 
 ## [1.5.1] - 2026-01-13
 ### Ajouté
