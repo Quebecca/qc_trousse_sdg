@@ -18,8 +18,8 @@
         ...rest
     } = $props();
 
-    leftIcon = leftIcon === true || leftIcon === "true" || leftIcon === "";
-    const isDisabled = rest.disabled === true || rest.disabled === "true" || rest.disabled === "";
+    const leftIconNormalized = $derived(leftIcon === true || leftIcon === "true" || leftIcon === "");
+    const isDisabled = $derived(rest.disabled === true || rest.disabled === "true" || rest.disabled === "");
 
     let searchInput;
 
@@ -37,12 +37,12 @@
 {/if}
 <div class={[
             "qc-search-input",
-            leftIcon && "qc-search-left-icon",
-            leftIcon && isDisabled && "qc-search-left-icon-disabled"
+            leftIconNormalized && "qc-search-left-icon",
+            leftIconNormalized && isDisabled && "qc-search-left-icon-disabled"
         ]}
      size={size}>
 
-    {#if leftIcon}
+    {#if leftIconNormalized}
         <Icon type="search-thin"
               iconColor="grey-regular"
               class={`qc-icon${isDisabled ? ' is-disabled' : ''}`}

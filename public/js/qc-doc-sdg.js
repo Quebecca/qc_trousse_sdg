@@ -79840,14 +79840,15 @@
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root_2$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[57, 4]]);
-	var root$6 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[65, 4]]);
+	var root_2$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
+	var root$6 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
+		const // svelte-ignore state_referenced_locally — rest.label sert de valeur initiale, mise à jour ensuite par $effect
+		requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
 			var fragment = comment();
@@ -79867,7 +79868,7 @@
 					}),
 					'if',
 					Checkbox,
-					56,
+					57,
 					4
 				);
 			}
@@ -80052,11 +80053,11 @@
 		var div = root$6();
 		var node_1 = child(div);
 
-		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 72, 8);
+		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 73, 8);
 
 		var node_2 = sibling(node_1, 2);
 
-		add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Checkbox, 73, 8);
+		add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Checkbox, 74, 8);
 
 		var node_3 = sibling(node_2, 2);
 
@@ -80076,7 +80077,7 @@
 			}),
 			'component',
 			Checkbox,
-			74,
+			75,
 			8,
 			{ componentTag: 'FormError' }
 		);
@@ -80330,9 +80331,8 @@
 					'id'
 				]);
 
-		leftIcon(strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), ""));
-
-		const isDisabled = strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "");
+		const leftIconNormalized = tag(user_derived(() => strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), "")), 'leftIconNormalized');
+		const isDisabled = tag(user_derived(() => strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "")), 'isDisabled');
 		let searchInput;
 
 		function focus() {
@@ -80419,7 +80419,7 @@
 				add_svelte_meta(
 					() => Label($$anchor, {
 						get disabled() {
-							return isDisabled;
+							return get(isDisabled);
 						},
 
 						get text() {
@@ -80455,7 +80455,7 @@
 		{
 			var consequent_1 = ($$anchor) => {
 				{
-					let $0 = user_derived(() => `qc-icon${isDisabled ? ' is-disabled' : ''}`);
+					let $0 = user_derived(() => `qc-icon${get(isDisabled) ? ' is-disabled' : ''}`);
 
 					add_svelte_meta(
 						() => Icon($$anchor, {
@@ -80476,7 +80476,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_1, ($$render) => {
-					if (leftIcon()) $$render(consequent_1);
+					if (get(leftIconNormalized)) $$render(consequent_1);
 				}),
 				'if',
 				SearchInput,
@@ -80493,7 +80493,7 @@
 				type: 'search',
 				autocomplete: 'off',
 				'aria-label': label() ? undefined : ariaLabel(),
-				class: isDisabled ? "qc-disabled" : "",
+				class: get(isDisabled) ? "qc-disabled" : "",
 				id: id(),
 				...rest
 			}),
@@ -80550,8 +80550,8 @@
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-search-input",
-				leftIcon() && "qc-search-left-icon",
-				leftIcon() && isDisabled && "qc-search-left-icon-disabled"
+				get(leftIconNormalized) && "qc-search-left-icon",
+				get(leftIconNormalized) && get(isDisabled) && "qc-search-left-icon-disabled"
 			]));
 
 			set_attribute(div, 'size', size());
@@ -80590,9 +80590,9 @@
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root_3$1 = add_locations(from_html(`<span class="qc-sr-only"></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
-	var root_2$5 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
-	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
+	var root_3$1 = add_locations(from_html(`<span class="qc-sr-only"></span>`), DropdownListItemsSingle[FILENAME], [[136, 20]]);
+	var root_2$5 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[120, 12]]);
+	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[118, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -80608,7 +80608,13 @@
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
-		let displayedItemsElements = tag(state(proxy(new Array(displayedItems().length))), 'displayedItemsElements');
+		let displayedItemsElements = tag(state(proxy([])), 'displayedItemsElements');
+
+		user_effect(() => {
+			if (strict_equals(get(displayedItemsElements).length, displayedItems().length, false)) {
+				set(displayedItemsElements, new Array(displayedItems().length), true);
+			}
+		});
 
 		function focusOnFirstElement() {
 			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
@@ -80815,13 +80821,13 @@
 								}),
 								'if',
 								DropdownListItemsSingle,
-								129,
+								135,
 								16
 							);
 						}
 
 						reset(li);
-						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 115, 16);
+						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 121, 16);
 						bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
 						template_effect(() => {
@@ -80849,7 +80855,7 @@
 					}),
 					'each',
 					DropdownListItemsSingle,
-					113,
+					119,
 					8
 				);
 
@@ -80865,7 +80871,7 @@
 				}),
 				'if',
 				DropdownListItemsSingle,
-				111,
+				117,
 				0
 			);
 		}
@@ -80899,8 +80905,8 @@
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root_2$4 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[154, 12, [[164, 16, [[169, 20], [181, 20]]]]]]);
-	var root_1$2 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[148, 4]]);
+	var root_2$4 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[160, 12, [[170, 16, [[175, 20], [187, 20]]]]]]);
+	var root_1$2 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[154, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -80915,7 +80921,13 @@
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
 		const name = Math.random().toString(36).substring(2, 15);
-		let displayedItemsElements = tag(state(proxy(new Array(displayedItems().length))), 'displayedItemsElements');
+		let displayedItemsElements = tag(state(proxy([])), 'displayedItemsElements');
+
+		user_effect(() => {
+			if (strict_equals(get(displayedItemsElements).length, displayedItems().length, false)) {
+				set(displayedItemsElements, new Array(displayedItems().length), true);
+			}
+		});
 
 		function focusOnFirstElement() {
 			if (displayedItems() && displayedItems().length > 0) {
@@ -80986,7 +80998,7 @@
 
 				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
 					event.target.checked = !event.target.checked;
-					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 87, 16);
+					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 93, 16);
 				}
 			}
 
@@ -81121,8 +81133,8 @@
 						var input = child(label);
 
 						remove_input_defaults(input);
-						validate_binding('bind:checked={item.checked}', [], () => get(item), () => 'checked', 176, 28);
-						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 177, 28);
+						validate_binding('bind:checked={item.checked}', [], () => get(item), () => 'checked', 182, 28);
+						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 183, 28);
 						bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
 						var input_value;
@@ -81180,7 +81192,7 @@
 					}),
 					'each',
 					DropdownListItemsMultiple,
-					149,
+					155,
 					8
 				);
 
@@ -81196,7 +81208,7 @@
 				}),
 				'if',
 				DropdownListItemsMultiple,
-				147,
+				153,
 				0
 			);
 		}
@@ -81738,9 +81750,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[394, 20]]);
-	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[435, 24]]);
-	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[324, 0, [[329, 4, [[348, 8, [[377, 12, [[433, 16]]]]]]]]]]);
+	var root_2$2 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[395, 20]]);
+	var root_3 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[436, 24]]);
+	var root$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[325, 0, [[330, 4, [[349, 8, [[378, 12, [[434, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -81770,11 +81782,11 @@
 			expanded = prop($$props, 'expanded', 15, false);
 
 		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option";
-		const inputId = `${id()}-input`;
-		const popupId = `${id()}-popup`;
-		const itemsId = `${id()}-items`;
-		const labelId = `${id()}-label`;
-		const errorId = `${id()}-error`;
+		const inputId = tag(user_derived(() => `${id()}-input`), 'inputId');
+		const popupId = tag(user_derived(() => `${id()}-popup`), 'popupId');
+		const itemsId = tag(user_derived(() => `${id()}-items`), 'itemsId');
+		const labelId = tag(user_derived(() => `${id()}-label`), 'labelId');
+		const errorId = tag(user_derived(() => `${id()}-error`), 'errorId');
 		const availableWidths = ["xs", "sm", "md", "lg", "xl"];
 		const buttonHeight = 40;
 		let instance = tag(state(void 0), 'instance');
@@ -81811,7 +81823,9 @@
 		let previousValue = tag(state(proxy(value())), 'previousValue');
 		let searchText = tag(state(""), 'searchText');
 		let hiddenSearchText = tag(state(""), 'hiddenSearchText');
-		let displayedItems = tag(state(proxy(items())), 'displayedItems');
+
+		let // svelte-ignore state_referenced_locally — items sert de valeur initiale, mise à jour par $effect sur searchText
+		displayedItems = tag(state(proxy(items())), 'displayedItems');
 
 		let itemsForSearch = tag(
 			user_derived(() => items().map((item) => {
@@ -82287,7 +82301,7 @@
 						},
 
 						get forId() {
-							return inputId;
+							return get(inputId);
 						},
 
 						onclick: (e) => {
@@ -82296,12 +82310,12 @@
 						},
 						bold: true,
 						get id() {
-							return labelId;
+							return get(labelId);
 						}
 					}),
 					'component',
 					DropdownList,
-					335,
+					336,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -82313,7 +82327,7 @@
 				}),
 				'if',
 				DropdownList,
-				334,
+				335,
 				8
 			);
 		}
@@ -82324,7 +82338,7 @@
 		add_svelte_meta(
 			() => DropdownListButton(node_1, {
 				get inputId() {
-					return inputId;
+					return get(inputId);
 				},
 
 				get disabled() {
@@ -82336,7 +82350,7 @@
 				},
 
 				get 'aria-labelledby'() {
-					return labelId;
+					return get(labelId);
 				},
 
 				get 'aria-required'() {
@@ -82348,7 +82362,7 @@
 				},
 				'aria-haspopup': 'listbox',
 				get 'aria-controls'() {
-					return itemsId;
+					return get(itemsId);
 				},
 
 				get 'aria-invalid'() {
@@ -82381,7 +82395,7 @@
 			}),
 			'component',
 			DropdownList,
-			357,
+			358,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -82434,7 +82448,7 @@
 						),
 						'component',
 						DropdownList,
-						395,
+						396,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -82450,7 +82464,7 @@
 				}),
 				'if',
 				DropdownList,
-				393,
+				394,
 				16
 			);
 		}
@@ -82464,7 +82478,7 @@
 				() => bind_this(
 					DropdownListItems(node_4, {
 						get id() {
-							return itemsId;
+							return get(itemsId);
 						},
 
 						get placeholder() {
@@ -82508,7 +82522,7 @@
 				),
 				'component',
 				DropdownList,
-				413,
+				414,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -82528,7 +82542,7 @@
 			}),
 			'key',
 			DropdownList,
-			434,
+			435,
 			20
 		);
 
@@ -82549,7 +82563,7 @@
 			add_svelte_meta(
 				() => FormError(node_6, {
 					get id() {
-						return errorId;
+						return get(errorId);
 					},
 
 					get invalid() {
@@ -82574,7 +82588,7 @@
 				}),
 				'component',
 				DropdownList,
-				443,
+				444,
 				4,
 				{ componentTag: 'FormError' }
 			);
@@ -82592,7 +82606,7 @@
 				invalid() && "qc-dropdown-list-invalid"
 			]));
 
-			set_attribute(div_3, 'id', popupId);
+			set_attribute(div_3, 'id', get(popupId));
 
 			set_style(div_3, `
                     --dropdown-items-top-offset: ${get(topOffset)};

@@ -12,7 +12,13 @@
 
     const name = Math.random().toString(36).substring(2, 15);
 
-    let displayedItemsElements = $state(new Array(displayedItems.length));
+    let displayedItemsElements = $state([]);
+
+    $effect(() => {
+        if (displayedItemsElements.length !== displayedItems.length) {
+            displayedItemsElements = new Array(displayedItems.length);
+        }
+    });
 
     export function focusOnFirstElement() {
         if (displayedItems && displayedItems.length > 0) {

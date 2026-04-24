@@ -33,11 +33,11 @@
 
     const
         defaultPlaceholder = lang === "fr" ? "Faire une sélection" : "Select an option",
-        inputId = `${id}-input`,
-        popupId = `${id}-popup`,
-        itemsId = `${id}-items`,
-        labelId = `${id}-label`,
-        errorId = `${id}-error`,
+        inputId = $derived(`${id}-input`),
+        popupId = $derived(`${id}-popup`),
+        itemsId = $derived(`${id}-items`),
+        labelId = $derived(`${id}-label`),
+        errorId = $derived(`${id}-error`),
         availableWidths = ["xs", "sm", "md", "lg", "xl"], buttonHeight = 40
     ;
 
@@ -69,6 +69,7 @@
         previousValue = $state(value),
         searchText = $state(""),
         hiddenSearchText = $state(""),
+        // svelte-ignore state_referenced_locally — items sert de valeur initiale, mise à jour par $effect sur searchText
         displayedItems = $state(items),
         itemsForSearch = $derived(items.map((item) => {
             return {

@@ -6,6 +6,9 @@
 - **qc-search-input** : Ajout de la propriété `placeholder` comme attribut explicite du web component ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).
 ### Corrigé
 - **qc-textfield** : Le label conserve un fallback sur `input.disabled` quand la propriété `disabled` n'est pas passée explicitement (rétrocompatibilité Svelte).
+- **Dépendances** : Mise à jour des dépendances npm (correctifs de sécurité Dependabot).
+- **SCSS** : Correction des warnings Sass `if-function` dans `_grid-lib.scss` (`if()` → `@if/@else`).
+- **Svelte** : Correction des warnings `state_referenced_locally` dans les composants (Notice, Alert, ToggleSwitch, Fieldset, SearchInput, DropdownList, Tooltip, Checkbox, ToTop).
 
 ## [1.5.1] - 2026-01-13
 ### Ajouté

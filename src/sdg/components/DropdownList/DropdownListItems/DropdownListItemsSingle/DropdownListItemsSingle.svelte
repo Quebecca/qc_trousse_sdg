@@ -14,7 +14,13 @@
         handlePrintableCharacter = () => {}
     } = $props();
 
-    let displayedItemsElements = $state(new Array(displayedItems.length));
+    let displayedItemsElements = $state([]);
+
+    $effect(() => {
+        if (displayedItemsElements.length !== displayedItems.length) {
+            displayedItemsElements = new Array(displayedItems.length);
+        }
+    });
 
     export function focusOnFirstElement() {
         if (displayedItemsElements && displayedItemsElements.length > 0) {

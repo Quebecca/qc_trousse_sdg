@@ -25,6 +25,7 @@
         ...rest
     } = $props();
 
+    // svelte-ignore state_referenced_locally — rest.label sert de valeur initiale, mise à jour ensuite par $effect
     let label = $state(rest.label),
         rootElement = $state()
     ;

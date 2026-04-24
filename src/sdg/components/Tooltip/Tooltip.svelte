@@ -32,6 +32,7 @@
         displayModal = $state(false),
         translateX = $state(defaultTranslateX),
         translateY = $state(defaultTranslateY),
+        // svelte-ignore state_referenced_locally — requestedPosition sert de valeur initiale, position est ensuite ajustée par showPopover
         position = $state(requestedPosition),
         mobileFlag = $state(false),
         forceModal = $state(false),
@@ -39,8 +40,7 @@
         hasDescription = $derived.by(_ => hasProperty(description, slots["description"], descriptionSlot)),
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
         tooltipIcon = $derived( icon + "-tooltip"),
-        labels = {
-
+        labels = $derived({
             tooltipButton: {
                 ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip")
                             + (text ? (isFr ? " pour " : " for ") + text : ""),
@@ -48,7 +48,7 @@
             closeButton: {
                 ariaLabel : isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
             }
-        }
+        })
     ;
     $inspect("modalFlag",modalFlag)
 

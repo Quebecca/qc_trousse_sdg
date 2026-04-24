@@ -9,6 +9,7 @@
       demo = 'false'
    } = $props();
 
+   // svelte-ignore state_referenced_locally — demo sert de valeur initiale, la visibilité est ensuite gérée par handleScrollUpButton
    let visible = $state(demo === 'true');
    let lastVisible = setContext('visible', () => visible);
    let lastScrollY = 0;
