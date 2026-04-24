@@ -23,9 +23,9 @@
     } = $props();
 
     let groupSelection = $state(),
-        legendId = name
+        legendId = $derived(name
             ? "id_" + name
-            : Utils.generateId("legend");
+            : Utils.generateId("legend"));
 </script>
 {#snippet fieldset()}
 <fieldset bind:this={rootElement}

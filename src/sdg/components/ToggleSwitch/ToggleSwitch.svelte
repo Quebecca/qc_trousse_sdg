@@ -8,10 +8,10 @@
         textAlign
     } = $props();
 
-    const usedId = "toggle-switch-" + (id ?
-        id : Math.random().toString(36));
+    const usedId = $derived("toggle-switch-" + (id ?
+        id : Math.random().toString(36)));
 
-    let usedLabelTextAlignment = textAlign?.toLowerCase() === "end" ? "end" : "start";
+    let usedLabelTextAlignment = $derived(textAlign?.toLowerCase() === "end" ? "end" : "start");
 </script>
 
 <label class={[

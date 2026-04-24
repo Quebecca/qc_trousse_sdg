@@ -20,14 +20,14 @@
 
     const language = Utils.getPageLanguage();
 
-    const typeClass = (type !== "") ? type : 'general';
+    const typeClass = $derived((type !== "") ? type : 'general');
     const closeLabel = language === 'fr' ? "Fermer l’alerte" : "Close l’alerte";
     const warningLabel = language === 'fr' ? "Information d'importance élevée" : "Information of high importance";
     const generalLabel = language === 'fr' ? "Information importante" : "Important information";
 
-    const label = type === 'general' ? generalLabel : warningLabel;
+    const label = $derived(type === 'general' ? generalLabel : warningLabel);
 
-    let containerClass = "qc-container" + (fullWidth === 'true' ? '-fluid' : '');
+    let containerClass = $derived("qc-container" + (fullWidth === 'true' ? '-fluid' : ''));
 
     onMount(() => {
         const key = getPersistenceKey();
