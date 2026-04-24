@@ -8,6 +8,7 @@
     maxlength: { attribute: 'max-length', type: 'Number' },
     invalid: { attribute: 'invalid', type: 'Boolean', reflect: true },
     invalidText: { attribute: 'invalid-text', type: 'String' },
+    disabled: { attribute: 'disabled' }
   }
 }} />
 
