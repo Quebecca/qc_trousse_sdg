@@ -6,6 +6,7 @@
         ariaLabel: {attribute:'aria-label'},
         clearAriaLabel: {attribute: 'clear-aria-label'},
         label: {attribute: 'label'},
+        placeholder: {attribute: 'placeholder'},
         size: {attribute: 'size'},
         leftIcon: {attribute: 'left-icon'}
     }

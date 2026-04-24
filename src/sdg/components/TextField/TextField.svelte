@@ -24,7 +24,8 @@
         descriptionElement = $bindable(),
         maxlengthElement = $bindable(),
         input,
-        children
+        children,
+        disabled,
     } = $props();
 
     const webComponentMode = getContext('webComponentMode');
@@ -130,7 +131,7 @@
     {#if label}
         <Label
                 {required}
-                disabled={input?.disabled}
+                disabled={disabled}
                 text={label}
                 forId={input?.id}
                 bind:rootElement={labelElement}
