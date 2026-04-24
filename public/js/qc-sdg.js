@@ -28,6 +28,8 @@
 	const HYDRATION_START = '[';
 	/** used to indicate that an `{:else}...` block was rendered */
 	const HYDRATION_START_ELSE = '[!';
+	/** used to indicate that a boundary's `failed` snippet was rendered on the server */
+	const HYDRATION_START_FAILED = '[?';
 	const HYDRATION_END = ']';
 	const HYDRATION_ERROR = {};
 
@@ -38,6 +40,7 @@
 
 	const NAMESPACE_HTML = 'http://www.w3.org/1999/xhtml';
 	const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
+	const NAMESPACE_MATHML = 'http://www.w3.org/1998/Math/MathML';
 
 	const ATTACHMENT_KEY = '@attach';
 
@@ -47,6 +50,7 @@
 	// to de-opt (this occurs often when using popular extensions).
 	var is_array = Array.isArray;
 	var index_of = Array.prototype.indexOf;
+	var includes = Array.prototype.includes;
 	var array_from = Array.from;
 	var object_keys = Object.keys;
 	var define_property = Object.defineProperty;
@@ -88,7 +92,7 @@
 
 	/**
 	 * TODO replace with Promise.withResolvers once supported widely enough
-	 * @template T
+	 * @template [T=void]
 	 */
 	function deferred() {
 		/** @type {(value: T) => void} */
@@ -146,6 +150,15 @@
 	const DERIVED = 1 << 1;
 	const EFFECT = 1 << 2;
 	const RENDER_EFFECT = 1 << 3;
+	/**
+	 * An effect that does not destroy its child effects when it reruns.
+	 * Runs as part of render effects, i.e. not eagerly as part of tree traversal or effect flushing.
+	 */
+	const MANAGED_EFFECT = 1 << 24;
+	/**
+	 * An effect that does not destroy its child effects when it reruns (like MANAGED_EFFECT).
+	 * Runs eagerly as part of tree traversal or effect flushing.
+	 */
 	const BLOCK_EFFECT = 1 << 4;
 	const BRANCH_EFFECT = 1 << 5;
 	const ROOT_EFFECT = 1 << 6;
@@ -162,10 +175,12 @@
 	const MAYBE_DIRTY = 1 << 12;
 	const INERT = 1 << 13;
 	const DESTROYED = 1 << 14;
+	/** Set once a reaction has run for the first time */
+	const REACTION_RAN = 1 << 15;
+	/** Effect is in the process of getting destroyed. Can be observed in child teardown functions */
+	const DESTROYING = 1 << 25;
 
 	// Flags exclusive to effects
-	/** Set once an effect that should run synchronously has run */
-	const EFFECT_RAN = 1 << 15;
 	/**
 	 * 'Transparent' effects do not create a transition boundary.
 	 * This is on a block effect 99% of the time but may also be on a branch effect if its parent block effect was pruned
@@ -175,14 +190,16 @@
 	const HEAD_EFFECT = 1 << 18;
 	const EFFECT_PRESERVED = 1 << 19;
 	const USER_EFFECT = 1 << 20;
+	const EFFECT_OFFSCREEN = 1 << 25;
 
 	// Flags exclusive to deriveds
 	/**
 	 * Tells that we marked this derived and its reactions as visited during the "mark as (maybe) dirty"-phase.
 	 * Will be lifted during execution of the derived and during checking its dirty state (both are necessary
-	 * because a derived might be checked but not executed).
+	 * because a derived might be checked but not executed). This is a pure performance optimization flag and
+	 * should not be used for any other purpose!
 	 */
-	const WAS_MARKED = 1 << 15;
+	const WAS_MARKED = 1 << 16;
 
 	// Flags used for async
 	const REACTION_IS_UPDATING = 1 << 21;
@@ -201,6 +218,10 @@
 		message = 'The reaction that called `getAbortSignal()` was re-run or destroyed';
 	})();
 
+	const IS_XHTML =
+		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
+		!!globalThis.document?.contentType &&
+		/* @__PURE__ */ globalThis.document.contentType.includes('xml');
 	const ELEMENT_NODE = 1;
 	const TEXT_NODE = 3;
 	const COMMENT_NODE = 8;
@@ -407,17 +428,6 @@
 
 
 	/**
-	 * Assignment to `%property%` property (%location%) will evaluate to the right-hand side, not the value of `%property%` following the assignment. This may result in unexpected behaviour.
-	 * @param {string} property
-	 * @param {string} location
-	 */
-	function assignment_value_stale(property, location) {
-		{
-			console.warn(`https://svelte.dev/e/assignment_value_stale`);
-		}
-	}
-
-	/**
 	 * `%binding%` (%location%) is binding to a non-reactive property
 	 * @param {string} binding
 	 * @param {string | undefined | null} [location]
@@ -435,6 +445,15 @@
 	function console_log_state(method) {
 		{
 			console.warn(`https://svelte.dev/e/console_log_state`);
+		}
+	}
+
+	/**
+	 * Reading a derived belonging to a now-destroyed effect may result in stale values
+	 */
+	function derived_inert() {
+		{
+			console.warn(`https://svelte.dev/e/derived_inert`);
 		}
 	}
 
@@ -536,7 +555,7 @@
 	 */
 	let hydrate_node;
 
-	/** @param {TemplateNode} node */
+	/** @param {TemplateNode | null} node */
 	function set_hydrate_node(node) {
 		if (node === null) {
 			hydration_mismatch();
@@ -547,7 +566,7 @@
 	}
 
 	function hydrate_next() {
-		return set_hydrate_node(/** @type {TemplateNode} */ (get_next_sibling(hydrate_node)));
+		return set_hydrate_node(get_next_sibling(hydrate_node));
 	}
 
 	/** @param {TemplateNode} node */
@@ -591,7 +610,12 @@
 				if (data === HYDRATION_END) {
 					if (depth === 0) return node;
 					depth -= 1;
-				} else if (data === HYDRATION_START || data === HYDRATION_START_ELSE) {
+				} else if (
+					data === HYDRATION_START ||
+					data === HYDRATION_START_ELSE ||
+					// "[1", "[2", etc. for if blocks
+					(data[0] === '[' && !isNaN(Number(data.slice(1))))
+				) {
 					depth += 1;
 				}
 			}
@@ -638,6 +662,8 @@
 		return !safe_not_equal(value, this.v);
 	}
 
+	/** True if experimental.async=true */
+	/** True if $inspect.trace is used */
 	let tracing_mode_flag = false;
 
 	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
@@ -720,7 +746,7 @@
 					cloned.set(original, copy);
 				}
 
-				for (var key in value) {
+				for (var key of Object.keys(value)) {
 					copy[key] = clone(
 						// @ts-expect-error
 						value[key],
@@ -767,62 +793,6 @@
 	/** @import { Derived, Reaction, Value } from '#client' */
 
 	/**
-	 * @param {string} label
-	 * @returns {Error & { stack: string } | null}
-	 */
-	function get_stack(label) {
-		// @ts-ignore stackTraceLimit doesn't exist everywhere
-		const limit = Error.stackTraceLimit;
-
-		// @ts-ignore
-		Error.stackTraceLimit = Infinity;
-		let error = Error();
-
-		// @ts-ignore
-		Error.stackTraceLimit = limit;
-
-		const stack = error.stack;
-
-		if (!stack) return null;
-
-		const lines = stack.split('\n');
-		const new_lines = ['\n'];
-
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const posixified = line.replaceAll('\\', '/');
-
-			if (line === 'Error') {
-				continue;
-			}
-
-			if (line.includes('validate_each_keys')) {
-				return null;
-			}
-
-			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
-				continue;
-			}
-
-			new_lines.push(line);
-		}
-
-		if (new_lines.length === 1) {
-			return null;
-		}
-
-		define_property(error, 'stack', {
-			value: new_lines.join('\n')
-		});
-
-		define_property(error, 'name', {
-			value: label
-		});
-
-		return /** @type {Error & { stack: string }} */ (error);
-	}
-
-	/**
 	 * @param {Value} source
 	 * @param {string} label
 	 */
@@ -841,6 +811,70 @@
 		// @ts-expect-error
 		value?.[PROXY_PATH_SYMBOL]?.(label);
 		return value;
+	}
+
+	/**
+	 * @param {string} label
+	 * @returns {Error & { stack: string } | null}
+	 */
+	function get_error(label) {
+		const error = new Error();
+		const stack = get_stack();
+
+		if (stack.length === 0) {
+			return null;
+		}
+
+		stack.unshift('\n');
+
+		define_property(error, 'stack', {
+			value: stack.join('\n')
+		});
+
+		define_property(error, 'name', {
+			value: label
+		});
+
+		return /** @type {Error & { stack: string }} */ (error);
+	}
+
+	/**
+	 * @returns {string[]}
+	 */
+	function get_stack() {
+		// @ts-ignore - doesn't exist everywhere
+		const limit = Error.stackTraceLimit;
+		// @ts-ignore - doesn't exist everywhere
+		Error.stackTraceLimit = Infinity;
+		const stack = new Error().stack;
+		// @ts-ignore - doesn't exist everywhere
+		Error.stackTraceLimit = limit;
+
+		if (!stack) return [];
+
+		const lines = stack.split('\n');
+		const new_lines = [];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const posixified = line.replaceAll('\\', '/');
+
+			if (line.trim() === 'Error') {
+				continue;
+			}
+
+			if (line.includes('validate_each_keys')) {
+				return [];
+			}
+
+			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
+				continue;
+			}
+
+			new_lines.push(line);
+		}
+
+		return new_lines;
 	}
 
 	/** @import { ComponentContext, DevStackEntry, Effect } from '#client' */
@@ -953,6 +987,7 @@
 			e: null,
 			s: props,
 			x: null,
+			r: /** @type {Effect} */ (active_effect),
 			l: null
 		};
 	}
@@ -1073,19 +1108,16 @@
 			return error;
 		}
 
-		if ((effect.f & EFFECT_RAN) === 0) {
-			// if the error occurred while creating this subtree, we let it
-			// bubble up until it hits a boundary that can handle it
-			if ((effect.f & BOUNDARY_EFFECT) === 0) {
+		// if the error occurred while creating this subtree, we let it
+		// bubble up until it hits a boundary that can handle it, unless
+		// it's an $effect in which case it doesn't run immediately
+		if ((effect.f & REACTION_RAN) === 0 && (effect.f & EFFECT) === 0) {
 
-				throw error;
-			}
-
-			/** @type {Boundary} */ (effect.b).error(error);
-		} else {
-			// otherwise we bubble up the effect tree ourselves
-			invoke_error_boundary(error, effect);
+			throw error;
 		}
+
+		// otherwise we bubble up the effect tree ourselves
+		invoke_error_boundary(error, effect);
 	}
 
 	/**
@@ -1095,6 +1127,11 @@
 	function invoke_error_boundary(error, effect) {
 		while (effect !== null) {
 			if ((effect.f & BOUNDARY_EFFECT) !== 0) {
+				if ((effect.f & REACTION_RAN) === 0) {
+					// we are still creating the boundary effect
+					throw error;
+				}
+
 				try {
 					/** @type {Boundary} */ (effect.b).error(error);
 					return;
@@ -1109,31 +1146,107 @@
 		throw error;
 	}
 
-	/** @import { Fork } from 'svelte' */
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
+	/** @import { Derived, Signal } from '#client' */
+
+	const STATUS_MASK = -7169;
 
 	/**
-	 * @typedef {{
-	 *   parent: EffectTarget | null;
-	 *   effect: Effect | null;
-	 *   effects: Effect[];
-	 *   render_effects: Effect[];
-	 *   block_effects: Effect[];
-	 * }} EffectTarget
+	 * @param {Signal} signal
+	 * @param {number} status
 	 */
+	function set_signal_status(signal, status) {
+		signal.f = (signal.f & STATUS_MASK) | status;
+	}
+
+	/**
+	 * Set a derived's status to CLEAN or MAYBE_DIRTY based on its connection state.
+	 * @param {Derived} derived
+	 */
+	function update_derived_status(derived) {
+		// Only mark as MAYBE_DIRTY if disconnected and has dependencies.
+		if ((derived.f & CONNECTED) !== 0 || derived.deps === null) {
+			set_signal_status(derived, CLEAN);
+		} else {
+			set_signal_status(derived, MAYBE_DIRTY);
+		}
+	}
+
+	/** @import { Derived, Effect, Value } from '#client' */
+
+	/**
+	 * @param {Value[] | null} deps
+	 */
+	function clear_marked(deps) {
+		if (deps === null) return;
+
+		for (const dep of deps) {
+			if ((dep.f & DERIVED) === 0 || (dep.f & WAS_MARKED) === 0) {
+				continue;
+			}
+
+			dep.f ^= WAS_MARKED;
+
+			clear_marked(/** @type {Derived} */ (dep).deps);
+		}
+	}
+
+	/**
+	 * @param {Effect} effect
+	 * @param {Set<Effect>} dirty_effects
+	 * @param {Set<Effect>} maybe_dirty_effects
+	 */
+	function defer_effect(effect, dirty_effects, maybe_dirty_effects) {
+		if ((effect.f & DIRTY) !== 0) {
+			dirty_effects.add(effect);
+		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
+			maybe_dirty_effects.add(effect);
+		}
+
+		// Since we're not executing these effects now, we need to clear any WAS_MARKED flags
+		// so that other batches can correctly reach these effects during their own traversal
+		clear_marked(effect.deps);
+
+		// mark as clean so they get scheduled if they depend on pending async state
+		set_signal_status(effect, CLEAN);
+	}
+
+	/** @import { StoreReferencesContainer } from '#client' */
+	/** @import { Store } from '#shared' */
+
+	/**
+	 * Whether or not the prop currently being read is a store binding, as in
+	 * `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
+	 * runes mode, and skip `binding_property_non_reactive` validation
+	 */
+	let is_store_binding = false;
+
+	/**
+	 * Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
+	 * Used to prevent `binding_property_non_reactive` validation false positives and
+	 * ensure that these props are treated as mutable even in runes mode
+	 * @template T
+	 * @param {() => T} fn
+	 * @returns {[T, boolean]}
+	 */
+	function capture_store_binding(fn) {
+		var previous_is_store_binding = is_store_binding;
+
+		try {
+			is_store_binding = false;
+			return [fn(), is_store_binding];
+		} finally {
+			is_store_binding = previous_is_store_binding;
+		}
+	}
+
+	/** @import { Fork } from 'svelte' */
+	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
 
 	/** @type {Set<Batch>} */
 	const batches = new Set();
 
 	/** @type {Batch | null} */
 	let current_batch = null;
-
-	/**
-	 * This is needed to avoid overwriting inputs in non-async mode
-	 * TODO 6.0 remove this, as non-async mode will go away
-	 * @type {Batch | null}
-	 */
-	let previous_batch = null;
 
 	/**
 	 * When time travelling (i.e. working in one batch, while other batches
@@ -1143,36 +1256,55 @@
 	 */
 	let batch_values = null;
 
-	/** @type {Effect[]} */
-	let queued_root_effects = [];
-
 	/** @type {Effect | null} */
 	let last_scheduled_effect = null;
 
-	let is_flushing = false;
 	let is_flushing_sync = false;
+	let is_processing = false;
+
+	/**
+	 * During traversal, this is an array. Newly created effects are (if not immediately
+	 * executed) pushed to this array, rather than going through the scheduling
+	 * rigamarole that would cause another turn of the flush loop.
+	 * @type {Effect[] | null}
+	 */
+	let collected_effects = null;
+
+	/**
+	 * An array of effects that are marked during traversal as a result of a `set`
+	 * (not `internal_set`) call. These will be added to the next batch and
+	 * trigger another `batch.process()`
+	 * @type {Effect[] | null}
+	 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
+	 */
+	let legacy_updates = null;
+
+	var flush_count = 0;
+
+	let uid = 1;
 
 	class Batch {
-		committed = false;
+		id = uid++;
 
 		/**
-		 * The current values of any sources that are updated in this batch
+		 * The current values of any signals that are updated in this batch.
+		 * Tuple format: [value, is_derived] (note: is_derived is false for deriveds, too, if they were overridden via assignment)
 		 * They keys of this map are identical to `this.#previous`
-		 * @type {Map<Source, any>}
+		 * @type {Map<Value, [any, boolean]>}
 		 */
 		current = new Map();
 
 		/**
-		 * The values of any sources that are updated in this batch _before_ those updates took place.
+		 * The values of any signals (sources and deriveds) that are updated in this batch _before_ those updates took place.
 		 * They keys of this map are identical to `this.#current`
-		 * @type {Map<Source, any>}
+		 * @type {Map<Value, any>}
 		 */
 		previous = new Map();
 
 		/**
 		 * When the batch is committed (and the DOM is updated), we need to remove old branches
 		 * and append new ones by calling the functions added inside (if/each/key/etc) blocks
-		 * @type {Set<() => void>}
+		 * @type {Set<(batch: Batch) => void>}
 		 */
 		#commit_callbacks = new Set();
 
@@ -1183,14 +1315,22 @@
 		#discard_callbacks = new Set();
 
 		/**
-		 * The number of async effects that are currently in flight
+		 * Callbacks that should run only when a fork is committed.
+		 * @type {Set<(batch: Batch) => void>}
 		 */
-		#pending = 0;
+		#fork_commit_callbacks = new Set();
 
 		/**
-		 * The number of async effects that are currently in flight, _not_ inside a pending boundary
+		 * Async effects that are currently in flight
+		 * @type {Map<Effect, number>}
 		 */
-		#blocking_pending = 0;
+		#pending = new Map();
+
+		/**
+		 * Async effects that are currently in flight, _not_ inside a pending boundary
+		 * @type {Map<Effect, number>}
+		 */
+		#blocking_pending = new Map();
 
 		/**
 		 * A deferred that resolves when the batch is committed, used with `settled()`
@@ -1200,82 +1340,224 @@
 		#deferred = null;
 
 		/**
-		 * Deferred effects (which run after async work has completed) that are DIRTY
+		 * The root effects that need to be flushed
 		 * @type {Effect[]}
 		 */
-		#dirty_effects = [];
+		#roots = [];
+
+		/**
+		 * Effects created while this batch was active.
+		 * @type {Effect[]}
+		 */
+		#new_effects = [];
+
+		/**
+		 * Deferred effects (which run after async work has completed) that are DIRTY
+		 * @type {Set<Effect>}
+		 */
+		#dirty_effects = new Set();
 
 		/**
 		 * Deferred effects that are MAYBE_DIRTY
-		 * @type {Effect[]}
-		 */
-		#maybe_dirty_effects = [];
-
-		/**
-		 * A set of branches that still exist, but will be destroyed when this batch
-		 * is committed — we skip over these during `process`
 		 * @type {Set<Effect>}
 		 */
-		skipped_effects = new Set();
+		#maybe_dirty_effects = new Set();
+
+		/**
+		 * A map of branches that still exist, but will be destroyed when this batch
+		 * is committed — we skip over these during `process`.
+		 * The value contains child effects that were dirty/maybe_dirty before being reset,
+		 * so they can be rescheduled if the branch survives.
+		 * @type {Map<Effect, { d: Effect[], m: Effect[] }>}
+		 */
+		#skipped_branches = new Map();
+
+		/**
+		 * Inverse of #skipped_branches which we need to tell prior batches to unskip them when committing
+		 * @type {Set<Effect>}
+		 */
+		#unskipped_branches = new Set();
 
 		is_fork = false;
 
-		/**
-		 *
-		 * @param {Effect[]} root_effects
-		 */
-		process(root_effects) {
-			queued_root_effects = [];
+		#decrement_queued = false;
 
-			previous_batch = null;
+		/** @type {Set<Batch>} */
+		#blockers = new Set();
+
+		#is_deferred() {
+			return this.is_fork || this.#blocking_pending.size > 0;
+		}
+
+		#is_blocked() {
+			for (const batch of this.#blockers) {
+				for (const effect of batch.#blocking_pending.keys()) {
+					var skipped = false;
+					var e = effect;
+
+					while (e.parent !== null) {
+						if (this.#skipped_branches.has(e)) {
+							skipped = true;
+							break;
+						}
+
+						e = e.parent;
+					}
+
+					if (!skipped) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Add an effect to the #skipped_branches map and reset its children
+		 * @param {Effect} effect
+		 */
+		skip_effect(effect) {
+			if (!this.#skipped_branches.has(effect)) {
+				this.#skipped_branches.set(effect, { d: [], m: [] });
+			}
+			this.#unskipped_branches.delete(effect);
+		}
+
+		/**
+		 * Remove an effect from the #skipped_branches map and reschedule
+		 * any tracked dirty/maybe_dirty child effects
+		 * @param {Effect} effect
+		 * @param {(e: Effect) => void} callback
+		 */
+		unskip_effect(effect, callback = (e) => this.schedule(e)) {
+			var tracked = this.#skipped_branches.get(effect);
+			if (tracked) {
+				this.#skipped_branches.delete(effect);
+
+				for (var e of tracked.d) {
+					set_signal_status(e, DIRTY);
+					callback(e);
+				}
+
+				for (e of tracked.m) {
+					set_signal_status(e, MAYBE_DIRTY);
+					callback(e);
+				}
+			}
+			this.#unskipped_branches.add(effect);
+		}
+
+		#process() {
+			if (flush_count++ > 1000) {
+				batches.delete(this);
+				infinite_loop_guard();
+			}
+
+			// we only reschedule previously-deferred effects if we expect
+			// to be able to run them after processing the batch
+			if (!this.#is_deferred()) {
+				for (const e of this.#dirty_effects) {
+					this.#maybe_dirty_effects.delete(e);
+					set_signal_status(e, DIRTY);
+					this.schedule(e);
+				}
+
+				for (const e of this.#maybe_dirty_effects) {
+					set_signal_status(e, MAYBE_DIRTY);
+					this.schedule(e);
+				}
+			}
+
+			const roots = this.#roots;
+			this.#roots = [];
 
 			this.apply();
 
-			/** @type {EffectTarget} */
-			var target = {
-				parent: null,
-				effect: null,
-				effects: [],
-				render_effects: [],
-				block_effects: []
-			};
+			/** @type {Effect[]} */
+			var effects = (collected_effects = []);
 
-			for (const root of root_effects) {
-				this.#traverse_effect_tree(root, target);
+			/** @type {Effect[]} */
+			var render_effects = [];
+
+			/**
+			 * @type {Effect[]}
+			 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
+			 */
+			var updates = (legacy_updates = []);
+
+			for (const root of roots) {
+				try {
+					this.#traverse(root, effects, render_effects);
+				} catch (e) {
+					reset_all(root);
+					throw e;
+				}
 			}
 
-			if (!this.is_fork) {
-				this.#resolve();
+			// any writes should take effect in a subsequent batch
+			current_batch = null;
+
+			if (updates.length > 0) {
+				var batch = Batch.ensure();
+				for (const e of updates) {
+					batch.schedule(e);
+				}
 			}
 
-			if (this.#blocking_pending > 0 || this.is_fork) {
-				this.#defer_effects(target.effects);
-				this.#defer_effects(target.render_effects);
-				this.#defer_effects(target.block_effects);
+			collected_effects = null;
+			legacy_updates = null;
+
+			if (this.#is_deferred() || this.#is_blocked()) {
+				this.#defer_effects(render_effects);
+				this.#defer_effects(effects);
+
+				for (const [e, t] of this.#skipped_branches) {
+					reset_branch(e, t);
+				}
 			} else {
-				// If sources are written to, then work needs to happen in a separate batch, else prior sources would be mixed with
-				// newly updated sources, which could lead to infinite loops when effects run over and over again.
-				previous_batch = this;
-				current_batch = null;
+				if (this.#pending.size === 0) {
+					batches.delete(this);
+				}
 
-				flush_queued_effects(target.render_effects);
-				flush_queued_effects(target.effects);
+				// clear effects. Those that are still needed will be rescheduled through unskipping the skipped branches.
+				this.#dirty_effects.clear();
+				this.#maybe_dirty_effects.clear();
 
-				previous_batch = null;
+				// append/remove branches
+				for (const fn of this.#commit_callbacks) fn(this);
+				this.#commit_callbacks.clear();
+				flush_queued_effects(render_effects);
+				flush_queued_effects(effects);
 
 				this.#deferred?.resolve();
 			}
 
-			batch_values = null;
+			var next_batch = /** @type {Batch | null} */ (/** @type {unknown} */ (current_batch));
+
+			// Edge case: During traversal new branches might create effects that run immediately and set state,
+			// causing an effect and therefore a root to be scheduled again. We need to traverse the current batch
+			// once more in that case - most of the time this will just clean up dirty branches.
+			if (this.#roots.length > 0) {
+				const batch = (next_batch ??= this);
+				batch.#roots.push(...this.#roots.filter((r) => !batch.#roots.includes(r)));
+			}
+
+			if (next_batch !== null) {
+				batches.add(next_batch);
+
+				next_batch.#process();
+			}
 		}
 
 		/**
 		 * Traverse the effect tree, executing effects or stashing
 		 * them for later execution as appropriate
 		 * @param {Effect} root
-		 * @param {EffectTarget} target
+		 * @param {Effect[]} effects
+		 * @param {Effect[]} render_effects
 		 */
-		#traverse_effect_tree(root, target) {
+		#traverse(root, effects, render_effects) {
 			root.f ^= CLEAN;
 
 			var effect = root.first;
@@ -1285,25 +1567,15 @@
 				var is_branch = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
 				var is_skippable_branch = is_branch && (flags & CLEAN) !== 0;
 
-				var skip = is_skippable_branch || (flags & INERT) !== 0 || this.skipped_effects.has(effect);
-
-				if ((effect.f & BOUNDARY_EFFECT) !== 0 && effect.b?.is_pending()) {
-					target = {
-						parent: target,
-						effect,
-						effects: [],
-						render_effects: [],
-						block_effects: []
-					};
-				}
+				var skip = is_skippable_branch || (flags & INERT) !== 0 || this.#skipped_branches.has(effect);
 
 				if (!skip && effect.fn !== null) {
 					if (is_branch) {
 						effect.f ^= CLEAN;
 					} else if ((flags & EFFECT) !== 0) {
-						target.effects.push(effect);
+						effects.push(effect);
 					} else if (is_dirty(effect)) {
-						if ((effect.f & BLOCK_EFFECT) !== 0) target.block_effects.push(effect);
+						if ((flags & BLOCK_EFFECT) !== 0) this.#maybe_dirty_effects.add(effect);
 						update_effect(effect);
 					}
 
@@ -1315,23 +1587,15 @@
 					}
 				}
 
-				var parent = effect.parent;
-				effect = effect.next;
+				while (effect !== null) {
+					var next = effect.next;
 
-				while (effect === null && parent !== null) {
-					if (parent === target.effect) {
-						// TODO rather than traversing into pending boundaries and deferring the effects,
-						// could we just attach the effects _to_ the pending boundary and schedule them
-						// once the boundary is ready?
-						this.#defer_effects(target.effects);
-						this.#defer_effects(target.render_effects);
-						this.#defer_effects(target.block_effects);
-
-						target = /** @type {EffectTarget} */ (target.parent);
+					if (next !== null) {
+						effect = next;
+						break;
 					}
 
-					effect = parent.next;
-					parent = parent.parent;
+					effect = effect.parent;
 				}
 			}
 		}
@@ -1340,36 +1604,36 @@
 		 * @param {Effect[]} effects
 		 */
 		#defer_effects(effects) {
-			for (const e of effects) {
-				const target = (e.f & DIRTY) !== 0 ? this.#dirty_effects : this.#maybe_dirty_effects;
-				target.push(e);
-
-				// mark as clean so they get scheduled if they depend on pending async state
-				set_signal_status(e, CLEAN);
+			for (var i = 0; i < effects.length; i += 1) {
+				defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
 			}
 		}
 
 		/**
 		 * Associate a change to a given source with the current
 		 * batch, noting its previous and current values
-		 * @param {Source} source
+		 * @param {Value} source
 		 * @param {any} value
+		 * @param {boolean} [is_derived]
 		 */
-		capture(source, value) {
-			if (!this.previous.has(source)) {
-				this.previous.set(source, value);
+		capture(source, value, is_derived = false) {
+			if (source.v !== UNINITIALIZED && !this.previous.has(source)) {
+				this.previous.set(source, source.v);
 			}
 
 			// Don't save errors in `batch_values`, or they won't be thrown in `runtime.js#get`
 			if ((source.f & ERROR_VALUE) === 0) {
-				this.current.set(source, source.v);
-				batch_values?.set(source, source.v);
+				this.current.set(source, [value, is_derived]);
+				batch_values?.set(source, value);
+			}
+
+			if (!this.is_fork) {
+				source.v = value;
 			}
 		}
 
 		activate() {
 			current_batch = this;
-			this.apply();
 		}
 
 		deactivate() {
@@ -1378,37 +1642,39 @@
 		}
 
 		flush() {
-			this.activate();
 
-			if (queued_root_effects.length > 0) {
-				flush_effects();
+			try {
+				is_processing = true;
+				current_batch = this;
 
-				if (current_batch !== null && current_batch !== this) {
-					// this can happen if a new batch was created during `flush_effects()`
-					return;
-				}
-			} else if (this.#pending === 0) {
-				this.process([]); // TODO this feels awkward
+				this.#process();
+			} finally {
+				flush_count = 0;
+				last_scheduled_effect = null;
+				collected_effects = null;
+				legacy_updates = null;
+				is_processing = false;
+
+				current_batch = null;
+				batch_values = null;
+
+				old_values.clear();
 			}
-
-			this.deactivate();
 		}
 
 		discard() {
 			for (const fn of this.#discard_callbacks) fn(this);
 			this.#discard_callbacks.clear();
+			this.#fork_commit_callbacks.clear();
+
+			batches.delete(this);
 		}
 
-		#resolve() {
-			if (this.#blocking_pending === 0) {
-				// append/remove branches
-				for (const fn of this.#commit_callbacks) fn();
-				this.#commit_callbacks.clear();
-			}
-
-			if (this.#pending === 0) {
-				this.#commit();
-			}
+		/**
+		 * @param {Effect} effect
+		 */
+		register_created_effect(effect) {
+			this.#new_effects.push(effect);
 		}
 
 		#commit() {
@@ -1416,122 +1682,175 @@
 			// in other words, we re-run block/async effects with the newly
 			// committed state, unless the batch in question has a more
 			// recent value for a given source
-			if (batches.size > 1) {
-				this.previous.clear();
+			for (const batch of batches) {
+				var is_earlier = batch.id < this.id;
 
-				var previous_batch_values = batch_values;
-				var is_earlier = true;
+				/** @type {Source[]} */
+				var sources = [];
 
-				/** @type {EffectTarget} */
-				var dummy_target = {
-					parent: null,
-					effect: null,
-					effects: [],
-					render_effects: [],
-					block_effects: []
-				};
+				for (const [source, [value, is_derived]] of this.current) {
+					if (batch.current.has(source)) {
+						var batch_value = /** @type {[any, boolean]} */ (batch.current.get(source))[0]; // faster than destructuring
 
-				for (const batch of batches) {
-					if (batch === this) {
-						is_earlier = false;
-						continue;
-					}
-
-					/** @type {Source[]} */
-					const sources = [];
-
-					for (const [source, value] of this.current) {
-						if (batch.current.has(source)) {
-							if (is_earlier && value !== batch.current.get(source)) {
-								// bring the value up to date
-								batch.current.set(source, value);
-							} else {
-								// same value or later batch has more recent value,
-								// no need to re-run these effects
-								continue;
-							}
-						}
-
-						sources.push(source);
-					}
-
-					if (sources.length === 0) {
-						continue;
-					}
-
-					// Re-run async/block effects that depend on distinct values changed in both batches
-					const others = [...batch.current.keys()].filter((s) => !this.current.has(s));
-					if (others.length > 0) {
-						/** @type {Set<Value>} */
-						const marked = new Set();
-						/** @type {Map<Reaction, boolean>} */
-						const checked = new Map();
-						for (const source of sources) {
-							mark_effects(source, others, marked, checked);
-						}
-
-						if (queued_root_effects.length > 0) {
-							current_batch = batch;
-							batch.apply();
-
-							for (const root of queued_root_effects) {
-								batch.#traverse_effect_tree(root, dummy_target);
-							}
-
-							// TODO do we need to do anything with `target`? defer block effects?
-
-							queued_root_effects = [];
-							batch.deactivate();
+						if (is_earlier && value !== batch_value) {
+							// bring the value up to date
+							batch.current.set(source, [value, is_derived]);
+						} else {
+							// same value or later batch has more recent value,
+							// no need to re-run these effects
+							continue;
 						}
 					}
+
+					sources.push(source);
 				}
 
-				current_batch = null;
-				batch_values = previous_batch_values;
+				// Re-run async/block effects that depend on distinct values changed in both batches
+				var others = [...batch.current.keys()].filter((s) => !this.current.has(s));
+
+				if (others.length === 0) {
+					if (is_earlier) {
+						// this batch is now obsolete and can be discarded
+						batch.discard();
+					}
+				} else if (sources.length > 0) {
+
+					// A batch was unskipped in a later batch -> tell prior batches to unskip it, too
+					if (is_earlier) {
+						for (const unskipped of this.#unskipped_branches) {
+							batch.unskip_effect(unskipped, (e) => {
+								if ((e.f & (BLOCK_EFFECT | ASYNC)) !== 0) {
+									batch.schedule(e);
+								} else {
+									batch.#defer_effects([e]);
+								}
+							});
+						}
+					}
+
+					batch.activate();
+
+					/** @type {Set<Value>} */
+					var marked = new Set();
+
+					/** @type {Map<Reaction, boolean>} */
+					var checked = new Map();
+
+					for (var source of sources) {
+						mark_effects(source, others, marked, checked);
+					}
+
+					checked = new Map();
+					var current_unequal = [...batch.current.keys()].filter((c) =>
+						this.current.has(c) ? /** @type {[any, boolean]} */ (this.current.get(c))[0] !== c : true
+					);
+
+					for (const effect of this.#new_effects) {
+						if (
+							(effect.f & (DESTROYED | INERT | EAGER_EFFECT)) === 0 &&
+							depends_on(effect, current_unequal, checked)
+						) {
+							if ((effect.f & (ASYNC | BLOCK_EFFECT)) !== 0) {
+								set_signal_status(effect, DIRTY);
+								batch.schedule(effect);
+							} else {
+								batch.#dirty_effects.add(effect);
+							}
+						}
+					}
+
+					// Only apply and traverse when we know we triggered async work with marking the effects
+					if (batch.#roots.length > 0) {
+						batch.apply();
+
+						for (var root of batch.#roots) {
+							batch.#traverse(root, [], []);
+						}
+
+						batch.#roots = [];
+					}
+
+					batch.deactivate();
+				}
 			}
 
-			this.committed = true;
-			batches.delete(this);
+			for (const batch of batches) {
+				if (batch.#blockers.has(this)) {
+					batch.#blockers.delete(this);
+
+					if (batch.#blockers.size === 0 && !batch.#is_deferred()) {
+						batch.activate();
+						batch.#process();
+					}
+				}
+			}
 		}
 
 		/**
-		 *
 		 * @param {boolean} blocking
+		 * @param {Effect} effect
 		 */
-		increment(blocking) {
-			this.#pending += 1;
-			if (blocking) this.#blocking_pending += 1;
+		increment(blocking, effect) {
+			let pending_count = this.#pending.get(effect) ?? 0;
+			this.#pending.set(effect, pending_count + 1);
+
+			if (blocking) {
+				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
+				this.#blocking_pending.set(effect, blocking_pending_count + 1);
+			}
 		}
 
 		/**
-		 *
 		 * @param {boolean} blocking
+		 * @param {Effect} effect
+		 * @param {boolean} skip - whether to skip updates (because this is triggered by a stale reaction)
 		 */
-		decrement(blocking) {
-			this.#pending -= 1;
-			if (blocking) this.#blocking_pending -= 1;
+		decrement(blocking, effect, skip) {
+			let pending_count = this.#pending.get(effect) ?? 0;
 
-			this.revive();
-		}
-
-		revive() {
-			for (const e of this.#dirty_effects) {
-				set_signal_status(e, DIRTY);
-				schedule_effect(e);
+			if (pending_count === 1) {
+				this.#pending.delete(effect);
+			} else {
+				this.#pending.set(effect, pending_count - 1);
 			}
 
-			for (const e of this.#maybe_dirty_effects) {
-				set_signal_status(e, MAYBE_DIRTY);
-				schedule_effect(e);
+			if (blocking) {
+				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
+
+				if (blocking_pending_count === 1) {
+					this.#blocking_pending.delete(effect);
+				} else {
+					this.#blocking_pending.set(effect, blocking_pending_count - 1);
+				}
 			}
 
-			this.#dirty_effects = [];
-			this.#maybe_dirty_effects = [];
+			if (this.#decrement_queued || skip) return;
+			this.#decrement_queued = true;
 
-			this.flush();
+			queue_micro_task(() => {
+				this.#decrement_queued = false;
+				this.flush();
+			});
 		}
 
-		/** @param {() => void} fn */
+		/**
+		 * @param {Set<Effect>} dirty_effects
+		 * @param {Set<Effect>} maybe_dirty_effects
+		 */
+		transfer_effects(dirty_effects, maybe_dirty_effects) {
+			for (const e of dirty_effects) {
+				this.#dirty_effects.add(e);
+			}
+
+			for (const e of maybe_dirty_effects) {
+				this.#maybe_dirty_effects.add(e);
+			}
+
+			dirty_effects.clear();
+			maybe_dirty_effects.clear();
+		}
+
+		/** @param {(batch: Batch) => void} fn */
 		oncommit(fn) {
 			this.#commit_callbacks.add(fn);
 		}
@@ -1541,6 +1860,16 @@
 			this.#discard_callbacks.add(fn);
 		}
 
+		/** @param {(batch: Batch) => void} fn */
+		on_fork_commit(fn) {
+			this.#fork_commit_callbacks.add(fn);
+		}
+
+		run_fork_commit_callbacks() {
+			for (const fn of this.#fork_commit_callbacks) fn(this);
+			this.#fork_commit_callbacks.clear();
+		}
+
 		settled() {
 			return (this.#deferred ??= deferred()).promise;
 		}
@@ -1548,33 +1877,91 @@
 		static ensure() {
 			if (current_batch === null) {
 				const batch = (current_batch = new Batch());
-				batches.add(current_batch);
 
-				if (!is_flushing_sync) {
-					Batch.enqueue(() => {
-						if (current_batch !== batch) {
-							// a flushSync happened in the meantime
-							return;
-						}
+				if (!is_processing) {
+					batches.add(current_batch);
 
-						batch.flush();
-					});
+					if (!is_flushing_sync) {
+						queue_micro_task(() => {
+							if (current_batch !== batch) {
+								// a flushSync happened in the meantime
+								return;
+							}
+
+							batch.flush();
+						});
+					}
 				}
 			}
 
 			return current_batch;
 		}
 
-		/** @param {() => void} task */
-		static enqueue(task) {
-			queue_micro_task(task);
+		apply() {
+			{
+				batch_values = null;
+				return;
+			}
 		}
 
-		apply() {
-			return;
+		/**
+		 *
+		 * @param {Effect} effect
+		 */
+		schedule(effect) {
+			last_scheduled_effect = effect;
+
+			// defer render effects inside a pending boundary
+			// TODO the `REACTION_RAN` check is only necessary because of legacy `$:` effects AFAICT — we can remove later
+			if (
+				effect.b?.is_pending &&
+				(effect.f & (EFFECT | RENDER_EFFECT | MANAGED_EFFECT)) !== 0 &&
+				(effect.f & REACTION_RAN) === 0
+			) {
+				effect.b.defer_effect(effect);
+				return;
+			}
+
+			var e = effect;
+
+			while (e.parent !== null) {
+				e = e.parent;
+				var flags = e.f;
+
+				// if the effect is being scheduled because a parent (each/await/etc) block
+				// updated an internal source, or because a branch is being unskipped,
+				// bail out or we'll cause a second flush
+				if (collected_effects !== null && e === active_effect) {
+
+					// in sync mode, render effects run during traversal. in an extreme edge case
+					// — namely that we're setting a value inside a derived read during traversal —
+					// they can be made dirty after they have already been visited, in which
+					// case we shouldn't bail out. we also shouldn't bail out if we're
+					// updating a store inside a `$:`, since this might invalidate
+					// effects that were already visited
+					if (
+						(active_reaction === null || (active_reaction.f & DERIVED) === 0) &&
+						true
+					) {
+						return;
+					}
+				}
+
+				if ((flags & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
+					if ((flags & CLEAN) === 0) {
+						// branch is already dirty, bail
+						return;
+					}
+
+					e.f ^= CLEAN;
+				}
+			}
+
+			this.#roots.push(e);
 		}
 	}
 
+	// TODO Svelte@6 think about removing the callback argument.
 	/**
 	 * Synchronously flush any pending updates.
 	 * Returns void if no callback is provided, otherwise returns the result of calling the callback.
@@ -1583,7 +1970,6 @@
 	 * @returns {T}
 	 */
 	function flushSync(fn) {
-
 		var was_flushing_sync = is_flushing_sync;
 		is_flushing_sync = true;
 
@@ -1595,55 +1981,19 @@
 			while (true) {
 				flush_tasks();
 
-				if (queued_root_effects.length === 0) {
-					current_batch?.flush();
-
-					// we need to check again, in case we just updated an `$effect.pending()`
-					if (queued_root_effects.length === 0) {
-						// this would be reset in `flush_effects()` but since we are early returning here,
-						// we need to reset it here as well in case the first time there's 0 queued root effects
-						last_scheduled_effect = null;
-
-						return /** @type {T} */ (result);
-					}
+				if (current_batch === null) {
+					return /** @type {T} */ (result);
 				}
 
-				flush_effects();
+				current_batch.flush();
 			}
 		} finally {
 			is_flushing_sync = was_flushing_sync;
 		}
 	}
 
-	function flush_effects() {
-		var was_updating_effect = is_updating_effect;
-		is_flushing = true;
-
-		try {
-			var flush_count = 0;
-			set_is_updating_effect(true);
-
-			while (queued_root_effects.length > 0) {
-				var batch = Batch.ensure();
-
-				if (flush_count++ > 1000) {
-					var updates, entry; if (DEV) ;
-
-					infinite_loop_guard();
-				}
-
-				batch.process(queued_root_effects);
-				old_values.clear();
-			}
-		} finally {
-			is_flushing = false;
-			set_is_updating_effect(was_updating_effect);
-
-			last_scheduled_effect = null;
-		}
-	}
-
 	function infinite_loop_guard() {
+
 		try {
 			effect_update_depth_exceeded();
 		} catch (error) {
@@ -1680,16 +2030,15 @@
 				// don't know if we need to keep them until they are executed. Doing the check
 				// here (rather than in `update_effect`) allows us to skip the work for
 				// immediate effects.
-				if (effect.deps === null && effect.first === null && effect.nodes_start === null) {
-					// if there's no teardown or abort controller we completely unlink
-					// the effect from the graph
-					if (effect.teardown === null && effect.ac === null) {
-						// remove this effect from the graph
-						unlink_effect(effect);
-					} else {
-						// keep the effect in the graph, but free up some memory
-						effect.fn = null;
-					}
+				if (
+					effect.deps === null &&
+					effect.first === null &&
+					effect.nodes === null &&
+					effect.teardown === null &&
+					effect.ac === null
+				) {
+					// remove this effect from the graph
+					unlink_effect(effect);
 				}
 
 				// If update_effect() has a flushSync() in it, we may have flushed another flush_queued_effects(),
@@ -1750,7 +2099,7 @@
 					mark_effects(/** @type {Derived} */ (reaction), sources, marked, checked);
 				} else if (
 					(flags & (ASYNC | BLOCK_EFFECT)) !== 0 &&
-					(flags & DIRTY) === 0 && // we may have scheduled this one already
+					(flags & DIRTY) === 0 &&
 					depends_on(reaction, sources, checked)
 				) {
 					set_signal_status(reaction, DIRTY);
@@ -1771,7 +2120,7 @@
 
 		if (reaction.deps !== null) {
 			for (const dep of reaction.deps) {
-				if (sources.includes(dep)) {
+				if (includes.call(sources, dep)) {
 					return true;
 				}
 
@@ -1788,34 +2137,53 @@
 	}
 
 	/**
-	 * @param {Effect} signal
+	 * @param {Effect} effect
 	 * @returns {void}
 	 */
-	function schedule_effect(signal) {
-		var effect = (last_scheduled_effect = signal);
+	function schedule_effect(effect) {
+		/** @type {Batch} */ (current_batch).schedule(effect);
+	}
 
-		while (effect.parent !== null) {
-			effect = effect.parent;
-			var flags = effect.f;
-
-			// if the effect is being scheduled because a parent (each/await/etc) block
-			// updated an internal source, bail out or we'll cause a second flush
-			if (
-				is_flushing &&
-				effect === active_effect &&
-				(flags & BLOCK_EFFECT) !== 0 &&
-				(flags & HEAD_EFFECT) === 0
-			) {
-				return;
-			}
-
-			if ((flags & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
-				if ((flags & CLEAN) === 0) return;
-				effect.f ^= CLEAN;
-			}
+	/**
+	 * Mark all the effects inside a skipped branch CLEAN, so that
+	 * they can be correctly rescheduled later. Tracks dirty and maybe_dirty
+	 * effects so they can be rescheduled if the branch survives.
+	 * @param {Effect} effect
+	 * @param {{ d: Effect[], m: Effect[] }} tracked
+	 */
+	function reset_branch(effect, tracked) {
+		// clean branch = nothing dirty inside, no need to traverse further
+		if ((effect.f & BRANCH_EFFECT) !== 0 && (effect.f & CLEAN) !== 0) {
+			return;
 		}
 
-		queued_root_effects.push(effect);
+		if ((effect.f & DIRTY) !== 0) {
+			tracked.d.push(effect);
+		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
+			tracked.m.push(effect);
+		}
+
+		set_signal_status(effect, CLEAN);
+
+		var e = effect.first;
+		while (e !== null) {
+			reset_branch(e, tracked);
+			e = e.next;
+		}
+	}
+
+	/**
+	 * Mark an entire effect tree clean following an error
+	 * @param {Effect} effect
+	 */
+	function reset_all(effect) {
+		set_signal_status(effect, CLEAN);
+
+		var e = effect.first;
+		while (e !== null) {
+			reset_all(e);
+			e = e.next;
+		}
 	}
 
 	/**
@@ -1913,23 +2281,31 @@
 	 * }} BoundaryProps
 	 */
 
-	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED | BOUNDARY_EFFECT;
+	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
 
 	/**
 	 * @param {TemplateNode} node
 	 * @param {BoundaryProps} props
 	 * @param {((anchor: Node) => void)} children
+	 * @param {((error: unknown) => unknown) | undefined} [transform_error]
 	 * @returns {void}
 	 */
-	function boundary(node, props, children) {
-		new Boundary(node, props, children);
+	function boundary(node, props, children, transform_error) {
+		new Boundary(node, props, children, transform_error);
 	}
 
 	class Boundary {
 		/** @type {Boundary | null} */
 		parent;
 
-		#pending = false;
+		is_pending = false;
+
+		/**
+		 * API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
+		 * Inherited from parent boundary, or defaults to identity.
+		 * @type {(error: unknown) => unknown}
+		 */
+		transform_error;
 
 		/** @type {TemplateNode} */
 		#anchor;
@@ -1958,13 +2334,15 @@
 		/** @type {DocumentFragment | null} */
 		#offscreen_fragment = null;
 
-		/** @type {TemplateNode | null} */
-		#pending_anchor = null;
-
 		#local_pending_count = 0;
 		#pending_count = 0;
+		#pending_count_update_queued = false;
 
-		#is_creating_fallback = false;
+		/** @type {Set<Effect>} */
+		#dirty_effects = new Set();
+
+		/** @type {Set<Effect>} */
+		#maybe_dirty_effects = new Set();
 
 		/**
 		 * A source containing the number of pending async deriveds/expressions.
@@ -1987,51 +2365,47 @@
 		 * @param {TemplateNode} node
 		 * @param {BoundaryProps} props
 		 * @param {((anchor: Node) => void)} children
+		 * @param {((error: unknown) => unknown) | undefined} [transform_error]
 		 */
-		constructor(node, props, children) {
+		constructor(node, props, children, transform_error) {
 			this.#anchor = node;
 			this.#props = props;
-			this.#children = children;
+
+			this.#children = (anchor) => {
+				var effect = /** @type {Effect} */ (active_effect);
+
+				effect.b = this;
+				effect.f |= BOUNDARY_EFFECT;
+
+				children(anchor);
+			};
 
 			this.parent = /** @type {Effect} */ (active_effect).b;
 
-			this.#pending = !!this.#props.pending;
+			// Inherit transform_error from parent boundary, or use the provided one, or default to identity
+			this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
 
 			this.#effect = block(() => {
-				/** @type {Effect} */ (active_effect).b = this;
-
 				if (hydrating) {
-					const comment = this.#hydrate_open;
+					const comment = /** @type {Comment} */ (this.#hydrate_open);
 					hydrate_next();
 
-					const server_rendered_pending =
-						/** @type {Comment} */ (comment).nodeType === COMMENT_NODE &&
-						/** @type {Comment} */ (comment).data === HYDRATION_START_ELSE;
+					const server_rendered_pending = comment.data === HYDRATION_START_ELSE;
+					const server_rendered_failed = comment.data.startsWith(HYDRATION_START_FAILED);
 
-					if (server_rendered_pending) {
+					if (server_rendered_failed) {
+						// Server rendered the failed snippet - hydrate it.
+						// The serialized error is embedded in the comment: <!--[?<json>-->
+						const serialized_error = JSON.parse(comment.data.slice(HYDRATION_START_FAILED.length));
+						this.#hydrate_failed_content(serialized_error);
+					} else if (server_rendered_pending) {
 						this.#hydrate_pending_content();
 					} else {
 						this.#hydrate_resolved_content();
 					}
 				} else {
-					var anchor = this.#get_anchor();
-
-					try {
-						this.#main_effect = branch(() => children(anchor));
-					} catch (error) {
-						this.error(error);
-					}
-
-					if (this.#pending_count > 0) {
-						this.#show_pending_snippet();
-					} else {
-						this.#pending = false;
-					}
+					this.#render();
 				}
-
-				return () => {
-					this.#pending_anchor?.remove();
-				};
 			}, flags);
 
 			if (hydrating) {
@@ -2045,58 +2419,103 @@
 			} catch (error) {
 				this.error(error);
 			}
+		}
 
-			// Since server rendered resolved content, we never show pending state
-			// Even if client-side async operations are still running, the content is already displayed
-			this.#pending = false;
+		/**
+		 * @param {unknown} error The deserialized error from the server's hydration comment
+		 */
+		#hydrate_failed_content(error) {
+			const failed = this.#props.failed;
+			if (!failed) return;
+
+			this.#failed_effect = branch(() => {
+				failed(
+					this.#anchor,
+					() => error,
+					() => () => {}
+				);
+			});
 		}
 
 		#hydrate_pending_content() {
 			const pending = this.#props.pending;
-			if (!pending) {
-				return;
-			}
+			if (!pending) return;
+
+			this.is_pending = true;
 			this.#pending_effect = branch(() => pending(this.#anchor));
 
-			Batch.enqueue(() => {
-				var anchor = this.#get_anchor();
+			queue_micro_task(() => {
+				var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
+				var anchor = create_text();
+
+				fragment.append(anchor);
 
 				this.#main_effect = this.#run(() => {
-					Batch.ensure();
 					return branch(() => this.#children(anchor));
 				});
 
-				if (this.#pending_count > 0) {
-					this.#show_pending_snippet();
-				} else {
+				if (this.#pending_count === 0) {
+					this.#anchor.before(fragment);
+					this.#offscreen_fragment = null;
+
 					pause_effect(/** @type {Effect} */ (this.#pending_effect), () => {
 						this.#pending_effect = null;
 					});
 
-					this.#pending = false;
+					this.#resolve(/** @type {Batch} */ (current_batch));
 				}
 			});
 		}
 
-		#get_anchor() {
-			var anchor = this.#anchor;
+		#render() {
+			try {
+				this.is_pending = this.has_pending_snippet();
+				this.#pending_count = 0;
+				this.#local_pending_count = 0;
 
-			if (this.#pending) {
-				this.#pending_anchor = create_text();
-				this.#anchor.before(this.#pending_anchor);
+				this.#main_effect = branch(() => {
+					this.#children(this.#anchor);
+				});
 
-				anchor = this.#pending_anchor;
+				if (this.#pending_count > 0) {
+					var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
+					move_effect(this.#main_effect, fragment);
+
+					const pending = /** @type {(anchor: Node) => void} */ (this.#props.pending);
+					this.#pending_effect = branch(() => pending(this.#anchor));
+				} else {
+					this.#resolve(/** @type {Batch} */ (current_batch));
+				}
+			} catch (error) {
+				this.error(error);
 			}
-
-			return anchor;
 		}
 
 		/**
-		 * Returns `true` if the effect exists inside a boundary whose pending snippet is shown
+		 * @param {Batch} batch
+		 */
+		#resolve(batch) {
+			this.is_pending = false;
+
+			// any effects that were previously deferred should be transferred
+			// to the batch, which will flush in the next microtask
+			batch.transfer_effects(this.#dirty_effects, this.#maybe_dirty_effects);
+		}
+
+		/**
+		 * Defer an effect inside a pending boundary until the boundary resolves
+		 * @param {Effect} effect
+		 */
+		defer_effect(effect) {
+			defer_effect(effect, this.#dirty_effects, this.#maybe_dirty_effects);
+		}
+
+		/**
+		 * Returns `false` if the effect exists inside a boundary whose pending snippet is shown
 		 * @returns {boolean}
 		 */
-		is_pending() {
-			return this.#pending || (!!this.parent && this.parent.is_pending());
+		is_rendered() {
+			return !this.is_pending && (!this.parent || this.parent.is_rendered());
 		}
 
 		has_pending_snippet() {
@@ -2104,7 +2523,8 @@
 		}
 
 		/**
-		 * @param {() => Effect | null} fn
+		 * @template T
+		 * @param {() => T} fn
 		 */
 		#run(fn) {
 			var previous_effect = active_effect;
@@ -2116,6 +2536,7 @@
 			set_component_context(this.#effect.ctx);
 
 			try {
+				Batch.ensure();
 				return fn();
 			} catch (e) {
 				handle_error(e);
@@ -2127,29 +2548,16 @@
 			}
 		}
 
-		#show_pending_snippet() {
-			const pending = /** @type {(anchor: Node) => void} */ (this.#props.pending);
-
-			if (this.#main_effect !== null) {
-				this.#offscreen_fragment = document.createDocumentFragment();
-				this.#offscreen_fragment.append(/** @type {TemplateNode} */ (this.#pending_anchor));
-				move_effect(this.#main_effect, this.#offscreen_fragment);
-			}
-
-			if (this.#pending_effect === null) {
-				this.#pending_effect = branch(() => pending(this.#anchor));
-			}
-		}
-
 		/**
 		 * Updates the pending count associated with the currently visible pending snippet,
 		 * if any, such that we can replace the snippet with content once work is done
 		 * @param {1 | -1} d
+		 * @param {Batch} batch
 		 */
-		#update_pending_count(d) {
+		#update_pending_count(d, batch) {
 			if (!this.has_pending_snippet()) {
 				if (this.parent) {
-					this.parent.#update_pending_count(d);
+					this.parent.#update_pending_count(d, batch);
 				}
 
 				// if there's no parent, we're in a scope with no pending snippet
@@ -2159,7 +2567,7 @@
 			this.#pending_count += d;
 
 			if (this.#pending_count === 0) {
-				this.#pending = false;
+				this.#resolve(batch);
 
 				if (this.#pending_effect) {
 					pause_effect(this.#pending_effect, () => {
@@ -2179,15 +2587,22 @@
 		 * and controls when the current `pending` snippet (if any) is removed.
 		 * Do not call from inside the class
 		 * @param {1 | -1} d
+		 * @param {Batch} batch
 		 */
-		update_pending_count(d) {
-			this.#update_pending_count(d);
+		update_pending_count(d, batch) {
+			this.#update_pending_count(d, batch);
 
 			this.#local_pending_count += d;
 
-			if (this.#effect_pending) {
-				internal_set(this.#effect_pending, this.#local_pending_count);
-			}
+			if (!this.#effect_pending || this.#pending_count_update_queued) return;
+			this.#pending_count_update_queued = true;
+
+			queue_micro_task(() => {
+				this.#pending_count_update_queued = false;
+				if (this.#effect_pending) {
+					internal_set(this.#effect_pending, this.#local_pending_count);
+				}
+			});
 		}
 
 		get_effect_pending() {
@@ -2197,15 +2612,29 @@
 
 		/** @param {unknown} error */
 		error(error) {
-			var onerror = this.#props.onerror;
-			let failed = this.#props.failed;
-
 			// If we have nothing to capture the error, or if we hit an error while
 			// rendering the fallback, re-throw for another boundary to handle
-			if (this.#is_creating_fallback || (!onerror && !failed)) {
+			if (!this.#props.onerror && !this.#props.failed) {
 				throw error;
 			}
 
+			if (current_batch?.is_fork) {
+				if (this.#main_effect) current_batch.skip_effect(this.#main_effect);
+				if (this.#pending_effect) current_batch.skip_effect(this.#pending_effect);
+				if (this.#failed_effect) current_batch.skip_effect(this.#failed_effect);
+
+				current_batch.on_fork_commit(() => {
+					this.#handle_error(error);
+				});
+			} else {
+				this.#handle_error(error);
+			}
+		}
+
+		/**
+		 * @param {unknown} error
+		 */
+		#handle_error(error) {
 			if (this.#main_effect) {
 				destroy_effect(this.#main_effect);
 				this.#main_effect = null;
@@ -2227,6 +2656,8 @@
 				set_hydrate_node(skip_nodes());
 			}
 
+			var onerror = this.#props.onerror;
+			let failed = this.#props.failed;
 			var did_reset = false;
 			var calling_on_error = false;
 
@@ -2242,76 +2673,86 @@
 					svelte_boundary_reset_onerror();
 				}
 
-				// If the failure happened while flushing effects, current_batch can be null
-				Batch.ensure();
-
-				this.#local_pending_count = 0;
-
 				if (this.#failed_effect !== null) {
 					pause_effect(this.#failed_effect, () => {
 						this.#failed_effect = null;
 					});
 				}
 
-				// we intentionally do not try to find the nearest pending boundary. If this boundary has one, we'll render it on reset
-				// but it would be really weird to show the parent's boundary on a child reset.
-				this.#pending = this.has_pending_snippet();
-
-				this.#main_effect = this.#run(() => {
-					this.#is_creating_fallback = false;
-					return branch(() => this.#children(this.#anchor));
+				this.#run(() => {
+					this.#render();
 				});
-
-				if (this.#pending_count > 0) {
-					this.#show_pending_snippet();
-				} else {
-					this.#pending = false;
-				}
 			};
 
-			var previous_reaction = active_reaction;
+			/** @param {unknown} transformed_error */
+			const handle_error_result = (transformed_error) => {
+				try {
+					calling_on_error = true;
+					onerror?.(transformed_error, reset);
+					calling_on_error = false;
+				} catch (error) {
+					invoke_error_boundary(error, this.#effect && this.#effect.parent);
+				}
 
-			try {
-				set_active_reaction(null);
-				calling_on_error = true;
-				onerror?.(error, reset);
-				calling_on_error = false;
-			} catch (error) {
-				invoke_error_boundary(error, this.#effect && this.#effect.parent);
-			} finally {
-				set_active_reaction(previous_reaction);
-			}
-
-			if (failed) {
-				queue_micro_task(() => {
+				if (failed) {
 					this.#failed_effect = this.#run(() => {
-						Batch.ensure();
-						this.#is_creating_fallback = true;
-
 						try {
 							return branch(() => {
+								// errors in `failed` snippets cause the boundary to error again
+								// TODO Svelte 6: revisit this decision, most likely better to go to parent boundary instead
+								var effect = /** @type {Effect} */ (active_effect);
+
+								effect.b = this;
+								effect.f |= BOUNDARY_EFFECT;
+
 								failed(
 									this.#anchor,
-									() => error,
+									() => transformed_error,
 									() => reset
 								);
 							});
 						} catch (error) {
 							invoke_error_boundary(error, /** @type {Effect} */ (this.#effect.parent));
 							return null;
-						} finally {
-							this.#is_creating_fallback = false;
 						}
 					});
-				});
-			}
+				}
+			};
+
+			queue_micro_task(() => {
+				// Run the error through the API-level transformError transform (e.g. SvelteKit's handleError)
+				/** @type {unknown} */
+				var result;
+				try {
+					result = this.transform_error(error);
+				} catch (e) {
+					invoke_error_boundary(e, this.#effect && this.#effect.parent);
+					return;
+				}
+
+				if (
+					result !== null &&
+					typeof result === 'object' &&
+					typeof (/** @type {any} */ (result).then) === 'function'
+				) {
+					// transformError returned a Promise — wait for it
+					/** @type {any} */ (result).then(
+						handle_error_result,
+						/** @param {unknown} e */
+						(e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
+					);
+				} else {
+					// Synchronous result — handle immediately
+					handle_error_result(result);
+				}
+			});
 		}
 	}
 
-	/** @import { Effect, TemplateNode, Value } from '#client' */
+	/** @import { Blocker, Effect, Value } from '#client' */
 
 	/**
-	 * @param {Array<Promise<void>>} blockers
+	 * @param {Blocker[]} blockers
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
 	 * @param {(values: Value[]) => any} fn
@@ -2319,48 +2760,60 @@
 	function flatten(blockers, sync, async, fn) {
 		const d = derived ;
 
-		if (async.length === 0 && blockers.length === 0) {
+		// Filter out already-settled blockers - no need to wait for them
+		var pending = blockers.filter((b) => !b.settled);
+
+		if (async.length === 0 && pending.length === 0) {
 			fn(sync.map(d));
 			return;
 		}
 
-		var batch = current_batch;
 		var parent = /** @type {Effect} */ (active_effect);
 
 		var restore = capture();
+		var blocker_promise =
+			pending.length === 1
+				? pending[0].promise
+				: pending.length > 1
+					? Promise.all(pending.map((b) => b.promise))
+					: null;
 
-		function run() {
-			Promise.all(async.map((expression) => async_derived(expression)))
-				.then((result) => {
-					restore();
+		/** @param {Value[]} values */
+		function finish(values) {
+			restore();
 
-					try {
-						fn([...sync.map(d), ...result]);
-					} catch (error) {
-						// ignore errors in blocks that have already been destroyed
-						if ((parent.f & DESTROYED) === 0) {
-							invoke_error_boundary(error, parent);
-						}
-					}
-
-					batch?.deactivate();
-					unset_context();
-				})
-				.catch((error) => {
+			try {
+				fn(values);
+			} catch (error) {
+				if ((parent.f & DESTROYED) === 0) {
 					invoke_error_boundary(error, parent);
-				});
+				}
+			}
+
+			unset_context();
 		}
 
-		if (blockers.length > 0) {
-			Promise.all(blockers).then(() => {
-				restore();
+		// Fast path: blockers but no async expressions
+		if (async.length === 0) {
+			/** @type {Promise<any>} */ (blocker_promise).then(() => finish(sync.map(d)));
+			return;
+		}
 
-				try {
-					return run();
-				} finally {
-					batch?.deactivate();
-					unset_context();
-				}
+		var decrement_pending = increment_pending();
+
+		// Full path: has async expressions
+		function run() {
+			Promise.all(async.map((expression) => async_derived(expression)))
+				.then((result) => finish([...sync.map(d), ...result]))
+				.catch((error) => invoke_error_boundary(error, parent))
+				.finally(() => decrement_pending());
+		}
+
+		if (blocker_promise) {
+			blocker_promise.then(() => {
+				restore();
+				run();
+				unset_context();
 			});
 		} else {
 			run();
@@ -2368,7 +2821,7 @@
 	}
 
 	/**
-	 * @param {Array<Promise<void>>} blockers
+	 * @param {Blocker[]} blockers
 	 * @param {(values: Value[]) => any} fn
 	 */
 	function run_after_blockers(blockers, fn) {
@@ -2381,16 +2834,22 @@
 	 * causes `b` to be registered as a dependency).
 	 */
 	function capture() {
-		var previous_effect = active_effect;
+		var previous_effect = /** @type {Effect} */ (active_effect);
 		var previous_reaction = active_reaction;
 		var previous_component_context = component_context;
-		var previous_batch = current_batch;
+		var previous_batch = /** @type {Batch} */ (current_batch);
 
 		return function restore(activate_batch = true) {
 			set_active_effect(previous_effect);
 			set_active_reaction(previous_reaction);
 			set_component_context(previous_component_context);
-			if (activate_batch) previous_batch?.activate();
+
+			if (activate_batch && (previous_effect.f & DESTROYED) === 0) {
+				// TODO we only need optional chaining here because `{#await ...}` blocks
+				// are anomalous. Once we retire them we can get rid of it
+				previous_batch?.activate();
+				previous_batch?.apply();
+			}
 		};
 	}
 
@@ -2402,21 +2861,51 @@
 	 * @returns {Promise<() => T>}
 	 */
 	async function track_reactivity_loss(promise) {
+		// Ensure that unrelated reads after an async operation is kicked off don't cause false positives
+		queueMicrotask(() => {
+		});
+
 		var value = await promise;
 
 		return () => {
+			// While this can result in false negatives it also guards against the more important
+			// false positives that would occur if this is the last in a chain of async operations,
+			// and the reactivity_loss_tracker would then stay around until the next async operation happens.
+			queueMicrotask(() => {
+			});
+
 			return value;
 		};
 	}
 
-	function unset_context() {
+	function unset_context(deactivate_batch = true) {
 		set_active_effect(null);
 		set_active_reaction(null);
 		set_component_context(null);
+		if (deactivate_batch) current_batch?.deactivate();
 	}
 
-	/** @import { Derived, Effect, Source } from '#client' */
+	/**
+	 * @returns {(skip?: boolean) => void}
+	 */
+	function increment_pending() {
+		var effect = /** @type {Effect} */ (active_effect);
+		var boundary = /** @type {Boundary} */ (effect.b);
+		var batch = /** @type {Batch} */ (current_batch);
+		var blocking = boundary.is_rendered();
+
+		boundary.update_pending_count(1, batch);
+		batch.increment(blocking, effect);
+
+		return (skip = false) => {
+			boundary.update_pending_count(-1, batch);
+			batch.decrement(blocking, effect, skip);
+		};
+	}
+
+	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
 	/** @import { Batch } from './batch.js'; */
+	/** @import { Boundary } from '../dom/blocks/boundary.js'; */
 
 	/**
 	 * @template V
@@ -2426,10 +2915,6 @@
 	/*#__NO_SIDE_EFFECTS__*/
 	function derived(fn) {
 		var flags = DERIVED | DIRTY;
-		var parent_derived =
-			active_reaction !== null && (active_reaction.f & DERIVED) !== 0
-				? /** @type {Derived} */ (active_reaction)
-				: null;
 
 		if (active_effect !== null) {
 			// Since deriveds are evaluated lazily, any effects created inside them are
@@ -2449,7 +2934,7 @@
 			rv: 0,
 			v: /** @type {V} */ (UNINITIALIZED),
 			wv: 0,
-			parent: parent_derived ?? active_effect,
+			parent: active_effect,
 			ac: null
 		};
 
@@ -2459,18 +2944,17 @@
 	/**
 	 * @template V
 	 * @param {() => V | Promise<V>} fn
+	 * @param {string} [label]
 	 * @param {string} [location] If provided, print a warning if the value is not read immediately after update
 	 * @returns {Promise<Source<V>>}
 	 */
 	/*#__NO_SIDE_EFFECTS__*/
-	function async_derived(fn, location) {
+	function async_derived(fn, label, location) {
 		let parent = /** @type {Effect | null} */ (active_effect);
 
 		if (parent === null) {
 			async_derived_orphan();
 		}
-
-		var boundary = /** @type {Boundary} */ (parent.b);
 
 		var promise = /** @type {Promise<V>} */ (/** @type {unknown} */ (undefined));
 		var signal = source(/** @type {V} */ (UNINITIALIZED));
@@ -2482,6 +2966,7 @@
 		var deferreds = new Map();
 
 		async_effect(() => {
+			var effect = /** @type {Effect} */ (active_effect);
 
 			/** @type {ReturnType<typeof deferred<V>>} */
 			var d = deferred();
@@ -2491,17 +2976,7 @@
 				// If this code is changed at some point, make sure to still access the then property
 				// of fn() to read any signals it might access, so that we track them as dependencies.
 				// We call `unset_context` to undo any `save` calls that happen inside `fn()`
-				Promise.resolve(fn())
-					.then(d.resolve, d.reject)
-					.then(() => {
-						if (batch === current_batch && batch.committed) {
-							// if the batch was rejected as stale, we need to cleanup
-							// after any `$.save(...)` calls inside `fn()`
-							batch.deactivate();
-						}
-
-						unset_context();
-					});
+				Promise.resolve(fn()).then(d.resolve, d.reject).finally(unset_context);
 			} catch (error) {
 				d.reject(error);
 				unset_context();
@@ -2510,13 +2985,25 @@
 			var batch = /** @type {Batch} */ (current_batch);
 
 			if (should_suspend) {
-				var blocking = !boundary.is_pending();
+				// we only increment the batch's pending state for updates, not creation, otherwise
+				// we will decrement to zero before the work that depends on this promise (e.g. a
+				// template effect) has initialized, causing the batch to resolve prematurely
+				if ((effect.f & REACTION_RAN) !== 0) {
+					var decrement_pending = increment_pending();
+				}
 
-				boundary.update_pending_count(1);
-				batch.increment(blocking);
+				if (/** @type {Boundary} */ (parent.b).is_rendered()) {
+					deferreds.get(batch)?.reject(STALE_REACTION);
+					deferreds.delete(batch); // delete to ensure correct order in Map iteration below
+				} else {
+					// While the boundary is still showing pending, a new run supersedes all older in-flight runs
+					// for this async expression. Cancel eagerly so resolution cannot commit stale values.
+					for (const d of deferreds.values()) {
+						d.reject(STALE_REACTION);
+					}
+					deferreds.clear();
+				}
 
-				deferreds.get(batch)?.reject(STALE_REACTION);
-				deferreds.delete(batch); // delete to ensure correct order in Map iteration below
 				deferreds.set(batch, d);
 			}
 
@@ -2526,15 +3013,24 @@
 			 */
 			const handler = (value, error = undefined) => {
 
+				if (decrement_pending) {
+					// don't trigger an update if we're only here because
+					// the promise was superseded before it could resolve
+					var skip = error === STALE_REACTION;
+					decrement_pending(skip);
+				}
+
+				if (error === STALE_REACTION || (effect.f & DESTROYED) !== 0) {
+					return;
+				}
+
 				batch.activate();
 
 				if (error) {
-					if (error !== STALE_REACTION) {
-						signal.f |= ERROR_VALUE;
+					signal.f |= ERROR_VALUE;
 
-						// @ts-expect-error the error is the wrong type, but we don't care
-						internal_set(signal, error);
-					}
+					// @ts-expect-error the error is the wrong type, but we don't care
+					internal_set(signal, error);
 				} else {
 					if ((signal.f & ERROR_VALUE) !== 0) {
 						signal.f ^= ERROR_VALUE;
@@ -2550,10 +3046,7 @@
 					}
 				}
 
-				if (should_suspend) {
-					boundary.update_pending_count(-1);
-					batch.decrement(blocking);
-				}
+				batch.deactivate();
 			};
 
 			d.promise.then(handler, (e) => handler(null, e || 'unknown'));
@@ -2628,21 +3121,6 @@
 	}
 
 	/**
-	 * @param {Derived} derived
-	 * @returns {Effect | null}
-	 */
-	function get_derived_parent_effect(derived) {
-		var parent = derived.parent;
-		while (parent !== null) {
-			if ((parent.f & DERIVED) === 0) {
-				return /** @type {Effect} */ (parent);
-			}
-			parent = parent.parent;
-		}
-		return null;
-	}
-
-	/**
 	 * @template T
 	 * @param {Derived} derived
 	 * @returns {T}
@@ -2650,8 +3128,15 @@
 	function execute_derived(derived) {
 		var value;
 		var prev_active_effect = active_effect;
+		var parent = derived.parent;
 
-		set_active_effect(get_derived_parent_effect(derived));
+		if (!is_destroying_effect && parent !== null && (parent.f & (DESTROYED | INERT)) !== 0) {
+			derived_inert();
+
+			return derived.v;
+		}
+
+		set_active_effect(parent);
 
 		{
 			try {
@@ -2674,10 +3159,25 @@
 		var value = execute_derived(derived);
 
 		if (!derived.equals(value)) {
-			// TODO can we avoid setting `derived.v` when `batch_values !== null`,
-			// without causing the value to be stale later?
-			derived.v = value;
 			derived.wv = increment_write_version();
+
+			// in a fork, we don't update the underlying value, just `batch_values`.
+			// the underlying value will be updated when the fork is committed.
+			// otherwise, the next time we get here after a 'real world' state
+			// change, `derived.equals` may incorrectly return `true`
+			if (!current_batch?.is_fork || derived.deps === null) {
+				if (current_batch !== null) {
+					current_batch.capture(derived, value, true);
+				} else {
+					derived.v = value;
+				}
+
+				// deriveds without dependencies should never be recomputed
+				if (derived.deps === null) {
+					set_signal_status(derived, CLEAN);
+					return;
+				}
+			}
 		}
 
 		// don't mark derived clean if we're reading it inside a
@@ -2691,12 +3191,51 @@
 		if (batch_values !== null) {
 			// only cache the value if we're in a tracking context, otherwise we won't
 			// clear the cache in `mark_reactions` when dependencies are updated
-			if (effect_tracking()) {
-				batch_values.set(derived, derived.v);
+			if (effect_tracking() || current_batch?.is_fork) {
+				batch_values.set(derived, value);
 			}
 		} else {
-			var status = (derived.f & CONNECTED) === 0 ? MAYBE_DIRTY : CLEAN;
-			set_signal_status(derived, status);
+			update_derived_status(derived);
+		}
+	}
+
+	/**
+	 * @param {Derived} derived
+	 */
+	function freeze_derived_effects(derived) {
+		if (derived.effects === null) return;
+
+		for (const e of derived.effects) {
+			// if the effect has a teardown function or abort signal, call it
+			if (e.teardown || e.ac) {
+				e.teardown?.();
+				e.ac?.abort(STALE_REACTION);
+
+				// make it a noop so it doesn't get called again if the derived
+				// is unfrozen. we don't set it to `null`, because the existence
+				// of a teardown function is what determines whether the
+				// effect runs again during unfreezing
+				e.teardown = noop;
+				e.ac = null;
+
+				remove_reactions(e, 0);
+				destroy_effect_children(e);
+			}
+		}
+	}
+
+	/**
+	 * @param {Derived} derived
+	 */
+	function unfreeze_derived_effects(derived) {
+		if (derived.effects === null) return;
+
+		for (const e of derived.effects) {
+			// if the effect was previously frozen — indicated by the presence
+			// of a teardown function — unfreeze it
+			if (e.teardown) {
+				update_effect(e);
+			}
 		}
 	}
 
@@ -2776,49 +3315,50 @@
 			(!untracking || (active_reaction.f & EAGER_EFFECT) !== 0) &&
 			is_runes() &&
 			(active_reaction.f & (DERIVED | BLOCK_EFFECT | ASYNC | EAGER_EFFECT)) !== 0 &&
-			!current_sources?.includes(source)
+			(current_sources === null || !includes.call(current_sources, source))
 		) {
 			state_unsafe_mutation();
 		}
 
 		let new_value = should_proxy ? proxy(value) : value;
 
-		return internal_set(source, new_value);
+		return internal_set(source, new_value, legacy_updates);
 	}
 
 	/**
 	 * @template V
 	 * @param {Source<V>} source
 	 * @param {V} value
+	 * @param {Effect[] | null} [updated_during_traversal]
 	 * @returns {V}
 	 */
-	function internal_set(source, value) {
+	function internal_set(source, value, updated_during_traversal = null) {
 		if (!source.equals(value)) {
-			var old_value = source.v;
-
-			if (is_destroying_effect) {
-				old_values.set(source, value);
-			} else {
-				old_values.set(source, old_value);
-			}
-
-			source.v = value;
+			old_values.set(source, is_destroying_effect ? value : source.v);
 
 			var batch = Batch.ensure();
-			batch.capture(source, old_value);
+			batch.capture(source, value);
 
 			if ((source.f & DERIVED) !== 0) {
+				const derived = /** @type {Derived} */ (source);
+
 				// if we are assigning to a dirty derived we set it to clean/maybe dirty but we also eagerly execute it to track the dependencies
 				if ((source.f & DIRTY) !== 0) {
-					execute_derived(/** @type {Derived} */ (source));
+					execute_derived(derived);
 				}
 
-				set_signal_status(source, (source.f & CONNECTED) !== 0 ? CLEAN : MAYBE_DIRTY);
+				// During time traveling we don't want to reset the status so that
+				// traversal of the graph in the other batches still happens
+				if (batch_values === null) {
+					update_derived_status(derived);
+				}
 			}
 
 			source.wv = increment_write_version();
 
-			mark_reactions(source, DIRTY);
+			// For debugging, in case you want to know which reactions are being scheduled:
+			// log_reactions(source);
+			mark_reactions(source, DIRTY, updated_during_traversal);
 
 			// It's possible that the current reaction might not have up-to-date dependencies
 			// whilst it's actively running. So in the case of ensuring it registers the reaction
@@ -2847,9 +3387,7 @@
 	function flush_eager_effects() {
 		eager_effects_deferred = false;
 
-		const inspects = Array.from(eager_effects);
-
-		for (const effect of inspects) {
+		for (const effect of eager_effects) {
 			// Mark clean inspect-effects as maybe dirty and then check their dirtiness
 			// instead of just updating the effects - this way we avoid overfiring.
 			if ((effect.f & CLEAN) !== 0) {
@@ -2875,9 +3413,10 @@
 	/**
 	 * @param {Value} signal
 	 * @param {number} status should be DIRTY or MAYBE_DIRTY
+	 * @param {Effect[] | null} updated_during_traversal
 	 * @returns {void}
 	 */
-	function mark_reactions(signal, status) {
+	function mark_reactions(signal, status, updated_during_traversal) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
 		var length = reactions.length;
@@ -2899,21 +3438,28 @@
 				batch_values?.delete(derived);
 
 				if ((flags & WAS_MARKED) === 0) {
-					// Only connected deriveds can be reliably unmarked right away
-					if (flags & CONNECTED) {
+					// Only connected deriveds being executed outside the update cycle can be reliably unmarked right away
+					if (
+						flags & CONNECTED &&
+						(active_effect === null || (active_effect.f & REACTION_IS_UPDATING) === 0)
+					) {
 						reaction.f |= WAS_MARKED;
 					}
 
-					mark_reactions(derived, MAYBE_DIRTY);
+					mark_reactions(derived, MAYBE_DIRTY, updated_during_traversal);
 				}
 			} else if (not_dirty) {
-				if ((flags & BLOCK_EFFECT) !== 0) {
-					if (eager_block_effects !== null) {
-						eager_block_effects.add(/** @type {Effect} */ (reaction));
-					}
+				var effect = /** @type {Effect} */ (reaction);
+
+				if ((flags & BLOCK_EFFECT) !== 0 && eager_block_effects !== null) {
+					eager_block_effects.add(effect);
 				}
 
-				schedule_effect(/** @type {Effect} */ (reaction));
+				if (updated_during_traversal !== null) {
+					updated_during_traversal.push(effect);
+				} else {
+					schedule_effect(effect);
+				}
 			}
 		}
 	}
@@ -2991,7 +3537,7 @@
 				}
 				var s = sources.get(prop);
 				if (s === undefined) {
-					s = with_parent(() => {
+					with_parent(() => {
 						var s = state(descriptor.value);
 						sources.set(prop, s);
 						return s;
@@ -3308,21 +3854,19 @@
 	/**
 	 * @template {Node} N
 	 * @param {N} node
-	 * @returns {Node | null}
 	 */
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_first_child(node) {
-		return first_child_getter.call(node);
+		return /** @type {TemplateNode | null} */ (first_child_getter.call(node));
 	}
 
 	/**
 	 * @template {Node} N
 	 * @param {N} node
-	 * @returns {Node | null}
 	 */
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_next_sibling(node) {
-		return next_sibling_getter.call(node);
+		return /** @type {TemplateNode | null} */ (next_sibling_getter.call(node));
 	}
 
 	/**
@@ -3330,14 +3874,14 @@
 	 * @template {Node} N
 	 * @param {N} node
 	 * @param {boolean} is_text
-	 * @returns {Node | null}
+	 * @returns {TemplateNode | null}
 	 */
 	function child(node, is_text) {
 		if (!hydrating) {
 			return get_first_child(node);
 		}
 
-		var child = /** @type {TemplateNode} */ (get_first_child(hydrate_node));
+		var child = get_first_child(hydrate_node);
 
 		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
 		if (child === null) {
@@ -3349,20 +3893,23 @@
 			return text;
 		}
 
+		if (is_text) {
+			merge_text_nodes(/** @type {Text} */ (child));
+		}
+
 		set_hydrate_node(child);
 		return child;
 	}
 
 	/**
 	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {DocumentFragment | TemplateNode | TemplateNode[]} fragment
+	 * @param {TemplateNode} node
 	 * @param {boolean} [is_text]
-	 * @returns {Node | null}
+	 * @returns {TemplateNode | null}
 	 */
-	function first_child(fragment, is_text = false) {
+	function first_child(node, is_text = false) {
 		if (!hydrating) {
-			// when not hydrating, `fragment` is a `DocumentFragment` (the result of calling `open_frag`)
-			var first = /** @type {DocumentFragment} */ (get_first_child(/** @type {Node} */ (fragment)));
+			var first = get_first_child(node);
 
 			// TODO prevent user comments with the empty string when preserveComments is true
 			if (first instanceof Comment && first.data === '') return get_next_sibling(first);
@@ -3370,14 +3917,18 @@
 			return first;
 		}
 
-		// if an {expression} is empty during SSR, there might be no
-		// text node to hydrate — we must therefore create one
-		if (is_text && hydrate_node?.nodeType !== TEXT_NODE) {
-			var text = create_text();
+		if (is_text) {
+			// if an {expression} is empty during SSR, there might be no
+			// text node to hydrate — we must therefore create one
+			if (hydrate_node?.nodeType !== TEXT_NODE) {
+				var text = create_text();
 
-			hydrate_node?.before(text);
-			set_hydrate_node(text);
-			return text;
+				hydrate_node?.before(text);
+				set_hydrate_node(text);
+				return text;
+			}
+
+			merge_text_nodes(/** @type {Text} */ (hydrate_node));
 		}
 
 		return hydrate_node;
@@ -3388,7 +3939,7 @@
 	 * @param {TemplateNode} node
 	 * @param {number} count
 	 * @param {boolean} is_text
-	 * @returns {Node | null}
+	 * @returns {TemplateNode | null}
 	 */
 	function sibling(node, count = 1, is_text = false) {
 		let next_sibling = hydrating ? hydrate_node : node;
@@ -3403,24 +3954,28 @@
 			return next_sibling;
 		}
 
-		// if a sibling {expression} is empty during SSR, there might be no
-		// text node to hydrate — we must therefore create one
-		if (is_text && next_sibling?.nodeType !== TEXT_NODE) {
-			var text = create_text();
-			// If the next sibling is `null` and we're handling text then it's because
-			// the SSR content was empty for the text, so we need to generate a new text
-			// node and insert it after the last sibling
-			if (next_sibling === null) {
-				last_sibling?.after(text);
-			} else {
-				next_sibling.before(text);
+		if (is_text) {
+			// if a sibling {expression} is empty during SSR, there might be no
+			// text node to hydrate — we must therefore create one
+			if (next_sibling?.nodeType !== TEXT_NODE) {
+				var text = create_text();
+				// If the next sibling is `null` and we're handling text then it's because
+				// the SSR content was empty for the text, so we need to generate a new text
+				// node and insert it after the last sibling
+				if (next_sibling === null) {
+					last_sibling?.after(text);
+				} else {
+					next_sibling.before(text);
+				}
+				set_hydrate_node(text);
+				return text;
 			}
-			set_hydrate_node(text);
-			return text;
+
+			merge_text_nodes(/** @type {Text} */ (next_sibling));
 		}
 
 		set_hydrate_node(next_sibling);
-		return /** @type {TemplateNode} */ (next_sibling);
+		return next_sibling;
 	}
 
 	/**
@@ -3440,6 +3995,41 @@
 	 */
 	function should_defer_append() {
 		return false;
+	}
+
+	/**
+	 * @template {keyof HTMLElementTagNameMap | string} T
+	 * @param {T} tag
+	 * @param {string} [namespace]
+	 * @param {string} [is]
+	 * @returns {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element}
+	 */
+	function create_element(tag, namespace, is) {
+		let options = undefined;
+		return /** @type {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element} */ (
+			document.createElementNS(namespace ?? NAMESPACE_HTML, tag, options)
+		);
+	}
+
+	/**
+	 * Browsers split text nodes larger than 65536 bytes when parsing.
+	 * For hydration to succeed, we need to stitch them back together
+	 * @param {Text} text
+	 */
+	function merge_text_nodes(text) {
+		if (/** @type {string} */ (text.nodeValue).length < 65536) {
+			return;
+		}
+
+		let next = text.nextSibling;
+
+		while (next !== null && next.nodeType === TEXT_NODE) {
+			next.remove();
+
+			/** @type {string} */ (text.nodeValue) += /** @type {string} */ (next.nodeValue);
+
+			next = text.nextSibling;
+		}
 	}
 
 	/**
@@ -3479,7 +4069,7 @@
 						}
 					});
 				},
-				// In the capture phase to guarantee we get noticed of it (no possiblity of stopPropagation)
+				// In the capture phase to guarantee we get noticed of it (no possibility of stopPropagation)
 				{ capture: true }
 			);
 		}
@@ -3529,7 +4119,7 @@
 		add_form_reset_listener();
 	}
 
-	/** @import { ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
+	/** @import { Blocker, ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
 
 	/**
 	 * @param {'$effect' | '$effect.pre' | '$inspect'} rune
@@ -3566,11 +4156,9 @@
 	/**
 	 * @param {number} type
 	 * @param {null | (() => void | (() => void))} fn
-	 * @param {boolean} sync
-	 * @param {boolean} push
 	 * @returns {Effect}
 	 */
-	function create_effect(type, fn, sync, push = true) {
+	function create_effect(type, fn) {
 		var parent = active_effect;
 
 		if (parent !== null && (parent.f & INERT) !== 0) {
@@ -3581,8 +4169,7 @@
 		var effect = {
 			ctx: component_context,
 			deps: null,
-			nodes_start: null,
-			nodes_end: null,
+			nodes: null,
 			f: type | DIRTY | CONNECTED,
 			first: null,
 			fn,
@@ -3592,35 +4179,38 @@
 			b: parent && parent.b,
 			prev: null,
 			teardown: null,
-			transitions: null,
 			wv: 0,
 			ac: null
 		};
 
-		if (sync) {
+		current_batch?.register_created_effect(effect);
+
+		/** @type {Effect | null} */
+		var e = effect;
+
+		if ((type & EFFECT) !== 0) {
+			if (collected_effects !== null) {
+				// created during traversal — collect and run afterwards
+				collected_effects.push(effect);
+			} else {
+				// schedule for later
+				Batch.ensure().schedule(effect);
+			}
+		} else if (fn !== null) {
 			try {
 				update_effect(effect);
-				effect.f |= EFFECT_RAN;
 			} catch (e) {
 				destroy_effect(effect);
 				throw e;
 			}
-		} else if (fn !== null) {
-			schedule_effect(effect);
-		}
 
-		if (push) {
-			/** @type {Effect | null} */
-			var e = effect;
-
-			// if an effect has already ran and doesn't need to be kept in the tree
-			// (because it won't re-run, has no DOM, and has no teardown etc)
+			// if an effect doesn't need to be kept in the tree (because it
+			// won't re-run, has no DOM, and has no teardown etc)
 			// then we skip it and go to its child (if any)
 			if (
-				sync &&
 				e.deps === null &&
 				e.teardown === null &&
-				e.nodes_start === null &&
+				e.nodes === null &&
 				e.first === e.last && // either `null`, or a singular child
 				(e.f & EFFECT_PRESERVED) === 0
 			) {
@@ -3629,23 +4219,23 @@
 					e.f |= EFFECT_TRANSPARENT;
 				}
 			}
+		}
 
-			if (e !== null) {
-				e.parent = parent;
+		if (e !== null) {
+			e.parent = parent;
 
-				if (parent !== null) {
-					push_effect(e, parent);
-				}
+			if (parent !== null) {
+				push_effect(e, parent);
+			}
 
-				// if we're in a derived, add the effect there too
-				if (
-					active_reaction !== null &&
-					(active_reaction.f & DERIVED) !== 0 &&
-					(type & ROOT_EFFECT) === 0
-				) {
-					var derived = /** @type {Derived} */ (active_reaction);
-					(derived.effects ??= []).push(e);
-				}
+			// if we're in a derived, add the effect there too
+			if (
+				active_reaction !== null &&
+				(active_reaction.f & DERIVED) !== 0 &&
+				(type & ROOT_EFFECT) === 0
+			) {
+				var derived = /** @type {Derived} */ (active_reaction);
+				(derived.effects ??= []).push(e);
 			}
 		}
 
@@ -3664,7 +4254,7 @@
 	 * @param {() => void} fn
 	 */
 	function teardown(fn) {
-		const effect = create_effect(RENDER_EFFECT, null, false);
+		const effect = create_effect(RENDER_EFFECT, null);
 		set_signal_status(effect, CLEAN);
 		effect.teardown = fn;
 		return effect;
@@ -3680,7 +4270,7 @@
 		// Non-nested `$effect(...)` in a component should be deferred
 		// until the component is mounted
 		var flags = /** @type {Effect} */ (active_effect).f;
-		var defer = !active_reaction && (flags & BRANCH_EFFECT) !== 0 && (flags & EFFECT_RAN) === 0;
+		var defer = !active_reaction && (flags & BRANCH_EFFECT) !== 0 && (flags & REACTION_RAN) === 0;
 
 		if (defer) {
 			// Top-level `$effect(...)` in an unmounted component — defer until mount
@@ -3696,12 +4286,12 @@
 	 * @param {() => void | (() => void)} fn
 	 */
 	function create_user_effect(fn) {
-		return create_effect(EFFECT | USER_EFFECT, fn, false);
+		return create_effect(EFFECT | USER_EFFECT, fn);
 	}
 
 	/** @param {() => void | (() => void)} fn */
 	function eager_effect(fn) {
-		return create_effect(EAGER_EFFECT, fn, true);
+		return create_effect(EAGER_EFFECT, fn);
 	}
 
 	/**
@@ -3711,7 +4301,7 @@
 	 */
 	function effect_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
+		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
 
 		return () => {
 			destroy_effect(effect);
@@ -3725,7 +4315,7 @@
 	 */
 	function component_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
+		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
 
 		return (options = {}) => {
 			return new Promise((fulfil) => {
@@ -3747,7 +4337,7 @@
 	 * @returns {Effect}
 	 */
 	function effect(fn) {
-		return create_effect(EFFECT, fn, false);
+		return create_effect(EFFECT, fn);
 	}
 
 	/**
@@ -3755,7 +4345,7 @@
 	 * @returns {Effect}
 	 */
 	function async_effect(fn) {
-		return create_effect(ASYNC | EFFECT_PRESERVED, fn, true);
+		return create_effect(ASYNC | EFFECT_PRESERVED, fn);
 	}
 
 	/**
@@ -3763,19 +4353,18 @@
 	 * @returns {Effect}
 	 */
 	function render_effect(fn, flags = 0) {
-		return create_effect(RENDER_EFFECT | flags, fn, true);
+		return create_effect(RENDER_EFFECT | flags, fn);
 	}
 
 	/**
 	 * @param {(...expressions: any) => void | (() => void)} fn
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
-	 * @param {Array<Promise<void>>} blockers
-	 * @param {boolean} defer
+	 * @param {Blocker[]} blockers
 	 */
-	function template_effect(fn, sync = [], async = [], blockers = [], defer = false) {
+	function template_effect(fn, sync = [], async = [], blockers = []) {
 		flatten(blockers, sync, async, (values) => {
-			create_effect(defer ? EFFECT : RENDER_EFFECT, () => fn(...values.map(get)), true);
+			create_effect(RENDER_EFFECT, () => fn(...values.map(get)));
 		});
 	}
 
@@ -3784,16 +4373,24 @@
 	 * @param {number} flags
 	 */
 	function block(fn, flags = 0) {
-		var effect = create_effect(BLOCK_EFFECT | flags, fn, true);
+		var effect = create_effect(BLOCK_EFFECT | flags, fn);
 		return effect;
 	}
 
 	/**
 	 * @param {(() => void)} fn
-	 * @param {boolean} [push]
+	 * @param {number} flags
 	 */
-	function branch(fn, push = true) {
-		return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn, true, push);
+	function managed(fn, flags = 0) {
+		var effect = create_effect(MANAGED_EFFECT | flags, fn);
+		return effect;
+	}
+
+	/**
+	 * @param {(() => void)} fn
+	 */
+	function branch(fn) {
+		return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn);
 	}
 
 	/**
@@ -3872,18 +4469,18 @@
 
 		if (
 			(remove_dom || (effect.f & HEAD_EFFECT) !== 0) &&
-			effect.nodes_start !== null &&
-			effect.nodes_end !== null
+			effect.nodes !== null &&
+			effect.nodes.end !== null
 		) {
-			remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
+			remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
 			removed = true;
 		}
 
+		set_signal_status(effect, DESTROYING);
 		destroy_effect_children(effect, remove_dom && !removed);
 		remove_reactions(effect, 0);
-		set_signal_status(effect, DESTROYED);
 
-		var transitions = effect.transitions;
+		var transitions = effect.nodes && effect.nodes.t;
 
 		if (transitions !== null) {
 			for (const transition of transitions) {
@@ -3892,6 +4489,9 @@
 		}
 
 		execute_effect_teardown(effect);
+
+		effect.f ^= DESTROYING;
+		effect.f |= DESTROYED;
 
 		var parent = effect.parent;
 
@@ -3908,9 +4508,9 @@
 			effect.ctx =
 			effect.deps =
 			effect.fn =
-			effect.nodes_start =
-			effect.nodes_end =
+			effect.nodes =
 			effect.ac =
+			effect.b =
 				null;
 	}
 
@@ -3922,7 +4522,7 @@
 	function remove_effect_dom(node, end) {
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : /** @type {TemplateNode} */ (get_next_sibling(node));
+			var next = node === end ? null : get_next_sibling(node);
 
 			node.remove();
 			node = next;
@@ -3964,17 +4564,11 @@
 
 		pause_children(effect, transitions, true);
 
-		run_out_transitions(transitions, () => {
+		var fn = () => {
 			if (destroy) destroy_effect(effect);
 			if (callback) callback();
-		});
-	}
+		};
 
-	/**
-	 * @param {TransitionManager[]} transitions
-	 * @param {() => void} fn
-	 */
-	function run_out_transitions(transitions, fn) {
 		var remaining = transitions.length;
 		if (remaining > 0) {
 			var check = () => --remaining || fn();
@@ -3995,8 +4589,10 @@
 		if ((effect.f & INERT) !== 0) return;
 		effect.f ^= INERT;
 
-		if (effect.transitions !== null) {
-			for (const transition of effect.transitions) {
+		var t = effect.nodes && effect.nodes.t;
+
+		if (t !== null) {
+			for (const transition of t) {
 				if (transition.is_global || local) {
 					transitions.push(transition);
 				}
@@ -4007,16 +4603,22 @@
 
 		while (child !== null) {
 			var sibling = child.next;
-			var transparent =
-				(child.f & EFFECT_TRANSPARENT) !== 0 ||
-				// If this is a branch effect without a block effect parent,
-				// it means the parent block effect was pruned. In that case,
-				// transparency information was transferred to the branch effect.
-				((child.f & BRANCH_EFFECT) !== 0 && (effect.f & BLOCK_EFFECT) !== 0);
-			// TODO we don't need to call pause_children recursively with a linked list in place
-			// it's slightly more involved though as we have to account for `transparent` changing
-			// through the tree.
-			pause_children(child, transitions, transparent ? local : false);
+
+			// If this child is a root effect, then it will become an independent root when its parent
+			// is destroyed, it should therefore not become inert nor partake in transitions.
+			if ((child.f & ROOT_EFFECT) === 0) {
+				var transparent =
+					(child.f & EFFECT_TRANSPARENT) !== 0 ||
+					// If this is a branch effect without a block effect parent,
+					// it means the parent block effect was pruned. In that case,
+					// transparency information was transferred to the branch effect.
+					((child.f & BRANCH_EFFECT) !== 0 && (effect.f & BLOCK_EFFECT) !== 0);
+				// TODO we don't need to call pause_children recursively with a linked list in place
+				// it's slightly more involved though as we have to account for `transparent` changing
+				// through the tree.
+				pause_children(child, transitions, transparent ? local : false);
+			}
+
 			child = sibling;
 		}
 	}
@@ -4044,7 +4646,7 @@
 		// `{#if foo}{foo.bar()}{/if}` if `foo` is now `undefined
 		if ((effect.f & CLEAN) === 0) {
 			set_signal_status(effect, DIRTY);
-			schedule_effect(effect);
+			Batch.ensure().schedule(effect); // Assumption: This happens during the commit phase of the batch, causing another flush, but it's safe
 		}
 
 		var child = effect.first;
@@ -4059,8 +4661,10 @@
 			child = sibling;
 		}
 
-		if (effect.transitions !== null) {
-			for (const transition of effect.transitions) {
+		var t = effect.nodes && effect.nodes.t;
+
+		if (t !== null) {
+			for (const transition of t) {
 				if (transition.is_global || local) {
 					transition.in();
 				}
@@ -4073,26 +4677,24 @@
 	 * @param {DocumentFragment} fragment
 	 */
 	function move_effect(effect, fragment) {
-		var node = effect.nodes_start;
-		var end = effect.nodes_end;
+		if (!effect.nodes) return;
+
+		/** @type {TemplateNode | null} */
+		var node = effect.nodes.start;
+		var end = effect.nodes.end;
 
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : /** @type {TemplateNode} */ (get_next_sibling(node));
+			var next = node === end ? null : get_next_sibling(node);
 
 			fragment.append(node);
 			node = next;
 		}
 	}
 
-	/** @import { Derived, Effect, Reaction, Signal, Source, Value } from '#client' */
+	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
 
 	let is_updating_effect = false;
-
-	/** @param {boolean} value */
-	function set_is_updating_effect(value) {
-		is_updating_effect = value;
-	}
 
 	let is_destroying_effect = false;
 
@@ -4197,21 +4799,18 @@
 		}
 
 		if ((flags & MAYBE_DIRTY) !== 0) {
-			var dependencies = reaction.deps;
+			var dependencies = /** @type {Value[]} */ (reaction.deps);
+			var length = dependencies.length;
 
-			if (dependencies !== null) {
-				var length = dependencies.length;
+			for (var i = 0; i < length; i++) {
+				var dependency = dependencies[i];
 
-				for (var i = 0; i < length; i++) {
-					var dependency = dependencies[i];
+				if (is_dirty(/** @type {Derived} */ (dependency))) {
+					update_derived(/** @type {Derived} */ (dependency));
+				}
 
-					if (is_dirty(/** @type {Derived} */ (dependency))) {
-						update_derived(/** @type {Derived} */ (dependency));
-					}
-
-					if (dependency.wv > reaction.wv) {
-						return true;
-					}
+				if (dependency.wv > reaction.wv) {
+					return true;
 				}
 			}
 
@@ -4237,7 +4836,7 @@
 		var reactions = signal.reactions;
 		if (reactions === null) return;
 
-		if (current_sources?.includes(signal)) {
+		if (current_sources !== null && includes.call(current_sources, signal)) {
 			return;
 		}
 
@@ -4292,12 +4891,19 @@
 			reaction.f |= REACTION_IS_UPDATING;
 			var fn = /** @type {Function} */ (reaction.fn);
 			var result = fn();
+			reaction.f |= REACTION_RAN;
 			var deps = reaction.deps;
+
+			// Don't remove reactions during fork;
+			// they must remain for when fork is discarded
+			var is_fork = current_batch?.is_fork;
 
 			if (new_deps !== null) {
 				var i;
 
-				remove_reactions(reaction, skipped_deps);
+				if (!is_fork) {
+					remove_reactions(reaction, skipped_deps);
+				}
 
 				if (deps !== null && skipped_deps > 0) {
 					deps.length = skipped_deps + new_deps.length;
@@ -4308,12 +4914,12 @@
 					reaction.deps = deps = new_deps;
 				}
 
-				if (is_updating_effect && effect_tracking() && (reaction.f & CONNECTED) !== 0) {
+				if (effect_tracking() && (reaction.f & CONNECTED) !== 0) {
 					for (i = skipped_deps; i < deps.length; i++) {
 						(deps[i].reactions ??= []).push(reaction);
 					}
 				}
-			} else if (deps !== null && skipped_deps < deps.length) {
+			} else if (!is_fork && deps !== null && skipped_deps < deps.length) {
 				remove_reactions(reaction, skipped_deps);
 				deps.length = skipped_deps;
 			}
@@ -4342,6 +4948,20 @@
 			// the same version
 			if (previous_reaction !== null && previous_reaction !== reaction) {
 				read_version++;
+
+				// update the `rv` of the previous reaction's deps — both existing and new —
+				// so that they are not added again
+				if (previous_reaction.deps !== null) {
+					for (let i = 0; i < previous_skipped_deps; i += 1) {
+						previous_reaction.deps[i].rv = read_version;
+					}
+				}
+
+				if (previous_deps !== null) {
+					for (const dep of previous_deps) {
+						dep.rv = read_version;
+					}
+				}
 
 				if (untracked_writes !== null) {
 					if (previous_untracked_writes === null) {
@@ -4402,18 +5022,31 @@
 			// Destroying a child effect while updating a parent effect can cause a dependency to appear
 			// to be unused, when in fact it is used by the currently-updating parent. Checking `new_deps`
 			// allows us to skip the expensive work of disconnecting and immediately reconnecting it
-			(new_deps === null || !new_deps.includes(dependency))
+			(new_deps === null || !includes.call(new_deps, dependency))
 		) {
-			set_signal_status(dependency, MAYBE_DIRTY);
+			var derived = /** @type {Derived} */ (dependency);
+
 			// If we are working with a derived that is owned by an effect, then mark it as being
 			// disconnected and remove the mark flag, as it cannot be reliably removed otherwise
-			if ((dependency.f & CONNECTED) !== 0) {
-				dependency.f ^= CONNECTED;
-				dependency.f &= ~WAS_MARKED;
+			if ((derived.f & CONNECTED) !== 0) {
+				derived.f ^= CONNECTED;
+				derived.f &= ~WAS_MARKED;
 			}
+
+			// In a fork it's possible that a derived is executed and gets reactions, then commits, but is
+			// never re-executed. This is possible when the derived is only executed once in the context
+			// of a new branch which happens before fork.commit() runs. In this case, the derived still has
+			// UNINITIALIZED as its value, and then when it's loosing its reactions we need to ensure it stays
+			// DIRTY so it is reexecuted once someone wants its value again.
+			if (derived.v !== UNINITIALIZED) {
+				update_derived_status(derived);
+			}
+
+			// freeze any effects inside this derived
+			freeze_derived_effects(derived);
+
 			// Disconnect any reactions owned by this reaction
-			destroy_derived_effects(/** @type {Derived} **/ (dependency));
-			remove_reactions(/** @type {Derived} **/ (dependency), 0);
+			remove_reactions(derived, 0);
 		}
 	}
 
@@ -4451,7 +5084,7 @@
 		is_updating_effect = true;
 
 		try {
-			if ((flags & BLOCK_EFFECT) !== 0) {
+			if ((flags & (BLOCK_EFFECT | MANAGED_EFFECT)) !== 0) {
 				destroy_block_effect_children(effect);
 			} else {
 				destroy_effect_children(effect);
@@ -4500,7 +5133,7 @@
 			// we don't add the dependency, because that would create a memory leak
 			var destroyed = active_effect !== null && (active_effect.f & DESTROYED) !== 0;
 
-			if (!destroyed && !current_sources?.includes(signal)) {
+			if (!destroyed && (current_sources === null || !includes.call(current_sources, signal))) {
 				var deps = active_reaction.deps;
 
 				if ((active_reaction.f & REACTION_IS_UPDATING) !== 0) {
@@ -4515,7 +5148,7 @@
 							skipped_deps++;
 						} else if (new_deps === null) {
 							new_deps = [signal];
-						} else if (!new_deps.includes(signal)) {
+						} else {
 							new_deps.push(signal);
 						}
 					}
@@ -4528,21 +5161,21 @@
 
 					if (reactions === null) {
 						signal.reactions = [active_reaction];
-					} else if (!reactions.includes(active_reaction)) {
+					} else if (!includes.call(reactions, active_reaction)) {
 						reactions.push(active_reaction);
 					}
 				}
 			}
 		}
 
-		if (is_destroying_effect) {
-			if (old_values.has(signal)) {
-				return old_values.get(signal);
-			}
+		if (is_destroying_effect && old_values.has(signal)) {
+			return old_values.get(signal);
+		}
 
-			if (is_derived) {
-				var derived = /** @type {Derived} */ (signal);
+		if (is_derived) {
+			var derived = /** @type {Derived} */ (signal);
 
+			if (is_destroying_effect) {
 				var value = derived.v;
 
 				// if the derived is dirty and has reactions, or depends on the values that just changed, re-execute
@@ -4558,21 +5191,34 @@
 
 				return value;
 			}
-		} else if (is_derived) {
-			derived = /** @type {Derived} */ (signal);
 
-			if (batch_values?.has(derived)) {
-				return batch_values.get(derived);
-			}
+			// connect disconnected deriveds if we are reading them inside an effect,
+			// or inside another derived that is already connected
+			var should_connect =
+				(derived.f & CONNECTED) === 0 &&
+				!untracking &&
+				active_reaction !== null &&
+				(is_updating_effect || (active_reaction.f & CONNECTED) !== 0);
+
+			var is_new = (derived.f & REACTION_RAN) === 0;
 
 			if (is_dirty(derived)) {
+				if (should_connect) {
+					// set the flag before `update_derived`, so that the derived
+					// is added as a reaction to its dependencies
+					derived.f |= CONNECTED;
+				}
+
 				update_derived(derived);
 			}
 
-			if (is_updating_effect && effect_tracking() && (derived.f & CONNECTED) === 0) {
+			if (should_connect && !is_new) {
+				unfreeze_derived_effects(derived);
 				reconnect(derived);
 			}
-		} else if (batch_values?.has(signal)) {
+		}
+
+		if (batch_values?.has(signal)) {
 			return batch_values.get(signal);
 		}
 
@@ -4589,14 +5235,15 @@
 	 * @param {Derived} derived
 	 */
 	function reconnect(derived) {
-		if (derived.deps === null) return;
+		derived.f |= CONNECTED;
 
-		derived.f ^= CONNECTED;
+		if (derived.deps === null) return;
 
 		for (const dep of derived.deps) {
 			(dep.reactions ??= []).push(derived);
 
 			if ((dep.f & DERIVED) !== 0 && (dep.f & CONNECTED) === 0) {
+				unfreeze_derived_effects(/** @type {Derived} */ (dep));
 				reconnect(/** @type {Derived} */ (dep));
 			}
 		}
@@ -4646,16 +5293,11 @@
 		}
 	}
 
-	const STATUS_MASK = -7169;
-
 	/**
-	 * @param {Signal} signal
-	 * @param {number} status
-	 * @returns {void}
+	 * Used on elements, as a map of event type -> event handler,
+	 * and on events themselves to track which element handled an event
 	 */
-	function set_signal_status(signal, status) {
-		signal.f = (signal.f & STATUS_MASK) | status;
-	}
+	const event_symbol = Symbol('events');
 
 	/** @type {Set<string>} */
 	const all_registered_events = new Set();
@@ -4732,6 +5374,17 @@
 	}
 
 	/**
+	 * @param {string} event_name
+	 * @param {Element} element
+	 * @param {EventListener} [handler]
+	 * @returns {void}
+	 */
+	function delegated(event_name, element, handler) {
+		// @ts-expect-error
+		(element[event_symbol] ??= {})[event_name] = handler;
+	}
+
+	/**
 	 * @param {Array<string>} events
 	 * @returns {void}
 	 */
@@ -4767,8 +5420,8 @@
 		last_propagated_event = event;
 
 		// composedPath contains list of nodes the event has propagated through.
-		// We check __root to skip all nodes below it in case this is a
-		// parent of the __root node, which indicates that there's nested
+		// We check `event_symbol` to skip all nodes below it in case this is a
+		// parent of the `event_symbol` node, which indicates that there's nested
 		// mounted apps. In this case we don't want to trigger events multiple times.
 		var path_idx = 0;
 
@@ -4776,7 +5429,7 @@
 		// without it the variable will be DCE'd and things will
 		// fail mysteriously in Firefox
 		// @ts-expect-error is added below
-		var handled_at = last_propagated_event === event && event.__root;
+		var handled_at = last_propagated_event === event && event[event_symbol];
 
 		if (handled_at) {
 			var at_idx = path.indexOf(handled_at);
@@ -4788,7 +5441,7 @@
 				// -> ignore, but set handle_at to document/window so that we're resetting the event
 				// chain in case someone manually dispatches the same event object again.
 				// @ts-expect-error
-				event.__root = handler_element;
+				event[event_symbol] = handler_element;
 				return;
 			}
 
@@ -4853,7 +5506,7 @@
 
 				try {
 					// @ts-expect-error
-					var delegated = current_target['__' + event_name];
+					var delegated = current_target[event_symbol]?.[event_name];
 
 					if (
 						delegated != null &&
@@ -4888,7 +5541,7 @@
 			}
 		} finally {
 			// @ts-expect-error is used above
-			event.__root = handler_element;
+			event[event_symbol] = handler_element;
 			// @ts-ignore remove proxy on currentTarget
 			delete event.currentTarget;
 			set_active_reaction(previous_reaction);
@@ -4938,14 +5591,31 @@
 		handler?.apply(element, args);
 	}
 
+	const policy =
+		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
+		globalThis?.window?.trustedTypes &&
+		/* @__PURE__ */ globalThis.window.trustedTypes.createPolicy('svelte-trusted-html', {
+			/** @param {string} html */
+			createHTML: (html) => {
+				return html;
+			}
+		});
+
 	/** @param {string} html */
+	function create_trusted_html(html) {
+		return /** @type {string} */ (policy?.createHTML(html) ?? html);
+	}
+
+	/**
+	 * @param {string} html
+	 */
 	function create_fragment_from_html(html) {
-		var elem = document.createElement('template');
-		elem.innerHTML = html.replaceAll('<!>', '<!---->'); // XHTML compliance
+		var elem = create_element('template');
+		elem.innerHTML = create_trusted_html(html.replaceAll('<!>', '<!---->')); // XHTML compliance
 		return elem.content;
 	}
 
-	/** @import { Effect, TemplateNode } from '#client' */
+	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
 	/** @import { TemplateStructure } from './types' */
 
 	/**
@@ -4954,9 +5624,8 @@
 	 */
 	function assign_nodes(start, end) {
 		var effect = /** @type {Effect} */ (active_effect);
-		if (effect.nodes_start === null) {
-			effect.nodes_start = start;
-			effect.nodes_end = end;
+		if (effect.nodes === null) {
+			effect.nodes = { start, end, a: null, t: null };
 		}
 	}
 
@@ -4987,7 +5656,7 @@
 
 			if (node === undefined) {
 				node = create_fragment_from_html(has_start ? content : '<!>' + content);
-				if (!is_fragment) node = /** @type {Node} */ (get_first_child(node));
+				if (!is_fragment) node = /** @type {TemplateNode} */ (get_first_child(node));
 			}
 
 			var clone = /** @type {TemplateNode} */ (
@@ -5035,13 +5704,15 @@
 	 */
 	function append(anchor, dom) {
 		if (hydrating) {
-			var effect = /** @type {Effect} */ (active_effect);
+			var effect = /** @type {Effect & { nodes: EffectNodes }} */ (active_effect);
+
 			// When hydrating and outer component and an inner component is async, i.e. blocked on a promise,
 			// then by the time the inner resolves we have already advanced to the end of the hydrated nodes
 			// of the parent component. Check for defined for that reason to avoid rewinding the parent's end marker.
-			if ((effect.f & EFFECT_RAN) === 0 || effect.nodes_end === null) {
-				effect.nodes_end = hydrate_node;
+			if ((effect.f & REACTION_RAN) === 0 || effect.nodes.end === null) {
+				effect.nodes.end = hydrate_node;
 			}
+
 			hydrate_next();
 			return;
 		}
@@ -5190,7 +5861,7 @@
 		return /** @type {T} */ (location?.replace(/\//g, '/\u200b'));
 	}
 
-	/** @import { ComponentContext, Effect, TemplateNode } from '#client' */
+	/** @import { ComponentContext, Effect, EffectNodes, TemplateNode } from '#client' */
 	/** @import { Component, ComponentType, SvelteComponent, MountOptions } from '../../index.js' */
 
 	/**
@@ -5200,12 +5871,12 @@
 	 */
 	function set_text(text, value) {
 		// For objects, we apply string coercion (which might make things like $state array references in the template reactive) before diffing
-		var str = value == null ? '' : typeof value === 'object' ? value + '' : value;
+		var str = value == null ? '' : typeof value === 'object' ? `${value}` : value;
 		// @ts-expect-error
 		if (str !== (text.__t ??= text.nodeValue)) {
 			// @ts-expect-error
 			text.__t = str;
-			text.nodeValue = str + '';
+			text.nodeValue = `${str}`;
 		}
 	}
 
@@ -5236,6 +5907,7 @@
 	 *  	context?: Map<any, any>;
 	 * 		intro?: boolean;
 	 * 		recover?: boolean;
+	 *		transformError?: (error: unknown) => unknown;
 	 * 	} : {
 	 * 		target: Document | Element | ShadowRoot;
 	 * 		props: Props;
@@ -5243,6 +5915,7 @@
 	 *  	context?: Map<any, any>;
 	 * 		intro?: boolean;
 	 * 		recover?: boolean;
+	 *		transformError?: (error: unknown) => unknown;
 	 * 	}} options
 	 * @returns {Exports}
 	 */
@@ -5254,12 +5927,13 @@
 		const previous_hydrate_node = hydrate_node;
 
 		try {
-			var anchor = /** @type {TemplateNode} */ (get_first_child(target));
+			var anchor = get_first_child(target);
+
 			while (
 				anchor &&
 				(anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */ (anchor).data !== HYDRATION_START)
 			) {
-				anchor = /** @type {TemplateNode} */ (get_next_sibling(anchor));
+				anchor = get_next_sibling(anchor);
 			}
 
 			if (!anchor) {
@@ -5303,8 +5977,8 @@
 		}
 	}
 
-	/** @type {Map<string, number>} */
-	const document_listeners = new Map();
+	/** @type {Map<EventTarget, Map<string, number>>} */
+	const listeners = new Map();
 
 	/**
 	 * @template {Record<string, any>} Exports
@@ -5312,42 +5986,11 @@
 	 * @param {MountOptions} options
 	 * @returns {Exports}
 	 */
-	function _mount(Component, { target, anchor, props = {}, events, context, intro = true }) {
+	function _mount(
+		Component,
+		{ target, anchor, props = {}, events, context, intro = true, transformError }
+	) {
 		init_operations();
-
-		/** @type {Set<string>} */
-		var registered_events = new Set();
-
-		/** @param {Array<string>} events */
-		var event_handle = (events) => {
-			for (var i = 0; i < events.length; i++) {
-				var event_name = events[i];
-
-				if (registered_events.has(event_name)) continue;
-				registered_events.add(event_name);
-
-				var passive = is_passive_event(event_name);
-
-				// Add the event listener to both the container and the document.
-				// The container listener ensures we catch events from within in case
-				// the outer content stops propagation of the event.
-				target.addEventListener(event_name, handle_event_propagation, { passive });
-
-				var n = document_listeners.get(event_name);
-
-				if (n === undefined) {
-					// The document listener ensures we catch events that originate from elements that were
-					// manually moved outside of the container (e.g. via manual portals).
-					document.addEventListener(event_name, handle_event_propagation, { passive });
-					document_listeners.set(event_name, 1);
-				} else {
-					document_listeners.set(event_name, n + 1);
-				}
-			}
-		};
-
-		event_handle(array_from(all_registered_events));
-		root_event_handles.add(event_handle);
 
 		/** @type {Exports} */
 		// @ts-expect-error will be defined because the render effect runs synchronously
@@ -5362,11 +6005,9 @@
 					pending: () => {}
 				},
 				(anchor_node) => {
-					if (context) {
-						push({});
-						var ctx = /** @type {ComponentContext} */ (component_context);
-						ctx.c = context;
-					}
+					push({});
+					var ctx = /** @type {ComponentContext} */ (component_context);
+					if (context) ctx.c = context;
 
 					if (events) {
 						// We can't spread the object or else we'd lose the state proxy stuff, if it is one
@@ -5380,7 +6021,7 @@
 					component = Component(anchor_node, props) || {};
 
 					if (hydrating) {
-						/** @type {Effect} */ (active_effect).nodes_end = hydrate_node;
+						/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = hydrate_node;
 
 						if (
 							hydrate_node === null ||
@@ -5392,23 +6033,70 @@
 						}
 					}
 
-					if (context) {
-						pop();
+					pop();
+				},
+				transformError
+			);
+
+			// Setup event delegation _after_ component is mounted - if an error would happen during mount, it would otherwise not be cleaned up
+			/** @type {Set<string>} */
+			var registered_events = new Set();
+
+			/** @param {Array<string>} events */
+			var event_handle = (events) => {
+				for (var i = 0; i < events.length; i++) {
+					var event_name = events[i];
+
+					if (registered_events.has(event_name)) continue;
+					registered_events.add(event_name);
+
+					var passive = is_passive_event(event_name);
+
+					// Add the event listener to both the container and the document.
+					// The container listener ensures we catch events from within in case
+					// the outer content stops propagation of the event.
+					//
+					// The document listener ensures we catch events that originate from elements that were
+					// manually moved outside of the container (e.g. via manual portals).
+					for (const node of [target, document]) {
+						var counts = listeners.get(node);
+
+						if (counts === undefined) {
+							counts = new Map();
+							listeners.set(node, counts);
+						}
+
+						var count = counts.get(event_name);
+
+						if (count === undefined) {
+							node.addEventListener(event_name, handle_event_propagation, { passive });
+							counts.set(event_name, 1);
+						} else {
+							counts.set(event_name, count + 1);
+						}
 					}
 				}
-			);
+			};
+
+			event_handle(array_from(all_registered_events));
+			root_event_handles.add(event_handle);
 
 			return () => {
 				for (var event_name of registered_events) {
-					target.removeEventListener(event_name, handle_event_propagation);
+					for (const node of [target, document]) {
+						var counts = /** @type {Map<string, number>} */ (listeners.get(node));
+						var count = /** @type {number} */ (counts.get(event_name));
 
-					var n = /** @type {number} */ (document_listeners.get(event_name));
+						if (--count == 0) {
+							node.removeEventListener(event_name, handle_event_propagation);
+							counts.delete(event_name);
 
-					if (--n === 0) {
-						document.removeEventListener(event_name, handle_event_propagation);
-						document_listeners.delete(event_name);
-					} else {
-						document_listeners.set(event_name, n);
+							if (counts.size === 0) {
+								listeners.delete(node);
+							}
+						} else {
+							counts.set(event_name, count);
+						}
 					}
 				}
 
@@ -5509,11 +6197,34 @@
 		/** @type {Map<Batch, Key>} */
 		#batches = new Map();
 
-		/** @type {Map<Key, Effect>} */
+		/**
+		 * Map of keys to effects that are currently rendered in the DOM.
+		 * These effects are visible and actively part of the document tree.
+		 * Example:
+		 * ```
+		 * {#if condition}
+		 * 	foo
+		 * {:else}
+		 * 	bar
+		 * {/if}
+		 * ```
+		 * Can result in the entries `true->Effect` and `false->Effect`
+		 * @type {Map<Key, Effect>}
+		 */
 		#onscreen = new Map();
 
-		/** @type {Map<Key, Branch>} */
+		/**
+		 * Similar to #onscreen with respect to the keys, but contains branches that are not yet
+		 * in the DOM, because their insertion is deferred.
+		 * @type {Map<Key, Branch>}
+		 */
 		#offscreen = new Map();
+
+		/**
+		 * Keys of effects that are currently outroing
+		 * @type {Set<Key>}
+		 */
+		#outroing = new Set();
 
 		/**
 		 * Whether to pause (i.e. outro) on change, or destroy immediately.
@@ -5530,9 +6241,10 @@
 			this.#transition = transition;
 		}
 
-		#commit = () => {
-			var batch = /** @type {Batch} */ (current_batch);
-
+		/**
+		 * @param {Batch} batch
+		 */
+		#commit = (batch) => {
 			// if this batch was made obsolete, bail
 			if (!this.#batches.has(batch)) return;
 
@@ -5543,6 +6255,7 @@
 			if (onscreen) {
 				// effect is already in the DOM — abort any current outro
 				resume_effect(onscreen);
+				this.#outroing.delete(key);
 			} else {
 				// effect is currently offscreen. put it in the DOM
 				var offscreen = this.#offscreen.get(key);
@@ -5581,7 +6294,8 @@
 			// outro/destroy all onscreen effects...
 			for (const [k, effect] of this.#onscreen) {
 				// ...except the one that was just committed
-				if (k === key) continue;
+				//    or those that are already outroing (else the transition is aborted and the effect destroyed right away)
+				if (k === key || this.#outroing.has(k)) continue;
 
 				const on_destroy = () => {
 					const keys = Array.from(this.#batches.values());
@@ -5598,10 +6312,12 @@
 						destroy_effect(effect);
 					}
 
+					this.#outroing.delete(k);
 					this.#onscreen.delete(k);
 				};
 
 				if (this.#transition || !onscreen) {
+					this.#outroing.add(k);
 					pause_effect(effect, on_destroy, false);
 				} else {
 					on_destroy();
@@ -5658,17 +6374,17 @@
 			if (defer) {
 				for (const [k, effect] of this.#onscreen) {
 					if (k === key) {
-						batch.skipped_effects.delete(effect);
+						batch.unskip_effect(effect);
 					} else {
-						batch.skipped_effects.add(effect);
+						batch.skip_effect(effect);
 					}
 				}
 
 				for (const [k, branch] of this.#offscreen) {
 					if (k === key) {
-						batch.skipped_effects.delete(branch.effect);
+						batch.unskip_effect(branch.effect);
 					} else {
-						batch.skipped_effects.add(branch.effect);
+						batch.skip_effect(branch.effect);
 					}
 				}
 
@@ -5679,7 +6395,7 @@
 					this.anchor = hydrate_node;
 				}
 
-				this.#commit();
+				this.#commit(batch);
 			}
 		}
 	}
@@ -5776,36 +6492,6 @@
 		onMount(() => () => untrack(fn));
 	}
 
-	/**
-	 *
-	 * @param {any} a
-	 * @param {any} b
-	 * @param {string} property
-	 * @param {string} location
-	 */
-	function compare(a, b, property, location) {
-		if (a !== b) {
-			assignment_value_stale(property, /** @type {string} */ (sanitize_location(location)));
-		}
-
-		return a;
-	}
-
-	/**
-	 * @param {any} object
-	 * @param {string} property
-	 * @param {any} value
-	 * @param {string} location
-	 */
-	function assign(object, property, value, location) {
-		return compare(
-			(object[property] = value),
-			untrack(() => object[property]),
-			property,
-			location
-		);
-	}
-
 	/** @import { SourceLocation } from '#client' */
 
 	/**
@@ -5854,7 +6540,7 @@
 		while (node && i < locations.length) {
 			if (hydrating && node.nodeType === COMMENT_NODE) {
 				var comment = /** @type {Comment} */ (node);
-				if (comment.data === HYDRATION_START || comment.data === HYDRATION_START_ELSE) depth += 1;
+				if (comment.data[0] === HYDRATION_START) depth += 1;
 				else if (comment.data[0] === HYDRATION_END) depth -= 1;
 			}
 
@@ -5993,9 +6679,7 @@
 					inspector(...snap);
 
 					if (!initial) {
-						const stack = get_stack('$inspect(...)');
-						// eslint-disable-next-line no-console
-
+						const stack = get_error('$inspect(...)');
 						if (stack) {
 							// eslint-disable-next-line no-console
 							console.groupCollapsed('stack trace');
@@ -6053,6 +6737,7 @@
 
 	const PENDING = 0;
 	const THEN = 1;
+	const CATCH = 2;
 
 	/** @typedef {typeof PENDING | typeof THEN | typeof CATCH} AwaitState */
 
@@ -6077,7 +6762,14 @@
 		var branches = new BranchManager(node);
 
 		block(() => {
+			var batch = /** @type {Batch} */ (current_batch);
+
+			// we null out `current_batch` because otherwise `save(...)` will incorrectly restore it —
+			// the batch will already have been committed by the time it resolves
+			batch.deactivate();
 			var input = get_input();
+			batch.activate();
+
 			var destroyed = false;
 
 			/** Whether or not there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
@@ -6116,7 +6808,7 @@
 					try {
 						fn();
 					} finally {
-						unset_context();
+						unset_context(false);
 
 						// without this, the DOM does not update until two ticks after the promise
 						// resolves, which is unexpected behaviour (and somewhat irksome to test)
@@ -6134,7 +6826,7 @@
 					(e) => {
 						resolve(() => {
 							internal_set(error, e);
-							branches.ensure(THEN, catch_fn && ((target) => catch_fn(target, error)));
+							branches.ensure(CATCH, catch_fn && ((target) => catch_fn(target, error)));
 
 							if (!catch_fn) {
 								// Rethrow the error if no catch block exists
@@ -6175,16 +6867,17 @@
 
 	/** @import { TemplateNode } from '#client' */
 
-	// TODO reinstate https://github.com/sveltejs/svelte/pull/15250
-
 	/**
 	 * @param {TemplateNode} node
-	 * @param {(branch: (fn: (anchor: Node) => void, flag?: boolean) => void) => void} fn
+	 * @param {(branch: (fn: (anchor: Node) => void, key?: number | false) => void) => void} fn
 	 * @param {boolean} [elseif] True if this is an `{:else if ...}` block rather than an `{#if ...}`, as that affects which transitions are considered 'local'
 	 * @returns {void}
 	 */
 	function if_block(node, fn, elseif = false) {
+		/** @type {TemplateNode | undefined} */
+		var marker;
 		if (hydrating) {
+			marker = hydrate_node;
 			hydrate_next();
 		}
 
@@ -6192,14 +6885,15 @@
 		var flags = elseif ? EFFECT_TRANSPARENT : 0;
 
 		/**
-		 * @param {boolean} condition,
+		 * @param {number | false} key
 		 * @param {null | ((anchor: Node) => void)} fn
 		 */
-		function update_branch(condition, fn) {
+		function update_branch(key, fn) {
 			if (hydrating) {
-				const is_else = read_hydration_instruction(node) === HYDRATION_START_ELSE;
+				var data = read_hydration_instruction(/** @type {TemplateNode} */ (marker));
 
-				if (condition === is_else) {
+				// "[n" = branch n, "[-1" = else
+				if (key !== parseInt(data.substring(1))) {
 					// Hydration mismatch: remove everything inside the anchor and start fresh.
 					// This could happen with `{#if browser}...{/if}`, for example
 					var anchor = skip_nodes();
@@ -6208,31 +6902,33 @@
 					branches.anchor = anchor;
 
 					set_hydrating(false);
-					branches.ensure(condition, fn);
+					branches.ensure(key, fn);
 					set_hydrating(true);
 
 					return;
 				}
 			}
 
-			branches.ensure(condition, fn);
+			branches.ensure(key, fn);
 		}
 
 		block(() => {
 			var has_branch = false;
 
-			fn((fn, flag = true) => {
+			fn((fn, key = 0) => {
 				has_branch = true;
-				update_branch(flag, fn);
+				update_branch(key, fn);
 			});
 
 			if (!has_branch) {
-				update_branch(false, null);
+				update_branch(-1, null);
 			}
 		}, flags);
 	}
 
 	/** @import { TemplateNode } from '#client' */
+
+	const NAN = Symbol('NaN');
 
 	/**
 	 * @template V
@@ -6251,12 +6947,21 @@
 		block(() => {
 			var key = get_key();
 
+			// NaN !== NaN, hence we do this workaround to not trigger remounts unnecessarily
+			if (key !== key) {
+				key = /** @type {any} */ (NAN);
+			}
+
 			branches.ensure(key, render_fn);
 		});
 	}
 
-	/** @import { EachItem, EachState, Effect, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
+	/** @import { EachItem, EachOutroGroup, EachState, Effect, EffectNodes, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
 	/** @import { Batch } from '../../reactivity/batch.js'; */
+
+	// When making substantive changes to this file, validate them with the each block stress test:
+	// https://svelte.dev/playground/1972b2cf46564476ad8c8c6405b23b7b
+	// This test also exists in this repo, as `packages/svelte/tests/manual/each-stress-test`
 
 	/**
 	 * @param {any} _
@@ -6270,44 +6975,109 @@
 	 * Pause multiple effects simultaneously, and coordinate their
 	 * subsequent destruction. Used in each blocks
 	 * @param {EachState} state
-	 * @param {EachItem[]} items
+	 * @param {Effect[]} to_destroy
 	 * @param {null | Node} controlled_anchor
 	 */
-	function pause_effects(state, items, controlled_anchor) {
-		var items_map = state.items;
-
+	function pause_effects(state, to_destroy, controlled_anchor) {
 		/** @type {TransitionManager[]} */
 		var transitions = [];
-		var length = items.length;
+		var length = to_destroy.length;
+
+		/** @type {EachOutroGroup} */
+		var group;
+		var remaining = to_destroy.length;
 
 		for (var i = 0; i < length; i++) {
-			pause_children(items[i].e, transitions, true);
-		}
+			let effect = to_destroy[i];
 
-		var is_controlled = length > 0 && transitions.length === 0 && controlled_anchor !== null;
-		// If we have a controlled anchor, it means that the each block is inside a single
-		// DOM element, so we can apply a fast-path for clearing the contents of the element.
-		if (is_controlled) {
-			var parent_node = /** @type {Element} */ (
-				/** @type {Element} */ (controlled_anchor).parentNode
+			pause_effect(
+				effect,
+				() => {
+					if (group) {
+						group.pending.delete(effect);
+						group.done.add(effect);
+
+						if (group.pending.size === 0) {
+							var groups = /** @type {Set<EachOutroGroup>} */ (state.outrogroups);
+
+							destroy_effects(state, array_from(group.done));
+							groups.delete(group);
+
+							if (groups.size === 0) {
+								state.outrogroups = null;
+							}
+						}
+					} else {
+						remaining -= 1;
+					}
+				},
+				false
 			);
-			clear_text_content(parent_node);
-			parent_node.append(/** @type {Element} */ (controlled_anchor));
-			items_map.clear();
-			link(state, items[0].prev, items[length - 1].next);
 		}
 
-		run_out_transitions(transitions, () => {
-			for (var i = 0; i < length; i++) {
-				var item = items[i];
-				if (!is_controlled) {
-					items_map.delete(item.k);
-					link(state, item.prev, item.next);
-				}
-				destroy_effect(item.e, !is_controlled);
+		if (remaining === 0) {
+			// If we're in a controlled each block (i.e. the block is the only child of an
+			// element), and we are removing all items, _and_ there are no out transitions,
+			// we can use the fast path — emptying the element and replacing the anchor
+			var fast_path = transitions.length === 0 && controlled_anchor !== null;
+
+			if (fast_path) {
+				var anchor = /** @type {Element} */ (controlled_anchor);
+				var parent_node = /** @type {Element} */ (anchor.parentNode);
+
+				clear_text_content(parent_node);
+				parent_node.append(anchor);
+
+				state.items.clear();
 			}
-		});
+
+			destroy_effects(state, to_destroy, !fast_path);
+		} else {
+			group = {
+				pending: new Set(to_destroy),
+				done: new Set()
+			};
+
+			(state.outrogroups ??= new Set()).add(group);
+		}
 	}
+
+	/**
+	 * @param {EachState} state
+	 * @param {Effect[]} to_destroy
+	 * @param {boolean} remove_dom
+	 */
+	function destroy_effects(state, to_destroy, remove_dom = true) {
+		/** @type {Set<Effect> | undefined} */
+		var preserved_effects;
+
+		// The loop-in-a-loop isn't ideal, but we should only hit this in relatively rare cases
+		if (state.pending.size > 0) {
+			preserved_effects = new Set();
+
+			for (const keys of state.pending.values()) {
+				for (const key of keys) {
+					preserved_effects.add(/** @type {EachItem} */ (state.items.get(key)).e);
+				}
+			}
+		}
+
+		for (var i = 0; i < to_destroy.length; i++) {
+			var e = to_destroy[i];
+
+			if (preserved_effects?.has(e)) {
+				e.f |= EFFECT_OFFSCREEN;
+
+				const fragment = document.createDocumentFragment();
+				move_effect(e, fragment);
+			} else {
+				destroy_effect(to_destroy[i], remove_dom);
+			}
+		}
+	}
+
+	/** @type {TemplateNode} */
+	var offscreen_anchor;
 
 	/**
 	 * @template V
@@ -6322,8 +7092,8 @@
 	function each(node, flags, get_collection, get_key, render_fn, fallback_fn = null) {
 		var anchor = node;
 
-		/** @type {EachState} */
-		var state = { flags, items: new Map(), first: null };
+		/** @type {Map<any, EachItem>} */
+		var items = new Map();
 
 		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
 
@@ -6331,7 +7101,7 @@
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
-				? set_hydrate_node(/** @type {Comment | Text} */ (get_first_child(parent_node)))
+				? set_hydrate_node(get_first_child(parent_node))
 				: parent_node.appendChild(create_text());
 		}
 
@@ -6341,11 +7111,6 @@
 
 		/** @type {Effect | null} */
 		var fallback = null;
-
-		var was_empty = false;
-
-		/** @type {Map<any, EachItem>} */
-		var offscreen_items = new Map();
 
 		// TODO: ideally we could use derived for runes mode but because of the ability
 		// to use a store which can be mutated, we can't do that here as mutating a store
@@ -6359,50 +7124,53 @@
 		/** @type {V[]} */
 		var array;
 
-		/** @type {Effect} */
-		var each_effect;
+		/** @type {Map<Batch, Set<any>>} */
+		var pending = new Map();
 
-		function commit() {
-			reconcile(
-				each_effect,
-				array,
-				state,
-				offscreen_items,
-				anchor,
-				render_fn,
-				flags,
-				get_key,
-				get_collection
-			);
+		var first_run = true;
 
-			if (fallback_fn !== null) {
+		/**
+		 * @param {Batch} batch
+		 */
+		function commit(batch) {
+			if ((state.effect.f & DESTROYED) !== 0) {
+				return;
+			}
+
+			state.pending.delete(batch);
+
+			state.fallback = fallback;
+			reconcile(state, array, anchor, flags, get_key);
+
+			if (fallback !== null) {
 				if (array.length === 0) {
-					if (fallback) {
+					if ((fallback.f & EFFECT_OFFSCREEN) === 0) {
 						resume_effect(fallback);
 					} else {
-						fallback = branch(() => fallback_fn(anchor));
+						fallback.f ^= EFFECT_OFFSCREEN;
+						move(fallback, null, anchor);
 					}
-				} else if (fallback !== null) {
+				} else {
 					pause_effect(fallback, () => {
+						// TODO only null out if no pending batch needs it,
+						// otherwise re-add `fallback.fragment` and move the
+						// effect into it
 						fallback = null;
 					});
 				}
 			}
 		}
 
-		block(() => {
-			// store a reference to the effect so that we can update the start/end nodes in reconciliation
-			each_effect ??= /** @type {Effect} */ (active_effect);
+		/**
+		 * @param {Batch} batch
+		 */
+		function discard(batch) {
+			state.pending.delete(batch);
+		}
 
+		var effect = block(() => {
 			array = /** @type {V[]} */ (get(each_array));
 			var length = array.length;
-
-			if (was_empty && length === 0) {
-				// ignore updates if the array is empty,
-				// and it already was empty on previous run
-				return;
-			}
-			was_empty = length === 0;
 
 			/** `true` if there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
 			let mismatch = false;
@@ -6420,102 +7188,93 @@
 				}
 			}
 
-			// this is separate to the previous block because `hydrating` might change
-			if (hydrating) {
-				/** @type {EachItem | null} */
-				var prev = null;
+			var keys = new Set();
+			var batch = /** @type {Batch} */ (current_batch);
+			var defer = should_defer_append();
 
-				/** @type {EachItem} */
-				var item;
+			for (var index = 0; index < length; index += 1) {
+				if (
+					hydrating &&
+					hydrate_node.nodeType === COMMENT_NODE &&
+					/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
+				) {
+					// The server rendered fewer items than expected,
+					// so break out and continue appending non-hydrated items
+					anchor = /** @type {Comment} */ (hydrate_node);
+					mismatch = true;
+					set_hydrating(false);
+				}
 
-				for (var i = 0; i < length; i++) {
-					if (
-						hydrate_node.nodeType === COMMENT_NODE &&
-						/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
-					) {
-						// The server rendered fewer items than expected,
-						// so break out and continue appending non-hydrated items
-						anchor = /** @type {Comment} */ (hydrate_node);
-						mismatch = true;
-						set_hydrating(false);
-						break;
+				var value = array[index];
+				var key = get_key(value, index);
+
+				var item = first_run ? null : items.get(key);
+
+				if (item) {
+					// update before reconciliation, to trigger any async updates
+					if (item.v) internal_set(item.v, value);
+					if (item.i) internal_set(item.i, index);
+
+					if (defer) {
+						batch.unskip_effect(item.e);
 					}
-
-					var value = array[i];
-					var key = get_key(value, i);
+				} else {
 					item = create_item(
-						hydrate_node,
-						state,
-						prev,
-						null,
+						items,
+						first_run ? anchor : (offscreen_anchor ??= create_text()),
 						value,
 						key,
-						i,
+						index,
 						render_fn,
 						flags,
 						get_collection
 					);
-					state.items.set(key, item);
 
-					prev = item;
+					if (!first_run) {
+						item.e.f |= EFFECT_OFFSCREEN;
+					}
+
+					items.set(key, item);
 				}
 
-				// remove excess nodes
-				if (length > 0) {
-					set_hydrate_node(skip_nodes());
+				keys.add(key);
+			}
+
+			if (length === 0 && fallback_fn && !fallback) {
+				if (first_run) {
+					fallback = branch(() => fallback_fn(anchor));
+				} else {
+					fallback = branch(() => fallback_fn((offscreen_anchor ??= create_text())));
+					fallback.f |= EFFECT_OFFSCREEN;
 				}
 			}
 
-			if (hydrating) {
-				if (length === 0 && fallback_fn) {
-					fallback = branch(() => fallback_fn(anchor));
+			if (length > keys.size) {
+				{
+					// in prod, the additional information isn't printed, so don't bother computing it
+					each_key_duplicate();
 				}
-			} else {
-				if (should_defer_append()) {
-					var keys = new Set();
-					var batch = /** @type {Batch} */ (current_batch);
+			}
 
-					for (i = 0; i < length; i += 1) {
-						value = array[i];
-						key = get_key(value, i);
+			// remove excess nodes
+			if (hydrating && length > 0) {
+				set_hydrate_node(skip_nodes());
+			}
 
-						var existing = state.items.get(key) ?? offscreen_items.get(key);
+			if (!first_run) {
+				pending.set(batch, keys);
 
-						if (existing) {
-							// update before reconciliation, to trigger any async updates
-							if ((flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0) {
-								update_item(existing, value, i, flags);
-							}
-						} else {
-							item = create_item(
-								null,
-								state,
-								null,
-								null,
-								value,
-								key,
-								i,
-								render_fn,
-								flags,
-								get_collection,
-								true
-							);
-
-							offscreen_items.set(key, item);
-						}
-
-						keys.add(key);
-					}
-
-					for (const [key, item] of state.items) {
+				if (defer) {
+					for (const [key, item] of items) {
 						if (!keys.has(key)) {
-							batch.skipped_effects.add(item.e);
+							batch.skip_effect(item.e);
 						}
 					}
 
 					batch.oncommit(commit);
+					batch.ondiscard(discard);
 				} else {
-					commit();
+					commit(batch);
 				}
 			}
 
@@ -6533,57 +7292,58 @@
 			get(each_array);
 		});
 
+		/** @type {EachState} */
+		var state = { effect, items, pending, outrogroups: null, fallback };
+
+		first_run = false;
+
 		if (hydrating) {
 			anchor = hydrate_node;
 		}
 	}
 
 	/**
+	 * Skip past any non-branch effects (which could be created with `createSubscriber`, for example) to find the next branch effect
+	 * @param {Effect | null} effect
+	 * @returns {Effect | null}
+	 */
+	function skip_to_branch(effect) {
+		while (effect !== null && (effect.f & BRANCH_EFFECT) === 0) {
+			effect = effect.next;
+		}
+		return effect;
+	}
+
+	/**
 	 * Add, remove, or reorder items output by an each block as its input changes
 	 * @template V
-	 * @param {Effect} each_effect
-	 * @param {Array<V>} array
 	 * @param {EachState} state
-	 * @param {Map<any, EachItem>} offscreen_items
+	 * @param {Array<V>} array
 	 * @param {Element | Comment | Text} anchor
-	 * @param {(anchor: Node, item: MaybeSource<V>, index: number | Source<number>, collection: () => V[]) => void} render_fn
 	 * @param {number} flags
 	 * @param {(value: V, index: number) => any} get_key
-	 * @param {() => V[]} get_collection
 	 * @returns {void}
 	 */
-	function reconcile(
-		each_effect,
-		array,
-		state,
-		offscreen_items,
-		anchor,
-		render_fn,
-		flags,
-		get_key,
-		get_collection
-	) {
+	function reconcile(state, array, anchor, flags, get_key) {
 		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
-		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
-		var first = state.first;
-		var current = first;
+		var current = skip_to_branch(state.effect.first);
 
-		/** @type {undefined | Set<EachItem>} */
+		/** @type {undefined | Set<Effect>} */
 		var seen;
 
-		/** @type {EachItem | null} */
+		/** @type {Effect | null} */
 		var prev = null;
 
-		/** @type {undefined | Set<EachItem>} */
+		/** @type {undefined | Set<Effect>} */
 		var to_animate;
 
-		/** @type {EachItem[]} */
+		/** @type {Effect[]} */
 		var matched = [];
 
-		/** @type {EachItem[]} */
+		/** @type {Effect[]} */
 		var stashed = [];
 
 		/** @type {V} */
@@ -6592,8 +7352,8 @@
 		/** @type {any} */
 		var key;
 
-		/** @type {EachItem | undefined} */
-		var item;
+		/** @type {Effect | undefined} */
+		var effect;
 
 		/** @type {number} */
 		var i;
@@ -6602,11 +7362,13 @@
 			for (i = 0; i < length; i += 1) {
 				value = array[i];
 				key = get_key(value, i);
-				item = items.get(key);
+				effect = /** @type {EachItem} */ (items.get(key)).e;
 
-				if (item !== undefined) {
-					item.a?.measure();
-					(to_animate ??= new Set()).add(item);
+				// offscreen == coming in now, no animation in that case,
+				// else this would happen https://github.com/sveltejs/svelte/issues/17181
+				if ((effect.f & EFFECT_OFFSCREEN) === 0) {
+					effect.nodes?.a?.measure();
+					(to_animate ??= new Set()).add(effect);
 				}
 			}
 		}
@@ -6615,62 +7377,53 @@
 			value = array[i];
 			key = get_key(value, i);
 
-			item = items.get(key);
+			effect = /** @type {EachItem} */ (items.get(key)).e;
 
-			if (item === undefined) {
-				var pending = offscreen_items.get(key);
+			if (state.outrogroups !== null) {
+				for (const group of state.outrogroups) {
+					group.pending.delete(effect);
+					group.done.delete(effect);
+				}
+			}
 
-				if (pending !== undefined) {
-					offscreen_items.delete(key);
-					items.set(key, pending);
+			if ((effect.f & INERT) !== 0) {
+				resume_effect(effect);
+				if (is_animated) {
+					effect.nodes?.a?.unfix();
+					(to_animate ??= new Set()).delete(effect);
+				}
+			}
 
+			if ((effect.f & EFFECT_OFFSCREEN) !== 0) {
+				effect.f ^= EFFECT_OFFSCREEN;
+
+				if (effect === current) {
+					move(effect, null, anchor);
+				} else {
 					var next = prev ? prev.next : current;
 
-					link(state, prev, pending);
-					link(state, pending, next);
+					if (effect === state.effect.last) {
+						state.effect.last = effect.prev;
+					}
 
-					move(pending, next, anchor);
-					prev = pending;
-				} else {
-					var child_anchor = current ? /** @type {TemplateNode} */ (current.e.nodes_start) : anchor;
+					if (effect.prev) effect.prev.next = effect.next;
+					if (effect.next) effect.next.prev = effect.prev;
+					link(state, prev, effect);
+					link(state, effect, next);
 
-					prev = create_item(
-						child_anchor,
-						state,
-						prev,
-						prev === null ? state.first : prev.next,
-						value,
-						key,
-						i,
-						render_fn,
-						flags,
-						get_collection
-					);
-				}
+					move(effect, next, anchor);
+					prev = effect;
 
-				items.set(key, prev);
+					matched = [];
+					stashed = [];
 
-				matched = [];
-				stashed = [];
-
-				current = prev.next;
-				continue;
-			}
-
-			if (should_update) {
-				update_item(item, value, i, flags);
-			}
-
-			if ((item.e.f & INERT) !== 0) {
-				resume_effect(item.e);
-				if (is_animated) {
-					item.a?.unfix();
-					(to_animate ??= new Set()).delete(item);
+					current = skip_to_branch(prev.next);
+					continue;
 				}
 			}
 
-			if (item !== current) {
-				if (seen !== undefined && seen.has(item)) {
+			if (effect !== current) {
+				if (seen !== undefined && seen.has(effect)) {
 					if (matched.length < stashed.length) {
 						// more efficient to move later items to the front
 						var start = stashed[0];
@@ -6701,14 +7454,14 @@
 						stashed = [];
 					} else {
 						// more efficient to move earlier items to the back
-						seen.delete(item);
-						move(item, current, anchor);
+						seen.delete(effect);
+						move(effect, current, anchor);
 
-						link(state, item.prev, item.next);
-						link(state, item, prev === null ? state.first : prev.next);
-						link(state, prev, item);
+						link(state, effect.prev, effect.next);
+						link(state, effect, prev === null ? state.effect.first : prev.next);
+						link(state, prev, effect);
 
-						prev = item;
+						prev = effect;
 					}
 
 					continue;
@@ -6717,37 +7470,57 @@
 				matched = [];
 				stashed = [];
 
-				while (current !== null && current.k !== key) {
-					// If the each block isn't inert and an item has an effect that is already inert,
-					// skip over adding it to our seen Set as the item is already being handled
-					if ((current.e.f & INERT) === 0) {
-						(seen ??= new Set()).add(current);
-					}
+				while (current !== null && current !== effect) {
+					(seen ??= new Set()).add(current);
 					stashed.push(current);
-					current = current.next;
+					current = skip_to_branch(current.next);
 				}
 
 				if (current === null) {
 					continue;
 				}
-
-				item = current;
 			}
 
-			matched.push(item);
-			prev = item;
-			current = item.next;
+			if ((effect.f & EFFECT_OFFSCREEN) === 0) {
+				matched.push(effect);
+			}
+
+			prev = effect;
+			current = skip_to_branch(effect.next);
+		}
+
+		if (state.outrogroups !== null) {
+			for (const group of state.outrogroups) {
+				if (group.pending.size === 0) {
+					destroy_effects(state, array_from(group.done));
+					state.outrogroups?.delete(group);
+				}
+			}
+
+			if (state.outrogroups.size === 0) {
+				state.outrogroups = null;
+			}
 		}
 
 		if (current !== null || seen !== undefined) {
-			var to_destroy = seen === undefined ? [] : array_from(seen);
+			/** @type {Effect[]} */
+			var to_destroy = [];
+
+			if (seen !== undefined) {
+				for (effect of seen) {
+					if ((effect.f & INERT) === 0) {
+						to_destroy.push(effect);
+					}
+				}
+			}
 
 			while (current !== null) {
 				// If the each block isn't inert, then inert effects are currently outroing and will be removed once the transition is finished
-				if ((current.e.f & INERT) === 0) {
+				if ((current.f & INERT) === 0 && current !== state.fallback) {
 					to_destroy.push(current);
 				}
-				current = current.next;
+
+				current = skip_to_branch(current.next);
 			}
 
 			var destroy_length = to_destroy.length;
@@ -6757,11 +7530,11 @@
 
 				if (is_animated) {
 					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.measure();
+						to_destroy[i].nodes?.a?.measure();
 					}
 
 					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].a?.fix();
+						to_destroy[i].nodes?.a?.fix();
 					}
 				}
 
@@ -6772,168 +7545,127 @@
 		if (is_animated) {
 			queue_micro_task(() => {
 				if (to_animate === undefined) return;
-				for (item of to_animate) {
-					item.a?.apply();
+				for (effect of to_animate) {
+					effect.nodes?.a?.apply();
 				}
 			});
-		}
-
-		each_effect.first = state.first && state.first.e;
-		each_effect.last = prev && prev.e;
-
-		for (var unused of offscreen_items.values()) {
-			destroy_effect(unused.e);
-		}
-
-		offscreen_items.clear();
-	}
-
-	/**
-	 * @param {EachItem} item
-	 * @param {any} value
-	 * @param {number} index
-	 * @param {number} type
-	 * @returns {void}
-	 */
-	function update_item(item, value, index, type) {
-		if ((type & EACH_ITEM_REACTIVE) !== 0) {
-			internal_set(item.v, value);
-		}
-
-		if ((type & EACH_INDEX_REACTIVE) !== 0) {
-			internal_set(/** @type {Value<number>} */ (item.i), index);
-		} else {
-			item.i = index;
 		}
 	}
 
 	/**
 	 * @template V
-	 * @param {Node | null} anchor
-	 * @param {EachState} state
-	 * @param {EachItem | null} prev
-	 * @param {EachItem | null} next
+	 * @param {Map<any, EachItem>} items
+	 * @param {Node} anchor
 	 * @param {V} value
 	 * @param {unknown} key
 	 * @param {number} index
 	 * @param {(anchor: Node, item: V | Source<V>, index: number | Value<number>, collection: () => V[]) => void} render_fn
 	 * @param {number} flags
 	 * @param {() => V[]} get_collection
-	 * @param {boolean} [deferred]
 	 * @returns {EachItem}
 	 */
-	function create_item(
-		anchor,
-		state,
-		prev,
-		next,
-		value,
-		key,
-		index,
-		render_fn,
-		flags,
-		get_collection,
-		deferred
-	) {
-		var reactive = (flags & EACH_ITEM_REACTIVE) !== 0;
-		var mutable = (flags & EACH_ITEM_IMMUTABLE) === 0;
+	function create_item(items, anchor, value, key, index, render_fn, flags, get_collection) {
+		var v =
+			(flags & EACH_ITEM_REACTIVE) !== 0
+				? (flags & EACH_ITEM_IMMUTABLE) === 0
+					? mutable_source(value, false, false)
+					: source(value)
+				: null;
 
-		var v = reactive ? (mutable ? mutable_source(value, false, false) : source(value)) : value;
-		var i = (flags & EACH_INDEX_REACTIVE) === 0 ? index : source(index);
+		var i = (flags & EACH_INDEX_REACTIVE) !== 0 ? source(index) : null;
 
-		/** @type {EachItem} */
-		var item = {
-			i,
+		return {
 			v,
-			k: key,
-			a: null,
-			// @ts-expect-error
-			e: null,
-			prev,
-			next
+			i,
+			e: branch(() => {
+				render_fn(anchor, v ?? value, i ?? index, get_collection);
+
+				return () => {
+					items.delete(key);
+				};
+			})
 		};
-
-		try {
-			if (anchor === null) {
-				var fragment = document.createDocumentFragment();
-				fragment.append((anchor = create_text()));
-			}
-
-			item.e = branch(() => render_fn(/** @type {Node} */ (anchor), v, i, get_collection), hydrating);
-
-			item.e.prev = prev && prev.e;
-			item.e.next = next && next.e;
-
-			if (prev === null) {
-				if (!deferred) {
-					state.first = item;
-				}
-			} else {
-				prev.next = item;
-				prev.e.next = item.e;
-			}
-
-			if (next !== null) {
-				next.prev = item;
-				next.e.prev = item.e;
-			}
-
-			return item;
-		} finally {
-		}
 	}
 
 	/**
-	 * @param {EachItem} item
-	 * @param {EachItem | null} next
+	 * @param {Effect} effect
+	 * @param {Effect | null} next
 	 * @param {Text | Element | Comment} anchor
 	 */
-	function move(item, next, anchor) {
-		var end = item.next ? /** @type {TemplateNode} */ (item.next.e.nodes_start) : anchor;
+	function move(effect, next, anchor) {
+		if (!effect.nodes) return;
 
-		var dest = next ? /** @type {TemplateNode} */ (next.e.nodes_start) : anchor;
-		var node = /** @type {TemplateNode} */ (item.e.nodes_start);
+		var node = effect.nodes.start;
+		var end = effect.nodes.end;
 
-		while (node !== null && node !== end) {
+		var dest =
+			next && (next.f & EFFECT_OFFSCREEN) === 0
+				? /** @type {EffectNodes} */ (next.nodes).start
+				: anchor;
+
+		while (node !== null) {
 			var next_node = /** @type {TemplateNode} */ (get_next_sibling(node));
 			dest.before(node);
+
+			if (node === end) {
+				return;
+			}
+
 			node = next_node;
 		}
 	}
 
 	/**
 	 * @param {EachState} state
-	 * @param {EachItem | null} prev
-	 * @param {EachItem | null} next
+	 * @param {Effect | null} prev
+	 * @param {Effect | null} next
 	 */
 	function link(state, prev, next) {
 		if (prev === null) {
-			state.first = next;
+			state.effect.first = next;
 		} else {
 			prev.next = next;
-			prev.e.next = next && next.e;
 		}
 
-		if (next !== null) {
+		if (next === null) {
+			state.effect.last = prev;
+		} else {
 			next.prev = prev;
-			next.e.prev = prev && prev.e;
 		}
 	}
 
 	/** @import { Effect, TemplateNode } from '#client' */
+	/** @import {} from 'trusted-types' */
 
 	/**
 	 * @param {Element | Text | Comment} node
-	 * @param {() => string} get_value
+	 * @param {() => string | TrustedHTML} get_value
+	 * @param {boolean} [is_controlled]
 	 * @param {boolean} [svg]
 	 * @param {boolean} [mathml]
 	 * @param {boolean} [skip_warning]
 	 * @returns {void}
 	 */
-	function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
+	function html(
+		node,
+		get_value,
+		is_controlled = false,
+		svg = false,
+		mathml = false,
+		skip_warning = false
+	) {
 		var anchor = node;
 
+		/** @type {string | TrustedHTML} */
 		var value = '';
+
+		if (is_controlled) {
+			var parent_node = /** @type {Element} */ (node);
+
+			if (hydrating) {
+				anchor = set_hydrate_node(get_first_child(parent_node));
+			}
+		}
 
 		template_effect(() => {
 			var effect = /** @type {Effect} */ (active_effect);
@@ -6943,9 +7675,25 @@
 				return;
 			}
 
-			if (effect.nodes_start !== null) {
-				remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
-				effect.nodes_start = effect.nodes_end = null;
+			if (is_controlled && !hydrating) {
+				// When @html is the only child, use innerHTML directly.
+				// This also handles contenteditable, where the user may delete the anchor comment.
+				effect.nodes = null;
+				parent_node.innerHTML = /** @type {string} */ (value);
+
+				if (value !== '') {
+					assign_nodes(
+						/** @type {TemplateNode} */ (get_first_child(parent_node)),
+						/** @type {TemplateNode} */ (parent_node.lastChild)
+					);
+				}
+
+				return;
+			}
+
+			if (effect.nodes !== null) {
+				remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
+				effect.nodes = null;
 			}
 
 			if (value === '') return;
@@ -6954,6 +7702,8 @@
 				// We're deliberately not trying to repair mismatches between server and client,
 				// as it's costly and error-prone (and it's an edge case to have a mismatch anyway)
 				/** @type {Comment} */ (hydrate_node).data;
+
+				/** @type {TemplateNode | null} */
 				var next = hydrate_next();
 				var last = next;
 
@@ -6962,7 +7712,7 @@
 					(next.nodeType !== COMMENT_NODE || /** @type {Comment} */ (next).data !== '')
 				) {
 					last = next;
-					next = /** @type {TemplateNode} */ (get_next_sibling(next));
+					next = get_next_sibling(next);
 				}
 
 				if (next === null) {
@@ -6975,18 +7725,18 @@
 				return;
 			}
 
-			var html = value + '';
-			if (svg) html = `<svg>${html}</svg>`;
-			else if (mathml) html = `<math>${html}</math>`;
-
 			// Don't use create_fragment_with_script_from_html here because that would mean script tags are executed.
 			// @html is basically `.innerHTML = ...` and that doesn't execute scripts either due to security reasons.
-			/** @type {DocumentFragment | Element} */
-			var node = create_fragment_from_html(html);
+			// Use a <template>, <svg>, or <math> wrapper depending on context. If value is a TrustedHTML object,
+			// it will be assigned directly to innerHTML without coercion — this allows {@html policy.createHTML(...)} to work.
+			var ns = svg ? NAMESPACE_SVG : mathml ? NAMESPACE_MATHML : undefined;
+			var wrapper = /** @type {HTMLTemplateElement | SVGElement | MathMLElement} */ (
+				create_element(svg ? 'svg' : mathml ? 'math' : 'template', ns)
+			);
+			wrapper.innerHTML = /** @type {any} */ (value);
 
-			if (svg || mathml) {
-				node = /** @type {Element} */ (get_first_child(node));
-			}
+			/** @type {DocumentFragment | Element} */
+			var node = svg || mathml ? wrapper : /** @type {HTMLTemplateElement} */ (wrapper).content;
 
 			assign_nodes(
 				/** @type {TemplateNode} */ (get_first_child(node)),
@@ -6995,7 +7745,7 @@
 
 			if (svg || mathml) {
 				while (get_first_child(node)) {
-					anchor.before(/** @type {Node} */ (get_first_child(node)));
+					anchor.before(/** @type {TemplateNode} */ (get_first_child(node)));
 				}
 			} else {
 				anchor.before(node);
@@ -7042,7 +7792,7 @@
 		return sanitized;
 	}
 
-	/** @import { Effect, TemplateNode } from '#client' */
+	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
 
 	/**
 	 * @param {Comment | Element} node
@@ -7074,7 +7824,9 @@
 
 		block(() => {
 			const next_tag = get_tag() || null;
-			var ns = next_tag === 'svg' ? NAMESPACE_SVG : null;
+			var ns = next_tag === 'svg'
+					? NAMESPACE_SVG
+					: undefined;
 
 			if (next_tag === null) {
 				branches.ensure(null, null);
@@ -7082,13 +7834,8 @@
 			}
 
 			branches.ensure(next_tag, (anchor) => {
-
 				if (next_tag) {
-					element = hydrating
-						? /** @type {Element} */ (element)
-						: ns
-							? document.createElementNS(ns, next_tag)
-							: document.createElement(next_tag);
+					element = hydrating ? /** @type {Element} */ (element) : create_element(next_tag, ns);
 
 					assign_nodes(element, element);
 
@@ -7100,9 +7847,9 @@
 
 						// If hydrating, use the existing ssr comment as the anchor so that the
 						// inner open and close methods can pick up the existing nodes correctly
-						var child_anchor = /** @type {TemplateNode} */ (
-							hydrating ? get_first_child(element) : element.appendChild(create_text())
-						);
+						var child_anchor = hydrating
+							? get_first_child(element)
+							: element.appendChild(create_text());
 
 						if (hydrating) {
 							if (child_anchor === null) {
@@ -7120,7 +7867,7 @@
 					}
 
 					// we do this after calling `render_fn` so that child effects don't override `nodes.end`
-					/** @type {Effect} */ (active_effect).nodes_end = element;
+					/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = element;
 
 					anchor.before(element);
 				}
@@ -7159,7 +7906,7 @@
 			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
 			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
 			if (!target.querySelector('#' + css.hash)) {
-				const style = document.createElement('style');
+				const style = create_element('style');
 				style.id = css.hash;
 				style.textContent = css.code;
 
@@ -7185,7 +7932,7 @@
 		/** @type {Effect | null} */
 		var e;
 
-		block(() => {
+		managed(() => {
 			if (fn !== (fn = get_fn())) {
 				if (e) {
 					destroy_effect(e);
@@ -7232,7 +7979,7 @@
 		}
 
 		if (directives) {
-			for (var key in directives) {
+			for (var key of Object.keys(directives)) {
 				if (directives[key]) {
 					classname = classname ? classname + ' ' + key : key;
 				} else if (classname.length) {
@@ -7267,7 +8014,7 @@
 		var separator = important ? ' !important;' : ';';
 		var css = '';
 
-		for (var key in styles) {
+		for (var key of Object.keys(styles)) {
 			var value = styles[key];
 			if (value != null && value !== '') {
 				css += ' ' + key + ': ' + value + separator;
@@ -7579,13 +8326,18 @@
 		}
 	}
 
-	/** @import { Effect } from '#client' */
+	/** @import { Blocker, Effect } from '#client' */
 
 	const CLASS = Symbol('class');
 	const STYLE = Symbol('style');
 
 	const IS_CUSTOM_ELEMENT = Symbol('is custom element');
 	const IS_HTML = Symbol('is html');
+
+	const LINK_TAG = IS_XHTML ? 'link' : 'LINK';
+	const INPUT_TAG = IS_XHTML ? 'input' : 'INPUT';
+	const OPTION_TAG = IS_XHTML ? 'option' : 'OPTION';
+	const SELECT_TAG = IS_XHTML ? 'select' : 'SELECT';
 
 	/**
 	 * The value/checked attribute in the template actually corresponds to the defaultValue property, so we need
@@ -7660,7 +8412,7 @@
 			if (
 				attribute === 'src' ||
 				attribute === 'srcset' ||
-				(attribute === 'href' && element.nodeName === 'LINK')
+				(attribute === 'href' && element.nodeName === LINK_TAG)
 			) {
 
 				// If we reset these attributes, they would result in another network request, which we want to avoid.
@@ -7706,7 +8458,7 @@
 		should_remove_defaults = false,
 		skip_warning = false
 	) {
-		if (hydrating && should_remove_defaults && element.tagName === 'INPUT') {
+		if (hydrating && should_remove_defaults && element.nodeName === INPUT_TAG) {
 			var input = /** @type {HTMLInputElement} */ (element);
 			var attribute = input.type === 'checkbox' ? 'defaultChecked' : 'defaultValue';
 
@@ -7728,7 +8480,7 @@
 		}
 
 		var current = prev || {};
-		var is_option_element = element.tagName === 'OPTION';
+		var is_option_element = element.nodeName === OPTION_TAG;
 
 		for (var key in prev) {
 			if (!(key in next)) {
@@ -7804,14 +8556,14 @@
 				const opts = {};
 				const event_handle_key = '$$' + key;
 				let event_name = key.slice(2);
-				var delegated = can_delegate_event(event_name);
+				var is_delegated = can_delegate_event(event_name);
 
 				if (is_capture_event(event_name)) {
 					event_name = event_name.slice(0, -7);
 					opts.capture = true;
 				}
 
-				if (!delegated && prev_value) {
+				if (!is_delegated && prev_value) {
 					// Listening to same event but different handler -> our handle function below takes care of this
 					// If we were to remove and add listeners in this case, it could happen that the event is "swallowed"
 					// (the browser seems to not know yet that a new one exists now) and doesn't reach the handler
@@ -7822,25 +8574,19 @@
 					current[event_handle_key] = null;
 				}
 
-				if (value != null) {
-					if (!delegated) {
-						/**
-						 * @this {any}
-						 * @param {Event} evt
-						 */
-						function handle(evt) {
-							current[key].call(this, evt);
-						}
-
-						current[event_handle_key] = create_event(event_name, element, handle, opts);
-					} else {
-						// @ts-ignore
-						element[`__${event_name}`] = value;
-						delegate([event_name]);
+				if (is_delegated) {
+					delegated(event_name, element, value);
+					delegate([event_name]);
+				} else if (value != null) {
+					/**
+					 * @this {any}
+					 * @param {Event} evt
+					 */
+					function handle(evt) {
+						current[key].call(this, evt);
 					}
-				} else if (delegated) {
-					// @ts-ignore
-					element[`__${event_name}`] = undefined;
+
+					current[event_handle_key] = create_event(event_name, element, handle, opts);
 				}
 			} else if (key === 'style') {
 				// avoid using the setter
@@ -7909,7 +8655,7 @@
 	 * @param {(...expressions: any) => Record<string | symbol, any>} fn
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
-	 * @param {Array<Promise<void>>} blockers
+	 * @param {Blocker[]} blockers
 	 * @param {string} [css_hash]
 	 * @param {boolean} [should_remove_defaults]
 	 * @param {boolean} [skip_warning]
@@ -7931,10 +8677,10 @@
 			/** @type {Record<symbol, Effect>} */
 			var effects = {};
 
-			var is_select = element.nodeName === 'SELECT';
+			var is_select = element.nodeName === SELECT_TAG;
 			var inited = false;
 
-			block(() => {
+			managed(() => {
 				var next = fn(...values.map(get));
 				/** @type {Record<string | symbol, any>} */
 				var current = set_attributes(
@@ -8097,8 +8843,9 @@
 			var value = get();
 
 			if (input === document.activeElement) {
-				// we need both, because in non-async mode, render effects run before previous_batch is set
-				var batch = /** @type {Batch} */ (previous_batch ?? current_batch);
+				// In sync mode render effects are executed during tree traversal -> needs current_batch
+				// In async mode render effects are flushed once batch resolved, at which point current_batch is null -> needs previous_batch
+				var batch = /** @type {Batch} */ (current_batch);
 
 				// Never rewrite the contents of a focused input. We can get here if, for example,
 				// an update is deferred because of async work depending on the input:
@@ -8173,6 +8920,8 @@
 		return value === '' ? null : +value;
 	}
 
+	/** @import { ComponentContext, Effect } from '#client' */
+
 	/**
 	 * @param {any} bound_value
 	 * @param {Element} element_or_component
@@ -8193,6 +8942,9 @@
 	 * @returns {void}
 	 */
 	function bind_this(element_or_component = {}, update, get_value, get_parts) {
+		var component_effect = /** @type {ComponentContext} */ (component_context).r;
+		var parent = /** @type {Effect} */ (active_effect);
+
 		effect(() => {
 			/** @type {unknown[]} */
 			var old_parts;
@@ -8208,7 +8960,7 @@
 				untrack(() => {
 					if (element_or_component !== get_value(...parts)) {
 						update(element_or_component, ...parts);
-						// If this is an effect rerun (cause: each block context changes), then nullfiy the binding at
+						// If this is an effect rerun (cause: each block context changes), then nullify the binding at
 						// the previous position if it isn't already taken over by a different effect.
 						if (old_parts && is_bound_this(get_value(...old_parts), element_or_component)) {
 							update(null, ...old_parts);
@@ -8218,45 +8970,29 @@
 			});
 
 			return () => {
-				// We cannot use effects in the teardown phase, we we use a microtask instead.
-				queue_micro_task(() => {
+				// When the bind:this effect is destroyed, we go up the effect parent chain until we find the last parent effect that is destroyed,
+				// or the effect containing the component bind:this is in (whichever comes first). That way we can time the nulling of the binding
+				// as close to user/developer expectation as possible.
+				// TODO Svelte 6: Decide if we want to keep this logic or just always null the binding in the component effect's teardown
+				// (which would be simpler, but less intuitive in some cases, and breaks the `ondestroy-before-cleanup` test)
+				let p = parent;
+				while (p !== component_effect && p.parent !== null && p.parent.f & DESTROYING) {
+					p = p.parent;
+				}
+				const teardown = () => {
 					if (parts && is_bound_this(get_value(...parts), element_or_component)) {
 						update(null, ...parts);
 					}
-				});
+				};
+				const original_teardown = p.teardown;
+				p.teardown = () => {
+					teardown();
+					original_teardown?.();
+				};
 			};
 		});
 
 		return element_or_component;
-	}
-
-	/** @import { StoreReferencesContainer } from '#client' */
-	/** @import { Store } from '#shared' */
-
-	/**
-	 * Whether or not the prop currently being read is a store binding, as in
-	 * `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
-	 * runes mode, and skip `binding_property_non_reactive` validation
-	 */
-	let is_store_binding = false;
-
-	/**
-	 * Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
-	 * Used to prevent `binding_property_non_reactive` validation false positives and
-	 * ensure that these props are treated as mutable even in runes mode
-	 * @template T
-	 * @param {() => T} fn
-	 * @returns {[T, boolean]}
-	 */
-	function capture_store_binding(fn) {
-		var previous_is_store_binding = is_store_binding;
-
-		try {
-			is_store_binding = false;
-			return [fn(), is_store_binding];
-		} finally {
-			is_store_binding = previous_is_store_binding;
-		}
 	}
 
 	/** @import { Effect, Source } from './types.js' */
@@ -8423,7 +9159,7 @@
 		};
 
 		/** @type {((v: V) => void) | undefined} */
-		var setter;
+		let setter;
 
 		if (bindable) {
 			// Can be the case when someone does `mount(Component, props)` with `let props = $state({...})`
@@ -8435,6 +9171,7 @@
 				(is_entry_props && key in props ? (v) => (props[key] = v) : undefined);
 		}
 
+		/** @type {V} */
 		var initial_value;
 		var is_store_sub = false;
 
@@ -8526,9 +9263,7 @@
 
 				// special case — avoid recalculating the derived if we're in a
 				// teardown function and the prop was overridden locally, or the
-				// component was already destroyed (this latter part is necessary
-				// because `bind:this` can read props after the component has
-				// been destroyed. TODO simplify `bind:this`
+				// component was already destroyed (people could access props in a timeout)
 				if ((is_destroying_effect && overridden) || (parent_effect.f & DESTROYED) !== 0) {
 					return d.v;
 				}
@@ -8538,40 +9273,11 @@
 		);
 	}
 
-	/**
-	 * @param {() => any} collection
-	 * @param {(item: any, index: number) => string} key_fn
-	 * @returns {void}
-	 */
-	function validate_each_keys(collection, key_fn) {
-		render_effect(() => {
-			const keys = new Map();
-			const maybe_array = collection();
-			const array = is_array(maybe_array)
-				? maybe_array
-				: maybe_array == null
-					? []
-					: Array.from(maybe_array);
-			const length = array.length;
-			for (let i = 0; i < length; i++) {
-				const key = key_fn(array[i], i);
-				if (keys.has(key)) {
-					String(keys.get(key));
-
-					/** @type {string | null} */
-					let k = String(key);
-					if (k.startsWith('[object ')) k = null;
-
-					each_key_duplicate();
-				}
-				keys.set(key, i);
-			}
-		});
-	}
+	/** @import { Blocker } from '#client' */
 
 	/**
 	 * @param {string} binding
-	 * @param {Array<Promise<void>>} blockers
+	 * @param {Blocker[]} blockers
 	 * @param {() => Record<string, any>} get_object
 	 * @param {() => string} get_property
 	 * @param {number} line
@@ -8696,7 +9402,8 @@
 				props,
 				context: options.context,
 				intro: options.intro ?? false,
-				recover: options.recover
+				recover: options.recover,
+				transformError: options.transformError
 			});
 
 			// We don't flushSync for custom element wrappers or if the user doesn't want it,
@@ -8788,18 +9495,23 @@
 			$$l_u = new Map();
 			/** @type {any} The managed render effect for reflecting attributes */
 			$$me;
+			/** @type {ShadowRoot | null} The ShadowRoot of the custom element */
+			$$shadowRoot = null;
 
 			/**
 			 * @param {*} $$componentCtor
 			 * @param {*} $$slots
-			 * @param {*} use_shadow_dom
+			 * @param {ShadowRootInit | undefined} shadow_root_init
 			 */
-			constructor($$componentCtor, $$slots, use_shadow_dom) {
+			constructor($$componentCtor, $$slots, shadow_root_init) {
 				super();
 				this.$$ctor = $$componentCtor;
 				this.$$s = $$slots;
-				if (use_shadow_dom) {
-					this.attachShadow({ mode: 'open' });
+
+				if (shadow_root_init) {
+					// We need to store the reference to shadow root, because `closed` shadow root cannot be
+					// accessed with `this.shadowRoot`.
+					this.$$shadowRoot = this.attachShadow(shadow_root_init);
 				}
 			}
 
@@ -8851,7 +9563,7 @@
 						 * @param {Element} anchor
 						 */
 						return (anchor) => {
-							const slot = document.createElement('slot');
+							const slot = create_element('slot');
 							if (name !== 'default') slot.name = name;
 
 							append(anchor, slot);
@@ -8889,7 +9601,7 @@
 					}
 					this.$$c = createClassComponent({
 						component: this.$$ctor,
-						target: this.shadowRoot || this,
+						target: this.$$shadowRoot || this,
 						props: {
 							...this.$$d,
 							$$slots,
@@ -9030,7 +9742,7 @@
 	 * @param {Record<string, CustomElementPropDefinition>} props_definition  The props to observe
 	 * @param {string[]} slots  The slots to create
 	 * @param {string[]} exports  Explicitly exported values, other than props
-	 * @param {boolean} use_shadow_dom  Whether to use shadow DOM
+	 * @param {ShadowRootInit | undefined} shadow_root_init  Options passed to shadow DOM constructor
 	 * @param {(ce: new () => HTMLElement) => new () => HTMLElement} [extend]
 	 */
 	function create_custom_element(
@@ -9038,12 +9750,12 @@
 		props_definition,
 		slots,
 		exports$1,
-		use_shadow_dom,
+		shadow_root_init,
 		extend
 	) {
 		let Class = class extends SvelteElement {
 			constructor() {
-				super(Component, slots, use_shadow_dom);
+				super(Component, slots, shadow_root_init);
 				this.$$p_d = props_definition;
 			}
 			static get observedAttributes() {
@@ -9115,7 +9827,9 @@
 					// eslint-disable-next-line no-console
 					console.log('%c[snapshot]', 'color: grey', ...transformed);
 				}
-			} catch {}
+			} catch {
+				// Errors can occur when trying to snapshot objects with getters that throw or non-enumerable properties.
+			}
 		});
 
 		return objects;
@@ -9362,6 +10076,7 @@
 		let attributes = tag(user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {}), 'attributes');
 
 		var $$exports = {
+			...legacy_api(),
 			get type() {
 				return type();
 			},
@@ -9441,9 +10156,7 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$p();
@@ -9452,13 +10165,11 @@
 			role: 'img',
 			class: ["qc-icon", src() && "qc-icon-custom"],
 			'aria-label': label(),
-
 			style: `--img-color: var(--qc-color-${color()});
         --img-width: ${width()};
         --img-height: ${height()};
         --img-src: url('${src()}');
     `,
-
 			'data-img-type': type(),
 			...get(attributes),
 			...rest,
@@ -9487,7 +10198,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
@@ -9519,17 +10230,20 @@
 			slotContent = prop($$props, 'slotContent', 7);
 
 		const types = Object.keys(typesDescriptions);
-		const usedType = types.includes(type()) ? type() : defaultType;
-		const usedHeader = header().match(/h[1-6]/) ? header() : defaultHeader;
+		const usedType = tag(user_derived(() => types.includes(type()) ? type() : defaultType), 'usedType');
+		const usedHeader = tag(user_derived(() => header().match(/h[1-6]/) ? header() : defaultHeader), 'usedHeader');
 
-		const role = strict_equals(usedType, "success")
-			? "status"
-			: strict_equals(usedType, "error") ? "alert" : null;
+		const role = tag(
+			user_derived(() => strict_equals(get(usedType), "success")
+				? "status"
+				: strict_equals(get(usedType), "error") ? "alert" : null),
+			'role'
+		);
 
 		let noticeElement = tag(state(null), 'noticeElement');
 
 		user_effect(() => {
-			if (role && get(noticeElement)) {
+			if (get(role) && get(noticeElement)) {
 				const tempNodes = Array.from(get(noticeElement).childNodes);
 
 				get(noticeElement).innerHTML = "";
@@ -9539,15 +10253,16 @@
 			}
 		});
 
-		const shouldUseIcon = strict_equals(usedType, "advice") || strict_equals(usedType, "note");
+		const shouldUseIcon = tag(user_derived(() => strict_equals(get(usedType), "advice") || strict_equals(get(usedType), "note")), 'shouldUseIcon');
 
 		// Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
-		const computedType = shouldUseIcon ? "neutral" : usedType;
+		const computedType = tag(user_derived(() => get(shouldUseIcon) ? "neutral" : get(usedType)), 'computedType');
 
-		const iconType = shouldUseIcon ? icon() ?? "note" : usedType;
-		const iconLabel = typesDescriptions[type()] ?? typesDescriptions['information'];
+		const iconType = tag(user_derived(() => get(shouldUseIcon) ? icon() ?? "note" : get(usedType)), 'iconType');
+		const iconLabel = tag(user_derived(() => typesDescriptions[type()] ?? typesDescriptions['information']), 'iconLabel');
 
 		var $$exports = {
+			...legacy_api(),
 			get title() {
 				return title();
 			},
@@ -9600,9 +10315,7 @@
 			set slotContent($$value) {
 				slotContent($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$o();
@@ -9613,13 +10326,12 @@
 		add_svelte_meta(
 			() => Icon(node_1, {
 				get type() {
-					return iconType;
+					return get(iconType);
 				},
 
 				get label() {
-					return iconLabel;
+					return get(iconLabel);
 				},
-
 				size: 'nm'
 			}),
 			'component',
@@ -9642,12 +10354,12 @@
 				var node_3 = first_child(fragment);
 
 				{
-					validate_void_dynamic_element(() => usedHeader);
-					validate_dynamic_element_tag(() => usedHeader);
+					validate_dynamic_element_tag(() => get(usedHeader));
+					validate_void_dynamic_element(() => get(usedHeader));
 
 					element(
 						node_3,
-						() => usedHeader,
+						() => get(usedHeader),
 						false,
 						($$element, $$anchor) => {
 							var fragment_1 = comment();
@@ -9685,8 +10397,8 @@
 		reset(div);
 
 		template_effect(() => {
-			set_class(div, 1, `qc-component qc-notice qc-${computedType ?? ''}`);
-			set_attribute(div_4, 'role', role);
+			set_class(div, 1, `qc-component qc-notice qc-${get(computedType) ?? ''}`);
+			set_attribute(div_4, 'role', get(role));
 		});
 
 		append($$anchor, div);
@@ -9706,7 +10418,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
@@ -9755,7 +10467,7 @@
 		},
 		['default'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
@@ -9774,23 +10486,19 @@
 		[
 			57,
 			0,
-
 			[
 				[
 					60,
 					4,
-
 					[
 						[
 							79,
 							8,
-
 							[
 								[80, 12, [[81, 16, [[82, 20, [[86, 24]]]]]]],
 								[93, 12, [[110, 16]]]
 							]
 						],
-
 						[133, 8]
 					]
 				]
@@ -9831,9 +10539,9 @@
 			searchZoneSlot = prop($$props, 'searchZoneSlot', 7),
 			slots = prop($$props, 'slots', 7, false);
 
-		let containerClass = tag(state('qc-container'), 'containerClass'),
-			searchZone = tag(state(null), 'searchZone'),
-			displaySearchForm = tag(state(false), 'displaySearchForm');
+		let containerClass = tag(state('qc-container'), 'containerClass');
+		let searchZone = tag(state(null), 'searchZone');
+		let displaySearchForm = tag(state(false), 'displaySearchForm');
 
 		function focusOnSearchInput() {
 			if (get(displaySearchForm)) {
@@ -9855,6 +10563,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get customElementParent() {
 				return customElementParent();
 			},
@@ -10065,9 +10774,7 @@
 			set slots($$value = false) {
 				slots($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$m();
@@ -10111,7 +10818,7 @@
 
 							add_svelte_meta(
 								() => if_block(node_1, ($$render) => {
-									if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, false);
+									if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, -1);
 								}),
 								'if',
 								PivHeader,
@@ -10188,28 +10895,30 @@
 			{
 				var consequent_3 = ($$anchor) => {
 					var a_3 = root_6$2();
-
-					a_3.__click = (evt) => {
-						evt.preventDefault();
-						set(displaySearchForm, !get(displaySearchForm));
-
-						tick().then(() => {
-							focusOnSearchInput();
-						});
-					};
-
 					var span_1 = child(a_3);
 					var text_3 = child(span_1, true);
 
 					reset(span_1);
 					reset(a_3);
 					template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
+
+					delegated('click', a_3, function click(evt) {
+						evt.preventDefault();
+						set(displaySearchForm, !get(displaySearchForm));
+
+						tick().then(() => {
+							focusOnSearchInput();
+						});
+					});
+
 					append($$anchor, a_3);
 				};
 
+				var d = user_derived(() => Utils.isTruthy(enableSearch()));
+
 				add_svelte_meta(
 					() => if_block(node_4, ($$render) => {
-						if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
+						if (get(d)) $$render(consequent_3);
 					}),
 					'if',
 					PivHeader,
@@ -10320,7 +11029,7 @@
 
 				add_svelte_meta(
 					() => if_block(node_5, ($$render) => {
-						if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, false);
+						if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, -1);
 					}),
 					'if',
 					PivHeader,
@@ -10428,7 +11137,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
@@ -10446,6 +11155,7 @@
 			props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'self']);
 
 		var $$exports = {
+			...legacy_api(),
 			get self() {
 				return self();
 			},
@@ -10453,9 +11163,7 @@
 			set self($$value) {
 				self($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$l();
@@ -10538,7 +11246,7 @@
 		},
 		['links', 'search-zone'],
 		[],
-		true,
+		{ mode: 'open' },
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
 				static self;
@@ -10580,6 +11288,7 @@
 			slots = prop($$props, 'slots', 23, () => ({}));
 
 		var $$exports = {
+			...legacy_api(),
 			get logoUrl() {
 				return logoUrl();
 			},
@@ -10687,9 +11396,7 @@
 			set slots($$value = {}) {
 				slots($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$k();
@@ -10775,7 +11482,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_2, ($$render) => {
-					if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, false);
+					if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, -1);
 				}),
 				'if',
 				PivFooter,
@@ -10814,7 +11521,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
@@ -10832,6 +11539,7 @@
 			props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'self']);
 
 		var $$exports = {
+			...legacy_api(),
 			get self() {
 				return self();
 			},
@@ -10839,9 +11547,7 @@
 			set self($$value) {
 				self($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$j();
@@ -10906,7 +11612,7 @@
 		},
 		['default', 'copyright'],
 		[],
-		true,
+		{ mode: 'open' },
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
 				static self;
@@ -10951,6 +11657,7 @@
 				]);
 
 		var $$exports = {
+			...legacy_api(),
 			get size() {
 				return size();
 			},
@@ -11012,9 +11719,7 @@
 			set src($$value) {
 				src($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var button = root$i();
@@ -11045,9 +11750,7 @@
 							get color() {
 								return iconColor();
 							},
-
 							'aria-hidden': 'true',
-
 							get label() {
 								return label();
 							},
@@ -11095,7 +11798,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
@@ -11119,7 +11822,7 @@
 			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
 
 		const language = Utils.getPageLanguage();
-		const typeClass = strict_equals(type(), "", false) ? type() : 'general';
+		const typeClass = tag(user_derived(() => strict_equals(type(), "", false) ? type() : 'general'), 'typeClass');
 		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
 
 		const warningLabel = strict_equals(language, 'fr')
@@ -11127,8 +11830,8 @@
 			: "Information of high importance";
 
 		const generalLabel = strict_equals(language, 'fr') ? "Information importante" : "Important information";
-		const label = strict_equals(type(), 'general') ? generalLabel : warningLabel;
-		let containerClass = "qc-container" + (strict_equals(fullWidth(), 'true') ? '-fluid' : '');
+		const label = tag(user_derived(() => strict_equals(type(), 'general') ? generalLabel : warningLabel), 'label');
+		let containerClass = tag(user_derived(() => "qc-container" + (strict_equals(fullWidth(), 'true') ? '-fluid' : '')), 'containerClass');
 
 		onMount(() => {
 			const key = getPersistenceKey();
@@ -11163,6 +11866,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get type() {
 				return type();
 			},
@@ -11260,9 +11964,7 @@
 			set hideAlertCallback($$value = () => {}) {
 				hideAlertCallback($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -11288,11 +11990,9 @@
 							get color() {
 								return get($1);
 							},
-
 							size: 'nm',
-
 							get label() {
-								return label;
+								return get(label);
 							}
 						}),
 						'component',
@@ -11322,7 +12022,6 @@
 								get 'aria-label'() {
 									return closeLabel;
 								},
-
 								onclick: hideAlert,
 								size: 'nm',
 								icon: 'xclose',
@@ -11337,9 +12036,11 @@
 						);
 					};
 
+					var d = user_derived(() => Utils.isTruthy(maskable()));
+
 					add_svelte_meta(
 						() => if_block(node_4, ($$render) => {
-							if (Utils.isTruthy(maskable())) $$render(consequent);
+							if (get(d)) $$render(consequent);
 						}),
 						'if',
 						Alert,
@@ -11354,16 +12055,18 @@
 				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
 
 				template_effect(() => {
-					set_class(div, 1, `qc-general-alert ${typeClass ?? ''}`);
-					set_class(div_1, 1, clsx(containerClass));
+					set_class(div, 1, `qc-general-alert ${get(typeClass) ?? ''}`);
+					set_class(div_1, 1, clsx(get(containerClass)));
 				});
 
 				append($$anchor, div);
 			};
 
+			var d_1 = user_derived(() => !Utils.isTruthy(hide()));
+
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (!Utils.isTruthy(hide())) $$render(consequent_1);
+					if (get(d_1)) $$render(consequent_1);
 				}),
 				'if',
 				Alert,
@@ -11394,7 +12097,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
@@ -11417,6 +12120,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get hide() {
 				return hide();
 			},
@@ -11424,9 +12128,7 @@
 			set hide($$value = "false") {
 				hide($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$h();
@@ -11438,7 +12140,6 @@
 			add_svelte_meta(
 				() => Alert(node, spread_props({ hideAlertCallback }, () => props, {
 					slotContent: `<slot />`,
-
 					get hide() {
 						return hide();
 					},
@@ -11484,7 +12185,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	ToTop[FILENAME] = 'src/sdg/components/ToTop/ToTop.svelte';
@@ -11544,6 +12245,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -11560,9 +12262,7 @@
 			set demo($$value = 'false') {
 				demo($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var a = root$g();
@@ -11570,10 +12270,6 @@
 		event('scroll', $window, handleScrollUpButton);
 
 		let classes;
-
-		a.__click = (e) => scrollToTop(e);
-		a.__keydown = handleEnterAndSpace;
-
 		var node = child(a);
 
 		add_svelte_meta(() => Icon(node, { type: 'arrow-up', color: 'background' }), 'component', ToTop, 76, 3, { componentTag: 'Icon' });
@@ -11592,13 +12288,18 @@
 			set_text(text_1, text());
 		});
 
+		delegated('click', a, function click(e) {
+			return scrollToTop(e);
+		});
+
+		delegated('keydown', a, handleEnterAndSpace);
 		append($$anchor, a);
 
 		return pop($$exports);
 	}
 
 	delegate(['click', 'keydown']);
-	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], true);
+	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], { mode: 'open' });
 
 	ToTopWC[FILENAME] = 'src/sdg/components/ToTop/toTopWC.svelte';
 
@@ -11621,8 +12322,7 @@
 			demo: { attribute: 'demo', type: 'String' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
@@ -11736,6 +12436,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get externalIconAlt() {
 				return externalIconAlt();
 			},
@@ -11774,9 +12475,7 @@
 			set nestedExternalLinks($$value = false) {
 				nestedExternalLinks($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$f();
@@ -11785,14 +12484,11 @@
 		add_svelte_meta(
 			() => Icon(node_1, {
 				type: 'external-link',
-
 				get alt() {
 					return externalIconAlt();
 				},
-
 				class: 'qc-ext-link-img',
 				color: 'link-text',
-
 				get rootElement() {
 					return get(imgElement);
 				},
@@ -11824,7 +12520,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
@@ -11908,12 +12604,12 @@
 		return pop($$exports);
 	}
 
-	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
+	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], []));
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
 	var root_1$7 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root$e = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
+	var root$e = add_locations(from_html(`<span class="qc-label-text"></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -11923,6 +12619,7 @@
 			required = prop($$props, 'required', 7);
 
 		var $$exports = {
+			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -11939,19 +12636,16 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$e();
 		var span = first_child(fragment);
-		var node = child(span);
 
-		html(node, text);
+		html(span, text, true);
 		reset(span);
 
-		var node_1 = sibling(span);
+		var node = sibling(span);
 
 		{
 			var consequent = ($$anchor) => {
@@ -11961,7 +12655,7 @@
 			};
 
 			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
+				() => if_block(node, ($$render) => {
 					if (required()) $$render(consequent);
 				}),
 				'if',
@@ -11976,7 +12670,7 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(LabelText, { text: {}, required: {} }, [], [], true);
+	create_custom_element(LabelText, { text: {}, required: {} }, [], [], { mode: 'open' });
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
@@ -12010,6 +12704,7 @@
 				]);
 
 		var $$exports = {
+			...legacy_api(),
 			get forId() {
 				return forId();
 			},
@@ -12071,23 +12766,19 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var label = root$d();
 
 		attribute_effect(label, () => ({
 			for: forId(),
-
 			class: [
 				"qc-label",
 				compact() && "qc-compact",
 				bold() && "qc-bold",
 				disabled() && "qc-disabled"
 			],
-
 			...rest
 		}));
 
@@ -12130,7 +12821,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
@@ -12176,6 +12867,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get focus() {
 				return focus;
 			},
@@ -12243,9 +12935,7 @@
 			) {
 				id($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$c();
@@ -12298,7 +12988,6 @@
 						() => Icon($$anchor, {
 							type: 'search-thin',
 							iconColor: 'grey-regular',
-
 							get class() {
 								return get($0);
 							}
@@ -12354,7 +13043,6 @@
 						icon: 'xclose',
 						iconColor: 'blue-piv',
 						iconSize: 'sm',
-
 						get 'aria-label'() {
 							return clearAriaLabel();
 						},
@@ -12396,7 +13084,16 @@
 			set_attribute(div, 'size', size());
 		});
 
-		bind_value(input, value);
+		bind_value(
+			input,
+			function get() {
+				return value();
+			},
+			function set($$value) {
+				value($$value);
+			}
+		);
+
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -12415,7 +13112,7 @@
 		},
 		[],
 		['focus'],
-		true
+		{ mode: 'open' }
 	);
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
@@ -12449,29 +13146,30 @@
 				"placeholder": strict_equals(lang, "fr") ? "Rechercher…" : "Search",
 				"aria-label": strict_equals(lang, "fr") ? "Rechercher…" : "Search"
 			},
-
 			submit: {
 				"aria-label": strict_equals(lang, "fr") ? "Lancer la recherche" : "Submit search"
 			}
 		};
 
 		let inputProps = tag(
-				user_derived(() => ({
-					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("input", rest),
-					name: name()
-				})),
-				'inputProps'
-			),
-			submitProps = tag(
-				user_derived(() => ({
-					...defaultsAttributes.input,
-					...Utils.computeFieldsAttributes("submit", rest)
-				})),
-				'submitProps'
-			);
+			user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("input", rest),
+				name: name()
+			})),
+			'inputProps'
+		);
+
+		let submitProps = tag(
+			user_derived(() => ({
+				...defaultsAttributes.input,
+				...Utils.computeFieldsAttributes("submit", rest)
+			})),
+			'submitProps'
+		);
 
 		var $$exports = {
+			...legacy_api(),
 			get value() {
 				return value();
 			},
@@ -12497,9 +13195,7 @@
 			set pivBackground($$value = false) {
 				pivBackground($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$b();
@@ -12536,11 +13232,9 @@
 				() => IconButton(node_1, spread_props(
 					{
 						type: 'submit',
-
 						get iconColor() {
 							return get($0);
 						},
-
 						icon: 'search-thin',
 						iconSize: 'md'
 					},
@@ -12561,7 +13255,7 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], true);
+	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], { mode: 'open' });
 
 	SearchBarWC[FILENAME] = 'src/sdg/components/SearchBar/SearchBarWC.svelte';
 
@@ -12585,8 +13279,7 @@
 			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	SearchInputWC[FILENAME] = 'src/sdg/components/SearchInput/SearchInputWC.svelte';
@@ -12615,8 +13308,7 @@
 			leftIcon: { attribute: 'left-icon' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
@@ -12646,8 +13338,7 @@
 			rotate: { attribute: 'rotate' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	IconButtonWC[FILENAME] = 'src/sdg/components/IconButton/IconButtonWC.svelte';
@@ -12674,13 +13365,12 @@
 			iconColor: { attribute: 'icon-color' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root_2$7 = add_locations(from_html(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
+	var root_2$7 = add_locations(from_html(`<!> <span></span>`, 1), FormError[FILENAME], [[48, 8]]);
 	var root_1$6 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
 
 	function FormError($$anchor, $$props) {
@@ -12696,17 +13386,18 @@
 			extraClasses = prop($$props, 'extraClasses', 23, () => []),
 			rootElement = prop($$props, 'rootElement', 15);
 
-		let cleanLabel = tag(user_derived(() => label().replace(/:\s*$/, '')), 'cleanLabel'),
-			defaultInvalidText = tag(
-				user_derived(() => label()
-					? strict_equals(lang, 'fr')
-						? `Le champ ${get(cleanLabel)} est obligatoire.`
-						: `${get(cleanLabel)} field is required.`
-					: strict_equals(lang, 'fr')
-						? `Ce champ est obligatoire.`
-						: `This field is required.`),
-				'defaultInvalidText'
-			);
+		let cleanLabel = tag(user_derived(() => label().replace(/:\s*$/, '')), 'cleanLabel');
+
+		let defaultInvalidText = tag(
+			user_derived(() => label()
+				? strict_equals(lang, 'fr')
+					? `Le champ ${get(cleanLabel)} est obligatoire.`
+					: `${get(cleanLabel)} field is required.`
+				: strict_equals(lang, 'fr')
+					? `Ce champ est obligatoire.`
+					: `This field is required.`),
+			'defaultInvalidText'
+		);
 
 		onMount(() => {
 			if (id()) return;
@@ -12715,6 +13406,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -12767,9 +13459,7 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -12800,9 +13490,8 @@
 						);
 
 						var span = sibling(node_2, 2);
-						var node_3 = child(span);
 
-						html(node_3, () => invalidText() ? invalidText() : get(defaultInvalidText));
+						html(span, () => invalidText() ? invalidText() : get(defaultInvalidText), true);
 						reset(span);
 						append($$anchor, fragment_1);
 					}),
@@ -12854,7 +13543,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
@@ -12871,11 +13560,6 @@
 			validate_snippet_args(...arguments);
 
 			var fieldset_1 = root_1$5();
-
-			fieldset_1.__change = function (...$$args) {
-				apply(onchange, this, $$args, Fieldset, [38, 11]);
-			};
-
 			var node = child(fieldset_1);
 
 			{
@@ -12901,7 +13585,7 @@
 					);
 
 					reset(legend_1);
-					template_effect(() => set_attribute(legend_1, 'id', legendId));
+					template_effect(() => set_attribute(legend_1, 'id', get(legendId)));
 					append($$anchor, legend_1);
 				};
 
@@ -12957,7 +13641,7 @@
 					disabled() && "qc-disabled"
 				]));
 
-				set_attribute(fieldset_1, 'aria-describedby', legendId);
+				set_attribute(fieldset_1, 'aria-describedby', get(legendId));
 				set_attribute(fieldset_1, 'selection-button', selectionButton() ? selectionButton() : undefined);
 				set_attribute(fieldset_1, 'inline', inline() ? inline() : undefined);
 
@@ -12972,6 +13656,10 @@
         --column-count: ${columnCount() ?? ''};
         --fieldset-width: ${maxWidth() ?? ''};
         `);
+			});
+
+			delegated('change', fieldset_1, function (...$$args) {
+				apply(onchange, this, $$args, Fieldset, [38, 11]);
 			});
 
 			append($$anchor, fieldset_1);
@@ -12993,10 +13681,11 @@
 			children = prop($$props, 'children', 7),
 			rootElement = prop($$props, 'rootElement', 15);
 
-		let groupSelection = tag(state(void 0), 'groupSelection'),
-			legendId = name() ? "id_" + name() : Utils.generateId("legend");
+		let groupSelection = tag(state(void 0), 'groupSelection');
+		let legendId = tag(user_derived(() => name() ? "id_" + name() : Utils.generateId("legend")), 'legendId');
 
 		var $$exports = {
+			...legacy_api(),
 			get legend() {
 				return legend();
 			},
@@ -13130,9 +13819,7 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -13154,7 +13841,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_4, ($$render) => {
-					if (!invalid()) $$render(consequent_1); else $$render(alternate, false);
+					if (!invalid()) $$render(consequent_1); else $$render(alternate, -1);
 				}),
 				'if',
 				Fieldset,
@@ -13191,10 +13878,10 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
-	/* updateChoiceInput.svelte.js generated by Svelte v5.43.5 */
+	/* updateChoiceInput.svelte.js generated by Svelte v5.55.5 */
 
 	function updateChoiceInput(
 		input,
@@ -13283,6 +13970,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -13362,9 +14050,7 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		{
@@ -13392,7 +14078,6 @@
 						get invalidText() {
 							return invalidText();
 						},
-
 						onchange
 					},
 					() => restProps,
@@ -13420,7 +14105,6 @@
 							add_svelte_meta(() => snippet(node, children), 'render', ChoiceGroup, 54, 4);
 							append($$anchor, fragment_1);
 						}),
-
 						$$slots: { default: true }
 					}
 				)),
@@ -13450,7 +14134,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
@@ -13474,6 +14158,7 @@
 			inline = prop($$props, 'inline', 7);
 
 		var $$exports = {
+			...legacy_api(),
 			get name() {
 				return name();
 			},
@@ -13553,9 +14238,7 @@
 			set inline($$value) {
 				inline($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$a();
@@ -13597,9 +14280,7 @@
 					get inline() {
 						return inline();
 					},
-
 					host: $$props.$$host,
-
 					get invalid() {
 						return invalid();
 					},
@@ -13615,7 +14296,6 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
-
 					$$slots: { default: true }
 				}),
 				'component',
@@ -13649,7 +14329,7 @@
 		},
 		['default'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
@@ -13690,7 +14370,7 @@
 		});
 
 		Utils.getPageLanguage();
-			const qcCheckoxContext = getContext("qc-checkbox");
+		const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
 			name = prop($$props, 'name', 7),
@@ -13707,8 +14387,8 @@
 			requiredSpan = prop($$props, 'requiredSpan', 15),
 			input = prop($$props, 'input', 7);
 
-		let label = tag(state(proxy($$props.label)), 'label'),
-			rootElement = tag(state(void 0), 'rootElement');
+		let label = tag(state(proxy($$props.label)), 'label');
+		let rootElement = tag(state(void 0), 'rootElement');
 
 		onMount(() => {
 			if (qcCheckoxContext) return;
@@ -13735,6 +14415,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -13859,9 +14540,7 @@
 			set input($$value) {
 				input($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$9();
@@ -13933,7 +14612,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
@@ -13953,9 +14632,9 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		let requiredSpan = tag(state(null), 'requiredSpan'),
-			labelElement = tag(state(void 0), 'labelElement'),
-			input = tag(state(void 0), 'input');
+		let requiredSpan = tag(state(null), 'requiredSpan');
+		let labelElement = tag(state(void 0), 'labelElement');
+		let input = tag(state(void 0), 'input');
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
@@ -13964,6 +14643,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get required() {
 				return required();
 			},
@@ -13998,9 +14678,7 @@
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$8();
@@ -14054,7 +14732,6 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
-
 					$$slots: { default: true }
 				}),
 				'component',
@@ -14083,7 +14760,7 @@
 		},
 		['default'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
@@ -14107,8 +14784,8 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root_3$3 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[142, 8]]);
-	var root_4$1 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[153, 8]]);
+	var root_3$3 = add_locations(from_html(`<div class="qc-description"></div>`), TextField[FILENAME], [[142, 8]]);
+	var root_4$1 = add_locations(from_html(`<div aria-live="polite"></div>`), TextField[FILENAME], [[153, 8]]);
 	var root_1$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
 	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
 
@@ -14118,7 +14795,8 @@
 
 		var $$ownership_validator = create_ownership_validator($$props);
 
-		const textfield = wrap_snippet(TextField, function ($$anchor) {
+		const // Génération des ID pour le aria-describedby
+		textfield = wrap_snippet(TextField, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
 			var fragment = root_1$4();
@@ -14183,9 +14861,8 @@
 			{
 				var consequent_1 = ($$anchor) => {
 					var div = root_3$3();
-					var node_2 = child(div);
 
-					html(node_2, description);
+					html(div, description, true);
 					reset(div);
 					bind_this(div, ($$value) => descriptionElement($$value), () => descriptionElement());
 					template_effect(() => set_attribute(div, 'id', descriptionId));
@@ -14203,18 +14880,17 @@
 				);
 			}
 
-			var node_3 = sibling(node_1, 2);
+			var node_2 = sibling(node_1, 2);
 
-			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 150, 4);
+			add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', TextField, 150, 4);
 
-			var node_4 = sibling(node_3, 2);
+			var node_3 = sibling(node_2, 2);
 
 			{
 				var consequent_2 = ($$anchor) => {
 					var div_1 = root_4$1();
-					var node_5 = child(div_1);
 
-					html(node_5, () => get(charCountText));
+					html(div_1, () => get(charCountText), true);
 					reset(div_1);
 					bind_this(div_1, ($$value) => maxlengthElement($$value), () => maxlengthElement());
 
@@ -14231,7 +14907,7 @@
 				};
 
 				add_svelte_meta(
-					() => if_block(node_4, ($$render) => {
+					() => if_block(node_3, ($$render) => {
 						if (maxlength() && strict_equals(maxlength(), null, false)) $$render(consequent_2);
 					}),
 					'if',
@@ -14241,7 +14917,7 @@
 				);
 			}
 
-			var node_6 = sibling(node_4, 2);
+			var node_4 = sibling(node_3, 2);
 
 			{
 				let $0 = user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
@@ -14250,7 +14926,7 @@
 				$$ownership_validator.binding('formErrorElement', FormError, formErrorElement);
 
 				add_svelte_meta(
-					() => FormError(node_6, {
+					() => FormError(node_4, {
 						get invalid() {
 							return invalid();
 						},
@@ -14262,9 +14938,7 @@
 						get label() {
 							return get($1);
 						},
-
 						extraClasses: ['qc-xs-mt'],
-
 						get id() {
 							return get(errorId);
 						},
@@ -14314,23 +14988,23 @@
 			disabled = prop($$props, 'disabled', 7);
 
 		const webComponentMode = getContext('webComponentMode');
+		let errorId = tag(state(void 0), 'errorId');
+		let charCountText = tag(state(void 0), 'charCountText');
+		let rootElement = tag(state(void 0), 'rootElement');
+		let textFieldRow = tag(state(void 0), 'textFieldRow');
 
-		let errorId = tag(state(void 0), 'errorId'),
-			charCountText = tag(state(void 0), 'charCountText'),
-			rootElement = tag(state(void 0), 'rootElement'),
-			textFieldRow = tag(state(void 0), 'textFieldRow'),
-			defaultInvalidText = tag(
-				user_derived(() => {
-					if (!maxlengthReached()) {
-						return undefined;
-					}
+		let defaultInvalidText = tag(
+			user_derived(() => {
+				if (!maxlengthReached()) {
+					return undefined;
+				}
 
-					return strict_equals(lang, 'fr')
-						? `La limite de caractères du champ ${label()} est dépassée.`
-						: `The character limit for the ${label()} field has been exceeded.`;
-				}),
-				'defaultInvalidText'
-			);
+				return strict_equals(lang, 'fr')
+					? `La limite de caractères du champ ${label()} est dépassée.`
+					: `The character limit for the ${label()} field has been exceeded.`;
+			}),
+			'defaultInvalidText'
+		);
 
 		onMount(() => {
 			if (webComponentMode) return;
@@ -14397,9 +15071,10 @@
 			);
 		});
 
-		// Génération des ID pour le aria-describedby
-		const descriptionId = Utils.generateId('description-'),
-			charCountId = Utils.generateId('charcount-');
+		const // Génération des ID pour le aria-describedby
+		descriptionId = Utils.generateId('description-');
+
+		const charCountId = Utils.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -14415,6 +15090,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get label() {
 				return label();
 			},
@@ -14575,13 +15251,11 @@
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment_2 = comment();
-		var node_7 = first_child(fragment_2);
+		var node_5 = first_child(fragment_2);
 
 		{
 			var consequent_3 = ($$anchor) => {
@@ -14590,9 +15264,9 @@
 
 			var alternate = ($$anchor) => {
 				var div_2 = root_6$1();
-				var node_8 = child(div_2);
+				var node_6 = child(div_2);
 
-				add_svelte_meta(() => textfield(node_8), 'render', TextField, 182, 8);
+				add_svelte_meta(() => textfield(node_6), 'render', TextField, 182, 8);
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
@@ -14605,8 +15279,8 @@
 			};
 
 			add_svelte_meta(
-				() => if_block(node_7, ($$render) => {
-					if (webComponentMode) $$render(consequent_3); else $$render(alternate, false);
+				() => if_block(node_5, ($$render) => {
+					if (webComponentMode) $$render(consequent_3); else $$render(alternate, -1);
 				}),
 				'if',
 				TextField,
@@ -14644,7 +15318,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
@@ -14669,13 +15343,13 @@
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false);
 
-		let labelElement = tag(state(void 0), 'labelElement'),
-			formErrorElement = tag(state(void 0), 'formErrorElement'),
-			descriptionElement = tag(state(void 0), 'descriptionElement'),
-			maxlengthElement = tag(state(void 0), 'maxlengthElement'),
-			value = tag(state(void 0), 'value'),
-			input = tag(state(void 0), 'input'),
-			textFieldRow = tag(state(void 0), 'textFieldRow');
+		let labelElement = tag(state(void 0), 'labelElement');
+		let formErrorElement = tag(state(void 0), 'formErrorElement');
+		let descriptionElement = tag(state(void 0), 'descriptionElement');
+		let maxlengthElement = tag(state(void 0), 'maxlengthElement');
+		let value = tag(state(void 0), 'value');
+		let input = tag(state(void 0), 'input');
+		let textFieldRow = tag(state(void 0), 'textFieldRow');
 
 		onMount(() => {
 			const initialLabelElement = $$props.$$host?.querySelector('label');
@@ -14731,6 +15405,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -14810,9 +15485,7 @@
 			set invalidAtSubmit($$value = false) {
 				invalidAtSubmit($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$7();
@@ -14930,7 +15603,6 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
-
 					$$slots: { default: true }
 				}),
 				'component',
@@ -14965,12 +15637,12 @@
 		},
 		['default'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$6 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
+	var root$6 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -14983,10 +15655,11 @@
 			justified = prop($$props, 'justified', 7),
 			textAlign = prop($$props, 'textAlign', 7);
 
-		const usedId = "toggle-switch-" + (id() ? id() : Math.random().toString(36));
-		let usedLabelTextAlignment = strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start";
+		const usedId = tag(user_derived(() => "toggle-switch-" + (id() ? id() : Math.random().toString(36))), 'usedId');
+		let usedLabelTextAlignment = tag(user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start"), 'usedLabelTextAlignment');
 
 		var $$exports = {
+			...legacy_api(),
 			get label() {
 				return label();
 			},
@@ -15039,9 +15712,7 @@
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var label_1 = root$6();
@@ -15050,26 +15721,34 @@
 		remove_input_defaults(input);
 
 		var span = sibling(input, 2);
-		var node = child(span);
 
-		html(node, label);
+		html(span, label, true);
 		reset(span);
 		next(2);
 		reset(label_1);
 
 		template_effect(() => {
 			set_class(label_1, 1, clsx(["qc-switch", justified() && "qc-switch-justified"]));
-			set_attribute(label_1, 'for', usedId);
-			set_attribute(input, 'id', usedId);
+			set_attribute(label_1, 'for', get(usedId));
+			set_attribute(input, 'id', get(usedId));
 			input.disabled = disabled();
 
 			set_class(span, 1, clsx([
 				"qc-switch-label",
-				strict_equals(usedLabelTextAlignment, "end") && "qc-switch-label-end"
+				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
 			]));
 		});
 
-		bind_checked(input, checked);
+		bind_checked(
+			input,
+			function get() {
+				return checked();
+			},
+			function set($$value) {
+				checked($$value);
+			}
+		);
+
 		append($$anchor, label_1);
 
 		return pop($$exports);
@@ -15087,7 +15766,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	ToggleSwitchWC[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte';
@@ -15151,6 +15830,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -15203,9 +15883,7 @@
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -15282,8 +15960,7 @@
 			textAlign: { attribute: 'text-align', type: 'String' }
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	ToggleSwitchGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte';
@@ -15323,6 +16000,7 @@
 		);
 
 		var $$exports = {
+			...legacy_api(),
 			get disabled() {
 				return disabled();
 			},
@@ -15366,16 +16044,13 @@
 			set maxWidth($$value = "fit-content") {
 				maxWidth($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		add_svelte_meta(
 			() => ChoiceGroup($$anchor, spread_props(
 				{
 					elementsGap: 'md',
-
 					get maxWidth() {
 						return get(usedWidth);
 					}
@@ -15441,7 +16116,6 @@
 
 						append($$anchor, fragment_1);
 					}),
-
 					$$slots: { default: true }
 				}
 			)),
@@ -15466,13 +16140,12 @@
 			items: {}
 		},
 		[],
-		[],
-		false
+		[]
 	));
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
+	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"></span>`), DropdownListItemsSingle[FILENAME], [[130, 20]]);
 	var root_2$4 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[114, 12]]);
 	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[112, 4]]);
 
@@ -15518,7 +16191,7 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
-				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:46:34'));
+				items().forEach((item) => item.checked = false);
 				items().find((option) => strict_equals(option.value, item.value)).checked = true;
 				selectionCallback()();
 			}
@@ -15585,6 +16258,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
@@ -15658,9 +16332,7 @@
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -15670,38 +16342,31 @@
 			var consequent_1 = ($$anchor) => {
 				var ul = root_1$3();
 
-				validate_each_keys(displayedItems, (item) => item.id);
-
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
 						var li = root_2$4();
-
-						li.__click = (event) => handleMouseUp(event, get(item));
-						li.__keydown = (event) => handleKeyDown(event, get(index), get(item));
-
 						var node_1 = child(li);
 
 						{
 							var consequent = ($$anchor) => {
 								var span = root_3$2();
-								var node_2 = child(span);
 
-								html(node_2, placeholder);
+								html(span, placeholder, true);
 								reset(span);
 								append($$anchor, span);
 							};
 
 							var alternate = ($$anchor) => {
 								var fragment_1 = comment();
-								var node_3 = first_child(fragment_1);
+								var node_2 = first_child(fragment_1);
 
-								html(node_3, () => get(item).label);
+								html(node_2, () => get(item).label);
 								append($$anchor, fragment_1);
 							};
 
 							add_svelte_meta(
 								() => if_block(node_1, ($$render) => {
-									if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, false);
+									if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, -1);
 								}),
 								'if',
 								DropdownListItemsSingle,
@@ -15727,6 +16392,14 @@
 							set_attribute(li, 'aria-selected', !!get(item).checked);
 						});
 
+						delegated('click', li, function click(event) {
+							return handleMouseUp(event, get(item));
+						});
+
+						delegated('keydown', li, function keydown(event) {
+							return handleKeyDown(event, get(index), get(item));
+						});
+
 						append($$anchor, li);
 					}),
 					'each',
@@ -15739,9 +16412,11 @@
 				append($$anchor, ul);
 			};
 
+			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
+
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent_1);
+					if (get(d)) $$render(consequent_1);
 				}),
 				'if',
 				DropdownListItemsSingle,
@@ -15774,7 +16449,7 @@
 			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
-		true
+		{ mode: 'open' }
 	);
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
@@ -15928,6 +16603,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
@@ -15983,9 +16659,7 @@
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = comment();
@@ -15995,21 +16669,13 @@
 			var consequent = ($$anchor) => {
 				var ul = root_1$2();
 
-				validate_each_keys(displayedItems, (item) => item.id);
-
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
 						var li = root_2$3();
-
-						li.__keydown = (e) => handleLiKeyDown(e, get(index));
-						li.__click = (e) => handleLiClick(e, get(item));
-
 						var label = child(li);
 						var input = child(label);
 
 						remove_input_defaults(input);
-						input.__change = handleChange;
-						input.__keydown = (e) => handleKeyDown(e, get(index));
 						validate_binding('bind:checked={item.checked}', [], () => get(item), () => 'checked', 176, 28);
 						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 177, 28);
 						bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
@@ -16041,7 +16707,30 @@
 							set_text(text, get(item).label);
 						});
 
-						bind_checked(input, () => get(item).checked, ($$value) => (get(item).checked = $$value));
+						delegated('keydown', li, function keydown(e) {
+							return handleLiKeyDown(e, get(index));
+						});
+
+						delegated('click', li, function click(e) {
+							return handleLiClick(e, get(item));
+						});
+
+						delegated('change', input, handleChange);
+
+						delegated('keydown', input, function keydown_1(e) {
+							return handleKeyDown(e, get(index));
+						});
+
+						bind_checked(
+							input,
+							function get$1() {
+								return get(item).checked;
+							},
+							function set($$value) {
+								(get(item).checked = $$value);
+							}
+						);
+
 						append($$anchor, li);
 					}),
 					'each',
@@ -16054,9 +16743,11 @@
 				append($$anchor, ul);
 			};
 
+			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
+
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent);
+					if (get(d)) $$render(consequent);
 				}),
 				'if',
 				DropdownListItemsMultiple,
@@ -16087,12 +16778,12 @@
 			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
-		true
+		{ mode: 'open' }
 	);
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
+	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"></span>`), DropdownListItems[FILENAME], [[82, 16]]);
 	var root$5 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
@@ -16135,6 +16826,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get focus() {
 				return focus;
 			},
@@ -16253,9 +16945,7 @@
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$5();
@@ -16281,9 +16971,7 @@
 							passValue: () => {
 								selectionCallbackMultiple()();
 							},
-
 							handleExit: (key) => handleExitMultiple()(key),
-
 							get focusOnOuterElement() {
 								return focusOnOuterElement();
 							},
@@ -16322,9 +17010,7 @@
 							selectionCallback: () => {
 								selectionCallbackSingle()();
 							},
-
 							handleExit: (key) => handleExitSingle()(key),
-
 							get focusOnOuterElement() {
 								return focusOnOuterElement();
 							},
@@ -16350,7 +17036,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (multiple()) $$render(consequent); else $$render(alternate, false);
+					if (multiple()) $$render(consequent); else $$render(alternate, -1);
 				}),
 				'if',
 				DropdownListItems,
@@ -16370,9 +17056,8 @@
 				add_svelte_meta(
 					() => await_block(node_2, tick, null, ($$anchor, _) => {
 						var span = root_4();
-						var node_3 = child(span);
 
-						html(node_3, noOptionsMessage);
+						html(span, noOptionsMessage, true);
 						reset(span);
 						append($$anchor, span);
 					}),
@@ -16422,13 +17107,13 @@
 		},
 		[],
 		['focus', 'focusOnLastElement', 'focusOnFirstMatchingElement'],
-		true
+		{ mode: 'open' }
 	);
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
-	var root_2$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
+	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"></span>`), DropdownListButton[FILENAME], [[25, 8]]);
+	var root_2$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"></span>`), DropdownListButton[FILENAME], [[27, 8]]);
 	var root$4 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
@@ -16457,6 +17142,7 @@
 				]);
 
 		var $$exports = {
+			...legacy_api(),
 			get inputId() {
 				return inputId();
 			},
@@ -16509,9 +17195,7 @@
 			set buttonElement($$value) {
 				buttonElement($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var button = root$4();
@@ -16530,25 +17214,23 @@
 		{
 			var consequent = ($$anchor) => {
 				var span = root_1$1();
-				var node_1 = child(span);
 
-				html(node_1, selectedOptionsText);
+				html(span, selectedOptionsText, true);
 				reset(span);
 				append($$anchor, span);
 			};
 
 			var alternate = ($$anchor) => {
 				var span_1 = root_2$2();
-				var node_2 = child(span_1);
 
-				html(node_2, placeholder);
+				html(span_1, placeholder, true);
 				reset(span_1);
 				append($$anchor, span_1);
 			};
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (selectedOptionsText().length > 0) $$render(consequent); else $$render(alternate, false);
+					if (selectedOptionsText().length > 0) $$render(consequent); else $$render(alternate, -1);
 				}),
 				'if',
 				DropdownListButton,
@@ -16561,22 +17243,19 @@
 
 		set_class(span_2, 1, clsx(["qc-dropdown-button-icon"]));
 
-		var node_3 = child(span_2);
+		var node_1 = child(span_2);
 
 		{
 			let $0 = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
 			let $1 = user_derived(() => expanded() ? 0 : 180);
 
 			add_svelte_meta(
-				() => Icon(node_3, {
+				() => Icon(node_1, {
 					type: 'chevron-up-thin',
-
 					get color() {
 						return get($0);
 					},
-
 					size: 'sm',
-
 					get rotate() {
 						return get($1);
 					}
@@ -16609,7 +17288,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
@@ -16645,108 +17324,115 @@
 			webComponentMode = prop($$props, 'webComponentMode', 7, false),
 			expanded = prop($$props, 'expanded', 15, false);
 
-		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
-			inputId = `${id()}-input`,
-			popupId = `${id()}-popup`,
-			itemsId = `${id()}-items`,
-			labelId = `${id()}-label`,
-			errorId = `${id()}-error`,
-			availableWidths = ["xs", "sm", "md", "lg", "xl"],
-			buttonHeight = 40;
+		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option";
+		const inputId = `${id()}-input`;
+		const popupId = `${id()}-popup`;
+		const itemsId = `${id()}-items`;
+		const labelId = `${id()}-label`;
+		const errorId = `${id()}-error`;
+		const availableWidths = ["xs", "sm", "md", "lg", "xl"];
+		const buttonHeight = 40;
+		let instance = tag(state(void 0), 'instance');
+		let parentRow = tag(user_derived(() => get(instance)?.closest(".qc-formfield-row")), 'parentRow');
+		let button = tag(state(void 0), 'button');
+		let searchInput = tag(state(void 0), 'searchInput');
+		let popup = tag(state(void 0), 'popup');
+		let dropdownItems = tag(state(void 0), 'dropdownItems');
+		let selectedItems = tag(user_derived(() => items().filter((item) => item.checked) ?? []), 'selectedItems');
 
-		let instance = tag(state(void 0), 'instance'),
-			parentRow = tag(user_derived(() => get(instance)?.closest(".qc-formfield-row")), 'parentRow'),
-			button = tag(state(void 0), 'button'),
-			searchInput = tag(state(void 0), 'searchInput'),
-			popup = tag(state(void 0), 'popup'),
-			dropdownItems = tag(state(void 0), 'dropdownItems'),
-			selectedItems = tag(user_derived(() => items().filter((item) => item.checked) ?? []), 'selectedItems'),
-			selectedOptionsText = tag(
-				user_derived(() => {
-					if (get(selectedItems).length >= 3) {
-						if (strict_equals(lang, "fr")) {
-							return `${get(selectedItems).length} options sélectionnées`;
-						}
-
-						return `${get(selectedItems).length} selected options`;
+		let selectedOptionsText = tag(
+			user_derived(() => {
+				if (get(selectedItems).length >= 3) {
+					if (strict_equals(lang, "fr")) {
+						return `${get(selectedItems).length} options sélectionnées`;
 					}
 
-					if (get(selectedItems).length > 0 && value().length > 0) {
-						if (multiple()) {
-							return get(selectedItems).map((item) => item.label).join(", ");
-						}
+					return `${get(selectedItems).length} selected options`;
+				}
 
-						return get(selectedItems)[0].label;
+				if (get(selectedItems).length > 0 && value().length > 0) {
+					if (multiple()) {
+						return get(selectedItems).map((item) => item.label).join(", ");
 					}
 
-					return "";
-				}),
-				'selectedOptionsText'
-			),
-			previousValue = tag(state(proxy(value())), 'previousValue'),
-			searchText = tag(state(""), 'searchText'),
-			hiddenSearchText = tag(state(""), 'hiddenSearchText'),
-			displayedItems = tag(state(proxy(items())), 'displayedItems'),
-			itemsForSearch = tag(
-				user_derived(() => items().map((item) => {
-					return {
-						label: Utils.cleanupSearchPrompt(item.label),
-						value: item.value,
-						disabled: item.disabled,
-						checked: item.checked
-					};
-				})),
-				'itemsForSearch'
-			),
-			widthClass = tag(
-				user_derived(() => {
-					if (availableWidths.includes(width())) {
-						return `qc-dropdown-list-${width()}`;
+					return get(selectedItems)[0].label;
+				}
+
+				return "";
+			}),
+			'selectedOptionsText'
+		);
+
+		let previousValue = tag(state(proxy(value())), 'previousValue');
+		let searchText = tag(state(""), 'searchText');
+		let hiddenSearchText = tag(state(""), 'hiddenSearchText');
+		let displayedItems = tag(state(proxy(items())), 'displayedItems');
+
+		let itemsForSearch = tag(
+			user_derived(() => items().map((item) => {
+				return {
+					label: Utils.cleanupSearchPrompt(item.label),
+					value: item.value,
+					disabled: item.disabled,
+					checked: item.checked
+				};
+			})),
+			'itemsForSearch'
+		);
+
+		let widthClass = tag(
+			user_derived(() => {
+				if (availableWidths.includes(width())) {
+					return `qc-dropdown-list-${width()}`;
+				}
+
+				return `qc-dropdown-list-md`;
+			}),
+			'widthClass'
+		);
+
+		let srItemsCountText = tag(
+			user_derived(() => {
+				const s = get(displayedItems).length > 1 ? "s" : "";
+
+				if (get(displayedItems).length > 0) {
+					return strict_equals(lang, "fr")
+						? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
+						: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
+				}
+
+				return "";
+			}),
+			'srItemsCountText'
+		);
+
+		let buttonElementYPosition = tag(state(0), 'buttonElementYPosition');
+
+		let usedHeight = tag(
+			user_derived(() => {
+				const maxItemsHeight = 336;
+				const searchInputTotalHeight = 56;
+
+				if (enableSearch()) {
+					if (get(displayedItems).length > 7) {
+						return maxItemsHeight - searchInputTotalHeight - 17;
 					}
 
-					return `qc-dropdown-list-md`;
-				}),
-				'widthClass'
-			),
-			srItemsCountText = tag(
-				user_derived(() => {
-					const s = get(displayedItems).length > 1 ? "s" : "";
-
-					if (get(displayedItems).length > 0) {
-						return strict_equals(lang, "fr")
-							? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
-							: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
+					return maxItemsHeight - searchInputTotalHeight;
+				} else {
+					if (get(displayedItems).length > 8) {
+						return maxItemsHeight - 33;
 					}
 
-					return "";
-				}),
-				'srItemsCountText'
-			),
-			buttonElementYPosition = tag(state(0), 'buttonElementYPosition'),
-			usedHeight = tag(
-				user_derived(() => {
-					const maxItemsHeight = 336;
-					const searchInputTotalHeight = 56;
+					return maxItemsHeight;
+				}
+			}),
+			'usedHeight'
+		);
 
-					if (enableSearch()) {
-						if (get(displayedItems).length > 7) {
-							return maxItemsHeight - searchInputTotalHeight - 17;
-						}
-
-						return maxItemsHeight - searchInputTotalHeight;
-					} else {
-						if (get(displayedItems).length > 8) {
-							return maxItemsHeight - 33;
-						}
-
-						return maxItemsHeight;
-					}
-				}),
-				'usedHeight'
-			),
-			topOffset = tag(state(0), 'topOffset'),
-			popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness'),
-			popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
+		let topOffset = tag(state(0), 'topOffset');
+		let popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness');
+		let popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -16954,6 +17640,7 @@
 		});
 
 		var $$exports = {
+			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -17123,9 +17810,7 @@
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div = root$3();
@@ -17164,9 +17849,7 @@
 							e.preventDefault();
 							get(button).focus();
 						},
-
 						bold: true,
-
 						get id() {
 							return labelId;
 						}
@@ -17218,9 +17901,7 @@
 				get 'aria-expanded'() {
 					return expanded();
 				},
-
 				'aria-haspopup': 'listbox',
-
 				get 'aria-controls'() {
 					return itemsId;
 				},
@@ -17240,9 +17921,7 @@
 				get usedHeight() {
 					return get(usedHeight);
 				},
-
 				onclick: handleDropdownButtonClick,
-
 				onkeydown: (e) => {
 					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
 				},
@@ -17287,9 +17966,7 @@
 								get ariaLabel() {
 									return get($0);
 								},
-
 								leftIcon: 'true',
-
 								onkeydown: (e) => {
 									handleArrowDown(e, get(dropdownItems));
 									handleArrowUp(e, get(button));
@@ -17369,12 +18046,10 @@
 							closeDropdown("");
 							get(button)?.focus();
 						},
-
 						handleExitSingle: (key) => closeDropdown(key),
 						handleExitMultiple: (key) => closeDropdown(key),
 						focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
 						handlePrintableCharacter,
-
 						get value() {
 							return value();
 						},
@@ -17439,9 +18114,7 @@
 					get invalidText() {
 						return invalidText();
 					},
-
 					extraClasses: ["qc-xs-mt"],
-
 					get label() {
 						return get($0);
 					},
@@ -17517,7 +18190,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
@@ -17664,6 +18337,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -17743,9 +18417,7 @@
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var fragment = root$2();
@@ -17786,9 +18458,7 @@
 						get width() {
 							return width();
 						},
-
 						webComponentMode: true,
-
 						get multiple() {
 							return multiple();
 						},
@@ -17880,7 +18550,7 @@
 		},
 		['default'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	var lg = {
@@ -17945,32 +18615,25 @@
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
 
-		const tooltipPanelSnippet = wrap_snippet(Tooltip, function (
-			$$anchor,
-
-			// $inspect("Placement initial : " + start, requestedPosition)
-			// $inspect("Waiting for next frame")
-			// $inspect("Placement selon " + placement + " : "  + result )
-			// await waitForNextFrame();
-			//$inspect(`adjustPin ${otherAxisPosition}`)
-			//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
-			// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
-			//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
-			//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
-			//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
-			// Récupère les coordonnées de l'élément par rapport au viewport
-			// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
-			// console.log("border",border)
-			//$inspect("keydown", e.key)
-			displayMode = noop
-		) {
+		const // $inspect("Placement initial : " + start, requestedPosition)
+		// $inspect("Waiting for next frame")
+		// $inspect("Placement selon " + placement + " : "  + result )
+		// await waitForNextFrame();
+		//$inspect(`adjustPin ${otherAxisPosition}`)
+		//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
+		// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+		//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
+		//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
+		//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
+		// Récupère les coordonnées de l'élément par rapport au viewport
+		// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+		// console.log("border",border)
+		//$inspect("keydown", e.key)
+		tooltipPanelSnippet = wrap_snippet(Tooltip, function ($$anchor, displayMode = noop) {
 			validate_snippet_args(...arguments);
 
 			var div = root_1();
 			let classes;
-
-			div.__click = (e) => e.clickIntoPanel = true;
-
 			let styles;
 			var div_1 = child(div);
 			var section = child(div_1);
@@ -18022,7 +18685,7 @@
 
 					add_svelte_meta(
 						() => if_block(node_2, ($$render) => {
-							if (title()) $$render(consequent); else $$render(alternate, false);
+							if (title()) $$render(consequent); else $$render(alternate, -1);
 						}),
 						'if',
 						Tooltip,
@@ -18037,15 +18700,6 @@
 			reset(div_1);
 
 			var a = sibling(div_1, 2);
-
-			a.__click = closeTooltip;
-
-			a.__keydown = (e) => {
-				if (strict_equals(e.code, "Space")) {
-					closeTooltip(e);
-				}
-			};
-
 			var node_4 = child(a);
 
 			add_svelte_meta(() => Icon(node_4, { type: 'xclose', color: 'blue-piv', size: 'sm' }), 'component', Tooltip, 465, 12, { componentTag: 'Icon' });
@@ -18070,6 +18724,18 @@
 				set_attribute(a, 'aria-label', labels.closeButton.ariaLabel);
 			});
 
+			delegated('click', div, function click(e) {
+				return e.clickIntoPanel = true;
+			});
+
+			delegated('click', a, closeTooltip);
+
+			delegated('keydown', a, function keydown(e) {
+				if (strict_equals(e.code, "Space")) {
+					closeTooltip(e);
+				}
+			});
+
 			append($$anchor, div);
 		});
 
@@ -18086,36 +18752,35 @@
 			descriptionSlot = prop($$props, 'descriptionSlot', 7),
 			textSlot = prop($$props, 'textSlot', 7);
 
-		const defaultTranslateY = "calc(-50% + 8px)",
-			defaultTranslateX = "-50%";
+		const defaultTranslateY = "calc(-50% + 8px)";
+		const defaultTranslateX = "-50%";
+		let isFr = strict_equals(Utils.getPageLanguage(), "fr");
+		let tooltipPanel = tag(state(void 0), 'tooltipPanel');
+		let tooltipId = Utils.generateId("tooltip");
+		let tooltipContainer;
+		let tooltipButton = tag(state(void 0), 'tooltipButton');
+		let modale = tag(state(void 0), 'modale');
+		let displayPopover = tag(state(false), 'displayPopover');
+		let visiblePopover = tag(state(false), 'visiblePopover');
+		let displayModal = tag(state(false), 'displayModal');
+		let translateX = tag(state(defaultTranslateX), 'translateX');
+		let translateY = tag(state(defaultTranslateY), 'translateY');
+		let position = tag(state(proxy(requestedPosition())), 'position');
+		let mobileFlag = tag(state(false), 'mobileFlag');
+		let forceModal = tag(state(false), 'forceModal');
+		let modalFlag = tag(user_derived(() => get(mobileFlag) || strict_equals(displayMode(), "modal") || get(forceModal)), 'modalFlag');
+		let hasDescription = tag(user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot())), 'hasDescription');
+		let hasText = tag(user_derived((_) => hasProperty(text(), slots()["text"], textSlot())), 'hasText');
+		let tooltipIcon = tag(user_derived(() => icon() + "-tooltip"), 'tooltipIcon');
 
-		let isFr = strict_equals(Utils.getPageLanguage(), "fr"),
-			tooltipPanel = tag(state(void 0), 'tooltipPanel'),
-			tooltipId = Utils.generateId("tooltip"),
-			tooltipContainer,
-			tooltipButton = tag(state(void 0), 'tooltipButton'),
-			modale = tag(state(void 0), 'modale'),
-			displayPopover = tag(state(false), 'displayPopover'),
-			visiblePopover = tag(state(false), 'visiblePopover'),
-			displayModal = tag(state(false), 'displayModal'),
-			translateX = tag(state(defaultTranslateX), 'translateX'),
-			translateY = tag(state(defaultTranslateY), 'translateY'),
-			position = tag(state(proxy(requestedPosition())), 'position'),
-			mobileFlag = tag(state(false), 'mobileFlag'),
-			forceModal = tag(state(false), 'forceModal'),
-			modalFlag = tag(user_derived(() => get(mobileFlag) || strict_equals(displayMode(), "modal") || get(forceModal)), 'modalFlag'),
-			hasDescription = tag(user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot())), 'hasDescription'),
-			hasText = tag(user_derived((_) => hasProperty(text(), slots()["text"], textSlot())), 'hasText'),
-			tooltipIcon = tag(user_derived(() => icon() + "-tooltip"), 'tooltipIcon'),
-			labels = {
-				tooltipButton: {
-					ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "")
-				},
-
-				closeButton: {
-					ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
-				}
-			};
+		let labels = {
+			tooltipButton: {
+				ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "")
+			},
+			closeButton: {
+				ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
+			}
+		};
 
 		inspect(() => ["modalFlag", get(modalFlag)], (...$$args) => console.log(...$$args), true);
 
@@ -18424,6 +19089,7 @@
 		}
 
 		var $$exports = {
+			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -18530,9 +19196,7 @@
 			set textSlot($$value) {
 				textSlot($$value);
 				flushSync();
-			},
-
-			...legacy_api()
+			}
 		};
 
 		var div_2 = root$1();
@@ -18540,25 +19204,12 @@
 		event('click', $document, closeOnTooltipBlur);
 		event('focusin', $document, closeOnTooltipBlur);
 		event('blur', $window, closeOnWindowBlur);
-		div_2.__focusout = markInnerEvent;
-
-		div_2.__keydown = (e) => {
-			//$inspect("keydown", e.key)
-			if (get(modalFlag)) return;
-
-			if (strict_equals(e.key, "Escape")) {
-				closeTooltip(e);
-			}
-		};
 
 		var node_5 = child(div_2);
 
 		{
 			var consequent_1 = ($$anchor) => {
 				var span = root_5();
-
-				span.__click = clickIconButton;
-
 				var node_6 = child(span);
 
 				html(node_6, text);
@@ -18567,6 +19218,7 @@
 
 				add_svelte_meta(() => snippet(node_7, textSlot), 'render', Tooltip, 343, 21);
 				reset(span);
+				delegated('click', span, clickIconButton);
 				append($$anchor, span);
 			};
 
@@ -18578,7 +19230,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_5, ($$render) => {
-					if (get(hasText)) $$render(consequent_1); else $$render(alternate_1, false);
+					if (get(hasText)) $$render(consequent_1); else $$render(alternate_1, -1);
 				}),
 				'if',
 				Tooltip,
@@ -18595,20 +19247,7 @@
 				let classes_1;
 				let styles_1;
 				var div_4 = child(div_3);
-
-				div_4.__click = clickIconButton;
-
 				var a_1 = sibling(div_4, 2);
-
-				a_1.__click = showTooltip;
-
-				a_1.__keydown = (e) => {
-					if (strict_equals(e.code, "Space")) {
-						get(tooltipButton).click();
-						e.preventDefault();
-					}
-				};
-
 				var node_9 = child(a_1);
 
 				add_svelte_meta(
@@ -18616,7 +19255,6 @@
 						get type() {
 							return get(tooltipIcon);
 						},
-
 						size: 'sm'
 					}),
 					'component',
@@ -18659,13 +19297,6 @@
 				{
 					var consequent_3 = ($$anchor) => {
 						var dialog = root_9();
-
-						dialog.__click = (e) => {
-							if (e.clickIntoPanel) return;
-
-							closeModale();
-						};
-
 						let classes_3;
 						var div_6 = child(dialog);
 						var node_13 = child(div_6);
@@ -18676,6 +19307,13 @@
 						bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
 						template_effect(() => classes_3 = set_class(dialog, 1, 'qc-hash-1ejnoxp', null, classes_3, { 'qc-desktop': !get(mobileFlag) }));
 						event('toggle', dialog, toggleModal);
+
+						delegated('click', dialog, function click_1(e) {
+							if (e.clickIntoPanel) return;
+
+							closeModale();
+						});
+
 						append($$anchor, dialog);
 					};
 
@@ -18702,6 +19340,16 @@
 					set_attribute(a_1, 'aria-label', labels.tooltipButton.ariaLabel);
 				});
 
+				delegated('click', div_4, clickIconButton);
+				delegated('click', a_1, showTooltip);
+
+				delegated('keydown', a_1, function keydown_2(e) {
+					if (strict_equals(e.code, "Space")) {
+						get(tooltipButton).click();
+						e.preventDefault();
+					}
+				});
+
 				append($$anchor, div_3);
 			};
 
@@ -18718,6 +19366,17 @@
 
 		reset(div_2);
 		bind_this(div_2, ($$value) => tooltipContainer = $$value, () => tooltipContainer);
+		delegated('focusout', div_2, markInnerEvent);
+
+		delegated('keydown', div_2, function keydown_1(e) {
+			//$inspect("keydown", e.key)
+			if (get(modalFlag)) return;
+
+			if (strict_equals(e.key, "Escape")) {
+				closeTooltip(e);
+			}
+		});
+
 		append($$anchor, div_2);
 
 		return pop($$exports);
@@ -18743,7 +19402,7 @@
 		},
 		[],
 		[],
-		true
+		{ mode: 'open' }
 	);
 
 	TooltipWC[FILENAME] = 'src/sdg/components/Tooltip/TooltipWC.svelte';
@@ -18821,7 +19480,7 @@
 		},
 		['text', 'description'],
 		[],
-		true
+		{ mode: 'open' }
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
