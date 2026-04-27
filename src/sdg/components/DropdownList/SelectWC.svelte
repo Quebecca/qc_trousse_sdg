@@ -110,8 +110,10 @@
 
     $effect(() => {
         if (previousValue.toString() !== value.toString()) {
+            internalChange = true;
             previousValue = value;
             selectElement?.dispatchEvent(new CustomEvent('change', {detail: value}));
+            tick().then(() => internalChange = false);
         }
     });
 

@@ -18211,7 +18211,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[167, 0], [188, 0]]);
+	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[169, 0], [190, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -18335,8 +18335,10 @@
 
 		user_effect(() => {
 			if (strict_equals(get(previousValue).toString(), value().toString(), false)) {
+				internalChange = true;
 				set(previousValue, value(), true);
 				get(selectElement)?.dispatchEvent(new CustomEvent('change', { detail: value() }));
+				tick().then(() => internalChange = false);
 			}
 		});
 
@@ -18565,7 +18567,7 @@
 				)),
 				'component',
 				SelectWC,
-				171,
+				173,
 				0,
 				{ componentTag: 'DropdownList' }
 			);
