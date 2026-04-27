@@ -5,6 +5,7 @@
 - **qc-textfield** : Ajout de la propriété `disabled` comme attribut explicite du web component, pour une meilleure réactivité avec les frameworks (Angular, etc.) ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).
 - **qc-search-input** : Ajout de la propriété `placeholder` comme attribut explicite du web component ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).
 ### Corrigé
+- **qc-select** : Correction du double event `change` et de la perte de sélection lors d'une reconstruction dynamique des options par un framework (Angular `@for`, React `.map()`, etc.) ([#36](https://github.com/Quebecca/qc_trousse_sdg/issues/36)).
 - **qc-textfield** : Le label conserve un fallback sur `input.disabled` quand la propriété `disabled` n'est pas passée explicitement (rétrocompatibilité Svelte).
 - **Dépendances** : Mise à jour des dépendances npm (correctifs de sécurité Dependabot).
 - **SCSS** : Correction des warnings Sass `if-function` dans `_grid-lib.scss` (`if()` → `@if/@else`).

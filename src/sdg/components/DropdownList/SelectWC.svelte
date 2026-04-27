@@ -39,7 +39,24 @@
     let selectElement = $state();
     let items = $state();
     let labelElement = $state();
-    const observer = Utils.createMutationObserver($host(), setupItemsList);
+    let setupDebounceTimer = null;
+    let lastKnownValue = [];
+    const debouncedSetupItemsList = () => {
+        // Capturer la valeur AVANT le debounce — le MutationObserver
+        // est appelé synchronement par le navigateur, avant les $effect Svelte
+        if (setupDebounceTimer === null) {
+            lastKnownValue = [...value];
+        }
+        clearTimeout(setupDebounceTimer);
+        setupDebounceTimer = setTimeout(() => {
+            setupDebounceTimer = null;
+            const options = selectElement?.querySelectorAll("option");
+            if (options && options.length > 0) {
+                setupItemsList(lastKnownValue);
+            }
+        }, 0);
+    };
+    const observer = Utils.createMutationObserver($host(), debouncedSetupItemsList);
     const observerOptions = {
         childList: true,
         attributes: true,
@@ -72,6 +89,7 @@
     });
 
     onDestroy(() => {
+        clearTimeout(setupDebounceTimer);
         observer?.disconnect();
         selectElement.removeEventListener("change", handleSelectChange);
     });
@@ -92,8 +110,10 @@
 
     $effect(() => {
         if (previousValue.toString() !== value.toString()) {
+            internalChange = true;
             previousValue = value;
             selectElement?.dispatchEvent(new CustomEvent('change', {detail: value}));
+            tick().then(() => internalChange = false);
         }
     });
 
@@ -121,13 +141,18 @@
        }
     });
 
-    function setupItemsList() {
+    function setupItemsList(preservedValue) {
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
+            const hasPreservedValue = preservedValue && preservedValue.length > 0;
             items = Array.from(options).map(option => ({
                 value: option.value,
                 label: option.label ?? option.innerHTML,
-                checked: option.selected,
+                // Si une valeur est préservée (reconstruction dynamique),
+                // ignorer option.selected (le navigateur sélectionne la 1re option par défaut)
+                checked: hasPreservedValue
+                    ? preservedValue.includes(option.value)
+                    : option.selected,
                 disabled: option.disabled,
             }));
         } else {

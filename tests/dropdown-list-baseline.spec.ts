@@ -561,7 +561,7 @@ test.describe('formulaire', () => {
 
 test.describe('Manipulation du DOM', () => {
    test('Réordonnancement des options', {
-       tag: ['@dom', '@dropdownlist'],
+       tag: ['@baseline', '@dropdownlist'],
        annotation: {
            type: 'description',
            description: 'En réordonnant les options dans le select, alors les changement sont reflétés dans la popup'
@@ -597,5 +597,69 @@ test.describe('Manipulation du DOM', () => {
        - status
        `
        );
+   });
+
+   test('Reconstruction dynamique des options (issue #36)', {
+       tag: ['@baseline', '@dropdownlist'],
+       annotation: {
+           type: 'description',
+           description: 'Quand les options sont reconstruites dynamiquement (ex: boucle @for Angular après navigation), la sélection doit rester fonctionnelle'
+       }
+   }, async ({ page }) => {
+       // Sélectionner Option 3
+       await page.locator('#qc-select-single-choice-input').click();
+       await page.locator('[id="qc-select-single-choice-Option-3-3"]').click();
+       await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 3');
+
+       // Simuler la reconstruction des options par un framework (Angular @for)
+       // Vider puis recréer les options une par une, comme le ferait une boucle @for
+       await page.locator('#select-single-choice').evaluate((select: HTMLSelectElement) => {
+           select.innerHTML = '';
+           for (let i = 1; i <= 5; i++) {
+               const option = document.createElement('option');
+               option.value = String(i);
+               option.textContent = `Option ${i}`;
+               select.appendChild(option);
+           }
+       });
+
+       // Attendre que le MutationObserver (debouncé) ait traité les mutations
+       await page.waitForTimeout(100);
+
+       // Sélectionner Option 4 après reconstruction
+       await page.locator('#qc-select-single-choice-input').click();
+       await page.locator('[id="qc-select-single-choice-Option-4-4"]').click();
+
+       // La sélection doit être effective — pas écrasée par un change event parasite
+       await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 4');
+   });
+
+   test('Reconstruction dynamique préserve la valeur courante (issue #36)', {
+       tag: ['@baseline', '@dropdownlist'],
+       annotation: {
+           type: 'description',
+           description: 'Quand les options sont reconstruites alors qu\'une valeur est sélectionnée, la valeur doit être préservée si elle existe toujours dans les nouvelles options'
+       }
+   }, async ({ page }) => {
+       // Sélectionner Option 5
+       await page.locator('#qc-select-single-choice-input').click();
+       await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
+       await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+
+       // Reconstruire les options en gardant la valeur 5 disponible
+       await page.locator('#select-single-choice').evaluate((select: HTMLSelectElement) => {
+           select.innerHTML = '';
+           for (let i = 3; i <= 8; i++) {
+               const option = document.createElement('option');
+               option.value = String(i);
+               option.textContent = `Option ${i}`;
+               select.appendChild(option);
+           }
+       });
+
+       await page.waitForTimeout(100);
+
+       // La valeur 5 doit être préservée puisqu'elle existe dans les nouvelles options
+       await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
    });
 });

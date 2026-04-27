@@ -18211,7 +18211,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[144, 0], [165, 0]]);
+	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[169, 0], [190, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -18249,7 +18249,33 @@
 		let selectElement = tag(state(void 0), 'selectElement');
 		let items = tag(state(void 0), 'items');
 		let labelElement = tag(state(void 0), 'labelElement');
-		const observer = Utils.createMutationObserver($$props.$$host, setupItemsList);
+		let setupDebounceTimer = null;
+		let lastKnownValue = [];
+
+		const debouncedSetupItemsList = () => {
+			// Capturer la valeur AVANT le debounce — le MutationObserver
+			// est appelé synchronement par le navigateur, avant les $effect Svelte
+			if (strict_equals(setupDebounceTimer, null)) {
+				lastKnownValue = [...value()];
+			}
+
+			clearTimeout(setupDebounceTimer);
+
+			setupDebounceTimer = setTimeout(
+				() => {
+					setupDebounceTimer = null;
+
+					const options = get(selectElement)?.querySelectorAll("option");
+
+					if (options && options.length > 0) {
+						setupItemsList(lastKnownValue);
+					}
+				},
+				0
+			);
+		};
+
+		const observer = Utils.createMutationObserver($$props.$$host, debouncedSetupItemsList);
 
 		const observerOptions = {
 			childList: true,
@@ -18284,6 +18310,7 @@
 		});
 
 		onDestroy(() => {
+			clearTimeout(setupDebounceTimer);
 			observer?.disconnect();
 			get(selectElement).removeEventListener("change", handleSelectChange);
 		});
@@ -18308,8 +18335,10 @@
 
 		user_effect(() => {
 			if (strict_equals(get(previousValue).toString(), value().toString(), false)) {
+				internalChange = true;
 				set(previousValue, value(), true);
 				get(selectElement)?.dispatchEvent(new CustomEvent('change', { detail: value() }));
+				tick().then(() => internalChange = false);
 			}
 		});
 
@@ -18327,16 +18356,22 @@
 			}
 		});
 
-		function setupItemsList() {
+		function setupItemsList(preservedValue) {
 			const options = get(selectElement)?.querySelectorAll("option");
 
 			if (options && options.length > 0) {
+				const hasPreservedValue = preservedValue && preservedValue.length > 0;
+
 				set(
 					items,
 					Array.from(options).map((option) => ({
 						value: option.value,
 						label: option.label ?? option.innerHTML,
-						checked: option.selected,
+						// Si une valeur est préservée (reconstruction dynamique),
+						// ignorer option.selected (le navigateur sélectionne la 1re option par défaut)
+						checked: hasPreservedValue
+							? preservedValue.includes(option.value)
+							: option.selected,
 						disabled: option.disabled
 					})),
 					true
@@ -18532,7 +18567,7 @@
 				)),
 				'component',
 				SelectWC,
-				148,
+				173,
 				0,
 				{ componentTag: 'DropdownList' }
 			);
