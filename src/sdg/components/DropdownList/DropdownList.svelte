@@ -15,7 +15,7 @@
         ariaLabel = "",
         width = "md",
         items = [],
-        value = $bindable([]),
+        value = $bindable(),
         placeholder,
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
@@ -57,7 +57,7 @@
                 return `${selectedItems.length} selected options`;
             }
 
-            if (selectedItems.length > 0 && value.length > 0) {
+            if (selectedItems.length > 0 && value?.length > 0) {
                 if (multiple) {
                     return selectedItems.map((item) => item.label).join(", ");
                 }
@@ -248,19 +248,24 @@
     });
 
     $effect(() => {
-        const tempValue = selectedItems?.map(item => item.value);
-        if (tempValue?.toString() !== "") {
-            value = tempValue;
-        } else {
-            value = [];
-        }
-    });
-
-    $effect(() => {
         if (value) {
             items.forEach((item) => {
                 item.checked = value.includes(item.value);
             });
+        }
+    });
+
+    $effect(() => {
+        const tempValue = selectedItems?.map(item => item.value);
+        const newStr = tempValue?.toString() ?? '';
+        const oldStr = value?.toString() ?? '';
+        // Ne pas écraser value quand selectedItems est vide mais value a des éléments
+        // (reset parasite lors d'une reconstruction dynamique des options)
+        if (newStr === '' && oldStr !== '') {
+            return;
+        }
+        if (newStr !== oldStr) {
+            value = tempValue?.length > 0 ? tempValue : [];
         }
     });
 
