@@ -12828,7 +12828,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$c = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[38, 0, [[51, 4]]]]);
+	var root$c = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[88, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -12839,6 +12839,7 @@
 		let value = prop($$props, 'value', 15, ''),
 			label = prop($$props, 'label', 7, ''),
 			size = prop($$props, 'size', 7, ''),
+			debounce = prop($$props, 'debounce', 7, 0),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
@@ -12853,6 +12854,7 @@
 					'value',
 					'label',
 					'size',
+					'debounce',
 					'ariaLabel',
 					'clearAriaLabel',
 					'leftIcon',
@@ -12862,6 +12864,48 @@
 		const leftIconNormalized = tag(user_derived(() => strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), "")), 'leftIconNormalized');
 		const isDisabled = tag(user_derived(() => strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "")), 'isDisabled');
 		let searchInput;
+
+		// Valeur interne liée à l'input — toujours synchrone avec la saisie
+		let inputValue = tag(state(proxy(value() ?? '')), 'inputValue');
+
+		let timer;
+
+		// Synchroniser inputValue quand value change de l'extérieur (clear, reset)
+		// untrack sur inputValue pour ne réagir qu'aux changements de `value`
+		user_effect(() => {
+			const v = value() ?? '';
+
+			if (strict_equals(v, untrack(() => get(inputValue)), false)) {
+				set(inputValue, v, true);
+			}
+		});
+
+		function handleInput() {
+			if (debounce() > 0) {
+				clearTimeout(timer);
+
+				timer = setTimeout(
+					() => {
+						value(get(inputValue));
+						searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
+					},
+					debounce()
+				);
+			} else {
+				value(get(inputValue));
+			}
+		}
+
+		function clearValue(e) {
+			e.preventDefault();
+			clearTimeout(timer);
+			set(inputValue, "");
+			value("");
+			searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
+			searchInput?.focus();
+		}
+
+		onDestroy(() => clearTimeout(timer));
 
 		function focus() {
 			searchInput?.focus();
@@ -12897,6 +12941,15 @@
 
 			set size($$value = '') {
 				size($$value);
+				flushSync();
+			},
+
+			get debounce() {
+				return debounce();
+			},
+
+			set debounce($$value = 0) {
+				debounce($$value);
 				flushSync();
 			},
 
@@ -12960,7 +13013,7 @@
 					}),
 					'component',
 					SearchInput,
-					32,
+					69,
 					4,
 					{ componentTag: 'Label' }
 				);
@@ -12972,7 +13025,7 @@
 				}),
 				'if',
 				SearchInput,
-				31,
+				68,
 				0
 			);
 		}
@@ -12995,7 +13048,7 @@
 						}),
 						'component',
 						SearchInput,
-						46,
+						83,
 						8,
 						{ componentTag: 'Icon' }
 					);
@@ -13008,7 +13061,7 @@
 				}),
 				'if',
 				SearchInput,
-				45,
+				82,
 				4
 			);
 		}
@@ -13018,6 +13071,7 @@
 		attribute_effect(
 			input,
 			() => ({
+				oninput: handleInput,
 				type: 'search',
 				autocomplete: 'off',
 				'aria-label': label() ? undefined : ariaLabel(),
@@ -13047,16 +13101,11 @@
 						get 'aria-label'() {
 							return clearAriaLabel();
 						},
-
-						onclick: (e) => {
-							e.preventDefault();
-							value("");
-							searchInput?.focus();
-						}
+						onclick: clearValue
 					}),
 					'component',
 					SearchInput,
-					61,
+					99,
 					4,
 					{ componentTag: 'IconButton' }
 				);
@@ -13064,11 +13113,11 @@
 
 			add_svelte_meta(
 				() => if_block(node_2, ($$render) => {
-					if (value()) $$render(consequent_2);
+					if (get(inputValue)) $$render(consequent_2);
 				}),
 				'if',
 				SearchInput,
-				60,
+				98,
 				4
 			);
 		}
@@ -13087,11 +13136,11 @@
 
 		bind_value(
 			input,
-			function get() {
-				return value();
+			function get$1() {
+				return get(inputValue);
 			},
-			function set($$value) {
-				value($$value);
+			function set$1($$value) {
+				set(inputValue, $$value);
 			}
 		);
 
@@ -13106,6 +13155,7 @@
 			value: {},
 			label: {},
 			size: {},
+			debounce: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
 			leftIcon: {},
@@ -13208,6 +13258,7 @@
 
 			add_svelte_meta(
 				() => SearchInput(node, spread_props(() => get(inputProps), {
+					size: 'full-width',
 					get value() {
 						return value();
 					},
@@ -13243,7 +13294,7 @@
 				)),
 				'component',
 				SearchBar,
-				40,
+				42,
 				8,
 				{ componentTag: 'IconButton' }
 			);
@@ -13292,7 +13343,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
-		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 21, 0, { componentTag: 'SearchInput' });
+		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 23, 0, { componentTag: 'SearchInput' });
 
 		return pop($$exports);
 	}
@@ -13301,12 +13352,14 @@
 		SearchInputWC,
 		{
 			id: { attribute: 'id' },
+			value: { attribute: 'value', reflect: true },
 			ariaLabel: { attribute: 'aria-label' },
 			clearAriaLabel: { attribute: 'clear-aria-label' },
 			label: { attribute: 'label' },
 			placeholder: { attribute: 'placeholder' },
 			size: { attribute: 'size' },
-			leftIcon: { attribute: 'left-icon' }
+			leftIcon: { attribute: 'left-icon' },
+			debounce: { attribute: 'debounce' }
 		},
 		[],
 		[]
@@ -17307,9 +17360,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[395, 20]]);
-	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[436, 24]]);
-	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[325, 0, [[330, 4, [[349, 8, [[378, 12, [[434, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[400, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[441, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[330, 0, [[335, 4, [[354, 8, [[383, 12, [[439, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -17323,7 +17376,7 @@
 			ariaLabel = prop($$props, 'ariaLabel', 7, ""),
 			width = prop($$props, 'width', 7, "md"),
 			items = prop($$props, 'items', 23, () => []),
-			value = prop($$props, 'value', 31, () => tag_proxy(proxy([]), 'value')),
+			value = prop($$props, 'value', 15),
 			placeholder = prop($$props, 'placeholder', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
 			enableSearch = prop($$props, 'enableSearch', 7, false),
@@ -17364,7 +17417,7 @@
 					return `${get(selectedItems).length} selected options`;
 				}
 
-				if (get(selectedItems).length > 0 && value().length > 0) {
+				if (get(selectedItems).length > 0 && value()?.length > 0) {
 					if (multiple()) {
 						return get(selectedItems).map((item) => item.label).join(", ");
 					}
@@ -17586,20 +17639,26 @@
 		});
 
 		user_effect(() => {
-			const tempValue = get(selectedItems)?.map((item) => item.value);
-
-			if (strict_equals(tempValue?.toString(), "", false)) {
-				value(tempValue);
-			} else {
-				value([]);
-			}
-		});
-
-		user_effect(() => {
 			if (value()) {
 				items().forEach((item) => {
 					item.checked = value().includes(item.value);
 				});
+			}
+		});
+
+		user_effect(() => {
+			const tempValue = get(selectedItems)?.map((item) => item.value);
+			const newStr = tempValue?.toString() ?? '';
+			const oldStr = value()?.toString() ?? '';
+
+			// Ne pas écraser value quand selectedItems est vide mais value a des éléments
+			// (reset parasite lors d'une reconstruction dynamique des options)
+			if (strict_equals(newStr, '') && strict_equals(oldStr, '', false)) {
+				return;
+			}
+
+			if (strict_equals(newStr, oldStr, false)) {
+				value(tempValue?.length > 0 ? tempValue : []);
 			}
 		});
 
@@ -17706,7 +17765,7 @@
 				return value();
 			},
 
-			set value($$value = []) {
+			set value($$value) {
 				value($$value);
 				flushSync();
 			},
@@ -17872,7 +17931,7 @@
 					}),
 					'component',
 					DropdownList,
-					336,
+					341,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -17884,7 +17943,7 @@
 				}),
 				'if',
 				DropdownList,
-				335,
+				340,
 				8
 			);
 		}
@@ -17952,7 +18011,7 @@
 			}),
 			'component',
 			DropdownList,
-			358,
+			363,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -18005,7 +18064,7 @@
 						),
 						'component',
 						DropdownList,
-						396,
+						401,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -18021,7 +18080,7 @@
 				}),
 				'if',
 				DropdownList,
-				394,
+				399,
 				16
 			);
 		}
@@ -18079,7 +18138,7 @@
 				),
 				'component',
 				DropdownList,
-				414,
+				419,
 				16,
 				{ componentTag: 'DropdownListItems' }
 			);
@@ -18099,7 +18158,7 @@
 			}),
 			'key',
 			DropdownList,
-			435,
+			440,
 			20
 		);
 
@@ -18145,7 +18204,7 @@
 				}),
 				'component',
 				DropdownList,
-				444,
+				449,
 				4,
 				{ componentTag: 'FormError' }
 			);
