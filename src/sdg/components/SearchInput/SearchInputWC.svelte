@@ -8,7 +8,8 @@
         label: {attribute: 'label'},
         placeholder: {attribute: 'placeholder'},
         size: {attribute: 'size'},
-        leftIcon: {attribute: 'left-icon'}
+        leftIcon: {attribute: 'left-icon'},
+        debounce: {attribute: 'debounce'}
     }
 }}" />
 

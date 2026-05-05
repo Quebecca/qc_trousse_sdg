@@ -38,6 +38,16 @@
             clear-aria-label="Effacer le texte"
             left-icon
     ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            placeholder="Recherche avec debounce (300 ms)"
+            aria-label="Recherche avec debounce"
+            clear-aria-label="Effacer le texte"
+            debounce="300"
+            left-icon
+    ></qc-search-input>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -77,6 +87,12 @@
             <td>Texte</td>
             <td>"Effacer le texte" ou "Clear text"</td>
             <td>Libellé accessible du bouton pour effacer le champ.</td>
+        </tr>
+        <tr>
+            <td>debounce</td>
+            <td>Nombre (millisecondes)</td>
+            <td>0</td>
+            <td>Délai avant de propager la valeur saisie. Utile pour limiter les appels lors d'une recherche en temps réel. La valeur 0 désactive le debounce (propagation immédiate).</td>
         </tr>
         <tr>
             <td>disabled</td>

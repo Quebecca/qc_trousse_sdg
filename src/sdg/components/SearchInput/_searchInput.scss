@@ -4,16 +4,6 @@
 qc-search-input {
   display: block;
   width: 100%;
-  // TODO mettre un token
-  max-width: rem(548);
-
-    $sizes: map.get($lg-tokens, size, max-width);
-    @each $size, $width in $sizes {
-      &[size="#{$size}"] {
-        max-width: 100%;
-        width: $width;
-      }
-    }
 }
 
 %qc-search-wrapper {
@@ -31,6 +21,21 @@ qc-search-input {
     width: rem(40);
     flex-shrink: 0;
   }
+
+  // TODO mettre un token
+  max-width: rem(548);
+  $sizes: map.get($lg-tokens, size, max-width);
+  @each $size, $width in $sizes {
+    &[size="#{$size}"] {
+      max-width: 100%;
+      width: $width;
+    }
+  }
+  &[size="full-width"] {
+    max-width: 100%;
+    width: 100%;
+  }
+
 }
 
 %qc-search-disabled {

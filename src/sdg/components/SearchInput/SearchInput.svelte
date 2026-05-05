@@ -3,14 +3,15 @@
     import {Utils} from "../utils";
     import Icon from "../../bases/Icon/Icon.svelte";
     import Label from "../Label/Label.svelte";
+    import { onDestroy, untrack } from "svelte";
 
     const lang = Utils.getPageLanguage();
-
 
     let {
         value = $bindable(''),
         label = '',
         size = '',
+        debounce = 0,
         ariaLabel = lang === "fr" ? "Rechercher..." : "Search...",
         clearAriaLabel = lang === "fr" ? "Effacer le texte" : "Clear text",
         leftIcon = false,
@@ -22,6 +23,40 @@
     const isDisabled = $derived(rest.disabled === true || rest.disabled === "true" || rest.disabled === "");
 
     let searchInput;
+
+    // Valeur interne liée à l'input — toujours synchrone avec la saisie
+    let inputValue = $state(value ?? '');
+    let timer;
+
+    // Synchroniser inputValue quand value change de l'extérieur (clear, reset)
+    // untrack sur inputValue pour ne réagir qu'aux changements de `value`
+    $effect(() => {
+        const v = value ?? '';
+        if (v !== untrack(() => inputValue)) {
+            inputValue = v;
+        }
+    });
+
+    function handleInput() {
+        if (debounce > 0) {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                value = inputValue;
+            }, debounce);
+        } else {
+            value = inputValue;
+        }
+    }
+
+    function clearValue(e) {
+        e.preventDefault();
+        clearTimeout(timer);
+        inputValue = "";
+        value = "";
+        searchInput?.focus();
+    }
+
+    onDestroy(() => clearTimeout(timer));
 
     export function focus() {
         searchInput?.focus();
@@ -49,7 +84,8 @@
         />
     {/if}
     <input  bind:this={searchInput}
-            bind:value
+            bind:value={inputValue}
+            oninput={handleInput}
             type="search"
             autocomplete="off"
             aria-label={label ? undefined : ariaLabel}
@@ -57,17 +93,13 @@
             id={id}
             {...rest}
     />
-    {#if value}
+    {#if inputValue}
     <IconButton type="button"
                 icon="xclose"
                 iconColor="blue-piv"
                 iconSize="sm"
                 aria-label={clearAriaLabel}
-                onclick={(e) => {
-                    e.preventDefault();
-                    value = "";
-                    searchInput?.focus();
-                }}
+                onclick={clearValue}
         />
     {/if}
 </div>
