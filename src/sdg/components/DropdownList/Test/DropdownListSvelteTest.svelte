@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-select-embedded-test'
+  tag: 'qc-select-svelte-test'
 }} />
 
 <script>
@@ -90,7 +90,7 @@
         items={dropdownListTest.overflowOptions()}
 />
 
-<form id="dropdown-list-embedded-test-form">
+<form id="dropdown-list-svelte-test-form">
     <DropdownList
             bind:this={restaurantsDropdownList}
             label="Types de restaurants"

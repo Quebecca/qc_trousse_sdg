@@ -5,7 +5,7 @@
 </script>
 
 <svelte:options customElement={{
-  tag: 'qc-toggle-switch-embedded-test'
+  tag: 'qc-toggle-switch-svelte-test'
 }} />
 
 <Fieldset

@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-icon-embedded-test'
+  tag: 'qc-icon-svelte-test'
 }}/>
 
 <script>

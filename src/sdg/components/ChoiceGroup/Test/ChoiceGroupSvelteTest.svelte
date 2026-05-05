@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-choicegroup-embedded-test'
+  tag: 'qc-choicegroup-svelte-test'
 }}/>
 <script>
     
