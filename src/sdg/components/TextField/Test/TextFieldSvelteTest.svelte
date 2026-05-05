@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-textfield-embedded-test'
+  tag: 'qc-textfield-svelte-test'
 }}/>
 <script>
     import TextField from "../TextField.svelte";

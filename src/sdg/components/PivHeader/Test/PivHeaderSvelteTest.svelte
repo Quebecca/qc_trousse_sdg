@@ -1,5 +1,5 @@
 <svelte:options customElement={{
-  tag: 'qc-piv-header-embedded-test',
+  tag: 'qc-piv-header-svelte-test',
   shadow: "none",
 }}/>
 
