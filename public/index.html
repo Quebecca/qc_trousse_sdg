@@ -2347,6 +2347,16 @@
             clear-aria-label="Effacer le texte"
             left-icon
     ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            placeholder="Recherche avec debounce (300 ms)"
+            aria-label="Recherche avec debounce"
+            clear-aria-label="Effacer le texte"
+            debounce="300"
+            left-icon
+    ></qc-search-input>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -2388,6 +2398,12 @@
             <td>Libellé accessible du bouton pour effacer le champ.</td>
         </tr>
         <tr>
+            <td>debounce</td>
+            <td>Nombre (millisecondes)</td>
+            <td>0</td>
+            <td>Délai avant de propager la valeur saisie. Utile pour limiter les appels lors d'une recherche en temps réel. La valeur 0 désactive le debounce (propagation immédiate).</td>
+        </tr>
+        <tr>
             <td>disabled</td>
             <td>na</td>
             <td>na</td>
@@ -2408,6 +2424,49 @@
         </tbody>
     </table>
 </div>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <caption>Événements</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Détail (<code>e.detail</code>)</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>qc-change</td>
+            <td>Texte (valeur courante)</td>
+            <td>Émis après le délai du debounce ou lors du clear. Non émis si <code>debounce="0"</code>.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h3>Utilisation du debounce</h3>
+<p>L'attribut <code>debounce</code> retarde la propagation de la valeur saisie.
+    Cela permet de limiter les appels réseau lors d'une recherche en temps réel.</p>
+<p>Lorsque le debounce est actif, l'événement <code>qc-change</code> est émis après le délai
+    avec la valeur finale dans <code>e.detail</code>. Cet événement est aussi émis lors du clear.</p>
+
+<qc-doc-exemple caption="Debounce — la valeur n'est propagée qu'après 300 ms d'inactivité">
+    <qc-search-input
+            id="demo-debounce"
+            placeholder="Tapez pour chercher…"
+            aria-label="Recherche avec debounce"
+            clear-aria-label="Effacer le texte"
+            debounce="300"
+            left-icon
+    ></qc-search-input>
+    <p>Valeur propagée : <code id="demo-debounce-output"></code></p>
+    <script>
+        document.getElementById('demo-debounce').addEventListener('qc-change', function(e) {
+            document.getElementById('demo-debounce-output').textContent = e.detail || '(clear)';
+        });
+    </script>
+</qc-doc-exemple>
 
     <hr/>
     <!-- Commutateur -->

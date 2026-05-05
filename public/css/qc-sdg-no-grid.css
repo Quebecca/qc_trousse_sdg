@@ -1816,27 +1816,6 @@ qc-alert [slot] a, qc-alert:not([slot=content]) a {
 qc-search-input {
   display: block;
   width: 100%;
-  max-width: 54.8rem;
-}
-qc-search-input[size=xs] {
-  max-width: 100%;
-  width: 6.3rem;
-}
-qc-search-input[size=sm] {
-  max-width: 100%;
-  width: 15.6rem;
-}
-qc-search-input[size=md] {
-  max-width: 100%;
-  width: 24.9rem;
-}
-qc-search-input[size=lg] {
-  max-width: 100%;
-  width: 52.8rem;
-}
-qc-search-input[size=xl] {
-  max-width: 100%;
-  width: 82.5rem;
 }
 
 .qc-search-bar, .qc-search-input {
@@ -1852,6 +1831,33 @@ qc-search-input[size=xl] {
 .qc-search-bar button, .qc-search-input button {
   width: 4rem;
   flex-shrink: 0;
+}
+.qc-search-bar, .qc-search-input {
+  max-width: 54.8rem;
+}
+[size=xs].qc-search-bar, [size=xs].qc-search-input {
+  max-width: 100%;
+  width: 6.3rem;
+}
+[size=sm].qc-search-bar, [size=sm].qc-search-input {
+  max-width: 100%;
+  width: 15.6rem;
+}
+[size=md].qc-search-bar, [size=md].qc-search-input {
+  max-width: 100%;
+  width: 24.9rem;
+}
+[size=lg].qc-search-bar, [size=lg].qc-search-input {
+  max-width: 100%;
+  width: 52.8rem;
+}
+[size=xl].qc-search-bar, [size=xl].qc-search-input {
+  max-width: 100%;
+  width: 82.5rem;
+}
+[size=full-width].qc-search-bar, [size=full-width].qc-search-input {
+  max-width: 100%;
+  width: 100%;
 }
 
 .qc-search-input.qc-search-left-icon-disabled qc-icon, .qc-search-input.qc-search-left-icon-disabled::before {
