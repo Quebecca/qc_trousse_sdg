@@ -3,11 +3,16 @@
 ## [latest]
 ### Ajouté
 - **qc-search-input** : Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
+- **qc-search-input** : Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
+- **qc-search-input** : Ajout de la propriété `value` comme attribut explicite du web component.
 - **qc-search-input** : Tests Playwright (baseline + svelte) avec screenshots partagés.
 ### Modifié
 - **qc-search-input** : Optimisation du `$effect` de synchronisation avec `untrack()`.
 - **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.
 - **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.
+- **Tests** : Renommage des composants de test `*EmbeddedTest` → `*SvelteTest` pour cohérence.
+### Corrigé
+- **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté

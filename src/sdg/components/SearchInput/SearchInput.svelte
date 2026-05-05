@@ -42,6 +42,7 @@
             clearTimeout(timer);
             timer = setTimeout(() => {
                 value = inputValue;
+                searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value }));
             }, debounce);
         } else {
             value = inputValue;
@@ -53,6 +54,7 @@
         clearTimeout(timer);
         inputValue = "";
         value = "";
+        searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value }));
         searchInput?.focus();
     }
 
