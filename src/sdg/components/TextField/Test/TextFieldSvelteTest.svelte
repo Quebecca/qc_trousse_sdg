@@ -115,10 +115,19 @@
 
 <TextField
         label="Commentaires"
-        size="lg"
         description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
 >
     <textarea name="zone-lg" id="zone-lg"></textarea>
+</TextField>
+
+<TextField
+        label="Commentaires"
+        description="Vous pouvez entrer des commentaires dans la zone de texte ci-dessous."
+>
+    <input type="text"
+           name="zone-lg-input"
+           placeholder="Long placeholder lorem ipsum dolor sit amet"
+    />
 </TextField>
 
 <TextField
