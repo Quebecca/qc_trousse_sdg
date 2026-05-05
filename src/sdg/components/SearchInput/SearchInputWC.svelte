@@ -3,6 +3,7 @@
     shadow: 'none',
     props: {
         id: {attribute: 'id'},
+        value: {attribute: 'value', reflect: true},
         ariaLabel: {attribute:'aria-label'},
         clearAriaLabel: {attribute: 'clear-aria-label'},
         label: {attribute: 'label'},
