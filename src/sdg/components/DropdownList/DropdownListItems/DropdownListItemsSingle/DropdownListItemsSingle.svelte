@@ -8,7 +8,8 @@
         items,
         displayedItems,
         placeholder,
-        selectionCallback = () => {},
+        value = [],
+        onSelect = () => {},
         handleExit = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
@@ -49,9 +50,7 @@
         event.preventDefault();
 
         if (!item.disabled) {
-            items.forEach(item => item.checked = false);
-            items.find(option => option.value === item.value).checked = true;
-            selectionCallback();
+            onSelect(item.value);
         }
     }
 
@@ -123,12 +122,12 @@
                 class={[
                     "qc-dropdown-list-single",
                     item.disabled ? "qc-disabled" : "qc-dropdown-list-active",
-                    item.checked ? selectedElementCLass : "",
+                    value?.includes(item.value) ? selectedElementCLass : "",
                 ]}
                 data-item-value={item.value}
                 tabindex="0"
                 role="option"
-                aria-selected={!!item.checked}
+                aria-selected={value?.includes(item.value)}
                 onclick={(event) => handleMouseUp(event, item)}
                 onkeydown={(event) => handleKeyDown(event, index, item)}
             >

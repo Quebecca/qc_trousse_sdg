@@ -4,8 +4,9 @@
 
     let {
         displayedItems,
+        value = [],
+        onToggle = () => {},
         handleExit = () => {},
-        selectionCallback = () => {},
         focusOnOuterElement = () => {},
         handlePrintableCharacter = () => {}
     } = $props();
@@ -89,8 +90,7 @@
             event.stopPropagation();
 
             if (displayedItems.length > 0 && !displayedItems[index].disabled) {
-                event.target.checked = !event.target.checked;
-                displayedItems[index].checked = event.target.checked;
+                onToggle(displayedItems[index].value);
             }
         }
 
@@ -126,7 +126,7 @@
             event.stopPropagation();
 
             if (!item.disabled) {
-                item.checked = !item.checked;
+                onToggle(item.value);
             }
         }
     }
@@ -135,8 +135,8 @@
         return event.key === "Escape" || (!event.shiftKey && event.key === "Tab" && index === displayedItems.length - 1);
     }
 
-    function handleChange() {
-        selectionCallback();
+    function handleChange(event) {
+        onToggle(event.target.value);
     }
 
     function itemsHaveIds() {
@@ -179,7 +179,7 @@
                             value={item.value}
                             {name}
                             disabled={item.disabled}
-                            bind:checked={item.checked}
+                            checked={value?.includes(item.value)}
                             bind:this={displayedItemsElements[index]}
                             onchange={handleChange}
                             onkeydown={(e) => handleKeyDown(e, index)}
