@@ -1866,6 +1866,9 @@ qc-search-input {
   cursor: not-allowed;
 }
 
+label + .qc-search-input {
+  margin-top: 0.4rem;
+}
 .qc-search-input input[type=search] {
   display: block;
   position: relative;

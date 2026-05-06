@@ -45,6 +45,9 @@ qc-search-input {
 }
 
 .qc-search-input {
+  label + & {
+    margin-top: rem(4);
+  }
   @extend %qc-search-wrapper;
   input[type=search] {
     display: block;
