@@ -1,12 +1,12 @@
 # Historique des versions
 
-## [latest]
 ### Ajouté
 - **qc-search-input** : Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
 - **qc-search-input** : Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
 - **qc-search-input** : Ajout de la propriété `value` comme attribut explicite du web component.
 - **qc-search-input** : Tests Playwright (baseline + svelte) avec screenshots partagés.
 ### Modifié
+- **qc-select** : Refonte interne — séparation de `items` (métadonnées) et `value` (sélection). Élimine la dépendance circulaire qui causait la perte de sélection à l'initialisation. L'API du web component reste identique. En usage Svelte direct (composant `DropdownList`), `value` n'est plus synchronisé automatiquement quand des items sont retirés — c'est au développeur de mettre à jour `value` si les options changent.
 - **qc-search-input** : Optimisation du `$effect` de synchronisation avec `untrack()`.
 - **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.
 - **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.

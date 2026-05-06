@@ -48,7 +48,7 @@
         searchInput = $state(),
         popup = $state(),
         dropdownItems = $state(),
-        selectedItems = $derived(items.filter((item) => item.checked) ?? []),
+        selectedItems = $derived(items?.filter((item) => value?.includes(item.value)) ?? []),
         selectedOptionsText = $derived.by(() => {
             if (selectedItems.length >= 3) {
                 if (lang === "fr") {
@@ -56,14 +56,12 @@
                 }
                 return `${selectedItems.length} selected options`;
             }
-
-            if (selectedItems.length > 0 && value?.length > 0) {
+            if (selectedItems.length > 0) {
                 if (multiple) {
                     return selectedItems.map((item) => item.label).join(", ");
                 }
                 return selectedItems[0].label;
             }
-
             return "";
         }),
         previousValue = $state(value),
@@ -76,7 +74,6 @@
                 label: Utils.cleanupSearchPrompt(item.label),
                 value: item.value,
                 disabled: item.disabled,
-                checked: item.checked,
             }
         })),
         widthClass = $derived.by(() => {
@@ -248,28 +245,6 @@
     });
 
     $effect(() => {
-        if (value) {
-            items.forEach((item) => {
-                item.checked = value.includes(item.value);
-            });
-        }
-    });
-
-    $effect(() => {
-        const tempValue = selectedItems?.map(item => item.value);
-        const newStr = tempValue?.toString() ?? '';
-        const oldStr = value?.toString() ?? '';
-        // Ne pas écraser value quand selectedItems est vide mais value a des éléments
-        // (reset parasite lors d'une reconstruction dynamique des options)
-        if (newStr === '' && oldStr !== '') {
-            return;
-        }
-        if (newStr !== oldStr) {
-            value = tempValue?.length > 0 ? tempValue : [];
-        }
-    });
-
-    $effect(() => {
         items.forEach((item) => {
             if (!item.id) {
                 item.id = `${id}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
@@ -423,16 +398,24 @@
                         {items}
                         {displayedItems}
                         {noOptionsMessage}
-                        selectionCallbackSingle={() => {
+                        {value}
+                        onSelect={(itemValue) => {
+                            value = [itemValue];
                             closeDropdown("");
                             button?.focus();
+                        }}
+                        onToggle={(itemValue) => {
+                            if (value.includes(itemValue)) {
+                                value = value.filter(v => v !== itemValue);
+                            } else {
+                                value = [...value, itemValue];
+                            }
                         }}
                         handleExitSingle={(key) => closeDropdown(key)}
                         handleExitMultiple={(key) => closeDropdown(key)}
                         focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
                         handlePrintableCharacter={handlePrintableCharacter}
                         bind:this={dropdownItems}
-                        bind:value={value}
                 />
 
                 <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->

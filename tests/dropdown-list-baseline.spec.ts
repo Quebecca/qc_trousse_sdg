@@ -663,3 +663,68 @@ test.describe('Manipulation du DOM', () => {
        await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
    });
 });
+
+test.describe('Désélection externe via removeAttribute', () => {
+    test('Retirer l\'attribut selected désélectionne l\'option (scénario PGU facets.js)', {
+        tag: ['@baseline', '@dropdownlist', '@deselect'],
+        annotation: {
+            type: 'description',
+            description: 'Quand un script externe retire l\'attribut selected d\'une option ' +
+                '(ex: bouton "retirer ce filtre" dans une page de recherche), ' +
+                'le composant qc-select doit refléter la désélection dans son UI.'
+        }
+    }, async ({ page }) => {
+        // Sélectionner Option 5
+        await page.locator('#qc-select-single-choice-input').click();
+        await page.locator('[id="qc-select-single-choice-Option-5-5"]').click();
+        await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+
+        // Simuler la désélection externe : retirer l'attribut selected
+        // (comme le fait facets.js du PGU avec el.removeAttr("selected"))
+        await page.locator('#select-single-choice').evaluate((select: HTMLSelectElement) => {
+            const option = select.querySelector('option[value="5"]');
+            if (option) {
+                option.removeAttribute('selected');
+            }
+        });
+
+        // Attendre que le MutationObserver (debouncé) ait traité la mutation
+        await page.waitForTimeout(100);
+
+        // Le composant doit refléter la désélection — le texte ne doit plus afficher Option 5
+        await expect(page.locator('#qc-select-single-choice-input')).not.toContainText('Option 5');
+    });
+
+    test('Retirer l\'attribut selected en mode multiple désélectionne l\'option', {
+        tag: ['@multiple', '@dropdownlist', '@deselect'],
+        annotation: {
+            type: 'description',
+            description: 'En mode multiple, retirer l\'attribut selected d\'une option cochée ' +
+                'doit la décocher dans le composant qc-select.'
+        }
+    }, async ({ page }) => {
+        // Sélectionner Option 3 et Option 4
+        await page.locator('#qc-select-multiple-choices-input').click();
+        await page.locator('#qc-select-multiple-choices-items').getByText('Option 3').click();
+        await page.locator('#qc-select-multiple-choices-items').getByText('Option 4').click();
+        await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('Option 3, Option 4');
+
+        // Fermer le dropdown
+        await page.locator('#qc-select-multiple-choices-input').click();
+
+        // Simuler la désélection externe de Option 3
+        await page.locator('#select-multiple-choices').evaluate((select: HTMLSelectElement) => {
+            const option = select.querySelector('option[value="3"]');
+            if (option) {
+                option.removeAttribute('selected');
+            }
+        });
+
+        // Attendre le MutationObserver
+        await page.waitForTimeout(100);
+
+        // Seule Option 4 doit rester sélectionnée
+        await expect(page.locator('#qc-select-multiple-choices-input')).toContainText('Option 4');
+        await expect(page.locator('#qc-select-multiple-choices-input')).not.toContainText('Option 3');
+    });
+});
