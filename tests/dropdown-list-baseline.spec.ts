@@ -37,7 +37,7 @@ test.describe('Rendu visuel',
     test('Select svelte', {
         tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {
-        const htmlFilePath = path.resolve(__dirname, '../public/dropdownListEmbedded.test.html');
+        const htmlFilePath = path.resolve(__dirname, '../public/dropdownListSvelte.test.html');
         await page.goto(`file://${htmlFilePath}`);
 
         await page.locator('#dropdown-list-single-choice-no-scroll-input').click();
