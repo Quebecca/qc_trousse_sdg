@@ -91,18 +91,28 @@
     let labelElement = $state();
     let setupDebounceTimer = null;
     let lastKnownValue = [];
-    const debouncedSetupItemsList = () => {
+    let hasChildListMutation = false;
+    const debouncedSetupItemsList = (mutations) => {
+        // Ignorer les mutations déclenchées par la synchronisation interne du DOM
+        if (internalChange) return;
         // Capturer la valeur AVANT le debounce — le MutationObserver
         // est appelé synchronement par le navigateur, avant les $effect Svelte
         if (setupDebounceTimer === null) {
             lastKnownValue = [...value];
+            hasChildListMutation = false;
+        }
+        // Détecter si des mutations childList sont présentes (reconstruction DOM)
+        if (mutations?.some?.(m => m.type === "childList")) {
+            hasChildListMutation = true;
         }
         clearTimeout(setupDebounceTimer);
         setupDebounceTimer = setTimeout(() => {
             setupDebounceTimer = null;
             const options = selectElement?.querySelectorAll("option");
             if (options && options.length > 0) {
-                setupItemsList(lastKnownValue);
+                // Reconstruction DOM (childList) : préserver la valeur
+                // Changement d'attribut selected uniquement : relire le DOM
+                setupItemsList(hasChildListMutation ? lastKnownValue : null);
             }
         }, 0);
     };
