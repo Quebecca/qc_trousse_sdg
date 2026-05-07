@@ -407,17 +407,6 @@
 
 
 	/**
-	 * Assignment to `%property%` property (%location%) will evaluate to the right-hand side, not the value of `%property%` following the assignment. This may result in unexpected behaviour.
-	 * @param {string} property
-	 * @param {string} location
-	 */
-	function assignment_value_stale(property, location) {
-		{
-			console.warn(`https://svelte.dev/e/assignment_value_stale`);
-		}
-	}
-
-	/**
 	 * `%binding%` (%location%) is binding to a non-reactive property
 	 * @param {string} binding
 	 * @param {string | undefined | null} [location]
@@ -5776,36 +5765,6 @@
 		onMount(() => () => untrack(fn));
 	}
 
-	/**
-	 *
-	 * @param {any} a
-	 * @param {any} b
-	 * @param {string} property
-	 * @param {string} location
-	 */
-	function compare(a, b, property, location) {
-		if (a !== b) {
-			assignment_value_stale(property, /** @type {string} */ (sanitize_location(location)));
-		}
-
-		return a;
-	}
-
-	/**
-	 * @param {any} object
-	 * @param {string} property
-	 * @param {any} value
-	 * @param {string} location
-	 */
-	function assign(object, property, value, location) {
-		return compare(
-			(object[property] = value),
-			untrack(() => object[property]),
-			property,
-			location
-		);
-	}
-
 	/** @import { SourceLocation } from '#client' */
 
 	/**
@@ -7624,6 +7583,49 @@
 		input.__on_r = remove_defaults;
 		queue_micro_task(remove_defaults);
 		add_form_reset_listener();
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {any} value
+	 */
+	function set_value(element, value) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.value ===
+				(attributes.value =
+					// treat null and undefined the same for the initial value
+					value ?? undefined) ||
+			// @ts-expect-error
+			// `progress` elements always need their value set when it's `0`
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.value = value ?? '';
+	}
+
+	/**
+	 * @param {Element} element
+	 * @param {boolean} checked
+	 */
+	function set_checked(element, checked) {
+		var attributes = get_attributes(element);
+
+		if (
+			attributes.checked ===
+			(attributes.checked =
+				// treat null and undefined the same for the initial value
+				checked ?? undefined)
+		) {
+			return;
+		}
+
+		// @ts-expect-error
+		element.checked = checked;
 	}
 
 	/**
@@ -12140,7 +12142,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$c = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[38, 0, [[51, 4]]]]);
+	var root$c = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[88, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -12151,6 +12153,7 @@
 		let value = prop($$props, 'value', 15, ''),
 			label = prop($$props, 'label', 7, ''),
 			size = prop($$props, 'size', 7, ''),
+			debounce = prop($$props, 'debounce', 7, 0),
 			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
@@ -12165,6 +12168,7 @@
 					'value',
 					'label',
 					'size',
+					'debounce',
 					'ariaLabel',
 					'clearAriaLabel',
 					'leftIcon',
@@ -12174,6 +12178,48 @@
 		const leftIconNormalized = tag(user_derived(() => strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), "")), 'leftIconNormalized');
 		const isDisabled = tag(user_derived(() => strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "")), 'isDisabled');
 		let searchInput;
+
+		// Valeur interne liée à l'input — toujours synchrone avec la saisie
+		let inputValue = tag(state(proxy(value() ?? '')), 'inputValue');
+
+		let timer;
+
+		// Synchroniser inputValue quand value change de l'extérieur (clear, reset)
+		// untrack sur inputValue pour ne réagir qu'aux changements de `value`
+		user_effect(() => {
+			const v = value() ?? '';
+
+			if (strict_equals(v, untrack(() => get(inputValue)), false)) {
+				set(inputValue, v, true);
+			}
+		});
+
+		function handleInput() {
+			if (debounce() > 0) {
+				clearTimeout(timer);
+
+				timer = setTimeout(
+					() => {
+						value(get(inputValue));
+						searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
+					},
+					debounce()
+				);
+			} else {
+				value(get(inputValue));
+			}
+		}
+
+		function clearValue(e) {
+			e.preventDefault();
+			clearTimeout(timer);
+			set(inputValue, "");
+			value("");
+			searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
+			searchInput?.focus();
+		}
+
+		onDestroy(() => clearTimeout(timer));
 
 		function focus() {
 			searchInput?.focus();
@@ -12208,6 +12254,15 @@
 
 			set size($$value = '') {
 				size($$value);
+				flushSync();
+			},
+
+			get debounce() {
+				return debounce();
+			},
+
+			set debounce($$value = 0) {
+				debounce($$value);
 				flushSync();
 			},
 
@@ -12273,7 +12328,7 @@
 					}),
 					'component',
 					SearchInput,
-					32,
+					69,
 					4,
 					{ componentTag: 'Label' }
 				);
@@ -12285,7 +12340,7 @@
 				}),
 				'if',
 				SearchInput,
-				31,
+				68,
 				0
 			);
 		}
@@ -12309,7 +12364,7 @@
 						}),
 						'component',
 						SearchInput,
-						46,
+						83,
 						8,
 						{ componentTag: 'Icon' }
 					);
@@ -12322,7 +12377,7 @@
 				}),
 				'if',
 				SearchInput,
-				45,
+				82,
 				4
 			);
 		}
@@ -12332,6 +12387,7 @@
 		attribute_effect(
 			input,
 			() => ({
+				oninput: handleInput,
 				type: 'search',
 				autocomplete: 'off',
 				'aria-label': label() ? undefined : ariaLabel(),
@@ -12363,15 +12419,11 @@
 							return clearAriaLabel();
 						},
 
-						onclick: (e) => {
-							e.preventDefault();
-							value("");
-							searchInput?.focus();
-						}
+						onclick: clearValue
 					}),
 					'component',
 					SearchInput,
-					61,
+					99,
 					4,
 					{ componentTag: 'IconButton' }
 				);
@@ -12379,11 +12431,11 @@
 
 			add_svelte_meta(
 				() => if_block(node_2, ($$render) => {
-					if (value()) $$render(consequent_2);
+					if (get(inputValue)) $$render(consequent_2);
 				}),
 				'if',
 				SearchInput,
-				60,
+				98,
 				4
 			);
 		}
@@ -12400,7 +12452,7 @@
 			set_attribute(div, 'size', size());
 		});
 
-		bind_value(input, value);
+		bind_value(input, () => get(inputValue), ($$value) => set(inputValue, $$value));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -12412,6 +12464,7 @@
 			value: {},
 			label: {},
 			size: {},
+			debounce: {},
 			ariaLabel: {},
 			clearAriaLabel: {},
 			leftIcon: {},
@@ -12515,6 +12568,8 @@
 
 			add_svelte_meta(
 				() => SearchInput(node, spread_props(() => get(inputProps), {
+					size: 'full-width',
+
 					get value() {
 						return value();
 					},
@@ -12552,7 +12607,7 @@
 				)),
 				'component',
 				SearchBar,
-				40,
+				42,
 				8,
 				{ componentTag: 'IconButton' }
 			);
@@ -12602,7 +12657,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
-		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 21, 0, { componentTag: 'SearchInput' });
+		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 23, 0, { componentTag: 'SearchInput' });
 
 		return pop($$exports);
 	}
@@ -12611,12 +12666,14 @@
 		SearchInputWC,
 		{
 			id: { attribute: 'id' },
+			value: { attribute: 'value', reflect: true },
 			ariaLabel: { attribute: 'aria-label' },
 			clearAriaLabel: { attribute: 'clear-aria-label' },
 			label: { attribute: 'label' },
 			placeholder: { attribute: 'placeholder' },
 			size: { attribute: 'size' },
-			leftIcon: { attribute: 'left-icon' }
+			leftIcon: { attribute: 'left-icon' },
+			debounce: { attribute: 'debounce' }
 		},
 		[],
 		[],
@@ -15476,9 +15533,9 @@
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[136, 20]]);
-	var root_2$4 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[120, 12]]);
-	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[118, 4]]);
+	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[135, 20]]);
+	var root_2$4 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[119, 12]]);
+	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[117, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -15489,7 +15546,8 @@
 		let items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			placeholder = prop($$props, 'placeholder', 7),
-			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
+			value = prop($$props, 'value', 23, () => []),
+			onSelect = prop($$props, 'onSelect', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
@@ -15528,9 +15586,7 @@
 			event.preventDefault();
 
 			if (!item.disabled) {
-				items().forEach((item) => assign(item, 'checked', false, 'src/​sdg/​components/​DropdownList/​DropdownListItems/​DropdownListItemsSingle/​DropdownListItemsSingle.svelte:52:34'));
-				items().find((option) => strict_equals(option.value, item.value)).checked = true;
-				selectionCallback()();
+				onSelect()(item.value);
 			}
 		}
 
@@ -15634,12 +15690,21 @@
 				flushSync();
 			},
 
-			get selectionCallback() {
-				return selectionCallback();
+			get value() {
+				return value();
 			},
 
-			set selectionCallback($$value = () => {}) {
-				selectionCallback($$value);
+			set value($$value = []) {
+				value($$value);
+				flushSync();
+			},
+
+			get onSelect() {
+				return onSelect();
+			},
+
+			set onSelect($$value = () => {}) {
+				onSelect($$value);
 				flushSync();
 			},
 
@@ -15715,33 +15780,38 @@
 								}),
 								'if',
 								DropdownListItemsSingle,
-								135,
+								134,
 								16
 							);
 						}
 
 						reset(li);
-						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 121, 16);
+						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 120, 16);
 						bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
-						template_effect(() => {
-							set_attribute(li, 'id', get(item).id);
+						template_effect(
+							($0, $1) => {
+								set_attribute(li, 'id', get(item).id);
+								set_class(li, 1, $0);
+								set_attribute(li, 'data-item-value', get(item).value);
+								set_attribute(li, 'aria-selected', $1);
+							},
+							[
+								() => clsx([
+									"qc-dropdown-list-single",
+									get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
+									value()?.includes(get(item).value) ? selectedElementCLass : ""
+								]),
 
-							set_class(li, 1, clsx([
-								"qc-dropdown-list-single",
-								get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
-								get(item).checked ? selectedElementCLass : ""
-							]));
-
-							set_attribute(li, 'data-item-value', get(item).value);
-							set_attribute(li, 'aria-selected', !!get(item).checked);
-						});
+								() => value()?.includes(get(item).value)
+							]
+						);
 
 						append($$anchor, li);
 					}),
 					'each',
 					DropdownListItemsSingle,
-					119,
+					118,
 					8
 				);
 
@@ -15755,7 +15825,7 @@
 				}),
 				'if',
 				DropdownListItemsSingle,
-				117,
+				116,
 				0
 			);
 		}
@@ -15773,7 +15843,8 @@
 			items: {},
 			displayedItems: {},
 			placeholder: {},
-			selectionCallback: {},
+			value: {},
+			onSelect: {},
 			handleExit: {},
 			focusOnOuterElement: {},
 			handlePrintableCharacter: {}
@@ -15796,11 +15867,10 @@
 		check_target(new.target);
 		push($$props, true);
 
-		var $$ownership_validator = create_ownership_validator($$props);
-
 		let displayedItems = prop($$props, 'displayedItems', 7),
+			value = prop($$props, 'value', 23, () => []),
+			onToggle = prop($$props, 'onToggle', 7, () => {}),
 			handleExit = prop($$props, 'handleExit', 7, () => {}),
-			selectionCallback = prop($$props, 'selectionCallback', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
 			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
 
@@ -15881,8 +15951,7 @@
 				event.stopPropagation();
 
 				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
-					event.target.checked = !event.target.checked;
-					$$ownership_validator.mutation('displayedItems', ['displayedItems', index, 'checked'], displayedItems()[index].checked = event.target.checked, 93, 16);
+					onToggle()(displayedItems()[index].value);
 				}
 			}
 
@@ -15918,7 +15987,7 @@
 				event.stopPropagation();
 
 				if (!item.disabled) {
-					item.checked = !item.checked;
+					onToggle()(item.value);
 				}
 			}
 		}
@@ -15927,8 +15996,8 @@
 			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
 		}
 
-		function handleChange() {
-			selectionCallback()();
+		function handleChange(event) {
+			onToggle()(event.target.value);
 		}
 
 		function itemsHaveIds() {
@@ -15965,21 +16034,30 @@
 				flushSync();
 			},
 
+			get value() {
+				return value();
+			},
+
+			set value($$value = []) {
+				value($$value);
+				flushSync();
+			},
+
+			get onToggle() {
+				return onToggle();
+			},
+
+			set onToggle($$value = () => {}) {
+				onToggle($$value);
+				flushSync();
+			},
+
 			get handleExit() {
 				return handleExit();
 			},
 
 			set handleExit($$value = () => {}) {
 				handleExit($$value);
-				flushSync();
-			},
-
-			get selectionCallback() {
-				return selectionCallback();
-			},
-
-			set selectionCallback($$value = () => {}) {
-				selectionCallback($$value);
 				flushSync();
 			},
 
@@ -16026,11 +16104,9 @@
 						remove_input_defaults(input);
 						input.__change = handleChange;
 						input.__keydown = (e) => handleKeyDown(e, get(index));
-						validate_binding('bind:checked={item.checked}', [], () => get(item), () => 'checked', 182, 28);
 						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 183, 28);
 						bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
-						var input_value;
 						var span = sibling(input, 2);
 						var text = child(span, true);
 
@@ -16038,26 +16114,25 @@
 						reset(label);
 						reset(li);
 
-						template_effect(() => {
-							set_class(li, 1, clsx([
-								"qc-dropdown-list-multiple",
-								get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
-							]));
+						template_effect(
+							($0) => {
+								set_class(li, 1, clsx([
+									"qc-dropdown-list-multiple",
+									get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
+								]));
 
-							set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
-							set_attribute(label, 'for', get(item).id + "-checkbox");
-							set_attribute(input, 'id', get(item).id + "-checkbox");
-							set_attribute(input, 'name', name);
-							input.disabled = get(item).disabled;
+								set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
+								set_attribute(label, 'for', get(item).id + "-checkbox");
+								set_attribute(input, 'id', get(item).id + "-checkbox");
+								set_value(input, get(item).value);
+								set_attribute(input, 'name', name);
+								input.disabled = get(item).disabled;
+								set_checked(input, $0);
+								set_text(text, get(item).label);
+							},
+							[() => value()?.includes(get(item).value)]
+						);
 
-							if (input_value !== (input_value = get(item).value)) {
-								input.value = (input.__value = get(item).value) ?? '';
-							}
-
-							set_text(text, get(item).label);
-						});
-
-						bind_checked(input, () => get(item).checked, ($$value) => (get(item).checked = $$value));
 						append($$anchor, li);
 					}),
 					'each',
@@ -16092,8 +16167,9 @@
 		DropdownListItemsMultiple,
 		{
 			displayedItems: {},
+			value: {},
+			onToggle: {},
 			handleExit: {},
-			selectionCallback: {},
 			focusOnOuterElement: {},
 			handlePrintableCharacter: {}
 		},
@@ -16108,8 +16184,8 @@
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[82, 16]]);
-	var root$5 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[45, 0, [[79, 4]]]]);
+	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[81, 16]]);
+	var root$5 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[46, 0, [[78, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -16120,8 +16196,9 @@
 			items = prop($$props, 'items', 7),
 			displayedItems = prop($$props, 'displayedItems', 7),
 			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
-			selectionCallbackSingle = prop($$props, 'selectionCallbackSingle', 7, () => {}),
-			selectionCallbackMultiple = prop($$props, 'selectionCallbackMultiple', 7, () => {}),
+			value = prop($$props, 'value', 23, () => []),
+			onSelect = prop($$props, 'onSelect', 7, () => {}),
+			onToggle = prop($$props, 'onToggle', 7, () => {}),
 			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
 			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
 			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
@@ -16208,21 +16285,30 @@
 				flushSync();
 			},
 
-			get selectionCallbackSingle() {
-				return selectionCallbackSingle();
+			get value() {
+				return value();
 			},
 
-			set selectionCallbackSingle($$value = () => {}) {
-				selectionCallbackSingle($$value);
+			set value($$value = []) {
+				value($$value);
 				flushSync();
 			},
 
-			get selectionCallbackMultiple() {
-				return selectionCallbackMultiple();
+			get onSelect() {
+				return onSelect();
 			},
 
-			set selectionCallbackMultiple($$value = () => {}) {
-				selectionCallbackMultiple($$value);
+			set onSelect($$value = () => {}) {
+				onSelect($$value);
+				flushSync();
+			},
+
+			get onToggle() {
+				return onToggle();
+			},
+
+			set onToggle($$value = () => {}) {
+				onToggle($$value);
 				flushSync();
 			},
 
@@ -16294,8 +16380,12 @@
 								return noOptionsMessage();
 							},
 
-							passValue: () => {
-								selectionCallbackMultiple()();
+							get value() {
+								return value();
+							},
+
+							get onToggle() {
+								return onToggle();
 							},
 
 							handleExit: (key) => handleExitMultiple()(key),
@@ -16313,7 +16403,7 @@
 					),
 					'component',
 					DropdownListItems,
-					51,
+					52,
 					8,
 					{ componentTag: 'DropdownListItemsMultiple' }
 				);
@@ -16335,8 +16425,12 @@
 								return noOptionsMessage();
 							},
 
-							selectionCallback: () => {
-								selectionCallbackSingle()();
+							get value() {
+								return value();
+							},
+
+							get onSelect() {
+								return onSelect();
 							},
 
 							handleExit: (key) => handleExitSingle()(key),
@@ -16370,7 +16464,7 @@
 				}),
 				'if',
 				DropdownListItems,
-				50,
+				51,
 				4
 			);
 		}
@@ -16394,7 +16488,7 @@
 					}),
 					'await',
 					DropdownListItems,
-					81,
+					80,
 					12
 				);
 
@@ -16407,7 +16501,7 @@
 				}),
 				'if',
 				DropdownListItems,
-				80,
+				79,
 				8
 			);
 		}
@@ -16428,8 +16522,9 @@
 			items: {},
 			displayedItems: {},
 			noOptionsMessage: {},
-			selectionCallbackSingle: {},
-			selectionCallbackMultiple: {},
+			value: {},
+			onSelect: {},
+			onToggle: {},
 			handleExitSingle: {},
 			handleExitMultiple: {},
 			focusOnOuterElement: {},
@@ -16630,9 +16725,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[400, 20]]);
-	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[441, 24]]);
-	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[330, 0, [[335, 4, [[354, 8, [[383, 12, [[439, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[375, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[424, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[305, 0, [[310, 4, [[329, 8, [[358, 12, [[422, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -16676,7 +16771,7 @@
 			searchInput = tag(state(void 0), 'searchInput'),
 			popup = tag(state(void 0), 'popup'),
 			dropdownItems = tag(state(void 0), 'dropdownItems'),
-			selectedItems = tag(user_derived(() => items().filter((item) => item.checked) ?? []), 'selectedItems'),
+			selectedItems = tag(user_derived(() => items()?.filter((item) => value()?.includes(item.value)) ?? []), 'selectedItems'),
 			selectedOptionsText = tag(
 				user_derived(() => {
 					if (get(selectedItems).length >= 3) {
@@ -16687,7 +16782,7 @@
 						return `${get(selectedItems).length} selected options`;
 					}
 
-					if (get(selectedItems).length > 0 && value()?.length > 0) {
+					if (get(selectedItems).length > 0) {
 						if (multiple()) {
 							return get(selectedItems).map((item) => item.label).join(", ");
 						}
@@ -16709,8 +16804,7 @@
 					return {
 						label: Utils.cleanupSearchPrompt(item.label),
 						value: item.value,
-						disabled: item.disabled,
-						checked: item.checked
+						disabled: item.disabled
 					};
 				})),
 				'itemsForSearch'
@@ -16897,30 +16991,6 @@
 			if (!expanded()) {
 				set(hiddenSearchText, "");
 				set(searchText, "");
-			}
-		});
-
-		user_effect(() => {
-			if (value()) {
-				items().forEach((item) => {
-					item.checked = value().includes(item.value);
-				});
-			}
-		});
-
-		user_effect(() => {
-			const tempValue = get(selectedItems)?.map((item) => item.value);
-			const newStr = tempValue?.toString() ?? '';
-			const oldStr = value()?.toString() ?? '';
-
-			// Ne pas écraser value quand selectedItems est vide mais value a des éléments
-			// (reset parasite lors d'une reconstruction dynamique des options)
-			if (strict_equals(newStr, '') && strict_equals(oldStr, '', false)) {
-				return;
-			}
-
-			if (strict_equals(newStr, oldStr, false)) {
-				value(tempValue?.length > 0 ? tempValue : []);
 			}
 		});
 
@@ -17196,7 +17266,7 @@
 					}),
 					'component',
 					DropdownList,
-					341,
+					316,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -17208,7 +17278,7 @@
 				}),
 				'if',
 				DropdownList,
-				340,
+				315,
 				8
 			);
 		}
@@ -17280,7 +17350,7 @@
 			}),
 			'component',
 			DropdownList,
-			363,
+			338,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -17335,7 +17405,7 @@
 						),
 						'component',
 						DropdownList,
-						401,
+						376,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -17351,71 +17421,72 @@
 				}),
 				'if',
 				DropdownList,
-				399,
+				374,
 				16
 			);
 		}
 
 		var node_4 = sibling(node_2, 2);
 
-		{
-			$$ownership_validator.binding('value', DropdownListItems, value);
+		add_svelte_meta(
+			() => bind_this(
+				DropdownListItems(node_4, {
+					get id() {
+						return get(itemsId);
+					},
 
-			add_svelte_meta(
-				() => bind_this(
-					DropdownListItems(node_4, {
-						get id() {
-							return get(itemsId);
-						},
+					get placeholder() {
+						return placeholder();
+					},
 
-						get placeholder() {
-							return placeholder();
-						},
+					get multiple() {
+						return multiple();
+					},
 
-						get multiple() {
-							return multiple();
-						},
+					get items() {
+						return items();
+					},
 
-						get items() {
-							return items();
-						},
+					get displayedItems() {
+						return get(displayedItems);
+					},
 
-						get displayedItems() {
-							return get(displayedItems);
-						},
+					get noOptionsMessage() {
+						return noOptionsMessage();
+					},
 
-						get noOptionsMessage() {
-							return noOptionsMessage();
-						},
+					get value() {
+						return value();
+					},
 
-						selectionCallbackSingle: () => {
-							closeDropdown("");
-							get(button)?.focus();
-						},
+					onSelect: (itemValue) => {
+						value([itemValue]);
+						closeDropdown("");
+						get(button)?.focus();
+					},
 
-						handleExitSingle: (key) => closeDropdown(key),
-						handleExitMultiple: (key) => closeDropdown(key),
-						focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
-						handlePrintableCharacter,
-
-						get value() {
-							return value();
-						},
-
-						set value($$value) {
-							value($$value);
+					onToggle: (itemValue) => {
+						if (value().includes(itemValue)) {
+							value(value().filter((v) => strict_equals(v, itemValue, false)));
+						} else {
+							value([...value(), itemValue]);
 						}
-					}),
-					($$value) => set(dropdownItems, $$value, true),
-					() => get(dropdownItems)
-				),
-				'component',
-				DropdownList,
-				419,
-				16,
-				{ componentTag: 'DropdownListItems' }
-			);
-		}
+					},
+
+					handleExitSingle: (key) => closeDropdown(key),
+					handleExitMultiple: (key) => closeDropdown(key),
+					focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
+					handlePrintableCharacter
+				}),
+				($$value) => set(dropdownItems, $$value, true),
+				() => get(dropdownItems)
+			),
+			'component',
+			DropdownList,
+			394,
+			16,
+			{ componentTag: 'DropdownListItems' }
+		);
 
 		var div_5 = sibling(node_4, 2);
 		var node_5 = child(div_5);
@@ -17431,7 +17502,7 @@
 			}),
 			'key',
 			DropdownList,
-			440,
+			423,
 			20
 		);
 
@@ -17479,7 +17550,7 @@
 				}),
 				'component',
 				DropdownList,
-				449,
+				432,
 				4,
 				{ componentTag: 'FormError' }
 			);
@@ -17545,7 +17616,7 @@
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
 
-	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[169, 0], [190, 0]]);
+	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[247, 0], [268, 0]]);
 
 	function SelectWC($$anchor, $$props) {
 		check_target(new.target);
@@ -17553,6 +17624,55 @@
 
 		var $$ownership_validator = create_ownership_validator($$props);
 
+		/**
+		 * ============================================================================
+		 * INVARIANTS CRITIQUES — Fix v1.5.2 (issue #36)
+		 * ============================================================================
+		 *
+		 * Ce composant contient trois mécanismes interdépendants introduits dans la
+		 * v1.5.2 pour corriger la perte de sélection lors de reconstructions dynamiques
+		 * des options DOM (Angular @for, React map, etc.). Ces mécanismes DOIVENT être
+		 * préservés lors de tout refactoring.
+		 *
+		 * 1. DEBOUNCE MUTATIONOBSERVER AVEC CAPTURE DE `lastKnownValue`
+		 *    ─────────────────────────────────────────────────────────────
+		 *    Le MutationObserver est appelé synchronement par le navigateur à chaque
+		 *    mutation DOM. Lors d'une reconstruction (innerHTML vidé puis recréé),
+		 *    plusieurs mutations sont émises en rafale. Le debounce (setTimeout 0ms)
+		 *    regroupe ces mutations en un seul appel à setupItemsList.
+		 *
+		 *    INVARIANT : La valeur courante (`value`) est capturée dans `lastKnownValue`
+		 *    au PREMIER appel synchrone (quand `setupDebounceTimer === null`), AVANT le
+		 *    setTimeout. Cela garantit que la valeur sauvegardée reflète l'état AVANT
+		 *    que le navigateur ne réinitialise les options (sélection de la 1re option
+		 *    par défaut).
+		 *
+		 * 2. PARAMÈTRE `preservedValue` DANS `setupItemsList`
+		 *    ──────────────────────────────────────────────────
+		 *    Lors d'une reconstruction dynamique, le navigateur marque la première
+		 *    option comme `selected` par défaut. Le paramètre `preservedValue` permet
+		 *    d'ignorer `option.selected` et d'utiliser la valeur capturée à la place.
+		 *
+		 *    INVARIANT : Si `preservedValue` est fourni et non vide, l'état `checked`
+		 *    des items est déterminé par `preservedValue.includes(option.value)` et NON
+		 *    par `option.selected`. Cela empêche le reset parasite de la sélection.
+		 *
+		 * 3. FLAG `internalChange` AUTOUR DE `dispatchEvent('change')`
+		 *    ──────────────────────────────────────────────────────────
+		 *    Quand `value` change (sélection utilisateur ou assignation programmatique),
+		 *    le composant synchronise le DOM natif (option.selected) et dispatche un
+		 *    événement `change`. Sans protection, cet événement déclencherait
+		 *    `handleSelectChange` → `setupItemsList` → reset de la sélection.
+		 *
+		 *    INVARIANT : `internalChange = true` est positionné AVANT toute modification
+		 *    du DOM natif ou dispatch d'événement, et remis à `false` APRÈS `tick()`
+		 *    (fin du cycle Svelte). Le guard `if (internalChange) return` dans
+		 *    `handleSelectChange` coupe la boucle réactive.
+		 *
+		 *    Le timer de debounce est nettoyé dans `onDestroy` pour éviter les fuites
+		 *    mémoire.
+		 * ============================================================================
+		 */
 		let invalid = prop($$props, 'invalid', 15, false),
 			value = prop($$props, 'value', 31, () => tag_proxy(proxy([]), 'value')),
 			multiple = prop($$props, 'multiple', 7),
@@ -17585,12 +17705,22 @@
 		let labelElement = tag(state(void 0), 'labelElement');
 		let setupDebounceTimer = null;
 		let lastKnownValue = [];
+		let hasChildListMutation = false;
 
-		const debouncedSetupItemsList = () => {
+		const debouncedSetupItemsList = (mutations) => {
+			// Ignorer les mutations déclenchées par la synchronisation interne du DOM
+			if (internalChange) return;
+
 			// Capturer la valeur AVANT le debounce — le MutationObserver
 			// est appelé synchronement par le navigateur, avant les $effect Svelte
 			if (strict_equals(setupDebounceTimer, null)) {
 				lastKnownValue = [...value()];
+				hasChildListMutation = false;
+			}
+
+			// Détecter si des mutations childList sont présentes (reconstruction DOM)
+			if (mutations?.some?.((m) => strict_equals(m.type, "childList"))) {
+				hasChildListMutation = true;
 			}
 
 			clearTimeout(setupDebounceTimer);
@@ -17602,7 +17732,9 @@
 					const options = get(selectElement)?.querySelectorAll("option");
 
 					if (options && options.length > 0) {
-						setupItemsList(lastKnownValue);
+						// Reconstruction DOM (childList) : préserver la valeur
+						// Changement d'attribut selected uniquement : relire le DOM
+						setupItemsList(hasChildListMutation ? lastKnownValue : null);
 					}
 				},
 				0
@@ -17694,24 +17826,28 @@
 			const options = get(selectElement)?.querySelectorAll("option");
 
 			if (options && options.length > 0) {
-				const hasPreservedValue = preservedValue && preservedValue.length > 0;
+				// Étape 1 : Construire les items (métadonnées uniquement)
+				const newItems = Array.from(options).map((option) => ({
+					value: option.value,
+					label: option.label ?? option.innerHTML,
+					disabled: option.disabled
+				}));
 
-				set(
-					items,
-					Array.from(options).map((option) => ({
-						value: option.value,
-						label: option.label ?? option.innerHTML,
+				// Étape 2 : Déterminer value séparément
+				if (preservedValue && preservedValue.length > 0) {
+					// Reconstruction dynamique : filtrer les valeurs préservées
+					// contre les nouveaux items (ne garder que celles qui existent encore)
+					value(preservedValue.filter((v) => newItems.some((item) => strict_equals(item.value, v))));
+				} else {
+					// Initialisation : extraire depuis option.selected du DOM
+					// Filtrer les valeurs vides (options placeholder avec value="")
+					value(Array.from(options).filter((opt) => opt.selected && strict_equals(opt.value, "", false)).map((opt) => opt.value));
+				}
 
-						// Si une valeur est préservée (reconstruction dynamique),
-						// ignorer option.selected (le navigateur sélectionne la 1re option par défaut)
-						checked: hasPreservedValue
-							? preservedValue.includes(option.value)
-							: option.selected,
-
-						disabled: option.disabled
-					})),
-					true
-				);
+				// Étape 3 : Ajouter checked dérivé de value pour compatibilité
+				// avec DropdownList (qui lit encore item.checked jusqu'au Task 4)
+				// Note : pas d'id ici — DropdownList le génère via son $effect
+				set(items, newItems.map((item) => ({ ...item, checked: value().includes(item.value) })), true);
 			} else {
 				set(items, [], true);
 			}
@@ -17906,7 +18042,7 @@
 				)),
 				'component',
 				SelectWC,
-				173,
+				251,
 				0,
 				{ componentTag: 'DropdownList' }
 			);
