@@ -9,3 +9,4 @@ export * from "./components/ChoiceGroup/Test/ChoiceGroupSvelteTest.svelte";
 export * from "./components/ToggleSwitch/Test/ToggleSwitchSvelteTest.svelte";
 export * from "./components/PivHeader/Test/PivHeaderSvelteTest.svelte";
 export * from "./components/Alert/Test/AlertSvelteTest.svelte";
+export * from "./components/SearchInput/Test/SearchInputSvelteTest.svelte";
