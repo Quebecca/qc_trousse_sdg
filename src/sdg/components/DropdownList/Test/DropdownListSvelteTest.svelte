@@ -17,8 +17,9 @@
     let restaurantsDropdownList = $state(null);
     let regionsDropdownList = $state(null);
 
-    singleChoiceOptions[0].checked = true;
-    singleChoiceWithSearchOptions[0].checked = true;
+    // Valeur initiale sélectionnée : premier élément (value = 1)
+    let singleChoiceValue = $state([1]);
+    let singleChoiceWithSearchValue = $state([1]);
 
     function validateForm(event) {
         event.preventDefault();
@@ -43,6 +44,7 @@
         id="dropdown-list-single-choice"
         label="Choix unique"
         items={singleChoiceOptions}
+        bind:value={singleChoiceValue}
 />
 
 <div style="height: 40rem;">
@@ -51,6 +53,7 @@
         label="Choix unique avec recherche"
         enableSearch={true}
         items={singleChoiceWithSearchOptions}
+        bind:value={singleChoiceWithSearchValue}
 />
 </div>
 
@@ -72,6 +75,7 @@
             id="dropdown-list-single-choice-other"
             label="Autre choix"
             items={singleChoiceOptions}
+            value={singleChoiceValue}
     />
 </div>
 
@@ -110,6 +114,7 @@
             enableSearch={true}
             searchPlaceholder="Rechercher les régions"
             items={regions}
+            value={["Centre-du-Québec", "Montérégie"]}
             width="lg"
     />
 
