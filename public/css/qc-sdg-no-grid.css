@@ -944,6 +944,10 @@ code, .qc-code {
   font-weight: var(--qc-font-weight-regular);
 }
 
+sup, sub {
+  line-height: 0;
+}
+
 ol, ul {
   max-inline-size: var(--qc-max-content-width);
   margin-top: 0;

@@ -31,3 +31,7 @@ code, .qc-code {
 .qc-font-size-md {
   @include content-font("md");
 }
+
+sup,sub {
+  line-height: 0;
+}
