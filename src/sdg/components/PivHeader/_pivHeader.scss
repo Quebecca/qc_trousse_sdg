@@ -53,16 +53,19 @@ qc-piv-header {
       display: flex;
       flex-grow: 1;
       flex-wrap: wrap;
-      align-items: start;
+      align-items: center;
       margin-right: auto;
+      margin-bottom: rem(16);
       & > * {
-        min-height: rem(72);
+        //min-height: rem(72);
       }
 
       .logo {
         display: flex;
         align-items: center;
         flex-basis: rem(264);
+        margin-bottom: rem(-16);
+        height: rem(72);
 
         a {
           display: flex;
@@ -84,6 +87,7 @@ qc-piv-header {
     }
 
     .title {
+      margin-top: rem(16);
       display: block;
       align-content: center;
     }

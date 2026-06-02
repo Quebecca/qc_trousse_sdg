@@ -1479,16 +1479,16 @@ qc-piv-header {
   display: flex;
   flex-grow: 1;
   flex-wrap: wrap;
-  align-items: start;
+  align-items: center;
   margin-right: auto;
-}
-.qc-piv-header .piv-top .signature-group > * {
-  min-height: 7.2rem;
+  margin-bottom: 1.6rem;
 }
 .qc-piv-header .piv-top .signature-group .logo {
   display: flex;
   align-items: center;
   flex-basis: 26.4rem;
+  margin-bottom: -1.6rem;
+  height: 7.2rem;
 }
 .qc-piv-header .piv-top .signature-group .logo a {
   display: flex;
@@ -1506,6 +1506,7 @@ qc-piv-header {
   min-height: 4rem;
 }
 .qc-piv-header .piv-top .title {
+  margin-top: 1.6rem;
   display: block;
   align-content: center;
 }
