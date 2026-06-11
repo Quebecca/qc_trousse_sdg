@@ -261,9 +261,8 @@
     $effect(() => {
         if (placeholder)  return;
         const optionWithEmptyValue = findOptionWithEmptyValue();
-        if (!optionWithEmptyValue) return;
         placeholder =
-            optionWithEmptyValue.label !== ""
+            optionWithEmptyValue && optionWithEmptyValue.label !== ""
                 ?  optionWithEmptyValue.label
                 : defaultPlaceholder
         ;

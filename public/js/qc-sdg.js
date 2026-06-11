@@ -12373,7 +12373,7 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$f = add_locations(from_html(`<div hidden=""><!></div>`), ExternalLink[FILENAME], [[108, 0]]);
+	var root$f = add_locations(from_html(`<span hidden=""><!></span>`), ExternalLink[FILENAME], [[104, 0]]);
 
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
@@ -12398,7 +12398,6 @@
 
 						const style = window.getComputedStyle(node);
 
-						// Si l'élément est masqué par CSS (display ou visibility), on l'ignore
 						if (strict_equals(style.display, 'none') || strict_equals(style.visibility, 'hidden') || strict_equals(style.position, 'absolute')) {
 							return NodeFilter.FILTER_REJECT;
 						}
@@ -12419,24 +12418,23 @@
 		}
 
 		function addExternalLinkIcon(link) {
-			// Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
-			const walker = createVisibleNodesTreeWalker(link);
+			// Si le lien contient déjà une icône ou un img-wrap (y compris sérialisé par innerHTML), ne rien faire
+			if (link.querySelector('.qc-ext-link-img') || link.querySelector('.img-wrap')) {
+				return;
+			}
 
+			const walker = createVisibleNodesTreeWalker(link);
 			let lastTextNode = null;
 
 			while (walker.nextNode()) {
 				lastTextNode = walker.currentNode;
 			}
 
-			// S'il n'y a pas de nœud texte visible, on ne fait rien
 			if (!lastTextNode) {
 				return;
 			}
 
-			// Séparer le contenu du dernier nœud texte en deux parties :
-			// le préfixe (éventuel) et le dernier mot
 			const text = lastTextNode.textContent;
-
 			const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
 
 			if (!match) {
@@ -12445,14 +12443,11 @@
 
 			const prefix = match[1] || "";
 			const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
-
-			// Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
 			const span = document.createElement('span');
 
 			span.classList.add('img-wrap');
 			span.innerHTML = `${lastWord}${get(imgElement).outerHTML}`;
 
-			// Met à jour le nœud texte : on garde le préfixe et on insère le span après
 			if (prefix) {
 				lastTextNode.textContent = prefix;
 				lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
@@ -12470,9 +12465,7 @@
 
 			tick().then(() => {
 				links().forEach((link) => {
-					if (!link.querySelector('.qc-ext-link-img')) {
-						addExternalLinkIcon(link);
-					}
+					addExternalLinkIcon(link);
 				});
 
 				return tick();
@@ -12524,8 +12517,8 @@
 			}
 		};
 
-		var div = root$f();
-		var node_1 = child(div);
+		var span_1 = root$f();
+		var node_1 = child(span_1);
 
 		add_svelte_meta(
 			() => Icon(node_1, {
@@ -12545,13 +12538,13 @@
 			}),
 			'component',
 			ExternalLink,
-			109,
+			105,
 			4,
 			{ componentTag: 'Icon' }
 		);
 
-		reset(div);
-		append($$anchor, div);
+		reset(span_1);
+		append($$anchor, span_1);
 
 		return pop($$exports);
 	}
@@ -12576,14 +12569,20 @@
 		push($$props, true);
 
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
+		const hostEl = $$props.$$host;
 		let links = tag(state(proxy(queryLinks())), 'links');
 		let isUpdating = tag(state(false), 'isUpdating');
 		let pendingUpdate = false;
-		const nestedExternalLinks = $$props.$$host.querySelector('qc-external-link');
-		const observer = Utils.createMutationObserver($$props.$$host, refreshLinks);
+		const nestedExternalLinks = hostEl.querySelector('qc-external-link');
+		const observer = Utils.createMutationObserver(hostEl, refreshLinks);
+		let lastLinksSignature = '';
 
 		function queryLinks() {
-			return Array.from($$props.$$host.querySelectorAll('a'));
+			return Array.from(hostEl.querySelectorAll('a'));
+		}
+
+		function getLinksSignature(linksList) {
+			return linksList.map((a) => a.href + '|' + a.textContent).join(';;');
 		}
 
 		function refreshLinks() {
@@ -12600,14 +12599,23 @@
 					return;
 				}
 
-				set(links, queryLinks(), true);
+				const newLinks = queryLinks();
+				const newSignature = getLinksSignature(newLinks);
+
+				// Ne re-traiter que si les liens ont réellement changé
+				if (strict_equals(newSignature, lastLinksSignature, false)) {
+					set(links, newLinks, true);
+					lastLinksSignature = newSignature;
+				}
+
 				pendingUpdate = false;
 			});
 		}
 
 		onMount(() => {
-			$$props.$$host.classList.add('qc-external-link');
-			observer?.observe($$props.$$host, { childList: true, characterData: true, subtree: true });
+			hostEl.classList.add('qc-external-link');
+			lastLinksSignature = getLinksSignature(get(links));
+			observer?.observe(hostEl, { childList: true, characterData: true, subtree: true });
 		});
 
 		onDestroy(() => observer?.disconnect());
@@ -12642,7 +12650,7 @@
 			)),
 			'component',
 			ExternalLinkWC,
-			54,
+			69,
 			0,
 			{ componentTag: 'ExternalLink' }
 		);
@@ -17432,9 +17440,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[375, 20]]);
-	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[424, 24]]);
-	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[305, 0, [[310, 4, [[329, 8, [[358, 12, [[422, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[374, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[423, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[304, 0, [[309, 4, [[328, 8, [[357, 12, [[421, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -17728,9 +17736,7 @@
 
 			const optionWithEmptyValue = findOptionWithEmptyValue();
 
-			if (!optionWithEmptyValue) return;
-
-			placeholder(strict_equals(optionWithEmptyValue.label, "", false) ? optionWithEmptyValue.label : defaultPlaceholder);
+			placeholder(optionWithEmptyValue && strict_equals(optionWithEmptyValue.label, "", false) ? optionWithEmptyValue.label : defaultPlaceholder);
 		});
 
 		user_effect(() => {
@@ -17978,7 +17984,7 @@
 					}),
 					'component',
 					DropdownList,
-					316,
+					315,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -17990,7 +17996,7 @@
 				}),
 				'if',
 				DropdownList,
-				315,
+				314,
 				8
 			);
 		}
@@ -18058,7 +18064,7 @@
 			}),
 			'component',
 			DropdownList,
-			338,
+			337,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -18111,7 +18117,7 @@
 						),
 						'component',
 						DropdownList,
-						376,
+						375,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -18127,7 +18133,7 @@
 				}),
 				'if',
 				DropdownList,
-				374,
+				373,
 				16
 			);
 		}
@@ -18188,7 +18194,7 @@
 			),
 			'component',
 			DropdownList,
-			394,
+			393,
 			16,
 			{ componentTag: 'DropdownListItems' }
 		);
@@ -18207,7 +18213,7 @@
 			}),
 			'key',
 			DropdownList,
-			423,
+			422,
 			20
 		);
 
@@ -18253,7 +18259,7 @@
 				}),
 				'component',
 				DropdownList,
-				432,
+				431,
 				4,
 				{ componentTag: 'FormError' }
 			);

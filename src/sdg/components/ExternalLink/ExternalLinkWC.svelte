@@ -12,14 +12,21 @@
     import {onDestroy, onMount, tick} from "svelte";
 
     const props = $props();
+    const hostEl = $host();
     let links = $state(queryLinks());
     let isUpdating = $state(false);
     let pendingUpdate = false;
-    const nestedExternalLinks = $host().querySelector('qc-external-link');
+    const nestedExternalLinks = hostEl.querySelector('qc-external-link');
 
-    const observer = Utils.createMutationObserver($host(), refreshLinks);
+    const observer = Utils.createMutationObserver(hostEl, refreshLinks);
+    let lastLinksSignature = '';
+
     function queryLinks() {
-        return Array.from($host().querySelectorAll('a'));
+        return Array.from(hostEl.querySelectorAll('a'));
+    }
+
+    function getLinksSignature(linksList) {
+        return linksList.map(a => a.href + '|' + a.textContent).join(';;');
     }
 
     function refreshLinks() {
@@ -33,15 +40,23 @@
                 return;
             }
 
-            links = queryLinks();
+            const newLinks = queryLinks();
+            const newSignature = getLinksSignature(newLinks);
+
+            // Ne re-traiter que si les liens ont réellement changé
+            if (newSignature !== lastLinksSignature) {
+                links = newLinks;
+                lastLinksSignature = newSignature;
+            }
             pendingUpdate = false;
         });
     }
 
     onMount(() => {
-        $host().classList.add('qc-external-link');
+        hostEl.classList.add('qc-external-link');
+        lastLinksSignature = getLinksSignature(links);
 
-        observer?.observe($host(), {
+        observer?.observe(hostEl, {
             childList: true,
             characterData: true,
             subtree: true,

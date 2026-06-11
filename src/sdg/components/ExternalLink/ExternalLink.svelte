@@ -25,7 +25,6 @@ function createVisibleNodesTreeWalker(link) {
                         return NodeFilter.FILTER_REJECT;
                     }
                     const style = window.getComputedStyle(node);
-                    // Si l'élément est masqué par CSS (display ou visibility), on l'ignore
                     if (style.display === 'none'
                         || style.visibility === 'hidden'
                         || style.position === 'absolute') {
@@ -48,20 +47,21 @@ function createVisibleNodesTreeWalker(link) {
 }
 
 function addExternalLinkIcon(link) {
-    // Crée un TreeWalker pour parcourir uniquement les nœuds texte visibles
+    // Si le lien contient déjà une icône ou un img-wrap (y compris sérialisé par innerHTML), ne rien faire
+    if (link.querySelector('.qc-ext-link-img') || link.querySelector('.img-wrap')) {
+        return;
+    }
+
     const walker = createVisibleNodesTreeWalker(link);
 
     let lastTextNode = null;
     while (walker.nextNode()) {
         lastTextNode = walker.currentNode;
     }
-    // S'il n'y a pas de nœud texte visible, on ne fait rien
     if (!lastTextNode) {
         return;
     }
 
-    // Séparer le contenu du dernier nœud texte en deux parties :
-    // le préfixe (éventuel) et le dernier mot
     const text = lastTextNode.textContent;
     const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
     if (!match) {
@@ -71,12 +71,10 @@ function addExternalLinkIcon(link) {
     const prefix = match[1] || "";
     const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
 
-    // Crée un span avec white-space: nowrap pour empêcher le saut de ligne de l'image de lien externe
     const span = document.createElement('span');
     span.classList.add('img-wrap')
     span.innerHTML = `${lastWord}${imgElement.outerHTML}`;
 
-    // Met à jour le nœud texte : on garde le préfixe et on insère le span après
     if (prefix) {
         lastTextNode.textContent = prefix;
         lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
@@ -94,9 +92,7 @@ $effect(() => {
 
     tick().then(() => {
         links.forEach(link => {
-            if (!link.querySelector('.qc-ext-link-img')) {
-                addExternalLinkIcon(link);
-            }
+            addExternalLinkIcon(link);
         });
         return tick();
     }).then(() => {
@@ -105,7 +101,7 @@ $effect(() => {
 });
 </script>
 
-<div hidden>
+<span hidden>
     <Icon
             type="external-link"
             alt={externalIconAlt}
@@ -113,5 +109,4 @@ $effect(() => {
             class="qc-ext-link-img"
             color="link-text"
     />
-</div>
-
+</span>
