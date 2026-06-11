@@ -16,6 +16,7 @@
 - **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).
 - **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
+- **commutateur** : Correction css pour corriger le comportement des balises `sup` et `sub` dans le libellé 
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté

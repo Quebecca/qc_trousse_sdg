@@ -2426,7 +2426,6 @@ qc-textfield textarea:disabled {
 }
 
 .qc-switch-label {
-  display: flex;
   margin-top: 0.3rem;
 }
 
