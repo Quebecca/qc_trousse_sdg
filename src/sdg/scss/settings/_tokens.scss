@@ -166,7 +166,19 @@ $lg-tokens: (
         ),
     ),
     spacer: (
-      // base scale
+        // base scale
+        1: rem(1 * $base-spacer),
+        2: rem(2 * $base-spacer),
+        3: rem(3 * $base-spacer),
+        4: rem(4 * $base-spacer),
+        5: rem(5 * $base-spacer),
+        6: rem(6 * $base-spacer),
+        7: rem(7 * $base-spacer),
+        8: rem(8 * $base-spacer),
+        9: rem(9 * $base-spacer),
+        10: rem(10 * $base-spacer),
+        11: rem(11 * $base-spacer),
+        12: rem(12 * $base-spacer),
         xs: rem(1 * $base-spacer),
         sm: rem(2 * $base-spacer),
         md: rem(3 * $base-spacer),
