@@ -188,6 +188,10 @@ $lg-tokens: (
       // prefixes : m -> margin, p -> padding, t -> top, b -> bottom, l -> left, r -> right
       // x -> horizontal i.e. left and right, y -> vertical i.e. top and bottom
       // mt -> margin top
+        main: (
+            // page <main> section
+            mb:  rem(9 * $base-spacer),
+        ),
         h1: (
             mt: rem(9 * $base-spacer),
             mb: rem(4 * $base-spacer),

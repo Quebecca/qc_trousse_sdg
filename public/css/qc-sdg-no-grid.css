@@ -216,6 +216,7 @@ label.qc-choicefield-label input.qc-choicefield.qc-compact {
   --qc-spacer-lg: 4.8rem;
   --qc-spacer-xl: 9.6rem;
   --qc-spacer-section: var(--qc-spacer-xl);
+  --qc-spacer-main-mb: 7.2rem;
   --qc-spacer-h1-mt: 7.2rem;
   --qc-spacer-h1-mb: 3.2rem;
   --qc-spacer-h2-mt: 7.2rem;
