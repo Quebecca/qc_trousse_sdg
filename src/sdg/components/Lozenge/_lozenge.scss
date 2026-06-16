@@ -1,0 +1,113 @@
+@use "qc-sdg-lib" as *;
+
+.qc-lozenge {
+  display: inline-flex;
+  align-items: center;
+  gap: rem(4);
+  max-width: rem(288);
+  min-width: rem(32);
+  padding: rem(2) token-value(spacer, xs);
+  border-radius: rem(999);
+  @include content-font(sm, semi-bold, 1);
+  white-space: nowrap;
+  vertical-align: middle;
+
+  // Par défaut : style "general" (bleue)
+  background-color: token-value(color, blue, pale);
+  color: token-value(color, blue, piv);
+
+  &.qc-general {
+    background-color: token-value(color, blue, pale);
+    color: token-value(color, blue, piv);
+  }
+
+  &.qc-success {
+    background-color: token-value(color, green, pale);
+    color: token-value(color, green, dark);
+  }
+
+  &.qc-error {
+    background-color: token-value(color, pink, pale);
+    color: token-value(color, red, dark);
+  }
+
+  &.qc-warning {
+    background-color: token-value(color, yellow, pale);
+    color: token-value(color, grey, dark);
+  }
+
+  &.qc-complementary {
+    background-color: token-value(color, grey, pale);
+    color: token-value(color, grey, dark);
+  }
+
+  .qc-lozenge-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Quand la pastille contient un exposant sans icône, on passe en inline
+  // pour que le sup/sub s'affiche naturellement.
+  // Quand il y a une icône ET un exposant, on garde inline-flex avec baseline.
+  &:has(sup, sub):not(:has(.qc-icon)) {
+    display: inline-block;
+  }
+
+  .qc-icon-font {
+    flex-shrink: 0;
+  }
+
+  qc-icon {
+    line-height: 0;
+    font-weight: token-value(font weight medium);
+  }
+
+  // Couleur de l'icône par type de pastille.
+  // Les icônes sont en mode font (Material Symbols) : on force la couleur via `color`.
+  .qc-icon-font {
+    color: token-value(color, blue, piv);
+  }
+
+  &.qc-general .qc-icon-font {
+    color: token-value(color, blue, piv);
+  }
+
+  &.qc-success .qc-icon-font {
+    color: token-value(color, green, dark);
+  }
+
+  &.qc-error .qc-icon-font {
+    color: token-value(color, red, dark);
+  }
+
+  &.qc-warning .qc-icon-font {
+    color: token-value(color, grey, dark);
+  }
+
+  &.qc-complementary .qc-icon-font {
+    color: token-value(color, grey, dark);
+  }
+
+  // Espacement entre pastilles adjacentes sans conteneur
+  & + & {
+    margin-left: token-value(spacer, xs);
+  }
+}
+
+// Conteneur pour pastilles combinées.
+.qc-lozenge-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  vertical-align: middle;
+  gap: token-value(spacer, xs);
+
+  .qc-lozenge {
+    margin: 0;
+  }
+
+  .qc-lozenge + .qc-lozenge {
+    margin-left: 0;
+  }
+}
