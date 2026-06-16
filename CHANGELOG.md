@@ -35,6 +35,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
   - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
   - **infobulle** : ajout d'exemples.
 - **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
+- **pastille (qc-lozenge)** : Ajout du composant Pastille.
 
 ### Modifié
 - **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
