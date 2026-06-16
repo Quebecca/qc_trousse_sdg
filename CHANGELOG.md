@@ -17,6 +17,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
+- **pastille (qc-lozenge)** : Ajout du composant Pastille.
 - **icônes** : Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
 - **icônes** : Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
 - **icônes** : Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.

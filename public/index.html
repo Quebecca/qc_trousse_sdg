@@ -56,6 +56,7 @@
     <li><a href='#alert'>Alerte générale</a></li>
     <li><a href='#notice'>Avis</a></li>
     <li><a href='#tooltip'>Infobulles</a></li>
+    <li><a href='#lozenge'>Pastille</a></li>
     <li><a href='#search-bar'>Barre de recherche</a></li>
     <li><a href='#buttons'>Boutons</a></li>
     <li>
@@ -1461,6 +1462,153 @@
 
 <h4>Zone d’ajout de contenu HTML</h4>
 <p>Le texte lié et la description peuvent être ajoutés par slot. Voir les exemples d'insertions de contenu. </p>
+
+    <hr/>
+    <h2 id="lozenge">Pastilles</h2>
+
+<p>La pastille est utilisée pour visualiser des états ou fournir une information complémentaire.
+Elle est constituée des éléments suivants :</p>
+<ul>
+  <li>une zone de couleur qui varie en fonction de l'attribut sélectionné</li>
+  <li>un libellé</li>
+  <li>une icône (optionnel)</li>
+</ul>
+
+<h3>Exemples</h3>
+
+<h4>Pastille générale (bleue)</h4>
+<qc-doc-exemple caption="Éléments sélectionnés ou actifs, informations importantes. Statut par défaut.">
+  <span class="qc-lozenge qc-general" aria-label="Information">Pastille générale</span>
+  <span class="qc-lozenge qc-general" aria-label="Information">
+    <qc-icon icon="information" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Pastille générale</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Pastille de succès (verte)</h4>
+<qc-doc-exemple caption="Réussite, confirmation, état positif ou action approuvée.">
+  <span class="qc-lozenge qc-success" aria-label="Succès">Pastille de succès</span>
+  <span class="qc-lozenge qc-success" aria-label="Succès">
+    <qc-icon icon="success" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Pastille de succès</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Pastille d'erreur (rouge)</h4>
+<qc-doc-exemple caption="Erreurs ou états critiques nécessitant une intervention immédiate.">
+  <span class="qc-lozenge qc-error" aria-label="Erreur">Pastille d'erreur</span>
+  <span class="qc-lozenge qc-error" aria-label="Erreur">
+    <qc-icon icon="error" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Pastille d'erreur</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Pastille d'avertissement (jaune)</h4>
+<qc-doc-exemple caption="Situations nécessitant une attention particulière.">
+  <span class="qc-lozenge qc-warning" aria-label="Avertissement">Pastille d'avertissement</span>
+  <span class="qc-lozenge qc-warning" aria-label="Avertissement">
+    <qc-icon icon="warning" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Pastille d'avertissement</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Pastille complémentaire (grise)</h4>
+<qc-doc-exemple caption="Éléments neutres, informations supplémentaires, non prioritaires.">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément">Pastille complémentaire</span>
+  <span class="qc-lozenge qc-complementary" aria-label="Complément">
+    <qc-icon icon="emoji_objects" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Pastille complémentaire</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Italique et exposant</h4>
+<qc-doc-exemple caption="Contenus permis : italique et exposant (sup/sub).">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément"><em>Avec de l'italique</em></span>
+  <span class="qc-lozenge qc-general" aria-label="Information">Avec un exposant ici 1<sup>er</sup></span>
+</qc-doc-exemple>
+
+<h4>Ellipse</h4>
+<qc-doc-exemple caption="Ellipse automatique lorsque le texte dépasse la largeur maximale de 288 px.">
+  <span class="qc-lozenge qc-general" aria-label="Information">
+    <span class="qc-lozenge-label">Ce texte est beaucoup trop long pour tenir dans la pastille</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Combinaison de pastilles</h4>
+<p>La combinaison de plusieurs pastilles est permise dans les contextes de contenu courant
+(paragraphes, tableaux de données, contenu d'accordéon, de feuille, dialogue modal, etc.).
+Un espacement de 8 px est appliqué horizontalement et verticalement entre les pastilles adjacentes.</p>
+<qc-doc-exemple caption="Pastilles combinées avec espacement automatique.">
+  <div class="qc-lozenge-group">
+    <span class="qc-lozenge qc-success" aria-label="Succès">Approuvé</span>
+    <span class="qc-lozenge qc-general" aria-label="Information">En traitement</span>
+    <span class="qc-lozenge qc-complementary" aria-label="Complément">Archivé</span>
+    <span class="qc-lozenge qc-warning" aria-label="Avertissement">En attente</span>
+    <span class="qc-lozenge qc-error" aria-label="Erreur">Rejeté</span>
+  </div>
+</qc-doc-exemple>
+
+<h3>Classes CSS</h3>
+
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <caption>Classes de pastilles</caption>
+    <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑lozenge</code></td>
+      <td><code>&lt;span&gt;</code></td>
+      <td>Classe de base obligatoire. Définit la forme pill, les dimensions (min 32 px, max 288 px), la typographie et l'ellipse automatique.</td>
+    </tr>
+    <tr>
+      <td><code>aria‑label</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Attribut recommandé. Indique la nature du statut au lecteur d'écran (ex : « Information », « Succès », « Erreur », « Avertissement », « Complément »). La couleur seule ne transmettant pas l'information aux utilisateurs de technologies d'assistance ou daltoniens.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑general</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille générale (bleue). Statut par défaut.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑success</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille de succès (verte).</td>
+    </tr>
+    <tr>
+      <td><code>qc‑error</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille d'erreur (rouge).</td>
+    </tr>
+    <tr>
+      <td><code>qc‑warning</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille d'avertissement (jaune).</td>
+    </tr>
+    <tr>
+      <td><code>qc‑complementary</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille complémentaire (grise).</td>
+    </tr>
+    <tr>
+      <td><code>qc‑lozenge‑label</code></td>
+      <td><code>&lt;span&gt;</code> enfant</td>
+      <td>Encapsule le libellé quand une icône est présente. Gère l'ellipse sur le texte.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑lozenge‑group</code></td>
+      <td><code>&lt;div&gt;</code> conteneur</td>
+      <td>Conteneur pour pastilles combinées. Gère l'espacement horizontal et vertical</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 
     <hr/>
     <h2 id="search-bar">Barre de recherche</h2>
