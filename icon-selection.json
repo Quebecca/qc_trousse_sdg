@@ -1,0 +1,29 @@
+{
+  "icons": [
+    "place",
+    "arrow_upward",
+    "event",
+    "check",
+    "expand_less",
+    "content_paste",
+    "schedule",
+    "mail",
+    "error",
+    "warning",
+    "open_in_new",
+    "info",
+    "lightbulb",
+    "remove",
+    "edit_note",
+    "call",
+    "add",
+    "help",
+    "search",
+    "check_circle",
+    "person",
+    "language",
+    "close"
+  ],
+  "variants": ["outlined", "filled"],
+  "maxBundleWarning": 100
+}

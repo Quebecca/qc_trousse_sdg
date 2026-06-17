@@ -21,7 +21,7 @@ a {
   }
 
 }
-div.qc-ext-link-img {
+.qc-ext-link-img {
 
   @extend .icon-external-link;
   $ratio : math.div(11,16) * 1em;

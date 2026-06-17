@@ -1,6 +1,7 @@
 <script>
     import {onMount, tick} from "svelte";
     import {Utils} from "../utils"
+    import Icon from "../../bases/Icon/Icon.svelte";
 
     const lang = Utils.getPageLanguage();
 
@@ -103,7 +104,14 @@
                     });
                 }}
                     >
-                        <span class="no-link-title" role="heading"
+                        <Icon
+                                type="search"
+                                size="nm"
+                                color="background"
+                                variant="outlined"
+                                renderMode="font"
+                        />
+                        <span class="no-link-title qc-sr-only" role="heading"
                               aria-level="1">{displaySearchForm ? hideSearchText : displaySearchText}</span>
                     </a>
                 {/if}

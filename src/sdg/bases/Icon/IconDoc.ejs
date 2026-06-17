@@ -1,25 +1,28 @@
 
 <h2 id="icons">Iconographie (qc-icon)</h2>
 
-<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+<p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
     <div>
-        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
-        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
-        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
-        <qc-icon type="success" color="blue-regular" size="lg"></qc-icon>
-        <qc-icon type="success" color="success" size="xl"></qc-icon>
+        <qc-icon icon="check_circle" color="pink-regular" size="xs"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-piv" size="sm"></qc-icon>
+        <qc-icon icon="check_circle" color="grey-dark" size="md"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-regular" size="lg"></qc-icon>
+        <qc-icon icon="check_circle" color="success" size="xl"></qc-icon>
     </div>
     <div>
-        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="-90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="180"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg"></qc-icon>
     </div>
-
+    <div>
+        <qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+        <qc-icon icon="info" variant="filled" size="lg"></qc-icon>
+    </div>
 
 </qc-doc-exemple>
 <style>
@@ -54,16 +57,22 @@
         </thead>
         <tbody>
         <tr>
-            <td>type</td>
+            <td>type (icon)</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
+            <td>Nom de l'icône à afficher (Material Symbols ou alias legacy).</td>
+        </tr>
+        <tr>
+            <td>variant</td>
+            <td>outlined, filled</td>
+            <td>outlined</td>
+            <td>Variante de l'icône Material Symbols.</td>
         </tr>
         <tr>
             <td>label</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code></td>
+            <td>Texte alternatif pour l'accessibilité. Sert de libellé pour les lecteurs d'écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code>).</td>
         </tr>
         <tr>
             <td>rotate</td>
@@ -73,13 +82,13 @@
         </tr>
         <tr>
             <td>size</td>
-            <td>xs, sm, md, lg ou xl</td>
+            <td>xs, sm, md, nm, lg ou xl</td>
             <td>md</td>
-            <td>Taille de l’icône.</td>
+            <td>Taille de l'icône.</td>
         </tr>
         <tr>
             <td>color</td>
-            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>--qc-color-</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
             <td>text-primary</td>
             <td>Couleur de l'icône.</td>
         </tr>
@@ -87,13 +96,13 @@
             <td>width</td>
             <td>Toute valeur acceptée par la directive css <code>width</code></td>
             <td>auto</td>
-            <td>Largeur personnalisée de l’icône.</td>
+            <td>Largeur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>height</td>
             <td>Toute valeur acceptée par la directive css <code>height</code></td>
             <td>auto</td>
-            <td>Hauteur personnalisée de l’icône.</td>
+            <td>Hauteur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>src</td>
@@ -105,25 +114,33 @@
     </table>
 </div>
 
-<h4>Liste des icônes</h4>
+<h4>Icônes disponibles</h4>
 
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
         <tr>
             <th>Nom</th>
-            <th>Aperçu</th>
+            <th>Outlined</th>
+            <th>Filled</th>
+            <th>Ancien(s) nom(s)</th>
         </tr>
         </thead>
         <tbody>
-        <% icons.forEach(function(icon){ %>
+        <% icons.forEach(function(icon){
+            // Trouver les anciens noms qui pointent vers cette icône
+            const aliases = Object.entries(legacyMappings)
+                .filter(function([old, modern]) { return modern === icon; })
+                .map(function([old]) { return old; });
+        %>
             <tr>
-                <td><%= icon %></td>
-                <td><qc-icon type="<%= icon %>" size="lg" /></td>
+                <td><code><%= icon %></code></td>
+                <td><qc-icon icon="<%= icon %>" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="<%= icon %>" variant="filled" size="lg" /></td>
+                <td><%- aliases.length ? aliases.map(function(a) { return '<code>' + a + '</code>'; }).join(', ') : '—' %></td>
             </tr>
         <% }); %>
         </tbody>
     </table>
 </div>
-
 

@@ -219,6 +219,7 @@ if (!build_process) {
         },
         plugins: [
             replace(replacements),
+            json(),
             buildHtmlDoc({
                 input: 'src/doc/_index.html',
                 output: 'public/index.html'
@@ -263,6 +264,7 @@ if (!build_process) {
                 format: 'iife',
             },
             plugins: [
+                json(),
                 svelte(svelteOptions),
                 resolve({
                     browser: true,

@@ -1,6 +1,6 @@
 @use "../../scss/qc-sdg-lib" as *;
 @use "sass:list";
-$noMask: information-tooltip question-tooltip;
+@use "sass:map";
 
 qc-icon {
   display: inline-flex;
@@ -17,31 +17,92 @@ qc-icon {
   mask-repeat: no-repeat;
   background-color: var(--img-color);
   transform: rotate(var(--img-rotate));
-  // TODO questionner une échelle [0 - 10 ou 100]
+
+  // Tailles prédéfinies
   @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
     &[data-img-size=#{$size-type}] {
       height: rem($size);
       width: rem($size);
     }
   }
-  @each $name, $url in $images {
-    // classes pour les icônes
-      @at-root .icon-#{$name} {
-        @if (list.index($noMask, $name)) {
-          background-image: getImageUrl($name);
-          background-color: transparent;
-          background-repeat: no-repeat;
-          background-size: 100%;
-        }
-        @else {
-          mask-image: getImageUrl($name);
-        }
 
-      }
-    &[data-img-type=#{$name}] {
-      @extend .icon-#{$name};
+  // Classes utilitaires .icon-{name} pour les icônes modernes (variante outlined)
+  // Utilisées par d'autres composants via @extend
+  @each $name, $base64 in map.get($images, "outlined") {
+    @at-root .icon-#{$name} {
+      mask-image: url('data:image/svg+xml;base64,#{$base64}');
     }
   }
+
+  // Classes utilitaires .icon-{legacy-name} pour les alias legacy
+  // Permet aux composants existants de continuer à utiliser @extend .icon-{legacy-name}
+  @each $legacy-name, $modern-name in $legacy-mappings {
+    $base64: map.get(map.get($images, "outlined"), $modern-name);
+    @if $base64 {
+      @at-root .icon-#{$legacy-name} {
+        mask-image: url('data:image/svg+xml;base64,#{$base64}');
+      }
+    }
+  }
+
+  // Classes utilitaires pour les icônes legacy multicolores (noMask)
+  @each $name, $base64 in $legacy-icons {
+    @at-root .icon-#{$name} {
+      background-image: url('data:image/svg+xml;base64,#{$base64}');
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-size: 100%;
+    }
+  }
+
+  // Variante outlined (défaut quand data-img-variant absent ou = "outlined")
+  @each $name, $base64 in map.get($images, "outlined") {
+    &[data-img-type=#{$name}][data-img-variant="outlined"],
+    &[data-img-type=#{$name}]:not([data-img-variant]) {
+      mask-image: url('data:image/svg+xml;base64,#{$base64}');
+    }
+  }
+
+  // Variante filled
+  @each $name, $base64 in map.get($images, "filled") {
+    &[data-img-type=#{$name}][data-img-variant="filled"] {
+      mask-image: url('data:image/svg+xml;base64,#{$base64}');
+    }
+  }
+
+  // Icônes legacy multicolores (noMask) — utilisent background-image au lieu de mask-image
+  @each $name, $base64 in $legacy-icons {
+    &[data-img-type=#{$name}] {
+      background-image: url('data:image/svg+xml;base64,#{$base64}');
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-size: 100%;
+    }
+  }
+
+  // Aliases legacy → modern (période de dépréciation)
+  // Duplique les règles mask-image pour les anciens noms (Option B : duplication)
+  @each $legacy-name, $modern-name in $legacy-mappings {
+    $base64: map.get(map.get($images, "outlined"), $modern-name);
+    @if $base64 {
+      &[data-img-type=#{$legacy-name}]:not([data-img-variant]),
+      &[data-img-type=#{$legacy-name}][data-img-variant="outlined"] {
+        mask-image: url('data:image/svg+xml;base64,#{$base64}');
+      }
+    }
+  }
+
+  // Aliases legacy → variante filled (si demandée explicitement)
+  @each $legacy-name, $modern-name in $legacy-mappings {
+    $base64: map.get(map.get($images, "filled"), $modern-name);
+    @if $base64 {
+      &[data-img-type=#{$legacy-name}][data-img-variant="filled"] {
+        mask-image: url('data:image/svg+xml;base64,#{$base64}');
+      }
+    }
+  }
+
+  // Icône personnalisée via src
   &.qc-icon-custom {
     mask-image: var(--img-src);
   }
@@ -52,4 +113,70 @@ qc-icon {
   }
 }
 
+// --- Mode Font (Phase 2) ---
+// Conditionné par $icon-render-mode : 'font' ou 'both'
 
+@if $icon-render-mode == 'font' or $icon-render-mode == 'both' {
+  // Déclaration @font-face pour la font Material Symbols subsetée
+  @if $google-api-icon-font {
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+  } @else {
+    @font-face {
+      font-family: 'Material Symbols Outlined';
+      font-style: normal;
+      font-weight: 100 700;
+      font-display: block;
+      src: url('#{$google-font-path}/material-symbols-outlined.woff2') format('woff2');
+    }
+  }
+
+  // Styles du rendu par icon font (codepoints Unicode)
+  .qc-icon-font {
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+
+    display: inline-block;
+    flex-shrink: 0;
+    font-size: 1em; // Par défaut, hérite de la taille du texte parent
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    overflow: hidden;
+
+    // Couleur contrôlée par la même variable CSS que le mode SVG
+    color: var(--img-color);
+    transform: rotate(var(--img-rotate));
+    vertical-align: middle;
+
+    // Tailles identiques au mode SVG
+    @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+      &[data-img-size=#{$size-type}] {
+        font-size: rem($size);
+        width: rem($size);
+        height: rem($size);
+      }
+    }
+
+    // Variante outlined (défaut) — FILL: 0
+    // On ne fixe PAS 'wght' pour que l'icône hérite du font-weight du parent
+    font-variation-settings: 'opsz' 24, 'FILL' 0, 'GRAD' 0;
+
+    // Variante filled — FILL: 1
+    &[data-img-variant="filled"] {
+      font-variation-settings: 'opsz' 24, 'FILL' 1, 'GRAD' 0;
+    }
+
+    // État désactivé
+    &.is-disabled {
+      cursor: not-allowed;
+      color: token-value(color grey regular);
+    }
+  }
+}

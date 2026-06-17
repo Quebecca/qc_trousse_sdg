@@ -1,0 +1,27 @@
+{
+  "codepoints": {
+    "place": "F1DB",
+    "arrow_upward": "E5D8",
+    "event": "E878",
+    "check": "E5CA",
+    "expand_less": "E5CE",
+    "content_paste": "E14F",
+    "schedule": "EFD6",
+    "mail": "E159",
+    "error": "F8B6",
+    "warning": "F083",
+    "open_in_new": "E89E",
+    "info": "E88E",
+    "lightbulb": "E90F",
+    "remove": "E15B",
+    "edit_note": "E745",
+    "call": "F0D4",
+    "add": "E145",
+    "help": "E8FD",
+    "search": "E8B6",
+    "check_circle": "F0BE",
+    "person": "F0D3",
+    "language": "E894",
+    "close": "E5CD"
+  }
+}

@@ -75,5 +75,5 @@
    {demo}
 >
    <Icon type="arrow-up" color="background"/>
-   <span>{text}</span>
+   <span class="qc-sr-only">{text}</span>
 </a>

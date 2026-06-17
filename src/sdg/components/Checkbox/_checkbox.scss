@@ -1,6 +1,5 @@
 @use "qc-sdg-lib" as *;
 @use "../Fieldset/fieldset" as *;
-@use "../../bases/Icon/icons" as *;
 
 
 input[type="checkbox"].qc-choicefield {
@@ -19,19 +18,20 @@ input[type="checkbox"].qc-choicefield {
     }
 
     &::after {
-      @extend .icon-checkmark;
-      content: "";
+      content: "\e5ca"; // Caractère "check" de la font Material Symbols
+      font-family: 'Material Symbols Outlined';
+      font-style: normal;
+      font-feature-settings: 'liga';
+      font-variation-settings: 'opsz' 24, 'FILL' 0, 'GRAD' 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      mask-size: contain;
-      mask-repeat: no-repeat;
-      mask-position: center;
-      background-color: token-value(color, white);
-      width: token-value(spacer, md);
-      height: rem(18);
-
+      color: token-value(color, white);
+      font-size: rem(18);
+      line-height: 1;
     }
   }
   &.qc-compact {
@@ -47,8 +47,7 @@ input[type="checkbox"].qc-choicefield {
       }
 
       &::after {
-        width: token-value(spacer, sm);
-        height: rem(12);
+        font-size: rem(12);
       }
     }
   }

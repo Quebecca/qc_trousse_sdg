@@ -10,6 +10,8 @@
       height: {attribute: 'height'},
       src: {attribute: 'src'},
       rotate: {attribute: 'rotate'},
+      variant: {attribute: 'variant'},
+      renderMode: {attribute: 'render-mode'},
   }
 }}" />
 

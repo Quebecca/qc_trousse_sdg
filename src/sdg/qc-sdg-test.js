@@ -3,6 +3,7 @@ import {setMcePivHeaderLogoSrc} from "./components/PivHeader/Test/pivHeaderTest"
 setMcePivHeaderLogoSrc();
 
 export * from './bases/Icon/Test/IconSvelteTest.svelte';
+export * from './bases/Icon/Test/IconFontSvelteTest.svelte';
 export * from './components/TextField/Test/TextFieldSvelteTest.svelte';
 export * from "./components/DropdownList/Test/DropdownListSvelteTest.svelte";
 export * from "./components/ChoiceGroup/Test/ChoiceGroupSvelteTest.svelte";

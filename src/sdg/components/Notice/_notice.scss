@@ -56,8 +56,11 @@
   ) {
     &.qc-#{$type} .icon-container {
       background-color: token-value(color, nth($color, 1), pale);
-      [role=img] {
+      div[role=img] {
         background-color: token-value(color,nth($color, 1), nth($color, 2));
+      }
+      span[role=img] {
+        color: token-value(color,nth($color, 1), nth($color, 2));
       }
     }
   }

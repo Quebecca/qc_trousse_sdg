@@ -72,8 +72,14 @@ function addExternalLinkIcon(link) {
     const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
 
     const span = document.createElement('span');
-    span.classList.add('img-wrap')
-    span.innerHTML = `${lastWord}${imgElement.outerHTML}`;
+    span.classList.add('img-wrap');
+    // Cloner l'icône et injecter le textContent (codepoint Unicode pour le mode font)
+    const iconClone = imgElement.cloneNode(true);
+    if (!iconClone.textContent && imgElement.textContent) {
+        iconClone.textContent = imgElement.textContent;
+    }
+    span.innerHTML = `${lastWord}`;
+    span.appendChild(iconClone);
 
     if (prefix) {
         lastTextNode.textContent = prefix;
@@ -103,7 +109,8 @@ $effect(() => {
 
 <span hidden>
     <Icon
-            type="external-link"
+            type="open_in_new"
+            size=""
             alt={externalIconAlt}
             bind:rootElement={imgElement}
             class="qc-ext-link-img"

@@ -39,9 +39,6 @@
     opacity: 1;
     visibility: visible;
   }
-  span {
-    @include sr-only;
-  }
 
 }
 
