@@ -166,11 +166,11 @@ qc-icon {
 
     // Variante outlined (défaut) — FILL: 0
     // On ne fixe PAS 'wght' pour que l'icône hérite du font-weight du parent
-    font-variation-settings: 'opsz' 24, 'FILL' 0, 'GRAD' 0;
+    font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
 
     // Variante filled — FILL: 1
     &[data-img-variant="filled"] {
-      font-variation-settings: 'opsz' 24, 'FILL' 1, 'GRAD' 0;
+      font-variation-settings: 'opsz' 40, 'FILL' 1, 'GRAD' 0;
     }
 
     // État désactivé
