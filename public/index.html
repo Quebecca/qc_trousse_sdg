@@ -344,25 +344,28 @@
     
 <h2 id="icons">Iconographie (qc-icon)</h2>
 
-<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+<p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
     <div>
-        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
-        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
-        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
-        <qc-icon type="success" color="blue-regular" size="lg"></qc-icon>
-        <qc-icon type="success" color="success" size="xl"></qc-icon>
+        <qc-icon icon="check_circle" color="pink-regular" size="xs"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-piv" size="sm"></qc-icon>
+        <qc-icon icon="check_circle" color="grey-dark" size="md"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-regular" size="lg"></qc-icon>
+        <qc-icon icon="check_circle" color="success" size="xl"></qc-icon>
     </div>
     <div>
-        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="-90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="180"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg"></qc-icon>
     </div>
-
+    <div>
+        <qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+        <qc-icon icon="info" variant="filled" size="lg"></qc-icon>
+    </div>
 
 </qc-doc-exemple>
 <style>
@@ -376,7 +379,19 @@
     }
 </style>
 
-<qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
+<h3>Héritage (<em>Legacy</em>)</h3>
+
+<p>L'attribut <code>src</code> permet d'afficher une icône SVG personnalisée.
+    Cette fonctionnalité est conservée pour la rétrocompatibilité, mais elle est <strong>dépréciée</strong>.
+    Les icônes personnalisées ne bénéficient pas des avantages de la font variable
+    (variantes outlined/filled, héritage du <code>font-weight</code>, optical size).
+    Si vous utilisez des icônes via <code>src</code>, remplacez-les par leur équivalent
+    <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>
+    pour garantir la cohérence visuelle de votre charte graphique.
+    Consultez le <a href="https://github.com/Quebecca/qc_trousse_sdg/blob/develop/MIGRATION-ICONS.md#proc%C3%A9dure-pour-ajouter-une-nouvelle-ic%C3%B4ne">guide de migration</a> pour la procédure d'ajout.
+</p>
+
+<qc-doc-exemple caption="Exemple d'icône personnalisée en base64 (<em>legacy</em> — pour les icônes non présentes dans Material Symbols).">
         <qc-icon
                 src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
         />
@@ -384,11 +399,9 @@
 
 <h3>Documentation technique</h3>
 
-
-<div class="table-overflow" id="exemple-caption">
-
+<h4>Attributs</h4>
+<div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
-        <caption>Attributs</caption>
         <thead>
         <tr>
             <th>Nom</th>
@@ -399,16 +412,22 @@
         </thead>
         <tbody>
         <tr>
-            <td>type</td>
+            <td>type (icon)</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
+            <td>Nom de l'icône à afficher (Material Symbols ou alias legacy).</td>
+        </tr>
+        <tr>
+            <td>variant</td>
+            <td>outlined, filled</td>
+            <td>outlined</td>
+            <td>Variante de l'icône Material Symbols.</td>
         </tr>
         <tr>
             <td>label</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code></td>
+            <td>Texte alternatif pour l'accessibilité. Sert de libellé pour les lecteurs d'écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code>).</td>
         </tr>
         <tr>
             <td>rotate</td>
@@ -418,13 +437,13 @@
         </tr>
         <tr>
             <td>size</td>
-            <td>xs, sm, md, lg ou xl</td>
+            <td>xs, sm, md, nm, lg ou xl</td>
             <td>md</td>
-            <td>Taille de l’icône.</td>
+            <td>Taille de l'icône.</td>
         </tr>
         <tr>
             <td>color</td>
-            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>--qc-color-</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
             <td>text-primary</td>
             <td>Couleur de l'icône.</td>
         </tr>
@@ -432,173 +451,197 @@
             <td>width</td>
             <td>Toute valeur acceptée par la directive css <code>width</code></td>
             <td>auto</td>
-            <td>Largeur personnalisée de l’icône.</td>
+            <td>Largeur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>height</td>
             <td>Toute valeur acceptée par la directive css <code>height</code></td>
             <td>auto</td>
-            <td>Hauteur personnalisée de l’icône.</td>
+            <td>Hauteur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>src</td>
             <td>Toute valeur acceptée par la fonction css <code>url()</code></td>
             <td>na</td>
-            <td>Chemin pour afficher une icône personnalisée.</td>
+            <td>Chemin pour afficher une icône personnalisée (périmé, voir section « Héritage » ci-dessus).</td>
         </tr>
         </tbody>
     </table>
 </div>
 
+<h4>Icônes disponibles</h4>
+
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
-        <caption>Liste des icônes</caption>
         <thead>
         <tr>
             <th>Nom</th>
-            <th>Aperçu</th>
+            <th>Outlined</th>
+            <th>Filled</th>
+            <th>Ancien(s) nom(s)</th>
         </tr>
         </thead>
         <tbody>
         
             <tr>
-                <td>adresse</td>
-                <td><qc-icon type="adresse" size="lg" /></td>
+                <td><code>place</code></td>
+                <td><qc-icon icon="place" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="place" variant="filled" size="lg" /></td>
+                <td><code>adresse</code></td>
             </tr>
         
             <tr>
-                <td>arrow-up</td>
-                <td><qc-icon type="arrow-up" size="lg" /></td>
+                <td><code>arrow_upward</code></td>
+                <td><qc-icon icon="arrow_upward" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_upward" variant="filled" size="lg" /></td>
+                <td><code>arrow-up</code></td>
             </tr>
         
             <tr>
-                <td>calendar</td>
-                <td><qc-icon type="calendar" size="lg" /></td>
+                <td><code>event</code></td>
+                <td><qc-icon icon="event" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="event" variant="filled" size="lg" /></td>
+                <td><code>calendar</code></td>
             </tr>
         
             <tr>
-                <td>checkmark</td>
-                <td><qc-icon type="checkmark" size="lg" /></td>
+                <td><code>check</code></td>
+                <td><qc-icon icon="check" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="check" variant="filled" size="lg" /></td>
+                <td><code>checkmark</code></td>
             </tr>
         
             <tr>
-                <td>chevron-up-thin</td>
-                <td><qc-icon type="chevron-up-thin" size="lg" /></td>
+                <td><code>expand_less</code></td>
+                <td><qc-icon icon="expand_less" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="expand_less" variant="filled" size="lg" /></td>
+                <td><code>chevron-up-thin</code>, <code>chevron-up</code></td>
             </tr>
         
             <tr>
-                <td>chevron-up</td>
-                <td><qc-icon type="chevron-up" size="lg" /></td>
+                <td><code>content_paste</code></td>
+                <td><qc-icon icon="content_paste" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="content_paste" variant="filled" size="lg" /></td>
+                <td><code>clipboard</code></td>
             </tr>
         
             <tr>
-                <td>clipboard</td>
-                <td><qc-icon type="clipboard" size="lg" /></td>
+                <td><code>schedule</code></td>
+                <td><qc-icon icon="schedule" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="schedule" variant="filled" size="lg" /></td>
+                <td><code>clock</code></td>
             </tr>
         
             <tr>
-                <td>clock</td>
-                <td><qc-icon type="clock" size="lg" /></td>
+                <td><code>mail</code></td>
+                <td><qc-icon icon="mail" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="mail" variant="filled" size="lg" /></td>
+                <td><code>email</code></td>
             </tr>
         
             <tr>
-                <td>email</td>
-                <td><qc-icon type="email" size="lg" /></td>
+                <td><code>error</code></td>
+                <td><qc-icon icon="error" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="error" variant="filled" size="lg" /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>error</td>
-                <td><qc-icon type="error" size="lg" /></td>
+                <td><code>warning</code></td>
+                <td><qc-icon icon="warning" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="warning" variant="filled" size="lg" /></td>
+                <td><code>exclamation</code></td>
             </tr>
         
             <tr>
-                <td>exclamation</td>
-                <td><qc-icon type="exclamation" size="lg" /></td>
+                <td><code>open_in_new</code></td>
+                <td><qc-icon icon="open_in_new" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="open_in_new" variant="filled" size="lg" /></td>
+                <td><code>external-link</code></td>
             </tr>
         
             <tr>
-                <td>external-link</td>
-                <td><qc-icon type="external-link" size="lg" /></td>
+                <td><code>info</code></td>
+                <td><qc-icon icon="info" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="info" variant="filled" size="lg" /></td>
+                <td><code>information</code></td>
             </tr>
         
             <tr>
-                <td>information-tooltip</td>
-                <td><qc-icon type="information-tooltip" size="lg" /></td>
+                <td><code>lightbulb</code></td>
+                <td><qc-icon icon="lightbulb" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="lightbulb" variant="filled" size="lg" /></td>
+                <td><code>ligth-bulb</code></td>
             </tr>
         
             <tr>
-                <td>information</td>
-                <td><qc-icon type="information" size="lg" /></td>
+                <td><code>remove</code></td>
+                <td><qc-icon icon="remove" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="remove" variant="filled" size="lg" /></td>
+                <td><code>minus</code></td>
             </tr>
         
             <tr>
-                <td>ligth-bulb</td>
-                <td><qc-icon type="ligth-bulb" size="lg" /></td>
+                <td><code>edit_note</code></td>
+                <td><qc-icon icon="edit_note" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="edit_note" variant="filled" size="lg" /></td>
+                <td><code>note</code></td>
             </tr>
         
             <tr>
-                <td>minus</td>
-                <td><qc-icon type="minus" size="lg" /></td>
+                <td><code>call</code></td>
+                <td><qc-icon icon="call" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="call" variant="filled" size="lg" /></td>
+                <td><code>phone</code></td>
             </tr>
         
             <tr>
-                <td>note</td>
-                <td><qc-icon type="note" size="lg" /></td>
+                <td><code>add</code></td>
+                <td><qc-icon icon="add" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="add" variant="filled" size="lg" /></td>
+                <td><code>plus</code></td>
             </tr>
         
             <tr>
-                <td>phone</td>
-                <td><qc-icon type="phone" size="lg" /></td>
+                <td><code>help</code></td>
+                <td><qc-icon icon="help" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="help" variant="filled" size="lg" /></td>
+                <td><code>question-mark</code></td>
             </tr>
         
             <tr>
-                <td>plus</td>
-                <td><qc-icon type="plus" size="lg" /></td>
+                <td><code>search</code></td>
+                <td><qc-icon icon="search" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="search" variant="filled" size="lg" /></td>
+                <td><code>search-thin</code></td>
             </tr>
         
             <tr>
-                <td>question-mark</td>
-                <td><qc-icon type="question-mark" size="lg" /></td>
+                <td><code>check_circle</code></td>
+                <td><qc-icon icon="check_circle" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="check_circle" variant="filled" size="lg" /></td>
+                <td><code>success</code></td>
             </tr>
         
             <tr>
-                <td>question-tooltip</td>
-                <td><qc-icon type="question-tooltip" size="lg" /></td>
+                <td><code>person</code></td>
+                <td><qc-icon icon="person" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="person" variant="filled" size="lg" /></td>
+                <td><code>user</code></td>
             </tr>
         
             <tr>
-                <td>search-thin</td>
-                <td><qc-icon type="search-thin" size="lg" /></td>
+                <td><code>language</code></td>
+                <td><qc-icon icon="language" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="language" variant="filled" size="lg" /></td>
+                <td><code>website</code></td>
             </tr>
         
             <tr>
-                <td>search</td>
-                <td><qc-icon type="search" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>success</td>
-                <td><qc-icon type="success" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>user</td>
-                <td><qc-icon type="user" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>warning</td>
-                <td><qc-icon type="warning" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>website</td>
-                <td><qc-icon type="website" size="lg" /></td>
-            </tr>
-        
-            <tr>
-                <td>xclose</td>
-                <td><qc-icon type="xclose" size="lg" /></td>
+                <td><code>close</code></td>
+                <td><qc-icon icon="close" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="close" variant="filled" size="lg" /></td>
+                <td><code>xclose</code></td>
             </tr>
         
         </tbody>
@@ -606,8 +649,6 @@
 </div>
 
 
-
-    <hr/>
     <h2 id="liens">Liens</h2>
 <qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
     <dl>
@@ -1486,14 +1527,14 @@
 
 <qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détails concernant le composant <code>qc-icon</code>.">
     <div class="qc-button-group">
-        <button class="qc-button qc-primary">
-            <qc-icon type="arrow-up" rotate="-90"></qc-icon>
+        <button class="qc-button qc-primary qc-has-icon-left">
+            <qc-icon type="arrow_left_alt"></qc-icon>
             Précédent
         </button>
 
-        <button class="qc-button qc-primary">
+        <button class="qc-button qc-primary qc-has-icon-right">
             Suivant
-            <qc-icon type="arrow-up" rotate="90"></qc-icon>
+            <qc-icon type="arrow_right_alt"></qc-icon>
         </button>
     </div>
 </qc-doc-exemple>

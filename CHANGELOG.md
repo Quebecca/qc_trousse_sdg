@@ -12,6 +12,8 @@
 - **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.
 - **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.
 - **Tests** : Renommage des composants de test `*EmbeddedTest` → `*SvelteTest` pour cohérence.
+### Déprécié
+- **qc-icon (attribut `src`)** : L'usage d'icônes SVG personnalisées via l'attribut `src` est désormais considéré comme *legacy*. Cette fonctionnalité reste supportée mais est fortement déconseillée : les icônes personnalisées ne s'intègrent pas visuellement avec les Material Symbols (pas de support des variantes, du font-weight hérité, ni de l'optical size). Les équipes ayant utilisé `src` pour des icônes personnalisées sont invitées à identifier un équivalent dans le catalogue [Material Symbols](https://fonts.google.com/icons) et à migrer. Consulter le [guide de migration](MIGRATION-ICONS.md) pour la procédure.
 ### Corrigé
 - **qc-select** : Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
 - **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).

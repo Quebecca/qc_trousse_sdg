@@ -1,13 +1,11 @@
 @use "../../scss/qc-sdg-lib" as *;
-@use "sass:list";
-@use "sass:map";
 
 qc-icon {
   display: inline-flex;
   align-items: stretch;
 }
 
-// TODO retirer une fois toutes les icônes remplacées par Icon dans les composants
+// Support legacy : .qc-icon pour les icônes personnalisées via src
 .qc-icon {
   display: inline-block;
   flex-shrink: 0;
@@ -23,82 +21,6 @@ qc-icon {
     &[data-img-size=#{$size-type}] {
       height: rem($size);
       width: rem($size);
-    }
-  }
-
-  // Classes utilitaires .icon-{name} pour les icônes modernes (variante outlined)
-  // Utilisées par d'autres composants via @extend
-  @each $name, $base64 in map.get($images, "outlined") {
-    @at-root .icon-#{$name} {
-      mask-image: url('data:image/svg+xml;base64,#{$base64}');
-    }
-  }
-
-  // Classes utilitaires .icon-{legacy-name} pour les alias legacy
-  // Permet aux composants existants de continuer à utiliser @extend .icon-{legacy-name}
-  @each $legacy-name, $modern-name in $legacy-mappings {
-    $base64: map.get(map.get($images, "outlined"), $modern-name);
-    @if $base64 {
-      @at-root .icon-#{$legacy-name} {
-        mask-image: url('data:image/svg+xml;base64,#{$base64}');
-      }
-    }
-  }
-
-  // Classes utilitaires pour les icônes legacy multicolores (noMask)
-  @each $name, $base64 in $legacy-icons {
-    @at-root .icon-#{$name} {
-      background-image: url('data:image/svg+xml;base64,#{$base64}');
-      background-color: transparent;
-      background-repeat: no-repeat;
-      background-size: 100%;
-    }
-  }
-
-  // Variante outlined (défaut quand data-img-variant absent ou = "outlined")
-  @each $name, $base64 in map.get($images, "outlined") {
-    &[data-img-type=#{$name}][data-img-variant="outlined"],
-    &[data-img-type=#{$name}]:not([data-img-variant]) {
-      mask-image: url('data:image/svg+xml;base64,#{$base64}');
-    }
-  }
-
-  // Variante filled
-  @each $name, $base64 in map.get($images, "filled") {
-    &[data-img-type=#{$name}][data-img-variant="filled"] {
-      mask-image: url('data:image/svg+xml;base64,#{$base64}');
-    }
-  }
-
-  // Icônes legacy multicolores (noMask) — utilisent background-image au lieu de mask-image
-  @each $name, $base64 in $legacy-icons {
-    &[data-img-type=#{$name}] {
-      background-image: url('data:image/svg+xml;base64,#{$base64}');
-      background-color: transparent;
-      background-repeat: no-repeat;
-      background-size: 100%;
-    }
-  }
-
-  // Aliases legacy → modern (période de dépréciation)
-  // Duplique les règles mask-image pour les anciens noms (Option B : duplication)
-  @each $legacy-name, $modern-name in $legacy-mappings {
-    $base64: map.get(map.get($images, "outlined"), $modern-name);
-    @if $base64 {
-      &[data-img-type=#{$legacy-name}]:not([data-img-variant]),
-      &[data-img-type=#{$legacy-name}][data-img-variant="outlined"] {
-        mask-image: url('data:image/svg+xml;base64,#{$base64}');
-      }
-    }
-  }
-
-  // Aliases legacy → variante filled (si demandée explicitement)
-  @each $legacy-name, $modern-name in $legacy-mappings {
-    $base64: map.get(map.get($images, "filled"), $modern-name);
-    @if $base64 {
-      &[data-img-type=#{$legacy-name}][data-img-variant="filled"] {
-        mask-image: url('data:image/svg+xml;base64,#{$base64}');
-      }
     }
   }
 
