@@ -9,6 +9,11 @@
 
   .qc-general-alert-elements {
     display: flex;
+
+    // Icônes warning et general : font-weight 500
+    > .qc-icon-font {
+      font-weight: 500;
+    }
   }
 
   &.warning {

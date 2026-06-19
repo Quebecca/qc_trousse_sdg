@@ -75,7 +75,7 @@
                                 onclick={hideAlert}
                                 size="nm"
                                 icon="xclose"
-                                iconSize="sm"
+                                iconSize="nm"
                                 iconColor="blue-piv"
                     />
                 {/if}
