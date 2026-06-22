@@ -22,7 +22,7 @@ input[type="checkbox"].qc-choicefield {
       font-family: 'Material Symbols Outlined';
       font-style: normal;
       font-feature-settings: 'liga';
-      font-variation-settings: 'opsz' 24, 'FILL' 0, 'GRAD' 0;
+      font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       position: absolute;
@@ -30,7 +30,8 @@ input[type="checkbox"].qc-choicefield {
       top: 50%;
       transform: translate(-50%, -50%);
       color: token-value(color, white);
-      font-size: rem(18);
+      font-size: rem(24);
+      font-weight: 600;
       line-height: 1;
     }
   }
@@ -47,7 +48,8 @@ input[type="checkbox"].qc-choicefield {
       }
 
       &::after {
-        font-size: rem(12);
+        font-size: rem(16);
+        font-weight: 600;
       }
     }
   }
