@@ -83,6 +83,7 @@
         <Icon type="search-thin"
               iconColor="grey-regular"
               class={`qc-icon${isDisabled ? ' is-disabled' : ''}`}
+              size="nm"
         />
     {/if}
     <input  bind:this={searchInput}
@@ -99,7 +100,7 @@
     <IconButton type="button"
                 icon="xclose"
                 iconColor="blue-piv"
-                iconSize="sm"
+                iconSize="nm"
                 aria-label={clearAriaLabel}
                 onclick={clearValue}
         />
