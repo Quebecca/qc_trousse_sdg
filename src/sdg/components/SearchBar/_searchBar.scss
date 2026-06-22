@@ -25,6 +25,10 @@ qc-search-bar {
     }
   }
 
+  [type=submit] .qc-icon-font {
+    font-weight: 600;
+  }
+
   [type=submit] {
     z-index: 1;
     background-color: transparent;
@@ -49,6 +53,12 @@ qc-search-bar {
 
 .qc-search-bar.piv-background {
   --qc-color-formfield-focus-outline: #{token-value(color blue pale)};
+
+  // Fond foncé : font-weight 400 pour l'icône search
+  [type=submit] .qc-icon-font {
+    font-weight: 400;
+  }
+
   [type=submit] {
     &::before {
       background: token-value(color background);

@@ -43,7 +43,7 @@
                 type="submit"
                 iconColor={pivBackground ? 'blue-piv' : 'background'}
                 icon="search-thin"
-                iconSize="md"
+                iconSize="nm"
                 {...submitProps}
         />
 </div>
