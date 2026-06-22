@@ -106,7 +106,7 @@
                     >
                         <Icon
                                 type="search"
-                                size="nm"
+                                size="lg"
                                 color="background"
                                 variant="outlined"
                                 renderMode="font"
