@@ -74,6 +74,6 @@
    tabindex={visible ? 0 : -1}
    {demo}
 >
-   <Icon type="arrow-up" color="background"/>
+   <Icon type="north" color="background" size="nm"/>
    <span class="qc-sr-only">{text}</span>
 </a>
