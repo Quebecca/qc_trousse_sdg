@@ -2,6 +2,7 @@
 
 .qc-form-error {
   display: flex;
+  column-gap: rem(8);
   color: token-value(color, red, regular);
   align-items: start;
   font-weight: token-value(font weight content medium);
@@ -9,9 +10,15 @@
   .qc-icon {
       display: flex;
       align-items: center;
-      margin-right: token-value(spacer, xs);
+      margin-right: 0;
       --error-icon-width: #{rem(24)}!important;
-      --error-icon-height: #{rem(21)}!important;
+      --error-icon-height: #{rem(24)}!important;
+  }
+  .qc-icon-font {
+      font-size: rem(24);
+      width: rem(24);
+      height: rem(24);
+      font-weight: 500;
   }
   &.qc-xs-mt {
     margin-top: token-value(spacer, xs);
