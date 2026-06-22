@@ -1,5 +1,44 @@
 # Historique des versions
 
+## Migration des icônes vers Material Symbols
+
+Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.
+Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
+
+### ⚠️ Changements avec impact (*breaking changes*)
+
+- **Boutons avec icône** : les boutons contenant une icône détectent automatiquement la position de l'icône via `:has(> qc-icon:first-child)` / `:has(> qc-icon:last-child)` pour ajuster le padding à 18px côté icône. Pour que le sélecteur `:first-child` / `:last-child` fonctionne correctement, le texte du bouton doit être enveloppé dans un `<span>`. Exemple :
+  ```html
+  <button class="qc-button qc-primary">
+      <qc-icon type="arrow_left_alt"></qc-icon>
+      <span>Précédent</span>
+  </button>
+  ```
+- **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
+
+### Ajouté
+- **icônes** : Nouveau catalogue de 30 icônes Material Symbols : `place`, `arrow_upward`, `arrow_downward`, `arrow_back`, `arrow_forward`, `arrow_left_alt`, `arrow_right_alt`, `north`, `event`, `check`, `expand_less`, `content_paste`, `emoji_objects`, `schedule`, `mail`, `error`, `warning`, `open_in_new`, `info`, `lightbulb`, `remove`, `edit_note`, `call`, `add`, `help`, `search`, `check_circle`, `person`, `language`, `close`.
+- **boutons** : Détection automatique de la position de l'icône via `:has(> qc-icon:first-child/:last-child)` pour ajuster le padding à 18px côté icône. Le texte du bouton doit être dans un `<span>`.
+
+### Modifié
+- **icônes (variable globale)** : Passage de l'optical size (`opsz`) de 24 à 40 dans les `font-variation-settings` de `.qc-icon-font`.
+- **liens externes** : Remplacement du rendu SVG par la font Material (`open_in_new`, 1em, couleur héritée du lien).
+- **alerte générale** : Icônes warning/general en font-weight 500 ; icône close en 2.4rem.
+- **avis (notice)** : Icônes en 2rem (md), font-weight 600 ; icône « advice » → `emoji_objects` ; icône « note » → `content_paste` ; padding latéral de `.icon-container` à 10px.
+- **infobulle** : Icône trigger remplacée par `info`/`help` (FILL 1) en 2.4rem, font-weight 600, couleur bleu PIV ; icône close en 2.4rem ; pointe SVG sans rotation CSS.
+- **barre de recherche** : Icône search en 2.4rem font-weight 600 (standard), 400 (fond foncé) ; icône close en 2.4rem.
+- **boutons (primary/secondary/tertiary/danger)** : Icône en 2.4rem, font-weight 600 ; icônes séquentielles → `arrow_left_alt` / `arrow_right_alt`.
+- **boutons (simple)** : Icône standard 2.4rem font-weight 600, compact 2rem font-weight 500.
+- **cases à cocher** : Icône check en 2.4rem font-weight 600 (standard), 1.6rem font-weight 600 (compact).
+- **message d'erreur** : Ajout column-gap 0.8rem ; icône warning en 2.4rem font-weight 500.
+- **champ de recherche** : Icônes search et close en 2.4rem.
+- **liste déroulante** : Padding-right du bouton à 0.4rem ; icône expand_less en 2.4rem.
+- **haut de page** : Icône → `north` en 2.4rem, font-weight 600.
+- **bandeau PIV** : Icône search en 2.8rem, font-weight 600, margin-right 1.6rem, couleur blanche.
+
+---
+## Autres changements
+
 ### Ajouté
 - **qc-search-input** : Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
 - **qc-search-input** : Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
@@ -12,8 +51,6 @@
 - **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.
 - **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.
 - **Tests** : Renommage des composants de test `*EmbeddedTest` → `*SvelteTest` pour cohérence.
-### Déprécié
-- **qc-icon (attribut `src`)** : L'usage d'icônes SVG personnalisées via l'attribut `src` est désormais considéré comme *legacy*. Cette fonctionnalité reste supportée mais est fortement déconseillée : les icônes personnalisées ne s'intègrent pas visuellement avec les Material Symbols (pas de support des variantes, du font-weight hérité, ni de l'optical size). Les équipes ayant utilisé `src` pour des icônes personnalisées sont invitées à identifier un équivalent dans le catalogue [Material Symbols](https://fonts.google.com/icons) et à migrer. Consulter le [guide de migration](MIGRATION-ICONS.md) pour la procédure.
 ### Corrigé
 - **qc-select** : Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
 - **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).
