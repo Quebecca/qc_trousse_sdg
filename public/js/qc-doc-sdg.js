@@ -77806,7 +77806,7 @@
 
 	Code[FILENAME] = 'src/doc/components/Code.svelte';
 
-	var root_1$7 = add_locations(
+	var root_1$8 = add_locations(
 		from_html(
 			`
                 <span class="copy">Copier</span>
@@ -77817,7 +77817,7 @@
 		[[64, 16]]
 	);
 
-	var root_2$8 = add_locations(
+	var root_2$9 = add_locations(
 		from_html(
 			`
                 <span class="copied">Copié&nbsp!</span>
@@ -77828,7 +77828,7 @@
 		[[66, 16]]
 	);
 
-	var root$f = add_locations(
+	var root$e = add_locations(
 		from_html(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button>
             <!>
         </button><!></code></pre>`),
@@ -77929,21 +77929,21 @@
 			}
 		};
 
-		var pre = root$f();
+		var pre = root$e();
 		var code = child(pre);
 		var button = child(code);
 		var node = sibling(child(button));
 
 		{
 			var consequent = ($$anchor) => {
-				var fragment = root_1$7();
+				var fragment = root_1$8();
 
 				next(2);
 				append($$anchor, fragment);
 			};
 
 			var alternate = ($$anchor) => {
-				var fragment_1 = root_2$8();
+				var fragment_1 = root_2$9();
 
 				next(2);
 				append($$anchor, fragment_1);
@@ -77991,7 +77991,7 @@
 
 	Color_doc[FILENAME] = 'src/doc/components/color-doc.svelte';
 
-	var root$e = add_locations(from_html(`<div class="color-details qc-hash-1we8qc0"><div></div> <div class="color-description qc-hash-1we8qc0"><strong> </strong><br/> <code> </code></div></div>`), Color_doc[FILENAME], [[16, 0, [[17, 4], [19, 4, [[20, 8], [20, 32], [21, 8]]]]]]);
+	var root$d = add_locations(from_html(`<div class="color-details qc-hash-1we8qc0"><div></div> <div class="color-description qc-hash-1we8qc0"><strong> </strong><br/> <code> </code></div></div>`), Color_doc[FILENAME], [[16, 0, [[17, 4], [19, 4, [[20, 8], [20, 32], [21, 8]]]]]]);
 
 	const $$css$3 = {
 		hash: 'qc-hash-1we8qc0',
@@ -78037,7 +78037,7 @@
 			}
 		};
 
-		var div = root$e();
+		var div = root$d();
 		var div_1 = child(div);
 		let classes;
 		var div_2 = sibling(div_1, 2);
@@ -78086,7 +78086,7 @@
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$d = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
+	var root$c = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -78159,7 +78159,7 @@
 			}
 		};
 
-		var label_1 = root$d();
+		var label_1 = root$c();
 		var input = child(label_1);
 
 		remove_input_defaults(input);
@@ -78215,7 +78215,7 @@
 
 	TopNav[FILENAME] = 'src/doc/components/TopNav.svelte';
 
-	var root$c = add_locations(from_html(`<div role="complementary" class="qc-hash-ogsj9p"><div class="qc-container top-nav qc-hash-ogsj9p"><div class="switch-control qc-hash-ogsj9p"><!></div></div></div>`), TopNav[FILENAME], [[17, 0, [[18, 4, [[19, 8]]]]]]);
+	var root$b = add_locations(from_html(`<div role="complementary" class="qc-hash-ogsj9p"><div class="qc-container top-nav qc-hash-ogsj9p"><div class="switch-control qc-hash-ogsj9p"><!></div></div></div>`), TopNav[FILENAME], [[17, 0, [[18, 4, [[19, 8]]]]]]);
 
 	const $$css$2 = {
 		hash: 'qc-hash-ogsj9p',
@@ -78235,7 +78235,7 @@
 		});
 
 		var $$exports = { ...legacy_api() };
-		var div = root$c();
+		var div = root$b();
 		var div_1 = child(div);
 		var div_2 = child(div_1);
 		var node = child(div_2);
@@ -78270,7 +78270,7 @@
 
 	Switch[FILENAME] = 'src/doc/components/Switch.svelte';
 
-	var root$b = add_locations(from_html(`<div class="switch qc-hash-qsg5d6"><input/> <span class="slider round qc-hash-qsg5d6"></span></div>`), Switch[FILENAME], [[18, 0, [[24, 4], [31, 4]]]]);
+	var root$a = add_locations(from_html(`<div class="switch qc-hash-qsg5d6"><input/> <span class="slider round qc-hash-qsg5d6"></span></div>`), Switch[FILENAME], [[18, 0, [[24, 4], [31, 4]]]]);
 
 	const $$css$1 = {
 		hash: 'qc-hash-qsg5d6',
@@ -78337,7 +78337,7 @@
 			}
 		};
 
-		var div = root$b();
+		var div = root$a();
 		var input = child(div);
 
 		attribute_effect(
@@ -78383,7 +78383,7 @@
 
 	Exemple[FILENAME] = 'src/doc/components/Exemple.svelte';
 
-	var root$a = add_locations(from_html(`<div class="exemple-area"><figure><div class="exemple"></div> <figcaption></figcaption></figure> <!></div>`), Exemple[FILENAME], [[45, 0, [[48, 4, [[51, 8], [54, 8]]]]]]);
+	var root$9 = add_locations(from_html(`<div class="exemple-area"><figure><div class="exemple"></div> <figcaption></figcaption></figure> <!></div>`), Exemple[FILENAME], [[45, 0, [[48, 4, [[51, 8], [54, 8]]]]]]);
 
 	function Exemple($$anchor, $$props) {
 		check_target(new.target);
@@ -78473,7 +78473,7 @@
 			}
 		};
 
-		var div = root$a();
+		var div = root$9();
 		var figure_1 = child(div);
 
 		attribute_effect(figure_1, () => ({ ...restProps }));
@@ -78743,8 +78743,8 @@
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
-	var root_1$6 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root$9 = add_locations(from_html(`<span class="qc-label-text"></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
+	var root_1$7 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
+	var root$8 = add_locations(from_html(`<span class="qc-label-text"></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -78774,7 +78774,7 @@
 			}
 		};
 
-		var fragment = root$9();
+		var fragment = root$8();
 		var span = first_child(fragment);
 
 		html$1(span, text, true);
@@ -78784,7 +78784,7 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span_1 = root_1$6();
+				var span_1 = root_1$7();
 
 				append($$anchor, span_1);
 			};
@@ -78809,7 +78809,7 @@
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var root$8 = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
+	var root$7 = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -78904,7 +78904,7 @@
 			}
 		};
 
-		var label = root$8();
+		var label = root$7();
 
 		attribute_effect(label, () => ({
 			for: forId(),
@@ -78959,9 +78959,117 @@
 		{ mode: 'open' }
 	);
 
+	var mappings = {
+		adresse: "place",
+		"arrow-up": "arrow_upward",
+		calendar: "event",
+		checkmark: "check",
+		"chevron-up-thin": "expand_less",
+		"chevron-up": "expand_less",
+		clipboard: "content_paste",
+		clock: "schedule",
+		email: "mail",
+		error: "error",
+		exclamation: "warning",
+		"external-link": "open_in_new",
+		"information-tooltip": "information-tooltip",
+		information: "info",
+		"ligth-bulb": "lightbulb",
+		minus: "remove",
+		note: "edit_note",
+		phone: "call",
+		plus: "add",
+		"question-mark": "help",
+		"question-tooltip": "question-tooltip",
+		"search-thin": "search",
+		search: "search",
+		success: "check_circle",
+		user: "person",
+		warning: "warning",
+		website: "language",
+		xclose: "close"
+	};
+	var deprecationMessage = "L'icône '{old}' est dépréciée. Utilisez type=\"{new}\" à la place.";
+	var iconMapping = {
+		mappings: mappings,
+		deprecationMessage: deprecationMessage
+	};
+
+	var icons = [
+		"place",
+		"arrow_upward",
+		"arrow_downward",
+		"arrow_back",
+		"arrow_forward",
+		"arrow_left_alt",
+		"arrow_right_alt",
+		"north",
+		"event",
+		"check",
+		"expand_less",
+		"content_paste",
+		"emoji_objects",
+		"schedule",
+		"mail",
+		"error",
+		"warning",
+		"open_in_new",
+		"info",
+		"lightbulb",
+		"remove",
+		"edit_note",
+		"call",
+		"add",
+		"help",
+		"search",
+		"check_circle",
+		"person",
+		"language",
+		"close"
+	];
+	var iconSelection = {
+		icons: icons};
+
+	var codepoints = {
+		place: "E55F",
+		arrow_upward: "E5D8",
+		arrow_downward: "E5DB",
+		arrow_back: "E5C4",
+		arrow_forward: "E5C8",
+		arrow_left_alt: "EF7D",
+		arrow_right_alt: "E941",
+		north: "F1E0",
+		event: "E878",
+		check: "E5CA",
+		expand_less: "E5CE",
+		content_paste: "E14F",
+		emoji_objects: "EA24",
+		schedule: "E8B5",
+		mail: "E158",
+		error: "E000",
+		warning: "E002",
+		open_in_new: "E89E",
+		info: "E88E",
+		lightbulb: "E0F0",
+		remove: "E15B",
+		edit_note: "E745",
+		call: "E0B0",
+		add: "E145",
+		help: "E887",
+		search: "E8B6",
+		check_circle: "E86C",
+		person: "E7FD",
+		language: "E894",
+		close: "E5CD"
+	};
+	var iconCodepoints = {
+		codepoints: codepoints
+	};
+
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root$7 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[17, 0]]);
+	var root_1$6 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[66, 4]]);
+	var root_2$8 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[81, 4]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -78970,12 +79078,16 @@
 		let type = prop($$props, 'type', 7),
 			label = prop($$props, 'label', 7),
 			size = prop($$props, 'size', 7, 'md'),
-			color = prop($$props, 'color', 7, 'text-primary'),
+			color = prop($$props, 'color', 7),
 			width = prop($$props, 'width', 7, 'auto'),
 			height = prop($$props, 'height', 7, 'auto'),
 			src = prop($$props, 'src', 7, ''),
 			rotate = prop($$props, 'rotate', 7, 0),
+			variant = prop($$props, 'variant', 7, 'outlined'),
+			renderMode = prop($$props, 'renderMode', 7, null // null = hérite du mode global, 'font' ou 'svg' pour forcer
+			),
 			rootElement = prop($$props, 'rootElement', 15),
+			vAlign = prop($$props, 'vAlign', 7, 'middle'),
 			rest = rest_props(
 				$$props,
 				[
@@ -78991,10 +79103,57 @@
 					'height',
 					'src',
 					'rotate',
-					'rootElement'
+					'variant',
+					'renderMode',
+					'rootElement',
+					'vAlign'
 				]);
 
 		let attributes = tag(user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {}), 'attributes');
+
+		// Résolution du nom canonique (legacy → modern)
+		let resolvedType = tag(
+			user_derived(() => {
+				if (!type()) return type();
+
+				const mapped = iconMapping.mappings[type()];
+
+				return mapped && strict_equals(mapped, type(), false) ? mapped : type();
+			}),
+			'resolvedType'
+		);
+
+		// Récupérer le codepoint Unicode pour le mode font
+		let codepoint = tag(user_derived(() => get(resolvedType) ? iconCodepoints.codepoints[get(resolvedType)] : null), 'codepoint');
+
+		// Caractère Unicode correspondant au codepoint
+		let unicodeChar = tag(
+			user_derived(() => get(codepoint)
+				? String.fromCodePoint(parseInt(get(codepoint), 16))
+				: null),
+			'unicodeChar'
+		);
+
+		// Déterminer le mode de rendu effectif :
+		// - src fourni → toujours SVG (mask-image custom)
+		// - renderMode === 'svg' → forcer mode SVG
+		// - sinon (null ou 'font') ET codepoint trouvé → mode font
+		let isFontMode = tag(user_derived(() => !src() && strict_equals(renderMode(), 'svg', false) && strict_equals(get(unicodeChar), null, false)), 'isFontMode');
+
+		// Mécanisme de dépréciation : avertit si un nom legacy ou inconnu est utilisé
+		user_effect(() => {
+			if (!type()) return;
+
+			const mappedName = iconMapping.mappings[type()];
+
+			if (mappedName && strict_equals(mappedName, type(), false)) {
+				// Nom legacy détecté — émettre un avertissement de dépréciation
+				console.warn(...log_if_contains_state('warn', iconMapping.deprecationMessage.replace('{old}', type()).replace('{new}', mappedName)));
+			} else if (!mappedName && !iconSelection.icons.includes(type())) {
+				// Nom inconnu — ni dans le mapping, ni dans la sélection
+				console.warn(`[qc-icon] Icône inconnue : "${type()}". Vérifiez le nom ou utilisez l'attribut src.`);
+			}
+		});
 
 		var $$exports = {
 			...legacy_api(),
@@ -79029,7 +79188,7 @@
 				return color();
 			},
 
-			set color($$value = 'text-primary') {
+			set color($$value) {
 				color($$value);
 				flushSync();
 			},
@@ -79070,6 +79229,24 @@
 				flushSync();
 			},
 
+			get variant() {
+				return variant();
+			},
+
+			set variant($$value = 'outlined') {
+				variant($$value);
+				flushSync();
+			},
+
+			get renderMode() {
+				return renderMode();
+			},
+
+			set renderMode($$value = null) {
+				renderMode($$value);
+				flushSync();
+			},
+
 			get rootElement() {
 				return rootElement();
 			},
@@ -79077,29 +79254,87 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
+			},
+
+			get vAlign() {
+				return vAlign();
+			},
+
+			set vAlign($$value = 'middle') {
+				vAlign($$value);
+				flushSync();
 			}
 		};
 
-		var div = root$7();
+		var fragment = comment();
+		var node = first_child(fragment);
 
-		attribute_effect(div, () => ({
-			role: 'img',
-			class: ["qc-icon", src() && "qc-icon-custom"],
-			'aria-label': label(),
-			style: `--img-color: var(--qc-color-${color()});
-        --img-width: ${width()};
-        --img-height: ${height()};
-        --img-src: url('${src()}');
-    `,
-			'data-img-type': type(),
-			...get(attributes),
-			...rest,
-			'aria-hidden': label() ? undefined : true,
-			[STYLE]: { '--img-rotate': rotate() && rotate() + "deg" }
-		}));
+		{
+			var consequent = ($$anchor) => {
+				var span = root_1$6();
 
-		bind_this(div, ($$value) => rootElement($$value), () => rootElement());
-		append($$anchor, div);
+				attribute_effect(span, () => ({
+					role: 'img',
+					...rest,
+					class: ["qc-icon-font", $$props.class],
+					'aria-label': label(),
+					style: color()
+						? `--img-color: var(--qc-color-${color()});`
+						: 'inherit',
+					'data-img-type': get(resolvedType),
+					'data-img-variant': variant(),
+					...get(attributes),
+					'aria-hidden': label() ? undefined : true,
+					[STYLE]: {
+						'--img-rotate': rotate() && rotate() + "deg",
+						'--img-valign': vAlign()
+					}
+				}));
+
+				var text = child(span, true);
+
+				reset(span);
+				bind_this(span, ($$value) => rootElement($$value), () => rootElement());
+				template_effect(() => set_text(text, get(unicodeChar)));
+				append($$anchor, span);
+			};
+
+			var alternate = ($$anchor) => {
+				var div = root_2$8();
+
+				attribute_effect(div, () => ({
+					role: 'img',
+					class: ["qc-icon", src() && "qc-icon-custom"],
+					'aria-label': label(),
+					style: `--img-color: var(--qc-color-${color() || 'text-primary'});
+            --img-width: ${width()};
+            --img-height: ${height()};
+            --img-src: url('${src()}');
+        `,
+					'data-img-type': type(),
+					'data-img-variant': variant(),
+					...get(attributes),
+					...rest,
+					'aria-hidden': label() ? undefined : true,
+					[STYLE]: { '--img-rotate': rotate() && rotate() + "deg" }
+				}));
+
+				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
+				append($$anchor, div);
+			};
+
+			add_svelte_meta(
+				() => if_block(node, ($$render) => {
+					if (get(isFontMode)) $$render(consequent); else $$render(alternate, -1);
+				}),
+				'if',
+				Icon,
+				64,
+				0
+			);
+		}
+
+		append($$anchor, fragment);
 
 		return pop($$exports);
 	}
@@ -79115,7 +79350,10 @@
 			height: {},
 			src: {},
 			rotate: {},
-			rootElement: {}
+			variant: {},
+			renderMode: {},
+			rootElement: {},
+			vAlign: {}
 		},
 		[],
 		[],
@@ -80361,7 +80599,7 @@
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var root$4 = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[88, 4]]]]);
+	var root$4 = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[89, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -80577,7 +80815,8 @@
 							iconColor: 'grey-regular',
 							get class() {
 								return get($0);
-							}
+							},
+							size: 'nm'
 						}),
 						'component',
 						SearchInput,
@@ -80630,7 +80869,7 @@
 						type: 'button',
 						icon: 'xclose',
 						iconColor: 'blue-piv',
-						iconSize: 'sm',
+						iconSize: 'nm',
 						get 'aria-label'() {
 							return clearAriaLabel();
 						},
@@ -80638,7 +80877,7 @@
 					}),
 					'component',
 					SearchInput,
-					99,
+					100,
 					4,
 					{ componentTag: 'IconButton' }
 				);
@@ -80650,7 +80889,7 @@
 				}),
 				'if',
 				SearchInput,
-				98,
+				99,
 				4
 			);
 		}
