@@ -227,6 +227,7 @@
                 return;
             }
             const gap = getScreenGap(tooltipButton, otherAxisPosition);
+            const edgeMargin = 3; // décalage pour que l'infobulle ne vienne pas en butée du bord et que l'ombre soit visible
             // console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
             if (gap < 0) {
                 //$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
@@ -235,16 +236,16 @@
             }
             switch (otherAxisPosition) {
                 case "top":
-                    translateY = `-${gap}px`
+                    translateY = `calc(-${gap}px + ${edgeMargin}px)`
                     break;
                 case "bottom":
-                    translateY = `calc(-100% + 23px + ${gap}px)`
+                    translateY = `calc(-100% + 24px + ${gap}px - ${edgeMargin}px)`
                     break;
                 case "right":
-                    translateX = `calc(-100% + 23px + ${gap}px)`
+                    translateX = `calc(-100% + 24px + ${gap}px - ${edgeMargin}px)`
                     break;
                 case "left":
-                    translateX = `-${gap}px`
+                    translateX = `calc(-${gap}px + ${edgeMargin}px)`
                     break;
             }
         })
