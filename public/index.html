@@ -498,6 +498,48 @@
             </tr>
         
             <tr>
+                <td><code>arrow_downward</code></td>
+                <td><qc-icon icon="arrow_downward" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_downward" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>arrow_back</code></td>
+                <td><qc-icon icon="arrow_back" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_back" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>arrow_forward</code></td>
+                <td><qc-icon icon="arrow_forward" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_forward" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>arrow_left_alt</code></td>
+                <td><qc-icon icon="arrow_left_alt" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_left_alt" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>arrow_right_alt</code></td>
+                <td><qc-icon icon="arrow_right_alt" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="arrow_right_alt" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>north</code></td>
+                <td><qc-icon icon="north" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="north" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
                 <td><code>event</code></td>
                 <td><qc-icon icon="event" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="event" variant="filled" size="lg" /></td>
@@ -523,6 +565,13 @@
                 <td><qc-icon icon="content_paste" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="content_paste" variant="filled" size="lg" /></td>
                 <td><code>clipboard</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>emoji_objects</code></td>
+                <td><qc-icon icon="emoji_objects" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="emoji_objects" variant="filled" size="lg" /></td>
+                <td>—</td>
             </tr>
         
             <tr>
@@ -1525,19 +1574,20 @@
 
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détails concernant le composant <code>qc-icon</code>.">
+<qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détails concernant le composant <code>qc-icon</code>.<br/>NB2 : le texte du bouton doit être placé dans une balise span.">
     <div class="qc-button-group">
-        <button class="qc-button qc-primary qc-has-icon-left">
+        <button class="qc-button qc-primary">
             <qc-icon type="arrow_left_alt"></qc-icon>
-            Précédent
+            <span>Précédent</span>
         </button>
 
-        <button class="qc-button qc-primary qc-has-icon-right">
-            Suivant
+        <button class="qc-button qc-primary">
+            <span>Suivant</span>
             <qc-icon type="arrow_right_alt"></qc-icon>
         </button>
     </div>
 </qc-doc-exemple>
+
 
 <qc-doc-exemple caption="Exemples avec un lien et un bouton de soumission.">
     <div class="qc-button-group">
