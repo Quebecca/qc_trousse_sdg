@@ -197,6 +197,23 @@
     }
   }
 
+  // Icône en mode font pour boutons primary/secondary/tertiary/danger
+  &:not(.qc-simple) {
+    .qc-icon-font {
+      font-size: rem(24);
+      width: rem(24);
+      height: rem(24);
+      font-weight: 600;
+    }
+
+    &:has(> qc-icon:first-child) {
+      padding-left: rem(18);
+    }
+    &:has(> qc-icon:last-child) {
+      padding-right: rem(18);
+    }
+  }
+
   &.qc-simple {
     color: token-value(color blue, piv);
     background-color: transparent;
@@ -204,6 +221,13 @@
     padding: 0;
     min-width: unset;
     min-height: unset;
+
+    .qc-icon-font {
+      font-size: rem(24);
+      width: rem(24);
+      height: rem(24);
+      font-weight: 600;
+    }
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
@@ -218,6 +242,13 @@
     &.qc-compact {
       font-size: token-value(font size, sm);
       line-height: token-value(line height, sm);
+
+      .qc-icon-font {
+        font-size: rem(20);
+        width: rem(20);
+        height: rem(20);
+        font-weight: 500;
+      }
     }
 
     &:disabled,
