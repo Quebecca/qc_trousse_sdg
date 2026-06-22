@@ -18,7 +18,7 @@
         textSlot
     } = $props()
     const
-        defaultTranslateY = "calc(-50% + 8px)",
+        defaultTranslateY = "calc(-50% + 12px)",
         defaultTranslateX = "-50%"
     ;
     let isFr = Utils.getPageLanguage() === "fr",
@@ -39,7 +39,7 @@
         modalFlag = $derived(mobileFlag || displayMode === "modal" || forceModal),
         hasDescription = $derived.by(_ => hasProperty(description, slots["description"], descriptionSlot)),
         hasText = $derived.by(_ => hasProperty(text, slots["text"], textSlot)),
-        tooltipIcon = $derived( icon + "-tooltip"),
+        tooltipIcon = $derived(icon === "question" ? "help" : "info"),
         labels = $derived({
             tooltipButton: {
                 ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip")
@@ -238,10 +238,10 @@
                     translateY = `-${gap}px`
                     break;
                 case "bottom":
-                    translateY = `calc(-100% + 16px + ${gap}px)`
+                    translateY = `calc(-100% + 23px + ${gap}px)`
                     break;
                 case "right":
-                    translateX = `calc(-100% + 16px + ${gap}px)`
+                    translateX = `calc(-100% + 23px + ${gap}px)`
                     break;
                 case "left":
                     translateX = `-${gap}px`
@@ -369,34 +369,19 @@
              }
             }}
          >
-            <Icon type={tooltipIcon} size="sm" />
+            <Icon type={tooltipIcon}
+                  size="nm"
+                  variant="filled"
+                  color="blue-piv"
+                  vAlign="top"
+            />
         </a>
          {#if !modalFlag && displayPopover}
          <div class="qc-tooltip-pin"
               class:qc-tooltip-visible={visiblePopover}
               aria-hidden="true"
             >
-             <svg
-                 width="9"
-                 height="15"
-                 viewBox="0 0 9 15"
-                 fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-                <style>
-                    .triangle {
-                        fill: var(--qc-color-background);
-                    }
-                    .stroke {
-                        fill: var(--qc-color-grey-light);
-                    }
-                </style>
-                <path
-                        class="triangle"
-                        d="M8.02002 14.1667L1.35335 7.50004L8.02002 0.833374L8.02002 14.1667Z"/>
-                <path
-                        class="stroke"
-                        d="M1.35335 7.5L8.02002 14.1667L8.02002 15H7.02002V14.5118L1.90735e-05 7.5L7.02002 0.488157V0L8.02002 3.64262e-08L8.02002 0.833335L1.35335 7.5Z"/>
-            </svg>
+             {@render pinSvg(position)}
          </div>
          {@render tooltipPanelSnippet("popover")}
          {/if}
@@ -464,9 +449,33 @@
         >
             <Icon type="xclose"
                   color="blue-piv"
-                  size="sm" />
+                  size="nm"
+                  vAlign="top"
+            />
         </a>
     </div>
+{/snippet}
+
+{#snippet pinSvg(pos)}
+    {@const isHorizontal = pos === "top" || pos === "bottom"}
+    {@const w = isHorizontal ? 15 : 9}
+    {@const h = isHorizontal ? 9 : 15}
+    {@const paths = ({
+        right:  { tri: "M8.02 14.167L1.353 7.5 8.02.833V14.167Z",
+                  str: "M1.353 7.5 8.02 14.167V15H7.02v-.488L0 7.5 7.02.488V0h1v.833L1.353 7.5Z" },
+        top: { tri: "M.833.98 7.5 7.647 14.167.98H.833Z",
+                  str: "M7.5 7.647.833.98H0v1L7.5 9 15 1.98v-1h-.833L7.5 7.647Z" },
+        bottom:    { tri: "M14.167 8.02 7.5 1.353.833 8.02h13.334Z",
+                  str: "M7.5 1.353 14.167 8.02H15v-1L7.5 0 0 7.02v1h.833L7.5 1.353Z" }
+    })[pos]}
+    <svg width={w} height={h} viewBox="0 0 {w} {h}" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <style>
+            .triangle { fill: var(--qc-color-background); }
+            .stroke { fill: var(--qc-color-grey-light); }
+        </style>
+        <path class="triangle" d={paths.tri}/>
+        <path class="stroke" d={paths.str}/>
+    </svg>
 {/snippet}
 
 
@@ -497,19 +506,24 @@
     }
     .qc-tooltip-button {
         align-self: center;
-        height: 16px;
-        width: 16px;
-        line-height: 16px;
+        height: 24px;
+        width: 24px;
+        line-height: 24px;
         display: block;
         position: relative;
+        font-weight: 600;
+        &:focus,
+        &:focus-visible {
+            outline-offset: 0;
+        }
     }
     .qc-tooltip-container {
         position: relative;
     }
     .qc-tooltip-pin {
         position: absolute;
-        top:0;
-        left: calc(100% + var(--pin-gap) + 1px);
+        top: calc(var(--pin-height) / 2);
+        left: calc(100% + var(--pin-gap) + 2px);
         z-index: 200;
         width: var(--pin-height);
         height: var(--pin-base);
@@ -552,8 +566,8 @@
         position: absolute;
         right: 8px;
         top: 8px;
-        line-height: 16px;
-        height: 16px;
+        line-height: 24px;
+        height: 24px;
     }
 
     dialog {
@@ -612,7 +626,7 @@
             border: 1px solid var(--qc-color-grey-light);
             transform: translateY(var(--translateY));
             top:0;
-            left: calc(100% + var(--pin-gap) + var(--pin-height) - 1px);
+            left: calc(100% + var(--pin-gap) + var(--pin-height));
             z-index:199;
         }
 
@@ -625,16 +639,16 @@
         &.qc-tooltip-top .qc-tooltip-pin,
         &.qc-tooltip-bottom .qc-tooltip-pin
         {
-            left: calc(.5 * var(--pin-height) - 1px);
+            /*left: 50%;*/
+            /*transform: translateX(-50%);*/
+            left: calc(50% - var(--pin-base) / 2);
         }
         &.qc-tooltip-top .qc-tooltip-pin {
-            top: calc(-100% - var(--pin-gap) + 2px);
-            transform: rotate(-90deg);
+            top: calc(0px - var(--pin-height) - var(--pin-gap) - 2px);
         }
 
         &.qc-tooltip-bottom .qc-tooltip-pin {
-            top: calc(100% + var(--pin-gap) - 1px);
-            transform: rotate(90deg);
+            top: calc(100% + var(--pin-gap) + 2px);
         }
 
         &.qc-tooltip-top .qc-tooltip-panel {

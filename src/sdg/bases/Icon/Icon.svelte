@@ -15,6 +15,7 @@
         variant = 'outlined',
         renderMode = null, // null = hérite du mode global, 'font' ou 'svg' pour forcer
         rootElement = $bindable(),
+        vAlign = 'middle',
         ...rest
     } = $props();
 
@@ -68,6 +69,7 @@
           aria-label={label}
           style={color ? `--img-color: var(--qc-color-${color});` : 'inherit'}
           style:--img-rotate={rotate && rotate + "deg"}
+          style:--img-valign={vAlign}
           data-img-type={resolvedType}
           data-img-variant={variant}
           {...attributes}

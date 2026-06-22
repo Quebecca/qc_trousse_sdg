@@ -75,7 +75,7 @@ qc-icon {
     // Couleur contrôlée par la même variable CSS que le mode SVG
     color: var(--img-color);
     transform: rotate(var(--img-rotate));
-    vertical-align: middle;
+    vertical-align: var(--img-valign);
 
     // Tailles identiques au mode SVG
     @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
