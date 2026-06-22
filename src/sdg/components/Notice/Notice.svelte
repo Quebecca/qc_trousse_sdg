@@ -44,7 +44,11 @@
 
     // Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
     const computedType = $derived(shouldUseIcon ? "neutral" : usedType);
-    const iconType = $derived(shouldUseIcon ? (icon ?? "note") : usedType);
+    const iconType = $derived.by(() => {
+        if (usedType === "advice") return icon ?? "emoji_objects";
+        if (usedType === "note") return icon ?? "content_paste";
+        return usedType;
+    });
     const iconLabel = $derived(typesDescriptions[type] ?? typesDescriptions['information']);
 </script>
 
@@ -61,7 +65,7 @@ le denaturaliser.-->
     <div class="qc-icon">
       <Icon type={iconType}
             label={iconLabel}
-            size="nm"
+            size="md"
       />
     </div>
   </div>

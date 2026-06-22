@@ -21,14 +21,12 @@
 
   .icon-container {
     display: flex;  
-    padding: token-value(spacer, md) token-value(spacer, xs);
-    background-color: token-value(color,blue,pale);      
+    padding: token-value(spacer, md) rem(10);
+    //background-color: token-value(color,blue,pale);
 
-    .qc-icon {
-      background-size: 100% auto;
-      min-width: token-value(spacer, md);      
-      height: token-value(spacer, md);
-    }    
+    .qc-icon-font {
+      font-weight: 600;
+    }
   }
   .content-container {
     width: 100%;
