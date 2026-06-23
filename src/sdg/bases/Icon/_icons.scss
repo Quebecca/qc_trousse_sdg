@@ -41,20 +41,20 @@ qc-icon {
 @if $icon-render-mode == 'font' or $icon-render-mode == 'both' {
   // Déclaration @font-face pour la font Material Symbols subsetée
   @if $google-api-icon-font {
-    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
   } @else {
     @font-face {
-      font-family: 'Material Symbols Outlined';
+      font-family: 'Material Symbols Rounded';
       font-style: normal;
       font-weight: 100 700;
       font-display: block;
-      src: url('#{$google-font-path}/material-symbols-outlined.woff2') format('woff2');
+      src: url('#{$google-font-path}/material-symbols-rounded.woff2') format('woff2');
     }
   }
 
   // Styles du rendu par icon font (codepoints Unicode)
   .qc-icon-font {
-    font-family: 'Material Symbols Outlined';
+    font-family: 'Material Symbols Rounded';
     font-style: normal;
     font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;

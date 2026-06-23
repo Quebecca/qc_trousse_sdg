@@ -734,14 +734,14 @@ qc-icon {
 }
 
 @font-face {
-  font-family: "Material Symbols Outlined";
+  font-family: "Material Symbols Rounded";
   font-style: normal;
   font-weight: 100 700;
   font-display: block;
-  src: url("../../dist/fonts/material-symbols-outlined.woff2") format("woff2");
+  src: url("../../dist/fonts/material-symbols-rounded.woff2") format("woff2");
 }
 .qc-icon-font {
-  font-family: "Material Symbols Outlined";
+  font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
@@ -2152,7 +2152,7 @@ input[type=checkbox].qc-choicefield:checked::before {
 }
 input[type=checkbox].qc-choicefield:checked::after {
   content: "\e5ca";
-  font-family: "Material Symbols Outlined";
+  font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
   font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;

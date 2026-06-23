@@ -20,13 +20,13 @@ const { execSync } = require('child_process');
 
 // URL de la font source Material Symbols (format TTF)
 const FONT_SOURCE_URL =
-  'https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsOutlined%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf';
+  'https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf';
 
 // Chemins du projet
 const TMP_DIR = path.resolve(__dirname, '..', 'tmp');
 const DEST_DIR = path.resolve(__dirname, '..', 'dist', 'fonts');
-const SOURCE_TTF = path.join(TMP_DIR, 'MaterialSymbolsOutlined.ttf');
-const OUTPUT_WOFF2 = path.join(DEST_DIR, 'material-symbols-outlined.woff2');
+const SOURCE_TTF = path.join(TMP_DIR, 'MaterialSymbolsRounded.ttf');
+const OUTPUT_WOFF2 = path.join(DEST_DIR, 'material-symbols-rounded.woff2');
 const CODEPOINT_MAP = path.resolve(__dirname, '..', 'icon-codepoints.json');
 
 /**
