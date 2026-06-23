@@ -82,7 +82,7 @@
     {#if leftIconNormalized}
         <Icon type="search-thin"
               iconColor="grey-regular"
-              class={`qc-icon${isDisabled ? ' is-disabled' : ''}`}
+              class={isDisabled ? 'is-disabled' : ''}
               size="nm"
         />
     {/if}

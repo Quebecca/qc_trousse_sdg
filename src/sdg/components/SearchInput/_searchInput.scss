@@ -98,8 +98,9 @@ qc-search-input {
       @extend %qc-search-disabled;
     }
 
-    qc-icon {
-      @extend %qc-search-disabled;
+    qc-icon .qc-icon-font {
+      color: token-value(color, grey, regular);
+      cursor: not-allowed;
     }
   }
 }
