@@ -513,6 +513,7 @@
         display: block;
         position: relative;
         font-weight: 600;
+        font-variation-settings: 'opsz' 24, 'FILL' 1, 'GRAD' 0;
         &:focus,
         &:focus-visible {
             outline-offset: 0;
