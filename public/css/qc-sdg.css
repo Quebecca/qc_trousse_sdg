@@ -744,13 +744,14 @@ qc-icon {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
+  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
   text-rendering: optimizeLegibility;
   display: inline-block;
   flex-shrink: 0;
   font-size: 1em;
-  line-height: 1;
   letter-spacing: normal;
   text-transform: none;
   white-space: nowrap;
@@ -790,9 +791,6 @@ qc-icon {
   font-size: 3.2rem;
   width: 3.2rem;
   height: 3.2rem;
-}
-.qc-icon-font {
-  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
 }
 .qc-icon-font[data-img-variant=filled] {
   font-variation-settings: "opsz" 40, "FILL" 1, "GRAD" 0;
@@ -838,8 +836,6 @@ a .img-wrap {
 }
 
 .qc-ext-link-img {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   vertical-align: -0.17em;
   margin-left: 4px;
 }
@@ -2158,6 +2154,7 @@ input[type=checkbox].qc-choicefield:checked::after {
   font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2165,7 +2162,6 @@ input[type=checkbox].qc-choicefield:checked::after {
   color: var(--qc-color-white);
   font-size: 2.4rem;
   font-weight: 600;
-  line-height: 1;
 }
 input[type=checkbox].qc-choicefield.qc-compact:checked::before {
   width: 0.8rem;

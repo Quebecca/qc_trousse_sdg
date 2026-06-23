@@ -26,6 +26,17 @@
   font-weight: token-value(font, weight, header, bold);
 }
 
+// Icon font Material Symbols — propriétés de base partagées
+@mixin icon-font-base() {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-feature-settings: 'liga';
+  font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
+}
+
 // ruler
 @mixin ruler() {
   margin: token-value(spacer lg) 0;
