@@ -25,3 +25,4 @@ node_modules/
 tmp/
 icon-selection.local.json
 .playwright-mcp/
+/.ai/*
