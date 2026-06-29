@@ -17781,9 +17781,9 @@
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[374, 20]]);
-	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[423, 24]]);
-	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div class="qc-dropdown-list-expanded" tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[304, 0, [[309, 4, [[328, 8, [[357, 12, [[421, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[388, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[437, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[317, 0, [[322, 4, [[341, 8, [[370, 12, [[435, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -17920,6 +17920,8 @@
 		);
 
 		let topOffset = tag(state(0), 'topOffset');
+		let isFlipped = tag(user_derived(() => get(topOffset) < 0), 'isFlipped');
+		let initialPopupHeight = tag(state(0), 'initialPopupHeight');
 		let popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness');
 		let popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
 
@@ -18082,13 +18084,24 @@
 
 		user_effect(() => {
 			if (expanded()) {
-				const borderThickness = 2 * (invalid() ? 2 : 1);
+				// Ne recalculer que si la hauteur initiale n'a pas encore été capturée
+				// (premier rendu après ouverture)
+				if (get(initialPopupHeight) > 0) return;
 
-				const popupHeight = get(popup)
-					? get(popup).getBoundingClientRect().height
-					: get(usedHeight);
+				tick().then(() => {
+					const borderThickness = 2 * (invalid() ? 2 : 1);
 
-				set(topOffset, get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness, true);
+					const popupHeight = get(popup)
+						? get(popup).getBoundingClientRect().height
+						: get(usedHeight);
+
+					// Mémoriser la hauteur initiale à l'ouverture
+					set(initialPopupHeight, popupHeight, true);
+
+					set(topOffset, get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness, true);
+				});
+			} else {
+				set(initialPopupHeight, 0);
 			}
 		});
 
@@ -18325,7 +18338,7 @@
 					}),
 					'component',
 					DropdownList,
-					315,
+					328,
 					12,
 					{ componentTag: 'Label' }
 				);
@@ -18337,7 +18350,7 @@
 				}),
 				'if',
 				DropdownList,
-				314,
+				327,
 				8
 			);
 		}
@@ -18405,7 +18418,7 @@
 			}),
 			'component',
 			DropdownList,
-			337,
+			350,
 			12,
 			{ componentTag: 'DropdownListButton' }
 		);
@@ -18458,7 +18471,7 @@
 						),
 						'component',
 						DropdownList,
-						375,
+						389,
 						24,
 						{ componentTag: 'SearchInput' }
 					);
@@ -18474,7 +18487,7 @@
 				}),
 				'if',
 				DropdownList,
-				373,
+				387,
 				16
 			);
 		}
@@ -18535,7 +18548,7 @@
 			),
 			'component',
 			DropdownList,
-			393,
+			407,
 			16,
 			{ componentTag: 'DropdownListItems' }
 		);
@@ -18554,7 +18567,7 @@
 			}),
 			'key',
 			DropdownList,
-			422,
+			436,
 			20
 		);
 
@@ -18600,7 +18613,7 @@
 				}),
 				'component',
 				DropdownList,
-				431,
+				445,
 				4,
 				{ componentTag: 'FormError' }
 			);
@@ -18620,12 +18633,18 @@
 
 			set_attribute(div_3, 'id', get(popupId));
 
+			set_class(div_3, 1, clsx([
+				"qc-dropdown-list-expanded",
+				get(isFlipped) && "qc-dropdown-list-flipped"
+			]));
+
 			set_style(div_3, `
                     --dropdown-items-top-offset: ${get(topOffset)};
                     --dropdown-items-height: ${get(usedHeight)};
                     --dropdown-items-bottom-border: ${get(popupBottomBorderThickness)};
                     --dropdown-items-top-border: ${get(popupTopBorderThickness)};
                     --dropdown-button-border: ${invalid() ? 2 : 1};
+                    ${get(isFlipped) && get(initialPopupHeight) > 0 ? `min-height: ${get(initialPopupHeight)}px;` : ''}
                     `);
 
 			set_attribute(div_3, 'hidden', !expanded());
