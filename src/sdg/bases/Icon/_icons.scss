@@ -53,6 +53,9 @@ qc-icon {
     @include icon-font-base();
     text-rendering: optimizeLegibility;
 
+    // font-variation-settings piloté par --img-variation (inline) ou par défaut opsz 40
+    font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 0, 'GRAD' 0);
+
     display: inline-block;
     flex-shrink: 0;
     font-size: 1em;
@@ -77,7 +80,7 @@ qc-icon {
 
     // Variante filled — FILL: 1
     &[data-img-variant="filled"] {
-      font-variation-settings: 'opsz' 40, 'FILL' 1, 'GRAD' 0;
+      font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 1, 'GRAD' 0);
     }
 
     &.is-disabled {

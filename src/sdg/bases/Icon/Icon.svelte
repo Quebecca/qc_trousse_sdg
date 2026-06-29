@@ -13,6 +13,7 @@
         src = '',
         rotate = 0,
         variant = 'outlined',
+        variationSettings = null,
         renderMode = null, // null = hérite du mode global, 'font' ou 'svg' pour forcer
         rootElement = $bindable(),
         vAlign = 'middle',
@@ -70,6 +71,7 @@
           style={color ? `--img-color: var(--qc-color-${color});` : 'inherit'}
           style:--img-rotate={rotate && rotate + "deg"}
           style:--img-valign={vAlign}
+          style:--img-variation={variationSettings}
           data-img-type={resolvedType}
           data-img-variant={variant}
           {...attributes}

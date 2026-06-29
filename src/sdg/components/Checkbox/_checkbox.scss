@@ -20,6 +20,7 @@ input[type="checkbox"].qc-choicefield {
     &::after {
       content: "\e5ca"; // Caractère "check" de la font Material Symbols
       @include icon-font-base();
+      font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
       position: absolute;
       left: 50%;
       top: 50%;

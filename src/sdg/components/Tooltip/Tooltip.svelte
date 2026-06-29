@@ -375,6 +375,7 @@
                   variant="filled"
                   color="blue-piv"
                   vAlign="top"
+                  variationSettings="'opsz' 24, 'FILL' 1, 'GRAD' 0"
             />
         </a>
          {#if !modalFlag && displayPopover}
@@ -513,7 +514,6 @@
         display: block;
         position: relative;
         font-weight: 600;
-        font-variation-settings: 'opsz' 24, 'FILL' 1, 'GRAD' 0;
         &:focus,
         &:focus-visible {
             outline-offset: 0;
