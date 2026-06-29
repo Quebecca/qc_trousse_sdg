@@ -110,6 +110,8 @@
             }
         }),
         topOffset = $state(0),
+        isFlipped = $derived(topOffset < 0),
+        initialPopupHeight = $state(0),
         popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
         popupBottomBorderThickness = $derived(topOffset && topOffset >= 0 ? 1 : 0)
     ;
@@ -270,12 +272,23 @@
 
     $effect(() => {
         if (expanded) {
-            const borderThickness = 2 * (invalid ? 2 : 1);
-            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+            // Ne recalculer que si la hauteur initiale n'a pas encore été capturée
+            // (premier rendu après ouverture)
+            if (initialPopupHeight > 0) return;
 
-            topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
-                -popupHeight
-                : buttonHeight - borderThickness;
+            tick().then(() => {
+                const borderThickness = 2 * (invalid ? 2 : 1);
+                const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+
+                // Mémoriser la hauteur initiale à l'ouverture
+                initialPopupHeight = popupHeight;
+
+                topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
+                    -popupHeight
+                    : buttonHeight - borderThickness;
+            });
+        } else {
+            initialPopupHeight = 0;
         }
     });
 
@@ -356,13 +369,14 @@
 
             <div
                     id={popupId}
-                    class="qc-dropdown-list-expanded"
+                    class={["qc-dropdown-list-expanded", isFlipped && "qc-dropdown-list-flipped"]}
                     style={`
                     --dropdown-items-top-offset: ${topOffset};
                     --dropdown-items-height: ${usedHeight};
                     --dropdown-items-bottom-border: ${popupBottomBorderThickness};
                     --dropdown-items-top-border: ${popupTopBorderThickness};
                     --dropdown-button-border: ${invalid ? 2 : 1};
+                    ${isFlipped && initialPopupHeight > 0 ? `min-height: ${initialPopupHeight}px;` : ''}
                     `}
                     tabindex="-1"
                     hidden={!expanded}

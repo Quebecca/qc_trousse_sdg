@@ -34,6 +34,15 @@ test.describe('Rendu visuel',
         await expect(page).toHaveScreenshot('dropdownListPopupAbove.png', {fullPage: true});
     });
 
+    test('Select tiroir au-dessus avec recherche', {
+        tag: ['@baseline', '@popup-above', '@dropdownlist']
+    }, async ({ page }) => {
+        await page.getByRole('combobox', { name: 'Régions desservies' }).click();
+        await page.locator('#dropdown-list-regions-search').fill('cap');
+
+        await expect(page).toHaveScreenshot('dropdownListPopupAboveSearch.png', {fullPage: true});
+    });
+
     test('Select svelte', {
         tag: ['@svelte', '@dropdownlist']
     }, async ({ page }) => {
