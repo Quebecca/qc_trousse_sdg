@@ -79068,8 +79068,8 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root_1$6 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[66, 4]]);
-	var root_2$8 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[81, 4]]);
+	var root_1$6 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[67, 4]]);
+	var root_2$8 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[83, 4]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -79084,6 +79084,7 @@
 			src = prop($$props, 'src', 7, ''),
 			rotate = prop($$props, 'rotate', 7, 0),
 			variant = prop($$props, 'variant', 7, 'outlined'),
+			variationSettings = prop($$props, 'variationSettings', 7, null),
 			renderMode = prop($$props, 'renderMode', 7, null // null = hérite du mode global, 'font' ou 'svg' pour forcer
 			),
 			rootElement = prop($$props, 'rootElement', 15),
@@ -79104,6 +79105,7 @@
 					'src',
 					'rotate',
 					'variant',
+					'variationSettings',
 					'renderMode',
 					'rootElement',
 					'vAlign'
@@ -79238,6 +79240,15 @@
 				flushSync();
 			},
 
+			get variationSettings() {
+				return variationSettings();
+			},
+
+			set variationSettings($$value = null) {
+				variationSettings($$value);
+				flushSync();
+			},
+
 			get renderMode() {
 				return renderMode();
 			},
@@ -79287,7 +79298,8 @@
 					'aria-hidden': label() ? undefined : true,
 					[STYLE]: {
 						'--img-rotate': rotate() && rotate() + "deg",
-						'--img-valign': vAlign()
+						'--img-valign': vAlign(),
+						'--img-variation': variationSettings()
 					}
 				}));
 
@@ -79329,7 +79341,7 @@
 				}),
 				'if',
 				Icon,
-				64,
+				65,
 				0
 			);
 		}
@@ -79351,6 +79363,7 @@
 			src: {},
 			rotate: {},
 			variant: {},
+			variationSettings: {},
 			renderMode: {},
 			rootElement: {},
 			vAlign: {}
@@ -80807,7 +80820,7 @@
 		{
 			var consequent_1 = ($$anchor) => {
 				{
-					let $0 = user_derived(() => `qc-icon${get(isDisabled) ? ' is-disabled' : ''}`);
+					let $0 = user_derived(() => get(isDisabled) ? 'is-disabled' : '');
 
 					add_svelte_meta(
 						() => Icon($$anchor, {

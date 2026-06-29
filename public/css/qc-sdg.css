@@ -744,11 +744,11 @@ qc-icon {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
-  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1;
   text-rendering: optimizeLegibility;
+  font-variation-settings: var(--img-variation, "opsz" 40, "FILL" 0, "GRAD" 0);
   display: inline-block;
   flex-shrink: 0;
   font-size: 1em;
@@ -793,7 +793,7 @@ qc-icon {
   height: 3.2rem;
 }
 .qc-icon-font[data-img-variant=filled] {
-  font-variation-settings: "opsz" 40, "FILL" 1, "GRAD" 0;
+  font-variation-settings: var(--img-variation, "opsz" 40, "FILL" 1, "GRAD" 0);
 }
 .qc-icon-font.is-disabled {
   cursor: not-allowed;
@@ -1808,7 +1808,7 @@ qc-search-input {
   width: 100%;
 }
 
-.qc-search-input.qc-search-left-icon-disabled qc-icon, .qc-search-input.qc-search-left-icon-disabled::before {
+.qc-search-input.qc-search-left-icon-disabled::before {
   background-color: var(--qc-color-grey-pale);
   border: 1px solid var(--qc-color-grey-regular);
   cursor: not-allowed;
@@ -1851,6 +1851,11 @@ label + .qc-search-input {
 .qc-search-input button {
   cursor: pointer;
 }
+.qc-search-input.qc-search-left-icon-disabled qc-icon .qc-icon-font {
+  color: var(--qc-color-grey-regular);
+  cursor: not-allowed;
+}
+
 qc-search-bar {
   position: relative;
   display: block;
@@ -2151,10 +2156,10 @@ input[type=checkbox].qc-choicefield:checked::after {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
-  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1;
+  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   position: absolute;
   left: 50%;
   top: 50%;
