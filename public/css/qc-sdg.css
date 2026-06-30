@@ -686,11 +686,6 @@ h1:after, .qc-h1:after {
   border-bottom: 4px solid var(--qc-color-accent);
 }
 
-qc-icon {
-  display: inline-flex;
-  align-items: stretch;
-}
-
 .qc-icon {
   display: inline-block;
   flex-shrink: 0;
