@@ -282,6 +282,20 @@ async function main() {
     console.warn(`\n   ⚠️  ${iconNames.length} icônes sélectionnées (seuil : ${selection.maxBundleWarning || 100}). Impact sur la taille du bundle.`);
   }
 
+  // Étape 7 : Génération de la documentation HTML des icônes
+  const ejs = require('ejs');
+  const ejsTemplate = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/IconDoc.ejs');
+  const htmlOutput = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/_icon.html');
+  const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'icon-mapping.json'), 'utf-8'));
+
+  const templateContent = fs.readFileSync(ejsTemplate, 'utf-8');
+  const html = ejs.render(templateContent, {
+    icons: iconNames,
+    legacyMappings: mapping.mappings,
+  });
+  fs.writeFileSync(htmlOutput, html, 'utf-8');
+  console.log(`   📖 Documentation : ${path.basename(htmlOutput)} (${iconNames.length} icônes)`);
+
   console.log(`\n✨ Font prête dans ${path.relative(process.cwd(), OUTPUT_WOFF2)}`);
 }
 

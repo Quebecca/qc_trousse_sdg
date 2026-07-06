@@ -11,6 +11,9 @@
     "event",
     "check",
     "expand_less",
+    "expand_more",
+    "chevron_right",
+    "chevron_left",
     "content_paste",
     "emoji_objects",
     "schedule",
@@ -29,7 +32,13 @@
     "check_circle",
     "person",
     "language",
-    "close"
+    "close",
+    "description",
+    "more_horiz",
+    "print",
+    "toc",
+    "download",
+    "videocam"
   ],
   "variants": ["outlined", "filled"],
   "maxBundleWarning": 100

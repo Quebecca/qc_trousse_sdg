@@ -11,6 +11,9 @@
     "event": "E878",
     "check": "E5CA",
     "expand_less": "E5CE",
+    "expand_more": "E5CF",
+    "chevron_right": "E5CC",
+    "chevron_left": "E5CB",
     "content_paste": "E14F",
     "emoji_objects": "EA24",
     "schedule": "E8B5",
@@ -29,6 +32,12 @@
     "check_circle": "E86C",
     "person": "E7FD",
     "language": "E894",
-    "close": "E5CD"
+    "close": "E5CD",
+    "description": "E873",
+    "more_horiz": "E5D3",
+    "print": "E8AD",
+    "toc": "E8DE",
+    "download": "F090",
+    "videocam": "E04B"
   }
 }
