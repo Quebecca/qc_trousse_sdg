@@ -31,58 +31,52 @@
 }
 
 // --- Mode Font ---
-@if $icon-render-mode == 'font' or $icon-render-mode == 'both' {
-  @if $google-api-materials {
-//    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;1,0,40,400;1,0,24,400&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
-//    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,600;1,0,40,700;1,0,24,400;1,0,24,600;1,0,24,700&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,favorite,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
-    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;0,0,40,500;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,500;1,0,40,600;1,0,40,700;1,0,24,400;1,0,24,500;1,0,24,600;1,0,24,700&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,favorite,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
-  } @else {
-    @font-face {
-      font-family: 'Material Symbols Rounded';
-      font-style: normal;
-      font-weight: 100 700;
-      font-display: block;
-      src: url('#{$google-font-path}/material-symbols-rounded.woff2') format('woff2');
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('#{$google-font-path}/material-symbols-rounded.woff2') format('woff2');
+}
+
+
+.qc-icon-font {
+  @include icon-font-base();
+  text-rendering: optimizeLegibility;
+
+  // font-variation-settings piloté par --img-variation (inline) ou par défaut opsz 40
+  font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 0, 'GRAD' 0);
+
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  overflow: hidden;
+
+  color: var(--img-color);
+  transform: rotate(var(--img-rotate));
+  vertical-align: var(--img-valign);
+
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      font-size: rem($size);
+      width: rem($size);
+      height: rem($size);
     }
   }
 
-  .qc-icon-font {
-    @include icon-font-base();
-    text-rendering: optimizeLegibility;
+  // Variante filled — FILL: 1
+  &[data-img-variant="filled"] {
+    font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 1, 'GRAD' 0);
+  }
 
-    // font-variation-settings piloté par --img-variation (inline) ou par défaut opsz 40
-    font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 0, 'GRAD' 0);
-
-    display: inline-block;
-    flex-shrink: 0;
-    font-size: 1em;
-    letter-spacing: normal;
-    text-transform: none;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    overflow: hidden;
-
-    color: var(--img-color);
-    transform: rotate(var(--img-rotate));
-    vertical-align: var(--img-valign);
-
-    @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
-      &[data-img-size=#{$size-type}] {
-        font-size: rem($size);
-        width: rem($size);
-        height: rem($size);
-      }
-    }
-
-    // Variante filled — FILL: 1
-    &[data-img-variant="filled"] {
-      font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 1, 'GRAD' 0);
-    }
-
-    &.is-disabled {
-      cursor: not-allowed;
-      color: token-value(color grey regular);
-    }
+  &.is-disabled {
+    cursor: not-allowed;
+    color: token-value(color grey regular);
   }
 }
+

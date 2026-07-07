@@ -47,7 +47,7 @@ L'API du composant est rétrocompatible — les anciens noms d'icônes continuen
 
 ## Période de dépréciation
 
-Les anciens noms d'icônes restent fonctionnels pendant une **période de dépréciation minimale de 2 versions majeures** du SDG.
+Les anciens noms d'icônes restent fonctionnels mais pourront être retirées dans les prochaines versions mineures de la trousse — donc à partir de la 1.7
 
 Pendant cette période :
 
@@ -94,46 +94,59 @@ Permet d'afficher une icône Material Symbols **qui n'est pas dans le subset** d
 <qc-icon codepoint="E873" size="lg" label="Description"></qc-icon>
 ```
 
-> ⚠️ Cet attribut nécessite l'inclusion dynamique de la font pour le glyphe ciblé (voir section suivante).
+> ⚠️ Cet attribut nécessite que le glyphe soit disponible dans la font chargée (voir section suivante).
 
 ---
 
-## Utiliser une icône hors du subset (inclusion dynamique)
+## Personnaliser le subset d'icônes
 
-La trousse inclut un subset limité de Material Symbols. Pour utiliser une icône qui n'en fait pas partie **sans recompiler la trousse**, suivez cette procédure :
+La trousse inclut un `@font-face` pointant vers un subset de Material Symbols Rounded (`dist/fonts/material-symbols-rounded.woff2`). Deux cas de figure :
 
-### 1. Trouver le codepoint de l'icône
+### Cas 1 : Ajouter une icône ponctuelle via `codepoint`
 
-Rendez-vous sur [fonts.google.com/icons](https://fonts.google.com/icons), trouvez l'icône souhaitée, et notez son codepoint Unicode (visible dans les métadonnées de l'icône).
-
-### 2. Inclure la font dynamiquement via Google Fonts
-
-Ajoutez un `<link>` qui charge **uniquement** le glyphe nécessaire via l'API Google Fonts :
+Pour afficher une icône qui n'est pas dans le subset de la trousse, ajoutez un `<link>` Google Fonts qui charge le glyphe manquant, puis utilisez l'attribut `codepoint` :
 
 ```html
+<!-- Charger le glyphe « favorite » (hors subset) -->
 <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
-```
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=favorite" />
 
-> Remplacez `icon_names=favorite` par le nom de votre icône. L'API retourne un `@font-face` avec `unicode-range` restreint au codepoint de l'icône — seul le glyphe demandé est téléchargé.
-
-### 3. Utiliser l'icône via l'attribut `codepoint`
-
-```html
-<qc-icon codepoint="E87D" size="lg" label="Favori"></qc-icon>
-```
-
-### Exemple complet
-
-```html
-<!-- Inclusion dynamique de l'icône « favorite » (hors subset) -->
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
-
+<!-- Afficher l'icône par son codepoint Unicode -->
 <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
 ```
 
-Cette approche permet d'ajouter n'importe quelle icône du catalogue Material Symbols sans recompiler la trousse ni modifier le subset.
+Le `<link>` retourne un `@font-face` avec `unicode-range` restreint au glyphe demandé — il complète la font locale sans la remplacer.
+
+### Cas 2 : Remplacer le subset de la trousse par un subset custom
+
+Si vous avez besoin d'un jeu d'icônes différent (plus large, ou un subset spécifique à votre projet), écrasez le `@font-face` de la trousse en plaçant le vôtre **après** l'import de la CSS de la trousse :
+
+```html
+<link rel="stylesheet" href="qc-sdg.css">
+
+<!-- Écraser le @font-face de la trousse avec un subset custom -->
+<style>
+    @font-face {
+        font-family: 'Material Symbols Rounded';
+        font-weight: 100 700;
+        src: url('/chemin/vers/mon-subset-custom.woff2') format('woff2');
+    }
+</style>
+```
+
+Vous pouvez aussi utiliser directement l'API Google Fonts pour charger un subset distant :
+
+```html
+<link rel="stylesheet" href="qc-sdg.css">
+
+<!-- Subset Google Fonts avec les icônes souhaitées -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,24,400;0,0,40,400;0,0,40,500;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,500;1,0,40,600;1,0,40,700&icon_names=favorite,shopping_cart,visibility" />
+```
+
+> L'API `icon_names` accepte plusieurs noms séparés par des virgules.
+
+Dans les deux cas, la font-family doit rester `'Material Symbols Rounded'` pour que le composant `<qc-icon>` fonctionne.
 
 ---
 

@@ -11,7 +11,7 @@ $google-fonts : (
   open-sans: ('Open Sans', sans-serif),
   roboto-mono: ('Roboto Mono', monospace)
 );
-$google-api-materials: false !default;
+
 $google-font-path : "../fonts" !default;
 $env: "build" !default;
 
@@ -22,11 +22,4 @@ $grid-aliases: (
     tablet: sm,
     mobile: xs
 );
-
-// Mode de rendu des icônes : 'svg' (Phase 1), 'font' (Phase 2), ou 'both'
-$icon-render-mode: 'font' !default;
-// Charger la font Material Symbols depuis Google Fonts API (true) ou localement (false)
-$google-api-icon-font: false !default;
-// Chemin vers les fichiers de font locaux
-$icon-font-path: "../fonts" !default;
 
