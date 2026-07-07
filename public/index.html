@@ -402,6 +402,14 @@
     }
 </style>
 
+<qc-doc-exemple caption="Attribut codepoint : afficher une icône Material Symbols hors du subset de la trousse, par son codepoint Unicode. Nécessite l'inclusion dynamique de la font via un lien Google Fonts."
+                id="icons-codepoint">
+    <!-- Inclusion dynamique de l'icône « favorite » (hors subset) via Google Fonts API -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
+    <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+</qc-doc-exemple>
+
 <h3>Documentation technique</h3>
 
 <h4>Attributs</h4>
@@ -475,6 +483,12 @@
             <td>Booléen (présence de l'attribut)</td>
             <td>false</td>
             <td>Force l'utilisation du nom comme icône Material Symbols, sans passer par le mapping legacy. Utile lorsqu'un nom Material entre en conflit avec un alias legacy (ex.&nbsp;: <code>note</code>).</td>
+        </tr>
+        <tr>
+            <td>codepoint</td>
+            <td>Code hexadécimal Unicode (ex.&nbsp;: <code>E873</code>)</td>
+            <td>—</td>
+            <td>Affiche une icône Material Symbols par son codepoint Unicode, sans qu'elle soit incluse dans le subset de la trousse. Nécessite l'inclusion dynamique de la font via un <code>&lt;link&gt;</code> Google Fonts (voir le <a href="MIGRATION-ICONS.md">guide de migration</a>).</td>
         </tr>
         </tbody>
     </table>

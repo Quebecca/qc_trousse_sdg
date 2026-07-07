@@ -79109,8 +79109,8 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root_1$6 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[71, 4]]);
-	var root_2$8 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[87, 4]]);
+	var root_1$6 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[77, 4]]);
+	var root_2$8 = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[93, 4]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -79128,7 +79128,9 @@
 			variationSettings = prop($$props, 'variationSettings', 7, null),
 			renderMode = prop($$props, 'renderMode', 7, null // null = hérite du mode global, 'font' ou 'svg' pour forcer
 			),
-			useMaterial = prop($$props, 'useMaterial', 7, false // Force l'utilisation du nom material sans passer par le mapping legacy
+			useMaterial = prop($$props, 'use-material', 7, false // Force l'utilisation du nom material sans passer par le mapping legacy
+			),
+			codepointProp = prop($$props, 'codepoint', 7, null // Codepoint Unicode direct (ex: "E873") pour afficher une icône hors du subset
 			),
 			rootElement = prop($$props, 'rootElement', 15),
 			vAlign = prop($$props, 'vAlign', 7, 'middle'),
@@ -79150,7 +79152,8 @@
 					'variant',
 					'variationSettings',
 					'renderMode',
-					'useMaterial',
+					'use-material',
+					'codepoint',
 					'rootElement',
 					'vAlign'
 				]);
@@ -79172,7 +79175,13 @@
 		);
 
 		// Récupérer le codepoint Unicode pour le mode font
-		let codepoint = tag(user_derived(() => get(resolvedType) ? iconCodepoints.codepoints[get(resolvedType)] : null), 'codepoint');
+		// Priorité : codepoint fourni en attribut > résolution via le nom
+		let codepoint = tag(
+			user_derived(() => codepointProp()
+				? codepointProp()
+				: get(resolvedType) ? iconCodepoints.codepoints[get(resolvedType)] : null),
+			'codepoint'
+		);
 
 		// Caractère Unicode correspondant au codepoint
 		let unicodeChar = tag(
@@ -79310,12 +79319,21 @@
 				flushSync();
 			},
 
-			get useMaterial() {
+			get 'use-material'() {
 				return useMaterial();
 			},
 
-			set useMaterial($$value = false) {
+			set 'use-material'($$value = false) {
 				useMaterial($$value);
+				flushSync();
+			},
+
+			get codepoint() {
+				return codepointProp();
+			},
+
+			set codepoint($$value = null) {
+				codepointProp($$value);
 				flushSync();
 			},
 
@@ -79402,7 +79420,7 @@
 				}),
 				'if',
 				Icon,
-				69,
+				75,
 				0
 			);
 		}
@@ -79426,7 +79444,8 @@
 			variant: {},
 			variationSettings: {},
 			renderMode: {},
-			useMaterial: {},
+			'use-material': {},
+			codepoint: {},
 			rootElement: {},
 			vAlign: {}
 		},
