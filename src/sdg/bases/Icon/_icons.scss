@@ -32,8 +32,10 @@
 
 // --- Mode Font ---
 @if $icon-render-mode == 'font' or $icon-render-mode == 'both' {
-  @if $google-api-icon-font {
-    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+  @if $google-api-materials {
+//    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;1,0,40,400;1,0,24,400&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
+//    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,600;1,0,40,700;1,0,24,400;1,0,24,600;1,0,24,700&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,favorite,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,40,400;0,0,40,500;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,500;1,0,40,600;1,0,40,700;1,0,24,400;1,0,24,500;1,0,24,600;1,0,24,700&icon_names=add,arrow_back,arrow_downward,arrow_forward,arrow_left_alt,arrow_right_alt,arrow_upward,article,call,check,check_circle,chevron_left,chevron_right,close,content_paste,description,download,edit_note,emoji_objects,error,event,expand_less,expand_more,favorite,help,info,language,lightbulb,mail,more_horiz,north,note,open_in_new,person,place,print,remove,schedule,search,toc,videocam,warning');
   } @else {
     @font-face {
       font-family: 'Material Symbols Rounded';

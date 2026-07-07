@@ -18,6 +18,8 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 
 ### Ajouté
 - **icônes** : Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
+- **icônes** : Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
+- **icônes** : Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.
 - **boutons** : Détection automatique de la position de l'icône via `:has(> qc-icon:first-child/:last-child)` pour ajuster le padding à 18px côté icône. Le texte du bouton doit être dans un `<span>`.
 
 ### Modifié

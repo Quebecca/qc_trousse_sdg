@@ -11,7 +11,8 @@
     "start": "sirv .",
     "rewrite-bootstrap": "gulp rewriteBs",
     "build-grid-tokens": "node ./scripts/buildGridTokens.js",
-    "build-icon-font": "node scripts/build-icon-font.js"
+    "build-icon-font": "node scripts/build-icon-font.js",
+    "build-icon-doc": "node scripts/build-icon-doc.js"
   },
   "repository": {
     "type": "git",

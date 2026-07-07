@@ -15,7 +15,8 @@
         variant = 'outlined',
         variationSettings = null,
         renderMode = null, // null = hérite du mode global, 'font' ou 'svg' pour forcer
-        useMaterial = false, // Force l'utilisation du nom material sans passer par le mapping legacy
+        'use-material': useMaterial = false, // Force l'utilisation du nom material sans passer par le mapping legacy
+        codepoint: codepointProp = null, // Codepoint Unicode direct (ex: "E873") pour afficher une icône hors du subset
         rootElement = $bindable(),
         vAlign = 'middle',
         ...rest
@@ -33,7 +34,12 @@
     });
 
     // Récupérer le codepoint Unicode pour le mode font
-    let codepoint = $derived(resolvedType ? iconCodepoints.codepoints[resolvedType] : null);
+    // Priorité : codepoint fourni en attribut > résolution via le nom
+    let codepoint = $derived(
+        codepointProp
+            ? codepointProp
+            : (resolvedType ? iconCodepoints.codepoints[resolvedType] : null)
+    );
 
     // Caractère Unicode correspondant au codepoint
     let unicodeChar = $derived(codepoint ? String.fromCodePoint(parseInt(codepoint, 16)) : null);

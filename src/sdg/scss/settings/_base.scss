@@ -11,6 +11,7 @@ $google-fonts : (
   open-sans: ('Open Sans', sans-serif),
   roboto-mono: ('Roboto Mono', monospace)
 );
+$google-api-materials: false !default;
 $google-font-path : "../fonts" !default;
 $env: "build" !default;
 

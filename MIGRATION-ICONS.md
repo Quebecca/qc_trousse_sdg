@@ -2,10 +2,9 @@
 
 ## Introduction
 
-Le SDG migre ses icônes SVG personnalisées vers les **Material Symbols** de Google.
-Cette migration standardise l'iconographie, facilite la maintenance et offre un catalogue plus riche.
+Le SDG utilise les **Material Symbols** de Google pour son iconographie. Le composant `<qc-icon>` rend les icônes via la font variable Material Symbols (mode font), avec un subset de glyphes inclus dans la trousse.
 
-La technique de rendu reste identique (`mask-image` + `background-color`) : seuls les fichiers SVG sources changent. L'API du composant `<qc-icon>` est entièrement rétrocompatible — les anciens noms d'icônes continuent de fonctionner pendant la période de dépréciation.
+L'API du composant est rétrocompatible — les anciens noms d'icônes continuent de fonctionner pendant la période de dépréciation.
 
 ---
 
@@ -25,7 +24,7 @@ La technique de rendu reste identique (`mask-image` + `background-color`) : seul
 | `error` | `error` |
 | `exclamation` | `warning` |
 | `external-link` | `open_in_new` |
-| `information-tooltip` | `information-tooltip` ¹ |
+| `information-tooltip` | — ² |
 | `information` | `info` |
 | `ligth-bulb` | `lightbulb` |
 | `minus` | `remove` |
@@ -33,7 +32,7 @@ La technique de rendu reste identique (`mask-image` + `background-color`) : seul
 | `phone` | `call` |
 | `plus` | `add` |
 | `question-mark` | `help` |
-| `question-tooltip` | `question-tooltip` ¹ |
+| `question-tooltip` | — ² |
 | `search-thin` | `search` |
 | `search` | `search` |
 | `success` | `check_circle` |
@@ -42,7 +41,7 @@ La technique de rendu reste identique (`mask-image` + `background-color`) : seul
 | `website` | `language` |
 | `xclose` | `close` |
 
-> ¹ Les icônes `information-tooltip` et `question-tooltip` sont multicolores et ne sont pas migrées vers Material Symbols. Elles conservent leur rendu via `background-image`.
+> ² Les noms `information-tooltip` et `question-tooltip` sont obsolètes. Le composant `<qc-tooltip>` utilise désormais les icônes Material `info` et `help` (variante filled) directement.
 
 ---
 
@@ -56,255 +55,154 @@ Pendant cette période :
 - Un **avertissement** est émis dans la console du navigateur indiquant le nouveau nom à utiliser.
 - Exemple de message : `L'icône 'xclose' est dépréciée. Utilisez type="close" à la place.`
 
-Après la fin de la période de dépréciation, les anciens noms seront retirés et ne produiront plus de rendu.
-
 **Action recommandée** : remplacez dès maintenant les anciens noms par les noms Material Symbols dans votre code.
 
 ---
 
-## Nouvel attribut `variant`
+## Attributs du composant `<qc-icon>`
 
-Le composant `<qc-icon>` supporte désormais un attribut **`variant`** permettant de choisir entre les styles `outlined` et `filled` d'une icône.
+| Attribut | Description |
+|----------|-------------|
+| `icon` | Nom de l'icône (Material Symbols ou alias legacy) |
+| `variant` | `outlined` (défaut) ou `filled` |
+| `size` | `xs`, `sm`, `md`, `nm`, `lg`, `xl` |
+| `color` | Jeton de couleur (ex : `text-primary`, `blue-piv`) |
+| `use-material` | Force la résolution directe vers Material Symbols (contourne le mapping legacy) |
+| `codepoint` | Codepoint Unicode hexadécimal (ex : `E873`) pour une icône hors du subset |
+| `label` | Texte alternatif (accessibilité) |
+| `rotate` | Rotation en degrés |
 
-| Valeur | Description |
-|--------|-------------|
-| `outlined` | Contour uniquement (valeur par défaut) |
-| `filled` | Forme pleine |
+### Attribut `use-material`
 
-### Exemples d'utilisation
+Certains noms existent à la fois comme alias legacy et comme icône Material distincte. Par exemple, `note` est un alias legacy de `edit_note`, mais `note` est aussi une icône Material à part entière.
+
+L'attribut `use-material` force la résolution directe dans le catalogue Material :
 
 ```html
-<!-- Variante outlined (défaut) -->
-<qc-icon icon="search" size="lg"></qc-icon>
+<!-- Sans use-material : "note" → résolu en "edit_note" via le mapping legacy -->
+<qc-icon icon="note" size="lg"></qc-icon>
 
-<!-- Variante filled explicite -->
-<qc-icon icon="search" variant="filled" size="lg"></qc-icon>
-
-<!-- Variante outlined explicite -->
-<qc-icon icon="check_circle" variant="outlined" size="md"></qc-icon>
+<!-- Avec use-material : "note" → affiche l'icône Material "note" directement -->
+<qc-icon icon="note" size="lg" use-material></qc-icon>
 ```
 
-Si l'attribut `variant` n'est pas spécifié, la variante `outlined` est utilisée par défaut.
+### Attribut `codepoint`
+
+Permet d'afficher une icône Material Symbols **qui n'est pas dans le subset** de la trousse, en fournissant directement son codepoint Unicode.
+
+```html
+<qc-icon codepoint="E873" size="lg" label="Description"></qc-icon>
+```
+
+> ⚠️ Cet attribut nécessite l'inclusion dynamique de la font pour le glyphe ciblé (voir section suivante).
 
 ---
 
-## Procédure pour ajouter une nouvelle icône Material Symbols
+## Utiliser une icône hors du subset (inclusion dynamique)
 
-Pour ajouter une icône Material Symbols au bundle du SDG :
+La trousse inclut un subset limité de Material Symbols. Pour utiliser une icône qui n'en fait pas partie **sans recompiler la trousse**, suivez cette procédure :
 
-### 1. Ajouter le nom dans `icon-selection.json`
+### 1. Trouver le codepoint de l'icône
 
-Ouvrir le fichier `icon-selection.json` à la racine du projet et ajouter le nom de l'icône dans le tableau `icons` :
+Rendez-vous sur [fonts.google.com/icons](https://fonts.google.com/icons), trouvez l'icône souhaitée, et notez son codepoint Unicode (visible dans les métadonnées de l'icône).
 
-```json
-{
-  "icons": [
-    "place",
-    "arrow_upward",
-    "...",
-    "mon_nouvelle_icone"
-  ],
-  "variants": ["outlined", "filled"],
-  "maxBundleWarning": 100
-}
-```
+### 2. Inclure la font dynamiquement via Google Fonts
 
-Le nom doit correspondre exactement à l'identifiant Material Symbols (voir [fonts.google.com/icons](https://fonts.google.com/icons)).
-
-### 2. Régénérer les assets
-
-#### Mode SVG (Phase 1)
-
-```bash
-node scripts/download-material-icons.js   # Télécharger les SVG
-npm run build-images-scss-map             # Régénérer la map SCSS base64
-```
-
-#### Mode Font (Phase 2)
-
-```bash
-npm run build-icon-font                   # Régénérer la font subsetée + codepoints
-```
-
-### 3. Recompiler le projet
-
-```bash
-npm run dev
-```
-
-L'icône est maintenant disponible dans le composant `<qc-icon>` :
+Ajoutez un `<link>` qui charge **uniquement** le glyphe nécessaire via l'API Google Fonts :
 
 ```html
-<!-- Mode SVG (défaut) -->
-<qc-icon icon="mon_nouvelle_icone" size="md"></qc-icon>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
+```
 
-<!-- Mode Font -->
-<qc-icon icon="mon_nouvelle_icone" size="md" render-mode="font"></qc-icon>
+> Remplacez `icon_names=favorite` par le nom de votre icône. L'API retourne un `@font-face` avec `unicode-range` restreint au codepoint de l'icône — seul le glyphe demandé est téléchargé.
+
+### 3. Utiliser l'icône via l'attribut `codepoint`
+
+```html
+<qc-icon codepoint="E87D" size="lg" label="Favori"></qc-icon>
+```
+
+### Exemple complet
+
+```html
+<!-- Inclusion dynamique de l'icône « favorite » (hors subset) -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
+
+<qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+```
+
+Cette approche permet d'ajouter n'importe quelle icône du catalogue Material Symbols sans recompiler la trousse ni modifier le subset.
+
+---
+
+## Icônes incluses dans le subset
+
+Le subset de la trousse contient les icônes suivantes (utilisables directement via l'attribut `icon`) :
+
+| Nom | Codepoint | Utilisation |
+|-----|-----------|-------------|
+| `place` | U+E55F | Adresse, localisation |
+| `arrow_upward` | U+E5D8 | Flèche vers le haut |
+| `arrow_downward` | U+E5DB | Flèche vers le bas |
+| `arrow_back` | U+E5C4 | Flèche retour |
+| `arrow_forward` | U+E5C8 | Flèche suivant |
+| `arrow_left_alt` | U+EF7D | Flèche gauche (séquentiel) |
+| `arrow_right_alt` | U+E941 | Flèche droite (séquentiel) |
+| `north` | U+F1E0 | Haut de page |
+| `event` | U+E878 | Calendrier, date |
+| `check` | U+E5CA | Coche de validation |
+| `expand_less` | U+E5CE | Chevron vers le haut |
+| `expand_more` | U+E5CF | Chevron vers le bas |
+| `chevron_right` | U+E5CC | Chevron droite |
+| `chevron_left` | U+E5CB | Chevron gauche |
+| `content_paste` | U+E14F | Presse-papiers |
+| `emoji_objects` | U+EA24 | Conseil, astuce |
+| `schedule` | U+E8B5 | Horloge, horaire |
+| `mail` | U+E158 | Courriel |
+| `error` | U+E000 | Erreur |
+| `warning` | U+E002 | Avertissement |
+| `open_in_new` | U+E89E | Lien externe |
+| `info` | U+E88E | Information |
+| `lightbulb` | U+E0F0 | Ampoule |
+| `remove` | U+E15B | Moins, retirer |
+| `edit_note` | U+E745 | Note, édition |
+| `call` | U+E0B0 | Téléphone |
+| `add` | U+E145 | Plus, ajouter |
+| `help` | U+E887 | Aide |
+| `search` | U+E8B6 | Recherche |
+| `check_circle` | U+E86C | Succès |
+| `person` | U+E7FD | Utilisateur |
+| `language` | U+E894 | Site web, langue |
+| `close` | U+E5CD | Fermer |
+| `description` | U+E873 | Document |
+| `more_horiz` | U+E5D3 | Points de suspension |
+| `print` | U+E8AD | Imprimer |
+| `toc` | U+E8DE | Table des matières |
+| `download` | U+F090 | Télécharger |
+| `videocam` | U+E04B | Vidéoconférence |
+| `note` | U+E674 | Note (pense-bête) |
+
+---
+
+## Variantes `outlined` et `filled`
+
+```html
+<!-- Outlined (défaut) -->
+<qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+
+<!-- Filled -->
+<qc-icon icon="info" variant="filled" size="lg"></qc-icon>
 ```
 
 ---
 
-## Icônes Material Symbols disponibles
+## Héritage du `font-weight`
 
-Le bundle inclut actuellement les icônes suivantes (variantes `outlined` et `filled`) :
-
-| Nom | Utilisation |
-|-----|-------------|
-| `place` | Adresse, localisation |
-| `arrow_upward` | Flèche vers le haut |
-| `event` | Calendrier, date |
-| `check` | Coche de validation |
-| `expand_less` | Chevron vers le haut |
-| `content_paste` | Presse-papiers |
-| `schedule` | Horloge, horaire |
-| `mail` | Courriel |
-| `error` | Erreur |
-| `warning` | Avertissement |
-| `open_in_new` | Lien externe |
-| `info` | Information |
-| `lightbulb` | Ampoule, astuce |
-| `remove` | Moins, retirer |
-| `edit_note` | Note, édition |
-| `call` | Téléphone |
-| `add` | Plus, ajouter |
-| `help` | Aide, point d'interrogation |
-| `search` | Recherche |
-| `check_circle` | Succès |
-| `person` | Utilisateur |
-| `language` | Site web, langue |
-| `close` | Fermer |
-
-
----
-
-## Phase 2 — Mode Font
-
-Le SDG offre un mode de rendu alternatif utilisant la **font Material Symbols** (icon font) au lieu des SVG encodés en base64. Ce mode produit un résultat visuellement identique tout en réduisant la taille du bundle pour les projets utilisant un grand nombre d'icônes.
-
-### Activer le mode font
-
-#### Via la variable SCSS (global, au build)
-
-```scss
-// Dans le fichier de configuration SCSS du projet consommateur
-$icon-render-mode: 'font';
-$google-api-icon-font: false; // self-hosted (défaut)
-$icon-font-path: "../fonts";  // chemin vers le woff2
-
-@use "qc-sdg" as *;
-```
-
-#### Via l'attribut HTML (par icône)
+L'icône hérite du `font-weight` du contexte. En gras, le trait de l'icône est plus épais :
 
 ```html
-<!-- Forcer le mode font sur une icône spécifique -->
-<qc-icon icon="search" size="md" render-mode="font"></qc-icon>
-
-<!-- Forcer le mode SVG (défaut) -->
-<qc-icon icon="search" size="md" render-mode="svg"></qc-icon>
-```
-
-Le mode `render-mode="font"` peut être utilisé même si le build SCSS est en mode `'svg'`, à condition que les styles `.qc-icon-font` et la `@font-face` soient inclus manuellement ou via `$icon-render-mode: 'both'`.
-
-### Prérequis
-
-Pour régénérer la font subsetée, les outils suivants doivent être installés :
-
-```bash
-pip install fonttools brotli
-```
-
-Cela installe `pyftsubset`, l'outil de subsetting utilisé par le script de build.
-
-### Ajouter une icône personnalisée
-
-#### 1. Créer `icon-selection.local.json`
-
-Ce fichier (non versionné) permet d'étendre la sélection d'icônes sans modifier `icon-selection.json` :
-
-```json
-{
-  "extends": "./icon-selection.json",
-  "icons": [
-    "shopping_cart",
-    "visibility_off",
-    "download"
-  ]
-}
-```
-
-#### 2. Régénérer la font subsetée
-
-```bash
-npm run build-icon-font
-```
-
-Ce script fusionne les icônes de base avec celles de `icon-selection.local.json`, puis produit `dist/fonts/material-symbols-outlined.woff2` contenant uniquement les glyphes nécessaires.
-
-#### 3. Recompiler le projet
-
-```bash
-npm run dev    # mode développement
-npm run build  # mode production
-```
-
-L'icône est immédiatement utilisable :
-
-```html
-<qc-icon icon="shopping_cart" size="md" render-mode="font"></qc-icon>
-```
-
-### Icônes disponibles et codepoints
-
-La font subsetée contient les icônes suivantes (identiques au mode SVG) :
-
-| Nom | Codepoint |
-|-----|-----------|
-| `place` | U+F1DB |
-| `arrow_upward` | U+E5D8 |
-| `event` | U+E878 |
-| `check` | U+E5CA |
-| `expand_less` | U+E5CE |
-| `content_paste` | U+E14F |
-| `schedule` | U+EFD6 |
-| `mail` | U+E159 |
-| `error` | U+F8B6 |
-| `warning` | U+F083 |
-| `open_in_new` | U+E89E |
-| `info` | U+E88E |
-| `lightbulb` | U+E90F |
-| `remove` | U+E15B |
-| `edit_note` | U+E745 |
-| `call` | U+F0D4 |
-| `add` | U+E145 |
-| `help` | U+E8FD |
-| `search` | U+E8B6 |
-| `check_circle` | U+F0BE |
-| `person` | U+F0D3 |
-| `language` | U+E894 |
-| `close` | U+E5CD |
-
-### Différences techniques entre les modes
-
-| Aspect | Mode SVG (Phase 1) | Mode Font (Phase 2) |
-|--------|--------------------|--------------------|
-| Rendu | `mask-image` + `background-color` | Codepoint Unicode + `color` CSS |
-| Élément DOM | `<div class="qc-icon">` | `<span class="qc-icon-font">` |
-| Variantes | Fichiers SVG séparés | `font-variation-settings: 'FILL' 0/1` |
-| Taille bundle | ~1 KB/icône (base64) | ~38 KB total (font woff2) |
-| Gras hérité | Non (image fixe) | Oui (axe `wght` de la font variable) |
-| Avantage | Pas de font à charger | Plus léger au-delà de ~40 icônes |
-
-### Héritage du `font-weight`
-
-En mode font, l'icône hérite du `font-weight` du contexte. Si le texte autour est en gras, l'icône aura un trait plus épais automatiquement via l'axe variable `wght` de la font.
-
-```html
-<!-- L'icône hérite du gras — trait plus épais -->
 <strong><qc-icon icon="search" size="md"></qc-icon> Rechercher</strong>
-
-<!-- Icône normale (font-weight: 400) -->
 <p><qc-icon icon="search" size="md"></qc-icon> Rechercher</p>
 ```
-
-Ce comportement est intentionnel : l'icône s'harmonise visuellement avec le texte qui l'entoure.

@@ -13,13 +13,14 @@
       variant: {attribute: 'variant'},
       renderMode: {attribute: 'render-mode'},
       useMaterial: {attribute: 'use-material', type: 'Boolean'},
+      codepoint: {attribute: 'codepoint'},
   }
 }}" />
 
 <script>
     import Icon from "./Icon.svelte";
 
-    const props = $props();
+    let { useMaterial, ...otherProps } = $props();
 </script>
 
-<Icon {...props} />
+<Icon use-material={useMaterial} {...otherProps} />

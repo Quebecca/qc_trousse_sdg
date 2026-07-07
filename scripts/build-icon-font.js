@@ -1,40 +1,47 @@
 /**
  * Script de construction de la font Material Symbols subsetée.
  *
- * Télécharge la font source TTF depuis GitHub, puis la subsette via
- * l'API Python fontTools pour ne garder que les glyphes des icônes
- * de icon-selection.json. Produit un fichier woff2 optimisé dans dist/fonts/
- * et un fichier de mapping nom → codepoint Unicode pour le composant.
+ * Télécharge un subset optimisé de Material Symbols Rounded depuis l'API
+ * Google Fonts, avec les axes variables restreints aux valeurs utilisées
+ * par la trousse.
  *
- * Approche : on subsette par codepoints Unicode (PUA) + glyphes .fill,
- * sans conserver les tables de ligatures (trop volumineuses).
- * Le composant utilise les codepoints directement pour le rendu.
+ * Aucune dépendance système requise (pas de Python, pas de fonttools).
+ * Seuls Node.js et un accès réseau sont nécessaires.
  *
- * Dépendance système requise : pip install fonttools brotli
+ * Axes inclus :
+ *   - FILL : 0 (outlined), 1 (filled)
+ *   - GRAD : 0
+ *   - opsz : 24, 40
+ *   - wght : 400, 500, 600, 700
+ *
+ * Soit 2×1×2×4 = 16 combinaisons d'instances discrètes.
  */
 
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
-const { execSync } = require('child_process');
 
-// URL de la font source Material Symbols (format TTF)
-const FONT_SOURCE_URL =
-  'https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf';
+// --- Configuration des axes variables ---
+const FILL_VALUES = [0, 1];
+const GRAD_VALUES = [0];
+const OPSZ_VALUES = [24, 40];
+const WGHT_VALUES = [400, 500, 600, 700];
 
 // Chemins du projet
-const TMP_DIR = path.resolve(__dirname, '..', 'tmp');
 const DEST_DIR = path.resolve(__dirname, '..', 'dist', 'fonts');
-const SOURCE_TTF = path.join(TMP_DIR, 'MaterialSymbolsRounded.ttf');
 const OUTPUT_WOFF2 = path.join(DEST_DIR, 'material-symbols-rounded.woff2');
 const CODEPOINT_MAP = path.resolve(__dirname, '..', 'icon-codepoints.json');
 
+// User-Agent d'un navigateur moderne (pour obtenir du woff2)
+const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
 /**
- * Télécharge un fichier binaire via HTTPS avec suivi des redirections.
- * @param {string} url - URL source à télécharger
- * @returns {Promise<Buffer>} Contenu binaire du fichier
+ * Effectue une requête HTTPS GET avec suivi des redirections.
+ * @param {string} url - URL à requêter
+ * @param {object} [headers] - Headers HTTP additionnels
+ * @returns {Promise<{status: number, headers: object, body: Buffer}>}
  */
-function downloadBinary(url) {
+function httpGet(url, headers = {}) {
   return new Promise((resolve, reject) => {
     const request = (currentUrl, redirectCount = 0) => {
       if (redirectCount > 5) {
@@ -42,21 +49,20 @@ function downloadBinary(url) {
         return;
       }
 
-      const client = currentUrl.startsWith('https') ? https : require('http');
-      client.get(currentUrl, (res) => {
+      const options = { headers: { 'User-Agent': USER_AGENT, ...headers } };
+      https.get(currentUrl, options, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           request(res.headers.location, redirectCount + 1);
           return;
         }
 
-        if (res.statusCode !== 200) {
-          reject(new Error(`HTTP ${res.statusCode} pour ${currentUrl}`));
-          return;
-        }
-
         const chunks = [];
         res.on('data', (chunk) => chunks.push(chunk));
-        res.on('end', () => resolve(Buffer.concat(chunks)));
+        res.on('end', () => resolve({
+          status: res.statusCode,
+          headers: res.headers,
+          body: Buffer.concat(chunks),
+        }));
         res.on('error', reject);
       }).on('error', reject);
     };
@@ -66,28 +72,67 @@ function downloadBinary(url) {
 }
 
 /**
- * Vérifie que python3 et fontTools sont disponibles.
- * @throws {Error} Si les dépendances ne sont pas installées
+ * Construit l'URL de l'API Google Fonts avec les axes et les icônes.
+ * @param {string[]} iconNames - Noms des icônes à inclure
+ * @returns {string} URL complète
  */
-function checkDependencies() {
-  try {
-    execSync('python3 -c "import fontTools; import brotli"', { stdio: 'pipe' });
-  } catch {
+function buildGoogleFontsUrl(iconNames) {
+  // Construire les combinaisons d'axes : FILL,GRAD,opsz,wght
+  const tuples = [];
+  for (const fill of FILL_VALUES) {
+    for (const grad of GRAD_VALUES) {
+      for (const opsz of OPSZ_VALUES) {
+        for (const wght of WGHT_VALUES) {
+          tuples.push(`${fill},${grad},${opsz},${wght}`);
+        }
+      }
+    }
+  }
+
+  const axisSpec = `FILL,GRAD,opsz,wght@${tuples.join(';')}`;
+  const iconList = [...iconNames].sort().join(',');
+
+  return `https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:${axisSpec}&icon_names=${iconList}`;
+}
+
+/**
+ * Récupère le CSS de Google Fonts et en extrait l'URL du woff2.
+ * @param {string} cssUrl - URL de l'API CSS Google Fonts
+ * @returns {Promise<string>} URL directe du fichier woff2
+ */
+async function extractWoff2Url(cssUrl) {
+  const response = await httpGet(cssUrl);
+
+  if (response.status !== 200) {
     throw new Error(
-      'python3 avec fonttools et brotli requis. Installez :\n' +
-      '  pip install fonttools brotli\n' +
-      'ou\n' +
-      '  pip3 install fonttools brotli'
+      `L'API Google Fonts a retourné HTTP ${response.status}.\n` +
+      `URL : ${cssUrl}\n` +
+      `Réponse : ${response.body.toString('utf-8').substring(0, 200)}`
     );
   }
+
+  const css = response.body.toString('utf-8');
+
+  // Extraire l'URL du woff2 depuis le CSS
+  const woff2Match = css.match(/src:\s*url\(([^)]+)\)\s*format\(['"]woff2['"]\)/);
+  if (woff2Match) {
+    return woff2Match[1];
+  }
+
+  // Fallback : toute URL de font dans le CSS
+  const urlMatch = css.match(/url\((https:\/\/fonts\.gstatic\.com[^)]+)\)/);
+  if (urlMatch) {
+    return urlMatch[1];
+  }
+
+  throw new Error(
+    `Impossible d'extraire l'URL de la font depuis le CSS Google Fonts.\n` +
+    `CSS reçu :\n${css.substring(0, 500)}`
+  );
 }
 
 /**
  * Charge la sélection d'icônes avec support de l'extension locale.
- *
- * Si icon-selection.local.json existe, fusionne ses icônes avec la sélection
- * de base (union dédupliquée via Set).
- *
  * @returns {{ icons: string[], variants: string[], maxBundleWarning: number }}
  */
 function loadIconSelection() {
@@ -113,135 +158,15 @@ function loadIconSelection() {
 }
 
 /**
- * Subsette la font via l'API Python fontTools.
- *
- * Stratégie :
- * - Subsetter par codepoints Unicode (chaque icône a un codepoint PUA)
- * - Ajouter les glyphes .fill par nom (variante filled)
- * - Ne PAS conserver les tables de ligatures (trop volumineuses, tirent tous les glyphes)
- * - Le composant utilisera les codepoints directement au lieu des ligatures textuelles
- *
- * @param {string} sourceTtf - Chemin vers le fichier TTF source
- * @param {string} outputWoff2 - Chemin de sortie du fichier woff2
- * @param {string[]} iconNames - Noms des icônes à conserver
- * @returns {{ codepoints: Record<string, string>, missing: string[] }} Mapping nom → codepoint et icônes manquantes
- */
-function subsetFont(sourceTtf, outputWoff2, iconNames) {
-  // Lire les codepoints manuels depuis icon-codepoints.json
-  const existingCodepoints = JSON.parse(fs.readFileSync(CODEPOINT_MAP, 'utf-8')).codepoints || {};
-  const codepointsJson = JSON.stringify(existingCodepoints);
-
-  // Script Python qui effectue le subsetting en utilisant les codepoints fournis
-  const iconNamesJson = JSON.stringify(iconNames);
-  const pythonScript = `
-import json, sys
-from fontTools.ttLib import TTFont
-from fontTools.subset import Subsetter, Options
-
-font = TTFont('${sourceTtf.replace(/\\/g, '/')}')
-cmap = font.getBestCmap()
-all_glyphs = set(font.getGlyphOrder())
-
-icons = json.loads('${iconNamesJson}')
-provided_codepoints = json.loads('${codepointsJson.replace(/'/g, "\\'")}')
-
-# Utiliser les codepoints fournis en priorité, sinon résoudre via cmap
-unicodes = set()
-codepoints = {}
-missing = []
-
-for icon in icons:
-    if icon in provided_codepoints:
-        cp = int(provided_codepoints[icon], 16)
-        if cp in cmap:
-            unicodes.add(cp)
-            codepoints[icon] = provided_codepoints[icon]
-        else:
-            missing.append(icon)
-    else:
-        # Fallback : chercher par nom de glyphe dans le cmap
-        reverse = {name: cp for cp, name in cmap.items()}
-        if icon in reverse:
-            cp = reverse[icon]
-            unicodes.add(cp)
-            codepoints[icon] = f'{cp:04X}'
-        else:
-            missing.append(icon)
-
-# Trouver les glyphes .fill (variante filled)
-fill_glyphs = set()
-for icon in icons:
-    fill = f'{icon}.fill'
-    if fill in all_glyphs:
-        fill_glyphs.add(fill)
-
-# Subsetter
-options = Options()
-options.flavor = 'woff2'
-options.layout_features = []  # Pas de ligatures (trop volumineuses)
-options.ignore_missing_glyphs = True
-options.hinting = False
-options.desubroutinize = True
-
-subsetter = Subsetter(options=options)
-subsetter.populate(unicodes=unicodes, glyphs=fill_glyphs)
-subsetter.subset(font)
-
-font.save('${outputWoff2.replace(/\\/g, '/')}')
-
-# Sortie JSON : mapping + manquants
-result = {'codepoints': codepoints, 'missing': missing, 'glyphCount': len(font.getGlyphOrder())}
-print(json.dumps(result))
-`;
-
-  const scriptFile = path.join(TMP_DIR, 'subset-font.py');
-  fs.writeFileSync(scriptFile, pythonScript, 'utf-8');
-
-  console.log(`   🔧 Subsetting : ${iconNames.length} icônes...`);
-
-  try {
-    const output = execSync(`python3 "${scriptFile}"`, {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    return JSON.parse(output.trim());
-  } catch (err) {
-    throw new Error(
-      `Échec du subsetting :\n${err.stderr?.toString() || err.message}`
-    );
-  }
-}
-
-/**
- * Fonction principale — orchestre le pipeline complet :
- * 1. Vérification des dépendances (python3 + fonttools + brotli)
- * 2. Téléchargement de la font source (avec cache dans tmp/)
- * 3. Subsetting par codepoints Unicode + glyphes .fill
- * 4. Génération du fichier de mapping codepoints
- * 5. Rapport de taille
+ * Fonction principale.
  */
 async function main() {
-  console.log('📦 Construction de la font Material Symbols (subsetée)...\n');
+  console.log('📦 Construction de la font Material Symbols (via Google Fonts API)...\n');
 
-  // Étape 0 : Vérifier les prérequis
-  checkDependencies();
-
-  // Créer les dossiers nécessaires
-  fs.mkdirSync(TMP_DIR, { recursive: true });
+  // Créer le dossier de destination
   fs.mkdirSync(DEST_DIR, { recursive: true });
 
-  // Étape 1 : Télécharger la font source (si pas déjà en cache)
-  if (!fs.existsSync(SOURCE_TTF)) {
-    console.log('   ⬇️  Téléchargement de la font source...');
-    const buffer = await downloadBinary(FONT_SOURCE_URL);
-    fs.writeFileSync(SOURCE_TTF, buffer);
-    console.log(`   ✅ Font source : ${(buffer.length / 1024).toFixed(0)} KB\n`);
-  } else {
-    const stats = fs.statSync(SOURCE_TTF);
-    console.log(`   ♻️  Font source en cache : ${(stats.size / 1024).toFixed(0)} KB\n`);
-  }
-
-  // Étape 2 : Charger la sélection d'icônes
+  // Étape 1 : Charger la sélection d'icônes
   const selection = loadIconSelection();
   const iconNames = selection.icons;
 
@@ -251,52 +176,54 @@ async function main() {
 
   console.log(`   📋 Icônes sélectionnées : ${iconNames.length}`);
 
-  // Étape 3 : Subsetter la font
-  const result = subsetFont(SOURCE_TTF, OUTPUT_WOFF2, iconNames);
+  // Étape 2 : Construire l'URL Google Fonts
+  const cssUrl = buildGoogleFontsUrl(iconNames);
+  const tupleCount = FILL_VALUES.length * GRAD_VALUES.length * OPSZ_VALUES.length * WGHT_VALUES.length;
+  console.log(`   🔧 Axes : ${tupleCount} combinaisons (FILL×GRAD×opsz×wght)`);
 
-  // Étape 4 : Mettre à jour le fichier de mapping codepoints
-  // On conserve les codepoints existants et on ajoute/met à jour ceux résolus par le subsetting
-  const existingData = JSON.parse(fs.readFileSync(CODEPOINT_MAP, 'utf-8'));
-  const mergedCodepoints = { ...existingData.codepoints, ...result.codepoints };
-  const codepointData = { codepoints: mergedCodepoints };
-  fs.writeFileSync(CODEPOINT_MAP, JSON.stringify(codepointData, null, 2), 'utf-8');
-  console.log(`   📄 Mapping codepoints : ${Object.keys(mergedCodepoints).length} icônes → ${path.basename(CODEPOINT_MAP)}`);
+  // Étape 3 : Récupérer le CSS et extraire l'URL du woff2
+  console.log('   ⬇️  Requête à l\'API Google Fonts...');
+  const woff2Url = await extractWoff2Url(cssUrl);
 
-  // Étape 5 : Rapport de taille
-  const outputStats = fs.statSync(OUTPUT_WOFF2);
-  const sourceStats = fs.statSync(SOURCE_TTF);
-  const ratio = ((outputStats.size / sourceStats.size) * 100).toFixed(1);
+  // Étape 4 : Télécharger le woff2
+  console.log('   ⬇️  Téléchargement de la font subsetée...');
+  const fontResponse = await httpGet(woff2Url);
 
-  console.log(`\n   ✅ Font subsetée : ${(outputStats.size / 1024).toFixed(1)} KB`);
-  console.log(`   📊 Réduction : ${ratio}% de la font source (${result.glyphCount} glyphes)`);
-  console.log(`   📋 Icônes incluses : ${Object.keys(result.codepoints).length}`);
-
-  // Étape 6 : Avertissements
-  if (result.missing.length > 0) {
-    console.warn(`\n   ⚠️  Icônes non trouvées dans la font source : ${result.missing.join(', ')}`);
-    console.warn('   Ces noms ne correspondent pas à des icônes Material Symbols valides.');
-    console.warn('   Vérifiez sur https://fonts.google.com/icons?icon.set=Material+Symbols');
+  if (fontResponse.status !== 200) {
+    throw new Error(`Échec du téléchargement de la font : HTTP ${fontResponse.status}`);
   }
 
+  fs.writeFileSync(OUTPUT_WOFF2, fontResponse.body);
+  const sizeKb = (fontResponse.body.length / 1024).toFixed(1);
+  console.log(`   ✅ Font subsetée : ${sizeKb} KB`);
+
+  // Étape 5 : Mettre à jour le mapping codepoints
+  // Les codepoints sont maintenus manuellement dans icon-codepoints.json
+  // On vérifie simplement que toutes les icônes ont un codepoint
+  const codepointData = JSON.parse(fs.readFileSync(CODEPOINT_MAP, 'utf-8'));
+  const missingCodepoints = iconNames.filter(name => !codepointData.codepoints[name]);
+
+  if (missingCodepoints.length > 0) {
+    console.warn(`\n   ⚠️  Icônes sans codepoint dans ${path.basename(CODEPOINT_MAP)} : ${missingCodepoints.join(', ')}`);
+    console.warn('   Ajoutez les codepoints manuellement (voir https://fonts.google.com/icons)');
+  }
+
+  console.log(`   📄 Mapping codepoints : ${Object.keys(codepointData.codepoints).length} icônes`);
+
+  // Étape 6 : Avertissements
   if (iconNames.length > (selection.maxBundleWarning || 100)) {
-    console.warn(`\n   ⚠️  ${iconNames.length} icônes sélectionnées (seuil : ${selection.maxBundleWarning || 100}). Impact sur la taille du bundle.`);
+    console.warn(`\n   ⚠️  ${iconNames.length} icônes (seuil : ${selection.maxBundleWarning || 100}).`);
   }
 
   // Étape 7 : Génération de la documentation HTML des icônes
-  const ejs = require('ejs');
-  const ejsTemplate = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/IconDoc.ejs');
-  const htmlOutput = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/_icon.html');
-  const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'icon-mapping.json'), 'utf-8'));
+  const { execSync } = require('child_process');
+  execSync('node ' + path.resolve(__dirname, 'build-icon-doc.js'), { stdio: 'inherit' });
 
-  const templateContent = fs.readFileSync(ejsTemplate, 'utf-8');
-  const html = ejs.render(templateContent, {
-    icons: iconNames,
-    legacyMappings: mapping.mappings,
-  });
-  fs.writeFileSync(htmlOutput, html, 'utf-8');
-  console.log(`   📖 Documentation : ${path.basename(htmlOutput)} (${iconNames.length} icônes)`);
+  // Étape 8 : Afficher l'URL pour référence
+  console.log(`\n   🔗 URL Google Fonts :`);
+  console.log(`   ${cssUrl}\n`);
 
-  console.log(`\n✨ Font prête dans ${path.relative(process.cwd(), OUTPUT_WOFF2)}`);
+  console.log(`✨ Font prête dans ${path.relative(process.cwd(), OUTPUT_WOFF2)}`);
 }
 
 main().catch((err) => {
