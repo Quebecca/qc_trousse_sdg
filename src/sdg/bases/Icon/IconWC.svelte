@@ -12,6 +12,7 @@
       rotate: {attribute: 'rotate'},
       variant: {attribute: 'variant'},
       renderMode: {attribute: 'render-mode'},
+      useMaterial: {attribute: 'use-material', type: 'Boolean'},
   }
 }}" />
 

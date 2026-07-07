@@ -15,6 +15,7 @@
         variant = 'outlined',
         variationSettings = null,
         renderMode = null, // null = hérite du mode global, 'font' ou 'svg' pour forcer
+        useMaterial = false, // Force l'utilisation du nom material sans passer par le mapping legacy
         rootElement = $bindable(),
         vAlign = 'middle',
         ...rest
@@ -23,8 +24,10 @@
     let attributes = $derived(width === 'auto' ? { 'data-img-size': size } : {});
 
     // Résolution du nom canonique (legacy → modern)
+    // Si use-material est activé, on utilise le type tel quel sans passer par le mapping
     let resolvedType = $derived.by(() => {
         if (!type) return type;
+        if (useMaterial != null && useMaterial !== false) return type;
         const mapped = iconMapping.mappings[type];
         return (mapped && mapped !== type) ? mapped : type;
     });
@@ -46,6 +49,7 @@
     // Mécanisme de dépréciation : avertit si un nom legacy ou inconnu est utilisé
     $effect(() => {
         if (!type) return;
+        if (useMaterial != null && useMaterial !== false) return; // Pas de vérification legacy si use-material est activé
 
         const mappedName = iconMapping.mappings[type];
         if (mappedName && mappedName !== type) {

@@ -17,7 +17,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
-- **icônes** : Nouveau catalogue de 30 icônes Material Symbols : `place`, `arrow_upward`, `arrow_downward`, `arrow_back`, `arrow_forward`, `arrow_left_alt`, `arrow_right_alt`, `north`, `event`, `check`, `expand_less`, `content_paste`, `emoji_objects`, `schedule`, `mail`, `error`, `warning`, `open_in_new`, `info`, `lightbulb`, `remove`, `edit_note`, `call`, `add`, `help`, `search`, `check_circle`, `person`, `language`, `close`.
+- **icônes** : Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
 - **boutons** : Détection automatique de la position de l'icône via `:has(> qc-icon:first-child/:last-child)` pour ajuster le padding à 18px côté icône. Le texte du bouton doit être dans un `<span>`.
 
 ### Modifié

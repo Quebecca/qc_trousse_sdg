@@ -379,23 +379,28 @@
     }
 </style>
 
-<h3>Héritage (<em>Legacy</em>)</h3>
-
-<p>L'attribut <code>src</code> permet d'afficher une icône SVG personnalisée.
-    Cette fonctionnalité est conservée pour la rétrocompatibilité, mais elle est <strong>dépréciée</strong>.
-    Les icônes personnalisées ne bénéficient pas des avantages de la font variable
-    (variantes outlined/filled, héritage du <code>font-weight</code>, optical size).
-    Si vous utilisez des icônes via <code>src</code>, remplacez-les par leur équivalent
-    <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>
-    pour garantir la cohérence visuelle de votre charte graphique.
-    Consultez le <a href="https://github.com/Quebecca/qc_trousse_sdg/blob/develop/MIGRATION-ICONS.md#proc%C3%A9dure-pour-ajouter-une-nouvelle-ic%C3%B4ne">guide de migration</a> pour la procédure d'ajout.
-</p>
-
-<qc-doc-exemple caption="Exemple d'icône personnalisée en base64 (<em>legacy</em> — pour les icônes non présentes dans Material Symbols).">
+<qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
         <qc-icon
                 src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
         />
 </qc-doc-exemple>
+
+<qc-doc-exemple caption="Attribut use-material : « note » est à la fois un alias legacy (→ edit_note) et une icône Material Symbols. L'attribut use-material force la résolution vers le catalogue Material."
+                id="icons-use-material">
+    <div>
+        <p>Sans <code>use-material</code> — « note » est résolu via le mapping legacy vers <code>edit_note</code> :</p>
+        <qc-icon icon="note" size="lg"></qc-icon>
+    </div>
+    <div>
+        <p>Avec <code>use-material</code> — « note » affiche l'icône Material Symbols <code>note</code> :</p>
+        <qc-icon icon="note" size="lg" use-material></qc-icon>
+    </div>
+</qc-doc-exemple>
+<style>
+    #icons-use-material div {
+        margin-bottom: var(--qc-spacer-content-block-mb);
+    }
+</style>
 
 <h3>Documentation technique</h3>
 
@@ -463,7 +468,13 @@
             <td>src</td>
             <td>Toute valeur acceptée par la fonction css <code>url()</code></td>
             <td>na</td>
-            <td>Chemin pour afficher une icône personnalisée (périmé, voir section « Héritage » ci-dessus).</td>
+            <td>Chemin pour afficher une icône personnalisée.</td>
+        </tr>
+        <tr>
+            <td>use-material</td>
+            <td>Booléen (présence de l'attribut)</td>
+            <td>false</td>
+            <td>Force l'utilisation du nom comme icône Material Symbols, sans passer par le mapping legacy. Utile lorsqu'un nom Material entre en conflit avec un alias legacy (ex.&nbsp;: <code>note</code>).</td>
         </tr>
         </tbody>
     </table>
@@ -561,6 +572,27 @@
             </tr>
         
             <tr>
+                <td><code>expand_more</code></td>
+                <td><qc-icon icon="expand_more" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="expand_more" variant="filled" size="lg" /></td>
+                <td><code>crochet-bas</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>chevron_right</code></td>
+                <td><qc-icon icon="chevron_right" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="chevron_right" variant="filled" size="lg" /></td>
+                <td><code>chevron-droite</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>chevron_left</code></td>
+                <td><qc-icon icon="chevron_left" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="chevron_left" variant="filled" size="lg" /></td>
+                <td><code>chevron-gauche</code></td>
+            </tr>
+        
+            <tr>
                 <td><code>content_paste</code></td>
                 <td><qc-icon icon="content_paste" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="content_paste" variant="filled" size="lg" /></td>
@@ -592,14 +624,14 @@
                 <td><code>error</code></td>
                 <td><qc-icon icon="error" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="error" variant="filled" size="lg" /></td>
-                <td>—</td>
+                <td><code>error</code></td>
             </tr>
         
             <tr>
                 <td><code>warning</code></td>
                 <td><qc-icon icon="warning" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="warning" variant="filled" size="lg" /></td>
-                <td><code>exclamation</code></td>
+                <td><code>exclamation</code>, <code>warning</code></td>
             </tr>
         
             <tr>
@@ -662,7 +694,7 @@
                 <td><code>search</code></td>
                 <td><qc-icon icon="search" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="search" variant="filled" size="lg" /></td>
-                <td><code>search-thin</code></td>
+                <td><code>search-thin</code>, <code>search</code></td>
             </tr>
         
             <tr>
@@ -691,6 +723,55 @@
                 <td><qc-icon icon="close" variant="outlined" size="lg" /></td>
                 <td><qc-icon icon="close" variant="filled" size="lg" /></td>
                 <td><code>xclose</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>description</code></td>
+                <td><qc-icon icon="description" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="description" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>more_horiz</code></td>
+                <td><qc-icon icon="more_horiz" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="more_horiz" variant="filled" size="lg" /></td>
+                <td><code>dots</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>note</code></td>
+                <td><qc-icon icon="note" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="note" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>print</code></td>
+                <td><qc-icon icon="print" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="print" variant="filled" size="lg" /></td>
+                <td><code>printer</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>toc</code></td>
+                <td><qc-icon icon="toc" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="toc" variant="filled" size="lg" /></td>
+                <td><code>tableMatiere</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>download</code></td>
+                <td><qc-icon icon="download" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="download" variant="filled" size="lg" /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>videocam</code></td>
+                <td><qc-icon icon="videocam" variant="outlined" size="lg" /></td>
+                <td><qc-icon icon="videocam" variant="filled" size="lg" /></td>
+                <td><code>on-line</code></td>
             </tr>
         
         </tbody>

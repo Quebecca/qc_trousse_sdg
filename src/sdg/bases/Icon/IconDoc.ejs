@@ -42,6 +42,23 @@
         />
 </qc-doc-exemple>
 
+<qc-doc-exemple caption="Attribut use-material : « note » est à la fois un alias legacy (→ edit_note) et une icône Material Symbols. L'attribut use-material force la résolution vers le catalogue Material."
+                id="icons-use-material">
+    <div>
+        <p>Sans <code>use-material</code> — « note » est résolu via le mapping legacy vers <code>edit_note</code> :</p>
+        <qc-icon icon="note" size="lg"></qc-icon>
+    </div>
+    <div>
+        <p>Avec <code>use-material</code> — « note » affiche l'icône Material Symbols <code>note</code> :</p>
+        <qc-icon icon="note" size="lg" use-material></qc-icon>
+    </div>
+</qc-doc-exemple>
+<style>
+    #icons-use-material div {
+        margin-bottom: var(--qc-spacer-content-block-mb);
+    }
+</style>
+
 <h3>Documentation technique</h3>
 
 <h4>Attributs</h4>
@@ -109,6 +126,12 @@
             <td>Toute valeur acceptée par la fonction css <code>url()</code></td>
             <td>na</td>
             <td>Chemin pour afficher une icône personnalisée.</td>
+        </tr>
+        <tr>
+            <td>use-material</td>
+            <td>Booléen (présence de l'attribut)</td>
+            <td>false</td>
+            <td>Force l'utilisation du nom comme icône Material Symbols, sans passer par le mapping legacy. Utile lorsqu'un nom Material entre en conflit avec un alias legacy (ex.&nbsp;: <code>note</code>).</td>
         </tr>
         </tbody>
     </table>

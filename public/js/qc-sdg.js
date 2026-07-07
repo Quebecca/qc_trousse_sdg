@@ -642,7 +642,7 @@
 	/** @import { Equals } from '#client' */
 
 	/** @type {Equals} */
-	function equals(value) {
+	function equals$1(value) {
 		return value === this.v;
 	}
 
@@ -2927,7 +2927,7 @@
 			ctx: component_context,
 			deps: null,
 			effects: null,
-			equals,
+			equals: equals$1,
 			f: flags,
 			fn,
 			reactions: null,
@@ -3262,7 +3262,7 @@
 			f: 0, // TODO ideally we could skip this altogether, but it causes type errors
 			v,
 			reactions: null,
-			equals,
+			equals: equals$1,
 			rv: 0,
 			wv: 0
 		};
@@ -3782,6 +3782,20 @@
 		} catch {}
 
 		return (a === b) === equal;
+	}
+
+	/**
+	 * @param {any} a
+	 * @param {any} b
+	 * @param {boolean} equal
+	 * @returns {boolean}
+	 */
+	function equals(a, b, equal = true) {
+		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
+			state_proxy_equality_mismatch();
+		}
+
+		return (a == b) === equal;
 	}
 
 	/** @import { Effect, TemplateNode } from '#client' */
@@ -10141,8 +10155,12 @@
 		checkmark: "check",
 		"chevron-up-thin": "expand_less",
 		"chevron-up": "expand_less",
+		"chevron-droite": "chevron_right",
+		"chevron-gauche": "chevron_left",
+		"crochet-bas": "expand_more",
 		clipboard: "content_paste",
 		clock: "schedule",
+		dots: "more_horiz",
 		email: "mail",
 		error: "error",
 		exclamation: "warning",
@@ -10151,18 +10169,21 @@
 		information: "info",
 		"ligth-bulb": "lightbulb",
 		minus: "remove",
-		note: "edit_note",
+		"on-line": "videocam",
 		phone: "call",
 		plus: "add",
+		printer: "print",
 		"question-mark": "help",
 		"question-tooltip": "question-tooltip",
 		"search-thin": "search",
 		search: "search",
 		success: "check_circle",
+		tableMatiere: "toc",
 		user: "person",
 		warning: "warning",
 		website: "language",
-		xclose: "close"
+		xclose: "close",
+		note: "edit_note"
 	};
 	var deprecationMessage = "L'icône '{old}' est dépréciée. Utilisez type=\"{new}\" à la place.";
 	var iconMapping = {
@@ -10182,6 +10203,9 @@
 		"event",
 		"check",
 		"expand_less",
+		"expand_more",
+		"chevron_right",
+		"chevron_left",
 		"content_paste",
 		"emoji_objects",
 		"schedule",
@@ -10200,7 +10224,14 @@
 		"check_circle",
 		"person",
 		"language",
-		"close"
+		"close",
+		"description",
+		"more_horiz",
+		"note",
+		"print",
+		"toc",
+		"download",
+		"videocam"
 	];
 	var iconSelection = {
 		icons: icons};
@@ -10217,6 +10248,9 @@
 		event: "E878",
 		check: "E5CA",
 		expand_less: "E5CE",
+		expand_more: "E5CF",
+		chevron_right: "E5CC",
+		chevron_left: "E5CB",
 		content_paste: "E14F",
 		emoji_objects: "EA24",
 		schedule: "E8B5",
@@ -10235,7 +10269,14 @@
 		check_circle: "E86C",
 		person: "E7FD",
 		language: "E894",
-		close: "E5CD"
+		close: "E5CD",
+		description: "E873",
+		more_horiz: "E5D3",
+		print: "E8AD",
+		toc: "E8DE",
+		download: "F090",
+		videocam: "E04B",
+		note: "E674"
 	};
 	var iconCodepoints = {
 		codepoints: codepoints
@@ -10243,8 +10284,8 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var root_1$9 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[67, 4]]);
-	var root_2$a = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[83, 4]]);
+	var root_1$9 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[71, 4]]);
+	var root_2$a = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[87, 4]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -10261,6 +10302,8 @@
 			variant = prop($$props, 'variant', 7, 'outlined'),
 			variationSettings = prop($$props, 'variationSettings', 7, null),
 			renderMode = prop($$props, 'renderMode', 7, null // null = hérite du mode global, 'font' ou 'svg' pour forcer
+			),
+			useMaterial = prop($$props, 'useMaterial', 7, false // Force l'utilisation du nom material sans passer par le mapping legacy
 			),
 			rootElement = prop($$props, 'rootElement', 15),
 			vAlign = prop($$props, 'vAlign', 7, 'middle'),
@@ -10282,6 +10325,7 @@
 					'variant',
 					'variationSettings',
 					'renderMode',
+					'useMaterial',
 					'rootElement',
 					'vAlign'
 				]);
@@ -10289,9 +10333,11 @@
 		let attributes = tag(user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {}), 'attributes');
 
 		// Résolution du nom canonique (legacy → modern)
+		// Si use-material est activé, on utilise le type tel quel sans passer par le mapping
 		let resolvedType = tag(
 			user_derived(() => {
 				if (!type()) return type();
+				if (equals(useMaterial(), null, false) && strict_equals(useMaterial(), false, false)) return type();
 
 				const mapped = iconMapping.mappings[type()];
 
@@ -10320,6 +10366,12 @@
 		// Mécanisme de dépréciation : avertit si un nom legacy ou inconnu est utilisé
 		user_effect(() => {
 			if (!type()) return;
+
+			if (equals(
+				useMaterial(),
+				null, // Pas de vérification legacy si use-material est activé
+				false
+			) && strict_equals(useMaterial(), false, false)) return;
 
 			const mappedName = iconMapping.mappings[type()];
 
@@ -10433,6 +10485,15 @@
 				flushSync();
 			},
 
+			get useMaterial() {
+				return useMaterial();
+			},
+
+			set useMaterial($$value = false) {
+				useMaterial($$value);
+				flushSync();
+			},
+
 			get rootElement() {
 				return rootElement();
 			},
@@ -10516,7 +10577,7 @@
 				}),
 				'if',
 				Icon,
-				65,
+				69,
 				0
 			);
 		}
@@ -10540,6 +10601,7 @@
 			variant: {},
 			variationSettings: {},
 			renderMode: {},
+			useMaterial: {},
 			rootElement: {},
 			vAlign: {}
 		},
@@ -13765,7 +13827,7 @@
 		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
-		add_svelte_meta(() => Icon($$anchor, spread_props(() => props)), 'component', IconWC, 24, 0, { componentTag: 'Icon' });
+		add_svelte_meta(() => Icon($$anchor, spread_props(() => props)), 'component', IconWC, 25, 0, { componentTag: 'Icon' });
 
 		return pop($$exports);
 	}
@@ -13782,7 +13844,8 @@
 			src: { attribute: 'src' },
 			rotate: { attribute: 'rotate' },
 			variant: { attribute: 'variant' },
-			renderMode: { attribute: 'render-mode' }
+			renderMode: { attribute: 'render-mode' },
+			useMaterial: { attribute: 'use-material', type: 'Boolean' }
 		},
 		[],
 		[]
