@@ -10293,7 +10293,7 @@
 
 		let type = prop($$props, 'type', 7),
 			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7, 'md'),
+			size = prop($$props, 'size', 7),
 			color = prop($$props, 'color', 7),
 			width = prop($$props, 'width', 7, 'auto'),
 			height = prop($$props, 'height', 7, 'auto'),
@@ -10417,7 +10417,7 @@
 				return size();
 			},
 
-			set size($$value = 'md') {
+			set size($$value) {
 				size($$value);
 				flushSync();
 			},

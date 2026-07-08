@@ -6,7 +6,7 @@
     let {
         type,
         label,
-        size = 'md',
+        size,
         color,
         width = 'auto',
         height = 'auto',

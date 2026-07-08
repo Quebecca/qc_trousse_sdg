@@ -24,6 +24,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 
 ### Modifié
 - **icônes (variable globale)** : Passage de l'optical size (`opsz`) de 24 à 40 dans les `font-variation-settings` de `.qc-icon-font`.
+- **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
 - **liens externes** : Remplacement du rendu SVG par la font Material (`open_in_new`, 1em, couleur héritée du lien).
 - **alerte générale** : Icônes warning/general en font-weight 500 ; icône close en 2.4rem.
 - **avis (notice)** : Icônes en 2rem (md), font-weight 600 ; icône « advice » → `emoji_objects` ; icône « note » → `content_paste` ; padding latéral de `.icon-container` à 10px.
