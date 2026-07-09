@@ -2653,6 +2653,9 @@ li[aria-selected=true] {
   cursor: pointer;
   margin-bottom: var(--qc-spacer-md);
 }
+.qc-button qc-icon {
+  display: inline-flex;
+}
 .qc-button:focus, .qc-button:focus-visible {
   outline: none;
 }

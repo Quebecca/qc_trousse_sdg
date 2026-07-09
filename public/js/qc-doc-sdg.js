@@ -79133,7 +79133,8 @@
 			codepointProp = prop($$props, 'codepoint', 7, null // Codepoint Unicode direct (ex: "E873") pour afficher une icône hors du subset
 			),
 			rootElement = prop($$props, 'rootElement', 15),
-			vAlign = prop($$props, 'vAlign', 7, 'middle'),
+			vAlign = prop($$props, 'vAlign', 7, '-.125em' // pour alignement avec le texte par défaut
+			),
 			rest = rest_props(
 				$$props,
 				[
@@ -79158,7 +79159,12 @@
 					'vAlign'
 				]);
 
-		let attributes = tag(user_derived(() => strict_equals(width(), 'auto') ? { 'data-img-size': size() } : {}), 'attributes');
+		let attributes = tag(
+			user_derived(() => strict_equals(width(), 'auto')
+				? { 'data-img-size': size() ? size() : src() ? "md" : null }
+				: {}),
+			'attributes'
+		);
 
 		// Résolution du nom canonique (legacy → modern)
 		// Si use-material est activé, on utilise le type tel quel sans passer par le mapping
@@ -79350,7 +79356,7 @@
 				return vAlign();
 			},
 
-			set vAlign($$value = 'middle') {
+			set vAlign($$value = '-.125em') {
 				vAlign($$value);
 				flushSync();
 			}
