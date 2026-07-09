@@ -18,11 +18,11 @@
         'use-material': useMaterial = false, // Force l'utilisation du nom material sans passer par le mapping legacy
         codepoint: codepointProp = null, // Codepoint Unicode direct (ex: "E873") pour afficher une icône hors du subset
         rootElement = $bindable(),
-        vAlign = 'middle',
+        vAlign = '-.125em', // pour alignement avec le texte par défaut
         ...rest
     } = $props();
 
-    let attributes = $derived(width === 'auto' ? { 'data-img-size': size } : {});
+    let attributes = $derived(width === 'auto' ? { 'data-img-size': size ? size : (src ? "md" : null) } : {});
 
     // Résolution du nom canonique (legacy → modern)
     // Si use-material est activé, on utilise le type tel quel sans passer par le mapping

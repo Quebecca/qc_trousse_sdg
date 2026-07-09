@@ -30,6 +30,9 @@
   cursor: pointer;
   margin-bottom: token-value(spacer, md);
 
+  qc-icon {
+    display: inline-flex;
+  }
   &:focus,
   &:focus-visible {
     outline: none;

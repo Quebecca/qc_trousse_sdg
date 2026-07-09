@@ -14,6 +14,7 @@
       renderMode: {attribute: 'render-mode'},
       useMaterial: {attribute: 'use-material', type: 'Boolean'},
       codepoint: {attribute: 'codepoint'},
+      verticalAlign: {attribute: 'vertical-align'},
   }
 }}" />
 
