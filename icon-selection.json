@@ -39,7 +39,8 @@
     "print",
     "toc",
     "download",
-    "videocam"
+    "videocam",
+    "fax"
   ],
   "variants": ["outlined", "filled"],
   "maxBundleWarning": 100
