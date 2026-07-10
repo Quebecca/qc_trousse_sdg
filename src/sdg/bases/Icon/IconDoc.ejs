@@ -202,8 +202,8 @@
         %>
             <tr>
                 <td><code><%= icon %></code></td>
-                <td><qc-icon icon="<%= icon %>" variant="outlined" size="lg" /></td>
-                <td><qc-icon icon="<%= icon %>" variant="filled" size="lg" /></td>
+                <td><qc-icon icon="<%= icon %>" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="<%= icon %>" variant="filled" size="lg" use-material /></td>
                 <td><%- aliases.length ? aliases.map(function(a) { return '<code>' + a + '</code>'; }).join(', ') : '—' %></td>
             </tr>
         <% }); %>
