@@ -10231,7 +10231,8 @@
 		"print",
 		"toc",
 		"download",
-		"videocam"
+		"videocam",
+		"fax"
 	];
 	var iconSelection = {
 		icons: icons};
@@ -10276,7 +10277,8 @@
 		toc: "E8DE",
 		download: "F090",
 		videocam: "E04B",
-		note: "E674"
+		note: "E674",
+		fax: "EAD8"
 	};
 	var iconCodepoints = {
 		codepoints: codepoints
