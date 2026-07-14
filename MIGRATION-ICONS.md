@@ -174,7 +174,7 @@ Le subset de la trousse contient les icônes suivantes (utilisables directement 
 | `emoji_objects` | U+EA24 | Conseil, astuce |
 | `schedule` | U+E8B5 | Horloge, horaire |
 | `mail` | U+E158 | Courriel |
-| `error` | U+E000 | Erreur |
+| `cancel` | U+E5C9 | Erreur (croix dans un cercle) |
 | `warning` | U+E002 | Avertissement |
 | `open_in_new` | U+E89E | Lien externe |
 | `info` | U+E88E | Information |
