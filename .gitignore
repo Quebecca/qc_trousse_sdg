@@ -41,3 +41,7 @@ icon-selection.local.json
 
 # Sortie JS jetable des passes de build « root-font-size 100 % » (issue #48)
 /.rfz-build/
+
+# Sorties JS vides générées
+/dist/js/qc-sdg-no-grid.js
+/dist/qc-sdg-design-tokens.js

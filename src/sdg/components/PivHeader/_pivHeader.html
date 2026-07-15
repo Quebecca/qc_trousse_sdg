@@ -63,139 +63,141 @@
 
 
 <h3>Documentation technique</h3>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>title-text</td>
-      <td>Texte</td>
-      <td>Chaîne vide</td>
-      <td>Titre au milieu du bandeau (dans un hyperlien)</td>
-    </tr>
-    <tr>
-      <td>title-url</td>
 
-      <td>Adresse</td>
-      <td>/</td>
-      <td>URL de l’hyperlien du titre</td>
-    </tr>
-    <tr>
-      <td>logo-url</td>
-      <td>Adresse</td>
-      <td>/</td>
-      <td>Adresse du lien du logo</td>
-    </tr>
-    <tr>
-      <td>logo-src</td>
-      <td>Adresse</td>
-      <td>Adresse du logo inclus dans la trousse</td>
-      <td>Adresse du logo</td>
-    </tr>
-    <tr>
-      <td>logo-alt</td>
-      <td>texte</td>
-      <td>Logo du gouvernement du Québec/Logo of government of Québec</td>
-      <td>Attribut « alt » de la balise img du logo</td>
-    </tr>
-    <tr>
-      <td>alt-language-text</td>
-      <td>Texte</td>
-      <td>English/Français</td>
-      <td>Texte du lien de changement de langue</td>
-    </tr>
-    <tr>
-      <td>alt-language-url</td>
-      <td>Adresse</td>
-      <td>vide</td>
-      <td>L’URL de l’autre langue. Si vide, le lien n'apparaît pas.</td>
-    </tr>
-    <tr>
-      <td>join-us-text</td>
-      <td>Texte</td>
-      <td>Nous joindre/Contact us</td>
-      <td>Texte du lien « Nous joindre »</td>
-    </tr>
-    <tr>
-      <td>join-us-url</td>
-      <td>Adresse</td>
-      <td>Vide</td>
-      <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparaît pas.</td>
-    </tr>
-    <tr>
-      <td>go-to-content</td>
-      <td>"true" ou "false"</td>
-      <td>"true"</td>
-      <td>Afficher ou non le lien pour aller directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>go-to-content-text</td>
-      <td>Texte</td>
-      <td>Passer au contenu/Skip to content</td>
-      <td>Texte du lien pour passer directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>go-to-content-anchor</td>
-      <td>id du 1<sup>er</sup> élément de contenu</td>
-      <td>"main"</td>
-      <td>Cible du lien pour passer directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>full-width</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le bandeau en pleine largeur (classe de conteneur « qc‑container‑fluid »).</td>
-    </tr>
-    <tr>
-      <td>enable-search</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>
-        Active la recherche dans le bandeau PIV :
-        <ul>
-          <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors
-            affiché ;
-          </li>
-          <li>au clic, il affiche le formulaire de recherche.</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>show-search</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a
-        pas été pressé).
-      </td>
-    </tr>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>title-text</td>
+            <td>Texte</td>
+            <td>Chaîne vide</td>
+            <td>Titre au milieu du bandeau (dans un hyperlien)</td>
+        </tr>
+        <tr>
+            <td>title-url</td>
 
-    <tr>
-      <td>display-search-text</td>
-      <td>Texte</td>
-      <td>Cliquer pour faire une recherche / Click to search</td>
-      <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour afficher la
-        barre de recherche.
-      </td>
-    </tr>
-    <tr>
-      <td>hide-search-text</td>
-      <td>Texte</td>
-      <td>Masquer la barre de recherche / Hide search bar</td>
-      <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour masquer la
-        barre de recherche.
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+            <td>Adresse</td>
+            <td>/</td>
+            <td>URL de l’hyperlien du titre</td>
+        </tr>
+        <tr>
+            <td>logo-url</td>
+            <td>Adresse</td>
+            <td>/</td>
+            <td>Adresse du lien du logo</td>
+        </tr>
+        <tr>
+            <td>logo-src</td>
+            <td>Adresse</td>
+            <td>Adresse du logo inclus dans la trousse</td>
+            <td>Adresse du logo</td>
+        </tr>
+        <tr>
+            <td>logo-alt</td>
+            <td>texte</td>
+            <td>Logo du gouvernement du Québec/Logo of government of Québec</td>
+            <td>Attribut « alt » de la balise img du logo</td>
+        </tr>
+        <tr>
+            <td>alt-language-text</td>
+            <td>Texte</td>
+            <td>English/Français</td>
+            <td>Texte du lien de changement de langue</td>
+        </tr>
+        <tr>
+            <td>alt-language-url</td>
+            <td>Adresse</td>
+            <td>vide</td>
+            <td>L’URL de l’autre langue. Si vide, le lien n'apparaît pas.</td>
+        </tr>
+        <tr>
+            <td>join-us-text</td>
+            <td>Texte</td>
+            <td>Nous joindre/Contact us</td>
+            <td>Texte du lien « Nous joindre »</td>
+        </tr>
+        <tr>
+            <td>join-us-url</td>
+            <td>Adresse</td>
+            <td>Vide</td>
+            <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparaît pas.</td>
+        </tr>
+        <tr>
+            <td>go-to-content</td>
+            <td>"true" ou "false"</td>
+            <td>"true"</td>
+            <td>Afficher ou non le lien pour aller directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>go-to-content-text</td>
+            <td>Texte</td>
+            <td>Passer au contenu/Skip to content</td>
+            <td>Texte du lien pour passer directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>go-to-content-anchor</td>
+            <td>id du 1<sup>er</sup> élément de contenu</td>
+            <td>"main"</td>
+            <td>Cible du lien pour passer directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>full-width</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le bandeau en pleine largeur (classe de conteneur « qc‑container‑fluid »).</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>
+                Active la recherche dans le bandeau PIV :
+                <ul>
+                    <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors
+                        affiché ;
+                    </li>
+                    <li>au clic, il affiche le formulaire de recherche.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>show-search</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a
+                pas été pressé).
+            </td>
+        </tr>
+
+        <tr>
+            <td>display-search-text</td>
+            <td>Texte</td>
+            <td>Cliquer pour faire une recherche / Click to search</td>
+            <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour afficher la
+                barre de recherche.
+            </td>
+        </tr>
+        <tr>
+            <td>hide-search-text</td>
+            <td>Texte</td>
+            <td>Masquer la barre de recherche / Hide search bar</td>
+            <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour masquer la
+                barre de recherche.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
 <h4>Zones d’ajout de contenu HTML</h4>
 
 <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>

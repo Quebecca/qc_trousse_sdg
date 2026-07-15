@@ -1,5 +1,17 @@
 # Historique des versions
 
+## [1.5.A VENIR] - AAAA-MM-JJ
+
+### Ajouté
+- **Nouveau composant** : `qc-table` pour l’affichage des tableaux et des listes structurées.
+- **Tableaux** : Ajout et harmonisation des styles des tableaux avec les variantes définies dans le Système de design.
+- **Documentation** : Ajout des exemples du composant `qc-table`.
+- **Tests** : Ajout des tests Playwright du composant `qc-table`.
+
+### Modifié
+- **Tableaux** : Adaptation de la largeur des tableaux standards au contenu plutôt que de forcer une largeur de 100 %.
+- **Documentation** : Remplacement de l’utilisation directe de la classe `.qc-table` par le composant `<qc-table>` pour les tableaux de la documentation.
+
 ## Migration des icônes vers Material Symbols
 
 Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.

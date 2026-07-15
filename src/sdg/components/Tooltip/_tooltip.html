@@ -85,64 +85,63 @@
 
 <h3>Documentation technique</h3>
 
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>text</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Texte lié à l'infobulle</td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Titre de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Contenu de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>icon</td>
+            <td>"information" ou "question"</td>
+            <td>"information"</td>
+            <td>Icône de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>display-mode</td>
+            <td>"popover" ou "modal"</td>
+            <td>"popover"</td>
+            <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
+        </tr>
+        <tr>
+            <td>position</td>
+            <td>"right", "top" ou "bottom"</td>
+            <td>"top"</td>
+            <td>Position du phylactère</td>
+        </tr>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tr>
-      <td>text</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Texte lié à l'infobulle</td>
-    </tr>
-    <tr>
-      <td>Title</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Titre de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>description</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Contenu de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>icon</td>
-      <td>"information" ou "question"</td>
-      <td>"information"</td>
-      <td>Icône de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>display-mode</td>
-      <td>"popover" ou "modal"</td>
-      <td>"popover"</td>
-      <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
-    </tr>
-    <tr>
-      <td>position</td>
-      <td>"right", "top" ou "bottom"</td>
-      <td>"top"</td>
-      <td>Position du phylactère</td>
-    </tr>
+        <tr>
+            <td>description-id</td>
+            <td>Id d'un élément dans le document</td>
+            <td>Nulle</td>
+            <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
+        </tr>
 
-    <tr>
-      <td>description-id</td>
-      <td>Id d'un élément dans le document</td>
-      <td>Nulle</td>
-      <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
-    </tr>
-
-  </table>
-</div>
+    </table>
+</qc-table>
 
 <h4>Zone d’ajout de contenu HTML</h4>
 <p>Le texte lié et la description peuvent être ajoutés par slot. Voir les exemples d'insertions de contenu. </p>

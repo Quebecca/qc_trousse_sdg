@@ -161,57 +161,18 @@ code.hljs {
   padding: var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm) var(--qc-spacer-sm);
   border: 1px solid var(--qc-box_shadow-0-color);
 }
-.exemple-area > figure .exemple > *:last-child {
+.exemple-area > figure .exemple > *:last-child:not(qc-table):not(table.qc-table) {
   margin-bottom: 0;
+}
+.exemple-area > figure .exemple .table-overflow-container {
+  width: 100%;
+  overflow-x: auto;
 }
 .exemple-area > figure > figcaption {
   display: block;
 }
 .exemple-area > figure:has(qc-select, qc-tooltip) {
   overflow-x: visible;
-}
-
-table.qc-table caption {
-  font-size: var(--qc-font-size-lg);
-  line-height: var(--qc-line-height-lg);
-  font-weight: var(--qc-font-weight-bold);
-  margin-bottom: var(--qc-spacer-content-block-mb);
-  text-align: left;
-}
-table.qc-table {
-  margin-bottom: 0;
-  background-color: var(--qc-color-white);
-  width: 100%;
-  max-width: 100%;
-  overflow: auto;
-  border-collapse: collapse;
-}
-table.qc-table > thead {
-  background-color: var(--qc-color-blue-medium);
-  color: var(--qc-color-white);
-  border: 1px solid var(--qc-color-blue-medium);
-}
-table.qc-table > thead th {
-  font-size: var(--qc-font-size-md);
-  line-height: var(--qc-line-height-md);
-  font-weight: var(--qc-font-weight-bold);
-}
-table.qc-table thead th, table.qc-table tbody th, table.qc-table tbody td {
-  vertical-align: middle;
-  text-align: left;
-  padding: var(--qc-spacer-sm);
-}
-table.qc-table tbody th, table.qc-table tbody td {
-  border-bottom: 1px solid var(--qc-color-grey-light);
-}
-table.qc-table {
-  /* ----- Striped tables ----- */
-}
-table.qc-table.qc-striped tbody tr:nth-of-type(even) {
-  background-color: var(--qc-color-grey-pale);
-}
-table.qc-table {
-  /* ----- TODO add footer style ----- */
 }
 
 .ui-autocomplete {
@@ -443,16 +404,6 @@ dl.qc-list-inline dt::before {
   display: block;
   content: "";
   margin-bottom: var(--qc-spacer-list-item-mb);
-}
-
-.table-overflow {
-  width: 100%;
-  overflow-x: auto;
-  margin: var(--qc-spacer-content-block-mb) 0;
-}
-
-.table-overflow + .table-overflow {
-  margin-top: 4rem;
 }
 
 hr {

@@ -10,8 +10,13 @@
     padding: token-value(spacer sm) token-value(spacer sm) token-value(spacer sm) token-value(spacer sm);
     @include qc-shading(0);
 
-    & > *:last-child {
+    & > *:last-child:not(qc-table):not(table.qc-table) {
       margin-bottom: 0;
+    }
+    // Conteneur utilisé dans l’exemple de tableau de données sans <qc-table>.
+    .table-overflow-container {
+      width: 100%;
+      overflow-x: auto;
     }
   }
 
