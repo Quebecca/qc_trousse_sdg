@@ -14,7 +14,7 @@ L'API du composant est rétrocompatible — les anciens noms d'icônes continuen
 |----------------------|-------------------------------|
 | `adresse` | `place` |
 | `arrow-up` | `arrow_upward` |
-| `calendar` | `event` |
+| `calendar` | `calendar_today` |
 | `checkmark` | `check` |
 | `chevron-up-thin` | `expand_less` |
 | `chevron-up` | `expand_less` |
@@ -38,7 +38,7 @@ L'API du composant est rétrocompatible — les anciens noms d'icônes continuen
 | `success` | `check_circle` |
 | `user` | `person` |
 | `warning` | `warning` |
-| `website` | `language` |
+| `website` | `laptop_chromebook` |
 | `xclose` | `close` |
 
 > ² Les noms `information-tooltip` et `question-tooltip` sont obsolètes. Le composant `<qc-tooltip>` utilise désormais les icônes Material `info` et `help` (variante filled) directement.
@@ -164,7 +164,7 @@ Le subset de la trousse contient les icônes suivantes (utilisables directement 
 | `arrow_left_alt` | U+EF7D | Flèche gauche (séquentiel) |
 | `arrow_right_alt` | U+E941 | Flèche droite (séquentiel) |
 | `north` | U+F1E0 | Haut de page |
-| `event` | U+E878 | Calendrier, date |
+| `calendar_today` | U+E935 | Calendrier, date |
 | `check` | U+E5CA | Coche de validation |
 | `expand_less` | U+E5CE | Chevron vers le haut |
 | `expand_more` | U+E5CF | Chevron vers le bas |
@@ -187,7 +187,7 @@ Le subset de la trousse contient les icônes suivantes (utilisables directement 
 | `search` | U+E8B6 | Recherche |
 | `check_circle` | U+E86C | Succès |
 | `person` | U+E7FD | Utilisateur |
-| `language` | U+E894 | Site web, langue |
+| `laptop_chromebook` | U+E31F | Site web |
 | `close` | U+E5CD | Fermer |
 | `description` | U+E873 | Document |
 | `more_horiz` | U+E5D3 | Points de suspension |
