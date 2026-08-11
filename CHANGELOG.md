@@ -55,6 +55,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.
 - **Tests** : Renommage des composants de test `*EmbeddedTest` → `*SvelteTest` pour cohérence.
 ### Corrigé
+- **qc-textfield** : Correction des valeurs par défaut de `size` dans la documentation (md pour `input`, lg pour `textarea` — et non lg/xl comme indiqué précédemment).
 - **qc-select** : Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
 - **qc-select** : Correction du décalage entre le panneau déroulant et le bouton lorsqu'une recherche réduit les options et que le panneau est retourné vers le haut. La hauteur du panneau est désormais figée à l'ouverture quand il s'affiche au-dessus, évitant tout repositionnement pendant la saisie.
 - **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).
