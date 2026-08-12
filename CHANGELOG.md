@@ -49,6 +49,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **qc-search-input** : Tests Playwright (baseline + svelte) avec screenshots partagés.
 - **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
 ### Modifié
+- **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
 - **qc-select** : Refonte interne — séparation de `items` (métadonnées) et `value` (sélection). Élimine la dépendance circulaire qui causait la perte de sélection à l'initialisation. L'API du web component reste identique. En usage Svelte direct (composant `DropdownList`), `value` n'est plus synchronisé automatiquement quand des items sont retirés — c'est au développeur de mettre à jour `value` si les options changent.
 - **qc-search-input** : Optimisation du `$effect` de synchronisation avec `untrack()`.
 - **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.

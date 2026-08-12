@@ -5,6 +5,7 @@
   width: fit-content;
   white-space: nowrap;
   margin: 0;
+  max-inline-size: token-value(max-content-width);
 
   &.qc-compact {
     font-size: token-value(font size sm);

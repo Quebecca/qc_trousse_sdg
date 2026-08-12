@@ -602,6 +602,7 @@ label {
   line-height: var(--qc-line-height-md);
   font-weight: var(--qc-font-weight-bold);
   display: inline-block;
+  max-inline-size: var(--qc-max-content-width);
 }
 
 legend {
@@ -2192,6 +2193,7 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
   width: fit-content;
   white-space: nowrap;
   margin: 0;
+  max-inline-size: var(--qc-max-content-width);
 }
 .qc-label.qc-compact, qc-textfield label.qc-compact,
 .qc-textfield label.qc-compact {
@@ -2225,6 +2227,7 @@ qc-textfield .qc-description,
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
+  max-inline-size: var(--qc-max-content-width);
   color: var(--qc-color-blue-dark);
 }
 qc-textfield .qc-description:has(~ :disabled),
