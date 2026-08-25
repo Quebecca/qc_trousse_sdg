@@ -1,7 +1,7 @@
 @use "../../scss/qc-sdg-lib" as *;
 
 // Support legacy : .qc-icon pour les icônes personnalisées via src
-.qc-icon {
+.qc-icon-custom {
   display: inline-block;
   flex-shrink: 0;
   width: var(--img-width);
@@ -10,23 +10,21 @@
   mask-repeat: no-repeat;
   background-color: var(--img-color);
   transform: rotate(var(--img-rotate));
+  mask-image: var(--img-src);
 
+  &.is-disabled {
+    cursor: not-allowed;
+    background-color: token-value(color grey regular);
+  }
+}
+
+.qc-icon {
   // Tailles prédéfinies
   @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
     &[data-img-size=#{$size-type}] {
       height: rem($size);
       width: rem($size);
     }
-  }
-
-  // Icône personnalisée via src
-  &.qc-icon-custom {
-    mask-image: var(--img-src);
-  }
-
-  &.is-disabled {
-    cursor: not-allowed;
-    background-color: token-value(color grey regular);
   }
 }
 
@@ -64,8 +62,6 @@
   @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
     &[data-img-size=#{$size-type}] {
       font-size: rem($size);
-      width: rem($size);
-      height: rem($size);
     }
   }
 
