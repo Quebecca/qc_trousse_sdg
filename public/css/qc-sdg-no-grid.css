@@ -687,7 +687,7 @@ h1:after, .qc-h1:after {
   border-bottom: 4px solid var(--qc-color-accent);
 }
 
-.qc-icon {
+.qc-icon-custom {
   display: inline-block;
   flex-shrink: 0;
   width: var(--img-width);
@@ -696,7 +696,13 @@ h1:after, .qc-h1:after {
   mask-repeat: no-repeat;
   background-color: var(--img-color);
   transform: rotate(var(--img-rotate));
+  mask-image: var(--img-src);
 }
+.qc-icon-custom.is-disabled {
+  cursor: not-allowed;
+  background-color: var(--qc-color-grey-regular);
+}
+
 .qc-icon[data-img-size=xs] {
   height: 1.2rem;
   width: 1.2rem;
@@ -720,13 +726,6 @@ h1:after, .qc-h1:after {
 .qc-icon[data-img-size=xl] {
   height: 3.2rem;
   width: 3.2rem;
-}
-.qc-icon.qc-icon-custom {
-  mask-image: var(--img-src);
-}
-.qc-icon.is-disabled {
-  cursor: not-allowed;
-  background-color: var(--qc-color-grey-regular);
 }
 
 @font-face {
@@ -760,33 +759,21 @@ h1:after, .qc-h1:after {
 }
 .qc-icon-font[data-img-size=xs] {
   font-size: 1.2rem;
-  width: 1.2rem;
-  height: 1.2rem;
 }
 .qc-icon-font[data-img-size=sm] {
   font-size: 1.6rem;
-  width: 1.6rem;
-  height: 1.6rem;
 }
 .qc-icon-font[data-img-size=md] {
   font-size: 2rem;
-  width: 2rem;
-  height: 2rem;
 }
 .qc-icon-font[data-img-size=nm] {
   font-size: 2.4rem;
-  width: 2.4rem;
-  height: 2.4rem;
 }
 .qc-icon-font[data-img-size=lg] {
   font-size: 2.8rem;
-  width: 2.8rem;
-  height: 2.8rem;
 }
 .qc-icon-font[data-img-size=xl] {
   font-size: 3.2rem;
-  width: 3.2rem;
-  height: 3.2rem;
 }
 .qc-icon-font[data-img-variant=filled] {
   font-variation-settings: var(--img-variation, "opsz" 40, "FILL" 1, "GRAD" 0);

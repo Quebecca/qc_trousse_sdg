@@ -10549,7 +10549,7 @@
 				attribute_effect(span, () => ({
 					role: 'img',
 					...rest,
-					class: ["qc-icon-font", $$props.class],
+					class: ["qc-icon", "qc-icon-font", $$props.class],
 					'aria-label': label(),
 					style: color()
 						? `--img-color: var(--qc-color-${color()});`
