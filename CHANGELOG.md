@@ -48,6 +48,9 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **qc-search-input** : Ajout de la propriété `value` comme attribut explicite du web component.
 - **qc-search-input** : Tests Playwright (baseline + svelte) avec screenshots partagés.
 - **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
+- **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
+- **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+
 ### Modifié
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
 - **qc-select** : Refonte interne — séparation de `items` (métadonnées) et `value` (sélection). Élimine la dépendance circulaire qui causait la perte de sélection à l'initialisation. L'API du web component reste identique. En usage Svelte direct (composant `DropdownList`), `value` n'est plus synchronisé automatiquement quand des items sont retirés — c'est au développeur de mettre à jour `value` si les options changent.
@@ -63,6 +66,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
 - **commutateur** : Correction css pour corriger le comportement des balises `sup` et `sub` dans le libellé 
+
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté

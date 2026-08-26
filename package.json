@@ -8,6 +8,7 @@
     "preversion": "./scripts/check-release-note.sh",
     "version": "./scripts/compile-doc.sh",
     "build": "rollup -c --bundleConfigAsCjs",
+    "test": "playwright test",
     "start": "sirv .",
     "rewrite-bootstrap": "gulp rewriteBs",
     "build-grid-tokens": "node ./scripts/buildGridTokens.js",
