@@ -1,5 +1,10 @@
 # Historique des versions
 
+## [Non publié]
+### Ajouté
+- **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
+- **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+
 ## [1.5.2] - 2026-04-27
 ### Ajouté
 - **qc-textfield** : Ajout de la propriété `disabled` comme attribut explicite du web component, pour une meilleure réactivité avec les frameworks (Angular, etc.) ([#37](https://github.com/Quebecca/qc_trousse_sdg/pull/37)).

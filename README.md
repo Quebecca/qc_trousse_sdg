@@ -165,6 +165,71 @@ Voici un [exemple de projet d'utilisation de la trousse](https://github.com/Queb
 - Inclusion des scss de la trousse dans une feuille de style personnalisée ;
 - Intégration dans Bootstrap.
 
+### Tests visuels (Playwright)
+
+Les composants sont couverts par des tests de régression visuelle [Playwright](https://playwright.dev) situés dans le dossier `/tests`. Chaque test charge une fixture HTML statique depuis `/public/*.test.html` et compare une capture d’écran à une image de référence enregistrée dans `tests/<nom-du-test>.spec.ts-snapshots/`.
+
+#### Lancer les tests
+
+```bash
+npm run test [options]
+```
+
+La commande transmet les options à `playwright test`. Les options passées directement après `npm run test` sont interprétées par npm ; pour transmettre des options à Playwright, il faut les faire précéder de `--` :
+
+```bash
+# Toute la suite
+npm run test
+
+# Un seul navigateur
+npm run test -- --project=chromium
+
+# Filtrer par étiquette (voir plus bas)
+npm run test -- --grep @svelte
+npm run test -- --grep @alert
+
+# Régénérer les images de référence après un changement visuel assumé
+npm run test -- --update-snapshots
+
+# Interface interactive
+npm run test -- --ui
+```
+
+Le rapport HTML est généré dans `/playwright-report` (`npx playwright show-report` pour l’ouvrir).
+
+#### Deux familles de tests : `baseline` et `svelte`
+
+Chaque composant peut être rendu de deux façons dans la trousse : via son **composant web** (fixture `*Baseline.test.html`) et via son **composant Svelte** (fixture `*Svelte.test.html`). Les deux rendus doivent être visuellement identiques.
+
+Pour éviter de maintenir deux fichiers de test en double, **seuls les tests `*-baseline.spec.ts` sont écrits à la main**. Les tests `*-svelte.spec.ts` sont **générés automatiquement** à partir des baselines par le plugin Rollup `plugins/buildSvelteTests.js`, exécuté à chaque compilation de développement (`npm run dev`).
+
+La génération applique deux remplacements sur le contenu du baseline :
+
+- `Baseline.test.html` → `Svelte.test.html` (la fixture chargée) ;
+- toutes les occurrences de `baseline` → `svelte` (nom du fichier, titre des tests et **étiquettes `tag`**, p. ex. `@baseline` → `@svelte`).
+
+Le fichier généré est donc identique à son baseline, au mot `baseline` près, renommé partout. C’est ce qui garantit que les deux familles testent exactement le même scénario. Le plugin surveille les baselines (`addWatchFile`) : modifier un `*-baseline.spec.ts` régénère automatiquement son jumeau svelte tant que `npm run dev` tourne.
+
+> ⚠️ Ne pas éditer les fichiers `*-svelte.spec.ts` à la main : ils sont écrasés à la prochaine compilation. Toute modification doit se faire dans le `*-baseline.spec.ts` correspondant.
+
+Les étiquettes permettent de cibler un sous-ensemble : `--grep @baseline` (composants web), `--grep @svelte` (composants Svelte), ou `--grep @<composant>` (p. ex. `@alert`, `@icon`).
+
+#### Exceptions
+
+Certains composants n’ont pas d’équivalent Svelte, ou leur test svelte ne doit pas être généré. Leur baseline est alors listé dans `tests/buildSvelteTestsIgnore.json` (globs) et le plugin les ignore :
+
+```json
+[
+  "**/button-baseline.spec.ts",
+  "**/dropdown-list-baseline.spec.ts",
+  "**/piv-header-baseline.spec.ts",
+  "**/external-link-baseline.spec.ts",
+  "**/tooltip-baseline.spec.ts"
+]
+```
+
+Pour ajouter une exception, il suffit d’ajouter le glob du baseline concerné à ce fichier ; à l’inverse, retirer un glob de la liste active la génération du jumeau svelte au prochain `npm run dev`.
+
 ## Historique
 
 Voir le fichier [CHANGELOG.md](CHANGELOG.md).
