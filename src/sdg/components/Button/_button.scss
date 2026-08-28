@@ -185,19 +185,12 @@
     }
   }
 
-  .qc-icon {
-    display: inline-block;
+  // Icône personnalisée (mode SVG via mask) : suit la couleur texte du bouton
+  // (les règles mask/taille/display viennent de bases/Icon/_icons.scss)
+  .qc-icon-custom {
+    background-color: currentColor;
     width: rem(16);
     height: rem(16);
-    background-color: currentColor;
-    mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    flex-shrink: 0;
-
-    &.qc-custom-icon {
-      mask:var(--img-src);
-      mask-size: 100% 100%;
-    }
   }
 
   // Icône en mode font pour boutons primary/secondary/tertiary/danger
