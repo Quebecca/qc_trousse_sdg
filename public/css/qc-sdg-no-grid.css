@@ -2747,18 +2747,10 @@ li[aria-selected=true] {
   border-color: var(--qc-color-grey-light);
   color: var(--qc-color-white);
 }
-.qc-button .qc-icon {
-  display: inline-block;
+.qc-button .qc-icon-custom {
+  background-color: currentColor;
   width: 1.6rem;
   height: 1.6rem;
-  background-color: currentColor;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-  flex-shrink: 0;
-}
-.qc-button .qc-icon.qc-custom-icon {
-  mask: var(--img-src);
-  mask-size: 100% 100%;
 }
 .qc-button:not(.qc-simple) .qc-icon-font {
   font-size: 2.4rem;
