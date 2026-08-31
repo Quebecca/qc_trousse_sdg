@@ -16,4 +16,6 @@ export * from './components/ChoiceGroup/ToggleSwitchGroupWC.svelte'
 export * from './components/DropdownList/SelectWC.svelte'
 export * from './components/Tooltip/TooltipWC.svelte'
 export * from './components/Table/TableWC.svelte'
-
+export * from './components/Note/NoteRefWC.svelte'
+export * from './components/Note/NoteListWC.svelte'
+export * from './components/Sheet/SheetWC.svelte'

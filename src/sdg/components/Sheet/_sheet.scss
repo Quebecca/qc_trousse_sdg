@@ -1,0 +1,100 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+@mixin focus-outline($offset: rem(2)) {
+  outline: rem(2) solid token-value(color blue regular);
+  outline-offset: $offset;
+}
+
+// Dimensions de la feuille : max 1/3 viewport, min 320px
+$sheet-max-height: calc(100vh / 3);
+$sheet-min-height: rem(320);
+
+.qc-sheet-dialog {
+  // Reset des valeurs par défaut du <dialog>, fixée en bas, pleine largeur
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: $sheet-max-height;
+  min-height: $sheet-min-height;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: token-value(color, background);
+
+  &::backdrop {
+    background-color: rgba(var(--qc-color-blue-dark-rgb), .25);
+  }
+
+  &:focus {
+    @include focus-outline(rem(-2));
+  }
+
+  .qc-sheet-panel {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    max-height: $sheet-max-height;
+    min-height: $sheet-min-height;
+  }
+
+  .qc-sheet-header {
+    position: absolute;
+    top: rem(4);
+    right: rem(4);
+    z-index: 1;
+
+    .qc-sheet-close {
+      // Cible tactile d'au moins 24x24 px (WCAG 2.5.8) : l'icône est centrée
+      // dans une zone cliquable de taille « spacer md » (24px).
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: token-value(spacer, md);
+      min-height: token-value(spacer, md);
+      // Reset des styles natifs du bouton
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+
+      &:focus-visible {
+        @include focus-outline;
+      }
+    }
+  }
+
+  .qc-sheet-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: token-value(spacer, md) 0;
+    max-inline-size: token-value(max-content-width);
+    @include content-font(md);
+
+    @include media-mobile {
+      padding-left: token-value(spacer, sm);
+      padding-right: token-value(spacer, sm);
+    }
+
+    // Réserve l'espace du bouton de fermeture (positionné en absolu en haut à
+    // droite) pour que le premier élément — titre OU paragraphe de description —
+    // ne passe jamais sous le bouton, notamment en mobile où la largeur est
+    // réduite. On cible le premier enfant, qui est l'élément en regard du bouton.
+    > :first-child {
+      padding-right: token-value(spacer, lg);
+    }
+
+    .qc-sheet-title {
+      @include header-font(md);
+      margin: 0 0 token-value(spacer, sm) 0;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
