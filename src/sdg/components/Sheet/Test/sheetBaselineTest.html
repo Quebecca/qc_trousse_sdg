@@ -1,0 +1,13 @@
+<!-- Sheet baseline test fixture -->
+<h3>Feuille avec titre</h3>
+<button id="btn-sheet-title" class="qc-button qc-primary qc-compact" onclick="document.getElementById('sheet-test-1').show()">Ouvrir avec titre</button>
+<qc-sheet id="sheet-test-1"
+          title="Titre de la feuille"
+          description="Contenu de la feuille avec un titre. La feuille peut être fermée avec le bouton X, Échap, ou en cliquant sur le fond.">
+</qc-sheet>
+
+<h3>Feuille sans titre</h3>
+<button id="btn-sheet-no-title" class="qc-button qc-primary qc-compact" onclick="document.getElementById('sheet-test-2').show()">Ouvrir sans titre</button>
+<qc-sheet id="sheet-test-2"
+          description="Contenu simple sans titre.">
+</qc-sheet>
