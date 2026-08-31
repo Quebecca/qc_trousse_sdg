@@ -50,6 +50,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
 - **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
 - **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+- **Documentation (infobulle)** : ajout d'un exemple d'affichage en feuille (`display-mode="modal"`).
 
 ### Modifié
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.

@@ -44,7 +44,10 @@ async function prepareSnapshotForPosition(position) {
 
 async function prepareSnapshotForModale() {
     const mainTooltip = document.getElementById("tooltip");
-    mainTooltip.displayMode = "modal";
+    // Contournement bug Svelte 5.57 : l'AJOUT d'un attribut absent au montage n'est pas
+    // répercuté au prop du composant, mais la MODIFICATION d'un attribut existant l'est.
+    // La fixture déclare donc display-mode="popover" par défaut, qu'on modifie ici.
+    mainTooltip.setAttribute("display-mode", "modal");
     mainTooltip.text = "feuille"
     await new Promise(resolve => setTimeout(resolve, 100));
 
