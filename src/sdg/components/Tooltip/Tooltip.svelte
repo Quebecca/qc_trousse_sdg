@@ -2,6 +2,7 @@
     import {Utils} from "../utils";
     import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
+    import Sheet from "../Sheet/Sheet.svelte";
     import gridConfig from '../../../sdg/scss/settings/grid.json';
     let {
         text,
@@ -26,7 +27,7 @@
         tooltipId = Utils.generateId("tooltip"),
         tooltipContainer,
         tooltipButton = $state(),
-        modale = $state(),
+        sheet = $state(),
         displayPopover = $state(false),
         visiblePopover = $state(false),
         displayModal = $state(false),
@@ -50,7 +51,6 @@
             }
         })
     ;
-    $inspect("modalFlag",modalFlag)
 
     function hasProperty(property, slotExist, snippet) {
         if (property) return true;
@@ -79,12 +79,9 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
-        $inspect("sm bp" , getSmBreakpoint(gridConfig))
         setIsMobile()
         window.addEventListener("resize", setIsMobile)
     })
-
-    $inspect("isMobile", mobileFlag)
 
     $effect(_ => {
         if (!displayPopover) {
@@ -117,29 +114,17 @@
         }
     }
 
+    // displayModal repasse à false dans onclose de la feuille, quelle que soit la
+    // cause de la fermeture (bouton, Échap, fond) : la feuille n'est démontée
+    // qu'après sa fermeture, ce qui laisse Sheet rendre le focus au déclencheur.
     function closeModale() {
-        if (!modale) return;
-
-        modale.close();
-        toggleModal();
-        displayModal = false;
-    }
-
-    function toggleModal() {
-        if (!modale) return;
-        const body = document.querySelector("body");
-        if (modale.open) {
-            body.style.overflow = "hidden";
-        }
-        else {
-            body.style.overflow = ""
-        }
+        sheet?.close();
     }
 
     async function showModal(e) {
         displayModal = true;
         await tick()
-        modale.showModal();
+        sheet?.show();
     }
 
     function getSmBreakpoint(gridConfig) {
@@ -385,33 +370,28 @@
             >
              {@render pinSvg(position)}
          </div>
-         {@render tooltipPanelSnippet("popover")}
+         {@render tooltipPanelSnippet()}
          {/if}
          {#if modalFlag && displayModal}
-         <dialog bind:this={modale}
-                 ontoggle={toggleModal}
-                 class:qc-desktop={!mobileFlag}
-                 onclick={e => {
-                     if (e.clickIntoPanel) return;
-                     closeModale();
-                 }}
-            >
-            <div class="qc-container">
-                {@render tooltipPanelSnippet("modal")}
-            </div>
-         </dialog>
+         <Sheet bind:this={sheet} title={title} onclose={() => displayModal = false}>
+             {#snippet children()}
+                 {@html description}
+                 {@render descriptionSlot()}
+             {/snippet}
+         </Sheet>
          {/if}
      </div>
     {/if}
 </div>
 
-{#snippet tooltipPanelSnippet(displayMode)}
+<!-- Panneau de l'infobulle en popover. En mode modal, le contenu est rendu
+     dans <Sheet>. -->
+{#snippet tooltipPanelSnippet()}
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions,a11y_click_events_have_key_events -->
     <div role="tooltip"
-         class="qc-tooltip-panel"
+         class="qc-tooltip-panel qc-shading-2"
          onclick={e => e.clickIntoPanel = true}
          class:qc-tooltip-visible={visiblePopover}
-         class:qc-shading-2={displayMode === "popover"}
          bind:this={tooltipPanel}
          style:--translateY={translateY}
          style:--translateX={translateX}
@@ -558,36 +538,6 @@
         top: 8px;
         line-height: 24px;
         height: 24px;
-    }
-
-    dialog {
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-        margin: 0;
-        padding: 0;
-        border: 1px solid var(--qc-color-grey-light);
-        background: var(--qc-color-background);
-
-        &.qc-desktop {
-            padding-top: 8px;
-        }
-
-        .qc-tooltip-panel {
-            visibility: visible!important;
-        }
-
-        &::backdrop {
-            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)
-        }
-
-        .qc-tooltip-xclose {
-            right: 0;
-        }
     }
 
     .qc-tooltip-panel {

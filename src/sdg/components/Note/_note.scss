@@ -1,0 +1,203 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+@mixin flex-center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+qc-note-ref {
+  // inline-block : le navigateur retire les blancs de début et de fin de ligne
+  // dans l'élément. Sans ça, l'indentation du HTML source (entre la balise et
+  // le <a> rendu) ajoute un espace avant le badge.
+  display: inline-block;
+
+  // L'appel de note : lien d'ancrage <a> en mode « inline », <button> en mode
+  // « feuille » (mobile / display="sheet").
+  .qc-note-call {
+    @include flex-center;
+    text-decoration: none;
+    // Calage sur la ligne de texte, quelle que soit la taille de police : sans
+    // ça, sur un titre au line-height élevé, le badge décroche de la ligne.
+    vertical-align: bottom;
+    // Décalage lors du scroll vers l'appel de note (barre sticky éventuelle)
+    scroll-margin-top: token-value(spacer, xl);
+
+    // Mode feuille : le bouton prend l'apparence de l'appel en lien, et le
+    // même contour de focus que les liens de la trousse.
+    &:is(button) {
+      padding: 0;
+      border: 0;
+      background: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+
+      &:focus-visible {
+        @include focus-link;
+      }
+    }
+
+    // Variante « terme à définir » : trait pointillé sous tout le lien
+    // (terme + zone du badge), dashes de 3px espacés de 3px.
+    &.qc-note-has-term {
+      position: relative;
+      // Le badge se cale sur le bas du terme pour que le trait passe sous les deux
+      align-items: flex-end;
+      // Couleur du trait, surchargeable (ex. en-tête de tableau foncé)
+      --qc-note-term-underline-color: #{token-value(color blue piv)};
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: repeating-linear-gradient(
+                        to right,
+                        var(--qc-note-term-underline-color) 0,
+                        var(--qc-note-term-underline-color) rem(3),
+                        transparent rem(3),
+                        transparent rem(6)
+        );
+      }
+
+      .qc-note-term {
+        color: token-value(color text primary);
+      }
+    }
+
+    // Zone du badge (24x24), dans laquelle le badge visible (16x16) est centré
+    .qc-note-number-wrapper {
+      @include flex-center;
+      min-width: token-value(spacer, md);
+      min-height: token-value(spacer, md);
+    }
+
+    .qc-note-number {
+      @include flex-center;
+      font-size: rem(12);
+      font-weight: token-value(font weight bold);
+      line-height: 0;
+      background-color: token-value(color blue pale);
+      color: token-value(color blue piv);
+      min-width: token-value(spacer, sm);
+      min-height: token-value(spacer, sm);
+    }
+  }
+}
+
+// Appel de note sur un terme dans l'en-tête foncé d'un tableau standard : le
+// terme et son trait passent en blanc. Les en-têtes clairs (liste structurée,
+// en-tête gris, tableau simplifié) sont exclus.
+table:not(.qc-table--structured-list):not(.qc-table--grey-header):not(.qc-table--simplified) th qc-note-ref .qc-note-has-term,
+qc-table:not([structured-list]) th qc-note-ref .qc-note-has-term {
+  --qc-note-term-underline-color: #{token-value(color white)};
+
+  .qc-note-term {
+    color: token-value(color white);
+  }
+}
+
+// Un tableau suivi de ses notes : l'espace est porté par la liste (14px)
+// table.qc-table (et non table) : la marge vient de « table.qc-table » (0,1,1),
+// que « table:has(...) » (0,0,2) ne battrait pas.
+qc-table, table.qc-table {
+  &:has(+ qc-note-list) {
+    margin-bottom: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Liste des définitions (qc-note-list)
+// ---------------------------------------------------------------------------
+qc-note-list {
+  display: block;
+  margin-bottom: token-value(spacer, lg);
+
+  @include media-mobile() {
+    display: none;
+  }
+
+  .qc-note-list-title {
+    @include content-font(md, bold);
+    border-top: 1px solid token-value(color grey light);
+    padding-top: token-value(spacer, lg);
+    margin-top: token-value(spacer, lg);
+    margin-bottom: token-value(spacer, xs);
+  }
+
+  // Les notes : <ol> pour plusieurs définitions, <p class="qc-note-list-single">
+  // pour une seule. Sans titre (ex. sous un tableau), 14px au-dessus.
+  .qc-note-list {
+    margin-top: rem(14);
+
+    // Une entrée : liens de retour + définition sur une même ligne, même
+    // police qu'il y ait une seule note ou plusieurs
+    li,
+    &.qc-note-list-single {
+      @include content-font(sm);
+      display: flex;
+      align-items: baseline;
+      gap: rem(12);
+    }
+
+    // Note unique : <div> (elle peut contenir du HTML de bloc). Reprend les
+    // marges qu'elle avait comme <p>.
+    &.qc-note-list-single {
+      margin-bottom: token-value(spacer, md);
+      max-inline-size: token-value(max-content-width);
+    }
+
+    // Liste de plusieurs définitions
+    &:not(.qc-note-list-single) {
+      list-style: none;
+      padding: 0;
+      margin-bottom: token-value(spacer, lg);
+
+      li {
+        margin-top: 0;
+        margin-bottom: rem(4);
+      }
+    }
+  }
+
+  // Sous le titre (bas de page) : seuls les 8px du titre séparent le titre des
+  // notes. Deux listes qui se suivent (notes de données + notes de contenu) :
+  // la seconde ne reprend pas la marge du haut.
+  .qc-note-list-title + .qc-note-list,
+  & + & .qc-note-list {
+    margin-top: 0;
+  }
+
+  .qc-note-backlinks {
+    // Garde les liens de retour (1, 2, …) côte à côte : sans ça, une définition
+    // longue fait rétrécir ce conteneur et les liens passent les uns sous les autres.
+    display: inline-flex;
+    flex-shrink: 0;
+    gap: rem(12);
+
+    // Lien de retour (numéro + flèche) : cible d'ancre depuis l'appel de note
+    .qc-note-backlink {
+      @include content-font(sm, bold);
+      display: inline-flex;
+      align-items: center;
+      color: token-value(color blue dark);
+      text-decoration: none;
+      // Décalage lors du scroll vers la définition (barre sticky éventuelle)
+      scroll-margin-top: token-value(spacer, xl);
+
+      .qc-note-backlink-number:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // Zone de la flèche (16x24)
+    .qc-note-backlink-icon {
+      @include flex-center;
+      min-width: token-value(spacer, sm);
+      min-height: token-value(spacer, md);
+    }
+  }
+}

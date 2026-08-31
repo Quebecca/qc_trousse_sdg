@@ -1,0 +1,95 @@
+<h2 id="sheet">Feuille (qc-sheet)</h2>
+
+<p>La feuille est utilisée pour afficher du contenu secondaire sans interrompre la tâche principale de l'utilisateur.
+  Elle fonctionne en mode modal : le contenu en arrière-plan est grisé et désactivé.
+</p>
+
+<h3>Exemple : feuille avec titre</h3>
+<qc-doc-exemple caption="Feuille avec titre et contenu long">
+  <button class="qc-button qc-primary qc-compact" onclick="document.getElementById('sheet-demo-1').show()">Ouvrir la feuille</button>
+  <qc-sheet id="sheet-demo-1"
+            title="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eros augue, luctus vitae eros in, sollicitudin semper erat. Fusce fringilla blandit erat, id lobortis nulla posuere sed. Donec feugiat vel nibh ut sodales. Duis posuere facilisis arcu, sed consectetur tellus ullamcorper eu. Nullam in tincidunt diam. Curabitur purus enim, lacinia sit amet felis ut, sollicitudin luctus tortor. Cras faucibus turpis eget elementum rhoncus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a ornare ex, sit amet vulputate dolor. Aenean turpis eros, euismod nec tellus sed, pellentesque finibus lorem. Aliquam portitor in nibh id euismod. Maecenas volutpat tincidunt ligula et lacinia. Nullam mi massa, tincidunt a suscipit at, fermentum eu risus.">
+  </qc-sheet>
+</qc-doc-exemple>
+
+<h3>Exemple : feuille sans titre</h3>
+<qc-doc-exemple caption="Feuille sans titre, avec contenu court">
+  <button class="qc-button qc-primary qc-compact" onclick="document.getElementById('sheet-demo-2').show()">Ouvrir la feuille</button>
+  <qc-sheet id="sheet-demo-2"
+            description="Contenu simple sans titre. La feuille peut être fermée avec le bouton X, la touche Échap, ou en cliquant sur le fond grisé.">
+  </qc-sheet>
+</qc-doc-exemple>
+
+<h3>Comportement</h3>
+<ul>
+  <li><strong>Dimensions</strong> : la feuille occupe 100 % de la largeur. Sa hauteur est d'au plus un tiers de la
+    fenêtre et d'au moins 320 px ; si la fenêtre est trop basse pour respecter les deux, le minimum l'emporte.
+    Au-delà, le contenu défile.</li>
+  <li><strong>Contenu</strong> : aligné sur la grille de la page (<code>qc-container</code>) ; en mobile, 16 px
+    de marge à gauche et à droite.</li>
+  <li><strong>Fermeture</strong> : bouton de fermeture, touche Échap ou clic sur le fond grisé.</li>
+</ul>
+
+<h3>Attributs</h3>
+<table class="qc-table">
+  <thead>
+    <tr>
+      <th>Attribut</th>
+      <th>Type</th>
+      <th>Défaut</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>title</code></td>
+      <td>String</td>
+      <td><code>""</code></td>
+      <td>Titre affiché en gras en haut du contenu de la feuille. Utilisé aussi comme nom accessible du dialog
+        (<code>aria-labelledby</code>). Si aucun titre n'est fourni, le dialog est nommé par
+        <code>label</code>.</td>
+    </tr>
+    <tr>
+      <td><code>label</code></td>
+      <td>String</td>
+      <td><code>""</code></td>
+      <td>Nom accessible du dialog (<code>aria-label</code>) quand la feuille n'a pas de titre visible. Il doit
+        décrire le contenu de la feuille (par exemple, pour une note de bas de page : « Note numéro 3 »). Si
+        absent, le nom générique « Feuille » / « Sheet » est utilisé. Ignoré si <code>title</code> est
+        fourni.</td>
+    </tr>
+    <tr>
+      <td><code>description</code></td>
+      <td>String (HTML)</td>
+      <td><code>""</code></td>
+      <td>Contenu de la feuille. Le composant l'entoure d'un bloc <code>&lt;div&gt;</code> : la valeur peut
+        contenir des balises en ligne (liens, gras, etc.) ou de bloc (paragraphes, listes).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Utilisation en Svelte</h3>
+
+<p>En plus de l'attribut <code>description</code>, la feuille accepte du contenu par défaut
+  (<em>children</em>) lorsqu'elle est utilisée directement comme composant Svelte. Le contenu fourni remplace
+  alors <code>description</code>, ce qui permet d'afficher du contenu de bloc riche ou des composants imbriqués.
+  C'est le mécanisme utilisé par l'infobulle (<code>qc-tooltip</code>) pour afficher son contenu en feuille.</p>
+
+<p>Le composant expose les méthodes <code>show()</code> et <code>close()</code> (aussi disponibles sur l'élément
+  <code>qc-sheet</code>) et accepte, en plus des attributs ci-dessus, la prop <code>onclose</code> : une fonction
+  appelée à chaque fermeture, quelle qu'en soit la cause.</p>
+
+<qc-code language="html" raw-code="&lt;script&gt;
+    import Sheet from '../Sheet/Sheet.svelte';
+    let sheet;
+&lt;/script&gt;
+
+&lt;button onclick={() =&gt; sheet.show()}&gt;Ouvrir&lt;/button&gt;
+
+&lt;Sheet bind:this={sheet} title=&quot;Mon titre&quot;&gt;
+    {#snippet children()}
+        &lt;p&gt;Premier paragraphe.&lt;/p&gt;
+        &lt;ul&gt;&lt;li&gt;Contenu de bloc&lt;/li&gt;&lt;/ul&gt;
+    {/snippet}
+&lt;/Sheet&gt;"></qc-code>

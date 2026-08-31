@@ -16,7 +16,9 @@ test('Tooltip baseline', {
     await page.goto(`file://${htmlFilePath}`);
     await page.evaluate(prepareSnapshotForModale);
     await expectStableScreenshot(page, `tooltip-feuille.png`, {fullPage: true});
-    await page.getByRole('button', { name: 'Fermer l\'aide contextuelle' }).click();
+    // En mode feuille, l'infobulle s'affiche dans le composant Sheet : on la
+    // ferme avec le bouton de fermeture de la feuille.
+    await page.getByRole('button', { name: 'Fermer la feuille' }).click();
     await page.evaluate(changeIcon, "question");
     await expectStableScreenshot(page, `tooltip-question-mark.png`, {fullPage: true});
 });
