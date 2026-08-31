@@ -80,7 +80,7 @@
      size={size}>
 
     {#if leftIconNormalized}
-        <Icon type="search-thin"
+        <Icon type="search"
               iconColor="grey-regular"
               class={isDisabled ? 'is-disabled' : ''}
               size="nm"
@@ -98,7 +98,7 @@
     />
     {#if inputValue}
     <IconButton type="button"
-                icon="xclose"
+                icon="close"
                 iconColor="blue-piv"
                 iconSize="nm"
                 aria-label={clearAriaLabel}

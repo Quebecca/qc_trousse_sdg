@@ -449,7 +449,7 @@
                  }
              }}
         >
-            <Icon type="xclose"
+            <Icon type="close"
                   color="blue-piv"
                   size="nm"
                   vAlign="top"

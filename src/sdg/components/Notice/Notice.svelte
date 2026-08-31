@@ -47,7 +47,9 @@
     const iconType = $derived.by(() => {
         if (usedType === "advice") return icon ?? "emoji_objects";
         if (usedType === "note") return icon ?? "content_paste";
-        return usedType;
+        // Noms d'icônes modernes (les noms de type historiques sont des alias dépréciés)
+        const modernIcons = { information: "info", warning: "warning", success: "check_circle", error: "cancel" };
+        return icon ?? modernIcons[usedType] ?? usedType;
     });
     const iconLabel = $derived(typesDescriptions[type] ?? typesDescriptions['information']);
 </script>

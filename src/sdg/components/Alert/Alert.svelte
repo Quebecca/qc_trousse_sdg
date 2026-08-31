@@ -61,7 +61,7 @@
          role="alert">
         <div class={containerClass}>
             <div class="qc-general-alert-elements">
-                <Icon type={type === 'warning' ? 'warning' : 'information'}
+                <Icon type={type === 'warning' ? 'warning' : 'info'}
                       color={type === 'general' ? 'blue-piv' : 'yellow-dark'}
                       size="nm"
                       label={label}
@@ -74,7 +74,7 @@
                     <IconButton aria-label={closeLabel}
                                 onclick={hideAlert}
                                 size="nm"
-                                icon="xclose"
+                                icon="close"
                                 iconSize="nm"
                                 iconColor="blue-piv"
                     />
