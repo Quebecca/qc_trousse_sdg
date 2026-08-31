@@ -387,7 +387,7 @@
     <p class="qc-font-size-sm">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
     <p class="qc-font-size-md" style="color: var(--qc-color-blue-piv);">Texte en bleu PIV <qc-icon icon="info"></qc-icon> avec icône héritée</p>
     <p class="qc-font-size-md" style="color: var(--qc-color-success);">Texte en vert succès <qc-icon icon="check_circle"></qc-icon> avec icône héritée</p>
-    <p class="qc-font-size-md" style="color: var(--qc-color-error);">Texte en rouge erreur <qc-icon icon="error"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-error);">Texte en rouge erreur <qc-icon icon="cancel"></qc-icon> avec icône héritée</p>
     <p class="qc-font-size-lg"><strong>Texte en gras <qc-icon icon="search"></qc-icon> — l'icône hérite du font-weight</strong></p>
 </qc-doc-exemple>
 
@@ -1310,7 +1310,7 @@
       <td>icon</td>
       <td>Toute clé de la map $images dans settings/_base.scss</td>
       <td>information
-        <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon>
+        <qc-icon icon="info" aria-hidden="true" size="nm"></qc-icon>
         (si absence de type)
       </td>
       <td>Défini l’icône pour les avis neutres</td>
@@ -1347,8 +1347,7 @@
 
 <h3>Exemples</h3>
 <h4>Infobulles simples</h4>
-<qc-doc-exemple id="alert-warning"
-                caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
+<qc-doc-exemple caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
   <p>Une infobulle vers la <qc-tooltip text="droite" description="Une infobulle vers la droite" position="right"></qc-tooltip>, le <qc-tooltip text="haut" description="Une infobulle vers le haut" position="top"></qc-tooltip> et le <qc-tooltip text="bas" description="Une infobulle vers le bas" position="bottom"></qc-tooltip>, et en <qc-tooltip text="feuille" description="Une infobulle feuille" display-mode="modal"></qc-tooltip></p>
 
 </qc-doc-exemple>
@@ -1358,8 +1357,7 @@
 <h4>Insertion de contenu</h4>
 
 <p>Le texte et la description peuvent aussi être ajoutés par <code>slot</code> ou via l'attribut description-id</p>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
+<qc-doc-exemple caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
   <p>Lorem ipsum <qc-tooltip>
       <span slot="text">dolor</span>
       <span slot="description">
@@ -1375,15 +1373,13 @@
 </qc-doc-exemple>
 
 <h4>Icône seule</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle sans texte (2 icônes possibles)">
+<qc-doc-exemple caption="Exemple d'infobulle sans texte (2 icônes possibles)">
   <p><qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip></p>
   <p><qc-tooltip description-id="tooltip-1" icon="question"></qc-tooltip></p>
 </qc-doc-exemple>
 
 <h4>Ajout dans un libellé de champ texte</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle placée dans un libellé de champ texte">
+<qc-doc-exemple caption="Exemple d'infobulle placée dans un libellé de champ texte">
   <qc-textfield>
     <label>Nom complet <qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip> </label>
     <input type="text"/>
@@ -1391,10 +1387,24 @@
 </qc-doc-exemple>
 
 <h4>Ajout d’un titre</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle placée dans un libellé de champ texte">
+<qc-doc-exemple caption="Exemple d'infobulle avec titre">
 
-    <p><qc-tooltip text="Lorem" title="Lorem ipsum dolor" description-id="tooltip-1" icon="information">ipsum dolor</qc-tooltip></p>
+    <p><qc-tooltip text="Lorem"
+                   display-mode="popover"
+                   title="Lorem ipsum dolor"
+                   description-id="tooltip-1"
+                   icon="information">ipsum dolor</qc-tooltip></p>
+
+</qc-doc-exemple>
+
+<h4>Affichage feuille</h4>
+<qc-doc-exemple caption="Exemple d'infobulle avec affichage forcé à feuille (au lieu de bulle)">
+
+  <p><qc-tooltip text="Lorem"
+                 title="Lorem ipsum dolor"
+                 description-id="tooltip-1"
+                 display-mode="modal"
+                 icon="information">ipsum dolor</qc-tooltip></p>
 
 </qc-doc-exemple>
 
@@ -1681,23 +1691,23 @@
 
     <div class="qc-button-group">
         <button class="qc-button qc-simple">
-            <qc-icon type="information"></qc-icon>
+            <qc-icon type="info"></qc-icon>
             Action
         </button>
 
         <button class="qc-button qc-simple" disabled>
-            <qc-icon type="plus"></qc-icon>
+            <qc-icon type="add"></qc-icon>
             Action
         </button>
     </div>
     <div class="qc-button-group qc-compact">
         <button class="qc-button qc-simple qc-compact">
-            <qc-icon type="information"></qc-icon>
+            <qc-icon type="info"></qc-icon>
             Action
         </button>
 
         <button class="qc-button qc-simple qc-compact" disabled>
-            <qc-icon type="plus"></qc-icon>
+            <qc-icon type="add"></qc-icon>
             Action
         </button>
     </div>

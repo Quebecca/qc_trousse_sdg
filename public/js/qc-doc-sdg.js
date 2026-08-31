@@ -87847,7 +87847,7 @@
 
 					add_svelte_meta(
 						() => Icon($$anchor, {
-							type: 'search-thin',
+							type: 'search',
 							iconColor: 'grey-regular',
 							get class() {
 								return get($0);
@@ -87903,7 +87903,7 @@
 				add_svelte_meta(
 					() => IconButton($$anchor, {
 						type: 'button',
-						icon: 'xclose',
+						icon: 'close',
 						iconColor: 'blue-piv',
 						iconSize: 'nm',
 						get 'aria-label'() {
@@ -89121,7 +89121,7 @@
 
 			add_svelte_meta(
 				() => Icon(node_1, {
-					type: 'chevron-up-thin',
+					type: 'expand_less',
 					get color() {
 						return get($0);
 					},
