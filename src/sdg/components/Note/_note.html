@@ -1,0 +1,190 @@
+<h2 id="note">Notes (qc-note-ref / qc-note-list)</h2>
+
+<p>Les notes apportent un complément d'information sans alourdir le texte. Chaque note est représentée dans le contenu par un numéro qui est relié à la description en bas de page.</p>
+
+<p><em>Redimensionnez votre fenêtre à moins de 768px pour voir le comportement mobile.
+  L'activation (clic ou clavier) ouvrira une feuille au lieu de scroller vers la définition ci-dessous.</em></p>
+
+<h3>Note simple sur un terme</h3>
+<qc-doc-exemple caption="Note sur un terme — le terme et le numéro sont cliquables ensemble">
+  <p>
+    Pour ces types de pêche, votre ligne peut être équipée d’hameçons,<qc-note-ref
+            note-id="n1"
+            scope="demo-simple"
+            term="de leurres artificiels"
+            definition="Cuillère, poisson-nageur simulé, mouche artificielle ou tout autre dispositif constitué de plumes, de fibres, de caoutchouc, de bois, de métal, de plastique ou d’autres matériaux semblables et muni d’un ou de plusieurs hameçons.">
+    </qc-note-ref>
+    ou de mouches, appâtés ou non. Un hameçon peut être simple ou multiple. Un leurre artificiel ou une mouche comptent pour un hameçon
+  </p>
+  <qc-note-list scope="demo-simple" title="Notes et références"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Note simple sans terme</h3>
+<qc-doc-exemple caption="Note après un passage — seul le numéro de la note est affiché">
+  <p>Le permis est obligatoire pour pratiquer cette activité<qc-note-ref
+            note-id="n-sans"
+            scope="demo-sans"
+            definition="Certaines exceptions peuvent s’appliquer selon la situation du pêcheur.">
+    </qc-note-ref>
+  </p>
+  <qc-note-list scope="demo-sans" title="Notes et références"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Notes multiples après un passage</h3>
+<qc-doc-exemple caption="Plusieurs notes à la suite d'un passage">
+  <p>Pour ces types de pêche, votre ligne peut être équipée d’hameçons, de leurres artificiels ou de mouches,
+    appâtés ou non. Un hameçon peut être simple ou multiple.
+    Un leurre artificiel ou une mouche comptent pour un hameçon<qc-note-ref
+            note-id="n4"
+            scope="demo-apres"
+            definition="Un hameçon peut être simple ou multiple.">
+    </qc-note-ref><qc-note-ref
+            note-id="n5"
+            scope="demo-apres"
+            definition="Un hameçon multiple comporte plusieurs pointes fixées sur une même tige.">
+    </qc-note-ref>
+  </p>
+  <qc-note-list scope="demo-apres" title="Notes et références"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Notes partagées (même définition, deux termes différents)</h3>
+<qc-doc-exemple caption="Deux appels pointant vers la même définition">
+  <p>Le <qc-note-ref
+          note-id="n7"
+          scope="demo-partage"
+          term="règlement municipal"
+          definition="Acte administratif à portée générale adopté par un conseil municipal.">
+  </qc-note-ref>
+    encadre la gestion des matières résiduelles.
+  </p>
+  <p>La notion de
+    <qc-note-ref
+            note-id="n7"
+            scope="demo-partage"
+            term="règlement">
+    </qc-note-ref>
+    est précisée dans le Code municipal.
+  </p>
+  <qc-note-list scope="demo-partage" title="Notes et références"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Exemple complet avec tableau (notes de données)</h3>
+<qc-doc-exemple caption="Notes de données dans un tableau + notes de contenu avec numérotation indépendante">
+  <p>Les résultats présentés dans le tableau ci-dessous sont issus de l'enquête annuelle
+    sur les conditions de vie<qc-note-ref note-id="c1" scope="demo-complet-contenu" definition="Enquête réalisée par l'Institut de la statistique du Québec auprès de 12 000 ménages."></qc-note-ref>
+    menée dans l'ensemble des régions administratives du Québec<qc-note-ref note-id="c2" scope="demo-complet-contenu" definition="Les régions du Nord-du-Québec et de la Côte-Nord sont exclues de l'échantillon en raison de contraintes logistiques."></qc-note-ref>.
+  </p>
+
+  <h4>Taux d'emploi par groupe d'âge, Québec, 2023<qc-note-ref note-id="c3" scope="demo-complet-contenu" definition="Source : Institut de la statistique du Québec, Enquête sur la population active, 2023."></qc-note-ref></h4>
+  <table class="qc-table table-overflow" style="border: 1px solid">
+    <caption>Taux d'emploi par groupe d'âge<qc-note-ref note-id="d1" scope="demo-complet-data" definition="Source : Institut de la statistique du Québec, Enquête sur la population active, 2023."></qc-note-ref></caption>
+    <tr>
+      <th>Groupe d'âge</th>
+      <th>Taux d'emploi (%)<qc-note-ref note-id="d2" scope="demo-complet-data" definition="Le taux d'emploi représente la proportion de la population en âge de travailler qui occupe un emploi."></qc-note-ref></th>
+      <th>Variation annuelle<qc-note-ref note-id="d3" scope="demo-complet-data" definition="Variation en points de pourcentage par rapport à l'année précédente. Les données désaisonnalisées ne sont pas disponibles pour ce tableau."></qc-note-ref></th>
+    </tr>
+    <tr>
+      <td>15-24 ans</td>
+      <td>59,2</td>
+      <td>+1,3</td>
+    </tr>
+    <tr>
+      <td>25-54 ans</td>
+      <td>84,7</td>
+      <td>-0,2</td>
+    </tr>
+    <tr>
+      <td>55 ans et plus<qc-note-ref note-id="d4" scope="demo-complet-data" definition="Inclut les personnes de 55 à 69 ans seulement. Les personnes de 70 ans et plus sont exclues du calcul."></qc-note-ref></td>
+      <td>38,1</td>
+      <td>+0,8</td>
+    </tr>
+  </table>
+  <qc-note-list scope="demo-complet-data"></qc-note-list>
+
+  <qc-note-list scope="demo-complet-contenu" title="Notes et références"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Affichage en feuille (display="sheet")</h3>
+<qc-doc-exemple caption="Le clic ouvre une feuille au lieu de scroller vers la définition">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Le terme
+    <qc-note-ref note-id="sheet-1" scope="demo-sheet" term="obligation fiduciaire" definition="Obligation légale d'agir dans l'intérêt d'une autre personne, en faisant preuve de diligence et de bonne foi."></qc-note-ref>
+    est utilisé en droit des affaires. Pellentesque sed tellus et lectus.
+  </p>
+  <p>La notion de
+    <qc-note-ref note-id="sheet-2" scope="demo-sheet" term="devoir de loyauté" definition="Devoir d'agir avec honnêteté et transparence envers les parties prenantes."></qc-note-ref>
+    est complémentaire.
+  </p>
+  <p><em>Note : dans cet exemple, le paramètre <code>display="sheet"</code> est activé.
+    Le clic ouvre une feuille même en bureau. Sans ce paramètre, la feuille n'apparaît qu'en mobile.</em></p>
+  <qc-note-list scope="demo-sheet" display="sheet"></qc-note-list>
+</qc-doc-exemple>
+
+<h3>Attributs — qc-note-ref</h3>
+<table class="qc-table">
+  <thead>
+    <tr>
+      <th>Attribut</th>
+      <th>Type</th>
+      <th>Défaut</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>note-id</code></td>
+      <td>String</td>
+      <td>—</td>
+      <td>Identifiant de la note. Plusieurs appels avec le même <code>note-id</code> pointent vers la même définition (note partagée).</td>
+    </tr>
+    <tr>
+      <td><code>definition</code></td>
+      <td>String (HTML)</td>
+      <td><code>""</code></td>
+      <td>Texte de la définition. Requis sur au moins un appel par <code>note-id</code>. Supporte le HTML (gras, liens, etc.).</td>
+    </tr>
+    <tr>
+      <td><code>scope</code></td>
+      <td>String</td>
+      <td><code>"page"</code></td>
+      <td>Scope de numérotation. Les notes d'un même scope partagent une numérotation séquentielle indépendante. Utiliser un scope distinct pour les notes de données (tableau/graphique).</td>
+    </tr>
+    <tr>
+      <td><code>term</code></td>
+      <td>String</td>
+      <td><code>""</code></td>
+      <td>Le terme à définir. Si présent, le terme et le numéro sont soulignés ensemble en pointillé. Si absent, seul l'exposant est affiché.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Attributs — qc-note-list</h3>
+<table class="qc-table">
+  <thead>
+    <tr>
+      <th>Attribut</th>
+      <th>Type</th>
+      <th>Défaut</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>scope</code></td>
+      <td>String</td>
+      <td><code>"page"</code></td>
+      <td>Scope dont les définitions seront affichées. Doit correspondre au scope des <code>qc-note-ref</code> associés.</td>
+    </tr>
+    <tr>
+      <td><code>display</code></td>
+      <td>String</td>
+      <td>—</td>
+      <td>Mode d'affichage. Si absent, les définitions s'affichent en bas de page (comportement par défaut). Si <code>"sheet"</code>, le clic sur un appel de note ouvre une feuille.</td>
+    </tr>
+    <tr>
+      <td><code>title</code></td>
+      <td>String</td>
+      <td><code>""</code></td>
+      <td>Titre affiché au-dessus de la liste des définitions (ex : « Notes et références »). Si absent, aucun titre n'est affiché.</td>
+    </tr>
+  </tbody>
+</table>

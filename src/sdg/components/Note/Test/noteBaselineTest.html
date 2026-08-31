@@ -1,0 +1,29 @@
+<!-- Note baseline test fixture -->
+<style>
+  /* Empêcher le scroll-margin d'interférer avec les screenshots */
+  qc-note-ref a, .qc-note-backlink { scroll-margin-top: 0 !important; }
+</style>
+
+<h3>Note avec terme</h3>
+<p>Le concept de
+  <qc-note-ref note-id="t1" scope="test-terme" term="fiducie" definition="Contrat par lequel une personne transfère des biens à une autre personne."></qc-note-ref>
+  est défini dans le Code civil.
+</p>
+<qc-note-list scope="test-terme" title="Notes et références"></qc-note-list>
+
+<h3>Note sans terme</h3>
+<p>Le permis est obligatoire<qc-note-ref note-id="t2" scope="test-sans" definition="Certaines exceptions peuvent s'appliquer."></qc-note-ref></p>
+<qc-note-list scope="test-sans" title="Notes et références"></qc-note-list>
+
+<h3>Notes partagées</h3>
+<p>Le <qc-note-ref note-id="t3" scope="test-partage" term="règlement" definition="Acte administratif adopté par un conseil."></qc-note-ref> encadre la gestion.</p>
+<p>La notion de <qc-note-ref note-id="t3" scope="test-partage" term="règlement municipal"></qc-note-ref> est précisée.</p>
+<qc-note-list scope="test-partage" title="Notes et références"></qc-note-list>
+
+<h3>Notes de données</h3>
+<table class="qc-table" style="border:1px solid">
+  <caption>Tableau<qc-note-ref note-id="d1" scope="test-data" definition="Source : ISQ, 2023."></qc-note-ref></caption>
+  <tr><th>Col A<qc-note-ref note-id="d2" scope="test-data" definition="Définition colonne A."></qc-note-ref></th><th>Col B</th></tr>
+  <tr><td>1</td><td>2</td></tr>
+</table>
+<qc-note-list scope="test-data"></qc-note-list>

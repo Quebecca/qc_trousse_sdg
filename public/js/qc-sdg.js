@@ -4029,7 +4029,7 @@ createHTML: (html) => {
 		}
 	}
 	/** @type {Map<EventTarget, Map<string, number>>} */
-	var listeners = /* @__PURE__ */ new Map();
+	var listeners$1 = /* @__PURE__ */ new Map();
 	/**
 	* @template {Record<string, any>} Exports
 	* @param {ComponentType<SvelteComponent<any>> | Component<any>} Component
@@ -4069,10 +4069,10 @@ createHTML: (html) => {
 					registered_events.add(event_name);
 					var passive = is_passive_event(event_name);
 					for (const node of [target, document]) {
-						var counts = listeners.get(node);
+						var counts = listeners$1.get(node);
 						if (counts === void 0) {
 							counts = /* @__PURE__ */ new Map();
-							listeners.set(node, counts);
+							listeners$1.set(node, counts);
 						}
 						var count = counts.get(event_name);
 						if (count === void 0) {
@@ -4086,12 +4086,12 @@ createHTML: (html) => {
 			root_event_handles.add(event_handle);
 			return () => {
 				for (var event_name of registered_events) for (const node of [target, document]) {
-					var counts = listeners.get(node);
+					var counts = listeners$1.get(node);
 					var count = counts.get(event_name);
 					if (--count == 0) {
 						node.removeEventListener(event_name, handle_event_propagation);
 						counts.delete(event_name);
-						if (counts.size === 0) listeners.delete(node);
+						if (counts.size === 0) listeners$1.delete(node);
 					} else counts.set(event_name, count);
 				}
 				root_event_handles.delete(event_handle);
@@ -6664,7 +6664,7 @@ createHTML: (html) => {
 	} };
 	//#endregion
 	//#region src/sdg/bases/Icon/Icon.svelte
-	var rest_excludes$21 = /* @__PURE__ */ new Set([
+	var rest_excludes$23 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -6685,11 +6685,11 @@ createHTML: (html) => {
 		"rootElement",
 		"vAlign"
 	]);
-	var root$30 = /* @__PURE__ */ from_html(`<span> </span>`);
-	var root_1$13 = /* @__PURE__ */ from_html(`<div></div>`);
+	var root$33 = /* @__PURE__ */ from_html(`<span> </span>`);
+	var root_1$16 = /* @__PURE__ */ from_html(`<div></div>`);
 	function Icon($$anchor, $$props) {
 		push($$props, true);
-		let type = prop($$props, "type", 7), label = prop($$props, "label", 7), size = prop($$props, "size", 7), color = prop($$props, "color", 7), width = prop($$props, "width", 7, "auto"), height = prop($$props, "height", 7, "auto"), src = prop($$props, "src", 7, ""), rotate = prop($$props, "rotate", 7, 0), variant = prop($$props, "variant", 7, "outlined"), variationSettings = prop($$props, "variationSettings", 7, null), renderMode = prop($$props, "renderMode", 7, null), useMaterial = prop($$props, "use-material", 7, false), codepointProp = prop($$props, "codepoint", 7, null), rootElement = prop($$props, "rootElement", 15), vAlign = prop($$props, "vAlign", 7, "-.125em"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$21);
+		let type = prop($$props, "type", 7), label = prop($$props, "label", 7), size = prop($$props, "size", 7), color = prop($$props, "color", 7), width = prop($$props, "width", 7, "auto"), height = prop($$props, "height", 7, "auto"), src = prop($$props, "src", 7, ""), rotate = prop($$props, "rotate", 7, 0), variant = prop($$props, "variant", 7, "outlined"), variationSettings = prop($$props, "variationSettings", 7, null), renderMode = prop($$props, "renderMode", 7, null), useMaterial = prop($$props, "use-material", 7, false), codepointProp = prop($$props, "codepoint", 7, null), rootElement = prop($$props, "rootElement", 15), vAlign = prop($$props, "vAlign", 7, "-.125em"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$23);
 		let attributes = /* @__PURE__ */ user_derived(() => width() === "auto" ? { "data-img-size": size() ? size() : src() ? "md" : null } : {});
 		let resolvedType = /* @__PURE__ */ user_derived(() => {
 			if (!type()) return type();
@@ -6817,7 +6817,7 @@ createHTML: (html) => {
 		var fragment = comment();
 		var node = first_child(fragment);
 		var consequent = ($$anchor) => {
-			var span = root$30();
+			var span = root$33();
 			attribute_effect(span, () => ({
 				role: "img",
 				...rest,
@@ -6844,7 +6844,7 @@ createHTML: (html) => {
 			append($$anchor, span);
 		};
 		var alternate = ($$anchor) => {
-			var div = root_1$13();
+			var div = root_1$16();
 			attribute_effect(div, () => ({
 				role: "img",
 				class: ["qc-icon", src() && "qc-icon-custom"],
@@ -6890,7 +6890,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Notice/Notice.svelte
-	var root$29 = /* @__PURE__ */ from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`);
+	var root$32 = /* @__PURE__ */ from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`);
 	function Notice($$anchor, $$props) {
 		push($$props, true);
 		const isFr = Utils.getPageLanguage() === "fr";
@@ -6974,7 +6974,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root$29();
+		var div = root$32();
 		var div_1 = child(div);
 		var div_2 = child(div_1);
 		Icon(child(div_2), {
@@ -7027,17 +7027,17 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Notice/NoticeWC.svelte
-	var rest_excludes$20 = /* @__PURE__ */ new Set([
+	var rest_excludes$22 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
-	var root$28 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$31 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function NoticeWC($$anchor, $$props) {
 		push($$props, true);
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$20);
-		var fragment = root$28();
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$22);
+		var fragment = root$31();
 		var node = first_child(fragment);
 		{
 			const slotContent = ($$anchor) => {
@@ -7079,13 +7079,13 @@ createHTML: (html) => {
 	}, ["default"], [], { mode: "open" }));
 	//#endregion
 	//#region src/sdg/components/PivHeader/PivHeader.svelte
-	var root$27 = /* @__PURE__ */ from_html(`<a class="page-title"> </a>`);
-	var root_1$12 = /* @__PURE__ */ from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`);
-	var root_2$7 = /* @__PURE__ */ from_html(`<div class="title"><!></div>`);
-	var root_3$2 = /* @__PURE__ */ from_html(`<div class="go-to-content"><a> </a></div>`);
-	var root_4$1 = /* @__PURE__ */ from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`);
-	var root_5$1 = /* @__PURE__ */ from_html(`<li><a> </a></li>`);
-	var root_6$1 = /* @__PURE__ */ from_html(`<nav><ul><!> <!></ul></nav>`);
+	var root$30 = /* @__PURE__ */ from_html(`<a class="page-title"> </a>`);
+	var root_1$15 = /* @__PURE__ */ from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`);
+	var root_2$10 = /* @__PURE__ */ from_html(`<div class="title"><!></div>`);
+	var root_3$3 = /* @__PURE__ */ from_html(`<div class="go-to-content"><a> </a></div>`);
+	var root_4$2 = /* @__PURE__ */ from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`);
+	var root_5$2 = /* @__PURE__ */ from_html(`<li><a> </a></li>`);
+	var root_6$2 = /* @__PURE__ */ from_html(`<nav><ul><!> <!></ul></nav>`);
 	var root_7$1 = /* @__PURE__ */ from_html(`<div class="search-zone"><!></div>`);
 	var root_8$1 = /* @__PURE__ */ from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`);
 	function PivHeader($$anchor, $$props) {
@@ -7268,10 +7268,10 @@ createHTML: (html) => {
 				var fragment = comment();
 				var node = first_child(fragment);
 				var consequent_1 = ($$anchor) => {
-					var div_2 = root_2$7();
+					var div_2 = root_2$10();
 					var node_1 = child(div_2);
 					var consequent = ($$anchor) => {
-						var a = root$27();
+						var a = root$30();
 						var text = only_child(a, true);
 						template_effect(() => {
 							set_attribute(a, "href", titleUrl());
@@ -7280,7 +7280,7 @@ createHTML: (html) => {
 						append($$anchor, a);
 					};
 					var alternate = ($$anchor) => {
-						var span = root_1$12();
+						var span = root_1$15();
 						var text_1 = only_child(span, true);
 						template_effect(() => set_text(text_1, titleText()));
 						append($$anchor, span);
@@ -7299,7 +7299,7 @@ createHTML: (html) => {
 			};
 			var node_2 = child(div_1);
 			var consequent_2 = ($$anchor) => {
-				var div_3 = root_3$2();
+				var div_3 = root_3$3();
 				var a_1 = child(div_3);
 				var text_2 = only_child(a_1, true);
 				reset(div_3);
@@ -7323,7 +7323,7 @@ createHTML: (html) => {
 			var div_7 = sibling(div_5, 2);
 			var node_4 = child(div_7);
 			var consequent_3 = ($$anchor) => {
-				var a_3 = root_4$1();
+				var a_3 = root_4$2();
 				var node_5 = child(a_3);
 				Icon(node_5, {
 					type: "search",
@@ -7359,11 +7359,11 @@ createHTML: (html) => {
 				var fragment_2 = comment();
 				var node_8 = first_child(fragment_2);
 				var consequent_7 = ($$anchor) => {
-					var nav = root_6$1();
+					var nav = root_6$2();
 					var ul = child(nav);
 					var node_9 = child(ul);
 					var consequent_5 = ($$anchor) => {
-						var li = root_5$1();
+						var li = root_5$2();
 						var a_4 = child(li);
 						var text_4 = only_child(a_4, true);
 						reset(li);
@@ -7378,7 +7378,7 @@ createHTML: (html) => {
 					});
 					var node_10 = sibling(node_9, 2);
 					var consequent_6 = ($$anchor) => {
-						var li_1 = root_5$1();
+						var li_1 = root_5$2();
 						var a_5 = child(li_1);
 						var text_5 = only_child(a_5, true);
 						reset(li_1);
@@ -7470,18 +7470,18 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/PivHeader/PivHeaderWC.svelte
-	var rest_excludes$19 = /* @__PURE__ */ new Set([
+	var rest_excludes$21 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host",
 		"self"
 	]);
-	var root$26 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$29 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function PivHeaderWC($$anchor, $$props) {
 		const $$slots = sanitize_slots($$props);
 		push($$props, true);
-		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$19);
+		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$21);
 		var $$exports = {
 			get self() {
 				return self();
@@ -7491,7 +7491,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$26();
+		var fragment = root$29();
 		var node = first_child(fragment);
 		{
 			const linksSlot = ($$anchor) => {
@@ -7552,9 +7552,9 @@ createHTML: (html) => {
 	}));
 	//#endregion
 	//#region src/sdg/components/PivFooter/PivFooter.svelte
-	var root$25 = /* @__PURE__ */ from_html(`<img/>`);
-	var root_1$11 = /* @__PURE__ */ from_html(`<a> </a>`);
-	var root_2$6 = /* @__PURE__ */ from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`);
+	var root$28 = /* @__PURE__ */ from_html(`<img/>`);
+	var root_1$14 = /* @__PURE__ */ from_html(`<a> </a>`);
+	var root_2$9 = /* @__PURE__ */ from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`);
 	function PivFooter($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
@@ -7638,7 +7638,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root_2$6();
+		var div = root_2$9();
 		var node = child(div);
 		var consequent = ($$anchor) => {
 			var fragment = comment();
@@ -7654,7 +7654,7 @@ createHTML: (html) => {
 			var $$array = /* @__PURE__ */ user_derived(() => to_array(get($$item), 2));
 			let theme = () => get($$array)[0];
 			let src = () => get($$array)[1];
-			var img = root$25();
+			var img = root$28();
 			template_effect(() => {
 				set_attribute(img, "src", src());
 				set_attribute(img, "alt", logoAlt());
@@ -7671,7 +7671,7 @@ createHTML: (html) => {
 			append($$anchor, fragment_1);
 		};
 		var alternate = ($$anchor) => {
-			var a_1 = root_1$11();
+			var a_1 = root_1$14();
 			var text = only_child(a_1, true);
 			template_effect(() => {
 				set_attribute(a_1, "href", copyrightUrl());
@@ -7710,18 +7710,18 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/PivFooter/PivFooterWC.svelte
-	var rest_excludes$18 = /* @__PURE__ */ new Set([
+	var rest_excludes$20 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host",
 		"self"
 	]);
-	var root$24 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$27 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function PivFooterWC($$anchor, $$props) {
 		const $$slots = sanitize_slots($$props);
 		push($$props, true);
-		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$18);
+		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$20);
 		var $$exports = {
 			get self() {
 				return self();
@@ -7731,7 +7731,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$24();
+		var fragment = root$27();
 		var node = first_child(fragment);
 		{
 			const mainSlot = ($$anchor) => {
@@ -7780,7 +7780,7 @@ createHTML: (html) => {
 	}));
 	//#endregion
 	//#region src/sdg/components/IconButton/IconButton.svelte
-	var rest_excludes$17 = /* @__PURE__ */ new Set([
+	var rest_excludes$19 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -7793,10 +7793,10 @@ createHTML: (html) => {
 		"class",
 		"src"
 	]);
-	var root$23 = /* @__PURE__ */ from_html(`<button><!></button>`);
+	var root$26 = /* @__PURE__ */ from_html(`<button><!></button>`);
 	function IconButton($$anchor, $$props) {
 		push($$props, true);
-		const size = prop($$props, "size", 7, "xl"), label = prop($$props, "label", 7), icon = prop($$props, "icon", 7), iconSize = prop($$props, "iconSize", 7), iconColor = prop($$props, "iconColor", 7), className = prop($$props, "class", 7, ""), src = prop($$props, "src", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$17);
+		const size = prop($$props, "size", 7, "xl"), label = prop($$props, "label", 7), icon = prop($$props, "icon", 7), iconSize = prop($$props, "iconSize", 7), iconColor = prop($$props, "iconColor", 7), className = prop($$props, "class", 7, ""), src = prop($$props, "src", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$19);
 		var $$exports = {
 			get size() {
 				return size();
@@ -7848,7 +7848,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var button = root$23();
+		var button = root$26();
 		attribute_effect(button, () => ({
 			"data-button-size": size(),
 			class: `qc-icon-button ${className()}`,
@@ -7896,7 +7896,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Alert/Alert.svelte
-	var root$22 = /* @__PURE__ */ from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
+	var root$25 = /* @__PURE__ */ from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	function Alert($$anchor, $$props) {
 		push($$props, true);
 		let type = prop($$props, "type", 7, "general"), maskable = prop($$props, "maskable", 7, ""), content = prop($$props, "content", 7, ""), hide = prop($$props, "hide", 15, "false"), fullWidth = prop($$props, "fullWidth", 7, "false"), slotContent = prop($$props, "slotContent", 7), id = prop($$props, "id", 7), persistenceKey = prop($$props, "persistenceKey", 7), persistHidden = prop($$props, "persistHidden", 7, false), rootElement = prop($$props, "rootElement", 15), hideAlertCallback = prop($$props, "hideAlertCallback", 7, () => {});
@@ -8010,7 +8010,7 @@ createHTML: (html) => {
 		var fragment = comment();
 		var node = first_child(fragment);
 		var consequent_1 = ($$anchor) => {
-			var div = root$22();
+			var div = root$25();
 			var div_1 = child(div);
 			var div_2 = child(div_1);
 			var node_1 = child(div_2);
@@ -8084,17 +8084,17 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Alert/AlertWC.svelte
-	var rest_excludes$16 = /* @__PURE__ */ new Set([
+	var rest_excludes$18 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host",
 		"hide"
 	]);
-	var root$21 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$24 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function AlertWC($$anchor, $$props) {
 		push($$props, true);
-		let hide = prop($$props, "hide", 7, "false"), props = /* @__PURE__ */ rest_props($$props, rest_excludes$16);
+		let hide = prop($$props, "hide", 7, "false"), props = /* @__PURE__ */ rest_props($$props, rest_excludes$18);
 		let rootElement = /* @__PURE__ */ state(void 0);
 		function hideAlertCallback() {
 			get(rootElement)?.dispatchEvent(new CustomEvent("qc.alert.hide", {
@@ -8111,7 +8111,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$21();
+		var fragment = root$24();
 		var node = first_child(fragment);
 		Alert(node, spread_props({ hideAlertCallback }, () => props, {
 			slotContent: `<slot />`,
@@ -8153,7 +8153,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" }));
 	//#endregion
 	//#region src/sdg/components/ToTop/ToTop.svelte
-	var root$20 = /* @__PURE__ */ from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`);
+	var root$23 = /* @__PURE__ */ from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`);
 	function ToTop($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
@@ -8205,7 +8205,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var a = root$20();
+		var a = root$23();
 		event("scroll", $window, handleScrollUpButton);
 		let classes;
 		var node = child(a);
@@ -8235,14 +8235,14 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/ToTop/toTopWC.svelte
-	var rest_excludes$15 = /* @__PURE__ */ new Set([
+	var rest_excludes$17 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
 	function ToTopWC($$anchor, $$props) {
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$15);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$17);
 		ToTop($$anchor, spread_props(() => props));
 	}
 	customElements.define("qc-to-top", create_custom_element(ToTopWC, {
@@ -8350,7 +8350,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/ExternalLink/ExternalLinkWC.svelte
-	var rest_excludes$14 = /* @__PURE__ */ new Set([
+	var rest_excludes$16 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -8358,7 +8358,7 @@ createHTML: (html) => {
 	]);
 	function ExternalLinkWC($$anchor, $$props) {
 		push($$props, true);
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$14);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$16);
 		const hostEl = $$props.$$host;
 		let links = /* @__PURE__ */ state(proxy(queryLinks()));
 		let isUpdating = /* @__PURE__ */ state(false);
@@ -8420,8 +8420,8 @@ createHTML: (html) => {
 	customElements.define("qc-external-link", create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: "img-alt" } }, [], []));
 	//#endregion
 	//#region src/sdg/components/Label/LabelText.svelte
-	var root$19 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
-	var root_1$10 = /* @__PURE__ */ from_html(`<span class="qc-label-text"></span><!>`, 1);
+	var root$22 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
+	var root_1$13 = /* @__PURE__ */ from_html(`<span class="qc-label-text"></span><!>`, 1);
 	function LabelText($$anchor, $$props) {
 		push($$props, true);
 		let text = prop($$props, "text", 7), required = prop($$props, "required", 7);
@@ -8441,13 +8441,13 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root_1$10();
+		var fragment = root_1$13();
 		var span = first_child(fragment);
 		html(span, text, true);
 		reset(span);
 		var node = sibling(span);
 		var consequent = ($$anchor) => {
-			append($$anchor, root$19());
+			append($$anchor, root$22());
 		};
 		if_block(node, ($$render) => {
 			if (required()) $$render(consequent);
@@ -8461,7 +8461,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Label/Label.svelte
-	var rest_excludes$13 = /* @__PURE__ */ new Set([
+	var rest_excludes$15 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -8474,10 +8474,10 @@ createHTML: (html) => {
 		"disabled",
 		"rootElement"
 	]);
-	var root$18 = /* @__PURE__ */ from_html(`<label><!></label>`);
+	var root$21 = /* @__PURE__ */ from_html(`<label><!></label>`);
 	function Label($$anchor, $$props) {
 		push($$props, true);
-		let forId = prop($$props, "forId", 7), text = prop($$props, "text", 7), required = prop($$props, "required", 7, false), compact = prop($$props, "compact", 7, false), bold = prop($$props, "bold", 7, false), disabled = prop($$props, "disabled", 7, false), rootElement = prop($$props, "rootElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$13);
+		let forId = prop($$props, "forId", 7), text = prop($$props, "text", 7), required = prop($$props, "required", 7, false), compact = prop($$props, "compact", 7, false), bold = prop($$props, "bold", 7, false), disabled = prop($$props, "disabled", 7, false), rootElement = prop($$props, "rootElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$15);
 		var $$exports = {
 			get forId() {
 				return forId();
@@ -8529,7 +8529,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var label = root$18();
+		var label = root$21();
 		attribute_effect(label, () => ({
 			for: forId(),
 			class: [
@@ -8564,7 +8564,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/SearchInput/SearchInput.svelte
-	var rest_excludes$12 = /* @__PURE__ */ new Set([
+	var rest_excludes$14 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -8578,11 +8578,11 @@ createHTML: (html) => {
 		"leftIcon",
 		"id"
 	]);
-	var root$17 = /* @__PURE__ */ from_html(`<!> <div><!> <input/> <!></div>`, 1);
+	var root$20 = /* @__PURE__ */ from_html(`<!> <div><!> <input/> <!></div>`, 1);
 	function SearchInput($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
-		let value = prop($$props, "value", 15, ""), label = prop($$props, "label", 7, ""), size = prop($$props, "size", 7, ""), debounce = prop($$props, "debounce", 7, 0), ariaLabel = prop($$props, "ariaLabel", 7, lang === "fr" ? "Rechercher..." : "Search..."), clearAriaLabel = prop($$props, "clearAriaLabel", 7, lang === "fr" ? "Effacer le texte" : "Clear text"), leftIcon = prop($$props, "leftIcon", 7, false), id = prop($$props, "id", 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$12);
+		let value = prop($$props, "value", 15, ""), label = prop($$props, "label", 7, ""), size = prop($$props, "size", 7, ""), debounce = prop($$props, "debounce", 7, 0), ariaLabel = prop($$props, "ariaLabel", 7, lang === "fr" ? "Rechercher..." : "Search..."), clearAriaLabel = prop($$props, "clearAriaLabel", 7, lang === "fr" ? "Effacer le texte" : "Clear text"), leftIcon = prop($$props, "leftIcon", 7, false), id = prop($$props, "id", 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$14);
 		const leftIconNormalized = /* @__PURE__ */ user_derived(() => leftIcon() === true || leftIcon() === "true" || leftIcon() === "");
 		const isDisabled = /* @__PURE__ */ user_derived(() => $$props.disabled === true || $$props.disabled === "true" || $$props.disabled === "");
 		let searchInput;
@@ -8678,7 +8678,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$17();
+		var fragment = root$20();
 		var node = first_child(fragment);
 		var consequent = ($$anchor) => {
 			Label($$anchor, {
@@ -8766,7 +8766,7 @@ createHTML: (html) => {
 	}, [], ["focus"], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/SearchBar/SearchBar.svelte
-	var rest_excludes$11 = /* @__PURE__ */ new Set([
+	var rest_excludes$13 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -8775,11 +8775,11 @@ createHTML: (html) => {
 		"name",
 		"pivBackground"
 	]);
-	var root$16 = /* @__PURE__ */ from_html(`<div><!> <!></div>`);
+	var root$19 = /* @__PURE__ */ from_html(`<div><!> <!></div>`);
 	function SearchBar($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
-		let value = prop($$props, "value", 15, ""), name = prop($$props, "name", 7, "q"), pivBackground = prop($$props, "pivBackground", 7, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$11);
+		let value = prop($$props, "value", 15, ""), name = prop($$props, "name", 7, "q"), pivBackground = prop($$props, "pivBackground", 7, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$13);
 		let defaultsAttributes = {
 			input: {
 				"placeholder": lang === "fr" ? "Rechercher…" : "Search",
@@ -8819,7 +8819,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root$16();
+		var div = root$19();
 		let classes;
 		var node = child(div);
 		SearchInput(node, spread_props(() => get(inputProps), {
@@ -8855,14 +8855,14 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/SearchBar/SearchBarWC.svelte
-	var rest_excludes$10 = /* @__PURE__ */ new Set([
+	var rest_excludes$12 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
 	function SearchBarWC($$anchor, $$props) {
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$10);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$12);
 		SearchBar($$anchor, spread_props(() => props));
 	}
 	customElements.define("qc-search-bar", create_custom_element(SearchBarWC, {
@@ -8881,14 +8881,14 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/SearchInput/SearchInputWC.svelte
-	var rest_excludes$9 = /* @__PURE__ */ new Set([
+	var rest_excludes$11 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
 	function SearchInputWC($$anchor, $$props) {
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$9);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$11);
 		SearchInput($$anchor, spread_props(() => props));
 	}
 	customElements.define("qc-search-input", create_custom_element(SearchInputWC, {
@@ -8907,7 +8907,7 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/bases/Icon/IconWC.svelte
-	var rest_excludes$8 = /* @__PURE__ */ new Set([
+	var rest_excludes$10 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -8916,7 +8916,7 @@ createHTML: (html) => {
 	]);
 	function IconWC($$anchor, $$props) {
 		push($$props, true);
-		let useMaterial = prop($$props, "useMaterial", 7), otherProps = /* @__PURE__ */ rest_props($$props, rest_excludes$8);
+		let useMaterial = prop($$props, "useMaterial", 7), otherProps = /* @__PURE__ */ rest_props($$props, rest_excludes$10);
 		var $$exports = {
 			get useMaterial() {
 				return useMaterial();
@@ -8951,14 +8951,14 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/IconButton/IconButtonWC.svelte
-	var rest_excludes$7 = /* @__PURE__ */ new Set([
+	var rest_excludes$9 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
 	function IconButtonWC($$anchor, $$props) {
-		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$7);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$9);
 		IconButton($$anchor, spread_props(() => props));
 	}
 	customElements.define("qc-icon-button", create_custom_element(IconButtonWC, {
@@ -8970,8 +8970,8 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/FormError/FormError.svelte
-	var root$15 = /* @__PURE__ */ from_html(`<!> <span></span>`, 1);
-	var root_1$9 = /* @__PURE__ */ from_html(`<div role="alert"><!></div>`);
+	var root$18 = /* @__PURE__ */ from_html(`<!> <span></span>`, 1);
+	var root_1$12 = /* @__PURE__ */ from_html(`<div role="alert"><!></div>`);
 	function FormError($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
@@ -9029,9 +9029,9 @@ createHTML: (html) => {
 		var fragment = comment();
 		var node = first_child(fragment);
 		var consequent = ($$anchor) => {
-			var div = root_1$9();
+			var div = root_1$12();
 			await_block(child(div), tick, ($$anchor) => {}, ($$anchor, _) => {
-				var fragment_1 = root$15();
+				var fragment_1 = root$18();
 				var node_2 = first_child(fragment_1);
 				Icon(node_2, {
 					type: "warning",
@@ -9068,16 +9068,16 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Fieldset/Fieldset.svelte
-	var root$14 = /* @__PURE__ */ from_html(`<legend><!></legend>`);
-	var root_1$8 = /* @__PURE__ */ from_html(`<fieldset><!> <div><!></div> <!></fieldset>`);
-	var root_2$5 = /* @__PURE__ */ from_html(`<div class="qc-fieldset-invalid"><!></div>`);
+	var root$17 = /* @__PURE__ */ from_html(`<legend><!></legend>`);
+	var root_1$11 = /* @__PURE__ */ from_html(`<fieldset><!> <div><!></div> <!></fieldset>`);
+	var root_2$8 = /* @__PURE__ */ from_html(`<div class="qc-fieldset-invalid"><!></div>`);
 	function Fieldset($$anchor, $$props) {
 		push($$props, true);
 		const fieldset = ($$anchor) => {
-			var fieldset_1 = root_1$8();
+			var fieldset_1 = root_1$11();
 			var node = child(fieldset_1);
 			var consequent = ($$anchor) => {
-				var legend_1 = root$14();
+				var legend_1 = root$17();
 				LabelText(child(legend_1), {
 					get text() {
 						return legend();
@@ -9252,7 +9252,7 @@ createHTML: (html) => {
 			fieldset($$anchor);
 		};
 		var alternate = ($$anchor) => {
-			var div_1 = root_2$5();
+			var div_1 = root_2$8();
 			var node_5 = child(div_1);
 			fieldset(node_5);
 			reset(div_1);
@@ -9309,7 +9309,7 @@ createHTML: (html) => {
 	}
 	//#endregion
 	//#region src/sdg/components/ChoiceGroup/ChoiceGroup.svelte
-	var rest_excludes$6 = /* @__PURE__ */ new Set([
+	var rest_excludes$8 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -9326,7 +9326,7 @@ createHTML: (html) => {
 	]);
 	function ChoiceGroup($$anchor, $$props) {
 		push($$props, true);
-		let invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), children = prop($$props, "children", 7), compact = prop($$props, "compact", 7, false), selectionButton = prop($$props, "selectionButton", 7, false), inline = prop($$props, "inline", 7, false), host = prop($$props, "host", 7), name = prop($$props, "name", 7), required = prop($$props, "required", 7), restProps = /* @__PURE__ */ rest_props($$props, rest_excludes$6);
+		let invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), children = prop($$props, "children", 7), compact = prop($$props, "compact", 7, false), selectionButton = prop($$props, "selectionButton", 7, false), inline = prop($$props, "inline", 7, false), host = prop($$props, "host", 7), name = prop($$props, "name", 7), required = prop($$props, "required", 7), restProps = /* @__PURE__ */ rest_props($$props, rest_excludes$8);
 		let fieldsetElement = /* @__PURE__ */ state(void 0);
 		let onchange = (e) => {
 			if (invalid() && e.target.checked) invalid(false);
@@ -9451,7 +9451,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte
-	var root$13 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$16 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function ChoiceGroupWC($$anchor, $$props) {
 		push($$props, true);
 		let name = prop($$props, "name", 7), legend = prop($$props, "legend", 7), compact = prop($$props, "compact", 7), required = prop($$props, "required", 7), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), selectionButton = prop($$props, "selectionButton", 7), columnCount = prop($$props, "columnCount", 7), inline = prop($$props, "inline", 7);
@@ -9520,7 +9520,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$13();
+		var fragment = root$16();
 		var node = first_child(fragment);
 		ChoiceGroup(node, {
 			get name() {
@@ -9604,15 +9604,15 @@ createHTML: (html) => {
 			type: "Boolean"
 		}
 	}, ["default"], [], { mode: "open" }));
-	var root$12 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
-	var root_1$7 = /* @__PURE__ */ from_html(`<div><!> <!> <!></div>`);
+	var root$15 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
+	var root_1$10 = /* @__PURE__ */ from_html(`<div><!> <!> <!></div>`);
 	function Checkbox($$anchor, $$props) {
 		push($$props, true);
 		const requiredSpanSnippet = ($$anchor) => {
 			var fragment = comment();
 			var node = first_child(fragment);
 			var consequent = ($$anchor) => {
-				var span = root$12();
+				var span = root$15();
 				bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
 				append($$anchor, span);
 			};
@@ -9739,7 +9739,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root_1$7();
+		var div = root_1$10();
 		var node_1 = child(div);
 		requiredSpanSnippet(node_1);
 		var node_2 = sibling(node_1, 2);
@@ -9782,7 +9782,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Checkbox/CheckboxWC.svelte
-	var root$11 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$14 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function CheckboxWC($$anchor, $$props) {
 		push($$props, true);
 		setContext("qc-checkbox", true);
@@ -9825,7 +9825,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$11();
+		var fragment = root$14();
 		var node = first_child(fragment);
 		Checkbox(node, {
 			get compact() {
@@ -9901,14 +9901,14 @@ createHTML: (html) => {
 	}
 	//#endregion
 	//#region src/sdg/components/TextField/TextField.svelte
-	var root$10 = /* @__PURE__ */ from_html(`<div class="qc-description"></div>`);
-	var root_1$6 = /* @__PURE__ */ from_html(`<div aria-live="polite"></div>`);
-	var root_2$4 = /* @__PURE__ */ from_html(`<!> <!> <!> <!> <!>`, 1);
-	var root_3$1 = /* @__PURE__ */ from_html(`<div class="qc-textfield"><!></div>`);
+	var root$13 = /* @__PURE__ */ from_html(`<div class="qc-description"></div>`);
+	var root_1$9 = /* @__PURE__ */ from_html(`<div aria-live="polite"></div>`);
+	var root_2$7 = /* @__PURE__ */ from_html(`<!> <!> <!> <!> <!>`, 1);
+	var root_3$2 = /* @__PURE__ */ from_html(`<div class="qc-textfield"><!></div>`);
 	function TextField($$anchor, $$props) {
 		push($$props, true);
 		const textfield = ($$anchor) => {
-			var fragment = root_2$4();
+			var fragment = root_2$7();
 			var node = first_child(fragment);
 			var consequent = ($$anchor) => {
 				{
@@ -9941,7 +9941,7 @@ createHTML: (html) => {
 			});
 			var node_1 = sibling(node, 2);
 			var consequent_1 = ($$anchor) => {
-				var div = root$10();
+				var div = root$13();
 				html(div, description, true);
 				reset(div);
 				bind_this(div, ($$value) => descriptionElement($$value), () => descriptionElement());
@@ -9955,7 +9955,7 @@ createHTML: (html) => {
 			snippet(node_2, () => children() ?? noop);
 			var node_3 = sibling(node_2, 2);
 			var consequent_2 = ($$anchor) => {
-				var div_1 = root_1$6();
+				var div_1 = root_1$9();
 				html(div_1, () => get(charCountText), true);
 				reset(div_1);
 				bind_this(div_1, ($$value) => maxlengthElement($$value), () => maxlengthElement());
@@ -10188,7 +10188,7 @@ createHTML: (html) => {
 			textfield($$anchor);
 		};
 		var alternate = ($$anchor) => {
-			var div_2 = root_3$1();
+			var div_2 = root_3$2();
 			var node_6 = child(div_2);
 			textfield(node_6);
 			reset(div_2);
@@ -10228,7 +10228,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/TextField/TextFieldWC.svelte
-	var root$9 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$12 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function TextFieldWC($$anchor, $$props) {
 		push($$props, true);
 		setContext("webComponentMode", true);
@@ -10332,7 +10332,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$9();
+		var fragment = root$12();
 		var node = first_child(fragment);
 		TextField(node, {
 			get label() {
@@ -10455,7 +10455,7 @@ createHTML: (html) => {
 	}, ["default"], [], { mode: "open" }));
 	//#endregion
 	//#region src/sdg/components/ToggleSwitch/ToggleSwitch.svelte
-	var root$8 = /* @__PURE__ */ from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`);
+	var root$11 = /* @__PURE__ */ from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`);
 	function ToggleSwitch($$anchor, $$props) {
 		push($$props, true);
 		let label = prop($$props, "label", 7), id = prop($$props, "id", 7), checked = prop($$props, "checked", 15, false), disabled = prop($$props, "disabled", 15, false), justified = prop($$props, "justified", 7), textAlign = prop($$props, "textAlign", 7);
@@ -10505,7 +10505,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var label_1 = root$8();
+		var label_1 = root$11();
 		var input = child(label_1);
 		remove_input_defaults(input);
 		var span = sibling(input, 2);
@@ -10534,7 +10534,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte
-	var rest_excludes$4 = /* @__PURE__ */ new Set([
+	var rest_excludes$6 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -10548,7 +10548,7 @@ createHTML: (html) => {
 	]);
 	function ToggleSwitchWC($$anchor, $$props) {
 		push($$props, true);
-		let id = prop($$props, "id", 7), label = prop($$props, "label", 7), checked = prop($$props, "checked", 15, false), disabled = prop($$props, "disabled", 7, false), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$4);
+		let id = prop($$props, "id", 7), label = prop($$props, "label", 7), checked = prop($$props, "checked", 15, false), disabled = prop($$props, "disabled", 7, false), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$6);
 		let parent = /* @__PURE__ */ state(void 0);
 		let index;
 		onMount(() => {
@@ -10680,7 +10680,7 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte
-	var rest_excludes$3 = /* @__PURE__ */ new Set([
+	var rest_excludes$5 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -10693,7 +10693,7 @@ createHTML: (html) => {
 	]);
 	function ToggleSwitchGroupWC($$anchor, $$props) {
 		push($$props, true);
-		let disabled = prop($$props, "disabled", 15, false), items = prop($$props, "items", 31, () => proxy([])), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), maxWidth = prop($$props, "maxWidth", 7, "fit-content"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$3);
+		let disabled = prop($$props, "disabled", 15, false), items = prop($$props, "items", 31, () => proxy([])), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), maxWidth = prop($$props, "maxWidth", 7, "fit-content"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$5);
 		let usedWidth = /* @__PURE__ */ user_derived(() => {
 			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d*\.?\d*rem$/) || maxWidth().match(/^\d*\.?\d*em$/) || maxWidth().match(/^\d*\.?\d*%$/)) return maxWidth();
 			else return "fit-content";
@@ -10804,9 +10804,9 @@ createHTML: (html) => {
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte
-	var root$7 = /* @__PURE__ */ from_html(`<span class="qc-sr-only"></span>`);
-	var root_1$5 = /* @__PURE__ */ from_html(`<li tabindex="0" role="option"><!></li>`);
-	var root_2$3 = /* @__PURE__ */ from_html(`<ul></ul>`);
+	var root$10 = /* @__PURE__ */ from_html(`<span class="qc-sr-only"></span>`);
+	var root_1$8 = /* @__PURE__ */ from_html(`<li tabindex="0" role="option"><!></li>`);
+	var root_2$6 = /* @__PURE__ */ from_html(`<ul></ul>`);
 	function DropdownListItemsSingle($$anchor, $$props) {
 		push($$props, true);
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
@@ -10929,12 +10929,12 @@ createHTML: (html) => {
 		var fragment = comment();
 		var node = first_child(fragment);
 		var consequent_1 = ($$anchor) => {
-			var ul = root_2$3();
+			var ul = root_2$6();
 			each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-				var li = root_1$5();
+				var li = root_1$8();
 				var node_1 = child(li);
 				var consequent = ($$anchor) => {
-					var span = root$7();
+					var span = root$10();
 					html(span, placeholder, true);
 					reset(span);
 					append($$anchor, span);
@@ -10991,8 +10991,8 @@ createHTML: (html) => {
 	], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte
-	var root$6 = /* @__PURE__ */ from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`);
-	var root_1$4 = /* @__PURE__ */ from_html(`<ul></ul>`);
+	var root$9 = /* @__PURE__ */ from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`);
+	var root_1$7 = /* @__PURE__ */ from_html(`<ul></ul>`);
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		push($$props, true);
 		let displayedItems = prop($$props, "displayedItems", 7), value = prop($$props, "value", 23, () => []), onToggle = prop($$props, "onToggle", 7, () => {}), handleExit = prop($$props, "handleExit", 7, () => {}), focusOnOuterElement = prop($$props, "focusOnOuterElement", 7, () => {}), handlePrintableCharacter = prop($$props, "handlePrintableCharacter", 7, () => {});
@@ -11131,9 +11131,9 @@ createHTML: (html) => {
 		var fragment = comment();
 		var node = first_child(fragment);
 		var consequent = ($$anchor) => {
-			var ul = root_1$4();
+			var ul = root_1$7();
 			each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-				var li = root$6();
+				var li = root$9();
 				var label = child(li);
 				var input = child(label);
 				remove_input_defaults(input);
@@ -11187,8 +11187,8 @@ createHTML: (html) => {
 	], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte
-	var root$5 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-list-no-options"></span>`);
-	var root_1$3 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`);
+	var root$8 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-list-no-options"></span>`);
+	var root_1$6 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`);
 	function DropdownListItems($$anchor, $$props) {
 		push($$props, true);
 		let id = prop($$props, "id", 7), multiple = prop($$props, "multiple", 7), items = prop($$props, "items", 7), displayedItems = prop($$props, "displayedItems", 7), noOptionsMessage = prop($$props, "noOptionsMessage", 7), value = prop($$props, "value", 23, () => []), onSelect = prop($$props, "onSelect", 7, () => {}), onToggle = prop($$props, "onToggle", 7, () => {}), handleExitSingle = prop($$props, "handleExitSingle", 7, () => {}), handleExitMultiple = prop($$props, "handleExitMultiple", 7, () => {}), focusOnOuterElement = prop($$props, "focusOnOuterElement", 7, () => {}), handlePrintableCharacter = prop($$props, "handlePrintableCharacter", 7, () => {}), placeholder = prop($$props, "placeholder", 7);
@@ -11304,7 +11304,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root_1$3();
+		var div = root_1$6();
 		var node = child(div);
 		var consequent = ($$anchor) => {
 			bind_this(DropdownListItemsMultiple($$anchor, {
@@ -11370,7 +11370,7 @@ createHTML: (html) => {
 		var consequent_1 = ($$anchor) => {
 			var fragment_2 = comment();
 			await_block(first_child(fragment_2), tick, null, ($$anchor, _) => {
-				var span = root$5();
+				var span = root$8();
 				html(span, noOptionsMessage, true);
 				reset(span);
 				append($$anchor, span);
@@ -11407,7 +11407,7 @@ createHTML: (html) => {
 	], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte
-	var rest_excludes$2 = /* @__PURE__ */ new Set([
+	var rest_excludes$4 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -11419,12 +11419,12 @@ createHTML: (html) => {
 		"placeholder",
 		"buttonElement"
 	]);
-	var root$4 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-choice"></span>`);
-	var root_1$2 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-placeholder"></span>`);
-	var root_2$2 = /* @__PURE__ */ from_html(`<button><!> <span><!></span></button>`);
+	var root$7 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-choice"></span>`);
+	var root_1$5 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-placeholder"></span>`);
+	var root_2$5 = /* @__PURE__ */ from_html(`<button><!> <span><!></span></button>`);
 	function DropdownListButton($$anchor, $$props) {
 		push($$props, true);
-		let inputId = prop($$props, "inputId", 7), expanded = prop($$props, "expanded", 7), disabled = prop($$props, "disabled", 7), selectedOptionsText = prop($$props, "selectedOptionsText", 7, ""), placeholder = prop($$props, "placeholder", 7), buttonElement = prop($$props, "buttonElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$2);
+		let inputId = prop($$props, "inputId", 7), expanded = prop($$props, "expanded", 7), disabled = prop($$props, "disabled", 7), selectedOptionsText = prop($$props, "selectedOptionsText", 7, ""), placeholder = prop($$props, "placeholder", 7), buttonElement = prop($$props, "buttonElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$4);
 		var $$exports = {
 			get inputId() {
 				return inputId();
@@ -11469,7 +11469,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var button = root_2$2();
+		var button = root_2$5();
 		attribute_effect(button, () => ({
 			type: "button",
 			id: inputId(),
@@ -11480,13 +11480,13 @@ createHTML: (html) => {
 		}));
 		var node = child(button);
 		var consequent = ($$anchor) => {
-			var span = root$4();
+			var span = root$7();
 			html(span, selectedOptionsText, true);
 			reset(span);
 			append($$anchor, span);
 		};
 		var alternate = ($$anchor) => {
-			var span_1 = root_1$2();
+			var span_1 = root_1$5();
 			html(span_1, placeholder, true);
 			reset(span_1);
 			append($$anchor, span_1);
@@ -11528,9 +11528,9 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/DropdownList/DropdownList.svelte
-	var root$3 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-search"><!></div>`);
-	var root_1$1 = /* @__PURE__ */ from_html(`<span> </span>`);
-	var root_2$1 = /* @__PURE__ */ from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`);
+	var root$6 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-search"><!></div>`);
+	var root_1$4 = /* @__PURE__ */ from_html(`<span> </span>`);
+	var root_2$4 = /* @__PURE__ */ from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`);
 	function DropdownList($$anchor, $$props) {
 		push($$props, true);
 		const lang = Utils.getPageLanguage();
@@ -11857,7 +11857,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div = root_2$1();
+		var div = root_2$4();
 		event("click", $document.body, handleOuterEvent);
 		event("keydown", $document.body, handleTab);
 		event("scroll", $window, setRemainingBottomHeight);
@@ -11942,7 +11942,7 @@ createHTML: (html) => {
 		var div_3 = sibling(node_1, 2);
 		var node_2 = child(div_3);
 		var consequent_1 = ($$anchor) => {
-			var div_4 = root$3();
+			var div_4 = root$6();
 			var node_3 = child(div_4);
 			{
 				let $0 = /* @__PURE__ */ user_derived(() => searchPlaceholder() ? searchPlaceholder() : void 0);
@@ -12015,7 +12015,7 @@ createHTML: (html) => {
 		}), ($$value) => set(dropdownItems, $$value, true), () => get(dropdownItems));
 		var div_5 = sibling(node_4, 2);
 		key(child(div_5), () => get(searchText), ($$anchor) => {
-			var span = root_1$1();
+			var span = root_1$4();
 			var text = only_child(span, true);
 			template_effect(() => set_text(text, get(srItemsCountText)));
 			append($$anchor, span);
@@ -12098,7 +12098,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/DropdownList/SelectWC.svelte
-	var rest_excludes$1 = /* @__PURE__ */ new Set([
+	var rest_excludes$3 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
@@ -12113,7 +12113,7 @@ createHTML: (html) => {
 		"width",
 		"expanded"
 	]);
-	var root$2 = /* @__PURE__ */ from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1);
+	var root$5 = /* @__PURE__ */ from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1);
 	function SelectWC($$anchor, $$props) {
 		push($$props, true);
 		/**
@@ -12165,7 +12165,7 @@ createHTML: (html) => {
 		*    mémoire.
 		* ============================================================================
 		*/
-		let invalid = prop($$props, "invalid", 15, false), value = prop($$props, "value", 31, () => proxy([])), multiple = prop($$props, "multiple", 7), disabled = prop($$props, "disabled", 7), required = prop($$props, "required", 7), label = prop($$props, "label", 7), placeholder = prop($$props, "placeholder", 7), width = prop($$props, "width", 7), expanded = prop($$props, "expanded", 15, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$1);
+		let invalid = prop($$props, "invalid", 15, false), value = prop($$props, "value", 31, () => proxy([])), multiple = prop($$props, "multiple", 7), disabled = prop($$props, "disabled", 7), required = prop($$props, "required", 7), label = prop($$props, "label", 7), placeholder = prop($$props, "placeholder", 7), width = prop($$props, "width", 7), expanded = prop($$props, "expanded", 15, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$3);
 		let selectElement = /* @__PURE__ */ state(void 0);
 		let items = /* @__PURE__ */ state(void 0);
 		let labelElement = /* @__PURE__ */ state(void 0);
@@ -12361,7 +12361,7 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var fragment = root$2();
+		var fragment = root$5();
 		var div = first_child(fragment);
 		slot(child(div), $$props, "default", {}, null);
 		reset(div);
@@ -12494,6 +12494,206 @@ createHTML: (html) => {
 			type: "Boolean"
 		}
 	}, ["default"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/Sheet/Sheet.svelte
+	var root$4 = /* @__PURE__ */ from_html(`<h2 class="qc-sheet-title" tabindex="-1"> </h2>`);
+	var root_1$3 = /* @__PURE__ */ from_html(`<p></p>`);
+	var root_2$3 = /* @__PURE__ */ from_html(`<dialog class="qc-sheet-dialog" aria-modal="true" tabindex="-1"><div class="qc-sheet-panel"><div class="qc-container"><div class="qc-sheet-content qc-scrollbar"><!> <!></div></div> <div class="qc-sheet-header"><button type="button" class="qc-sheet-close"><!></button></div></div></dialog>`);
+	function Sheet($$anchor, $$props) {
+		push($$props, true);
+		const lang = Utils.getPageLanguage();
+		let title = prop($$props, "title", 7, ""), description = prop($$props, "description", 7, ""), host = prop($$props, "host", 7, null), children = prop($$props, "children", 7, null);
+		const closeLabel = lang === "fr" ? "Fermer la feuille" : "Close sheet";
+		const titleId = Utils.generateId("sheet-title");
+		const descriptionId = Utils.generateId("sheet-description");
+		let dialog = /* @__PURE__ */ state(null);
+		let displayModal = /* @__PURE__ */ state(false);
+		let triggerElement = null;
+		let lastPointerTarget = null;
+		function trackPointer(e) {
+			lastPointerTarget = e.target;
+		}
+		document.addEventListener("pointerdown", trackPointer, true);
+		function resolveTrigger() {
+			const active = document.activeElement;
+			if (active && active !== document.body) return active;
+			let el = lastPointerTarget;
+			while (el && el !== document.body) {
+				if (typeof el.focus === "function" && el.tabIndex > -1) return el;
+				el = el.parentElement;
+			}
+			return active;
+		}
+		function show() {
+			triggerElement = resolveTrigger();
+			set(displayModal, true);
+		}
+		function close() {
+			closeSheet();
+		}
+		function closeSheet() {
+			if (get(dialog) && get(dialog).open) get(dialog).close();
+		}
+		function handleClose() {
+			set(displayModal, false);
+			document.body.style.overflow = "";
+			const trigger = triggerElement;
+			triggerElement = null;
+			if (!(trigger && trigger.focus)) return;
+			let attempts = 0;
+			const restoreFocus = () => {
+				if (get(dialog) && get(dialog).isConnected && attempts < 10) {
+					attempts++;
+					requestAnimationFrame(restoreFocus);
+					return;
+				}
+				trigger.focus();
+			};
+			requestAnimationFrame(restoreFocus);
+		}
+		function handleBackdropClick(e) {
+			if (e.target === get(dialog)) closeSheet();
+		}
+		function handleCloseClick(e) {
+			e.preventDefault();
+			closeSheet();
+		}
+		user_effect(() => {
+			if (get(displayModal) && get(dialog) && get(dialog).isConnected && !get(dialog).open) requestAnimationFrame(() => {
+				if (get(dialog) && get(dialog).isConnected && !get(dialog).open) {
+					get(dialog).showModal();
+					document.body.style.overflow = "hidden";
+					requestAnimationFrame(() => {
+						if (title()) {
+							const titleEl = get(dialog).querySelector(".qc-sheet-title");
+							if (titleEl) titleEl.focus();
+						} else get(dialog).focus();
+					});
+				}
+			});
+		});
+		user_effect(() => {
+			if (host()) {
+				host().show = () => {
+					triggerElement = resolveTrigger();
+					set(displayModal, true);
+				};
+				host().close = () => {
+					closeSheet();
+				};
+			}
+		});
+		onDestroy(() => {
+			document.body.style.overflow = "";
+			document.removeEventListener("pointerdown", trackPointer, true);
+		});
+		var $$exports = {
+			show,
+			close,
+			get title() {
+				return title();
+			},
+			set title($$value = "") {
+				title($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value = "") {
+				description($$value);
+				flushSync();
+			},
+			get host() {
+				return host();
+			},
+			set host($$value = null) {
+				host($$value);
+				flushSync();
+			},
+			get children() {
+				return children();
+			},
+			set children($$value = null) {
+				children($$value);
+				flushSync();
+			}
+		};
+		var fragment = comment();
+		var node = first_child(fragment);
+		var consequent_2 = ($$anchor) => {
+			var dialog_1 = root_2$3();
+			var div = child(dialog_1);
+			var div_1 = child(div);
+			var div_2 = child(div_1);
+			var node_1 = child(div_2);
+			var consequent = ($$anchor) => {
+				var h2 = root$4();
+				var text = only_child(h2, true);
+				template_effect(() => {
+					set_attribute(h2, "id", titleId);
+					set_text(text, title());
+				});
+				append($$anchor, h2);
+			};
+			if_block(node_1, ($$render) => {
+				if (title()) $$render(consequent);
+			});
+			var node_2 = sibling(node_1, 2);
+			var consequent_1 = ($$anchor) => {
+				var fragment_1 = comment();
+				snippet(first_child(fragment_1), children);
+				append($$anchor, fragment_1);
+			};
+			var alternate = ($$anchor) => {
+				var p = root_1$3();
+				html(p, description, true);
+				reset(p);
+				template_effect(() => set_attribute(p, "id", descriptionId));
+				append($$anchor, p);
+			};
+			if_block(node_2, ($$render) => {
+				if (children()) $$render(consequent_1);
+				else $$render(alternate, -1);
+			});
+			reset(div_2);
+			reset(div_1);
+			var div_3 = sibling(div_1, 2);
+			var button = child(div_3);
+			Icon(child(button), {
+				type: "close",
+				color: "blue-piv",
+				size: "sm"
+			});
+			reset(button);
+			reset(div_3);
+			reset(div);
+			reset(dialog_1);
+			bind_this(dialog_1, ($$value) => set(dialog, $$value), () => get(dialog));
+			template_effect(() => {
+				set_attribute(dialog_1, "aria-labelledby", title() ? titleId : void 0);
+				set_attribute(dialog_1, "aria-label", !title() ? lang === "fr" ? "Feuille" : "Sheet" : void 0);
+				set_attribute(dialog_1, "aria-describedby", !children() ? descriptionId : void 0);
+				set_attribute(button, "aria-label", closeLabel);
+			});
+			event("close", dialog_1, handleClose);
+			delegated("click", dialog_1, handleBackdropClick);
+			delegated("click", button, handleCloseClick);
+			append($$anchor, dialog_1);
+		};
+		if_block(node, ($$render) => {
+			if (get(displayModal)) $$render(consequent_2);
+		});
+		append($$anchor, fragment);
+		return pop($$exports);
+	}
+	delegate(["click"]);
+	create_custom_element(Sheet, {
+		title: {},
+		description: {},
+		host: {},
+		children: {}
+	}, [], ["show", "close"], { mode: "open" });
 	var grid_default = {
 		lg: {
 			"gutter": "32px",
@@ -12532,7 +12732,7 @@ createHTML: (html) => {
 				str: "M7.5 1.353 14.167 8.02H15v-1L7.5 0 0 7.02v1h.833L7.5 1.353Z"
 			}
 		})[pos()]);
-		var svg = root_3();
+		var svg = root_3$1();
 		var path = sibling(child(svg));
 		var path_1 = sibling(path);
 		reset(svg);
@@ -12545,33 +12745,32 @@ createHTML: (html) => {
 		});
 		append($$anchor, svg);
 	};
-	var root$1 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
-	var root_1 = /* @__PURE__ */ from_html(`<header class="qc-hash-1qkpz29"><h2 class="qc-tooltip-title qc-hash-1qkpz29"> </h2></header> <main class="qc-hash-1qkpz29"><!></main>`, 1);
-	var root_2 = /* @__PURE__ */ from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-1qkpz29"><section class="qc-tooltip-content-text qc-hash-1qkpz29"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-1qkpz29" href="#top"><!></a></div>`);
-	var root_3 = /* @__PURE__ */ from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-1qkpz29"><style class="qc-hash-1qkpz29">.triangle { fill: var(--qc-color-background); }
-            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-1qkpz29"></path><path class="stroke qc-hash-1qkpz29"></path></svg>`);
-	var root_4 = /* @__PURE__ */ from_html(`<span class="qc-tooltip-text qc-hash-1qkpz29" tabindex="-1"><!><!></span>`);
-	var root_5 = /* @__PURE__ */ from_html(`<span class="qc-hash-1qkpz29">&zwj;</span>`);
-	var root_6 = /* @__PURE__ */ from_html(`<div aria-hidden="true"><!></div> <!>`, 1);
-	var root_7 = /* @__PURE__ */ from_html(`<dialog><div class="qc-container qc-hash-1qkpz29"><!></div></dialog>`);
-	var root_8 = /* @__PURE__ */ from_html(`<div><div class="clickable-gutter qc-hash-1qkpz29"></div> <a role="button" class="qc-tooltip-button qc-hash-1qkpz29" href="#top"><!></a> <!> <!></div>`);
-	var root_9 = /* @__PURE__ */ from_html(`<div class="qc-tooltip qc-hash-1qkpz29"><!> <!></div>`);
+	var root$3 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
+	var root_1$2 = /* @__PURE__ */ from_html(`<header class="qc-hash-1ai2ds"><h2 class="qc-tooltip-title qc-hash-1ai2ds"> </h2></header> <main class="qc-hash-1ai2ds"><!></main>`, 1);
+	var root_2$2 = /* @__PURE__ */ from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-1ai2ds"><section class="qc-tooltip-content-text qc-hash-1ai2ds"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-1ai2ds" href="#top"><!></a></div>`);
+	var root_3$1 = /* @__PURE__ */ from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-1ai2ds"><style class="qc-hash-1ai2ds">.triangle { fill: var(--qc-color-background); }
+            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-1ai2ds"></path><path class="stroke qc-hash-1ai2ds"></path></svg>`);
+	var root_4$1 = /* @__PURE__ */ from_html(`<span class="qc-tooltip-text qc-hash-1ai2ds" tabindex="-1"><!><!></span>`);
+	var root_5$1 = /* @__PURE__ */ from_html(`<span class="qc-hash-1ai2ds">&zwj;</span>`);
+	var root_6$1 = /* @__PURE__ */ from_html(`<div aria-hidden="true"><!></div> <!>`, 1);
+	var root_7 = /* @__PURE__ */ from_html(`<div><div class="clickable-gutter qc-hash-1ai2ds"></div> <a role="button" class="qc-tooltip-button qc-hash-1ai2ds" href="#top"><!></a> <!> <!></div>`);
+	var root_8 = /* @__PURE__ */ from_html(`<div class="qc-tooltip qc-hash-1ai2ds"><!> <!></div>`);
 	var $$css = {
-		hash: "qc-hash-1qkpz29",
-		code: ".qc-tooltip.qc-hash-1qkpz29 {display:inline-flex;align-items:center;font-size:var(--qc-font-size-md);font-family:var(--qc-font-family-content);font-weight:var(--qc-font-weight-regular);--pin-gap: 4px;--pin-height: 9px;--pin-base: 15px;}.clickable-gutter.qc-hash-1qkpz29 {position:absolute;height:24px;width:24px;left:-4px;top:-4px;cursor:pointer;}.qc-tooltip-text.qc-hash-1qkpz29 {border-bottom:1px dashed var(--qc-color-blue-piv);cursor:pointer;white-space:nowrap;margin-right:calc( .5 * var(--qc-spacer-xs) );}.qc-tooltip-button.qc-hash-1qkpz29 {align-self:center;height:24px;width:24px;line-height:24px;display:block;position:relative;font-weight:600;&:focus,\n        &:focus-visible {outline-offset:0;}}.qc-tooltip-container.qc-hash-1qkpz29 {position:relative;}.qc-tooltip-pin.qc-hash-1qkpz29 {position:absolute;top:calc(var(--pin-height) / 2);left:calc(100% + var(--pin-gap) + 2px);z-index:200;width:var(--pin-height);height:var(--pin-base);}svg.qc-hash-1qkpz29 {display:block;}.qc-tooltip-content.qc-hash-1qkpz29 {overflow-y:auto;max-height:calc(var(--max-height) - 48px);scrollbar-gutter:stable;padding-right:16px;padding-top:3px;padding-left:3px;}.qc-tooltip-content-text.qc-hash-1qkpz29 {max-inline-size:var(--qc-max-content-width);}.qc-tooltip-content.qc-hash-1qkpz29:focus-visible {outline:none;}.qc-tooltip-xclose.qc-hash-1qkpz29 {position:absolute;right:8px;top:8px;line-height:24px;height:24px;}dialog.qc-hash-1qkpz29 {top:auto;bottom:0;left:0;right:0;max-width:100%;width:100%;height:auto;margin:0;padding:0;border:1px solid var(--qc-color-grey-light);background:var(--qc-color-background);&.qc-desktop {padding-top:8px;}.qc-tooltip-panel:where(.qc-hash-1qkpz29) {visibility:visible!important;}&::backdrop {background-color:rgba(var(--qc-color-blue-dark-rgb), .25)}.qc-tooltip-xclose:where(.qc-hash-1qkpz29) {right:0;}}.qc-tooltip-panel.qc-hash-1qkpz29 {font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);position:relative;min-height:68px;max-height:var(--max-height);background:var(--qc-color-background);color:var(--qc-color-text-primary);width:100%;padding-top:21px;padding-left:13px;padding-bottom:24px;}.qc-tooltip-popover.qc-hash-1qkpz29 {.qc-tooltip-panel:where(.qc-hash-1qkpz29) {visibility:hidden;position:absolute;min-width:216px;max-width:320px;padding-right:8px;width:max-content;border:1px solid var(--qc-color-grey-light);transform:translateY(var(--translateY));top:0;left:calc(100% + var(--pin-gap) + var(--pin-height));z-index:199;}&.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-1qkpz29) {top:calc(100% + var(--pin-height) + var(--pin-gap));left:auto;transform:translateX(var(--translateX));}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1qkpz29),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1qkpz29)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/left:calc(50% - var(--pin-base) / 2);}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1qkpz29) {top:calc(0px - var(--pin-height) - var(--pin-gap) - 2px);}&.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1qkpz29) {top:calc(100% + var(--pin-gap) + 2px);}&.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-1qkpz29) {\n            /*display: none;*/top:0;transform:translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );left:auto;}.qc-tooltip-visible:where(.qc-hash-1qkpz29) {visibility:visible;}.qc-tooltip-content:where(.qc-hash-1qkpz29):focus-visible {outline:2px solid var(--qc-color-blue-regular);outline-offset:1px;}}.qc-hash-1qkpz29::-webkit-scrollbar,\n    .qc-hash-1qkpz29::-webkit-scrollbar-track,\n    .qc-hash-1qkpz29::-webkit-scrollbar-thumb\n    {height:50%;margin-top:10px;margin-right:-8px;}.qc-hash-1qkpz29::-webkit-scrollbar-thumb {background:var(--qc-color-blue-piv);}"
+		hash: "qc-hash-1ai2ds",
+		code: ".qc-tooltip.qc-hash-1ai2ds {display:inline-flex;align-items:center;font-size:var(--qc-font-size-md);font-family:var(--qc-font-family-content);font-weight:var(--qc-font-weight-regular);--pin-gap: 4px;--pin-height: 9px;--pin-base: 15px;}.clickable-gutter.qc-hash-1ai2ds {position:absolute;height:24px;width:24px;left:-4px;top:-4px;cursor:pointer;}.qc-tooltip-text.qc-hash-1ai2ds {border-bottom:1px dashed var(--qc-color-blue-piv);cursor:pointer;white-space:nowrap;margin-right:calc( .5 * var(--qc-spacer-xs) );}.qc-tooltip-button.qc-hash-1ai2ds {align-self:center;height:24px;width:24px;line-height:24px;display:block;position:relative;font-weight:600;&:focus,\n        &:focus-visible {outline-offset:0;}}.qc-tooltip-container.qc-hash-1ai2ds {position:relative;}.qc-tooltip-pin.qc-hash-1ai2ds {position:absolute;top:calc(var(--pin-height) / 2);left:calc(100% + var(--pin-gap) + 2px);z-index:200;width:var(--pin-height);height:var(--pin-base);}svg.qc-hash-1ai2ds {display:block;}.qc-tooltip-content.qc-hash-1ai2ds {overflow-y:auto;max-height:calc(var(--max-height) - 48px);scrollbar-gutter:stable;padding-right:16px;padding-top:3px;padding-left:3px;}.qc-tooltip-content-text.qc-hash-1ai2ds {max-inline-size:var(--qc-max-content-width);}.qc-tooltip-content.qc-hash-1ai2ds:focus-visible {outline:none;}.qc-tooltip-xclose.qc-hash-1ai2ds {position:absolute;right:8px;top:8px;line-height:24px;height:24px;}.qc-tooltip-panel.qc-hash-1ai2ds {font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);position:relative;min-height:68px;max-height:var(--max-height);background:var(--qc-color-background);color:var(--qc-color-text-primary);width:100%;padding-top:21px;padding-left:13px;padding-bottom:24px;}.qc-tooltip-popover.qc-hash-1ai2ds {.qc-tooltip-panel:where(.qc-hash-1ai2ds) {visibility:hidden;position:absolute;min-width:216px;max-width:320px;padding-right:8px;width:max-content;border:1px solid var(--qc-color-grey-light);transform:translateY(var(--translateY));top:0;left:calc(100% + var(--pin-gap) + var(--pin-height));z-index:199;}&.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-1ai2ds) {top:calc(100% + var(--pin-height) + var(--pin-gap));left:auto;transform:translateX(var(--translateX));}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1ai2ds),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1ai2ds)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/left:calc(50% - var(--pin-base) / 2);}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1ai2ds) {top:calc(0px - var(--pin-height) - var(--pin-gap) - 2px);}&.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1ai2ds) {top:calc(100% + var(--pin-gap) + 2px);}&.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-1ai2ds) {\n            /*display: none;*/top:0;transform:translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );left:auto;}.qc-tooltip-visible:where(.qc-hash-1ai2ds) {visibility:visible;}.qc-tooltip-content:where(.qc-hash-1ai2ds):focus-visible {outline:2px solid var(--qc-color-blue-regular);outline-offset:1px;}}.qc-hash-1ai2ds::-webkit-scrollbar,\n    .qc-hash-1ai2ds::-webkit-scrollbar-track,\n    .qc-hash-1ai2ds::-webkit-scrollbar-thumb\n    {height:50%;margin-top:10px;margin-right:-8px;}.qc-hash-1ai2ds::-webkit-scrollbar-thumb {background:var(--qc-color-blue-piv);}"
 	};
 	function Tooltip($$anchor, $$props) {
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
 		const tooltipPanelSnippet = ($$anchor, displayMode = noop) => {
-			var div = root_2();
+			var div = root_2$2();
 			let classes;
 			let styles;
 			var div_1 = child(div);
 			var section = child(div_1);
 			{
 				const content = ($$anchor) => {
-					var fragment = root$1();
+					var fragment = root$3();
 					var node = first_child(fragment);
 					html(node, description);
 					snippet(sibling(node, 2), descriptionSlot);
@@ -12579,7 +12778,7 @@ createHTML: (html) => {
 				};
 				var node_2 = child(section);
 				var consequent = ($$anchor) => {
-					var fragment_1 = root_1();
+					var fragment_1 = root_1$2();
 					var header = first_child(fragment_1);
 					var h2 = child(header);
 					var text_1 = only_child(h2, true);
@@ -12615,7 +12814,7 @@ createHTML: (html) => {
 			reset(div);
 			bind_this(div, ($$value) => set(tooltipPanel, $$value), () => get(tooltipPanel));
 			template_effect(() => {
-				classes = set_class(div, 1, "qc-tooltip-panel qc-hash-1qkpz29", null, classes, {
+				classes = set_class(div, 1, "qc-tooltip-panel qc-hash-1ai2ds", null, classes, {
 					"qc-tooltip-visible": get(visiblePopover),
 					"qc-shading-2": displayMode() === "popover"
 				});
@@ -12642,7 +12841,7 @@ createHTML: (html) => {
 		let tooltipId = Utils.generateId("tooltip");
 		let tooltipContainer;
 		let tooltipButton = /* @__PURE__ */ state(void 0);
-		let modale = /* @__PURE__ */ state(void 0);
+		let sheet = /* @__PURE__ */ state(void 0);
 		let displayPopover = /* @__PURE__ */ state(false);
 		let visiblePopover = /* @__PURE__ */ state(false);
 		let displayModal = /* @__PURE__ */ state(false);
@@ -12701,21 +12900,14 @@ createHTML: (html) => {
 			}
 		}
 		function closeModale() {
-			if (!get(modale)) return;
-			get(modale).close();
-			toggleModal();
+			if (!get(sheet)) return;
+			get(sheet).close();
 			set(displayModal, false);
-		}
-		function toggleModal() {
-			if (!get(modale)) return;
-			const body = document.querySelector("body");
-			if (get(modale).open) body.style.overflow = "hidden";
-			else body.style.overflow = "";
 		}
 		async function showModal(e) {
 			set(displayModal, true);
 			await tick();
-			get(modale).showModal();
+			get(sheet)?.show();
 		}
 		function getSmBreakpoint(gridConfig) {
 			return parseInt(gridConfig.lg.breakpoint.sm.replace("px", ""));
@@ -12942,13 +13134,13 @@ createHTML: (html) => {
 				flushSync();
 			}
 		};
-		var div_2 = root_9();
+		var div_2 = root_8();
 		event("click", $document, closeOnTooltipBlur);
 		event("focusin", $document, closeOnTooltipBlur);
 		event("blur", $window, closeOnWindowBlur);
 		var node_5 = child(div_2);
 		var consequent_1 = ($$anchor) => {
-			var span = root_4();
+			var span = root_4$1();
 			var node_6 = child(span);
 			html(node_6, text);
 			snippet(sibling(node_6), textSlot);
@@ -12957,7 +13149,7 @@ createHTML: (html) => {
 			append($$anchor, span);
 		};
 		var alternate_1 = ($$anchor) => {
-			append($$anchor, root_5());
+			append($$anchor, root_5$1());
 		};
 		if_block(node_5, ($$render) => {
 			if (get(hasText)) $$render(consequent_1);
@@ -12965,7 +13157,7 @@ createHTML: (html) => {
 		});
 		var node_8 = sibling(node_5, 2);
 		var consequent_4 = ($$anchor) => {
-			var div_3 = root_8();
+			var div_3 = root_7();
 			let classes_1;
 			let styles_1;
 			var div_4 = child(div_3);
@@ -12984,14 +13176,14 @@ createHTML: (html) => {
 			bind_this(a_1, ($$value) => set(tooltipButton, $$value), () => get(tooltipButton));
 			var node_10 = sibling(a_1, 2);
 			var consequent_2 = ($$anchor) => {
-				var fragment_3 = root_6();
+				var fragment_3 = root_6$1();
 				var div_5 = first_child(fragment_3);
 				let classes_2;
 				pinSvg(child(div_5), () => get(position));
 				reset(div_5);
 				var node_12 = sibling(div_5, 2);
 				tooltipPanelSnippet(node_12, () => "popover");
-				template_effect(() => classes_2 = set_class(div_5, 1, "qc-tooltip-pin qc-hash-1qkpz29", null, classes_2, { "qc-tooltip-visible": get(visiblePopover) }));
+				template_effect(() => classes_2 = set_class(div_5, 1, "qc-tooltip-pin qc-hash-1ai2ds", null, classes_2, { "qc-tooltip-visible": get(visiblePopover) }));
 				append($$anchor, fragment_3);
 			};
 			if_block(node_10, ($$render) => {
@@ -12999,28 +13191,29 @@ createHTML: (html) => {
 			});
 			var node_13 = sibling(node_10, 2);
 			var consequent_3 = ($$anchor) => {
-				var dialog = root_7();
-				let classes_3;
-				var div_6 = child(dialog);
-				var node_14 = child(div_6);
-				tooltipPanelSnippet(node_14, () => "modal");
-				reset(div_6);
-				reset(dialog);
-				bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
-				template_effect(() => classes_3 = set_class(dialog, 1, "qc-hash-1qkpz29", null, classes_3, { "qc-desktop": !get(mobileFlag) }));
-				event("toggle", dialog, toggleModal);
-				delegated("click", dialog, (e) => {
-					if (e.clickIntoPanel) return;
-					closeModale();
-				});
-				append($$anchor, dialog);
+				{
+					const children = ($$anchor) => {
+						var fragment_5 = root$3();
+						var node_14 = first_child(fragment_5);
+						html(node_14, description);
+						snippet(sibling(node_14, 2), descriptionSlot);
+						append($$anchor, fragment_5);
+					};
+					bind_this(Sheet($$anchor, {
+						get title() {
+							return title();
+						},
+						children,
+						$$slots: { default: true }
+					}), ($$value) => set(sheet, $$value, true), () => get(sheet));
+				}
 			};
 			if_block(node_13, ($$render) => {
 				if (get(modalFlag) && get(displayModal)) $$render(consequent_3);
 			});
 			reset(div_3);
 			template_effect(() => {
-				classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ""} qc-scrollbar`, "qc-hash-1qkpz29", classes_1, {
+				classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ""} qc-scrollbar`, "qc-hash-1ai2ds", classes_1, {
 					"qc-tooltip-popover": !get(modalFlag),
 					"qc-tooltip-modal": get(modalFlag)
 				});
@@ -13071,18 +13264,18 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/sdg/components/Tooltip/TooltipWC.svelte
-	var rest_excludes = /* @__PURE__ */ new Set([
+	var rest_excludes$2 = /* @__PURE__ */ new Set([
 		"$$slots",
 		"$$events",
 		"$$legacy",
 		"$$host"
 	]);
-	var root = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	var root$2 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function TooltipWC($$anchor, $$props) {
 		const $$slots = sanitize_slots($$props);
 		push($$props, true);
-		let props = /* @__PURE__ */ rest_props($$props, rest_excludes);
-		var fragment = root();
+		let props = /* @__PURE__ */ rest_props($$props, rest_excludes$2);
+		var fragment = root$2();
 		var node = first_child(fragment);
 		{
 			const textSlot = ($$anchor) => {
@@ -13145,6 +13338,571 @@ createHTML: (html) => {
 			type: "String"
 		}
 	}, ["text", "description"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/Note/NoteRegistry.js
+	/**
+	* Central registry for footnotes.
+	*
+	* Each note-ref registers itself here. The note-list subscribes to changes
+	* and renders the definitions with back-links.
+	*
+	* Structure:
+	*   registry = {
+	*     [scope]: {
+	*       counter: 1,
+	*       notes: {
+	*         [noteId]: {
+	*           definition: "...",
+	*           refs: [ { number: 1, refElementId: "qc-note-ref-n1-1" }, ... ]
+	*         }
+	*       },
+	*       order: ["n1", "n2", ...]  // insertion order of first appearance
+	*     }
+	*   }
+	*
+	* Scopes allow independent numbering (e.g. a table vs page content).
+	* Default scope is "page".
+	*/
+	var DEFAULT_SCOPE = "page";
+	var registry = {};
+	var listeners = /* @__PURE__ */ new Set();
+	function getScope(scope) {
+		if (!registry[scope]) registry[scope] = {
+			counter: 1,
+			notes: {},
+			order: [],
+			display: "inline"
+		};
+		return registry[scope];
+	}
+	/**
+	* Set the display mode for a scope.
+	* @param {string} scope
+	* @param {'inline'|'sheet'} mode - 'inline' = scroll to definition, 'sheet' = open in bottom sheet
+	*/
+	function setDisplayMode(scope, mode) {
+		const s = getScope(scope);
+		s.display = mode;
+		notify();
+	}
+	/**
+	* Get the display mode for a scope.
+	* @param {string} scope
+	* @returns {'inline'|'sheet'}
+	*/
+	function getDisplayMode(scope = DEFAULT_SCOPE) {
+		const s = registry[scope];
+		return s ? s.display : "inline";
+	}
+	/**
+	* Get the definition for a note in a scope.
+	* @param {string} noteId
+	* @param {string} scope
+	* @returns {string}
+	*/
+	function getDefinition(noteId, scope = DEFAULT_SCOPE) {
+		const s = registry[scope];
+		if (!s || !s.notes[noteId]) return "";
+		return s.notes[noteId].definition;
+	}
+	/**
+	* Register a note reference.
+	* @param {string} noteId - Unique note identifier (shared for same definition)
+	* @param {string} definition - The note definition text (HTML allowed)
+	* @param {string} scope - The scope for numbering (default: 'page')
+	* @returns {{ number: number, refElementId: string }} The assigned number and element id
+	*/
+	function registerRef(noteId, definition = "", scope = DEFAULT_SCOPE) {
+		const s = getScope(scope);
+		if (!s.notes[noteId]) {
+			s.notes[noteId] = {
+				definition: definition || "",
+				refs: []
+			};
+			s.order.push(noteId);
+		}
+		if (definition && !s.notes[noteId].definition) s.notes[noteId].definition = definition;
+		const number = s.counter++;
+		const refElementId = `qc-note-ref-${noteId}-${number}`;
+		s.notes[noteId].refs.push({
+			number,
+			refElementId
+		});
+		notify();
+		return {
+			number,
+			refElementId
+		};
+	}
+	/**
+	* Unregister a note reference (cleanup on disconnect).
+	* @param {string} noteId
+	* @param {number} number
+	* @param {string} scope
+	*/
+	function unregisterRef(noteId, number, scope = DEFAULT_SCOPE) {
+		const s = registry[scope];
+		if (!s || !s.notes[noteId]) return;
+		s.notes[noteId].refs = s.notes[noteId].refs.filter((r) => r.number !== number);
+		if (s.notes[noteId].refs.length === 0) {
+			delete s.notes[noteId];
+			s.order = s.order.filter((id) => id !== noteId);
+		}
+		notify();
+	}
+	/**
+	* Get all notes for a scope, in order.
+	* @param {string} scope
+	* @returns {Array<{ noteId: string, definition: string, refs: Array<{ number: number, refElementId: string }> }>}
+	*/
+	function getNotes(scope = DEFAULT_SCOPE) {
+		const s = registry[scope];
+		if (!s) return [];
+		return s.order.map((noteId) => ({
+			noteId,
+			definition: s.notes[noteId].definition,
+			refs: s.notes[noteId].refs
+		}));
+	}
+	/**
+	* Subscribe to registry changes.
+	* @param {Function} callback
+	* @returns {Function} Unsubscribe function
+	*/
+	function subscribe(callback) {
+		listeners.add(callback);
+		return () => listeners.delete(callback);
+	}
+	function notify() {
+		listeners.forEach((fn) => fn());
+	}
+	//#endregion
+	//#region src/sdg/components/Note/NoteRef.svelte
+	var root$1 = /* @__PURE__ */ from_html(`<span class="qc-note-term"></span>`);
+	var root_1$1 = /* @__PURE__ */ from_html(`<a role="button" tabindex="0" aria-haspopup="dialog"><!><span class="qc-note-number-wrapper"><span class="qc-note-number" aria-hidden="true"> </span></span></a>`);
+	var root_2$1 = /* @__PURE__ */ from_html(`<a role="doc-noteref"><!><span class="qc-note-number-wrapper"><span class="qc-note-number" aria-hidden="true"> </span></span></a>`);
+	function NoteRef($$anchor, $$props) {
+		push($$props, true);
+		const lang = Utils.getPageLanguage();
+		let noteId = prop($$props, "noteId", 7), definition = prop($$props, "definition", 7, ""), scope = prop($$props, "scope", 7, "page"), term = prop($$props, "term", 7, "");
+		let number = /* @__PURE__ */ state(0);
+		let refElementId = /* @__PURE__ */ state("");
+		let displayMode = /* @__PURE__ */ state("inline");
+		let isMobile = /* @__PURE__ */ state(false);
+		let unsubscribeRegistry;
+		let mobileMediaQuery;
+		const MOBILE_BREAKPOINT = parseInt(grid_default.lg.breakpoint.sm.replace("px", ""));
+		const i18n = lang === "en" ? {
+			noteLabel: (n) => `Note number ${n}`,
+			noteWithTerm: (t, n) => `${t}, note number ${n}`,
+			opensSheet: "opens in a panel"
+		} : {
+			noteLabel: (n) => `Note num\u00e9ro ${n}`,
+			noteWithTerm: (t, n) => `${t}, note num\u00e9ro ${n}`,
+			opensSheet: "ouvre un panneau"
+		};
+		let opensAsSheet = /* @__PURE__ */ user_derived(() => get(displayMode) === "sheet" || get(isMobile));
+		let accessibleLabel = /* @__PURE__ */ user_derived(() => {
+			const base = term() ? i18n.noteWithTerm(stripHtml(term()), get(number)) : i18n.noteLabel(get(number));
+			return get(opensAsSheet) ? `${base} (${i18n.opensSheet})` : base;
+		});
+		function stripHtml(html) {
+			const tmp = document.createElement("div");
+			tmp.innerHTML = html;
+			return (tmp.textContent || tmp.innerText || "").trim();
+		}
+		function activate(e) {
+			if (get(opensAsSheet)) {
+				e.preventDefault();
+				openSheet();
+			}
+		}
+		function handleKeydown(e) {
+			if (!get(opensAsSheet)) return;
+			if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+				e.preventDefault();
+				openSheet();
+			}
+		}
+		function openSheet() {
+			const noteDefinition = getDefinition(noteId(), scope()) || definition();
+			let sheet = document.getElementById("qc-note-sheet-singleton");
+			if (!sheet) {
+				sheet = document.createElement("qc-sheet");
+				sheet.id = "qc-note-sheet-singleton";
+				document.body.appendChild(sheet);
+			}
+			sheet.setAttribute("description", noteDefinition);
+			requestAnimationFrame(() => sheet.show?.());
+		}
+		onMount(() => {
+			const result = registerRef(noteId(), definition(), scope());
+			set(number, result.number, true);
+			set(refElementId, result.refElementId, true);
+			set(displayMode, getDisplayMode(scope()), true);
+			unsubscribeRegistry = subscribe(() => {
+				set(displayMode, getDisplayMode(scope()), true);
+			});
+			if (window.matchMedia) {
+				mobileMediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+				set(isMobile, mobileMediaQuery.matches, true);
+				mobileMediaQuery.addEventListener("change", handleBreakpointChange);
+			}
+		});
+		function handleBreakpointChange(e) {
+			set(isMobile, e.matches, true);
+		}
+		onDestroy(() => {
+			if (get(number) && noteId()) unregisterRef(noteId(), get(number), scope());
+			unsubscribeRegistry?.();
+			mobileMediaQuery?.removeEventListener("change", handleBreakpointChange);
+		});
+		var $$exports = {
+			get noteId() {
+				return noteId();
+			},
+			set noteId($$value) {
+				noteId($$value);
+				flushSync();
+			},
+			get definition() {
+				return definition();
+			},
+			set definition($$value = "") {
+				definition($$value);
+				flushSync();
+			},
+			get scope() {
+				return scope();
+			},
+			set scope($$value = "page") {
+				scope($$value);
+				flushSync();
+			},
+			get term() {
+				return term();
+			},
+			set term($$value = "") {
+				term($$value);
+				flushSync();
+			}
+		};
+		var fragment = comment();
+		var node = first_child(fragment);
+		var consequent_3 = ($$anchor) => {
+			var fragment_1 = comment();
+			var node_1 = first_child(fragment_1);
+			var consequent_1 = ($$anchor) => {
+				var a = root_1$1();
+				let classes;
+				var node_2 = child(a);
+				var consequent = ($$anchor) => {
+					var span = root$1();
+					html(span, term, true);
+					reset(span);
+					append($$anchor, span);
+				};
+				if_block(node_2, ($$render) => {
+					if (term()) $$render(consequent);
+				});
+				var span_1 = sibling(node_2);
+				var text = only_child(child(span_1), true);
+				reset(span_1);
+				reset(a);
+				template_effect(() => {
+					set_attribute(a, "id", get(refElementId));
+					set_attribute(a, "aria-label", get(accessibleLabel));
+					classes = set_class(a, 1, "", null, classes, { "qc-note-has-term": !!term() });
+					set_text(text, get(number));
+				});
+				delegated("click", a, activate);
+				delegated("keydown", a, handleKeydown);
+				append($$anchor, a);
+			};
+			var alternate = ($$anchor) => {
+				var a_1 = root_2$1();
+				let classes_1;
+				var node_3 = child(a_1);
+				var consequent_2 = ($$anchor) => {
+					var span_3 = root$1();
+					html(span_3, term, true);
+					reset(span_3);
+					append($$anchor, span_3);
+				};
+				if_block(node_3, ($$render) => {
+					if (term()) $$render(consequent_2);
+				});
+				var span_4 = sibling(node_3);
+				var text_1 = only_child(child(span_4), true);
+				reset(span_4);
+				reset(a_1);
+				template_effect(() => {
+					set_attribute(a_1, "href", `#qc-note-def-${noteId() ?? ""}-${get(number) ?? ""}`);
+					set_attribute(a_1, "id", get(refElementId));
+					set_attribute(a_1, "aria-label", get(accessibleLabel));
+					classes_1 = set_class(a_1, 1, "", null, classes_1, { "qc-note-has-term": !!term() });
+					set_text(text_1, get(number));
+				});
+				delegated("click", a_1, activate);
+				append($$anchor, a_1);
+			};
+			if_block(node_1, ($$render) => {
+				if (get(opensAsSheet)) $$render(consequent_1);
+				else $$render(alternate, -1);
+			});
+			append($$anchor, fragment_1);
+		};
+		if_block(node, ($$render) => {
+			if (get(number) > 0) $$render(consequent_3);
+		});
+		append($$anchor, fragment);
+		return pop($$exports);
+	}
+	delegate(["click", "keydown"]);
+	create_custom_element(NoteRef, {
+		noteId: {},
+		definition: {},
+		scope: {},
+		term: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Note/NoteRefWC.svelte
+	var rest_excludes$1 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
+	function NoteRefWC($$anchor, $$props) {
+		let props = /* @__PURE__ */ rest_props($$props, rest_excludes$1);
+		NoteRef($$anchor, spread_props(() => props));
+	}
+	customElements.define("qc-note-ref", create_custom_element(NoteRefWC, {
+		noteId: {
+			attribute: "note-id",
+			type: "String"
+		},
+		definition: {
+			attribute: "definition",
+			type: "String"
+		},
+		scope: {
+			attribute: "scope",
+			type: "String"
+		},
+		term: {
+			attribute: "term",
+			type: "String"
+		}
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/Note/NoteList.svelte
+	var root = /* @__PURE__ */ from_html(`<a class="qc-note-backlink"><span class="qc-note-backlink-number" aria-hidden="true"> </span> <span class="qc-note-backlink-icon"><!></span></a>`);
+	var root_1 = /* @__PURE__ */ from_html(`<span class="qc-note-backlinks"></span> <span class="qc-note-definition"></span>`, 1);
+	var root_2 = /* @__PURE__ */ from_html(`<h2 class="qc-note-list-title"> </h2>`);
+	var root_3 = /* @__PURE__ */ from_html(`<p class="qc-note-list qc-note-list-single" role="doc-footnote"><!></p>`);
+	var root_4 = /* @__PURE__ */ from_html(`<li role="doc-footnote"><!></li>`);
+	var root_5 = /* @__PURE__ */ from_html(`<ol class="qc-note-list" role="list"></ol>`);
+	var root_6 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
+	function NoteList($$anchor, $$props) {
+		push($$props, true);
+		const noteContent = ($$anchor, note = noop) => {
+			var fragment = root_1();
+			var span = first_child(fragment);
+			each(span, 21, () => note().refs, (ref) => ref.number, ($$anchor, ref) => {
+				var a = root();
+				var span_1 = child(a);
+				var text = only_child(span_1, true);
+				var span_2 = sibling(span_1, 2);
+				Icon(child(span_2), {
+					type: "arrow-up",
+					color: "blue-piv",
+					size: "xs"
+				});
+				reset(span_2);
+				reset(a);
+				template_effect(() => {
+					set_attribute(a, "id", `qc-note-def-${note().noteId ?? ""}-${get(ref).number ?? ""}`);
+					set_attribute(a, "href", `#${get(ref).refElementId ?? ""}`);
+					set_attribute(a, "aria-label", `${returnLabel} ${get(ref).number ?? ""}`);
+					set_text(text, get(ref).number);
+				});
+				append($$anchor, a);
+			});
+			reset(span);
+			var span_3 = sibling(span, 2);
+			html(span_3, () => note().definition, true);
+			reset(span_3);
+			append($$anchor, fragment);
+		};
+		const lang = Utils.getPageLanguage();
+		let scope = prop($$props, "scope", 7, "page"), display = prop($$props, "display", 7, "inline"), title = prop($$props, "title", 7, "");
+		const returnLabel = lang === "fr" ? "Retour à l’appel de note numéro" : "Return to note reference number";
+		const defaultListLabel = lang === "fr" ? "Notes et références" : "Notes and references";
+		let notes = /* @__PURE__ */ state(proxy([]));
+		let unsubscribe;
+		onMount(() => {
+			setDisplayMode(scope(), display());
+			set(notes, getNotes(scope()), true);
+			unsubscribe = subscribe(() => {
+				set(notes, getNotes(scope()), true);
+			});
+		});
+		onDestroy(() => unsubscribe?.());
+		var $$exports = {
+			get scope() {
+				return scope();
+			},
+			set scope($$value = "page") {
+				scope($$value);
+				flushSync();
+			},
+			get display() {
+				return display();
+			},
+			set display($$value = "inline") {
+				display($$value);
+				flushSync();
+			},
+			get title() {
+				return title();
+			},
+			set title($$value = "") {
+				title($$value);
+				flushSync();
+			}
+		};
+		var fragment_1 = comment();
+		var node_1 = first_child(fragment_1);
+		var consequent_2 = ($$anchor) => {
+			var fragment_2 = root_6();
+			var node_2 = first_child(fragment_2);
+			var consequent = ($$anchor) => {
+				var h2 = root_2();
+				var text_1 = only_child(h2, true);
+				template_effect(() => set_text(text_1, title()));
+				append($$anchor, h2);
+			};
+			if_block(node_2, ($$render) => {
+				if (title()) $$render(consequent);
+			});
+			var node_3 = sibling(node_2, 2);
+			var consequent_1 = ($$anchor) => {
+				var p = root_3();
+				var node_4 = child(p);
+				noteContent(node_4, () => get(notes)[0]);
+				reset(p);
+				append($$anchor, p);
+			};
+			var alternate = ($$anchor) => {
+				var ol = root_5();
+				each(ol, 21, () => get(notes), (note) => note.noteId, ($$anchor, note) => {
+					var li = root_4();
+					var node_5 = child(li);
+					noteContent(node_5, () => get(note));
+					reset(li);
+					append($$anchor, li);
+				});
+				reset(ol);
+				template_effect(() => set_attribute(ol, "aria-label", title() || defaultListLabel));
+				append($$anchor, ol);
+			};
+			if_block(node_3, ($$render) => {
+				if (get(notes).length === 1) $$render(consequent_1);
+				else $$render(alternate, -1);
+			});
+			append($$anchor, fragment_2);
+		};
+		if_block(node_1, ($$render) => {
+			if (display() !== "sheet" && get(notes).length > 0) $$render(consequent_2);
+		});
+		append($$anchor, fragment_1);
+		return pop($$exports);
+	}
+	create_custom_element(NoteList, {
+		scope: {},
+		display: {},
+		title: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Note/NoteListWC.svelte
+	var rest_excludes = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
+	function NoteListWC($$anchor, $$props) {
+		let props = /* @__PURE__ */ rest_props($$props, rest_excludes);
+		NoteList($$anchor, spread_props(() => props));
+	}
+	customElements.define("qc-note-list", create_custom_element(NoteListWC, {
+		scope: {
+			attribute: "scope",
+			type: "String"
+		},
+		display: {
+			attribute: "display",
+			type: "String"
+		},
+		title: {
+			attribute: "title",
+			type: "String"
+		}
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/Sheet/SheetWC.svelte
+	function SheetWC($$anchor, $$props) {
+		push($$props, true);
+		let sheetTitle = prop($$props, "sheetTitle", 7, ""), description = prop($$props, "description", 7, "");
+		var $$exports = {
+			get sheetTitle() {
+				return sheetTitle();
+			},
+			set sheetTitle($$value = "") {
+				sheetTitle($$value);
+				flushSync();
+			},
+			get description() {
+				return description();
+			},
+			set description($$value = "") {
+				description($$value);
+				flushSync();
+			}
+		};
+		Sheet($$anchor, {
+			get description() {
+				return description();
+			},
+			host: $$props.$$host,
+			get title() {
+				return sheetTitle();
+			}
+		});
+		return pop($$exports);
+	}
+	customElements.define("qc-sheet", create_custom_element(SheetWC, {
+		sheetTitle: {
+			attribute: "title",
+			type: "String"
+		},
+		description: {
+			attribute: "description",
+			type: "String"
+		}
+	}, [], [], void 0, (customElementConstructor) => {
+		return class extends customElementConstructor {
+			connectedCallback() {
+				const titleValue = this.getAttribute("title");
+				if (titleValue) {
+					this.removeAttribute("title");
+					this.sheetTitle = titleValue;
+				}
+				super.connectedCallback();
+			}
+		};
+	}));
 	//#endregion
 	//#region src/sdg/_dark-theme.js
 	if (window.matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.classList.add("qc-dark-theme");

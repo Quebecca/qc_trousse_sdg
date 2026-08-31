@@ -12,12 +12,12 @@ test('Tooltip baseline', {
         await page.evaluate(prepareSnapshotForPosition, position);
         await expect(page).toHaveScreenshot(`tooltip-${position}.png`, {fullPage: true});
     }
-    await page.pause()
     await page.goto(`file://${htmlFilePath}`);
     await page.evaluate(prepareSnapshotForModale);
     await expect(page).toHaveScreenshot(`tooltip-feuille.png`, {fullPage: true});
-    await page.pause()
-    await page.getByRole('button', { name: 'Fermer l\'aide contextuelle' }).click();
+    // Le mode modal du tooltip est désormais rendu par le composant Sheet :
+    // le bouton de fermeture porte l'aria-label « Fermer la feuille ».
+    await page.getByRole('button', { name: 'Fermer la feuille' }).click();
     await page.evaluate(changeIcon, "question");
     await expect(page).toHaveScreenshot(`tooltip-question-mark.png`, {fullPage: true});
 });

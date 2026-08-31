@@ -1,0 +1,157 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+@mixin flex-center {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+qc-note-ref {
+  // L'appel de note est toujours un lien <a> : lien d'ancrage en mode « inline »,
+  // ou <a role="button"> (sans href) en mode « feuille » (mobile / display="sheet").
+  a {
+    @include flex-center;
+    align-items: flex-end;
+    text-decoration: none;
+    // Décalage lors du scroll vers l'appel de note (barre sticky éventuelle)
+    scroll-margin-top: token-value(spacer, xl);
+
+    // Mode feuille : le <a role="button"> n'a pas de href, donc pas de curseur
+    // main par défaut. On le rétablit pour signaler qu'il est cliquable.
+    &:not([href]) {
+      cursor: pointer;
+    }
+
+    // Variante « terme à définir » : soulignement pointillé sous tout le lien
+    &.qc-note-has-term {
+      position: relative;
+
+      // Couleur du trait dashed, surchargeable via la custom property
+      // `--qc-note-term-underline-color`
+      --qc-note-term-underline-color: #{token-value(color blue piv)};
+
+      // Trait dashed dessiné sous tout le lien (terme + zone 24)
+      // Dashes 3px, gap 3px
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: repeating-linear-gradient(
+                        to right,
+                        var(--qc-note-term-underline-color) 0,
+                        var(--qc-note-term-underline-color) rem(3),
+                        transparent rem(3),
+                        transparent rem(6)
+        );
+      }
+
+      .qc-note-term {
+        color: token-value(color text primary);
+      }
+    }
+
+    .qc-note-number-wrapper {
+      @include flex-center;
+      min-width: token-value(spacer, md);
+      min-height: token-value(spacer, md);
+    }
+
+    .qc-note-number {
+      @include flex-center;
+      font-size: rem(12);
+      font-weight: token-value(font weight bold);
+      line-height: 0;
+      background-color: token-value(color blue pale);
+      color: token-value(color blue piv);
+      min-width: token-value(spacer, sm);
+      min-height: token-value(spacer, sm);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Liste des définitions en bas de page (qc-note-list)
+// ---------------------------------------------------------------------------
+qc-note-list {
+  display: block;
+  margin-bottom: token-value(spacer, lg);
+
+  @include media-mobile() {
+    display: none;
+  }
+
+  // Deux listes de notes qui se suivent (ex. notes de données + notes de
+  // contenu sous un tableau) : la seconde ne reprend pas la marge du haut,
+  // pour éviter un espacement doublé entre les deux blocs.
+  & + & .qc-note-list {
+    margin-top: 0;
+  }
+
+  .qc-note-list-title {
+    @include content-font(md, bold);
+    border-top: 1px solid token-value(color grey light);
+    padding-top: token-value(spacer, lg);
+    margin-top: token-value(spacer, lg);
+    margin-bottom: token-value(spacer, xs);
+  }
+
+  .qc-note-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: rem(50);
+    margin-top: token-value(spacer sm);
+
+    // Disposition d'une entrée de note : liens de retour + définition sur une
+    // même ligne. S'applique aux items de liste (<li>) et au cas d'une note
+    // unique rendue en paragraphe (<p class="qc-note-list-single">).
+    li,
+    &.qc-note-list-single {
+      @include content-font(sm);
+      display: flex;
+      gap: rem(2);
+      align-items: baseline;
+    }
+
+    li {
+      margin-bottom: rem(4);
+      margin-top: 0;
+    }
+  }
+
+  .qc-note-backlinks {
+    // Garde les numéros de retour (1, 2, …) côte à côte sur une même ligne.
+    // Sans ça, ce conteneur peut rétrécir sous la pression d'une définition
+    // longue et faire wrapper les backlinks les uns sous les autres.
+    display: inline-flex;
+    flex-shrink: 0;
+
+    // Lien de retour : numéro + icône flèche. C'est aussi la cible d'ancre
+    // depuis l'appel de note (option accessible : focus sur un élément opérable).
+    .qc-note-backlink {
+      @include content-font(sm, bold);
+      display: inline-flex;
+      align-items: center;
+      gap: rem(2);
+      color: token-value(color blue dark);
+      text-decoration: none;
+      // Décalage lors du scroll vers la définition (barre sticky éventuelle)
+      scroll-margin-top: token-value(spacer, xl);
+
+      .qc-note-backlink-number {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    // Boîte de l'icône flèche (zone cliquable 24x24)
+    .qc-note-backlink-icon {
+      @include flex-center;
+      min-width: token-value(spacer, md);
+      min-height: token-value(spacer, md);
+    }
+  }
+}

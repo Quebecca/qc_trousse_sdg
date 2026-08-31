@@ -2,6 +2,7 @@
     import {Utils} from "../utils";
     import {onMount, tick} from "svelte";
     import Icon from "../../bases/Icon/Icon.svelte";
+    import Sheet from "../Sheet/Sheet.svelte";
     import gridConfig from '../../../sdg/scss/settings/grid.json';
     let {
         text,
@@ -26,7 +27,7 @@
         tooltipId = Utils.generateId("tooltip"),
         tooltipContainer,
         tooltipButton = $state(),
-        modale = $state(),
+        sheet = $state(),
         displayPopover = $state(false),
         visiblePopover = $state(false),
         displayModal = $state(false),
@@ -50,7 +51,6 @@
             }
         })
     ;
-    $inspect("modalFlag",modalFlag)
 
     function hasProperty(property, slotExist, snippet) {
         if (property) return true;
@@ -79,12 +79,9 @@
     onMount(_ => {
         tooltipContainer
             .addEventListener("click", markInnerEvent)
-        $inspect("sm bp" , getSmBreakpoint(gridConfig))
         setIsMobile()
         window.addEventListener("resize", setIsMobile)
     })
-
-    $inspect("isMobile", mobileFlag)
 
     $effect(_ => {
         if (!displayPopover) {
@@ -118,28 +115,16 @@
     }
 
     function closeModale() {
-        if (!modale) return;
+        if (!sheet) return;
 
-        modale.close();
-        toggleModal();
+        sheet.close();
         displayModal = false;
-    }
-
-    function toggleModal() {
-        if (!modale) return;
-        const body = document.querySelector("body");
-        if (modale.open) {
-            body.style.overflow = "hidden";
-        }
-        else {
-            body.style.overflow = ""
-        }
     }
 
     async function showModal(e) {
         displayModal = true;
         await tick()
-        modale.showModal();
+        sheet?.show();
     }
 
     function getSmBreakpoint(gridConfig) {
@@ -388,18 +373,12 @@
          {@render tooltipPanelSnippet("popover")}
          {/if}
          {#if modalFlag && displayModal}
-         <dialog bind:this={modale}
-                 ontoggle={toggleModal}
-                 class:qc-desktop={!mobileFlag}
-                 onclick={e => {
-                     if (e.clickIntoPanel) return;
-                     closeModale();
-                 }}
-            >
-            <div class="qc-container">
-                {@render tooltipPanelSnippet("modal")}
-            </div>
-         </dialog>
+         <Sheet bind:this={sheet} title={title}>
+             {#snippet children()}
+                 {@html description}
+                 {@render descriptionSlot()}
+             {/snippet}
+         </Sheet>
          {/if}
      </div>
     {/if}
@@ -558,36 +537,6 @@
         top: 8px;
         line-height: 24px;
         height: 24px;
-    }
-
-    dialog {
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-        margin: 0;
-        padding: 0;
-        border: 1px solid var(--qc-color-grey-light);
-        background: var(--qc-color-background);
-
-        &.qc-desktop {
-            padding-top: 8px;
-        }
-
-        .qc-tooltip-panel {
-            visibility: visible!important;
-        }
-
-        &::backdrop {
-            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)
-        }
-
-        .qc-tooltip-xclose {
-            right: 0;
-        }
     }
 
     .qc-tooltip-panel {
