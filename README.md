@@ -115,11 +115,13 @@ Cf le guide GitHub : https://docs.github.com/fr/get-started.
 
 #### Installation
 
+> **Gestionnaire de paquets : `yarn` uniquement.** Ce dépôt est verrouillé sur yarn (champ `packageManager` + garde-fou `preinstall`). Un `yarn install` échouera volontairement avec un message invitant à utiliser yarn, afin d'éviter la dérive entre lockfiles. Activez yarn via Corepack (fourni avec Node.js) : `corepack enable` — la bonne version de yarn sera alors utilisée automatiquement.
+
 Une fois votre divergence créée :
 - Cloner le dépôt : `git clone <url-de-votre-divergence>`
 - Aller dans le dossier : `cd qc_trousse_sdg`.
-- Installer les dépendances Node.js : `npm install`.
-- Lancer la commande : `npm run dev`.
+- Installer les dépendances Node.js : `yarn install`.
+- Lancer la commande : `yarn dev`.
 
 Une fois cette commande lancée, toute modification d’un fichier dans `/src` est automatiquement compilée à la volée dans le répertoire `/public`.
 
@@ -127,7 +129,7 @@ Un lien vers la documentation de la trousse (`/public/index.html`) est affiché 
 
 #### Compilation pour la production
 
-Lancer la commande `npm run build` pour générer les fichiers CSS et JavaScript minifiés dans le répertoire `/dist`.
+Lancer la commande `yarn build` pour générer les fichiers CSS et JavaScript minifiés dans le répertoire `/dist`.
 
 ### Ajout de la trousse dans un projet existant
 
@@ -172,27 +174,27 @@ Les composants sont couverts par des tests de régression visuelle [Playwright](
 #### Lancer les tests
 
 ```bash
-npm run test [options]
+yarn test [options]
 ```
 
-La commande transmet les options à `playwright test`. Les options passées directement après `npm run test` sont interprétées par npm ; pour transmettre des options à Playwright, il faut les faire précéder de `--` :
+La commande transmet les options à `playwright test`. Avec yarn, les options passées après `yarn test` sont transmises directement à Playwright :
 
 ```bash
 # Toute la suite
-npm run test
+yarn test
 
 # Un seul navigateur
-npm run test -- --project=chromium
+yarn test --project=chromium
 
 # Filtrer par étiquette (voir plus bas)
-npm run test -- --grep @svelte
-npm run test -- --grep @alert
+yarn test --grep @svelte
+yarn test --grep @alert
 
 # Régénérer les images de référence après un changement visuel assumé
-npm run test -- --update-snapshots
+yarn test --update-snapshots
 
 # Interface interactive
-npm run test -- --ui
+yarn test --ui
 ```
 
 Le rapport HTML est généré dans `/playwright-report` (`npx playwright show-report` pour l’ouvrir).
@@ -201,14 +203,14 @@ Le rapport HTML est généré dans `/playwright-report` (`npx playwright show-re
 
 Chaque composant peut être rendu de deux façons dans la trousse : via son **composant web** (fixture `*Baseline.test.html`) et via son **composant Svelte** (fixture `*Svelte.test.html`). Les deux rendus doivent être visuellement identiques.
 
-Pour éviter de maintenir deux fichiers de test en double, **seuls les tests `*-baseline.spec.ts` sont écrits à la main**. Les tests `*-svelte.spec.ts` sont **générés automatiquement** à partir des baselines par le plugin Rollup `plugins/buildSvelteTests.js`, exécuté à chaque compilation de développement (`npm run dev`).
+Pour éviter de maintenir deux fichiers de test en double, **seuls les tests `*-baseline.spec.ts` sont écrits à la main**. Les tests `*-svelte.spec.ts` sont **générés automatiquement** à partir des baselines par le plugin Rollup `plugins/buildSvelteTests.js`, exécuté à chaque compilation de développement (`yarn dev`).
 
 La génération applique deux remplacements sur le contenu du baseline :
 
 - `Baseline.test.html` → `Svelte.test.html` (la fixture chargée) ;
 - toutes les occurrences de `baseline` → `svelte` (nom du fichier, titre des tests et **étiquettes `tag`**, p. ex. `@baseline` → `@svelte`).
 
-Le fichier généré est donc identique à son baseline, au mot `baseline` près, renommé partout. C’est ce qui garantit que les deux familles testent exactement le même scénario. Le plugin surveille les baselines (`addWatchFile`) : modifier un `*-baseline.spec.ts` régénère automatiquement son jumeau svelte tant que `npm run dev` tourne.
+Le fichier généré est donc identique à son baseline, au mot `baseline` près, renommé partout. C’est ce qui garantit que les deux familles testent exactement le même scénario. Le plugin surveille les baselines (`addWatchFile`) : modifier un `*-baseline.spec.ts` régénère automatiquement son jumeau svelte tant que `yarn dev` tourne.
 
 > ⚠️ Ne pas éditer les fichiers `*-svelte.spec.ts` à la main : ils sont écrasés à la prochaine compilation. Toute modification doit se faire dans le `*-baseline.spec.ts` correspondant.
 
@@ -228,7 +230,7 @@ Certains composants n’ont pas d’équivalent Svelte, ou leur test svelte ne d
 ]
 ```
 
-Pour ajouter une exception, il suffit d’ajouter le glob du baseline concerné à ce fichier ; à l’inverse, retirer un glob de la liste active la génération du jumeau svelte au prochain `npm run dev`.
+Pour ajouter une exception, il suffit d’ajouter le glob du baseline concerné à ce fichier ; à l’inverse, retirer un glob de la liste active la génération du jumeau svelte au prochain `yarn dev`.
 
 ## Historique
 

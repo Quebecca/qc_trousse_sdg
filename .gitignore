@@ -4,6 +4,10 @@
 node_modules/
 /sandbox
 
+# Gestionnaire de paquets : yarn uniquement (voir packageManager + preinstall).
+# package-lock.json ne doit pas être commité pour éviter la dérive avec yarn.lock.
+package-lock.json
+
 /dist/qc-sdg-design-tokens.js
 /public/js/rewrite-bs.js
 /dist/js/qc-sdg-design-tokens.js

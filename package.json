@@ -3,7 +3,9 @@
   "version": "1.5.2",
   "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
+  "packageManager": "yarn@1.22.22",
   "scripts": {
+    "preinstall": "npx only-allow yarn",
     "dev": "rollup -c -w --bundleConfigAsCjs",
     "preversion": "./scripts/check-release-note.sh",
     "version": "./scripts/compile-doc.sh",
