@@ -2852,3 +2852,91 @@ a.qc-button {
     scrollbar-width: thin;
   }
 }
+
+.qc-lozenge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 28.8rem;
+  min-width: 3.2rem;
+  padding: 0.2rem var(--qc-spacer-xs);
+  border-radius: 99.9rem;
+  font-size: var(--qc-font-size-sm);
+  line-height: var(--qc-line-height-sm);
+  font-weight: var(--qc-font-weight-semi-bold);
+  font-family: var(--qc-font-family-content);
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: var(--qc-color-blue-pale);
+  color: var(--qc-color-blue-piv);
+}
+.qc-lozenge.qc-general {
+  background-color: var(--qc-color-blue-pale);
+  color: var(--qc-color-blue-piv);
+}
+.qc-lozenge.qc-success {
+  background-color: var(--qc-color-green-pale);
+  color: var(--qc-color-green-dark);
+}
+.qc-lozenge.qc-error {
+  background-color: var(--qc-color-pink-pale);
+  color: var(--qc-color-red-dark);
+}
+.qc-lozenge.qc-warning {
+  background-color: var(--qc-color-yellow-pale);
+  color: var(--qc-color-grey-dark);
+}
+.qc-lozenge.qc-complementary {
+  background-color: var(--qc-color-grey-pale);
+  color: var(--qc-color-grey-dark);
+}
+.qc-lozenge .qc-lozenge-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qc-lozenge:has(sup, sub):not(:has(.qc-icon)) {
+  display: inline-block;
+}
+.qc-lozenge .qc-icon-font {
+  flex-shrink: 0;
+}
+.qc-lozenge qc-icon {
+  line-height: 0;
+  font-weight: var(--qc-font-weight-medium);
+}
+.qc-lozenge .qc-icon-font {
+  color: var(--qc-color-blue-piv);
+}
+.qc-lozenge.qc-general .qc-icon-font {
+  color: var(--qc-color-blue-piv);
+}
+.qc-lozenge.qc-success .qc-icon-font {
+  color: var(--qc-color-green-dark);
+}
+.qc-lozenge.qc-error .qc-icon-font {
+  color: var(--qc-color-red-dark);
+}
+.qc-lozenge.qc-warning .qc-icon-font {
+  color: var(--qc-color-grey-dark);
+}
+.qc-lozenge.qc-complementary .qc-icon-font {
+  color: var(--qc-color-grey-dark);
+}
+.qc-lozenge + .qc-lozenge {
+  margin-left: var(--qc-spacer-xs);
+}
+
+.qc-lozenge-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  vertical-align: middle;
+  gap: var(--qc-spacer-xs);
+}
+.qc-lozenge-group .qc-lozenge {
+  margin: 0;
+}
+.qc-lozenge-group .qc-lozenge + .qc-lozenge {
+  margin-left: 0;
+}
