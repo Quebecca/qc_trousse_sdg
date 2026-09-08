@@ -72,7 +72,11 @@ const scssOptions = {
         .process(css, {
             from: undefined
         })
-        .then((result) => result.css),
+        // dart-sass (mode compressed) préfixe un BOM UTF-8 dès que le CSS
+        // contient du non-ASCII (glyphes Material, accents). postcss >= 8.5.26
+        // le conserve (postcss <= 8.5.10 le retirait), d'où un diff récurrent
+        // sur les dist/css. On le retire ici pour un build reproductible.
+        .then((result) => result.css.replace(/^\uFEFF/, '')),
     sourceMap: false,
 
     prependData: `
