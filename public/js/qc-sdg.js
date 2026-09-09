@@ -13302,20 +13302,20 @@
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
 
-	var root$k = add_locations(from_html(`<span hidden=""><!></span>`), ExternalLink[FILENAME], [[110, 0]]);
-
 	function ExternalLink($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		let externalIconAlt = prop($$props, 'externalIconAlt', 23, () => strict_equals(Utils.getPageLanguage(), 'fr')
-				? "Ce lien dirige vers un autre site."
-				: "This link directs to another site."),
+		let // Attribut `img-alt` (API publique). Par défaut, l'alternative de l'icône est
+			// posée en CSS (content-alt bilingue, voir _links.scss). Si l'intégrateur
+			// fournit `img-alt`, on l'applique via un aria-label sur le lien (voir applyCustomAlt).
+			externalIconAlt = prop($$props, 'externalIconAlt', 7, ''),
 			links = prop($$props, 'links', 23, () => []),
 			isUpdating = prop($$props, 'isUpdating', 15, false),
 			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
 
-		let imgElement = tag(state(void 0), 'imgElement');
+		// Liens dont on a nous-mêmes posé l'aria-label (pour ne pas écraser un aria-label auteur).
+		const ownAriaLinks = new WeakSet();
 
 		function createVisibleNodesTreeWalker(link) {
 			return document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
@@ -13346,9 +13346,13 @@
 			});
 		}
 
-		function addExternalLinkIcon(link) {
-			// Si le lien contient déjà une icône ou un img-wrap (y compris sérialisé par innerHTML), ne rien faire
-			if (link.querySelector('.qc-ext-link-img') || link.querySelector('.img-wrap')) {
+		// Enrobe le dernier mot visible du lien dans un <span class="qc-ext-link-text">.
+		// Aucune icône n'est injectée : elle est posée en ::after CSS sur ce span.
+		// Le span est `white-space: nowrap` (CSS), ce qui soude l'icône ::after au
+		// dernier mot -> l'icône ne s'orpheline jamais en début de ligne.
+		function wrapLastWord(link) {
+			// Idempotence : déjà traité ?
+			if (link.querySelector('.qc-ext-link-text')) {
 				return;
 			}
 
@@ -13371,20 +13375,14 @@
 			}
 
 			const prefix = match[1] || "";
+
+			// Points de coupure doux dans un dernier mot long (URL, mot composé)
 			const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
+
 			const span = document.createElement('span');
 
-			span.classList.add('img-wrap');
-
-			// Cloner l'icône et injecter le textContent (codepoint Unicode pour le mode font)
-			const iconClone = get(imgElement).cloneNode(true);
-
-			if (!iconClone.textContent && get(imgElement).textContent) {
-				iconClone.textContent = get(imgElement).textContent;
-			}
-
-			span.innerHTML = `${lastWord}`;
-			span.appendChild(iconClone);
+			span.classList.add('qc-ext-link-text');
+			span.innerHTML = lastWord;
 
 			if (prefix) {
 				lastTextNode.textContent = prefix;
@@ -13394,8 +13392,29 @@
 			}
 		}
 
+		// Applique un img-alt personnalisé via aria-label sur le lien.
+		// aria-label remplace le nom accessible calculé : le content-alt du ::after n'est donc
+		// plus annoncé (pas de double annonce), et on préserve le texte visible dans le nom
+		// (WCAG 2.5.3 « Label in Name »). Sans img-alt, on ne touche à rien -> le content-alt
+		// CSS bilingue fournit l'alternative par défaut.
+		function applyCustomAlt(link) {
+			if (!externalIconAlt()) {
+				return;
+			}
+
+			// Ne pas écraser un aria-label posé par l'intégrateur lui-même.
+			if (link.hasAttribute('aria-label') && !ownAriaLinks.has(link)) {
+				return;
+			}
+
+			const text = link.textContent.replace(/\s+/g, ' ').trim();
+
+			link.setAttribute('aria-label', `${text} ${externalIconAlt()}`.trim());
+			ownAriaLinks.add(link);
+		}
+
 		user_effect(() => {
-			if (nestedExternalLinks() || links().length <= 0 || !get(imgElement)) {
+			if (nestedExternalLinks() || links().length <= 0) {
 				return;
 			}
 
@@ -13403,7 +13422,8 @@
 
 			tick().then(() => {
 				links().forEach((link) => {
-					addExternalLinkIcon(link);
+					wrapLastWord(link);
+					applyCustomAlt(link);
 				});
 
 				return tick();
@@ -13418,11 +13438,7 @@
 				return externalIconAlt();
 			},
 
-			set externalIconAlt(
-				$$value = Utils.getPageLanguage() === 'fr'
-					? "Ce lien dirige vers un autre site."
-					: "This link directs to another site."
-			) {
+			set externalIconAlt($$value = '') {
 				externalIconAlt($$value);
 				flushSync();
 			},
@@ -13454,35 +13470,6 @@
 				flushSync();
 			}
 		};
-
-		var span_1 = root$k();
-		var node_1 = child(span_1);
-
-		add_svelte_meta(
-			() => Icon(node_1, {
-				type: 'open_in_new',
-				size: '',
-				get alt() {
-					return externalIconAlt();
-				},
-				class: 'qc-ext-link-img',
-				get rootElement() {
-					return get(imgElement);
-				},
-
-				set rootElement($$value) {
-					set(imgElement, $$value, true);
-				}
-			}),
-			'component',
-			ExternalLink,
-			111,
-			4,
-			{ componentTag: 'Icon' }
-		);
-
-		reset(span_1);
-		append($$anchor, span_1);
 
 		return pop($$exports);
 	}

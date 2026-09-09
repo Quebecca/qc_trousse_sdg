@@ -814,25 +814,42 @@ a:active {
 a:active .qc-ext-link-text {
   text-decoration: none;
 }
-a .img-wrap {
+a .qc-ext-link-text {
   white-space: nowrap;
 }
 
-.qc-ext-link-img {
-  vertical-align: -0.17em;
+.qc-external-link .qc-ext-link-text::after {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
+  content: "\e89e"/"Ce lien dirige vers un autre site.";
+  text-rendering: optimizeLegibility;
+  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
+  display: inline-block;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  word-wrap: normal;
+  direction: ltr;
+  overflow: hidden;
   margin-left: 4px;
+  vertical-align: -0.17em;
+  transform: rotate(0);
+  text-decoration: none;
+  color: currentColor;
 }
-a:visited .qc-ext-link-img {
-  color: var(--qc-color-link-visited);
-}
-.img-wrap + .qc-ext-link-img {
-  display: none;
+
+.qc-external-link .qc-ext-link-text:not(:lang(fr))::after {
+  content: "\e89e"/"This link directs to another site.";
 }
 
 .qc-external-link .qc-button {
   gap: 0;
 }
-.qc-external-link .qc-button > .img-wrap::before {
+.qc-external-link .qc-button > .qc-ext-link-text::before {
   content: " ";
 }
 
