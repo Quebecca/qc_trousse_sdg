@@ -16,27 +16,51 @@ a {
   &:active {
     @include active-link();
   }
-  .img-wrap {
+  // Le dernier mot du lien externe est enrobé côté JS (qc-external-link).
+  // nowrap : soude le dernier mot à l'icône ::after -> l'icône ne s'orpheline jamais.
+  .qc-ext-link-text {
     white-space: nowrap;
   }
-
 }
-.qc-ext-link-img {
-  // Rendu en icon font Material Symbols (open_in_new, codepoint e89e)
-  vertical-align: -0.17em;
+
+// Icône « lien externe » (open_in_new, \e89e) posée en pseudo-élément CSS — plus
+// d'élément dans le DOM, plus de réservation CLS (présente dès le 1er paint).
+// display:inline-block => l'icône n'est PAS traversée par le souligné du lien ;
+// le nowrap du wrapper la maintient collée au dernier mot.
+// content-alt (/ "…") = nom accessible de l'icône, décliné par langue via :lang().
+.qc-external-link .qc-ext-link-text::after {
+  // Reproduit à l'identique le rendu de .qc-icon-font (ancienne icône injectée)
+  // pour ne pas altérer les baselines visuelles.
+  @include icon-font-base();
+  content: "\e89e" / "Ce lien dirige vers un autre site.";
+  text-rendering: optimizeLegibility;
+  font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
+  display: inline-block;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  word-wrap: normal;
+  direction: ltr;
+  overflow: hidden;
   margin-left: 4px;
-  a:visited & {
-    color: token-value(color, link, visited);
-  }
-
-  .img-wrap + & {
-    display: none;
-  }
+  vertical-align: -0.17em;
+  // rotate(0) identité : reproduit le chemin de rendu de .qc-icon-font
+  // (transform présent), sinon firefox rastérise le glyphe légèrement différemment.
+  transform: rotate(0);
+  text-decoration: none;
+  color: currentColor;
 }
 
+// Message anglais dès que la langue n'est pas le français (défaut = fr),
+// pour reproduire la sémantique d'origine (getPageLanguage()==='fr' ? fr : en).
+.qc-external-link .qc-ext-link-text:not(:lang(fr))::after {
+  content: "\e89e" / "This link directs to another site.";
+}
+
+// Lien externe dans un bouton : colle l'icône sans espace hérité
 .qc-external-link .qc-button {
   gap: 0;
-  > .img-wrap::before {
+  > .qc-ext-link-text::before {
     content: "\a0";
   }
 }

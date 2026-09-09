@@ -1,18 +1,18 @@
 <script>
-import {Utils} from "../utils";
-import Icon from "../../bases/Icon/Icon.svelte";
 import {tick} from "svelte";
 
 let {
-    externalIconAlt = Utils.getPageLanguage() === 'fr'
-        ? "Ce lien dirige vers un autre site."
-        : "This link directs to another site.",
+    // Attribut `img-alt` (API publique). Par défaut, l'alternative de l'icône est
+    // posée en CSS (content-alt bilingue, voir _links.scss). Si l'intégrateur
+    // fournit `img-alt`, on l'applique via un aria-label sur le lien (voir applyCustomAlt).
+    externalIconAlt = '',
     links = [],
     isUpdating = $bindable(false),
     nestedExternalLinks = false
 } = $props();
 
-let imgElement = $state();
+// Liens dont on a nous-mêmes posé l'aria-label (pour ne pas écraser un aria-label auteur).
+const ownAriaLinks = new WeakSet();
 
 function createVisibleNodesTreeWalker(link) {
     return document.createTreeWalker(
@@ -46,9 +46,13 @@ function createVisibleNodesTreeWalker(link) {
     );
 }
 
-function addExternalLinkIcon(link) {
-    // Si le lien contient déjà une icône ou un img-wrap (y compris sérialisé par innerHTML), ne rien faire
-    if (link.querySelector('.qc-ext-link-img') || link.querySelector('.img-wrap')) {
+// Enrobe le dernier mot visible du lien dans un <span class="qc-ext-link-text">.
+// Aucune icône n'est injectée : elle est posée en ::after CSS sur ce span.
+// Le span est `white-space: nowrap` (CSS), ce qui soude l'icône ::after au
+// dernier mot -> l'icône ne s'orpheline jamais en début de ligne.
+function wrapLastWord(link) {
+    // Idempotence : déjà traité ?
+    if (link.querySelector('.qc-ext-link-text')) {
         return;
     }
 
@@ -69,17 +73,12 @@ function addExternalLinkIcon(link) {
     }
 
     const prefix = match[1] || "";
+    // Points de coupure doux dans un dernier mot long (URL, mot composé)
     const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
 
     const span = document.createElement('span');
-    span.classList.add('img-wrap');
-    // Cloner l'icône et injecter le textContent (codepoint Unicode pour le mode font)
-    const iconClone = imgElement.cloneNode(true);
-    if (!iconClone.textContent && imgElement.textContent) {
-        iconClone.textContent = imgElement.textContent;
-    }
-    span.innerHTML = `${lastWord}`;
-    span.appendChild(iconClone);
+    span.classList.add('qc-ext-link-text');
+    span.innerHTML = lastWord;
 
     if (prefix) {
         lastTextNode.textContent = prefix;
@@ -89,8 +88,26 @@ function addExternalLinkIcon(link) {
     }
 }
 
+// Applique un img-alt personnalisé via aria-label sur le lien.
+// aria-label remplace le nom accessible calculé : le content-alt du ::after n'est donc
+// plus annoncé (pas de double annonce), et on préserve le texte visible dans le nom
+// (WCAG 2.5.3 « Label in Name »). Sans img-alt, on ne touche à rien -> le content-alt
+// CSS bilingue fournit l'alternative par défaut.
+function applyCustomAlt(link) {
+    if (!externalIconAlt) {
+        return;
+    }
+    // Ne pas écraser un aria-label posé par l'intégrateur lui-même.
+    if (link.hasAttribute('aria-label') && !ownAriaLinks.has(link)) {
+        return;
+    }
+    const text = link.textContent.replace(/\s+/g, ' ').trim();
+    link.setAttribute('aria-label', `${text} ${externalIconAlt}`.trim());
+    ownAriaLinks.add(link);
+}
+
 $effect(() => {
-    if (nestedExternalLinks || links.length <= 0 || !imgElement) {
+    if (nestedExternalLinks || links.length <= 0) {
         return;
     }
 
@@ -98,7 +115,8 @@ $effect(() => {
 
     tick().then(() => {
         links.forEach(link => {
-            addExternalLinkIcon(link);
+            wrapLastWord(link);
+            applyCustomAlt(link);
         });
         return tick();
     }).then(() => {
@@ -106,13 +124,3 @@ $effect(() => {
     });
 });
 </script>
-
-<span hidden>
-    <Icon
-            type="open_in_new"
-            size=""
-            alt={externalIconAlt}
-            bind:rootElement={imgElement}
-            class="qc-ext-link-img"
-    />
-</span>
