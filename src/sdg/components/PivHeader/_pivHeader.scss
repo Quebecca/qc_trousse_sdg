@@ -35,6 +35,15 @@ qc-piv-header {
   }
 }
 
+// Réservation CLS : avant l'upgrade du web-component, le contenu du bandeau est
+// construit dans le shadow DOM et le host n'a aucune hauteur réservée (≈21px),
+// puis il saute à sa hauteur finale (72px) une fois défini -> Cumulative Layout Shift.
+// On réserve la hauteur finale dès l'état :not(:defined) pour supprimer le shift.
+qc-piv-header:not(:defined) {
+  display: block;
+  min-height: rem(72);
+}
+
 .qc-piv-header {
   color: map.get($colors, white);
   container-type: normal;
