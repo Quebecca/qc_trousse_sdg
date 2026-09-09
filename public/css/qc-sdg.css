@@ -1404,6 +1404,11 @@ qc-piv-header {
   background-color: #095797;
   width: 100%;
 }
+qc-piv-header:not(:defined) {
+  display: block;
+  min-height: 7.2rem;
+}
+
 .qc-piv-header {
   color: #ffffff;
   container-type: normal;
