@@ -818,14 +818,13 @@ a .qc-ext-link-text {
   white-space: nowrap;
 }
 
-.qc-external-link .qc-ext-link-text::after {
+qc-external-link:not(:defined)::after, .qc-external-link .qc-ext-link-text::after {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1;
-  content: "\e89e"/"Ce lien dirige vers un autre site.";
   text-rendering: optimizeLegibility;
   font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
   display: inline-block;
@@ -842,7 +841,20 @@ a .qc-ext-link-text {
   color: currentColor;
 }
 
+.qc-external-link .qc-ext-link-text::after {
+  content: "\e89e"/"Ce lien dirige vers un autre site.";
+}
+
+qc-external-link:not(:defined)::after {
+  content: "\e89e"/"Ce lien dirige vers un autre site.";
+  display: inline;
+}
+
 .qc-external-link .qc-ext-link-text:not(:lang(fr))::after {
+  content: "\e89e"/"This link directs to another site.";
+}
+
+qc-external-link:not(:defined):not(:lang(fr))::after {
   content: "\e89e"/"This link directs to another site.";
 }
 
