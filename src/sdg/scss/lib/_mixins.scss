@@ -3,6 +3,7 @@
 @use "sass:map";
 @use "sass:math";
 @use "settings/base" as *;
+@use "settings/tokens" as tokens;
 
 @use "functions" as *;
 @use "../../bases/grid/grid-lib" as grid;
@@ -138,7 +139,26 @@
   @include qc-formcontrol-box();
 }
 
-@mixin heading($i) {
+// Échelle des titres — source unique = la map font.size.heading de _tokens.scss.
+// L'ordre des clés définit l'index : xxl = 1, xl = 2, l = 3, md = 4, sm = 5, xs = 6.
+$heading-scale-names: map.keys(map.get(tokens.$lg-tokens, font, size, heading));
+
+// Normalise un niveau de titre en index numérique (1…6).
+// Accepte soit un index (1…6), soit un nom d'échelle (xxl, xl, l, md, sm, xs)
+// afin de conserver la compatibilité : heading(1) === heading(xxl).
+@function heading-index($level) {
+  @if meta.type-of($level) == 'number' {
+    @return $level;
+  }
+  $i: list.index($heading-scale-names, $level);
+  @if $i == null {
+    @error "heading(): niveau inconnu '#{$level}'. Attendu un index 1…#{list.length($heading-scale-names)} ou un nom parmi #{$heading-scale-names}.";
+  }
+  @return $i;
+}
+
+@mixin heading($level) {
+  $i: heading-index($level);
   @include header-font(h#{$i});
   max-inline-size: token-value(max-content-width);
   margin-top: token-value(spacer h#{$i} mt);

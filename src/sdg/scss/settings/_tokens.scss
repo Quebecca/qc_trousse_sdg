@@ -19,12 +19,16 @@ $lg-tokens: (
         ),
         size: (
             root-percent: #{$percent-root-font-size}#{"%"},
-            h6: rem(16),
-            h5: rem(19),
-            h4: rem(21),
-            h3: rem(28),
-            h2: rem(36),
-            h1: rem(48),
+            // Échelle des titres : source unique. L'index dans cette map (xxl = 1 … xs = 6)
+            // sert à générer les tokens numérotés --qc-font-size-h1…h6 (cf. qc-design-tokens.scss).
+            heading: (
+              xxl: rem(48),
+              xl: rem(36),
+              l: rem(28),
+              md: rem(20),
+              sm: rem(18),
+              xs: rem(16),
+            ),
             90: rem(14),
             100: rem(16),
             120: rem(18),
@@ -53,12 +57,16 @@ $lg-tokens: (
         ),
     ),
     line-height :(
-        h6: rem(20),
-        h5: rem(24),
-        h4: rem(24),
-        h3: rem(32),
-        h2: rem(40),
-        h1: rem(56),
+        // Même ordre d'index que font.size.h (xxl = 1 … xs = 6) pour la génération
+        // des tokens numérotés --qc-line-height-h1…h6 (cf. qc-design-tokens.scss).
+        heading: (
+            xxl: rem(56),
+            xl: rem(40),
+            l: rem(32),
+            md: rem(24),
+            sm: rem(24),
+            xs: rem(20),
+        ),
         90: rem(20),
         100: rem(24),
         120: rem(28),

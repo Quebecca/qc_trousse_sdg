@@ -53,8 +53,12 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
 - **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
 - **Documentation (infobulle)** : ajout d'un exemple d'affichage en feuille (`display-mode="modal"`).
+- **titres** : nouvelles classes de taille `.qc-heading-xxl`, `.qc-heading-xl`, `.qc-heading-l`, `.qc-heading-md`, `.qc-heading-sm`, `.qc-heading-xs`. Elles appliquent la taille d'un niveau de titre (respectivement h1 à h6) à n'importe quel élément, indépendamment de sa balise — utile pour découpler l'apparence de la sémantique (p. ex. un `<h1>` au rendu visuel d'un h2 via `.qc-heading-xl`).
+- **surtitre** : possibilité de placer le surtitre (`.qc-subhead`) hors du titre, comme `<p>` frère du titre dans un `<hgroup>` (structure recommandée : le surtitre ne fait pas partie du nom accessible du titre). L'ancienne forme (`<span>` au début du `<h1>`) reste prise en charge, avec un rendu identique.
 
 ### Modifié
+- **titres (jetons)** : refonte de l'échelle typographique. Les clés `h1`…`h6` de `font.size` et `line-height` sont remplacées par une map unique `heading` (`xxl`→`xs`), source unique. Les jetons numérotés `--qc-font-size-h1`…`h6` et `--qc-line-height-h1`…`h6` sont désormais générés automatiquement par index. Le mixin `heading()` accepte indifféremment un index (`heading(1)`) ou un nom (`heading(xxl)`).
+- **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
 - **qc-select** : Refonte interne — séparation de `items` (métadonnées) et `value` (sélection). Élimine la dépendance circulaire qui causait la perte de sélection à l'initialisation. L'API du web component reste identique. En usage Svelte direct (composant `DropdownList`), `value` n'est plus synchronisé automatiquement quand des items sont retirés — c'est au développeur de mettre à jour `value` si les options changent.
 - **qc-search-input** : Optimisation du `$effect` de synchronisation avec `untrack()`.

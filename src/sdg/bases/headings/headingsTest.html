@@ -1,0 +1,35 @@
+<!-- Fixture de validation des titres (générée en public/headings.test.html).
+     Trois formes par niveau : balise native hN, classe numérotée .qc-hN,
+     classe nommée .qc-heading-<taille>. Plus un cas de découplage sémantique. -->
+<div id="native">
+  <h1>Titre h1</h1>
+  <h2>Titre h2</h2>
+  <h3>Titre h3</h3>
+  <h4>Titre h4</h4>
+  <h5>Titre h5</h5>
+  <h6>Titre h6</h6>
+</div>
+<div id="numbered">
+  <p class="qc-h1">.qc-h1</p>
+  <p class="qc-h2">.qc-h2</p>
+  <p class="qc-h3">.qc-h3</p>
+  <p class="qc-h4">.qc-h4</p>
+  <p class="qc-h5">.qc-h5</p>
+  <p class="qc-h6">.qc-h6</p>
+</div>
+<div id="named">
+  <p class="qc-heading-xxl">.qc-heading-xxl</p>
+  <p class="qc-heading-xl">.qc-heading-xl</p>
+  <p class="qc-heading-l">.qc-heading-l</p>
+  <p class="qc-heading-md">.qc-heading-md</p>
+  <p class="qc-heading-sm">.qc-heading-sm</p>
+  <p class="qc-heading-xs">.qc-heading-xs</p>
+</div>
+<!-- Découplage : balise h1, rendu visuel d'un h2 -->
+<h1 class="qc-heading-xl" id="decouple">h1 au rendu visuel du h2</h1>
+<!-- Surtitre : deux structures, même visuel attendu -->
+<hgroup id="subhead-hgroup">
+  <p class="qc-subhead">Surtitre</p>
+  <h1>Titre avec surtitre (hgroup)</h1>
+</hgroup>
+<h1><span class="qc-subhead" id="subhead-h1">Surtitre</span>Titre avec surtitre (h1)</h1>

@@ -1,19 +1,42 @@
 @use "qc-sdg-lib" as *;
-@for $i from 1 through 6 {
-  h#{$i}, .qc-h#{$i} {
+@use "sass:map";
+
+// Génère les titres depuis la map font.size.heading (source unique).
+// L'index de chaque clé (xxl = 1 … xs = 6) donne le niveau hN et la classe .qc-hN ;
+// la clé nommée donne la classe .qc-heading-<nom> (ex. .qc-heading-xxl). heading() accepte
+// indifféremment l'index (heading(1)) ou le nom (heading(xxl)).
+@each $name in map.keys(map.get($lg-tokens, font, size, heading)) {
+  $i: heading-index($name);
+  h#{$i}, .qc-h#{$i}, .qc-heading-#{$name} {
     @include heading($i);
   }
 }
 
-h1, .qc-h1 {
+// Surtitre — même visuel quelle que soit la structure :
+//  - forme sémantique (recommandée) : <hgroup><p class="qc-subhead">…</p><h1>Titre</h1></hgroup>
+//    le surtitre est frère du titre, donc hors du nom accessible du <h1> ;
+//  - ancienne forme (conservée) : <h1><span class="qc-subhead">…</span>Titre</h1>.
+.qc-subhead {
+  @include content-font(sm, $include-family: 1);
+  color: token-value(color, grey, medium);
+  display: block;
+  margin: 0;
+}
 
-  .qc-subhead {
-    @include content-font(sm, $include-family: 1);
-    color : token-value(color, grey, medium);
-    display: block;
+// Regroupement sémantique surtitre + titre : le <hgroup> porte les marges du titre
+// et le titre interne perd les siennes, pour un espacement identique à l'ancienne forme.
+hgroup:has(> .qc-subhead) {
+  margin-top: token-value(spacer h1 mt);
+  margin-bottom: token-value(spacer h1 mb);
+
+  > h1,
+  > .qc-h1 {
     margin: 0;
   }
+}
 
+// Trait d'accent sous les titres de niveau 1
+h1, .qc-h1 {
   &:after {
     content: "";
     display:block;
