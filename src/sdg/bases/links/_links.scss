@@ -28,11 +28,12 @@ a {
 // display:inline-block => l'icône n'est PAS traversée par le souligné du lien ;
 // le nowrap du wrapper la maintient collée au dernier mot.
 // content-alt (/ "…") = nom accessible de l'icône, décliné par langue via :lang().
-.qc-external-link .qc-ext-link-text::after {
-  // Reproduit à l'identique le rendu de .qc-icon-font (ancienne icône injectée)
-  // pour ne pas altérer les baselines visuelles.
+// Rendu de l'icône « lien externe » (open_in_new, \e89e), partagé entre l'état
+// défini (::after sur le wrapper JS .qc-ext-link-text) et l'état non défini
+// (réservation CLS sur le host, cf. plus bas). Reproduit à l'identique .qc-icon-font
+// pour ne pas altérer les baselines visuelles.
+%qc-ext-link-icon {
   @include icon-font-base();
-  content: "\e89e" / "Ce lien dirige vers un autre site.";
   text-rendering: optimizeLegibility;
   font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
   display: inline-block;
@@ -51,9 +52,32 @@ a {
   color: currentColor;
 }
 
+.qc-external-link .qc-ext-link-text::after {
+  @extend %qc-ext-link-icon;
+  content: "\e89e" / "Ce lien dirige vers un autre site.";
+}
+
+// Réservation CLS : avant l'upgrade du web-component, le wrapper .qc-ext-link-text
+// (créé côté JS) n'existe pas encore -> l'icône ::after est absente au 1er paint,
+// puis s'ajoute à l'upgrade = décalage de mise en page (visible à froid/lent).
+// On pose la MÊME icône sur le host non défini : présente dès le 1er paint, soudée
+// au dernier mot (même comportement anti-orphelin que le wrapper nowrap) -> zéro shift.
+qc-external-link:not(:defined)::after {
+  @extend %qc-ext-link-icon;
+  content: "\e89e" / "Ce lien dirige vers un autre site.";
+  // Sur le host (hors du <a>), `inline` soude l'icône au dernier mot comme un
+  // caractère : même wrap que le span nowrap post-upgrade (pas d'orphelin, même
+  // nombre de lignes) et pas touchée par le souligné du lien (généré hors du <a>).
+  display: inline;
+}
+
 // Message anglais dès que la langue n'est pas le français (défaut = fr),
 // pour reproduire la sémantique d'origine (getPageLanguage()==='fr' ? fr : en).
 .qc-external-link .qc-ext-link-text:not(:lang(fr))::after {
+  content: "\e89e" / "This link directs to another site.";
+}
+
+qc-external-link:not(:defined):not(:lang(fr))::after {
   content: "\e89e" / "This link directs to another site.";
 }
 

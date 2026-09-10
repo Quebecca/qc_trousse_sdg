@@ -39,6 +39,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **haut de page** : Icône → `north` en 2.4rem, font-weight 600.
 - **bandeau PIV** : Icône search en 2.8rem, font-weight 600, margin-right 1.6rem, couleur blanche.
 - **bandeau PIV** : optimisation CLS — réservation de la hauteur du bandeau (`min-height` sur `:not(:defined)`) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
+- **liens externes** : optimisation CLS — réservation de l'icône (`::after` sur le host `:not(:defined)`, `display:inline` pour la souder au dernier mot) afin d'éliminer le décalage de mise en page au moment de l'upgrade du web-component.
 
 ---
 ## Autres changements
