@@ -964,23 +964,135 @@
 </qc-doc-exemple>
     <hr/>
     <h2 id="titre">Niveaux de titres</h2>
+<p>
+  Chaque balise de titre HTML (<code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code>) est mise en forme
+  automatiquement&nbsp;: aucune classe n'est requise pour obtenir le rendu ci-dessous.
+</p>
 <qc-doc-exemple caption="Exemples de titres"
                 code-target-id="liste-titres"
 >
   <div role="presentation"
        id="liste-titres"
   >
-    <h1 class="qc-h1">Titre de niveau 1</h1>
-    <h1 id="exemple-titre-h1"
-        class="qc-h1"><span class="qc-subhead ">Surtitre</span>Titre de niveau 1 avec surtitre
-    </h1>
-    <h2 class="qc-h2">Titre de niveau 2</h2>
-    <h3 class="qc-h3">Titre de niveau 3</h3>
-    <h4 class="qc-h4">Titre de niveau 4</h4>
-    <h5 class="qc-h5">Titre de niveau 5</h5>
-    <h6 class="qc-h6">Titre de niveau 6</h6>
+    <h1>Titre de niveau 1</h1>
+    <h2>Titre de niveau 2</h2>
+    <h3>Titre de niveau 3</h3>
+    <h4>Titre de niveau 4</h4>
+    <h5>Titre de niveau 5</h5>
+    <h6>Titre de niveau 6</h6>
   </div>
 </qc-doc-exemple>
+
+<p>
+  Pour donner à un titre une taille différente de son niveau sémantique, deux familles de classes
+  sont disponibles (voir <a href="#classes-css-titres">Classes CSS</a>)&nbsp;:
+  <code>.qc‑h<em>niveau</em></code> et <code>.qc‑heading‑<em>taille</em></code>. Dans l'exemple
+  suivant, deux titres de premier niveau (<code>&lt;h1&gt;</code>) adoptent la taille d'un h2,
+  chacun par l'une des deux méthodes.
+</p>
+<qc-doc-exemple caption="Deux titres de niveau 1 à la taille d'un h2"
+                code-target-id="exemple-taille-titre"
+>
+  <div role="presentation"
+       id="exemple-taille-titre"
+  >
+    <h1 class="qc-h2">Titre de niveau 1</h1>
+    <h1 class="qc-heading-xl">Titre de niveau 1</h1>
+  </div>
+</qc-doc-exemple>
+
+<h3 id="classes-css-titres">Classes CSS</h3>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <caption>Classes de titres</caption>
+    <thead>
+    <tr>
+      <th>Patron</th>
+      <th>Valeurs possibles</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑h<em>niveau</em></code></td>
+      <td><code>qc‑h1</code>, <code>qc‑h2</code>, <code>qc‑h3</code>, <code>qc‑h4</code>, <code>qc‑h5</code>, <code>qc‑h6</code></td>
+      <td>
+        Applique la mise en forme d'un niveau de titre (h1 à h6) à n'importe quel élément, sans en
+        changer la balise. Voir l'<a href="#exemple-taille-titre">exemple</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>qc‑heading‑<em>taille</em></code></td>
+      <td><code>qc‑heading‑xxl</code>, <code>qc‑heading‑xl</code>, <code>qc‑heading‑l</code>, <code>qc‑heading‑md</code>, <code>qc‑heading‑sm</code>, <code>qc‑heading‑xs</code></td>
+      <td>
+        Applique une taille de titre indépendamment du niveau sémantique
+        (<code>xxl</code>&nbsp;=&nbsp;h1, <code>xl</code>&nbsp;=&nbsp;h2, <code>l</code>&nbsp;=&nbsp;h3,
+        <code>md</code>&nbsp;=&nbsp;h4, <code>sm</code>&nbsp;=&nbsp;h5, <code>xs</code>&nbsp;=&nbsp;h6).
+        Voir l'<a href="#exemple-taille-titre">exemple</a>.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="surtitre">Surtitre</h2>
+<p>
+  Un surtitre est un court intitulé affiché au-dessus d'un titre de premier niveau, à l'aide de la
+  classe <code>.qc‑subhead</code>. Deux structures sont possibles et produisent le même rendu.
+</p>
+<p>
+  <strong>Recommandé.</strong> Placer le surtitre <em>hors</em> du <code>&lt;h1&gt;</code>, comme
+  <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code>&nbsp;: le surtitre ne
+  fait alors pas partie du nom accessible du titre.
+</p>
+<qc-doc-exemple caption="Surtitre dans un hgroup (recommandé)"
+                code-target-id="exemple-surtitre-hgroup"
+>
+  <div role="presentation"
+       id="exemple-surtitre-hgroup"
+  >
+    <hgroup>
+      <p class="qc-subhead">Surtitre</p>
+      <h1>Titre de niveau 1 avec surtitre</h1>
+    </hgroup>
+  </div>
+</qc-doc-exemple>
+<p>
+  <strong>Ancienne forme (conservée).</strong> Le surtitre est un <code>&lt;span&gt;</code> au début
+  du <code>&lt;h1&gt;</code>.
+</p>
+<qc-doc-exemple caption="Surtitre dans le h1 (ancienne forme)"
+                code-target-id="exemple-surtitre-h1"
+>
+  <div role="presentation"
+       id="exemple-surtitre-h1"
+  >
+    <h1><span class="qc-subhead">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
+  </div>
+</qc-doc-exemple>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <caption>Classe de surtitre</caption>
+    <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑subhead</code></td>
+      <td>
+        Surtitre affiché au-dessus d'un titre de premier niveau. À placer soit comme
+        <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code> (recommandé), soit
+        dans un <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>. Voir les
+        <a href="#exemple-surtitre-hgroup">exemples</a>.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
     <hr/>
     <h2 id="ombrages">Ombrages</h2>
 <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>,

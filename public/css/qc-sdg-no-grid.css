@@ -76,12 +76,12 @@ label.qc-choicefield-label input.qc-choicefield.qc-compact {
   --qc-font-family-header: var(--qc-font-family-roboto);
   --qc-font-family-code: var(--qc-font-family-roboto-mono);
   --qc-font-size-root-percent: 62.5%;
-  --qc-font-size-h6: 1.6rem;
-  --qc-font-size-h5: 1.9rem;
-  --qc-font-size-h4: 2.1rem;
-  --qc-font-size-h3: 2.8rem;
-  --qc-font-size-h2: 3.6rem;
-  --qc-font-size-h1: 4.8rem;
+  --qc-font-size-heading-xxl: 4.8rem;
+  --qc-font-size-heading-xl: 3.6rem;
+  --qc-font-size-heading-l: 2.8rem;
+  --qc-font-size-heading-md: 2rem;
+  --qc-font-size-heading-sm: 1.8rem;
+  --qc-font-size-heading-xs: 1.6rem;
   --qc-font-size-90: 1.4rem;
   --qc-font-size-100: 1.6rem;
   --qc-font-size-120: 1.8rem;
@@ -101,12 +101,12 @@ label.qc-choicefield-label input.qc-choicefield.qc-compact {
   --qc-font-weight-content-regular: var(--qc-font-weight-regular);
   --qc-font-weight-content-medium: var(--qc-font-weight-semi-bold);
   --qc-font-weight-content-bold: var(--qc-font-weight-bold);
-  --qc-line-height-h6: 2rem;
-  --qc-line-height-h5: 2.4rem;
-  --qc-line-height-h4: 2.4rem;
-  --qc-line-height-h3: 3.2rem;
-  --qc-line-height-h2: 4rem;
-  --qc-line-height-h1: 5.6rem;
+  --qc-line-height-heading-xxl: 5.6rem;
+  --qc-line-height-heading-xl: 4rem;
+  --qc-line-height-heading-l: 3.2rem;
+  --qc-line-height-heading-md: 2.4rem;
+  --qc-line-height-heading-sm: 2.4rem;
+  --qc-line-height-heading-xs: 2rem;
   --qc-line-height-90: 2rem;
   --qc-line-height-100: 2.4rem;
   --qc-line-height-120: 2.8rem;
@@ -247,6 +247,18 @@ label.qc-choicefield-label input.qc-choicefield.qc-compact {
   --qc-grid-container-max-width-sm: 768px;
   --qc-grid-container-max-width-md: 992px;
   --qc-grid-container-max-width-lg: 1200px;
+  --qc-font-size-h1: 4.8rem;
+  --qc-font-size-h2: 3.6rem;
+  --qc-font-size-h3: 2.8rem;
+  --qc-font-size-h4: 2rem;
+  --qc-font-size-h5: 1.8rem;
+  --qc-font-size-h6: 1.6rem;
+  --qc-line-height-h1: 5.6rem;
+  --qc-line-height-h2: 4rem;
+  --qc-line-height-h3: 3.2rem;
+  --qc-line-height-h4: 2.4rem;
+  --qc-line-height-h5: 2.4rem;
+  --qc-line-height-h6: 2rem;
 }
 @media (max-width: 1199.98px) {
   :root {
@@ -609,7 +621,7 @@ legend {
   padding: 0;
 }
 
-h1, .qc-h1 {
+h1, .qc-h1, .qc-heading-xxl {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h1);
   line-height: var(--qc-line-height-h1);
@@ -619,7 +631,7 @@ h1, .qc-h1 {
   margin-bottom: var(--qc-spacer-h1-mb);
 }
 
-h2, .qc-h2 {
+h2, .qc-h2, .qc-heading-xl {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h2);
   line-height: var(--qc-line-height-h2);
@@ -629,7 +641,7 @@ h2, .qc-h2 {
   margin-bottom: var(--qc-spacer-h2-mb);
 }
 
-h3, .qc-h3 {
+h3, .qc-h3, .qc-heading-l {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h3);
   line-height: var(--qc-line-height-h3);
@@ -639,7 +651,7 @@ h3, .qc-h3 {
   margin-bottom: var(--qc-spacer-h3-mb);
 }
 
-h4, .qc-h4 {
+h4, .qc-h4, .qc-heading-md {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h4);
   line-height: var(--qc-line-height-h4);
@@ -649,7 +661,7 @@ h4, .qc-h4 {
   margin-bottom: var(--qc-spacer-h4-mb);
 }
 
-h5, .qc-h5 {
+h5, .qc-h5, .qc-heading-sm {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h5);
   line-height: var(--qc-line-height-h5);
@@ -659,7 +671,7 @@ h5, .qc-h5 {
   margin-bottom: var(--qc-spacer-h5-mb);
 }
 
-h6, .qc-h6 {
+h6, .qc-h6, .qc-heading-xs {
   font-family: var(--qc-font-family-header);
   font-size: var(--qc-font-size-h6);
   line-height: var(--qc-line-height-h6);
@@ -669,7 +681,7 @@ h6, .qc-h6 {
   margin-bottom: var(--qc-spacer-h6-mb);
 }
 
-h1 .qc-subhead, .qc-h1 .qc-subhead {
+.qc-subhead {
   font-size: var(--qc-font-size-sm);
   line-height: var(--qc-line-height-sm);
   font-weight: var(--qc-font-weight-regular);
@@ -678,6 +690,16 @@ h1 .qc-subhead, .qc-h1 .qc-subhead {
   display: block;
   margin: 0;
 }
+
+hgroup:has(> .qc-subhead) {
+  margin-top: var(--qc-spacer-h1-mt);
+  margin-bottom: var(--qc-spacer-h1-mb);
+}
+hgroup:has(> .qc-subhead) > h1,
+hgroup:has(> .qc-subhead) > .qc-h1 {
+  margin: 0;
+}
+
 h1:after, .qc-h1:after {
   content: "";
   display: block;
