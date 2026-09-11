@@ -28,6 +28,26 @@
   }
 }
 
+// Réservation CLS avant l'upgrade du web-component.
+// Le host <qc-icon> est vide avant upgrade (le glyphe est injecté à l'upgrade) => 0×0,
+// puis pousse le texte suivant. On réserve la boîte inline CARRÉE du glyphe
+// (largeur = hauteur = taille) avec le même vertical-align (-0.125em = --img-valign)
+// pour reproduire aussi l'expansion de la line-box (icônes plus grandes que le texte).
+// font-size par attribut `size` => width/height:1em ET le vertical-align scalent
+// ensemble ; sans attribut `size`, l'icône prend la taille du texte (1em hérité).
+qc-icon:not(:defined) {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[size="#{$size-type}"] {
+      font-size: rem($size);
+    }
+  }
+}
+
 // --- Mode Font ---
 @font-face {
   font-family: 'Material Symbols Rounded';
