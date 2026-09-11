@@ -1899,6 +1899,11 @@ qc-search-bar {
   display: block;
 }
 
+qc-search-bar:not(:defined) {
+  min-height: 4rem;
+  visibility: hidden;
+}
+
 .qc-search-bar {
   max-width: var(--qc-size-search-bar-max-width);
   width: 100%;
