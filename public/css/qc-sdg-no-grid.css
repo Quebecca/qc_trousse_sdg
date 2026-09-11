@@ -818,7 +818,8 @@ a .qc-ext-link-text {
   white-space: nowrap;
 }
 
-qc-external-link:not(:defined)::after, .qc-external-link .qc-ext-link-text::after {
+.qc-external-link .qc-ext-link-text::after,
+qc-external-link:not(:defined)::after {
   font-family: "Material Symbols Rounded";
   font-style: normal;
   font-feature-settings: "liga";
@@ -841,19 +842,16 @@ qc-external-link:not(:defined)::after, .qc-external-link .qc-ext-link-text::afte
   color: currentColor;
 }
 
-.qc-external-link .qc-ext-link-text::after {
+.qc-external-link .qc-ext-link-text::after,
+qc-external-link:not(:defined)::after {
   content: "\e89e"/"Ce lien dirige vers un autre site.";
 }
 
 qc-external-link:not(:defined)::after {
-  content: "\e89e"/"Ce lien dirige vers un autre site.";
   display: inline;
 }
 
-.qc-external-link .qc-ext-link-text:not(:lang(fr))::after {
-  content: "\e89e"/"This link directs to another site.";
-}
-
+.qc-external-link .qc-ext-link-text:not(:lang(fr))::after,
 qc-external-link:not(:defined):not(:lang(fr))::after {
   content: "\e89e"/"This link directs to another site.";
 }
