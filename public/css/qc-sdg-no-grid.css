@@ -728,6 +728,31 @@ h1:after, .qc-h1:after {
   width: 3.2rem;
 }
 
+qc-icon:not(:defined) {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+qc-icon:not(:defined)[size=xs] {
+  font-size: 1.2rem;
+}
+qc-icon:not(:defined)[size=sm] {
+  font-size: 1.6rem;
+}
+qc-icon:not(:defined)[size=md] {
+  font-size: 2rem;
+}
+qc-icon:not(:defined)[size=nm] {
+  font-size: 2.4rem;
+}
+qc-icon:not(:defined)[size=lg] {
+  font-size: 2.8rem;
+}
+qc-icon:not(:defined)[size=xl] {
+  font-size: 3.2rem;
+}
+
 @font-face {
   font-family: "Material Symbols Rounded";
   font-style: normal;
