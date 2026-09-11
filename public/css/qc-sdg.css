@@ -2521,6 +2521,12 @@ qc-textfield textarea:disabled {
   width: 100%;
 }
 
+qc-toggle-switch:not(:defined) {
+  display: block;
+  min-height: 3.2rem;
+  visibility: hidden;
+}
+
 .qc-dropdown-list-multiple {
   margin: 0;
 }
