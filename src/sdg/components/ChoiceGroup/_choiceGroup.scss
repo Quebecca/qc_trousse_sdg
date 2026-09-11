@@ -5,6 +5,25 @@ label.qc-choicefield-label {
   @extend %check-row;
 }
 
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// Avant upgrade, les <label> slottés (case/radio + texte) flottent inline et la legend
+// (attribut) n'existe pas encore ; après upgrade la trousse rend un <fieldset> block :
+// legend (ligne 24 + marge basse spacer-md 24 = 48) puis les rangées empilées (24px,
+// gap spacer-sm). On reproduit exactement cet empilement (flex column + gap + rangées
+// %check-row) — ce qui scale avec le nombre d'options (déterministe en light-DOM) — et
+// on réserve la hauteur de la legend via padding-top (uniquement si l'attribut existe).
+// visibility masque le contenu brut (FOUC). Résidu = legend/texte multi-lignes.
+qc-choice-group:not(:defined) {
+  display: flex;
+  flex-direction: column;
+  gap: token-value(spacer, sm);
+  visibility: hidden;
+
+  &[legend] {
+    padding-top: rem(48);
+  }
+}
+
 input.qc-choicefield {
 
   cursor: pointer;
