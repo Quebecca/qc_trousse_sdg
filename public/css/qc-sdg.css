@@ -1408,6 +1408,11 @@ qc-notice {
   margin-bottom: 3.2rem;
 }
 
+qc-notice:not(:defined) {
+  min-height: 7.2rem;
+  visibility: hidden;
+}
+
 .qc-piv-header .piv-top .right-section .links ul, qc-piv-header [slot=links], qc-piv-header [slot=links] ul {
   list-style: none;
   padding: 0;
