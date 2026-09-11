@@ -1436,6 +1436,7 @@ qc-piv-header {
 qc-piv-header:not(:defined) {
   display: block;
   min-height: 7.2rem;
+  visibility: hidden;
 }
 
 .qc-piv-header {
@@ -1735,6 +1736,23 @@ qc-alert [slot] *, qc-alert:not([slot=content]) * {
 }
 qc-alert [slot] a, qc-alert:not([slot=content]) a {
   color: var(--qc-color-blue-piv);
+}
+
+qc-alert:not(:defined) {
+  display: block;
+  padding: var(--qc-spacer-md) 0;
+  font-size: var(--qc-font-size-md);
+  line-height: var(--qc-line-height-md);
+  font-weight: var(--qc-font-weight-semi-bold);
+  visibility: hidden;
+}
+@media (max-width: 767.98px) {
+  qc-alert:not(:defined) {
+    padding: var(--qc-spacer-sm) 0;
+    font-size: var(--qc-font-size-sm);
+    line-height: var(--qc-line-height-sm);
+    font-weight: var(--qc-font-weight-semi-bold);
+  }
 }
 
 .qc-to-top[demo=false] {
