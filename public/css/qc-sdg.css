@@ -2637,6 +2637,13 @@ li[aria-selected=true] {
   max-width: 100%;
 }
 
+qc-select:not(:defined) {
+  display: block;
+  min-height: 4rem;
+  margin-bottom: 3.2rem;
+  visibility: hidden;
+}
+
 .qc-dropdown-list-container {
   width: 100%;
 }
