@@ -2058,6 +2058,16 @@ input.qc-selection-button:focus {
   display: block;
 }
 
+qc-choice-group:not(:defined) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--qc-spacer-sm);
+  visibility: hidden;
+}
+qc-choice-group:not(:defined)[legend] {
+  padding-top: 4.8rem;
+}
+
 input.qc-choicefield {
   cursor: pointer;
   min-width: var(--qc-spacer-md);
