@@ -56,3 +56,23 @@ qc-alert {
     }
   }
 }
+
+// Réservation CLS : avant l'upgrade du web-component, le shadow (padding vertical +
+// mise en forme du contenu) n'est pas encore appliqué -> l'alerte fait ~24px (texte seul)
+// puis saute à sa hauteur finale à l'upgrade (padding md haut+bas + contenu). En haut de
+// page, ça pousse tout le contenu vers le bas = Cumulative Layout Shift.
+// On réplique le padding vertical + le font-sizing du contenu dès :not(:defined) pour que
+// le slot occupe la même hauteur avant et après upgrade.
+qc-alert:not(:defined) {
+  display: block;
+  padding: token-value(spacer, md) 0;
+  @include content-font(md, semi-bold);
+  // Anti-FOUC : masque le message brut avant upgrade (le bandeau coloré + icône
+  // apparaissent d'un coup à l'upgrade). Boîte réservée (padding) conservée.
+  visibility: hidden;
+
+  @include media-mobile() {
+    padding: token-value(spacer, sm) 0;
+    @include content-font(sm, semi-bold);
+  }
+}

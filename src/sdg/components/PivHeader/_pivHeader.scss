@@ -42,6 +42,10 @@ qc-piv-header {
 qc-piv-header:not(:defined) {
   display: block;
   min-height: rem(72);
+  // Anti-FOUC : masque le contenu brut (liens slottés) avant l'upgrade du web-component,
+  // sans display:none (qui collapserait la boîte et réintroduirait le CLS). La hauteur
+  // réservée (min-height) est conservée. visibility (pas opacity) => hors arbre a11y aussi.
+  visibility: hidden;
 }
 
 .qc-piv-header {
