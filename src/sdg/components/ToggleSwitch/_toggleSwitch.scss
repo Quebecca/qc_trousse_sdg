@@ -94,3 +94,14 @@ $border: 1;
   justify-content: space-between;
   width: 100%;
 }
+
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// Le host est vide avant upgrade (le libellé vient de l'attribut, le commutateur est
+// rendu dans le shadow) ; il rend ensuite un commutateur de hauteur fixe ($height).
+// display:block + min-height réserve exactement cette hauteur (block => pas de strut de
+// baseline qui gonflerait une line-box inline). visibility:hidden par cohérence.
+qc-toggle-switch:not(:defined) {
+  display: block;
+  min-height: rem($height);
+  visibility: hidden;
+}
