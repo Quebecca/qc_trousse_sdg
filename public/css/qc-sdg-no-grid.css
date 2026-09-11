@@ -2269,6 +2269,13 @@ input[type=checkbox].qc-choicefield.qc-compact:checked::after {
 .qc-checkbox-single label {
   flex-grow: 0;
 }
+qc-checkbox:not(:defined) {
+  display: block;
+  min-height: var(--qc-spacer-md);
+  margin-bottom: var(--qc-spacer-content-block-mb);
+  visibility: hidden;
+}
+
 .qc-label, qc-textfield label,
 .qc-textfield label {
   display: inline-block;
