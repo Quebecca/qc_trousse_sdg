@@ -42,6 +42,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **liens externes** : optimisation CLS — réservation de l'icône (`::after` sur le host `:not(:defined)`, `display:inline` pour la souder au dernier mot) afin d'éliminer le décalage de mise en page au moment de l'upgrade du web-component.
 - **alerte générale** : optimisation CLS — réservation de la hauteur du bandeau (`padding` + police sur `:not(:defined)`) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
 - **avis (notice)** : optimisation CLS + anti-FOUC — réservation d'un plancher de hauteur (`min-height`, colonne icône) et masquage du contenu brut (`visibility: hidden`) sur `:not(:defined)`. La hauteur d'un avis dépendant du contenu, seul un plancher est réservable ; le décalage résiduel correspond au contenu dépassant le plancher. À noter : si le JavaScript ne se charge pas, le contenu slotté (dont un résumé d'erreurs) reste invisible.
+- **barre de recherche** : optimisation CLS — réservation de la hauteur du champ (`min-height` sur `:not(:defined)`, hauteur fixe) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
 - **bandeau PIV / alerte générale** : masquage anti-FOUC — le contenu brut est caché (`visibility: hidden` sur `:not(:defined)`, sans collapser la boîte réservée) avant l'upgrade du web-component, évitant le clignotement du contenu non stylé. À noter : si le JavaScript ne se charge pas, ces composants restent invisibles.
 
 ---

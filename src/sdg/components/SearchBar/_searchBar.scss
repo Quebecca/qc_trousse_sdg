@@ -5,6 +5,17 @@ qc-search-bar {
   position: relative;
   display: block;
 }
+
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// Le host est vide avant upgrade (le champ + le bouton sont rendus dans le shadow) ;
+// il rend une barre de hauteur fixe (padding rem(8) + ligne + bordure = 40px, non
+// responsive). min-height:rem(40) réserve exactement cette hauteur => 0 CLS.
+// visibility:hidden par cohérence avec les autres composants (host vide => sans effet
+// visible aujourd'hui, garde-fou si un contenu de repli était un jour slotté).
+qc-search-bar:not(:defined) {
+  min-height: rem(40);
+  visibility: hidden;
+}
 .qc-search-bar {
   @extend %qc-search-wrapper;
   max-width: token-value(size search-bar max-width);
