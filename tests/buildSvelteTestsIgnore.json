@@ -3,5 +3,6 @@
   "**/dropdown-list-baseline.spec.ts",
   "**/piv-header-baseline.spec.ts",
   "**/external-link-baseline.spec.ts",
-  "**/tooltip-baseline.spec.ts"
+  "**/tooltip-baseline.spec.ts",
+  "**/headings-baseline.spec.ts"
 ]

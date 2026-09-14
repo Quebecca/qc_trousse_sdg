@@ -25,6 +25,30 @@
                }
             }
          }
+         // Tokens de titres numérotés (--qc-font-size-h1…h6, --qc-line-height-h1…h6)
+         // générés depuis l'index des clés de la map h, pour compatibilité ascendante.
+         @include generate-heading-index-tokens($settings);
+      }
+   }
+}
+
+// Génère les tokens numérotés hN à partir de la map heading (source unique).
+// L'index de chaque clé dans la map (xxl = 1 … xs = 6) donne le numéro du titre.
+@mixin generate-heading-index-tokens($settings) {
+   $fs-h: map.get($settings, font, size, heading);
+   @if $fs-h != null {
+      $i: 1;
+      @each $name, $value in $fs-h {
+         --qc-font-size-h#{$i}: #{$value};
+         $i: $i + 1;
+      }
+   }
+   $lh-h: map.get($settings, line-height, heading);
+   @if $lh-h != null {
+      $i: 1;
+      @each $name, $value in $lh-h {
+         --qc-line-height-h#{$i}: #{$value};
+         $i: $i + 1;
       }
    }
 }
