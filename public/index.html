@@ -344,25 +344,28 @@
     
 <h2 id="icons">Iconographie (qc-icon)</h2>
 
-<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+<p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
     <div>
-        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
-        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
-        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
-        <qc-icon type="success" color="blue-regular" size="lg"></qc-icon>
-        <qc-icon type="success" color="success" size="xl"></qc-icon>
+        <qc-icon icon="check_circle" color="pink-regular" size="xs"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-piv" size="sm"></qc-icon>
+        <qc-icon icon="check_circle" color="grey-dark" size="md"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-regular" size="lg"></qc-icon>
+        <qc-icon icon="check_circle" color="success" size="xl"></qc-icon>
     </div>
     <div>
-        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="-90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="180"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg"></qc-icon>
     </div>
-
+    <div>
+        <qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+        <qc-icon icon="info" variant="filled" size="lg"></qc-icon>
+    </div>
 
 </qc-doc-exemple>
 <style>
@@ -376,19 +379,66 @@
     }
 </style>
 
+<qc-doc-exemple caption="L'icône s'adapte automatiquement à la taille et à la couleur du texte environnant."
+                id="icons-inline">
+    <p class="qc-font-size-xl">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-lg">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-md">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-sm">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-blue-piv);">Texte en bleu PIV <qc-icon icon="info"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-success);">Texte en vert succès <qc-icon icon="check_circle"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-error);">Texte en rouge erreur <qc-icon icon="cancel"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-lg"><strong>Texte en gras <qc-icon icon="search"></qc-icon> — l'icône hérite du font-weight</strong></p>
+</qc-doc-exemple>
+
+<h3>Héritage (<em>Legacy</em>)</h3>
+
+<p>L'attribut <code>src</code> permet d'afficher une icône SVG personnalisée.
+    Cette fonctionnalité est conservée pour la rétrocompatibilité, mais elle est <strong>dépréciée</strong>.
+    Les icônes personnalisées ne bénéficient pas des avantages de la font variable
+    (variantes outlined/filled, héritage du <code>font-weight</code>, optical size).
+    Si vous utilisez des icônes via <code>src</code>, remplacez-les par leur équivalent
+    <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>
+    pour garantir la cohérence visuelle de votre charte graphique.
+    Consultez le <a href="https://github.com/Quebecca/qc_trousse_sdg/blob/develop/MIGRATION-ICONS.md#proc%C3%A9dure-pour-ajouter-une-nouvelle-ic%C3%B4ne">guide de migration</a> pour la procédure d'ajout.
+</p>
+
 <qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
         <qc-icon
                 src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
         />
 </qc-doc-exemple>
 
+<qc-doc-exemple caption="Attribut use-material : « note » est à la fois un alias legacy (→ edit_note) et une icône Material Symbols. L'attribut use-material force la résolution vers le catalogue Material."
+                id="icons-use-material">
+    <div>
+        <p>Sans <code>use-material</code> — « note » est résolu via le mapping legacy vers <code>edit_note</code> :</p>
+        <qc-icon icon="note" size="lg"></qc-icon>
+    </div>
+    <div>
+        <p>Avec <code>use-material</code> — « note » affiche l'icône Material Symbols <code>note</code> :</p>
+        <qc-icon icon="note" size="lg" use-material></qc-icon>
+    </div>
+</qc-doc-exemple>
+<style>
+    #icons-use-material div {
+        margin-bottom: var(--qc-spacer-content-block-mb);
+    }
+</style>
+
+<qc-doc-exemple caption="Attribut codepoint : afficher une icône Material Symbols hors du subset de la trousse, par son codepoint Unicode. Nécessite l'inclusion dynamique de la font via un lien Google Fonts."
+                id="icons-codepoint">
+    <!-- Inclusion dynamique de l'icône « favorite » (hors subset) via Google Fonts API -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
+    <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+</qc-doc-exemple>
+
 <h3>Documentation technique</h3>
 
-
-<div class="table-overflow" id="exemple-caption">
-
+<h4>Attributs</h4>
+<div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
-        <caption>Attributs</caption>
         <thead>
         <tr>
             <th>Nom</th>
@@ -399,16 +449,22 @@
         </thead>
         <tbody>
         <tr>
-            <td>type</td>
+            <td>type (icon)</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
+            <td>Nom de l'icône à afficher (Material Symbols ou alias legacy).</td>
+        </tr>
+        <tr>
+            <td>variant</td>
+            <td>outlined, filled</td>
+            <td>outlined</td>
+            <td>Variante de l'icône Material Symbols.</td>
         </tr>
         <tr>
             <td>label</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code></td>
+            <td>Texte alternatif pour l'accessibilité. Sert de libellé pour les lecteurs d'écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code>).</td>
         </tr>
         <tr>
             <td>rotate</td>
@@ -418,13 +474,13 @@
         </tr>
         <tr>
             <td>size</td>
-            <td>xs, sm, md, lg ou xl</td>
-            <td>md</td>
-            <td>Taille de l’icône.</td>
+            <td>xs, sm, md, nm, lg ou xl</td>
+            <td></td>
+            <td>Taille de l'icône. Si le paramètre est absent, l'icône aura la taille du texte (1em)</td>
         </tr>
         <tr>
             <td>color</td>
-            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>--qc-color-</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
             <td>text-primary</td>
             <td>Couleur de l'icône.</td>
         </tr>
@@ -432,13 +488,19 @@
             <td>width</td>
             <td>Toute valeur acceptée par la directive css <code>width</code></td>
             <td>auto</td>
-            <td>Largeur personnalisée de l’icône.</td>
+            <td>Largeur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>height</td>
             <td>Toute valeur acceptée par la directive css <code>height</code></td>
             <td>auto</td>
-            <td>Hauteur personnalisée de l’icône.</td>
+            <td>Hauteur personnalisée de l'icône.</td>
+        </tr>
+        <tr>
+            <td>vertical-align</td>
+            <td>Toute valeur acceptée par la directive css `vertical-align`</td>
+            <td>-.125em</td>
+            <td>Par défaut, l'alignement vertical est ajusté pour la font Materials de façon à l'aligner avec le texte. </td>
         </tr>
         <tr>
             <td>src</td>
@@ -446,159 +508,321 @@
             <td>na</td>
             <td>Chemin pour afficher une icône personnalisée.</td>
         </tr>
+        <tr>
+            <td>use-material</td>
+            <td>Booléen (présence de l'attribut)</td>
+            <td>false</td>
+            <td>Force l'utilisation du nom comme icône Material Symbols, sans passer par le mapping legacy. Utile lorsqu'un nom Material entre en conflit avec un alias legacy (ex.&nbsp;: <code>note</code>).</td>
+        </tr>
+        <tr>
+            <td>codepoint</td>
+            <td>Code hexadécimal Unicode (ex.&nbsp;: <code>E873</code>)</td>
+            <td>—</td>
+            <td>Affiche une icône Material Symbols par son codepoint Unicode, sans qu'elle soit incluse dans le subset de la trousse. Nécessite l'inclusion dynamique de la font via un <code>&lt;link&gt;</code> Google Fonts (voir le <a href="MIGRATION-ICONS.md">guide de migration</a>).</td>
+        </tr>
         </tbody>
     </table>
 </div>
 
+<h4>Icônes disponibles</h4>
+
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
-        <caption>Liste des icônes</caption>
         <thead>
         <tr>
             <th>Nom</th>
-            <th>Aperçu</th>
+            <th>Outlined</th>
+            <th>Filled</th>
+            <th>Ancien(s) nom(s)</th>
         </tr>
         </thead>
         <tbody>
         
             <tr>
-                <td>adresse</td>
-                <td><qc-icon type="adresse" size="lg" /></td>
+                <td><code>place</code></td>
+                <td><qc-icon icon="place" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="place" variant="filled" size="lg" use-material /></td>
+                <td><code>adresse</code></td>
             </tr>
         
             <tr>
-                <td>arrow-up</td>
-                <td><qc-icon type="arrow-up" size="lg" /></td>
+                <td><code>arrow_upward</code></td>
+                <td><qc-icon icon="arrow_upward" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_upward" variant="filled" size="lg" use-material /></td>
+                <td><code>arrow-up</code></td>
             </tr>
         
             <tr>
-                <td>calendar</td>
-                <td><qc-icon type="calendar" size="lg" /></td>
+                <td><code>arrow_downward</code></td>
+                <td><qc-icon icon="arrow_downward" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_downward" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>checkmark</td>
-                <td><qc-icon type="checkmark" size="lg" /></td>
+                <td><code>arrow_back</code></td>
+                <td><qc-icon icon="arrow_back" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_back" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>chevron-up-thin</td>
-                <td><qc-icon type="chevron-up-thin" size="lg" /></td>
+                <td><code>arrow_forward</code></td>
+                <td><qc-icon icon="arrow_forward" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_forward" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>chevron-up</td>
-                <td><qc-icon type="chevron-up" size="lg" /></td>
+                <td><code>arrow_left_alt</code></td>
+                <td><qc-icon icon="arrow_left_alt" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_left_alt" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>clipboard</td>
-                <td><qc-icon type="clipboard" size="lg" /></td>
+                <td><code>arrow_right_alt</code></td>
+                <td><qc-icon icon="arrow_right_alt" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="arrow_right_alt" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>clock</td>
-                <td><qc-icon type="clock" size="lg" /></td>
+                <td><code>north</code></td>
+                <td><qc-icon icon="north" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="north" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>email</td>
-                <td><qc-icon type="email" size="lg" /></td>
+                <td><code>calendar_today</code></td>
+                <td><qc-icon icon="calendar_today" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="calendar_today" variant="filled" size="lg" use-material /></td>
+                <td><code>calendar</code></td>
             </tr>
         
             <tr>
-                <td>error</td>
-                <td><qc-icon type="error" size="lg" /></td>
+                <td><code>check</code></td>
+                <td><qc-icon icon="check" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="check" variant="filled" size="lg" use-material /></td>
+                <td><code>checkmark</code></td>
             </tr>
         
             <tr>
-                <td>exclamation</td>
-                <td><qc-icon type="exclamation" size="lg" /></td>
+                <td><code>expand_less</code></td>
+                <td><qc-icon icon="expand_less" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="expand_less" variant="filled" size="lg" use-material /></td>
+                <td><code>chevron-up-thin</code>, <code>chevron-up</code></td>
             </tr>
         
             <tr>
-                <td>external-link</td>
-                <td><qc-icon type="external-link" size="lg" /></td>
+                <td><code>expand_more</code></td>
+                <td><qc-icon icon="expand_more" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="expand_more" variant="filled" size="lg" use-material /></td>
+                <td><code>crochet-bas</code></td>
             </tr>
         
             <tr>
-                <td>information-tooltip</td>
-                <td><qc-icon type="information-tooltip" size="lg" /></td>
+                <td><code>chevron_right</code></td>
+                <td><qc-icon icon="chevron_right" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="chevron_right" variant="filled" size="lg" use-material /></td>
+                <td><code>chevron-droite</code></td>
             </tr>
         
             <tr>
-                <td>information</td>
-                <td><qc-icon type="information" size="lg" /></td>
+                <td><code>chevron_left</code></td>
+                <td><qc-icon icon="chevron_left" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="chevron_left" variant="filled" size="lg" use-material /></td>
+                <td><code>chevron-gauche</code></td>
             </tr>
         
             <tr>
-                <td>ligth-bulb</td>
-                <td><qc-icon type="ligth-bulb" size="lg" /></td>
+                <td><code>content_paste</code></td>
+                <td><qc-icon icon="content_paste" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="content_paste" variant="filled" size="lg" use-material /></td>
+                <td><code>clipboard</code></td>
             </tr>
         
             <tr>
-                <td>minus</td>
-                <td><qc-icon type="minus" size="lg" /></td>
+                <td><code>emoji_objects</code></td>
+                <td><qc-icon icon="emoji_objects" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="emoji_objects" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
             <tr>
-                <td>note</td>
-                <td><qc-icon type="note" size="lg" /></td>
+                <td><code>schedule</code></td>
+                <td><qc-icon icon="schedule" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="schedule" variant="filled" size="lg" use-material /></td>
+                <td><code>clock</code></td>
             </tr>
         
             <tr>
-                <td>phone</td>
-                <td><qc-icon type="phone" size="lg" /></td>
+                <td><code>mail</code></td>
+                <td><qc-icon icon="mail" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="mail" variant="filled" size="lg" use-material /></td>
+                <td><code>email</code></td>
             </tr>
         
             <tr>
-                <td>plus</td>
-                <td><qc-icon type="plus" size="lg" /></td>
+                <td><code>cancel</code></td>
+                <td><qc-icon icon="cancel" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="cancel" variant="filled" size="lg" use-material /></td>
+                <td><code>error</code></td>
             </tr>
         
             <tr>
-                <td>question-mark</td>
-                <td><qc-icon type="question-mark" size="lg" /></td>
+                <td><code>warning</code></td>
+                <td><qc-icon icon="warning" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="warning" variant="filled" size="lg" use-material /></td>
+                <td><code>exclamation</code>, <code>warning</code></td>
             </tr>
         
             <tr>
-                <td>question-tooltip</td>
-                <td><qc-icon type="question-tooltip" size="lg" /></td>
+                <td><code>open_in_new</code></td>
+                <td><qc-icon icon="open_in_new" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="open_in_new" variant="filled" size="lg" use-material /></td>
+                <td><code>external-link</code></td>
             </tr>
         
             <tr>
-                <td>search-thin</td>
-                <td><qc-icon type="search-thin" size="lg" /></td>
+                <td><code>info</code></td>
+                <td><qc-icon icon="info" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="info" variant="filled" size="lg" use-material /></td>
+                <td><code>information</code></td>
             </tr>
         
             <tr>
-                <td>search</td>
-                <td><qc-icon type="search" size="lg" /></td>
+                <td><code>lightbulb</code></td>
+                <td><qc-icon icon="lightbulb" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="lightbulb" variant="filled" size="lg" use-material /></td>
+                <td><code>ligth-bulb</code></td>
             </tr>
         
             <tr>
-                <td>success</td>
-                <td><qc-icon type="success" size="lg" /></td>
+                <td><code>remove</code></td>
+                <td><qc-icon icon="remove" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="remove" variant="filled" size="lg" use-material /></td>
+                <td><code>minus</code></td>
             </tr>
         
             <tr>
-                <td>user</td>
-                <td><qc-icon type="user" size="lg" /></td>
+                <td><code>edit_note</code></td>
+                <td><qc-icon icon="edit_note" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="edit_note" variant="filled" size="lg" use-material /></td>
+                <td><code>note</code></td>
             </tr>
         
             <tr>
-                <td>warning</td>
-                <td><qc-icon type="warning" size="lg" /></td>
+                <td><code>call</code></td>
+                <td><qc-icon icon="call" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="call" variant="filled" size="lg" use-material /></td>
+                <td><code>phone</code></td>
             </tr>
         
             <tr>
-                <td>website</td>
-                <td><qc-icon type="website" size="lg" /></td>
+                <td><code>add</code></td>
+                <td><qc-icon icon="add" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="add" variant="filled" size="lg" use-material /></td>
+                <td><code>plus</code></td>
             </tr>
         
             <tr>
-                <td>xclose</td>
-                <td><qc-icon type="xclose" size="lg" /></td>
+                <td><code>help</code></td>
+                <td><qc-icon icon="help" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="help" variant="filled" size="lg" use-material /></td>
+                <td><code>question-mark</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>search</code></td>
+                <td><qc-icon icon="search" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="search" variant="filled" size="lg" use-material /></td>
+                <td><code>search-thin</code>, <code>search</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>check_circle</code></td>
+                <td><qc-icon icon="check_circle" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="check_circle" variant="filled" size="lg" use-material /></td>
+                <td><code>success</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>person</code></td>
+                <td><qc-icon icon="person" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="person" variant="filled" size="lg" use-material /></td>
+                <td><code>user</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>laptop_chromebook</code></td>
+                <td><qc-icon icon="laptop_chromebook" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="laptop_chromebook" variant="filled" size="lg" use-material /></td>
+                <td><code>website</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>close</code></td>
+                <td><qc-icon icon="close" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="close" variant="filled" size="lg" use-material /></td>
+                <td><code>xclose</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>description</code></td>
+                <td><qc-icon icon="description" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="description" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>more_horiz</code></td>
+                <td><qc-icon icon="more_horiz" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="more_horiz" variant="filled" size="lg" use-material /></td>
+                <td><code>dots</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>note</code></td>
+                <td><qc-icon icon="note" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="note" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>print</code></td>
+                <td><qc-icon icon="print" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="print" variant="filled" size="lg" use-material /></td>
+                <td><code>printer</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>toc</code></td>
+                <td><qc-icon icon="toc" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="toc" variant="filled" size="lg" use-material /></td>
+                <td><code>tableMatiere</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>download</code></td>
+                <td><qc-icon icon="download" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="download" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>videocam</code></td>
+                <td><qc-icon icon="videocam" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="videocam" variant="filled" size="lg" use-material /></td>
+                <td><code>on-line</code></td>
+            </tr>
+        
+            <tr>
+                <td><code>fax</code></td>
+                <td><qc-icon icon="fax" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="fax" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
             </tr>
         
         </tbody>
@@ -606,8 +830,6 @@
 </div>
 
 
-
-    <hr/>
     <h2 id="liens">Liens</h2>
 <qc-doc-exemple caption="Exemple de différents liens hypertexte selon leurs états.">
     <dl>
@@ -742,23 +964,135 @@
 </qc-doc-exemple>
     <hr/>
     <h2 id="titre">Niveaux de titres</h2>
+<p>
+  Chaque balise de titre HTML (<code>&lt;h1&gt;</code> à <code>&lt;h6&gt;</code>) est mise en forme
+  automatiquement&nbsp;: aucune classe n'est requise pour obtenir le rendu ci-dessous.
+</p>
 <qc-doc-exemple caption="Exemples de titres"
                 code-target-id="liste-titres"
 >
   <div role="presentation"
        id="liste-titres"
   >
-    <h1 class="qc-h1">Titre de niveau 1</h1>
-    <h1 id="exemple-titre-h1"
-        class="qc-h1"><span class="qc-subhead ">Surtitre</span>Titre de niveau 1 avec surtitre
-    </h1>
-    <h2 class="qc-h2">Titre de niveau 2</h2>
-    <h3 class="qc-h3">Titre de niveau 3</h3>
-    <h4 class="qc-h4">Titre de niveau 4</h4>
-    <h5 class="qc-h5">Titre de niveau 5</h5>
-    <h6 class="qc-h6">Titre de niveau 6</h6>
+    <h1>Titre de niveau 1</h1>
+    <h2>Titre de niveau 2</h2>
+    <h3>Titre de niveau 3</h3>
+    <h4>Titre de niveau 4</h4>
+    <h5>Titre de niveau 5</h5>
+    <h6>Titre de niveau 6</h6>
   </div>
 </qc-doc-exemple>
+
+<p>
+  Pour donner à un titre une taille différente de son niveau sémantique, deux familles de classes
+  sont disponibles (voir <a href="#classes-css-titres">Classes CSS</a>)&nbsp;:
+  <code>.qc‑h<em>niveau</em></code> et <code>.qc‑heading‑<em>taille</em></code>. Dans l'exemple
+  suivant, deux titres de premier niveau (<code>&lt;h1&gt;</code>) adoptent la taille d'un h2,
+  chacun par l'une des deux méthodes.
+</p>
+<qc-doc-exemple caption="Deux titres de niveau 1 à la taille d'un h2"
+                code-target-id="exemple-taille-titre"
+>
+  <div role="presentation"
+       id="exemple-taille-titre"
+  >
+    <h1 class="qc-h2">Titre de niveau 1</h1>
+    <h1 class="qc-heading-xl">Titre de niveau 1</h1>
+  </div>
+</qc-doc-exemple>
+
+<h3 id="classes-css-titres">Classes CSS</h3>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <caption>Classes de titres</caption>
+    <thead>
+    <tr>
+      <th>Patron</th>
+      <th>Valeurs possibles</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑h<em>niveau</em></code></td>
+      <td><code>qc‑h1</code>, <code>qc‑h2</code>, <code>qc‑h3</code>, <code>qc‑h4</code>, <code>qc‑h5</code>, <code>qc‑h6</code></td>
+      <td>
+        Applique la mise en forme d'un niveau de titre (h1 à h6) à n'importe quel élément, sans en
+        changer la balise. Voir l'<a href="#exemple-taille-titre">exemple</a>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>qc‑heading‑<em>taille</em></code></td>
+      <td><code>qc‑heading‑xxl</code>, <code>qc‑heading‑xl</code>, <code>qc‑heading‑lg</code>, <code>qc‑heading‑md</code>, <code>qc‑heading‑sm</code>, <code>qc‑heading‑xs</code></td>
+      <td>
+        Applique une taille de titre indépendamment du niveau sémantique
+        (<code>xxl</code>&nbsp;=&nbsp;h1, <code>xl</code>&nbsp;=&nbsp;h2, <code>lg</code>&nbsp;=&nbsp;h3,
+        <code>md</code>&nbsp;=&nbsp;h4, <code>sm</code>&nbsp;=&nbsp;h5, <code>xs</code>&nbsp;=&nbsp;h6).
+        Voir l'<a href="#exemple-taille-titre">exemple</a>.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="surtitre">Surtitre</h2>
+<p>
+  Un surtitre est un court intitulé affiché au-dessus d'un titre de premier niveau, à l'aide de la
+  classe <code>.qc‑subhead</code>. Deux structures sont possibles et produisent le même rendu.
+</p>
+<p>
+  <strong>Recommandé.</strong> Placer le surtitre <em>hors</em> du <code>&lt;h1&gt;</code>, comme
+  <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code>&nbsp;: le surtitre ne
+  fait alors pas partie du nom accessible du titre.
+</p>
+<qc-doc-exemple caption="Surtitre dans un hgroup (recommandé)"
+                code-target-id="exemple-surtitre-hgroup"
+>
+  <div role="presentation"
+       id="exemple-surtitre-hgroup"
+  >
+    <hgroup>
+      <p class="qc-subhead">Surtitre</p>
+      <h1>Titre de niveau 1 avec surtitre</h1>
+    </hgroup>
+  </div>
+</qc-doc-exemple>
+<p>
+  <strong>Ancienne forme (conservée).</strong> Le surtitre est un <code>&lt;span&gt;</code> au début
+  du <code>&lt;h1&gt;</code>.
+</p>
+<qc-doc-exemple caption="Surtitre dans le h1 (ancienne forme)"
+                code-target-id="exemple-surtitre-h1"
+>
+  <div role="presentation"
+       id="exemple-surtitre-h1"
+  >
+    <h1><span class="qc-subhead">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
+  </div>
+</qc-doc-exemple>
+<div class="table-overflow">
+  <table class="qc-table qc-striped">
+    <caption>Classe de surtitre</caption>
+    <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑subhead</code></td>
+      <td>
+        Surtitre affiché au-dessus d'un titre de premier niveau. À placer soit comme
+        <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code> (recommandé), soit
+        dans un <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>. Voir les
+        <a href="#exemple-surtitre-hgroup">exemples</a>.
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
     <hr/>
     <h2 id="ombrages">Ombrages</h2>
 <p>Pour appliquer un ombrage sur un élément, il suffit de lui appliquer la classe <code>qc-shading-X</code>,
@@ -977,12 +1311,10 @@
                 caption="Exemple d’avis complémentaires"
 >
   <qc-notice type="advice"
-             icon="ligth-bulb"
              title="Nouvelle règlementation"
              content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
   </qc-notice>
   <qc-notice type="note"
-             icon="note"
              title="Nouvelle règlementation"
              content="Les nouveaux règlements de pêche seront en vigeur à partir du 12 mai.">
   </qc-notice>
@@ -1090,7 +1422,7 @@
       <td>icon</td>
       <td>Toute clé de la map $images dans settings/_base.scss</td>
       <td>information
-        <qc-icon icon="information" aria-hidden="true" size="nm"></qc-icon>
+        <qc-icon icon="info" aria-hidden="true" size="nm"></qc-icon>
         (si absence de type)
       </td>
       <td>Défini l’icône pour les avis neutres</td>
@@ -1127,8 +1459,7 @@
 
 <h3>Exemples</h3>
 <h4>Infobulles simples</h4>
-<qc-doc-exemple id="alert-warning"
-                caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
+<qc-doc-exemple caption="Exemple d'infobulles phylactère (dans les 3 positions) et feuille (fenêtre modale).">
   <p>Une infobulle vers la <qc-tooltip text="droite" description="Une infobulle vers la droite" position="right"></qc-tooltip>, le <qc-tooltip text="haut" description="Une infobulle vers le haut" position="top"></qc-tooltip> et le <qc-tooltip text="bas" description="Une infobulle vers le bas" position="bottom"></qc-tooltip>, et en <qc-tooltip text="feuille" description="Une infobulle feuille" display-mode="modal"></qc-tooltip></p>
 
 </qc-doc-exemple>
@@ -1138,8 +1469,7 @@
 <h4>Insertion de contenu</h4>
 
 <p>Le texte et la description peuvent aussi être ajoutés par <code>slot</code> ou via l'attribut description-id</p>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
+<qc-doc-exemple caption="Exemple d'ajout de contenu par slot et via l'attribut description-id">
   <p>Lorem ipsum <qc-tooltip>
       <span slot="text">dolor</span>
       <span slot="description">
@@ -1155,15 +1485,13 @@
 </qc-doc-exemple>
 
 <h4>Icône seule</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle sans texte (2 icônes possibles)">
+<qc-doc-exemple caption="Exemple d'infobulle sans texte (2 icônes possibles)">
   <p><qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip></p>
   <p><qc-tooltip description-id="tooltip-1" icon="question"></qc-tooltip></p>
 </qc-doc-exemple>
 
 <h4>Ajout dans un libellé de champ texte</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle placée dans un libellé de champ texte">
+<qc-doc-exemple caption="Exemple d'infobulle placée dans un libellé de champ texte">
   <qc-textfield>
     <label>Nom complet <qc-tooltip description-id="tooltip-1" icon="information"></qc-tooltip> </label>
     <input type="text"/>
@@ -1171,10 +1499,24 @@
 </qc-doc-exemple>
 
 <h4>Ajout d’un titre</h4>
-<qc-doc-exemple id="alert-general"
-                caption="Exemple d'infobulle placée dans un libellé de champ texte">
+<qc-doc-exemple caption="Exemple d'infobulle avec titre">
 
-    <p><qc-tooltip text="Lorem" title="Lorem ipsum dolor" description-id="tooltip-1" icon="information">ipsum dolor</qc-tooltip></p>
+    <p><qc-tooltip text="Lorem"
+                   display-mode="popover"
+                   title="Lorem ipsum dolor"
+                   description-id="tooltip-1"
+                   icon="information">ipsum dolor</qc-tooltip></p>
+
+</qc-doc-exemple>
+
+<h4>Affichage feuille</h4>
+<qc-doc-exemple caption="Exemple d'infobulle avec affichage forcé à feuille (au lieu de bulle)">
+
+  <p><qc-tooltip text="Lorem"
+                 title="Lorem ipsum dolor"
+                 description-id="tooltip-1"
+                 display-mode="modal"
+                 icon="information">ipsum dolor</qc-tooltip></p>
 
 </qc-doc-exemple>
 
@@ -1461,42 +1803,43 @@
 
     <div class="qc-button-group">
         <button class="qc-button qc-simple">
-            <qc-icon type="information"></qc-icon>
+            <qc-icon type="info"></qc-icon>
             Action
         </button>
 
         <button class="qc-button qc-simple" disabled>
-            <qc-icon type="plus"></qc-icon>
+            <qc-icon type="add"></qc-icon>
             Action
         </button>
     </div>
     <div class="qc-button-group qc-compact">
         <button class="qc-button qc-simple qc-compact">
-            <qc-icon type="information"></qc-icon>
+            <qc-icon type="info"></qc-icon>
             Action
         </button>
 
         <button class="qc-button qc-simple qc-compact" disabled>
-            <qc-icon type="plus"></qc-icon>
+            <qc-icon type="add"></qc-icon>
             Action
         </button>
     </div>
 
 </qc-doc-exemple>
 
-<qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détails concernant le composant <code>qc-icon</code>.">
+<qc-doc-exemple caption="Exemples de boutons avec icône.<br/>NB: voir la section <a href='#icons'>Icônes</a> pour plus de détails concernant le composant <code>qc-icon</code>.<br/>NB2 : le texte du bouton doit être placé dans une balise span.">
     <div class="qc-button-group">
         <button class="qc-button qc-primary">
-            <qc-icon type="arrow-up" rotate="-90"></qc-icon>
-            Précédent
+            <qc-icon type="arrow_left_alt"></qc-icon>
+            <span>Précédent</span>
         </button>
 
         <button class="qc-button qc-primary">
-            Suivant
-            <qc-icon type="arrow-up" rotate="90"></qc-icon>
+            <span>Suivant</span>
+            <qc-icon type="arrow_right_alt"></qc-icon>
         </button>
     </div>
 </qc-doc-exemple>
+
 
 <qc-doc-exemple caption="Exemples avec un lien et un bouton de soumission.">
     <div class="qc-button-group">
@@ -2227,8 +2570,8 @@
     <tr>
       <td>size</td>
       <td>"xs", "sm", "md", "lg", "xl"</td>
-      <td>lg pour les champs simple (<code>input</code>) <br>
-        xl pour les champs multilignes (<code>textarea</code>),
+      <td>md pour les champs simples (<code>input</code>) <br>
+        lg pour les champs multilignes (<code>textarea</code>)
       </td>
       <td>Largeur du champ</td>
     </tr>
@@ -2347,6 +2690,16 @@
             clear-aria-label="Effacer le texte"
             left-icon
     ></qc-search-input>
+
+    <br>
+
+    <qc-search-input
+            placeholder="Recherche avec debounce (300 ms)"
+            aria-label="Recherche avec debounce"
+            clear-aria-label="Effacer le texte"
+            debounce="300"
+            left-icon
+    ></qc-search-input>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -2388,6 +2741,12 @@
             <td>Libellé accessible du bouton pour effacer le champ.</td>
         </tr>
         <tr>
+            <td>debounce</td>
+            <td>Nombre (millisecondes)</td>
+            <td>0</td>
+            <td>Délai avant de propager la valeur saisie. Utile pour limiter les appels lors d'une recherche en temps réel. La valeur 0 désactive le debounce (propagation immédiate).</td>
+        </tr>
+        <tr>
             <td>disabled</td>
             <td>na</td>
             <td>na</td>
@@ -2408,6 +2767,49 @@
         </tbody>
     </table>
 </div>
+
+<div class="table-overflow">
+    <table class="qc-table qc-striped component-attributes-description">
+        <caption>Événements</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Détail (<code>e.detail</code>)</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>qc-change</td>
+            <td>Texte (valeur courante)</td>
+            <td>Émis après le délai du debounce ou lors du clear. Non émis si <code>debounce="0"</code>.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h3>Utilisation du debounce</h3>
+<p>L'attribut <code>debounce</code> retarde la propagation de la valeur saisie.
+    Cela permet de limiter les appels réseau lors d'une recherche en temps réel.</p>
+<p>Lorsque le debounce est actif, l'événement <code>qc-change</code> est émis après le délai
+    avec la valeur finale dans <code>e.detail</code>. Cet événement est aussi émis lors du clear.</p>
+
+<qc-doc-exemple caption="Debounce — la valeur n'est propagée qu'après 300 ms d'inactivité">
+    <qc-search-input
+            id="demo-debounce"
+            placeholder="Tapez pour chercher…"
+            aria-label="Recherche avec debounce"
+            clear-aria-label="Effacer le texte"
+            debounce="300"
+            left-icon
+    ></qc-search-input>
+    <p>Valeur propagée : <code id="demo-debounce-output"></code></p>
+    <script>
+        document.getElementById('demo-debounce').addEventListener('qc-change', function(e) {
+            document.getElementById('demo-debounce-output').textContent = e.detail || '(clear)';
+        });
+    </script>
+</qc-doc-exemple>
 
     <hr/>
     <!-- Commutateur -->

@@ -1,25 +1,28 @@
 
 <h2 id="icons">Iconographie (qc-icon)</h2>
 
-<p> Le composant <code>qc-icon</code> permet d’afficher une icône avec la bonne couleur quel que soit le thème.</p>
+<p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
     <div>
-        <qc-icon type="success" color="pink-regular" size="xs"></qc-icon>
-        <qc-icon type="success" color="blue-piv" size="sm"></qc-icon>
-        <qc-icon type="success" color="grey-dark" size="md"></qc-icon>
-        <qc-icon type="success" color="blue-regular" size="lg"></qc-icon>
-        <qc-icon type="success" color="success" size="xl"></qc-icon>
+        <qc-icon icon="check_circle" color="pink-regular" size="xs"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-piv" size="sm"></qc-icon>
+        <qc-icon icon="check_circle" color="grey-dark" size="md"></qc-icon>
+        <qc-icon icon="check_circle" color="blue-regular" size="lg"></qc-icon>
+        <qc-icon icon="check_circle" color="success" size="xl"></qc-icon>
     </div>
     <div>
-        <qc-icon type="arrow-up"  size="lg" rotate="-90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="90"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg" rotate="180"></qc-icon>
-        <qc-icon type="arrow-up"  size="lg"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="-90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="90"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg" rotate="180"></qc-icon>
+        <qc-icon icon="arrow_upward"  size="lg"></qc-icon>
     </div>
-
+    <div>
+        <qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+        <qc-icon icon="info" variant="filled" size="lg"></qc-icon>
+    </div>
 
 </qc-doc-exemple>
 <style>
@@ -33,10 +36,59 @@
     }
 </style>
 
+<qc-doc-exemple caption="L'icône s'adapte automatiquement à la taille et à la couleur du texte environnant."
+                id="icons-inline">
+    <p class="qc-font-size-xl">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-lg">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-md">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-sm">Lorem ipsum <qc-icon icon="description"></qc-icon> dolor sit amet</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-blue-piv);">Texte en bleu PIV <qc-icon icon="info"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-success);">Texte en vert succès <qc-icon icon="check_circle"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-md" style="color: var(--qc-color-error);">Texte en rouge erreur <qc-icon icon="cancel"></qc-icon> avec icône héritée</p>
+    <p class="qc-font-size-lg"><strong>Texte en gras <qc-icon icon="search"></qc-icon> — l'icône hérite du font-weight</strong></p>
+</qc-doc-exemple>
+
+<h3>Héritage (<em>Legacy</em>)</h3>
+
+<p>L'attribut <code>src</code> permet d'afficher une icône SVG personnalisée.
+    Cette fonctionnalité est conservée pour la rétrocompatibilité, mais elle est <strong>dépréciée</strong>.
+    Les icônes personnalisées ne bénéficient pas des avantages de la font variable
+    (variantes outlined/filled, héritage du <code>font-weight</code>, optical size).
+    Si vous utilisez des icônes via <code>src</code>, remplacez-les par leur équivalent
+    <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Material Symbols</a>
+    pour garantir la cohérence visuelle de votre charte graphique.
+    Consultez le <a href="https://github.com/Quebecca/qc_trousse_sdg/blob/develop/MIGRATION-ICONS.md#proc%C3%A9dure-pour-ajouter-une-nouvelle-ic%C3%B4ne">guide de migration</a> pour la procédure d'ajout.
+</p>
+
 <qc-doc-exemple caption="Exemple d'icône personnalisée en base64.">
         <qc-icon
                 src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc4OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg=="
         />
+</qc-doc-exemple>
+
+<qc-doc-exemple caption="Attribut use-material : « note » est à la fois un alias legacy (→ edit_note) et une icône Material Symbols. L'attribut use-material force la résolution vers le catalogue Material."
+                id="icons-use-material">
+    <div>
+        <p>Sans <code>use-material</code> — « note » est résolu via le mapping legacy vers <code>edit_note</code> :</p>
+        <qc-icon icon="note" size="lg"></qc-icon>
+    </div>
+    <div>
+        <p>Avec <code>use-material</code> — « note » affiche l'icône Material Symbols <code>note</code> :</p>
+        <qc-icon icon="note" size="lg" use-material></qc-icon>
+    </div>
+</qc-doc-exemple>
+<style>
+    #icons-use-material div {
+        margin-bottom: var(--qc-spacer-content-block-mb);
+    }
+</style>
+
+<qc-doc-exemple caption="Attribut codepoint : afficher une icône Material Symbols hors du subset de la trousse, par son codepoint Unicode. Nécessite l'inclusion dynamique de la font via un lien Google Fonts."
+                id="icons-codepoint">
+    <!-- Inclusion dynamique de l'icône « favorite » (hors subset) via Google Fonts API -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
+    <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -54,16 +106,22 @@
         </thead>
         <tbody>
         <tr>
-            <td>type</td>
+            <td>type (icon)</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Nom de l’icône à afficher, à prendre dans la liste ci-dessous.</td>
+            <td>Nom de l'icône à afficher (Material Symbols ou alias legacy).</td>
+        </tr>
+        <tr>
+            <td>variant</td>
+            <td>outlined, filled</td>
+            <td>outlined</td>
+            <td>Variante de l'icône Material Symbols.</td>
         </tr>
         <tr>
             <td>label</td>
             <td>Texte</td>
             <td>""</td>
-            <td>Texte alternatif pour l’accessibilité. Sert de libellé pour les lecteurs d’écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code></td>
+            <td>Texte alternatif pour l'accessibilité. Sert de libellé pour les lecteurs d'écran. Si absent, l'icône sera masquée au lecteur d'écran (via l'attribut <code>aria-hidden</code>).</td>
         </tr>
         <tr>
             <td>rotate</td>
@@ -73,13 +131,13 @@
         </tr>
         <tr>
             <td>size</td>
-            <td>xs, sm, md, lg ou xl</td>
-            <td>md</td>
-            <td>Taille de l’icône.</td>
+            <td>xs, sm, md, nm, lg ou xl</td>
+            <td></td>
+            <td>Taille de l'icône. Si le paramètre est absent, l'icône aura la taille du texte (1em)</td>
         </tr>
         <tr>
             <td>color</td>
-            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>‑‑qc‑color‑</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
+            <td>Toute valeur correspondant à un jeton de couleur une fois précédée de <code>--qc-color-</code>. Par exemple, "text-primary" donne la couleur de <code>--qc-color-text-primary</code></td>
             <td>text-primary</td>
             <td>Couleur de l'icône.</td>
         </tr>
@@ -87,13 +145,19 @@
             <td>width</td>
             <td>Toute valeur acceptée par la directive css <code>width</code></td>
             <td>auto</td>
-            <td>Largeur personnalisée de l’icône.</td>
+            <td>Largeur personnalisée de l'icône.</td>
         </tr>
         <tr>
             <td>height</td>
             <td>Toute valeur acceptée par la directive css <code>height</code></td>
             <td>auto</td>
-            <td>Hauteur personnalisée de l’icône.</td>
+            <td>Hauteur personnalisée de l'icône.</td>
+        </tr>
+        <tr>
+            <td>vertical-align</td>
+            <td>Toute valeur acceptée par la directive css `vertical-align`</td>
+            <td>-.125em</td>
+            <td>Par défaut, l'alignement vertical est ajusté pour la font Materials de façon à l'aligner avec le texte. </td>
         </tr>
         <tr>
             <td>src</td>
@@ -101,29 +165,49 @@
             <td>na</td>
             <td>Chemin pour afficher une icône personnalisée.</td>
         </tr>
+        <tr>
+            <td>use-material</td>
+            <td>Booléen (présence de l'attribut)</td>
+            <td>false</td>
+            <td>Force l'utilisation du nom comme icône Material Symbols, sans passer par le mapping legacy. Utile lorsqu'un nom Material entre en conflit avec un alias legacy (ex.&nbsp;: <code>note</code>).</td>
+        </tr>
+        <tr>
+            <td>codepoint</td>
+            <td>Code hexadécimal Unicode (ex.&nbsp;: <code>E873</code>)</td>
+            <td>—</td>
+            <td>Affiche une icône Material Symbols par son codepoint Unicode, sans qu'elle soit incluse dans le subset de la trousse. Nécessite l'inclusion dynamique de la font via un <code>&lt;link&gt;</code> Google Fonts (voir le <a href="MIGRATION-ICONS.md">guide de migration</a>).</td>
+        </tr>
         </tbody>
     </table>
 </div>
 
-<h4>Liste des icônes</h4>
+<h4>Icônes disponibles</h4>
 
 <div class="table-overflow">
     <table class="qc-table qc-striped component-attributes-description">
         <thead>
         <tr>
             <th>Nom</th>
-            <th>Aperçu</th>
+            <th>Outlined</th>
+            <th>Filled</th>
+            <th>Ancien(s) nom(s)</th>
         </tr>
         </thead>
         <tbody>
-        <% icons.forEach(function(icon){ %>
+        <% icons.forEach(function(icon){
+            // Trouver les anciens noms qui pointent vers cette icône
+            const aliases = Object.entries(legacyMappings)
+                .filter(function([old, modern]) { return modern === icon; })
+                .map(function([old]) { return old; });
+        %>
             <tr>
-                <td><%= icon %></td>
-                <td><qc-icon type="<%= icon %>" size="lg" /></td>
+                <td><code><%= icon %></code></td>
+                <td><qc-icon icon="<%= icon %>" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="<%= icon %>" variant="filled" size="lg" use-material /></td>
+                <td><%- aliases.length ? aliases.map(function(a) { return '<code>' + a + '</code>'; }).join(', ') : '—' %></td>
             </tr>
         <% }); %>
         </tbody>
     </table>
 </div>
-
 

@@ -1,0 +1,221 @@
+# Guide de migration — Icônes Material Symbols
+
+## Introduction
+
+Le SDG utilise les **Material Symbols** de Google pour son iconographie. Le composant `<qc-icon>` rend les icônes via la font variable Material Symbols (mode font), avec un subset de glyphes inclus dans la trousse.
+
+L'API du composant est rétrocompatible — les anciens noms d'icônes continuent de fonctionner pendant la période de dépréciation.
+
+---
+
+## Table de correspondance (ancien nom → nouveau nom)
+
+| Ancien nom (legacy) | Nouveau nom (Material Symbols) |
+|----------------------|-------------------------------|
+| `adresse` | `place` |
+| `arrow-up` | `arrow_upward` |
+| `calendar` | `calendar_today` |
+| `checkmark` | `check` |
+| `chevron-up-thin` | `expand_less` |
+| `chevron-up` | `expand_less` |
+| `clipboard` | `content_paste` |
+| `clock` | `schedule` |
+| `email` | `mail` |
+| `error` | `error` |
+| `exclamation` | `warning` |
+| `external-link` | `open_in_new` |
+| `information-tooltip` | — ² |
+| `information` | `info` |
+| `ligth-bulb` | `lightbulb` |
+| `minus` | `remove` |
+| `note` | `edit_note` |
+| `phone` | `call` |
+| `plus` | `add` |
+| `question-mark` | `help` |
+| `question-tooltip` | — ² |
+| `search-thin` | `search` |
+| `search` | `search` |
+| `success` | `check_circle` |
+| `user` | `person` |
+| `warning` | `warning` |
+| `website` | `laptop_chromebook` |
+| `xclose` | `close` |
+
+> ² Les noms `information-tooltip` et `question-tooltip` sont obsolètes. Le composant `<qc-tooltip>` utilise désormais les icônes Material `info` et `help` (variante filled) directement.
+
+---
+
+## Période de dépréciation
+
+Les anciens noms d'icônes restent fonctionnels mais pourront être retirées dans les prochaines versions mineures de la trousse — donc à partir de la 1.7
+
+Pendant cette période :
+
+- Les anciens noms continuent d'afficher l'icône correspondante.
+- Un **avertissement** est émis dans la console du navigateur indiquant le nouveau nom à utiliser.
+- Exemple de message : `L'icône 'xclose' est dépréciée. Utilisez type="close" à la place.`
+
+**Action recommandée** : remplacez dès maintenant les anciens noms par les noms Material Symbols dans votre code.
+
+---
+
+## Attributs du composant `<qc-icon>`
+
+| Attribut | Description |
+|----------|-------------|
+| `icon` | Nom de l'icône (Material Symbols ou alias legacy) |
+| `variant` | `outlined` (défaut) ou `filled` |
+| `size` | `xs`, `sm`, `md`, `nm`, `lg`, `xl` |
+| `color` | Jeton de couleur (ex : `text-primary`, `blue-piv`) |
+| `use-material` | Force la résolution directe vers Material Symbols (contourne le mapping legacy) |
+| `codepoint` | Codepoint Unicode hexadécimal (ex : `E873`) pour une icône hors du subset |
+| `label` | Texte alternatif (accessibilité) |
+| `rotate` | Rotation en degrés |
+
+### Attribut `use-material`
+
+Certains noms existent à la fois comme alias legacy et comme icône Material distincte. Par exemple, `note` est un alias legacy de `edit_note`, mais `note` est aussi une icône Material à part entière.
+
+L'attribut `use-material` force la résolution directe dans le catalogue Material :
+
+```html
+<!-- Sans use-material : "note" → résolu en "edit_note" via le mapping legacy -->
+<qc-icon icon="note" size="lg"></qc-icon>
+
+<!-- Avec use-material : "note" → affiche l'icône Material "note" directement -->
+<qc-icon icon="note" size="lg" use-material></qc-icon>
+```
+
+### Attribut `codepoint`
+
+Permet d'afficher une icône Material Symbols **qui n'est pas dans le subset** de la trousse, en fournissant directement son codepoint Unicode.
+
+```html
+<qc-icon codepoint="E873" size="lg" label="Description"></qc-icon>
+```
+
+> ⚠️ Cet attribut nécessite que le glyphe soit disponible dans la font chargée (voir section suivante).
+
+---
+
+## Personnaliser le subset d'icônes
+
+La trousse inclut un `@font-face` pointant vers un subset de Material Symbols Rounded (`dist/fonts/material-symbols-rounded.woff2`). Deux cas de figure :
+
+### Cas 1 : Ajouter une icône ponctuelle via `codepoint`
+
+Pour afficher une icône qui n'est pas dans le subset de la trousse, ajoutez un `<link>` Google Fonts qui charge le glyphe manquant, puis utilisez l'attribut `codepoint` :
+
+```html
+<!-- Charger le glyphe « favorite » (hors subset) -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=favorite" />
+
+<!-- Afficher l'icône par son codepoint Unicode -->
+<qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+```
+
+Le `<link>` retourne un `@font-face` avec `unicode-range` restreint au glyphe demandé — il complète la font locale sans la remplacer.
+
+### Cas 2 : Remplacer le subset de la trousse par un subset custom
+
+Si vous avez besoin d'un jeu d'icônes différent (plus large, ou un subset spécifique à votre projet), écrasez le `@font-face` de la trousse en plaçant le vôtre **après** l'import de la CSS de la trousse :
+
+```html
+<link rel="stylesheet" href="qc-sdg.css">
+
+<!-- Écraser le @font-face de la trousse avec un subset custom -->
+<style>
+    @font-face {
+        font-family: 'Material Symbols Rounded';
+        font-weight: 100 700;
+        src: url('/chemin/vers/mon-subset-custom.woff2') format('woff2');
+    }
+</style>
+```
+
+Vous pouvez aussi utiliser directement l'API Google Fonts pour charger un subset distant :
+
+```html
+<link rel="stylesheet" href="qc-sdg.css">
+
+<!-- Subset Google Fonts avec les icônes souhaitées -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL,GRAD,opsz,wght@0,0,24,400;0,0,40,400;0,0,40,500;0,0,40,600;0,0,40,700;1,0,40,400;1,0,40,500;1,0,40,600;1,0,40,700&icon_names=favorite,shopping_cart,visibility" />
+```
+
+> L'API `icon_names` accepte plusieurs noms séparés par des virgules.
+
+Dans les deux cas, la font-family doit rester `'Material Symbols Rounded'` pour que le composant `<qc-icon>` fonctionne.
+
+---
+
+## Icônes incluses dans le subset
+
+Le subset de la trousse contient les icônes suivantes (utilisables directement via l'attribut `icon`) :
+
+| Nom | Codepoint | Utilisation |
+|-----|-----------|-------------|
+| `place` | U+E55F | Adresse, localisation |
+| `arrow_upward` | U+E5D8 | Flèche vers le haut |
+| `arrow_downward` | U+E5DB | Flèche vers le bas |
+| `arrow_back` | U+E5C4 | Flèche retour |
+| `arrow_forward` | U+E5C8 | Flèche suivant |
+| `arrow_left_alt` | U+EF7D | Flèche gauche (séquentiel) |
+| `arrow_right_alt` | U+E941 | Flèche droite (séquentiel) |
+| `north` | U+F1E0 | Haut de page |
+| `calendar_today` | U+E935 | Calendrier, date |
+| `check` | U+E5CA | Coche de validation |
+| `expand_less` | U+E5CE | Chevron vers le haut |
+| `expand_more` | U+E5CF | Chevron vers le bas |
+| `chevron_right` | U+E5CC | Chevron droite |
+| `chevron_left` | U+E5CB | Chevron gauche |
+| `content_paste` | U+E14F | Presse-papiers |
+| `emoji_objects` | U+EA24 | Conseil, astuce |
+| `schedule` | U+E8B5 | Horloge, horaire |
+| `mail` | U+E158 | Courriel |
+| `cancel` | U+E5C9 | Erreur (croix dans un cercle) |
+| `warning` | U+E002 | Avertissement |
+| `open_in_new` | U+E89E | Lien externe |
+| `info` | U+E88E | Information |
+| `lightbulb` | U+E0F0 | Ampoule |
+| `remove` | U+E15B | Moins, retirer |
+| `edit_note` | U+E745 | Note, édition |
+| `call` | U+E0B0 | Téléphone |
+| `add` | U+E145 | Plus, ajouter |
+| `help` | U+E887 | Aide |
+| `search` | U+E8B6 | Recherche |
+| `check_circle` | U+E86C | Succès |
+| `person` | U+E7FD | Utilisateur |
+| `laptop_chromebook` | U+E31F | Site web |
+| `close` | U+E5CD | Fermer |
+| `description` | U+E873 | Document |
+| `more_horiz` | U+E5D3 | Points de suspension |
+| `print` | U+E8AD | Imprimer |
+| `toc` | U+E8DE | Table des matières |
+| `download` | U+F090 | Télécharger |
+| `videocam` | U+E04B | Vidéoconférence |
+| `note` | U+E674 | Note (pense-bête) |
+
+---
+
+## Variantes `outlined` et `filled`
+
+```html
+<!-- Outlined (défaut) -->
+<qc-icon icon="info" variant="outlined" size="lg"></qc-icon>
+
+<!-- Filled -->
+<qc-icon icon="info" variant="filled" size="lg"></qc-icon>
+```
+
+---
+
+## Héritage du `font-weight`
+
+L'icône hérite du `font-weight` du contexte. En gras, le trait de l'icône est plus épais :
+
+```html
+<strong><qc-icon icon="search" size="md"></qc-icon> Rechercher</strong>
+<p><qc-icon icon="search" size="md"></qc-icon> Rechercher</p>
+```

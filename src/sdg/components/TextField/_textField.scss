@@ -9,13 +9,14 @@ qc-textfield,
 
   .qc-description {
     @include content-font(sm);
+    max-inline-size: token-value(max-content-width);
     color: token-value(color blue dark);
     &:has(~ :disabled) {
       color: token-value(color, grey, regular);
     }
   }
   label {
-    @extend .qc-label
+    @extend .qc-label;
   }
 }
 

@@ -36,12 +36,14 @@
 
 <div class="qc-search-bar" class:piv-background={pivBackground}>
     <SearchInput bind:value
-                 {...inputProps}/>
+                 {...inputProps}
+                 size="full-width"
+        />
         <IconButton
                 type="submit"
                 iconColor={pivBackground ? 'blue-piv' : 'background'}
-                icon="search-thin"
-                iconSize="md"
+                icon="search"
+                iconSize="nm"
                 {...submitProps}
         />
 </div>

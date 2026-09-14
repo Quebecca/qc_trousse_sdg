@@ -29,7 +29,7 @@
 
     <span class={["qc-dropdown-button-icon"]}>
         <Icon
-            type="chevron-up-thin"
+            type="expand_less"
             color={disabled ? "grey-regular" : "blue-piv"}
             size="sm"
             rotate={expanded ? 0 : 180}

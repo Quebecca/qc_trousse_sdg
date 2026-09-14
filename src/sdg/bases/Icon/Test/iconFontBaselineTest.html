@@ -1,0 +1,112 @@
+<!-- Fixture de test pour le mode font (render-mode="font") -->
+<!-- Les styles sont chargés depuis le CSS compilé (mode font activé par défaut) -->
+
+<!-- Section 1 : Icônes en mode font — toutes tailles -->
+<div class="section-material-sizes">
+    <h3>Icônes mode font — toutes tailles</h3>
+    <div>
+        <qc-icon icon="search" size="xs"></qc-icon>
+        <qc-icon icon="search" size="sm"></qc-icon>
+        <qc-icon icon="search" size="md"></qc-icon>
+        <qc-icon icon="search" size="lg"></qc-icon>
+        <qc-icon icon="search" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="close" size="xs"></qc-icon>
+        <qc-icon icon="close" size="sm"></qc-icon>
+        <qc-icon icon="close" size="md"></qc-icon>
+        <qc-icon icon="close" size="lg"></qc-icon>
+        <qc-icon icon="close" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="arrow_upward" size="xs"></qc-icon>
+        <qc-icon icon="arrow_upward" size="sm"></qc-icon>
+        <qc-icon icon="arrow_upward" size="md"></qc-icon>
+        <qc-icon icon="arrow_upward" size="lg"></qc-icon>
+        <qc-icon icon="arrow_upward" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="check" size="xs"></qc-icon>
+        <qc-icon icon="check" size="sm"></qc-icon>
+        <qc-icon icon="check" size="md"></qc-icon>
+        <qc-icon icon="check" size="lg"></qc-icon>
+        <qc-icon icon="check" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="expand_less" size="xs"></qc-icon>
+        <qc-icon icon="expand_less" size="sm"></qc-icon>
+        <qc-icon icon="expand_less" size="md"></qc-icon>
+        <qc-icon icon="expand_less" size="lg"></qc-icon>
+        <qc-icon icon="expand_less" size="xl"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="info" size="xs"></qc-icon>
+        <qc-icon icon="info" size="sm"></qc-icon>
+        <qc-icon icon="info" size="md"></qc-icon>
+        <qc-icon icon="info" size="lg"></qc-icon>
+        <qc-icon icon="info" size="xl"></qc-icon>
+    </div>
+</div>
+
+<!-- Section 2 : Variantes outlined et filled côte à côte -->
+<div class="section-variants">
+    <h3>Variantes outlined vs filled</h3>
+    <div>
+        <qc-icon icon="info" size="lg" variant="outlined"></qc-icon>
+        <qc-icon icon="info" size="lg" variant="filled"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="check_circle" size="lg" variant="outlined"></qc-icon>
+        <qc-icon icon="check_circle" size="lg" variant="filled"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="error" size="lg" variant="outlined"></qc-icon>
+        <qc-icon icon="error" size="lg" variant="filled"></qc-icon>
+    </div>
+    <div>
+        <qc-icon icon="warning" size="lg" variant="outlined"></qc-icon>
+        <qc-icon icon="warning" size="lg" variant="filled"></qc-icon>
+    </div>
+</div>
+
+<!-- Section 3 : Couleurs personnalisées -->
+<div class="section-colors">
+    <h3>Couleurs personnalisées</h3>
+    <div>
+        <qc-icon icon="check_circle" size="lg" color="success"></qc-icon>
+        <qc-icon icon="error" size="lg" color="error"></qc-icon>
+        <qc-icon icon="warning" size="lg" color="warning"></qc-icon>
+        <qc-icon icon="info" size="lg" color="information"></qc-icon>
+    </div>
+</div>
+
+<!-- Section 4 : Rotation -->
+<div class="section-rotation">
+    <h3>Rotation</h3>
+    <div>
+        <qc-icon icon="arrow_upward" size="lg" rotate="0"></qc-icon>
+        <qc-icon icon="arrow_upward" size="lg" rotate="90"></qc-icon>
+        <qc-icon icon="arrow_upward" size="lg" rotate="180"></qc-icon>
+        <qc-icon icon="arrow_upward" size="lg" rotate="270"></qc-icon>
+    </div>
+</div>
+
+<!-- Section 5 : Icône personnalisée via src (doit fallback en SVG) -->
+<div class="section-custom-src">
+    <h3>Icône personnalisée (src) — fallback SVG</h3>
+    <qc-icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDIgMC04LTMuNTgtOC04czMuNTgtOCA4LTggOCAzLjU4IDggOC0zLjU4IDgtOCA4eiIvPjwvc3ZnPg==" size="lg">
+    </qc-icon>
+</div>
+
+<!-- Section 6 : Alias legacy (vérification rétrocompatibilité) -->
+<div class="section-legacy">
+    <h3>Alias legacy</h3>
+    <div>
+        <qc-icon icon="arrow-up" size="md"></qc-icon>
+        <qc-icon icon="checkmark" size="md"></qc-icon>
+        <qc-icon icon="xclose" size="md"></qc-icon>
+        <qc-icon icon="clipboard" size="md"></qc-icon>
+        <qc-icon icon="external-link" size="md"></qc-icon>
+        <qc-icon icon="email" size="md"></qc-icon>
+    </div>
+</div>

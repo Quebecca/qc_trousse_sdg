@@ -35,6 +35,19 @@ qc-piv-header {
   }
 }
 
+// Réservation CLS : avant l'upgrade du web-component, le contenu du bandeau est
+// construit dans le shadow DOM et le host n'a aucune hauteur réservée (≈21px),
+// puis il saute à sa hauteur finale (72px) une fois défini -> Cumulative Layout Shift.
+// On réserve la hauteur finale dès l'état :not(:defined) pour supprimer le shift.
+qc-piv-header:not(:defined) {
+  display: block;
+  min-height: rem(72);
+  // Anti-FOUC : masque le contenu brut (liens slottés) avant l'upgrade du web-component,
+  // sans display:none (qui collapserait la boîte et réintroduirait le CLS). La hauteur
+  // réservée (min-height) est conservée. visibility (pas opacity) => hors arbre a11y aussi.
+  visibility: hidden;
+}
+
 .qc-piv-header {
   color: map.get($colors, white);
   container-type: normal;
@@ -53,16 +66,19 @@ qc-piv-header {
       display: flex;
       flex-grow: 1;
       flex-wrap: wrap;
-      align-items: start;
+      align-items: center;
       margin-right: auto;
+      margin-bottom: rem(16);
       & > * {
-        min-height: rem(72);
+        //min-height: rem(72);
       }
 
       .logo {
         display: flex;
         align-items: center;
         flex-basis: rem(264);
+        margin-bottom: rem(-16);
+        height: rem(72);
 
         a {
           display: flex;
@@ -84,6 +100,7 @@ qc-piv-header {
     }
 
     .title {
+      margin-top: rem(16);
       display: block;
       align-content: center;
     }
@@ -103,18 +120,17 @@ qc-piv-header {
       }
 
       .qc-search {
-        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi42NyA1Mi4yMSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5GaWNoaWVyIDE8L3RpdGxlPjxnIGlkPSJDYWxxdWVfMiIgZGF0YS1uYW1lPSJDYWxxdWUgMiI+PGcgaWQ9IkNhbHF1ZV8xLTIiIGRhdGEtbmFtZT0iQ2FscXVlIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTUyLjY3LDQ3LjgxbC0xNS0xNWEyMC43NywyMC43NywwLDEsMC00LjMyLDQuNDZMNDguMjgsNTIuMjFaTTIwLjc4LDM1LjM2QTE0LjQxLDE0LjQxLDAsMSwxLDM1LjE5LDIxaDBBMTQuNDMsMTQuNDMsMCwwLDEsMjAuNzgsMzUuMzZaIi8+PC9nPjwvZz48L3N2Zz4=');
-        background-repeat: no-repeat;
-        min-width: rem(24);
-        height: rem(24);
-        margin-right: token-value(spacer md);;
+        margin-right: rem(16);
+
+        .qc-icon-font {
+          font-weight: 600;
+          color: white;
+        }
+
         @include media-mobile() {
           margin-right: token-value(spacer sm);
         }
 
-        span {
-          @include sr-only();
-        }
       }
     }
     & + .title {
@@ -152,7 +168,7 @@ qc-piv-header,
     }
   }
 
-  a, span {
+  a, span:not(.qc-icon-font) {
     font-family: token-value(font family header);
     text-decoration: none;
     font-weight: token-value(font weight regular);

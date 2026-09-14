@@ -30,6 +30,9 @@
   cursor: pointer;
   margin-bottom: token-value(spacer, md);
 
+  qc-icon {
+    display: inline-flex;
+  }
   &:focus,
   &:focus-visible {
     outline: none;
@@ -182,18 +185,28 @@
     }
   }
 
-  .qc-icon {
-    display: inline-block;
+  // Icône personnalisée (mode SVG via mask) : suit la couleur texte du bouton
+  // (les règles mask/taille/display viennent de bases/Icon/_icons.scss)
+  .qc-icon-custom {
+    background-color: currentColor;
     width: rem(16);
     height: rem(16);
-    background-color: currentColor;
-    mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    flex-shrink: 0;
+  }
 
-    &.qc-custom-icon {
-      mask:var(--img-src);
-      mask-size: 100% 100%;
+  // Icône en mode font pour boutons primary/secondary/tertiary/danger
+  &:not(.qc-simple) {
+    .qc-icon-font {
+      font-size: rem(24);
+      width: rem(24);
+      height: rem(24);
+      font-weight: 600;
+    }
+
+    &:has(> qc-icon:first-child) {
+      padding-left: rem(18);
+    }
+    &:has(> qc-icon:last-child) {
+      padding-right: rem(18);
     }
   }
 
@@ -204,6 +217,13 @@
     padding: 0;
     min-width: unset;
     min-height: unset;
+
+    .qc-icon-font {
+      font-size: rem(24);
+      width: rem(24);
+      height: rem(24);
+      font-weight: 600;
+    }
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
@@ -218,6 +238,13 @@
     &.qc-compact {
       font-size: token-value(font size, sm);
       line-height: token-value(line height, sm);
+
+      .qc-icon-font {
+        font-size: rem(20);
+        width: rem(20);
+        height: rem(20);
+        font-weight: 500;
+      }
     }
 
     &:disabled,

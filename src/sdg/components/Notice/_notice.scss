@@ -21,14 +21,12 @@
 
   .icon-container {
     display: flex;  
-    padding: token-value(spacer, md) token-value(spacer, xs);
-    background-color: token-value(color,blue,pale);      
+    padding: token-value(spacer, md) rem(10);
+    //background-color: token-value(color,blue,pale);
 
-    .qc-icon {
-      background-size: 100% auto;
-      min-width: token-value(spacer, md);      
-      height: token-value(spacer, md);
-    }    
+    .qc-icon-font {
+      font-weight: 600;
+    }
   }
   .content-container {
     width: 100%;
@@ -56,8 +54,11 @@
   ) {
     &.qc-#{$type} .icon-container {
       background-color: token-value(color, nth($color, 1), pale);
-      [role=img] {
+      div[role=img] {
         background-color: token-value(color,nth($color, 1), nth($color, 2));
+      }
+      span[role=img] {
+        color: token-value(color,nth($color, 1), nth($color, 2));
       }
     }
   }
@@ -85,4 +86,18 @@ qc-notice {
   }
   margin-bottom: rem(4 * $base-spacer);
 
+}
+
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// La hauteur d'un avis dépend du contenu (et en mode attributs `title`/`content`
+// le contenu n'est même pas dans le DOM avant upgrade) : on ne peut pas réserver
+// une hauteur exacte. On réserve donc un PLANCHER = hauteur de la colonne icône
+// (icône ~24px + 2× spacer-md), c.-à-d. la hauteur minimale garantie de tout avis :
+// jamais de sur-réservation, et le gros du saut (0 → plancher) est absorbé.
+// visibility:hidden masque le contenu brut slotté avant upgrade (anti-FOUC), sans
+// collapser la boîte (pas de display:none). Compromis assumé : si le JS ne charge
+// pas, le contenu slotté (y compris un résumé d'erreurs de formulaire) reste invisible.
+qc-notice:not(:defined) {
+  min-height: rem(72);
+  visibility: hidden;
 }

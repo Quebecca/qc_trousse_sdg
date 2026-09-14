@@ -10,6 +10,7 @@ select {
 label {
   @include content-font('md', 'bold');
   display: inline-block;
+  max-inline-size: token-value(max-content-width);
 }
 
 legend {

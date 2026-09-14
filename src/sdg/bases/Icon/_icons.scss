@@ -1,14 +1,7 @@
 @use "../../scss/qc-sdg-lib" as *;
-@use "sass:list";
-$noMask: information-tooltip question-tooltip;
 
-qc-icon {
-  display: inline-flex;
-  align-items: stretch;
-}
-
-// TODO retirer une fois toutes les icônes remplacées par Icon dans les composants
-.qc-icon {
+// Support legacy : .qc-icon pour les icônes personnalisées via src
+.qc-icon-custom {
   display: inline-block;
   flex-shrink: 0;
   width: var(--img-width);
@@ -17,34 +10,7 @@ qc-icon {
   mask-repeat: no-repeat;
   background-color: var(--img-color);
   transform: rotate(var(--img-rotate));
-  // TODO questionner une échelle [0 - 10 ou 100]
-  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
-    &[data-img-size=#{$size-type}] {
-      height: rem($size);
-      width: rem($size);
-    }
-  }
-  @each $name, $url in $images {
-    // classes pour les icônes
-      @at-root .icon-#{$name} {
-        @if (list.index($noMask, $name)) {
-          background-image: getImageUrl($name);
-          background-color: transparent;
-          background-repeat: no-repeat;
-          background-size: 100%;
-        }
-        @else {
-          mask-image: getImageUrl($name);
-        }
-
-      }
-    &[data-img-type=#{$name}] {
-      @extend .icon-#{$name};
-    }
-  }
-  &.qc-icon-custom {
-    mask-image: var(--img-src);
-  }
+  mask-image: var(--img-src);
 
   &.is-disabled {
     cursor: not-allowed;
@@ -52,4 +18,81 @@ qc-icon {
   }
 }
 
+.qc-icon {
+  // Tailles prédéfinies
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      height: rem($size);
+      width: rem($size);
+    }
+  }
+}
+
+// Réservation CLS avant l'upgrade du web-component.
+// Le host <qc-icon> est vide avant upgrade (le glyphe est injecté à l'upgrade) => 0×0,
+// puis pousse le texte suivant. On réserve la boîte inline CARRÉE du glyphe
+// (largeur = hauteur = taille) avec le même vertical-align (-0.125em = --img-valign)
+// pour reproduire aussi l'expansion de la line-box (icônes plus grandes que le texte).
+// font-size par attribut `size` => width/height:1em ET le vertical-align scalent
+// ensemble ; sans attribut `size`, l'icône prend la taille du texte (1em hérité).
+qc-icon:not(:defined) {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[size="#{$size-type}"] {
+      font-size: rem($size);
+    }
+  }
+}
+
+// --- Mode Font ---
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('#{$google-font-path}/material-symbols-rounded.woff2') format('woff2');
+}
+
+
+.qc-icon-font {
+  @include icon-font-base();
+  text-rendering: optimizeLegibility;
+
+  // font-variation-settings piloté par --img-variation (inline) ou par défaut opsz 40
+  font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 0, 'GRAD' 0);
+
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  overflow: hidden;
+
+  color: var(--img-color);
+  transform: rotate(var(--img-rotate));
+  vertical-align: var(--img-valign);
+
+  @each $size-type, $size in (xs: 12, sm: 16, md: 20, nm: 24, lg: 28, xl: 32) {
+    &[data-img-size=#{$size-type}] {
+      font-size: rem($size);
+    }
+  }
+
+  // Variante filled — FILL: 1
+  &[data-img-variant="filled"] {
+    font-variation-settings: var(--img-variation, 'opsz' 40, 'FILL' 1, 'GRAD' 0);
+  }
+
+  &.is-disabled {
+    cursor: not-allowed;
+    color: token-value(color grey regular);
+  }
+}
 

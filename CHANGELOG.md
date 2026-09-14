@@ -1,9 +1,54 @@
 # Historique des versions
 
-## [Non publié]
+## Migration des icônes vers Material Symbols
+
+Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.
+Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
+
+### ⚠️ Changements avec impact (*breaking changes*)
+
+- **Boutons avec icône** : les boutons contenant une icône détectent automatiquement la position de l'icône via `:has(> qc-icon:first-child)` / `:has(> qc-icon:last-child)` pour ajuster le padding à 18px côté icône. Pour que le sélecteur `:first-child` / `:last-child` fonctionne correctement, le texte du bouton doit être enveloppé dans un `<span>`. Exemple :
+  ```html
+  <button class="qc-button qc-primary">
+      <qc-icon type="arrow_left_alt"></qc-icon>
+      <span>Précédent</span>
+  </button>
+  ```
+- **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
+
 ### Ajouté
+- **icônes** :
+  - Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
+  - Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
+  - Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.
+- **boutons** : Détection automatique de la position de l'icône. Voir note précédente.
+- **qc-search-input** : 
+  - Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
+  - Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
+  - Ajout de la propriété `value` comme attribut explicite du web component.
+  - Tests Playwright (baseline + svelte) avec screenshots partagés.
+- **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
+- **titres** : nouvelles classes de taille `.qc-heading-<taille>`, taille de xxl à xs.
+- **surtitre** : possibilité de placer le surtitre dans un `hgroup`
 - **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
-- **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+- **Documentation** 
+  - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+  - **infobulle** : ajout d'exemples.
+- **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
+
+### Modifié
+- **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
+- **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
+- **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
+
+### Corrigé
+- **qc-textfield** : Correction des valeurs par défaut de `size` dans la documentation (md pour `input`, lg pour `textarea` — et non lg/xl comme indiqué précédemment).
+- **qc-select** : 
+  - Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
+  - Correction du décalage entre le panneau déroulant et le bouton lorsqu'une recherche réduit les options et que le panneau est retourné vers le haut. La hauteur du panneau est désormais figée à l'ouverture quand il s'affiche au-dessus, évitant tout repositionnement pendant la saisie.
+- **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
+- **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
+- **commutateur** : Correction css concernant le comportement des balises `sup` et `sub` dans le libellé
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté

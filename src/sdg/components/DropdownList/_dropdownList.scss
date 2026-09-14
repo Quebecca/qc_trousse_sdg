@@ -13,6 +13,21 @@ $border: 1;
   max-width: 100%;
 }
 
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// Avant upgrade, le <select> natif slotté est visible (FOUC) et le host est inline sans
+// marge ; après upgrade la trousse rend un faux-select block (bouton min-height 40 +
+// bordure) avec un label optionnel et margin-bottom 32. On réserve : display block + la
+// marge basse constante (32) + le plancher du bouton ($min-height, hauteur minimale
+// garantie de tout select), et on masque le contenu brut. La hauteur variant avec le
+// label (optionnel), seul le plancher est réservable ; le résidu = la hauteur du label
+// quand il est présent. Compromis assumé : le <select> natif est invisible sans JS.
+qc-select:not(:defined) {
+  display: block;
+  min-height: rem($min-height);
+  margin-bottom: rem(32);
+  visibility: hidden;
+}
+
 .qc-dropdown-list-container {
   width: 100%;
 

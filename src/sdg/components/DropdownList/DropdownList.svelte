@@ -15,7 +15,7 @@
         ariaLabel = "",
         width = "md",
         items = [],
-        value = $bindable([]),
+        value = $bindable(),
         placeholder,
         noOptionsMessage = lang === "fr" ? "Aucun élément" : "No item",
         enableSearch = false,
@@ -48,7 +48,7 @@
         searchInput = $state(),
         popup = $state(),
         dropdownItems = $state(),
-        selectedItems = $derived(items.filter((item) => item.checked) ?? []),
+        selectedItems = $derived(items?.filter((item) => value?.includes(item.value)) ?? []),
         selectedOptionsText = $derived.by(() => {
             if (selectedItems.length >= 3) {
                 if (lang === "fr") {
@@ -56,14 +56,12 @@
                 }
                 return `${selectedItems.length} selected options`;
             }
-
-            if (selectedItems.length > 0 && value.length > 0) {
+            if (selectedItems.length > 0) {
                 if (multiple) {
                     return selectedItems.map((item) => item.label).join(", ");
                 }
                 return selectedItems[0].label;
             }
-
             return "";
         }),
         previousValue = $state(value),
@@ -76,7 +74,6 @@
                 label: Utils.cleanupSearchPrompt(item.label),
                 value: item.value,
                 disabled: item.disabled,
-                checked: item.checked,
             }
         })),
         widthClass = $derived.by(() => {
@@ -113,6 +110,8 @@
             }
         }),
         topOffset = $state(0),
+        isFlipped = $derived(topOffset < 0),
+        initialPopupHeight = $state(0),
         popupTopBorderThickness = $derived(topOffset && topOffset < 0 ? 1 : 0),
         popupBottomBorderThickness = $derived(topOffset && topOffset >= 0 ? 1 : 0)
     ;
@@ -248,23 +247,6 @@
     });
 
     $effect(() => {
-        const tempValue = selectedItems?.map(item => item.value);
-        if (tempValue?.toString() !== "") {
-            value = tempValue;
-        } else {
-            value = [];
-        }
-    });
-
-    $effect(() => {
-        if (value) {
-            items.forEach((item) => {
-                item.checked = value.includes(item.value);
-            });
-        }
-    });
-
-    $effect(() => {
         items.forEach((item) => {
             if (!item.id) {
                 item.id = `${id}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
@@ -281,9 +263,8 @@
     $effect(() => {
         if (placeholder)  return;
         const optionWithEmptyValue = findOptionWithEmptyValue();
-        if (!optionWithEmptyValue) return;
         placeholder =
-            optionWithEmptyValue.label !== ""
+            optionWithEmptyValue && optionWithEmptyValue.label !== ""
                 ?  optionWithEmptyValue.label
                 : defaultPlaceholder
         ;
@@ -291,12 +272,23 @@
 
     $effect(() => {
         if (expanded) {
-            const borderThickness = 2 * (invalid ? 2 : 1);
-            const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+            // Ne recalculer que si la hauteur initiale n'a pas encore été capturée
+            // (premier rendu après ouverture)
+            if (initialPopupHeight > 0) return;
 
-            topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
-                -popupHeight
-                : buttonHeight - borderThickness;
+            tick().then(() => {
+                const borderThickness = 2 * (invalid ? 2 : 1);
+                const popupHeight = popup ? popup.getBoundingClientRect().height : usedHeight;
+
+                // Mémoriser la hauteur initiale à l'ouverture
+                initialPopupHeight = popupHeight;
+
+                topOffset = buttonElementYPosition + buttonHeight > innerHeight - popupHeight ?
+                    -popupHeight
+                    : buttonHeight - borderThickness;
+            });
+        } else {
+            initialPopupHeight = 0;
         }
     });
 
@@ -377,13 +369,14 @@
 
             <div
                     id={popupId}
-                    class="qc-dropdown-list-expanded"
+                    class={["qc-dropdown-list-expanded", isFlipped && "qc-dropdown-list-flipped"]}
                     style={`
                     --dropdown-items-top-offset: ${topOffset};
                     --dropdown-items-height: ${usedHeight};
                     --dropdown-items-bottom-border: ${popupBottomBorderThickness};
                     --dropdown-items-top-border: ${popupTopBorderThickness};
                     --dropdown-button-border: ${invalid ? 2 : 1};
+                    ${isFlipped && initialPopupHeight > 0 ? `min-height: ${initialPopupHeight}px;` : ''}
                     `}
                     tabindex="-1"
                     hidden={!expanded}
@@ -418,16 +411,24 @@
                         {items}
                         {displayedItems}
                         {noOptionsMessage}
-                        selectionCallbackSingle={() => {
+                        {value}
+                        onSelect={(itemValue) => {
+                            value = [itemValue];
                             closeDropdown("");
                             button?.focus();
+                        }}
+                        onToggle={(itemValue) => {
+                            if (value.includes(itemValue)) {
+                                value = value.filter(v => v !== itemValue);
+                            } else {
+                                value = [...value, itemValue];
+                            }
                         }}
                         handleExitSingle={(key) => closeDropdown(key)}
                         handleExitMultiple={(key) => closeDropdown(key)}
                         focusOnOuterElement={() => enableSearch ? searchInput?.focus() : button?.focus()}
                         handlePrintableCharacter={handlePrintableCharacter}
                         bind:this={dropdownItems}
-                        bind:value={value}
                 />
 
                 <!-- Pour les lecteurs d'écran: lit le nombre de résultats -->

@@ -10,8 +10,9 @@
         items,
         displayedItems,
         noOptionsMessage,
-        selectionCallbackSingle = () => {},
-        selectionCallbackMultiple = () => {},
+        value = [],
+        onSelect = () => {},
+        onToggle = () => {},
         handleExitSingle = () => {},
         handleExitMultiple = () => {},
         focusOnOuterElement = () => {},
@@ -52,9 +53,8 @@
             {items}
             {displayedItems}
             {noOptionsMessage}
-            passValue={() => {
-                selectionCallbackMultiple();
-            }}
+            {value}
+            {onToggle}
             handleExit={(key) => handleExitMultiple(key)}
             focusOnOuterElement={focusOnOuterElement}
             handlePrintableCharacter={handlePrintableCharacter}
@@ -65,9 +65,8 @@
             {items}
             {displayedItems}
             {noOptionsMessage}
-            selectionCallback={() => {
-                selectionCallbackSingle();
-            }}
+            {value}
+            {onSelect}
             handleExit={(key) => handleExitSingle(key)}
             focusOnOuterElement={focusOnOuterElement}
             handlePrintableCharacter={handlePrintableCharacter}

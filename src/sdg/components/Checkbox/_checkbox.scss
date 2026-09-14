@@ -1,6 +1,5 @@
 @use "qc-sdg-lib" as *;
 @use "../Fieldset/fieldset" as *;
-@use "../../bases/Icon/icons" as *;
 
 
 input[type="checkbox"].qc-choicefield {
@@ -19,19 +18,16 @@ input[type="checkbox"].qc-choicefield {
     }
 
     &::after {
-      @extend .icon-checkmark;
-      content: "";
+      content: "\e5ca"; // Caractère "check" de la font Material Symbols
+      @include icon-font-base();
+      font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      mask-size: contain;
-      mask-repeat: no-repeat;
-      mask-position: center;
-      background-color: token-value(color, white);
-      width: token-value(spacer, md);
-      height: rem(18);
-
+      color: token-value(color, white);
+      font-size: rem(24);
+      font-weight: 600;
     }
   }
   &.qc-compact {
@@ -47,8 +43,8 @@ input[type="checkbox"].qc-choicefield {
       }
 
       &::after {
-        width: token-value(spacer, sm);
-        height: rem(12);
+        font-size: rem(16);
+        font-weight: 600;
       }
     }
   }
@@ -67,4 +63,17 @@ input[type="checkbox"].qc-choicefield {
   &.qc-checkbox-single-invalid {
     @extend .qc-fieldset-invalid;
   }
+}
+
+// Réservation CLS + anti-FOUC avant l'upgrade du web-component.
+// Le host reste inline, mais le wrapper .qc-checkbox-single (rendu dans le shadow) porte
+// une margin-bottom (spacer-content-block-mb) qui pousse le contenu suivant à l'upgrade.
+// Sur un host inline cette marge serait ignorée => on passe le host en block, on réserve
+// la même marge basse + un plancher de hauteur (spacer-md = hauteur de la case stylée),
+// et on masque le contenu brut (anti-FOUC).
+qc-checkbox:not(:defined) {
+  display: block;
+  min-height: token-value(spacer, md);
+  margin-bottom: token-value(spacer content-block mb);
+  visibility: hidden;
 }

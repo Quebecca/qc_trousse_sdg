@@ -4,55 +4,69 @@
 
 a {
   color: token-value(color, link, text);
-  &:visited {
-    color: token-value(color, link, visited);
-  }
-  &:hover {
-    @include hover-link();
-  }
-  &:focus, &:focus-visible {
-    @include focus-link();
-  }
-  &:active {
-    @include active-link();
-  }
-  .img-wrap {
-    white-space: nowrap;
-  }
 
+  &:visited { color: token-value(color, link, visited); }
+  &:hover   { @include hover-link(); }
+  &:focus,
+  &:focus-visible { @include focus-link(); }
+  &:active  { @include active-link(); }
+
+  // Le dernier mot du lien externe est enrobé côté JS (qc-external-link).
+  // nowrap : soude le dernier mot à l'icône ::after -> l'icône ne s'orpheline jamais.
+  .qc-ext-link-text { white-space: nowrap; }
 }
-div.qc-ext-link-img {
 
-  @extend .icon-external-link;
-  $ratio : math.div(11,16) * 1em;
-  height: $ratio;
-  width: $ratio;
-  display: inline-block!important;
-  background: token-value(color link text);
-  mask-size: $ratio;
+// Icône « lien externe » (open_in_new, \e89e) posée en pseudo-élément CSS : plus
+// d'élément dans le DOM, plus de réservation CLS (présente dès le 1er paint).
+// Reproduit à l'identique .qc-icon-font pour ne pas altérer les baselines visuelles.
+// Partagée entre l'état défini (::after sur le wrapper JS .qc-ext-link-text) et
+// l'état non défini (réservation CLS sur le host, cf. plus bas).
+%qc-ext-link-icon {
+  @include icon-font-base();
+  text-rendering: optimizeLegibility;
+  font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
+  // inline-block => l'icône n'est PAS traversée par le souligné du lien ;
+  // le nowrap du wrapper la maintient collée au dernier mot.
+  display: inline-block;
+  font-size: 1em;
+  letter-spacing: normal;
+  text-transform: none;
+  word-wrap: normal;
+  direction: ltr;
+  overflow: hidden;
   margin-left: 4px;
-  a:visited  & {
-    background: token-value(color link visited);
-  }
-  a:focus  & {
-    background: token-value(color link hover);
-  }
-  a:hover  & {
-    background: token-value(color link hover);
-  }
-  a:active  & {
-    background: token-value(color link active);
-  }
-
-
-  .img-wrap + & {
-    display: none;
-  }
+  vertical-align: -0.17em;
+  // rotate(0) identité : reproduit le chemin de rendu de .qc-icon-font (transform
+  // présent), sinon firefox rastérise le glyphe légèrement différemment.
+  transform: rotate(0);
+  text-decoration: none;
+  color: currentColor;
 }
 
+// Icône (défaut FR), portée par deux sélecteurs :
+//  - wrapper JS .qc-ext-link-text -> état défini (post-upgrade) ;
+//  - host qc-external-link:not(:defined) -> réservation CLS avant upgrade : l'icône
+//    est présente dès le 1er paint puis reste identique après upgrade = zéro shift.
+.qc-external-link .qc-ext-link-text::after,
+qc-external-link:not(:defined)::after {
+  @extend %qc-ext-link-icon;
+  content: "\e89e" / "Ce lien dirige vers un autre site.";
+}
+
+// Sur le host (hors du <a>), `inline` soude l'icône au dernier mot comme un
+// caractère : même wrap que le span nowrap post-upgrade (pas d'orphelin, même
+// nombre de lignes) et pas touchée par le souligné du lien (généré hors du <a>).
+qc-external-link:not(:defined)::after { display: inline; }
+
+// Message anglais dès que la langue n'est pas le français (défaut = fr),
+// pour reproduire la sémantique d'origine (getPageLanguage()==='fr' ? fr : en).
+.qc-external-link .qc-ext-link-text:not(:lang(fr))::after,
+qc-external-link:not(:defined):not(:lang(fr))::after {
+  content: "\e89e" / "This link directs to another site.";
+}
+
+// Lien externe dans un bouton : colle l'icône sans espace hérité
 .qc-external-link .qc-button {
   gap: 0;
-  > .img-wrap::before {
-    content: "\a0";
-  }
+  > .qc-ext-link-text::before { content: "\a0"; }
 }
