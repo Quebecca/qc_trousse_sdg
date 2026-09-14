@@ -38,9 +38,13 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
 
 ### Modifié
+- **outillage de build** : passage de **Rollup** à **Vite 8** (rolldown/Oxc) pour la compilation des bundles et du CSS. La sortie distribuée (`dist/`) est inchangée ; seuls les scripts de développement évoluent (`build`, `dev`, `build:dev` via `scripts/*.mjs`). Rollup et ses greffons sont entièrement retirés.
 - **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
 - **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
+
+### Retiré
+- **outillage mort** : suppression du script npm `rewrite-bootstrap` et du `gulpfile.js` associé (tâche `rewriteBs`). Ce code n'était plus fonctionnel (dépendances `gulp` / `gulp-transform` / `gulp-clean` / `bootstrap-for-qc-sdg` absentes) et sa sortie n'était ni versionnée ni consommée : le code de grille Bootstrap avait déjà été inliné une fois pour toutes dans le SCSS (`_grid-lib.scss`, `_display.scss`).
 
 ### Corrigé
 - **boutons** : Correction du fond du bouton secondaire (`.qc-secondary`), désormais transparent au lieu de blanc.

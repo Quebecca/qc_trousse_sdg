@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
+import { globSync } from 'glob';
 
 function buildHtmlDoc({ input }) {
     return {
@@ -14,7 +14,7 @@ function buildHtmlDoc({ input }) {
 
             this.addWatchFile(inputPath);
 
-            const partialPaths = glob.sync('sdg/**/_*.html', {
+            const partialPaths = globSync('sdg/**/_*.html', {
                 cwd: srcRoot,
                 absolute: true,
             });

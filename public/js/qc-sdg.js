@@ -2521,7 +2521,7 @@
 					if (error !== STALE_REACTION) {
 						signal.f |= ERROR_VALUE;
 
-						// @ts-expect-error the error is the wrong type, but we don't care
+					// @ts-expect-error the error is the wrong type, but we don't care
 						internal_set(signal, error);
 					}
 				} else {
@@ -3410,14 +3410,14 @@
 		// text node to hydrate — we must therefore create one
 		if (is_text && next_sibling?.nodeType !== TEXT_NODE) {
 			var text = create_text();
-			// If the next sibling is `null` and we're handling text then it's because
-			// the SSR content was empty for the text, so we need to generate a new text
-			// node and insert it after the last sibling
-			if (next_sibling === null) {
-				last_sibling?.after(text);
-			} else {
-				next_sibling.before(text);
-			}
+				// If the next sibling is `null` and we're handling text then it's because
+				// the SSR content was empty for the text, so we need to generate a new text
+				// node and insert it after the last sibling
+				if (next_sibling === null) {
+					last_sibling?.after(text);
+				} else {
+					next_sibling.before(text);
+				}
 			set_hydrate_node(text);
 			return text;
 		}
@@ -3636,17 +3636,17 @@
 			if (e !== null) {
 				e.parent = parent;
 
-				if (parent !== null) {
-					push_effect(e, parent);
-				}
+			if (parent !== null) {
+				push_effect(e, parent);
+			}
 
-				// if we're in a derived, add the effect there too
-				if (
-					active_reaction !== null &&
-					(active_reaction.f & DERIVED) !== 0 &&
-					(type & ROOT_EFFECT) === 0
-				) {
-					var derived = /** @type {Derived} */ (active_reaction);
+			// if we're in a derived, add the effect there too
+			if (
+				active_reaction !== null &&
+				(active_reaction.f & DERIVED) !== 0 &&
+				(type & ROOT_EFFECT) === 0
+			) {
+				var derived = /** @type {Derived} */ (active_reaction);
 					(derived.effects ??= []).push(e);
 				}
 			}
@@ -4208,12 +4208,12 @@
 				for (var i = 0; i < length; i++) {
 					var dependency = dependencies[i];
 
-					if (is_dirty(/** @type {Derived} */ (dependency))) {
-						update_derived(/** @type {Derived} */ (dependency));
-					}
+				if (is_dirty(/** @type {Derived} */ (dependency))) {
+					update_derived(/** @type {Derived} */ (dependency));
+				}
 
-					if (dependency.wv > reaction.wv) {
-						return true;
+				if (dependency.wv > reaction.wv) {
+					return true;
 					}
 				}
 			}
@@ -12945,7 +12945,7 @@
 		};
 
 		let inputProps = tag(
-				user_derived(() => ({
+			user_derived(() => ({
 					...defaultsAttributes.input,
 					...Utils.computeFieldsAttributes("input", rest),
 					name: name()
@@ -12956,9 +12956,9 @@
 				user_derived(() => ({
 					...defaultsAttributes.input,
 					...Utils.computeFieldsAttributes("submit", rest)
-				})),
-				'submitProps'
-			);
+			})),
+			'submitProps'
+		);
 
 		var $$exports = {
 			get value() {
@@ -17239,17 +17239,17 @@
 			selectedOptionsText = tag(
 				user_derived(() => {
 					if (get(selectedItems).length >= 3) {
-						if (strict_equals(lang, "fr")) {
-							return `${get(selectedItems).length} options sélectionnées`;
-						}
+					if (strict_equals(lang, "fr")) {
+						return `${get(selectedItems).length} options sélectionnées`;
+					}
 
 						return `${get(selectedItems).length} selected options`;
 					}
 
 					if (get(selectedItems).length > 0) {
-						if (multiple()) {
-							return get(selectedItems).map((item) => item.label).join(", ");
-						}
+					if (multiple()) {
+						return get(selectedItems).map((item) => item.label).join(", ");
+					}
 
 						return get(selectedItems)[0].label;
 					}
@@ -17287,11 +17287,11 @@
 				user_derived(() => {
 					const s = get(displayedItems).length > 1 ? "s" : "";
 
-					if (get(displayedItems).length > 0) {
-						return strict_equals(lang, "fr")
-							? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
-							: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
-					}
+				if (get(displayedItems).length > 0) {
+					return strict_equals(lang, "fr")
+						? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
+						: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
+				}
 
 					return "";
 				}),
@@ -17301,18 +17301,18 @@
 			usedHeight = tag(
 				user_derived(() => {
 					const maxItemsHeight = 336;
-					const searchInputTotalHeight = 56;
+				const searchInputTotalHeight = 56;
 
 					if (enableSearch()) {
-						if (get(displayedItems).length > 7) {
-							return maxItemsHeight - searchInputTotalHeight - 17;
-						}
+					if (get(displayedItems).length > 7) {
+						return maxItemsHeight - searchInputTotalHeight - 17;
+					}
 
-						return maxItemsHeight - searchInputTotalHeight;
+					return maxItemsHeight - searchInputTotalHeight;
 					} else {
-						if (get(displayedItems).length > 8) {
-							return maxItemsHeight - 33;
-						}
+					if (get(displayedItems).length > 8) {
+						return maxItemsHeight - 33;
+					}
 
 						return maxItemsHeight;
 					}
