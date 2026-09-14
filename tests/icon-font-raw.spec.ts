@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
 
-const htmlFilePath = path.resolve(__dirname, '..', 'public', 'icon-font-raw.test.html');
+const htmlFilePath = path.resolve(__dirname, '..', 'public', 'iconFontRaw.test.html');
 
 /**
  * Test brut de la font Material Symbols subsetée.
