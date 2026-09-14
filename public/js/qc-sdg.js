@@ -1,53 +1,15 @@
-(function () {
-	'use strict';
-
-	// generated during release, do not modify
-
-	const PUBLIC_VERSION = '5';
-
-	if (typeof window !== 'undefined') {
-		// @ts-expect-error
-		((window.__svelte ??= {}).v ??= new Set()).add(PUBLIC_VERSION);
-	}
-
-	const EACH_ITEM_REACTIVE = 1;
-	const EACH_INDEX_REACTIVE = 1 << 1;
-	/** See EachBlock interface metadata.is_controlled for an explanation what this is */
-	const EACH_IS_CONTROLLED = 1 << 2;
-	const EACH_IS_ANIMATED = 1 << 3;
-	const EACH_ITEM_IMMUTABLE = 1 << 4;
-
-	const PROPS_IS_IMMUTABLE = 1;
-	const PROPS_IS_UPDATED = 1 << 2;
-	const PROPS_IS_BINDABLE = 1 << 3;
-	const PROPS_IS_LAZY_INITIAL = 1 << 4;
-
-	const TEMPLATE_FRAGMENT = 1;
-	const TEMPLATE_USE_IMPORT_NODE = 1 << 1;
-
-	const HYDRATION_START = '[';
-	/** used to indicate that an `{:else}...` block was rendered */
-	const HYDRATION_START_ELSE = '[!';
-	/** used to indicate that a boundary's `failed` snippet was rendered on the server */
-	const HYDRATION_START_FAILED = '[?';
-	const HYDRATION_END = ']';
-	const HYDRATION_ERROR = {};
-
-	const UNINITIALIZED = Symbol('uninitialized');
-
-	// Dev-time component properties
-	const FILENAME = Symbol('filename');
-
-	const NAMESPACE_HTML = 'http://www.w3.org/1999/xhtml';
-	const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
-	const NAMESPACE_MATHML = 'http://www.w3.org/1998/Math/MathML';
-
-	const ATTACHMENT_KEY = '@attach';
-
-	var DEV = false;
-
-	// Store the references to globals in case someone tries to monkey patch these, causing the below
-	// to de-opt (this occurs often when using popular extensions).
+(function() {
+	//#region node_modules/svelte/src/internal/disclose-version.js
+	if (typeof window !== "undefined") ((window.__svelte ??= {}).v ??= /* @__PURE__ */ new Set()).add("5");
+	//#endregion
+	//#region node_modules/svelte/src/constants.js
+	var HYDRATION_ERROR = {};
+	var UNINITIALIZED = Symbol("uninitialized");
+	var NAMESPACE_HTML = "http://www.w3.org/1999/xhtml";
+	var NAMESPACE_SVG = "http://www.w3.org/2000/svg";
+	var NAMESPACE_MATHML = "http://www.w3.org/1998/Math/MathML";
+	//#endregion
+	//#region node_modules/svelte/src/internal/shared/utils.js
 	var is_array = Array.isArray;
 	var index_of = Array.prototype.indexOf;
 	var includes = Array.prototype.includes;
@@ -60,961 +22,500 @@
 	var array_prototype = Array.prototype;
 	var get_prototype_of = Object.getPrototypeOf;
 	var is_extensible = Object.isExtensible;
-
 	/**
-	 * @param {any} thing
-	 * @returns {thing is Function}
-	 */
+	* @param {any} thing
+	* @returns {thing is Function}
+	*/
 	function is_function(thing) {
-		return typeof thing === 'function';
+		return typeof thing === "function";
 	}
-
-	const noop = () => {};
-
-	// Adapted from https://github.com/then/is-promise/blob/master/index.js
-	// Distributed under MIT License https://github.com/then/is-promise/blob/master/LICENSE
-
+	var noop = () => {};
 	/**
-	 * @template [T=any]
-	 * @param {any} value
-	 * @returns {value is PromiseLike<T>}
-	 */
+	* @template [T=any]
+	* @param {any} value
+	* @returns {value is PromiseLike<T>}
+	*/
 	function is_promise(value) {
-		return typeof value?.then === 'function';
+		return typeof value?.then === "function";
 	}
-
 	/** @param {Array<() => void>} arr */
 	function run_all(arr) {
-		for (var i = 0; i < arr.length; i++) {
-			arr[i]();
-		}
+		for (var i = 0; i < arr.length; i++) arr[i]();
 	}
-
 	/**
-	 * TODO replace with Promise.withResolvers once supported widely enough
-	 * @template [T=void]
-	 */
+	* TODO replace with Promise.withResolvers once supported widely enough
+	* @template [T=void]
+	*/
 	function deferred() {
 		/** @type {(value: T) => void} */
 		var resolve;
-
 		/** @type {(reason: any) => void} */
 		var reject;
-
-		/** @type {Promise<T>} */
-		var promise = new Promise((res, rej) => {
-			resolve = res;
-			reject = rej;
-		});
-
-		// @ts-expect-error
-		return { promise, resolve, reject };
+		return {
+			promise: new Promise((res, rej) => {
+				resolve = res;
+				reject = rej;
+			}),
+			resolve,
+			reject
+		};
 	}
-
 	/**
-	 * When encountering a situation like `let [a, b, c] = $derived(blah())`,
-	 * we need to stash an intermediate value that `a`, `b`, and `c` derive
-	 * from, in case it's an iterable
-	 * @template T
-	 * @param {ArrayLike<T> | Iterable<T>} value
-	 * @param {number} [n]
-	 * @returns {Array<T>}
-	 */
+	* When encountering a situation like `let [a, b, c] = $derived(blah())`,
+	* we need to stash an intermediate value that `a`, `b`, and `c` derive
+	* from, in case it's an iterable
+	* @template T
+	* @param {ArrayLike<T> | Iterable<T>} value
+	* @param {number} [n]
+	* @returns {Array<T>}
+	*/
 	function to_array(value, n) {
-		// return arrays unchanged
-		if (Array.isArray(value)) {
-			return value;
-		}
-
-		// if value is not iterable, or `n` is unspecified (indicates a rest
-		// element, which means we're not concerned about unbounded iterables)
-		// convert to an array with `Array.from`
-		if (!(Symbol.iterator in value)) {
-			return Array.from(value);
-		}
-
-		// otherwise, populate an array with `n` values
-
+		if (Array.isArray(value)) return value;
+		if (n === void 0 || !(Symbol.iterator in value)) return Array.from(value);
 		/** @type {T[]} */
 		const array = [];
-
 		for (const element of value) {
 			array.push(element);
 			if (array.length === n) break;
 		}
-
 		return array;
 	}
-
-	// General flags
-	const DERIVED = 1 << 1;
-	const EFFECT = 1 << 2;
-	const RENDER_EFFECT = 1 << 3;
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/constants.js
 	/**
-	 * An effect that does not destroy its child effects when it reruns.
-	 * Runs as part of render effects, i.e. not eagerly as part of tree traversal or effect flushing.
-	 */
-	const MANAGED_EFFECT = 1 << 24;
-	/**
-	 * An effect that does not destroy its child effects when it reruns (like MANAGED_EFFECT).
-	 * Runs eagerly as part of tree traversal or effect flushing.
-	 */
-	const BLOCK_EFFECT = 1 << 4;
-	const BRANCH_EFFECT = 1 << 5;
-	const ROOT_EFFECT = 1 << 6;
-	const BOUNDARY_EFFECT = 1 << 7;
-	/**
-	 * Indicates that a reaction is connected to an effect root — either it is an effect,
-	 * or it is a derived that is depended on by at least one effect. If a derived has
-	 * no dependents, we can disconnect it from the graph, allowing it to either be
-	 * GC'd or reconnected later if an effect comes to depend on it again
-	 */
-	const CONNECTED = 1 << 9;
-	const CLEAN = 1 << 10;
-	const DIRTY = 1 << 11;
-	const MAYBE_DIRTY = 1 << 12;
-	const INERT = 1 << 13;
-	const DESTROYED = 1 << 14;
+	* An effect that does not destroy its child effects when it reruns.
+	* Runs as part of render effects, i.e. not eagerly as part of tree traversal or effect flushing.
+	*/
+	var MANAGED_EFFECT = 1 << 24;
+	var CLEAN = 1024;
+	var DIRTY = 2048;
+	var MAYBE_DIRTY = 4096;
+	var INERT = 8192;
+	var DESTROYED = 16384;
 	/** Set once a reaction has run for the first time */
-	const REACTION_RAN = 1 << 15;
+	var REACTION_RAN = 32768;
 	/** Effect is in the process of getting destroyed. Can be observed in child teardown functions */
-	const DESTROYING = 1 << 25;
-
-	// Flags exclusive to effects
+	var DESTROYING = 1 << 25;
 	/**
-	 * 'Transparent' effects do not create a transition boundary.
-	 * This is on a block effect 99% of the time but may also be on a branch effect if its parent block effect was pruned
-	 */
-	const EFFECT_TRANSPARENT = 1 << 16;
-	const EAGER_EFFECT = 1 << 17;
-	const HEAD_EFFECT = 1 << 18;
-	const EFFECT_PRESERVED = 1 << 19;
-	const USER_EFFECT = 1 << 20;
-	const EFFECT_OFFSCREEN = 1 << 25;
-
-	// Flags exclusive to deriveds
+	* 'Transparent' effects do not create a transition boundary.
+	* This is on a block effect 99% of the time but may also be on a branch effect if its parent block effect was pruned
+	*/
+	var EFFECT_TRANSPARENT = 65536;
+	var EFFECT_PRESERVED = 1 << 19;
+	var USER_EFFECT = 1 << 20;
+	var EFFECT_OFFSCREEN = 1 << 25;
 	/**
-	 * Tells that we marked this derived and its reactions as visited during the "mark as (maybe) dirty"-phase.
-	 * Will be lifted during execution of the derived and during checking its dirty state (both are necessary
-	 * because a derived might be checked but not executed). This is a pure performance optimization flag and
-	 * should not be used for any other purpose!
-	 */
-	const WAS_MARKED = 1 << 16;
-
-	// Flags used for async
-	const REACTION_IS_UPDATING = 1 << 21;
-	const ASYNC = 1 << 22;
-
-	const ERROR_VALUE = 1 << 23;
-
-	const STATE_SYMBOL = Symbol('$state');
-	const LEGACY_PROPS = Symbol('legacy props');
-	const LOADING_ATTR_SYMBOL = Symbol('');
-	const PROXY_PATH_SYMBOL = Symbol('proxy path');
-	const ATTRIBUTES_CACHE = Symbol('attributes');
-	const CLASS_CACHE = Symbol('class');
-	const STYLE_CACHE = Symbol('style');
-	const TEXT_CACHE = Symbol('text');
-	const FORM_RESET_HANDLER = Symbol('form reset');
-
+	* Tells that we marked this derived and its reactions as visited during the "mark as (maybe) dirty"-phase.
+	* Will be lifted during execution of the derived and during checking its dirty state (both are necessary
+	* because a derived might be checked but not executed). This is a pure performance optimization flag and
+	* should not be used for any other purpose!
+	*/
+	var WAS_MARKED = 65536;
+	var REACTION_IS_UPDATING = 1 << 21;
+	var ASYNC = 1 << 22;
+	var ERROR_VALUE = 1 << 23;
+	var STATE_SYMBOL = Symbol("$state");
+	/** Marks component export objects, so that `proxy(...)` leaves them untouched */
+	var COMPONENT_SYMBOL = Symbol("component");
+	var LEGACY_PROPS = Symbol("legacy props");
+	var LOADING_ATTR_SYMBOL = Symbol("");
+	var ATTRIBUTES_CACHE = Symbol("attributes");
+	var CLASS_CACHE = Symbol("class");
+	var STYLE_CACHE = Symbol("style");
+	var TEXT_CACHE = Symbol("text");
+	var FORM_RESET_HANDLER = Symbol("form reset");
 	/** allow users to ignore aborted signal errors if `reason.name === 'StaleReactionError` */
-	const STALE_REACTION = new (class StaleReactionError extends Error {
-		name = 'StaleReactionError';
-		message = 'The reaction that called `getAbortSignal()` was re-run or destroyed';
-	})();
-
-	const IS_XHTML =
-		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
-		!!globalThis.document?.contentType &&
-		/* @__PURE__ */ globalThis.document.contentType.includes('xml');
-	const ELEMENT_NODE = 1;
-	const TEXT_NODE = 3;
-	const COMMENT_NODE = 8;
-	const DOCUMENT_FRAGMENT_NODE = 11;
-
-	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
-
-
+	var STALE_REACTION = new class StaleReactionError extends Error {
+		name = "StaleReactionError";
+		message = "The reaction that called `getAbortSignal()` was re-run or destroyed";
+	}();
+	var IS_XHTML = !!globalThis.document?.contentType && /* @__PURE__ */ globalThis.document.contentType.includes("xml");
 	/**
-	 * A snippet function was passed invalid arguments. Snippets should only be instantiated via `{@render ...}`
-	 * @returns {never}
-	 */
-	function invalid_snippet_arguments() {
-		{
-			throw new Error(`https://svelte.dev/e/invalid_snippet_arguments`);
-		}
-	}
-
-	/**
-	 * `%name%(...)` can only be used during component initialisation
-	 * @param {string} name
-	 * @returns {never}
-	 */
-	function lifecycle_outside_component(name) {
-		{
-			throw new Error(`https://svelte.dev/e/lifecycle_outside_component`);
-		}
-	}
-
-	/**
-	 * Attempted to render a snippet without a `{@render}` block. This would cause the snippet code to be stringified instead of its content being rendered to the DOM. To fix this, change `{snippet}` to `{@render snippet()}`.
-	 * @returns {never}
-	 */
-	function snippet_without_render_tag() {
-		{
-			throw new Error(`https://svelte.dev/e/snippet_without_render_tag`);
-		}
-	}
-
-	/**
-	 * The `this` prop on `<svelte:element>` must be a string, if defined
-	 * @returns {never}
-	 */
-	function svelte_element_invalid_this_value() {
-		{
-			throw new Error(`https://svelte.dev/e/svelte_element_invalid_this_value`);
-		}
-	}
-
-	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
-
-
-	/**
-	 * Cannot create a `$derived(...)` with an `await` expression outside of an effect tree
-	 * @returns {never}
-	 */
-	function async_derived_orphan() {
-		{
-			throw new Error(`https://svelte.dev/e/async_derived_orphan`);
-		}
-	}
-
-	/**
-	 * Calling `%method%` on a component instance (of %component%) is no longer valid in Svelte 5
-	 * @param {string} method
-	 * @param {string} component
-	 * @returns {never}
-	 */
-	function component_api_changed(method, component) {
-		{
-			throw new Error(`https://svelte.dev/e/component_api_changed`);
-		}
-	}
-
-	/**
-	 * Attempted to instantiate %component% with `new %name%`, which is no longer valid in Svelte 5. If this component is not under your control, set the `compatibility.componentApi` compiler option to `4` to keep it working.
-	 * @param {string} component
-	 * @param {string} name
-	 * @returns {never}
-	 */
-	function component_api_invalid_new(component, name) {
-		{
-			throw new Error(`https://svelte.dev/e/component_api_invalid_new`);
-		}
-	}
-
-	/**
-	 * Keyed each block has duplicate key `%value%` at indexes %a% and %b%
-	 * @param {string} a
-	 * @param {string} b
-	 * @param {string | undefined | null} [value]
-	 * @returns {never}
-	 */
-	function each_key_duplicate(a, b, value) {
-		{
-			throw new Error(`https://svelte.dev/e/each_key_duplicate`);
-		}
-	}
-
-	/**
-	 * `%rune%` cannot be used inside an effect cleanup function
-	 * @param {string} rune
-	 * @returns {never}
-	 */
-	function effect_in_teardown(rune) {
-		{
-			throw new Error(`https://svelte.dev/e/effect_in_teardown`);
-		}
-	}
-
-	/**
-	 * Effect cannot be created inside a `$derived` value that was not itself created inside an effect
-	 * @returns {never}
-	 */
-	function effect_in_unowned_derived() {
-		{
-			throw new Error(`https://svelte.dev/e/effect_in_unowned_derived`);
-		}
-	}
-
-	/**
-	 * `%rune%` can only be used inside an effect (e.g. during component initialisation)
-	 * @param {string} rune
-	 * @returns {never}
-	 */
-	function effect_orphan(rune) {
-		{
-			throw new Error(`https://svelte.dev/e/effect_orphan`);
-		}
-	}
-
-	/**
-	 * Maximum update depth exceeded. This typically indicates that an effect reads and writes the same piece of state
-	 * @returns {never}
-	 */
-	function effect_update_depth_exceeded() {
-		{
-			throw new Error(`https://svelte.dev/e/effect_update_depth_exceeded`);
-		}
-	}
-
-	/**
-	 * Failed to hydrate the application
-	 * @returns {never}
-	 */
-	function hydration_failed() {
-		{
-			throw new Error(`https://svelte.dev/e/hydration_failed`);
-		}
-	}
-
-	/**
-	 * Cannot do `bind:%key%={undefined}` when `%key%` has a fallback value
-	 * @param {string} key
-	 * @returns {never}
-	 */
-	function props_invalid_value(key) {
-		{
-			throw new Error(`https://svelte.dev/e/props_invalid_value`);
-		}
-	}
-
-	/**
-	 * Property descriptors defined on `$state` objects must contain `value` and always be `enumerable`, `configurable` and `writable`.
-	 * @returns {never}
-	 */
-	function state_descriptors_fixed() {
-		{
-			throw new Error(`https://svelte.dev/e/state_descriptors_fixed`);
-		}
-	}
-
-	/**
-	 * Cannot set prototype of `$state` object
-	 * @returns {never}
-	 */
-	function state_prototype_fixed() {
-		{
-			throw new Error(`https://svelte.dev/e/state_prototype_fixed`);
-		}
-	}
-
-	/**
-	 * Updating state inside `$derived(...)`, `$inspect(...)` or a template expression is forbidden. If the value should not be reactive, declare it without `$state`
-	 * @returns {never}
-	 */
-	function state_unsafe_mutation() {
-		{
-			throw new Error(`https://svelte.dev/e/state_unsafe_mutation`);
-		}
-	}
-
-	/**
-	 * A `<svelte:boundary>` `reset` function cannot be called while an error is still being handled
-	 * @returns {never}
-	 */
-	function svelte_boundary_reset_onerror() {
-		{
-			throw new Error(`https://svelte.dev/e/svelte_boundary_reset_onerror`);
-		}
-	}
-
-	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
-
-
-	/**
-	 * `%binding%` (%location%) is binding to a non-reactive property
-	 * @param {string} binding
-	 * @param {string | undefined | null} [location]
-	 */
-	function binding_property_non_reactive(binding, location) {
-		{
-			console.warn(`https://svelte.dev/e/binding_property_non_reactive`);
-		}
-	}
-
-	/**
-	 * Your `console.%method%` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
-	 * @param {string} method
-	 */
-	function console_log_state(method) {
-		{
-			console.warn(`https://svelte.dev/e/console_log_state`);
-		}
-	}
-
-	/**
-	 * Reading a derived belonging to a now-destroyed effect may result in stale values
-	 */
+	* Reading a derived belonging to a now-destroyed effect may result in stale values
+	*/
 	function derived_inert() {
-		{
-			console.warn(`https://svelte.dev/e/derived_inert`);
-		}
+		console.warn(`https://svelte.dev/e/derived_inert`);
 	}
-
 	/**
-	 * %handler% should be a function. Did you mean to %suggestion%?
-	 * @param {string} handler
-	 * @param {string} suggestion
-	 */
-	function event_handler_invalid(handler, suggestion) {
-		{
-			console.warn(`https://svelte.dev/e/event_handler_invalid`);
-		}
-	}
-
-	/**
-	 * Hydration failed because the initial UI does not match what was rendered on the server. The error occurred near %location%
-	 * @param {string | undefined | null} [location]
-	 */
+	* Hydration failed because the initial UI does not match what was rendered on the server. The error occurred near %location%
+	* @param {string | undefined | null} [location]
+	*/
 	function hydration_mismatch(location) {
-		{
-			console.warn(`https://svelte.dev/e/hydration_mismatch`);
-		}
+		console.warn(`https://svelte.dev/e/hydration_mismatch`);
 	}
-
 	/**
-	 * %parent% passed property `%prop%` to %child% with `bind:`, but its parent component %owner% did not declare `%prop%` as a binding. Consider creating a binding between %owner% and %parent% (e.g. `bind:%prop%={...}` instead of `%prop%={...}`)
-	 * @param {string} parent
-	 * @param {string} prop
-	 * @param {string} child
-	 * @param {string} owner
-	 */
-	function ownership_invalid_binding(parent, prop, child, owner) {
-		{
-			console.warn(`https://svelte.dev/e/ownership_invalid_binding`);
-		}
-	}
-
-	/**
-	 * Mutating unbound props (`%name%`, at %location%) is strongly discouraged. Consider using `bind:%prop%={...}` in %parent% (or using a callback) instead
-	 * @param {string} name
-	 * @param {string} location
-	 * @param {string} prop
-	 * @param {string} parent
-	 */
-	function ownership_invalid_mutation(name, location, prop, parent) {
-		{
-			console.warn(`https://svelte.dev/e/ownership_invalid_mutation`);
-		}
-	}
-
-	/**
-	 * The `value` property of a `<select multiple>` element should be an array, but it received a non-array value. The selection will be kept as is.
-	 */
+	* The `value` property of a `<select multiple>` element should be an array, but it received a non-array value. The selection will be kept as is.
+	*/
 	function select_multiple_invalid_value() {
-		{
-			console.warn(`https://svelte.dev/e/select_multiple_invalid_value`);
-		}
+		console.warn(`https://svelte.dev/e/select_multiple_invalid_value`);
 	}
-
 	/**
-	 * Reactive `$state(...)` proxies and the values they proxy have different identities. Because of this, comparisons with `%operator%` will produce unexpected results
-	 * @param {string} operator
-	 */
-	function state_proxy_equality_mismatch(operator) {
-		{
-			console.warn(`https://svelte.dev/e/state_proxy_equality_mismatch`);
-		}
-	}
-
-	/**
-	 * A `<svelte:boundary>` `reset` function only resets the boundary the first time it is called
-	 */
+	* A `<svelte:boundary>` `reset` function only resets the boundary the first time it is called
+	*/
 	function svelte_boundary_reset_noop() {
-		{
-			console.warn(`https://svelte.dev/e/svelte_boundary_reset_noop`);
-		}
+		console.warn(`https://svelte.dev/e/svelte_boundary_reset_noop`);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/hydration.js
 	/** @import { TemplateNode } from '#client' */
-
-
 	/**
-	 * Use this variable to guard everything related to hydration code so it can be treeshaken out
-	 * if the user doesn't use the `hydrate` method and these code paths are therefore not needed.
-	 */
-	let hydrating = false;
-
+	* Use this variable to guard everything related to hydration code so it can be treeshaken out
+	* if the user doesn't use the `hydrate` method and these code paths are therefore not needed.
+	*/
+	var hydrating = false;
 	/** @param {boolean} value */
 	function set_hydrating(value) {
 		hydrating = value;
 	}
-
 	/**
-	 * The node that is currently being hydrated. This starts out as the first node inside the opening
-	 * <!--[--> comment, and updates each time a component calls `$.child(...)` or `$.sibling(...)`.
-	 * When entering a block (e.g. `{#if ...}`), `hydrate_node` is the block opening comment; by the
-	 * time we leave the block it is the closing comment, which serves as the block's anchor.
-	 * @type {TemplateNode}
-	 */
-	let hydrate_node;
-
+	* The node that is currently being hydrated. This starts out as the first node inside the opening
+	* <!--[--> comment, and updates each time a component calls `$.child(...)` or `$.sibling(...)`.
+	* When entering a block (e.g. `{#if ...}`), `hydrate_node` is the block opening comment; by the
+	* time we leave the block it is the closing comment, which serves as the block's anchor.
+	* @type {TemplateNode}
+	*/
+	var hydrate_node;
 	/** @param {TemplateNode | null} node */
 	function set_hydrate_node(node) {
 		if (node === null) {
 			hydration_mismatch();
 			throw HYDRATION_ERROR;
 		}
-
-		return (hydrate_node = node);
+		return hydrate_node = node;
 	}
-
 	function hydrate_next() {
-		return set_hydrate_node(get_next_sibling(hydrate_node));
+		return set_hydrate_node(/* @__PURE__ */ get_next_sibling(hydrate_node));
 	}
-
 	/** @param {TemplateNode} node */
 	function reset(node) {
 		if (!hydrating) return;
-
-		// If the node has remaining siblings, something has gone wrong
-		if (get_next_sibling(hydrate_node) !== null) {
+		if (/* @__PURE__ */ get_next_sibling(hydrate_node) !== null) {
 			hydration_mismatch();
 			throw HYDRATION_ERROR;
 		}
-
 		hydrate_node = node;
 	}
-
 	function next(count = 1) {
 		if (hydrating) {
 			var i = count;
 			var node = hydrate_node;
-
-			while (i--) {
-				node = /** @type {TemplateNode} */ (get_next_sibling(node));
-			}
-
+			while (i--) node = /* @__PURE__ */ get_next_sibling(node);
 			hydrate_node = node;
 		}
 	}
-
 	/**
-	 * Skips or removes (depending on {@link remove}) all nodes starting at `hydrate_node` up until the next hydration end comment
-	 * @param {boolean} remove
-	 */
+	* Skips or removes (depending on {@link remove}) all nodes starting at `hydrate_node` up until the next hydration end comment
+	* @param {boolean} remove
+	*/
 	function skip_nodes(remove = true) {
 		var depth = 0;
 		var node = hydrate_node;
-
 		while (true) {
-			if (node.nodeType === COMMENT_NODE) {
-				var data = /** @type {Comment} */ (node).data;
-
-				if (data === HYDRATION_END) {
+			if (node.nodeType === 8) {
+				var data = node.data;
+				if (data === "]") {
 					if (depth === 0) return node;
 					depth -= 1;
-				} else if (
-					data === HYDRATION_START ||
-					data === HYDRATION_START_ELSE ||
-					// "[1", "[2", etc. for if blocks
-					(data[0] === '[' && !isNaN(Number(data.slice(1))))
-				) {
-					depth += 1;
-				}
+				} else if (data === "[" || data === "[!" || data[0] === "[" && !isNaN(Number(data.slice(1)))) depth += 1;
 			}
-
-			var next = /** @type {TemplateNode} */ (get_next_sibling(node));
+			var next = /* @__PURE__ */ get_next_sibling(node);
 			if (remove) node.remove();
 			node = next;
 		}
 	}
-
 	/**
-	 *
-	 * @param {TemplateNode} node
-	 */
+	*
+	* @param {TemplateNode} node
+	*/
 	function read_hydration_instruction(node) {
-		if (!node || node.nodeType !== COMMENT_NODE) {
+		if (!node || node.nodeType !== 8) {
 			hydration_mismatch();
 			throw HYDRATION_ERROR;
 		}
-
-		return /** @type {Comment} */ (node).data;
+		return node.data;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/equality.js
 	/** @import { Equals } from '#client' */
-
 	/** @type {Equals} */
-	function equals$1(value) {
+	function equals(value) {
 		return value === this.v;
 	}
-
 	/**
-	 * @param {unknown} a
-	 * @param {unknown} b
-	 * @returns {boolean}
-	 */
+	* @param {unknown} a
+	* @param {unknown} b
+	* @returns {boolean}
+	*/
 	function safe_not_equal(a, b) {
-		return a != a
-			? b == b
-			: a !== b || (a !== null && typeof a === 'object') || typeof a === 'function';
+		return a != a ? b == b : a !== b || a !== null && typeof a === "object" || typeof a === "function";
 	}
-
 	/** @type {Equals} */
 	function safe_equals(value) {
 		return !safe_not_equal(value, this.v);
 	}
-
+	/**
+	* `%name%(...)` can only be used during component initialisation
+	* @param {string} name
+	* @returns {never}
+	*/
+	function lifecycle_outside_component(name) {
+		throw new Error(`https://svelte.dev/e/lifecycle_outside_component`);
+	}
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/errors.js
+	/**
+	* Cannot create a `$derived(...)` with an `await` expression outside of an effect tree
+	* @returns {never}
+	*/
+	function async_derived_orphan() {
+		throw new Error(`https://svelte.dev/e/async_derived_orphan`);
+	}
+	/**
+	* Keyed each block has duplicate key `%value%` at indexes %a% and %b%
+	* @param {string} a
+	* @param {string} b
+	* @param {string | undefined | null} [value]
+	* @returns {never}
+	*/
+	function each_key_duplicate(a, b, value) {
+		throw new Error(`https://svelte.dev/e/each_key_duplicate`);
+	}
+	/**
+	* `%rune%` cannot be used inside an effect cleanup function
+	* @param {string} rune
+	* @returns {never}
+	*/
+	function effect_in_teardown(rune) {
+		throw new Error(`https://svelte.dev/e/effect_in_teardown`);
+	}
+	/**
+	* Effect cannot be created inside a `$derived` value that was not itself created inside an effect
+	* @returns {never}
+	*/
+	function effect_in_unowned_derived() {
+		throw new Error(`https://svelte.dev/e/effect_in_unowned_derived`);
+	}
+	/**
+	* `%rune%` can only be used inside an effect (e.g. during component initialisation)
+	* @param {string} rune
+	* @returns {never}
+	*/
+	function effect_orphan(rune) {
+		throw new Error(`https://svelte.dev/e/effect_orphan`);
+	}
+	/**
+	* Maximum update depth exceeded. This typically indicates that an effect reads and writes the same piece of state
+	* @returns {never}
+	*/
+	function effect_update_depth_exceeded() {
+		throw new Error(`https://svelte.dev/e/effect_update_depth_exceeded`);
+	}
+	/**
+	* Failed to hydrate the application
+	* @returns {never}
+	*/
+	function hydration_failed() {
+		throw new Error(`https://svelte.dev/e/hydration_failed`);
+	}
+	/**
+	* Cannot do `bind:%key%={undefined}` when `%key%` has a fallback value
+	* @param {string} key
+	* @returns {never}
+	*/
+	function props_invalid_value(key) {
+		throw new Error(`https://svelte.dev/e/props_invalid_value`);
+	}
+	/**
+	* `setContext` must be called when a component first initializes, not in a subsequent effect or after an `await` expression
+	* @returns {never}
+	*/
+	function set_context_after_init() {
+		throw new Error(`https://svelte.dev/e/set_context_after_init`);
+	}
+	/**
+	* Property descriptors defined on `$state` objects must contain `value` and always be `enumerable`, `configurable` and `writable`.
+	* @returns {never}
+	*/
+	function state_descriptors_fixed() {
+		throw new Error(`https://svelte.dev/e/state_descriptors_fixed`);
+	}
+	/**
+	* Cannot set prototype of `$state` object
+	* @returns {never}
+	*/
+	function state_prototype_fixed() {
+		throw new Error(`https://svelte.dev/e/state_prototype_fixed`);
+	}
+	/**
+	* Updating state inside `$derived(...)`, `$inspect(...)` or a template expression is forbidden. If the value should not be reactive, declare it without `$state`
+	* @returns {never}
+	*/
+	function state_unsafe_mutation() {
+		throw new Error(`https://svelte.dev/e/state_unsafe_mutation`);
+	}
+	/**
+	* A `<svelte:boundary>` `reset` function cannot be called while an error is still being handled
+	* @returns {never}
+	*/
+	function svelte_boundary_reset_onerror() {
+		throw new Error(`https://svelte.dev/e/svelte_boundary_reset_onerror`);
+	}
+	//#endregion
+	//#region node_modules/svelte/src/internal/flags/index.js
 	/** True if experimental.async=true */
-	/** True if $inspect.trace is used */
-	let tracing_mode_flag = false;
-
-	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
-
-
-	/**
-	 * `<svelte:element this="%tag%">` is a void element — it cannot have content
-	 * @param {string} tag
-	 */
-	function dynamic_void_element_content(tag) {
-		{
-			console.warn(`https://svelte.dev/e/dynamic_void_element_content`);
-		}
-	}
-
+	var async_mode_flag = false;
+	/** True if we're not certain that we only have Svelte 5 code in the compilation */
+	var legacy_mode_flag = false;
+	//#endregion
+	//#region node_modules/svelte/src/internal/shared/clone.js
 	/** @import { Snapshot } from './types' */
-
 	/**
-	 * In dev, we keep track of which properties could not be cloned. In prod
-	 * we don't bother, but we keep a dummy array around so that the
-	 * signature stays the same
-	 * @type {string[]}
-	 */
-	const empty = [];
-
+	* In dev, we keep track of which properties could not be cloned. In prod
+	* we don't bother, but we keep a dummy array around so that the
+	* signature stays the same
+	* @type {string[]}
+	*/
+	var empty = [];
 	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {boolean} [skip_warning]
-	 * @param {boolean} [no_tojson]
-	 * @returns {Snapshot<T>}
-	 */
+	* @template T
+	* @param {T} value
+	* @param {boolean} [skip_warning]
+	* @param {boolean} [no_tojson]
+	* @returns {Snapshot<T>}
+	*/
 	function snapshot(value, skip_warning = false, no_tojson = false) {
-
-		return clone(value, new Map(), '', empty, null, no_tojson);
+		return clone(value, /* @__PURE__ */ new Map(), "", empty, null, no_tojson);
 	}
-
 	/**
-	 * @template T
-	 * @param {T} value
-	 * @param {Map<T, Snapshot<T>>} cloned
-	 * @param {string} path
-	 * @param {string[]} paths
-	 * @param {null | T} [original] The original value, if `value` was produced from a `toJSON` call
-	 * @param {boolean} [no_tojson]
-	 * @returns {Snapshot<T>}
-	 */
+	* @template T
+	* @param {T} value
+	* @param {Map<T, Snapshot<T>>} cloned
+	* @param {string} path
+	* @param {string[]} paths
+	* @param {null | T} [original] The original value, if `value` was produced from a `toJSON` call
+	* @param {boolean} [no_tojson]
+	* @returns {Snapshot<T>}
+	*/
 	function clone(value, cloned, path, paths, original = null, no_tojson = false) {
-		if (typeof value === 'object' && value !== null) {
+		if (typeof value === "object" && value !== null) {
 			var unwrapped = cloned.get(value);
-			if (unwrapped !== undefined) return unwrapped;
-
-			if (value instanceof Map) return /** @type {Snapshot<T>} */ (new Map(value));
-			if (value instanceof Set) return /** @type {Snapshot<T>} */ (new Set(value));
-
+			if (unwrapped !== void 0) return unwrapped;
+			if (value instanceof Map) return new Map(value);
+			if (value instanceof Set) return new Set(value);
 			if (is_array(value)) {
-				var copy = /** @type {Snapshot<any>} */ (Array(value.length));
+				var copy = Array(value.length);
 				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
+				if (original !== null) cloned.set(original, copy);
 				for (var i = 0; i < value.length; i += 1) {
 					var element = value[i];
-					if (i in value) {
-						copy[i] = clone(element, cloned, path, paths, null, no_tojson);
-					}
+					if (i in value) copy[i] = clone(element, cloned, path, paths, null, no_tojson);
 				}
-
 				return copy;
 			}
-
 			if (get_prototype_of(value) === object_prototype) {
 				/** @type {Snapshot<any>} */
 				copy = {};
 				cloned.set(value, copy);
-
-				if (original !== null) {
-					cloned.set(original, copy);
-				}
-
-				for (var key of Object.keys(value)) {
-					copy[key] = clone(
-						// @ts-expect-error
-						value[key],
-						cloned,
-						path,
-						paths,
-						null,
-						no_tojson
-					);
-				}
-
+				if (original !== null) cloned.set(original, copy);
+				for (var key of Object.keys(value)) copy[key] = clone(value[key], cloned, path, paths, null, no_tojson);
 				return copy;
 			}
-
 			if (value instanceof Date) {
-				return /** @type {Snapshot<T>} */ (structuredClone(value));
+				value.getTime();
+				return structuredClone(value);
 			}
-
-			if (typeof (/** @type {T & { toJSON?: any } } */ (value).toJSON) === 'function' && !no_tojson) {
-				return clone(
-					/** @type {T & { toJSON(): any } } */ (value).toJSON(),
-					cloned,
-					path,
-					paths,
-					// Associate the instance with the toJSON clone
-					value
-				);
-			}
+			if (typeof value.toJSON === "function" && !no_tojson) return clone(
+				/** @type {T & { toJSON(): any } } */
+				value.toJSON(),
+				cloned,
+				path,
+				paths,
+				value
+			);
 		}
-
-		if (value instanceof EventTarget) {
-			// can't be cloned
-			return /** @type {Snapshot<T>} */ (value);
-		}
-
+		if (value instanceof EventTarget) return value;
 		try {
-			return /** @type {Snapshot<T>} */ (structuredClone(value));
+			return structuredClone(value);
 		} catch (e) {
-
-			return /** @type {Snapshot<T>} */ (value);
+			return value;
 		}
 	}
-
-	/** @import { Derived, Reaction, Value } from '#client' */
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/shared/context.js
 	/**
-	 * @param {Value} source
-	 * @param {string} label
-	 */
-	function tag(source, label) {
-		source.label = label;
-		tag_proxy(source.v, label);
-
-		return source;
-	}
-
+	* @typedef {{ p: Context | null, c: Map<unknown, unknown> | null }} Context
+	*/
 	/**
-	 * @param {unknown} value
-	 * @param {string} label
-	 */
-	function tag_proxy(value, label) {
-		// @ts-expect-error
-		value?.[PROXY_PATH_SYMBOL]?.(label);
-		return value;
-	}
-
-	/**
-	 * @param {string} label
-	 * @returns {Error & { stack: string } | null}
-	 */
-	function get_error(label) {
-		const error = new Error();
-		const stack = get_stack();
-
-		if (stack.length === 0) {
-			return null;
-		}
-
-		stack.unshift('\n');
-
-		define_property(error, 'stack', {
-			value: stack.join('\n')
-		});
-
-		define_property(error, 'name', {
-			value: label
-		});
-
-		return /** @type {Error & { stack: string }} */ (error);
-	}
-
-	/**
-	 * @returns {string[]}
-	 */
-	function get_stack() {
-		// @ts-ignore - doesn't exist everywhere
-		const limit = Error.stackTraceLimit;
-		// @ts-ignore - doesn't exist everywhere
-		Error.stackTraceLimit = Infinity;
-		const stack = new Error().stack;
-		// @ts-ignore - doesn't exist everywhere
-		Error.stackTraceLimit = limit;
-
-		if (!stack) return [];
-
-		const lines = stack.split('\n');
-		const new_lines = [];
-
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const posixified = line.replaceAll('\\', '/');
-
-			if (line.trim() === 'Error') {
-				continue;
-			}
-
-			if (line.includes('validate_each_keys')) {
-				return [];
-			}
-
-			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
-				continue;
-			}
-
-			new_lines.push(line);
-		}
-
-		return new_lines;
-	}
-
-	/**
-	 * @typedef {{ p: Context | null, c: Map<unknown, unknown> | null }} Context
-	 */
-
-	/**
-	 * @param {Context} context
-	 * @returns {Map<unknown, unknown> | null}
-	 */
+	* @param {Context} context
+	* @returns {Map<unknown, unknown> | null}
+	*/
 	function get_parent_context(context) {
 		let parent = context.p;
-		while (parent !== null && parent.c === null) {
-			parent = parent.p;
-		}
+		while (parent !== null && parent.c === null) parent = parent.p;
 		return parent?.c ?? null;
 	}
-
 	/**
-	 * @param {Context | null} context
-	 * @param {string} name
-	 * @returns {Map<unknown, unknown>}
-	 */
+	* @param {Context | null} context
+	* @param {string} name
+	* @returns {Map<unknown, unknown>}
+	*/
 	function get_or_init_context_map(context, name) {
-		if (context === null) {
-			lifecycle_outside_component();
-		}
-
-		return (context.c ??= new Map(get_parent_context(context) || undefined));
+		if (context === null) lifecycle_outside_component(name);
+		return context.c ??= new Map(get_parent_context(context) || void 0);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/context.js
 	/** @import { ComponentContext, DevStackEntry, Effect } from '#client' */
-
 	/** @type {ComponentContext | null} */
-	let component_context = null;
-
+	var component_context = null;
 	/** @param {ComponentContext | null} context */
 	function set_component_context(context) {
 		component_context = context;
 	}
-
-	/** @type {DevStackEntry | null} */
-	let dev_stack = null;
-
 	/**
-	 * Execute a callback with a new dev stack entry
-	 * @param {() => any} callback - Function to execute
-	 * @param {DevStackEntry['type']} type - Type of block/component
-	 * @param {any} component - Component function
-	 * @param {number} line - Line number
-	 * @param {number} column - Column number
-	 * @param {Record<string, any>} [additional] - Any additional properties to add to the dev stack entry
-	 * @returns {any}
-	 */
-	function add_svelte_meta(callback, type, component, line, column, additional) {
-		const parent = dev_stack;
-
-		dev_stack = {
-			type,
-			file: component[FILENAME],
-			line,
-			column,
-			parent,
-			...additional
-		};
-
-		try {
-			return callback();
-		} finally {
-			dev_stack = parent;
-		}
-	}
-
-	/**
-	 * The current component function. Different from current component context:
-	 * ```html
-	 * <!-- App.svelte -->
-	 * <Foo>
-	 *   <Bar /> <!-- context == Foo.svelte, function == App.svelte -->
-	 * </Foo>
-	 * ```
-	 * @type {ComponentContext['function']}
-	 */
-	let dev_current_component_function = null;
-
-	/** @param {ComponentContext['function']} fn */
-	function set_dev_current_component_function(fn) {
-		dev_current_component_function = fn;
-	}
-
-	/**
-	 * Retrieves the context set with the specified `key` in the current component or any of its
-	 * ancestors. If multiple components set the same key, the value from the closest one is returned.
-	 * A `setContext` call in the current component is only visible to `getContext` calls that run after it.
-	 * Must be called during component initialisation.
-	 *
-	 * [`createContext`](https://svelte.dev/docs/svelte/svelte#createContext) is a type-safe alternative.
-	 *
-	 * @template T
-	 * @param {any} key
-	 * @returns {T}
-	 */
+	* Retrieves the context set with the specified `key` in the current component or any of its
+	* ancestors. If multiple components set the same key, the value from the closest one is returned.
+	* A `setContext` call in the current component is only visible to `getContext` calls that run after it.
+	* Must be called during component initialisation.
+	*
+	* [`createContext`](https://svelte.dev/docs/svelte/svelte#createContext) is a type-safe alternative.
+	*
+	* @template T
+	* @param {any} key
+	* @returns {T}
+	*/
 	function getContext(key) {
-		const context_map = get_or_init_context_map(component_context);
-		const result = /** @type {T} */ (context_map.get(key));
-		return result;
+		return get_or_init_context_map(component_context, "getContext").get(key);
 	}
-
 	/**
-	 * Associates an arbitrary `context` object with the current component and the specified `key`
-	 * and returns that object. The context is then available to the component itself and all of its
-	 * descendants (including slotted content) with `getContext`.
-	 *
-	 * Like lifecycle functions, this must be called during component initialisation.
-	 *
-	 * [`createContext`](https://svelte.dev/docs/svelte/svelte#createContext) is a type-safe alternative.
-	 *
-	 * @template T
-	 * @param {any} key
-	 * @param {T} context
-	 * @returns {T}
-	 */
+	* Associates an arbitrary `context` object with the current component and the specified `key`
+	* and returns that object. The context is then available to the component itself and all of its
+	* descendants (including slotted content) with `getContext`.
+	*
+	* Like lifecycle functions, this must be called during component initialisation.
+	*
+	* [`createContext`](https://svelte.dev/docs/svelte/svelte#createContext) is a type-safe alternative.
+	*
+	* @template T
+	* @param {any} key
+	* @param {T} context
+	* @returns {T}
+	*/
 	function setContext(key, context) {
-		const context_map = get_or_init_context_map(component_context);
-
+		const context_map = get_or_init_context_map(component_context, "setContext");
+		if (async_mode_flag) {
+			var flags = active_effect.f;
+			if (!(!active_reaction && (flags & 32) !== 0 && !component_context.i)) set_context_after_init();
+		}
 		context_map.set(key, context);
 		return context;
 	}
-
 	/**
-	 * @param {Record<string, unknown>} props
-	 * @param {any} runes
-	 * @param {Function} [fn]
-	 * @returns {void}
-	 */
+	* @param {Record<string, unknown>} props
+	* @param {any} runes
+	* @param {Function} [fn]
+	* @returns {void}
+	*/
 	function push(props, runes = false, fn) {
 		component_context = {
 			p: component_context,
@@ -1023,226 +524,140 @@
 			e: null,
 			s: props,
 			x: null,
-			r: /** @type {Effect} */ (active_effect),
-			l: null
+			r: active_effect,
+			l: legacy_mode_flag && !runes ? {
+				s: null,
+				u: null,
+				$: []
+			} : null
 		};
 	}
-
 	/**
-	 * @template {Record<string, any>} T
-	 * @param {T} [component]
-	 * @returns {T}
-	 */
+	* @template {Record<string, any>} T
+	* @param {T} [component]
+	* @returns {T}
+	*/
 	function pop(component) {
-		var context = /** @type {ComponentContext} */ (component_context);
+		var context = component_context;
 		var effects = context.e;
-
 		if (effects !== null) {
 			context.e = null;
-
-			for (var fn of effects) {
-				create_user_effect(fn);
-			}
+			for (var fn of effects) create_user_effect(fn);
 		}
-
-		if (component !== undefined) {
-			context.x = component;
-		}
-
+		if (component !== void 0) context.x = component;
 		context.i = true;
-
 		component_context = context.p;
-
-		return component ?? /** @type {T} */ ({});
+		return mark_as_component(component);
 	}
-
+	/**
+	* Add a symbol to the object (or create one if undefined) to mark it as a component so it isn't proxified.
+	* @param {any} component
+	*/
+	function mark_as_component(component = {}) {
+		define_property(component, COMPONENT_SYMBOL, { value: true });
+		return component;
+	}
 	/** @returns {boolean} */
 	function is_runes() {
-		return true;
+		return !legacy_mode_flag || component_context !== null && component_context.l === null;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/task.js
 	/** @type {Array<() => void>} */
-	let micro_tasks = [];
-
+	var micro_tasks = [];
 	function run_micro_tasks() {
 		var tasks = micro_tasks;
 		micro_tasks = [];
 		run_all(tasks);
 	}
-
 	/**
-	 * @param {() => void} fn
-	 */
+	* @param {() => void} fn
+	*/
 	function queue_micro_task(fn) {
 		if (micro_tasks.length === 0 && !is_flushing_sync) {
 			var tasks = micro_tasks;
 			queueMicrotask(() => {
-				// If this is false, a flushSync happened in the meantime. Do _not_ run new scheduled microtasks in that case
-				// as the ordering of microtasks would be broken at that point - consider this case:
-				// - queue_micro_task schedules microtask A to flush task X
-				// - synchronously after, flushSync runs, processing task X
-				// - synchronously after, some other microtask B is scheduled, but not through queue_micro_task but for example a Promise.resolve() in user code
-				// - synchronously after, queue_micro_task schedules microtask C to flush task Y
-				// - one tick later, microtask A now resolves, flushing task Y before microtask B, which is incorrect
-				// This if check prevents that race condition (that realistically will only happen in tests)
 				if (tasks === micro_tasks) run_micro_tasks();
 			});
 		}
-
 		micro_tasks.push(fn);
 	}
-
 	/**
-	 * Synchronously run any queued tasks.
-	 */
+	* Synchronously run any queued tasks.
+	*/
 	function flush_tasks() {
-		while (micro_tasks.length > 0) {
-			run_micro_tasks();
-		}
+		while (micro_tasks.length > 0) run_micro_tasks();
 	}
-
-	/** @import { Derived, Effect } from '#client' */
-	/** @import { Boundary } from './dom/blocks/boundary.js' */
-
-	/**
-	 * @param {unknown} error
-	 */
-	function handle_error(error) {
-		var effect = active_effect;
-
-		// for unowned deriveds, don't throw until we read the value
-		if (effect === null) {
-			/** @type {Derived} */ (active_reaction).f |= ERROR_VALUE;
-			return error;
-		}
-
-		// if the error occurred while creating this subtree, we let it
-		// bubble up until it hits a boundary that can handle it, unless
-		// it's an $effect in which case it doesn't run immediately
-		if ((effect.f & REACTION_RAN) === 0 && (effect.f & EFFECT) === 0) {
-
-			throw error;
-		}
-
-		// otherwise we bubble up the effect tree ourselves
-		invoke_error_boundary(error, effect);
-	}
-
-	/**
-	 * @param {unknown} error
-	 * @param {Effect | null} effect
-	 */
-	function invoke_error_boundary(error, effect) {
-		if (effect !== null && (effect.f & DESTROYED) !== 0) {
-			return;
-		}
-
-		while (effect !== null) {
-			if ((effect.f & BOUNDARY_EFFECT) !== 0) {
-				if ((effect.f & REACTION_RAN) === 0) {
-					// we are still creating the boundary effect
-					throw error;
-				}
-
-				try {
-					/** @type {Boundary} */ (effect.b).error(error);
-					return;
-				} catch (e) {
-					error = e;
-				}
-			}
-
-			effect = effect.parent;
-		}
-
-		throw error;
-	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/status.js
 	/** @import { Derived, Signal } from '#client' */
-
-	const STATUS_MASK = -7169;
-
+	var STATUS_MASK = ~(DIRTY | MAYBE_DIRTY | CLEAN);
 	/**
-	 * @param {Signal} signal
-	 * @param {number} status
-	 */
+	* @param {Signal} signal
+	* @param {number} status
+	*/
 	function set_signal_status(signal, status) {
-		signal.f = (signal.f & STATUS_MASK) | status;
+		signal.f = signal.f & STATUS_MASK | status;
 	}
-
 	/**
-	 * Set a derived's status to CLEAN or MAYBE_DIRTY based on its connection state.
-	 * @param {Derived} derived
-	 */
+	* Set a derived's status to CLEAN or MAYBE_DIRTY based on its connection state.
+	* @param {Derived} derived
+	*/
 	function update_derived_status(derived) {
-		// Only mark as MAYBE_DIRTY if disconnected and has dependencies.
-		if ((derived.f & CONNECTED) !== 0 || derived.deps === null) {
-			set_signal_status(derived, CLEAN);
-		} else {
-			set_signal_status(derived, MAYBE_DIRTY);
-		}
+		if ((derived.f & 512) !== 0 || derived.deps === null) set_signal_status(derived, CLEAN);
+		else set_signal_status(derived, MAYBE_DIRTY);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/utils.js
 	/** @import { Derived, Effect, Value } from '#client' */
-
 	/**
-	 * @param {Value[] | null} deps
-	 */
+	* @param {Value[] | null} deps
+	*/
 	function clear_marked(deps) {
 		if (deps === null) return;
-
 		for (const dep of deps) {
-			if ((dep.f & DERIVED) === 0 || (dep.f & WAS_MARKED) === 0) {
-				continue;
-			}
-
+			if ((dep.f & 2) === 0 || (dep.f & 65536) === 0) continue;
 			dep.f ^= WAS_MARKED;
-
-			clear_marked(/** @type {Derived} */ (dep).deps);
+			clear_marked(
+				/** @type {Derived} */
+				dep.deps
+			);
 		}
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {Set<Effect>} dirty_effects
-	 * @param {Set<Effect>} maybe_dirty_effects
-	 */
+	* @param {Effect} effect
+	* @param {Set<Effect>} dirty_effects
+	* @param {Set<Effect>} maybe_dirty_effects
+	*/
 	function defer_effect(effect, dirty_effects, maybe_dirty_effects) {
-		if ((effect.f & DIRTY) !== 0) {
-			dirty_effects.add(effect);
-		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
-			maybe_dirty_effects.add(effect);
-		}
-
-		// Since we're not executing these effects now, we need to clear any WAS_MARKED flags
-		// so that other batches can correctly reach these effects during their own traversal
+		if ((effect.f & 2048) !== 0) dirty_effects.add(effect);
+		else if ((effect.f & 4096) !== 0) maybe_dirty_effects.add(effect);
 		clear_marked(effect.deps);
-
-		// mark as clean so they get scheduled if they depend on pending async state
 		set_signal_status(effect, CLEAN);
 	}
-
-	/** @import { StoreReferencesContainer } from '#client' */
-	/** @import { Store } from '#shared' */
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/store.js
 	/**
-	 * Whether or not the prop currently being read is a store binding, as in
-	 * `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
-	 * runes mode, and skip `binding_property_non_reactive` validation
-	 */
-	let is_store_binding = false;
-
+	* We set this to `true` when updating a store so that we correctly
+	* schedule effects if the update takes place inside a `$:` effect
+	*/
+	var legacy_is_updating_store = false;
 	/**
-	 * Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
-	 * Used to prevent `binding_property_non_reactive` validation false positives and
-	 * ensure that these props are treated as mutable even in runes mode
-	 * @template T
-	 * @param {() => T} fn
-	 * @returns {[T, boolean]}
-	 */
+	* Whether or not the prop currently being read is a store binding, as in
+	* `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
+	* runes mode, and skip `binding_property_non_reactive` validation
+	*/
+	var is_store_binding = false;
+	/**
+	* Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
+	* Used to prevent `binding_property_non_reactive` validation false positives and
+	* ensure that these props are treated as mutable even in runes mode
+	* @template T
+	* @param {() => T} fn
+	* @returns {[T, boolean]}
+	*/
 	function capture_store_binding(fn) {
 		var previous_is_store_binding = is_store_binding;
-
 		try {
 			is_store_binding = false;
 			return [fn(), is_store_binding];
@@ -1250,53 +665,40 @@
 			is_store_binding = previous_is_store_binding;
 		}
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/misc.js
 	/**
-	 * @param {HTMLElement} dom
-	 * @param {boolean} value
-	 * @returns {void}
-	 */
+	* @param {HTMLElement} dom
+	* @param {boolean} value
+	* @returns {void}
+	*/
 	function autofocus(dom, value) {
 		if (value) {
 			const body = document.body;
 			dom.autofocus = true;
-
 			queue_micro_task(() => {
-				if (document.activeElement === body) {
-					dom.focus();
-				}
+				if (document.activeElement === body) dom.focus();
 			});
 		}
 	}
-
-	let listening_to_form_reset = false;
-
+	var listening_to_form_reset = false;
 	function add_form_reset_listener() {
 		if (!listening_to_form_reset) {
 			listening_to_form_reset = true;
-			document.addEventListener(
-				'reset',
-				(evt) => {
-					// Needs to happen one tick later or else the dom properties of the form
-					// elements have not updated to their reset values yet
-					Promise.resolve().then(() => {
-						if (!evt.defaultPrevented) {
-							for (const e of /**@type {HTMLFormElement} */ (evt.target).elements) {
-								/** @type {any} */ (e)[FORM_RESET_HANDLER]?.();
-							}
-						}
-					});
-				},
-				// In the capture phase to guarantee we get noticed of it (no possibility of stopPropagation)
-				{ capture: true }
-			);
+			document.addEventListener("reset", (evt) => {
+				Promise.resolve().then(() => {
+					if (!evt.defaultPrevented) for (const e of evt.target.elements)
+ /** @type {any} */ e[FORM_RESET_HANDLER]?.();
+				});
+			}, { capture: true });
 		}
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/bindings/shared.js
 	/**
-	 * @template T
-	 * @param {() => T} fn
-	 */
+	* @template T
+	* @param {() => T} fn
+	*/
 	function without_reactive_context(fn) {
 		var previous_reaction = active_reaction;
 		var previous_effect = active_effect;
@@ -1309,1349 +711,492 @@
 			set_active_effect(previous_effect);
 		}
 	}
-
 	/**
-	 * Listen to the given event, and then instantiate a global form reset listener if not already done,
-	 * to notify all bindings when the form is reset
-	 * @param {HTMLElement} element
-	 * @param {string} event
-	 * @param {(is_reset?: true) => void} handler
-	 * @param {(is_reset?: true) => void} [on_reset]
-	 */
+	* Listen to the given event, and then instantiate a global form reset listener if not already done,
+	* to notify all bindings when the form is reset
+	* @param {HTMLElement} element
+	* @param {string} event
+	* @param {(is_reset?: true) => void} handler
+	* @param {(is_reset?: true) => void} [on_reset]
+	*/
 	function listen_to_event_and_reset_event(element, event, handler, on_reset = handler) {
 		element.addEventListener(event, () => without_reactive_context(handler));
-		const prev = /** @type {any} */ (element)[FORM_RESET_HANDLER];
-		if (prev) {
-			// special case for checkbox that can have multiple binds (group & checked)
-			/** @type {any} */ (element)[FORM_RESET_HANDLER] = () => {
-				prev();
-				on_reset(true);
-			};
-		} else {
-			/** @type {any} */ (element)[FORM_RESET_HANDLER] = () => on_reset(true);
-		}
-
+		const prev = element[FORM_RESET_HANDLER];
+		if (prev)
+ /** @type {any} */ element[FORM_RESET_HANDLER] = () => {
+			prev();
+			on_reset(true);
+		};
+		else
+ /** @type {any} */ element[FORM_RESET_HANDLER] = () => on_reset(true);
 		add_form_reset_listener();
 	}
-
-	/**
-	 * Returns a `subscribe` function that integrates external event-based systems with Svelte's reactivity.
-	 * It's particularly useful for integrating with web APIs like `MediaQuery`, `IntersectionObserver`, or `WebSocket`.
-	 *
-	 * If `subscribe` is called inside an effect (including indirectly, for example inside a getter),
-	 * the `start` callback will be called with an `update` function. Whenever `update` is called, the effect re-runs.
-	 *
-	 * If `start` returns a cleanup function, it will be called when the effect is destroyed.
-	 *
-	 * If `subscribe` is called in multiple effects, `start` will only be called once as long as the effects
-	 * are active, and the returned teardown function will only be called when all effects are destroyed.
-	 *
-	 * It's best understood with an example. Here's an implementation of [`MediaQuery`](https://svelte.dev/docs/svelte/svelte-reactivity#MediaQuery):
-	 *
-	 * ```js
-	 * import { createSubscriber } from 'svelte/reactivity';
-	 * import { on } from 'svelte/events';
-	 *
-	 * export class MediaQuery {
-	 * 	#query;
-	 * 	#subscribe;
-	 *
-	 * 	constructor(query) {
-	 * 		this.#query = window.matchMedia(`(${query})`);
-	 *
-	 * 		this.#subscribe = createSubscriber((update) => {
-	 * 			// when the `change` event occurs, re-run any effects that read `this.current`
-	 * 			const off = on(this.#query, 'change', update);
-	 *
-	 * 			// stop listening when all the effects are destroyed
-	 * 			return () => off();
-	 * 		});
-	 * 	}
-	 *
-	 * 	get current() {
-	 * 		// This makes the getter reactive, if read in an effect
-	 * 		this.#subscribe();
-	 *
-	 * 		// Return the current state of the query, whether or not we're in an effect
-	 * 		return this.#query.matches;
-	 * 	}
-	 * }
-	 * ```
-	 * @param {(update: () => void) => (() => void) | void} start
-	 * @since 5.7.0
-	 */
-	function createSubscriber(start) {
-		let subscribers = 0;
-		let version = source(0);
-		/** @type {(() => void) | void} */
-		let stop;
-
-		return () => {
-			if (effect_tracking()) {
-				get(version);
-
-				render_effect(() => {
-					if (subscribers === 0) {
-						stop = untrack(() => start(() => increment(version)));
-					}
-
-					subscribers += 1;
-
-					return () => {
-						queue_micro_task(() => {
-							// Only count down after a microtask, else we would reach 0 before our own render effect reruns,
-							// but reach 1 again when the tick callback of the prior teardown runs. That would mean we
-							// re-subcribe unnecessarily and create a memory leak because the old subscription is never cleaned up.
-							subscribers -= 1;
-
-							if (subscribers === 0) {
-								stop?.();
-								stop = undefined;
-								// Increment the version to ensure any dependent deriveds are marked dirty when the subscription is picked up again later.
-								// If we didn't do this then the comparison of write versions would determine that the derived has a later version than
-								// the subscriber, and it would not be re-run.
-								increment(version);
-							}
-						});
-					};
-				});
-			}
-		};
-	}
-
-	/** @import { Effect, Source, TemplateNode, } from '#client' */
-
-	/**
-	 * @typedef {{
-	 * 	 onerror?: ((error: unknown, reset: () => void) => void) | null;
-	 *   failed?: ((anchor: Node, error: () => unknown, reset: () => () => void) => void) | null;
-	 *   pending?: ((anchor: Node) => void) | null;
-	 * }} BoundaryProps
-	 */
-
-	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
-
-	/**
-	 * @param {TemplateNode} node
-	 * @param {BoundaryProps} props
-	 * @param {((anchor: Node) => void)} children
-	 * @param {((error: unknown) => unknown) | undefined} [transform_error]
-	 * @returns {void}
-	 */
-	function boundary(node, props, children, transform_error) {
-		new Boundary(node, props, children, transform_error);
-	}
-
-	class Boundary {
-		/** @type {Boundary | null} */
-		parent;
-
-		is_pending = false;
-
-		/**
-		 * API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
-		 * Inherited from parent boundary, or defaults to identity.
-		 * @type {(error: unknown) => unknown}
-		 */
-		transform_error;
-
-		/** @type {TemplateNode} */
-		#anchor;
-
-		/** @type {TemplateNode | null} */
-		#hydrate_open = hydrating ? hydrate_node : null;
-
-		/** @type {BoundaryProps} */
-		#props;
-
-		/** @type {((anchor: Node) => void)} */
-		#children;
-
-		/** @type {Effect} */
-		#effect;
-
-		/** @type {Effect | null} */
-		#main_effect = null;
-
-		/** @type {Effect | null} */
-		#pending_effect = null;
-
-		/** @type {Effect | null} */
-		#failed_effect = null;
-
-		/** @type {DocumentFragment | null} */
-		#offscreen_fragment = null;
-
-		#local_pending_count = 0;
-		#pending_count = 0;
-		#pending_count_update_queued = false;
-
-		/** @type {Set<Effect>} */
-		#dirty_effects = new Set();
-
-		/** @type {Set<Effect>} */
-		#maybe_dirty_effects = new Set();
-
-		/**
-		 * A source containing the number of pending async deriveds/expressions.
-		 * Only created if `$effect.pending()` is used inside the boundary,
-		 * otherwise updating the source results in needless `Batch.ensure()`
-		 * calls followed by no-op flushes
-		 * @type {Source<number> | null}
-		 */
-		#effect_pending = null;
-
-		#effect_pending_subscriber = createSubscriber(() => {
-			this.#effect_pending = source(this.#local_pending_count);
-
-			return () => {
-				this.#effect_pending = null;
-			};
-		});
-
-		/**
-		 * @param {TemplateNode} node
-		 * @param {BoundaryProps} props
-		 * @param {((anchor: Node) => void)} children
-		 * @param {((error: unknown) => unknown) | undefined} [transform_error]
-		 */
-		constructor(node, props, children, transform_error) {
-			this.#anchor = node;
-			this.#props = props;
-
-			this.#children = (anchor) => {
-				var effect = /** @type {Effect} */ (active_effect);
-
-				effect.b = this;
-				effect.f |= BOUNDARY_EFFECT;
-
-				children(anchor);
-			};
-
-			this.parent = /** @type {Effect} */ (active_effect).b;
-
-			// Inherit transform_error from parent boundary, or use the provided one, or default to identity
-			this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
-
-			this.#effect = block(() => {
-				if (hydrating) {
-					const comment = /** @type {Comment} */ (this.#hydrate_open);
-					hydrate_next();
-
-					const server_rendered_pending = comment.data === HYDRATION_START_ELSE;
-					const server_rendered_failed = comment.data.startsWith(HYDRATION_START_FAILED);
-
-					if (server_rendered_failed) {
-						// Server rendered the failed snippet - hydrate it.
-						// The serialized error is embedded in the comment: <!--[?<json>-->
-						const serialized_error = JSON.parse(comment.data.slice(HYDRATION_START_FAILED.length));
-						this.#hydrate_failed_content(serialized_error);
-					} else if (server_rendered_pending) {
-						this.#hydrate_pending_content();
-					} else {
-						this.#hydrate_resolved_content();
-					}
-				} else {
-					this.#render();
-				}
-			}, flags);
-
-			if (hydrating) {
-				this.#anchor = hydrate_node;
-			}
-		}
-
-		#hydrate_resolved_content() {
-			try {
-				this.#main_effect = branch(() => this.#children(this.#anchor));
-			} catch (error) {
-				this.error(error);
-			}
-		}
-
-		/**
-		 * @param {unknown} error The deserialized error from the server's hydration comment
-		 */
-		#hydrate_failed_content(error) {
-			const failed = this.#props.failed;
-			const { reset, invoke_onerror } = this.#create_reset(error);
-
-			// `onerror` may mutate state, which is disallowed while hydrating
-			queue_micro_task(invoke_onerror);
-
-			if (!failed) return;
-
-			this.#failed_effect = branch(() => {
-				failed(
-					this.#anchor,
-					() => error,
-					() => reset
-				);
-			});
-		}
-
-		/**
-		 * Creates the `reset` function for a failed boundary, along with a function
-		 * that invokes `onerror` with it (if provided)
-		 * @param {unknown} error
-		 * @returns {{ reset: () => void, invoke_onerror: () => void }}
-		 */
-		#create_reset(error) {
-			var did_reset = false;
-			var calling_on_error = false;
-
-			const reset = () => {
-				if (did_reset) {
-					svelte_boundary_reset_noop();
-					return;
-				}
-
-				did_reset = true;
-
-				if (calling_on_error) {
-					svelte_boundary_reset_onerror();
-				}
-
-				if (this.#failed_effect !== null) {
-					pause_effect(this.#failed_effect, () => {
-						this.#failed_effect = null;
-					});
-				}
-
-				this.#run(() => {
-					this.#render();
-				});
-			};
-
-			const invoke_onerror = () => {
-				try {
-					calling_on_error = true;
-					this.#props.onerror?.(error, reset);
-					calling_on_error = false;
-				} catch (err) {
-					invoke_error_boundary(err, this.#effect && this.#effect.parent);
-				}
-			};
-
-			return { reset, invoke_onerror };
-		}
-
-		#hydrate_pending_content() {
-			const pending = this.#props.pending;
-			if (!pending) return;
-
-			this.is_pending = true;
-			this.#pending_effect = branch(() => pending(this.#anchor));
-
-			queue_micro_task(() => {
-				var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
-				var anchor = create_text();
-
-				fragment.append(anchor);
-
-				this.#main_effect = this.#run(() => {
-					return branch(() => this.#children(anchor));
-				});
-
-				if (this.#pending_count === 0) {
-					this.#anchor.before(fragment);
-					this.#offscreen_fragment = null;
-
-					pause_effect(/** @type {Effect} */ (this.#pending_effect), () => {
-						this.#pending_effect = null;
-					});
-
-					this.#resolve(/** @type {Batch} */ (current_batch));
-				}
-			});
-		}
-
-		#render() {
-			try {
-				this.is_pending = this.has_pending_snippet();
-				this.#pending_count = 0;
-				this.#local_pending_count = 0;
-
-				this.#main_effect = branch(() => {
-					this.#children(this.#anchor);
-				});
-
-				if (this.#pending_count > 0) {
-					var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
-					move_effect(this.#main_effect, fragment);
-
-					const pending = /** @type {(anchor: Node) => void} */ (this.#props.pending);
-					this.#pending_effect = branch(() => pending(this.#anchor));
-				} else {
-					this.#resolve(/** @type {Batch} */ (current_batch));
-				}
-			} catch (error) {
-				this.error(error);
-			}
-		}
-
-		/**
-		 * @param {Batch} batch
-		 */
-		#resolve(batch) {
-			this.is_pending = false;
-
-			// any effects that were previously deferred should be transferred
-			// to the batch, which will flush in the next microtask
-			batch.transfer_effects(this.#dirty_effects, this.#maybe_dirty_effects);
-		}
-
-		/**
-		 * Defer an effect inside a pending boundary until the boundary resolves
-		 * @param {Effect} effect
-		 */
-		defer_effect(effect) {
-			defer_effect(effect, this.#dirty_effects, this.#maybe_dirty_effects);
-		}
-
-		/**
-		 * Returns `false` if the effect exists inside a boundary whose pending snippet is shown
-		 * @returns {boolean}
-		 */
-		is_rendered() {
-			return !this.is_pending && (!this.parent || this.parent.is_rendered());
-		}
-
-		has_pending_snippet() {
-			return !!this.#props.pending;
-		}
-
-		/**
-		 * @template T
-		 * @param {() => T} fn
-		 */
-		#run(fn) {
-			var previous_effect = active_effect;
-			var previous_reaction = active_reaction;
-			var previous_ctx = component_context;
-
-			set_active_effect(this.#effect);
-			set_active_reaction(this.#effect);
-			set_component_context(this.#effect.ctx);
-
-			try {
-				Batch.ensure();
-				return fn();
-			} catch (e) {
-				handle_error(e);
-				return null;
-			} finally {
-				set_active_effect(previous_effect);
-				set_active_reaction(previous_reaction);
-				set_component_context(previous_ctx);
-			}
-		}
-
-		/**
-		 * Updates the pending count associated with the currently visible pending snippet,
-		 * if any, such that we can replace the snippet with content once work is done
-		 * @param {1 | -1} d
-		 * @param {Batch} batch
-		 */
-		#update_pending_count(d, batch) {
-			if (!this.has_pending_snippet()) {
-				if (this.parent) {
-					this.parent.#update_pending_count(d, batch);
-				}
-
-				// if there's no parent, we're in a scope with no pending snippet
-				return;
-			}
-
-			this.#pending_count += d;
-
-			if (this.#pending_count === 0) {
-				this.#resolve(batch);
-
-				if (this.#pending_effect) {
-					pause_effect(this.#pending_effect, () => {
-						this.#pending_effect = null;
-					});
-				}
-
-				if (this.#offscreen_fragment) {
-					this.#anchor.before(this.#offscreen_fragment);
-					this.#offscreen_fragment = null;
-				}
-			}
-		}
-
-		/**
-		 * Update the source that powers `$effect.pending()` inside this boundary,
-		 * and controls when the current `pending` snippet (if any) is removed.
-		 * Do not call from inside the class
-		 * @param {1 | -1} d
-		 * @param {Batch} batch
-		 */
-		update_pending_count(d, batch) {
-			this.#update_pending_count(d, batch);
-
-			this.#local_pending_count += d;
-
-			if (!this.#effect_pending || this.#pending_count_update_queued) return;
-			this.#pending_count_update_queued = true;
-
-			queue_micro_task(() => {
-				this.#pending_count_update_queued = false;
-				if (this.#effect_pending) {
-					internal_set(this.#effect_pending, this.#local_pending_count);
-				}
-			});
-		}
-
-		get_effect_pending() {
-			this.#effect_pending_subscriber();
-			return get(/** @type {Source<number>} */ (this.#effect_pending));
-		}
-
-		/** @param {unknown} error */
-		error(error) {
-			// If we have nothing to capture the error, or if we hit an error while
-			// rendering the fallback, re-throw for another boundary to handle
-			if (!this.#props.onerror && !this.#props.failed) {
-				throw error;
-			}
-
-			if (current_batch?.is_fork) {
-				if (this.#main_effect) current_batch.skip_effect(this.#main_effect);
-				if (this.#pending_effect) current_batch.skip_effect(this.#pending_effect);
-				if (this.#failed_effect) current_batch.skip_effect(this.#failed_effect);
-
-				current_batch.oncommit(() => {
-					this.#handle_error(error);
-				});
-			} else {
-				this.#handle_error(error);
-			}
-		}
-
-		/**
-		 * @param {unknown} error
-		 */
-		#handle_error(error) {
-			if (this.#main_effect) {
-				destroy_effect(this.#main_effect);
-				this.#main_effect = null;
-			}
-
-			if (this.#pending_effect) {
-				destroy_effect(this.#pending_effect);
-				this.#pending_effect = null;
-			}
-
-			if (this.#failed_effect) {
-				destroy_effect(this.#failed_effect);
-				this.#failed_effect = null;
-			}
-
-			if (hydrating) {
-				set_hydrate_node(/** @type {TemplateNode} */ (this.#hydrate_open));
-				next();
-				set_hydrate_node(skip_nodes());
-			}
-
-			let failed = this.#props.failed;
-
-			/** @param {unknown} transformed_error */
-			const handle_error_result = (transformed_error) => {
-				const { reset, invoke_onerror } = this.#create_reset(transformed_error);
-
-				invoke_onerror();
-
-				if (failed) {
-					this.#failed_effect = this.#run(() => {
-						try {
-							return branch(() => {
-								// errors in `failed` snippets cause the boundary to error again
-								// TODO Svelte 6: revisit this decision, most likely better to go to parent boundary instead
-								var effect = /** @type {Effect} */ (active_effect);
-
-								effect.b = this;
-								effect.f |= BOUNDARY_EFFECT;
-
-								failed(
-									this.#anchor,
-									() => transformed_error,
-									() => reset
-								);
-							});
-						} catch (error) {
-							invoke_error_boundary(error, /** @type {Effect} */ (this.#effect.parent));
-							return null;
-						}
-					});
-				}
-			};
-
-			queue_micro_task(() => {
-				// Run the error through the API-level transformError transform (e.g. SvelteKit's handleError)
-				/** @type {unknown} */
-				var result;
-				try {
-					result = this.transform_error(error);
-				} catch (e) {
-					invoke_error_boundary(e, this.#effect && this.#effect.parent);
-					return;
-				}
-
-				if (
-					result !== null &&
-					typeof result === 'object' &&
-					typeof (/** @type {any} */ (result).then) === 'function'
-				) {
-					// transformError returned a Promise — wait for it
-					/** @type {any} */ (result).then(
-						handle_error_result,
-						/** @param {unknown} e */
-						(e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
-					);
-				} else {
-					// Synchronous result — handle immediately
-					handle_error_result(result);
-				}
-			});
-		}
-	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/async.js
 	/** @import { Blocker, Effect, Source, Value } from '#client' */
-
 	/**
-	 * @param {Blocker[]} blockers
-	 * @param {Array<() => any>} sync
-	 * @param {Array<() => Promise<any>>} async
-	 * @param {(values: Value[]) => any} fn
-	 */
+	* @param {Blocker[]} blockers
+	* @param {Array<() => any>} sync
+	* @param {Array<() => Promise<any>>} async
+	* @param {(values: Value[]) => any} fn
+	*/
 	function flatten(blockers, sync, async, fn) {
-		const d = derived ;
-
-		// Filter out already-settled blockers - no need to wait for them
+		const d = is_runes() ? derived : derived_safe_equal;
 		var pending = blockers.filter((b) => !b.settled);
-
 		var deriveds = sync.map(d);
-
 		if (async.length === 0 && pending.length === 0) {
 			fn(deriveds);
 			return;
 		}
-
-		var parent = /** @type {Effect} */ (active_effect);
-
+		var parent = active_effect;
 		var restore = capture();
-		var blocker_promise =
-			pending.length === 1
-				? pending[0].promise
-				: pending.length > 1
-					? Promise.all(pending.map((b) => b.promise))
-					: null;
-
+		var blocker_promise = pending.length === 1 ? pending[0].promise : pending.length > 1 ? Promise.all(pending.map((b) => b.promise)) : null;
 		/**
-		 * @param {Source[]} async
-		 */
+		* @param {Source[]} async
+		*/
 		function finish(async) {
-			if ((parent.f & DESTROYED) !== 0) {
-				return;
-			}
-
+			if ((parent.f & 16384) !== 0) return;
 			restore();
-
 			try {
 				fn([...deriveds, ...async]);
 			} catch (error) {
 				invoke_error_boundary(error, parent);
 			}
-
 			unset_context();
 		}
-
 		var decrement_pending = increment_pending();
-
-		// Fast path: blockers but no async expressions
 		if (async.length === 0) {
-			/** @type {Promise<any>} */ (blocker_promise).then(() => finish([])).finally(decrement_pending);
+			/** @type {Promise<any>} */ blocker_promise.then(() => finish([])).finally(decrement_pending);
 			return;
 		}
-
-		// Full path: has async expressions
 		function run() {
-			Promise.all(async.map((expression) => async_derived(expression)))
-				.then(finish)
-				.catch((error) => invoke_error_boundary(error, parent))
-				.finally(decrement_pending);
+			Promise.all(async.map((expression) => /* @__PURE__ */ async_derived(expression))).then(finish).catch((error) => invoke_error_boundary(error, parent)).finally(decrement_pending);
 		}
-
-		if (blocker_promise) {
-			blocker_promise.then(() => {
-				restore();
-				run();
-				unset_context();
-			});
-		} else {
+		if (blocker_promise) blocker_promise.then(() => {
+			restore();
 			run();
-		}
+			unset_context();
+		});
+		else run();
 	}
-
 	/**
-	 * @param {Blocker[]} blockers
-	 * @param {(values: Value[]) => any} fn
-	 */
-	function run_after_blockers(blockers, fn) {
-		flatten(blockers, [], [], fn);
-	}
-
-	/**
-	 * Captures the current effect context so that we can restore it after
-	 * some asynchronous work has happened (so that e.g. `await a + b`
-	 * causes `b` to be registered as a dependency).
-	 */
+	* Captures the current effect context so that we can restore it after
+	* some asynchronous work has happened (so that e.g. `await a + b`
+	* causes `b` to be registered as a dependency).
+	*/
 	function capture() {
-		var previous_effect = /** @type {Effect} */ (active_effect);
+		var previous_effect = active_effect;
 		var previous_reaction = active_reaction;
 		var previous_component_context = component_context;
-		var previous_batch = /** @type {Batch} */ (current_batch);
-
+		var previous_batch = current_batch;
 		return function restore(activate_batch = true) {
 			set_active_effect(previous_effect);
 			set_active_reaction(previous_reaction);
 			set_component_context(previous_component_context);
-
-			if (activate_batch && (previous_effect.f & DESTROYED) === 0) {
-				// TODO we only need optional chaining here because `{#await ...}` blocks
-				// are anomalous. Once we retire them we can get rid of it
+			if (activate_batch && (previous_effect.f & 16384) === 0) {
 				previous_batch?.activate();
 				previous_batch?.apply();
 			}
 		};
 	}
-
-	/**
-	 * Reset `current_async_effect` after the `promise` resolves, so
-	 * that we can emit `await_reactivity_loss` warnings
-	 * @template T
-	 * @param {Promise<T>} promise
-	 * @returns {Promise<() => T>}
-	 */
-	async function track_reactivity_loss(promise) {
-		// Ensure that unrelated reads after an async operation is kicked off don't cause false positives
-		queueMicrotask(() => {
-		});
-
-		var value = await promise;
-
-		return () => {
-			// While this can result in false negatives it also guards against the more important
-			// false positives that would occur if this is the last in a chain of async operations,
-			// and the reactivity_loss_tracker would then stay around until the next async operation happens.
-			queueMicrotask(() => {
-			});
-
-			return value;
-		};
-	}
-
 	function unset_context(deactivate_batch = true) {
 		set_active_effect(null);
 		set_active_reaction(null);
 		set_component_context(null);
 		if (deactivate_batch) current_batch?.deactivate();
 	}
-
 	/**
-	 * @returns {(skip?: boolean) => void}
-	 */
+	* @returns {(skip?: boolean) => void}
+	*/
 	function increment_pending() {
-		var effect = /** @type {Effect} */ (active_effect);
-		var boundary = effect.b; // undefined if called outside the render tree, e.g. a standalone $effect.root
-		var batch = /** @type {Batch} */ (current_batch);
+		var effect = active_effect;
+		var boundary = effect.b;
+		var batch = current_batch;
 		var blocking = !!boundary?.is_rendered();
-
 		boundary?.update_pending_count(1, batch);
 		batch.increment(blocking, effect);
-
 		return () => {
 			boundary?.update_pending_count(-1, batch);
 			batch.decrement(blocking, effect);
 		};
 	}
-
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
-	/** @import { Batch } from './batch.js'; */
-	/** @import { Boundary } from '../dom/blocks/boundary.js'; */
-
 	/**
-	 * @template V
-	 * @param {() => V} fn
-	 * @returns {Derived<V>}
-	 */
+	* @template V
+	* @param {() => V} fn
+	* @returns {Derived<V>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function derived(fn) {
-		var flags = DERIVED | DIRTY;
-
-		if (active_effect !== null) {
-			// Since deriveds are evaluated lazily, any effects created inside them are
-			// created too late to ensure that the parent effect is added to the tree
-			active_effect.f |= EFFECT_PRESERVED;
-		}
-
-		/** @type {Derived<V>} */
-		const signal = {
+		var flags = 2 | DIRTY;
+		if (active_effect !== null) active_effect.f |= EFFECT_PRESERVED;
+		return {
 			ctx: component_context,
 			deps: null,
 			effects: null,
-			equals: equals$1,
+			equals,
 			f: flags,
 			fn,
 			reactions: null,
 			rv: 0,
-			v: /** @type {V} */ (UNINITIALIZED),
+			v: UNINITIALIZED,
 			wv: 0,
 			parent: active_effect,
 			ac: null
 		};
-
-		return signal;
 	}
-
-	const OBSOLETE = Symbol('obsolete');
-
+	var OBSOLETE = Symbol("obsolete");
 	/**
-	 * @template V
-	 * @param {() => V | Promise<V>} fn
-	 * @param {string} [label]
-	 * @param {string} [location] If provided, print a warning if the value is not read immediately after update
-	 * @returns {Promise<Source<V>>}
-	 */
+	* @template V
+	* @param {() => V | Promise<V>} fn
+	* @param {string} [label]
+	* @param {string} [location] If provided, print a warning if the value is not read immediately after update
+	* @returns {Promise<Source<V>>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function async_derived(fn, label, location) {
-		let parent = /** @type {Effect | null} */ (active_effect);
-
-		if (parent === null) {
-			async_derived_orphan();
-		}
-
-		var promise = /** @type {Promise<V>} */ (/** @type {unknown} */ (undefined));
-		var signal = source(/** @type {V} */ (UNINITIALIZED));
-
-		// only suspend in async deriveds created on initialisation
+		let parent = active_effect;
+		if (parent === null) async_derived_orphan();
+		var promise = void 0;
+		var signal = source(UNINITIALIZED);
 		var should_suspend = !active_reaction;
-
 		/** @type {Set<ReturnType<typeof deferred<V>>>} */
-		var deferreds = new Set();
-
+		var deferreds = /* @__PURE__ */ new Set();
 		async_effect(() => {
-			var effect = /** @type {Effect} */ (active_effect);
-
+			var effect = active_effect;
 			/** @type {ReturnType<typeof deferred<V>>} */
 			var d = deferred();
 			promise = d.promise;
-
 			try {
-				// If this code is changed at some point, make sure to still access the then property
-				// of fn() to read any signals it might access, so that we track them as dependencies.
-				// We call `unset_context` to undo any `save` calls that happen inside `fn()`
-				Promise.resolve(fn())
-					.then(d.resolve, (e) => {
-						// if the promise was rejected by the user, via `getAbortSignal`, then
-						// wait for a subsequent resolution instead of flushing the batch
-						if (e !== STALE_REACTION) d.reject(e);
-					})
-					.finally(unset_context);
+				Promise.resolve(fn()).then(d.resolve, (e) => {
+					if (e !== STALE_REACTION) d.reject(e);
+				}).finally(unset_context);
 			} catch (error) {
 				d.reject(error);
 				unset_context();
 			}
-
-			var batch = /** @type {Batch} */ (current_batch);
-
+			var batch = current_batch;
 			if (should_suspend) {
-				// we only increment the batch's pending state for updates, not creation, otherwise
-				// we will decrement to zero before the work that depends on this promise (e.g. a
-				// template effect) has initialized, causing the batch to resolve prematurely
-				if ((effect.f & REACTION_RAN) !== 0) {
-					var decrement_pending = increment_pending();
-				}
-
-				if (
-					// boundary can be null if the async derived is inside an $effect.root not connected to the component render tree
-					parent.b?.is_rendered()
-				) {
-					batch.async_deriveds.get(effect)?.reject(OBSOLETE);
-				} else {
-					// While the boundary is still showing pending, a new run supersedes all older in-flight runs
-					// for this async expression. Cancel eagerly so resolution cannot commit stale values.
-					for (const d of deferreds.values()) {
-						d.reject(OBSOLETE);
-					}
-				}
-
+				if ((effect.f & 32768) !== 0) var decrement_pending = increment_pending();
+				if (parent.b?.is_rendered()) batch.async_deriveds.get(effect)?.reject(OBSOLETE);
+				else for (const d of deferreds.values()) d.reject(OBSOLETE);
 				deferreds.add(d);
 				batch.async_deriveds.set(effect, d);
 			}
-
 			/**
-			 * @param {any} value
-			 * @param {unknown} error
-			 */
-			const handler = (value, error = undefined) => {
-
+			* @param {any} value
+			* @param {unknown} error
+			*/
+			const handler = (value, error = void 0) => {
 				decrement_pending?.();
 				deferreds.delete(d);
-
 				if (error === OBSOLETE) return;
-
 				batch.activate();
-
 				if (error) {
 					signal.f |= ERROR_VALUE;
-
-					// @ts-expect-error the error is the wrong type, but we don't care
 					internal_set(signal, error);
 				} else {
-					if ((signal.f & ERROR_VALUE) !== 0) {
-						signal.f ^= ERROR_VALUE;
-					}
-
+					if ((signal.f & 8388608) !== 0) signal.f ^= ERROR_VALUE;
 					internal_set(signal, value);
 				}
-
 				batch.deactivate();
 			};
-
-			d.promise.then(handler, (e) => handler(null, e || 'unknown'));
+			d.promise.then(handler, (e) => handler(null, e || "unknown"));
 		});
-
 		teardown(() => {
-			for (const d of deferreds) {
-				d.reject(OBSOLETE);
-			}
+			for (const d of deferreds) d.reject(OBSOLETE);
 		});
-
 		return new Promise((fulfil) => {
 			/** @param {Promise<V>} p */
 			function next(p) {
 				function go() {
-					if (p === promise) {
-						fulfil(signal);
-					} else {
-						// if the effect re-runs before the initial promise
-						// resolves, delay resolution until we have a value
-						next(promise);
-					}
+					if (p === promise) fulfil(signal);
+					else next(promise);
 				}
-
 				p.then(go, go);
 			}
-
 			next(promise);
 		});
 	}
-
 	/**
-	 * @template V
-	 * @param {() => V} fn
-	 * @returns {Derived<V>}
-	 */
+	* @template V
+	* @param {() => V} fn
+	* @returns {Derived<V>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function user_derived(fn) {
-		const d = derived(fn);
-
-		push_reaction_value(d);
-
+		const d = /* @__PURE__ */ derived(fn);
+		if (!async_mode_flag) push_reaction_value(d);
 		return d;
 	}
-
 	/**
-	 * @template V
-	 * @param {() => V} fn
-	 * @returns {Derived<V>}
-	 */
+	* @template V
+	* @param {() => V} fn
+	* @returns {Derived<V>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function derived_safe_equal(fn) {
-		const signal = derived(fn);
+		const signal = /* @__PURE__ */ derived(fn);
 		signal.equals = safe_equals;
 		return signal;
 	}
-
 	/**
-	 * @param {Derived} derived
-	 * @returns {void}
-	 */
+	* @param {Derived} derived
+	* @returns {void}
+	*/
 	function destroy_derived_effects(derived) {
 		var effects = derived.effects;
-
 		if (effects !== null) {
 			derived.effects = null;
-
-			for (var i = 0; i < effects.length; i += 1) {
-				destroy_effect(/** @type {Effect} */ (effects[i]));
-			}
+			for (var i = 0; i < effects.length; i += 1) destroy_effect(effects[i]);
 		}
 	}
-
 	/**
-	 * @template T
-	 * @param {Derived} derived
-	 * @returns {T}
-	 */
+	* @template T
+	* @param {Derived} derived
+	* @returns {T}
+	*/
 	function execute_derived(derived) {
 		var value;
 		var prev_active_effect = active_effect;
 		var parent = derived.parent;
-
-		if (
-			!is_destroying_effect &&
-			parent !== null &&
-			derived.v !== UNINITIALIZED && // if it was never evaluated before, it's guaranteed to fail downstream, so we try to execute instead
-			(parent.f & (DESTROYED | INERT)) !== 0
-		) {
+		if (!is_destroying_effect && parent !== null && derived.v !== UNINITIALIZED && (parent.f & 24576) !== 0) {
 			derived_inert();
-
 			return derived.v;
 		}
-
 		set_active_effect(parent);
-
-		{
-			try {
-				derived.f &= ~WAS_MARKED;
-				destroy_derived_effects(derived);
-				value = update_reaction(derived);
-			} finally {
-				set_active_effect(prev_active_effect);
-			}
+		try {
+			derived.f &= ~WAS_MARKED;
+			destroy_derived_effects(derived);
+			value = update_reaction(derived);
+		} finally {
+			set_active_effect(prev_active_effect);
 		}
-
 		return value;
 	}
-
 	/**
-	 * @param {Derived} derived
-	 * @returns {void}
-	 */
+	* @param {Derived} derived
+	* @returns {void}
+	*/
 	function update_derived(derived) {
 		var value = execute_derived(derived);
-
 		if (!derived.equals(value)) {
 			derived.wv = increment_write_version();
-
-			// in a fork, we don't update the underlying value, just `batch_values`.
-			// the underlying value will be updated when the fork is committed.
-			// otherwise, the next time we get here after a 'real world' state
-			// change, `derived.equals` may incorrectly return `true`
 			if (!current_batch?.is_fork || derived.deps === null) {
 				if (current_batch !== null) {
-					// We also write to previous_batch because if it exists, it is a sign that we're
-					// currently in the process of flushing effects. These updates to deriveds may belong
-					// to the previous batch, not the new one (which can already exist if an earlier
-					// effect wrote to a source). This can cause bugs when running batch.#commit() later,
-					// but not adding it to current_batch can, too, so we add it to both.
-					// See https://github.com/sveltejs/svelte/pull/18117 for more details.
 					current_batch.capture(derived, value, true);
 					previous_batch?.capture(derived, value, true);
-				} else {
-					derived.v = value;
-				}
-
-				// deriveds without dependencies should never be recomputed
+				} else derived.v = value;
 				if (derived.deps === null) {
 					set_signal_status(derived, CLEAN);
 					return;
 				}
 			}
 		}
-
-		// don't mark derived clean if we're reading it inside a
-		// cleanup function, or it will cache a stale value
-		if (is_destroying_effect) {
-			return;
-		}
-
-		// During time traveling we don't want to reset the status so that
-		// traversal of the graph in the other batches still happens
+		if (is_destroying_effect) return;
 		if (batch_values !== null) {
-			// only cache the value if we're in a tracking context, otherwise we won't
-			// clear the cache in `mark_reactions` when dependencies are updated
-			if (effect_tracking() || current_batch?.is_fork) {
-				batch_values.set(derived, value);
-			}
-		} else {
-			update_derived_status(derived);
-		}
+			if (effect_tracking() || current_batch?.is_fork) batch_values.set(derived, value);
+		} else update_derived_status(derived);
 	}
-
 	/**
-	 * @param {Derived} derived
-	 */
+	* @param {Derived} derived
+	*/
 	function freeze_derived_effects(derived) {
 		if (derived.effects === null) return;
-
-		for (const e of derived.effects) {
-			// if the effect has a teardown function or abort signal, call it
-			if (e.teardown || e.ac) {
-				e.teardown?.();
-				if (e.ac !== null) {
-					without_reactive_context(() => {
-						/** @type {AbortController} */ (e.ac).abort(STALE_REACTION);
-						e.ac = null;
-					});
-				}
-
-				// make it a noop so it doesn't get called again if the derived
-				// is unfrozen. we don't set it to `null`, because the existence
-				// of a teardown function is what determines whether the
-				// effect runs again during unfreezing (but not for teardown-only effects)
-				if (e.fn !== null) e.teardown = noop;
-
-				remove_reactions(e, 0);
-				destroy_effect_children(e);
-			}
+		for (const e of derived.effects) if (e.teardown || e.ac) {
+			e.teardown?.();
+			if (e.ac !== null) without_reactive_context(() => {
+				/** @type {AbortController} */ e.ac.abort(STALE_REACTION);
+				e.ac = null;
+			});
+			if (e.fn !== null) e.teardown = noop;
+			remove_reactions(e, 0);
+			destroy_effect_children(e);
 		}
 	}
-
 	/**
-	 * @param {Derived} derived
-	 */
+	* @param {Derived} derived
+	*/
 	function unfreeze_derived_effects(derived) {
 		if (derived.effects === null) return;
-
-		for (const e of derived.effects) {
-			// if the effect was previously frozen — indicated by the presence
-			// of a teardown function — unfreeze it
-			if (e.teardown && e.fn !== null) {
-				update_effect(e);
-			}
-		}
+		for (const e of derived.effects) if (e.teardown && e.fn !== null) update_effect(e);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/batch.js
 	/** @import { Fork } from 'svelte' */
 	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
-
 	/** @type {Batch | null} */
-	let first_batch = null;
-
+	var first_batch = null;
 	/** @type {Batch | null} */
-	let last_batch = null;
-
+	var last_batch = null;
 	/** @type {Batch | null} */
-	let current_batch = null;
-
+	var current_batch = null;
 	/**
-	 * This is needed to avoid overwriting inputs
-	 * @type {Batch | null}
-	 */
-	let previous_batch = null;
-
+	* This is needed to avoid overwriting inputs
+	* @type {Batch | null}
+	*/
+	var previous_batch = null;
 	/**
-	 * When time travelling (i.e. working in one batch, while other batches
-	 * still have ongoing work), we ignore the real values of affected
-	 * signals in favour of their values within the batch
-	 * @type {Map<Value, any> | null}
-	 */
-	let batch_values = null;
-
+	* When time travelling (i.e. working in one batch, while other batches
+	* still have ongoing work), we ignore the real values of affected
+	* signals in favour of their values within the batch
+	* @type {Map<Value, any> | null}
+	*/
+	var batch_values = null;
 	/** @type {Effect | null} */
-	let last_scheduled_effect = null;
-
-	let is_flushing_sync = false;
-	let is_processing = false;
-
+	var last_scheduled_effect = null;
+	var is_flushing_sync = false;
+	var is_processing = false;
 	/**
-	 * During traversal, this is an array. Newly created effects are (if not immediately
-	 * executed) pushed to this array, rather than going through the scheduling
-	 * rigamarole that would cause another turn of the flush loop.
-	 * @type {Effect[] | null}
-	 */
-	let collected_effects = null;
-
+	* During traversal, this is an array. Newly created effects are (if not immediately
+	* executed) pushed to this array, rather than going through the scheduling
+	* rigamarole that would cause another turn of the flush loop.
+	* @type {Effect[] | null}
+	*/
+	var collected_effects = null;
 	/**
-	 * An array of effects that are marked during traversal as a result of a `set`
-	 * (not `internal_set`) call. These will be added to the next batch and
-	 * trigger another `batch.process()`
-	 * @type {Effect[] | null}
-	 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
-	 */
-	let legacy_updates = null;
-
+	* An array of effects that are marked during traversal as a result of a `set`
+	* (not `internal_set`) call. These will be added to the next batch and
+	* trigger another `batch.process()`
+	* @type {Effect[] | null}
+	* @deprecated when we get rid of legacy mode and stores, we can get rid of this
+	*/
+	var legacy_updates = null;
 	var flush_count = 0;
-
-	/** @type {Set<Value>} */
-	var source_stacks = new Set();
-
-	let uid = 1;
-
-	class Batch {
+	var uid = 1;
+	var Batch = class Batch {
 		id = uid++;
-
 		/** True as soon as `#process` was called */
 		#started = false;
-
 		linked = true;
-
 		/** @type {Batch | null} */
 		#prev = null;
-
 		/** @type {Batch | null} */
 		#next = null;
-
 		/** @type {Map<Effect, ReturnType<typeof deferred<any>>>} */
-		async_deriveds = new Map();
-
+		async_deriveds = /* @__PURE__ */ new Map();
 		/**
-		 * The current values of any signals that are updated in this batch.
-		 * Tuple format: [value, is_derived] (note: is_derived is false for deriveds, too, if they were overridden via assignment)
-		 * They keys of this map are identical to `this.#previous`
-		 * @type {Map<Value, [any, boolean]>}
-		 */
-		current = new Map();
-
+		* The current values of any signals that are updated in this batch.
+		* Tuple format: [value, is_derived] (note: is_derived is false for deriveds, too, if they were overridden via assignment)
+		* They keys of this map are identical to `this.#previous`
+		* @type {Map<Value, [any, boolean]>}
+		*/
+		current = /* @__PURE__ */ new Map();
 		/**
-		 * The values of any signals (sources and deriveds) that are updated in this batch _before_ those updates took place.
-		 * They keys of this map are identical to `this.#current`
-		 * @type {Map<Value, any>}
-		 */
-		previous = new Map();
-
+		* The values of any signals (sources and deriveds) that are updated in this batch _before_ those updates took place.
+		* They keys of this map are identical to `this.#current`
+		* @type {Map<Value, any>}
+		*/
+		previous = /* @__PURE__ */ new Map();
 		/**
-		 * When the batch is committed (and the DOM is updated), we need to remove old branches
-		 * and append new ones by calling the functions added inside (if/each/key/etc) blocks
-		 * @type {Set<(batch: Batch) => void>}
-		 */
-		#commit_callbacks = new Set();
-
+		* When the batch is committed (and the DOM is updated), we need to remove old branches
+		* and append new ones by calling the functions added inside (if/each/key/etc) blocks
+		* @type {Set<(batch: Batch) => void>}
+		*/
+		#commit_callbacks = /* @__PURE__ */ new Set();
 		/**
-		 * If a fork is discarded, we need to destroy any effects that are no longer needed
-		 * @type {Set<(batch: Batch) => void>}
-		 */
-		#discard_callbacks = new Set();
-
+		* If a fork is discarded, we need to destroy any effects that are no longer needed
+		* @type {Set<(batch: Batch) => void>}
+		*/
+		#discard_callbacks = /* @__PURE__ */ new Set();
 		/**
-		 * The number of async effects that are currently in flight
-		 */
+		* The number of async effects that are currently in flight
+		*/
 		#pending = 0;
-
 		/**
-		 * Async effects that are currently in flight, _not_ inside a pending boundary
-		 * @type {Map<Effect, number>}
-		 */
-		#blocking_pending = new Map();
-
+		* Async effects that are currently in flight, _not_ inside a pending boundary
+		* @type {Map<Effect, number>}
+		*/
+		#blocking_pending = /* @__PURE__ */ new Map();
 		/**
-		 * A deferred that resolves when the batch is committed, used with `settled()`
-		 * TODO replace with Promise.withResolvers once supported widely enough
-		 * @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
-		 */
+		* A deferred that resolves when the batch is committed, used with `settled()`
+		* TODO replace with Promise.withResolvers once supported widely enough
+		* @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
+		*/
 		#deferred = null;
-
 		/**
-		 * The root effects that need to be flushed
-		 * @type {Effect[]}
-		 */
+		* The root effects that need to be flushed
+		* @type {Effect[]}
+		*/
 		#roots = [];
-
 		/**
-		 * Effects created while this batch was active.
-		 * @type {Effect[]}
-		 */
+		* Effects created while this batch was active.
+		* @type {Effect[]}
+		*/
 		#new_effects = [];
-
 		/**
-		 * Deferred effects (which run after async work has completed) that are DIRTY
-		 * @type {Set<Effect>}
-		 */
-		#dirty_effects = new Set();
-
+		* Deferred effects (which run after async work has completed) that are DIRTY
+		* @type {Set<Effect>}
+		*/
+		#dirty_effects = /* @__PURE__ */ new Set();
 		/**
-		 * Deferred effects that are MAYBE_DIRTY
-		 * @type {Set<Effect>}
-		 */
-		#maybe_dirty_effects = new Set();
-
+		* Deferred effects that are MAYBE_DIRTY
+		* @type {Set<Effect>}
+		*/
+		#maybe_dirty_effects = /* @__PURE__ */ new Set();
 		/**
-		 * A map of branches that still exist, but will be destroyed when this batch
-		 * is committed — we skip over these during `process`.
-		 * The value contains child effects that were dirty/maybe_dirty before being reset,
-		 * so they can be rescheduled if the branch survives.
-		 * @type {Map<Effect, { d: Effect[], m: Effect[] }>}
-		 */
-		#skipped_branches = new Map();
-
+		* A map of branches that still exist, but will be destroyed when this batch
+		* is committed — we skip over these during `process`.
+		* The value contains child effects that were dirty/maybe_dirty before being reset,
+		* so they can be rescheduled if the branch survives.
+		* @type {Map<Effect, { d: Effect[], m: Effect[] }>}
+		*/
+		#skipped_branches = /* @__PURE__ */ new Map();
 		/**
-		 * Inverse of #skipped_branches which we need to tell prior batches to unskip them when committing
-		 * @type {Set<Effect>}
-		 */
-		#unskipped_branches = new Set();
-
+		* Inverse of #skipped_branches which we need to tell prior batches to unskip them when committing
+		* @type {Set<Effect>}
+		*/
+		#unskipped_branches = /* @__PURE__ */ new Set();
 		is_fork = false;
-
 		#decrement_queued = false;
-
 		constructor() {
-			// link batch
-			if (last_batch === null) {
-				first_batch = last_batch = this;
-			} else {
+			if (last_batch === null) first_batch = last_batch = this;
+			else {
 				last_batch.#next = this;
 				this.#prev = last_batch;
 			}
-
 			last_batch = this;
 		}
-
 		#is_deferred() {
 			if (this.is_fork) return true;
-
 			for (const effect of this.#blocking_pending.keys()) {
 				var e = effect;
 				var skipped = false;
-
 				while (e.parent !== null) {
 					if (this.#skipped_branches.has(e)) {
 						skipped = true;
 						break;
 					}
-
 					e = e.parent;
 				}
-
-				if (!skipped) {
-					return true;
-				}
+				if (!skipped) return true;
 			}
-
 			return false;
 		}
-
 		/**
-		 * Add an effect to the #skipped_branches map and reset its children
-		 * @param {Effect} effect
-		 */
+		* Add an effect to the #skipped_branches map and reset its children
+		* @param {Effect} effect
+		*/
 		skip_effect(effect) {
-			if (!this.#skipped_branches.has(effect)) {
-				this.#skipped_branches.set(effect, { d: [], m: [] });
-			}
+			if (!this.#skipped_branches.has(effect)) this.#skipped_branches.set(effect, {
+				d: [],
+				m: []
+			});
 			this.#unskipped_branches.delete(effect);
 		}
-
 		/**
-		 * Remove an effect from the #skipped_branches map and reschedule
-		 * any tracked dirty/maybe_dirty child effects
-		 * @param {Effect} effect
-		 * @param {(e: Effect) => void} callback
-		 */
+		* Remove an effect from the #skipped_branches map and reschedule
+		* any tracked dirty/maybe_dirty child effects
+		* @param {Effect} effect
+		* @param {(e: Effect) => void} callback
+		*/
 		unskip_effect(effect, callback = (e) => this.schedule(e)) {
 			var tracked = this.#skipped_branches.get(effect);
 			if (tracked) {
 				this.#skipped_branches.delete(effect);
-
 				for (var e of tracked.d) {
 					set_signal_status(e, DIRTY);
 					callback(e);
 				}
-
 				for (e of tracked.m) {
 					set_signal_status(e, MAYBE_DIRTY);
 					callback(e);
@@ -2659,261 +1204,169 @@
 			}
 			this.#unskipped_branches.add(effect);
 		}
-
 		#process() {
 			this.#started = true;
-
-			if (flush_count++ > 1000) {
+			if (flush_count++ > 1e3) {
 				this.#unlink();
 				infinite_loop_guard();
 			}
-
-			// We always reschedule previously-deferred effects, not just when
-			// #is_deferred() is true, because traversing the tree could make
-			// an if block that contains the last blocking pending effect falsy,
-			// causing the block to no longer be deferred.
 			for (const e of this.#dirty_effects) {
 				this.#maybe_dirty_effects.delete(e);
 				set_signal_status(e, DIRTY);
 				this.schedule(e);
 			}
-
 			for (const e of this.#maybe_dirty_effects) {
 				set_signal_status(e, MAYBE_DIRTY);
 				this.schedule(e);
 			}
-
 			const roots = this.#roots;
 			this.#roots = [];
-
 			this.apply();
-
 			/** @type {Effect[]} */
-			var effects = (collected_effects = []);
-
+			var effects = collected_effects = [];
 			/** @type {Effect[]} */
 			var render_effects = [];
-
 			/**
-			 * @type {Effect[]}
-			 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
-			 */
-			var updates = (legacy_updates = []);
-
-			for (const root of roots) {
-				try {
-					this.#traverse(root, effects, render_effects);
-				} catch (e) {
-					reset_all(root);
-					// If there's no async work left, this branch is now dead and needs
-					// to be discarded to not become a zombie that is never cleaned up.
-					// See https://github.com/sveltejs/svelte/issues/18221#issuecomment-4497918414
-					// for a (non-minimal) reproduction that demonstrates a case where this is necessary
-					// to not get follow-up false-positives via "batch has scheduled roots" invariant errors.
-					if (!this.#is_deferred()) this.discard();
-					throw e;
-				}
+			* @type {Effect[]}
+			* @deprecated when we get rid of legacy mode and stores, we can get rid of this
+			*/
+			var updates = legacy_updates = [];
+			for (const root of roots) try {
+				this.#traverse(root, effects, render_effects);
+			} catch (e) {
+				reset_all(root);
+				if (!this.#is_deferred()) this.discard();
+				throw e;
 			}
-
-			// any writes should take effect in a subsequent batch
 			current_batch = null;
-
 			if (updates.length > 0) {
 				var batch = Batch.ensure();
-				for (const e of updates) {
-					batch.schedule(e);
-				}
+				for (const e of updates) batch.schedule(e);
 			}
-
 			collected_effects = null;
 			legacy_updates = null;
-
-			// if the batch has outstanding pending work, stash effects and bail
 			if (this.#is_deferred()) {
 				this.#defer_effects(render_effects);
 				this.#defer_effects(effects);
-
-				for (const [e, t] of this.#skipped_branches) {
-					reset_branch(e, t);
-				}
-
-				if (updates.length > 0) {
-					/** @type {Batch} */ (/** @type {unknown} */ (current_batch)).#process();
-				}
-
+				for (const [e, t] of this.#skipped_branches) reset_branch(e, t);
+				if (updates.length > 0)
+ /** @type {Batch} */ current_batch.#process();
 				return;
 			}
-
 			const earlier_batch = this.#find_earlier_batch();
-
 			if (earlier_batch) {
-				// If this batch collected deferred effects during traversal, they still need
-				// to run after being merged into the earlier batch.
 				this.#defer_effects(render_effects);
 				this.#defer_effects(effects);
 				earlier_batch.#merge(this);
 				return;
 			}
-
-			// clear effects. Those that are still needed will be rescheduled through unskipping the skipped branches.
 			this.#dirty_effects.clear();
 			this.#maybe_dirty_effects.clear();
-
-			// append/remove branches
 			for (const fn of this.#commit_callbacks) fn(this);
 			this.#commit_callbacks.clear();
-
 			previous_batch = this;
 			flush_queued_effects(render_effects);
 			flush_queued_effects(effects);
 			previous_batch = null;
-
 			this.#deferred?.resolve();
-
-			var next_batch = /** @type {Batch | null} */ (/** @type {unknown} */ (current_batch));
-
+			var next_batch = current_batch;
 			if (this.#pending === 0 && (this.#roots.length === 0 || next_batch !== null)) {
 				this.#unlink();
+				if (async_mode_flag) {
+					this.#commit();
+					current_batch = next_batch;
+				}
 			}
-
-			// Edge case: During traversal new branches might create effects that run immediately and set state,
-			// causing an effect and therefore a root to be scheduled again. We need to traverse the current batch
-			// once more in that case - most of the time this will just clean up dirty branches.
 			if (this.#roots.length > 0) {
 				if (next_batch !== null) {
 					const batch = next_batch;
 					batch.#roots.push(...this.#roots.filter((r) => !batch.#roots.includes(r)));
-				} else {
-					next_batch = this;
-				}
+				} else next_batch = this;
 			}
-
 			if (next_batch !== null) {
 				old_values.clear();
 				next_batch.#process();
 			}
 		}
-
 		/**
-		 * Traverse the effect tree, executing effects or stashing
-		 * them for later execution as appropriate
-		 * @param {Effect} root
-		 * @param {Effect[]} effects
-		 * @param {Effect[]} render_effects
-		 */
+		* Traverse the effect tree, executing effects or stashing
+		* them for later execution as appropriate
+		* @param {Effect} root
+		* @param {Effect[]} effects
+		* @param {Effect[]} render_effects
+		*/
 		#traverse(root, effects, render_effects) {
 			root.f ^= CLEAN;
-
 			var effect = root.first;
-
 			while (effect !== null) {
 				var flags = effect.f;
-				var is_branch = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
-				var is_skippable_branch = is_branch && (flags & CLEAN) !== 0;
-
-				var skip = is_skippable_branch || (flags & INERT) !== 0 || this.#skipped_branches.has(effect);
-
-				if (!skip && effect.fn !== null) {
-					if (is_branch) {
-						effect.f ^= CLEAN;
-					} else if ((flags & EFFECT) !== 0) {
-						effects.push(effect);
-					} else if (is_dirty(effect)) {
-						if ((flags & BLOCK_EFFECT) !== 0) this.#maybe_dirty_effects.add(effect);
+				var is_branch = (flags & 96) !== 0;
+				if (!(is_branch && (flags & 1024) !== 0 || (flags & 8192) !== 0 || this.#skipped_branches.has(effect)) && effect.fn !== null) {
+					if (is_branch) effect.f ^= CLEAN;
+					else if ((flags & 4) !== 0) effects.push(effect);
+					else if (async_mode_flag && (flags & 16777224) !== 0) render_effects.push(effect);
+					else if (is_dirty(effect)) {
+						if ((flags & 16) !== 0) this.#maybe_dirty_effects.add(effect);
 						update_effect(effect);
 					}
-
 					var child = effect.first;
-
 					if (child !== null) {
 						effect = child;
 						continue;
 					}
 				}
-
 				while (effect !== null) {
 					var next = effect.next;
-
 					if (next !== null) {
 						effect = next;
 						break;
 					}
-
 					effect = effect.parent;
 				}
 			}
 		}
-
 		#find_earlier_batch() {
 			var batch = this.#prev;
-
 			while (batch !== null) {
 				if (!batch.is_fork) {
-					// if the batches are connected, break
-					for (const [value, [, is_derived]] of this.current) {
-						if (batch.current.has(value) && !is_derived) {
-							return batch;
-						}
-					}
+					for (const [value, [, is_derived]] of this.current) if (batch.current.has(value) && !is_derived) return batch;
 				}
-
 				batch = batch.#prev;
 			}
-
 			return null;
 		}
-
 		/**
-		 * @param {Batch} batch
-		 */
+		* @param {Batch} batch
+		*/
 		#merge(batch) {
 			for (const [source, value] of batch.current) {
-				if (!this.previous.has(source) && batch.previous.has(source)) {
-					this.previous.set(source, batch.previous.get(source));
-				}
-
+				if (!this.previous.has(source) && batch.previous.has(source)) this.previous.set(source, batch.previous.get(source));
 				this.current.set(source, value);
 			}
-
 			for (const [effect, deferred] of batch.async_deriveds) {
 				const d = this.async_deriveds.get(effect);
 				if (d) deferred.promise.then(d.resolve).catch(d.reject);
 			}
-
-			// Clear them or else those that are still pending might get rejected on discard (after merged-into batch is done).
-			// This can happen when batch Y merged into X and Y has a pending boundary and therefore still-pending async deriveds inside.
 			batch.async_deriveds.clear();
-
-			// Mark is not guaranteed not touch these, so we transfer them
 			this.transfer_effects(batch.#dirty_effects, batch.#maybe_dirty_effects);
-
 			/**
-			 * mark all effects that depend on `batch.current`, except the
-			 * async effects that we just resolved (TODO unless they depend
-			 * on values in this batch that are NOT in the later batch?).
-			 * Through this we also will populate the correct #skipped_branches,
-			 * oncommit callbacks etc, so we don't need to merge them separately.
-			 * @param {Value} value
-			 */
+			* mark all effects that depend on `batch.current`, except the
+			* async effects that we just resolved (TODO unless they depend
+			* on values in this batch that are NOT in the later batch?).
+			* Through this we also will populate the correct #skipped_branches,
+			* oncommit callbacks etc, so we don't need to merge them separately.
+			* @param {Value} value
+			*/
 			const mark = (value) => {
 				var reactions = value.reactions;
 				if (reactions === null) return;
-				// skip if value is derived and is neither dirty nor maybe dirty. transitive
-				// deriveds (a derived depending on another derived) are only MAYBE_DIRTY, so
-				// we must continue traversing them to reach the effects that depend on them
-				if ((value.f & DERIVED) !== 0 && (value.f & (DIRTY | MAYBE_DIRTY)) === 0) {
-					return;
-				}
-
+				if ((value.f & 2) !== 0 && (value.f & 6144) === 0) return;
 				for (const reaction of reactions) {
 					var flags = reaction.f;
-
-					if ((flags & DERIVED) !== 0) {
-						mark(/** @type {Derived} */ (reaction));
-					} else {
-						var effect = /** @type {Effect} */ (reaction);
-
-						if (flags & (ASYNC | BLOCK_EFFECT) && !this.async_deriveds.has(effect)) {
+					if ((flags & 2) !== 0) mark(reaction);
+					else {
+						var effect = reaction;
+						if (flags & 4194320 && !this.async_deriveds.has(effect)) {
 							this.#maybe_dirty_effects.delete(effect);
 							set_signal_status(effect, DIRTY);
 							this.schedule(effect);
@@ -2921,66 +1374,44 @@
 					}
 				}
 			};
-
-			for (const source of this.current.keys()) {
-				mark(source);
-			}
-
+			for (const source of this.current.keys()) mark(source);
 			this.oncommit(() => batch.discard());
 			batch.#unlink();
-
 			current_batch = this;
 			this.#process();
 		}
-
 		/**
-		 * @param {Effect[]} effects
-		 */
+		* @param {Effect[]} effects
+		*/
 		#defer_effects(effects) {
-			for (var i = 0; i < effects.length; i += 1) {
-				defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
-			}
+			for (var i = 0; i < effects.length; i += 1) defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
 		}
-
 		/**
-		 * Associate a change to a given source with the current
-		 * batch, noting its previous and current values
-		 * @param {Value} source
-		 * @param {any} value
-		 * @param {boolean} [is_derived]
-		 */
+		* Associate a change to a given source with the current
+		* batch, noting its previous and current values
+		* @param {Value} source
+		* @param {any} value
+		* @param {boolean} [is_derived]
+		*/
 		capture(source, value, is_derived = false) {
-			if (source.v !== UNINITIALIZED && !this.previous.has(source)) {
-				this.previous.set(source, source.v);
-			}
-
-			// Don't save errors in `batch_values`, or they won't be thrown in `runtime.js#get`
-			if ((source.f & ERROR_VALUE) === 0) {
+			if (source.v !== UNINITIALIZED && !this.previous.has(source)) this.previous.set(source, source.v);
+			if ((source.f & 8388608) === 0) {
 				this.current.set(source, [value, is_derived]);
 				batch_values?.set(source, value);
 			}
-
-			if (!this.is_fork) {
-				source.v = value;
-			}
+			if (!this.is_fork) source.v = value;
 		}
-
 		activate() {
 			current_batch = this;
 		}
-
 		deactivate() {
 			current_batch = null;
 			batch_values = null;
 		}
-
 		flush() {
 			try {
-				if (DEV) ;
-
 				is_processing = true;
 				current_batch = this;
-
 				this.#process();
 			} finally {
 				flush_count = 0;
@@ -2988,421 +1419,249 @@
 				collected_effects = null;
 				legacy_updates = null;
 				is_processing = false;
-
 				current_batch = null;
 				batch_values = null;
-
 				old_values.clear();
 			}
 		}
-
 		discard() {
 			for (const fn of this.#discard_callbacks) fn(this);
 			this.#discard_callbacks.clear();
-
-			for (const deferred of this.async_deriveds.values()) {
-				deferred.reject(OBSOLETE);
-			}
-
+			for (const deferred of this.async_deriveds.values()) deferred.reject(OBSOLETE);
 			this.#unlink();
 			this.#deferred?.resolve();
 		}
-
 		/**
-		 * @param {Effect} effect
-		 */
+		* @param {Effect} effect
+		*/
 		register_created_effect(effect) {
 			this.#new_effects.push(effect);
 		}
-
 		#commit() {
-			// If there are other pending batches, they now need to be 'rebased' —
-			// in other words, we re-run block/async effects with the newly
-			// committed state, unless the batch in question has a more
-			// recent value for a given source
 			for (let batch = first_batch; batch !== null; batch = batch.#next) {
 				var is_earlier = batch.id < this.id;
-
 				/** @type {Source[]} */
 				var sources = [];
-
 				for (const [source, [value, is_derived]] of this.current) {
 					if (batch.current.has(source)) {
-						var batch_value = /** @type {[any, boolean]} */ (batch.current.get(source))[0]; // faster than destructuring
-
-						if (is_earlier && value !== batch_value) {
-							// bring the value up to date
-							batch.current.set(source, [value, is_derived]);
-						} else {
-							// same value or later batch has more recent value,
-							// no need to re-run these effects
-							continue;
-						}
+						var batch_value = batch.current.get(source)[0];
+						if (is_earlier && value !== batch_value) batch.current.set(source, [value, is_derived]);
+						else continue;
 					}
-
 					sources.push(source);
 				}
-
-				if (is_earlier) {
-					// TODO do we need to restart these in some cases, instead of
-					// immediately resolving them? Likely not because of how this.apply() works.
-					for (const [effect, deferred] of this.async_deriveds) {
-						const d = batch.async_deriveds.get(effect);
-						if (d) deferred.promise.then(d.resolve).catch(d.reject);
-					}
+				if (is_earlier) for (const [effect, deferred] of this.async_deriveds) {
+					const d = batch.async_deriveds.get(effect);
+					if (d) deferred.promise.then(d.resolve).catch(d.reject);
 				}
-
-				var current = [...batch.current.keys()].filter(
-					(source) => !(/** @type {[any, boolean]} */ (batch.current.get(source))[1])
-				);
-
-				// If not started yet or no sources to update (which is e.g. possible for the very first batch) then bail
+				var current = [...batch.current.keys()].filter((source) => !batch.current.get(source)[1]);
 				if (!batch.#started || current.length === 0) continue;
-
-				// Re-run async/block effects that depend on distinct values changed in both batches (ignoring deriveds)
 				var others = current.filter((source) => !this.current.has(source));
-
 				if (others.length === 0) {
-					if (is_earlier) {
-						// this batch is now obsolete and can be discarded
-						batch.discard();
-					}
+					if (is_earlier) batch.discard();
 				} else if (sources.length > 0) {
-
-					// A batch was unskipped in a later batch -> tell prior batches to unskip it, too
-					if (is_earlier) {
-						for (const unskipped of this.#unskipped_branches) {
-							batch.unskip_effect(unskipped, (e) => {
-								if ((e.f & (BLOCK_EFFECT | ASYNC)) !== 0) {
-									batch.schedule(e);
-								} else {
-									batch.#defer_effects([e]);
-								}
-							});
-						}
-					}
-
+					if (is_earlier) for (const unskipped of this.#unskipped_branches) batch.unskip_effect(unskipped, (e) => {
+						if ((e.f & 4194320) !== 0) batch.schedule(e);
+						else batch.#defer_effects([e]);
+					});
 					batch.activate();
-
 					/** @type {Set<Value>} */
-					var marked = new Set();
-
+					var marked = /* @__PURE__ */ new Set();
 					/** @type {Map<Reaction, boolean>} */
-					var checked = new Map();
-
-					for (var source of sources) {
-						mark_effects(source, others, marked, checked);
-					}
-
-					checked = new Map();
-					var current_unequal = [...batch.current]
-						.filter(([c, v1]) => {
-							const v2 = this.current.get(c);
-							if (!v2) return true;
-							// Either their values are different or one is a derived but not the other
-							return v2[0] !== v1[0] || v2[1] !== v1[1];
-						})
-						.map(([c]) => c);
-
+					var checked = /* @__PURE__ */ new Map();
+					for (var source of sources) mark_effects(source, others, marked, checked);
+					checked = /* @__PURE__ */ new Map();
+					var current_unequal = [...batch.current].filter(([c, v1]) => {
+						const v2 = this.current.get(c);
+						if (!v2) return true;
+						return v2[0] !== v1[0] || v2[1] !== v1[1];
+					}).map(([c]) => c);
 					if (current_unequal.length > 0) {
-						for (const effect of this.#new_effects) {
-							if (
-								(effect.f & (DESTROYED | INERT | EAGER_EFFECT)) === 0 &&
-								depends_on(effect, current_unequal, checked)
-							) {
-								if ((effect.f & (ASYNC | BLOCK_EFFECT)) !== 0) {
-									set_signal_status(effect, DIRTY);
-									batch.schedule(effect);
-								} else {
-									batch.#dirty_effects.add(effect);
-								}
-							}
+						for (const effect of this.#new_effects) if ((effect.f & 155648) === 0 && depends_on(effect, current_unequal, checked)) {
+							if ((effect.f & 4194320) !== 0) {
+								set_signal_status(effect, DIRTY);
+								batch.schedule(effect);
+							} else batch.#dirty_effects.add(effect);
 						}
 					}
-
-					// Only apply and traverse when we know we triggered async work with marking the effects
-					// and know this won't run anyway right afterwards
 					if (batch.#roots.length > 0 && !batch.#decrement_queued) {
 						batch.apply();
-
-						for (var root of batch.#roots) {
-							batch.#traverse(root, [], []);
-						}
-
+						for (var root of batch.#roots) batch.#traverse(root, [], []);
 						batch.#roots = [];
 					}
-
 					batch.deactivate();
 				}
 			}
 		}
-
 		/**
-		 * @param {boolean} blocking
-		 * @param {Effect} effect
-		 */
+		* @param {boolean} blocking
+		* @param {Effect} effect
+		*/
 		increment(blocking, effect) {
 			this.#pending += 1;
-
 			if (blocking) {
 				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
 				this.#blocking_pending.set(effect, blocking_pending_count + 1);
 			}
 		}
-
 		/**
-		 * @param {boolean} blocking
-		 * @param {Effect} effect
-		 */
+		* @param {boolean} blocking
+		* @param {Effect} effect
+		*/
 		decrement(blocking, effect) {
 			this.#pending -= 1;
-
 			if (blocking) {
 				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
-
-				if (blocking_pending_count === 1) {
-					this.#blocking_pending.delete(effect);
-				} else {
-					this.#blocking_pending.set(effect, blocking_pending_count - 1);
-				}
+				if (blocking_pending_count === 1) this.#blocking_pending.delete(effect);
+				else this.#blocking_pending.set(effect, blocking_pending_count - 1);
 			}
-
 			if (this.#decrement_queued) return;
 			this.#decrement_queued = true;
-
 			queue_micro_task(() => {
 				this.#decrement_queued = false;
-
-				if (this.linked) {
-					this.flush();
-				}
+				if (this.linked) this.flush();
 			});
 		}
-
 		/**
-		 * @param {Set<Effect>} dirty_effects
-		 * @param {Set<Effect>} maybe_dirty_effects
-		 */
+		* @param {Set<Effect>} dirty_effects
+		* @param {Set<Effect>} maybe_dirty_effects
+		*/
 		transfer_effects(dirty_effects, maybe_dirty_effects) {
-			for (const e of dirty_effects) {
-				this.#dirty_effects.add(e);
-			}
-
-			for (const e of maybe_dirty_effects) {
-				this.#maybe_dirty_effects.add(e);
-			}
-
+			for (const e of dirty_effects) this.#dirty_effects.add(e);
+			for (const e of maybe_dirty_effects) this.#maybe_dirty_effects.add(e);
 			dirty_effects.clear();
 			maybe_dirty_effects.clear();
 		}
-
 		/** @param {(batch: Batch) => void} fn */
 		oncommit(fn) {
 			this.#commit_callbacks.add(fn);
 		}
-
 		/** @param {(batch: Batch) => void} fn */
 		ondiscard(fn) {
 			this.#discard_callbacks.add(fn);
 		}
-
 		settled() {
 			return (this.#deferred ??= deferred()).promise;
 		}
-
 		static ensure() {
 			if (current_batch === null) {
-				const batch = (current_batch = new Batch());
-
-				if (!is_processing && !is_flushing_sync) {
-					queue_micro_task(() => {
-						if (!batch.#started) {
-							batch.flush();
-						}
-					});
-				}
+				const batch = current_batch = new Batch();
+				if (!is_processing && !is_flushing_sync) queue_micro_task(() => {
+					if (!batch.#started) batch.flush();
+				});
 			}
-
 			return current_batch;
 		}
-
 		apply() {
-			{
+			if (!async_mode_flag || !this.is_fork && this.#prev === null && this.#next === null) {
 				batch_values = null;
 				return;
 			}
+			batch_values = /* @__PURE__ */ new Map();
+			for (const [source, [value]] of this.current) batch_values.set(source, value);
+			for (let batch = first_batch; batch !== null; batch = batch.#next) {
+				if (batch === this || batch.is_fork) continue;
+				var intersects = false;
+				if (batch.id < this.id) for (const [source, [, is_derived]] of batch.current) {
+					if (is_derived) continue;
+					if (this.current.has(source)) {
+						intersects = true;
+						break;
+					}
+				}
+				if (!intersects) {
+					for (const [source, previous] of batch.previous) if (!batch_values.has(source)) batch_values.set(source, previous);
+				}
+			}
 		}
-
 		/**
-		 *
-		 * @param {Effect} effect
-		 */
+		*
+		* @param {Effect} effect
+		*/
 		schedule(effect) {
 			last_scheduled_effect = effect;
-
-			// defer render effects inside a pending boundary
-			// TODO the `REACTION_RAN` check is only necessary because of legacy `$:` effects AFAICT — we can remove later
-			if (
-				effect.b?.is_pending &&
-				(effect.f & (EFFECT | RENDER_EFFECT | MANAGED_EFFECT)) !== 0 &&
-				(effect.f & REACTION_RAN) === 0
-			) {
+			if (effect.b?.is_pending && (effect.f & 16777228) !== 0 && (effect.f & 32768) === 0) {
 				effect.b.defer_effect(effect);
 				return;
 			}
-
 			var e = effect;
-
 			while (e.parent !== null) {
 				e = e.parent;
 				var flags = e.f;
-
-				// if the effect is being scheduled because a parent (each/await/etc) block
-				// updated an internal source, or because a branch is being unskipped,
-				// bail out or we'll cause a second flush
 				if (collected_effects !== null && e === active_effect) {
-
-					// in sync mode, render effects run during traversal. in an extreme edge case
-					// — namely that we're setting a value inside a derived read during traversal —
-					// they can be made dirty after they have already been visited, in which
-					// case we shouldn't bail out. we also shouldn't bail out if we're
-					// updating a store inside a `$:`, since this might invalidate
-					// effects that were already visited
-					if (
-						(active_reaction === null || (active_reaction.f & DERIVED) === 0) &&
-						true
-					) {
-						return;
-					}
+					if (async_mode_flag) return;
+					if ((active_reaction === null || (active_reaction.f & 2) === 0) && !legacy_is_updating_store) return;
 				}
-
-				if ((flags & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
-					if ((flags & CLEAN) === 0) {
-						// branch is already dirty, bail
-						return;
-					}
-
+				if ((flags & 96) !== 0) {
+					if ((flags & 1024) === 0) return;
 					e.f ^= CLEAN;
 				}
 			}
-
 			this.#roots.push(e);
 		}
-
 		#unlink() {
-			// #merge calls #unlink, discard later on does it again - prevent
-			// running it multiple times to not corrupt the linked list
 			if (!this.linked) return;
-
 			var prev = this.#prev;
 			var next = this.#next;
-
-			if (prev === null) {
-				first_batch = next;
-			} else {
-				prev.#next = next;
-			}
-
-			if (next === null) {
-				last_batch = prev;
-			} else {
-				next.#prev = prev;
-			}
-
+			if (prev === null) first_batch = next;
+			else prev.#next = next;
+			if (next === null) last_batch = prev;
+			else next.#prev = prev;
 			this.linked = false;
 		}
-	}
-
-	// TODO Svelte@6 think about removing the callback argument.
+	};
 	/**
-	 * Synchronously flush any pending updates.
-	 * Returns void if no callback is provided, otherwise returns the result of calling the callback.
-	 * @template [T=void]
-	 * @param {(() => T) | undefined} [fn]
-	 * @returns {T}
-	 */
+	* Synchronously flush any pending updates.
+	* Returns void if no callback is provided, otherwise returns the result of calling the callback.
+	* @template [T=void]
+	* @param {(() => T) | undefined} [fn]
+	* @returns {T}
+	*/
 	function flushSync(fn) {
 		var was_flushing_sync = is_flushing_sync;
 		is_flushing_sync = true;
-
 		try {
 			var result;
-
-			if (fn) ;
-
+			if (fn) {
+				if (current_batch !== null && !current_batch.is_fork) current_batch.flush();
+				result = fn();
+			}
 			while (true) {
 				flush_tasks();
-
-				if (current_batch === null) {
-					return /** @type {T} */ (result);
-				}
-
+				if (current_batch === null) return result;
 				current_batch.flush();
 			}
 		} finally {
 			is_flushing_sync = was_flushing_sync;
 		}
 	}
-
 	function infinite_loop_guard() {
-
 		try {
 			effect_update_depth_exceeded();
 		} catch (error) {
-
-			// Best effort: invoke the boundary nearest the most recent
-			// effect and hope that it's relevant to the infinite loop
 			invoke_error_boundary(error, last_scheduled_effect);
 		}
 	}
-
 	/** @type {Set<Effect> | null} */
-	let eager_block_effects = null;
-
+	var eager_block_effects = null;
 	/**
-	 * @param {Array<Effect>} effects
-	 * @returns {void}
-	 */
+	* @param {Array<Effect>} effects
+	* @returns {void}
+	*/
 	function flush_queued_effects(effects) {
 		var length = effects.length;
 		if (length === 0) return;
-
 		var i = 0;
-
 		while (i < length) {
 			var effect = effects[i++];
-
-			if ((effect.f & (DESTROYED | INERT)) === 0 && is_dirty(effect)) {
-				eager_block_effects = new Set();
-
+			if ((effect.f & 24576) === 0 && is_dirty(effect)) {
+				eager_block_effects = /* @__PURE__ */ new Set();
 				update_effect(effect);
-
-				// Effects with no dependencies or teardown do not get added to the effect tree.
-				// Deferred effects (e.g. `$effect(...)`) _are_ added to the tree because we
-				// don't know if we need to keep them until they are executed. Doing the check
-				// here (rather than in `update_effect`) allows us to skip the work for
-				// immediate effects.
-				if (
-					effect.deps === null &&
-					effect.first === null &&
-					effect.nodes === null &&
-					effect.teardown === null &&
-					effect.ac === null
-				) {
-					// remove this effect from the graph
-					unlink_effect(effect);
-				}
-
-				// If update_effect() has a flushSync() in it, we may have flushed another flush_queued_effects(),
-				// which already handled this logic and did set eager_block_effects to null.
+				if (effect.deps === null && effect.first === null && effect.nodes === null && effect.teardown === null && effect.ac === null) unlink_effect(effect);
 				if (eager_block_effects?.size > 0) {
 					old_values.clear();
-
 					for (const e of eager_block_effects) {
-						// Skip eager effects that have already been unmounted
-						if ((e.f & (DESTROYED | INERT)) !== 0) continue;
-
-						// Run effects in order from ancestor to descendant, else we could run into nullpointers
+						if ((e.f & 24576) !== 0) continue;
 						/** @type {Effect[]} */
 						const ordered_effects = [e];
 						let ancestor = e.parent;
@@ -3413,469 +1672,288 @@
 							}
 							ancestor = ancestor.parent;
 						}
-
 						for (let j = ordered_effects.length - 1; j >= 0; j--) {
 							const e = ordered_effects[j];
-							// Skip eager effects that have already been unmounted
-							if ((e.f & (DESTROYED | INERT)) !== 0) continue;
+							if ((e.f & 24576) !== 0) continue;
 							update_effect(e);
 						}
 					}
-
 					eager_block_effects.clear();
 				}
 			}
 		}
-
 		eager_block_effects = null;
 	}
-
 	/**
-	 * This is similar to `mark_reactions`, but it only marks async/block effects
-	 * depending on `value` and at least one of the other `sources`, so that
-	 * these effects can re-run after another batch has been committed
-	 * @param {Value} value
-	 * @param {Source[]} sources
-	 * @param {Set<Value>} marked
-	 * @param {Map<Reaction, boolean>} checked
-	 */
+	* This is similar to `mark_reactions`, but it only marks async/block effects
+	* depending on `value` and at least one of the other `sources`, so that
+	* these effects can re-run after another batch has been committed
+	* @param {Value} value
+	* @param {Source[]} sources
+	* @param {Set<Value>} marked
+	* @param {Map<Reaction, boolean>} checked
+	*/
 	function mark_effects(value, sources, marked, checked) {
 		if (marked.has(value)) return;
 		marked.add(value);
-
-		if (value.reactions !== null) {
-			for (const reaction of value.reactions) {
-				const flags = reaction.f;
-
-				if ((flags & DERIVED) !== 0) {
-					mark_effects(/** @type {Derived} */ (reaction), sources, marked, checked);
-				} else if (
-					(flags & (ASYNC | BLOCK_EFFECT)) !== 0 &&
-					(flags & DIRTY) === 0 &&
-					depends_on(reaction, sources, checked)
-				) {
-					set_signal_status(reaction, DIRTY);
-					schedule_effect(/** @type {Effect} */ (reaction));
-				}
+		if (value.reactions !== null) for (const reaction of value.reactions) {
+			const flags = reaction.f;
+			if ((flags & 2) !== 0) mark_effects(reaction, sources, marked, checked);
+			else if ((flags & 4194320) !== 0 && (flags & 2048) === 0 && depends_on(reaction, sources, checked)) {
+				set_signal_status(reaction, DIRTY);
+				schedule_effect(reaction);
 			}
 		}
 	}
-
 	/**
-	 * @param {Reaction} reaction
-	 * @param {Source[]} sources
-	 * @param {Map<Reaction, boolean>} checked
-	 */
+	* @param {Reaction} reaction
+	* @param {Source[]} sources
+	* @param {Map<Reaction, boolean>} checked
+	*/
 	function depends_on(reaction, sources, checked) {
 		const depends = checked.get(reaction);
-		if (depends !== undefined) return depends;
-
-		if (reaction.deps !== null) {
-			for (const dep of reaction.deps) {
-				if (includes.call(sources, dep)) {
-					return true;
-				}
-
-				if ((dep.f & DERIVED) !== 0 && depends_on(/** @type {Derived} */ (dep), sources, checked)) {
-					checked.set(/** @type {Derived} */ (dep), true);
-					return true;
-				}
+		if (depends !== void 0) return depends;
+		if (reaction.deps !== null) for (const dep of reaction.deps) {
+			if (includes.call(sources, dep)) return true;
+			if ((dep.f & 2) !== 0 && depends_on(dep, sources, checked)) {
+				checked.set(dep, true);
+				return true;
 			}
 		}
-
 		checked.set(reaction, false);
-
 		return false;
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @returns {void}
-	 */
+	* @param {Effect} effect
+	* @returns {void}
+	*/
 	function schedule_effect(effect) {
-		/** @type {Batch} */ (current_batch).schedule(effect);
+		/** @type {Batch} */ current_batch.schedule(effect);
 	}
-
 	/**
-	 * Mark all the effects inside a skipped branch CLEAN, so that
-	 * they can be correctly rescheduled later. Tracks dirty and maybe_dirty
-	 * effects so they can be rescheduled if the branch survives.
-	 * @param {Effect} effect
-	 * @param {{ d: Effect[], m: Effect[] }} tracked
-	 */
+	* Mark all the effects inside a skipped branch CLEAN, so that
+	* they can be correctly rescheduled later. Tracks dirty and maybe_dirty
+	* effects so they can be rescheduled if the branch survives.
+	* @param {Effect} effect
+	* @param {{ d: Effect[], m: Effect[] }} tracked
+	*/
 	function reset_branch(effect, tracked) {
-		// clean branch = nothing dirty inside, no need to traverse further
-		if ((effect.f & BRANCH_EFFECT) !== 0 && (effect.f & CLEAN) !== 0) {
-			return;
-		}
-
-		if ((effect.f & DIRTY) !== 0) {
-			tracked.d.push(effect);
-		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
-			tracked.m.push(effect);
-		}
-
+		if ((effect.f & 32) !== 0 && (effect.f & 1024) !== 0) return;
+		if ((effect.f & 2048) !== 0) tracked.d.push(effect);
+		else if ((effect.f & 4096) !== 0) tracked.m.push(effect);
 		set_signal_status(effect, CLEAN);
-
 		var e = effect.first;
 		while (e !== null) {
 			reset_branch(e, tracked);
 			e = e.next;
 		}
 	}
-
 	/**
-	 * Mark an entire effect tree clean following an error
-	 * @param {Effect} effect
-	 */
+	* Mark an entire effect tree clean following an error
+	* @param {Effect} effect
+	*/
 	function reset_all(effect) {
 		set_signal_status(effect, CLEAN);
-
 		var e = effect.first;
 		while (e !== null) {
 			reset_all(e);
 			e = e.next;
 		}
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/sources.js
 	/** @import { Derived, Effect, Source, Value } from '#client' */
-
 	/** @type {Set<Effect>} */
-	let eager_effects = new Set();
-
+	var eager_effects = /* @__PURE__ */ new Set();
 	/** @type {Map<Source, any>} */
-	const old_values = new Map();
-
-	let eager_effects_deferred = false;
-
+	var old_values = /* @__PURE__ */ new Map();
+	var eager_effects_deferred = false;
 	/**
-	 * @template V
-	 * @param {V} v
-	 * @param {Error | null} [stack]
-	 * @returns {Source<V>}
-	 */
-	// TODO rename this to `state` throughout the codebase
+	* @template V
+	* @param {V} v
+	* @param {Error | null} [stack]
+	* @returns {Source<V>}
+	*/
 	function source(v, stack) {
-		/** @type {Value} */
-		var signal = {
-			f: 0, // TODO ideally we could skip this altogether, but it causes type errors
+		return {
+			f: 0,
 			v,
 			reactions: null,
-			equals: equals$1,
+			equals,
 			rv: 0,
 			wv: 0
 		};
-
-		return signal;
 	}
-
 	/**
-	 * @template V
-	 * @param {V} v
-	 * @param {Error | null} [stack]
-	 */
+	* @template V
+	* @param {V} v
+	* @param {Error | null} [stack]
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function state(v, stack) {
-		const s = source(v);
-
+		const s = source(v, stack);
 		push_reaction_value(s);
-
 		return s;
 	}
-
 	/**
-	 * @template V
-	 * @param {V} initial_value
-	 * @param {boolean} [immutable]
-	 * @returns {Source<V>}
-	 */
+	* @template V
+	* @param {V} initial_value
+	* @param {boolean} [immutable]
+	* @returns {Source<V>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function mutable_source(initial_value, immutable = false, trackable = true) {
 		const s = source(initial_value);
-		if (!immutable) {
-			s.equals = safe_equals;
-		}
-
+		if (!immutable) s.equals = safe_equals;
+		if (legacy_mode_flag && trackable && component_context !== null && component_context.l !== null) (component_context.l.s ??= []).push(s);
 		return s;
 	}
-
 	/**
-	 * @template V
-	 * @param {Source<V>} source
-	 * @param {V} value
-	 * @param {boolean} [should_proxy]
-	 * @returns {V}
-	 */
+	* @template V
+	* @param {Source<V>} source
+	* @param {V} value
+	* @param {boolean} [should_proxy]
+	* @returns {V}
+	*/
 	function set(source, value, should_proxy = false) {
-		if (
-			active_reaction !== null &&
-			// since we are untracking the function inside `$inspect.with` we need to add this check
-			// to ensure we error if state is set inside an inspect effect
-			(!untracking || (active_reaction.f & EAGER_EFFECT) !== 0) &&
-			is_runes() &&
-			(active_reaction.f & (DERIVED | BLOCK_EFFECT | ASYNC | EAGER_EFFECT)) !== 0 &&
-			(current_sources === null || !current_sources.has(source))
-		) {
-			state_unsafe_mutation();
-		}
-
-		let new_value = should_proxy ? proxy(value) : value;
-
-		return internal_set(source, new_value, legacy_updates);
+		if (active_reaction !== null && (!untracking || (active_reaction.f & 131072) !== 0) && is_runes() && (active_reaction.f & 4325394) !== 0 && (current_sources === null || !current_sources.has(source))) state_unsafe_mutation();
+		return internal_set(source, should_proxy ? proxy(value) : value, legacy_updates);
 	}
-
 	/**
-	 * @template V
-	 * @param {Source<V>} source
-	 * @param {V} value
-	 * @param {Effect[] | null} [updated_during_traversal]
-	 * @returns {V}
-	 */
+	* @template V
+	* @param {Source<V>} source
+	* @param {V} value
+	* @param {Effect[] | null} [updated_during_traversal]
+	* @returns {V}
+	*/
 	function internal_set(source, value, updated_during_traversal = null) {
 		if (!source.equals(value)) {
-			if (is_destroying_effect) {
-				old_values.set(source, value);
-			} else if (!old_values.has(source)) {
-				// only record the value from before the first write in this flush, otherwise a
-				// teardown would see the value from before whichever write happened to be last
-				old_values.set(source, source.v);
-			}
-
+			if (is_destroying_effect) old_values.set(source, value);
+			else if (!old_values.has(source)) old_values.set(source, source.v);
 			var batch = Batch.ensure();
 			batch.capture(source, value);
-
-			if ((source.f & DERIVED) !== 0) {
-				const derived = /** @type {Derived} */ (source);
-
-				// if we are assigning to a dirty derived we set it to clean/maybe dirty but we also eagerly execute it to track the dependencies
-				if ((source.f & DIRTY) !== 0) {
-					execute_derived(derived);
-				}
-
-				// During time traveling we don't want to reset the status so that
-				// traversal of the graph in the other batches still happens
-				if (batch_values === null) {
-					update_derived_status(derived);
-				}
+			if ((source.f & 2) !== 0) {
+				const derived = source;
+				if ((source.f & 2048) !== 0) execute_derived(derived);
+				if (batch_values === null) update_derived_status(derived);
 			}
-
 			source.wv = increment_write_version();
-
-			// For debugging, in case you want to know which reactions are being scheduled:
-			// log_reactions(source);
 			mark_reactions(source, DIRTY, updated_during_traversal);
-
-			// It's possible that the current reaction might not have up-to-date dependencies
-			// whilst it's actively running. So in the case of ensuring it registers the reaction
-			// properly for itself, we need to ensure the current effect actually gets
-			// scheduled. i.e: `$effect(() => x++)`
-			if (
-				active_effect !== null &&
-				(active_effect.f & CLEAN) !== 0 &&
-				(active_effect.f & (BRANCH_EFFECT | ROOT_EFFECT)) === 0
-			) {
-				if (untracked_writes === null) {
-					set_untracked_writes([source]);
-				} else {
-					untracked_writes.push(source);
-				}
+			if (is_runes() && active_effect !== null && (active_effect.f & 1024) !== 0 && (active_effect.f & 96) === 0) {
+				if (untracked_writes === null) set_untracked_writes([source]);
+				else untracked_writes.push(source);
 			}
-
-			if (!batch.is_fork && eager_effects.size > 0 && !eager_effects_deferred) {
-				flush_eager_effects();
-			}
+			if (!batch.is_fork && eager_effects.size > 0 && !eager_effects_deferred) flush_eager_effects();
 		}
-
 		return value;
 	}
-
 	function flush_eager_effects() {
 		eager_effects_deferred = false;
-
 		for (const effect of eager_effects) {
-			// Mark clean inspect-effects as maybe dirty and then check their dirtiness
-			// instead of just updating the effects - this way we avoid overfiring.
-			if ((effect.f & CLEAN) !== 0) {
-				set_signal_status(effect, MAYBE_DIRTY);
-			}
-
+			if ((effect.f & 1024) !== 0) set_signal_status(effect, MAYBE_DIRTY);
 			let dirty;
-
 			try {
 				dirty = is_dirty(effect);
 			} catch {
-				// Dirty-checking can evaluate derived dependencies and throw in cases where
-				// parent effects are about to destroy this eager effect. Run the effect so
-				// its own error handling can deal with transient failures.
 				dirty = true;
 			}
-
-			if (dirty) {
-				update_effect(effect);
-			}
+			if (dirty) update_effect(effect);
 		}
-
 		eager_effects.clear();
 	}
-
 	/**
-	 * Silently (without using `get`) increment a source
-	 * @param {Source<number>} source
-	 */
+	* Silently (without using `get`) increment a source
+	* @param {Source<number>} source
+	*/
 	function increment(source) {
 		set(source, source.v + 1);
 	}
-
 	/**
-	 * @param {Value} signal
-	 * @param {number} status should be DIRTY or MAYBE_DIRTY
-	 * @param {Effect[] | null} updated_during_traversal
-	 * @returns {void}
-	 */
+	* @param {Value} signal
+	* @param {number} status should be DIRTY or MAYBE_DIRTY
+	* @param {Effect[] | null} updated_during_traversal
+	* @returns {void}
+	*/
 	function mark_reactions(signal, status, updated_during_traversal) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
+		var runes = is_runes();
 		var length = reactions.length;
-
 		for (var i = 0; i < length; i++) {
 			var reaction = reactions[i];
 			var flags = reaction.f;
-
+			if (!runes && reaction === active_effect) continue;
 			var not_dirty = (flags & DIRTY) === 0;
-
-			// don't set a DIRTY reaction to MAYBE_DIRTY
-			if (not_dirty) {
-				set_signal_status(reaction, status);
-			}
-
-			if ((flags & EAGER_EFFECT) !== 0) {
-				// Eager effects need to run immediately:
-				// - for $inspect so that the stack trace makes sense
-				// - for $state.eager because they might be without an effect parent
-				eager_effects.add(/** @type {Effect} */ (reaction));
-			} else if ((flags & DERIVED) !== 0) {
-				var derived = /** @type {Derived} */ (reaction);
-
+			if (not_dirty) set_signal_status(reaction, status);
+			if ((flags & 131072) !== 0) eager_effects.add(reaction);
+			else if ((flags & 2) !== 0) {
+				var derived = reaction;
 				batch_values?.delete(derived);
-
-				if ((flags & WAS_MARKED) === 0) {
-					// Only connected deriveds being executed outside the update cycle can be reliably unmarked right away
-					if (
-						flags & CONNECTED &&
-						(active_effect === null || (active_effect.f & REACTION_IS_UPDATING) === 0)
-					) {
-						reaction.f |= WAS_MARKED;
-					}
-
+				if ((flags & 65536) === 0) {
+					if (flags & 512 && (active_effect === null || (active_effect.f & 2097152) === 0)) reaction.f |= WAS_MARKED;
 					mark_reactions(derived, MAYBE_DIRTY, updated_during_traversal);
 				}
 			} else if (not_dirty) {
-				var effect = /** @type {Effect} */ (reaction);
-
-				if ((flags & BLOCK_EFFECT) !== 0 && eager_block_effects !== null) {
-					eager_block_effects.add(effect);
-				}
-
-				if (updated_during_traversal !== null) {
-					updated_during_traversal.push(effect);
-				} else {
-					schedule_effect(effect);
-				}
+				var effect = reaction;
+				if ((flags & 16) !== 0 && eager_block_effects !== null) eager_block_effects.add(effect);
+				if (updated_during_traversal !== null) updated_during_traversal.push(effect);
+				else schedule_effect(effect);
 			}
 		}
 	}
-
-	/** @import { Source } from '#client' */
-
 	/**
-	 * @template T
-	 * @param {T} value
-	 * @returns {T}
-	 */
+	* @template T
+	* @param {T} value
+	* @returns {T}
+	*/
 	function proxy(value) {
-		// if non-proxyable, or is already a proxy, return `value`
-		if (typeof value !== 'object' || value === null || STATE_SYMBOL in value) {
-			return value;
-		}
-
+		if (typeof value !== "object" || value === null || STATE_SYMBOL in value || COMPONENT_SYMBOL in value) return value;
 		const prototype = get_prototype_of(value);
-
-		if (prototype !== object_prototype && prototype !== array_prototype) {
-			return value;
-		}
-
+		if (prototype !== object_prototype && prototype !== array_prototype) return value;
 		/** @type {Map<any, Source<any>>} */
-		var sources = new Map();
+		var sources = /* @__PURE__ */ new Map();
 		var is_proxied_array = is_array(value);
-		var version = state(0);
+		var version = /* @__PURE__ */ state(0);
+		var stack = null;
 		var parent_version = update_version;
-
 		/**
-		 * Executes the proxy in the context of the reaction it was originally created in, if any
-		 * @template T
-		 * @param {() => T} fn
-		 */
+		* Executes the proxy in the context of the reaction it was originally created in, if any
+		* @template T
+		* @param {() => T} fn
+		*/
 		var with_parent = (fn) => {
-			if (update_version === parent_version) {
-				return fn();
-			}
-
-			// child source is being created after the initial proxy —
-			// prevent it from being associated with the current reaction
+			if (update_version === parent_version) return fn();
 			var reaction = active_reaction;
 			var version = update_version;
-
 			set_active_reaction(null);
 			set_update_version(parent_version);
-
 			var result = fn();
-
 			set_active_reaction(reaction);
 			set_update_version(version);
-
 			return result;
 		};
-
-		if (is_proxied_array) {
-			// We need to create the length source eagerly to ensure that
-			// mutations to the array are properly synced with our proxy
-			sources.set('length', state(/** @type {any[]} */ (value).length));
-		}
-
-		return new Proxy(/** @type {any} */ (value), {
+		if (is_proxied_array) sources.set("length", /* @__PURE__ */ state(
+			/** @type {any[]} */
+			value.length,
+			stack
+		));
+		return new Proxy(value, {
 			defineProperty(_, prop, descriptor) {
-				if (
-					!('value' in descriptor) ||
-					descriptor.configurable === false ||
-					descriptor.enumerable === false ||
-					descriptor.writable === false
-				) {
-					// we disallow non-basic descriptors, because unless they are applied to the
-					// target object — which we avoid, so that state can be forked — we will run
-					// afoul of the various invariants
-					// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy/getOwnPropertyDescriptor#invariants
-					state_descriptors_fixed();
-				}
+				if (!("value" in descriptor) || descriptor.configurable === false || descriptor.enumerable === false || descriptor.writable === false) state_descriptors_fixed();
 				var s = sources.get(prop);
-				if (s === undefined) {
-					with_parent(() => {
-						var s = state(descriptor.value);
-						sources.set(prop, s);
-						return s;
-					});
-				} else {
-					set(s, descriptor.value, true);
-				}
-
+				if (s === void 0) with_parent(() => {
+					var s = /* @__PURE__ */ state(descriptor.value, stack);
+					sources.set(prop, s);
+					return s;
+				});
+				else set(s, descriptor.value, true);
 				return true;
 			},
-
 			deleteProperty(target, prop) {
 				var s = sources.get(prop);
-
-				if (s === undefined) {
+				if (s === void 0) {
 					if (prop in target) {
-						const s = with_parent(() => state(UNINITIALIZED));
+						const s = with_parent(() => /* @__PURE__ */ state(UNINITIALIZED, stack));
 						sources.set(prop, s);
 						increment(version);
 					}
@@ -3883,536 +1961,388 @@
 					set(s, UNINITIALIZED);
 					increment(version);
 				}
-
 				return true;
 			},
-
 			get(target, prop, receiver) {
-				if (prop === STATE_SYMBOL) {
-					return value;
-				}
-
+				if (prop === STATE_SYMBOL) return value;
 				var s = sources.get(prop);
 				var exists = prop in target;
-
-				// create a source, but only if it's an own property and not a prototype property
-				if (s === undefined && (!exists || get_descriptor(target, prop)?.writable)) {
+				if (s === void 0 && (!exists || get_descriptor(target, prop)?.writable)) {
 					s = with_parent(() => {
-						var p = proxy(exists ? target[prop] : UNINITIALIZED);
-						var s = state(p);
-
-						return s;
+						return /* @__PURE__ */ state(proxy(exists ? target[prop] : UNINITIALIZED), stack);
 					});
-
 					sources.set(prop, s);
 				}
-
-				if (s !== undefined) {
+				if (s !== void 0) {
 					var v = get(s);
-					return v === UNINITIALIZED ? undefined : v;
+					return v === UNINITIALIZED ? void 0 : v;
 				}
-
 				return Reflect.get(target, prop, receiver);
 			},
-
 			getOwnPropertyDescriptor(target, prop) {
 				var descriptor = Reflect.getOwnPropertyDescriptor(target, prop);
-
-				if (descriptor && 'value' in descriptor) {
+				if (descriptor && "value" in descriptor) {
 					var s = sources.get(prop);
 					if (s) descriptor.value = get(s);
-				} else if (descriptor === undefined) {
+				} else if (descriptor === void 0) {
 					var source = sources.get(prop);
 					var value = source?.v;
-
-					if (source !== undefined && value !== UNINITIALIZED) {
-						return {
-							enumerable: true,
-							configurable: true,
-							value,
-							writable: true
-						};
-					}
+					if (source !== void 0 && value !== UNINITIALIZED) return {
+						enumerable: true,
+						configurable: true,
+						value,
+						writable: true
+					};
 				}
-
 				return descriptor;
 			},
-
 			has(target, prop) {
-				if (prop === STATE_SYMBOL) {
-					return true;
-				}
-
+				if (prop === STATE_SYMBOL) return true;
 				var s = sources.get(prop);
-				var has = (s !== undefined && s.v !== UNINITIALIZED) || Reflect.has(target, prop);
-
-				if (
-					s !== undefined ||
-					(active_effect !== null && (!has || get_descriptor(target, prop)?.writable))
-				) {
-					if (s === undefined) {
+				var has = s !== void 0 && s.v !== UNINITIALIZED || Reflect.has(target, prop);
+				if (s !== void 0 || active_effect !== null && (!has || get_descriptor(target, prop)?.writable)) {
+					if (s === void 0) {
 						s = with_parent(() => {
-							var p = has ? proxy(target[prop]) : UNINITIALIZED;
-							var s = state(p);
-
-							return s;
+							return /* @__PURE__ */ state(has ? proxy(target[prop]) : UNINITIALIZED, stack);
 						});
-
 						sources.set(prop, s);
 					}
-
-					var value = get(s);
-					if (value === UNINITIALIZED) {
-						return false;
-					}
+					if (get(s) === UNINITIALIZED) return false;
 				}
-
 				return has;
 			},
-
 			set(target, prop, value, receiver) {
 				var s = sources.get(prop);
 				var has = prop in target;
-
-				// variable.length = value -> clear all signals with index >= value
-				if (is_proxied_array && prop === 'length') {
-					for (var i = value; i < /** @type {Source<number>} */ (s).v; i += 1) {
-						var other_s = sources.get(i + '');
-						if (other_s !== undefined) {
-							set(other_s, UNINITIALIZED);
-						} else if (i in target) {
-							// If the item exists in the original, we need to create an uninitialized source,
-							// else a later read of the property would result in a source being created with
-							// the value of the original item at that index.
-							other_s = with_parent(() => state(UNINITIALIZED));
-							sources.set(i + '', other_s);
-						}
+				if (is_proxied_array && prop === "length") for (var i = value; i < s.v; i += 1) {
+					var other_s = sources.get(i + "");
+					if (other_s !== void 0) set(other_s, UNINITIALIZED);
+					else if (i in target) {
+						other_s = with_parent(() => /* @__PURE__ */ state(UNINITIALIZED, stack));
+						sources.set(i + "", other_s);
 					}
 				}
-
-				// If we haven't yet created a source for this property, we need to ensure
-				// we do so otherwise if we read it later, then the write won't be tracked and
-				// the heuristics of effects will be different vs if we had read the proxied
-				// object property before writing to that property.
-				if (s === undefined) {
+				if (s === void 0) {
 					if (!has || get_descriptor(target, prop)?.writable) {
-						s = with_parent(() => state(undefined));
+						s = with_parent(() => /* @__PURE__ */ state(void 0, stack));
 						set(s, proxy(value));
-
 						sources.set(prop, s);
 					}
 				} else {
 					has = s.v !== UNINITIALIZED;
-
 					var p = with_parent(() => proxy(value));
 					set(s, p);
 				}
-
 				var descriptor = Reflect.getOwnPropertyDescriptor(target, prop);
-
-				// Set the new value before updating any signals so that any listeners get the new value
-				if (descriptor?.set) {
-					descriptor.set.call(receiver, value);
-				}
-
+				if (descriptor?.set) descriptor.set.call(receiver, value);
 				if (!has) {
-					// If we have mutated an array directly, we might need to
-					// signal that length has also changed. Do it before updating metadata
-					// to ensure that iterating over the array as a result of a metadata update
-					// will not cause the length to be out of sync.
-					if (is_proxied_array && typeof prop === 'string') {
-						var ls = /** @type {Source<number>} */ (sources.get('length'));
+					if (is_proxied_array && typeof prop === "string") {
+						var ls = sources.get("length");
 						var n = Number(prop);
-
-						if (Number.isInteger(n) && n >= ls.v) {
-							set(ls, n + 1);
-						}
+						if (Number.isInteger(n) && n >= ls.v) set(ls, n + 1);
 					}
-
 					increment(version);
 				}
-
 				return true;
 			},
-
 			ownKeys(target) {
 				get(version);
-
 				var own_keys = Reflect.ownKeys(target).filter((key) => {
 					var source = sources.get(key);
-					return source === undefined || source.v !== UNINITIALIZED;
+					return source === void 0 || source.v !== UNINITIALIZED;
 				});
-
-				for (var [key, source] of sources) {
-					if (source.v !== UNINITIALIZED && !(key in target)) {
-						own_keys.push(key);
-					}
-				}
-
+				for (var [key, source] of sources) if (source.v !== UNINITIALIZED && !(key in target)) own_keys.push(key);
 				return own_keys;
 			},
-
 			setPrototypeOf() {
 				state_prototype_fixed();
 			}
 		});
 	}
-
 	/**
-	 * @param {any} value
-	 */
+	* @param {any} value
+	*/
 	function get_proxied_value(value) {
 		try {
-			if (value !== null && typeof value === 'object' && STATE_SYMBOL in value) {
-				return value[STATE_SYMBOL];
-			}
-		} catch {
-			// the above if check can throw an error if the value in question
-			// is the contentWindow of an iframe on another domain, in which
-			// case we want to just return the value (because it's definitely
-			// not a proxied value) so we don't break any JavaScript interacting
-			// with that iframe (such as various payment companies client side
-			// JavaScript libraries interacting with their iframes on the same
-			// domain)
-		}
-
+			if (value !== null && typeof value === "object" && STATE_SYMBOL in value) return value[STATE_SYMBOL];
+		} catch {}
 		return value;
 	}
-
 	/**
-	 * @param {any} a
-	 * @param {any} b
-	 */
+	* @param {any} a
+	* @param {any} b
+	*/
 	function is(a, b) {
 		return Object.is(get_proxied_value(a), get_proxied_value(b));
 	}
-
-	/**
-	 * @param {any} a
-	 * @param {any} b
-	 * @param {boolean} equal
-	 * @returns {boolean}
-	 */
-	function strict_equals(a, b, equal = true) {
-		// try-catch needed because this tries to read properties of `a` and `b`,
-		// which could be disallowed for example in a secure context
-		try {
-			if ((a === b) !== (get_proxied_value(a) === get_proxied_value(b))) {
-				state_proxy_equality_mismatch(equal ? '===' : '!==');
-			}
-		} catch {}
-
-		return (a === b) === equal;
-	}
-
-	/**
-	 * @param {any} a
-	 * @param {any} b
-	 * @param {boolean} equal
-	 * @returns {boolean}
-	 */
-	function equals(a, b, equal = true) {
-		if ((a == b) !== (get_proxied_value(a) == get_proxied_value(b))) {
-			state_proxy_equality_mismatch();
-		}
-
-		return (a == b) === equal;
-	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/operations.js
 	/** @import { Effect, TemplateNode } from '#client' */
-
-	// export these for reference in the compiled code, making global name deduplication unnecessary
 	/** @type {Window} */
 	var $window;
-
 	/** @type {Document} */
 	var $document;
-
 	/** @type {boolean} */
 	var is_firefox;
-
 	/** @type {() => Node | null} */
 	var first_child_getter;
 	/** @type {() => Node | null} */
 	var next_sibling_getter;
-
 	/**
-	 * Initialize these lazily to avoid issues when using the runtime in a server context
-	 * where these globals are not available while avoiding a separate server entry point
-	 */
+	* Initialize these lazily to avoid issues when using the runtime in a server context
+	* where these globals are not available while avoiding a separate server entry point
+	*/
 	function init_operations() {
-		if ($window !== undefined) {
-			return;
-		}
-
+		if ($window !== void 0) return;
 		$window = window;
 		$document = document;
 		is_firefox = /Firefox/.test(navigator.userAgent);
-
 		var element_prototype = Element.prototype;
 		var node_prototype = Node.prototype;
 		var text_prototype = Text.prototype;
-
-		// @ts-ignore
-		first_child_getter = get_descriptor(node_prototype, 'firstChild').get;
-		// @ts-ignore
-		next_sibling_getter = get_descriptor(node_prototype, 'nextSibling').get;
-
+		first_child_getter = get_descriptor(node_prototype, "firstChild").get;
+		next_sibling_getter = get_descriptor(node_prototype, "nextSibling").get;
 		if (is_extensible(element_prototype)) {
-			// the following assignments improve perf of lookups on DOM nodes
-			/** @type {any} */ (element_prototype)[CLASS_CACHE] = undefined;
-			/** @type {any} */ (element_prototype)[ATTRIBUTES_CACHE] = null;
-			/** @type {any} */ (element_prototype)[STYLE_CACHE] = undefined;
-			// @ts-expect-error
-			element_prototype.__e = undefined;
+			/** @type {any} */ element_prototype[CLASS_CACHE] = void 0;
+			/** @type {any} */ element_prototype[ATTRIBUTES_CACHE] = null;
+			/** @type {any} */ element_prototype[STYLE_CACHE] = void 0;
+			element_prototype.__e = void 0;
 		}
-
-		if (is_extensible(text_prototype)) {
-			/** @type {any} */ (text_prototype)[TEXT_CACHE] = undefined;
-		}
+		if (is_extensible(text_prototype))
+ /** @type {any} */ text_prototype[TEXT_CACHE] = void 0;
 	}
-
 	/**
-	 * @param {string} value
-	 * @returns {Text}
-	 */
-	function create_text(value = '') {
+	* @param {string} value
+	* @returns {Text}
+	*/
+	function create_text(value = "") {
 		return document.createTextNode(value);
 	}
-
 	/**
-	 * @template {Node} N
-	 * @param {N} node
-	 */
+	* @template {Node} N
+	* @param {N} node
+	*/
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_first_child(node) {
-		return /** @type {TemplateNode | null} */ (first_child_getter.call(node));
+		return first_child_getter.call(node);
 	}
-
 	/**
-	 * @template {Node} N
-	 * @param {N} node
-	 */
+	* @template {Node} N
+	* @param {N} node
+	*/
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_next_sibling(node) {
-		return /** @type {TemplateNode | null} */ (next_sibling_getter.call(node));
+		return next_sibling_getter.call(node);
 	}
-
 	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @template {Node} N
-	 * @param {N} node
-	 * @param {boolean} is_text
-	 * @returns {TemplateNode | null}
-	 */
+	* Don't mark this as side-effect-free, hydration needs to walk all nodes
+	* @template {Node} N
+	* @param {N} node
+	* @param {boolean} is_text
+	* @returns {TemplateNode | null}
+	*/
 	function child(node, is_text) {
-		if (!hydrating) {
-			return get_first_child(node);
-		}
-
-		var child = get_first_child(hydrate_node);
-
-		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
-		if (child === null) {
-			child = hydrate_node.appendChild(create_text());
-		} else if (is_text && child.nodeType !== TEXT_NODE) {
+		if (!hydrating) return /* @__PURE__ */ get_first_child(node);
+		var child = /* @__PURE__ */ get_first_child(hydrate_node);
+		if (child === null) child = hydrate_node.appendChild(create_text());
+		else if (is_text && child.nodeType !== 3) {
 			var text = create_text();
 			child?.before(text);
 			set_hydrate_node(text);
 			return text;
 		}
-
-		if (is_text) {
-			merge_text_nodes(/** @type {Text} */ (child));
-		}
-
+		if (is_text) merge_text_nodes(child);
 		set_hydrate_node(child);
 		return child;
 	}
-
 	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {TemplateNode} node
-	 * @param {boolean} [is_text]
-	 * @returns {TemplateNode | null}
-	 */
+	* Don't mark this as side-effect-free, hydration needs to walk all nodes
+	* @param {TemplateNode} node
+	* @param {boolean} [is_text]
+	* @returns {TemplateNode | null}
+	*/
 	function first_child(node, is_text = false) {
 		if (!hydrating) {
-			var first = get_first_child(node);
-
-			// TODO prevent user comments with the empty string when preserveComments is true
-			if (first instanceof Comment && first.data === '') return get_next_sibling(first);
-
+			var first = /* @__PURE__ */ get_first_child(node);
+			if (first instanceof Comment && first.data === "") return /* @__PURE__ */ get_next_sibling(first);
 			return first;
 		}
-
 		if (is_text) {
-			// if an {expression} is empty during SSR, there might be no
-			// text node to hydrate — we must therefore create one
-			if (hydrate_node?.nodeType !== TEXT_NODE) {
+			if (hydrate_node?.nodeType !== 3) {
 				var text = create_text();
-
 				hydrate_node?.before(text);
 				set_hydrate_node(text);
 				return text;
 			}
-
-			merge_text_nodes(/** @type {Text} */ (hydrate_node));
+			merge_text_nodes(hydrate_node);
 		}
-
 		return hydrate_node;
 	}
-
 	/**
-	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {TemplateNode} node
-	 * @param {number} count
-	 * @param {boolean} is_text
-	 * @returns {TemplateNode | null}
-	 */
+	* `child`, for the very common case of an element with exactly one child. Resetting the
+	* hydration cursor is part of the same step, so the compiler doesn't have to emit a
+	* separate `reset` call for every `<p>{text}</p>` in an app.
+	* Don't mark this as side-effect-free, hydration needs to walk all nodes
+	* @param {TemplateNode} node
+	* @param {boolean} [is_text]
+	* @returns {TemplateNode | null}
+	*/
+	function only_child(node, is_text = false) {
+		if (!hydrating) return /* @__PURE__ */ get_first_child(node);
+		var first = child(node, is_text);
+		reset(node);
+		return first;
+	}
+	/**
+	* Don't mark this as side-effect-free, hydration needs to walk all nodes
+	* @param {TemplateNode} node
+	* @param {number} count
+	* @param {boolean} is_text
+	* @returns {TemplateNode | null}
+	*/
 	function sibling(node, count = 1, is_text = false) {
 		let next_sibling = hydrating ? hydrate_node : node;
 		var last_sibling;
-
 		while (count--) {
 			last_sibling = next_sibling;
-			next_sibling = /** @type {TemplateNode} */ (get_next_sibling(next_sibling));
+			next_sibling = /* @__PURE__ */ get_next_sibling(next_sibling);
 		}
-
-		if (!hydrating) {
-			return next_sibling;
-		}
-
+		if (!hydrating) return next_sibling;
 		if (is_text) {
-			// if a sibling {expression} is empty during SSR, there might be no
-			// text node to hydrate — we must therefore create one
-			if (next_sibling?.nodeType !== TEXT_NODE) {
+			if (next_sibling?.nodeType !== 3) {
 				var text = create_text();
-				// If the next sibling is `null` and we're handling text then it's because
-				// the SSR content was empty for the text, so we need to generate a new text
-				// node and insert it after the last sibling
-				if (next_sibling === null) {
-					last_sibling?.after(text);
-				} else {
-					next_sibling.before(text);
-				}
+				if (next_sibling === null) last_sibling?.after(text);
+				else next_sibling.before(text);
 				set_hydrate_node(text);
 				return text;
 			}
-
-			merge_text_nodes(/** @type {Text} */ (next_sibling));
+			merge_text_nodes(next_sibling);
 		}
-
 		set_hydrate_node(next_sibling);
 		return next_sibling;
 	}
-
 	/**
-	 * @template {Node} N
-	 * @param {N} node
-	 * @returns {void}
-	 */
+	* @template {Node} N
+	* @param {N} node
+	* @returns {void}
+	*/
 	function clear_text_content(node) {
-		node.textContent = '';
+		node.textContent = "";
 	}
-
 	/**
-	 * Branching here is intentional and load-bearing for perf. `createElement(tag)`
-	 * hits a fast path in Blink that `createElementNS(NAMESPACE_HTML, tag)` doesn't,
-	 * and passing an explicit `undefined` as the trailing options arg measurably
-	 * slows both APIs. Funnelling every case through a single `createElementNS(ns,
-	 * tag, options)` call would be smaller but slower on the HTML path.
-	 *
-	 * @template {keyof HTMLElementTagNameMap | string} T
-	 * @param {T} tag
-	 * @param {string} [namespace]
-	 * @param {string} [is]
-	 * @returns {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element}
-	 */
+	* Returns `true` if we're updating the current block, for example `condition` in
+	* an `{#if condition}` block just changed. In this case, the branch should be
+	* appended (or removed) at the same time as other updates within the
+	* current `<svelte:boundary>`
+	*/
+	function should_defer_append() {
+		if (!async_mode_flag) return false;
+		if (eager_block_effects !== null) return false;
+		return (active_effect.f & REACTION_RAN) !== 0;
+	}
+	/**
+	* Branching here is intentional and load-bearing for perf. `createElement(tag)`
+	* hits a fast path in Blink that `createElementNS(NAMESPACE_HTML, tag)` doesn't,
+	* and passing an explicit `undefined` as the trailing options arg measurably
+	* slows both APIs. Funnelling every case through a single `createElementNS(ns,
+	* tag, options)` call would be smaller but slower on the HTML path.
+	*
+	* @template {keyof HTMLElementTagNameMap | string} T
+	* @param {T} tag
+	* @param {string} [namespace]
+	* @param {string} [is]
+	* @returns {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element}
+	*/
 	function create_element(tag, namespace, is) {
-		if (namespace == null || namespace === NAMESPACE_HTML) {
-			return /** @type {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element} */ (
-				is ? document.createElement(tag, { is }) : document.createElement(tag)
-			);
-		}
-		return /** @type {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element} */ (
-			is ? document.createElementNS(namespace, tag, { is }) : document.createElementNS(namespace, tag)
-		);
+		if (namespace == null || namespace === "http://www.w3.org/1999/xhtml") return is ? document.createElement(tag, { is }) : document.createElement(tag);
+		return is ? document.createElementNS(namespace, tag, { is }) : document.createElementNS(namespace, tag);
 	}
-
 	/**
-	 * Browsers split text nodes larger than 65536 bytes when parsing.
-	 * For hydration to succeed, we need to stitch them back together
-	 * @param {Text} text
-	 */
+	* Browsers split text nodes larger than 65536 bytes when parsing.
+	* For hydration to succeed, we need to stitch them back together
+	* @param {Text} text
+	*/
 	function merge_text_nodes(text) {
-		if (/** @type {string} */ (text.nodeValue).length < 65536) {
-			return;
-		}
-
+		if (text.nodeValue.length < 65536) return;
 		let next = text.nextSibling;
-
-		while (next !== null && next.nodeType === TEXT_NODE) {
+		while (next !== null && next.nodeType === 3) {
 			next.remove();
-
-			/** @type {string} */ (text.nodeValue) += /** @type {string} */ (next.nodeValue);
-
+			/** @type {string} */ text.nodeValue += next.nodeValue;
 			next = text.nextSibling;
 		}
 	}
-
-	/** @import { Blocker, ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
-
 	/**
-	 * @param {'$effect' | '$effect.pre' | '$inspect'} rune
-	 */
+	* @param {unknown} error
+	*/
+	function handle_error(error) {
+		var effect = active_effect;
+		if (effect === null) {
+			/** @type {Derived} */ active_reaction.f |= ERROR_VALUE;
+			return error;
+		}
+		if ((effect.f & 32768) === 0 && (effect.f & 4) === 0) throw error;
+		invoke_error_boundary(error, effect);
+	}
+	/**
+	* @param {unknown} error
+	* @param {Effect | null} effect
+	*/
+	function invoke_error_boundary(error, effect) {
+		if (effect !== null && (effect.f & 16384) !== 0) return;
+		while (effect !== null) {
+			if ((effect.f & 128) !== 0 && (effect.f & 33570816) === 0) {
+				if ((effect.f & 32768) === 0) throw error;
+				try {
+					/** @type {Boundary} */ effect.b.error(error);
+					return;
+				} catch (e) {
+					error = e;
+				}
+			}
+			effect = effect.parent;
+		}
+		throw error;
+	}
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/effects.js
+	/** @import { Blocker, ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
+	/**
+	* @param {'$effect' | '$effect.pre' | '$inspect'} rune
+	*/
 	function validate_effect(rune) {
 		if (active_effect === null) {
-			if (active_reaction === null) {
-				effect_orphan();
-			}
-
+			if (active_reaction === null) effect_orphan(rune);
 			effect_in_unowned_derived();
 		}
-
-		if (is_destroying_effect) {
-			effect_in_teardown();
-		}
+		if (is_destroying_effect) effect_in_teardown(rune);
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {Effect} parent_effect
-	 */
+	* @param {Effect} effect
+	* @param {Effect} parent_effect
+	*/
 	function push_effect(effect, parent_effect) {
 		var parent_last = parent_effect.last;
-		if (parent_last === null) {
-			parent_effect.last = parent_effect.first = effect;
-		} else {
+		if (parent_last === null) parent_effect.last = parent_effect.first = effect;
+		else {
 			parent_last.next = effect;
 			effect.prev = parent_last;
 			parent_effect.last = effect;
 		}
 	}
-
 	/**
-	 * @param {number} type
-	 * @param {null | (() => void | (() => void))} fn
-	 * @returns {Effect}
-	 */
+	* @param {number} type
+	* @param {null | (() => void | (() => void))} fn
+	* @returns {Effect}
+	*/
 	function create_effect(type, fn) {
 		var parent = active_effect;
-
-		if (parent !== null && (parent.f & INERT) !== 0) {
-			type |= INERT;
-		}
-
+		if (parent !== null && (parent.f & 8192) !== 0) type |= INERT;
 		/** @type {Effect} */
 		var effect = {
 			ctx: component_context,
 			deps: null,
 			nodes: null,
-			f: type | DIRTY | CONNECTED,
+			f: type | DIRTY | 512,
 			first: null,
 			fn,
 			last: null,
@@ -4424,20 +2354,12 @@
 			wv: 0,
 			ac: null
 		};
-
 		current_batch?.register_created_effect(effect);
-
 		/** @type {Effect | null} */
 		var e = effect;
-
-		if ((type & EFFECT) !== 0) {
-			if (collected_effects !== null) {
-				// created during traversal — collect and run afterwards
-				collected_effects.push(effect);
-			} else {
-				// schedule for later
-				Batch.ensure().schedule(effect);
-			}
+		if ((type & 4) !== 0) {
+			if (collected_effects !== null) collected_effects.push(effect);
+			else Batch.ensure().schedule(effect);
 		} else if (fn !== null) {
 			try {
 				update_effect(effect);
@@ -4445,205 +2367,145 @@
 				destroy_effect(effect);
 				throw e;
 			}
-
-			// if an effect doesn't need to be kept in the tree (because it
-			// won't re-run, has no DOM, and has no teardown etc)
-			// then we skip it and go to its child (if any)
-			if (
-				e.deps === null &&
-				e.teardown === null &&
-				e.nodes === null &&
-				e.first === e.last && // either `null`, or a singular child
-				(e.f & EFFECT_PRESERVED) === 0
-			) {
+			if (e.deps === null && e.teardown === null && e.nodes === null && e.first === e.last && (e.f & 524288) === 0) {
 				e = e.first;
-				if ((type & BLOCK_EFFECT) !== 0 && (type & EFFECT_TRANSPARENT) !== 0 && e !== null) {
-					e.f |= EFFECT_TRANSPARENT;
-				}
+				if ((type & 16) !== 0 && (type & 65536) !== 0 && e !== null) e.f |= EFFECT_TRANSPARENT;
 			}
 		}
-
 		if (e !== null) {
 			e.parent = parent;
-
-			if (parent !== null) {
-				push_effect(e, parent);
-			}
-
-			// if we're in a derived, add the effect there too
-			if (
-				active_reaction !== null &&
-				(active_reaction.f & DERIVED) !== 0 &&
-				(type & ROOT_EFFECT) === 0
-			) {
-				var derived = /** @type {Derived} */ (active_reaction);
+			if (parent !== null) push_effect(e, parent);
+			if (active_reaction !== null && (active_reaction.f & 2) !== 0 && (type & 64) === 0) {
+				var derived = active_reaction;
 				(derived.effects ??= []).push(e);
 			}
 		}
-
 		return effect;
 	}
-
 	/**
-	 * Internal representation of `$effect.tracking()`
-	 * @returns {boolean}
-	 */
+	* Internal representation of `$effect.tracking()`
+	* @returns {boolean}
+	*/
 	function effect_tracking() {
 		return active_reaction !== null && !untracking;
 	}
-
 	/**
-	 * @param {() => void} fn
-	 */
+	* @param {() => void} fn
+	*/
 	function teardown(fn) {
-		const effect = create_effect(RENDER_EFFECT, null);
+		const effect = create_effect(8, null);
 		set_signal_status(effect, CLEAN);
 		effect.teardown = fn;
 		return effect;
 	}
-
 	/**
-	 * Internal representation of `$effect(...)`
-	 * @param {() => void | (() => void)} fn
-	 */
+	* Internal representation of `$effect(...)`
+	* @param {() => void | (() => void)} fn
+	*/
 	function user_effect(fn) {
-		validate_effect();
-
-		// Non-nested `$effect(...)` in a component should be deferred
-		// until the component is mounted
-		var flags = /** @type {Effect} */ (active_effect).f;
-		var defer =
-			!active_reaction &&
-			(flags & BRANCH_EFFECT) !== 0 &&
-			component_context !== null &&
-			!component_context.i;
-
-		if (defer) {
-			// Top-level `$effect(...)` in an unmounted component — defer until mount
-			var context = /** @type {ComponentContext} */ (component_context);
+		validate_effect("$effect");
+		var flags = active_effect.f;
+		if (!active_reaction && (flags & 32) !== 0 && component_context !== null && !component_context.i) {
+			var context = component_context;
 			(context.e ??= []).push(fn);
-		} else {
-			// Everything else — create immediately
-			return create_user_effect(fn);
-		}
+		} else return create_user_effect(fn);
 	}
-
 	/**
-	 * @param {() => void | (() => void)} fn
-	 */
+	* @param {() => void | (() => void)} fn
+	*/
 	function create_user_effect(fn) {
-		return create_effect(EFFECT | USER_EFFECT, fn);
+		return create_effect(4 | USER_EFFECT, fn);
 	}
-
-	/** @param {() => void | (() => void)} fn */
-	function eager_effect(fn) {
-		return create_effect(EAGER_EFFECT, fn);
-	}
-
 	/**
-	 * Internal representation of `$effect.root(...)`
-	 * @param {() => void | (() => void)} fn
-	 * @returns {() => void}
-	 */
+	* Internal representation of `$effect.root(...)`
+	* @param {() => void | (() => void)} fn
+	* @returns {() => void}
+	*/
 	function effect_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
-
+		const effect = create_effect(64 | EFFECT_PRESERVED, fn);
 		return () => {
 			destroy_effect(effect);
 		};
 	}
-
 	/**
-	 * An effect root whose children can transition out
-	 * @param {() => void} fn
-	 * @returns {(options?: { outro?: boolean }) => Promise<void>}
-	 */
+	* An effect root whose children can transition out
+	* @param {() => void} fn
+	* @returns {(options?: { outro?: boolean }) => Promise<void>}
+	*/
 	function component_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
-
+		const effect = create_effect(64 | EFFECT_PRESERVED, fn);
 		return (options = {}) => {
 			return new Promise((fulfil) => {
-				if (options.outro) {
-					pause_effect(effect, () => {
-						destroy_effect(effect);
-						fulfil(undefined);
-					});
-				} else {
+				if (options.outro) pause_effect(effect, () => {
 					destroy_effect(effect);
-					fulfil(undefined);
+					fulfil(void 0);
+				});
+				else {
+					destroy_effect(effect);
+					fulfil(void 0);
 				}
 			});
 		};
 	}
-
 	/**
-	 * @param {() => void | (() => void)} fn
-	 * @returns {Effect}
-	 */
+	* @param {() => void | (() => void)} fn
+	* @returns {Effect}
+	*/
 	function effect(fn) {
-		return create_effect(EFFECT, fn);
+		return create_effect(4, fn);
 	}
-
 	/**
-	 * @param {() => void | (() => void)} fn
-	 * @returns {Effect}
-	 */
+	* @param {() => void | (() => void)} fn
+	* @returns {Effect}
+	*/
 	function async_effect(fn) {
 		return create_effect(ASYNC | EFFECT_PRESERVED, fn);
 	}
-
 	/**
-	 * @param {() => void | (() => void)} fn
-	 * @returns {Effect}
-	 */
+	* @param {() => void | (() => void)} fn
+	* @returns {Effect}
+	*/
 	function render_effect(fn, flags = 0) {
-		return create_effect(RENDER_EFFECT | flags, fn);
+		return create_effect(8 | flags, fn);
 	}
-
 	/**
-	 * @param {(...expressions: any) => void | (() => void)} fn
-	 * @param {Array<() => any>} sync
-	 * @param {Array<() => Promise<any>>} async
-	 * @param {Blocker[]} blockers
-	 */
+	* @param {(...expressions: any) => void | (() => void)} fn
+	* @param {Array<() => any>} sync
+	* @param {Array<() => Promise<any>>} async
+	* @param {Blocker[]} blockers
+	*/
 	function template_effect(fn, sync = [], async = [], blockers = []) {
 		flatten(blockers, sync, async, (values) => {
-			create_effect(RENDER_EFFECT, () => {
+			create_effect(8, () => {
 				fn(...values.map(get));
 			});
 		});
 	}
-
 	/**
-	 * @param {(() => void)} fn
-	 * @param {number} flags
-	 */
+	* @param {(() => void)} fn
+	* @param {number} flags
+	*/
 	function block(fn, flags = 0) {
-		var effect = create_effect(BLOCK_EFFECT | flags, fn);
-		return effect;
+		return create_effect(16 | flags, fn);
 	}
-
 	/**
-	 * @param {(() => void)} fn
-	 * @param {number} flags
-	 */
+	* @param {(() => void)} fn
+	* @param {number} flags
+	*/
 	function managed(fn, flags = 0) {
-		var effect = create_effect(MANAGED_EFFECT | flags, fn);
-		return effect;
+		return create_effect(MANAGED_EFFECT | flags, fn);
 	}
-
 	/**
-	 * @param {(() => void)} fn
-	 */
+	* @param {(() => void)} fn
+	*/
 	function branch(fn) {
-		return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn);
+		return create_effect(32 | EFFECT_PRESERVED, fn);
 	}
-
 	/**
-	 * @param {Effect} effect
-	 */
+	* @param {Effect} effect
+	*/
 	function execute_effect_teardown(effect) {
 		var teardown = effect.teardown;
 		if (teardown !== null) {
@@ -4653,456 +2515,309 @@
 			set_active_reaction(null);
 			try {
 				teardown.call(null);
+			} catch (error) {
+				invoke_error_boundary(error, effect.parent);
 			} finally {
 				set_is_destroying_effect(previously_destroying_effect);
 				set_active_reaction(previous_reaction);
 			}
 		}
 	}
-
 	/**
-	 * @param {Effect} signal
-	 * @param {boolean} remove_dom
-	 * @returns {void}
-	 */
+	* @param {Effect} signal
+	* @param {boolean} remove_dom
+	* @returns {void}
+	*/
 	function destroy_effect_children(signal, remove_dom = false) {
 		var effect = signal.first;
 		signal.first = signal.last = null;
-
 		while (effect !== null) {
 			const controller = effect.ac;
-
-			if (controller !== null) {
-				without_reactive_context(() => {
-					controller.abort(STALE_REACTION);
-				});
-			}
-
+			if (controller !== null) without_reactive_context(() => {
+				controller.abort(STALE_REACTION);
+			});
 			var next = effect.next;
-
-			if ((effect.f & ROOT_EFFECT) !== 0) {
-				// this is now an independent root
-				effect.parent = null;
-			} else {
-				destroy_effect(effect, remove_dom);
-			}
-
+			if ((effect.f & 64) !== 0) effect.parent = null;
+			else destroy_effect(effect, remove_dom);
 			effect = next;
 		}
 	}
-
 	/**
-	 * @param {Effect} signal
-	 * @returns {void}
-	 */
+	* @param {Effect} signal
+	* @returns {void}
+	*/
 	function destroy_block_effect_children(signal) {
 		var effect = signal.first;
-
 		while (effect !== null) {
 			var next = effect.next;
-			if ((effect.f & BRANCH_EFFECT) === 0) {
-				destroy_effect(effect);
-			}
+			if ((effect.f & 32) === 0) destroy_effect(effect);
 			effect = next;
 		}
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {boolean} [remove_dom]
-	 * @returns {void}
-	 */
+	* @param {Effect} effect
+	* @param {boolean} [remove_dom]
+	* @returns {void}
+	*/
 	function destroy_effect(effect, remove_dom = true) {
 		var removed = false;
-
-		if (
-			(remove_dom || (effect.f & HEAD_EFFECT) !== 0) &&
-			effect.nodes !== null &&
-			effect.nodes.end !== null
-		) {
-			remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
+		if ((remove_dom || (effect.f & 262144) !== 0) && effect.nodes !== null && effect.nodes.end !== null) {
+			remove_effect_dom(effect.nodes.start, effect.nodes.end);
 			removed = true;
 		}
-
 		effect.f |= DESTROYING;
 		destroy_effect_children(effect, remove_dom && !removed);
 		remove_reactions(effect, 0);
-
 		var transitions = effect.nodes && effect.nodes.t;
-
-		if (transitions !== null) {
-			for (const transition of transitions) {
-				transition.stop();
-			}
-		}
-
+		if (transitions !== null) for (const transition of transitions) transition.stop();
 		execute_effect_teardown(effect);
-
 		effect.f ^= DESTROYING;
 		effect.f |= DESTROYED;
-
 		var parent = effect.parent;
-
-		// If the parent doesn't have any children, then skip this work altogether
-		if (parent !== null && parent.first !== null) {
-			unlink_effect(effect);
-		}
-
-		// `first` and `child` are nulled out in destroy_effect_children
-		// we don't null out `parent` so that error propagation can work correctly
-		effect.next =
-			effect.prev =
-			effect.teardown =
-			effect.ctx =
-			effect.deps =
-			effect.fn =
-			effect.nodes =
-			effect.ac =
-			effect.b =
-				null;
+		if (parent !== null && parent.first !== null) unlink_effect(effect);
+		effect.next = effect.prev = effect.teardown = effect.ctx = effect.deps = effect.fn = effect.nodes = effect.ac = effect.b = null;
 	}
-
 	/**
-	 *
-	 * @param {TemplateNode | null} node
-	 * @param {TemplateNode} end
-	 */
+	*
+	* @param {TemplateNode | null} node
+	* @param {TemplateNode} end
+	*/
 	function remove_effect_dom(node, end) {
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : get_next_sibling(node);
-
+			var next = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
 			node.remove();
 			node = next;
 		}
 	}
-
 	/**
-	 * Detach an effect from the effect tree, freeing up memory and
-	 * reducing the amount of work that happens on subsequent traversals
-	 * @param {Effect} effect
-	 */
+	* Detach an effect from the effect tree, freeing up memory and
+	* reducing the amount of work that happens on subsequent traversals
+	* @param {Effect} effect
+	*/
 	function unlink_effect(effect) {
 		var parent = effect.parent;
 		var prev = effect.prev;
 		var next = effect.next;
-
 		if (prev !== null) prev.next = next;
 		if (next !== null) next.prev = prev;
-
 		if (parent !== null) {
 			if (parent.first === effect) parent.first = next;
 			if (parent.last === effect) parent.last = prev;
 		}
 	}
-
 	/**
-	 * When a block effect is removed, we don't immediately destroy it or yank it
-	 * out of the DOM, because it might have transitions. Instead, we 'pause' it.
-	 * It stays around (in memory, and in the DOM) until outro transitions have
-	 * completed, and if the state change is reversed then we _resume_ it.
-	 * A paused effect does not update, and the DOM subtree becomes inert.
-	 * @param {Effect} effect
-	 * @param {() => void} [callback]
-	 * @param {boolean} [destroy]
-	 */
+	* When a block effect is removed, we don't immediately destroy it or yank it
+	* out of the DOM, because it might have transitions. Instead, we 'pause' it.
+	* It stays around (in memory, and in the DOM) until outro transitions have
+	* completed, and if the state change is reversed then we _resume_ it.
+	* A paused effect does not update, and the DOM subtree becomes inert.
+	* @param {Effect} effect
+	* @param {() => void} [callback]
+	* @param {boolean} [destroy]
+	*/
 	function pause_effect(effect, callback, destroy = true) {
 		/** @type {TransitionManager[]} */
 		var transitions = [];
-
+		effect.f |= 256;
 		pause_children(effect, transitions, true);
-
 		var fn = () => {
 			if (destroy) destroy_effect(effect);
 			if (callback) callback();
 		};
-
 		var remaining = transitions.length;
 		if (remaining > 0) {
 			var check = () => --remaining || fn();
-			for (var transition of transitions) {
-				transition.out(check);
-			}
-		} else {
-			fn();
-		}
+			for (var transition of transitions) transition.out(check);
+		} else fn();
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {TransitionManager[]} transitions
-	 * @param {boolean} local
-	 */
+	* @param {Effect} effect
+	* @param {TransitionManager[]} transitions
+	* @param {boolean} local
+	*/
 	function pause_children(effect, transitions, local) {
-		if ((effect.f & INERT) !== 0) return;
+		if ((effect.f & 8192) !== 0) return;
 		effect.f ^= INERT;
-
 		var t = effect.nodes && effect.nodes.t;
-
 		if (t !== null) {
-			for (const transition of t) {
-				if (transition.is_global || local) {
-					transitions.push(transition);
-				}
-			}
+			for (const transition of t) if (transition.is_global || local) transitions.push(transition);
 		}
-
 		var child = effect.first;
-
 		while (child !== null) {
 			var sibling = child.next;
-
-			// If this child is a root effect, then it will become an independent root when its parent
-			// is destroyed, it should therefore not become inert nor partake in transitions.
-			if ((child.f & ROOT_EFFECT) === 0) {
-				var transparent =
-					(child.f & EFFECT_TRANSPARENT) !== 0 ||
-					// If this is a branch effect without a block effect parent,
-					// it means the parent block effect was pruned. In that case,
-					// transparency information was transferred to the branch effect.
-					((child.f & BRANCH_EFFECT) !== 0 && (effect.f & BLOCK_EFFECT) !== 0);
-				// TODO we don't need to call pause_children recursively with a linked list in place
-				// it's slightly more involved though as we have to account for `transparent` changing
-				// through the tree.
+			if ((child.f & 64) === 0) {
+				var transparent = (child.f & 65536) !== 0 || (child.f & 32) !== 0 && (effect.f & 16) !== 0;
 				pause_children(child, transitions, transparent ? local : false);
 			}
-
 			child = sibling;
 		}
 	}
-
 	/**
-	 * The opposite of `pause_effect`. We call this if (for example)
-	 * `x` becomes falsy then truthy: `{#if x}...{/if}`
-	 * @param {Effect} effect
-	 */
+	* The opposite of `pause_effect`. We call this if (for example)
+	* `x` becomes falsy then truthy: `{#if x}...{/if}`
+	* @param {Effect} effect
+	*/
 	function resume_effect(effect) {
+		effect.f &= -257;
 		resume_children(effect, true);
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {boolean} local
-	 */
+	* @param {Effect} effect
+	* @param {boolean} local
+	*/
 	function resume_children(effect, local) {
-		if ((effect.f & INERT) === 0) return;
+		if ((effect.f & 256) !== 0) return;
+		if ((effect.f & 8192) === 0) return;
 		effect.f ^= INERT;
-
-		// If a dependency of this effect changed while it was paused,
-		// schedule the effect to update. we don't use `is_dirty`
-		// here because we don't want to eagerly recompute a derived like
-		// `{#if foo}{foo.bar()}{/if}` if `foo` is now `undefined
-		if ((effect.f & CLEAN) === 0) {
+		if ((effect.f & 1024) === 0) {
 			set_signal_status(effect, DIRTY);
-			Batch.ensure().schedule(effect); // Assumption: This happens during the commit phase of the batch, causing another flush, but it's safe
+			Batch.ensure().schedule(effect);
 		}
-
 		var child = effect.first;
-
 		while (child !== null) {
 			var sibling = child.next;
-			var transparent = (child.f & EFFECT_TRANSPARENT) !== 0 || (child.f & BRANCH_EFFECT) !== 0;
-			// TODO we don't need to call resume_children recursively with a linked list in place
-			// it's slightly more involved though as we have to account for `transparent` changing
-			// through the tree.
+			var transparent = (child.f & 65536) !== 0 || (child.f & 32) !== 0;
 			resume_children(child, transparent ? local : false);
 			child = sibling;
 		}
-
 		var t = effect.nodes && effect.nodes.t;
-
 		if (t !== null) {
-			for (const transition of t) {
-				if (transition.is_global || local) {
-					transition.in();
-				}
-			}
+			for (const transition of t) if (transition.is_global || local) transition.in();
 		}
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {DocumentFragment} fragment
-	 */
+	* @param {Effect} effect
+	* @param {DocumentFragment} fragment
+	*/
 	function move_effect(effect, fragment) {
 		if (!effect.nodes) return;
-
 		/** @type {TemplateNode | null} */
 		var node = effect.nodes.start;
 		var end = effect.nodes.end;
-
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : get_next_sibling(node);
-
+			var next = node === end ? null : /* @__PURE__ */ get_next_sibling(node);
 			fragment.append(node);
 			node = next;
 		}
 	}
-
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/legacy.js
 	/**
-	 * True if updating in an effect context that is reactive (i.e. not branch/root effects)
-	 */
-	let is_updating_effect = false;
-
-	let is_destroying_effect = false;
-
+	* @type {Set<Value> | null}
+	* @deprecated
+	*/
+	var captured_signals = null;
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/runtime.js
+	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
+	/**
+	* True if updating in an effect context that is reactive (i.e. not branch/root effects)
+	*/
+	var is_updating_effect = false;
+	var is_destroying_effect = false;
 	/** @param {boolean} value */
 	function set_is_destroying_effect(value) {
 		is_destroying_effect = value;
 	}
-
 	/** @type {null | Reaction} */
-	let active_reaction = null;
-
-	let untracking = false;
-
+	var active_reaction = null;
+	var untracking = false;
 	/** @param {null | Reaction} reaction */
 	function set_active_reaction(reaction) {
 		active_reaction = reaction;
 	}
-
 	/** @type {null | Effect} */
-	let active_effect = null;
-
+	var active_effect = null;
 	/** @param {null | Effect} effect */
 	function set_active_effect(effect) {
 		active_effect = effect;
 	}
-
 	/**
-	 * When sources are created within a reaction, reading and writing
-	 * them within that reaction should not cause a re-run
-	 * @type {null | Set<Source>}
-	 */
-	let current_sources = null;
-
+	* When sources are created within a reaction, reading and writing
+	* them within that reaction should not cause a re-run
+	* @type {null | Set<Source>}
+	*/
+	var current_sources = null;
 	/** @param {Value} value */
 	function push_reaction_value(value) {
-		if (active_reaction !== null && (true)) {
-			(current_sources ??= new Set()).add(value);
-		}
+		if (active_reaction !== null && (!async_mode_flag || (active_reaction.f & 2) !== 0)) (current_sources ??= /* @__PURE__ */ new Set()).add(value);
 	}
-
 	/**
-	 * The dependencies of the reaction that is currently being executed. In many cases,
-	 * the dependencies are unchanged between runs, and so this will be `null` unless
-	 * and until a new dependency is accessed — we track this via `skipped_deps`
-	 * @type {null | Value[]}
-	 */
-	let new_deps = null;
-
-	let skipped_deps = 0;
-
+	* The dependencies of the reaction that is currently being executed. In many cases,
+	* the dependencies are unchanged between runs, and so this will be `null` unless
+	* and until a new dependency is accessed — we track this via `skipped_deps`
+	* @type {null | Value[]}
+	*/
+	var new_deps = null;
+	var skipped_deps = 0;
 	/**
-	 * Tracks writes that the effect it's executed in doesn't listen to yet,
-	 * so that the dependency can be added to the effect later on if it then reads it
-	 * @type {null | Source[]}
-	 */
-	let untracked_writes = null;
-
+	* Tracks writes that the effect it's executed in doesn't listen to yet,
+	* so that the dependency can be added to the effect later on if it then reads it
+	* @type {null | Source[]}
+	*/
+	var untracked_writes = null;
 	/** @param {null | Source[]} value */
 	function set_untracked_writes(value) {
 		untracked_writes = value;
 	}
-
 	/**
-	 * @type {number} Used by sources and deriveds for handling updates.
-	 * Version starts from 1 so that unowned deriveds differentiate between a created effect and a run one for tracing
-	 **/
-	let write_version = 1;
-
-	/** @type {number} Used to version each read of a source of derived to avoid duplicating depedencies inside a reaction */
-	let read_version = 0;
-
-	let update_version = read_version;
-
+	* @type {number} Used by sources and deriveds for handling updates.
+	* Version starts from 1 so that unowned deriveds differentiate between a created effect and a run one for tracing
+	**/
+	var write_version = 1;
+	/** @type {number} Used to version each read of a source of derived to avoid duplicating dependencies inside a reaction */
+	var read_version = 0;
+	var update_version = read_version;
 	/** @param {number} value */
 	function set_update_version(value) {
 		update_version = value;
 	}
-
 	function increment_write_version() {
 		return ++write_version;
 	}
-
 	/**
-	 * Determines whether a derived or effect is dirty.
-	 * If it is MAYBE_DIRTY, will set the status to CLEAN
-	 * @param {Reaction} reaction
-	 * @returns {boolean}
-	 */
+	* Determines whether a derived or effect is dirty.
+	* If it is MAYBE_DIRTY, will set the status to CLEAN
+	* @param {Reaction} reaction
+	* @returns {boolean}
+	*/
 	function is_dirty(reaction) {
 		var flags = reaction.f;
-
-		if ((flags & DIRTY) !== 0) {
-			return true;
-		}
-
-		if (flags & DERIVED) {
-			reaction.f &= ~WAS_MARKED;
-		}
-
-		if ((flags & MAYBE_DIRTY) !== 0) {
-			var dependencies = /** @type {Value[]} */ (reaction.deps);
+		if ((flags & 2048) !== 0) return true;
+		if (flags & 2) reaction.f &= ~WAS_MARKED;
+		if ((flags & 4096) !== 0) {
+			var dependencies = reaction.deps;
 			var length = dependencies.length;
-
 			for (var i = 0; i < length; i++) {
 				var dependency = dependencies[i];
-
-				if (is_dirty(/** @type {Derived} */ (dependency))) {
-					update_derived(/** @type {Derived} */ (dependency));
-				}
-
-				if (dependency.wv > reaction.wv) {
-					return true;
-				}
+				if (is_dirty(dependency)) update_derived(dependency);
+				if (dependency.wv > reaction.wv) return true;
 			}
-
-			if (
-				(flags & CONNECTED) !== 0 &&
-				// During time traveling we don't want to reset the status so that
-				// traversal of the graph in the other batches still happens
-				batch_values === null
-			) {
-				set_signal_status(reaction, CLEAN);
-			}
+			if ((flags & 512) !== 0 && batch_values === null) set_signal_status(reaction, CLEAN);
 		}
-
 		return false;
 	}
-
 	/**
-	 * @param {Value} signal
-	 * @param {Effect} effect
-	 * @param {boolean} [root]
-	 */
+	* @param {Value} signal
+	* @param {Effect} effect
+	* @param {boolean} [root]
+	*/
 	function schedule_possible_effect_self_invalidation(signal, effect, root = true) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
-
-		if (current_sources !== null && current_sources.has(signal)) {
-			return;
-		}
-
+		if (!async_mode_flag && current_sources !== null && current_sources.has(signal)) return;
 		for (var i = 0; i < reactions.length; i++) {
 			var reaction = reactions[i];
-
-			if ((reaction.f & DERIVED) !== 0) {
-				schedule_possible_effect_self_invalidation(/** @type {Derived} */ (reaction), effect, false);
-			} else if (effect === reaction) {
-				if (root) {
-					set_signal_status(reaction, DIRTY);
-				} else if ((reaction.f & CLEAN) !== 0) {
-					set_signal_status(reaction, MAYBE_DIRTY);
-				}
-				schedule_effect(/** @type {Effect} */ (reaction));
+			if ((reaction.f & 2) !== 0) schedule_possible_effect_self_invalidation(reaction, effect, false);
+			else if (effect === reaction) {
+				if (root) set_signal_status(reaction, DIRTY);
+				else if ((reaction.f & 1024) !== 0) set_signal_status(reaction, MAYBE_DIRTY);
+				schedule_effect(reaction);
 			}
 		}
 	}
-
 	/** @param {Reaction} reaction */
 	function update_reaction(reaction) {
 		var previous_deps = new_deps;
@@ -5113,118 +2828,41 @@
 		var previous_component_context = component_context;
 		var previous_untracking = untracking;
 		var previous_update_version = update_version;
-
 		var flags = reaction.f;
-
-		new_deps = /** @type {null | Value[]} */ (null);
+		new_deps = null;
 		skipped_deps = 0;
 		untracked_writes = null;
-		active_reaction = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) === 0 ? reaction : null;
-
+		active_reaction = (flags & 96) === 0 ? reaction : null;
 		current_sources = null;
 		set_component_context(reaction.ctx);
 		untracking = false;
 		update_version = ++read_version;
-
 		if (reaction.ac !== null) {
 			without_reactive_context(() => {
-				/** @type {AbortController} */ (reaction.ac).abort(STALE_REACTION);
+				/** @type {AbortController} */ reaction.ac.abort(STALE_REACTION);
 			});
-
 			reaction.ac = null;
 		}
-
 		try {
 			reaction.f |= REACTION_IS_UPDATING;
-			var fn = /** @type {Function} */ (reaction.fn);
+			var fn = reaction.fn;
 			var result = fn();
 			reaction.f |= REACTION_RAN;
-			var deps = reaction.deps;
-
-			// Don't remove reactions during fork;
-			// they must remain for when fork is discarded
-			var is_fork = current_batch?.is_fork;
-
-			if (new_deps !== null) {
-				var i;
-
-				if (!is_fork) {
-					remove_reactions(reaction, skipped_deps);
-				}
-
-				if (deps !== null && skipped_deps > 0) {
-					deps.length = skipped_deps + new_deps.length;
-					for (i = 0; i < new_deps.length; i++) {
-						deps[skipped_deps + i] = new_deps[i];
-					}
-				} else {
-					reaction.deps = deps = new_deps;
-				}
-
-				if (effect_tracking() && (reaction.f & CONNECTED) !== 0) {
-					for (i = skipped_deps; i < deps.length; i++) {
-						(deps[i].reactions ??= []).push(reaction);
-					}
-				}
-			} else if (!is_fork && deps !== null && skipped_deps < deps.length) {
-				remove_reactions(reaction, skipped_deps);
-				deps.length = skipped_deps;
-			}
-
-			// If we're inside an effect and we have untracked writes, then we need to
-			// ensure that if any of those untracked writes result in re-invalidation
-			// of the current effect, then that happens accordingly
-			if (
-				is_runes() &&
-				untracked_writes !== null &&
-				!untracking &&
-				deps !== null &&
-				(reaction.f & (DERIVED | MAYBE_DIRTY | DIRTY)) === 0
-			) {
-				for (i = 0; i < /** @type {Source[]} */ (untracked_writes).length; i++) {
-					schedule_possible_effect_self_invalidation(
-						untracked_writes[i],
-						/** @type {Effect} */ (reaction)
-					);
-				}
-			}
-
-			// If we are returning to an previous reaction then
-			// we need to increment the read version to ensure that
-			// any dependencies in this reaction aren't marked with
-			// the same version
+			var deps = update_dependencies(reaction);
+			if (is_runes() && untracked_writes !== null && !untracking && deps !== null && (reaction.f & 6146) === 0) for (var i = 0; i < untracked_writes.length; i++) schedule_possible_effect_self_invalidation(untracked_writes[i], reaction);
 			if (previous_reaction !== null && previous_reaction !== reaction) {
 				read_version++;
-
-				// update the `rv` of the previous reaction's deps — both existing and new —
-				// so that they are not added again
-				if (previous_reaction.deps !== null) {
-					for (let i = 0; i < previous_skipped_deps; i += 1) {
-						previous_reaction.deps[i].rv = read_version;
-					}
-				}
-
-				if (previous_deps !== null) {
-					for (const dep of previous_deps) {
-						dep.rv = read_version;
-					}
-				}
-
+				if (previous_reaction.deps !== null) for (let i = 0; i < previous_skipped_deps; i += 1) previous_reaction.deps[i].rv = read_version;
+				if (previous_deps !== null) for (const dep of previous_deps) dep.rv = read_version;
 				if (untracked_writes !== null) {
-					if (previous_untracked_writes === null) {
-						previous_untracked_writes = untracked_writes;
-					} else {
-						previous_untracked_writes.push(.../** @type {Source[]} */ (untracked_writes));
-					}
+					if (previous_untracked_writes === null) previous_untracked_writes = untracked_writes;
+					else previous_untracked_writes.push(...untracked_writes);
 				}
 			}
-
-			if ((reaction.f & ERROR_VALUE) !== 0) {
-				reaction.f ^= ERROR_VALUE;
-			}
-
+			if ((reaction.f & 8388608) !== 0) reaction.f ^= ERROR_VALUE;
 			return result;
 		} catch (error) {
+			update_dependencies(reaction);
 			return handle_error(error);
 		} finally {
 			reaction.f ^= REACTION_IS_UPDATING;
@@ -5238,314 +2876,200 @@
 			update_version = previous_update_version;
 		}
 	}
-
 	/**
-	 * @template V
-	 * @param {Reaction} signal
-	 * @param {Value<V>} dependency
-	 * @returns {void}
-	 */
+	* @param {Reaction} reaction
+	*/
+	function update_dependencies(reaction) {
+		var deps = reaction.deps;
+		var is_fork = current_batch?.is_fork;
+		if (new_deps !== null) {
+			var i;
+			if (!is_fork) remove_reactions(reaction, skipped_deps);
+			if (deps !== null && skipped_deps > 0) {
+				deps.length = skipped_deps + new_deps.length;
+				for (i = 0; i < new_deps.length; i++) deps[skipped_deps + i] = new_deps[i];
+			} else reaction.deps = deps = new_deps;
+			if (effect_tracking() && (reaction.f & 512) !== 0) for (i = skipped_deps; i < deps.length; i++) (deps[i].reactions ??= []).push(reaction);
+		} else if (!is_fork && deps !== null && skipped_deps < deps.length) {
+			remove_reactions(reaction, skipped_deps);
+			deps.length = skipped_deps;
+		}
+		return deps;
+	}
+	/**
+	* @template V
+	* @param {Reaction} signal
+	* @param {Value<V>} dependency
+	* @returns {void}
+	*/
 	function remove_reaction(signal, dependency) {
 		let reactions = dependency.reactions;
 		if (reactions !== null) {
 			var index = index_of.call(reactions, signal);
 			if (index !== -1) {
 				var new_length = reactions.length - 1;
-				if (new_length === 0) {
-					reactions = dependency.reactions = null;
-				} else {
-					// Swap with last element and then remove.
+				if (new_length === 0) reactions = dependency.reactions = null;
+				else {
 					reactions[index] = reactions[new_length];
 					reactions.pop();
 				}
 			}
 		}
-
-		// If the derived has no reactions, then we can disconnect it from the graph,
-		// allowing it to either reconnect in the future, or be GC'd by the VM.
-		if (
-			reactions === null &&
-			(dependency.f & DERIVED) !== 0 &&
-			// Destroying a child effect while updating a parent effect can cause a dependency to appear
-			// to be unused, when in fact it is used by the currently-updating parent. Checking `new_deps`
-			// allows us to skip the expensive work of disconnecting and immediately reconnecting it
-			(new_deps === null || !includes.call(new_deps, dependency))
-		) {
-			var derived = /** @type {Derived} */ (dependency);
-
-			// If we are working with a derived that is owned by an effect, then mark it as being
-			// disconnected and remove the mark flag, as it cannot be reliably removed otherwise
-			if ((derived.f & CONNECTED) !== 0) {
-				derived.f ^= CONNECTED;
+		if (reactions === null && (dependency.f & 2) !== 0 && (new_deps === null || !includes.call(new_deps, dependency))) {
+			var derived = dependency;
+			if ((derived.f & 512) !== 0) {
+				derived.f ^= 512;
 				derived.f &= ~WAS_MARKED;
 			}
-
-			// In a fork it's possible that a derived is executed and gets reactions, then commits, but is
-			// never re-executed. This is possible when the derived is only executed once in the context
-			// of a new branch which happens before fork.commit() runs. In this case, the derived still has
-			// UNINITIALIZED as its value, and then when it's loosing its reactions we need to ensure it stays
-			// DIRTY so it is reexecuted once someone wants its value again.
-			if (derived.v !== UNINITIALIZED) {
-				update_derived_status(derived);
-			}
-
-			// Call abort controller, noone's listening to this derived anymore
-			if (derived.ac !== null) {
-				without_reactive_context(() => {
-					/** @type {AbortController} */ (derived.ac).abort(STALE_REACTION);
-					derived.ac = null;
-					// ensure it reruns right away next time instead of potentially returning a rejected promise as its value
-					set_signal_status(derived, DIRTY);
-				});
-			}
-
-			// freeze any effects inside this derived
+			if (derived.v !== UNINITIALIZED) update_derived_status(derived);
+			if (derived.ac !== null) without_reactive_context(() => {
+				/** @type {AbortController} */ derived.ac.abort(STALE_REACTION);
+				derived.ac = null;
+				set_signal_status(derived, DIRTY);
+			});
 			freeze_derived_effects(derived);
-
-			// Disconnect any reactions owned by this reaction
 			remove_reactions(derived, 0);
 		}
 	}
-
 	/**
-	 * @param {Reaction} signal
-	 * @param {number} start_index
-	 * @returns {void}
-	 */
+	* @param {Reaction} signal
+	* @param {number} start_index
+	* @returns {void}
+	*/
 	function remove_reactions(signal, start_index) {
 		var dependencies = signal.deps;
 		if (dependencies === null) return;
-
-		for (var i = start_index; i < dependencies.length; i++) {
-			remove_reaction(signal, dependencies[i]);
-		}
+		for (var i = start_index; i < dependencies.length; i++) remove_reaction(signal, dependencies[i]);
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @returns {void}
-	 */
+	* @param {Effect} effect
+	* @returns {void}
+	*/
 	function update_effect(effect) {
 		var flags = effect.f;
-
-		if ((flags & DESTROYED) !== 0) {
-			return;
-		}
-
+		if ((flags & 16384) !== 0) return;
 		set_signal_status(effect, CLEAN);
-
 		var previous_effect = active_effect;
 		var was_updating_effect = is_updating_effect;
-
 		active_effect = effect;
-		is_updating_effect = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) === 0; // Branch/root effects are not reactive contexts
-
+		is_updating_effect = (flags & 96) === 0;
 		try {
-			if ((flags & (BLOCK_EFFECT | MANAGED_EFFECT)) !== 0) {
-				destroy_block_effect_children(effect);
-			} else {
-				destroy_effect_children(effect);
-			}
-
+			if ((flags & 16777232) !== 0) destroy_block_effect_children(effect);
+			else destroy_effect_children(effect);
 			execute_effect_teardown(effect);
 			var teardown = update_reaction(effect);
-			effect.teardown = typeof teardown === 'function' ? teardown : null;
+			effect.teardown = typeof teardown === "function" ? teardown : null;
 			effect.wv = write_version;
-
-			// In DEV, increment versions of any sources that were written to during the effect,
-			// so that they are correctly marked as dirty when the effect re-runs
-			var dep; if (DEV && tracing_mode_flag && (effect.f & DIRTY) !== 0 && effect.deps !== null) ;
 		} finally {
 			is_updating_effect = was_updating_effect;
 			active_effect = previous_effect;
 		}
 	}
-
 	/**
-	 * Returns a promise that resolves once any pending state changes have been applied.
-	 * @returns {Promise<void>}
-	 */
+	* Returns a promise that resolves once any pending state changes have been applied.
+	* @returns {Promise<void>}
+	*/
 	async function tick() {
-
+		if (async_mode_flag) return new Promise((f) => {
+			requestAnimationFrame(() => f());
+			setTimeout(() => f());
+		});
 		await Promise.resolve();
-
-		// By calling flushSync we guarantee that any pending state changes are applied after one tick.
-		// TODO look into whether we can make flushing subsequent updates synchronously in the future.
 		flushSync();
 	}
-
 	/**
-	 * @template V
-	 * @param {Value<V>} signal
-	 * @returns {V}
-	 */
+	* @template V
+	* @param {Value<V>} signal
+	* @returns {V}
+	*/
 	function get(signal) {
-		var flags = signal.f;
-		var is_derived = (flags & DERIVED) !== 0;
-
-		// Register the dependency on the current reaction signal.
+		var is_derived = (signal.f & 2) !== 0;
+		captured_signals?.add(signal);
 		if (active_reaction !== null && !untracking) {
-			// if we're in a derived that is being read inside an _async_ derived,
-			// it's possible that the effect was already destroyed. In this case,
-			// we don't add the dependency, because that would create a memory leak
-			var destroyed = active_effect !== null && (active_effect.f & DESTROYED) !== 0;
-
-			if (!destroyed && (current_sources === null || !current_sources.has(signal))) {
+			if (!(active_effect !== null && (active_effect.f & 16384) !== 0) && (current_sources === null || !current_sources.has(signal))) {
 				var deps = active_reaction.deps;
-
-				if ((active_reaction.f & REACTION_IS_UPDATING) !== 0) {
-					// we're in the effect init/update cycle
+				if ((active_reaction.f & 2097152) !== 0) {
 					if (signal.rv < read_version) {
 						signal.rv = read_version;
-
-						// If the signal is accessing the same dependencies in the same
-						// order as it did last time, increment `skipped_deps`
-						// rather than updating `new_deps`, which creates GC cost
-						if (new_deps === null && deps !== null && deps[skipped_deps] === signal) {
-							skipped_deps++;
-						} else if (new_deps === null) {
-							new_deps = [signal];
-						} else {
-							new_deps.push(signal);
-						}
+						if (new_deps === null && deps !== null && deps[skipped_deps] === signal) skipped_deps++;
+						else if (new_deps === null) new_deps = [signal];
+						else new_deps.push(signal);
 					}
 				} else {
-					// We're adding a dependency outside the init/update cycle (i.e. after an `await`).
-					// We have to deduplicate deps/reactions in this case or remove_reactions could
-					// disconnect deps/reactions that are actually still in use (if skip_deps says
-					// "disconnect all after this index" and some of the signals are also present in
-					// list prior to the cutoff index, i.e. that should be kept).
 					active_reaction.deps ??= [];
-					if (!includes.call(active_reaction.deps, signal)) {
-						active_reaction.deps.push(signal);
-					}
-
+					if (!includes.call(active_reaction.deps, signal)) active_reaction.deps.push(signal);
 					var reactions = signal.reactions;
-
-					if (reactions === null) {
-						signal.reactions = [active_reaction];
-					} else if (!includes.call(reactions, active_reaction)) {
-						reactions.push(active_reaction);
-					}
+					if (reactions === null) signal.reactions = [active_reaction];
+					else if (!includes.call(reactions, active_reaction)) reactions.push(active_reaction);
 				}
 			}
 		}
-
-		if (is_destroying_effect && old_values.has(signal)) {
-			return old_values.get(signal);
-		}
-
+		if (is_destroying_effect && old_values.has(signal)) return old_values.get(signal);
 		if (is_derived) {
-			var derived = /** @type {Derived} */ (signal);
-
+			var derived = signal;
 			if (is_destroying_effect) {
 				var value = derived.v;
-
-				// if the derived is dirty and has reactions, or depends on the values that just changed, re-execute
-				// (a derived can be maybe_dirty due to the effect destroy removing its last reaction)
-				if (
-					((derived.f & CLEAN) === 0 && derived.reactions !== null) ||
-					depends_on_old_values(derived)
-				) {
-					value = execute_derived(derived);
-				}
-
+				if ((derived.f & 1024) === 0 && derived.reactions !== null || depends_on_old_values(derived)) value = execute_derived(derived);
 				old_values.set(derived, value);
-
 				return value;
 			}
-
-			// connect disconnected deriveds if we are reading them inside an effect,
-			// or inside another derived that is already connected
-			var should_connect =
-				(derived.f & CONNECTED) === 0 &&
-				!untracking &&
-				active_reaction !== null &&
-				(is_updating_effect || (active_reaction.f & CONNECTED) !== 0);
-
+			var should_connect = (derived.f & 512) === 0 && !untracking && active_reaction !== null && (is_updating_effect || (active_reaction.f & 512) !== 0);
 			var is_new = (derived.f & REACTION_RAN) === 0;
-
 			if (is_dirty(derived)) {
-				if (should_connect) {
-					// set the flag before `update_derived`, so that the derived
-					// is added as a reaction to its dependencies
-					derived.f |= CONNECTED;
-				}
-
+				if (should_connect) derived.f |= 512;
 				update_derived(derived);
 			}
-
 			if (should_connect && !is_new) {
 				unfreeze_derived_effects(derived);
 				reconnect(derived);
 			}
 		}
-
-		if (batch_values?.has(signal)) {
-			return batch_values.get(signal);
-		}
-
-		if ((signal.f & ERROR_VALUE) !== 0) {
-			throw signal.v;
-		}
-
+		if (batch_values?.has(signal)) return batch_values.get(signal);
+		if ((signal.f & 8388608) !== 0) throw signal.v;
 		return signal.v;
 	}
-
 	/**
-	 * (Re)connect a disconnected derived, so that it is notified
-	 * of changes in `mark_reactions`
-	 * @param {Derived} derived
-	 */
+	* (Re)connect a disconnected derived, so that it is notified
+	* of changes in `mark_reactions`
+	* @param {Derived} derived
+	*/
 	function reconnect(derived) {
-		derived.f |= CONNECTED;
-
+		derived.f |= 512;
 		if (derived.deps === null) return;
-
 		for (const dep of derived.deps) {
 			(dep.reactions ??= []).push(derived);
-
-			if ((dep.f & DERIVED) !== 0 && (dep.f & CONNECTED) === 0) {
-				unfreeze_derived_effects(/** @type {Derived} */ (dep));
-				reconnect(/** @type {Derived} */ (dep));
+			if ((dep.f & 2) !== 0 && (dep.f & 512) === 0) {
+				unfreeze_derived_effects(dep);
+				reconnect(dep);
 			}
 		}
 	}
-
 	/** @param {Derived} derived */
 	function depends_on_old_values(derived) {
-		if (derived.v === UNINITIALIZED) return true; // we don't know, so assume the worst
+		if (derived.v === UNINITIALIZED) return true;
 		if (derived.deps === null) return false;
-
 		for (const dep of derived.deps) {
-			if (old_values.has(dep)) {
-				return true;
-			}
-
-			if ((dep.f & DERIVED) !== 0 && depends_on_old_values(/** @type {Derived} */ (dep))) {
-				return true;
-			}
+			if (old_values.has(dep)) return true;
+			if ((dep.f & 2) !== 0 && depends_on_old_values(dep)) return true;
 		}
-
 		return false;
 	}
-
 	/**
-	 * When used inside a [`$derived`](https://svelte.dev/docs/svelte/$derived) or [`$effect`](https://svelte.dev/docs/svelte/$effect),
-	 * any state read inside `fn` will not be treated as a dependency.
-	 *
-	 * ```ts
-	 * $effect(() => {
-	 *   // this will run when `data` changes, but not when `time` changes
-	 *   save(data, {
-	 *     timestamp: untrack(() => time)
-	 *   });
-	 * });
-	 * ```
-	 * @template T
-	 * @param {() => T} fn
-	 * @returns {T}
-	 */
+	* When used inside a [`$derived`](https://svelte.dev/docs/svelte/$derived) or [`$effect`](https://svelte.dev/docs/svelte/$effect),
+	* any state read inside `fn` will not be treated as a dependency.
+	*
+	* ```ts
+	* $effect(() => {
+	*   // this will run when `data` changes, but not when `time` changes
+	*   save(data, {
+	*     timestamp: untrack(() => time)
+	*   });
+	* });
+	* ```
+	* @template T
+	* @param {() => T} fn
+	* @returns {T}
+	*/
 	function untrack(fn) {
 		var previous_untracking = untracking;
 		try {
@@ -5555,143 +3079,88 @@
 			untracking = previous_untracking;
 		}
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/events.js
 	/**
-	 * Used on elements, as a map of event type -> event handler,
-	 * and on events themselves to track which element handled an event
-	 */
-	const event_symbol = Symbol('events');
-
+	* Used on elements, as a map of event type -> event handler,
+	* and on events themselves to track which element handled an event
+	*/
+	var event_symbol = Symbol("events");
 	/** @type {Set<string>} */
-	const all_registered_events = new Set();
-
+	var all_registered_events = /* @__PURE__ */ new Set();
 	/** @type {Set<(events: Array<string>) => void>} */
-	const root_event_handles = new Set();
-
+	var root_event_handles = /* @__PURE__ */ new Set();
 	/**
-	 * @param {string} event_name
-	 * @param {EventTarget} dom
-	 * @param {EventListener} [handler]
-	 * @param {AddEventListenerOptions} [options]
-	 */
+	* @param {string} event_name
+	* @param {EventTarget} dom
+	* @param {EventListener} [handler]
+	* @param {AddEventListenerOptions} [options]
+	*/
 	function create_event(event_name, dom, handler, options = {}) {
 		/**
-		 * @this {EventTarget}
-		 */
-		function target_handler(/** @type {Event} */ event) {
-			if (!options.capture) {
-				// Only call in the bubble phase, else delegated events would be called before the capturing events
-				handle_event_propagation.call(dom, event);
-			}
-			if (!event.cancelBubble) {
-				return without_reactive_context(() => {
-					return handler?.call(this, event);
-				});
-			}
-		}
-
-		// Chrome has a bug where pointer events don't work when attached to a DOM element that has been cloned
-		// with cloneNode() and the DOM element is disconnected from the document. To ensure the event works, we
-		// defer the attachment till after it's been appended to the document. TODO: remove this once Chrome fixes
-		// this bug. The same applies to wheel events and touch events.
-		if (
-			event_name.startsWith('pointer') ||
-			event_name.startsWith('touch') ||
-			event_name === 'wheel'
-		) {
-			queue_micro_task(() => {
-				dom.addEventListener(event_name, target_handler, options);
+		* @this {EventTarget}
+		*/
+		function target_handler(event) {
+			if (!options.capture) handle_event_propagation.call(dom, event);
+			if (!event.cancelBubble) return without_reactive_context(() => {
+				return handler?.call(this, event);
 			});
-		} else {
-			dom.addEventListener(event_name, target_handler, options);
 		}
-
+		if (event_name.startsWith("pointer") || event_name.startsWith("touch") || event_name === "wheel") queue_micro_task(() => {
+			dom.addEventListener(event_name, target_handler, options);
+		});
+		else dom.addEventListener(event_name, target_handler, options);
 		return target_handler;
 	}
-
 	/**
-	 * @param {string} event_name
-	 * @param {Element} dom
-	 * @param {EventListener} [handler]
-	 * @param {boolean} [capture]
-	 * @param {boolean} [passive]
-	 * @returns {void}
-	 */
+	* @param {string} event_name
+	* @param {Element} dom
+	* @param {EventListener} [handler]
+	* @param {boolean} [capture]
+	* @param {boolean} [passive]
+	* @returns {void}
+	*/
 	function event(event_name, dom, handler, capture, passive) {
-		var options = { capture, passive };
+		var options = {
+			capture,
+			passive
+		};
 		var target_handler = create_event(event_name, dom, handler, options);
-
-		if (
-			dom === document.body ||
-			// @ts-ignore
-			dom === window ||
-			// @ts-ignore
-			dom === document ||
-			// Firefox has quirky behavior, it can happen that we still get "canplay" events when the element is already removed
-			dom instanceof HTMLMediaElement
-		) {
-			teardown(() => {
-				dom.removeEventListener(event_name, target_handler, options);
-			});
-		}
+		if (dom === document.body || dom === window || dom === document || dom instanceof HTMLMediaElement) teardown(() => {
+			dom.removeEventListener(event_name, target_handler, options);
+		});
 	}
-
 	/**
-	 * @param {string} event_name
-	 * @param {Element} element
-	 * @param {EventListener} [handler]
-	 * @returns {void}
-	 */
+	* @param {string} event_name
+	* @param {Element} element
+	* @param {EventListener} [handler]
+	* @returns {void}
+	*/
 	function delegated(event_name, element, handler) {
-		// @ts-expect-error
 		(element[event_symbol] ??= {})[event_name] = handler;
 	}
-
 	/**
-	 * @param {Array<string>} events
-	 * @returns {void}
-	 */
+	* @param {Array<string>} events
+	* @returns {void}
+	*/
 	function delegate(events) {
-		for (var i = 0; i < events.length; i++) {
-			all_registered_events.add(events[i]);
-		}
-
-		for (var fn of root_event_handles) {
-			fn(events);
-		}
+		for (var i = 0; i < events.length; i++) all_registered_events.add(events[i]);
+		for (var fn of root_event_handles) fn(events);
 	}
-
-	// used to store the reference to the currently propagated event
-	// to prevent garbage collection between microtasks in Firefox (<= 141)
-	// If the event object is GCed too early, the expando __root property
-	// set on the event object is lost, causing the event delegation
-	// to process the event twice
-	let last_propagated_event = null;
-
-	// whether a task is already queued to clear `last_propagated_event`
-	let last_propagated_event_clear_scheduled = false;
-
+	var last_propagated_event = null;
+	var last_propagated_event_clear_scheduled = false;
 	/**
-	 * @this {EventTarget}
-	 * @param {Event} event
-	 * @returns {void}
-	 */
+	* @this {EventTarget}
+	* @param {Event} event
+	* @returns {void}
+	*/
 	function handle_event_propagation(event) {
 		var handler_element = this;
-		var owner_document = /** @type {Node} */ (handler_element).ownerDocument;
+		var owner_document = handler_element.ownerDocument;
 		var event_name = event.type;
 		var path = event.composedPath?.() || [];
-		var current_target = /** @type {null | Element} */ (path[0] || event.target);
-
+		var current_target = path[0] || event.target;
 		last_propagated_event = event;
-
-		// The reference is only needed while the event can still reach another
-		// delegated root, i.e. during the current (synchronous) dispatch and its
-		// microtask checkpoints. Clearing it in a later task preserves the
-		// Firefox workaround while making sure the slot doesn't retain the last
-		// event forever — through `event.target` it would otherwise keep the
-		// entire detached subtree of whatever the user last clicked in alive
-		// until the next delegated event happens to arrive.
 		if (!last_propagated_event_clear_scheduled) {
 			last_propagated_event_clear_scheduled = true;
 			setTimeout(() => {
@@ -5699,603 +3168,859 @@
 				last_propagated_event = null;
 			});
 		}
-
-		// composedPath contains list of nodes the event has propagated through.
-		// We check `event_symbol` to skip all nodes below it in case this is a
-		// parent of the `event_symbol` node, which indicates that there's nested
-		// mounted apps. In this case we don't want to trigger events multiple times.
 		var path_idx = 0;
-
-		// the `last_propagated_event === event` check is redundant, but
-		// without it the variable will be DCE'd and things will
-		// fail mysteriously in Firefox
-		// @ts-expect-error is added below
 		var handled_at = last_propagated_event === event && event[event_symbol];
-
 		if (handled_at) {
 			var at_idx = path.indexOf(handled_at);
-			if (
-				at_idx !== -1 &&
-				(handler_element === document || handler_element === /** @type {any} */ (window))
-			) {
-				// This is the fallback document listener or a window listener, but the event was already handled
-				// -> ignore, but set handle_at to document/window so that we're resetting the event
-				// chain in case someone manually dispatches the same event object again.
-				// @ts-expect-error
+			if (at_idx !== -1 && (handler_element === document || handler_element === window)) {
 				event[event_symbol] = handler_element;
 				return;
 			}
-
-			// We're deliberately not skipping if the index is higher, because
-			// someone could create an event programmatically and emit it multiple times,
-			// in which case we want to handle the whole propagation chain properly each time.
-			// (this will only be a false negative if the event is dispatched multiple times and
-			// the fallback document listener isn't reached in between, but that's super rare)
 			var handler_idx = path.indexOf(handler_element);
-			if (handler_idx === -1) {
-				// handle_idx can theoretically be -1 (happened in some JSDOM testing scenarios with an event listener on the window object)
-				// so guard against that, too, and assume that everything was handled at this point.
-				return;
-			}
-
-			if (at_idx <= handler_idx) {
-				path_idx = at_idx;
-			}
+			if (handler_idx === -1) return;
+			if (at_idx <= handler_idx) path_idx = at_idx;
 		}
-
-		current_target = /** @type {Element} */ (path[path_idx] || event.target);
-		// there can only be one delegated event per element, and we either already handled the current target,
-		// or this is the very first target in the chain which has a non-delegated listener, in which case it's safe
-		// to handle a possible delegated event on it later (through the root delegation listener for example).
+		current_target = path[path_idx] || event.target;
 		if (current_target === handler_element) return;
-
-		// Proxy currentTarget to correct target
-		define_property(event, 'currentTarget', {
+		define_property(event, "currentTarget", {
 			configurable: true,
 			get() {
 				return current_target || owner_document;
 			}
 		});
-
-		// This started because of Chromium issue https://chromestatus.com/feature/5128696823545856,
-		// where removal or moving of the DOM can cause sync `blur` events to fire, which can cause logic
-		// to run inside the current `active_reaction`, which isn't what we want at all. However, on reflection,
-		// it's probably best that all events handled by Svelte have this behaviour, as we don't really want
-		// an event handler to run in the context of another reaction or effect.
 		var previous_reaction = active_reaction;
 		var previous_effect = active_effect;
 		set_active_reaction(null);
 		set_active_effect(null);
-
 		try {
 			/**
-			 * @type {unknown}
-			 */
+			* @type {unknown}
+			*/
 			var throw_error;
 			/**
-			 * @type {unknown[]}
-			 */
+			* @type {unknown[]}
+			*/
 			var other_errors = [];
-
 			while (current_target !== null) {
 				if (current_target === handler_element) break;
-
 				try {
-					// @ts-expect-error
 					var delegated = current_target[event_symbol]?.[event_name];
-
-					if (
-						delegated != null &&
-						(!(/** @type {any} */ (current_target).disabled) ||
-							// DOM could've been updated already by the time this is reached, so we check this as well
-							// -> the target could not have been disabled because it emits the event in the first place
-							event.target === current_target)
-					) {
-						delegated.call(current_target, event);
-					}
+					if (delegated != null && (!current_target.disabled || event.target === current_target)) delegated.call(current_target, event);
 				} catch (error) {
-					if (throw_error) {
-						other_errors.push(error);
-					} else {
-						throw_error = error;
-					}
+					if (throw_error) other_errors.push(error);
+					else throw_error = error;
 				}
 				if (event.cancelBubble) break;
-
 				path_idx++;
-				current_target = path_idx < path.length ? /** @type {Element} */ (path[path_idx]) : null;
+				current_target = path_idx < path.length ? path[path_idx] : null;
 			}
-
 			if (throw_error) {
-				for (let error of other_errors) {
-					// Throw the rest of the errors, one-by-one on a microtask
-					queueMicrotask(() => {
-						throw error;
-					});
-				}
+				for (let error of other_errors) queueMicrotask(() => {
+					throw error;
+				});
 				throw throw_error;
 			}
 		} finally {
-			// @ts-expect-error is used above
 			event[event_symbol] = handler_element;
-			// @ts-ignore remove proxy on currentTarget
 			delete event.currentTarget;
 			set_active_reaction(previous_reaction);
 			set_active_effect(previous_effect);
 		}
 	}
-
-	/**
-	 * In dev, warn if an event handler is not a function, as it means the
-	 * user probably called the handler or forgot to add a `() =>`
-	 * @param {() => (event: Event, ...args: any) => void} thunk
-	 * @param {EventTarget} element
-	 * @param {[Event, ...any]} args
-	 * @param {any} component
-	 * @param {[number, number]} [loc]
-	 * @param {boolean} [remove_parens]
-	 */
-	function apply(
-		thunk,
-		element,
-		args,
-		component,
-		loc,
-		has_side_effects = false,
-		remove_parens = false
-	) {
-		let handler;
-		let error;
-
-		try {
-			handler = thunk();
-		} catch (e) {
-			error = e;
-		}
-
-		if (typeof handler !== 'function' && (has_side_effects || handler != null || error)) {
-			component?.[FILENAME];
-			const phase = args[0]?.eventPhase < Event.BUBBLING_PHASE ? 'capture' : '';
-			args[0]?.type + phase;
-
-			event_handler_invalid();
-
-			if (error) {
-				throw error;
-			}
-		}
-		handler?.apply(element, args);
-	}
-
-	const policy =
-		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
-		globalThis?.window?.trustedTypes &&
-		/* @__PURE__ */ globalThis.window.trustedTypes.createPolicy('svelte-trusted-html', {
-			/** @param {string} html */
-			createHTML: (html) => {
-				return html;
-			}
-		});
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/reconciler.js
+	var policy = globalThis?.window?.trustedTypes && /* @__PURE__ */ globalThis.window.trustedTypes.createPolicy("svelte-trusted-html", { 
+	/** @param {string} html */
+createHTML: (html) => {
+		return html;
+	} });
 	/** @param {string} html */
 	function create_trusted_html(html) {
-		return /** @type {string} */ (policy?.createHTML(html) ?? html);
+		return policy?.createHTML(html) ?? html;
 	}
-
 	/**
-	 * @param {string} html
-	 */
+	* @param {string} html
+	*/
 	function create_fragment_from_html(html) {
-		var elem = create_element('template');
-		elem.innerHTML = create_trusted_html(html.replaceAll('<!>', '<!---->')); // XHTML compliance
+		var elem = create_element("template");
+		elem.innerHTML = create_trusted_html(html.replaceAll("<!>", "<!---->"));
 		return elem.content;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/template.js
 	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
 	/** @import { TemplateStructure } from './types' */
-
 	/**
-	 * @param {TemplateNode} start
-	 * @param {TemplateNode | null} end
-	 */
+	* @param {TemplateNode} start
+	* @param {TemplateNode | null} end
+	*/
 	function assign_nodes(start, end) {
-		var effect = /** @type {Effect} */ (active_effect);
-		if (effect.nodes === null) {
-			effect.nodes = { start, end, a: null, t: null };
-		}
+		var effect = active_effect;
+		if (effect.nodes === null) effect.nodes = {
+			start,
+			end,
+			a: null,
+			t: null
+		};
 	}
-
 	/**
-	 * @param {string} content
-	 * @param {number} flags
-	 * @returns {() => Node | Node[]}
-	 */
+	* @param {string} content
+	* @param {number} flags
+	* @returns {() => Node | Node[]}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function from_html(content, flags) {
-		var is_fragment = (flags & TEMPLATE_FRAGMENT) !== 0;
-		var use_import_node = (flags & TEMPLATE_USE_IMPORT_NODE) !== 0;
-
+		var is_fragment = (flags & 1) !== 0;
+		var use_import_node = (flags & 2) !== 0;
 		/** @type {Node} */
 		var node;
-
 		/**
-		 * Whether or not the first item is a text/element node. If not, we need to
-		 * create an additional comment node to act as `effect.nodes.start`
-		 */
-		var has_start = !content.startsWith('<!>');
-
+		* Whether or not the first item is a text/element node. If not, we need to
+		* create an additional comment node to act as `effect.nodes.start`
+		*/
+		var has_start = !content.startsWith("<!>");
 		return () => {
 			if (hydrating) {
 				assign_nodes(hydrate_node, null);
 				return hydrate_node;
 			}
-
-			if (node === undefined) {
-				node = create_fragment_from_html(has_start ? content : '<!>' + content);
-				if (!is_fragment) node = /** @type {TemplateNode} */ (get_first_child(node));
+			if (node === void 0) {
+				node = create_fragment_from_html(has_start ? content : "<!>" + content);
+				if (!is_fragment) node = /* @__PURE__ */ get_first_child(node);
 			}
-
-			var clone = /** @type {TemplateNode} */ (
-				use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true)
-			);
-
+			var clone = use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true);
 			if (is_fragment) {
-				var start = /** @type {TemplateNode} */ (get_first_child(clone));
-				var end = /** @type {TemplateNode} */ (clone.lastChild);
-
+				var start = /* @__PURE__ */ get_first_child(clone);
+				var end = clone.lastChild;
 				assign_nodes(start, end);
-			} else {
-				assign_nodes(clone, clone);
-			}
-
+			} else assign_nodes(clone, clone);
 			return clone;
 		};
 	}
-
 	/**
-	 * @param {string} content
-	 * @param {number} flags
-	 * @param {'svg' | 'math'} ns
-	 * @returns {() => Node | Node[]}
-	 */
+	* @param {string} content
+	* @param {number} flags
+	* @param {'svg' | 'math'} ns
+	* @returns {() => Node | Node[]}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
-	function from_namespace(content, flags, ns = 'svg') {
+	function from_namespace(content, flags, ns = "svg") {
 		/**
-		 * Whether or not the first item is a text/element node. If not, we need to
-		 * create an additional comment node to act as `effect.nodes.start`
-		 */
-		var has_start = !content.startsWith('<!>');
-		var wrapped = `<${ns}>${has_start ? content : '<!>' + content}</${ns}>`;
-
+		* Whether or not the first item is a text/element node. If not, we need to
+		* create an additional comment node to act as `effect.nodes.start`
+		*/
+		var has_start = !content.startsWith("<!>");
+		var is_fragment = (flags & 1) !== 0;
+		var wrapped = `<${ns}>${has_start ? content : "<!>" + content}</${ns}>`;
 		/** @type {Element | DocumentFragment} */
 		var node;
-
 		return () => {
 			if (hydrating) {
 				assign_nodes(hydrate_node, null);
 				return hydrate_node;
 			}
-
 			if (!node) {
-				var fragment = /** @type {DocumentFragment} */ (create_fragment_from_html(wrapped));
-				var root = /** @type {Element} */ (get_first_child(fragment));
-
-				{
-					node = /** @type {Element} */ (get_first_child(root));
-				}
+				var root = /* @__PURE__ */ get_first_child(create_fragment_from_html(wrapped));
+				if (is_fragment) {
+					node = document.createDocumentFragment();
+					while (/* @__PURE__ */ get_first_child(root)) node.appendChild(/* @__PURE__ */ get_first_child(root));
+				} else node = /* @__PURE__ */ get_first_child(root);
 			}
-
-			var clone = /** @type {TemplateNode} */ (node.cloneNode(true));
-
-			{
-				assign_nodes(clone, clone);
-			}
-
+			var clone = node.cloneNode(true);
+			if (is_fragment) {
+				var start = /* @__PURE__ */ get_first_child(clone);
+				var end = clone.lastChild;
+				assign_nodes(start, end);
+			} else assign_nodes(clone, clone);
 			return clone;
 		};
 	}
-
 	/**
-	 * @param {string} content
-	 * @param {number} flags
-	 */
+	* @param {string} content
+	* @param {number} flags
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function from_svg(content, flags) {
-		return from_namespace(content, flags, 'svg');
+		return /* @__PURE__ */ from_namespace(content, flags, "svg");
 	}
-
 	/**
-	 * @returns {TemplateNode | DocumentFragment}
-	 */
+	* @returns {TemplateNode | DocumentFragment}
+	*/
 	function comment() {
-		// we're not delegating to `template` here for performance reasons
 		if (hydrating) {
 			assign_nodes(hydrate_node, null);
 			return hydrate_node;
 		}
-
 		var frag = document.createDocumentFragment();
-		var start = document.createComment('');
+		var start = document.createComment("");
 		var anchor = create_text();
 		frag.append(start, anchor);
-
 		assign_nodes(start, anchor);
-
 		return frag;
 	}
-
 	/**
-	 * Assign the created (or in hydration mode, traversed) dom elements to the current block
-	 * and insert the elements into the dom (in client mode).
-	 * @param {Text | Comment | Element} anchor
-	 * @param {DocumentFragment | Element} dom
-	 */
+	* Assign the created (or in hydration mode, traversed) dom elements to the current block
+	* and insert the elements into the dom (in client mode).
+	* @param {Text | Comment | Element} anchor
+	* @param {DocumentFragment | Element} dom
+	*/
 	function append(anchor, dom) {
 		if (hydrating) {
-			var effect = /** @type {Effect & { nodes: EffectNodes }} */ (active_effect);
-
-			// When hydrating and outer component and an inner component is async, i.e. blocked on a promise,
-			// then by the time the inner resolves we have already advanced to the end of the hydrated nodes
-			// of the parent component. Check for defined for that reason to avoid rewinding the parent's end marker.
-			if ((effect.f & REACTION_RAN) === 0 || effect.nodes.end === null) {
-				effect.nodes.end = hydrate_node;
-			}
-
+			var effect = active_effect;
+			if ((effect.f & 32768) === 0 || effect.nodes.end === null) effect.nodes.end = hydrate_node;
 			hydrate_next();
 			return;
 		}
-
-		if (anchor === null) {
-			// edge case — void `<svelte:element>` with content
-			return;
-		}
-
-		anchor.before(/** @type {Node} */ (dom));
+		if (anchor === null) return;
+		anchor.before(dom);
 	}
-
-	const VOID_ELEMENT_NAMES = [
-		'area',
-		'base',
-		'br',
-		'col',
-		'command',
-		'embed',
-		'hr',
-		'img',
-		'input',
-		'keygen',
-		'link',
-		'meta',
-		'param',
-		'source',
-		'track',
-		'wbr'
-	];
-
 	/**
-	 * Returns `true` if `name` is of a void element
-	 * @param {string} name
-	 */
-	function is_void(name) {
-		return VOID_ELEMENT_NAMES.includes(name) || name.toLowerCase() === '!doctype';
-	}
-
-	/**
-	 * @param {string} name
-	 */
+	* @param {string} name
+	*/
 	function is_capture_event(name) {
-		return name.endsWith('capture') && name !== 'gotpointercapture' && name !== 'lostpointercapture';
+		return name.endsWith("capture") && name !== "gotpointercapture" && name !== "lostpointercapture";
 	}
-
 	/** List of Element events that will be delegated */
-	const DELEGATED_EVENTS = [
-		'beforeinput',
-		'click',
-		'change',
-		'dblclick',
-		'contextmenu',
-		'focusin',
-		'focusout',
-		'input',
-		'keydown',
-		'keyup',
-		'mousedown',
-		'mousemove',
-		'mouseout',
-		'mouseover',
-		'mouseup',
-		'pointerdown',
-		'pointermove',
-		'pointerout',
-		'pointerover',
-		'pointerup',
-		'touchend',
-		'touchmove',
-		'touchstart'
+	var DELEGATED_EVENTS = [
+		"beforeinput",
+		"click",
+		"change",
+		"dblclick",
+		"contextmenu",
+		"focusin",
+		"focusout",
+		"input",
+		"keydown",
+		"keyup",
+		"mousedown",
+		"mousemove",
+		"mouseout",
+		"mouseover",
+		"mouseup",
+		"pointerdown",
+		"pointermove",
+		"pointerout",
+		"pointerover",
+		"pointerup",
+		"touchend",
+		"touchmove",
+		"touchstart"
 	];
-
 	/**
-	 * Returns `true` if `event_name` is a delegated event
-	 * @param {string} event_name
-	 */
+	* Returns `true` if `event_name` is a delegated event
+	* @param {string} event_name
+	*/
 	function can_delegate_event(event_name) {
 		return DELEGATED_EVENTS.includes(event_name);
 	}
-
 	/**
-	 * @type {Record<string, string>}
-	 * List of attribute names that should be aliased to their property names
-	 * because they behave differently between setting them as an attribute and
-	 * setting them as a property.
-	 */
-	const ATTRIBUTE_ALIASES = {
-		// no `class: 'className'` because we handle that separately
-		formnovalidate: 'formNoValidate',
-		ismap: 'isMap',
-		nomodule: 'noModule',
-		playsinline: 'playsInline',
-		readonly: 'readOnly',
-		defaultvalue: 'defaultValue',
-		defaultchecked: 'defaultChecked',
-		srcobject: 'srcObject',
-		novalidate: 'noValidate',
-		allowfullscreen: 'allowFullscreen',
-		disablepictureinpicture: 'disablePictureInPicture',
-		disableremoteplayback: 'disableRemotePlayback'
+	* Attributes that are boolean, i.e. they are present or not present.
+	*/
+	var DOM_BOOLEAN_ATTRIBUTES = [
+		"allowfullscreen",
+		"async",
+		"autofocus",
+		"autoplay",
+		"checked",
+		"controls",
+		"default",
+		"disabled",
+		"formnovalidate",
+		"indeterminate",
+		"inert",
+		"ismap",
+		"loop",
+		"multiple",
+		"muted",
+		"nomodule",
+		"novalidate",
+		"open",
+		"playsinline",
+		"readonly",
+		"required",
+		"reversed",
+		"seamless",
+		"selected",
+		"webkitdirectory",
+		"defer",
+		"disablepictureinpicture",
+		"disableremoteplayback"
+	];
+	/**
+	* @type {Record<string, string>}
+	* List of attribute names that should be aliased to their property names
+	* because they behave differently between setting them as an attribute and
+	* setting them as a property.
+	*/
+	var ATTRIBUTE_ALIASES = {
+		formnovalidate: "formNoValidate",
+		ismap: "isMap",
+		nomodule: "noModule",
+		playsinline: "playsInline",
+		readonly: "readOnly",
+		defaultvalue: "defaultValue",
+		defaultchecked: "defaultChecked",
+		srcobject: "srcObject",
+		novalidate: "noValidate",
+		allowfullscreen: "allowFullscreen",
+		disablepictureinpicture: "disablePictureInPicture",
+		disableremoteplayback: "disableRemotePlayback"
 	};
-
 	/**
-	 * @param {string} name
-	 */
+	* @param {string} name
+	*/
 	function normalize_attribute(name) {
 		name = name.toLowerCase();
 		return ATTRIBUTE_ALIASES[name] ?? name;
 	}
-
+	[...DOM_BOOLEAN_ATTRIBUTES];
 	/**
-	 * Subset of delegated events which should be passive by default.
-	 * These two are already passive via browser defaults on window, document and body.
-	 * But since
-	 * - we're delegating them
-	 * - they happen often
-	 * - they apply to mobile which is generally less performant
-	 * we're marking them as passive by default for other elements, too.
-	 */
-	const PASSIVE_EVENTS = ['touchstart', 'touchmove'];
-
+	* Subset of delegated events which should be passive by default.
+	* These two are already passive via browser defaults on window, document and body.
+	* But since
+	* - we're delegating them
+	* - they happen often
+	* - they apply to mobile which is generally less performant
+	* we're marking them as passive by default for other elements, too.
+	*/
+	var PASSIVE_EVENTS = ["touchstart", "touchmove"];
 	/**
-	 * Returns `true` if `name` is a passive event
-	 * @param {string} name
-	 */
+	* Returns `true` if `name` is a passive event
+	* @param {string} name
+	*/
 	function is_passive_event(name) {
 		return PASSIVE_EVENTS.includes(name);
 	}
-
 	/** List of elements that require raw contents and should not have SSR comments put in them */
-	const RAW_TEXT_ELEMENTS = /** @type {const} */ (['textarea', 'script', 'style', 'title']);
-
+	var RAW_TEXT_ELEMENTS = [
+		"textarea",
+		"script",
+		"style",
+		"title"
+	];
 	/** @param {string} name */
 	function is_raw_text_element(name) {
-		return RAW_TEXT_ELEMENTS.includes(/** @type {typeof RAW_TEXT_ELEMENTS[number]} */ (name));
+		return RAW_TEXT_ELEMENTS.includes(name);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/reactivity/create-subscriber.js
 	/**
-	 * Prevent devtools trying to make `location` a clickable link by inserting a zero-width space
-	 * @template {string | undefined} T
-	 * @param {T} location
-	 * @returns {T};
-	 */
-	function sanitize_location(location) {
-		return /** @type {T} */ (location?.replace(/\//g, '/\u200b'));
+	* Returns a `subscribe` function that integrates external event-based systems with Svelte's reactivity.
+	* It's particularly useful for integrating with web APIs like `MediaQuery`, `IntersectionObserver`, or `WebSocket`.
+	*
+	* If `subscribe` is called inside an effect (including indirectly, for example inside a getter),
+	* the `start` callback will be called with an `update` function. Whenever `update` is called, the effect re-runs.
+	*
+	* If `start` returns a cleanup function, it will be called when the effect is destroyed.
+	*
+	* If `subscribe` is called in multiple effects, `start` will only be called once as long as the effects
+	* are active, and the returned teardown function will only be called when all effects are destroyed.
+	*
+	* It's best understood with an example. Here's an implementation of [`MediaQuery`](https://svelte.dev/docs/svelte/svelte-reactivity#MediaQuery):
+	*
+	* ```js
+	* import { createSubscriber } from 'svelte/reactivity';
+	* import { on } from 'svelte/events';
+	*
+	* export class MediaQuery {
+	* 	#query;
+	* 	#subscribe;
+	*
+	* 	constructor(query) {
+	* 		this.#query = window.matchMedia(`(${query})`);
+	*
+	* 		this.#subscribe = createSubscriber((update) => {
+	* 			// when the `change` event occurs, re-run any effects that read `this.current`
+	* 			const off = on(this.#query, 'change', update);
+	*
+	* 			// stop listening when all the effects are destroyed
+	* 			return () => off();
+	* 		});
+	* 	}
+	*
+	* 	get current() {
+	* 		// This makes the getter reactive, if read in an effect
+	* 		this.#subscribe();
+	*
+	* 		// Return the current state of the query, whether or not we're in an effect
+	* 		return this.#query.matches;
+	* 	}
+	* }
+	* ```
+	* @param {(update: () => void) => (() => void) | void} start
+	* @since 5.7.0
+	*/
+	function createSubscriber(start) {
+		let subscribers = 0;
+		let version = source(0);
+		/** @type {(() => void) | void} */
+		let stop;
+		return () => {
+			if (effect_tracking()) {
+				get(version);
+				render_effect(() => {
+					if (subscribers === 0) stop = untrack(() => start(() => increment(version)));
+					subscribers += 1;
+					return () => {
+						queue_micro_task(() => {
+							subscribers -= 1;
+							if (subscribers === 0) {
+								stop?.();
+								stop = void 0;
+								increment(version);
+							}
+						});
+					};
+				});
+			}
+		};
 	}
-
-	/** @import { ComponentContext, Effect, EffectNodes, TemplateNode } from '#client' */
-	/** @import { Component, ComponentType, SvelteComponent, MountOptions } from '../../index.js' */
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/boundary.js
+	/** @import { Effect, Source, TemplateNode, } from '#client' */
 	/**
-	 * @param {Element} text
-	 * @param {string} value
-	 * @returns {void}
-	 */
+	* @typedef {{
+	* 	 onerror?: ((error: unknown, reset: () => void) => void) | null;
+	*   failed?: ((anchor: Node, error: () => unknown, reset: () => () => void) => void) | null;
+	*   pending?: ((anchor: Node) => void) | null;
+	* }} BoundaryProps
+	*/
+	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
+	/**
+	* @param {TemplateNode} node
+	* @param {BoundaryProps} props
+	* @param {((anchor: Node) => void)} children
+	* @param {((error: unknown) => unknown) | undefined} [transform_error]
+	* @returns {void}
+	*/
+	function boundary(node, props, children, transform_error) {
+		new Boundary(node, props, children, transform_error);
+	}
+	var Boundary = class {
+		/** @type {Boundary | null} */
+		parent;
+		is_pending = false;
+		/**
+		* API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
+		* Inherited from parent boundary, or defaults to identity.
+		* @type {(error: unknown) => unknown}
+		*/
+		transform_error;
+		/** @type {TemplateNode} */
+		#anchor;
+		/** @type {TemplateNode | null} */
+		#hydrate_open = hydrating ? hydrate_node : null;
+		/** @type {BoundaryProps} */
+		#props;
+		/** @type {((anchor: Node) => void)} */
+		#children;
+		/** @type {Effect} */
+		#effect;
+		/** @type {Effect | null} */
+		#main_effect = null;
+		/** @type {Effect | null} */
+		#pending_effect = null;
+		/** @type {Effect | null} */
+		#failed_effect = null;
+		/** @type {DocumentFragment | null} */
+		#offscreen_fragment = null;
+		#local_pending_count = 0;
+		#pending_count = 0;
+		#pending_count_update_queued = false;
+		/** @type {Set<Effect>} */
+		#dirty_effects = /* @__PURE__ */ new Set();
+		/** @type {Set<Effect>} */
+		#maybe_dirty_effects = /* @__PURE__ */ new Set();
+		/**
+		* A source containing the number of pending async deriveds/expressions.
+		* Only created if `$effect.pending()` is used inside the boundary,
+		* otherwise updating the source results in needless `Batch.ensure()`
+		* calls followed by no-op flushes
+		* @type {Source<number> | null}
+		*/
+		#effect_pending = null;
+		#effect_pending_subscriber = createSubscriber(() => {
+			this.#effect_pending = source(this.#local_pending_count);
+			return () => {
+				this.#effect_pending = null;
+			};
+		});
+		/**
+		* @param {TemplateNode} node
+		* @param {BoundaryProps} props
+		* @param {((anchor: Node) => void)} children
+		* @param {((error: unknown) => unknown) | undefined} [transform_error]
+		*/
+		constructor(node, props, children, transform_error) {
+			this.#anchor = node;
+			this.#props = props;
+			this.#children = (anchor) => {
+				var effect = active_effect;
+				effect.b = this;
+				effect.f |= 128;
+				children(anchor);
+			};
+			this.parent = active_effect.b;
+			this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
+			this.#effect = block(() => {
+				if (hydrating) {
+					const comment = this.#hydrate_open;
+					hydrate_next();
+					const server_rendered_pending = comment.data === "[!";
+					if (comment.data.startsWith("[?")) {
+						const serialized_error = JSON.parse(comment.data.slice(2));
+						this.#hydrate_failed_content(serialized_error);
+					} else if (server_rendered_pending) this.#hydrate_pending_content();
+					else this.#hydrate_resolved_content();
+				} else this.#render();
+			}, flags);
+			if (hydrating) this.#anchor = hydrate_node;
+		}
+		#hydrate_resolved_content() {
+			try {
+				this.#main_effect = branch(() => this.#children(this.#anchor));
+			} catch (error) {
+				this.error(error);
+			}
+		}
+		/**
+		* @param {unknown} error The deserialized error from the server's hydration comment
+		*/
+		#hydrate_failed_content(error) {
+			const failed = this.#props.failed;
+			const { reset, invoke_onerror } = this.#create_reset(error);
+			queue_micro_task(invoke_onerror);
+			if (!failed) return;
+			this.#failed_effect = branch(() => {
+				failed(this.#anchor, () => error, () => reset);
+			});
+		}
+		/**
+		* Creates the `reset` function for a failed boundary, along with a function
+		* that invokes `onerror` with it (if provided)
+		* @param {unknown} error
+		* @returns {{ reset: () => void, invoke_onerror: () => void }}
+		*/
+		#create_reset(error) {
+			var did_reset = false;
+			var calling_on_error = false;
+			const reset = () => {
+				if (did_reset) {
+					svelte_boundary_reset_noop();
+					return;
+				}
+				did_reset = true;
+				if (calling_on_error) svelte_boundary_reset_onerror();
+				if (this.#failed_effect !== null) pause_effect(this.#failed_effect, () => {
+					this.#failed_effect = null;
+				});
+				this.#run(() => {
+					this.#render();
+				});
+			};
+			const invoke_onerror = () => {
+				try {
+					calling_on_error = true;
+					this.#props.onerror?.(error, reset);
+					calling_on_error = false;
+				} catch (err) {
+					invoke_error_boundary(err, this.#effect && this.#effect.parent);
+				}
+			};
+			return {
+				reset,
+				invoke_onerror
+			};
+		}
+		#hydrate_pending_content() {
+			const pending = this.#props.pending;
+			if (!pending) return;
+			this.is_pending = true;
+			this.#pending_effect = branch(() => pending(this.#anchor));
+			queue_micro_task(() => {
+				var fragment = this.#offscreen_fragment = document.createDocumentFragment();
+				var anchor = create_text();
+				var handled = false;
+				fragment.append(anchor);
+				this.#main_effect = this.#run(() => {
+					try {
+						return branch(() => this.#children(anchor));
+					} catch (error) {
+						try {
+							this.error(error);
+							handled = true;
+						} catch (error) {
+							invoke_error_boundary(error, this.#effect.parent);
+						}
+						return null;
+					}
+				});
+				if (this.#main_effect === null) {
+					this.#offscreen_fragment = null;
+					if (handled) this.#resolve(current_batch);
+					return;
+				}
+				if (this.#pending_count === 0) {
+					this.#anchor.before(fragment);
+					this.#offscreen_fragment = null;
+					pause_effect(this.#pending_effect, () => {
+						this.#pending_effect = null;
+					});
+					this.#resolve(current_batch);
+				}
+			});
+		}
+		#render() {
+			try {
+				this.is_pending = this.has_pending_snippet();
+				this.#pending_count = 0;
+				this.#local_pending_count = 0;
+				this.#main_effect = branch(() => {
+					this.#children(this.#anchor);
+				});
+				if (this.#pending_count > 0) {
+					var fragment = this.#offscreen_fragment = document.createDocumentFragment();
+					move_effect(this.#main_effect, fragment);
+					const pending = this.#props.pending;
+					this.#pending_effect = branch(() => pending(this.#anchor));
+				} else this.#resolve(current_batch);
+			} catch (error) {
+				this.error(error);
+			}
+		}
+		/**
+		* @param {Batch} batch
+		*/
+		#resolve(batch) {
+			this.is_pending = false;
+			batch.transfer_effects(this.#dirty_effects, this.#maybe_dirty_effects);
+		}
+		/**
+		* Defer an effect inside a pending boundary until the boundary resolves
+		* @param {Effect} effect
+		*/
+		defer_effect(effect) {
+			defer_effect(effect, this.#dirty_effects, this.#maybe_dirty_effects);
+		}
+		/**
+		* Returns `false` if the effect exists inside a boundary whose pending snippet is shown
+		* @returns {boolean}
+		*/
+		is_rendered() {
+			return !this.is_pending && (!this.parent || this.parent.is_rendered());
+		}
+		has_pending_snippet() {
+			return !!this.#props.pending;
+		}
+		/**
+		* @template T
+		* @param {() => T} fn
+		*/
+		#run(fn) {
+			var previous_effect = active_effect;
+			var previous_reaction = active_reaction;
+			var previous_ctx = component_context;
+			set_active_effect(this.#effect);
+			set_active_reaction(this.#effect);
+			set_component_context(this.#effect.ctx);
+			try {
+				Batch.ensure();
+				return fn();
+			} finally {
+				set_active_effect(previous_effect);
+				set_active_reaction(previous_reaction);
+				set_component_context(previous_ctx);
+			}
+		}
+		/**
+		* Updates the pending count associated with the currently visible pending snippet,
+		* if any, such that we can replace the snippet with content once work is done
+		* @param {1 | -1} d
+		* @param {Batch} batch
+		*/
+		#update_pending_count(d, batch) {
+			if (!this.has_pending_snippet()) {
+				if (this.parent) this.parent.#update_pending_count(d, batch);
+				return;
+			}
+			this.#pending_count += d;
+			if (this.#pending_count === 0) {
+				this.#resolve(batch);
+				if (this.#pending_effect) pause_effect(this.#pending_effect, () => {
+					this.#pending_effect = null;
+				});
+				if (this.#offscreen_fragment) {
+					this.#anchor.before(this.#offscreen_fragment);
+					this.#offscreen_fragment = null;
+				}
+			}
+		}
+		/**
+		* Update the source that powers `$effect.pending()` inside this boundary,
+		* and controls when the current `pending` snippet (if any) is removed.
+		* Do not call from inside the class
+		* @param {1 | -1} d
+		* @param {Batch} batch
+		*/
+		update_pending_count(d, batch) {
+			this.#update_pending_count(d, batch);
+			this.#local_pending_count += d;
+			if (!this.#effect_pending || this.#pending_count_update_queued) return;
+			this.#pending_count_update_queued = true;
+			queue_micro_task(() => {
+				this.#pending_count_update_queued = false;
+				if (this.#effect_pending) internal_set(this.#effect_pending, this.#local_pending_count);
+			});
+		}
+		get_effect_pending() {
+			this.#effect_pending_subscriber();
+			return get(this.#effect_pending);
+		}
+		/** @param {unknown} error */
+		error(error) {
+			if (!this.#props.onerror && !this.#props.failed) throw error;
+			if (current_batch?.is_fork) {
+				if (this.#main_effect) current_batch.skip_effect(this.#main_effect);
+				if (this.#pending_effect) current_batch.skip_effect(this.#pending_effect);
+				if (this.#failed_effect) current_batch.skip_effect(this.#failed_effect);
+				current_batch.oncommit(() => {
+					this.#handle_error(error);
+				});
+			} else this.#handle_error(error);
+		}
+		/**
+		* @param {unknown} error
+		*/
+		#handle_error(error) {
+			if (this.#main_effect) {
+				destroy_effect(this.#main_effect);
+				this.#main_effect = null;
+			}
+			if (this.#pending_effect) {
+				destroy_effect(this.#pending_effect);
+				this.#pending_effect = null;
+			}
+			if (this.#failed_effect) {
+				destroy_effect(this.#failed_effect);
+				this.#failed_effect = null;
+			}
+			if (hydrating) {
+				set_hydrate_node(this.#hydrate_open);
+				next();
+				set_hydrate_node(skip_nodes());
+			}
+			let failed = this.#props.failed;
+			/** @param {unknown} transformed_error */
+			const handle_error_result = (transformed_error) => {
+				const { reset, invoke_onerror } = this.#create_reset(transformed_error);
+				invoke_onerror();
+				if (failed) this.#failed_effect = this.#run(() => {
+					try {
+						return branch(() => {
+							var effect = active_effect;
+							effect.b = this;
+							effect.f |= 128;
+							failed(this.#anchor, () => transformed_error, () => reset);
+						});
+					} catch (error) {
+						invoke_error_boundary(error, this.#effect.parent);
+						return null;
+					}
+				});
+			};
+			queue_micro_task(() => {
+				/** @type {unknown} */
+				var result;
+				try {
+					result = this.transform_error(error);
+				} catch (e) {
+					invoke_error_boundary(e, this.#effect && this.#effect.parent);
+					return;
+				}
+				if (result !== null && typeof result === "object" && typeof result.then === "function")
+ /** @type {any} */ result.then(
+					handle_error_result,
+					/** @param {unknown} e */
+					(e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
+				);
+				else handle_error_result(result);
+			});
+		}
+	};
+	/**
+	* @param {Element} text
+	* @param {string} value
+	* @returns {void}
+	*/
 	function set_text(text, value) {
-		// For objects, we apply string coercion (which might make things like $state array references in the template reactive) before diffing
-		var str = value == null ? '' : typeof value === 'object' ? `${value}` : value;
-		// prettier-ignore
-		if (str !== (/** @type {any} */ (text)[TEXT_CACHE] ??= text.nodeValue)) {
-			/** @type {any} */ (text)[TEXT_CACHE] = str;
+		var str = value == null ? "" : typeof value === "object" ? `${value}` : value;
+		if (str !== (text[TEXT_CACHE] ??= text.nodeValue)) {
+			/** @type {any} */ text[TEXT_CACHE] = str;
 			text.nodeValue = `${str}`;
 		}
 	}
-
 	/**
-	 * Mounts a component to the given target and returns the exports and potentially the props (if compiled with `accessors: true`) of the component.
-	 * Transitions will play during the initial render unless the `intro` option is set to `false`.
-	 *
-	 * @template {Record<string, any>} Props
-	 * @template {Record<string, any>} Exports
-	 * @param {ComponentType<SvelteComponent<Props>> | Component<Props, Exports, any>} component
-	 * @param {MountOptions<Props>} options
-	 * @returns {Exports}
-	 */
+	* Mounts a component to the given target and returns the exports and potentially the props (if compiled with `accessors: true`) of the component.
+	* Transitions will play during the initial render unless the `intro` option is set to `false`.
+	*
+	* @template {Record<string, any>} Props
+	* @template {Record<string, any>} Exports
+	* @param {ComponentType<SvelteComponent<Props>> | Component<Props, Exports, any>} component
+	* @param {MountOptions<Props>} options
+	* @returns {Exports}
+	*/
 	function mount(component, options) {
 		return _mount(component, options);
 	}
-
 	/**
-	 * Hydrates a component on the given target and returns the exports and potentially the props (if compiled with `accessors: true`) of the component
-	 *
-	 * @template {Record<string, any>} Props
-	 * @template {Record<string, any>} Exports
-	 * @param {ComponentType<SvelteComponent<Props>> | Component<Props, Exports, any>} component
-	 * @param {{} extends Props ? {
-	 * 		target: Document | Element | ShadowRoot;
-	 * 		props?: Props;
-	 * 		events?: Record<string, (e: any) => any>;
-	 *  	context?: Map<any, any>;
-	 * 		intro?: boolean;
-	 * 		recover?: boolean;
-	 *		transformError?: (error: unknown) => unknown;
-	 * 	} : {
-	 * 		target: Document | Element | ShadowRoot;
-	 * 		props: Props;
-	 * 		events?: Record<string, (e: any) => any>;
-	 *  	context?: Map<any, any>;
-	 * 		intro?: boolean;
-	 * 		recover?: boolean;
-	 *		transformError?: (error: unknown) => unknown;
-	 * 	}} options
-	 * @returns {Exports}
-	 */
+	* Hydrates a component on the given target and returns the exports and potentially the props (if compiled with `accessors: true`) of the component
+	*
+	* @template {Record<string, any>} Props
+	* @template {Record<string, any>} Exports
+	* @param {ComponentType<SvelteComponent<Props>> | Component<Props, Exports, any>} component
+	* @param {{} extends Props ? {
+	* 		target: Document | Element | ShadowRoot;
+	* 		props?: Props;
+	* 		events?: Record<string, (e: any) => any>;
+	*  	context?: Map<any, any>;
+	* 		intro?: boolean;
+	* 		recover?: boolean;
+	*		transformError?: (error: unknown) => unknown;
+	* 	} : {
+	* 		target: Document | Element | ShadowRoot;
+	* 		props: Props;
+	* 		events?: Record<string, (e: any) => any>;
+	*  	context?: Map<any, any>;
+	* 		intro?: boolean;
+	* 		recover?: boolean;
+	*		transformError?: (error: unknown) => unknown;
+	* 	}} options
+	* @returns {Exports}
+	*/
 	function hydrate(component, options) {
 		init_operations();
 		options.intro = options.intro ?? false;
 		const target = options.target;
 		const was_hydrating = hydrating;
 		const previous_hydrate_node = hydrate_node;
-
 		try {
-			var anchor = get_first_child(target);
-
-			while (
-				anchor &&
-				(anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */ (anchor).data !== HYDRATION_START)
-			) {
-				anchor = get_next_sibling(anchor);
-			}
-
-			if (!anchor) {
-				throw HYDRATION_ERROR;
-			}
-
+			var anchor = /* @__PURE__ */ get_first_child(target);
+			while (anchor && (anchor.nodeType !== 8 || anchor.data !== "[")) anchor = /* @__PURE__ */ get_next_sibling(anchor);
+			if (!anchor) throw HYDRATION_ERROR;
 			set_hydrating(true);
-			set_hydrate_node(/** @type {Comment} */ (anchor));
-
-			const instance = _mount(component, { ...options, anchor });
-
+			set_hydrate_node(anchor);
+			const instance = _mount(component, {
+				...options,
+				anchor
+			});
 			set_hydrating(false);
-
-			return /**  @type {Exports} */ (instance);
+			return instance;
 		} catch (error) {
-			// re-throw Svelte errors - they are certainly not related to hydration
-			if (
-				error instanceof Error &&
-				error.message.split('\n').some((line) => line.startsWith('https://svelte.dev/e/'))
-			) {
-				throw error;
-			}
-			if (error !== HYDRATION_ERROR) {
-				// eslint-disable-next-line no-console
-				console.warn('Failed to hydrate: ', error);
-			}
-
-			if (options.recover === false) {
-				hydration_failed();
-			}
-
-			// If an error occurred above, the operations might not yet have been initialised.
+			if (error instanceof Error && error.message.split("\n").some((line) => line.startsWith("https://svelte.dev/e/"))) throw error;
+			if (error !== HYDRATION_ERROR) console.warn("Failed to hydrate: ", error);
+			if (options.recover === false) hydration_failed();
 			init_operations();
 			clear_text_content(target);
-
 			set_hydrating(false);
 			return mount(component, options);
 		} finally {
@@ -6303,874 +4028,415 @@
 			set_hydrate_node(previous_hydrate_node);
 		}
 	}
-
 	/** @type {Map<EventTarget, Map<string, number>>} */
-	const listeners = new Map();
-
+	var listeners = /* @__PURE__ */ new Map();
 	/**
-	 * @template {Record<string, any>} Exports
-	 * @param {ComponentType<SvelteComponent<any>> | Component<any>} Component
-	 * @param {MountOptions} options
-	 * @returns {Exports}
-	 */
-	function _mount(
-		Component,
-		{ target, anchor, props = {}, events, context, intro = true, transformError }
-	) {
+	* @template {Record<string, any>} Exports
+	* @param {ComponentType<SvelteComponent<any>> | Component<any>} Component
+	* @param {MountOptions} options
+	* @returns {Exports}
+	*/
+	function _mount(Component, { target, anchor, props = {}, events, context, intro = true, transformError }) {
 		init_operations();
-
 		/** @type {Exports} */
-		// @ts-expect-error will be defined because the render effect runs synchronously
-		var component = undefined;
-
+		var component = void 0;
 		var unmount = component_root(() => {
 			var anchor_node = anchor ?? target.appendChild(create_text());
-
-			boundary(
-				/** @type {TemplateNode} */ (anchor_node),
-				{
-					pending: () => {}
-				},
-				(anchor_node) => {
-					push({});
-					var ctx = /** @type {ComponentContext} */ (component_context);
-					if (context) ctx.c = context;
-
-					if (events) {
-						// We can't spread the object or else we'd lose the state proxy stuff, if it is one
-						/** @type {any} */ (props).$$events = events;
+			boundary(anchor_node, { pending: () => {} }, (anchor_node) => {
+				push({});
+				var ctx = component_context;
+				if (context) ctx.c = context;
+				if (events)
+ /** @type {any} */ props.$$events = events;
+				if (hydrating) assign_nodes(anchor_node, null);
+				component = Component(anchor_node, props) || mark_as_component();
+				if (hydrating) {
+					/** @type {Effect & { nodes: EffectNodes }} */ active_effect.nodes.end = hydrate_node;
+					if (hydrate_node === null || hydrate_node.nodeType !== 8 || hydrate_node.data !== "]") {
+						hydration_mismatch();
+						throw HYDRATION_ERROR;
 					}
-
-					if (hydrating) {
-						assign_nodes(/** @type {TemplateNode} */ (anchor_node), null);
-					}
-					// @ts-expect-error the public typings are not what the actual function looks like
-					component = Component(anchor_node, props) || {};
-
-					if (hydrating) {
-						/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = hydrate_node;
-
-						if (
-							hydrate_node === null ||
-							hydrate_node.nodeType !== COMMENT_NODE ||
-							/** @type {Comment} */ (hydrate_node).data !== HYDRATION_END
-						) {
-							hydration_mismatch();
-							throw HYDRATION_ERROR;
-						}
-					}
-
-					pop();
-				},
-				transformError
-			);
-
-			// Setup event delegation _after_ component is mounted - if an error would happen during mount, it would otherwise not be cleaned up
+				}
+				pop();
+			}, transformError);
 			/** @type {Set<string>} */
-			var registered_events = new Set();
-
+			var registered_events = /* @__PURE__ */ new Set();
 			/** @param {Array<string>} events */
 			var event_handle = (events) => {
 				for (var i = 0; i < events.length; i++) {
 					var event_name = events[i];
-
 					if (registered_events.has(event_name)) continue;
 					registered_events.add(event_name);
-
 					var passive = is_passive_event(event_name);
-
-					// Add the event listener to both the container and the document.
-					// The container listener ensures we catch events from within in case
-					// the outer content stops propagation of the event.
-					//
-					// The document listener ensures we catch events that originate from elements that were
-					// manually moved outside of the container (e.g. via manual portals).
 					for (const node of [target, document]) {
 						var counts = listeners.get(node);
-
-						if (counts === undefined) {
-							counts = new Map();
+						if (counts === void 0) {
+							counts = /* @__PURE__ */ new Map();
 							listeners.set(node, counts);
 						}
-
 						var count = counts.get(event_name);
-
-						if (count === undefined) {
+						if (count === void 0) {
 							node.addEventListener(event_name, handle_event_propagation, { passive });
 							counts.set(event_name, 1);
-						} else {
-							counts.set(event_name, count + 1);
-						}
+						} else counts.set(event_name, count + 1);
 					}
 				}
 			};
-
 			event_handle(array_from(all_registered_events));
 			root_event_handles.add(event_handle);
-
 			return () => {
-				for (var event_name of registered_events) {
-					for (const node of [target, document]) {
-						var counts = /** @type {Map<string, number>} */ (listeners.get(node));
-						var count = /** @type {number} */ (counts.get(event_name));
-
-						if (--count == 0) {
-							node.removeEventListener(event_name, handle_event_propagation);
-							counts.delete(event_name);
-
-							if (counts.size === 0) {
-								listeners.delete(node);
-							}
-						} else {
-							counts.set(event_name, count);
-						}
-					}
+				for (var event_name of registered_events) for (const node of [target, document]) {
+					var counts = listeners.get(node);
+					var count = counts.get(event_name);
+					if (--count == 0) {
+						node.removeEventListener(event_name, handle_event_propagation);
+						counts.delete(event_name);
+						if (counts.size === 0) listeners.delete(node);
+					} else counts.set(event_name, count);
 				}
-
 				root_event_handles.delete(event_handle);
-
-				if (anchor_node !== anchor) {
-					anchor_node.parentNode?.removeChild(anchor_node);
-				}
+				if (anchor_node !== anchor) anchor_node.parentNode?.removeChild(anchor_node);
 			};
 		});
-
 		mounted_components.set(component, unmount);
 		return component;
 	}
-
 	/**
-	 * References of the components that were mounted or hydrated.
-	 * Uses a `WeakMap` to avoid memory leaks.
-	 */
-	let mounted_components = new WeakMap();
-
+	* References of the components that were mounted or hydrated.
+	* Uses a `WeakMap` to avoid memory leaks.
+	*/
+	var mounted_components = /* @__PURE__ */ new WeakMap();
 	/**
-	 * Unmounts a component that was previously mounted using `mount` or `hydrate`.
-	 *
-	 * Since 5.13.0, if `options.outro` is `true`, [transitions](https://svelte.dev/docs/svelte/transition) will play before the component is removed from the DOM.
-	 *
-	 * Returns a `Promise` that resolves after transitions have completed if `options.outro` is true, or immediately otherwise (prior to 5.13.0, returns `void`).
-	 *
-	 * ```js
-	 * import { mount, unmount } from 'svelte';
-	 * import App from './App.svelte';
-	 *
-	 * const app = mount(App, { target: document.body });
-	 *
-	 * // later...
-	 * unmount(app, { outro: true });
-	 * ```
-	 * @param {Record<string, any>} component
-	 * @param {{ outro?: boolean }} [options]
-	 * @returns {Promise<void>}
-	 */
+	* Unmounts a component that was previously mounted using `mount` or `hydrate`.
+	*
+	* Since 5.13.0, if `options.outro` is `true`, [transitions](https://svelte.dev/docs/svelte/transition) will play before the component is removed from the DOM.
+	*
+	* Returns a `Promise` that resolves after transitions have completed if `options.outro` is true, or immediately otherwise (prior to 5.13.0, returns `void`).
+	*
+	* ```js
+	* import { mount, unmount } from 'svelte';
+	* import App from './App.svelte';
+	*
+	* const app = mount(App, { target: document.body });
+	*
+	* // later...
+	* unmount(app, { outro: true });
+	* ```
+	* @param {Record<string, any>} component
+	* @param {{ outro?: boolean }} [options]
+	* @returns {Promise<void>}
+	*/
 	function unmount(component, options) {
 		const fn = mounted_components.get(component);
-
 		if (fn) {
 			mounted_components.delete(component);
 			return fn(options);
 		}
-
 		return Promise.resolve();
 	}
-
-	/**
-	 * @param {() => string} tag_fn
-	 * @returns {void}
-	 */
-	function validate_void_dynamic_element(tag_fn) {
-		const tag = tag_fn();
-		if (tag && is_void(tag)) {
-			dynamic_void_element_content();
-		}
-	}
-
-	/** @param {() => unknown} tag_fn */
-	function validate_dynamic_element_tag(tag_fn) {
-		const tag = tag_fn();
-		const is_string = typeof tag === 'string';
-		if (tag && !is_string) {
-			svelte_element_invalid_this_value();
-		}
-	}
-
-	/**
-	 * @template {(...args: any[]) => unknown} T
-	 * @param {T} fn
-	 */
-	function prevent_snippet_stringification(fn) {
-		fn.toString = () => {
-			snippet_without_render_tag();
-			return '';
-		};
-		return fn;
-	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/branches.js
 	/** @import { Effect, TemplateNode } from '#client' */
-
 	/**
-	 * @typedef {{ effect: Effect, fragment: DocumentFragment }} Branch
-	 */
-
+	* @typedef {{ effect: Effect, fragment: DocumentFragment }} Branch
+	*/
 	/**
-	 * @template Key
-	 */
-	class BranchManager {
+	* @template Key
+	*/
+	var BranchManager = class {
 		/** @type {TemplateNode} */
 		anchor;
-
 		/** @type {Map<Batch, Key>} */
-		#batches = new Map();
-
+		#batches = /* @__PURE__ */ new Map();
 		/**
-		 * Map of keys to effects that are currently rendered in the DOM.
-		 * These effects are visible and actively part of the document tree.
-		 * Example:
-		 * ```
-		 * {#if condition}
-		 * 	foo
-		 * {:else}
-		 * 	bar
-		 * {/if}
-		 * ```
-		 * Can result in the entries `true->Effect` and `false->Effect`
-		 * @type {Map<Key, Effect>}
-		 */
-		#onscreen = new Map();
-
+		* Map of keys to effects that are currently rendered in the DOM.
+		* These effects are visible and actively part of the document tree.
+		* Example:
+		* ```
+		* {#if condition}
+		* 	foo
+		* {:else}
+		* 	bar
+		* {/if}
+		* ```
+		* Can result in the entries `true->Effect` and `false->Effect`
+		* @type {Map<Key, Effect>}
+		*/
+		#onscreen = /* @__PURE__ */ new Map();
 		/**
-		 * Similar to #onscreen with respect to the keys, but contains branches that are not yet
-		 * in the DOM, because their insertion is deferred.
-		 * @type {Map<Key, Branch>}
-		 */
-		#offscreen = new Map();
-
+		* Similar to #onscreen with respect to the keys, but contains branches that are not yet
+		* in the DOM, because their insertion is deferred.
+		* @type {Map<Key, Branch>}
+		*/
+		#offscreen = /* @__PURE__ */ new Map();
 		/**
-		 * Keys of effects that are currently outroing
-		 * @type {Set<Key>}
-		 */
-		#outroing = new Set();
-
+		* Keys of effects that are currently outroing
+		* @type {Set<Key>}
+		*/
+		#outroing = /* @__PURE__ */ new Set();
 		/**
-		 * Whether to pause (i.e. outro) on change, or destroy immediately.
-		 * This is necessary for `<svelte:element>`
-		 */
+		* Whether to pause (i.e. outro) on change, or destroy immediately.
+		* This is necessary for `<svelte:element>`
+		*/
 		#transition = true;
-
 		/**
-		 * @param {TemplateNode} anchor
-		 * @param {boolean} transition
-		 */
+		* @param {TemplateNode} anchor
+		* @param {boolean} transition
+		*/
 		constructor(anchor, transition = true) {
 			this.anchor = anchor;
 			this.#transition = transition;
 		}
-
 		/**
-		 * @param {Batch} batch
-		 */
+		* @param {Batch} batch
+		*/
 		#commit = (batch) => {
-			// if this batch was made obsolete, bail
 			if (!this.#batches.has(batch)) return;
-
-			var key = /** @type {Key} */ (this.#batches.get(batch));
-
+			var key = this.#batches.get(batch);
 			var onscreen = this.#onscreen.get(key);
-
 			if (onscreen) {
-				// effect is already in the DOM — abort any current outro
 				resume_effect(onscreen);
 				this.#outroing.delete(key);
 			} else {
-				// effect is currently offscreen. put it in the DOM
 				var offscreen = this.#offscreen.get(key);
-
 				if (offscreen) {
-					// effect could have been outro'ed before through a prior batch — resume if necessary
 					resume_effect(offscreen.effect);
 					this.#onscreen.set(key, offscreen.effect);
 					this.#offscreen.delete(key);
-
-					// remove the anchor...
-					/** @type {TemplateNode} */ (offscreen.fragment.lastChild).remove();
-
-					// ...and append the fragment
+					/** @type {TemplateNode} */ offscreen.fragment.lastChild.remove();
 					this.anchor.before(offscreen.fragment);
 					onscreen = offscreen.effect;
 				}
 			}
-
 			for (const [b, k] of this.#batches) {
 				this.#batches.delete(b);
-
-				if (b === batch) {
-					// keep values for newer batches
-					break;
-				}
-
+				if (b === batch) break;
 				const offscreen = this.#offscreen.get(k);
-
 				if (offscreen) {
-					// for older batches, destroy offscreen effects
-					// as they will never be committed
 					destroy_effect(offscreen.effect);
 					this.#offscreen.delete(k);
 				}
 			}
-
-			// outro/destroy all onscreen effects...
 			for (const [k, effect] of this.#onscreen) {
-				// ...except the one that was just committed
-				//    or those that are already outroing (else the transition is aborted and the effect destroyed right away)
 				if (k === key || this.#outroing.has(k)) continue;
-
 				const on_destroy = () => {
-					const keys = Array.from(this.#batches.values());
-
-					if (keys.includes(k)) {
-						// keep the effect offscreen, as another batch will need it
+					if (Array.from(this.#batches.values()).includes(k)) {
 						var fragment = document.createDocumentFragment();
 						move_effect(effect, fragment);
-
-						fragment.append(create_text()); // TODO can we avoid this?
-
-						this.#offscreen.set(k, { effect, fragment });
-					} else {
-						destroy_effect(effect);
-					}
-
+						fragment.append(create_text());
+						this.#offscreen.set(k, {
+							effect,
+							fragment
+						});
+					} else destroy_effect(effect);
 					this.#outroing.delete(k);
 					this.#onscreen.delete(k);
 				};
-
 				if (this.#transition || !onscreen) {
 					this.#outroing.add(k);
 					pause_effect(effect, on_destroy, false);
-				} else {
-					on_destroy();
-				}
+				} else on_destroy();
 			}
 		};
-
 		/**
-		 * @param {Batch} batch
-		 */
+		* @param {Batch} batch
+		*/
 		#discard = (batch) => {
 			this.#batches.delete(batch);
-
 			const keys = Array.from(this.#batches.values());
-
-			for (const [k, branch] of this.#offscreen) {
-				if (!keys.includes(k)) {
-					destroy_effect(branch.effect);
-					this.#offscreen.delete(k);
-				}
+			for (const [k, branch] of this.#offscreen) if (!keys.includes(k)) {
+				destroy_effect(branch.effect);
+				this.#offscreen.delete(k);
 			}
 		};
-
 		/**
-		 *
-		 * @param {any} key
-		 * @param {null | ((target: TemplateNode) => void)} fn
-		 */
+		*
+		* @param {any} key
+		* @param {null | ((target: TemplateNode) => void)} fn
+		*/
 		ensure(key, fn) {
-			var batch = /** @type {Batch} */ (current_batch);
-
+			var batch = current_batch;
+			var defer = should_defer_append();
 			if (fn && !this.#onscreen.has(key) && !this.#offscreen.has(key)) {
-				{
-					this.#onscreen.set(
-						key,
-						branch(() => fn(this.anchor))
-					);
-				}
+				if (defer) {
+					var fragment = document.createDocumentFragment();
+					var target = create_text();
+					fragment.append(target);
+					this.#offscreen.set(key, {
+						effect: branch(() => fn(target)),
+						fragment
+					});
+				} else this.#onscreen.set(key, branch(() => fn(this.anchor)));
 			}
-
 			this.#batches.set(batch, key);
-
-			{
-				if (hydrating) {
-					this.anchor = hydrate_node;
-				}
-
+			if (defer) {
+				for (const [k, effect] of this.#onscreen) if (k === key) batch.unskip_effect(effect);
+				else batch.skip_effect(effect);
+				for (const [k, branch] of this.#offscreen) if (k === key) batch.unskip_effect(branch.effect);
+				else batch.skip_effect(branch.effect);
+				batch.oncommit(this.#commit);
+				batch.ondiscard(this.#discard);
+			} else {
+				if (hydrating) this.anchor = hydrate_node;
 				this.#commit(batch);
 			}
 		}
-	}
-
+	};
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/snippet.js
 	/** @import { Snippet } from 'svelte' */
 	/** @import { TemplateNode } from '#client' */
 	/** @import { Getters } from '#shared' */
-
 	/**
-	 * @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
-	 * @param {TemplateNode} node
-	 * @param {() => SnippetFn | null | undefined} get_snippet
-	 * @param {(() => any)[]} args
-	 * @returns {void}
-	 */
+	* @template {(node: TemplateNode, ...args: any[]) => void} SnippetFn
+	* @param {TemplateNode} node
+	* @param {() => SnippetFn | null | undefined} get_snippet
+	* @param {(() => any)[]} args
+	* @returns {void}
+	*/
 	function snippet(node, get_snippet, ...args) {
 		var branches = new BranchManager(node);
-
 		block(() => {
 			const snippet = get_snippet() ?? null;
-
 			branches.ensure(snippet, snippet && ((anchor) => snippet(anchor, ...args)));
 		}, EFFECT_TRANSPARENT);
 	}
-
 	/**
-	 * In development, wrap the snippet function so that it passes validation, and so that the
-	 * correct component context is set for ownership checks
-	 * @param {any} component
-	 * @param {(node: TemplateNode, ...args: any[]) => void} fn
-	 */
-	function wrap_snippet(component, fn) {
-		const snippet = (/** @type {TemplateNode} */ node, /** @type {any[]} */ ...args) => {
-			var previous_component_function = dev_current_component_function;
-			set_dev_current_component_function(component);
-
-			try {
-				return fn(node, ...args);
-			} finally {
-				set_dev_current_component_function(previous_component_function);
-			}
-		};
-
-		prevent_snippet_stringification(snippet);
-
-		return snippet;
-	}
-
-	/** @import { ComponentContext, ComponentContextLegacy } from '#client' */
-	/** @import { EventDispatcher } from './index.js' */
-	/** @import { NotFunction } from './internal/types.js' */
-
-	/**
-	 * `onMount`, like [`$effect`](https://svelte.dev/docs/svelte/$effect), schedules a function to run as soon as the component has been mounted to the DOM.
-	 * Unlike `$effect`, the provided function only runs once.
-	 *
-	 * It must be called during the component's initialisation (but doesn't need to live _inside_ the component;
-	 * it can be called from an external module). If a function is returned _synchronously_ from `onMount`,
-	 * it will be called when the component is unmounted.
-	 *
-	 * `onMount` functions do not run during [server-side rendering](https://svelte.dev/docs/svelte/svelte-server#render).
-	 *
-	 * @template T
-	 * @param {() => NotFunction<T> | Promise<NotFunction<T>> | (() => any)} fn
-	 * @returns {void}
-	 */
+	* `onMount`, like [`$effect`](https://svelte.dev/docs/svelte/$effect), schedules a function to run as soon as the component has been mounted to the DOM.
+	* Unlike `$effect`, the provided function only runs once.
+	*
+	* It must be called during the component's initialisation (but doesn't need to live _inside_ the component;
+	* it can be called from an external module). If a function is returned _synchronously_ from `onMount`,
+	* it will be called when the component is unmounted.
+	*
+	* `onMount` functions do not run during [server-side rendering](https://svelte.dev/docs/svelte/svelte-server#render).
+	*
+	* @template T
+	* @param {() => NotFunction<T> | Promise<NotFunction<T>> | (() => any)} fn
+	* @returns {void}
+	*/
 	function onMount(fn) {
-		if (component_context === null) {
-			lifecycle_outside_component();
-		}
-
-		{
-			user_effect(() => {
-				const cleanup = untrack(fn);
-				if (typeof cleanup === 'function') return /** @type {() => void} */ (cleanup);
-			});
-		}
+		if (component_context === null) lifecycle_outside_component("onMount");
+		if (legacy_mode_flag && component_context.l !== null) init_update_callbacks(component_context).m.push(fn);
+		else user_effect(() => {
+			const cleanup = untrack(fn);
+			if (typeof cleanup === "function") return cleanup;
+		});
 	}
-
 	/**
-	 * Schedules a callback to run immediately before the component is unmounted.
-	 *
-	 * Out of `onMount`, `beforeUpdate`, `afterUpdate` and `onDestroy`, this is the
-	 * only one that runs inside a server-side component.
-	 *
-	 * @param {() => any} fn
-	 * @returns {void}
-	 */
+	* Schedules a callback to run immediately before the component is unmounted.
+	*
+	* Out of `onMount`, `beforeUpdate`, `afterUpdate` and `onDestroy`, this is the
+	* only one that runs inside a server-side component.
+	*
+	* @param {() => any} fn
+	* @returns {void}
+	*/
 	function onDestroy(fn) {
-		if (component_context === null) {
-			lifecycle_outside_component();
-		}
-
+		if (component_context === null) lifecycle_outside_component("onDestroy");
 		onMount(() => () => untrack(fn));
 	}
-
-	/** @import { SourceLocation } from '#client' */
-
 	/**
-	 * @param {any} fn
-	 * @param {string} filename
-	 * @param {SourceLocation[]} locations
-	 * @returns {any}
-	 */
-	function add_locations(fn, filename, locations) {
-		return (/** @type {any[]} */ ...args) => {
-			const dom = fn(...args);
-
-			var node = hydrating ? dom : dom.nodeType === DOCUMENT_FRAGMENT_NODE ? dom.firstChild : dom;
-			assign_locations(node, filename, locations);
-
-			return dom;
+	* Legacy-mode: Init callbacks object for onMount/beforeUpdate/afterUpdate
+	* @param {ComponentContext} context
+	*/
+	function init_update_callbacks(context) {
+		var l = context.l;
+		return l.u ??= {
+			a: [],
+			b: [],
+			m: []
 		};
 	}
-
-	/**
-	 * @param {Element} element
-	 * @param {string} filename
-	 * @param {SourceLocation} location
-	 */
-	function assign_location(element, filename, location) {
-		// @ts-expect-error
-		element.__svelte_meta = {
-			parent: dev_stack,
-			loc: { file: filename, line: location[0], column: location[1] }
-		};
-
-		if (location[2]) {
-			assign_locations(element.firstChild, filename, location[2]);
-		}
-	}
-
-	/**
-	 * @param {Node | null} node
-	 * @param {string} filename
-	 * @param {SourceLocation[]} locations
-	 */
-	function assign_locations(node, filename, locations) {
-		var i = 0;
-		var depth = 0;
-
-		while (node && i < locations.length) {
-			if (hydrating && node.nodeType === COMMENT_NODE) {
-				var comment = /** @type {Comment} */ (node);
-				if (comment.data[0] === HYDRATION_START) depth += 1;
-				else if (comment.data[0] === HYDRATION_END) depth -= 1;
-			}
-
-			if (depth === 0 && node.nodeType === ELEMENT_NODE) {
-				assign_location(/** @type {Element} */ (node), filename, locations[i++]);
-			}
-
-			node = node.nextSibling;
-		}
-	}
-
-	/** @typedef {{ file: string, line: number, column: number }} Location */
-
-
-	/**
-	 * Sets up a validator that
-	 * - traverses the path of a prop to find out if it is allowed to be mutated
-	 * - checks that the binding chain is not interrupted
-	 * @param {Record<string, any>} props
-	 */
-	function create_ownership_validator(props) {
-		const component = component_context?.function;
-		const parent = component_context?.p?.function;
-
-		return {
-			/**
-			 * @param {string} prop
-			 * @param {any[]} path
-			 * @param {any} result
-			 * @param {number} line
-			 * @param {number} column
-			 */
-			mutation: (prop, path, result, line, column) => {
-				const name = path[0];
-				if (is_bound_or_unset(props, name) || !parent) {
-					return result;
-				}
-
-				/** @type {any} */
-				let value = props;
-
-				for (let i = 0; i < path.length - 1; i++) {
-					value = value[path[i]];
-					if (!value?.[STATE_SYMBOL]) {
-						return result;
-					}
-				}
-
-				const location = sanitize_location(`${component[FILENAME]}:${line}:${column}`);
-
-				ownership_invalid_mutation(name, location, prop, parent[FILENAME]);
-
-				return result;
-			},
-			/**
-			 * @param {any} key
-			 * @param {any} child_component
-			 * @param {() => any} value
-			 */
-			binding: (key, child_component, value) => {
-				if (!is_bound_or_unset(props, key) && parent && value()?.[STATE_SYMBOL]) {
-					ownership_invalid_binding(
-						component[FILENAME],
-						key,
-						child_component[FILENAME],
-						parent[FILENAME]
-					);
-				}
-			}
-		};
-	}
-
-	/**
-	 * @param {Record<string, any>} props
-	 * @param {string} prop_name
-	 */
-	function is_bound_or_unset(props, prop_name) {
-		// Can be the case when someone does `mount(Component, props)` with `let props = $state({...})`
-		// or `createClassComponent(Component, props)`
-		const is_entry_props = STATE_SYMBOL in props || LEGACY_PROPS in props;
-		return (
-			!!get_descriptor(props, prop_name)?.set ||
-			(is_entry_props && prop_name in props) ||
-			!(prop_name in props)
-		);
-	}
-
-	/** @param {Function & { [FILENAME]: string }} target */
-	function check_target(target) {
-		if (target) {
-			component_api_invalid_new(target[FILENAME] ?? 'a component', target.name);
-		}
-	}
-
-	function legacy_api() {
-		const component = component_context?.function;
-
-		/** @param {string} method */
-		function error(method) {
-			component_api_changed(method, component[FILENAME]);
-		}
-
-		return {
-			$destroy: () => error('$destroy()'),
-			$on: () => error('$on(...)'),
-			$set: () => error('$set(...)')
-		};
-	}
-
-	/**
-	 * @param {() => any[]} get_value
-	 * @param {Function} inspector
-	 * @param {boolean} show_stack
-	 */
-	function inspect(get_value, inspector, show_stack = false) {
-		validate_effect();
-
-		let initial = true;
-		let error = /** @type {any} */ (UNINITIALIZED);
-
-		// Inspect effects runs synchronously so that we can capture useful
-		// stack traces. As a consequence, reading the value might result
-		// in an error (an `$inspect(object.property)` will run before the
-		// `{#if object}...{/if}` that contains it)
-		eager_effect(() => {
-			error = UNINITIALIZED;
-
-			try {
-				var value = get_value();
-			} catch (e) {
-				error = e;
-				return;
-			}
-
-			var snap = snapshot(value, true, true);
-			untrack(() => {
-				if (show_stack) {
-					inspector(...snap);
-
-					if (!initial) {
-						const stack = get_error('$inspect(...)');
-						if (stack) {
-							// eslint-disable-next-line no-console
-							console.groupCollapsed('stack trace');
-							// eslint-disable-next-line no-console
-							console.log(stack);
-							// eslint-disable-next-line no-console
-							console.groupEnd();
-						}
-					}
-				} else {
-					inspector(initial ? 'init' : 'update', ...snap);
-				}
-			});
-
-			initial = false;
-		});
-
-		// If an error occurs, we store it (along with its stack trace).
-		// If the render effect subsequently runs, we log the error,
-		// but if it doesn't run it's because the `$inspect` was
-		// destroyed, meaning we don't need to bother
-		render_effect(() => {
-			try {
-				// call `get_value` so that this runs alongside the inspect effect
-				get_value();
-			} catch {
-				// ignore
-			}
-
-			if (error !== UNINITIALIZED) {
-				// eslint-disable-next-line no-console
-				console.error(error);
-				error = UNINITIALIZED;
-			}
-		});
-	}
-
-	/**
-	 * @param {Node} anchor
-	 * @param {...(()=>any)[]} args
-	 */
-	function validate_snippet_args(anchor, ...args) {
-		if (typeof anchor !== 'object' || !(anchor instanceof Node)) {
-			invalid_snippet_arguments();
-		}
-
-		for (let arg of args) {
-			if (typeof arg !== 'function') {
-				invalid_snippet_arguments();
-			}
-		}
-	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/await.js
 	/** @import { Source, TemplateNode } from '#client' */
-
-	const PENDING = 0;
-	const THEN = 1;
-	const CATCH = 2;
-
+	var PENDING = 0;
+	var THEN = 1;
+	var CATCH = 2;
 	/** @typedef {typeof PENDING | typeof THEN | typeof CATCH} AwaitState */
-
 	/**
-	 * @template V
-	 * @param {TemplateNode} node
-	 * @param {(() => any)} get_input
-	 * @param {null | ((anchor: Node) => void)} pending_fn
-	 * @param {null | ((anchor: Node, value: Source<V>) => void)} then_fn
-	 * @param {null | ((anchor: Node, error: unknown) => void)} catch_fn
-	 * @returns {void}
-	 */
+	* @template V
+	* @param {TemplateNode} node
+	* @param {(() => any)} get_input
+	* @param {null | ((anchor: Node) => void)} pending_fn
+	* @param {null | ((anchor: Node, value: Source<V>) => void)} then_fn
+	* @param {null | ((anchor: Node, error: unknown) => void)} catch_fn
+	* @returns {void}
+	*/
 	function await_block(node, get_input, pending_fn, then_fn, catch_fn) {
-		if (hydrating) {
-			hydrate_next();
-		}
-
-		var v = /** @type {V} */ (UNINITIALIZED);
-		var value = source(v) ;
-		var error = source(v) ;
-
+		if (hydrating) hydrate_next();
+		var runes = is_runes();
+		var v = UNINITIALIZED;
+		var value = runes ? source(v) : /* @__PURE__ */ mutable_source(v, false, false);
+		var error = runes ? source(v) : /* @__PURE__ */ mutable_source(v, false, false);
 		var branches = new BranchManager(node);
-
 		block(() => {
-			var batch = /** @type {Batch} */ (current_batch);
+			var batch = current_batch;
 			var input = get_input();
-
 			var destroyed = false;
-
 			/** Whether or not there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
-			// @ts-ignore coercing `node` to a `Comment` causes TypeScript and Prettier to fight
-			let mismatch = hydrating && is_promise(input) === (node.data === HYDRATION_START_ELSE);
-
+			let mismatch = hydrating && is_promise(input) === (node.data === "[!");
 			if (mismatch) {
-				// Hydration mismatch: remove everything inside the anchor and start fresh
 				set_hydrate_node(skip_nodes());
 				set_hydrating(false);
 			}
-
 			if (is_promise(input)) {
 				var restore = capture();
 				var resolved = false;
-
 				/**
-				 * @param {() => void} fn
-				 */
+				* @param {() => void} fn
+				*/
 				const resolve = (fn) => {
 					if (destroyed) return;
-
 					resolved = true;
-					// We don't want to restore the previous batch here; {#await} blocks don't follow the async logic
-					// we have elsewhere, instead pending/resolve/fail states are each their own batch so to speak.
 					restore(false);
-					// ...but it might still be set here. That means a `save(...)` has restored it — but that batch will
-					// likely already have been committed by the time it resolves, and this resolve should be processed
-					// in a separate batch. We're not using batch.deactivate()/activate() above because get_input()
-					// could write to sources, which would then incorrectly create a new batch or could mess with
-					// async_derived expecting a current_batch to exist.
-					if (current_batch === batch) {
-						batch.deactivate();
-					}
-					// Make sure we have a batch, since the branch manager expects one to exist
+					if (current_batch === batch) batch.deactivate();
 					Batch.ensure();
-
 					try {
 						fn();
 					} finally {
 						unset_context(false);
-
-						// without this, the DOM does not update until two ticks after the promise
-						// resolves, which is unexpected behaviour (and somewhat irksome to test)
 						if (!is_flushing_sync) flushSync();
 					}
 				};
-
-				input.then(
-					(v) => {
-						resolve(() => {
-							internal_set(value, v);
-							branches.ensure(THEN, then_fn && ((target) => then_fn(target, value)));
-						});
-					},
-					(e) => {
-						resolve(() => {
-							internal_set(error, e);
-							branches.ensure(CATCH, catch_fn && ((target) => catch_fn(target, error)));
-
-							if (!catch_fn) {
-								// Rethrow the error if no catch block exists
-								throw error.v;
-							}
-						});
-					}
-				);
-
-				if (hydrating) {
-					branches.ensure(PENDING, pending_fn);
-				} else {
-					// Wait a microtask before checking if we should show the pending state as
-					// the promise might have resolved by then
-					queue_micro_task(() => {
-						if (!resolved) {
-							resolve(() => {
-								branches.ensure(PENDING, pending_fn);
-							});
-						}
+				input.then((v) => {
+					resolve(() => {
+						internal_set(value, v);
+						branches.ensure(THEN, then_fn && ((target) => then_fn(target, value)));
 					});
-				}
+				}, (e) => {
+					resolve(() => {
+						internal_set(error, e);
+						branches.ensure(CATCH, catch_fn && ((target) => catch_fn(target, error)));
+						if (!catch_fn) throw error.v;
+					});
+				});
+				if (hydrating) branches.ensure(PENDING, pending_fn);
+				else queue_micro_task(() => {
+					if (!resolved) resolve(() => {
+						branches.ensure(PENDING, pending_fn);
+					});
+				});
 			} else {
 				internal_set(value, input);
 				branches.ensure(THEN, then_fn && ((target) => then_fn(target, value)));
 			}
-
-			if (mismatch) {
-				// continue in hydration mode
-				set_hydrating(true);
-			}
-
+			if (mismatch) set_hydrating(true);
 			return () => {
 				destroyed = true;
 			};
 		});
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/if.js
 	/** @import { TemplateNode } from '#client' */
-
 	/**
-	 * @param {TemplateNode} node
-	 * @param {(branch: (fn: (anchor: Node) => void, key?: number | false) => void) => void} fn
-	 * @param {boolean} [elseif] True if this is an `{:else if ...}` block rather than an `{#if ...}`, as that affects which transitions are considered 'local'
-	 * @returns {void}
-	 */
+	* @param {TemplateNode} node
+	* @param {(branch: (fn: (anchor: Node) => void, key?: number | false) => void) => void} fn
+	* @param {boolean} [elseif] True if this is an `{:else if ...}` block rather than an `{#if ...}`, as that affects which transitions are considered 'local'
+	* @returns {void}
+	*/
 	function if_block(node, fn, elseif = false) {
 		/** @type {TemplateNode | undefined} */
 		var marker;
@@ -7178,1789 +4444,1174 @@
 			marker = hydrate_node;
 			hydrate_next();
 		}
-
 		var branches = new BranchManager(node);
 		var flags = elseif ? EFFECT_TRANSPARENT : 0;
-
 		/**
-		 * @param {number | false} key
-		 * @param {null | ((anchor: Node) => void)} fn
-		 */
+		* @param {number | false} key
+		* @param {null | ((anchor: Node) => void)} fn
+		*/
 		function update_branch(key, fn) {
 			if (hydrating) {
-				var data = read_hydration_instruction(/** @type {TemplateNode} */ (marker));
-
-				// "[n" = branch n, "[-1" = else
+				var data = read_hydration_instruction(marker);
 				if (key !== parseInt(data.substring(1))) {
-					// Hydration mismatch: remove everything inside the anchor and start fresh.
-					// This could happen with `{#if browser}...{/if}`, for example
 					var anchor = skip_nodes();
-
 					set_hydrate_node(anchor);
 					branches.anchor = anchor;
-
 					set_hydrating(false);
 					branches.ensure(key, fn);
 					set_hydrating(true);
-
 					return;
 				}
 			}
-
 			branches.ensure(key, fn);
 		}
-
 		block(() => {
 			var has_branch = false;
-
 			fn((fn, key = 0) => {
 				has_branch = true;
 				update_branch(key, fn);
 			});
-
-			if (!has_branch) {
-				update_branch(-1, null);
-			}
+			if (!has_branch) update_branch(-1, null);
 		}, flags);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/key.js
 	/** @import { TemplateNode } from '#client' */
-
-	const NAN = Symbol('NaN');
-
+	var NAN = Symbol("NaN");
 	/**
-	 * @template V
-	 * @param {TemplateNode} node
-	 * @param {() => V} get_key
-	 * @param {(anchor: Node) => TemplateNode | void} render_fn
-	 * @returns {void}
-	 */
+	* @template V
+	* @param {TemplateNode} node
+	* @param {() => V} get_key
+	* @param {(anchor: Node) => TemplateNode | void} render_fn
+	* @returns {void}
+	*/
 	function key(node, get_key, render_fn) {
-		if (hydrating) {
-			hydrate_next();
-		}
-
+		if (hydrating) hydrate_next();
 		var branches = new BranchManager(node);
-
+		var legacy = !is_runes();
 		block(() => {
 			var key = get_key();
-
-			// NaN !== NaN, hence we do this workaround to not trigger remounts unnecessarily
-			if (key !== key) {
-				key = /** @type {any} */ (NAN);
-			}
-
+			if (key !== key) key = NAN;
+			if (legacy && key !== null && typeof key === "object") key = {};
 			branches.ensure(key, render_fn);
 		});
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/each.js
 	/** @import { EachItem, EachOutroGroup, EachState, Effect, EffectNodes, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
 	/** @import { Batch } from '../../reactivity/batch.js'; */
-
-	// When making substantive changes to this file, validate them with the each block stress test:
-	// https://svelte.dev/playground/1972b2cf46564476ad8c8c6405b23b7b
-	// This test also exists in this repo, as `packages/svelte/tests/manual/each-stress-test`
-
 	/**
-	 * @param {any} _
-	 * @param {number} i
-	 */
+	* @param {any} _
+	* @param {number} i
+	*/
 	function index(_, i) {
 		return i;
 	}
-
 	/**
-	 * Pause multiple effects simultaneously, and coordinate their
-	 * subsequent destruction. Used in each blocks
-	 * @param {EachState} state
-	 * @param {Effect[]} to_destroy
-	 * @param {null | Node} controlled_anchor
-	 */
+	* Pause multiple effects simultaneously, and coordinate their
+	* subsequent destruction. Used in each blocks
+	* @param {EachState} state
+	* @param {Effect[]} to_destroy
+	* @param {null | Node} controlled_anchor
+	*/
 	function pause_effects(state, to_destroy, controlled_anchor) {
 		/** @type {TransitionManager[]} */
 		var transitions = [];
 		var length = to_destroy.length;
-
 		/** @type {EachOutroGroup} */
 		var group;
 		var remaining = to_destroy.length;
-
 		for (var i = 0; i < length; i++) {
 			let effect = to_destroy[i];
-
-			pause_effect(
-				effect,
-				() => {
-					if (group) {
-						group.pending.delete(effect);
-						group.done.add(effect);
-
-						if (group.pending.size === 0) {
-							var groups = /** @type {Set<EachOutroGroup>} */ (state.outrogroups);
-
-							destroy_effects(state, array_from(group.done));
-							groups.delete(group);
-
-							if (groups.size === 0) {
-								state.outrogroups = null;
-							}
-						}
-					} else {
-						remaining -= 1;
+			pause_effect(effect, () => {
+				if (group) {
+					group.pending.delete(effect);
+					group.done.add(effect);
+					if (group.pending.size === 0) {
+						var groups = state.outrogroups;
+						destroy_effects(state, array_from(group.done));
+						groups.delete(group);
+						if (groups.size === 0) state.outrogroups = null;
 					}
-				},
-				false
-			);
+				} else remaining -= 1;
+			}, false);
 		}
-
 		if (remaining === 0) {
-			// If we're in a controlled each block (i.e. the block is the only child of an
-			// element), and we are removing all items, _and_ there are no out transitions,
-			// we can use the fast path — emptying the element and replacing the anchor.
-			// Skip the fast path when another batch is still pending on this each block:
-			// that batch's keys still reference EachItems in `state.items`, which
-			// `destroy_effects` needs to preserve offscreen (see #18610).
-			var fast_path =
-				transitions.length === 0 && controlled_anchor !== null && state.pending.size === 0;
-
+			var fast_path = transitions.length === 0 && controlled_anchor !== null && state.pending.size === 0;
 			if (fast_path) {
-				var anchor = /** @type {Element} */ (controlled_anchor);
-				var parent_node = /** @type {Element} */ (anchor.parentNode);
-
+				var anchor = controlled_anchor;
+				var parent_node = anchor.parentNode;
 				clear_text_content(parent_node);
 				parent_node.append(anchor);
-
 				state.items.clear();
 			}
-
 			destroy_effects(state, to_destroy, !fast_path);
 		} else {
 			group = {
 				pending: new Set(to_destroy),
-				done: new Set()
+				done: /* @__PURE__ */ new Set()
 			};
-
-			(state.outrogroups ??= new Set()).add(group);
+			(state.outrogroups ??= /* @__PURE__ */ new Set()).add(group);
 		}
 	}
-
 	/**
-	 * @param {EachState} state
-	 * @param {Effect[]} to_destroy
-	 * @param {boolean} remove_dom
-	 */
+	* @param {EachState} state
+	* @param {Effect[]} to_destroy
+	* @param {boolean} remove_dom
+	*/
 	function destroy_effects(state, to_destroy, remove_dom = true) {
 		/** @type {Set<Effect> | undefined} */
 		var preserved_effects;
-
-		// The loop-in-a-loop isn't ideal, but we should only hit this in relatively rare cases
 		if (state.pending.size > 0) {
-			preserved_effects = new Set();
-
-			for (const keys of state.pending.values()) {
-				for (const key of keys) {
-					preserved_effects.add(/** @type {EachItem} */ (state.items.get(key)).e);
-				}
-			}
+			preserved_effects = /* @__PURE__ */ new Set();
+			for (const keys of state.pending.values()) for (const key of keys) preserved_effects.add(
+				/** @type {EachItem} */
+				state.items.get(key).e
+			);
 		}
-
 		for (var i = 0; i < to_destroy.length; i++) {
 			var e = to_destroy[i];
-
 			if (preserved_effects?.has(e)) {
 				e.f |= EFFECT_OFFSCREEN;
-
-				const fragment = document.createDocumentFragment();
-				move_effect(e, fragment);
-			} else {
-				destroy_effect(to_destroy[i], remove_dom);
-			}
+				move_effect(e, document.createDocumentFragment());
+			} else destroy_effect(to_destroy[i], remove_dom);
 		}
 	}
-
 	/** @type {TemplateNode} */
 	var offscreen_anchor;
-
 	/**
-	 * @template V
-	 * @param {Element | Comment} node The next sibling node, or the parent node if this is a 'controlled' block
-	 * @param {number} flags
-	 * @param {() => V[]} get_collection
-	 * @param {(value: V, index: number) => any} get_key
-	 * @param {(anchor: Node, item: MaybeSource<V>, index: MaybeSource<number>) => void} render_fn
-	 * @param {null | ((anchor: Node) => void)} fallback_fn
-	 * @returns {void}
-	 */
+	* @template V
+	* @param {Element | Comment} node The next sibling node, or the parent node if this is a 'controlled' block
+	* @param {number} flags
+	* @param {() => V[]} get_collection
+	* @param {(value: V, index: number) => any} get_key
+	* @param {(anchor: Node, item: MaybeSource<V>, index: MaybeSource<number>) => void} render_fn
+	* @param {null | ((anchor: Node) => void)} fallback_fn
+	* @returns {void}
+	*/
 	function each(node, flags, get_collection, get_key, render_fn, fallback_fn = null) {
 		var anchor = node;
-
 		/** @type {Map<any, EachItem>} */
-		var items = new Map();
-
-		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
-
-		if (is_controlled) {
-			var parent_node = /** @type {Element} */ (node);
-
-			anchor = hydrating
-				? set_hydrate_node(get_first_child(parent_node))
-				: parent_node.appendChild(create_text());
+		var items = /* @__PURE__ */ new Map();
+		if ((flags & 4) !== 0) {
+			var parent_node = node;
+			anchor = hydrating ? set_hydrate_node(/* @__PURE__ */ get_first_child(parent_node)) : parent_node.appendChild(create_text());
 		}
-
-		if (hydrating) {
-			hydrate_next();
-		}
-
+		if (hydrating) hydrate_next();
 		/** @type {Effect | null} */
 		var fallback = null;
-
-		// TODO: ideally we could use derived for runes mode but because of the ability
-		// to use a store which can be mutated, we can't do that here as mutating a store
-		// will still result in the collection array being the same from the store
-		var each_array = derived_safe_equal(() => {
+		var each_array = /* @__PURE__ */ derived_safe_equal(() => {
 			var collection = get_collection();
-
-			return /** @type {V[]} */ (
-				is_array(collection) ? collection : collection == null ? [] : array_from(collection)
-			);
+			return is_array(collection) ? collection : collection == null ? [] : array_from(collection);
 		});
-
 		/** @type {V[]} */
 		var array;
-
 		/** @type {Map<Batch, Set<any>>} */
-		var pending = new Map();
-
+		var pending = /* @__PURE__ */ new Map();
 		var first_run = true;
-
 		/**
-		 * @param {Batch} batch
-		 */
+		* @param {Batch} batch
+		*/
 		function commit(batch) {
-			if ((state.effect.f & DESTROYED) !== 0) {
-				return;
-			}
-
+			if ((state.effect.f & 16384) !== 0) return;
 			state.pending.delete(batch);
-
 			state.fallback = fallback;
 			reconcile(state, array, anchor, flags, get_key);
-
 			if (fallback !== null) {
 				if (array.length === 0) {
-					if ((fallback.f & EFFECT_OFFSCREEN) === 0) {
-						resume_effect(fallback);
-					} else {
+					if ((fallback.f & 33554432) === 0) resume_effect(fallback);
+					else {
 						fallback.f ^= EFFECT_OFFSCREEN;
 						move(fallback, null, anchor);
 					}
-				} else {
-					pause_effect(fallback, () => {
-						// TODO only null out if no pending batch needs it,
-						// otherwise re-add `fallback.fragment` and move the
-						// effect into it
-						fallback = null;
-					});
-				}
+				} else pause_effect(fallback, () => {
+					fallback = null;
+				});
 			}
 		}
-
-		var effect = block(() => {
-			array = /** @type {V[]} */ (get(each_array));
-			var length = array.length;
-
-			/** `true` if there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
-			let mismatch = false;
-
-			if (hydrating) {
-				var is_else = read_hydration_instruction(anchor) === HYDRATION_START_ELSE;
-
-				if (is_else !== (length === 0)) {
-					// hydration mismatch — remove the server-rendered DOM and start over
-					anchor = skip_nodes();
-
-					set_hydrate_node(anchor);
-					set_hydrating(false);
-					mismatch = true;
-				}
-			}
-
-			var keys = new Set();
-			var batch = /** @type {Batch} */ (current_batch);
-
-			for (var index = 0; index < length; index += 1) {
-				if (
-					hydrating &&
-					hydrate_node.nodeType === COMMENT_NODE &&
-					/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
-				) {
-					// The server rendered fewer items than expected,
-					// so break out and continue appending non-hydrated items
-					anchor = /** @type {Comment} */ (hydrate_node);
-					mismatch = true;
-					set_hydrating(false);
-				}
-
-				var value = array[index];
-				var key = get_key(value, index);
-
-				var item = first_run ? null : items.get(key);
-
-				if (item) {
-					// update before reconciliation, to trigger any async updates
-					if (item.v) internal_set(item.v, value);
-					if (item.i) internal_set(item.i, index);
-				} else {
-					item = create_item(
-						items,
-						first_run ? anchor : (offscreen_anchor ??= create_text()),
-						value,
-						key,
-						index,
-						render_fn,
-						flags,
-						get_collection
-					);
-
-					if (!first_run) {
-						item.e.f |= EFFECT_OFFSCREEN;
-					}
-
-					items.set(key, item);
-				}
-
-				keys.add(key);
-			}
-
-			if (length === 0 && fallback_fn && !fallback) {
-				if (first_run) {
-					fallback = branch(() => fallback_fn(anchor));
-				} else {
-					fallback = branch(() => fallback_fn((offscreen_anchor ??= create_text())));
-					fallback.f |= EFFECT_OFFSCREEN;
-				}
-			}
-
-			if (length > keys.size) {
-				{
-					// in prod, the additional information isn't printed, so don't bother computing it
-					each_key_duplicate();
-				}
-			}
-
-			// remove excess nodes
-			if (hydrating && length > 0) {
-				set_hydrate_node(skip_nodes());
-			}
-
-			if (!first_run) {
-				pending.set(batch, keys);
-
-				{
-					commit(batch);
-				}
-			}
-
-			if (mismatch) {
-				// continue in hydration mode
-				set_hydrating(true);
-			}
-
-			// When we mount the each block for the first time, the collection won't be
-			// connected to this effect as the effect hasn't finished running yet and its deps
-			// won't be assigned. However, it's possible that when reconciling the each block
-			// that a mutation occurred and it's made the collection MAYBE_DIRTY, so reading the
-			// collection again can provide consistency to the reactive graph again as the deriveds
-			// will now be `CLEAN`.
-			get(each_array);
-		});
-
+		/**
+		* @param {Batch} batch
+		*/
+		function discard(batch) {
+			state.pending.delete(batch);
+		}
 		/** @type {EachState} */
-		var state = { effect, items, pending, outrogroups: null, fallback };
-
+		var state = {
+			effect: block(() => {
+				array = get(each_array);
+				var length = array.length;
+				/** `true` if there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
+				let mismatch = false;
+				if (hydrating) {
+					if (read_hydration_instruction(anchor) === "[!" !== (length === 0)) {
+						anchor = skip_nodes();
+						set_hydrate_node(anchor);
+						set_hydrating(false);
+						mismatch = true;
+					}
+				}
+				var keys = /* @__PURE__ */ new Set();
+				var batch = current_batch;
+				var defer = should_defer_append();
+				for (var index = 0; index < length; index += 1) {
+					if (hydrating && hydrate_node.nodeType === 8 && hydrate_node.data === "]") {
+						anchor = hydrate_node;
+						mismatch = true;
+						set_hydrating(false);
+					}
+					var value = array[index];
+					var key = get_key(value, index);
+					var item = first_run ? null : items.get(key);
+					if (item) {
+						if (item.v) internal_set(item.v, value);
+						if (item.i) internal_set(item.i, index);
+						if (defer) batch.unskip_effect(item.e);
+					} else {
+						item = create_item(items, first_run ? anchor : offscreen_anchor ??= create_text(), value, key, index, render_fn, flags, get_collection);
+						if (!first_run) item.e.f |= EFFECT_OFFSCREEN;
+						items.set(key, item);
+					}
+					keys.add(key);
+				}
+				if (length === 0 && fallback_fn && !fallback) {
+					if (first_run) fallback = branch(() => fallback_fn(anchor));
+					else {
+						fallback = branch(() => fallback_fn(offscreen_anchor ??= create_text()));
+						fallback.f |= EFFECT_OFFSCREEN;
+					}
+				}
+				if (length > keys.size) each_key_duplicate("", "", "");
+				if (hydrating && length > 0) set_hydrate_node(skip_nodes());
+				if (!first_run) {
+					pending.set(batch, keys);
+					if (defer) {
+						for (const [key, item] of items) if (!keys.has(key)) batch.skip_effect(item.e);
+						batch.oncommit(commit);
+						batch.ondiscard(discard);
+					} else commit(batch);
+				}
+				if (mismatch) set_hydrating(true);
+				get(each_array);
+			}),
+			flags,
+			items,
+			pending,
+			outrogroups: null,
+			fallback
+		};
 		first_run = false;
-
-		if (hydrating) {
-			anchor = hydrate_node;
-		}
+		if (hydrating) anchor = hydrate_node;
 	}
-
 	/**
-	 * Skip past any non-branch effects (which could be created with `createSubscriber`, for example) to find the next branch effect
-	 * @param {Effect | null} effect
-	 * @returns {Effect | null}
-	 */
+	* Skip past any non-branch effects (which could be created with `createSubscriber`, for example) to find the next branch effect
+	* @param {Effect | null} effect
+	* @returns {Effect | null}
+	*/
 	function skip_to_branch(effect) {
-		while (effect !== null && (effect.f & BRANCH_EFFECT) === 0) {
-			effect = effect.next;
-		}
+		while (effect !== null && (effect.f & 32) === 0) effect = effect.next;
 		return effect;
 	}
-
 	/**
-	 * Add, remove, or reorder items output by an each block as its input changes
-	 * @template V
-	 * @param {EachState} state
-	 * @param {Array<V>} array
-	 * @param {Element | Comment | Text} anchor
-	 * @param {number} flags
-	 * @param {(value: V, index: number) => any} get_key
-	 * @returns {void}
-	 */
+	* Add, remove, or reorder items output by an each block as its input changes
+	* @template V
+	* @param {EachState} state
+	* @param {Array<V>} array
+	* @param {Element | Comment | Text} anchor
+	* @param {number} flags
+	* @param {(value: V, index: number) => any} get_key
+	* @returns {void}
+	*/
 	function reconcile(state, array, anchor, flags, get_key) {
-		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
-
+		var is_animated = (flags & 8) !== 0;
 		var length = array.length;
 		var items = state.items;
 		var current = skip_to_branch(state.effect.first);
-
 		/** @type {undefined | Set<Effect>} */
 		var seen;
-
 		/** @type {Effect | null} */
 		var prev = null;
-
 		/** @type {undefined | Set<Effect>} */
 		var to_animate;
-
 		/** @type {Effect[]} */
 		var matched = [];
-
 		/** @type {Effect[]} */
 		var stashed = [];
-
 		/** @type {V} */
 		var value;
-
 		/** @type {any} */
 		var key;
-
 		/** @type {Effect | undefined} */
 		var effect;
-
 		/** @type {number} */
 		var i;
-
-		if (is_animated) {
-			for (i = 0; i < length; i += 1) {
-				value = array[i];
-				key = get_key(value, i);
-				effect = /** @type {EachItem} */ (items.get(key)).e;
-
-				// offscreen == coming in now, no animation in that case,
-				// else this would happen https://github.com/sveltejs/svelte/issues/17181
-				if ((effect.f & EFFECT_OFFSCREEN) === 0) {
-					effect.nodes?.a?.measure();
-					(to_animate ??= new Set()).add(effect);
-				}
+		if (is_animated) for (i = 0; i < length; i += 1) {
+			value = array[i];
+			key = get_key(value, i);
+			effect = items.get(key).e;
+			if ((effect.f & 33554432) === 0) {
+				effect.nodes?.a?.measure();
+				(to_animate ??= /* @__PURE__ */ new Set()).add(effect);
 			}
 		}
-
 		for (i = 0; i < length; i += 1) {
 			value = array[i];
 			key = get_key(value, i);
-
-			effect = /** @type {EachItem} */ (items.get(key)).e;
-
-			if (state.outrogroups !== null) {
-				for (const group of state.outrogroups) {
-					group.pending.delete(effect);
-					group.done.delete(effect);
-				}
+			effect = items.get(key).e;
+			if (state.outrogroups !== null) for (const group of state.outrogroups) {
+				group.pending.delete(effect);
+				group.done.delete(effect);
 			}
-
-			if ((effect.f & INERT) !== 0) {
+			if ((effect.f & 8192) !== 0) {
 				resume_effect(effect);
 				if (is_animated) {
 					effect.nodes?.a?.unfix();
-					(to_animate ??= new Set()).delete(effect);
+					(to_animate ??= /* @__PURE__ */ new Set()).delete(effect);
 				}
 			}
-
-			if ((effect.f & EFFECT_OFFSCREEN) !== 0) {
+			if ((effect.f & 33554432) !== 0) {
 				effect.f ^= EFFECT_OFFSCREEN;
-
-				if (effect === current) {
-					move(effect, null, anchor);
-				} else {
+				if (effect === current) move(effect, null, anchor);
+				else {
 					var next = prev ? prev.next : current;
-
-					if (effect === state.effect.last) {
-						state.effect.last = effect.prev;
-					}
-
+					if (effect === state.effect.last) state.effect.last = effect.prev;
 					if (effect.prev) effect.prev.next = effect.next;
 					if (effect.next) effect.next.prev = effect.prev;
 					link(state, prev, effect);
 					link(state, effect, next);
-
 					move(effect, next, anchor);
 					prev = effect;
-
 					matched = [];
 					stashed = [];
-
 					current = skip_to_branch(prev.next);
 					continue;
 				}
 			}
-
 			if (effect !== current) {
-				if (seen !== undefined && seen.has(effect)) {
+				if (seen !== void 0 && seen.has(effect)) {
 					if (matched.length < stashed.length) {
-						// more efficient to move later items to the front
 						var start = stashed[0];
 						var j;
-
 						prev = start.prev;
-
 						var a = matched[0];
 						var b = matched[matched.length - 1];
-
-						for (j = 0; j < matched.length; j += 1) {
-							move(matched[j], start, anchor);
-						}
-
-						for (j = 0; j < stashed.length; j += 1) {
-							seen.delete(stashed[j]);
-						}
-
+						for (j = 0; j < matched.length; j += 1) move(matched[j], start, anchor);
+						for (j = 0; j < stashed.length; j += 1) seen.delete(stashed[j]);
 						link(state, a.prev, b.next);
 						link(state, prev, a);
 						link(state, b, start);
-
 						current = start;
 						prev = b;
 						i -= 1;
-
 						matched = [];
 						stashed = [];
 					} else {
-						// more efficient to move earlier items to the back
 						seen.delete(effect);
 						move(effect, current, anchor);
-
 						link(state, effect.prev, effect.next);
 						link(state, effect, prev === null ? state.effect.first : prev.next);
 						link(state, prev, effect);
-
 						prev = effect;
 					}
-
 					continue;
 				}
-
 				matched = [];
 				stashed = [];
-
 				while (current !== null && current !== effect) {
-					(seen ??= new Set()).add(current);
+					(seen ??= /* @__PURE__ */ new Set()).add(current);
 					stashed.push(current);
 					current = skip_to_branch(current.next);
 				}
-
-				if (current === null) {
-					continue;
-				}
+				if (current === null) continue;
 			}
-
-			if ((effect.f & EFFECT_OFFSCREEN) === 0) {
-				matched.push(effect);
-			}
-
+			if ((effect.f & 33554432) === 0) matched.push(effect);
 			prev = effect;
 			current = skip_to_branch(effect.next);
 		}
-
 		if (state.outrogroups !== null) {
-			for (const group of state.outrogroups) {
-				if (group.pending.size === 0) {
-					destroy_effects(state, array_from(group.done));
-					state.outrogroups?.delete(group);
-				}
+			for (const group of state.outrogroups) if (group.pending.size === 0) {
+				destroy_effects(state, array_from(group.done));
+				state.outrogroups?.delete(group);
 			}
-
-			if (state.outrogroups.size === 0) {
-				state.outrogroups = null;
-			}
+			if (state.outrogroups.size === 0) state.outrogroups = null;
 		}
-
-		if (current !== null || seen !== undefined) {
+		if (current !== null || seen !== void 0) {
 			/** @type {Effect[]} */
 			var to_destroy = [];
-
-			if (seen !== undefined) {
-				for (effect of seen) {
-					if ((effect.f & INERT) === 0) {
-						to_destroy.push(effect);
-					}
-				}
+			if (seen !== void 0) {
+				for (effect of seen) if ((effect.f & 8192) === 0) to_destroy.push(effect);
 			}
-
 			while (current !== null) {
-				// If the each block isn't inert, then inert effects are currently outroing and will be removed once the transition is finished
-				if ((current.f & INERT) === 0 && current !== state.fallback) {
-					to_destroy.push(current);
-				}
-
+				if ((current.f & 8192) === 0 && current !== state.fallback) to_destroy.push(current);
 				current = skip_to_branch(current.next);
 			}
-
 			var destroy_length = to_destroy.length;
-
 			if (destroy_length > 0) {
-				var controlled_anchor = (flags & EACH_IS_CONTROLLED) !== 0 && length === 0 ? anchor : null;
-
+				var controlled_anchor = (flags & 4) !== 0 && length === 0 ? anchor : null;
 				if (is_animated) {
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].nodes?.a?.measure();
-					}
-
-					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].nodes?.a?.fix();
-					}
+					for (i = 0; i < destroy_length; i += 1) to_destroy[i].nodes?.a?.measure();
+					for (i = 0; i < destroy_length; i += 1) to_destroy[i].nodes?.a?.fix();
 				}
-
 				pause_effects(state, to_destroy, controlled_anchor);
 			}
 		}
-
-		if (is_animated) {
-			queue_micro_task(() => {
-				if (to_animate === undefined) return;
-				for (effect of to_animate) {
-					effect.nodes?.a?.apply();
-				}
-			});
-		}
+		if (is_animated) queue_micro_task(() => {
+			if (to_animate === void 0) return;
+			for (effect of to_animate) effect.nodes?.a?.apply();
+		});
 	}
-
 	/**
-	 * @template V
-	 * @param {Map<any, EachItem>} items
-	 * @param {Node} anchor
-	 * @param {V} value
-	 * @param {unknown} key
-	 * @param {number} index
-	 * @param {(anchor: Node, item: V | Source<V>, index: number | Value<number>, collection: () => V[]) => void} render_fn
-	 * @param {number} flags
-	 * @param {() => V[]} get_collection
-	 * @returns {EachItem}
-	 */
+	* @template V
+	* @param {Map<any, EachItem>} items
+	* @param {Node} anchor
+	* @param {V} value
+	* @param {unknown} key
+	* @param {number} index
+	* @param {(anchor: Node, item: V | Source<V>, index: number | Value<number>, collection: () => V[]) => void} render_fn
+	* @param {number} flags
+	* @param {() => V[]} get_collection
+	* @returns {EachItem}
+	*/
 	function create_item(items, anchor, value, key, index, render_fn, flags, get_collection) {
-		var v =
-			(flags & EACH_ITEM_REACTIVE) !== 0
-				? (flags & EACH_ITEM_IMMUTABLE) === 0
-					? mutable_source(value, false, false)
-					: source(value)
-				: null;
-
-		var i = (flags & EACH_INDEX_REACTIVE) !== 0 ? source(index) : null;
-
+		var v = (flags & 1) !== 0 ? (flags & 16) === 0 ? /* @__PURE__ */ mutable_source(value, false, false) : source(value) : null;
+		var i = (flags & 2) !== 0 ? source(index) : null;
 		return {
 			v,
 			i,
 			e: branch(() => {
 				render_fn(anchor, v ?? value, i ?? index, get_collection);
-
 				return () => {
 					items.delete(key);
 				};
 			})
 		};
 	}
-
 	/**
-	 * @param {Effect} effect
-	 * @param {Effect | null} next
-	 * @param {Text | Element | Comment} anchor
-	 */
+	* @param {Effect} effect
+	* @param {Effect | null} next
+	* @param {Text | Element | Comment} anchor
+	*/
 	function move(effect, next, anchor) {
 		if (!effect.nodes) return;
-
 		var node = effect.nodes.start;
 		var end = effect.nodes.end;
-
-		var dest =
-			next && (next.f & EFFECT_OFFSCREEN) === 0
-				? /** @type {EffectNodes} */ (next.nodes).start
-				: anchor;
-
+		var dest = next && (next.f & 33554432) === 0 ? next.nodes.start : anchor;
 		while (node !== null) {
-			var next_node = /** @type {TemplateNode} */ (get_next_sibling(node));
+			var next_node = /* @__PURE__ */ get_next_sibling(node);
 			dest.before(node);
-
-			if (node === end) {
-				return;
-			}
-
+			if (node === end) return;
 			node = next_node;
 		}
 	}
-
 	/**
-	 * @param {EachState} state
-	 * @param {Effect | null} prev
-	 * @param {Effect | null} next
-	 */
+	* @param {EachState} state
+	* @param {Effect | null} prev
+	* @param {Effect | null} next
+	*/
 	function link(state, prev, next) {
-		if (prev === null) {
-			state.effect.first = next;
-		} else {
-			prev.next = next;
-		}
-
-		if (next === null) {
-			state.effect.last = prev;
-		} else {
-			next.prev = prev;
-		}
+		if (prev === null) state.effect.first = next;
+		else prev.next = next;
+		if (next === null) state.effect.last = prev;
+		else next.prev = prev;
 	}
-
-	/** @import { Effect, TemplateNode } from '#client' */
-	/** @import {} from 'trusted-types' */
-
 	/**
-	 * @param {Element | Text | Comment} node
-	 * @param {() => string | TrustedHTML} get_value
-	 * @param {boolean} [is_controlled]
-	 * @param {boolean} [svg]
-	 * @param {boolean} [mathml]
-	 * @param {boolean} [skip_warning]
-	 * @returns {void}
-	 */
-	function html(
-		node,
-		get_value,
-		is_controlled = false,
-		svg = false,
-		mathml = false,
-		skip_warning = false
-	) {
+	* @param {Element | Text | Comment} node
+	* @param {() => string | TrustedHTML} get_value
+	* @param {boolean} [is_controlled]
+	* @param {boolean} [svg]
+	* @param {boolean} [mathml]
+	* @param {boolean} [skip_warning]
+	* @returns {void}
+	*/
+	function html(node, get_value, is_controlled = false, svg = false, mathml = false, skip_warning = false) {
 		var anchor = node;
-
 		/** @type {string | TrustedHTML} */
-		var value = '';
-
+		var value = "";
 		if (is_controlled) {
-			var parent_node = /** @type {Element} */ (node);
-
-			if (hydrating) {
-				anchor = set_hydrate_node(get_first_child(parent_node));
-			}
+			var parent_node = node;
+			if (hydrating) anchor = set_hydrate_node(/* @__PURE__ */ get_first_child(parent_node));
 		}
-
 		template_effect(() => {
-			var effect = /** @type {Effect} */ (active_effect);
-
-			if (value === (value = get_value() ?? '')) {
+			var effect = active_effect;
+			if (value === (value = get_value() ?? "")) {
 				if (hydrating) hydrate_next();
 				return;
 			}
-
 			if (is_controlled && !hydrating) {
-				// When @html is the only child, use innerHTML directly.
-				// This also handles contenteditable, where the user may delete the anchor comment.
 				effect.nodes = null;
-				parent_node.innerHTML = /** @type {string} */ (value);
-
-				if (value !== '') {
-					assign_nodes(
-						/** @type {TemplateNode} */ (get_first_child(parent_node)),
-						/** @type {TemplateNode} */ (parent_node.lastChild)
-					);
-				}
-
+				parent_node.innerHTML = value;
+				if (value !== "") assign_nodes(/* @__PURE__ */ get_first_child(parent_node), parent_node.lastChild);
 				return;
 			}
-
 			if (effect.nodes !== null) {
-				remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
+				remove_effect_dom(effect.nodes.start, effect.nodes.end);
 				effect.nodes = null;
 			}
-
-			if (value === '') return;
-
+			if (value === "") return;
 			if (hydrating) {
-				// We're deliberately not trying to repair mismatches between server and client,
-				// as it's costly and error-prone (and it's an edge case to have a mismatch anyway)
-				/** @type {Comment} */ (hydrate_node).data;
-
+				hydrate_node.data;
 				/** @type {TemplateNode | null} */
 				var next = hydrate_next();
 				var last = next;
-
-				while (
-					next !== null &&
-					(next.nodeType !== COMMENT_NODE || /** @type {Comment} */ (next).data !== '')
-				) {
+				while (next !== null && (next.nodeType !== 8 || next.data !== "")) {
 					last = next;
-					next = get_next_sibling(next);
+					next = /* @__PURE__ */ get_next_sibling(next);
 				}
-
 				if (next === null) {
 					hydration_mismatch();
 					throw HYDRATION_ERROR;
 				}
-
 				assign_nodes(hydrate_node, last);
 				anchor = set_hydrate_node(next);
 				return;
 			}
-
-			// Don't use create_fragment_with_script_from_html here because that would mean script tags are executed.
-			// @html is basically `.innerHTML = ...` and that doesn't execute scripts either due to security reasons.
-			// Use a <template>, <svg>, or <math> wrapper depending on context. If value is a TrustedHTML object,
-			// it will be assigned directly to innerHTML without coercion — this allows {@html policy.createHTML(...)} to work.
-			var ns = svg ? NAMESPACE_SVG : mathml ? NAMESPACE_MATHML : undefined;
-			var wrapper = /** @type {HTMLTemplateElement | SVGElement | MathMLElement} */ (
-				create_element(svg ? 'svg' : mathml ? 'math' : 'template', ns)
-			);
-			wrapper.innerHTML = /** @type {any} */ (value);
-
+			var wrapper = create_element(svg ? "svg" : mathml ? "math" : "template", svg ? NAMESPACE_SVG : mathml ? NAMESPACE_MATHML : void 0);
+			wrapper.innerHTML = value;
 			/** @type {DocumentFragment | Element} */
-			var node = svg || mathml ? wrapper : /** @type {HTMLTemplateElement} */ (wrapper).content;
-
-			assign_nodes(
-				/** @type {TemplateNode} */ (get_first_child(node)),
-				/** @type {TemplateNode} */ (node.lastChild)
-			);
-
-			if (svg || mathml) {
-				while (get_first_child(node)) {
-					anchor.before(/** @type {TemplateNode} */ (get_first_child(node)));
-				}
-			} else {
-				anchor.before(node);
-			}
+			var node = svg || mathml ? wrapper : /** @type {HTMLTemplateElement} */ wrapper.content;
+			assign_nodes(/* @__PURE__ */ get_first_child(node), node.lastChild);
+			if (svg || mathml) while (/* @__PURE__ */ get_first_child(node)) anchor.before(/* @__PURE__ */ get_first_child(node));
+			else anchor.before(node);
 		});
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/slot.js
 	/**
-	 * @param {Comment} anchor
-	 * @param {Record<string, any>} $$props
-	 * @param {string} name
-	 * @param {Record<string, unknown>} slot_props
-	 * @param {null | ((anchor: Comment) => void)} fallback_fn
-	 */
+	* @param {Comment} anchor
+	* @param {Record<string, any>} $$props
+	* @param {string} name
+	* @param {Record<string, unknown>} slot_props
+	* @param {null | ((anchor: Comment) => void)} fallback_fn
+	*/
 	function slot(anchor, $$props, name, slot_props, fallback_fn) {
-		if (hydrating) {
-			hydrate_next();
+		if (hydrating) hydrate_next();
+		if ($$props.$$host?.$$shadowRoot) {
+			const element = create_element("slot");
+			if (name !== "default") element.name = name;
+			append(anchor, element);
+			if (fallback_fn !== null) {
+				const fallback_anchor = create_text();
+				element.append(fallback_anchor);
+				fallback_fn(fallback_anchor);
+			}
+			return;
 		}
-
 		var slot_fn = $$props.$$slots?.[name];
-		// Interop: Can use snippets to fill slots
 		var is_interop = false;
 		if (slot_fn === true) {
-			slot_fn = $$props[name === 'default' ? 'children' : name];
+			slot_fn = $$props[name === "default" ? "children" : name];
 			is_interop = true;
 		}
-
-		if (slot_fn === undefined) ; else {
-			slot_fn(anchor, is_interop ? () => slot_props : slot_props);
-		}
+		if (slot_fn === void 0) {
+			if (fallback_fn !== null) fallback_fn(anchor);
+		} else slot_fn(anchor, is_interop ? () => slot_props : slot_props);
 	}
-
 	/**
-	 * @param {Record<string, any>} props
-	 * @returns {Record<string, boolean>}
-	 */
+	* @param {Record<string, any>} props
+	* @returns {Record<string, boolean>}
+	*/
 	function sanitize_slots(props) {
 		/** @type {Record<string, boolean>} */
 		const sanitized = {};
 		if (props.children) sanitized.default = true;
-		for (const key in props.$$slots) {
-			sanitized[key] = true;
-		}
+		for (const key in props.$$slots) sanitized[key] = true;
 		return sanitized;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/blocks/svelte-element.js
 	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
-
 	/**
-	 * @param {Comment | Element} node
-	 * @param {() => string} get_tag
-	 * @param {boolean} is_svg
-	 * @param {undefined | ((element: Element, anchor: Node | null) => void)} render_fn,
-	 * @param {undefined | (() => string)} get_namespace
-	 * @param {undefined | [number, number]} location
-	 * @returns {void}
-	 */
+	* @param {Comment | Element} node
+	* @param {() => string} get_tag
+	* @param {boolean} is_svg
+	* @param {undefined | ((element: Element, anchor: Node | null) => void)} render_fn,
+	* @param {undefined | (() => string)} get_namespace
+	* @param {undefined | [number, number]} location
+	* @returns {void}
+	*/
 	function element(node, get_tag, is_svg, render_fn, get_namespace, location) {
 		let was_hydrating = hydrating;
-
-		if (hydrating) {
-			hydrate_next();
-		}
-
+		if (hydrating) hydrate_next();
 		/** @type {null | Element} */
 		var element = null;
-
-		if (hydrating && hydrate_node.nodeType === ELEMENT_NODE) {
-			element = /** @type {Element} */ (hydrate_node);
+		if (hydrating && hydrate_node.nodeType === 1) {
+			element = hydrate_node;
 			hydrate_next();
 		}
-
-		var anchor = /** @type {TemplateNode} */ (hydrating ? hydrate_node : node);
-
+		var anchor = hydrating ? hydrate_node : node;
 		var branches = new BranchManager(anchor, false);
-
 		block(() => {
 			const next_tag = get_tag() || null;
-			var ns = next_tag === 'svg'
-					? NAMESPACE_SVG
-					: undefined;
-
+			var ns = get_namespace ? get_namespace() : is_svg || next_tag === "svg" ? NAMESPACE_SVG : void 0;
 			if (next_tag === null) {
 				branches.ensure(null, null);
 				return;
 			}
-
 			branches.ensure(next_tag, (anchor) => {
 				if (next_tag) {
-					element = hydrating ? /** @type {Element} */ (element) : create_element(next_tag, ns);
-
+					element = hydrating ? element : create_element(next_tag, ns);
 					assign_nodes(element, element);
-
 					if (render_fn) {
 						var tmp_comment = null;
-
-						if (hydrating && is_raw_text_element(next_tag)) {
-							// prevent hydration glitches (code just below expects an anchor)
-							element.append((tmp_comment = document.createComment('')));
-						}
-
-						// If hydrating, use the existing ssr comment as the anchor so that the
-						// inner open and close methods can pick up the existing nodes correctly
-						var child_anchor = hydrating
-							? get_first_child(element)
-							: element.appendChild(create_text());
-
+						if (hydrating && is_raw_text_element(next_tag)) element.append(tmp_comment = document.createComment(""));
+						var child_anchor = hydrating ? /* @__PURE__ */ get_first_child(element) : element.appendChild(create_text());
 						if (hydrating) {
-							if (child_anchor === null) {
-								set_hydrating(false);
-							} else {
-								set_hydrate_node(child_anchor);
-							}
+							if (child_anchor === null) set_hydrating(false);
+							else set_hydrate_node(child_anchor);
 						}
-
-						// `child_anchor` is undefined if this is a void element, but we still
-						// need to call `render_fn` in order to run actions etc. If the element
-						// contains children, it's a user error (which is warned on elsewhere)
-						// and the DOM will be silently discarded
 						render_fn(element, child_anchor);
 						tmp_comment?.remove();
 					}
-
-					// we do this after calling `render_fn` so that child effects don't override `nodes.end`
-					/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = element;
-
+					/** @type {Effect & { nodes: EffectNodes }} */ active_effect.nodes.end = element;
 					anchor.before(element);
 				}
-
-				if (hydrating) {
-					set_hydrate_node(anchor);
-				}
+				if (hydrating) set_hydrate_node(anchor);
 			});
-
 			return () => {
+				if (next_tag);
 			};
 		}, EFFECT_TRANSPARENT);
-
-		teardown(() => {
-		});
-
+		teardown(() => {});
 		if (was_hydrating) {
 			set_hydrating(true);
 			set_hydrate_node(anchor);
 		}
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/css.js
 	/**
-	 * @param {Node} anchor
-	 * @param {{ hash: string, code: string }} css
-	 */
+	* @param {Node} anchor
+	* @param {{ hash: string, code: string }} css
+	*/
 	function append_styles$1(anchor, css) {
-		// Use an effect to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
 		effect(() => {
-			// Bit of a hack: branches.js/each.js use offscreen fragments with temporary text nodes that will
-			// never be connected to the real dom. Therfore walk up to the branch that has created the component
-			// whose styles we want to append, and check its node instead. It will be connected by the time we get here.
 			anchor = active_effect?.parent?.nodes?.start ?? anchor;
 			var root = anchor.getRootNode();
-
-			var target = /** @type {ShadowRoot} */ (root).host
-				? /** @type {ShadowRoot} */ (root)
-				: /** @type {Document} */ (root).head ?? /** @type {Document} */ (root.ownerDocument).head;
-
-			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
-			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
-			if (!target.querySelector('#' + css.hash)) {
-				const style = create_element('style');
+			var target = root.host ? root : /** @type {Document} */ root.head ?? root.ownerDocument.head;
+			if (!target.querySelector("#" + css.hash)) {
+				const style = create_element("style");
 				style.id = css.hash;
 				style.textContent = css.code;
-
 				target.appendChild(style);
 			}
 		});
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/attachments.js
 	/** @import { Effect } from '#client' */
-
-	// TODO in 6.0 or 7.0, when we remove legacy mode, we can simplify this by
-	// getting rid of the block/branch stuff and just letting the effect rip.
-	// see https://github.com/sveltejs/svelte/pull/15962
-
 	/**
-	 * @param {Element} node
-	 * @param {() => (node: Element) => void} get_fn
-	 */
+	* @param {Element} node
+	* @param {() => (node: Element) => void} get_fn
+	*/
 	function attach(node, get_fn) {
 		/** @type {false | undefined | ((node: Element) => void)} */
-		var fn = undefined;
-
+		var fn = void 0;
 		/** @type {Effect | null} */
 		var e;
-
 		managed(() => {
 			if (fn !== (fn = get_fn())) {
 				if (e) {
 					destroy_effect(e);
 					e = null;
 				}
-
-				if (fn) {
-					e = branch(() => {
-						effect(() => /** @type {(node: Element) => void} */ (fn)(node));
-					});
-				}
+				if (fn) e = branch(() => {
+					effect(() => fn(node));
+				});
 			}
 		});
 	}
-
-	function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx$1(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
-
-	/**
-	 * Small wrapper around clsx to preserve Svelte's (weird) handling of falsy values.
-	 * TODO Svelte 6 revisit this, and likely turn all falsy values into the empty string (what clsx also does)
-	 * @param  {any} value
-	 */
-	function clsx(value) {
-		if (typeof value === 'object') {
-			return clsx$1(value);
-		} else {
-			return value ?? '';
-		}
+	//#endregion
+	//#region node_modules/clsx/dist/clsx.mjs
+	function r(e) {
+		var t, f, n = "";
+		if ("string" == typeof e || "number" == typeof e) n += e;
+		else if ("object" == typeof e) if (Array.isArray(e)) {
+			var o = e.length;
+			for (t = 0; t < o; t++) e[t] && (f = r(e[t])) && (n && (n += " "), n += f);
+		} else for (f in e) e[f] && (n && (n += " "), n += f);
+		return n;
 	}
-
-	const whitespace = [...' \t\n\r\f\u00a0\u000b\ufeff'];
-
+	function clsx$1() {
+		for (var e, t, f = 0, n = "", o = arguments.length; f < o; f++) (e = arguments[f]) && (t = r(e)) && (n && (n += " "), n += t);
+		return n;
+	}
+	//#endregion
+	//#region node_modules/svelte/src/internal/shared/attributes.js
 	/**
-	 * @param {any} value
-	 * @param {string | null} [hash]
-	 * @param {Record<string, boolean>} [directives]
-	 * @returns {string | null}
-	 */
+	* Small wrapper around clsx to preserve Svelte's (weird) handling of falsy values.
+	* TODO Svelte 6 revisit this, and likely turn all falsy values into the empty string (what clsx also does)
+	* @param  {any} value
+	*/
+	function clsx(value) {
+		if (typeof value === "object") return clsx$1(value);
+		else return value ?? "";
+	}
+	var whitespace = [..." 	\n\r\f\xA0\v﻿"];
+	/**
+	* @param {any} value
+	* @param {string | null} [hash]
+	* @param {Record<string, boolean>} [directives]
+	* @returns {string | null}
+	*/
 	function to_class(value, hash, directives) {
-		var classname = value == null ? '' : '' + value;
-
-		if (hash) {
-			classname = classname ? classname + ' ' + hash : hash;
-		}
-
+		var classname = value == null ? "" : "" + value;
+		if (hash) classname = classname ? classname + " " + hash : hash;
 		if (directives) {
-			for (var key of Object.keys(directives)) {
-				if (directives[key]) {
-					classname = classname ? classname + ' ' + key : key;
-				} else if (classname.length) {
-					var len = key.length;
-					var a = 0;
-
-					while ((a = classname.indexOf(key, a)) >= 0) {
-						var b = a + len;
-
-						if (
-							(a === 0 || whitespace.includes(classname[a - 1])) &&
-							(b === classname.length || whitespace.includes(classname[b]))
-						) {
-							classname = (a === 0 ? '' : classname.substring(0, a)) + classname.substring(b + 1);
-						} else {
-							a = b;
-						}
-					}
+			for (var key of Object.keys(directives)) if (directives[key]) classname = classname ? classname + " " + key : key;
+			else if (classname.length) {
+				var len = key.length;
+				var a = 0;
+				while ((a = classname.indexOf(key, a)) >= 0) {
+					var b = a + len;
+					if ((a === 0 || whitespace.includes(classname[a - 1])) && (b === classname.length || whitespace.includes(classname[b]))) classname = (a === 0 ? "" : classname.substring(0, a)) + classname.substring(b + 1);
+					else a = b;
 				}
 			}
 		}
-
-		return classname === '' ? null : classname;
+		return classname === "" ? null : classname;
 	}
-
 	/**
-	 *
-	 * @param {Record<string,any>} styles
-	 * @param {boolean} important
-	 */
+	*
+	* @param {Record<string,any>} styles
+	* @param {boolean} important
+	*/
 	function append_styles(styles, important = false) {
-		var separator = important ? ' !important;' : ';';
-		var css = '';
-
+		var separator = important ? " !important;" : ";";
+		var css = "";
 		for (var key of Object.keys(styles)) {
 			var value = styles[key];
-			if (value != null && value !== '') {
-				css += ' ' + key + ': ' + value + separator;
-			}
+			if (value != null && value !== "") css += " " + key + ": " + value + separator;
 		}
-
 		return css;
 	}
-
 	/**
-	 * @param {string} name
-	 * @returns {string}
-	 */
+	* @param {string} name
+	* @returns {string}
+	*/
 	function to_css_name(name) {
-		if (name[0] !== '-' || name[1] !== '-') {
-			return name.toLowerCase();
-		}
+		if (name[0] !== "-" || name[1] !== "-") return name.toLowerCase();
 		return name;
 	}
-
 	/**
-	 * @param {any} value
-	 * @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [styles]
-	 * @returns {string | null}
-	 */
+	* @param {any} value
+	* @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [styles]
+	* @returns {string | null}
+	*/
 	function to_style(value, styles) {
 		if (styles) {
-			var new_style = '';
-
+			var new_style = "";
 			/** @type {Record<string,any> | undefined} */
 			var normal_styles;
-
 			/** @type {Record<string,any> | undefined} */
 			var important_styles;
-
 			if (Array.isArray(styles)) {
 				normal_styles = styles[0];
 				important_styles = styles[1];
-			} else {
-				normal_styles = styles;
-			}
-
+			} else normal_styles = styles;
 			if (value) {
-				// strip comments; surrounding whitespace is handled by the trims below (which is much faster than doing it through regex)
-				value = String(value)
-					.replaceAll(/\/\*.*?\*\//g, '')
-					.trim();
-
+				value = String(value).replaceAll(/\/\*.*?\*\//g, "").trim();
 				/** @type {boolean | '"' | "'"} */
 				var in_str = false;
 				var in_apo = 0;
 				var in_comment = false;
-
 				var reserved_names = [];
-
-				if (normal_styles) {
-					reserved_names.push(...Object.keys(normal_styles).map(to_css_name));
-				}
-				if (important_styles) {
-					reserved_names.push(...Object.keys(important_styles).map(to_css_name));
-				}
-
+				if (normal_styles) reserved_names.push(...Object.keys(normal_styles).map(to_css_name));
+				if (important_styles) reserved_names.push(...Object.keys(important_styles).map(to_css_name));
 				var start_index = 0;
 				var name_index = -1;
-
 				const len = value.length;
 				for (var i = 0; i < len; i++) {
 					var c = value[i];
-
 					if (in_comment) {
-						if (c === '/' && value[i - 1] === '*') {
-							in_comment = false;
-						}
+						if (c === "/" && value[i - 1] === "*") in_comment = false;
 					} else if (in_str) {
-						if (in_str === c) {
-							in_str = false;
-						}
-					} else if (c === '/' && value[i + 1] === '*') {
-						in_comment = true;
-					} else if (c === '"' || c === "'") {
-						in_str = c;
-					} else if (c === '(') {
-						in_apo++;
-					} else if (c === ')') {
-						in_apo--;
-					}
-
+						if (in_str === c) in_str = false;
+					} else if (c === "/" && value[i + 1] === "*") in_comment = true;
+					else if (c === "\"" || c === "'") in_str = c;
+					else if (c === "(") in_apo++;
+					else if (c === ")") in_apo--;
 					if (!in_comment && in_str === false && in_apo === 0) {
-						if (c === ':' && name_index === -1) {
-							name_index = i;
-						} else if (c === ';' || i === len - 1) {
+						if (c === ":" && name_index === -1) name_index = i;
+						else if (c === ";" || i === len - 1) {
 							if (name_index !== -1) {
 								var name = to_css_name(value.substring(start_index, name_index).trim());
-
 								if (!reserved_names.includes(name)) {
-									if (c !== ';') {
-										i++;
-									}
-
+									if (c !== ";") i++;
 									var property = value.substring(start_index, i).trim();
-									new_style += ' ' + property + ';';
+									new_style += " " + property + ";";
 								}
 							}
-
 							start_index = i + 1;
 							name_index = -1;
 						}
 					}
 				}
 			}
-
-			if (normal_styles) {
-				new_style += append_styles(normal_styles);
-			}
-
-			if (important_styles) {
-				new_style += append_styles(important_styles, true);
-			}
-
+			if (normal_styles) new_style += append_styles(normal_styles);
+			if (important_styles) new_style += append_styles(important_styles, true);
 			new_style = new_style.trim();
-			return new_style === '' ? null : new_style;
+			return new_style === "" ? null : new_style;
 		}
-
 		return value == null ? null : String(value);
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/class.js
 	/**
-	 * @param {Element} dom
-	 * @param {boolean | number} is_html
-	 * @param {string | null} value
-	 * @param {string} [hash]
-	 * @param {Record<string, any>} [prev_classes]
-	 * @param {Record<string, any>} [next_classes]
-	 * @returns {Record<string, boolean> | undefined}
-	 */
+	* @param {Element} dom
+	* @param {boolean | number} is_html
+	* @param {string | null} value
+	* @param {string} [hash]
+	* @param {Record<string, any>} [prev_classes]
+	* @param {Record<string, any>} [next_classes]
+	* @returns {Record<string, boolean> | undefined}
+	*/
 	function set_class(dom, is_html, value, hash, prev_classes, next_classes) {
-		var prev = /** @type {any} */ (dom)[CLASS_CACHE];
-
-		if (
-			hydrating ||
-			prev !== value ||
-			prev === undefined // for edge case of `class={undefined}`
-		) {
+		var prev = dom[CLASS_CACHE];
+		if (hydrating || prev !== value || prev === void 0) {
 			var next_class_name = to_class(value, hash, next_classes);
-
-			if (!hydrating || next_class_name !== dom.getAttribute('class')) {
-				// Removing the attribute when the value is only an empty string causes
-				// performance issues vs simply making the className an empty string. So
-				// we should only remove the class if the value is nullish
-				// and there no hash/directives :
-				if (next_class_name == null) {
-					dom.removeAttribute('class');
-				} else if (is_html) {
-					dom.className = next_class_name;
-				} else {
-					dom.setAttribute('class', next_class_name);
-				}
+			if (!hydrating || next_class_name !== dom.getAttribute("class")) {
+				if (next_class_name == null) dom.removeAttribute("class");
+				else if (is_html) dom.className = next_class_name;
+				else dom.setAttribute("class", next_class_name);
 			}
-
-			/** @type {any} */ (dom)[CLASS_CACHE] = value;
-		} else if (next_classes && prev_classes !== next_classes) {
-			for (var key in next_classes) {
-				var is_present = !!next_classes[key];
-
-				if (prev_classes == null || is_present !== !!prev_classes[key]) {
-					dom.classList.toggle(key, is_present);
-				}
-			}
+			/** @type {any} */ dom[CLASS_CACHE] = value;
+		} else if (next_classes && prev_classes !== next_classes) for (var key in next_classes) {
+			var is_present = !!next_classes[key];
+			if (prev_classes == null || is_present !== !!prev_classes[key]) dom.classList.toggle(key, is_present);
 		}
-
 		return next_classes;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/style.js
 	/**
-	 * @param {Element & ElementCSSInlineStyle} dom
-	 * @param {Record<string, any>} prev
-	 * @param {Record<string, any>} next
-	 * @param {string} [priority]
-	 */
+	* @param {Element & ElementCSSInlineStyle} dom
+	* @param {Record<string, any>} prev
+	* @param {Record<string, any>} next
+	* @param {string} [priority]
+	*/
 	function update_styles(dom, prev = {}, next, priority) {
 		for (var key in next) {
 			var value = next[key];
-
 			if (prev[key] !== value) {
-				if (next[key] == null) {
-					dom.style.removeProperty(key);
-				} else {
-					dom.style.setProperty(key, value, priority);
-				}
+				if (next[key] == null) dom.style.removeProperty(key);
+				else dom.style.setProperty(key, value, priority);
 			}
 		}
 	}
-
 	/**
-	 * @param {Element & ElementCSSInlineStyle} dom
-	 * @param {string | null} value
-	 * @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [prev_styles]
-	 * @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [next_styles]
-	 */
+	* @param {Element & ElementCSSInlineStyle} dom
+	* @param {string | null} value
+	* @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [prev_styles]
+	* @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [next_styles]
+	*/
 	function set_style(dom, value, prev_styles, next_styles) {
-		var prev = /** @type {any} */ (dom)[STYLE_CACHE];
-
+		var prev = dom[STYLE_CACHE];
 		if (hydrating || prev !== value) {
 			var next_style_attr = to_style(value, next_styles);
-
-			if (!hydrating || next_style_attr !== dom.getAttribute('style')) {
-				if (next_style_attr == null) {
-					dom.removeAttribute('style');
-				} else {
-					dom.style.cssText = next_style_attr;
-				}
+			if (!hydrating || next_style_attr !== dom.getAttribute("style")) {
+				if (next_style_attr == null) dom.removeAttribute("style");
+				else dom.style.cssText = next_style_attr;
 			}
-
-			/** @type {any} */ (dom)[STYLE_CACHE] = value;
+			/** @type {any} */ dom[STYLE_CACHE] = value;
 		} else if (next_styles) {
 			if (Array.isArray(next_styles)) {
 				update_styles(dom, prev_styles?.[0], next_styles[0]);
-				update_styles(dom, prev_styles?.[1], next_styles[1], 'important');
-			} else {
-				update_styles(dom, prev_styles, next_styles);
-			}
+				update_styles(dom, prev_styles?.[1], next_styles[1], "important");
+			} else update_styles(dom, prev_styles, next_styles);
 		}
-
 		return next_styles;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/bindings/select.js
 	/**
-	 * Selects the correct option(s) (depending on whether this is a multiple select)
-	 * @template V
-	 * @param {HTMLSelectElement} select
-	 * @param {V} value
-	 * @param {boolean} mounting
-	 */
+	* Sets the `selected` attribute on an option so form reset can restore it.
+	* @param {HTMLOptionElement} option
+	* @param {boolean} selected
+	*/
+	function set_selected(option, selected) {
+		if (selected) {
+			if (!option.hasAttribute("selected")) option.setAttribute("selected", "");
+		} else option.removeAttribute("selected");
+	}
+	/**
+	* Sets the options a form reset should restore. The first call selects
+	* them if nothing has set a value, later calls leave the current selection alone.
+	* @param {HTMLSelectElement} select
+	* @param {any} value
+	*/
+	function set_default_select_value(select, value) {
+		var mounting = !("__defaultValue" in select);
+		if (!mounting && select.__defaultValue === value) return;
+		select.__defaultValue = value;
+		apply_default_select_value(select, !mounting || "__value" in select);
+	}
+	/**
+	* Marks the options matching `__defaultValue` as selected. Without `preserve`
+	* a newly matching option gets selected, as an inserted `<option selected>` would.
+	* @param {HTMLSelectElement} select
+	* @param {boolean} preserve
+	*/
+	function apply_default_select_value(select, preserve) {
+		var value = select.__defaultValue;
+		var multiple = select.multiple;
+		var values = multiple ? value ?? [] : null;
+		if (multiple && !is_array(values)) return;
+		var index = select.selectedIndex;
+		var selected = preserve && multiple ? new Set(select.selectedOptions) : null;
+		for (var option of select.options) {
+			var option_value = get_option_value(option);
+			set_selected(option, multiple ? values.includes(option_value) : is(option_value, value));
+		}
+		if (!preserve) return;
+		if (selected !== null) for (option of select.options) {
+			var was_selected = selected.has(option);
+			if (option.selected !== was_selected) option.selected = was_selected;
+		}
+		else if (select.selectedIndex !== index) select.selectedIndex = index;
+	}
+	/**
+	* Selects the correct option(s) (depending on whether this is a multiple select)
+	* @template V
+	* @param {HTMLSelectElement} select
+	* @param {V} value
+	* @param {boolean} mounting
+	*/
 	function select_option(select, value, mounting = false) {
 		if (select.multiple) {
-			// If value is null or undefined, keep the selection as is
-			if (value == undefined) {
-				return;
-			}
-
-			// If not an array, warn and keep the selection as is
-			if (!is_array(value)) {
-				return select_multiple_invalid_value();
-			}
-
-			// Otherwise, update the selection
-			for (var option of select.options) {
-				option.selected = value.includes(get_option_value(option));
-			}
-
+			if (value == void 0) return;
+			if (!is_array(value)) return select_multiple_invalid_value();
+			for (var option of select.options) option.selected = value.includes(get_option_value(option));
 			return;
 		}
-
-		for (option of select.options) {
-			var option_value = get_option_value(option);
-			if (is(option_value, value)) {
-				option.selected = true;
-				return;
-			}
+		for (option of select.options) if (is(get_option_value(option), value)) {
+			option.selected = true;
+			return;
 		}
-
-		if (!mounting || value !== undefined) {
-			select.selectedIndex = -1; // no option should be selected
-		}
+		if (!mounting || value !== void 0) select.selectedIndex = -1;
 	}
-
 	/**
-	 * Selects the correct option(s) if `value` is given,
-	 * and then sets up a mutation observer to sync the
-	 * current selection to the dom when it changes. Such
-	 * changes could for example occur when options are
-	 * inside an `#each` block.
-	 * @param {HTMLSelectElement} select
-	 */
+	* Sets up a mutation observer to sync the current selection
+	* and default to the dom when the options change, for example
+	* when they are inside an `#each` block. Called once per `<select>`,
+	* by the compiled output or by `attribute_effect` for spreads.
+	* @param {HTMLSelectElement} select
+	*/
 	function init_select(select) {
-		var observer = new MutationObserver(() => {
-			if ('__value' in select) {
-				// @ts-ignore
-				select_option(select, select.__value);
-			}
-			// Deliberately don't update the potential binding value,
-			// the model should be preserved unless explicitly changed
+		var observer = new MutationObserver((entries) => {
+			if (entries.every(is_selectedcontent_mutation)) return;
+			if ("__defaultValue" in select) apply_default_select_value(select, false);
+			if ("__value" in select) select_option(select, select.__value);
 		});
-
 		observer.observe(select, {
-			// Listen to option element changes
 			childList: true,
-			subtree: true, // because of <optgroup>
-			// Listen to option element value attribute changes
-			// (doesn't get notified of select value changes,
-			// because that property is not reflected as an attribute)
+			subtree: true,
 			attributes: true,
-			attributeFilter: ['value']
+			attributeFilter: ["value"]
 		});
-
 		teardown(() => {
 			observer.disconnect();
 		});
 	}
-
 	/** @param {HTMLOptionElement} option */
 	function get_option_value(option) {
-		// __value only exists if the <option> has a value attribute
-		if ('__value' in option) {
-			return option.__value;
-		} else {
-			return option.value;
-		}
+		if ("__value" in option) return option.__value;
+		else return option.value;
 	}
-
-	/** @import { Blocker, Effect } from '#client' */
-
-	const CLASS = Symbol('class');
-	const STYLE = Symbol('style');
-
-	const IS_CUSTOM_ELEMENT = Symbol('is custom element');
-	const IS_HTML = Symbol('is html');
-
-	const LINK_TAG = IS_XHTML ? 'link' : 'LINK';
-	const INPUT_TAG = IS_XHTML ? 'input' : 'INPUT';
-	const OPTION_TAG = IS_XHTML ? 'option' : 'OPTION';
-	const SELECT_TAG = IS_XHTML ? 'select' : 'SELECT';
-	const PROGRESS_TAG = IS_XHTML ? 'progress' : 'PROGRESS';
-
 	/**
-	 * The value/checked attribute in the template actually corresponds to the defaultValue property, so we need
-	 * to remove it upon hydration to avoid a bug when someone resets the form value.
-	 * @param {HTMLInputElement} input
-	 * @returns {void}
-	 */
+	* Returns `true` if the mutation stems from the browser mirroring the selected
+	* option's content into `<selectedcontent>`, or from us replacing the
+	* `<selectedcontent>` element with a clone of itself
+	* @param {MutationRecord} entry
+	*/
+	function is_selectedcontent_mutation(entry) {
+		if (entry.target.closest("selectedcontent") !== null) return true;
+		if (entry.type === "childList") {
+			var nodes = [...entry.addedNodes, ...entry.removedNodes];
+			return nodes.length > 0 && nodes.every((node) => node.nodeName === "SELECTEDCONTENT");
+		}
+		return false;
+	}
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/attributes.js
+	/** @import { Blocker, Effect } from '#client' */
+	var CLASS = Symbol("class");
+	var STYLE = Symbol("style");
+	var IS_CUSTOM_ELEMENT = Symbol("is custom element");
+	var IS_HTML = Symbol("is html");
+	var LINK_TAG = IS_XHTML ? "link" : "LINK";
+	var INPUT_TAG = IS_XHTML ? "input" : "INPUT";
+	var OPTION_TAG = IS_XHTML ? "option" : "OPTION";
+	var SELECT_TAG = IS_XHTML ? "select" : "SELECT";
+	var PROGRESS_TAG = IS_XHTML ? "progress" : "PROGRESS";
+	/**
+	* The value/checked attribute in the template actually corresponds to the defaultValue property, so we need
+	* to remove it upon hydration to avoid a bug when someone resets the form value.
+	* @param {HTMLInputElement} input
+	* @returns {void}
+	*/
 	function remove_input_defaults(input) {
 		if (!hydrating) return;
-
 		var already_removed = false;
-
-		// We try and remove the default attributes later, rather than sync during hydration.
-		// Doing it sync during hydration has a negative impact on performance, but deferring the
-		// work in an idle task alleviates this greatly. If a form reset event comes in before
-		// the idle callback, then we ensure the input defaults are cleared just before.
 		var remove_defaults = () => {
 			if (already_removed) return;
 			already_removed = true;
-
-			// Remove the attributes but preserve the values
-			if (input.hasAttribute('value')) {
+			if (input.hasAttribute("value")) {
 				var value = input.value;
-				set_attribute(input, 'value', null);
+				set_attribute(input, "value", null);
 				input.value = value;
 			}
-
-			if (input.hasAttribute('checked')) {
+			if (input.hasAttribute("checked")) {
 				var checked = input.checked;
-				set_attribute(input, 'checked', null);
+				set_attribute(input, "checked", null);
 				input.checked = checked;
 			}
 		};
-
-		/** @type {any} */ (input)[FORM_RESET_HANDLER] = remove_defaults;
+		/** @type {any} */ input[FORM_RESET_HANDLER] = remove_defaults;
 		queue_micro_task(remove_defaults);
 		add_form_reset_listener();
 	}
-
 	/**
-	 * @param {Element} element
-	 * @param {any} value
-	 */
+	* @param {Element} element
+	* @param {any} value
+	*/
 	function set_value(element, value) {
 		var attributes = get_attributes(element);
-
-		if (
-			attributes.value ===
-				(attributes.value =
-					// treat null and undefined the same for the initial value
-					value ?? undefined) ||
-			// @ts-expect-error
-			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== PROGRESS_TAG))
-		) {
-			return;
-		}
-
-		// @ts-expect-error
-		element.value = value ?? '';
+		if (attributes.value === (attributes.value = value ?? void 0) || element.value === value && (value !== 0 || element.nodeName !== PROGRESS_TAG)) return;
+		element.value = value ?? "";
 	}
-
 	/**
-	 * @param {Element} element
-	 * @param {boolean} checked
-	 */
+	* @param {Element} element
+	* @param {boolean} checked
+	*/
 	function set_checked(element, checked) {
 		var attributes = get_attributes(element);
-
-		if (
-			attributes.checked ===
-			(attributes.checked =
-				// treat null and undefined the same for the initial value
-				checked ?? undefined)
-		) {
-			return;
-		}
-
-		// @ts-expect-error
+		if (attributes.checked === (attributes.checked = checked ?? void 0)) return;
 		element.checked = checked;
 	}
-
 	/**
-	 * Sets the `selected` attribute on an `option` element.
-	 * Not set through the property because that doesn't reflect to the DOM,
-	 * which means it wouldn't be taken into account when a form is reset.
-	 * @param {HTMLOptionElement} element
-	 * @param {boolean} selected
-	 */
-	function set_selected(element, selected) {
-		if (selected) {
-			// The selected option could've changed via user selection, and
-			// setting the value without this check would set it back.
-			if (!element.hasAttribute('selected')) {
-				element.setAttribute('selected', '');
-			}
-		} else {
-			element.removeAttribute('selected');
-		}
-	}
-
-	/**
-	 * @param {Element} element
-	 * @param {string} attribute
-	 * @param {string | null} value
-	 * @param {boolean} [skip_warning]
-	 */
+	* @param {Element} element
+	* @param {string} attribute
+	* @param {string | null} value
+	* @param {boolean} [skip_warning]
+	*/
 	function set_attribute(element, attribute, value, skip_warning) {
 		var attributes = get_attributes(element);
-
 		if (hydrating) {
 			attributes[attribute] = element.getAttribute(attribute);
-
-			if (
-				attribute === 'src' ||
-				attribute === 'srcset' ||
-				(attribute === 'href' && element.nodeName === LINK_TAG)
-			) {
-
-				// If we reset these attributes, they would result in another network request, which we want to avoid.
-				// We assume they are the same between client and server as checking if they are equal is expensive
-				// (we can't just compare the strings as they can be different between client and server but result in the
-				// same url, so we would need to create hidden anchor elements to compare them)
+			if (attribute === "src" || attribute === "srcset" || attribute === "href" && element.nodeName === LINK_TAG) {
+				if (!skip_warning);
 				return;
 			}
 		}
-
 		if (attributes[attribute] === (attributes[attribute] = value)) return;
-
-		if (attribute === 'loading') {
-			// @ts-expect-error
-			element[LOADING_ATTR_SYMBOL] = value;
-		}
-
-		if (value == null) {
-			element.removeAttribute(attribute);
-		} else if (typeof value !== 'string' && get_setters(element).includes(attribute)) {
-			// @ts-ignore
-			element[attribute] = value;
-		} else {
-			element.setAttribute(attribute, value);
-		}
+		if (attribute === "loading") element[LOADING_ATTR_SYMBOL] = value;
+		if (value == null) element.removeAttribute(attribute);
+		else if (typeof value !== "string" && get_setters(element).has(attribute)) element[attribute] = value;
+		else element.setAttribute(attribute, value);
 	}
-
 	/**
-	 * Spreads attributes onto a DOM element, taking into account the currently set attributes
-	 * @param {Element & ElementCSSInlineStyle} element
-	 * @param {Record<string | symbol, any> | undefined} prev
-	 * @param {Record<string | symbol, any>} next New attributes - this function mutates this object
-	 * @param {string} [css_hash]
-	 * @param {boolean} [should_remove_defaults]
-	 * @param {boolean} [skip_warning]
-	 * @returns {Record<string, any>}
-	 */
-	function set_attributes(
-		element,
-		prev,
-		next,
-		css_hash,
-		should_remove_defaults = false,
-		skip_warning = false
-	) {
+	* Spreads attributes onto a DOM element, taking into account the currently set attributes
+	* @param {Element & ElementCSSInlineStyle} element
+	* @param {Record<string | symbol, any> | undefined} prev
+	* @param {Record<string | symbol, any>} next New attributes - this function mutates this object
+	* @param {string} [css_hash]
+	* @param {boolean} [should_remove_defaults]
+	* @param {boolean} [skip_warning]
+	* @returns {Record<string, any>}
+	*/
+	function set_attributes(element, prev, next, css_hash, should_remove_defaults = false, skip_warning = false) {
 		if (hydrating && should_remove_defaults && element.nodeName === INPUT_TAG) {
-			var input = /** @type {HTMLInputElement} */ (element);
-			var attribute = input.type === 'checkbox' ? 'defaultChecked' : 'defaultValue';
-
-			if (!(attribute in next)) {
-				remove_input_defaults(input);
-			}
+			if (!("defaultValue" in next || "defaultChecked" in next)) remove_input_defaults(element);
 		}
-
 		var attributes = get_attributes(element);
-
 		var is_custom_element = attributes[IS_CUSTOM_ELEMENT];
 		var preserve_attribute_case = !attributes[IS_HTML];
-
-		// If we're hydrating but the custom element is from Svelte, and it already scaffolded,
-		// then it might run block logic in hydration mode, which we have to prevent.
 		let is_hydrating_custom_element = hydrating && is_custom_element;
-		if (is_hydrating_custom_element) {
-			set_hydrating(false);
-		}
-
+		if (is_hydrating_custom_element) set_hydrating(false);
 		var current = prev || {};
 		var is_option_element = element.nodeName === OPTION_TAG;
-
-		for (var key in prev) {
-			// don't null our internal $$onX listeners
-			if (!(key in next) && key[0] + key[1] !== '$$') {
-				next[key] = null;
-			}
-		}
-
-		if (next.class) {
-			next.class = clsx(next.class);
-		} else if (next[CLASS]) {
-			next.class = null; /* force call to set_class() */
-		}
-
-		if (next[STYLE]) {
-			next.style ??= null; /* force call to set_style() */
-		}
-
+		var is_select_element = element.nodeName === SELECT_TAG;
+		for (var key in prev) if (!(key in next) && key[0] + key[1] !== "$$") next[key] = null;
+		if (next.class) next.class = clsx(next.class);
+		else if (css_hash || next[CLASS]) next.class = null;
+		if (next[STYLE]) next.style ??= null;
 		var setters = get_setters(element);
-
-		if (element.nodeName === INPUT_TAG && 'type' in next && ('value' in next || '__value' in next)) {
+		if (element.nodeName === INPUT_TAG && "type" in next && ("value" in next || "__value" in next)) {
 			var type = next.type;
-
-			if (type !== current.type || (type === undefined && element.hasAttribute('type'))) {
+			if (type !== current.type || type === void 0 && element.hasAttribute("type")) {
 				current.type = type;
-				set_attribute(element, 'type', type);
+				set_attribute(element, "type", type, skip_warning);
 			}
 		}
-
-		// since key is captured we use const
 		for (const key in next) {
-			// let instead of var because referenced in a closure
 			let value = next[key];
-
-			// Up here because we want to do this for the initial value, too, even if it's undefined,
-			// and this wouldn't be reached in case of undefined because of the equality check below
-			if (is_option_element && key === 'value' && value == null) {
-				// The <option> element is a special case because removing the value attribute means
-				// the value is set to the text content of the option element, and setting the value
-				// to null or undefined means the value is set to the string "null" or "undefined".
-				// To align with how we handle this case in non-spread-scenarios, this logic is needed.
-				// There's a super-edge-case bug here that is left in in favor of smaller code size:
-				// Because of the "set missing props to null" logic above, we can't differentiate
-				// between a missing value and an explicitly set value of null or undefined. That means
-				// that once set, the value attribute of an <option> element can't be removed. This is
-				// a very rare edge case, and removing the attribute altogether isn't possible either
-				// for the <option value={undefined}> case, so we're not losing any functionality here.
-				// @ts-ignore
-				element.value = element.__value = '';
+			if (is_option_element && key === "value" && value == null) {
+				element.value = element.__value = "";
 				current[key] = value;
 				continue;
 			}
-
-			if (key === 'class') {
-				var is_html = element.namespaceURI === 'http://www.w3.org/1999/xhtml';
-				set_class(element, is_html, value, css_hash, prev?.[CLASS], next[CLASS]);
+			if (key === "class") {
+				set_class(element, element.namespaceURI === "http://www.w3.org/1999/xhtml", value, css_hash, prev?.[CLASS], next[CLASS]);
 				current[key] = value;
 				current[CLASS] = next[CLASS];
 				continue;
 			}
-
-			if (key === 'style') {
+			if (key === "style") {
 				set_style(element, value, prev?.[STYLE], next[STYLE]);
 				current[key] = value;
 				current[STYLE] = next[STYLE];
 				continue;
 			}
-
 			var prev_value = current[key];
-
-			// Skip if value is unchanged, unless it's `undefined` and the element still has the attribute
-			if (value === prev_value && !(value === undefined && element.hasAttribute(key))) {
-				continue;
-			}
-
+			if (value === prev_value && !(value === void 0 && element.hasAttribute(key))) continue;
 			current[key] = value;
-
-			var prefix = key[0] + key[1]; // this is faster than key.slice(0, 2)
-			if (prefix === '$$') continue;
-
-			if (prefix === 'on') {
+			var prefix = key[0] + key[1];
+			if (prefix === "$$") continue;
+			if (prefix === "on") {
 				/** @type {{ capture?: true }} */
 				const opts = {};
-				const event_handle_key = '$$' + key;
+				const event_handle_key = "$$" + key;
 				let event_name = key.slice(2);
 				var is_delegated = can_delegate_event(event_name);
-
 				if (is_capture_event(event_name)) {
 					event_name = event_name.slice(0, -7);
 					opts.capture = true;
 				}
-
 				if (!is_delegated && prev_value) {
-					// Listening to same event but different handler -> our handle function below takes care of this
-					// If we were to remove and add listeners in this case, it could happen that the event is "swallowed"
-					// (the browser seems to not know yet that a new one exists now) and doesn't reach the handler
-					// https://github.com/sveltejs/svelte/issues/11903
 					if (value != null) continue;
-
 					element.removeEventListener(event_name, current[event_handle_key], opts);
 					current[event_handle_key] = null;
 				}
-
 				if (is_delegated) {
 					delegated(event_name, element, value);
 					delegate([event_name]);
 				} else if (value != null) {
 					/**
-					 * @this {any}
-					 * @param {Event} evt
-					 */
+					* @this {any}
+					* @param {Event} evt
+					*/
 					function handle(evt) {
 						current[key].call(this, evt);
 					}
-
 					current[event_handle_key] = create_event(event_name, element, handle, opts);
 				}
-			} else if (key === 'style') {
-				// avoid using the setter
-				set_attribute(element, key, value);
-			} else if (key === 'autofocus') {
-				autofocus(/** @type {HTMLElement} */ (element), Boolean(value));
-			} else if (!is_custom_element && (key === '__value' || (key === 'value' && value != null))) {
-				// @ts-ignore We're not running this for custom elements because __value is actually
-				// how Lit stores the current value on the element, and messing with that would break things.
-				element.value = element.__value = value;
-			} else if (key === 'selected' && is_option_element) {
-				set_selected(/** @type {HTMLOptionElement} */ (element), value);
-			} else {
+			} else if (key === "style") set_attribute(element, key, value);
+			else if (key === "autofocus") autofocus(element, Boolean(value));
+			else if (!is_custom_element && (key === "__value" || key === "value" && value != null)) element.value = element.__value = value;
+			else if (key === "selected" && is_option_element) set_selected(element, value);
+			else {
 				var name = key;
-				if (!preserve_attribute_case) {
-					name = normalize_attribute(name);
-				}
-
-				var is_default = name === 'defaultValue' || name === 'defaultChecked';
-
+				if (!preserve_attribute_case) name = normalize_attribute(name);
+				var is_default = name === "defaultValue" || name === "defaultChecked";
+				if (is_select_element && name === "defaultValue") continue;
 				if (value == null && !is_custom_element && !is_default) {
 					attributes[key] = null;
-
-					if (name === 'value' || name === 'checked') {
-						// removing value/checked also removes defaultValue/defaultChecked — preserve
-						let input = /** @type {HTMLInputElement} */ (element);
-						const use_default = prev === undefined;
-						if (name === 'value') {
+					if (name === "value" || name === "checked") {
+						let input = element;
+						const use_default = prev === void 0;
+						if (name === "value") {
 							let previous = input.defaultValue;
 							input.removeAttribute(name);
 							input.defaultValue = previous;
-							// @ts-ignore
 							input.value = input.__value = use_default ? previous : null;
 						} else {
 							let previous = input.defaultChecked;
@@ -8968,197 +5619,119 @@
 							input.defaultChecked = previous;
 							input.checked = use_default ? previous : false;
 						}
-					} else {
-						element.removeAttribute(key);
-					}
-				} else if (
-					is_default ||
-					(setters.includes(name) && (is_custom_element || typeof value !== 'string'))
-				) {
-					// @ts-ignore
+					} else element.removeAttribute(key);
+				} else if (is_default || (is_custom_element || typeof value !== "string") && setters.has(name)) {
 					element[name] = value;
-					// remove it from attributes's cache
 					if (name in attributes) attributes[name] = UNINITIALIZED;
-				} else if (typeof value !== 'function') {
-					set_attribute(element, name, value);
-				}
+				} else if (typeof value !== "function") set_attribute(element, name, value, skip_warning);
 			}
 		}
-
-		if (is_hydrating_custom_element) {
-			set_hydrating(true);
-		}
-
+		if (is_hydrating_custom_element) set_hydrating(true);
 		return current;
 	}
-
 	/**
-	 * @param {Element & ElementCSSInlineStyle} element
-	 * @param {(...expressions: any) => Record<string | symbol, any>} fn
-	 * @param {Array<() => any>} sync
-	 * @param {Array<() => Promise<any>>} async
-	 * @param {Blocker[]} blockers
-	 * @param {string} [css_hash]
-	 * @param {boolean} [should_remove_defaults]
-	 * @param {boolean} [skip_warning]
-	 */
-	function attribute_effect(
-		element,
-		fn,
-		sync = [],
-		async = [],
-		blockers = [],
-		css_hash,
-		should_remove_defaults = false,
-		skip_warning = false
-	) {
+	* @param {Element & ElementCSSInlineStyle} element
+	* @param {(...expressions: any) => Record<string | symbol, any>} fn
+	* @param {Array<() => any>} sync
+	* @param {Array<() => Promise<any>>} async
+	* @param {Blocker[]} blockers
+	* @param {string} [css_hash]
+	* @param {boolean} [should_remove_defaults]
+	* @param {boolean} [skip_warning]
+	*/
+	function attribute_effect(element, fn, sync = [], async = [], blockers = [], css_hash, should_remove_defaults = false, skip_warning = false) {
 		flatten(blockers, sync, async, (values) => {
 			/** @type {Record<string | symbol, any> | undefined} */
-			var prev = undefined;
-
+			var prev = void 0;
 			/** @type {Record<symbol, Effect>} */
 			var effects = {};
-
 			var is_select = element.nodeName === SELECT_TAG;
 			var inited = false;
-
 			managed(() => {
 				var next = fn(...values.map(get));
 				/** @type {Record<string | symbol, any>} */
-				var current = set_attributes(
-					element,
-					prev,
-					next,
-					css_hash,
-					should_remove_defaults,
-					skip_warning
-				);
-
-				if (inited && is_select && 'value' in next) {
-					select_option(/** @type {HTMLSelectElement} */ (element), next.value);
+				var current = set_attributes(element, prev, next, css_hash, should_remove_defaults, skip_warning);
+				if (inited && is_select) {
+					var select = element;
+					if ("defaultValue" in next) set_default_select_value(select, next.defaultValue);
+					if ("value" in next) select_option(select, next.value);
 				}
-
-				for (let symbol of Object.getOwnPropertySymbols(effects)) {
-					if (!next[symbol]) destroy_effect(effects[symbol]);
-				}
-
+				for (let symbol of Object.getOwnPropertySymbols(effects)) if (!next[symbol]) destroy_effect(effects[symbol]);
 				for (let symbol of Object.getOwnPropertySymbols(next)) {
 					var n = next[symbol];
-
-					if (symbol.description === ATTACHMENT_KEY && (!prev || n !== prev[symbol])) {
+					if (symbol.description === "@attach" && (!prev || n !== prev[symbol])) {
 						if (effects[symbol]) destroy_effect(effects[symbol]);
 						effects[symbol] = branch(() => attach(element, () => n));
 					}
-
 					current[symbol] = n;
 				}
-
 				prev = current;
 			});
-
 			if (is_select) {
-				var select = /** @type {HTMLSelectElement} */ (element);
-
+				var select = element;
 				effect(() => {
-					select_option(select, /** @type {Record<string | symbol, any>} */ (prev).value, true);
+					var attrs = prev;
+					if ("defaultValue" in attrs) set_default_select_value(select, attrs.defaultValue);
+					select_option(select, attrs.value, true);
 					init_select(select);
 				});
 			}
-
 			inited = true;
 		});
 	}
-
 	/**
-	 *
-	 * @param {Element} element
-	 */
+	*
+	* @param {Element} element
+	*/
 	function get_attributes(element) {
-		return /** @type {Record<string | symbol, unknown>} **/ (
-			/** @type {any} */ (element)[ATTRIBUTES_CACHE] ??= {
-				[IS_CUSTOM_ELEMENT]: element.nodeName.includes('-'),
-				[IS_HTML]: element.namespaceURI === NAMESPACE_HTML
-			}
-		);
+		return element[ATTRIBUTES_CACHE] ??= {
+			[IS_CUSTOM_ELEMENT]: element.nodeName.includes("-"),
+			[IS_HTML]: element.namespaceURI === NAMESPACE_HTML
+		};
 	}
-
-	/** @type {Map<string, string[]>} */
-	var setters_cache = new Map();
-
+	/** @type {Map<string, Set<string>>} */
+	var setters_cache = /* @__PURE__ */ new Map();
 	/** @param {Element} element */
 	function get_setters(element) {
-		var cache_key = element.getAttribute('is') || element.nodeName;
+		var cache_key = element.getAttribute("is") || element.nodeName;
 		var setters = setters_cache.get(cache_key);
 		if (setters) return setters;
-		setters_cache.set(cache_key, (setters = []));
-
+		setters_cache.set(cache_key, setters = /* @__PURE__ */ new Set());
 		var descriptors;
-		var proto = element; // In the case of custom elements there might be setters on the instance
+		var proto = element;
 		var element_proto = Element.prototype;
-
-		// Stop at Element, from there on there's only unnecessary (and dangerous, like innerHTML) setters we're not interested in
-		// Do not use constructor.name here as that's unreliable in some browser environments
 		while (element_proto !== proto) {
 			descriptors = get_descriptors(proto);
-
-			for (var key in descriptors) {
-				if (
-					descriptors[key].set &&
-					// better safe than sorry, we don't want spread attributes to mess with HTML content
-					key !== 'innerHTML' &&
-					key !== 'textContent' &&
-					key !== 'innerText'
-				) {
-					setters.push(key);
-				}
-			}
-
+			for (var key in descriptors) if (descriptors[key].set && key !== "innerHTML" && key !== "textContent" && key !== "innerText") setters.add(key);
 			proto = get_prototype_of(proto);
 		}
-
 		return setters;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/bindings/input.js
 	/** @import { Batch } from '../../../reactivity/batch.js' */
-
 	/**
-	 * @param {HTMLInputElement} input
-	 * @param {() => unknown} get
-	 * @param {(value: unknown) => void} set
-	 * @returns {void}
-	 */
+	* @param {HTMLInputElement} input
+	* @param {() => unknown} get
+	* @param {(value: unknown) => void} set
+	* @returns {void}
+	*/
 	function bind_value(input, get, set = get) {
-		var batches = new WeakSet();
-
-		listen_to_event_and_reset_event(input, 'input', async (is_reset) => {
-
+		var batches = /* @__PURE__ */ new WeakSet();
+		listen_to_event_and_reset_event(input, "input", async (is_reset) => {
 			/** @type {any} */
 			var value = is_reset ? input.defaultValue : input.value;
 			value = is_numberlike_input(input) ? to_number(value) : value;
 			set(value);
-
-			if (current_batch !== null) {
-				batches.add(current_batch);
-			}
-
-			// Because `{#each ...}` blocks work by updating sources inside the flush,
-			// we need to wait a tick before checking to see if we should forcibly
-			// update the input and reset the selection state
+			if (current_batch !== null) batches.add(current_batch);
 			await tick();
-
-			// Respect any validation in accessors
 			if (value !== (value = get())) {
 				var start = input.selectionStart;
 				var end = input.selectionEnd;
 				var length = input.value.length;
-
-				// the value is coerced on assignment
-				input.value = value ?? '';
-
-				// Restore selection
+				input.value = value ?? "";
 				if (end !== null) {
 					var new_length = input.value.length;
-					// If cursor was at end and new input is longer, move cursor to new end
 					if (start === end && end === length && new_length > length) {
 						input.selectionStart = new_length;
 						input.selectionEnd = new_length;
@@ -9169,167 +5742,92 @@
 				}
 			}
 		});
-
-		if (
-			// If we are hydrating and the value has since changed,
-			// then use the updated value from the input instead.
-			(hydrating && input.defaultValue !== input.value) ||
-			// If defaultValue is set, then value == defaultValue
-			// TODO Svelte 6: remove input.value check and set to empty string?
-			(untrack(get) == null && input.value)
-		) {
+		if (hydrating && input.defaultValue !== input.value || untrack(get) == null && input.value) {
 			set(is_numberlike_input(input) ? to_number(input.value) : input.value);
-
-			if (current_batch !== null) {
-				batches.add(current_batch);
-			}
+			if (current_batch !== null) batches.add(current_batch);
 		}
-
 		render_effect(() => {
-
 			var value = get();
-
 			if (input === document.activeElement) {
-				// In sync mode render effects are executed during tree traversal -> needs current_batch
-				// In async mode render effects are flushed once batch resolved, at which point current_batch is null -> needs previous_batch
-				var batch = /** @type {Batch} */ (current_batch);
-
-				// Never rewrite the contents of a focused input. We can get here if, for example,
-				// an update is deferred because of async work depending on the input:
-				//
-				// <input bind:value={query}>
-				// <p>{await find(query)}</p>
-				if (batches.has(batch)) {
-					return;
-				}
+				var batch = async_mode_flag ? previous_batch : current_batch;
+				if (batches.has(batch)) return;
 			}
-
-			if (is_numberlike_input(input) && value === to_number(input.value)) {
-				// handles 0 vs 00 case (see https://github.com/sveltejs/svelte/issues/9959)
-				return;
-			}
-
-			if (input.type === 'date' && !value && !input.value) {
-				// Handles the case where a temporarily invalid date is set (while typing, for example with a leading 0 for the day)
-				// and prevents this state from clearing the other parts of the date input (see https://github.com/sveltejs/svelte/issues/7897)
-				return;
-			}
-
-			// don't set the value of the input if it's the same to allow
-			// minlength to work properly
-			if (value !== input.value) {
-				// @ts-expect-error the value is coerced on assignment
-				input.value = value ?? '';
-			}
+			if (is_numberlike_input(input) && value === to_number(input.value)) return;
+			if (input.type === "date" && !value && !input.value) return;
+			if (value !== input.value) input.value = value ?? "";
 		});
 	}
-
 	/**
-	 * @param {HTMLInputElement} input
-	 * @param {() => unknown} get
-	 * @param {(value: unknown) => void} set
-	 * @returns {void}
-	 */
+	* @param {HTMLInputElement} input
+	* @param {() => unknown} get
+	* @param {(value: unknown) => void} set
+	* @returns {void}
+	*/
 	function bind_checked(input, get, set = get) {
-		listen_to_event_and_reset_event(input, 'change', (is_reset) => {
-			var value = is_reset ? input.defaultChecked : input.checked;
-			set(value);
+		listen_to_event_and_reset_event(input, "change", (is_reset) => {
+			set(is_reset ? input.defaultChecked : input.checked);
 		});
-
-		if (
-			// If we are hydrating and the value has since changed,
-			// then use the update value from the input instead.
-			(hydrating && input.defaultChecked !== input.checked) ||
-			// If defaultChecked is set, then checked == defaultChecked
-			untrack(get) == null
-		) {
-			set(input.checked);
-		}
-
+		if (hydrating && input.defaultChecked !== input.checked || untrack(get) == null) set(input.checked);
 		render_effect(() => {
 			var value = get();
 			input.checked = Boolean(value);
 		});
 	}
-
 	/**
-	 * @param {HTMLInputElement} input
-	 */
+	* @param {HTMLInputElement} input
+	*/
 	function is_numberlike_input(input) {
 		var type = input.type;
-		return type === 'number' || type === 'range';
+		return type === "number" || type === "range";
 	}
-
 	/**
-	 * @param {string} value
-	 */
+	* @param {string} value
+	*/
 	function to_number(value) {
-		return value === '' ? null : +value;
+		return value === "" ? null : +value;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/bindings/this.js
 	/** @import { ComponentContext, Effect } from '#client' */
-
 	/**
-	 * @param {any} bound_value
-	 * @param {Element} element_or_component
-	 * @returns {boolean}
-	 */
+	* @param {any} bound_value
+	* @param {Element} element_or_component
+	* @returns {boolean}
+	*/
 	function is_bound_this(bound_value, element_or_component) {
-		return (
-			bound_value === element_or_component || bound_value?.[STATE_SYMBOL] === element_or_component
-		);
+		return bound_value === element_or_component || bound_value?.[STATE_SYMBOL] === element_or_component;
 	}
-
 	/**
-	 * @param {any} element_or_component
-	 * @param {(value: unknown, ...parts: unknown[]) => void} update
-	 * @param {(...parts: unknown[]) => unknown} get_value
-	 * @param {() => unknown[]} [get_parts] Set if the this binding is used inside an each block,
-	 * 										returns all the parts of the each block context that are used in the expression
-	 * @returns {void}
-	 */
-	function bind_this(element_or_component = {}, update, get_value, get_parts) {
-		var component_effect = /** @type {ComponentContext} */ (component_context).r;
-		var parent = /** @type {Effect} */ (active_effect);
-
+	* @param {any} element_or_component
+	* @param {(value: unknown, ...parts: unknown[]) => void} update
+	* @param {(...parts: unknown[]) => unknown} get_value
+	* @param {() => unknown[]} [get_parts] Set if the this binding is used inside an each block,
+	* 										returns all the parts of the each block context that are used in the expression
+	* @returns {void}
+	*/
+	function bind_this(element_or_component = mark_as_component(), update, get_value, get_parts) {
+		var component_effect = component_context.r;
+		var parent = active_effect;
 		effect(() => {
 			/** @type {unknown[]} */
 			var old_parts;
-
 			/** @type {unknown[]} */
 			var parts;
-
 			render_effect(() => {
 				old_parts = parts;
-				// We only track changes to the parts, not the value itself to avoid unnecessary reruns.
 				parts = get_parts?.() || [];
-
 				untrack(() => {
 					if (!is_bound_this(get_value(...parts), element_or_component)) {
 						update(element_or_component, ...parts);
-						// If this is an effect rerun (cause: each block context changes), then nullify the binding at
-						// the previous position if it isn't already taken over by a different effect.
-						if (old_parts && is_bound_this(get_value(...old_parts), element_or_component)) {
-							update(null, ...old_parts);
-						}
+						if (old_parts && is_bound_this(get_value(...old_parts), element_or_component)) update(null, ...old_parts);
 					}
 				});
 			});
-
 			return () => {
-				// When the bind:this effect is destroyed, we go up the effect parent chain until we find the last parent effect that is destroyed,
-				// or the effect containing the component bind:this is in (whichever comes first). That way we can time the nulling of the binding
-				// as close to user/developer expectation as possible.
-				// TODO Svelte 6: Decide if we want to keep this logic or just always null the binding in the component effect's teardown
-				// (which would be simpler, but less intuitive in some cases, and breaks the `ondestroy-before-cleanup` test)
 				let p = parent;
-				while (p !== component_effect && p.parent !== null && p.parent.f & DESTROYING) {
-					p = p.parent;
-				}
+				while (p !== component_effect && p.parent !== null && p.parent.f & 33554432) p = p.parent;
 				const teardown = () => {
-					if (parts && is_bound_this(get_value(...parts), element_or_component)) {
-						update(null, ...parts);
-					}
+					if (parts && is_bound_this(get_value(...parts), element_or_component)) update(null, ...parts);
 				};
 				const original_teardown = p.teardown;
 				p.teardown = () => {
@@ -9338,35 +5836,31 @@
 				};
 			};
 		});
-
 		return element_or_component;
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/reactivity/props.js
 	/** @import { Derived, Effect, Source } from './types.js' */
-
 	/**
-	 * The proxy handler for rest props (i.e. `const { x, ...rest } = $props()`).
-	 * Is passed the full `$$props` object and excludes the named props.
-	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Set<string | symbol>, name?: string }>}}
-	 */
-	const rest_props_handler = {
+	* The proxy handler for rest props (i.e. `const { x, ...rest } = $props()`).
+	* Is passed the full `$$props` object and excludes the named props.
+	* @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Set<string | symbol>, name?: string }>}}
+	*/
+	var rest_props_handler = {
 		get(target, key) {
 			if (target.exclude.has(key)) return;
 			return target.props[key];
 		},
 		set(target, key) {
-
 			return false;
 		},
 		getOwnPropertyDescriptor(target, key) {
 			if (target.exclude.has(key)) return;
-			if (key in target.props) {
-				return {
-					enumerable: true,
-					configurable: true,
-					value: target.props[key]
-				};
-			}
+			if (key in target.props) return {
+				enumerable: true,
+				configurable: true,
+				value: target.props[key]
+			};
 		},
 		has(target, key) {
 			if (target.exclude.has(key)) return false;
@@ -9376,31 +5870,32 @@
 			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.has(key));
 		}
 	};
-
 	/**
-	 * @param {Record<string, unknown>} props
-	 * @param {Set<string>} exclude
-	 * @param {string} [name]
-	 * @returns {Record<string, unknown>}
-	 */
+	* @param {Record<string, unknown>} props
+	* @param {Set<string>} exclude
+	* @param {string} [name]
+	* @returns {Record<string, unknown>}
+	*/
 	/*#__NO_SIDE_EFFECTS__*/
 	function rest_props(props, exclude, name) {
-		return new Proxy({ props, exclude }, rest_props_handler);
+		return new Proxy({
+			props,
+			exclude
+		}, rest_props_handler);
 	}
-
 	/**
-	 * The proxy handler for spread props. Handles the incoming array of props
-	 * that looks like `() => { dynamic: props }, { static: prop }, ..` and wraps
-	 * them so that the whole thing is passed to the component as the `$$props` argument.
-	 * @type {ProxyHandler<{ props: Array<Record<string | symbol, unknown> | (() => Record<string | symbol, unknown>)> }>}}
-	 */
-	const spread_props_handler = {
+	* The proxy handler for spread props. Handles the incoming array of props
+	* that looks like `() => { dynamic: props }, { static: prop }, ..` and wraps
+	* them so that the whole thing is passed to the component as the `$$props` argument.
+	* @type {ProxyHandler<{ props: Array<Record<string | symbol, unknown> | (() => Record<string | symbol, unknown>)> }>}}
+	*/
+	var spread_props_handler = {
 		get(target, key) {
 			let i = target.props.length;
 			while (i--) {
 				let p = target.props[i];
 				if (is_function(p)) p = p();
-				if (typeof p === 'object' && p !== null && key in p) return p[key];
+				if (typeof p === "object" && p !== null && key in p) return p[key];
 			}
 		},
 		set(target, key, value) {
@@ -9421,332 +5916,193 @@
 			while (i--) {
 				let p = target.props[i];
 				if (is_function(p)) p = p();
-				if (typeof p === 'object' && p !== null && key in p) {
+				if (typeof p === "object" && p !== null && key in p) {
 					const descriptor = get_descriptor(p, key);
-					if (descriptor && !descriptor.configurable) {
-						// Prevent a "Non-configurability Report Error": The target is an array, it does
-						// not actually contain this property. If it is now described as non-configurable,
-						// the proxy throws a validation error. Setting it to true avoids that.
-						descriptor.configurable = true;
-					}
+					if (descriptor && !descriptor.configurable) descriptor.configurable = true;
 					return descriptor;
 				}
 			}
 		},
 		has(target, key) {
-			// To prevent a false positive `is_entry_props` in the `prop` function
 			if (key === STATE_SYMBOL || key === LEGACY_PROPS) return false;
-
 			for (let p of target.props) {
 				if (is_function(p)) p = p();
 				if (p != null && key in p) return true;
 			}
-
 			return false;
 		},
 		ownKeys(target) {
 			/** @type {Array<string | symbol>} */
 			const keys = [];
-
 			for (let p of target.props) {
 				if (is_function(p)) p = p();
 				if (!p) continue;
-
-				for (const key in p) {
-					if (!keys.includes(key)) keys.push(key);
-				}
-
-				for (const key of Object.getOwnPropertySymbols(p)) {
-					if (!keys.includes(key)) keys.push(key);
-				}
+				for (const key in p) if (!keys.includes(key)) keys.push(key);
+				for (const key of Object.getOwnPropertySymbols(p)) if (!keys.includes(key)) keys.push(key);
 			}
-
 			return keys;
 		}
 	};
-
 	/**
-	 * @param {Array<Record<string, unknown> | (() => Record<string, unknown>)>} props
-	 * @returns {any}
-	 */
+	* @param {Array<Record<string, unknown> | (() => Record<string, unknown>)>} props
+	* @returns {any}
+	*/
 	function spread_props(...props) {
 		return new Proxy({ props }, spread_props_handler);
 	}
-
 	/**
-	 * This function is responsible for synchronizing a possibly bound prop with the inner component state.
-	 * It is used whenever the compiler sees that the component writes to the prop, or when it has a default prop_value.
-	 * @template V
-	 * @param {Record<string, unknown>} props
-	 * @param {string} key
-	 * @param {number} flags
-	 * @param {V | (() => V)} [fallback]
-	 * @returns {(() => V | ((arg: V) => V) | ((arg: V, mutation: boolean) => V))}
-	 */
+	* This function is responsible for synchronizing a possibly bound prop with the inner component state.
+	* It is used whenever the compiler sees that the component writes to the prop, or when it has a default prop_value.
+	* @template V
+	* @param {Record<string, unknown>} props
+	* @param {string} key
+	* @param {number} flags
+	* @param {V | (() => V)} [fallback]
+	* @returns {(() => V | ((arg: V) => V) | ((arg: V, mutation: boolean) => V))}
+	*/
 	function prop(props, key, flags, fallback) {
-		var runes = true;
-		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
-		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
-
-		var fallback_value = /** @type {V} */ (fallback);
+		var runes = !legacy_mode_flag || (flags & 2) !== 0;
+		var bindable = (flags & 8) !== 0;
+		var lazy = (flags & 16) !== 0;
+		var fallback_value = fallback;
 		var fallback_dirty = true;
-		var fallback_signal = /** @type {Derived<V> | undefined} */ (undefined);
-
+		var fallback_signal = void 0;
 		var get_fallback = () => {
 			if (lazy && runes) {
-				fallback_signal ??= derived(/** @type {() => V} */ (fallback));
+				fallback_signal ??= /* @__PURE__ */ derived(fallback);
 				return get(fallback_signal);
 			}
-
 			if (fallback_dirty) {
 				fallback_dirty = false;
-
-				fallback_value = lazy
-					? untrack(/** @type {() => V} */ (fallback))
-					: /** @type {V} */ (fallback);
+				fallback_value = lazy ? untrack(fallback) : fallback;
 			}
-
 			return fallback_value;
 		};
-
 		/** @type {((v: V) => void) | undefined} */
 		let setter;
-
 		if (bindable) {
-			// Can be the case when someone does `mount(Component, props)` with `let props = $state({...})`
-			// or `createClassComponent(Component, props)`
 			var is_entry_props = STATE_SYMBOL in props || LEGACY_PROPS in props;
-
-			setter =
-				get_descriptor(props, key)?.set ??
-				(is_entry_props && key in props ? (v) => (props[key] = v) : undefined);
+			setter = get_descriptor(props, key)?.set ?? (is_entry_props && key in props ? (v) => props[key] = v : void 0);
 		}
-
 		/** @type {V} */
 		var initial_value;
 		var is_store_sub = false;
-
-		if (bindable) {
-			[initial_value, is_store_sub] = capture_store_binding(() => /** @type {V} */ (props[key]));
-		} else {
-			initial_value = /** @type {V} */ (props[key]);
-		}
-
-		if (initial_value === undefined && fallback !== undefined) {
+		if (bindable) [initial_value, is_store_sub] = capture_store_binding(() => props[key]);
+		else initial_value = props[key];
+		if (initial_value === void 0 && fallback !== void 0) {
 			initial_value = get_fallback();
-
 			if (setter) {
-				props_invalid_value();
+				if (runes) props_invalid_value(key);
 				setter(initial_value);
 			}
 		}
-
 		/** @type {() => V} */
 		var getter;
-
-		{
-			getter = () => {
-				var value = /** @type {V} */ (props[key]);
-				if (value === undefined) return get_fallback();
-				fallback_dirty = true;
-				return value;
-			};
-		}
-
-		// prop is never written to — we only need a getter
-		if ((flags & PROPS_IS_UPDATED) === 0) {
-			return getter;
-		}
-
-		// prop is written to, but the parent component had `bind:foo` which
-		// means we can just call `$$props.foo = value` directly
+		if (runes) getter = () => {
+			var value = props[key];
+			if (value === void 0) return get_fallback();
+			fallback_dirty = true;
+			return value;
+		};
+		else getter = () => {
+			var value = props[key];
+			if (value !== void 0) fallback_value = void 0;
+			return value === void 0 ? fallback_value : value;
+		};
+		if (runes && (flags & 4) === 0) return getter;
 		if (setter) {
 			var legacy_parent = props.$$legacy;
-			return /** @type {() => V} */ (
-				function (/** @type {V} */ value, /** @type {boolean} */ mutation) {
-					if (arguments.length > 0) {
-						// We don't want to notify if the value was mutated and the parent is in runes mode.
-						// In that case the state proxy (if it exists) should take care of the notification.
-						// If the parent is not in runes mode, we need to notify on mutation, too, that the prop
-						// has changed because the parent will not be able to detect the change otherwise.
-						if (!mutation || legacy_parent || is_store_sub) {
-							/** @type {Function} */ (setter)(mutation ? getter() : value);
-						}
-
-						return value;
-					}
-
-					return getter();
+			return (function(value, mutation) {
+				if (arguments.length > 0) {
+					if (!runes || !mutation || legacy_parent || is_store_sub)
+ /** @type {Function} */ setter(mutation ? getter() : value);
+					return value;
 				}
-			);
+				return getter();
+			});
 		}
-
-		// Either prop is written to, but there's no binding, which means we
-		// create a derived that we can write to locally.
-		// Or we are in legacy mode where we always create a derived to replicate that
-		// Svelte 4 did not trigger updates when a primitive value was updated to the same value.
 		var overridden = false;
-
-		var d = ((flags & PROPS_IS_IMMUTABLE) !== 0 ? derived : derived_safe_equal)(() => {
+		var d = ((flags & 1) !== 0 ? derived : derived_safe_equal)(() => {
 			overridden = false;
 			return getter();
 		});
-
-		// Capture the initial value if it's bindable
 		if (bindable) get(d);
-
-		var parent_effect = /** @type {Effect} */ (active_effect);
-
-		return /** @type {() => V} */ (
-			function (/** @type {any} */ value, /** @type {boolean} */ mutation) {
-				if (arguments.length > 0) {
-					const new_value = mutation ? get(d) : bindable ? proxy(value) : value;
-
-					set(d, new_value);
-					overridden = true;
-
-					if (fallback_value !== undefined) {
-						fallback_value = new_value;
-					}
-
-					return value;
-				}
-
-				// special case — avoid recalculating the derived if we're in a
-				// teardown function and the prop was overridden locally, or the
-				// component was already destroyed (people could access props in a timeout)
-				if ((is_destroying_effect && overridden) || (parent_effect.f & DESTROYED) !== 0) {
-					return d.v;
-				}
-
-				return get(d);
+		var parent_effect = active_effect;
+		return (function(value, mutation) {
+			if (arguments.length > 0) {
+				const new_value = mutation ? get(d) : runes && bindable ? proxy(value) : value;
+				set(d, new_value);
+				overridden = true;
+				if (fallback_value !== void 0) fallback_value = new_value;
+				return value;
 			}
-		);
-	}
-
-	/** @import { Blocker } from '#client' */
-
-	/**
-	 * @param {string} binding
-	 * @param {Blocker[]} blockers
-	 * @param {() => Record<string, any>} get_object
-	 * @param {() => string} get_property
-	 * @param {number} line
-	 * @param {number} column
-	 */
-	function validate_binding(binding, blockers, get_object, get_property, line, column) {
-		run_after_blockers(blockers, () => {
-			var warned = false;
-
-			dev_current_component_function?.[FILENAME];
-
-			render_effect(() => {
-				if (warned) return;
-
-				var [object, is_store_sub] = capture_store_binding(get_object);
-
-				if (is_store_sub) return;
-
-				var property = get_property();
-
-				var ran = false;
-
-				// by making the (possibly false, but it would be an extreme edge case) assumption
-				// that a getter has a corresponding setter, we can determine if a property is
-				// reactive by seeing if this effect has dependencies
-				var effect = render_effect(() => {
-					if (ran) return;
-
-					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-					object[property];
-				});
-
-				ran = true;
-
-				if (effect.deps === null) {
-					binding_property_non_reactive();
-
-					warned = true;
-				}
-			});
+			if (is_destroying_effect && overridden || (parent_effect.f & 16384) !== 0) return d.v;
+			return get(d);
 		});
 	}
-
+	//#endregion
+	//#region node_modules/svelte/src/legacy/legacy-client.js
 	/** @import { ComponentConstructorOptions, ComponentType, SvelteComponent, Component } from 'svelte' */
-
 	/**
-	 * Takes the same options as a Svelte 4 component and the component function and returns a Svelte 4 compatible component.
-	 *
-	 * @deprecated Use this only as a temporary solution to migrate your imperative component code to Svelte 5.
-	 *
-	 * @template {Record<string, any>} Props
-	 * @template {Record<string, any>} Exports
-	 * @template {Record<string, any>} Events
-	 * @template {Record<string, any>} Slots
-	 *
-	 * @param {ComponentConstructorOptions<Props> & {
-	 * 	component: ComponentType<SvelteComponent<Props, Events, Slots>> | Component<Props>;
-	 * }} options
-	 * @returns {SvelteComponent<Props, Events, Slots> & Exports}
-	 */
+	* Takes the same options as a Svelte 4 component and the component function and returns a Svelte 4 compatible component.
+	*
+	* @deprecated Use this only as a temporary solution to migrate your imperative component code to Svelte 5.
+	*
+	* @template {Record<string, any>} Props
+	* @template {Record<string, any>} Exports
+	* @template {Record<string, any>} Events
+	* @template {Record<string, any>} Slots
+	*
+	* @param {ComponentConstructorOptions<Props> & {
+	* 	component: ComponentType<SvelteComponent<Props, Events, Slots>> | Component<Props>;
+	* }} options
+	* @returns {SvelteComponent<Props, Events, Slots> & Exports}
+	*/
 	function createClassComponent(options) {
-		// @ts-expect-error $$prop_def etc are not actually defined
 		return new Svelte4Component(options);
 	}
-
 	/**
-	 * Support using the component as both a class and function during the transition period
-	 * @typedef  {{new (o: ComponentConstructorOptions): SvelteComponent;(...args: Parameters<Component<Record<string, any>>>): ReturnType<Component<Record<string, any>, Record<string, any>>>;}} LegacyComponentType
-	 */
-
-	class Svelte4Component {
+	* Support using the component as both a class and function during the transition period
+	* @typedef  {{new (o: ComponentConstructorOptions): SvelteComponent;(...args: Parameters<Component<Record<string, any>>>): ReturnType<Component<Record<string, any>, Record<string, any>>>;}} LegacyComponentType
+	*/
+	var Svelte4Component = class {
 		/** @type {any} */
 		#events;
-
 		/** @type {Record<string, any>} */
 		#instance;
-
 		/**
-		 * @param {ComponentConstructorOptions & {
-		 *  component: any;
-		 * }} options
-		 */
+		* @param {ComponentConstructorOptions & {
+		*  component: any;
+		* }} options
+		*/
 		constructor(options) {
-			var sources = new Map();
-
+			var sources = /* @__PURE__ */ new Map();
 			/**
-			 * @param {string | symbol} key
-			 * @param {unknown} value
-			 */
+			* @param {string | symbol} key
+			* @param {unknown} value
+			*/
 			var add_source = (key, value) => {
-				var s = mutable_source(value, false, false);
+				var s = /* @__PURE__ */ mutable_source(value, false, false);
 				sources.set(key, s);
 				return s;
 			};
-
-			// Replicate coarse-grained props through a proxy that has a version source for
-			// each property, which is incremented on updates to the property itself. Do not
-			// use our $state proxy because that one has fine-grained reactivity.
-			const props = new Proxy(
-				{ ...(options.props || {}), $$events: {} },
-				{
-					get(target, prop) {
-						return get(sources.get(prop) ?? add_source(prop, Reflect.get(target, prop)));
-					},
-					has(target, prop) {
-						// Necessary to not throw "invalid binding" validation errors on the component side
-						if (prop === LEGACY_PROPS) return true;
-
-						get(sources.get(prop) ?? add_source(prop, Reflect.get(target, prop)));
-						return Reflect.has(target, prop);
-					},
-					set(target, prop, value) {
-						set(sources.get(prop) ?? add_source(prop, value), value);
-						return Reflect.set(target, prop, value);
-					}
+			const props = new Proxy({
+				...options.props || {},
+				$$events: {}
+			}, {
+				get(target, prop) {
+					return get(sources.get(prop) ?? add_source(prop, Reflect.get(target, prop)));
+				},
+				has(target, prop) {
+					if (prop === LEGACY_PROPS) return true;
+					get(sources.get(prop) ?? add_source(prop, Reflect.get(target, prop)));
+					return Reflect.has(target, prop);
+				},
+				set(target, prop, value) {
+					set(sources.get(prop) ?? add_source(prop, value), value);
+					return Reflect.set(target, prop, value);
 				}
-			);
-
+			});
 			this.#instance = (options.hydrate ? hydrate : mount)(options.component, {
 				target: options.target,
 				anchor: options.anchor,
@@ -9756,17 +6112,10 @@
 				recover: options.recover,
 				transformError: options.transformError
 			});
-
-			// We don't flushSync for custom element wrappers or if the user doesn't want it,
-			// or if we're in async mode since `flushSync()` will fail
-			if ((!options?.props?.$$host || options.sync === false)) {
-				flushSync();
-			}
-
+			if (!async_mode_flag && (!options?.props?.$$host || options.sync === false)) flushSync();
 			this.#events = props.$$events;
-
 			for (const key of Object.keys(this.#instance)) {
-				if (key === '$set' || key === '$destroy' || key === '$on') continue;
+				if (key === "$set" || key === "$destroy" || key === "$on") continue;
 				define_property(this, key, {
 					get() {
 						return this.#instance[key];
@@ -9778,341 +6127,256 @@
 					enumerable: true
 				});
 			}
-
-			this.#instance.$set = /** @param {Record<string, any>} next */ (next) => {
+			this.#instance.$set = (next) => {
 				Object.assign(props, next);
 			};
-
 			this.#instance.$destroy = () => {
 				unmount(this.#instance);
 			};
 		}
-
 		/** @param {Record<string, any>} props */
 		$set(props) {
 			this.#instance.$set(props);
 		}
-
 		/**
-		 * @param {string} event
-		 * @param {(...args: any[]) => any} callback
-		 * @returns {any}
-		 */
+		* @param {string} event
+		* @param {(...args: any[]) => any} callback
+		* @returns {any}
+		*/
 		$on(event, callback) {
 			this.#events[event] = this.#events[event] || [];
-
 			/** @param {any[]} args */
 			const cb = (...args) => callback.call(this, ...args);
 			this.#events[event].push(cb);
 			return () => {
-				this.#events[event] = this.#events[event].filter(/** @param {any} fn */ (fn) => fn !== cb);
+				this.#events[event] = this.#events[event].filter(
+					/** @param {any} fn */
+					(fn) => fn !== cb
+				);
 			};
 		}
-
 		$destroy() {
 			this.#instance.$destroy();
 		}
-	}
-
+	};
+	//#endregion
+	//#region node_modules/svelte/src/internal/client/dom/elements/custom-element.js
 	/**
-	 * @typedef {Object} CustomElementPropDefinition
-	 * @property {string} [attribute]
-	 * @property {boolean} [reflect]
-	 * @property {'String'|'Boolean'|'Number'|'Array'|'Object'} [type]
-	 */
-
+	* @typedef {Object} CustomElementPropDefinition
+	* @property {string} [attribute]
+	* @property {boolean} [reflect]
+	* @property {'String'|'Boolean'|'Number'|'Array'|'Object'} [type]
+	*/
 	/** @type {any} */
-	let SvelteElement;
-
-	if (typeof HTMLElement === 'function') {
-		SvelteElement = class extends HTMLElement {
-			/** The Svelte component constructor */
-			$$ctor;
-			/** Slots */
-			$$s;
-			/** @type {any} The Svelte component instance */
-			$$c;
-			/** Whether or not the custom element is connected */
-			$$cn = false;
-			/** @type {Record<string, any>} Component props data */
-			$$d = {};
-			/** `true` if currently in the process of reflecting component props back to attributes */
-			$$r = false;
-			/** @type {Record<string, CustomElementPropDefinition>} Props definition (name, reflected, type etc) */
-			$$p_d = {};
-			/** @type {Record<string, EventListenerOrEventListenerObject[]>} Event listeners */
-			$$l = {};
-			/** @type {Map<EventListenerOrEventListenerObject, Function>} Event listener unsubscribe functions */
-			$$l_u = new Map();
-			/** @type {any} The managed render effect for reflecting attributes */
-			$$me;
-			/** @type {ShadowRoot | null} The ShadowRoot of the custom element */
-			$$shadowRoot = null;
-
-			/**
-			 * @param {*} $$componentCtor
-			 * @param {*} $$slots
-			 * @param {ShadowRootInit | undefined} shadow_root_init
-			 */
-			constructor($$componentCtor, $$slots, shadow_root_init) {
-				super();
-				this.$$ctor = $$componentCtor;
-				this.$$s = $$slots;
-
-				if (shadow_root_init) {
-					// We need to store the reference to shadow root, because `closed` shadow root cannot be
-					// accessed with `this.shadowRoot`.
-					this.$$shadowRoot = this.attachShadow(shadow_root_init);
+	var SvelteElement;
+	if (typeof HTMLElement === "function") SvelteElement = class extends HTMLElement {
+		/** The Svelte component constructor */
+		$$ctor;
+		/** Slots */
+		$$s;
+		/** @type {any} The Svelte component instance */
+		$$c;
+		/** Whether or not the custom element is connected */
+		$$cn = false;
+		/** @type {Record<string, any>} Component props data */
+		$$d = {};
+		/** `true` if currently in the process of reflecting component props back to attributes */
+		$$r = false;
+		/** @type {Record<string, CustomElementPropDefinition>} Props definition (name, reflected, type etc) */
+		$$p_d = {};
+		/** @type {Record<string, EventListenerOrEventListenerObject[]>} Event listeners */
+		$$l = {};
+		/** @type {Map<EventListenerOrEventListenerObject, Function>} Event listener unsubscribe functions */
+		$$l_u = /* @__PURE__ */ new Map();
+		/** @type {any} The managed render effect for reflecting attributes */
+		$$me;
+		/** @type {ShadowRoot | null} The ShadowRoot of the custom element */
+		$$shadowRoot = null;
+		/**
+		* @param {*} $$componentCtor
+		* @param {*} $$slots
+		* @param {ShadowRootInit | undefined} shadow_root_init
+		*/
+		constructor($$componentCtor, $$slots, shadow_root_init) {
+			super();
+			this.$$ctor = $$componentCtor;
+			this.$$s = $$slots;
+			if (shadow_root_init) this.$$shadowRoot = this.attachShadow(shadow_root_init);
+		}
+		/**
+		* @param {string} type
+		* @param {EventListenerOrEventListenerObject} listener
+		* @param {boolean | AddEventListenerOptions} [options]
+		*/
+		addEventListener(type, listener, options) {
+			this.$$l[type] = this.$$l[type] || [];
+			this.$$l[type].push(listener);
+			if (this.$$c) {
+				const unsub = this.$$c.$on(type, listener);
+				this.$$l_u.set(listener, unsub);
+			}
+			super.addEventListener(type, listener, options);
+		}
+		/**
+		* @param {string} type
+		* @param {EventListenerOrEventListenerObject} listener
+		* @param {boolean | AddEventListenerOptions} [options]
+		*/
+		removeEventListener(type, listener, options) {
+			super.removeEventListener(type, listener, options);
+			if (this.$$c) {
+				const unsub = this.$$l_u.get(listener);
+				if (unsub) {
+					unsub();
+					this.$$l_u.delete(listener);
 				}
 			}
-
-			/**
-			 * @param {string} type
-			 * @param {EventListenerOrEventListenerObject} listener
-			 * @param {boolean | AddEventListenerOptions} [options]
-			 */
-			addEventListener(type, listener, options) {
-				// We can't determine upfront if the event is a custom event or not, so we have to
-				// listen to both. If someone uses a custom event with the same name as a regular
-				// browser event, this fires twice - we can't avoid that.
-				this.$$l[type] = this.$$l[type] || [];
-				this.$$l[type].push(listener);
-				if (this.$$c) {
+		}
+		async connectedCallback() {
+			this.$$cn = true;
+			if (!this.$$c) {
+				await Promise.resolve();
+				if (!this.$$cn || this.$$c) return;
+				/** @param {string} name */
+				function create_slot(name) {
+					/**
+					* @param {Element} anchor
+					*/
+					return (anchor) => {
+						const slot = create_element("slot");
+						if (name !== "default") slot.name = name;
+						append(anchor, slot);
+					};
+				}
+				/** @type {Record<string, any>} */
+				const $$slots = {};
+				const existing_slots = get_custom_elements_slots(this);
+				for (const name of this.$$s) if (name in existing_slots) {
+					if (name === "default" && !this.$$d.children) {
+						this.$$d.children = create_slot(name);
+						$$slots.default = true;
+					} else $$slots[name] = create_slot(name);
+				}
+				for (const attribute of this.attributes) {
+					const name = this.$$g_p(attribute.name);
+					if (!(name in this.$$d)) this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, "toProp");
+				}
+				for (const key in this.$$p_d) if (!(key in this.$$d) && this[key] !== void 0) {
+					this.$$d[key] = this[key];
+					delete this[key];
+				}
+				this.$$c = createClassComponent({
+					component: this.$$ctor,
+					target: this.$$shadowRoot || this,
+					props: {
+						...this.$$d,
+						$$slots,
+						$$host: this
+					}
+				});
+				this.$$me = effect_root(() => {
+					render_effect(() => {
+						this.$$r = true;
+						for (const key of object_keys(this.$$c)) {
+							if (!this.$$p_d[key]?.reflect) continue;
+							this.$$d[key] = this.$$c[key];
+							const attribute_value = get_custom_element_value(key, this.$$d[key], this.$$p_d, "toAttribute");
+							if (attribute_value == null) this.removeAttribute(this.$$p_d[key].attribute || key);
+							else this.setAttribute(this.$$p_d[key].attribute || key, attribute_value);
+						}
+						this.$$r = false;
+					});
+				});
+				for (const type in this.$$l) for (const listener of this.$$l[type]) {
 					const unsub = this.$$c.$on(type, listener);
 					this.$$l_u.set(listener, unsub);
 				}
-				super.addEventListener(type, listener, options);
-			}
-
-			/**
-			 * @param {string} type
-			 * @param {EventListenerOrEventListenerObject} listener
-			 * @param {boolean | AddEventListenerOptions} [options]
-			 */
-			removeEventListener(type, listener, options) {
-				super.removeEventListener(type, listener, options);
-				if (this.$$c) {
-					const unsub = this.$$l_u.get(listener);
-					if (unsub) {
-						unsub();
-						this.$$l_u.delete(listener);
-					}
-				}
-			}
-
-			async connectedCallback() {
-				this.$$cn = true;
-				if (!this.$$c) {
-					// We wait one tick to let possible child slot elements be created/mounted
-					await Promise.resolve();
-					if (!this.$$cn || this.$$c) {
-						return;
-					}
-					/** @param {string} name */
-					function create_slot(name) {
-						/**
-						 * @param {Element} anchor
-						 */
-						return (anchor) => {
-							const slot = create_element('slot');
-							if (name !== 'default') slot.name = name;
-
-							append(anchor, slot);
-						};
-					}
-					/** @type {Record<string, any>} */
-					const $$slots = {};
-					const existing_slots = get_custom_elements_slots(this);
-					for (const name of this.$$s) {
-						if (name in existing_slots) {
-							if (name === 'default' && !this.$$d.children) {
-								this.$$d.children = create_slot(name);
-								$$slots.default = true;
-							} else {
-								$$slots[name] = create_slot(name);
-							}
-						}
-					}
-					for (const attribute of this.attributes) {
-						// this.$$data takes precedence over this.attributes
-						const name = this.$$g_p(attribute.name);
-						if (!(name in this.$$d)) {
-							this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, 'toProp');
-						}
-					}
-					// Port over props that were set programmatically before ce was initialized
-					for (const key in this.$$p_d) {
-						// @ts-expect-error
-						if (!(key in this.$$d) && this[key] !== undefined) {
-							// @ts-expect-error
-							this.$$d[key] = this[key]; // don't transform, these were set through JavaScript
-							// @ts-expect-error
-							delete this[key]; // remove the property that shadows the getter/setter
-						}
-					}
-					this.$$c = createClassComponent({
-						component: this.$$ctor,
-						target: this.$$shadowRoot || this,
-						props: {
-							...this.$$d,
-							$$slots,
-							$$host: this
-						}
-					});
-
-					// Reflect component props as attributes
-					this.$$me = effect_root(() => {
-						render_effect(() => {
-							this.$$r = true;
-							for (const key of object_keys(this.$$c)) {
-								if (!this.$$p_d[key]?.reflect) continue;
-								this.$$d[key] = this.$$c[key];
-								const attribute_value = get_custom_element_value(
-									key,
-									this.$$d[key],
-									this.$$p_d,
-									'toAttribute'
-								);
-								if (attribute_value == null) {
-									this.removeAttribute(this.$$p_d[key].attribute || key);
-								} else {
-									this.setAttribute(this.$$p_d[key].attribute || key, attribute_value);
-								}
-							}
-							this.$$r = false;
-						});
-					});
-
-					for (const type in this.$$l) {
-						for (const listener of this.$$l[type]) {
-							const unsub = this.$$c.$on(type, listener);
-							this.$$l_u.set(listener, unsub);
-						}
-					}
-					this.$$l = {};
-				}
-			}
-
-			// We don't need this when working within Svelte code, but for compatibility of people using this outside of Svelte
-			// and setting attributes through setAttribute etc, this is helpful
-
-			/**
-			 * @param {string} attr
-			 * @param {string} _oldValue
-			 * @param {string} newValue
-			 */
-			attributeChangedCallback(attr, _oldValue, newValue) {
-				if (this.$$r) return;
-				attr = this.$$g_p(attr);
-				this.$$d[attr] = get_custom_element_value(attr, newValue, this.$$p_d, 'toProp');
-				this.$$c?.$set({ [attr]: this.$$d[attr] });
-			}
-
-			disconnectedCallback() {
-				this.$$cn = false;
-				// In a microtask, because this could be a move within the DOM
-				Promise.resolve().then(() => {
-					if (!this.$$cn && this.$$c) {
-						this.$$c.$destroy();
-						this.$$me();
-						this.$$c = undefined;
-					}
-				});
-			}
-
-			/**
-			 * @param {string} attribute_name
-			 */
-			$$g_p(attribute_name) {
-				return (
-					object_keys(this.$$p_d).find(
-						(key) =>
-							this.$$p_d[key].attribute === attribute_name ||
-							(!this.$$p_d[key].attribute && key.toLowerCase() === attribute_name)
-					) || attribute_name
-				);
-			}
-		};
-	}
-
-	/**
-	 * @param {string} prop
-	 * @param {any} value
-	 * @param {Record<string, CustomElementPropDefinition>} props_definition
-	 * @param {'toAttribute' | 'toProp'} [transform]
-	 */
-	function get_custom_element_value(prop, value, props_definition, transform) {
-		const type = props_definition[prop]?.type;
-		value = type === 'Boolean' && typeof value !== 'boolean' ? value != null : value;
-		if (!transform || !props_definition[prop]) {
-			return value;
-		} else if (transform === 'toAttribute') {
-			switch (type) {
-				case 'Object':
-				case 'Array':
-					return value == null ? null : JSON.stringify(value);
-				case 'Boolean':
-					return value ? '' : null;
-				case 'Number':
-					return value == null ? null : value;
-				default:
-					return value;
-			}
-		} else {
-			switch (type) {
-				case 'Object':
-				case 'Array':
-					return value && JSON.parse(value);
-				case 'Boolean':
-					return value; // conversion already handled above
-				case 'Number':
-					return value != null ? +value : value;
-				default:
-					return value;
+				this.$$l = {};
 			}
 		}
-	}
-
+		/**
+		* @param {string} attr
+		* @param {string} _oldValue
+		* @param {string} newValue
+		*/
+		attributeChangedCallback(attr, _oldValue, newValue) {
+			if (this.$$r) return;
+			attr = this.$$g_p(attr);
+			this.$$d[attr] = get_custom_element_value(attr, newValue, this.$$p_d, "toProp");
+			this.$$c?.$set({ [attr]: this.$$d[attr] });
+		}
+		disconnectedCallback() {
+			this.$$cn = false;
+			Promise.resolve().then(() => {
+				if (!this.$$cn && this.$$c) {
+					this.$$c.$destroy();
+					this.$$me();
+					this.$$c = void 0;
+				}
+			});
+		}
+		/**
+		* @param {string} attribute_name
+		*/
+		$$g_p(attribute_name) {
+			return object_keys(this.$$p_d).find((key) => this.$$p_d[key].attribute === attribute_name || !this.$$p_d[key].attribute && key.toLowerCase() === attribute_name) || attribute_name;
+		}
+	};
 	/**
-	 * @param {HTMLElement} element
-	 */
+	* @param {string} prop
+	* @param {any} value
+	* @param {Record<string, CustomElementPropDefinition>} props_definition
+	* @param {'toAttribute' | 'toProp'} [transform]
+	*/
+	function get_custom_element_value(prop, value, props_definition, transform) {
+		const type = props_definition[prop]?.type;
+		value = type === "Boolean" && typeof value !== "boolean" ? value != null : value;
+		if (!transform || !props_definition[prop]) return value;
+		else if (transform === "toAttribute") switch (type) {
+			case "Object":
+			case "Array": return value == null ? null : JSON.stringify(value);
+			case "Boolean": return value ? "" : null;
+			case "Number": return value == null ? null : value;
+			default: return value;
+		}
+		else switch (type) {
+			case "Object":
+			case "Array": return value && JSON.parse(value);
+			case "Boolean": return value;
+			case "Number": return value != null ? +value : value;
+			default: return value;
+		}
+	}
+	/**
+	* @param {HTMLElement} element
+	*/
 	function get_custom_elements_slots(element) {
 		/** @type {Record<string, true>} */
 		const result = {};
 		element.childNodes.forEach((node) => {
-			result[/** @type {Element} node */ (node).slot || 'default'] = true;
+			result[node.slot || "default"] = true;
 		});
 		return result;
 	}
-
 	/**
-	 * @internal
-	 *
-	 * Turn a Svelte component into a custom element.
-	 * @param {any} Component  A Svelte component function
-	 * @param {Record<string, CustomElementPropDefinition>} props_definition  The props to observe
-	 * @param {string[]} slots  The slots to create
-	 * @param {string[]} exports  Explicitly exported values, other than props
-	 * @param {ShadowRootInit | undefined} shadow_root_init  Options passed to shadow DOM constructor
-	 * @param {(ce: new () => HTMLElement) => new () => HTMLElement} [extend]
-	 */
-	function create_custom_element(
-		Component,
-		props_definition,
-		slots,
-		exports,
-		shadow_root_init,
-		extend
-	) {
+	* @internal
+	*
+	* Turn a Svelte component into a custom element.
+	* @param {any} Component  A Svelte component function
+	* @param {Record<string, CustomElementPropDefinition>} props_definition  The props to observe
+	* @param {string[]} slots  The slots to create
+	* @param {string[]} exports  Explicitly exported values, other than props
+	* @param {ShadowRootInit | undefined} shadow_root_init  Options passed to shadow DOM constructor
+	* @param {(ce: new () => HTMLElement) => new () => HTMLElement} [extend]
+	*/
+	function create_custom_element(Component, props_definition, slots, exports, shadow_root_init, extend) {
 		let Class = class extends SvelteElement {
 			constructor() {
 				super(Component, slots, shadow_root_init);
 				this.$$p_d = props_definition;
 			}
 			static get observedAttributes() {
-				return object_keys(props_definition).map((key) =>
-					(props_definition[key].attribute || key).toLowerCase()
-				);
+				return object_keys(props_definition).map((key) => (props_definition[key].attribute || key).toLowerCase());
 			}
 		};
 		object_keys(props_definition).forEach((prop) => {
@@ -10124,3378 +6388,2144 @@
 					value = get_custom_element_value(prop, value, props_definition);
 					this.$$d[prop] = value;
 					var component = this.$$c;
-
 					if (component) {
-						// // If the instance has an accessor, use that instead
-						var setter = get_descriptor(component, prop)?.get;
-
-						if (setter) {
-							component[prop] = value;
-						} else {
-							component.$set({ [prop]: value });
-						}
+						if (get_descriptor(component, prop)?.get) component[prop] = value;
+						else component.$set({ [prop]: value });
 					}
 				}
 			});
 		});
 		exports.forEach((property) => {
-			define_property(Class.prototype, property, {
-				get() {
-					return this.$$c?.[property];
-				}
-			});
+			define_property(Class.prototype, property, { get() {
+				return this.$$c?.[property];
+			} });
 		});
-		if (extend) {
-			// @ts-expect-error - assigning here is fine
-			Class = extend(Class);
-		}
-		Component.element = /** @type {any} */ Class;
+		if (extend) Class = extend(Class);
+		Component.element = Class;
 		return Class;
 	}
-
-	/**
-	 * @param {string} method
-	 * @param  {...any} objects
-	 */
-	function log_if_contains_state(method, ...objects) {
-		untrack(() => {
-			try {
-				let has_state = false;
-				const transformed = [];
-
-				for (const obj of objects) {
-					if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
-						transformed.push(snapshot(obj, true));
-						has_state = true;
-					} else {
-						transformed.push(obj);
-					}
+	//#endregion
+	//#region src/sdg/components/utils.js
+	var Utils = class {
+		static assetsBasePath = document.currentScript.getAttribute("sdg-assets-base-path") || new URL(document.currentScript.src).pathname.split("/").slice(0, -2).join("/") || "/";
+		static cssRelativePath = `${this.assetsBasePath}/css/`.replace("//", "/");
+		static imagesRelativePath = `${this.assetsBasePath}/img/`.replace("//", "/");
+		static cssFileName = getCssFileName(document.currentScript.getAttribute("sdg-css-filename"), document.currentScript.src);
+		static cssPath = getCssPath(document.currentScript.getAttribute("sdg-css-path"), document.currentScript.src, this.cssRelativePath, this.cssFileName);
+		static sharedTexts = { openInNewTab: {
+			fr: "Ce lien s’ouvrira dans un nouvel onglet.",
+			en: "This link will open in a new tab."
+		} };
+		/**
+		* Get current page language based on HTML lang attribute
+		* @returns {string} language code (fr/en).
+		*/
+		static getPageLanguage() {
+			return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
+		}
+		static isTruthy(value) {
+			if (typeof value === "boolean") return value;
+			if (typeof value === "string") return value.toLowerCase() === "true" || !!parseInt(value);
+			if (typeof value === "number") return !!value;
+			return false;
+		}
+		/**
+		* extract and clean prefixed attributes
+		* example:
+		*  computeFieldsAttributes("radio", {"radio-class": "my-radio", "radio-data-foo": "foo", "other": "other value"})
+		*  return {"class":"my-radio", "data-foo":"foo"}
+		*
+		</div>
+		* @param {(string|string[])} prefix - Une chaîne de caractères ou un tableau de chaînes.
+		* @param restProps - object of attributes
+		* @returns {*} - object of attributes
+		*/
+		static computeFieldsAttributes(prefix, restProps) {
+			let output = {}, _prefix = prefix + "-";
+			Object.entries(restProps).forEach(([prop, value]) => {
+				if (prop.startsWith(_prefix)) {
+					const prefixProp = prop.replace(new RegExp("^" + _prefix), "");
+					output[prefixProp] = value;
 				}
-
-				if (has_state) {
-					console_log_state(method);
-
-					// eslint-disable-next-line no-console
-					console.log('%c[snapshot]', 'color: grey', ...transformed);
-				}
-			} catch {
-				// Errors can occur when trying to snapshot objects with getters that throw or non-enumerable properties.
+			});
+			return output;
+		}
+		/**
+		* Checks if the current node or one of its children is currently in focus
+		* @param node The element's node to check
+		* @returns {boolean} If the current node or one of its children is currently in focus
+		*/
+		static componentIsActive(node) {
+			if (!node) return false;
+			const root = node.getRootNode();
+			return node.contains(root.activeElement);
+		}
+		/**
+		* Waits for a specified amount of time
+		* @param ms The amount of time to wait
+		* @returns {Promise<unknown>} The resolution of the sleep action
+		*/
+		static sleep(ms) {
+			return new Promise((resolve) => setTimeout(resolve, ms));
+		}
+		static generateId(prefix = "") {
+			return prefix + "-" + (Math.floor(Math.random() * 9e4) + 1e4);
+		}
+		/**
+		* Returns the word in lowercase and with accented letters replaced by their non-accented counterparts
+		* @param str
+		* @returns {string}
+		*/
+		static cleanupSearchPrompt(str) {
+			let word = String(str);
+			const replaceAccents = (str, search, replace) => {
+				return str.replaceAll(new RegExp(search, "gi"), replace);
+			};
+			word = replaceAccents(word, /[éèêë]/gi, "e");
+			word = replaceAccents(word, /[àäâ]/gi, "a");
+			word = replaceAccents(word, /[ùûü]/gi, "u");
+			word = replaceAccents(word, /[ïî]/gi, "i");
+			word = replaceAccents(word, /[ôö]/gi, "i");
+			word = replaceAccents(word, /œ/gi, "oe");
+			word = replaceAccents(word, /æ/gi, "ae");
+			word = word.replaceAll(/[-_—–]/gi, " ");
+			word = word.replaceAll(/’/gi, "'");
+			return word.toLowerCase();
+		}
+		static now() {
+			return (/* @__PURE__ */ new Date()).getTime();
+		}
+		/**
+		* Creates a MutationObserver instance with selector nesting check
+		* @param rootElement
+		* @param callback
+		* @param selector
+		* @returns {MutationObserver | null}
+		*/
+		static createMutationObserver(rootElement, callback, selector) {
+			if (!selector) selector = rootElement.tagName.toLowerCase();
+			if (rootElement.querySelector(selector)) {
+				console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
+				return null;
 			}
-		});
-
-		return objects;
-	}
-
-	class Utils {
-
-	    static assetsBasePath =
-	        document
-	            .currentScript
-	            .getAttribute('sdg-assets-base-path')
-	        || new URL(document.currentScript.src).pathname
-	                    .split('/')
-	                    .slice(0, -2)
-	                    .join('/')
-	        || '/'
-	    static cssRelativePath =
-	        `${this.assetsBasePath}/css/`
-	            .replace('//','/')
-	    static imagesRelativePath =
-	        `${this.assetsBasePath}/img/`
-	            .replace('//','/')
-	    static cssFileName =
-	        getCssFileName(document.currentScript.getAttribute('sdg-css-filename'), document.currentScript.src);
-	    static cssPath =
-	        getCssPath(
-	            document.currentScript.getAttribute('sdg-css-path'),
-	            document.currentScript.src,
-	            this.cssRelativePath,
-	            this.cssFileName
-	        );
-	    static sharedTexts =
-	        { openInNewTab :
-	            { fr: 'Ce lien s’ouvrira dans un nouvel onglet.'
-	            , en: 'This link will open in a new tab.'
-	            }
-	        }
-
-	    /**
-	     * Get current page language based on HTML lang attribute
-	     * @returns {string} language code (fr/en).
-	     */
-	    static getPageLanguage() {
-	        return document.getElementsByTagName("html")[0].getAttribute("lang") || "fr";
-	    }
-
-	    static isTruthy(value) {
-	        if (typeof value === 'boolean') {
-	            return value;
-	        }
-	        if (typeof value === 'string') {
-	            return value.toLowerCase() === 'true' || !!parseInt(value); // Vérifie si la chaîne est "true" (insensible à la casse)
-	        }
-	        if (typeof value === 'number') {
-	            return !!value; // Vérifie si le nombre est égal à 1
-	        }
-	        return false;
-	    }
-
-	    /**
-	     * extract and clean prefixed attributes
-	     * example:
-	     *  computeFieldsAttributes("radio", {"radio-class": "my-radio", "radio-data-foo": "foo", "other": "other value"})
-	     *  return {"class":"my-radio", "data-foo":"foo"}
-	     *
-	     </div>
-	     * @param {(string|string[])} prefix - Une chaîne de caractères ou un tableau de chaînes.
-	     * @param restProps - object of attributes
-	     * @returns {*} - object of attributes
-	     */
-	    static computeFieldsAttributes(prefix , restProps) {
-	        let output = {},
-	            _prefix = prefix + '-';
-	        Object
-	            .entries(restProps)
-	            .forEach(([prop,value]) => {
-	                if (prop.startsWith(_prefix)) {
-	                    const prefixProp = prop.replace(new RegExp('^' + _prefix), '');
-	                    output[prefixProp] = value;
-	                }
-	            });
-
-	        return output;
-	    }
-
-	    /**
-	     * Checks if the current node or one of its children is currently in focus
-	     * @param node The element's node to check
-	     * @returns {boolean} If the current node or one of its children is currently in focus
-	     */
-	    static componentIsActive(node) {
-	        if (!node) {
-	            return false;
-	        }
-
-	        const root = node.getRootNode();
-	        return node.contains(root.activeElement);
-	    }
-
-	    /**
-	     * Waits for a specified amount of time
-	     * @param ms The amount of time to wait
-	     * @returns {Promise<unknown>} The resolution of the sleep action
-	     */
-	    static sleep(ms) {
-	        return new Promise(resolve => setTimeout(resolve, ms));
-	    }
-
-	    static generateId(prefix = '') {
-	        return prefix + "-" + (Math.floor(Math.random() * 90000) + 10000);
-	    }
-
-
-	    /**
-	     * Returns the word in lowercase and with accented letters replaced by their non-accented counterparts
-	     * @param str
-	     * @returns {string}
-	     */
-	    static cleanupSearchPrompt(str) {
-	        let word = String(str);
-
-	        const replaceAccents = (str, search, replace) => {
-	            return str.replaceAll(new RegExp(search, 'gi'), replace);
-	        };
-
-	        // Supprime les accents.
-	        word = replaceAccents(word, /[éèêë]/gi, 'e');
-	        word = replaceAccents(word, /[àäâ]/gi, 'a');
-	        word = replaceAccents(word, /[ùûü]/gi, 'u');
-	        word = replaceAccents(word, /[ïî]/gi, 'i');
-	        word = replaceAccents(word, /[ôö]/gi, 'i');
-	        word = replaceAccents(word, /œ/gi, 'oe');
-	        word = replaceAccents(word, /æ/gi, 'ae');
-
-	        // Remplace les caractères spéciaux par des espaces.
-	        word = word.replaceAll(/[-_—–]/gi, ' ');
-	        word = word.replaceAll(/’/gi, "'");
-
-	        // Convertit le mot en minuscules.
-	        return word.toLowerCase();
-	    }
-
-	    static now() {
-	        return (new Date()).getTime();
-	    }
-
-	    /**
-	     * Creates a MutationObserver instance with selector nesting check
-	     * @param rootElement
-	     * @param callback
-	     * @param selector
-	     * @returns {MutationObserver | null}
-	     */
-	    static createMutationObserver(rootElement, callback, selector) {
-	        if (!selector) {
-	            selector = rootElement.tagName.toLowerCase();
-	        }
-	        if (rootElement.querySelector(selector)) {
-	            console.warn(`Imbrication d'éléments "${selector}" détectée. Le MutationObserver n'est pas créé`);
-	            return null;
-	        }
-
-	        return new MutationObserver(callback);
-	    }
-	}
-
+			return new MutationObserver(callback);
+		}
+	};
 	function getCacheBustingParam(cssPath, currentScriptSrc) {
-	    const pattern = /\?.*$/;
-
-	    const cssCacheBustingParam = cssPath?.match(pattern);
-	    if (cssCacheBustingParam && cssCacheBustingParam.length > 0) {
-	        return '';
-	    }
-
-	    const scriptCacheBustingParam = currentScriptSrc?.match(pattern);
-	    if (scriptCacheBustingParam && scriptCacheBustingParam.length > 0) {
-	        return scriptCacheBustingParam[0];
-	    }
-
-	    return '';
+		const pattern = /\?.*$/;
+		const cssCacheBustingParam = cssPath?.match(pattern);
+		if (cssCacheBustingParam && cssCacheBustingParam.length > 0) return "";
+		const scriptCacheBustingParam = currentScriptSrc?.match(pattern);
+		if (scriptCacheBustingParam && scriptCacheBustingParam.length > 0) return scriptCacheBustingParam[0];
+		return "";
 	}
-
 	function getCssFileName(sdgCssFilename, src) {
-	    const cssPattern =/^.*\.css/;
-
-	    if (!cssPattern.test(sdgCssFilename)) {
-	        return 'qc-sdg.min.css' + getCacheBustingParam(
-	            'qc-sdg.min.css', src
-	        );
-	    } else {
-	        return sdgCssFilename + getCacheBustingParam(
-	            sdgCssFilename, src
-	        );
-	    }
+		if (!/^.*\.css/.test(sdgCssFilename)) return "qc-sdg.min.css" + getCacheBustingParam("qc-sdg.min.css", src);
+		else return sdgCssFilename + getCacheBustingParam(sdgCssFilename, src);
 	}
-
 	function getCssPath(sdgCssPath, src, cssRelativePath, cssFileName) {
-	    const cssPattern =/^.*\.css/;
-
-	    if (!cssPattern.test(sdgCssPath)) {
-	        return cssRelativePath + cssFileName;
-	    } else {
-	        return sdgCssPath + getCacheBustingParam(
-	            sdgCssPath, src
-	        );
-	    }
+		if (!/^.*\.css/.test(sdgCssPath)) return cssRelativePath + cssFileName;
+		else return sdgCssPath + getCacheBustingParam(sdgCssPath, src);
 	}
-
-	var mappings = {
-		adresse: "place",
-		"arrow-up": "arrow_upward",
-		calendar: "calendar_today",
-		checkmark: "check",
-		"chevron-up-thin": "expand_less",
-		"chevron-up": "expand_less",
-		"chevron-droite": "chevron_right",
-		"chevron-gauche": "chevron_left",
-		"crochet-bas": "expand_more",
-		clipboard: "content_paste",
-		clock: "schedule",
-		dots: "more_horiz",
-		email: "mail",
-		error: "cancel",
-		exclamation: "warning",
-		"external-link": "open_in_new",
-		"information-tooltip": "information-tooltip",
-		information: "info",
-		"ligth-bulb": "lightbulb",
-		minus: "remove",
-		"on-line": "videocam",
-		phone: "call",
-		plus: "add",
-		printer: "print",
-		"question-mark": "help",
-		"question-tooltip": "question-tooltip",
-		"search-thin": "search",
-		search: "search",
-		success: "check_circle",
-		tableMatiere: "toc",
-		user: "person",
-		warning: "warning",
-		website: "laptop_chromebook",
-		xclose: "close",
-		note: "edit_note"
+	var icon_mapping_default = {
+		mappings: {
+			"adresse": "place",
+			"arrow-up": "arrow_upward",
+			"calendar": "calendar_today",
+			"checkmark": "check",
+			"chevron-up-thin": "expand_less",
+			"chevron-up": "expand_less",
+			"chevron-droite": "chevron_right",
+			"chevron-gauche": "chevron_left",
+			"crochet-bas": "expand_more",
+			"clipboard": "content_paste",
+			"clock": "schedule",
+			"dots": "more_horiz",
+			"email": "mail",
+			"error": "cancel",
+			"exclamation": "warning",
+			"external-link": "open_in_new",
+			"information-tooltip": "information-tooltip",
+			"information": "info",
+			"ligth-bulb": "lightbulb",
+			"minus": "remove",
+			"on-line": "videocam",
+			"phone": "call",
+			"plus": "add",
+			"printer": "print",
+			"question-mark": "help",
+			"question-tooltip": "question-tooltip",
+			"search-thin": "search",
+			"search": "search",
+			"success": "check_circle",
+			"tableMatiere": "toc",
+			"user": "person",
+			"warning": "warning",
+			"website": "laptop_chromebook",
+			"xclose": "close",
+			"note": "edit_note"
+		},
+		noMask: ["information-tooltip", "question-tooltip"],
+		deprecationMessage: "L'icône '{old}' est dépréciée. Utilisez type=\"{new}\" à la place."
 	};
-	var deprecationMessage = "L'icône '{old}' est dépréciée. Utilisez type=\"{new}\" à la place.";
-	var iconMapping = {
-		mappings: mappings,
-		deprecationMessage: deprecationMessage
+	var icon_selection_default = {
+		icons: [
+			"place",
+			"arrow_upward",
+			"arrow_downward",
+			"arrow_back",
+			"arrow_forward",
+			"arrow_left_alt",
+			"arrow_right_alt",
+			"north",
+			"calendar_today",
+			"check",
+			"expand_less",
+			"expand_more",
+			"chevron_right",
+			"chevron_left",
+			"content_paste",
+			"emoji_objects",
+			"schedule",
+			"mail",
+			"cancel",
+			"warning",
+			"open_in_new",
+			"info",
+			"lightbulb",
+			"remove",
+			"edit_note",
+			"call",
+			"add",
+			"help",
+			"search",
+			"check_circle",
+			"person",
+			"laptop_chromebook",
+			"close",
+			"description",
+			"more_horiz",
+			"note",
+			"print",
+			"toc",
+			"download",
+			"videocam",
+			"fax"
+		],
+		variants: ["outlined", "filled"],
+		maxBundleWarning: 100
 	};
-
-	var icons = [
-		"place",
-		"arrow_upward",
-		"arrow_downward",
-		"arrow_back",
-		"arrow_forward",
-		"arrow_left_alt",
-		"arrow_right_alt",
-		"north",
-		"calendar_today",
-		"check",
-		"expand_less",
-		"expand_more",
-		"chevron_right",
-		"chevron_left",
-		"content_paste",
-		"emoji_objects",
-		"schedule",
-		"mail",
-		"cancel",
-		"warning",
-		"open_in_new",
-		"info",
-		"lightbulb",
-		"remove",
-		"edit_note",
-		"call",
-		"add",
-		"help",
-		"search",
-		"check_circle",
-		"person",
-		"laptop_chromebook",
-		"close",
-		"description",
-		"more_horiz",
-		"note",
-		"print",
-		"toc",
-		"download",
-		"videocam",
-		"fax"
-	];
-	var iconSelection = {
-		icons: icons};
-
-	var codepoints = {
-		place: "E55F",
-		arrow_upward: "E5D8",
-		arrow_downward: "E5DB",
-		arrow_back: "E5C4",
-		arrow_forward: "E5C8",
-		arrow_left_alt: "EF7D",
-		arrow_right_alt: "E941",
-		north: "F1E0",
-		calendar_today: "E935",
-		check: "E5CA",
-		expand_less: "E5CE",
-		expand_more: "E5CF",
-		chevron_right: "E5CC",
-		chevron_left: "E5CB",
-		content_paste: "E14F",
-		emoji_objects: "EA24",
-		schedule: "E8B5",
-		mail: "E158",
-		cancel: "E5C9",
-		warning: "E002",
-		open_in_new: "E89E",
-		info: "E88E",
-		lightbulb: "E0F0",
-		remove: "E15B",
-		edit_note: "E745",
-		call: "E0B0",
-		add: "E145",
-		help: "E887",
-		search: "E8B6",
-		check_circle: "E86C",
-		person: "E7FD",
-		laptop_chromebook: "E31F",
-		close: "E5CD",
-		description: "E873",
-		more_horiz: "E5D3",
-		print: "E8AD",
-		toc: "E8DE",
-		download: "F090",
-		videocam: "E04B",
-		note: "E674",
-		fax: "EAD8"
-	};
-	var iconCodepoints = {
-		codepoints: codepoints
-	};
-
-	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
-
-	var rest_excludes$k = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'type',
-		'label',
-		'size',
-		'color',
-		'width',
-		'height',
-		'src',
-		'rotate',
-		'variant',
-		'variationSettings',
-		'renderMode',
-		'use-material',
-		'codepoint',
-		'rootElement',
-		'vAlign'
+	var icon_codepoints_default = { codepoints: {
+		"place": "E55F",
+		"arrow_upward": "E5D8",
+		"arrow_downward": "E5DB",
+		"arrow_back": "E5C4",
+		"arrow_forward": "E5C8",
+		"arrow_left_alt": "EF7D",
+		"arrow_right_alt": "E941",
+		"north": "F1E0",
+		"calendar_today": "E935",
+		"check": "E5CA",
+		"expand_less": "E5CE",
+		"expand_more": "E5CF",
+		"chevron_right": "E5CC",
+		"chevron_left": "E5CB",
+		"content_paste": "E14F",
+		"emoji_objects": "EA24",
+		"schedule": "E8B5",
+		"mail": "E158",
+		"cancel": "E5C9",
+		"warning": "E002",
+		"open_in_new": "E89E",
+		"info": "E88E",
+		"lightbulb": "E0F0",
+		"remove": "E15B",
+		"edit_note": "E745",
+		"call": "E0B0",
+		"add": "E145",
+		"help": "E887",
+		"search": "E8B6",
+		"check_circle": "E86C",
+		"person": "E7FD",
+		"laptop_chromebook": "E31F",
+		"close": "E5CD",
+		"description": "E873",
+		"more_horiz": "E5D3",
+		"print": "E8AD",
+		"toc": "E8DE",
+		"download": "F090",
+		"videocam": "E04B",
+		"note": "E674",
+		"fax": "EAD8"
+	} };
+	//#endregion
+	//#region src/sdg/bases/Icon/Icon.svelte
+	var rest_excludes$21 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"type",
+		"label",
+		"size",
+		"color",
+		"width",
+		"height",
+		"src",
+		"rotate",
+		"variant",
+		"variationSettings",
+		"renderMode",
+		"use-material",
+		"codepoint",
+		"rootElement",
+		"vAlign"
 	]);
-
-	var root$u = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[77, 4]]);
-	var root_1$d = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[93, 4]]);
-
+	var root$30 = /* @__PURE__ */ from_html(`<span> </span>`);
+	var root_1$13 = /* @__PURE__ */ from_html(`<div></div>`);
 	function Icon($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let type = prop($$props, 'type', 7),
-			label = prop($$props, 'label', 7),
-			size = prop($$props, 'size', 7),
-			color = prop($$props, 'color', 7),
-			width = prop($$props, 'width', 7, 'auto'),
-			height = prop($$props, 'height', 7, 'auto'),
-			src = prop($$props, 'src', 7, ''),
-			rotate = prop($$props, 'rotate', 7, 0),
-			variant = prop($$props, 'variant', 7, 'outlined'),
-			variationSettings = prop($$props, 'variationSettings', 7, null),
-			renderMode = prop($$props, 'renderMode', 7, null // null = hérite du mode global, 'font' ou 'svg' pour forcer
-			),
-			useMaterial = prop($$props, 'use-material', 7, false // Force l'utilisation du nom material sans passer par le mapping legacy
-			),
-			codepointProp = prop($$props, 'codepoint', 7, null // Codepoint Unicode direct (ex: "E873") pour afficher une icône hors du subset
-			),
-			rootElement = prop($$props, 'rootElement', 15),
-			vAlign = prop($$props, 'vAlign', 7, '-.125em' // pour alignement avec le texte par défaut
-			),
-			rest = rest_props($$props, rest_excludes$k);
-
-		let attributes = tag(
-			user_derived(() => strict_equals(width(), 'auto')
-				? { 'data-img-size': size() ? size() : src() ? "md" : null }
-				: {}),
-			'attributes'
-		);
-
-		// Résolution du nom canonique (legacy → modern)
-		// Si use-material est activé, on utilise le type tel quel sans passer par le mapping
-		let resolvedType = tag(
-			user_derived(() => {
-				if (!type()) return type();
-				if (equals(useMaterial(), null, false) && strict_equals(useMaterial(), false, false)) return type();
-
-				const mapped = iconMapping.mappings[type()];
-
-				return mapped && strict_equals(mapped, type(), false) ? mapped : type();
-			}),
-			'resolvedType'
-		);
-
-		// Récupérer le codepoint Unicode pour le mode font
-		// Priorité : codepoint fourni en attribut > résolution via le nom
-		let codepoint = tag(
-			user_derived(() => codepointProp()
-				? codepointProp()
-				: get(resolvedType) ? iconCodepoints.codepoints[get(resolvedType)] : null),
-			'codepoint'
-		);
-
-		// Caractère Unicode correspondant au codepoint
-		let unicodeChar = tag(
-			user_derived(() => get(codepoint)
-				? String.fromCodePoint(parseInt(get(codepoint), 16))
-				: null),
-			'unicodeChar'
-		);
-
-		// Déterminer le mode de rendu effectif :
-		// - src fourni → toujours SVG (mask-image custom)
-		// - renderMode === 'svg' → forcer mode SVG
-		// - sinon (null ou 'font') ET codepoint trouvé → mode font
-		let isFontMode = tag(user_derived(() => !src() && strict_equals(renderMode(), 'svg', false) && strict_equals(get(unicodeChar), null, false)), 'isFontMode');
-
-		// Mécanisme de dépréciation : avertit si un nom legacy ou inconnu est utilisé
+		let type = prop($$props, "type", 7), label = prop($$props, "label", 7), size = prop($$props, "size", 7), color = prop($$props, "color", 7), width = prop($$props, "width", 7, "auto"), height = prop($$props, "height", 7, "auto"), src = prop($$props, "src", 7, ""), rotate = prop($$props, "rotate", 7, 0), variant = prop($$props, "variant", 7, "outlined"), variationSettings = prop($$props, "variationSettings", 7, null), renderMode = prop($$props, "renderMode", 7, null), useMaterial = prop($$props, "use-material", 7, false), codepointProp = prop($$props, "codepoint", 7, null), rootElement = prop($$props, "rootElement", 15), vAlign = prop($$props, "vAlign", 7, "-.125em"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$21);
+		let attributes = /* @__PURE__ */ user_derived(() => width() === "auto" ? { "data-img-size": size() ? size() : src() ? "md" : null } : {});
+		let resolvedType = /* @__PURE__ */ user_derived(() => {
+			if (!type()) return type();
+			if (useMaterial() != null && useMaterial() !== false) return type();
+			const mapped = icon_mapping_default.mappings[type()];
+			return mapped && mapped !== type() ? mapped : type();
+		});
+		let codepoint = /* @__PURE__ */ user_derived(() => codepointProp() ? codepointProp() : get(resolvedType) ? icon_codepoints_default.codepoints[get(resolvedType)] : null);
+		let unicodeChar = /* @__PURE__ */ user_derived(() => get(codepoint) ? String.fromCodePoint(parseInt(get(codepoint), 16)) : null);
+		let isFontMode = /* @__PURE__ */ user_derived(() => !src() && renderMode() !== "svg" && get(unicodeChar) !== null);
 		user_effect(() => {
 			if (!type()) return;
-
-			if (equals(
-				useMaterial(),
-				null, // Pas de vérification legacy si use-material est activé
-				false
-			) && strict_equals(useMaterial(), false, false)) return;
-
-			const mappedName = iconMapping.mappings[type()];
-
-			if (mappedName && strict_equals(mappedName, type(), false)) {
-				// Nom legacy détecté — émettre un avertissement de dépréciation
-				console.warn(...log_if_contains_state('warn', iconMapping.deprecationMessage.replace('{old}', type()).replace('{new}', mappedName)));
-			} else if (!mappedName && !iconSelection.icons.includes(type())) {
-				// Nom inconnu — ni dans le mapping, ni dans la sélection
-				console.warn(`[qc-icon] Icône inconnue : "${type()}". Vérifiez le nom ou utilisez l'attribut src.`);
-			}
+			if (useMaterial() != null && useMaterial() !== false) return;
+			const mappedName = icon_mapping_default.mappings[type()];
+			if (mappedName && mappedName !== type()) console.warn(icon_mapping_default.deprecationMessage.replace("{old}", type()).replace("{new}", mappedName));
+			else if (!mappedName && !icon_selection_default.icons.includes(type())) console.warn(`[qc-icon] Icône inconnue : "${type()}". Vérifiez le nom ou utilisez l'attribut src.`);
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get type() {
 				return type();
 			},
-
 			set type($$value) {
 				type($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get size() {
 				return size();
 			},
-
 			set size($$value) {
 				size($$value);
 				flushSync();
 			},
-
 			get color() {
 				return color();
 			},
-
 			set color($$value) {
 				color($$value);
 				flushSync();
 			},
-
 			get width() {
 				return width();
 			},
-
-			set width($$value = 'auto') {
+			set width($$value = "auto") {
 				width($$value);
 				flushSync();
 			},
-
 			get height() {
 				return height();
 			},
-
-			set height($$value = 'auto') {
+			set height($$value = "auto") {
 				height($$value);
 				flushSync();
 			},
-
 			get src() {
 				return src();
 			},
-
-			set src($$value = '') {
+			set src($$value = "") {
 				src($$value);
 				flushSync();
 			},
-
 			get rotate() {
 				return rotate();
 			},
-
 			set rotate($$value = 0) {
 				rotate($$value);
 				flushSync();
 			},
-
 			get variant() {
 				return variant();
 			},
-
-			set variant($$value = 'outlined') {
+			set variant($$value = "outlined") {
 				variant($$value);
 				flushSync();
 			},
-
 			get variationSettings() {
 				return variationSettings();
 			},
-
 			set variationSettings($$value = null) {
 				variationSettings($$value);
 				flushSync();
 			},
-
 			get renderMode() {
 				return renderMode();
 			},
-
 			set renderMode($$value = null) {
 				renderMode($$value);
 				flushSync();
 			},
-
-			get 'use-material'() {
+			get "use-material"() {
 				return useMaterial();
 			},
-
-			set 'use-material'($$value = false) {
+			set "use-material"($$value = false) {
 				useMaterial($$value);
 				flushSync();
 			},
-
 			get codepoint() {
 				return codepointProp();
 			},
-
 			set codepoint($$value = null) {
 				codepointProp($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			},
-
 			get vAlign() {
 				return vAlign();
 			},
-
-			set vAlign($$value = '-.125em') {
+			set vAlign($$value = "-.125em") {
 				vAlign($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent = ($$anchor) => {
-				var span = root$u();
-
-				attribute_effect(span, () => ({
-					role: 'img',
-					...rest,
-					class: ["qc-icon", "qc-icon-font", $$props.class],
-					'aria-label': label(),
-					style: color()
-						? `--img-color: var(--qc-color-${color()});`
-						: 'inherit',
-					'data-img-type': get(resolvedType),
-					'data-img-variant': variant(),
-					...get(attributes),
-					'aria-hidden': label() ? undefined : true,
-					[STYLE]: {
-						'--img-rotate': rotate() && rotate() + "deg",
-						'--img-valign': vAlign(),
-						'--img-variation': variationSettings()
-					}
-				}));
-
-				var text = child(span, true);
-
-				reset(span);
-				bind_this(span, ($$value) => rootElement($$value), () => rootElement());
-				template_effect(() => set_text(text, get(unicodeChar)));
-				append($$anchor, span);
-			};
-
-			var alternate = ($$anchor) => {
-				var div = root_1$d();
-
-				attribute_effect(div, () => ({
-					role: 'img',
-					class: ["qc-icon", src() && "qc-icon-custom"],
-					'aria-label': label(),
-					style: `--img-color: var(--qc-color-${color() || 'text-primary'});
+		var consequent = ($$anchor) => {
+			var span = root$30();
+			attribute_effect(span, () => ({
+				role: "img",
+				...rest,
+				class: [
+					"qc-icon",
+					"qc-icon-font",
+					$$props.class
+				],
+				"aria-label": label(),
+				style: color() ? `--img-color: var(--qc-color-${color()});` : "inherit",
+				"data-img-type": get(resolvedType),
+				"data-img-variant": variant(),
+				...get(attributes),
+				"aria-hidden": label() ? void 0 : true,
+				[STYLE]: {
+					"--img-rotate": rotate() && rotate() + "deg",
+					"--img-valign": vAlign(),
+					"--img-variation": variationSettings()
+				}
+			}));
+			var text = only_child(span, true);
+			bind_this(span, ($$value) => rootElement($$value), () => rootElement());
+			template_effect(() => set_text(text, get(unicodeChar)));
+			append($$anchor, span);
+		};
+		var alternate = ($$anchor) => {
+			var div = root_1$13();
+			attribute_effect(div, () => ({
+				role: "img",
+				class: ["qc-icon", src() && "qc-icon-custom"],
+				"aria-label": label(),
+				style: `--img-color: var(--qc-color-${color() || "text-primary"});
             --img-width: ${width()};
             --img-height: ${height()};
             --img-src: url('${src()}');
         `,
-					'data-img-type': type(),
-					'data-img-variant': variant(),
-					...get(attributes),
-					...rest,
-					'aria-hidden': label() ? undefined : true,
-					[STYLE]: { '--img-rotate': rotate() && rotate() + "deg" }
-				}));
-
-				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
-				append($$anchor, div);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (get(isFontMode)) $$render(consequent); else $$render(alternate, -1);
-				}),
-				'if',
-				Icon,
-				75,
-				0
-			);
-		}
-
+				"data-img-type": type(),
+				"data-img-variant": variant(),
+				...get(attributes),
+				...rest,
+				"aria-hidden": label() ? void 0 : true,
+				[STYLE]: { "--img-rotate": rotate() && rotate() + "deg" }
+			}));
+			bind_this(div, ($$value) => rootElement($$value), () => rootElement());
+			append($$anchor, div);
+		};
+		if_block(node, ($$render) => {
+			if (get(isFontMode)) $$render(consequent);
+			else $$render(alternate, -1);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		Icon,
-		{
-			type: {},
-			label: {},
-			size: {},
-			color: {},
-			width: {},
-			height: {},
-			src: {},
-			rotate: {},
-			variant: {},
-			variationSettings: {},
-			renderMode: {},
-			'use-material': {},
-			codepoint: {},
-			rootElement: {},
-			vAlign: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
-
-	var root$t = add_locations(from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [[63, 0, [[66, 2, [[67, 4]]], [75, 2, [[76, 4]]]]]]);
-
+	create_custom_element(Icon, {
+		type: {},
+		label: {},
+		size: {},
+		color: {},
+		width: {},
+		height: {},
+		src: {},
+		rotate: {},
+		variant: {},
+		variationSettings: {},
+		renderMode: {},
+		"use-material": {},
+		codepoint: {},
+		rootElement: {},
+		vAlign: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Notice/Notice.svelte
+	var root$29 = /* @__PURE__ */ from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`);
 	function Notice($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		const isFr = strict_equals(Utils.getPageLanguage(), 'fr');
-		const defaultHeader = 'h2';
-		const defaultType = 'information';
-
+		const isFr = Utils.getPageLanguage() === "fr";
+		const defaultHeader = "h2";
+		const defaultType = "information";
 		const typesDescriptions = {
-			'advice': isFr ? "Avis conseil" : "Advisory notice",
-			'note': isFr ? "Avis explicatif" : "Explanatory notice",
-			'information': isFr ? "Avis général" : "General notice",
-			'warning': isFr ? "Avis d’avertissement" : "Warning notice",
-			'success': isFr ? "Avis de réussite" : "Success notice",
-			'error': isFr ? "Avis d’erreur" : "Error notice"
+			"advice": isFr ? "Avis conseil" : "Advisory notice",
+			"note": isFr ? "Avis explicatif" : "Explanatory notice",
+			"information": isFr ? "Avis général" : "General notice",
+			"warning": isFr ? "Avis d’avertissement" : "Warning notice",
+			"success": isFr ? "Avis de réussite" : "Success notice",
+			"error": isFr ? "Avis d’erreur" : "Error notice"
 		};
-
-		let title = prop($$props, 'title', 7, ""),
-			type = prop($$props, 'type', 7, defaultType),
-			content = prop($$props, 'content', 7, ""),
-			header = prop($$props, 'header', 7, defaultHeader),
-			icon = prop($$props, 'icon', 7),
-			slotContent = prop($$props, 'slotContent', 7);
-
+		let title = prop($$props, "title", 7, ""), type = prop($$props, "type", 7, defaultType), content = prop($$props, "content", 7, ""), header = prop($$props, "header", 7, defaultHeader), icon = prop($$props, "icon", 7), slotContent = prop($$props, "slotContent", 7);
 		const types = Object.keys(typesDescriptions);
-		const usedType = tag(user_derived(() => types.includes(type()) ? type() : defaultType), 'usedType');
-		const usedHeader = tag(user_derived(() => header().match(/h[1-6]/) ? header() : defaultHeader), 'usedHeader');
-
-		const role = tag(
-			user_derived(() => strict_equals(get(usedType), "success")
-				? "status"
-				: strict_equals(get(usedType), "error") ? "alert" : null),
-			'role'
-		);
-
-		let noticeElement = tag(state(null), 'noticeElement');
-
+		const usedType = /* @__PURE__ */ user_derived(() => types.includes(type()) ? type() : defaultType);
+		const usedHeader = /* @__PURE__ */ user_derived(() => header().match(/h[1-6]/) ? header() : defaultHeader);
+		const role = /* @__PURE__ */ user_derived(() => get(usedType) === "success" ? "status" : get(usedType) === "error" ? "alert" : null);
+		let noticeElement = /* @__PURE__ */ state(null);
 		user_effect(() => {
 			if (get(role) && get(noticeElement)) {
 				const tempNodes = Array.from(get(noticeElement).childNodes);
-
 				get(noticeElement).innerHTML = "";
-
-				// Réinsère le contenu pour qu'il soit détecté par le lecteur d'écran.
 				tempNodes.forEach((node) => get(noticeElement).appendChild(node));
 			}
 		});
-
-		const shouldUseIcon = tag(user_derived(() => strict_equals(get(usedType), "advice") || strict_equals(get(usedType), "note")), 'shouldUseIcon');
-
-		// Si le type est "advice" ou "note", on force "neutral" (le gris), sinon on garde le type normal
-		const computedType = tag(user_derived(() => get(shouldUseIcon) ? "neutral" : get(usedType)), 'computedType');
-
-		const iconType = tag(
-			user_derived(() => {
-				if (strict_equals(get(usedType), "advice")) return icon() ?? "emoji_objects";
-				if (strict_equals(get(usedType), "note")) return icon() ?? "content_paste";
-
-				// Noms d'icônes modernes (les noms de type historiques sont des alias dépréciés)
-				const modernIcons = {
-					information: "info",
-					warning: "warning",
-					success: "check_circle",
-					error: "cancel"
-				};
-
-				return icon() ?? modernIcons[get(usedType)] ?? get(usedType);
-			}),
-			'iconType'
-		);
-
-		const iconLabel = tag(user_derived(() => typesDescriptions[type()] ?? typesDescriptions['information']), 'iconLabel');
-
+		const shouldUseIcon = /* @__PURE__ */ user_derived(() => get(usedType) === "advice" || get(usedType) === "note");
+		const computedType = /* @__PURE__ */ user_derived(() => get(shouldUseIcon) ? "neutral" : get(usedType));
+		const iconType = /* @__PURE__ */ user_derived(() => {
+			if (get(usedType) === "advice") return icon() ?? "emoji_objects";
+			if (get(usedType) === "note") return icon() ?? "content_paste";
+			return icon() ?? {
+				information: "info",
+				warning: "warning",
+				success: "check_circle",
+				error: "cancel"
+			}[get(usedType)] ?? get(usedType);
+		});
+		const iconLabel = /* @__PURE__ */ user_derived(() => typesDescriptions[type()] ?? typesDescriptions["information"]);
 		var $$exports = {
-			...legacy_api(),
 			get title() {
 				return title();
 			},
-
 			set title($$value = "") {
 				title($$value);
 				flushSync();
 			},
-
 			get type() {
 				return type();
 			},
-
 			set type($$value = defaultType) {
 				type($$value);
 				flushSync();
 			},
-
 			get content() {
 				return content();
 			},
-
 			set content($$value = "") {
 				content($$value);
 				flushSync();
 			},
-
 			get header() {
 				return header();
 			},
-
 			set header($$value = defaultHeader) {
 				header($$value);
 				flushSync();
 			},
-
 			get icon() {
 				return icon();
 			},
-
 			set icon($$value) {
 				icon($$value);
 				flushSync();
 			},
-
 			get slotContent() {
 				return slotContent();
 			},
-
 			set slotContent($$value) {
 				slotContent($$value);
 				flushSync();
 			}
 		};
-
-		var div = root$t();
+		var div = root$29();
 		var div_1 = child(div);
 		var div_2 = child(div_1);
-		var node_1 = child(div_2);
-
-		add_svelte_meta(
-			() => Icon(node_1, {
-				get type() {
-					return get(iconType);
-				},
-
-				get label() {
-					return get(iconLabel);
-				},
-				size: 'md'
-			}),
-			'component',
-			Notice,
-			68,
-			6,
-			{ componentTag: 'Icon' }
-		);
-
+		Icon(child(div_2), {
+			get type() {
+				return get(iconType);
+			},
+			get label() {
+				return get(iconLabel);
+			},
+			size: "md"
+		});
 		reset(div_2);
 		reset(div_1);
-
 		var div_3 = sibling(div_1, 2);
 		var div_4 = child(div_3);
 		var node_2 = child(div_4);
-
-		{
-			var consequent = ($$anchor) => {
-				var fragment = comment();
-				var node_3 = first_child(fragment);
-
-				{
-					validate_dynamic_element_tag(() => get(usedHeader));
-					validate_void_dynamic_element(() => get(usedHeader));
-
-					element(
-						node_3,
-						() => get(usedHeader),
-						false,
-						($$element, $$anchor) => {
-							var fragment_1 = comment();
-							var node_4 = first_child(fragment_1);
-
-							html(node_4, title);
-							append($$anchor, fragment_1);
-						});
-				}
-
-				append($$anchor, fragment);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_2, ($$render) => {
-					if (title() && strict_equals(title(), "", false)) $$render(consequent);
-				}),
-				'if',
-				Notice,
-				77,
-				8
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			var fragment = comment();
+			element(first_child(fragment), () => get(usedHeader), false, ($$element, $$anchor) => {
+				var fragment_1 = comment();
+				html(first_child(fragment_1), title);
+				append($$anchor, fragment_1);
+			});
+			append($$anchor, fragment);
+		};
+		if_block(node_2, ($$render) => {
+			if (title() && title() !== "") $$render(consequent);
+		});
 		var node_5 = sibling(node_2, 2);
-
 		html(node_5, content);
-
-		var node_6 = sibling(node_5, 2);
-
-		add_svelte_meta(() => snippet(node_6, () => slotContent() ?? noop), 'render', Notice, 85, 8);
+		snippet(sibling(node_5, 2), () => slotContent() ?? noop);
 		reset(div_4);
 		bind_this(div_4, ($$value) => set(noticeElement, $$value), () => get(noticeElement));
 		reset(div_3);
 		reset(div);
-
 		template_effect(() => {
-			set_class(div, 1, `qc-component qc-notice qc-${get(computedType) ?? ''}`);
-			set_attribute(div_4, 'role', get(role));
+			set_class(div, 1, `qc-component qc-notice qc-${get(computedType) ?? ""}`);
+			set_attribute(div_4, "role", get(role));
 		});
-
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		Notice,
-		{
-			title: {},
-			type: {},
-			content: {},
-			header: {},
-			icon: {},
-			slotContent: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
-
-	var rest_excludes$j = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-	var root$s = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), NoticeWC[FILENAME], [[27, 0]]);
-
-	function NoticeWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$j);
-		var $$exports = { ...legacy_api() };
-		var fragment = root$s();
-		var node = first_child(fragment);
-
-		{
-			const slotContent = wrap_snippet(NoticeWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
-				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
-
-				slot(node_1, $$props, 'default', {}, null);
-				append($$anchor, fragment_1);
-			});
-
-			add_svelte_meta(() => Notice(node, spread_props(() => props, { slotContent, $$slots: { slotContent: true } })), 'component', NoticeWC, 20, 0, { componentTag: 'Notice' });
-		}
-
-		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
-
-		return pop($$exports);
-	}
-
-	customElements.define('qc-notice', create_custom_element(
-		NoticeWC,
-		{
-			title: { attribute: 'title', type: 'String' },
-			type: { attribute: 'type', type: 'String' },
-			content: { attribute: 'content', type: 'String' },
-			header: { attribute: 'header', type: 'String' },
-			icon: { attribute: 'icon', type: 'String' }
-		},
-		['default'],
-		[],
-		{ mode: 'open' }
-	));
-
-	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
-
-	var root$r = add_locations(from_html(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[73, 24]]);
-	var root_1$c = add_locations(from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[75, 24]]);
-	var root_2$7 = add_locations(from_html(`<div class="title"><!></div>`), PivHeader[FILENAME], [[71, 16]]);
-	var root_3$2 = add_locations(from_html(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 12, [[64, 16]]]]);
-	var root_4$1 = add_locations(from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[96, 20, [[114, 24]]]]);
-	var root_5$1 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[127, 40, [[127, 44]]]]);
-	var root_6$1 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[130, 40, [[130, 44]]]]);
-	var root_7$1 = add_locations(from_html(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[124, 28, [[125, 32]]]]);
-	var root_8$1 = add_locations(from_html(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[143, 16]]);
-
-	var root_9$1 = add_locations(from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
-		[
-			58,
-			0,
-			[
-				[
-					61,
-					4,
-					[
-						[
-							80,
-							8,
-							[
-								[81, 12, [[82, 16, [[83, 20, [[87, 24]]]]]]],
-								[94, 12, [[118, 16]]]
-							]
-						],
-						[141, 8]
-					]
-				]
-			]
-		]
+	create_custom_element(Notice, {
+		title: {},
+		type: {},
+		content: {},
+		header: {},
+		icon: {},
+		slotContent: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Notice/NoticeWC.svelte
+	var rest_excludes$20 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
 	]);
-
-	function PivHeader($$anchor, $$props) {
-		check_target(new.target);
+	var root$28 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
+	function NoticeWC($$anchor, $$props) {
 		push($$props, true);
-
-		const lang = Utils.getPageLanguage();
-
-		let customElementParent = prop($$props, 'customElementParent', 7),
-			logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			fullWidth = prop($$props, 'fullWidth', 7, 'false'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
-			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
-				? 'Logo du gouvernement du Québec'
-				: 'Logo of government of Québec'),
-			titleUrl = prop($$props, 'titleUrl', 7, '/'),
-			titleText = prop($$props, 'titleText', 7, ''),
-			joinUsText = prop($$props, 'joinUsText', 23, () => strict_equals(lang, 'fr') ? 'Nous joindre' : 'Contact us'),
-			joinUsUrl = prop($$props, 'joinUsUrl', 7, ''),
-			altLanguageText = prop($$props, 'altLanguageText', 23, () => strict_equals(lang, 'fr') ? 'English' : 'Français'),
-			altLanguageUrl = prop($$props, 'altLanguageUrl', 7, ''),
-			linksLabel = prop($$props, 'linksLabel', 23, () => strict_equals(lang, 'fr') ? 'Navigation PIV' : 'PIV navigation'),
-			goToContent = prop($$props, 'goToContent', 7, 'true'),
-			goToContentAnchor = prop($$props, 'goToContentAnchor', 7, '#main'),
-			goToContentText = prop($$props, 'goToContentText', 23, () => strict_equals(lang, 'fr') ? 'Passer au contenu' : 'Skip to content'),
-			displaySearchText = prop($$props, 'displaySearchText', 23, () => strict_equals(lang, 'fr')
-				? 'Cliquer pour faire une recherche'
-				: 'Click to search'),
-			hideSearchText = prop($$props, 'hideSearchText', 23, () => strict_equals(lang, 'fr') ? 'Masquer la barre de recherche' : 'Hide search bar'),
-			enableSearch = prop($$props, 'enableSearch', 7, 'false'),
-			showSearch = prop($$props, 'showSearch', 7, 'false'),
-			linksSlot = prop($$props, 'linksSlot', 7),
-			searchZoneSlot = prop($$props, 'searchZoneSlot', 7),
-			slots = prop($$props, 'slots', 7, false);
-
-		let containerClass = tag(state('qc-container'), 'containerClass');
-		let searchZone = tag(state(null), 'searchZone');
-		let displaySearchForm = tag(state(false), 'displaySearchForm');
-
-		function focusOnSearchInput() {
-			if (get(displaySearchForm)) {
-				let input = customElementParent()
-					? customElementParent().querySelector('[slot="search-zone"] input')
-					: get(searchZone).querySelector('input');
-
-				input?.focus();
-			}
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$20);
+		var fragment = root$28();
+		var node = first_child(fragment);
+		{
+			const slotContent = ($$anchor) => {
+				var fragment_1 = comment();
+				slot(first_child(fragment_1), $$props, "default", {}, null);
+				append($$anchor, fragment_1);
+			};
+			Notice(node, spread_props(() => props, {
+				slotContent,
+				$$slots: { slotContent: true }
+			}));
 		}
-
+		var link = sibling(node, 2);
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
+		append($$anchor, fragment);
+		pop();
+	}
+	customElements.define("qc-notice", create_custom_element(NoticeWC, {
+		title: {
+			attribute: "title",
+			type: "String"
+		},
+		type: {
+			attribute: "type",
+			type: "String"
+		},
+		content: {
+			attribute: "content",
+			type: "String"
+		},
+		header: {
+			attribute: "header",
+			type: "String"
+		},
+		icon: {
+			attribute: "icon",
+			type: "String"
+		}
+	}, ["default"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/PivHeader/PivHeader.svelte
+	var root$27 = /* @__PURE__ */ from_html(`<a class="page-title"> </a>`);
+	var root_1$12 = /* @__PURE__ */ from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`);
+	var root_2$7 = /* @__PURE__ */ from_html(`<div class="title"><!></div>`);
+	var root_3$2 = /* @__PURE__ */ from_html(`<div class="go-to-content"><a> </a></div>`);
+	var root_4$1 = /* @__PURE__ */ from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`);
+	var root_5$1 = /* @__PURE__ */ from_html(`<li><a> </a></li>`);
+	var root_6$1 = /* @__PURE__ */ from_html(`<nav><ul><!> <!></ul></nav>`);
+	var root_7$1 = /* @__PURE__ */ from_html(`<div class="search-zone"><!></div>`);
+	var root_8$1 = /* @__PURE__ */ from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`);
+	function PivHeader($$anchor, $$props) {
+		push($$props, true);
+		const lang = Utils.getPageLanguage();
+		let customElementParent = prop($$props, "customElementParent", 7), logoUrl = prop($$props, "logoUrl", 7, "/"), fullWidth = prop($$props, "fullWidth", 7, "false"), logoSrc = prop($$props, "logoSrc", 23, () => Utils.imagesRelativePath + "QUEBEC_blanc.svg"), logoAlt = prop($$props, "logoAlt", 7, lang === "fr" ? "Logo du gouvernement du Québec" : "Logo of government of Québec"), titleUrl = prop($$props, "titleUrl", 7, "/"), titleText = prop($$props, "titleText", 7, ""), joinUsText = prop($$props, "joinUsText", 7, lang === "fr" ? "Nous joindre" : "Contact us"), joinUsUrl = prop($$props, "joinUsUrl", 7, ""), altLanguageText = prop($$props, "altLanguageText", 7, lang === "fr" ? "English" : "Français"), altLanguageUrl = prop($$props, "altLanguageUrl", 7, ""), linksLabel = prop($$props, "linksLabel", 7, lang === "fr" ? "Navigation PIV" : "PIV navigation"), goToContent = prop($$props, "goToContent", 7, "true"), goToContentAnchor = prop($$props, "goToContentAnchor", 7, "#main"), goToContentText = prop($$props, "goToContentText", 7, lang === "fr" ? "Passer au contenu" : "Skip to content"), displaySearchText = prop($$props, "displaySearchText", 7, lang === "fr" ? "Cliquer pour faire une recherche" : "Click to search"), hideSearchText = prop($$props, "hideSearchText", 7, lang === "fr" ? "Masquer la barre de recherche" : "Hide search bar"), enableSearch = prop($$props, "enableSearch", 7, "false"), showSearch = prop($$props, "showSearch", 7, "false"), linksSlot = prop($$props, "linksSlot", 7), searchZoneSlot = prop($$props, "searchZoneSlot", 7), slots = prop($$props, "slots", 7, false);
+		let containerClass = /* @__PURE__ */ state("qc-container");
+		let searchZone = /* @__PURE__ */ state(null);
+		let displaySearchForm = /* @__PURE__ */ state(false);
+		function focusOnSearchInput() {
+			if (get(displaySearchForm)) (customElementParent() ? customElementParent().querySelector("[slot=\"search-zone\"] input") : get(searchZone).querySelector("input"))?.focus();
+		}
 		onMount(() => {
-			set(containerClass, get(containerClass) + (strict_equals(fullWidth(), 'true') ? '-fluid' : ''));
-
-			if (strict_equals(showSearch(), 'true')) {
-				enableSearch('true');
+			set(containerClass, get(containerClass) + (fullWidth() === "true" ? "-fluid" : ""));
+			if (showSearch() === "true") {
+				enableSearch("true");
 				set(displaySearchForm, true);
 			}
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get customElementParent() {
 				return customElementParent();
 			},
-
 			set customElementParent($$value) {
 				customElementParent($$value);
 				flushSync();
 			},
-
 			get logoUrl() {
 				return logoUrl();
 			},
-
-			set logoUrl($$value = '/') {
+			set logoUrl($$value = "/") {
 				logoUrl($$value);
 				flushSync();
 			},
-
 			get fullWidth() {
 				return fullWidth();
 			},
-
-			set fullWidth($$value = 'false') {
+			set fullWidth($$value = "false") {
 				fullWidth($$value);
 				flushSync();
 			},
-
 			get logoSrc() {
 				return logoSrc();
 			},
-
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrc($$value = Utils.imagesRelativePath + "QUEBEC_blanc.svg") {
 				logoSrc($$value);
 				flushSync();
 			},
-
 			get logoAlt() {
 				return logoAlt();
 			},
-
-			set logoAlt(
-				$$value = lang === 'fr'
-					? 'Logo du gouvernement du Québec'
-					: 'Logo of government of Québec'
-			) {
+			set logoAlt($$value = lang === "fr" ? "Logo du gouvernement du Québec" : "Logo of government of Québec") {
 				logoAlt($$value);
 				flushSync();
 			},
-
 			get titleUrl() {
 				return titleUrl();
 			},
-
-			set titleUrl($$value = '/') {
+			set titleUrl($$value = "/") {
 				titleUrl($$value);
 				flushSync();
 			},
-
 			get titleText() {
 				return titleText();
 			},
-
-			set titleText($$value = '') {
+			set titleText($$value = "") {
 				titleText($$value);
 				flushSync();
 			},
-
 			get joinUsText() {
 				return joinUsText();
 			},
-
-			set joinUsText($$value = lang === 'fr' ? 'Nous joindre' : 'Contact us') {
+			set joinUsText($$value = lang === "fr" ? "Nous joindre" : "Contact us") {
 				joinUsText($$value);
 				flushSync();
 			},
-
 			get joinUsUrl() {
 				return joinUsUrl();
 			},
-
-			set joinUsUrl($$value = '') {
+			set joinUsUrl($$value = "") {
 				joinUsUrl($$value);
 				flushSync();
 			},
-
 			get altLanguageText() {
 				return altLanguageText();
 			},
-
-			set altLanguageText($$value = lang === 'fr' ? 'English' : 'Français') {
+			set altLanguageText($$value = lang === "fr" ? "English" : "Français") {
 				altLanguageText($$value);
 				flushSync();
 			},
-
 			get altLanguageUrl() {
 				return altLanguageUrl();
 			},
-
-			set altLanguageUrl($$value = '') {
+			set altLanguageUrl($$value = "") {
 				altLanguageUrl($$value);
 				flushSync();
 			},
-
 			get linksLabel() {
 				return linksLabel();
 			},
-
-			set linksLabel(
-				$$value = lang === 'fr' ? 'Navigation PIV' : 'PIV navigation'
-			) {
+			set linksLabel($$value = lang === "fr" ? "Navigation PIV" : "PIV navigation") {
 				linksLabel($$value);
 				flushSync();
 			},
-
 			get goToContent() {
 				return goToContent();
 			},
-
-			set goToContent($$value = 'true') {
+			set goToContent($$value = "true") {
 				goToContent($$value);
 				flushSync();
 			},
-
 			get goToContentAnchor() {
 				return goToContentAnchor();
 			},
-
-			set goToContentAnchor($$value = '#main') {
+			set goToContentAnchor($$value = "#main") {
 				goToContentAnchor($$value);
 				flushSync();
 			},
-
 			get goToContentText() {
 				return goToContentText();
 			},
-
-			set goToContentText(
-				$$value = lang === 'fr' ? 'Passer au contenu' : 'Skip to content'
-			) {
+			set goToContentText($$value = lang === "fr" ? "Passer au contenu" : "Skip to content") {
 				goToContentText($$value);
 				flushSync();
 			},
-
 			get displaySearchText() {
 				return displaySearchText();
 			},
-
-			set displaySearchText(
-				$$value = lang === 'fr'
-					? 'Cliquer pour faire une recherche'
-					: 'Click to search'
-			) {
+			set displaySearchText($$value = lang === "fr" ? "Cliquer pour faire une recherche" : "Click to search") {
 				displaySearchText($$value);
 				flushSync();
 			},
-
 			get hideSearchText() {
 				return hideSearchText();
 			},
-
-			set hideSearchText(
-				$$value = lang === 'fr' ? 'Masquer la barre de recherche' : 'Hide search bar'
-			) {
+			set hideSearchText($$value = lang === "fr" ? "Masquer la barre de recherche" : "Hide search bar") {
 				hideSearchText($$value);
 				flushSync();
 			},
-
 			get enableSearch() {
 				return enableSearch();
 			},
-
-			set enableSearch($$value = 'false') {
+			set enableSearch($$value = "false") {
 				enableSearch($$value);
 				flushSync();
 			},
-
 			get showSearch() {
 				return showSearch();
 			},
-
-			set showSearch($$value = 'false') {
+			set showSearch($$value = "false") {
 				showSearch($$value);
 				flushSync();
 			},
-
 			get linksSlot() {
 				return linksSlot();
 			},
-
 			set linksSlot($$value) {
 				linksSlot($$value);
 				flushSync();
 			},
-
 			get searchZoneSlot() {
 				return searchZoneSlot();
 			},
-
 			set searchZoneSlot($$value) {
 				searchZoneSlot($$value);
 				flushSync();
 			},
-
 			get slots() {
 				return slots();
 			},
-
 			set slots($$value = false) {
 				slots($$value);
 				flushSync();
 			}
 		};
-
-		var div = root_9$1();
+		var div = root_8$1();
 		var div_1 = child(div);
-
 		{
-			const title = wrap_snippet(PivHeader, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			const title = ($$anchor) => {
 				var fragment = comment();
 				var node = first_child(fragment);
-
-				{
-					var consequent_1 = ($$anchor) => {
-						var div_2 = root_2$7();
-						var node_1 = child(div_2);
-
-						{
-							var consequent = ($$anchor) => {
-								var a = root$r();
-								var text = child(a, true);
-
-								reset(a);
-
-								template_effect(() => {
-									set_attribute(a, 'href', titleUrl());
-									set_text(text, titleText());
-								});
-
-								append($$anchor, a);
-							};
-
-							var alternate = ($$anchor) => {
-								var span = root_1$c();
-								var text_1 = child(span, true);
-
-								reset(span);
-								template_effect(() => set_text(text_1, titleText()));
-								append($$anchor, span);
-							};
-
-							add_svelte_meta(
-								() => if_block(node_1, ($$render) => {
-									if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, -1);
-								}),
-								'if',
-								PivHeader,
-								72,
-								20
-							);
-						}
-
-						reset(div_2);
-						append($$anchor, div_2);
+				var consequent_1 = ($$anchor) => {
+					var div_2 = root_2$7();
+					var node_1 = child(div_2);
+					var consequent = ($$anchor) => {
+						var a = root$27();
+						var text = only_child(a, true);
+						template_effect(() => {
+							set_attribute(a, "href", titleUrl());
+							set_text(text, titleText());
+						});
+						append($$anchor, a);
 					};
-
-					add_svelte_meta(
-						() => if_block(node, ($$render) => {
-							if (titleText()) $$render(consequent_1);
-						}),
-						'if',
-						PivHeader,
-						70,
-						12
-					);
-				}
-
-				append($$anchor, fragment);
-			});
-
-			var node_2 = child(div_1);
-
-			{
-				var consequent_2 = ($$anchor) => {
-					var div_3 = root_3$2();
-					var a_1 = child(div_3);
-					var text_2 = child(a_1, true);
-
-					reset(a_1);
-					reset(div_3);
-
-					template_effect(() => {
-						set_attribute(a_1, 'href', goToContentAnchor());
-						set_text(text_2, goToContentText());
+					var alternate = ($$anchor) => {
+						var span = root_1$12();
+						var text_1 = only_child(span, true);
+						template_effect(() => set_text(text_1, titleText()));
+						append($$anchor, span);
+					};
+					if_block(node_1, ($$render) => {
+						if (titleUrl() && titleUrl().length > 0) $$render(consequent);
+						else $$render(alternate, -1);
 					});
-
-					append($$anchor, div_3);
+					reset(div_2);
+					append($$anchor, div_2);
 				};
-
-				add_svelte_meta(
-					() => if_block(node_2, ($$render) => {
-						if (strict_equals(goToContent(), 'true')) $$render(consequent_2);
-					}),
-					'if',
-					PivHeader,
-					62,
-					8
-				);
-			}
-
+				if_block(node, ($$render) => {
+					if (titleText()) $$render(consequent_1);
+				});
+				append($$anchor, fragment);
+			};
+			var node_2 = child(div_1);
+			var consequent_2 = ($$anchor) => {
+				var div_3 = root_3$2();
+				var a_1 = child(div_3);
+				var text_2 = only_child(a_1, true);
+				reset(div_3);
+				template_effect(() => {
+					set_attribute(a_1, "href", goToContentAnchor());
+					set_text(text_2, goToContentText());
+				});
+				append($$anchor, div_3);
+			};
+			if_block(node_2, ($$render) => {
+				if (goToContent() === "true") $$render(consequent_2);
+			});
 			var div_4 = sibling(node_2, 2);
 			var div_5 = child(div_4);
 			var div_6 = child(div_5);
 			var a_2 = child(div_6);
-			var img = child(a_2);
-
-			reset(a_2);
+			var img = only_child(a_2);
 			reset(div_6);
-
-			var node_3 = sibling(div_6, 2);
-
-			add_svelte_meta(() => title(node_3), 'render', PivHeader, 91, 16);
+			title(sibling(div_6, 2));
 			reset(div_5);
-
 			var div_7 = sibling(div_5, 2);
 			var node_4 = child(div_7);
-
-			{
-				var consequent_3 = ($$anchor) => {
-					var a_3 = root_4$1();
-					var node_5 = child(a_3);
-
-					add_svelte_meta(
-						() => Icon(node_5, {
-							type: 'search',
-							size: 'lg',
-							color: 'background',
-							variant: 'outlined',
-							renderMode: 'font'
-						}),
-						'component',
-						PivHeader,
-						107,
-						24,
-						{ componentTag: 'Icon' }
-					);
-
-					var span_1 = sibling(node_5, 2);
-					var text_3 = child(span_1, true);
-
-					reset(span_1);
-					reset(a_3);
-					template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
-
-					delegated('click', a_3, function click(evt) {
-						evt.preventDefault();
-						set(displaySearchForm, !get(displaySearchForm));
-
-						tick().then(() => {
-							focusOnSearchInput();
-						});
+			var consequent_3 = ($$anchor) => {
+				var a_3 = root_4$1();
+				var node_5 = child(a_3);
+				Icon(node_5, {
+					type: "search",
+					size: "lg",
+					color: "background",
+					variant: "outlined",
+					renderMode: "font"
+				});
+				var text_3 = only_child(sibling(node_5, 2), true);
+				reset(a_3);
+				template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
+				delegated("click", a_3, (evt) => {
+					evt.preventDefault();
+					set(displaySearchForm, !get(displaySearchForm));
+					tick().then(() => {
+						focusOnSearchInput();
 					});
-
-					append($$anchor, a_3);
-				};
-
-				var d = user_derived(() => Utils.isTruthy(enableSearch()));
-
-				add_svelte_meta(
-					() => if_block(node_4, ($$render) => {
-						if (get(d)) $$render(consequent_3);
-					}),
-					'if',
-					PivHeader,
-					95,
-					16
-				);
-			}
-
+				});
+				append($$anchor, a_3);
+			};
+			var d = /* @__PURE__ */ user_derived(() => Utils.isTruthy(enableSearch()));
+			if_block(node_4, ($$render) => {
+				if (get(d)) $$render(consequent_3);
+			});
 			var div_8 = sibling(node_4, 2);
 			var node_6 = child(div_8);
-
-			{
-				var consequent_4 = ($$anchor) => {
-					var fragment_1 = comment();
-					var node_7 = first_child(fragment_1);
-
-					add_svelte_meta(() => snippet(node_7, linksSlot), 'render', PivHeader, 120, 24);
-					append($$anchor, fragment_1);
+			var consequent_4 = ($$anchor) => {
+				var fragment_1 = comment();
+				snippet(first_child(fragment_1), linksSlot);
+				append($$anchor, fragment_1);
+			};
+			var alternate_1 = ($$anchor) => {
+				var fragment_2 = comment();
+				var node_8 = first_child(fragment_2);
+				var consequent_7 = ($$anchor) => {
+					var nav = root_6$1();
+					var ul = child(nav);
+					var node_9 = child(ul);
+					var consequent_5 = ($$anchor) => {
+						var li = root_5$1();
+						var a_4 = child(li);
+						var text_4 = only_child(a_4, true);
+						reset(li);
+						template_effect(() => {
+							set_attribute(a_4, "href", altLanguageUrl());
+							set_text(text_4, altLanguageText());
+						});
+						append($$anchor, li);
+					};
+					if_block(node_9, ($$render) => {
+						if (altLanguageUrl()) $$render(consequent_5);
+					});
+					var node_10 = sibling(node_9, 2);
+					var consequent_6 = ($$anchor) => {
+						var li_1 = root_5$1();
+						var a_5 = child(li_1);
+						var text_5 = only_child(a_5, true);
+						reset(li_1);
+						template_effect(() => {
+							set_attribute(a_5, "href", joinUsUrl());
+							set_text(text_5, joinUsText());
+						});
+						append($$anchor, li_1);
+					};
+					if_block(node_10, ($$render) => {
+						if (joinUsUrl()) $$render(consequent_6);
+					});
+					reset(ul);
+					reset(nav);
+					template_effect(() => set_attribute(nav, "aria-label", linksLabel()));
+					append($$anchor, nav);
 				};
-
-				var alternate_1 = ($$anchor) => {
-					var fragment_2 = comment();
-					var node_8 = first_child(fragment_2);
-
-					{
-						var consequent_7 = ($$anchor) => {
-							var nav = root_7$1();
-							var ul = child(nav);
-							var node_9 = child(ul);
-
-							{
-								var consequent_5 = ($$anchor) => {
-									var li = root_5$1();
-									var a_4 = child(li);
-									var text_4 = child(a_4, true);
-
-									reset(a_4);
-									reset(li);
-
-									template_effect(() => {
-										set_attribute(a_4, 'href', altLanguageUrl());
-										set_text(text_4, altLanguageText());
-									});
-
-									append($$anchor, li);
-								};
-
-								add_svelte_meta(
-									() => if_block(node_9, ($$render) => {
-										if (altLanguageUrl()) $$render(consequent_5);
-									}),
-									'if',
-									PivHeader,
-									126,
-									36
-								);
-							}
-
-							var node_10 = sibling(node_9, 2);
-
-							{
-								var consequent_6 = ($$anchor) => {
-									var li_1 = root_6$1();
-									var a_5 = child(li_1);
-									var text_5 = child(a_5, true);
-
-									reset(a_5);
-									reset(li_1);
-
-									template_effect(() => {
-										set_attribute(a_5, 'href', joinUsUrl());
-										set_text(text_5, joinUsText());
-									});
-
-									append($$anchor, li_1);
-								};
-
-								add_svelte_meta(
-									() => if_block(node_10, ($$render) => {
-										if (joinUsUrl()) $$render(consequent_6);
-									}),
-									'if',
-									PivHeader,
-									129,
-									36
-								);
-							}
-
-							reset(ul);
-							reset(nav);
-							template_effect(() => set_attribute(nav, 'aria-label', linksLabel()));
-							append($$anchor, nav);
-						};
-
-						add_svelte_meta(
-							() => if_block(node_8, ($$render) => {
-								if (joinUsUrl() || altLanguageUrl()) $$render(consequent_7);
-							}),
-							'if',
-							PivHeader,
-							123,
-							24
-						);
-					}
-
-					append($$anchor, fragment_2);
-				};
-
-				add_svelte_meta(
-					() => if_block(node_6, ($$render) => {
-						if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, -1);
-					}),
-					'if',
-					PivHeader,
-					119,
-					20
-				);
-			}
-
+				if_block(node_8, ($$render) => {
+					if (joinUsUrl() || altLanguageUrl()) $$render(consequent_7);
+				});
+				append($$anchor, fragment_2);
+			};
+			if_block(node_6, ($$render) => {
+				if ((!slots() || slots()["links"]) && linksSlot()) $$render(consequent_4);
+				else $$render(alternate_1, -1);
+			});
 			reset(div_8);
 			reset(div_7);
 			reset(div_4);
-
 			var node_11 = sibling(div_4, 2);
-
-			add_svelte_meta(() => title(node_11), 'render', PivHeader, 139, 8);
-
+			title(node_11);
 			var div_9 = sibling(node_11, 2);
 			var node_12 = child(div_9);
-
-			{
-				var consequent_9 = ($$anchor) => {
-					var div_10 = root_8$1();
-					var node_13 = child(div_10);
-
-					{
-						var consequent_8 = ($$anchor) => {
-							var fragment_3 = comment();
-							var node_14 = first_child(fragment_3);
-
-							add_svelte_meta(() => snippet(node_14, searchZoneSlot), 'render', PivHeader, 145, 24);
-							append($$anchor, fragment_3);
-						};
-
-						add_svelte_meta(
-							() => if_block(node_13, ($$render) => {
-								if (searchZoneSlot()) $$render(consequent_8);
-							}),
-							'if',
-							PivHeader,
-							144,
-							20
-						);
-					}
-
-					reset(div_10);
-					bind_this(div_10, ($$value) => set(searchZone, $$value), () => get(searchZone));
-					append($$anchor, div_10);
+			var consequent_9 = ($$anchor) => {
+				var div_10 = root_7$1();
+				var node_13 = child(div_10);
+				var consequent_8 = ($$anchor) => {
+					var fragment_3 = comment();
+					snippet(first_child(fragment_3), searchZoneSlot);
+					append($$anchor, fragment_3);
 				};
-
-				add_svelte_meta(
-					() => if_block(node_12, ($$render) => {
-						if (get(displaySearchForm)) $$render(consequent_9);
-					}),
-					'if',
-					PivHeader,
-					142,
-					12
-				);
-			}
-
+				if_block(node_13, ($$render) => {
+					if (searchZoneSlot()) $$render(consequent_8);
+				});
+				reset(div_10);
+				bind_this(div_10, ($$value) => set(searchZone, $$value), () => get(searchZone));
+				append($$anchor, div_10);
+			};
+			if_block(node_12, ($$render) => {
+				if (get(displaySearchForm)) $$render(consequent_9);
+			});
 			reset(div_9);
 			reset(div_1);
-
 			template_effect(() => {
-				set_attribute(a_2, 'href', logoUrl());
-				set_attribute(img, 'src', logoSrc());
-				set_attribute(img, 'alt', logoAlt());
+				set_attribute(a_2, "href", logoUrl());
+				set_attribute(img, "src", logoSrc());
+				set_attribute(img, "alt", logoAlt());
 			});
 		}
-
 		reset(div);
 		template_effect(() => set_class(div_1, 1, get(containerClass)));
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	delegate(['click']);
-
-	create_custom_element(
-		PivHeader,
-		{
-			customElementParent: {},
-			logoUrl: {},
-			fullWidth: {},
-			logoSrc: {},
-			logoAlt: {},
-			titleUrl: {},
-			titleText: {},
-			joinUsText: {},
-			joinUsUrl: {},
-			altLanguageText: {},
-			altLanguageUrl: {},
-			linksLabel: {},
-			goToContent: {},
-			goToContentAnchor: {},
-			goToContentText: {},
-			displaySearchText: {},
-			hideSearchText: {},
-			enableSearch: {},
-			showSearch: {},
-			linksSlot: {},
-			searchZoneSlot: {},
-			slots: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
-
-	var rest_excludes$i = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'self']);
-	var root$q = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
-
+	delegate(["click"]);
+	create_custom_element(PivHeader, {
+		customElementParent: {},
+		logoUrl: {},
+		fullWidth: {},
+		logoSrc: {},
+		logoAlt: {},
+		titleUrl: {},
+		titleText: {},
+		joinUsText: {},
+		joinUsUrl: {},
+		altLanguageText: {},
+		altLanguageUrl: {},
+		linksLabel: {},
+		goToContent: {},
+		goToContentAnchor: {},
+		goToContentText: {},
+		displaySearchText: {},
+		hideSearchText: {},
+		enableSearch: {},
+		showSearch: {},
+		linksSlot: {},
+		searchZoneSlot: {},
+		slots: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/PivHeader/PivHeaderWC.svelte
+	var rest_excludes$19 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"self"
+	]);
+	var root$26 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function PivHeaderWC($$anchor, $$props) {
-		check_target(new.target);
-
 		const $$slots = sanitize_slots($$props);
-
 		push($$props, true);
-
-		let self = prop($$props, 'self', 7),
-			props = rest_props($$props, rest_excludes$i);
-
+		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$19);
 		var $$exports = {
-			...legacy_api(),
 			get self() {
 				return self();
 			},
-
 			set self($$value) {
 				self($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$q();
+		var fragment = root$26();
 		var node = first_child(fragment);
-
 		{
-			const linksSlot = wrap_snippet(PivHeaderWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			const linksSlot = ($$anchor) => {
 				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
-
-				slot(node_1, $$props, 'links', {}, null);
+				slot(first_child(fragment_1), $$props, "links", {}, null);
 				append($$anchor, fragment_1);
-			});
-
-			const searchZoneSlot = wrap_snippet(PivHeaderWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			};
+			const searchZoneSlot = ($$anchor) => {
 				var fragment_2 = comment();
-				var node_2 = first_child(fragment_2);
-
-				slot(node_2, $$props, 'search-zone', {}, null);
+				slot(first_child(fragment_2), $$props, "search-zone", {}, null);
 				append($$anchor, fragment_2);
-			});
-
-			add_svelte_meta(
-				() => PivHeader(node, spread_props(
-					{
-						get customElementParent() {
-							return self();
-						}
-					},
-					() => props,
-					{
-						slots: $$slots,
-						linksSlot,
-						searchZoneSlot,
-						$$slots: { linksSlot: true, searchZoneSlot: true }
-					}
-				)),
-				'component',
-				PivHeaderWC,
-				46,
-				0,
-				{ componentTag: 'PivHeader' }
-			);
+			};
+			PivHeader(node, spread_props({ get customElementParent() {
+				return self();
+			} }, () => props, {
+				slots: $$slots,
+				linksSlot,
+				searchZoneSlot,
+				$$slots: {
+					linksSlot: true,
+					searchZoneSlot: true
+				}
+			}));
 		}
-
 		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-piv-header', create_custom_element(
-		PivHeaderWC,
-		{
-			logoUrl: { attribute: 'logo-url' },
-			fullWidth: { attribute: 'full-width' },
-			logoSrc: { attribute: 'logo-src' },
-			logoAlt: { attribute: 'logo-alt' },
-			titleUrl: { attribute: 'title-url' },
-			titleText: { attribute: 'title-text' },
-			linksLabel: { attribute: 'links-label' },
-			altLanguageText: { attribute: 'alt-language-text' },
-			altLanguageUrl: { attribute: 'alt-language-url' },
-			joinUsText: { attribute: 'join-us-text' },
-			joinUsUrl: { attribute: 'join-us-url' },
-			goToContent: { attribute: 'go-to-content' },
-			goToContentAnchor: { attribute: 'go-to-content-anchor' },
-			goToContentText: { attribute: 'go-to-content-text' },
-			displaySearchText: { attribute: 'display-search-text' },
-			hideSearchText: { attribute: 'hide-search-text' },
-			enableSearch: { attribute: 'enable-search' },
-			showSearch: { attribute: 'show-search' },
-			self: {}
-		},
-		['links', 'search-zone'],
-		[],
-		{ mode: 'open' },
-		(customElementConstructor) => {
-			return class extends customElementConstructor {
-				static self;
-
-				constructor() {
-					super();
-					this.self = this;
-				}
-			};
-		}
-	));
-
-	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
-
-	var root$p = add_locations(from_html(`<img/>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_1$b = add_locations(from_html(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-	var root_2$6 = add_locations(from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
-
+	customElements.define("qc-piv-header", create_custom_element(PivHeaderWC, {
+		logoUrl: { attribute: "logo-url" },
+		fullWidth: { attribute: "full-width" },
+		logoSrc: { attribute: "logo-src" },
+		logoAlt: { attribute: "logo-alt" },
+		titleUrl: { attribute: "title-url" },
+		titleText: { attribute: "title-text" },
+		linksLabel: { attribute: "links-label" },
+		altLanguageText: { attribute: "alt-language-text" },
+		altLanguageUrl: { attribute: "alt-language-url" },
+		joinUsText: { attribute: "join-us-text" },
+		joinUsUrl: { attribute: "join-us-url" },
+		goToContent: { attribute: "go-to-content" },
+		goToContentAnchor: { attribute: "go-to-content-anchor" },
+		goToContentText: { attribute: "go-to-content-text" },
+		displaySearchText: { attribute: "display-search-text" },
+		hideSearchText: { attribute: "hide-search-text" },
+		enableSearch: { attribute: "enable-search" },
+		showSearch: { attribute: "show-search" },
+		self: {}
+	}, ["links", "search-zone"], [], { mode: "open" }, (customElementConstructor) => {
+		return class extends customElementConstructor {
+			static self;
+			constructor() {
+				super();
+				this.self = this;
+			}
+		};
+	}));
+	//#endregion
+	//#region src/sdg/components/PivFooter/PivFooter.svelte
+	var root$25 = /* @__PURE__ */ from_html(`<img/>`);
+	var root_1$11 = /* @__PURE__ */ from_html(`<a> </a>`);
+	var root_2$6 = /* @__PURE__ */ from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`);
 	function PivFooter($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
 		const lang = Utils.getPageLanguage();
-
-		let logoUrl = prop($$props, 'logoUrl', 7, '/'),
-			logoSrc = prop($$props, 'logoSrc', 23, () => Utils.imagesRelativePath + 'QUEBEC_couleur.svg'),
-			logoSrcDarkTheme = prop($$props, 'logoSrcDarkTheme', 23, () => Utils.imagesRelativePath + 'QUEBEC_blanc.svg'),
-			logoAlt = prop($$props, 'logoAlt', 23, () => strict_equals(lang, 'fr')
-				? 'Logo du gouvernement du Québec'
-				: 'Logo of the Quebec government'),
-			logoWidth = prop($$props, 'logoWidth', 7, 139),
-			logoHeight = prop($$props, 'logoHeight', 7, 50),
-			copyrightUrl = prop($$props, 'copyrightUrl', 23, () => strict_equals(lang, 'fr')
-				? 'https://www.quebec.ca/droit-auteur'
-				: 'https://www.quebec.ca/en/copyright'),
-			copyrightText = prop($$props, 'copyrightText', 23, () => '© Gouvernement du Québec, ' + new Date().getFullYear()),
-			mainSlot = prop($$props, 'mainSlot', 7),
-			copyrightSlot = prop($$props, 'copyrightSlot', 7),
-			slots = prop($$props, 'slots', 23, () => ({}));
-
+		let logoUrl = prop($$props, "logoUrl", 7, "/"), logoSrc = prop($$props, "logoSrc", 23, () => Utils.imagesRelativePath + "QUEBEC_couleur.svg"), logoSrcDarkTheme = prop($$props, "logoSrcDarkTheme", 23, () => Utils.imagesRelativePath + "QUEBEC_blanc.svg"), logoAlt = prop($$props, "logoAlt", 7, lang === "fr" ? "Logo du gouvernement du Québec" : "Logo of the Quebec government"), logoWidth = prop($$props, "logoWidth", 7, 139), logoHeight = prop($$props, "logoHeight", 7, 50), copyrightUrl = prop($$props, "copyrightUrl", 7, lang === "fr" ? "https://www.quebec.ca/droit-auteur" : "https://www.quebec.ca/en/copyright"), copyrightText = prop($$props, "copyrightText", 23, () => "© Gouvernement du Québec, " + (/* @__PURE__ */ new Date()).getFullYear()), mainSlot = prop($$props, "mainSlot", 7), copyrightSlot = prop($$props, "copyrightSlot", 7), slots = prop($$props, "slots", 23, () => ({}));
 		var $$exports = {
-			...legacy_api(),
 			get logoUrl() {
 				return logoUrl();
 			},
-
-			set logoUrl($$value = '/') {
+			set logoUrl($$value = "/") {
 				logoUrl($$value);
 				flushSync();
 			},
-
 			get logoSrc() {
 				return logoSrc();
 			},
-
-			set logoSrc($$value = Utils.imagesRelativePath + 'QUEBEC_couleur.svg') {
+			set logoSrc($$value = Utils.imagesRelativePath + "QUEBEC_couleur.svg") {
 				logoSrc($$value);
 				flushSync();
 			},
-
 			get logoSrcDarkTheme() {
 				return logoSrcDarkTheme();
 			},
-
-			set logoSrcDarkTheme($$value = Utils.imagesRelativePath + 'QUEBEC_blanc.svg') {
+			set logoSrcDarkTheme($$value = Utils.imagesRelativePath + "QUEBEC_blanc.svg") {
 				logoSrcDarkTheme($$value);
 				flushSync();
 			},
-
 			get logoAlt() {
 				return logoAlt();
 			},
-
-			set logoAlt(
-				$$value = lang === 'fr'
-					? 'Logo du gouvernement du Québec'
-					: 'Logo of the Quebec government'
-			) {
+			set logoAlt($$value = lang === "fr" ? "Logo du gouvernement du Québec" : "Logo of the Quebec government") {
 				logoAlt($$value);
 				flushSync();
 			},
-
 			get logoWidth() {
 				return logoWidth();
 			},
-
 			set logoWidth($$value = 139) {
 				logoWidth($$value);
 				flushSync();
 			},
-
 			get logoHeight() {
 				return logoHeight();
 			},
-
 			set logoHeight($$value = 50) {
 				logoHeight($$value);
 				flushSync();
 			},
-
 			get copyrightUrl() {
 				return copyrightUrl();
 			},
-
-			set copyrightUrl(
-				$$value = lang === 'fr'
-					? 'https://www.quebec.ca/droit-auteur'
-					: 'https://www.quebec.ca/en/copyright'
-			) {
+			set copyrightUrl($$value = lang === "fr" ? "https://www.quebec.ca/droit-auteur" : "https://www.quebec.ca/en/copyright") {
 				copyrightUrl($$value);
 				flushSync();
 			},
-
 			get copyrightText() {
 				return copyrightText();
 			},
-
-			set copyrightText(
-				$$value = '© Gouvernement du Québec, ' + new Date().getFullYear()
-			) {
+			set copyrightText($$value = "© Gouvernement du Québec, " + (/* @__PURE__ */ new Date()).getFullYear()) {
 				copyrightText($$value);
 				flushSync();
 			},
-
 			get mainSlot() {
 				return mainSlot();
 			},
-
 			set mainSlot($$value) {
 				mainSlot($$value);
 				flushSync();
 			},
-
 			get copyrightSlot() {
 				return copyrightSlot();
 			},
-
 			set copyrightSlot($$value) {
 				copyrightSlot($$value);
 				flushSync();
 			},
-
 			get slots() {
 				return slots();
 			},
-
 			set slots($$value = {}) {
 				slots($$value);
 				flushSync();
 			}
 		};
-
 		var div = root_2$6();
 		var node = child(div);
-
-		{
-			var consequent = ($$anchor) => {
-				var fragment = comment();
-				var node_1 = first_child(fragment);
-
-				add_svelte_meta(() => snippet(node_1, mainSlot), 'render', PivFooter, 22, 8);
-				append($$anchor, fragment);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (mainSlot()) $$render(consequent);
-				}),
-				'if',
-				PivFooter,
-				21,
-				4
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			var fragment = comment();
+			snippet(first_child(fragment), mainSlot);
+			append($$anchor, fragment);
+		};
+		if_block(node, ($$render) => {
+			if (mainSlot()) $$render(consequent);
+		});
 		var a = sibling(node, 2);
 		let styles;
-
-		add_svelte_meta(
-			() => each(a, 21, () => [['light', logoSrc()], ['dark', logoSrcDarkTheme()]], index, ($$anchor, $$item) => {
-				var $$array = user_derived(() => to_array(get($$item), 2));
-				let theme = () => get($$array)[0];
-
-				theme();
-
-				let src = () => get($$array)[1];
-
-				src();
-
-				var img = root$p();
-
-				template_effect(() => {
-					set_attribute(img, 'src', src());
-					set_attribute(img, 'alt', logoAlt());
-					set_class(img, 1, `qc-${theme() ?? ''}-theme-show`);
-				});
-
-				append($$anchor, img);
-			}),
-			'each',
-			PivFooter,
-			30,
-			8
-		);
-
+		each(a, 21, () => [["light", logoSrc()], ["dark", logoSrcDarkTheme()]], index, ($$anchor, $$item) => {
+			var $$array = /* @__PURE__ */ user_derived(() => to_array(get($$item), 2));
+			let theme = () => get($$array)[0];
+			let src = () => get($$array)[1];
+			var img = root$25();
+			template_effect(() => {
+				set_attribute(img, "src", src());
+				set_attribute(img, "alt", logoAlt());
+				set_class(img, 1, `qc-${theme() ?? ""}-theme-show`);
+			});
+			append($$anchor, img);
+		});
 		reset(a);
-
 		var span = sibling(a, 2);
 		var node_2 = child(span);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var fragment_1 = comment();
-				var node_3 = first_child(fragment_1);
-
-				add_svelte_meta(() => snippet(node_3, copyrightSlot), 'render', PivFooter, 43, 12);
-				append($$anchor, fragment_1);
-			};
-
-			var alternate = ($$anchor) => {
-				var a_1 = root_1$b();
-				var text = child(a_1, true);
-
-				reset(a_1);
-
-				template_effect(() => {
-					set_attribute(a_1, 'href', copyrightUrl());
-					set_text(text, copyrightText());
-				});
-
-				append($$anchor, a_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_2, ($$render) => {
-					if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, -1);
-				}),
-				'if',
-				PivFooter,
-				42,
-				8
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			var fragment_1 = comment();
+			snippet(first_child(fragment_1), copyrightSlot);
+			append($$anchor, fragment_1);
+		};
+		var alternate = ($$anchor) => {
+			var a_1 = root_1$11();
+			var text = only_child(a_1, true);
+			template_effect(() => {
+				set_attribute(a_1, "href", copyrightUrl());
+				set_text(text, copyrightText());
+			});
+			append($$anchor, a_1);
+		};
+		if_block(node_2, ($$render) => {
+			if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1);
+			else $$render(alternate, -1);
+		});
 		reset(span);
 		reset(div);
-
 		template_effect(() => {
-			set_attribute(a, 'href', logoUrl());
-			styles = set_style(a, '', styles, { '--logo-width': logoWidth(), '--logo-height': logoHeight() });
+			set_attribute(a, "href", logoUrl());
+			styles = set_style(a, "", styles, {
+				"--logo-width": logoWidth(),
+				"--logo-height": logoHeight()
+			});
 		});
-
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		PivFooter,
-		{
-			logoUrl: {},
-			logoSrc: {},
-			logoSrcDarkTheme: {},
-			logoAlt: {},
-			logoWidth: {},
-			logoHeight: {},
-			copyrightUrl: {},
-			copyrightText: {},
-			mainSlot: {},
-			copyrightSlot: {},
-			slots: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
-
-	var rest_excludes$h = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'self']);
-	var root$o = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivFooterWC[FILENAME], [[44, 0]]);
-
+	create_custom_element(PivFooter, {
+		logoUrl: {},
+		logoSrc: {},
+		logoSrcDarkTheme: {},
+		logoAlt: {},
+		logoWidth: {},
+		logoHeight: {},
+		copyrightUrl: {},
+		copyrightText: {},
+		mainSlot: {},
+		copyrightSlot: {},
+		slots: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/PivFooter/PivFooterWC.svelte
+	var rest_excludes$18 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"self"
+	]);
+	var root$24 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function PivFooterWC($$anchor, $$props) {
-		check_target(new.target);
-
 		const $$slots = sanitize_slots($$props);
-
 		push($$props, true);
-
-		let self = prop($$props, 'self', 7),
-			props = rest_props($$props, rest_excludes$h);
-
+		let self = prop($$props, "self", 7), props = /* @__PURE__ */ rest_props($$props, rest_excludes$18);
 		var $$exports = {
-			...legacy_api(),
 			get self() {
 				return self();
 			},
-
 			set self($$value) {
 				self($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$o();
+		var fragment = root$24();
 		var node = first_child(fragment);
-
 		{
-			const mainSlot = wrap_snippet(PivFooterWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			const mainSlot = ($$anchor) => {
 				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
-
-				slot(node_1, $$props, 'default', {}, null);
+				slot(first_child(fragment_1), $$props, "default", {}, null);
 				append($$anchor, fragment_1);
-			});
-
-			const copyrightSlot = wrap_snippet(PivFooterWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			};
+			const copyrightSlot = ($$anchor) => {
 				var fragment_2 = comment();
-				var node_2 = first_child(fragment_2);
-
-				slot(node_2, $$props, 'copyright', {}, null);
+				slot(first_child(fragment_2), $$props, "copyright", {}, null);
 				append($$anchor, fragment_2);
-			});
-
-			add_svelte_meta(
-				() => PivFooter(node, spread_props(() => props, {
-					slots: $$slots,
-					mainSlot,
-					copyrightSlot,
-					$$slots: { mainSlot: true, copyrightSlot: true }
-				})),
-				'component',
-				PivFooterWC,
-				36,
-				0,
-				{ componentTag: 'PivFooter' }
-			);
+			};
+			PivFooter(node, spread_props(() => props, {
+				slots: $$slots,
+				mainSlot,
+				copyrightSlot,
+				$$slots: {
+					mainSlot: true,
+					copyrightSlot: true
+				}
+			}));
 		}
-
 		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-piv-footer', create_custom_element(
-		PivFooterWC,
-		{
-			logoUrl: { attribute: 'logo-url' },
-			logoSrc: { attribute: 'logo-src' },
-			logoSrcDarkTheme: { attribute: 'logo-src-dark-theme' },
-			logoAlt: { attribute: 'logo-alt' },
-			logoWidth: { attribute: 'logo-width' },
-			logoHeight: { attribute: 'logo-height' },
-			copyrightText: { attribute: 'copyright-text' },
-			copyrightUrl: { attribute: 'copyright-url' },
-			self: {}
-		},
-		['default', 'copyright'],
-		[],
-		{ mode: 'open' },
-		(customElementConstructor) => {
-			return class extends customElementConstructor {
-				static self;
-
-				constructor() {
-					super();
-					this.self = this;
-				}
-			};
-		}
-	));
-
-	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
-
-	var rest_excludes$g = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'size',
-		'label',
-		'icon',
-		'iconSize',
-		'iconColor',
-		'class',
-		'src'
+	customElements.define("qc-piv-footer", create_custom_element(PivFooterWC, {
+		logoUrl: { attribute: "logo-url" },
+		logoSrc: { attribute: "logo-src" },
+		logoSrcDarkTheme: { attribute: "logo-src-dark-theme" },
+		logoAlt: { attribute: "logo-alt" },
+		logoWidth: { attribute: "logo-width" },
+		logoHeight: { attribute: "logo-height" },
+		copyrightText: { attribute: "copyright-text" },
+		copyrightUrl: { attribute: "copyright-url" },
+		self: {}
+	}, ["default", "copyright"], [], { mode: "open" }, (customElementConstructor) => {
+		return class extends customElementConstructor {
+			static self;
+			constructor() {
+				super();
+				this.self = this;
+			}
+		};
+	}));
+	//#endregion
+	//#region src/sdg/components/IconButton/IconButton.svelte
+	var rest_excludes$17 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"size",
+		"label",
+		"icon",
+		"iconSize",
+		"iconColor",
+		"class",
+		"src"
 	]);
-
-	var root$n = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
-
+	var root$23 = /* @__PURE__ */ from_html(`<button><!></button>`);
 	function IconButton($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		const size = prop($$props, 'size', 7, 'xl'),
-			label = prop($$props, 'label', 7),
-			icon = prop($$props, 'icon', 7),
-			iconSize = prop($$props, 'iconSize', 7),
-			iconColor = prop($$props, 'iconColor', 7),
-			className = prop($$props, 'class', 7, ''),
-			src = prop($$props, 'src', 7),
-			rest = rest_props($$props, rest_excludes$g);
-
+		const size = prop($$props, "size", 7, "xl"), label = prop($$props, "label", 7), icon = prop($$props, "icon", 7), iconSize = prop($$props, "iconSize", 7), iconColor = prop($$props, "iconColor", 7), className = prop($$props, "class", 7, ""), src = prop($$props, "src", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$17);
 		var $$exports = {
-			...legacy_api(),
 			get size() {
 				return size();
 			},
-
-			set size($$value = 'xl') {
+			set size($$value = "xl") {
 				size($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get icon() {
 				return icon();
 			},
-
 			set icon($$value) {
 				icon($$value);
 				flushSync();
 			},
-
 			get iconSize() {
 				return iconSize();
 			},
-
 			set iconSize($$value) {
 				iconSize($$value);
 				flushSync();
 			},
-
 			get iconColor() {
 				return iconColor();
 			},
-
 			set iconColor($$value) {
 				iconColor($$value);
 				flushSync();
 			},
-
 			get class() {
 				return className();
 			},
-
-			set class($$value = '') {
+			set class($$value = "") {
 				className($$value);
 				flushSync();
 			},
-
 			get src() {
 				return src();
 			},
-
 			set src($$value) {
 				src($$value);
 				flushSync();
 			}
 		};
-
-		var button = root$n();
-
+		var button = root$23();
 		attribute_effect(button, () => ({
-			'data-button-size': size(),
+			"data-button-size": size(),
 			class: `qc-icon-button ${className()}`,
 			...rest
 		}));
-
 		var node = child(button);
-
-		{
-			var consequent = ($$anchor) => {
-				{
-					let $0 = user_derived(() => src() ? src() : null);
-
-					add_svelte_meta(
-						() => Icon($$anchor, {
-							get type() {
-								return icon();
-							},
-
-							get size() {
-								return iconSize();
-							},
-
-							get color() {
-								return iconColor();
-							},
-							'aria-hidden': 'true',
-							get label() {
-								return label();
-							},
-
-							get src() {
-								return get($0);
-							}
-						}),
-						'component',
-						IconButton,
-						23,
-						8,
-						{ componentTag: 'Icon' }
-					);
-				}
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (icon()) $$render(consequent);
-				}),
-				'if',
-				IconButton,
-				22,
-				4
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			{
+				let $0 = /* @__PURE__ */ user_derived(() => src() ? src() : null);
+				Icon($$anchor, {
+					get type() {
+						return icon();
+					},
+					get size() {
+						return iconSize();
+					},
+					get color() {
+						return iconColor();
+					},
+					"aria-hidden": "true",
+					get label() {
+						return label();
+					},
+					get src() {
+						return get($0);
+					}
+				});
+			}
+		};
+		if_block(node, ($$render) => {
+			if (icon()) $$render(consequent);
+		});
 		reset(button);
 		append($$anchor, button);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		IconButton,
-		{
-			size: {},
-			label: {},
-			icon: {},
-			iconSize: {},
-			iconColor: {},
-			class: {},
-			src: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
-
-	var root$m = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
-
+	create_custom_element(IconButton, {
+		size: {},
+		label: {},
+		icon: {},
+		iconSize: {},
+		iconColor: {},
+		class: {},
+		src: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Alert/Alert.svelte
+	var root$22 = /* @__PURE__ */ from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`);
 	function Alert($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let type = prop($$props, 'type', 7, "general"),
-			maskable = prop($$props, 'maskable', 7, ""),
-			content = prop($$props, 'content', 7, ""),
-			hide = prop($$props, 'hide', 15, "false"),
-			fullWidth = prop($$props, 'fullWidth', 7, "false"),
-			slotContent = prop($$props, 'slotContent', 7),
-			id = prop($$props, 'id', 7),
-			persistenceKey = prop($$props, 'persistenceKey', 7),
-			persistHidden = prop($$props, 'persistHidden', 7, false),
-			rootElement = prop($$props, 'rootElement', 15),
-			hideAlertCallback = prop($$props, 'hideAlertCallback', 7, () => {});
-
+		let type = prop($$props, "type", 7, "general"), maskable = prop($$props, "maskable", 7, ""), content = prop($$props, "content", 7, ""), hide = prop($$props, "hide", 15, "false"), fullWidth = prop($$props, "fullWidth", 7, "false"), slotContent = prop($$props, "slotContent", 7), id = prop($$props, "id", 7), persistenceKey = prop($$props, "persistenceKey", 7), persistHidden = prop($$props, "persistHidden", 7, false), rootElement = prop($$props, "rootElement", 15), hideAlertCallback = prop($$props, "hideAlertCallback", 7, () => {});
 		const language = Utils.getPageLanguage();
-		const typeClass = tag(user_derived(() => strict_equals(type(), "", false) ? type() : 'general'), 'typeClass');
-		const closeLabel = strict_equals(language, 'fr') ? "Fermer l’alerte" : "Close l’alerte";
-
-		const warningLabel = strict_equals(language, 'fr')
-			? "Information d'importance élevée"
-			: "Information of high importance";
-
-		const generalLabel = strict_equals(language, 'fr') ? "Information importante" : "Important information";
-		const label = tag(user_derived(() => strict_equals(type(), 'general') ? generalLabel : warningLabel), 'label');
-		let containerClass = tag(user_derived(() => "qc-container" + (strict_equals(fullWidth(), 'true') ? '-fluid' : '')), 'containerClass');
-
+		const typeClass = /* @__PURE__ */ user_derived(() => type() !== "" ? type() : "general");
+		const closeLabel = language === "fr" ? "Fermer l’alerte" : "Close l’alerte";
+		const warningLabel = language === "fr" ? "Information d'importance élevée" : "Information of high importance";
+		const generalLabel = language === "fr" ? "Information importante" : "Important information";
+		const label = /* @__PURE__ */ user_derived(() => type() === "general" ? generalLabel : warningLabel);
+		let containerClass = /* @__PURE__ */ user_derived(() => "qc-container" + (fullWidth() === "true" ? "-fluid" : ""));
 		onMount(() => {
 			const key = getPersistenceKey();
-
 			if (!key) return;
-
 			hide(sessionStorage.getItem(key) ? "true" : "false");
 		});
-
 		function hideAlert() {
 			hide("true");
 			persistHiddenState();
 			hideAlertCallback()();
 		}
-
 		function getPersistenceKey() {
 			if (!persistHidden()) return false;
-
 			const key = persistenceKey() || id();
-
 			if (!key) return false;
-
-			return 'qc-alert:' + key;
+			return "qc-alert:" + key;
 		}
-
 		function persistHiddenState() {
 			const key = getPersistenceKey();
-
 			if (!key) return;
-
 			sessionStorage.setItem(key, Utils.now());
 		}
-
 		var $$exports = {
-			...legacy_api(),
 			get type() {
 				return type();
 			},
-
 			set type($$value = "general") {
 				type($$value);
 				flushSync();
 			},
-
 			get maskable() {
 				return maskable();
 			},
-
 			set maskable($$value = "") {
 				maskable($$value);
 				flushSync();
 			},
-
 			get content() {
 				return content();
 			},
-
 			set content($$value = "") {
 				content($$value);
 				flushSync();
 			},
-
 			get hide() {
 				return hide();
 			},
-
 			set hide($$value = "false") {
 				hide($$value);
 				flushSync();
 			},
-
 			get fullWidth() {
 				return fullWidth();
 			},
-
 			set fullWidth($$value = "false") {
 				fullWidth($$value);
 				flushSync();
 			},
-
 			get slotContent() {
 				return slotContent();
 			},
-
 			set slotContent($$value) {
 				slotContent($$value);
 				flushSync();
 			},
-
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get persistenceKey() {
 				return persistenceKey();
 			},
-
 			set persistenceKey($$value) {
 				persistenceKey($$value);
 				flushSync();
 			},
-
 			get persistHidden() {
 				return persistHidden();
 			},
-
 			set persistHidden($$value = false) {
 				persistHidden($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			},
-
 			get hideAlertCallback() {
 				return hideAlertCallback();
 			},
-
 			set hideAlertCallback($$value = () => {}) {
 				hideAlertCallback($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var div = root$m();
-				var div_1 = child(div);
-				var div_2 = child(div_1);
-				var node_1 = child(div_2);
-
-				{
-					let $0 = user_derived(() => strict_equals(type(), 'warning') ? 'warning' : 'info');
-					let $1 = user_derived(() => strict_equals(type(), 'general') ? 'blue-piv' : 'yellow-dark');
-
-					add_svelte_meta(
-						() => Icon(node_1, {
-							get type() {
-								return get($0);
-							},
-
-							get color() {
-								return get($1);
-							},
-							size: 'nm',
-							get label() {
-								return get(label);
-							}
-						}),
-						'component',
-						Alert,
-						64,
-						16,
-						{ componentTag: 'Icon' }
-					);
-				}
-
-				var div_3 = sibling(node_1, 2);
-				var node_2 = child(div_3);
-
-				html(node_2, content);
-
-				var node_3 = sibling(node_2, 2);
-
-				html(node_3, slotContent);
-				reset(div_3);
-
-				var node_4 = sibling(div_3, 2);
-
-				{
-					var consequent = ($$anchor) => {
-						add_svelte_meta(
-							() => IconButton($$anchor, {
-								get 'aria-label'() {
-									return closeLabel;
-								},
-								onclick: hideAlert,
-								size: 'nm',
-								icon: 'close',
-								iconSize: 'nm',
-								iconColor: 'blue-piv'
-							}),
-							'component',
-							Alert,
-							74,
-							20,
-							{ componentTag: 'IconButton' }
-						);
-					};
-
-					var d = user_derived(() => Utils.isTruthy(maskable()));
-
-					add_svelte_meta(
-						() => if_block(node_4, ($$render) => {
-							if (get(d)) $$render(consequent);
-						}),
-						'if',
-						Alert,
-						73,
-						16
-					);
-				}
-
-				reset(div_2);
-				reset(div_1);
-				reset(div);
-				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
-
-				template_effect(() => {
-					set_class(div, 1, `qc-general-alert ${get(typeClass) ?? ''}`);
-					set_class(div_1, 1, clsx(get(containerClass)));
+		var consequent_1 = ($$anchor) => {
+			var div = root$22();
+			var div_1 = child(div);
+			var div_2 = child(div_1);
+			var node_1 = child(div_2);
+			{
+				let $0 = /* @__PURE__ */ user_derived(() => type() === "warning" ? "warning" : "info");
+				let $1 = /* @__PURE__ */ user_derived(() => type() === "general" ? "blue-piv" : "yellow-dark");
+				Icon(node_1, {
+					get type() {
+						return get($0);
+					},
+					get color() {
+						return get($1);
+					},
+					size: "nm",
+					get label() {
+						return get(label);
+					}
 				});
-
-				append($$anchor, div);
+			}
+			var div_3 = sibling(node_1, 2);
+			var node_2 = child(div_3);
+			html(node_2, content);
+			html(sibling(node_2, 2), slotContent);
+			reset(div_3);
+			var node_4 = sibling(div_3, 2);
+			var consequent = ($$anchor) => {
+				IconButton($$anchor, {
+					get "aria-label"() {
+						return closeLabel;
+					},
+					onclick: hideAlert,
+					size: "nm",
+					icon: "close",
+					iconSize: "nm",
+					iconColor: "blue-piv"
+				});
 			};
-
-			var d_1 = user_derived(() => !Utils.isTruthy(hide()));
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (get(d_1)) $$render(consequent_1);
-				}),
-				'if',
-				Alert,
-				58,
-				0
-			);
-		}
-
+			var d = /* @__PURE__ */ user_derived(() => Utils.isTruthy(maskable()));
+			if_block(node_4, ($$render) => {
+				if (get(d)) $$render(consequent);
+			});
+			reset(div_2);
+			reset(div_1);
+			reset(div);
+			bind_this(div, ($$value) => rootElement($$value), () => rootElement());
+			template_effect(() => {
+				set_class(div, 1, `qc-general-alert ${get(typeClass) ?? ""}`);
+				set_class(div_1, 1, clsx(get(containerClass)));
+			});
+			append($$anchor, div);
+		};
+		var d_1 = /* @__PURE__ */ user_derived(() => !Utils.isTruthy(hide()));
+		if_block(node, ($$render) => {
+			if (get(d_1)) $$render(consequent_1);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		Alert,
-		{
-			type: {},
-			maskable: {},
-			content: {},
-			hide: {},
-			fullWidth: {},
-			slotContent: {},
-			id: {},
-			persistenceKey: {},
-			persistHidden: {},
-			rootElement: {},
-			hideAlertCallback: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
-
-	var rest_excludes$f = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'hide']);
-	var root$l = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[40, 0]]);
-
+	create_custom_element(Alert, {
+		type: {},
+		maskable: {},
+		content: {},
+		hide: {},
+		fullWidth: {},
+		slotContent: {},
+		id: {},
+		persistenceKey: {},
+		persistHidden: {},
+		rootElement: {},
+		hideAlertCallback: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Alert/AlertWC.svelte
+	var rest_excludes$16 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"hide"
+	]);
+	var root$21 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function AlertWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let hide = prop($$props, 'hide', 7, "false"),
-			props = rest_props($$props, rest_excludes$f);
-
-		let rootElement = tag(state(void 0), 'rootElement');
-
+		let hide = prop($$props, "hide", 7, "false"), props = /* @__PURE__ */ rest_props($$props, rest_excludes$16);
+		let rootElement = /* @__PURE__ */ state(void 0);
 		function hideAlertCallback() {
-			get(rootElement)?.dispatchEvent(new CustomEvent('qc.alert.hide', { bubbles: true, composed: true }));
+			get(rootElement)?.dispatchEvent(new CustomEvent("qc.alert.hide", {
+				bubbles: true,
+				composed: true
+			}));
 		}
-
 		var $$exports = {
-			...legacy_api(),
 			get hide() {
 				return hide();
 			},
-
 			set hide($$value = "false") {
 				hide($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$l();
+		var fragment = root$21();
 		var node = first_child(fragment);
-
-		{
-			$$ownership_validator.binding('hide', Alert, hide);
-
-			add_svelte_meta(
-				() => Alert(node, spread_props({ hideAlertCallback }, () => props, {
-					slotContent: `<slot />`,
-					get hide() {
-						return hide();
-					},
-
-					set hide($$value) {
-						hide($$value);
-					},
-
-					get rootElement() {
-						return get(rootElement);
-					},
-
-					set rootElement($$value) {
-						set(rootElement, $$value, true);
-					}
-				})),
-				'component',
-				AlertWC,
-				33,
-				1,
-				{ componentTag: 'Alert' }
-			);
-		}
-
+		Alert(node, spread_props({ hideAlertCallback }, () => props, {
+			slotContent: `<slot />`,
+			get hide() {
+				return hide();
+			},
+			set hide($$value) {
+				hide($$value);
+			},
+			get rootElement() {
+				return get(rootElement);
+			},
+			set rootElement($$value) {
+				set(rootElement, $$value, true);
+			}
+		}));
 		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-alert', create_custom_element(
-		AlertWC,
-		{
-			type: { attribute: 'type' },
-			maskable: { attribute: 'maskable' },
-			fullWidth: { attribute: 'full-width' },
-			content: { attribute: 'content' },
-			hide: { attribute: 'hide', reflect: true },
-			persistHidden: { attribute: 'persist-hidden', type: 'Boolean' },
-			persistenceKey: { attribute: 'persistence-key', type: 'String' }
+	customElements.define("qc-alert", create_custom_element(AlertWC, {
+		type: { attribute: "type" },
+		maskable: { attribute: "maskable" },
+		fullWidth: { attribute: "full-width" },
+		content: { attribute: "content" },
+		hide: {
+			attribute: "hide",
+			reflect: true
 		},
-		[],
-		[],
-		{ mode: 'open' }
-	));
-
-	ToTop[FILENAME] = 'src/sdg/components/ToTop/ToTop.svelte';
-
-	var root$k = add_locations(from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`), ToTop[FILENAME], [[68, 0, [[78, 3]]]]);
-
+		persistHidden: {
+			attribute: "persist-hidden",
+			type: "Boolean"
+		},
+		persistenceKey: {
+			attribute: "persistence-key",
+			type: "String"
+		}
+	}, [], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/ToTop/ToTop.svelte
+	var root$20 = /* @__PURE__ */ from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`);
 	function ToTop($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
 		const lang = Utils.getPageLanguage();
-
-		const text = prop($$props, 'text', 23, () => strict_equals(lang, 'fr') ? "Retour en haut" : "Back to top"),
-			demo = prop($$props, 'demo', 7, 'false');
-
-		// svelte-ignore state_referenced_locally — demo sert de valeur initiale, la visibilité est ensuite gérée par handleScrollUpButton
-		let visible = tag(state(proxy(strict_equals(demo(), 'true'))), 'visible');
-
-		let lastVisible = setContext('visible', () => get(visible));
+		const text = prop($$props, "text", 7, lang === "fr" ? "Retour en haut" : "Back to top"), demo = prop($$props, "demo", 7, "false");
+		let visible = /* @__PURE__ */ state(demo() === "true");
+		let lastVisible = setContext("visible", () => get(visible));
 		let lastScrollY = 0;
 		let minimumScrollHeight = 0;
 		let toTopElement;
-
 		function handleScrollUpButton() {
-			if (Utils.isTruthy(demo())) {
-				return;
-			}
-
+			if (Utils.isTruthy(demo())) return;
 			const pageBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1;
-
 			set(visible, lastScrollY > window.scrollY && (document.body.scrollTop > minimumScrollHeight || document.documentElement.scrollTop > minimumScrollHeight) && !pageBottom, true);
-
-			if (!get(visible) && lastVisible) {
-				// removing focus on visibility loss
-				toTopElement.blur();
-			}
-
+			if (!get(visible) && lastVisible) toTopElement.blur();
 			lastVisible = get(visible);
 			lastScrollY = window.scrollY;
 		}
-
 		function scrollToTop(e) {
 			e.preventDefault();
-			window.scrollTo({ top: 0, behavior: 'smooth' });
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth"
+			});
 		}
-
 		function handleEnterAndSpace(e) {
 			switch (e.code) {
-				case 'Enter':
-
-				case 'Space':
+				case "Enter":
+				case "Space":
 					e.preventDefault();
 					scrollToTop();
 			}
 		}
-
 		user_effect(() => {
 			lastScrollY = window.scrollY;
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
-
-			set text($$value = lang === 'fr' ? "Retour en haut" : "Back to top") {
+			set text($$value = lang === "fr" ? "Retour en haut" : "Back to top") {
 				text($$value);
 				flushSync();
 			},
-
 			get demo() {
 				return demo();
 			},
-
-			set demo($$value = 'false') {
+			set demo($$value = "false") {
 				demo($$value);
 				flushSync();
 			}
 		};
-
-		var a = root$k();
-
-		event('scroll', $window, handleScrollUpButton);
-
+		var a = root$20();
+		event("scroll", $window, handleScrollUpButton);
 		let classes;
 		var node = child(a);
-
-		add_svelte_meta(() => Icon(node, { type: 'north', color: 'background', size: 'nm' }), 'component', ToTop, 77, 3, { componentTag: 'Icon' });
-
-		var span = sibling(node, 2);
-		var text_1 = child(span, true);
-
-		reset(span);
+		Icon(node, {
+			type: "north",
+			color: "background",
+			size: "nm"
+		});
+		var text_1 = only_child(sibling(node, 2), true);
 		reset(a);
 		bind_this(a, ($$value) => toTopElement = $$value, () => toTopElement);
-
 		template_effect(() => {
-			classes = set_class(a, 1, 'qc-to-top', null, classes, { visible: get(visible) });
-			set_attribute(a, 'tabindex', get(visible) ? 0 : -1);
-			set_attribute(a, 'demo', demo());
+			classes = set_class(a, 1, "qc-to-top", null, classes, { visible: get(visible) });
+			set_attribute(a, "tabindex", get(visible) ? 0 : -1);
+			set_attribute(a, "demo", demo());
 			set_text(text_1, text());
 		});
-
-		delegated('click', a, function click(e) {
-			return scrollToTop(e);
-		});
-
-		delegated('keydown', a, handleEnterAndSpace);
+		delegated("click", a, (e) => scrollToTop(e));
+		delegated("keydown", a, handleEnterAndSpace);
 		append($$anchor, a);
-
 		return pop($$exports);
 	}
-
-	delegate(['click', 'keydown']);
-	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], { mode: 'open' });
-
-	ToTopWC[FILENAME] = 'src/sdg/components/ToTop/toTopWC.svelte';
-
-	var rest_excludes$e = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-
+	delegate(["click", "keydown"]);
+	create_custom_element(ToTop, {
+		text: {},
+		demo: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/ToTop/toTopWC.svelte
+	var rest_excludes$15 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
 	function ToTopWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$e);
-		var $$exports = { ...legacy_api() };
-
-		add_svelte_meta(() => ToTop($$anchor, spread_props(() => props)), 'component', ToTopWC, 16, 0, { componentTag: 'ToTop' });
-
-		return pop($$exports);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$15);
+		ToTop($$anchor, spread_props(() => props));
 	}
-
-	customElements.define('qc-to-top', create_custom_element(
-		ToTopWC,
-		{
-			text: { attribute: 'text', type: 'String' },
-			demo: { attribute: 'demo', type: 'String' }
+	customElements.define("qc-to-top", create_custom_element(ToTopWC, {
+		text: {
+			attribute: "text",
+			type: "String"
 		},
-		[],
-		[]
-	));
-
-	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
-
-	function ExternalLink($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let // Attribut `img-alt` (API publique). Par défaut, l'alternative de l'icône est
-			// posée en CSS (content-alt bilingue, voir _links.scss). Si l'intégrateur
-			// fournit `img-alt`, on l'applique via un aria-label sur le lien (voir applyCustomAlt).
-			externalIconAlt = prop($$props, 'externalIconAlt', 7, ''),
-			links = prop($$props, 'links', 23, () => []),
-			isUpdating = prop($$props, 'isUpdating', 15, false),
-			nestedExternalLinks = prop($$props, 'nestedExternalLinks', 7, false);
-
-		// Liens dont on a nous-mêmes posé l'aria-label (pour ne pas écraser un aria-label auteur).
-		const ownAriaLinks = new WeakSet();
-
-		function createVisibleNodesTreeWalker(link) {
-			return document.createTreeWalker(link, NodeFilter.SHOW_ALL, {
-				acceptNode: (node) => {
-					if (node instanceof Element) {
-						if (node.hasAttribute('hidden')) {
-							return NodeFilter.FILTER_REJECT;
-						}
-
-						const style = window.getComputedStyle(node);
-
-						if (strict_equals(style.display, 'none') || strict_equals(style.visibility, 'hidden') || strict_equals(style.position, 'absolute')) {
-							return NodeFilter.FILTER_REJECT;
-						}
-					}
-
-					if (!node instanceof Text) {
-						return NodeFilter.FILTER_SKIP;
-					}
-
-					// Ignore les nœuds vides
-					if (!(/\S/).test(node.textContent)) {
-						return NodeFilter.FILTER_SKIP;
-					}
-
-					return NodeFilter.FILTER_ACCEPT;
-				}
-			});
+		demo: {
+			attribute: "demo",
+			type: "String"
 		}
-
-		// Enrobe le dernier mot visible du lien dans un <span class="qc-ext-link-text">.
-		// Aucune icône n'est injectée : elle est posée en ::after CSS sur ce span.
-		// Le span est `white-space: nowrap` (CSS), ce qui soude l'icône ::after au
-		// dernier mot -> l'icône ne s'orpheline jamais en début de ligne.
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/ExternalLink/ExternalLink.svelte
+	function ExternalLink($$anchor, $$props) {
+		push($$props, true);
+		let externalIconAlt = prop($$props, "externalIconAlt", 7, ""), links = prop($$props, "links", 23, () => []), isUpdating = prop($$props, "isUpdating", 15, false), nestedExternalLinks = prop($$props, "nestedExternalLinks", 7, false);
+		const ownAriaLinks = /* @__PURE__ */ new WeakSet();
+		function createVisibleNodesTreeWalker(link) {
+			return document.createTreeWalker(link, NodeFilter.SHOW_ALL, { acceptNode: (node) => {
+				if (node instanceof Element) {
+					if (node.hasAttribute("hidden")) return NodeFilter.FILTER_REJECT;
+					const style = window.getComputedStyle(node);
+					if (style.display === "none" || style.visibility === "hidden" || style.position === "absolute") return NodeFilter.FILTER_REJECT;
+				}
+				if (!node instanceof Text) return NodeFilter.FILTER_SKIP;
+				if (!/\S/.test(node.textContent)) return NodeFilter.FILTER_SKIP;
+				return NodeFilter.FILTER_ACCEPT;
+			} });
+		}
 		function wrapLastWord(link) {
-			// Idempotence : déjà traité ?
-			if (link.querySelector('.qc-ext-link-text')) {
-				return;
-			}
-
+			if (link.querySelector(".qc-ext-link-text")) return;
 			const walker = createVisibleNodesTreeWalker(link);
 			let lastTextNode = null;
-
-			while (walker.nextNode()) {
-				lastTextNode = walker.currentNode;
-			}
-
-			if (!lastTextNode) {
-				return;
-			}
-
-			const text = lastTextNode.textContent;
-			const match = text.match(/^([\s\S]*\s)?(\S+)\s*$/m);
-
-			if (!match) {
-				return;
-			}
-
+			while (walker.nextNode()) lastTextNode = walker.currentNode;
+			if (!lastTextNode) return;
+			const match = lastTextNode.textContent.match(/^([\s\S]*\s)?(\S+)\s*$/m);
+			if (!match) return;
 			const prefix = match[1] || "";
-
-			// Points de coupure doux dans un dernier mot long (URL, mot composé)
 			const lastWord = match[2].replace(/([\/\-\u2013\u2014])/g, "$1<wbr>");
-
-			const span = document.createElement('span');
-
-			span.classList.add('qc-ext-link-text');
+			const span = document.createElement("span");
+			span.classList.add("qc-ext-link-text");
 			span.innerHTML = lastWord;
-
 			if (prefix) {
 				lastTextNode.textContent = prefix;
 				lastTextNode.parentNode.insertBefore(span, lastTextNode.nextSibling);
-			} else {
-				lastTextNode.parentNode.replaceChild(span, lastTextNode);
-			}
+			} else lastTextNode.parentNode.replaceChild(span, lastTextNode);
 		}
-
-		// Applique un img-alt personnalisé via aria-label sur le lien.
-		// aria-label remplace le nom accessible calculé : le content-alt du ::after n'est donc
-		// plus annoncé (pas de double annonce), et on préserve le texte visible dans le nom
-		// (WCAG 2.5.3 « Label in Name »). Sans img-alt, on ne touche à rien -> le content-alt
-		// CSS bilingue fournit l'alternative par défaut.
 		function applyCustomAlt(link) {
-			if (!externalIconAlt()) {
-				return;
-			}
-
-			// Ne pas écraser un aria-label posé par l'intégrateur lui-même.
-			if (link.hasAttribute('aria-label') && !ownAriaLinks.has(link)) {
-				return;
-			}
-
-			const text = link.textContent.replace(/\s+/g, ' ').trim();
-
-			link.setAttribute('aria-label', `${text} ${externalIconAlt()}`.trim());
+			if (!externalIconAlt()) return;
+			if (link.hasAttribute("aria-label") && !ownAriaLinks.has(link)) return;
+			const text = link.textContent.replace(/\s+/g, " ").trim();
+			link.setAttribute("aria-label", `${text} ${externalIconAlt()}`.trim());
 			ownAriaLinks.add(link);
 		}
-
 		user_effect(() => {
-			if (nestedExternalLinks() || links().length <= 0) {
-				return;
-			}
-
+			if (nestedExternalLinks() || links().length <= 0) return;
 			isUpdating(true);
-
 			tick().then(() => {
 				links().forEach((link) => {
 					wrapLastWord(link);
 					applyCustomAlt(link);
 				});
-
 				return tick();
 			}).then(() => {
 				isUpdating(false);
 			});
 		});
-
-		var $$exports = {
-			...legacy_api(),
+		return pop({
 			get externalIconAlt() {
 				return externalIconAlt();
 			},
-
-			set externalIconAlt($$value = '') {
+			set externalIconAlt($$value = "") {
 				externalIconAlt($$value);
 				flushSync();
 			},
-
 			get links() {
 				return links();
 			},
-
 			set links($$value = []) {
 				links($$value);
 				flushSync();
 			},
-
 			get isUpdating() {
 				return isUpdating();
 			},
-
 			set isUpdating($$value = false) {
 				isUpdating($$value);
 				flushSync();
 			},
-
 			get nestedExternalLinks() {
 				return nestedExternalLinks();
 			},
-
 			set nestedExternalLinks($$value = false) {
 				nestedExternalLinks($$value);
 				flushSync();
 			}
-		};
-
-		return pop($$exports);
+		});
 	}
-
-	create_custom_element(
-		ExternalLink,
-		{
-			externalIconAlt: {},
-			links: {},
-			isUpdating: {},
-			nestedExternalLinks: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
-
-	var rest_excludes$d = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-
+	create_custom_element(ExternalLink, {
+		externalIconAlt: {},
+		links: {},
+		isUpdating: {},
+		nestedExternalLinks: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/ExternalLink/ExternalLinkWC.svelte
+	var rest_excludes$14 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
 	function ExternalLinkWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$d);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$14);
 		const hostEl = $$props.$$host;
-		let links = tag(state(proxy(queryLinks())), 'links');
-		let isUpdating = tag(state(false), 'isUpdating');
+		let links = /* @__PURE__ */ state(proxy(queryLinks()));
+		let isUpdating = /* @__PURE__ */ state(false);
 		let pendingUpdate = false;
-		const nestedExternalLinks = hostEl.querySelector('qc-external-link');
+		const nestedExternalLinks = hostEl.querySelector("qc-external-link");
 		const observer = Utils.createMutationObserver(hostEl, refreshLinks);
-		let lastLinksSignature = '';
-
+		let lastLinksSignature = "";
 		function queryLinks() {
-			return Array.from(hostEl.querySelectorAll('a'));
+			return Array.from(hostEl.querySelectorAll("a"));
 		}
-
 		function getLinksSignature(linksList) {
-			return linksList.map((a) => a.href + '|' + a.textContent).join(';;');
+			return linksList.map((a) => a.href + "|" + a.textContent).join(";;");
 		}
-
 		function refreshLinks() {
-			if (get(isUpdating) || pendingUpdate) {
-				return;
-			}
-
+			if (get(isUpdating) || pendingUpdate) return;
 			pendingUpdate = true;
-
 			tick().then(() => {
 				if (get(isUpdating)) {
 					pendingUpdate = false;
-
 					return;
 				}
-
 				const newLinks = queryLinks();
 				const newSignature = getLinksSignature(newLinks);
-
-				// Ne re-traiter que si les liens ont réellement changé
-				if (strict_equals(newSignature, lastLinksSignature, false)) {
+				if (newSignature !== lastLinksSignature) {
 					set(links, newLinks, true);
 					lastLinksSignature = newSignature;
 				}
-
 				pendingUpdate = false;
 			});
 		}
-
 		onMount(() => {
-			hostEl.classList.add('qc-external-link');
+			hostEl.classList.add("qc-external-link");
 			lastLinksSignature = getLinksSignature(get(links));
-			observer?.observe(hostEl, { childList: true, characterData: true, subtree: true });
+			observer?.observe(hostEl, {
+				childList: true,
+				characterData: true,
+				subtree: true
+			});
 		});
-
 		onDestroy(() => observer?.disconnect());
-
-		var $$exports = { ...legacy_api() };
-
-		add_svelte_meta(
-			() => ExternalLink($$anchor, spread_props(
-				{
-					get nestedExternalLinks() {
-						return nestedExternalLinks;
-					}
-				},
-				() => props,
-				{
-					get links() {
-						return get(links);
-					},
-
-					set links($$value) {
-						set(links, $$value, true);
-					},
-
-					get isUpdating() {
-						return get(isUpdating);
-					},
-
-					set isUpdating($$value) {
-						set(isUpdating, $$value, true);
-					}
-				}
-			)),
-			'component',
-			ExternalLinkWC,
-			69,
-			0,
-			{ componentTag: 'ExternalLink' }
-		);
-
-		return pop($$exports);
+		ExternalLink($$anchor, spread_props({ get nestedExternalLinks() {
+			return nestedExternalLinks;
+		} }, () => props, {
+			get links() {
+				return get(links);
+			},
+			set links($$value) {
+				set(links, $$value, true);
+			},
+			get isUpdating() {
+				return get(isUpdating);
+			},
+			set isUpdating($$value) {
+				set(isUpdating, $$value, true);
+			}
+		}));
+		pop();
 	}
-
-	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], []));
-
-	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
-
-	var root$j = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root_1$a = add_locations(from_html(`<span class="qc-label-text"></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
-
+	customElements.define("qc-external-link", create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: "img-alt" } }, [], []));
+	//#endregion
+	//#region src/sdg/components/Label/LabelText.svelte
+	var root$19 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
+	var root_1$10 = /* @__PURE__ */ from_html(`<span class="qc-label-text"></span><!>`, 1);
 	function LabelText($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let text = prop($$props, 'text', 7),
-			required = prop($$props, 'required', 7);
-
+		let text = prop($$props, "text", 7), required = prop($$props, "required", 7);
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
-
 			set text($$value) {
 				text($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value) {
 				required($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root_1$a();
+		var fragment = root_1$10();
 		var span = first_child(fragment);
-
 		html(span, text, true);
 		reset(span);
-
 		var node = sibling(span);
-
-		{
-			var consequent = ($$anchor) => {
-				var span_1 = root$j();
-
-				append($$anchor, span_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (required()) $$render(consequent);
-				}),
-				'if',
-				LabelText,
-				5,
-				47
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			append($$anchor, root$19());
+		};
+		if_block(node, ($$render) => {
+			if (required()) $$render(consequent);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(LabelText, { text: {}, required: {} }, [], [], { mode: 'open' });
-
-	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
-
-	var rest_excludes$c = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'forId',
-		'text',
-		'required',
-		'compact',
-		'bold',
-		'disabled',
-		'rootElement'
+	create_custom_element(LabelText, {
+		text: {},
+		required: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Label/Label.svelte
+	var rest_excludes$13 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"forId",
+		"text",
+		"required",
+		"compact",
+		"bold",
+		"disabled",
+		"rootElement"
 	]);
-
-	var root$i = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
-
+	var root$18 = /* @__PURE__ */ from_html(`<label><!></label>`);
 	function Label($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let forId = prop($$props, 'forId', 7),
-			text = prop($$props, 'text', 7),
-			required = prop($$props, 'required', 7, false),
-			compact = prop($$props, 'compact', 7, false),
-			bold = prop($$props, 'bold', 7, false),
-			disabled = prop($$props, 'disabled', 7, false),
-			rootElement = prop($$props, 'rootElement', 15),
-			rest = rest_props($$props, rest_excludes$c);
-
+		let forId = prop($$props, "forId", 7), text = prop($$props, "text", 7), required = prop($$props, "required", 7, false), compact = prop($$props, "compact", 7, false), bold = prop($$props, "bold", 7, false), disabled = prop($$props, "disabled", 7, false), rootElement = prop($$props, "rootElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$13);
 		var $$exports = {
-			...legacy_api(),
 			get forId() {
 				return forId();
 			},
-
 			set forId($$value) {
 				forId($$value);
 				flushSync();
 			},
-
 			get text() {
 				return text();
 			},
-
 			set text($$value) {
 				text($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value = false) {
 				compact($$value);
 				flushSync();
 			},
-
 			get bold() {
 				return bold();
 			},
-
 			set bold($$value = false) {
 				bold($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			}
 		};
-
-		var label = root$i();
-
+		var label = root$18();
 		attribute_effect(label, () => ({
 			for: forId(),
 			class: [
@@ -13506,950 +8536,576 @@
 			],
 			...rest
 		}));
-
-		var node = child(label);
-
-		add_svelte_meta(
-			() => LabelText(node, {
-				get text() {
-					return text();
-				},
-
-				get required() {
-					return required();
-				}
-			}),
-			'component',
-			Label,
-			27,
-			4,
-			{ componentTag: 'LabelText' }
-		);
-
+		LabelText(child(label), {
+			get text() {
+				return text();
+			},
+			get required() {
+				return required();
+			}
+		});
 		reset(label);
 		bind_this(label, ($$value) => rootElement($$value), () => rootElement());
 		append($$anchor, label);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		Label,
-		{
-			forId: {},
-			text: {},
-			required: {},
-			compact: {},
-			bold: {},
-			disabled: {},
-			rootElement: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
-
-	var rest_excludes$b = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'value',
-		'label',
-		'size',
-		'debounce',
-		'ariaLabel',
-		'clearAriaLabel',
-		'leftIcon',
-		'id'
+	create_custom_element(Label, {
+		forId: {},
+		text: {},
+		required: {},
+		compact: {},
+		bold: {},
+		disabled: {},
+		rootElement: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/SearchInput/SearchInput.svelte
+	var rest_excludes$12 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"value",
+		"label",
+		"size",
+		"debounce",
+		"ariaLabel",
+		"clearAriaLabel",
+		"leftIcon",
+		"id"
 	]);
-
-	var root$h = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[89, 4]]]]);
-
+	var root$17 = /* @__PURE__ */ from_html(`<!> <div><!> <input/> <!></div>`, 1);
 	function SearchInput($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
 		const lang = Utils.getPageLanguage();
-
-		let value = prop($$props, 'value', 15, ''),
-			label = prop($$props, 'label', 7, ''),
-			size = prop($$props, 'size', 7, ''),
-			debounce = prop($$props, 'debounce', 7, 0),
-			ariaLabel = prop($$props, 'ariaLabel', 23, () => strict_equals(lang, "fr") ? "Rechercher..." : "Search..."),
-			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
-			leftIcon = prop($$props, 'leftIcon', 7, false),
-			id = prop($$props, 'id', 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`),
-			rest = rest_props($$props, rest_excludes$b);
-
-		const leftIconNormalized = tag(user_derived(() => strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), "")), 'leftIconNormalized');
-		const isDisabled = tag(user_derived(() => strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "")), 'isDisabled');
+		let value = prop($$props, "value", 15, ""), label = prop($$props, "label", 7, ""), size = prop($$props, "size", 7, ""), debounce = prop($$props, "debounce", 7, 0), ariaLabel = prop($$props, "ariaLabel", 7, lang === "fr" ? "Rechercher..." : "Search..."), clearAriaLabel = prop($$props, "clearAriaLabel", 7, lang === "fr" ? "Effacer le texte" : "Clear text"), leftIcon = prop($$props, "leftIcon", 7, false), id = prop($$props, "id", 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$12);
+		const leftIconNormalized = /* @__PURE__ */ user_derived(() => leftIcon() === true || leftIcon() === "true" || leftIcon() === "");
+		const isDisabled = /* @__PURE__ */ user_derived(() => $$props.disabled === true || $$props.disabled === "true" || $$props.disabled === "");
 		let searchInput;
-
-		// Valeur interne liée à l'input — toujours synchrone avec la saisie
-		let inputValue = tag(state(proxy(value() ?? '')), 'inputValue');
-
+		let inputValue = /* @__PURE__ */ state(proxy(value() ?? ""));
 		let timer;
-
-		// Synchroniser inputValue quand value change de l'extérieur (clear, reset)
-		// untrack sur inputValue pour ne réagir qu'aux changements de `value`
 		user_effect(() => {
-			const v = value() ?? '';
-
-			if (strict_equals(v, untrack(() => get(inputValue)), false)) {
-				set(inputValue, v, true);
-			}
+			const v = value() ?? "";
+			if (v !== untrack(() => get(inputValue))) set(inputValue, v, true);
 		});
-
 		function handleInput() {
 			if (debounce() > 0) {
 				clearTimeout(timer);
-
-				timer = setTimeout(
-					() => {
-						value(get(inputValue));
-						searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
-					},
-					debounce()
-				);
-			} else {
-				value(get(inputValue));
-			}
+				timer = setTimeout(() => {
+					value(get(inputValue));
+					searchInput?.dispatchEvent(new CustomEvent("qc-change", {
+						bubbles: true,
+						detail: value()
+					}));
+				}, debounce());
+			} else value(get(inputValue));
 		}
-
 		function clearValue(e) {
 			e.preventDefault();
 			clearTimeout(timer);
 			set(inputValue, "");
 			value("");
-			searchInput?.dispatchEvent(new CustomEvent('qc-change', { bubbles: true, detail: value() }));
+			searchInput?.dispatchEvent(new CustomEvent("qc-change", {
+				bubbles: true,
+				detail: value()
+			}));
 			searchInput?.focus();
 		}
-
 		onDestroy(() => clearTimeout(timer));
-
 		function focus() {
 			searchInput?.focus();
 		}
-
 		var $$exports = {
-			...legacy_api(),
-			get focus() {
-				return focus;
-			},
-
+			focus,
 			get value() {
 				return value();
 			},
-
-			set value($$value = '') {
+			set value($$value = "") {
 				value($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
-			set label($$value = '') {
+			set label($$value = "") {
 				label($$value);
 				flushSync();
 			},
-
 			get size() {
 				return size();
 			},
-
-			set size($$value = '') {
+			set size($$value = "") {
 				size($$value);
 				flushSync();
 			},
-
 			get debounce() {
 				return debounce();
 			},
-
 			set debounce($$value = 0) {
 				debounce($$value);
 				flushSync();
 			},
-
 			get ariaLabel() {
 				return ariaLabel();
 			},
-
 			set ariaLabel($$value = lang === "fr" ? "Rechercher..." : "Search...") {
 				ariaLabel($$value);
 				flushSync();
 			},
-
 			get clearAriaLabel() {
 				return clearAriaLabel();
 			},
-
 			set clearAriaLabel($$value = lang === "fr" ? "Effacer le texte" : "Clear text") {
 				clearAriaLabel($$value);
 				flushSync();
 			},
-
 			get leftIcon() {
 				return leftIcon();
 			},
-
 			set leftIcon($$value = false) {
 				leftIcon($$value);
 				flushSync();
 			},
-
 			get id() {
 				return id();
 			},
-
-			set id(
-				$$value = `qc-search-input-${Math.random().toString(36).slice(2, 11)}`
-			) {
+			set id($$value = `qc-search-input-${Math.random().toString(36).slice(2, 11)}`) {
 				id($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$h();
+		var fragment = root$17();
 		var node = first_child(fragment);
-
-		{
-			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Label($$anchor, {
-						get disabled() {
-							return get(isDisabled);
-						},
-
-						get text() {
-							return label();
-						},
-
-						get forId() {
-							return id();
-						}
-					}),
-					'component',
-					SearchInput,
-					69,
-					4,
-					{ componentTag: 'Label' }
-				);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (label()) $$render(consequent);
-				}),
-				'if',
-				SearchInput,
-				68,
-				0
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			Label($$anchor, {
+				get disabled() {
+					return get(isDisabled);
+				},
+				get text() {
+					return label();
+				},
+				get forId() {
+					return id();
+				}
+			});
+		};
+		if_block(node, ($$render) => {
+			if (label()) $$render(consequent);
+		});
 		var div = sibling(node, 2);
 		var node_1 = child(div);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				{
-					let $0 = user_derived(() => get(isDisabled) ? 'is-disabled' : '');
-
-					add_svelte_meta(
-						() => Icon($$anchor, {
-							type: 'search',
-							iconColor: 'grey-regular',
-							get class() {
-								return get($0);
-							},
-							size: 'nm'
-						}),
-						'component',
-						SearchInput,
-						83,
-						8,
-						{ componentTag: 'Icon' }
-					);
-				}
-			};
-
-			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
-					if (get(leftIconNormalized)) $$render(consequent_1);
-				}),
-				'if',
-				SearchInput,
-				82,
-				4
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			{
+				let $0 = /* @__PURE__ */ user_derived(() => get(isDisabled) ? "is-disabled" : "");
+				Icon($$anchor, {
+					type: "search",
+					iconColor: "grey-regular",
+					get class() {
+						return get($0);
+					},
+					size: "nm"
+				});
+			}
+		};
+		if_block(node_1, ($$render) => {
+			if (get(leftIconNormalized)) $$render(consequent_1);
+		});
 		var input = sibling(node_1, 2);
-
-		attribute_effect(
-			input,
-			() => ({
-				oninput: handleInput,
-				type: 'search',
-				autocomplete: 'off',
-				'aria-label': label() ? undefined : ariaLabel(),
-				class: get(isDisabled) ? "qc-disabled" : "",
-				id: id(),
-				...rest
-			}),
-			void 0,
-			void 0,
-			void 0,
-			void 0,
-			true
-		);
-
+		attribute_effect(input, () => ({
+			oninput: handleInput,
+			type: "search",
+			autocomplete: "off",
+			"aria-label": label() ? void 0 : ariaLabel(),
+			class: get(isDisabled) ? "qc-disabled" : "",
+			id: id(),
+			...rest
+		}), void 0, void 0, void 0, void 0, true);
 		bind_this(input, ($$value) => searchInput = $$value, () => searchInput);
-
 		var node_2 = sibling(input, 2);
-
-		{
-			var consequent_2 = ($$anchor) => {
-				add_svelte_meta(
-					() => IconButton($$anchor, {
-						type: 'button',
-						icon: 'close',
-						iconColor: 'blue-piv',
-						iconSize: 'nm',
-						get 'aria-label'() {
-							return clearAriaLabel();
-						},
-						onclick: clearValue
-					}),
-					'component',
-					SearchInput,
-					100,
-					4,
-					{ componentTag: 'IconButton' }
-				);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_2, ($$render) => {
-					if (get(inputValue)) $$render(consequent_2);
-				}),
-				'if',
-				SearchInput,
-				99,
-				4
-			);
-		}
-
+		var consequent_2 = ($$anchor) => {
+			IconButton($$anchor, {
+				type: "button",
+				icon: "close",
+				iconColor: "blue-piv",
+				iconSize: "nm",
+				get "aria-label"() {
+					return clearAriaLabel();
+				},
+				onclick: clearValue
+			});
+		};
+		if_block(node_2, ($$render) => {
+			if (get(inputValue)) $$render(consequent_2);
+		});
 		reset(div);
-
 		template_effect(() => {
 			set_class(div, 1, clsx([
 				"qc-search-input",
 				get(leftIconNormalized) && "qc-search-left-icon",
 				get(leftIconNormalized) && get(isDisabled) && "qc-search-left-icon-disabled"
 			]));
-
-			set_attribute(div, 'size', size());
+			set_attribute(div, "size", size());
 		});
-
-		bind_value(
-			input,
-			function get$1() {
-				return get(inputValue);
-			},
-			function set$1($$value) {
-				set(inputValue, $$value);
-			}
-		);
-
+		bind_value(input, () => get(inputValue), ($$value) => set(inputValue, $$value));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		SearchInput,
-		{
-			value: {},
-			label: {},
-			size: {},
-			debounce: {},
-			ariaLabel: {},
-			clearAriaLabel: {},
-			leftIcon: {},
-			id: {}
-		},
-		[],
-		['focus'],
-		{ mode: 'open' }
-	);
-
-	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
-
-	var rest_excludes$a = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'value',
-		'name',
-		'pivBackground'
+	create_custom_element(SearchInput, {
+		value: {},
+		label: {},
+		size: {},
+		debounce: {},
+		ariaLabel: {},
+		clearAriaLabel: {},
+		leftIcon: {},
+		id: {}
+	}, [], ["focus"], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/SearchBar/SearchBar.svelte
+	var rest_excludes$11 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"value",
+		"name",
+		"pivBackground"
 	]);
-
-	var root$g = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
-
+	var root$16 = /* @__PURE__ */ from_html(`<div><!> <!></div>`);
 	function SearchBar($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
 		const lang = Utils.getPageLanguage();
-
-		let value = prop($$props, 'value', 15, ''),
-			name = prop($$props, 'name', 7, 'q'),
-			pivBackground = prop($$props, 'pivBackground', 7, false),
-			rest = rest_props($$props, rest_excludes$a);
-
+		let value = prop($$props, "value", 15, ""), name = prop($$props, "name", 7, "q"), pivBackground = prop($$props, "pivBackground", 7, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$11);
 		let defaultsAttributes = {
 			input: {
-				"placeholder": strict_equals(lang, "fr") ? "Rechercher…" : "Search",
-				"aria-label": strict_equals(lang, "fr") ? "Rechercher…" : "Search"
+				"placeholder": lang === "fr" ? "Rechercher…" : "Search",
+				"aria-label": lang === "fr" ? "Rechercher…" : "Search"
 			},
-			submit: {
-				"aria-label": strict_equals(lang, "fr") ? "Lancer la recherche" : "Submit search"
-			}
+			submit: { "aria-label": lang === "fr" ? "Lancer la recherche" : "Submit search" }
 		};
-
-		let inputProps = tag(
-			user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("input", rest),
-				name: name()
-			})),
-			'inputProps'
-		);
-
-		let submitProps = tag(
-			user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("submit", rest)
-			})),
-			'submitProps'
-		);
-
+		let inputProps = /* @__PURE__ */ user_derived(() => ({
+			...defaultsAttributes.input,
+			...Utils.computeFieldsAttributes("input", rest),
+			name: name()
+		}));
+		let submitProps = /* @__PURE__ */ user_derived(() => ({
+			...defaultsAttributes.input,
+			...Utils.computeFieldsAttributes("submit", rest)
+		}));
 		var $$exports = {
-			...legacy_api(),
 			get value() {
 				return value();
 			},
-
-			set value($$value = '') {
+			set value($$value = "") {
 				value($$value);
 				flushSync();
 			},
-
 			get name() {
 				return name();
 			},
-
-			set name($$value = 'q') {
+			set name($$value = "q") {
 				name($$value);
 				flushSync();
 			},
-
 			get pivBackground() {
 				return pivBackground();
 			},
-
 			set pivBackground($$value = false) {
 				pivBackground($$value);
 				flushSync();
 			}
 		};
-
-		var div = root$g();
+		var div = root$16();
 		let classes;
 		var node = child(div);
-
-		{
-			$$ownership_validator.binding('value', SearchInput, value);
-
-			add_svelte_meta(
-				() => SearchInput(node, spread_props(() => get(inputProps), {
-					size: 'full-width',
-					get value() {
-						return value();
-					},
-
-					set value($$value) {
-						value($$value);
-					}
-				})),
-				'component',
-				SearchBar,
-				38,
-				4,
-				{ componentTag: 'SearchInput' }
-			);
-		}
-
+		SearchInput(node, spread_props(() => get(inputProps), {
+			size: "full-width",
+			get value() {
+				return value();
+			},
+			set value($$value) {
+				value($$value);
+			}
+		}));
 		var node_1 = sibling(node, 2);
-
 		{
-			let $0 = user_derived(() => pivBackground() ? 'blue-piv' : 'background');
-
-			add_svelte_meta(
-				() => IconButton(node_1, spread_props(
-					{
-						type: 'submit',
-						get iconColor() {
-							return get($0);
-						},
-						icon: 'search',
-						iconSize: 'nm'
-					},
-					() => get(submitProps)
-				)),
-				'component',
-				SearchBar,
-				42,
-				8,
-				{ componentTag: 'IconButton' }
-			);
+			let $0 = /* @__PURE__ */ user_derived(() => pivBackground() ? "blue-piv" : "background");
+			IconButton(node_1, spread_props({
+				type: "submit",
+				get iconColor() {
+					return get($0);
+				},
+				icon: "search",
+				iconSize: "nm"
+			}, () => get(submitProps)));
 		}
-
 		reset(div);
-		template_effect(() => classes = set_class(div, 1, 'qc-search-bar', null, classes, { 'piv-background': pivBackground() }));
+		template_effect(() => classes = set_class(div, 1, "qc-search-bar", null, classes, { "piv-background": pivBackground() }));
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], { mode: 'open' });
-
-	SearchBarWC[FILENAME] = 'src/sdg/components/SearchBar/SearchBarWC.svelte';
-
-	var rest_excludes$9 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-
+	create_custom_element(SearchBar, {
+		value: {},
+		name: {},
+		pivBackground: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/SearchBar/SearchBarWC.svelte
+	var rest_excludes$10 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
 	function SearchBarWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$9);
-		var $$exports = { ...legacy_api() };
-
-		add_svelte_meta(() => SearchBar($$anchor, spread_props(() => props)), 'component', SearchBarWC, 17, 0, { componentTag: 'SearchBar' });
-
-		return pop($$exports);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$10);
+		SearchBar($$anchor, spread_props(() => props));
 	}
-
-	customElements.define('qc-search-bar', create_custom_element(
-		SearchBarWC,
-		{
-			value: { attribute: 'input-value', type: 'String' },
-			name: { attribute: 'input-name', type: 'String' },
-			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
+	customElements.define("qc-search-bar", create_custom_element(SearchBarWC, {
+		value: {
+			attribute: "input-value",
+			type: "String"
 		},
-		[],
-		[]
-	));
-
-	SearchInputWC[FILENAME] = 'src/sdg/components/SearchInput/SearchInputWC.svelte';
-
-	var rest_excludes$8 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-
+		name: {
+			attribute: "input-name",
+			type: "String"
+		},
+		pivBackground: {
+			attribute: "piv-background",
+			type: "Boolean"
+		}
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/SearchInput/SearchInputWC.svelte
+	var rest_excludes$9 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
 	function SearchInputWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$8);
-		var $$exports = { ...legacy_api() };
-
-		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 23, 0, { componentTag: 'SearchInput' });
-
-		return pop($$exports);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$9);
+		SearchInput($$anchor, spread_props(() => props));
 	}
-
-	customElements.define('qc-search-input', create_custom_element(
-		SearchInputWC,
-		{
-			id: { attribute: 'id' },
-			value: { attribute: 'value', reflect: true },
-			ariaLabel: { attribute: 'aria-label' },
-			clearAriaLabel: { attribute: 'clear-aria-label' },
-			label: { attribute: 'label' },
-			placeholder: { attribute: 'placeholder' },
-			size: { attribute: 'size' },
-			leftIcon: { attribute: 'left-icon' },
-			debounce: { attribute: 'debounce' }
+	customElements.define("qc-search-input", create_custom_element(SearchInputWC, {
+		id: { attribute: "id" },
+		value: {
+			attribute: "value",
+			reflect: true
 		},
-		[],
-		[]
-	));
-
-	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
-
-	var rest_excludes$7 = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'useMaterial']);
-
+		ariaLabel: { attribute: "aria-label" },
+		clearAriaLabel: { attribute: "clear-aria-label" },
+		label: { attribute: "label" },
+		placeholder: { attribute: "placeholder" },
+		size: { attribute: "size" },
+		leftIcon: { attribute: "left-icon" },
+		debounce: { attribute: "debounce" }
+	}, [], []));
+	//#endregion
+	//#region src/sdg/bases/Icon/IconWC.svelte
+	var rest_excludes$8 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"useMaterial"
+	]);
 	function IconWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let useMaterial = prop($$props, 'useMaterial', 7),
-			otherProps = rest_props($$props, rest_excludes$7);
-
+		let useMaterial = prop($$props, "useMaterial", 7), otherProps = /* @__PURE__ */ rest_props($$props, rest_excludes$8);
 		var $$exports = {
-			...legacy_api(),
 			get useMaterial() {
 				return useMaterial();
 			},
-
 			set useMaterial($$value) {
 				useMaterial($$value);
 				flushSync();
 			}
 		};
-
-		add_svelte_meta(
-			() => Icon($$anchor, spread_props(
-				{
-					get 'use-material'() {
-						return useMaterial();
-					}
-				},
-				() => otherProps
-			)),
-			'component',
-			IconWC,
-			27,
-			0,
-			{ componentTag: 'Icon' }
-		);
-
+		Icon($$anchor, spread_props({ get "use-material"() {
+			return useMaterial();
+		} }, () => otherProps));
 		return pop($$exports);
 	}
-
-	customElements.define('qc-icon', create_custom_element(
-		IconWC,
-		{
-			type: { attribute: 'icon' },
-			label: { attribute: 'label' },
-			color: { attribute: 'color' },
-			size: { attribute: 'size' },
-			width: { attribute: 'width' },
-			height: { attribute: 'height' },
-			src: { attribute: 'src' },
-			rotate: { attribute: 'rotate' },
-			variant: { attribute: 'variant' },
-			renderMode: { attribute: 'render-mode' },
-			useMaterial: { attribute: 'use-material', type: 'Boolean' },
-			codepoint: { attribute: 'codepoint' },
-			verticalAlign: { attribute: 'vertical-align' }
+	customElements.define("qc-icon", create_custom_element(IconWC, {
+		type: { attribute: "icon" },
+		label: { attribute: "label" },
+		color: { attribute: "color" },
+		size: { attribute: "size" },
+		width: { attribute: "width" },
+		height: { attribute: "height" },
+		src: { attribute: "src" },
+		rotate: { attribute: "rotate" },
+		variant: { attribute: "variant" },
+		renderMode: { attribute: "render-mode" },
+		useMaterial: {
+			attribute: "use-material",
+			type: "Boolean"
 		},
-		[],
-		[]
-	));
-
-	IconButtonWC[FILENAME] = 'src/sdg/components/IconButton/IconButtonWC.svelte';
-
-	var rest_excludes$6 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-
+		codepoint: { attribute: "codepoint" },
+		verticalAlign: { attribute: "vertical-align" }
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/IconButton/IconButtonWC.svelte
+	var rest_excludes$7 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
 	function IconButtonWC($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		const props = rest_props($$props, rest_excludes$6);
-		var $$exports = { ...legacy_api() };
-
-		add_svelte_meta(() => IconButton($$anchor, spread_props(() => props)), 'component', IconButtonWC, 19, 0, { componentTag: 'IconButton' });
-
-		return pop($$exports);
+		const props = /* @__PURE__ */ rest_props($$props, rest_excludes$7);
+		IconButton($$anchor, spread_props(() => props));
 	}
-
-	customElements.define('qc-icon-button', create_custom_element(
-		IconButtonWC,
-		{
-			size: { attribute: 'size' },
-			label: { attribute: 'label' },
-			icon: { attribute: 'icon' },
-			iconSize: { attribute: 'icon-size' },
-			iconColor: { attribute: 'icon-color' }
-		},
-		[],
-		[]
-	));
-
-	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
-
-	var root$f = add_locations(from_html(`<!> <span></span>`, 1), FormError[FILENAME], [[48, 8]]);
-	var root_1$9 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
-
+	customElements.define("qc-icon-button", create_custom_element(IconButtonWC, {
+		size: { attribute: "size" },
+		label: { attribute: "label" },
+		icon: { attribute: "icon" },
+		iconSize: { attribute: "icon-size" },
+		iconColor: { attribute: "icon-color" }
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/FormError/FormError.svelte
+	var root$15 = /* @__PURE__ */ from_html(`<!> <span></span>`, 1);
+	var root_1$9 = /* @__PURE__ */ from_html(`<div role="alert"><!></div>`);
 	function FormError($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
 		const lang = Utils.getPageLanguage();
-
-		let invalid = prop($$props, 'invalid', 7),
-			label = prop($$props, 'label', 7, ''),
-			invalidText = prop($$props, 'invalidText', 7),
-			id = prop($$props, 'id', 15),
-			extraClasses = prop($$props, 'extraClasses', 23, () => []),
-			rootElement = prop($$props, 'rootElement', 15);
-
-		let cleanLabel = tag(user_derived(() => label().replace(/:\s*$/, '')), 'cleanLabel');
-
-		let defaultInvalidText = tag(
-			user_derived(() => label()
-				? strict_equals(lang, 'fr')
-					? `Le champ ${get(cleanLabel)} est obligatoire.`
-					: `${get(cleanLabel)} field is required.`
-				: strict_equals(lang, 'fr')
-					? `Ce champ est obligatoire.`
-					: `This field is required.`),
-			'defaultInvalidText'
-		);
-
+		let invalid = prop($$props, "invalid", 7), label = prop($$props, "label", 7, ""), invalidText = prop($$props, "invalidText", 7), id = prop($$props, "id", 15), extraClasses = prop($$props, "extraClasses", 23, () => []), rootElement = prop($$props, "rootElement", 15);
+		let cleanLabel = /* @__PURE__ */ user_derived(() => label().replace(/:\s*$/, ""));
+		let defaultInvalidText = /* @__PURE__ */ user_derived(() => label() ? lang === "fr" ? `Le champ ${get(cleanLabel)} est obligatoire.` : `${get(cleanLabel)} field is required.` : lang === "fr" ? `Ce champ est obligatoire.` : `This field is required.`);
 		onMount(() => {
 			if (id()) return;
-
-			id(Utils.generateId('qc-form-error'));
+			id(Utils.generateId("qc-form-error"));
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
-			set label($$value = '') {
+			set label($$value = "") {
 				label($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get extraClasses() {
 				return extraClasses();
 			},
-
 			set extraClasses($$value = []) {
 				extraClasses($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent = ($$anchor) => {
-				var div = root_1$9();
-				var node_1 = child(div);
-
-				add_svelte_meta(
-					() => await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-						var fragment_1 = root$f();
-						var node_2 = first_child(fragment_1);
-
-						add_svelte_meta(
-							() => Icon(node_2, {
-								type: 'warning',
-								color: 'red-regular',
-								width: 'var(--error-icon-width)',
-								height: 'var(--error-icon-height)'
-							}),
-							'component',
-							FormError,
-							42,
-							8,
-							{ componentTag: 'Icon' }
-						);
-
-						var span = sibling(node_2, 2);
-
-						html(span, () => invalidText() ? invalidText() : get(defaultInvalidText), true);
-						reset(span);
-						append($$anchor, fragment_1);
-					}),
-					'await',
-					FormError,
-					39,
-					4
-				);
-
-				reset(div);
-				bind_this(div, ($$value) => rootElement($$value), () => rootElement());
-
-				template_effect(
-					($0) => {
-						set_attribute(div, 'id', id());
-						set_class(div, 1, $0);
-					},
-					[() => clsx(['qc-form-error', ...extraClasses()])]
-				);
-
-				append($$anchor, div);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (invalid()) $$render(consequent);
-				}),
-				'if',
-				FormError,
-				34,
-				0
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			var div = root_1$9();
+			await_block(child(div), tick, ($$anchor) => {}, ($$anchor, _) => {
+				var fragment_1 = root$15();
+				var node_2 = first_child(fragment_1);
+				Icon(node_2, {
+					type: "warning",
+					color: "red-regular",
+					width: "var(--error-icon-width)",
+					height: "var(--error-icon-height)"
+				});
+				var span = sibling(node_2, 2);
+				html(span, () => invalidText() ? invalidText() : get(defaultInvalidText), true);
+				reset(span);
+				append($$anchor, fragment_1);
+			});
+			reset(div);
+			bind_this(div, ($$value) => rootElement($$value), () => rootElement());
+			template_effect(($0) => {
+				set_attribute(div, "id", id());
+				set_class(div, 1, $0);
+			}, [() => clsx(["qc-form-error", ...extraClasses()])]);
+			append($$anchor, div);
+		};
+		if_block(node, ($$render) => {
+			if (invalid()) $$render(consequent);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		FormError,
-		{
-			invalid: {},
-			label: {},
-			invalidText: {},
-			id: {},
-			extraClasses: {},
-			rootElement: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
-
-	var root$e = add_locations(from_html(`<legend><!></legend>`), Fieldset[FILENAME], [[43, 4]]);
-	var root_1$8 = add_locations(from_html(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[47, 4]]]]);
-	var root_2$5 = add_locations(from_html(`<div class="qc-fieldset-invalid"><!></div>`), Fieldset[FILENAME], [[70, 4]]);
-
+	create_custom_element(FormError, {
+		invalid: {},
+		label: {},
+		invalidText: {},
+		id: {},
+		extraClasses: {},
+		rootElement: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Fieldset/Fieldset.svelte
+	var root$14 = /* @__PURE__ */ from_html(`<legend><!></legend>`);
+	var root_1$8 = /* @__PURE__ */ from_html(`<fieldset><!> <div><!></div> <!></fieldset>`);
+	var root_2$5 = /* @__PURE__ */ from_html(`<div class="qc-fieldset-invalid"><!></div>`);
 	function Fieldset($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		const fieldset = wrap_snippet(Fieldset, function ($$anchor) {
-			validate_snippet_args(...arguments);
-
+		const fieldset = ($$anchor) => {
 			var fieldset_1 = root_1$8();
 			var node = child(fieldset_1);
-
-			{
-				var consequent = ($$anchor) => {
-					var legend_1 = root$e();
-					var node_1 = child(legend_1);
-
-					add_svelte_meta(
-						() => LabelText(node_1, {
-							get text() {
-								return legend();
-							},
-
-							get required() {
-								return required();
-							}
-						}),
-						'component',
-						Fieldset,
-						44,
-						8,
-						{ componentTag: 'LabelText' }
-					);
-
-					reset(legend_1);
-					template_effect(() => set_attribute(legend_1, 'id', get(legendId)));
-					append($$anchor, legend_1);
-				};
-
-				add_svelte_meta(
-					() => if_block(node, ($$render) => {
-						if (legend()) $$render(consequent);
-					}),
-					'if',
-					Fieldset,
-					42,
-					2
-				);
-			}
-
+			var consequent = ($$anchor) => {
+				var legend_1 = root$14();
+				LabelText(child(legend_1), {
+					get text() {
+						return legend();
+					},
+					get required() {
+						return required();
+					}
+				});
+				reset(legend_1);
+				template_effect(() => set_attribute(legend_1, "id", get(legendId)));
+				append($$anchor, legend_1);
+			};
+			if_block(node, ($$render) => {
+				if (legend()) $$render(consequent);
+			});
 			var div = sibling(node, 2);
-			var node_2 = child(div);
-
-			add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Fieldset, 60, 8);
+			snippet(child(div), () => children() ?? noop);
 			reset(div);
 			bind_this(div, ($$value) => set(groupSelection, $$value), () => get(groupSelection));
-
-			var node_3 = sibling(div, 2);
-
-			add_svelte_meta(
-				() => FormError(node_3, {
-					get invalid() {
-						return invalid();
-					},
-
-					get invalidText() {
-						return invalidText();
-					},
-
-					get label() {
-						return legend();
-					}
-				}),
-				'component',
-				Fieldset,
-				62,
-				4,
-				{ componentTag: 'FormError' }
-			);
-
+			FormError(sibling(div, 2), {
+				get invalid() {
+					return invalid();
+				},
+				get invalidText() {
+					return invalidText();
+				},
+				get label() {
+					return legend();
+				}
+			});
 			reset(fieldset_1);
 			bind_this(fieldset_1, ($$value) => rootElement($$value), () => rootElement());
-
 			template_effect(() => {
 				set_class(fieldset_1, 1, clsx([
 					"qc-choice-group",
@@ -14457,2171 +9113,1442 @@
 					compact() && "qc-compact",
 					disabled() && "qc-disabled"
 				]));
-
-				set_attribute(fieldset_1, 'aria-describedby', get(legendId));
-				set_attribute(fieldset_1, 'selection-button', selectionButton() ? selectionButton() : undefined);
-				set_attribute(fieldset_1, 'inline', inline() ? inline() : undefined);
-
+				set_attribute(fieldset_1, "aria-describedby", get(legendId));
+				set_attribute(fieldset_1, "selection-button", selectionButton() ? selectionButton() : void 0);
+				set_attribute(fieldset_1, "inline", inline() ? inline() : void 0);
 				set_class(div, 1, clsx([
 					selectionButton() && !inline() && "qc-field-elements-selection-button",
 					selectionButton() && inline() && "qc-field-elements-selection-button-flex-row",
 					!selectionButton() && "qc-field-elements-flex",
 					!selectionButton() && `qc-field-elements-flex-${elementsGap()}`
 				]));
-
 				set_style(div, `
-        --column-count: ${columnCount() ?? ''};
-        --fieldset-width: ${maxWidth() ?? ''};
+        --column-count: ${columnCount() ?? ""};
+        --fieldset-width: ${maxWidth() ?? ""};
         `);
 			});
-
-			delegated('change', fieldset_1, function (...$$args) {
-				apply(onchange, this, $$args, Fieldset, [38, 11]);
+			delegated("change", fieldset_1, function(...$$args) {
+				onchange()?.apply(this, $$args);
 			});
-
 			append($$anchor, fieldset_1);
-		});
-
-		let legend = prop($$props, 'legend', 7),
-			name = prop($$props, 'name', 7),
-			selectionButton = prop($$props, 'selectionButton', 7, false),
-			inline = prop($$props, 'inline', 7, false),
-			columnCount = prop($$props, 'columnCount', 7, 1),
-			compact = prop($$props, 'compact', 7),
-			required = prop($$props, 'required', 7, false),
-			disabled = prop($$props, 'disabled', 7),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			onchange = prop($$props, 'onchange', 7, () => {}),
-			elementsGap = prop($$props, 'elementsGap', 7, "sm"),
-			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
-			children = prop($$props, 'children', 7),
-			rootElement = prop($$props, 'rootElement', 15);
-
-		let groupSelection = tag(state(void 0), 'groupSelection');
-		let legendId = tag(user_derived(() => name() ? "id_" + name() : Utils.generateId("legend")), 'legendId');
-
+		};
+		let legend = prop($$props, "legend", 7), name = prop($$props, "name", 7), selectionButton = prop($$props, "selectionButton", 7, false), inline = prop($$props, "inline", 7, false), columnCount = prop($$props, "columnCount", 7, 1), compact = prop($$props, "compact", 7), required = prop($$props, "required", 7, false), disabled = prop($$props, "disabled", 7), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), onchange = prop($$props, "onchange", 7, () => {}), elementsGap = prop($$props, "elementsGap", 7, "sm"), maxWidth = prop($$props, "maxWidth", 7, "fit-content"), children = prop($$props, "children", 7), rootElement = prop($$props, "rootElement", 15);
+		let groupSelection = /* @__PURE__ */ state(void 0);
+		let legendId = /* @__PURE__ */ user_derived(() => name() ? "id_" + name() : Utils.generateId("legend"));
 		var $$exports = {
-			...legacy_api(),
 			get legend() {
 				return legend();
 			},
-
 			set legend($$value) {
 				legend($$value);
 				flushSync();
 			},
-
 			get name() {
 				return name();
 			},
-
 			set name($$value) {
 				name($$value);
 				flushSync();
 			},
-
 			get selectionButton() {
 				return selectionButton();
 			},
-
 			set selectionButton($$value = false) {
 				selectionButton($$value);
 				flushSync();
 			},
-
 			get inline() {
 				return inline();
 			},
-
 			set inline($$value = false) {
 				inline($$value);
 				flushSync();
 			},
-
 			get columnCount() {
 				return columnCount();
 			},
-
 			set columnCount($$value = 1) {
 				columnCount($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value) {
 				compact($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get onchange() {
 				return onchange();
 			},
-
 			set onchange($$value = () => {}) {
 				onchange($$value);
 				flushSync();
 			},
-
 			get elementsGap() {
 				return elementsGap();
 			},
-
 			set elementsGap($$value = "sm") {
 				elementsGap($$value);
 				flushSync();
 			},
-
 			get maxWidth() {
 				return maxWidth();
 			},
-
 			set maxWidth($$value = "fit-content") {
 				maxWidth($$value);
 				flushSync();
 			},
-
 			get children() {
 				return children();
 			},
-
 			set children($$value) {
 				children($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node_4 = first_child(fragment);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				add_svelte_meta(() => fieldset($$anchor), 'render', Fieldset, 68, 4);
-			};
-
-			var alternate = ($$anchor) => {
-				var div_1 = root_2$5();
-				var node_5 = child(div_1);
-
-				add_svelte_meta(() => fieldset(node_5), 'render', Fieldset, 71, 8);
-				reset(div_1);
-				append($$anchor, div_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_4, ($$render) => {
-					if (!invalid()) $$render(consequent_1); else $$render(alternate, -1);
-				}),
-				'if',
-				Fieldset,
-				67,
-				0
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			fieldset($$anchor);
+		};
+		var alternate = ($$anchor) => {
+			var div_1 = root_2$5();
+			var node_5 = child(div_1);
+			fieldset(node_5);
+			reset(div_1);
+			append($$anchor, div_1);
+		};
+		if_block(node_4, ($$render) => {
+			if (!invalid()) $$render(consequent_1);
+			else $$render(alternate, -1);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	delegate(['change']);
-
-	create_custom_element(
-		Fieldset,
-		{
-			legend: {},
-			name: {},
-			selectionButton: {},
-			inline: {},
-			columnCount: {},
-			compact: {},
-			required: {},
-			disabled: {},
-			invalid: {},
-			invalidText: {},
-			onchange: {},
-			elementsGap: {},
-			maxWidth: {},
-			children: {},
-			rootElement: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	/* updateChoiceInput.svelte.js generated by Svelte v5.56.10 */
-
-	function updateChoiceInput(
-		input,
-		required,
-		invalid,
-		compact,
-		selectionButton,
-		inline,
-		name
-	) {
+	delegate(["change"]);
+	create_custom_element(Fieldset, {
+		legend: {},
+		name: {},
+		selectionButton: {},
+		inline: {},
+		columnCount: {},
+		compact: {},
+		required: {},
+		disabled: {},
+		invalid: {},
+		invalidText: {},
+		onchange: {},
+		elementsGap: {},
+		maxWidth: {},
+		children: {},
+		rootElement: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Checkbox/updateChoiceInput.svelte.js
+	function updateChoiceInput(input, required, invalid, compact, selectionButton, inline, name) {
 		if (!input) return;
-		if (strict_equals(input.role, "switch")) return;
-		if (strict_equals(input.type, "hidden")) return;
-
-		let label = input.closest('label');
-
+		if (input.role === "switch") return;
+		if (input.type === "hidden") return;
+		let label = input.closest("label");
 		if (!label) {
-			console.warn(...log_if_contains_state('warn', "Pas d'élément label parent pour l'input", input));
-
+			console.warn("Pas d'élément label parent pour l'input", input);
 			return;
 		}
-
-		input.classList.add('qc-choicefield');
-		label.classList.add('qc-choicefield-label');
-		input.classList.toggle('qc-selection-button', selectionButton);
-		label.classList.toggle('qc-selection-button', selectionButton);
-		label.classList.toggle('qc-selection-button-inline', inline);
-		input.setAttribute('aria-required', required ? 'true' : "false");
-		input.setAttribute('aria-invalid', invalid ? 'true' : "false");
-		input.classList.toggle('qc-compact', compact ? compact : selectionButton);
-
-		if (name && !input.hasAttribute('name')) {
-			input.setAttribute('name', name);
-		}
+		input.classList.add("qc-choicefield");
+		label.classList.add("qc-choicefield-label");
+		input.classList.toggle("qc-selection-button", selectionButton);
+		label.classList.toggle("qc-selection-button", selectionButton);
+		label.classList.toggle("qc-selection-button-inline", inline);
+		input.setAttribute("aria-required", required ? "true" : "false");
+		input.setAttribute("aria-invalid", invalid ? "true" : "false");
+		input.classList.toggle("qc-compact", compact ? compact : selectionButton);
+		if (name && !input.hasAttribute("name")) input.setAttribute("name", name);
 	}
-
 	function onChange(input, setInvalid) {
-		input.addEventListener('change', () => setInvalid(false));
+		input.addEventListener("change", () => setInvalid(false));
 	}
-
-	ChoiceGroup[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroup.svelte';
-
-	var rest_excludes$5 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'invalid',
-		'invalidText',
-		'children',
-		'compact',
-		'selectionButton',
-		'inline',
-		'host',
-		'name',
-		'required'
+	//#endregion
+	//#region src/sdg/components/ChoiceGroup/ChoiceGroup.svelte
+	var rest_excludes$6 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"invalid",
+		"invalidText",
+		"children",
+		"compact",
+		"selectionButton",
+		"inline",
+		"host",
+		"name",
+		"required"
 	]);
-
 	function ChoiceGroup($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			children = prop($$props, 'children', 7),
-			compact = prop($$props, 'compact', 7, false),
-			selectionButton = prop($$props, 'selectionButton', 7, false),
-			inline = prop($$props, 'inline', 7, false),
-			host = prop($$props, 'host', 7),
-			name = prop($$props, 'name', 7),
-			required = prop($$props, 'required', 7),
-			restProps = rest_props($$props, rest_excludes$5);
-
-		let fieldsetElement = tag(state(void 0), 'fieldsetElement');
-
+		let invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), children = prop($$props, "children", 7), compact = prop($$props, "compact", 7, false), selectionButton = prop($$props, "selectionButton", 7, false), inline = prop($$props, "inline", 7, false), host = prop($$props, "host", 7), name = prop($$props, "name", 7), required = prop($$props, "required", 7), restProps = /* @__PURE__ */ rest_props($$props, rest_excludes$6);
+		let fieldsetElement = /* @__PURE__ */ state(void 0);
 		let onchange = (e) => {
-			if (invalid() && e.target.checked) {
-				invalid(false);
-			}
+			if (invalid() && e.target.checked) invalid(false);
 		};
-
 		user_effect(() => {
-			(host() ? host() : get(fieldsetElement)).querySelectorAll('input, .qc-choicefield').forEach((input) => updateChoiceInput(input, required(), invalid(), compact(), selectionButton(), inline(), name()));
+			(host() ? host() : get(fieldsetElement)).querySelectorAll("input, .qc-choicefield").forEach((input) => updateChoiceInput(input, required(), invalid(), compact(), selectionButton(), inline(), name()));
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get children() {
 				return children();
 			},
-
 			set children($$value) {
 				children($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value = false) {
 				compact($$value);
 				flushSync();
 			},
-
 			get selectionButton() {
 				return selectionButton();
 			},
-
 			set selectionButton($$value = false) {
 				selectionButton($$value);
 				flushSync();
 			},
-
 			get inline() {
 				return inline();
 			},
-
 			set inline($$value = false) {
 				inline($$value);
 				flushSync();
 			},
-
 			get host() {
 				return host();
 			},
-
 			set host($$value) {
 				host($$value);
 				flushSync();
 			},
-
 			get name() {
 				return name();
 			},
-
 			set name($$value) {
 				name($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value) {
 				required($$value);
 				flushSync();
 			}
 		};
-
-		{
-			$$ownership_validator.binding('invalid', Fieldset, invalid);
-
-			add_svelte_meta(
-				() => Fieldset($$anchor, spread_props(
-					{
-						get required() {
-							return required();
-						},
-
-						get compact() {
-							return compact();
-						},
-
-						get selectionButton() {
-							return selectionButton();
-						},
-
-						get inline() {
-							return inline();
-						},
-
-						get invalidText() {
-							return invalidText();
-						},
-						onchange
-					},
-					() => restProps,
-					{
-						get invalid() {
-							return invalid();
-						},
-
-						set invalid($$value) {
-							invalid($$value);
-						},
-
-						get rootElement() {
-							return get(fieldsetElement);
-						},
-
-						set rootElement($$value) {
-							set(fieldsetElement, $$value, true);
-						},
-
-						children: wrap_snippet(ChoiceGroup, ($$anchor, $$slotProps) => {
-							var fragment_1 = comment();
-							var node = first_child(fragment_1);
-
-							add_svelte_meta(() => snippet(node, children), 'render', ChoiceGroup, 54, 4);
-							append($$anchor, fragment_1);
-						}),
-						$$slots: { default: true }
-					}
-				)),
-				'component',
-				ChoiceGroup,
-				43,
-				0,
-				{ componentTag: 'Fieldset' }
-			);
-		}
-
+		Fieldset($$anchor, spread_props({
+			get required() {
+				return required();
+			},
+			get compact() {
+				return compact();
+			},
+			get selectionButton() {
+				return selectionButton();
+			},
+			get inline() {
+				return inline();
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			onchange
+		}, () => restProps, {
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+			},
+			get rootElement() {
+				return get(fieldsetElement);
+			},
+			set rootElement($$value) {
+				set(fieldsetElement, $$value, true);
+			},
+			children: ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				snippet(first_child(fragment_1), children);
+				append($$anchor, fragment_1);
+			},
+			$$slots: { default: true }
+		}));
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		ChoiceGroup,
-		{
-			invalid: {},
-			invalidText: {},
-			children: {},
-			compact: {},
-			selectionButton: {},
-			inline: {},
-			host: {},
-			name: {},
-			required: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
-
-	var root$d = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
-
+	create_custom_element(ChoiceGroup, {
+		invalid: {},
+		invalidText: {},
+		children: {},
+		compact: {},
+		selectionButton: {},
+		inline: {},
+		host: {},
+		name: {},
+		required: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte
+	var root$13 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function ChoiceGroupWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let name = prop($$props, 'name', 7),
-			legend = prop($$props, 'legend', 7),
-			compact = prop($$props, 'compact', 7),
-			required = prop($$props, 'required', 7),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			selectionButton = prop($$props, 'selectionButton', 7),
-			columnCount = prop($$props, 'columnCount', 7),
-			inline = prop($$props, 'inline', 7);
-
+		let name = prop($$props, "name", 7), legend = prop($$props, "legend", 7), compact = prop($$props, "compact", 7), required = prop($$props, "required", 7), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), selectionButton = prop($$props, "selectionButton", 7), columnCount = prop($$props, "columnCount", 7), inline = prop($$props, "inline", 7);
 		var $$exports = {
-			...legacy_api(),
 			get name() {
 				return name();
 			},
-
 			set name($$value) {
 				name($$value);
 				flushSync();
 			},
-
 			get legend() {
 				return legend();
 			},
-
 			set legend($$value) {
 				legend($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value) {
 				compact($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value) {
 				required($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get selectionButton() {
 				return selectionButton();
 			},
-
 			set selectionButton($$value) {
 				selectionButton($$value);
 				flushSync();
 			},
-
 			get columnCount() {
 				return columnCount();
 			},
-
 			set columnCount($$value) {
 				columnCount($$value);
 				flushSync();
 			},
-
 			get inline() {
 				return inline();
 			},
-
 			set inline($$value) {
 				inline($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$d();
+		var fragment = root$13();
 		var node = first_child(fragment);
-
-		{
-			$$ownership_validator.binding('invalid', ChoiceGroup, invalid);
-
-			add_svelte_meta(
-				() => ChoiceGroup(node, {
-					get name() {
-						return name();
-					},
-
-					get legend() {
-						return legend();
-					},
-
-					get compact() {
-						return compact();
-					},
-
-					get required() {
-						return required();
-					},
-
-					get invalidText() {
-						return invalidText();
-					},
-
-					get selectionButton() {
-						return selectionButton();
-					},
-
-					get columnCount() {
-						return columnCount();
-					},
-
-					get inline() {
-						return inline();
-					},
-					host: $$props.$$host,
-					get invalid() {
-						return invalid();
-					},
-
-					set invalid($$value) {
-						invalid($$value);
-					},
-
-					children: wrap_snippet(ChoiceGroupWC, ($$anchor, $$slotProps) => {
-						var fragment_1 = comment();
-						var node_1 = first_child(fragment_1);
-
-						slot(node_1, $$props, 'default', {}, null);
-						append($$anchor, fragment_1);
-					}),
-					$$slots: { default: true }
-				}),
-				'component',
-				ChoiceGroupWC,
-				33,
-				0,
-				{ componentTag: 'ChoiceGroup' }
-			);
-		}
-
+		ChoiceGroup(node, {
+			get name() {
+				return name();
+			},
+			get legend() {
+				return legend();
+			},
+			get compact() {
+				return compact();
+			},
+			get required() {
+				return required();
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			get selectionButton() {
+				return selectionButton();
+			},
+			get columnCount() {
+				return columnCount();
+			},
+			get inline() {
+				return inline();
+			},
+			host: $$props.$$host,
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+			},
+			children: ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				slot(first_child(fragment_1), $$props, "default", {}, null);
+				append($$anchor, fragment_1);
+			},
+			$$slots: { default: true }
+		});
 		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-choice-group', create_custom_element(
-		ChoiceGroupWC,
-		{
-			name: { attribute: 'name', type: 'String' },
-			legend: { attribute: 'legend', type: 'String' },
-			compact: { attribute: 'compact', type: 'Boolean' },
-			required: { attribute: 'required', type: 'Boolean' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' },
-			selectionButton: { attribute: 'selection-button', type: 'Boolean' },
-			columnCount: { attribute: 'column-count', type: 'String' },
-			inline: { attribute: 'inline', type: 'Boolean' }
+	customElements.define("qc-choice-group", create_custom_element(ChoiceGroupWC, {
+		name: {
+			attribute: "name",
+			type: "String"
 		},
-		['default'],
-		[],
-		{ mode: 'open' }
-	));
-
-	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
-
-	var root$c = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
-	var root_1$7 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
-
+		legend: {
+			attribute: "legend",
+			type: "String"
+		},
+		compact: {
+			attribute: "compact",
+			type: "Boolean"
+		},
+		required: {
+			attribute: "required",
+			type: "Boolean"
+		},
+		invalid: {
+			attribute: "invalid",
+			type: "Boolean"
+		},
+		invalidText: {
+			attribute: "invalid-text",
+			type: "String"
+		},
+		selectionButton: {
+			attribute: "selection-button",
+			type: "Boolean"
+		},
+		columnCount: {
+			attribute: "column-count",
+			type: "String"
+		},
+		inline: {
+			attribute: "inline",
+			type: "Boolean"
+		}
+	}, ["default"], [], { mode: "open" }));
+	var root$12 = /* @__PURE__ */ from_html(`<span class="qc-required" aria-hidden="true">*</span>`);
+	var root_1$7 = /* @__PURE__ */ from_html(`<div><!> <!> <!></div>`);
 	function Checkbox($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		const // svelte-ignore state_referenced_locally — rest.label sert de valeur initiale, mise à jour ensuite par $effect
-		requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
-			validate_snippet_args(...arguments);
-
+		const requiredSpanSnippet = ($$anchor) => {
 			var fragment = comment();
 			var node = first_child(fragment);
-
-			{
-				var consequent = ($$anchor) => {
-					var span = root$c();
-
-					bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
-					append($$anchor, span);
-				};
-
-				add_svelte_meta(
-					() => if_block(node, ($$render) => {
-						if (required()) $$render(consequent);
-					}),
-					'if',
-					Checkbox,
-					57,
-					4
-				);
-			}
-
+			var consequent = ($$anchor) => {
+				var span = root$12();
+				bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
+				append($$anchor, span);
+			};
+			if_block(node, ($$render) => {
+				if (required()) $$render(consequent);
+			});
 			append($$anchor, fragment);
-		});
-
+		};
 		Utils.getPageLanguage();
 		const qcCheckoxContext = getContext("qc-checkbox");
-
-		let id = prop($$props, 'id', 7),
-			name = prop($$props, 'name', 7),
-			value = prop($$props, 'value', 7),
-			description = prop($$props, 'description', 7),
-			required = prop($$props, 'required', 15, false),
-			disabled = prop($$props, 'disabled', 7),
-			compact = prop($$props, 'compact', 7, false),
-			checked = prop($$props, 'checked', 15, false),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			children = prop($$props, 'children', 7),
-			labelElement = prop($$props, 'labelElement', 7),
-			requiredSpan = prop($$props, 'requiredSpan', 15),
-			input = prop($$props, 'input', 7);
-
-		let label = tag(state(proxy($$props.label)), 'label');
-		let rootElement = tag(state(void 0), 'rootElement');
-
+		let id = prop($$props, "id", 7), name = prop($$props, "name", 7), value = prop($$props, "value", 7), description = prop($$props, "description", 7), required = prop($$props, "required", 15, false), disabled = prop($$props, "disabled", 7), compact = prop($$props, "compact", 7, false), checked = prop($$props, "checked", 15, false), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), children = prop($$props, "children", 7), labelElement = prop($$props, "labelElement", 7), requiredSpan = prop($$props, "requiredSpan", 15), input = prop($$props, "input", 7);
+		let label = /* @__PURE__ */ state(proxy($$props.label));
+		let rootElement = /* @__PURE__ */ state(void 0);
 		onMount(() => {
 			if (qcCheckoxContext) return;
-
-			labelElement(get(rootElement)?.querySelector('label'));
-			input(get(rootElement)?.querySelector('input[type="checkbox"]'));
+			labelElement(get(rootElement)?.querySelector("label"));
+			input(get(rootElement)?.querySelector("input[type=\"checkbox\"]"));
 			onChange(input(), (_invalid) => invalid(_invalid));
 		});
-
 		user_effect(() => {
-			if (labelElement()) {
-				set(label, labelElement().querySelector('span')?.textContent, true);
-			}
+			if (labelElement()) set(label, labelElement().querySelector("span")?.textContent, true);
 		});
-
 		user_effect((_) => updateChoiceInput(input(), required(), invalid(), compact(), false, false));
-
 		user_effect(() => {
-			if (required() && get(label) && requiredSpan()) {
-				const textSpan = labelElement().querySelector('span');
-
-				textSpan.appendChild(requiredSpan());
-			}
+			if (required() && get(label) && requiredSpan()) labelElement().querySelector("span").appendChild(requiredSpan());
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get name() {
 				return name();
 			},
-
 			set name($$value) {
 				name($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value) {
 				value($$value);
 				flushSync();
 			},
-
 			get description() {
 				return description();
 			},
-
 			set description($$value) {
 				description($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value = false) {
 				compact($$value);
 				flushSync();
 			},
-
 			get checked() {
 				return checked();
 			},
-
 			set checked($$value = false) {
 				checked($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get children() {
 				return children();
 			},
-
 			set children($$value) {
 				children($$value);
 				flushSync();
 			},
-
 			get labelElement() {
 				return labelElement();
 			},
-
 			set labelElement($$value) {
 				labelElement($$value);
 				flushSync();
 			},
-
 			get requiredSpan() {
 				return requiredSpan();
 			},
-
 			set requiredSpan($$value) {
 				requiredSpan($$value);
 				flushSync();
 			},
-
 			get input() {
 				return input();
 			},
-
 			set input($$value) {
 				input($$value);
 				flushSync();
 			}
 		};
-
 		var div = root_1$7();
 		var node_1 = child(div);
-
-		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 73, 8);
-
+		requiredSpanSnippet(node_1);
 		var node_2 = sibling(node_1, 2);
-
-		add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', Checkbox, 74, 8);
-
-		var node_3 = sibling(node_2, 2);
-
-		add_svelte_meta(
-			() => FormError(node_3, {
-				get invalid() {
-					return invalid();
-				},
-
-				get invalidText() {
-					return invalidText();
-				},
-
-				get label() {
-					return get(label);
-				}
-			}),
-			'component',
-			Checkbox,
-			75,
-			8,
-			{ componentTag: 'FormError' }
-		);
-
+		snippet(node_2, () => children() ?? noop);
+		FormError(sibling(node_2, 2), {
+			get invalid() {
+				return invalid();
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			get label() {
+				return get(label);
+			}
+		});
 		reset(div);
 		bind_this(div, ($$value) => set(rootElement, $$value), () => get(rootElement));
-
 		template_effect(() => {
-			set_class(div, 1, clsx([
-				"qc-checkbox-single",
-				invalid() && "qc-checkbox-single-invalid"
-			]));
-
-			set_attribute(div, 'compact', compact());
+			set_class(div, 1, clsx(["qc-checkbox-single", invalid() && "qc-checkbox-single-invalid"]));
+			set_attribute(div, "compact", compact());
 		});
-
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		Checkbox,
-		{
-			id: {},
-			name: {},
-			value: {},
-			description: {},
-			required: {},
-			disabled: {},
-			compact: {},
-			checked: {},
-			invalid: {},
-			invalidText: {},
-			children: {},
-			labelElement: {},
-			requiredSpan: {},
-			input: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
-
-	var root$b = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
-
+	create_custom_element(Checkbox, {
+		id: {},
+		name: {},
+		value: {},
+		description: {},
+		required: {},
+		disabled: {},
+		compact: {},
+		checked: {},
+		invalid: {},
+		invalidText: {},
+		children: {},
+		labelElement: {},
+		requiredSpan: {},
+		input: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Checkbox/CheckboxWC.svelte
+	var root$11 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function CheckboxWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		setContext('qc-checkbox', true);
-
-		let required = prop($$props, 'required', 15, false),
-			compact = prop($$props, 'compact', 7),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7);
-
-		let requiredSpan = tag(state(null), 'requiredSpan');
-		let labelElement = tag(state(void 0), 'labelElement');
-		let input = tag(state(void 0), 'input');
-
+		setContext("qc-checkbox", true);
+		let required = prop($$props, "required", 15, false), compact = prop($$props, "compact", 7), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7);
+		let requiredSpan = /* @__PURE__ */ state(null);
+		let labelElement = /* @__PURE__ */ state(void 0);
+		let input = /* @__PURE__ */ state(void 0);
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-			set(input, $$props.$$host.querySelector('input[type="checkbox"]'), true);
+			set(input, $$props.$$host.querySelector("input[type=\"checkbox\"]"), true);
 			onChange(get(input), (_invalid) => invalid(_invalid));
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get compact() {
 				return compact();
 			},
-
 			set compact($$value) {
 				compact($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			}
 		};
-
-		var fragment = root$b();
+		var fragment = root$11();
 		var node = first_child(fragment);
-
-		{
-			$$ownership_validator.binding('invalid', Checkbox, invalid);
-
-			add_svelte_meta(
-				() => Checkbox(node, {
-					get compact() {
-						return compact();
-					},
-
-					get required() {
-						return required();
-					},
-
-					get invalidText() {
-						return invalidText();
-					},
-
-					get labelElement() {
-						return get(labelElement);
-					},
-
-					get input() {
-						return get(input);
-					},
-
+		Checkbox(node, {
+			get compact() {
+				return compact();
+			},
+			get required() {
+				return required();
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			get labelElement() {
+				return get(labelElement);
+			},
+			get input() {
+				return get(input);
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+			},
+			get requiredSpan() {
+				return get(requiredSpan);
+			},
+			set requiredSpan($$value) {
+				set(requiredSpan, $$value, true);
+			},
+			children: ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				slot(first_child(fragment_1), $$props, "default", {}, null);
+				append($$anchor, fragment_1);
+			},
+			$$slots: { default: true }
+		});
+		var link = sibling(node, 2);
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
+		append($$anchor, fragment);
+		return pop($$exports);
+	}
+	customElements.define("qc-checkbox", create_custom_element(CheckboxWC, {
+		required: {
+			attribute: "required",
+			type: "Boolean"
+		},
+		compact: {
+			attribute: "compact",
+			type: "Boolean"
+		},
+		invalid: {
+			attribute: "invalid",
+			type: "Boolean"
+		},
+		invalidText: {
+			attribute: "invalid-text",
+			type: "String"
+		}
+	}, ["default"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/TextField/textFieldUtils.js
+	function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
+		if (!input) return;
+		if (!input.autocomplete) input.autocomplete = "off";
+		if (!input.id) input.id = Utils.generateId(input.type);
+		setValue(input.value);
+		setRequired(input.required);
+		input.addEventListener("input", () => {
+			setValue(input.value);
+			setInvalid(false);
+		});
+		setTextFieldRow(input.closest(".qc-formfield-row"));
+	}
+	//#endregion
+	//#region src/sdg/components/TextField/TextField.svelte
+	var root$10 = /* @__PURE__ */ from_html(`<div class="qc-description"></div>`);
+	var root_1$6 = /* @__PURE__ */ from_html(`<div aria-live="polite"></div>`);
+	var root_2$4 = /* @__PURE__ */ from_html(`<!> <!> <!> <!> <!>`, 1);
+	var root_3$1 = /* @__PURE__ */ from_html(`<div class="qc-textfield"><!></div>`);
+	function TextField($$anchor, $$props) {
+		push($$props, true);
+		const textfield = ($$anchor) => {
+			var fragment = root_2$4();
+			var node = first_child(fragment);
+			var consequent = ($$anchor) => {
+				{
+					let $0 = /* @__PURE__ */ user_derived(() => disabled() ?? input()?.disabled);
+					let $1 = /* @__PURE__ */ user_derived(() => input()?.id);
+					Label($$anchor, {
+						get required() {
+							return required();
+						},
+						get disabled() {
+							return get($0);
+						},
+						get text() {
+							return label();
+						},
+						get forId() {
+							return get($1);
+						},
+						get rootElement() {
+							return labelElement();
+						},
+						set rootElement($$value) {
+							labelElement($$value);
+						}
+					});
+				}
+			};
+			if_block(node, ($$render) => {
+				if (label()) $$render(consequent);
+			});
+			var node_1 = sibling(node, 2);
+			var consequent_1 = ($$anchor) => {
+				var div = root$10();
+				html(div, description, true);
+				reset(div);
+				bind_this(div, ($$value) => descriptionElement($$value), () => descriptionElement());
+				template_effect(() => set_attribute(div, "id", descriptionId));
+				append($$anchor, div);
+			};
+			if_block(node_1, ($$render) => {
+				if (description()) $$render(consequent_1);
+			});
+			var node_2 = sibling(node_1, 2);
+			snippet(node_2, () => children() ?? noop);
+			var node_3 = sibling(node_2, 2);
+			var consequent_2 = ($$anchor) => {
+				var div_1 = root_1$6();
+				html(div_1, () => get(charCountText), true);
+				reset(div_1);
+				bind_this(div_1, ($$value) => maxlengthElement($$value), () => maxlengthElement());
+				template_effect(() => {
+					set_attribute(div_1, "id", charCountId);
+					set_class(div_1, 1, clsx(["qc-textfield-charcount", maxlengthReached() && "qc-max-reached"]));
+				});
+				append($$anchor, div_1);
+			};
+			if_block(node_3, ($$render) => {
+				if (maxlength() && maxlength() !== null) $$render(consequent_2);
+			});
+			var node_4 = sibling(node_3, 2);
+			{
+				let $0 = /* @__PURE__ */ user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
+				let $1 = /* @__PURE__ */ user_derived(() => label() ? label() : input()?.getAttribute("aria-label"));
+				FormError(node_4, {
 					get invalid() {
 						return invalid();
 					},
-
-					set invalid($$value) {
-						invalid($$value);
+					get invalidText() {
+						return get($0);
 					},
-
-					get requiredSpan() {
-						return get(requiredSpan);
+					get label() {
+						return get($1);
 					},
-
-					set requiredSpan($$value) {
-						set(requiredSpan, $$value, true);
+					extraClasses: ["qc-xs-mt"],
+					get id() {
+						return get(errorId);
 					},
-
-					children: wrap_snippet(CheckboxWC, ($$anchor, $$slotProps) => {
-						var fragment_1 = comment();
-						var node_1 = first_child(fragment_1);
-
-						slot(node_1, $$props, 'default', {}, null);
-						append($$anchor, fragment_1);
-					}),
-					$$slots: { default: true }
-				}),
-				'component',
-				CheckboxWC,
-				38,
-				0,
-				{ componentTag: 'Checkbox' }
-			);
-		}
-
-		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
-
-		return pop($$exports);
-	}
-
-	customElements.define('qc-checkbox', create_custom_element(
-		CheckboxWC,
-		{
-			required: { attribute: 'required', type: 'Boolean' },
-			compact: { attribute: 'compact', type: 'Boolean' },
-			invalid: { attribute: 'invalid', type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' }
-		},
-		['default'],
-		[],
-		{ mode: 'open' }
-	));
-
-	function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
-	    if (!input) return;
-	    if (!input.autocomplete) {
-	        input.autocomplete = "off";
-	    }
-	    if (!input.id) {
-	        input.id =  Utils.generateId(input.type);
-	    }
-	    setValue(input.value);
-	    setRequired(input.required);
-	    input.addEventListener(
-	        'input',
-	        () => {
-	            setValue(input.value);
-	            setInvalid(false);
-	    });
-	    setTextFieldRow(input.closest('.qc-formfield-row'));
-	}
-
-	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
-
-	var root$a = add_locations(from_html(`<div class="qc-description"></div>`), TextField[FILENAME], [[142, 8]]);
-	var root_1$6 = add_locations(from_html(`<div aria-live="polite"></div>`), TextField[FILENAME], [[153, 8]]);
-	var root_2$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_3$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
-
-	function TextField($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		const // Génération des ID pour le aria-describedby
-		textfield = wrap_snippet(TextField, function ($$anchor) {
-			validate_snippet_args(...arguments);
-
-			var fragment = root_2$4();
-			var node = first_child(fragment);
-
-			{
-				var consequent = ($$anchor) => {
-					{
-						let $0 = user_derived(() => disabled() ?? input()?.disabled);
-						let $1 = user_derived(() => input()?.id);
-
-						$$ownership_validator.binding('labelElement', Label, labelElement);
-
-						add_svelte_meta(
-							() => Label($$anchor, {
-								get required() {
-									return required();
-								},
-
-								get disabled() {
-									return get($0);
-								},
-
-								get text() {
-									return label();
-								},
-
-								get forId() {
-									return get($1);
-								},
-
-								get rootElement() {
-									return labelElement();
-								},
-
-								set rootElement($$value) {
-									labelElement($$value);
-								}
-							}),
-							'component',
-							TextField,
-							132,
-							8,
-							{ componentTag: 'Label' }
-						);
+					set id($$value) {
+						set(errorId, $$value, true);
+					},
+					get rootElement() {
+						return formErrorElement();
+					},
+					set rootElement($$value) {
+						formErrorElement($$value);
 					}
-				};
-
-				add_svelte_meta(
-					() => if_block(node, ($$render) => {
-						if (label()) $$render(consequent);
-					}),
-					'if',
-					TextField,
-					131,
-					4
-				);
+				});
 			}
-
-			var node_1 = sibling(node, 2);
-
-			{
-				var consequent_1 = ($$anchor) => {
-					var div = root$a();
-
-					html(div, description, true);
-					reset(div);
-					bind_this(div, ($$value) => descriptionElement($$value), () => descriptionElement());
-					template_effect(() => set_attribute(div, 'id', descriptionId));
-					append($$anchor, div);
-				};
-
-				add_svelte_meta(
-					() => if_block(node_1, ($$render) => {
-						if (description()) $$render(consequent_1);
-					}),
-					'if',
-					TextField,
-					141,
-					4
-				);
-			}
-
-			var node_2 = sibling(node_1, 2);
-
-			add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', TextField, 150, 4);
-
-			var node_3 = sibling(node_2, 2);
-
-			{
-				var consequent_2 = ($$anchor) => {
-					var div_1 = root_1$6();
-
-					html(div_1, () => get(charCountText), true);
-					reset(div_1);
-					bind_this(div_1, ($$value) => maxlengthElement($$value), () => maxlengthElement());
-
-					template_effect(() => {
-						set_attribute(div_1, 'id', charCountId);
-
-						set_class(div_1, 1, clsx([
-							'qc-textfield-charcount',
-							maxlengthReached() && 'qc-max-reached'
-						]));
-					});
-
-					append($$anchor, div_1);
-				};
-
-				add_svelte_meta(
-					() => if_block(node_3, ($$render) => {
-						if (maxlength() && strict_equals(maxlength(), null, false)) $$render(consequent_2);
-					}),
-					'if',
-					TextField,
-					152,
-					4
-				);
-			}
-
-			var node_4 = sibling(node_3, 2);
-
-			{
-				let $0 = user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
-				let $1 = user_derived(() => label() ? label() : input()?.getAttribute("aria-label"));
-
-				$$ownership_validator.binding('formErrorElement', FormError, formErrorElement);
-
-				add_svelte_meta(
-					() => FormError(node_4, {
-						get invalid() {
-							return invalid();
-						},
-
-						get invalidText() {
-							return get($0);
-						},
-
-						get label() {
-							return get($1);
-						},
-						extraClasses: ['qc-xs-mt'],
-						get id() {
-							return get(errorId);
-						},
-
-						set id($$value) {
-							set(errorId, $$value, true);
-						},
-
-						get rootElement() {
-							return formErrorElement();
-						},
-
-						set rootElement($$value) {
-							formErrorElement($$value);
-						}
-					}),
-					'component',
-					TextField,
-					166,
-					4,
-					{ componentTag: 'FormError' }
-				);
-			}
-
 			append($$anchor, fragment);
-		});
-
+		};
 		const lang = Utils.getPageLanguage();
-
-		let label = prop($$props, 'label', 7, ''),
-			required = prop($$props, 'required', 15, false),
-			description = prop($$props, 'description', 7),
-			size = prop($$props, 'size', 15),
-			maxlength = prop($$props, 'maxlength', 7),
-			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
-			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false),
-			value = prop($$props, 'value', 15, ""),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			describedBy = prop($$props, 'describedBy', 31, () => tag_proxy(proxy([]), 'describedBy')),
-			labelElement = prop($$props, 'labelElement', 15),
-			formErrorElement = prop($$props, 'formErrorElement', 15),
-			descriptionElement = prop($$props, 'descriptionElement', 15),
-			maxlengthElement = prop($$props, 'maxlengthElement', 15),
-			input = prop($$props, 'input', 7),
-			children = prop($$props, 'children', 7),
-			disabled = prop($$props, 'disabled', 7);
-
-		const webComponentMode = getContext('webComponentMode');
-		let errorId = tag(state(void 0), 'errorId');
-		let charCountText = tag(state(void 0), 'charCountText');
-		let rootElement = tag(state(void 0), 'rootElement');
-		let textFieldRow = tag(state(void 0), 'textFieldRow');
-
-		let defaultInvalidText = tag(
-			user_derived(() => {
-				if (!maxlengthReached()) {
-					return undefined;
-				}
-
-				return strict_equals(lang, 'fr')
-					? `La limite de caractères du champ ${label()} est dépassée.`
-					: `The character limit for the ${label()} field has been exceeded.`;
-			}),
-			'defaultInvalidText'
-		);
-
+		let label = prop($$props, "label", 7, ""), required = prop($$props, "required", 15, false), description = prop($$props, "description", 7), size = prop($$props, "size", 15), maxlength = prop($$props, "maxlength", 7), maxlengthReached = prop($$props, "maxlengthReached", 15, false), invalidAtSubmit = prop($$props, "invalidAtSubmit", 15, false), value = prop($$props, "value", 15, ""), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), describedBy = prop($$props, "describedBy", 31, () => proxy([])), labelElement = prop($$props, "labelElement", 15), formErrorElement = prop($$props, "formErrorElement", 15), descriptionElement = prop($$props, "descriptionElement", 15), maxlengthElement = prop($$props, "maxlengthElement", 15), input = prop($$props, "input", 7), children = prop($$props, "children", 7), disabled = prop($$props, "disabled", 7);
+		const webComponentMode = getContext("webComponentMode");
+		let errorId = /* @__PURE__ */ state(void 0);
+		let charCountText = /* @__PURE__ */ state(void 0);
+		let rootElement = /* @__PURE__ */ state(void 0);
+		let textFieldRow = /* @__PURE__ */ state(void 0);
+		let defaultInvalidText = /* @__PURE__ */ user_derived(() => {
+			if (!maxlengthReached()) return;
+			return lang === "fr" ? `La limite de caractères du champ ${label()} est dépassée.` : `The character limit for the ${label()} field has been exceeded.`;
+		});
 		onMount(() => {
 			if (webComponentMode) return;
-
-			if (!input()) {
-				input(get(rootElement)?.querySelector('input,textarea'));
-			}
-
+			if (!input()) input(get(rootElement)?.querySelector("input,textarea"));
 			onMountInput(input(), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => value(valueParam), (invalidParam) => invalid(invalidParam), (requiredParam) => {
-				if (requiredParam) {
-					required(requiredParam);
-				}
+				if (requiredParam) required(requiredParam);
 			});
 		});
-
 		user_effect(() => {
 			if (size()) return;
 			if (!input()) return;
-
-			size(strict_equals(input().tagName, 'INPUT') ? 'md' : 'lg');
+			size(input().tagName === "INPUT" ? "md" : "lg");
 		});
-
 		user_effect(() => {
 			invalidAtSubmit(required() && !value() || maxlengthReached());
 		});
-
 		user_effect(() => {
 			if (webComponentMode) return;
-
-			if (invalid() && get(textFieldRow)) {
-				get(textFieldRow).appendChild(formErrorElement());
-			}
+			if (invalid() && get(textFieldRow)) get(textFieldRow).appendChild(formErrorElement());
 		});
-
 		user_effect(() => {
-			if (maxlength() && maxlength() < 1) {
-				maxlength(0);
-			}
+			if (maxlength() && maxlength() < 1) maxlength(0);
 		});
-
 		user_effect(() => {
-			set(charCountText, '');
-
+			set(charCountText, "");
 			if (!maxlength()) return;
-
 			const currentLength = value()?.length || 0;
 			const remaining = maxlength() - currentLength;
 			const over = Math.abs(remaining);
-
 			maxlengthReached(remaining < 0);
-
-			const s = over > 1 ? 's' : '';
-
-			set(
-				charCountText,
-				remaining >= 0
-					? strict_equals(lang, 'fr')
-						? `${remaining} caractère${s} restant${s}`
-						: `${remaining} character${s} remaining`
-					: strict_equals(lang, 'fr')
-						? `${over} caractère${s} en trop`
-						: `${over} character${s} over the limit`,
-				true
-			);
+			const s = over > 1 ? "s" : "";
+			set(charCountText, remaining >= 0 ? lang === "fr" ? `${remaining} caractère${s} restant${s}` : `${remaining} character${s} remaining` : lang === "fr" ? `${over} caractère${s} en trop` : `${over} character${s} over the limit`, true);
 		});
-
-		const // Génération des ID pour le aria-describedby
-		descriptionId = Utils.generateId('description-');
-
-		const charCountId = Utils.generateId('charcount-');
-
+		const descriptionId = Utils.generateId("description-");
+		const charCountId = Utils.generateId("charcount-");
 		user_effect(() => {
 			if (!input()) return;
-
 			input().setAttribute("aria-describedby", [
 				description() && descriptionId,
 				invalid() && get(errorId),
 				maxlength() && charCountId
-			].filter(Boolean).join(' '));
-
-			input().setAttribute('aria-invalid', invalid());
-			input().setAttribute('aria-required', required());
+			].filter(Boolean).join(" "));
+			input().setAttribute("aria-invalid", invalid());
+			input().setAttribute("aria-required", required());
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get label() {
 				return label();
 			},
-
-			set label($$value = '') {
+			set label($$value = "") {
 				label($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get description() {
 				return description();
 			},
-
 			set description($$value) {
 				description($$value);
 				flushSync();
 			},
-
 			get size() {
 				return size();
 			},
-
 			set size($$value) {
 				size($$value);
 				flushSync();
 			},
-
 			get maxlength() {
 				return maxlength();
 			},
-
 			set maxlength($$value) {
 				maxlength($$value);
 				flushSync();
 			},
-
 			get maxlengthReached() {
 				return maxlengthReached();
 			},
-
 			set maxlengthReached($$value = false) {
 				maxlengthReached($$value);
 				flushSync();
 			},
-
 			get invalidAtSubmit() {
 				return invalidAtSubmit();
 			},
-
 			set invalidAtSubmit($$value = false) {
 				invalidAtSubmit($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value = "") {
 				value($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get describedBy() {
 				return describedBy();
 			},
-
 			set describedBy($$value = []) {
 				describedBy($$value);
 				flushSync();
 			},
-
 			get labelElement() {
 				return labelElement();
 			},
-
 			set labelElement($$value) {
 				labelElement($$value);
 				flushSync();
 			},
-
 			get formErrorElement() {
 				return formErrorElement();
 			},
-
 			set formErrorElement($$value) {
 				formErrorElement($$value);
 				flushSync();
 			},
-
 			get descriptionElement() {
 				return descriptionElement();
 			},
-
 			set descriptionElement($$value) {
 				descriptionElement($$value);
 				flushSync();
 			},
-
 			get maxlengthElement() {
 				return maxlengthElement();
 			},
-
 			set maxlengthElement($$value) {
 				maxlengthElement($$value);
 				flushSync();
 			},
-
 			get input() {
 				return input();
 			},
-
 			set input($$value) {
 				input($$value);
 				flushSync();
 			},
-
 			get children() {
 				return children();
 			},
-
 			set children($$value) {
 				children($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
 			}
 		};
-
 		var fragment_2 = comment();
 		var node_5 = first_child(fragment_2);
-
-		{
-			var consequent_3 = ($$anchor) => {
-				add_svelte_meta(() => textfield($$anchor), 'render', TextField, 175, 4);
-			};
-
-			var alternate = ($$anchor) => {
-				var div_2 = root_3$1();
-				var node_6 = child(div_2);
-
-				add_svelte_meta(() => textfield(node_6), 'render', TextField, 182, 8);
-				reset(div_2);
-				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
-
-				template_effect(() => {
-					set_attribute(div_2, 'size', size());
-					set_attribute(div_2, 'invalid', invalid() ? true : undefined);
-				});
-
-				append($$anchor, div_2);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_5, ($$render) => {
-					if (webComponentMode) $$render(consequent_3); else $$render(alternate, -1);
-				}),
-				'if',
-				TextField,
-				174,
-				0
-			);
-		}
-
+		var consequent_3 = ($$anchor) => {
+			textfield($$anchor);
+		};
+		var alternate = ($$anchor) => {
+			var div_2 = root_3$1();
+			var node_6 = child(div_2);
+			textfield(node_6);
+			reset(div_2);
+			bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
+			template_effect(() => {
+				set_attribute(div_2, "size", size());
+				set_attribute(div_2, "invalid", invalid() ? true : void 0);
+			});
+			append($$anchor, div_2);
+		};
+		if_block(node_5, ($$render) => {
+			if (webComponentMode) $$render(consequent_3);
+			else $$render(alternate, -1);
+		});
 		append($$anchor, fragment_2);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		TextField,
-		{
-			label: {},
-			required: {},
-			description: {},
-			size: {},
-			maxlength: {},
-			maxlengthReached: {},
-			invalidAtSubmit: {},
-			value: {},
-			invalid: {},
-			invalidText: {},
-			describedBy: {},
-			labelElement: {},
-			formErrorElement: {},
-			descriptionElement: {},
-			maxlengthElement: {},
-			input: {},
-			children: {},
-			disabled: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
-
-	var root$9 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[116, 0]]);
-
+	create_custom_element(TextField, {
+		label: {},
+		required: {},
+		description: {},
+		size: {},
+		maxlength: {},
+		maxlengthReached: {},
+		invalidAtSubmit: {},
+		value: {},
+		invalid: {},
+		invalidText: {},
+		describedBy: {},
+		labelElement: {},
+		formErrorElement: {},
+		descriptionElement: {},
+		maxlengthElement: {},
+		input: {},
+		children: {},
+		disabled: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/TextField/TextFieldWC.svelte
+	var root$9 = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function TextFieldWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		setContext('webComponentMode', true);
-
-		let invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			label = prop($$props, 'label', 7),
-			description = prop($$props, 'description', 7),
-			required = prop($$props, 'required', 7),
-			maxlength = prop($$props, 'maxlength', 7),
-			size = prop($$props, 'size', 7),
-			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
-			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false);
-
-		let labelElement = tag(state(void 0), 'labelElement');
-		let formErrorElement = tag(state(void 0), 'formErrorElement');
-		let descriptionElement = tag(state(void 0), 'descriptionElement');
-		let maxlengthElement = tag(state(void 0), 'maxlengthElement');
-		let value = tag(state(void 0), 'value');
-		let input = tag(state(void 0), 'input');
-		let textFieldRow = tag(state(void 0), 'textFieldRow');
-
+		setContext("webComponentMode", true);
+		let invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), label = prop($$props, "label", 7), description = prop($$props, "description", 7), required = prop($$props, "required", 7), maxlength = prop($$props, "maxlength", 7), size = prop($$props, "size", 7), maxlengthReached = prop($$props, "maxlengthReached", 15, false), invalidAtSubmit = prop($$props, "invalidAtSubmit", 15, false);
+		let labelElement = /* @__PURE__ */ state(void 0);
+		let formErrorElement = /* @__PURE__ */ state(void 0);
+		let descriptionElement = /* @__PURE__ */ state(void 0);
+		let maxlengthElement = /* @__PURE__ */ state(void 0);
+		let value = /* @__PURE__ */ state(void 0);
+		let input = /* @__PURE__ */ state(void 0);
+		let textFieldRow = /* @__PURE__ */ state(void 0);
 		onMount(() => {
-			const initialLabelElement = $$props.$$host?.querySelector('label');
-
+			const initialLabelElement = $$props.$$host?.querySelector("label");
 			if (initialLabelElement) {
 				label(initialLabelElement.innerHTML);
 				initialLabelElement.remove();
 			}
-
-			set(input, $$props.$$host?.querySelector('input,textarea'), true);
-
+			set(input, $$props.$$host?.querySelector("input,textarea"), true);
 			onMountInput(get(input), (textFieldRowParam) => set(textFieldRow, textFieldRowParam, true), (valueParam) => set(value, valueParam, true), (invalidParam) => invalid(invalidParam), (requiredParam) => {
-				if (requiredParam) {
-					required(requiredParam);
-				}
+				if (requiredParam) required(requiredParam);
 			});
 		});
-
 		user_effect(() => {
 			if (!size()) return;
-
-			$$props.$$host.setAttribute('size', size());
+			$$props.$$host.setAttribute("size", size());
 		});
-
 		user_effect(() => {
 			if (!get(input)) return;
-
-			if (get(labelElement)) {
-				get(input).before(get(labelElement));
-			}
-
-			if (description()) {
-				get(input).before(get(descriptionElement));
-			}
-
-			if (maxlength()) {
-				get(input).after(get(maxlengthElement));
-			}
+			if (get(labelElement)) get(input).before(get(labelElement));
+			if (description()) get(input).before(get(descriptionElement));
+			if (maxlength()) get(input).after(get(maxlengthElement));
 		});
-
 		user_effect(() => {
 			if (!get(formErrorElement)) return;
-
-			if (get(textFieldRow)) {
-				get(textFieldRow).appendChild(get(formErrorElement));
-			} else {
-				if (get(maxlengthElement)) {
-					get(maxlengthElement).after(get(formErrorElement));
-				} else {
-					get(input).after(get(formErrorElement));
-				}
-			}
+			if (get(textFieldRow)) get(textFieldRow).appendChild(get(formErrorElement));
+			else if (get(maxlengthElement)) get(maxlengthElement).after(get(formErrorElement));
+			else get(input).after(get(formErrorElement));
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get description() {
 				return description();
 			},
-
 			set description($$value) {
 				description($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value) {
 				required($$value);
 				flushSync();
 			},
-
 			get maxlength() {
 				return maxlength();
 			},
-
 			set maxlength($$value) {
 				maxlength($$value);
 				flushSync();
 			},
-
 			get size() {
 				return size();
 			},
-
 			set size($$value) {
 				size($$value);
 				flushSync();
 			},
-
 			get maxlengthReached() {
 				return maxlengthReached();
 			},
-
 			set maxlengthReached($$value = false) {
 				maxlengthReached($$value);
 				flushSync();
 			},
-
 			get invalidAtSubmit() {
 				return invalidAtSubmit();
 			},
-
 			set invalidAtSubmit($$value = false) {
 				invalidAtSubmit($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = root$9();
 		var node = first_child(fragment);
-
-		{
-			$$ownership_validator.binding('size', TextField, size);
-			$$ownership_validator.binding('invalid', TextField, invalid);
-			$$ownership_validator.binding('invalidText', TextField, invalidText);
-			$$ownership_validator.binding('maxlengthReached', TextField, maxlengthReached);
-			$$ownership_validator.binding('invalidAtSubmit', TextField, invalidAtSubmit);
-
-			add_svelte_meta(
-				() => TextField(node, {
-					get label() {
-						return label();
-					},
-
-					get description() {
-						return description();
-					},
-
-					get input() {
-						return get(input);
-					},
-
-					get required() {
-						return required();
-					},
-
-					get maxlength() {
-						return maxlength();
-					},
-
-					get value() {
-						return get(value);
-					},
-
-					get size() {
-						return size();
-					},
-
-					set size($$value) {
-						size($$value);
-					},
-
-					get invalid() {
-						return invalid();
-					},
-
-					set invalid($$value) {
-						invalid($$value);
-					},
-
-					get invalidText() {
-						return invalidText();
-					},
-
-					set invalidText($$value) {
-						invalidText($$value);
-					},
-
-					get maxlengthReached() {
-						return maxlengthReached();
-					},
-
-					set maxlengthReached($$value) {
-						maxlengthReached($$value);
-					},
-
-					get invalidAtSubmit() {
-						return invalidAtSubmit();
-					},
-
-					set invalidAtSubmit($$value) {
-						invalidAtSubmit($$value);
-					},
-
-					get labelElement() {
-						return get(labelElement);
-					},
-
-					set labelElement($$value) {
-						set(labelElement, $$value, true);
-					},
-
-					get formErrorElement() {
-						return get(formErrorElement);
-					},
-
-					set formErrorElement($$value) {
-						set(formErrorElement, $$value, true);
-					},
-
-					get descriptionElement() {
-						return get(descriptionElement);
-					},
-
-					set descriptionElement($$value) {
-						set(descriptionElement, $$value, true);
-					},
-
-					get maxlengthElement() {
-						return get(maxlengthElement);
-					},
-
-					set maxlengthElement($$value) {
-						set(maxlengthElement, $$value, true);
-					},
-
-					children: wrap_snippet(TextFieldWC, ($$anchor, $$slotProps) => {
-						var fragment_1 = comment();
-						var node_1 = first_child(fragment_1);
-
-						slot(node_1, $$props, 'default', {}, null);
-						append($$anchor, fragment_1);
-					}),
-					$$slots: { default: true }
-				}),
-				'component',
-				TextFieldWC,
-				96,
-				0,
-				{ componentTag: 'TextField' }
-			);
-		}
-
-		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
-		append($$anchor, fragment);
-
-		return pop($$exports);
-	}
-
-	customElements.define('qc-textfield', create_custom_element(
-		TextFieldWC,
-		{
-			label: { attribute: 'label', type: 'String' },
-			required: { attribute: 'required', type: 'Boolean' },
-			description: { attribute: 'description', type: 'String' },
-			size: { attribute: 'size', type: 'String' },
-			maxlength: { attribute: 'max-length', type: 'Number' },
-			invalid: { attribute: 'invalid', reflect: true, type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' },
-			disabled: { attribute: 'disabled' },
-			maxlengthReached: {},
-			invalidAtSubmit: {}
-		},
-		['default'],
-		[],
-		{ mode: 'open' }
-	));
-
-	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
-
-	var root$8 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
-
-	function ToggleSwitch($$anchor, $$props) {
-		check_target(new.target);
-		push($$props, true);
-
-		let label = prop($$props, 'label', 7),
-			id = prop($$props, 'id', 7),
-			checked = prop($$props, 'checked', 15, false),
-			disabled = prop($$props, 'disabled', 15, false),
-			justified = prop($$props, 'justified', 7),
-			textAlign = prop($$props, 'textAlign', 7);
-
-		const usedId = tag(user_derived(() => "toggle-switch-" + (id() ? id() : Math.random().toString(36))), 'usedId');
-		let usedLabelTextAlignment = tag(user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start"), 'usedLabelTextAlignment');
-
-		var $$exports = {
-			...legacy_api(),
+		TextField(node, {
 			get label() {
 				return label();
 			},
-
+			get description() {
+				return description();
+			},
+			get input() {
+				return get(input);
+			},
+			get required() {
+				return required();
+			},
+			get maxlength() {
+				return maxlength();
+			},
+			get value() {
+				return get(value);
+			},
+			get size() {
+				return size();
+			},
+			set size($$value) {
+				size($$value);
+			},
+			get invalid() {
+				return invalid();
+			},
+			set invalid($$value) {
+				invalid($$value);
+			},
+			get invalidText() {
+				return invalidText();
+			},
+			set invalidText($$value) {
+				invalidText($$value);
+			},
+			get maxlengthReached() {
+				return maxlengthReached();
+			},
+			set maxlengthReached($$value) {
+				maxlengthReached($$value);
+			},
+			get invalidAtSubmit() {
+				return invalidAtSubmit();
+			},
+			set invalidAtSubmit($$value) {
+				invalidAtSubmit($$value);
+			},
+			get labelElement() {
+				return get(labelElement);
+			},
+			set labelElement($$value) {
+				set(labelElement, $$value, true);
+			},
+			get formErrorElement() {
+				return get(formErrorElement);
+			},
+			set formErrorElement($$value) {
+				set(formErrorElement, $$value, true);
+			},
+			get descriptionElement() {
+				return get(descriptionElement);
+			},
+			set descriptionElement($$value) {
+				set(descriptionElement, $$value, true);
+			},
+			get maxlengthElement() {
+				return get(maxlengthElement);
+			},
+			set maxlengthElement($$value) {
+				set(maxlengthElement, $$value, true);
+			},
+			children: ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				slot(first_child(fragment_1), $$props, "default", {}, null);
+				append($$anchor, fragment_1);
+			},
+			$$slots: { default: true }
+		});
+		var link = sibling(node, 2);
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
+		append($$anchor, fragment);
+		return pop($$exports);
+	}
+	customElements.define("qc-textfield", create_custom_element(TextFieldWC, {
+		label: {
+			attribute: "label",
+			type: "String"
+		},
+		required: {
+			attribute: "required",
+			type: "Boolean"
+		},
+		description: {
+			attribute: "description",
+			type: "String"
+		},
+		size: {
+			attribute: "size",
+			type: "String"
+		},
+		maxlength: {
+			attribute: "max-length",
+			type: "Number"
+		},
+		invalid: {
+			attribute: "invalid",
+			reflect: true,
+			type: "Boolean"
+		},
+		invalidText: {
+			attribute: "invalid-text",
+			type: "String"
+		},
+		disabled: { attribute: "disabled" },
+		maxlengthReached: {},
+		invalidAtSubmit: {}
+	}, ["default"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/components/ToggleSwitch/ToggleSwitch.svelte
+	var root$8 = /* @__PURE__ */ from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`);
+	function ToggleSwitch($$anchor, $$props) {
+		push($$props, true);
+		let label = prop($$props, "label", 7), id = prop($$props, "id", 7), checked = prop($$props, "checked", 15, false), disabled = prop($$props, "disabled", 15, false), justified = prop($$props, "justified", 7), textAlign = prop($$props, "textAlign", 7);
+		const usedId = /* @__PURE__ */ user_derived(() => "toggle-switch-" + (id() ? id() : Math.random().toString(36)));
+		let usedLabelTextAlignment = /* @__PURE__ */ user_derived(() => textAlign()?.toLowerCase() === "end" ? "end" : "start");
+		var $$exports = {
+			get label() {
+				return label();
+			},
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get checked() {
 				return checked();
 			},
-
 			set checked($$value = false) {
 				checked($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get justified() {
 				return justified();
 			},
-
 			set justified($$value) {
 				justified($$value);
 				flushSync();
 			},
-
 			get textAlign() {
 				return textAlign();
 			},
-
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
 			}
 		};
-
 		var label_1 = root$8();
 		var input = child(label_1);
-
 		remove_input_defaults(input);
-
 		var span = sibling(input, 2);
-
 		html(span, label, true);
 		reset(span);
 		next(2);
 		reset(label_1);
-
 		template_effect(() => {
 			set_class(label_1, 1, clsx(["qc-switch", justified() && "qc-switch-justified"]));
-			set_attribute(label_1, 'for', get(usedId));
-			set_attribute(input, 'id', get(usedId));
+			set_attribute(label_1, "for", get(usedId));
+			set_attribute(input, "id", get(usedId));
 			input.disabled = disabled();
-
-			set_class(span, 1, clsx([
-				"qc-switch-label",
-				strict_equals(get(usedLabelTextAlignment), "end") && "qc-switch-label-end"
-			]));
+			set_class(span, 1, clsx(["qc-switch-label", get(usedLabelTextAlignment) === "end" && "qc-switch-label-end"]));
 		});
-
-		bind_checked(
-			input,
-			function get() {
-				return checked();
-			},
-			function set($$value) {
-				checked($$value);
-			}
-		);
-
+		bind_checked(input, checked);
 		append($$anchor, label_1);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		ToggleSwitch,
-		{
-			label: {},
-			id: {},
-			checked: {},
-			disabled: {},
-			justified: {},
-			textAlign: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	ToggleSwitchWC[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte';
-
-	var rest_excludes$4 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'id',
-		'label',
-		'checked',
-		'disabled',
-		'justified',
-		'textAlign'
+	create_custom_element(ToggleSwitch, {
+		label: {},
+		id: {},
+		checked: {},
+		disabled: {},
+		justified: {},
+		textAlign: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte
+	var rest_excludes$4 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"id",
+		"label",
+		"checked",
+		"disabled",
+		"justified",
+		"textAlign"
 	]);
-
 	function ToggleSwitchWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
-		let id = prop($$props, 'id', 7),
-			label = prop($$props, 'label', 7),
-			checked = prop($$props, 'checked', 15, false),
-			disabled = prop($$props, 'disabled', 7, false),
-			justified = prop($$props, 'justified', 7, false),
-			textAlign = prop($$props, 'textAlign', 7),
-			rest = rest_props($$props, rest_excludes$4);
-
-		let parent = tag(state(void 0), 'parent');
+		let id = prop($$props, "id", 7), label = prop($$props, "label", 7), checked = prop($$props, "checked", 15, false), disabled = prop($$props, "disabled", 7, false), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$4);
+		let parent = /* @__PURE__ */ state(void 0);
 		let index;
-
 		onMount(() => {
 			set(parent, $$props.$$host.closest("qc-toggle-switch-group"), true);
-
 			if (get(parent)) {
 				get(parent).items.push({
 					id: id(),
@@ -16631,3478 +10558,2276 @@
 					justified: justified(),
 					textAlign: textAlign()
 				});
-
 				index = get(parent).items.length - 1;
 			}
 		});
-
 		onDestroy(() => {
 			get(parent).items.splice(index, 1);
 		});
-
 		user_effect(() => {
 			if (get(parent)) {
 				checked(get(parent).items[index].checked);
 				$$props.$$host.dispatchEvent(new Event("change"));
 			}
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get checked() {
 				return checked();
 			},
-
 			set checked($$value = false) {
 				checked($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get justified() {
 				return justified();
 			},
-
 			set justified($$value = false) {
 				justified($$value);
 				flushSync();
 			},
-
 			get textAlign() {
 				return textAlign();
 			},
-
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent = ($$anchor) => {
-				{
-					$$ownership_validator.binding('checked', ToggleSwitch, checked);
-
-					add_svelte_meta(
-						() => ToggleSwitch($$anchor, spread_props(
-							{
-								get label() {
-									return label();
-								},
-
-								get disabled() {
-									return disabled();
-								},
-
-								get justified() {
-									return justified();
-								},
-
-								get textAlign() {
-									return textAlign();
-								}
-							},
-							() => rest,
-							{
-								get checked() {
-									return checked();
-								},
-
-								set checked($$value) {
-									checked($$value);
-								}
-							}
-						)),
-						'component',
-						ToggleSwitchWC,
-						57,
-						4,
-						{ componentTag: 'ToggleSwitch' }
-					);
+		var consequent = ($$anchor) => {
+			ToggleSwitch($$anchor, spread_props({
+				get label() {
+					return label();
+				},
+				get disabled() {
+					return disabled();
+				},
+				get justified() {
+					return justified();
+				},
+				get textAlign() {
+					return textAlign();
 				}
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (!get(parent)) $$render(consequent);
-				}),
-				'if',
-				ToggleSwitchWC,
-				56,
-				0
-			);
-		}
-
+			}, () => rest, {
+				get checked() {
+					return checked();
+				},
+				set checked($$value) {
+					checked($$value);
+				}
+			}));
+		};
+		if_block(node, ($$render) => {
+			if (!get(parent)) $$render(consequent);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-toggle-switch', create_custom_element(
-		ToggleSwitchWC,
-		{
-			id: { attribute: 'id', type: 'String' },
-			label: { attribute: 'label', type: 'String' },
-			checked: { attribute: 'checked', reflect: true, type: 'Boolean' },
-			disabled: { attribute: 'disabled', reflect: true, type: 'Boolean' },
-			justified: { attribute: 'justified', reflect: true, type: 'Boolean' },
-			textAlign: { attribute: 'text-align', type: 'String' }
+	customElements.define("qc-toggle-switch", create_custom_element(ToggleSwitchWC, {
+		id: {
+			attribute: "id",
+			type: "String"
 		},
-		[],
-		[]
-	));
-
-	ToggleSwitchGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte';
-
-	var rest_excludes$3 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'disabled',
-		'items',
-		'justified',
-		'textAlign',
-		'maxWidth'
+		label: {
+			attribute: "label",
+			type: "String"
+		},
+		checked: {
+			attribute: "checked",
+			reflect: true,
+			type: "Boolean"
+		},
+		disabled: {
+			attribute: "disabled",
+			reflect: true,
+			type: "Boolean"
+		},
+		justified: {
+			attribute: "justified",
+			reflect: true,
+			type: "Boolean"
+		},
+		textAlign: {
+			attribute: "text-align",
+			type: "String"
+		}
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte
+	var rest_excludes$3 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"disabled",
+		"items",
+		"justified",
+		"textAlign",
+		"maxWidth"
 	]);
-
 	function ToggleSwitchGroupWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let disabled = prop($$props, 'disabled', 15, false),
-			items = prop($$props, 'items', 31, () => tag_proxy(proxy([]), 'items')),
-			justified = prop($$props, 'justified', 7, false),
-			textAlign = prop($$props, 'textAlign', 7),
-			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
-			rest = rest_props($$props, rest_excludes$3);
-
-		let usedWidth = tag(
-			user_derived(() => {
-				if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d*\.?\d*rem$/) || maxWidth().match(/^\d*\.?\d*em$/) || maxWidth().match(/^\d*\.?\d*%$/)) {
-					return maxWidth();
-				} else {
-					return "fit-content";
-				}
-			}),
-			'usedWidth'
-		);
-
+		let disabled = prop($$props, "disabled", 15, false), items = prop($$props, "items", 31, () => proxy([])), justified = prop($$props, "justified", 7, false), textAlign = prop($$props, "textAlign", 7), maxWidth = prop($$props, "maxWidth", 7, "fit-content"), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$3);
+		let usedWidth = /* @__PURE__ */ user_derived(() => {
+			if (maxWidth().match(/^\d+px$/) || maxWidth().match(/^\d*\.?\d*rem$/) || maxWidth().match(/^\d*\.?\d*em$/) || maxWidth().match(/^\d*\.?\d*%$/)) return maxWidth();
+			else return "fit-content";
+		});
 		var $$exports = {
-			...legacy_api(),
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get items() {
 				return items();
 			},
-
 			set items($$value = []) {
 				items($$value);
 				flushSync();
 			},
-
 			get justified() {
 				return justified();
 			},
-
 			set justified($$value = false) {
 				justified($$value);
 				flushSync();
 			},
-
 			get textAlign() {
 				return textAlign();
 			},
-
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
 			},
-
 			get maxWidth() {
 				return maxWidth();
 			},
-
 			set maxWidth($$value = "fit-content") {
 				maxWidth($$value);
 				flushSync();
 			}
 		};
-
-		add_svelte_meta(
-			() => ChoiceGroup($$anchor, spread_props(
-				{
-					elementsGap: 'md',
-					get maxWidth() {
-						return get(usedWidth);
+		ChoiceGroup($$anchor, spread_props({
+			elementsGap: "md",
+			get maxWidth() {
+				return get(usedWidth);
+			}
+		}, () => rest, {
+			children: ($$anchor, $$slotProps) => {
+				var fragment_1 = comment();
+				each(first_child(fragment_1), 17, items, index, ($$anchor, item, $$index) => {
+					{
+						let $0 = /* @__PURE__ */ user_derived(() => get(item).disabled ?? disabled());
+						let $1 = /* @__PURE__ */ user_derived(() => justified() ?? get(item).justified);
+						let $2 = /* @__PURE__ */ user_derived(() => textAlign() ?? get(item).textAlign);
+						ToggleSwitch($$anchor, {
+							get id() {
+								return get(item).id;
+							},
+							get label() {
+								return get(item).label;
+							},
+							get disabled() {
+								return get($0);
+							},
+							get justified() {
+								return get($1);
+							},
+							get textAlign() {
+								return get($2);
+							},
+							get checked() {
+								return get(item).checked;
+							},
+							set checked($$value) {
+								get(item).checked = $$value;
+							}
+						});
 					}
-				},
-				() => rest,
-				{
-					children: wrap_snippet(ToggleSwitchGroupWC, ($$anchor, $$slotProps) => {
-						var fragment_1 = comment();
-						var node = first_child(fragment_1);
-
-						add_svelte_meta(
-							() => each(node, 17, items, index, ($$anchor, item, $$index) => {
-								validate_binding('bind:checked={item.checked}', [], () => get(item), () => 'checked', 49, 12);
-
-								{
-									let $0 = user_derived(() => get(item).disabled ?? disabled());
-									let $1 = user_derived(() => justified() ?? get(item).justified);
-									let $2 = user_derived(() => textAlign() ?? get(item).textAlign);
-
-									add_svelte_meta(
-										() => ToggleSwitch($$anchor, {
-											get id() {
-												return get(item).id;
-											},
-
-											get label() {
-												return get(item).label;
-											},
-
-											get disabled() {
-												return get($0);
-											},
-
-											get justified() {
-												return get($1);
-											},
-
-											get textAlign() {
-												return get($2);
-											},
-
-											get checked() {
-												return get(item).checked;
-											},
-
-											set checked($$value) {
-												(get(item).checked = $$value);
-											}
-										}),
-										'component',
-										ToggleSwitchGroupWC,
-										46,
-										8,
-										{ componentTag: 'ToggleSwitch' }
-									);
-								}
-							}),
-							'each',
-							ToggleSwitchGroupWC,
-							45,
-							4
-						);
-
-						append($$anchor, fragment_1);
-					}),
-					$$slots: { default: true }
-				}
-			)),
-			'component',
-			ToggleSwitchGroupWC,
-			40,
-			0,
-			{ componentTag: 'ChoiceGroup' }
-		);
-
+				});
+				append($$anchor, fragment_1);
+			},
+			$$slots: { default: true }
+		}));
 		return pop($$exports);
 	}
-
-	customElements.define('qc-toggle-switch-group', create_custom_element(
-		ToggleSwitchGroupWC,
-		{
-			legend: { attribute: 'legend', type: 'String' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
-			justified: { attribute: 'justified', type: 'Boolean' },
-			textAlign: { attribute: 'text-align', type: 'String' },
-			maxWidth: { attribute: 'max-width', type: 'String' },
-			items: {}
+	customElements.define("qc-toggle-switch-group", create_custom_element(ToggleSwitchGroupWC, {
+		legend: {
+			attribute: "legend",
+			type: "String"
 		},
-		[],
-		[]
-	));
-
-	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
-
-	var root$7 = add_locations(from_html(`<span class="qc-sr-only"></span>`), DropdownListItemsSingle[FILENAME], [[135, 20]]);
-	var root_1$5 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[119, 12]]);
-	var root_2$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[117, 4]]);
-
+		disabled: {
+			attribute: "disabled",
+			type: "Boolean"
+		},
+		justified: {
+			attribute: "justified",
+			type: "Boolean"
+		},
+		textAlign: {
+			attribute: "text-align",
+			type: "String"
+		},
+		maxWidth: {
+			attribute: "max-width",
+			type: "String"
+		},
+		items: {}
+	}, [], []));
+	//#endregion
+	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte
+	var root$7 = /* @__PURE__ */ from_html(`<span class="qc-sr-only"></span>`);
+	var root_1$5 = /* @__PURE__ */ from_html(`<li tabindex="0" role="option"><!></li>`);
+	var root_2$3 = /* @__PURE__ */ from_html(`<ul></ul>`);
 	function DropdownListItemsSingle($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
 		const selectedElementCLass = "qc-dropdown-list-single-selected";
-
-		let items = prop($$props, 'items', 7),
-			displayedItems = prop($$props, 'displayedItems', 7),
-			placeholder = prop($$props, 'placeholder', 7),
-			value = prop($$props, 'value', 23, () => []),
-			onSelect = prop($$props, 'onSelect', 7, () => {}),
-			handleExit = prop($$props, 'handleExit', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
-			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
-
-		let displayedItemsElements = tag(state(proxy([])), 'displayedItemsElements');
-
+		let items = prop($$props, "items", 7), displayedItems = prop($$props, "displayedItems", 7), placeholder = prop($$props, "placeholder", 7), value = prop($$props, "value", 23, () => []), onSelect = prop($$props, "onSelect", 7, () => {}), handleExit = prop($$props, "handleExit", 7, () => {}), focusOnOuterElement = prop($$props, "focusOnOuterElement", 7, () => {}), handlePrintableCharacter = prop($$props, "handlePrintableCharacter", 7, () => {});
+		let displayedItemsElements = /* @__PURE__ */ state(proxy([]));
 		user_effect(() => {
-			if (strict_equals(get(displayedItemsElements).length, displayedItems().length, false)) {
-				set(displayedItemsElements, new Array(displayedItems().length), true);
-			}
+			if (get(displayedItemsElements).length !== displayedItems().length) set(displayedItemsElements, new Array(displayedItems().length), true);
 		});
-
 		function focusOnFirstElement() {
-			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
-				get(displayedItemsElements)[0].focus();
-			}
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) get(displayedItemsElements)[0].focus();
 		}
-
 		function focusOnLastElement() {
-			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
-				get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
-			}
+			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
 		}
-
 		function focusOnFirstMatchingElement(passedValue) {
 			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
-				const foundElement = get(displayedItemsElements).find((el) => strict_equals(el.dataset.itemValue.toString(), passedValue.toString()));
-
-				if (foundElement) {
-					foundElement.focus();
-				}
+				const foundElement = get(displayedItemsElements).find((el) => el.dataset.itemValue.toString() === passedValue.toString());
+				if (foundElement) foundElement.focus();
 			}
 		}
-
 		function handleSelection(event, item) {
 			event.preventDefault();
-
-			if (!item.disabled) {
-				onSelect()(item.value);
-			}
+			if (!item.disabled) onSelect()(item.value);
 		}
-
 		function handleMouseUp(event, item) {
 			handleSelection(event, item);
 		}
-
 		function handleComboKey(event, index, item) {
-			if (strict_equals(event.key, "ArrowDown")) {
+			if (event.key === "ArrowDown") {
 				event.preventDefault();
 				event.stopPropagation();
-
-				if (get(displayedItemsElements).length > 0 && index < get(displayedItemsElements).length - 1) {
-					get(displayedItemsElements)[index + 1].focus();
-				}
+				if (get(displayedItemsElements).length > 0 && index < get(displayedItemsElements).length - 1) get(displayedItemsElements)[index + 1].focus();
 			}
-
-			if (strict_equals(event.key, "ArrowUp")) {
+			if (event.key === "ArrowUp") {
 				event.preventDefault();
 				event.stopPropagation();
-
-				if (get(displayedItemsElements).length > 0 && index > 0) {
-					get(displayedItemsElements)[index - 1].focus();
-				} else {
-					focusOnOuterElement()();
-				}
+				if (get(displayedItemsElements).length > 0 && index > 0) get(displayedItemsElements)[index - 1].focus();
+				else focusOnOuterElement()();
 			}
-
-			if (strict_equals(event.key, "Enter") || strict_equals(event.key, " ")) {
-				handleSelection(event, item);
-			}
-
+			if (event.key === "Enter" || event.key === " ") handleSelection(event, item);
 			tick().then(() => {
-				if (canExit(event, index)) {
-					handleExit()(event.key);
-				}
+				if (canExit(event, index)) handleExit()(event.key);
 			}).catch(console.error);
 		}
-
 		function handleKeyDown(event, index, item) {
-			if (event.key.match(/^\w$/i)) {
-				handlePrintableCharacter()(event);
-			} else {
-				handleComboKey(event, index, item);
-			}
+			if (event.key.match(/^\w$/i)) handlePrintableCharacter()(event);
+			else handleComboKey(event, index, item);
 		}
-
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
+			return event.key === "Escape" || !event.shiftKey && event.key === "Tab" && index === displayedItems().length - 1;
 		}
-
 		function itemsHaveIds() {
 			let valid = true;
-
 			displayedItems().forEach((item) => {
-				if (!item.id) {
-					valid = false;
-				}
+				if (!item.id) valid = false;
 			});
-
 			return valid;
 		}
-
 		var $$exports = {
-			...legacy_api(),
-			get focusOnFirstElement() {
-				return focusOnFirstElement;
-			},
-
-			get focusOnLastElement() {
-				return focusOnLastElement;
-			},
-
-			get focusOnFirstMatchingElement() {
-				return focusOnFirstMatchingElement;
-			},
-
+			focusOnFirstElement,
+			focusOnLastElement,
+			focusOnFirstMatchingElement,
 			get items() {
 				return items();
 			},
-
 			set items($$value) {
 				items($$value);
 				flushSync();
 			},
-
 			get displayedItems() {
 				return displayedItems();
 			},
-
 			set displayedItems($$value) {
 				displayedItems($$value);
 				flushSync();
 			},
-
 			get placeholder() {
 				return placeholder();
 			},
-
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
-
 			get onSelect() {
 				return onSelect();
 			},
-
 			set onSelect($$value = () => {}) {
 				onSelect($$value);
 				flushSync();
 			},
-
 			get handleExit() {
 				return handleExit();
 			},
-
 			set handleExit($$value = () => {}) {
 				handleExit($$value);
 				flushSync();
 			},
-
 			get focusOnOuterElement() {
 				return focusOnOuterElement();
 			},
-
 			set focusOnOuterElement($$value = () => {}) {
 				focusOnOuterElement($$value);
 				flushSync();
 			},
-
 			get handlePrintableCharacter() {
 				return handlePrintableCharacter();
 			},
-
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var ul = root_2$3();
-
-				add_svelte_meta(
-					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root_1$5();
-						var node_1 = child(li);
-
-						{
-							var consequent = ($$anchor) => {
-								var span = root$7();
-
-								html(span, placeholder, true);
-								reset(span);
-								append($$anchor, span);
-							};
-
-							var alternate = ($$anchor) => {
-								var fragment_1 = comment();
-								var node_2 = first_child(fragment_1);
-
-								html(node_2, () => get(item).label);
-								append($$anchor, fragment_1);
-							};
-
-							add_svelte_meta(
-								() => if_block(node_1, ($$render) => {
-									if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, -1);
-								}),
-								'if',
-								DropdownListItemsSingle,
-								134,
-								16
-							);
-						}
-
-						reset(li);
-						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 120, 16);
-						bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
-
-						template_effect(
-							($0, $1) => {
-								set_attribute(li, 'id', get(item).id);
-								set_class(li, 1, $0);
-								set_attribute(li, 'data-item-value', get(item).value);
-								set_attribute(li, 'aria-selected', $1);
-							},
-							[
-								() => clsx([
-									"qc-dropdown-list-single",
-									get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
-									value()?.includes(get(item).value) ? selectedElementCLass : ""
-								]),
-								() => value()?.includes(get(item).value)
-							]
-						);
-
-						delegated('click', li, function click(event) {
-							return handleMouseUp(event, get(item));
-						});
-
-						delegated('keydown', li, function keydown(event) {
-							return handleKeyDown(event, get(index), get(item));
-						});
-
-						append($$anchor, li);
-					}),
-					'each',
-					DropdownListItemsSingle,
-					118,
-					8
-				);
-
-				reset(ul);
-				append($$anchor, ul);
-			};
-
-			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (get(d)) $$render(consequent_1);
-				}),
-				'if',
-				DropdownListItemsSingle,
-				116,
-				0
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			var ul = root_2$3();
+			each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
+				var li = root_1$5();
+				var node_1 = child(li);
+				var consequent = ($$anchor) => {
+					var span = root$7();
+					html(span, placeholder, true);
+					reset(span);
+					append($$anchor, span);
+				};
+				var alternate = ($$anchor) => {
+					var fragment_1 = comment();
+					html(first_child(fragment_1), () => get(item).label);
+					append($$anchor, fragment_1);
+				};
+				if_block(node_1, ($$render) => {
+					if (!get(item).value && !get(item).label) $$render(consequent);
+					else $$render(alternate, -1);
+				});
+				reset(li);
+				bind_this(li, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
+				template_effect(($0, $1) => {
+					set_attribute(li, "id", get(item).id);
+					set_class(li, 1, $0);
+					set_attribute(li, "data-item-value", get(item).value);
+					set_attribute(li, "aria-selected", $1);
+				}, [() => clsx([
+					"qc-dropdown-list-single",
+					get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
+					value()?.includes(get(item).value) ? selectedElementCLass : ""
+				]), () => value()?.includes(get(item).value)]);
+				delegated("click", li, (event) => handleMouseUp(event, get(item)));
+				delegated("keydown", li, (event) => handleKeyDown(event, get(index), get(item)));
+				append($$anchor, li);
+			});
+			reset(ul);
+			append($$anchor, ul);
+		};
+		var d = /* @__PURE__ */ user_derived(() => displayedItems().length > 0 && itemsHaveIds());
+		if_block(node, ($$render) => {
+			if (get(d)) $$render(consequent_1);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	delegate(['click', 'keydown']);
-
-	create_custom_element(
-		DropdownListItemsSingle,
-		{
-			items: {},
-			displayedItems: {},
-			placeholder: {},
-			value: {},
-			onSelect: {},
-			handleExit: {},
-			focusOnOuterElement: {},
-			handlePrintableCharacter: {}
-		},
-		[],
-		[
-			'focusOnFirstElement',
-			'focusOnLastElement',
-			'focusOnFirstMatchingElement'
-		],
-		{ mode: 'open' }
-	);
-
-	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
-
-	var root$6 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[160, 12, [[170, 16, [[175, 20], [187, 20]]]]]]);
-	var root_1$4 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[154, 4]]);
-
+	delegate(["click", "keydown"]);
+	create_custom_element(DropdownListItemsSingle, {
+		items: {},
+		displayedItems: {},
+		placeholder: {},
+		value: {},
+		onSelect: {},
+		handleExit: {},
+		focusOnOuterElement: {},
+		handlePrintableCharacter: {}
+	}, [], [
+		"focusOnFirstElement",
+		"focusOnLastElement",
+		"focusOnFirstMatchingElement"
+	], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte
+	var root$6 = /* @__PURE__ */ from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`);
+	var root_1$4 = /* @__PURE__ */ from_html(`<ul></ul>`);
 	function DropdownListItemsMultiple($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let displayedItems = prop($$props, 'displayedItems', 7),
-			value = prop($$props, 'value', 23, () => []),
-			onToggle = prop($$props, 'onToggle', 7, () => {}),
-			handleExit = prop($$props, 'handleExit', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
-			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {});
-
+		let displayedItems = prop($$props, "displayedItems", 7), value = prop($$props, "value", 23, () => []), onToggle = prop($$props, "onToggle", 7, () => {}), handleExit = prop($$props, "handleExit", 7, () => {}), focusOnOuterElement = prop($$props, "focusOnOuterElement", 7, () => {}), handlePrintableCharacter = prop($$props, "handlePrintableCharacter", 7, () => {});
 		const name = Math.random().toString(36).substring(2, 15);
-		let displayedItemsElements = tag(state(proxy([])), 'displayedItemsElements');
-
+		let displayedItemsElements = /* @__PURE__ */ state(proxy([]));
 		user_effect(() => {
-			if (strict_equals(get(displayedItemsElements).length, displayedItems().length, false)) {
-				set(displayedItemsElements, new Array(displayedItems().length), true);
-			}
+			if (get(displayedItemsElements).length !== displayedItems().length) set(displayedItemsElements, new Array(displayedItems().length), true);
 		});
-
 		function focusOnFirstElement() {
 			if (displayedItems() && displayedItems().length > 0) {
-				if (displayedItems()[0].disabled) {
-					get(displayedItemsElements)[0].closest("li").focus();
-				} else {
-					get(displayedItemsElements)[0].focus();
-				}
+				if (displayedItems()[0].disabled) get(displayedItemsElements)[0].closest("li").focus();
+				else get(displayedItemsElements)[0].focus();
 			}
 		}
-
 		function focusOnLastElement() {
 			if (displayedItems() && displayedItems().length > 0) {
-				if (displayedItems()[displayedItems().length - 1].disabled) {
-					get(displayedItemsElements)[get(displayedItemsElements).length - 1].closest("li").focus();
-				} else {
-					get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
-				}
+				if (displayedItems()[displayedItems().length - 1].disabled) get(displayedItemsElements)[get(displayedItemsElements).length - 1].closest("li").focus();
+				else get(displayedItemsElements)[get(displayedItemsElements).length - 1].focus();
 			}
 		}
-
 		function focusOnFirstMatchingElement(value) {
 			if (get(displayedItemsElements) && get(displayedItemsElements).length > 0) {
 				const foundElement = get(displayedItemsElements).find((element) => element.value.toLowerCase().includes(value.toLowerCase()));
-
 				if (foundElement) {
-					if (foundElement.disabled) {
-						foundElement.closest("li").focus();
-					} else {
-						foundElement.focus();
-					}
+					if (foundElement.disabled) foundElement.closest("li").focus();
+					else foundElement.focus();
 				}
 			}
 		}
-
 		function handleComboKey(event, index) {
-			if (strict_equals(event.key, "ArrowDown")) {
+			if (event.key === "ArrowDown") {
 				event.preventDefault();
 				event.stopPropagation();
-
 				if (displayedItems().length > 0 && index < displayedItems().length - 1) {
-					if (displayedItems()[index + 1].disabled) {
-						get(displayedItemsElements)[index + 1].closest("li").focus();
-					} else {
-						get(displayedItemsElements)[index + 1].focus();
-					}
+					if (displayedItems()[index + 1].disabled) get(displayedItemsElements)[index + 1].closest("li").focus();
+					else get(displayedItemsElements)[index + 1].focus();
 				}
 			}
-
-			if (strict_equals(event.key, "ArrowUp")) {
+			if (event.key === "ArrowUp") {
 				event.preventDefault();
 				event.stopPropagation();
-
 				if (displayedItems().length > 0 && index > 0) {
-					if (displayedItems()[index - 1].disabled) {
-						get(displayedItemsElements)[index - 1].closest("li").focus();
-					} else {
-						get(displayedItemsElements)[index - 1].focus();
-					}
-				} else {
-					focusOnOuterElement()();
-				}
+					if (displayedItems()[index - 1].disabled) get(displayedItemsElements)[index - 1].closest("li").focus();
+					else get(displayedItemsElements)[index - 1].focus();
+				} else focusOnOuterElement()();
 			}
-
-			if (strict_equals(event.key, "Enter")) {
+			if (event.key === "Enter") {
 				event.preventDefault();
 				event.stopPropagation();
-
-				if (displayedItems().length > 0 && !displayedItems()[index].disabled) {
-					onToggle()(displayedItems()[index].value);
-				}
+				if (displayedItems().length > 0 && !displayedItems()[index].disabled) onToggle()(displayedItems()[index].value);
 			}
-
 			tick().then(() => {
-				if (canExit(event, index)) {
-					handleExit()(event.key);
-				}
+				if (canExit(event, index)) handleExit()(event.key);
 			}).catch(console.error);
 		}
-
 		function handleKeyDown(event, index) {
-			if (event.key.match(/^\w$/i)) {
-				handlePrintableCharacter()(event);
-			} else {
-				handleComboKey(event, index);
-			}
+			if (event.key.match(/^\w$/i)) handlePrintableCharacter()(event);
+			else handleComboKey(event, index);
 		}
-
 		function handleLiKeyDown(event, index) {
-			if (strict_equals(event.target.tagName, "INPUT", false)) {
+			if (event.target.tagName !== "INPUT") {
 				handleKeyDown(event, index);
-
-				if (strict_equals(event.key, "Tab", false)) {
+				if (event.key !== "Tab") {
 					event.preventDefault();
 					event.stopPropagation();
 				}
 			}
 		}
-
 		function handleLiClick(event, item) {
-			if (strict_equals(event.target.tagName, "INPUT", false)) {
+			if (event.target.tagName !== "INPUT") {
 				event.preventDefault();
 				event.stopPropagation();
-
-				if (!item.disabled) {
-					onToggle()(item.value);
-				}
+				if (!item.disabled) onToggle()(item.value);
 			}
 		}
-
 		function canExit(event, index) {
-			return strict_equals(event.key, "Escape") || !event.shiftKey && strict_equals(event.key, "Tab") && strict_equals(index, displayedItems().length - 1);
+			return event.key === "Escape" || !event.shiftKey && event.key === "Tab" && index === displayedItems().length - 1;
 		}
-
 		function handleChange(event) {
 			onToggle()(event.target.value);
 		}
-
 		function itemsHaveIds() {
 			let valid = true;
-
 			displayedItems().forEach((item) => {
-				if (!item.id) {
-					valid = false;
-				}
+				if (!item.id) valid = false;
 			});
-
 			return valid;
 		}
-
 		var $$exports = {
-			...legacy_api(),
-			get focusOnFirstElement() {
-				return focusOnFirstElement;
-			},
-
-			get focusOnLastElement() {
-				return focusOnLastElement;
-			},
-
-			get focusOnFirstMatchingElement() {
-				return focusOnFirstMatchingElement;
-			},
-
+			focusOnFirstElement,
+			focusOnLastElement,
+			focusOnFirstMatchingElement,
 			get displayedItems() {
 				return displayedItems();
 			},
-
 			set displayedItems($$value) {
 				displayedItems($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
-
 			get onToggle() {
 				return onToggle();
 			},
-
 			set onToggle($$value = () => {}) {
 				onToggle($$value);
 				flushSync();
 			},
-
 			get handleExit() {
 				return handleExit();
 			},
-
 			set handleExit($$value = () => {}) {
 				handleExit($$value);
 				flushSync();
 			},
-
 			get focusOnOuterElement() {
 				return focusOnOuterElement();
 			},
-
 			set focusOnOuterElement($$value = () => {}) {
 				focusOnOuterElement($$value);
 				flushSync();
 			},
-
 			get handlePrintableCharacter() {
 				return handlePrintableCharacter();
 			},
-
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = comment();
 		var node = first_child(fragment);
-
-		{
-			var consequent = ($$anchor) => {
-				var ul = root_1$4();
-
-				add_svelte_meta(
-					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root$6();
-						var label = child(li);
-						var input = child(label);
-
-						remove_input_defaults(input);
-						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 183, 28);
-						bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
-
-						var span = sibling(input, 2);
-						var text = child(span, true);
-
-						reset(span);
-						reset(label);
-						reset(li);
-
-						template_effect(
-							($0) => {
-								set_class(li, 1, clsx([
-									"qc-dropdown-list-multiple",
-									get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"
-								]));
-
-								set_attribute(li, 'tabindex', get(item).disabled ? "0" : "-1");
-								set_attribute(label, 'for', get(item).id + "-checkbox");
-								set_attribute(input, 'id', get(item).id + "-checkbox");
-								set_value(input, get(item).value);
-								set_attribute(input, 'name', name);
-								input.disabled = get(item).disabled;
-								set_checked(input, $0);
-								set_text(text, get(item).label);
-							},
-							[() => value()?.includes(get(item).value)]
-						);
-
-						delegated('keydown', li, function keydown(e) {
-							return handleLiKeyDown(e, get(index));
-						});
-
-						delegated('click', li, function click(e) {
-							return handleLiClick(e, get(item));
-						});
-
-						delegated('change', input, handleChange);
-
-						delegated('keydown', input, function keydown_1(e) {
-							return handleKeyDown(e, get(index));
-						});
-
-						append($$anchor, li);
-					}),
-					'each',
-					DropdownListItemsMultiple,
-					155,
-					8
-				);
-
-				reset(ul);
-				append($$anchor, ul);
-			};
-
-			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (get(d)) $$render(consequent);
-				}),
-				'if',
-				DropdownListItemsMultiple,
-				153,
-				0
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			var ul = root_1$4();
+			each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
+				var li = root$6();
+				var label = child(li);
+				var input = child(label);
+				remove_input_defaults(input);
+				bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
+				var text = only_child(sibling(input, 2), true);
+				reset(label);
+				reset(li);
+				template_effect(($0) => {
+					set_class(li, 1, clsx(["qc-dropdown-list-multiple", get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active"]));
+					set_attribute(li, "tabindex", get(item).disabled ? "0" : "-1");
+					set_attribute(label, "for", get(item).id + "-checkbox");
+					set_attribute(input, "id", get(item).id + "-checkbox");
+					set_value(input, get(item).value);
+					set_attribute(input, "name", name);
+					input.disabled = get(item).disabled;
+					set_checked(input, $0);
+					set_text(text, get(item).label);
+				}, [() => value()?.includes(get(item).value)]);
+				delegated("keydown", li, (e) => handleLiKeyDown(e, get(index)));
+				delegated("click", li, (e) => handleLiClick(e, get(item)));
+				delegated("change", input, handleChange);
+				delegated("keydown", input, (e) => handleKeyDown(e, get(index)));
+				append($$anchor, li);
+			});
+			reset(ul);
+			append($$anchor, ul);
+		};
+		var d = /* @__PURE__ */ user_derived(() => displayedItems().length > 0 && itemsHaveIds());
+		if_block(node, ($$render) => {
+			if (get(d)) $$render(consequent);
+		});
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	delegate(['keydown', 'click', 'change']);
-
-	create_custom_element(
-		DropdownListItemsMultiple,
-		{
-			displayedItems: {},
-			value: {},
-			onToggle: {},
-			handleExit: {},
-			focusOnOuterElement: {},
-			handlePrintableCharacter: {}
-		},
-		[],
-		[
-			'focusOnFirstElement',
-			'focusOnLastElement',
-			'focusOnFirstMatchingElement'
-		],
-		{ mode: 'open' }
-	);
-
-	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
-
-	var root$5 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"></span>`), DropdownListItems[FILENAME], [[81, 16]]);
-	var root_1$3 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[46, 0, [[78, 4]]]]);
-
+	delegate([
+		"keydown",
+		"click",
+		"change"
+	]);
+	create_custom_element(DropdownListItemsMultiple, {
+		displayedItems: {},
+		value: {},
+		onToggle: {},
+		handleExit: {},
+		focusOnOuterElement: {},
+		handlePrintableCharacter: {}
+	}, [], [
+		"focusOnFirstElement",
+		"focusOnLastElement",
+		"focusOnFirstMatchingElement"
+	], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte
+	var root$5 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-list-no-options"></span>`);
+	var root_1$3 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`);
 	function DropdownListItems($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let id = prop($$props, 'id', 7),
-			multiple = prop($$props, 'multiple', 7),
-			items = prop($$props, 'items', 7),
-			displayedItems = prop($$props, 'displayedItems', 7),
-			noOptionsMessage = prop($$props, 'noOptionsMessage', 7),
-			value = prop($$props, 'value', 23, () => []),
-			onSelect = prop($$props, 'onSelect', 7, () => {}),
-			onToggle = prop($$props, 'onToggle', 7, () => {}),
-			handleExitSingle = prop($$props, 'handleExitSingle', 7, () => {}),
-			handleExitMultiple = prop($$props, 'handleExitMultiple', 7, () => {}),
-			focusOnOuterElement = prop($$props, 'focusOnOuterElement', 7, () => {}),
-			handlePrintableCharacter = prop($$props, 'handlePrintableCharacter', 7, () => {}),
-			placeholder = prop($$props, 'placeholder', 7);
-
-		let itemsComponent = tag(state(void 0), 'itemsComponent');
-
+		let id = prop($$props, "id", 7), multiple = prop($$props, "multiple", 7), items = prop($$props, "items", 7), displayedItems = prop($$props, "displayedItems", 7), noOptionsMessage = prop($$props, "noOptionsMessage", 7), value = prop($$props, "value", 23, () => []), onSelect = prop($$props, "onSelect", 7, () => {}), onToggle = prop($$props, "onToggle", 7, () => {}), handleExitSingle = prop($$props, "handleExitSingle", 7, () => {}), handleExitMultiple = prop($$props, "handleExitMultiple", 7, () => {}), focusOnOuterElement = prop($$props, "focusOnOuterElement", 7, () => {}), handlePrintableCharacter = prop($$props, "handlePrintableCharacter", 7, () => {}), placeholder = prop($$props, "placeholder", 7);
+		let itemsComponent = /* @__PURE__ */ state(void 0);
 		function focus() {
 			tick().then(() => {
 				get(itemsComponent)?.focusOnFirstElement();
 			}).catch(console.error);
 		}
-
 		function focusOnLastElement() {
 			tick().then(() => {
 				get(itemsComponent)?.focusOnLastElement();
 			}).catch(console.error);
 		}
-
 		function focusOnFirstMatchingElement(value) {
-			if (get(itemsComponent) && value && value.length > 0) {
-				tick().then(() => {
-					get(itemsComponent)?.focusOnFirstMatchingElement(value);
-				}).catch(console.error);
-			}
+			if (get(itemsComponent) && value && value.length > 0) tick().then(() => {
+				get(itemsComponent)?.focusOnFirstMatchingElement(value);
+			}).catch(console.error);
 		}
-
 		var $$exports = {
-			...legacy_api(),
-			get focus() {
-				return focus;
-			},
-
-			get focusOnLastElement() {
-				return focusOnLastElement;
-			},
-
-			get focusOnFirstMatchingElement() {
-				return focusOnFirstMatchingElement;
-			},
-
+			focus,
+			focusOnLastElement,
+			focusOnFirstMatchingElement,
 			get id() {
 				return id();
 			},
-
 			set id($$value) {
 				id($$value);
 				flushSync();
 			},
-
 			get multiple() {
 				return multiple();
 			},
-
 			set multiple($$value) {
 				multiple($$value);
 				flushSync();
 			},
-
 			get items() {
 				return items();
 			},
-
 			set items($$value) {
 				items($$value);
 				flushSync();
 			},
-
 			get displayedItems() {
 				return displayedItems();
 			},
-
 			set displayedItems($$value) {
 				displayedItems($$value);
 				flushSync();
 			},
-
 			get noOptionsMessage() {
 				return noOptionsMessage();
 			},
-
 			set noOptionsMessage($$value) {
 				noOptionsMessage($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
-
 			get onSelect() {
 				return onSelect();
 			},
-
 			set onSelect($$value = () => {}) {
 				onSelect($$value);
 				flushSync();
 			},
-
 			get onToggle() {
 				return onToggle();
 			},
-
 			set onToggle($$value = () => {}) {
 				onToggle($$value);
 				flushSync();
 			},
-
 			get handleExitSingle() {
 				return handleExitSingle();
 			},
-
 			set handleExitSingle($$value = () => {}) {
 				handleExitSingle($$value);
 				flushSync();
 			},
-
 			get handleExitMultiple() {
 				return handleExitMultiple();
 			},
-
 			set handleExitMultiple($$value = () => {}) {
 				handleExitMultiple($$value);
 				flushSync();
 			},
-
 			get focusOnOuterElement() {
 				return focusOnOuterElement();
 			},
-
 			set focusOnOuterElement($$value = () => {}) {
 				focusOnOuterElement($$value);
 				flushSync();
 			},
-
 			get handlePrintableCharacter() {
 				return handlePrintableCharacter();
 			},
-
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
 			},
-
 			get placeholder() {
 				return placeholder();
 			},
-
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			}
 		};
-
 		var div = root_1$3();
 		var node = child(div);
-
-		{
-			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => bind_this(
-						DropdownListItemsMultiple($$anchor, {
-							get items() {
-								return items();
-							},
-
-							get displayedItems() {
-								return displayedItems();
-							},
-
-							get noOptionsMessage() {
-								return noOptionsMessage();
-							},
-
-							get value() {
-								return value();
-							},
-
-							get onToggle() {
-								return onToggle();
-							},
-							handleExit: (key) => handleExitMultiple()(key),
-							get focusOnOuterElement() {
-								return focusOnOuterElement();
-							},
-
-							get handlePrintableCharacter() {
-								return handlePrintableCharacter();
-							}
-						}),
-						($$value) => set(itemsComponent, $$value, true),
-						() => get(itemsComponent)
-					),
-					'component',
-					DropdownListItems,
-					52,
-					8,
-					{ componentTag: 'DropdownListItemsMultiple' }
-				);
-			};
-
-			var alternate = ($$anchor) => {
-				add_svelte_meta(
-					() => bind_this(
-						DropdownListItemsSingle($$anchor, {
-							get items() {
-								return items();
-							},
-
-							get displayedItems() {
-								return displayedItems();
-							},
-
-							get noOptionsMessage() {
-								return noOptionsMessage();
-							},
-
-							get value() {
-								return value();
-							},
-
-							get onSelect() {
-								return onSelect();
-							},
-							handleExit: (key) => handleExitSingle()(key),
-							get focusOnOuterElement() {
-								return focusOnOuterElement();
-							},
-
-							get handlePrintableCharacter() {
-								return handlePrintableCharacter();
-							},
-
-							get placeholder() {
-								return placeholder();
-							}
-						}),
-						($$value) => set(itemsComponent, $$value, true),
-						() => get(itemsComponent)
-					),
-					'component',
-					DropdownListItems,
-					64,
-					8,
-					{ componentTag: 'DropdownListItemsSingle' }
-				);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (multiple()) $$render(consequent); else $$render(alternate, -1);
-				}),
-				'if',
-				DropdownListItems,
-				51,
-				4
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			bind_this(DropdownListItemsMultiple($$anchor, {
+				get items() {
+					return items();
+				},
+				get displayedItems() {
+					return displayedItems();
+				},
+				get noOptionsMessage() {
+					return noOptionsMessage();
+				},
+				get value() {
+					return value();
+				},
+				get onToggle() {
+					return onToggle();
+				},
+				handleExit: (key) => handleExitMultiple()(key),
+				get focusOnOuterElement() {
+					return focusOnOuterElement();
+				},
+				get handlePrintableCharacter() {
+					return handlePrintableCharacter();
+				}
+			}), ($$value) => set(itemsComponent, $$value, true), () => get(itemsComponent));
+		};
+		var alternate = ($$anchor) => {
+			bind_this(DropdownListItemsSingle($$anchor, {
+				get items() {
+					return items();
+				},
+				get displayedItems() {
+					return displayedItems();
+				},
+				get noOptionsMessage() {
+					return noOptionsMessage();
+				},
+				get value() {
+					return value();
+				},
+				get onSelect() {
+					return onSelect();
+				},
+				handleExit: (key) => handleExitSingle()(key),
+				get focusOnOuterElement() {
+					return focusOnOuterElement();
+				},
+				get handlePrintableCharacter() {
+					return handlePrintableCharacter();
+				},
+				get placeholder() {
+					return placeholder();
+				}
+			}), ($$value) => set(itemsComponent, $$value, true), () => get(itemsComponent));
+		};
+		if_block(node, ($$render) => {
+			if (multiple()) $$render(consequent);
+			else $$render(alternate, -1);
+		});
 		var div_1 = sibling(node, 2);
 		var node_1 = child(div_1);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var fragment_2 = comment();
-				var node_2 = first_child(fragment_2);
-
-				add_svelte_meta(
-					() => await_block(node_2, tick, null, ($$anchor, _) => {
-						var span = root$5();
-
-						html(span, noOptionsMessage, true);
-						reset(span);
-						append($$anchor, span);
-					}),
-					'await',
-					DropdownListItems,
-					80,
-					12
-				);
-
-				append($$anchor, fragment_2);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_1, ($$render) => {
-					if (displayedItems().length <= 0) $$render(consequent_1);
-				}),
-				'if',
-				DropdownListItems,
-				79,
-				8
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			var fragment_2 = comment();
+			await_block(first_child(fragment_2), tick, null, ($$anchor, _) => {
+				var span = root$5();
+				html(span, noOptionsMessage, true);
+				reset(span);
+				append($$anchor, span);
+			});
+			append($$anchor, fragment_2);
+		};
+		if_block(node_1, ($$render) => {
+			if (displayedItems().length <= 0) $$render(consequent_1);
+		});
 		reset(div_1);
 		reset(div);
-		template_effect(() => set_attribute(div, 'id', id()));
+		template_effect(() => set_attribute(div, "id", id()));
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		DropdownListItems,
-		{
-			id: {},
-			multiple: {},
-			items: {},
-			displayedItems: {},
-			noOptionsMessage: {},
-			value: {},
-			onSelect: {},
-			onToggle: {},
-			handleExitSingle: {},
-			handleExitMultiple: {},
-			focusOnOuterElement: {},
-			handlePrintableCharacter: {},
-			placeholder: {}
-		},
-		[],
-		['focus', 'focusOnLastElement', 'focusOnFirstMatchingElement'],
-		{ mode: 'open' }
-	);
-
-	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
-
-	var rest_excludes$2 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'inputId',
-		'expanded',
-		'disabled',
-		'selectedOptionsText',
-		'placeholder',
-		'buttonElement'
+	create_custom_element(DropdownListItems, {
+		id: {},
+		multiple: {},
+		items: {},
+		displayedItems: {},
+		noOptionsMessage: {},
+		value: {},
+		onSelect: {},
+		onToggle: {},
+		handleExitSingle: {},
+		handleExitMultiple: {},
+		focusOnOuterElement: {},
+		handlePrintableCharacter: {},
+		placeholder: {}
+	}, [], [
+		"focus",
+		"focusOnLastElement",
+		"focusOnFirstMatchingElement"
+	], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte
+	var rest_excludes$2 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"inputId",
+		"expanded",
+		"disabled",
+		"selectedOptionsText",
+		"placeholder",
+		"buttonElement"
 	]);
-
-	var root$4 = add_locations(from_html(`<span class="qc-dropdown-choice"></span>`), DropdownListButton[FILENAME], [[25, 8]]);
-	var root_1$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"></span>`), DropdownListButton[FILENAME], [[27, 8]]);
-	var root_2$2 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
-
+	var root$4 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-choice"></span>`);
+	var root_1$2 = /* @__PURE__ */ from_html(`<span class="qc-dropdown-placeholder"></span>`);
+	var root_2$2 = /* @__PURE__ */ from_html(`<button><!> <span><!></span></button>`);
 	function DropdownListButton($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		let inputId = prop($$props, 'inputId', 7),
-			expanded = prop($$props, 'expanded', 7),
-			disabled = prop($$props, 'disabled', 7),
-			selectedOptionsText = prop($$props, 'selectedOptionsText', 7, ""),
-			placeholder = prop($$props, 'placeholder', 7),
-			buttonElement = prop($$props, 'buttonElement', 15),
-			rest = rest_props($$props, rest_excludes$2);
-
+		let inputId = prop($$props, "inputId", 7), expanded = prop($$props, "expanded", 7), disabled = prop($$props, "disabled", 7), selectedOptionsText = prop($$props, "selectedOptionsText", 7, ""), placeholder = prop($$props, "placeholder", 7), buttonElement = prop($$props, "buttonElement", 15), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$2);
 		var $$exports = {
-			...legacy_api(),
 			get inputId() {
 				return inputId();
 			},
-
 			set inputId($$value) {
 				inputId($$value);
 				flushSync();
 			},
-
 			get expanded() {
 				return expanded();
 			},
-
 			set expanded($$value) {
 				expanded($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get selectedOptionsText() {
 				return selectedOptionsText();
 			},
-
 			set selectedOptionsText($$value = "") {
 				selectedOptionsText($$value);
 				flushSync();
 			},
-
 			get placeholder() {
 				return placeholder();
 			},
-
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			},
-
 			get buttonElement() {
 				return buttonElement();
 			},
-
 			set buttonElement($$value) {
 				buttonElement($$value);
 				flushSync();
 			}
 		};
-
 		var button = root_2$2();
-
 		attribute_effect(button, () => ({
-			type: 'button',
+			type: "button",
 			id: inputId(),
 			disabled: disabled(),
-			class: 'qc-dropdown-button',
-			role: 'combobox',
+			class: "qc-dropdown-button",
+			role: "combobox",
 			...rest
 		}));
-
 		var node = child(button);
-
-		{
-			var consequent = ($$anchor) => {
-				var span = root$4();
-
-				html(span, selectedOptionsText, true);
-				reset(span);
-				append($$anchor, span);
-			};
-
-			var alternate = ($$anchor) => {
-				var span_1 = root_1$2();
-
-				html(span_1, placeholder, true);
-				reset(span_1);
-				append($$anchor, span_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (selectedOptionsText().length > 0) $$render(consequent); else $$render(alternate, -1);
-				}),
-				'if',
-				DropdownListButton,
-				24,
-				4
-			);
-		}
-
+		var consequent = ($$anchor) => {
+			var span = root$4();
+			html(span, selectedOptionsText, true);
+			reset(span);
+			append($$anchor, span);
+		};
+		var alternate = ($$anchor) => {
+			var span_1 = root_1$2();
+			html(span_1, placeholder, true);
+			reset(span_1);
+			append($$anchor, span_1);
+		};
+		if_block(node, ($$render) => {
+			if (selectedOptionsText().length > 0) $$render(consequent);
+			else $$render(alternate, -1);
+		});
 		var span_2 = sibling(node, 2);
-
 		set_class(span_2, 1, clsx(["qc-dropdown-button-icon"]));
-
 		var node_1 = child(span_2);
-
 		{
-			let $0 = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
-			let $1 = user_derived(() => expanded() ? 0 : 180);
-
-			add_svelte_meta(
-				() => Icon(node_1, {
-					type: 'expand_less',
-					get color() {
-						return get($0);
-					},
-					size: 'sm',
-					get rotate() {
-						return get($1);
-					}
-				}),
-				'component',
-				DropdownListButton,
-				31,
-				8,
-				{ componentTag: 'Icon' }
-			);
+			let $0 = /* @__PURE__ */ user_derived(() => disabled() ? "grey-regular" : "blue-piv");
+			let $1 = /* @__PURE__ */ user_derived(() => expanded() ? 0 : 180);
+			Icon(node_1, {
+				type: "expand_less",
+				get color() {
+					return get($0);
+				},
+				size: "sm",
+				get rotate() {
+					return get($1);
+				}
+			});
 		}
-
 		reset(span_2);
 		reset(button);
 		bind_this(button, ($$value) => buttonElement($$value), () => buttonElement());
 		append($$anchor, button);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		DropdownListButton,
-		{
-			inputId: {},
-			expanded: {},
-			disabled: {},
-			selectedOptionsText: {},
-			placeholder: {},
-			buttonElement: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
-
-	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[388, 20]]);
-	var root_1$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[437, 24]]);
-	var root_2$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[317, 0, [[322, 4, [[341, 8, [[370, 12, [[435, 16]]]]]]]]]]);
-
+	create_custom_element(DropdownListButton, {
+		inputId: {},
+		expanded: {},
+		disabled: {},
+		selectedOptionsText: {},
+		placeholder: {},
+		buttonElement: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/DropdownList/DropdownList.svelte
+	var root$3 = /* @__PURE__ */ from_html(`<div class="qc-dropdown-list-search"><!></div>`);
+	var root_1$1 = /* @__PURE__ */ from_html(`<span> </span>`);
+	var root_2$1 = /* @__PURE__ */ from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`);
 	function DropdownList($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
 		const lang = Utils.getPageLanguage();
-
-		let id = prop($$props, 'id', 23, () => Math.random().toString(36).substring(2, 15)),
-			label = prop($$props, 'label', 7, ""),
-			ariaLabel = prop($$props, 'ariaLabel', 7, ""),
-			width = prop($$props, 'width', 7, "md"),
-			items = prop($$props, 'items', 23, () => []),
-			value = prop($$props, 'value', 15),
-			placeholder = prop($$props, 'placeholder', 7),
-			noOptionsMessage = prop($$props, 'noOptionsMessage', 23, () => strict_equals(lang, "fr") ? "Aucun élément" : "No item"),
-			enableSearch = prop($$props, 'enableSearch', 7, false),
-			required = prop($$props, 'required', 7, false),
-			disabled = prop($$props, 'disabled', 7, false),
-			invalid = prop($$props, 'invalid', 15, false),
-			invalidText = prop($$props, 'invalidText', 7),
-			searchPlaceholder = prop($$props, 'searchPlaceholder', 7, ""),
-			multiple = prop($$props, 'multiple', 7, false),
-			rootElement = prop($$props, 'rootElement', 15),
-			errorElement = prop($$props, 'errorElement', 15),
-			webComponentMode = prop($$props, 'webComponentMode', 7, false),
-			expanded = prop($$props, 'expanded', 15, false);
-
-		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option";
-		const inputId = tag(user_derived(() => `${id()}-input`), 'inputId');
-		const popupId = tag(user_derived(() => `${id()}-popup`), 'popupId');
-		const itemsId = tag(user_derived(() => `${id()}-items`), 'itemsId');
-		const labelId = tag(user_derived(() => `${id()}-label`), 'labelId');
-		const errorId = tag(user_derived(() => `${id()}-error`), 'errorId');
-		const availableWidths = ["xs", "sm", "md", "lg", "xl"];
+		let id = prop($$props, "id", 23, () => Math.random().toString(36).substring(2, 15)), label = prop($$props, "label", 7, ""), ariaLabel = prop($$props, "ariaLabel", 7, ""), width = prop($$props, "width", 7, "md"), items = prop($$props, "items", 23, () => []), value = prop($$props, "value", 15), placeholder = prop($$props, "placeholder", 7), noOptionsMessage = prop($$props, "noOptionsMessage", 7, lang === "fr" ? "Aucun élément" : "No item"), enableSearch = prop($$props, "enableSearch", 7, false), required = prop($$props, "required", 7, false), disabled = prop($$props, "disabled", 7, false), invalid = prop($$props, "invalid", 15, false), invalidText = prop($$props, "invalidText", 7), searchPlaceholder = prop($$props, "searchPlaceholder", 7, ""), multiple = prop($$props, "multiple", 7, false), rootElement = prop($$props, "rootElement", 15), errorElement = prop($$props, "errorElement", 15), webComponentMode = prop($$props, "webComponentMode", 7, false), expanded = prop($$props, "expanded", 15, false);
+		const defaultPlaceholder = lang === "fr" ? "Faire une sélection" : "Select an option";
+		const inputId = /* @__PURE__ */ user_derived(() => `${id()}-input`);
+		const popupId = /* @__PURE__ */ user_derived(() => `${id()}-popup`);
+		const itemsId = /* @__PURE__ */ user_derived(() => `${id()}-items`);
+		const labelId = /* @__PURE__ */ user_derived(() => `${id()}-label`);
+		const errorId = /* @__PURE__ */ user_derived(() => `${id()}-error`);
+		const availableWidths = [
+			"xs",
+			"sm",
+			"md",
+			"lg",
+			"xl"
+		];
 		const buttonHeight = 40;
-		let instance = tag(state(void 0), 'instance');
-		let parentRow = tag(user_derived(() => get(instance)?.closest(".qc-formfield-row")), 'parentRow');
-		let button = tag(state(void 0), 'button');
-		let searchInput = tag(state(void 0), 'searchInput');
-		let popup = tag(state(void 0), 'popup');
-		let dropdownItems = tag(state(void 0), 'dropdownItems');
-		let selectedItems = tag(user_derived(() => items()?.filter((item) => value()?.includes(item.value)) ?? []), 'selectedItems');
-
-		let selectedOptionsText = tag(
-			user_derived(() => {
-				if (get(selectedItems).length >= 3) {
-					if (strict_equals(lang, "fr")) {
-						return `${get(selectedItems).length} options sélectionnées`;
-					}
-
-					return `${get(selectedItems).length} selected options`;
-				}
-
-				if (get(selectedItems).length > 0) {
-					if (multiple()) {
-						return get(selectedItems).map((item) => item.label).join(", ");
-					}
-
-					return get(selectedItems)[0].label;
-				}
-
-				return "";
-			}),
-			'selectedOptionsText'
-		);
-
-		let previousValue = tag(state(proxy(value())), 'previousValue');
-		let searchText = tag(state(""), 'searchText');
-		let hiddenSearchText = tag(state(""), 'hiddenSearchText');
-
-		let // svelte-ignore state_referenced_locally — items sert de valeur initiale, mise à jour par $effect sur searchText
-		displayedItems = tag(state(proxy(items())), 'displayedItems');
-
-		let itemsForSearch = tag(
-			user_derived(() => items().map((item) => {
-				return {
-					label: Utils.cleanupSearchPrompt(item.label),
-					value: item.value,
-					disabled: item.disabled
-				};
-			})),
-			'itemsForSearch'
-		);
-
-		let widthClass = tag(
-			user_derived(() => {
-				if (availableWidths.includes(width())) {
-					return `qc-dropdown-list-${width()}`;
-				}
-
-				return `qc-dropdown-list-md`;
-			}),
-			'widthClass'
-		);
-
-		let srItemsCountText = tag(
-			user_derived(() => {
-				const s = get(displayedItems).length > 1 ? "s" : "";
-
-				if (get(displayedItems).length > 0) {
-					return strict_equals(lang, "fr")
-						? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
-						: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
-				}
-
-				return "";
-			}),
-			'srItemsCountText'
-		);
-
-		let buttonElementYPosition = tag(state(0), 'buttonElementYPosition');
-
-		let usedHeight = tag(
-			user_derived(() => {
-				const maxItemsHeight = 336;
-				const searchInputTotalHeight = 56;
-
-				if (enableSearch()) {
-					if (get(displayedItems).length > 7) {
-						return maxItemsHeight - searchInputTotalHeight - 17;
-					}
-
-					return maxItemsHeight - searchInputTotalHeight;
-				} else {
-					if (get(displayedItems).length > 8) {
-						return maxItemsHeight - 33;
-					}
-
-					return maxItemsHeight;
-				}
-			}),
-			'usedHeight'
-		);
-
-		let topOffset = tag(state(0), 'topOffset');
-		let isFlipped = tag(user_derived(() => get(topOffset) < 0), 'isFlipped');
-		let initialPopupHeight = tag(state(0), 'initialPopupHeight');
-		let popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness');
-		let popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
-
+		let instance = /* @__PURE__ */ state(void 0);
+		let parentRow = /* @__PURE__ */ user_derived(() => get(instance)?.closest(".qc-formfield-row"));
+		let button = /* @__PURE__ */ state(void 0);
+		let searchInput = /* @__PURE__ */ state(void 0);
+		let popup = /* @__PURE__ */ state(void 0);
+		let dropdownItems = /* @__PURE__ */ state(void 0);
+		let selectedItems = /* @__PURE__ */ user_derived(() => items()?.filter((item) => value()?.includes(item.value)) ?? []);
+		let selectedOptionsText = /* @__PURE__ */ user_derived(() => {
+			if (get(selectedItems).length >= 3) {
+				if (lang === "fr") return `${get(selectedItems).length} options sélectionnées`;
+				return `${get(selectedItems).length} selected options`;
+			}
+			if (get(selectedItems).length > 0) {
+				if (multiple()) return get(selectedItems).map((item) => item.label).join(", ");
+				return get(selectedItems)[0].label;
+			}
+			return "";
+		});
+		let previousValue = /* @__PURE__ */ state(proxy(value()));
+		let searchText = /* @__PURE__ */ state("");
+		let hiddenSearchText = /* @__PURE__ */ state("");
+		let displayedItems = /* @__PURE__ */ state(proxy(items()));
+		let itemsForSearch = /* @__PURE__ */ user_derived(() => items().map((item) => {
+			return {
+				label: Utils.cleanupSearchPrompt(item.label),
+				value: item.value,
+				disabled: item.disabled
+			};
+		}));
+		let widthClass = /* @__PURE__ */ user_derived(() => {
+			if (availableWidths.includes(width())) return `qc-dropdown-list-${width()}`;
+			return `qc-dropdown-list-md`;
+		});
+		let srItemsCountText = /* @__PURE__ */ user_derived(() => {
+			const s = get(displayedItems).length > 1 ? "s" : "";
+			if (get(displayedItems).length > 0) return lang === "fr" ? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.` : `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
+			return "";
+		});
+		let buttonElementYPosition = /* @__PURE__ */ state(0);
+		let usedHeight = /* @__PURE__ */ user_derived(() => {
+			const maxItemsHeight = 336;
+			if (enableSearch()) {
+				if (get(displayedItems).length > 7) return 263;
+				return 280;
+			} else {
+				if (get(displayedItems).length > 8) return 303;
+				return maxItemsHeight;
+			}
+		});
+		let topOffset = /* @__PURE__ */ state(0);
+		let isFlipped = /* @__PURE__ */ user_derived(() => get(topOffset) < 0);
+		let initialPopupHeight = /* @__PURE__ */ state(0);
+		let popupTopBorderThickness = /* @__PURE__ */ user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0);
+		let popupBottomBorderThickness = /* @__PURE__ */ user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0);
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
-				if (value && value.length > 0) {
-					get(dropdownItems)?.focusOnFirstMatchingElement(snapshot(value)?.sort()[0]);
-				} else {
-					get(dropdownItems)?.focus();
-				}
+				if (value && value.length > 0) get(dropdownItems)?.focusOnFirstMatchingElement(snapshot(value)?.sort()[0]);
+				else get(dropdownItems)?.focus();
 			}
 		}
-
 		function handleDropdownButtonClick(event) {
 			event.preventDefault();
 			expanded(!expanded());
 		}
-
 		function handleOuterEvent() {
-			if (!Utils.componentIsActive(get(instance))) {
-				expanded(false);
-			}
+			if (!Utils.componentIsActive(get(instance))) expanded(false);
 		}
-
 		function handleTab(event) {
-			// Le changement de focus a lieu après le lancement de l'événement clavier.
-			// Il faut donc faire un court sleep pour avoir le nouvel élément en focus.
 			tick().then(() => {
-				if (strict_equals(event.key, "Tab") && !Utils.componentIsActive(get(instance))) {
-					expanded(false);
-				}
+				if (event.key === "Tab" && !Utils.componentIsActive(get(instance))) expanded(false);
 			}).catch(console.error);
 		}
-
 		function handleEscape(event) {
-			if (strict_equals(event.key, "Escape")) {
-				expanded(false);
-			}
+			if (event.key === "Escape") expanded(false);
 		}
-
 		function handleArrowUp(event, targetComponent) {
-			if (strict_equals(event.key, "ArrowUp") && targetComponent) {
+			if (event.key === "ArrowUp" && targetComponent) {
 				event.preventDefault();
 				targetComponent.focus();
 			}
 		}
-
 		function handleArrowDown(event, targetComponent) {
-			if (strict_equals(event.key, "ArrowDown") && targetComponent) {
+			if (event.key === "ArrowDown" && targetComponent) {
 				event.preventDefault();
 				expanded(true);
 				targetComponent.focus();
 			}
 		}
-
 		function handleButtonComboKey(event, targetComponent) {
 			handleEscape(event);
 			handleTab(event);
-
-			if (strict_equals(event.key, "ArrowDown")) {
+			if (event.key === "ArrowDown") {
 				event.preventDefault();
-
-				if (expanded()) {
-					targetComponent.focus();
-				} else {
+				if (expanded()) targetComponent.focus();
+				else {
 					expanded(true);
 					focusOnSelectedOption(value());
 				}
 			}
-
-			if (strict_equals(event.key, "ArrowUp")) {
+			if (event.key === "ArrowUp") {
 				event.preventDefault();
-
-				if (expanded()) {
-					get(dropdownItems)?.focusOnLastElement();
-				}
+				if (expanded()) get(dropdownItems)?.focusOnLastElement();
 			}
 		}
-
 		function handlePrintableCharacter(event) {
-			if (enableSearch()) {
-				get(searchInput)?.focus();
-			} else {
+			if (enableSearch()) get(searchInput)?.focus();
+			else {
 				set(hiddenSearchText, get(hiddenSearchText) + event.key);
-
-				if (get(hiddenSearchText).length > 0 && expanded()) {
-					get(dropdownItems)?.focusOnFirstMatchingElement(get(hiddenSearchText));
-				}
+				if (get(hiddenSearchText).length > 0 && expanded()) get(dropdownItems)?.focusOnFirstMatchingElement(get(hiddenSearchText));
 			}
 		}
-
 		function handleButtonKeyDown(event, targetComponent) {
-			if (event.key.match(/^\w$/i)) {
-				handlePrintableCharacter(event);
-			} else {
-				handleButtonComboKey(event, targetComponent);
-			}
+			if (event.key.match(/^\w$/i)) handlePrintableCharacter(event);
+			else handleButtonComboKey(event, targetComponent);
 		}
-
 		function closeDropdown(key) {
 			expanded(false);
 			set(hiddenSearchText, "");
-
-			if (strict_equals(key, "Escape") && get(button)) {
-				get(button).focus();
-			}
+			if (key === "Escape" && get(button)) get(button).focus();
 		}
-
 		user_effect(() => {
 			if (get(searchText).length > 0) {
 				let newDisplayedItems = [];
-
-				for (let i = 0; i < items().length; i++) {
-					if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) {
-						newDisplayedItems.push(items()[i]);
-					}
-				}
-
+				for (let i = 0; i < items().length; i++) if (get(itemsForSearch)[i].label.includes(Utils.cleanupSearchPrompt(get(searchText)))) newDisplayedItems.push(items()[i]);
 				set(displayedItems, newDisplayedItems, true);
-			} else {
-				set(displayedItems, items(), true);
-			}
+			} else set(displayedItems, items(), true);
 		});
-
 		user_effect(() => {
-			if (strict_equals(get(previousValue)?.toString(), value()?.toString(), false)) {
+			if (get(previousValue)?.toString() !== value()?.toString()) {
 				set(previousValue, value(), true);
 				invalid(false);
 			}
 		});
-
 		user_effect(() => {
 			if (!expanded()) {
 				set(hiddenSearchText, "");
 				set(searchText, "");
 			}
 		});
-
 		user_effect(() => {
 			items().forEach((item) => {
-				if (!item.id) {
-					item.id = `${id()}-${item.label.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gmi, "").replace(/\s+/, "-")}`;
-				}
+				if (!item.id) item.id = `${id()}-${item.label.toString().replace(/(\(|\))/gim, "").replace(/\s+/, "-")}-${item.value?.toString().replace(/(\(|\))/gim, "").replace(/\s+/, "-")}`;
 			});
 		});
-
 		user_effect(() => {
-			if (get(parentRow) && errorElement() && !webComponentMode()) {
-				get(parentRow).appendChild(snapshot(errorElement()));
-			}
+			if (get(parentRow) && errorElement() && !webComponentMode()) get(parentRow).appendChild(snapshot(errorElement()));
 		});
-
 		user_effect(() => {
 			if (placeholder()) return;
-
 			const optionWithEmptyValue = findOptionWithEmptyValue();
-
-			placeholder(optionWithEmptyValue && strict_equals(optionWithEmptyValue.label, "", false) ? optionWithEmptyValue.label : defaultPlaceholder);
+			placeholder(optionWithEmptyValue && optionWithEmptyValue.label !== "" ? optionWithEmptyValue.label : defaultPlaceholder);
 		});
-
 		user_effect(() => {
 			if (expanded()) {
-				// Ne recalculer que si la hauteur initiale n'a pas encore été capturée
-				// (premier rendu après ouverture)
 				if (get(initialPopupHeight) > 0) return;
-
 				tick().then(() => {
 					const borderThickness = 2 * (invalid() ? 2 : 1);
-
-					const popupHeight = get(popup)
-						? get(popup).getBoundingClientRect().height
-						: get(usedHeight);
-
-					// Mémoriser la hauteur initiale à l'ouverture
+					const popupHeight = get(popup) ? get(popup).getBoundingClientRect().height : get(usedHeight);
 					set(initialPopupHeight, popupHeight, true);
-
 					set(topOffset, get(buttonElementYPosition) + buttonHeight > innerHeight - popupHeight ? -popupHeight : buttonHeight - borderThickness, true);
 				});
-			} else {
-				set(initialPopupHeight, 0);
-			}
+			} else set(initialPopupHeight, 0);
 		});
-
 		function findOptionWithEmptyValue() {
-			return items()?.find((item) => strict_equals(item.value, "") || strict_equals(item.value, null) || strict_equals(item.value, undefined));
+			return items()?.find((item) => item.value === "" || item.value === null || item.value === void 0);
 		}
-
 		function setRemainingBottomHeight() {
-			if (!get(button)) {
-				return;
-			}
-
+			if (!get(button)) return;
 			set(buttonElementYPosition, get(button).getBoundingClientRect().y, true);
 		}
-
 		onMount(() => {
 			setRemainingBottomHeight();
 		});
-
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
-
 			set id($$value = Math.random().toString(36).substring(2, 15)) {
 				id($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value = "") {
 				label($$value);
 				flushSync();
 			},
-
 			get ariaLabel() {
 				return ariaLabel();
 			},
-
 			set ariaLabel($$value = "") {
 				ariaLabel($$value);
 				flushSync();
 			},
-
 			get width() {
 				return width();
 			},
-
 			set width($$value = "md") {
 				width($$value);
 				flushSync();
 			},
-
 			get items() {
 				return items();
 			},
-
 			set items($$value = []) {
 				items($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value) {
 				value($$value);
 				flushSync();
 			},
-
 			get placeholder() {
 				return placeholder();
 			},
-
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			},
-
 			get noOptionsMessage() {
 				return noOptionsMessage();
 			},
-
 			set noOptionsMessage($$value = lang === "fr" ? "Aucun élément" : "No item") {
 				noOptionsMessage($$value);
 				flushSync();
 			},
-
 			get enableSearch() {
 				return enableSearch();
 			},
-
 			set enableSearch($$value = false) {
 				enableSearch($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value = false) {
 				required($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value = false) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get invalidText() {
 				return invalidText();
 			},
-
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
 			},
-
 			get searchPlaceholder() {
 				return searchPlaceholder();
 			},
-
 			set searchPlaceholder($$value = "") {
 				searchPlaceholder($$value);
 				flushSync();
 			},
-
 			get multiple() {
 				return multiple();
 			},
-
 			set multiple($$value = false) {
 				multiple($$value);
 				flushSync();
 			},
-
 			get rootElement() {
 				return rootElement();
 			},
-
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
 			},
-
 			get errorElement() {
 				return errorElement();
 			},
-
 			set errorElement($$value) {
 				errorElement($$value);
 				flushSync();
 			},
-
 			get webComponentMode() {
 				return webComponentMode();
 			},
-
 			set webComponentMode($$value = false) {
 				webComponentMode($$value);
 				flushSync();
 			},
-
 			get expanded() {
 				return expanded();
 			},
-
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
 			}
 		};
-
 		var div = root_2$1();
-
-		event('click', $document.body, handleOuterEvent);
-		event('keydown', $document.body, handleTab);
-		event('scroll', $window, setRemainingBottomHeight);
-
+		event("click", $document.body, handleOuterEvent);
+		event("keydown", $document.body, handleTab);
+		event("scroll", $window, setRemainingBottomHeight);
 		var div_1 = child(div);
-
 		set_class(div_1, 1, clsx(["qc-dropdown-list-container"]));
-
 		var node = child(div_1);
-
-		{
-			var consequent = ($$anchor) => {
-				add_svelte_meta(
-					() => Label($$anchor, {
-						get required() {
-							return required();
-						},
-
-						get disabled() {
-							return disabled();
-						},
-
-						get text() {
-							return label();
-						},
-
-						get forId() {
-							return get(inputId);
-						},
-
-						onclick: (e) => {
-							e.preventDefault();
-							get(button).focus();
-						},
-						bold: true,
-						get id() {
-							return get(labelId);
-						}
-					}),
-					'component',
-					DropdownList,
-					328,
-					12,
-					{ componentTag: 'Label' }
-				);
-			};
-
-			add_svelte_meta(
-				() => if_block(node, ($$render) => {
-					if (label()) $$render(consequent);
-				}),
-				'if',
-				DropdownList,
-				327,
-				8
-			);
-		}
-
-		var div_2 = sibling(node, 2);
-		var node_1 = child(div_2);
-
-		add_svelte_meta(
-			() => DropdownListButton(node_1, {
-				get inputId() {
-					return get(inputId);
+		var consequent = ($$anchor) => {
+			Label($$anchor, {
+				get required() {
+					return required();
 				},
-
 				get disabled() {
 					return disabled();
 				},
-
-				get expanded() {
-					return expanded();
+				get text() {
+					return label();
 				},
-
-				get 'aria-labelledby'() {
+				get forId() {
+					return get(inputId);
+				},
+				onclick: (e) => {
+					e.preventDefault();
+					get(button).focus();
+				},
+				bold: true,
+				get id() {
 					return get(labelId);
-				},
-
-				get 'aria-required'() {
-					return required();
-				},
-
-				get 'aria-expanded'() {
-					return expanded();
-				},
-				'aria-haspopup': 'listbox',
-				get 'aria-controls'() {
-					return get(itemsId);
-				},
-
-				get 'aria-invalid'() {
-					return invalid();
-				},
-
-				get selectedOptionsText() {
-					return get(selectedOptionsText);
-				},
-
-				get placeholder() {
-					return placeholder();
-				},
-
-				get usedHeight() {
-					return get(usedHeight);
-				},
-				onclick: handleDropdownButtonClick,
-				onkeydown: (e) => {
-					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
-				},
-
-				get buttonElement() {
-					return get(button);
-				},
-
-				set buttonElement($$value) {
-					set(button, $$value, true);
 				}
-			}),
-			'component',
-			DropdownList,
-			350,
-			12,
-			{ componentTag: 'DropdownListButton' }
-		);
-
+			});
+		};
+		if_block(node, ($$render) => {
+			if (label()) $$render(consequent);
+		});
+		var div_2 = sibling(node, 2);
+		var node_1 = child(div_2);
+		DropdownListButton(node_1, {
+			get inputId() {
+				return get(inputId);
+			},
+			get disabled() {
+				return disabled();
+			},
+			get expanded() {
+				return expanded();
+			},
+			get "aria-labelledby"() {
+				return get(labelId);
+			},
+			get "aria-required"() {
+				return required();
+			},
+			get "aria-expanded"() {
+				return expanded();
+			},
+			"aria-haspopup": "listbox",
+			get "aria-controls"() {
+				return get(itemsId);
+			},
+			get "aria-invalid"() {
+				return invalid();
+			},
+			get selectedOptionsText() {
+				return get(selectedOptionsText);
+			},
+			get placeholder() {
+				return placeholder();
+			},
+			get usedHeight() {
+				return get(usedHeight);
+			},
+			onclick: handleDropdownButtonClick,
+			onkeydown: (e) => {
+				handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
+			},
+			get buttonElement() {
+				return get(button);
+			},
+			set buttonElement($$value) {
+				set(button, $$value, true);
+			}
+		});
 		var div_3 = sibling(node_1, 2);
 		var node_2 = child(div_3);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var div_4 = root$3();
-				var node_3 = child(div_4);
-
-				{
-					let $0 = user_derived(() => searchPlaceholder() ? searchPlaceholder() : undefined);
-
-					add_svelte_meta(
-						() => bind_this(
-							SearchInput(node_3, {
-								get id() {
-									return `${id() ?? ''}-search`;
-								},
-
-								get placeholder() {
-									return searchPlaceholder();
-								},
-
-								get ariaLabel() {
-									return get($0);
-								},
-								leftIcon: 'true',
-								onkeydown: (e) => {
-									handleArrowDown(e, get(dropdownItems));
-									handleArrowUp(e, get(button));
-
-									if (strict_equals(e.key, "Enter")) {
-										e.preventDefault();
-									}
-								},
-
-								get value() {
-									return get(searchText);
-								},
-
-								set value($$value) {
-									set(searchText, $$value, true);
-								}
-							}),
-							($$value) => set(searchInput, $$value, true),
-							() => get(searchInput)
-						),
-						'component',
-						DropdownList,
-						389,
-						24,
-						{ componentTag: 'SearchInput' }
-					);
-				}
-
-				reset(div_4);
-				append($$anchor, div_4);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_2, ($$render) => {
-					if (enableSearch()) $$render(consequent_1);
-				}),
-				'if',
-				DropdownList,
-				387,
-				16
-			);
-		}
-
-		var node_4 = sibling(node_2, 2);
-
-		add_svelte_meta(
-			() => bind_this(
-				DropdownListItems(node_4, {
+		var consequent_1 = ($$anchor) => {
+			var div_4 = root$3();
+			var node_3 = child(div_4);
+			{
+				let $0 = /* @__PURE__ */ user_derived(() => searchPlaceholder() ? searchPlaceholder() : void 0);
+				bind_this(SearchInput(node_3, {
 					get id() {
-						return get(itemsId);
+						return `${id() ?? ""}-search`;
 					},
-
 					get placeholder() {
-						return placeholder();
+						return searchPlaceholder();
 					},
-
-					get multiple() {
-						return multiple();
+					get ariaLabel() {
+						return get($0);
 					},
-
-					get items() {
-						return items();
+					leftIcon: "true",
+					onkeydown: (e) => {
+						handleArrowDown(e, get(dropdownItems));
+						handleArrowUp(e, get(button));
+						if (e.key === "Enter") e.preventDefault();
 					},
-
-					get displayedItems() {
-						return get(displayedItems);
-					},
-
-					get noOptionsMessage() {
-						return noOptionsMessage();
-					},
-
 					get value() {
-						return value();
+						return get(searchText);
 					},
-
-					onSelect: (itemValue) => {
-						value([itemValue]);
-						closeDropdown("");
-						get(button)?.focus();
-					},
-
-					onToggle: (itemValue) => {
-						if (value().includes(itemValue)) {
-							value(value().filter((v) => strict_equals(v, itemValue, false)));
-						} else {
-							value([...value(), itemValue]);
-						}
-					},
-					handleExitSingle: (key) => closeDropdown(key),
-					handleExitMultiple: (key) => closeDropdown(key),
-					focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
-					handlePrintableCharacter
-				}),
-				($$value) => set(dropdownItems, $$value, true),
-				() => get(dropdownItems)
-			),
-			'component',
-			DropdownList,
-			407,
-			16,
-			{ componentTag: 'DropdownListItems' }
-		);
-
+					set value($$value) {
+						set(searchText, $$value, true);
+					}
+				}), ($$value) => set(searchInput, $$value, true), () => get(searchInput));
+			}
+			reset(div_4);
+			append($$anchor, div_4);
+		};
+		if_block(node_2, ($$render) => {
+			if (enableSearch()) $$render(consequent_1);
+		});
+		var node_4 = sibling(node_2, 2);
+		bind_this(DropdownListItems(node_4, {
+			get id() {
+				return get(itemsId);
+			},
+			get placeholder() {
+				return placeholder();
+			},
+			get multiple() {
+				return multiple();
+			},
+			get items() {
+				return items();
+			},
+			get displayedItems() {
+				return get(displayedItems);
+			},
+			get noOptionsMessage() {
+				return noOptionsMessage();
+			},
+			get value() {
+				return value();
+			},
+			onSelect: (itemValue) => {
+				value([itemValue]);
+				closeDropdown("");
+				get(button)?.focus();
+			},
+			onToggle: (itemValue) => {
+				if (value().includes(itemValue)) value(value().filter((v) => v !== itemValue));
+				else value([...value(), itemValue]);
+			},
+			handleExitSingle: (key) => closeDropdown(key),
+			handleExitMultiple: (key) => closeDropdown(key),
+			focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
+			handlePrintableCharacter
+		}), ($$value) => set(dropdownItems, $$value, true), () => get(dropdownItems));
 		var div_5 = sibling(node_4, 2);
-		var node_5 = child(div_5);
-
-		add_svelte_meta(
-			() => key(node_5, () => get(searchText), ($$anchor) => {
-				var span = root_1$1();
-				var text = child(span, true);
-
-				reset(span);
-				template_effect(() => set_text(text, get(srItemsCountText)));
-				append($$anchor, span);
-			}),
-			'key',
-			DropdownList,
-			436,
-			20
-		);
-
+		key(child(div_5), () => get(searchText), ($$anchor) => {
+			var span = root_1$1();
+			var text = only_child(span, true);
+			template_effect(() => set_text(text, get(srItemsCountText)));
+			append($$anchor, span);
+		});
 		reset(div_5);
 		reset(div_3);
 		bind_this(div_3, ($$value) => set(popup, $$value), () => get(popup));
 		reset(div_2);
 		bind_this(div_2, ($$value) => set(instance, $$value), () => get(instance));
 		reset(div_1);
-
 		var node_6 = sibling(div_1, 2);
-
 		{
-			let $0 = user_derived(() => label() ?? ariaLabel());
-
-			$$ownership_validator.binding('errorElement', FormError, errorElement);
-
-			add_svelte_meta(
-				() => FormError(node_6, {
-					get id() {
-						return get(errorId);
-					},
-
-					get invalid() {
-						return invalid();
-					},
-
-					get invalidText() {
-						return invalidText();
-					},
-					extraClasses: ["qc-xs-mt"],
-					get label() {
-						return get($0);
-					},
-
-					get rootElement() {
-						return errorElement();
-					},
-
-					set rootElement($$value) {
-						errorElement($$value);
-					}
-				}),
-				'component',
-				DropdownList,
-				445,
-				4,
-				{ componentTag: 'FormError' }
-			);
+			let $0 = /* @__PURE__ */ user_derived(() => label() ?? ariaLabel());
+			FormError(node_6, {
+				get id() {
+					return get(errorId);
+				},
+				get invalid() {
+					return invalid();
+				},
+				get invalidText() {
+					return invalidText();
+				},
+				extraClasses: ["qc-xs-mt"],
+				get label() {
+					return get($0);
+				},
+				get rootElement() {
+					return errorElement();
+				},
+				set rootElement($$value) {
+					errorElement($$value);
+				}
+			});
 		}
-
 		reset(div);
 		bind_this(div, ($$value) => rootElement($$value), () => rootElement());
-
 		template_effect(() => {
 			set_class(div, 1, clsx([!get(parentRow) && !webComponentMode() && "qc-select"]));
-
 			set_class(div_2, 1, clsx([
 				`qc-dropdown-list`,
 				get(widthClass),
 				invalid() && "qc-dropdown-list-invalid"
 			]));
-
-			set_attribute(div_3, 'id', get(popupId));
-
-			set_class(div_3, 1, clsx([
-				"qc-dropdown-list-expanded",
-				get(isFlipped) && "qc-dropdown-list-flipped"
-			]));
-
+			set_attribute(div_3, "id", get(popupId));
+			set_class(div_3, 1, clsx(["qc-dropdown-list-expanded", get(isFlipped) && "qc-dropdown-list-flipped"]));
 			set_style(div_3, `
                     --dropdown-items-top-offset: ${get(topOffset)};
                     --dropdown-items-height: ${get(usedHeight)};
                     --dropdown-items-bottom-border: ${get(popupBottomBorderThickness)};
                     --dropdown-items-top-border: ${get(popupTopBorderThickness)};
                     --dropdown-button-border: ${invalid() ? 2 : 1};
-                    ${get(isFlipped) && get(initialPopupHeight) > 0 ? `min-height: ${get(initialPopupHeight)}px;` : ''}
+                    ${get(isFlipped) && get(initialPopupHeight) > 0 ? `min-height: ${get(initialPopupHeight)}px;` : ""}
                     `);
-
-			set_attribute(div_3, 'hidden', !expanded());
+			set_attribute(div_3, "hidden", !expanded());
 		});
-
 		append($$anchor, div);
-
 		return pop($$exports);
 	}
-
-	create_custom_element(
-		DropdownList,
-		{
-			id: {},
-			label: {},
-			ariaLabel: {},
-			width: {},
-			items: {},
-			value: {},
-			placeholder: {},
-			noOptionsMessage: {},
-			enableSearch: {},
-			required: {},
-			disabled: {},
-			invalid: {},
-			invalidText: {},
-			searchPlaceholder: {},
-			multiple: {},
-			rootElement: {},
-			errorElement: {},
-			webComponentMode: {},
-			expanded: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
-
-	var rest_excludes$1 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'invalid',
-		'value',
-		'multiple',
-		'disabled',
-		'required',
-		'label',
-		'placeholder',
-		'width',
-		'expanded'
+	create_custom_element(DropdownList, {
+		id: {},
+		label: {},
+		ariaLabel: {},
+		width: {},
+		items: {},
+		value: {},
+		placeholder: {},
+		noOptionsMessage: {},
+		enableSearch: {},
+		required: {},
+		disabled: {},
+		invalid: {},
+		invalidText: {},
+		searchPlaceholder: {},
+		multiple: {},
+		rootElement: {},
+		errorElement: {},
+		webComponentMode: {},
+		expanded: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/DropdownList/SelectWC.svelte
+	var rest_excludes$1 = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host",
+		"invalid",
+		"value",
+		"multiple",
+		"disabled",
+		"required",
+		"label",
+		"placeholder",
+		"width",
+		"expanded"
 	]);
-
-	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[279, 0], [300, 0]]);
-
+	var root$2 = /* @__PURE__ */ from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1);
 	function SelectWC($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
-
-		var $$ownership_validator = create_ownership_validator($$props);
-
 		/**
-		 * ============================================================================
-		 * INVARIANTS CRITIQUES — Fix v1.5.2 (issue #36)
-		 * ============================================================================
-		 *
-		 * Ce composant contient trois mécanismes interdépendants introduits dans la
-		 * v1.5.2 pour corriger la perte de sélection lors de reconstructions dynamiques
-		 * des options DOM (Angular @for, React map, etc.). Ces mécanismes DOIVENT être
-		 * préservés lors de tout refactoring.
-		 *
-		 * 1. DEBOUNCE MUTATIONOBSERVER AVEC CAPTURE DE `lastKnownValue`
-		 *    ─────────────────────────────────────────────────────────────
-		 *    Le MutationObserver est appelé synchronement par le navigateur à chaque
-		 *    mutation DOM. Lors d'une reconstruction (innerHTML vidé puis recréé),
-		 *    plusieurs mutations sont émises en rafale. Le debounce (setTimeout 0ms)
-		 *    regroupe ces mutations en un seul appel à setupItemsList.
-		 *
-		 *    INVARIANT : La valeur courante (`value`) est capturée dans `lastKnownValue`
-		 *    au PREMIER appel synchrone (quand `setupDebounceTimer === null`), AVANT le
-		 *    setTimeout. Cela garantit que la valeur sauvegardée reflète l'état AVANT
-		 *    que le navigateur ne réinitialise les options (sélection de la 1re option
-		 *    par défaut).
-		 *
-		 * 2. PARAMÈTRE `preservedValue` DANS `setupItemsList`
-		 *    ──────────────────────────────────────────────────
-		 *    Lors d'une reconstruction dynamique, le navigateur marque la première
-		 *    option comme `selected` par défaut. Le paramètre `preservedValue` permet
-		 *    d'ignorer `option.selected` et d'utiliser la valeur capturée à la place.
-		 *
-		 *    INVARIANT : Si `preservedValue` est fourni et non vide, l'état `checked`
-		 *    des items est déterminé par `preservedValue.includes(option.value)` et NON
-		 *    par `option.selected`. Cela empêche le reset parasite de la sélection.
-		 *
-		 * 3. FLAG `internalChange` AUTOUR DE `dispatchEvent('change')`
-		 *    ──────────────────────────────────────────────────────────
-		 *    Quand `value` change (sélection utilisateur ou assignation programmatique),
-		 *    le composant synchronise le DOM natif (option.selected) et dispatche un
-		 *    événement `change`. Sans protection, cet événement déclencherait
-		 *    `handleSelectChange` → `setupItemsList` → reset de la sélection.
-		 *
-		 *    INVARIANT : `internalChange = true` est positionné AVANT toute modification
-		 *    du DOM natif ou dispatch d'événement, et remis à `false` APRÈS `tick()`
-		 *    (fin du cycle Svelte). Le guard `if (internalChange) return` dans
-		 *    `handleSelectChange` coupe la boucle réactive.
-		 *
-		 *    Le timer de debounce est nettoyé dans `onDestroy` pour éviter les fuites
-		 *    mémoire.
-		 * ============================================================================
-		 */
-		let invalid = prop($$props, 'invalid', 15, false),
-			value = prop($$props, 'value', 31, () => tag_proxy(proxy([]), 'value')),
-			multiple = prop($$props, 'multiple', 7),
-			disabled = prop($$props, 'disabled', 7),
-			required = prop($$props, 'required', 7),
-			label = prop($$props, 'label', 7),
-			placeholder = prop($$props, 'placeholder', 7),
-			width = prop($$props, 'width', 7),
-			expanded = prop($$props, 'expanded', 15, false),
-			rest = rest_props($$props, rest_excludes$1);
-
-		let selectElement = tag(state(void 0), 'selectElement');
-		let items = tag(state(void 0), 'items');
-		let labelElement = tag(state(void 0), 'labelElement');
+		* ============================================================================
+		* INVARIANTS CRITIQUES — Fix v1.5.2 (issue #36)
+		* ============================================================================
+		*
+		* Ce composant contient trois mécanismes interdépendants introduits dans la
+		* v1.5.2 pour corriger la perte de sélection lors de reconstructions dynamiques
+		* des options DOM (Angular @for, React map, etc.). Ces mécanismes DOIVENT être
+		* préservés lors de tout refactoring.
+		*
+		* 1. DEBOUNCE MUTATIONOBSERVER AVEC CAPTURE DE `lastKnownValue`
+		*    ─────────────────────────────────────────────────────────────
+		*    Le MutationObserver est appelé synchronement par le navigateur à chaque
+		*    mutation DOM. Lors d'une reconstruction (innerHTML vidé puis recréé),
+		*    plusieurs mutations sont émises en rafale. Le debounce (setTimeout 0ms)
+		*    regroupe ces mutations en un seul appel à setupItemsList.
+		*
+		*    INVARIANT : La valeur courante (`value`) est capturée dans `lastKnownValue`
+		*    au PREMIER appel synchrone (quand `setupDebounceTimer === null`), AVANT le
+		*    setTimeout. Cela garantit que la valeur sauvegardée reflète l'état AVANT
+		*    que le navigateur ne réinitialise les options (sélection de la 1re option
+		*    par défaut).
+		*
+		* 2. PARAMÈTRE `preservedValue` DANS `setupItemsList`
+		*    ──────────────────────────────────────────────────
+		*    Lors d'une reconstruction dynamique, le navigateur marque la première
+		*    option comme `selected` par défaut. Le paramètre `preservedValue` permet
+		*    d'ignorer `option.selected` et d'utiliser la valeur capturée à la place.
+		*
+		*    INVARIANT : Si `preservedValue` est fourni et non vide, l'état `checked`
+		*    des items est déterminé par `preservedValue.includes(option.value)` et NON
+		*    par `option.selected`. Cela empêche le reset parasite de la sélection.
+		*
+		* 3. FLAG `internalChange` AUTOUR DE `dispatchEvent('change')`
+		*    ──────────────────────────────────────────────────────────
+		*    Quand `value` change (sélection utilisateur ou assignation programmatique),
+		*    le composant synchronise le DOM natif (option.selected) et dispatche un
+		*    événement `change`. Sans protection, cet événement déclencherait
+		*    `handleSelectChange` → `setupItemsList` → reset de la sélection.
+		*
+		*    INVARIANT : `internalChange = true` est positionné AVANT toute modification
+		*    du DOM natif ou dispatch d'événement, et remis à `false` APRÈS `tick()`
+		*    (fin du cycle Svelte). Le guard `if (internalChange) return` dans
+		*    `handleSelectChange` coupe la boucle réactive.
+		*
+		*    Le timer de debounce est nettoyé dans `onDestroy` pour éviter les fuites
+		*    mémoire.
+		* ============================================================================
+		*/
+		let invalid = prop($$props, "invalid", 15, false), value = prop($$props, "value", 31, () => proxy([])), multiple = prop($$props, "multiple", 7), disabled = prop($$props, "disabled", 7), required = prop($$props, "required", 7), label = prop($$props, "label", 7), placeholder = prop($$props, "placeholder", 7), width = prop($$props, "width", 7), expanded = prop($$props, "expanded", 15, false), rest = /* @__PURE__ */ rest_props($$props, rest_excludes$1);
+		let selectElement = /* @__PURE__ */ state(void 0);
+		let items = /* @__PURE__ */ state(void 0);
+		let labelElement = /* @__PURE__ */ state(void 0);
 		let setupDebounceTimer = null;
 		let lastKnownValue = [];
 		let hasChildListMutation = false;
-
 		const debouncedSetupItemsList = (mutations) => {
-			// Ignorer les mutations déclenchées par la synchronisation interne du DOM
 			if (internalChange) return;
-
-			// Capturer la valeur AVANT le debounce — le MutationObserver
-			// est appelé synchronement par le navigateur, avant les $effect Svelte
-			if (strict_equals(setupDebounceTimer, null)) {
+			if (setupDebounceTimer === null) {
 				lastKnownValue = [...value()];
 				hasChildListMutation = false;
 			}
-
-			// Détecter si des mutations childList sont présentes (reconstruction DOM)
-			if (mutations?.some?.((m) => strict_equals(m.type, "childList"))) {
-				hasChildListMutation = true;
-			}
-
+			if (mutations?.some?.((m) => m.type === "childList")) hasChildListMutation = true;
 			clearTimeout(setupDebounceTimer);
-
-			setupDebounceTimer = setTimeout(
-				() => {
-					setupDebounceTimer = null;
-
-					const options = get(selectElement)?.querySelectorAll("option");
-
-					if (options && options.length > 0) {
-						// Reconstruction DOM (childList) : préserver la valeur
-						// Changement d'attribut selected uniquement : relire le DOM
-						setupItemsList(hasChildListMutation ? lastKnownValue : null);
-					}
-				},
-				0
-			);
+			setupDebounceTimer = setTimeout(() => {
+				setupDebounceTimer = null;
+				const options = get(selectElement)?.querySelectorAll("option");
+				if (options && options.length > 0) setupItemsList(hasChildListMutation ? lastKnownValue : null);
+			}, 0);
 		};
-
 		const observer = Utils.createMutationObserver($$props.$$host, debouncedSetupItemsList);
-
 		const observerOptions = {
 			childList: true,
 			attributes: true,
 			subtree: true,
-			attributeFilter: ["label", "value", "disabled", "selected"]
+			attributeFilter: [
+				"label",
+				"value",
+				"disabled",
+				"selected"
+			]
 		};
-
-		let instance = tag(state(void 0), 'instance');
-		let errorElement = tag(state(void 0), 'errorElement');
-		let parentRow = tag(user_derived(() => $$props.$$host.closest(".qc-formfield-row")), 'parentRow');
+		let instance = /* @__PURE__ */ state(void 0);
+		let errorElement = /* @__PURE__ */ state(void 0);
+		let parentRow = /* @__PURE__ */ user_derived(() => $$props.$$host.closest(".qc-formfield-row"));
 		let internalChange = false;
-		let previousValue = tag(state(proxy(value())), 'previousValue');
-
-		// Descriptor natif pour déléguer le setter de la propriété .selected des <option>.
+		let previousValue = /* @__PURE__ */ state(proxy(value()));
 		const OPTION_SELECTED_DESCRIPTOR = Object.getOwnPropertyDescriptor(HTMLOptionElement.prototype, "selected");
-
-		const wrappedOptions = new WeakSet();
-
-		// Intercepte l'écriture de la PROPRIÉTÉ option.selected (ex. jQuery.val()), invisible du
-		// MutationObserver (qui ne voit que les mutations d'attributs/childList, jamais les propriétés).
-		// Chaque <option> n'est enrobée qu'une fois ; le setter délègue au natif puis réconcilie
-		// (débouncé, et neutralisé pendant la synchro interne via `internalChange` pour éviter la boucle).
+		const wrappedOptions = /* @__PURE__ */ new WeakSet();
 		function interceptOptionSelectedSetters() {
 			if (!get(selectElement) || !OPTION_SELECTED_DESCRIPTOR) return;
-
 			for (const option of get(selectElement).querySelectorAll("option")) {
 				if (wrappedOptions.has(option)) continue;
-
 				wrappedOptions.add(option);
-
 				Object.defineProperty(option, "selected", {
 					configurable: true,
 					enumerable: false,
 					get() {
 						return OPTION_SELECTED_DESCRIPTOR.get.call(this);
 					},
-
 					set(selected) {
 						OPTION_SELECTED_DESCRIPTOR.set.call(this, selected);
-
-						if (!internalChange) {
-							debouncedSetupItemsList();
-						}
+						if (!internalChange) debouncedSetupItemsList();
 					}
 				});
 			}
 		}
-
 		onMount(() => {
 			set(selectElement, $$props.$$host.querySelector("select"), true);
 			set(labelElement, $$props.$$host.querySelector("label"), true);
-
-			if (get(labelElement)) {
-				label(get(labelElement).innerHTML);
-			}
-
+			if (get(labelElement)) label(get(labelElement).innerHTML);
 			if (get(selectElement)) {
 				multiple(get(selectElement).multiple);
 				disabled(get(selectElement).disabled);
 				get(selectElement).addEventListener("change", handleSelectChange);
 				observer?.observe(get(selectElement), observerOptions);
 			}
-
 			setupItemsList();
 			$$props.$$host.classList.add("qc-select");
 		});
-
 		onDestroy(() => {
 			clearTimeout(setupDebounceTimer);
 			observer?.disconnect();
 			get(selectElement).removeEventListener("change", handleSelectChange);
 		});
-
 		user_effect(() => {
 			if (!get(selectElement)) return;
 			if (!get(selectElement).options) return;
-
 			internalChange = true;
-
 			for (const option of get(selectElement).options) {
 				const selected = value().includes(option.value);
-
-				if (strict_equals(selected, option.selected, false)) {
+				if (selected !== option.selected) {
 					option.toggleAttribute("selected", selected);
 					option.selected = selected;
 				}
 			}
-
 			tick().then(() => internalChange = false);
 		});
-
 		user_effect(() => {
-			if (strict_equals(get(previousValue).toString(), value().toString(), false)) {
+			if (get(previousValue).toString() !== value().toString()) {
 				internalChange = true;
 				set(previousValue, value(), true);
-				get(selectElement)?.dispatchEvent(new CustomEvent('change', { detail: value() }));
+				get(selectElement)?.dispatchEvent(new CustomEvent("change", { detail: value() }));
 				tick().then(() => internalChange = false);
 			}
 		});
-
 		user_effect(() => {
-			if (expanded()) {
-				get(selectElement)?.dispatchEvent(new CustomEvent('qc.select.show', { bubbles: true, composed: true }));
-			} else {
-				get(selectElement)?.dispatchEvent(new CustomEvent('qc.select.hide', { bubbles: true, composed: true }));
-			}
+			if (expanded()) get(selectElement)?.dispatchEvent(new CustomEvent("qc.select.show", {
+				bubbles: true,
+				composed: true
+			}));
+			else get(selectElement)?.dispatchEvent(new CustomEvent("qc.select.hide", {
+				bubbles: true,
+				composed: true
+			}));
 		});
-
 		user_effect(() => {
-			if (get(parentRow) && get(errorElement)) {
-				get(parentRow).appendChild(get(errorElement));
-			}
+			if (get(parentRow) && get(errorElement)) get(parentRow).appendChild(get(errorElement));
 		});
-
 		function setupItemsList(preservedValue) {
-			// Enrober les setters .selected des options courantes (idempotent) — couvre aussi
-			// les <option> recréées lors d'une reconstruction dynamique (issue #36).
 			interceptOptionSelectedSetters();
-
 			const options = get(selectElement)?.querySelectorAll("option");
-
 			if (options && options.length > 0) {
-				// Étape 1 : Construire les items (métadonnées uniquement)
 				const newItems = Array.from(options).map((option) => ({
 					value: option.value,
 					label: option.label ?? option.innerHTML,
 					disabled: option.disabled
 				}));
-
-				// Étape 2 : Déterminer value séparément
-				if (preservedValue && preservedValue.length > 0) {
-					// Reconstruction dynamique : filtrer les valeurs préservées
-					// contre les nouveaux items (ne garder que celles qui existent encore)
-					value(preservedValue.filter((v) => newItems.some((item) => strict_equals(item.value, v))));
-				} else {
-					// Initialisation : extraire depuis option.selected du DOM
-					// Filtrer les valeurs vides (options placeholder avec value="")
-					value(Array.from(options).filter((opt) => opt.selected && strict_equals(opt.value, "", false)).map((opt) => opt.value));
-				}
-
-				// Étape 3 : Ajouter checked dérivé de value pour compatibilité
-				// avec DropdownList (qui lit encore item.checked jusqu'au Task 4)
-				// Note : pas d'id ici — DropdownList le génère via son $effect
-				set(items, newItems.map((item) => ({ ...item, checked: value().includes(item.value) })), true);
-			} else {
-				set(items, [], true);
-			}
+				if (preservedValue && preservedValue.length > 0) value(preservedValue.filter((v) => newItems.some((item) => item.value === v)));
+				else value(Array.from(options).filter((opt) => opt.selected && opt.value !== "").map((opt) => opt.value));
+				set(items, newItems.map((item) => ({
+					...item,
+					checked: value().includes(item.value)
+				})), true);
+			} else set(items, [], true);
 		}
-
 		function handleSelectChange() {
 			if (internalChange) return;
-
 			setupItemsList();
 		}
-
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
-
 			set invalid($$value = false) {
 				invalid($$value);
 				flushSync();
 			},
-
 			get value() {
 				return value();
 			},
-
 			set value($$value = []) {
 				value($$value);
 				flushSync();
 			},
-
 			get multiple() {
 				return multiple();
 			},
-
 			set multiple($$value) {
 				multiple($$value);
 				flushSync();
 			},
-
 			get disabled() {
 				return disabled();
 			},
-
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
 			},
-
 			get required() {
 				return required();
 			},
-
 			set required($$value) {
 				required($$value);
 				flushSync();
 			},
-
 			get label() {
 				return label();
 			},
-
 			set label($$value) {
 				label($$value);
 				flushSync();
 			},
-
 			get placeholder() {
 				return placeholder();
 			},
-
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
 			},
-
 			get width() {
 				return width();
 			},
-
 			set width($$value) {
 				width($$value);
 				flushSync();
 			},
-
 			get expanded() {
 				return expanded();
 			},
-
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
 			}
 		};
-
 		var fragment = root$2();
 		var div = first_child(fragment);
-		var node = child(div);
-
-		slot(node, $$props, 'default', {});
+		slot(child(div), $$props, "default", {}, null);
 		reset(div);
-
 		var node_1 = sibling(div, 2);
-
 		{
-			let $0 = user_derived(() => get(selectElement)?.getAttribute("aria-label"));
-
-			$$ownership_validator.binding('value', DropdownList, value);
-			$$ownership_validator.binding('invalid', DropdownList, invalid);
-			$$ownership_validator.binding('expanded', DropdownList, expanded);
-
-			add_svelte_meta(
-				() => DropdownList(node_1, spread_props(
-					{
-						get label() {
-							return label();
-						},
-
-						get ariaLabel() {
-							return get($0);
-						},
-
-						get items() {
-							return get(items);
-						},
-
-						get placeholder() {
-							return placeholder();
-						},
-
-						get width() {
-							return width();
-						},
-						webComponentMode: true,
-						get multiple() {
-							return multiple();
-						},
-
-						get disabled() {
-							return disabled();
-						},
-
-						get required() {
-							return required();
-						}
-					},
-					() => rest,
-					{
-						get value() {
-							return value();
-						},
-
-						set value($$value) {
-							value($$value);
-						},
-
-						get errorElement() {
-							return get(errorElement);
-						},
-
-						set errorElement($$value) {
-							set(errorElement, $$value, true);
-						},
-
-						get invalid() {
-							return invalid();
-						},
-
-						set invalid($$value) {
-							invalid($$value);
-						},
-
-						get rootElement() {
-							return get(instance);
-						},
-
-						set rootElement($$value) {
-							set(instance, $$value, true);
-						},
-
-						get expanded() {
-							return expanded();
-						},
-
-						set expanded($$value) {
-							expanded($$value);
-						}
-					}
-				)),
-				'component',
-				SelectWC,
-				283,
-				0,
-				{ componentTag: 'DropdownList' }
-			);
+			let $0 = /* @__PURE__ */ user_derived(() => get(selectElement)?.getAttribute("aria-label"));
+			DropdownList(node_1, spread_props({
+				get label() {
+					return label();
+				},
+				get ariaLabel() {
+					return get($0);
+				},
+				get items() {
+					return get(items);
+				},
+				get placeholder() {
+					return placeholder();
+				},
+				get width() {
+					return width();
+				},
+				webComponentMode: true,
+				get multiple() {
+					return multiple();
+				},
+				get disabled() {
+					return disabled();
+				},
+				get required() {
+					return required();
+				}
+			}, () => rest, {
+				get value() {
+					return value();
+				},
+				set value($$value) {
+					value($$value);
+				},
+				get errorElement() {
+					return get(errorElement);
+				},
+				set errorElement($$value) {
+					set(errorElement, $$value, true);
+				},
+				get invalid() {
+					return invalid();
+				},
+				set invalid($$value) {
+					invalid($$value);
+				},
+				get rootElement() {
+					return get(instance);
+				},
+				set rootElement($$value) {
+					set(instance, $$value, true);
+				},
+				get expanded() {
+					return expanded();
+				},
+				set expanded($$value) {
+					expanded($$value);
+				}
+			}));
 		}
-
 		var link = sibling(node_1, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
 		return pop($$exports);
 	}
-
-	customElements.define('qc-select', create_custom_element(
-		SelectWC,
-		{
-			id: { attribute: 'id', type: 'String' },
-			label: { attribute: 'label', reflect: true, type: 'String' },
-			width: { attribute: 'width', type: 'String' },
-			value: { attribute: 'value', reflect: true, type: 'String' },
-			enableSearch: { attribute: 'enable-search', type: 'Boolean' },
-			required: { attribute: 'required', type: 'Boolean' },
-			disabled: { attribute: 'disabled', type: 'Boolean' },
-			invalid: { attribute: 'invalid', reflect: true, type: 'Boolean' },
-			invalidText: { attribute: 'invalid-text', type: 'String' },
-			placeholder: { attribute: 'placeholder', type: 'String' },
-			searchPlaceholder: { attribute: 'search-placeholder', type: 'String' },
-			noOptionsMessage: { attribute: 'no-options-message', type: 'String' },
-			multiple: { attribute: 'multiple', type: 'Boolean' },
-			expanded: { attribute: 'expanded', reflect: true, type: 'Boolean' }
+	customElements.define("qc-select", create_custom_element(SelectWC, {
+		id: {
+			attribute: "id",
+			type: "String"
 		},
-		['default'],
-		[],
-		{ mode: 'open' }
-	));
-
-	var lg = {
-		gutter: "32px",
-		breakpoint: {
-			xs: "0",
-			sm: "768px",
-			md: "992px",
-			lg: "1200px"
+		label: {
+			attribute: "label",
+			reflect: true,
+			type: "String"
 		},
-		"container-max-width": {
-			sm: "768px",
-			md: "992px",
-			lg: "1200px"
+		width: {
+			attribute: "width",
+			type: "String"
+		},
+		value: {
+			attribute: "value",
+			reflect: true,
+			type: "String"
+		},
+		enableSearch: {
+			attribute: "enable-search",
+			type: "Boolean"
+		},
+		required: {
+			attribute: "required",
+			type: "Boolean"
+		},
+		disabled: {
+			attribute: "disabled",
+			type: "Boolean"
+		},
+		invalid: {
+			attribute: "invalid",
+			reflect: true,
+			type: "Boolean"
+		},
+		invalidText: {
+			attribute: "invalid-text",
+			type: "String"
+		},
+		placeholder: {
+			attribute: "placeholder",
+			type: "String"
+		},
+		searchPlaceholder: {
+			attribute: "search-placeholder",
+			type: "String"
+		},
+		noOptionsMessage: {
+			attribute: "no-options-message",
+			type: "String"
+		},
+		multiple: {
+			attribute: "multiple",
+			type: "Boolean"
+		},
+		expanded: {
+			attribute: "expanded",
+			reflect: true,
+			type: "Boolean"
 		}
+	}, ["default"], [], { mode: "open" }));
+	var grid_default = {
+		lg: {
+			"gutter": "32px",
+			"breakpoint": {
+				"xs": "0",
+				"sm": "768px",
+				"md": "992px",
+				"lg": "1200px"
+			},
+			"container-max-width": {
+				"sm": "768px",
+				"md": "992px",
+				"lg": "1200px"
+			}
+		},
+		md: { "gutter": "24px" },
+		sm: { "gutter": "16px" }
 	};
-	var md = {
-		gutter: "24px"
-	};
-	var sm = {
-		gutter: "16px"
-	};
-	var gridConfig = {
-		lg: lg,
-		md: md,
-		sm: sm
-	};
-
-	Tooltip[FILENAME] = 'src/sdg/components/Tooltip/Tooltip.svelte';
-
-	const pinSvg = wrap_snippet(Tooltip, function ($$anchor, pos = noop) {
-		validate_snippet_args(...arguments);
-
-		const isHorizontal = tag(user_derived(() => strict_equals(pos(), "top") || strict_equals(pos(), "bottom")), 'isHorizontal');
-
-		get(isHorizontal);
-
-		const w = tag(user_derived(() => get(isHorizontal) ? 15 : 9), 'w');
-
-		get(w);
-
-		const h = tag(user_derived(() => get(isHorizontal) ? 9 : 15), 'h');
-
-		get(h);
-
-		const paths = tag(
-			user_derived(() => ({
-				right: {
-					tri: "M8.02 14.167L1.353 7.5 8.02.833V14.167Z",
-					str: "M1.353 7.5 8.02 14.167V15H7.02v-.488L0 7.5 7.02.488V0h1v.833L1.353 7.5Z"
-				},
-				top: {
-					tri: "M.833.98 7.5 7.647 14.167.98H.833Z",
-					str: "M7.5 7.647.833.98H0v1L7.5 9 15 1.98v-1h-.833L7.5 7.647Z"
-				},
-				bottom: {
-					tri: "M14.167 8.02 7.5 1.353.833 8.02h13.334Z",
-					str: "M7.5 1.353 14.167 8.02H15v-1L7.5 0 0 7.02v1h.833L7.5 1.353Z"
-				}
-			})[pos()]),
-			'paths'
-		);
-
-		get(paths);
-
+	//#endregion
+	//#region src/sdg/components/Tooltip/Tooltip.svelte
+	var pinSvg = ($$anchor, pos = noop) => {
+		const isHorizontal = /* @__PURE__ */ user_derived(() => pos() === "top" || pos() === "bottom");
+		const w = /* @__PURE__ */ user_derived(() => get(isHorizontal) ? 15 : 9);
+		const h = /* @__PURE__ */ user_derived(() => get(isHorizontal) ? 9 : 15);
+		const paths = /* @__PURE__ */ user_derived(() => ({
+			right: {
+				tri: "M8.02 14.167L1.353 7.5 8.02.833V14.167Z",
+				str: "M1.353 7.5 8.02 14.167V15H7.02v-.488L0 7.5 7.02.488V0h1v.833L1.353 7.5Z"
+			},
+			top: {
+				tri: "M.833.98 7.5 7.647 14.167.98H.833Z",
+				str: "M7.5 7.647.833.98H0v1L7.5 9 15 1.98v-1h-.833L7.5 7.647Z"
+			},
+			bottom: {
+				tri: "M14.167 8.02 7.5 1.353.833 8.02h13.334Z",
+				str: "M7.5 1.353 14.167 8.02H15v-1L7.5 0 0 7.02v1h.833L7.5 1.353Z"
+			}
+		})[pos()]);
 		var svg = root_3();
 		var path = sibling(child(svg));
 		var path_1 = sibling(path);
-
 		reset(svg);
-
 		template_effect(() => {
-			set_attribute(svg, 'width', get(w));
-			set_attribute(svg, 'height', get(h));
-			set_attribute(svg, 'viewBox', `0 0 ${get(w) ?? ''} ${get(h) ?? ''}`);
-			set_attribute(path, 'd', get(paths).tri);
-			set_attribute(path_1, 'd', get(paths).str);
+			set_attribute(svg, "width", get(w));
+			set_attribute(svg, "height", get(h));
+			set_attribute(svg, "viewBox", `0 0 ${get(w) ?? ""} ${get(h) ?? ""}`);
+			set_attribute(path, "d", get(paths).tri);
+			set_attribute(path_1, "d", get(paths).str);
 		});
-
 		append($$anchor, svg);
-	});
-
-	var root$1 = add_locations(from_html(`<!> <!>`, 1), Tooltip[FILENAME], []);
-	var root_1 = add_locations(from_html(`<header class="qc-hash-s23dzl"><h2 class="qc-tooltip-title qc-hash-s23dzl"> </h2></header> <main class="qc-hash-s23dzl"><!></main>`, 1), Tooltip[FILENAME], [[428, 20, [[429, 24]]], [433, 20]]);
-	var root_2 = add_locations(from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-s23dzl"><section class="qc-tooltip-content-text qc-hash-s23dzl"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-s23dzl" href="#top"><!></a></div>`), Tooltip[FILENAME], [[410, 4, [[421, 8, [[422, 12]]], [441, 8]]]]);
-
-	var root_3 = add_locations(
-		from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-s23dzl"><style class="qc-hash-s23dzl">.triangle { fill: var(--qc-color-background); }
-            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-s23dzl"></path><path class="stroke qc-hash-s23dzl"></path></svg>`),
-		Tooltip[FILENAME],
-		[[473, 4, [[474, 8], [478, 8], [479, 8]]]]
-	);
-
-	var root_4 = add_locations(from_html(`<span class="qc-tooltip-text qc-hash-s23dzl" tabindex="-1"><!><!></span>`), Tooltip[FILENAME], [[341, 5]]);
-	var root_5 = add_locations(from_html(`<span class="qc-hash-s23dzl">&zwj;</span>`), Tooltip[FILENAME], [[346, 8]]);
-	var root_6 = add_locations(from_html(`<div aria-hidden="true"><!></div> <!>`, 1), Tooltip[FILENAME], [[382, 9]]);
-	var root_7 = add_locations(from_html(`<dialog><div class="qc-container qc-hash-s23dzl"><!></div></dialog>`), Tooltip[FILENAME], [[391, 9, [[399, 12]]]]);
-	var root_8 = add_locations(from_html(`<div><div class="clickable-gutter qc-hash-s23dzl"></div> <a role="button" class="qc-tooltip-button qc-hash-s23dzl" href="#top"><!></a> <!> <!></div>`), Tooltip[FILENAME], [[350, 5, [[357, 9], [360, 9]]]]);
-	var root_9 = add_locations(from_html(`<div class="qc-tooltip qc-hash-s23dzl"><!> <!></div>`), Tooltip[FILENAME], [[328, 0]]);
-
-	const $$css = {
-		hash: 'qc-hash-s23dzl',
-		code: '\n    .qc-tooltip.qc-hash-s23dzl {\n        display: inline-flex;\n        align-items: center;\n        font-size: var(--qc-font-size-md);\n        font-family: var(--qc-font-family-content);\n        font-weight: var(--qc-font-weight-regular);\n        --pin-gap: 4px;\n        --pin-height: 9px;\n        --pin-base: 15px;\n    }\n    .clickable-gutter.qc-hash-s23dzl {\n        position: absolute;\n        height: 24px;\n        width: 24px;\n        left: -4px;\n        top: -4px;\n        cursor: pointer;\n    }\n    .qc-tooltip-text.qc-hash-s23dzl {\n        border-bottom: 1px dashed var(--qc-color-blue-piv);\n        cursor: pointer;\n        white-space: nowrap;\n        margin-right: calc( .5 * var(--qc-spacer-xs) );\n    }\n    .qc-tooltip-button.qc-hash-s23dzl {\n        align-self: center;\n        height: 24px;\n        width: 24px;\n        line-height: 24px;\n        display: block;\n        position: relative;\n        font-weight: 600;\n        &:focus,\n        &:focus-visible {\n            outline-offset: 0;\n        }\n    }\n    .qc-tooltip-container.qc-hash-s23dzl {\n        position: relative;\n    }\n    .qc-tooltip-pin.qc-hash-s23dzl {\n        position: absolute;\n        top: calc(var(--pin-height) / 2);\n        left: calc(100% + var(--pin-gap) + 2px);\n        z-index: 200;\n        width: var(--pin-height);\n        height: var(--pin-base);\n    }\n\n    svg.qc-hash-s23dzl {\n        display: block;\n    }\n\n    .qc-tooltip-content.qc-hash-s23dzl {\n        overflow-y: auto;\n        max-height: calc(var(--max-height) - 48px);\n        scrollbar-gutter: stable;\n        padding-right: 16px;\n        padding-top: 3px;\n        padding-left: 3px;\n    }\n\n    .qc-tooltip-content-text.qc-hash-s23dzl {\n        max-inline-size: var(--qc-max-content-width);\n    }\n\n    /* (unused) h1,*/h2.qc-hash-s23dzl /* (unused) h3,h4,h5,h6,[role="heading"]*/ {\n        font-size: var(--qc-font-size-sm);\n        font-weight: var(--qc-font-weight-bold);\n        line-height: var(--qc-line-height-sm);\n        margin: 0;\n        font-family: var(--qc-font-family-content);\n        &::after{\n            display: none;\n        }\n    }\n\n\n    .qc-tooltip-content.qc-hash-s23dzl:focus-visible {\n        outline: none;\n    }\n\n    .qc-tooltip-xclose.qc-hash-s23dzl {\n        position: absolute;\n        right: 8px;\n        top: 8px;\n        line-height: 24px;\n        height: 24px;\n    }\n\n    dialog.qc-hash-s23dzl {\n        top: auto;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        max-width: 100%;\n        width: 100%;\n        height: auto;\n        margin: 0;\n        padding: 0;\n        border: 1px solid var(--qc-color-grey-light);\n        background: var(--qc-color-background);\n\n        &.qc-desktop {\n            padding-top: 8px;\n        }\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: visible!important;\n        }\n\n        &::backdrop {\n            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)\n        }\n\n        .qc-tooltip-xclose:where(.qc-hash-s23dzl) {\n            right: 0;\n        }\n    }\n\n    .qc-tooltip-panel.qc-hash-s23dzl {\n        font-size: var(--qc-font-size-sm);\n        line-height: var(--qc-line-height-sm);\n        position: relative;\n        min-height: 68px;\n        max-height: var(--max-height);\n        background: var(--qc-color-background);\n        color: var(--qc-color-text-primary);\n        width: 100%;\n        padding-top: 21px;\n        padding-left: 13px;\n        padding-bottom: 24px;\n    }\n\n    .qc-tooltip-popover.qc-hash-s23dzl {\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: hidden;\n            position: absolute;\n            min-width: 216px;\n            max-width: 320px;\n            padding-right: 8px;\n            width: max-content;\n            border: 1px solid var(--qc-color-grey-light);\n            transform: translateY(var(--translateY));\n            top:0;\n            left: calc(100% + var(--pin-gap) + var(--pin-height));\n            z-index:199;\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-height) + var(--pin-gap));\n            left:auto;\n            transform: translateX(var(--translateX));\n        }\n\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/\n            left: calc(50% - var(--pin-base) / 2);\n        }\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(0px - var(--pin-height) - var(--pin-gap) - 2px);\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-gap) + 2px);\n        }\n\n        &.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            /*display: none;*/\n            top: 0;\n            transform: translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );\n            left:auto;\n        }\n        .qc-tooltip-visible:where(.qc-hash-s23dzl) {\n            visibility: visible;\n        }\n\n        .qc-tooltip-content:where(.qc-hash-s23dzl):focus-visible {\n            outline: 2px solid var(--qc-color-blue-regular);\n            outline-offset: 1px;\n        }\n    }\n\n    .qc-hash-s23dzl::-webkit-scrollbar,\n    .qc-hash-s23dzl::-webkit-scrollbar-track,\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb\n    {\n        height: 50%;\n        margin-top: 10px;\n        margin-right: -8px;\n    }\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb {\n        background: var(--qc-color-blue-piv);\n    }\n\n\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiVG9vbHRpcC5zdmVsdGUiLCJzb3VyY2VzIjpbIlRvb2x0aXAuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG4gICAgaW1wb3J0IHtVdGlsc30gZnJvbSBcIi4uL3V0aWxzXCI7XG4gICAgaW1wb3J0IHtvbk1vdW50LCB0aWNrfSBmcm9tIFwic3ZlbHRlXCI7XG4gICAgaW1wb3J0IEljb24gZnJvbSBcIi4uLy4uL2Jhc2VzL0ljb24vSWNvbi5zdmVsdGVcIjtcbiAgICBpbXBvcnQgZ3JpZENvbmZpZyBmcm9tICcuLi8uLi8uLi9zZGcvc2Nzcy9zZXR0aW5ncy9ncmlkLmpzb24nO1xuICAgIGxldCB7XG4gICAgICAgIHRleHQsXG4gICAgICAgIHRpdGxlLFxuICAgICAgICBkZXNjcmlwdGlvbixcbiAgICAgICAgcmVxdWVzdGVkUG9zaXRpb24gPSBcInRvcFwiLFxuICAgICAgICBwcmV2ZW50T3V0ZXJFdmVudENsb3NpbmcgPSBmYWxzZSxcbiAgICAgICAgZGlzcGxheU1vZGUgPSBcInBvcG92ZXJcIixcbiAgICAgICAgaWNvbiA9IFwiaW5mb3JtYXRpb25cIixcbiAgICAgICAgZGVzY3JpcHRpb25JZCxcbiAgICAgICAgc2xvdHMsXG4gICAgICAgIGhvc3QsXG4gICAgICAgIGRlc2NyaXB0aW9uU2xvdCxcbiAgICAgICAgdGV4dFNsb3RcbiAgICB9ID0gJHByb3BzKClcbiAgICBjb25zdFxuICAgICAgICBkZWZhdWx0VHJhbnNsYXRlWSA9IFwiY2FsYygtNTAlICsgMTJweClcIixcbiAgICAgICAgZGVmYXVsdFRyYW5zbGF0ZVggPSBcIi01MCVcIlxuICAgIDtcbiAgICBsZXQgaXNGciA9IFV0aWxzLmdldFBhZ2VMYW5ndWFnZSgpID09PSBcImZyXCIsXG4gICAgICAgIHRvb2x0aXBQYW5lbCA9ICRzdGF0ZSgpLFxuICAgICAgICB0b29sdGlwSWQgPSBVdGlscy5nZW5lcmF0ZUlkKFwidG9vbHRpcFwiKSxcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lcixcbiAgICAgICAgdG9vbHRpcEJ1dHRvbiA9ICRzdGF0ZSgpLFxuICAgICAgICBtb2RhbGUgPSAkc3RhdGUoKSxcbiAgICAgICAgZGlzcGxheVBvcG92ZXIgPSAkc3RhdGUoZmFsc2UpLFxuICAgICAgICB2aXNpYmxlUG9wb3ZlciA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIGRpc3BsYXlNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIHRyYW5zbGF0ZVggPSAkc3RhdGUoZGVmYXVsdFRyYW5zbGF0ZVgpLFxuICAgICAgICB0cmFuc2xhdGVZID0gJHN0YXRlKGRlZmF1bHRUcmFuc2xhdGVZKSxcbiAgICAgICAgLy8gc3ZlbHRlLWlnbm9yZSBzdGF0ZV9yZWZlcmVuY2VkX2xvY2FsbHkg4oCUIHJlcXVlc3RlZFBvc2l0aW9uIHNlcnQgZGUgdmFsZXVyIGluaXRpYWxlLCBwb3NpdGlvbiBlc3QgZW5zdWl0ZSBhanVzdMOpZSBwYXIgc2hvd1BvcG92ZXJcbiAgICAgICAgcG9zaXRpb24gPSAkc3RhdGUocmVxdWVzdGVkUG9zaXRpb24pLFxuICAgICAgICBtb2JpbGVGbGFnID0gJHN0YXRlKGZhbHNlKSxcbiAgICAgICAgZm9yY2VNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIG1vZGFsRmxhZyA9ICRkZXJpdmVkKG1vYmlsZUZsYWcgfHwgZGlzcGxheU1vZGUgPT09IFwibW9kYWxcIiB8fCBmb3JjZU1vZGFsKSxcbiAgICAgICAgaGFzRGVzY3JpcHRpb24gPSAkZGVyaXZlZC5ieShfID0+IGhhc1Byb3BlcnR5KGRlc2NyaXB0aW9uLCBzbG90c1tcImRlc2NyaXB0aW9uXCJdLCBkZXNjcmlwdGlvblNsb3QpKSxcbiAgICAgICAgaGFzVGV4dCA9ICRkZXJpdmVkLmJ5KF8gPT4gaGFzUHJvcGVydHkodGV4dCwgc2xvdHNbXCJ0ZXh0XCJdLCB0ZXh0U2xvdCkpLFxuICAgICAgICB0b29sdGlwSWNvbiA9ICRkZXJpdmVkKGljb24gPT09IFwicXVlc3Rpb25cIiA/IFwiaGVscFwiIDogXCJpbmZvXCIpLFxuICAgICAgICBsYWJlbHMgPSAkZGVyaXZlZCh7XG4gICAgICAgICAgICB0b29sdGlwQnV0dG9uOiB7XG4gICAgICAgICAgICAgICAgYXJpYUxhYmVsOiAoaXNGciA/IFwiQWZmaWNoZXIgbCdhaWRlIGNvbnRleHR1ZWxsZVwiIDogXCJEaXNwbGF5IHRvb2x0aXBcIilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICArICh0ZXh0ID8gKGlzRnIgPyBcIiBwb3VyIFwiIDogXCIgZm9yIFwiKSArIHRleHQgOiBcIlwiKSxcbiAgICAgICAgICAgIH0sXG4gICAgICAgICAgICBjbG9zZUJ1dHRvbjoge1xuICAgICAgICAgICAgICAgIGFyaWFMYWJlbCA6IGlzRnIgPyBcIkZlcm1lciBsJ2FpZGUgY29udGV4dHVlbGxlXCIgOiBcIkNsb3NlIHRvb2x0aXBcIlxuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgIDtcbiAgICAkaW5zcGVjdChcIm1vZGFsRmxhZ1wiLG1vZGFsRmxhZylcblxuICAgIGZ1bmN0aW9uIGhhc1Byb3BlcnR5KHByb3BlcnR5LCBzbG90RXhpc3QsIHNuaXBwZXQpIHtcbiAgICAgICAgaWYgKHByb3BlcnR5KSByZXR1cm4gdHJ1ZTtcbiAgICAgICAgaWYgKHNsb3RzKSByZXR1cm4gc2xvdEV4aXN0ICE9PSB1bmRlZmluZWRcbiAgICAgICAgcmV0dXJuIHNuaXBwZXQgIT09IG51bGxcbiAgICB9XG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIVtcInBvcG92ZXJcIixcIm1vZGFsXCJdLmluY2x1ZGVzKGRpc3BsYXlNb2RlKSApIHtcbiAgICAgICAgICAgIGRpc3BsYXlNb2RlID0gXCJwb3BvdmVyXCJcbiAgICAgICAgfVxuICAgIH0pXG4gICAgJGVmZmVjdChfID0+IHtcbiAgICAgICAgaWYgKCFbXCJpbmZvcm1hdGlvblwiLFwicXVlc3Rpb25cIl0uaW5jbHVkZXMoaWNvbikgKSB7XG4gICAgICAgICAgICBpY29uID0gXCJpbmZvcm1hdGlvblwiXG4gICAgICAgIH1cbiAgICB9KVxuICAgICRlZmZlY3QoXyA9PiB7XG4gICAgICAgIGlmIChkZXNjcmlwdGlvbikgcmV0dXJuO1xuICAgICAgICBpZiAoIWRlc2NyaXB0aW9uSWQpIHJldHVybjtcbiAgICAgICAgY29uc3QgdGFyZ2V0ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoZGVzY3JpcHRpb25JZCk7XG4gICAgICAgIGlmICghdGFyZ2V0KSByZXR1cm47XG4gICAgICAgIGRlc2NyaXB0aW9uID0gdGFyZ2V0LmlubmVySFRNTDtcbiAgICB9KVxuXG4gICAgb25Nb3VudChfID0+IHtcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lclxuICAgICAgICAgICAgLmFkZEV2ZW50TGlzdGVuZXIoXCJjbGlja1wiLCBtYXJrSW5uZXJFdmVudClcbiAgICAgICAgJGluc3BlY3QoXCJzbSBicFwiICwgZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpKVxuICAgICAgICBzZXRJc01vYmlsZSgpXG4gICAgICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKFwicmVzaXplXCIsIHNldElzTW9iaWxlKVxuICAgIH0pXG5cbiAgICAkaW5zcGVjdChcImlzTW9iaWxlXCIsIG1vYmlsZUZsYWcpXG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIWRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IGZhbHNlXG4gICAgICAgIH1cbiAgICB9KVxuXG4gICAgYXN5bmMgZnVuY3Rpb24gc2hvd1Rvb2x0aXAoZSkge1xuICAgICAgICBmb3JjZU1vZGFsID0gZmFsc2U7XG4gICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgaWYgKG1vZGFsRmxhZykge1xuICAgICAgICAgICAgc2hvd01vZGFsKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIHNob3dQb3BvdmVyKClcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlVG9vbHRpcChlKSB7XG4gICAgICAgIGlmIChtb2RhbEZsYWcpIHtcbiAgICAgICAgICAgIGNsb3NlTW9kYWxlKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIGRpc3BsYXlQb3BvdmVyID0gZmFsc2U7XG4gICAgICAgIH1cbiAgICAgICAgaWYgKGUpIHtcbiAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgICAgIGlmIChkb2N1bWVudC5hY3RpdmVFbGVtZW50ID09PSB0b29sdGlwQnV0dG9uKSByZXR1cm5cbiAgICAgICAgICAgIHRvb2x0aXBCdXR0b24uZm9jdXMoKTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlTW9kYWxlKCkge1xuICAgICAgICBpZiAoIW1vZGFsZSkgcmV0dXJuO1xuXG4gICAgICAgIG1vZGFsZS5jbG9zZSgpO1xuICAgICAgICB0b2dnbGVNb2RhbCgpO1xuICAgICAgICBkaXNwbGF5TW9kYWwgPSBmYWxzZTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiB0b2dnbGVNb2RhbCgpIHtcbiAgICAgICAgaWYgKCFtb2RhbGUpIHJldHVybjtcbiAgICAgICAgY29uc3QgYm9keSA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCJib2R5XCIpO1xuICAgICAgICBpZiAobW9kYWxlLm9wZW4pIHtcbiAgICAgICAgICAgIGJvZHkuc3R5bGUub3ZlcmZsb3cgPSBcImhpZGRlblwiO1xuICAgICAgICB9XG4gICAgICAgIGVsc2Uge1xuICAgICAgICAgICAgYm9keS5zdHlsZS5vdmVyZmxvdyA9IFwiXCJcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dNb2RhbChlKSB7XG4gICAgICAgIGRpc3BsYXlNb2RhbCA9IHRydWU7XG4gICAgICAgIGF3YWl0IHRpY2soKVxuICAgICAgICBtb2RhbGUuc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpIHtcbiAgICAgICAgcmV0dXJuIHBhcnNlSW50KGdyaWRDb25maWcubGcuYnJlYWtwb2ludC5zbS5yZXBsYWNlKFwicHhcIiwgXCJcIikpO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIHNldElzTW9iaWxlKCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgbW9iaWxlRmxhZyA9IGJvdW5kcy5yaWdodCA8PSBnZXRTbUJyZWFrcG9pbnQoZ3JpZENvbmZpZyk7XG4gICAgICAgIHJldHVybiBtb2JpbGVGbGFnO1xuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dQb3BvdmVyKGUpIHtcbiAgICAgICAgaWYgKGRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICBkaXNwbGF5UG9wb3Zlcj1mYWxzZTtcbiAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgfVxuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IHRydWVcbiAgICAgICAgYXdhaXQgdGljaygpXG4gICAgICAgIGxldCBzdGFydCA9IHJlcXVlc3RlZFBvc2l0aW9uLFxuICAgICAgICAgICAgY3VycmVudCA9ICBzdGFydFxuICAgICAgICA7XG4gICAgICAgIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKVxuICAgICAgICAvLyAkaW5zcGVjdChcIlBsYWNlbWVudCBpbml0aWFsIDogXCIgKyBzdGFydCwgcmVxdWVzdGVkUG9zaXRpb24pXG4gICAgICAgIGxldCB0cmllcyA9IGdldFRyaWVzT3JkZXIoc3RhcnQpO1xuICAgICAgICB3aGlsZSAodHJ1ZSkge1xuICAgICAgICAgICAgcG9zaXRpb24gPSBjdXJyZW50XG4gICAgICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICAgICAgICAgIGlmICh0cnlQbGFjZW1lbnQoY3VycmVudCkpIHtcbiAgICAgICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IHRydWU7XG4gICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBjb25zdCBpbmRleCA9IHRyaWVzLmluZGV4T2YoY3VycmVudClcbiAgICAgICAgICAgIGN1cnJlbnQgPSB0cmllc1soaW5kZXggKyAxKSAlIHRyaWVzLmxlbmd0aF1cbiAgICAgICAgICAgIGlmIChjdXJyZW50ID09PSBzdGFydCkge1xuICAgICAgICAgICAgICAgIGZhbGxCYWNrKClcbiAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRUcmllc09yZGVyKHBsYWNlbWVudCkge1xuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgXCJyaWdodFwiOiBbXCJyaWdodFwiLCBcInRvcFwiLCBcImJvdHRvbVwiXSxcbiAgICAgICAgICAgIFwidG9wXCI6IFtcInRvcFwiLCBcImJvdHRvbVwiLCBcInJpZ2h0XCJdLFxuICAgICAgICAgICAgXCJib3R0b21cIjogW1wiYm90dG9tXCIsIFwidG9wXCIsIFwicmlnaHRcIl1cbiAgICAgICAgfVtwbGFjZW1lbnRdXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gd2FpdEZvck5leHRGcmFtZSgpIHtcbiAgICAgICAgLy8gJGluc3BlY3QoXCJXYWl0aW5nIGZvciBuZXh0IGZyYW1lXCIpXG4gICAgICAgIHJldHVybiBuZXcgUHJvbWlzZShyZXNvbHZlID0+IHtcbiAgICAgICAgICAgIHdpbmRvdy5yZXF1ZXN0QW5pbWF0aW9uRnJhbWUocmVzb2x2ZSk7XG4gICAgICAgIH0pO1xuICAgIH1cblxuICAgICBmdW5jdGlvbiB0cnlQbGFjZW1lbnQocGxhY2VtZW50KSB7XG4gICAgICAgIGxldCByZXN1bHQgPSAhaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICBpZiAocmVzdWx0KSB7XG4gICAgICAgICAgICByZXN1bHQgPSBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICB9XG4gICAgICAgIC8vICRpbnNwZWN0KFwiUGxhY2VtZW50IHNlbG9uIFwiICsgcGxhY2VtZW50ICsgXCIgOiBcIiAgKyByZXN1bHQgKVxuICAgICAgICByZXR1cm4gcmVzdWx0O1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldE90aGVyQXhpc1Bvc2l0aW9ucyhwbGFjZW1lbnQpIHtcbiAgICAgICAgcmV0dXJuIHBsYWNlbWVudCA9PT0gXCJyaWdodFwiXG4gICAgICAgICAgICAgICAgPyBbXCJ0b3BcIiwgXCJib3R0b21cIl1cbiAgICAgICAgICAgICAgICA6IFtcInJpZ2h0XCIsIFwibGVmdFwiXTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwb3NpdGlvbikge1xuICAgICAgICB0cmFuc2xhdGVYID0gZGVmYXVsdFRyYW5zbGF0ZVgsXG4gICAgICAgIHRyYW5zbGF0ZVkgPSBkZWZhdWx0VHJhbnNsYXRlWVxuICAgICAgICBsZXQgb3RoZXJBeGlzUG9zaXRpb25zID0gZ2V0T3RoZXJBeGlzUG9zaXRpb25zKHBvc2l0aW9uKTtcbiAgICAgICAgbGV0IGFkanVzdGFibGUgPSB0cnVlO1xuXG4gICAgICAgIG90aGVyQXhpc1Bvc2l0aW9ucy5mb3JFYWNoKG90aGVyQXhpc1Bvc2l0aW9uID0+IHtcbiAgICAgICAgICAgIC8vIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKTtcbiAgICAgICAgICAgIGlmICghYWRqdXN0YWJsZSkgcmV0dXJuO1xuICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259YClcbiAgICAgICAgICAgIGlmICghaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBvdGhlckF4aXNQb3NpdGlvbikpIHtcbiAgICAgICAgICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtvdGhlckF4aXNQb3NpdGlvbn0gOiBub3RoaW5nIHRvIGFkanVzdCBgKVxuICAgICAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcCh0b29sdGlwQnV0dG9uLCBvdGhlckF4aXNQb3NpdGlvbik7XG4gICAgICAgICAgICBjb25zdCBlZGdlTWFyZ2luID0gMzsgLy8gZMOpY2FsYWdlIHBvdXIgcXVlIGwnaW5mb2J1bGxlIG5lIHZpZW5uZSBwYXMgZW4gYnV0w6llIGR1IGJvcmQgZXQgcXVlIGwnb21icmUgc29pdCB2aXNpYmxlXG4gICAgICAgICAgICAvLyBjb25zb2xlLmxvZyhgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259IDogZ2FwIHZhbHVlIGZvciBidXR0b24gOiAke2dhcH1gLCBnYXAgPCAwIClcbiAgICAgICAgICAgIGlmIChnYXAgPCAwKSB7XG4gICAgICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7cG9zaXRpb259IDogYnV0dG9uIG92ZXJmbG93d2luZyAtIG5vIGFkanVzdGVtZW50IGVuYWJsZWRgKVxuICAgICAgICAgICAgICAgIGFkanVzdGFibGUgPSBmYWxzZTtcbiAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBzd2l0Y2ggKG90aGVyQXhpc1Bvc2l0aW9uKSB7XG4gICAgICAgICAgICAgICAgY2FzZSBcInRvcFwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLSR7Z2FwfXB4ICsgJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImJvdHRvbVwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLTEwMCUgKyAyNHB4ICsgJHtnYXB9cHggLSAke2VkZ2VNYXJnaW59cHgpYFxuICAgICAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0xMDAlICsgMjRweCArICR7Z2FwfXB4IC0gJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImxlZnRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0ke2dhcH1weCArICR7ZWRnZU1hcmdpbn1weClgXG4gICAgICAgICAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtwb3NpdGlvbn0gOiBhZGp1c3RhYmxlIDogJHthZGp1c3RhYmxlfWApXG4gICAgICAgIHJldHVybiBhZGp1c3RhYmxlO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGZhbGxCYWNrKCkge1xuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IGZhbHNlO1xuICAgICAgICBmb3JjZU1vZGFsID0gdHJ1ZTtcbiAgICAgICAgc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xvc2VPblRvb2x0aXBCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGlmIChlLnRvb2x0aXBDb250YWluZXIgPT09IHRvb2x0aXBDb250YWluZXIpIHJldHVybjtcbiAgICAgICAgaWYgKCFob3N0KSByZXR1cm47XG4gICAgICAgIGlmIChob3N0ID09PSBlLnRhcmdldCkgcmV0dXJuO1xuICAgICAgICBjbG9zZVRvb2x0aXAoKVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlT25XaW5kb3dCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGNsb3NlVG9vbHRpcCgpXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gbWFya0lubmVyRXZlbnQoZSkge1xuICAgICAgICBlLnRvb2x0aXBDb250YWluZXIgPSB0b29sdGlwQ29udGFpbmVyO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGlzRWxlbWVudE92ZXJmbG93aW5nKGVsZW1lbnQsIHBvc2l0aW9uKSB7XG4gICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbik7XG4gICAgICAgIGNvbnN0IG92ZXJmbG93ID0gZ2FwIDwgMDtcbiAgICAgICAgLy8kaW5zcGVjdChgT3ZlcmZsb3cgZm9yICR7Y29uc29sZU5hbWUoZWxlbWVudCl9IGluIHBvc2l0aW9uICR7cG9zaXRpb259IDogJHtvdmVyZmxvd30gKGdhcDogJHtnYXB9KWApXG4gICAgICAgIHJldHVybiBvdmVyZmxvdztcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRTY3JlZW5Cb3VuZHMoKSB7XG4gICAgICAgIHJldHVybiB7XG4gICAgICAgICAgICBcInJpZ2h0XCIgOiBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xpZW50V2lkdGgsXG4gICAgICAgICAgICBcInRvcFwiIDogMCxcbiAgICAgICAgICAgIFwiYm90dG9tXCI6IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGllbnRIZWlnaHQsXG4gICAgICAgICAgICBcImxlZnRcIiA6IDBcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbiwgb2Zmc2V0ID0gMCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgLy8gUsOpY3Vww6hyZSBsZXMgY29vcmRvbm7DqWVzIGRlIGwnw6lsw6ltZW50IHBhciByYXBwb3J0IGF1IHZpZXdwb3J0XG4gICAgICAgIGNvbnN0IHJlY3QgPSBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpO1xuICAgICAgICAvLyBjb25zb2xlLmxvZyhgZWxlbWVudC5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKSBmb3IgJHtjb25zb2xlTmFtZShlbGVtZW50KX0gaW4gcG9zaXRpb24gJHtwb3NpdGlvbn1gLCBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpKVxuICAgICAgICBjb25zdCBib3JkZXIgPSBib3VuZHNbcG9zaXRpb25dXG4gICAgICAgIC8vIGNvbnNvbGUubG9nKFwiYm9yZGVyXCIsYm9yZGVyKVxuICAgICAgICBzd2l0Y2ggKHBvc2l0aW9uKSB7XG4gICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgIGNhc2UgXCJib3R0b21cIjpcbiAgICAgICAgICAgICAgICByZXR1cm4gKGJvcmRlciAtIG9mZnNldCkgLSByZWN0W3Bvc2l0aW9uXTtcbiAgICAgICAgICAgIGNhc2UgXCJ0b3BcIiA6XG4gICAgICAgICAgICBjYXNlIFwibGVmdFwiIDpcbiAgICAgICAgICAgICAgICByZXR1cm4gcmVjdFtwb3NpdGlvbl0gLSAoYm9yZGVyIC0gb2Zmc2V0KVxuICAgICAgICB9XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xpY2tJY29uQnV0dG9uKGUpIHtcbiAgICAgICAgZS5zdG9wSW1tZWRpYXRlUHJvcGFnYXRpb24oKTtcbiAgICAgICAgdG9vbHRpcEJ1dHRvbi5mb2N1cygpXG4gICAgICAgIHRvb2x0aXBCdXR0b24uY2xpY2soKVxuICAgIH1cblxuPC9zY3JpcHQ+XG5cbjxzdmVsdGU6ZG9jdW1lbnRcbiAgICAgICAgb25jbGljaz17Y2xvc2VPblRvb2x0aXBCbHVyfVxuICAgICAgICBvbmZvY3VzaW49e2Nsb3NlT25Ub29sdGlwQmx1cn1cbi8+XG48c3ZlbHRlOndpbmRvd1xuICAgICAgICBvbmJsdXI9e2Nsb3NlT25XaW5kb3dCbHVyfVxuLz5cbjwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X25vX3N0YXRpY19lbGVtZW50X2ludGVyYWN0aW9ucyAtLT5cbjxkaXYgY2xhc3M9XCJxYy10b29sdGlwXCJcbiAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcENvbnRhaW5lcn1cbiAgICAgIG9uZm9jdXNvdXQ9e21hcmtJbm5lckV2ZW50fVxuICAgICAgb25rZXlkb3duPXtlID0+IHtcbiAgICAgICAgICAgICAvLyRpbnNwZWN0KFwia2V5ZG93blwiLCBlLmtleSlcbiAgICAgICAgICAgICBpZiAobW9kYWxGbGFnKSByZXR1cm47XG4gICAgICAgICAgICAgaWYgKGUua2V5ID09PSBcIkVzY2FwZVwiKSB7XG4gICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICB9XG4gICAgICAgICB9fVxuPlxuICAgIDwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgeyNpZiBoYXNUZXh0fVxuICAgICA8c3BhbiBjbGFzcz1cInFjLXRvb2x0aXAtdGV4dFwiXG4gICAgICAgICAgIG9uY2xpY2s9e2NsaWNrSWNvbkJ1dHRvbn1cbiAgICAgICAgICAgdGFiaW5kZXg9XCItMVwiXG4gICAgICAgID57QGh0bWwgdGV4dH17QHJlbmRlciB0ZXh0U2xvdCgpfTwvc3Bhbj5cbiAgICB7OmVsc2V9XG4gICAgICAgIDxzcGFuPiZ6d2o7PC9zcGFuPlxuICAgIHsvaWZ9XG4gICAgeyNpZiBoYXNEZXNjcmlwdGlvbn1cblxuICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250YWluZXIgcWMtdG9vbHRpcC17cG9zaXRpb259IHFjLXNjcm9sbGJhclwiXG4gICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC1wb3BvdmVyPXshbW9kYWxGbGFnfVxuICAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtbW9kYWw9e21vZGFsRmxhZ31cbiAgICAgICAgICBzdHlsZTotLW1heC1oZWlnaHQ9e21vZGFsRmxhZyA/IFwiMzIwcHhcIiA6IFwiMTYwcHhcIn07XG4gICAgICAgID5cbiAgICAgICAgIDwhLS0gYWpvdXQgZCd1bmUgem9uZSBjbGlxdWFibGUgZGUgMjRweCBhdXRvdXIgZHUgYm91dG9uLCBwb3VyIGRlcyByYWlzb25zIGQnYWNjZXNzaWJpbGl0w6kgLS0+XG4gICAgICAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9jbGlja19ldmVudHNfaGF2ZV9rZXlfZXZlbnRzIC0tPlxuICAgICAgICAgPGRpdiBjbGFzcz1cImNsaWNrYWJsZS1ndXR0ZXJcIlxuICAgICAgICAgICAgICBvbmNsaWNrPXtjbGlja0ljb25CdXR0b259XG4gICAgICAgICA+PC9kaXY+XG4gICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgIGNsYXNzPVwicWMtdG9vbHRpcC1idXR0b25cIlxuICAgICAgICAgICAgaHJlZj1cIiN0b3BcIlxuICAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLnRvb2x0aXBCdXR0b24uYXJpYUxhYmVsfVxuICAgICAgICAgICAgb25jbGljaz17c2hvd1Rvb2x0aXB9XG4gICAgICAgICAgICBiaW5kOnRoaXM9e3Rvb2x0aXBCdXR0b259XG4gICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgIGlmIChlLmNvZGUgPT09IFwiU3BhY2VcIikge1xuICAgICAgICAgICAgICAgICB0b29sdGlwQnV0dG9uLmNsaWNrKClcbiAgICAgICAgICAgICAgICAgZS5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH19XG4gICAgICAgICA+XG4gICAgICAgICAgICA8SWNvbiB0eXBlPXt0b29sdGlwSWNvbn1cbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2YXJpYW50PVwiZmlsbGVkXCJcbiAgICAgICAgICAgICAgICAgIGNvbG9yPVwiYmx1ZS1waXZcIlxuICAgICAgICAgICAgICAgICAgdkFsaWduPVwidG9wXCJcbiAgICAgICAgICAgICAgICAgIHZhcmlhdGlvblNldHRpbmdzPVwiJ29wc3onIDI0LCAnRklMTCcgMSwgJ0dSQUQnIDBcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgICAgICAgeyNpZiAhbW9kYWxGbGFnICYmIGRpc3BsYXlQb3BvdmVyfVxuICAgICAgICAgPGRpdiBjbGFzcz1cInFjLXRvb2x0aXAtcGluXCJcbiAgICAgICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC12aXNpYmxlPXt2aXNpYmxlUG9wb3Zlcn1cbiAgICAgICAgICAgICAgYXJpYS1oaWRkZW49XCJ0cnVlXCJcbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICB7QHJlbmRlciBwaW5TdmcocG9zaXRpb24pfVxuICAgICAgICAgPC9kaXY+XG4gICAgICAgICB7QHJlbmRlciB0b29sdGlwUGFuZWxTbmlwcGV0KFwicG9wb3ZlclwiKX1cbiAgICAgICAgIHsvaWZ9XG4gICAgICAgICB7I2lmIG1vZGFsRmxhZyAmJiBkaXNwbGF5TW9kYWx9XG4gICAgICAgICA8ZGlhbG9nIGJpbmQ6dGhpcz17bW9kYWxlfVxuICAgICAgICAgICAgICAgICBvbnRvZ2dsZT17dG9nZ2xlTW9kYWx9XG4gICAgICAgICAgICAgICAgIGNsYXNzOnFjLWRlc2t0b3A9eyFtb2JpbGVGbGFnfVxuICAgICAgICAgICAgICAgICBvbmNsaWNrPXtlID0+IHtcbiAgICAgICAgICAgICAgICAgICAgIGlmIChlLmNsaWNrSW50b1BhbmVsKSByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICBjbG9zZU1vZGFsZSgpO1xuICAgICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cInFjLWNvbnRhaW5lclwiPlxuICAgICAgICAgICAgICAgIHtAcmVuZGVyIHRvb2x0aXBQYW5lbFNuaXBwZXQoXCJtb2RhbFwiKX1cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgPC9kaWFsb2c+XG4gICAgICAgICB7L2lmfVxuICAgICA8L2Rpdj5cbiAgICB7L2lmfVxuPC9kaXY+XG5cbnsjc25pcHBldCB0b29sdGlwUGFuZWxTbmlwcGV0KGRpc3BsYXlNb2RlKX1cbiAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9ub19ub25pbnRlcmFjdGl2ZV9lbGVtZW50X2ludGVyYWN0aW9ucyxhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgPGRpdiByb2xlPVwidG9vbHRpcFwiXG4gICAgICAgICBjbGFzcz1cInFjLXRvb2x0aXAtcGFuZWxcIlxuICAgICAgICAgb25jbGljaz17ZSA9PiBlLmNsaWNrSW50b1BhbmVsID0gdHJ1ZX1cbiAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtdmlzaWJsZT17dmlzaWJsZVBvcG92ZXJ9XG4gICAgICAgICBjbGFzczpxYy1zaGFkaW5nLTI9e2Rpc3BsYXlNb2RlID09PSBcInBvcG92ZXJcIn1cbiAgICAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcFBhbmVsfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVZPXt0cmFuc2xhdGVZfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVYPXt0cmFuc2xhdGVYfVxuICAgICAgICAgaWQ9e3Rvb2x0aXBJZH1cbiAgICAgICAgIGFyaWEtZGVzY3JpYmVkYnk9XCJ7dG9vbHRpcElkfS10aXRsZVwiXG4gICAgPlxuICAgICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250ZW50XCI+XG4gICAgICAgICAgICA8c2VjdGlvbiBjbGFzcz1cInFjLXRvb2x0aXAtY29udGVudC10ZXh0XCI+XG4gICAgICAgICAgICAgICAgeyNzbmlwcGV0IGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAge0BodG1sIGRlc2NyaXB0aW9ufVxuICAgICAgICAgICAgICAgICAgICB7QHJlbmRlciBkZXNjcmlwdGlvblNsb3QoKX1cbiAgICAgICAgICAgICAgICB7L3NuaXBwZXR9XG4gICAgICAgICAgICAgICAgeyNpZiB0aXRsZX1cbiAgICAgICAgICAgICAgICAgICAgPGhlYWRlcj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz1cInFjLXRvb2x0aXAtdGl0bGVcIlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZD1cInt0b29sdGlwSWR9LXRpdGxlXCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA+e3RpdGxlfTwvaDI+XG4gICAgICAgICAgICAgICAgICAgIDwvaGVhZGVyPlxuICAgICAgICAgICAgICAgICAgICA8bWFpbj5cbiAgICAgICAgICAgICAgICAgICAgICAgIHtAcmVuZGVyIGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAgPC9tYWluPlxuICAgICAgICAgICAgICAgIHs6ZWxzZX1cbiAgICAgICAgICAgICAgICAgICAge0ByZW5kZXIgY29udGVudCgpfVxuICAgICAgICAgICAgICAgIHsvaWZ9XG4gICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgIDwvZGl2PlxuICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgY2xhc3M9XCJxYy10b29sdGlwLXhjbG9zZVwiXG4gICAgICAgICAgIGhyZWY9XCIjdG9wXCJcbiAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLmNsb3NlQnV0dG9uLmFyaWFMYWJlbH1cbiAgICAgICAgICAgb25jbGljaz17Y2xvc2VUb29sdGlwfVxuICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgICAgICBpZiAoZS5jb2RlID09PSBcIlNwYWNlXCIpIHtcbiAgICAgICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgIH19XG4gICAgICAgID5cbiAgICAgICAgICAgIDxJY29uIHR5cGU9XCJjbG9zZVwiXG4gICAgICAgICAgICAgICAgICBjb2xvcj1cImJsdWUtcGl2XCJcbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2QWxpZ249XCJ0b3BcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgIDwvZGl2Plxuey9zbmlwcGV0fVxuXG57I3NuaXBwZXQgcGluU3ZnKHBvcyl9XG4gICAge0Bjb25zdCBpc0hvcml6b250YWwgPSBwb3MgPT09IFwidG9wXCIgfHwgcG9zID09PSBcImJvdHRvbVwifVxuICAgIHtAY29uc3QgdyA9IGlzSG9yaXpvbnRhbCA/IDE1IDogOX1cbiAgICB7QGNvbnN0IGggPSBpc0hvcml6b250YWwgPyA5IDogMTV9XG4gICAge0Bjb25zdCBwYXRocyA9ICh7XG4gICAgICAgIHJpZ2h0OiAgeyB0cmk6IFwiTTguMDIgMTQuMTY3TDEuMzUzIDcuNSA4LjAyLjgzM1YxNC4xNjdaXCIsXG4gICAgICAgICAgICAgICAgICBzdHI6IFwiTTEuMzUzIDcuNSA4LjAyIDE0LjE2N1YxNUg3LjAydi0uNDg4TDAgNy41IDcuMDIuNDg4VjBoMXYuODMzTDEuMzUzIDcuNVpcIiB9LFxuICAgICAgICB0b3A6IHsgdHJpOiBcIk0uODMzLjk4IDcuNSA3LjY0NyAxNC4xNjcuOThILjgzM1pcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDcuNjQ3LjgzMy45OEgwdjFMNy41IDkgMTUgMS45OHYtMWgtLjgzM0w3LjUgNy42NDdaXCIgfSxcbiAgICAgICAgYm90dG9tOiAgICB7IHRyaTogXCJNMTQuMTY3IDguMDIgNy41IDEuMzUzLjgzMyA4LjAyaDEzLjMzNFpcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDEuMzUzIDE0LjE2NyA4LjAySDE1di0xTDcuNSAwIDAgNy4wMnYxaC44MzNMNy41IDEuMzUzWlwiIH1cbiAgICB9KVtwb3NdfVxuICAgIDxzdmcgd2lkdGg9e3d9IGhlaWdodD17aH0gdmlld0JveD1cIjAgMCB7d30ge2h9XCIgZmlsbD1cIm5vbmVcIiB4bWxucz1cImh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnXCI+XG4gICAgICAgIDxzdHlsZT5cbiAgICAgICAgICAgIC50cmlhbmdsZSB7IGZpbGw6IHZhcigtLXFjLWNvbG9yLWJhY2tncm91bmQpOyB9XG4gICAgICAgICAgICAuc3Ryb2tlIHsgZmlsbDogdmFyKC0tcWMtY29sb3ItZ3JleS1saWdodCk7IH1cbiAgICAgICAgPC9zdHlsZT5cbiAgICAgICAgPHBhdGggY2xhc3M9XCJ0cmlhbmdsZVwiIGQ9e3BhdGhzLnRyaX0vPlxuICAgICAgICA8cGF0aCBjbGFzcz1cInN0cm9rZVwiIGQ9e3BhdGhzLnN0cn0vPlxuICAgIDwvc3ZnPlxuey9zbmlwcGV0fVxuXG5cbjxzdHlsZT5cbiAgICAucWMtdG9vbHRpcCB7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBmb250LXNpemU6IHZhcigtLXFjLWZvbnQtc2l6ZS1tZCk7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1xYy1mb250LWZhbWlseS1jb250ZW50KTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IHZhcigtLXFjLWZvbnQtd2VpZ2h0LXJlZ3VsYXIpO1xuICAgICAgICAtLXBpbi1nYXA6IDRweDtcbiAgICAgICAgLS1waW4taGVpZ2h0OiA5cHg7XG4gICAgICAgIC0tcGluLWJhc2U6IDE1cHg7XG4gICAgfVxuICAgIC5jbGlja2FibGUtZ3V0dGVyIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICBoZWlnaHQ6IDI0cHg7XG4gICAgICAgIHdpZHRoOiAyNHB4O1xuICAgICAgICBsZWZ0OiAtNHB4O1xuICAgICAgICB0b3A6IC00cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG4gICAgLnFjLXRvb2x0aXAtdGV4dCB7XG4gICAgICAgIGJvcmRlci1ib3R0b206IDFweCBkYXNoZWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1waXYpO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgICAgIG1hcmdpbi1yaWdodDogY2FsYyggLjUgKiB2YXIoLS1xYy1zcGFjZXIteHMpICk7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLWJ1dHRvbiB7XG4gICAgICAgIGFsaWduLXNlbGY6IGNlbnRlcjtcbiAgICAgICAgaGVpZ2h0OiAyNHB4O1xuICAgICAgICB3aWR0aDogMjRweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiA2MDA7XG4gICAgICAgICY6Zm9jdXMsXG4gICAgICAgICY6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lLW9mZnNldDogMDtcbiAgICAgICAgfVxuICAgIH1cbiAgICAucWMtdG9vbHRpcC1jb250YWluZXIge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLXBpbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiBjYWxjKHZhcigtLXBpbi1oZWlnaHQpIC8gMik7XG4gICAgICAgIGxlZnQ6IGNhbGMoMTAwJSArIHZhcigtLXBpbi1nYXApICsgMnB4KTtcbiAgICAgICAgei1pbmRleDogMjAwO1xuICAgICAgICB3aWR0aDogdmFyKC0tcGluLWhlaWdodCk7XG4gICAgICAgIGhlaWdodDogdmFyKC0tcGluLWJhc2UpO1xuICAgIH1cblxuICAgIHN2ZyB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQge1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBtYXgtaGVpZ2h0OiBjYWxjKHZhcigtLW1heC1oZWlnaHQpIC0gNDhweCk7XG4gICAgICAgIHNjcm9sbGJhci1ndXR0ZXI6IHN0YWJsZTtcbiAgICAgICAgcGFkZGluZy1yaWdodDogMTZweDtcbiAgICAgICAgcGFkZGluZy10b3A6IDNweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAzcHg7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAtY29udGVudC10ZXh0IHtcbiAgICAgICAgbWF4LWlubGluZS1zaXplOiB2YXIoLS1xYy1tYXgtY29udGVudC13aWR0aCk7XG4gICAgfVxuXG4gICAgaDEsaDIsaDMsaDQsaDUsaDYsW3JvbGU9XCJoZWFkaW5nXCJdIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBmb250LXdlaWdodDogdmFyKC0tcWMtZm9udC13ZWlnaHQtYm9sZCk7XG4gICAgICAgIGxpbmUtaGVpZ2h0OiB2YXIoLS1xYy1saW5lLWhlaWdodC1zbSk7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgZm9udC1mYW1pbHk6IHZhcigtLXFjLWZvbnQtZmFtaWx5LWNvbnRlbnQpO1xuICAgICAgICAmOjphZnRlcntcbiAgICAgICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIH1cbiAgICB9XG5cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgIG91dGxpbmU6IG5vbmU7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAteGNsb3NlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICByaWdodDogOHB4O1xuICAgICAgICB0b3A6IDhweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGhlaWdodDogMjRweDtcbiAgICB9XG5cbiAgICBkaWFsb2cge1xuICAgICAgICB0b3A6IGF1dG87XG4gICAgICAgIGJvdHRvbTogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBwYWRkaW5nOiAwO1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1xYy1jb2xvci1ncmV5LWxpZ2h0KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tcWMtY29sb3ItYmFja2dyb3VuZCk7XG5cbiAgICAgICAgJi5xYy1kZXNrdG9wIHtcbiAgICAgICAgICAgIHBhZGRpbmctdG9wOiA4cHg7XG4gICAgICAgIH1cblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiB2aXNpYmxlIWltcG9ydGFudDtcbiAgICAgICAgfVxuXG4gICAgICAgICY6OmJhY2tkcm9wIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tcWMtY29sb3ItYmx1ZS1kYXJrLXJnYiksIC4yNSlcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLXhjbG9zZSB7XG4gICAgICAgICAgICByaWdodDogMDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5xYy10b29sdGlwLXBhbmVsIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBsaW5lLWhlaWdodDogdmFyKC0tcWMtbGluZS1oZWlnaHQtc20pO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIG1pbi1oZWlnaHQ6IDY4cHg7XG4gICAgICAgIG1heC1oZWlnaHQ6IHZhcigtLW1heC1oZWlnaHQpO1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1xYy1jb2xvci1iYWNrZ3JvdW5kKTtcbiAgICAgICAgY29sb3I6IHZhcigtLXFjLWNvbG9yLXRleHQtcHJpbWFyeSk7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nLXRvcDogMjFweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAxM3B4O1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMjRweDtcbiAgICB9XG5cbiAgICAucWMtdG9vbHRpcC1wb3BvdmVyIHtcblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgICBtaW4td2lkdGg6IDIxNnB4O1xuICAgICAgICAgICAgbWF4LXdpZHRoOiAzMjBweDtcbiAgICAgICAgICAgIHBhZGRpbmctcmlnaHQ6IDhweDtcbiAgICAgICAgICAgIHdpZHRoOiBtYXgtY29udGVudDtcbiAgICAgICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLXFjLWNvbG9yLWdyZXktbGlnaHQpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKHZhcigtLXRyYW5zbGF0ZVkpKTtcbiAgICAgICAgICAgIHRvcDowO1xuICAgICAgICAgICAgbGVmdDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyB2YXIoLS1waW4taGVpZ2h0KSk7XG4gICAgICAgICAgICB6LWluZGV4OjE5OTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGFuZWwge1xuICAgICAgICAgICAgdG9wOiBjYWxjKDEwMCUgKyB2YXIoLS1waW4taGVpZ2h0KSArIHZhcigtLXBpbi1nYXApKTtcbiAgICAgICAgICAgIGxlZnQ6YXV0bztcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWCh2YXIoLS10cmFuc2xhdGVYKSk7XG4gICAgICAgIH1cblxuICAgICAgICAmLnFjLXRvb2x0aXAtdG9wIC5xYy10b29sdGlwLXBpbixcbiAgICAgICAgJi5xYy10b29sdGlwLWJvdHRvbSAucWMtdG9vbHRpcC1waW5cbiAgICAgICAge1xuICAgICAgICAgICAgLypsZWZ0OiA1MCU7Ki9cbiAgICAgICAgICAgIC8qdHJhbnNmb3JtOiB0cmFuc2xhdGVYKC01MCUpOyovXG4gICAgICAgICAgICBsZWZ0OiBjYWxjKDUwJSAtIHZhcigtLXBpbi1iYXNlKSAvIDIpO1xuICAgICAgICB9XG4gICAgICAgICYucWMtdG9vbHRpcC10b3AgLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygwcHggLSB2YXIoLS1waW4taGVpZ2h0KSAtIHZhcigtLXBpbi1nYXApIC0gMnB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyAycHgpO1xuICAgICAgICB9XG5cbiAgICAgICAgJi5xYy10b29sdGlwLXRvcCAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICAvKmRpc3BsYXk6IG5vbmU7Ki9cbiAgICAgICAgICAgIHRvcDogMDtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKFxuICAgICAgICAgICAgICAgICAgICB2YXIoLS10cmFuc2xhdGVYKSxcbiAgICAgICAgICAgICAgICAgICAgY2FsYygtMTAwJSAtIHZhcigtLXBpbi1nYXApIC0gdmFyKC0tcGluLWhlaWdodCkpXG4gICAgICAgICAgICApO1xuICAgICAgICAgICAgbGVmdDphdXRvO1xuICAgICAgICB9XG4gICAgICAgIC5xYy10b29sdGlwLXZpc2libGUge1xuICAgICAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lOiAycHggc29saWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1yZWd1bGFyKTtcbiAgICAgICAgICAgIG91dGxpbmUtb2Zmc2V0OiAxcHg7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICA6Oi13ZWJraXQtc2Nyb2xsYmFyLFxuICAgIDo6LXdlYmtpdC1zY3JvbGxiYXItdHJhY2ssXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYlxuICAgIHtcbiAgICAgICAgaGVpZ2h0OiA1MCU7XG4gICAgICAgIG1hcmdpbi10b3A6IDEwcHg7XG4gICAgICAgIG1hcmdpbi1yaWdodDogLThweDtcbiAgICB9XG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLXFjLWNvbG9yLWJsdWUtcGl2KTtcbiAgICB9XG5cbjwvc3R5bGU+Il0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFvZUEsSUFBSSwwQkFBVyxDQUFDO0FBQ2hCLFFBQVEsb0JBQW9CO0FBQzVCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsY0FBYztBQUN0QixRQUFRLGlCQUFpQjtBQUN6QixRQUFRLGdCQUFnQjtBQUN4QjtBQUNBLElBQUksZ0NBQWlCLENBQUM7QUFDdEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsV0FBVztBQUNuQixRQUFRLFVBQVU7QUFDbEIsUUFBUSxTQUFTO0FBQ2pCLFFBQVEsZUFBZTtBQUN2QjtBQUNBLElBQUksK0JBQWdCLENBQUM7QUFDckIsUUFBUSxrREFBa0Q7QUFDMUQsUUFBUSxlQUFlO0FBQ3ZCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsOENBQThDO0FBQ3REO0FBQ0EsSUFBSSxpQ0FBa0IsQ0FBQztBQUN2QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLFlBQVk7QUFDcEIsUUFBUSxXQUFXO0FBQ25CLFFBQVEsaUJBQWlCO0FBQ3pCLFFBQVEsY0FBYztBQUN0QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLENBQUMsTUFBTTtBQUNmLFFBQVEsQ0FBQyxjQUFjLENBQUM7QUFDeEIsWUFBWSxpQkFBaUI7QUFDN0I7QUFDQTtBQUNBLElBQUksb0NBQXFCLENBQUM7QUFDMUIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxJQUFJLDhCQUFlLENBQUM7QUFDcEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxnQ0FBZ0M7QUFDeEMsUUFBUSx1Q0FBdUM7QUFDL0MsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsdUJBQXVCO0FBQy9COztBQUVBLElBQUksa0JBQUcsQ0FBQztBQUNSLFFBQVEsY0FBYztBQUN0Qjs7QUFFQSxJQUFJLGtDQUFtQixDQUFDO0FBQ3hCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsaUJBQWlCO0FBQ3pCOztBQUVBLElBQUksdUNBQXdCLENBQUM7QUFDN0IsUUFBUSw0Q0FBNEM7QUFDcEQ7O0FBRUEsZ0JBQUksRUFBRSxHQUFDLGlCQUFFLGFBQUMsRUFBRSxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxDQUFDLGtCQUFnQixDQUFDO0FBQ3ZDLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsdUNBQXVDO0FBQy9DLFFBQVEscUNBQXFDO0FBQzdDLFFBQVEsU0FBUztBQUNqQixRQUFRLDBDQUEwQztBQUNsRCxRQUFRLENBQUMsT0FBTztBQUNoQixZQUFZLGFBQWE7QUFDekI7QUFDQTs7O0FBR0EsSUFBSSxrQ0FBbUIsY0FBYyxDQUFDO0FBQ3RDLFFBQVEsYUFBYTtBQUNyQjs7QUFFQSxJQUFJLGlDQUFrQixDQUFDO0FBQ3ZCLFFBQVEsa0JBQWtCO0FBQzFCLFFBQVEsVUFBVTtBQUNsQixRQUFRLFFBQVE7QUFDaEIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxZQUFZO0FBQ3BCOztBQUVBLElBQUkscUJBQU0sQ0FBQztBQUNYLFFBQVEsU0FBUztBQUNqQixRQUFRLFNBQVM7QUFDakIsUUFBUSxPQUFPO0FBQ2YsUUFBUSxRQUFRO0FBQ2hCLFFBQVEsZUFBZTtBQUN2QixRQUFRLFdBQVc7QUFDbkIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsU0FBUztBQUNqQixRQUFRLFVBQVU7QUFDbEIsUUFBUSw0Q0FBNEM7QUFDcEQsUUFBUSxzQ0FBc0M7O0FBRTlDLFFBQVEsQ0FBQyxXQUFXLENBQUM7QUFDckIsWUFBWSxnQkFBZ0I7QUFDNUI7O0FBRUEsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLDZCQUE2QjtBQUN6Qzs7QUFFQSxRQUFRLENBQUMsVUFBVSxDQUFDO0FBQ3BCLFlBQVk7QUFDWixRQUFROztBQUVSLFFBQVEseUNBQWtCLENBQUM7QUFDM0IsWUFBWSxRQUFRO0FBQ3BCO0FBQ0E7O0FBRUEsSUFBSSxnQ0FBaUIsQ0FBQztBQUN0QixRQUFRLGlDQUFpQztBQUN6QyxRQUFRLHFDQUFxQztBQUM3QyxRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLDZCQUE2QjtBQUNyQyxRQUFRLHNDQUFzQztBQUM5QyxRQUFRLG1DQUFtQztBQUMzQyxRQUFRLFdBQVc7QUFDbkIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxvQkFBb0I7QUFDNUI7O0FBRUEsSUFBSSxrQ0FBbUIsQ0FBQzs7QUFFeEIsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLDRDQUE0QztBQUN4RCxZQUFZLHdDQUF3QztBQUNwRCxZQUFZLEtBQUs7QUFDakIsWUFBWSxxREFBcUQ7QUFDakUsWUFBWSxXQUFXO0FBQ3ZCOztBQUVBLFFBQVEsQ0FBQyxrQkFBa0IsQ0FBQyx3Q0FBaUIsQ0FBQztBQUM5QyxZQUFZLG9EQUFvRDtBQUNoRSxZQUFZLFNBQVM7QUFDckIsWUFBWSx3Q0FBd0M7QUFDcEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyxzQ0FBZTtBQUN4QyxRQUFRLENBQUMsa0JBQWtCLENBQUM7QUFDNUIsUUFBUTtBQUNSLFlBQVk7QUFDWixZQUFZO0FBQ1osWUFBWSxxQ0FBcUM7QUFDakQ7QUFDQSxRQUFRLENBQUMsZUFBZSxDQUFDLHNDQUFlLENBQUM7QUFDekMsWUFBWSx5REFBeUQ7QUFDckU7O0FBRUEsUUFBUSxDQUFDLGtCQUFrQixDQUFDLHNDQUFlLENBQUM7QUFDNUMsWUFBWSxzQ0FBc0M7QUFDbEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyx3Q0FBaUIsQ0FBQztBQUMzQyxZQUFZO0FBQ1osWUFBWSxNQUFNO0FBQ2xCLFlBQVk7QUFDWjtBQUNBO0FBQ0EsYUFBYTtBQUNiLFlBQVksU0FBUztBQUNyQjtBQUNBLFFBQVEsMENBQW1CLENBQUM7QUFDNUIsWUFBWSxtQkFBbUI7QUFDL0I7O0FBRUEsUUFBUSwwQ0FBbUIsY0FBYyxDQUFDO0FBQzFDLFlBQVksK0NBQStDO0FBQzNELFlBQVksbUJBQW1CO0FBQy9CO0FBQ0E7O0FBRUEsbUJBQUksbUJBQW1CO0FBQ3ZCLG1CQUFJLHlCQUF5QjtBQUM3QixtQkFBSTtBQUNKLElBQUk7QUFDSixRQUFRLFdBQVc7QUFDbkIsUUFBUSxnQkFBZ0I7QUFDeEIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxtQkFBSSx5QkFBeUIsQ0FBQztBQUM5QixRQUFRLG9DQUFvQztBQUM1QyIsImlnbm9yZUxpc3QiOltdfQ== */'
 	};
-
+	var root$1 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
+	var root_1 = /* @__PURE__ */ from_html(`<header class="qc-hash-s23dzl"><h2 class="qc-tooltip-title qc-hash-s23dzl"> </h2></header> <main class="qc-hash-s23dzl"><!></main>`, 1);
+	var root_2 = /* @__PURE__ */ from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-s23dzl"><section class="qc-tooltip-content-text qc-hash-s23dzl"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-s23dzl" href="#top"><!></a></div>`);
+	var root_3 = /* @__PURE__ */ from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-s23dzl"><style class="qc-hash-s23dzl">.triangle { fill: var(--qc-color-background); }
+            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-s23dzl"></path><path class="stroke qc-hash-s23dzl"></path></svg>`);
+	var root_4 = /* @__PURE__ */ from_html(`<span class="qc-tooltip-text qc-hash-s23dzl" tabindex="-1"><!><!></span>`);
+	var root_5 = /* @__PURE__ */ from_html(`<span class="qc-hash-s23dzl">&zwj;</span>`);
+	var root_6 = /* @__PURE__ */ from_html(`<div aria-hidden="true"><!></div> <!>`, 1);
+	var root_7 = /* @__PURE__ */ from_html(`<dialog><div class="qc-container qc-hash-s23dzl"><!></div></dialog>`);
+	var root_8 = /* @__PURE__ */ from_html(`<div><div class="clickable-gutter qc-hash-s23dzl"></div> <a role="button" class="qc-tooltip-button qc-hash-s23dzl" href="#top"><!></a> <!> <!></div>`);
+	var root_9 = /* @__PURE__ */ from_html(`<div class="qc-tooltip qc-hash-s23dzl"><!> <!></div>`);
+	var $$css = {
+		hash: "qc-hash-s23dzl",
+		code: ".qc-tooltip.qc-hash-s23dzl {display:inline-flex;align-items:center;font-size:var(--qc-font-size-md);font-family:var(--qc-font-family-content);font-weight:var(--qc-font-weight-regular);--pin-gap: 4px;--pin-height: 9px;--pin-base: 15px;}.clickable-gutter.qc-hash-s23dzl {position:absolute;height:24px;width:24px;left:-4px;top:-4px;cursor:pointer;}.qc-tooltip-text.qc-hash-s23dzl {border-bottom:1px dashed var(--qc-color-blue-piv);cursor:pointer;white-space:nowrap;margin-right:calc( .5 * var(--qc-spacer-xs) );}.qc-tooltip-button.qc-hash-s23dzl {align-self:center;height:24px;width:24px;line-height:24px;display:block;position:relative;font-weight:600;&:focus,\n        &:focus-visible {outline-offset:0;}}.qc-tooltip-container.qc-hash-s23dzl {position:relative;}.qc-tooltip-pin.qc-hash-s23dzl {position:absolute;top:calc(var(--pin-height) / 2);left:calc(100% + var(--pin-gap) + 2px);z-index:200;width:var(--pin-height);height:var(--pin-base);}svg.qc-hash-s23dzl {display:block;}.qc-tooltip-content.qc-hash-s23dzl {overflow-y:auto;max-height:calc(var(--max-height) - 48px);scrollbar-gutter:stable;padding-right:16px;padding-top:3px;padding-left:3px;}.qc-tooltip-content-text.qc-hash-s23dzl {max-inline-size:var(--qc-max-content-width);}h2.qc-hash-s23dzl {font-size:var(--qc-font-size-sm);font-weight:var(--qc-font-weight-bold);line-height:var(--qc-line-height-sm);margin:0;font-family:var(--qc-font-family-content);&::after{display:none;}}.qc-tooltip-content.qc-hash-s23dzl:focus-visible {outline:none;}.qc-tooltip-xclose.qc-hash-s23dzl {position:absolute;right:8px;top:8px;line-height:24px;height:24px;}dialog.qc-hash-s23dzl {top:auto;bottom:0;left:0;right:0;max-width:100%;width:100%;height:auto;margin:0;padding:0;border:1px solid var(--qc-color-grey-light);background:var(--qc-color-background);&.qc-desktop {padding-top:8px;}.qc-tooltip-panel:where(.qc-hash-s23dzl) {visibility:visible!important;}&::backdrop {background-color:rgba(var(--qc-color-blue-dark-rgb), .25)}.qc-tooltip-xclose:where(.qc-hash-s23dzl) {right:0;}}.qc-tooltip-panel.qc-hash-s23dzl {font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);position:relative;min-height:68px;max-height:var(--max-height);background:var(--qc-color-background);color:var(--qc-color-text-primary);width:100%;padding-top:21px;padding-left:13px;padding-bottom:24px;}.qc-tooltip-popover.qc-hash-s23dzl {.qc-tooltip-panel:where(.qc-hash-s23dzl) {visibility:hidden;position:absolute;min-width:216px;max-width:320px;padding-right:8px;width:max-content;border:1px solid var(--qc-color-grey-light);transform:translateY(var(--translateY));top:0;left:calc(100% + var(--pin-gap) + var(--pin-height));z-index:199;}&.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-s23dzl) {top:calc(100% + var(--pin-height) + var(--pin-gap));left:auto;transform:translateX(var(--translateX));}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/left:calc(50% - var(--pin-base) / 2);}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl) {top:calc(0px - var(--pin-height) - var(--pin-gap) - 2px);}&.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl) {top:calc(100% + var(--pin-gap) + 2px);}&.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            /*display: none;*/top:0;transform:translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );left:auto;}.qc-tooltip-visible:where(.qc-hash-s23dzl) {visibility:visible;}.qc-tooltip-content:where(.qc-hash-s23dzl):focus-visible {outline:2px solid var(--qc-color-blue-regular);outline-offset:1px;}}.qc-hash-s23dzl::-webkit-scrollbar,\n    .qc-hash-s23dzl::-webkit-scrollbar-track,\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb\n    {height:50%;margin-top:10px;margin-right:-8px;}.qc-hash-s23dzl::-webkit-scrollbar-thumb {background:var(--qc-color-blue-piv);}"
+	};
 	function Tooltip($$anchor, $$props) {
-		check_target(new.target);
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
-
-		const // svelte-ignore state_referenced_locally — requestedPosition sert de valeur initiale, position est ensuite ajustée par showPopover
-		// $inspect("Placement initial : " + start, requestedPosition)
-		// $inspect("Waiting for next frame")
-		// $inspect("Placement selon " + placement + " : "  + result )
-		// await waitForNextFrame();
-		//$inspect(`adjustPin ${otherAxisPosition}`)
-		//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
-		// décalage pour que l'infobulle ne vienne pas en butée du bord et que l'ombre soit visible
-		// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
-		//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
-		//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
-		//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
-		// Récupère les coordonnées de l'élément par rapport au viewport
-		// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
-		// console.log("border",border)
-		//$inspect("keydown", e.key)
-		tooltipPanelSnippet = wrap_snippet(Tooltip, function ($$anchor, displayMode = noop) {
-			validate_snippet_args(...arguments);
-
+		const tooltipPanelSnippet = ($$anchor, displayMode = noop) => {
 			var div = root_2();
 			let classes;
 			let styles;
 			var div_1 = child(div);
 			var section = child(div_1);
-
 			{
-				const content = wrap_snippet(Tooltip, function ($$anchor) {
-					validate_snippet_args(...arguments);
-
+				const content = ($$anchor) => {
 					var fragment = root$1();
 					var node = first_child(fragment);
-
 					html(node, description);
-
-					var node_1 = sibling(node, 2);
-
-					add_svelte_meta(() => snippet(node_1, descriptionSlot), 'render', Tooltip, 425, 20);
+					snippet(sibling(node, 2), descriptionSlot);
 					append($$anchor, fragment);
-				});
-
+				};
 				var node_2 = child(section);
-
-				{
-					var consequent = ($$anchor) => {
-						var fragment_1 = root_1();
-						var header = first_child(fragment_1);
-						var h2 = child(header);
-						var text_1 = child(h2, true);
-
-						reset(h2);
-						reset(header);
-
-						var main = sibling(header, 2);
-						var node_3 = child(main);
-
-						add_svelte_meta(() => content(node_3), 'render', Tooltip, 434, 24);
-						reset(main);
-
-						template_effect(() => {
-							set_attribute(h2, 'id', `${tooltipId ?? ''}-title`);
-							set_text(text_1, title());
-						});
-
-						append($$anchor, fragment_1);
-					};
-
-					var alternate = ($$anchor) => {
-						add_svelte_meta(() => content($$anchor), 'render', Tooltip, 437, 20);
-					};
-
-					add_svelte_meta(
-						() => if_block(node_2, ($$render) => {
-							if (title()) $$render(consequent); else $$render(alternate, -1);
-						}),
-						'if',
-						Tooltip,
-						427,
-						16
-					);
-				}
-
+				var consequent = ($$anchor) => {
+					var fragment_1 = root_1();
+					var header = first_child(fragment_1);
+					var h2 = child(header);
+					var text_1 = only_child(h2, true);
+					reset(header);
+					var main = sibling(header, 2);
+					var node_3 = child(main);
+					content(node_3);
+					reset(main);
+					template_effect(() => {
+						set_attribute(h2, "id", `${tooltipId ?? ""}-title`);
+						set_text(text_1, title());
+					});
+					append($$anchor, fragment_1);
+				};
+				var alternate = ($$anchor) => {
+					content($$anchor);
+				};
+				if_block(node_2, ($$render) => {
+					if (title()) $$render(consequent);
+					else $$render(alternate, -1);
+				});
 				reset(section);
 			}
-
 			reset(div_1);
-
 			var a = sibling(div_1, 2);
-			var node_4 = child(a);
-
-			add_svelte_meta(() => Icon(node_4, { type: 'close', color: 'blue-piv', size: 'nm', vAlign: 'top' }), 'component', Tooltip, 452, 12, { componentTag: 'Icon' });
+			Icon(child(a), {
+				type: "close",
+				color: "blue-piv",
+				size: "nm",
+				vAlign: "top"
+			});
 			reset(a);
 			reset(div);
 			bind_this(div, ($$value) => set(tooltipPanel, $$value), () => get(tooltipPanel));
-
 			template_effect(() => {
-				classes = set_class(div, 1, 'qc-tooltip-panel qc-hash-s23dzl', null, classes, {
-					'qc-tooltip-visible': get(visiblePopover),
-					'qc-shading-2': strict_equals(displayMode(), "popover")
+				classes = set_class(div, 1, "qc-tooltip-panel qc-hash-s23dzl", null, classes, {
+					"qc-tooltip-visible": get(visiblePopover),
+					"qc-shading-2": displayMode() === "popover"
 				});
-
-				set_attribute(div, 'id', tooltipId);
-				set_attribute(div, 'aria-describedby', `${tooltipId ?? ''}-title`);
-
-				styles = set_style(div, '', styles, {
-					'--translateY': get(translateY),
-					'--translateX': get(translateX)
+				set_attribute(div, "id", tooltipId);
+				set_attribute(div, "aria-describedby", `${tooltipId ?? ""}-title`);
+				styles = set_style(div, "", styles, {
+					"--translateY": get(translateY),
+					"--translateX": get(translateX)
 				});
-
-				set_attribute(a, 'aria-label', get(labels).closeButton.ariaLabel);
+				set_attribute(a, "aria-label", get(labels).closeButton.ariaLabel);
 			});
-
-			delegated('click', div, function click(e) {
-				return e.clickIntoPanel = true;
+			delegated("click", div, (e) => e.clickIntoPanel = true);
+			delegated("click", a, closeTooltip);
+			delegated("keydown", a, (e) => {
+				if (e.code === "Space") closeTooltip(e);
 			});
-
-			delegated('click', a, closeTooltip);
-
-			delegated('keydown', a, function keydown(e) {
-				if (strict_equals(e.code, "Space")) {
-					closeTooltip(e);
-				}
-			});
-
 			append($$anchor, div);
-		});
-
-		let text = prop($$props, 'text', 7),
-			title = prop($$props, 'title', 7),
-			description = prop($$props, 'description', 7),
-			requestedPosition = prop($$props, 'requestedPosition', 7, "top"),
-			preventOuterEventClosing = prop($$props, 'preventOuterEventClosing', 7, false),
-			displayMode = prop($$props, 'displayMode', 7, "popover"),
-			icon = prop($$props, 'icon', 7, "information"),
-			descriptionId = prop($$props, 'descriptionId', 7),
-			slots = prop($$props, 'slots', 7),
-			host = prop($$props, 'host', 7),
-			descriptionSlot = prop($$props, 'descriptionSlot', 7),
-			textSlot = prop($$props, 'textSlot', 7);
-
+		};
+		let text = prop($$props, "text", 7), title = prop($$props, "title", 7), description = prop($$props, "description", 7), requestedPosition = prop($$props, "requestedPosition", 7, "top"), preventOuterEventClosing = prop($$props, "preventOuterEventClosing", 7, false), displayMode = prop($$props, "displayMode", 7, "popover"), icon = prop($$props, "icon", 7, "information"), descriptionId = prop($$props, "descriptionId", 7), slots = prop($$props, "slots", 7), host = prop($$props, "host", 7), descriptionSlot = prop($$props, "descriptionSlot", 7), textSlot = prop($$props, "textSlot", 7);
 		const defaultTranslateY = "calc(-50% + 12px)";
 		const defaultTranslateX = "-50%";
-		let isFr = strict_equals(Utils.getPageLanguage(), "fr");
-		let tooltipPanel = tag(state(void 0), 'tooltipPanel');
+		let isFr = Utils.getPageLanguage() === "fr";
+		let tooltipPanel = /* @__PURE__ */ state(void 0);
 		let tooltipId = Utils.generateId("tooltip");
 		let tooltipContainer;
-		let tooltipButton = tag(state(void 0), 'tooltipButton');
-		let modale = tag(state(void 0), 'modale');
-		let displayPopover = tag(state(false), 'displayPopover');
-		let visiblePopover = tag(state(false), 'visiblePopover');
-		let displayModal = tag(state(false), 'displayModal');
-		let translateX = tag(state(defaultTranslateX), 'translateX');
-		let translateY = tag(state(defaultTranslateY), 'translateY');
-		let position = tag(state(proxy(requestedPosition())), 'position');
-		let mobileFlag = tag(state(false), 'mobileFlag');
-		let forceModal = tag(state(false), 'forceModal');
-		let modalFlag = tag(user_derived(() => get(mobileFlag) || strict_equals(displayMode(), "modal") || get(forceModal)), 'modalFlag');
-		let hasDescription = tag(user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot())), 'hasDescription');
-		let hasText = tag(user_derived((_) => hasProperty(text(), slots()["text"], textSlot())), 'hasText');
-		let tooltipIcon = tag(user_derived(() => strict_equals(icon(), "question") ? "help" : "info"), 'tooltipIcon');
-
-		let labels = tag(
-			user_derived(() => ({
-				tooltipButton: {
-					ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "")
-				},
-				closeButton: {
-					ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
-				}
-			})),
-			'labels'
-		);
-
-		inspect(() => ["modalFlag", get(modalFlag)], (...$$args) => console.log(...$$args), true);
-
+		let tooltipButton = /* @__PURE__ */ state(void 0);
+		let modale = /* @__PURE__ */ state(void 0);
+		let displayPopover = /* @__PURE__ */ state(false);
+		let visiblePopover = /* @__PURE__ */ state(false);
+		let displayModal = /* @__PURE__ */ state(false);
+		let translateX = /* @__PURE__ */ state(defaultTranslateX);
+		let translateY = /* @__PURE__ */ state(defaultTranslateY);
+		let position = /* @__PURE__ */ state(proxy(requestedPosition()));
+		let mobileFlag = /* @__PURE__ */ state(false);
+		let forceModal = /* @__PURE__ */ state(false);
+		let modalFlag = /* @__PURE__ */ user_derived(() => get(mobileFlag) || displayMode() === "modal" || get(forceModal));
+		let hasDescription = /* @__PURE__ */ user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot()));
+		let hasText = /* @__PURE__ */ user_derived((_) => hasProperty(text(), slots()["text"], textSlot()));
+		let tooltipIcon = /* @__PURE__ */ user_derived(() => icon() === "question" ? "help" : "info");
+		let labels = /* @__PURE__ */ user_derived(() => ({
+			tooltipButton: { ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "") },
+			closeButton: { ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip" }
+		}));
 		function hasProperty(property, slotExist, snippet) {
 			if (property) return true;
-			if (slots()) return strict_equals(slotExist, undefined, false);
-
-			return strict_equals(snippet, null, false);
+			if (slots()) return slotExist !== void 0;
+			return snippet !== null;
 		}
-
 		user_effect((_) => {
-			if (!["popover", "modal"].includes(displayMode())) {
-				displayMode("popover");
-			}
+			if (!["popover", "modal"].includes(displayMode())) displayMode("popover");
 		});
-
 		user_effect((_) => {
-			if (!["information", "question"].includes(icon())) {
-				icon("information");
-			}
+			if (!["information", "question"].includes(icon())) icon("information");
 		});
-
 		user_effect((_) => {
 			if (description()) return;
 			if (!descriptionId()) return;
-
 			const target = document.getElementById(descriptionId());
-
 			if (!target) return;
-
 			description(target.innerHTML);
 		});
-
 		onMount((_) => {
 			tooltipContainer.addEventListener("click", markInnerEvent);
-			inspect(() => ["sm bp", getSmBreakpoint(gridConfig)], (...$$args) => console.log(...$$args), true);
 			setIsMobile();
 			window.addEventListener("resize", setIsMobile);
 		});
-
-		inspect(() => ["isMobile", get(mobileFlag)], (...$$args) => console.log(...$$args), true);
-
 		user_effect((_) => {
-			if (!get(displayPopover)) {
-				set(visiblePopover, false);
-			}
+			if (!get(displayPopover)) set(visiblePopover, false);
 		});
-
 		async function showTooltip(e) {
 			set(forceModal, false);
 			e.preventDefault();
-
-			if (get(modalFlag)) {
-				showModal();
-			} else {
-				showPopover();
-			}
+			if (get(modalFlag)) showModal();
+			else showPopover();
 		}
-
 		function closeTooltip(e) {
-			if (get(modalFlag)) {
-				closeModale();
-			} else {
-				set(displayPopover, false);
-			}
-
+			if (get(modalFlag)) closeModale();
+			else set(displayPopover, false);
 			if (e) {
 				e.preventDefault();
-
-				if (strict_equals(document.activeElement, get(tooltipButton))) return;
-
+				if (document.activeElement === get(tooltipButton)) return;
 				get(tooltipButton).focus();
 			}
 		}
-
 		function closeModale() {
 			if (!get(modale)) return;
-
 			get(modale).close();
 			toggleModal();
 			set(displayModal, false);
 		}
-
 		function toggleModal() {
 			if (!get(modale)) return;
-
 			const body = document.querySelector("body");
-
-			if (get(modale).open) {
-				body.style.overflow = "hidden";
-			} else {
-				body.style.overflow = "";
-			}
+			if (get(modale).open) body.style.overflow = "hidden";
+			else body.style.overflow = "";
 		}
-
 		async function showModal(e) {
 			set(displayModal, true);
-			(await track_reactivity_loss(tick()))();
+			await tick();
 			get(modale).showModal();
 		}
-
 		function getSmBreakpoint(gridConfig) {
 			return parseInt(gridConfig.lg.breakpoint.sm.replace("px", ""));
 		}
-
 		function setIsMobile() {
 			const bounds = getScreenBounds();
-
-			set(mobileFlag, bounds.right <= getSmBreakpoint(gridConfig));
-
+			set(mobileFlag, bounds.right <= getSmBreakpoint(grid_default));
 			return get(mobileFlag);
 		}
-
 		async function showPopover(e) {
 			if (get(displayPopover)) {
 				set(displayPopover, false);
-
 				return;
 			}
-
 			set(displayPopover, true);
-			(await track_reactivity_loss(tick()))();
-
+			await tick();
 			let start = requestedPosition(), current = start;
-
-			(await track_reactivity_loss(waitForNextFrame()))();
-
-			// $inspect("Placement initial : " + start, requestedPosition)
+			await waitForNextFrame();
 			let tries = getTriesOrder(start);
-
 			while (true) {
 				set(position, current, true);
-				(await track_reactivity_loss(waitForNextFrame()))();
-
+				await waitForNextFrame();
 				if (tryPlacement(current)) {
 					set(visiblePopover, true);
-
 					break;
 				}
-
-				const index = tries.indexOf(current);
-
-				current = tries[(index + 1) % tries.length];
-
-				if (strict_equals(current, start)) {
+				current = tries[(tries.indexOf(current) + 1) % tries.length];
+				if (current === start) {
 					fallBack();
-
 					break;
 				}
 			}
-
-			(await track_reactivity_loss(waitForNextFrame()))();
+			await waitForNextFrame();
 		}
-
 		function getTriesOrder(placement) {
-			return ({
-				"right": ["right", "top", "bottom"],
-				"top": ["top", "bottom", "right"],
-				"bottom": ["bottom", "top", "right"]
-			})[placement];
+			return {
+				"right": [
+					"right",
+					"top",
+					"bottom"
+				],
+				"top": [
+					"top",
+					"bottom",
+					"right"
+				],
+				"bottom": [
+					"bottom",
+					"top",
+					"right"
+				]
+			}[placement];
 		}
-
 		function waitForNextFrame() {
-			// $inspect("Waiting for next frame")
 			return new Promise((resolve) => {
 				window.requestAnimationFrame(resolve);
 			});
 		}
-
 		function tryPlacement(placement) {
 			let result = !isElementOverflowing(get(tooltipPanel), placement);
-
-			if (result) {
-				result = adjustCrossAxis(get(tooltipPanel), placement);
-			}
-
-			// $inspect("Placement selon " + placement + " : "  + result )
+			if (result) result = adjustCrossAxis(get(tooltipPanel), placement);
 			return result;
 		}
-
 		function getOtherAxisPositions(placement) {
-			return strict_equals(placement, "right") ? ["top", "bottom"] : ["right", "left"];
+			return placement === "right" ? ["top", "bottom"] : ["right", "left"];
 		}
-
 		function adjustCrossAxis(tooltipPanel, position) {
-			(
-				set(translateX, defaultTranslateX),
-				set(translateY, defaultTranslateY)
-			);
-
+			set(translateX, defaultTranslateX), set(translateY, defaultTranslateY);
 			let otherAxisPositions = getOtherAxisPositions(position);
 			let adjustable = true;
-
 			otherAxisPositions.forEach((otherAxisPosition) => {
-				// await waitForNextFrame();
 				if (!adjustable) return;
-
-				//$inspect(`adjustPin ${otherAxisPosition}`)
-				if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) {
-					//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
-					return;
-				}
-
+				if (!isElementOverflowing(tooltipPanel, otherAxisPosition)) return;
 				const gap = getScreenGap(get(tooltipButton), otherAxisPosition);
-				const edgeMargin = 3; // décalage pour que l'infobulle ne vienne pas en butée du bord et que l'ombre soit visible
-
-				// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+				const edgeMargin = 3;
 				if (gap < 0) {
-					//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
 					adjustable = false;
-
 					return;
 				}
-
 				switch (otherAxisPosition) {
 					case "top":
 						set(translateY, `calc(-${gap}px + ${edgeMargin}px)`);
 						break;
-
 					case "bottom":
 						set(translateY, `calc(-100% + 24px + ${gap}px - ${edgeMargin}px)`);
 						break;
-
 					case "right":
 						set(translateX, `calc(-100% + 24px + ${gap}px - ${edgeMargin}px)`);
 						break;
-
-					case "left":
-						set(translateX, `calc(-${gap}px + ${edgeMargin}px)`);
-						break;
+					case "left": set(translateX, `calc(-${gap}px + ${edgeMargin}px)`);
 				}
 			});
-
-			//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
 			return adjustable;
 		}
-
 		function fallBack() {
 			set(displayPopover, false);
 			set(forceModal, true);
 			showModal();
 		}
-
 		function closeOnTooltipBlur(e) {
 			if (preventOuterEventClosing()) return;
-			if (strict_equals(e.tooltipContainer, tooltipContainer)) return;
+			if (e.tooltipContainer === tooltipContainer) return;
 			if (!host()) return;
-			if (strict_equals(host(), e.target)) return;
-
+			if (host() === e.target) return;
 			closeTooltip();
 		}
-
 		function closeOnWindowBlur(e) {
 			if (preventOuterEventClosing()) return;
-
 			closeTooltip();
 		}
-
 		function markInnerEvent(e) {
 			e.tooltipContainer = tooltipContainer;
 		}
-
 		function isElementOverflowing(element, position) {
-			const gap = getScreenGap(element, position);
-			const overflow = gap < 0;
-
-			//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
-			return overflow;
+			return getScreenGap(element, position) < 0;
 		}
-
 		function getScreenBounds() {
 			return {
 				"right": document.documentElement.clientWidth,
@@ -20111,444 +12836,313 @@
 				"left": 0
 			};
 		}
-
 		function getScreenGap(element, position, offset = 0) {
 			const bounds = getScreenBounds();
-
-			// Récupère les coordonnées de l'élément par rapport au viewport
 			const rect = element.getBoundingClientRect();
-
-			// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
 			const border = bounds[position];
-
-			// console.log("border",border)
 			switch (position) {
 				case "right":
-
-				case "bottom":
-					return border - offset - rect[position];
-
+				case "bottom": return border - offset - rect[position];
 				case "top":
-
-				case "left":
-					return rect[position] - (border - offset);
+				case "left": return rect[position] - (border - offset);
 			}
 		}
-
 		function clickIconButton(e) {
 			e.stopImmediatePropagation();
 			get(tooltipButton).focus();
 			get(tooltipButton).click();
 		}
-
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
-
 			set text($$value) {
 				text($$value);
 				flushSync();
 			},
-
 			get title() {
 				return title();
 			},
-
 			set title($$value) {
 				title($$value);
 				flushSync();
 			},
-
 			get description() {
 				return description();
 			},
-
 			set description($$value) {
 				description($$value);
 				flushSync();
 			},
-
 			get requestedPosition() {
 				return requestedPosition();
 			},
-
 			set requestedPosition($$value = "top") {
 				requestedPosition($$value);
 				flushSync();
 			},
-
 			get preventOuterEventClosing() {
 				return preventOuterEventClosing();
 			},
-
 			set preventOuterEventClosing($$value = false) {
 				preventOuterEventClosing($$value);
 				flushSync();
 			},
-
 			get displayMode() {
 				return displayMode();
 			},
-
 			set displayMode($$value = "popover") {
 				displayMode($$value);
 				flushSync();
 			},
-
 			get icon() {
 				return icon();
 			},
-
 			set icon($$value = "information") {
 				icon($$value);
 				flushSync();
 			},
-
 			get descriptionId() {
 				return descriptionId();
 			},
-
 			set descriptionId($$value) {
 				descriptionId($$value);
 				flushSync();
 			},
-
 			get slots() {
 				return slots();
 			},
-
 			set slots($$value) {
 				slots($$value);
 				flushSync();
 			},
-
 			get host() {
 				return host();
 			},
-
 			set host($$value) {
 				host($$value);
 				flushSync();
 			},
-
 			get descriptionSlot() {
 				return descriptionSlot();
 			},
-
 			set descriptionSlot($$value) {
 				descriptionSlot($$value);
 				flushSync();
 			},
-
 			get textSlot() {
 				return textSlot();
 			},
-
 			set textSlot($$value) {
 				textSlot($$value);
 				flushSync();
 			}
 		};
-
 		var div_2 = root_9();
-
-		event('click', $document, closeOnTooltipBlur);
-		event('focusin', $document, closeOnTooltipBlur);
-		event('blur', $window, closeOnWindowBlur);
-
+		event("click", $document, closeOnTooltipBlur);
+		event("focusin", $document, closeOnTooltipBlur);
+		event("blur", $window, closeOnWindowBlur);
 		var node_5 = child(div_2);
-
-		{
-			var consequent_1 = ($$anchor) => {
-				var span = root_4();
-				var node_6 = child(span);
-
-				html(node_6, text);
-
-				var node_7 = sibling(node_6);
-
-				add_svelte_meta(() => snippet(node_7, textSlot), 'render', Tooltip, 344, 21);
-				reset(span);
-				delegated('click', span, clickIconButton);
-				append($$anchor, span);
-			};
-
-			var alternate_1 = ($$anchor) => {
-				var span_1 = root_5();
-
-				append($$anchor, span_1);
-			};
-
-			add_svelte_meta(
-				() => if_block(node_5, ($$render) => {
-					if (get(hasText)) $$render(consequent_1); else $$render(alternate_1, -1);
-				}),
-				'if',
-				Tooltip,
-				340,
-				4
-			);
-		}
-
+		var consequent_1 = ($$anchor) => {
+			var span = root_4();
+			var node_6 = child(span);
+			html(node_6, text);
+			snippet(sibling(node_6), textSlot);
+			reset(span);
+			delegated("click", span, clickIconButton);
+			append($$anchor, span);
+		};
+		var alternate_1 = ($$anchor) => {
+			append($$anchor, root_5());
+		};
+		if_block(node_5, ($$render) => {
+			if (get(hasText)) $$render(consequent_1);
+			else $$render(alternate_1, -1);
+		});
 		var node_8 = sibling(node_5, 2);
-
-		{
-			var consequent_4 = ($$anchor) => {
-				var div_3 = root_8();
-				let classes_1;
-				let styles_1;
-				var div_4 = child(div_3);
-				var a_1 = sibling(div_4, 2);
-				var node_9 = child(a_1);
-
-				add_svelte_meta(
-					() => Icon(node_9, {
-						get type() {
-							return get(tooltipIcon);
-						},
-						size: 'nm',
-						variant: 'filled',
-						color: 'blue-piv',
-						vAlign: 'top',
-						variationSettings: '\'opsz\' 24, \'FILL\' 1, \'GRAD\' 0'
-					}),
-					'component',
-					Tooltip,
-					373,
-					12,
-					{ componentTag: 'Icon' }
-				);
-
-				reset(a_1);
-				bind_this(a_1, ($$value) => set(tooltipButton, $$value), () => get(tooltipButton));
-
-				var node_10 = sibling(a_1, 2);
-
-				{
-					var consequent_2 = ($$anchor) => {
-						var fragment_3 = root_6();
-						var div_5 = first_child(fragment_3);
-						let classes_2;
-						var node_11 = child(div_5);
-
-						add_svelte_meta(() => pinSvg(node_11, () => get(position)), 'render', Tooltip, 386, 13);
-						reset(div_5);
-
-						var node_12 = sibling(div_5, 2);
-
-						add_svelte_meta(() => tooltipPanelSnippet(node_12, () => "popover"), 'render', Tooltip, 388, 9);
-						template_effect(() => classes_2 = set_class(div_5, 1, 'qc-tooltip-pin qc-hash-s23dzl', null, classes_2, { 'qc-tooltip-visible': get(visiblePopover) }));
-						append($$anchor, fragment_3);
-					};
-
-					add_svelte_meta(
-						() => if_block(node_10, ($$render) => {
-							if (!get(modalFlag) && get(displayPopover)) $$render(consequent_2);
-						}),
-						'if',
-						Tooltip,
-						381,
-						9
-					);
-				}
-
-				var node_13 = sibling(node_10, 2);
-
-				{
-					var consequent_3 = ($$anchor) => {
-						var dialog = root_7();
-						let classes_3;
-						var div_6 = child(dialog);
-						var node_14 = child(div_6);
-
-						add_svelte_meta(() => tooltipPanelSnippet(node_14, () => "modal"), 'render', Tooltip, 400, 16);
-						reset(div_6);
-						reset(dialog);
-						bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
-						template_effect(() => classes_3 = set_class(dialog, 1, 'qc-hash-s23dzl', null, classes_3, { 'qc-desktop': !get(mobileFlag) }));
-						event('toggle', dialog, toggleModal);
-
-						delegated('click', dialog, function click_1(e) {
-							if (e.clickIntoPanel) return;
-
-							closeModale();
-						});
-
-						append($$anchor, dialog);
-					};
-
-					add_svelte_meta(
-						() => if_block(node_13, ($$render) => {
-							if (get(modalFlag) && get(displayModal)) $$render(consequent_3);
-						}),
-						'if',
-						Tooltip,
-						390,
-						9
-					);
-				}
-
-				reset(div_3);
-
-				template_effect(() => {
-					classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ''} qc-scrollbar`, 'qc-hash-s23dzl', classes_1, {
-						'qc-tooltip-popover': !get(modalFlag),
-						'qc-tooltip-modal': get(modalFlag)
-					});
-
-					styles_1 = set_style(div_3, '', styles_1, { '--max-height': `${get(modalFlag) ? "320px" : "160px"};` });
-					set_attribute(a_1, 'aria-label', get(labels).tooltipButton.ariaLabel);
-				});
-
-				delegated('click', div_4, clickIconButton);
-				delegated('click', a_1, showTooltip);
-
-				delegated('keydown', a_1, function keydown_2(e) {
-					if (strict_equals(e.code, "Space")) {
-						get(tooltipButton).click();
-						e.preventDefault();
-					}
-				});
-
-				append($$anchor, div_3);
+		var consequent_4 = ($$anchor) => {
+			var div_3 = root_8();
+			let classes_1;
+			let styles_1;
+			var div_4 = child(div_3);
+			var a_1 = sibling(div_4, 2);
+			Icon(child(a_1), {
+				get type() {
+					return get(tooltipIcon);
+				},
+				size: "nm",
+				variant: "filled",
+				color: "blue-piv",
+				vAlign: "top",
+				variationSettings: "'opsz' 24, 'FILL' 1, 'GRAD' 0"
+			});
+			reset(a_1);
+			bind_this(a_1, ($$value) => set(tooltipButton, $$value), () => get(tooltipButton));
+			var node_10 = sibling(a_1, 2);
+			var consequent_2 = ($$anchor) => {
+				var fragment_3 = root_6();
+				var div_5 = first_child(fragment_3);
+				let classes_2;
+				pinSvg(child(div_5), () => get(position));
+				reset(div_5);
+				var node_12 = sibling(div_5, 2);
+				tooltipPanelSnippet(node_12, () => "popover");
+				template_effect(() => classes_2 = set_class(div_5, 1, "qc-tooltip-pin qc-hash-s23dzl", null, classes_2, { "qc-tooltip-visible": get(visiblePopover) }));
+				append($$anchor, fragment_3);
 			};
-
-			add_svelte_meta(
-				() => if_block(node_8, ($$render) => {
-					if (get(hasDescription)) $$render(consequent_4);
-				}),
-				'if',
-				Tooltip,
-				348,
-				4
-			);
-		}
-
+			if_block(node_10, ($$render) => {
+				if (!get(modalFlag) && get(displayPopover)) $$render(consequent_2);
+			});
+			var node_13 = sibling(node_10, 2);
+			var consequent_3 = ($$anchor) => {
+				var dialog = root_7();
+				let classes_3;
+				var div_6 = child(dialog);
+				var node_14 = child(div_6);
+				tooltipPanelSnippet(node_14, () => "modal");
+				reset(div_6);
+				reset(dialog);
+				bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
+				template_effect(() => classes_3 = set_class(dialog, 1, "qc-hash-s23dzl", null, classes_3, { "qc-desktop": !get(mobileFlag) }));
+				event("toggle", dialog, toggleModal);
+				delegated("click", dialog, (e) => {
+					if (e.clickIntoPanel) return;
+					closeModale();
+				});
+				append($$anchor, dialog);
+			};
+			if_block(node_13, ($$render) => {
+				if (get(modalFlag) && get(displayModal)) $$render(consequent_3);
+			});
+			reset(div_3);
+			template_effect(() => {
+				classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ""} qc-scrollbar`, "qc-hash-s23dzl", classes_1, {
+					"qc-tooltip-popover": !get(modalFlag),
+					"qc-tooltip-modal": get(modalFlag)
+				});
+				styles_1 = set_style(div_3, "", styles_1, { "--max-height": `${get(modalFlag) ? "320px" : "160px"};` });
+				set_attribute(a_1, "aria-label", get(labels).tooltipButton.ariaLabel);
+			});
+			delegated("click", div_4, clickIconButton);
+			delegated("click", a_1, showTooltip);
+			delegated("keydown", a_1, (e) => {
+				if (e.code === "Space") {
+					get(tooltipButton).click();
+					e.preventDefault();
+				}
+			});
+			append($$anchor, div_3);
+		};
+		if_block(node_8, ($$render) => {
+			if (get(hasDescription)) $$render(consequent_4);
+		});
 		reset(div_2);
 		bind_this(div_2, ($$value) => tooltipContainer = $$value, () => tooltipContainer);
-		delegated('focusout', div_2, markInnerEvent);
-
-		delegated('keydown', div_2, function keydown_1(e) {
-			//$inspect("keydown", e.key)
+		delegated("focusout", div_2, markInnerEvent);
+		delegated("keydown", div_2, (e) => {
 			if (get(modalFlag)) return;
-
-			if (strict_equals(e.key, "Escape")) {
-				closeTooltip(e);
-			}
+			if (e.key === "Escape") closeTooltip(e);
 		});
-
 		append($$anchor, div_2);
-
 		return pop($$exports);
 	}
-
-	delegate(['click', 'keydown', 'focusout']);
-
-	create_custom_element(
-		Tooltip,
-		{
-			text: {},
-			title: {},
-			description: {},
-			requestedPosition: {},
-			preventOuterEventClosing: {},
-			displayMode: {},
-			icon: {},
-			descriptionId: {},
-			slots: {},
-			host: {},
-			descriptionSlot: {},
-			textSlot: {}
-		},
-		[],
-		[],
-		{ mode: 'open' }
-	);
-
-	TooltipWC[FILENAME] = 'src/sdg/components/Tooltip/TooltipWC.svelte';
-
-	var rest_excludes = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-	var root = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TooltipWC[FILENAME], [[29, 0]]);
-
+	delegate([
+		"click",
+		"keydown",
+		"focusout"
+	]);
+	create_custom_element(Tooltip, {
+		text: {},
+		title: {},
+		description: {},
+		requestedPosition: {},
+		preventOuterEventClosing: {},
+		displayMode: {},
+		icon: {},
+		descriptionId: {},
+		slots: {},
+		host: {},
+		descriptionSlot: {},
+		textSlot: {}
+	}, [], [], { mode: "open" });
+	//#endregion
+	//#region src/sdg/components/Tooltip/TooltipWC.svelte
+	var rest_excludes = /* @__PURE__ */ new Set([
+		"$$slots",
+		"$$events",
+		"$$legacy",
+		"$$host"
+	]);
+	var root = /* @__PURE__ */ from_html(`<!> <link rel="stylesheet"/>`, 1);
 	function TooltipWC($$anchor, $$props) {
-		check_target(new.target);
-
 		const $$slots = sanitize_slots($$props);
-
 		push($$props, true);
-
-		let props = rest_props($$props, rest_excludes);
-		var $$exports = { ...legacy_api() };
+		let props = /* @__PURE__ */ rest_props($$props, rest_excludes);
 		var fragment = root();
 		var node = first_child(fragment);
-
 		{
-			const textSlot = wrap_snippet(TooltipWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			const textSlot = ($$anchor) => {
 				var fragment_1 = comment();
-				var node_1 = first_child(fragment_1);
-
-				slot(node_1, $$props, 'text', {}, null);
+				slot(first_child(fragment_1), $$props, "text", {}, null);
 				append($$anchor, fragment_1);
-			});
-
-			const descriptionSlot = wrap_snippet(TooltipWC, function ($$anchor) {
-				validate_snippet_args(...arguments);
-
+			};
+			const descriptionSlot = ($$anchor) => {
 				var fragment_2 = comment();
-				var node_2 = first_child(fragment_2);
-
-				slot(node_2, $$props, 'description', {}, null);
+				slot(first_child(fragment_2), $$props, "description", {}, null);
 				append($$anchor, fragment_2);
-			});
-
-			add_svelte_meta(
-				() => Tooltip(node, spread_props(() => props, {
-					slots: $$slots,
-					host: $$props.$$host,
-					textSlot,
-					descriptionSlot,
-					$$slots: { textSlot: true, descriptionSlot: true }
-				})),
-				'component',
-				TooltipWC,
-				21,
-				0,
-				{ componentTag: 'Tooltip' }
-			);
+			};
+			Tooltip(node, spread_props(() => props, {
+				slots: $$slots,
+				host: $$props.$$host,
+				textSlot,
+				descriptionSlot,
+				$$slots: {
+					textSlot: true,
+					descriptionSlot: true
+				}
+			}));
 		}
-
 		var link = sibling(node, 2);
-
-		template_effect(() => set_attribute(link, 'href', Utils.cssPath));
+		template_effect(() => set_attribute(link, "href", Utils.cssPath));
 		append($$anchor, fragment);
-
-		return pop($$exports);
+		pop();
 	}
-
-	customElements.define('qc-tooltip', create_custom_element(
-		TooltipWC,
-		{
-			text: { attribute: 'label', type: 'String' },
-			title: { attribute: 'title', type: 'String' },
-			description: { attribute: 'description', type: 'String' },
-			requestedPosition: { attribute: 'position', type: 'String' },
-			preventOuterEventClosing: { attribute: 'prevent-outer-event-closing', type: 'Boolean' },
-			displayMode: { attribute: 'display-mode', type: 'String' },
-			descriptionId: { attribute: 'description-id', type: 'String' },
-			icon: { attribute: 'icon', type: 'String' }
+	customElements.define("qc-tooltip", create_custom_element(TooltipWC, {
+		text: {
+			attribute: "label",
+			type: "String"
 		},
-		['text', 'description'],
-		[],
-		{ mode: 'open' }
-	));
-
-	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-	if (isDarkMode) {
-	    document.documentElement.classList.add('qc-dark-theme');
-	}
-
+		title: {
+			attribute: "title",
+			type: "String"
+		},
+		description: {
+			attribute: "description",
+			type: "String"
+		},
+		requestedPosition: {
+			attribute: "position",
+			type: "String"
+		},
+		preventOuterEventClosing: {
+			attribute: "prevent-outer-event-closing",
+			type: "Boolean"
+		},
+		displayMode: {
+			attribute: "display-mode",
+			type: "String"
+		},
+		descriptionId: {
+			attribute: "description-id",
+			type: "String"
+		},
+		icon: {
+			attribute: "icon",
+			type: "String"
+		}
+	}, ["text", "description"], [], { mode: "open" }));
+	//#endregion
+	//#region src/sdg/_dark-theme.js
+	if (window.matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.classList.add("qc-dark-theme");
+	//#endregion
 })();

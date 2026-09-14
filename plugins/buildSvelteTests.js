@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import glob from 'glob';
+import { globSync } from 'glob';
 
 function buildSvelteTests({input, ignorePathsFile}) {
     return {
@@ -12,7 +12,7 @@ function buildSvelteTests({input, ignorePathsFile}) {
                 JSON.parse(fs.readFileSync(resolvedIgnorePathsFile, 'utf-8'))
                 : [];
 
-            const partialPaths = glob.sync('**/*-baseline.spec.ts', {
+            const partialPaths = globSync('**/*-baseline.spec.ts', {
                 cwd: testsRoot,
                 absolute: true,
                 ignore: ignorePaths
