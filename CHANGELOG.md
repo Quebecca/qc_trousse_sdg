@@ -17,72 +17,38 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
-- **icônes** : Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
-- **icônes** : Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
-- **icônes** : Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.
-- **boutons** : Détection automatique de la position de l'icône via `:has(> qc-icon:first-child/:last-child)` pour ajuster le padding à 18px côté icône. Le texte du bouton doit être dans un `<span>`.
-
-### Modifié
-- **icônes (variable globale)** : Passage de l'optical size (`opsz`) de 24 à 40 dans les `font-variation-settings` de `.qc-icon-font`.
-- **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
-- **liens externes** : Remplacement du rendu SVG par la font Material (`open_in_new`, 1em, couleur héritée du lien).
-- **alerte générale** : Icônes warning/general en font-weight 500 ; icône close en 2.4rem.
-- **avis (notice)** : Icônes en 2rem (md), font-weight 600 ; icône « advice » → `emoji_objects` ; icône « note » → `content_paste` ; padding latéral de `.icon-container` à 10px.
-- **infobulle** : Icône trigger remplacée par `info`/`help` (FILL 1) en 2.4rem, font-weight 600, couleur bleu PIV ; icône close en 2.4rem ; pointe SVG sans rotation CSS.
-- **barre de recherche** : Icône search en 2.4rem font-weight 600 (standard), 400 (fond foncé) ; icône close en 2.4rem.
-- **boutons (primary/secondary/tertiary/danger)** : Icône en 2.4rem, font-weight 600 ; icônes séquentielles → `arrow_left_alt` / `arrow_right_alt`.
-- **boutons (simple)** : Icône standard 2.4rem font-weight 600, compact 2rem font-weight 500.
-- **cases à cocher** : Icône check en 2.4rem font-weight 600 (standard), 1.6rem font-weight 600 (compact).
-- **message d'erreur** : Ajout column-gap 0.8rem ; icône warning en 2.4rem font-weight 500.
-- **champ de recherche** : Icônes search et close en 2.4rem.
-- **liste déroulante** : Padding-right du bouton à 0.4rem ; icône expand_less en 2.4rem.
-- **haut de page** : Icône → `north` en 2.4rem, font-weight 600.
-- **bandeau PIV** : Icône search en 2.8rem, font-weight 600, margin-right 1.6rem, couleur blanche.
-- **bandeau PIV** : optimisation CLS — réservation de la hauteur du bandeau (`min-height` sur `:not(:defined)`) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
-- **liens externes** : optimisation CLS — réservation de l'icône (`::after` sur le host `:not(:defined)`, `display:inline` pour la souder au dernier mot) afin d'éliminer le décalage de mise en page au moment de l'upgrade du web-component.
-- **alerte générale** : optimisation CLS — réservation de la hauteur du bandeau (`padding` + police sur `:not(:defined)`) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
-- **avis (notice)** : optimisation CLS + anti-FOUC — réservation d'un plancher de hauteur (`min-height`, colonne icône) et masquage du contenu brut (`visibility: hidden`) sur `:not(:defined)`. La hauteur d'un avis dépendant du contenu, seul un plancher est réservable ; le décalage résiduel correspond au contenu dépassant le plancher. À noter : si le JavaScript ne se charge pas, le contenu slotté (dont un résumé d'erreurs) reste invisible.
-- **barre de recherche** : optimisation CLS — réservation de la hauteur du champ (`min-height` sur `:not(:defined)`, hauteur fixe) pour éliminer le décalage de mise en page au moment de l'upgrade du web-component.
-- **icônes** : optimisation CLS — réservation de la boîte inline du glyphe par taille (`width`/`height`/`vertical-align` sur `:not(:defined)`, `font-size` par attribut `size`) pour éliminer le décalage du texte suivant au moment de l'upgrade du web-component.
-- **liste déroulante (select)** : optimisation CLS + anti-FOUC — réservation de la marge basse constante, d'un plancher de hauteur (bouton) et masquage du `<select>` natif (`visibility: hidden`) sur `:not(:defined)`. La hauteur variant avec le label optionnel, seul le plancher est réservable ; le résidu = la hauteur du label. À noter : si le JavaScript ne se charge pas, le `<select>` natif reste invisible.
-- **groupe de choix (choice-group)** : optimisation CLS + anti-FOUC — reproduction de l'empilement du `fieldset` avant l'upgrade (`display:flex; flex-direction:column; gap` + `padding-top` pour la légende) et masquage du contenu brut (`visibility: hidden`) sur `:not(:defined)`. La réservation suit le nombre d'options (déterministe en light-DOM) ; le résidu = légende ou texte d'option sur plusieurs lignes. À noter : si le JavaScript ne se charge pas, les cases/boutons restent invisibles.
-- **case à cocher unique (checkbox)** : optimisation CLS + anti-FOUC — passage du host en `block` pour réserver la marge basse (rendue dans le shadow, sinon ignorée sur un host inline) + plancher de hauteur et masquage du contenu brut (`visibility: hidden`) sur `:not(:defined)`. À noter : si le JavaScript ne se charge pas, la case reste invisible.
-- **commutateur (toggle-switch)** : optimisation CLS — réservation de la hauteur du commutateur (`display:block; min-height` sur `:not(:defined)`, hauteur fixe) pour éliminer le décalage du contenu suivant au moment de l'upgrade du web-component.
-- **bandeau PIV / alerte générale** : masquage anti-FOUC — le contenu brut est caché (`visibility: hidden` sur `:not(:defined)`, sans collapser la boîte réservée) avant l'upgrade du web-component, évitant le clignotement du contenu non stylé. À noter : si le JavaScript ne se charge pas, ces composants restent invisibles.
-
----
-## Autres changements
-
-### Ajouté
-- **qc-search-input** : Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
-- **qc-search-input** : Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
-- **qc-search-input** : Ajout de la propriété `value` comme attribut explicite du web component.
-- **qc-search-input** : Tests Playwright (baseline + svelte) avec screenshots partagés.
+- **icônes** :
+  - Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
+  - Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
+  - Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.
+- **boutons** : Détection automatique de la position de l'icône. Voir note précédente.
+- **qc-search-input** : 
+  - Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
+  - Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
+  - Ajout de la propriété `value` comme attribut explicite du web component.
+  - Tests Playwright (baseline + svelte) avec screenshots partagés.
 - **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
+- **titres** : nouvelles classes de taille `.qc-heading-<taille>`, taille de xxl à xs.
+- **surtitre** : possibilité de placer le surtitre dans un `hgroup`
 - **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
-- **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
-- **Documentation (infobulle)** : ajout d'un exemple d'affichage en feuille (`display-mode="modal"`).
-- **titres** : nouvelles classes de taille `.qc-heading-xxl`, `.qc-heading-xl`, `.qc-heading-lg`, `.qc-heading-md`, `.qc-heading-sm`, `.qc-heading-xs`. Elles appliquent la taille d'un niveau de titre (respectivement h1 à h6) à n'importe quel élément, indépendamment de sa balise — utile pour découpler l'apparence de la sémantique (p. ex. un `<h1>` au rendu visuel d'un h2 via `.qc-heading-xl`).
-- **surtitre** : possibilité de placer le surtitre (`.qc-subhead`) hors du titre, comme `<p>` frère du titre dans un `<hgroup>` (structure recommandée : le surtitre ne fait pas partie du nom accessible du titre). L'ancienne forme (`<span>` au début du `<h1>`) reste prise en charge, avec un rendu identique.
+- **Documentation** 
+  - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+  - **infobulle** : ajout d'exemples.
+- **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
 
 ### Modifié
-- **titres (jetons)** : refonte de l'échelle typographique. Les clés `h1`…`h6` de `font.size` et `line-height` sont remplacées par une map unique `heading` (`xxl`→`xs`), source unique. Les jetons numérotés `--qc-font-size-h1`…`h6` et `--qc-line-height-h1`…`h6` sont désormais générés automatiquement par index. Le mixin `heading()` accepte indifféremment un index (`heading(1)`) ou un nom (`heading(xxl)`).
+- **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
 - **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
-- **qc-select** : Refonte interne — séparation de `items` (métadonnées) et `value` (sélection). Élimine la dépendance circulaire qui causait la perte de sélection à l'initialisation. L'API du web component reste identique. En usage Svelte direct (composant `DropdownList`), `value` n'est plus synchronisé automatiquement quand des items sont retirés — c'est au développeur de mettre à jour `value` si les options changent.
-- **qc-search-input** : Optimisation du `$effect` de synchronisation avec `untrack()`.
-- **qc-search-input** : Déplacement des styles de taille (`$sizes`) dans le `%qc-search-wrapper` pour cohérence entre composant web et Svelte.
-- **Tests** : Configuration `snapshotPathTemplate` pour partager les snapshots entre tests baseline et svelte.
-- **Tests** : Renommage des composants de test `*EmbeddedTest` → `*SvelteTest` pour cohérence.
+
 ### Corrigé
 - **qc-textfield** : Correction des valeurs par défaut de `size` dans la documentation (md pour `input`, lg pour `textarea` — et non lg/xl comme indiqué précédemment).
-- **qc-select** : Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
-- **qc-select** : Correction du décalage entre le panneau déroulant et le bouton lorsqu'une recherche réduit les options et que le panneau est retourné vers le haut. La hauteur du panneau est désormais figée à l'ouverture quand il s'affiche au-dessus, évitant tout repositionnement pendant la saisie.
-- **qc-textfield** : Ajout d'un champ manquant dans la fixture de test Svelte (textarea « Commentaires » avec input text).
+- **qc-select** : 
+  - Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
+  - Correction du décalage entre le panneau déroulant et le bouton lorsqu'une recherche réduit les options et que le panneau est retourné vers le haut. La hauteur du panneau est désormais figée à l'ouverture quand il s'affiche au-dessus, évitant tout repositionnement pendant la saisie.
 - **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
-- **commutateur** : Correction css pour corriger le comportement des balises `sup` et `sub` dans le libellé 
-
+- **commutateur** : Correction css concernant le comportement des balises `sup` et `sub` dans le libellé
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté
