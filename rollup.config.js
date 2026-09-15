@@ -213,6 +213,33 @@ let
     ]
 ;
 
+// ─── Variantes « root-font-size 100 % » (issue #48) ─────────────────────────
+// Émises seulement au build, à côté des fichiers standards, à partir des
+// entrées SCSS qui reconfigurent $percent-root-font-size à 100. Le JS n'étant
+// pas affecté (il ne référence que des var(--qc-*)), ces passes ne produisent
+// qu'un JS stub jeté dans .rfz-build/ (gitignoré) ; seul le CSS est conservé.
+if (build_process) {
+    const rfzVariants = [
+        { input: 'src/sdg/qc-sdg-rfz100.js',               css: 'dist/css/qc-sdg-rfz100.min.css' },
+        { input: 'src/sdg/qc-sdg-no-grid-rfz100.js',       css: 'dist/css/qc-sdg-no-grid-rfz100.min.css' },
+        { input: 'src/sdg/qc-sdg-design-tokens-rfz100.js', css: 'dist/css/qc-sdg-design-tokens-rfz100.min.css' },
+    ];
+    for (const variant of rfzVariants) {
+        rollupOptions.push({
+            input: variant.input,
+            output: {
+                file: '.rfz-build/' + variant.input.split('/').pop(),
+                format: 'iife',
+            },
+            plugins: [
+                scss(Object.assign({
+                    output: (styles) => fs.writeFileSync(variant.css, styles),
+                }, scssOptions)),
+            ],
+        });
+    }
+}
+
 
 if (!build_process) {
     rollupOptions.unshift({

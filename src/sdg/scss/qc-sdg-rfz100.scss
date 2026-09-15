@@ -1,0 +1,7 @@
+// Variante « root-font-size 100 % » (issue #48).
+// Configure la variable racine une seule fois, puis délègue à l'entrée standard :
+// une seule source de vérité (aucun fork de composant), seules les valeurs
+// dérivées de $percent-root-font-size (barème rem + --qc-font-size-root-percent)
+// diffèrent entre cette sortie et qc-sdg.min.css.
+@use "settings/base" with ($percent-root-font-size: 100);
+@use "qc-sdg";
