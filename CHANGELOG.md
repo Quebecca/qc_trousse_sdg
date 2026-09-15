@@ -47,6 +47,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **qc-select** : 
   - Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.
   - Correction du décalage entre le panneau déroulant et le bouton lorsqu'une recherche réduit les options et que le panneau est retourné vers le haut. La hauteur du panneau est désormais figée à l'ouverture quand il s'affiche au-dessus, évitant tout repositionnement pendant la saisie.
+  - Correction de la synchronisation de l'affichage quand un script externe change la sélection via la **propriété** `option.selected` (p. ex. `jQuery.val()`), sans muter l'attribut `selected` ni émettre d'événement natif — cas invisible du `MutationObserver`. Le composant réconcilie désormais son état dans ce cas.
 - **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
 - **commutateur** : Correction css concernant le comportement des balises `sup` et `sub` dans le libellé

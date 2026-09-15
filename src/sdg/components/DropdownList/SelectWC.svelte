@@ -129,6 +129,35 @@
     let internalChange = false;
     let previousValue = $state(value);
 
+    // Descriptor natif pour déléguer le setter de la propriété .selected des <option>.
+    const OPTION_SELECTED_DESCRIPTOR = Object.getOwnPropertyDescriptor(HTMLOptionElement.prototype, "selected");
+    const wrappedOptions = new WeakSet();
+
+    // Intercepte l'écriture de la PROPRIÉTÉ option.selected (ex. jQuery.val()), invisible du
+    // MutationObserver (qui ne voit que les mutations d'attributs/childList, jamais les propriétés).
+    // Chaque <option> n'est enrobée qu'une fois ; le setter délègue au natif puis réconcilie
+    // (débouncé, et neutralisé pendant la synchro interne via `internalChange` pour éviter la boucle).
+    function interceptOptionSelectedSetters() {
+        if (!selectElement || !OPTION_SELECTED_DESCRIPTOR) return;
+        for (const option of selectElement.querySelectorAll("option")) {
+            if (wrappedOptions.has(option)) continue;
+            wrappedOptions.add(option);
+            Object.defineProperty(option, "selected", {
+                configurable: true,
+                enumerable: false,
+                get() {
+                    return OPTION_SELECTED_DESCRIPTOR.get.call(this);
+                },
+                set(selected) {
+                    OPTION_SELECTED_DESCRIPTOR.set.call(this, selected);
+                    if (!internalChange) {
+                        debouncedSetupItemsList();
+                    }
+                }
+            });
+        }
+    }
+
     onMount(() => {
         selectElement = $host().querySelector("select");
         labelElement = $host().querySelector("label");
@@ -202,6 +231,9 @@
     });
 
     function setupItemsList(preservedValue) {
+        // Enrober les setters .selected des options courantes (idempotent) — couvre aussi
+        // les <option> recréées lors d'une reconstruction dynamique (issue #36).
+        interceptOptionSelectedSetters();
         const options = selectElement?.querySelectorAll("option");
         if (options && options.length > 0) {
             // Étape 1 : Construire les items (métadonnées uniquement)
