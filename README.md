@@ -1,8 +1,13 @@
 # Trousse de développement du Système de design gouvernemental du Québec
 
-## Avertissement
+## ⚠️ Branche archivée
 
-Cette version de la trousse est réglée pour une valeur de `root-font-size` de 100 %, au lieu du 62,5 % de la branche principale.
+Cette branche `main-rfz100` est **archivée** et n'est plus maintenue.
+
+La variante `root-font-size` de 100 % (au lieu du 62,5 % par défaut) est désormais générée **directement dans la branche `main`**, publiée à chaque version sous les fichiers suffixés `-rfz100` :
+`dist/css/qc-sdg-rfz100.min.css`, `dist/css/qc-sdg-no-grid-rfz100.min.css`, `dist/css/qc-sdg-design-tokens-rfz100.min.css` (voir l'[issue #48](https://github.com/Quebecca/qc_trousse_sdg/issues/48)).
+
+Cette branche est **conservée** (non supprimée) pour les intégrations qui la référencent en accès direct. Elle ne recevra plus de correctifs : pour bénéficier des mises à jour, utilisez les fichiers `-rfz100` de `main`.
 
 ## Présentation
 

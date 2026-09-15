@@ -1,5 +1,9 @@
 # Historique des versions
 
+## Archivée — 2026-09-15
+
+La branche `main-rfz100` est **archivée** et n’est plus maintenue. La variante `root-font-size` de 100 % est désormais reprise directement dans la branche `main`, sous les fichiers suffixés `-rfz100` (voir [#48](https://github.com/Quebecca/qc_trousse_sdg/issues/48)). Cette branche est conservée (non supprimée) pour les intégrations qui la référencent en accès direct. Tag d’archive : `archive/main-rfz100`.
+
 ## [1.5.1] - 2026-01-13
 ### Ajouté
 - **Infobulle** : Ajout d'un attribut pour placer un titre dans le composant ([#33](https://github.com/Quebecca/qc_trousse_sdg/issues/33))
