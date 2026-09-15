@@ -42,6 +42,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
 
 ### Corrigé
+- **boutons** : Correction du fond du bouton secondaire (`.qc-secondary`), désormais transparent au lieu de blanc.
 - **qc-textfield** : Correction des valeurs par défaut de `size` dans la documentation (md pour `input`, lg pour `textarea` — et non lg/xl comme indiqué précédemment).
 - **qc-select** : 
   - Correction du placeholder absent quand aucune option vide n'est définie. La logique applique désormais : placeholder explicite > libellé de l'option à valeur vide > libellé par défaut.

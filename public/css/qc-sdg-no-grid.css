@@ -2825,7 +2825,7 @@ qc-select:not(:defined) {
 .qc-button.qc-secondary {
   --qc-color-link-text: var(--qc-color-blue-piv);
   color: var(--qc-color-blue-piv);
-  background-color: var(--qc-color-white);
+  background-color: transparent;
   border-color: var(--qc-color-blue-piv);
 }
 .qc-button.qc-secondary:hover:not(:disabled), .qc-button.qc-secondary:focus:not(:disabled), .qc-button.qc-secondary:active:not(:disabled), .qc-button.qc-secondary.qc-hover, .qc-button.qc-secondary.qc-focus, .qc-button.qc-secondary.qc-active {
