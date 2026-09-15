@@ -17,6 +17,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
+- **variantes `root-font-size`** : génération automatique, à chaque version, des feuilles de style réglées à `root-font-size` 100 % (`qc-sdg-rfz100.min.css`, `qc-sdg-no-grid-rfz100.min.css`, `qc-sdg-design-tokens-rfz100.min.css`) à côté des fichiers 62,5 % dans `dist/css`. Remplace la branche `main-rfz100`, désormais inutile. Les deux variantes partagent le même JavaScript (issue #48).
 - **icônes** :
   - Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
   - Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
