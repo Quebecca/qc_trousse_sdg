@@ -737,3 +737,33 @@ test.describe('Désélection externe via removeAttribute', () => {
         await expect(page.locator('#qc-select-multiple-choices-input')).not.toContainText('Option 3');
     });
 });
+
+test.describe('Sélection externe via la propriété .selected (scénario jQuery .val())', () => {
+    test('Écrire option.selected en propriété (sans attribut ni event) met à jour le composant', {
+        tag: ['@baseline', '@dropdownlist', '@jquery-property'],
+        annotation: {
+            type: 'description',
+            description: 'jQuery.val() écrit la propriété option.selected sur chaque <option> ' +
+                '(pas l\'attribut, et son .trigger("change") n\'atteint pas addEventListener). ' +
+                'Le composant qc-select doit tout de même refléter la nouvelle sélection.'
+        }
+    }, async ({ page }) => {
+        // État de départ : Option 1 est sélectionnée dans la fixture
+        await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 1');
+
+        // Simuler jQuery.val('5') : écrire UNIQUEMENT la propriété .selected
+        // (aucun setAttribute('selected'), aucun dispatchEvent) — comme jQuery.valHooks.select.set
+        await page.locator('#select-single-choice').evaluate((select: HTMLSelectElement) => {
+            for (const option of Array.from(select.options)) {
+                option.selected = (option.value === '5');
+            }
+        });
+
+        // Laisser le temps à la réconciliation (débounce)
+        await page.waitForTimeout(100);
+
+        // Le composant doit afficher Option 5, plus Option 1
+        await expect(page.locator('#qc-select-single-choice-input')).toContainText('Option 5');
+        await expect(page.locator('#qc-select-single-choice-input')).not.toContainText('Option 1');
+    });
+});

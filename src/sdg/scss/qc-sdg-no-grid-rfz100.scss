@@ -1,0 +1,4 @@
+// Variante « root-font-size 100 % » (issue #48) — sans système de grille.
+// Cf. qc-sdg-rfz100.scss pour le rationnel.
+@use "settings/base" with ($percent-root-font-size: 100);
+@use "qc-sgd-no-grid";

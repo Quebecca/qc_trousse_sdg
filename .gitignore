@@ -30,3 +30,6 @@ tmp/
 icon-selection.local.json
 .playwright-mcp/
 /.ai/*
+
+# Sortie JS jetable des passes de build « root-font-size 100 % » (issue #48)
+/.rfz-build/

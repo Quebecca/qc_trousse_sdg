@@ -1,8 +1,13 @@
 # Trousse de développement du Système de design gouvernemental du Québec
 
-## Avertissement
+## Valeur de `root-font-size`
 
-Cette version de la trousse est réglée pour une valeur de `root-font-size` de 62,5 %. Pour un `root-font-size` de 100 %, veuillez consulter la branche `main-rfz100` à cette adresse : https://github.com/Quebecca/qc_trousse_sdg/tree/main-rfz100 
+La trousse est livrée en deux variantes générées ensemble à chaque version, dans le dossier `dist/css` :
+
+- **`root-font-size` de 62,5 %** (variante par défaut) : `qc-sdg.min.css`, `qc-sdg-no-grid.min.css`, `qc-sdg-design-tokens.min.css`.
+- **`root-font-size` de 100 %** : les mêmes fichiers suffixés `-rfz100` — `qc-sdg-rfz100.min.css`, `qc-sdg-no-grid-rfz100.min.css`, `qc-sdg-design-tokens-rfz100.min.css`.
+
+Les deux variantes sont **mutuellement exclusives** : insérez **une seule** des deux feuilles de style dans vos pages. Le fichier JavaScript (`qc-sdg.min.js`) est commun aux deux — il ne dépend pas de la valeur de `root-font-size`.
 
 ## Présentation
 
