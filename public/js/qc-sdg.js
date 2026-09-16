@@ -28,19 +28,16 @@
 	const HYDRATION_START = '[';
 	/** used to indicate that an `{:else}...` block was rendered */
 	const HYDRATION_START_ELSE = '[!';
-	/** used to indicate that a boundary's `failed` snippet was rendered on the server */
-	const HYDRATION_START_FAILED = '[?';
 	const HYDRATION_END = ']';
 	const HYDRATION_ERROR = {};
 
-	const UNINITIALIZED = Symbol('uninitialized');
+	const UNINITIALIZED = Symbol();
 
 	// Dev-time component properties
 	const FILENAME = Symbol('filename');
 
 	const NAMESPACE_HTML = 'http://www.w3.org/1999/xhtml';
 	const NAMESPACE_SVG = 'http://www.w3.org/2000/svg';
-	const NAMESPACE_MATHML = 'http://www.w3.org/1998/Math/MathML';
 
 	const ATTACHMENT_KEY = '@attach';
 
@@ -50,7 +47,6 @@
 	// to de-opt (this occurs often when using popular extensions).
 	var is_array = Array.isArray;
 	var index_of = Array.prototype.indexOf;
-	var includes = Array.prototype.includes;
 	var array_from = Array.from;
 	var object_keys = Object.keys;
 	var define_property = Object.defineProperty;
@@ -92,7 +88,7 @@
 
 	/**
 	 * TODO replace with Promise.withResolvers once supported widely enough
-	 * @template [T=void]
+	 * @template T
 	 */
 	function deferred() {
 		/** @type {(value: T) => void} */
@@ -150,15 +146,6 @@
 	const DERIVED = 1 << 1;
 	const EFFECT = 1 << 2;
 	const RENDER_EFFECT = 1 << 3;
-	/**
-	 * An effect that does not destroy its child effects when it reruns.
-	 * Runs as part of render effects, i.e. not eagerly as part of tree traversal or effect flushing.
-	 */
-	const MANAGED_EFFECT = 1 << 24;
-	/**
-	 * An effect that does not destroy its child effects when it reruns (like MANAGED_EFFECT).
-	 * Runs eagerly as part of tree traversal or effect flushing.
-	 */
 	const BLOCK_EFFECT = 1 << 4;
 	const BRANCH_EFFECT = 1 << 5;
 	const ROOT_EFFECT = 1 << 6;
@@ -175,12 +162,10 @@
 	const MAYBE_DIRTY = 1 << 12;
 	const INERT = 1 << 13;
 	const DESTROYED = 1 << 14;
-	/** Set once a reaction has run for the first time */
-	const REACTION_RAN = 1 << 15;
-	/** Effect is in the process of getting destroyed. Can be observed in child teardown functions */
-	const DESTROYING = 1 << 25;
 
 	// Flags exclusive to effects
+	/** Set once an effect that should run synchronously has run */
+	const EFFECT_RAN = 1 << 15;
 	/**
 	 * 'Transparent' effects do not create a transition boundary.
 	 * This is on a block effect 99% of the time but may also be on a branch effect if its parent block effect was pruned
@@ -190,16 +175,14 @@
 	const HEAD_EFFECT = 1 << 18;
 	const EFFECT_PRESERVED = 1 << 19;
 	const USER_EFFECT = 1 << 20;
-	const EFFECT_OFFSCREEN = 1 << 25;
 
 	// Flags exclusive to deriveds
 	/**
 	 * Tells that we marked this derived and its reactions as visited during the "mark as (maybe) dirty"-phase.
 	 * Will be lifted during execution of the derived and during checking its dirty state (both are necessary
-	 * because a derived might be checked but not executed). This is a pure performance optimization flag and
-	 * should not be used for any other purpose!
+	 * because a derived might be checked but not executed).
 	 */
-	const WAS_MARKED = 1 << 16;
+	const WAS_MARKED = 1 << 15;
 
 	// Flags used for async
 	const REACTION_IS_UPDATING = 1 << 21;
@@ -211,11 +194,6 @@
 	const LEGACY_PROPS = Symbol('legacy props');
 	const LOADING_ATTR_SYMBOL = Symbol('');
 	const PROXY_PATH_SYMBOL = Symbol('proxy path');
-	const ATTRIBUTES_CACHE = Symbol('attributes');
-	const CLASS_CACHE = Symbol('class');
-	const STYLE_CACHE = Symbol('style');
-	const TEXT_CACHE = Symbol('text');
-	const FORM_RESET_HANDLER = Symbol('form reset');
 
 	/** allow users to ignore aborted signal errors if `reason.name === 'StaleReactionError` */
 	const STALE_REACTION = new (class StaleReactionError extends Error {
@@ -223,10 +201,6 @@
 		message = 'The reaction that called `getAbortSignal()` was re-run or destroyed';
 	})();
 
-	const IS_XHTML =
-		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
-		!!globalThis.document?.contentType &&
-		/* @__PURE__ */ globalThis.document.contentType.includes('xml');
 	const ELEMENT_NODE = 1;
 	const TEXT_NODE = 3;
 	const COMMENT_NODE = 8;
@@ -454,15 +428,6 @@
 	}
 
 	/**
-	 * Reading a derived belonging to a now-destroyed effect may result in stale values
-	 */
-	function derived_inert() {
-		{
-			console.warn(`https://svelte.dev/e/derived_inert`);
-		}
-	}
-
-	/**
 	 * %handler% should be a function. Did you mean to %suggestion%?
 	 * @param {string} handler
 	 * @param {string} suggestion
@@ -560,7 +525,7 @@
 	 */
 	let hydrate_node;
 
-	/** @param {TemplateNode | null} node */
+	/** @param {TemplateNode} node */
 	function set_hydrate_node(node) {
 		if (node === null) {
 			hydration_mismatch();
@@ -571,7 +536,7 @@
 	}
 
 	function hydrate_next() {
-		return set_hydrate_node(get_next_sibling(hydrate_node));
+		return set_hydrate_node(/** @type {TemplateNode} */ (get_next_sibling(hydrate_node)));
 	}
 
 	/** @param {TemplateNode} node */
@@ -615,12 +580,7 @@
 				if (data === HYDRATION_END) {
 					if (depth === 0) return node;
 					depth -= 1;
-				} else if (
-					data === HYDRATION_START ||
-					data === HYDRATION_START_ELSE ||
-					// "[1", "[2", etc. for if blocks
-					(data[0] === '[' && !isNaN(Number(data.slice(1))))
-				) {
+				} else if (data === HYDRATION_START || data === HYDRATION_START_ELSE) {
 					depth += 1;
 				}
 			}
@@ -667,8 +627,6 @@
 		return !safe_not_equal(value, this.v);
 	}
 
-	/** True if experimental.async=true */
-	/** True if $inspect.trace is used */
 	let tracing_mode_flag = false;
 
 	/* This file is generated by scripts/process-messages/index.js. Do not edit! */
@@ -751,7 +709,7 @@
 					cloned.set(original, copy);
 				}
 
-				for (var key of Object.keys(value)) {
+				for (var key in value) {
 					copy[key] = clone(
 						// @ts-expect-error
 						value[key],
@@ -798,6 +756,62 @@
 	/** @import { Derived, Reaction, Value } from '#client' */
 
 	/**
+	 * @param {string} label
+	 * @returns {Error & { stack: string } | null}
+	 */
+	function get_stack(label) {
+		// @ts-ignore stackTraceLimit doesn't exist everywhere
+		const limit = Error.stackTraceLimit;
+
+		// @ts-ignore
+		Error.stackTraceLimit = Infinity;
+		let error = Error();
+
+		// @ts-ignore
+		Error.stackTraceLimit = limit;
+
+		const stack = error.stack;
+
+		if (!stack) return null;
+
+		const lines = stack.split('\n');
+		const new_lines = ['\n'];
+
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const posixified = line.replaceAll('\\', '/');
+
+			if (line === 'Error') {
+				continue;
+			}
+
+			if (line.includes('validate_each_keys')) {
+				return null;
+			}
+
+			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
+				continue;
+			}
+
+			new_lines.push(line);
+		}
+
+		if (new_lines.length === 1) {
+			return null;
+		}
+
+		define_property(error, 'stack', {
+			value: new_lines.join('\n')
+		});
+
+		define_property(error, 'name', {
+			value: label
+		});
+
+		return /** @type {Error & { stack: string }} */ (error);
+	}
+
+	/**
 	 * @param {Value} source
 	 * @param {string} label
 	 */
@@ -816,99 +830,6 @@
 		// @ts-expect-error
 		value?.[PROXY_PATH_SYMBOL]?.(label);
 		return value;
-	}
-
-	/**
-	 * @param {string} label
-	 * @returns {Error & { stack: string } | null}
-	 */
-	function get_error(label) {
-		const error = new Error();
-		const stack = get_stack();
-
-		if (stack.length === 0) {
-			return null;
-		}
-
-		stack.unshift('\n');
-
-		define_property(error, 'stack', {
-			value: stack.join('\n')
-		});
-
-		define_property(error, 'name', {
-			value: label
-		});
-
-		return /** @type {Error & { stack: string }} */ (error);
-	}
-
-	/**
-	 * @returns {string[]}
-	 */
-	function get_stack() {
-		// @ts-ignore - doesn't exist everywhere
-		const limit = Error.stackTraceLimit;
-		// @ts-ignore - doesn't exist everywhere
-		Error.stackTraceLimit = Infinity;
-		const stack = new Error().stack;
-		// @ts-ignore - doesn't exist everywhere
-		Error.stackTraceLimit = limit;
-
-		if (!stack) return [];
-
-		const lines = stack.split('\n');
-		const new_lines = [];
-
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const posixified = line.replaceAll('\\', '/');
-
-			if (line.trim() === 'Error') {
-				continue;
-			}
-
-			if (line.includes('validate_each_keys')) {
-				return [];
-			}
-
-			if (posixified.includes('svelte/src/internal') || posixified.includes('node_modules/.vite')) {
-				continue;
-			}
-
-			new_lines.push(line);
-		}
-
-		return new_lines;
-	}
-
-	/**
-	 * @typedef {{ p: Context | null, c: Map<unknown, unknown> | null }} Context
-	 */
-
-	/**
-	 * @param {Context} context
-	 * @returns {Map<unknown, unknown> | null}
-	 */
-	function get_parent_context(context) {
-		let parent = context.p;
-		while (parent !== null && parent.c === null) {
-			parent = parent.p;
-		}
-		return parent?.c ?? null;
-	}
-
-	/**
-	 * @param {Context | null} context
-	 * @param {string} name
-	 * @returns {Map<unknown, unknown>}
-	 */
-	function get_or_init_context_map(context, name) {
-		if (context === null) {
-			lifecycle_outside_component();
-		}
-
-		return (context.c ??= new Map(get_parent_context(context) || undefined));
 	}
 
 	/** @import { ComponentContext, DevStackEntry, Effect } from '#client' */
@@ -971,9 +892,7 @@
 	}
 
 	/**
-	 * Retrieves the context set with the specified `key` in the current component or any of its
-	 * ancestors. If multiple components set the same key, the value from the closest one is returned.
-	 * A `setContext` call in the current component is only visible to `getContext` calls that run after it.
+	 * Retrieves the context that belongs to the closest parent component with the specified `key`.
 	 * Must be called during component initialisation.
 	 *
 	 * [`createContext`](https://svelte.dev/docs/svelte/svelte#createContext) is a type-safe alternative.
@@ -983,15 +902,15 @@
 	 * @returns {T}
 	 */
 	function getContext(key) {
-		const context_map = get_or_init_context_map(component_context);
+		const context_map = get_or_init_context_map();
 		const result = /** @type {T} */ (context_map.get(key));
 		return result;
 	}
 
 	/**
 	 * Associates an arbitrary `context` object with the current component and the specified `key`
-	 * and returns that object. The context is then available to the component itself and all of its
-	 * descendants (including slotted content) with `getContext`.
+	 * and returns that object. The context is then available to children of the component
+	 * (including slotted content) with `getContext`.
 	 *
 	 * Like lifecycle functions, this must be called during component initialisation.
 	 *
@@ -1003,7 +922,7 @@
 	 * @returns {T}
 	 */
 	function setContext(key, context) {
-		const context_map = get_or_init_context_map(component_context);
+		const context_map = get_or_init_context_map();
 
 		context_map.set(key, context);
 		return context;
@@ -1023,7 +942,6 @@
 			e: null,
 			s: props,
 			x: null,
-			r: /** @type {Effect} */ (active_effect),
 			l: null
 		};
 	}
@@ -1059,6 +977,34 @@
 	/** @returns {boolean} */
 	function is_runes() {
 		return true;
+	}
+
+	/**
+	 * @param {string} name
+	 * @returns {Map<unknown, unknown>}
+	 */
+	function get_or_init_context_map(name) {
+		if (component_context === null) {
+			lifecycle_outside_component();
+		}
+
+		return (component_context.c ??= new Map(get_parent_context(component_context) || undefined));
+	}
+
+	/**
+	 * @param {ComponentContext} component_context
+	 * @returns {Map<unknown, unknown> | null}
+	 */
+	function get_parent_context(component_context) {
+		let parent = component_context.p;
+		while (parent !== null) {
+			const context_map = parent.c;
+			if (context_map !== null) {
+				return context_map;
+			}
+			parent = parent.p;
+		}
+		return null;
 	}
 
 	/** @type {Array<() => void>} */
@@ -1116,16 +1062,19 @@
 			return error;
 		}
 
-		// if the error occurred while creating this subtree, we let it
-		// bubble up until it hits a boundary that can handle it, unless
-		// it's an $effect in which case it doesn't run immediately
-		if ((effect.f & REACTION_RAN) === 0 && (effect.f & EFFECT) === 0) {
+		if ((effect.f & EFFECT_RAN) === 0) {
+			// if the error occurred while creating this subtree, we let it
+			// bubble up until it hits a boundary that can handle it
+			if ((effect.f & BOUNDARY_EFFECT) === 0) {
 
-			throw error;
+				throw error;
+			}
+
+			/** @type {Boundary} */ (effect.b).error(error);
+		} else {
+			// otherwise we bubble up the effect tree ourselves
+			invoke_error_boundary(error, effect);
 		}
-
-		// otherwise we bubble up the effect tree ourselves
-		invoke_error_boundary(error, effect);
 	}
 
 	/**
@@ -1133,17 +1082,8 @@
 	 * @param {Effect | null} effect
 	 */
 	function invoke_error_boundary(error, effect) {
-		if (effect !== null && (effect.f & DESTROYED) !== 0) {
-			return;
-		}
-
 		while (effect !== null) {
 			if ((effect.f & BOUNDARY_EFFECT) !== 0) {
-				if ((effect.f & REACTION_RAN) === 0) {
-					// we are still creating the boundary effect
-					throw error;
-				}
-
 				try {
 					/** @type {Boundary} */ (effect.b).error(error);
 					return;
@@ -1158,180 +1098,713 @@
 		throw error;
 	}
 
-	/** @import { Derived, Signal } from '#client' */
-
-	const STATUS_MASK = -7169;
-
-	/**
-	 * @param {Signal} signal
-	 * @param {number} status
-	 */
-	function set_signal_status(signal, status) {
-		signal.f = (signal.f & STATUS_MASK) | status;
-	}
+	/** @import { Fork } from 'svelte' */
+	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
 
 	/**
-	 * Set a derived's status to CLEAN or MAYBE_DIRTY based on its connection state.
-	 * @param {Derived} derived
+	 * @typedef {{
+	 *   parent: EffectTarget | null;
+	 *   effect: Effect | null;
+	 *   effects: Effect[];
+	 *   render_effects: Effect[];
+	 *   block_effects: Effect[];
+	 * }} EffectTarget
 	 */
-	function update_derived_status(derived) {
-		// Only mark as MAYBE_DIRTY if disconnected and has dependencies.
-		if ((derived.f & CONNECTED) !== 0 || derived.deps === null) {
-			set_signal_status(derived, CLEAN);
-		} else {
-			set_signal_status(derived, MAYBE_DIRTY);
-		}
-	}
 
-	/** @import { Derived, Effect, Value } from '#client' */
+	/** @type {Set<Batch>} */
+	const batches = new Set();
+
+	/** @type {Batch | null} */
+	let current_batch = null;
 
 	/**
-	 * @param {Value[] | null} deps
+	 * This is needed to avoid overwriting inputs in non-async mode
+	 * TODO 6.0 remove this, as non-async mode will go away
+	 * @type {Batch | null}
 	 */
-	function clear_marked(deps) {
-		if (deps === null) return;
+	let previous_batch = null;
 
-		for (const dep of deps) {
-			if ((dep.f & DERIVED) === 0 || (dep.f & WAS_MARKED) === 0) {
-				continue;
+	/**
+	 * When time travelling (i.e. working in one batch, while other batches
+	 * still have ongoing work), we ignore the real values of affected
+	 * signals in favour of their values within the batch
+	 * @type {Map<Value, any> | null}
+	 */
+	let batch_values = null;
+
+	/** @type {Effect[]} */
+	let queued_root_effects = [];
+
+	/** @type {Effect | null} */
+	let last_scheduled_effect = null;
+
+	let is_flushing = false;
+	let is_flushing_sync = false;
+
+	class Batch {
+		committed = false;
+
+		/**
+		 * The current values of any sources that are updated in this batch
+		 * They keys of this map are identical to `this.#previous`
+		 * @type {Map<Source, any>}
+		 */
+		current = new Map();
+
+		/**
+		 * The values of any sources that are updated in this batch _before_ those updates took place.
+		 * They keys of this map are identical to `this.#current`
+		 * @type {Map<Source, any>}
+		 */
+		previous = new Map();
+
+		/**
+		 * When the batch is committed (and the DOM is updated), we need to remove old branches
+		 * and append new ones by calling the functions added inside (if/each/key/etc) blocks
+		 * @type {Set<() => void>}
+		 */
+		#commit_callbacks = new Set();
+
+		/**
+		 * If a fork is discarded, we need to destroy any effects that are no longer needed
+		 * @type {Set<(batch: Batch) => void>}
+		 */
+		#discard_callbacks = new Set();
+
+		/**
+		 * The number of async effects that are currently in flight
+		 */
+		#pending = 0;
+
+		/**
+		 * The number of async effects that are currently in flight, _not_ inside a pending boundary
+		 */
+		#blocking_pending = 0;
+
+		/**
+		 * A deferred that resolves when the batch is committed, used with `settled()`
+		 * TODO replace with Promise.withResolvers once supported widely enough
+		 * @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
+		 */
+		#deferred = null;
+
+		/**
+		 * Deferred effects (which run after async work has completed) that are DIRTY
+		 * @type {Effect[]}
+		 */
+		#dirty_effects = [];
+
+		/**
+		 * Deferred effects that are MAYBE_DIRTY
+		 * @type {Effect[]}
+		 */
+		#maybe_dirty_effects = [];
+
+		/**
+		 * A set of branches that still exist, but will be destroyed when this batch
+		 * is committed — we skip over these during `process`
+		 * @type {Set<Effect>}
+		 */
+		skipped_effects = new Set();
+
+		is_fork = false;
+
+		/**
+		 *
+		 * @param {Effect[]} root_effects
+		 */
+		process(root_effects) {
+			queued_root_effects = [];
+
+			previous_batch = null;
+
+			this.apply();
+
+			/** @type {EffectTarget} */
+			var target = {
+				parent: null,
+				effect: null,
+				effects: [],
+				render_effects: [],
+				block_effects: []
+			};
+
+			for (const root of root_effects) {
+				this.#traverse_effect_tree(root, target);
 			}
 
-			dep.f ^= WAS_MARKED;
+			if (!this.is_fork) {
+				this.#resolve();
+			}
 
-			clear_marked(/** @type {Derived} */ (dep).deps);
+			if (this.#blocking_pending > 0 || this.is_fork) {
+				this.#defer_effects(target.effects);
+				this.#defer_effects(target.render_effects);
+				this.#defer_effects(target.block_effects);
+			} else {
+				// If sources are written to, then work needs to happen in a separate batch, else prior sources would be mixed with
+				// newly updated sources, which could lead to infinite loops when effects run over and over again.
+				previous_batch = this;
+				current_batch = null;
+
+				flush_queued_effects(target.render_effects);
+				flush_queued_effects(target.effects);
+
+				previous_batch = null;
+
+				this.#deferred?.resolve();
+			}
+
+			batch_values = null;
 		}
-	}
 
-	/**
-	 * @param {Effect} effect
-	 * @param {Set<Effect>} dirty_effects
-	 * @param {Set<Effect>} maybe_dirty_effects
-	 */
-	function defer_effect(effect, dirty_effects, maybe_dirty_effects) {
-		if ((effect.f & DIRTY) !== 0) {
-			dirty_effects.add(effect);
-		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
-			maybe_dirty_effects.add(effect);
-		}
+		/**
+		 * Traverse the effect tree, executing effects or stashing
+		 * them for later execution as appropriate
+		 * @param {Effect} root
+		 * @param {EffectTarget} target
+		 */
+		#traverse_effect_tree(root, target) {
+			root.f ^= CLEAN;
 
-		// Since we're not executing these effects now, we need to clear any WAS_MARKED flags
-		// so that other batches can correctly reach these effects during their own traversal
-		clear_marked(effect.deps);
+			var effect = root.first;
 
-		// mark as clean so they get scheduled if they depend on pending async state
-		set_signal_status(effect, CLEAN);
-	}
+			while (effect !== null) {
+				var flags = effect.f;
+				var is_branch = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
+				var is_skippable_branch = is_branch && (flags & CLEAN) !== 0;
 
-	/** @import { StoreReferencesContainer } from '#client' */
-	/** @import { Store } from '#shared' */
+				var skip = is_skippable_branch || (flags & INERT) !== 0 || this.skipped_effects.has(effect);
 
-	/**
-	 * Whether or not the prop currently being read is a store binding, as in
-	 * `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
-	 * runes mode, and skip `binding_property_non_reactive` validation
-	 */
-	let is_store_binding = false;
-
-	/**
-	 * Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
-	 * Used to prevent `binding_property_non_reactive` validation false positives and
-	 * ensure that these props are treated as mutable even in runes mode
-	 * @template T
-	 * @param {() => T} fn
-	 * @returns {[T, boolean]}
-	 */
-	function capture_store_binding(fn) {
-		var previous_is_store_binding = is_store_binding;
-
-		try {
-			is_store_binding = false;
-			return [fn(), is_store_binding];
-		} finally {
-			is_store_binding = previous_is_store_binding;
-		}
-	}
-
-	/**
-	 * @param {HTMLElement} dom
-	 * @param {boolean} value
-	 * @returns {void}
-	 */
-	function autofocus(dom, value) {
-		if (value) {
-			const body = document.body;
-			dom.autofocus = true;
-
-			queue_micro_task(() => {
-				if (document.activeElement === body) {
-					dom.focus();
+				if ((effect.f & BOUNDARY_EFFECT) !== 0 && effect.b?.is_pending()) {
+					target = {
+						parent: target,
+						effect,
+						effects: [],
+						render_effects: [],
+						block_effects: []
+					};
 				}
-			});
+
+				if (!skip && effect.fn !== null) {
+					if (is_branch) {
+						effect.f ^= CLEAN;
+					} else if ((flags & EFFECT) !== 0) {
+						target.effects.push(effect);
+					} else if (is_dirty(effect)) {
+						if ((effect.f & BLOCK_EFFECT) !== 0) target.block_effects.push(effect);
+						update_effect(effect);
+					}
+
+					var child = effect.first;
+
+					if (child !== null) {
+						effect = child;
+						continue;
+					}
+				}
+
+				var parent = effect.parent;
+				effect = effect.next;
+
+				while (effect === null && parent !== null) {
+					if (parent === target.effect) {
+						// TODO rather than traversing into pending boundaries and deferring the effects,
+						// could we just attach the effects _to_ the pending boundary and schedule them
+						// once the boundary is ready?
+						this.#defer_effects(target.effects);
+						this.#defer_effects(target.render_effects);
+						this.#defer_effects(target.block_effects);
+
+						target = /** @type {EffectTarget} */ (target.parent);
+					}
+
+					effect = parent.next;
+					parent = parent.parent;
+				}
+			}
 		}
-	}
 
-	let listening_to_form_reset = false;
+		/**
+		 * @param {Effect[]} effects
+		 */
+		#defer_effects(effects) {
+			for (const e of effects) {
+				const target = (e.f & DIRTY) !== 0 ? this.#dirty_effects : this.#maybe_dirty_effects;
+				target.push(e);
 
-	function add_form_reset_listener() {
-		if (!listening_to_form_reset) {
-			listening_to_form_reset = true;
-			document.addEventListener(
-				'reset',
-				(evt) => {
-					// Needs to happen one tick later or else the dom properties of the form
-					// elements have not updated to their reset values yet
-					Promise.resolve().then(() => {
-						if (!evt.defaultPrevented) {
-							for (const e of /**@type {HTMLFormElement} */ (evt.target).elements) {
-								/** @type {any} */ (e)[FORM_RESET_HANDLER]?.();
+				// mark as clean so they get scheduled if they depend on pending async state
+				set_signal_status(e, CLEAN);
+			}
+		}
+
+		/**
+		 * Associate a change to a given source with the current
+		 * batch, noting its previous and current values
+		 * @param {Source} source
+		 * @param {any} value
+		 */
+		capture(source, value) {
+			if (!this.previous.has(source)) {
+				this.previous.set(source, value);
+			}
+
+			// Don't save errors in `batch_values`, or they won't be thrown in `runtime.js#get`
+			if ((source.f & ERROR_VALUE) === 0) {
+				this.current.set(source, source.v);
+				batch_values?.set(source, source.v);
+			}
+		}
+
+		activate() {
+			current_batch = this;
+			this.apply();
+		}
+
+		deactivate() {
+			current_batch = null;
+			batch_values = null;
+		}
+
+		flush() {
+			this.activate();
+
+			if (queued_root_effects.length > 0) {
+				flush_effects();
+
+				if (current_batch !== null && current_batch !== this) {
+					// this can happen if a new batch was created during `flush_effects()`
+					return;
+				}
+			} else if (this.#pending === 0) {
+				this.process([]); // TODO this feels awkward
+			}
+
+			this.deactivate();
+		}
+
+		discard() {
+			for (const fn of this.#discard_callbacks) fn(this);
+			this.#discard_callbacks.clear();
+		}
+
+		#resolve() {
+			if (this.#blocking_pending === 0) {
+				// append/remove branches
+				for (const fn of this.#commit_callbacks) fn();
+				this.#commit_callbacks.clear();
+			}
+
+			if (this.#pending === 0) {
+				this.#commit();
+			}
+		}
+
+		#commit() {
+			// If there are other pending batches, they now need to be 'rebased' —
+			// in other words, we re-run block/async effects with the newly
+			// committed state, unless the batch in question has a more
+			// recent value for a given source
+			if (batches.size > 1) {
+				this.previous.clear();
+
+				var previous_batch_values = batch_values;
+				var is_earlier = true;
+
+				/** @type {EffectTarget} */
+				var dummy_target = {
+					parent: null,
+					effect: null,
+					effects: [],
+					render_effects: [],
+					block_effects: []
+				};
+
+				for (const batch of batches) {
+					if (batch === this) {
+						is_earlier = false;
+						continue;
+					}
+
+					/** @type {Source[]} */
+					const sources = [];
+
+					for (const [source, value] of this.current) {
+						if (batch.current.has(source)) {
+							if (is_earlier && value !== batch.current.get(source)) {
+								// bring the value up to date
+								batch.current.set(source, value);
+							} else {
+								// same value or later batch has more recent value,
+								// no need to re-run these effects
+								continue;
 							}
 						}
+
+						sources.push(source);
+					}
+
+					if (sources.length === 0) {
+						continue;
+					}
+
+					// Re-run async/block effects that depend on distinct values changed in both batches
+					const others = [...batch.current.keys()].filter((s) => !this.current.has(s));
+					if (others.length > 0) {
+						/** @type {Set<Value>} */
+						const marked = new Set();
+						/** @type {Map<Reaction, boolean>} */
+						const checked = new Map();
+						for (const source of sources) {
+							mark_effects(source, others, marked, checked);
+						}
+
+						if (queued_root_effects.length > 0) {
+							current_batch = batch;
+							batch.apply();
+
+							for (const root of queued_root_effects) {
+								batch.#traverse_effect_tree(root, dummy_target);
+							}
+
+							// TODO do we need to do anything with `target`? defer block effects?
+
+							queued_root_effects = [];
+							batch.deactivate();
+						}
+					}
+				}
+
+				current_batch = null;
+				batch_values = previous_batch_values;
+			}
+
+			this.committed = true;
+			batches.delete(this);
+		}
+
+		/**
+		 *
+		 * @param {boolean} blocking
+		 */
+		increment(blocking) {
+			this.#pending += 1;
+			if (blocking) this.#blocking_pending += 1;
+		}
+
+		/**
+		 *
+		 * @param {boolean} blocking
+		 */
+		decrement(blocking) {
+			this.#pending -= 1;
+			if (blocking) this.#blocking_pending -= 1;
+
+			this.revive();
+		}
+
+		revive() {
+			for (const e of this.#dirty_effects) {
+				set_signal_status(e, DIRTY);
+				schedule_effect(e);
+			}
+
+			for (const e of this.#maybe_dirty_effects) {
+				set_signal_status(e, MAYBE_DIRTY);
+				schedule_effect(e);
+			}
+
+			this.#dirty_effects = [];
+			this.#maybe_dirty_effects = [];
+
+			this.flush();
+		}
+
+		/** @param {() => void} fn */
+		oncommit(fn) {
+			this.#commit_callbacks.add(fn);
+		}
+
+		/** @param {(batch: Batch) => void} fn */
+		ondiscard(fn) {
+			this.#discard_callbacks.add(fn);
+		}
+
+		settled() {
+			return (this.#deferred ??= deferred()).promise;
+		}
+
+		static ensure() {
+			if (current_batch === null) {
+				const batch = (current_batch = new Batch());
+				batches.add(current_batch);
+
+				if (!is_flushing_sync) {
+					Batch.enqueue(() => {
+						if (current_batch !== batch) {
+							// a flushSync happened in the meantime
+							return;
+						}
+
+						batch.flush();
 					});
-				},
-				// In the capture phase to guarantee we get noticed of it (no possibility of stopPropagation)
-				{ capture: true }
-			);
+				}
+			}
+
+			return current_batch;
+		}
+
+		/** @param {() => void} task */
+		static enqueue(task) {
+			queue_micro_task(task);
+		}
+
+		apply() {
+			return;
 		}
 	}
 
 	/**
-	 * @template T
-	 * @param {() => T} fn
+	 * Synchronously flush any pending updates.
+	 * Returns void if no callback is provided, otherwise returns the result of calling the callback.
+	 * @template [T=void]
+	 * @param {(() => T) | undefined} [fn]
+	 * @returns {T}
 	 */
-	function without_reactive_context(fn) {
-		var previous_reaction = active_reaction;
-		var previous_effect = active_effect;
-		set_active_reaction(null);
-		set_active_effect(null);
+	function flushSync(fn) {
+
+		var was_flushing_sync = is_flushing_sync;
+		is_flushing_sync = true;
+
 		try {
-			return fn();
+			var result;
+
+			if (fn) ;
+
+			while (true) {
+				flush_tasks();
+
+				if (queued_root_effects.length === 0) {
+					current_batch?.flush();
+
+					// we need to check again, in case we just updated an `$effect.pending()`
+					if (queued_root_effects.length === 0) {
+						// this would be reset in `flush_effects()` but since we are early returning here,
+						// we need to reset it here as well in case the first time there's 0 queued root effects
+						last_scheduled_effect = null;
+
+						return /** @type {T} */ (result);
+					}
+				}
+
+				flush_effects();
+			}
 		} finally {
-			set_active_reaction(previous_reaction);
-			set_active_effect(previous_effect);
+			is_flushing_sync = was_flushing_sync;
+		}
+	}
+
+	function flush_effects() {
+		var was_updating_effect = is_updating_effect;
+		is_flushing = true;
+
+		try {
+			var flush_count = 0;
+			set_is_updating_effect(true);
+
+			while (queued_root_effects.length > 0) {
+				var batch = Batch.ensure();
+
+				if (flush_count++ > 1000) {
+					var updates, entry; if (DEV) ;
+
+					infinite_loop_guard();
+				}
+
+				batch.process(queued_root_effects);
+				old_values.clear();
+			}
+		} finally {
+			is_flushing = false;
+			set_is_updating_effect(was_updating_effect);
+
+			last_scheduled_effect = null;
+		}
+	}
+
+	function infinite_loop_guard() {
+		try {
+			effect_update_depth_exceeded();
+		} catch (error) {
+
+			// Best effort: invoke the boundary nearest the most recent
+			// effect and hope that it's relevant to the infinite loop
+			invoke_error_boundary(error, last_scheduled_effect);
+		}
+	}
+
+	/** @type {Set<Effect> | null} */
+	let eager_block_effects = null;
+
+	/**
+	 * @param {Array<Effect>} effects
+	 * @returns {void}
+	 */
+	function flush_queued_effects(effects) {
+		var length = effects.length;
+		if (length === 0) return;
+
+		var i = 0;
+
+		while (i < length) {
+			var effect = effects[i++];
+
+			if ((effect.f & (DESTROYED | INERT)) === 0 && is_dirty(effect)) {
+				eager_block_effects = new Set();
+
+				update_effect(effect);
+
+				// Effects with no dependencies or teardown do not get added to the effect tree.
+				// Deferred effects (e.g. `$effect(...)`) _are_ added to the tree because we
+				// don't know if we need to keep them until they are executed. Doing the check
+				// here (rather than in `update_effect`) allows us to skip the work for
+				// immediate effects.
+				if (effect.deps === null && effect.first === null && effect.nodes_start === null) {
+					// if there's no teardown or abort controller we completely unlink
+					// the effect from the graph
+					if (effect.teardown === null && effect.ac === null) {
+						// remove this effect from the graph
+						unlink_effect(effect);
+					} else {
+						// keep the effect in the graph, but free up some memory
+						effect.fn = null;
+					}
+				}
+
+				// If update_effect() has a flushSync() in it, we may have flushed another flush_queued_effects(),
+				// which already handled this logic and did set eager_block_effects to null.
+				if (eager_block_effects?.size > 0) {
+					old_values.clear();
+
+					for (const e of eager_block_effects) {
+						// Skip eager effects that have already been unmounted
+						if ((e.f & (DESTROYED | INERT)) !== 0) continue;
+
+						// Run effects in order from ancestor to descendant, else we could run into nullpointers
+						/** @type {Effect[]} */
+						const ordered_effects = [e];
+						let ancestor = e.parent;
+						while (ancestor !== null) {
+							if (eager_block_effects.has(ancestor)) {
+								eager_block_effects.delete(ancestor);
+								ordered_effects.push(ancestor);
+							}
+							ancestor = ancestor.parent;
+						}
+
+						for (let j = ordered_effects.length - 1; j >= 0; j--) {
+							const e = ordered_effects[j];
+							// Skip eager effects that have already been unmounted
+							if ((e.f & (DESTROYED | INERT)) !== 0) continue;
+							update_effect(e);
+						}
+					}
+
+					eager_block_effects.clear();
+				}
+			}
+		}
+
+		eager_block_effects = null;
+	}
+
+	/**
+	 * This is similar to `mark_reactions`, but it only marks async/block effects
+	 * depending on `value` and at least one of the other `sources`, so that
+	 * these effects can re-run after another batch has been committed
+	 * @param {Value} value
+	 * @param {Source[]} sources
+	 * @param {Set<Value>} marked
+	 * @param {Map<Reaction, boolean>} checked
+	 */
+	function mark_effects(value, sources, marked, checked) {
+		if (marked.has(value)) return;
+		marked.add(value);
+
+		if (value.reactions !== null) {
+			for (const reaction of value.reactions) {
+				const flags = reaction.f;
+
+				if ((flags & DERIVED) !== 0) {
+					mark_effects(/** @type {Derived} */ (reaction), sources, marked, checked);
+				} else if (
+					(flags & (ASYNC | BLOCK_EFFECT)) !== 0 &&
+					(flags & DIRTY) === 0 && // we may have scheduled this one already
+					depends_on(reaction, sources, checked)
+				) {
+					set_signal_status(reaction, DIRTY);
+					schedule_effect(/** @type {Effect} */ (reaction));
+				}
+			}
 		}
 	}
 
 	/**
-	 * Listen to the given event, and then instantiate a global form reset listener if not already done,
-	 * to notify all bindings when the form is reset
-	 * @param {HTMLElement} element
-	 * @param {string} event
-	 * @param {(is_reset?: true) => void} handler
-	 * @param {(is_reset?: true) => void} [on_reset]
+	 * @param {Reaction} reaction
+	 * @param {Source[]} sources
+	 * @param {Map<Reaction, boolean>} checked
 	 */
-	function listen_to_event_and_reset_event(element, event, handler, on_reset = handler) {
-		element.addEventListener(event, () => without_reactive_context(handler));
-		const prev = /** @type {any} */ (element)[FORM_RESET_HANDLER];
-		if (prev) {
-			// special case for checkbox that can have multiple binds (group & checked)
-			/** @type {any} */ (element)[FORM_RESET_HANDLER] = () => {
-				prev();
-				on_reset(true);
-			};
-		} else {
-			/** @type {any} */ (element)[FORM_RESET_HANDLER] = () => on_reset(true);
+	function depends_on(reaction, sources, checked) {
+		const depends = checked.get(reaction);
+		if (depends !== undefined) return depends;
+
+		if (reaction.deps !== null) {
+			for (const dep of reaction.deps) {
+				if (sources.includes(dep)) {
+					return true;
+				}
+
+				if ((dep.f & DERIVED) !== 0 && depends_on(/** @type {Derived} */ (dep), sources, checked)) {
+					checked.set(/** @type {Derived} */ (dep), true);
+					return true;
+				}
+			}
 		}
 
-		add_form_reset_listener();
+		checked.set(reaction, false);
+
+		return false;
+	}
+
+	/**
+	 * @param {Effect} signal
+	 * @returns {void}
+	 */
+	function schedule_effect(signal) {
+		var effect = (last_scheduled_effect = signal);
+
+		while (effect.parent !== null) {
+			effect = effect.parent;
+			var flags = effect.f;
+
+			// if the effect is being scheduled because a parent (each/await/etc) block
+			// updated an internal source, bail out or we'll cause a second flush
+			if (
+				is_flushing &&
+				effect === active_effect &&
+				(flags & BLOCK_EFFECT) !== 0 &&
+				(flags & HEAD_EFFECT) === 0
+			) {
+				return;
+			}
+
+			if ((flags & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
+				if ((flags & CLEAN) === 0) return;
+				effect.f ^= CLEAN;
+			}
+		}
+
+		queued_root_effects.push(effect);
 	}
 
 	/**
@@ -1423,37 +1896,29 @@
 
 	/**
 	 * @typedef {{
-	 * 	 onerror?: ((error: unknown, reset: () => void) => void) | null;
-	 *   failed?: ((anchor: Node, error: () => unknown, reset: () => () => void) => void) | null;
-	 *   pending?: ((anchor: Node) => void) | null;
+	 * 	 onerror?: (error: unknown, reset: () => void) => void;
+	 *   failed?: (anchor: Node, error: () => unknown, reset: () => () => void) => void;
+	 *   pending?: (anchor: Node) => void;
 	 * }} BoundaryProps
 	 */
 
-	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED;
+	var flags = EFFECT_TRANSPARENT | EFFECT_PRESERVED | BOUNDARY_EFFECT;
 
 	/**
 	 * @param {TemplateNode} node
 	 * @param {BoundaryProps} props
 	 * @param {((anchor: Node) => void)} children
-	 * @param {((error: unknown) => unknown) | undefined} [transform_error]
 	 * @returns {void}
 	 */
-	function boundary(node, props, children, transform_error) {
-		new Boundary(node, props, children, transform_error);
+	function boundary(node, props, children) {
+		new Boundary(node, props, children);
 	}
 
 	class Boundary {
 		/** @type {Boundary | null} */
 		parent;
 
-		is_pending = false;
-
-		/**
-		 * API-level transformError transform function. Transforms errors before they reach the `failed` snippet.
-		 * Inherited from parent boundary, or defaults to identity.
-		 * @type {(error: unknown) => unknown}
-		 */
-		transform_error;
+		#pending = false;
 
 		/** @type {TemplateNode} */
 		#anchor;
@@ -1482,15 +1947,13 @@
 		/** @type {DocumentFragment | null} */
 		#offscreen_fragment = null;
 
+		/** @type {TemplateNode | null} */
+		#pending_anchor = null;
+
 		#local_pending_count = 0;
 		#pending_count = 0;
-		#pending_count_update_queued = false;
 
-		/** @type {Set<Effect>} */
-		#dirty_effects = new Set();
-
-		/** @type {Set<Effect>} */
-		#maybe_dirty_effects = new Set();
+		#is_creating_fallback = false;
 
 		/**
 		 * A source containing the number of pending async deriveds/expressions.
@@ -1513,47 +1976,51 @@
 		 * @param {TemplateNode} node
 		 * @param {BoundaryProps} props
 		 * @param {((anchor: Node) => void)} children
-		 * @param {((error: unknown) => unknown) | undefined} [transform_error]
 		 */
-		constructor(node, props, children, transform_error) {
+		constructor(node, props, children) {
 			this.#anchor = node;
 			this.#props = props;
-
-			this.#children = (anchor) => {
-				var effect = /** @type {Effect} */ (active_effect);
-
-				effect.b = this;
-				effect.f |= BOUNDARY_EFFECT;
-
-				children(anchor);
-			};
+			this.#children = children;
 
 			this.parent = /** @type {Effect} */ (active_effect).b;
 
-			// Inherit transform_error from parent boundary, or use the provided one, or default to identity
-			this.transform_error = transform_error ?? this.parent?.transform_error ?? ((e) => e);
+			this.#pending = !!this.#props.pending;
 
 			this.#effect = block(() => {
+				/** @type {Effect} */ (active_effect).b = this;
+
 				if (hydrating) {
-					const comment = /** @type {Comment} */ (this.#hydrate_open);
+					const comment = this.#hydrate_open;
 					hydrate_next();
 
-					const server_rendered_pending = comment.data === HYDRATION_START_ELSE;
-					const server_rendered_failed = comment.data.startsWith(HYDRATION_START_FAILED);
+					const server_rendered_pending =
+						/** @type {Comment} */ (comment).nodeType === COMMENT_NODE &&
+						/** @type {Comment} */ (comment).data === HYDRATION_START_ELSE;
 
-					if (server_rendered_failed) {
-						// Server rendered the failed snippet - hydrate it.
-						// The serialized error is embedded in the comment: <!--[?<json>-->
-						const serialized_error = JSON.parse(comment.data.slice(HYDRATION_START_FAILED.length));
-						this.#hydrate_failed_content(serialized_error);
-					} else if (server_rendered_pending) {
+					if (server_rendered_pending) {
 						this.#hydrate_pending_content();
 					} else {
 						this.#hydrate_resolved_content();
 					}
 				} else {
-					this.#render();
+					var anchor = this.#get_anchor();
+
+					try {
+						this.#main_effect = branch(() => children(anchor));
+					} catch (error) {
+						this.error(error);
+					}
+
+					if (this.#pending_count > 0) {
+						this.#show_pending_snippet();
+					} else {
+						this.#pending = false;
+					}
 				}
+
+				return () => {
+					this.#pending_anchor?.remove();
+				};
 			}, flags);
 
 			if (hydrating) {
@@ -1567,154 +2034,58 @@
 			} catch (error) {
 				this.error(error);
 			}
-		}
 
-		/**
-		 * @param {unknown} error The deserialized error from the server's hydration comment
-		 */
-		#hydrate_failed_content(error) {
-			const failed = this.#props.failed;
-			const { reset, invoke_onerror } = this.#create_reset(error);
-
-			// `onerror` may mutate state, which is disallowed while hydrating
-			queue_micro_task(invoke_onerror);
-
-			if (!failed) return;
-
-			this.#failed_effect = branch(() => {
-				failed(
-					this.#anchor,
-					() => error,
-					() => reset
-				);
-			});
-		}
-
-		/**
-		 * Creates the `reset` function for a failed boundary, along with a function
-		 * that invokes `onerror` with it (if provided)
-		 * @param {unknown} error
-		 * @returns {{ reset: () => void, invoke_onerror: () => void }}
-		 */
-		#create_reset(error) {
-			var did_reset = false;
-			var calling_on_error = false;
-
-			const reset = () => {
-				if (did_reset) {
-					svelte_boundary_reset_noop();
-					return;
-				}
-
-				did_reset = true;
-
-				if (calling_on_error) {
-					svelte_boundary_reset_onerror();
-				}
-
-				if (this.#failed_effect !== null) {
-					pause_effect(this.#failed_effect, () => {
-						this.#failed_effect = null;
-					});
-				}
-
-				this.#run(() => {
-					this.#render();
-				});
-			};
-
-			const invoke_onerror = () => {
-				try {
-					calling_on_error = true;
-					this.#props.onerror?.(error, reset);
-					calling_on_error = false;
-				} catch (err) {
-					invoke_error_boundary(err, this.#effect && this.#effect.parent);
-				}
-			};
-
-			return { reset, invoke_onerror };
+			// Since server rendered resolved content, we never show pending state
+			// Even if client-side async operations are still running, the content is already displayed
+			this.#pending = false;
 		}
 
 		#hydrate_pending_content() {
 			const pending = this.#props.pending;
-			if (!pending) return;
-
-			this.is_pending = true;
+			if (!pending) {
+				return;
+			}
 			this.#pending_effect = branch(() => pending(this.#anchor));
 
-			queue_micro_task(() => {
-				var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
-				var anchor = create_text();
-
-				fragment.append(anchor);
+			Batch.enqueue(() => {
+				var anchor = this.#get_anchor();
 
 				this.#main_effect = this.#run(() => {
+					Batch.ensure();
 					return branch(() => this.#children(anchor));
 				});
 
-				if (this.#pending_count === 0) {
-					this.#anchor.before(fragment);
-					this.#offscreen_fragment = null;
-
+				if (this.#pending_count > 0) {
+					this.#show_pending_snippet();
+				} else {
 					pause_effect(/** @type {Effect} */ (this.#pending_effect), () => {
 						this.#pending_effect = null;
 					});
 
-					this.#resolve(/** @type {Batch} */ (current_batch));
+					this.#pending = false;
 				}
 			});
 		}
 
-		#render() {
-			try {
-				this.is_pending = this.has_pending_snippet();
-				this.#pending_count = 0;
-				this.#local_pending_count = 0;
+		#get_anchor() {
+			var anchor = this.#anchor;
 
-				this.#main_effect = branch(() => {
-					this.#children(this.#anchor);
-				});
+			if (this.#pending) {
+				this.#pending_anchor = create_text();
+				this.#anchor.before(this.#pending_anchor);
 
-				if (this.#pending_count > 0) {
-					var fragment = (this.#offscreen_fragment = document.createDocumentFragment());
-					move_effect(this.#main_effect, fragment);
-
-					const pending = /** @type {(anchor: Node) => void} */ (this.#props.pending);
-					this.#pending_effect = branch(() => pending(this.#anchor));
-				} else {
-					this.#resolve(/** @type {Batch} */ (current_batch));
-				}
-			} catch (error) {
-				this.error(error);
+				anchor = this.#pending_anchor;
 			}
+
+			return anchor;
 		}
 
 		/**
-		 * @param {Batch} batch
-		 */
-		#resolve(batch) {
-			this.is_pending = false;
-
-			// any effects that were previously deferred should be transferred
-			// to the batch, which will flush in the next microtask
-			batch.transfer_effects(this.#dirty_effects, this.#maybe_dirty_effects);
-		}
-
-		/**
-		 * Defer an effect inside a pending boundary until the boundary resolves
-		 * @param {Effect} effect
-		 */
-		defer_effect(effect) {
-			defer_effect(effect, this.#dirty_effects, this.#maybe_dirty_effects);
-		}
-
-		/**
-		 * Returns `false` if the effect exists inside a boundary whose pending snippet is shown
+		 * Returns `true` if the effect exists inside a boundary whose pending snippet is shown
 		 * @returns {boolean}
 		 */
-		is_rendered() {
-			return !this.is_pending && (!this.parent || this.parent.is_rendered());
+		is_pending() {
+			return this.#pending || (!!this.parent && this.parent.is_pending());
 		}
 
 		has_pending_snippet() {
@@ -1722,8 +2093,7 @@
 		}
 
 		/**
-		 * @template T
-		 * @param {() => T} fn
+		 * @param {() => Effect | null} fn
 		 */
 		#run(fn) {
 			var previous_effect = active_effect;
@@ -1735,7 +2105,6 @@
 			set_component_context(this.#effect.ctx);
 
 			try {
-				Batch.ensure();
 				return fn();
 			} catch (e) {
 				handle_error(e);
@@ -1747,16 +2116,29 @@
 			}
 		}
 
+		#show_pending_snippet() {
+			const pending = /** @type {(anchor: Node) => void} */ (this.#props.pending);
+
+			if (this.#main_effect !== null) {
+				this.#offscreen_fragment = document.createDocumentFragment();
+				this.#offscreen_fragment.append(/** @type {TemplateNode} */ (this.#pending_anchor));
+				move_effect(this.#main_effect, this.#offscreen_fragment);
+			}
+
+			if (this.#pending_effect === null) {
+				this.#pending_effect = branch(() => pending(this.#anchor));
+			}
+		}
+
 		/**
 		 * Updates the pending count associated with the currently visible pending snippet,
 		 * if any, such that we can replace the snippet with content once work is done
 		 * @param {1 | -1} d
-		 * @param {Batch} batch
 		 */
-		#update_pending_count(d, batch) {
+		#update_pending_count(d) {
 			if (!this.has_pending_snippet()) {
 				if (this.parent) {
-					this.parent.#update_pending_count(d, batch);
+					this.parent.#update_pending_count(d);
 				}
 
 				// if there's no parent, we're in a scope with no pending snippet
@@ -1766,7 +2148,7 @@
 			this.#pending_count += d;
 
 			if (this.#pending_count === 0) {
-				this.#resolve(batch);
+				this.#pending = false;
 
 				if (this.#pending_effect) {
 					pause_effect(this.#pending_effect, () => {
@@ -1786,22 +2168,15 @@
 		 * and controls when the current `pending` snippet (if any) is removed.
 		 * Do not call from inside the class
 		 * @param {1 | -1} d
-		 * @param {Batch} batch
 		 */
-		update_pending_count(d, batch) {
-			this.#update_pending_count(d, batch);
+		update_pending_count(d) {
+			this.#update_pending_count(d);
 
 			this.#local_pending_count += d;
 
-			if (!this.#effect_pending || this.#pending_count_update_queued) return;
-			this.#pending_count_update_queued = true;
-
-			queue_micro_task(() => {
-				this.#pending_count_update_queued = false;
-				if (this.#effect_pending) {
-					internal_set(this.#effect_pending, this.#local_pending_count);
-				}
-			});
+			if (this.#effect_pending) {
+				internal_set(this.#effect_pending, this.#local_pending_count);
+			}
 		}
 
 		get_effect_pending() {
@@ -1811,29 +2186,15 @@
 
 		/** @param {unknown} error */
 		error(error) {
+			var onerror = this.#props.onerror;
+			let failed = this.#props.failed;
+
 			// If we have nothing to capture the error, or if we hit an error while
 			// rendering the fallback, re-throw for another boundary to handle
-			if (!this.#props.onerror && !this.#props.failed) {
+			if (this.#is_creating_fallback || (!onerror && !failed)) {
 				throw error;
 			}
 
-			if (current_batch?.is_fork) {
-				if (this.#main_effect) current_batch.skip_effect(this.#main_effect);
-				if (this.#pending_effect) current_batch.skip_effect(this.#pending_effect);
-				if (this.#failed_effect) current_batch.skip_effect(this.#failed_effect);
-
-				current_batch.oncommit(() => {
-					this.#handle_error(error);
-				});
-			} else {
-				this.#handle_error(error);
-			}
-		}
-
-		/**
-		 * @param {unknown} error
-		 */
-		#handle_error(error) {
 			if (this.#main_effect) {
 				destroy_effect(this.#main_effect);
 				this.#main_effect = null;
@@ -1855,73 +2216,91 @@
 				set_hydrate_node(skip_nodes());
 			}
 
-			let failed = this.#props.failed;
+			var did_reset = false;
+			var calling_on_error = false;
 
-			/** @param {unknown} transformed_error */
-			const handle_error_result = (transformed_error) => {
-				const { reset, invoke_onerror } = this.#create_reset(transformed_error);
+			const reset = () => {
+				if (did_reset) {
+					svelte_boundary_reset_noop();
+					return;
+				}
 
-				invoke_onerror();
+				did_reset = true;
 
-				if (failed) {
+				if (calling_on_error) {
+					svelte_boundary_reset_onerror();
+				}
+
+				// If the failure happened while flushing effects, current_batch can be null
+				Batch.ensure();
+
+				this.#local_pending_count = 0;
+
+				if (this.#failed_effect !== null) {
+					pause_effect(this.#failed_effect, () => {
+						this.#failed_effect = null;
+					});
+				}
+
+				// we intentionally do not try to find the nearest pending boundary. If this boundary has one, we'll render it on reset
+				// but it would be really weird to show the parent's boundary on a child reset.
+				this.#pending = this.has_pending_snippet();
+
+				this.#main_effect = this.#run(() => {
+					this.#is_creating_fallback = false;
+					return branch(() => this.#children(this.#anchor));
+				});
+
+				if (this.#pending_count > 0) {
+					this.#show_pending_snippet();
+				} else {
+					this.#pending = false;
+				}
+			};
+
+			var previous_reaction = active_reaction;
+
+			try {
+				set_active_reaction(null);
+				calling_on_error = true;
+				onerror?.(error, reset);
+				calling_on_error = false;
+			} catch (error) {
+				invoke_error_boundary(error, this.#effect && this.#effect.parent);
+			} finally {
+				set_active_reaction(previous_reaction);
+			}
+
+			if (failed) {
+				queue_micro_task(() => {
 					this.#failed_effect = this.#run(() => {
+						Batch.ensure();
+						this.#is_creating_fallback = true;
+
 						try {
 							return branch(() => {
-								// errors in `failed` snippets cause the boundary to error again
-								// TODO Svelte 6: revisit this decision, most likely better to go to parent boundary instead
-								var effect = /** @type {Effect} */ (active_effect);
-
-								effect.b = this;
-								effect.f |= BOUNDARY_EFFECT;
-
 								failed(
 									this.#anchor,
-									() => transformed_error,
+									() => error,
 									() => reset
 								);
 							});
 						} catch (error) {
 							invoke_error_boundary(error, /** @type {Effect} */ (this.#effect.parent));
 							return null;
+						} finally {
+							this.#is_creating_fallback = false;
 						}
 					});
-				}
-			};
-
-			queue_micro_task(() => {
-				// Run the error through the API-level transformError transform (e.g. SvelteKit's handleError)
-				/** @type {unknown} */
-				var result;
-				try {
-					result = this.transform_error(error);
-				} catch (e) {
-					invoke_error_boundary(e, this.#effect && this.#effect.parent);
-					return;
-				}
-
-				if (
-					result !== null &&
-					typeof result === 'object' &&
-					typeof (/** @type {any} */ (result).then) === 'function'
-				) {
-					// transformError returned a Promise — wait for it
-					/** @type {any} */ (result).then(
-						handle_error_result,
-						/** @param {unknown} e */
-						(e) => invoke_error_boundary(e, this.#effect && this.#effect.parent)
-					);
-				} else {
-					// Synchronous result — handle immediately
-					handle_error_result(result);
-				}
-			});
+				});
+			}
 		}
 	}
 
-	/** @import { Blocker, Effect, Source, Value } from '#client' */
+	/** @import { Effect, TemplateNode, Value } from '#client' */
 
 	/**
-	 * @param {Blocker[]} blockers
+	 * @param {Array<Promise<void>>} blockers
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
 	 * @param {(values: Value[]) => any} fn
@@ -1929,66 +2308,48 @@
 	function flatten(blockers, sync, async, fn) {
 		const d = derived ;
 
-		// Filter out already-settled blockers - no need to wait for them
-		var pending = blockers.filter((b) => !b.settled);
-
-		var deriveds = sync.map(d);
-
-		if (async.length === 0 && pending.length === 0) {
-			fn(deriveds);
+		if (async.length === 0 && blockers.length === 0) {
+			fn(sync.map(d));
 			return;
 		}
 
+		var batch = current_batch;
 		var parent = /** @type {Effect} */ (active_effect);
 
 		var restore = capture();
-		var blocker_promise =
-			pending.length === 1
-				? pending[0].promise
-				: pending.length > 1
-					? Promise.all(pending.map((b) => b.promise))
-					: null;
 
-		/**
-		 * @param {Source[]} async
-		 */
-		function finish(async) {
-			if ((parent.f & DESTROYED) !== 0) {
-				return;
-			}
-
-			restore();
-
-			try {
-				fn([...deriveds, ...async]);
-			} catch (error) {
-				invoke_error_boundary(error, parent);
-			}
-
-			unset_context();
-		}
-
-		var decrement_pending = increment_pending();
-
-		// Fast path: blockers but no async expressions
-		if (async.length === 0) {
-			/** @type {Promise<any>} */ (blocker_promise).then(() => finish([])).finally(decrement_pending);
-			return;
-		}
-
-		// Full path: has async expressions
 		function run() {
 			Promise.all(async.map((expression) => async_derived(expression)))
-				.then(finish)
-				.catch((error) => invoke_error_boundary(error, parent))
-				.finally(decrement_pending);
+				.then((result) => {
+					restore();
+
+					try {
+						fn([...sync.map(d), ...result]);
+					} catch (error) {
+						// ignore errors in blocks that have already been destroyed
+						if ((parent.f & DESTROYED) === 0) {
+							invoke_error_boundary(error, parent);
+						}
+					}
+
+					batch?.deactivate();
+					unset_context();
+				})
+				.catch((error) => {
+					invoke_error_boundary(error, parent);
+				});
 		}
 
-		if (blocker_promise) {
-			blocker_promise.then(() => {
+		if (blockers.length > 0) {
+			Promise.all(blockers).then(() => {
 				restore();
-				run();
-				unset_context();
+
+				try {
+					return run();
+				} finally {
+					batch?.deactivate();
+					unset_context();
+				}
 			});
 		} else {
 			run();
@@ -1996,7 +2357,7 @@
 	}
 
 	/**
-	 * @param {Blocker[]} blockers
+	 * @param {Array<Promise<void>>} blockers
 	 * @param {(values: Value[]) => any} fn
 	 */
 	function run_after_blockers(blockers, fn) {
@@ -2009,22 +2370,16 @@
 	 * causes `b` to be registered as a dependency).
 	 */
 	function capture() {
-		var previous_effect = /** @type {Effect} */ (active_effect);
+		var previous_effect = active_effect;
 		var previous_reaction = active_reaction;
 		var previous_component_context = component_context;
-		var previous_batch = /** @type {Batch} */ (current_batch);
+		var previous_batch = current_batch;
 
 		return function restore(activate_batch = true) {
 			set_active_effect(previous_effect);
 			set_active_reaction(previous_reaction);
 			set_component_context(previous_component_context);
-
-			if (activate_batch && (previous_effect.f & DESTROYED) === 0) {
-				// TODO we only need optional chaining here because `{#await ...}` blocks
-				// are anomalous. Once we retire them we can get rid of it
-				previous_batch?.activate();
-				previous_batch?.apply();
-			}
+			if (activate_batch) previous_batch?.activate();
 		};
 	}
 
@@ -2036,51 +2391,21 @@
 	 * @returns {Promise<() => T>}
 	 */
 	async function track_reactivity_loss(promise) {
-		// Ensure that unrelated reads after an async operation is kicked off don't cause false positives
-		queueMicrotask(() => {
-		});
-
 		var value = await promise;
 
 		return () => {
-			// While this can result in false negatives it also guards against the more important
-			// false positives that would occur if this is the last in a chain of async operations,
-			// and the reactivity_loss_tracker would then stay around until the next async operation happens.
-			queueMicrotask(() => {
-			});
-
 			return value;
 		};
 	}
 
-	function unset_context(deactivate_batch = true) {
+	function unset_context() {
 		set_active_effect(null);
 		set_active_reaction(null);
 		set_component_context(null);
-		if (deactivate_batch) current_batch?.deactivate();
 	}
 
-	/**
-	 * @returns {(skip?: boolean) => void}
-	 */
-	function increment_pending() {
-		var effect = /** @type {Effect} */ (active_effect);
-		var boundary = effect.b; // undefined if called outside the render tree, e.g. a standalone $effect.root
-		var batch = /** @type {Batch} */ (current_batch);
-		var blocking = !!boundary?.is_rendered();
-
-		boundary?.update_pending_count(1, batch);
-		batch.increment(blocking, effect);
-
-		return () => {
-			boundary?.update_pending_count(-1, batch);
-			batch.decrement(blocking, effect);
-		};
-	}
-
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
+	/** @import { Derived, Effect, Source } from '#client' */
 	/** @import { Batch } from './batch.js'; */
-	/** @import { Boundary } from '../dom/blocks/boundary.js'; */
 
 	/**
 	 * @template V
@@ -2090,6 +2415,10 @@
 	/*#__NO_SIDE_EFFECTS__*/
 	function derived(fn) {
 		var flags = DERIVED | DIRTY;
+		var parent_derived =
+			active_reaction !== null && (active_reaction.f & DERIVED) !== 0
+				? /** @type {Derived} */ (active_reaction)
+				: null;
 
 		if (active_effect !== null) {
 			// Since deriveds are evaluated lazily, any effects created inside them are
@@ -2109,29 +2438,28 @@
 			rv: 0,
 			v: /** @type {V} */ (UNINITIALIZED),
 			wv: 0,
-			parent: active_effect,
+			parent: parent_derived ?? active_effect,
 			ac: null
 		};
 
 		return signal;
 	}
 
-	const OBSOLETE = Symbol('obsolete');
-
 	/**
 	 * @template V
 	 * @param {() => V | Promise<V>} fn
-	 * @param {string} [label]
 	 * @param {string} [location] If provided, print a warning if the value is not read immediately after update
 	 * @returns {Promise<Source<V>>}
 	 */
 	/*#__NO_SIDE_EFFECTS__*/
-	function async_derived(fn, label, location) {
+	function async_derived(fn, location) {
 		let parent = /** @type {Effect | null} */ (active_effect);
 
 		if (parent === null) {
 			async_derived_orphan();
 		}
+
+		var boundary = /** @type {Boundary} */ (parent.b);
 
 		var promise = /** @type {Promise<V>} */ (/** @type {unknown} */ (undefined));
 		var signal = source(/** @type {V} */ (UNINITIALIZED));
@@ -2139,11 +2467,10 @@
 		// only suspend in async deriveds created on initialisation
 		var should_suspend = !active_reaction;
 
-		/** @type {Set<ReturnType<typeof deferred<V>>>} */
-		var deferreds = new Set();
+		/** @type {Map<Batch, ReturnType<typeof deferred<V>>>} */
+		var deferreds = new Map();
 
 		async_effect(() => {
-			var effect = /** @type {Effect} */ (active_effect);
 
 			/** @type {ReturnType<typeof deferred<V>>} */
 			var d = deferred();
@@ -2154,12 +2481,16 @@
 				// of fn() to read any signals it might access, so that we track them as dependencies.
 				// We call `unset_context` to undo any `save` calls that happen inside `fn()`
 				Promise.resolve(fn())
-					.then(d.resolve, (e) => {
-						// if the promise was rejected by the user, via `getAbortSignal`, then
-						// wait for a subsequent resolution instead of flushing the batch
-						if (e !== STALE_REACTION) d.reject(e);
-					})
-					.finally(unset_context);
+					.then(d.resolve, d.reject)
+					.then(() => {
+						if (batch === current_batch && batch.committed) {
+							// if the batch was rejected as stale, we need to cleanup
+							// after any `$.save(...)` calls inside `fn()`
+							batch.deactivate();
+						}
+
+						unset_context();
+					});
 			} catch (error) {
 				d.reject(error);
 				unset_context();
@@ -2168,28 +2499,14 @@
 			var batch = /** @type {Batch} */ (current_batch);
 
 			if (should_suspend) {
-				// we only increment the batch's pending state for updates, not creation, otherwise
-				// we will decrement to zero before the work that depends on this promise (e.g. a
-				// template effect) has initialized, causing the batch to resolve prematurely
-				if ((effect.f & REACTION_RAN) !== 0) {
-					var decrement_pending = increment_pending();
-				}
+				var blocking = !boundary.is_pending();
 
-				if (
-					// boundary can be null if the async derived is inside an $effect.root not connected to the component render tree
-					parent.b?.is_rendered()
-				) {
-					batch.async_deriveds.get(effect)?.reject(OBSOLETE);
-				} else {
-					// While the boundary is still showing pending, a new run supersedes all older in-flight runs
-					// for this async expression. Cancel eagerly so resolution cannot commit stale values.
-					for (const d of deferreds.values()) {
-						d.reject(OBSOLETE);
-					}
-				}
+				boundary.update_pending_count(1);
+				batch.increment(blocking);
 
-				deferreds.add(d);
-				batch.async_deriveds.set(effect, d);
+				deferreds.get(batch)?.reject(STALE_REACTION);
+				deferreds.delete(batch); // delete to ensure correct order in Map iteration below
+				deferreds.set(batch, d);
 			}
 
 			/**
@@ -2198,35 +2515,42 @@
 			 */
 			const handler = (value, error = undefined) => {
 
-				decrement_pending?.();
-				deferreds.delete(d);
-
-				if (error === OBSOLETE) return;
-
 				batch.activate();
 
 				if (error) {
-					signal.f |= ERROR_VALUE;
+					if (error !== STALE_REACTION) {
+						signal.f |= ERROR_VALUE;
 
-					// @ts-expect-error the error is the wrong type, but we don't care
-					internal_set(signal, error);
+						// @ts-expect-error the error is the wrong type, but we don't care
+						internal_set(signal, error);
+					}
 				} else {
 					if ((signal.f & ERROR_VALUE) !== 0) {
 						signal.f ^= ERROR_VALUE;
 					}
 
 					internal_set(signal, value);
+
+					// All prior async derived runs are now stale
+					for (const [b, d] of deferreds) {
+						deferreds.delete(b);
+						if (b === batch) break;
+						d.reject(STALE_REACTION);
+					}
 				}
 
-				batch.deactivate();
+				if (should_suspend) {
+					boundary.update_pending_count(-1);
+					batch.decrement(blocking);
+				}
 			};
 
 			d.promise.then(handler, (e) => handler(null, e || 'unknown'));
 		});
 
 		teardown(() => {
-			for (const d of deferreds) {
-				d.reject(OBSOLETE);
+			for (const d of deferreds.values()) {
+				d.reject(STALE_REACTION);
 			}
 		});
 
@@ -2293,6 +2617,21 @@
 	}
 
 	/**
+	 * @param {Derived} derived
+	 * @returns {Effect | null}
+	 */
+	function get_derived_parent_effect(derived) {
+		var parent = derived.parent;
+		while (parent !== null) {
+			if ((parent.f & DERIVED) === 0) {
+				return /** @type {Effect} */ (parent);
+			}
+			parent = parent.parent;
+		}
+		return null;
+	}
+
+	/**
 	 * @template T
 	 * @param {Derived} derived
 	 * @returns {T}
@@ -2300,20 +2639,8 @@
 	function execute_derived(derived) {
 		var value;
 		var prev_active_effect = active_effect;
-		var parent = derived.parent;
 
-		if (
-			!is_destroying_effect &&
-			parent !== null &&
-			derived.v !== UNINITIALIZED && // if it was never evaluated before, it's guaranteed to fail downstream, so we try to execute instead
-			(parent.f & (DESTROYED | INERT)) !== 0
-		) {
-			derived_inert();
-
-			return derived.v;
-		}
-
-		set_active_effect(parent);
+		set_active_effect(get_derived_parent_effect(derived));
 
 		{
 			try {
@@ -2336,32 +2663,10 @@
 		var value = execute_derived(derived);
 
 		if (!derived.equals(value)) {
+			// TODO can we avoid setting `derived.v` when `batch_values !== null`,
+			// without causing the value to be stale later?
+			derived.v = value;
 			derived.wv = increment_write_version();
-
-			// in a fork, we don't update the underlying value, just `batch_values`.
-			// the underlying value will be updated when the fork is committed.
-			// otherwise, the next time we get here after a 'real world' state
-			// change, `derived.equals` may incorrectly return `true`
-			if (!current_batch?.is_fork || derived.deps === null) {
-				if (current_batch !== null) {
-					// We also write to previous_batch because if it exists, it is a sign that we're
-					// currently in the process of flushing effects. These updates to deriveds may belong
-					// to the previous batch, not the new one (which can already exist if an earlier
-					// effect wrote to a source). This can cause bugs when running batch.#commit() later,
-					// but not adding it to current_batch can, too, so we add it to both.
-					// See https://github.com/sveltejs/svelte/pull/18117 for more details.
-					current_batch.capture(derived, value, true);
-					previous_batch?.capture(derived, value, true);
-				} else {
-					derived.v = value;
-				}
-
-				// deriveds without dependencies should never be recomputed
-				if (derived.deps === null) {
-					set_signal_status(derived, CLEAN);
-					return;
-				}
-			}
 		}
 
 		// don't mark derived clean if we're reading it inside a
@@ -2375,1172 +2680,18 @@
 		if (batch_values !== null) {
 			// only cache the value if we're in a tracking context, otherwise we won't
 			// clear the cache in `mark_reactions` when dependencies are updated
-			if (effect_tracking() || current_batch?.is_fork) {
-				batch_values.set(derived, value);
+			if (effect_tracking()) {
+				batch_values.set(derived, derived.v);
 			}
 		} else {
-			update_derived_status(derived);
-		}
-	}
-
-	/**
-	 * @param {Derived} derived
-	 */
-	function freeze_derived_effects(derived) {
-		if (derived.effects === null) return;
-
-		for (const e of derived.effects) {
-			// if the effect has a teardown function or abort signal, call it
-			if (e.teardown || e.ac) {
-				e.teardown?.();
-				if (e.ac !== null) {
-					without_reactive_context(() => {
-						/** @type {AbortController} */ (e.ac).abort(STALE_REACTION);
-						e.ac = null;
-					});
-				}
-
-				// make it a noop so it doesn't get called again if the derived
-				// is unfrozen. we don't set it to `null`, because the existence
-				// of a teardown function is what determines whether the
-				// effect runs again during unfreezing (but not for teardown-only effects)
-				if (e.fn !== null) e.teardown = noop;
-
-				remove_reactions(e, 0);
-				destroy_effect_children(e);
-			}
-		}
-	}
-
-	/**
-	 * @param {Derived} derived
-	 */
-	function unfreeze_derived_effects(derived) {
-		if (derived.effects === null) return;
-
-		for (const e of derived.effects) {
-			// if the effect was previously frozen — indicated by the presence
-			// of a teardown function — unfreeze it
-			if (e.teardown && e.fn !== null) {
-				update_effect(e);
-			}
-		}
-	}
-
-	/** @import { Fork } from 'svelte' */
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
-
-	/** @type {Batch | null} */
-	let first_batch = null;
-
-	/** @type {Batch | null} */
-	let last_batch = null;
-
-	/** @type {Batch | null} */
-	let current_batch = null;
-
-	/**
-	 * This is needed to avoid overwriting inputs
-	 * @type {Batch | null}
-	 */
-	let previous_batch = null;
-
-	/**
-	 * When time travelling (i.e. working in one batch, while other batches
-	 * still have ongoing work), we ignore the real values of affected
-	 * signals in favour of their values within the batch
-	 * @type {Map<Value, any> | null}
-	 */
-	let batch_values = null;
-
-	/** @type {Effect | null} */
-	let last_scheduled_effect = null;
-
-	let is_flushing_sync = false;
-	let is_processing = false;
-
-	/**
-	 * During traversal, this is an array. Newly created effects are (if not immediately
-	 * executed) pushed to this array, rather than going through the scheduling
-	 * rigamarole that would cause another turn of the flush loop.
-	 * @type {Effect[] | null}
-	 */
-	let collected_effects = null;
-
-	/**
-	 * An array of effects that are marked during traversal as a result of a `set`
-	 * (not `internal_set`) call. These will be added to the next batch and
-	 * trigger another `batch.process()`
-	 * @type {Effect[] | null}
-	 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
-	 */
-	let legacy_updates = null;
-
-	var flush_count = 0;
-
-	/** @type {Set<Value>} */
-	var source_stacks = new Set();
-
-	let uid = 1;
-
-	class Batch {
-		id = uid++;
-
-		/** True as soon as `#process` was called */
-		#started = false;
-
-		linked = true;
-
-		/** @type {Batch | null} */
-		#prev = null;
-
-		/** @type {Batch | null} */
-		#next = null;
-
-		/** @type {Map<Effect, ReturnType<typeof deferred<any>>>} */
-		async_deriveds = new Map();
-
-		/**
-		 * The current values of any signals that are updated in this batch.
-		 * Tuple format: [value, is_derived] (note: is_derived is false for deriveds, too, if they were overridden via assignment)
-		 * They keys of this map are identical to `this.#previous`
-		 * @type {Map<Value, [any, boolean]>}
-		 */
-		current = new Map();
-
-		/**
-		 * The values of any signals (sources and deriveds) that are updated in this batch _before_ those updates took place.
-		 * They keys of this map are identical to `this.#current`
-		 * @type {Map<Value, any>}
-		 */
-		previous = new Map();
-
-		/**
-		 * When the batch is committed (and the DOM is updated), we need to remove old branches
-		 * and append new ones by calling the functions added inside (if/each/key/etc) blocks
-		 * @type {Set<(batch: Batch) => void>}
-		 */
-		#commit_callbacks = new Set();
-
-		/**
-		 * If a fork is discarded, we need to destroy any effects that are no longer needed
-		 * @type {Set<(batch: Batch) => void>}
-		 */
-		#discard_callbacks = new Set();
-
-		/**
-		 * The number of async effects that are currently in flight
-		 */
-		#pending = 0;
-
-		/**
-		 * Async effects that are currently in flight, _not_ inside a pending boundary
-		 * @type {Map<Effect, number>}
-		 */
-		#blocking_pending = new Map();
-
-		/**
-		 * A deferred that resolves when the batch is committed, used with `settled()`
-		 * TODO replace with Promise.withResolvers once supported widely enough
-		 * @type {{ promise: Promise<void>, resolve: (value?: any) => void, reject: (reason: unknown) => void } | null}
-		 */
-		#deferred = null;
-
-		/**
-		 * The root effects that need to be flushed
-		 * @type {Effect[]}
-		 */
-		#roots = [];
-
-		/**
-		 * Effects created while this batch was active.
-		 * @type {Effect[]}
-		 */
-		#new_effects = [];
-
-		/**
-		 * Deferred effects (which run after async work has completed) that are DIRTY
-		 * @type {Set<Effect>}
-		 */
-		#dirty_effects = new Set();
-
-		/**
-		 * Deferred effects that are MAYBE_DIRTY
-		 * @type {Set<Effect>}
-		 */
-		#maybe_dirty_effects = new Set();
-
-		/**
-		 * A map of branches that still exist, but will be destroyed when this batch
-		 * is committed — we skip over these during `process`.
-		 * The value contains child effects that were dirty/maybe_dirty before being reset,
-		 * so they can be rescheduled if the branch survives.
-		 * @type {Map<Effect, { d: Effect[], m: Effect[] }>}
-		 */
-		#skipped_branches = new Map();
-
-		/**
-		 * Inverse of #skipped_branches which we need to tell prior batches to unskip them when committing
-		 * @type {Set<Effect>}
-		 */
-		#unskipped_branches = new Set();
-
-		is_fork = false;
-
-		#decrement_queued = false;
-
-		constructor() {
-			// link batch
-			if (last_batch === null) {
-				first_batch = last_batch = this;
-			} else {
-				last_batch.#next = this;
-				this.#prev = last_batch;
-			}
-
-			last_batch = this;
-		}
-
-		#is_deferred() {
-			if (this.is_fork) return true;
-
-			for (const effect of this.#blocking_pending.keys()) {
-				var e = effect;
-				var skipped = false;
-
-				while (e.parent !== null) {
-					if (this.#skipped_branches.has(e)) {
-						skipped = true;
-						break;
-					}
-
-					e = e.parent;
-				}
-
-				if (!skipped) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		/**
-		 * Add an effect to the #skipped_branches map and reset its children
-		 * @param {Effect} effect
-		 */
-		skip_effect(effect) {
-			if (!this.#skipped_branches.has(effect)) {
-				this.#skipped_branches.set(effect, { d: [], m: [] });
-			}
-			this.#unskipped_branches.delete(effect);
-		}
-
-		/**
-		 * Remove an effect from the #skipped_branches map and reschedule
-		 * any tracked dirty/maybe_dirty child effects
-		 * @param {Effect} effect
-		 * @param {(e: Effect) => void} callback
-		 */
-		unskip_effect(effect, callback = (e) => this.schedule(e)) {
-			var tracked = this.#skipped_branches.get(effect);
-			if (tracked) {
-				this.#skipped_branches.delete(effect);
-
-				for (var e of tracked.d) {
-					set_signal_status(e, DIRTY);
-					callback(e);
-				}
-
-				for (e of tracked.m) {
-					set_signal_status(e, MAYBE_DIRTY);
-					callback(e);
-				}
-			}
-			this.#unskipped_branches.add(effect);
-		}
-
-		#process() {
-			this.#started = true;
-
-			if (flush_count++ > 1000) {
-				this.#unlink();
-				infinite_loop_guard();
-			}
-
-			// We always reschedule previously-deferred effects, not just when
-			// #is_deferred() is true, because traversing the tree could make
-			// an if block that contains the last blocking pending effect falsy,
-			// causing the block to no longer be deferred.
-			for (const e of this.#dirty_effects) {
-				this.#maybe_dirty_effects.delete(e);
-				set_signal_status(e, DIRTY);
-				this.schedule(e);
-			}
-
-			for (const e of this.#maybe_dirty_effects) {
-				set_signal_status(e, MAYBE_DIRTY);
-				this.schedule(e);
-			}
-
-			const roots = this.#roots;
-			this.#roots = [];
-
-			this.apply();
-
-			/** @type {Effect[]} */
-			var effects = (collected_effects = []);
-
-			/** @type {Effect[]} */
-			var render_effects = [];
-
-			/**
-			 * @type {Effect[]}
-			 * @deprecated when we get rid of legacy mode and stores, we can get rid of this
-			 */
-			var updates = (legacy_updates = []);
-
-			for (const root of roots) {
-				try {
-					this.#traverse(root, effects, render_effects);
-				} catch (e) {
-					reset_all(root);
-					// If there's no async work left, this branch is now dead and needs
-					// to be discarded to not become a zombie that is never cleaned up.
-					// See https://github.com/sveltejs/svelte/issues/18221#issuecomment-4497918414
-					// for a (non-minimal) reproduction that demonstrates a case where this is necessary
-					// to not get follow-up false-positives via "batch has scheduled roots" invariant errors.
-					if (!this.#is_deferred()) this.discard();
-					throw e;
-				}
-			}
-
-			// any writes should take effect in a subsequent batch
-			current_batch = null;
-
-			if (updates.length > 0) {
-				var batch = Batch.ensure();
-				for (const e of updates) {
-					batch.schedule(e);
-				}
-			}
-
-			collected_effects = null;
-			legacy_updates = null;
-
-			// if the batch has outstanding pending work, stash effects and bail
-			if (this.#is_deferred()) {
-				this.#defer_effects(render_effects);
-				this.#defer_effects(effects);
-
-				for (const [e, t] of this.#skipped_branches) {
-					reset_branch(e, t);
-				}
-
-				if (updates.length > 0) {
-					/** @type {Batch} */ (/** @type {unknown} */ (current_batch)).#process();
-				}
-
-				return;
-			}
-
-			const earlier_batch = this.#find_earlier_batch();
-
-			if (earlier_batch) {
-				// If this batch collected deferred effects during traversal, they still need
-				// to run after being merged into the earlier batch.
-				this.#defer_effects(render_effects);
-				this.#defer_effects(effects);
-				earlier_batch.#merge(this);
-				return;
-			}
-
-			// clear effects. Those that are still needed will be rescheduled through unskipping the skipped branches.
-			this.#dirty_effects.clear();
-			this.#maybe_dirty_effects.clear();
-
-			// append/remove branches
-			for (const fn of this.#commit_callbacks) fn(this);
-			this.#commit_callbacks.clear();
-
-			previous_batch = this;
-			flush_queued_effects(render_effects);
-			flush_queued_effects(effects);
-			previous_batch = null;
-
-			this.#deferred?.resolve();
-
-			var next_batch = /** @type {Batch | null} */ (/** @type {unknown} */ (current_batch));
-
-			if (this.#pending === 0 && (this.#roots.length === 0 || next_batch !== null)) {
-				this.#unlink();
-			}
-
-			// Edge case: During traversal new branches might create effects that run immediately and set state,
-			// causing an effect and therefore a root to be scheduled again. We need to traverse the current batch
-			// once more in that case - most of the time this will just clean up dirty branches.
-			if (this.#roots.length > 0) {
-				if (next_batch !== null) {
-					const batch = next_batch;
-					batch.#roots.push(...this.#roots.filter((r) => !batch.#roots.includes(r)));
-				} else {
-					next_batch = this;
-				}
-			}
-
-			if (next_batch !== null) {
-				old_values.clear();
-				next_batch.#process();
-			}
-		}
-
-		/**
-		 * Traverse the effect tree, executing effects or stashing
-		 * them for later execution as appropriate
-		 * @param {Effect} root
-		 * @param {Effect[]} effects
-		 * @param {Effect[]} render_effects
-		 */
-		#traverse(root, effects, render_effects) {
-			root.f ^= CLEAN;
-
-			var effect = root.first;
-
-			while (effect !== null) {
-				var flags = effect.f;
-				var is_branch = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) !== 0;
-				var is_skippable_branch = is_branch && (flags & CLEAN) !== 0;
-
-				var skip = is_skippable_branch || (flags & INERT) !== 0 || this.#skipped_branches.has(effect);
-
-				if (!skip && effect.fn !== null) {
-					if (is_branch) {
-						effect.f ^= CLEAN;
-					} else if ((flags & EFFECT) !== 0) {
-						effects.push(effect);
-					} else if (is_dirty(effect)) {
-						if ((flags & BLOCK_EFFECT) !== 0) this.#maybe_dirty_effects.add(effect);
-						update_effect(effect);
-					}
-
-					var child = effect.first;
-
-					if (child !== null) {
-						effect = child;
-						continue;
-					}
-				}
-
-				while (effect !== null) {
-					var next = effect.next;
-
-					if (next !== null) {
-						effect = next;
-						break;
-					}
-
-					effect = effect.parent;
-				}
-			}
-		}
-
-		#find_earlier_batch() {
-			var batch = this.#prev;
-
-			while (batch !== null) {
-				if (!batch.is_fork) {
-					// if the batches are connected, break
-					for (const [value, [, is_derived]] of this.current) {
-						if (batch.current.has(value) && !is_derived) {
-							return batch;
-						}
-					}
-				}
-
-				batch = batch.#prev;
-			}
-
-			return null;
-		}
-
-		/**
-		 * @param {Batch} batch
-		 */
-		#merge(batch) {
-			for (const [source, value] of batch.current) {
-				if (!this.previous.has(source) && batch.previous.has(source)) {
-					this.previous.set(source, batch.previous.get(source));
-				}
-
-				this.current.set(source, value);
-			}
-
-			for (const [effect, deferred] of batch.async_deriveds) {
-				const d = this.async_deriveds.get(effect);
-				if (d) deferred.promise.then(d.resolve).catch(d.reject);
-			}
-
-			// Clear them or else those that are still pending might get rejected on discard (after merged-into batch is done).
-			// This can happen when batch Y merged into X and Y has a pending boundary and therefore still-pending async deriveds inside.
-			batch.async_deriveds.clear();
-
-			// Mark is not guaranteed not touch these, so we transfer them
-			this.transfer_effects(batch.#dirty_effects, batch.#maybe_dirty_effects);
-
-			/**
-			 * mark all effects that depend on `batch.current`, except the
-			 * async effects that we just resolved (TODO unless they depend
-			 * on values in this batch that are NOT in the later batch?).
-			 * Through this we also will populate the correct #skipped_branches,
-			 * oncommit callbacks etc, so we don't need to merge them separately.
-			 * @param {Value} value
-			 */
-			const mark = (value) => {
-				var reactions = value.reactions;
-				if (reactions === null) return;
-				// skip if value is derived and is neither dirty nor maybe dirty. transitive
-				// deriveds (a derived depending on another derived) are only MAYBE_DIRTY, so
-				// we must continue traversing them to reach the effects that depend on them
-				if ((value.f & DERIVED) !== 0 && (value.f & (DIRTY | MAYBE_DIRTY)) === 0) {
-					return;
-				}
-
-				for (const reaction of reactions) {
-					var flags = reaction.f;
-
-					if ((flags & DERIVED) !== 0) {
-						mark(/** @type {Derived} */ (reaction));
-					} else {
-						var effect = /** @type {Effect} */ (reaction);
-
-						if (flags & (ASYNC | BLOCK_EFFECT) && !this.async_deriveds.has(effect)) {
-							this.#maybe_dirty_effects.delete(effect);
-							set_signal_status(effect, DIRTY);
-							this.schedule(effect);
-						}
-					}
-				}
-			};
-
-			for (const source of this.current.keys()) {
-				mark(source);
-			}
-
-			this.oncommit(() => batch.discard());
-			batch.#unlink();
-
-			current_batch = this;
-			this.#process();
-		}
-
-		/**
-		 * @param {Effect[]} effects
-		 */
-		#defer_effects(effects) {
-			for (var i = 0; i < effects.length; i += 1) {
-				defer_effect(effects[i], this.#dirty_effects, this.#maybe_dirty_effects);
-			}
-		}
-
-		/**
-		 * Associate a change to a given source with the current
-		 * batch, noting its previous and current values
-		 * @param {Value} source
-		 * @param {any} value
-		 * @param {boolean} [is_derived]
-		 */
-		capture(source, value, is_derived = false) {
-			if (source.v !== UNINITIALIZED && !this.previous.has(source)) {
-				this.previous.set(source, source.v);
-			}
-
-			// Don't save errors in `batch_values`, or they won't be thrown in `runtime.js#get`
-			if ((source.f & ERROR_VALUE) === 0) {
-				this.current.set(source, [value, is_derived]);
-				batch_values?.set(source, value);
-			}
-
-			if (!this.is_fork) {
-				source.v = value;
-			}
-		}
-
-		activate() {
-			current_batch = this;
-		}
-
-		deactivate() {
-			current_batch = null;
-			batch_values = null;
-		}
-
-		flush() {
-			try {
-				if (DEV) ;
-
-				is_processing = true;
-				current_batch = this;
-
-				this.#process();
-			} finally {
-				flush_count = 0;
-				last_scheduled_effect = null;
-				collected_effects = null;
-				legacy_updates = null;
-				is_processing = false;
-
-				current_batch = null;
-				batch_values = null;
-
-				old_values.clear();
-			}
-		}
-
-		discard() {
-			for (const fn of this.#discard_callbacks) fn(this);
-			this.#discard_callbacks.clear();
-
-			for (const deferred of this.async_deriveds.values()) {
-				deferred.reject(OBSOLETE);
-			}
-
-			this.#unlink();
-			this.#deferred?.resolve();
-		}
-
-		/**
-		 * @param {Effect} effect
-		 */
-		register_created_effect(effect) {
-			this.#new_effects.push(effect);
-		}
-
-		#commit() {
-			// If there are other pending batches, they now need to be 'rebased' —
-			// in other words, we re-run block/async effects with the newly
-			// committed state, unless the batch in question has a more
-			// recent value for a given source
-			for (let batch = first_batch; batch !== null; batch = batch.#next) {
-				var is_earlier = batch.id < this.id;
-
-				/** @type {Source[]} */
-				var sources = [];
-
-				for (const [source, [value, is_derived]] of this.current) {
-					if (batch.current.has(source)) {
-						var batch_value = /** @type {[any, boolean]} */ (batch.current.get(source))[0]; // faster than destructuring
-
-						if (is_earlier && value !== batch_value) {
-							// bring the value up to date
-							batch.current.set(source, [value, is_derived]);
-						} else {
-							// same value or later batch has more recent value,
-							// no need to re-run these effects
-							continue;
-						}
-					}
-
-					sources.push(source);
-				}
-
-				if (is_earlier) {
-					// TODO do we need to restart these in some cases, instead of
-					// immediately resolving them? Likely not because of how this.apply() works.
-					for (const [effect, deferred] of this.async_deriveds) {
-						const d = batch.async_deriveds.get(effect);
-						if (d) deferred.promise.then(d.resolve).catch(d.reject);
-					}
-				}
-
-				var current = [...batch.current.keys()].filter(
-					(source) => !(/** @type {[any, boolean]} */ (batch.current.get(source))[1])
-				);
-
-				// If not started yet or no sources to update (which is e.g. possible for the very first batch) then bail
-				if (!batch.#started || current.length === 0) continue;
-
-				// Re-run async/block effects that depend on distinct values changed in both batches (ignoring deriveds)
-				var others = current.filter((source) => !this.current.has(source));
-
-				if (others.length === 0) {
-					if (is_earlier) {
-						// this batch is now obsolete and can be discarded
-						batch.discard();
-					}
-				} else if (sources.length > 0) {
-
-					// A batch was unskipped in a later batch -> tell prior batches to unskip it, too
-					if (is_earlier) {
-						for (const unskipped of this.#unskipped_branches) {
-							batch.unskip_effect(unskipped, (e) => {
-								if ((e.f & (BLOCK_EFFECT | ASYNC)) !== 0) {
-									batch.schedule(e);
-								} else {
-									batch.#defer_effects([e]);
-								}
-							});
-						}
-					}
-
-					batch.activate();
-
-					/** @type {Set<Value>} */
-					var marked = new Set();
-
-					/** @type {Map<Reaction, boolean>} */
-					var checked = new Map();
-
-					for (var source of sources) {
-						mark_effects(source, others, marked, checked);
-					}
-
-					checked = new Map();
-					var current_unequal = [...batch.current]
-						.filter(([c, v1]) => {
-							const v2 = this.current.get(c);
-							if (!v2) return true;
-							// Either their values are different or one is a derived but not the other
-							return v2[0] !== v1[0] || v2[1] !== v1[1];
-						})
-						.map(([c]) => c);
-
-					if (current_unequal.length > 0) {
-						for (const effect of this.#new_effects) {
-							if (
-								(effect.f & (DESTROYED | INERT | EAGER_EFFECT)) === 0 &&
-								depends_on(effect, current_unequal, checked)
-							) {
-								if ((effect.f & (ASYNC | BLOCK_EFFECT)) !== 0) {
-									set_signal_status(effect, DIRTY);
-									batch.schedule(effect);
-								} else {
-									batch.#dirty_effects.add(effect);
-								}
-							}
-						}
-					}
-
-					// Only apply and traverse when we know we triggered async work with marking the effects
-					// and know this won't run anyway right afterwards
-					if (batch.#roots.length > 0 && !batch.#decrement_queued) {
-						batch.apply();
-
-						for (var root of batch.#roots) {
-							batch.#traverse(root, [], []);
-						}
-
-						batch.#roots = [];
-					}
-
-					batch.deactivate();
-				}
-			}
-		}
-
-		/**
-		 * @param {boolean} blocking
-		 * @param {Effect} effect
-		 */
-		increment(blocking, effect) {
-			this.#pending += 1;
-
-			if (blocking) {
-				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
-				this.#blocking_pending.set(effect, blocking_pending_count + 1);
-			}
-		}
-
-		/**
-		 * @param {boolean} blocking
-		 * @param {Effect} effect
-		 */
-		decrement(blocking, effect) {
-			this.#pending -= 1;
-
-			if (blocking) {
-				let blocking_pending_count = this.#blocking_pending.get(effect) ?? 0;
-
-				if (blocking_pending_count === 1) {
-					this.#blocking_pending.delete(effect);
-				} else {
-					this.#blocking_pending.set(effect, blocking_pending_count - 1);
-				}
-			}
-
-			if (this.#decrement_queued) return;
-			this.#decrement_queued = true;
-
-			queue_micro_task(() => {
-				this.#decrement_queued = false;
-
-				if (this.linked) {
-					this.flush();
-				}
-			});
-		}
-
-		/**
-		 * @param {Set<Effect>} dirty_effects
-		 * @param {Set<Effect>} maybe_dirty_effects
-		 */
-		transfer_effects(dirty_effects, maybe_dirty_effects) {
-			for (const e of dirty_effects) {
-				this.#dirty_effects.add(e);
-			}
-
-			for (const e of maybe_dirty_effects) {
-				this.#maybe_dirty_effects.add(e);
-			}
-
-			dirty_effects.clear();
-			maybe_dirty_effects.clear();
-		}
-
-		/** @param {(batch: Batch) => void} fn */
-		oncommit(fn) {
-			this.#commit_callbacks.add(fn);
-		}
-
-		/** @param {(batch: Batch) => void} fn */
-		ondiscard(fn) {
-			this.#discard_callbacks.add(fn);
-		}
-
-		settled() {
-			return (this.#deferred ??= deferred()).promise;
-		}
-
-		static ensure() {
-			if (current_batch === null) {
-				const batch = (current_batch = new Batch());
-
-				if (!is_processing && !is_flushing_sync) {
-					queue_micro_task(() => {
-						if (!batch.#started) {
-							batch.flush();
-						}
-					});
-				}
-			}
-
-			return current_batch;
-		}
-
-		apply() {
-			{
-				batch_values = null;
-				return;
-			}
-		}
-
-		/**
-		 *
-		 * @param {Effect} effect
-		 */
-		schedule(effect) {
-			last_scheduled_effect = effect;
-
-			// defer render effects inside a pending boundary
-			// TODO the `REACTION_RAN` check is only necessary because of legacy `$:` effects AFAICT — we can remove later
-			if (
-				effect.b?.is_pending &&
-				(effect.f & (EFFECT | RENDER_EFFECT | MANAGED_EFFECT)) !== 0 &&
-				(effect.f & REACTION_RAN) === 0
-			) {
-				effect.b.defer_effect(effect);
-				return;
-			}
-
-			var e = effect;
-
-			while (e.parent !== null) {
-				e = e.parent;
-				var flags = e.f;
-
-				// if the effect is being scheduled because a parent (each/await/etc) block
-				// updated an internal source, or because a branch is being unskipped,
-				// bail out or we'll cause a second flush
-				if (collected_effects !== null && e === active_effect) {
-
-					// in sync mode, render effects run during traversal. in an extreme edge case
-					// — namely that we're setting a value inside a derived read during traversal —
-					// they can be made dirty after they have already been visited, in which
-					// case we shouldn't bail out. we also shouldn't bail out if we're
-					// updating a store inside a `$:`, since this might invalidate
-					// effects that were already visited
-					if (
-						(active_reaction === null || (active_reaction.f & DERIVED) === 0) &&
-						true
-					) {
-						return;
-					}
-				}
-
-				if ((flags & (ROOT_EFFECT | BRANCH_EFFECT)) !== 0) {
-					if ((flags & CLEAN) === 0) {
-						// branch is already dirty, bail
-						return;
-					}
-
-					e.f ^= CLEAN;
-				}
-			}
-
-			this.#roots.push(e);
-		}
-
-		#unlink() {
-			// #merge calls #unlink, discard later on does it again - prevent
-			// running it multiple times to not corrupt the linked list
-			if (!this.linked) return;
-
-			var prev = this.#prev;
-			var next = this.#next;
-
-			if (prev === null) {
-				first_batch = next;
-			} else {
-				prev.#next = next;
-			}
-
-			if (next === null) {
-				last_batch = prev;
-			} else {
-				next.#prev = prev;
-			}
-
-			this.linked = false;
-		}
-	}
-
-	// TODO Svelte@6 think about removing the callback argument.
-	/**
-	 * Synchronously flush any pending updates.
-	 * Returns void if no callback is provided, otherwise returns the result of calling the callback.
-	 * @template [T=void]
-	 * @param {(() => T) | undefined} [fn]
-	 * @returns {T}
-	 */
-	function flushSync(fn) {
-		var was_flushing_sync = is_flushing_sync;
-		is_flushing_sync = true;
-
-		try {
-			var result;
-
-			if (fn) ;
-
-			while (true) {
-				flush_tasks();
-
-				if (current_batch === null) {
-					return /** @type {T} */ (result);
-				}
-
-				current_batch.flush();
-			}
-		} finally {
-			is_flushing_sync = was_flushing_sync;
-		}
-	}
-
-	function infinite_loop_guard() {
-
-		try {
-			effect_update_depth_exceeded();
-		} catch (error) {
-
-			// Best effort: invoke the boundary nearest the most recent
-			// effect and hope that it's relevant to the infinite loop
-			invoke_error_boundary(error, last_scheduled_effect);
-		}
-	}
-
-	/** @type {Set<Effect> | null} */
-	let eager_block_effects = null;
-
-	/**
-	 * @param {Array<Effect>} effects
-	 * @returns {void}
-	 */
-	function flush_queued_effects(effects) {
-		var length = effects.length;
-		if (length === 0) return;
-
-		var i = 0;
-
-		while (i < length) {
-			var effect = effects[i++];
-
-			if ((effect.f & (DESTROYED | INERT)) === 0 && is_dirty(effect)) {
-				eager_block_effects = new Set();
-
-				update_effect(effect);
-
-				// Effects with no dependencies or teardown do not get added to the effect tree.
-				// Deferred effects (e.g. `$effect(...)`) _are_ added to the tree because we
-				// don't know if we need to keep them until they are executed. Doing the check
-				// here (rather than in `update_effect`) allows us to skip the work for
-				// immediate effects.
-				if (
-					effect.deps === null &&
-					effect.first === null &&
-					effect.nodes === null &&
-					effect.teardown === null &&
-					effect.ac === null
-				) {
-					// remove this effect from the graph
-					unlink_effect(effect);
-				}
-
-				// If update_effect() has a flushSync() in it, we may have flushed another flush_queued_effects(),
-				// which already handled this logic and did set eager_block_effects to null.
-				if (eager_block_effects?.size > 0) {
-					old_values.clear();
-
-					for (const e of eager_block_effects) {
-						// Skip eager effects that have already been unmounted
-						if ((e.f & (DESTROYED | INERT)) !== 0) continue;
-
-						// Run effects in order from ancestor to descendant, else we could run into nullpointers
-						/** @type {Effect[]} */
-						const ordered_effects = [e];
-						let ancestor = e.parent;
-						while (ancestor !== null) {
-							if (eager_block_effects.has(ancestor)) {
-								eager_block_effects.delete(ancestor);
-								ordered_effects.push(ancestor);
-							}
-							ancestor = ancestor.parent;
-						}
-
-						for (let j = ordered_effects.length - 1; j >= 0; j--) {
-							const e = ordered_effects[j];
-							// Skip eager effects that have already been unmounted
-							if ((e.f & (DESTROYED | INERT)) !== 0) continue;
-							update_effect(e);
-						}
-					}
-
-					eager_block_effects.clear();
-				}
-			}
-		}
-
-		eager_block_effects = null;
-	}
-
-	/**
-	 * This is similar to `mark_reactions`, but it only marks async/block effects
-	 * depending on `value` and at least one of the other `sources`, so that
-	 * these effects can re-run after another batch has been committed
-	 * @param {Value} value
-	 * @param {Source[]} sources
-	 * @param {Set<Value>} marked
-	 * @param {Map<Reaction, boolean>} checked
-	 */
-	function mark_effects(value, sources, marked, checked) {
-		if (marked.has(value)) return;
-		marked.add(value);
-
-		if (value.reactions !== null) {
-			for (const reaction of value.reactions) {
-				const flags = reaction.f;
-
-				if ((flags & DERIVED) !== 0) {
-					mark_effects(/** @type {Derived} */ (reaction), sources, marked, checked);
-				} else if (
-					(flags & (ASYNC | BLOCK_EFFECT)) !== 0 &&
-					(flags & DIRTY) === 0 &&
-					depends_on(reaction, sources, checked)
-				) {
-					set_signal_status(reaction, DIRTY);
-					schedule_effect(/** @type {Effect} */ (reaction));
-				}
-			}
-		}
-	}
-
-	/**
-	 * @param {Reaction} reaction
-	 * @param {Source[]} sources
-	 * @param {Map<Reaction, boolean>} checked
-	 */
-	function depends_on(reaction, sources, checked) {
-		const depends = checked.get(reaction);
-		if (depends !== undefined) return depends;
-
-		if (reaction.deps !== null) {
-			for (const dep of reaction.deps) {
-				if (includes.call(sources, dep)) {
-					return true;
-				}
-
-				if ((dep.f & DERIVED) !== 0 && depends_on(/** @type {Derived} */ (dep), sources, checked)) {
-					checked.set(/** @type {Derived} */ (dep), true);
-					return true;
-				}
-			}
-		}
-
-		checked.set(reaction, false);
-
-		return false;
-	}
-
-	/**
-	 * @param {Effect} effect
-	 * @returns {void}
-	 */
-	function schedule_effect(effect) {
-		/** @type {Batch} */ (current_batch).schedule(effect);
-	}
-
-	/**
-	 * Mark all the effects inside a skipped branch CLEAN, so that
-	 * they can be correctly rescheduled later. Tracks dirty and maybe_dirty
-	 * effects so they can be rescheduled if the branch survives.
-	 * @param {Effect} effect
-	 * @param {{ d: Effect[], m: Effect[] }} tracked
-	 */
-	function reset_branch(effect, tracked) {
-		// clean branch = nothing dirty inside, no need to traverse further
-		if ((effect.f & BRANCH_EFFECT) !== 0 && (effect.f & CLEAN) !== 0) {
-			return;
-		}
-
-		if ((effect.f & DIRTY) !== 0) {
-			tracked.d.push(effect);
-		} else if ((effect.f & MAYBE_DIRTY) !== 0) {
-			tracked.m.push(effect);
-		}
-
-		set_signal_status(effect, CLEAN);
-
-		var e = effect.first;
-		while (e !== null) {
-			reset_branch(e, tracked);
-			e = e.next;
-		}
-	}
-
-	/**
-	 * Mark an entire effect tree clean following an error
-	 * @param {Effect} effect
-	 */
-	function reset_all(effect) {
-		set_signal_status(effect, CLEAN);
-
-		var e = effect.first;
-		while (e !== null) {
-			reset_all(e);
-			e = e.next;
+			var status = (derived.f & CONNECTED) === 0 ? MAYBE_DIRTY : CLEAN;
+			set_signal_status(derived, status);
 		}
 	}
 
 	/** @import { Derived, Effect, Source, Value } from '#client' */
 
-	/** @type {Set<Effect>} */
+	/** @type {Set<any>} */
 	let eager_effects = new Set();
 
 	/** @type {Map<Source, any>} */
@@ -3614,56 +2765,49 @@
 			(!untracking || (active_reaction.f & EAGER_EFFECT) !== 0) &&
 			is_runes() &&
 			(active_reaction.f & (DERIVED | BLOCK_EFFECT | ASYNC | EAGER_EFFECT)) !== 0 &&
-			(current_sources === null || !current_sources.has(source))
+			!current_sources?.includes(source)
 		) {
 			state_unsafe_mutation();
 		}
 
 		let new_value = should_proxy ? proxy(value) : value;
 
-		return internal_set(source, new_value, legacy_updates);
+		return internal_set(source, new_value);
 	}
 
 	/**
 	 * @template V
 	 * @param {Source<V>} source
 	 * @param {V} value
-	 * @param {Effect[] | null} [updated_during_traversal]
 	 * @returns {V}
 	 */
-	function internal_set(source, value, updated_during_traversal = null) {
+	function internal_set(source, value) {
 		if (!source.equals(value)) {
+			var old_value = source.v;
+
 			if (is_destroying_effect) {
 				old_values.set(source, value);
-			} else if (!old_values.has(source)) {
-				// only record the value from before the first write in this flush, otherwise a
-				// teardown would see the value from before whichever write happened to be last
-				old_values.set(source, source.v);
+			} else {
+				old_values.set(source, old_value);
 			}
 
+			source.v = value;
+
 			var batch = Batch.ensure();
-			batch.capture(source, value);
+			batch.capture(source, old_value);
 
 			if ((source.f & DERIVED) !== 0) {
-				const derived = /** @type {Derived} */ (source);
-
 				// if we are assigning to a dirty derived we set it to clean/maybe dirty but we also eagerly execute it to track the dependencies
 				if ((source.f & DIRTY) !== 0) {
-					execute_derived(derived);
+					execute_derived(/** @type {Derived} */ (source));
 				}
 
-				// During time traveling we don't want to reset the status so that
-				// traversal of the graph in the other batches still happens
-				if (batch_values === null) {
-					update_derived_status(derived);
-				}
+				set_signal_status(source, (source.f & CONNECTED) !== 0 ? CLEAN : MAYBE_DIRTY);
 			}
 
 			source.wv = increment_write_version();
 
-			// For debugging, in case you want to know which reactions are being scheduled:
-			// log_reactions(source);
-			mark_reactions(source, DIRTY, updated_during_traversal);
+			mark_reactions(source, DIRTY);
 
 			// It's possible that the current reaction might not have up-to-date dependencies
 			// whilst it's actively running. So in the case of ensuring it registers the reaction
@@ -3692,25 +2836,16 @@
 	function flush_eager_effects() {
 		eager_effects_deferred = false;
 
-		for (const effect of eager_effects) {
+		const inspects = Array.from(eager_effects);
+
+		for (const effect of inspects) {
 			// Mark clean inspect-effects as maybe dirty and then check their dirtiness
 			// instead of just updating the effects - this way we avoid overfiring.
 			if ((effect.f & CLEAN) !== 0) {
 				set_signal_status(effect, MAYBE_DIRTY);
 			}
 
-			let dirty;
-
-			try {
-				dirty = is_dirty(effect);
-			} catch {
-				// Dirty-checking can evaluate derived dependencies and throw in cases where
-				// parent effects are about to destroy this eager effect. Run the effect so
-				// its own error handling can deal with transient failures.
-				dirty = true;
-			}
-
-			if (dirty) {
+			if (is_dirty(effect)) {
 				update_effect(effect);
 			}
 		}
@@ -3729,10 +2864,9 @@
 	/**
 	 * @param {Value} signal
 	 * @param {number} status should be DIRTY or MAYBE_DIRTY
-	 * @param {Effect[] | null} updated_during_traversal
 	 * @returns {void}
 	 */
-	function mark_reactions(signal, status, updated_during_traversal) {
+	function mark_reactions(signal, status) {
 		var reactions = signal.reactions;
 		if (reactions === null) return;
 		var length = reactions.length;
@@ -3748,39 +2882,27 @@
 				set_signal_status(reaction, status);
 			}
 
-			if ((flags & EAGER_EFFECT) !== 0) {
-				// Eager effects need to run immediately:
-				// - for $inspect so that the stack trace makes sense
-				// - for $state.eager because they might be without an effect parent
-				eager_effects.add(/** @type {Effect} */ (reaction));
-			} else if ((flags & DERIVED) !== 0) {
+			if ((flags & DERIVED) !== 0) {
 				var derived = /** @type {Derived} */ (reaction);
 
 				batch_values?.delete(derived);
 
 				if ((flags & WAS_MARKED) === 0) {
-					// Only connected deriveds being executed outside the update cycle can be reliably unmarked right away
-					if (
-						flags & CONNECTED &&
-						(active_effect === null || (active_effect.f & REACTION_IS_UPDATING) === 0)
-					) {
+					// Only connected deriveds can be reliably unmarked right away
+					if (flags & CONNECTED) {
 						reaction.f |= WAS_MARKED;
 					}
 
-					mark_reactions(derived, MAYBE_DIRTY, updated_during_traversal);
+					mark_reactions(derived, MAYBE_DIRTY);
 				}
 			} else if (not_dirty) {
-				var effect = /** @type {Effect} */ (reaction);
-
-				if ((flags & BLOCK_EFFECT) !== 0 && eager_block_effects !== null) {
-					eager_block_effects.add(effect);
+				if ((flags & BLOCK_EFFECT) !== 0) {
+					if (eager_block_effects !== null) {
+						eager_block_effects.add(/** @type {Effect} */ (reaction));
+					}
 				}
 
-				if (updated_during_traversal !== null) {
-					updated_during_traversal.push(effect);
-				} else {
-					schedule_effect(effect);
-				}
+				schedule_effect(/** @type {Effect} */ (reaction));
 			}
 		}
 	}
@@ -3858,7 +2980,7 @@
 				}
 				var s = sources.get(prop);
 				if (s === undefined) {
-					with_parent(() => {
+					s = with_parent(() => {
 						var s = state(descriptor.value);
 						sources.set(prop, s);
 						return s;
@@ -4160,15 +3282,21 @@
 
 		if (is_extensible(element_prototype)) {
 			// the following assignments improve perf of lookups on DOM nodes
-			/** @type {any} */ (element_prototype)[CLASS_CACHE] = undefined;
-			/** @type {any} */ (element_prototype)[ATTRIBUTES_CACHE] = null;
-			/** @type {any} */ (element_prototype)[STYLE_CACHE] = undefined;
+			// @ts-expect-error
+			element_prototype.__click = undefined;
+			// @ts-expect-error
+			element_prototype.__className = undefined;
+			// @ts-expect-error
+			element_prototype.__attributes = null;
+			// @ts-expect-error
+			element_prototype.__style = undefined;
 			// @ts-expect-error
 			element_prototype.__e = undefined;
 		}
 
 		if (is_extensible(text_prototype)) {
-			/** @type {any} */ (text_prototype)[TEXT_CACHE] = undefined;
+			// @ts-expect-error
+			text_prototype.__t = undefined;
 		}
 	}
 
@@ -4183,19 +3311,21 @@
 	/**
 	 * @template {Node} N
 	 * @param {N} node
+	 * @returns {Node | null}
 	 */
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_first_child(node) {
-		return /** @type {TemplateNode | null} */ (first_child_getter.call(node));
+		return first_child_getter.call(node);
 	}
 
 	/**
 	 * @template {Node} N
 	 * @param {N} node
+	 * @returns {Node | null}
 	 */
 	/*@__NO_SIDE_EFFECTS__*/
 	function get_next_sibling(node) {
-		return /** @type {TemplateNode | null} */ (next_sibling_getter.call(node));
+		return next_sibling_getter.call(node);
 	}
 
 	/**
@@ -4203,14 +3333,14 @@
 	 * @template {Node} N
 	 * @param {N} node
 	 * @param {boolean} is_text
-	 * @returns {TemplateNode | null}
+	 * @returns {Node | null}
 	 */
 	function child(node, is_text) {
 		if (!hydrating) {
 			return get_first_child(node);
 		}
 
-		var child = get_first_child(hydrate_node);
+		var child = /** @type {TemplateNode} */ (get_first_child(hydrate_node));
 
 		// Child can be null if we have an element with a single child, like `<p>{text}</p>`, where `text` is empty
 		if (child === null) {
@@ -4222,23 +3352,20 @@
 			return text;
 		}
 
-		if (is_text) {
-			merge_text_nodes(/** @type {Text} */ (child));
-		}
-
 		set_hydrate_node(child);
 		return child;
 	}
 
 	/**
 	 * Don't mark this as side-effect-free, hydration needs to walk all nodes
-	 * @param {TemplateNode} node
+	 * @param {DocumentFragment | TemplateNode | TemplateNode[]} fragment
 	 * @param {boolean} [is_text]
-	 * @returns {TemplateNode | null}
+	 * @returns {Node | null}
 	 */
-	function first_child(node, is_text = false) {
+	function first_child(fragment, is_text = false) {
 		if (!hydrating) {
-			var first = get_first_child(node);
+			// when not hydrating, `fragment` is a `DocumentFragment` (the result of calling `open_frag`)
+			var first = /** @type {DocumentFragment} */ (get_first_child(/** @type {Node} */ (fragment)));
 
 			// TODO prevent user comments with the empty string when preserveComments is true
 			if (first instanceof Comment && first.data === '') return get_next_sibling(first);
@@ -4246,18 +3373,14 @@
 			return first;
 		}
 
-		if (is_text) {
-			// if an {expression} is empty during SSR, there might be no
-			// text node to hydrate — we must therefore create one
-			if (hydrate_node?.nodeType !== TEXT_NODE) {
-				var text = create_text();
+		// if an {expression} is empty during SSR, there might be no
+		// text node to hydrate — we must therefore create one
+		if (is_text && hydrate_node?.nodeType !== TEXT_NODE) {
+			var text = create_text();
 
-				hydrate_node?.before(text);
-				set_hydrate_node(text);
-				return text;
-			}
-
-			merge_text_nodes(/** @type {Text} */ (hydrate_node));
+			hydrate_node?.before(text);
+			set_hydrate_node(text);
+			return text;
 		}
 
 		return hydrate_node;
@@ -4268,7 +3391,7 @@
 	 * @param {TemplateNode} node
 	 * @param {number} count
 	 * @param {boolean} is_text
-	 * @returns {TemplateNode | null}
+	 * @returns {Node | null}
 	 */
 	function sibling(node, count = 1, is_text = false) {
 		let next_sibling = hydrating ? hydrate_node : node;
@@ -4283,28 +3406,24 @@
 			return next_sibling;
 		}
 
-		if (is_text) {
-			// if a sibling {expression} is empty during SSR, there might be no
-			// text node to hydrate — we must therefore create one
-			if (next_sibling?.nodeType !== TEXT_NODE) {
-				var text = create_text();
-				// If the next sibling is `null` and we're handling text then it's because
-				// the SSR content was empty for the text, so we need to generate a new text
-				// node and insert it after the last sibling
-				if (next_sibling === null) {
-					last_sibling?.after(text);
-				} else {
-					next_sibling.before(text);
-				}
-				set_hydrate_node(text);
-				return text;
+		// if a sibling {expression} is empty during SSR, there might be no
+		// text node to hydrate — we must therefore create one
+		if (is_text && next_sibling?.nodeType !== TEXT_NODE) {
+			var text = create_text();
+			// If the next sibling is `null` and we're handling text then it's because
+			// the SSR content was empty for the text, so we need to generate a new text
+			// node and insert it after the last sibling
+			if (next_sibling === null) {
+				last_sibling?.after(text);
+			} else {
+				next_sibling.before(text);
 			}
-
-			merge_text_nodes(/** @type {Text} */ (next_sibling));
+			set_hydrate_node(text);
+			return text;
 		}
 
 		set_hydrate_node(next_sibling);
-		return next_sibling;
+		return /** @type {TemplateNode} */ (next_sibling);
 	}
 
 	/**
@@ -4317,51 +3436,103 @@
 	}
 
 	/**
-	 * Branching here is intentional and load-bearing for perf. `createElement(tag)`
-	 * hits a fast path in Blink that `createElementNS(NAMESPACE_HTML, tag)` doesn't,
-	 * and passing an explicit `undefined` as the trailing options arg measurably
-	 * slows both APIs. Funnelling every case through a single `createElementNS(ns,
-	 * tag, options)` call would be smaller but slower on the HTML path.
-	 *
-	 * @template {keyof HTMLElementTagNameMap | string} T
-	 * @param {T} tag
-	 * @param {string} [namespace]
-	 * @param {string} [is]
-	 * @returns {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element}
+	 * Returns `true` if we're updating the current block, for example `condition` in
+	 * an `{#if condition}` block just changed. In this case, the branch should be
+	 * appended (or removed) at the same time as other updates within the
+	 * current `<svelte:boundary>`
 	 */
-	function create_element(tag, namespace, is) {
-		if (namespace == null || namespace === NAMESPACE_HTML) {
-			return /** @type {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element} */ (
-				is ? document.createElement(tag, { is }) : document.createElement(tag)
-			);
-		}
-		return /** @type {T extends keyof HTMLElementTagNameMap ? HTMLElementTagNameMap[T] : Element} */ (
-			is ? document.createElementNS(namespace, tag, { is }) : document.createElementNS(namespace, tag)
-		);
+	function should_defer_append() {
+		return false;
 	}
 
 	/**
-	 * Browsers split text nodes larger than 65536 bytes when parsing.
-	 * For hydration to succeed, we need to stitch them back together
-	 * @param {Text} text
+	 * @param {HTMLElement} dom
+	 * @param {boolean} value
+	 * @returns {void}
 	 */
-	function merge_text_nodes(text) {
-		if (/** @type {string} */ (text.nodeValue).length < 65536) {
-			return;
-		}
+	function autofocus(dom, value) {
+		if (value) {
+			const body = document.body;
+			dom.autofocus = true;
 
-		let next = text.nextSibling;
-
-		while (next !== null && next.nodeType === TEXT_NODE) {
-			next.remove();
-
-			/** @type {string} */ (text.nodeValue) += /** @type {string} */ (next.nodeValue);
-
-			next = text.nextSibling;
+			queue_micro_task(() => {
+				if (document.activeElement === body) {
+					dom.focus();
+				}
+			});
 		}
 	}
 
-	/** @import { Blocker, ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
+	let listening_to_form_reset = false;
+
+	function add_form_reset_listener() {
+		if (!listening_to_form_reset) {
+			listening_to_form_reset = true;
+			document.addEventListener(
+				'reset',
+				(evt) => {
+					// Needs to happen one tick later or else the dom properties of the form
+					// elements have not updated to their reset values yet
+					Promise.resolve().then(() => {
+						if (!evt.defaultPrevented) {
+							for (const e of /**@type {HTMLFormElement} */ (evt.target).elements) {
+								// @ts-expect-error
+								e.__on_r?.();
+							}
+						}
+					});
+				},
+				// In the capture phase to guarantee we get noticed of it (no possiblity of stopPropagation)
+				{ capture: true }
+			);
+		}
+	}
+
+	/**
+	 * @template T
+	 * @param {() => T} fn
+	 */
+	function without_reactive_context(fn) {
+		var previous_reaction = active_reaction;
+		var previous_effect = active_effect;
+		set_active_reaction(null);
+		set_active_effect(null);
+		try {
+			return fn();
+		} finally {
+			set_active_reaction(previous_reaction);
+			set_active_effect(previous_effect);
+		}
+	}
+
+	/**
+	 * Listen to the given event, and then instantiate a global form reset listener if not already done,
+	 * to notify all bindings when the form is reset
+	 * @param {HTMLElement} element
+	 * @param {string} event
+	 * @param {(is_reset?: true) => void} handler
+	 * @param {(is_reset?: true) => void} [on_reset]
+	 */
+	function listen_to_event_and_reset_event(element, event, handler, on_reset = handler) {
+		element.addEventListener(event, () => without_reactive_context(handler));
+		// @ts-expect-error
+		const prev = element.__on_r;
+		if (prev) {
+			// special case for checkbox that can have multiple binds (group & checked)
+			// @ts-expect-error
+			element.__on_r = () => {
+				prev();
+				on_reset(true);
+			};
+		} else {
+			// @ts-expect-error
+			element.__on_r = () => on_reset(true);
+		}
+
+		add_form_reset_listener();
+	}
+
+	/** @import { ComponentContext, ComponentContextLegacy, Derived, Effect, TemplateNode, TransitionManager } from '#client' */
 
 	/**
 	 * @param {'$effect' | '$effect.pre' | '$inspect'} rune
@@ -4398,9 +3569,11 @@
 	/**
 	 * @param {number} type
 	 * @param {null | (() => void | (() => void))} fn
+	 * @param {boolean} sync
+	 * @param {boolean} push
 	 * @returns {Effect}
 	 */
-	function create_effect(type, fn) {
+	function create_effect(type, fn, sync, push = true) {
 		var parent = active_effect;
 
 		if (parent !== null && (parent.f & INERT) !== 0) {
@@ -4411,7 +3584,8 @@
 		var effect = {
 			ctx: component_context,
 			deps: null,
-			nodes: null,
+			nodes_start: null,
+			nodes_end: null,
 			f: type | DIRTY | CONNECTED,
 			first: null,
 			fn,
@@ -4421,38 +3595,35 @@
 			b: parent && parent.b,
 			prev: null,
 			teardown: null,
+			transitions: null,
 			wv: 0,
 			ac: null
 		};
 
-		current_batch?.register_created_effect(effect);
-
-		/** @type {Effect | null} */
-		var e = effect;
-
-		if ((type & EFFECT) !== 0) {
-			if (collected_effects !== null) {
-				// created during traversal — collect and run afterwards
-				collected_effects.push(effect);
-			} else {
-				// schedule for later
-				Batch.ensure().schedule(effect);
-			}
-		} else if (fn !== null) {
+		if (sync) {
 			try {
 				update_effect(effect);
+				effect.f |= EFFECT_RAN;
 			} catch (e) {
 				destroy_effect(effect);
 				throw e;
 			}
+		} else if (fn !== null) {
+			schedule_effect(effect);
+		}
 
-			// if an effect doesn't need to be kept in the tree (because it
-			// won't re-run, has no DOM, and has no teardown etc)
+		if (push) {
+			/** @type {Effect | null} */
+			var e = effect;
+
+			// if an effect has already ran and doesn't need to be kept in the tree
+			// (because it won't re-run, has no DOM, and has no teardown etc)
 			// then we skip it and go to its child (if any)
 			if (
+				sync &&
 				e.deps === null &&
 				e.teardown === null &&
-				e.nodes === null &&
+				e.nodes_start === null &&
 				e.first === e.last && // either `null`, or a singular child
 				(e.f & EFFECT_PRESERVED) === 0
 			) {
@@ -4461,23 +3632,23 @@
 					e.f |= EFFECT_TRANSPARENT;
 				}
 			}
-		}
 
-		if (e !== null) {
-			e.parent = parent;
+			if (e !== null) {
+				e.parent = parent;
 
-			if (parent !== null) {
-				push_effect(e, parent);
-			}
+				if (parent !== null) {
+					push_effect(e, parent);
+				}
 
-			// if we're in a derived, add the effect there too
-			if (
-				active_reaction !== null &&
-				(active_reaction.f & DERIVED) !== 0 &&
-				(type & ROOT_EFFECT) === 0
-			) {
-				var derived = /** @type {Derived} */ (active_reaction);
-				(derived.effects ??= []).push(e);
+				// if we're in a derived, add the effect there too
+				if (
+					active_reaction !== null &&
+					(active_reaction.f & DERIVED) !== 0 &&
+					(type & ROOT_EFFECT) === 0
+				) {
+					var derived = /** @type {Derived} */ (active_reaction);
+					(derived.effects ??= []).push(e);
+				}
 			}
 		}
 
@@ -4496,7 +3667,7 @@
 	 * @param {() => void} fn
 	 */
 	function teardown(fn) {
-		const effect = create_effect(RENDER_EFFECT, null);
+		const effect = create_effect(RENDER_EFFECT, null, false);
 		set_signal_status(effect, CLEAN);
 		effect.teardown = fn;
 		return effect;
@@ -4512,11 +3683,7 @@
 		// Non-nested `$effect(...)` in a component should be deferred
 		// until the component is mounted
 		var flags = /** @type {Effect} */ (active_effect).f;
-		var defer =
-			!active_reaction &&
-			(flags & BRANCH_EFFECT) !== 0 &&
-			component_context !== null &&
-			!component_context.i;
+		var defer = !active_reaction && (flags & BRANCH_EFFECT) !== 0 && (flags & EFFECT_RAN) === 0;
 
 		if (defer) {
 			// Top-level `$effect(...)` in an unmounted component — defer until mount
@@ -4532,12 +3699,12 @@
 	 * @param {() => void | (() => void)} fn
 	 */
 	function create_user_effect(fn) {
-		return create_effect(EFFECT | USER_EFFECT, fn);
+		return create_effect(EFFECT | USER_EFFECT, fn, false);
 	}
 
 	/** @param {() => void | (() => void)} fn */
 	function eager_effect(fn) {
-		return create_effect(EAGER_EFFECT, fn);
+		return create_effect(EAGER_EFFECT, fn, true);
 	}
 
 	/**
@@ -4547,7 +3714,7 @@
 	 */
 	function effect_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
+		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
 
 		return () => {
 			destroy_effect(effect);
@@ -4561,7 +3728,7 @@
 	 */
 	function component_root(fn) {
 		Batch.ensure();
-		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn);
+		const effect = create_effect(ROOT_EFFECT | EFFECT_PRESERVED, fn, true);
 
 		return (options = {}) => {
 			return new Promise((fulfil) => {
@@ -4583,7 +3750,7 @@
 	 * @returns {Effect}
 	 */
 	function effect(fn) {
-		return create_effect(EFFECT, fn);
+		return create_effect(EFFECT, fn, false);
 	}
 
 	/**
@@ -4591,7 +3758,7 @@
 	 * @returns {Effect}
 	 */
 	function async_effect(fn) {
-		return create_effect(ASYNC | EFFECT_PRESERVED, fn);
+		return create_effect(ASYNC | EFFECT_PRESERVED, fn, true);
 	}
 
 	/**
@@ -4599,20 +3766,19 @@
 	 * @returns {Effect}
 	 */
 	function render_effect(fn, flags = 0) {
-		return create_effect(RENDER_EFFECT | flags, fn);
+		return create_effect(RENDER_EFFECT | flags, fn, true);
 	}
 
 	/**
 	 * @param {(...expressions: any) => void | (() => void)} fn
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
-	 * @param {Blocker[]} blockers
+	 * @param {Array<Promise<void>>} blockers
+	 * @param {boolean} defer
 	 */
-	function template_effect(fn, sync = [], async = [], blockers = []) {
+	function template_effect(fn, sync = [], async = [], blockers = [], defer = false) {
 		flatten(blockers, sync, async, (values) => {
-			create_effect(RENDER_EFFECT, () => {
-				fn(...values.map(get));
-			});
+			create_effect(defer ? EFFECT : RENDER_EFFECT, () => fn(...values.map(get)), true);
 		});
 	}
 
@@ -4621,24 +3787,16 @@
 	 * @param {number} flags
 	 */
 	function block(fn, flags = 0) {
-		var effect = create_effect(BLOCK_EFFECT | flags, fn);
+		var effect = create_effect(BLOCK_EFFECT | flags, fn, true);
 		return effect;
 	}
 
 	/**
 	 * @param {(() => void)} fn
-	 * @param {number} flags
+	 * @param {boolean} [push]
 	 */
-	function managed(fn, flags = 0) {
-		var effect = create_effect(MANAGED_EFFECT | flags, fn);
-		return effect;
-	}
-
-	/**
-	 * @param {(() => void)} fn
-	 */
-	function branch(fn) {
-		return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn);
+	function branch(fn, push = true) {
+		return create_effect(BRANCH_EFFECT | EFFECT_PRESERVED, fn, true, push);
 	}
 
 	/**
@@ -4717,18 +3875,18 @@
 
 		if (
 			(remove_dom || (effect.f & HEAD_EFFECT) !== 0) &&
-			effect.nodes !== null &&
-			effect.nodes.end !== null
+			effect.nodes_start !== null &&
+			effect.nodes_end !== null
 		) {
-			remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
+			remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
 			removed = true;
 		}
 
-		effect.f |= DESTROYING;
 		destroy_effect_children(effect, remove_dom && !removed);
 		remove_reactions(effect, 0);
+		set_signal_status(effect, DESTROYED);
 
-		var transitions = effect.nodes && effect.nodes.t;
+		var transitions = effect.transitions;
 
 		if (transitions !== null) {
 			for (const transition of transitions) {
@@ -4737,9 +3895,6 @@
 		}
 
 		execute_effect_teardown(effect);
-
-		effect.f ^= DESTROYING;
-		effect.f |= DESTROYED;
 
 		var parent = effect.parent;
 
@@ -4756,9 +3911,9 @@
 			effect.ctx =
 			effect.deps =
 			effect.fn =
-			effect.nodes =
+			effect.nodes_start =
+			effect.nodes_end =
 			effect.ac =
-			effect.b =
 				null;
 	}
 
@@ -4770,7 +3925,7 @@
 	function remove_effect_dom(node, end) {
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : get_next_sibling(node);
+			var next = node === end ? null : /** @type {TemplateNode} */ (get_next_sibling(node));
 
 			node.remove();
 			node = next;
@@ -4812,11 +3967,17 @@
 
 		pause_children(effect, transitions, true);
 
-		var fn = () => {
+		run_out_transitions(transitions, () => {
 			if (destroy) destroy_effect(effect);
 			if (callback) callback();
-		};
+		});
+	}
 
+	/**
+	 * @param {TransitionManager[]} transitions
+	 * @param {() => void} fn
+	 */
+	function run_out_transitions(transitions, fn) {
 		var remaining = transitions.length;
 		if (remaining > 0) {
 			var check = () => --remaining || fn();
@@ -4837,10 +3998,8 @@
 		if ((effect.f & INERT) !== 0) return;
 		effect.f ^= INERT;
 
-		var t = effect.nodes && effect.nodes.t;
-
-		if (t !== null) {
-			for (const transition of t) {
+		if (effect.transitions !== null) {
+			for (const transition of effect.transitions) {
 				if (transition.is_global || local) {
 					transitions.push(transition);
 				}
@@ -4851,22 +4010,16 @@
 
 		while (child !== null) {
 			var sibling = child.next;
-
-			// If this child is a root effect, then it will become an independent root when its parent
-			// is destroyed, it should therefore not become inert nor partake in transitions.
-			if ((child.f & ROOT_EFFECT) === 0) {
-				var transparent =
-					(child.f & EFFECT_TRANSPARENT) !== 0 ||
-					// If this is a branch effect without a block effect parent,
-					// it means the parent block effect was pruned. In that case,
-					// transparency information was transferred to the branch effect.
-					((child.f & BRANCH_EFFECT) !== 0 && (effect.f & BLOCK_EFFECT) !== 0);
-				// TODO we don't need to call pause_children recursively with a linked list in place
-				// it's slightly more involved though as we have to account for `transparent` changing
-				// through the tree.
-				pause_children(child, transitions, transparent ? local : false);
-			}
-
+			var transparent =
+				(child.f & EFFECT_TRANSPARENT) !== 0 ||
+				// If this is a branch effect without a block effect parent,
+				// it means the parent block effect was pruned. In that case,
+				// transparency information was transferred to the branch effect.
+				((child.f & BRANCH_EFFECT) !== 0 && (effect.f & BLOCK_EFFECT) !== 0);
+			// TODO we don't need to call pause_children recursively with a linked list in place
+			// it's slightly more involved though as we have to account for `transparent` changing
+			// through the tree.
+			pause_children(child, transitions, transparent ? local : false);
 			child = sibling;
 		}
 	}
@@ -4894,7 +4047,7 @@
 		// `{#if foo}{foo.bar()}{/if}` if `foo` is now `undefined
 		if ((effect.f & CLEAN) === 0) {
 			set_signal_status(effect, DIRTY);
-			Batch.ensure().schedule(effect); // Assumption: This happens during the commit phase of the batch, causing another flush, but it's safe
+			schedule_effect(effect);
 		}
 
 		var child = effect.first;
@@ -4909,10 +4062,8 @@
 			child = sibling;
 		}
 
-		var t = effect.nodes && effect.nodes.t;
-
-		if (t !== null) {
-			for (const transition of t) {
+		if (effect.transitions !== null) {
+			for (const transition of effect.transitions) {
 				if (transition.is_global || local) {
 					transition.in();
 				}
@@ -4925,27 +4076,26 @@
 	 * @param {DocumentFragment} fragment
 	 */
 	function move_effect(effect, fragment) {
-		if (!effect.nodes) return;
-
-		/** @type {TemplateNode | null} */
-		var node = effect.nodes.start;
-		var end = effect.nodes.end;
+		var node = effect.nodes_start;
+		var end = effect.nodes_end;
 
 		while (node !== null) {
 			/** @type {TemplateNode | null} */
-			var next = node === end ? null : get_next_sibling(node);
+			var next = node === end ? null : /** @type {TemplateNode} */ (get_next_sibling(node));
 
 			fragment.append(node);
 			node = next;
 		}
 	}
 
-	/** @import { Derived, Effect, Reaction, Source, Value } from '#client' */
+	/** @import { Derived, Effect, Reaction, Signal, Source, Value } from '#client' */
 
-	/**
-	 * True if updating in an effect context that is reactive (i.e. not branch/root effects)
-	 */
 	let is_updating_effect = false;
+
+	/** @param {boolean} value */
+	function set_is_updating_effect(value) {
+		is_updating_effect = value;
+	}
 
 	let is_destroying_effect = false;
 
@@ -4975,14 +4125,18 @@
 	/**
 	 * When sources are created within a reaction, reading and writing
 	 * them within that reaction should not cause a re-run
-	 * @type {null | Set<Source>}
+	 * @type {null | Source[]}
 	 */
 	let current_sources = null;
 
 	/** @param {Value} value */
 	function push_reaction_value(value) {
 		if (active_reaction !== null && (true)) {
-			(current_sources ??= new Set()).add(value);
+			if (current_sources === null) {
+				current_sources = [value];
+			} else {
+				current_sources.push(value);
+			}
 		}
 	}
 
@@ -5046,18 +4200,21 @@
 		}
 
 		if ((flags & MAYBE_DIRTY) !== 0) {
-			var dependencies = /** @type {Value[]} */ (reaction.deps);
-			var length = dependencies.length;
+			var dependencies = reaction.deps;
 
-			for (var i = 0; i < length; i++) {
-				var dependency = dependencies[i];
+			if (dependencies !== null) {
+				var length = dependencies.length;
 
-				if (is_dirty(/** @type {Derived} */ (dependency))) {
-					update_derived(/** @type {Derived} */ (dependency));
-				}
+				for (var i = 0; i < length; i++) {
+					var dependency = dependencies[i];
 
-				if (dependency.wv > reaction.wv) {
-					return true;
+					if (is_dirty(/** @type {Derived} */ (dependency))) {
+						update_derived(/** @type {Derived} */ (dependency));
+					}
+
+					if (dependency.wv > reaction.wv) {
+						return true;
+					}
 				}
 			}
 
@@ -5083,7 +4240,7 @@
 		var reactions = signal.reactions;
 		if (reactions === null) return;
 
-		if (current_sources !== null && current_sources.has(signal)) {
+		if (current_sources?.includes(signal)) {
 			return;
 		}
 
@@ -5138,19 +4295,12 @@
 			reaction.f |= REACTION_IS_UPDATING;
 			var fn = /** @type {Function} */ (reaction.fn);
 			var result = fn();
-			reaction.f |= REACTION_RAN;
 			var deps = reaction.deps;
-
-			// Don't remove reactions during fork;
-			// they must remain for when fork is discarded
-			var is_fork = current_batch?.is_fork;
 
 			if (new_deps !== null) {
 				var i;
 
-				if (!is_fork) {
-					remove_reactions(reaction, skipped_deps);
-				}
+				remove_reactions(reaction, skipped_deps);
 
 				if (deps !== null && skipped_deps > 0) {
 					deps.length = skipped_deps + new_deps.length;
@@ -5161,12 +4311,12 @@
 					reaction.deps = deps = new_deps;
 				}
 
-				if (effect_tracking() && (reaction.f & CONNECTED) !== 0) {
+				if (is_updating_effect && effect_tracking() && (reaction.f & CONNECTED) !== 0) {
 					for (i = skipped_deps; i < deps.length; i++) {
 						(deps[i].reactions ??= []).push(reaction);
 					}
 				}
-			} else if (!is_fork && deps !== null && skipped_deps < deps.length) {
+			} else if (deps !== null && skipped_deps < deps.length) {
 				remove_reactions(reaction, skipped_deps);
 				deps.length = skipped_deps;
 			}
@@ -5195,20 +4345,6 @@
 			// the same version
 			if (previous_reaction !== null && previous_reaction !== reaction) {
 				read_version++;
-
-				// update the `rv` of the previous reaction's deps — both existing and new —
-				// so that they are not added again
-				if (previous_reaction.deps !== null) {
-					for (let i = 0; i < previous_skipped_deps; i += 1) {
-						previous_reaction.deps[i].rv = read_version;
-					}
-				}
-
-				if (previous_deps !== null) {
-					for (const dep of previous_deps) {
-						dep.rv = read_version;
-					}
-				}
 
 				if (untracked_writes !== null) {
 					if (previous_untracked_writes === null) {
@@ -5269,41 +4405,18 @@
 			// Destroying a child effect while updating a parent effect can cause a dependency to appear
 			// to be unused, when in fact it is used by the currently-updating parent. Checking `new_deps`
 			// allows us to skip the expensive work of disconnecting and immediately reconnecting it
-			(new_deps === null || !includes.call(new_deps, dependency))
+			(new_deps === null || !new_deps.includes(dependency))
 		) {
-			var derived = /** @type {Derived} */ (dependency);
-
+			set_signal_status(dependency, MAYBE_DIRTY);
 			// If we are working with a derived that is owned by an effect, then mark it as being
 			// disconnected and remove the mark flag, as it cannot be reliably removed otherwise
-			if ((derived.f & CONNECTED) !== 0) {
-				derived.f ^= CONNECTED;
-				derived.f &= ~WAS_MARKED;
+			if ((dependency.f & CONNECTED) !== 0) {
+				dependency.f ^= CONNECTED;
+				dependency.f &= ~WAS_MARKED;
 			}
-
-			// In a fork it's possible that a derived is executed and gets reactions, then commits, but is
-			// never re-executed. This is possible when the derived is only executed once in the context
-			// of a new branch which happens before fork.commit() runs. In this case, the derived still has
-			// UNINITIALIZED as its value, and then when it's loosing its reactions we need to ensure it stays
-			// DIRTY so it is reexecuted once someone wants its value again.
-			if (derived.v !== UNINITIALIZED) {
-				update_derived_status(derived);
-			}
-
-			// Call abort controller, noone's listening to this derived anymore
-			if (derived.ac !== null) {
-				without_reactive_context(() => {
-					/** @type {AbortController} */ (derived.ac).abort(STALE_REACTION);
-					derived.ac = null;
-					// ensure it reruns right away next time instead of potentially returning a rejected promise as its value
-					set_signal_status(derived, DIRTY);
-				});
-			}
-
-			// freeze any effects inside this derived
-			freeze_derived_effects(derived);
-
 			// Disconnect any reactions owned by this reaction
-			remove_reactions(derived, 0);
+			destroy_derived_effects(/** @type {Derived} **/ (dependency));
+			remove_reactions(/** @type {Derived} **/ (dependency), 0);
 		}
 	}
 
@@ -5338,10 +4451,10 @@
 		var was_updating_effect = is_updating_effect;
 
 		active_effect = effect;
-		is_updating_effect = (flags & (BRANCH_EFFECT | ROOT_EFFECT)) === 0; // Branch/root effects are not reactive contexts
+		is_updating_effect = true;
 
 		try {
-			if ((flags & (BLOCK_EFFECT | MANAGED_EFFECT)) !== 0) {
+			if ((flags & BLOCK_EFFECT) !== 0) {
 				destroy_block_effect_children(effect);
 			} else {
 				destroy_effect_children(effect);
@@ -5390,7 +4503,7 @@
 			// we don't add the dependency, because that would create a memory leak
 			var destroyed = active_effect !== null && (active_effect.f & DESTROYED) !== 0;
 
-			if (!destroyed && (current_sources === null || !current_sources.has(signal))) {
+			if (!destroyed && !current_sources?.includes(signal)) {
 				var deps = active_reaction.deps;
 
 				if ((active_reaction.f & REACTION_IS_UPDATING) !== 0) {
@@ -5405,40 +4518,34 @@
 							skipped_deps++;
 						} else if (new_deps === null) {
 							new_deps = [signal];
-						} else {
+						} else if (!new_deps.includes(signal)) {
 							new_deps.push(signal);
 						}
 					}
 				} else {
-					// We're adding a dependency outside the init/update cycle (i.e. after an `await`).
-					// We have to deduplicate deps/reactions in this case or remove_reactions could
-					// disconnect deps/reactions that are actually still in use (if skip_deps says
-					// "disconnect all after this index" and some of the signals are also present in
-					// list prior to the cutoff index, i.e. that should be kept).
-					active_reaction.deps ??= [];
-					if (!includes.call(active_reaction.deps, signal)) {
-						active_reaction.deps.push(signal);
-					}
+					// we're adding a dependency outside the init/update cycle
+					// (i.e. after an `await`)
+					(active_reaction.deps ??= []).push(signal);
 
 					var reactions = signal.reactions;
 
 					if (reactions === null) {
 						signal.reactions = [active_reaction];
-					} else if (!includes.call(reactions, active_reaction)) {
+					} else if (!reactions.includes(active_reaction)) {
 						reactions.push(active_reaction);
 					}
 				}
 			}
 		}
 
-		if (is_destroying_effect && old_values.has(signal)) {
-			return old_values.get(signal);
-		}
+		if (is_destroying_effect) {
+			if (old_values.has(signal)) {
+				return old_values.get(signal);
+			}
 
-		if (is_derived) {
-			var derived = /** @type {Derived} */ (signal);
+			if (is_derived) {
+				var derived = /** @type {Derived} */ (signal);
 
-			if (is_destroying_effect) {
 				var value = derived.v;
 
 				// if the derived is dirty and has reactions, or depends on the values that just changed, re-execute
@@ -5454,34 +4561,21 @@
 
 				return value;
 			}
+		} else if (is_derived) {
+			derived = /** @type {Derived} */ (signal);
 
-			// connect disconnected deriveds if we are reading them inside an effect,
-			// or inside another derived that is already connected
-			var should_connect =
-				(derived.f & CONNECTED) === 0 &&
-				!untracking &&
-				active_reaction !== null &&
-				(is_updating_effect || (active_reaction.f & CONNECTED) !== 0);
-
-			var is_new = (derived.f & REACTION_RAN) === 0;
+			if (batch_values?.has(derived)) {
+				return batch_values.get(derived);
+			}
 
 			if (is_dirty(derived)) {
-				if (should_connect) {
-					// set the flag before `update_derived`, so that the derived
-					// is added as a reaction to its dependencies
-					derived.f |= CONNECTED;
-				}
-
 				update_derived(derived);
 			}
 
-			if (should_connect && !is_new) {
-				unfreeze_derived_effects(derived);
+			if (is_updating_effect && effect_tracking() && (derived.f & CONNECTED) === 0) {
 				reconnect(derived);
 			}
-		}
-
-		if (batch_values?.has(signal)) {
+		} else if (batch_values?.has(signal)) {
 			return batch_values.get(signal);
 		}
 
@@ -5498,15 +4592,14 @@
 	 * @param {Derived} derived
 	 */
 	function reconnect(derived) {
-		derived.f |= CONNECTED;
-
 		if (derived.deps === null) return;
+
+		derived.f ^= CONNECTED;
 
 		for (const dep of derived.deps) {
 			(dep.reactions ??= []).push(derived);
 
 			if ((dep.f & DERIVED) !== 0 && (dep.f & CONNECTED) === 0) {
-				unfreeze_derived_effects(/** @type {Derived} */ (dep));
 				reconnect(/** @type {Derived} */ (dep));
 			}
 		}
@@ -5556,11 +4649,16 @@
 		}
 	}
 
+	const STATUS_MASK = -7169;
+
 	/**
-	 * Used on elements, as a map of event type -> event handler,
-	 * and on events themselves to track which element handled an event
+	 * @param {Signal} signal
+	 * @param {number} status
+	 * @returns {void}
 	 */
-	const event_symbol = Symbol('events');
+	function set_signal_status(signal, status) {
+		signal.f = (signal.f & STATUS_MASK) | status;
+	}
 
 	/** @type {Set<string>} */
 	const all_registered_events = new Set();
@@ -5637,17 +4735,6 @@
 	}
 
 	/**
-	 * @param {string} event_name
-	 * @param {Element} element
-	 * @param {EventListener} [handler]
-	 * @returns {void}
-	 */
-	function delegated(event_name, element, handler) {
-		// @ts-expect-error
-		(element[event_symbol] ??= {})[event_name] = handler;
-	}
-
-	/**
 	 * @param {Array<string>} events
 	 * @returns {void}
 	 */
@@ -5662,14 +4749,11 @@
 	}
 
 	// used to store the reference to the currently propagated event
-	// to prevent garbage collection between microtasks in Firefox (<= 141)
+	// to prevent garbage collection between microtasks in Firefox
 	// If the event object is GCed too early, the expando __root property
 	// set on the event object is lost, causing the event delegation
 	// to process the event twice
 	let last_propagated_event = null;
-
-	// whether a task is already queued to clear `last_propagated_event`
-	let last_propagated_event_clear_scheduled = false;
 
 	/**
 	 * @this {EventTarget}
@@ -5685,24 +4769,9 @@
 
 		last_propagated_event = event;
 
-		// The reference is only needed while the event can still reach another
-		// delegated root, i.e. during the current (synchronous) dispatch and its
-		// microtask checkpoints. Clearing it in a later task preserves the
-		// Firefox workaround while making sure the slot doesn't retain the last
-		// event forever — through `event.target` it would otherwise keep the
-		// entire detached subtree of whatever the user last clicked in alive
-		// until the next delegated event happens to arrive.
-		if (!last_propagated_event_clear_scheduled) {
-			last_propagated_event_clear_scheduled = true;
-			setTimeout(() => {
-				last_propagated_event_clear_scheduled = false;
-				last_propagated_event = null;
-			});
-		}
-
 		// composedPath contains list of nodes the event has propagated through.
-		// We check `event_symbol` to skip all nodes below it in case this is a
-		// parent of the `event_symbol` node, which indicates that there's nested
+		// We check __root to skip all nodes below it in case this is a
+		// parent of the __root node, which indicates that there's nested
 		// mounted apps. In this case we don't want to trigger events multiple times.
 		var path_idx = 0;
 
@@ -5710,7 +4779,7 @@
 		// without it the variable will be DCE'd and things will
 		// fail mysteriously in Firefox
 		// @ts-expect-error is added below
-		var handled_at = last_propagated_event === event && event[event_symbol];
+		var handled_at = last_propagated_event === event && event.__root;
 
 		if (handled_at) {
 			var at_idx = path.indexOf(handled_at);
@@ -5722,7 +4791,7 @@
 				// -> ignore, but set handle_at to document/window so that we're resetting the event
 				// chain in case someone manually dispatches the same event object again.
 				// @ts-expect-error
-				event[event_symbol] = handler_element;
+				event.__root = handler_element;
 				return;
 			}
 
@@ -5758,9 +4827,9 @@
 		});
 
 		// This started because of Chromium issue https://chromestatus.com/feature/5128696823545856,
-		// where removal or moving of the DOM can cause sync `blur` events to fire, which can cause logic
+		// where removal or moving of of the DOM can cause sync `blur` events to fire, which can cause logic
 		// to run inside the current `active_reaction`, which isn't what we want at all. However, on reflection,
-		// it's probably best that all events handled by Svelte have this behaviour, as we don't really want
+		// it's probably best that all event handled by Svelte have this behaviour, as we don't really want
 		// an event handler to run in the context of another reaction or effect.
 		var previous_reaction = active_reaction;
 		var previous_effect = active_effect;
@@ -5778,11 +4847,16 @@
 			var other_errors = [];
 
 			while (current_target !== null) {
-				if (current_target === handler_element) break;
+				/** @type {null | Element} */
+				var parent_element =
+					current_target.assignedSlot ||
+					current_target.parentNode ||
+					/** @type {any} */ (current_target).host ||
+					null;
 
 				try {
 					// @ts-expect-error
-					var delegated = current_target[event_symbol]?.[event_name];
+					var delegated = current_target['__' + event_name];
 
 					if (
 						delegated != null &&
@@ -5800,10 +4874,10 @@
 						throw_error = error;
 					}
 				}
-				if (event.cancelBubble) break;
-
-				path_idx++;
-				current_target = path_idx < path.length ? /** @type {Element} */ (path[path_idx]) : null;
+				if (event.cancelBubble || parent_element === handler_element || parent_element === null) {
+					break;
+				}
+				current_target = parent_element;
 			}
 
 			if (throw_error) {
@@ -5817,7 +4891,7 @@
 			}
 		} finally {
 			// @ts-expect-error is used above
-			event[event_symbol] = handler_element;
+			event.__root = handler_element;
 			// @ts-ignore remove proxy on currentTarget
 			delete event.currentTarget;
 			set_active_reaction(previous_reaction);
@@ -5867,31 +4941,14 @@
 		handler?.apply(element, args);
 	}
 
-	const policy =
-		// We gotta write it like this because after downleveling the pure comment may end up in the wrong location
-		globalThis?.window?.trustedTypes &&
-		/* @__PURE__ */ globalThis.window.trustedTypes.createPolicy('svelte-trusted-html', {
-			/** @param {string} html */
-			createHTML: (html) => {
-				return html;
-			}
-		});
-
 	/** @param {string} html */
-	function create_trusted_html(html) {
-		return /** @type {string} */ (policy?.createHTML(html) ?? html);
-	}
-
-	/**
-	 * @param {string} html
-	 */
 	function create_fragment_from_html(html) {
-		var elem = create_element('template');
-		elem.innerHTML = create_trusted_html(html.replaceAll('<!>', '<!---->')); // XHTML compliance
+		var elem = document.createElement('template');
+		elem.innerHTML = html.replaceAll('<!>', '<!---->'); // XHTML compliance
 		return elem.content;
 	}
 
-	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
+	/** @import { Effect, TemplateNode } from '#client' */
 	/** @import { TemplateStructure } from './types' */
 
 	/**
@@ -5900,8 +4957,9 @@
 	 */
 	function assign_nodes(start, end) {
 		var effect = /** @type {Effect} */ (active_effect);
-		if (effect.nodes === null) {
-			effect.nodes = { start, end, a: null, t: null };
+		if (effect.nodes_start === null) {
+			effect.nodes_start = start;
+			effect.nodes_end = end;
 		}
 	}
 
@@ -5932,7 +4990,7 @@
 
 			if (node === undefined) {
 				node = create_fragment_from_html(has_start ? content : '<!>' + content);
-				if (!is_fragment) node = /** @type {TemplateNode} */ (get_first_child(node));
+				if (!is_fragment) node = /** @type {Node} */ (get_first_child(node));
 			}
 
 			var clone = /** @type {TemplateNode} */ (
@@ -6032,15 +5090,13 @@
 	 */
 	function append(anchor, dom) {
 		if (hydrating) {
-			var effect = /** @type {Effect & { nodes: EffectNodes }} */ (active_effect);
-
+			var effect = /** @type {Effect} */ (active_effect);
 			// When hydrating and outer component and an inner component is async, i.e. blocked on a promise,
 			// then by the time the inner resolves we have already advanced to the end of the hydrated nodes
 			// of the parent component. Check for defined for that reason to avoid rewinding the parent's end marker.
-			if ((effect.f & REACTION_RAN) === 0 || effect.nodes.end === null) {
-				effect.nodes.end = hydrate_node;
+			if ((effect.f & EFFECT_RAN) === 0 || effect.nodes_end === null) {
+				effect.nodes_end = hydrate_node;
 			}
-
 			hydrate_next();
 			return;
 		}
@@ -6189,7 +5245,7 @@
 		return /** @type {T} */ (location?.replace(/\//g, '/\u200b'));
 	}
 
-	/** @import { ComponentContext, Effect, EffectNodes, TemplateNode } from '#client' */
+	/** @import { ComponentContext, Effect, TemplateNode } from '#client' */
 	/** @import { Component, ComponentType, SvelteComponent, MountOptions } from '../../index.js' */
 
 	/**
@@ -6199,11 +5255,12 @@
 	 */
 	function set_text(text, value) {
 		// For objects, we apply string coercion (which might make things like $state array references in the template reactive) before diffing
-		var str = value == null ? '' : typeof value === 'object' ? `${value}` : value;
-		// prettier-ignore
-		if (str !== (/** @type {any} */ (text)[TEXT_CACHE] ??= text.nodeValue)) {
-			/** @type {any} */ (text)[TEXT_CACHE] = str;
-			text.nodeValue = `${str}`;
+		var str = value == null ? '' : typeof value === 'object' ? value + '' : value;
+		// @ts-expect-error
+		if (str !== (text.__t ??= text.nodeValue)) {
+			// @ts-expect-error
+			text.__t = str;
+			text.nodeValue = str + '';
 		}
 	}
 
@@ -6234,7 +5291,6 @@
 	 *  	context?: Map<any, any>;
 	 * 		intro?: boolean;
 	 * 		recover?: boolean;
-	 *		transformError?: (error: unknown) => unknown;
 	 * 	} : {
 	 * 		target: Document | Element | ShadowRoot;
 	 * 		props: Props;
@@ -6242,7 +5298,6 @@
 	 *  	context?: Map<any, any>;
 	 * 		intro?: boolean;
 	 * 		recover?: boolean;
-	 *		transformError?: (error: unknown) => unknown;
 	 * 	}} options
 	 * @returns {Exports}
 	 */
@@ -6254,13 +5309,12 @@
 		const previous_hydrate_node = hydrate_node;
 
 		try {
-			var anchor = get_first_child(target);
-
+			var anchor = /** @type {TemplateNode} */ (get_first_child(target));
 			while (
 				anchor &&
 				(anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */ (anchor).data !== HYDRATION_START)
 			) {
-				anchor = get_next_sibling(anchor);
+				anchor = /** @type {TemplateNode} */ (get_next_sibling(anchor));
 			}
 
 			if (!anchor) {
@@ -6304,8 +5358,8 @@
 		}
 	}
 
-	/** @type {Map<EventTarget, Map<string, number>>} */
-	const listeners = new Map();
+	/** @type {Map<string, number>} */
+	const document_listeners = new Map();
 
 	/**
 	 * @template {Record<string, any>} Exports
@@ -6313,11 +5367,42 @@
 	 * @param {MountOptions} options
 	 * @returns {Exports}
 	 */
-	function _mount(
-		Component,
-		{ target, anchor, props = {}, events, context, intro = true, transformError }
-	) {
+	function _mount(Component, { target, anchor, props = {}, events, context, intro = true }) {
 		init_operations();
+
+		/** @type {Set<string>} */
+		var registered_events = new Set();
+
+		/** @param {Array<string>} events */
+		var event_handle = (events) => {
+			for (var i = 0; i < events.length; i++) {
+				var event_name = events[i];
+
+				if (registered_events.has(event_name)) continue;
+				registered_events.add(event_name);
+
+				var passive = is_passive_event(event_name);
+
+				// Add the event listener to both the container and the document.
+				// The container listener ensures we catch events from within in case
+				// the outer content stops propagation of the event.
+				target.addEventListener(event_name, handle_event_propagation, { passive });
+
+				var n = document_listeners.get(event_name);
+
+				if (n === undefined) {
+					// The document listener ensures we catch events that originate from elements that were
+					// manually moved outside of the container (e.g. via manual portals).
+					document.addEventListener(event_name, handle_event_propagation, { passive });
+					document_listeners.set(event_name, 1);
+				} else {
+					document_listeners.set(event_name, n + 1);
+				}
+			}
+		};
+
+		event_handle(array_from(all_registered_events));
+		root_event_handles.add(event_handle);
 
 		/** @type {Exports} */
 		// @ts-expect-error will be defined because the render effect runs synchronously
@@ -6332,9 +5417,11 @@
 					pending: () => {}
 				},
 				(anchor_node) => {
-					push({});
-					var ctx = /** @type {ComponentContext} */ (component_context);
-					if (context) ctx.c = context;
+					if (context) {
+						push({});
+						var ctx = /** @type {ComponentContext} */ (component_context);
+						ctx.c = context;
+					}
 
 					if (events) {
 						// We can't spread the object or else we'd lose the state proxy stuff, if it is one
@@ -6348,7 +5435,7 @@
 					component = Component(anchor_node, props) || {};
 
 					if (hydrating) {
-						/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = hydrate_node;
+						/** @type {Effect} */ (active_effect).nodes_end = hydrate_node;
 
 						if (
 							hydrate_node === null ||
@@ -6360,70 +5447,23 @@
 						}
 					}
 
-					pop();
-				},
-				transformError
-			);
-
-			// Setup event delegation _after_ component is mounted - if an error would happen during mount, it would otherwise not be cleaned up
-			/** @type {Set<string>} */
-			var registered_events = new Set();
-
-			/** @param {Array<string>} events */
-			var event_handle = (events) => {
-				for (var i = 0; i < events.length; i++) {
-					var event_name = events[i];
-
-					if (registered_events.has(event_name)) continue;
-					registered_events.add(event_name);
-
-					var passive = is_passive_event(event_name);
-
-					// Add the event listener to both the container and the document.
-					// The container listener ensures we catch events from within in case
-					// the outer content stops propagation of the event.
-					//
-					// The document listener ensures we catch events that originate from elements that were
-					// manually moved outside of the container (e.g. via manual portals).
-					for (const node of [target, document]) {
-						var counts = listeners.get(node);
-
-						if (counts === undefined) {
-							counts = new Map();
-							listeners.set(node, counts);
-						}
-
-						var count = counts.get(event_name);
-
-						if (count === undefined) {
-							node.addEventListener(event_name, handle_event_propagation, { passive });
-							counts.set(event_name, 1);
-						} else {
-							counts.set(event_name, count + 1);
-						}
+					if (context) {
+						pop();
 					}
 				}
-			};
-
-			event_handle(array_from(all_registered_events));
-			root_event_handles.add(event_handle);
+			);
 
 			return () => {
 				for (var event_name of registered_events) {
-					for (const node of [target, document]) {
-						var counts = /** @type {Map<string, number>} */ (listeners.get(node));
-						var count = /** @type {number} */ (counts.get(event_name));
+					target.removeEventListener(event_name, handle_event_propagation);
 
-						if (--count == 0) {
-							node.removeEventListener(event_name, handle_event_propagation);
-							counts.delete(event_name);
+					var n = /** @type {number} */ (document_listeners.get(event_name));
 
-							if (counts.size === 0) {
-								listeners.delete(node);
-							}
-						} else {
-							counts.set(event_name, count);
-						}
+					if (--n === 0) {
+						document.removeEventListener(event_name, handle_event_propagation);
+						document_listeners.delete(event_name);
+					} else {
+						document_listeners.set(event_name, n);
 					}
 				}
 
@@ -6524,34 +5564,11 @@
 		/** @type {Map<Batch, Key>} */
 		#batches = new Map();
 
-		/**
-		 * Map of keys to effects that are currently rendered in the DOM.
-		 * These effects are visible and actively part of the document tree.
-		 * Example:
-		 * ```
-		 * {#if condition}
-		 * 	foo
-		 * {:else}
-		 * 	bar
-		 * {/if}
-		 * ```
-		 * Can result in the entries `true->Effect` and `false->Effect`
-		 * @type {Map<Key, Effect>}
-		 */
+		/** @type {Map<Key, Effect>} */
 		#onscreen = new Map();
 
-		/**
-		 * Similar to #onscreen with respect to the keys, but contains branches that are not yet
-		 * in the DOM, because their insertion is deferred.
-		 * @type {Map<Key, Branch>}
-		 */
+		/** @type {Map<Key, Branch>} */
 		#offscreen = new Map();
-
-		/**
-		 * Keys of effects that are currently outroing
-		 * @type {Set<Key>}
-		 */
-		#outroing = new Set();
 
 		/**
 		 * Whether to pause (i.e. outro) on change, or destroy immediately.
@@ -6568,10 +5585,9 @@
 			this.#transition = transition;
 		}
 
-		/**
-		 * @param {Batch} batch
-		 */
-		#commit = (batch) => {
+		#commit = () => {
+			var batch = /** @type {Batch} */ (current_batch);
+
 			// if this batch was made obsolete, bail
 			if (!this.#batches.has(batch)) return;
 
@@ -6582,14 +5598,11 @@
 			if (onscreen) {
 				// effect is already in the DOM — abort any current outro
 				resume_effect(onscreen);
-				this.#outroing.delete(key);
 			} else {
 				// effect is currently offscreen. put it in the DOM
 				var offscreen = this.#offscreen.get(key);
 
 				if (offscreen) {
-					// effect could have been outro'ed before through a prior batch — resume if necessary
-					resume_effect(offscreen.effect);
 					this.#onscreen.set(key, offscreen.effect);
 					this.#offscreen.delete(key);
 
@@ -6623,8 +5636,7 @@
 			// outro/destroy all onscreen effects...
 			for (const [k, effect] of this.#onscreen) {
 				// ...except the one that was just committed
-				//    or those that are already outroing (else the transition is aborted and the effect destroyed right away)
-				if (k === key || this.#outroing.has(k)) continue;
+				if (k === key) continue;
 
 				const on_destroy = () => {
 					const keys = Array.from(this.#batches.values());
@@ -6641,12 +5653,10 @@
 						destroy_effect(effect);
 					}
 
-					this.#outroing.delete(k);
 					this.#onscreen.delete(k);
 				};
 
 				if (this.#transition || !onscreen) {
-					this.#outroing.add(k);
 					pause_effect(effect, on_destroy, false);
 				} else {
 					on_destroy();
@@ -6677,9 +5687,20 @@
 		 */
 		ensure(key, fn) {
 			var batch = /** @type {Batch} */ (current_batch);
+			var defer = should_defer_append();
 
 			if (fn && !this.#onscreen.has(key) && !this.#offscreen.has(key)) {
-				{
+				if (defer) {
+					var fragment = document.createDocumentFragment();
+					var target = create_text();
+
+					fragment.append(target);
+
+					this.#offscreen.set(key, {
+						effect: branch(() => fn(target)),
+						fragment
+					});
+				} else {
 					this.#onscreen.set(
 						key,
 						branch(() => fn(this.anchor))
@@ -6689,12 +5710,31 @@
 
 			this.#batches.set(batch, key);
 
-			{
+			if (defer) {
+				for (const [k, effect] of this.#onscreen) {
+					if (k === key) {
+						batch.skipped_effects.delete(effect);
+					} else {
+						batch.skipped_effects.add(effect);
+					}
+				}
+
+				for (const [k, branch] of this.#offscreen) {
+					if (k === key) {
+						batch.skipped_effects.delete(branch.effect);
+					} else {
+						batch.skipped_effects.add(branch.effect);
+					}
+				}
+
+				batch.oncommit(this.#commit);
+				batch.ondiscard(this.#discard);
+			} else {
 				if (hydrating) {
 					this.anchor = hydrate_node;
 				}
 
-				this.#commit(batch);
+				this.#commit();
 			}
 		}
 	}
@@ -6839,7 +5879,7 @@
 		while (node && i < locations.length) {
 			if (hydrating && node.nodeType === COMMENT_NODE) {
 				var comment = /** @type {Comment} */ (node);
-				if (comment.data[0] === HYDRATION_START) depth += 1;
+				if (comment.data === HYDRATION_START || comment.data === HYDRATION_START_ELSE) depth += 1;
 				else if (comment.data[0] === HYDRATION_END) depth -= 1;
 			}
 
@@ -6965,8 +6005,6 @@
 		// in an error (an `$inspect(object.property)` will run before the
 		// `{#if object}...{/if}` that contains it)
 		eager_effect(() => {
-			error = UNINITIALIZED;
-
 			try {
 				var value = get_value();
 			} catch (e) {
@@ -6980,7 +6018,9 @@
 					inspector(...snap);
 
 					if (!initial) {
-						const stack = get_error('$inspect(...)');
+						const stack = get_stack('$inspect(...)');
+						// eslint-disable-next-line no-console
+
 						if (stack) {
 							// eslint-disable-next-line no-console
 							console.groupCollapsed('stack trace');
@@ -7038,7 +6078,6 @@
 
 	const PENDING = 0;
 	const THEN = 1;
-	const CATCH = 2;
 
 	/** @typedef {typeof PENDING | typeof THEN | typeof CATCH} AwaitState */
 
@@ -7063,9 +6102,7 @@
 		var branches = new BranchManager(node);
 
 		block(() => {
-			var batch = /** @type {Batch} */ (current_batch);
 			var input = get_input();
-
 			var destroyed = false;
 
 			/** Whether or not there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
@@ -7092,21 +6129,19 @@
 					// We don't want to restore the previous batch here; {#await} blocks don't follow the async logic
 					// we have elsewhere, instead pending/resolve/fail states are each their own batch so to speak.
 					restore(false);
-					// ...but it might still be set here. That means a `save(...)` has restored it — but that batch will
-					// likely already have been committed by the time it resolves, and this resolve should be processed
-					// in a separate batch. We're not using batch.deactivate()/activate() above because get_input()
-					// could write to sources, which would then incorrectly create a new batch or could mess with
-					// async_derived expecting a current_batch to exist.
-					if (current_batch === batch) {
-						batch.deactivate();
-					}
 					// Make sure we have a batch, since the branch manager expects one to exist
 					Batch.ensure();
+
+					if (hydrating) {
+						// `restore()` could set `hydrating` to `true`, which we very much
+						// don't want — we want to restore everything _except_ this
+						set_hydrating(false);
+					}
 
 					try {
 						fn();
 					} finally {
-						unset_context(false);
+						unset_context();
 
 						// without this, the DOM does not update until two ticks after the promise
 						// resolves, which is unexpected behaviour (and somewhat irksome to test)
@@ -7124,7 +6159,7 @@
 					(e) => {
 						resolve(() => {
 							internal_set(error, e);
-							branches.ensure(CATCH, catch_fn && ((target) => catch_fn(target, error)));
+							branches.ensure(THEN, catch_fn && ((target) => catch_fn(target, error)));
 
 							if (!catch_fn) {
 								// Rethrow the error if no catch block exists
@@ -7165,17 +6200,16 @@
 
 	/** @import { TemplateNode } from '#client' */
 
+	// TODO reinstate https://github.com/sveltejs/svelte/pull/15250
+
 	/**
 	 * @param {TemplateNode} node
-	 * @param {(branch: (fn: (anchor: Node) => void, key?: number | false) => void) => void} fn
+	 * @param {(branch: (fn: (anchor: Node) => void, flag?: boolean) => void) => void} fn
 	 * @param {boolean} [elseif] True if this is an `{:else if ...}` block rather than an `{#if ...}`, as that affects which transitions are considered 'local'
 	 * @returns {void}
 	 */
 	function if_block(node, fn, elseif = false) {
-		/** @type {TemplateNode | undefined} */
-		var marker;
 		if (hydrating) {
-			marker = hydrate_node;
 			hydrate_next();
 		}
 
@@ -7183,15 +6217,14 @@
 		var flags = elseif ? EFFECT_TRANSPARENT : 0;
 
 		/**
-		 * @param {number | false} key
+		 * @param {boolean} condition,
 		 * @param {null | ((anchor: Node) => void)} fn
 		 */
-		function update_branch(key, fn) {
+		function update_branch(condition, fn) {
 			if (hydrating) {
-				var data = read_hydration_instruction(/** @type {TemplateNode} */ (marker));
+				const is_else = read_hydration_instruction(node) === HYDRATION_START_ELSE;
 
-				// "[n" = branch n, "[-1" = else
-				if (key !== parseInt(data.substring(1))) {
+				if (condition === is_else) {
 					// Hydration mismatch: remove everything inside the anchor and start fresh.
 					// This could happen with `{#if browser}...{/if}`, for example
 					var anchor = skip_nodes();
@@ -7200,33 +6233,31 @@
 					branches.anchor = anchor;
 
 					set_hydrating(false);
-					branches.ensure(key, fn);
+					branches.ensure(condition, fn);
 					set_hydrating(true);
 
 					return;
 				}
 			}
 
-			branches.ensure(key, fn);
+			branches.ensure(condition, fn);
 		}
 
 		block(() => {
 			var has_branch = false;
 
-			fn((fn, key = 0) => {
+			fn((fn, flag = true) => {
 				has_branch = true;
-				update_branch(key, fn);
+				update_branch(flag, fn);
 			});
 
 			if (!has_branch) {
-				update_branch(-1, null);
+				update_branch(false, null);
 			}
 		}, flags);
 	}
 
 	/** @import { TemplateNode } from '#client' */
-
-	const NAN = Symbol('NaN');
 
 	/**
 	 * @template V
@@ -7245,21 +6276,12 @@
 		block(() => {
 			var key = get_key();
 
-			// NaN !== NaN, hence we do this workaround to not trigger remounts unnecessarily
-			if (key !== key) {
-				key = /** @type {any} */ (NAN);
-			}
-
 			branches.ensure(key, render_fn);
 		});
 	}
 
-	/** @import { EachItem, EachOutroGroup, EachState, Effect, EffectNodes, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
+	/** @import { EachItem, EachState, Effect, MaybeSource, Source, TemplateNode, TransitionManager, Value } from '#client' */
 	/** @import { Batch } from '../../reactivity/batch.js'; */
-
-	// When making substantive changes to this file, validate them with the each block stress test:
-	// https://svelte.dev/playground/1972b2cf46564476ad8c8c6405b23b7b
-	// This test also exists in this repo, as `packages/svelte/tests/manual/each-stress-test`
 
 	/**
 	 * @param {any} _
@@ -7273,113 +6295,44 @@
 	 * Pause multiple effects simultaneously, and coordinate their
 	 * subsequent destruction. Used in each blocks
 	 * @param {EachState} state
-	 * @param {Effect[]} to_destroy
+	 * @param {EachItem[]} items
 	 * @param {null | Node} controlled_anchor
 	 */
-	function pause_effects(state, to_destroy, controlled_anchor) {
+	function pause_effects(state, items, controlled_anchor) {
+		var items_map = state.items;
+
 		/** @type {TransitionManager[]} */
 		var transitions = [];
-		var length = to_destroy.length;
-
-		/** @type {EachOutroGroup} */
-		var group;
-		var remaining = to_destroy.length;
+		var length = items.length;
 
 		for (var i = 0; i < length; i++) {
-			let effect = to_destroy[i];
+			pause_children(items[i].e, transitions, true);
+		}
 
-			pause_effect(
-				effect,
-				() => {
-					if (group) {
-						group.pending.delete(effect);
-						group.done.add(effect);
-
-						if (group.pending.size === 0) {
-							var groups = /** @type {Set<EachOutroGroup>} */ (state.outrogroups);
-
-							destroy_effects(state, array_from(group.done));
-							groups.delete(group);
-
-							if (groups.size === 0) {
-								state.outrogroups = null;
-							}
-						}
-					} else {
-						remaining -= 1;
-					}
-				},
-				false
+		var is_controlled = length > 0 && transitions.length === 0 && controlled_anchor !== null;
+		// If we have a controlled anchor, it means that the each block is inside a single
+		// DOM element, so we can apply a fast-path for clearing the contents of the element.
+		if (is_controlled) {
+			var parent_node = /** @type {Element} */ (
+				/** @type {Element} */ (controlled_anchor).parentNode
 			);
+			clear_text_content(parent_node);
+			parent_node.append(/** @type {Element} */ (controlled_anchor));
+			items_map.clear();
+			link(state, items[0].prev, items[length - 1].next);
 		}
 
-		if (remaining === 0) {
-			// If we're in a controlled each block (i.e. the block is the only child of an
-			// element), and we are removing all items, _and_ there are no out transitions,
-			// we can use the fast path — emptying the element and replacing the anchor.
-			// Skip the fast path when another batch is still pending on this each block:
-			// that batch's keys still reference EachItems in `state.items`, which
-			// `destroy_effects` needs to preserve offscreen (see #18610).
-			var fast_path =
-				transitions.length === 0 && controlled_anchor !== null && state.pending.size === 0;
-
-			if (fast_path) {
-				var anchor = /** @type {Element} */ (controlled_anchor);
-				var parent_node = /** @type {Element} */ (anchor.parentNode);
-
-				clear_text_content(parent_node);
-				parent_node.append(anchor);
-
-				state.items.clear();
-			}
-
-			destroy_effects(state, to_destroy, !fast_path);
-		} else {
-			group = {
-				pending: new Set(to_destroy),
-				done: new Set()
-			};
-
-			(state.outrogroups ??= new Set()).add(group);
-		}
-	}
-
-	/**
-	 * @param {EachState} state
-	 * @param {Effect[]} to_destroy
-	 * @param {boolean} remove_dom
-	 */
-	function destroy_effects(state, to_destroy, remove_dom = true) {
-		/** @type {Set<Effect> | undefined} */
-		var preserved_effects;
-
-		// The loop-in-a-loop isn't ideal, but we should only hit this in relatively rare cases
-		if (state.pending.size > 0) {
-			preserved_effects = new Set();
-
-			for (const keys of state.pending.values()) {
-				for (const key of keys) {
-					preserved_effects.add(/** @type {EachItem} */ (state.items.get(key)).e);
+		run_out_transitions(transitions, () => {
+			for (var i = 0; i < length; i++) {
+				var item = items[i];
+				if (!is_controlled) {
+					items_map.delete(item.k);
+					link(state, item.prev, item.next);
 				}
+				destroy_effect(item.e, !is_controlled);
 			}
-		}
-
-		for (var i = 0; i < to_destroy.length; i++) {
-			var e = to_destroy[i];
-
-			if (preserved_effects?.has(e)) {
-				e.f |= EFFECT_OFFSCREEN;
-
-				const fragment = document.createDocumentFragment();
-				move_effect(e, fragment);
-			} else {
-				destroy_effect(to_destroy[i], remove_dom);
-			}
-		}
+		});
 	}
-
-	/** @type {TemplateNode} */
-	var offscreen_anchor;
 
 	/**
 	 * @template V
@@ -7394,8 +6347,8 @@
 	function each(node, flags, get_collection, get_key, render_fn, fallback_fn = null) {
 		var anchor = node;
 
-		/** @type {Map<any, EachItem>} */
-		var items = new Map();
+		/** @type {EachState} */
+		var state = { flags, items: new Map(), first: null };
 
 		var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
 
@@ -7403,7 +6356,7 @@
 			var parent_node = /** @type {Element} */ (node);
 
 			anchor = hydrating
-				? set_hydrate_node(get_first_child(parent_node))
+				? set_hydrate_node(/** @type {Comment | Text} */ (get_first_child(parent_node)))
 				: parent_node.appendChild(create_text());
 		}
 
@@ -7414,60 +6367,67 @@
 		/** @type {Effect | null} */
 		var fallback = null;
 
+		var was_empty = false;
+
+		/** @type {Map<any, EachItem>} */
+		var offscreen_items = new Map();
+
 		// TODO: ideally we could use derived for runes mode but because of the ability
 		// to use a store which can be mutated, we can't do that here as mutating a store
 		// will still result in the collection array being the same from the store
 		var each_array = derived_safe_equal(() => {
 			var collection = get_collection();
 
-			return /** @type {V[]} */ (
-				is_array(collection) ? collection : collection == null ? [] : array_from(collection)
-			);
+			return is_array(collection) ? collection : collection == null ? [] : array_from(collection);
 		});
 
 		/** @type {V[]} */
 		var array;
 
-		/** @type {Map<Batch, Set<any>>} */
-		var pending = new Map();
+		/** @type {Effect} */
+		var each_effect;
 
-		var first_run = true;
+		function commit() {
+			reconcile(
+				each_effect,
+				array,
+				state,
+				offscreen_items,
+				anchor,
+				render_fn,
+				flags,
+				get_key,
+				get_collection
+			);
 
-		/**
-		 * @param {Batch} batch
-		 */
-		function commit(batch) {
-			if ((state.effect.f & DESTROYED) !== 0) {
-				return;
-			}
-
-			state.pending.delete(batch);
-
-			state.fallback = fallback;
-			reconcile(state, array, anchor, flags, get_key);
-
-			if (fallback !== null) {
+			if (fallback_fn !== null) {
 				if (array.length === 0) {
-					if ((fallback.f & EFFECT_OFFSCREEN) === 0) {
+					if (fallback) {
 						resume_effect(fallback);
 					} else {
-						fallback.f ^= EFFECT_OFFSCREEN;
-						move(fallback, null, anchor);
+						fallback = branch(() => fallback_fn(anchor));
 					}
-				} else {
+				} else if (fallback !== null) {
 					pause_effect(fallback, () => {
-						// TODO only null out if no pending batch needs it,
-						// otherwise re-add `fallback.fragment` and move the
-						// effect into it
 						fallback = null;
 					});
 				}
 			}
 		}
 
-		var effect = block(() => {
+		block(() => {
+			// store a reference to the effect so that we can update the start/end nodes in reconciliation
+			each_effect ??= /** @type {Effect} */ (active_effect);
+
 			array = /** @type {V[]} */ (get(each_array));
 			var length = array.length;
+
+			if (was_empty && length === 0) {
+				// ignore updates if the array is empty,
+				// and it already was empty on previous run
+				return;
+			}
+			was_empty = length === 0;
 
 			/** `true` if there was a hydration mismatch. Needs to be a `let` or else it isn't treeshaken out */
 			let mismatch = false;
@@ -7485,79 +6445,102 @@
 				}
 			}
 
-			var keys = new Set();
-			var batch = /** @type {Batch} */ (current_batch);
+			// this is separate to the previous block because `hydrating` might change
+			if (hydrating) {
+				/** @type {EachItem | null} */
+				var prev = null;
 
-			for (var index = 0; index < length; index += 1) {
-				if (
-					hydrating &&
-					hydrate_node.nodeType === COMMENT_NODE &&
-					/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
-				) {
-					// The server rendered fewer items than expected,
-					// so break out and continue appending non-hydrated items
-					anchor = /** @type {Comment} */ (hydrate_node);
-					mismatch = true;
-					set_hydrating(false);
-				}
+				/** @type {EachItem} */
+				var item;
 
-				var value = array[index];
-				var key = get_key(value, index);
+				for (var i = 0; i < length; i++) {
+					if (
+						hydrate_node.nodeType === COMMENT_NODE &&
+						/** @type {Comment} */ (hydrate_node).data === HYDRATION_END
+					) {
+						// The server rendered fewer items than expected,
+						// so break out and continue appending non-hydrated items
+						anchor = /** @type {Comment} */ (hydrate_node);
+						mismatch = true;
+						set_hydrating(false);
+						break;
+					}
 
-				var item = first_run ? null : items.get(key);
-
-				if (item) {
-					// update before reconciliation, to trigger any async updates
-					if (item.v) internal_set(item.v, value);
-					if (item.i) internal_set(item.i, index);
-				} else {
+					var value = array[i];
+					var key = get_key(value, i);
 					item = create_item(
-						items,
-						first_run ? anchor : (offscreen_anchor ??= create_text()),
+						hydrate_node,
+						state,
+						prev,
+						null,
 						value,
 						key,
-						index,
+						i,
 						render_fn,
 						flags,
 						get_collection
 					);
+					state.items.set(key, item);
 
-					if (!first_run) {
-						item.e.f |= EFFECT_OFFSCREEN;
+					prev = item;
+				}
+
+				// remove excess nodes
+				if (length > 0) {
+					set_hydrate_node(skip_nodes());
+				}
+			}
+
+			if (hydrating) {
+				if (length === 0 && fallback_fn) {
+					fallback = branch(() => fallback_fn(anchor));
+				}
+			} else {
+				if (should_defer_append()) {
+					var keys = new Set();
+					var batch = /** @type {Batch} */ (current_batch);
+
+					for (i = 0; i < length; i += 1) {
+						value = array[i];
+						key = get_key(value, i);
+
+						var existing = state.items.get(key) ?? offscreen_items.get(key);
+
+						if (existing) {
+							// update before reconciliation, to trigger any async updates
+							if ((flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0) {
+								update_item(existing, value, i, flags);
+							}
+						} else {
+							item = create_item(
+								null,
+								state,
+								null,
+								null,
+								value,
+								key,
+								i,
+								render_fn,
+								flags,
+								get_collection,
+								true
+							);
+
+							offscreen_items.set(key, item);
+						}
+
+						keys.add(key);
 					}
 
-					items.set(key, item);
-				}
+					for (const [key, item] of state.items) {
+						if (!keys.has(key)) {
+							batch.skipped_effects.add(item.e);
+						}
+					}
 
-				keys.add(key);
-			}
-
-			if (length === 0 && fallback_fn && !fallback) {
-				if (first_run) {
-					fallback = branch(() => fallback_fn(anchor));
+					batch.oncommit(commit);
 				} else {
-					fallback = branch(() => fallback_fn((offscreen_anchor ??= create_text())));
-					fallback.f |= EFFECT_OFFSCREEN;
-				}
-			}
-
-			if (length > keys.size) {
-				{
-					// in prod, the additional information isn't printed, so don't bother computing it
-					each_key_duplicate();
-				}
-			}
-
-			// remove excess nodes
-			if (hydrating && length > 0) {
-				set_hydrate_node(skip_nodes());
-			}
-
-			if (!first_run) {
-				pending.set(batch, keys);
-
-				{
-					commit(batch);
+					commit();
 				}
 			}
 
@@ -7575,58 +6558,57 @@
 			get(each_array);
 		});
 
-		/** @type {EachState} */
-		var state = { effect, items, pending, outrogroups: null, fallback };
-
-		first_run = false;
-
 		if (hydrating) {
 			anchor = hydrate_node;
 		}
 	}
 
 	/**
-	 * Skip past any non-branch effects (which could be created with `createSubscriber`, for example) to find the next branch effect
-	 * @param {Effect | null} effect
-	 * @returns {Effect | null}
-	 */
-	function skip_to_branch(effect) {
-		while (effect !== null && (effect.f & BRANCH_EFFECT) === 0) {
-			effect = effect.next;
-		}
-		return effect;
-	}
-
-	/**
 	 * Add, remove, or reorder items output by an each block as its input changes
 	 * @template V
-	 * @param {EachState} state
+	 * @param {Effect} each_effect
 	 * @param {Array<V>} array
+	 * @param {EachState} state
+	 * @param {Map<any, EachItem>} offscreen_items
 	 * @param {Element | Comment | Text} anchor
+	 * @param {(anchor: Node, item: MaybeSource<V>, index: number | Source<number>, collection: () => V[]) => void} render_fn
 	 * @param {number} flags
 	 * @param {(value: V, index: number) => any} get_key
+	 * @param {() => V[]} get_collection
 	 * @returns {void}
 	 */
-	function reconcile(state, array, anchor, flags, get_key) {
+	function reconcile(
+		each_effect,
+		array,
+		state,
+		offscreen_items,
+		anchor,
+		render_fn,
+		flags,
+		get_key,
+		get_collection
+	) {
 		var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
+		var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
 
 		var length = array.length;
 		var items = state.items;
-		var current = skip_to_branch(state.effect.first);
+		var first = state.first;
+		var current = first;
 
-		/** @type {undefined | Set<Effect>} */
+		/** @type {undefined | Set<EachItem>} */
 		var seen;
 
-		/** @type {Effect | null} */
+		/** @type {EachItem | null} */
 		var prev = null;
 
-		/** @type {undefined | Set<Effect>} */
+		/** @type {undefined | Set<EachItem>} */
 		var to_animate;
 
-		/** @type {Effect[]} */
+		/** @type {EachItem[]} */
 		var matched = [];
 
-		/** @type {Effect[]} */
+		/** @type {EachItem[]} */
 		var stashed = [];
 
 		/** @type {V} */
@@ -7635,8 +6617,8 @@
 		/** @type {any} */
 		var key;
 
-		/** @type {Effect | undefined} */
-		var effect;
+		/** @type {EachItem | undefined} */
+		var item;
 
 		/** @type {number} */
 		var i;
@@ -7645,13 +6627,11 @@
 			for (i = 0; i < length; i += 1) {
 				value = array[i];
 				key = get_key(value, i);
-				effect = /** @type {EachItem} */ (items.get(key)).e;
+				item = items.get(key);
 
-				// offscreen == coming in now, no animation in that case,
-				// else this would happen https://github.com/sveltejs/svelte/issues/17181
-				if ((effect.f & EFFECT_OFFSCREEN) === 0) {
-					effect.nodes?.a?.measure();
-					(to_animate ??= new Set()).add(effect);
+				if (item !== undefined) {
+					item.a?.measure();
+					(to_animate ??= new Set()).add(item);
 				}
 			}
 		}
@@ -7660,53 +6640,62 @@
 			value = array[i];
 			key = get_key(value, i);
 
-			effect = /** @type {EachItem} */ (items.get(key)).e;
+			item = items.get(key);
 
-			if (state.outrogroups !== null) {
-				for (const group of state.outrogroups) {
-					group.pending.delete(effect);
-					group.done.delete(effect);
-				}
-			}
+			if (item === undefined) {
+				var pending = offscreen_items.get(key);
 
-			if ((effect.f & INERT) !== 0) {
-				resume_effect(effect);
-				if (is_animated) {
-					effect.nodes?.a?.unfix();
-					(to_animate ??= new Set()).delete(effect);
-				}
-			}
+				if (pending !== undefined) {
+					offscreen_items.delete(key);
+					items.set(key, pending);
 
-			if ((effect.f & EFFECT_OFFSCREEN) !== 0) {
-				effect.f ^= EFFECT_OFFSCREEN;
-
-				if (effect === current) {
-					move(effect, null, anchor);
-				} else {
 					var next = prev ? prev.next : current;
 
-					if (effect === state.effect.last) {
-						state.effect.last = effect.prev;
-					}
+					link(state, prev, pending);
+					link(state, pending, next);
 
-					if (effect.prev) effect.prev.next = effect.next;
-					if (effect.next) effect.next.prev = effect.prev;
-					link(state, prev, effect);
-					link(state, effect, next);
+					move(pending, next, anchor);
+					prev = pending;
+				} else {
+					var child_anchor = current ? /** @type {TemplateNode} */ (current.e.nodes_start) : anchor;
 
-					move(effect, next, anchor);
-					prev = effect;
+					prev = create_item(
+						child_anchor,
+						state,
+						prev,
+						prev === null ? state.first : prev.next,
+						value,
+						key,
+						i,
+						render_fn,
+						flags,
+						get_collection
+					);
+				}
 
-					matched = [];
-					stashed = [];
+				items.set(key, prev);
 
-					current = skip_to_branch(prev.next);
-					continue;
+				matched = [];
+				stashed = [];
+
+				current = prev.next;
+				continue;
+			}
+
+			if (should_update) {
+				update_item(item, value, i, flags);
+			}
+
+			if ((item.e.f & INERT) !== 0) {
+				resume_effect(item.e);
+				if (is_animated) {
+					item.a?.unfix();
+					(to_animate ??= new Set()).delete(item);
 				}
 			}
 
-			if (effect !== current) {
-				if (seen !== undefined && seen.has(effect)) {
+			if (item !== current) {
+				if (seen !== undefined && seen.has(item)) {
 					if (matched.length < stashed.length) {
 						// more efficient to move later items to the front
 						var start = stashed[0];
@@ -7737,14 +6726,14 @@
 						stashed = [];
 					} else {
 						// more efficient to move earlier items to the back
-						seen.delete(effect);
-						move(effect, current, anchor);
+						seen.delete(item);
+						move(item, current, anchor);
 
-						link(state, effect.prev, effect.next);
-						link(state, effect, prev === null ? state.effect.first : prev.next);
-						link(state, prev, effect);
+						link(state, item.prev, item.next);
+						link(state, item, prev === null ? state.first : prev.next);
+						link(state, prev, item);
 
-						prev = effect;
+						prev = item;
 					}
 
 					continue;
@@ -7753,57 +6742,37 @@
 				matched = [];
 				stashed = [];
 
-				while (current !== null && current !== effect) {
-					(seen ??= new Set()).add(current);
+				while (current !== null && current.k !== key) {
+					// If the each block isn't inert and an item has an effect that is already inert,
+					// skip over adding it to our seen Set as the item is already being handled
+					if ((current.e.f & INERT) === 0) {
+						(seen ??= new Set()).add(current);
+					}
 					stashed.push(current);
-					current = skip_to_branch(current.next);
+					current = current.next;
 				}
 
 				if (current === null) {
 					continue;
 				}
+
+				item = current;
 			}
 
-			if ((effect.f & EFFECT_OFFSCREEN) === 0) {
-				matched.push(effect);
-			}
-
-			prev = effect;
-			current = skip_to_branch(effect.next);
-		}
-
-		if (state.outrogroups !== null) {
-			for (const group of state.outrogroups) {
-				if (group.pending.size === 0) {
-					destroy_effects(state, array_from(group.done));
-					state.outrogroups?.delete(group);
-				}
-			}
-
-			if (state.outrogroups.size === 0) {
-				state.outrogroups = null;
-			}
+			matched.push(item);
+			prev = item;
+			current = item.next;
 		}
 
 		if (current !== null || seen !== undefined) {
-			/** @type {Effect[]} */
-			var to_destroy = [];
-
-			if (seen !== undefined) {
-				for (effect of seen) {
-					if ((effect.f & INERT) === 0) {
-						to_destroy.push(effect);
-					}
-				}
-			}
+			var to_destroy = seen === undefined ? [] : array_from(seen);
 
 			while (current !== null) {
 				// If the each block isn't inert, then inert effects are currently outroing and will be removed once the transition is finished
-				if ((current.f & INERT) === 0 && current !== state.fallback) {
+				if ((current.e.f & INERT) === 0) {
 					to_destroy.push(current);
 				}
-
-				current = skip_to_branch(current.next);
+				current = current.next;
 			}
 
 			var destroy_length = to_destroy.length;
@@ -7813,11 +6782,11 @@
 
 				if (is_animated) {
 					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].nodes?.a?.measure();
+						to_destroy[i].a?.measure();
 					}
 
 					for (i = 0; i < destroy_length; i += 1) {
-						to_destroy[i].nodes?.a?.fix();
+						to_destroy[i].a?.fix();
 					}
 				}
 
@@ -7828,127 +6797,168 @@
 		if (is_animated) {
 			queue_micro_task(() => {
 				if (to_animate === undefined) return;
-				for (effect of to_animate) {
-					effect.nodes?.a?.apply();
+				for (item of to_animate) {
+					item.a?.apply();
 				}
 			});
+		}
+
+		each_effect.first = state.first && state.first.e;
+		each_effect.last = prev && prev.e;
+
+		for (var unused of offscreen_items.values()) {
+			destroy_effect(unused.e);
+		}
+
+		offscreen_items.clear();
+	}
+
+	/**
+	 * @param {EachItem} item
+	 * @param {any} value
+	 * @param {number} index
+	 * @param {number} type
+	 * @returns {void}
+	 */
+	function update_item(item, value, index, type) {
+		if ((type & EACH_ITEM_REACTIVE) !== 0) {
+			internal_set(item.v, value);
+		}
+
+		if ((type & EACH_INDEX_REACTIVE) !== 0) {
+			internal_set(/** @type {Value<number>} */ (item.i), index);
+		} else {
+			item.i = index;
 		}
 	}
 
 	/**
 	 * @template V
-	 * @param {Map<any, EachItem>} items
-	 * @param {Node} anchor
+	 * @param {Node | null} anchor
+	 * @param {EachState} state
+	 * @param {EachItem | null} prev
+	 * @param {EachItem | null} next
 	 * @param {V} value
 	 * @param {unknown} key
 	 * @param {number} index
 	 * @param {(anchor: Node, item: V | Source<V>, index: number | Value<number>, collection: () => V[]) => void} render_fn
 	 * @param {number} flags
 	 * @param {() => V[]} get_collection
+	 * @param {boolean} [deferred]
 	 * @returns {EachItem}
 	 */
-	function create_item(items, anchor, value, key, index, render_fn, flags, get_collection) {
-		var v =
-			(flags & EACH_ITEM_REACTIVE) !== 0
-				? (flags & EACH_ITEM_IMMUTABLE) === 0
-					? mutable_source(value, false, false)
-					: source(value)
-				: null;
+	function create_item(
+		anchor,
+		state,
+		prev,
+		next,
+		value,
+		key,
+		index,
+		render_fn,
+		flags,
+		get_collection,
+		deferred
+	) {
+		var reactive = (flags & EACH_ITEM_REACTIVE) !== 0;
+		var mutable = (flags & EACH_ITEM_IMMUTABLE) === 0;
 
-		var i = (flags & EACH_INDEX_REACTIVE) !== 0 ? source(index) : null;
+		var v = reactive ? (mutable ? mutable_source(value, false, false) : source(value)) : value;
+		var i = (flags & EACH_INDEX_REACTIVE) === 0 ? index : source(index);
 
-		return {
-			v,
+		/** @type {EachItem} */
+		var item = {
 			i,
-			e: branch(() => {
-				render_fn(anchor, v ?? value, i ?? index, get_collection);
-
-				return () => {
-					items.delete(key);
-				};
-			})
+			v,
+			k: key,
+			a: null,
+			// @ts-expect-error
+			e: null,
+			prev,
+			next
 		};
+
+		try {
+			if (anchor === null) {
+				var fragment = document.createDocumentFragment();
+				fragment.append((anchor = create_text()));
+			}
+
+			item.e = branch(() => render_fn(/** @type {Node} */ (anchor), v, i, get_collection), hydrating);
+
+			item.e.prev = prev && prev.e;
+			item.e.next = next && next.e;
+
+			if (prev === null) {
+				if (!deferred) {
+					state.first = item;
+				}
+			} else {
+				prev.next = item;
+				prev.e.next = item.e;
+			}
+
+			if (next !== null) {
+				next.prev = item;
+				next.e.prev = item.e;
+			}
+
+			return item;
+		} finally {
+		}
 	}
 
 	/**
-	 * @param {Effect} effect
-	 * @param {Effect | null} next
+	 * @param {EachItem} item
+	 * @param {EachItem | null} next
 	 * @param {Text | Element | Comment} anchor
 	 */
-	function move(effect, next, anchor) {
-		if (!effect.nodes) return;
+	function move(item, next, anchor) {
+		var end = item.next ? /** @type {TemplateNode} */ (item.next.e.nodes_start) : anchor;
 
-		var node = effect.nodes.start;
-		var end = effect.nodes.end;
+		var dest = next ? /** @type {TemplateNode} */ (next.e.nodes_start) : anchor;
+		var node = /** @type {TemplateNode} */ (item.e.nodes_start);
 
-		var dest =
-			next && (next.f & EFFECT_OFFSCREEN) === 0
-				? /** @type {EffectNodes} */ (next.nodes).start
-				: anchor;
-
-		while (node !== null) {
+		while (node !== null && node !== end) {
 			var next_node = /** @type {TemplateNode} */ (get_next_sibling(node));
 			dest.before(node);
-
-			if (node === end) {
-				return;
-			}
-
 			node = next_node;
 		}
 	}
 
 	/**
 	 * @param {EachState} state
-	 * @param {Effect | null} prev
-	 * @param {Effect | null} next
+	 * @param {EachItem | null} prev
+	 * @param {EachItem | null} next
 	 */
 	function link(state, prev, next) {
 		if (prev === null) {
-			state.effect.first = next;
+			state.first = next;
 		} else {
 			prev.next = next;
+			prev.e.next = next && next.e;
 		}
 
-		if (next === null) {
-			state.effect.last = prev;
-		} else {
+		if (next !== null) {
 			next.prev = prev;
+			next.e.prev = prev && prev.e;
 		}
 	}
 
 	/** @import { Effect, TemplateNode } from '#client' */
-	/** @import {} from 'trusted-types' */
 
 	/**
 	 * @param {Element | Text | Comment} node
-	 * @param {() => string | TrustedHTML} get_value
-	 * @param {boolean} [is_controlled]
+	 * @param {() => string} get_value
 	 * @param {boolean} [svg]
 	 * @param {boolean} [mathml]
 	 * @param {boolean} [skip_warning]
 	 * @returns {void}
 	 */
-	function html(
-		node,
-		get_value,
-		is_controlled = false,
-		svg = false,
-		mathml = false,
-		skip_warning = false
-	) {
+	function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
 		var anchor = node;
 
-		/** @type {string | TrustedHTML} */
 		var value = '';
-
-		if (is_controlled) {
-			var parent_node = /** @type {Element} */ (node);
-
-			if (hydrating) {
-				anchor = set_hydrate_node(get_first_child(parent_node));
-			}
-		}
 
 		template_effect(() => {
 			var effect = /** @type {Effect} */ (active_effect);
@@ -7958,25 +6968,9 @@
 				return;
 			}
 
-			if (is_controlled && !hydrating) {
-				// When @html is the only child, use innerHTML directly.
-				// This also handles contenteditable, where the user may delete the anchor comment.
-				effect.nodes = null;
-				parent_node.innerHTML = /** @type {string} */ (value);
-
-				if (value !== '') {
-					assign_nodes(
-						/** @type {TemplateNode} */ (get_first_child(parent_node)),
-						/** @type {TemplateNode} */ (parent_node.lastChild)
-					);
-				}
-
-				return;
-			}
-
-			if (effect.nodes !== null) {
-				remove_effect_dom(effect.nodes.start, /** @type {TemplateNode} */ (effect.nodes.end));
-				effect.nodes = null;
+			if (effect.nodes_start !== null) {
+				remove_effect_dom(effect.nodes_start, /** @type {TemplateNode} */ (effect.nodes_end));
+				effect.nodes_start = effect.nodes_end = null;
 			}
 
 			if (value === '') return;
@@ -7985,8 +6979,6 @@
 				// We're deliberately not trying to repair mismatches between server and client,
 				// as it's costly and error-prone (and it's an edge case to have a mismatch anyway)
 				/** @type {Comment} */ (hydrate_node).data;
-
-				/** @type {TemplateNode | null} */
 				var next = hydrate_next();
 				var last = next;
 
@@ -7995,7 +6987,7 @@
 					(next.nodeType !== COMMENT_NODE || /** @type {Comment} */ (next).data !== '')
 				) {
 					last = next;
-					next = get_next_sibling(next);
+					next = /** @type {TemplateNode} */ (get_next_sibling(next));
 				}
 
 				if (next === null) {
@@ -8008,18 +7000,18 @@
 				return;
 			}
 
+			var html = value + '';
+			if (svg) html = `<svg>${html}</svg>`;
+			else if (mathml) html = `<math>${html}</math>`;
+
 			// Don't use create_fragment_with_script_from_html here because that would mean script tags are executed.
 			// @html is basically `.innerHTML = ...` and that doesn't execute scripts either due to security reasons.
-			// Use a <template>, <svg>, or <math> wrapper depending on context. If value is a TrustedHTML object,
-			// it will be assigned directly to innerHTML without coercion — this allows {@html policy.createHTML(...)} to work.
-			var ns = svg ? NAMESPACE_SVG : mathml ? NAMESPACE_MATHML : undefined;
-			var wrapper = /** @type {HTMLTemplateElement | SVGElement | MathMLElement} */ (
-				create_element(svg ? 'svg' : mathml ? 'math' : 'template', ns)
-			);
-			wrapper.innerHTML = /** @type {any} */ (value);
-
 			/** @type {DocumentFragment | Element} */
-			var node = svg || mathml ? wrapper : /** @type {HTMLTemplateElement} */ (wrapper).content;
+			var node = create_fragment_from_html(html);
+
+			if (svg || mathml) {
+				node = /** @type {Element} */ (get_first_child(node));
+			}
 
 			assign_nodes(
 				/** @type {TemplateNode} */ (get_first_child(node)),
@@ -8028,7 +7020,7 @@
 
 			if (svg || mathml) {
 				while (get_first_child(node)) {
-					anchor.before(/** @type {TemplateNode} */ (get_first_child(node)));
+					anchor.before(/** @type {Node} */ (get_first_child(node)));
 				}
 			} else {
 				anchor.before(node);
@@ -8075,7 +7067,7 @@
 		return sanitized;
 	}
 
-	/** @import { Effect, EffectNodes, TemplateNode } from '#client' */
+	/** @import { Effect, TemplateNode } from '#client' */
 
 	/**
 	 * @param {Comment | Element} node
@@ -8107,9 +7099,7 @@
 
 		block(() => {
 			const next_tag = get_tag() || null;
-			var ns = next_tag === 'svg'
-					? NAMESPACE_SVG
-					: undefined;
+			var ns = next_tag === 'svg' ? NAMESPACE_SVG : null;
 
 			if (next_tag === null) {
 				branches.ensure(null, null);
@@ -8117,24 +7107,27 @@
 			}
 
 			branches.ensure(next_tag, (anchor) => {
+
 				if (next_tag) {
-					element = hydrating ? /** @type {Element} */ (element) : create_element(next_tag, ns);
+					element = hydrating
+						? /** @type {Element} */ (element)
+						: ns
+							? document.createElementNS(ns, next_tag)
+							: document.createElement(next_tag);
 
 					assign_nodes(element, element);
 
 					if (render_fn) {
-						var tmp_comment = null;
-
 						if (hydrating && is_raw_text_element(next_tag)) {
-							// prevent hydration glitches (code just below expects an anchor)
-							element.append((tmp_comment = document.createComment('')));
+							// prevent hydration glitches
+							element.append(document.createComment(''));
 						}
 
 						// If hydrating, use the existing ssr comment as the anchor so that the
 						// inner open and close methods can pick up the existing nodes correctly
-						var child_anchor = hydrating
-							? get_first_child(element)
-							: element.appendChild(create_text());
+						var child_anchor = /** @type {TemplateNode} */ (
+							hydrating ? get_first_child(element) : element.appendChild(create_text())
+						);
 
 						if (hydrating) {
 							if (child_anchor === null) {
@@ -8149,11 +7142,10 @@
 						// contains children, it's a user error (which is warned on elsewhere)
 						// and the DOM will be silently discarded
 						render_fn(element, child_anchor);
-						tmp_comment?.remove();
 					}
 
 					// we do this after calling `render_fn` so that child effects don't override `nodes.end`
-					/** @type {Effect & { nodes: EffectNodes }} */ (active_effect).nodes.end = element;
+					/** @type {Effect} */ (active_effect).nodes_end = element;
 
 					anchor.before(element);
 				}
@@ -8181,12 +7173,8 @@
 	 * @param {{ hash: string, code: string }} css
 	 */
 	function append_styles$1(anchor, css) {
-		// Use an effect to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
+		// Use `queue_micro_task` to ensure `anchor` is in the DOM, otherwise getRootNode() will yield wrong results
 		effect(() => {
-			// Bit of a hack: branches.js/each.js use offscreen fragments with temporary text nodes that will
-			// never be connected to the real dom. Therfore walk up to the branch that has created the component
-			// whose styles we want to append, and check its node instead. It will be connected by the time we get here.
-			anchor = active_effect?.parent?.nodes?.start ?? anchor;
 			var root = anchor.getRootNode();
 
 			var target = /** @type {ShadowRoot} */ (root).host
@@ -8196,7 +7184,7 @@
 			// Always querying the DOM is roughly the same perf as additionally checking for presence in a map first assuming
 			// that you'll get cache hits half of the time, so we just always query the dom for simplicity and code savings.
 			if (!target.querySelector('#' + css.hash)) {
-				const style = create_element('style');
+				const style = document.createElement('style');
 				style.id = css.hash;
 				style.textContent = css.code;
 
@@ -8222,7 +7210,7 @@
 		/** @type {Effect | null} */
 		var e;
 
-		managed(() => {
+		block(() => {
 			if (fn !== (fn = get_fn())) {
 				if (e) {
 					destroy_effect(e);
@@ -8269,7 +7257,7 @@
 		}
 
 		if (directives) {
-			for (var key of Object.keys(directives)) {
+			for (var key in directives) {
 				if (directives[key]) {
 					classname = classname ? classname + ' ' + key : key;
 				} else if (classname.length) {
@@ -8304,7 +7292,7 @@
 		var separator = important ? ' !important;' : ';';
 		var css = '';
 
-		for (var key of Object.keys(styles)) {
+		for (var key in styles) {
 			var value = styles[key];
 			if (value != null && value !== '') {
 				css += ' ' + key + ': ' + value + separator;
@@ -8348,9 +7336,8 @@
 			}
 
 			if (value) {
-				// strip comments; surrounding whitespace is handled by the trims below (which is much faster than doing it through regex)
 				value = String(value)
-					.replaceAll(/\/\*.*?\*\//g, '')
+					.replaceAll(/\s*\/\*.*?\*\/\s*/g, '')
 					.trim();
 
 				/** @type {boolean | '"' | "'"} */
@@ -8441,7 +7428,8 @@
 	 * @returns {Record<string, boolean> | undefined}
 	 */
 	function set_class(dom, is_html, value, hash, prev_classes, next_classes) {
-		var prev = /** @type {any} */ (dom)[CLASS_CACHE];
+		// @ts-expect-error need to add __className to patched prototype
+		var prev = dom.__className;
 
 		if (
 			hydrating ||
@@ -8464,7 +7452,8 @@
 				}
 			}
 
-			/** @type {any} */ (dom)[CLASS_CACHE] = value;
+			// @ts-expect-error need to add __className to patched prototype
+			dom.__className = value;
 		} else if (next_classes && prev_classes !== next_classes) {
 			for (var key in next_classes) {
 				var is_present = !!next_classes[key];
@@ -8505,7 +7494,8 @@
 	 * @param {Record<string, any> | [Record<string, any>, Record<string, any>]} [next_styles]
 	 */
 	function set_style(dom, value, prev_styles, next_styles) {
-		var prev = /** @type {any} */ (dom)[STYLE_CACHE];
+		// @ts-expect-error
+		var prev = dom.__style;
 
 		if (hydrating || prev !== value) {
 			var next_style_attr = to_style(value, next_styles);
@@ -8518,7 +7508,8 @@
 				}
 			}
 
-			/** @type {any} */ (dom)[STYLE_CACHE] = value;
+			// @ts-expect-error
+			dom.__style = value;
 		} else if (next_styles) {
 			if (Array.isArray(next_styles)) {
 				update_styles(dom, prev_styles?.[0], next_styles[0]);
@@ -8581,10 +7572,8 @@
 	 */
 	function init_select(select) {
 		var observer = new MutationObserver(() => {
-			if ('__value' in select) {
-				// @ts-ignore
-				select_option(select, select.__value);
-			}
+			// @ts-ignore
+			select_option(select, select.__value);
 			// Deliberately don't update the potential binding value,
 			// the model should be preserved unless explicitly changed
 		});
@@ -8615,19 +7604,13 @@
 		}
 	}
 
-	/** @import { Blocker, Effect } from '#client' */
+	/** @import { Effect } from '#client' */
 
 	const CLASS = Symbol('class');
 	const STYLE = Symbol('style');
 
 	const IS_CUSTOM_ELEMENT = Symbol('is custom element');
 	const IS_HTML = Symbol('is html');
-
-	const LINK_TAG = IS_XHTML ? 'link' : 'LINK';
-	const INPUT_TAG = IS_XHTML ? 'input' : 'INPUT';
-	const OPTION_TAG = IS_XHTML ? 'option' : 'OPTION';
-	const SELECT_TAG = IS_XHTML ? 'select' : 'SELECT';
-	const PROGRESS_TAG = IS_XHTML ? 'progress' : 'PROGRESS';
 
 	/**
 	 * The value/checked attribute in the template actually corresponds to the defaultValue property, so we need
@@ -8662,7 +7645,8 @@
 			}
 		};
 
-		/** @type {any} */ (input)[FORM_RESET_HANDLER] = remove_defaults;
+		// @ts-expect-error
+		input.__on_r = remove_defaults;
 		queue_micro_task(remove_defaults);
 		add_form_reset_listener();
 	}
@@ -8681,7 +7665,7 @@
 					value ?? undefined) ||
 			// @ts-expect-error
 			// `progress` elements always need their value set when it's `0`
-			(element.value === value && (value !== 0 || element.nodeName !== PROGRESS_TAG))
+			(element.value === value && (value !== 0 || element.nodeName !== 'PROGRESS'))
 		) {
 			return;
 		}
@@ -8744,7 +7728,7 @@
 			if (
 				attribute === 'src' ||
 				attribute === 'srcset' ||
-				(attribute === 'href' && element.nodeName === LINK_TAG)
+				(attribute === 'href' && element.nodeName === 'LINK')
 			) {
 
 				// If we reset these attributes, they would result in another network request, which we want to avoid.
@@ -8790,7 +7774,7 @@
 		should_remove_defaults = false,
 		skip_warning = false
 	) {
-		if (hydrating && should_remove_defaults && element.nodeName === INPUT_TAG) {
+		if (hydrating && should_remove_defaults && element.tagName === 'INPUT') {
 			var input = /** @type {HTMLInputElement} */ (element);
 			var attribute = input.type === 'checkbox' ? 'defaultChecked' : 'defaultValue';
 
@@ -8812,11 +7796,10 @@
 		}
 
 		var current = prev || {};
-		var is_option_element = element.nodeName === OPTION_TAG;
+		var is_option_element = element.tagName === 'OPTION';
 
 		for (var key in prev) {
-			// don't null our internal $$onX listeners
-			if (!(key in next) && key[0] + key[1] !== '$$') {
+			if (!(key in next)) {
 				next[key] = null;
 			}
 		}
@@ -8832,15 +7815,6 @@
 		}
 
 		var setters = get_setters(element);
-
-		if (element.nodeName === INPUT_TAG && 'type' in next && ('value' in next || '__value' in next)) {
-			var type = next.type;
-
-			if (type !== current.type || (type === undefined && element.hasAttribute('type'))) {
-				current.type = type;
-				set_attribute(element, 'type', type);
-			}
-		}
 
 		// since key is captured we use const
 		for (const key in next) {
@@ -8898,14 +7872,14 @@
 				const opts = {};
 				const event_handle_key = '$$' + key;
 				let event_name = key.slice(2);
-				var is_delegated = can_delegate_event(event_name);
+				var delegated = can_delegate_event(event_name);
 
 				if (is_capture_event(event_name)) {
 					event_name = event_name.slice(0, -7);
 					opts.capture = true;
 				}
 
-				if (!is_delegated && prev_value) {
+				if (!delegated && prev_value) {
 					// Listening to same event but different handler -> our handle function below takes care of this
 					// If we were to remove and add listeners in this case, it could happen that the event is "swallowed"
 					// (the browser seems to not know yet that a new one exists now) and doesn't reach the handler
@@ -8916,19 +7890,25 @@
 					current[event_handle_key] = null;
 				}
 
-				if (is_delegated) {
-					delegated(event_name, element, value);
-					delegate([event_name]);
-				} else if (value != null) {
-					/**
-					 * @this {any}
-					 * @param {Event} evt
-					 */
-					function handle(evt) {
-						current[key].call(this, evt);
-					}
+				if (value != null) {
+					if (!delegated) {
+						/**
+						 * @this {any}
+						 * @param {Event} evt
+						 */
+						function handle(evt) {
+							current[key].call(this, evt);
+						}
 
-					current[event_handle_key] = create_event(event_name, element, handle, opts);
+						current[event_handle_key] = create_event(event_name, element, handle, opts);
+					} else {
+						// @ts-ignore
+						element[`__${event_name}`] = value;
+						delegate([event_name]);
+					}
+				} else if (delegated) {
+					// @ts-ignore
+					element[`__${event_name}`] = undefined;
 				}
 			} else if (key === 'style') {
 				// avoid using the setter
@@ -8997,7 +7977,7 @@
 	 * @param {(...expressions: any) => Record<string | symbol, any>} fn
 	 * @param {Array<() => any>} sync
 	 * @param {Array<() => Promise<any>>} async
-	 * @param {Blocker[]} blockers
+	 * @param {Array<Promise<void>>} blockers
 	 * @param {string} [css_hash]
 	 * @param {boolean} [should_remove_defaults]
 	 * @param {boolean} [skip_warning]
@@ -9019,10 +7999,10 @@
 			/** @type {Record<symbol, Effect>} */
 			var effects = {};
 
-			var is_select = element.nodeName === SELECT_TAG;
+			var is_select = element.nodeName === 'SELECT';
 			var inited = false;
 
-			managed(() => {
+			block(() => {
 				var next = fn(...values.map(get));
 				/** @type {Record<string | symbol, any>} */
 				var current = set_attributes(
@@ -9075,7 +8055,8 @@
 	 */
 	function get_attributes(element) {
 		return /** @type {Record<string | symbol, unknown>} **/ (
-			/** @type {any} */ (element)[ATTRIBUTES_CACHE] ??= {
+			// @ts-expect-error
+			element.__attributes ??= {
 				[IS_CUSTOM_ELEMENT]: element.nodeName.includes('-'),
 				[IS_HTML]: element.namespaceURI === NAMESPACE_HTML
 			}
@@ -9096,19 +8077,13 @@
 		var proto = element; // In the case of custom elements there might be setters on the instance
 		var element_proto = Element.prototype;
 
-		// Stop at Element, from there on there's only unnecessary (and dangerous, like innerHTML) setters we're not interested in
-		// Do not use constructor.name here as that's unreliable in some browser environments
+		// Stop at Element, from there on there's only unnecessary setters we're not interested in
+		// Do not use contructor.name here as that's unreliable in some browser environments
 		while (element_proto !== proto) {
 			descriptors = get_descriptors(proto);
 
 			for (var key in descriptors) {
-				if (
-					descriptors[key].set &&
-					// better safe than sorry, we don't want spread attributes to mess with HTML content
-					key !== 'innerHTML' &&
-					key !== 'textContent' &&
-					key !== 'innerText'
-				) {
+				if (descriptors[key].set) {
 					setters.push(key);
 				}
 			}
@@ -9190,9 +8165,8 @@
 			var value = get();
 
 			if (input === document.activeElement) {
-				// In sync mode render effects are executed during tree traversal -> needs current_batch
-				// In async mode render effects are flushed once batch resolved, at which point current_batch is null -> needs previous_batch
-				var batch = /** @type {Batch} */ (current_batch);
+				// we need both, because in non-async mode, render effects run before previous_batch is set
+				var batch = /** @type {Batch} */ (previous_batch ?? current_batch);
 
 				// Never rewrite the contents of a focused input. We can get here if, for example,
 				// an update is deferred because of async work depending on the input:
@@ -9267,8 +8241,6 @@
 		return value === '' ? null : +value;
 	}
 
-	/** @import { ComponentContext, Effect } from '#client' */
-
 	/**
 	 * @param {any} bound_value
 	 * @param {Element} element_or_component
@@ -9289,9 +8261,6 @@
 	 * @returns {void}
 	 */
 	function bind_this(element_or_component = {}, update, get_value, get_parts) {
-		var component_effect = /** @type {ComponentContext} */ (component_context).r;
-		var parent = /** @type {Effect} */ (active_effect);
-
 		effect(() => {
 			/** @type {unknown[]} */
 			var old_parts;
@@ -9305,9 +8274,9 @@
 				parts = get_parts?.() || [];
 
 				untrack(() => {
-					if (!is_bound_this(get_value(...parts), element_or_component)) {
+					if (element_or_component !== get_value(...parts)) {
 						update(element_or_component, ...parts);
-						// If this is an effect rerun (cause: each block context changes), then nullify the binding at
+						// If this is an effect rerun (cause: each block context changes), then nullfiy the binding at
 						// the previous position if it isn't already taken over by a different effect.
 						if (old_parts && is_bound_this(get_value(...old_parts), element_or_component)) {
 							update(null, ...old_parts);
@@ -9317,41 +8286,57 @@
 			});
 
 			return () => {
-				// When the bind:this effect is destroyed, we go up the effect parent chain until we find the last parent effect that is destroyed,
-				// or the effect containing the component bind:this is in (whichever comes first). That way we can time the nulling of the binding
-				// as close to user/developer expectation as possible.
-				// TODO Svelte 6: Decide if we want to keep this logic or just always null the binding in the component effect's teardown
-				// (which would be simpler, but less intuitive in some cases, and breaks the `ondestroy-before-cleanup` test)
-				let p = parent;
-				while (p !== component_effect && p.parent !== null && p.parent.f & DESTROYING) {
-					p = p.parent;
-				}
-				const teardown = () => {
+				// We cannot use effects in the teardown phase, we we use a microtask instead.
+				queue_micro_task(() => {
 					if (parts && is_bound_this(get_value(...parts), element_or_component)) {
 						update(null, ...parts);
 					}
-				};
-				const original_teardown = p.teardown;
-				p.teardown = () => {
-					teardown();
-					original_teardown?.();
-				};
+				});
 			};
 		});
 
 		return element_or_component;
 	}
 
-	/** @import { Derived, Effect, Source } from './types.js' */
+	/** @import { StoreReferencesContainer } from '#client' */
+	/** @import { Store } from '#shared' */
+
+	/**
+	 * Whether or not the prop currently being read is a store binding, as in
+	 * `<Child bind:x={$y} />`. If it is, we treat the prop as mutable even in
+	 * runes mode, and skip `binding_property_non_reactive` validation
+	 */
+	let is_store_binding = false;
+
+	/**
+	 * Returns a tuple that indicates whether `fn()` reads a prop that is a store binding.
+	 * Used to prevent `binding_property_non_reactive` validation false positives and
+	 * ensure that these props are treated as mutable even in runes mode
+	 * @template T
+	 * @param {() => T} fn
+	 * @returns {[T, boolean]}
+	 */
+	function capture_store_binding(fn) {
+		var previous_is_store_binding = is_store_binding;
+
+		try {
+			is_store_binding = false;
+			return [fn(), is_store_binding];
+		} finally {
+			is_store_binding = previous_is_store_binding;
+		}
+	}
+
+	/** @import { Effect, Source } from './types.js' */
 
 	/**
 	 * The proxy handler for rest props (i.e. `const { x, ...rest } = $props()`).
 	 * Is passed the full `$$props` object and excludes the named props.
-	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Set<string | symbol>, name?: string }>}}
+	 * @type {ProxyHandler<{ props: Record<string | symbol, unknown>, exclude: Array<string | symbol>, name?: string }>}}
 	 */
 	const rest_props_handler = {
 		get(target, key) {
-			if (target.exclude.has(key)) return;
+			if (target.exclude.includes(key)) return;
 			return target.props[key];
 		},
 		set(target, key) {
@@ -9359,7 +8344,7 @@
 			return false;
 		},
 		getOwnPropertyDescriptor(target, key) {
-			if (target.exclude.has(key)) return;
+			if (target.exclude.includes(key)) return;
 			if (key in target.props) {
 				return {
 					enumerable: true,
@@ -9369,23 +8354,26 @@
 			}
 		},
 		has(target, key) {
-			if (target.exclude.has(key)) return false;
+			if (target.exclude.includes(key)) return false;
 			return key in target.props;
 		},
 		ownKeys(target) {
-			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.has(key));
+			return Reflect.ownKeys(target.props).filter((key) => !target.exclude.includes(key));
 		}
 	};
 
 	/**
 	 * @param {Record<string, unknown>} props
-	 * @param {Set<string>} exclude
+	 * @param {string[]} exclude
 	 * @param {string} [name]
 	 * @returns {Record<string, unknown>}
 	 */
 	/*#__NO_SIDE_EFFECTS__*/
 	function rest_props(props, exclude, name) {
-		return new Proxy({ props, exclude }, rest_props_handler);
+		return new Proxy(
+			{ props, exclude },
+			rest_props_handler
+		);
 	}
 
 	/**
@@ -9484,20 +8472,13 @@
 	 * @returns {(() => V | ((arg: V) => V) | ((arg: V, mutation: boolean) => V))}
 	 */
 	function prop(props, key, flags, fallback) {
-		var runes = true;
 		var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
 		var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
 
 		var fallback_value = /** @type {V} */ (fallback);
 		var fallback_dirty = true;
-		var fallback_signal = /** @type {Derived<V> | undefined} */ (undefined);
 
 		var get_fallback = () => {
-			if (lazy && runes) {
-				fallback_signal ??= derived(/** @type {() => V} */ (fallback));
-				return get(fallback_signal);
-			}
-
 			if (fallback_dirty) {
 				fallback_dirty = false;
 
@@ -9510,7 +8491,7 @@
 		};
 
 		/** @type {((v: V) => void) | undefined} */
-		let setter;
+		var setter;
 
 		if (bindable) {
 			// Can be the case when someone does `mount(Component, props)` with `let props = $state({...})`
@@ -9522,7 +8503,6 @@
 				(is_entry_props && key in props ? (v) => (props[key] = v) : undefined);
 		}
 
-		/** @type {V} */
 		var initial_value;
 		var is_store_sub = false;
 
@@ -9614,7 +8594,9 @@
 
 				// special case — avoid recalculating the derived if we're in a
 				// teardown function and the prop was overridden locally, or the
-				// component was already destroyed (people could access props in a timeout)
+				// component was already destroyed (this latter part is necessary
+				// because `bind:this` can read props after the component has
+				// been destroyed. TODO simplify `bind:this`
 				if ((is_destroying_effect && overridden) || (parent_effect.f & DESTROYED) !== 0) {
 					return d.v;
 				}
@@ -9624,11 +8606,40 @@
 		);
 	}
 
-	/** @import { Blocker } from '#client' */
+	/**
+	 * @param {() => any} collection
+	 * @param {(item: any, index: number) => string} key_fn
+	 * @returns {void}
+	 */
+	function validate_each_keys(collection, key_fn) {
+		render_effect(() => {
+			const keys = new Map();
+			const maybe_array = collection();
+			const array = is_array(maybe_array)
+				? maybe_array
+				: maybe_array == null
+					? []
+					: Array.from(maybe_array);
+			const length = array.length;
+			for (let i = 0; i < length; i++) {
+				const key = key_fn(array[i], i);
+				if (keys.has(key)) {
+					String(keys.get(key));
+
+					/** @type {string | null} */
+					let k = String(key);
+					if (k.startsWith('[object ')) k = null;
+
+					each_key_duplicate();
+				}
+				keys.set(key, i);
+			}
+		});
+	}
 
 	/**
 	 * @param {string} binding
-	 * @param {Blocker[]} blockers
+	 * @param {Array<Promise<void>>} blockers
 	 * @param {() => Record<string, any>} get_object
 	 * @param {() => string} get_property
 	 * @param {number} line
@@ -9753,8 +8764,7 @@
 				props,
 				context: options.context,
 				intro: options.intro ?? false,
-				recover: options.recover,
-				transformError: options.transformError
+				recover: options.recover
 			});
 
 			// We don't flushSync for custom element wrappers or if the user doesn't want it,
@@ -9846,23 +8856,18 @@
 			$$l_u = new Map();
 			/** @type {any} The managed render effect for reflecting attributes */
 			$$me;
-			/** @type {ShadowRoot | null} The ShadowRoot of the custom element */
-			$$shadowRoot = null;
 
 			/**
 			 * @param {*} $$componentCtor
 			 * @param {*} $$slots
-			 * @param {ShadowRootInit | undefined} shadow_root_init
+			 * @param {*} use_shadow_dom
 			 */
-			constructor($$componentCtor, $$slots, shadow_root_init) {
+			constructor($$componentCtor, $$slots, use_shadow_dom) {
 				super();
 				this.$$ctor = $$componentCtor;
 				this.$$s = $$slots;
-
-				if (shadow_root_init) {
-					// We need to store the reference to shadow root, because `closed` shadow root cannot be
-					// accessed with `this.shadowRoot`.
-					this.$$shadowRoot = this.attachShadow(shadow_root_init);
+				if (use_shadow_dom) {
+					this.attachShadow({ mode: 'open' });
 				}
 			}
 
@@ -9914,7 +8919,7 @@
 						 * @param {Element} anchor
 						 */
 						return (anchor) => {
-							const slot = create_element('slot');
+							const slot = document.createElement('slot');
 							if (name !== 'default') slot.name = name;
 
 							append(anchor, slot);
@@ -9952,7 +8957,7 @@
 					}
 					this.$$c = createClassComponent({
 						component: this.$$ctor,
-						target: this.$$shadowRoot || this,
+						target: this.shadowRoot || this,
 						props: {
 							...this.$$d,
 							$$slots,
@@ -10093,20 +9098,20 @@
 	 * @param {Record<string, CustomElementPropDefinition>} props_definition  The props to observe
 	 * @param {string[]} slots  The slots to create
 	 * @param {string[]} exports  Explicitly exported values, other than props
-	 * @param {ShadowRootInit | undefined} shadow_root_init  Options passed to shadow DOM constructor
+	 * @param {boolean} use_shadow_dom  Whether to use shadow DOM
 	 * @param {(ce: new () => HTMLElement) => new () => HTMLElement} [extend]
 	 */
 	function create_custom_element(
 		Component,
 		props_definition,
 		slots,
-		exports,
-		shadow_root_init,
+		exports$1,
+		use_shadow_dom,
 		extend
 	) {
 		let Class = class extends SvelteElement {
 			constructor() {
-				super(Component, slots, shadow_root_init);
+				super(Component, slots, use_shadow_dom);
 				this.$$p_d = props_definition;
 			}
 			static get observedAttributes() {
@@ -10138,7 +9143,7 @@
 				}
 			});
 		});
-		exports.forEach((property) => {
+		exports$1.forEach((property) => {
 			define_property(Class.prototype, property, {
 				get() {
 					return this.$$c?.[property];
@@ -10178,9 +9183,7 @@
 					// eslint-disable-next-line no-console
 					console.log('%c[snapshot]', 'color: grey', ...transformed);
 				}
-			} catch {
-				// Errors can occur when trying to snapshot objects with getters that throw or non-enumerable properties.
-			}
+			} catch {}
 		});
 
 		return objects;
@@ -10527,30 +9530,8 @@
 
 	Icon[FILENAME] = 'src/sdg/bases/Icon/Icon.svelte';
 
-	var rest_excludes$k = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'type',
-		'label',
-		'size',
-		'color',
-		'width',
-		'height',
-		'src',
-		'rotate',
-		'variant',
-		'variationSettings',
-		'renderMode',
-		'use-material',
-		'codepoint',
-		'rootElement',
-		'vAlign'
-	]);
-
-	var root$u = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[77, 4]]);
-	var root_1$d = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[93, 4]]);
+	var root_1$9 = add_locations(from_html(`<span> </span>`), Icon[FILENAME], [[77, 4]]);
+	var root_2$a = add_locations(from_html(`<div></div>`), Icon[FILENAME], [[93, 4]]);
 
 	function Icon($$anchor, $$props) {
 		check_target(new.target);
@@ -10575,7 +9556,29 @@
 			rootElement = prop($$props, 'rootElement', 15),
 			vAlign = prop($$props, 'vAlign', 7, '-.125em' // pour alignement avec le texte par défaut
 			),
-			rest = rest_props($$props, rest_excludes$k);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'type',
+					'label',
+					'size',
+					'color',
+					'width',
+					'height',
+					'src',
+					'rotate',
+					'variant',
+					'variationSettings',
+					'renderMode',
+					'use-material',
+					'codepoint',
+					'rootElement',
+					'vAlign'
+				]);
 
 		let attributes = tag(
 			user_derived(() => strict_equals(width(), 'auto')
@@ -10643,7 +9646,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get type() {
 				return type();
 			},
@@ -10777,7 +9779,9 @@
 			set vAlign($$value = '-.125em') {
 				vAlign($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -10785,20 +9789,23 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root$u();
+				var span = root_1$9();
 
 				attribute_effect(span, () => ({
 					role: 'img',
 					...rest,
 					class: ["qc-icon", "qc-icon-font", $$props.class],
 					'aria-label': label(),
+
 					style: color()
 						? `--img-color: var(--qc-color-${color()});`
 						: 'inherit',
+
 					'data-img-type': get(resolvedType),
 					'data-img-variant': variant(),
 					...get(attributes),
 					'aria-hidden': label() ? undefined : true,
+
 					[STYLE]: {
 						'--img-rotate': rotate() && rotate() + "deg",
 						'--img-valign': vAlign(),
@@ -10815,17 +9822,19 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div = root_1$d();
+				var div = root_2$a();
 
 				attribute_effect(div, () => ({
 					role: 'img',
 					class: ["qc-icon", src() && "qc-icon-custom"],
 					'aria-label': label(),
+
 					style: `--img-color: var(--qc-color-${color() || 'text-primary'});
             --img-width: ${width()};
             --img-height: ${height()};
             --img-src: url('${src()}');
         `,
+
 					'data-img-type': type(),
 					'data-img-variant': variant(),
 					...get(attributes),
@@ -10840,7 +9849,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (get(isFontMode)) $$render(consequent); else $$render(alternate, -1);
+					if (get(isFontMode)) $$render(consequent); else $$render(alternate, false);
 				}),
 				'if',
 				Icon,
@@ -10875,12 +9884,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	Notice[FILENAME] = 'src/sdg/components/Notice/Notice.svelte';
 
-	var root$t = add_locations(from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [[63, 0, [[66, 2, [[67, 4]]], [75, 2, [[76, 4]]]]]]);
+	var root$n = add_locations(from_html(`<div tabindex="0"><div class="icon-container"><div class="qc-icon"><!></div></div> <div class="content-container"><div class="content"><!> <!> <!></div></div></div>`), Notice[FILENAME], [[63, 0, [[66, 2, [[67, 4]]], [75, 2, [[76, 4]]]]]]);
 
 	function Notice($$anchor, $$props) {
 		check_target(new.target);
@@ -10956,7 +9965,6 @@
 		const iconLabel = tag(user_derived(() => typesDescriptions[type()] ?? typesDescriptions['information']), 'iconLabel');
 
 		var $$exports = {
-			...legacy_api(),
 			get title() {
 				return title();
 			},
@@ -11009,10 +10017,12 @@
 			set slotContent($$value) {
 				slotContent($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root$t();
+		var div = root$n();
 		var div_1 = child(div);
 		var div_2 = child(div_1);
 		var node_1 = child(div_2);
@@ -11026,6 +10036,7 @@
 				get label() {
 					return get(iconLabel);
 				},
+
 				size: 'md'
 			}),
 			'component',
@@ -11048,8 +10059,8 @@
 				var node_3 = first_child(fragment);
 
 				{
-					validate_dynamic_element_tag(() => get(usedHeader));
 					validate_void_dynamic_element(() => get(usedHeader));
+					validate_dynamic_element_tag(() => get(usedHeader));
 
 					element(
 						node_3,
@@ -11112,21 +10123,20 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	NoticeWC[FILENAME] = 'src/sdg/components/Notice/NoticeWC.svelte';
 
-	var rest_excludes$j = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
-	var root$s = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), NoticeWC[FILENAME], [[27, 0]]);
+	var root$m = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), NoticeWC[FILENAME], [[27, 0]]);
 
 	function NoticeWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$j);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
-		var fragment = root$s();
+		var fragment = root$m();
 		var node = first_child(fragment);
 
 		{
@@ -11162,38 +10172,42 @@
 		},
 		['default'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	PivHeader[FILENAME] = 'src/sdg/components/PivHeader/PivHeader.svelte';
 
-	var root$r = add_locations(from_html(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[73, 24]]);
-	var root_1$c = add_locations(from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[75, 24]]);
-	var root_2$7 = add_locations(from_html(`<div class="title"><!></div>`), PivHeader[FILENAME], [[71, 16]]);
-	var root_3$2 = add_locations(from_html(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 12, [[64, 16]]]]);
-	var root_4$1 = add_locations(from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[96, 20, [[114, 24]]]]);
-	var root_5$1 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[127, 40, [[127, 44]]]]);
-	var root_6$1 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[130, 40, [[130, 44]]]]);
-	var root_7$1 = add_locations(from_html(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[124, 28, [[125, 32]]]]);
-	var root_8$1 = add_locations(from_html(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[143, 16]]);
+	var root_3$4 = add_locations(from_html(`<a class="page-title"> </a>`), PivHeader[FILENAME], [[73, 24]]);
+	var root_4$4 = add_locations(from_html(`<span class="page-title" role="heading" aria-level="1"> </span>`), PivHeader[FILENAME], [[75, 24]]);
+	var root_2$9 = add_locations(from_html(`<div class="title"><!></div>`), PivHeader[FILENAME], [[71, 16]]);
+	var root_5$1 = add_locations(from_html(`<div class="go-to-content"><a> </a></div>`), PivHeader[FILENAME], [[63, 12, [[64, 16]]]]);
+	var root_6$2 = add_locations(from_html(`<a class="qc-search" href="/" role="button"><!> <span class="no-link-title qc-sr-only" role="heading" aria-level="1"> </span></a>`), PivHeader[FILENAME], [[96, 20, [[114, 24]]]]);
+	var root_10$1 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[127, 40, [[127, 44]]]]);
+	var root_11 = add_locations(from_html(`<li><a> </a></li>`), PivHeader[FILENAME], [[130, 40, [[130, 44]]]]);
+	var root_9$1 = add_locations(from_html(`<nav><ul><!> <!></ul></nav>`), PivHeader[FILENAME], [[124, 28, [[125, 32]]]]);
+	var root_12 = add_locations(from_html(`<div class="search-zone"><!></div>`), PivHeader[FILENAME], [[143, 16]]);
 
-	var root_9$1 = add_locations(from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
+	var root$l = add_locations(from_html(`<div role="banner" class="qc-piv-header qc-component"><div><!> <div class="piv-top"><div class="signature-group"><div class="logo"><a rel="noreferrer"><img/></a></div> <!></div> <div class="right-section"><!> <div class="links"><!></div></div></div> <!> <div class="piv-bottom"><!></div></div></div>`), PivHeader[FILENAME], [
 		[
 			58,
 			0,
+
 			[
 				[
 					61,
 					4,
+
 					[
 						[
 							80,
 							8,
+
 							[
 								[81, 12, [[82, 16, [[83, 20, [[87, 24]]]]]]],
 								[94, 12, [[118, 16]]]
 							]
 						],
+
 						[141, 8]
 					]
 				]
@@ -11234,9 +10248,9 @@
 			searchZoneSlot = prop($$props, 'searchZoneSlot', 7),
 			slots = prop($$props, 'slots', 7, false);
 
-		let containerClass = tag(state('qc-container'), 'containerClass');
-		let searchZone = tag(state(null), 'searchZone');
-		let displaySearchForm = tag(state(false), 'displaySearchForm');
+		let containerClass = tag(state('qc-container'), 'containerClass'),
+			searchZone = tag(state(null), 'searchZone'),
+			displaySearchForm = tag(state(false), 'displaySearchForm');
 
 		function focusOnSearchInput() {
 			if (get(displaySearchForm)) {
@@ -11258,7 +10272,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get customElementParent() {
 				return customElementParent();
 			},
@@ -11469,10 +10482,12 @@
 			set slots($$value = false) {
 				slots($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root_9$1();
+		var div = root$l();
 		var div_1 = child(div);
 
 		{
@@ -11484,12 +10499,12 @@
 
 				{
 					var consequent_1 = ($$anchor) => {
-						var div_2 = root_2$7();
+						var div_2 = root_2$9();
 						var node_1 = child(div_2);
 
 						{
 							var consequent = ($$anchor) => {
-								var a = root$r();
+								var a = root_3$4();
 								var text = child(a, true);
 
 								reset(a);
@@ -11503,7 +10518,7 @@
 							};
 
 							var alternate = ($$anchor) => {
-								var span = root_1$c();
+								var span = root_4$4();
 								var text_1 = child(span, true);
 
 								reset(span);
@@ -11513,7 +10528,7 @@
 
 							add_svelte_meta(
 								() => if_block(node_1, ($$render) => {
-									if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, -1);
+									if (titleUrl() && titleUrl().length > 0) $$render(consequent); else $$render(alternate, false);
 								}),
 								'if',
 								PivHeader,
@@ -11544,7 +10559,7 @@
 
 			{
 				var consequent_2 = ($$anchor) => {
-					var div_3 = root_3$2();
+					var div_3 = root_5$1();
 					var a_1 = child(div_3);
 					var text_2 = child(a_1, true);
 
@@ -11589,7 +10604,17 @@
 
 			{
 				var consequent_3 = ($$anchor) => {
-					var a_3 = root_4$1();
+					var a_3 = root_6$2();
+
+					a_3.__click = (evt) => {
+						evt.preventDefault();
+						set(displaySearchForm, !get(displaySearchForm));
+
+						tick().then(() => {
+							focusOnSearchInput();
+						});
+					};
+
 					var node_5 = child(a_3);
 
 					add_svelte_meta(
@@ -11613,24 +10638,12 @@
 					reset(span_1);
 					reset(a_3);
 					template_effect(() => set_text(text_3, get(displaySearchForm) ? hideSearchText() : displaySearchText()));
-
-					delegated('click', a_3, function click(evt) {
-						evt.preventDefault();
-						set(displaySearchForm, !get(displaySearchForm));
-
-						tick().then(() => {
-							focusOnSearchInput();
-						});
-					});
-
 					append($$anchor, a_3);
 				};
 
-				var d = user_derived(() => Utils.isTruthy(enableSearch()));
-
 				add_svelte_meta(
 					() => if_block(node_4, ($$render) => {
-						if (get(d)) $$render(consequent_3);
+						if (Utils.isTruthy(enableSearch())) $$render(consequent_3);
 					}),
 					'if',
 					PivHeader,
@@ -11657,13 +10670,13 @@
 
 					{
 						var consequent_7 = ($$anchor) => {
-							var nav = root_7$1();
+							var nav = root_9$1();
 							var ul = child(nav);
 							var node_9 = child(ul);
 
 							{
 								var consequent_5 = ($$anchor) => {
-									var li = root_5$1();
+									var li = root_10$1();
 									var a_4 = child(li);
 									var text_4 = child(a_4, true);
 
@@ -11693,7 +10706,7 @@
 
 							{
 								var consequent_6 = ($$anchor) => {
-									var li_1 = root_6$1();
+									var li_1 = root_11();
 									var a_5 = child(li_1);
 									var text_5 = child(a_5, true);
 
@@ -11741,7 +10754,7 @@
 
 				add_svelte_meta(
 					() => if_block(node_6, ($$render) => {
-						if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, -1);
+						if ((!slots() || slots()['links']) && linksSlot()) $$render(consequent_4); else $$render(alternate_1, false);
 					}),
 					'if',
 					PivHeader,
@@ -11763,7 +10776,7 @@
 
 			{
 				var consequent_9 = ($$anchor) => {
-					var div_10 = root_8$1();
+					var div_10 = root_12();
 					var node_13 = child(div_10);
 
 					{
@@ -11849,13 +10862,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	PivHeaderWC[FILENAME] = 'src/sdg/components/PivHeader/PivHeaderWC.svelte';
 
-	var rest_excludes$i = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'self']);
-	var root$q = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
+	var root$k = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivHeaderWC[FILENAME], [[56, 0]]);
 
 	function PivHeaderWC($$anchor, $$props) {
 		check_target(new.target);
@@ -11865,10 +10877,9 @@
 		push($$props, true);
 
 		let self = prop($$props, 'self', 7),
-			props = rest_props($$props, rest_excludes$i);
+			props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'self']);
 
 		var $$exports = {
-			...legacy_api(),
 			get self() {
 				return self();
 			},
@@ -11876,10 +10887,12 @@
 			set self($$value) {
 				self($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$q();
+		var fragment = root$k();
 		var node = first_child(fragment);
 
 		{
@@ -11959,7 +10972,7 @@
 		},
 		['links', 'search-zone'],
 		[],
-		{ mode: 'open' },
+		true,
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
 				static self;
@@ -11974,9 +10987,9 @@
 
 	PivFooter[FILENAME] = 'src/sdg/components/PivFooter/PivFooter.svelte';
 
-	var root$p = add_locations(from_html(`<img/>`), PivFooter[FILENAME], [[34, 12]]);
-	var root_1$b = add_locations(from_html(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
-	var root_2$6 = add_locations(from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
+	var root_2$8 = add_locations(from_html(`<img/>`), PivFooter[FILENAME], [[34, 12]]);
+	var root_4$3 = add_locations(from_html(`<a> </a>`), PivFooter[FILENAME], [[45, 12]]);
+	var root$j = add_locations(from_html(`<div class="qc-piv-footer qc-container-fluid"><!> <a class="logo"></a> <span class="copyright"><!></span></div>`), PivFooter[FILENAME], [[20, 0, [[25, 4], [41, 4]]]]);
 
 	function PivFooter($$anchor, $$props) {
 		check_target(new.target);
@@ -12001,7 +11014,6 @@
 			slots = prop($$props, 'slots', 23, () => ({}));
 
 		var $$exports = {
-			...legacy_api(),
 			get logoUrl() {
 				return logoUrl();
 			},
@@ -12109,10 +11121,12 @@
 			set slots($$value = {}) {
 				slots($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root_2$6();
+		var div = root$j();
 		var node = child(div);
 
 		{
@@ -12149,7 +11163,7 @@
 
 				src();
 
-				var img = root$p();
+				var img = root_2$8();
 
 				template_effect(() => {
 					set_attribute(img, 'src', src());
@@ -12180,7 +11194,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var a_1 = root_1$b();
+				var a_1 = root_4$3();
 				var text = child(a_1, true);
 
 				reset(a_1);
@@ -12195,7 +11209,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_2, ($$render) => {
-					if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, -1);
+					if (!slots() && copyrightSlot() || slots().copyright) $$render(consequent_1); else $$render(alternate, false);
 				}),
 				'if',
 				PivFooter,
@@ -12234,13 +11248,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	PivFooterWC[FILENAME] = 'src/sdg/components/PivFooter/PivFooterWC.svelte';
 
-	var rest_excludes$h = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'self']);
-	var root$o = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivFooterWC[FILENAME], [[44, 0]]);
+	var root$i = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), PivFooterWC[FILENAME], [[44, 0]]);
 
 	function PivFooterWC($$anchor, $$props) {
 		check_target(new.target);
@@ -12250,10 +11263,9 @@
 		push($$props, true);
 
 		let self = prop($$props, 'self', 7),
-			props = rest_props($$props, rest_excludes$h);
+			props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'self']);
 
 		var $$exports = {
-			...legacy_api(),
 			get self() {
 				return self();
 			},
@@ -12261,10 +11273,12 @@
 			set self($$value) {
 				self($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$o();
+		var fragment = root$i();
 		var node = first_child(fragment);
 
 		{
@@ -12326,7 +11340,7 @@
 		},
 		['default', 'copyright'],
 		[],
-		{ mode: 'open' },
+		true,
 		(customElementConstructor) => {
 			return class extends customElementConstructor {
 				static self;
@@ -12341,21 +11355,7 @@
 
 	IconButton[FILENAME] = 'src/sdg/components/IconButton/IconButton.svelte';
 
-	var rest_excludes$g = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'size',
-		'label',
-		'icon',
-		'iconSize',
-		'iconColor',
-		'class',
-		'src'
-	]);
-
-	var root$n = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
+	var root$h = add_locations(from_html(`<button><!></button>`), IconButton[FILENAME], [[17, 0]]);
 
 	function IconButton($$anchor, $$props) {
 		check_target(new.target);
@@ -12368,10 +11368,23 @@
 			iconColor = prop($$props, 'iconColor', 7),
 			className = prop($$props, 'class', 7, ''),
 			src = prop($$props, 'src', 7),
-			rest = rest_props($$props, rest_excludes$g);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'size',
+					'label',
+					'icon',
+					'iconSize',
+					'iconColor',
+					'class',
+					'src'
+				]);
 
 		var $$exports = {
-			...legacy_api(),
 			get size() {
 				return size();
 			},
@@ -12433,10 +11446,12 @@
 			set src($$value) {
 				src($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var button = root$n();
+		var button = root$h();
 
 		attribute_effect(button, () => ({
 			'data-button-size': size(),
@@ -12464,7 +11479,9 @@
 							get color() {
 								return iconColor();
 							},
+
 							'aria-hidden': 'true',
+
 							get label() {
 								return label();
 							},
@@ -12512,12 +11529,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	Alert[FILENAME] = 'src/sdg/components/Alert/Alert.svelte';
 
-	var root$m = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
+	var root_1$8 = add_locations(from_html(`<div role="alert"><div><div class="qc-general-alert-elements"><!> <div class="qc-alert-content"><!> <!></div> <!></div></div></div>`), Alert[FILENAME], [[59, 4, [[62, 8, [[63, 12, [[69, 16]]]]]]]]);
 
 	function Alert($$anchor, $$props) {
 		check_target(new.target);
@@ -12580,7 +11597,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get type() {
 				return type();
 			},
@@ -12678,7 +11694,9 @@
 			set hideAlertCallback($$value = () => {}) {
 				hideAlertCallback($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -12686,7 +11704,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div = root$m();
+				var div = root_1$8();
 				var div_1 = child(div);
 				var div_2 = child(div_1);
 				var node_1 = child(div_2);
@@ -12704,7 +11722,9 @@
 							get color() {
 								return get($1);
 							},
+
 							size: 'nm',
+
 							get label() {
 								return get(label);
 							}
@@ -12736,6 +11756,7 @@
 								get 'aria-label'() {
 									return closeLabel;
 								},
+
 								onclick: hideAlert,
 								size: 'nm',
 								icon: 'close',
@@ -12750,11 +11771,9 @@
 						);
 					};
 
-					var d = user_derived(() => Utils.isTruthy(maskable()));
-
 					add_svelte_meta(
 						() => if_block(node_4, ($$render) => {
-							if (get(d)) $$render(consequent);
+							if (Utils.isTruthy(maskable())) $$render(consequent);
 						}),
 						'if',
 						Alert,
@@ -12776,11 +11795,9 @@
 				append($$anchor, div);
 			};
 
-			var d_1 = user_derived(() => !Utils.isTruthy(hide()));
-
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (get(d_1)) $$render(consequent_1);
+					if (!Utils.isTruthy(hide())) $$render(consequent_1);
 				}),
 				'if',
 				Alert,
@@ -12811,13 +11828,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	AlertWC[FILENAME] = 'src/sdg/components/Alert/AlertWC.svelte';
 
-	var rest_excludes$f = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'hide']);
-	var root$l = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[40, 0]]);
+	var root$g = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), AlertWC[FILENAME], [[40, 0]]);
 
 	function AlertWC($$anchor, $$props) {
 		check_target(new.target);
@@ -12826,7 +11842,7 @@
 		var $$ownership_validator = create_ownership_validator($$props);
 
 		let hide = prop($$props, 'hide', 7, "false"),
-			props = rest_props($$props, rest_excludes$f);
+			props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'hide']);
 
 		let rootElement = tag(state(void 0), 'rootElement');
 
@@ -12835,7 +11851,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get hide() {
 				return hide();
 			},
@@ -12843,10 +11858,12 @@
 			set hide($$value = "false") {
 				hide($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$l();
+		var fragment = root$g();
 		var node = first_child(fragment);
 
 		{
@@ -12855,6 +11872,7 @@
 			add_svelte_meta(
 				() => Alert(node, spread_props({ hideAlertCallback }, () => props, {
 					slotContent: `<slot />`,
+
 					get hide() {
 						return hide();
 					},
@@ -12900,12 +11918,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	ToTop[FILENAME] = 'src/sdg/components/ToTop/ToTop.svelte';
 
-	var root$k = add_locations(from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`), ToTop[FILENAME], [[68, 0, [[78, 3]]]]);
+	var root$f = add_locations(from_html(`<a href="#top"><!> <span class="qc-sr-only"> </span></a>`), ToTop[FILENAME], [[68, 0, [[78, 3]]]]);
 
 	function ToTop($$anchor, $$props) {
 		check_target(new.target);
@@ -12962,7 +11980,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -12979,14 +11996,20 @@
 			set demo($$value = 'false') {
 				demo($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var a = root$k();
+		var a = root$f();
 
 		event('scroll', $window, handleScrollUpButton);
 
 		let classes;
+
+		a.__click = (e) => scrollToTop(e);
+		a.__keydown = handleEnterAndSpace;
+
 		var node = child(a);
 
 		add_svelte_meta(() => Icon(node, { type: 'north', color: 'background', size: 'nm' }), 'component', ToTop, 77, 3, { componentTag: 'Icon' });
@@ -13005,28 +12028,21 @@
 			set_text(text_1, text());
 		});
 
-		delegated('click', a, function click(e) {
-			return scrollToTop(e);
-		});
-
-		delegated('keydown', a, handleEnterAndSpace);
 		append($$anchor, a);
 
 		return pop($$exports);
 	}
 
 	delegate(['click', 'keydown']);
-	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], { mode: 'open' });
+	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], true);
 
 	ToTopWC[FILENAME] = 'src/sdg/components/ToTop/toTopWC.svelte';
-
-	var rest_excludes$e = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 
 	function ToTopWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$e);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(() => ToTop($$anchor, spread_props(() => props)), 'component', ToTopWC, 16, 0, { componentTag: 'ToTop' });
@@ -13041,7 +12057,8 @@
 			demo: { attribute: 'demo', type: 'String' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	ExternalLink[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLink.svelte';
@@ -13177,7 +12194,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get externalIconAlt() {
 				return externalIconAlt();
 			},
@@ -13212,7 +12228,9 @@
 			set nestedExternalLinks($$value = false) {
 				nestedExternalLinks($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		return pop($$exports);
@@ -13228,18 +12246,16 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	ExternalLinkWC[FILENAME] = 'src/sdg/components/ExternalLink/ExternalLinkWC.svelte';
-
-	var rest_excludes$d = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 
 	function ExternalLinkWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$d);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		const hostEl = $$props.$$host;
 		let links = tag(state(proxy(queryLinks())), 'links');
 		let isUpdating = tag(state(false), 'isUpdating');
@@ -13329,12 +12345,12 @@
 		return pop($$exports);
 	}
 
-	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], []));
+	customElements.define('qc-external-link', create_custom_element(ExternalLinkWC, { externalIconAlt: { attribute: 'img-alt' } }, [], [], false));
 
 	LabelText[FILENAME] = 'src/sdg/components/Label/LabelText.svelte';
 
-	var root$j = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
-	var root_1$a = add_locations(from_html(`<span class="qc-label-text"></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
+	var root_1$7 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), LabelText[FILENAME], [[5, 61]]);
+	var root$e = add_locations(from_html(`<span class="qc-label-text"><!></span><!>`, 1), LabelText[FILENAME], [[5, 0]]);
 
 	function LabelText($$anchor, $$props) {
 		check_target(new.target);
@@ -13344,7 +12360,6 @@
 			required = prop($$props, 'required', 7);
 
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -13361,26 +12376,29 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root_1$a();
+		var fragment = root$e();
 		var span = first_child(fragment);
+		var node = child(span);
 
-		html(span, text, true);
+		html(node, text);
 		reset(span);
 
-		var node = sibling(span);
+		var node_1 = sibling(span);
 
 		{
 			var consequent = ($$anchor) => {
-				var span_1 = root$j();
+				var span_1 = root_1$7();
 
 				append($$anchor, span_1);
 			};
 
 			add_svelte_meta(
-				() => if_block(node, ($$render) => {
+				() => if_block(node_1, ($$render) => {
 					if (required()) $$render(consequent);
 				}),
 				'if',
@@ -13395,25 +12413,11 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(LabelText, { text: {}, required: {} }, [], [], { mode: 'open' });
+	create_custom_element(LabelText, { text: {}, required: {} }, [], [], true);
 
 	Label[FILENAME] = 'src/sdg/components/Label/Label.svelte';
 
-	var rest_excludes$c = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'forId',
-		'text',
-		'required',
-		'compact',
-		'bold',
-		'disabled',
-		'rootElement'
-	]);
-
-	var root$i = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
+	var root$d = add_locations(from_html(`<label><!></label>`), Label[FILENAME], [[16, 0]]);
 
 	function Label($$anchor, $$props) {
 		check_target(new.target);
@@ -13426,10 +12430,23 @@
 			bold = prop($$props, 'bold', 7, false),
 			disabled = prop($$props, 'disabled', 7, false),
 			rootElement = prop($$props, 'rootElement', 15),
-			rest = rest_props($$props, rest_excludes$c);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'forId',
+					'text',
+					'required',
+					'compact',
+					'bold',
+					'disabled',
+					'rootElement'
+				]);
 
 		var $$exports = {
-			...legacy_api(),
 			get forId() {
 				return forId();
 			},
@@ -13491,19 +12508,23 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var label = root$i();
+		var label = root$d();
 
 		attribute_effect(label, () => ({
 			for: forId(),
+
 			class: [
 				"qc-label",
 				compact() && "qc-compact",
 				bold() && "qc-bold",
 				disabled() && "qc-disabled"
 			],
+
 			...rest
 		}));
 
@@ -13546,27 +12567,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	SearchInput[FILENAME] = 'src/sdg/components/SearchInput/SearchInput.svelte';
 
-	var rest_excludes$b = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'value',
-		'label',
-		'size',
-		'debounce',
-		'ariaLabel',
-		'clearAriaLabel',
-		'leftIcon',
-		'id'
-	]);
-
-	var root$h = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[89, 4]]]]);
+	var root$c = add_locations(from_html(`<!> <div><!> <input/> <!></div>`, 1), SearchInput[FILENAME], [[75, 0, [[89, 4]]]]);
 
 	function SearchInput($$anchor, $$props) {
 		check_target(new.target);
@@ -13582,7 +12588,22 @@
 			clearAriaLabel = prop($$props, 'clearAriaLabel', 23, () => strict_equals(lang, "fr") ? "Effacer le texte" : "Clear text"),
 			leftIcon = prop($$props, 'leftIcon', 7, false),
 			id = prop($$props, 'id', 23, () => `qc-search-input-${Math.random().toString(36).slice(2, 11)}`),
-			rest = rest_props($$props, rest_excludes$b);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'value',
+					'label',
+					'size',
+					'debounce',
+					'ariaLabel',
+					'clearAriaLabel',
+					'leftIcon',
+					'id'
+				]);
 
 		const leftIconNormalized = tag(user_derived(() => strict_equals(leftIcon(), true) || strict_equals(leftIcon(), "true") || strict_equals(leftIcon(), "")), 'leftIconNormalized');
 		const isDisabled = tag(user_derived(() => strict_equals($$props.disabled, true) || strict_equals($$props.disabled, "true") || strict_equals($$props.disabled, "")), 'isDisabled');
@@ -13635,7 +12656,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get focus() {
 				return focus;
 			},
@@ -13712,10 +12732,12 @@
 			) {
 				id($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$h();
+		var fragment = root$c();
 		var node = first_child(fragment);
 
 		{
@@ -13765,9 +12787,11 @@
 						() => Icon($$anchor, {
 							type: 'search',
 							iconColor: 'grey-regular',
+
 							get class() {
 								return get($0);
 							},
+
 							size: 'nm'
 						}),
 						'component',
@@ -13822,9 +12846,11 @@
 						icon: 'close',
 						iconColor: 'blue-piv',
 						iconSize: 'nm',
+
 						get 'aria-label'() {
 							return clearAriaLabel();
 						},
+
 						onclick: clearValue
 					}),
 					'component',
@@ -13858,16 +12884,7 @@
 			set_attribute(div, 'size', size());
 		});
 
-		bind_value(
-			input,
-			function get$1() {
-				return get(inputValue);
-			},
-			function set$1($$value) {
-				set(inputValue, $$value);
-			}
-		);
-
+		bind_value(input, () => get(inputValue), ($$value) => set(inputValue, $$value));
 		append($$anchor, fragment);
 
 		return pop($$exports);
@@ -13887,22 +12904,12 @@
 		},
 		[],
 		['focus'],
-		{ mode: 'open' }
+		true
 	);
 
 	SearchBar[FILENAME] = 'src/sdg/components/SearchBar/SearchBar.svelte';
 
-	var rest_excludes$a = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'value',
-		'name',
-		'pivBackground'
-	]);
-
-	var root$g = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
+	var root$b = add_locations(from_html(`<div><!> <!></div>`), SearchBar[FILENAME], [[37, 0]]);
 
 	function SearchBar($$anchor, $$props) {
 		check_target(new.target);
@@ -13914,37 +12921,46 @@
 		let value = prop($$props, 'value', 15, ''),
 			name = prop($$props, 'name', 7, 'q'),
 			pivBackground = prop($$props, 'pivBackground', 7, false),
-			rest = rest_props($$props, rest_excludes$a);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'value',
+					'name',
+					'pivBackground'
+				]);
 
 		let defaultsAttributes = {
 			input: {
 				"placeholder": strict_equals(lang, "fr") ? "Rechercher…" : "Search",
 				"aria-label": strict_equals(lang, "fr") ? "Rechercher…" : "Search"
 			},
+
 			submit: {
 				"aria-label": strict_equals(lang, "fr") ? "Lancer la recherche" : "Submit search"
 			}
 		};
 
 		let inputProps = tag(
-			user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("input", rest),
-				name: name()
-			})),
-			'inputProps'
-		);
-
-		let submitProps = tag(
-			user_derived(() => ({
-				...defaultsAttributes.input,
-				...Utils.computeFieldsAttributes("submit", rest)
-			})),
-			'submitProps'
-		);
+				user_derived(() => ({
+					...defaultsAttributes.input,
+					...Utils.computeFieldsAttributes("input", rest),
+					name: name()
+				})),
+				'inputProps'
+			),
+			submitProps = tag(
+				user_derived(() => ({
+					...defaultsAttributes.input,
+					...Utils.computeFieldsAttributes("submit", rest)
+				})),
+				'submitProps'
+			);
 
 		var $$exports = {
-			...legacy_api(),
 			get value() {
 				return value();
 			},
@@ -13970,10 +12986,12 @@
 			set pivBackground($$value = false) {
 				pivBackground($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root$g();
+		var div = root$b();
 		let classes;
 		var node = child(div);
 
@@ -13983,6 +13001,7 @@
 			add_svelte_meta(
 				() => SearchInput(node, spread_props(() => get(inputProps), {
 					size: 'full-width',
+
 					get value() {
 						return value();
 					},
@@ -14008,9 +13027,11 @@
 				() => IconButton(node_1, spread_props(
 					{
 						type: 'submit',
+
 						get iconColor() {
 							return get($0);
 						},
+
 						icon: 'search',
 						iconSize: 'nm'
 					},
@@ -14031,17 +13052,15 @@
 		return pop($$exports);
 	}
 
-	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], { mode: 'open' });
+	create_custom_element(SearchBar, { value: {}, name: {}, pivBackground: {} }, [], [], true);
 
 	SearchBarWC[FILENAME] = 'src/sdg/components/SearchBar/SearchBarWC.svelte';
-
-	var rest_excludes$9 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 
 	function SearchBarWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$9);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(() => SearchBar($$anchor, spread_props(() => props)), 'component', SearchBarWC, 17, 0, { componentTag: 'SearchBar' });
@@ -14057,18 +13076,17 @@
 			pivBackground: { attribute: 'piv-background', type: 'Boolean' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	SearchInputWC[FILENAME] = 'src/sdg/components/SearchInput/SearchInputWC.svelte';
-
-	var rest_excludes$8 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 
 	function SearchInputWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$8);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(() => SearchInput($$anchor, spread_props(() => props)), 'component', SearchInputWC, 23, 0, { componentTag: 'SearchInput' });
@@ -14090,22 +13108,20 @@
 			debounce: { attribute: 'debounce' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	IconWC[FILENAME] = 'src/sdg/bases/Icon/IconWC.svelte';
-
-	var rest_excludes$7 = new Set(['$$slots', '$$events', '$$legacy', '$$host', 'useMaterial']);
 
 	function IconWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
 		let useMaterial = prop($$props, 'useMaterial', 7),
-			otherProps = rest_props($$props, rest_excludes$7);
+			otherProps = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host', 'useMaterial']);
 
 		var $$exports = {
-			...legacy_api(),
 			get useMaterial() {
 				return useMaterial();
 			},
@@ -14113,7 +13129,9 @@
 			set useMaterial($$value) {
 				useMaterial($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		add_svelte_meta(
@@ -14153,18 +13171,17 @@
 			verticalAlign: { attribute: 'vertical-align' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	IconButtonWC[FILENAME] = 'src/sdg/components/IconButton/IconButtonWC.svelte';
-
-	var rest_excludes$6 = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 
 	function IconButtonWC($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const props = rest_props($$props, rest_excludes$6);
+		const props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 
 		add_svelte_meta(() => IconButton($$anchor, spread_props(() => props)), 'component', IconButtonWC, 19, 0, { componentTag: 'IconButton' });
@@ -14182,13 +13199,14 @@
 			iconColor: { attribute: 'icon-color' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	FormError[FILENAME] = 'src/sdg/components/FormError/FormError.svelte';
 
-	var root$f = add_locations(from_html(`<!> <span></span>`, 1), FormError[FILENAME], [[48, 8]]);
-	var root_1$9 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
+	var root_2$7 = add_locations(from_html(`<!> <span><!></span>`, 1), FormError[FILENAME], [[48, 8]]);
+	var root_1$6 = add_locations(from_html(`<div role="alert"><!></div>`), FormError[FILENAME], [[35, 0]]);
 
 	function FormError($$anchor, $$props) {
 		check_target(new.target);
@@ -14203,18 +13221,17 @@
 			extraClasses = prop($$props, 'extraClasses', 23, () => []),
 			rootElement = prop($$props, 'rootElement', 15);
 
-		let cleanLabel = tag(user_derived(() => label().replace(/:\s*$/, '')), 'cleanLabel');
-
-		let defaultInvalidText = tag(
-			user_derived(() => label()
-				? strict_equals(lang, 'fr')
-					? `Le champ ${get(cleanLabel)} est obligatoire.`
-					: `${get(cleanLabel)} field is required.`
-				: strict_equals(lang, 'fr')
-					? `Ce champ est obligatoire.`
-					: `This field is required.`),
-			'defaultInvalidText'
-		);
+		let cleanLabel = tag(user_derived(() => label().replace(/:\s*$/, '')), 'cleanLabel'),
+			defaultInvalidText = tag(
+				user_derived(() => label()
+					? strict_equals(lang, 'fr')
+						? `Le champ ${get(cleanLabel)} est obligatoire.`
+						: `${get(cleanLabel)} field is required.`
+					: strict_equals(lang, 'fr')
+						? `Ce champ est obligatoire.`
+						: `This field is required.`),
+				'defaultInvalidText'
+			);
 
 		onMount(() => {
 			if (id()) return;
@@ -14223,7 +13240,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -14276,7 +13292,9 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -14284,12 +13302,12 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var div = root_1$9();
+				var div = root_1$6();
 				var node_1 = child(div);
 
 				add_svelte_meta(
 					() => await_block(node_1, tick, ($$anchor) => {}, ($$anchor, _) => {
-						var fragment_1 = root$f();
+						var fragment_1 = root_2$7();
 						var node_2 = first_child(fragment_1);
 
 						add_svelte_meta(
@@ -14307,8 +13325,9 @@
 						);
 
 						var span = sibling(node_2, 2);
+						var node_3 = child(span);
 
-						html(span, () => invalidText() ? invalidText() : get(defaultInvalidText), true);
+						html(node_3, () => invalidText() ? invalidText() : get(defaultInvalidText));
 						reset(span);
 						append($$anchor, fragment_1);
 					}),
@@ -14360,14 +13379,14 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	Fieldset[FILENAME] = 'src/sdg/components/Fieldset/Fieldset.svelte';
 
-	var root$e = add_locations(from_html(`<legend><!></legend>`), Fieldset[FILENAME], [[43, 4]]);
-	var root_1$8 = add_locations(from_html(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[47, 4]]]]);
-	var root_2$5 = add_locations(from_html(`<div class="qc-fieldset-invalid"><!></div>`), Fieldset[FILENAME], [[70, 4]]);
+	var root_2$6 = add_locations(from_html(`<legend><!></legend>`), Fieldset[FILENAME], [[43, 4]]);
+	var root_1$5 = add_locations(from_html(`<fieldset><!> <div><!></div> <!></fieldset>`), Fieldset[FILENAME], [[31, 0, [[47, 4]]]]);
+	var root_4$2 = add_locations(from_html(`<div class="qc-fieldset-invalid"><!></div>`), Fieldset[FILENAME], [[70, 4]]);
 
 	function Fieldset($$anchor, $$props) {
 		check_target(new.target);
@@ -14376,12 +13395,17 @@
 		const fieldset = wrap_snippet(Fieldset, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fieldset_1 = root_1$8();
+			var fieldset_1 = root_1$5();
+
+			fieldset_1.__change = function (...$$args) {
+				apply(onchange, this, $$args, Fieldset, [38, 11]);
+			};
+
 			var node = child(fieldset_1);
 
 			{
 				var consequent = ($$anchor) => {
-					var legend_1 = root$e();
+					var legend_1 = root_2$6();
 					var node_1 = child(legend_1);
 
 					add_svelte_meta(
@@ -14475,10 +13499,6 @@
         `);
 			});
 
-			delegated('change', fieldset_1, function (...$$args) {
-				apply(onchange, this, $$args, Fieldset, [38, 11]);
-			});
-
 			append($$anchor, fieldset_1);
 		});
 
@@ -14498,11 +13518,10 @@
 			children = prop($$props, 'children', 7),
 			rootElement = prop($$props, 'rootElement', 15);
 
-		let groupSelection = tag(state(void 0), 'groupSelection');
-		let legendId = tag(user_derived(() => name() ? "id_" + name() : Utils.generateId("legend")), 'legendId');
+		let groupSelection = tag(state(void 0), 'groupSelection'),
+			legendId = tag(user_derived(() => name() ? "id_" + name() : Utils.generateId("legend")), 'legendId');
 
 		var $$exports = {
-			...legacy_api(),
 			get legend() {
 				return legend();
 			},
@@ -14636,7 +13655,9 @@
 			set rootElement($$value) {
 				rootElement($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -14648,7 +13669,7 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_1 = root_2$5();
+				var div_1 = root_4$2();
 				var node_5 = child(div_1);
 
 				add_svelte_meta(() => fieldset(node_5), 'render', Fieldset, 71, 8);
@@ -14658,7 +13679,7 @@
 
 			add_svelte_meta(
 				() => if_block(node_4, ($$render) => {
-					if (!invalid()) $$render(consequent_1); else $$render(alternate, -1);
+					if (!invalid()) $$render(consequent_1); else $$render(alternate, false);
 				}),
 				'if',
 				Fieldset,
@@ -14695,10 +13716,10 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
-	/* updateChoiceInput.svelte.js generated by Svelte v5.56.10 */
+	/* updateChoiceInput.svelte.js generated by Svelte v5.43.5 */
 
 	function updateChoiceInput(
 		input,
@@ -14741,22 +13762,6 @@
 
 	ChoiceGroup[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroup.svelte';
 
-	var rest_excludes$5 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'invalid',
-		'invalidText',
-		'children',
-		'compact',
-		'selectionButton',
-		'inline',
-		'host',
-		'name',
-		'required'
-	]);
-
 	function ChoiceGroup($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
@@ -14772,7 +13777,23 @@
 			host = prop($$props, 'host', 7),
 			name = prop($$props, 'name', 7),
 			required = prop($$props, 'required', 7),
-			restProps = rest_props($$props, rest_excludes$5);
+			restProps = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'invalid',
+					'invalidText',
+					'children',
+					'compact',
+					'selectionButton',
+					'inline',
+					'host',
+					'name',
+					'required'
+				]);
 
 		let fieldsetElement = tag(state(void 0), 'fieldsetElement');
 
@@ -14787,7 +13808,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -14867,7 +13887,9 @@
 			set required($$value) {
 				required($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		{
@@ -14895,6 +13917,7 @@
 						get invalidText() {
 							return invalidText();
 						},
+
 						onchange
 					},
 					() => restProps,
@@ -14922,6 +13945,7 @@
 							add_svelte_meta(() => snippet(node, children), 'render', ChoiceGroup, 54, 4);
 							append($$anchor, fragment_1);
 						}),
+
 						$$slots: { default: true }
 					}
 				)),
@@ -14951,12 +13975,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	ChoiceGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ChoiceGroupWC.svelte';
 
-	var root$d = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
+	var root$a = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), ChoiceGroupWC[FILENAME], [[47, 0]]);
 
 	function ChoiceGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -14975,7 +13999,6 @@
 			inline = prop($$props, 'inline', 7);
 
 		var $$exports = {
-			...legacy_api(),
 			get name() {
 				return name();
 			},
@@ -15055,10 +14078,12 @@
 			set inline($$value) {
 				inline($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$d();
+		var fragment = root$a();
 		var node = first_child(fragment);
 
 		{
@@ -15097,7 +14122,9 @@
 					get inline() {
 						return inline();
 					},
+
 					host: $$props.$$host,
+
 					get invalid() {
 						return invalid();
 					},
@@ -15113,6 +14140,7 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
+
 					$$slots: { default: true }
 				}),
 				'component',
@@ -15146,20 +14174,19 @@
 		},
 		['default'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	Checkbox[FILENAME] = 'src/sdg/components/Checkbox/Checkbox.svelte';
 
-	var root$c = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
-	var root_1$7 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
+	var root_2$5 = add_locations(from_html(`<span class="qc-required" aria-hidden="true">*</span>`), Checkbox[FILENAME], [[58, 4]]);
+	var root$9 = add_locations(from_html(`<div><!> <!> <!></div>`), Checkbox[FILENAME], [[66, 4]]);
 
 	function Checkbox($$anchor, $$props) {
 		check_target(new.target);
 		push($$props, true);
 
-		const // svelte-ignore state_referenced_locally — rest.label sert de valeur initiale, mise à jour ensuite par $effect
-		requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
+		const requiredSpanSnippet = wrap_snippet(Checkbox, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
 			var fragment = comment();
@@ -15167,7 +14194,7 @@
 
 			{
 				var consequent = ($$anchor) => {
-					var span = root$c();
+					var span = root_2$5();
 
 					bind_this(span, ($$value) => requiredSpan($$value), () => requiredSpan());
 					append($$anchor, span);
@@ -15188,7 +14215,7 @@
 		});
 
 		Utils.getPageLanguage();
-		const qcCheckoxContext = getContext("qc-checkbox");
+			const qcCheckoxContext = getContext("qc-checkbox");
 
 		let id = prop($$props, 'id', 7),
 			name = prop($$props, 'name', 7),
@@ -15205,8 +14232,8 @@
 			requiredSpan = prop($$props, 'requiredSpan', 15),
 			input = prop($$props, 'input', 7);
 
-		let label = tag(state(proxy($$props.label)), 'label');
-		let rootElement = tag(state(void 0), 'rootElement');
+		let label = tag(state(proxy($$props.label)), 'label'),
+			rootElement = tag(state(void 0), 'rootElement');
 
 		onMount(() => {
 			if (qcCheckoxContext) return;
@@ -15233,7 +14260,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -15358,10 +14384,12 @@
 			set input($$value) {
 				input($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root_1$7();
+		var div = root$9();
 		var node_1 = child(div);
 
 		add_svelte_meta(() => requiredSpanSnippet(node_1), 'render', Checkbox, 73, 8);
@@ -15430,12 +14458,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	CheckboxWC[FILENAME] = 'src/sdg/components/Checkbox/CheckboxWC.svelte';
 
-	var root$b = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
+	var root$8 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), CheckboxWC[FILENAME], [[49, 0]]);
 
 	function CheckboxWC($$anchor, $$props) {
 		check_target(new.target);
@@ -15450,9 +14478,9 @@
 			invalid = prop($$props, 'invalid', 15, false),
 			invalidText = prop($$props, 'invalidText', 7);
 
-		let requiredSpan = tag(state(null), 'requiredSpan');
-		let labelElement = tag(state(void 0), 'labelElement');
-		let input = tag(state(void 0), 'input');
+		let requiredSpan = tag(state(null), 'requiredSpan'),
+			labelElement = tag(state(void 0), 'labelElement'),
+			input = tag(state(void 0), 'input');
 
 		onMount(() => {
 			set(labelElement, $$props.$$host.querySelector("label"), true);
@@ -15461,7 +14489,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get required() {
 				return required();
 			},
@@ -15496,10 +14523,12 @@
 			set invalidText($$value) {
 				invalidText($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$b();
+		var fragment = root$8();
 		var node = first_child(fragment);
 
 		{
@@ -15550,6 +14579,7 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
+
 					$$slots: { default: true }
 				}),
 				'component',
@@ -15578,7 +14608,7 @@
 		},
 		['default'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	function onMountInput(input, setTextFieldRow, setValue, setInvalid, setRequired) {
@@ -15602,10 +14632,10 @@
 
 	TextField[FILENAME] = 'src/sdg/components/TextField/TextField.svelte';
 
-	var root$a = add_locations(from_html(`<div class="qc-description"></div>`), TextField[FILENAME], [[142, 8]]);
-	var root_1$6 = add_locations(from_html(`<div aria-live="polite"></div>`), TextField[FILENAME], [[153, 8]]);
-	var root_2$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
-	var root_3$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
+	var root_3$3 = add_locations(from_html(`<div class="qc-description"><!></div>`), TextField[FILENAME], [[142, 8]]);
+	var root_4$1 = add_locations(from_html(`<div aria-live="polite"><!></div>`), TextField[FILENAME], [[153, 8]]);
+	var root_1$4 = add_locations(from_html(`<!> <!> <!> <!> <!>`, 1), TextField[FILENAME], []);
+	var root_6$1 = add_locations(from_html(`<div class="qc-textfield"><!></div>`), TextField[FILENAME], [[177, 4]]);
 
 	function TextField($$anchor, $$props) {
 		check_target(new.target);
@@ -15613,11 +14643,10 @@
 
 		var $$ownership_validator = create_ownership_validator($$props);
 
-		const // Génération des ID pour le aria-describedby
-		textfield = wrap_snippet(TextField, function ($$anchor) {
+		const textfield = wrap_snippet(TextField, function ($$anchor) {
 			validate_snippet_args(...arguments);
 
-			var fragment = root_2$4();
+			var fragment = root_1$4();
 			var node = first_child(fragment);
 
 			{
@@ -15678,9 +14707,10 @@
 
 			{
 				var consequent_1 = ($$anchor) => {
-					var div = root$a();
+					var div = root_3$3();
+					var node_2 = child(div);
 
-					html(div, description, true);
+					html(node_2, description);
 					reset(div);
 					bind_this(div, ($$value) => descriptionElement($$value), () => descriptionElement());
 					template_effect(() => set_attribute(div, 'id', descriptionId));
@@ -15698,17 +14728,18 @@
 				);
 			}
 
-			var node_2 = sibling(node_1, 2);
+			var node_3 = sibling(node_1, 2);
 
-			add_svelte_meta(() => snippet(node_2, () => children() ?? noop), 'render', TextField, 150, 4);
+			add_svelte_meta(() => snippet(node_3, () => children() ?? noop), 'render', TextField, 150, 4);
 
-			var node_3 = sibling(node_2, 2);
+			var node_4 = sibling(node_3, 2);
 
 			{
 				var consequent_2 = ($$anchor) => {
-					var div_1 = root_1$6();
+					var div_1 = root_4$1();
+					var node_5 = child(div_1);
 
-					html(div_1, () => get(charCountText), true);
+					html(node_5, () => get(charCountText));
 					reset(div_1);
 					bind_this(div_1, ($$value) => maxlengthElement($$value), () => maxlengthElement());
 
@@ -15725,7 +14756,7 @@
 				};
 
 				add_svelte_meta(
-					() => if_block(node_3, ($$render) => {
+					() => if_block(node_4, ($$render) => {
 						if (maxlength() && strict_equals(maxlength(), null, false)) $$render(consequent_2);
 					}),
 					'if',
@@ -15735,7 +14766,7 @@
 				);
 			}
 
-			var node_4 = sibling(node_3, 2);
+			var node_6 = sibling(node_4, 2);
 
 			{
 				let $0 = user_derived(() => invalidText() ? invalidText() : get(defaultInvalidText));
@@ -15744,7 +14775,7 @@
 				$$ownership_validator.binding('formErrorElement', FormError, formErrorElement);
 
 				add_svelte_meta(
-					() => FormError(node_4, {
+					() => FormError(node_6, {
 						get invalid() {
 							return invalid();
 						},
@@ -15756,7 +14787,9 @@
 						get label() {
 							return get($1);
 						},
+
 						extraClasses: ['qc-xs-mt'],
+
 						get id() {
 							return get(errorId);
 						},
@@ -15806,23 +14839,23 @@
 			disabled = prop($$props, 'disabled', 7);
 
 		const webComponentMode = getContext('webComponentMode');
-		let errorId = tag(state(void 0), 'errorId');
-		let charCountText = tag(state(void 0), 'charCountText');
-		let rootElement = tag(state(void 0), 'rootElement');
-		let textFieldRow = tag(state(void 0), 'textFieldRow');
 
-		let defaultInvalidText = tag(
-			user_derived(() => {
-				if (!maxlengthReached()) {
-					return undefined;
-				}
+		let errorId = tag(state(void 0), 'errorId'),
+			charCountText = tag(state(void 0), 'charCountText'),
+			rootElement = tag(state(void 0), 'rootElement'),
+			textFieldRow = tag(state(void 0), 'textFieldRow'),
+			defaultInvalidText = tag(
+				user_derived(() => {
+					if (!maxlengthReached()) {
+						return undefined;
+					}
 
-				return strict_equals(lang, 'fr')
-					? `La limite de caractères du champ ${label()} est dépassée.`
-					: `The character limit for the ${label()} field has been exceeded.`;
-			}),
-			'defaultInvalidText'
-		);
+					return strict_equals(lang, 'fr')
+						? `La limite de caractères du champ ${label()} est dépassée.`
+						: `The character limit for the ${label()} field has been exceeded.`;
+				}),
+				'defaultInvalidText'
+			);
 
 		onMount(() => {
 			if (webComponentMode) return;
@@ -15889,10 +14922,9 @@
 			);
 		});
 
-		const // Génération des ID pour le aria-describedby
-		descriptionId = Utils.generateId('description-');
-
-		const charCountId = Utils.generateId('charcount-');
+		// Génération des ID pour le aria-describedby
+		const descriptionId = Utils.generateId('description-'),
+			charCountId = Utils.generateId('charcount-');
 
 		user_effect(() => {
 			if (!input()) return;
@@ -15908,7 +14940,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get label() {
 				return label();
 			},
@@ -16069,11 +15100,13 @@
 			set disabled($$value) {
 				disabled($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment_2 = comment();
-		var node_5 = first_child(fragment_2);
+		var node_7 = first_child(fragment_2);
 
 		{
 			var consequent_3 = ($$anchor) => {
@@ -16081,10 +15114,10 @@
 			};
 
 			var alternate = ($$anchor) => {
-				var div_2 = root_3$1();
-				var node_6 = child(div_2);
+				var div_2 = root_6$1();
+				var node_8 = child(div_2);
 
-				add_svelte_meta(() => textfield(node_6), 'render', TextField, 182, 8);
+				add_svelte_meta(() => textfield(node_8), 'render', TextField, 182, 8);
 				reset(div_2);
 				bind_this(div_2, ($$value) => set(rootElement, $$value), () => get(rootElement));
 
@@ -16097,8 +15130,8 @@
 			};
 
 			add_svelte_meta(
-				() => if_block(node_5, ($$render) => {
-					if (webComponentMode) $$render(consequent_3); else $$render(alternate, -1);
+				() => if_block(node_7, ($$render) => {
+					if (webComponentMode) $$render(consequent_3); else $$render(alternate, false);
 				}),
 				'if',
 				TextField,
@@ -16136,12 +15169,12 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	TextFieldWC[FILENAME] = 'src/sdg/components/TextField/TextFieldWC.svelte';
 
-	var root$9 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[116, 0]]);
+	var root$7 = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TextFieldWC[FILENAME], [[116, 0]]);
 
 	function TextFieldWC($$anchor, $$props) {
 		check_target(new.target);
@@ -16161,13 +15194,13 @@
 			maxlengthReached = prop($$props, 'maxlengthReached', 15, false),
 			invalidAtSubmit = prop($$props, 'invalidAtSubmit', 15, false);
 
-		let labelElement = tag(state(void 0), 'labelElement');
-		let formErrorElement = tag(state(void 0), 'formErrorElement');
-		let descriptionElement = tag(state(void 0), 'descriptionElement');
-		let maxlengthElement = tag(state(void 0), 'maxlengthElement');
-		let value = tag(state(void 0), 'value');
-		let input = tag(state(void 0), 'input');
-		let textFieldRow = tag(state(void 0), 'textFieldRow');
+		let labelElement = tag(state(void 0), 'labelElement'),
+			formErrorElement = tag(state(void 0), 'formErrorElement'),
+			descriptionElement = tag(state(void 0), 'descriptionElement'),
+			maxlengthElement = tag(state(void 0), 'maxlengthElement'),
+			value = tag(state(void 0), 'value'),
+			input = tag(state(void 0), 'input'),
+			textFieldRow = tag(state(void 0), 'textFieldRow');
 
 		onMount(() => {
 			const initialLabelElement = $$props.$$host?.querySelector('label');
@@ -16223,7 +15256,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -16303,10 +15335,12 @@
 			set invalidAtSubmit($$value = false) {
 				invalidAtSubmit($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var fragment = root$9();
+		var fragment = root$7();
 		var node = first_child(fragment);
 
 		{
@@ -16421,6 +15455,7 @@
 						slot(node_1, $$props, 'default', {}, null);
 						append($$anchor, fragment_1);
 					}),
+
 					$$slots: { default: true }
 				}),
 				'component',
@@ -16455,12 +15490,12 @@
 		},
 		['default'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	ToggleSwitch[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitch.svelte';
 
-	var root$8 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
+	var root$6 = add_locations(from_html(`<label><input type="checkbox" role="switch"/> <span><!></span> <span class="qc-switch-slider"></span></label>`), ToggleSwitch[FILENAME], [[17, 0, [[20, 4], [28, 4], [33, 4]]]]);
 
 	function ToggleSwitch($$anchor, $$props) {
 		check_target(new.target);
@@ -16477,7 +15512,6 @@
 		let usedLabelTextAlignment = tag(user_derived(() => strict_equals(textAlign()?.toLowerCase(), "end") ? "end" : "start"), 'usedLabelTextAlignment');
 
 		var $$exports = {
-			...legacy_api(),
 			get label() {
 				return label();
 			},
@@ -16530,17 +15564,20 @@
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var label_1 = root$8();
+		var label_1 = root$6();
 		var input = child(label_1);
 
 		remove_input_defaults(input);
 
 		var span = sibling(input, 2);
+		var node = child(span);
 
-		html(span, label, true);
+		html(node, label);
 		reset(span);
 		next(2);
 		reset(label_1);
@@ -16557,16 +15594,7 @@
 			]));
 		});
 
-		bind_checked(
-			input,
-			function get() {
-				return checked();
-			},
-			function set($$value) {
-				checked($$value);
-			}
-		);
-
+		bind_checked(input, checked);
 		append($$anchor, label_1);
 
 		return pop($$exports);
@@ -16584,23 +15612,10 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	ToggleSwitchWC[FILENAME] = 'src/sdg/components/ToggleSwitch/ToggleSwitchWC.svelte';
-
-	var rest_excludes$4 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'id',
-		'label',
-		'checked',
-		'disabled',
-		'justified',
-		'textAlign'
-	]);
 
 	function ToggleSwitchWC($$anchor, $$props) {
 		check_target(new.target);
@@ -16614,7 +15629,20 @@
 			disabled = prop($$props, 'disabled', 7, false),
 			justified = prop($$props, 'justified', 7, false),
 			textAlign = prop($$props, 'textAlign', 7),
-			rest = rest_props($$props, rest_excludes$4);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'id',
+					'label',
+					'checked',
+					'disabled',
+					'justified',
+					'textAlign'
+				]);
 
 		let parent = tag(state(void 0), 'parent');
 		let index;
@@ -16648,7 +15676,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -16701,7 +15728,9 @@
 			set textAlign($$value) {
 				textAlign($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -16778,22 +15807,11 @@
 			textAlign: { attribute: 'text-align', type: 'String' }
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	ToggleSwitchGroupWC[FILENAME] = 'src/sdg/components/ChoiceGroup/ToggleSwitchGroupWC.svelte';
-
-	var rest_excludes$3 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'disabled',
-		'items',
-		'justified',
-		'textAlign',
-		'maxWidth'
-	]);
 
 	function ToggleSwitchGroupWC($$anchor, $$props) {
 		check_target(new.target);
@@ -16804,7 +15822,19 @@
 			justified = prop($$props, 'justified', 7, false),
 			textAlign = prop($$props, 'textAlign', 7),
 			maxWidth = prop($$props, 'maxWidth', 7, "fit-content"),
-			rest = rest_props($$props, rest_excludes$3);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'disabled',
+					'items',
+					'justified',
+					'textAlign',
+					'maxWidth'
+				]);
 
 		let usedWidth = tag(
 			user_derived(() => {
@@ -16818,7 +15848,6 @@
 		);
 
 		var $$exports = {
-			...legacy_api(),
 			get disabled() {
 				return disabled();
 			},
@@ -16862,13 +15891,16 @@
 			set maxWidth($$value = "fit-content") {
 				maxWidth($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		add_svelte_meta(
 			() => ChoiceGroup($$anchor, spread_props(
 				{
 					elementsGap: 'md',
+
 					get maxWidth() {
 						return get(usedWidth);
 					}
@@ -16934,6 +15966,7 @@
 
 						append($$anchor, fragment_1);
 					}),
+
 					$$slots: { default: true }
 				}
 			)),
@@ -16958,14 +15991,15 @@
 			items: {}
 		},
 		[],
-		[]
+		[],
+		false
 	));
 
 	DropdownListItemsSingle[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsSingle/DropdownListItemsSingle.svelte';
 
-	var root$7 = add_locations(from_html(`<span class="qc-sr-only"></span>`), DropdownListItemsSingle[FILENAME], [[135, 20]]);
-	var root_1$5 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[119, 12]]);
-	var root_2$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[117, 4]]);
+	var root_3$2 = add_locations(from_html(`<span class="qc-sr-only"><!></span>`), DropdownListItemsSingle[FILENAME], [[135, 20]]);
+	var root_2$4 = add_locations(from_html(`<li tabindex="0" role="option"><!></li>`), DropdownListItemsSingle[FILENAME], [[119, 12]]);
+	var root_1$3 = add_locations(from_html(`<ul></ul>`), DropdownListItemsSingle[FILENAME], [[117, 4]]);
 
 	function DropdownListItemsSingle($$anchor, $$props) {
 		check_target(new.target);
@@ -17081,7 +16115,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
@@ -17164,7 +16197,9 @@
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -17172,33 +16207,40 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var ul = root_2$3();
+				var ul = root_1$3();
+
+				validate_each_keys(displayedItems, (item) => item.id);
 
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root_1$5();
+						var li = root_2$4();
+
+						li.__click = (event) => handleMouseUp(event, get(item));
+						li.__keydown = (event) => handleKeyDown(event, get(index), get(item));
+
 						var node_1 = child(li);
 
 						{
 							var consequent = ($$anchor) => {
-								var span = root$7();
+								var span = root_3$2();
+								var node_2 = child(span);
 
-								html(span, placeholder, true);
+								html(node_2, placeholder);
 								reset(span);
 								append($$anchor, span);
 							};
 
 							var alternate = ($$anchor) => {
 								var fragment_1 = comment();
-								var node_2 = first_child(fragment_1);
+								var node_3 = first_child(fragment_1);
 
-								html(node_2, () => get(item).label);
+								html(node_3, () => get(item).label);
 								append($$anchor, fragment_1);
 							};
 
 							add_svelte_meta(
 								() => if_block(node_1, ($$render) => {
-									if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, -1);
+									if (!get(item).value && !get(item).label) $$render(consequent); else $$render(alternate, false);
 								}),
 								'if',
 								DropdownListItemsSingle,
@@ -17224,17 +16266,10 @@
 									get(item).disabled ? "qc-disabled" : "qc-dropdown-list-active",
 									value()?.includes(get(item).value) ? selectedElementCLass : ""
 								]),
+
 								() => value()?.includes(get(item).value)
 							]
 						);
-
-						delegated('click', li, function click(event) {
-							return handleMouseUp(event, get(item));
-						});
-
-						delegated('keydown', li, function keydown(event) {
-							return handleKeyDown(event, get(index), get(item));
-						});
 
 						append($$anchor, li);
 					}),
@@ -17248,11 +16283,9 @@
 				append($$anchor, ul);
 			};
 
-			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
-
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (get(d)) $$render(consequent_1);
+					if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent_1);
 				}),
 				'if',
 				DropdownListItemsSingle,
@@ -17286,13 +16319,13 @@
 			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
-		{ mode: 'open' }
+		true
 	);
 
 	DropdownListItemsMultiple[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItemsMultiple/DropdownListItemsMultiple.svelte';
 
-	var root$6 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[160, 12, [[170, 16, [[175, 20], [187, 20]]]]]]);
-	var root_1$4 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[154, 4]]);
+	var root_2$3 = add_locations(from_html(`<li><label class="qc-choicefield-label" compact=""><input type="checkbox" class="qc-choicefield qc-compact"/> <span> </span></label></li>`), DropdownListItemsMultiple[FILENAME], [[160, 12, [[170, 16, [[175, 20], [187, 20]]]]]]);
+	var root_1$2 = add_locations(from_html(`<ul></ul>`), DropdownListItemsMultiple[FILENAME], [[154, 4]]);
 
 	function DropdownListItemsMultiple($$anchor, $$props) {
 		check_target(new.target);
@@ -17444,7 +16477,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get focusOnFirstElement() {
 				return focusOnFirstElement;
 			},
@@ -17509,7 +16541,9 @@
 			set handlePrintableCharacter($$value = () => {}) {
 				handlePrintableCharacter($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = comment();
@@ -17517,15 +16551,23 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var ul = root_1$4();
+				var ul = root_1$2();
+
+				validate_each_keys(displayedItems, (item) => item.id);
 
 				add_svelte_meta(
 					() => each(ul, 23, displayedItems, (item) => item.id, ($$anchor, item, index) => {
-						var li = root$6();
+						var li = root_2$3();
+
+						li.__keydown = (e) => handleLiKeyDown(e, get(index));
+						li.__click = (e) => handleLiClick(e, get(item));
+
 						var label = child(li);
 						var input = child(label);
 
 						remove_input_defaults(input);
+						input.__change = handleChange;
+						input.__keydown = (e) => handleKeyDown(e, get(index));
 						validate_binding('bind:this={displayedItemsElements[index]}', [], () => get(displayedItemsElements), () => get(index), 183, 28);
 						bind_this(input, ($$value, index) => get(displayedItemsElements)[index] = $$value, (index) => get(displayedItemsElements)?.[index], () => [get(index)]);
 
@@ -17555,20 +16597,6 @@
 							[() => value()?.includes(get(item).value)]
 						);
 
-						delegated('keydown', li, function keydown(e) {
-							return handleLiKeyDown(e, get(index));
-						});
-
-						delegated('click', li, function click(e) {
-							return handleLiClick(e, get(item));
-						});
-
-						delegated('change', input, handleChange);
-
-						delegated('keydown', input, function keydown_1(e) {
-							return handleKeyDown(e, get(index));
-						});
-
 						append($$anchor, li);
 					}),
 					'each',
@@ -17581,11 +16609,9 @@
 				append($$anchor, ul);
 			};
 
-			var d = user_derived(() => displayedItems().length > 0 && itemsHaveIds());
-
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (get(d)) $$render(consequent);
+					if (displayedItems().length > 0 && itemsHaveIds()) $$render(consequent);
 				}),
 				'if',
 				DropdownListItemsMultiple,
@@ -17617,13 +16643,13 @@
 			'focusOnLastElement',
 			'focusOnFirstMatchingElement'
 		],
-		{ mode: 'open' }
+		true
 	);
 
 	DropdownListItems[FILENAME] = 'src/sdg/components/DropdownList/DropdownListItems/DropdownListItems.svelte';
 
-	var root$5 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"></span>`), DropdownListItems[FILENAME], [[81, 16]]);
-	var root_1$3 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[46, 0, [[78, 4]]]]);
+	var root_4 = add_locations(from_html(`<span class="qc-dropdown-list-no-options"><!></span>`), DropdownListItems[FILENAME], [[81, 16]]);
+	var root$5 = add_locations(from_html(`<div class="qc-dropdown-list-items qc-scrollbar" tabindex="-1"><!> <div class="qc-dropdown-list-no-options-container" role="status"><!></div></div>`), DropdownListItems[FILENAME], [[46, 0, [[78, 4]]]]);
 
 	function DropdownListItems($$anchor, $$props) {
 		check_target(new.target);
@@ -17666,7 +16692,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get focus() {
 				return focus;
 			},
@@ -17794,10 +16819,12 @@
 			set placeholder($$value) {
 				placeholder($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root_1$3();
+		var div = root$5();
 		var node = child(div);
 
 		{
@@ -17824,7 +16851,9 @@
 							get onToggle() {
 								return onToggle();
 							},
+
 							handleExit: (key) => handleExitMultiple()(key),
+
 							get focusOnOuterElement() {
 								return focusOnOuterElement();
 							},
@@ -17867,7 +16896,9 @@
 							get onSelect() {
 								return onSelect();
 							},
+
 							handleExit: (key) => handleExitSingle()(key),
+
 							get focusOnOuterElement() {
 								return focusOnOuterElement();
 							},
@@ -17893,7 +16924,7 @@
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (multiple()) $$render(consequent); else $$render(alternate, -1);
+					if (multiple()) $$render(consequent); else $$render(alternate, false);
 				}),
 				'if',
 				DropdownListItems,
@@ -17912,9 +16943,10 @@
 
 				add_svelte_meta(
 					() => await_block(node_2, tick, null, ($$anchor, _) => {
-						var span = root$5();
+						var span = root_4();
+						var node_3 = child(span);
 
-						html(span, noOptionsMessage, true);
+						html(node_3, noOptionsMessage);
 						reset(span);
 						append($$anchor, span);
 					}),
@@ -17965,27 +16997,14 @@
 		},
 		[],
 		['focus', 'focusOnLastElement', 'focusOnFirstMatchingElement'],
-		{ mode: 'open' }
+		true
 	);
 
 	DropdownListButton[FILENAME] = 'src/sdg/components/DropdownList/DropdownListButton/DropdownListButton.svelte';
 
-	var rest_excludes$2 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'inputId',
-		'expanded',
-		'disabled',
-		'selectedOptionsText',
-		'placeholder',
-		'buttonElement'
-	]);
-
-	var root$4 = add_locations(from_html(`<span class="qc-dropdown-choice"></span>`), DropdownListButton[FILENAME], [[25, 8]]);
-	var root_1$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"></span>`), DropdownListButton[FILENAME], [[27, 8]]);
-	var root_2$2 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
+	var root_1$1 = add_locations(from_html(`<span class="qc-dropdown-choice"><!></span>`), DropdownListButton[FILENAME], [[25, 8]]);
+	var root_2$2 = add_locations(from_html(`<span class="qc-dropdown-placeholder"><!></span>`), DropdownListButton[FILENAME], [[27, 8]]);
+	var root$4 = add_locations(from_html(`<button><!> <span><!></span></button>`), DropdownListButton[FILENAME], [[15, 0, [[30, 4]]]]);
 
 	function DropdownListButton($$anchor, $$props) {
 		check_target(new.target);
@@ -17997,10 +17016,22 @@
 			selectedOptionsText = prop($$props, 'selectedOptionsText', 7, ""),
 			placeholder = prop($$props, 'placeholder', 7),
 			buttonElement = prop($$props, 'buttonElement', 15),
-			rest = rest_props($$props, rest_excludes$2);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'inputId',
+					'expanded',
+					'disabled',
+					'selectedOptionsText',
+					'placeholder',
+					'buttonElement'
+				]);
 
 		var $$exports = {
-			...legacy_api(),
 			get inputId() {
 				return inputId();
 			},
@@ -18053,10 +17084,12 @@
 			set buttonElement($$value) {
 				buttonElement($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var button = root_2$2();
+		var button = root$4();
 
 		attribute_effect(button, () => ({
 			type: 'button',
@@ -18071,24 +17104,26 @@
 
 		{
 			var consequent = ($$anchor) => {
-				var span = root$4();
+				var span = root_1$1();
+				var node_1 = child(span);
 
-				html(span, selectedOptionsText, true);
+				html(node_1, selectedOptionsText);
 				reset(span);
 				append($$anchor, span);
 			};
 
 			var alternate = ($$anchor) => {
-				var span_1 = root_1$2();
+				var span_1 = root_2$2();
+				var node_2 = child(span_1);
 
-				html(span_1, placeholder, true);
+				html(node_2, placeholder);
 				reset(span_1);
 				append($$anchor, span_1);
 			};
 
 			add_svelte_meta(
 				() => if_block(node, ($$render) => {
-					if (selectedOptionsText().length > 0) $$render(consequent); else $$render(alternate, -1);
+					if (selectedOptionsText().length > 0) $$render(consequent); else $$render(alternate, false);
 				}),
 				'if',
 				DropdownListButton,
@@ -18101,19 +17136,22 @@
 
 		set_class(span_2, 1, clsx(["qc-dropdown-button-icon"]));
 
-		var node_1 = child(span_2);
+		var node_3 = child(span_2);
 
 		{
 			let $0 = user_derived(() => disabled() ? "grey-regular" : "blue-piv");
 			let $1 = user_derived(() => expanded() ? 0 : 180);
 
 			add_svelte_meta(
-				() => Icon(node_1, {
+				() => Icon(node_3, {
 					type: 'expand_less',
+
 					get color() {
 						return get($0);
 					},
+
 					size: 'sm',
+
 					get rotate() {
 						return get($1);
 					}
@@ -18146,14 +17184,14 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	DropdownList[FILENAME] = 'src/sdg/components/DropdownList/DropdownList.svelte';
 
-	var root$3 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[388, 20]]);
-	var root_1$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[437, 24]]);
-	var root_2$1 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[317, 0, [[322, 4, [[341, 8, [[370, 12, [[435, 16]]]]]]]]]]);
+	var root_2$1 = add_locations(from_html(`<div class="qc-dropdown-list-search"><!></div>`), DropdownList[FILENAME], [[388, 20]]);
+	var root_3$1 = add_locations(from_html(`<span> </span>`), DropdownList[FILENAME], [[437, 24]]);
+	var root$3 = add_locations(from_html(`<div><div><!> <div tabindex="-1"><!> <div tabindex="-1" role="listbox"><!> <!> <div role="status" class="qc-sr-only"><!></div></div></div></div> <!></div>`), DropdownList[FILENAME], [[317, 0, [[322, 4, [[341, 8, [[370, 12, [[435, 16]]]]]]]]]]);
 
 	function DropdownList($$anchor, $$props) {
 		check_target(new.target);
@@ -18182,118 +17220,110 @@
 			webComponentMode = prop($$props, 'webComponentMode', 7, false),
 			expanded = prop($$props, 'expanded', 15, false);
 
-		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option";
-		const inputId = tag(user_derived(() => `${id()}-input`), 'inputId');
-		const popupId = tag(user_derived(() => `${id()}-popup`), 'popupId');
-		const itemsId = tag(user_derived(() => `${id()}-items`), 'itemsId');
-		const labelId = tag(user_derived(() => `${id()}-label`), 'labelId');
-		const errorId = tag(user_derived(() => `${id()}-error`), 'errorId');
-		const availableWidths = ["xs", "sm", "md", "lg", "xl"];
-		const buttonHeight = 40;
-		let instance = tag(state(void 0), 'instance');
-		let parentRow = tag(user_derived(() => get(instance)?.closest(".qc-formfield-row")), 'parentRow');
-		let button = tag(state(void 0), 'button');
-		let searchInput = tag(state(void 0), 'searchInput');
-		let popup = tag(state(void 0), 'popup');
-		let dropdownItems = tag(state(void 0), 'dropdownItems');
-		let selectedItems = tag(user_derived(() => items()?.filter((item) => value()?.includes(item.value)) ?? []), 'selectedItems');
+		const defaultPlaceholder = strict_equals(lang, "fr") ? "Faire une sélection" : "Select an option",
+			inputId = tag(user_derived(() => `${id()}-input`), 'inputId'),
+			popupId = tag(user_derived(() => `${id()}-popup`), 'popupId'),
+			itemsId = tag(user_derived(() => `${id()}-items`), 'itemsId'),
+			labelId = tag(user_derived(() => `${id()}-label`), 'labelId'),
+			errorId = tag(user_derived(() => `${id()}-error`), 'errorId'),
+			availableWidths = ["xs", "sm", "md", "lg", "xl"],
+			buttonHeight = 40;
 
-		let selectedOptionsText = tag(
-			user_derived(() => {
-				if (get(selectedItems).length >= 3) {
-					if (strict_equals(lang, "fr")) {
-						return `${get(selectedItems).length} options sélectionnées`;
+		let instance = tag(state(void 0), 'instance'),
+			parentRow = tag(user_derived(() => get(instance)?.closest(".qc-formfield-row")), 'parentRow'),
+			button = tag(state(void 0), 'button'),
+			searchInput = tag(state(void 0), 'searchInput'),
+			popup = tag(state(void 0), 'popup'),
+			dropdownItems = tag(state(void 0), 'dropdownItems'),
+			selectedItems = tag(user_derived(() => items()?.filter((item) => value()?.includes(item.value)) ?? []), 'selectedItems'),
+			selectedOptionsText = tag(
+				user_derived(() => {
+					if (get(selectedItems).length >= 3) {
+						if (strict_equals(lang, "fr")) {
+							return `${get(selectedItems).length} options sélectionnées`;
+						}
+
+						return `${get(selectedItems).length} selected options`;
 					}
 
-					return `${get(selectedItems).length} selected options`;
-				}
+					if (get(selectedItems).length > 0) {
+						if (multiple()) {
+							return get(selectedItems).map((item) => item.label).join(", ");
+						}
 
-				if (get(selectedItems).length > 0) {
-					if (multiple()) {
-						return get(selectedItems).map((item) => item.label).join(", ");
+						return get(selectedItems)[0].label;
 					}
 
-					return get(selectedItems)[0].label;
-				}
-
-				return "";
-			}),
-			'selectedOptionsText'
-		);
-
-		let previousValue = tag(state(proxy(value())), 'previousValue');
-		let searchText = tag(state(""), 'searchText');
-		let hiddenSearchText = tag(state(""), 'hiddenSearchText');
-
-		let // svelte-ignore state_referenced_locally — items sert de valeur initiale, mise à jour par $effect sur searchText
-		displayedItems = tag(state(proxy(items())), 'displayedItems');
-
-		let itemsForSearch = tag(
-			user_derived(() => items().map((item) => {
-				return {
-					label: Utils.cleanupSearchPrompt(item.label),
-					value: item.value,
-					disabled: item.disabled
-				};
-			})),
-			'itemsForSearch'
-		);
-
-		let widthClass = tag(
-			user_derived(() => {
-				if (availableWidths.includes(width())) {
-					return `qc-dropdown-list-${width()}`;
-				}
-
-				return `qc-dropdown-list-md`;
-			}),
-			'widthClass'
-		);
-
-		let srItemsCountText = tag(
-			user_derived(() => {
-				const s = get(displayedItems).length > 1 ? "s" : "";
-
-				if (get(displayedItems).length > 0) {
-					return strict_equals(lang, "fr")
-						? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
-						: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
-				}
-
-				return "";
-			}),
-			'srItemsCountText'
-		);
-
-		let buttonElementYPosition = tag(state(0), 'buttonElementYPosition');
-
-		let usedHeight = tag(
-			user_derived(() => {
-				const maxItemsHeight = 336;
-				const searchInputTotalHeight = 56;
-
-				if (enableSearch()) {
-					if (get(displayedItems).length > 7) {
-						return maxItemsHeight - searchInputTotalHeight - 17;
+					return "";
+				}),
+				'selectedOptionsText'
+			),
+			previousValue = tag(state(proxy(value())), 'previousValue'),
+			searchText = tag(state(""), 'searchText'),
+			hiddenSearchText = tag(state(""), 'hiddenSearchText'),
+			// svelte-ignore state_referenced_locally — items sert de valeur initiale, mise à jour par $effect sur searchText
+			displayedItems = tag(state(proxy(items())), 'displayedItems'),
+			itemsForSearch = tag(
+				user_derived(() => items().map((item) => {
+					return {
+						label: Utils.cleanupSearchPrompt(item.label),
+						value: item.value,
+						disabled: item.disabled
+					};
+				})),
+				'itemsForSearch'
+			),
+			widthClass = tag(
+				user_derived(() => {
+					if (availableWidths.includes(width())) {
+						return `qc-dropdown-list-${width()}`;
 					}
 
-					return maxItemsHeight - searchInputTotalHeight;
-				} else {
-					if (get(displayedItems).length > 8) {
-						return maxItemsHeight - 33;
+					return `qc-dropdown-list-md`;
+				}),
+				'widthClass'
+			),
+			srItemsCountText = tag(
+				user_derived(() => {
+					const s = get(displayedItems).length > 1 ? "s" : "";
+
+					if (get(displayedItems).length > 0) {
+						return strict_equals(lang, "fr")
+							? `${get(displayedItems).length} résultat${s} disponible${s}. Utilisez les flèches directionnelles haut et bas pour vous déplacer dans la liste.`
+							: `${get(displayedItems).length} result${s} available. Use up and down arrow keys to navigate through the list.`;
 					}
 
-					return maxItemsHeight;
-				}
-			}),
-			'usedHeight'
-		);
+					return "";
+				}),
+				'srItemsCountText'
+			),
+			buttonElementYPosition = tag(state(0), 'buttonElementYPosition'),
+			usedHeight = tag(
+				user_derived(() => {
+					const maxItemsHeight = 336;
+					const searchInputTotalHeight = 56;
 
-		let topOffset = tag(state(0), 'topOffset');
-		let isFlipped = tag(user_derived(() => get(topOffset) < 0), 'isFlipped');
-		let initialPopupHeight = tag(state(0), 'initialPopupHeight');
-		let popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness');
-		let popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
+					if (enableSearch()) {
+						if (get(displayedItems).length > 7) {
+							return maxItemsHeight - searchInputTotalHeight - 17;
+						}
+
+						return maxItemsHeight - searchInputTotalHeight;
+					} else {
+						if (get(displayedItems).length > 8) {
+							return maxItemsHeight - 33;
+						}
+
+						return maxItemsHeight;
+					}
+				}),
+				'usedHeight'
+			),
+			topOffset = tag(state(0), 'topOffset'),
+			isFlipped = tag(user_derived(() => get(topOffset) < 0), 'isFlipped'),
+			initialPopupHeight = tag(state(0), 'initialPopupHeight'),
+			popupTopBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) < 0 ? 1 : 0), 'popupTopBorderThickness'),
+			popupBottomBorderThickness = tag(user_derived(() => get(topOffset) && get(topOffset) >= 0 ? 1 : 0), 'popupBottomBorderThickness');
 
 		function focusOnSelectedOption(value) {
 			if (get(displayedItems).length > 0) {
@@ -18492,7 +17522,6 @@
 		});
 
 		var $$exports = {
-			...legacy_api(),
 			get id() {
 				return id();
 			},
@@ -18662,10 +17691,12 @@
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div = root_2$1();
+		var div = root$3();
 
 		event('click', $document.body, handleOuterEvent);
 		event('keydown', $document.body, handleTab);
@@ -18701,7 +17732,9 @@
 							e.preventDefault();
 							get(button).focus();
 						},
+
 						bold: true,
+
 						get id() {
 							return get(labelId);
 						}
@@ -18753,7 +17786,9 @@
 				get 'aria-expanded'() {
 					return expanded();
 				},
+
 				'aria-haspopup': 'listbox',
+
 				get 'aria-controls'() {
 					return get(itemsId);
 				},
@@ -18773,7 +17808,9 @@
 				get usedHeight() {
 					return get(usedHeight);
 				},
+
 				onclick: handleDropdownButtonClick,
+
 				onkeydown: (e) => {
 					handleButtonKeyDown(e, enableSearch() ? get(searchInput) : get(dropdownItems));
 				},
@@ -18798,7 +17835,7 @@
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var div_4 = root$3();
+				var div_4 = root_2$1();
 				var node_3 = child(div_4);
 
 				{
@@ -18818,7 +17855,9 @@
 								get ariaLabel() {
 									return get($0);
 								},
+
 								leftIcon: 'true',
+
 								onkeydown: (e) => {
 									handleArrowDown(e, get(dropdownItems));
 									handleArrowUp(e, get(button));
@@ -18908,6 +17947,7 @@
 							value([...value(), itemValue]);
 						}
 					},
+
 					handleExitSingle: (key) => closeDropdown(key),
 					handleExitMultiple: (key) => closeDropdown(key),
 					focusOnOuterElement: () => enableSearch() ? get(searchInput)?.focus() : get(button)?.focus(),
@@ -18928,7 +17968,7 @@
 
 		add_svelte_meta(
 			() => key(node_5, () => get(searchText), ($$anchor) => {
-				var span = root_1$1();
+				var span = root_3$1();
 				var text = child(span, true);
 
 				reset(span);
@@ -18968,7 +18008,9 @@
 					get invalidText() {
 						return invalidText();
 					},
+
 					extraClasses: ["qc-xs-mt"],
+
 					get label() {
 						return get($0);
 					},
@@ -19050,26 +18092,10 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	SelectWC[FILENAME] = 'src/sdg/components/DropdownList/SelectWC.svelte';
-
-	var rest_excludes$1 = new Set([
-		'$$slots',
-		'$$events',
-		'$$legacy',
-		'$$host',
-		'invalid',
-		'value',
-		'multiple',
-		'disabled',
-		'required',
-		'label',
-		'placeholder',
-		'width',
-		'expanded'
-	]);
 
 	var root$2 = add_locations(from_html(`<div hidden=""><!></div> <!> <link rel="stylesheet"/>`, 1), SelectWC[FILENAME], [[279, 0], [300, 0]]);
 
@@ -19137,7 +18163,23 @@
 			placeholder = prop($$props, 'placeholder', 7),
 			width = prop($$props, 'width', 7),
 			expanded = prop($$props, 'expanded', 15, false),
-			rest = rest_props($$props, rest_excludes$1);
+			rest = rest_props(
+				$$props,
+				[
+					'$$slots',
+					'$$events',
+					'$$legacy',
+					'$$host',
+					'invalid',
+					'value',
+					'multiple',
+					'disabled',
+					'required',
+					'label',
+					'placeholder',
+					'width',
+					'expanded'
+				]);
 
 		let selectElement = tag(state(void 0), 'selectElement');
 		let items = tag(state(void 0), 'items');
@@ -19215,6 +18257,7 @@
 				Object.defineProperty(option, "selected", {
 					configurable: true,
 					enumerable: false,
+
 					get() {
 						return OPTION_SELECTED_DESCRIPTOR.get.call(this);
 					},
@@ -19338,7 +18381,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get invalid() {
 				return invalid();
 			},
@@ -19418,7 +18460,9 @@
 			set expanded($$value = false) {
 				expanded($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
 		var fragment = root$2();
@@ -19459,7 +18503,9 @@
 						get width() {
 							return width();
 						},
+
 						webComponentMode: true,
+
 						get multiple() {
 							return multiple();
 						},
@@ -19551,7 +18597,7 @@
 		},
 		['default'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	var lg = {
@@ -19603,10 +18649,12 @@
 					tri: "M8.02 14.167L1.353 7.5 8.02.833V14.167Z",
 					str: "M1.353 7.5 8.02 14.167V15H7.02v-.488L0 7.5 7.02.488V0h1v.833L1.353 7.5Z"
 				},
+
 				top: {
 					tri: "M.833.98 7.5 7.647 14.167.98H.833Z",
 					str: "M7.5 7.647.833.98H0v1L7.5 9 15 1.98v-1h-.833L7.5 7.647Z"
 				},
+
 				bottom: {
 					tri: "M14.167 8.02 7.5 1.353.833 8.02h13.334Z",
 					str: "M7.5 1.353 14.167 8.02H15v-1L7.5 0 0 7.02v1h.833L7.5 1.353Z"
@@ -19617,7 +18665,7 @@
 
 		get(paths);
 
-		var svg = root_3();
+		var svg = root_5();
 		var path = sibling(child(svg));
 		var path_1 = sibling(path);
 
@@ -19634,27 +18682,27 @@
 		append($$anchor, svg);
 	});
 
-	var root$1 = add_locations(from_html(`<!> <!>`, 1), Tooltip[FILENAME], []);
-	var root_1 = add_locations(from_html(`<header class="qc-hash-s23dzl"><h2 class="qc-tooltip-title qc-hash-s23dzl"> </h2></header> <main class="qc-hash-s23dzl"><!></main>`, 1), Tooltip[FILENAME], [[428, 20, [[429, 24]]], [433, 20]]);
-	var root_2 = add_locations(from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-s23dzl"><section class="qc-tooltip-content-text qc-hash-s23dzl"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-s23dzl" href="#top"><!></a></div>`), Tooltip[FILENAME], [[410, 4, [[421, 8, [[422, 12]]], [441, 8]]]]);
+	var root_2 = add_locations(from_html(`<!> <!>`, 1), Tooltip[FILENAME], []);
+	var root_3 = add_locations(from_html(`<header class="qc-hash-s23dzl"><h2 class="qc-tooltip-title qc-hash-s23dzl"> </h2></header> <main class="qc-hash-s23dzl"><!></main>`, 1), Tooltip[FILENAME], [[428, 20, [[429, 24]]], [433, 20]]);
+	var root_1 = add_locations(from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-s23dzl"><section class="qc-tooltip-content-text qc-hash-s23dzl"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-s23dzl" href="#top"><!></a></div>`), Tooltip[FILENAME], [[410, 4, [[421, 8, [[422, 12]]], [441, 8]]]]);
 
-	var root_3 = add_locations(
+	var root_5 = add_locations(
 		from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-s23dzl"><style class="qc-hash-s23dzl">.triangle { fill: var(--qc-color-background); }
             .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-s23dzl"></path><path class="stroke qc-hash-s23dzl"></path></svg>`),
 		Tooltip[FILENAME],
 		[[473, 4, [[474, 8], [478, 8], [479, 8]]]]
 	);
 
-	var root_4 = add_locations(from_html(`<span class="qc-tooltip-text qc-hash-s23dzl" tabindex="-1"><!><!></span>`), Tooltip[FILENAME], [[341, 5]]);
-	var root_5 = add_locations(from_html(`<span class="qc-hash-s23dzl">&zwj;</span>`), Tooltip[FILENAME], [[346, 8]]);
-	var root_6 = add_locations(from_html(`<div aria-hidden="true"><!></div> <!>`, 1), Tooltip[FILENAME], [[382, 9]]);
-	var root_7 = add_locations(from_html(`<dialog><div class="qc-container qc-hash-s23dzl"><!></div></dialog>`), Tooltip[FILENAME], [[391, 9, [[399, 12]]]]);
+	var root_6 = add_locations(from_html(`<span class="qc-tooltip-text qc-hash-s23dzl" tabindex="-1"><!><!></span>`), Tooltip[FILENAME], [[341, 5]]);
+	var root_7 = add_locations(from_html(`<span class="qc-hash-s23dzl">&zwj;</span>`), Tooltip[FILENAME], [[346, 8]]);
+	var root_9 = add_locations(from_html(`<div aria-hidden="true"><!></div> <!>`, 1), Tooltip[FILENAME], [[382, 9]]);
+	var root_10 = add_locations(from_html(`<dialog><div class="qc-container qc-hash-s23dzl"><!></div></dialog>`), Tooltip[FILENAME], [[391, 9, [[399, 12]]]]);
 	var root_8 = add_locations(from_html(`<div><div class="clickable-gutter qc-hash-s23dzl"></div> <a role="button" class="qc-tooltip-button qc-hash-s23dzl" href="#top"><!></a> <!> <!></div>`), Tooltip[FILENAME], [[350, 5, [[357, 9], [360, 9]]]]);
-	var root_9 = add_locations(from_html(`<div class="qc-tooltip qc-hash-s23dzl"><!> <!></div>`), Tooltip[FILENAME], [[328, 0]]);
+	var root$1 = add_locations(from_html(`<div class="qc-tooltip qc-hash-s23dzl"><!> <!></div>`), Tooltip[FILENAME], [[328, 0]]);
 
 	const $$css = {
 		hash: 'qc-hash-s23dzl',
-		code: '\n    .qc-tooltip.qc-hash-s23dzl {\n        display: inline-flex;\n        align-items: center;\n        font-size: var(--qc-font-size-md);\n        font-family: var(--qc-font-family-content);\n        font-weight: var(--qc-font-weight-regular);\n        --pin-gap: 4px;\n        --pin-height: 9px;\n        --pin-base: 15px;\n    }\n    .clickable-gutter.qc-hash-s23dzl {\n        position: absolute;\n        height: 24px;\n        width: 24px;\n        left: -4px;\n        top: -4px;\n        cursor: pointer;\n    }\n    .qc-tooltip-text.qc-hash-s23dzl {\n        border-bottom: 1px dashed var(--qc-color-blue-piv);\n        cursor: pointer;\n        white-space: nowrap;\n        margin-right: calc( .5 * var(--qc-spacer-xs) );\n    }\n    .qc-tooltip-button.qc-hash-s23dzl {\n        align-self: center;\n        height: 24px;\n        width: 24px;\n        line-height: 24px;\n        display: block;\n        position: relative;\n        font-weight: 600;\n        &:focus,\n        &:focus-visible {\n            outline-offset: 0;\n        }\n    }\n    .qc-tooltip-container.qc-hash-s23dzl {\n        position: relative;\n    }\n    .qc-tooltip-pin.qc-hash-s23dzl {\n        position: absolute;\n        top: calc(var(--pin-height) / 2);\n        left: calc(100% + var(--pin-gap) + 2px);\n        z-index: 200;\n        width: var(--pin-height);\n        height: var(--pin-base);\n    }\n\n    svg.qc-hash-s23dzl {\n        display: block;\n    }\n\n    .qc-tooltip-content.qc-hash-s23dzl {\n        overflow-y: auto;\n        max-height: calc(var(--max-height) - 48px);\n        scrollbar-gutter: stable;\n        padding-right: 16px;\n        padding-top: 3px;\n        padding-left: 3px;\n    }\n\n    .qc-tooltip-content-text.qc-hash-s23dzl {\n        max-inline-size: var(--qc-max-content-width);\n    }\n\n    /* (unused) h1,*/h2.qc-hash-s23dzl /* (unused) h3,h4,h5,h6,[role="heading"]*/ {\n        font-size: var(--qc-font-size-sm);\n        font-weight: var(--qc-font-weight-bold);\n        line-height: var(--qc-line-height-sm);\n        margin: 0;\n        font-family: var(--qc-font-family-content);\n        &::after{\n            display: none;\n        }\n    }\n\n\n    .qc-tooltip-content.qc-hash-s23dzl:focus-visible {\n        outline: none;\n    }\n\n    .qc-tooltip-xclose.qc-hash-s23dzl {\n        position: absolute;\n        right: 8px;\n        top: 8px;\n        line-height: 24px;\n        height: 24px;\n    }\n\n    dialog.qc-hash-s23dzl {\n        top: auto;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        max-width: 100%;\n        width: 100%;\n        height: auto;\n        margin: 0;\n        padding: 0;\n        border: 1px solid var(--qc-color-grey-light);\n        background: var(--qc-color-background);\n\n        &.qc-desktop {\n            padding-top: 8px;\n        }\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: visible!important;\n        }\n\n        &::backdrop {\n            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)\n        }\n\n        .qc-tooltip-xclose:where(.qc-hash-s23dzl) {\n            right: 0;\n        }\n    }\n\n    .qc-tooltip-panel.qc-hash-s23dzl {\n        font-size: var(--qc-font-size-sm);\n        line-height: var(--qc-line-height-sm);\n        position: relative;\n        min-height: 68px;\n        max-height: var(--max-height);\n        background: var(--qc-color-background);\n        color: var(--qc-color-text-primary);\n        width: 100%;\n        padding-top: 21px;\n        padding-left: 13px;\n        padding-bottom: 24px;\n    }\n\n    .qc-tooltip-popover.qc-hash-s23dzl {\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: hidden;\n            position: absolute;\n            min-width: 216px;\n            max-width: 320px;\n            padding-right: 8px;\n            width: max-content;\n            border: 1px solid var(--qc-color-grey-light);\n            transform: translateY(var(--translateY));\n            top:0;\n            left: calc(100% + var(--pin-gap) + var(--pin-height));\n            z-index:199;\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-height) + var(--pin-gap));\n            left:auto;\n            transform: translateX(var(--translateX));\n        }\n\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/\n            left: calc(50% - var(--pin-base) / 2);\n        }\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(0px - var(--pin-height) - var(--pin-gap) - 2px);\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-gap) + 2px);\n        }\n\n        &.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            /*display: none;*/\n            top: 0;\n            transform: translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );\n            left:auto;\n        }\n        .qc-tooltip-visible:where(.qc-hash-s23dzl) {\n            visibility: visible;\n        }\n\n        .qc-tooltip-content:where(.qc-hash-s23dzl):focus-visible {\n            outline: 2px solid var(--qc-color-blue-regular);\n            outline-offset: 1px;\n        }\n    }\n\n    .qc-hash-s23dzl::-webkit-scrollbar,\n    .qc-hash-s23dzl::-webkit-scrollbar-track,\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb\n    {\n        height: 50%;\n        margin-top: 10px;\n        margin-right: -8px;\n    }\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb {\n        background: var(--qc-color-blue-piv);\n    }\n\n\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiVG9vbHRpcC5zdmVsdGUiLCJzb3VyY2VzIjpbIlRvb2x0aXAuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG4gICAgaW1wb3J0IHtVdGlsc30gZnJvbSBcIi4uL3V0aWxzXCI7XG4gICAgaW1wb3J0IHtvbk1vdW50LCB0aWNrfSBmcm9tIFwic3ZlbHRlXCI7XG4gICAgaW1wb3J0IEljb24gZnJvbSBcIi4uLy4uL2Jhc2VzL0ljb24vSWNvbi5zdmVsdGVcIjtcbiAgICBpbXBvcnQgZ3JpZENvbmZpZyBmcm9tICcuLi8uLi8uLi9zZGcvc2Nzcy9zZXR0aW5ncy9ncmlkLmpzb24nO1xuICAgIGxldCB7XG4gICAgICAgIHRleHQsXG4gICAgICAgIHRpdGxlLFxuICAgICAgICBkZXNjcmlwdGlvbixcbiAgICAgICAgcmVxdWVzdGVkUG9zaXRpb24gPSBcInRvcFwiLFxuICAgICAgICBwcmV2ZW50T3V0ZXJFdmVudENsb3NpbmcgPSBmYWxzZSxcbiAgICAgICAgZGlzcGxheU1vZGUgPSBcInBvcG92ZXJcIixcbiAgICAgICAgaWNvbiA9IFwiaW5mb3JtYXRpb25cIixcbiAgICAgICAgZGVzY3JpcHRpb25JZCxcbiAgICAgICAgc2xvdHMsXG4gICAgICAgIGhvc3QsXG4gICAgICAgIGRlc2NyaXB0aW9uU2xvdCxcbiAgICAgICAgdGV4dFNsb3RcbiAgICB9ID0gJHByb3BzKClcbiAgICBjb25zdFxuICAgICAgICBkZWZhdWx0VHJhbnNsYXRlWSA9IFwiY2FsYygtNTAlICsgMTJweClcIixcbiAgICAgICAgZGVmYXVsdFRyYW5zbGF0ZVggPSBcIi01MCVcIlxuICAgIDtcbiAgICBsZXQgaXNGciA9IFV0aWxzLmdldFBhZ2VMYW5ndWFnZSgpID09PSBcImZyXCIsXG4gICAgICAgIHRvb2x0aXBQYW5lbCA9ICRzdGF0ZSgpLFxuICAgICAgICB0b29sdGlwSWQgPSBVdGlscy5nZW5lcmF0ZUlkKFwidG9vbHRpcFwiKSxcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lcixcbiAgICAgICAgdG9vbHRpcEJ1dHRvbiA9ICRzdGF0ZSgpLFxuICAgICAgICBtb2RhbGUgPSAkc3RhdGUoKSxcbiAgICAgICAgZGlzcGxheVBvcG92ZXIgPSAkc3RhdGUoZmFsc2UpLFxuICAgICAgICB2aXNpYmxlUG9wb3ZlciA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIGRpc3BsYXlNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIHRyYW5zbGF0ZVggPSAkc3RhdGUoZGVmYXVsdFRyYW5zbGF0ZVgpLFxuICAgICAgICB0cmFuc2xhdGVZID0gJHN0YXRlKGRlZmF1bHRUcmFuc2xhdGVZKSxcbiAgICAgICAgLy8gc3ZlbHRlLWlnbm9yZSBzdGF0ZV9yZWZlcmVuY2VkX2xvY2FsbHkg4oCUIHJlcXVlc3RlZFBvc2l0aW9uIHNlcnQgZGUgdmFsZXVyIGluaXRpYWxlLCBwb3NpdGlvbiBlc3QgZW5zdWl0ZSBhanVzdMOpZSBwYXIgc2hvd1BvcG92ZXJcbiAgICAgICAgcG9zaXRpb24gPSAkc3RhdGUocmVxdWVzdGVkUG9zaXRpb24pLFxuICAgICAgICBtb2JpbGVGbGFnID0gJHN0YXRlKGZhbHNlKSxcbiAgICAgICAgZm9yY2VNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIG1vZGFsRmxhZyA9ICRkZXJpdmVkKG1vYmlsZUZsYWcgfHwgZGlzcGxheU1vZGUgPT09IFwibW9kYWxcIiB8fCBmb3JjZU1vZGFsKSxcbiAgICAgICAgaGFzRGVzY3JpcHRpb24gPSAkZGVyaXZlZC5ieShfID0+IGhhc1Byb3BlcnR5KGRlc2NyaXB0aW9uLCBzbG90c1tcImRlc2NyaXB0aW9uXCJdLCBkZXNjcmlwdGlvblNsb3QpKSxcbiAgICAgICAgaGFzVGV4dCA9ICRkZXJpdmVkLmJ5KF8gPT4gaGFzUHJvcGVydHkodGV4dCwgc2xvdHNbXCJ0ZXh0XCJdLCB0ZXh0U2xvdCkpLFxuICAgICAgICB0b29sdGlwSWNvbiA9ICRkZXJpdmVkKGljb24gPT09IFwicXVlc3Rpb25cIiA/IFwiaGVscFwiIDogXCJpbmZvXCIpLFxuICAgICAgICBsYWJlbHMgPSAkZGVyaXZlZCh7XG4gICAgICAgICAgICB0b29sdGlwQnV0dG9uOiB7XG4gICAgICAgICAgICAgICAgYXJpYUxhYmVsOiAoaXNGciA/IFwiQWZmaWNoZXIgbCdhaWRlIGNvbnRleHR1ZWxsZVwiIDogXCJEaXNwbGF5IHRvb2x0aXBcIilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICArICh0ZXh0ID8gKGlzRnIgPyBcIiBwb3VyIFwiIDogXCIgZm9yIFwiKSArIHRleHQgOiBcIlwiKSxcbiAgICAgICAgICAgIH0sXG4gICAgICAgICAgICBjbG9zZUJ1dHRvbjoge1xuICAgICAgICAgICAgICAgIGFyaWFMYWJlbCA6IGlzRnIgPyBcIkZlcm1lciBsJ2FpZGUgY29udGV4dHVlbGxlXCIgOiBcIkNsb3NlIHRvb2x0aXBcIlxuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgIDtcbiAgICAkaW5zcGVjdChcIm1vZGFsRmxhZ1wiLG1vZGFsRmxhZylcblxuICAgIGZ1bmN0aW9uIGhhc1Byb3BlcnR5KHByb3BlcnR5LCBzbG90RXhpc3QsIHNuaXBwZXQpIHtcbiAgICAgICAgaWYgKHByb3BlcnR5KSByZXR1cm4gdHJ1ZTtcbiAgICAgICAgaWYgKHNsb3RzKSByZXR1cm4gc2xvdEV4aXN0ICE9PSB1bmRlZmluZWRcbiAgICAgICAgcmV0dXJuIHNuaXBwZXQgIT09IG51bGxcbiAgICB9XG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIVtcInBvcG92ZXJcIixcIm1vZGFsXCJdLmluY2x1ZGVzKGRpc3BsYXlNb2RlKSApIHtcbiAgICAgICAgICAgIGRpc3BsYXlNb2RlID0gXCJwb3BvdmVyXCJcbiAgICAgICAgfVxuICAgIH0pXG4gICAgJGVmZmVjdChfID0+IHtcbiAgICAgICAgaWYgKCFbXCJpbmZvcm1hdGlvblwiLFwicXVlc3Rpb25cIl0uaW5jbHVkZXMoaWNvbikgKSB7XG4gICAgICAgICAgICBpY29uID0gXCJpbmZvcm1hdGlvblwiXG4gICAgICAgIH1cbiAgICB9KVxuICAgICRlZmZlY3QoXyA9PiB7XG4gICAgICAgIGlmIChkZXNjcmlwdGlvbikgcmV0dXJuO1xuICAgICAgICBpZiAoIWRlc2NyaXB0aW9uSWQpIHJldHVybjtcbiAgICAgICAgY29uc3QgdGFyZ2V0ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoZGVzY3JpcHRpb25JZCk7XG4gICAgICAgIGlmICghdGFyZ2V0KSByZXR1cm47XG4gICAgICAgIGRlc2NyaXB0aW9uID0gdGFyZ2V0LmlubmVySFRNTDtcbiAgICB9KVxuXG4gICAgb25Nb3VudChfID0+IHtcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lclxuICAgICAgICAgICAgLmFkZEV2ZW50TGlzdGVuZXIoXCJjbGlja1wiLCBtYXJrSW5uZXJFdmVudClcbiAgICAgICAgJGluc3BlY3QoXCJzbSBicFwiICwgZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpKVxuICAgICAgICBzZXRJc01vYmlsZSgpXG4gICAgICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKFwicmVzaXplXCIsIHNldElzTW9iaWxlKVxuICAgIH0pXG5cbiAgICAkaW5zcGVjdChcImlzTW9iaWxlXCIsIG1vYmlsZUZsYWcpXG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIWRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IGZhbHNlXG4gICAgICAgIH1cbiAgICB9KVxuXG4gICAgYXN5bmMgZnVuY3Rpb24gc2hvd1Rvb2x0aXAoZSkge1xuICAgICAgICBmb3JjZU1vZGFsID0gZmFsc2U7XG4gICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgaWYgKG1vZGFsRmxhZykge1xuICAgICAgICAgICAgc2hvd01vZGFsKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIHNob3dQb3BvdmVyKClcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlVG9vbHRpcChlKSB7XG4gICAgICAgIGlmIChtb2RhbEZsYWcpIHtcbiAgICAgICAgICAgIGNsb3NlTW9kYWxlKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIGRpc3BsYXlQb3BvdmVyID0gZmFsc2U7XG4gICAgICAgIH1cbiAgICAgICAgaWYgKGUpIHtcbiAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgICAgIGlmIChkb2N1bWVudC5hY3RpdmVFbGVtZW50ID09PSB0b29sdGlwQnV0dG9uKSByZXR1cm5cbiAgICAgICAgICAgIHRvb2x0aXBCdXR0b24uZm9jdXMoKTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlTW9kYWxlKCkge1xuICAgICAgICBpZiAoIW1vZGFsZSkgcmV0dXJuO1xuXG4gICAgICAgIG1vZGFsZS5jbG9zZSgpO1xuICAgICAgICB0b2dnbGVNb2RhbCgpO1xuICAgICAgICBkaXNwbGF5TW9kYWwgPSBmYWxzZTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiB0b2dnbGVNb2RhbCgpIHtcbiAgICAgICAgaWYgKCFtb2RhbGUpIHJldHVybjtcbiAgICAgICAgY29uc3QgYm9keSA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCJib2R5XCIpO1xuICAgICAgICBpZiAobW9kYWxlLm9wZW4pIHtcbiAgICAgICAgICAgIGJvZHkuc3R5bGUub3ZlcmZsb3cgPSBcImhpZGRlblwiO1xuICAgICAgICB9XG4gICAgICAgIGVsc2Uge1xuICAgICAgICAgICAgYm9keS5zdHlsZS5vdmVyZmxvdyA9IFwiXCJcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dNb2RhbChlKSB7XG4gICAgICAgIGRpc3BsYXlNb2RhbCA9IHRydWU7XG4gICAgICAgIGF3YWl0IHRpY2soKVxuICAgICAgICBtb2RhbGUuc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpIHtcbiAgICAgICAgcmV0dXJuIHBhcnNlSW50KGdyaWRDb25maWcubGcuYnJlYWtwb2ludC5zbS5yZXBsYWNlKFwicHhcIiwgXCJcIikpO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIHNldElzTW9iaWxlKCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgbW9iaWxlRmxhZyA9IGJvdW5kcy5yaWdodCA8PSBnZXRTbUJyZWFrcG9pbnQoZ3JpZENvbmZpZyk7XG4gICAgICAgIHJldHVybiBtb2JpbGVGbGFnO1xuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dQb3BvdmVyKGUpIHtcbiAgICAgICAgaWYgKGRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICBkaXNwbGF5UG9wb3Zlcj1mYWxzZTtcbiAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgfVxuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IHRydWVcbiAgICAgICAgYXdhaXQgdGljaygpXG4gICAgICAgIGxldCBzdGFydCA9IHJlcXVlc3RlZFBvc2l0aW9uLFxuICAgICAgICAgICAgY3VycmVudCA9ICBzdGFydFxuICAgICAgICA7XG4gICAgICAgIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKVxuICAgICAgICAvLyAkaW5zcGVjdChcIlBsYWNlbWVudCBpbml0aWFsIDogXCIgKyBzdGFydCwgcmVxdWVzdGVkUG9zaXRpb24pXG4gICAgICAgIGxldCB0cmllcyA9IGdldFRyaWVzT3JkZXIoc3RhcnQpO1xuICAgICAgICB3aGlsZSAodHJ1ZSkge1xuICAgICAgICAgICAgcG9zaXRpb24gPSBjdXJyZW50XG4gICAgICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICAgICAgICAgIGlmICh0cnlQbGFjZW1lbnQoY3VycmVudCkpIHtcbiAgICAgICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IHRydWU7XG4gICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBjb25zdCBpbmRleCA9IHRyaWVzLmluZGV4T2YoY3VycmVudClcbiAgICAgICAgICAgIGN1cnJlbnQgPSB0cmllc1soaW5kZXggKyAxKSAlIHRyaWVzLmxlbmd0aF1cbiAgICAgICAgICAgIGlmIChjdXJyZW50ID09PSBzdGFydCkge1xuICAgICAgICAgICAgICAgIGZhbGxCYWNrKClcbiAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRUcmllc09yZGVyKHBsYWNlbWVudCkge1xuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgXCJyaWdodFwiOiBbXCJyaWdodFwiLCBcInRvcFwiLCBcImJvdHRvbVwiXSxcbiAgICAgICAgICAgIFwidG9wXCI6IFtcInRvcFwiLCBcImJvdHRvbVwiLCBcInJpZ2h0XCJdLFxuICAgICAgICAgICAgXCJib3R0b21cIjogW1wiYm90dG9tXCIsIFwidG9wXCIsIFwicmlnaHRcIl1cbiAgICAgICAgfVtwbGFjZW1lbnRdXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gd2FpdEZvck5leHRGcmFtZSgpIHtcbiAgICAgICAgLy8gJGluc3BlY3QoXCJXYWl0aW5nIGZvciBuZXh0IGZyYW1lXCIpXG4gICAgICAgIHJldHVybiBuZXcgUHJvbWlzZShyZXNvbHZlID0+IHtcbiAgICAgICAgICAgIHdpbmRvdy5yZXF1ZXN0QW5pbWF0aW9uRnJhbWUocmVzb2x2ZSk7XG4gICAgICAgIH0pO1xuICAgIH1cblxuICAgICBmdW5jdGlvbiB0cnlQbGFjZW1lbnQocGxhY2VtZW50KSB7XG4gICAgICAgIGxldCByZXN1bHQgPSAhaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICBpZiAocmVzdWx0KSB7XG4gICAgICAgICAgICByZXN1bHQgPSBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICB9XG4gICAgICAgIC8vICRpbnNwZWN0KFwiUGxhY2VtZW50IHNlbG9uIFwiICsgcGxhY2VtZW50ICsgXCIgOiBcIiAgKyByZXN1bHQgKVxuICAgICAgICByZXR1cm4gcmVzdWx0O1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldE90aGVyQXhpc1Bvc2l0aW9ucyhwbGFjZW1lbnQpIHtcbiAgICAgICAgcmV0dXJuIHBsYWNlbWVudCA9PT0gXCJyaWdodFwiXG4gICAgICAgICAgICAgICAgPyBbXCJ0b3BcIiwgXCJib3R0b21cIl1cbiAgICAgICAgICAgICAgICA6IFtcInJpZ2h0XCIsIFwibGVmdFwiXTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwb3NpdGlvbikge1xuICAgICAgICB0cmFuc2xhdGVYID0gZGVmYXVsdFRyYW5zbGF0ZVgsXG4gICAgICAgIHRyYW5zbGF0ZVkgPSBkZWZhdWx0VHJhbnNsYXRlWVxuICAgICAgICBsZXQgb3RoZXJBeGlzUG9zaXRpb25zID0gZ2V0T3RoZXJBeGlzUG9zaXRpb25zKHBvc2l0aW9uKTtcbiAgICAgICAgbGV0IGFkanVzdGFibGUgPSB0cnVlO1xuXG4gICAgICAgIG90aGVyQXhpc1Bvc2l0aW9ucy5mb3JFYWNoKG90aGVyQXhpc1Bvc2l0aW9uID0+IHtcbiAgICAgICAgICAgIC8vIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKTtcbiAgICAgICAgICAgIGlmICghYWRqdXN0YWJsZSkgcmV0dXJuO1xuICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259YClcbiAgICAgICAgICAgIGlmICghaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBvdGhlckF4aXNQb3NpdGlvbikpIHtcbiAgICAgICAgICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtvdGhlckF4aXNQb3NpdGlvbn0gOiBub3RoaW5nIHRvIGFkanVzdCBgKVxuICAgICAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcCh0b29sdGlwQnV0dG9uLCBvdGhlckF4aXNQb3NpdGlvbik7XG4gICAgICAgICAgICBjb25zdCBlZGdlTWFyZ2luID0gMzsgLy8gZMOpY2FsYWdlIHBvdXIgcXVlIGwnaW5mb2J1bGxlIG5lIHZpZW5uZSBwYXMgZW4gYnV0w6llIGR1IGJvcmQgZXQgcXVlIGwnb21icmUgc29pdCB2aXNpYmxlXG4gICAgICAgICAgICAvLyBjb25zb2xlLmxvZyhgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259IDogZ2FwIHZhbHVlIGZvciBidXR0b24gOiAke2dhcH1gLCBnYXAgPCAwIClcbiAgICAgICAgICAgIGlmIChnYXAgPCAwKSB7XG4gICAgICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7cG9zaXRpb259IDogYnV0dG9uIG92ZXJmbG93d2luZyAtIG5vIGFkanVzdGVtZW50IGVuYWJsZWRgKVxuICAgICAgICAgICAgICAgIGFkanVzdGFibGUgPSBmYWxzZTtcbiAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBzd2l0Y2ggKG90aGVyQXhpc1Bvc2l0aW9uKSB7XG4gICAgICAgICAgICAgICAgY2FzZSBcInRvcFwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLSR7Z2FwfXB4ICsgJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImJvdHRvbVwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLTEwMCUgKyAyNHB4ICsgJHtnYXB9cHggLSAke2VkZ2VNYXJnaW59cHgpYFxuICAgICAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0xMDAlICsgMjRweCArICR7Z2FwfXB4IC0gJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImxlZnRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0ke2dhcH1weCArICR7ZWRnZU1hcmdpbn1weClgXG4gICAgICAgICAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtwb3NpdGlvbn0gOiBhZGp1c3RhYmxlIDogJHthZGp1c3RhYmxlfWApXG4gICAgICAgIHJldHVybiBhZGp1c3RhYmxlO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGZhbGxCYWNrKCkge1xuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IGZhbHNlO1xuICAgICAgICBmb3JjZU1vZGFsID0gdHJ1ZTtcbiAgICAgICAgc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xvc2VPblRvb2x0aXBCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGlmIChlLnRvb2x0aXBDb250YWluZXIgPT09IHRvb2x0aXBDb250YWluZXIpIHJldHVybjtcbiAgICAgICAgaWYgKCFob3N0KSByZXR1cm47XG4gICAgICAgIGlmIChob3N0ID09PSBlLnRhcmdldCkgcmV0dXJuO1xuICAgICAgICBjbG9zZVRvb2x0aXAoKVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlT25XaW5kb3dCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGNsb3NlVG9vbHRpcCgpXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gbWFya0lubmVyRXZlbnQoZSkge1xuICAgICAgICBlLnRvb2x0aXBDb250YWluZXIgPSB0b29sdGlwQ29udGFpbmVyO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGlzRWxlbWVudE92ZXJmbG93aW5nKGVsZW1lbnQsIHBvc2l0aW9uKSB7XG4gICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbik7XG4gICAgICAgIGNvbnN0IG92ZXJmbG93ID0gZ2FwIDwgMDtcbiAgICAgICAgLy8kaW5zcGVjdChgT3ZlcmZsb3cgZm9yICR7Y29uc29sZU5hbWUoZWxlbWVudCl9IGluIHBvc2l0aW9uICR7cG9zaXRpb259IDogJHtvdmVyZmxvd30gKGdhcDogJHtnYXB9KWApXG4gICAgICAgIHJldHVybiBvdmVyZmxvdztcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRTY3JlZW5Cb3VuZHMoKSB7XG4gICAgICAgIHJldHVybiB7XG4gICAgICAgICAgICBcInJpZ2h0XCIgOiBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xpZW50V2lkdGgsXG4gICAgICAgICAgICBcInRvcFwiIDogMCxcbiAgICAgICAgICAgIFwiYm90dG9tXCI6IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGllbnRIZWlnaHQsXG4gICAgICAgICAgICBcImxlZnRcIiA6IDBcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbiwgb2Zmc2V0ID0gMCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgLy8gUsOpY3Vww6hyZSBsZXMgY29vcmRvbm7DqWVzIGRlIGwnw6lsw6ltZW50IHBhciByYXBwb3J0IGF1IHZpZXdwb3J0XG4gICAgICAgIGNvbnN0IHJlY3QgPSBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpO1xuICAgICAgICAvLyBjb25zb2xlLmxvZyhgZWxlbWVudC5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKSBmb3IgJHtjb25zb2xlTmFtZShlbGVtZW50KX0gaW4gcG9zaXRpb24gJHtwb3NpdGlvbn1gLCBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpKVxuICAgICAgICBjb25zdCBib3JkZXIgPSBib3VuZHNbcG9zaXRpb25dXG4gICAgICAgIC8vIGNvbnNvbGUubG9nKFwiYm9yZGVyXCIsYm9yZGVyKVxuICAgICAgICBzd2l0Y2ggKHBvc2l0aW9uKSB7XG4gICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgIGNhc2UgXCJib3R0b21cIjpcbiAgICAgICAgICAgICAgICByZXR1cm4gKGJvcmRlciAtIG9mZnNldCkgLSByZWN0W3Bvc2l0aW9uXTtcbiAgICAgICAgICAgIGNhc2UgXCJ0b3BcIiA6XG4gICAgICAgICAgICBjYXNlIFwibGVmdFwiIDpcbiAgICAgICAgICAgICAgICByZXR1cm4gcmVjdFtwb3NpdGlvbl0gLSAoYm9yZGVyIC0gb2Zmc2V0KVxuICAgICAgICB9XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xpY2tJY29uQnV0dG9uKGUpIHtcbiAgICAgICAgZS5zdG9wSW1tZWRpYXRlUHJvcGFnYXRpb24oKTtcbiAgICAgICAgdG9vbHRpcEJ1dHRvbi5mb2N1cygpXG4gICAgICAgIHRvb2x0aXBCdXR0b24uY2xpY2soKVxuICAgIH1cblxuPC9zY3JpcHQ+XG5cbjxzdmVsdGU6ZG9jdW1lbnRcbiAgICAgICAgb25jbGljaz17Y2xvc2VPblRvb2x0aXBCbHVyfVxuICAgICAgICBvbmZvY3VzaW49e2Nsb3NlT25Ub29sdGlwQmx1cn1cbi8+XG48c3ZlbHRlOndpbmRvd1xuICAgICAgICBvbmJsdXI9e2Nsb3NlT25XaW5kb3dCbHVyfVxuLz5cbjwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X25vX3N0YXRpY19lbGVtZW50X2ludGVyYWN0aW9ucyAtLT5cbjxkaXYgY2xhc3M9XCJxYy10b29sdGlwXCJcbiAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcENvbnRhaW5lcn1cbiAgICAgIG9uZm9jdXNvdXQ9e21hcmtJbm5lckV2ZW50fVxuICAgICAgb25rZXlkb3duPXtlID0+IHtcbiAgICAgICAgICAgICAvLyRpbnNwZWN0KFwia2V5ZG93blwiLCBlLmtleSlcbiAgICAgICAgICAgICBpZiAobW9kYWxGbGFnKSByZXR1cm47XG4gICAgICAgICAgICAgaWYgKGUua2V5ID09PSBcIkVzY2FwZVwiKSB7XG4gICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICB9XG4gICAgICAgICB9fVxuPlxuICAgIDwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgeyNpZiBoYXNUZXh0fVxuICAgICA8c3BhbiBjbGFzcz1cInFjLXRvb2x0aXAtdGV4dFwiXG4gICAgICAgICAgIG9uY2xpY2s9e2NsaWNrSWNvbkJ1dHRvbn1cbiAgICAgICAgICAgdGFiaW5kZXg9XCItMVwiXG4gICAgICAgID57QGh0bWwgdGV4dH17QHJlbmRlciB0ZXh0U2xvdCgpfTwvc3Bhbj5cbiAgICB7OmVsc2V9XG4gICAgICAgIDxzcGFuPiZ6d2o7PC9zcGFuPlxuICAgIHsvaWZ9XG4gICAgeyNpZiBoYXNEZXNjcmlwdGlvbn1cblxuICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250YWluZXIgcWMtdG9vbHRpcC17cG9zaXRpb259IHFjLXNjcm9sbGJhclwiXG4gICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC1wb3BvdmVyPXshbW9kYWxGbGFnfVxuICAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtbW9kYWw9e21vZGFsRmxhZ31cbiAgICAgICAgICBzdHlsZTotLW1heC1oZWlnaHQ9e21vZGFsRmxhZyA/IFwiMzIwcHhcIiA6IFwiMTYwcHhcIn07XG4gICAgICAgID5cbiAgICAgICAgIDwhLS0gYWpvdXQgZCd1bmUgem9uZSBjbGlxdWFibGUgZGUgMjRweCBhdXRvdXIgZHUgYm91dG9uLCBwb3VyIGRlcyByYWlzb25zIGQnYWNjZXNzaWJpbGl0w6kgLS0+XG4gICAgICAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9jbGlja19ldmVudHNfaGF2ZV9rZXlfZXZlbnRzIC0tPlxuICAgICAgICAgPGRpdiBjbGFzcz1cImNsaWNrYWJsZS1ndXR0ZXJcIlxuICAgICAgICAgICAgICBvbmNsaWNrPXtjbGlja0ljb25CdXR0b259XG4gICAgICAgICA+PC9kaXY+XG4gICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgIGNsYXNzPVwicWMtdG9vbHRpcC1idXR0b25cIlxuICAgICAgICAgICAgaHJlZj1cIiN0b3BcIlxuICAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLnRvb2x0aXBCdXR0b24uYXJpYUxhYmVsfVxuICAgICAgICAgICAgb25jbGljaz17c2hvd1Rvb2x0aXB9XG4gICAgICAgICAgICBiaW5kOnRoaXM9e3Rvb2x0aXBCdXR0b259XG4gICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgIGlmIChlLmNvZGUgPT09IFwiU3BhY2VcIikge1xuICAgICAgICAgICAgICAgICB0b29sdGlwQnV0dG9uLmNsaWNrKClcbiAgICAgICAgICAgICAgICAgZS5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH19XG4gICAgICAgICA+XG4gICAgICAgICAgICA8SWNvbiB0eXBlPXt0b29sdGlwSWNvbn1cbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2YXJpYW50PVwiZmlsbGVkXCJcbiAgICAgICAgICAgICAgICAgIGNvbG9yPVwiYmx1ZS1waXZcIlxuICAgICAgICAgICAgICAgICAgdkFsaWduPVwidG9wXCJcbiAgICAgICAgICAgICAgICAgIHZhcmlhdGlvblNldHRpbmdzPVwiJ29wc3onIDI0LCAnRklMTCcgMSwgJ0dSQUQnIDBcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgICAgICAgeyNpZiAhbW9kYWxGbGFnICYmIGRpc3BsYXlQb3BvdmVyfVxuICAgICAgICAgPGRpdiBjbGFzcz1cInFjLXRvb2x0aXAtcGluXCJcbiAgICAgICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC12aXNpYmxlPXt2aXNpYmxlUG9wb3Zlcn1cbiAgICAgICAgICAgICAgYXJpYS1oaWRkZW49XCJ0cnVlXCJcbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICB7QHJlbmRlciBwaW5TdmcocG9zaXRpb24pfVxuICAgICAgICAgPC9kaXY+XG4gICAgICAgICB7QHJlbmRlciB0b29sdGlwUGFuZWxTbmlwcGV0KFwicG9wb3ZlclwiKX1cbiAgICAgICAgIHsvaWZ9XG4gICAgICAgICB7I2lmIG1vZGFsRmxhZyAmJiBkaXNwbGF5TW9kYWx9XG4gICAgICAgICA8ZGlhbG9nIGJpbmQ6dGhpcz17bW9kYWxlfVxuICAgICAgICAgICAgICAgICBvbnRvZ2dsZT17dG9nZ2xlTW9kYWx9XG4gICAgICAgICAgICAgICAgIGNsYXNzOnFjLWRlc2t0b3A9eyFtb2JpbGVGbGFnfVxuICAgICAgICAgICAgICAgICBvbmNsaWNrPXtlID0+IHtcbiAgICAgICAgICAgICAgICAgICAgIGlmIChlLmNsaWNrSW50b1BhbmVsKSByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICBjbG9zZU1vZGFsZSgpO1xuICAgICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cInFjLWNvbnRhaW5lclwiPlxuICAgICAgICAgICAgICAgIHtAcmVuZGVyIHRvb2x0aXBQYW5lbFNuaXBwZXQoXCJtb2RhbFwiKX1cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgPC9kaWFsb2c+XG4gICAgICAgICB7L2lmfVxuICAgICA8L2Rpdj5cbiAgICB7L2lmfVxuPC9kaXY+XG5cbnsjc25pcHBldCB0b29sdGlwUGFuZWxTbmlwcGV0KGRpc3BsYXlNb2RlKX1cbiAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9ub19ub25pbnRlcmFjdGl2ZV9lbGVtZW50X2ludGVyYWN0aW9ucyxhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgPGRpdiByb2xlPVwidG9vbHRpcFwiXG4gICAgICAgICBjbGFzcz1cInFjLXRvb2x0aXAtcGFuZWxcIlxuICAgICAgICAgb25jbGljaz17ZSA9PiBlLmNsaWNrSW50b1BhbmVsID0gdHJ1ZX1cbiAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtdmlzaWJsZT17dmlzaWJsZVBvcG92ZXJ9XG4gICAgICAgICBjbGFzczpxYy1zaGFkaW5nLTI9e2Rpc3BsYXlNb2RlID09PSBcInBvcG92ZXJcIn1cbiAgICAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcFBhbmVsfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVZPXt0cmFuc2xhdGVZfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVYPXt0cmFuc2xhdGVYfVxuICAgICAgICAgaWQ9e3Rvb2x0aXBJZH1cbiAgICAgICAgIGFyaWEtZGVzY3JpYmVkYnk9XCJ7dG9vbHRpcElkfS10aXRsZVwiXG4gICAgPlxuICAgICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250ZW50XCI+XG4gICAgICAgICAgICA8c2VjdGlvbiBjbGFzcz1cInFjLXRvb2x0aXAtY29udGVudC10ZXh0XCI+XG4gICAgICAgICAgICAgICAgeyNzbmlwcGV0IGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAge0BodG1sIGRlc2NyaXB0aW9ufVxuICAgICAgICAgICAgICAgICAgICB7QHJlbmRlciBkZXNjcmlwdGlvblNsb3QoKX1cbiAgICAgICAgICAgICAgICB7L3NuaXBwZXR9XG4gICAgICAgICAgICAgICAgeyNpZiB0aXRsZX1cbiAgICAgICAgICAgICAgICAgICAgPGhlYWRlcj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz1cInFjLXRvb2x0aXAtdGl0bGVcIlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZD1cInt0b29sdGlwSWR9LXRpdGxlXCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA+e3RpdGxlfTwvaDI+XG4gICAgICAgICAgICAgICAgICAgIDwvaGVhZGVyPlxuICAgICAgICAgICAgICAgICAgICA8bWFpbj5cbiAgICAgICAgICAgICAgICAgICAgICAgIHtAcmVuZGVyIGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAgPC9tYWluPlxuICAgICAgICAgICAgICAgIHs6ZWxzZX1cbiAgICAgICAgICAgICAgICAgICAge0ByZW5kZXIgY29udGVudCgpfVxuICAgICAgICAgICAgICAgIHsvaWZ9XG4gICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgIDwvZGl2PlxuICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgY2xhc3M9XCJxYy10b29sdGlwLXhjbG9zZVwiXG4gICAgICAgICAgIGhyZWY9XCIjdG9wXCJcbiAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLmNsb3NlQnV0dG9uLmFyaWFMYWJlbH1cbiAgICAgICAgICAgb25jbGljaz17Y2xvc2VUb29sdGlwfVxuICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgICAgICBpZiAoZS5jb2RlID09PSBcIlNwYWNlXCIpIHtcbiAgICAgICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgIH19XG4gICAgICAgID5cbiAgICAgICAgICAgIDxJY29uIHR5cGU9XCJjbG9zZVwiXG4gICAgICAgICAgICAgICAgICBjb2xvcj1cImJsdWUtcGl2XCJcbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2QWxpZ249XCJ0b3BcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgIDwvZGl2Plxuey9zbmlwcGV0fVxuXG57I3NuaXBwZXQgcGluU3ZnKHBvcyl9XG4gICAge0Bjb25zdCBpc0hvcml6b250YWwgPSBwb3MgPT09IFwidG9wXCIgfHwgcG9zID09PSBcImJvdHRvbVwifVxuICAgIHtAY29uc3QgdyA9IGlzSG9yaXpvbnRhbCA/IDE1IDogOX1cbiAgICB7QGNvbnN0IGggPSBpc0hvcml6b250YWwgPyA5IDogMTV9XG4gICAge0Bjb25zdCBwYXRocyA9ICh7XG4gICAgICAgIHJpZ2h0OiAgeyB0cmk6IFwiTTguMDIgMTQuMTY3TDEuMzUzIDcuNSA4LjAyLjgzM1YxNC4xNjdaXCIsXG4gICAgICAgICAgICAgICAgICBzdHI6IFwiTTEuMzUzIDcuNSA4LjAyIDE0LjE2N1YxNUg3LjAydi0uNDg4TDAgNy41IDcuMDIuNDg4VjBoMXYuODMzTDEuMzUzIDcuNVpcIiB9LFxuICAgICAgICB0b3A6IHsgdHJpOiBcIk0uODMzLjk4IDcuNSA3LjY0NyAxNC4xNjcuOThILjgzM1pcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDcuNjQ3LjgzMy45OEgwdjFMNy41IDkgMTUgMS45OHYtMWgtLjgzM0w3LjUgNy42NDdaXCIgfSxcbiAgICAgICAgYm90dG9tOiAgICB7IHRyaTogXCJNMTQuMTY3IDguMDIgNy41IDEuMzUzLjgzMyA4LjAyaDEzLjMzNFpcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDEuMzUzIDE0LjE2NyA4LjAySDE1di0xTDcuNSAwIDAgNy4wMnYxaC44MzNMNy41IDEuMzUzWlwiIH1cbiAgICB9KVtwb3NdfVxuICAgIDxzdmcgd2lkdGg9e3d9IGhlaWdodD17aH0gdmlld0JveD1cIjAgMCB7d30ge2h9XCIgZmlsbD1cIm5vbmVcIiB4bWxucz1cImh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnXCI+XG4gICAgICAgIDxzdHlsZT5cbiAgICAgICAgICAgIC50cmlhbmdsZSB7IGZpbGw6IHZhcigtLXFjLWNvbG9yLWJhY2tncm91bmQpOyB9XG4gICAgICAgICAgICAuc3Ryb2tlIHsgZmlsbDogdmFyKC0tcWMtY29sb3ItZ3JleS1saWdodCk7IH1cbiAgICAgICAgPC9zdHlsZT5cbiAgICAgICAgPHBhdGggY2xhc3M9XCJ0cmlhbmdsZVwiIGQ9e3BhdGhzLnRyaX0vPlxuICAgICAgICA8cGF0aCBjbGFzcz1cInN0cm9rZVwiIGQ9e3BhdGhzLnN0cn0vPlxuICAgIDwvc3ZnPlxuey9zbmlwcGV0fVxuXG5cbjxzdHlsZT5cbiAgICAucWMtdG9vbHRpcCB7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBmb250LXNpemU6IHZhcigtLXFjLWZvbnQtc2l6ZS1tZCk7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1xYy1mb250LWZhbWlseS1jb250ZW50KTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IHZhcigtLXFjLWZvbnQtd2VpZ2h0LXJlZ3VsYXIpO1xuICAgICAgICAtLXBpbi1nYXA6IDRweDtcbiAgICAgICAgLS1waW4taGVpZ2h0OiA5cHg7XG4gICAgICAgIC0tcGluLWJhc2U6IDE1cHg7XG4gICAgfVxuICAgIC5jbGlja2FibGUtZ3V0dGVyIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICBoZWlnaHQ6IDI0cHg7XG4gICAgICAgIHdpZHRoOiAyNHB4O1xuICAgICAgICBsZWZ0OiAtNHB4O1xuICAgICAgICB0b3A6IC00cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG4gICAgLnFjLXRvb2x0aXAtdGV4dCB7XG4gICAgICAgIGJvcmRlci1ib3R0b206IDFweCBkYXNoZWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1waXYpO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgICAgIG1hcmdpbi1yaWdodDogY2FsYyggLjUgKiB2YXIoLS1xYy1zcGFjZXIteHMpICk7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLWJ1dHRvbiB7XG4gICAgICAgIGFsaWduLXNlbGY6IGNlbnRlcjtcbiAgICAgICAgaGVpZ2h0OiAyNHB4O1xuICAgICAgICB3aWR0aDogMjRweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiA2MDA7XG4gICAgICAgICY6Zm9jdXMsXG4gICAgICAgICY6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lLW9mZnNldDogMDtcbiAgICAgICAgfVxuICAgIH1cbiAgICAucWMtdG9vbHRpcC1jb250YWluZXIge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLXBpbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiBjYWxjKHZhcigtLXBpbi1oZWlnaHQpIC8gMik7XG4gICAgICAgIGxlZnQ6IGNhbGMoMTAwJSArIHZhcigtLXBpbi1nYXApICsgMnB4KTtcbiAgICAgICAgei1pbmRleDogMjAwO1xuICAgICAgICB3aWR0aDogdmFyKC0tcGluLWhlaWdodCk7XG4gICAgICAgIGhlaWdodDogdmFyKC0tcGluLWJhc2UpO1xuICAgIH1cblxuICAgIHN2ZyB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQge1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBtYXgtaGVpZ2h0OiBjYWxjKHZhcigtLW1heC1oZWlnaHQpIC0gNDhweCk7XG4gICAgICAgIHNjcm9sbGJhci1ndXR0ZXI6IHN0YWJsZTtcbiAgICAgICAgcGFkZGluZy1yaWdodDogMTZweDtcbiAgICAgICAgcGFkZGluZy10b3A6IDNweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAzcHg7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAtY29udGVudC10ZXh0IHtcbiAgICAgICAgbWF4LWlubGluZS1zaXplOiB2YXIoLS1xYy1tYXgtY29udGVudC13aWR0aCk7XG4gICAgfVxuXG4gICAgaDEsaDIsaDMsaDQsaDUsaDYsW3JvbGU9XCJoZWFkaW5nXCJdIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBmb250LXdlaWdodDogdmFyKC0tcWMtZm9udC13ZWlnaHQtYm9sZCk7XG4gICAgICAgIGxpbmUtaGVpZ2h0OiB2YXIoLS1xYy1saW5lLWhlaWdodC1zbSk7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgZm9udC1mYW1pbHk6IHZhcigtLXFjLWZvbnQtZmFtaWx5LWNvbnRlbnQpO1xuICAgICAgICAmOjphZnRlcntcbiAgICAgICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIH1cbiAgICB9XG5cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgIG91dGxpbmU6IG5vbmU7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAteGNsb3NlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICByaWdodDogOHB4O1xuICAgICAgICB0b3A6IDhweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGhlaWdodDogMjRweDtcbiAgICB9XG5cbiAgICBkaWFsb2cge1xuICAgICAgICB0b3A6IGF1dG87XG4gICAgICAgIGJvdHRvbTogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBwYWRkaW5nOiAwO1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1xYy1jb2xvci1ncmV5LWxpZ2h0KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tcWMtY29sb3ItYmFja2dyb3VuZCk7XG5cbiAgICAgICAgJi5xYy1kZXNrdG9wIHtcbiAgICAgICAgICAgIHBhZGRpbmctdG9wOiA4cHg7XG4gICAgICAgIH1cblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiB2aXNpYmxlIWltcG9ydGFudDtcbiAgICAgICAgfVxuXG4gICAgICAgICY6OmJhY2tkcm9wIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tcWMtY29sb3ItYmx1ZS1kYXJrLXJnYiksIC4yNSlcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLXhjbG9zZSB7XG4gICAgICAgICAgICByaWdodDogMDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5xYy10b29sdGlwLXBhbmVsIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBsaW5lLWhlaWdodDogdmFyKC0tcWMtbGluZS1oZWlnaHQtc20pO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIG1pbi1oZWlnaHQ6IDY4cHg7XG4gICAgICAgIG1heC1oZWlnaHQ6IHZhcigtLW1heC1oZWlnaHQpO1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1xYy1jb2xvci1iYWNrZ3JvdW5kKTtcbiAgICAgICAgY29sb3I6IHZhcigtLXFjLWNvbG9yLXRleHQtcHJpbWFyeSk7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nLXRvcDogMjFweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAxM3B4O1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMjRweDtcbiAgICB9XG5cbiAgICAucWMtdG9vbHRpcC1wb3BvdmVyIHtcblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgICBtaW4td2lkdGg6IDIxNnB4O1xuICAgICAgICAgICAgbWF4LXdpZHRoOiAzMjBweDtcbiAgICAgICAgICAgIHBhZGRpbmctcmlnaHQ6IDhweDtcbiAgICAgICAgICAgIHdpZHRoOiBtYXgtY29udGVudDtcbiAgICAgICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLXFjLWNvbG9yLWdyZXktbGlnaHQpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKHZhcigtLXRyYW5zbGF0ZVkpKTtcbiAgICAgICAgICAgIHRvcDowO1xuICAgICAgICAgICAgbGVmdDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyB2YXIoLS1waW4taGVpZ2h0KSk7XG4gICAgICAgICAgICB6LWluZGV4OjE5OTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGFuZWwge1xuICAgICAgICAgICAgdG9wOiBjYWxjKDEwMCUgKyB2YXIoLS1waW4taGVpZ2h0KSArIHZhcigtLXBpbi1nYXApKTtcbiAgICAgICAgICAgIGxlZnQ6YXV0bztcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWCh2YXIoLS10cmFuc2xhdGVYKSk7XG4gICAgICAgIH1cblxuICAgICAgICAmLnFjLXRvb2x0aXAtdG9wIC5xYy10b29sdGlwLXBpbixcbiAgICAgICAgJi5xYy10b29sdGlwLWJvdHRvbSAucWMtdG9vbHRpcC1waW5cbiAgICAgICAge1xuICAgICAgICAgICAgLypsZWZ0OiA1MCU7Ki9cbiAgICAgICAgICAgIC8qdHJhbnNmb3JtOiB0cmFuc2xhdGVYKC01MCUpOyovXG4gICAgICAgICAgICBsZWZ0OiBjYWxjKDUwJSAtIHZhcigtLXBpbi1iYXNlKSAvIDIpO1xuICAgICAgICB9XG4gICAgICAgICYucWMtdG9vbHRpcC10b3AgLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygwcHggLSB2YXIoLS1waW4taGVpZ2h0KSAtIHZhcigtLXBpbi1nYXApIC0gMnB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyAycHgpO1xuICAgICAgICB9XG5cbiAgICAgICAgJi5xYy10b29sdGlwLXRvcCAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICAvKmRpc3BsYXk6IG5vbmU7Ki9cbiAgICAgICAgICAgIHRvcDogMDtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKFxuICAgICAgICAgICAgICAgICAgICB2YXIoLS10cmFuc2xhdGVYKSxcbiAgICAgICAgICAgICAgICAgICAgY2FsYygtMTAwJSAtIHZhcigtLXBpbi1nYXApIC0gdmFyKC0tcGluLWhlaWdodCkpXG4gICAgICAgICAgICApO1xuICAgICAgICAgICAgbGVmdDphdXRvO1xuICAgICAgICB9XG4gICAgICAgIC5xYy10b29sdGlwLXZpc2libGUge1xuICAgICAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lOiAycHggc29saWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1yZWd1bGFyKTtcbiAgICAgICAgICAgIG91dGxpbmUtb2Zmc2V0OiAxcHg7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICA6Oi13ZWJraXQtc2Nyb2xsYmFyLFxuICAgIDo6LXdlYmtpdC1zY3JvbGxiYXItdHJhY2ssXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYlxuICAgIHtcbiAgICAgICAgaGVpZ2h0OiA1MCU7XG4gICAgICAgIG1hcmdpbi10b3A6IDEwcHg7XG4gICAgICAgIG1hcmdpbi1yaWdodDogLThweDtcbiAgICB9XG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLXFjLWNvbG9yLWJsdWUtcGl2KTtcbiAgICB9XG5cbjwvc3R5bGU+Il0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFvZUEsSUFBSSwwQkFBVyxDQUFDO0FBQ2hCLFFBQVEsb0JBQW9CO0FBQzVCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsY0FBYztBQUN0QixRQUFRLGlCQUFpQjtBQUN6QixRQUFRLGdCQUFnQjtBQUN4QjtBQUNBLElBQUksZ0NBQWlCLENBQUM7QUFDdEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsV0FBVztBQUNuQixRQUFRLFVBQVU7QUFDbEIsUUFBUSxTQUFTO0FBQ2pCLFFBQVEsZUFBZTtBQUN2QjtBQUNBLElBQUksK0JBQWdCLENBQUM7QUFDckIsUUFBUSxrREFBa0Q7QUFDMUQsUUFBUSxlQUFlO0FBQ3ZCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsOENBQThDO0FBQ3REO0FBQ0EsSUFBSSxpQ0FBa0IsQ0FBQztBQUN2QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLFlBQVk7QUFDcEIsUUFBUSxXQUFXO0FBQ25CLFFBQVEsaUJBQWlCO0FBQ3pCLFFBQVEsY0FBYztBQUN0QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLENBQUMsTUFBTTtBQUNmLFFBQVEsQ0FBQyxjQUFjLENBQUM7QUFDeEIsWUFBWSxpQkFBaUI7QUFDN0I7QUFDQTtBQUNBLElBQUksb0NBQXFCLENBQUM7QUFDMUIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxJQUFJLDhCQUFlLENBQUM7QUFDcEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxnQ0FBZ0M7QUFDeEMsUUFBUSx1Q0FBdUM7QUFDL0MsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsdUJBQXVCO0FBQy9COztBQUVBLElBQUksa0JBQUcsQ0FBQztBQUNSLFFBQVEsY0FBYztBQUN0Qjs7QUFFQSxJQUFJLGtDQUFtQixDQUFDO0FBQ3hCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsaUJBQWlCO0FBQ3pCOztBQUVBLElBQUksdUNBQXdCLENBQUM7QUFDN0IsUUFBUSw0Q0FBNEM7QUFDcEQ7O0FBRUEsZ0JBQUksRUFBRSxHQUFDLGlCQUFFLGFBQUMsRUFBRSxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxDQUFDLGtCQUFnQixDQUFDO0FBQ3ZDLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsdUNBQXVDO0FBQy9DLFFBQVEscUNBQXFDO0FBQzdDLFFBQVEsU0FBUztBQUNqQixRQUFRLDBDQUEwQztBQUNsRCxRQUFRLENBQUMsT0FBTztBQUNoQixZQUFZLGFBQWE7QUFDekI7QUFDQTs7O0FBR0EsSUFBSSxrQ0FBbUIsY0FBYyxDQUFDO0FBQ3RDLFFBQVEsYUFBYTtBQUNyQjs7QUFFQSxJQUFJLGlDQUFrQixDQUFDO0FBQ3ZCLFFBQVEsa0JBQWtCO0FBQzFCLFFBQVEsVUFBVTtBQUNsQixRQUFRLFFBQVE7QUFDaEIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxZQUFZO0FBQ3BCOztBQUVBLElBQUkscUJBQU0sQ0FBQztBQUNYLFFBQVEsU0FBUztBQUNqQixRQUFRLFNBQVM7QUFDakIsUUFBUSxPQUFPO0FBQ2YsUUFBUSxRQUFRO0FBQ2hCLFFBQVEsZUFBZTtBQUN2QixRQUFRLFdBQVc7QUFDbkIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsU0FBUztBQUNqQixRQUFRLFVBQVU7QUFDbEIsUUFBUSw0Q0FBNEM7QUFDcEQsUUFBUSxzQ0FBc0M7O0FBRTlDLFFBQVEsQ0FBQyxXQUFXLENBQUM7QUFDckIsWUFBWSxnQkFBZ0I7QUFDNUI7O0FBRUEsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLDZCQUE2QjtBQUN6Qzs7QUFFQSxRQUFRLENBQUMsVUFBVSxDQUFDO0FBQ3BCLFlBQVk7QUFDWixRQUFROztBQUVSLFFBQVEseUNBQWtCLENBQUM7QUFDM0IsWUFBWSxRQUFRO0FBQ3BCO0FBQ0E7O0FBRUEsSUFBSSxnQ0FBaUIsQ0FBQztBQUN0QixRQUFRLGlDQUFpQztBQUN6QyxRQUFRLHFDQUFxQztBQUM3QyxRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLDZCQUE2QjtBQUNyQyxRQUFRLHNDQUFzQztBQUM5QyxRQUFRLG1DQUFtQztBQUMzQyxRQUFRLFdBQVc7QUFDbkIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxvQkFBb0I7QUFDNUI7O0FBRUEsSUFBSSxrQ0FBbUIsQ0FBQzs7QUFFeEIsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLDRDQUE0QztBQUN4RCxZQUFZLHdDQUF3QztBQUNwRCxZQUFZLEtBQUs7QUFDakIsWUFBWSxxREFBcUQ7QUFDakUsWUFBWSxXQUFXO0FBQ3ZCOztBQUVBLFFBQVEsQ0FBQyxrQkFBa0IsQ0FBQyx3Q0FBaUIsQ0FBQztBQUM5QyxZQUFZLG9EQUFvRDtBQUNoRSxZQUFZLFNBQVM7QUFDckIsWUFBWSx3Q0FBd0M7QUFDcEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyxzQ0FBZTtBQUN4QyxRQUFRLENBQUMsa0JBQWtCLENBQUM7QUFDNUIsUUFBUTtBQUNSLFlBQVk7QUFDWixZQUFZO0FBQ1osWUFBWSxxQ0FBcUM7QUFDakQ7QUFDQSxRQUFRLENBQUMsZUFBZSxDQUFDLHNDQUFlLENBQUM7QUFDekMsWUFBWSx5REFBeUQ7QUFDckU7O0FBRUEsUUFBUSxDQUFDLGtCQUFrQixDQUFDLHNDQUFlLENBQUM7QUFDNUMsWUFBWSxzQ0FBc0M7QUFDbEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyx3Q0FBaUIsQ0FBQztBQUMzQyxZQUFZO0FBQ1osWUFBWSxNQUFNO0FBQ2xCLFlBQVk7QUFDWjtBQUNBO0FBQ0EsYUFBYTtBQUNiLFlBQVksU0FBUztBQUNyQjtBQUNBLFFBQVEsMENBQW1CLENBQUM7QUFDNUIsWUFBWSxtQkFBbUI7QUFDL0I7O0FBRUEsUUFBUSwwQ0FBbUIsY0FBYyxDQUFDO0FBQzFDLFlBQVksK0NBQStDO0FBQzNELFlBQVksbUJBQW1CO0FBQy9CO0FBQ0E7O0FBRUEsbUJBQUksbUJBQW1CO0FBQ3ZCLG1CQUFJLHlCQUF5QjtBQUM3QixtQkFBSTtBQUNKLElBQUk7QUFDSixRQUFRLFdBQVc7QUFDbkIsUUFBUSxnQkFBZ0I7QUFDeEIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxtQkFBSSx5QkFBeUIsQ0FBQztBQUM5QixRQUFRLG9DQUFvQztBQUM1QyIsImlnbm9yZUxpc3QiOltdfQ== */'
+		code: '\n    .qc-tooltip.qc-hash-s23dzl {\n        display: inline-flex;\n        align-items: center;\n        font-size: var(--qc-font-size-md);\n        font-family: var(--qc-font-family-content);\n        font-weight: var(--qc-font-weight-regular);\n        --pin-gap: 4px;\n        --pin-height: 9px;\n        --pin-base: 15px;\n    }\n    .clickable-gutter.qc-hash-s23dzl {\n        position: absolute;\n        height: 24px;\n        width: 24px;\n        left: -4px;\n        top: -4px;\n        cursor: pointer;\n    }\n    .qc-tooltip-text.qc-hash-s23dzl {\n        border-bottom: 1px dashed var(--qc-color-blue-piv);\n        cursor: pointer;\n        white-space: nowrap;\n        margin-right: calc( .5 * var(--qc-spacer-xs) );\n    }\n    .qc-tooltip-button.qc-hash-s23dzl {\n        align-self: center;\n        height: 24px;\n        width: 24px;\n        line-height: 24px;\n        display: block;\n        position: relative;\n        font-weight: 600;\n        &:focus,\n        &:focus-visible {\n            outline-offset: 0;\n        }\n    }\n    .qc-tooltip-container.qc-hash-s23dzl {\n        position: relative;\n    }\n    .qc-tooltip-pin.qc-hash-s23dzl {\n        position: absolute;\n        top: calc(var(--pin-height) / 2);\n        left: calc(100% + var(--pin-gap) + 2px);\n        z-index: 200;\n        width: var(--pin-height);\n        height: var(--pin-base);\n    }\n\n    svg.qc-hash-s23dzl {\n        display: block;\n    }\n\n    .qc-tooltip-content.qc-hash-s23dzl {\n        overflow-y: auto;\n        max-height: calc(var(--max-height) - 48px);\n        scrollbar-gutter: stable;\n        padding-right: 16px;\n        padding-top: 3px;\n        padding-left: 3px;\n    }\n\n    .qc-tooltip-content-text.qc-hash-s23dzl {\n        max-inline-size: var(--qc-max-content-width);\n    }\n\n    /* (unused) h1,*/h2.qc-hash-s23dzl /* (unused) h3,h4,h5,h6,[role="heading"]*/ {\n        font-size: var(--qc-font-size-sm);\n        font-weight: var(--qc-font-weight-bold);\n        line-height: var(--qc-line-height-sm);\n        margin: 0;\n        font-family: var(--qc-font-family-content);\n        &::after{\n            display: none;\n        }\n    }\n\n\n    .qc-tooltip-content.qc-hash-s23dzl:focus-visible {\n        outline: none;\n    }\n\n    .qc-tooltip-xclose.qc-hash-s23dzl {\n        position: absolute;\n        right: 8px;\n        top: 8px;\n        line-height: 24px;\n        height: 24px;\n    }\n\n    dialog.qc-hash-s23dzl {\n        top: auto;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        max-width: 100%;\n        width: 100%;\n        height: auto;\n        margin: 0;\n        padding: 0;\n        border: 1px solid var(--qc-color-grey-light);\n        background: var(--qc-color-background);\n\n        &.qc-desktop {\n            padding-top: 8px;\n        }\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: visible!important;\n        }\n\n        &::backdrop {\n            background-color: rgba(var(--qc-color-blue-dark-rgb), .25)\n        }\n\n        .qc-tooltip-xclose:where(.qc-hash-s23dzl) {\n            right: 0;\n        }\n    }\n\n    .qc-tooltip-panel.qc-hash-s23dzl {\n        font-size: var(--qc-font-size-sm);\n        line-height: var(--qc-line-height-sm);\n        position: relative;\n        min-height: 68px;\n        max-height: var(--max-height);\n        background: var(--qc-color-background);\n        color: var(--qc-color-text-primary);\n        width: 100%;\n        padding-top: 21px;\n        padding-left: 13px;\n        padding-bottom: 24px;\n    }\n\n    .qc-tooltip-popover.qc-hash-s23dzl {\n\n        .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            visibility: hidden;\n            position: absolute;\n            min-width: 216px;\n            max-width: 320px;\n            padding-right: 8px;\n            width: max-content;\n            border: 1px solid var(--qc-color-grey-light);\n            transform: translateY(var(--translateY));\n            top:0;\n            left: calc(100% + var(--pin-gap) + var(--pin-height));\n            z-index:199;\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-height) + var(--pin-gap));\n            left:auto;\n            transform: translateX(var(--translateX));\n        }\n\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/\n            left: calc(50% - var(--pin-base) / 2);\n        }\n        &.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(0px - var(--pin-height) - var(--pin-gap) - 2px);\n        }\n\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl) {\n            top: calc(100% + var(--pin-gap) + 2px);\n        }\n\n        &.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            /*display: none;*/\n            top: 0;\n            transform: translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );\n            left:auto;\n        }\n        .qc-tooltip-visible:where(.qc-hash-s23dzl) {\n            visibility: visible;\n        }\n\n        .qc-tooltip-content:where(.qc-hash-s23dzl):focus-visible {\n            outline: 2px solid var(--qc-color-blue-regular);\n            outline-offset: 1px;\n        }\n    }\n\n    .qc-hash-s23dzl::-webkit-scrollbar,\n    .qc-hash-s23dzl::-webkit-scrollbar-track,\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb\n    {\n        height: 50%;\n        margin-top: 10px;\n        margin-right: -8px;\n    }\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb {\n        background: var(--qc-color-blue-piv);\n    }\n\n\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiVG9vbHRpcC5zdmVsdGUiLCJzb3VyY2VzIjpbIlRvb2x0aXAuc3ZlbHRlIl0sInNvdXJjZXNDb250ZW50IjpbIjxzY3JpcHQ+XG4gICAgaW1wb3J0IHtVdGlsc30gZnJvbSBcIi4uL3V0aWxzXCI7XG4gICAgaW1wb3J0IHtvbk1vdW50LCB0aWNrfSBmcm9tIFwic3ZlbHRlXCI7XG4gICAgaW1wb3J0IEljb24gZnJvbSBcIi4uLy4uL2Jhc2VzL0ljb24vSWNvbi5zdmVsdGVcIjtcbiAgICBpbXBvcnQgZ3JpZENvbmZpZyBmcm9tICcuLi8uLi8uLi9zZGcvc2Nzcy9zZXR0aW5ncy9ncmlkLmpzb24nO1xuICAgIGxldCB7XG4gICAgICAgIHRleHQsXG4gICAgICAgIHRpdGxlLFxuICAgICAgICBkZXNjcmlwdGlvbixcbiAgICAgICAgcmVxdWVzdGVkUG9zaXRpb24gPSBcInRvcFwiLFxuICAgICAgICBwcmV2ZW50T3V0ZXJFdmVudENsb3NpbmcgPSBmYWxzZSxcbiAgICAgICAgZGlzcGxheU1vZGUgPSBcInBvcG92ZXJcIixcbiAgICAgICAgaWNvbiA9IFwiaW5mb3JtYXRpb25cIixcbiAgICAgICAgZGVzY3JpcHRpb25JZCxcbiAgICAgICAgc2xvdHMsXG4gICAgICAgIGhvc3QsXG4gICAgICAgIGRlc2NyaXB0aW9uU2xvdCxcbiAgICAgICAgdGV4dFNsb3RcbiAgICB9ID0gJHByb3BzKClcbiAgICBjb25zdFxuICAgICAgICBkZWZhdWx0VHJhbnNsYXRlWSA9IFwiY2FsYygtNTAlICsgMTJweClcIixcbiAgICAgICAgZGVmYXVsdFRyYW5zbGF0ZVggPSBcIi01MCVcIlxuICAgIDtcbiAgICBsZXQgaXNGciA9IFV0aWxzLmdldFBhZ2VMYW5ndWFnZSgpID09PSBcImZyXCIsXG4gICAgICAgIHRvb2x0aXBQYW5lbCA9ICRzdGF0ZSgpLFxuICAgICAgICB0b29sdGlwSWQgPSBVdGlscy5nZW5lcmF0ZUlkKFwidG9vbHRpcFwiKSxcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lcixcbiAgICAgICAgdG9vbHRpcEJ1dHRvbiA9ICRzdGF0ZSgpLFxuICAgICAgICBtb2RhbGUgPSAkc3RhdGUoKSxcbiAgICAgICAgZGlzcGxheVBvcG92ZXIgPSAkc3RhdGUoZmFsc2UpLFxuICAgICAgICB2aXNpYmxlUG9wb3ZlciA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIGRpc3BsYXlNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIHRyYW5zbGF0ZVggPSAkc3RhdGUoZGVmYXVsdFRyYW5zbGF0ZVgpLFxuICAgICAgICB0cmFuc2xhdGVZID0gJHN0YXRlKGRlZmF1bHRUcmFuc2xhdGVZKSxcbiAgICAgICAgLy8gc3ZlbHRlLWlnbm9yZSBzdGF0ZV9yZWZlcmVuY2VkX2xvY2FsbHkg4oCUIHJlcXVlc3RlZFBvc2l0aW9uIHNlcnQgZGUgdmFsZXVyIGluaXRpYWxlLCBwb3NpdGlvbiBlc3QgZW5zdWl0ZSBhanVzdMOpZSBwYXIgc2hvd1BvcG92ZXJcbiAgICAgICAgcG9zaXRpb24gPSAkc3RhdGUocmVxdWVzdGVkUG9zaXRpb24pLFxuICAgICAgICBtb2JpbGVGbGFnID0gJHN0YXRlKGZhbHNlKSxcbiAgICAgICAgZm9yY2VNb2RhbCA9ICRzdGF0ZShmYWxzZSksXG4gICAgICAgIG1vZGFsRmxhZyA9ICRkZXJpdmVkKG1vYmlsZUZsYWcgfHwgZGlzcGxheU1vZGUgPT09IFwibW9kYWxcIiB8fCBmb3JjZU1vZGFsKSxcbiAgICAgICAgaGFzRGVzY3JpcHRpb24gPSAkZGVyaXZlZC5ieShfID0+IGhhc1Byb3BlcnR5KGRlc2NyaXB0aW9uLCBzbG90c1tcImRlc2NyaXB0aW9uXCJdLCBkZXNjcmlwdGlvblNsb3QpKSxcbiAgICAgICAgaGFzVGV4dCA9ICRkZXJpdmVkLmJ5KF8gPT4gaGFzUHJvcGVydHkodGV4dCwgc2xvdHNbXCJ0ZXh0XCJdLCB0ZXh0U2xvdCkpLFxuICAgICAgICB0b29sdGlwSWNvbiA9ICRkZXJpdmVkKGljb24gPT09IFwicXVlc3Rpb25cIiA/IFwiaGVscFwiIDogXCJpbmZvXCIpLFxuICAgICAgICBsYWJlbHMgPSAkZGVyaXZlZCh7XG4gICAgICAgICAgICB0b29sdGlwQnV0dG9uOiB7XG4gICAgICAgICAgICAgICAgYXJpYUxhYmVsOiAoaXNGciA/IFwiQWZmaWNoZXIgbCdhaWRlIGNvbnRleHR1ZWxsZVwiIDogXCJEaXNwbGF5IHRvb2x0aXBcIilcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICArICh0ZXh0ID8gKGlzRnIgPyBcIiBwb3VyIFwiIDogXCIgZm9yIFwiKSArIHRleHQgOiBcIlwiKSxcbiAgICAgICAgICAgIH0sXG4gICAgICAgICAgICBjbG9zZUJ1dHRvbjoge1xuICAgICAgICAgICAgICAgIGFyaWFMYWJlbCA6IGlzRnIgPyBcIkZlcm1lciBsJ2FpZGUgY29udGV4dHVlbGxlXCIgOiBcIkNsb3NlIHRvb2x0aXBcIlxuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgIDtcbiAgICAkaW5zcGVjdChcIm1vZGFsRmxhZ1wiLG1vZGFsRmxhZylcblxuICAgIGZ1bmN0aW9uIGhhc1Byb3BlcnR5KHByb3BlcnR5LCBzbG90RXhpc3QsIHNuaXBwZXQpIHtcbiAgICAgICAgaWYgKHByb3BlcnR5KSByZXR1cm4gdHJ1ZTtcbiAgICAgICAgaWYgKHNsb3RzKSByZXR1cm4gc2xvdEV4aXN0ICE9PSB1bmRlZmluZWRcbiAgICAgICAgcmV0dXJuIHNuaXBwZXQgIT09IG51bGxcbiAgICB9XG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIVtcInBvcG92ZXJcIixcIm1vZGFsXCJdLmluY2x1ZGVzKGRpc3BsYXlNb2RlKSApIHtcbiAgICAgICAgICAgIGRpc3BsYXlNb2RlID0gXCJwb3BvdmVyXCJcbiAgICAgICAgfVxuICAgIH0pXG4gICAgJGVmZmVjdChfID0+IHtcbiAgICAgICAgaWYgKCFbXCJpbmZvcm1hdGlvblwiLFwicXVlc3Rpb25cIl0uaW5jbHVkZXMoaWNvbikgKSB7XG4gICAgICAgICAgICBpY29uID0gXCJpbmZvcm1hdGlvblwiXG4gICAgICAgIH1cbiAgICB9KVxuICAgICRlZmZlY3QoXyA9PiB7XG4gICAgICAgIGlmIChkZXNjcmlwdGlvbikgcmV0dXJuO1xuICAgICAgICBpZiAoIWRlc2NyaXB0aW9uSWQpIHJldHVybjtcbiAgICAgICAgY29uc3QgdGFyZ2V0ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoZGVzY3JpcHRpb25JZCk7XG4gICAgICAgIGlmICghdGFyZ2V0KSByZXR1cm47XG4gICAgICAgIGRlc2NyaXB0aW9uID0gdGFyZ2V0LmlubmVySFRNTDtcbiAgICB9KVxuXG4gICAgb25Nb3VudChfID0+IHtcbiAgICAgICAgdG9vbHRpcENvbnRhaW5lclxuICAgICAgICAgICAgLmFkZEV2ZW50TGlzdGVuZXIoXCJjbGlja1wiLCBtYXJrSW5uZXJFdmVudClcbiAgICAgICAgJGluc3BlY3QoXCJzbSBicFwiICwgZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpKVxuICAgICAgICBzZXRJc01vYmlsZSgpXG4gICAgICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKFwicmVzaXplXCIsIHNldElzTW9iaWxlKVxuICAgIH0pXG5cbiAgICAkaW5zcGVjdChcImlzTW9iaWxlXCIsIG1vYmlsZUZsYWcpXG5cbiAgICAkZWZmZWN0KF8gPT4ge1xuICAgICAgICBpZiAoIWRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IGZhbHNlXG4gICAgICAgIH1cbiAgICB9KVxuXG4gICAgYXN5bmMgZnVuY3Rpb24gc2hvd1Rvb2x0aXAoZSkge1xuICAgICAgICBmb3JjZU1vZGFsID0gZmFsc2U7XG4gICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgaWYgKG1vZGFsRmxhZykge1xuICAgICAgICAgICAgc2hvd01vZGFsKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIHNob3dQb3BvdmVyKClcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlVG9vbHRpcChlKSB7XG4gICAgICAgIGlmIChtb2RhbEZsYWcpIHtcbiAgICAgICAgICAgIGNsb3NlTW9kYWxlKClcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICAgIGRpc3BsYXlQb3BvdmVyID0gZmFsc2U7XG4gICAgICAgIH1cbiAgICAgICAgaWYgKGUpIHtcbiAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTtcbiAgICAgICAgICAgIGlmIChkb2N1bWVudC5hY3RpdmVFbGVtZW50ID09PSB0b29sdGlwQnV0dG9uKSByZXR1cm5cbiAgICAgICAgICAgIHRvb2x0aXBCdXR0b24uZm9jdXMoKTtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlTW9kYWxlKCkge1xuICAgICAgICBpZiAoIW1vZGFsZSkgcmV0dXJuO1xuXG4gICAgICAgIG1vZGFsZS5jbG9zZSgpO1xuICAgICAgICB0b2dnbGVNb2RhbCgpO1xuICAgICAgICBkaXNwbGF5TW9kYWwgPSBmYWxzZTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiB0b2dnbGVNb2RhbCgpIHtcbiAgICAgICAgaWYgKCFtb2RhbGUpIHJldHVybjtcbiAgICAgICAgY29uc3QgYm9keSA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCJib2R5XCIpO1xuICAgICAgICBpZiAobW9kYWxlLm9wZW4pIHtcbiAgICAgICAgICAgIGJvZHkuc3R5bGUub3ZlcmZsb3cgPSBcImhpZGRlblwiO1xuICAgICAgICB9XG4gICAgICAgIGVsc2Uge1xuICAgICAgICAgICAgYm9keS5zdHlsZS5vdmVyZmxvdyA9IFwiXCJcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dNb2RhbChlKSB7XG4gICAgICAgIGRpc3BsYXlNb2RhbCA9IHRydWU7XG4gICAgICAgIGF3YWl0IHRpY2soKVxuICAgICAgICBtb2RhbGUuc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gZ2V0U21CcmVha3BvaW50KGdyaWRDb25maWcpIHtcbiAgICAgICAgcmV0dXJuIHBhcnNlSW50KGdyaWRDb25maWcubGcuYnJlYWtwb2ludC5zbS5yZXBsYWNlKFwicHhcIiwgXCJcIikpO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIHNldElzTW9iaWxlKCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgbW9iaWxlRmxhZyA9IGJvdW5kcy5yaWdodCA8PSBnZXRTbUJyZWFrcG9pbnQoZ3JpZENvbmZpZyk7XG4gICAgICAgIHJldHVybiBtb2JpbGVGbGFnO1xuICAgIH1cblxuICAgIGFzeW5jIGZ1bmN0aW9uIHNob3dQb3BvdmVyKGUpIHtcbiAgICAgICAgaWYgKGRpc3BsYXlQb3BvdmVyKSB7XG4gICAgICAgICAgICBkaXNwbGF5UG9wb3Zlcj1mYWxzZTtcbiAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgfVxuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IHRydWVcbiAgICAgICAgYXdhaXQgdGljaygpXG4gICAgICAgIGxldCBzdGFydCA9IHJlcXVlc3RlZFBvc2l0aW9uLFxuICAgICAgICAgICAgY3VycmVudCA9ICBzdGFydFxuICAgICAgICA7XG4gICAgICAgIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKVxuICAgICAgICAvLyAkaW5zcGVjdChcIlBsYWNlbWVudCBpbml0aWFsIDogXCIgKyBzdGFydCwgcmVxdWVzdGVkUG9zaXRpb24pXG4gICAgICAgIGxldCB0cmllcyA9IGdldFRyaWVzT3JkZXIoc3RhcnQpO1xuICAgICAgICB3aGlsZSAodHJ1ZSkge1xuICAgICAgICAgICAgcG9zaXRpb24gPSBjdXJyZW50XG4gICAgICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICAgICAgICAgIGlmICh0cnlQbGFjZW1lbnQoY3VycmVudCkpIHtcbiAgICAgICAgICAgICAgICB2aXNpYmxlUG9wb3ZlciA9IHRydWU7XG4gICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBjb25zdCBpbmRleCA9IHRyaWVzLmluZGV4T2YoY3VycmVudClcbiAgICAgICAgICAgIGN1cnJlbnQgPSB0cmllc1soaW5kZXggKyAxKSAlIHRyaWVzLmxlbmd0aF1cbiAgICAgICAgICAgIGlmIChjdXJyZW50ID09PSBzdGFydCkge1xuICAgICAgICAgICAgICAgIGZhbGxCYWNrKClcbiAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgICBhd2FpdCB3YWl0Rm9yTmV4dEZyYW1lKClcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRUcmllc09yZGVyKHBsYWNlbWVudCkge1xuICAgICAgICByZXR1cm4ge1xuICAgICAgICAgICAgXCJyaWdodFwiOiBbXCJyaWdodFwiLCBcInRvcFwiLCBcImJvdHRvbVwiXSxcbiAgICAgICAgICAgIFwidG9wXCI6IFtcInRvcFwiLCBcImJvdHRvbVwiLCBcInJpZ2h0XCJdLFxuICAgICAgICAgICAgXCJib3R0b21cIjogW1wiYm90dG9tXCIsIFwidG9wXCIsIFwicmlnaHRcIl1cbiAgICAgICAgfVtwbGFjZW1lbnRdXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gd2FpdEZvck5leHRGcmFtZSgpIHtcbiAgICAgICAgLy8gJGluc3BlY3QoXCJXYWl0aW5nIGZvciBuZXh0IGZyYW1lXCIpXG4gICAgICAgIHJldHVybiBuZXcgUHJvbWlzZShyZXNvbHZlID0+IHtcbiAgICAgICAgICAgIHdpbmRvdy5yZXF1ZXN0QW5pbWF0aW9uRnJhbWUocmVzb2x2ZSk7XG4gICAgICAgIH0pO1xuICAgIH1cblxuICAgICBmdW5jdGlvbiB0cnlQbGFjZW1lbnQocGxhY2VtZW50KSB7XG4gICAgICAgIGxldCByZXN1bHQgPSAhaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICBpZiAocmVzdWx0KSB7XG4gICAgICAgICAgICByZXN1bHQgPSBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwbGFjZW1lbnQpO1xuICAgICAgICB9XG4gICAgICAgIC8vICRpbnNwZWN0KFwiUGxhY2VtZW50IHNlbG9uIFwiICsgcGxhY2VtZW50ICsgXCIgOiBcIiAgKyByZXN1bHQgKVxuICAgICAgICByZXR1cm4gcmVzdWx0O1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldE90aGVyQXhpc1Bvc2l0aW9ucyhwbGFjZW1lbnQpIHtcbiAgICAgICAgcmV0dXJuIHBsYWNlbWVudCA9PT0gXCJyaWdodFwiXG4gICAgICAgICAgICAgICAgPyBbXCJ0b3BcIiwgXCJib3R0b21cIl1cbiAgICAgICAgICAgICAgICA6IFtcInJpZ2h0XCIsIFwibGVmdFwiXTtcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBhZGp1c3RDcm9zc0F4aXModG9vbHRpcFBhbmVsLCBwb3NpdGlvbikge1xuICAgICAgICB0cmFuc2xhdGVYID0gZGVmYXVsdFRyYW5zbGF0ZVgsXG4gICAgICAgIHRyYW5zbGF0ZVkgPSBkZWZhdWx0VHJhbnNsYXRlWVxuICAgICAgICBsZXQgb3RoZXJBeGlzUG9zaXRpb25zID0gZ2V0T3RoZXJBeGlzUG9zaXRpb25zKHBvc2l0aW9uKTtcbiAgICAgICAgbGV0IGFkanVzdGFibGUgPSB0cnVlO1xuXG4gICAgICAgIG90aGVyQXhpc1Bvc2l0aW9ucy5mb3JFYWNoKG90aGVyQXhpc1Bvc2l0aW9uID0+IHtcbiAgICAgICAgICAgIC8vIGF3YWl0IHdhaXRGb3JOZXh0RnJhbWUoKTtcbiAgICAgICAgICAgIGlmICghYWRqdXN0YWJsZSkgcmV0dXJuO1xuICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259YClcbiAgICAgICAgICAgIGlmICghaXNFbGVtZW50T3ZlcmZsb3dpbmcodG9vbHRpcFBhbmVsLCBvdGhlckF4aXNQb3NpdGlvbikpIHtcbiAgICAgICAgICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtvdGhlckF4aXNQb3NpdGlvbn0gOiBub3RoaW5nIHRvIGFkanVzdCBgKVxuICAgICAgICAgICAgICAgIHJldHVybjtcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcCh0b29sdGlwQnV0dG9uLCBvdGhlckF4aXNQb3NpdGlvbik7XG4gICAgICAgICAgICBjb25zdCBlZGdlTWFyZ2luID0gMzsgLy8gZMOpY2FsYWdlIHBvdXIgcXVlIGwnaW5mb2J1bGxlIG5lIHZpZW5uZSBwYXMgZW4gYnV0w6llIGR1IGJvcmQgZXQgcXVlIGwnb21icmUgc29pdCB2aXNpYmxlXG4gICAgICAgICAgICAvLyBjb25zb2xlLmxvZyhgYWRqdXN0UGluICR7b3RoZXJBeGlzUG9zaXRpb259IDogZ2FwIHZhbHVlIGZvciBidXR0b24gOiAke2dhcH1gLCBnYXAgPCAwIClcbiAgICAgICAgICAgIGlmIChnYXAgPCAwKSB7XG4gICAgICAgICAgICAgICAgLy8kaW5zcGVjdChgYWRqdXN0UGluICR7cG9zaXRpb259IDogYnV0dG9uIG92ZXJmbG93d2luZyAtIG5vIGFkanVzdGVtZW50IGVuYWJsZWRgKVxuICAgICAgICAgICAgICAgIGFkanVzdGFibGUgPSBmYWxzZTtcbiAgICAgICAgICAgICAgICByZXR1cm47XG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBzd2l0Y2ggKG90aGVyQXhpc1Bvc2l0aW9uKSB7XG4gICAgICAgICAgICAgICAgY2FzZSBcInRvcFwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLSR7Z2FwfXB4ICsgJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImJvdHRvbVwiOlxuICAgICAgICAgICAgICAgICAgICB0cmFuc2xhdGVZID0gYGNhbGMoLTEwMCUgKyAyNHB4ICsgJHtnYXB9cHggLSAke2VkZ2VNYXJnaW59cHgpYFxuICAgICAgICAgICAgICAgICAgICBicmVhaztcbiAgICAgICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0xMDAlICsgMjRweCArICR7Z2FwfXB4IC0gJHtlZGdlTWFyZ2lufXB4KWBcbiAgICAgICAgICAgICAgICAgICAgYnJlYWs7XG4gICAgICAgICAgICAgICAgY2FzZSBcImxlZnRcIjpcbiAgICAgICAgICAgICAgICAgICAgdHJhbnNsYXRlWCA9IGBjYWxjKC0ke2dhcH1weCArICR7ZWRnZU1hcmdpbn1weClgXG4gICAgICAgICAgICAgICAgICAgIGJyZWFrO1xuICAgICAgICAgICAgfVxuICAgICAgICB9KVxuICAgICAgICAvLyRpbnNwZWN0KGBhZGp1c3RQaW4gJHtwb3NpdGlvbn0gOiBhZGp1c3RhYmxlIDogJHthZGp1c3RhYmxlfWApXG4gICAgICAgIHJldHVybiBhZGp1c3RhYmxlO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGZhbGxCYWNrKCkge1xuICAgICAgICBkaXNwbGF5UG9wb3ZlciA9IGZhbHNlO1xuICAgICAgICBmb3JjZU1vZGFsID0gdHJ1ZTtcbiAgICAgICAgc2hvd01vZGFsKCk7XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xvc2VPblRvb2x0aXBCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGlmIChlLnRvb2x0aXBDb250YWluZXIgPT09IHRvb2x0aXBDb250YWluZXIpIHJldHVybjtcbiAgICAgICAgaWYgKCFob3N0KSByZXR1cm47XG4gICAgICAgIGlmIChob3N0ID09PSBlLnRhcmdldCkgcmV0dXJuO1xuICAgICAgICBjbG9zZVRvb2x0aXAoKVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGNsb3NlT25XaW5kb3dCbHVyKGUpIHtcbiAgICAgICAgaWYgKHByZXZlbnRPdXRlckV2ZW50Q2xvc2luZykgcmV0dXJuXG4gICAgICAgIGNsb3NlVG9vbHRpcCgpXG4gICAgfVxuXG4gICAgZnVuY3Rpb24gbWFya0lubmVyRXZlbnQoZSkge1xuICAgICAgICBlLnRvb2x0aXBDb250YWluZXIgPSB0b29sdGlwQ29udGFpbmVyO1xuICAgIH1cblxuICAgIGZ1bmN0aW9uIGlzRWxlbWVudE92ZXJmbG93aW5nKGVsZW1lbnQsIHBvc2l0aW9uKSB7XG4gICAgICAgIGNvbnN0IGdhcCA9IGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbik7XG4gICAgICAgIGNvbnN0IG92ZXJmbG93ID0gZ2FwIDwgMDtcbiAgICAgICAgLy8kaW5zcGVjdChgT3ZlcmZsb3cgZm9yICR7Y29uc29sZU5hbWUoZWxlbWVudCl9IGluIHBvc2l0aW9uICR7cG9zaXRpb259IDogJHtvdmVyZmxvd30gKGdhcDogJHtnYXB9KWApXG4gICAgICAgIHJldHVybiBvdmVyZmxvdztcbiAgICB9XG5cbiAgICBmdW5jdGlvbiBnZXRTY3JlZW5Cb3VuZHMoKSB7XG4gICAgICAgIHJldHVybiB7XG4gICAgICAgICAgICBcInJpZ2h0XCIgOiBkb2N1bWVudC5kb2N1bWVudEVsZW1lbnQuY2xpZW50V2lkdGgsXG4gICAgICAgICAgICBcInRvcFwiIDogMCxcbiAgICAgICAgICAgIFwiYm90dG9tXCI6IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5jbGllbnRIZWlnaHQsXG4gICAgICAgICAgICBcImxlZnRcIiA6IDBcbiAgICAgICAgfVxuICAgIH1cblxuICAgIGZ1bmN0aW9uIGdldFNjcmVlbkdhcChlbGVtZW50LCBwb3NpdGlvbiwgb2Zmc2V0ID0gMCkge1xuICAgICAgICBjb25zdCBib3VuZHMgPSBnZXRTY3JlZW5Cb3VuZHMoKTtcbiAgICAgICAgLy8gUsOpY3Vww6hyZSBsZXMgY29vcmRvbm7DqWVzIGRlIGwnw6lsw6ltZW50IHBhciByYXBwb3J0IGF1IHZpZXdwb3J0XG4gICAgICAgIGNvbnN0IHJlY3QgPSBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpO1xuICAgICAgICAvLyBjb25zb2xlLmxvZyhgZWxlbWVudC5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKSBmb3IgJHtjb25zb2xlTmFtZShlbGVtZW50KX0gaW4gcG9zaXRpb24gJHtwb3NpdGlvbn1gLCBlbGVtZW50LmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpKVxuICAgICAgICBjb25zdCBib3JkZXIgPSBib3VuZHNbcG9zaXRpb25dXG4gICAgICAgIC8vIGNvbnNvbGUubG9nKFwiYm9yZGVyXCIsYm9yZGVyKVxuICAgICAgICBzd2l0Y2ggKHBvc2l0aW9uKSB7XG4gICAgICAgICAgICBjYXNlIFwicmlnaHRcIjpcbiAgICAgICAgICAgIGNhc2UgXCJib3R0b21cIjpcbiAgICAgICAgICAgICAgICByZXR1cm4gKGJvcmRlciAtIG9mZnNldCkgLSByZWN0W3Bvc2l0aW9uXTtcbiAgICAgICAgICAgIGNhc2UgXCJ0b3BcIiA6XG4gICAgICAgICAgICBjYXNlIFwibGVmdFwiIDpcbiAgICAgICAgICAgICAgICByZXR1cm4gcmVjdFtwb3NpdGlvbl0gLSAoYm9yZGVyIC0gb2Zmc2V0KVxuICAgICAgICB9XG4gICAgfVxuXG4gICAgZnVuY3Rpb24gY2xpY2tJY29uQnV0dG9uKGUpIHtcbiAgICAgICAgZS5zdG9wSW1tZWRpYXRlUHJvcGFnYXRpb24oKTtcbiAgICAgICAgdG9vbHRpcEJ1dHRvbi5mb2N1cygpXG4gICAgICAgIHRvb2x0aXBCdXR0b24uY2xpY2soKVxuICAgIH1cblxuPC9zY3JpcHQ+XG5cbjxzdmVsdGU6ZG9jdW1lbnRcbiAgICAgICAgb25jbGljaz17Y2xvc2VPblRvb2x0aXBCbHVyfVxuICAgICAgICBvbmZvY3VzaW49e2Nsb3NlT25Ub29sdGlwQmx1cn1cbi8+XG48c3ZlbHRlOndpbmRvd1xuICAgICAgICBvbmJsdXI9e2Nsb3NlT25XaW5kb3dCbHVyfVxuLz5cbjwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X25vX3N0YXRpY19lbGVtZW50X2ludGVyYWN0aW9ucyAtLT5cbjxkaXYgY2xhc3M9XCJxYy10b29sdGlwXCJcbiAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcENvbnRhaW5lcn1cbiAgICAgIG9uZm9jdXNvdXQ9e21hcmtJbm5lckV2ZW50fVxuICAgICAgb25rZXlkb3duPXtlID0+IHtcbiAgICAgICAgICAgICAvLyRpbnNwZWN0KFwia2V5ZG93blwiLCBlLmtleSlcbiAgICAgICAgICAgICBpZiAobW9kYWxGbGFnKSByZXR1cm47XG4gICAgICAgICAgICAgaWYgKGUua2V5ID09PSBcIkVzY2FwZVwiKSB7XG4gICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICB9XG4gICAgICAgICB9fVxuPlxuICAgIDwhLS0gc3ZlbHRlLWlnbm9yZSBhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgeyNpZiBoYXNUZXh0fVxuICAgICA8c3BhbiBjbGFzcz1cInFjLXRvb2x0aXAtdGV4dFwiXG4gICAgICAgICAgIG9uY2xpY2s9e2NsaWNrSWNvbkJ1dHRvbn1cbiAgICAgICAgICAgdGFiaW5kZXg9XCItMVwiXG4gICAgICAgID57QGh0bWwgdGV4dH17QHJlbmRlciB0ZXh0U2xvdCgpfTwvc3Bhbj5cbiAgICB7OmVsc2V9XG4gICAgICAgIDxzcGFuPiZ6d2o7PC9zcGFuPlxuICAgIHsvaWZ9XG4gICAgeyNpZiBoYXNEZXNjcmlwdGlvbn1cblxuICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250YWluZXIgcWMtdG9vbHRpcC17cG9zaXRpb259IHFjLXNjcm9sbGJhclwiXG4gICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC1wb3BvdmVyPXshbW9kYWxGbGFnfVxuICAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtbW9kYWw9e21vZGFsRmxhZ31cbiAgICAgICAgICBzdHlsZTotLW1heC1oZWlnaHQ9e21vZGFsRmxhZyA/IFwiMzIwcHhcIiA6IFwiMTYwcHhcIn07XG4gICAgICAgID5cbiAgICAgICAgIDwhLS0gYWpvdXQgZCd1bmUgem9uZSBjbGlxdWFibGUgZGUgMjRweCBhdXRvdXIgZHUgYm91dG9uLCBwb3VyIGRlcyByYWlzb25zIGQnYWNjZXNzaWJpbGl0w6kgLS0+XG4gICAgICAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9jbGlja19ldmVudHNfaGF2ZV9rZXlfZXZlbnRzIC0tPlxuICAgICAgICAgPGRpdiBjbGFzcz1cImNsaWNrYWJsZS1ndXR0ZXJcIlxuICAgICAgICAgICAgICBvbmNsaWNrPXtjbGlja0ljb25CdXR0b259XG4gICAgICAgICA+PC9kaXY+XG4gICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgIGNsYXNzPVwicWMtdG9vbHRpcC1idXR0b25cIlxuICAgICAgICAgICAgaHJlZj1cIiN0b3BcIlxuICAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLnRvb2x0aXBCdXR0b24uYXJpYUxhYmVsfVxuICAgICAgICAgICAgb25jbGljaz17c2hvd1Rvb2x0aXB9XG4gICAgICAgICAgICBiaW5kOnRoaXM9e3Rvb2x0aXBCdXR0b259XG4gICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgIGlmIChlLmNvZGUgPT09IFwiU3BhY2VcIikge1xuICAgICAgICAgICAgICAgICB0b29sdGlwQnV0dG9uLmNsaWNrKClcbiAgICAgICAgICAgICAgICAgZS5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH19XG4gICAgICAgICA+XG4gICAgICAgICAgICA8SWNvbiB0eXBlPXt0b29sdGlwSWNvbn1cbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2YXJpYW50PVwiZmlsbGVkXCJcbiAgICAgICAgICAgICAgICAgIGNvbG9yPVwiYmx1ZS1waXZcIlxuICAgICAgICAgICAgICAgICAgdkFsaWduPVwidG9wXCJcbiAgICAgICAgICAgICAgICAgIHZhcmlhdGlvblNldHRpbmdzPVwiJ29wc3onIDI0LCAnRklMTCcgMSwgJ0dSQUQnIDBcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgICAgICAgeyNpZiAhbW9kYWxGbGFnICYmIGRpc3BsYXlQb3BvdmVyfVxuICAgICAgICAgPGRpdiBjbGFzcz1cInFjLXRvb2x0aXAtcGluXCJcbiAgICAgICAgICAgICAgY2xhc3M6cWMtdG9vbHRpcC12aXNpYmxlPXt2aXNpYmxlUG9wb3Zlcn1cbiAgICAgICAgICAgICAgYXJpYS1oaWRkZW49XCJ0cnVlXCJcbiAgICAgICAgICAgID5cbiAgICAgICAgICAgICB7QHJlbmRlciBwaW5TdmcocG9zaXRpb24pfVxuICAgICAgICAgPC9kaXY+XG4gICAgICAgICB7QHJlbmRlciB0b29sdGlwUGFuZWxTbmlwcGV0KFwicG9wb3ZlclwiKX1cbiAgICAgICAgIHsvaWZ9XG4gICAgICAgICB7I2lmIG1vZGFsRmxhZyAmJiBkaXNwbGF5TW9kYWx9XG4gICAgICAgICA8ZGlhbG9nIGJpbmQ6dGhpcz17bW9kYWxlfVxuICAgICAgICAgICAgICAgICBvbnRvZ2dsZT17dG9nZ2xlTW9kYWx9XG4gICAgICAgICAgICAgICAgIGNsYXNzOnFjLWRlc2t0b3A9eyFtb2JpbGVGbGFnfVxuICAgICAgICAgICAgICAgICBvbmNsaWNrPXtlID0+IHtcbiAgICAgICAgICAgICAgICAgICAgIGlmIChlLmNsaWNrSW50b1BhbmVsKSByZXR1cm47XG4gICAgICAgICAgICAgICAgICAgICBjbG9zZU1vZGFsZSgpO1xuICAgICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgPlxuICAgICAgICAgICAgPGRpdiBjbGFzcz1cInFjLWNvbnRhaW5lclwiPlxuICAgICAgICAgICAgICAgIHtAcmVuZGVyIHRvb2x0aXBQYW5lbFNuaXBwZXQoXCJtb2RhbFwiKX1cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgPC9kaWFsb2c+XG4gICAgICAgICB7L2lmfVxuICAgICA8L2Rpdj5cbiAgICB7L2lmfVxuPC9kaXY+XG5cbnsjc25pcHBldCB0b29sdGlwUGFuZWxTbmlwcGV0KGRpc3BsYXlNb2RlKX1cbiAgICA8IS0tIHN2ZWx0ZS1pZ25vcmUgYTExeV9ub19ub25pbnRlcmFjdGl2ZV9lbGVtZW50X2ludGVyYWN0aW9ucyxhMTF5X2NsaWNrX2V2ZW50c19oYXZlX2tleV9ldmVudHMgLS0+XG4gICAgPGRpdiByb2xlPVwidG9vbHRpcFwiXG4gICAgICAgICBjbGFzcz1cInFjLXRvb2x0aXAtcGFuZWxcIlxuICAgICAgICAgb25jbGljaz17ZSA9PiBlLmNsaWNrSW50b1BhbmVsID0gdHJ1ZX1cbiAgICAgICAgIGNsYXNzOnFjLXRvb2x0aXAtdmlzaWJsZT17dmlzaWJsZVBvcG92ZXJ9XG4gICAgICAgICBjbGFzczpxYy1zaGFkaW5nLTI9e2Rpc3BsYXlNb2RlID09PSBcInBvcG92ZXJcIn1cbiAgICAgICAgIGJpbmQ6dGhpcz17dG9vbHRpcFBhbmVsfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVZPXt0cmFuc2xhdGVZfVxuICAgICAgICAgc3R5bGU6LS10cmFuc2xhdGVYPXt0cmFuc2xhdGVYfVxuICAgICAgICAgaWQ9e3Rvb2x0aXBJZH1cbiAgICAgICAgIGFyaWEtZGVzY3JpYmVkYnk9XCJ7dG9vbHRpcElkfS10aXRsZVwiXG4gICAgPlxuICAgICAgICA8ZGl2IGNsYXNzPVwicWMtdG9vbHRpcC1jb250ZW50XCI+XG4gICAgICAgICAgICA8c2VjdGlvbiBjbGFzcz1cInFjLXRvb2x0aXAtY29udGVudC10ZXh0XCI+XG4gICAgICAgICAgICAgICAgeyNzbmlwcGV0IGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAge0BodG1sIGRlc2NyaXB0aW9ufVxuICAgICAgICAgICAgICAgICAgICB7QHJlbmRlciBkZXNjcmlwdGlvblNsb3QoKX1cbiAgICAgICAgICAgICAgICB7L3NuaXBwZXR9XG4gICAgICAgICAgICAgICAgeyNpZiB0aXRsZX1cbiAgICAgICAgICAgICAgICAgICAgPGhlYWRlcj5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxoMiBjbGFzcz1cInFjLXRvb2x0aXAtdGl0bGVcIlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZD1cInt0b29sdGlwSWR9LXRpdGxlXCJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA+e3RpdGxlfTwvaDI+XG4gICAgICAgICAgICAgICAgICAgIDwvaGVhZGVyPlxuICAgICAgICAgICAgICAgICAgICA8bWFpbj5cbiAgICAgICAgICAgICAgICAgICAgICAgIHtAcmVuZGVyIGNvbnRlbnQoKX1cbiAgICAgICAgICAgICAgICAgICAgPC9tYWluPlxuICAgICAgICAgICAgICAgIHs6ZWxzZX1cbiAgICAgICAgICAgICAgICAgICAge0ByZW5kZXIgY29udGVudCgpfVxuICAgICAgICAgICAgICAgIHsvaWZ9XG4gICAgICAgICAgICA8L3NlY3Rpb24+XG4gICAgICAgIDwvZGl2PlxuICAgICAgICA8YSByb2xlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgY2xhc3M9XCJxYy10b29sdGlwLXhjbG9zZVwiXG4gICAgICAgICAgIGhyZWY9XCIjdG9wXCJcbiAgICAgICAgICAgYXJpYS1sYWJlbD17bGFiZWxzLmNsb3NlQnV0dG9uLmFyaWFMYWJlbH1cbiAgICAgICAgICAgb25jbGljaz17Y2xvc2VUb29sdGlwfVxuICAgICAgICAgICBvbmtleWRvd249e2UgPT4ge1xuICAgICAgICAgICAgICAgICBpZiAoZS5jb2RlID09PSBcIlNwYWNlXCIpIHtcbiAgICAgICAgICAgICAgICAgICAgIGNsb3NlVG9vbHRpcChlKTtcbiAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgIH19XG4gICAgICAgID5cbiAgICAgICAgICAgIDxJY29uIHR5cGU9XCJjbG9zZVwiXG4gICAgICAgICAgICAgICAgICBjb2xvcj1cImJsdWUtcGl2XCJcbiAgICAgICAgICAgICAgICAgIHNpemU9XCJubVwiXG4gICAgICAgICAgICAgICAgICB2QWxpZ249XCJ0b3BcIlxuICAgICAgICAgICAgLz5cbiAgICAgICAgPC9hPlxuICAgIDwvZGl2Plxuey9zbmlwcGV0fVxuXG57I3NuaXBwZXQgcGluU3ZnKHBvcyl9XG4gICAge0Bjb25zdCBpc0hvcml6b250YWwgPSBwb3MgPT09IFwidG9wXCIgfHwgcG9zID09PSBcImJvdHRvbVwifVxuICAgIHtAY29uc3QgdyA9IGlzSG9yaXpvbnRhbCA/IDE1IDogOX1cbiAgICB7QGNvbnN0IGggPSBpc0hvcml6b250YWwgPyA5IDogMTV9XG4gICAge0Bjb25zdCBwYXRocyA9ICh7XG4gICAgICAgIHJpZ2h0OiAgeyB0cmk6IFwiTTguMDIgMTQuMTY3TDEuMzUzIDcuNSA4LjAyLjgzM1YxNC4xNjdaXCIsXG4gICAgICAgICAgICAgICAgICBzdHI6IFwiTTEuMzUzIDcuNSA4LjAyIDE0LjE2N1YxNUg3LjAydi0uNDg4TDAgNy41IDcuMDIuNDg4VjBoMXYuODMzTDEuMzUzIDcuNVpcIiB9LFxuICAgICAgICB0b3A6IHsgdHJpOiBcIk0uODMzLjk4IDcuNSA3LjY0NyAxNC4xNjcuOThILjgzM1pcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDcuNjQ3LjgzMy45OEgwdjFMNy41IDkgMTUgMS45OHYtMWgtLjgzM0w3LjUgNy42NDdaXCIgfSxcbiAgICAgICAgYm90dG9tOiAgICB7IHRyaTogXCJNMTQuMTY3IDguMDIgNy41IDEuMzUzLjgzMyA4LjAyaDEzLjMzNFpcIixcbiAgICAgICAgICAgICAgICAgIHN0cjogXCJNNy41IDEuMzUzIDE0LjE2NyA4LjAySDE1di0xTDcuNSAwIDAgNy4wMnYxaC44MzNMNy41IDEuMzUzWlwiIH1cbiAgICB9KVtwb3NdfVxuICAgIDxzdmcgd2lkdGg9e3d9IGhlaWdodD17aH0gdmlld0JveD1cIjAgMCB7d30ge2h9XCIgZmlsbD1cIm5vbmVcIiB4bWxucz1cImh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnXCI+XG4gICAgICAgIDxzdHlsZT5cbiAgICAgICAgICAgIC50cmlhbmdsZSB7IGZpbGw6IHZhcigtLXFjLWNvbG9yLWJhY2tncm91bmQpOyB9XG4gICAgICAgICAgICAuc3Ryb2tlIHsgZmlsbDogdmFyKC0tcWMtY29sb3ItZ3JleS1saWdodCk7IH1cbiAgICAgICAgPC9zdHlsZT5cbiAgICAgICAgPHBhdGggY2xhc3M9XCJ0cmlhbmdsZVwiIGQ9e3BhdGhzLnRyaX0vPlxuICAgICAgICA8cGF0aCBjbGFzcz1cInN0cm9rZVwiIGQ9e3BhdGhzLnN0cn0vPlxuICAgIDwvc3ZnPlxuey9zbmlwcGV0fVxuXG5cbjxzdHlsZT5cbiAgICAucWMtdG9vbHRpcCB7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBmb250LXNpemU6IHZhcigtLXFjLWZvbnQtc2l6ZS1tZCk7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1xYy1mb250LWZhbWlseS1jb250ZW50KTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IHZhcigtLXFjLWZvbnQtd2VpZ2h0LXJlZ3VsYXIpO1xuICAgICAgICAtLXBpbi1nYXA6IDRweDtcbiAgICAgICAgLS1waW4taGVpZ2h0OiA5cHg7XG4gICAgICAgIC0tcGluLWJhc2U6IDE1cHg7XG4gICAgfVxuICAgIC5jbGlja2FibGUtZ3V0dGVyIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICBoZWlnaHQ6IDI0cHg7XG4gICAgICAgIHdpZHRoOiAyNHB4O1xuICAgICAgICBsZWZ0OiAtNHB4O1xuICAgICAgICB0b3A6IC00cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG4gICAgLnFjLXRvb2x0aXAtdGV4dCB7XG4gICAgICAgIGJvcmRlci1ib3R0b206IDFweCBkYXNoZWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1waXYpO1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgICAgIG1hcmdpbi1yaWdodDogY2FsYyggLjUgKiB2YXIoLS1xYy1zcGFjZXIteHMpICk7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLWJ1dHRvbiB7XG4gICAgICAgIGFsaWduLXNlbGY6IGNlbnRlcjtcbiAgICAgICAgaGVpZ2h0OiAyNHB4O1xuICAgICAgICB3aWR0aDogMjRweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZvbnQtd2VpZ2h0OiA2MDA7XG4gICAgICAgICY6Zm9jdXMsXG4gICAgICAgICY6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lLW9mZnNldDogMDtcbiAgICAgICAgfVxuICAgIH1cbiAgICAucWMtdG9vbHRpcC1jb250YWluZXIge1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgfVxuICAgIC5xYy10b29sdGlwLXBpbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiBjYWxjKHZhcigtLXBpbi1oZWlnaHQpIC8gMik7XG4gICAgICAgIGxlZnQ6IGNhbGMoMTAwJSArIHZhcigtLXBpbi1nYXApICsgMnB4KTtcbiAgICAgICAgei1pbmRleDogMjAwO1xuICAgICAgICB3aWR0aDogdmFyKC0tcGluLWhlaWdodCk7XG4gICAgICAgIGhlaWdodDogdmFyKC0tcGluLWJhc2UpO1xuICAgIH1cblxuICAgIHN2ZyB7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIH1cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQge1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBtYXgtaGVpZ2h0OiBjYWxjKHZhcigtLW1heC1oZWlnaHQpIC0gNDhweCk7XG4gICAgICAgIHNjcm9sbGJhci1ndXR0ZXI6IHN0YWJsZTtcbiAgICAgICAgcGFkZGluZy1yaWdodDogMTZweDtcbiAgICAgICAgcGFkZGluZy10b3A6IDNweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAzcHg7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAtY29udGVudC10ZXh0IHtcbiAgICAgICAgbWF4LWlubGluZS1zaXplOiB2YXIoLS1xYy1tYXgtY29udGVudC13aWR0aCk7XG4gICAgfVxuXG4gICAgaDEsaDIsaDMsaDQsaDUsaDYsW3JvbGU9XCJoZWFkaW5nXCJdIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBmb250LXdlaWdodDogdmFyKC0tcWMtZm9udC13ZWlnaHQtYm9sZCk7XG4gICAgICAgIGxpbmUtaGVpZ2h0OiB2YXIoLS1xYy1saW5lLWhlaWdodC1zbSk7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgZm9udC1mYW1pbHk6IHZhcigtLXFjLWZvbnQtZmFtaWx5LWNvbnRlbnQpO1xuICAgICAgICAmOjphZnRlcntcbiAgICAgICAgICAgIGRpc3BsYXk6IG5vbmU7XG4gICAgICAgIH1cbiAgICB9XG5cblxuICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgIG91dGxpbmU6IG5vbmU7XG4gICAgfVxuXG4gICAgLnFjLXRvb2x0aXAteGNsb3NlIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICByaWdodDogOHB4O1xuICAgICAgICB0b3A6IDhweDtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDI0cHg7XG4gICAgICAgIGhlaWdodDogMjRweDtcbiAgICB9XG5cbiAgICBkaWFsb2cge1xuICAgICAgICB0b3A6IGF1dG87XG4gICAgICAgIGJvdHRvbTogMDtcbiAgICAgICAgbGVmdDogMDtcbiAgICAgICAgcmlnaHQ6IDA7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBwYWRkaW5nOiAwO1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1xYy1jb2xvci1ncmV5LWxpZ2h0KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tcWMtY29sb3ItYmFja2dyb3VuZCk7XG5cbiAgICAgICAgJi5xYy1kZXNrdG9wIHtcbiAgICAgICAgICAgIHBhZGRpbmctdG9wOiA4cHg7XG4gICAgICAgIH1cblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiB2aXNpYmxlIWltcG9ydGFudDtcbiAgICAgICAgfVxuXG4gICAgICAgICY6OmJhY2tkcm9wIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEodmFyKC0tcWMtY29sb3ItYmx1ZS1kYXJrLXJnYiksIC4yNSlcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLXhjbG9zZSB7XG4gICAgICAgICAgICByaWdodDogMDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5xYy10b29sdGlwLXBhbmVsIHtcbiAgICAgICAgZm9udC1zaXplOiB2YXIoLS1xYy1mb250LXNpemUtc20pO1xuICAgICAgICBsaW5lLWhlaWdodDogdmFyKC0tcWMtbGluZS1oZWlnaHQtc20pO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIG1pbi1oZWlnaHQ6IDY4cHg7XG4gICAgICAgIG1heC1oZWlnaHQ6IHZhcigtLW1heC1oZWlnaHQpO1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1xYy1jb2xvci1iYWNrZ3JvdW5kKTtcbiAgICAgICAgY29sb3I6IHZhcigtLXFjLWNvbG9yLXRleHQtcHJpbWFyeSk7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBwYWRkaW5nLXRvcDogMjFweDtcbiAgICAgICAgcGFkZGluZy1sZWZ0OiAxM3B4O1xuICAgICAgICBwYWRkaW5nLWJvdHRvbTogMjRweDtcbiAgICB9XG5cbiAgICAucWMtdG9vbHRpcC1wb3BvdmVyIHtcblxuICAgICAgICAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgICBtaW4td2lkdGg6IDIxNnB4O1xuICAgICAgICAgICAgbWF4LXdpZHRoOiAzMjBweDtcbiAgICAgICAgICAgIHBhZGRpbmctcmlnaHQ6IDhweDtcbiAgICAgICAgICAgIHdpZHRoOiBtYXgtY29udGVudDtcbiAgICAgICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLXFjLWNvbG9yLWdyZXktbGlnaHQpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKHZhcigtLXRyYW5zbGF0ZVkpKTtcbiAgICAgICAgICAgIHRvcDowO1xuICAgICAgICAgICAgbGVmdDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyB2YXIoLS1waW4taGVpZ2h0KSk7XG4gICAgICAgICAgICB6LWluZGV4OjE5OTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGFuZWwge1xuICAgICAgICAgICAgdG9wOiBjYWxjKDEwMCUgKyB2YXIoLS1waW4taGVpZ2h0KSArIHZhcigtLXBpbi1nYXApKTtcbiAgICAgICAgICAgIGxlZnQ6YXV0bztcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWCh2YXIoLS10cmFuc2xhdGVYKSk7XG4gICAgICAgIH1cblxuICAgICAgICAmLnFjLXRvb2x0aXAtdG9wIC5xYy10b29sdGlwLXBpbixcbiAgICAgICAgJi5xYy10b29sdGlwLWJvdHRvbSAucWMtdG9vbHRpcC1waW5cbiAgICAgICAge1xuICAgICAgICAgICAgLypsZWZ0OiA1MCU7Ki9cbiAgICAgICAgICAgIC8qdHJhbnNmb3JtOiB0cmFuc2xhdGVYKC01MCUpOyovXG4gICAgICAgICAgICBsZWZ0OiBjYWxjKDUwJSAtIHZhcigtLXBpbi1iYXNlKSAvIDIpO1xuICAgICAgICB9XG4gICAgICAgICYucWMtdG9vbHRpcC10b3AgLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygwcHggLSB2YXIoLS1waW4taGVpZ2h0KSAtIHZhcigtLXBpbi1nYXApIC0gMnB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgICYucWMtdG9vbHRpcC1ib3R0b20gLnFjLXRvb2x0aXAtcGluIHtcbiAgICAgICAgICAgIHRvcDogY2FsYygxMDAlICsgdmFyKC0tcGluLWdhcCkgKyAycHgpO1xuICAgICAgICB9XG5cbiAgICAgICAgJi5xYy10b29sdGlwLXRvcCAucWMtdG9vbHRpcC1wYW5lbCB7XG4gICAgICAgICAgICAvKmRpc3BsYXk6IG5vbmU7Ki9cbiAgICAgICAgICAgIHRvcDogMDtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKFxuICAgICAgICAgICAgICAgICAgICB2YXIoLS10cmFuc2xhdGVYKSxcbiAgICAgICAgICAgICAgICAgICAgY2FsYygtMTAwJSAtIHZhcigtLXBpbi1nYXApIC0gdmFyKC0tcGluLWhlaWdodCkpXG4gICAgICAgICAgICApO1xuICAgICAgICAgICAgbGVmdDphdXRvO1xuICAgICAgICB9XG4gICAgICAgIC5xYy10b29sdGlwLXZpc2libGUge1xuICAgICAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICAgICAgfVxuXG4gICAgICAgIC5xYy10b29sdGlwLWNvbnRlbnQ6Zm9jdXMtdmlzaWJsZSB7XG4gICAgICAgICAgICBvdXRsaW5lOiAycHggc29saWQgdmFyKC0tcWMtY29sb3ItYmx1ZS1yZWd1bGFyKTtcbiAgICAgICAgICAgIG91dGxpbmUtb2Zmc2V0OiAxcHg7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICA6Oi13ZWJraXQtc2Nyb2xsYmFyLFxuICAgIDo6LXdlYmtpdC1zY3JvbGxiYXItdHJhY2ssXG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYlxuICAgIHtcbiAgICAgICAgaGVpZ2h0OiA1MCU7XG4gICAgICAgIG1hcmdpbi10b3A6IDEwcHg7XG4gICAgICAgIG1hcmdpbi1yaWdodDogLThweDtcbiAgICB9XG4gICAgOjotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLXFjLWNvbG9yLWJsdWUtcGl2KTtcbiAgICB9XG5cbjwvc3R5bGU+Il0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFvZUEsSUFBSSwwQkFBVyxDQUFDO0FBQ2hCLFFBQVEsb0JBQW9CO0FBQzVCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsY0FBYztBQUN0QixRQUFRLGlCQUFpQjtBQUN6QixRQUFRLGdCQUFnQjtBQUN4QjtBQUNBLElBQUksZ0NBQWlCLENBQUM7QUFDdEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsV0FBVztBQUNuQixRQUFRLFVBQVU7QUFDbEIsUUFBUSxTQUFTO0FBQ2pCLFFBQVEsZUFBZTtBQUN2QjtBQUNBLElBQUksK0JBQWdCLENBQUM7QUFDckIsUUFBUSxrREFBa0Q7QUFDMUQsUUFBUSxlQUFlO0FBQ3ZCLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsOENBQThDO0FBQ3REO0FBQ0EsSUFBSSxpQ0FBa0IsQ0FBQztBQUN2QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLFlBQVk7QUFDcEIsUUFBUSxXQUFXO0FBQ25CLFFBQVEsaUJBQWlCO0FBQ3pCLFFBQVEsY0FBYztBQUN0QixRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLENBQUMsTUFBTTtBQUNmLFFBQVEsQ0FBQyxjQUFjLENBQUM7QUFDeEIsWUFBWSxpQkFBaUI7QUFDN0I7QUFDQTtBQUNBLElBQUksb0NBQXFCLENBQUM7QUFDMUIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxJQUFJLDhCQUFlLENBQUM7QUFDcEIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxnQ0FBZ0M7QUFDeEMsUUFBUSx1Q0FBdUM7QUFDL0MsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsdUJBQXVCO0FBQy9COztBQUVBLElBQUksa0JBQUcsQ0FBQztBQUNSLFFBQVEsY0FBYztBQUN0Qjs7QUFFQSxJQUFJLGtDQUFtQixDQUFDO0FBQ3hCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsMENBQTBDO0FBQ2xELFFBQVEsd0JBQXdCO0FBQ2hDLFFBQVEsbUJBQW1CO0FBQzNCLFFBQVEsZ0JBQWdCO0FBQ3hCLFFBQVEsaUJBQWlCO0FBQ3pCOztBQUVBLElBQUksdUNBQXdCLENBQUM7QUFDN0IsUUFBUSw0Q0FBNEM7QUFDcEQ7O0FBRUEsZ0JBQUksRUFBRSxHQUFDLGlCQUFFLGFBQUMsRUFBRSxDQUFDLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxDQUFDLGtCQUFnQixDQUFDO0FBQ3ZDLFFBQVEsaUNBQWlDO0FBQ3pDLFFBQVEsdUNBQXVDO0FBQy9DLFFBQVEscUNBQXFDO0FBQzdDLFFBQVEsU0FBUztBQUNqQixRQUFRLDBDQUEwQztBQUNsRCxRQUFRLENBQUMsT0FBTztBQUNoQixZQUFZLGFBQWE7QUFDekI7QUFDQTs7O0FBR0EsSUFBSSxrQ0FBbUIsY0FBYyxDQUFDO0FBQ3RDLFFBQVEsYUFBYTtBQUNyQjs7QUFFQSxJQUFJLGlDQUFrQixDQUFDO0FBQ3ZCLFFBQVEsa0JBQWtCO0FBQzFCLFFBQVEsVUFBVTtBQUNsQixRQUFRLFFBQVE7QUFDaEIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxZQUFZO0FBQ3BCOztBQUVBLElBQUkscUJBQU0sQ0FBQztBQUNYLFFBQVEsU0FBUztBQUNqQixRQUFRLFNBQVM7QUFDakIsUUFBUSxPQUFPO0FBQ2YsUUFBUSxRQUFRO0FBQ2hCLFFBQVEsZUFBZTtBQUN2QixRQUFRLFdBQVc7QUFDbkIsUUFBUSxZQUFZO0FBQ3BCLFFBQVEsU0FBUztBQUNqQixRQUFRLFVBQVU7QUFDbEIsUUFBUSw0Q0FBNEM7QUFDcEQsUUFBUSxzQ0FBc0M7O0FBRTlDLFFBQVEsQ0FBQyxXQUFXLENBQUM7QUFDckIsWUFBWSxnQkFBZ0I7QUFDNUI7O0FBRUEsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLDZCQUE2QjtBQUN6Qzs7QUFFQSxRQUFRLENBQUMsVUFBVSxDQUFDO0FBQ3BCLFlBQVk7QUFDWixRQUFROztBQUVSLFFBQVEseUNBQWtCLENBQUM7QUFDM0IsWUFBWSxRQUFRO0FBQ3BCO0FBQ0E7O0FBRUEsSUFBSSxnQ0FBaUIsQ0FBQztBQUN0QixRQUFRLGlDQUFpQztBQUN6QyxRQUFRLHFDQUFxQztBQUM3QyxRQUFRLGtCQUFrQjtBQUMxQixRQUFRLGdCQUFnQjtBQUN4QixRQUFRLDZCQUE2QjtBQUNyQyxRQUFRLHNDQUFzQztBQUM5QyxRQUFRLG1DQUFtQztBQUMzQyxRQUFRLFdBQVc7QUFDbkIsUUFBUSxpQkFBaUI7QUFDekIsUUFBUSxrQkFBa0I7QUFDMUIsUUFBUSxvQkFBb0I7QUFDNUI7O0FBRUEsSUFBSSxrQ0FBbUIsQ0FBQzs7QUFFeEIsUUFBUSx3Q0FBaUIsQ0FBQztBQUMxQixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGdCQUFnQjtBQUM1QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLGtCQUFrQjtBQUM5QixZQUFZLDRDQUE0QztBQUN4RCxZQUFZLHdDQUF3QztBQUNwRCxZQUFZLEtBQUs7QUFDakIsWUFBWSxxREFBcUQ7QUFDakUsWUFBWSxXQUFXO0FBQ3ZCOztBQUVBLFFBQVEsQ0FBQyxrQkFBa0IsQ0FBQyx3Q0FBaUIsQ0FBQztBQUM5QyxZQUFZLG9EQUFvRDtBQUNoRSxZQUFZLFNBQVM7QUFDckIsWUFBWSx3Q0FBd0M7QUFDcEQ7O0FBRUEsUUFBUSxDQUFDLGVBQWUsQ0FBQyxzQ0FBZTtBQUN4QyxRQUFRLENBQUMsa0JBQWtCLENBQUM7QUFDNUIsUUFBUTtBQUNSO0FBQ0E7QUFDQSxZQUFZLHFDQUFxQztBQUNqRDtBQUNBLFFBQVEsQ0FBQyxlQUFlLENBQUMsc0NBQWUsQ0FBQztBQUN6QyxZQUFZLHlEQUF5RDtBQUNyRTs7QUFFQSxRQUFRLENBQUMsa0JBQWtCLENBQUMsc0NBQWUsQ0FBQztBQUM1QyxZQUFZLHNDQUFzQztBQUNsRDs7QUFFQSxRQUFRLENBQUMsZUFBZSxDQUFDLHdDQUFpQixDQUFDO0FBQzNDO0FBQ0EsWUFBWSxNQUFNO0FBQ2xCLFlBQVk7QUFDWjtBQUNBO0FBQ0EsYUFBYTtBQUNiLFlBQVksU0FBUztBQUNyQjtBQUNBLFFBQVEsMENBQW1CLENBQUM7QUFDNUIsWUFBWSxtQkFBbUI7QUFDL0I7O0FBRUEsUUFBUSwwQ0FBbUIsY0FBYyxDQUFDO0FBQzFDLFlBQVksK0NBQStDO0FBQzNELFlBQVksbUJBQW1CO0FBQy9CO0FBQ0E7O0FBRUEsbUJBQUksbUJBQW1CO0FBQ3ZCLG1CQUFJLHlCQUF5QjtBQUM3QixtQkFBSTtBQUNKLElBQUk7QUFDSixRQUFRLFdBQVc7QUFDbkIsUUFBUSxnQkFBZ0I7QUFDeEIsUUFBUSxrQkFBa0I7QUFDMUI7QUFDQSxtQkFBSSx5QkFBeUIsQ0FBQztBQUM5QixRQUFRLG9DQUFvQztBQUM1QyIsImlnbm9yZUxpc3QiOltdfQ== */'
 	};
 
 	function Tooltip($$anchor, $$props) {
@@ -19662,27 +18710,34 @@
 		push($$props, true);
 		append_styles$1($$anchor, $$css);
 
-		const // svelte-ignore state_referenced_locally — requestedPosition sert de valeur initiale, position est ensuite ajustée par showPopover
-		// $inspect("Placement initial : " + start, requestedPosition)
-		// $inspect("Waiting for next frame")
-		// $inspect("Placement selon " + placement + " : "  + result )
-		// await waitForNextFrame();
-		//$inspect(`adjustPin ${otherAxisPosition}`)
-		//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
-		// décalage pour que l'infobulle ne vienne pas en butée du bord et que l'ombre soit visible
-		// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
-		//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
-		//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
-		//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
-		// Récupère les coordonnées de l'élément par rapport au viewport
-		// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
-		// console.log("border",border)
-		//$inspect("keydown", e.key)
-		tooltipPanelSnippet = wrap_snippet(Tooltip, function ($$anchor, displayMode = noop) {
+		const tooltipPanelSnippet = wrap_snippet(Tooltip, function (
+			$$anchor,
+
+			// svelte-ignore state_referenced_locally — requestedPosition sert de valeur initiale, position est ensuite ajustée par showPopover
+			// $inspect("Placement initial : " + start, requestedPosition)
+			// $inspect("Waiting for next frame")
+			// $inspect("Placement selon " + placement + " : "  + result )
+			// await waitForNextFrame();
+			//$inspect(`adjustPin ${otherAxisPosition}`)
+			//$inspect(`adjustPin ${otherAxisPosition} : nothing to adjust `)
+			// décalage pour que l'infobulle ne vienne pas en butée du bord et que l'ombre soit visible
+			// console.log(`adjustPin ${otherAxisPosition} : gap value for button : ${gap}`, gap < 0 )
+			//$inspect(`adjustPin ${position} : button overflowwing - no adjustement enabled`)
+			//$inspect(`adjustPin ${position} : adjustable : ${adjustable}`)
+			//$inspect(`Overflow for ${consoleName(element)} in position ${position} : ${overflow} (gap: ${gap})`)
+			// Récupère les coordonnées de l'élément par rapport au viewport
+			// console.log(`element.getBoundingClientRect() for ${consoleName(element)} in position ${position}`, element.getBoundingClientRect())
+			// console.log("border",border)
+			//$inspect("keydown", e.key)
+			displayMode = noop
+		) {
 			validate_snippet_args(...arguments);
 
-			var div = root_2();
+			var div = root_1();
 			let classes;
+
+			div.__click = (e) => e.clickIntoPanel = true;
+
 			let styles;
 			var div_1 = child(div);
 			var section = child(div_1);
@@ -19691,7 +18746,7 @@
 				const content = wrap_snippet(Tooltip, function ($$anchor) {
 					validate_snippet_args(...arguments);
 
-					var fragment = root$1();
+					var fragment = root_2();
 					var node = first_child(fragment);
 
 					html(node, description);
@@ -19706,7 +18761,7 @@
 
 				{
 					var consequent = ($$anchor) => {
-						var fragment_1 = root_1();
+						var fragment_1 = root_3();
 						var header = first_child(fragment_1);
 						var h2 = child(header);
 						var text_1 = child(h2, true);
@@ -19734,7 +18789,7 @@
 
 					add_svelte_meta(
 						() => if_block(node_2, ($$render) => {
-							if (title()) $$render(consequent); else $$render(alternate, -1);
+							if (title()) $$render(consequent); else $$render(alternate, false);
 						}),
 						'if',
 						Tooltip,
@@ -19749,6 +18804,15 @@
 			reset(div_1);
 
 			var a = sibling(div_1, 2);
+
+			a.__click = closeTooltip;
+
+			a.__keydown = (e) => {
+				if (strict_equals(e.code, "Space")) {
+					closeTooltip(e);
+				}
+			};
+
 			var node_4 = child(a);
 
 			add_svelte_meta(() => Icon(node_4, { type: 'close', color: 'blue-piv', size: 'nm', vAlign: 'top' }), 'component', Tooltip, 452, 12, { componentTag: 'Icon' });
@@ -19773,18 +18837,6 @@
 				set_attribute(a, 'aria-label', get(labels).closeButton.ariaLabel);
 			});
 
-			delegated('click', div, function click(e) {
-				return e.clickIntoPanel = true;
-			});
-
-			delegated('click', a, closeTooltip);
-
-			delegated('keydown', a, function keydown(e) {
-				if (strict_equals(e.code, "Space")) {
-					closeTooltip(e);
-				}
-			});
-
 			append($$anchor, div);
 		});
 
@@ -19801,38 +18853,39 @@
 			descriptionSlot = prop($$props, 'descriptionSlot', 7),
 			textSlot = prop($$props, 'textSlot', 7);
 
-		const defaultTranslateY = "calc(-50% + 12px)";
-		const defaultTranslateX = "-50%";
-		let isFr = strict_equals(Utils.getPageLanguage(), "fr");
-		let tooltipPanel = tag(state(void 0), 'tooltipPanel');
-		let tooltipId = Utils.generateId("tooltip");
-		let tooltipContainer;
-		let tooltipButton = tag(state(void 0), 'tooltipButton');
-		let modale = tag(state(void 0), 'modale');
-		let displayPopover = tag(state(false), 'displayPopover');
-		let visiblePopover = tag(state(false), 'visiblePopover');
-		let displayModal = tag(state(false), 'displayModal');
-		let translateX = tag(state(defaultTranslateX), 'translateX');
-		let translateY = tag(state(defaultTranslateY), 'translateY');
-		let position = tag(state(proxy(requestedPosition())), 'position');
-		let mobileFlag = tag(state(false), 'mobileFlag');
-		let forceModal = tag(state(false), 'forceModal');
-		let modalFlag = tag(user_derived(() => get(mobileFlag) || strict_equals(displayMode(), "modal") || get(forceModal)), 'modalFlag');
-		let hasDescription = tag(user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot())), 'hasDescription');
-		let hasText = tag(user_derived((_) => hasProperty(text(), slots()["text"], textSlot())), 'hasText');
-		let tooltipIcon = tag(user_derived(() => strict_equals(icon(), "question") ? "help" : "info"), 'tooltipIcon');
+		const defaultTranslateY = "calc(-50% + 12px)",
+			defaultTranslateX = "-50%";
 
-		let labels = tag(
-			user_derived(() => ({
-				tooltipButton: {
-					ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "")
-				},
-				closeButton: {
-					ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
-				}
-			})),
-			'labels'
-		);
+		let isFr = strict_equals(Utils.getPageLanguage(), "fr"),
+			tooltipPanel = tag(state(void 0), 'tooltipPanel'),
+			tooltipId = Utils.generateId("tooltip"),
+			tooltipContainer,
+			tooltipButton = tag(state(void 0), 'tooltipButton'),
+			modale = tag(state(void 0), 'modale'),
+			displayPopover = tag(state(false), 'displayPopover'),
+			visiblePopover = tag(state(false), 'visiblePopover'),
+			displayModal = tag(state(false), 'displayModal'),
+			translateX = tag(state(defaultTranslateX), 'translateX'),
+			translateY = tag(state(defaultTranslateY), 'translateY'),
+			position = tag(state(proxy(requestedPosition())), 'position'),
+			mobileFlag = tag(state(false), 'mobileFlag'),
+			forceModal = tag(state(false), 'forceModal'),
+			modalFlag = tag(user_derived(() => get(mobileFlag) || strict_equals(displayMode(), "modal") || get(forceModal)), 'modalFlag'),
+			hasDescription = tag(user_derived((_) => hasProperty(description(), slots()["description"], descriptionSlot())), 'hasDescription'),
+			hasText = tag(user_derived((_) => hasProperty(text(), slots()["text"], textSlot())), 'hasText'),
+			tooltipIcon = tag(user_derived(() => strict_equals(icon(), "question") ? "help" : "info"), 'tooltipIcon'),
+			labels = tag(
+				user_derived(() => ({
+					tooltipButton: {
+						ariaLabel: (isFr ? "Afficher l'aide contextuelle" : "Display tooltip") + (text() ? (isFr ? " pour " : " for ") + text() : "")
+					},
+
+					closeButton: {
+						ariaLabel: isFr ? "Fermer l'aide contextuelle" : "Close tooltip"
+					}
+				})),
+				'labels'
+			);
 
 		inspect(() => ["modalFlag", get(modalFlag)], (...$$args) => console.log(...$$args), true);
 
@@ -20142,7 +19195,6 @@
 		}
 
 		var $$exports = {
-			...legacy_api(),
 			get text() {
 				return text();
 			},
@@ -20249,20 +19301,35 @@
 			set textSlot($$value) {
 				textSlot($$value);
 				flushSync();
-			}
+			},
+
+			...legacy_api()
 		};
 
-		var div_2 = root_9();
+		var div_2 = root$1();
 
 		event('click', $document, closeOnTooltipBlur);
 		event('focusin', $document, closeOnTooltipBlur);
 		event('blur', $window, closeOnWindowBlur);
+		div_2.__focusout = markInnerEvent;
+
+		div_2.__keydown = (e) => {
+			//$inspect("keydown", e.key)
+			if (get(modalFlag)) return;
+
+			if (strict_equals(e.key, "Escape")) {
+				closeTooltip(e);
+			}
+		};
 
 		var node_5 = child(div_2);
 
 		{
 			var consequent_1 = ($$anchor) => {
-				var span = root_4();
+				var span = root_6();
+
+				span.__click = clickIconButton;
+
 				var node_6 = child(span);
 
 				html(node_6, text);
@@ -20271,19 +19338,18 @@
 
 				add_svelte_meta(() => snippet(node_7, textSlot), 'render', Tooltip, 344, 21);
 				reset(span);
-				delegated('click', span, clickIconButton);
 				append($$anchor, span);
 			};
 
 			var alternate_1 = ($$anchor) => {
-				var span_1 = root_5();
+				var span_1 = root_7();
 
 				append($$anchor, span_1);
 			};
 
 			add_svelte_meta(
 				() => if_block(node_5, ($$render) => {
-					if (get(hasText)) $$render(consequent_1); else $$render(alternate_1, -1);
+					if (get(hasText)) $$render(consequent_1); else $$render(alternate_1, false);
 				}),
 				'if',
 				Tooltip,
@@ -20300,7 +19366,20 @@
 				let classes_1;
 				let styles_1;
 				var div_4 = child(div_3);
+
+				div_4.__click = clickIconButton;
+
 				var a_1 = sibling(div_4, 2);
+
+				a_1.__click = showTooltip;
+
+				a_1.__keydown = (e) => {
+					if (strict_equals(e.code, "Space")) {
+						get(tooltipButton).click();
+						e.preventDefault();
+					}
+				};
+
 				var node_9 = child(a_1);
 
 				add_svelte_meta(
@@ -20308,6 +19387,7 @@
 						get type() {
 							return get(tooltipIcon);
 						},
+
 						size: 'nm',
 						variant: 'filled',
 						color: 'blue-piv',
@@ -20328,7 +19408,7 @@
 
 				{
 					var consequent_2 = ($$anchor) => {
-						var fragment_3 = root_6();
+						var fragment_3 = root_9();
 						var div_5 = first_child(fragment_3);
 						let classes_2;
 						var node_11 = child(div_5);
@@ -20358,7 +19438,14 @@
 
 				{
 					var consequent_3 = ($$anchor) => {
-						var dialog = root_7();
+						var dialog = root_10();
+
+						dialog.__click = (e) => {
+							if (e.clickIntoPanel) return;
+
+							closeModale();
+						};
+
 						let classes_3;
 						var div_6 = child(dialog);
 						var node_14 = child(div_6);
@@ -20369,13 +19456,6 @@
 						bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
 						template_effect(() => classes_3 = set_class(dialog, 1, 'qc-hash-s23dzl', null, classes_3, { 'qc-desktop': !get(mobileFlag) }));
 						event('toggle', dialog, toggleModal);
-
-						delegated('click', dialog, function click_1(e) {
-							if (e.clickIntoPanel) return;
-
-							closeModale();
-						});
-
 						append($$anchor, dialog);
 					};
 
@@ -20402,16 +19482,6 @@
 					set_attribute(a_1, 'aria-label', get(labels).tooltipButton.ariaLabel);
 				});
 
-				delegated('click', div_4, clickIconButton);
-				delegated('click', a_1, showTooltip);
-
-				delegated('keydown', a_1, function keydown_2(e) {
-					if (strict_equals(e.code, "Space")) {
-						get(tooltipButton).click();
-						e.preventDefault();
-					}
-				});
-
 				append($$anchor, div_3);
 			};
 
@@ -20428,17 +19498,6 @@
 
 		reset(div_2);
 		bind_this(div_2, ($$value) => tooltipContainer = $$value, () => tooltipContainer);
-		delegated('focusout', div_2, markInnerEvent);
-
-		delegated('keydown', div_2, function keydown_1(e) {
-			//$inspect("keydown", e.key)
-			if (get(modalFlag)) return;
-
-			if (strict_equals(e.key, "Escape")) {
-				closeTooltip(e);
-			}
-		});
-
 		append($$anchor, div_2);
 
 		return pop($$exports);
@@ -20464,12 +19523,11 @@
 		},
 		[],
 		[],
-		{ mode: 'open' }
+		true
 	);
 
 	TooltipWC[FILENAME] = 'src/sdg/components/Tooltip/TooltipWC.svelte';
 
-	var rest_excludes = new Set(['$$slots', '$$events', '$$legacy', '$$host']);
 	var root = add_locations(from_html(`<!> <link rel="stylesheet"/>`, 1), TooltipWC[FILENAME], [[29, 0]]);
 
 	function TooltipWC($$anchor, $$props) {
@@ -20479,7 +19537,7 @@
 
 		push($$props, true);
 
-		let props = rest_props($$props, rest_excludes);
+		let props = rest_props($$props, ['$$slots', '$$events', '$$legacy', '$$host']);
 		var $$exports = { ...legacy_api() };
 		var fragment = root();
 		var node = first_child(fragment);
@@ -20543,7 +19601,7 @@
 		},
 		['text', 'description'],
 		[],
-		{ mode: 'open' }
+		true
 	));
 
 	const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
