@@ -12,6 +12,7 @@
     "preversion": "./scripts/check-release-note.sh",
     "version": "./scripts/compile-doc.sh",
     "build": "node scripts/build-vite.mjs",
+    "pretest": "yarn build && yarn build:dev",
     "test": "playwright test",
     "start": "sirv . --host 127.0.0.1 --port 5173 --dev",
     "build-grid-tokens": "node ./scripts/buildGridTokens.js",

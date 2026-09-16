@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
+  <!-- Les jeux de tests valident le LIVRABLE minifié de dist/, pas le build dev
+       de public/. La trousse (qc-sdg) est chargée depuis dist/*.min ; qc-doc-sdg
+       et qc-sdg-test restent dans public/ (échafaudage de doc/test sans build dist). -->
   <link rel="stylesheet"
-        href="css/qc-sdg.css">
+        href="../dist/css/qc-sdg.min.css">
   <link rel="stylesheet"
         href="css/qc-doc-sdg.css">
   <title>Documentation technique du Système de design gouvernemental</title>
   <script defer
-          src='js/qc-sdg.js'
-          sdg-css-filename="qc-sdg.css">
+          src='../dist/js/qc-sdg.min.js'>
   </script>
   <script defer
           src='js/qc-doc-sdg.js'
@@ -26,7 +28,7 @@
 </main>
 <script src='js/qc-doc-exemple.js'></script>
 <script src='js/qc-sdg-test.js'
-        sdg-css-filename="qc-sdg.css"
+        sdg-css-path="../dist/css/qc-sdg.min.css"
   ></script>
 </body>
 </html>
