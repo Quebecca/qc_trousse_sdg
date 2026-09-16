@@ -5,6 +5,7 @@
   "main": "index.js",
   "packageManager": "yarn@1.22.22",
   "scripts": {
+    "//preinstall": "Force yarn (refuse npm/pnpm) pour protéger yarn.lock",
     "preinstall": "npx only-allow yarn",
     "dev": "node scripts/build-dev.mjs --watch --serve",
     "build:dev": "node scripts/build-dev.mjs",
