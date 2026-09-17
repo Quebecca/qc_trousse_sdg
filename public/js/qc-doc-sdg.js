@@ -62832,7 +62832,9 @@ createHTML: (html) => {
 			"toc",
 			"download",
 			"videocam",
-			"fax"
+			"fax",
+			"add_circle",
+			"do_not_disturb_on"
 		],
 		variants: ["outlined", "filled"],
 		maxBundleWarning: 100
@@ -62878,7 +62880,9 @@ createHTML: (html) => {
 		"download": "F090",
 		"videocam": "E04B",
 		"note": "E674",
-		"fax": "EAD8"
+		"fax": "EAD8",
+		"add_circle": "E147",
+		"do_not_disturb_on": "E644"
 	} };
 	//#endregion
 	//#region src/sdg/bases/Icon/Icon.svelte
