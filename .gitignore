@@ -8,12 +8,13 @@ node_modules/
 # package-lock.json ne doit pas être commité pour éviter la dérive avec yarn.lock.
 package-lock.json
 
-/dist/qc-sdg-design-tokens.js
 /public/js/rewrite-bs.js
-/dist/js/qc-sdg-design-tokens.js
-/dist/js/qc-sdg-no-grid.js
 /public/js/assets/asset-*
 *dev.html
+
+# Dossiers intermédiaires de Vite (build lib) — créés puis supprimés à chaque build.
+/dist/.vite-tmp/
+/.vite-tmp-dev/
 
 # Playwright
 *.test.html

@@ -11,13 +11,13 @@
 // (sirv sur 127.0.0.1). Marc n'utilise pas le serveur : la cible principale est
 // le contenu de public/. On n'efface JAMAIS public/ en bloc (qc-doc-exemple.js,
 // images, favicon y sont suivis) — on n'écrit que les fichiers produits.
-import { build, createLogger } from 'vite';
+import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import replace from '@rollup/plugin-replace';
-import { sveltePlugin, cssPreprocessorOptions } from './vite-common.mjs';
+import { sveltePlugin, cssPreprocessorOptions, createQuietLogger } from './vite-common.mjs';
 import buildHtmlDoc from '../plugins/buildHtmlDoc.mjs';
 import buildDevDoc from '../plugins/buildDevDoc.mjs';
 import buildTestFixtures from '../plugins/buildTestFixtures.mjs';
@@ -38,26 +38,15 @@ const replacements = {
     preventAssignment: false,
 };
 
-// Vite avertit pour chaque url() de police non résolue au build
-// (« … didn't resolve at build time, it will remain unchanged … »). C'est le
-// comportement VOULU ici : $google-font-path pointe vers ../../dist/fonts
-// (dist/ est un dossier FRÈRE de public/, résolu au runtime en file://), donc
-// le chemin DOIT rester inchangé — pas de resolve.alias, sinon Vite bundlerait
-// les polices et casserait la doc statique. Aucune annotation par-url n'existe :
-// on filtre ce message précis via un logger custom (le reste passe normalement).
-const logger = createLogger('warn');
-const drop = (msg) => typeof msg === 'string' && msg.includes("didn't resolve at build time");
-const baseWarn = logger.warn.bind(logger);
-const baseWarnOnce = logger.warnOnce.bind(logger);
-logger.warn = (msg, options) => { if (!drop(msg)) baseWarn(msg, options); };
-// Vite déduplique les avertissements d'url() CSS via warnOnce (canal distinct de warn).
-logger.warnOnce = (msg, options) => { if (!drop(msg)) baseWarnOnce(msg, options); };
+// Vite avertit pour chaque url() de police non résolue au build (by design :
+// ../../dist/fonts doit rester intact pour la doc file://). Filtre partagé.
+const logger = createQuietLogger();
 
 // Sorties dev identiques à l'ancien build rollup (public/, non-min, expanded).
 const bundles = [
     { entry: 'src/sdg/qc-sdg.js',               name: 'qcSdg',            js: 'public/js/qc-sdg.js',              css: 'public/css/qc-sdg.css' },
     { entry: 'src/sdg/qc-sdg-no-grid.js',       name: 'qcSdgNoGrid',      js: 'public/js/qc-sdg-no-grid.js',      css: 'public/css/qc-sdg-no-grid.css' },
-    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens', js: 'dist/qc-sdg-design-tokens.js', css: 'public/css/qc-sdg-design-tokens.css' },
+    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens', js: null, css: 'public/css/qc-sdg-design-tokens.css' },
     { entry: 'src/doc/qc-doc-sdg.js',           name: 'qcDocSdg',         js: 'public/js/qc-doc-sdg.js',          css: 'public/css/qc-doc-sdg.css', includeDoc: true },
     { entry: 'src/sdg/qc-sdg-test.js',          name: 'qcSdgTest',        js: 'public/js/qc-sdg-test.js',         css: null },
 ];
@@ -97,9 +86,13 @@ async function buildBundle(b) {
             },
         },
     });
-    const jsDest = path.join(root, b.js);
-    fs.mkdirSync(path.dirname(jsDest), { recursive: true });
-    fs.copyFileSync(path.join(tmp, 'bundle.js'), jsDest);
+    // JS copié uniquement pour les bundles qui en livrent un (design-tokens n'a
+    // que du CSS ; son stub JS reste dans le temp ignoré et est jeté avec lui).
+    if (b.js) {
+        const jsDest = path.join(root, b.js);
+        fs.mkdirSync(path.dirname(jsDest), { recursive: true });
+        fs.copyFileSync(path.join(tmp, 'bundle.js'), jsDest);
+    }
 
     const cssSrc = path.join(tmp, 'bundle.css');
     if (b.css && fs.existsSync(cssSrc)) {

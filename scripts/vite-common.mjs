@@ -2,7 +2,25 @@
 // et le serveur de dev (vite.config.js). Reprend fidèlement les options
 // svelte + scss de l'ancien rollup.config.js.
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { createLogger } from 'vite';
 import path from 'node:path';
+
+// Logger Vite qui masque l'avertissement « … didn't resolve at build time … »
+// émis pour CHAQUE url() de police. C'est le comportement VOULU : les @font-face
+// pointent vers dist/fonts (dossier FRÈRE de public/, résolu au runtime en
+// file://), donc le chemin DOIT rester inchangé — pas de resolve.alias, sinon
+// Vite bundlerait les polices et casserait la doc statique. Aucune annotation
+// par-url n'existe ; Vite déduplique via warnOnce -> on filtre warn ET warnOnce.
+// Partagé par build-dev.mjs et build-vite.mjs.
+export function createQuietLogger() {
+    const logger = createLogger('warn');
+    const drop = (msg) => typeof msg === 'string' && msg.includes("didn't resolve at build time");
+    const baseWarn = logger.warn.bind(logger);
+    const baseWarnOnce = logger.warnOnce.bind(logger);
+    logger.warn = (msg, opts) => { if (!drop(msg)) baseWarn(msg, opts); };
+    logger.warnOnce = (msg, opts) => { if (!drop(msg)) baseWarnOnce(msg, opts); };
+    return logger;
+}
 
 // Plugin svelte équivalent aux svelteOptions de rollup.config.js :
 // custom elements, hash de classe css « qc-hash-… », et on ignore le même warning.

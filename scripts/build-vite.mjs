@@ -9,10 +9,11 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
 import replace from '@rollup/plugin-replace';
-import { sveltePlugin, cssPreprocessorOptions } from './vite-common.mjs';
+import { sveltePlugin, cssPreprocessorOptions, createQuietLogger } from './vite-common.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf-8'));
+const logger = createQuietLogger();
 
 // Reprise du @rollup/plugin-replace de rollup.config.js.
 // NB : le patch customElements$1 -> customElements est VOLONTAIREMENT absent
@@ -26,8 +27,12 @@ const replacements = {
 // Chemins de sortie identiques à l'ancien build rollup.
 const bundles = [
     { entry: 'src/sdg/qc-sdg.js',               name: 'qcSdg',            js: 'dist/js/qc-sdg.min.js',        css: 'dist/css/qc-sdg.min.css' },
-    { entry: 'src/sdg/qc-sdg-no-grid.js',       name: 'qcSdgNoGrid',      js: 'dist/js/qc-sdg-no-grid.js',    css: 'dist/css/qc-sdg-no-grid.min.css' },
-    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens', js: 'dist/qc-sdg-design-tokens.js', css: 'dist/css/qc-sdg-design-tokens.min.css' },
+    // JS commun à qc-sdg.min.js (cf. README) et donc NON livré : pas de `js:`,
+    // le stub reste dans le dossier temp ignoré et est jeté avec lui. On garde
+    // ces entrées non-cssOnly pour que leur CSS soit compilé à l'identique
+    // (cssOnly déclencherait skipAdditionalData et dévierait le CSS).
+    { entry: 'src/sdg/qc-sdg-no-grid.js',       name: 'qcSdgNoGrid',                                          css: 'dist/css/qc-sdg-no-grid.min.css' },
+    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens',                                    css: 'dist/css/qc-sdg-design-tokens.min.css' },
     // Variantes « root-font-size 100 % » (issue #48) : stubs JS important un SCSS
     // qui reconfigure $percent-root-font-size:100 puis délègue à l'entrée standard.
     // Le JS est agnostique -> jeté ; seul le CSS est conservé (cssOnly).
@@ -47,6 +52,7 @@ for (const b of bundles) {
         root,
         configFile: false,
         logLevel: 'warn',
+        customLogger: logger,
         plugins: [
             replace(replacements),
             sveltePlugin({ isBuild: true }),
@@ -69,8 +75,10 @@ for (const b of bundles) {
         },
     });
 
-    // Place le JS (sauf variantes cssOnly : le stub JS est jeté).
-    if (!b.cssOnly) {
+    // Place le JS uniquement pour les bundles qui en livrent un (seul qc-sdg
+    // porte `js:`). Les autres entrées sont bâties pour leur seul CSS ; leur
+    // stub JS reste dans le dossier temp ignoré et est jeté avec lui.
+    if (b.js) {
         const jsSrc = path.join(tmp, 'bundle.js');
         const jsDest = path.join(root, b.js);
         fs.mkdirSync(path.dirname(jsDest), { recursive: true });
@@ -88,7 +96,7 @@ for (const b of bundles) {
             .replace(/^\uFEFF/, '')
             .replace(/\/\*\$vite\$:\d+\*\//g, '');
         fs.writeFileSync(cssDest, css, 'utf-8');
-        console.log(`  ✓ ${b.cssOnly ? '' : b.js + '\n  ✓ '}${b.css}`);
+        console.log(`  ✓ ${b.js ? b.js + '\n  ✓ ' : ''}${b.css}`);
     } else {
         console.log(`  ✓ ${b.js}\n  (aucun css produit)`);
     }
