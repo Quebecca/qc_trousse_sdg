@@ -228,10 +228,12 @@ $lg-tokens: (
     grid: map.get($grid-config, lg),
 ) !default;
 
-// legacy
-$xl-tokens : $lg-tokens;
+$xl-tokens: map.merge($lg-tokens, (
+    grid: map.get($grid-config, xl)
+));
 
 $breakpoints-tokens: (
+    xl : $xl-tokens,
     lg : $lg-tokens,
     md : (
         font-size: (

@@ -231,9 +231,11 @@ label.qc-choicefield-label input.qc-choicefield.qc-compact {
   --qc-grid-breakpoint-sm: 768px;
   --qc-grid-breakpoint-md: 992px;
   --qc-grid-breakpoint-lg: 1200px;
+  --qc-grid-breakpoint-xl: 1448px;
   --qc-grid-container-max-width-sm: 768px;
   --qc-grid-container-max-width-md: 992px;
   --qc-grid-container-max-width-lg: 1200px;
+  --qc-grid-container-max-width-xl: 1448px;
 }
 @media (max-width: 1199.98px) {
   :root {
@@ -1245,6 +1247,35 @@ hr {
     display: flex !important;
   }
   .qc-d-lg-inline-flex {
+    display: inline-flex !important;
+  }
+}
+@media (min-width: 1448px) {
+  .qc-d-xl-none {
+    display: none !important;
+  }
+  .qc-d-xl-inline {
+    display: inline !important;
+  }
+  .qc-d-xl-inline-block {
+    display: inline-block !important;
+  }
+  .qc-d-xl-block {
+    display: block !important;
+  }
+  .qc-d-xl-table {
+    display: table !important;
+  }
+  .qc-d-xl-table-row {
+    display: table-row !important;
+  }
+  .qc-d-xl-table-cell {
+    display: table-cell !important;
+  }
+  .qc-d-xl-flex {
+    display: flex !important;
+  }
+  .qc-d-xl-inline-flex {
     display: inline-flex !important;
   }
 }

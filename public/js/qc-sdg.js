@@ -11600,7 +11600,7 @@
 	delegate(['click', 'keydown']);
 	create_custom_element(ToTop, { text: {}, demo: {} }, [], [], true);
 
-	ToTopWC[FILENAME] = 'src/sdg/components/ToTop/toTopWC.svelte';
+	ToTopWC[FILENAME] = 'src/sdg/components/ToTop/ToTopWC.svelte';
 
 	function ToTopWC($$anchor, $$props) {
 		check_target(new.target);
@@ -17870,6 +17870,22 @@
 		true
 	));
 
+	var xl = {
+		gutter: "32px",
+		breakpoint: {
+			xs: "0",
+			sm: "768px",
+			md: "992px",
+			lg: "1200px",
+			xl: "1448px"
+		},
+		"container-max-width": {
+			sm: "768px",
+			md: "992px",
+			lg: "1200px",
+			xl: "1448px"
+		}
+	};
 	var lg = {
 		gutter: "32px",
 		breakpoint: {
@@ -17891,6 +17907,7 @@
 		gutter: "16px"
 	};
 	var gridConfig = {
+		xl: xl,
 		lg: lg,
 		md: md,
 		sm: sm

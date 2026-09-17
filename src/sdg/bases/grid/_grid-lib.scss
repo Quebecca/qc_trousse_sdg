@@ -15,9 +15,9 @@ $enable-grid-classes: base.$enable-grid-classes;
 $enable-deprecation-messages : false;
 $grid-columns: 12;
 $grid-row-columns:            6 !default;
-$grid-breakpoints: map.get(tokens.$lg-tokens, grid, breakpoint);
+$grid-breakpoints: map.get(tokens.$xl-tokens, grid, breakpoint);
 $grid-gutter-width: token-value(grid gutter);
-$container-max-widths: map.get(tokens.$lg-tokens, grid, container-max-width);
+$container-max-widths: map.get(tokens.$xl-tokens, grid, container-max-width);
 
 // équivalent à @import(src/sdg/scss/vendor/bootstrap-rewrite/mixins/_grid-framework.scss)
 // Framework grid generation
