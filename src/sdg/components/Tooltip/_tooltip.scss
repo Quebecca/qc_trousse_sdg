@@ -7,3 +7,15 @@
     margin-bottom: 0;
   }
 }
+
+h2, [role="heading"] {
+  display: block;
+  font-size: var(--qc-font-size-sm);
+  font-weight: var(--qc-font-weight-bold);
+  line-height: var(--qc-line-height-sm);
+  margin: 0;
+  font-family: var(--qc-font-family-content);
+  &::after{
+    display: none;
+  }
+}

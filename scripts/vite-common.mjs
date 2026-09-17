@@ -25,7 +25,7 @@ export function sveltePlugin({ isBuild }) {
 }
 
 // Options scss équivalentes aux scssOptions rollup (includePaths + @use qc-sdg-lib).
-// L'injection de version (pkg-version / dev-env) est faite par postcss.config.js.
+// L'injection de version (pkg-version / dev-env) est faite par postcss.config.mjs.
 // La compression est faite par sass (style: compressed), comme l'ancien build rollup
 // (outputStyle). Vite ne re-minifie PAS le CSS (build.cssMinify: false) pour éviter
 // tout lowering du CSS moderne qui dévierait le rendu du design system.

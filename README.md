@@ -208,7 +208,7 @@ Le rapport HTML est généré dans `/playwright-report` (`npx playwright show-re
 
 Chaque composant peut être rendu de deux façons dans la trousse : via son **composant web** (fixture `*Baseline.test.html`) et via son **composant Svelte** (fixture `*Svelte.test.html`). Les deux rendus doivent être visuellement identiques.
 
-Pour éviter de maintenir deux fichiers de test en double, **seuls les tests `*-baseline.spec.ts` sont écrits à la main**. Les tests `*-svelte.spec.ts` sont **générés automatiquement** à partir des baselines par le plugin Rollup `plugins/buildSvelteTests.js`, exécuté à chaque compilation de développement (`yarn dev`).
+Pour éviter de maintenir deux fichiers de test en double, **seuls les tests `*-baseline.spec.ts` sont écrits à la main**. Les tests `*-svelte.spec.ts` sont **générés automatiquement** à partir des baselines par le plugin `plugins/buildSvelteTests.mjs`, exécuté à chaque compilation de développement (`yarn dev`).
 
 La génération applique deux remplacements sur le contenu du baseline :
 

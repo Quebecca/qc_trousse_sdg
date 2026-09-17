@@ -11,17 +11,17 @@
 // (sirv sur 127.0.0.1). Marc n'utilise pas le serveur : la cible principale est
 // le contenu de public/. On n'efface JAMAIS public/ en bloc (qc-doc-exemple.js,
 // images, favicon y sont suivis) — on n'écrit que les fichiers produits.
-import { build } from 'vite';
+import { build, createLogger } from 'vite';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import replace from '@rollup/plugin-replace';
 import { sveltePlugin, cssPreprocessorOptions } from './vite-common.mjs';
-import buildHtmlDoc from '../plugins/buildHtmlDoc.js';
-import buildDevDoc from '../plugins/buildDevDoc.js';
-import buildTestFixtures from '../plugins/buildTestFixtures.js';
-import buildSvelteTests from '../plugins/buildSvelteTests.js';
+import buildHtmlDoc from '../plugins/buildHtmlDoc.mjs';
+import buildDevDoc from '../plugins/buildDevDoc.mjs';
+import buildTestFixtures from '../plugins/buildTestFixtures.mjs';
+import buildSvelteTests from '../plugins/buildSvelteTests.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -37,6 +37,21 @@ const replacements = {
     delimiters: ['', ''],
     preventAssignment: false,
 };
+
+// Vite avertit pour chaque url() de police non résolue au build
+// (« … didn't resolve at build time, it will remain unchanged … »). C'est le
+// comportement VOULU ici : $google-font-path pointe vers ../../dist/fonts
+// (dist/ est un dossier FRÈRE de public/, résolu au runtime en file://), donc
+// le chemin DOIT rester inchangé — pas de resolve.alias, sinon Vite bundlerait
+// les polices et casserait la doc statique. Aucune annotation par-url n'existe :
+// on filtre ce message précis via un logger custom (le reste passe normalement).
+const logger = createLogger('warn');
+const drop = (msg) => typeof msg === 'string' && msg.includes("didn't resolve at build time");
+const baseWarn = logger.warn.bind(logger);
+const baseWarnOnce = logger.warnOnce.bind(logger);
+logger.warn = (msg, options) => { if (!drop(msg)) baseWarn(msg, options); };
+// Vite déduplique les avertissements d'url() CSS via warnOnce (canal distinct de warn).
+logger.warnOnce = (msg, options) => { if (!drop(msg)) baseWarnOnce(msg, options); };
 
 // Sorties dev identiques à l'ancien build rollup (public/, non-min, expanded).
 const bundles = [
@@ -57,6 +72,7 @@ async function buildBundle(b) {
         configFile: false,
         mode: 'development',
         logLevel: 'warn',
+        customLogger: logger,
         // svelte dev:false : `vite build` le force de toute façon (le plugin
         // décide sur la commande, pas le mode) -> on l'aligne pour éviter
         // l'avertissement. Bundles non-minifiés (minify:false) + CSS expanded.
