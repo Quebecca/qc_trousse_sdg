@@ -8,7 +8,8 @@
   }
 }
 
-h2, [role="heading"] {
+.qc-tooltip-content h2,
+qc-tooltip [role="heading"] {
   display: block;
   font-size: var(--qc-font-size-sm);
   font-weight: var(--qc-font-weight-bold);
