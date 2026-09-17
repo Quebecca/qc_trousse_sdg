@@ -1487,7 +1487,6 @@
   <p>Lorem ipsum <qc-tooltip>
       <span slot="text">dolor</span>
       <span slot="description">
-        <span role="heading" aria-level="3">Titre 3</span>
         Suspendisse at dui ac risus egestas rhoncus nec eu sapien. Morbi in metus a dui commodo convallis quis eget tortor. Morbi non elementum enim, a interdum turpis. Nulla tortor quam, porta non volutpat in, cursus et magna. Cras sit amet turpis quis est cursus dapibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent laoreet nec elit quis pharetra. Maecenas at leo pellentesque sapien tincidunt feugiat et non turpis. Morbi porttitor nibh id laoreet laoreet. Nam eleifend nunc at consectetur semper. Sed pellentesque mauris sapien, et finibus dui sollicitudin eu. Integer id viverra dui. Sed lectus eros, pulvinar id elit id, accumsan laoreet enim.
       </span>
   </qc-tooltip> sit amet, consectetur adipiscing elit. Duis vel tincidunt nunc, vel condimentum odio. Proin pharetra sed metus quis maximus.</p>
@@ -1514,13 +1513,23 @@
 </qc-doc-exemple>
 
 <h4>Ajout d’un titre</h4>
-<qc-doc-exemple caption="Exemple d'infobulle avec titre">
+<qc-doc-exemple caption="Exemple d'infobulle avec titre<br/>NB: pour personnaliser le niveau de titre dans un slot, utilisez les attributs <code>role</code> et <code>aria-level</code> avec une balise <code>span</code>">
 
     <p><qc-tooltip text="Lorem"
                    display-mode="popover"
                    title="Lorem ipsum dolor"
                    description-id="tooltip-1"
                    icon="information">ipsum dolor</qc-tooltip></p>
+  <p><qc-tooltip text="Lorem"
+                 display-mode="popover"
+                 icon="information">
+    <span slot="description">
+        <span role="heading" aria-level="3">Titre slotté</span>
+        <span> Pour personnaliser le niveau de titre dans un slot, utilisez les attributs <code>role</code> et <code>aria-level</code> avec un <code>&lt;span&gt;</code></span>
+    </span>
+  </qc-tooltip> ipsum dolor
+
+  </p>
 
 </qc-doc-exemple>
 
