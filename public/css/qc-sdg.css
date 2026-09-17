@@ -2953,6 +2953,18 @@ a.qc-button {
   margin-bottom: 0;
 }
 
+h2, [role=heading] {
+  display: block;
+  font-size: var(--qc-font-size-sm);
+  font-weight: var(--qc-font-weight-bold);
+  line-height: var(--qc-line-height-sm);
+  margin: 0;
+  font-family: var(--qc-font-family-content);
+}
+h2::after, [role=heading]::after {
+  display: none;
+}
+
 .qc-scrollbar::-webkit-scrollbar,
 .qc-scrollbar ::-webkit-scrollbar {
   width: var(--qc-spacer-xs);

@@ -62283,10 +62283,10 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" });
 	//#endregion
 	//#region src/doc/components/TopNav.svelte
-	var root$17 = /* @__PURE__ */ from_html(`<div role="complementary" class="qc-hash-ogsj9p"><div class="qc-container top-nav qc-hash-ogsj9p"><div class="switch-control qc-hash-ogsj9p"><!></div></div></div>`);
+	var root$17 = /* @__PURE__ */ from_html(`<div role="complementary" class="qc-hash-1njsrlu"><div class="qc-container top-nav qc-hash-1njsrlu"><div class="switch-control qc-hash-1njsrlu"><!></div></div></div>`);
 	var $$css$2 = {
-		hash: "qc-hash-ogsj9p",
-		code: "[role=complementary].qc-hash-ogsj9p {position:sticky;z-index:100;top:0;background-color:var(--qc-color-background);min-height:7.2rem;height:7.2rem;border-bottom:solid 0.1rem var(--qc-color-grey-light);}.top-nav.qc-hash-ogsj9p {position:absolute;inset:0;display:flex;align-items:end;padding-bottom:var(--qc-spacer-sm);}.top-nav.qc-hash-ogsj9p .switch-control:where(.qc-hash-ogsj9p) {margin-left:auto;margin-right:0;display:flex;align-items:center;}"
+		hash: "qc-hash-1njsrlu",
+		code: "[role=complementary].qc-hash-1njsrlu {position:sticky;z-index:100;top:0;background-color:var(--qc-color-background);min-height:7.2rem;height:7.2rem;border-bottom:solid 0.1rem var(--qc-color-grey-light);}.top-nav.qc-hash-1njsrlu {position:absolute;inset:0;display:flex;align-items:end;padding-bottom:var(--qc-spacer-sm);}.top-nav.qc-hash-1njsrlu .switch-control:where(.qc-hash-1njsrlu) {margin-left:auto;margin-right:0;display:flex;align-items:center;}"
 	};
 	function TopNav($$anchor, $$props) {
 		push($$props, true);

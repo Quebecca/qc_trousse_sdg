@@ -12546,19 +12546,19 @@ createHTML: (html) => {
 		append($$anchor, svg);
 	};
 	var root$1 = /* @__PURE__ */ from_html(`<!> <!>`, 1);
-	var root_1 = /* @__PURE__ */ from_html(`<header class="qc-hash-s23dzl"><h2 class="qc-tooltip-title qc-hash-s23dzl"> </h2></header> <main class="qc-hash-s23dzl"><!></main>`, 1);
-	var root_2 = /* @__PURE__ */ from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-s23dzl"><section class="qc-tooltip-content-text qc-hash-s23dzl"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-s23dzl" href="#top"><!></a></div>`);
-	var root_3 = /* @__PURE__ */ from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-s23dzl"><style class="qc-hash-s23dzl">.triangle { fill: var(--qc-color-background); }
-            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-s23dzl"></path><path class="stroke qc-hash-s23dzl"></path></svg>`);
-	var root_4 = /* @__PURE__ */ from_html(`<span class="qc-tooltip-text qc-hash-s23dzl" tabindex="-1"><!><!></span>`);
-	var root_5 = /* @__PURE__ */ from_html(`<span class="qc-hash-s23dzl">&zwj;</span>`);
+	var root_1 = /* @__PURE__ */ from_html(`<header class="qc-hash-1qkpz29"><h2 class="qc-tooltip-title qc-hash-1qkpz29"> </h2></header> <main class="qc-hash-1qkpz29"><!></main>`, 1);
+	var root_2 = /* @__PURE__ */ from_html(`<div role="tooltip"><div class="qc-tooltip-content qc-hash-1qkpz29"><section class="qc-tooltip-content-text qc-hash-1qkpz29"><!></section></div> <a role="button" class="qc-tooltip-xclose qc-hash-1qkpz29" href="#top"><!></a></div>`);
+	var root_3 = /* @__PURE__ */ from_svg(`<svg fill="none" xmlns="http://www.w3.org/2000/svg" class="qc-hash-1qkpz29"><style class="qc-hash-1qkpz29">.triangle { fill: var(--qc-color-background); }
+            .stroke { fill: var(--qc-color-grey-light); }</style><path class="triangle qc-hash-1qkpz29"></path><path class="stroke qc-hash-1qkpz29"></path></svg>`);
+	var root_4 = /* @__PURE__ */ from_html(`<span class="qc-tooltip-text qc-hash-1qkpz29" tabindex="-1"><!><!></span>`);
+	var root_5 = /* @__PURE__ */ from_html(`<span class="qc-hash-1qkpz29">&zwj;</span>`);
 	var root_6 = /* @__PURE__ */ from_html(`<div aria-hidden="true"><!></div> <!>`, 1);
-	var root_7 = /* @__PURE__ */ from_html(`<dialog><div class="qc-container qc-hash-s23dzl"><!></div></dialog>`);
-	var root_8 = /* @__PURE__ */ from_html(`<div><div class="clickable-gutter qc-hash-s23dzl"></div> <a role="button" class="qc-tooltip-button qc-hash-s23dzl" href="#top"><!></a> <!> <!></div>`);
-	var root_9 = /* @__PURE__ */ from_html(`<div class="qc-tooltip qc-hash-s23dzl"><!> <!></div>`);
+	var root_7 = /* @__PURE__ */ from_html(`<dialog><div class="qc-container qc-hash-1qkpz29"><!></div></dialog>`);
+	var root_8 = /* @__PURE__ */ from_html(`<div><div class="clickable-gutter qc-hash-1qkpz29"></div> <a role="button" class="qc-tooltip-button qc-hash-1qkpz29" href="#top"><!></a> <!> <!></div>`);
+	var root_9 = /* @__PURE__ */ from_html(`<div class="qc-tooltip qc-hash-1qkpz29"><!> <!></div>`);
 	var $$css = {
-		hash: "qc-hash-s23dzl",
-		code: ".qc-tooltip.qc-hash-s23dzl {display:inline-flex;align-items:center;font-size:var(--qc-font-size-md);font-family:var(--qc-font-family-content);font-weight:var(--qc-font-weight-regular);--pin-gap: 4px;--pin-height: 9px;--pin-base: 15px;}.clickable-gutter.qc-hash-s23dzl {position:absolute;height:24px;width:24px;left:-4px;top:-4px;cursor:pointer;}.qc-tooltip-text.qc-hash-s23dzl {border-bottom:1px dashed var(--qc-color-blue-piv);cursor:pointer;white-space:nowrap;margin-right:calc( .5 * var(--qc-spacer-xs) );}.qc-tooltip-button.qc-hash-s23dzl {align-self:center;height:24px;width:24px;line-height:24px;display:block;position:relative;font-weight:600;&:focus,\n        &:focus-visible {outline-offset:0;}}.qc-tooltip-container.qc-hash-s23dzl {position:relative;}.qc-tooltip-pin.qc-hash-s23dzl {position:absolute;top:calc(var(--pin-height) / 2);left:calc(100% + var(--pin-gap) + 2px);z-index:200;width:var(--pin-height);height:var(--pin-base);}svg.qc-hash-s23dzl {display:block;}.qc-tooltip-content.qc-hash-s23dzl {overflow-y:auto;max-height:calc(var(--max-height) - 48px);scrollbar-gutter:stable;padding-right:16px;padding-top:3px;padding-left:3px;}.qc-tooltip-content-text.qc-hash-s23dzl {max-inline-size:var(--qc-max-content-width);}h2.qc-hash-s23dzl {font-size:var(--qc-font-size-sm);font-weight:var(--qc-font-weight-bold);line-height:var(--qc-line-height-sm);margin:0;font-family:var(--qc-font-family-content);&::after{display:none;}}.qc-tooltip-content.qc-hash-s23dzl:focus-visible {outline:none;}.qc-tooltip-xclose.qc-hash-s23dzl {position:absolute;right:8px;top:8px;line-height:24px;height:24px;}dialog.qc-hash-s23dzl {top:auto;bottom:0;left:0;right:0;max-width:100%;width:100%;height:auto;margin:0;padding:0;border:1px solid var(--qc-color-grey-light);background:var(--qc-color-background);&.qc-desktop {padding-top:8px;}.qc-tooltip-panel:where(.qc-hash-s23dzl) {visibility:visible!important;}&::backdrop {background-color:rgba(var(--qc-color-blue-dark-rgb), .25)}.qc-tooltip-xclose:where(.qc-hash-s23dzl) {right:0;}}.qc-tooltip-panel.qc-hash-s23dzl {font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);position:relative;min-height:68px;max-height:var(--max-height);background:var(--qc-color-background);color:var(--qc-color-text-primary);width:100%;padding-top:21px;padding-left:13px;padding-bottom:24px;}.qc-tooltip-popover.qc-hash-s23dzl {.qc-tooltip-panel:where(.qc-hash-s23dzl) {visibility:hidden;position:absolute;min-width:216px;max-width:320px;padding-right:8px;width:max-content;border:1px solid var(--qc-color-grey-light);transform:translateY(var(--translateY));top:0;left:calc(100% + var(--pin-gap) + var(--pin-height));z-index:199;}&.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-s23dzl) {top:calc(100% + var(--pin-height) + var(--pin-gap));left:auto;transform:translateX(var(--translateX));}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/left:calc(50% - var(--pin-base) / 2);}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-s23dzl) {top:calc(0px - var(--pin-height) - var(--pin-gap) - 2px);}&.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-s23dzl) {top:calc(100% + var(--pin-gap) + 2px);}&.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-s23dzl) {\n            /*display: none;*/top:0;transform:translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );left:auto;}.qc-tooltip-visible:where(.qc-hash-s23dzl) {visibility:visible;}.qc-tooltip-content:where(.qc-hash-s23dzl):focus-visible {outline:2px solid var(--qc-color-blue-regular);outline-offset:1px;}}.qc-hash-s23dzl::-webkit-scrollbar,\n    .qc-hash-s23dzl::-webkit-scrollbar-track,\n    .qc-hash-s23dzl::-webkit-scrollbar-thumb\n    {height:50%;margin-top:10px;margin-right:-8px;}.qc-hash-s23dzl::-webkit-scrollbar-thumb {background:var(--qc-color-blue-piv);}"
+		hash: "qc-hash-1qkpz29",
+		code: ".qc-tooltip.qc-hash-1qkpz29 {display:inline-flex;align-items:center;font-size:var(--qc-font-size-md);font-family:var(--qc-font-family-content);font-weight:var(--qc-font-weight-regular);--pin-gap: 4px;--pin-height: 9px;--pin-base: 15px;}.clickable-gutter.qc-hash-1qkpz29 {position:absolute;height:24px;width:24px;left:-4px;top:-4px;cursor:pointer;}.qc-tooltip-text.qc-hash-1qkpz29 {border-bottom:1px dashed var(--qc-color-blue-piv);cursor:pointer;white-space:nowrap;margin-right:calc( .5 * var(--qc-spacer-xs) );}.qc-tooltip-button.qc-hash-1qkpz29 {align-self:center;height:24px;width:24px;line-height:24px;display:block;position:relative;font-weight:600;&:focus,\n        &:focus-visible {outline-offset:0;}}.qc-tooltip-container.qc-hash-1qkpz29 {position:relative;}.qc-tooltip-pin.qc-hash-1qkpz29 {position:absolute;top:calc(var(--pin-height) / 2);left:calc(100% + var(--pin-gap) + 2px);z-index:200;width:var(--pin-height);height:var(--pin-base);}svg.qc-hash-1qkpz29 {display:block;}.qc-tooltip-content.qc-hash-1qkpz29 {overflow-y:auto;max-height:calc(var(--max-height) - 48px);scrollbar-gutter:stable;padding-right:16px;padding-top:3px;padding-left:3px;}.qc-tooltip-content-text.qc-hash-1qkpz29 {max-inline-size:var(--qc-max-content-width);}.qc-tooltip-content.qc-hash-1qkpz29:focus-visible {outline:none;}.qc-tooltip-xclose.qc-hash-1qkpz29 {position:absolute;right:8px;top:8px;line-height:24px;height:24px;}dialog.qc-hash-1qkpz29 {top:auto;bottom:0;left:0;right:0;max-width:100%;width:100%;height:auto;margin:0;padding:0;border:1px solid var(--qc-color-grey-light);background:var(--qc-color-background);&.qc-desktop {padding-top:8px;}.qc-tooltip-panel:where(.qc-hash-1qkpz29) {visibility:visible!important;}&::backdrop {background-color:rgba(var(--qc-color-blue-dark-rgb), .25)}.qc-tooltip-xclose:where(.qc-hash-1qkpz29) {right:0;}}.qc-tooltip-panel.qc-hash-1qkpz29 {font-size:var(--qc-font-size-sm);line-height:var(--qc-line-height-sm);position:relative;min-height:68px;max-height:var(--max-height);background:var(--qc-color-background);color:var(--qc-color-text-primary);width:100%;padding-top:21px;padding-left:13px;padding-bottom:24px;}.qc-tooltip-popover.qc-hash-1qkpz29 {.qc-tooltip-panel:where(.qc-hash-1qkpz29) {visibility:hidden;position:absolute;min-width:216px;max-width:320px;padding-right:8px;width:max-content;border:1px solid var(--qc-color-grey-light);transform:translateY(var(--translateY));top:0;left:calc(100% + var(--pin-gap) + var(--pin-height));z-index:199;}&.qc-tooltip-bottom .qc-tooltip-panel:where(.qc-hash-1qkpz29) {top:calc(100% + var(--pin-height) + var(--pin-gap));left:auto;transform:translateX(var(--translateX));}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1qkpz29),\n        &.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1qkpz29)\n        {\n            /*left: 50%;*/\n            /*transform: translateX(-50%);*/left:calc(50% - var(--pin-base) / 2);}&.qc-tooltip-top .qc-tooltip-pin:where(.qc-hash-1qkpz29) {top:calc(0px - var(--pin-height) - var(--pin-gap) - 2px);}&.qc-tooltip-bottom .qc-tooltip-pin:where(.qc-hash-1qkpz29) {top:calc(100% + var(--pin-gap) + 2px);}&.qc-tooltip-top .qc-tooltip-panel:where(.qc-hash-1qkpz29) {\n            /*display: none;*/top:0;transform:translate(\n                    var(--translateX),\n                    calc(-100% - var(--pin-gap) - var(--pin-height))\n            );left:auto;}.qc-tooltip-visible:where(.qc-hash-1qkpz29) {visibility:visible;}.qc-tooltip-content:where(.qc-hash-1qkpz29):focus-visible {outline:2px solid var(--qc-color-blue-regular);outline-offset:1px;}}.qc-hash-1qkpz29::-webkit-scrollbar,\n    .qc-hash-1qkpz29::-webkit-scrollbar-track,\n    .qc-hash-1qkpz29::-webkit-scrollbar-thumb\n    {height:50%;margin-top:10px;margin-right:-8px;}.qc-hash-1qkpz29::-webkit-scrollbar-thumb {background:var(--qc-color-blue-piv);}"
 	};
 	function Tooltip($$anchor, $$props) {
 		push($$props, true);
@@ -12615,7 +12615,7 @@ createHTML: (html) => {
 			reset(div);
 			bind_this(div, ($$value) => set(tooltipPanel, $$value), () => get(tooltipPanel));
 			template_effect(() => {
-				classes = set_class(div, 1, "qc-tooltip-panel qc-hash-s23dzl", null, classes, {
+				classes = set_class(div, 1, "qc-tooltip-panel qc-hash-1qkpz29", null, classes, {
 					"qc-tooltip-visible": get(visiblePopover),
 					"qc-shading-2": displayMode() === "popover"
 				});
@@ -12991,7 +12991,7 @@ createHTML: (html) => {
 				reset(div_5);
 				var node_12 = sibling(div_5, 2);
 				tooltipPanelSnippet(node_12, () => "popover");
-				template_effect(() => classes_2 = set_class(div_5, 1, "qc-tooltip-pin qc-hash-s23dzl", null, classes_2, { "qc-tooltip-visible": get(visiblePopover) }));
+				template_effect(() => classes_2 = set_class(div_5, 1, "qc-tooltip-pin qc-hash-1qkpz29", null, classes_2, { "qc-tooltip-visible": get(visiblePopover) }));
 				append($$anchor, fragment_3);
 			};
 			if_block(node_10, ($$render) => {
@@ -13007,7 +13007,7 @@ createHTML: (html) => {
 				reset(div_6);
 				reset(dialog);
 				bind_this(dialog, ($$value) => set(modale, $$value), () => get(modale));
-				template_effect(() => classes_3 = set_class(dialog, 1, "qc-hash-s23dzl", null, classes_3, { "qc-desktop": !get(mobileFlag) }));
+				template_effect(() => classes_3 = set_class(dialog, 1, "qc-hash-1qkpz29", null, classes_3, { "qc-desktop": !get(mobileFlag) }));
 				event("toggle", dialog, toggleModal);
 				delegated("click", dialog, (e) => {
 					if (e.clickIntoPanel) return;
@@ -13020,7 +13020,7 @@ createHTML: (html) => {
 			});
 			reset(div_3);
 			template_effect(() => {
-				classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ""} qc-scrollbar`, "qc-hash-s23dzl", classes_1, {
+				classes_1 = set_class(div_3, 1, `qc-tooltip-container qc-tooltip-${get(position) ?? ""} qc-scrollbar`, "qc-hash-1qkpz29", classes_1, {
 					"qc-tooltip-popover": !get(modalFlag),
 					"qc-tooltip-modal": get(modalFlag)
 				});
