@@ -41,10 +41,42 @@
     color: token-value(color, grey, dark);
   }
 
+  // Icône canonique par type, injectée en pseudo-élément (modificateur
+  // qc-lozenge-icon). Pur CSS => aucun CLS (contrairement à <qc-icon> qui
+  // s'upgrade après le paint). Désactivée si l'édimestre place son propre
+  // <qc-icon> dans la pastille (:not(:has(.qc-icon))) : sa règle l'emporte.
+  // La couleur du glyphe hérite de la couleur du texte, déjà propre au type.
+  &-icon:not(:has(.qc-icon)) {
+    &::before {
+      @include icon-font-base();
+      font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0;
+      font-size: rem(20);
+      vertical-align: middle;
+      margin-inline-end: rem(4);
+      content: '\e88e'; // info (défaut = général)
+    }
+
+    &.qc-success::before { content: '\e86c'; }        // check_circle
+    &.qc-error::before { content: '\e5c9'; }          // cancel
+    &.qc-warning::before { content: '\e002'; }        // warning
+    &.qc-complementary::before { content: '\ea24'; }  // emoji_objects
+  }
+
   .qc-lozenge-label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  // Pastille texte seul (sans icône ni exposant) : l'ellipse s'applique
+  // directement sur la pastille, sans wrapper. On passe en inline-block car
+  // text-overflow ne s'applique pas à un conteneur flex (le run de texte y est
+  // un flex item anonyme non stylable). Le wrapper .qc-lozenge-label ne reste
+  // requis que lorsqu'une icône est présente.
+  &:not(:has(.qc-icon, sup, sub)) {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   // Quand la pastille contient un exposant sans icône, on passe en inline
