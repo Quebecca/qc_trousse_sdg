@@ -3033,10 +3033,40 @@ qc-tooltip [role=heading]::after {
   background-color: var(--qc-color-grey-pale);
   color: var(--qc-color-grey-dark);
 }
+.qc-lozenge-icon:not(:has(.qc-icon))::before {
+  font-family: "Material Symbols Rounded";
+  font-style: normal;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1;
+  font-variation-settings: "opsz" 40, "FILL" 0, "GRAD" 0;
+  font-size: 2rem;
+  vertical-align: middle;
+  margin-inline-end: 0.4rem;
+  content: "\e88e";
+}
+.qc-lozenge-icon:not(:has(.qc-icon)).qc-success::before {
+  content: "\e86c";
+}
+.qc-lozenge-icon:not(:has(.qc-icon)).qc-error::before {
+  content: "\e5c9";
+}
+.qc-lozenge-icon:not(:has(.qc-icon)).qc-warning::before {
+  content: "\e002";
+}
+.qc-lozenge-icon:not(:has(.qc-icon)).qc-complementary::before {
+  content: "\ea24";
+}
 .qc-lozenge .qc-lozenge-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.qc-lozenge:not(:has(.qc-icon, sup, sub)) {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .qc-lozenge:has(sup, sub):not(:has(.qc-icon)) {
   display: inline-block;
