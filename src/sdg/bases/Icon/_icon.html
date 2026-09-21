@@ -3,6 +3,8 @@
 
 <p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
+<p>Les icônes reposant sur une police de caractères, elles héritent des propriétés typographiques de leur conteneur : la taille (<code>font-size</code>), la couleur (<code>color</code>), la graisse (<code>font-weight</code>), etc.</p>
+
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
@@ -89,6 +91,46 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
     <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+</qc-doc-exemple>
+
+<h3>Utilisation en CSS pur (<code>::before</code>)</h3>
+
+<p>Il est aussi possible d'afficher l'icône en CSS pur, via un pseudo-élément <code>::before</code>, lorsque le composant web ne peut pas être utilisé.</p>
+
+<qc-doc-exemple caption="Icône affichée via un pseudo-élément ::before sur un span portant qc-icon qc-icon-font (patron CSS pur, sans composant web)."
+                id="icons-before">
+    <style>
+        #css-icons {
+            display: flex;
+            gap:var(--qc-spacer-1);
+            font-size:3.2rem;
+            color: var(--qc-color-success);
+            font-weight: var(--qc-font-weight-semi-bold);
+            /* Le codepoint de check_circle est E86C (voir la colonne Codepoint dans le tableau de la documentation technique plus bas) */
+            .mon-icone-sr-only::before {
+                content: "\e86c";
+            }
+            .mon-icone-accessible {
+                &::before {
+                    content: "\e86c" / "Libellé";
+                }
+                &:lang(en)::before {
+                    content: "\e86c" / "Label";
+                }
+            }
+        }
+    </style>
+    <div id="css-icons">
+        <span class="qc-icon qc-icon-font mon-icone-sr-only"
+          aria-hidden="true"></span>
+        <span class="qc-icon qc-icon-font mon-icone-accessible"
+        ></span>
+        <div lang="en">
+            <span class="qc-icon qc-icon-font mon-icone-accessible"
+            ></span>
+        </div>
+    </div>
+
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -188,6 +230,7 @@
         <thead>
         <tr>
             <th>Nom</th>
+            <th>Codepoint</th>
             <th>Outlined</th>
             <th>Filled</th>
             <th>Ancien(s) nom(s)</th>
@@ -197,6 +240,7 @@
         
             <tr>
                 <td><code>place</code></td>
+                <td><code>E55F</code></td>
                 <td><qc-icon icon="place" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="place" variant="filled" size="lg" use-material /></td>
                 <td><code>adresse</code></td>
@@ -204,6 +248,7 @@
         
             <tr>
                 <td><code>arrow_upward</code></td>
+                <td><code>E5D8</code></td>
                 <td><qc-icon icon="arrow_upward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_upward" variant="filled" size="lg" use-material /></td>
                 <td><code>arrow-up</code></td>
@@ -211,6 +256,7 @@
         
             <tr>
                 <td><code>arrow_downward</code></td>
+                <td><code>E5DB</code></td>
                 <td><qc-icon icon="arrow_downward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_downward" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -218,6 +264,7 @@
         
             <tr>
                 <td><code>arrow_back</code></td>
+                <td><code>E5C4</code></td>
                 <td><qc-icon icon="arrow_back" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_back" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -225,6 +272,7 @@
         
             <tr>
                 <td><code>arrow_forward</code></td>
+                <td><code>E5C8</code></td>
                 <td><qc-icon icon="arrow_forward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_forward" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -232,6 +280,7 @@
         
             <tr>
                 <td><code>arrow_left_alt</code></td>
+                <td><code>EF7D</code></td>
                 <td><qc-icon icon="arrow_left_alt" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_left_alt" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -239,6 +288,7 @@
         
             <tr>
                 <td><code>arrow_right_alt</code></td>
+                <td><code>E941</code></td>
                 <td><qc-icon icon="arrow_right_alt" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_right_alt" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -246,6 +296,7 @@
         
             <tr>
                 <td><code>north</code></td>
+                <td><code>F1E0</code></td>
                 <td><qc-icon icon="north" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="north" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -253,6 +304,7 @@
         
             <tr>
                 <td><code>calendar_today</code></td>
+                <td><code>E935</code></td>
                 <td><qc-icon icon="calendar_today" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="calendar_today" variant="filled" size="lg" use-material /></td>
                 <td><code>calendar</code></td>
@@ -260,6 +312,7 @@
         
             <tr>
                 <td><code>check</code></td>
+                <td><code>E5CA</code></td>
                 <td><qc-icon icon="check" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="check" variant="filled" size="lg" use-material /></td>
                 <td><code>checkmark</code></td>
@@ -267,6 +320,7 @@
         
             <tr>
                 <td><code>expand_less</code></td>
+                <td><code>E5CE</code></td>
                 <td><qc-icon icon="expand_less" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="expand_less" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-up-thin</code>, <code>chevron-up</code></td>
@@ -274,6 +328,7 @@
         
             <tr>
                 <td><code>expand_more</code></td>
+                <td><code>E5CF</code></td>
                 <td><qc-icon icon="expand_more" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="expand_more" variant="filled" size="lg" use-material /></td>
                 <td><code>crochet-bas</code></td>
@@ -281,6 +336,7 @@
         
             <tr>
                 <td><code>chevron_right</code></td>
+                <td><code>E5CC</code></td>
                 <td><qc-icon icon="chevron_right" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="chevron_right" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-droite</code></td>
@@ -288,6 +344,7 @@
         
             <tr>
                 <td><code>chevron_left</code></td>
+                <td><code>E5CB</code></td>
                 <td><qc-icon icon="chevron_left" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="chevron_left" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-gauche</code></td>
@@ -295,6 +352,7 @@
         
             <tr>
                 <td><code>content_paste</code></td>
+                <td><code>E14F</code></td>
                 <td><qc-icon icon="content_paste" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="content_paste" variant="filled" size="lg" use-material /></td>
                 <td><code>clipboard</code></td>
@@ -302,6 +360,7 @@
         
             <tr>
                 <td><code>emoji_objects</code></td>
+                <td><code>EA24</code></td>
                 <td><qc-icon icon="emoji_objects" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="emoji_objects" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -309,6 +368,7 @@
         
             <tr>
                 <td><code>schedule</code></td>
+                <td><code>E8B5</code></td>
                 <td><qc-icon icon="schedule" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="schedule" variant="filled" size="lg" use-material /></td>
                 <td><code>clock</code></td>
@@ -316,6 +376,7 @@
         
             <tr>
                 <td><code>mail</code></td>
+                <td><code>E158</code></td>
                 <td><qc-icon icon="mail" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="mail" variant="filled" size="lg" use-material /></td>
                 <td><code>email</code></td>
@@ -323,6 +384,7 @@
         
             <tr>
                 <td><code>cancel</code></td>
+                <td><code>E5C9</code></td>
                 <td><qc-icon icon="cancel" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="cancel" variant="filled" size="lg" use-material /></td>
                 <td><code>error</code></td>
@@ -330,6 +392,7 @@
         
             <tr>
                 <td><code>warning</code></td>
+                <td><code>E002</code></td>
                 <td><qc-icon icon="warning" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="warning" variant="filled" size="lg" use-material /></td>
                 <td><code>exclamation</code>, <code>warning</code></td>
@@ -337,6 +400,7 @@
         
             <tr>
                 <td><code>open_in_new</code></td>
+                <td><code>E89E</code></td>
                 <td><qc-icon icon="open_in_new" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="open_in_new" variant="filled" size="lg" use-material /></td>
                 <td><code>external-link</code></td>
@@ -344,6 +408,7 @@
         
             <tr>
                 <td><code>info</code></td>
+                <td><code>E88E</code></td>
                 <td><qc-icon icon="info" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="info" variant="filled" size="lg" use-material /></td>
                 <td><code>information</code></td>
@@ -351,6 +416,7 @@
         
             <tr>
                 <td><code>lightbulb</code></td>
+                <td><code>E0F0</code></td>
                 <td><qc-icon icon="lightbulb" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="lightbulb" variant="filled" size="lg" use-material /></td>
                 <td><code>ligth-bulb</code></td>
@@ -358,6 +424,7 @@
         
             <tr>
                 <td><code>remove</code></td>
+                <td><code>E15B</code></td>
                 <td><qc-icon icon="remove" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="remove" variant="filled" size="lg" use-material /></td>
                 <td><code>minus</code></td>
@@ -365,6 +432,7 @@
         
             <tr>
                 <td><code>edit_note</code></td>
+                <td><code>E745</code></td>
                 <td><qc-icon icon="edit_note" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="edit_note" variant="filled" size="lg" use-material /></td>
                 <td><code>note</code></td>
@@ -372,6 +440,7 @@
         
             <tr>
                 <td><code>call</code></td>
+                <td><code>E0B0</code></td>
                 <td><qc-icon icon="call" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="call" variant="filled" size="lg" use-material /></td>
                 <td><code>phone</code></td>
@@ -379,6 +448,7 @@
         
             <tr>
                 <td><code>add</code></td>
+                <td><code>E145</code></td>
                 <td><qc-icon icon="add" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="add" variant="filled" size="lg" use-material /></td>
                 <td><code>plus</code></td>
@@ -386,6 +456,7 @@
         
             <tr>
                 <td><code>help</code></td>
+                <td><code>E887</code></td>
                 <td><qc-icon icon="help" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="help" variant="filled" size="lg" use-material /></td>
                 <td><code>question-mark</code></td>
@@ -393,6 +464,7 @@
         
             <tr>
                 <td><code>search</code></td>
+                <td><code>E8B6</code></td>
                 <td><qc-icon icon="search" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="search" variant="filled" size="lg" use-material /></td>
                 <td><code>search-thin</code>, <code>search</code></td>
@@ -400,6 +472,7 @@
         
             <tr>
                 <td><code>check_circle</code></td>
+                <td><code>E86C</code></td>
                 <td><qc-icon icon="check_circle" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="check_circle" variant="filled" size="lg" use-material /></td>
                 <td><code>success</code></td>
@@ -407,6 +480,7 @@
         
             <tr>
                 <td><code>person</code></td>
+                <td><code>E7FD</code></td>
                 <td><qc-icon icon="person" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="person" variant="filled" size="lg" use-material /></td>
                 <td><code>user</code></td>
@@ -414,6 +488,7 @@
         
             <tr>
                 <td><code>laptop_chromebook</code></td>
+                <td><code>E31F</code></td>
                 <td><qc-icon icon="laptop_chromebook" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="laptop_chromebook" variant="filled" size="lg" use-material /></td>
                 <td><code>website</code></td>
@@ -421,6 +496,7 @@
         
             <tr>
                 <td><code>close</code></td>
+                <td><code>E5CD</code></td>
                 <td><qc-icon icon="close" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="close" variant="filled" size="lg" use-material /></td>
                 <td><code>xclose</code></td>
@@ -428,6 +504,7 @@
         
             <tr>
                 <td><code>description</code></td>
+                <td><code>E873</code></td>
                 <td><qc-icon icon="description" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="description" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -435,6 +512,7 @@
         
             <tr>
                 <td><code>more_horiz</code></td>
+                <td><code>E5D3</code></td>
                 <td><qc-icon icon="more_horiz" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="more_horiz" variant="filled" size="lg" use-material /></td>
                 <td><code>dots</code></td>
@@ -442,6 +520,7 @@
         
             <tr>
                 <td><code>note</code></td>
+                <td><code>E66D</code></td>
                 <td><qc-icon icon="note" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="note" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -449,6 +528,7 @@
         
             <tr>
                 <td><code>print</code></td>
+                <td><code>E8AD</code></td>
                 <td><qc-icon icon="print" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="print" variant="filled" size="lg" use-material /></td>
                 <td><code>printer</code></td>
@@ -456,6 +536,7 @@
         
             <tr>
                 <td><code>toc</code></td>
+                <td><code>E8DE</code></td>
                 <td><qc-icon icon="toc" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="toc" variant="filled" size="lg" use-material /></td>
                 <td><code>tableMatiere</code></td>
@@ -463,6 +544,7 @@
         
             <tr>
                 <td><code>download</code></td>
+                <td><code>F090</code></td>
                 <td><qc-icon icon="download" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="download" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -470,6 +552,7 @@
         
             <tr>
                 <td><code>videocam</code></td>
+                <td><code>E04B</code></td>
                 <td><qc-icon icon="videocam" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="videocam" variant="filled" size="lg" use-material /></td>
                 <td><code>on-line</code></td>
@@ -477,6 +560,7 @@
         
             <tr>
                 <td><code>fax</code></td>
+                <td><code>EAD8</code></td>
                 <td><qc-icon icon="fax" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="fax" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -484,6 +568,7 @@
         
             <tr>
                 <td><code>add_circle</code></td>
+                <td><code>E147</code></td>
                 <td><qc-icon icon="add_circle" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="add_circle" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -491,6 +576,7 @@
         
             <tr>
                 <td><code>do_not_disturb_on</code></td>
+                <td><code>E644</code></td>
                 <td><qc-icon icon="do_not_disturb_on" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="do_not_disturb_on" variant="filled" size="lg" use-material /></td>
                 <td>—</td>

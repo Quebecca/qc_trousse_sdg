@@ -3,6 +3,8 @@
 
 <p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
+<p>Les icônes reposant sur une police de caractères, elles héritent des propriétés typographiques de leur conteneur : la taille (<code>font-size</code>), la couleur (<code>color</code>), la graisse (<code>font-weight</code>), etc.</p>
+
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
@@ -89,6 +91,46 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
     <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+</qc-doc-exemple>
+
+<h3>Utilisation en CSS pur (<code>::before</code>)</h3>
+
+<p>Il est aussi possible d'afficher l'icône en CSS pur, via un pseudo-élément <code>::before</code>, lorsque le composant web ne peut pas être utilisé.</p>
+
+<qc-doc-exemple caption="Icône affichée via un pseudo-élément ::before sur un span portant qc-icon qc-icon-font (patron CSS pur, sans composant web)."
+                id="icons-before">
+    <style>
+        #css-icons {
+            display: flex;
+            gap:var(--qc-spacer-1);
+            font-size:3.2rem;
+            color: var(--qc-color-success);
+            font-weight: var(--qc-font-weight-semi-bold);
+            /* Le codepoint de check_circle est E86C (voir la colonne Codepoint dans le tableau de la documentation technique plus bas) */
+            .mon-icone-sr-only::before {
+                content: "\e86c";
+            }
+            .mon-icone-accessible {
+                &::before {
+                    content: "\e86c" / "Libellé";
+                }
+                &:lang(en)::before {
+                    content: "\e86c" / "Label";
+                }
+            }
+        }
+    </style>
+    <div id="css-icons">
+        <span class="qc-icon qc-icon-font mon-icone-sr-only"
+          aria-hidden="true"></span>
+        <span class="qc-icon qc-icon-font mon-icone-accessible"
+        ></span>
+        <div lang="en">
+            <span class="qc-icon qc-icon-font mon-icone-accessible"
+            ></span>
+        </div>
+    </div>
+
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -188,6 +230,7 @@
         <thead>
         <tr>
             <th>Nom</th>
+            <th>Codepoint</th>
             <th>Outlined</th>
             <th>Filled</th>
             <th>Ancien(s) nom(s)</th>
@@ -202,6 +245,7 @@
         %>
             <tr>
                 <td><code><%= icon %></code></td>
+                <td><code><%= codepoints[icon] || '—' %></code></td>
                 <td><qc-icon icon="<%= icon %>" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="<%= icon %>" variant="filled" size="lg" use-material /></td>
                 <td><%- aliases.length ? aliases.map(function(a) { return '<code>' + a + '</code>'; }).join(', ') : '—' %></td>
