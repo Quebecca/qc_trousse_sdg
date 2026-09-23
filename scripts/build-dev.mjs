@@ -18,6 +18,7 @@ import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import replace from '@rollup/plugin-replace';
 import { sveltePlugin, cssPreprocessorOptions, createQuietLogger } from './vite-common.mjs';
+import { compileCssWithMap } from './compile-css-map.mjs';
 import buildHtmlDoc from '../plugins/buildHtmlDoc.mjs';
 import buildDevDoc from '../plugins/buildDevDoc.mjs';
 import buildTestFixtures from '../plugins/buildTestFixtures.mjs';
@@ -42,66 +43,87 @@ const replacements = {
 // ../../dist/fonts doit rester intact pour la doc file://). Filtre partagé.
 const logger = createQuietLogger();
 
-// Sorties dev identiques à l'ancien build rollup (public/, non-min, expanded).
+// build DEV : produit les MAPS (npm run build ne les produit pas).
+//  - la TROUSSE -> dist/ (minifiée, dev-env=false, MÊME forme que le livrable
+//    prod) + .map gitignorée : c'est ce que charge index.html/fixtures via
+//    ../dist, donc la map doit vivre là pour que les DevTools remontent au SCSS.
+//  - la DOC (qc-doc-sdg, qc-sdg-test) -> public/ (expansée, dev-env=true) + .map.
+// public/ ne contient donc QUE les assets de la doc.
+// `doc:true` => loadPaths avec src/doc/scss en tête (police servie en ../../dist/fonts) ;
+// `doc:false` (trousse->dist) => police en ../fonts, comme le build prod.
 const bundles = [
-    { entry: 'src/sdg/qc-sdg.js',               name: 'qcSdg',            js: 'public/js/qc-sdg.js',              css: 'public/css/qc-sdg.css' },
-    { entry: 'src/sdg/qc-sdg-no-grid.js',       name: 'qcSdgNoGrid',      js: 'public/js/qc-sdg-no-grid.js',      css: 'public/css/qc-sdg-no-grid.css' },
-    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens', js: null, css: 'public/css/qc-sdg-design-tokens.css' },
-    { entry: 'src/doc/qc-doc-sdg.js',           name: 'qcDocSdg',         js: 'public/js/qc-doc-sdg.js',          css: 'public/css/qc-doc-sdg.css', includeDoc: true },
-    { entry: 'src/sdg/qc-sdg-test.js',          name: 'qcSdgTest',        js: 'public/js/qc-sdg-test.js',         css: null },
+    { entry: 'src/sdg/qc-sdg.js',               name: 'qcSdg',            minify: true,  devEnv: false, doc: false, js: 'dist/js/qc-sdg.min.js', css: 'dist/css/qc-sdg.min.css',              scss: 'src/sdg/scss/qc-sdg.scss' },
+    { entry: 'src/sdg/qc-sdg-no-grid.js',       name: 'qcSdgNoGrid',      minify: true,  devEnv: false, doc: false, js: null, css: 'dist/css/qc-sdg-no-grid.min.css',      scss: 'src/sdg/scss/qc-sgd-no-grid.scss' },
+    { entry: 'src/sdg/qc-sdg-design-tokens.js', name: 'qcSdgDesignTokens', minify: true, devEnv: false, doc: false, js: null, css: 'dist/css/qc-sdg-design-tokens.min.css', scss: 'src/sdg/scss/qc-design-tokens.scss' },
+    { entry: 'src/doc/qc-doc-sdg.js',  name: 'qcDocSdg',  minify: false, devEnv: true, doc: true, js: 'public/js/qc-doc-sdg.js',  css: 'public/css/qc-doc-sdg.css', scss: 'src/doc/scss/qc-doc-sdg.scss' },
+    { entry: 'src/sdg/qc-sdg-test.js', name: 'qcSdgTest', minify: false, devEnv: true, doc: true, js: 'public/js/qc-sdg-test.js', css: null },
 ];
 
 const tmpRoot = path.join(root, '.vite-tmp-dev');
 
 async function buildBundle(b) {
-    const tmp = path.join(tmpRoot, b.name);
-    fs.rmSync(tmp, { recursive: true, force: true });
-    await build({
-        root,
-        configFile: false,
-        mode: 'development',
-        logLevel: 'warn',
-        customLogger: logger,
-        // svelte dev:false : `vite build` le force de toute façon (le plugin
-        // décide sur la commande, pas le mode) -> on l'aligne pour éviter
-        // l'avertissement. Bundles non-minifiés (minify:false) + CSS expanded.
-        plugins: [replace(replacements), sveltePlugin({ isBuild: true })],
-        resolve: { dedupe: ['svelte'] },
-        publicDir: false,
-        // En dev, src/doc/scss est en tête des loadPaths pour TOUS les bundles
-        // (comme l'includePaths rollup) -> settings/_base override
-        // $google-font-path vers ../../dist/fonts (polices servies depuis dist/).
-        css: { preprocessorOptions: cssPreprocessorOptions({ root, isBuild: false, includeDoc: true }) },
-        build: {
-            outDir: tmp,
-            emptyOutDir: true,
-            minify: false,
-            cssMinify: false,
-            lib: {
-                entry: path.join(root, b.entry),
-                formats: ['iife'],
-                name: b.name,
-                fileName: () => 'bundle.js',
-                cssFileName: 'bundle',
-            },
-        },
-    });
-    // JS copié uniquement pour les bundles qui en livrent un (design-tokens n'a
-    // que du CSS ; son stub JS reste dans le temp ignoré et est jeté avec lui).
+    // JS via Vite uniquement pour les bundles qui livrent un JS. L'import scss
+    // ayant été retiré des entrées, Vite ne compile plus le CSS (zéro double
+    // compilation). Les bundles CSS-only (no-grid, design-tokens) ne lancent PAS Vite.
     if (b.js) {
+        const tmp = path.join(tmpRoot, b.name);
+        fs.rmSync(tmp, { recursive: true, force: true });
+        await build({
+            root,
+            configFile: false,
+            mode: b.doc ? 'development' : 'production', // trousse -> même mode que build-vite (JS identique)
+            logLevel: 'warn',
+            customLogger: logger,
+            plugins: [replace(replacements), sveltePlugin({ isBuild: true })],
+            resolve: { dedupe: ['svelte'] },
+            publicDir: false,
+            // Requis pour les <style lang="scss"> des composants (loadPaths +
+            // additionalData). L'entrée n'importe plus le scss global -> pas de bundle.css.
+            css: { preprocessorOptions: cssPreprocessorOptions({ root, isBuild: false, includeDoc: true }) },
+            build: {
+                outDir: tmp,
+                emptyOutDir: true,
+                minify: b.minify,
+                cssMinify: false,
+                sourcemap: true, // le JS porte le commentaire ; dev copie le .map
+                lib: {
+                    entry: path.join(root, b.entry),
+                    formats: ['iife'],
+                    name: b.name,
+                    fileName: () => 'bundle.js',
+                    cssFileName: 'bundle',
+                },
+            },
+        });
         const jsDest = path.join(root, b.js);
         fs.mkdirSync(path.dirname(jsDest), { recursive: true });
-        fs.copyFileSync(path.join(tmp, 'bundle.js'), jsDest);
+        const jsSrc = path.join(tmp, 'bundle.js');
+        const jsMapName = path.basename(jsDest) + '.map';
+        const js = fs.readFileSync(jsSrc, 'utf-8')
+            .replace(/# sourceMappingURL=bundle\.js\.map/, `# sourceMappingURL=${jsMapName}`);
+        fs.writeFileSync(jsDest, js, 'utf-8');
+        if (fs.existsSync(jsSrc + '.map')) {
+            fs.copyFileSync(jsSrc + '.map', jsDest + '.map'); // .map DEV (gitignoré)
+        }
     }
 
-    const cssSrc = path.join(tmp, 'bundle.css');
-    if (b.css && fs.existsSync(cssSrc)) {
-        const cssDest = path.join(root, b.css);
-        fs.mkdirSync(path.dirname(cssDest), { recursive: true });
-        const css = fs.readFileSync(cssSrc, 'utf-8')
-            .replace(/^\uFEFF/, '')
-            .replace(/\/\*\$vite\$:\d+\*\//g, '');
-        fs.writeFileSync(cssDest, css, 'utf-8');
+    // CSS compilé EN DIRECT par Sass (pas via Vite) pour obtenir la sourcemap
+    // CSS que `vite build()` refuse d'émettre. Byte-identique à la sortie Vite
+    // (CSS 100 % issu de l'entrée SCSS, aucun style de composant extrait).
+    if (b.css && b.scss) {
+        await compileCssWithMap({
+            entryScss: path.join(root, b.scss),
+            cssDest: path.join(root, b.css),
+            // doc -> src/doc/scss en tête (police ../../dist/fonts) ;
+            // trousse -> sans src/doc/scss (police ../fonts, comme le build prod).
+            loadPaths: b.doc
+                ? [path.join(root, 'src/doc/scss'), path.join(root, 'src/sdg/scss'), path.join(root, 'src')]
+                : [path.join(root, 'src/sdg/scss'), path.join(root, 'src')],
+            minify: b.minify,
+            sourceMap: true,
+            devEnv: b.devEnv,
+            pkgVersion: pkg.version,
+        });
     }
 }
 

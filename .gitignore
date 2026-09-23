@@ -16,6 +16,13 @@ package-lock.json
 /dist/.vite-tmp/
 /.vite-tmp-dev/
 
+# Sourcemaps : générées UNIQUEMENT par npm run dev (jamais par npm run build).
+# Aide au debug local, jamais distribuées.
+/public/js/*.map
+/public/css/*.map
+/dist/js/*.map
+/dist/css/*.map
+
 # Playwright
 *.test.html
 /test-results/
