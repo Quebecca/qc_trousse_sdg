@@ -351,3 +351,11 @@ qc-table {
   width: 100%;
   overflow-x: auto;
 }
+
+// Conteneur de défilement horizontal pour un tableau utilisé sans le composant Web.
+// Le composant <qc-table> gère déjà ce défilement ; cette classe reproduit le
+// même comportement en usage CSS seul.
+.qc-table-container {
+  width: 100%;
+  overflow-x: auto;
+}

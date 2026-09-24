@@ -6,6 +6,7 @@
 
 <qc-doc-exemple
         id="qc-table-standard"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de tableau standard avec en-tête bleu">
     <qc-table>
         <table>
@@ -41,6 +42,7 @@
 
 <qc-doc-exemple
         id="qc-table-standard-grey-header"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de tableau standard avec en-tête gris pâle">
     <qc-table>
         <table class="qc-table--grey-header">
@@ -76,6 +78,7 @@
 
 <qc-doc-exemple
         id="qc-table-simplified"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de tableau simplifié avec en-tête blanc">
     <qc-table>
         <table class="qc-table--simplified">
@@ -106,6 +109,47 @@
     </qc-table>
 </qc-doc-exemple>
 
+<h4>Rangées en alternance — qc-striped</h4>
+
+<qc-doc-exemple
+        id="qc-table-striped"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de tableau standard avec rangées en alternance (qc-striped)">
+    <qc-table>
+        <table class="qc-striped">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            <tr>
+                <td>Sophie Gagnon</td>
+                <td>Ressources humaines</td>
+                <td>Directrice</td>
+                <td class="qc-table-number">15</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
 <h4>Utilisation sans le composant Web</h4>
 
 <p>
@@ -118,7 +162,7 @@
 <qc-doc-exemple
         id="qc-table-css-class"
         caption="Exemple de tableau standard utilisant directement la classe qc-table">
-    <div class="table-overflow-container">
+    <div class="qc-table-container">
     <table class="qc-table">
         <caption>Liste des employés par département</caption>
         <thead>
@@ -158,27 +202,50 @@
 </p>
 
 <p> Sans le composant Web, la gestion du défilement horizontal doit être prévue par l’implémenteur.
-    L’exemple précédent illustre une approche possible.
+    Placez le <code>&lt;table&gt;</code> dans un conteneur portant la classe <code>qc-table-container</code>
+    pour reproduire le même comportement, comme dans l’exemple précédent.
 </p>
-
-<p>
-    Dans cet exemple, la balise <code>&lt;table&gt;</code> est placée dans un conteneur portant la classe
-    <code>table-overflow-container</code>. Cette classe est utilisée à titre d’exemple pour illustrer
-    la gestion du défilement horizontal. Elle ne fait pas partie des classes fournies par la trousse.
-</p>
-
-<qc-code language="css"
-    raw-code=".table-overflow-container {
-                width: 100%;
-                overflow-x: auto;
-    }">
-</qc-code>
 
 <h4>Classes CSS</h4>
 
 <qc-table>
     <table class="qc-striped component-attributes-description">
-        <caption>Classes de tableaux</caption>
+        <caption>Classes pour réglages avec ou sans composant Web</caption>
+        <thead>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-striped</code></td>
+            <td>
+                À ajouter au tableau pour appliquer un fond gris pâle aux rangées paires et créer une alternance visuelle (<a href="#qc-table-striped">voir exemple</a>).
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc-table--grey-header</code></td>
+            <td>À ajouter au tableau pour afficher les en-têtes sur un fond gris pâle (<a href="#qc-table-standard-grey-header">voir exemple</a>).</td>
+        </tr>
+        <tr>
+            <td><code>qc-table--simplified</code></td>
+            <td>À ajouter au tableau pour afficher la variante simplifiée, dont les en-têtes ont un fond blanc (<a href="#qc-table-simplified">voir exemple</a>).</td>
+        </tr>
+        <tr>
+            <td><code>qc-table-number</code></td>
+            <td>
+                À ajouter à une cellule d’en-tête <code>&lt;th&gt;</code> ou de donnée <code>&lt;td&gt;</code> pour aligner à droite son contenu numérique (<a href="#qc-table-standard">voir exemple</a>).
+                L’alignement revient à gauche dans une liste structurée affichée en cartes sur mobile.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Classes pour réglages sans composant Web</caption>
         <thead>
         <tr>
             <th>Classe</th>
@@ -189,29 +256,15 @@
         <tr>
             <td><code>qc-table</code></td>
             <td>
-                Classe de base permettant d’appliquer le rendu visuel d’un tableau standard avec des en-têtes sur fond bleu.
+                Classe de base permettant d’appliquer le rendu visuel d’un tableau standard avec des en-têtes sur fond bleu.<br/>
+                Cette classe est ajoutée automatiquement par le composant Web (<a href="#qc-table-standard">voir exemple</a>). À écrire soi-même uniquement en usage CSS sans le composant Web (<a href="#qc-table-css-class">voir exemple</a>).
             </td>
         </tr>
         <tr>
-            <td><code>qc-striped</code></td>
+            <td><code>qc-table-container</code></td>
             <td>
-                Ajoute un fond gris pâle aux rangées paires du tableau afin de créer une alternance visuelle.
-            </td>
-        </tr>
-        <tr>
-            <td><code>qc-table--grey-header</code></td>
-            <td>Variante du tableau standard dont les en-têtes ont un fond gris pâle.</td>
-        </tr>
-        <tr>
-            <td><code>qc-table--simplified</code></td>
-            <td>Variante simplifiée du tableau standard dont les en-têtes ont un fond blanc.</td>
-        </tr>
-        <tr>
-            <td><code>qc-table-number</code></td>
-            <td>
-                Aligne à droite le contenu numérique d’une cellule d’en-tête
-                <code>&lt;th&gt;</code> ou d’une cellule de donnée <code>&lt;td&gt;</code>.
-                L’alignement revient à gauche dans une liste structurée affichée en cartes sur mobile.
+                À placer autour du <code>&lt;table&gt;</code> (conteneur enveloppant) pour prendre en charge le défilement horizontal lorsque le tableau dépasse la largeur disponible.<br/>
+                Le défilement est géré automatiquement par le composant Web. À écrire soi-même uniquement en usage CSS sans le composant Web (<a href="#qc-table-css-class">voir exemple</a>).
             </td>
         </tr>
         </tbody>
@@ -240,6 +293,7 @@
 <h4>Liste structurée avec en-tête</h4>
 
 <qc-doc-exemple id="qc-table-structured-list"
+                filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
                 caption="Exemple de tableau affiché en liste structurée">
     <qc-table structured-list>
         <table>
@@ -270,6 +324,7 @@
 <h4>Liste structurée avec en-têtes définis sans &lt;thead&gt; </h4>
 <qc-doc-exemple
         id="qc-table-structured-list-without-thead"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de liste structurée dont les en-têtes de colonnes sont définis sans utiliser l'élément &lt;thead&gt;"
 >
     <qc-table structured-list>
@@ -300,6 +355,7 @@
 
 <qc-doc-exemple
         id="qc-table-structured-list-without-header"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de liste structurée sans en-tête"
 >
     <qc-table structured-list>
@@ -333,6 +389,7 @@
 
 <qc-doc-exemple
         id="qc-table-structured-list-vertical"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
         caption="Exemple de liste structurée verticale"
 >
     <qc-table structured-list>
