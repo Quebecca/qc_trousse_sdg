@@ -37,17 +37,22 @@ test('SearchInput svelte — sans debounce, propagation immédiate', {
 test('SearchInput svelte — avec debounce, propagation après délai', {
     tag: ['@svelte', '@search-input']
 }, async ({ page }) => {
+    // Horloge virtuelle : le debounce (setTimeout) est piloté par page.clock,
+    // ce qui élimine toute dépendance au temps réel (source de flakiness Firefox).
+    await page.clock.install();
     const input = page.locator('input[placeholder="Avec debounce"]');
-    await input.pressSequentially('abc', { delay: 50 });
+    await input.pressSequentially('abc');
     await expect(input).toHaveValue('abc');
 
-    await page.waitForTimeout(400);
+    // Le debounce (300 ms) s'écoule sur l'horloge virtuelle : la valeur reste stable
+    await page.clock.runFor(400);
     await expect(input).toHaveValue('abc');
 });
 
 test('SearchInput svelte — debounce regroupe les frappes en un seul événement', {
     tag: ['@svelte', '@search-input']
 }, async ({ page }) => {
+    await page.clock.install();
     const input = page.locator('input[placeholder="Avec debounce"]');
 
     // Écouter les événements qc-change directement sur l'input
@@ -59,15 +64,15 @@ test('SearchInput svelte — debounce regroupe les frappes en un seul événemen
         (window as any).__qcChangeEvents = events;
     });
 
-    // Taper rapidement plusieurs caractères (intervalle < debounce)
-    await input.pressSequentially('hello', { delay: 30 });
+    // Taper rapidement plusieurs caractères (horloge figée : tout se produit à t=0)
+    await input.pressSequentially('hello');
 
-    // Juste après la saisie, aucun événement ne doit avoir été émis
+    // Horloge non avancée : aucun événement ne doit avoir été émis
     const eventsBeforeDelay = await page.evaluate(() => (window as any).__qcChangeEvents.length);
     expect(eventsBeforeDelay).toBe(0);
 
-    // Attendre que le debounce se déclenche (300ms + marge)
-    await page.waitForTimeout(500);
+    // Avancer l'horloge virtuelle au-delà du debounce (300 ms)
+    await page.clock.runFor(350);
 
     // Un seul événement doit avoir été émis avec la valeur finale
     const eventsAfterDelay = await page.evaluate(() => [...(window as any).__qcChangeEvents]);
@@ -78,6 +83,7 @@ test('SearchInput svelte — debounce regroupe les frappes en un seul événemen
 test('SearchInput svelte — debounce réinitialise le timer à chaque frappe', {
     tag: ['@svelte', '@search-input']
 }, async ({ page }) => {
+    await page.clock.install();
     const input = page.locator('input[placeholder="Avec debounce"]');
 
     // Écouter les événements qc-change directement sur l'input
@@ -89,18 +95,18 @@ test('SearchInput svelte — debounce réinitialise le timer à chaque frappe', 
         (window as any).__qcChangeEvents2 = events;
     });
 
-    // Taper 'ab', attendre 200ms (< debounce), puis taper 'c'
-    await input.pressSequentially('ab', { delay: 30 });
-    await page.waitForTimeout(200);
-    await input.pressSequentially('c', { delay: 30 });
+    // Taper 'ab', avancer de 200 ms (< debounce), puis taper 'c'
+    await input.pressSequentially('ab');
+    await page.clock.runFor(200);
+    await input.pressSequentially('c');
 
-    // Attendre un peu — le premier timer devrait avoir été annulé
-    await page.waitForTimeout(150);
+    // 150 ms après 'c' (< 300 ms) : le premier timer a été annulé, rien n'est émis
+    await page.clock.runFor(150);
     const eventsMidway = await page.evaluate(() => (window as any).__qcChangeEvents2.length);
     expect(eventsMidway).toBe(0);
 
-    // Attendre que le debounce final se déclenche (300ms + marge)
-    await page.waitForTimeout(400);
+    // Avancer au-delà du debounce final (total 350 ms depuis 'c' > 300 ms)
+    await page.clock.runFor(200);
     const eventsFinal = await page.evaluate(() => [...(window as any).__qcChangeEvents2]);
     expect(eventsFinal).toHaveLength(1);
     expect(eventsFinal[0]).toBe('abc');
@@ -120,6 +126,7 @@ test('SearchInput svelte — clear réinitialise le champ', {
 test('SearchInput svelte — clear annule le debounce en attente', {
     tag: ['@svelte', '@search-input']
 }, async ({ page }) => {
+    await page.clock.install();
     const input = page.locator('input[placeholder="Avec debounce"]');
 
     // Écouter les événements qc-change directement sur l'input
@@ -131,17 +138,17 @@ test('SearchInput svelte — clear annule le debounce en attente', {
         (window as any).__qcClearEvents = events;
     });
 
-    // Taper du texte (debounce pas encore écoulé)
-    await input.pressSequentially('test', { delay: 30 });
+    // Taper du texte (horloge figée : le debounce est en attente, jamais déclenché)
+    await input.pressSequentially('test');
 
-    // Cliquer sur clear avant que le debounce ne se déclenche
+    // Cliquer sur clear avant d'avancer l'horloge
     await page.getByRole('button', { name: 'Effacer le texte' }).last().click();
 
     // Le champ doit être vide immédiatement
     await expect(input).toHaveValue('');
 
-    // Attendre au-delà du délai de debounce
-    await page.waitForTimeout(500);
+    // Avancer au-delà du délai de debounce
+    await page.clock.runFor(500);
 
     // Seul l'événement du clear doit avoir été émis (valeur vide),
     // pas celui du debounce avec 'test'
