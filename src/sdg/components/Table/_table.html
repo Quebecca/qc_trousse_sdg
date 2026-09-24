@@ -1,0 +1,403 @@
+<h2 id="table">Tableau de données (qc-table)</h2>
+
+<h3>Exemples</h3>
+
+<h4>Tableau standard — en-tête bleu</h4>
+
+<qc-doc-exemple
+        id="qc-table-standard"
+        caption="Exemple de tableau standard avec en-tête bleu">
+    <qc-table>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+
+<h4>Tableau standard — en-tête gris pâle</h4>
+
+<qc-doc-exemple
+        id="qc-table-standard-grey-header"
+        caption="Exemple de tableau standard avec en-tête gris pâle">
+    <qc-table>
+        <table class="qc-table--grey-header">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+
+<h4>Tableau standard simplifié — en-tête blanc</h4>
+
+<qc-doc-exemple
+        id="qc-table-simplified"
+        caption="Exemple de tableau simplifié avec en-tête blanc">
+    <qc-table>
+        <table class="qc-table--simplified">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Utilisation sans le composant Web</h4>
+
+<p>
+    Pour appliquer uniquement le rendu visuel d’un tableau de données, ajoutez la classe
+    <code>qc-table</code> directement sur la balise <code>&lt;table&gt;</code>. Vous pouvez également
+    la combiner avec les classes <code>qc-table--grey-header</code> ou
+    <code>qc-table--simplified</code> pour utiliser l’une des variantes visuelles du tableau.
+</p>
+
+<qc-doc-exemple
+        id="qc-table-css-class"
+        caption="Exemple de tableau standard utilisant directement la classe qc-table">
+    <div class="table-overflow-container">
+    <table class="qc-table">
+        <caption>Liste des employés par département</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">11</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</qc-doc-exemple>
+
+
+<h4>Défilement horizontal</h4>
+
+<p>
+    Le composant Web <code>&lt;qc-table&gt;</code> prend en charge le défilement horizontal
+    lorsque le tableau ou la liste structurée dépasse la largeur disponible. Ce comportement
+    s’applique aux tableaux de données, quelle que soit la taille de l’écran. Sur mobile,
+    les listes structurées sont plutôt présentées sous forme de cartes.
+</p>
+
+<p> Sans le composant Web, la gestion du défilement horizontal doit être prévue par l’implémenteur.
+    L’exemple précédent illustre une approche possible.
+</p>
+
+<p>
+    Dans cet exemple, la balise <code>&lt;table&gt;</code> est placée dans un conteneur portant la classe
+    <code>table-overflow-container</code>. Cette classe est utilisée à titre d’exemple pour illustrer
+    la gestion du défilement horizontal. Elle ne fait pas partie des classes fournies par la trousse.
+</p>
+
+<qc-code language="css"
+    raw-code=".table-overflow-container {
+                width: 100%;
+                overflow-x: auto;
+    }">
+</qc-code>
+
+<h4>Classes CSS</h4>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Classes de tableaux</caption>
+        <thead>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-table</code></td>
+            <td>
+                Classe de base permettant d’appliquer le rendu visuel d’un tableau standard avec des en-têtes sur fond bleu.
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc-striped</code></td>
+            <td>
+                Ajoute un fond gris pâle aux rangées paires du tableau afin de créer une alternance visuelle.
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc-table--grey-header</code></td>
+            <td>Variante du tableau standard dont les en-têtes ont un fond gris pâle.</td>
+        </tr>
+        <tr>
+            <td><code>qc-table--simplified</code></td>
+            <td>Variante simplifiée du tableau standard dont les en-têtes ont un fond blanc.</td>
+        </tr>
+        <tr>
+            <td><code>qc-table-number</code></td>
+            <td>
+                Aligne à droite le contenu numérique d’une cellule d’en-tête
+                <code>&lt;th&gt;</code> ou d’une cellule de donnée <code>&lt;td&gt;</code>.
+                L’alignement revient à gauche dans une liste structurée affichée en cartes sur mobile.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h2 id="liste-structuree">Liste structurée (qc-table)</h2>
+
+<p>
+    Une liste structurée permet de présenter une information principale accompagnée
+    d’un ensemble de détails associés. Elle repose sur la structure d’un tableau HTML,
+    mais adapte sa présentation sur le mobile afin de faciliter la lecture des données.
+
+</p>
+
+<p>
+    Le tableau simplifié et la liste structurée peuvent avoir une apparence similaire
+    sur écran large, notamment avec des en-têtes sur fond blanc, mais ils répondent à
+    des besoins différents.
+</p>
+
+<h3>Exemples</h3>
+
+<p>Dans tous les exemples suivants, réduisez la taille de l’écran pour constater le passage en liste de cartes.</p>
+
+<h4>Liste structurée avec en-tête</h4>
+
+<qc-doc-exemple id="qc-table-structured-list"
+                caption="Exemple de tableau affiché en liste structurée">
+    <qc-table structured-list>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée avec en-têtes définis sans &lt;thead&gt; </h4>
+<qc-doc-exemple
+        id="qc-table-structured-list-without-thead"
+        caption="Exemple de liste structurée dont les en-têtes de colonnes sont définis sans utiliser l'élément &lt;thead&gt;"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <tbody>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+            </tr>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée sans en-tête</h4>
+
+<qc-doc-exemple
+        id="qc-table-structured-list-without-header"
+        caption="Exemple de liste structurée sans en-tête"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Horaire de la journée</caption>
+            <tbody>
+            <tr>
+                <td>11 h</td>
+                <td>Conférence de Monsieur X</td>
+                <td>
+                    <a href="#" aria-label="S’inscrire à la conférence de Monsieur X">
+                        S’inscrire
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>11 h 30</td>
+                <td>Dîner de réseautage</td>
+                <td>
+                    <a href="#" aria-label="S’inscrire au dîner de réseautage">
+                        S’inscrire
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée verticale (clé / valeur)</h4>
+
+<qc-doc-exemple
+        id="qc-table-structured-list-vertical"
+        caption="Exemple de liste structurée verticale"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Demande d’intégration – 01345</caption>
+            <tbody>
+            <tr>
+                <th scope="row">Statut</th>
+                <td>À corriger</td>
+            </tr>
+            <tr>
+                <th scope="row">Territoire</th>
+                <td>Bas-Saint-Laurent</td>
+            </tr>
+            <tr>
+                <th scope="row">Catégorie</th>
+                <td>Inventaire faunique</td>
+            </tr>
+            <tr>
+                <th scope="row">Nombre d’occurrences</th>
+                <td>5 602</td>
+            </tr>
+            <tr>
+                <th scope="row">Date de soumission</th>
+                <td>
+                    2025-07-10
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>structured-list</td>
+            <td>Présence de l'attribut</td>
+            <td>Absent</td>
+            <td>Si présent, le tableau est affiché en liste structurée et, sur le mobile, sous forme de cartes. En son absence, le tableau est affiché normalement.</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h4>Accessibilité</h4>
+<p>
+    NB&nbsp;: Le titre de la liste structurée, tout comme celui du tableau standard, doit être placé dans l’élément
+    <code>&lt;caption&gt;</code>.
+</p>
+
+<p>
+    Pour la fusion des cellules des données le composant <code>&lt;qc-table&gt;</code> gère la présentation
+    des données, mais pas l'accessibilité du contenu : il revient à l'implémenteur de fournir un tableau
+    valide et accessible.
+</p>

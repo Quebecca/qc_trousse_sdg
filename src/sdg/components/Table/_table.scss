@@ -1,0 +1,353 @@
+@use "../../scss/qc-sdg-lib" as *;
+
+
+// Filet gris clair en bas d'une cellule (séparation entre les lignes).
+@mixin bottom-border {
+  box-shadow: inset 0 rem(-1) 0 token-value(color grey light);
+}
+// Espacements horizontaux
+@mixin table-cell-horizontal-padding {
+  padding-left: token-value(spacer, sm);
+  padding-right: token-value(spacer, sm);
+
+  &:first-child {
+    padding-left: 0;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+// Filet foncé en haut + filet gris clair en bas, réservé à la première
+// rangée de données d'un tableau sans <thead> .
+@mixin first-row-top-border {
+  box-shadow:
+          inset 0 rem(1) 0 token-value(color blue dark),
+          inset 0 rem(-1) 0 token-value(color grey light);
+}
+
+@mixin table-standard-header-style {
+  color: token-value(color white);
+  background-color: token-value(color blue medium);
+
+  th {
+    @include content-font(md, bold);
+    padding: token-value(spacer, sm);
+    vertical-align: top;
+    text-align: left;
+    box-shadow: inset 0 rem(-1) 0 token-value(color blue dark);
+
+    &.qc-table-number {
+      text-align: right;
+    }
+  }
+}
+
+// Style commun aux tableaux standards :
+// - tableau dans <qc-table> sans structured-list
+// - tableau HTML avec la classe .qc-table
+@mixin standard-qc-table {
+  max-width: 100%;
+  border-collapse: collapse;
+  background-color: token-value(color white);
+
+  thead {
+    @include table-standard-header-style;
+  }
+
+  tbody {
+    th,
+    td {
+      padding: token-value(spacer, sm);
+      vertical-align: top;
+      text-align: left;
+      @include bottom-border;
+    }
+  }
+
+  // Données numériques.
+  th.qc-table-number,
+  td.qc-table-number {
+    text-align: right;
+  }
+
+  // Cas d'un tableau sans <thead> :
+  // si la première rangée du tbody ne contient que des <th> (elle joue donc
+  // sémantiquement le rôle d'une ligne d'en-tête de colonnes)
+  &:not(:has(thead)) {
+    tbody tr:first-child:has(th):not(:has(td)) {
+      @include table-standard-header-style;
+    }
+
+    // Tableau vertical : première rangée composée de <th> et de <td>.
+    tbody tr:first-child:has(th):has(td) {
+      th,
+      td {
+        @include first-row-top-border;
+      }
+    }
+  }
+
+  // Variante rayée utilisée notamment dans la documentation.
+  &.qc-striped {
+    tbody tr:nth-of-type(even) {
+      background-color: token-value(color grey pale);
+    }
+  }
+
+  // Variante en-tête gris pâle du tableau standard.
+  &.qc-table--grey-header {
+    thead,
+    tbody tr:first-child:has(th):not(:has(td)){
+      color: token-value(color blue dark);
+      background-color: token-value(color grey pale);
+
+      th {
+        @include bottom-border;
+      }
+    }
+  }
+
+  // Variante Tableau simplifié
+  &.qc-table--simplified {
+    thead,
+    tbody tr:first-child:has(th):not(:has(td)) {
+      color: token-value(color blue dark);
+      background-color: token-value(color white);
+
+      th {
+        padding-top: 0;
+        padding-bottom: token-value(spacer, xs);
+        @include table-cell-horizontal-padding;
+      }
+    }
+
+    tbody {
+      th,
+      td {
+        padding-top: token-value(spacer, sm);
+        padding-bottom: token-value(spacer, sm);
+        @include table-cell-horizontal-padding;
+      }
+    }
+  }
+}
+
+@mixin structured-qc-table {
+  border-collapse: collapse;
+  color: token-value(color blue dark);
+
+  @include media-mobile() {
+    display: block;
+  }
+
+  caption {
+    @include media-mobile() {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  // En-têtes de colonnes.
+  // Inclut aussi les <th> d'une ligne d'en-tête sans <thead> natif.
+  thead,
+  tbody tr[data-qc-header-row] {
+    @include media-mobile() {
+      display: none;
+    }
+  }
+
+  thead th,
+  tbody tr[data-qc-header-row] th {
+    padding-top: 0;
+    padding-bottom: token-value(spacer, xs);
+    @include table-cell-horizontal-padding;
+    color: token-value(color blue dark);
+    background-color: token-value(color white);
+    box-shadow: inset 0 rem(-1) 0 token-value(color blue dark);
+    font-weight: token-value(font-weight, bold);
+    vertical-align: top;
+    text-align: left;
+
+    &.qc-table-number {
+      text-align: right;
+    }
+  }
+
+  // Corps du tableau.
+  tbody {
+    @include media-mobile() {
+      display: block;
+      width: 100%;
+    }
+
+    tr {
+      @include media-mobile() {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: token-value(spacer, sm) 0;
+        @include bottom-border;
+
+        // Espacement entre les enfants (th/td), sauf entre le th
+        // (libellé) et le td qui le suit directement : voir plus bas.
+        > * + * {
+          margin-top: token-value(spacer, sm);
+        }
+
+        th + td {
+          margin-top: 0;
+        }
+      }
+    }
+
+    td {
+      padding-top: token-value(spacer, sm);
+      padding-bottom: token-value(spacer, sm);
+      @include table-cell-horizontal-padding;
+
+      @include bottom-border;
+      vertical-align: top;
+      text-align: left;
+
+      @include media-mobile() {
+        display: block;
+        width: 100%;
+        padding: 0;
+        white-space: normal;
+        box-shadow: none;
+      }
+    }
+
+    // Cas d’une liste structurée verticale : le libellé se trouve dans un <th> de ligne.
+    th {
+      padding-top: token-value(spacer, sm);
+      padding-bottom: token-value(spacer, sm);
+      @include table-cell-horizontal-padding;
+
+      color: token-value(color blue dark);
+      @include bottom-border;
+      font-weight: token-value(font-weight, bold);
+      vertical-align: top;
+      text-align: left;
+
+      @include media-mobile() {
+        display: block;
+        width: 100%;
+        padding: 0 0 token-value(spacer, sm) 0;
+        font-weight: token-value(font-weight, semi-bold);
+        text-align: left;
+        box-shadow: none;
+      }
+    }
+
+    // Les cellules clonées servent uniquement à l’affichage mobile.
+    [data-qc-clone] {
+      display: none;
+
+      @include media-mobile() {
+        display: block;
+      }
+    }
+
+    // Filet foncé en haut du tableau en mobile, sur la première rangée de données.
+    tr:first-child,
+    tr[data-qc-header-row] + tr:not([data-qc-header-row]) {
+      @include media-mobile() {
+        @include first-row-top-border;
+      }
+    }
+
+    // Libellés générés à partir du thead.
+    :is(th, td)[data-label]::before {
+      @include media-mobile() {
+        content: attr(data-label);
+        display: block;
+        font-weight: token-value(font-weight, semi-bold);
+      }
+    }
+  }
+
+  // Données numériques.
+  // En mobile, la liste structurée passe en affichage vertical
+  // et les données sont réalignées à gauche.
+  tr > :is(th, td).qc-table-number {
+    text-align: right;
+
+    @include media-mobile() {
+      text-align: left;
+    }
+  }
+
+  // Sans <thead> ET sans ligne d'en-tête marquée :
+  // cas d'une liste verticale ou liste sans entête.
+  &:not(:has(thead)):not(:has([data-qc-header-row])) {
+    tbody {
+      tr {
+        @include media-mobile() {
+          // Liste verticale : pas d'espace entre le th (libellé) et le td (valeur).
+          gap: 0;
+        }
+
+        &:first-child {
+          th,
+          td {
+            @include first-row-top-border;
+
+            @include media-mobile() {
+              box-shadow: none;
+            }
+          }
+        }
+      }
+
+      th {
+        @include media-mobile() {
+          padding-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Style commun du titre des tableaux.
+table.qc-table caption,
+qc-table table caption {
+  @include content-font(lg, bold);
+  margin-bottom: token-value(spacer content-block mb);
+  text-align: left;
+}
+
+
+// Espacement externe du composant ou de la table utilisée sans composant Web.
+qc-table,
+table.qc-table {
+  margin-top: token-value(spacer, 9);
+  margin-bottom: token-value(spacer, 9);
+}
+
+// Dans le composant Web, le wrapper porte déjà l’espacement.
+qc-table > table.qc-table {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+// Tableau standard
+table.qc-table:not(.qc-table--structured-list),
+qc-table:not([structured-list]) table:not(.qc-table) {
+  @include standard-qc-table;
+}
+
+// Liste structurée
+table.qc-table.qc-table--structured-list,
+qc-table[structured-list] table:not(.qc-table) {
+  @include structured-qc-table;
+}
+
+// Le Web Component reste responsable du défilement horizontal.
+qc-table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}

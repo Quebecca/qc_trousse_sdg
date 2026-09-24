@@ -33,64 +33,64 @@
 
 <h3>Documentation technique</h3>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tr>
-      <td>type</td>
-      <td>"general" ou "warning"</td>
-      <td>"general"</td>
-      <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
-    </tr>
-    <tr>
-      <td>content</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Afficher le contenu de l’alerte</td>
-    </tr>
-    <tr>
-      <td>hide</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Masque ou affiche l’alerte</td>
-    </tr>
-    <tr>
-      <td>full-width</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
-        qc-container-fluid)
-      </td>
-    </tr>
-      <tr>
-          <td>maskable</td>
-          <td>"true" ou "false"</td>
-          <td>"true"</td>
-          <td>Afficher le bouton de fermeture de l’alerte</td>
-      </tr>
-      <tr>
-          <td>persist-hidden</td>
-          <td>na</td>
-          <td></td>
-          <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
-      </tr>
-    <tr>
-      <td>persistence-key</td>
-      <td>Chaîne de caractère</td>
-      <td>Id de l'élément, valeur nulle sinon</td>
-      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
-    </tr>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>type</td>
+            <td>"general" ou "warning"</td>
+            <td>"general"</td>
+            <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
+        </tr>
+        <tr>
+            <td>content</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Afficher le contenu de l’alerte</td>
+        </tr>
+        <tr>
+            <td>hide</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Masque ou affiche l’alerte</td>
+        </tr>
+        <tr>
+            <td>full-width</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
+                qc-container-fluid)
+            </td>
+        </tr>
+        <tr>
+            <td>maskable</td>
+            <td>"true" ou "false"</td>
+            <td>"true"</td>
+            <td>Afficher le bouton de fermeture de l’alerte</td>
+        </tr>
+        <tr>
+            <td>persist-hidden</td>
+            <td>na</td>
+            <td></td>
+            <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+        </tr>
+        <tr>
+            <td>persistence-key</td>
+            <td>Chaîne de caractère</td>
+            <td>Id de l'élément, valeur nulle sinon</td>
+            <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+        </tr>
+    </table>
+</qc-table>
 
-  </table>
-</div>
 
 <h4>Événement JS</h4>
 

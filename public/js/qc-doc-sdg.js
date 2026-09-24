@@ -66073,3 +66073,5 @@ createHTML: (html) => {
 	if (maskableAlert && displayAlertLink && !maskableAlert.querySelector(".qc-general-alert")) displayAlertLink.removeAttribute("hidden");
 	//#endregion
 })();
+
+//# sourceMappingURL=qc-doc-sdg.js.map

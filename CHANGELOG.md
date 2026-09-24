@@ -1,5 +1,17 @@
 # Historique des versions
 
+## [1.5.A VENIR] - AAAA-MM-JJ
+
+### Ajouté
+- **Nouveau composant** : `qc-table` pour l’affichage des tableaux et des listes structurées.
+- **Tableaux** : Ajout et harmonisation des styles des tableaux avec les variantes définies dans le Système de design.
+- **Documentation** : Ajout des exemples du composant `qc-table`.
+- **Tests** : Ajout des tests Playwright du composant `qc-table`.
+
+### Modifié
+- **Tableaux** : Adaptation de la largeur des tableaux standards au contenu plutôt que de forcer une largeur de 100 %.
+- **Documentation** : Remplacement de l’utilisation directe de la classe `.qc-table` par le composant `<qc-table>` pour les tableaux de la documentation.
+
 ## Migration des icônes vers Material Symbols
 
 Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.
@@ -40,6 +52,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 
 ### Modifié
 - **outillage de build** : passage de **Rollup** à **Vite 8** (rolldown/Oxc) pour la compilation des bundles et du CSS. La sortie distribuée (`dist/`) est inchangée ; seuls les scripts de développement évoluent (`build`, `dev`, `build:dev` via `scripts/*.mjs`). Rollup et ses greffons sont entièrement retirés.
+- **site de doc et sourcemaps (développement uniquement)** : le site de documentation charge désormais la trousse depuis `dist/` (`index.html` et jeux de tests via `../dist`) ; `public/` ne contient plus que les assets propres à la doc. `yarn build` et `yarn dev` produisent des bundles minifiés **identiques** (portant le commentaire `sourceMappingURL`) ; seul `yarn dev` écrit en plus les fichiers `.map` (gitignorés, jamais distribués). Les `.map` remontent au SCSS/source (CSS via l'API Sass, JS via Vite) ; chaque SCSS n'est compilé qu'une seule fois (les entrées JS ne l'importent plus, Vite ne bâtit que le JS, les bundles CSS seuls ne lancent pas Vite). Côté consommateur, le commentaire pointe vers un `.map` non livré (requête ignorée / 404 silencieux dans les DevTools) ; le contenu des bundles est par ailleurs inchangé.
 - **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
 - **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.

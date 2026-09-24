@@ -16,6 +16,13 @@ package-lock.json
 /dist/.vite-tmp/
 /.vite-tmp-dev/
 
+# Sourcemaps : générées UNIQUEMENT par npm run dev (jamais par npm run build).
+# Aide au debug local, jamais distribuées.
+/public/js/*.map
+/public/css/*.map
+/dist/js/*.map
+/dist/css/*.map
+
 # Playwright
 *.test.html
 /test-results/
@@ -34,3 +41,7 @@ icon-selection.local.json
 
 # Sortie JS jetable des passes de build « root-font-size 100 % » (issue #48)
 /.rfz-build/
+
+# Sorties JS vides générées
+/dist/js/qc-sdg-no-grid.js
+/dist/qc-sdg-design-tokens.js
