@@ -1,0 +1,6 @@
+qc-doc-top-nav:not(:defined) {
+  display: block;
+  min-height: 7.2rem;
+  height: 7.2rem;
+  border-bottom: solid 0.1rem var(--qc-color-grey-light);
+}

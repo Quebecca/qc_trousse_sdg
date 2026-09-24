@@ -1,6 +1,7 @@
 @use "qc-sdg-lib" as *;
 @use "components/code" as *;
 @use "components/exemple" as *;
+@use "components/topNav" as *;
 @use "jQueryUI/jquery-ui.autocomplete";
 
 main {
@@ -38,6 +39,10 @@ qc-color-doc {
 
 h1,h2,h3,h4,h5,h6 {
   scroll-margin-top: rem(96);
+}
+
+#version::after {
+  content: "\00a0"; /* espace insécable (l'entité &nbsp; n'est pas interprétée en CSS) */
 }
 
 #grid-samples {
