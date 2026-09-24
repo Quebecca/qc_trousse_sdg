@@ -164,15 +164,18 @@ code.hljs {
 .exemple-area > figure .exemple > *:last-child:not(qc-table):not(table.qc-table) {
   margin-bottom: 0;
 }
-.exemple-area > figure .exemple .table-overflow-container {
-  width: 100%;
-  overflow-x: auto;
-}
 .exemple-area > figure > figcaption {
   display: block;
 }
 .exemple-area > figure:has(qc-select, qc-tooltip) {
   overflow-x: visible;
+}
+
+qc-doc-top-nav:not(:defined) {
+  display: block;
+  min-height: 7.2rem;
+  height: 7.2rem;
+  border-bottom: solid 0.1rem var(--qc-color-grey-light);
 }
 
 .ui-autocomplete {
@@ -268,6 +271,10 @@ qc-color-doc {
 
 h1, h2, h3, h4, h5, h6 {
   scroll-margin-top: 9.6rem;
+}
+
+#version::after {
+  content: " "; /* espace insécable (l'entité &nbsp; n'est pas interprétée en CSS) */
 }
 
 #grid-samples {

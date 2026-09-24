@@ -62041,13 +62041,13 @@ createHTML: (html) => {
 	//#region src/doc/components/Code.svelte
 	var import_pretty = /* @__PURE__ */ __toESM(require_pretty());
 	var import_js = /* @__PURE__ */ __toESM(require_js());
-	var root$20 = /* @__PURE__ */ from_html(`
+	var root_1$12 = /* @__PURE__ */ from_html(`
                 <span class="copy">Copier</span>
             `, 1);
-	var root_1$12 = /* @__PURE__ */ from_html(`
+	var root_2$6 = /* @__PURE__ */ from_html(`
                 <span class="copied">Copié&nbsp!</span>
             `, 1);
-	var root_2$6 = /* @__PURE__ */ from_html(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button>
+	var root_3$2 = /* @__PURE__ */ from_html(`<pre class="qc-hash-1fxiy4n"><code class="hljs"><button>
             <!>
         </button><!></code></pre>`);
 	var $$css$4 = {
@@ -62058,10 +62058,24 @@ createHTML: (html) => {
 		push($$props, true);
 		append_styles$1($$anchor, $$css$4);
 		const copyButtonTimeout = 2e3;
-		let targetId = prop($$props, "targetId", 7, ""), rawCode = prop($$props, "rawCode", 7, ""), language = prop($$props, "language", 7, "html"), outerHTML = prop($$props, "outerHTML", 7, false);
+		let targetId = prop($$props, "targetId", 7, ""), rawCode = prop($$props, "rawCode", 7, ""), language = prop($$props, "language", 7, "html"), outerHTML = prop($$props, "outerHTML", 7, false), filter = prop($$props, "filter", 7, "");
 		let hlCode = /* @__PURE__ */ state(void 0);
 		let prettyCode = /* @__PURE__ */ state(void 0);
 		let copied = /* @__PURE__ */ state(false);
+		const ALWAYS_STRIP_CLASSES = ["mounted"];
+		const ALWAYS_STRIP_CLASS_RE = /^(svelte-|qc-hash-)/;
+		const KEEP_EMPTY_ATTRS = /* @__PURE__ */ new Set([
+			"value",
+			"alt",
+			"placeholder",
+			"title",
+			"label",
+			"content",
+			"href",
+			"src",
+			"srcset",
+			"aria-label"
+		]);
 		function copy() {
 			navigator.clipboard.writeText(get(prettyCode));
 			set(copied, true);
@@ -62069,13 +62083,69 @@ createHTML: (html) => {
 				set(copied, false);
 			}, copyButtonTimeout);
 		}
-		function updateHLCode(rawCode, targetId) {
-			if (!rawCode) rawCode = document.getElementById(targetId)?.[outerHTML() ? "outerHTML" : "innerHTML"] ?? "";
-			rawCode.replace("class=\"mounted\"", "").replace("/qc-hash-.*/g", "").replace("/is-external=\"\"/g", "is-external");
-			set(prettyCode, language() === "javascript" ? (0, import_js.default)(rawCode) : (0, import_pretty.default)(rawCode, { wrap_attributes: "force-aligned" }), true);
+		/**
+		* Analyse la valeur de l'attribut `filter` en trois listes d'opérations.
+		* Chaque token (séparé par des espaces) prend une des formes suivantes :
+		*   - `nom-de-classe` (ou `.nom-de-classe`) : retire la classe partout ;
+		*   - `[nom-attribut]`                      : retire l'attribut partout ;
+		*   - `!sélecteur-css`                      : supprime les éléments correspondants.
+		*/
+		function parseFilter(filter) {
+			const classes = [];
+			const attributes = [];
+			const removeSelectors = [];
+			for (const token of (filter || "").trim().split(/\s+/).filter(Boolean)) if (token.startsWith("!")) removeSelectors.push(token.slice(1));
+			else if (token.startsWith("[") && token.endsWith("]")) attributes.push(token.slice(1, -1));
+			else classes.push(token.replace(/^\./, ""));
+			return {
+				classes,
+				attributes,
+				removeSelectors
+			};
+		}
+		/**
+		* Nettoie le HTML capturé : les composants sans shadow DOM (ex. qc-table)
+		* mutent le light DOM (classes, data-*, cellules clonées) ; on rend ici le
+		* code tel qu'un intégrateur l'a écrit. Le parsing se fait dans un <template>
+		* détaché : son contenu est inerte, donc aucun custom element n'est ré-upgradé.
+		*/
+		function cleanHTML(html, filter) {
+			const { classes, attributes, removeSelectors } = parseFilter(filter);
+			const template = document.createElement("template");
+			template.innerHTML = html;
+			const root = template.content;
+			removeSelectors.forEach((selector) => {
+				try {
+					root.querySelectorAll(selector).forEach((node) => node.remove());
+				} catch (e) {}
+			});
+			root.querySelectorAll("*").forEach((element) => {
+				ALWAYS_STRIP_CLASSES.forEach((className) => element.classList.remove(className));
+				[...element.classList].filter((className) => ALWAYS_STRIP_CLASS_RE.test(className)).forEach((className) => element.classList.remove(className));
+				classes.forEach((className) => element.classList.remove(className));
+				if (element.hasAttribute("class") && element.classList.length === 0) element.removeAttribute("class");
+				attributes.forEach((attribute) => element.removeAttribute(attribute));
+			});
+			const serializer = document.createElement("div");
+			serializer.append(root);
+			return collapseBooleanAttributes(serializer.innerHTML);
+		}
+		/**
+		* Réduit les attributs à valeur vide à leur forme booléenne nue
+		* (`structured-list=""` -> `structured-list`). La sérialisation DOM produit
+		* toujours `=""` ; on ne peut donc normaliser que sur la chaîne. Les attributs
+		* de KEEP_EMPTY_ATTRS sont préservés car leur valeur vide porte du sens.
+		*/
+		function collapseBooleanAttributes(html) {
+			return html.replace(/(\s)([a-zA-Z][\w-]*)=""/g, (match, space, name) => KEEP_EMPTY_ATTRS.has(name) ? match : `${space}${name}`);
+		}
+		function updateHLCode(rawCode, targetId, filter) {
+			let code = rawCode ? rawCode : document.getElementById(targetId)?.[outerHTML() ? "outerHTML" : "innerHTML"] ?? "";
+			if (language() === "html") code = cleanHTML(code, filter);
+			set(prettyCode, language() === "javascript" ? (0, import_js.default)(code) : (0, import_pretty.default)(code, { wrap_attributes: "force-aligned" }), true);
 			set(hlCode, import_lib.default.highlight(get(prettyCode), { language: language() }).value, true);
 		}
-		user_effect(() => updateHLCode(rawCode(), targetId()));
+		user_effect(() => updateHLCode(rawCode(), targetId(), filter()));
 		var $$exports = {
 			get targetId() {
 				return targetId();
@@ -62104,30 +62174,37 @@ createHTML: (html) => {
 			set outerHTML($$value = false) {
 				outerHTML($$value);
 				flushSync();
+			},
+			get filter() {
+				return filter();
+			},
+			set filter($$value = "") {
+				filter($$value);
+				flushSync();
 			}
 		};
-		var pre = root_2$6();
-		var code = child(pre);
-		var button = child(code);
-		var node = sibling(child(button));
+		var pre = root_3$2();
+		var code_1 = child(pre);
+		var button = child(code_1);
+		var node_1 = sibling(child(button));
 		var consequent = ($$anchor) => {
-			var fragment = root$20();
+			var fragment = root_1$12();
 			next(2);
 			append($$anchor, fragment);
 		};
 		var alternate = ($$anchor) => {
-			var fragment_1 = root_1$12();
+			var fragment_1 = root_2$6();
 			next(2);
 			append($$anchor, fragment_1);
 		};
-		if_block(node, ($$render) => {
+		if_block(node_1, ($$render) => {
 			if (!get(copied)) $$render(consequent);
 			else $$render(alternate, -1);
 		});
 		next();
 		reset(button);
 		html(sibling(button), () => get(hlCode));
-		reset(code);
+		reset(code_1);
 		reset(pre);
 		template_effect(() => set_class(button, 1, `qc-button qc-compact ${get(copied) ? "qc-secondary" : "qc-primary"}`));
 		delegated("click", button, copy);
@@ -62142,6 +62219,7 @@ createHTML: (html) => {
 			attribute: "outer-html",
 			type: "Boolean"
 		},
+		filter: { attribute: "filter" },
 		language: {}
 	}, [], []));
 	//#endregion
@@ -62400,12 +62478,13 @@ createHTML: (html) => {
 		"caption",
 		"codeTargetId",
 		"hideCode",
-		"rawCode"
+		"rawCode",
+		"filter"
 	]);
 	var root$15 = /* @__PURE__ */ from_html(`<div class="exemple-area"><figure><div class="exemple"></div> <figcaption></figcaption></figure> <!></div>`);
 	function Exemple($$anchor, $$props) {
 		push($$props, true);
-		let caption = prop($$props, "caption", 7, "SVP fournir une description"), codeTargetId = prop($$props, "codeTargetId", 7), hideCode = prop($$props, "hideCode", 7, false), rawCode = prop($$props, "rawCode", 7), restProps = /* @__PURE__ */ rest_props($$props, rest_excludes$7);
+		let caption = prop($$props, "caption", 7, "SVP fournir une description"), codeTargetId = prop($$props, "codeTargetId", 7), hideCode = prop($$props, "hideCode", 7, false), rawCode = prop($$props, "rawCode", 7), filter = prop($$props, "filter", 7, ""), restProps = /* @__PURE__ */ rest_props($$props, rest_excludes$7);
 		let exempleCode = /* @__PURE__ */ state(void 0);
 		let figure = /* @__PURE__ */ state(void 0);
 		let rootElement = /* @__PURE__ */ state(void 0);
@@ -62446,6 +62525,13 @@ createHTML: (html) => {
 			set rawCode($$value) {
 				rawCode($$value);
 				flushSync();
+			},
+			get filter() {
+				return filter();
+			},
+			set filter($$value = "") {
+				filter($$value);
+				flushSync();
 			}
 		};
 		var div = root$15();
@@ -62461,9 +62547,14 @@ createHTML: (html) => {
 		bind_this(figure_1, ($$value) => set(figure, $$value), () => get(figure));
 		var node_1 = sibling(figure_1, 2);
 		var consequent = ($$anchor) => {
-			Code($$anchor, { get rawCode() {
-				return get(exempleCode);
-			} });
+			Code($$anchor, {
+				get rawCode() {
+					return get(exempleCode);
+				},
+				get filter() {
+					return filter();
+				}
+			});
 		};
 		if_block(node_1, ($$render) => {
 			if (!hideCode()) $$render(consequent);
@@ -62480,7 +62571,8 @@ createHTML: (html) => {
 			attribute: "hide-code",
 			type: "Boolean"
 		},
-		rawCode: { attribute: "raw-code" }
+		rawCode: { attribute: "raw-code" },
+		filter: { attribute: "filter" }
 	}, [], []));
 	//#endregion
 	//#region src/sdg/components/utils.js
