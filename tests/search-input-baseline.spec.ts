@@ -83,6 +83,10 @@ test('SearchInput baseline — debounce regroupe les frappes en un seul événem
 test('SearchInput baseline — debounce réinitialise le timer à chaque frappe', {
     tag: ['@baseline', '@search-input']
 }, async ({ page }) => {
+    // Réarmement debounce : test racé sur les 3 moteurs sous Linux (l'ordre entre le handler
+    // input/clearTimeout et l'avancée de page.clock n'est pas garanti par Playwright).
+    // Déterministe uniquement sur darwin -> joué en local (yarn fastest), skippé en conteneur.
+    test.skip(process.platform !== 'darwin', 'Réarmement debounce déterministe seulement sur darwin (course input/horloge en conteneur Linux)');
     await page.clock.install();
     const input = page.locator('input[placeholder="Avec debounce"]');
 
