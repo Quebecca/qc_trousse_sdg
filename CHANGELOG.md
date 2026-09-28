@@ -12,6 +12,9 @@
 - **Tableaux** : Adaptation de la largeur des tableaux standards au contenu plutôt que de forcer une largeur de 100 %.
 - **Documentation** : Remplacement de l’utilisation directe de la classe `.qc-table` par le composant `<qc-table>` pour les tableaux de la documentation.
 
+### Corrigé
+- **Thème sombre** : Correction d'un bug du logo PIV invisible quand le thème sombre est désactivé (`$enable-dark-theme: false`).
+
 ## Migration des icônes vers Material Symbols
 
 Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.
