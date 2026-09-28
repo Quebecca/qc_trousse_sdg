@@ -1,0 +1,30 @@
+<!-- Fixture de validation de la base « accessibility » (générée en
+     public/accessibilityBaseline.test.html).
+     La base ne livre qu'UNE classe : .qc-sr-only (mixin sr-only) — contenu
+     réservé aux lecteurs d'écran, retiré du flux visuel (clip 1px).
+     NOTE : la trousse ne fournit AUCUN utilitaire skip-link ni reveal-au-focus.
+     Le patron skip-link ci-dessous repose donc sur .qc-sr-only nu ; il reste
+     masqué même au focus (voir spec) — c'est un écart documenté, pas un rendu
+     à masquer. Les encadrés colorés matérialisent l'espace réellement occupé. -->
+
+<!-- 1. Texte sr-only : la mention masquée n'occupe aucun espace visuel.
+     Le paragraphe « attendu » sert de témoin (rendu identique attendu). -->
+<div id="sr-only-text" style="background:#e8f0fe;padding:.5rem;">
+  <p>Prix : 25&nbsp;$<span class="qc-sr-only"> par personne, taxes incluses</span></p>
+  <p>Prix : 25&nbsp;$ <em>(témoin : mention visible)</em></p>
+</div>
+
+<!-- 2. sr-only sur un titre de section (repère de structure non visuel).
+     Le titre masqué ne doit ajouter ni hauteur ni marge visible. -->
+<div id="sr-only-heading" style="background:#fef7e0;padding:.5rem;">
+  <h2 class="qc-sr-only">Navigation principale (titre masqué)</h2>
+  <p>Contenu de la section suivant immédiatement un h2 en qc-sr-only.</p>
+</div>
+
+<!-- 3. Patron skip-link (« aller au contenu ») en markup réel.
+     Le lien porte .qc-sr-only : il est masqué par défaut ET au focus, la base
+     n'ayant pas de reveal-au-focus. Le spec le focus pour capturer cet état. -->
+<div id="skip-link" style="background:#e6f4ea;padding:.5rem;">
+  <a id="skip" class="qc-sr-only" href="#contenu">Aller au contenu principal</a>
+  <p id="contenu">Début du contenu principal (le lien d'évitement précède ce bloc).</p>
+</div>

@@ -1,0 +1,60 @@
+<!-- Fixture baseline du message d'erreur de champ (.qc-form-error) : le markup
+     statique que produit FormError.svelte (div role=alert + <qc-icon> warning rouge
+     + span du message). Couvre le rendu de référence du SCSS _formError.scss :
+     couleur (red-regular), icône 24px (.qc-icon-font), graisse (medium),
+     column-gap, alignement haut (align-items:start) sur texte multiligne, et les
+     deux marges hautes (spacer sm par défaut vs modificateur .qc-xs-mt = spacer xs).
+     Le snapshot fait foi. -->
+
+<!-- Défaut : message générique, marge haute par défaut (spacer sm).
+     Un champ factice précède pour rendre la marge visible. -->
+<div id="default">
+  <label class="qc-label">Numéro de dossier</label>
+  <input type="text" style="display:block">
+  <div class="qc-form-error" role="alert">
+    <qc-icon icon="warning"
+             color="red-regular"
+             width="var(--error-icon-width)"
+             height="var(--error-icon-height)"></qc-icon>
+    <span>Ce champ est obligatoire.</span>
+  </div>
+</div>
+
+<!-- Message nommé (repli par défaut de FormError avec un label) -->
+<div id="labelled">
+  <label class="qc-label">Nom de famille</label>
+  <input type="text" style="display:block">
+  <div class="qc-form-error" role="alert">
+    <qc-icon icon="warning"
+             color="red-regular"
+             width="var(--error-icon-width)"
+             height="var(--error-icon-height)"></qc-icon>
+    <span>Le champ Nom de famille est obligatoire.</span>
+  </div>
+</div>
+
+<!-- Modificateur .qc-xs-mt : marge haute réduite (spacer xs), utilisé par
+     TextField / DropdownList. À comparer visuellement au cas #default. -->
+<div id="xs-mt">
+  <label class="qc-label">Courriel</label>
+  <input type="text" style="display:block">
+  <div class="qc-form-error qc-xs-mt" role="alert">
+    <qc-icon icon="warning"
+             color="red-regular"
+             width="var(--error-icon-width)"
+             height="var(--error-icon-height)"></qc-icon>
+    <span>Le champ Courriel est obligatoire.</span>
+  </div>
+</div>
+
+<!-- Texte multiligne : valide align-items:start (l'icône reste alignée
+     en haut, pas centrée verticalement sur le bloc de texte). -->
+<div id="multiline" style="max-width: 34ch">
+  <div class="qc-form-error" role="alert">
+    <qc-icon icon="warning"
+             color="red-regular"
+             width="var(--error-icon-width)"
+             height="var(--error-icon-height)"></qc-icon>
+    <span>Le message d’erreur peut s’étendre sur plusieurs lignes&nbsp;; l’icône d’avertissement doit rester alignée sur la première ligne du texte.</span>
+  </div>
+</div>

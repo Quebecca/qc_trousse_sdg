@@ -1,0 +1,32 @@
+<!-- Fixture de validation des ombrages (générée en public/shadingsBaseline.test.html).
+     Les ombrages sont purement CSS (pas de composant). La classe .qc-shading-X applique
+     un niveau d'élévation X : le niveau 0 est une simple bordure (pas d'ombre), les
+     niveaux 1 à 4 posent une box-shadow de flou/décalage croissant (tokens box_shadow).
+     Un espacement large est appliqué aux boîtes pour que chaque ombre soit visible et
+     non tronquée dans le snapshot pleine page.
+     Source de vérité des variantes : _shadings.scss (5 niveaux : 0, 1, 2, 3, 4). -->
+<style>
+  /* Cadre de test uniquement — n'altère pas la définition des ombrages, force juste
+     un espacement et une taille homogènes pour rendre chaque niveau lisible. */
+  #liste-elevation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4rem;
+    padding: 3rem;
+    background: #fff;
+  }
+  #liste-elevation > div {
+    width: 12rem;
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 2px;
+  }
+</style>
+<div id="liste-elevation">
+  <div class="qc-shading-0">Élévation 0</div>
+  <div class="qc-shading-1">Élévation 1</div>
+  <div class="qc-shading-2">Élévation 2</div>
+  <div class="qc-shading-3">Élévation 3</div>
+  <div class="qc-shading-4">Élévation 4</div>
+</div>

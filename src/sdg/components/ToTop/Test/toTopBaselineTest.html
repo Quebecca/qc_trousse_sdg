@@ -1,0 +1,22 @@
+<!-- Fixture baseline du composant Retour en haut (<qc-to-top>) : le WC posé en
+     markup HTML statique.
+
+     Le composant est normalement en `position: fixed` (bas-droite) et invisible
+     (`opacity: 0`) tant que le défilement vers le haut ne l'a pas révélé. L'attribut
+     `demo="true"` — celui qu'emploie la doc pour présenter le composant — court-circuite
+     la logique de scroll : le bouton est monté `visible` et rendu DANS LE FLUX (la règle
+     `[demo="false"]` de positionnement fixe ne s'applique pas). C'est donc l'état
+     déterministe qui sert de rendu de référence (bouton bleu, icône « north »).
+     L'état :focus (contour + bordure + ombrage) est piloté côté spec.
+
+     Le snapshot fait foi (rendu visuel de référence, partagé avec le test svelte). -->
+
+<!-- Bouton visible (mode démo), texte par défaut « Retour en haut » -->
+<div class="cas cas-defaut" style="margin-block-end: var(--qc-spacer-md);">
+    <qc-to-top demo="true"></qc-to-top>
+</div>
+
+<!-- Bouton visible (mode démo), texte personnalisé via l'attribut `text` -->
+<div class="cas cas-texte" style="margin-block-end: var(--qc-spacer-md);">
+    <qc-to-top demo="true" text="Revenir au sommet"></qc-to-top>
+</div>

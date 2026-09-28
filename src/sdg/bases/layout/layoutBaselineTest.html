@@ -1,0 +1,33 @@
+<!-- Fixture de validation de la base « layout » (générée en public/layoutBaseline.test.html).
+     _layout.scss pose les règles structurelles globales de la page :
+       - :root font-size (token font size root-percent) → échelle racine des rem ;
+       - box-sizing: border-box sur *, *::before, *::after ;
+       - body : police de contenu (content-font md), marge 0, couleur de fond
+         (token color background), couleur de texte (token color text primary),
+         min-height 100vh.
+     La fixture rend ces règles observables. La géométrie de sonde (.cvt-*) est neutre
+     et volontairement minimale : elle ne teste aucune autre base, elle sert uniquement
+     à révéler le comportement de box-sizing et de l'échelle rem héritée du :root. -->
+<style>
+  /* Géométrie de sonde neutre — ne dépend d'aucune autre base. */
+  .cvt-ruler { width: 200px; height: 8px; background: currentColor; margin-bottom: 4px; }
+  .cvt-probe { width: 200px; padding: 20px; border: 6px solid; }
+  .cvt-rem   { width: 10rem; height: 2rem; border: 1px solid; }
+</style>
+
+<!-- box-sizing: border-box → largeur totale = 200px malgré padding (20) + bordure (6),
+     donc la sonde reste alignée sur la règle de 200px au-dessus. -->
+<div id="box-sizing">
+  <div class="cvt-ruler"></div>
+  <div class="cvt-probe">box-sizing: border-box (largeur totale = 200px)</div>
+</div>
+
+<!-- Police de contenu (content-font md) + couleur de texte primary héritées du body. -->
+<div id="body-typography">
+  <p>Texte de contenu hérité du body : famille, taille et couleur définies par la base layout.</p>
+</div>
+
+<!-- :root font-size (root-percent) → une boîte dimensionnée en rem reflète l'échelle racine. -->
+<div id="root-rem">
+  <div class="cvt-rem"></div>
+</div>

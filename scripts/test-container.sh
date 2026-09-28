@@ -21,7 +21,8 @@
 # - Multi-worktree : chaque exécution est lancée depuis son propre répertoire et
 #   est éphémère (--rm) ; les tests sont en file:// (aucun port), donc plusieurs
 #   worktrees tournent en parallèle sans conflit.
-# - PLAYWRIGHT_HTML_OPEN=never : jamais de serveur de rapport bloquant.
+# - Rapport HTML généré sans serveur bloquant (open:'never' dans la config) ;
+#   consultable via `yarn playwright show-report` après le run.
 #
 set -euo pipefail
 
@@ -48,7 +49,6 @@ echo "▶ Args PW    : $*"
 
 exec docker run --rm \
   --platform="${PLATFORM}" \
-  -e PLAYWRIGHT_HTML_OPEN=never \
   -e YARN_CACHE_FOLDER=/opt/yarn-cache \
   -v "$PWD":/work -w /work \
   -v /work/node_modules \

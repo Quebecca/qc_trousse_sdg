@@ -1,0 +1,34 @@
+<!-- Fixture de validation du séparateur (générée en public/separator.test.html).
+     Le séparateur est purement CSS : la base `_separator.scss` applique le mixin
+     `ruler()` à l'élément natif <hr> (margin: spacer lg 0 ; border: 0 ;
+     border-bottom: 1px solid grey light). Aucune classe ni variante — seul <hr>
+     est stylé. La fixture couvre donc le rendu du <hr> dans différents contextes :
+     entre paragraphes, en série, et dans des conteneurs de largeur variable. -->
+
+<!-- Cas de base : <hr> entre deux blocs de texte (contexte courant) -->
+<div id="between-paragraphs">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+  <hr/>
+  <p>A autem consequuntur cum cupiditate dignissimos, dolore doloribus.</p>
+</div>
+
+<!-- Séparateurs en série : valide la marge verticale (spacer lg) cumulée -->
+<div id="consecutive">
+  <p>Premier bloc.</p>
+  <hr/>
+  <p>Deuxième bloc.</p>
+  <hr/>
+  <p>Troisième bloc.</p>
+</div>
+
+<!-- <hr> seul, sans texte adjacent : valide border-bottom + reset border -->
+<div id="standalone">
+  <hr/>
+</div>
+
+<!-- <hr> dans un conteneur étroit : valide que le trait suit la largeur du parent -->
+<div id="narrow" style="max-width: 320px;">
+  <p>Bloc contraint en largeur.</p>
+  <hr/>
+  <p>Le trait doit épouser la largeur du conteneur.</p>
+</div>

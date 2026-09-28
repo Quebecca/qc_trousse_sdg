@@ -1,0 +1,83 @@
+<!-- Fixture baseline de la base « colors ». Chaque token de couleur
+     (--qc-color-*) est rendu sur une ligne de lorem ipsum colorée, empilées
+     verticalement. Design volontairement plat : texte monospace (police
+     système, aucun @font-face donc aucun font-swap) + nowrap + overflow
+     hidden => hauteur de ligne fixe, AUCUN retour à la ligne possible, donc
+     aucun décalage de mise en page pendant la capture (pas d'attente requise
+     dans le spec). Le token `background` n'a pas de ligne : il est validé
+     directement par le fond de page. Toute dérive d'une valeur de couleur
+     fait bouger ce snapshot — le snapshot fait foi. -->
+<style>
+  #colors-baseline { margin: 0; }
+  #colors-baseline h3 { font: 700 16px/24px monospace; margin: 24px 0 4px; }
+  #colors-baseline h3:first-child { margin-top: 0; }
+  #colors-baseline .cvt-line { font: 14px/24px monospace; margin: 0; white-space: nowrap; overflow: hidden; }
+</style>
+
+<div id="colors-baseline">
+
+  <h3>Base</h3>
+  <p class="cvt-line" style="color: var(--qc-color-white)">white — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-text-primary)">text-primary — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Bleus</h3>
+  <p class="cvt-line" style="color: var(--qc-color-blue-extra-pale)">blue-extra-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-pale)">blue-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-light)">blue-light — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-regular_light)">blue-regular_light — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-regular)">blue-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-piv)">blue-piv — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-medium)">blue-medium — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-blue-dark)">blue-dark — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Violet</h3>
+  <p class="cvt-line" style="color: var(--qc-color-purple)">purple — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Niveaux de gris</h3>
+  <p class="cvt-line" style="color: var(--qc-color-grey-extra-pale)">grey-extra-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-grey-pale)">grey-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-grey-light)">grey-light — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-grey-regular)">grey-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-grey-medium)">grey-medium — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-grey-dark)">grey-dark — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Rouges et roses</h3>
+  <p class="cvt-line" style="color: var(--qc-color-pink-pale)">pink-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-pink-regular)">pink-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-pale)">red-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-light)">red-light — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-regular_light)">red-regular_light — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-regular)">red-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-medium)">red-medium — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-red-dark)">red-dark — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Verts</h3>
+  <p class="cvt-line" style="color: var(--qc-color-green-pale)">green-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-green-regular)">green-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-green-dark)">green-dark — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Jaunes</h3>
+  <p class="cvt-line" style="color: var(--qc-color-yellow-pale)">yellow-pale — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-yellow-regular)">yellow-regular — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-yellow-dark)">yellow-dark — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Alias fonctionnels</h3>
+  <p class="cvt-line" style="color: var(--qc-color-accent)">accent — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-success)">success — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-error)">error — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-danger)">danger — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-box_shadow)">box_shadow — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Liens</h3>
+  <p class="cvt-line" style="color: var(--qc-color-link-text)">link-text — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-link-hover)">link-hover — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-link-visited)">link-visited — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-link-active)">link-active — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-link-focus-outline)">link-focus-outline — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+
+  <h3>Champs de formulaire</h3>
+  <p class="cvt-line" style="color: var(--qc-color-formfield-border)">formfield-border — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-formfield-focus-border)">formfield-focus-border — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-formfield-focus-outline)">formfield-focus-outline — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+  <p class="cvt-line" style="color: var(--qc-color-searchinput-icon)">searchinput-icon — Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+</div>

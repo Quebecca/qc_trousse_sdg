@@ -1,0 +1,70 @@
+<!-- Fixture de régression visuelle du pied de page du PIV (qc-piv-footer).
+     Pilote le web component livré (dist/js/qc-sdg.min.js) : la carte interne
+     (.qc-piv-footer : logo + copyright) et le contenu slotté (nav > ul de liens,
+     stylé par le sélecteur qc-piv-footer) sont couverts par le même snapshot.
+     Cas groupés par variante. copyright-text figé pour un rendu déterministe
+     (l'année par défaut du composant dériverait d'une année à l'autre). -->
+
+<!-- Variante par défaut : logo standard, plusieurs liens (ul flex-wrap centré). -->
+<div id="piv-footer-default">
+  <qc-piv-footer copyright-text="© Gouvernement du Québec, 2024">
+    <nav aria-label="Navigation du pied de page">
+      <ul>
+        <li><a href="/">Accessibilité</a></li>
+        <li><a href="/">Plan du site</a></li>
+        <li><a href="/">Accès à l’information</a></li>
+        <li><a href="/">Politique de confidentialité</a></li>
+        <li><a href="/">Conditions d’utilisation</a></li>
+        <li><a href="/">À propos de Québec.ca</a></li>
+      </ul>
+    </nav>
+  </qc-piv-footer>
+</div>
+
+<!-- Variante peu de liens : une seule rangée, centrage horizontal du ul. -->
+<div id="piv-footer-few-links">
+  <qc-piv-footer copyright-text="© Gouvernement du Québec, 2024">
+    <nav aria-label="Navigation du pied de page">
+      <ul>
+        <li><a href="/">Accès à l’information</a></li>
+        <li><a href="/">Politique de confidentialité</a></li>
+      </ul>
+    </nav>
+  </qc-piv-footer>
+</div>
+
+<!-- Variante logo personnalisé : dimensions logo-width/logo-height + copyright slotté. -->
+<div id="piv-footer-custom-logo">
+  <qc-piv-footer
+          logo-width="200"
+          logo-height="72"
+          copyright-url="https://www.quebec.ca/droit-auteur"
+          copyright-text="© Gouvernement du Québec, 2024">
+    <nav aria-label="Navigation du pied de page">
+      <ul>
+        <li><a href="/">Accès à l’information</a></li>
+        <li><a href="/">Politique de confidentialité</a></li>
+      </ul>
+    </nav>
+    <qc-external-link slot="copyright">
+      <a target="_blank"
+         rel="noopener"
+         href="https://www.quebec.ca/droit-auteur">
+        © Gouvernement du Québec, 2024
+      </a>
+    </qc-external-link>
+  </qc-piv-footer>
+</div>
+
+<!-- Zones d'ajout de contenu (slots) délimitées en pointillé : slot par défaut + slot copyright. -->
+<div id="piv-footer-slots">
+  <qc-piv-footer copyright-text="© Gouvernement du Québec, 2024">
+    <div style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      Contenu par défaut
+    </div>
+    <div slot="copyright"
+         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      slot="copyright"
+    </div>
+  </qc-piv-footer>
+</div>

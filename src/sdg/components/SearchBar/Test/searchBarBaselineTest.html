@@ -1,0 +1,21 @@
+<!-- Fixture de test du composant qc-search-bar (WC posé en markup statique).
+     Le rendu doit être IDENTIQUE au harnais Svelte (searchBarSvelteTest.html) :
+     baseline et svelte partagent le même snapshot PNG. -->
+
+<!-- Variante par défaut, dans un formulaire (cas d'usage recherche Solr). -->
+<div class="cas cas-defaut" style="margin-block-start: var(--qc-spacer-md); margin-block-end: var(--qc-spacer-md);">
+    <form action="#">
+        <qc-search-bar></qc-search-bar>
+    </form>
+</div>
+
+<!-- Variante avec valeur pré-remplie : affiche le bouton d'effacement (icône close). -->
+<div class="cas cas-valeur" style="margin-block-end: var(--qc-spacer-md);">
+    <qc-search-bar input-value="Climat"></qc-search-bar>
+</div>
+
+<!-- Variante sur fond bleu PIV (attribut piv-background). -->
+<div class="cas cas-piv"
+     style="margin-block-end: var(--qc-spacer-md); padding: var(--qc-spacer-md); background-color: var(--qc-color-blue-piv);">
+    <qc-search-bar piv-background></qc-search-bar>
+</div>

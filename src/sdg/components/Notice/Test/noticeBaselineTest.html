@@ -1,0 +1,71 @@
+<!-- Fixture baseline du composant Avis (<qc-notice>) : le WC posé en markup HTML
+     statique. Couvre TOUS les types, les deux modes de contenu (attribut `content`
+     vs slot), le niveau de titre personnalisé (`header`), la surcharge d'icône
+     (`icon`) et le repli sur `information` pour un type invalide.
+     Le snapshot fait foi (rendu visuel de référence, partagé avec le test svelte). -->
+
+<!-- Type advice (neutre / gris, icône emoji_objects par défaut) -->
+<qc-notice type="advice"
+           title="Nouvelle règlementation"
+           content="Les nouveaux règlements de pêche seront en vigueur à partir du 12 mai.">
+</qc-notice>
+
+<!-- Type note (neutre / gris, icône content_paste par défaut) -->
+<qc-notice type="note"
+           title="Nouvelle règlementation"
+           content="Les nouveaux règlements de pêche seront en vigueur à partir du 12 mai.">
+</qc-notice>
+
+<!-- Type information (défaut, bleu PIV, icône info) -->
+<qc-notice type="information"
+           title="Nouvelle règlementation"
+           content="Les nouveaux règlements de pêche seront en vigueur à partir du 12 mai.">
+</qc-notice>
+
+<!-- Type warning — mode attribut (jaune, icône warning) -->
+<qc-notice type="warning"
+           title="Migration des contenus"
+           content="Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.">
+</qc-notice>
+
+<!-- Type warning — mode slot (contenu HTML structuré projeté) -->
+<qc-notice type="warning">
+  <h2>Migration des contenus</h2>
+  <p>Les contenus seront transférés dans Québec.ca à partir du 16 février et le site sera fermé le 20 avril.</p>
+</qc-notice>
+
+<!-- Type success (vert, icône check_circle, role=status) -->
+<qc-notice type="success"
+           title="Votre demande d’inscription a été reçue"
+           content="Votre code de confirmation sera envoyé par courriel.">
+</qc-notice>
+
+<!-- Type error (rouge, icône cancel, role=alert) — résumé d'erreurs slotté en liens -->
+<qc-notice type="error"
+           title="Des erreurs sont présentes dans le formulaire :">
+  <ul>
+    <li><a href="#nom-de-famille">Le champ « Nom de famille » est obligatoire ;</a></li>
+    <li><a href="#prenom">Le champ « Prénom » est obligatoire ;</a></li>
+    <li><a href="#numero-de-dossier">Le champ « Numéro de dossier » est obligatoire.</a></li>
+  </ul>
+</qc-notice>
+
+<!-- Niveau de titre personnalisé (header=h4) -->
+<qc-notice type="information"
+           header="h4"
+           title="Titre de niveau h4"
+           content="Avis dont le niveau sémantique du titre est personnalisé.">
+</qc-notice>
+
+<!-- Surcharge d'icône (icon=schedule) sur un type advice -->
+<qc-notice type="advice"
+           icon="schedule"
+           title="Icône personnalisée"
+           content="Avis conseil avec une icône surchargée via l’attribut icon.">
+</qc-notice>
+
+<!-- Type invalide → repli sur information -->
+<qc-notice type="inexistant"
+           title="Type inconnu"
+           content="Un type non reconnu doit retomber sur le rendu « information ».">
+</qc-notice>

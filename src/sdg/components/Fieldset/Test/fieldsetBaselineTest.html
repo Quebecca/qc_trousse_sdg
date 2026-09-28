@@ -1,0 +1,11 @@
+<!-- Fixture INTENTIONNELLEMENT VIDE — la base CSS `_fieldset.scss` n'est PAS testée ici.
+
+     Comme `form`, `_fieldset.scss` est de la logique interne (mise en page des groupes
+     de champs, légende, gaps, boutons de sélection) sans rendu propre isolable : elle est
+     exercée à travers les tests des composants de formulaire (ChoiceGroup, TextField,
+     FormfieldRow…) qui l'utilisent.
+
+     Ce fichier vide est une SÉCURITÉ : il documente que l'absence de test pour `fieldset`
+     est un choix délibéré, pas un oubli. Ne pas y ajouter de markup ni recréer de spec
+     fieldset-baseline. Le plugin buildFixturesIndex ignore les fixtures vides (sans markup),
+     donc `fieldset` n'apparaît pas dans public/fixtures-index.html. -->

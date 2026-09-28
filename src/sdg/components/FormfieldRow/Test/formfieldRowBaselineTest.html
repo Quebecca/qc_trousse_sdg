@@ -1,0 +1,68 @@
+<!-- Fixture de validation de la disposition « champs alignés » (.qc-formfield-row).
+     Générée dans public/formfieldRowBaseline.test.html (enrobée dans src/doc/_test.html).
+     La classe .qc-formfield-row (définie dans components/Fieldset/_fieldset.scss) aligne
+     des champs sur une même ligne : flex + gap horizontal de 32px, retour à la ligne
+     (flex-wrap), marge basse des champs neutralisée, largeur d'input pilotée par `size`,
+     .qc-select en width:fit-content, et un .qc-form-error enfant direct qui occupe 100 %
+     de la largeur. Cas groupés par variante ; le snapshot fait foi. -->
+
+<!-- 1. Deux champs de tailles différentes (largeur d'input par `size` + gap horizontal) -->
+<h2 class="qc-h4">Champs alignés (tailles sm / xs)</h2>
+<div id="row-textfields" class="qc-formfield-row">
+    <qc-textfield label="Téléphone" size="sm" required>
+        <input type="text" name="telephone" placeholder="(123) 456-7890"/>
+    </qc-textfield>
+    <qc-textfield label="Poste" size="xs" required>
+        <input type="text" name="poste"/>
+    </qc-textfield>
+</div>
+
+<!-- 2. Progression des largeurs d'input xs / sm / md sur une même ligne -->
+<h2 class="qc-h4">Trois tailles sur une ligne (xs / sm / md)</h2>
+<div id="row-sizes" class="qc-formfield-row">
+    <qc-textfield label="Très court (xs)" size="xs"><input type="text" name="xs"/></qc-textfield>
+    <qc-textfield label="Court (sm)" size="sm"><input type="text" name="sm"/></qc-textfield>
+    <qc-textfield label="Moyen (md)" size="md"><input type="text" name="md"/></qc-textfield>
+</div>
+
+<!-- 3. Champ texte + liste déroulante (.qc-select en width:fit-content, aligné dans la ligne) -->
+<h2 class="qc-h4">Champ texte + liste déroulante</h2>
+<div id="row-select" class="qc-formfield-row">
+    <qc-textfield label="Ville" size="sm"><input type="text" name="ville"/></qc-textfield>
+    <qc-select id="ffr-region" placeholder="Sélectionner une région" required>
+        <label for="ffr-region-select">Région</label>
+        <select id="ffr-region-select" name="region">
+            <option value="">Veuillez faire un choix</option>
+            <option value="Capitale-Nationale">Capitale-Nationale</option>
+            <option value="Montérégie">Montérégie</option>
+            <option value="Outaouais">Outaouais</option>
+        </select>
+    </qc-select>
+</div>
+
+<!-- 4. Erreur de rangée : un .qc-form-error enfant direct occupe 100 % de la largeur -->
+<h2 class="qc-h4">Erreur au niveau de la rangée (pleine largeur)</h2>
+<div id="row-error" class="qc-formfield-row">
+    <qc-textfield label="Prénom" size="sm"><input type="text" name="prenom"/></qc-textfield>
+    <qc-textfield label="Nom" size="sm"><input type="text" name="nom"/></qc-textfield>
+    <div class="qc-form-error" role="alert">
+        <span role="img"
+              class="qc-icon qc-icon-font"
+              style="--img-color: var(--qc-color-red-regular);"
+              data-img-type="warning"
+              data-img-variant="outlined"
+              aria-hidden="true">&#xE002;</span>
+        <span>Veuillez remplir tous les champs de cette rangée.</span>
+    </div>
+</div>
+
+<!-- 5. Plusieurs champs sur une rangée : gap horizontal régulier et alignement.
+     NB : avec min-width:0 les champs se compressent au lieu de passer à la ligne à cette
+     largeur de viewport ; flex-wrap reste actif mais n'est pas déclenché ici. -->
+<h2 class="qc-h4">Plusieurs champs alignés (gap horizontal régulier)</h2>
+<div id="row-multi" class="qc-formfield-row">
+    <qc-textfield label="Champ A" size="md"><input type="text" name="a"/></qc-textfield>
+    <qc-textfield label="Champ B" size="md"><input type="text" name="b"/></qc-textfield>
+    <qc-textfield label="Champ C" size="md"><input type="text" name="c"/></qc-textfield>
+    <qc-textfield label="Champ D" size="md"><input type="text" name="d"/></qc-textfield>
+</div>

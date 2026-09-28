@@ -1,0 +1,75 @@
+<!-- Fixture de validation de la typographie (générée en public/typographyBaseline.test.html).
+     Challenge _paragraph.scss et _fonts.scss : paragraphes (marge basse, largeur max),
+     tailles de police utilitaires (.qc-font-size-sm/md/lg/xl), familles (header/content/code),
+     graisses (header + content : regular/medium/bold, romain et italique), exposant/indice,
+     code inline. Cas groupés par variante avec un id, comme headingsTest.html. -->
+
+<!-- Conteneur à hauteur fixe : le contenu (~945px) mélange plusieurs polices web
+     à des tailles variées, dont les hauteurs de ligne fractionnaires s'accumulent
+     et arrondissent à 945 OU 946px selon le timing de chargement de la police au
+     moment de la capture -> la hauteur totale de page oscillait de 1px et faisait
+     échouer toHaveScreenshot sur un mismatch de dimensions (sans diff de pixels
+     visible). On fige une hauteur entière (> contenu) + overflow:hidden : la page
+     a toujours la même hauteur, l'arrondi ±1px est absorbé. Design déterministe
+     plutôt qu'attente de chargement. -->
+<style>
+  #typography-baseline { height: 960px; overflow: hidden; }
+</style>
+
+<div id="typography-baseline">
+
+<!-- Paragraphes : marge basse entre deux <p> + max-inline-size (largeur de ligne bornée) -->
+<div id="paragraphs">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin iaculis sapien vitae tempor
+     porttitor. Morbi tincidunt lorem et neque commodo varius. Suspendisse pretium risus sit amet
+     nisi tempus, ut euismod ex euismod. Nulla eget ullamcorper justo. Quisque cursus eget ex eget
+     cursus. Suspendisse potenti. Donec a risus viverra dolor sodales elementum.</p>
+  <p>Aliquam rutrum sollicitudin lorem, vitae elementum tellus cursus ut. Vivamus in sodales risus.
+     Maecenas neque ante, faucibus non lobortis et, auctor non sem. Integer nec hendrerit dolor.
+     Mauris odio elit, viverra quis dolor sit amet, finibus auctor ex. Aliquam dapibus vestibulum
+     metus a blandit. Etiam vitae augue id dui interdum viverra.</p>
+</div>
+
+<!-- Tailles de police utilitaires : content-font sm/md/lg/xl (font-size + line-height) -->
+<div id="font-sizes">
+  <p class="qc-font-size-sm">.qc-font-size-sm — texte de petite taille (sm)</p>
+  <p class="qc-font-size-md">.qc-font-size-md — taille de texte courante (md)</p>
+  <p class="qc-font-size-lg">.qc-font-size-lg — texte de grande taille (lg)</p>
+  <p class="qc-font-size-xl">.qc-font-size-xl — texte de très grande taille (xl)</p>
+</div>
+
+<!-- Familles de police : header (Roboto), content (Open Sans), code (Roboto Mono) -->
+<div id="font-families">
+  <p style="font-family: var(--qc-font-family-header);">Famille header (Roboto) — ABCDEFG abcdefg 0123456789</p>
+  <p style="font-family: var(--qc-font-family-content);">Famille content (Open Sans) — ABCDEFG abcdefg 0123456789</p>
+  <p class="qc-code">Famille code (.qc-code) — ABCDEFG abcdefg 0123456789</p>
+</div>
+
+<!-- Graisses header (Roboto) : regular / medium / bold, romain et italique -->
+<div id="font-weights-header" style="font-family: var(--qc-font-family-header);">
+  <p style="font-weight: var(--qc-font-weight-header-regular);">Header regular
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+  <p style="font-weight: var(--qc-font-weight-header-medium);">Header medium
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+  <p style="font-weight: var(--qc-font-weight-header-bold);">Header bold
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+</div>
+
+<!-- Graisses content (Open Sans) : regular / medium (semi-bold) / bold, romain et italique -->
+<div id="font-weights-content" style="font-family: var(--qc-font-family-content);">
+  <p style="font-weight: var(--qc-font-weight-content-regular);">Content regular
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+  <p style="font-weight: var(--qc-font-weight-content-medium);">Content medium
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+  <p style="font-weight: var(--qc-font-weight-content-bold);">Content bold
+    <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
+</div>
+
+<!-- Emphases inline : gras, italique, code, exposant et indice (sup/sub à line-height 0) -->
+<div id="inline">
+  <p>Texte avec <strong>gras</strong>, <em>italique</em> et code inline
+     <code>const x = 1;</code>. Formule H<sub>2</sub>O et puissance 10<sup>3</sup> sur la ligne.</p>
+</div>
+
+</div>
+

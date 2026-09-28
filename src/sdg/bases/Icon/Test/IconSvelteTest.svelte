@@ -7,141 +7,171 @@
     import { Utils } from '../../../components/utils.js';
 </script>
 
-<!-- Section 1 : Icônes Material Symbols (noms canoniques) — toutes tailles -->
-<div class="section-material-sizes">
-    <h3>Icônes Material Symbols — toutes tailles</h3>
-    <div>
-        <Icon type="search" size="xs" label="search xs" />
-        <Icon type="search" size="sm" label="search sm" />
-        <Icon type="search" size="md" label="search md" />
-        <Icon type="search" size="lg" label="search lg" />
-        <Icon type="search" size="xl" label="search xl" />
-    </div>
-    <div>
-        <Icon type="close" size="xs" label="close xs" />
-        <Icon type="close" size="sm" label="close sm" />
-        <Icon type="close" size="md" label="close md" />
-        <Icon type="close" size="lg" label="close lg" />
-        <Icon type="close" size="xl" label="close xl" />
-    </div>
-    <div>
-        <Icon type="arrow_upward" size="xs" label="arrow_upward xs" />
-        <Icon type="arrow_upward" size="sm" label="arrow_upward sm" />
-        <Icon type="arrow_upward" size="md" label="arrow_upward md" />
-        <Icon type="arrow_upward" size="lg" label="arrow_upward lg" />
-        <Icon type="arrow_upward" size="xl" label="arrow_upward xl" />
-    </div>
-    <div>
-        <Icon type="check" size="xs" label="check xs" />
-        <Icon type="check" size="sm" label="check sm" />
-        <Icon type="check" size="md" label="check md" />
-        <Icon type="check" size="lg" label="check lg" />
-        <Icon type="check" size="xl" label="check xl" />
-    </div>
-    <div>
-        <Icon type="expand_less" size="xs" label="expand_less xs" />
-        <Icon type="expand_less" size="sm" label="expand_less sm" />
-        <Icon type="expand_less" size="md" label="expand_less md" />
-        <Icon type="expand_less" size="lg" label="expand_less lg" />
-        <Icon type="expand_less" size="xl" label="expand_less xl" />
-    </div>
-    <div>
-        <Icon type="info" size="xs" label="info xs" />
-        <Icon type="info" size="sm" label="info sm" />
-        <Icon type="info" size="md" label="info md" />
-        <Icon type="info" size="lg" label="info lg" />
-        <Icon type="info" size="xl" label="info xl" />
-    </div>
-    <div>
-        <Icon type="warning" size="xs" label="warning xs" />
-        <Icon type="warning" size="sm" label="warning sm" />
-        <Icon type="warning" size="md" label="warning md" />
-        <Icon type="warning" size="lg" label="warning lg" />
-        <Icon type="warning" size="xl" label="warning xl" />
-    </div>
-    <div>
-        <Icon type="error" size="xs" label="error xs" />
-        <Icon type="error" size="sm" label="error sm" />
-        <Icon type="error" size="md" label="error md" />
-        <Icon type="error" size="lg" label="error lg" />
-        <Icon type="error" size="xl" label="error xl" />
-    </div>
-    <div>
-        <Icon type="check_circle" size="xs" label="check_circle xs" />
-        <Icon type="check_circle" size="sm" label="check_circle sm" />
-        <Icon type="check_circle" size="md" label="check_circle md" />
-        <Icon type="check_circle" size="lg" label="check_circle lg" />
-        <Icon type="check_circle" size="xl" label="check_circle xl" />
-    </div>
-    <div>
-        <Icon type="person" size="xs" label="person xs" />
-        <Icon type="person" size="sm" label="person sm" />
-        <Icon type="person" size="md" label="person md" />
-        <Icon type="person" size="lg" label="person lg" />
-        <Icon type="person" size="xl" label="person xl" />
-    </div>
+<!-- ⚠️ FICHIER GÉNÉRÉ depuis icon-codepoints.json (scripts/build-icon-fixtures.js) — NE PAS ÉDITER À LA MAIN.
+     Couverture EXHAUSTIVE : toutes les icônes du subset (43) en outlined + filled,
+     + tailles, couleurs, rotation, alias legacy et icône personnalisée (src).
+     Baseline et svelte PARTAGENT le même snapshot : les deux arbres doivent rendre au pixel près. -->
+
+<!-- Section 1 : toutes les icônes du subset — variante outlined -->
+<div class="section-all-outlined"><h3>Subset complet — outlined (43)</h3><div class="grid">
+        <span class="cell"><Icon type="place" variant="outlined" size="lg" use-material /><span class="name">place</span></span>
+        <span class="cell"><Icon type="arrow_upward" variant="outlined" size="lg" use-material /><span class="name">arrow_upward</span></span>
+        <span class="cell"><Icon type="arrow_downward" variant="outlined" size="lg" use-material /><span class="name">arrow_downward</span></span>
+        <span class="cell"><Icon type="arrow_back" variant="outlined" size="lg" use-material /><span class="name">arrow_back</span></span>
+        <span class="cell"><Icon type="arrow_forward" variant="outlined" size="lg" use-material /><span class="name">arrow_forward</span></span>
+        <span class="cell"><Icon type="arrow_left_alt" variant="outlined" size="lg" use-material /><span class="name">arrow_left_alt</span></span>
+        <span class="cell"><Icon type="arrow_right_alt" variant="outlined" size="lg" use-material /><span class="name">arrow_right_alt</span></span>
+        <span class="cell"><Icon type="north" variant="outlined" size="lg" use-material /><span class="name">north</span></span>
+        <span class="cell"><Icon type="calendar_today" variant="outlined" size="lg" use-material /><span class="name">calendar_today</span></span>
+        <span class="cell"><Icon type="check" variant="outlined" size="lg" use-material /><span class="name">check</span></span>
+        <span class="cell"><Icon type="expand_less" variant="outlined" size="lg" use-material /><span class="name">expand_less</span></span>
+        <span class="cell"><Icon type="expand_more" variant="outlined" size="lg" use-material /><span class="name">expand_more</span></span>
+        <span class="cell"><Icon type="chevron_right" variant="outlined" size="lg" use-material /><span class="name">chevron_right</span></span>
+        <span class="cell"><Icon type="chevron_left" variant="outlined" size="lg" use-material /><span class="name">chevron_left</span></span>
+        <span class="cell"><Icon type="content_paste" variant="outlined" size="lg" use-material /><span class="name">content_paste</span></span>
+        <span class="cell"><Icon type="emoji_objects" variant="outlined" size="lg" use-material /><span class="name">emoji_objects</span></span>
+        <span class="cell"><Icon type="schedule" variant="outlined" size="lg" use-material /><span class="name">schedule</span></span>
+        <span class="cell"><Icon type="mail" variant="outlined" size="lg" use-material /><span class="name">mail</span></span>
+        <span class="cell"><Icon type="cancel" variant="outlined" size="lg" use-material /><span class="name">cancel</span></span>
+        <span class="cell"><Icon type="warning" variant="outlined" size="lg" use-material /><span class="name">warning</span></span>
+        <span class="cell"><Icon type="open_in_new" variant="outlined" size="lg" use-material /><span class="name">open_in_new</span></span>
+        <span class="cell"><Icon type="info" variant="outlined" size="lg" use-material /><span class="name">info</span></span>
+        <span class="cell"><Icon type="lightbulb" variant="outlined" size="lg" use-material /><span class="name">lightbulb</span></span>
+        <span class="cell"><Icon type="remove" variant="outlined" size="lg" use-material /><span class="name">remove</span></span>
+        <span class="cell"><Icon type="edit_note" variant="outlined" size="lg" use-material /><span class="name">edit_note</span></span>
+        <span class="cell"><Icon type="call" variant="outlined" size="lg" use-material /><span class="name">call</span></span>
+        <span class="cell"><Icon type="add" variant="outlined" size="lg" use-material /><span class="name">add</span></span>
+        <span class="cell"><Icon type="help" variant="outlined" size="lg" use-material /><span class="name">help</span></span>
+        <span class="cell"><Icon type="search" variant="outlined" size="lg" use-material /><span class="name">search</span></span>
+        <span class="cell"><Icon type="check_circle" variant="outlined" size="lg" use-material /><span class="name">check_circle</span></span>
+        <span class="cell"><Icon type="person" variant="outlined" size="lg" use-material /><span class="name">person</span></span>
+        <span class="cell"><Icon type="laptop_chromebook" variant="outlined" size="lg" use-material /><span class="name">laptop_chromebook</span></span>
+        <span class="cell"><Icon type="close" variant="outlined" size="lg" use-material /><span class="name">close</span></span>
+        <span class="cell"><Icon type="description" variant="outlined" size="lg" use-material /><span class="name">description</span></span>
+        <span class="cell"><Icon type="more_horiz" variant="outlined" size="lg" use-material /><span class="name">more_horiz</span></span>
+        <span class="cell"><Icon type="print" variant="outlined" size="lg" use-material /><span class="name">print</span></span>
+        <span class="cell"><Icon type="toc" variant="outlined" size="lg" use-material /><span class="name">toc</span></span>
+        <span class="cell"><Icon type="download" variant="outlined" size="lg" use-material /><span class="name">download</span></span>
+        <span class="cell"><Icon type="videocam" variant="outlined" size="lg" use-material /><span class="name">videocam</span></span>
+        <span class="cell"><Icon type="note" variant="outlined" size="lg" use-material /><span class="name">note</span></span>
+        <span class="cell"><Icon type="fax" variant="outlined" size="lg" use-material /><span class="name">fax</span></span>
+        <span class="cell"><Icon type="add_circle" variant="outlined" size="lg" use-material /><span class="name">add_circle</span></span>
+        <span class="cell"><Icon type="do_not_disturb_on" variant="outlined" size="lg" use-material /><span class="name">do_not_disturb_on</span></span>
+</div></div>
+<!-- Section 2 : toutes les icônes du subset — variante filled -->
+<div class="section-all-filled"><h3>Subset complet — filled (43)</h3><div class="grid">
+        <span class="cell"><Icon type="place" variant="filled" size="lg" use-material /><span class="name">place</span></span>
+        <span class="cell"><Icon type="arrow_upward" variant="filled" size="lg" use-material /><span class="name">arrow_upward</span></span>
+        <span class="cell"><Icon type="arrow_downward" variant="filled" size="lg" use-material /><span class="name">arrow_downward</span></span>
+        <span class="cell"><Icon type="arrow_back" variant="filled" size="lg" use-material /><span class="name">arrow_back</span></span>
+        <span class="cell"><Icon type="arrow_forward" variant="filled" size="lg" use-material /><span class="name">arrow_forward</span></span>
+        <span class="cell"><Icon type="arrow_left_alt" variant="filled" size="lg" use-material /><span class="name">arrow_left_alt</span></span>
+        <span class="cell"><Icon type="arrow_right_alt" variant="filled" size="lg" use-material /><span class="name">arrow_right_alt</span></span>
+        <span class="cell"><Icon type="north" variant="filled" size="lg" use-material /><span class="name">north</span></span>
+        <span class="cell"><Icon type="calendar_today" variant="filled" size="lg" use-material /><span class="name">calendar_today</span></span>
+        <span class="cell"><Icon type="check" variant="filled" size="lg" use-material /><span class="name">check</span></span>
+        <span class="cell"><Icon type="expand_less" variant="filled" size="lg" use-material /><span class="name">expand_less</span></span>
+        <span class="cell"><Icon type="expand_more" variant="filled" size="lg" use-material /><span class="name">expand_more</span></span>
+        <span class="cell"><Icon type="chevron_right" variant="filled" size="lg" use-material /><span class="name">chevron_right</span></span>
+        <span class="cell"><Icon type="chevron_left" variant="filled" size="lg" use-material /><span class="name">chevron_left</span></span>
+        <span class="cell"><Icon type="content_paste" variant="filled" size="lg" use-material /><span class="name">content_paste</span></span>
+        <span class="cell"><Icon type="emoji_objects" variant="filled" size="lg" use-material /><span class="name">emoji_objects</span></span>
+        <span class="cell"><Icon type="schedule" variant="filled" size="lg" use-material /><span class="name">schedule</span></span>
+        <span class="cell"><Icon type="mail" variant="filled" size="lg" use-material /><span class="name">mail</span></span>
+        <span class="cell"><Icon type="cancel" variant="filled" size="lg" use-material /><span class="name">cancel</span></span>
+        <span class="cell"><Icon type="warning" variant="filled" size="lg" use-material /><span class="name">warning</span></span>
+        <span class="cell"><Icon type="open_in_new" variant="filled" size="lg" use-material /><span class="name">open_in_new</span></span>
+        <span class="cell"><Icon type="info" variant="filled" size="lg" use-material /><span class="name">info</span></span>
+        <span class="cell"><Icon type="lightbulb" variant="filled" size="lg" use-material /><span class="name">lightbulb</span></span>
+        <span class="cell"><Icon type="remove" variant="filled" size="lg" use-material /><span class="name">remove</span></span>
+        <span class="cell"><Icon type="edit_note" variant="filled" size="lg" use-material /><span class="name">edit_note</span></span>
+        <span class="cell"><Icon type="call" variant="filled" size="lg" use-material /><span class="name">call</span></span>
+        <span class="cell"><Icon type="add" variant="filled" size="lg" use-material /><span class="name">add</span></span>
+        <span class="cell"><Icon type="help" variant="filled" size="lg" use-material /><span class="name">help</span></span>
+        <span class="cell"><Icon type="search" variant="filled" size="lg" use-material /><span class="name">search</span></span>
+        <span class="cell"><Icon type="check_circle" variant="filled" size="lg" use-material /><span class="name">check_circle</span></span>
+        <span class="cell"><Icon type="person" variant="filled" size="lg" use-material /><span class="name">person</span></span>
+        <span class="cell"><Icon type="laptop_chromebook" variant="filled" size="lg" use-material /><span class="name">laptop_chromebook</span></span>
+        <span class="cell"><Icon type="close" variant="filled" size="lg" use-material /><span class="name">close</span></span>
+        <span class="cell"><Icon type="description" variant="filled" size="lg" use-material /><span class="name">description</span></span>
+        <span class="cell"><Icon type="more_horiz" variant="filled" size="lg" use-material /><span class="name">more_horiz</span></span>
+        <span class="cell"><Icon type="print" variant="filled" size="lg" use-material /><span class="name">print</span></span>
+        <span class="cell"><Icon type="toc" variant="filled" size="lg" use-material /><span class="name">toc</span></span>
+        <span class="cell"><Icon type="download" variant="filled" size="lg" use-material /><span class="name">download</span></span>
+        <span class="cell"><Icon type="videocam" variant="filled" size="lg" use-material /><span class="name">videocam</span></span>
+        <span class="cell"><Icon type="note" variant="filled" size="lg" use-material /><span class="name">note</span></span>
+        <span class="cell"><Icon type="fax" variant="filled" size="lg" use-material /><span class="name">fax</span></span>
+        <span class="cell"><Icon type="add_circle" variant="filled" size="lg" use-material /><span class="name">add_circle</span></span>
+        <span class="cell"><Icon type="do_not_disturb_on" variant="filled" size="lg" use-material /><span class="name">do_not_disturb_on</span></span>
+</div></div>
+<!-- Section 3 : tailles (xs→xl) -->
+<div class="section-sizes"><h3>Tailles</h3>
+    <div><Icon type="search" size="xs" /><Icon type="search" size="sm" /><Icon type="search" size="md" /><Icon type="search" size="nm" /><Icon type="search" size="lg" /><Icon type="search" size="xl" /></div>
+    <div><Icon type="check_circle" size="xs" /><Icon type="check_circle" size="sm" /><Icon type="check_circle" size="md" /><Icon type="check_circle" size="nm" /><Icon type="check_circle" size="lg" /><Icon type="check_circle" size="xl" /></div>
+    <div><Icon type="arrow_upward" size="xs" /><Icon type="arrow_upward" size="sm" /><Icon type="arrow_upward" size="md" /><Icon type="arrow_upward" size="nm" /><Icon type="arrow_upward" size="lg" /><Icon type="arrow_upward" size="xl" /></div>
+</div>
+<!-- Section 4 : couleurs sémantiques -->
+<div class="section-colors"><h3>Couleurs</h3><div>
+    <Icon type="check_circle" size="lg" color="success" /><Icon type="check_circle" size="lg" color="error" /><Icon type="check_circle" size="lg" color="warning" /><Icon type="check_circle" size="lg" color="information" />
+</div></div>
+<!-- Section 5 : rotation -->
+<div class="section-rotation"><h3>Rotation</h3><div>
+    <Icon type="arrow_upward" size="lg" rotate={0} /><Icon type="arrow_upward" size="lg" rotate={90} /><Icon type="arrow_upward" size="lg" rotate={180} /><Icon type="arrow_upward" size="lg" rotate={270} />
+</div></div>
+<!-- Section 6 : alias legacy (rétrocompatibilité) -->
+<div class="section-legacy"><h3>Alias legacy (33)</h3><div class="grid">
+        <span class="cell"><Icon type="adresse" size="md" /><span class="name">adresse</span></span>
+        <span class="cell"><Icon type="arrow-up" size="md" /><span class="name">arrow-up</span></span>
+        <span class="cell"><Icon type="calendar" size="md" /><span class="name">calendar</span></span>
+        <span class="cell"><Icon type="checkmark" size="md" /><span class="name">checkmark</span></span>
+        <span class="cell"><Icon type="chevron-up-thin" size="md" /><span class="name">chevron-up-thin</span></span>
+        <span class="cell"><Icon type="chevron-up" size="md" /><span class="name">chevron-up</span></span>
+        <span class="cell"><Icon type="chevron-droite" size="md" /><span class="name">chevron-droite</span></span>
+        <span class="cell"><Icon type="chevron-gauche" size="md" /><span class="name">chevron-gauche</span></span>
+        <span class="cell"><Icon type="crochet-bas" size="md" /><span class="name">crochet-bas</span></span>
+        <span class="cell"><Icon type="clipboard" size="md" /><span class="name">clipboard</span></span>
+        <span class="cell"><Icon type="clock" size="md" /><span class="name">clock</span></span>
+        <span class="cell"><Icon type="dots" size="md" /><span class="name">dots</span></span>
+        <span class="cell"><Icon type="email" size="md" /><span class="name">email</span></span>
+        <span class="cell"><Icon type="error" size="md" /><span class="name">error</span></span>
+        <span class="cell"><Icon type="exclamation" size="md" /><span class="name">exclamation</span></span>
+        <span class="cell"><Icon type="external-link" size="md" /><span class="name">external-link</span></span>
+        <span class="cell"><Icon type="information" size="md" /><span class="name">information</span></span>
+        <span class="cell"><Icon type="ligth-bulb" size="md" /><span class="name">ligth-bulb</span></span>
+        <span class="cell"><Icon type="minus" size="md" /><span class="name">minus</span></span>
+        <span class="cell"><Icon type="on-line" size="md" /><span class="name">on-line</span></span>
+        <span class="cell"><Icon type="phone" size="md" /><span class="name">phone</span></span>
+        <span class="cell"><Icon type="plus" size="md" /><span class="name">plus</span></span>
+        <span class="cell"><Icon type="printer" size="md" /><span class="name">printer</span></span>
+        <span class="cell"><Icon type="question-mark" size="md" /><span class="name">question-mark</span></span>
+        <span class="cell"><Icon type="search-thin" size="md" /><span class="name">search-thin</span></span>
+        <span class="cell"><Icon type="search" size="md" /><span class="name">search</span></span>
+        <span class="cell"><Icon type="success" size="md" /><span class="name">success</span></span>
+        <span class="cell"><Icon type="tableMatiere" size="md" /><span class="name">tableMatiere</span></span>
+        <span class="cell"><Icon type="user" size="md" /><span class="name">user</span></span>
+        <span class="cell"><Icon type="warning" size="md" /><span class="name">warning</span></span>
+        <span class="cell"><Icon type="website" size="md" /><span class="name">website</span></span>
+        <span class="cell"><Icon type="xclose" size="md" /><span class="name">xclose</span></span>
+        <span class="cell"><Icon type="note" size="md" /><span class="name">note</span></span>
+</div></div>
+<!-- Section 7 : icône personnalisée via src (mode SVG mask) -->
+<div class="section-custom-src"><h3>Icône personnalisée (src)</h3>
+    <Icon src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDIgMC04LTMuNTgtOC04czMuNTgtOCA4LTggOCAzLjU4IDggOC0zLjU4IDgtOCA4eiIvPjwvc3ZnPg==" size="lg" />
 </div>
 
-<!-- Section 2 : Variantes outlined et filled côte à côte -->
-<div class="section-variants">
-    <h3>Variantes outlined vs filled</h3>
-    <div>
-        <Icon type="info" size="lg" variant="outlined" label="info outlined" />
-        <Icon type="info" size="lg" variant="filled" label="info filled" />
-    </div>
-    <div>
-        <Icon type="check_circle" size="lg" variant="outlined" label="check_circle outlined" />
-        <Icon type="check_circle" size="lg" variant="filled" label="check_circle filled" />
-    </div>
-    <div>
-        <Icon type="error" size="lg" variant="outlined" label="error outlined" />
-        <Icon type="error" size="lg" variant="filled" label="error filled" />
-    </div>
-    <div>
-        <Icon type="warning" size="lg" variant="outlined" label="warning outlined" />
-        <Icon type="warning" size="lg" variant="filled" label="warning filled" />
-    </div>
+<!-- Section 8 : icône au fil du texte (miroir de la fixture baseline) -->
+<div class="section-inline"><h3>Icône au fil du texte</h3>
+    <p class="qc-font-size-xl">Lorem ipsum <Icon type="description" /> dolor sit amet</p>
+    <p class="qc-font-size-lg">Lorem ipsum <Icon type="description" /> dolor sit amet</p>
+    <p class="qc-font-size-md">Lorem ipsum <Icon type="description" /> dolor sit amet</p>
+    <p class="qc-font-size-sm">Lorem ipsum <Icon type="description" /> dolor sit amet</p>
 </div>
 
-<!-- Section 3 : Couleurs personnalisées -->
-<div class="section-colors">
-    <h3>Couleurs personnalisées</h3>
-    <div>
-        <Icon type="check_circle" size="lg" color="success" label="success" />
-        <Icon type="error" size="lg" color="error" label="error" />
-        <Icon type="warning" size="lg" color="warning" label="warning" />
-        <Icon type="info" size="lg" color="information" label="information" />
-    </div>
-</div>
-
-<!-- Section 4 : Rotation -->
-<div class="section-rotation">
-    <h3>Rotation</h3>
-    <div>
-        <Icon type="arrow_upward" size="lg" rotate={0} label="0deg" />
-        <Icon type="arrow_upward" size="lg" rotate={90} label="90deg" />
-        <Icon type="arrow_upward" size="lg" rotate={180} label="180deg" />
-        <Icon type="arrow_upward" size="lg" rotate={270} label="270deg" />
-    </div>
-</div>
-
-<!-- Section 5 : Icône personnalisée via src -->
-<div class="section-custom-src">
-    <h3>Icône personnalisée (src)</h3>
-    <Icon src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iOTczLjFweCIgaGVpZ2h0PSI5NzMuMXB4IiB2aWV3Qm94PSIwIDAgOTczLjEgOTczLjEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDk3My4xIDk3My4xOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIKCT4KPGc+Cgk8cGF0aCBkPSJNNTAyLjI5LDc5OC4xOTloLTQ3Yy0zMy4xLDAtNjAsMjYuOS02MCw2MHY2NC45YzAsMzMuMSwyNi45LDYwLDYwLDYwaDQ3YzMzLjEwMSwwLDYwLTI2LjksNjAtNjB2LTY0LjkKCQlDNTYyLjI5LDgxNSw1MzUuMzkxLDc4OC4xOTksNTAyLjI5LDc4OC4xOTl6IiBmaWxsPSIjZmZmIi8+Cgk8cGF0aCBkPSJNMTcwLjg5LDI4NS44bDg2LjcsMTAuOGMyNy41LDMuNCw1My42LTEyLjQsNjMuNS0zOC4zYzEyLjUtMzIuNywyOS45LTU4LjUsNTIuMi03Ny4zYzMxLjYwMS0yNi42LDcwLjktNDAsMTE3LjktNDAKCQljNDguNywwLDg3LjUsMTIuOCwxMTYuMywzOC4zYzI4LjgsMjUuNiw0My4xLDU2LjIsNDMuMSw5Mi4xYzAsMjUuOC04LjEsNDkuNC0yNC4zLDcwLjhjLTEwLjUsMTMuNi00Mi44LDQyLjItOTYuNyw4NS45CgkJYy01NCw0My43LTg5Ljg5OSw4My4wOTktMTA3Ljg5OSwxMTguMDk5Yy0xOC40LDM1LjgwMS0yNC44LDc1LjUtMjYuNCwxMTUuMzAxYy0xLjM5OSwzNC4xLDI1LjgsNjIuNSw2MCw2Mi41aDQ5CgkJYzMxLjIsMCw1Ny0yMy45LDU5LjgtNTQuOWMyLTIyLjI5OSw1LjctMzkuMTk5LDExLjMwMS01MC42OTljOS4zOTktMTkuNzAxLDMzLjY5OS00NS43MDEsNzIuNjk5LTc4LjEKCQlDNzIzLjU5LDQ3Ny44LDc3Mi43OSw0MjguNCw3OTUuODkxLDM5MmMyMy0zNi4zLDM0LjYtNzQuOCwzNC42LTExNS41YzAtNzMuNS0zMS4zLTEzOC05NC0xOTMuNGMtNjIuNi01NS40LTE0Ny04My4xLTI1My04My4xCgkJYy0xMDAuOCwwLTE4Mi4xLDI3LjMtMjQ0LjEsODJjLTUyLjgsNDYuNi04NC45LDEwMS44LTk2LjIsMTY1LjVDMTM5LjY5LDI2Ni4xLDE1Mi4zOSwyODMuNSwxNzAuODksMjg1Ljh6IiBmaWxsPSIjZmZmIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" size="lg" label="icône personnalisée" />
-</div>
-
-<!-- Section 6 : Alias legacy (vérification rétrocompatibilité) -->
-<div class="section-legacy">
-    <h3>Alias legacy</h3>
-    <div>
-        <Icon type="arrow-up" size="md" label="arrow-up" />
-        <Icon type="checkmark" size="md" label="checkmark" />
-        <Icon type="xclose" size="md" label="xclose" />
-        <Icon type="clipboard" size="md" label="clipboard" />
-        <Icon type="external-link" size="md" label="external-link" />
-        <Icon type="ligth-bulb" size="md" label="ligth-bulb" />
-    </div>
-</div>
+<style>
+    .grid { display: flex; flex-wrap: wrap; gap: 1.6rem; }
+    .cell { display: inline-flex; flex-direction: column; align-items: center; width: 8rem; gap: .4rem; }
+    .cell .name { font-size: 1.1rem; color: #555; word-break: break-all; text-align: center; }
+    .section-sizes > div, .section-colors > div, .section-rotation > div { display: flex; gap: 1.6rem; align-items: center; margin: .8rem 0; }
+</style>
 
 <link rel='stylesheet' href='{Utils.cssPath}'>

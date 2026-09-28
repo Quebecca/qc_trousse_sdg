@@ -1,0 +1,191 @@
+<!-- Fixture de validation de la grille (générée en public/gridBaseline.test.html).
+     Couvre _grid.scss / _grid-lib.scss au-delà de rem-parity : conteneurs
+     (.qc-container, -fluid, -sm/-md/-lg), rangée (.qc-row, .no-gutters),
+     colonnes fixes (.qc-col-1..12), colonnes auto (.qc-col, .qc-col-auto),
+     colonnes responsives (.qc-col-{sm,md,lg}-N), décalages (.qc-offset*),
+     ordre (.qc-order*) et .qc-row-cols-N.
+     Breakpoints trousse : xs=0, sm=768px, md=992px, lg=1200px ; 12 colonnes.
+     La spec capture DEUX viewports : lg (1280, tous les infixes actifs) et
+     xs (600, sm/md/lg retombent à 100 % => empilement) pour prouver la bascule. -->
+<style>
+  /* Habillage purement visuel de la fixture — rend les cellules de grille
+     visibles dans le snapshot (le markup de grille seul ne peint rien). */
+  .grid-demo { margin-bottom: 2.4rem; }
+  .grid-demo h2 { font: 700 1.4rem/1.4 sans-serif; margin: 1.2rem 0 .4rem; }
+  .grid-demo .qc-row { margin-bottom: .6rem; }
+  .grid-demo .box {
+    background: #d0e4f5;
+    border: 1px solid #3676b8;
+    padding: .4rem .6rem;
+    text-align: center;
+    font: 1.2rem/1.4 sans-serif;
+    box-sizing: border-box;
+    min-height: 2.4rem;
+  }
+  .grid-demo .box.alt { background: #f5e2d0; border-color: #b86f36; }
+  .grid-demo .frame { outline: 1px dashed #999; background: #f7f7f7; }
+</style>
+
+<div class="grid-demo">
+
+  <!-- Règle 12 colonnes : 12 × .qc-col-1 -->
+  <section id="ruler">
+    <h2>Règle 12 colonnes (.qc-col-1)</h2>
+    <div class="qc-row">
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+      <div class="qc-col-1"><div class="box">1</div></div>
+    </div>
+  </section>
+
+  <!-- Largeurs fixes (sans infixe = tous viewports) -->
+  <section id="fixed-widths">
+    <h2>Largeurs fixes (.qc-col-N)</h2>
+    <div class="qc-row">
+      <div class="qc-col-12"><div class="box">12</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-6"><div class="box">6</div></div>
+      <div class="qc-col-6"><div class="box">6</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-4"><div class="box">4</div></div>
+      <div class="qc-col-4"><div class="box">4</div></div>
+      <div class="qc-col-4"><div class="box">4</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-3"><div class="box">3</div></div>
+      <div class="qc-col-3"><div class="box">3</div></div>
+      <div class="qc-col-3"><div class="box">3</div></div>
+      <div class="qc-col-3"><div class="box">3</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-8"><div class="box">8</div></div>
+      <div class="qc-col-4"><div class="box">4</div></div>
+    </div>
+  </section>
+
+  <!-- Colonnes auto : largeur égale (.qc-col) et contenu (.qc-col-auto) -->
+  <section id="auto">
+    <h2>Colonnes auto (.qc-col / .qc-col-auto)</h2>
+    <div class="qc-row">
+      <div class="qc-col"><div class="box">col (1/3)</div></div>
+      <div class="qc-col"><div class="box">col (1/3)</div></div>
+      <div class="qc-col"><div class="box">col (1/3)</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-auto"><div class="box alt">auto</div></div>
+      <div class="qc-col"><div class="box">col (remplit le reste)</div></div>
+      <div class="qc-col-auto"><div class="box alt">auto</div></div>
+    </div>
+  </section>
+
+  <!-- Colonnes responsives : varient selon le viewport -->
+  <section id="responsive">
+    <h2>Colonnes responsives (.qc-col-{sm,md,lg}-N)</h2>
+    <div class="qc-row">
+      <div class="qc-col-sm-6"><div class="box">sm-6</div></div>
+      <div class="qc-col-sm-6"><div class="box">sm-6</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-md-4"><div class="box">md-4</div></div>
+      <div class="qc-col-md-4"><div class="box">md-4</div></div>
+      <div class="qc-col-md-4"><div class="box">md-4</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-lg-3"><div class="box">lg-3</div></div>
+      <div class="qc-col-lg-9"><div class="box">lg-9</div></div>
+    </div>
+    <!-- Mix de paliers : empile en xs, se réagence aux paliers supérieurs -->
+    <div class="qc-row">
+      <div class="qc-col-12 qc-col-md-8 qc-col-lg-6"><div class="box">12 / md-8 / lg-6</div></div>
+      <div class="qc-col-12 qc-col-md-4 qc-col-lg-6"><div class="box">12 / md-4 / lg-6</div></div>
+    </div>
+  </section>
+
+  <!-- Décalages -->
+  <section id="offsets">
+    <h2>Décalages (.qc-offset-N / .qc-offset-md-N)</h2>
+    <div class="qc-row">
+      <div class="qc-col-4"><div class="box">4</div></div>
+      <div class="qc-col-4 qc-offset-4"><div class="box">4 offset-4</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-6 qc-offset-3"><div class="box">6 offset-3 (centré)</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-12 qc-col-md-6 qc-offset-md-3"><div class="box">md-6 offset-md-3</div></div>
+    </div>
+  </section>
+
+  <!-- Ordre -->
+  <section id="order">
+    <h2>Ordre (.qc-order-first / -last / -N)</h2>
+    <div class="qc-row">
+      <div class="qc-col-3 qc-order-last"><div class="box">1er en HTML, order-last</div></div>
+      <div class="qc-col-3"><div class="box">2e en HTML</div></div>
+      <div class="qc-col-3 qc-order-first"><div class="box">3e en HTML, order-first</div></div>
+      <div class="qc-col-3"><div class="box">4e en HTML</div></div>
+    </div>
+    <div class="qc-row">
+      <div class="qc-col-4 qc-order-2"><div class="box">order-2</div></div>
+      <div class="qc-col-4 qc-order-3"><div class="box">order-3</div></div>
+      <div class="qc-col-4 qc-order-1"><div class="box">order-1</div></div>
+    </div>
+  </section>
+
+  <!-- Row-cols : force N colonnes de largeur égale par rangée -->
+  <section id="row-cols">
+    <h2>Row-cols (.qc-row-cols-N)</h2>
+    <div class="qc-row qc-row-cols-2">
+      <div class="qc-col"><div class="box">a</div></div>
+      <div class="qc-col"><div class="box">b</div></div>
+      <div class="qc-col"><div class="box">c</div></div>
+      <div class="qc-col"><div class="box">d</div></div>
+    </div>
+    <div class="qc-row qc-row-cols-3">
+      <div class="qc-col"><div class="box">a</div></div>
+      <div class="qc-col"><div class="box">b</div></div>
+      <div class="qc-col"><div class="box">c</div></div>
+      <div class="qc-col"><div class="box">d</div></div>
+      <div class="qc-col"><div class="box">e</div></div>
+    </div>
+  </section>
+
+  <!-- Sans gouttière -->
+  <section id="no-gutters">
+    <h2>Sans gouttière (.no-gutters)</h2>
+    <div class="qc-row no-gutters">
+      <div class="qc-col-4"><div class="box">4</div></div>
+      <div class="qc-col-4"><div class="box">4</div></div>
+      <div class="qc-col-4"><div class="box">4</div></div>
+    </div>
+  </section>
+
+  <!-- Variantes de conteneur (imbriquées dans le .qc-container du gabarit) -->
+  <section id="containers">
+    <h2>Conteneurs (.qc-container-fluid / -sm / -md / -lg)</h2>
+    <div class="qc-container-fluid frame">
+      <div class="qc-row"><div class="qc-col-12"><div class="box">container-fluid (100 %)</div></div></div>
+    </div>
+    <div class="qc-container-sm frame">
+      <div class="qc-row"><div class="qc-col-12"><div class="box">container-sm (max 768)</div></div></div>
+    </div>
+    <div class="qc-container-md frame">
+      <div class="qc-row"><div class="qc-col-12"><div class="box">container-md (max 992)</div></div></div>
+    </div>
+    <div class="qc-container-lg frame">
+      <div class="qc-row"><div class="qc-col-12"><div class="box">container-lg (max 1200)</div></div></div>
+    </div>
+  </section>
+
+</div>
