@@ -10,9 +10,32 @@
   }
 }
 
+// Style du résumé d'erreurs (liens rouges) d'un avis error. Appliqué à la fois à
+// la CARTE .qc-notice.qc-error (contexte Svelte / contenu shadow) ET au custom
+// element qc-notice[type="error"] (liste slottée dans le light DOM en mode WC) :
+// les deux arbres sont distincts, il faut donc cibler les deux. Bug corrigé le 23 sept 2026.
+@mixin qc-notice-error-links() {
+  ul li {
+    &::marker {
+      color: token-value(color text primary);
+    }
+    color: token-value(color, red, regular);
+    a {
+      color: inherit;
+      &:hover, &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
 .qc-notice {
   max-inline-size: token-value(max-content-width);
   display: flex;
+  // La marge inter-avis appartient à la CARTE (.qc-notice), pas au custom element
+  // <qc-notice> : sinon elle est perdue quand le composant est monté hors WC
+  // (contexte Svelte pur / harnais de test). Bug corrigé le 23 sept 2026.
+  margin-bottom: rem(4 * $base-spacer);
   border: 1px solid token-value(color,grey,light);
   background-color: token-value(color,white);
   word-break: break-word;
@@ -45,6 +68,12 @@
           token-value(spacer, sm);
   }
 
+  // Résumé d'erreurs (liens rouges) — contexte Svelte / contenu shadow.
+  // Le light DOM slotté du WC est couvert plus bas sur qc-notice[type="error"].
+  &.qc-error {
+    @include qc-notice-error-links();
+  }
+
   @each $type, $color in (
       "information": ("blue", "piv"),
       "warning": ("yellow" , "dark"),
@@ -64,7 +93,7 @@
   }
 }
 
-// Links in a error notice (eg. error summary)
+// Custom element : styles du light DOM slotté (liste projetée) + repli avant upgrade.
 qc-notice {
   display: block;
   @include qc-notice-title();
@@ -72,19 +101,11 @@ qc-notice {
     padding-left: token-value(spacer, sm) !important;
     //margin-top: token-value(spacer, sm) !important;
   }
-  &[type="error"] ul li {
-     &::marker {
-       color:token-value(color text primary);
-     }
-     color: token-value(color, red, regular);
-     a {
-      color: inherit;
-      &:hover, &:focus {
-        text-decoration: none;
-      }
-    }
+  // Liste d'erreurs slottée dans le light DOM (mode WC) : mêmes liens rouges que
+  // la carte .qc-notice.qc-error (contexte Svelte). Voir mixin qc-notice-error-links.
+  &[type="error"] {
+    @include qc-notice-error-links();
   }
-  margin-bottom: rem(4 * $base-spacer);
 
 }
 
