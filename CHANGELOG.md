@@ -1,19 +1,6 @@
 # Historique des versions
 
-## [1.5.A VENIR] - AAAA-MM-JJ
-
-### Ajouté
-- **Nouveau composant** : `qc-table` pour l’affichage des tableaux et des listes structurées.
-- **Tableaux** : Ajout et harmonisation des styles des tableaux avec les variantes définies dans le Système de design.
-- **Documentation** : Ajout des exemples du composant `qc-table`.
-- **Tests** : Ajout des tests Playwright du composant `qc-table`.
-
-### Modifié
-- **Tableaux** : Adaptation de la largeur des tableaux standards au contenu plutôt que de forcer une largeur de 100 %.
-- **Documentation** : Remplacement de l’utilisation directe de la classe `.qc-table` par le composant `<qc-table>` pour les tableaux de la documentation.
-
-### Corrigé
-- **Thème sombre** : Correction d'un bug du logo PIV invisible quand le thème sombre est désactivé (`$enable-dark-theme: false`).
+## [1.6 À VENIR] - AAAA-MM-JJ
 
 ## Migration des icônes vers Material Symbols
 
@@ -29,6 +16,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
       <span>Précédent</span>
   </button>
   ```
+  
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
@@ -51,7 +39,9 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
   - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
   - **infobulle** : ajout d'exemples.
 - **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
-- **pastille (qc-lozenge)** : Ajout du composant Pastille.
+- **pastille** : Ajout du composant `qc-lozenge`.
+- **Tableaux et listes structurée (qc-table)** : Ajout du composant `qc-table`
+
 
 ### Modifié
 - **outillage de build** : passage de **Rollup** à **Vite 8** (rolldown/Oxc) pour la compilation des bundles et du CSS. La sortie distribuée (`dist/`) est inchangée ; seuls les scripts de développement évoluent (`build`, `dev`, `build:dev` via `scripts/*.mjs`). Rollup et ses greffons sont entièrement retirés.
@@ -73,6 +63,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **qc-search-input** : Correction de la marge haute entre le champ et son libellé.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
 - **commutateur** : Correction css concernant le comportement des balises `sup` et `sub` dans le libellé
+- **Thème sombre** : Correction d'un bug du logo PIV invisible quand le thème sombre est désactivé (`$enable-dark-theme: false`).
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté
