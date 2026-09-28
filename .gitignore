@@ -45,3 +45,4 @@ icon-selection.local.json
 # Sorties JS vides générées
 /dist/js/qc-sdg-no-grid.js
 /dist/qc-sdg-design-tokens.js
+/public/fixtures-index.html
