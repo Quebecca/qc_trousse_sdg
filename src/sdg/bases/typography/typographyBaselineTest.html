@@ -38,11 +38,15 @@
   <p class="qc-font-size-xl">.qc-font-size-xl — texte de très grande taille (xl)</p>
 </div>
 
-<!-- Familles de police : header (Roboto), content (Open Sans), code (Roboto Mono) -->
+<!-- Familles de police : header (Roboto) et content (Open Sans), embarquées via
+     @font-face. La famille « code » (--qc-font-family-code = Roboto Mono) n'est PAS
+     distribuée par la trousse (aucun @font-face) : elle retombe sur le monospace
+     système, non reproductible d'un environnement à l'autre (DejaVu Sans Mono en
+     WSL, WenQuanYi Zen Hei Mono en conteneur…). Elle est donc volontairement absente
+     de cette fixture — rien de déterministe à capturer pour une police non livrée. -->
 <div id="font-families">
   <p style="font-family: var(--qc-font-family-header);">Famille header (Roboto) — ABCDEFG abcdefg 0123456789</p>
   <p style="font-family: var(--qc-font-family-content);">Famille content (Open Sans) — ABCDEFG abcdefg 0123456789</p>
-  <p class="qc-code">Famille code (.qc-code) — ABCDEFG abcdefg 0123456789</p>
 </div>
 
 <!-- Graisses header (Roboto) : regular / medium / bold, romain et italique -->
@@ -65,10 +69,11 @@
     <i>ABCDEFGHIJKLMNOP abcdefghijklmnop 0123456789</i></p>
 </div>
 
-<!-- Emphases inline : gras, italique, code, exposant et indice (sup/sub à line-height 0) -->
+<!-- Emphases inline : gras, italique, exposant et indice (sup/sub à line-height 0).
+     Le code inline (<code>) est absent : il ne rend que la police code non distribuée. -->
 <div id="inline">
-  <p>Texte avec <strong>gras</strong>, <em>italique</em> et code inline
-     <code>const x = 1;</code>. Formule H<sub>2</sub>O et puissance 10<sup>3</sup> sur la ligne.</p>
+  <p>Texte avec <strong>gras</strong> et <em>italique</em>. Formule H<sub>2</sub>O
+     et puissance 10<sup>3</sup> sur la ligne.</p>
 </div>
 
 </div>
