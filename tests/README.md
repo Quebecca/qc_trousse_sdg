@@ -15,6 +15,77 @@ yarn fastest --project=chromium              # un seul navigateur
 yarn test -g @table                          # filtre par tag, dans le conteneur
 ```
 
+## Rapport HTML et mode non interactif (`-n`)
+
+Le reporter est conditionnel (voir `playwright.config.ts`) :
+
+| Invocation | Reporter | Rapport HTML |
+|------------|----------|--------------|
+| `yarn fastest` / `yarn test` (défaut) | `list` + `html` (`open:'never'`) | **écrit** dans `playwright-report/`, **sans** lancer de serveur |
+| `yarn fastest -n` (ou tout passage de `-n`) | `list` seul | **aucun** dossier HTML |
+
+- Le rapport HTML est **toujours généré** en mode défaut, mais le serveur n'est
+  **jamais** ouvert automatiquement (il bloquerait un terminal non interactif).
+  On le consulte après coup :
+
+  ```bash
+  yarn playwright show-report
+  ```
+
+- `-n` (posé par le wrapper `scripts/run-tests.mjs` → `PW_NO_HTML=1`) donne un
+  run **`list` pur**, sans dossier HTML : pour un agent, la CI, ou tout terminal
+  non interactif où le serveur de rapport bloquerait.
+- Dans le conteneur (`yarn test`), le rapport est écrit dans le
+  `playwright-report/` **monté** sur l'hôte ; on ne lance jamais de serveur
+  *dans* le conteneur (il serait impossible à arrêter) — on le consulte depuis
+  l'hôte avec `show-report`.
+
+## Déterminisme et parallélisme
+
+Hors CI, Playwright tourne **en parallèle** sur tous les cœurs
+(`workers: process.env.CI ? 1 : undefined`). Un test visuel dont le rendu dépend
+du **timing** ou de la **hauteur du viewport** — p. ex. une liste déroulante qui
+calcule sa direction d'ouverture (haut/bas), ou une capture `fullPage` qui
+redimensionne le viewport — peut alors **flaker** sous la charge : la capture
+tombe à cheval sur un reflow, et le sens/rendu bascule d'un run à l'autre.
+
+> ⚠️ **Le parallélisme peut faire échouer des tests** de façon non déterministe
+> (surtout sous forte charge machine). **En cas de plantage, relancer avec moins
+> de workers** — voire un seul :
+>
+> ```bash
+> yarn test --workers=1              # toute la suite, en série (le plus sûr)
+> yarn test --workers=2              # compromis vitesse/stabilité
+> yarn test -g @textwrap --workers=1 # cibler le test qui a planté
+> ```
+>
+> **Flux recommandé (rapide puis fiable)** : lancer la suite en parallèle, puis
+> **ne rejouer que les échecs** en série. `--last-failed` ne relance que les
+> tests tombés au run précédent :
+>
+> ```bash
+> yarn test --workers=6                 # 1er passage, rapide (parallèle)
+> yarn test --last-failed --workers=1   # rejeu des SEULS échecs, en série
+> ```
+>
+> Un échec qui **disparaît** au rejeu `--workers=1` n'est pas une régression de
+> la trousse : c'est une race induite par la charge. S'il **persiste** à 1
+> worker, c'est un vrai diff (ou un test à rendre déterministe).
+
+Pour **reproduire / diagnostiquer** (ou stabiliser) un test visuel instable,
+jouer en série avec répétitions :
+
+```bash
+yarn test -g @textwrap --workers=1 --repeat-each=10
+```
+
+Si ça passe en `--workers=1` mais rate en parallèle → race induite par la charge.
+
+> **Principe** : on préfère un **design de fixture qui ne peut pas décaler**
+> (hauteur de ligne fixe, `white-space: nowrap`, pas de dépendance à la hauteur
+> du viewport) plutôt que d'ajouter des attentes de chargement dans le test.
+> Une attente masque le symptôme ; un design plat supprime la cause.
+
 ## Baselines : double plateforme
 
 Les snapshots sont versionnés (Git LFS) pour **deux plateformes** :

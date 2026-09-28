@@ -23,6 +23,7 @@ import buildHtmlDoc from '../plugins/buildHtmlDoc.mjs';
 import buildDevDoc from '../plugins/buildDevDoc.mjs';
 import buildTestFixtures from '../plugins/buildTestFixtures.mjs';
 import buildSvelteTests from '../plugins/buildSvelteTests.mjs';
+import buildFixturesIndex from '../plugins/buildFixturesIndex.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 process.chdir(root);
@@ -134,6 +135,7 @@ function runDocPlugins() {
     buildDevDoc({ input: 'src/doc/_dev.html' }).buildStart.call(ctx);
     buildTestFixtures({ input: 'src/doc/_test.html' }).buildStart.call(ctx);
     buildSvelteTests({ input: 'tests', ignorePathsFile: 'buildSvelteTestsIgnore.json' }).buildStart.call(ctx);
+    buildFixturesIndex({ input: 'src/doc/_fixtures-index.html', output: 'public/fixtures-index.html' }).buildStart.call(ctx);
 }
 
 async function full() {

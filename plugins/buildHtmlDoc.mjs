@@ -29,7 +29,7 @@ function buildHtmlDoc({ input, output }) {
                 if (html.includes(marker)) {
                     html = html.replace(new RegExp(marker, 'g'), content);
                 } else {
-                    const ignoredPartials = ['_dev.html', '_test.html'];
+                    const ignoredPartials = ['_dev.html', '_test.html', '_fixtures-index.html'];
 
                     if (!ignoredPartials.includes(partialName)) {
                         this.warn(`⚠️ Le partiel "${partialName}" n'est pas utilisé dans ${inputFileName}`);

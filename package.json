@@ -4,6 +4,9 @@
   "description": "Trousse de développement du Système de design gouvernemental du Québec",
   "main": "index.js",
   "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "preinstall": "npx only-allow yarn",
     "dev": "node scripts/build-dev.mjs --watch --serve",
@@ -12,7 +15,7 @@
     "version": "./scripts/compile-doc.sh",
     "build": "node scripts/build-vite.mjs",
     "prefastest": "yarn build && yarn build:dev",
-    "fastest": "playwright test",
+    "fastest": "node scripts/run-tests.mjs",
     "test": "bash scripts/test-container.sh",
     "start": "sirv . --host 127.0.0.1 --port 5173 --dev",
     "build-grid-tokens": "node ./scripts/buildGridTokens.js",

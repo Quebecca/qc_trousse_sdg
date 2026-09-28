@@ -22,7 +22,17 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* Contrat :
+     - défaut (yarn test / yarn fastest) : `list` (feedback live) + `html` en
+       open:'never'. Le rapport HTML est TOUJOURS généré dans playwright-report/
+       mais le serveur n'est JAMAIS lancé automatiquement (il bloquerait un
+       terminal non interactif). On le consulte après coup via `yarn playwright
+       show-report`. Fonctionne aussi dans le conteneur (dossier monté).
+     - `-n` (posé par le wrapper run-tests.mjs -> PW_NO_HTML=1) : `list` seul,
+       pas de dossier HTML — pour un run CI/agent pur. */
+  reporter: process.env.PW_NO_HTML === '1'
+    ? [['list']]
+    : [['list'], ['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   /* Dossier unique pour les snapshots — partagé entre tests baseline et svelte.
      Le template utilise {arg} (nom du screenshot) pour éviter les collisions. */
