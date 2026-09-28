@@ -16,6 +16,15 @@ test.describe('Couleurs', () => {
     test('rendu visuel de référence de la palette', {
         tag: ['@baseline', '@colors']
     }, async ({page}) => {
+        // Police web « Open Sans » (embarquée via @font-face) : on garantit son
+        // chargement avant la capture, sinon FOUT -> capture avec la police de repli.
+        await page.evaluate(async () => {
+            await Promise.all([
+                (document as any).fonts.load("400 14px 'Open Sans'"),
+                (document as any).fonts.load("700 16px 'Open Sans'"),
+            ]);
+            await (document as any).fonts.ready;
+        });
         await expect(page).toHaveScreenshot('colors.png', {fullPage: true});
     });
 });

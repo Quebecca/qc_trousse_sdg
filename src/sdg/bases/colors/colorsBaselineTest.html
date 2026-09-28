@@ -1,17 +1,27 @@
 <!-- Fixture baseline de la base « colors ». Chaque token de couleur
      (--qc-color-*) est rendu sur une ligne de lorem ipsum colorée, empilées
-     verticalement. Design volontairement plat : texte monospace (police
-     système, aucun @font-face donc aucun font-swap) + nowrap + overflow
-     hidden => hauteur de ligne fixe, AUCUN retour à la ligne possible, donc
-     aucun décalage de mise en page pendant la capture (pas d'attente requise
-     dans le spec). Le token `background` n'a pas de ligne : il est validé
-     directement par le fond de page. Toute dérive d'une valeur de couleur
-     fait bouger ce snapshot — le snapshot fait foi. -->
+     verticalement. Police : « Open Sans » — police EMBARQUÉE dans la trousse
+     via @font-face (woff2 self-hostée dans dist/fonts, chargée par
+     qc-sdg.min.css) — et NON une famille générique comme `monospace` :
+     `monospace` résout vers une police système différente selon
+     l'environnement (DejaVu Sans Mono en WSL, WenQuanYi Zen Hei Mono dans le
+     conteneur, Menlo sur macOS…) -> glyphes différents -> diff de pixels sur
+     une baseline pourtant censée ne valider que les couleurs. Une police à
+     nous, servie depuis un woff2 identique partout, rend la capture
+     reproductible d'un environnement à l'autre. NB : Roboto Mono, elle, n'a
+     PAS de @font-face dans la trousse (--qc-font-family-code retombe sur le
+     `monospace` système) — ne pas l'utiliser ici. nowrap + overflow:hidden +
+     line-height fixe => hauteur de ligne stable, aucun retour à la ligne,
+     aucun décalage pendant la capture. Le spec attend document.fonts.ready
+     avant de capturer (police web -> chargement requis). Le token
+     `background` n'a pas de ligne : il est validé directement par le fond de
+     page. Toute dérive d'une valeur de couleur fait bouger ce snapshot —
+     le snapshot fait foi. -->
 <style>
   #colors-baseline { margin: 0; }
-  #colors-baseline h3 { font: 700 16px/24px monospace; margin: 24px 0 4px; }
+  #colors-baseline h3 { font: 700 16px/24px 'Open Sans', sans-serif; margin: 24px 0 4px; }
   #colors-baseline h3:first-child { margin-top: 0; }
-  #colors-baseline .cvt-line { font: 14px/24px monospace; margin: 0; white-space: nowrap; overflow: hidden; }
+  #colors-baseline .cvt-line { font: 400 14px/24px 'Open Sans', sans-serif; margin: 0; white-space: nowrap; overflow: hidden; }
 </style>
 
 <div id="colors-baseline">

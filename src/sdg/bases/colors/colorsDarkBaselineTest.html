@@ -1,13 +1,15 @@
 <!-- Fixture baseline « colors » en THÈME SOMBRE — même palette que la fixture
      claire mais avec .qc-dark-theme sur :root, pour valider les overrides de
-     tokens en thème sombre. -->
+     tokens en thème sombre. Police « Open Sans » (embarquée via @font-face) et
+     non une famille générique, pour une capture reproductible entre
+     environnements — voir colorsBaselineTest.html pour le détail. -->
 <script>document.documentElement.classList.add("qc-dark-theme");</script>
 
 <style>
   #colors-dark-baseline { margin: 0; }
-  #colors-dark-baseline h3 { font: 700 16px/24px monospace; margin: 24px 0 4px; }
+  #colors-dark-baseline h3 { font: 700 16px/24px 'Open Sans', sans-serif; margin: 24px 0 4px; }
   #colors-dark-baseline h3:first-child { margin-top: 0; }
-  #colors-dark-baseline .cvt-line { font: 14px/24px monospace; margin: 0; white-space: nowrap; overflow: hidden; }
+  #colors-dark-baseline .cvt-line { font: 400 14px/24px 'Open Sans', sans-serif; margin: 0; white-space: nowrap; overflow: hidden; }
 </style>
 
 <div id="colors-dark-baseline">

@@ -16,6 +16,15 @@ test.describe('Couleurs — thème sombre', () => {
     test('rendu visuel de référence de la palette (thème sombre)', {
         tag: ['@baseline', '@colors-dark']
     }, async ({page}) => {
+        // Police web « Open Sans » (embarquée via @font-face) : on garantit son
+        // chargement avant la capture, sinon FOUT -> capture avec la police de repli.
+        await page.evaluate(async () => {
+            await Promise.all([
+                (document as any).fonts.load("400 14px 'Open Sans'"),
+                (document as any).fonts.load("700 16px 'Open Sans'"),
+            ]);
+            await (document as any).fonts.ready;
+        });
         await expect(page).toHaveScreenshot('colors-dark.png', {fullPage: true});
     });
 });
