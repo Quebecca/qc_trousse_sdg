@@ -1,0 +1,58 @@
+name: Tests
+
+# Joue la suite Playwright de la trousse dans l'image officielle Playwright,
+# le MÊME environnement de rendu que celui qui a généré les baselines linux
+# (voir scripts/test-container.sh). Le runner ubuntu-latest est en amd64, ce qui
+# correspond au linux/amd64 des baselines ; et son système de fichiers est
+# sensible à la casse, donc il attrape les bugs de casse d'assets qu'un Mac
+# (FS insensible) laisse passer.
+
+on:
+  push:
+    # `ci-**` = branches jetables pour tester ce workflow sans ouvrir de PR.
+    branches: [develop, 'ci-**']
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+# Un push qui en remplace un autre sur la même réf annule le run précédent.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    # Image épinglée sur la version de @playwright/test (package.json). Embarque
+    # Node 22 et yarn 1.22.22 : tout le pipeline (build + tests) tourne dedans.
+    container: mcr.microsoft.com/playwright:v1.56.1-noble
+    steps:
+      # git-lfs est absent de l'image Playwright ; sans lui, le checkout LFS
+      # laisserait les baselines PNG en pointeurs et tous les snapshots
+      # échoueraient.
+      - name: Installer git-lfs (absent de l'image)
+        run: apt-get update && apt-get install -y git-lfs
+
+      - name: Récupérer le code (avec les baselines LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Installer les dépendances
+        run: yarn install --frozen-lockfile
+
+      # `yarn fastest` enchaîne build + build:dev + Playwright. `-n` force le
+      # reporter list (pas de serveur de rapport bloquant). `--workers=1` évite
+      # la race de charge documentée sur le tiroir dropdown.
+      - name: Jouer la suite Playwright
+        run: yarn fastest -n --workers=1
+
+      # En cas d'échec, publier le rapport HTML (images actual/expected/diff)
+      # pour diagnostiquer les écarts de snapshot.
+      - name: Publier le rapport en cas d'échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
