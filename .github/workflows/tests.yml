@@ -41,11 +41,17 @@ jobs:
       - name: Installer les dépendances
         run: yarn install --frozen-lockfile
 
-      # `yarn fastest` enchaîne build + build:dev + Playwright. `-n` force le
-      # reporter list (pas de serveur de rapport bloquant). `--workers=1` évite
-      # la race de charge documentée sur le tiroir dropdown.
+      # `yarn fastest` enchaîne build + build:dev + Playwright. On NE passe PAS
+      # `-n` ici : `-n` couperait le rapport HTML (PW_NO_HTML=1) qu'on veut en
+      # artifact ; la config le génère en open:'never', donc rien ne bloque.
+      # `--workers=1` évite la race de charge documentée sur le tiroir dropdown.
+      # HOME=/root : dans un job `container:`, $HOME n'appartient pas à l'utilisateur
+      # courant, et Firefox refuse alors de démarrer ("$HOME folder isn't owned by
+      # the current user"). /root appartient à root -> Firefox se lance.
       - name: Jouer la suite Playwright
-        run: yarn fastest -n --workers=1
+        run: yarn fastest --workers=1
+        env:
+          HOME: /root
 
       # En cas d'échec, publier le rapport HTML (images actual/expected/diff)
       # pour diagnostiquer les écarts de snapshot.
