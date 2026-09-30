@@ -1143,30 +1143,10 @@
 <h2 id="surtitre">Surtitre</h2>
 <p>
   Un surtitre est un court intitulé affiché au-dessus d'un titre de premier niveau, à l'aide de la
-  classe <code>.qc‑subhead</code>. Deux structures sont possibles et produisent le même rendu.
+  classe <code>.qc‑subhead</code>.
 </p>
-<p>
-  <strong>Recommandé.</strong> Placer le surtitre <em>hors</em> du <code>&lt;h1&gt;</code>, comme
-  <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code>&nbsp;: le surtitre ne
-  fait alors pas partie du nom accessible du titre.
-</p>
-<qc-doc-exemple caption="Surtitre dans un hgroup (recommandé)"
-                code-target-id="exemple-surtitre-hgroup"
->
-  <div role="presentation"
-       id="exemple-surtitre-hgroup"
-  >
-    <hgroup>
-      <p class="qc-subhead">Surtitre</p>
-      <h1>Titre de niveau 1 avec surtitre</h1>
-    </hgroup>
-  </div>
-</qc-doc-exemple>
-<p>
-  <strong>Ancienne forme (conservée).</strong> Le surtitre est un <code>&lt;span&gt;</code> au début
-  du <code>&lt;h1&gt;</code>.
-</p>
-<qc-doc-exemple caption="Surtitre dans le h1 (ancienne forme)"
+
+<qc-doc-exemple caption="Surtitre du h1"
                 code-target-id="exemple-surtitre-h1"
 >
   <div role="presentation"
@@ -1188,10 +1168,8 @@
     <tr>
       <td><code>qc‑subhead</code></td>
       <td>
-        Surtitre affiché au-dessus d'un titre de premier niveau. À placer soit comme
-        <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code> (recommandé), soit
-        dans un <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>. Voir les
-        <a href="#exemple-surtitre-hgroup">exemples</a>.
+        Surtitre affiché au-dessus d'un titre de premier niveau. À placer sur un
+        <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>, comme dans l'exemple.
       </td>
     </tr>
     </tbody>
