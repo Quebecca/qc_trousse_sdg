@@ -3,10 +3,12 @@
 
 @mixin qc-notice-title() {
   h1,h2,h3,h4,h5,h6,[role=heading] {
-    margin: 0;
-    padding: 0;
-    @include content-font(sm, bold);
-    font-family: token-value(font, family, content);
+    margin: 0!important;
+    padding: 0!important;
+    font-size: token-value(font size sm)!important;
+    line-height: token-value(line-height sm)!important;
+    font-weight: token-value(font weight bold)!important;
+    font-family: token-value(font, family, content)!important;
   }
 }
 
