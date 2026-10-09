@@ -66148,7 +66148,7 @@ createHTML: (html) => {
 	}, [], [], { mode: "open" }));
 	//#endregion
 	//#region src/doc/qc-doc-sdg.js
-	if (document.getElementById("version")) document.getElementById("version").textContent = `v1.5.2`;
+	if (document.getElementById("version")) document.getElementById("version").textContent = `v1.6.0`;
 	var displayAlertLink = document.getElementById("show-qc-alert");
 	var maskableAlert = document.getElementById("alerte-masquable");
 	if (displayAlertLink) {
