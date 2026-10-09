@@ -73,8 +73,14 @@
 
 <h2 id="surtitre">Surtitre</h2>
 <p>
-  Un surtitre est un court intitulé affiché au-dessus d'un titre de premier niveau, à l'aide de la
-  classe <code>.qc‑subhead</code>.
+  Un surtitre (<i>eyebrow</i>) est un court intitulé affiché au-dessus d'un titre
+  de premier niveau, à l'aide de la classe <code>.qc‑eyebrow</code>.
+</p>
+<p>
+  <strong>Note&nbsp;:</strong> l'ancienne classe <code>.qc‑subhead</code> est
+  <strong>périmée</strong>. Elle reste prise en charge comme alias de
+  <code>.qc‑eyebrow</code> pour la rétrocompatibilité, mais ne doit plus être
+  utilisée dans du nouveau code.
 </p>
 
 <qc-doc-exemple caption="Surtitre du h1"
@@ -83,7 +89,7 @@
   <div role="presentation"
        id="exemple-surtitre-h1"
   >
-    <h1><span class="qc-subhead">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
+    <h1><span class="qc-eyebrow">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
   </div>
 </qc-doc-exemple>
 <qc-table>
@@ -97,10 +103,17 @@
     </thead>
     <tbody>
     <tr>
-      <td><code>qc‑subhead</code></td>
+      <td><code>qc‑eyebrow</code></td>
       <td>
         Surtitre affiché au-dessus d'un titre de premier niveau. À placer sur un
         <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>, comme dans l'exemple.
+      </td>
+    </tr>
+    <tr>
+      <td><code>qc‑subhead</code> <em>(périmée)</em></td>
+      <td>
+        Ancien nom de <code>qc‑eyebrow</code>, conservé comme alias pour la
+        rétrocompatibilité. Ne plus utiliser.
       </td>
     </tr>
     </tbody>

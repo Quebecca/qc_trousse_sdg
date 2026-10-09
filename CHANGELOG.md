@@ -33,7 +33,7 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
   - Tests Playwright (baseline + svelte) avec screenshots partagés.
 - **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
 - **titres** : nouvelles classes de taille `.qc-heading-<taille>`, taille de xxl à xs.
-- **surtitre** : possibilité de placer le surtitre dans un `hgroup`
+- **surtitre (eyebrow)** : nouvelle classe `.qc-eyebrow` pour le surtitre, qui remplace `.qc-subhead` (voir **Déprécié**). Rendu identique à l'ancienne classe, sur les deux formes existantes&nbsp;: insérée dans le titre (`<h1><span class="qc-eyebrow">…</span>…</h1>`) ou dans un `<hgroup>`.
 - **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
 - **Documentation** 
   - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
@@ -49,6 +49,9 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
 - **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
 - **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
+
+### Déprécié
+- **surtitre** : la classe `.qc-subhead` est **périmée**, remplacée par `.qc-eyebrow`. Elle reste prise en charge comme alias (rendu identique) pour la rétrocompatibilité, mais ne doit plus être utilisée dans du nouveau code.
 
 ### Retiré
 - **outillage mort** : suppression du script npm `rewrite-bootstrap` et du `gulpfile.js` associé (tâche `rewriteBs`). Ce code n'était plus fonctionnel (dépendances `gulp` / `gulp-transform` / `gulp-clean` / `bootstrap-for-qc-sdg` absentes) et sa sortie n'était ni versionnée ni consommée : le code de grille Bootstrap avait déjà été inliné une fois pour toutes dans le SCSS (`_grid-lib.scss`, `_display.scss`).

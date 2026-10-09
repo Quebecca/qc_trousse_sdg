@@ -12,11 +12,14 @@
   }
 }
 
-// Surtitre — même visuel quelle que soit la structure :
-//  - forme sémantique (recommandée) : <hgroup><p class="qc-subhead">…</p><h1>Titre</h1></hgroup>
+// Surtitre (« eyebrow ») — même visuel quelle que soit la structure :
+//  - forme sémantique (recommandée) : <hgroup><p class="qc-eyebrow">…</p><h1>Titre</h1></hgroup>
 //    le surtitre est frère du titre, donc hors du nom accessible du <h1> ;
-//  - ancienne forme (conservée) : <h1><span class="qc-subhead">…</span>Titre</h1>.
-.qc-subhead {
+//  - ancienne forme (conservée) : <h1><span class="qc-eyebrow">…</span>Titre</h1>.
+//
+// RÉTROCOMPATIBILITÉ : l'ancienne classe .qc-subhead reste un alias de .qc-eyebrow
+// (même rendu), mais elle est PÉRIMÉE — ne plus l'utiliser dans du nouveau code.
+.qc-eyebrow, .qc-subhead {
   @include content-font(sm, $include-family: 1);
   color: token-value(color, grey, medium);
   display: block;
@@ -25,7 +28,7 @@
 
 // Regroupement sémantique surtitre + titre : le <hgroup> porte les marges du titre
 // et le titre interne perd les siennes, pour un espacement identique à l'ancienne forme.
-hgroup:has(> .qc-subhead) {
+hgroup:has(> :is(.qc-eyebrow, .qc-subhead)) {
   margin-top: token-value(spacer h1 mt);
   margin-bottom: token-value(spacer h1 mb);
 
