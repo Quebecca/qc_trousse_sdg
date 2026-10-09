@@ -1,0 +1,40 @@
+<!-- Fixture de validation de la scrollbar stylée (générée dans public/scrollbarBaseline.test.html).
+     Base CSS pure (_scrollbar.scss) : la classe .qc-scrollbar habille la scrollbar WebKit
+     (largeur = spacer xs, piste transparente, pouce bleu PIV arrondi, boutons/coins masqués)
+     et fournit un repli scrollbar-color/scrollbar-width pour les moteurs sans ::-webkit-scrollbar.
+     Deux cas, car le SCSS cible DEUX sélecteurs distincts :
+       #direct   -> .qc-scrollbar::-webkit-scrollbar   (l'élément .qc-scrollbar défile lui-même)
+       #nested   -> .qc-scrollbar ::-webkit-scrollbar  (un descendant de .qc-scrollbar défile)
+     overflow/hauteur posés en style inline : ils forcent l'apparition de la scrollbar,
+     ils ne font pas partie du composant testé. -->
+<style>
+  /* Force une scrollbar classique visible (indépendant des préférences OS d'overlay). */
+  #scrollbar-cases { display: flex; gap: 2.4rem; align-items: flex-start; padding: 2.4rem; }
+  #scrollbar-cases .scroll-box {
+    width: 24rem;
+    height: 16rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border: 0.1rem solid var(--qc-color-grey-300, #ccc);
+    padding: 0.8rem;
+  }
+  #scrollbar-cases .tall { height: 48rem; }
+</style>
+<div id="scrollbar-cases">
+  <!-- Cas direct : .qc-scrollbar défile -> &::-webkit-scrollbar -->
+  <div id="direct" class="qc-scrollbar scroll-box">
+    <div class="tall">
+      <p class="qc-h4">Défilement direct</p>
+      <p>La scrollbar est celle de l'élément .qc-scrollbar lui-même.</p>
+    </div>
+  </div>
+  <!-- Cas descendant : un enfant de .qc-scrollbar défile -> .qc-scrollbar ::-webkit-scrollbar -->
+  <div id="nested" class="qc-scrollbar">
+    <div class="scroll-box">
+      <div class="tall">
+        <p class="qc-h4">Défilement d'un descendant</p>
+        <p>La scrollbar est celle d'un enfant contenu dans .qc-scrollbar.</p>
+      </div>
+    </div>
+  </div>
+</div>

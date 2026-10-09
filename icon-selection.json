@@ -40,7 +40,9 @@
     "toc",
     "download",
     "videocam",
-    "fax"
+    "fax",
+    "add_circle",
+    "do_not_disturb_on"
   ],
   "variants": ["outlined", "filled"],
   "maxBundleWarning": 100

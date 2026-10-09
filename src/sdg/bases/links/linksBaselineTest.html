@@ -1,0 +1,43 @@
+<!-- Fixture de validation des liens génériques (base « links », générée en
+     public/linksBaseline.test.html). Le lien externe (qc-external-link) est
+     couvert par external-link-baseline -> volontairement EXCLU ici.
+
+     Les états interactifs sont figés via les classes .pseudo-* de la doc
+     (qc-doc-sdg.css, chargée par le wrapper _test.html) : elles réappliquent
+     les mixins hover-link() / focus-link() / active-link() du SCSS de la
+     trousse pour capturer chaque état dans un snapshot unique.
+
+     Couverture face à _links.scss :
+       a                 -> couleur token(color link text)
+       a:visited         -> token(color link visited)              [.pseudo-visited]
+       a:hover           -> hover-link()  : token(color link hover), sans souligné
+       a:focus / -visible-> focus-link()  : hover + outline 2px, offset 1px
+       a:active          -> active-link() : token(color link active), sans souligné
+     (.not-visited neutralise la couleur :visited pour montrer l'état par défaut.) -->
+<div id="links-etats">
+  <dl>
+    <dt>Lien non visité (état par défaut)</dt>
+    <dd><a href="#" class="not-visited">Lien générique</a></dd>
+
+    <dt>Lien visité (:visited)</dt>
+    <dd><a href="#" class="pseudo-visited">Lien générique</a></dd>
+
+    <dt>Lien au survol (:hover)</dt>
+    <dd><a href="#" class="pseudo-hover">Lien générique</a></dd>
+
+    <dt>Lien au focus (:focus / :focus-visible)</dt>
+    <dd><a href="#" class="pseudo-focus">Lien générique</a></dd>
+
+    <dt>Lien actif au clic (:active)</dt>
+    <dd><a href="#" class="pseudo-active">Lien générique</a></dd>
+  </dl>
+</div>
+
+<!-- Lien au fil du texte : valide le rendu inline (souligné par défaut,
+     couleur, cohabitation avec l'interligne du paragraphe). -->
+<div id="links-inline">
+  <p>Un paragraphe courant contenant un <a href="#" class="not-visited">lien
+    générique</a> inséré au fil du texte, suivi d'un
+    <a href="#" class="pseudo-visited">lien déjà visité</a> pour comparer les
+    deux couleurs dans un même flux.</p>
+</div>

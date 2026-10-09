@@ -1,0 +1,61 @@
+<!-- Fixture baseline — bouton-icône (WC qc-icon-button, shadow: none) -->
+<!-- Le composant ne dessine qu'une boîte flex dimensionnée (data-button-size) ; -->
+<!-- l'apparence vient de l'icône interne (couleur/taille). On challenge donc -->
+<!-- tailles de boîte, tailles d'icône, couleurs, icônes variées, états. -->
+
+<!-- Section 1 : tailles de bouton (sm/md/nm/lg/xl) — icône fixe -->
+<div class="section-button-sizes">
+    <h3>Tailles de bouton</h3>
+    <div>
+        <qc-icon-button size="sm" icon="close" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="md" icon="close" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="nm" icon="close" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="lg" icon="close" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="xl" icon="close" label="Fermer"></qc-icon-button>
+    </div>
+</div>
+
+<!-- Section 2 : tailles d'icône dans un bouton xl -->
+<div class="section-icon-sizes">
+    <h3>Tailles d'icône</h3>
+    <div>
+        <qc-icon-button size="xl" icon="search" icon-size="sm" label="Rechercher"></qc-icon-button>
+        <qc-icon-button size="xl" icon="search" icon-size="md" label="Rechercher"></qc-icon-button>
+        <qc-icon-button size="xl" icon="search" icon-size="nm" label="Rechercher"></qc-icon-button>
+        <qc-icon-button size="xl" icon="search" icon-size="lg" label="Rechercher"></qc-icon-button>
+        <qc-icon-button size="xl" icon="search" icon-size="xl" label="Rechercher"></qc-icon-button>
+    </div>
+</div>
+
+<!-- Section 3 : couleurs d'icône -->
+<div class="section-icon-colors">
+    <h3>Couleurs d'icône</h3>
+    <div>
+        <qc-icon-button size="lg" icon="info" icon-size="nm" label="Information"></qc-icon-button>
+        <qc-icon-button size="lg" icon="info" icon-size="nm" icon-color="blue-piv" label="Information"></qc-icon-button>
+        <qc-icon-button size="lg" icon="check_circle" icon-size="nm" icon-color="success" label="Succès"></qc-icon-button>
+        <qc-icon-button size="lg" icon="error" icon-size="nm" icon-color="error" label="Erreur"></qc-icon-button>
+        <qc-icon-button size="lg" icon="warning" icon-size="nm" icon-color="warning" label="Avertissement"></qc-icon-button>
+    </div>
+</div>
+
+<!-- Section 4 : icônes variées (usages réels : fermeture, recherche, navigation) -->
+<div class="section-icons">
+    <h3>Icônes variées</h3>
+    <div>
+        <qc-icon-button size="nm" icon="close" icon-size="nm" icon-color="blue-piv" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="nm" icon="search" icon-size="nm" icon-color="blue-piv" label="Rechercher"></qc-icon-button>
+        <qc-icon-button size="nm" icon="arrow_upward" icon-size="nm" icon-color="blue-piv" label="Haut"></qc-icon-button>
+        <qc-icon-button size="nm" icon="arrow_forward" icon-size="nm" icon-color="blue-piv" label="Suivant"></qc-icon-button>
+        <qc-icon-button size="nm" icon="check" icon-size="nm" icon-color="blue-piv" label="Valider"></qc-icon-button>
+    </div>
+</div>
+
+<!-- Section 5 : états (désactivé) et classe utilitaire -->
+<div class="section-states">
+    <h3>États</h3>
+    <div>
+        <qc-icon-button size="lg" icon="close" icon-size="nm" icon-color="blue-piv" label="Fermer"></qc-icon-button>
+        <qc-icon-button size="lg" icon="close" icon-size="nm" icon-color="blue-piv" label="Fermer" disabled></qc-icon-button>
+    </div>
+</div>

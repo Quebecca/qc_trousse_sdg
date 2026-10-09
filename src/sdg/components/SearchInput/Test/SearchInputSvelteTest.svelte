@@ -5,12 +5,14 @@
 
 <svelte:options customElement={{tag: "qc-search-input-svelte-test" }} />
 
+<div style="margin-block-start: var(--qc-spacer-md);">
 <SearchInput
         placeholder="Sans debounce"
         ariaLabel="Recherche sans debounce"
         clearAriaLabel="Effacer le texte"
         leftIcon={true}
 />
+</div>
 
 <br>
 

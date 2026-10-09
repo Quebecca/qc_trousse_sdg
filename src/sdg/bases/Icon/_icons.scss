@@ -4,6 +4,9 @@
 .qc-icon-custom {
   display: inline-block;
   flex-shrink: 0;
+  // Icône SVG inline : alignement image standard (centrée sur la ligne). Aucun
+  // ajustement en em ici — le -0.125em est propre à la fonte Material (mode font).
+  vertical-align: middle;
   width: var(--img-width);
   height: var(--img-height);
   mask-size: 100% 100%;
@@ -26,6 +29,21 @@
       width: rem($size);
     }
   }
+}
+
+qc-icon:defined {
+  display: inline-flex;
+}
+
+// Le -0.125em compense le décalage vertical propre à la fonte Material Symbols
+// (mode font). Il ne s'applique qu'au mode font : une icône SVG (`src`) s'aligne
+// comme une image inline.
+qc-icon:defined:not([src]) {
+  vertical-align: -0.125em;
+}
+
+qc-icon[src] {
+  vertical-align: middle;
 }
 
 // Réservation CLS avant l'upgrade du web-component.

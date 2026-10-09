@@ -548,18 +548,6 @@
         max-inline-size: var(--qc-max-content-width);
     }
 
-    h1,h2,h3,h4,h5,h6,[role="heading"] {
-        font-size: var(--qc-font-size-sm);
-        font-weight: var(--qc-font-weight-bold);
-        line-height: var(--qc-line-height-sm);
-        margin: 0;
-        font-family: var(--qc-font-family-content);
-        &::after{
-            display: none;
-        }
-    }
-
-
     .qc-tooltip-content:focus-visible {
         outline: none;
     }

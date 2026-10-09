@@ -12,6 +12,26 @@
     </p>
 </div>
 
+<!-- Retour à la ligne du DERNIER MOT + icône (max-width étroit force le wrap ; le
+     dernier mot « adipiscing » tient sur sa ligne mais « adipiscing + icône » déborde).
+     Cas 1 — SANS composant : l'icône est un élément inline séparé après un espace ;
+     hyphens:none empêche la césure du mot -> à la coupure, l'icône s'ORPHELINE seule
+     en début de ligne, détachée du dernier mot. C'est le défaut que corrige le composant. -->
+<div style="border: 1px solid var(--qc-color-text-primary); padding: var(--qc-spacer-sm); max-width: 260px; margin-block-end: var(--qc-spacer-md);">
+    <p class="qc-font-size-md">
+        <a href="http://www.external.domain.com/" target="_blank" rel="noreferrer nofollow" style="hyphens: none;">Lorem ipsum dolor adipiscing <span class="qc-icon-font" aria-hidden="true">&#xe89e;</span></a>
+    </p>
+</div>
+
+<!-- Cas 2 — AVEC composant : qc-external-link enrobe le dernier mot dans
+     .qc-ext-link-text (white-space: nowrap) et pose l'icône en ::after -> le dernier
+     mot et l'icône restent SOUDÉS et passent ENSEMBLE à la ligne. -->
+<div style="border: 1px solid var(--qc-color-text-primary); padding: var(--qc-spacer-sm); max-width: 260px; margin-block-end: var(--qc-spacer-md);">
+    <p class="qc-font-size-md">
+        <qc-external-link><a href="http://www.external.domain.com/" target="_blank" rel="noreferrer nofollow">Lorem ipsum dolor adipiscing</a></qc-external-link>
+    </p>
+</div>
+
 <p class="qc-font-size-xl">
     Lorem ipsum
     <qc-external-link><a href="http://www.external.domain.com/">Lorem ipsum dolor sit amet, consectetur

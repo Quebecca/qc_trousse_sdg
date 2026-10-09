@@ -1,0 +1,93 @@
+<!-- Fixture de validation de la BASE CSS des tableaux (générée en public/tablesBase.test.html).
+     Cible le rendu de `table.qc-table` tel que shippé dans CETTE branche d'intégration,
+     c.-à-d. la base fournie par src/doc/scss/_tables.scss (chargée via qc-doc-sdg.css) :
+       - table.qc-table : en-tête bleu, caption en gras, filets bas de cellules, paddings ;
+       - .qc-striped    : rangées paires sur fond gris pâle ;
+       - <th scope="row"> en corps (liste verticale clé/valeur).
+     NB : les variantes qc-table--grey-header / qc-table--simplified / qc-table-number /
+     structured-list appartiennent au composant Web qc-table (non fusionné dans cette
+     branche) ; elles ne sont donc PAS couvertes ici et seront testées via @table quand
+     le composant sera intégré. Cas groupés par variante, comme headingsTest.html. -->
+
+<!-- Standard : en-tête bleu, caption, filets bas -->
+<div id="standard">
+  <table class="qc-table">
+    <caption>Standard — en-tête bleu</caption>
+    <thead>
+      <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Département</th>
+        <th scope="col">Poste</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Marie Tremblay</td>
+        <td>Communications</td>
+        <td>Conseillère</td>
+      </tr>
+      <tr>
+        <td>Jean Lavoie</td>
+        <td>Informatique</td>
+        <td>Analyste</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Rangées alternées : rangées paires sur fond gris pâle (.qc-striped) -->
+<div id="striped">
+  <table class="qc-table qc-striped">
+    <caption>Rangées alternées (qc-striped)</caption>
+    <thead>
+      <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Département</th>
+        <th scope="col">Poste</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Marie Tremblay</td>
+        <td>Communications</td>
+        <td>Conseillère</td>
+      </tr>
+      <tr>
+        <td>Jean Lavoie</td>
+        <td>Informatique</td>
+        <td>Analyste</td>
+      </tr>
+      <tr>
+        <td>Amélie Roy</td>
+        <td>Finances</td>
+        <td>Directrice</td>
+      </tr>
+      <tr>
+        <td>Luc Bernard</td>
+        <td>Ressources humaines</td>
+        <td>Conseiller</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Liste verticale clé/valeur : <th scope="row"> en corps (style tbody th) -->
+<div id="vertical">
+  <table class="qc-table">
+    <caption>Vertical — clé / valeur</caption>
+    <tbody>
+      <tr>
+        <th scope="row">Statut</th>
+        <td>À corriger</td>
+      </tr>
+      <tr>
+        <th scope="row">Territoire</th>
+        <td>Bas-Saint-Laurent</td>
+      </tr>
+      <tr>
+        <th scope="row">Catégorie</th>
+        <td>Inventaire faunique</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

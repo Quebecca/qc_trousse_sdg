@@ -1,0 +1,77 @@
+<!-- Fixture de validation des listes (générée en public/listsBaseline.test.html).
+     Challenge _lists.scss : ul (disc) / ul imbriquée (circle) / imbrication profonde,
+     ol numérotée + imbriquée, listes de définition (dl/dt/dd, marges à 0), imbrication
+     mixte (ol dans ul et inverse), et la largeur max (max-content-width) + marges de bloc.
+     Cas groupés par variante avec un id, comme headingsTest.html. -->
+
+<!-- Liste non ordonnée : disc au 1er niveau, circle aux niveaux imbriqués -->
+<div id="unordered">
+  <ul>
+    <li>Élément non ordonné 1 (disc)</li>
+    <li>Élément non ordonné 2
+      <ul>
+        <li>Imbriqué niveau 2 (circle)</li>
+        <li>Imbriqué niveau 2
+          <ul>
+            <li>Imbriqué niveau 3 (circle)</li>
+            <li>Imbriqué niveau 3</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Élément non ordonné 3</li>
+  </ul>
+</div>
+
+<!-- Liste ordonnée : numérotation, imbrication ordonnée -->
+<div id="ordered">
+  <ol>
+    <li>Élément ordonné 1</li>
+    <li>Élément ordonné 2
+      <ol>
+        <li>Imbriqué ordonné 2.1</li>
+        <li>Imbriqué ordonné 2.2</li>
+      </ol>
+    </li>
+    <li>Élément ordonné 3</li>
+  </ol>
+</div>
+
+<!-- Liste de définition : marges dl/dd à 0 -->
+<div id="definition">
+  <dl>
+    <dt>Terme 1</dt>
+    <dd>Définition du terme 1.</dd>
+    <dt>Terme 2</dt>
+    <dd>Définition du terme 2, un peu plus longue pour occuper la largeur.</dd>
+  </dl>
+</div>
+
+<!-- Imbrication mixte : ol dans ul et ul dans ol -->
+<div id="mixed">
+  <ul>
+    <li>Puce contenant une liste ordonnée
+      <ol>
+        <li>Ordonné imbriqué a</li>
+        <li>Ordonné imbriqué b</li>
+      </ol>
+    </li>
+    <li>Autre puce</li>
+  </ul>
+  <ol>
+    <li>Numéro contenant une liste à puces
+      <ul>
+        <li>Puce imbriquée a</li>
+        <li>Puce imbriquée b</li>
+      </ul>
+    </li>
+    <li>Autre numéro</li>
+  </ol>
+</div>
+
+<!-- Largeur max : le texte long doit être borné à max-content-width -->
+<div id="width">
+  <ul>
+    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+  </ul>
+</div>

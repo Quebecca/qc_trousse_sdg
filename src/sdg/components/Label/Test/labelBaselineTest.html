@@ -1,0 +1,44 @@
+<!-- Fixture de validation du Label (générée en public/labelBaseline.test.html).
+     Label = base CSS pure : <label class="qc-label"> englobant <span class="qc-label-text">
+     + indicateur requis .qc-required. Modificateurs : .qc-compact (font-size sm),
+     .qc-bold (font-weight bold). État désactivé : deux mécanismes couverts —
+     .qc-label:has(~ :disabled) (frère désactivé) et l'utilitaire .qc-disabled. -->
+<div id="base">
+  <label class="qc-label" for="f-base">
+    <span class="qc-label-text">Étiquette de base</span>
+  </label>
+</div>
+<div id="required">
+  <label class="qc-label" for="f-required">
+    <span class="qc-label-text">Étiquette requise</span><span class="qc-required" aria-hidden="true">*</span>
+  </label>
+</div>
+<div id="compact">
+  <label class="qc-label qc-compact" for="f-compact">
+    <span class="qc-label-text">Étiquette compacte</span><span class="qc-required" aria-hidden="true">*</span>
+  </label>
+</div>
+<div id="bold">
+  <label class="qc-label qc-bold" for="f-bold">
+    <span class="qc-label-text">Étiquette en gras</span>
+  </label>
+</div>
+<!-- Désactivé via frère :disabled (sélecteur :has(~ :disabled)) -->
+<div id="disabled-sibling">
+  <label class="qc-label" for="f-disabled">
+    <span class="qc-label-text">Étiquette désactivée (frère :disabled)</span>
+  </label>
+  <input type="text" id="f-disabled" name="f-disabled" disabled />
+</div>
+<!-- Désactivé via l'utilitaire .qc-disabled -->
+<div id="disabled-class">
+  <label class="qc-label qc-disabled" for="f-disabled2">
+    <span class="qc-label-text">Étiquette désactivée (.qc-disabled)</span>
+  </label>
+</div>
+<!-- Texte long : vérifie white-space wrap du .qc-label-text et max-inline-size du .qc-label -->
+<div id="long" style="width: 300px; padding: 10px; border: 1px solid #ccc;">
+  <label class="qc-label" for="f-long">
+    <span class="qc-label-text">Étiquette très longue lorem ipsum dolor sit amet consectetur adipiscing elit</span><span class="qc-required" aria-hidden="true">*</span>
+  </label>
+</div>

@@ -28,7 +28,7 @@
             name,
         }),
         submitProps = $derived({
-            ...defaultsAttributes.input,
+            ...defaultsAttributes.submit,
             ...Utils.computeFieldsAttributes("submit", rest)
         });
     ;

@@ -5,7 +5,8 @@
             caption : {attribute: 'caption'},
             codeTargetId: {attribute: 'code-target-id'},
             hideCode: {attribute: 'hide-code', type: 'Boolean'},
-            rawCode: {attribute: 'raw-code'}
+            rawCode: {attribute: 'raw-code'},
+            filter: {attribute: 'filter'}
         }
     }} />
     <script>
@@ -17,6 +18,7 @@
          codeTargetId,
          hideCode = false,
          rawCode,
+         filter = '',
          ...restProps
      } = $props();
 
@@ -56,6 +58,6 @@
         </figcaption>
     </figure>
     {#if !hideCode}
-        <Code rawCode={exempleCode}></Code>
+        <Code rawCode={exempleCode} filter={filter}></Code>
     {/if}
 </div>

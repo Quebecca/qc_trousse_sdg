@@ -1,0 +1,311 @@
+<h1>Tests qc-table</h1>
+
+<h2>Tableau standard en-tête bleu</h2>
+
+<qc-table>
+    <table id="table-standard">
+        <caption>Liste des employés</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">12</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+
+<h2>Tableau standard avec en-tête gris pâle</h2>
+
+<qc-table>
+    <table
+            id="table-standard-grey-header"
+            class="qc-table--grey-header"
+    >
+        <caption>Liste des employés</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">12</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h2>Tableau avec des rangées alternées</h2>
+
+<qc-table>
+    <table
+            id="table-standard-striped"
+            class="qc-striped"
+    >
+        <caption>Liste des employés</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">12</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h2>Tableau simplifié avec en-tête blanc</h2>
+
+<qc-table>
+    <table
+            id="table-standard-simplified"
+            class="qc-table--simplified"
+    >
+        <caption>Liste des employés</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">12</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée avec en-tête</h2>
+
+<qc-table structured-list>
+    <table id="table-structured-list">
+        <caption>Liste des employés</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée sans en-tête</h2>
+
+<qc-table structured-list>
+    <table  id="table-structured-list-without-header">
+        <caption>Liste des employés</caption>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée verticale</h2>
+
+<qc-table structured-list>
+    <table id="table-structured-list-vertical">
+        <caption>Informations de l’employée Marie Tremblay</caption>
+        <tbody>
+        <tr>
+            <th scope="row">Nom</th>
+            <td>Marie Tremblay</td>
+        </tr>
+        <tr>
+            <th scope="row">Département</th>
+            <td>Communications</td>
+        </tr>
+        <tr>
+            <th scope="row">Poste</th>
+            <td>Conseillère</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée avec en-têtes sans thead</h2>
+
+<qc-table structured-list>
+    <table id="table-structured-list-without-thead">
+        <caption>Liste des employés par département</caption>
+
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+        </tr>
+
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+        </tr>
+
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+        </tr>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée avec en-têtes fusionnés</h2>
+
+<qc-table structured-list>
+    <table id="table-structured-list-merged-headers">
+        <caption>
+            Taux de cotisation au Régime de rentes du Québec (exemple fictif)
+        </caption>
+
+        <tr>
+            <th rowspan="2" scope="col"></th>
+            <th colspan="2" scope="colgroup">Régime de base</th>
+            <th colspan="2" scope="colgroup">Régime supplémentaire</th>
+        </tr>
+
+        <tr>
+            <th scope="col" class="qc-table-number">Taux 2025</th>
+            <th scope="col" class="qc-table-number">Taux 2026</th>
+            <th scope="col" class="qc-table-number">Taux 2025</th>
+            <th scope="col" class="qc-table-number">Taux 2026</th>
+        </tr>
+
+        <tr>
+            <th scope="row">Part du salarié</th>
+            <td class="qc-table-number">5,50 %</td>
+            <td class="qc-table-number">1,50 %</td>
+            <td class="qc-table-number">1,00 %</td>
+            <td class="qc-table-number">1,70 %</td>
+        </tr>
+
+        <tr>
+            <th scope="row">Part de l'employeur</th>
+            <td class="qc-table-number">5,40 %</td>
+            <td class="qc-table-number">5,00 %</td>
+            <td class="qc-table-number">1,70 %</td>
+            <td class="qc-table-number">1,00 %</td>
+        </tr>
+    </table>
+</qc-table>
+
+
+<h2>Liste structurée avec des cellules fusionnées</h2>
+
+<qc-table structured-list>
+    <table id="table-structured-list-merged-cells">
+        <caption>Tarifs de renouvellement par catégorie (exemple fictif)</caption>
+        <thead>
+        <tr>
+            <th scope="col">Service</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col" class="qc-table-number">Tarif</th>
+            <th scope="col">Validité</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="2">Permis de conduire</td>
+            <td>Classe 5A – véhicule de promenade</td>
+            <td class="qc-table-number">6,00 $</td>
+            <td rowspan="2">2 ans</td>
+        </tr>
+        <tr>
+            <td>Classe 6A – motocyclette</td>
+            <td class="qc-table-number">2,00 $</td>
+        </tr>
+        <tr>
+            <td rowspan="2">Immatriculation</td>
+            <td>Véhicule de promenade</td>
+            <td class="qc-table-number">0,08 $</td>
+            <td>4 ans</td>
+        </tr>
+        <tr>
+            <td>Véhicule électrique</td>
+            <td colspan="2">
+                Exonération partielle applicable — voir les conditions d'admissibilité
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>

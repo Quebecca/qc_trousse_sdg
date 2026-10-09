@@ -92,7 +92,7 @@
   &.qc-secondary {
     --qc-color-link-text: #{token-value(color blue, piv)};
     color: token-value(color blue, piv);
-    background-color: token-value(color white);
+    background-color: transparent;
     border-color: token-value(color blue, piv);
 
     &:hover:not(:disabled),

@@ -1,0 +1,65 @@
+<style>
+  .lozenge-specimen {
+    margin-bottom: 1.6rem;
+  }
+</style>
+
+<!-- Pastille générale (bleue) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-general" aria-label="Information">Pastille générale</span>
+  <span class="qc-lozenge qc-general qc-lozenge-icon" aria-label="Information">Pastille générale</span>
+</div>
+
+<!-- Pastille de succès (verte) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-success" aria-label="Succès">Pastille de succès</span>
+  <span class="qc-lozenge qc-success qc-lozenge-icon" aria-label="Succès">Pastille de succès</span>
+</div>
+
+<!-- Pastille d'erreur (rouge) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-error" aria-label="Erreur">Pastille d'erreur</span>
+  <span class="qc-lozenge qc-error qc-lozenge-icon" aria-label="Erreur">Pastille d'erreur</span>
+</div>
+
+<!-- Pastille d'avertissement (jaune) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-warning" aria-label="Avertissement">Pastille d'avertissement</span>
+  <span class="qc-lozenge qc-warning qc-lozenge-icon" aria-label="Avertissement">Pastille d'avertissement</span>
+</div>
+
+<!-- Pastille complémentaire (grise) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément">Pastille complémentaire</span>
+  <span class="qc-lozenge qc-complementary qc-lozenge-icon" aria-label="Complément">Pastille complémentaire</span>
+</div>
+
+<!-- Italique et exposant -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément"><em>Avec de l'italique</em></span>
+  <span class="qc-lozenge qc-general" aria-label="Information">Avec un exposant ici 1<sup>er</sup></span>
+</div>
+
+<!-- Ellipse (texte seul) -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-general" aria-label="Information">Ce texte est beaucoup trop long pour tenir dans la pastille</span>
+</div>
+
+<!-- Ellipse avec qc-icon personnalisé : cas de test de compatibilité qc-icon + qc-lozenge-label -->
+<div class="lozenge-specimen">
+  <span class="qc-lozenge qc-general" aria-label="Information">
+    <qc-icon icon="information" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Ce texte est beaucoup trop long pour tenir dans la pastille</span>
+  </span>
+</div>
+
+<!-- Combinaison de pastilles -->
+<div class="lozenge-specimen">
+  <div class="qc-lozenge-group">
+    <span class="qc-lozenge qc-success" aria-label="Succès">Approuvé</span>
+    <span class="qc-lozenge qc-general" aria-label="Information">En traitement</span>
+    <span class="qc-lozenge qc-complementary" aria-label="Complément">Archivé</span>
+    <span class="qc-lozenge qc-warning" aria-label="Avertissement">En attente</span>
+    <span class="qc-lozenge qc-error" aria-label="Erreur">Rejeté</span>
+  </div>
+</div>

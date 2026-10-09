@@ -7,3 +7,16 @@
     margin-bottom: 0;
   }
 }
+
+.qc-tooltip-content h2,
+qc-tooltip [role="heading"] {
+  display: block;
+  font-size: var(--qc-font-size-sm);
+  font-weight: var(--qc-font-weight-bold);
+  line-height: var(--qc-line-height-sm);
+  margin: 0;
+  font-family: var(--qc-font-family-content);
+  &::after{
+    display: none;
+  }
+}

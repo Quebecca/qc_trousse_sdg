@@ -1,0 +1,92 @@
+<!-- Fixture de validation des utilitaires CSS (générée en public/utilitiesBaseline.test.html).
+     Couvre les classes RÉELLEMENT livrées dans dist/css/qc-sdg.min.css :
+       - display  : src/sdg/scss/utilities/_display.scss  (.qc-d-*, .qc-nowrap)
+       - états    : src/sdg/scss/utilities/_states.scss   (.qc-required, .qc-disabled)
+       - thèmes   : src/sdg/scss/utilities/_themes.scss    (.qc-*-theme-show)
+     NB : src/sdg/scss/vendor/bootstrap-rewrite/utilities/_spacing.scss et _flex.scss
+     ne sont PLUS compilés (aucun @use dans le graphe SCSS — cf. commentaire
+     « retrait de ces utilitaires pour alléger la css » dans _display.scss). Leurs
+     classes (.qc-m-*, .qc-p-*, .qc-flex-*, .qc-justify-content-*, .qc-align-*)
+     sont ABSENTES du livrable et ne peuvent donc pas être testées visuellement. -->
+<style>
+  /* Échafaudage de visualisation — permet de VOIR l'effet des utilitaires
+     (les classes qc-d-* n'ont aucun rendu propre sans contenu visible). */
+  .demo-utilities { margin-bottom: 2.4rem; }
+  .demo-utilities h2 { margin-top: 0; }
+  .demo-box {
+    background: #d6e6f5;
+    border: 1px solid #4d7fb0;
+    padding: 0.4rem 0.8rem;
+    margin: 0.2rem;
+  }
+  .demo-flex-container { border: 1px dashed #999; }
+  .demo-nowrap-frame { width: 12rem; border: 1px solid #999; padding: 0.4rem; overflow: hidden; }
+</style>
+
+<!-- display : chaque valeur générée par _display.scss appliquée à des boîtes.
+     block/inline/inline-block/table changent le flux ; flex/inline-flex alignent
+     les enfants ; none masque (la boîte ne doit PAS apparaître). -->
+<div class="demo-utilities" id="display">
+  <h2 class="qc-h4">display — .qc-d-*</h2>
+
+  <p>block :</p>
+  <span class="demo-box qc-d-block">.qc-d-block A</span>
+  <span class="demo-box qc-d-block">.qc-d-block B</span>
+
+  <p>inline :</p>
+  <div class="demo-box qc-d-inline">.qc-d-inline A</div>
+  <div class="demo-box qc-d-inline">.qc-d-inline B</div>
+
+  <p>inline-block :</p>
+  <div class="demo-box qc-d-inline-block">.qc-d-inline-block A</div>
+  <div class="demo-box qc-d-inline-block">.qc-d-inline-block B</div>
+
+  <p>flex :</p>
+  <div class="demo-flex-container qc-d-flex">
+    <span class="demo-box">flex 1</span>
+    <span class="demo-box">flex 2</span>
+    <span class="demo-box">flex 3</span>
+  </div>
+
+  <p>inline-flex :</p>
+  <div class="demo-flex-container qc-d-inline-flex">
+    <span class="demo-box">inline-flex 1</span>
+    <span class="demo-box">inline-flex 2</span>
+  </div>
+
+  <p>table / table-row / table-cell :</p>
+  <div class="qc-d-table" style="border-collapse:collapse;">
+    <div class="qc-d-table-row">
+      <span class="demo-box qc-d-table-cell">cellule 1</span>
+      <span class="demo-box qc-d-table-cell">cellule 2</span>
+    </div>
+  </div>
+
+  <p>none (la boîte suivante doit être invisible) :</p>
+  <span class="demo-box qc-d-none">.qc-d-none — NE DOIT PAS APPARAÎTRE</span>
+  <span class="demo-box qc-d-inline-block">boîte témoin visible</span>
+</div>
+
+<!-- .qc-nowrap : empêche le retour à la ligne d'un texte long dans un cadre étroit. -->
+<div class="demo-utilities" id="nowrap">
+  <h2 class="qc-h4">.qc-nowrap</h2>
+  <p>Sans nowrap (le texte doit passer à la ligne) :</p>
+  <div class="demo-nowrap-frame">Un texte assez long qui doit revenir à la ligne dans ce cadre étroit.</div>
+  <p>Avec .qc-nowrap (une seule ligne, débordement masqué) :</p>
+  <div class="demo-nowrap-frame qc-nowrap">Un texte assez long qui reste sur une seule ligne grâce à qc-nowrap.</div>
+</div>
+
+<!-- états : _states.scss — marqueur « requis » (rouge) et état désactivé (gris). -->
+<div class="demo-utilities" id="states">
+  <h2 class="qc-h4">états — .qc-required / .qc-disabled</h2>
+  <p>Champ obligatoire : <label>Courriel<span class="qc-required">*</span></label></p>
+  <p class="qc-disabled">.qc-disabled — texte grisé, curseur « not-allowed »</p>
+</div>
+
+<!-- thèmes : _themes.scss — en thème clair (défaut), .qc-light-theme-show est
+     visible (block) et .qc-dark-theme-show est masqué (none). -->
+<div class="demo-utilities" id="themes">
+  <h2 class="qc-h4">thèmes — .qc-*-theme-show (rendu en thème clair)</h2>
+  <span class="demo-box qc-light-theme-show">.qc-light-theme-show — VISIBLE en thème clair</span>
+  <span class="demo-box qc-dark-theme-show">.qc-dark-theme-show — MASQUÉ en thème clair</span>
+</div>

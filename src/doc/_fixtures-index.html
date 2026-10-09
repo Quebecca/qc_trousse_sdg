@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Index des fixtures de test — GÉNÉRÉ à la volée par plugins/buildFixturesIndex.mjs
+       (lors de yarn dev / build:dev, donc aussi test / fastest via leur hook pre*).
+       Ne PAS éditer public/fixtures-index.html : éditer ce gabarit ou le plugin. -->
+  <link rel="stylesheet" href="../dist/css/qc-sdg.min.css">
+  <link rel="stylesheet" href="css/qc-doc-sdg.css">
+  <title>Index des fixtures de test — Système de design gouvernemental</title>
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <style>
+    main.qc-container { padding-block: var(--qc-spacer-lg); }
+    .fixtures-intro { color: var(--qc-color-text-secondary); margin-block-end: var(--qc-spacer-md); }
+    .fixtures-section { margin-block-end: var(--qc-spacer-lg); }
+    .fixtures-section ul { list-style: none; padding: 0; margin: 0; }
+    .fixtures-section li {
+      display: flex; align-items: baseline; gap: var(--qc-spacer-sm);
+      padding-block: var(--qc-spacer-xs);
+      border-block-end: 1px solid var(--qc-color-grey-light);
+    }
+    .fixtures-section li .name { flex: 1 1 auto; font-weight: 600; }
+    .fixtures-section li .links { flex: 0 0 auto; display: flex; gap: var(--qc-spacer-md); }
+    .fixtures-section li .absent { color: var(--qc-color-grey-regular); }
+  </style>
+</head>
+<body>
+<main id="main" class="qc-container">
+  <h1>Index des fixtures de test</h1>
+  <p class="fixtures-intro">
+    Pour chaque base, composant et modèle : la fixture <strong>baseline</strong> (rendu du
+    composant web posé en markup statique) et, quand elle existe, la fixture <strong>svelte</strong>
+    (composant monté directement). Les deux partagent le même snapshot de référence.
+  </p>
+  <!-- fixtures-list -->
+</main>
+</body>
+</html>

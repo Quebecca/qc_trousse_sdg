@@ -47,9 +47,6 @@
       margin-right: 0;
       display: flex;
       align-items: center;
-      label:first-child {
-        margin-right: rem(16);
-      }
     }
   }
 </style>

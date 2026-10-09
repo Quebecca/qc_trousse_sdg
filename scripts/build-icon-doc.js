@@ -17,14 +17,17 @@ const ejsTemplate = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/IconDoc.ej
 const htmlOutput = path.resolve(__dirname, '..', 'src/sdg/bases/Icon/_icon.html');
 const selectionPath = path.resolve(__dirname, '..', 'icon-selection.json');
 const mappingPath = path.resolve(__dirname, '..', 'icon-mapping.json');
+const codepointsPath = path.resolve(__dirname, '..', 'icon-codepoints.json');
 
 const selection = JSON.parse(fs.readFileSync(selectionPath, 'utf-8'));
 const mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf-8'));
+const codepoints = JSON.parse(fs.readFileSync(codepointsPath, 'utf-8'));
 
 const templateContent = fs.readFileSync(ejsTemplate, 'utf-8');
 const html = ejs.render(templateContent, {
   icons: selection.icons,
   legacyMappings: mapping.mappings,
+  codepoints: codepoints.codepoints,
 });
 
 fs.writeFileSync(htmlOutput, html, 'utf-8');

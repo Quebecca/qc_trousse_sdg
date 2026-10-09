@@ -6,21 +6,21 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet"
-        href="css/qc-sdg.css">
+        href="../dist/css/qc-sdg.min.css">
   <link rel="stylesheet"
         href="css/qc-doc-sdg.css">
   <title>Documentation technique du Système de design gouvernemental</title>
   <script defer
-          src='js/qc-sdg.js'
-          sdg-css-filename="qc-sdg.css">
+          src='../dist/js/qc-sdg.min.js'
+          >
   </script>
   <script defer
           src='js/qc-doc-sdg.js'
           sdg-css-filename="qc-doc-sdg.css">
   </script>
   <link rel="icon"
-        type="image/x-icon"
-        href="img/favicon.ico">
+        type="image/png"
+        href="img/favicon.png">
 </head>
 <body>
 <header>
@@ -32,7 +32,7 @@
 <qc-doc-top-nav></qc-doc-top-nav>
 <div class="qc-container">
   <h1>
-  <span class="qc-subhead" id="version"></span>
+  <span class="qc-eyebrow" id="version"></span>
   Documentation technique
 </h1>
 <nav class="main-menu"
@@ -56,6 +56,7 @@
     <li><a href='#alert'>Alerte générale</a></li>
     <li><a href='#notice'>Avis</a></li>
     <li><a href='#tooltip'>Infobulles</a></li>
+    <li><a href='#lozenge'>Pastille</a></li>
     <li><a href='#search-bar'>Barre de recherche</a></li>
     <li><a href='#buttons'>Boutons</a></li>
     <li>
@@ -76,7 +77,9 @@
       </ul>
 
     </li>
-    <li><a href="#toTop">Haut de page</a></li>
+      <li><a href="#toTop">Haut de page</a></li>
+      <li><a href="#table">Tableau de données</a></li>
+      <li><a href="#liste-structuree">Liste structurée</a></li>
   </ul>
   <h2 class="qc-h4">Modèles</h2>
   <ul>
@@ -346,6 +349,8 @@
 
 <p> Le composant <code>qc-icon</code> permet d'afficher une icône avec la bonne couleur quel que soit le thème.</p>
 
+<p>Les icônes reposant sur une police de caractères, elles héritent des propriétés typographiques de leur conteneur : la taille (<code>font-size</code>), la couleur (<code>color</code>), la graisse (<code>font-weight</code>), etc.</p>
+
 <h3>Exemples</h3>
 <qc-doc-exemple caption="Exemples d'utilisation d'icônes avec différentes propriétés."
                 id="icons-exemple">
@@ -353,6 +358,7 @@
         <qc-icon icon="check_circle" color="pink-regular" size="xs"></qc-icon>
         <qc-icon icon="check_circle" color="blue-piv" size="sm"></qc-icon>
         <qc-icon icon="check_circle" color="grey-dark" size="md"></qc-icon>
+        <qc-icon icon="check_circle" color="green-dark" size="nm"></qc-icon>
         <qc-icon icon="check_circle" color="blue-regular" size="lg"></qc-icon>
         <qc-icon icon="check_circle" color="success" size="xl"></qc-icon>
     </div>
@@ -432,6 +438,46 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=favorite" />
     <qc-icon codepoint="E87D" size="lg" color="pink-regular" label="Favori"></qc-icon>
+</qc-doc-exemple>
+
+<h3>Utilisation en CSS pur (<code>::before</code>)</h3>
+
+<p>Il est aussi possible d'afficher l'icône en CSS pur, via un pseudo-élément <code>::before</code>, lorsque le composant web ne peut pas être utilisé.</p>
+
+<qc-doc-exemple caption="Icône affichée via un pseudo-élément ::before sur un span portant qc-icon qc-icon-font (patron CSS pur, sans composant web)."
+                id="icons-before">
+    <style>
+        #css-icons {
+            display: flex;
+            gap:var(--qc-spacer-1);
+            font-size:3.2rem;
+            color: var(--qc-color-success);
+            font-weight: var(--qc-font-weight-semi-bold);
+            /* Le codepoint de check_circle est E86C (voir la colonne Codepoint dans le tableau de la documentation technique plus bas) */
+            .mon-icone-sr-only::before {
+                content: "\e86c";
+            }
+            .mon-icone-accessible {
+                &::before {
+                    content: "\e86c" / "Libellé";
+                }
+                &:lang(en)::before {
+                    content: "\e86c" / "Label";
+                }
+            }
+        }
+    </style>
+    <div id="css-icons">
+        <span class="qc-icon qc-icon-font mon-icone-sr-only"
+          aria-hidden="true"></span>
+        <span class="qc-icon qc-icon-font mon-icone-accessible"
+        ></span>
+        <div lang="en">
+            <span class="qc-icon qc-icon-font mon-icone-accessible"
+            ></span>
+        </div>
+    </div>
+
 </qc-doc-exemple>
 
 <h3>Documentation technique</h3>
@@ -531,6 +577,7 @@
         <thead>
         <tr>
             <th>Nom</th>
+            <th>Codepoint</th>
             <th>Outlined</th>
             <th>Filled</th>
             <th>Ancien(s) nom(s)</th>
@@ -540,6 +587,7 @@
         
             <tr>
                 <td><code>place</code></td>
+                <td><code>E55F</code></td>
                 <td><qc-icon icon="place" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="place" variant="filled" size="lg" use-material /></td>
                 <td><code>adresse</code></td>
@@ -547,6 +595,7 @@
         
             <tr>
                 <td><code>arrow_upward</code></td>
+                <td><code>E5D8</code></td>
                 <td><qc-icon icon="arrow_upward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_upward" variant="filled" size="lg" use-material /></td>
                 <td><code>arrow-up</code></td>
@@ -554,6 +603,7 @@
         
             <tr>
                 <td><code>arrow_downward</code></td>
+                <td><code>E5DB</code></td>
                 <td><qc-icon icon="arrow_downward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_downward" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -561,6 +611,7 @@
         
             <tr>
                 <td><code>arrow_back</code></td>
+                <td><code>E5C4</code></td>
                 <td><qc-icon icon="arrow_back" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_back" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -568,6 +619,7 @@
         
             <tr>
                 <td><code>arrow_forward</code></td>
+                <td><code>E5C8</code></td>
                 <td><qc-icon icon="arrow_forward" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_forward" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -575,6 +627,7 @@
         
             <tr>
                 <td><code>arrow_left_alt</code></td>
+                <td><code>EF7D</code></td>
                 <td><qc-icon icon="arrow_left_alt" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_left_alt" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -582,6 +635,7 @@
         
             <tr>
                 <td><code>arrow_right_alt</code></td>
+                <td><code>E941</code></td>
                 <td><qc-icon icon="arrow_right_alt" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="arrow_right_alt" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -589,6 +643,7 @@
         
             <tr>
                 <td><code>north</code></td>
+                <td><code>F1E0</code></td>
                 <td><qc-icon icon="north" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="north" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -596,6 +651,7 @@
         
             <tr>
                 <td><code>calendar_today</code></td>
+                <td><code>E935</code></td>
                 <td><qc-icon icon="calendar_today" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="calendar_today" variant="filled" size="lg" use-material /></td>
                 <td><code>calendar</code></td>
@@ -603,6 +659,7 @@
         
             <tr>
                 <td><code>check</code></td>
+                <td><code>E5CA</code></td>
                 <td><qc-icon icon="check" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="check" variant="filled" size="lg" use-material /></td>
                 <td><code>checkmark</code></td>
@@ -610,6 +667,7 @@
         
             <tr>
                 <td><code>expand_less</code></td>
+                <td><code>E5CE</code></td>
                 <td><qc-icon icon="expand_less" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="expand_less" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-up-thin</code>, <code>chevron-up</code></td>
@@ -617,6 +675,7 @@
         
             <tr>
                 <td><code>expand_more</code></td>
+                <td><code>E5CF</code></td>
                 <td><qc-icon icon="expand_more" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="expand_more" variant="filled" size="lg" use-material /></td>
                 <td><code>crochet-bas</code></td>
@@ -624,6 +683,7 @@
         
             <tr>
                 <td><code>chevron_right</code></td>
+                <td><code>E5CC</code></td>
                 <td><qc-icon icon="chevron_right" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="chevron_right" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-droite</code></td>
@@ -631,6 +691,7 @@
         
             <tr>
                 <td><code>chevron_left</code></td>
+                <td><code>E5CB</code></td>
                 <td><qc-icon icon="chevron_left" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="chevron_left" variant="filled" size="lg" use-material /></td>
                 <td><code>chevron-gauche</code></td>
@@ -638,6 +699,7 @@
         
             <tr>
                 <td><code>content_paste</code></td>
+                <td><code>E14F</code></td>
                 <td><qc-icon icon="content_paste" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="content_paste" variant="filled" size="lg" use-material /></td>
                 <td><code>clipboard</code></td>
@@ -645,6 +707,7 @@
         
             <tr>
                 <td><code>emoji_objects</code></td>
+                <td><code>EA24</code></td>
                 <td><qc-icon icon="emoji_objects" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="emoji_objects" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -652,6 +715,7 @@
         
             <tr>
                 <td><code>schedule</code></td>
+                <td><code>E8B5</code></td>
                 <td><qc-icon icon="schedule" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="schedule" variant="filled" size="lg" use-material /></td>
                 <td><code>clock</code></td>
@@ -659,6 +723,7 @@
         
             <tr>
                 <td><code>mail</code></td>
+                <td><code>E158</code></td>
                 <td><qc-icon icon="mail" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="mail" variant="filled" size="lg" use-material /></td>
                 <td><code>email</code></td>
@@ -666,6 +731,7 @@
         
             <tr>
                 <td><code>cancel</code></td>
+                <td><code>E5C9</code></td>
                 <td><qc-icon icon="cancel" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="cancel" variant="filled" size="lg" use-material /></td>
                 <td><code>error</code></td>
@@ -673,6 +739,7 @@
         
             <tr>
                 <td><code>warning</code></td>
+                <td><code>E002</code></td>
                 <td><qc-icon icon="warning" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="warning" variant="filled" size="lg" use-material /></td>
                 <td><code>exclamation</code>, <code>warning</code></td>
@@ -680,6 +747,7 @@
         
             <tr>
                 <td><code>open_in_new</code></td>
+                <td><code>E89E</code></td>
                 <td><qc-icon icon="open_in_new" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="open_in_new" variant="filled" size="lg" use-material /></td>
                 <td><code>external-link</code></td>
@@ -687,6 +755,7 @@
         
             <tr>
                 <td><code>info</code></td>
+                <td><code>E88E</code></td>
                 <td><qc-icon icon="info" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="info" variant="filled" size="lg" use-material /></td>
                 <td><code>information</code></td>
@@ -694,6 +763,7 @@
         
             <tr>
                 <td><code>lightbulb</code></td>
+                <td><code>E0F0</code></td>
                 <td><qc-icon icon="lightbulb" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="lightbulb" variant="filled" size="lg" use-material /></td>
                 <td><code>ligth-bulb</code></td>
@@ -701,6 +771,7 @@
         
             <tr>
                 <td><code>remove</code></td>
+                <td><code>E15B</code></td>
                 <td><qc-icon icon="remove" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="remove" variant="filled" size="lg" use-material /></td>
                 <td><code>minus</code></td>
@@ -708,6 +779,7 @@
         
             <tr>
                 <td><code>edit_note</code></td>
+                <td><code>E745</code></td>
                 <td><qc-icon icon="edit_note" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="edit_note" variant="filled" size="lg" use-material /></td>
                 <td><code>note</code></td>
@@ -715,6 +787,7 @@
         
             <tr>
                 <td><code>call</code></td>
+                <td><code>E0B0</code></td>
                 <td><qc-icon icon="call" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="call" variant="filled" size="lg" use-material /></td>
                 <td><code>phone</code></td>
@@ -722,6 +795,7 @@
         
             <tr>
                 <td><code>add</code></td>
+                <td><code>E145</code></td>
                 <td><qc-icon icon="add" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="add" variant="filled" size="lg" use-material /></td>
                 <td><code>plus</code></td>
@@ -729,6 +803,7 @@
         
             <tr>
                 <td><code>help</code></td>
+                <td><code>E887</code></td>
                 <td><qc-icon icon="help" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="help" variant="filled" size="lg" use-material /></td>
                 <td><code>question-mark</code></td>
@@ -736,6 +811,7 @@
         
             <tr>
                 <td><code>search</code></td>
+                <td><code>E8B6</code></td>
                 <td><qc-icon icon="search" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="search" variant="filled" size="lg" use-material /></td>
                 <td><code>search-thin</code>, <code>search</code></td>
@@ -743,6 +819,7 @@
         
             <tr>
                 <td><code>check_circle</code></td>
+                <td><code>E86C</code></td>
                 <td><qc-icon icon="check_circle" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="check_circle" variant="filled" size="lg" use-material /></td>
                 <td><code>success</code></td>
@@ -750,6 +827,7 @@
         
             <tr>
                 <td><code>person</code></td>
+                <td><code>E7FD</code></td>
                 <td><qc-icon icon="person" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="person" variant="filled" size="lg" use-material /></td>
                 <td><code>user</code></td>
@@ -757,6 +835,7 @@
         
             <tr>
                 <td><code>laptop_chromebook</code></td>
+                <td><code>E31F</code></td>
                 <td><qc-icon icon="laptop_chromebook" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="laptop_chromebook" variant="filled" size="lg" use-material /></td>
                 <td><code>website</code></td>
@@ -764,6 +843,7 @@
         
             <tr>
                 <td><code>close</code></td>
+                <td><code>E5CD</code></td>
                 <td><qc-icon icon="close" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="close" variant="filled" size="lg" use-material /></td>
                 <td><code>xclose</code></td>
@@ -771,6 +851,7 @@
         
             <tr>
                 <td><code>description</code></td>
+                <td><code>E873</code></td>
                 <td><qc-icon icon="description" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="description" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -778,6 +859,7 @@
         
             <tr>
                 <td><code>more_horiz</code></td>
+                <td><code>E5D3</code></td>
                 <td><qc-icon icon="more_horiz" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="more_horiz" variant="filled" size="lg" use-material /></td>
                 <td><code>dots</code></td>
@@ -785,6 +867,7 @@
         
             <tr>
                 <td><code>note</code></td>
+                <td><code>E66D</code></td>
                 <td><qc-icon icon="note" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="note" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -792,6 +875,7 @@
         
             <tr>
                 <td><code>print</code></td>
+                <td><code>E8AD</code></td>
                 <td><qc-icon icon="print" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="print" variant="filled" size="lg" use-material /></td>
                 <td><code>printer</code></td>
@@ -799,6 +883,7 @@
         
             <tr>
                 <td><code>toc</code></td>
+                <td><code>E8DE</code></td>
                 <td><qc-icon icon="toc" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="toc" variant="filled" size="lg" use-material /></td>
                 <td><code>tableMatiere</code></td>
@@ -806,6 +891,7 @@
         
             <tr>
                 <td><code>download</code></td>
+                <td><code>F090</code></td>
                 <td><qc-icon icon="download" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="download" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
@@ -813,6 +899,7 @@
         
             <tr>
                 <td><code>videocam</code></td>
+                <td><code>E04B</code></td>
                 <td><qc-icon icon="videocam" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="videocam" variant="filled" size="lg" use-material /></td>
                 <td><code>on-line</code></td>
@@ -820,8 +907,25 @@
         
             <tr>
                 <td><code>fax</code></td>
+                <td><code>EAD8</code></td>
                 <td><qc-icon icon="fax" variant="outlined" size="lg" use-material /></td>
                 <td><qc-icon icon="fax" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>add_circle</code></td>
+                <td><code>E147</code></td>
+                <td><qc-icon icon="add_circle" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="add_circle" variant="filled" size="lg" use-material /></td>
+                <td>—</td>
+            </tr>
+        
+            <tr>
+                <td><code>do_not_disturb_on</code></td>
+                <td><code>E644</code></td>
+                <td><qc-icon icon="do_not_disturb_on" variant="outlined" size="lg" use-material /></td>
+                <td><qc-icon icon="do_not_disturb_on" variant="filled" size="lg" use-material /></td>
                 <td>—</td>
             </tr>
         
@@ -906,8 +1010,8 @@
 
 </qc-doc-exemple>
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Attributs</caption>
         <thead>
         <tr>
@@ -933,7 +1037,7 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
     <hr/>
     <h2 id="liste">Liste</h2>
 <qc-doc-exemple caption="Exemple de listes">
@@ -1002,76 +1106,63 @@
 </qc-doc-exemple>
 
 <h3 id="classes-css-titres">Classes CSS</h3>
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
-    <caption>Classes de titres</caption>
-    <thead>
-    <tr>
-      <th>Patron</th>
-      <th>Valeurs possibles</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td><code>qc‑h<em>niveau</em></code></td>
-      <td><code>qc‑h1</code>, <code>qc‑h2</code>, <code>qc‑h3</code>, <code>qc‑h4</code>, <code>qc‑h5</code>, <code>qc‑h6</code></td>
-      <td>
-        Applique la mise en forme d'un niveau de titre (h1 à h6) à n'importe quel élément, sans en
-        changer la balise. Voir l'<a href="#exemple-taille-titre">exemple</a>.
-      </td>
-    </tr>
-    <tr>
-      <td><code>qc‑heading‑<em>taille</em></code></td>
-      <td><code>qc‑heading‑xxl</code>, <code>qc‑heading‑xl</code>, <code>qc‑heading‑lg</code>, <code>qc‑heading‑md</code>, <code>qc‑heading‑sm</code>, <code>qc‑heading‑xs</code></td>
-      <td>
-        Applique une taille de titre indépendamment du niveau sémantique
-        (<code>xxl</code>&nbsp;=&nbsp;h1, <code>xl</code>&nbsp;=&nbsp;h2, <code>lg</code>&nbsp;=&nbsp;h3,
-        <code>md</code>&nbsp;=&nbsp;h4, <code>sm</code>&nbsp;=&nbsp;h5, <code>xs</code>&nbsp;=&nbsp;h6).
-        Voir l'<a href="#exemple-taille-titre">exemple</a>.
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<qc-table>
+    <table class="qc-striped">
+        <caption>Classes de titres</caption>
+        <thead>
+        <tr>
+            <th>Patron</th>
+            <th>Valeurs possibles</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc‑h<em>niveau</em></code></td>
+            <td><code>qc‑h1</code>, <code>qc‑h2</code>, <code>qc‑h3</code>, <code>qc‑h4</code>, <code>qc‑h5</code>, <code>qc‑h6</code></td>
+            <td>
+                Applique la mise en forme d'un niveau de titre (h1 à h6) à n'importe quel élément, sans en
+                changer la balise. Voir l'<a href="#exemple-taille-titre">exemple</a>.
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc‑heading‑<em>taille</em></code></td>
+            <td><code>qc‑heading‑xxl</code>, <code>qc‑heading‑xl</code>, <code>qc‑heading‑lg</code>, <code>qc‑heading‑md</code>, <code>qc‑heading‑sm</code>, <code>qc‑heading‑xs</code></td>
+            <td>
+                Applique une taille de titre indépendamment du niveau sémantique
+                (<code>xxl</code>&nbsp;=&nbsp;h1, <code>xl</code>&nbsp;=&nbsp;h2, <code>lg</code>&nbsp;=&nbsp;h3,
+                <code>md</code>&nbsp;=&nbsp;h4, <code>sm</code>&nbsp;=&nbsp;h5, <code>xs</code>&nbsp;=&nbsp;h6).
+                Voir l'<a href="#exemple-taille-titre">exemple</a>.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
 
 <h2 id="surtitre">Surtitre</h2>
 <p>
-  Un surtitre est un court intitulé affiché au-dessus d'un titre de premier niveau, à l'aide de la
-  classe <code>.qc‑subhead</code>. Deux structures sont possibles et produisent le même rendu.
+  Un surtitre (<i>eyebrow</i>) est un court intitulé affiché au-dessus d'un titre
+  de premier niveau, à l'aide de la classe <code>.qc‑eyebrow</code>.
 </p>
 <p>
-  <strong>Recommandé.</strong> Placer le surtitre <em>hors</em> du <code>&lt;h1&gt;</code>, comme
-  <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code>&nbsp;: le surtitre ne
-  fait alors pas partie du nom accessible du titre.
+  <strong>Note&nbsp;:</strong> l'ancienne classe <code>.qc‑subhead</code> est
+  <strong>périmée</strong>. Elle reste prise en charge comme alias de
+  <code>.qc‑eyebrow</code> pour la rétrocompatibilité, mais ne doit plus être
+  utilisée dans du nouveau code.
 </p>
-<qc-doc-exemple caption="Surtitre dans un hgroup (recommandé)"
-                code-target-id="exemple-surtitre-hgroup"
->
-  <div role="presentation"
-       id="exemple-surtitre-hgroup"
-  >
-    <hgroup>
-      <p class="qc-subhead">Surtitre</p>
-      <h1>Titre de niveau 1 avec surtitre</h1>
-    </hgroup>
-  </div>
-</qc-doc-exemple>
-<p>
-  <strong>Ancienne forme (conservée).</strong> Le surtitre est un <code>&lt;span&gt;</code> au début
-  du <code>&lt;h1&gt;</code>.
-</p>
-<qc-doc-exemple caption="Surtitre dans le h1 (ancienne forme)"
+
+<qc-doc-exemple caption="Surtitre du h1"
                 code-target-id="exemple-surtitre-h1"
 >
   <div role="presentation"
        id="exemple-surtitre-h1"
   >
-    <h1><span class="qc-subhead">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
+    <h1><span class="qc-eyebrow">Surtitre</span>Titre de niveau 1 avec surtitre</h1>
   </div>
 </qc-doc-exemple>
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
+<qc-table>
+    <table class="qc-striped">
     <caption>Classe de surtitre</caption>
     <thead>
     <tr>
@@ -1081,17 +1172,22 @@
     </thead>
     <tbody>
     <tr>
-      <td><code>qc‑subhead</code></td>
+      <td><code>qc‑eyebrow</code></td>
       <td>
-        Surtitre affiché au-dessus d'un titre de premier niveau. À placer soit comme
-        <code>&lt;p&gt;</code> frère du titre dans un <code>&lt;hgroup&gt;</code> (recommandé), soit
-        dans un <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>. Voir les
-        <a href="#exemple-surtitre-hgroup">exemples</a>.
+        Surtitre affiché au-dessus d'un titre de premier niveau. À placer sur un
+        <code>&lt;span&gt;</code> au début du <code>&lt;h1&gt;</code>, comme dans l'exemple.
+      </td>
+    </tr>
+    <tr>
+      <td><code>qc‑subhead</code> <em>(périmée)</em></td>
+      <td>
+        Ancien nom de <code>qc‑eyebrow</code>, conservé comme alias pour la
+        rétrocompatibilité. Ne plus utiliser.
       </td>
     </tr>
     </tbody>
   </table>
-</div>
+</qc-table>
 
     <hr/>
     <h2 id="ombrages">Ombrages</h2>
@@ -1216,64 +1312,64 @@
 
 <h3>Documentation technique</h3>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tr>
-      <td>type</td>
-      <td>"general" ou "warning"</td>
-      <td>"general"</td>
-      <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
-    </tr>
-    <tr>
-      <td>content</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Afficher le contenu de l’alerte</td>
-    </tr>
-    <tr>
-      <td>hide</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Masque ou affiche l’alerte</td>
-    </tr>
-    <tr>
-      <td>full-width</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
-        qc-container-fluid)
-      </td>
-    </tr>
-      <tr>
-          <td>maskable</td>
-          <td>"true" ou "false"</td>
-          <td>"true"</td>
-          <td>Afficher le bouton de fermeture de l’alerte</td>
-      </tr>
-      <tr>
-          <td>persist-hidden</td>
-          <td>na</td>
-          <td></td>
-          <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
-      </tr>
-    <tr>
-      <td>persistence-key</td>
-      <td>Chaîne de caractère</td>
-      <td>Id de l'élément, valeur nulle sinon</td>
-      <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
-    </tr>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>type</td>
+            <td>"general" ou "warning"</td>
+            <td>"general"</td>
+            <td>Type de l’alerte : s'il s'agit d’une alerte bleue ou jaune</td>
+        </tr>
+        <tr>
+            <td>content</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Afficher le contenu de l’alerte</td>
+        </tr>
+        <tr>
+            <td>hide</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Masque ou affiche l’alerte</td>
+        </tr>
+        <tr>
+            <td>full-width</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le contenu de l’alerte dans un conteneur pleine-largeur (classe css
+                qc-container-fluid)
+            </td>
+        </tr>
+        <tr>
+            <td>maskable</td>
+            <td>"true" ou "false"</td>
+            <td>"true"</td>
+            <td>Afficher le bouton de fermeture de l’alerte</td>
+        </tr>
+        <tr>
+            <td>persist-hidden</td>
+            <td>na</td>
+            <td></td>
+            <td>Masque l'alerte de façon persistente une fois qu'elle est masquée par l'internaute, c‑à‑d. qu'elle reste masquée lorsque l'utilisateur rafraîchit la page, pendant tout le temps de sa session.</td>
+        </tr>
+        <tr>
+            <td>persistence-key</td>
+            <td>Chaîne de caractère</td>
+            <td>Id de l'élément, valeur nulle sinon</td>
+            <td>Clé pour le stockage de session (<code>Window.sessionStorage</code>). Si non défini, l'id de l'élément sera utilisé. Si celui-ci non plus n'est pas défini, la persistence du masquage n'aura pas lieu.</td>
+        </tr>
+    </table>
+</qc-table>
 
-  </table>
-</div>
 
 <h4>Événement JS</h4>
 
@@ -1382,8 +1478,8 @@
 <h3>Documentation technique</h3>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
     <caption>Attributs</caption>
     <thead>
     <tr>
@@ -1429,7 +1525,7 @@
     </tr>
     </tbody>
   </table>
-</div>
+</qc-table>
 <h4>Zone d’ajout de contenu HTML</h4>
 
 <p>Ci-dessous, la zone d’ajout de contenu HTML (balise &lt;slot&gt;) délimitée en pointillé.</p>
@@ -1499,13 +1595,23 @@
 </qc-doc-exemple>
 
 <h4>Ajout d’un titre</h4>
-<qc-doc-exemple caption="Exemple d'infobulle avec titre">
+<qc-doc-exemple caption="Exemple d'infobulle avec titre<br/>NB: pour personnaliser le niveau de titre dans un slot, utilisez les attributs <code>role</code> et <code>aria-level</code> avec une balise <code>span</code>">
 
     <p><qc-tooltip text="Lorem"
                    display-mode="popover"
                    title="Lorem ipsum dolor"
                    description-id="tooltip-1"
                    icon="information">ipsum dolor</qc-tooltip></p>
+  <p><qc-tooltip text="Lorem"
+                 display-mode="popover"
+                 icon="information">
+    <span slot="description">
+        <span role="heading" aria-level="3">Titre slotté</span>
+        <span> Pour personnaliser le niveau de titre dans un slot, utilisez les attributs <code>role</code> et <code>aria-level</code> avec un <code>&lt;span&gt;</code></span>
+    </span>
+  </qc-tooltip> ipsum dolor
+
+  </p>
 
 </qc-doc-exemple>
 
@@ -1522,67 +1628,219 @@
 
 <h3>Documentation technique</h3>
 
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>text</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Texte lié à l'infobulle</td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Titre de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td>Texte</td>
+            <td>Chaine vide</td>
+            <td>Contenu de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>icon</td>
+            <td>"information" ou "question"</td>
+            <td>"information"</td>
+            <td>Icône de l'infobulle</td>
+        </tr>
+        <tr>
+            <td>display-mode</td>
+            <td>"popover" ou "modal"</td>
+            <td>"popover"</td>
+            <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
+        </tr>
+        <tr>
+            <td>position</td>
+            <td>"right", "top" ou "bottom"</td>
+            <td>"top"</td>
+            <td>Position du phylactère</td>
+        </tr>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tr>
-      <td>text</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Texte lié à l'infobulle</td>
-    </tr>
-    <tr>
-      <td>Title</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Titre de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>description</td>
-      <td>Texte</td>
-      <td>Chaine vide</td>
-      <td>Contenu de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>icon</td>
-      <td>"information" ou "question"</td>
-      <td>"information"</td>
-      <td>Icône de l'infobulle</td>
-    </tr>
-    <tr>
-      <td>display-mode</td>
-      <td>"popover" ou "modal"</td>
-      <td>"popover"</td>
-      <td>Affichage phylactère (popover) ou feuille (modal). Dans tous les cas, en mobile l'affichage est en feuille.</td>
-    </tr>
-    <tr>
-      <td>position</td>
-      <td>"right", "top" ou "bottom"</td>
-      <td>"top"</td>
-      <td>Position du phylactère</td>
-    </tr>
+        <tr>
+            <td>description-id</td>
+            <td>Id d'un élément dans le document</td>
+            <td>Nulle</td>
+            <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
+        </tr>
 
-    <tr>
-      <td>description-id</td>
-      <td>Id d'un élément dans le document</td>
-      <td>Nulle</td>
-      <td>Id d'un élément dans la page, dont le contenu sera affiché dans l'infobulle.</td>
-    </tr>
-
-  </table>
-</div>
+    </table>
+</qc-table>
 
 <h4>Zone d’ajout de contenu HTML</h4>
 <p>Le texte lié et la description peuvent être ajoutés par slot. Voir les exemples d'insertions de contenu. </p>
+
+    <hr/>
+    <h2 id="lozenge">Pastilles</h2>
+
+<p>La pastille est utilisée pour visualiser des états ou fournir une information complémentaire.
+Elle est constituée des éléments suivants :</p>
+<ul>
+  <li>une zone de couleur qui varie en fonction de l'attribut sélectionné</li>
+  <li>un libellé - via l'attribut <code>aria-label</code></li>
+  <li>une icône (optionnel)</li>
+</ul>
+
+<h3>Ajout obligatoire du libellé</h3>
+<p>Comme la couleur seule ne transmet pas l'information aux utilisateurs de technologies
+d'assistance ou daltoniens, ajoutez l'attribut <code>aria-label</code> sur la pastille
+(<code>.qc-lozenge</code>) pour indiquer la nature du statut au lecteur d'écran
+(ex. : « Information », « Succès », « Erreur », « Avertissement », « Complément »).
+Voir l'<a href="#lozenge-general">exemple de pastille générale</a>.</p>
+
+<h3>Exemples</h3>
+
+<h4>Pastille générale (bleue)</h4>
+<qc-doc-exemple id="lozenge-general" caption="Éléments sélectionnés ou actifs, informations importantes. Statut par défaut.">
+  <span class="qc-lozenge qc-general" aria-label="Information">Pastille générale</span>
+  <span class="qc-lozenge qc-general qc-lozenge-icon" aria-label="Information">Pastille générale</span>
+</qc-doc-exemple>
+
+<h4>Pastille de succès (verte)</h4>
+<qc-doc-exemple id="lozenge-success" caption="Réussite, confirmation, état positif ou action approuvée.">
+  <span class="qc-lozenge qc-success" aria-label="Succès">Pastille de succès</span>
+  <span class="qc-lozenge qc-success qc-lozenge-icon" aria-label="Succès">Pastille de succès</span>
+</qc-doc-exemple>
+
+<h4>Pastille d'erreur (rouge)</h4>
+<qc-doc-exemple id="lozenge-error" caption="Erreurs ou états critiques nécessitant une intervention immédiate.">
+  <span class="qc-lozenge qc-error" aria-label="Erreur">Pastille d'erreur</span>
+  <span class="qc-lozenge qc-error qc-lozenge-icon" aria-label="Erreur">Pastille d'erreur</span>
+</qc-doc-exemple>
+
+<h4>Pastille d'avertissement (jaune)</h4>
+<qc-doc-exemple id="lozenge-warning" caption="Situations nécessitant une attention particulière.">
+  <span class="qc-lozenge qc-warning" aria-label="Avertissement">Pastille d'avertissement</span>
+  <span class="qc-lozenge qc-warning qc-lozenge-icon" aria-label="Avertissement">Pastille d'avertissement</span>
+</qc-doc-exemple>
+
+<h4>Pastille complémentaire (grise)</h4>
+<qc-doc-exemple id="lozenge-complementary" caption="Éléments neutres, informations supplémentaires, non prioritaires.">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément">Pastille complémentaire</span>
+  <span class="qc-lozenge qc-complementary qc-lozenge-icon" aria-label="Complément">Pastille complémentaire</span>
+</qc-doc-exemple>
+
+<h4>Italique et exposant</h4>
+<qc-doc-exemple id="lozenge-inline-content" caption="Contenus permis : italique et exposant (sup/sub).">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément"><em>Avec de l'italique</em></span>
+  <span class="qc-lozenge qc-general" aria-label="Information">Avec un exposant ici 1<sup>er</sup></span>
+</qc-doc-exemple>
+
+<h4>Ellipse</h4>
+<qc-doc-exemple id="lozenge-ellipsis" caption="Ellipse automatique lorsque le texte dépasse la largeur maximale de 288 px.">
+  <span class="qc-lozenge qc-general" aria-label="Information">Ce texte est beaucoup trop long pour tenir dans la pastille</span>
+</qc-doc-exemple>
+
+<h4>Icône personnalisée</h4>
+<p>L'édimestre peut placer une icône de son choix avec <code>&lt;qc-icon&gt;</code> et encapsuler
+le libellé dans <code>qc-lozenge-label</code>. La règle d'icône automatique (<code>qc-lozenge-icon</code>)
+est alors désactivée : l'icône choisie l'emporte. Le wrapper isole le libellé pour que l'ellipse
+morde sur le texte sans tronquer l'icône.</p>
+<qc-doc-exemple id="lozenge-custom-icon" caption="Icône au choix via qc-icon ; le libellé est encapsulé dans qc-lozenge-label (ellipse préservée sur un texte long).">
+  <span class="qc-lozenge qc-complementary" aria-label="Complément">
+    <qc-icon icon="schedule" size="md"></qc-icon>
+    <span class="qc-lozenge-label">En traitement</span>
+  </span>
+  <span class="qc-lozenge qc-general" aria-label="Information">
+    <qc-icon icon="information" size="md"></qc-icon>
+    <span class="qc-lozenge-label">Ce texte est beaucoup trop long pour tenir dans la pastille</span>
+  </span>
+</qc-doc-exemple>
+
+<h4>Combinaison de pastilles</h4>
+<p>La combinaison de plusieurs pastilles est permise dans les contextes de contenu courant
+(paragraphes, tableaux de données, contenu d'accordéon, de feuille, dialogue modal, etc.).
+Un espacement de 8 px est appliqué horizontalement et verticalement entre les pastilles adjacentes.</p>
+<qc-doc-exemple id="lozenge-group" caption="Pastilles combinées avec espacement automatique.">
+  <div class="qc-lozenge-group">
+    <span class="qc-lozenge qc-success" aria-label="Succès">Approuvé</span>
+    <span class="qc-lozenge qc-general" aria-label="Information">En traitement</span>
+    <span class="qc-lozenge qc-complementary" aria-label="Complément">Archivé</span>
+    <span class="qc-lozenge qc-warning" aria-label="Avertissement">En attente</span>
+    <span class="qc-lozenge qc-error" aria-label="Erreur">Rejeté</span>
+  </div>
+</qc-doc-exemple>
+
+<h3>Classes CSS</h3>
+
+<qc-table>
+  <table class="qc-striped">
+    <caption>Classes de pastilles</caption>
+    <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Élément</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc‑lozenge</code></td>
+      <td><code>&lt;span&gt;</code></td>
+      <td>Classe de base obligatoire. Définit la forme pill, les dimensions (min 32 px, max 288 px), la typographie et l'ellipse automatique. Voir l'<a href="#lozenge-general">exemple de pastille générale</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑general</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille générale (bleue). Statut par défaut. Voir l'<a href="#lozenge-general">exemple de pastille générale</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑success</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille de succès (verte). Voir l'<a href="#lozenge-success">exemple de pastille de succès</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑error</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille d'erreur (rouge). Voir l'<a href="#lozenge-error">exemple de pastille d'erreur</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑warning</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille d'avertissement (jaune). Voir l'<a href="#lozenge-warning">exemple de pastille d'avertissement</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑complementary</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Pastille complémentaire (grise). Voir l'<a href="#lozenge-complementary">exemple de pastille complémentaire</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑lozenge‑icon</code></td>
+      <td><code>.qc-lozenge</code></td>
+      <td>Modificateur optionnel qui affiche l'icône canonique du type en pseudo-élément CSS (info, check_circle, cancel, warning, emoji_objects) — sans composant web, donc sans décalage de mise en page. Ignoré si un <code>&lt;qc-icon&gt;</code> est présent dans la pastille. Voir l'<a href="#lozenge-general">exemple de pastille générale</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑lozenge‑label</code></td>
+      <td><code>&lt;span&gt;</code> enfant</td>
+      <td>Encapsule le libellé lorsqu'un <code>&lt;qc-icon&gt;</code> personnalisé est présent, pour appliquer l'ellipse au texte sans tronquer l'icône. Voir l'<a href="#lozenge-custom-icon">exemple d'icône personnalisée</a>.</td>
+    </tr>
+    <tr>
+      <td><code>qc‑lozenge‑group</code></td>
+      <td><code>&lt;div&gt;</code> conteneur</td>
+      <td>Conteneur pour pastilles combinées. Gère l'espacement horizontal et vertical. Voir l'<a href="#lozenge-group">exemple de combinaison de pastilles</a>.</td>
+    </tr>
+    </tbody>
+  </table>
+</qc-table>
 
     <hr/>
     <h2 id="search-bar">Barre de recherche</h2>
@@ -1650,60 +1908,60 @@
 </qc-doc-exemple>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>q</td>
-      <td>Nom du champ dans le formulaire</td>
-    </tr>
-    <tr>
-      <td>value</td>
-      <td>Texte</td>
-      <td>Chaîne vide</td>
-      <td>Valeur du champ dans le formulaire</td>
-    </tr>
-    <tr>
-      <td>input-*</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Tout attribut commençant par <code>input-</code> sera ajouté au champ texte du composant.
-      </td>
-    </tr>
-    <tr>
-      <td>submit-aria-label</td>
-      <td>Texte</td>
-      <td>Lancer la recherche/Submit search</td>
-      <td>Valeur de l’attribut aria-label du bouton</td>
-    </tr>
-    <tr>
-      <td>submit-*</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Tout attribut commençant par <code>submit-</code> sera ajouté au bouton du composant. Utile
-        par exemple pour lui donner un nom et une valeur.
-      </td>
-    </tr>
-    <tr>
-      <td>piv-background</td>
-      <td>Aucune (simplement ajouter l’attribut)</td>
-      <td>False</td>
-      <td>Indique que la barre de recherche est sur fond bleu PIV</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>name</td>
+            <td>Texte</td>
+            <td>q</td>
+            <td>Nom du champ dans le formulaire</td>
+        </tr>
+        <tr>
+            <td>value</td>
+            <td>Texte</td>
+            <td>Chaîne vide</td>
+            <td>Valeur du champ dans le formulaire</td>
+        </tr>
+        <tr>
+            <td>input-*</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Tout attribut commençant par <code>input-</code> sera ajouté au champ texte du composant.
+            </td>
+        </tr>
+        <tr>
+            <td>submit-aria-label</td>
+            <td>Texte</td>
+            <td>Lancer la recherche/Submit search</td>
+            <td>Valeur de l’attribut aria-label du bouton</td>
+        </tr>
+        <tr>
+            <td>submit-*</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Tout attribut commençant par <code>submit-</code> sera ajouté au bouton du composant. Utile
+                par exemple pour lui donner un nom et une valeur.
+            </td>
+        </tr>
+        <tr>
+            <td>piv-background</td>
+            <td>Aucune (simplement ajouter l’attribut)</td>
+            <td>False</td>
+            <td>Indique que la barre de recherche est sur fond bleu PIV</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
 
 <h3>Zone d’ajout de contenu HTML</h3>
 <p>Aucune zone d’ajout de contenu n'est définie pour ce composant.</p>
@@ -1857,8 +2115,8 @@
 <h3>Classes CSS</h3>
 
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Classes de boutons</caption>
         <thead>
         <tr>
@@ -1901,11 +2159,10 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
 
-
-<div class="table-overflow">
-    <table class="qc-table qc-striped">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Classes pour le contenant parent d'un groupe de boutons</caption>
         <thead>
         <tr>
@@ -1924,7 +2181,7 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
 
     <hr/>
     <h2 id="formulaires">Formulaires</h2>
@@ -2132,80 +2389,80 @@
 </qc-doc-exemple>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption id="choice-group-doc">Attributs de qc-choice-group</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>legend</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Légende du groupe</td>
-    </tr>
-    <tr>
-      <td>name</td>
-      <td>Texte</td>
-      <td>""</td>
-      <td>Nom commun à tous les champs du groupe</td>
-    </tr>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-        Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
-      <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
-    </tr>
-    <tr>
-      <td>selection-button</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
-    </tr>
-    <tr>
-      <td>column-count</td>
-      <td>Nombre</td>
-      <td>1</td>
-      <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
-        <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
-      </td>
-    </tr>
-    <tr>
-      <td>inline</td>
-      <td>na</td>
-      <td>na</td>
-      <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption id="choice-group-doc">Attributs de qc-choice-group</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>legend</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Légende du groupe</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>Texte</td>
+            <td>""</td>
+            <td>Nom commun à tous les champs du groupe</td>
+        </tr>
+        <tr>
+            <td>compact</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche les champs au format compact</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Indique que la sélection est obligatoire en ajoutant un astérisque dans la légende.</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Affiche le message d'erreur. Voir l'exemple de validation de formulaire avec des groupes de choix.
+                <br/>NB : `invalid` prend automatiquement la valeur `false` dès qu’un champ est coché.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+            <td>Message d’erreur à afficher lorsque le groupe est invalide.</td>
+        </tr>
+        <tr>
+            <td>selection-button</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche les champs au format de boutons de sélection dans une grille.</td>
+        </tr>
+        <tr>
+            <td>column-count</td>
+            <td>Nombre</td>
+            <td>1</td>
+            <td><b>Boutons de sélection uniquement </b>: nombre de colonnes de la grille de boutons de sélection.
+                <br/> Si la fenêtre est au format mobile (<code>--qc-breakpoint-sm</code>), la grille passe automatiquement à une colonne.
+            </td>
+        </tr>
+        <tr>
+            <td>inline</td>
+            <td>na</td>
+            <td>na</td>
+            <td><b>Boutons de sélection uniquement</b> : affiche les boutons de sélection sur une rangée.</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
 
 <h5>Zone d’ajout de contenu HTML</h5>
 
@@ -2256,49 +2513,49 @@
 </qc-doc-exemple>
 
 
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs de qc-checkbox</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>compact</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Affiche la case à cocher au format compact</td>
+        </tr>
+        <tr>
+            <td>required</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
+        </tr>
+        <tr>
+            <td>invalid</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
+                <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
+            </td>
+        </tr>
+        <tr>
+            <td>invalid-text</td>
+            <td>Texte</td>
+            <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
+            <td>Message d’erreur à afficher lorsque la case est invalide.</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs de qc-checkbox</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>compact</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Affiche la case à cocher au format compact</td>
-    </tr>
-    <tr>
-      <td>required</td>
-      <td>na</td>
-      <td>na</td>
-      <td>Ajoute un astérisque pour indiquer que la sélection est obligatoire.</td>
-    </tr>
-    <tr>
-      <td>invalid</td>
-      <td>na</td>
-      <td>na</td>
-      <td>
-          Affiche le message d’erreur (voir l’exemple de case à cocher obligatoire).
-        <br/>NB : `invalid` prend automatiquement la valeur `false` dès que la case est cochée.
-      </td>
-    </tr>
-    <tr>
-      <td>invalid-text</td>
-      <td>Texte</td>
-      <td>"Le champ {nom du champ} est obligatoire" ou "{field name} field is required"</td>
-      <td>Message d’erreur à afficher lorsque la case est invalide.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
 
 
     <hr/>
@@ -2549,8 +2806,8 @@
 
 <h4>Documentation technique</h4>
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
     <caption>Attributs</caption>
     <thead>
     <tr>
@@ -2616,11 +2873,11 @@
     </tr>
     </tbody>
   </table>
-</div>
+</qc-table>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
     <caption>Propriété js</caption>
     <thead>
     <tr>
@@ -2643,7 +2900,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</qc-table>
 
 <h5>Zone d’ajout de contenu HTML</h5>
 
@@ -2704,8 +2961,8 @@
 
 <h3>Documentation technique</h3>
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Attributs</caption>
         <thead>
         <tr>
@@ -2766,10 +3023,10 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Événements</caption>
         <thead>
         <tr>
@@ -2786,7 +3043,8 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
+
 
 <h3>Utilisation du debounce</h3>
 <p>L'attribut <code>debounce</code> retarde la propagation de la valeur saisie.
@@ -2877,9 +3135,9 @@
 
 <h4>Documentation technique</h4>
 
-
-<table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs de <code>qc-toggle-switch</code></caption>    <thead>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs de <code>qc-toggle-switch</code></caption>    <thead>
     <tr>
         <th>Nom</th>
         <th>Valeur attendue</th>
@@ -2887,92 +3145,95 @@
         <th>Description</th>
     </tr>
     </thead>
-    <tbody>
-    <tr>
-        <td>label</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu du libellé du commutateur</td>
-    </tr>
-    <tr>
-        <td>checked</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Active le commutateur par défaut</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le commutateur</td>
-    </tr>
-    <tr>
-        <td>justified</td>
-        <td>na</td>
-        <td>na</td>
-        <td>
-            Permet au commutateur et son libellé de prendre toute la largeur disponible
-        </td>
-    </tr>
-    <tr>
-        <td>text-align</td>
-        <td>"start" ou "end"</td>
-        <td>"start"</td>
-        <td>Alignement du texte du libellé</td>
-    </tr>
-    </tbody>
-</table>
+        <tbody>
+        <tr>
+            <td>label</td>
+            <td>Contenu HTML</td>
+            <td></td>
+            <td>Contenu du libellé du commutateur</td>
+        </tr>
+        <tr>
+            <td>checked</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Active le commutateur par défaut</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le commutateur</td>
+        </tr>
+        <tr>
+            <td>justified</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Permet au commutateur et son libellé de prendre toute la largeur disponible
+            </td>
+        </tr>
+        <tr>
+            <td>text-align</td>
+            <td>"start" ou "end"</td>
+            <td>"start"</td>
+            <td>Alignement du texte du libellé</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
 
 
-<table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs de <code>qc-toggle-switch-group</code></caption>
-    <thead>
-    <tr>
-        <th>Nom</th>
-        <th>Valeur attendue</th>
-        <th>Valeur par défaut</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>legend</td>
-        <td>Contenu HTML</td>
-        <td></td>
-        <td>Contenu de la légende du groupe de commutateurs</td>
-    </tr>
-    <tr>
-        <td>disabled</td>
-        <td>na</td>
-        <td>na</td>
-        <td>Désactive le groupe de commutateurs</td>
-    </tr>
-    <tr>
-        <td>justified</td>
-        <td>na</td>
-        <td>na</td>
-        <td>
-            Permet au commutateur et son libellé de prendre toute la largeur disponible.
-            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
-        </td>
-    </tr>
-    <tr>
-        <td>text-align</td>
-        <td>"start" ou "end"</td>
-        <td>"start"</td>
-        <td>
-            Alignement du texte des libellés des commutateurs.
-            <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
-        </td>
-    </tr>
-    <tr>
-        <td>max-width</td>
-        <td>Toute valeur acceptée par la directive css <code>max-width</code></td>
-        <td>"fit-content"</td>
-        <td>Largeur maximale des commutateurs dans le groupe</td>
-    </tr>
-    </tbody>
-</table>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs de <code>qc-toggle-switch-group</code></caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>legend</td>
+            <td>Contenu HTML</td>
+            <td></td>
+            <td>Contenu de la légende du groupe de commutateurs</td>
+        </tr>
+        <tr>
+            <td>disabled</td>
+            <td>na</td>
+            <td>na</td>
+            <td>Désactive le groupe de commutateurs</td>
+        </tr>
+        <tr>
+            <td>justified</td>
+            <td>na</td>
+            <td>na</td>
+            <td>
+                Permet au commutateur et son libellé de prendre toute la largeur disponible.
+                <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+            </td>
+        </tr>
+        <tr>
+            <td>text-align</td>
+            <td>"start" ou "end"</td>
+            <td>"start"</td>
+            <td>
+                Alignement du texte des libellés des commutateurs.
+                <br> N.B. : Cette valeur a priorité sur celle des commutateurs du groupe.
+            </td>
+        </tr>
+        <tr>
+            <td>max-width</td>
+            <td>Toute valeur acceptée par la directive css <code>max-width</code></td>
+            <td>"fit-content"</td>
+            <td>Largeur maximale des commutateurs dans le groupe</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
     <hr/>
     <h3 id="select">Liste déroulante</h3>
 
@@ -3079,8 +3340,8 @@
 <h4>Documentation technique</h4>
 
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Attributs</caption>
         <thead>
         <tr>
@@ -3185,34 +3446,36 @@
         </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
 
 
 
-<div class="table-overflow">
-    <table class="qc-table qc-striped component-attributes-description">
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
         <caption>Propriété JS</caption>
         <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
+        <tr>
+            <th>Nom</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>value</td>
-                <td>Tableau de chaîne de caractères</td>
-                <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
-            </tr>
-            <tr>
-                <td>expanded</td>
-                <td>Booléen</td>
-                <td>Indique que la liste déroulante est ouverte</td>
-            </tr>
+        <tr>
+            <td>value</td>
+            <td>Tableau de chaîne de caractères</td>
+            <td>Valeur(s) sélectionnée(s) dans la liste déroulante</td>
+        </tr>
+        <tr>
+            <td>expanded</td>
+            <td>Booléen</td>
+            <td>Indique que la liste déroulante est ouverte</td>
+        </tr>
         </tbody>
     </table>
-</div>
+</qc-table>
+
 
 <h5>Événements JS</h5>
 <ul>
@@ -3354,33 +3617,494 @@
 <h3>Documentation technique</h3>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>text</td>
-      <td>Texte</td>
-      <td>Retour en haut / Back to top</td>
-      <td>la valeur de l’attribut "text" de l’élément.</td>
-    </tr>
-    <tr>
-      <td>demo</td>
-      <td>"true" ou "false"</td>
-      <td>false</td>
-      <td>Pour utiliser le composant en démonstration uniquement.</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>text</td>
+            <td>Texte</td>
+            <td>Retour en haut / Back to top</td>
+            <td>la valeur de l’attribut "text" de l’élément.</td>
+        </tr>
+        <tr>
+            <td>demo</td>
+            <td>"true" ou "false"</td>
+            <td>false</td>
+            <td>Pour utiliser le composant en démonstration uniquement.</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+    <hr/>
+    <h2 id="table">Tableau de données (qc-table)</h2>
+
+<h3>Exemples</h3>
+
+<h4>Tableau standard — en-tête bleu</h4>
+
+<qc-doc-exemple
+        id="qc-table-standard"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de tableau standard avec en-tête bleu">
+    <qc-table>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+
+<h4>Tableau standard — en-tête gris pâle</h4>
+
+<qc-doc-exemple
+        id="qc-table-standard-grey-header"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de tableau standard avec en-tête gris pâle">
+    <qc-table>
+        <table class="qc-table--grey-header">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+
+<h4>Tableau standard simplifié — en-tête blanc</h4>
+
+<qc-doc-exemple
+        id="qc-table-simplified"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de tableau simplifié avec en-tête blanc">
+    <qc-table>
+        <table class="qc-table--simplified">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Rangées en alternance — qc-striped</h4>
+
+<qc-doc-exemple
+        id="qc-table-striped"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de tableau standard avec rangées en alternance (qc-striped)">
+    <qc-table>
+        <table class="qc-striped">
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+                <th scope="col" class="qc-table-number">Années d’expérience</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+                <td class="qc-table-number">8</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+                <td class="qc-table-number">11</td>
+            </tr>
+            <tr>
+                <td>Sophie Gagnon</td>
+                <td>Ressources humaines</td>
+                <td>Directrice</td>
+                <td class="qc-table-number">15</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Utilisation sans le composant Web</h4>
+
+<p>
+    Pour appliquer uniquement le rendu visuel d’un tableau de données, ajoutez la classe
+    <code>qc-table</code> directement sur la balise <code>&lt;table&gt;</code>. Vous pouvez également
+    la combiner avec les classes <code>qc-table--grey-header</code> ou
+    <code>qc-table--simplified</code> pour utiliser l’une des variantes visuelles du tableau.
+</p>
+
+<qc-doc-exemple
+        id="qc-table-css-class"
+        caption="Exemple de tableau standard utilisant directement la classe qc-table">
+    <div class="qc-table-container">
+    <table class="qc-table">
+        <caption>Liste des employés par département</caption>
+        <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Département</th>
+            <th scope="col">Poste</th>
+            <th scope="col" class="qc-table-number">Années d’expérience</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Marie Tremblay</td>
+            <td>Communications</td>
+            <td>Conseillère</td>
+            <td class="qc-table-number">8</td>
+        </tr>
+        <tr>
+            <td>Jean Lavoie</td>
+            <td>Informatique</td>
+            <td>Analyste</td>
+            <td class="qc-table-number">11</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</qc-doc-exemple>
+
+
+<h4>Défilement horizontal</h4>
+
+<p>
+    Le composant Web <code>&lt;qc-table&gt;</code> prend en charge le défilement horizontal
+    lorsque le tableau ou la liste structurée dépasse la largeur disponible. Ce comportement
+    s’applique aux tableaux de données, quelle que soit la taille de l’écran. Sur mobile,
+    les listes structurées sont plutôt présentées sous forme de cartes.
+</p>
+
+<p> Sans le composant Web, la gestion du défilement horizontal doit être prévue par l’implémenteur.
+    Placez le <code>&lt;table&gt;</code> dans un conteneur portant la classe <code>qc-table-container</code>
+    pour reproduire le même comportement, comme dans l’exemple précédent.
+</p>
+
+<h4>Classes CSS</h4>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Classes pour réglages avec ou sans composant Web</caption>
+        <thead>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-striped</code></td>
+            <td>
+                À ajouter au tableau pour appliquer un fond gris pâle aux rangées paires et créer une alternance visuelle (<a href="#qc-table-striped">voir exemple</a>).
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc-table--grey-header</code></td>
+            <td>À ajouter au tableau pour afficher les en-têtes sur un fond gris pâle (<a href="#qc-table-standard-grey-header">voir exemple</a>).</td>
+        </tr>
+        <tr>
+            <td><code>qc-table--simplified</code></td>
+            <td>À ajouter au tableau pour afficher la variante simplifiée, dont les en-têtes ont un fond blanc (<a href="#qc-table-simplified">voir exemple</a>).</td>
+        </tr>
+        <tr>
+            <td><code>qc-table-number</code></td>
+            <td>
+                À ajouter à une cellule d’en-tête <code>&lt;th&gt;</code> ou de donnée <code>&lt;td&gt;</code> pour aligner à droite son contenu numérique (<a href="#qc-table-standard">voir exemple</a>).
+                L’alignement revient à gauche dans une liste structurée affichée en cartes sur mobile.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Classes pour réglages sans composant Web</caption>
+        <thead>
+        <tr>
+            <th>Classe</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><code>qc-table</code></td>
+            <td>
+                Classe de base permettant d’appliquer le rendu visuel d’un tableau standard avec des en-têtes sur fond bleu.<br/>
+                Cette classe est ajoutée automatiquement par le composant Web (<a href="#qc-table-standard">voir exemple</a>). À écrire soi-même uniquement en usage CSS sans le composant Web (<a href="#qc-table-css-class">voir exemple</a>).
+            </td>
+        </tr>
+        <tr>
+            <td><code>qc-table-container</code></td>
+            <td>
+                À placer autour du <code>&lt;table&gt;</code> (conteneur enveloppant) pour prendre en charge le défilement horizontal lorsque le tableau dépasse la largeur disponible.<br/>
+                Le défilement est géré automatiquement par le composant Web. À écrire soi-même uniquement en usage CSS sans le composant Web (<a href="#qc-table-css-class">voir exemple</a>).
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h2 id="liste-structuree">Liste structurée (qc-table)</h2>
+
+<p>
+    Une liste structurée permet de présenter une information principale accompagnée
+    d’un ensemble de détails associés. Elle repose sur la structure d’un tableau HTML,
+    mais adapte sa présentation sur le mobile afin de faciliter la lecture des données.
+
+</p>
+
+<p>
+    Le tableau simplifié et la liste structurée peuvent avoir une apparence similaire
+    sur écran large, notamment avec des en-têtes sur fond blanc, mais ils répondent à
+    des besoins différents.
+</p>
+
+<h3>Exemples</h3>
+
+<p>Dans tous les exemples suivants, réduisez la taille de l’écran pour constater le passage en liste de cartes.</p>
+
+<h4>Liste structurée avec en-tête</h4>
+
+<qc-doc-exemple id="qc-table-structured-list"
+                filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+                caption="Exemple de tableau affiché en liste structurée">
+    <qc-table structured-list>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée avec en-têtes définis sans &lt;thead&gt; </h4>
+<qc-doc-exemple
+        id="qc-table-structured-list-without-thead"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de liste structurée dont les en-têtes de colonnes sont définis sans utiliser l'élément &lt;thead&gt;"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Liste des employés par département</caption>
+            <tbody>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Département</th>
+                <th scope="col">Poste</th>
+            </tr>
+            <tr>
+                <td>Marie Tremblay</td>
+                <td>Communications</td>
+                <td>Conseillère</td>
+            </tr>
+            <tr>
+                <td>Jean Lavoie</td>
+                <td>Informatique</td>
+                <td>Analyste</td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée sans en-tête</h4>
+
+<qc-doc-exemple
+        id="qc-table-structured-list-without-header"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de liste structurée sans en-tête"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Horaire de la journée</caption>
+            <tbody>
+            <tr>
+                <td>11 h</td>
+                <td>Conférence de Monsieur X</td>
+                <td>
+                    <a href="#" aria-label="S’inscrire à la conférence de Monsieur X">
+                        S’inscrire
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>11 h 30</td>
+                <td>Dîner de réseautage</td>
+                <td>
+                    <a href="#" aria-label="S’inscrire au dîner de réseautage">
+                        S’inscrire
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h4>Liste structurée verticale (clé / valeur)</h4>
+
+<qc-doc-exemple
+        id="qc-table-structured-list-vertical"
+        filter="qc-table qc-table--structured-list [data-label] [data-qc-header-row] ![data-qc-clone]"
+        caption="Exemple de liste structurée verticale"
+>
+    <qc-table structured-list>
+        <table>
+            <caption>Demande d’intégration – 01345</caption>
+            <tbody>
+            <tr>
+                <th scope="row">Statut</th>
+                <td>À corriger</td>
+            </tr>
+            <tr>
+                <th scope="row">Territoire</th>
+                <td>Bas-Saint-Laurent</td>
+            </tr>
+            <tr>
+                <th scope="row">Catégorie</th>
+                <td>Inventaire faunique</td>
+            </tr>
+            <tr>
+                <th scope="row">Nombre d’occurrences</th>
+                <td>5 602</td>
+            </tr>
+            <tr>
+                <th scope="row">Date de soumission</th>
+                <td>
+                    2025-07-10
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </qc-table>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>structured-list</td>
+            <td>Présence de l'attribut</td>
+            <td>Absent</td>
+            <td>Si présent, le tableau est affiché en liste structurée et, sur le mobile, sous forme de cartes. En son absence, le tableau est affiché normalement.</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
+<h4>Accessibilité</h4>
+<p>
+    NB&nbsp;: Le titre de la liste structurée, tout comme celui du tableau standard, doit être placé dans l’élément
+    <code>&lt;caption&gt;</code>.
+</p>
+
+<p>
+    Pour la fusion des cellules des données le composant <code>&lt;qc-table&gt;</code> gère la présentation
+    des données, mais pas l'accessibilité du contenu : il revient à l'implémenteur de fournir un tableau
+    valide et accessible.
+</p>
     <hr/>
     <h2 id="piv-header">Bandeau d’en-tête du PIV (qc-piv-header)</h2>
 
@@ -3447,139 +4171,141 @@
 
 
 <h3>Documentation technique</h3>
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>title-text</td>
-      <td>Texte</td>
-      <td>Chaîne vide</td>
-      <td>Titre au milieu du bandeau (dans un hyperlien)</td>
-    </tr>
-    <tr>
-      <td>title-url</td>
 
-      <td>Adresse</td>
-      <td>/</td>
-      <td>URL de l’hyperlien du titre</td>
-    </tr>
-    <tr>
-      <td>logo-url</td>
-      <td>Adresse</td>
-      <td>/</td>
-      <td>Adresse du lien du logo</td>
-    </tr>
-    <tr>
-      <td>logo-src</td>
-      <td>Adresse</td>
-      <td>Adresse du logo inclus dans la trousse</td>
-      <td>Adresse du logo</td>
-    </tr>
-    <tr>
-      <td>logo-alt</td>
-      <td>texte</td>
-      <td>Logo du gouvernement du Québec/Logo of government of Québec</td>
-      <td>Attribut « alt » de la balise img du logo</td>
-    </tr>
-    <tr>
-      <td>alt-language-text</td>
-      <td>Texte</td>
-      <td>English/Français</td>
-      <td>Texte du lien de changement de langue</td>
-    </tr>
-    <tr>
-      <td>alt-language-url</td>
-      <td>Adresse</td>
-      <td>vide</td>
-      <td>L’URL de l’autre langue. Si vide, le lien n'apparaît pas.</td>
-    </tr>
-    <tr>
-      <td>join-us-text</td>
-      <td>Texte</td>
-      <td>Nous joindre/Contact us</td>
-      <td>Texte du lien « Nous joindre »</td>
-    </tr>
-    <tr>
-      <td>join-us-url</td>
-      <td>Adresse</td>
-      <td>Vide</td>
-      <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparaît pas.</td>
-    </tr>
-    <tr>
-      <td>go-to-content</td>
-      <td>"true" ou "false"</td>
-      <td>"true"</td>
-      <td>Afficher ou non le lien pour aller directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>go-to-content-text</td>
-      <td>Texte</td>
-      <td>Passer au contenu/Skip to content</td>
-      <td>Texte du lien pour passer directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>go-to-content-anchor</td>
-      <td>id du 1<sup>er</sup> élément de contenu</td>
-      <td>"main"</td>
-      <td>Cible du lien pour passer directement au contenu.</td>
-    </tr>
-    <tr>
-      <td>full-width</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le bandeau en pleine largeur (classe de conteneur « qc‑container‑fluid »).</td>
-    </tr>
-    <tr>
-      <td>enable-search</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>
-        Active la recherche dans le bandeau PIV :
-        <ul>
-          <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors
-            affiché ;
-          </li>
-          <li>au clic, il affiche le formulaire de recherche.</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td>show-search</td>
-      <td>"true" ou "false"</td>
-      <td>"false"</td>
-      <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a
-        pas été pressé).
-      </td>
-    </tr>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>title-text</td>
+            <td>Texte</td>
+            <td>Chaîne vide</td>
+            <td>Titre au milieu du bandeau (dans un hyperlien)</td>
+        </tr>
+        <tr>
+            <td>title-url</td>
 
-    <tr>
-      <td>display-search-text</td>
-      <td>Texte</td>
-      <td>Cliquer pour faire une recherche / Click to search</td>
-      <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour afficher la
-        barre de recherche.
-      </td>
-    </tr>
-    <tr>
-      <td>hide-search-text</td>
-      <td>Texte</td>
-      <td>Masquer la barre de recherche / Hide search bar</td>
-      <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour masquer la
-        barre de recherche.
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+            <td>Adresse</td>
+            <td>/</td>
+            <td>URL de l’hyperlien du titre</td>
+        </tr>
+        <tr>
+            <td>logo-url</td>
+            <td>Adresse</td>
+            <td>/</td>
+            <td>Adresse du lien du logo</td>
+        </tr>
+        <tr>
+            <td>logo-src</td>
+            <td>Adresse</td>
+            <td>Adresse du logo inclus dans la trousse</td>
+            <td>Adresse du logo</td>
+        </tr>
+        <tr>
+            <td>logo-alt</td>
+            <td>texte</td>
+            <td>Logo du gouvernement du Québec/Logo of government of Québec</td>
+            <td>Attribut « alt » de la balise img du logo</td>
+        </tr>
+        <tr>
+            <td>alt-language-text</td>
+            <td>Texte</td>
+            <td>English/Français</td>
+            <td>Texte du lien de changement de langue</td>
+        </tr>
+        <tr>
+            <td>alt-language-url</td>
+            <td>Adresse</td>
+            <td>vide</td>
+            <td>L’URL de l’autre langue. Si vide, le lien n'apparaît pas.</td>
+        </tr>
+        <tr>
+            <td>join-us-text</td>
+            <td>Texte</td>
+            <td>Nous joindre/Contact us</td>
+            <td>Texte du lien « Nous joindre »</td>
+        </tr>
+        <tr>
+            <td>join-us-url</td>
+            <td>Adresse</td>
+            <td>Vide</td>
+            <td>Adresse du lien « Nous joindre ». Si vide, le lien n'apparaît pas.</td>
+        </tr>
+        <tr>
+            <td>go-to-content</td>
+            <td>"true" ou "false"</td>
+            <td>"true"</td>
+            <td>Afficher ou non le lien pour aller directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>go-to-content-text</td>
+            <td>Texte</td>
+            <td>Passer au contenu/Skip to content</td>
+            <td>Texte du lien pour passer directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>go-to-content-anchor</td>
+            <td>id du 1<sup>er</sup> élément de contenu</td>
+            <td>"main"</td>
+            <td>Cible du lien pour passer directement au contenu.</td>
+        </tr>
+        <tr>
+            <td>full-width</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le bandeau en pleine largeur (classe de conteneur « qc‑container‑fluid »).</td>
+        </tr>
+        <tr>
+            <td>enable-search</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>
+                Active la recherche dans le bandeau PIV :
+                <ul>
+                    <li style="margin-bottom: 0">le bouton de recherche en forme de loupe est alors
+                        affiché ;
+                    </li>
+                    <li>au clic, il affiche le formulaire de recherche.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>show-search</td>
+            <td>"true" ou "false"</td>
+            <td>"false"</td>
+            <td>Affiche le formulaire de recherche (normalement caché tant que le bouton de recherche n'a
+                pas été pressé).
+            </td>
+        </tr>
+
+        <tr>
+            <td>display-search-text</td>
+            <td>Texte</td>
+            <td>Cliquer pour faire une recherche / Click to search</td>
+            <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour afficher la
+                barre de recherche.
+            </td>
+        </tr>
+        <tr>
+            <td>hide-search-text</td>
+            <td>Texte</td>
+            <td>Masquer la barre de recherche / Hide search bar</td>
+            <td>Texte du bouton de recherche (en forme de loupe) pour les lecteurs d’écran pour masquer la
+                barre de recherche.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
+
 <h4>Zones d’ajout de contenu HTML</h4>
 
 <p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.</p>
@@ -3656,87 +4382,87 @@
 <h3>Documentation technique</h3>
 
 
-<div class="table-overflow">
-  <table class="qc-table qc-striped component-attributes-description">
-    <caption>Attributs</caption>
-    <thead>
-    <tr>
-      <th>Nom</th>
-      <th>Valeur attendue</th>
-      <th>Valeur par défaut</th>
-      <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>logo-url</td>
-      <td>Adresse du lien au clic sur l’image</td>
-      <td>/</td>
-      <td>Cible du lien contenant le logo</td>
-    </tr>
-    <tr>
-      <td>logo-src</td>
-      <td>Le chemin de l’image en thème clair.</td>
-      <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
-      <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
-        couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
-      </td>
-    </tr>
-    <tr>
-      <td>logo-src-dark-theme</td>
-      <td>Le chemin de l’image en thème sombre.</td>
-      <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
-      <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
-        blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
-      </td>
-    </tr>
-    <tr>
-      <td>logo-alt</td>
-      <td>Texte</td>
-      <td>
-        <dl>
-          <dt>Français</dt>
-          <dd>Logo du gouvernement du Québec</dd>
-          <dt>Anglais</dt>
-          <dd>Logo of government of Québec</dd>
-        </dl>
-      </td>
-      <td>Texte alternatif du logo pour les lecteurs d’écran</td>
-    </tr>
-    <tr>
-      <td>logo-width</td>
-      <td>Nombre</td>
-      <td>139</td>
-      <td>Largeur de l’image en px</td>
-    </tr>
-    <tr>
-      <td>logo-height</td>
-      <td>Nombre</td>
-      <td>35</td>
-      <td>Hauteur de l’image en px</td>
-    </tr>
-    <tr>
-      <td>copyright-text</td>
-      <td>Texte</td>
-      <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
-      <td>Texte du lien de droit d'auteur affiché dans le pied de page.</td>
-    </tr>
-    <tr>
-      <td>copyright-url</td>
-      <td>Adresse</td>
-      <td>
-        <dl>
-          <dt>Français</dt>
-          <dd>https://www.quebec.ca/droit-auteur</dd>
-          <dt>Anglais</dt>
-          <dd>https://www.quebec.ca/en/copyright</dd>
-        </dl>
-      </td>
-      <td>L’adresse de la page du droit d’auteur sur quebec.ca</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
+<qc-table>
+    <table class="qc-striped component-attributes-description">
+        <caption>Attributs</caption>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Valeur attendue</th>
+            <th>Valeur par défaut</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>logo-url</td>
+            <td>Adresse du lien au clic sur l’image</td>
+            <td>/</td>
+            <td>Cible du lien contenant le logo</td>
+        </tr>
+        <tr>
+            <td>logo-src</td>
+            <td>Le chemin de l’image en thème clair.</td>
+            <td>Le chemin vers l’image dist/img/QUEBEC_couleur.svg de la trousse</td>
+            <td>Adresse de l’image du pied de page en thème clair (fond transparent, texte et drapeaux en
+                couleur, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
+            </td>
+        </tr>
+        <tr>
+            <td>logo-src-dark-theme</td>
+            <td>Le chemin de l’image en thème sombre.</td>
+            <td>Le chemin vers l’image dist/img/QUEBEC_blanc.svg de la trousse</td>
+            <td>Adresse de l’image du pied de page en thème sombre (fond transparent, texte et drapeaux en
+                blanc, voir <a href="#piv-footer-ex-2">l’exemple de pied de page du PIV personnalisé</a>).
+            </td>
+        </tr>
+        <tr>
+            <td>logo-alt</td>
+            <td>Texte</td>
+            <td>
+                <dl>
+                    <dt>Français</dt>
+                    <dd>Logo du gouvernement du Québec</dd>
+                    <dt>Anglais</dt>
+                    <dd>Logo of government of Québec</dd>
+                </dl>
+            </td>
+            <td>Texte alternatif du logo pour les lecteurs d’écran</td>
+        </tr>
+        <tr>
+            <td>logo-width</td>
+            <td>Nombre</td>
+            <td>139</td>
+            <td>Largeur de l’image en px</td>
+        </tr>
+        <tr>
+            <td>logo-height</td>
+            <td>Nombre</td>
+            <td>35</td>
+            <td>Hauteur de l’image en px</td>
+        </tr>
+        <tr>
+            <td>copyright-text</td>
+            <td>Texte</td>
+            <td>© Gouvernement du Québec, &lt;année en cours AAAA&gt;</td>
+            <td>Texte du lien de droit d'auteur affiché dans le pied de page.</td>
+        </tr>
+        <tr>
+            <td>copyright-url</td>
+            <td>Adresse</td>
+            <td>
+                <dl>
+                    <dt>Français</dt>
+                    <dd>https://www.quebec.ca/droit-auteur</dd>
+                    <dt>Anglais</dt>
+                    <dd>https://www.quebec.ca/en/copyright</dd>
+                </dl>
+            </td>
+            <td>L’adresse de la page du droit d’auteur sur quebec.ca</td>
+        </tr>
+        </tbody>
+    </table>
+</qc-table>
 
 <qc-notice type="information">Les images du pied de page du PIV doivent respecter
   <qc-external-link><a href="https://www.piv.gouv.qc.ca/fileadmin/documents/guide/section1_general.pdf">les

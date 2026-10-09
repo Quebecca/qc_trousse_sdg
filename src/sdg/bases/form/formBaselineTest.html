@@ -1,0 +1,11 @@
+<!-- Fixture INTENTIONNELLEMENT VIDE — la base CSS `_form.scss` n'est PAS testée ici.
+
+     `_form.scss` ne pose que de la logique interne (font: inherit sur input/button/
+     textarea/select, réinitialisations de base) qui n'a pas de rendu propre isolable :
+     elle est exercée à travers les tests des composants de formulaire (TextField,
+     ChoiceGroup, SearchInput, ToggleSwitch, DropdownList, Fieldset, FormError…).
+
+     Ce fichier vide est une SÉCURITÉ : il documente que l'absence de test pour `form`
+     est un choix délibéré, pas un oubli. Ne pas y ajouter de markup ni recréer de spec
+     form-baseline. Le plugin buildFixturesIndex ignore les fixtures vides (sans markup),
+     donc `form` n'apparaît pas dans public/fixtures-index.html. -->

@@ -1,0 +1,48 @@
+<!-- Fixture de validation des figures et images (générée en public/figuresBaseline.test.html).
+     Challenge _figure.scss : la carte <figure> (display:table, marge basse, overflow-x),
+     la <figcaption> (caption-side:bottom, fond grey/pale, max-inline-size, content-font sm),
+     l'<img> imbriquée (width:100%) et l'<img> nue (border:none, vertical-align:middle).
+     Cas groupés par variante avec un id, comme headingsTest.html.
+     Image locale stable du dépôt : public/img/figure-sample.png. -->
+
+<!-- Cas de référence : figure + image + légende (paragraphe + source en em) -->
+<div id="figure-legende">
+  <figure>
+    <img src="img/figure-sample.png"
+         alt="Image avec légende">
+    <figcaption>
+      <p>La légende de l’image <br>
+        <em>La source de l’image</em>
+      </p>
+    </figcaption>
+  </figure>
+</div>
+
+<!-- Figure sans légende : la carte se réduit à l’image (display:table, shrink-to-fit) -->
+<div id="figure-sans-legende">
+  <figure>
+    <img src="img/figure-sample.png"
+         alt="Image sans légende">
+  </figure>
+</div>
+
+<!-- Légende longue : exerce le fond grey/pale, le padding et max-inline-size (retour à la ligne) -->
+<div id="figure-legende-longue">
+  <figure>
+    <img src="img/figure-sample.png"
+         alt="Image avec une légende longue">
+    <figcaption>
+      <p>Une légende volontairement longue pour valider le retour à la ligne, la contrainte
+        de largeur maximale de contenu, le fond gris pâle et le rembourrage de la légende
+        lorsqu’elle dépasse la largeur de l’image. <br>
+        <em>Source : Système de design gouvernemental</em>
+      </p>
+    </figcaption>
+  </figure>
+</div>
+
+<!-- Image nue (hors figure) : règles img de base (border:none, vertical-align:middle),
+     largeur native conservée, alignée au texte courant -->
+<div id="image-seule">
+  <p>Texte avant une <img src="img/figure-sample.png" alt="Image en ligne"> image en ligne.</p>
+</div>

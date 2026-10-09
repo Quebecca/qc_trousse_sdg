@@ -3,9 +3,11 @@
 :root {
   --qc-light-theme-display: block;
   --qc-dark-theme-display: none;
-  &.qc-dark-theme {
-    --qc-light-theme-display: none;
-    --qc-dark-theme-display: block;
+  @if $enable-dark-theme {
+    &.qc-dark-theme {
+      --qc-light-theme-display: none;
+      --qc-dark-theme-display: block;
+    }
   }
 }
 

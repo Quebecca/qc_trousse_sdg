@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { expectStableScreenshot } from './stable-screenshot';
 import path = require('path');
 
 test('Tooltip baseline', {
@@ -10,16 +11,14 @@ test('Tooltip baseline', {
         await page.goto(`file://${htmlFilePath}`);
         // Injection du script dans le contexte du navigateur
         await page.evaluate(prepareSnapshotForPosition, position);
-        await expect(page).toHaveScreenshot(`tooltip-${position}.png`, {fullPage: true});
+        await expectStableScreenshot(page, `tooltip-${position}.png`, {fullPage: true});
     }
-    await page.pause()
     await page.goto(`file://${htmlFilePath}`);
     await page.evaluate(prepareSnapshotForModale);
-    await expect(page).toHaveScreenshot(`tooltip-feuille.png`, {fullPage: true});
-    await page.pause()
+    await expectStableScreenshot(page, `tooltip-feuille.png`, {fullPage: true});
     await page.getByRole('button', { name: 'Fermer l\'aide contextuelle' }).click();
     await page.evaluate(changeIcon, "question");
-    await expect(page).toHaveScreenshot(`tooltip-question-mark.png`, {fullPage: true});
+    await expectStableScreenshot(page, `tooltip-question-mark.png`, {fullPage: true});
 });
 
 async function prepareSnapshotForPosition(position) {
