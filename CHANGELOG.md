@@ -1,13 +1,13 @@
 # Historique des versions
 
-## [1.6 À VENIR] - AAAA-MM-JJ
+## [1.6.0] - 2026-10-09
 
 ## Migration des icônes vers Material Symbols
 
 Les icônes du SDG passent de SVG (`mask-image`) à la font variable **Material Symbols Outlined**.
 Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 
-### ⚠️ Changements avec impact (*breaking changes*)
+## ⚠️ Changements avec impact (*breaking changes*)
 
 - **Boutons avec icône** : les boutons contenant une icône détectent automatiquement la position de l'icône via `:has(> qc-icon:first-child)` / `:has(> qc-icon:last-child)` pour ajuster le padding à 18px côté icône. Pour que le sélecteur `:first-child` / `:last-child` fonctionne correctement, le texte du bouton doit être enveloppé dans un `<span>`. Exemple :
   ```html
@@ -20,41 +20,28 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **Icônes personnalisées (`src`)** : l'attribut `src` est désormais *legacy*. Les icônes SVG personnalisées ne s'intègrent pas visuellement avec Material Symbols (pas de variantes, pas d'héritage du `font-weight`, pas d'optical size). Les équipes doivent migrer vers un équivalent [Material Symbols](https://fonts.google.com/icons).
 
 ### Ajouté
-- **variantes `root-font-size`** : génération automatique, à chaque version, des feuilles de style réglées à `root-font-size` 100 % (`qc-sdg-rfz100.min.css`, `qc-sdg-no-grid-rfz100.min.css`, `qc-sdg-design-tokens-rfz100.min.css`) à côté des fichiers 62,5 % dans `dist/css`. Remplace la branche `main-rfz100`, désormais inutile. Les deux variantes partagent le même JavaScript (issue #48).
-- **icônes** :
+- **Icônes** :
   - Nouveau catalogue d'icônes basée sur Material Symbols. Les anciens alias fonctionnent toujours mais affichent l'équivalent Material Symbols.
   - Nouvel attribut `use-material` sur `<qc-icon>` permettant de forcer l'utilisation du nom Material Symbols sans passer par le mapping legacy (résout les conflits de noms comme `note` vs `edit_note`).
   - Nouvel attribut `codepoint` sur `<qc-icon>` permettant d'afficher une icône Material Symbols par son codepoint Unicode, sans qu'elle soit dans le subset de la trousse. Combiné avec une inclusion dynamique `@font-face` + `unicode-range`, cela évite de recompiler la trousse.
-- **boutons** : Détection automatique de la position de l'icône. Voir note précédente.
+- **Boutons** : Détection automatique de la position de l'icône. Voir note précédente.
 - **qc-search-input** : 
   - Ajout de la propriété `debounce` (délai en ms avant propagation de la valeur saisie).
   - Ajout de l'événement `qc-change`, émis après le délai du debounce ou lors du clear.
   - Ajout de la propriété `value` comme attribut explicite du web component.
-  - Tests Playwright (baseline + svelte) avec screenshots partagés.
-- **jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
-- **titres** : nouvelles classes de taille `.qc-heading-<taille>`, taille de xxl à xs.
-- **surtitre (eyebrow)** : nouvelle classe `.qc-eyebrow` pour le surtitre, qui remplace `.qc-subhead` (voir **Déprécié**). Rendu identique à l'ancienne classe, sur les deux formes existantes&nbsp;: insérée dans le titre (`<h1><span class="qc-eyebrow">…</span>…</h1>`) ou dans un `<hgroup>`.
-- **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
-- **Documentation** 
-  - Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
-  - **infobulle** : ajout d'exemples.
-- **CLS**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
-- **pastille** : Ajout du composant `qc-lozenge`.
+- **Jeton d'espacement** : ajout des jetons d'espacement --qc-spacer-1 à -12, et de --qc-spacer-main-mb
+- **Titres** : nouvelles classes de taille `.qc-heading-<taille>`, taille de xxl à xs.
+- **Surtitre (eyebrow)** : nouvelle classe `.qc-eyebrow` pour le surtitre, qui remplace `.qc-subhead` (voir **Déprécié**). Rendu identique à l'ancienne classe, sur les deux formes existantes&nbsp;: insérée dans le titre (`<h1><span class="qc-eyebrow">…</span>…</h1>`) ou dans un `<hgroup>`.
+- **Pastille** : Ajout du composant `qc-lozenge`.
 - **Tableaux et listes structurée (qc-table)** : Ajout du composant `qc-table`
-
+- **Infobulle** : ajout d'exemples.
+- **Performances**: optimisations CLS (_Cumulative Layout Shift_ - indicateur de performance d'affichage de la page) pour tous les composants.
+- **Variantes `root-font-size`** : génération automatique, à chaque version, des feuilles de style réglées à `root-font-size` 100 % (`qc-sdg-rfz100.min.css`, `qc-sdg-no-grid-rfz100.min.css`, `qc-sdg-design-tokens-rfz100.min.css`) à côté des fichiers 62,5 % dans `dist/css`. Remplace la branche `main-rfz100`, désormais inutile. Les deux variantes partagent le même JavaScript (issue #48).
 
 ### Modifié
-- **outillage de build** : passage de **Rollup** à **Vite 8** (rolldown/Oxc) pour la compilation des bundles et du CSS. La sortie distribuée (`dist/`) est inchangée ; seuls les scripts de développement évoluent (`build`, `dev`, `build:dev` via `scripts/*.mjs`). Rollup et ses greffons sont entièrement retirés.
-- **site de doc et sourcemaps (développement uniquement)** : le site de documentation charge désormais la trousse depuis `dist/` (`index.html` et jeux de tests via `../dist`) ; `public/` ne contient plus que les assets propres à la doc. `yarn build` et `yarn dev` produisent des bundles minifiés **identiques** (portant le commentaire `sourceMappingURL`) ; seul `yarn dev` écrit en plus les fichiers `.map` (gitignorés, jamais distribués). Les `.map` remontent au SCSS/source (CSS via l'API Sass, JS via Vite) ; chaque SCSS n'est compilé qu'une seule fois (les entrées JS ne l'importent plus, Vite ne bâtit que le JS, les bundles CSS seuls ne lancent pas Vite). Côté consommateur, le commentaire pointe vers un `.map` non livré (requête ignorée / 404 silencieux dans les DevTools) ; le contenu des bundles est par ailleurs inchangé.
-- **icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
-- **titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
-- **libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
-
-### Déprécié
-- **surtitre** : la classe `.qc-subhead` est **périmée**, remplacée par `.qc-eyebrow`. Elle reste prise en charge comme alias (rendu identique) pour la rétrocompatibilité, mais ne doit plus être utilisée dans du nouveau code.
-
-### Retiré
-- **outillage mort** : suppression du script npm `rewrite-bootstrap` et du `gulpfile.js` associé (tâche `rewriteBs`). Ce code n'était plus fonctionnel (dépendances `gulp` / `gulp-transform` / `gulp-clean` / `bootstrap-for-qc-sdg` absentes) et sa sortie n'était ni versionnée ni consommée : le code de grille Bootstrap avait déjà été inliné une fois pour toutes dans le SCSS (`_grid-lib.scss`, `_display.scss`).
+- **Icônes**: Modification de la valeur par défaut de l'attribut size (qui était `md`) ; désormais, en l'absence de l'attribut, l'icône prend la taille du texte (`font-size: 1em;`).
+- **Titres** : ajustement des tailles — `h4` / `.qc-h4` / `.qc-heading-md` de 21px à 20px, `h5` / `.qc-h5` / `.qc-heading-sm` de 19px à 18px (interlignage de 24px inchangé).
+- **Libellés de formulaire** : ajout d'une largeur maximale pour les libellés et descriptions des champs de formulaires.
 
 ### Corrigé
 - **boutons** : Correction du fond du bouton secondaire (`.qc-secondary`), désormais transparent au lieu de blanc.
@@ -67,6 +54,25 @@ Consulter le [guide de migration](MIGRATION-ICONS.md) pour tous les détails.
 - **piv-header** : Correction de la hauteur excessive du titre en cas de retour à la ligne en résolution bureau
 - **commutateur** : Correction css concernant le comportement des balises `sup` et `sub` dans le libellé
 - **Thème sombre** : Correction d'un bug du logo PIV invisible quand le thème sombre est désactivé (`$enable-dark-theme: false`).
+
+### Déprécié
+- **Surtitre** : la classe `.qc-subhead` est **périmée**, remplacée par `.qc-eyebrow`. Elle reste prise en charge comme alias (rendu identique) pour la rétrocompatibilité, mais ne doit plus être utilisée dans du nouveau code.
+
+## Autres changements concernant le projet (outillage & documentation)
+
+Ci-dessous, la liste des changements internes au projet nodejs de la trousse, concernant la programmation : chaîne de build, tests, scripts de développement et documentation.
+
+### Ajouté
+- **Tests** : Script npm `test` (`npm run test [options]`) pour lancer la suite Playwright, avec passage des options à Playwright via `--` (p. ex. `npm run test -- --grep @svelte`).
+- **qc-search-input** : tests Playwright (baseline + svelte) avec screenshots partagés.
+- **Documentation** : Section « Tests visuels (Playwright) » dans le README (lancement, familles `baseline`/`svelte` auto-générées par `plugins/buildSvelteTests.js`, et fichier d'exceptions `tests/buildSvelteTestsIgnore.json`).
+
+### Modifié
+- **outillage de build** : passage de **Rollup** à **Vite 8** (rolldown/Oxc) pour la compilation des bundles et du CSS. La sortie distribuée (`dist/`) est inchangée ; seuls les scripts de développement évoluent (`build`, `dev`, `build:dev` via `scripts/*.mjs`). Rollup et ses greffons sont entièrement retirés.
+- **site de doc et sourcemaps (développement uniquement)** : le site de documentation charge désormais la trousse depuis `dist/` (`index.html` et jeux de tests via `../dist`) ; `public/` ne contient plus que les assets propres à la doc. `yarn build` et `yarn dev` produisent des bundles minifiés **identiques** (portant le commentaire `sourceMappingURL`) ; seul `yarn dev` écrit en plus les fichiers `.map` (gitignorés, jamais distribués). Les `.map` remontent au SCSS/source (CSS via l'API Sass, JS via Vite) ; chaque SCSS n'est compilé qu'une seule fois (les entrées JS ne l'importent plus, Vite ne bâtit que le JS, les bundles CSS seuls ne lancent pas Vite). Côté consommateur, le commentaire pointe vers un `.map` non livré (requête ignorée / 404 silencieux dans les DevTools) ; le contenu des bundles est par ailleurs inchangé.
+
+### Retiré
+- **outillage mort** : suppression du script npm `rewrite-bootstrap` et du `gulpfile.js` associé (tâche `rewriteBs`). Ce code n'était plus fonctionnel (dépendances `gulp` / `gulp-transform` / `gulp-clean` / `bootstrap-for-qc-sdg` absentes) et sa sortie n'était ni versionnée ni consommée : le code de grille Bootstrap avait déjà été inliné une fois pour toutes dans le SCSS (`_grid-lib.scss`, `_display.scss`).
 
 ## [1.5.2] - 2026-04-27
 ### Ajouté
