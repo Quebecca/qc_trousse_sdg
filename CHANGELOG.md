@@ -1,5 +1,10 @@
 # Historique des versions
 
+## [1.6.1] - 2026-10-09
+
+### Corrigé
+- **Paquet npm** : ajout d'un `.npmignore` pour exclure du paquet publié les dossiers volumineux.
+
 ## [1.6.0] - 2026-10-09
 
 ## Migration des icônes vers Material Symbols
