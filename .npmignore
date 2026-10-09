@@ -1,0 +1,20 @@
+# Fichiers exclus du paquet npm publié (la trousse reste installable comme
+# dépendance Node : on ne retire que ce qui n'a aucune utilité pour un
+# consommateur). Voir aussi .gitignore (git) et le champ "files" (allowlist).
+
+# Suite de tests + captures de référence Playwright (tests/snapshots/*.png,
+# ~36 Mo via git lfs matérialisé sur disque). Aucune utilité en dépendance.
+tests/
+playwright.config.ts
+
+# Site de démonstration / documentation buildé — pas une surface d'API.
+public/
+index.html
+
+# Artefacts d'outils et d'éditeur présents dans l'arbre de travail local,
+# jamais destinés à la publication.
+.playwright-mcp/
+test-results/
+.rfz-build/
+.kiro/
+.idea/
