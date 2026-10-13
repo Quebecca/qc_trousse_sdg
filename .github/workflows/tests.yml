@@ -10,9 +10,9 @@ name: Tests
 on:
   push:
     # `ci-**` = branches jetables pour tester ce workflow sans ouvrir de PR.
-    branches: [develop, 'ci-**']
+    branches: [main, develop, 'ci-**']
   pull_request:
-    branches: [develop]
+    branches: [main, develop]
   workflow_dispatch:
 
 # Un push qui en remplace un autre sur la même réf annule le run précédent.
