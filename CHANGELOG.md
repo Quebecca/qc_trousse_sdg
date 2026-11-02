@@ -1,5 +1,11 @@
 # Historique des versions
 
+## [1.6.2] - en développement
+
+### Modifié
+- **Build/doc** : modification du calcul de la version affichée dans la doc, intégrant la dernière entrée du CHANGELOG.md.
+- **CI** : surveillance de la branche `main` en plus de `develop`.
+
 ## [1.6.1] - 2026-10-09
 
 ### Corrigé

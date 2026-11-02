@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
 import replace from '@rollup/plugin-replace';
-import { sveltePlugin, cssPreprocessorOptions, createQuietLogger } from './vite-common.mjs';
+import { sveltePlugin, cssPreprocessorOptions, createQuietLogger, versionLabel } from './vite-common.mjs';
 import { compileCssWithMap } from './compile-css-map.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,7 +20,7 @@ const logger = createQuietLogger();
 // NB : le patch customElements$1 -> customElements est VOLONTAIREMENT absent
 // (on teste d'abord si Vite/rolldown en a encore besoin — cf. échange avec Marc).
 const replacements = {
-    _vSDG_: `v${pkg.version}`,
+    _vSDG_: versionLabel(root, pkg.version),
     delimiters: ['', ''],
     preventAssignment: false,
 };

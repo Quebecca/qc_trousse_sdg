@@ -17,7 +17,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import replace from '@rollup/plugin-replace';
-import { sveltePlugin, cssPreprocessorOptions, createQuietLogger } from './vite-common.mjs';
+import { sveltePlugin, cssPreprocessorOptions, createQuietLogger, versionLabel } from './vite-common.mjs';
 import { compileCssWithMap } from './compile-css-map.mjs';
 import buildHtmlDoc from '../plugins/buildHtmlDoc.mjs';
 import buildDevDoc from '../plugins/buildDevDoc.mjs';
@@ -35,7 +35,7 @@ const doWatch = args.includes('--watch');
 const doServe = args.includes('--serve');
 
 const replacements = {
-    _vSDG_: `v${pkg.version}`,
+    _vSDG_: versionLabel(root, pkg.version),
     delimiters: ['', ''],
     preventAssignment: false,
 };
