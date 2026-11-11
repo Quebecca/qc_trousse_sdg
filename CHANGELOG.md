@@ -6,6 +6,7 @@
 - **Build/doc** : modification du calcul de la version affichée dans la doc, intégrant la dernière entrée du CHANGELOG.md.
 - **CI** : surveillance de la branche `main` en plus de `develop`.
 - **Dépôt** : `CLAUDE.md` et `.claude/` (fichiers locaux de Claude Code) ajoutés au `.gitignore`.
+- **Dépôt** : `public/img/maquettes/` suivi par Git LFS (captures Figma temporaires des contrats d'API, supprimées avant la fusion d'un composant).
 
 ### Corrigé
 - **Tooltip** : à exactement 768 px de large, le tooltip s'affichait en mode mobile (modale) alors que le CSS de la page est en mode desktop. Le seuil mobile est maintenant strictement inférieur au point de rupture `sm`.
