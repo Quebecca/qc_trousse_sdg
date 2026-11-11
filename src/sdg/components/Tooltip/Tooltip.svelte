@@ -148,7 +148,7 @@
 
     function setIsMobile() {
         const bounds = getScreenBounds();
-        mobileFlag = bounds.right <= getSmBreakpoint(gridConfig);
+        mobileFlag = bounds.right < getSmBreakpoint(gridConfig);
         return mobileFlag;
     }
 

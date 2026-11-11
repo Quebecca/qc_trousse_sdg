@@ -7,6 +7,9 @@
 - **CI** : surveillance de la branche `main` en plus de `develop`.
 - **Dépôt** : `CLAUDE.md` et `.claude/` (fichiers locaux de Claude Code) ajoutés au `.gitignore`.
 
+### Corrigé
+- **Tooltip** : à exactement 768 px de large, le tooltip s'affichait en mode mobile (modale) alors que le CSS de la page est en mode desktop. Le seuil mobile est maintenant strictement inférieur au point de rupture `sm`.
+
 ## [1.6.1] - 2026-10-09
 
 ### Corrigé
