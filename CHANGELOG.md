@@ -5,6 +5,7 @@
 ### Modifié
 - **Build/doc** : modification du calcul de la version affichée dans la doc, intégrant la dernière entrée du CHANGELOG.md.
 - **CI** : surveillance de la branche `main` en plus de `develop`.
+- **Dépôt** : `CLAUDE.md` et `.claude/` (fichiers locaux de Claude Code) ajoutés au `.gitignore`.
 
 ## [1.6.1] - 2026-10-09
 
