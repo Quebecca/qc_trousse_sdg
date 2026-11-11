@@ -36,7 +36,7 @@
     "autoprefixer": "^10.5.4",
     "ejs": "^6.0.1",
     "fast-check": "^4.9.0",
-    "glob": "^11.0.0",
+    "glob": "^14.0.2",
     "highlight.js": "^11.12.0",
     "js-beautify": "^2.0.3",
     "postcss": "^8.5.26",
