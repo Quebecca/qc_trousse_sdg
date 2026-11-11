@@ -1,5 +1,8 @@
 /.idea
 /.kiro
+# Fichiers locaux de Claude Code, générés par .kiro/scripts/setup-claude.sh.
+/CLAUDE.md
+/.claude/
 .DS_Store
 node_modules/
 /sandbox
