@@ -21,3 +21,13 @@ test.describe('Liens génériques', () => {
         await expect(page).toHaveScreenshot('links.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/links --include='*.scss'
+ *   -> 0 résultat
+ */
+test.skip('links-baseline mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

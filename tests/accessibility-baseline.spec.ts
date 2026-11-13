@@ -35,3 +35,13 @@ test.describe('Accessibility (base)', () => {
         await expect(page).toHaveScreenshot('accessibility-skip-focus.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/accessibility --include='*.scss'
+ *   -> 0 résultat
+ */
+test.skip('accessibility-baseline mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

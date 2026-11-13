@@ -20,3 +20,13 @@ test.describe('Séparateur', () => {
         await expect(page).toHaveScreenshot('separator.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/separator --include='*.scss'
+ *   -> 0 résultat
+ */
+test.skip('separator-baseline mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

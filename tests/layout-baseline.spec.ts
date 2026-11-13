@@ -18,4 +18,13 @@ test.describe('Layout', () => {
         });
         await expect(page).toHaveScreenshot('layout.png', {fullPage: true});
     });
+
+    // Preuve : grep -nE "@media|@container|vw|min-width|max-width" src/sdg/bases/layout/_layout.scss
+    // -> seule occurrence : @media (prefers-reduced-motion: reduce) (L29), préférence utilisateur,
+    // pas une largeur d'écran. Aucune règle dépendante de la largeur, pas de logique JS.
+    test.skip('rendu mobile de la base layout', {
+        tag: ['@baseline', '@layout', '@mobile']
+    }, async () => {
+        // Aucune règle mobile : pas de média-requête de largeur, pas de logique Svelte.
+    });
 });

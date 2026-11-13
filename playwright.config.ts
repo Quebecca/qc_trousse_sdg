@@ -48,30 +48,38 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    /* Contrat de tags : les projets desktop ne jouent jamais les tests
+       @mobile ; les projets mobiles ne jouent QUE les tests @mobile.
+       Pas de tag @desktop : l'absence de @mobile suffit. */
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      grepInvert: /@mobile/,
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      grepInvert: /@mobile/,
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      grepInvert: /@mobile/,
     },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    /* Projets mobiles (noms sans espace : ils entrent dans les noms de baselines). */
+    {
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 5'] },
+      grep: /@mobile/,
+    },
+    {
+      name: 'mobile-safari',
+      use: { ...devices['iPhone 12'] },
+      grep: /@mobile/,
+    },
 
     /* Test against branded browsers. */
     // {

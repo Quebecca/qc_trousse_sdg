@@ -7,6 +7,7 @@
 - **CI** : surveillance de la branche `main` en plus de `develop`.
 - **Dépôt** : `CLAUDE.md` et `.claude/` (fichiers locaux de Claude Code) ajoutés au `.gitignore`.
 - **Dépôt** : `public/img/maquettes/` suivi par Git LFS (captures Figma temporaires des contrats d'API, supprimées avant la fusion d'un composant).
+- **Tests** : projets Playwright mobiles (`mobile-chrome` Pixel 5, `mobile-safari` iPhone 12) réservés aux tests `@mobile`; les projets desktop les ignorent. Les cas mobiles de Tooltip, Table, Grille, Alert, PivHeader, ChoiceGroup, titres et utilitaires passent des `setViewportSize` aux projets mobiles; les autres composants et bases portent un `test.skip` `@mobile` justifié.
 
 ### Corrigé
 - **Tooltip** : à exactement 768 px de large, le tooltip s'affichait en mode mobile (modale) alors que le CSS de la page est en mode desktop. Le seuil mobile est maintenant strictement inférieur au point de rupture `sm`.

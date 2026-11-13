@@ -70,3 +70,24 @@ async function changeIcon(icon) {
 
 
 
+
+/*
+ * Test mobile (Pixel 5 / iPhone 12), ADAPTÉ du desktop : même fixture, mais un seul clic
+ * sur la première infobulle. Sous le seuil mobile (Tooltip.svelte : setIsMobile / clientWidth),
+ * l'infobulle s'affiche en feuille (modale) ; les cas de positionnement desktop ne s'appliquent pas.
+ */
+test('Tooltip baseline mobile', {
+    tag: ['@tooltip', '@baseline', '@mobile']
+}, async ({ page }) => {
+    const htmlFilePath = path.resolve(__dirname, '../public/tooltipBaseline.test.html');
+    await page.goto(`file://${htmlFilePath}`);
+    await page.evaluate(async () => {
+        const mainTooltip = document.getElementById("tooltip");
+        mainTooltip.text = "feuille";
+        await new Promise(resolve => setTimeout(resolve, 100));
+    });
+    // Un unique clic réel (tactile) sur la première infobulle
+    await page.locator('#tooltip').getByRole('button', { name: /Afficher l'aide contextuelle/ }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expectStableScreenshot(page, 'tooltip-feuille-mobile.png', {fullPage: true});
+});

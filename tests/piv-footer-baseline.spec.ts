@@ -27,3 +27,15 @@ test.describe('Pied de page du PIV', () => {
         await expect(page).toHaveScreenshot('piv-footer.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile pour ce composant, donc pas de baseline mobile.
+ * Seule occurrence : la classe qc-container-fluid (conteneur 100 % de large, sans
+ * max-width par point de rupture ; make-container ne pose qu'un padding fixe).
+ * Preuve (aucune règle de largeur, média-requête, vw, @container ni logique tactile) :
+ *   $ grep -rnE 'clientWidth|innerWidth|matchMedia|grid\.json|touch(start|end|move)|touch-action|pointer-events|pointerType|@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container-(sm|md|lg|xl)|qc-col-|qc-row' src/sdg/components/PivFooter --exclude-dir=Test --exclude=*.html --exclude=*.ejs
+ *   -> 0 résultat
+ */
+test.skip('piv-footer-baseline mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

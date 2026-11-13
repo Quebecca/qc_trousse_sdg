@@ -66,3 +66,13 @@ test('valeurs de reference documentees dans _functions.scss', () => {
     expect(remValues(16, 62.5).rem).toBeCloseTo(1.6, 5);
     expect(remValues(16, 100).rem).toBeCloseTo(1, 5);
 });
+
+/*
+ * @mobile : test de propriété Sass (rem()) sans rendu navigateur ni largeur
+ * Preuve :
+ *   $ grep -cE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/scss/lib/_functions.scss
+ *   -> 0 ; le test compile du Sass en Node, aucune page n'est ouverte
+ */
+test.skip('rem-parity mobile : test de propriété Sass (rem()) sans rendu navigateur ni largeur', {
+    tag: ['@mobile']
+}, async () => {});

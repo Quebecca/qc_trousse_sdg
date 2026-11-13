@@ -28,3 +28,13 @@ test.describe('Couleurs', () => {
         await expect(page).toHaveScreenshot('colors.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile (palette indépendante de la largeur)
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/colors --include='*.scss'
+ *   -> 0 résultat
+ */
+test.skip('colors-baseline mobile : aucune règle mobile (palette indépendante de la largeur)', {
+    tag: ['@mobile']
+}, async () => {});

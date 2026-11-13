@@ -22,3 +22,39 @@ test.describe('Utilitaires', () => {
         await expect(page).toHaveScreenshot('utilities.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : les utilitaires d'affichage ont une règle de largeur.
+ * Preuve :
+ *   $ grep -n 'media-breakpoint-up' src/sdg/scss/utilities/_display.scss
+ *   -> .qc-d-<sm|md|lg>-<valeur> n'est actif qu'à partir de 768 / 992 / 1200 px (grid.breakpoint).
+ *   Pixel 5 (393 px) et iPhone 12 (390 px) sont sous le premier seuil (sm = 768 px) :
+ *   seule la classe de base .qc-d-<valeur> s'applique. Test par styles calculés (pas de baseline).
+ */
+test.describe('Utilitaires (mobile)', () => {
+    test('les classes .qc-d-{sm,md,lg} responsives sont inactives sous 768 px', {
+        tag: ['@utilities', '@mobile']
+    }, async ({page}) => {
+        const htmlFilePath = path.resolve(__dirname, '../public/utilitiesBaseline.test.html');
+        await page.goto(`file://${htmlFilePath}`);
+        const displays = await page.evaluate(() => {
+            const cases: [string, string][] = [
+                ['qc-d-none qc-d-sm-block', 'none'],
+                ['qc-d-none qc-d-md-block', 'none'],
+                ['qc-d-none qc-d-lg-flex', 'none'],
+                ['qc-d-block qc-d-sm-none', 'block'],
+                ['qc-d-block qc-d-md-none', 'block'],
+                ['qc-d-inline qc-d-lg-none', 'inline'],
+            ];
+            return cases.map(([cls]) => {
+                const el = document.createElement('div');
+                el.className = cls;
+                document.body.appendChild(el);
+                const d = getComputedStyle(el).display;
+                el.remove();
+                return d;
+            });
+        });
+        expect(displays).toEqual(['none', 'none', 'none', 'block', 'block', 'inline']);
+    });
+});

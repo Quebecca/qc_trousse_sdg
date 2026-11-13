@@ -20,3 +20,14 @@ test.describe('Typographie', () => {
         await expect(page).toHaveScreenshot('typography.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : la seule règle de largeur (_paragraph.scss, max-width: 320px) ne s’applique pas à 390/393 px; la fixture n’a aucun titre h1-h3
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/typography --include='*.scss'
+ *   -> _paragraph.scss:14: @media (max-width: 320px)  (Pixel 5 = 393 px, iPhone 12 = 390 px : jamais déclenchée)
+ *   $ grep -cE '<h[1-3]' src/sdg/bases/typography/typographyBaselineTest.html -> 0 (les tokens de titres md/sm ne s'appliquent pas)
+ */
+test.skip('typography-baseline mobile : la seule règle de largeur (_paragraph.scss, max-width: 320px) ne s’applique pas à 390/393 px; la fixture n’a aucun titre h1-h3', {
+    tag: ['@mobile']
+}, async () => {});

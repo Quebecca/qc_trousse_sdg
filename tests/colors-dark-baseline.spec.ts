@@ -28,3 +28,14 @@ test.describe('Couleurs — thème sombre', () => {
         await expect(page).toHaveScreenshot('colors-dark.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile (thème sombre indépendant de la largeur)
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/colors --include='*.scss'
+ *   -> 0 résultat
+ *   (les tokens sombres ne déclinent que lg : tokens.scss $themes-tokens dark: lg)
+ */
+test.skip('colors-dark-baseline mobile : aucune règle mobile (thème sombre indépendant de la largeur)', {
+    tag: ['@mobile']
+}, async () => {});

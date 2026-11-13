@@ -19,3 +19,13 @@ test.describe('Listes', () => {
         await expect(page).toHaveScreenshot('lists.png', {fullPage: true});
     });
 });
+
+/*
+ * @mobile : aucune règle mobile
+ * Preuve :
+ *   $ grep -rnE '@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row|clientWidth|innerWidth|matchMedia' src/sdg/bases/lists --include='*.scss'
+ *   -> 0 résultat
+ */
+test.skip('lists-baseline mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

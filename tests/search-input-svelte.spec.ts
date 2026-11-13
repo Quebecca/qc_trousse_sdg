@@ -160,3 +160,13 @@ test('SearchInput svelte — clear annule le debounce en attente', {
     expect(events).toHaveLength(1);
     expect(events[0]).toBe('');
 });
+
+/*
+ * @mobile : aucune règle mobile pour ce composant, donc pas de svelte mobile.
+ * Preuve (aucune règle de largeur, média-requête, vw, @container ni logique tactile) :
+ *   $ grep -rnE 'clientWidth|innerWidth|matchMedia|grid\.json|touch(start|end|move)|touch-action|pointer-events|pointerType|@media|@container|[0-9]vw|media-mobile|media-tablet|media-desktop|media-breakpoint|qc-container|qc-col-|qc-row' src/sdg/components/SearchInput --exclude-dir=Test --exclude=*.html --exclude=*.ejs
+ *   -> 0 résultat
+ */
+test.skip('search-input-svelte mobile : aucune règle mobile', {
+    tag: ['@mobile']
+}, async () => {});

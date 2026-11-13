@@ -46,16 +46,35 @@ test('Table baseline desktop', {
 });
 
 test('Table baseline mobile', {
-    tag: ['@table', '@baseline']
+    tag: ['@table', '@baseline', '@mobile']
 }, async ({ page }) => {
-    await page.setViewportSize({
-        width: 375,
-        height: 800
-    });
-
+    // Rendu mobile réel (projets mobile-chrome / mobile-safari), sans
+    // setViewportSize : le SCSS bascule via media-mobile().
     await expect(page).toHaveScreenshot('table-mobile.png', {
         fullPage: true
     });
+
+    // Empilement : en mobile, la liste structurée passe en display: block
+    // et chaque cellule est précédée de son data-label (::before).
+    const table = page.locator('#table-structured-list');
+    await expect(table).toHaveCSS('display', 'block');
+
+    const firstCell = table.locator('tbody tr').nth(0).locator('td').nth(0);
+    await expect(firstCell).toHaveAttribute('data-label', 'Nom');
+    const before = await firstCell.evaluate(
+        (el) => getComputedStyle(el, '::before').content
+    );
+    expect(before).toBe('"Nom"');
+
+    const cellBox = await firstCell.boundingBox();
+    const nextCellBox = await table
+        .locator('tbody tr')
+        .nth(0)
+        .locator('td')
+        .nth(1)
+        .boundingBox();
+    // Cellules empilées verticalement (et non côte à côte).
+    expect(nextCellBox!.y).toBeGreaterThan(cellBox!.y);
 });
 
 test('Ajout des data-label', {
