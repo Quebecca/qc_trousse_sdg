@@ -23,5 +23,7 @@
   "**/scrollbar-baseline.spec.ts",
   "**/formfield-row-baseline.spec.ts",
   "**/lists-baseline.spec.ts",
-  "**/label-baseline.spec.ts"
+  "**/label-baseline.spec.ts",
+  "**/note-baseline.spec.ts",
+  "**/sheet-baseline.spec.ts"
 ]
