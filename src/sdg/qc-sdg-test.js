@@ -12,5 +12,6 @@ export * from "./components/IconButton/Test/IconButtonSvelteTest.svelte";
 export * from "./components/SearchInput/Test/SearchInputSvelteTest.svelte";
 export * from "./components/SearchBar/Test/SearchBarSvelteTest.svelte";
 export * from "./components/Notice/Test/NoticeSvelteTest.svelte";
+export * from "./components/NavFooter/Test/NavFooterSvelteTest.svelte";
 export * from "./components/ToTop/Test/ToTopSvelteTest.svelte";
 export * from "./components/Table/Test/TableSvelteTest.svelte";

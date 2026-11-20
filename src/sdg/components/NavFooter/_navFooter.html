@@ -1,0 +1,320 @@
+<h2 id="nav-footer">Pied de page de navigation (qc-nav-footer)</h2>
+
+<p>Section facultative placée au-dessus du <a href="#piv-footer">pied de page du PIV</a> : elle
+  identifie le site ou le service et regroupe ses liens principaux.</p>
+
+<h3>Exemples</h3>
+
+<h4>Pied de page complet</h4>
+<qc-doc-exemple caption="Exemple de pied de page complet : trois colonnes à partir de 768&nbsp;px, une en dessous.">
+  <qc-nav-footer title-text="Titre du site ou du service"
+                 title-url="/">
+    <ul slot="links">
+      <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+      <li>
+        <qc-external-link><a href="https://www.exemple.gouv.qc.ca">Lien vers une deuxième page</a></qc-external-link>
+      </li>
+    </ul>
+    <div slot="columns">
+      <nav aria-label="Plan du pied de page">
+        <div class="qc-nav-footer-column">
+          <h3>Titre de la colonne</h3>
+          <ul>
+            <li><a href="/section-1/page-1">Lien interne</a></li>
+            <li><a href="/section-1/page-2">Lien interne</a></li>
+            <li><a href="/section-1/page-3">Lien interne</a></li>
+            <li><a href="/section-1/page-4">Lien interne</a></li>
+            <li><a href="/section-1/page-5">Lien interne</a></li>
+          </ul>
+        </div>
+        <div class="qc-nav-footer-column">
+          <h3>Titre de la colonne</h3>
+          <ul>
+            <li><a href="/section-2/page-1">Lien interne</a></li>
+            <li><a href="/section-2/page-2">Lien interne</a></li>
+            <li><a href="/section-2/page-3">Lien interne</a></li>
+            <li><a href="/section-2/page-4">Lien interne</a></li>
+            <li><a href="/section-2/page-5">Lien interne</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="qc-nav-footer-column">
+        <h3>Suivez-nous</h3>
+        <ul>
+          <li>
+            <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-x" href="https://x.com/exemple">X (Twitter)</a></qc-external-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h4>Pied de page succinct</h4>
+<qc-doc-exemple caption="Exemple de pied de page succinct, sans zone <code>columns</code> : ni filet ni colonnes.">
+  <qc-nav-footer title-text="Titre du site ou du service"
+                 title-url="/"
+                 description="Courte description du service ou de l’application Web.">
+    <ul slot="links">
+      <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+      <li>
+        <qc-external-link><a href="https://www.exemple.gouv.qc.ca/aide">Aide</a></qc-external-link>
+      </li>
+    </ul>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h4>Colonnes seules</h4>
+<qc-doc-exemple caption="Exemple de pied de page à colonnes seules, sans zone <code>links</code> : ni liens de contact ni filet.">
+  <qc-nav-footer title-text="Titre du site ou du service">
+    <div slot="columns">
+      <nav aria-label="Plan du pied de page">
+        <div class="qc-nav-footer-column">
+          <h3>Programmes et services</h3>
+          <ul>
+            <li><a href="/programmes">Programmes d’aide financière aux entreprises et aux organismes à but non lucratif</a></li>
+            <li><a href="/permis">Permis et certificats</a></li>
+            <li><a href="/formulaires">Formulaires</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div class="qc-nav-footer-column">
+        <h3>Suivez-nous</h3>
+        <ul>
+          <li>
+            <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h4>Assemblage avec le pied de page du PIV</h4>
+<qc-doc-exemple caption="Exemple d’assemblage des deux pieds de page dans un seul <code>&amp;lt;footer&amp;gt;</code>.">
+  <footer>
+    <qc-nav-footer title-text="Titre du site ou du service">
+      <ul slot="links">
+        <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+      </ul>
+      <nav slot="columns" aria-label="Plan du pied de page">
+        <div class="qc-nav-footer-column">
+          <h3>Titre de la colonne</h3>
+          <ul>
+            <li><a href="/section-1/page-1">Lien interne</a></li>
+          </ul>
+        </div>
+      </nav>
+    </qc-nav-footer>
+    <qc-piv-footer>
+      <nav aria-label="Liens utilitaires et légaux">
+        <ul>
+          <li><a href="/accessibilite">Accessibilité</a></li>
+          <li><a href="/plan-du-site">Plan du site</a></li>
+          <li><a href="/acces-information">Accès à l’information</a></li>
+          <li><a href="/confidentialite">Politique de confidentialité</a></li>
+          <li><a href="/conditions-utilisation">Conditions d’utilisation</a></li>
+          <li><a href="/a-propos">À propos de Québec.ca</a></li>
+        </ul>
+      </nav>
+    </qc-piv-footer>
+  </footer>
+</qc-doc-exemple>
+
+<h4>Un repère de navigation par colonne</h4>
+<qc-doc-exemple caption="Exemple de repère de navigation par colonne : chaque colonne est un <code>&amp;lt;nav&amp;gt;</code> nommé par son titre.">
+  <qc-nav-footer title-text="Titre du site ou du service"
+                 title-url="/">
+    <ul slot="links">
+      <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+      <li>
+        <qc-external-link><a href="https://www.exemple.gouv.qc.ca">Lien vers une deuxième page</a></qc-external-link>
+      </li>
+    </ul>
+    <div slot="columns">
+      <nav class="qc-nav-footer-column" aria-labelledby="pied-page-colonne-1">
+        <h3 id="pied-page-colonne-1">Informations et services</h3>
+        <ul>
+          <li><a href="/section-1/page-1">Lien interne</a></li>
+          <li><a href="/section-1/page-2">Lien interne</a></li>
+        </ul>
+      </nav>
+      <nav class="qc-nav-footer-column" aria-labelledby="pied-page-colonne-2">
+        <h3 id="pied-page-colonne-2">Gouvernement</h3>
+        <ul>
+          <li><a href="/section-2/page-1">Lien interne</a></li>
+          <li><a href="/section-2/page-2">Lien interne</a></li>
+        </ul>
+      </nav>
+      <div class="qc-nav-footer-column">
+        <h3>Suivez-nous</h3>
+        <ul>
+          <li>
+            <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h4>Liens vers les médias sociaux</h4>
+<qc-doc-exemple caption="Exemple de liens vers les médias sociaux : classe <code>qc-social-&amp;lt;réseau&amp;gt;</code> sur le lien ; l’icône est décorative, le nom du réseau reste le texte.">
+  <qc-nav-footer title-text="Titre du site ou du service">
+    <div slot="columns">
+      <div class="qc-nav-footer-column">
+        <h3>Suivez-nous</h3>
+        <ul>
+          <li>
+            <qc-external-link><a class="qc-social-blogger" href="https://www.exemple.gouv.qc.ca/blogger">Blogger</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-bluesky" href="https://www.exemple.gouv.qc.ca/bluesky">Bluesky</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-facebook" href="https://www.exemple.gouv.qc.ca/facebook">Facebook</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-instagram" href="https://www.exemple.gouv.qc.ca/instagram">Instagram</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-linkedin" href="https://www.exemple.gouv.qc.ca/linkedin">LinkedIn</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-pinterest" href="https://www.exemple.gouv.qc.ca/pinterest">Pinterest</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-rss" href="https://www.exemple.gouv.qc.ca/rss">Fil RSS</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-soundcloud" href="https://www.exemple.gouv.qc.ca/soundcloud">SoundCloud</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-tiktok" href="https://www.exemple.gouv.qc.ca/tiktok">TikTok</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-x" href="https://www.exemple.gouv.qc.ca/x">X (Twitter)</a></qc-external-link>
+          </li>
+          <li>
+            <qc-external-link><a class="qc-social-youtube" href="https://www.exemple.gouv.qc.ca/youtube">YouTube</a></qc-external-link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h3>Documentation technique</h3>
+
+<qc-table>
+  <table class="qc-striped component-attributes-description">
+    <caption>Attributs</caption>
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Valeur attendue</th>
+      <th>Valeur par défaut</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>title-text</td>
+      <td>Texte</td>
+      <td>Aucune</td>
+      <td><b>Obligatoire.</b> Titre du site ou du service. Absent : aucun titre et un
+        avertissement dans la console.</td>
+    </tr>
+    <tr>
+      <td>title-url</td>
+      <td>Adresse</td>
+      <td>/</td>
+      <td>Lien du titre (page d’accueil).</td>
+    </tr>
+    <tr>
+      <td>title-tag</td>
+      <td>h2 à h6</td>
+      <td>h2</td>
+      <td>Niveau du titre. Valeur invalide : <code>h2</code>.</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>Texte</td>
+      <td>Chaîne vide</td>
+      <td>Courte description affichée sous le titre.</td>
+    </tr>
+    </tbody>
+  </table>
+</qc-table>
+
+<h4>Zones d’ajout de contenu HTML</h4>
+
+<p>Ci-dessous, les zones d’ajout de contenu HTML (balise &lt;slot&gt;) délimitées en pointillé.
+  La zone <code>links</code> reçoit une liste <code>&lt;ul&gt;</code> de liens de contact ; la zone
+  <code>columns</code> reçoit les colonnes (classe <code>qc-nav-footer-column</code>), directement ou
+  dans un <code>&lt;nav&gt;</code> intermédiaire. Le composant ne rend ni <code>&lt;nav&gt;</code>
+  ni <code>&lt;footer&gt;</code> : l’intégrateur les écrit.</p>
+<qc-doc-exemple id="qc-nav-footer-slots"
+                caption="Présentation des zones d’ajout de contenu du pied de page de navigation"
+                hide-code>
+  <qc-nav-footer title-text="Titre du site ou du service">
+    <div slot="links"
+         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      slot="links"
+    </div>
+    <div slot="columns"
+         style="border:2px dashed;padding: var(--qc-spacer-xs);">
+      slot="columns"
+    </div>
+  </qc-nav-footer>
+</qc-doc-exemple>
+
+<h4>Classes CSS</h4>
+
+<qc-table>
+  <table class="qc-striped component-attributes-description">
+    <caption>Classes du pied de page de navigation</caption>
+    <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><code>qc-nav-footer-column</code></td>
+      <td>À ajouter sur chaque élément de la zone <code>columns</code> qui doit s’afficher
+        comme une colonne (<code>&lt;div&gt;</code>, <code>&lt;section&gt;</code> ou
+        <code>&lt;nav&gt;</code>). La colonne occupe le tiers de la largeur à partir de
+        768&nbsp;px (bureau et tablette), et toute la largeur en dessous : l’équivalent de
+        <code>qc-col-sm-4</code> dans la grille de 12 colonnes. Un élément sans la classe
+        n’est pas une colonne.</td>
+    </tr>
+    <tr>
+      <td><code>qc-social-&lt;réseau&gt;</code></td>
+      <td>À ajouter sur le <code>&lt;a&gt;</code> d’un lien vers un réseau social pour
+        afficher l’icône du réseau : blogger, bluesky, facebook, instagram, linkedin,
+        pinterest, rss, soundcloud, tiktok, x, youtube. Voir l’exemple « Liens vers les
+        médias sociaux ».</td>
+    </tr>
+    </tbody>
+  </table>
+</qc-table>
+
+<h4>Accessibilité</h4>
+<ul>
+  <li>Liens natifs seulement ; ordre du focus identique à l’ordre visuel.</li>
+  <li>Chaque <code>&lt;nav&gt;</code> écrit par l’intégrateur a un nom unique, différent de celui des
+    liens du pied de page du PIV.</li>
+</ul>
+
+<h4>Cas non pris en charge</h4>
+<ul>
+  <li>Plus de trois colonnes (la quatrième passe à la rangée suivante).</li>
+  <li>Plusieurs pieds de page de navigation dans une page.</li>
+  <li>Largeur de contenu autre que celle de la grille.</li>
+  <li>Lien de média social sans texte (icône seule).</li>
+</ul>
