@@ -1,0 +1,176 @@
+<!-- Fixture baseline du pied de page de navigation (<qc-nav-footer>) : le web component
+     posé en HTML statique. Un cas par exemple de la doc (_navFooter.html), avec le même
+     code, dans le même ordre. Le test joue la fixture à la largeur bureau et à la largeur
+     mobile. Le snapshot est partagé avec le test svelte (même nom de capture).
+     Seul écart avec la doc : copyright-text figé sur qc-piv-footer (exemple 4), pour un
+     rendu qui ne change pas avec l'année (même choix que la fixture du PIV). -->
+
+<!-- La page de test place tout son contenu dans un .qc-container. Chaque cas commence par
+     un petit titre, dans le conteneur, puis le pied de page, qui occupe la largeur de la
+     fenêtre : la classe nav-footer-pleine-largeur le sort du conteneur. Le titre sépare
+     les cas sur les captures (même structure dans NavFooterSvelteTest.svelte). -->
+<style>
+  .nav-footer-cas {
+    margin-bottom: var(--qc-spacer-sm);
+  }
+  .nav-footer-pleine-largeur {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+</style>
+
+<h2 class="qc-heading-xs nav-footer-cas">Exemple 1 : pied de page complet</h2>
+<div class="nav-footer-pleine-largeur">
+<qc-nav-footer title-text="Titre du site ou du service"
+               title-url="/">
+  <ul slot="links">
+    <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+    <li>
+      <qc-external-link><a href="https://www.exemple.gouv.qc.ca">Lien vers une deuxième page</a></qc-external-link>
+    </li>
+  </ul>
+  <div slot="columns">
+    <nav aria-label="Plan du pied de page">
+      <div class="qc-nav-footer-column">
+        <h3>Titre de la colonne</h3>
+        <ul>
+          <li><a href="/section-1/page-1">Lien interne</a></li>
+          <li><a href="/section-1/page-2">Lien interne</a></li>
+          <li><a href="/section-1/page-3">Lien interne</a></li>
+          <li><a href="/section-1/page-4">Lien interne</a></li>
+          <li><a href="/section-1/page-5">Lien interne</a></li>
+        </ul>
+      </div>
+      <div class="qc-nav-footer-column">
+        <h3>Titre de la colonne</h3>
+        <ul>
+          <li><a href="/section-2/page-1">Lien interne</a></li>
+          <li><a href="/section-2/page-2">Lien interne</a></li>
+          <li><a href="/section-2/page-3">Lien interne</a></li>
+          <li><a href="/section-2/page-4">Lien interne</a></li>
+          <li><a href="/section-2/page-5">Lien interne</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="qc-nav-footer-column">
+      <h3>Suivez-nous</h3>
+      <ul>
+        <li>
+          <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+        </li>
+        <li>
+          <qc-external-link><a class="qc-social-x" href="https://x.com/exemple">X (Twitter)</a></qc-external-link>
+        </li>
+      </ul>
+    </div>
+  </div>
+</qc-nav-footer>
+</div>
+
+<h2 class="qc-heading-xs nav-footer-cas">Exemple 2 : pied de page succinct, sans colonnes</h2>
+<div class="nav-footer-pleine-largeur">
+<qc-nav-footer title-text="Titre du site ou du service"
+               title-url="/"
+               description="Courte description du service ou de l’application Web.">
+  <ul slot="links">
+    <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+    <li>
+      <qc-external-link><a href="https://www.exemple.gouv.qc.ca/aide">Aide</a></qc-external-link>
+    </li>
+  </ul>
+</qc-nav-footer>
+</div>
+
+<h2 class="qc-heading-xs nav-footer-cas">Exemple 3 : colonnes seules, sans liens au-dessus de la ligne</h2>
+<div class="nav-footer-pleine-largeur">
+<qc-nav-footer title-text="Titre du site ou du service">
+  <div slot="columns">
+    <nav aria-label="Plan du pied de page">
+      <div class="qc-nav-footer-column">
+        <h3>Programmes et services</h3>
+        <ul>
+          <li><a href="/programmes">Programmes d’aide financière aux entreprises et aux organismes à but non lucratif</a></li>
+          <li><a href="/permis">Permis et certificats</a></li>
+          <li><a href="/formulaires">Formulaires</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="qc-nav-footer-column">
+      <h3>Suivez-nous</h3>
+      <ul>
+        <li>
+          <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+        </li>
+      </ul>
+    </div>
+  </div>
+</qc-nav-footer>
+</div>
+
+<h2 class="qc-heading-xs nav-footer-cas">Exemple 4 : assemblage avec le pied de page du PIV</h2>
+<div class="nav-footer-pleine-largeur">
+<footer>
+  <qc-nav-footer title-text="Titre du site ou du service">
+    <ul slot="links">
+      <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+    </ul>
+    <nav slot="columns" aria-label="Plan du pied de page">
+      <div class="qc-nav-footer-column">
+        <h3>Titre de la colonne</h3>
+        <ul>
+          <li><a href="/section-1/page-1">Lien interne</a></li>
+        </ul>
+      </div>
+    </nav>
+  </qc-nav-footer>
+  <qc-piv-footer copyright-text="© Gouvernement du Québec, 2026">
+    <nav aria-label="Liens utilitaires et légaux">
+      <ul>
+        <li><a href="/accessibilite">Accessibilité</a></li>
+        <li><a href="/plan-du-site">Plan du site</a></li>
+        <li><a href="/acces-information">Accès à l’information</a></li>
+        <li><a href="/confidentialite">Politique de confidentialité</a></li>
+        <li><a href="/conditions-utilisation">Conditions d’utilisation</a></li>
+        <li><a href="/a-propos">À propos de Québec.ca</a></li>
+      </ul>
+    </nav>
+  </qc-piv-footer>
+</footer>
+</div>
+
+<h2 class="qc-heading-xs nav-footer-cas">Exemple 5 : un repère de navigation par colonne</h2>
+<div class="nav-footer-pleine-largeur">
+<qc-nav-footer title-text="Titre du site ou du service"
+               title-url="/">
+  <ul slot="links">
+    <li><a href="/joindre">Joindre [nom de l’organisation]</a></li>
+    <li>
+      <qc-external-link><a href="https://www.exemple.gouv.qc.ca">Lien vers une deuxième page</a></qc-external-link>
+    </li>
+  </ul>
+  <div slot="columns">
+    <nav class="qc-nav-footer-column" aria-labelledby="pied-page-colonne-1">
+      <h3 id="pied-page-colonne-1">Informations et services</h3>
+      <ul>
+        <li><a href="/section-1/page-1">Lien interne</a></li>
+        <li><a href="/section-1/page-2">Lien interne</a></li>
+      </ul>
+    </nav>
+    <nav class="qc-nav-footer-column" aria-labelledby="pied-page-colonne-2">
+      <h3 id="pied-page-colonne-2">Gouvernement</h3>
+      <ul>
+        <li><a href="/section-2/page-1">Lien interne</a></li>
+        <li><a href="/section-2/page-2">Lien interne</a></li>
+      </ul>
+    </nav>
+    <div class="qc-nav-footer-column">
+      <h3>Suivez-nous</h3>
+      <ul>
+        <li>
+          <qc-external-link><a class="qc-social-facebook" href="https://www.facebook.com/exemple">Facebook</a></qc-external-link>
+        </li>
+      </ul>
+    </div>
+  </div>
+</qc-nav-footer>
+</div>

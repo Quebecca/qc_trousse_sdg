@@ -1,0 +1,237 @@
+@use "../../scss/qc-sdg-lib" as *;
+@use "navFooterSocialIcons" as *;
+
+// Pied de page de navigation (qc-nav-footer).
+//
+// Deux arbres de style :
+// - le shadow DOM du web component (titre, description) : classes .qc-nav-footer-* ;
+// - le contenu des zones links et columns, qui reste dans le DOM de la page (light DOM) :
+//   en web component, c'est l'élément qui porte slot="links" ou slot="columns" ; en
+//   Svelte, ce sont les conteneurs .qc-nav-footer-links et .qc-nav-footer-columns rendus
+//   par le composant. Les mêmes mixins servent les deux cas.
+//
+// Mesures : Figma, fichier « [SDG OFFICIEL] Modèles », cadres 345:3590 (bureau) et
+// 5089:182 (mobile).
+
+// Couleurs de lien sur le fond du bandeau (texte inversé).
+// Thème sombre : contour de focus sur blue-pale, surcharge temporaire en attendant une
+// correction de la palette sombre.
+@mixin nav-footer-link-colors() {
+  --qc-color-link-text: #{token-value(color white)};
+  --qc-color-link-hover: #{token-value(color white)};
+  --qc-color-link-visited: #{token-value(color white)};
+  --qc-color-link-active: #{token-value(color white)};
+
+  @include dark-theme() {
+    --qc-color-link-focus-outline: #{token-value(color blue pale)};
+  }
+}
+
+// Icône de lien externe (open_in_new, posée par qc-external-link) : sur fond foncé, la
+// fiche Iconographie demande une graisse au-dessus de celle du texte (texte 400 -> icône
+// 500). En thème sombre, le fond du bandeau devient pâle : on revient à la graisse 400.
+// Une règle par sélecteur : le mixin dark-theme ne préfixe que le premier sélecteur
+// d'une liste. Les sélecteurs reprennent ceux de _links.scss, pour les surpasser.
+@mixin nav-footer-external-icon-weight() {
+  @each $icon in (".qc-external-link .qc-ext-link-text::after", "qc-external-link:not(:defined)::after") {
+    #{$icon} {
+      font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0, 'wght' 500;
+
+      @include dark-theme() {
+        font-variation-settings: 'opsz' 40, 'FILL' 0, 'GRAD' 0, 'wght' 400;
+      }
+    }
+  }
+}
+
+// Grille de trois colonnes à partir de sm (768 px), une seule en dessous : l'équivalent
+// de qc-col-sm-4 dans la grille de 12 colonnes.
+@mixin nav-footer-grid($row-gap) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: $row-gap;
+
+  @include media-breakpoint-up(sm) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--qc-grid-gutter);
+  }
+}
+
+// La marge du haut n'est pas touchée : quand la liste porte elle-même la zone links,
+// elle garde l'espace qui la sépare du titre.
+@mixin nav-footer-list-reset() {
+  list-style: none;
+  max-inline-size: none;
+  padding: 0;
+  margin-bottom: 0;
+
+  li {
+    @include content-font(sm);
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Zone links : la liste est l'élément qui porte la zone, ou elle est placée dans
+// un <nav> ou un <div> qui la porte.
+@mixin nav-footer-links-zone() {
+  margin-top: token-value(spacer sm);
+
+  &:is(ul),
+  ul {
+    @include nav-footer-list-reset();
+    @include nav-footer-grid(token-value(spacer xs));
+  }
+
+  ul {
+    margin-top: 0;
+  }
+
+  a {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+// Zone columns : est une colonne tout élément qui porte qc-nav-footer-column, placé
+// directement dans la zone ou directement dans un élément intermédiaire (un <nav>) qui
+// contient lui-même des colonnes. L'élément intermédiaire ne compte pas dans la mise en
+// colonne (display: contents).
+@mixin nav-footer-columns-zone() {
+  @include nav-footer-grid(token-value(spacer 4));
+  margin-top: token-value(spacer 4);
+
+  > :not(.qc-nav-footer-column):has(> .qc-nav-footer-column) {
+    display: contents;
+  }
+
+  .qc-nav-footer-column {
+    min-width: 0;
+
+    > :is(h2, h3, h4, h5, h6) {
+      @include header-font(h6);
+      color: inherit;
+      max-inline-size: none;
+      margin: 0 0 token-value(spacer sm);
+    }
+
+    ul {
+      @include nav-footer-list-reset();
+      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: token-value(spacer xs);
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Filet de séparation : seulement quand il y a des liens au-dessus de la ligne et des
+// colonnes en dessous.
+@mixin nav-footer-separator() {
+  border-top: 1px solid token-value(color blue piv);
+  padding-top: token-value(spacer 4);
+}
+
+qc-nav-footer {
+  @include nav-footer-link-colors();
+  display: block;
+  color: token-value(color white);
+  background-color: token-value(color blue medium);
+
+  > [slot=links] {
+    @include nav-footer-links-zone();
+  }
+
+  > [slot=columns] {
+    @include nav-footer-columns-zone();
+  }
+
+  &:has(> [slot=links]) > [slot=columns] {
+    @include nav-footer-separator();
+  }
+
+  @include nav-footer-external-icon-weight();
+}
+
+.qc-nav-footer {
+  @include nav-footer-link-colors();
+  @include content-font(sm, regular, 1);
+  color: token-value(color white);
+  background-color: token-value(color blue medium);
+  padding-top: token-value(spacer 5);
+  padding-bottom: token-value(spacer lg);
+
+  .qc-nav-footer-title {
+    @include header-font(h4);
+    color: inherit;
+    max-inline-size: token-value(max-content-width);
+    margin: 0;
+
+    a {
+      font-family: inherit;
+      font-weight: inherit;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .qc-nav-footer-description {
+    @include content-font(md);
+    color: inherit;
+    max-inline-size: token-value(max-content-width);
+    margin: token-value(spacer xs) 0 0;
+  }
+
+  // Mode Svelte : le contenu des zones est rendu dans ces conteneurs.
+  .qc-nav-footer-links {
+    @include nav-footer-links-zone();
+  }
+
+  .qc-nav-footer-columns {
+    @include nav-footer-columns-zone();
+  }
+
+  .qc-nav-footer-links + .qc-nav-footer-columns {
+    @include nav-footer-separator();
+  }
+
+  @include nav-footer-external-icon-weight();
+}
+
+// Liens vers les médias sociaux : classes génériques, indépendantes du composant.
+// L'icône est décorative (pseudo-élément) ; le nom du réseau reste le texte du lien.
+// Le lien est un bloc en ligne : l'icône (20 px) et le texte forment une seule boîte.
+// En ligne, l'icône dépassait de la boîte du texte (19 px) et le contour de focus
+// épousait ce dépassement (contour non rectangulaire). Pas de flex : qc-external-link
+// découpe le libellé (« X » + « (Twitter) »), et un élément flex perdrait l'espace.
+@each $network, $svg in $nav-footer-social-icons {
+  .qc-social-#{$network} {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .qc-social-#{$network}::before {
+    content: "";
+    display: inline-block;
+    width: rem(20);
+    height: rem(20);
+    margin-right: rem(12);
+    vertical-align: top;
+    background-color: currentColor;
+    mask: url("data:image/svg+xml;base64,#{$svg}") center / contain no-repeat;
+  }
+}

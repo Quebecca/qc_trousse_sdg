@@ -1,6 +1,10 @@
 # Historique des versions
 
-## [1.6.2] - en développement
+## [1.7.0] - en développement
+
+### Ajouté
+- **Pied de page de navigation** (`qc-nav-footer`, nouveau composant) : section facultative placée au-dessus du pied de page du PIV. Titre du site ou du service (lien vers l'accueil, niveau réglable par `title-tag`), courte description, liens de contact (zone `links`) et jusqu'à trois colonnes de liens (zone `columns`, colonnes repérées par la classe `qc-nav-footer-column`). Trois colonnes à partir de 768 px, une en dessous. Suit le thème sombre. Disponible aussi en composant Svelte (`NavFooter.svelte`).
+- **Liens vers les médias sociaux** : classes `qc-social-<réseau>` (11 réseaux) qui ajoutent l'icône décorative du réseau devant le texte du lien.
 
 ### Modifié
 - **Build/doc** : modification du calcul de la version affichée dans la doc, intégrant la dernière entrée du CHANGELOG.md.

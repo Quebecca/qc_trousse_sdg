@@ -1,6 +1,7 @@
 export * from './components/Notice/NoticeWC.svelte'
 export * from './components/PivHeader/PivHeaderWC.svelte'
 export * from './components/PivFooter/PivFooterWC.svelte'
+export * from './components/NavFooter/NavFooterWC.svelte'
 export * from './components/Alert/AlertWC.svelte'
 export * from './components/ToTop/ToTopWC.svelte'
 export * from './components/ExternalLink/ExternalLinkWC.svelte'
