@@ -71,9 +71,8 @@ input[type="checkbox"].qc-choicefield {
 // Sur un host inline cette marge serait ignorée => on passe le host en block, on réserve
 // la même marge basse + un plancher de hauteur (spacer-md = hauteur de la case stylée),
 // et on masque le contenu brut (anti-FOUC).
-qc-checkbox:not(:defined) {
-  display: block;
-  min-height: token-value(spacer, md);
-  margin-bottom: token-value(spacer content-block mb);
-  visibility: hidden;
+qc-checkbox {
+  @include qc-before-upgrade(block, token-value(spacer, md)) {
+    margin-bottom: token-value(spacer content-block mb);
+  }
 }

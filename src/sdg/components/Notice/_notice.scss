@@ -120,7 +120,6 @@ qc-notice {
 // visibility:hidden masque le contenu brut slotté avant upgrade (anti-FOUC), sans
 // collapser la boîte (pas de display:none). Compromis assumé : si le JS ne charge
 // pas, le contenu slotté (y compris un résumé d'erreurs de formulaire) reste invisible.
-qc-notice:not(:defined) {
-  min-height: rem(72);
-  visibility: hidden;
+qc-notice {
+  @include qc-before-upgrade(null, rem(72));
 }

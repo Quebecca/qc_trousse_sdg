@@ -21,11 +21,10 @@ $border: 1;
 // garantie de tout select), et on masque le contenu brut. La hauteur variant avec le
 // label (optionnel), seul le plancher est réservable ; le résidu = la hauteur du label
 // quand il est présent. Compromis assumé : le <select> natif est invisible sans JS.
-qc-select:not(:defined) {
-  display: block;
-  min-height: rem($min-height);
-  margin-bottom: rem(32);
-  visibility: hidden;
+qc-select {
+  @include qc-before-upgrade(block, rem($min-height)) {
+    margin-bottom: rem(32);
+  }
 }
 
 .qc-dropdown-list-container {

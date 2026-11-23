@@ -12,9 +12,8 @@ qc-search-bar {
 // responsive). min-height:rem(40) réserve exactement cette hauteur => 0 CLS.
 // visibility:hidden par cohérence avec les autres composants (host vide => sans effet
 // visible aujourd'hui, garde-fou si un contenu de repli était un jour slotté).
-qc-search-bar:not(:defined) {
-  min-height: rem(40);
-  visibility: hidden;
+qc-search-bar {
+  @include qc-before-upgrade(null, rem(40));
 }
 .qc-search-bar {
   @extend %qc-search-wrapper;

@@ -13,14 +13,14 @@ label.qc-choicefield-label {
 // %check-row) — ce qui scale avec le nombre d'options (déterministe en light-DOM) — et
 // on réserve la hauteur de la legend via padding-top (uniquement si l'attribut existe).
 // visibility masque le contenu brut (FOUC). Résidu = legend/texte multi-lignes.
-qc-choice-group:not(:defined) {
-  display: flex;
-  flex-direction: column;
-  gap: token-value(spacer, sm);
-  visibility: hidden;
+qc-choice-group {
+  @include qc-before-upgrade(flex) {
+    flex-direction: column;
+    gap: token-value(spacer, sm);
 
-  &[legend] {
-    padding-top: rem(48);
+    &[legend] {
+      padding-top: rem(48);
+    }
   }
 }
 

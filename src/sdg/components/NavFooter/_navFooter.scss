@@ -136,6 +136,12 @@
   }
 }
 
+// Padding vertical du bandeau, partagé par le bandeau défini et sa réservation CLS.
+@mixin nav-footer-band-padding() {
+  padding-top: token-value(spacer 5);
+  padding-bottom: token-value(spacer lg);
+}
+
 // Filet de séparation : seulement quand il y a des liens au-dessus de la ligne et des
 // colonnes en dessous.
 @mixin nav-footer-separator() {
@@ -164,13 +170,41 @@ qc-nav-footer {
   @include nav-footer-external-icon-weight();
 }
 
+// CLS : avant l'upgrade, le titre et la description (dans le shadow DOM) n'existent pas
+// encore et le host ne réserve que la hauteur des zones links et columns. À l'upgrade,
+// il grandit du padding du bandeau, du titre et de la description = Cumulative Layout
+// Shift. On réserve ces hauteurs dès :not(:defined) : le padding du bandeau, puis le
+// titre (::before, texte de title-text, même typographie que le titre) et la description
+// (::after, seulement si l'attribut existe). Seule la hauteur compte : l'ordre des
+// pseudo-éléments par rapport aux zones n'a pas d'effet sur le décalage.
+// Le padding vit dans le shadow DOM (.qc-nav-footer) en web component, et dans le
+// composant Svelte pur, qui n'a pas de host : un seul mixin sert les deux endroits.
+qc-nav-footer {
+  @include qc-before-upgrade(null) {
+    @include nav-footer-band-padding();
+
+    &::before {
+      content: attr(title-text);
+      display: block;
+      @include header-font(h4);
+      margin: 0;
+    }
+
+    &[description]::after {
+      content: attr(description);
+      display: block;
+      @include content-font(md);
+      margin: token-value(spacer xs) 0 0;
+    }
+  }
+}
+
 .qc-nav-footer {
   @include nav-footer-link-colors();
   @include content-font(sm, regular, 1);
   color: token-value(color white);
   background-color: token-value(color blue medium);
-  padding-top: token-value(spacer 5);
-  padding-bottom: token-value(spacer lg);
+  @include nav-footer-band-padding();
 
   .qc-nav-footer-title {
     @include header-font(h4);

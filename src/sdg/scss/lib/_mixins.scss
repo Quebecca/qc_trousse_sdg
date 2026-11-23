@@ -100,6 +100,29 @@
   }
 }
 
+// Réservation CLS + anti-FOUC avant l'upgrade d'un web component (état :not(:defined)).
+// À inclure dans la règle du host (qc-xxx { @include qc-before-upgrade(...) }).
+// - $display : display du host (block en général : un host inline ignorerait min-height et
+//   les marges verticales) ; null pour ne rien poser.
+// - $min-height : plancher de hauteur, celui du composant une fois défini ; null si la
+//   hauteur est réservée autrement (@content).
+// - @content : réservations propres au composant (padding, marges, pseudo-éléments).
+// visibility:hidden masque le contenu brut slotté (anti-FOUC) sans collapser la boîte
+// (décision de la trousse : ni display:none ni opacity:0, qui réintroduiraient le CLS).
+// visibility (pas opacity) retire aussi le contenu brut de l'arbre d'accessibilité.
+@mixin qc-before-upgrade($display: block, $min-height: null) {
+  &:not(:defined) {
+    @if $display {
+      display: $display;
+    }
+    @if $min-height {
+      min-height: $min-height;
+    }
+    visibility: hidden;
+    @content;
+  }
+}
+
 //Le champ recherche (et la barre de recherche) sont composés d'un champ et d'un ou plusieurs boutons,
 //le tout dans un cadre qui affiche deux bordures de 2px à l'extérieur et à l'intérieur au focus sur le champ recherche.
 //Pour afficher ces bordures, on ajoute au cadre un pseudo-élément ::before, positionné de façon absolue,

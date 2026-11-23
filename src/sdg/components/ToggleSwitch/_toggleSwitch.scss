@@ -100,8 +100,6 @@ $border: 1;
 // rendu dans le shadow) ; il rend ensuite un commutateur de hauteur fixe ($height).
 // display:block + min-height réserve exactement cette hauteur (block => pas de strut de
 // baseline qui gonflerait une line-box inline). visibility:hidden par cohérence.
-qc-toggle-switch:not(:defined) {
-  display: block;
-  min-height: rem($height);
-  visibility: hidden;
+qc-toggle-switch {
+  @include qc-before-upgrade(block, rem($height));
 }
